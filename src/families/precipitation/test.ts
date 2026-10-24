@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PrecipitationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('precipitation: intensity, runoff, accumulation, returnperiod, snowratio, c
   assert.equal(PrecipitationFormulas.infiltration(200, 150).value, 50, 'what soaks in')
   assert.equal(PrecipitationFormulas.infiltration(50, 100).value, 0)
   assert.equal(PrecipitationFormulas.intensity(50, 5).dst, 'hydrology')
-  assert.equal(qpuHexFamiliesOf().get('precipitation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('precipitation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'precipitation', program: ['runoff'], params: [200, 75] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 150, `precipitation.runoff at ${uuid}`)
-  qpuUuidReceiptOf('precipitation runoff', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('precipitation runoff', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; intensity 10, runoff 150, accumulation 72, returnperiod 25, snowratio 13, catchmentyield 10000, raindepth 20, infiltration 50; crossing to hydrology')
 })

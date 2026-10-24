@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SURGERY — THE OPERATING RECORD, AS ARITHMETIC (chosen by the clinical registry, not by hand). An operation is numbers:
@@ -30,4 +30,4 @@ export class SurgeryFormulas {
 }
 
 for (const name of ['bloodloss', 'complication', 'duration', 'margin', 'mortality', 'recovery', 'success', 'throughput'] as const)
-  qpuHexRegisterOf('surgery', name, (SurgeryFormulas[name] as (...x: unknown[]) => unknown).bind(SurgeryFormulas))
+  hexRegisterOf('surgery', name, (SurgeryFormulas[name] as (...x: unknown[]) => unknown).bind(SurgeryFormulas))

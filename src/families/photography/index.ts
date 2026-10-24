@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHOTOGRAPHY — MAKING LIGHT A PICTURE, AS ARITHMETIC. Exposure is a product; the f-number is focal over diameter; depth
@@ -31,4 +31,4 @@ export class PhotographyFormulas {
 }
 
 for (const name of ['composition', 'crop', 'depthoffield', 'dynamicrange', 'exposure', 'fstop', 'iso', 'megapixels'] as const)
-  qpuHexRegisterOf('photography', name, (PhotographyFormulas[name] as (...x: unknown[]) => unknown).bind(PhotographyFormulas))
+  hexRegisterOf('photography', name, (PhotographyFormulas[name] as (...x: unknown[]) => unknown).bind(PhotographyFormulas))

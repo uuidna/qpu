@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BLOG — THE PAYLOADCMS/WEBSITE BLOGGING USE CASE, AS ARITHMETIC (Posts, Categories, BlogContent). A blog is numbers:
@@ -30,4 +30,4 @@ export class BlogFormulas {
 }
 
 for (const name of ['categories', 'excerpt', 'freshness', 'pagination', 'readtime', 'related', 'series', 'slug'] as const)
-  qpuHexRegisterOf('blog', name, (BlogFormulas[name] as (...x: unknown[]) => unknown).bind(BlogFormulas))
+  hexRegisterOf('blog', name, (BlogFormulas[name] as (...x: unknown[]) => unknown).bind(BlogFormulas))

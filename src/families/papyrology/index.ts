@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PAPYROLOGY — scaffolded integer measures crossed to archaeology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PapyrologyFormulas {
 }
 
 for (const name of ['columnorderings', 'datingrange', 'fragments', 'joinpairs', 'linespercolumn', 'recovery', 'scribalhands', 'subsetreadings'] as const)
-  qpuHexRegisterOf('papyrology', name, (PapyrologyFormulas[name] as (...x: unknown[]) => unknown).bind(PapyrologyFormulas))
+  hexRegisterOf('papyrology', name, (PapyrologyFormulas[name] as (...x: unknown[]) => unknown).bind(PapyrologyFormulas))

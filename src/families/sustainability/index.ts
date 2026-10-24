@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SUSTAINABILITY — KEEPING WITHIN THE EARTH'S MEANS, AS ARITHMETIC. The carbon footprint of a consumption against its
@@ -31,4 +31,4 @@ export class SustainabilityFormulas {
 }
 
 for (const name of ['circularity', 'efficiency', 'footprint', 'intensity', 'lifecycle', 'offset', 'regeneration', 'renewable'] as const)
-  qpuHexRegisterOf('sustainability', name, (SustainabilityFormulas[name] as (...x: unknown[]) => unknown).bind(SustainabilityFormulas))
+  hexRegisterOf('sustainability', name, (SustainabilityFormulas[name] as (...x: unknown[]) => unknown).bind(SustainabilityFormulas))

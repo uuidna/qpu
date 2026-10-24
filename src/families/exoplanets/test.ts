@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ExoplanetsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('exoplanets: transitdepth, period, semimajor, radius, transitduration, radi
   assert.equal(ExoplanetsFormulas.insolation(10000, 10).value, 100)
   assert.equal(ExoplanetsFormulas.density(5000, 1000).value, 5)
   assert.equal(ExoplanetsFormulas.transitdepth(2, 100).dst, 'astronomy')
-  assert.equal(qpuHexFamiliesOf().get('exoplanets')?.length, 8)
+  assert.equal(hexFamiliesOf().get('exoplanets')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'exoplanets', program: ['transitdepth'], params: [2, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 400, `exoplanets.transitdepth at ${uuid}`)
-  qpuUuidReceiptOf('exoplanets transitdepth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('exoplanets transitdepth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; transitdepth 400, period 628, semimajor 100, radius 6371, transitduration 730, radialvelocity 10, insolation 100, density 5; crossing to astronomy')
 })

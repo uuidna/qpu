@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CINEMA — MOVING PICTURES AS ARITHMETIC (chosen by the public-API registry, not by hand). Making and showing films is
@@ -30,4 +30,4 @@ export class CinemaFormulas {
 }
 
 for (const name of ['aspect', 'boxoffice', 'frames', 'occupancy', 'rating', 'roi', 'runtime', 'shots'] as const)
-  qpuHexRegisterOf('cinema', name, (CinemaFormulas[name] as (...x: unknown[]) => unknown).bind(CinemaFormulas))
+  hexRegisterOf('cinema', name, (CinemaFormulas[name] as (...x: unknown[]) => unknown).bind(CinemaFormulas))

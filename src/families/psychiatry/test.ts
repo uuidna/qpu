@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PsychiatryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('psychiatry: phq, severity, remission, relapse, adherence, response, risk, 
   assert.equal(PsychiatryFormulas.wellbeing(8, 3).value, 5)
   assert.equal(PsychiatryFormulas.wellbeing(3, 8).value, 0, 'never below zero')
   assert.equal(PsychiatryFormulas.phq(21).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('psychiatry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('psychiatry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'psychiatry', program: ['severity'], params: [45, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 45, `psychiatry.severity at ${uuid}`)
-  qpuUuidReceiptOf('psychiatry severity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('psychiatry severity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; phq 21, severity 45, remission 30, relapse 20, adherence 90, response 75, risk 25, wellbeing 5; crossing to med')
 })

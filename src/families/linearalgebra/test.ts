@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LinearalgebraFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,10 +22,10 @@ test('linearalgebra: dot2, determinant2x2, trace2, matrixelements, rank, norm1, 
   assert.equal(LinearalgebraFormulas.span(3, 5).value, 3, 'min(3, 5)')
   assert.equal(LinearalgebraFormulas.characteristicdegree(5).value, 5, 'deg det(A − λI), 5×5')
   assert.equal(LinearalgebraFormulas.dot2(3, 4, 5).dst, 'algebra')
-  assert.equal(qpuHexFamiliesOf().get('linearalgebra')?.length, 15)
+  assert.equal(hexFamiliesOf().get('linearalgebra')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'linearalgebra', program: ['matrixelements'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `linearalgebra.matrixelements at ${uuid}`)
-  qpuUuidReceiptOf('linearalgebra matrixelements', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('linearalgebra matrixelements', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dot2 32, determinant2x2 11, trace2 16, matrixelements 12, rank 2, norm1 14, cross 12, scalarmul 27; crossing to algebra')
 })

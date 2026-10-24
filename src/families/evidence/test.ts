@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EvidenceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -19,10 +19,10 @@ test('evidence: the tribunal weighs by threshold — balance, corroboration, bal
   assert.equal(EvidenceFormulas.sufficiency(4, 3).value, 0, 'an element missing')
   assert.equal(EvidenceFormulas.hearsay(0).value, 0, 'no exception: inadmissible')
   assert.equal(EvidenceFormulas.hearsay(1).value, 1, 'an exception applies')
-  assert.equal(qpuHexFamiliesOf().get('evidence')?.length, 9)
+  assert.equal(hexFamiliesOf().get('evidence')?.length, 9)
   const uuid = qpuHexUuidOf({ family: 'evidence', program: ['chain'], params: [5, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1, `evidence.chain at ${uuid}`)
-  qpuUuidReceiptOf('evidence chain', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('evidence chain', contentUuidOf(run), { uuid })
   t.diagnostic('9 formulas; weight 7>3, margin 4, corroboration 3, admissible 8>3, chain 5/5, sufficiency 4/4; crossing to law')
 })

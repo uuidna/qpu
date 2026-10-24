@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HUSBANDRY — RAISING LIVESTOCK, AS ARITHMETIC. Keeping animals is numbers: how densely they stock a paddock, how much
@@ -30,4 +30,4 @@ export class HusbandryFormulas {
 }
 
 for (const name of ['feedconversion', 'herdgrowth', 'mortality', 'pasturerotation', 'spaceallowance', 'stockingdensity', 'waterrequirement', 'weaningweight'] as const)
-  qpuHexRegisterOf('husbandry', name, (HusbandryFormulas[name] as (...x: unknown[]) => unknown).bind(HusbandryFormulas))
+  hexRegisterOf('husbandry', name, (HusbandryFormulas[name] as (...x: unknown[]) => unknown).bind(HusbandryFormulas))

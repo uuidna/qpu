@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GASTRONOMY — RUNNING A KITCHEN, AS ARITHMETIC. A plate is numbers: cost per portion, the built-up plate cost, food cost as
@@ -30,4 +30,4 @@ export class GastronomyFormulas {
 }
 
 for (const name of ['covers', 'foodcostpercent', 'margin', 'menuprice', 'platecost', 'portioncost', 'waste', 'yield'] as const)
-  qpuHexRegisterOf('gastronomy', name, (GastronomyFormulas[name] as (...x: unknown[]) => unknown).bind(GastronomyFormulas))
+  hexRegisterOf('gastronomy', name, (GastronomyFormulas[name] as (...x: unknown[]) => unknown).bind(GastronomyFormulas))

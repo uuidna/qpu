@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RESPIRATION — CELLULAR AND PULMONARY GAS ACCOUNTING, AS ARITHMETIC. Breathing and burning fuel are numbers: the ATP a
@@ -31,4 +31,4 @@ export class RespirationFormulas {
 }
 
 for (const name of ['atpyield', 'gasexchange', 'glucoseoxidation', 'metabolicrate', 'minuteventilation', 'oxygenuptake', 'respiratoryquotient', 'tidalvolume'] as const)
-  qpuHexRegisterOf('respiration', name, (RespirationFormulas[name] as (...x: unknown[]) => unknown).bind(RespirationFormulas))
+  hexRegisterOf('respiration', name, (RespirationFormulas[name] as (...x: unknown[]) => unknown).bind(RespirationFormulas))

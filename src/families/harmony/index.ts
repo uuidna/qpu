@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HARMONY — TONAL MUSIC AS ARITHMETIC (chosen by the registry, not by hand). Chords and voices are numbers mod the octave:
@@ -31,4 +31,4 @@ export class HarmonyFormulas {
 }
 
 for (const name of ['cadence', 'chordquality', 'consonance', 'interval', 'inversion', 'keysignature', 'tension', 'voiceleading'] as const)
-  qpuHexRegisterOf('harmony', name, (HarmonyFormulas[name] as (...x: unknown[]) => unknown).bind(HarmonyFormulas))
+  hexRegisterOf('harmony', name, (HarmonyFormulas[name] as (...x: unknown[]) => unknown).bind(HarmonyFormulas))

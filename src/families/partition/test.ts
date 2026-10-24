@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PartitionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,10 +22,10 @@ test('partition: p(n), Durfee square, triangular/pentagonal, Ferrers conjugation
   assert.equal(PartitionFormulas.oddavailable(10).value, 5, '⌈10/2⌉ odd part-sizes')
   assert.equal(PartitionFormulas.selfconjugatehook(4).value, 7, 'principal hook 2·4-1')
   assert.equal(PartitionFormulas.p(7).dst, 'combinatorics')
-  assert.equal(qpuHexFamiliesOf().get('partition')?.length, 15)
+  assert.equal(hexFamiliesOf().get('partition')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'partition', program: ['triangular'], params: [10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 55, `partition.triangular at ${uuid}`)
-  qpuUuidReceiptOf('partition triangular', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('partition triangular', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; p(7)=15, p(10)=42, durfee 3, durfeecells 9, triangular 55, pentagonal 35, distinctmax 4, ferrers 12, conjugatecells 12, exactone 1, exacttwo 5, atmosttwo 6, hook 6, rank 5, oddavailable 5, selfconjugatehook 7; crossing to combinatorics')
 })

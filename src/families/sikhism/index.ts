@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SIKHISM — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SikhismFormulas {
 }
 
 for (const name of ['articlesoffaith', 'communitymeals', 'devotionratio', 'gurus', 'hymncombos', 'pillars', 'prayerorderings', 'scripturepages'] as const)
-  qpuHexRegisterOf('sikhism', name, (SikhismFormulas[name] as (...x: unknown[]) => unknown).bind(SikhismFormulas))
+  hexRegisterOf('sikhism', name, (SikhismFormulas[name] as (...x: unknown[]) => unknown).bind(SikhismFormulas))

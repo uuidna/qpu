@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { QuantumFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('quantum: qubits, states, gatecount, entanglementpairs, superposition, circ
   assert.equal(QuantumFormulas.shots(1024, 1).value, 1024)
   assert.equal(QuantumFormulas.fidelity(99, 100).value, 99)
   assert.equal(QuantumFormulas.qubits(5, 0).dst, 'physics')
-  assert.equal(qpuHexFamiliesOf().get('quantum')?.length, 8)
+  assert.equal(hexFamiliesOf().get('quantum')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'quantum', program: ['qubits'], params: [5, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `quantum.qubits at ${uuid}`)
-  qpuUuidReceiptOf('quantum qubits', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('quantum qubits', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; qubits 5, states 32, gatecount 60, entanglementpairs 28, superposition 16, circuitdepth 15, shots 1024, fidelity 99; crossing to physics')
 })

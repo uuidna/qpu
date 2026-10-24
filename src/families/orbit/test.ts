@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OrbitFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('orbit: period, semimajoraxis, eccentricity, apoapsis, periapsis, velocity,
   assert.equal(OrbitFormulas.inclination(30, 60).value, 45, 'degrees of tilt')
   assert.equal(OrbitFormulas.meananomaly(10, 45).value, 90, 'swept angle mod a turn')
   assert.equal(OrbitFormulas.period(62800, 8).dst, 'astronomy')
-  assert.equal(qpuHexFamiliesOf().get('orbit')?.length, 8)
+  assert.equal(hexFamiliesOf().get('orbit')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'orbit', program: ['period'], params: [62800, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 7850, `orbit.period at ${uuid}`)
-  qpuUuidReceiptOf('orbit period', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('orbit period', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; period 7850, semimajoraxis 400, eccentricity 250, apoapsis 500, periapsis 300, velocity 1000, inclination 45, meananomaly 90; crossing to astronomy')
 })

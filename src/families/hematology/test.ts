@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HematologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('hematology: hematocrit, hemoglobin, mcv, inr, platelets, oxygen, clotting,
   assert.equal(HematologyFormulas.clotting(12).value, 12)
   assert.equal(HematologyFormulas.differential(60, 100).value, 60)
   assert.equal(HematologyFormulas.hematocrit(45, 100).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('hematology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hematology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hematology', program: ['mcv'], params: [45, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `hematology.mcv at ${uuid}`)
-  qpuUuidReceiptOf('hematology mcv', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hematology mcv', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; hematocrit 45, hemoglobin 15, mcv 90, inr 108, platelets 250, oxygen 97, clotting 12, differential 60; crossing to med')
 })

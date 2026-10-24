@@ -2,7 +2,7 @@ import { test as receiptedTest } from './receipted.js'
 import type { TestContext } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { qpuContentUuidOf, qpuHexFamiliesOf, qpuUuidReceiptOf } from './index.js'
+import { contentUuidOf, hexFamiliesOf, uuidReceiptOf } from './index.js'
 import { DOORS } from '../../../mcp/discovery.js'
 import '../../../mcp/families.js'
 
@@ -16,7 +16,7 @@ const DOOR = 'cite'
 // no call runs for minutes (the old 120s × four retries was eight minutes). The host is probed once, memoized: when it
 // is unreachable — offline, no network, the host down — every live test skips rather than timing out, so the suite
 // finishes on any hardware (a Pravets 8M included) instead of stalling on a request that was never going to answer.
-// What that register recomputes one byte at a time is qpuZeroPageOf; qpuAnalyticsOf holds every integer, including the amplitude count.
+// What that register recomputes one byte at a time is zeroPageOf; analyticsOf holds every integer, including the amplitude count.
 const DEADLINE = 20000
 let up: Promise<boolean> | undefined
 const reachable = (): Promise<boolean> => (up ??= fetch(`${host}/health`, { signal: AbortSignal.timeout(DEADLINE) }).then((r) => r.ok).catch(() => false))
@@ -39,7 +39,7 @@ const call = async (args: Record<string, unknown>, name = DOOR, again = 0): Prom
   // the live reading is this test's computation: its content address is minted into the test's receipt ledger, so the
   // receipted reporter sees what was read and from where, and a test that only read the host is not "dry"
   const sc = body.result.structuredContent ?? {}
-  qpuUuidReceiptOf(`release ${name} ${JSON.stringify(args).slice(0, 80)}`, qpuContentUuidOf(sc), { holds: (sc as { holds?: unknown }).holds === true, host })
+  uuidReceiptOf(`release ${name} ${JSON.stringify(args).slice(0, 80)}`, contentUuidOf(sc), { holds: (sc as { holds?: unknown }).holds === true, host })
   return body.result
 }
 const out = (s: Shown) => (s.structuredContent ?? {}) as Record<string, unknown>
@@ -48,7 +48,7 @@ const FUSED = ['data', 'hex', 'discover', 'crypt', 'np', 'hologram']
 type Run = { value?: unknown; holds?: boolean; steps?: unknown[]; denied?: string; receipt?: string }
 const hex = async (family: string, program: string[], params: number[] = []): Promise<Run> => out(await call({ hex: { family, program, params } })) as Run
 // the families the data formulas index: sorted, the doors excluded, as data.research(f) and gate.family(i) count them
-const nonDoors = () => [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f)).sort()
+const nonDoors = () => [...hexFamiliesOf().keys()].filter((f) => !DOORS.has(f)).sort()
 
 test('release: every door and every formula is reachable through a sealed door', async (t) => {
   // COLD SPLITS HOT, ONE CATALOGUE: the doors come back cold and in full (name + kind, unfolded); the formulas are not
@@ -96,7 +96,7 @@ test('release: the site end to end — every address it lists answers, every pag
   const get = async (path: string, accept = 'text/html') => {
     const r = await fetch(`${host}${path}`, { headers: { accept }, redirect: 'manual', signal: AbortSignal.timeout(DEADLINE) })
     const text = await r.text()
-    qpuUuidReceiptOf(`release site ${path}`, qpuContentUuidOf({ status: r.status, text }), { holds: r.status === 200, host })
+    uuidReceiptOf(`release site ${path}`, contentUuidOf({ status: r.status, text }), { holds: r.status === 200, host })
     return { status: r.status, headers: r.headers, text: async () => text, json: async () => JSON.parse(text) as unknown }
   }
   // THE COLD START IS REPORTED, NOT RACED. The first page after a deploy seeds a changed site before it answers (minutes
@@ -210,12 +210,12 @@ test('release: the public APIs a family names test it — the registry searched 
   // what the unit may be: a category of the registry imagined — the families its APIs name, or a family to imagine
   const i = await hex('data', ['imagine'], [0])
   assert.ok(Number(i.value) >= 0, 'imagine(0) answers')
-  qpuUuidReceiptOf('release imagine', qpuContentUuidOf(i), { value: i.value })
+  uuidReceiptOf('release imagine', contentUuidOf(i), { value: i.value })
   t.diagnostic(`imagine(0): ${i.value} families reached`)
   // the Payload record: payloadcms/payload's docs, templates and examples read; the first docs section crossed
   const p = await hex('data', ['payload'], [0])
   assert.ok(p.holds === true || Number(p.value) >= 0, 'payload(0) answers: the docs section read, or a warning')
-  qpuUuidReceiptOf('release payload', qpuContentUuidOf(p), { value: p.value })
+  uuidReceiptOf('release payload', contentUuidOf(p), { value: p.value })
   t.diagnostic(`payload(0): ${p.value} families the section names, holds ${p.holds}`)
 })
 
@@ -226,7 +226,7 @@ test('release: every clay formula is cross developed from every perspective and 
   const families = nonDoors()
   const c = families.indexOf('clay')
   assert.ok(c >= 0, 'clay is a family')
-  const names = (qpuHexFamiliesOf().get('clay') ?? []).map((f) => f.name)
+  const names = (hexFamiliesOf().get('clay') ?? []).map((f) => f.name)
   const research = await hex('data', ['research'], [c])
   assert.ok(Number(research.value) > 0, 'clay: the registry holds APIs its formulas name')
   const d = await hex('data', ['discover'], [256])
@@ -238,7 +238,7 @@ test('release: every clay formula is cross developed from every perspective and 
   const crossed = async (name: string) => {
     if (relations.some((r) => r.families.length > 1 && r.ways.some((w) => w.family === 'clay' && w.program.includes(name)))) return 'relation'
     if (seals.some((s) => s.family === 'clay' && s.program.includes(name))) return 'seal'
-    const arity = qpuHexFamiliesOf().get('clay')!.find((f) => f.name === name)!.arity
+    const arity = hexFamiliesOf().get('clay')!.find((f) => f.name === name)!.arity
     const tuples = arity === 0 ? [[]] : arity === 1 ? [[1], [2], [3], [5], [8], [13]] : [[1, 2], [2, 3], [3, 5], [5, 8], [1, 1], [8, 13]]
     const runs = await Promise.all(tuples.map((params) => hex('clay', [name], params)))
     return runs.every((r) => r.holds === true && Number(r.value) < 3) ? 'involution' : undefined
@@ -251,7 +251,7 @@ test('release: every clay formula is cross developed from every perspective and 
   // fixed at each of a slice of small naturals, none through the relation that reaches its value
   let looked = 0, identified = 0
   for (const name of names) {
-    const arity = qpuHexFamiliesOf().get('clay')!.find((f) => f.name === name)!.arity
+    const arity = hexFamiliesOf().get('clay')!.find((f) => f.name === name)!.arity
     if (arity === 0) { assert.ok(how[name], `clay.${name}: a value with no parameter is tested by the relation that reaches it or by its own involution`); continue }
     for (const fixed of arity === 1 ? [[]] : [[1], [2], [3], [5]]) {
       const s = out(await call({ door: 'data', arguments: { source: 'sequence', family: 'clay', formula: name, fixed } })) as { agrees?: boolean; warning?: string; reading?: unknown }
@@ -271,7 +271,7 @@ test('release: the chat answers every formula asked in words with its numbers �
   let asked = 0, exact = 0
   const wrong: string[] = []
   for (const family of nonDoors()) {
-    const formulas = (qpuHexFamiliesOf().get(family) ?? []).filter((x) => !x.live)
+    const formulas = (hexFamiliesOf().get(family) ?? []).filter((x) => !x.live)
     for (const x of formulas) for (const input of [2, 5]) {
       const params = Array.from({ length: x.arity }, () => input)
       const question = `what is ${wordsOf(family)} ${wordsOf(x.name)}${params.length ? ` for ${params.join(' and ')}` : ''}?`
@@ -282,7 +282,7 @@ test('release: the chat answers every formula asked in words with its numbers �
       else if (wrong.length < 14) wrong.push(`${question} → ${reply.reading?.answer ?? JSON.stringify(reply).slice(0, 80)} (address says ${direct.value})`)
     }
   }
-  qpuUuidReceiptOf('release chat', qpuContentUuidOf({ asked, exact }), { asked, exact })
+  uuidReceiptOf('release chat', contentUuidOf({ asked, exact }), { asked, exact })
   assert.deepEqual(wrong, [], `every question answered exactly: ${exact}/${asked}`)
   t.diagnostic(`chat: ${exact}/${asked} questions answered exactly by the formula they name`)
 })
@@ -295,7 +295,7 @@ test('release: every theorem that states a cross-domain relation is confirmed by
   assert.ok((reading.stated ?? 0) > 0, 'the kernel states relation theorems')
   assert.deepEqual(reading.missing ?? [], [], `every relation theorem's value is reached across domains live; relations ${JSON.stringify(reading.relations).slice(0, 300)}`)
   assert.equal(r.holds, true, 'every cross-domain theorem is validated by the discovery')
-  qpuUuidReceiptOf('release theorems', qpuContentUuidOf(r), { stated: reading.stated, confirmed: reading.confirmed })
+  uuidReceiptOf('release theorems', contentUuidOf(r), { stated: reading.stated, confirmed: reading.confirmed })
   t.diagnostic(`theorems: ${reading.confirmed}/${reading.stated} cross-domain relation theorems confirmed by the live discovery`)
 })
 
@@ -320,6 +320,6 @@ test('release: paste the URL into any agent and it develops an idea on the formu
   assert.ok(finds.doors?.some((d) => d.name === 'findPages'), 'the Payload collections are fused into the same MCP (findPages)')
   const pages = await call({}, 'findPages').catch(() => null)
   assert.ok(pages !== null, 'the agent reads a Payload collection through the one door')
-  qpuUuidReceiptOf('release onboarding', qpuContentUuidOf({ wk: Boolean(wk), idea: idea.value, admin: admin.status }), { idea: idea.value })
+  uuidReceiptOf('release onboarding', contentUuidOf({ wk: Boolean(wk), idea: idea.value, admin: admin.status }), { idea: idea.value })
   t.diagnostic(`from ${host}: connect → ${doors.formulas?.length} formulas → idea tesla.schumann(1) = ${idea.value} → Payload admin ${admin.status}, findPages fused`)
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhysiotherapyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('physiotherapy: rom, strength, recovery, endurance, adherence, pain, gait, 
   assert.equal(PhysiotherapyFormulas.gait(1000, 10).value, 100)
   assert.equal(PhysiotherapyFormulas.balance(9, 10).value, 90)
   assert.equal(PhysiotherapyFormulas.rom(90, 120).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('physiotherapy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('physiotherapy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'physiotherapy', program: ['endurance'], params: [100, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `physiotherapy.endurance at ${uuid}`)
-  qpuUuidReceiptOf('physiotherapy endurance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('physiotherapy endurance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rom 75, strength 125, recovery 60, endurance 20, adherence 90, pain 5, gait 100, balance 90; crossing to med')
 })

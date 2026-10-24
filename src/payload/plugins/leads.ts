@@ -44,7 +44,7 @@ export const payloadLeadsOf = (): readonly PayloadLead[] => [
   },
   {
     where: 'legal.citation',
-    why: 'scripts/receipt.mjs sets citation.holds to false and citation.lead to true on the statement "clay solved in august", with the words "This file is a naming scheme. It solves none of the problems it names." qpuPublicOf().prize is false. That claim is not flipped.',
+    why: 'scripts/receipt.mjs sets citation.holds to false and citation.lead to true on the statement "clay solved in august", with the words "This file is a naming scheme. It solves none of the problems it names." publicOf().prize is false. That claim is not flipped.',
   },
   {
     where: 'cmi-rules-4a',
@@ -84,7 +84,7 @@ export const payloadLeadsOf = (): readonly PayloadLead[] => [
   },
   {
     where: 'open-math',
-    why: 'The clay seals recompute in CLAY_SEALS order. clay.bsd(15) is the author\'s seal arithmetic, recomputed. legal.citation for "clay solved in august" is holds false, lead true, and the file says it solves none of the problems it names. That row is a lead. It is not a proof of the negation. qpuPublicOf().prize is false: a prize is a lead. No Institute award is recorded in this tree. That absence is not a proof the claim is false. Nothing is submitted.',
+    why: 'The clay seals recompute in CLAY_SEALS order. clay.bsd(15) is the author\'s seal arithmetic, recomputed. legal.citation for "clay solved in august" is holds false, lead true, and the file says it solves none of the problems it names. That row is a lead. It is not a proof of the negation. publicOf().prize is false: a prize is a lead. No Institute award is recorded in this tree. That absence is not a proof the claim is false. Nothing is submitted.',
   },
   {
     where: 'permaculture',
@@ -100,7 +100,7 @@ export const payloadLeadsOf = (): readonly PayloadLead[] => [
   },
   {
     where: 'secured-connector',
-    why: 'googleapis.com:books and nytimes.com:books_api are secured. They are not fused and they are not called. A storage write needs a bearer the public caller is not given. The porting table names stdio and qpuHarnessesOf has no stdio row.',
+    why: 'googleapis.com:books and nytimes.com:books_api are secured. They are not fused and they are not called. A storage write needs a bearer the public caller is not given. The porting table names stdio and harnessesOf has no stdio row.',
   },
   {
     where: 'connector-efficiency',
@@ -172,6 +172,6 @@ export const payloadLeadsOf = (): readonly PayloadLead[] => [
   },
   {
     where: 'network-machine',
-    why: 'src/quantum/processing/unit/index.ts qpuNetworkMcpOf has hop, when, lanes, routes, channels, and holds. qpuComputerOf network has kind, href, hop, and holds. Neither has a slot for a machine row. The net_* doors stay on that catalog. qpuMachinesOf in src/quantum/processing/unit/zeropage.ts keeps the machine list. unit.host stays the unit host. No second network is added. cloud.scale holds when perNode > 0. scale(100, 0) holds false, value 0.',
+    why: 'src/quantum/processing/unit/index.ts networkMcpOf has hop, when, lanes, routes, channels, and holds. computerOf network has kind, href, hop, and holds. Neither has a slot for a machine row. The net_* doors stay on that catalog. machinesOf in src/quantum/processing/unit/zeropage.ts keeps the machine list. unit.host stays the unit host. No second network is added. cloud.scale holds when perNode > 0. scale(100, 0) holds false, value 0.',
   },
 ]

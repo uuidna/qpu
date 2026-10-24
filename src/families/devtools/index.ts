@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DEVTOOLS — SOFTWARE DELIVERY, AS ARITHMETIC (chosen by the registry: developer_tools, 168 APIs). Engineering health is
@@ -30,4 +30,4 @@ export class DevtoolsFormulas {
 }
 
 for (const name of ['build', 'bugs', 'churn', 'complexity', 'coverage', 'debt', 'ratio', 'velocity'] as const)
-  qpuHexRegisterOf('devtools', name, (DevtoolsFormulas[name] as (...x: unknown[]) => unknown).bind(DevtoolsFormulas))
+  hexRegisterOf('devtools', name, (DevtoolsFormulas[name] as (...x: unknown[]) => unknown).bind(DevtoolsFormulas))

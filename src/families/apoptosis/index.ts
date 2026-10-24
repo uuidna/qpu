@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** APOPTOSIS — PROGRAMMED CELL DEATH, AS ARITHMETIC. The orderly removal of cells is numbers: the fraction that die, the
@@ -31,4 +31,4 @@ export class ApoptosisFormulas {
 }
 
 for (const name of ['apoptoticindex', 'caspaseactivity', 'clearance', 'deathrate', 'halflife', 'netgrowth', 'survivalfraction', 'turnover'] as const)
-  qpuHexRegisterOf('apoptosis', name, (ApoptosisFormulas[name] as (...x: unknown[]) => unknown).bind(ApoptosisFormulas))
+  hexRegisterOf('apoptosis', name, (ApoptosisFormulas[name] as (...x: unknown[]) => unknown).bind(ApoptosisFormulas))

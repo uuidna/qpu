@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ORIGAMI — scaffolded integer measures crossed to geometry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class OrigamiFormulas {
 }
 
 for (const name of ['creasecount', 'crimpangle', 'flatfoldability', 'foldorderings', 'layersubsets', 'mountainvalley', 'panelcount', 'vertexpairs'] as const)
-  qpuHexRegisterOf('origami', name, (OrigamiFormulas[name] as (...x: unknown[]) => unknown).bind(OrigamiFormulas))
+  hexRegisterOf('origami', name, (OrigamiFormulas[name] as (...x: unknown[]) => unknown).bind(OrigamiFormulas))

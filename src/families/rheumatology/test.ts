@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RheumatologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('rheumatology: crp, das28, esr, flareindex, inflammation, jointcount, mobil
   assert.equal(RheumatologyFormulas.mobility(60, 90).value, 66)
   assert.equal(RheumatologyFormulas.painscore(7, 10).value, 70)
   assert.equal(RheumatologyFormulas.das28(5, 3, 20).dst, 'immunology')
-  assert.equal(qpuHexFamiliesOf().get('rheumatology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('rheumatology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'rheumatology', program: ['das28'], params: [5, 3, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `rheumatology.das28 at ${uuid}`)
-  qpuUuidReceiptOf('rheumatology das28', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('rheumatology das28', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; crp 10, das28 10, esr 25, flareindex 25, inflammation 35, jointcount 8, mobility 66, painscore 70; crossing to immunology')
 })

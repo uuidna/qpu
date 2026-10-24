@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PersonalityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('personality: openness, conscientiousness, extraversion, agreeableness, neu
   assert.equal(PersonalityFormulas.deviation(80, 50).value, 30, 'above the mean')
   assert.equal(PersonalityFormulas.deviation(40, 50).value, 0)
   assert.equal(PersonalityFormulas.openness(40, 10).dst, 'psychology')
-  assert.equal(qpuHexFamiliesOf().get('personality')?.length, 8)
+  assert.equal(hexFamiliesOf().get('personality')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'personality', program: ['composite'], params: [80, 90, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 210, `personality.composite at ${uuid}`)
-  qpuUuidReceiptOf('personality composite', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('personality composite', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; openness 80, conscientiousness 90, extraversion 40, agreeableness 90, neuroticism 35, composite 210, trait 4, deviation 30; crossing to psychology')
 })

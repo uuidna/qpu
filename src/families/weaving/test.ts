@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WeavingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('weaving: threadcount, warp, weft, density, cover, pickrate, width, gsm —
   assert.equal(WeavingFormulas.width(800, 80).value, 10)
   assert.equal(WeavingFormulas.gsm(50, 2500).value, 200)
   assert.equal(WeavingFormulas.threadcount(80, 60).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('weaving')?.length, 8)
+  assert.equal(hexFamiliesOf().get('weaving')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'weaving', program: ['density'], params: [80, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4800, `weaving.density at ${uuid}`)
-  qpuUuidReceiptOf('weaving density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('weaving density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; threadcount 140, warp 80, weft 60, density 4800, cover 50, pickrate 100, width 10, gsm 200; crossing to materials')
 })

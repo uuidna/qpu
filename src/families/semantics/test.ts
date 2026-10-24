@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SemanticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('semantics: similarity, polysemy, entailment, ambiguity, density, distance,
   assert.equal(SemanticsFormulas.sentiment(70, 30).value, 40, 'net positive')
   assert.equal(SemanticsFormulas.sentiment(30, 70).value, -40, 'net negative')
   assert.equal(SemanticsFormulas.similarity(3, 4).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('semantics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('semantics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'semantics', program: ['similarity'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `semantics.similarity at ${uuid}`)
-  qpuUuidReceiptOf('semantics similarity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('semantics similarity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; similarity 75, polysemy 3, entailment 40, ambiguity 3, density 30, distance 5, coherence 90, sentiment 40/-40; crossing to linguistics')
 })

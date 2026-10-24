@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONTROL — A FEEDBACK LOOP, AS ARITHMETIC (the controller the registry leaves to dynamics). Holding a system to a setpoint
@@ -30,4 +30,4 @@ export class ControlFormulas {
 }
 
 for (const name of ['bandwidth', 'damping', 'error', 'gainmargin', 'overshoot', 'risetime', 'settlingtime', 'steadystate'] as const)
-  qpuHexRegisterOf('control', name, (ControlFormulas[name] as (...x: unknown[]) => unknown).bind(ControlFormulas))
+  hexRegisterOf('control', name, (ControlFormulas[name] as (...x: unknown[]) => unknown).bind(ControlFormulas))

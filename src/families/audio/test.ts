@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AudioFormulas } from './index.js'
 
 /** audio: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('audio: samples, streambytes, bitrate, frames, channels, duration, bitdepth
   assert.equal(AudioFormulas.duration(88200, 44100).value, 2, 'duration(88200, 44100)')
   assert.equal(AudioFormulas.bitdepth(16, 1).value, 16, 'bitdepth(16, 1)')
   assert.equal(AudioFormulas.blocks(44100, 1152).value, 39, 'blocks(44100, 1152)')
-  assert.equal(qpuHexFamiliesOf().get('audio')?.length, 8)
+  assert.equal(hexFamiliesOf().get('audio')?.length, 8)
   for (const [name, params, expected] of [["samples",[44100,2],88200],["streambytes",[44100,2,2],176400],["bitrate",[44100,16],705600]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'audio', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `audio.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`audio ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`audio ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "samples=88200, streambytes=176400, bitrate=705600")
 })

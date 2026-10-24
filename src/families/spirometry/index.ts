@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SPIROMETRY — THE LUNG FUNCTION TEST, AS ARITHMETIC. A spirometer reads volumes and flows in whole millilitres and
@@ -31,4 +31,4 @@ export class SpirometryFormulas {
 }
 
 for (const name of ['fev1', 'fev1fvcratio', 'forcedvitalcapacity', 'peakflow', 'residualvolume', 'tidalvolume', 'totalcapacity', 'vitalcapacity'] as const)
-  qpuHexRegisterOf('spirometry', name, (SpirometryFormulas[name] as (...x: unknown[]) => unknown).bind(SpirometryFormulas))
+  hexRegisterOf('spirometry', name, (SpirometryFormulas[name] as (...x: unknown[]) => unknown).bind(SpirometryFormulas))

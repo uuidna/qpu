@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ScaleFormulas } from './index.js'
 
 /** The scored instruments exact; the score is a measure, not the verdict; contested ones are flagged. */
@@ -17,12 +17,12 @@ test('scale: PCL-R, Static-99R, Trotter-Gleser stature, Flesch, Hounsfield, poly
   assert.equal(ScaleFormulas.polygraph(95).value, 1, 'ESS −5 is deception-indicated')
   assert.equal(ScaleFormulas.polygraph(100).value, 0, 'ESS 0 is inconclusive')
   assert.match(String((ScaleFormulas.polygraph(100) as unknown as { admissible: string }).admissible), /contested/, 'polygraph flagged contested')
-  assert.equal(qpuHexFamiliesOf().get('scale')?.length, 6)
+  assert.equal(hexFamiliesOf().get('scale')?.length, 6)
   for (const [name, params, expected] of [['pclr', [30], 1], ['static99', [6], 5], ['hounsfield', [2000], 5]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'scale', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `scale.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`scale ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`scale ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('6 instruments; PCL-R≥30, Static-99R bands, Trotter-Gleser stature, Flesch, Hounsfield, polygraph (contested)')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { KinshipFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('kinship: coefficientrelatedness, generationdistance, degreeremoval, consan
   assert.equal(KinshipFormulas.cousindegree(4).value, 3)
   assert.equal(KinshipFormulas.lineagedepth(1900, 2000, 25).value, 4, 'a century at 25 years a generation')
   assert.equal(KinshipFormulas.coefficientrelatedness(2).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('kinship')?.length, 8)
+  assert.equal(hexFamiliesOf().get('kinship')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'kinship', program: ['descendants'], params: [2, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 16, `kinship.descendants at ${uuid}`)
-  qpuUuidReceiptOf('kinship descendants', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('kinship descendants', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coefficientrelatedness 250, generationdistance 4, degreeremoval 2, consanguinity 250, descendants 16, ancestorcount 32, cousindegree 3, lineagedepth 4; crossing to sociology')
 })

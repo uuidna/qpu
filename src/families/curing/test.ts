@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CuringFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('curing: saltconcentration, wateractivity, curetime, nitritelevel, phlevel,
   assert.equal(CuringFormulas.microbialreduction(99, 100).value, 99)
   assert.equal(CuringFormulas.brinestrength(20, 100).value, 20)
   assert.equal(CuringFormulas.saltconcentration(3, 100).dst, 'microbiology')
-  assert.equal(qpuHexFamiliesOf().get('curing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('curing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'curing', program: ['saltconcentration'], params: [3, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `curing.saltconcentration at ${uuid}`)
-  qpuUuidReceiptOf('curing saltconcentration', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('curing saltconcentration', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; saltconcentration 3, wateractivity 85, curetime 168, nitritelevel 150, phlevel 5, weightloss 30, microbialreduction 99, brinestrength 20; crossing to microbiology')
 })

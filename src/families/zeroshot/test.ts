@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ZeroshotFormulas } from './index.js'
 
 /** Zero-shot learning as exact combinatorics — embeddings, attributes, transfer pairs, comparisons, seen classes, prompts, signatures, partitions. */
@@ -16,12 +16,12 @@ test('zeroshot: embeddings, attributes, transfer pairs, comparisons, seen classe
   assert.equal(ZeroshotFormulas.partitions(10, 5).value, 2, '10 classes over 5 folds')
   assert.equal(ZeroshotFormulas.partitions(10, 0).value, 0, 'no fold, no divide')
   assert.equal(ZeroshotFormulas.embeddings(10, 64).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('zeroshot')?.length, 8)
+  assert.equal(hexFamiliesOf().get('zeroshot')?.length, 8)
   for (const [name, params, expected] of [['attributes', [10, 5], 50], ['signatures', [4], 16], ['embeddings', [10, 64], 640]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'zeroshot', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `zeroshot.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`zeroshot ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`zeroshot ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; 10×64 embeddings, 2^4 signatures, 10/5 partitions')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HighlightsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('highlights: items, active, scroll, reveal, sticky, parallax, duration, thr
   assert.equal(HighlightsFormulas.duration(400).value, 400)
   assert.equal(HighlightsFormulas.threshold(50).value, 50)
   assert.equal(HighlightsFormulas.items(5).dst, 'frontend')
-  assert.equal(qpuHexFamiliesOf().get('highlights')?.length, 8)
+  assert.equal(hexFamiliesOf().get('highlights')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'highlights', program: ['active'], params: [3, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `highlights.active at ${uuid}`)
-  qpuUuidReceiptOf('highlights active', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('highlights active', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; items 5, active 30, scroll 25, reveal 25, sticky 80, parallax 100, duration 400, threshold 50; crossing to frontend')
 })

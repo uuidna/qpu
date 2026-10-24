@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DROUGHT — scaffolded integer measures crossed to hydrology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DroughtFormulas {
 }
 
 for (const name of ['affectedarea', 'durationmonths', 'impactindex', 'pdsi', 'rainfalldeficit', 'recoverymonths', 'severity', 'waterdeficit'] as const)
-  qpuHexRegisterOf('drought', name, (DroughtFormulas[name] as (...x: unknown[]) => unknown).bind(DroughtFormulas))
+  hexRegisterOf('drought', name, (DroughtFormulas[name] as (...x: unknown[]) => unknown).bind(DroughtFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CRYPTANALYSIS — BREAKING A CIPHER, AS ARITHMETIC. The work of an attack is numbers: the keyspace to search, the time a
@@ -30,4 +30,4 @@ export class CryptanalysisFormulas {
 }
 
 for (const name of ['avalanche', 'bruteforce', 'coincidence', 'collisions', 'entropy', 'frequency', 'keyspace', 'strength'] as const)
-  qpuHexRegisterOf('cryptanalysis', name, (CryptanalysisFormulas[name] as (...x: unknown[]) => unknown).bind(CryptanalysisFormulas))
+  hexRegisterOf('cryptanalysis', name, (CryptanalysisFormulas[name] as (...x: unknown[]) => unknown).bind(CryptanalysisFormulas))

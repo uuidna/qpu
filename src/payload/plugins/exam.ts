@@ -2,13 +2,13 @@ import { ClaySeals, ClayPass, CLAY_SEALS } from '../../families/clay/index.js'
 import { MonitoringFormulas } from '../../families/monitoring/index.js'
 import { WaveFormulas, waveFamiliesOf } from '../../families/wave/index.js'
 import {
-  qpuFacesOf,
-  qpuHarnessesOf,
+  facesOf,
+  harnessesOf,
   qpuHexUuidOf,
-  qpuHexRunOf,
-  qpuMcpToolsListOf,
-  qpuMcpFusedOf,
-  qpuMcpDoorsOf,
+  hexRunOf,
+  mcpToolsListOf,
+  mcpFusedOf,
+  mcpDoorsOf,
   type QpuEnv,
 } from '../../quantum/processing/unit/index.js'
 import type { QpuPlugin } from './surface.js'
@@ -67,7 +67,7 @@ const hopFail = (partial: Omit<ExamHop, 'holds'> & { timeout?: boolean; error: s
  * clay.pass is probed with a deadline so a discover hang is a timeout hop, not silence.
  */
 export const examOf = async (env?: QpuEnv) => {
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   // lattice-named foreign deadline scale: tenOf(hexbit)=10000; clay.pass probe uses faces*faces*10 ms so hangs surface
   const passBudgetMs = faces * faces * 10
   const hops: ExamHop[] = []
@@ -89,7 +89,7 @@ export const examOf = async (env?: QpuEnv) => {
       hex = ''
     }
     if (hex) {
-      const run = await withTimeout(passBudgetMs, async () => qpuHexRunOf(hex, undefined, undefined, { store: false }) as Promise<{ value?: unknown; holds?: boolean }>)
+      const run = await withTimeout(passBudgetMs, async () => hexRunOf(hex, undefined, undefined, { store: false }) as Promise<{ value?: unknown; holds?: boolean }>)
       if (run.ok) {
         hops.push(hopOk({
           dir: 'inside-out', layer: 'hex-run', family: 'clay', formula: 'riemann', door: 'hex',
@@ -149,7 +149,7 @@ export const examOf = async (env?: QpuEnv) => {
   }
 
   {
-    const doors = qpuMcpDoorsOf()
+    const doors = mcpDoorsOf()
     hops.push(hopOk({
       dir: 'inside-out', layer: 'unit', door: 'boot/stdio/router',
       holds: doors.holds === true, value: doors.reachable,
@@ -158,7 +158,7 @@ export const examOf = async (env?: QpuEnv) => {
   }
 
   {
-    const fused = qpuMcpFusedOf()
+    const fused = mcpFusedOf()
     hops.push(hopOk({
       dir: 'inside-out', layer: 'fused-mcp', door: 'qpu-fused',
       holds: fused.length > 0, value: fused.length,
@@ -167,7 +167,7 @@ export const examOf = async (env?: QpuEnv) => {
   }
 
   {
-    const tools = qpuMcpToolsListOf()
+    const tools = mcpToolsListOf()
     const bytes = JSON.stringify({ resultType: 'complete', tools }).length
     hops.push(hopOk({
       dir: 'inside-out', layer: 'tools/list', door: '/mcp',
@@ -178,7 +178,7 @@ export const examOf = async (env?: QpuEnv) => {
   }
 
   {
-    const h = qpuHarnessesOf()
+    const h = harnessesOf()
     hops.push(hopOk({
       dir: 'inside-out', layer: 'harnesses', door: 'connector',
       holds: h.holds === true, value: h.rows.length,
@@ -190,7 +190,7 @@ export const examOf = async (env?: QpuEnv) => {
   const { publicMcpOf } = await import('./public.js')
 
   {
-    const h = qpuHarnessesOf()
+    const h = harnessesOf()
     hops.push(hopOk({
       dir: 'outside-in', layer: 'harness→url', door: h.url, tool: 'connector',
       holds: h.holds === true, value: h.rows.length,
@@ -276,7 +276,7 @@ export const examOf = async (env?: QpuEnv) => {
   const outside = hops.filter((h) => h.dir === 'outside-in')
   const healthy = hops.filter((h) => h.holds === true && !h.timeout && !h.error)
   const blind = hops.filter((h) => h.timeout || h.silent || (h.error && !h.holds))
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete', tools }).length
   const coverage = MonitoringFormulas.coverage(healthy.length, hops.length)
   const noise = MonitoringFormulas.noise(blind.filter((h) => h.timeout).length, Math.max(1, hops.length))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CognitionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cognition: load, reaction, accuracy, span, fluency, bias, workingmemory, p
   assert.equal(CognitionFormulas.workingmemory(7).value, 7, 'chunks held')
   assert.equal(CognitionFormulas.processing(1000, 4).value, 250, 'operations per second')
   assert.equal(CognitionFormulas.load(7, 4).dst, 'psychology')
-  assert.equal(qpuHexFamiliesOf().get('cognition')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cognition')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cognition', program: ['reaction'], params: [5000, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 250, `cognition.reaction at ${uuid}`)
-  qpuUuidReceiptOf('cognition reaction', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cognition reaction', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; load 175, reaction 250, accuracy 90, span 85, fluency 30, bias 30, workingmemory 7, processing 250; crossing to psychology')
 })

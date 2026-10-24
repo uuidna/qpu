@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NumenFormulas } from './index.js'
 
 /** Numerology decoded as exact digit arithmetic — the meaning is a lead, the number is a fact at its hex address. */
@@ -16,12 +16,12 @@ test('numen: digit reductions, master numbers, mirrors — exact, their signific
   assert.equal(NumenFormulas.palindrome(123).value, 0)
   assert.equal(NumenFormulas.nine(18).value, 9, 'the nine-wheel keeps 9')
   assert.equal(NumenFormulas.nine(10).value, 1)
-  assert.equal(qpuHexFamiliesOf().get('numen')?.length, 7)
+  assert.equal(hexFamiliesOf().get('numen')?.length, 7)
   for (const [name, params, expected] of [['root', [29], 11], ['reduce', [29], 2], ['mirror', [123], 321]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'numen', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `numen.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`numen ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`numen ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('7 formulas; exact digit math, significance a lead: root(29)=11 (master), reduce(29)=2, mirror(123)=321')
 })

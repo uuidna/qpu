@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PentominoFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('pentomino: pieces, cells, orientations, placementcombos, tilingsubsets, sy
   assert.equal(PentominoFormulas.boardarea(6, 10).value, 60)
   assert.equal(PentominoFormulas.coverage(100, 100).value, 100)
   assert.equal(PentominoFormulas.pieces(12, 0).dst, 'combinatorics')
-  assert.equal(qpuHexFamiliesOf().get('pentomino')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pentomino')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pentomino', program: ['pieces'], params: [12, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `pentomino.pieces at ${uuid}`)
-  qpuUuidReceiptOf('pentomino pieces', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pentomino pieces', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; pieces 12, cells 60, orientations 96, placementcombos 220, tilingsubsets 64, symmetryorderings 24, boardarea 60, coverage 100; crossing to combinatorics')
 })

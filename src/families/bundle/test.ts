@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BundleFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('bundle: chunks, treeshake, gzip, split, budget, dedupe, entry, overhead â€
   assert.equal(BundleFormulas.entry(5000, 10).value, 500, 'average chunk weight')
   assert.equal(BundleFormulas.overhead(50, 1000).value, 5)
   assert.equal(BundleFormulas.chunks(100, 30).dst, 'frontend')
-  assert.equal(qpuHexFamiliesOf().get('bundle')?.length, 8)
+  assert.equal(hexFamiliesOf().get('bundle')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'bundle', program: ['chunks'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `bundle.chunks at ${uuid}`)
-  qpuUuidReceiptOf('bundle chunks', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('bundle chunks', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; chunks 4, treeshake 30, gzip 30, split 80, budget 1, dedupe 12, entry 500, overhead 5; crossing to frontend')
 })

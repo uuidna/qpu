@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CropyieldFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('cropyield: perhectare, totalproduction, harvestindex, yieldgap, plantdensi
   assert.equal(CropyieldFormulas.moisturecorrected(10000, 20).value, 8000, 'dry mass')
   assert.equal(CropyieldFormulas.lossadjusted(5000, 300).value, 4700, 'harvest after loss')
   assert.equal(CropyieldFormulas.perhectare(10000, 4).dst, 'agronomy')
-  assert.equal(qpuHexFamiliesOf().get('cropyield')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cropyield')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cropyield', program: ['perhectare'], params: [10000, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2500, `cropyield.perhectare at ${uuid}`)
-  qpuUuidReceiptOf('cropyield perhectare', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cropyield perhectare', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; perhectare 2500, totalproduction 10000, harvestindex 45, yieldgap 1500, plantdensity 20000, biomassratio 25, moisturecorrected 8000, lossadjusted 4700; crossing to agronomy')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** QueueFormulas — 8 exact-integer formulas of the queue domain, each at a hex address crossing to cross; develops the queue leads. */
@@ -31,4 +31,4 @@ export class QueueFormulas {
 }
 
 for (const name of ['arrivals', 'combos', 'depth', 'latency', 'service', 'slots', 'throughput', 'waittime'] as const)
-  qpuHexRegisterOf('queue', name, (QueueFormulas[name] as (...x: unknown[]) => unknown).bind(QueueFormulas))
+  hexRegisterOf('queue', name, (QueueFormulas[name] as (...x: unknown[]) => unknown).bind(QueueFormulas))

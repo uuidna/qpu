@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COMPENSATION — PAY AS ARITHMETIC. What a role costs is numbers: annual salary from an hourly rate, a bonus as a percent
@@ -31,4 +31,4 @@ export class CompensationFormulas {
 }
 
 for (const name of ['band', 'benefit', 'bonus', 'equity', 'raise', 'ratio', 'salary', 'total'] as const)
-  qpuHexRegisterOf('compensation', name, (CompensationFormulas[name] as (...x: unknown[]) => unknown).bind(CompensationFormulas))
+  hexRegisterOf('compensation', name, (CompensationFormulas[name] as (...x: unknown[]) => unknown).bind(CompensationFormulas))

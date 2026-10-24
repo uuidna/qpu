@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BeamFormulas — 8 exact-integer formulas of the beam domain, each at a hex address crossing to cross; develops the beam leads. */
@@ -31,4 +31,4 @@ export class BeamFormulas {
 }
 
 for (const name of ['combos', 'deflection', 'load', 'moment', 'safety', 'sections', 'span', 'supports'] as const)
-  qpuHexRegisterOf('beam', name, (BeamFormulas[name] as (...x: unknown[]) => unknown).bind(BeamFormulas))
+  hexRegisterOf('beam', name, (BeamFormulas[name] as (...x: unknown[]) => unknown).bind(BeamFormulas))

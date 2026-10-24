@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DERIVATIVES — FINANCIAL CONTRACTS, AS ARITHMETIC. A derivative is numbers: the intrinsic value of a call, the leverage a
@@ -30,4 +30,4 @@ export class DerivativesFormulas {
 }
 
 for (const name of ['breakeven', 'delta', 'intrinsic', 'leverage', 'margin', 'moneyness', 'payoff', 'premium'] as const)
-  qpuHexRegisterOf('derivatives', name, (DerivativesFormulas[name] as (...x: unknown[]) => unknown).bind(DerivativesFormulas))
+  hexRegisterOf('derivatives', name, (DerivativesFormulas[name] as (...x: unknown[]) => unknown).bind(DerivativesFormulas))

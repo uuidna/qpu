@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CanonFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -37,15 +37,15 @@ test('canon: the holy books numbered, and the ways they are read, exact — the 
   assert.equal(CanonFormulas.suras().dst, 'cross')
 
   // the family is exactly its eight registered formulas
-  assert.equal(qpuHexFamiliesOf().get('canon')?.length, 8)
+  assert.equal(hexFamiliesOf().get('canon')?.length, 8)
 
   // a sample runs at its hex address and agrees, with a receipt
   for (const [name, params, expected] of [['books', [2], 66], ['suras', [], 114], ['orderings', [5], 120], ['selections', [5], 31]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'canon', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid)) as { value?: unknown; holds?: boolean }
     assert.equal(Number(run.value), expected, `canon.${name} at ${uuid}`)
     assert.equal(run.holds, true)
-    qpuUuidReceiptOf(`canon ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`canon ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; Bible 66/1189, Quran 114, Psalter 150, Gospels 4, testaments 2; Torah read 120 ways, Gospels 24; each a lead crossing canon → cross')
 })

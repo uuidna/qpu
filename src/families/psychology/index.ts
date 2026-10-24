@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PSYCHOLOGY — THE MIND AS ARITHMETIC (chosen by the registry, not by hand). Measuring behaviour is numbers: the
@@ -30,4 +30,4 @@ export class PsychologyFormulas {
 }
 
 for (const name of ['arousal', 'conditioning', 'conformity', 'correlation', 'iq', 'reaction', 'recall', 'reliability'] as const)
-  qpuHexRegisterOf('psychology', name, (PsychologyFormulas[name] as (...x: unknown[]) => unknown).bind(PsychologyFormulas))
+  hexRegisterOf('psychology', name, (PsychologyFormulas[name] as (...x: unknown[]) => unknown).bind(PsychologyFormulas))

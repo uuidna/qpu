@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OCEANOGRAPHY — OCEAN SCIENCE, AS ARITHMETIC (chosen by the public-API registry, not by hand). The sea is numbers:
@@ -30,4 +30,4 @@ export class OceanographyFormulas {
 }
 
 for (const name of ['current', 'density', 'pressure', 'salinity', 'thermocline', 'tide', 'upwelling', 'wave'] as const)
-  qpuHexRegisterOf('oceanography', name, (OceanographyFormulas[name] as (...x: unknown[]) => unknown).bind(OceanographyFormulas))
+  hexRegisterOf('oceanography', name, (OceanographyFormulas[name] as (...x: unknown[]) => unknown).bind(OceanographyFormulas))

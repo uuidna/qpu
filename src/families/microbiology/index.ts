@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MICROBIOLOGY — THE LIFE OF A CULTURE, AS ARITHMETIC (chosen by the registry, not by hand). A culture is numbers: cells
@@ -31,4 +31,4 @@ export class MicrobiologyFormulas {
 }
 
 for (const name of ['cfu', 'generation', 'growth', 'mic', 'od', 'resistance', 'viability', 'zone'] as const)
-  qpuHexRegisterOf('microbiology', name, (MicrobiologyFormulas[name] as (...x: unknown[]) => unknown).bind(MicrobiologyFormulas))
+  hexRegisterOf('microbiology', name, (MicrobiologyFormulas[name] as (...x: unknown[]) => unknown).bind(MicrobiologyFormulas))

@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { connectorUseOf, publicConnectorOf } from './permaculture.js'
-import { qpuMcpDiscoverOf } from '../../quantum/processing/unit/index.js'
+import { connectorUseOf, publicConnectorOf } from './connector.js'
+import { mcpDiscoverOf } from '../../quantum/processing/unit/index.js'
 
 test('connector { use: true } maps tools/list bill vs fused routes; goal stays OPEN', () => {
   const use = connectorUseOf()
@@ -25,7 +25,7 @@ test('connector { use: true } maps tools/list bill vs fused routes; goal stays O
 })
 
 test('MCP initialize instructions name fused connector { use: true }', () => {
-  const d = qpuMcpDiscoverOf()
+  const d = mcpDiscoverOf()
   assert.equal(d.holds, true)
   assert.ok(d.instructions.includes('connector { use: true }'))
   assert.ok(d.instructions.includes('not legal-doc or Drive'))

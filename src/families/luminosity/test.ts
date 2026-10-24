@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LuminosityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('luminosity: stefanboltzmann, apparentbrightness, inversesquare, bolometric
   assert.equal(LuminosityFormulas.luminosityclass(5000, 1000).value, 1, 'class reached')
   assert.equal(LuminosityFormulas.luminosityclass(500, 1000).value, 0)
   assert.equal(LuminosityFormulas.stefanboltzmann(3, 2).dst, 'astrophysics')
-  assert.equal(qpuHexFamiliesOf().get('luminosity')?.length, 8)
+  assert.equal(hexFamiliesOf().get('luminosity')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'luminosity', program: ['fluxratio'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `luminosity.fluxratio at ${uuid}`)
-  qpuUuidReceiptOf('luminosity fluxratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('luminosity fluxratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; stefanboltzmann 48, apparentbrightness 10, inversesquare 9, bolometric 600, eddingtonlimit 320000, radiusfromtemp 10, fluxratio 20, luminosityclass 1; crossing to astrophysics')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NEURALNET — A FEEDFORWARD NETWORK AS ARITHMETIC (chosen by the public-API registry, not by hand). A trained net is
@@ -31,4 +31,4 @@ export class NeuralnetFormulas {
 }
 
 for (const name of ['capacity', 'fanin', 'flops', 'layers', 'neurons', 'parameters', 'relu', 'weights'] as const)
-  qpuHexRegisterOf('neuralnet', name, (NeuralnetFormulas[name] as (...x: unknown[]) => unknown).bind(NeuralnetFormulas))
+  hexRegisterOf('neuralnet', name, (NeuralnetFormulas[name] as (...x: unknown[]) => unknown).bind(NeuralnetFormulas))

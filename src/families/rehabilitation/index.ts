@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REHABILITATION — RECOVERY AS ARITHMETIC. Getting a body back to work is numbers: range of motion regained, progress to a
@@ -31,4 +31,4 @@ export class RehabilitationFormulas {
 }
 
 for (const name of ['adherence', 'loadprogression', 'painscale', 'progress', 'rangeofmotion', 'recovery', 'sessions', 'strength'] as const)
-  qpuHexRegisterOf('rehabilitation', name, (RehabilitationFormulas[name] as (...x: unknown[]) => unknown).bind(RehabilitationFormulas))
+  hexRegisterOf('rehabilitation', name, (RehabilitationFormulas[name] as (...x: unknown[]) => unknown).bind(RehabilitationFormulas))

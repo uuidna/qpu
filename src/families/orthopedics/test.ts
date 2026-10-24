@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OrthopedicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('orthopedics: rangeofmotion, bonedensity, fractureload, legdiscrepancy, cob
   assert.equal(OrthopedicsFormulas.alignment(185, 180).value, 5)
   assert.equal(OrthopedicsFormulas.implantsize(96, 5).value, 20, 'stem increments for the canal')
   assert.equal(OrthopedicsFormulas.rangeofmotion(120, 150).dst, 'anatomy')
-  assert.equal(qpuHexFamiliesOf().get('orthopedics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('orthopedics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'orthopedics', program: ['implantsize'], params: [96, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `orthopedics.implantsize at ${uuid}`)
-  qpuUuidReceiptOf('orthopedics implantsize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('orthopedics implantsize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rangeofmotion 80, bonedensity 80, fractureload 4000, legdiscrepancy 15, cobbangle 40, gait 100, alignment 5, implantsize 20; crossing to anatomy')
 })

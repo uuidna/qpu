@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NUMERACY — EARLY-NUMBER LEARNING, AS ARITHMETIC (chosen by the curriculum registry, not by hand). Learning number is
@@ -30,4 +30,4 @@ export class NumeracyFormulas {
 }
 
 for (const name of ['accuracy', 'errorrate', 'factfluency', 'growth', 'masterypercent', 'operationspeed', 'placevalue', 'problemsolved'] as const)
-  qpuHexRegisterOf('numeracy', name, (NumeracyFormulas[name] as (...x: unknown[]) => unknown).bind(NumeracyFormulas))
+  hexRegisterOf('numeracy', name, (NumeracyFormulas[name] as (...x: unknown[]) => unknown).bind(NumeracyFormulas))

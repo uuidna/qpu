@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NUCLEARPHYSICS — THE NUCLEUS AS ARITHMETIC (chosen by the registry, not by hand). A nucleus is numbers: how much is left
@@ -31,4 +31,4 @@ export class NuclearphysicsFormulas {
 }
 
 for (const name of ['activity', 'bindingenergy', 'criticality', 'decay', 'dose', 'fission', 'halflife', 'massdefect'] as const)
-  qpuHexRegisterOf('nuclearphysics', name, (NuclearphysicsFormulas[name] as (...x: unknown[]) => unknown).bind(NuclearphysicsFormulas))
+  hexRegisterOf('nuclearphysics', name, (NuclearphysicsFormulas[name] as (...x: unknown[]) => unknown).bind(NuclearphysicsFormulas))

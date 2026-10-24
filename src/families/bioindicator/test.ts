@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BioindicatorFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('bioindicator: abundanceratio, biotic, diversityindex, evenness, pollutionl
   assert.equal(BioindicatorFormulas.speciesrichness(12, 8, 5).value, 25, 'distinct taxa across three strata')
   assert.equal(BioindicatorFormulas.tolerancescore(12, 40).value, 30)
   assert.equal(BioindicatorFormulas.abundanceratio(400, 1000).dst, 'ecology')
-  assert.equal(qpuHexFamiliesOf().get('bioindicator')?.length, 8)
+  assert.equal(hexFamiliesOf().get('bioindicator')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'bioindicator', program: ['diversityindex'], params: [25, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `bioindicator.diversityindex at ${uuid}`)
-  qpuUuidReceiptOf('bioindicator diversityindex', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('bioindicator diversityindex', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; abundanceratio 40, biotic 7, diversityindex 50, evenness 75, pollutionload 10000, sensitivity 25, speciesrichness 25, tolerancescore 30; crossing to ecology')
 })

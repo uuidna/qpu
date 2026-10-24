@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SortFormulas — 8 exact-integer formulas of the sort domain, each at a hex address crossing to cross; develops the sort leads. */
@@ -31,4 +31,4 @@ export class SortFormulas {
 }
 
 for (const name of ['combos', 'comparisons', 'depth', 'merges', 'partitions', 'passes', 'runs', 'swaps'] as const)
-  qpuHexRegisterOf('sort', name, (SortFormulas[name] as (...x: unknown[]) => unknown).bind(SortFormulas))
+  hexRegisterOf('sort', name, (SortFormulas[name] as (...x: unknown[]) => unknown).bind(SortFormulas))

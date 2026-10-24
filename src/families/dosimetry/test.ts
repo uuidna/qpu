@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DosimetryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('dosimetry: absorbeddose, equivalentdose, effectivedose, doserate, fraction
   assert.equal(DosimetryFormulas.shielding(100, 30).value, 4, 'four half-value layers')
   assert.equal(DosimetryFormulas.exposuretime(500, 50).value, 10)
   assert.equal(DosimetryFormulas.absorbeddose(600, 12).dst, 'radiology')
-  assert.equal(qpuHexFamiliesOf().get('dosimetry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dosimetry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dosimetry', program: ['shielding'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `dosimetry.shielding at ${uuid}`)
-  qpuUuidReceiptOf('dosimetry shielding', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dosimetry shielding', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; absorbeddose 50, equivalentdose 1000, effectivedose 120, doserate 50, fractionation 200, cumulative 6000, shielding 4, exposuretime 10; crossing to radiology')
 })

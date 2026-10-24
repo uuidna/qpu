@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SYNTAX — THE SHAPE OF LANGUAGE, AS ARITHMETIC. A sentence is a parse tree: how deep it runs, how wide it branches, how
@@ -30,4 +30,4 @@ export class SyntaxFormulas {
 }
 
 for (const name of ['agreement', 'ambiguity', 'branching', 'complexity', 'dependency', 'depth', 'recursion', 'wellformed'] as const)
-  qpuHexRegisterOf('syntax', name, (SyntaxFormulas[name] as (...x: unknown[]) => unknown).bind(SyntaxFormulas))
+  hexRegisterOf('syntax', name, (SyntaxFormulas[name] as (...x: unknown[]) => unknown).bind(SyntaxFormulas))

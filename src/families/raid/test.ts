@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RaidFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,10 +22,10 @@ test('raid: hybrid RAID capacity, parity, tolerance, rebuild — binding filesys
   assert.equal(RaidFormulas.fscount().value, 15, 'known filesystems bound')
   assert.equal(RaidFormulas.dbcount().value, 15, 'known databases bound')
   assert.equal(RaidFormulas.raid5capacity(5, 100).dst, 'storage')
-  assert.equal(qpuHexFamiliesOf().get('raid')?.length, 15)
+  assert.equal(hexFamiliesOf().get('raid')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'raid', program: ['raid5capacity'], params: [5, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 400, `raid.raid5capacity at ${uuid}`)
-  qpuUuidReceiptOf('raid raid5capacity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('raid raid5capacity', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; raid0 400, raid1 200, raid5 400, raid6 400, raid10 200, stripewidth 4, tolerance 1/2, rebuild 3, usable 80%, min 3, stripe 32768, mirrors 4, fs 15, db 15; crossing to storage')
 })

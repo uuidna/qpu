@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BrakingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('braking: distance, force, torque, fade, pressure, bias, deceleration, pad 
   assert.equal(BrakingFormulas.deceleration(100, 5).value, 20)
   assert.equal(BrakingFormulas.pad(12, 1, 5).value, 7, 'pad thickness left after the run')
   assert.equal(BrakingFormulas.distance(30, 9).dst, 'automotive')
-  assert.equal(qpuHexFamiliesOf().get('braking')?.length, 8)
+  assert.equal(hexFamiliesOf().get('braking')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'braking', program: ['distance'], params: [30, 9] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `braking.distance at ${uuid}`)
-  qpuUuidReceiptOf('braking distance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('braking distance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; distance 50, force 12000, torque 80000, fade 75, pressure 200, bias 60, deceleration 20, pad 7; crossing to automotive')
 })

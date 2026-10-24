@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AUTOMATION — THE WORK A ROBOT DOES, AS ARITHMETIC. A line of machines is numbers: tasks an hour, the share of time
@@ -31,4 +31,4 @@ export class AutomationFormulas {
 }
 
 for (const name of ['coverage', 'cycletime', 'errorrate', 'oee', 'payback', 'savings', 'throughput', 'uptime'] as const)
-  qpuHexRegisterOf('automation', name, (AutomationFormulas[name] as (...x: unknown[]) => unknown).bind(AutomationFormulas))
+  hexRegisterOf('automation', name, (AutomationFormulas[name] as (...x: unknown[]) => unknown).bind(AutomationFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LEARNING — MACHINE-LEARNING TRAINING, AS ARITHMETIC (chosen by the public-API registry, not by hand). Training a model is
@@ -31,4 +31,4 @@ export class LearningFormulas {
 }
 
 for (const name of ['accuracy', 'epochs', 'f1', 'loss', 'overfit', 'params', 'split', 'throughput'] as const)
-  qpuHexRegisterOf('learning', name, (LearningFormulas[name] as (...x: unknown[]) => unknown).bind(LearningFormulas))
+  hexRegisterOf('learning', name, (LearningFormulas[name] as (...x: unknown[]) => unknown).bind(LearningFormulas))

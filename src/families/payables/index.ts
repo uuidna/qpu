@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PAYABLES — WHAT THE BUSINESS OWES, AS ARITHMETIC (chosen by the ledger registry, not by hand). Money owed is numbers:
@@ -31,4 +31,4 @@ export class PayablesFormulas {
 }
 
 for (const name of ['accrual', 'aging', 'discount', 'dpo', 'outstanding', 'settlement', 'terms', 'turnover'] as const)
-  qpuHexRegisterOf('payables', name, (PayablesFormulas[name] as (...x: unknown[]) => unknown).bind(PayablesFormulas))
+  hexRegisterOf('payables', name, (PayablesFormulas[name] as (...x: unknown[]) => unknown).bind(PayablesFormulas))

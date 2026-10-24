@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MonsoonFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('monsoon: onsetday, rainfall, durationdays, windreversal, intensityindex, r
   assert.equal(MonsoonFormulas.deficitpct(20, 100).value, 20)
   assert.equal(MonsoonFormulas.cyclelength(12, 1).value, 12)
   assert.equal(MonsoonFormulas.onsetday(150, 10).dst, 'climate')
-  assert.equal(qpuHexFamiliesOf().get('monsoon')?.length, 8)
+  assert.equal(hexFamiliesOf().get('monsoon')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'monsoon', program: ['onsetday'], params: [150, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 160, `monsoon.onsetday at ${uuid}`)
-  qpuUuidReceiptOf('monsoon onsetday', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('monsoon onsetday', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; onsetday 160, rainfall 800, durationdays 120, windreversal 180, intensityindex 70, rainydays 60, deficitpct 20, cyclelength 12; crossing to climate')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MOTION — CSS ANIMATION/TRANSITION, AS ARITHMETIC (learned from Tailwind's duration scale, not by hand). Movement is
@@ -32,4 +32,4 @@ export class MotionFormulas {
 }
 
 for (const name of ['delay', 'duration', 'easing', 'fps', 'frames', 'progress', 'stagger', 'total'] as const)
-  qpuHexRegisterOf('motion', name, (MotionFormulas[name] as (...x: unknown[]) => unknown).bind(MotionFormulas))
+  hexRegisterOf('motion', name, (MotionFormulas[name] as (...x: unknown[]) => unknown).bind(MotionFormulas))

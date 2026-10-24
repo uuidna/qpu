@@ -20,7 +20,7 @@ test('the Worker config names no sweep limit: the work is split instead', () => 
 })
 
 test('the families registry is exactly the modules that register, and the bundler is told to keep each', () => {
-  const registers = (f) => /\b(qpuHexRegisterOf|qpuMcpFuseOf|qpuMcpRegisterOf)\(/.test(read(f))
+  const registers = (f) => /\b(hexRegisterOf|mcpFuseOf|mcpRegisterOf)\(/.test(read(f))
   const registering = [
     ...readdirSync(join(ROOT, 'src/families'), { withFileTypes: true }).filter((e) => e.isDirectory() && registers(`src/families/${e.name}/index.ts`)).map((e) => `./dist/families/${e.name}/index.js`),
     ...readdirSync(join(ROOT, 'src/mcp')).filter((f) => /\.ts$/.test(f) && !/\.test\.ts$|^index\.ts$|^families\.ts$|^registry\.ts$/.test(f) && registers(`src/mcp/${f}`)).map((f) => `./dist/mcp/${f.slice(0, -3)}.js`),
@@ -34,13 +34,13 @@ test('the families registry is exactly the modules that register, and the bundle
 
 test('every family is within its nibble: fifteen formulas, none truncated', async () => {
   await import('../dist/mcp/families.js')
-  const { qpuHexFamiliesOf, qpuHexRegisteredSizeOf, qpuHexFamilyCapOf } = await import('../dist/quantum/processing/unit/index.js')
-  const cap = qpuHexFamilyCapOf()
+  const { hexFamiliesOf, hexRegisteredSizeOf, hexFamilyCapOf } = await import('../dist/quantum/processing/unit/index.js')
+  const cap = hexFamilyCapOf()
   assert.equal(cap, 15)
-  for (const [family, formulas] of qpuHexFamiliesOf()) {
+  for (const [family, formulas] of hexFamiliesOf()) {
     assert.ok(formulas.length <= cap, `${family}: ${formulas.length} > ${cap}`)
-    assert.ok(qpuHexRegisteredSizeOf(family) <= cap, `${family} registered ${qpuHexRegisteredSizeOf(family)}: past the nibble, split it`)
+    assert.ok(hexRegisteredSizeOf(family) <= cap, `${family} registered ${hexRegisteredSizeOf(family)}: past the nibble, split it`)
     // one word per family (the naming rule): a registered family's name is one lowercase word, no separator
-    if (qpuHexRegisteredSizeOf(family) > 0) assert.match(family, /^[a-z]+$/, `${family}: a registered family is one lowercase word (the one-word rule)`)
+    if (hexRegisteredSizeOf(family) > 0) assert.match(family, /^[a-z]+$/, `${family}: a registered family is one lowercase word (the one-word rule)`)
   }
 })

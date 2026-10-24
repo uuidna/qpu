@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THE SCORED INSTRUMENTS AND MEASUREMENT REGRESSIONS court experts compute. Even the disciplines that look like pure
@@ -35,4 +35,4 @@ export class ScaleFormulas {
 }
 
 for (const name of ['flesch', 'hounsfield', 'pclr', 'polygraph', 'static99', 'stature'] as const)
-  qpuHexRegisterOf('scale', name, (ScaleFormulas[name] as (...x: unknown[]) => unknown).bind(ScaleFormulas))
+  hexRegisterOf('scale', name, (ScaleFormulas[name] as (...x: unknown[]) => unknown).bind(ScaleFormulas))

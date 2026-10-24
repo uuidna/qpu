@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StructuralFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('structural: moment, shear, buckling, safetyfactor, deflection, reinforceme
   assert.equal(StructuralFormulas.seismic(2000, 3).value, 6000, 'mass under acceleration')
   assert.equal(StructuralFormulas.shear(1000, 0).value, 0, 'guarded division')
   assert.equal(StructuralFormulas.moment(1000, 5).dst, 'construction')
-  assert.equal(qpuHexFamiliesOf().get('structural')?.length, 8)
+  assert.equal(hexFamiliesOf().get('structural')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'structural', program: ['moment'], params: [1000, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5000, `structural.moment at ${uuid}`)
-  qpuUuidReceiptOf('structural moment', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('structural moment', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; moment 5000, shear 250, buckling 100, safetyfactor 300, deflection 100, reinforcement 2, slenderness 60, seismic 6000; crossing to construction')
 })

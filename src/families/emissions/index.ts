@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EMISSIONS — CARBON ACCOUNTING AS ARITHMETIC (chosen by the registry, not by hand). Greenhouse gas is numbers:
@@ -31,4 +31,4 @@ export class EmissionsFormulas {
 }
 
 for (const name of ['allowance', 'equivalent', 'intensity', 'percapita', 'reduction', 'scope', 'sequestration', 'tax'] as const)
-  qpuHexRegisterOf('emissions', name, (EmissionsFormulas[name] as (...x: unknown[]) => unknown).bind(EmissionsFormulas))
+  hexRegisterOf('emissions', name, (EmissionsFormulas[name] as (...x: unknown[]) => unknown).bind(EmissionsFormulas))

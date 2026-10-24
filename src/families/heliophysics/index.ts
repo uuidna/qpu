@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HELIOPHYSICS — THE SUN AS ARITHMETIC (chosen by the registry, not by hand). The star is numbers: sunspot count, the
@@ -31,4 +31,4 @@ export class HeliophysicsFormulas {
 }
 
 for (const name of ['coronalmass', 'cycle', 'flareclass', 'flux', 'irradiance', 'magneticindex', 'solarwind', 'sunspot'] as const)
-  qpuHexRegisterOf('heliophysics', name, (HeliophysicsFormulas[name] as (...x: unknown[]) => unknown).bind(HeliophysicsFormulas))
+  hexRegisterOf('heliophysics', name, (HeliophysicsFormulas[name] as (...x: unknown[]) => unknown).bind(HeliophysicsFormulas))

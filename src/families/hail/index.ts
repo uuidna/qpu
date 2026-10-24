@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HAIL — scaffolded integer measures crossed to meteorology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HailFormulas {
 }
 
 for (const name of ['damagescale', 'diametermm', 'growthtime', 'kineticenergy', 'layers', 'massg', 'terminalvelocity', 'updraftspeed'] as const)
-  qpuHexRegisterOf('hail', name, (HailFormulas[name] as (...x: unknown[]) => unknown).bind(HailFormulas))
+  hexRegisterOf('hail', name, (HailFormulas[name] as (...x: unknown[]) => unknown).bind(HailFormulas))

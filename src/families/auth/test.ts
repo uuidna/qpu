@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AuthFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('auth: lockout, token, apikeys, verified, strength, sessions, expiry, failr
   assert.equal(AuthFormulas.expiry(1000, 4600).value, 3600)
   assert.equal(AuthFormulas.failratio(25, 100).value, 25)
   assert.equal(AuthFormulas.lockout(5, 5).dst, 'payload')
-  assert.equal(qpuHexFamiliesOf().get('auth')?.length, 8)
+  assert.equal(hexFamiliesOf().get('auth')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'auth', program: ['token'], params: [1000, 4600] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3600, `auth.token at ${uuid}`)
-  qpuUuidReceiptOf('auth token', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('auth token', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; lockout 1, token 3600, apikeys 75, verified 90, strength 48, sessions 3, expiry 3600, failratio 25; crossing to payload')
 })

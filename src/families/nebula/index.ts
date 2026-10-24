@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NebulaFormulas — 8 exact-integer formulas of the nebula domain, each at a hex address crossing to cross; develops the nebula leads. */
@@ -31,4 +31,4 @@ export class NebulaFormulas {
 }
 
 for (const name of ['combos', 'density', 'ionization', 'lightyears', 'radius', 'stars', 'temperature', 'types'] as const)
-  qpuHexRegisterOf('nebula', name, (NebulaFormulas[name] as (...x: unknown[]) => unknown).bind(NebulaFormulas))
+  hexRegisterOf('nebula', name, (NebulaFormulas[name] as (...x: unknown[]) => unknown).bind(NebulaFormulas))

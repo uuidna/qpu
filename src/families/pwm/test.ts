@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PwmFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('pwm: dutycycle, averagevoltage, period, resolution, onpulse, frequency, ri
   assert.equal(PwmFormulas.ripple(5, 100).value, 5)
   assert.equal(PwmFormulas.effectivepower(75, 100).value, 75)
   assert.equal(PwmFormulas.dutycycle(25, 100).dst, 'electronics')
-  assert.equal(qpuHexFamiliesOf().get('pwm')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pwm')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pwm', program: ['dutycycle'], params: [25, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `pwm.dutycycle at ${uuid}`)
-  qpuUuidReceiptOf('pwm dutycycle', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pwm dutycycle', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dutycycle 25, averagevoltage 12, period 1000, resolution 256, onpulse 250, frequency 1000, ripple 5, effectivepower 75; crossing to electronics')
 })

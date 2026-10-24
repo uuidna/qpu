@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CeramicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('ceramics: shrinkage, porosity, firing, density, hardness, glaze, thermalsh
   assert.equal(CeramicsFormulas.thermalshock(400, 50).value, 8)
   assert.equal(CeramicsFormulas.vitrification(85, 100).value, 85)
   assert.equal(CeramicsFormulas.shrinkage(100, 88).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('ceramics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ceramics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ceramics', program: ['glaze'], params: [2, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 6, `ceramics.glaze at ${uuid}`)
-  qpuUuidReceiptOf('ceramics glaze', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ceramics glaze', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; shrinkage 12, porosity 7, firing 1280, density 3, hardness 7, glaze 6, thermalshock 8, vitrification 85; crossing to materials')
 })

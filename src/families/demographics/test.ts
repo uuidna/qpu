@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DemographicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('demographics: birthrate, deathrate, growth, density, dependency, median, m
   assert.equal(DemographicsFormulas.migration(2000, 5000).value, -3000, 'net outflow is negative')
   assert.equal(DemographicsFormulas.life(820000, 10000).value, 82, 'life-expectancy proxy')
   assert.equal(DemographicsFormulas.birthrate(12000, 1000000).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('demographics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('demographics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'demographics', program: ['dependency'], params: [45, 55] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 81, `demographics.dependency at ${uuid}`)
-  qpuUuidReceiptOf('demographics dependency', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('demographics dependency', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; birthrate 12, deathrate 8, growth 4000/-4000, density 2000, dependency 81, median 39, migration 3000/-3000, life 82; crossing to econ')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EndocrinologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('endocrinology: homa, a1c, thyroid, cortisol, sensitivity, secretion, halfl
   assert.equal(EndocrinologyFormulas.halflife(10, 5).value, 1)
   assert.equal(EndocrinologyFormulas.feedback(90, 30).value, 300)
   assert.equal(EndocrinologyFormulas.homa(90, 10).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('endocrinology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('endocrinology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'endocrinology', program: ['thyroid'], params: [2, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `endocrinology.thyroid at ${uuid}`)
-  qpuUuidReceiptOf('endocrinology thyroid', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('endocrinology thyroid', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; homa 2, a1c 10, thyroid 50, cortisol 300, sensitivity 800, secretion 25, halflife 1, feedback 300; crossing to med')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LoyaltyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('loyalty: points, tier, redemption, retention, repeat, lifetime, churn, rew
   assert.equal(LoyaltyFormulas.reward(2500, 2000).value, 1, 'reward earned')
   assert.equal(LoyaltyFormulas.reward(1000, 2000).value, 0)
   assert.equal(LoyaltyFormulas.points(100, 3).dst, 'retail')
-  assert.equal(qpuHexFamiliesOf().get('loyalty')?.length, 8)
+  assert.equal(hexFamiliesOf().get('loyalty')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'loyalty', program: ['tier'], params: [2500, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `loyalty.tier at ${uuid}`)
-  qpuUuidReceiptOf('loyalty tier', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('loyalty tier', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; points 300, tier 2, redemption 10, retention 95, repeat 5, lifetime 600, churn 5, reward 1; crossing to retail')
 })

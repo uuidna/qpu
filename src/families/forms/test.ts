@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FormsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('forms: completion, abandonment, fields, conversion, validation, time, resp
   assert.equal(FormsFormulas.response(880, 1000).value, 88)
   assert.equal(FormsFormulas.dropoff(40, 500).value, 8)
   assert.equal(FormsFormulas.completion(750, 1000).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('forms')?.length, 8)
+  assert.equal(hexFamiliesOf().get('forms')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'forms', program: ['completion'], params: [750, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `forms.completion at ${uuid}`)
-  qpuUuidReceiptOf('forms completion', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('forms completion', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; completion 75, abandonment 25, fields 25, conversion 12, validation 15, time 60, response 88, dropoff 8; crossing to cross')
 })

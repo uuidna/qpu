@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOAVAILABILITY — HOW MUCH OF A DOSE REACHES THE BLOOD, AS ARITHMETIC. A drug given is not a drug absorbed: the
@@ -31,4 +31,4 @@ export class BioavailabilityFormulas {
 }
 
 for (const name of ['absolute', 'absorbed', 'aucratio', 'dosecorrected', 'fraction', 'oralfactor', 'relative', 'retained'] as const)
-  qpuHexRegisterOf('bioavailability', name, (BioavailabilityFormulas[name] as (...x: unknown[]) => unknown).bind(BioavailabilityFormulas))
+  hexRegisterOf('bioavailability', name, (BioavailabilityFormulas[name] as (...x: unknown[]) => unknown).bind(BioavailabilityFormulas))

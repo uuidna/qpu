@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FILTERING — SHAPING A SIGNAL IN FREQUENCY, AS ARITHMETIC. A filter is numbers: the cutoff frequency it turns at, the
@@ -31,4 +31,4 @@ export class FilteringFormulas {
 }
 
 for (const name of ['attenuation', 'bandwidth', 'cutoff', 'groupdelay', 'order', 'passband', 'rolloff', 'stopband'] as const)
-  qpuHexRegisterOf('filtering', name, (FilteringFormulas[name] as (...x: unknown[]) => unknown).bind(FilteringFormulas))
+  hexRegisterOf('filtering', name, (FilteringFormulas[name] as (...x: unknown[]) => unknown).bind(FilteringFormulas))

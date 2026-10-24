@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OPHTHALMOLOGY — THE EYE AS ARITHMETIC. Correcting sight is numbers: lens power in diopters, Snellen acuity, intraocular
@@ -30,4 +30,4 @@ export class OphthalmologyFormulas {
 }
 
 for (const name of ['accommodation', 'astigmatism', 'cylinderpower', 'diopter', 'iop', 'pupildistance', 'refractiveerror', 'visualacuity'] as const)
-  qpuHexRegisterOf('ophthalmology', name, (OphthalmologyFormulas[name] as (...x: unknown[]) => unknown).bind(OphthalmologyFormulas))
+  hexRegisterOf('ophthalmology', name, (OphthalmologyFormulas[name] as (...x: unknown[]) => unknown).bind(OphthalmologyFormulas))

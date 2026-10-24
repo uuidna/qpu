@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SPRINT — scaffolded integer measures crossed to kinematics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SprintFormulas {
 }
 
 for (const name of ['acceleration', 'distancecovered', 'reactiontime', 'splittime', 'stridefrequency', 'stridelength', 'topspeed', 'velocity'] as const)
-  qpuHexRegisterOf('sprint', name, (SprintFormulas[name] as (...x: unknown[]) => unknown).bind(SprintFormulas))
+  hexRegisterOf('sprint', name, (SprintFormulas[name] as (...x: unknown[]) => unknown).bind(SprintFormulas))

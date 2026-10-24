@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VirtualizationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('virtualization: overcommit, density, consolidation, ballooning, vcpu, allo
   assert.equal(VirtualizationFormulas.migration(16384, 1024).value, 16, 'seconds to move the guest')
   assert.equal(VirtualizationFormulas.ballooning(512, 1024).value, 0, 'never negative')
   assert.equal(VirtualizationFormulas.overcommit(32, 8).dst, 'concurrency')
-  assert.equal(qpuHexFamiliesOf().get('virtualization')?.length, 8)
+  assert.equal(hexFamiliesOf().get('virtualization')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'virtualization', program: ['overcommit'], params: [32, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 400, `virtualization.overcommit at ${uuid}`)
-  qpuUuidReceiptOf('virtualization overcommit', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('virtualization overcommit', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; overcommit 400, density 32, consolidation 13, ballooning 3072, vcpu 32, allocation 32768, overhead 25, migration 16; crossing to concurrency')
 })

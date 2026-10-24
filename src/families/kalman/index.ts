@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** KALMAN — THE RECURSIVE ESTIMATOR, AS ARITHMETIC. A filter is numbers: the gain that weighs a prediction against a
@@ -31,4 +31,4 @@ export class KalmanFormulas {
 }
 
 for (const name of ['errorcovariance', 'gain', 'innovation', 'measurementresidual', 'predictedstate', 'processnoise', 'steadygain', 'updatedestimate'] as const)
-  qpuHexRegisterOf('kalman', name, (KalmanFormulas[name] as (...x: unknown[]) => unknown).bind(KalmanFormulas))
+  hexRegisterOf('kalman', name, (KalmanFormulas[name] as (...x: unknown[]) => unknown).bind(KalmanFormulas))

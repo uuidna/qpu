@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PAGINATION — PAGING A STREAM OF ITEMS, AS ARITHMETIC (how a list or a bound volume is cut into pages). The page count,
@@ -31,4 +31,4 @@ export class PaginationFormulas {
 }
 
 for (const name of ['charsperpage', 'columns', 'itemsonpage', 'pageoffset', 'pagerange', 'pages', 'signatures', 'totalpages'] as const)
-  qpuHexRegisterOf('pagination', name, (PaginationFormulas[name] as (...x: unknown[]) => unknown).bind(PaginationFormulas))
+  hexRegisterOf('pagination', name, (PaginationFormulas[name] as (...x: unknown[]) => unknown).bind(PaginationFormulas))

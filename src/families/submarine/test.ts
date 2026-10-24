@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SubmarineFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('submarine: depth, pressure, buoyancy, displacement, ballasttanks, sonarran
   assert.equal(SubmarineFormulas.crushdepth(700, 1).value, 700)
   assert.equal(SubmarineFormulas.trimangle(300, 10).value, 30)
   assert.equal(SubmarineFormulas.depth(300, 1).dst, 'physics')
-  assert.equal(qpuHexFamiliesOf().get('submarine')?.length, 8)
+  assert.equal(hexFamiliesOf().get('submarine')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'submarine', program: ['depth'], params: [300, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `submarine.depth at ${uuid}`)
-  qpuUuidReceiptOf('submarine depth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('submarine depth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; depth 300, pressure 30, buoyancy 20, displacement 8000, ballasttanks 10, sonarrange 20000, crushdepth 700, trimangle 30; crossing to physics')
 })

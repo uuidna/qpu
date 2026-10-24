@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOMASS — BIOENERGY, AS ARITHMETIC. Turning crop and residue into energy is numbers: calorific value per unit mass,
@@ -30,4 +30,4 @@ export class BiomassFormulas {
 }
 
 for (const name of ['calorific', 'carbonneutral', 'combustion', 'conversion', 'density', 'digestion', 'moisture', 'output'] as const)
-  qpuHexRegisterOf('biomass', name, (BiomassFormulas[name] as (...x: unknown[]) => unknown).bind(BiomassFormulas))
+  hexRegisterOf('biomass', name, (BiomassFormulas[name] as (...x: unknown[]) => unknown).bind(BiomassFormulas))

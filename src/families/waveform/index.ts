@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WAVEFORM — A SIGNAL AS ARITHMETIC. A periodic signal is numbers: its period from frequency, amplitude from the swing,
@@ -30,4 +30,4 @@ export class WaveformFormulas {
 }
 
 for (const name of ['amplitude', 'crestfactor', 'dutycycle', 'frequencyfromperiod', 'peaktopeak', 'period', 'rmsvalue', 'slewrate'] as const)
-  qpuHexRegisterOf('waveform', name, (WaveformFormulas[name] as (...x: unknown[]) => unknown).bind(WaveformFormulas))
+  hexRegisterOf('waveform', name, (WaveformFormulas[name] as (...x: unknown[]) => unknown).bind(WaveformFormulas))

@@ -24,7 +24,7 @@ import { LawFormulas } from '../../families/law/index.js'
 import { PaymentFormulas } from '../../families/payment/index.js'
 import { PricingFormulas } from '../../families/pricing/index.js'
 import { QuantumFormulas } from '../../families/quantum/index.js'
-import { qpuHexUuidOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexUuidOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 
 export type PriceLeg = {
   family: string
@@ -192,7 +192,7 @@ export const priceCourtTrialOf = (
  * Partial FX / cart / cost pairs → bare → court.standard fails → holds false.
  */
 export const priceRelationOf = (input: PriceRelationInput = {}): PriceRelation => {
-  const lattice = qpuLatticeNamesOf()
+  const lattice = latticeNamesOf()
   const legs: PriceLeg[] = []
   const bare: string[] = []
 

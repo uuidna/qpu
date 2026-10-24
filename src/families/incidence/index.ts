@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INCIDENCE — NEW OCCURRENCE OF DISEASE, AS ARITHMETIC (a measure of how fast a condition appears in a population). Counting
@@ -31,4 +31,4 @@ export class IncidenceFormulas {
 }
 
 for (const name of ['attributablerisk', 'cumulative', 'oddsratio', 'persontime', 'rate', 'relativerisk', 'riskdifference', 'standardized'] as const)
-  qpuHexRegisterOf('incidence', name, (IncidenceFormulas[name] as (...x: unknown[]) => unknown).bind(IncidenceFormulas))
+  hexRegisterOf('incidence', name, (IncidenceFormulas[name] as (...x: unknown[]) => unknown).bind(IncidenceFormulas))

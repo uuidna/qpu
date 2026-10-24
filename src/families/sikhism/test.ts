@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SikhismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('sikhism: gurus, scripturepages, pillars, prayerorderings, articlesoffaith,
   assert.equal(SikhismFormulas.communitymeals(100, 7).value, 700)
   assert.equal(SikhismFormulas.devotionratio(90, 100).value, 90)
   assert.equal(SikhismFormulas.gurus(10, 0).dst, 'anthropology')
-  assert.equal(qpuHexFamiliesOf().get('sikhism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sikhism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sikhism', program: ['gurus'], params: [10, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `sikhism.gurus at ${uuid}`)
-  qpuUuidReceiptOf('sikhism gurus', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sikhism gurus', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gurus 10, scripturepages 1430, pillars 3, prayerorderings 120, articlesoffaith 5, hymncombos 220, communitymeals 700, devotionratio 90; crossing to anthropology')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CounterpointFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('counterpoint: voicecount, parallelfifths, motioncontrary, intervalconsonan
   assert.equal(CounterpointFormulas.cantusspan(24, 12).value, 12, 'an octave of span')
   assert.equal(CounterpointFormulas.imitationdelay(8, 2).value, 4)
   assert.equal(CounterpointFormulas.voicecount(2, 2).dst, 'music')
-  assert.equal(qpuHexFamiliesOf().get('counterpoint')?.length, 8)
+  assert.equal(hexFamiliesOf().get('counterpoint')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'counterpoint', program: ['speciesratio'], params: [8, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `counterpoint.speciesratio at ${uuid}`)
-  qpuUuidReceiptOf('counterpoint speciesratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('counterpoint speciesratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; voicecount 4, parallelfifths 30, motioncontrary 6, intervalconsonance 1, speciesratio 2, dissonancecount 3, cantusspan 12, imitationdelay 4; crossing to music')
 })

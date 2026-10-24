@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** RECTIFIERS — TURNING ALTERNATING CURRENT INTO DIRECT, AS ARITHMETIC. A rectifier is numbers: the average (DC) level it
  *  delivers, the ripple left on it, how efficiently AC power becomes DC, the peak inverse voltage a diode must stand, the
@@ -33,4 +33,4 @@ export class RectifiersFormulas {
 }
 
 for (const name of ['average', 'conductionangle', 'efficiency', 'formfactor', 'pivrating', 'regulation', 'ripple', 'ripplefactor'] as const)
-  qpuHexRegisterOf('rectifiers', name, (RectifiersFormulas[name] as (...x: unknown[]) => unknown).bind(RectifiersFormulas))
+  hexRegisterOf('rectifiers', name, (RectifiersFormulas[name] as (...x: unknown[]) => unknown).bind(RectifiersFormulas))

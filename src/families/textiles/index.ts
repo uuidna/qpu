@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TEXTILES — CLOTH AS ARITHMETIC. Weaving and fabric are numbers: threads per inch, weight per area, how hard a cloth
@@ -30,4 +30,4 @@ export class TextilesFormulas {
 }
 
 for (const name of ['coverage', 'drape', 'elongation', 'gsm', 'shrinkage', 'tensile', 'threadcount', 'yarn'] as const)
-  qpuHexRegisterOf('textiles', name, (TextilesFormulas[name] as (...x: unknown[]) => unknown).bind(TextilesFormulas))
+  hexRegisterOf('textiles', name, (TextilesFormulas[name] as (...x: unknown[]) => unknown).bind(TextilesFormulas))

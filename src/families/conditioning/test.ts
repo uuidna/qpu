@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConditioningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('conditioning: vo2max, heartrate, load, volume, intensity, trainingzone, re
   assert.equal(ConditioningFormulas.recovery(180, 120).value, 60, 'the one-minute pulse drop')
   assert.equal(ConditioningFormulas.onerepmax(100, 5).value, 116, 'the Epley estimate')
   assert.equal(ConditioningFormulas.vo2max(200, 50).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('conditioning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('conditioning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'conditioning', program: ['onerepmax'], params: [100, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 116, `conditioning.onerepmax at ${uuid}`)
-  qpuUuidReceiptOf('conditioning onerepmax', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('conditioning onerepmax', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; vo2max 60, heartrate 190, load 480, volume 3000, intensity 80, trainingzone 133, recovery 60, onerepmax 116; crossing to physiology')
 })

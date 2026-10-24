@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FORMANT — THE RESONANCES OF SPEECH, AS ARITHMETIC. A vocal tract shapes sound into formants: bands of energy whose
@@ -31,4 +31,4 @@ export class FormantFormulas {
 }
 
 for (const name of ['bandwidth', 'centerfrequency', 'dispersion', 'f1f2ratio', 'formantspacing', 'qfactor', 'resonancepeak', 'vowelspace'] as const)
-  qpuHexRegisterOf('formant', name, (FormantFormulas[name] as (...x: unknown[]) => unknown).bind(FormantFormulas))
+  hexRegisterOf('formant', name, (FormantFormulas[name] as (...x: unknown[]) => unknown).bind(FormantFormulas))

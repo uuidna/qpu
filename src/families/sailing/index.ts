@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** SAILING — THE POINTS OF A BOAT, AS ARITHMETIC. A hull's speed proxy, velocity made good, heel under force against
  *  righting moment, the distance of a tack across legs, a sail's triangle area, drift over time, a compass bearing
@@ -32,4 +32,4 @@ export class SailingFormulas {
 }
 
 for (const name of ['ballast', 'bearing', 'drift', 'heel', 'hullspeed', 'sailarea', 'tack', 'vmg'] as const)
-  qpuHexRegisterOf('sailing', name, (SailingFormulas[name] as (...x: unknown[]) => unknown).bind(SailingFormulas))
+  hexRegisterOf('sailing', name, (SailingFormulas[name] as (...x: unknown[]) => unknown).bind(SailingFormulas))

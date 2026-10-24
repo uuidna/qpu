@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LedgerFormulas — 8 exact-integer formulas of the ledger domain, each at a hex address crossing to cross; develops the ledger leads. */
@@ -31,4 +31,4 @@ export class LedgerFormulas {
 }
 
 for (const name of ['accounts', 'balance', 'combos', 'credits', 'debits', 'entries', 'periods', 'reconciled'] as const)
-  qpuHexRegisterOf('ledger', name, (LedgerFormulas[name] as (...x: unknown[]) => unknown).bind(LedgerFormulas))
+  hexRegisterOf('ledger', name, (LedgerFormulas[name] as (...x: unknown[]) => unknown).bind(LedgerFormulas))

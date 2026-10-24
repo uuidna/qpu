@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ElectionsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('elections: turnout, margin, seats, swing, threshold, apportionment, spoila
   assert.equal(ElectionsFormulas.spoilage(20, 1000).value, 2)
   assert.equal(ElectionsFormulas.proportionality(50, 100).value, 50)
   assert.equal(ElectionsFormulas.turnout(750, 1000).dst, 'demographics')
-  assert.equal(qpuHexFamiliesOf().get('elections')?.length, 8)
+  assert.equal(hexFamiliesOf().get('elections')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'elections', program: ['seats'], params: [12000, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `elections.seats at ${uuid}`)
-  qpuUuidReceiptOf('elections seats', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('elections seats', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; turnout 75, margin 400, seats 12, swing 15, threshold 5, apportionment 4, spoilage 2, proportionality 50; crossing to demographics')
 })

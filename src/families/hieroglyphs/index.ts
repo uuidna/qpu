@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HIEROGLYPHS — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HieroglyphsFormulas {
 }
 
 for (const name of ['biliterals', 'cartouchepairs', 'categorysubsets', 'decipheredratio', 'determinatives', 'phonemsigns', 'readingorderings', 'signs'] as const)
-  qpuHexRegisterOf('hieroglyphs', name, (HieroglyphsFormulas[name] as (...x: unknown[]) => unknown).bind(HieroglyphsFormulas))
+  hexRegisterOf('hieroglyphs', name, (HieroglyphsFormulas[name] as (...x: unknown[]) => unknown).bind(HieroglyphsFormulas))

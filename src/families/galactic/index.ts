@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GALACTIC — A GALAXY AS ARITHMETIC (integer proxies, no floats). The dynamics of a galaxy are numbers: how fast the disk
@@ -31,4 +31,4 @@ export class GalacticFormulas {
 }
 
 for (const name of ['diskmass', 'escapevelocity', 'masswithinradius', 'metallicity', 'rotationvelocity', 'starcount', 'surfacebrightness', 'virialmass'] as const)
-  qpuHexRegisterOf('galactic', name, (GalacticFormulas[name] as (...x: unknown[]) => unknown).bind(GalacticFormulas))
+  hexRegisterOf('galactic', name, (GalacticFormulas[name] as (...x: unknown[]) => unknown).bind(GalacticFormulas))

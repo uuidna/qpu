@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ClearanceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('clearance: renal, hepatic, total, filtration, extractionratio, firstpass, 
   assert.equal(ClearanceFormulas.residual(500, 120).value, 380)
   assert.equal(ClearanceFormulas.ratio(240, 120).value, 200)
   assert.equal(ClearanceFormulas.renal(100, 2, 10).dst, 'pharmacology')
-  assert.equal(qpuHexFamiliesOf().get('clearance')?.length, 8)
+  assert.equal(hexFamiliesOf().get('clearance')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'clearance', program: ['renal'], params: [100, 2, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `clearance.renal at ${uuid}`)
-  qpuUuidReceiptOf('clearance renal', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('clearance renal', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; renal 20, hepatic 600, total 620, filtration 20, extractionratio 75, firstpass 25, residual 380, ratio 200; crossing to pharmacology')
 })

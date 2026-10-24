@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOPHYSICS — LIVING MATTER AS ARITHMETIC (chosen by the registry, not by hand). The physics of cells is numbers:
@@ -31,4 +31,4 @@ export class BiophysicsFormulas {
 }
 
 for (const name of ['binding', 'conductance', 'diffusion', 'elasticity', 'folding', 'membrane', 'osmosis', 'tension'] as const)
-  qpuHexRegisterOf('biophysics', name, (BiophysicsFormulas[name] as (...x: unknown[]) => unknown).bind(BiophysicsFormulas))
+  hexRegisterOf('biophysics', name, (BiophysicsFormulas[name] as (...x: unknown[]) => unknown).bind(BiophysicsFormulas))

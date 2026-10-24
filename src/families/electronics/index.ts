@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELECTRONICS — THE CIRCUIT, AS ARITHMETIC. Running a circuit is numbers: Ohm's law for resistance, power in watts,
@@ -30,4 +30,4 @@ export class ElectronicsFormulas {
 }
 
 for (const name of ['capacitance', 'charge', 'efficiency', 'frequency', 'ohm', 'parallel', 'power', 'series'] as const)
-  qpuHexRegisterOf('electronics', name, (ElectronicsFormulas[name] as (...x: unknown[]) => unknown).bind(ElectronicsFormulas))
+  hexRegisterOf('electronics', name, (ElectronicsFormulas[name] as (...x: unknown[]) => unknown).bind(ElectronicsFormulas))

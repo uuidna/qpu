@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WIREFRAME — LAYOUT AS ARITHMETIC. A low-fidelity plan is numbers: the column a width divides into, the gutter, how
@@ -30,4 +30,4 @@ export class WireframeFormulas {
 }
 
 for (const name of ['alignment', 'density', 'fidelity', 'fold', 'grid', 'gutter', 'hierarchy', 'whitespace'] as const)
-  qpuHexRegisterOf('wireframe', name, (WireframeFormulas[name] as (...x: unknown[]) => unknown).bind(WireframeFormulas))
+  hexRegisterOf('wireframe', name, (WireframeFormulas[name] as (...x: unknown[]) => unknown).bind(WireframeFormulas))

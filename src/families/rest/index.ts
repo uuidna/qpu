@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REST — THE HTTP API SURFACE, AS ARITHMETIC (chosen by the public-API registry, not by hand). Serving requests is numbers:
@@ -30,4 +30,4 @@ export class RestFormulas {
 }
 
 for (const name of ['cachettl', 'errorrate', 'latency', 'pagination', 'payloadsize', 'ratelimit', 'statusclass', 'throughput'] as const)
-  qpuHexRegisterOf('rest', name, (RestFormulas[name] as (...x: unknown[]) => unknown).bind(RestFormulas))
+  hexRegisterOf('rest', name, (RestFormulas[name] as (...x: unknown[]) => unknown).bind(RestFormulas))

@@ -5,7 +5,7 @@ import { anyone, adminOrAbove, never } from '../access'
 export const QuantumReceipts: CollectionConfig = {
   slug: 'quantum-receipts',
   admin: { useAsTitle: 'uuid' },
-  // The receipt ledger is append-only and content-addressed: a row's `fold` is qpuContentUuidOf of the committed
+  // The receipt ledger is append-only and content-addressed: a row's `fold` is contentUuidOf of the committed
   // *-receipt.json it mirrors (the content itself stays git-committed, not copied into the row), and the row is never
   // updated or deleted. Append-only (update/delete:never) stops mutation of existing rows; gating `create` to an admin
   // stops a signed-in non-admin from INJECTING a forged append into the public verification ledger — immutability alone

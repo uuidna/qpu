@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RETIREMENT — THE SAVER'S ARITHMETIC. Retiring is numbers: the nest egg a saver builds, the rate they draw it down,
@@ -31,4 +31,4 @@ export class RetirementFormulas {
 }
 
 for (const name of ['contributions', 'drawdown', 'matchvalue', 'nestegg', 'replacementratio', 'shortfall', 'withdrawalrate', 'yearsofincome'] as const)
-  qpuHexRegisterOf('retirement', name, (RetirementFormulas[name] as (...x: unknown[]) => unknown).bind(RetirementFormulas))
+  hexRegisterOf('retirement', name, (RetirementFormulas[name] as (...x: unknown[]) => unknown).bind(RetirementFormulas))

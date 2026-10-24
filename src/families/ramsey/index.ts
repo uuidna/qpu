@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RAMSEY — RAMSEY THEORY AND STANDARD COMBINATORICS, AS ARITHMETIC. The textbook statement that complete order is
@@ -53,4 +53,4 @@ export class RamseyFormulas {
 }
 
 for (const name of ['binom', 'diagonalbound', 'erdos', 'eszbound', 'monochromatic', 'party', 'pigeon', 'r22', 'r33', 'r34', 'r35', 'r44', 'schur3', 'threshold', 'vdw23'] as const)
-  qpuHexRegisterOf('ramsey', name, (RamseyFormulas[name] as (...x: unknown[]) => unknown).bind(RamseyFormulas))
+  hexRegisterOf('ramsey', name, (RamseyFormulas[name] as (...x: unknown[]) => unknown).bind(RamseyFormulas))

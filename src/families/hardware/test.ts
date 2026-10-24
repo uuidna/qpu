@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HardwareFormulas } from './index.js'
 
 /** The silicon's arithmetic — SMT threads, cache lines, bus bytes, lanes, pins, dies, per-core power, address space. */
@@ -15,18 +15,18 @@ test('hardware: threads, cache lines, bus bytes, lanes, pins, dies, per-core pow
   assert.equal(HardwareFormulas.tdpPerCore(125, 8).value, 15, '125W over 8 cores')
   assert.equal(HardwareFormulas.addressable(20).value, 1048576, '2^20 addresses')
   assert.equal(HardwareFormulas.addressable(40).value, 0, 'past the safe cap')
-  assert.equal(qpuHexFamiliesOf().get('hardware')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hardware')?.length, 8)
   for (const [name, params, expected] of [['threads', [8], 16], ['lanes', [4, 16], 64], ['addressable', [20], 1048576]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'hardware', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `hardware.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`hardware ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`hardware ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; 8 cores→16 threads, 4096→64 lines, 4×16 lanes=64, 2^20 addressable')
 })
 
 import { crossSchemaOf, crossSchemaHolds, crossSchemasOf, crossSchemasHolds } from '../cross/index.js'
-import { qpuHexDecodeOf } from '../../quantum/processing/unit/index.js'
+import { hexDecodeOf } from '../../quantum/processing/unit/index.js'
 // register the sibling families so the catalog assertion is deterministic (each registers on import)
 import '../firmware/index.js'
 import '../software/index.js'
@@ -43,7 +43,7 @@ test('schema.org: a family is a DefinedTermSet of hex UUIDs, and all families ar
   for (const term of s.hasDefinedTerm) {
     assert.equal(term['@type'], 'DefinedTerm')
     assert.equal(term['@id'], `urn:uuid:${term.identifier}`)
-    const d = qpuHexDecodeOf(term.identifier) as { family?: string | null; program?: string[]; sealed?: boolean }
+    const d = hexDecodeOf(term.identifier) as { family?: string | null; program?: string[]; sealed?: boolean }
     assert.equal(d.family, 'hardware', `${term.name} addresses the hardware family`)
     assert.equal(d.program?.[0], term.termCode, `${term.name} decodes back to its formula`)
     assert.equal(d.sealed, true, `${term.name} wears its crypto-decided version`)

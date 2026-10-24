@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SILAGE — FORAGE PRESERVATION AS ARITHMETIC. Ensiling a crop is numbers: the dry matter it holds, how dense the packed
@@ -30,4 +30,4 @@ export class SilageFormulas {
 }
 
 for (const name of ['capacity', 'density', 'drymatter', 'feedout', 'fermentationloss', 'moisture', 'packingdensity', 'phlevel'] as const)
-  qpuHexRegisterOf('silage', name, (SilageFormulas[name] as (...x: unknown[]) => unknown).bind(SilageFormulas))
+  hexRegisterOf('silage', name, (SilageFormulas[name] as (...x: unknown[]) => unknown).bind(SilageFormulas))

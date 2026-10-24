@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GrouptheoryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('grouptheory: order, cosets, cyclicorder, subgroupindex, cosetcount, symmet
   assert.equal(GrouptheoryFormulas.elementorder(4, 6).value, 3, 'the order of 4 in Z6')
   assert.equal(GrouptheoryFormulas.elementorder(5, 6).value, 6)
   assert.equal(GrouptheoryFormulas.order(6, 4).dst, 'algebra')
-  assert.equal(qpuHexFamiliesOf().get('grouptheory')?.length, 8)
+  assert.equal(hexFamiliesOf().get('grouptheory')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'grouptheory', program: ['cosets'], params: [24, 6] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `grouptheory.cosets at ${uuid}`)
-  qpuUuidReceiptOf('grouptheory cosets', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('grouptheory cosets', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; order 24, cosets 4, cyclicorder 12, subgroupindex 5, cosetcount 4, symmetricorder 120, generatorpower 24, elementorder 3; crossing to algebra')
 })

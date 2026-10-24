@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DominoesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('dominoes: distinctpairs, doubles, totaltiles, pips, chainorderings, handsu
   assert.equal(DominoesFormulas.maxpip(6, 0).value, 6)
   assert.equal(DominoesFormulas.layoutpaths(7, 2).value, 42)
   assert.equal(DominoesFormulas.distinctpairs(7, 2).dst, 'combinatorics')
-  assert.equal(qpuHexFamiliesOf().get('dominoes')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dominoes')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dominoes', program: ['distinctpairs'], params: [7, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 21, `dominoes.distinctpairs at ${uuid}`)
-  qpuUuidReceiptOf('dominoes distinctpairs', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dominoes distinctpairs', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; distinctpairs 21, doubles 7, totaltiles 28, pips 168, chainorderings 720, handsubsets 128, maxpip 6, layoutpaths 42; crossing to combinatorics')
 })

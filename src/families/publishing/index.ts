@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PUBLISHING — THE TRADE AS ARITHMETIC (chosen by the registry, not by hand). Making and selling books is numbers:
@@ -31,4 +31,4 @@ export class PublishingFormulas {
 }
 
 for (const name of ['backlist', 'impact', 'margin', 'pages', 'print', 'readership', 'returns', 'royalty'] as const)
-  qpuHexRegisterOf('publishing', name, (PublishingFormulas[name] as (...x: unknown[]) => unknown).bind(PublishingFormulas))
+  hexRegisterOf('publishing', name, (PublishingFormulas[name] as (...x: unknown[]) => unknown).bind(PublishingFormulas))

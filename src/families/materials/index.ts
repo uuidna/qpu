@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MATERIALS — MATERIALS SCIENCE / ENGINEERING, AS ARITHMETIC (chosen by the public-API registry, not by hand). A loaded
@@ -31,4 +31,4 @@ export class MaterialsFormulas {
 }
 
 for (const name of ['density', 'fatigue', 'hardness', 'modulus', 'strain', 'stress', 'thermal', 'yield'] as const)
-  qpuHexRegisterOf('materials', name, (MaterialsFormulas[name] as (...x: unknown[]) => unknown).bind(MaterialsFormulas))
+  hexRegisterOf('materials', name, (MaterialsFormulas[name] as (...x: unknown[]) => unknown).bind(MaterialsFormulas))

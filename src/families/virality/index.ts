@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VIRALITY — HOW CONTENT SPREADS, AS ARITHMETIC. The spread of a thing is numbers: the K-factor an invite earns, the
@@ -30,4 +30,4 @@ export class ViralityFormulas {
 }
 
 for (const name of ['amplification', 'coefficient', 'cycletime', 'engagement', 'halflife', 'reach', 'saturation', 'shares'] as const)
-  qpuHexRegisterOf('virality', name, (ViralityFormulas[name] as (...x: unknown[]) => unknown).bind(ViralityFormulas))
+  hexRegisterOf('virality', name, (ViralityFormulas[name] as (...x: unknown[]) => unknown).bind(ViralityFormulas))

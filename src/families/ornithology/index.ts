@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ORNITHOLOGY — THE STUDY OF BIRDS, AS ARITHMETIC. A bird's flight and life are numbers: wing loading, clutch per nest,
@@ -30,4 +30,4 @@ export class OrnithologyFormulas {
 }
 
 for (const name of ['aspect', 'clutch', 'fledging', 'flock', 'migration', 'song', 'survival', 'wingload'] as const)
-  qpuHexRegisterOf('ornithology', name, (OrnithologyFormulas[name] as (...x: unknown[]) => unknown).bind(OrnithologyFormulas))
+  hexRegisterOf('ornithology', name, (OrnithologyFormulas[name] as (...x: unknown[]) => unknown).bind(OrnithologyFormulas))

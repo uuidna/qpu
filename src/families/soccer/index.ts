@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SOCCER — THE MATCH AS ARITHMETIC. Playing the game is numbers: ball possession, how chances become goals, how passes
@@ -30,4 +30,4 @@ export class SoccerFormulas {
 }
 
 for (const name of ['cleansheets', 'conversion', 'distance', 'goaldiff', 'passaccuracy', 'points', 'possession', 'xg'] as const)
-  qpuHexRegisterOf('soccer', name, (SoccerFormulas[name] as (...x: unknown[]) => unknown).bind(SoccerFormulas))
+  hexRegisterOf('soccer', name, (SoccerFormulas[name] as (...x: unknown[]) => unknown).bind(SoccerFormulas))

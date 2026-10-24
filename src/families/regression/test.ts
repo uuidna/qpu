@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RegressionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('regression: slope, intercept, residual, sse, rsquared, prediction, leverag
   assert.equal(RegressionFormulas.leverage(25, 100).value, 25)
   assert.equal(RegressionFormulas.mse(100, 4).value, 25, 'error over degrees')
   assert.equal(RegressionFormulas.slope(100, 20).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('regression')?.length, 8)
+  assert.equal(hexFamiliesOf().get('regression')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'regression', program: ['slope'], params: [100, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `regression.slope at ${uuid}`)
-  qpuUuidReceiptOf('regression slope', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('regression slope', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; slope 5, intercept 30, residual 5, sse 100, rsquared 80, prediction 50, leverage 25, mse 25; crossing to statistics')
 })

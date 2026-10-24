@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REVERBERATION — A ROOM'S TAIL, AS ARITHMETIC (chosen by the public-API registry, not by hand). A sound's decay is
@@ -31,4 +31,4 @@ export class ReverberationFormulas {
 }
 
 for (const name of ['absorptionarea', 'clarity', 'criticaldistance', 'decayrate', 'earlyreflections', 'meanfreepath', 'rt60', 'sabine'] as const)
-  qpuHexRegisterOf('reverberation', name, (ReverberationFormulas[name] as (...x: unknown[]) => unknown).bind(ReverberationFormulas))
+  hexRegisterOf('reverberation', name, (ReverberationFormulas[name] as (...x: unknown[]) => unknown).bind(ReverberationFormulas))

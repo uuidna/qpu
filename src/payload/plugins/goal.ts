@@ -11,7 +11,7 @@
  */
 import { CombinatoricsFormulas } from '../../families/combinatorics/index.js'
 import { CLAY_SEALS, claySealDomainCoverageOf } from '../../families/clay/index.js'
-import { qpuFacesOf, qpuHexUuidOf, qpuMcpToolsListOf } from '../../quantum/processing/unit/index.js'
+import { facesOf, qpuHexUuidOf, mcpToolsListOf } from '../../quantum/processing/unit/index.js'
 import { modeAccessOf } from './access-mode.js'
 import {
   accessExecuteGateOf,
@@ -96,7 +96,7 @@ export type GoalInput = {
  * Goal state from combinations. Recomputed each call — up to date, court-tried.
  */
 export const goalOf = (input: GoalInput = {}): GoalReading => {
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const seals = CLAY_SEALS.length
   // Do not clamp k to faces — C(n,k) holds false when k > n (goal → LEAD).
   const k = typeof input.k === 'number' && Number.isSafeInteger(input.k) && input.k >= 0 ? input.k : 1
@@ -167,7 +167,7 @@ export const goalOf = (input: GoalInput = {}): GoalReading => {
   const access = modeAccessOf({ mode, who })
   const executeAllowed = access.decides.execute === true && executeTrial.allow === true
 
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete', tools }).length
   const qpuPrefixed = tools.filter((t) => t.name.startsWith('qpu_')).length
   const billHolds = tools.length <= 16 && listBytes < 16384 && qpuPrefixed === 0

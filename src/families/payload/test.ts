@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PayloadFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -24,10 +24,10 @@ test('payload: imagine a Payload collection from a family — formulas as fields
   assert.equal(PayloadFormulas.coverage(11, 11).holds, true, 'full coverage holds')
 
   assert.equal(PayloadFormulas.collections().dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('payload')?.length, 4)
+  assert.equal(hexFamiliesOf().get('payload')?.length, 4)
   const uuid = qpuHexUuidOf({ family: 'payload', program: ['fields'], params: [0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), fieldsOf0, `payload.fields at ${uuid}`)
-  qpuUuidReceiptOf('payload fields', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('payload fields', contentUuidOf(run), { uuid })
   t.diagnostic(`4 formulas; imagine(0) = collection '${im.family}' with ${im.value} number fields + uuid, courtReceipt hook, standing access; ${cols.value} collections the lattice defines`)
 })

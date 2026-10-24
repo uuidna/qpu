@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CriticalchainFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('criticalchain: projectbuffer, feedingbuffer, resourcebuffer, bufferconsump
   assert.equal(CriticalchainFormulas.safetyremoved(40, 25).value, 15)
   assert.equal(CriticalchainFormulas.safetyremoved(25, 40).value, 0)
   assert.equal(CriticalchainFormulas.projectbuffer(1000, 50).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('criticalchain')?.length, 8)
+  assert.equal(hexFamiliesOf().get('criticalchain')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'criticalchain', program: ['chainlength'], params: [12, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `criticalchain.chainlength at ${uuid}`)
-  qpuUuidReceiptOf('criticalchain chainlength', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('criticalchain chainlength', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; projectbuffer 500, feedingbuffer 100, resourcebuffer 24, bufferconsumption 25, chainlength 60, aggregation 20, fevermargin 320, safetyremoved 15; crossing to logistics')
 })

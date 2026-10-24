@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SearchFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('search: recall, precision, latency, index, hits, throughput, coverage, f1 
   assert.equal(SearchFormulas.f1(80, 80).value, 80, 'balanced precision and recall')
   assert.equal(SearchFormulas.f1(0, 0).value, 0)
   assert.equal(SearchFormulas.recall(80, 100).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('search')?.length, 8)
+  assert.equal(hexFamiliesOf().get('search')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'search', program: ['recall'], params: [80, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `search.recall at ${uuid}`)
-  qpuUuidReceiptOf('search recall', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('search recall', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; recall 80, precision 80, latency 50, index 20000, hits 15, throughput 100, coverage 90, f1 80; crossing to cross')
 })

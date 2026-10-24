@@ -1,4 +1,4 @@
-import { chooseOf, qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { chooseOf, hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PLAGIARISM — the pair count C(a, b) on two naturals. A count. It names no work. */
@@ -16,4 +16,4 @@ export class PlagiarismFormulas {
   }
 }
 
-qpuHexRegisterOf('plagiarism', 'plagiarism', (PlagiarismFormulas.plagiarism as (...x: unknown[]) => unknown).bind(PlagiarismFormulas))
+hexRegisterOf('plagiarism', 'plagiarism', (PlagiarismFormulas.plagiarism as (...x: unknown[]) => unknown).bind(PlagiarismFormulas))

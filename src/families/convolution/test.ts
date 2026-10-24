@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConvolutionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('convolution: outputsize, receptivefield, padding, stride, kernelparams, fe
   assert.equal(ConvolutionFormulas.pooling(24, 2).value, 12)
   assert.equal(ConvolutionFormulas.dilation(3, 2).value, 5, 'a dilated 3×3 reaches 5')
   assert.equal(ConvolutionFormulas.outputsize(28, 5, 1).dst, 'linearalgebra')
-  assert.equal(qpuHexFamiliesOf().get('convolution')?.length, 8)
+  assert.equal(hexFamiliesOf().get('convolution')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'convolution', program: ['outputsize'], params: [28, 5, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 24, `convolution.outputsize at ${uuid}`)
-  qpuUuidReceiptOf('convolution outputsize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('convolution outputsize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; outputsize 24, receptivefield 11, padding 3, stride 2, kernelparams 432, featuremap 9216, pooling 12, dilation 5; crossing to linearalgebra')
 })

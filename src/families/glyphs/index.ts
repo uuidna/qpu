@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GLYPHS — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class GlyphsFormulas {
 }
 
 for (const name of ['componentsubsets', 'count', 'radicalcombos', 'rendercoverage', 'strokeorderings', 'strokesperglyph', 'unicodeplanes', 'variantcount'] as const)
-  qpuHexRegisterOf('glyphs', name, (GlyphsFormulas[name] as (...x: unknown[]) => unknown).bind(GlyphsFormulas))
+  hexRegisterOf('glyphs', name, (GlyphsFormulas[name] as (...x: unknown[]) => unknown).bind(GlyphsFormulas))

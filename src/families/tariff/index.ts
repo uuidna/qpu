@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TARIFF — scaffolded integer measures crossed to macroeconomics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TariffFormulas {
 }
 
 for (const name of ['deadweightloss', 'importprice', 'protectioneffect', 'quotafill', 'ratepct', 'revenue', 'schedulesubsets', 'tradereduction'] as const)
-  qpuHexRegisterOf('tariff', name, (TariffFormulas[name] as (...x: unknown[]) => unknown).bind(TariffFormulas))
+  hexRegisterOf('tariff', name, (TariffFormulas[name] as (...x: unknown[]) => unknown).bind(TariffFormulas))

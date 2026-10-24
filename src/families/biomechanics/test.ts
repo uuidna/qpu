@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BiomechanicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('biomechanics: torque, moment, power, impulse, groundreaction, leverage, wo
   assert.equal(BiomechanicsFormulas.workload(10, 50).value, 500, 'training volume')
   assert.equal(BiomechanicsFormulas.gait(120, 60).value, 2, 'steps per second')
   assert.equal(BiomechanicsFormulas.torque(50, 3).dst, 'mechanical')
-  assert.equal(qpuHexFamiliesOf().get('biomechanics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('biomechanics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'biomechanics', program: ['torque'], params: [50, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 150, `biomechanics.torque at ${uuid}`)
-  qpuUuidReceiptOf('biomechanics torque', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('biomechanics torque', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; torque 150, moment 160, power 100, impulse 400, groundreaction 1050, leverage 4, workload 500, gait 2; crossing to mechanical')
 })

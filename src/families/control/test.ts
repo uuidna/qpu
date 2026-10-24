@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ControlFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('control: error, settlingtime, overshoot, steadystate, risetime, damping, g
   assert.equal(ControlFormulas.gainmargin(100, 25).value, 4, 'the gain can quadruple')
   assert.equal(ControlFormulas.bandwidth(8, 3).value, 24)
   assert.equal(ControlFormulas.error(100, 30).dst, 'dynamics')
-  assert.equal(qpuHexFamiliesOf().get('control')?.length, 8)
+  assert.equal(hexFamiliesOf().get('control')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'control', program: ['gainmargin'], params: [100, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `control.gainmargin at ${uuid}`)
-  qpuUuidReceiptOf('control gainmargin', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('control gainmargin', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; error 70, settlingtime 20, overshoot 20, steadystate 60, risetime 20, damping 75, gainmargin 4, bandwidth 24; crossing to dynamics')
 })

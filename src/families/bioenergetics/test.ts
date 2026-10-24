@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BioenergeticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('bioenergetics: atphydrolysis, efficiency, electrontransport, gibbsfree, ph
   assert.equal(BioenergeticsFormulas.yield(1, 38).value, 38, 'ATP per glucose')
   assert.equal(BioenergeticsFormulas.redoxpotential(320, 820).value, 0)
   assert.equal(BioenergeticsFormulas.atphydrolysis(10, 31).dst, 'biochemistry')
-  assert.equal(qpuHexFamiliesOf().get('bioenergetics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('bioenergetics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'bioenergetics', program: ['efficiency'], params: [40, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 40, `bioenergetics.efficiency at ${uuid}`)
-  qpuUuidReceiptOf('bioenergetics efficiency', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('bioenergetics efficiency', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; atphydrolysis 310, efficiency 40, electrontransport 30, gibbsfree 50, phosphateratio 25, protonmotive 199, redoxpotential 500, yield 38; crossing to biochemistry')
 })

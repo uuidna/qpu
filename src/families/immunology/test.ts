@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ImmunologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('immunology: titer, response, seroconversion, neutralization, cellcount, cy
   assert.equal(ImmunologyFormulas.affinity(300, 100).value, 300)
   assert.equal(ImmunologyFormulas.boost(400, 100).value, 400, 'a fourfold boost ·100')
   assert.equal(ImmunologyFormulas.titer(2, 3).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('immunology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('immunology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'immunology', program: ['titer'], params: [2, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 16, `immunology.titer at ${uuid}`)
-  qpuUuidReceiptOf('immunology titer', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('immunology titer', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; titer 16, response 800, seroconversion 90, neutralization 90, cellcount 500, cytokine 100, affinity 300, boost 400; crossing to med')
 })

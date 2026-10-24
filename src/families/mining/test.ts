@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MiningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('mining: grade, recovery, reserves, stripping, cutoff, throughput, yield, c
   assert.equal(MiningFormulas.yield(80, 100).value, 80)
   assert.equal(MiningFormulas.cost(500, 7).value, 3500)
   assert.equal(MiningFormulas.grade(5, 1000).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('mining')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mining')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mining', program: ['throughput'], params: [12000, 24] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 500, `mining.throughput at ${uuid}`)
-  qpuUuidReceiptOf('mining throughput', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mining throughput', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; grade 5000, recovery 90, reserves 5000, stripping 300, cutoff 1, throughput 500, yield 80, cost 3500; crossing to econ')
 })

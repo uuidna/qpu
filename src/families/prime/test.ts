@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PrimeFormulas } from './index.js'
 
 /** prime: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('prime: gaps, count, product, totient, factors, sieve, twins, combos', asyn
   assert.equal(PrimeFormulas.sieve(100, 2).value, 50, 'sieve(100, 2)')
   assert.equal(PrimeFormulas.twins(100, 10).value, 10, 'twins(100, 10)')
   assert.equal(PrimeFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('prime')?.length, 8)
+  assert.equal(hexFamiliesOf().get('prime')?.length, 8)
   for (const [name, params, expected] of [["gaps",[13,11],2],["count",[100,4],25],["product",[7,13],91]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'prime', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `prime.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`prime ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`prime ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "gaps=2, count=25, product=91")
 })

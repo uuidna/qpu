@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PULMONOLOGY — THE LUNG AS ARITHMETIC (chosen by the clinical registry, not by hand). Breathing is numbers:
@@ -30,4 +30,4 @@ export class PulmonologyFormulas {
 }
 
 for (const name of ['compliance', 'deadspace', 'diffusion', 'fev1', 'peakflow', 'resistance', 'saturation', 'tidal'] as const)
-  qpuHexRegisterOf('pulmonology', name, (PulmonologyFormulas[name] as (...x: unknown[]) => unknown).bind(PulmonologyFormulas))
+  hexRegisterOf('pulmonology', name, (PulmonologyFormulas[name] as (...x: unknown[]) => unknown).bind(PulmonologyFormulas))

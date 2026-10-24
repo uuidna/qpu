@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ClimbingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('climbing: grade, gain, pitch, effort, sendrate, steepness, grip, rope — 
   assert.equal(ClimbingFormulas.grip(140, 70).value, 200, 'twice bodyweight')
   assert.equal(ClimbingFormulas.rope(60, 3).value, 20)
   assert.equal(ClimbingFormulas.gain(1000, 200).dst, 'fitness')
-  assert.equal(qpuHexFamiliesOf().get('climbing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('climbing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'climbing', program: ['gain'], params: [1000, 200] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 800, `climbing.gain at ${uuid}`)
-  qpuUuidReceiptOf('climbing gain', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('climbing gain', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; grade 12, gain 800, pitch 60, effort 7000, sendrate 30, steepness 200, grip 200, rope 20; crossing to fitness')
 })

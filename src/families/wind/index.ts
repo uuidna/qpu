@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WindFormulas — 8 exact-integer formulas of the wind domain, each at a hex address crossing to cross; develops the wind leads. */
@@ -31,4 +31,4 @@ export class WindFormulas {
 }
 
 for (const name of ['blades', 'capacity', 'farm', 'pairs', 'power', 'rated', 'tipratio', 'turbines'] as const)
-  qpuHexRegisterOf('wind', name, (WindFormulas[name] as (...x: unknown[]) => unknown).bind(WindFormulas))
+  hexRegisterOf('wind', name, (WindFormulas[name] as (...x: unknown[]) => unknown).bind(WindFormulas))

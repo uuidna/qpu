@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EXOPLANETS — DETECTING AND SIZING WORLDS AROUND OTHER STARS, AS ARITHMETIC (integer proxies for the standard
@@ -31,4 +31,4 @@ export class ExoplanetsFormulas {
 }
 
 for (const name of ['density', 'insolation', 'period', 'radialvelocity', 'radius', 'semimajor', 'transitdepth', 'transitduration'] as const)
-  qpuHexRegisterOf('exoplanets', name, (ExoplanetsFormulas[name] as (...x: unknown[]) => unknown).bind(ExoplanetsFormulas))
+  hexRegisterOf('exoplanets', name, (ExoplanetsFormulas[name] as (...x: unknown[]) => unknown).bind(ExoplanetsFormulas))

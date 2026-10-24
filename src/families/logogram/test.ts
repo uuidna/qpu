@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LogogramFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('logogram: symbols, compoundpairs, radicals, strokeorderings, semanticsubse
   assert.equal(LogogramFormulas.frequencyrank(2000, 10).value, 200)
   assert.equal(LogogramFormulas.literacyratio(95, 100).value, 95)
   assert.equal(LogogramFormulas.symbols(2000, 1).dst, 'combinatorics')
-  assert.equal(qpuHexFamiliesOf().get('logogram')?.length, 8)
+  assert.equal(hexFamiliesOf().get('logogram')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'logogram', program: ['symbols'], params: [2000, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2000, `logogram.symbols at ${uuid}`)
-  qpuUuidReceiptOf('logogram symbols', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('logogram symbols', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; symbols 2000, compoundpairs 190, radicals 214, strokeorderings 120, semanticsubsets 64, readingsper 5, frequencyrank 200, literacyratio 95; crossing to combinatorics')
 })

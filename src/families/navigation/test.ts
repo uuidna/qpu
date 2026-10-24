@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NavigationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('navigation: bearing, distance, eta, crosstrack, dilution, waypoint, headin
   assert.equal(NavigationFormulas.heading(350, 20).value, 10, 'drift carried past north')
   assert.equal(NavigationFormulas.accuracy(95, 100).value, 95)
   assert.equal(NavigationFormulas.bearing(450).dst, 'transport')
-  assert.equal(qpuHexFamiliesOf().get('navigation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('navigation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'navigation', program: ['heading'], params: [350, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `navigation.heading at ${uuid}`)
-  qpuUuidReceiptOf('navigation heading', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('navigation heading', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bearing 90, distance 180, eta 3, crosstrack 5, dilution 3, waypoint 30, heading 10, accuracy 95; crossing to transport')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MetabolismFormulas — 8 exact-integer formulas of the metabolism domain, each at a hex address crossing to cross; develops the metabolism leads. */
@@ -31,4 +31,4 @@ export class MetabolismFormulas {
 }
 
 for (const name of ['atp', 'bmr', 'calories', 'combos', 'enzymes', 'glucose', 'oxygen', 'pathways'] as const)
-  qpuHexRegisterOf('metabolism', name, (MetabolismFormulas[name] as (...x: unknown[]) => unknown).bind(MetabolismFormulas))
+  hexRegisterOf('metabolism', name, (MetabolismFormulas[name] as (...x: unknown[]) => unknown).bind(MetabolismFormulas))

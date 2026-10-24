@@ -1,5 +1,6 @@
 import Qpu.Mint
 import Qpu.Lattice
+import Qpu.Shor
 
 /-! # Qpu.Primes
 The primes the register geometry already exhibits, written as exact identities over the lattice constants — the

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DanceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('dance: tempo, counts, synchrony, steps, phrase, elevation, rotation, stami
   assert.equal(DanceFormulas.rotation(-90).value, 270)
   assert.equal(DanceFormulas.stamina(300, 60).value, 500)
   assert.equal(DanceFormulas.tempo(480, 4).dst, 'music')
-  assert.equal(qpuHexFamiliesOf().get('dance')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dance')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dance', program: ['counts'], params: [8, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 64, `dance.counts at ${uuid}`)
-  qpuUuidReceiptOf('dance counts', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dance counts', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; tempo 120, counts 64, synchrony 90, steps 20, phrase 8, elevation 30, rotation 90, stamina 500; crossing to music')
 })

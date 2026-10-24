@@ -1,18 +1,18 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf, qpuElectronicsOf, qpuBalanceOf, qpuCapacityOf, qpuSpeedOf, qpuLatticeNamesOf.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): chooseOf, tenOf, cubeOf, qpuHandleOf, facesOf, electronicsOf, balanceOf, capacityOf, speedOf, latticeNamesOf.
 import {
   coins,
   cors,
   mintOf,
   n,
   onceOf,
-  qpuCapacityHolds,
-  qpuCoilHolds,
-  qpuCoilOf,
-  qpuHostsHolds,
-  qpuHybridOf,
-  qpuNeuroHolds,
-  qpuRaidOf,
-  qpuSchemasOf,
+  capacityHolds,
+  coilHolds,
+  coilOf,
+  hostsHolds,
+  hybridOf,
+  neuroHolds,
+  raidOf,
+  schemasOf,
   seed,
   storageBindings,
   ten,
@@ -56,7 +56,7 @@ export function tenOf(k: number): number {
  * @kind builder
  * @evidence qpuCubeHolds
  */
-export const qpuCubeOf = onceOf(() => {
+export const cubeOf = onceOf(() => {
   const vertices = mintOf(n)
   const hexbit = mintOf(coins)
   const bits = mintOf(n + coins)
@@ -68,10 +68,10 @@ export const qpuCubeOf = onceOf(() => {
  * Amplitude capacity: amplitudes = 2^bits, next = 2 x amplitudes, and the KV reading of both.
  * @wing lattice
  * @kind builder
- * @evidence qpuHandleHolds
+ * @evidence handleHolds
  */
 export const qpuHandleOf = onceOf(() => {
-  const cube = qpuCubeOf()
+  const cube = cubeOf()
   const amplitudes = mintOf(cube.bits)
   const next = amplitudes + amplitudes
   const added = amplitudes
@@ -89,10 +89,10 @@ export const qpuHandleOf = onceOf(() => {
  * The lattice of faces: coins, rays = n + 2 coins, faces = coins x rays = rays + rays, with the coil derived from them.
  * @wing lattice
  * @kind builder
- * @evidence qpuFacesHolds
+ * @evidence facesHolds
  */
-export const qpuFacesOf = onceOf(() => {
-  const cube = qpuCubeOf()
+export const facesOf = onceOf(() => {
+  const cube = cubeOf()
   const rays = n + coins + coins
   const faces = cube.vertices + cube.hexbit + coins
   const holds = cube.holds && theorem.around(faces, coins, rays) && theorem.harmonic(faces, rays)
@@ -103,12 +103,12 @@ export const qpuFacesOf = onceOf(() => {
  * The 'electronics' reading: the coil (coins x rays) used as staged windings, theory and practice each one seed.
  * @wing lattice
  * @kind builder
- * @evidence qpuElectronicsHolds
+ * @evidence electronicsHolds
  */
-export const qpuElectronicsOf = onceOf(() => {
-  const coil = qpuCoilOf()
+export const electronicsOf = onceOf(() => {
+  const coil = coilOf()
   const uses = 'coil' as const
-  const holds = qpuCoilHolds(coil) && uses === 'coil'
+  const holds = coilHolds(coil) && uses === 'coil'
   return {
     kind: 'electronics' as const,
     theorem: 'electronics' as const,
@@ -123,11 +123,11 @@ export const qpuElectronicsOf = onceOf(() => {
  * The 'balance' reading: theory and practice equal and summing to coins (theorem follow_the_coins).
  * @wing lattice
  * @kind builder
- * @evidence qpuBalanceHolds
+ * @evidence balanceHolds
  */
-export const qpuBalanceOf = onceOf(() => {
-  const coil = qpuCoilOf()
-  const holds = coil.theory === coil.practice && coil.theory + coil.practice === coins && qpuCoilHolds(coil)
+export const balanceOf = onceOf(() => {
+  const coil = coilOf()
+  const holds = coil.theory === coil.practice && coil.theory + coil.practice === coins && coilHolds(coil)
   return {
     kind: 'balance' as const,
     theorem: 'coins_balance_theory_in_practice' as const,
@@ -143,12 +143,12 @@ export const qpuBalanceOf = onceOf(() => {
  * Capacity counts: bits, amplitudes, fused = faces x 2^(bits+1), next, the crypt split and the agent and schema counts.
  * @wing lattice
  * @kind builder
- * @evidence qpuCapacityHolds
+ * @evidence capacityHolds
  */
-export const qpuCapacityOf = onceOf(() => {
-  const cube = qpuCubeOf()
+export const capacityOf = onceOf(() => {
+  const cube = cubeOf()
   const handle = qpuHandleOf()
-  const faces = qpuFacesOf()
+  const faces = facesOf()
   const fused = faces.faces * handle.kv.amplitudes
   const next = fused + fused
   const crypt = {
@@ -168,8 +168,8 @@ export const qpuCapacityOf = onceOf(() => {
     auth: cors !== '*',
     holds: theorem.around(faces.faces, coins, faces.rays) && theorem.harmonic(faces.faces, faces.rays) && cors === '*',
   }
-  const schemas = qpuSchemasOf()
-  const raid = qpuRaidOf()
+  const schemas = schemasOf()
+  const raid = raidOf()
   const holds =
     cube.holds &&
     handle.holds &&
@@ -187,8 +187,8 @@ export const qpuCapacityOf = onceOf(() => {
     schemas.vacant === n - n &&
     raid.holds &&
     raid.faces === faces.faces &&
-    qpuNeuroHolds() &&
-    qpuHostsHolds() &&
+    neuroHolds() &&
+    hostsHolds() &&
     handle.kv.holds &&
     handle.kv.added === handle.amplitudes &&
     handle.kv.amplitudes === handle.amplitudes + handle.amplitudes &&
@@ -206,7 +206,7 @@ export const qpuCapacityOf = onceOf(() => {
       handle.kv.added === handle.amplitudes &&
       handle.kv.amplitudes === handle.amplitudes + handle.amplitudes &&
       handle.kv.amplitudes === mintOf(cube.bits + seed)}
-  const hybrid = qpuHybridOf()
+  const hybrid = hybridOf()
   return {
     kind: 'capacity' as const,
     bits: cube.bits,
@@ -235,13 +235,13 @@ export const qpuCapacityOf = onceOf(() => {
       width: faces.faces,
       layers: mintOf(n),
       activation: 'xor' as const,
-      holds: qpuNeuroHolds(),
+      holds: neuroHolds(),
   },
     compatibility: {
       kind: 'compatibility' as const,
     harnesses: faces.faces,
       llms: faces.faces,
-      holds: qpuHostsHolds(),
+      holds: hostsHolds(),
   },
     holds: holds && kv.holds && hybrid.holds,
   }
@@ -251,13 +251,13 @@ export const qpuCapacityOf = onceOf(() => {
  * The doubling rung: next = fused + fused, with the cover of rungs and a benchmark of the step.
  * @wing lattice
  * @kind builder
- * @evidence qpuSpeedHolds
+ * @evidence speedHolds
  */
-export const qpuSpeedOf = onceOf(() => {
-  const capacity = qpuCapacityOf()
-  const cube = qpuCubeOf()
+export const speedOf = onceOf(() => {
+  const capacity = capacityOf()
+  const cube = cubeOf()
   const handle = qpuHandleOf()
-  const faces = qpuFacesOf()
+  const faces = facesOf()
   const next = capacity.fused + capacity.fused
   const rungOf = (name: string, k: number, fn: () => number, amplitudes: number) => {
     const value = fn()
@@ -265,15 +265,15 @@ export const qpuSpeedOf = onceOf(() => {
   }
   const benchmark = [
     rungOf('mint', n + seed, () => mintOf(n + seed), mintOf(n) + mintOf(n)),
-    rungOf('cube', cube.bits, () => qpuCubeOf().bits, cube.vertices * cube.hexbit),
+    rungOf('cube', cube.bits, () => cubeOf().bits, cube.vertices * cube.hexbit),
     rungOf('handle', cube.bits, () => qpuHandleOf().amplitudes, mintOf(cube.bits)),
-    rungOf('faces', faces.faces, () => qpuFacesOf().faces, faces.coins * faces.rays),
+    rungOf('faces', faces.faces, () => facesOf().faces, faces.coins * faces.rays),
     rungOf('quantum', cube.bits + seed, () => faces.faces * mintOf(cube.bits + seed), capacity.fused),
     rungOf('next', cube.bits + coins, () => faces.faces * mintOf(cube.bits + coins), next),
     rungOf('amplitudes', cube.bits, () => qpuHandleOf().amplitudes, mintOf(cube.bits)),
     rungOf('kv', cube.bits + seed, () => qpuHandleOf().kv.amplitudes, mintOf(cube.bits + seed))]
   const holds =
-    qpuCapacityHolds(capacity) &&
+    capacityHolds(capacity) &&
     handle.holds &&
     theorem.next_fused(next, capacity.fused) &&
     next === capacity.fused * coins &&
@@ -297,9 +297,9 @@ export const qpuSpeedOf = onceOf(() => {
  * @wing lattice
  * @kind builder
  */
-export const qpuLatticeNamesOf = onceOf(() => {
-  const cube = qpuCubeOf()
-  const faces = qpuFacesOf()
+export const latticeNamesOf = onceOf(() => {
+  const cube = cubeOf()
+  const faces = facesOf()
   const plane = faces.faces * coins
   // the turns in degrees, as the Lean theorems Qpu.Pi.pi_half_turn / pi_turn_degrees write them (180, 360) — so an angle
   // in a family is never a hardcoded 180 or 360 but the theorem's expression over the lattice.

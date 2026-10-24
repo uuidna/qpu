@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COSTING — PRODUCT COST AS ARITHMETIC. The cost of making a thing is numbers: cost per unit, the markup over cost, the
@@ -30,4 +30,4 @@ export class CostingFormulas {
 }
 
 for (const name of ['absorption', 'breakeven', 'contribution', 'margin', 'markup', 'overhead', 'target', 'unitcost'] as const)
-  qpuHexRegisterOf('costing', name, (CostingFormulas[name] as (...x: unknown[]) => unknown).bind(CostingFormulas))
+  hexRegisterOf('costing', name, (CostingFormulas[name] as (...x: unknown[]) => unknown).bind(CostingFormulas))

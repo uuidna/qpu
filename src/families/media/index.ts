@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MEDIA — THE MEDIA BLOCK USE CASE FROM payloadcms/website, AS ARITHMETIC. A picture on a page is numbers: its aspect
@@ -31,4 +31,4 @@ export class MediaFormulas {
 }
 
 for (const name of ['aspect', 'caption', 'fit', 'gallery', 'lazy', 'load', 'ratio', 'sizes'] as const)
-  qpuHexRegisterOf('media', name, (MediaFormulas[name] as (...x: unknown[]) => unknown).bind(MediaFormulas))
+  hexRegisterOf('media', name, (MediaFormulas[name] as (...x: unknown[]) => unknown).bind(MediaFormulas))

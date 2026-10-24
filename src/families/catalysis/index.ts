@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CATALYSIS — RUNNING A REACTION IS NUMBERS (chosen by the chemistry registry, not by hand). A catalyst's work is counted:
@@ -31,4 +31,4 @@ export class CatalysisFormulas {
 }
 
 for (const name of ['activation', 'conversion', 'frequency', 'loading', 'rate', 'selectivity', 'surface', 'turnover'] as const)
-  qpuHexRegisterOf('catalysis', name, (CatalysisFormulas[name] as (...x: unknown[]) => unknown).bind(CatalysisFormulas))
+  hexRegisterOf('catalysis', name, (CatalysisFormulas[name] as (...x: unknown[]) => unknown).bind(CatalysisFormulas))

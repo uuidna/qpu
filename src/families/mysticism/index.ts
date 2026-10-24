@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MYSTICISM — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MysticismFormulas {
 }
 
 for (const name of ['ascentorderings', 'contemplationlevels', 'darknesslight', 'illuminationratio', 'numberpaths', 'stages', 'unionstates', 'virtuecombos'] as const)
-  qpuHexRegisterOf('mysticism', name, (MysticismFormulas[name] as (...x: unknown[]) => unknown).bind(MysticismFormulas))
+  hexRegisterOf('mysticism', name, (MysticismFormulas[name] as (...x: unknown[]) => unknown).bind(MysticismFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COHORT — A GROUP OF MEMBERS OVER TIME, AS ARITHMETIC (chosen by the public-API registry, not by hand). A cohort is
@@ -31,4 +31,4 @@ export class CohortFormulas {
 }
 
 for (const name of ['comparison', 'decay', 'engagement', 'maturation', 'retention', 'revenue', 'size', 'stickiness'] as const)
-  qpuHexRegisterOf('cohort', name, (CohortFormulas[name] as (...x: unknown[]) => unknown).bind(CohortFormulas))
+  hexRegisterOf('cohort', name, (CohortFormulas[name] as (...x: unknown[]) => unknown).bind(CohortFormulas))

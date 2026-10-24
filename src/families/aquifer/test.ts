@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AquiferFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('aquifer: transmissivity, storativity, drawdown, hydraulicconductivity, por
   assert.equal(AquiferFormulas.rechargerate(5000, 10).value, 500)
   assert.equal(AquiferFormulas.wellyield(20, 5).value, 100, 'specific capacity over drawdown')
   assert.equal(AquiferFormulas.transmissivity(50, 20).dst, 'hydrology')
-  assert.equal(qpuHexFamiliesOf().get('aquifer')?.length, 8)
+  assert.equal(hexFamiliesOf().get('aquifer')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'aquifer', program: ['transmissivity'], params: [50, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `aquifer.transmissivity at ${uuid}`)
-  qpuUuidReceiptOf('aquifer transmissivity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('aquifer transmissivity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; transmissivity 1000, storativity 30, drawdown 20, hydraulicconductivity 200, porosity 30, specificyield 18, rechargerate 500, wellyield 100; crossing to hydrology')
 })

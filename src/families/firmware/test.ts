@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FirmwareFormulas } from './index.js'
 
 /** The image's arithmetic — sectors, words, pages, checksum words, boot blocks, A/B slots, packed version, OTA delta. */
@@ -22,12 +22,12 @@ test('firmware: sectors, words, pages, checksumWords, bootBlocks, slots, version
   assert.equal(FirmwareFormulas.isr(64, 4).value, 256, '64 vectors of 4 bytes')
   assert.equal(FirmwareFormulas.watchdog(1000, 10).value, 100, '1000ms at 10ms ticks')
   assert.equal(FirmwareFormulas.flashcycles(5000, 100000).value, 5, '5000 writes of 100000 endurance')
-  assert.equal(qpuHexFamiliesOf().get('firmware')?.length, 15)
+  assert.equal(hexFamiliesOf().get('firmware')?.length, 15)
   for (const [name, params, expected] of [['sectors', [1024, 512], 2], ['version', [2, 1, 0], 2001000], ['otaDelta', [5000, 4000], 1000]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'firmware', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `firmware.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`firmware ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`firmware ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; 1024/512=2 sectors, 16→4 words, version 2.1.0→2001000, OTA delta 1000')
 })

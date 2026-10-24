@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VIRTUALIZATION — PACKING COMPUTE ONTO FEWER MACHINES, AS ARITHMETIC. A hypervisor is numbers: vCPUs overcommitted
@@ -31,4 +31,4 @@ export class VirtualizationFormulas {
 }
 
 for (const name of ['allocation', 'ballooning', 'consolidation', 'density', 'migration', 'overcommit', 'overhead', 'vcpu'] as const)
-  qpuHexRegisterOf('virtualization', name, (VirtualizationFormulas[name] as (...x: unknown[]) => unknown).bind(VirtualizationFormulas))
+  hexRegisterOf('virtualization', name, (VirtualizationFormulas[name] as (...x: unknown[]) => unknown).bind(VirtualizationFormulas))

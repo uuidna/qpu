@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** JOURNALISM — THE NEWSROOM AS ARITHMETIC. Writing is numbers: words per sentence, how much of the story sits above the
@@ -30,4 +30,4 @@ export class JournalismFormulas {
 }
 
 for (const name of ['bias', 'deadline', 'engagement', 'factcheck', 'inverted', 'readability', 'sources', 'wordcount'] as const)
-  qpuHexRegisterOf('journalism', name, (JournalismFormulas[name] as (...x: unknown[]) => unknown).bind(JournalismFormulas))
+  hexRegisterOf('journalism', name, (JournalismFormulas[name] as (...x: unknown[]) => unknown).bind(JournalismFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ComplianceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('compliance: penalty, control gap, deadline, reportable, risk, remediation,
   assert.equal(ComplianceFormulas.retention(7, 5).value, 1, 'kept long enough')
   assert.equal(ComplianceFormulas.coverage(8, 10).value, 80, '80% control coverage')
   assert.equal(ComplianceFormulas.penalty(1000000, 4).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('compliance')?.length, 8)
+  assert.equal(hexFamiliesOf().get('compliance')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'compliance', program: ['risk'], params: [4, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `compliance.risk at ${uuid}`)
-  qpuUuidReceiptOf('compliance risk', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('compliance risk', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; penalty 40000, breach 3, deadline +3, reportable 1, risk 20, remediation 15000, retention 1, coverage 80; crossing to law')
 })

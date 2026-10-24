@@ -3,9 +3,9 @@
  * README = the final build receipt.
  *
  * Every committed *-receipt.json is a node; every row of test-receipt.json is a node under it. Each node is a quantum
- * receipt minted by the unit's own qpuUuidReceiptOf: its UUID is the content address of its payload and its referrer,
+ * receipt minted by the unit's own uuidReceiptOf: its UUID is the content address of its payload and its referrer,
  * and its referrer is its parent, so the README's UUID is accountable to every receipt beneath it. All nodes share
- * the `build` stream, so they are also chained in order; qpuReceiptStreamsOf replays that chain and reports holds.
+ * the `build` stream, so they are also chained in order; receiptStreamsOf replays that chain and reports holds.
  *
  * The receipt bytes alone give the UUIDs — nothing depends on the git commit, so committing the tree never moves
  * them; a UUID moves only when a reading does. `--check` exits 1 when README.md differs from what the receipts give.
@@ -14,15 +14,15 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { qpuCiteOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
-import { qpuAnalyticsOf, qpuPublicOf } from '../dist/quantum/processing/unit/zeropage.js'
+import { qpuCiteOf, contentUuidOf, uuidReceiptOf, receiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
+import { analyticsOf, publicOf } from '../dist/quantum/processing/unit/zeropage.js'
 import { reactorStatsOf } from '../dist/families/reactor/index.js'
 import { clayOf, wingOf } from '../dist/core/showcase.js'
 import { mintOf, vertices } from './lattice-values.js'
 // every family and door registers on import, as on the host, so the summary counts what clients reach
 await import('../dist/mcp/families.js')
-const { qpuMcpDoorsOf, qpuMcpToolsListOf } = await import('../dist/quantum/processing/unit/index.js')
-const { qpuHexFamiliesOf } = await import("../dist/quantum/processing/unit/index.js")
+const { mcpDoorsOf, mcpToolsListOf } = await import('../dist/quantum/processing/unit/index.js')
+const { hexFamiliesOf } = await import("../dist/quantum/processing/unit/index.js")
 
 // the MCP resource surface, counted the way a client reaches it (resources/list + templates), not a hand list
 const { publicMcpOf } = await import('../dist/payload/plugins/public.js')
@@ -65,7 +65,7 @@ const summaryOf = (doc) =>
 
 const nodes = []
 const node = (name, payload, value, referrer, parent) => {
-  const r = qpuUuidReceiptOf(name, qpuContentUuidOf(payload), value, referrer)
+  const r = uuidReceiptOf(name, contentUuidOf(payload), value, referrer)
   nodes.push({ ...r, parent })
   return r
 }
@@ -93,7 +93,7 @@ for (const file of files) {
   }
 }
 const final = node('build readme', { children: tops.map((t) => t.uuid) }, { files: files.length, nodes: nodes.length }, root.uuid, root.uuid)
-const stream = qpuReceiptStreamsOf(nodes.length).streams.find((s) => s.stream === 'build')
+const stream = receiptStreamsOf(nodes.length).streams.find((s) => s.stream === 'build')
 
 const short = (u) => u.slice(0, vertices)
 const label = (n) => n.name.replace(/^build /, '').replace(/"/g, "'")
@@ -147,14 +147,14 @@ const rowsOf = () =>
 const receiptOf = (f) => (fs.existsSync(path.join(ROOT, f)) ? read(f) : {})
 const lean = receiptOf('lean-receipt.json'), formulas = receiptOf('formulas-receipt.json'), fuse = receiptOf('fuse-receipt.json')
 const discovery = receiptOf('discovery-receipt.json'), heat = receiptOf('heat-receipt.json'), payloadCf = receiptOf('payload-cf-receipt.json'), cross = receiptOf('cross-receipt.json'), apis = receiptOf('api-receipt.json')
-const doors = qpuMcpDoorsOf()
+const doors = mcpDoorsOf()
 // { doors: true } carries the formula COUNT (one catalogue, in hex — not a duplicated list). The README needs the full
-// list to build the families table, so it reads it from the one catalogue, qpuHexFamiliesOf, the same registry.
-const formulaRows = [...qpuHexFamiliesOf()].flatMap(([family, fs]) => fs.map((f) => ({ name: `${family}.${f.name}`, arity: f.arity })))
-const listed = qpuMcpToolsListOf().length
+// list to build the families table, so it reads it from the one catalogue, hexFamiliesOf, the same registry.
+const formulaRows = [...hexFamiliesOf()].flatMap(([family, fs]) => fs.map((f) => ({ name: `${family}.${f.name}`, arity: f.arity })))
+const listed = mcpToolsListOf().length
 const num = (x) => (typeof x === 'number' ? x.toLocaleString('en') : String(x ?? '—'))
 // THE FULL FAMILY CATALOG, the main lead a reader develops: every registered family and how many formulas it carries,
-// read from the live registry (qpuMcpDoorsOf), not a hand-kept list. The glance counts the Lean families discovery runs;
+// read from the live registry (mcpDoorsOf), not a hand-kept list. The glance counts the Lean families discovery runs;
 // this is the whole registered set, so a reader sees the breadth — every family a hex-program UUID crossing to another
 // (the cross formulations), each holding when its formulas recompute at their addresses (the cross-formula rows).
 const famCounts = (() => { const by = new Map(); for (const fm of formulaRows) { const k = fm.name.split('.')[0]; by.set(k, (by.get(k) ?? 0) + 1) } return [...by.entries()].sort((a, b) => a[0].localeCompare(b[0])) })()
@@ -244,7 +244,7 @@ ${next.join('\n')}`
 const cite = qpuCiteOf()
 const licenseHref = cite.links.edges.find((edge) => edge.to.endsWith('/license'))?.to ?? cite.links.edges.find((edge) => edge.from.endsWith('/license'))?.from ?? ''
 const linkNews = cite.links.edges.map((edge) => `- ${edge.from} → ${edge.to}`).join('\n')
-const clayRegister = qpuAnalyticsOf()
+const clayRegister = analyticsOf()
 const reactorStats = reactorStatsOf(heat)
 const clayRegisterTable = [
   '| Count | Integer |',
@@ -261,7 +261,7 @@ const summary = `An exact quantum processing unit served over MCP at https://qpu
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (\`{ "qpu": { "type": "http",
 "url": "https://qpu.uuidna.com/mcp" } }\`), as a package (\`npm install @uuidna/qpu\`), or as a container.
 
-${qpuPublicOf(clayRegister).lines.join('\n\n')}
+${publicOf(clayRegister).lines.join('\n\n')}
 
 Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat${reactorStats.heatIdentity ? ` hex \`${reactorStats.heatIdentity}\`` : ''}; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds ${reactorStats.holds}.
 
@@ -326,7 +326,7 @@ An exact quantum processing unit served over MCP at https://qpu.uuidna.com: inte
 formula families addressed by hex-program UUIDs, quantum receipts, its own cryptography, and live checks against public
 data. The unit, its site, admin and API are one Worker; reads need no auth, storage writes need a Bearer token.
 
-${qpuPublicOf(clayRegister).lines.join('\n\n')}
+${publicOf(clayRegister).lines.join('\n\n')}
 
 ## 2. Architecture
 
@@ -360,7 +360,7 @@ ${applications}
 ## 6. Clay Millennium Prize Problems
 
 Author claim: "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
-doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602)). A prize is a lead. \`qpuPublicOf().prize\` is false.
+doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602)). A prize is a lead. \`publicOf().prize\` is false.
 \`legal.citation\` for the naming-scheme statement holds false, lead true. Evidence in this tree is seal formula
 hex / value / holds / next only — this section does not state problems solved or unsolved, and does not publish as solved.
 Claimable programmatically = the ${num(Object.keys(CLAIMED_SEAL).length)} \`clay.*\` seals in CLAY_SEALS; Poincaré is named, not a seal formula.

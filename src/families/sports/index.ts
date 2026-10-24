@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SPORTS — SPORTS ANALYTICS, AS ARITHMETIC. A season is numbers: win percentage, points per game, point differential,
@@ -30,4 +30,4 @@ export class SportsFormulas {
 }
 
 for (const name of ['average', 'differential', 'pace', 'possession', 'rating', 'standings', 'streak', 'win'] as const)
-  qpuHexRegisterOf('sports', name, (SportsFormulas[name] as (...x: unknown[]) => unknown).bind(SportsFormulas))
+  hexRegisterOf('sports', name, (SportsFormulas[name] as (...x: unknown[]) => unknown).bind(SportsFormulas))

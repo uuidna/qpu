@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LASERS — COHERENT LIGHT, AS ARITHMETIC. A laser is numbers: the amplifier gain, the average power from the pulse train,
@@ -30,4 +30,4 @@ export class LasersFormulas {
 }
 
 for (const name of ['beamdivergence', 'coherencelength', 'fluence', 'gain', 'power', 'pulseenergy', 'repetitionrate', 'wavelength'] as const)
-  qpuHexRegisterOf('lasers', name, (LasersFormulas[name] as (...x: unknown[]) => unknown).bind(LasersFormulas))
+  hexRegisterOf('lasers', name, (LasersFormulas[name] as (...x: unknown[]) => unknown).bind(LasersFormulas))

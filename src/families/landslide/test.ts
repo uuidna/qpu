@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LandslideFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('landslide: slopeangle, factorofsafety, runoutdistance, volume, velocity, r
   assert.equal(LandslideFormulas.susceptibility(70, 100).value, 70)
   assert.equal(LandslideFormulas.debrisfraction(60, 100).value, 60)
   assert.equal(LandslideFormulas.slopeangle(450, 10).dst, 'geology')
-  assert.equal(qpuHexFamiliesOf().get('landslide')?.length, 8)
+  assert.equal(hexFamiliesOf().get('landslide')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'landslide', program: ['slopeangle'], params: [450, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 45, `landslide.slopeangle at ${uuid}`)
-  qpuUuidReceiptOf('landslide slopeangle', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('landslide slopeangle', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; slopeangle 45, factorofsafety 120, runoutdistance 600, volume 20000, velocity 10, rainfallthreshold 80, susceptibility 70, debrisfraction 60; crossing to geology')
 })

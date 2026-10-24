@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INSurance — WHAT A POLICY PAYS, AND WHAT IT KEEPS. A claim is arithmetic over the policy's own numbers: the premium on
@@ -46,4 +46,4 @@ export class InsuranceFormulas {
 }
 
 for (const name of ['ceded', 'claim', 'claimratio', 'coinsurance', 'coinsurance2', 'copay', 'frequencyseverity', 'indemnity', 'lossratio', 'premium', 'premium2', 'reserve', 'retained', 'solvencymargin', 'subrogation'] as const)
-  qpuHexRegisterOf('insurance', name, (InsuranceFormulas[name] as (...x: unknown[]) => unknown).bind(InsuranceFormulas))
+  hexRegisterOf('insurance', name, (InsuranceFormulas[name] as (...x: unknown[]) => unknown).bind(InsuranceFormulas))

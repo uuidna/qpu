@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { IndexingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('indexing: selectivity, cardinality, fanout, depth, scan, coverage, bloat, 
   assert.equal(IndexingFormulas.bloat(200, 1000).value, 20)
   assert.equal(IndexingFormulas.speedup(5000, 100).value, 5000, 'fifty times faster')
   assert.equal(IndexingFormulas.selectivity(5, 1000).dst, 'db')
-  assert.equal(qpuHexFamiliesOf().get('indexing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('indexing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'indexing', program: ['fanout'], params: [1000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `indexing.fanout at ${uuid}`)
-  qpuUuidReceiptOf('indexing fanout', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('indexing fanout', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; selectivity 0, cardinality 90, fanout 100, depth 10000, scan 25, coverage 80, bloat 20, speedup 5000; crossing to db')
 })

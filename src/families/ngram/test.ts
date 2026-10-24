@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NgramFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('ngram: count, probability, laplacesmoothing, perplexityproxy, coverage, ba
   assert.equal(NgramFormulas.conditionalcount(100, 1).value, 99, 'absolute discounting')
   assert.equal(NgramFormulas.conditionalcount(0, 5).value, 0)
   assert.equal(NgramFormulas.count(1000, 3).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('ngram')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ngram')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ngram', program: ['count'], params: [1000, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 998, `ngram.count at ${uuid}`)
-  qpuUuidReceiptOf('ngram count', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ngram count', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; count 998, probability 5, laplacesmoothing 2, perplexityproxy 125, coverage 90, backoffweight 400, vocabularysize 3800, conditionalcount 99; crossing to statistics')
 })

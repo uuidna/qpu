@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BeamFormulas } from './index.js'
 
 /** beam: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('beam: moment, deflection, span, load, supports, sections, safety, combos',
   assert.equal(BeamFormulas.sections(4, 0).value, 4, 'sections(4, 0)')
   assert.equal(BeamFormulas.safety(300, 100).value, 3, 'safety(300, 100)')
   assert.equal(BeamFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('beam')?.length, 8)
+  assert.equal(hexFamiliesOf().get('beam')?.length, 8)
   for (const [name, params, expected] of [["moment",[100,5],500],["deflection",[1000,48],20],["span",[6,1],6]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'beam', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `beam.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`beam ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`beam ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "moment=500, deflection=20, span=6")
 })

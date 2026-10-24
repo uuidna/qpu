@@ -60,11 +60,11 @@ test('port all like node: every node builtin is ported (how set, zero leads)', a
 
 test('combinatorial port wave: faces stride, Promise.all batches, full surface holds', async (t) => {
   const { QPU_PORTS } = await import('../dist/quantum/processing/unit/porting.js')
-  const { qpuFacesOf } = await import('../dist/quantum/processing/unit/index.js')
+  const { facesOf } = await import('../dist/quantum/processing/unit/index.js')
   const { CombinatoricsFormulas } = await import('../dist/families/combinatorics/index.js')
   const bare = (m) => m.replace(/^node:/, '')
   const surface = [...new Set(builtinModules.filter((m) => !m.startsWith('_') && !bare(m).includes('/')).map(bare))].sort()
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const width0 = faces * 2
   const bin = CombinatoricsFormulas.binomial(faces)
   assert.equal(faces, 14, 'stride is faces')

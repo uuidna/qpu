@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CORPUS — A BODY OF TEXT, AS ARITHMETIC (chosen by the text registry, not by hand). A corpus is numbers: the type-token
@@ -31,4 +31,4 @@ export class CorpusFormulas {
 }
 
 for (const name of ['annotationcoverage', 'balancescore', 'concordancehits', 'frequencyperm', 'hapaxratio', 'keyness', 'sampledwords', 'typetoken'] as const)
-  qpuHexRegisterOf('corpus', name, (CorpusFormulas[name] as (...x: unknown[]) => unknown).bind(CorpusFormulas))
+  hexRegisterOf('corpus', name, (CorpusFormulas[name] as (...x: unknown[]) => unknown).bind(CorpusFormulas))

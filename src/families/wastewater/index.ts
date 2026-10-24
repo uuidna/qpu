@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WASTEWATER — TREATMENT AS ARITHMETIC. A plant is numbers: the BOD mass a flow carries, COD read off BOD by a ratio,
@@ -31,4 +31,4 @@ export class WastewaterFormulas {
 }
 
 for (const name of ['aeration', 'bod', 'clarifier', 'cod', 'loading', 'removal', 'retention', 'sludge'] as const)
-  qpuHexRegisterOf('wastewater', name, (WastewaterFormulas[name] as (...x: unknown[]) => unknown).bind(WastewaterFormulas))
+  hexRegisterOf('wastewater', name, (WastewaterFormulas[name] as (...x: unknown[]) => unknown).bind(WastewaterFormulas))

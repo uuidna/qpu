@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RhythmFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('rhythm: beatduration, measurelength, notespermeasure, polyrhythm, subdivis
   assert.equal(RhythmFormulas.syncopation(3, 8).value, 37)
   assert.equal(RhythmFormulas.tupletduration(1, 500, 3).value, 166, 'a triplet in one beat')
   assert.equal(RhythmFormulas.beatduration(120).dst, 'music')
-  assert.equal(qpuHexFamiliesOf().get('rhythm')?.length, 8)
+  assert.equal(hexFamiliesOf().get('rhythm')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'rhythm', program: ['polyrhythm'], params: [3, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 6, `rhythm.polyrhythm at ${uuid}`)
-  qpuUuidReceiptOf('rhythm polyrhythm', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('rhythm polyrhythm', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; beatduration 500, measurelength 2000, notespermeasure 16, polyrhythm 6, subdivision 125, swingratio 200, syncopation 37, tupletduration 166; crossing to music')
 })

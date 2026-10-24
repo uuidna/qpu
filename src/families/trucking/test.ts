@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TruckingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('trucking: costpermile, fuelefficiency, loadfactor, deadhead, utilization, 
   assert.equal(TruckingFormulas.turnaround(6).value, 6)
   assert.equal(TruckingFormulas.payload(30000, 80000).value, 37)
   assert.equal(TruckingFormulas.costpermile(2000, 500).dst, 'transport')
-  assert.equal(qpuHexFamiliesOf().get('trucking')?.length, 8)
+  assert.equal(hexFamiliesOf().get('trucking')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'trucking', program: ['deadhead'], params: [100, 500] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `trucking.deadhead at ${uuid}`)
-  qpuUuidReceiptOf('trucking deadhead', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('trucking deadhead', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; costpermile 4, fuelefficiency 7, loadfactor 88, deadhead 20, utilization 75, hoursofservice 3, turnaround 6, payload 37; crossing to transport')
 })

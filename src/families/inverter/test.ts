@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { InverterFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('inverter: efficiency, power, thd, dcac, clipping, rating, loss, powerfacto
   assert.equal(InverterFormulas.loss(1000, 950).value, 50)
   assert.equal(InverterFormulas.powerfactor(800, 1000).value, 80)
   assert.equal(InverterFormulas.efficiency(950, 1000).dst, 'electrical')
-  assert.equal(qpuHexFamiliesOf().get('inverter')?.length, 8)
+  assert.equal(hexFamiliesOf().get('inverter')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'inverter', program: ['efficiency'], params: [950, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 95, `inverter.efficiency at ${uuid}`)
-  qpuUuidReceiptOf('inverter efficiency', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('inverter efficiency', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; efficiency 95, power 2300, thd 5, dcac 950, clipping 20, rating 800, loss 50, powerfactor 80; crossing to electrical')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CheeseFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('cheese: aging, cultureratio, fatindrymatter, moisture, phacidity, rennet, 
   assert.equal(CheeseFormulas.salt(5, 50).value, 10)
   assert.equal(CheeseFormulas.yield(1000, 10).value, 100, 'a hundred from a thousand')
   assert.equal(CheeseFormulas.yield(1000, 10).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('cheese')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cheese')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cheese', program: ['yield'], params: [1000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `cheese.yield at ${uuid}`)
-  qpuUuidReceiptOf('cheese yield', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cheese yield', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; aging 180, cultureratio 2, fatindrymatter 50, moisture 45, phacidity 18, rennet 7, salt 10, yield 100; crossing to chemistry')
 })

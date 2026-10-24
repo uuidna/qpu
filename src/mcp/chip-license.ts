@@ -19,11 +19,11 @@ import {
 } from '../core/crypt.js'
 import { AccessFormulas } from '../families/access/index.js'
 import { LawFormulas } from '../families/law/index.js'
-import { qpuFacesOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
+import { facesOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
 
 /** Deterministic imprint seed from lattice + SPDX — not OpenSSL KeyObject, not random per call. */
 const imprintSeedOf = (spdx: string): Bytes => {
-  const faces = qpuFacesOf()
+  const faces = facesOf()
   return sha256(utf8(`qpu-chip-license|${spdx}|coins=${faces.coins}|rays=${faces.rays}|faces=${faces.faces}`))
 }
 

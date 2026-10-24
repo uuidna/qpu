@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EloFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('elo: expectedscore, update, ratingdiff, kfactor, performance, winprobabili
   assert.equal(EloFormulas.provisional(10, 30).value, 20, 'twenty games to establish')
   assert.equal(EloFormulas.decay(1500, 6, 10).value, 1440)
   assert.equal(EloFormulas.expectedscore(1600, 1400).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('elo')?.length, 8)
+  assert.equal(hexFamiliesOf().get('elo')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'elo', program: ['expectedscore'], params: [1600, 1400] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `elo.expectedscore at ${uuid}`)
-  qpuUuidReceiptOf('elo expectedscore', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('elo expectedscore', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; expectedscore 60, update 12, ratingdiff 200, kfactor 40, performance 1740, winprobability 70, provisional 20, decay 1440; crossing to statistics')
 })

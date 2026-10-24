@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AUTOMOTIVE — THE MOVING MACHINE, AS ARITHMETIC. A vehicle is numbers: horsepower from torque and rpm, fuel economy,
@@ -30,4 +30,4 @@ export class AutomotiveFormulas {
 }
 
 for (const name of ['acceleration', 'braking', 'displacement', 'economy', 'emissions', 'power', 'range', 'ratio'] as const)
-  qpuHexRegisterOf('automotive', name, (AutomotiveFormulas[name] as (...x: unknown[]) => unknown).bind(AutomotiveFormulas))
+  hexRegisterOf('automotive', name, (AutomotiveFormulas[name] as (...x: unknown[]) => unknown).bind(AutomotiveFormulas))

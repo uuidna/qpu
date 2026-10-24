@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STELLAR — THE PHYSICS OF A STAR, AS ARITHMETIC (integer proxies, no floats). A star is numbers: how long it burns on the
@@ -31,4 +31,4 @@ export class StellarFormulas {
 }
 
 for (const name of ['corefusionrate', 'effectivetemp', 'mainsequencelifetime', 'massloss', 'masslunminosity', 'schwarzschildradius', 'spectralclass', 'surfacegravity'] as const)
-  qpuHexRegisterOf('stellar', name, (StellarFormulas[name] as (...x: unknown[]) => unknown).bind(StellarFormulas))
+  hexRegisterOf('stellar', name, (StellarFormulas[name] as (...x: unknown[]) => unknown).bind(StellarFormulas))

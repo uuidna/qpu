@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SmartgridFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('smartgrid: nodes, loadcombos, demandresponse, selfhealingpaths, meterdata,
   assert.equal(SmartgridFormulas.renewableshare(50, 100).value, 50)
   assert.equal(SmartgridFormulas.stabilitymargin(100, 20).value, 80)
   assert.equal(SmartgridFormulas.nodes(1000, 2).dst, 'energy')
-  assert.equal(qpuHexFamiliesOf().get('smartgrid')?.length, 8)
+  assert.equal(hexFamiliesOf().get('smartgrid')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'smartgrid', program: ['nodes'], params: [1000, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2000, `smartgrid.nodes at ${uuid}`)
-  qpuUuidReceiptOf('smartgrid nodes', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('smartgrid nodes', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; nodes 2000, loadcombos 66, demandresponse 15, selfhealingpaths 30, meterdata 24000, outagereduction 40, renewableshare 50, stabilitymargin 80; crossing to energy')
 })

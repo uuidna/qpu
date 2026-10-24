@@ -1,0 +1,120 @@
+[
+ {
+  "at": "2026-10-24T03:39:21.900Z",
+  "claim": "combinatorics.agrees = true",
+  "verdict": "unverified",
+  "reason": "the reading has no field \"agrees\"",
+  "next": "read the reading and name the field it carries: recognition, holds, denied, sources, resolve, next, connector"
+ },
+ {
+  "at": "2026-10-24T03:39:22.516Z",
+  "claim": "research.matched = 999 (family combinatorics)",
+  "verdict": "unverified",
+  "reason": "matched is 6, the claim says 999"
+ },
+ {
+  "at": "2026-10-24T03:39:23.041Z",
+  "claim": "nosuchsource.x = 1",
+  "verdict": "unverified",
+  "reason": "the reading has no field \"x\"",
+  "next": "read the reading and name the field it carries: recognition, holds, denied, sources, resolve, next, connector"
+ },
+ {
+  "at": "2026-10-24T03:39:33.937Z",
+  "claim": "research.agrees = true (family combinatorics)",
+  "verdict": "verified",
+  "reason": "agrees is true, as claimed"
+ },
+ {
+  "at": "2026-10-24T03:39:34.463Z",
+  "claim": "research.matched = 999 (family combinatorics)",
+  "verdict": "unverified",
+  "reason": "matched is 6, the claim says 999"
+ },
+ {
+  "at": "2026-10-24T03:39:34.989Z",
+  "claim": "nosuchsource.x = 1",
+  "verdict": "unverified",
+  "reason": "the source gave no reading",
+  "next": "retry, or name a source that serves this claim (connector { source: \"all\" } lists them)"
+ },
+ {
+  "at": "2026-10-24T03:40:38.059Z",
+  "claim": "npm latest version of the qpu package is 1.4.0",
+  "verdict": "unverified",
+  "reason": "zenodo version is 1.0.1, the claim says 1.4.0",
+  "tried": 41,
+  "answered": 41
+ },
+ {
+  "at": "2026-10-24T03:41:03.540Z",
+  "claim": "npm latest version of the qpu package is 1.4.0",
+  "verdict": "unverified",
+  "reason": "npm latest is 1.0.1, the claim says 1.4.0",
+  "tried": 41,
+  "answered": 41
+ },
+ {
+  "at": "2026-10-24T03:41:38.242Z",
+  "claim": "XPRIZE Quantum Applications is active",
+  "verdict": "unverified",
+  "reason": "no source field matches xprize, quantum, applications; 41 of 41 answered",
+  "next": "name a source whose reading carries the claim field",
+  "tried": 41,
+  "answered": 41
+ },
+ {
+  "at": "2026-10-24T03:41:48.820Z",
+  "claim": "XPRIZE Quantum Applications prize is 5 million dollars",
+  "verdict": "unverified",
+  "reason": "no source field matches xprize, quantum, applications, prize, million, dollars; 41 of 41 answered",
+  "next": "name a source whose reading carries the claim field",
+  "tried": 41,
+  "answered": 41
+ },
+ {
+  "at": "2026-10-24T03:41:59.409Z",
+  "claim": "XPRIZE Quantum Applications phase II wild card registration closed on 2026-03-04",
+  "verdict": "unverified",
+  "reason": "no source field matches xprize, quantum, applications, phase, wild, card, registration, closed, 2026; 41 of 41 answered",
+  "next": "name a source whose reading carries the claim field",
+  "tried": 41,
+  "answered": 41
+ },
+ {
+  "at": "2026-10-24T03:42:10.001Z",
+  "claim": "Google Quantum AI sponsors XPRIZE Quantum Applications",
+  "verdict": "unverified",
+  "reason": "no source field matches quantum, sponsors, xprize, applications; 41 of 41 answered",
+  "next": "name a source whose reading carries the claim field",
+  "tried": 41,
+  "answered": 41
+ },
+ {
+  "at": "2026-10-24T03:53:37.560Z",
+  "claim": "the 1000-bit modulus factors into two primes",
+  "verdict": "unverified",
+  "reason": "no source field matches the, 1000, bit, modulus, factors, into, two, primes; 41 of 41 answered",
+  "next": "name a source whose reading carries the claim field",
+  "tried": 41,
+  "answered": 41
+ },
+ {
+  "at": "2026-10-24T04:07:48.224Z",
+  "claim": "npm latest version of the qpu package is 1.4.0",
+  "verdict": "unverified",
+  "reason": "npm latest is 1.0.1, the claim says 1.4.0",
+  "next": "correct the claim or name the source that holds the value",
+  "tried": 41,
+  "answered": 40
+ },
+ {
+  "at": "2026-10-24T04:07:58.841Z",
+  "claim": "research matched families for combinatorics (family combinatorics)",
+  "verdict": "unverified",
+  "reason": "no source field matches research, matched, families, for, combinatorics, family; 0 of 41 answered",
+  "next": "name a source whose reading carries the claim field",
+  "tried": 41,
+  "answered": 0
+ }
+]

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NumismaticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('numismatics: coincount, mintcombos, denominationorderings, hoardsize, weig
   assert.equal(NumismaticsFormulas.dierotations(360, 12).value, 30)
   assert.equal(NumismaticsFormulas.varietysubsets(6).value, 64)
   assert.equal(NumismaticsFormulas.coincount(500, 10).dst, 'archaeology')
-  assert.equal(qpuHexFamiliesOf().get('numismatics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('numismatics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'numismatics', program: ['coincount'], params: [500, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5000, `numismatics.coincount at ${uuid}`)
-  qpuUuidReceiptOf('numismatics coincount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('numismatics coincount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coincount 5000, mintcombos 220, denominationorderings 120, hoardsize 500, weightgrains 240, purity 90, dierotations 30, varietysubsets 64; crossing to archaeology')
 })

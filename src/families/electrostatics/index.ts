@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELECTROSTATICS — CHARGES AT REST, AS ARITHMETIC. Coulomb's force between two charges, the field and potential a charge
@@ -30,4 +30,4 @@ export class ElectrostaticsFormulas {
 }
 
 for (const name of ['capacitance', 'charge', 'coulomb', 'dipole', 'energy', 'field', 'flux', 'potential'] as const)
-  qpuHexRegisterOf('electrostatics', name, (ElectrostaticsFormulas[name] as (...x: unknown[]) => unknown).bind(ElectrostaticsFormulas))
+  hexRegisterOf('electrostatics', name, (ElectrostaticsFormulas[name] as (...x: unknown[]) => unknown).bind(ElectrostaticsFormulas))

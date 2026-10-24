@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { InterconnectFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('interconnect: lanes, bandwidth, line coding, topology and the link picture
   assert.equal(InterconnectFormulas.overhead(130, 128).value, 2, 'raw minus effective')
   assert.equal(InterconnectFormulas.hops(8).value, 7, 'linear chain diameter')
   assert.equal(InterconnectFormulas.lanes(4, 16).dst, 'hardware')
-  assert.equal(qpuHexFamiliesOf().get('interconnect')?.length, 10)
+  assert.equal(hexFamiliesOf().get('interconnect')?.length, 10)
   const uuid = qpuHexUuidOf({ family: 'interconnect', program: ['lanes'], params: [4, 16] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 64, `interconnect.lanes at ${uuid}`)
-  qpuUuidReceiptOf('interconnect lanes', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('interconnect lanes', contentUuidOf(run), { uuid })
   t.diagnostic('10 formulas; lanes 64, bandwidth 512, throughput 128, latency 500, width 16, topology 12, duplex 1024, transfers 512, overhead 2, hops 7; crossing to hardware')
 })

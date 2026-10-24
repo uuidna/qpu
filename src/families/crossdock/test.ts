@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CrossdockFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('crossdock: throughput, dwelltime, doorsneeded, touchcount, flowrate, stagi
   assert.equal(CrossdockFormulas.sortaccuracy(990, 1000).value, 99)
   assert.equal(CrossdockFormulas.transferlag(60, 45).value, 15)
   assert.equal(CrossdockFormulas.throughput(6000, 60).dst, 'supplychain')
-  assert.equal(qpuHexFamiliesOf().get('crossdock')?.length, 8)
+  assert.equal(hexFamiliesOf().get('crossdock')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'crossdock', program: ['throughput'], params: [6000, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `crossdock.throughput at ${uuid}`)
-  qpuUuidReceiptOf('crossdock throughput', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('crossdock throughput', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; throughput 100, dwelltime 60, doorsneeded 4, touchcount 100, flowrate 100, stagingarea 2000, sortaccuracy 99, transferlag 15; crossing to supplychain')
 })

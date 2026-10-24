@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ROUTING — WEB APP ROUTING, AS ARITHMETIC (the path a request takes through the registry's pages, as numbers). A route is
@@ -31,4 +31,4 @@ export class RoutingFormulas {
 }
 
 for (const name of ['catchall', 'depth', 'lazy', 'match', 'nested', 'params', 'prefetch', 'redirect'] as const)
-  qpuHexRegisterOf('routing', name, (RoutingFormulas[name] as (...x: unknown[]) => unknown).bind(RoutingFormulas))
+  hexRegisterOf('routing', name, (RoutingFormulas[name] as (...x: unknown[]) => unknown).bind(RoutingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LeaveningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('leavening: riseratio, co2volume, fermentationrate, yeastactivity, doubling
   assert.equal(LeaveningFormulas.acidityph(50, 10).value, 5)
   assert.equal(LeaveningFormulas.ovenspring(120, 100).value, 20)
   assert.equal(LeaveningFormulas.riseratio(200, 100).dst, 'biochemistry')
-  assert.equal(qpuHexFamiliesOf().get('leavening')?.length, 8)
+  assert.equal(hexFamiliesOf().get('leavening')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'leavening', program: ['riseratio'], params: [200, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `leavening.riseratio at ${uuid}`)
-  qpuUuidReceiptOf('leavening riseratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('leavening riseratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; riseratio 200, co2volume 200, fermentationrate 20, yeastactivity 90, doublingtime 60, gasretention 80, acidityph 5, ovenspring 20; crossing to biochemistry')
 })

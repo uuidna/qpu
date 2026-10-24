@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FirewallFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('firewall: blockrate, throughput, rules, latency, falseblock, connections, 
   assert.equal(FirewallFormulas.inspection(900, 1000).value, 90)
   assert.equal(FirewallFormulas.coverage(48, 64).value, 75)
   assert.equal(FirewallFormulas.blockrate(250, 1000).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('firewall')?.length, 8)
+  assert.equal(hexFamiliesOf().get('firewall')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'firewall', program: ['connections'], params: [800, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `firewall.connections at ${uuid}`)
-  qpuUuidReceiptOf('firewall connections', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('firewall connections', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; blockrate 25, throughput 1000, rules 512, latency 45, falseblock 1, connections 80, inspection 90, coverage 75; crossing to networking')
 })

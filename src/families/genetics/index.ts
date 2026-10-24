@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GENETICS — LIFE'S CODE, AS ARITHMETIC (chosen by the public-API registry, not by hand). A genome is numbers: codons from
@@ -30,4 +30,4 @@ export class GeneticsFormulas {
 }
 
 for (const name of ['alleles', 'codons', 'coverage', 'gc', 'heritability', 'mutation', 'punnett', 'similarity'] as const)
-  qpuHexRegisterOf('genetics', name, (GeneticsFormulas[name] as (...x: unknown[]) => unknown).bind(GeneticsFormulas))
+  hexRegisterOf('genetics', name, (GeneticsFormulas[name] as (...x: unknown[]) => unknown).bind(GeneticsFormulas))

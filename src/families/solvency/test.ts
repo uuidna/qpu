@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SolvencyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('solvency: ratio, capital, margin, coverage, scr, mcr, buffer, leverage —
   assert.equal(SolvencyFormulas.buffer(500, 800).value, 0, 'no buffer below the requirement')
   assert.equal(SolvencyFormulas.leverage(2000, 1000).value, 200, 'twice the equity in debt')
   assert.equal(SolvencyFormulas.ratio(1500, 1000).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('solvency')?.length, 8)
+  assert.equal(hexFamiliesOf().get('solvency')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'solvency', program: ['ratio'], params: [1500, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 150, `solvency.ratio at ${uuid}`)
-  qpuUuidReceiptOf('solvency ratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('solvency ratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ratio 150, capital 500, margin 33, coverage 150, scr 450, mcr 112, buffer 400, leverage 200; crossing to statistics')
 })

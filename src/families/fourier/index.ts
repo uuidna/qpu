@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FOURIER — THE FREQUENCY DOMAIN, AS ARITHMETIC (chosen by the public-API registry, not by hand). A transform is numbers:
@@ -31,4 +31,4 @@ export class FourierFormulas {
 }
 
 for (const name of ['binwidth', 'fftoperations', 'frequencyresolution', 'fundamentalfrequency', 'harmonics', 'leakage', 'nyquist', 'spectralpower'] as const)
-  qpuHexRegisterOf('fourier', name, (FourierFormulas[name] as (...x: unknown[]) => unknown).bind(FourierFormulas))
+  hexRegisterOf('fourier', name, (FourierFormulas[name] as (...x: unknown[]) => unknown).bind(FourierFormulas))

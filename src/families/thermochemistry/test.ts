@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ThermochemistryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('thermochemistry: enthalpy, entropy, gibbs, heatcapacity, calorimetry, bond
   assert.equal(ThermochemistryFormulas.activationenergy(150, 50).value, 100, 'the forward barrier over the reverse')
   assert.equal(ThermochemistryFormulas.activationenergy(50, 150).value, 0)
   assert.equal(ThermochemistryFormulas.enthalpy(2, 286).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('thermochemistry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('thermochemistry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'thermochemistry', program: ['gibbs'], params: [1000, 300, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 400, `thermochemistry.gibbs at ${uuid}`)
-  qpuUuidReceiptOf('thermochemistry gibbs', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('thermochemistry gibbs', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; enthalpy 572, entropy 3, gibbs 400, heatcapacity 50, calorimetry 10000, bondenergy 1652, hesslaw 600, activationenergy 100; crossing to chemistry')
 })

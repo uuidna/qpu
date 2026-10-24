@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RAID — HYBRID REDUNDANT STORAGE, AS ARITHMETIC. A RAID array is numbers: usable capacity under striping, mirroring and
@@ -55,4 +55,4 @@ export class RaidFormulas {
 }
 
 for (const name of ['dbcount', 'faulttolerance', 'fscount', 'minimumdisks', 'mirrors', 'parityoverhead', 'raid0capacity', 'raid10capacity', 'raid1capacity', 'raid5capacity', 'raid6capacity', 'rebuildreads', 'stripesize', 'stripewidth', 'usablepercent'] as const)
-  qpuHexRegisterOf('raid', name, (RaidFormulas[name] as (...x: unknown[]) => unknown).bind(RaidFormulas))
+  hexRegisterOf('raid', name, (RaidFormulas[name] as (...x: unknown[]) => unknown).bind(RaidFormulas))

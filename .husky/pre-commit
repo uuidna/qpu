@@ -24,13 +24,13 @@ for file in $STAGED_FILES; do
   fi
 
   # Check for MIT license
-  if git show ":$file" | grep -qi "MIT\|mit license"; then
+  if git show ":$file" | grep -qiE "\bMIT\b|mit license"; then
     echo -e "${RED}❌ $file: MIT license detected (prohibited)${NC}"
     VIOLATIONS=$((VIOLATIONS + 1))
   fi
 
   # Check for Apache license
-  if git show ":$file" | grep -qi "Apache\|apache license"; then
+  if git show ":$file" | grep -qiE "\bApache\b|apache license"; then
     echo -e "${RED}❌ $file: Apache license detected (prohibited)${NC}"
     VIOLATIONS=$((VIOLATIONS + 1))
   fi
@@ -42,7 +42,7 @@ for file in $STAGED_FILES; do
   fi
 
   # Check for other licenses (BSD, ISC, MPL, etc.)
-  if git show ":$file" | grep -qiE "BSD|ISC license|Mozilla Public|MPL"; then
+  if git show ":$file" | grep -qiE "\bBSD\b|\bISC license\b|Mozilla Public|\bMPL\b"; then
     echo -e "${RED}❌ $file: Alternative license detected (prohibited)${NC}"
     VIOLATIONS=$((VIOLATIONS + 1))
   fi
@@ -105,6 +105,26 @@ if [[ " $STAGED_FILES " =~ "README" ]] || [[ " $STAGED_FILES " =~ "CITATION" ]];
     if [[ -z "$AUTHOR" ]] || [[ "$AUTHOR" != "Tsvetan Rouschev" ]]; then
       echo -e "${YELLOW}⚠️  Attribution check: Verify author is correct${NC}"
     fi
+  fi
+fi
+
+# Standards alignment: the Lean modules are the source of truth. The bundle (index.lean, lean/Qpu.lean) and the embedded
+# lean.ts are regenerated from them and re-staged, and the API surface is type-checked, so a commit cannot drift.
+if echo "$STAGED_FILES" | grep -q "src/quantum/processing/unit/lean/Qpu/"; then
+  echo "🧮 Aligning the Lean bundle with its modules..."
+  if npx tsx scripts/lean-bundle.ts && npx tsx scripts/embed-lean.ts; then
+    git add src/quantum/processing/unit/index.lean src/quantum/processing/unit/lean/Qpu.lean src/quantum/processing/unit/lean.ts
+  else
+    echo -e "${RED}❌ Lean bundle alignment failed${NC}"
+    VIOLATIONS=$((VIOLATIONS + 1))
+  fi
+fi
+
+if echo "$STAGED_FILES" | grep -q "\.ts$"; then
+  echo "🔷 Type-checking the API surface..."
+  if ! npx tsc --noEmit -p tsconfig.json; then
+    echo -e "${RED}❌ TypeScript check failed${NC}"
+    VIOLATIONS=$((VIOLATIONS + 1))
   fi
 fi
 

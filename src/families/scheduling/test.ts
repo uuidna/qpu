@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SchedulingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('scheduling: criticalpath, duration, float, lateness, leadlag, makespan, sl
   assert.equal(SchedulingFormulas.slack(40, 30).value, 10)
   assert.equal(SchedulingFormulas.utilization(30, 40).value, 75, 'percent busy')
   assert.equal(SchedulingFormulas.duration(100, 4).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('scheduling')?.length, 8)
+  assert.equal(hexFamiliesOf().get('scheduling')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'scheduling', program: ['duration'], params: [100, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `scheduling.duration at ${uuid}`)
-  qpuUuidReceiptOf('scheduling duration', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('scheduling duration', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; criticalpath 25, duration 25, float 15, lateness 5, leadlag 25, makespan 90, slack 10, utilization 75; crossing to logistics')
 })

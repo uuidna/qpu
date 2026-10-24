@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOCALIZATION — scaffolded integer measures crossed to control. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class LocalizationFormulas {
 }
 
 for (const name of ['confidence', 'covariance', 'gain', 'gridresolution', 'innovation', 'particlecount', 'positionvariance', 'updaterate'] as const)
-  qpuHexRegisterOf('localization', name, (LocalizationFormulas[name] as (...x: unknown[]) => unknown).bind(LocalizationFormulas))
+  hexRegisterOf('localization', name, (LocalizationFormulas[name] as (...x: unknown[]) => unknown).bind(LocalizationFormulas))

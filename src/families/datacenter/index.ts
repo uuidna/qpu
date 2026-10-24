@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DATACENTER — THE FACILITY, AS ARITHMETIC. A datacenter is numbers by the book: PUE as total facility power over IT
@@ -36,4 +36,4 @@ export class DatacenterFormulas {
 }
 
 for (const name of ['availability', 'capacity', 'carbon', 'coolingload', 'density', 'power', 'pue', 'racks', 'redundancy', 'waterusage'] as const)
-  qpuHexRegisterOf('datacenter', name, (DatacenterFormulas[name] as (...x: unknown[]) => unknown).bind(DatacenterFormulas))
+  hexRegisterOf('datacenter', name, (DatacenterFormulas[name] as (...x: unknown[]) => unknown).bind(DatacenterFormulas))

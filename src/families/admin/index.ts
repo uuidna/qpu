@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ADMIN — THE PAYLOAD CMS ADMIN UI, AS ARITHMETIC (its config chosen by the registry, not by hand). The dashboard is numbers:
@@ -31,4 +31,4 @@ export class AdminFormulas {
 }
 
 for (const name of ['columns', 'components', 'density', 'groups', 'hidden', 'load', 'nav', 'preview'] as const)
-  qpuHexRegisterOf('admin', name, (AdminFormulas[name] as (...x: unknown[]) => unknown).bind(AdminFormulas))
+  hexRegisterOf('admin', name, (AdminFormulas[name] as (...x: unknown[]) => unknown).bind(AdminFormulas))

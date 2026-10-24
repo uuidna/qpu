@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DIPLOMACY — THE STATECRAFT OF AGREEMENT, AS ARITHMETIC. Negotiation is numbers: the share of parties that agreed,
@@ -31,4 +31,4 @@ export class DiplomacyFormulas {
 }
 
 for (const name of ['alliance', 'concession', 'consensus', 'leverage', 'sanction', 'summit', 'tension', 'treaty'] as const)
-  qpuHexRegisterOf('diplomacy', name, (DiplomacyFormulas[name] as (...x: unknown[]) => unknown).bind(DiplomacyFormulas))
+  hexRegisterOf('diplomacy', name, (DiplomacyFormulas[name] as (...x: unknown[]) => unknown).bind(DiplomacyFormulas))

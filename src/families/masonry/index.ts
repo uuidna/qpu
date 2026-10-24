@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MASONRY — LAYING BRICK AND BLOCK, AS ARITHMETIC. Building a wall is numbers: the bricks an area needs, the mortar they
@@ -30,4 +30,4 @@ export class MasonryFormulas {
 }
 
 for (const name of ['bond', 'bricks', 'courses', 'coverage', 'joint', 'mortar', 'wall', 'waste'] as const)
-  qpuHexRegisterOf('masonry', name, (MasonryFormulas[name] as (...x: unknown[]) => unknown).bind(MasonryFormulas))
+  hexRegisterOf('masonry', name, (MasonryFormulas[name] as (...x: unknown[]) => unknown).bind(MasonryFormulas))

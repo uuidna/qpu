@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GlycolysisFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('glycolysis: flux, gluconeogenesis, glucoseconsumed, lactate, nadh, netatp,
   assert.equal(GlycolysisFormulas.phosphorylation(5).value, 10)
   assert.equal(GlycolysisFormulas.pyruvate(5).value, 10, 'two pyruvate per glucose')
   assert.equal(GlycolysisFormulas.flux(600, 60).dst, 'biochemistry')
-  assert.equal(qpuHexFamiliesOf().get('glycolysis')?.length, 8)
+  assert.equal(hexFamiliesOf().get('glycolysis')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'glycolysis', program: ['flux'], params: [600, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `glycolysis.flux at ${uuid}`)
-  qpuUuidReceiptOf('glycolysis flux', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('glycolysis flux', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; flux 10, gluconeogenesis 5, glucoseconsumed 50, lactate 10, nadh 10, netatp 10, phosphorylation 10, pyruvate 10; crossing to biochemistry')
 })

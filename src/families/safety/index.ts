@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SAFETY — WORKPLACE SAFETY AS ARITHMETIC. Protecting people is numbers: the OSHA incident rate, severity per incident, the
@@ -30,4 +30,4 @@ export class SafetyFormulas {
 }
 
 for (const name of ['compliance', 'exposure', 'incidentrate', 'margin', 'nearmiss', 'risk', 'severity', 'training'] as const)
-  qpuHexRegisterOf('safety', name, (SafetyFormulas[name] as (...x: unknown[]) => unknown).bind(SafetyFormulas))
+  hexRegisterOf('safety', name, (SafetyFormulas[name] as (...x: unknown[]) => unknown).bind(SafetyFormulas))

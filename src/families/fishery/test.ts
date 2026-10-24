@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FisheryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('fishery: catch, biomass, quota, cpue, sustainable, bycatch, spawning, mort
   assert.equal(FisheryFormulas.spawning(10000, 20).value, 2000)
   assert.equal(FisheryFormulas.mortality(250, 1000).value, 25)
   assert.equal(FisheryFormulas.catch(40, 25).dst, 'environment')
-  assert.equal(qpuHexFamiliesOf().get('fishery')?.length, 8)
+  assert.equal(hexFamiliesOf().get('fishery')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'fishery', program: ['catch'], params: [40, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `fishery.catch at ${uuid}`)
-  qpuUuidReceiptOf('fishery catch', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('fishery catch', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; catch 1000, biomass 6000, quota 3800, cpue 2500, sustainable 1, bycatch 15, spawning 2000, mortality 25; crossing to environment')
 })

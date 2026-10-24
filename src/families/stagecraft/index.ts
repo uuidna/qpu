@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STAGECRAFT — scaffolded integer measures crossed to geometry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class StagecraftFormulas {
 }
 
 for (const name of ['flats', 'loadmargin', 'riggingpoints', 'scenechanges', 'sightlines', 'stagearea', 'trusscombos', 'weightkg'] as const)
-  qpuHexRegisterOf('stagecraft', name, (StagecraftFormulas[name] as (...x: unknown[]) => unknown).bind(StagecraftFormulas))
+  hexRegisterOf('stagecraft', name, (StagecraftFormulas[name] as (...x: unknown[]) => unknown).bind(StagecraftFormulas))

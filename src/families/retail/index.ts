@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RETAIL — BRICK-AND-MORTAR RETAIL, AS ARITHMETIC (chosen by the public-API registry, not by hand). A shop is numbers:
@@ -30,4 +30,4 @@ export class RetailFormulas {
 }
 
 for (const name of ['basket', 'footfall', 'margin', 'markup', 'restock', 'sales', 'shrinkage', 'turnover'] as const)
-  qpuHexRegisterOf('retail', name, (RetailFormulas[name] as (...x: unknown[]) => unknown).bind(RetailFormulas))
+  hexRegisterOf('retail', name, (RetailFormulas[name] as (...x: unknown[]) => unknown).bind(RetailFormulas))

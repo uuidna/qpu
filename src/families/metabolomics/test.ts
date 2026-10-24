@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MetabolomicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('metabolomics: concentration, flux, pathway, foldchange, turnover, retentio
   assert.equal(MetabolomicsFormulas.ratio(45, 90).value, 50)
   assert.equal(MetabolomicsFormulas.coverage(80, 100).value, 80, 'four fifths of the known set')
   assert.equal(MetabolomicsFormulas.concentration(1000, 50).dst, 'biochemistry')
-  assert.equal(qpuHexFamiliesOf().get('metabolomics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('metabolomics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'metabolomics', program: ['pathway'], params: [100, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `metabolomics.pathway at ${uuid}`)
-  qpuUuidReceiptOf('metabolomics pathway', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('metabolomics pathway', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; concentration 20, flux 60, pathway 12, foldchange 300, turnover 12, retention 42, ratio 50, coverage 80; crossing to biochemistry')
 })

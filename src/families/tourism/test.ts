@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TourismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('tourism: occupancy, revpar, adr, nights, seasonality, capacity, spend, len
   assert.equal(TourismFormulas.spend(1000, 250).value, 250000)
   assert.equal(TourismFormulas.length(150, 50).value, 3, 'three nights on average')
   assert.equal(TourismFormulas.occupancy(80, 100).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('tourism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tourism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tourism', program: ['occupancy'], params: [80, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `tourism.occupancy at ${uuid}`)
-  qpuUuidReceiptOf('tourism occupancy', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tourism occupancy', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; occupancy 80, revpar 90, adr 112, nights 150, seasonality 300, capacity 200, spend 250000, length 3; crossing to econ')
 })

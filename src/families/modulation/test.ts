@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ModulationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('modulation: index, bandwidth, sidebands, deviation, carrierpower, symbolra
   assert.equal(ModulationFormulas.efficiency(9600, 2400).value, 400)
   assert.equal(ModulationFormulas.efficiency(9600, 0).value, 0)
   assert.equal(ModulationFormulas.index(50, 100).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('modulation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('modulation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'modulation', program: ['deviation'], params: [5, 15] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `modulation.deviation at ${uuid}`)
-  qpuUuidReceiptOf('modulation deviation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('modulation deviation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; index 50, bandwidth 180, sidebands 7, deviation 75, carrierpower 200, symbolrate 2400, bitrate 9600, efficiency 400; crossing to signal')
 })

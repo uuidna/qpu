@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MasonryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('masonry: bricks, mortar, courses, bond, wall, joint, coverage, waste — c
   assert.equal(MasonryFormulas.coverage(600, 60).value, 10)
   assert.equal(MasonryFormulas.waste(600, 5).value, 30, 'five percent over')
   assert.equal(MasonryFormulas.bricks(10, 60).dst, 'construction')
-  assert.equal(qpuHexFamiliesOf().get('masonry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('masonry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'masonry', program: ['courses'], params: [1000, 75] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 13, `masonry.courses at ${uuid}`)
-  qpuUuidReceiptOf('masonry courses', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('masonry courses', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bricks 600, mortar 1200, courses 13, bond 4, wall 15, joint 130, coverage 10, waste 30; crossing to construction')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOENERGETICS — THE ENERGY OF THE LIVING CELL, AS ARITHMETIC. Life runs on numbers: the energy an ATP hydrolysis
@@ -31,4 +31,4 @@ export class BioenergeticsFormulas {
 }
 
 for (const name of ['atphydrolysis', 'efficiency', 'electrontransport', 'gibbsfree', 'phosphateratio', 'protonmotive', 'redoxpotential', 'yield'] as const)
-  qpuHexRegisterOf('bioenergetics', name, (BioenergeticsFormulas[name] as (...x: unknown[]) => unknown).bind(BioenergeticsFormulas))
+  hexRegisterOf('bioenergetics', name, (BioenergeticsFormulas[name] as (...x: unknown[]) => unknown).bind(BioenergeticsFormulas))

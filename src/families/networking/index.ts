@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NETWORKING — THE MOVEMENT OF PACKETS, AS ARITHMETIC (chosen by the public-API registry, not by hand). Moving data is
@@ -31,4 +31,4 @@ export class NetworkingFormulas {
 }
 
 for (const name of ['bandwidth', 'hops', 'jitter', 'latency', 'loss', 'subnet', 'throughput', 'utilization'] as const)
-  qpuHexRegisterOf('networking', name, (NetworkingFormulas[name] as (...x: unknown[]) => unknown).bind(NetworkingFormulas))
+  hexRegisterOf('networking', name, (NetworkingFormulas[name] as (...x: unknown[]) => unknown).bind(NetworkingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LanduseFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('landuse: buildableratio, developable, impervious, openspaceratio, parcelco
   assert.equal(LanduseFormulas.setbackarea(50, 20).value, 1000)
   assert.equal(LanduseFormulas.zoningmix(1200, 4).value, 300, 'parcels per zone')
   assert.equal(LanduseFormulas.buildableratio(650, 1000).dst, 'geography')
-  assert.equal(qpuHexFamiliesOf().get('landuse')?.length, 8)
+  assert.equal(hexFamiliesOf().get('landuse')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'landuse', program: ['parcelcount'], params: [10000, 500] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `landuse.parcelcount at ${uuid}`)
-  qpuUuidReceiptOf('landuse parcelcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('landuse parcelcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; buildableratio 65, developable 700, impervious 35, openspaceratio 25, parcelcount 20, residentialshare 60, setbackarea 1000, zoningmix 300; crossing to geography')
 })

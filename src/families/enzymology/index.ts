@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENZYMOLOGY — ENZYME KINETICS AS ARITHMETIC. A catalysed reaction is numbers: the Michaelis-Menten rate, the velocity
@@ -30,4 +30,4 @@ export class EnzymologyFormulas {
 }
 
 for (const name of ['activity', 'catalyticefficiency', 'inhibition', 'michaelis', 'specificity', 'substrate', 'turnover', 'velocity'] as const)
-  qpuHexRegisterOf('enzymology', name, (EnzymologyFormulas[name] as (...x: unknown[]) => unknown).bind(EnzymologyFormulas))
+  hexRegisterOf('enzymology', name, (EnzymologyFormulas[name] as (...x: unknown[]) => unknown).bind(EnzymologyFormulas))

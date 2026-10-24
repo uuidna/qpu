@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BilingualismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('bilingualism: balanceindex, codeswitchrate, dominanceratio, exposurehours,
   assert.equal(BilingualismFormulas.proficiencygap(50, 80).value, 0, 'no lead when L2 is stronger')
   assert.equal(BilingualismFormulas.transferrate(8, 40).value, 20)
   assert.equal(BilingualismFormulas.dominanceratio(70, 30).dst, 'cognition')
-  assert.equal(qpuHexFamiliesOf().get('bilingualism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('bilingualism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'bilingualism', program: ['dominanceratio'], params: [70, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 70, `bilingualism.dominanceratio at ${uuid}`)
-  qpuUuidReceiptOf('bilingualism dominanceratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('bilingualism dominanceratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; balanceindex 80, codeswitchrate 7, dominanceratio 70, exposurehours 1460, interferencerate 4, lexicalaccess 120, proficiencygap 15, transferrate 20; crossing to cognition')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ProtocolFormulas — 8 exact-integer formulas of the protocol domain, each at a hex address crossing to cross; develops the protocol leads. */
@@ -31,4 +31,4 @@ export class ProtocolFormulas {
 }
 
 for (const name of ['combos', 'handshakes', 'headers', 'layers', 'messages', 'opcodes', 'states', 'versions'] as const)
-  qpuHexRegisterOf('protocol', name, (ProtocolFormulas[name] as (...x: unknown[]) => unknown).bind(ProtocolFormulas))
+  hexRegisterOf('protocol', name, (ProtocolFormulas[name] as (...x: unknown[]) => unknown).bind(ProtocolFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LimnologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('limnology: oxygen, clarity, trophic, residence, stratification, productivi
   assert.equal(LimnologyFormulas.ph(50, 100).value, 50)
   assert.equal(LimnologyFormulas.turbidity(3, 10).value, 30)
   assert.equal(LimnologyFormulas.oxygen(8, 10).dst, 'hydrology')
-  assert.equal(qpuHexFamiliesOf().get('limnology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('limnology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'limnology', program: ['trophic'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `limnology.trophic at ${uuid}`)
-  qpuUuidReceiptOf('limnology trophic', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('limnology trophic', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; oxygen 80, clarity 4, trophic 20, residence 100, stratification 15, productivity 100, ph 50, turbidity 30; crossing to hydrology')
 })

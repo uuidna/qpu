@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EnzymologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('enzymology: michaelis, velocity, turnover, specificity, inhibition, activi
   assert.equal(EnzymologyFormulas.catalyticefficiency(200, 4).value, 50000)
   assert.equal(EnzymologyFormulas.substrate(1000, 400).value, 600)
   assert.equal(EnzymologyFormulas.michaelis(100, 50, 50).dst, 'biochemistry')
-  assert.equal(qpuHexFamiliesOf().get('enzymology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('enzymology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'enzymology', program: ['michaelis'], params: [100, 50, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `enzymology.michaelis at ${uuid}`)
-  qpuUuidReceiptOf('enzymology michaelis', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('enzymology michaelis', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; michaelis 50, velocity 100, turnover 200, specificity 50, inhibition 75, activity 1000, catalyticefficiency 50000, substrate 600; crossing to biochemistry')
 })

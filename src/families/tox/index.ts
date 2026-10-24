@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TOX — TOXICOLOGY AS EVIDENCE. A poisoning is arithmetic over concentration, dose and time: the dose from a
@@ -31,4 +31,4 @@ export class ToxFormulas {
 }
 
 for (const name of ['clearance', 'dose', 'exposure', 'halflife', 'ld', 'margin', 'onset', 'threshold'] as const)
-  qpuHexRegisterOf('tox', name, (ToxFormulas[name] as (...x: unknown[]) => unknown).bind(ToxFormulas))
+  hexRegisterOf('tox', name, (ToxFormulas[name] as (...x: unknown[]) => unknown).bind(ToxFormulas))

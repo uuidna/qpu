@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { IdentityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -20,10 +20,10 @@ test('identity: assurance, matchconfidence, documentvalidity, liveness, uniquene
   assert.equal(IdentityFormulas.attestation(45, 50).value, 90, 'forty-five of fifty devices signed an attestation')
   assert.equal(IdentityFormulas.federation(8, 10).value, 80, 'eight of ten asserted claims verified by the provider')
   assert.equal(IdentityFormulas.assurance(3, 4).dst, 'auth', 'identity crosses into auth — the subject auth decides on')
-  assert.equal(qpuHexFamiliesOf().get('identity')?.length, 8)
+  assert.equal(hexFamiliesOf().get('identity')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'identity', program: ['assurance'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `identity.assurance at ${uuid}`)
-  qpuUuidReceiptOf('identity assurance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('identity assurance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas (NIST SP 800-63-3 assurance model); assurance 75, matchconfidence 90, documentvalidity 90, liveness 98, uniqueness 99, stepup 1/0, attestation 90, federation 80; crossing to auth')
 })

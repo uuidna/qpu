@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CYCLONE — scaffolded integer measures crossed to meteorology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CycloneFormulas {
 }
 
 for (const name of ['category', 'eyediameter', 'intensityindex', 'pressuredrop', 'radius', 'rainfall', 'stormsurge', 'windspeed'] as const)
-  qpuHexRegisterOf('cyclone', name, (CycloneFormulas[name] as (...x: unknown[]) => unknown).bind(CycloneFormulas))
+  hexRegisterOf('cyclone', name, (CycloneFormulas[name] as (...x: unknown[]) => unknown).bind(CycloneFormulas))

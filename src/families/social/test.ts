@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SocialFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('social: engagement, reach, virality, growth, impressions, sentiment, influ
   assert.equal(SocialFormulas.influence(100000, 5).value, 5000)
   assert.equal(SocialFormulas.frequency(240000, 80000).value, 3)
   assert.equal(SocialFormulas.engagement(500, 10000).dst, 'analytics')
-  assert.equal(qpuHexFamiliesOf().get('social')?.length, 8)
+  assert.equal(hexFamiliesOf().get('social')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'social', program: ['reach'], params: [100000, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 8000, `social.reach at ${uuid}`)
-  qpuUuidReceiptOf('social reach', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('social reach', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; engagement 5, reach 8000, virality 2, growth 5, impressions 240000, sentiment 70, influence 5000, frequency 3; crossing to analytics')
 })

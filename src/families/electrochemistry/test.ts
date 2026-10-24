@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ElectrochemistryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('electrochemistry: faraday, cellpotential, current, electrolysis, conductiv
   assert.equal(ElectrochemistryFormulas.capacity(1000, 4).value, 250)
   assert.equal(ElectrochemistryFormulas.efficiency(90, 100).value, 90, 'coulombic efficiency')
   assert.equal(ElectrochemistryFormulas.faraday(1000, 4).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('electrochemistry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('electrochemistry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'electrochemistry', program: ['current'], params: [600, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `electrochemistry.current at ${uuid}`)
-  qpuUuidReceiptOf('electrochemistry current', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('electrochemistry current', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; faraday 250, cellpotential 50/-50, current 10, electrolysis 10, conductivity 20, nernst 80/-80, capacity 250, efficiency 90; crossing to chemistry')
 })

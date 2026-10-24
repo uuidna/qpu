@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROOF — scaffolded integer measures crossed to logic. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ProofFormulas {
 }
 
 for (const name of ['axiomsused', 'branchsubsets', 'caseorderings', 'dependencypairs', 'inferencepaths', 'lemmas', 'qed', 'steps'] as const)
-  qpuHexRegisterOf('proof', name, (ProofFormulas[name] as (...x: unknown[]) => unknown).bind(ProofFormulas))
+  hexRegisterOf('proof', name, (ProofFormulas[name] as (...x: unknown[]) => unknown).bind(ProofFormulas))

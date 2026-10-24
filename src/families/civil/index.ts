@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CIVIL — CIVIL ENGINEERING, AS ARITHMETIC. Structures and the ground they sit on are numbers: the load a beam carries per
@@ -31,4 +31,4 @@ export class CivilFormulas {
 }
 
 for (const name of ['beamload', 'bearing', 'concrete', 'deflection', 'runoff', 'settlement', 'slope', 'trafficflow'] as const)
-  qpuHexRegisterOf('civil', name, (CivilFormulas[name] as (...x: unknown[]) => unknown).bind(CivilFormulas))
+  hexRegisterOf('civil', name, (CivilFormulas[name] as (...x: unknown[]) => unknown).bind(CivilFormulas))

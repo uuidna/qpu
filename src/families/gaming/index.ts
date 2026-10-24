@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GAMING — PLAY AS ARITHMETIC (chosen by the registry, not by hand). Running a game is numbers: frames per second,
@@ -30,4 +30,4 @@ export class GamingFormulas {
 }
 
 for (const name of ['accuracy', 'damage', 'framerate', 'kd', 'latency', 'score', 'winrate', 'xp'] as const)
-  qpuHexRegisterOf('gaming', name, (GamingFormulas[name] as (...x: unknown[]) => unknown).bind(GamingFormulas))
+  hexRegisterOf('gaming', name, (GamingFormulas[name] as (...x: unknown[]) => unknown).bind(GamingFormulas))

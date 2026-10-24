@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PomologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('pomology: yield, brix, fruitset, thinning, caliper, firmness, harvestindex
   assert.equal(PomologyFormulas.harvestindex(450, 1000).value, 45)
   assert.equal(PomologyFormulas.treedensity(10000, 25).value, 400, 'trees the planting holds')
   assert.equal(PomologyFormulas.yield(200, 150).dst, 'botany')
-  assert.equal(qpuHexFamiliesOf().get('pomology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pomology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pomology', program: ['treedensity'], params: [10000, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 400, `pomology.treedensity at ${uuid}`)
-  qpuUuidReceiptOf('pomology treedensity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pomology treedensity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; yield 30000, brix 13, fruitset 30, thinning 200, caliper 70, firmness 50, harvestindex 45, treedensity 400; crossing to botany')
 })

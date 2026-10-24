@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HANOI — scaffolded integer measures crossed to combinatorics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HanoiFormulas {
 }
 
 for (const name of ['disks', 'moveorderings', 'movesupperbound', 'pegs', 'recursiondepth', 'statesubsets', 'subtowers', 'transfertime'] as const)
-  qpuHexRegisterOf('hanoi', name, (HanoiFormulas[name] as (...x: unknown[]) => unknown).bind(HanoiFormulas))
+  hexRegisterOf('hanoi', name, (HanoiFormulas[name] as (...x: unknown[]) => unknown).bind(HanoiFormulas))

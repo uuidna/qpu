@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MAILLARD — scaffolded integer measures crossed to chemistry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MaillardFormulas {
 }
 
 for (const name of ['aminosugarratio', 'browningindex', 'crustthickness', 'flavorcompounds', 'phfactor', 'reactionrate', 'temperaturefactor', 'timetocolor'] as const)
-  qpuHexRegisterOf('maillard', name, (MaillardFormulas[name] as (...x: unknown[]) => unknown).bind(MaillardFormulas))
+  hexRegisterOf('maillard', name, (MaillardFormulas[name] as (...x: unknown[]) => unknown).bind(MaillardFormulas))

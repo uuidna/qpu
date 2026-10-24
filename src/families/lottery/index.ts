@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOTTERY — DRAWING ODDS AS ARITHMETIC. A lottery is counting: how many ways the balls fall, the one-in-N odds of a line,
@@ -39,4 +39,4 @@ export class LotteryFormulas {
 }
 
 for (const name of ['combinations', 'coverage', 'expectedvalue', 'houseedge', 'jackpotshare', 'oddsdenominator', 'rollover', 'ticketcost'] as const)
-  qpuHexRegisterOf('lottery', name, (LotteryFormulas[name] as (...x: unknown[]) => unknown).bind(LotteryFormulas))
+  hexRegisterOf('lottery', name, (LotteryFormulas[name] as (...x: unknown[]) => unknown).bind(LotteryFormulas))

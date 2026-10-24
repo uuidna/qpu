@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TranslationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('translation: bleu, fuzzy, throughput, expansion, coverage, edit, glossary,
   assert.equal(TranslationFormulas.glossary(10, 50).value, 5, 'hits per term')
   assert.equal(TranslationFormulas.quality(95, 100).value, 95, 'accepted of reviewed')
   assert.equal(TranslationFormulas.bleu(45, 50).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('translation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('translation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'translation', program: ['coverage'], params: [800, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `translation.coverage at ${uuid}`)
-  qpuUuidReceiptOf('translation coverage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('translation coverage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bleu 90, fuzzy 75, throughput 500, expansion 120, coverage 80, edit 20, glossary 5, quality 95; crossing to linguistics')
 })

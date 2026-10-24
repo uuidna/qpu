@@ -1,5 +1,5 @@
 import type { CollectionBeforeChangeHook, CollectionBeforeValidateHook, Access, Field } from 'payload'
-import { qpuContentUuidOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { contentUuidOf, uuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { LawFormulas } from '../families/law/index.js'
 
 /** THE MCP COURT AS PAYLOAD HOOKS — drop them into any collection config. Each is backed by a law-family cross formula
@@ -22,8 +22,8 @@ const num = (x: unknown): number => (typeof x === 'number' && Number.isFinite(x)
  *  author's standing (law.standing) is the receipt record; this is how every write joins it, and why a tampered doc
  *  gets a different UUID. `into` defaults to `uuid` — add `uuidField` so the collection stores it. */
 export const courtReceipt = (into = 'uuid'): CollectionBeforeChangeHook => ({ data, collection, operation }) => {
-  const uuid = qpuContentUuidOf({ collection: collection?.slug, operation, data })
-  qpuUuidReceiptOf(`payload ${collection?.slug ?? 'doc'} ${operation}`, uuid, { standing: Number(LawFormulas.standing(1).value) })
+  const uuid = contentUuidOf({ collection: collection?.slug, operation, data })
+  uuidReceiptOf(`payload ${collection?.slug ?? 'doc'} ${operation}`, uuid, { standing: Number(LawFormulas.standing(1).value) })
   return { ...(data ?? {}), [into]: uuid }
 }
 

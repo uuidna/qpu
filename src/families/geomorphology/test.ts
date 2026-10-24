@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GeomorphologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('geomorphology: slope, erosion, drainage, relief, sediment, sinuosity, inci
   assert.equal(GeomorphologyFormulas.incision(50, 200).value, 25)
   assert.equal(GeomorphologyFormulas.weathering(30, 100).value, 30)
   assert.equal(GeomorphologyFormulas.slope(30, 100).dst, 'geology')
-  assert.equal(qpuHexFamiliesOf().get('geomorphology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('geomorphology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'geomorphology', program: ['drainage'], params: [240, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `geomorphology.drainage at ${uuid}`)
-  qpuUuidReceiptOf('geomorphology drainage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('geomorphology drainage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; slope 30, erosion 50, drainage 4, relief 2000, sediment 20, sinuosity 150, incision 25, weathering 30; crossing to geology')
 })

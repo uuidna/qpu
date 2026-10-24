@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** CARTOGRAPHY — MAPPING THE GROUND AS ARITHMETIC. A map is numbers: the scale a ground distance maps to, a pixel
  *  distance on the ground, contour lines by interval, projection distortion, the resolution of an area in pixels,
@@ -33,4 +33,4 @@ export class CartographyFormulas {
 }
 
 for (const name of ['area', 'bearing', 'contour', 'distance', 'distortion', 'resolution', 'scale', 'zoom'] as const)
-  qpuHexRegisterOf('cartography', name, (CartographyFormulas[name] as (...x: unknown[]) => unknown).bind(CartographyFormulas))
+  hexRegisterOf('cartography', name, (CartographyFormulas[name] as (...x: unknown[]) => unknown).bind(CartographyFormulas))

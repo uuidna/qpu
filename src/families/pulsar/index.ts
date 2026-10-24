@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PULSAR — A NEUTRON STAR'S CLOCK, AS ARITHMETIC (chosen by the registry, not by hand). A spinning magnetised star is
@@ -31,4 +31,4 @@ export class PulsarFormulas {
 }
 
 for (const name of ['braking', 'characteristicage', 'dispersionmeasure', 'magneticfield', 'perioddderivative', 'pulsewidth', 'spindownluminosity', 'spinfrequency'] as const)
-  qpuHexRegisterOf('pulsar', name, (PulsarFormulas[name] as (...x: unknown[]) => unknown).bind(PulsarFormulas))
+  hexRegisterOf('pulsar', name, (PulsarFormulas[name] as (...x: unknown[]) => unknown).bind(PulsarFormulas))

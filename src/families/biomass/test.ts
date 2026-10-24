@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BiomassFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('biomass: calorific, carbonneutral, combustion, conversion, density, digest
   assert.equal(BiomassFormulas.moisture(1000, 400).value, 60, 'water fraction percent')
   assert.equal(BiomassFormulas.output(5000, 10).value, 500, 'yield per hectare')
   assert.equal(BiomassFormulas.calorific(18000, 1000).dst, 'energy')
-  assert.equal(qpuHexFamiliesOf().get('biomass')?.length, 8)
+  assert.equal(hexFamiliesOf().get('biomass')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'biomass', program: ['output'], params: [5000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 500, `biomass.output at ${uuid}`)
-  qpuUuidReceiptOf('biomass output', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('biomass output', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; calorific 18, carbonneutral 120, combustion 85, conversion 40, density 250, digestion 60, moisture 60, output 500; crossing to energy')
 })

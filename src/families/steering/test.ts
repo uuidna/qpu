@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SteeringFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('steering: turnradius, ackermannangle, slipangle, steeringratio, yawrate, u
   assert.equal(SteeringFormulas.wheelbaseratio(250, 300).value, 83)
   assert.equal(SteeringFormulas.correctiongain(100, 4).value, 25)
   assert.equal(SteeringFormulas.turnradius(1000, 20).dst, 'control')
-  assert.equal(qpuHexFamiliesOf().get('steering')?.length, 8)
+  assert.equal(hexFamiliesOf().get('steering')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'steering', program: ['turnradius'], params: [1000, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `steering.turnradius at ${uuid}`)
-  qpuUuidReceiptOf('steering turnradius', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('steering turnradius', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; turnradius 50, ackermannangle 30, slipangle 12, steeringratio 15, yawrate 60, understeer 8, wheelbaseratio 83, correctiongain 25; crossing to control')
 })

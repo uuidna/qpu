@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CINEMATOGRAPHY — THE CAMERA AS ARITHMETIC. Shooting a frame is numbers: the f-stop a lens runs at, the light a frame
@@ -31,4 +31,4 @@ export class CinematographyFormulas {
 }
 
 for (const name of ['aspect', 'depthoffield', 'exposure', 'focallength', 'framerate', 'fstop', 'iso', 'shutterangle'] as const)
-  qpuHexRegisterOf('cinematography', name, (CinematographyFormulas[name] as (...x: unknown[]) => unknown).bind(CinematographyFormulas))
+  hexRegisterOf('cinematography', name, (CinematographyFormulas[name] as (...x: unknown[]) => unknown).bind(CinematographyFormulas))

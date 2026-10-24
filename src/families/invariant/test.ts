@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { InvariantFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('invariant: conditions, preconditionpairs, stateorderings, holdratio, claus
   assert.equal(InvariantFormulas.strengthlevels(3, 1).value, 4)
   assert.equal(InvariantFormulas.checkpaths(5, 2).value, 20)
   assert.equal(InvariantFormulas.conditions(5, 3).dst, 'logic')
-  assert.equal(qpuHexFamiliesOf().get('invariant')?.length, 8)
+  assert.equal(hexFamiliesOf().get('invariant')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'invariant', program: ['conditions'], params: [5, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 8, `invariant.conditions at ${uuid}`)
-  qpuUuidReceiptOf('invariant conditions', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('invariant conditions', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; conditions 8, preconditionpairs 28, stateorderings 24, holdratio 100, clausesubsets 32, violations 0, strengthlevels 4, checkpaths 20; crossing to logic')
 })

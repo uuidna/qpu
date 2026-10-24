@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SAMPLING — DRAWING A FEW TO KNOW THE MANY, AS ARITHMETIC. A survey is numbers: how many to draw, the margin of error, the
@@ -30,4 +30,4 @@ export class SamplingFormulas {
 }
 
 for (const name of ['cluster', 'finitecorrection', 'marginoferror', 'samplesize', 'standarderror', 'stratum', 'systematic', 'weight'] as const)
-  qpuHexRegisterOf('sampling', name, (SamplingFormulas[name] as (...x: unknown[]) => unknown).bind(SamplingFormulas))
+  hexRegisterOf('sampling', name, (SamplingFormulas[name] as (...x: unknown[]) => unknown).bind(SamplingFormulas))

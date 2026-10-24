@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DispatchFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('dispatch: queuewait, assignmentrate, idletime, responsetime, jobspershift,
   assert.equal(DispatchFormulas.coverage(18, 20).value, 90)
   assert.equal(DispatchFormulas.backlog(50, 42).value, 8)
   assert.equal(DispatchFormulas.queuewait(600, 20).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('dispatch')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dispatch')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dispatch', program: ['queuewait'], params: [600, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `dispatch.queuewait at ${uuid}`)
-  qpuUuidReceiptOf('dispatch queuewait', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dispatch queuewait', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; queuewait 30, assignmentrate 30, idletime 60, responsetime 50, jobspershift 48, overtimeratio 12, coverage 90, backlog 8; crossing to logistics')
 })

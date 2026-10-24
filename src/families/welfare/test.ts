@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WelfareFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('welfare: poverty, gini, benefit, coverage, replacement, dependency, mobili
   assert.equal(WelfareFormulas.mobility(30, 100).value, 30)
   assert.equal(WelfareFormulas.transfer(15, 100).value, 15)
   assert.equal(WelfareFormulas.poverty(25, 100).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('welfare')?.length, 8)
+  assert.equal(hexFamiliesOf().get('welfare')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'welfare', program: ['poverty'], params: [25, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `welfare.poverty at ${uuid}`)
-  qpuUuidReceiptOf('welfare poverty', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('welfare poverty', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; poverty 25, gini 40, benefit 20, coverage 80, replacement 60, dependency 60, mobility 30, transfer 15; crossing to econ')
 })

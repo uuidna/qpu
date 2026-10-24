@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HydroponicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('hydroponics: ec, ph, nutrientratio, flowrate, density, reservoir, dosing, 
   assert.equal(HydroponicsFormulas.dosing(100, 2).value, 200)
   assert.equal(HydroponicsFormulas.dwc(8, 20).value, 160, 'total DWC volume')
   assert.equal(HydroponicsFormulas.ec(1400, 2).dst, 'agriculture')
-  assert.equal(qpuHexFamiliesOf().get('hydroponics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hydroponics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hydroponics', program: ['flowrate'], params: [600, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `hydroponics.flowrate at ${uuid}`)
-  qpuUuidReceiptOf('hydroponics flowrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hydroponics flowrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ec 700, ph 1, nutrientratio 75, flowrate 10, density 25, reservoir 200, dosing 200, dwc 160; crossing to agriculture')
 })

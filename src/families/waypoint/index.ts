@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** WAYPOINT — ROUTE GEOMETRY AS ARITHMETIC (chosen by the public-API registry, not by hand). A flight or sail plan is
  *  numbers: the squared distance of a leg, the time to reach it, how far off the line you drift, the whole route, the turn
@@ -33,4 +33,4 @@ export class WaypointFormulas {
 }
 
 for (const name of ['bearingdelta', 'crosstrack', 'eta', 'fuelburn', 'groundspeed', 'legdistance', 'totalroute', 'turnradius'] as const)
-  qpuHexRegisterOf('waypoint', name, (WaypointFormulas[name] as (...x: unknown[]) => unknown).bind(WaypointFormulas))
+  hexRegisterOf('waypoint', name, (WaypointFormulas[name] as (...x: unknown[]) => unknown).bind(WaypointFormulas))

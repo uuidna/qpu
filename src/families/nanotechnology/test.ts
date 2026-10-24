@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NanotechnologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('nanotechnology: aspectratio, bandgap, coating, dispersion, particlecount, 
   assert.equal(NanotechnologyFormulas.surfacevolume(600, 100).value, 600)
   assert.equal(NanotechnologyFormulas.yieldrate(90, 100).value, 90, 'yield as a percentage')
   assert.equal(NanotechnologyFormulas.coating(3, 4).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('nanotechnology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('nanotechnology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'nanotechnology', program: ['particlecount'], params: [1000, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `nanotechnology.particlecount at ${uuid}`)
-  qpuUuidReceiptOf('nanotechnology particlecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('nanotechnology particlecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; aspectratio 10000, bandgap 100, coating 12, dispersion 80, particlecount 200, quantumconfinement 200, surfacevolume 600, yieldrate 90; crossing to materials')
 })

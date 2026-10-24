@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GRAVITY — THE PULL, AND THE BALANCE IT GIVES TO SLOW CODE. The physics is numbers: weight (F = m·g), the inverse-square
@@ -35,4 +35,4 @@ export class GravityFormulas {
 }
 
 for (const name of ['balance', 'center', 'equilibrium', 'force', 'freefall', 'load', 'potential', 'weight'] as const)
-  qpuHexRegisterOf('gravity', name, (GravityFormulas[name] as (...x: unknown[]) => unknown).bind(GravityFormulas))
+  hexRegisterOf('gravity', name, (GravityFormulas[name] as (...x: unknown[]) => unknown).bind(GravityFormulas))

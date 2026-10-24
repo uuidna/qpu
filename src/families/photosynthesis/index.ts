@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHOTOSYNTHESIS — THE LIGHT REACTION AS ARITHMETIC. Making sugar from light is numbers: how much of the incident light a
@@ -31,4 +31,4 @@ export class PhotosynthesisFormulas {
 }
 
 for (const name of ['assimilation', 'carbonfixation', 'chlorophyll', 'grossproduction', 'lightefficiency', 'netproduction', 'oxygenrelease', 'quantumyield'] as const)
-  qpuHexRegisterOf('photosynthesis', name, (PhotosynthesisFormulas[name] as (...x: unknown[]) => unknown).bind(PhotosynthesisFormulas))
+  hexRegisterOf('photosynthesis', name, (PhotosynthesisFormulas[name] as (...x: unknown[]) => unknown).bind(PhotosynthesisFormulas))

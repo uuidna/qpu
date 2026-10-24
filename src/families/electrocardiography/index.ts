@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELECTROCARDIOGRAPHY — THE SURFACE ECG AS ARITHMETIC. The trace is numbers: the heart rate from the R-R interval, the
@@ -30,4 +30,4 @@ export class ElectrocardiographyFormulas {
 }
 
 for (const name of ['axisdeviation', 'correctedqt', 'heartrate', 'intervalratio', 'printerval', 'qrsduration', 'qtinterval', 'rraverage'] as const)
-  qpuHexRegisterOf('electrocardiography', name, (ElectrocardiographyFormulas[name] as (...x: unknown[]) => unknown).bind(ElectrocardiographyFormulas))
+  hexRegisterOf('electrocardiography', name, (ElectrocardiographyFormulas[name] as (...x: unknown[]) => unknown).bind(ElectrocardiographyFormulas))

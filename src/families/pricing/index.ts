@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PRICING — THE PRICING USE CASE FROM payloadcms/website, AS ARITHMETIC. A SaaS pricing table is numbers: a plan billed
@@ -31,4 +31,4 @@ export class PricingFormulas {
 }
 
 for (const name of ['annual', 'arr', 'discount', 'mrr', 'savings', 'seats', 'tier', 'upgrade'] as const)
-  qpuHexRegisterOf('pricing', name, (PricingFormulas[name] as (...x: unknown[]) => unknown).bind(PricingFormulas))
+  hexRegisterOf('pricing', name, (PricingFormulas[name] as (...x: unknown[]) => unknown).bind(PricingFormulas))

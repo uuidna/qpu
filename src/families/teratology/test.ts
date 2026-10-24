@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TeratologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('teratology: malformationrate, criticalwindows, doseresponse, exposurepairs
   assert.equal(TeratologyFormulas.thresholddose(500, 350).value, 150)
   assert.equal(TeratologyFormulas.incidence(2, 100).value, 2)
   assert.equal(TeratologyFormulas.malformationrate(3, 100).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('teratology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('teratology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'teratology', program: ['malformationrate'], params: [3, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `teratology.malformationrate at ${uuid}`)
-  qpuUuidReceiptOf('teratology malformationrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('teratology malformationrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; malformationrate 3, criticalwindows 8, doseresponse 100, exposurepairs 28, riskindex 20, stageorderings 120, thresholddose 150, incidence 2; crossing to physiology')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HALFLIFE — RADIOACTIVE DECAY AS ARITHMETIC. How much of a sample is left after whole half-lives: the count of half-lives
@@ -31,4 +31,4 @@ export class HalflifeFormulas {
 }
 
 for (const name of ['activity', 'constant', 'decayed', 'elapsedlives', 'fraction', 'generations', 'meanlife', 'remaining'] as const)
-  qpuHexRegisterOf('halflife', name, (HalflifeFormulas[name] as (...x: unknown[]) => unknown).bind(HalflifeFormulas))
+  hexRegisterOf('halflife', name, (HalflifeFormulas[name] as (...x: unknown[]) => unknown).bind(HalflifeFormulas))

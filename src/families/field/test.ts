@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FieldFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('field: depth, group, indexed, length, localized, options, required, unique
   assert.equal(FieldFormulas.unique(0).value, 1, 'no duplicates')
   assert.equal(FieldFormulas.unique(3).value, 0)
   assert.equal(FieldFormulas.required(9, 12).dst, 'payload')
-  assert.equal(qpuHexFamiliesOf().get('field')?.length, 8)
+  assert.equal(hexFamiliesOf().get('field')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'field', program: ['required'], params: [9, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `field.required at ${uuid}`)
-  qpuUuidReceiptOf('field required', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('field required', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; depth 3, group 25, indexed 25, length 1, localized 50, options 5, required 75, unique 1; crossing to payload')
 })

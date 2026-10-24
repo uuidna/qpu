@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STOICISM — scaffolded integer measures crossed to psychology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class StoicismFormulas {
 }
 
 for (const name of ['apatheiaindex', 'controlratio', 'dichotomypairs', 'disciplineorderings', 'impressionfilters', 'passionstates', 'preferredindifferents', 'virtues'] as const)
-  qpuHexRegisterOf('stoicism', name, (StoicismFormulas[name] as (...x: unknown[]) => unknown).bind(StoicismFormulas))
+  hexRegisterOf('stoicism', name, (StoicismFormulas[name] as (...x: unknown[]) => unknown).bind(StoicismFormulas))

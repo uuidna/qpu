@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AMORTIZATION — A LOAN (OR AN INTANGIBLE) SPREAD OVER TIME, AS ARITHMETIC. Paying a principal down is numbers: the level
@@ -31,4 +31,4 @@ export class AmortizationFormulas {
 }
 
 for (const name of ['extrapayment', 'intangible', 'interestportion', 'payoffmonths', 'principalportion', 'remainingbalance', 'schedulepayment', 'totalcost'] as const)
-  qpuHexRegisterOf('amortization', name, (AmortizationFormulas[name] as (...x: unknown[]) => unknown).bind(AmortizationFormulas))
+  hexRegisterOf('amortization', name, (AmortizationFormulas[name] as (...x: unknown[]) => unknown).bind(AmortizationFormulas))

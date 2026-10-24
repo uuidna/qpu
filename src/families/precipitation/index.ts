@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PRECIPITATION — RAINFALL AND SNOW AS ARITHMETIC (chosen by the public-API registry, not by hand). Falling water is
@@ -31,4 +31,4 @@ export class PrecipitationFormulas {
 }
 
 for (const name of ['accumulation', 'catchmentyield', 'infiltration', 'intensity', 'raindepth', 'returnperiod', 'runoff', 'snowratio'] as const)
-  qpuHexRegisterOf('precipitation', name, (PrecipitationFormulas[name] as (...x: unknown[]) => unknown).bind(PrecipitationFormulas))
+  hexRegisterOf('precipitation', name, (PrecipitationFormulas[name] as (...x: unknown[]) => unknown).bind(PrecipitationFormulas))

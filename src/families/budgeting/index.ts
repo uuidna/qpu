@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BUDGETING — PLANNING MONEY AS ARITHMETIC. A budget is numbers: how far actual ran from plan, how much of an allocation
@@ -31,4 +31,4 @@ export class BudgetingFormulas {
 }
 
 for (const name of ['allocation', 'burnrate', 'forecast', 'runway', 'savings', 'surplus', 'utilization', 'variance'] as const)
-  qpuHexRegisterOf('budgeting', name, (BudgetingFormulas[name] as (...x: unknown[]) => unknown).bind(BudgetingFormulas))
+  hexRegisterOf('budgeting', name, (BudgetingFormulas[name] as (...x: unknown[]) => unknown).bind(BudgetingFormulas))

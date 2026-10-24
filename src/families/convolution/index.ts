@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONVOLUTION — THE SLIDING WINDOW, AS ARITHMETIC. A convolution is numbers: the output size a kernel leaves, the
@@ -31,4 +31,4 @@ export class ConvolutionFormulas {
 }
 
 for (const name of ['dilation', 'featuremap', 'kernelparams', 'outputsize', 'padding', 'pooling', 'receptivefield', 'stride'] as const)
-  qpuHexRegisterOf('convolution', name, (ConvolutionFormulas[name] as (...x: unknown[]) => unknown).bind(ConvolutionFormulas))
+  hexRegisterOf('convolution', name, (ConvolutionFormulas[name] as (...x: unknown[]) => unknown).bind(ConvolutionFormulas))

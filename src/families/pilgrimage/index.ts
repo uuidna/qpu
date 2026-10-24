@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PILGRIMAGE — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PilgrimageFormulas {
 }
 
 for (const name of ['daysrequired', 'distance', 'groupsize', 'restpoints', 'routeorderings', 'stagecount', 'stationpairs', 'waypointsubsets'] as const)
-  qpuHexRegisterOf('pilgrimage', name, (PilgrimageFormulas[name] as (...x: unknown[]) => unknown).bind(PilgrimageFormulas))
+  hexRegisterOf('pilgrimage', name, (PilgrimageFormulas[name] as (...x: unknown[]) => unknown).bind(PilgrimageFormulas))

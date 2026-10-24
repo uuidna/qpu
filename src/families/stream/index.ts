@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** StreamFormulas — 8 exact-integer formulas of the stream domain, each at a hex address crossing to cross; develops the stream leads. */
@@ -31,4 +31,4 @@ export class StreamFormulas {
 }
 
 for (const name of ['backpressure', 'buffers', 'chunks', 'combos', 'pipes', 'segments', 'throughput', 'windows'] as const)
-  qpuHexRegisterOf('stream', name, (StreamFormulas[name] as (...x: unknown[]) => unknown).bind(StreamFormulas))
+  hexRegisterOf('stream', name, (StreamFormulas[name] as (...x: unknown[]) => unknown).bind(StreamFormulas))

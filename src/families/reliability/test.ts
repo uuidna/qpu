@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ReliabilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('reliability: mtbf, mttr, availability, failurerate, redundancy, survival, 
   assert.equal(ReliabilityFormulas.nines(99999, 100000).value, 9999)
   assert.equal(ReliabilityFormulas.reliability(95, 100).value, 95)
   assert.equal(ReliabilityFormulas.mtbf(10000, 5).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('reliability')?.length, 8)
+  assert.equal(hexFamiliesOf().get('reliability')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'reliability', program: ['availability'], params: [999, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 99, `reliability.availability at ${uuid}`)
-  qpuUuidReceiptOf('reliability availability', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('reliability availability', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mtbf 2000, mttr 150, availability 99, failurerate 3, redundancy 150, survival 95, nines 9999, reliability 95; crossing to code')
 })

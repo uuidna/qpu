@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ATHLETICS — PERFORMANCE AS ARITHMETIC. Sport is numbers: pace per unit of distance, speed over time, stride per step,
@@ -30,4 +30,4 @@ export class AthleticsFormulas {
 }
 
 for (const name of ['jump', 'pace', 'points', 'power', 'speed', 'split', 'stride', 'vo2max'] as const)
-  qpuHexRegisterOf('athletics', name, (AthleticsFormulas[name] as (...x: unknown[]) => unknown).bind(AthleticsFormulas))
+  hexRegisterOf('athletics', name, (AthleticsFormulas[name] as (...x: unknown[]) => unknown).bind(AthleticsFormulas))

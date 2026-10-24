@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AEROSPACE — FLIGHT & ORBITAL MECHANICS, AS ARITHMETIC (chosen by the public-API registry, not by hand). Flight is numbers:
@@ -31,4 +31,4 @@ export class AerospaceFormulas {
 }
 
 for (const name of ['apogee', 'escape', 'lift', 'mach', 'orbit', 'payload', 'range', 'thrust'] as const)
-  qpuHexRegisterOf('aerospace', name, (AerospaceFormulas[name] as (...x: unknown[]) => unknown).bind(AerospaceFormulas))
+  hexRegisterOf('aerospace', name, (AerospaceFormulas[name] as (...x: unknown[]) => unknown).bind(AerospaceFormulas))

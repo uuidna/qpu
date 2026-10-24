@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PERSONALITY — THE FIVE-FACTOR MODEL AS ARITHMETIC (chosen by the trait registry, not by hand). A profile is numbers:
@@ -31,4 +31,4 @@ export class PersonalityFormulas {
 }
 
 for (const name of ['agreeableness', 'composite', 'conscientiousness', 'deviation', 'extraversion', 'neuroticism', 'openness', 'trait'] as const)
-  qpuHexRegisterOf('personality', name, (PersonalityFormulas[name] as (...x: unknown[]) => unknown).bind(PersonalityFormulas))
+  hexRegisterOf('personality', name, (PersonalityFormulas[name] as (...x: unknown[]) => unknown).bind(PersonalityFormulas))

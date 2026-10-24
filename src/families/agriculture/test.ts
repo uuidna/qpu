@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AgricultureFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('agriculture: yield, seed, water, fertilizer, germination, rotation, moistu
   assert.equal(AgricultureFormulas.moisture(130, 100).value, 130)
   assert.equal(AgricultureFormulas.harvest(3000, 3).value, 9000)
   assert.equal(AgricultureFormulas.yield(9000, 3).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('agriculture')?.length, 8)
+  assert.equal(hexFamiliesOf().get('agriculture')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'agriculture', program: ['rotation'], params: [12, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `agriculture.rotation at ${uuid}`)
-  qpuUuidReceiptOf('agriculture rotation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('agriculture rotation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; yield 3000, seed 4800, water 1000, fertilizer 6000, germination 95, rotation 3, moisture 130, harvest 9000; crossing to econ')
 })

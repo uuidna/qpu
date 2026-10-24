@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf, gibbsFreeOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, gibbsFreeOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THERMODYNAMICS — RUNNING HEAT AS ARITHMETIC. The physics of engines and flow is numbers: Carnot efficiency from the two
@@ -34,4 +34,4 @@ export class ThermodynamicsFormulas {
 }
 
 for (const name of ['carnot', 'cop', 'efficiency', 'entropy', 'expansion', 'gibbs', 'heatflow', 'internal', 'work'] as const)
-  qpuHexRegisterOf('thermodynamics', name, (ThermodynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(ThermodynamicsFormulas))
+  hexRegisterOf('thermodynamics', name, (ThermodynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(ThermodynamicsFormulas))

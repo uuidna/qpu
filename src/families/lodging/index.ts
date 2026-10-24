@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LODGING — HOSPITALITY AS ARITHMETIC (chosen by the public-API registry, not by hand). A place to stay is numbers:
@@ -31,4 +31,4 @@ export class LodgingFormulas {
 }
 
 for (const name of ['amenity', 'cancellation', 'cleaning', 'leadtime', 'nightlyrate', 'occupancy', 'rating', 'seasonality'] as const)
-  qpuHexRegisterOf('lodging', name, (LodgingFormulas[name] as (...x: unknown[]) => unknown).bind(LodgingFormulas))
+  hexRegisterOf('lodging', name, (LodgingFormulas[name] as (...x: unknown[]) => unknown).bind(LodgingFormulas))

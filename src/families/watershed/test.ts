@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WatershedFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('watershed: runoff, drainagedensity, timeofconcentration, peakflow, infiltr
   assert.equal(WatershedFormulas.streamorder(3, 2).value, 3)
   assert.equal(WatershedFormulas.basinrelief(1200, 300).value, 900)
   assert.equal(WatershedFormulas.runoff(200, 60).dst, 'hydrology')
-  assert.equal(qpuHexFamiliesOf().get('watershed')?.length, 8)
+  assert.equal(hexFamiliesOf().get('watershed')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'watershed', program: ['runoff'], params: [200, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 120, `watershed.runoff at ${uuid}`)
-  qpuUuidReceiptOf('watershed runoff', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('watershed runoff', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; runoff 120, drainagedensity 50, timeofconcentration 1800, peakflow 1000, infiltration 80, catchmentarea 150000, streamorder 4, basinrelief 900; crossing to hydrology')
 })

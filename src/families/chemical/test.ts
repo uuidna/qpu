@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ChemicalFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('chemical: conversion, heattransfer, masstransfer, output, pressuredrop, re
   assert.equal(ChemicalFormulas.residence(1000, 50).value, 20)
   assert.equal(ChemicalFormulas.selectivity(75, 100).value, 75)
   assert.equal(ChemicalFormulas.conversion(80, 100).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('chemical')?.length, 8)
+  assert.equal(hexFamiliesOf().get('chemical')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'chemical', program: ['residence'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `chemical.residence at ${uuid}`)
-  qpuUuidReceiptOf('chemical residence', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('chemical residence', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; conversion 80, heattransfer 1000, masstransfer 120, output 90, pressuredrop 50, reflux 300, residence 20, selectivity 75; crossing to chemistry')
 })

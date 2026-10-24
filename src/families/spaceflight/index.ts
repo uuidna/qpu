@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SPACEFLIGHT — scaffolded integer measures crossed to aerospace. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SpaceflightFormulas {
 }
 
 for (const name of ['apogee', 'burntime', 'deltav', 'escapevelocity', 'orbitalperiod', 'payloadfraction', 'stageorderings', 'twr'] as const)
-  qpuHexRegisterOf('spaceflight', name, (SpaceflightFormulas[name] as (...x: unknown[]) => unknown).bind(SpaceflightFormulas))
+  hexRegisterOf('spaceflight', name, (SpaceflightFormulas[name] as (...x: unknown[]) => unknown).bind(SpaceflightFormulas))

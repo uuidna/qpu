@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SHAMANISM — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ShamanismFormulas {
 }
 
 for (const name of ['cosmiclayers', 'drumbeats', 'ecstasyratio', 'healingcombos', 'initiationstages', 'journeyorderings', 'spiritallies', 'trancestates'] as const)
-  qpuHexRegisterOf('shamanism', name, (ShamanismFormulas[name] as (...x: unknown[]) => unknown).bind(ShamanismFormulas))
+  hexRegisterOf('shamanism', name, (ShamanismFormulas[name] as (...x: unknown[]) => unknown).bind(ShamanismFormulas))

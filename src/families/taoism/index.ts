@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TAOISM — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TaoismFormulas {
 }
 
 for (const name of ['balanceratio', 'chaptercount', 'elementcombos', 'hexagrams', 'principles', 'stageorderings', 'trigrampairs', 'virtuecount'] as const)
-  qpuHexRegisterOf('taoism', name, (TaoismFormulas[name] as (...x: unknown[]) => unknown).bind(TaoismFormulas))
+  hexRegisterOf('taoism', name, (TaoismFormulas[name] as (...x: unknown[]) => unknown).bind(TaoismFormulas))

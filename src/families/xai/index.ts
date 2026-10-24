@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** XAI — explainable AI as exact combinatorics, not a fabricated coverage number. The coalitions SHAP sums over (2^f),
@@ -32,4 +32,4 @@ export class XaiFormulas {
 }
 
 for (const name of ['anchors', 'attributions', 'baselines', 'coalitions', 'heads', 'interactions', 'limeSamples', 'saliency'] as const)
-  qpuHexRegisterOf('xai', name, (XaiFormulas[name] as (...x: unknown[]) => unknown).bind(XaiFormulas))
+  hexRegisterOf('xai', name, (XaiFormulas[name] as (...x: unknown[]) => unknown).bind(XaiFormulas))

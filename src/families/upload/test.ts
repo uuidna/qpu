@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { UploadFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('upload: area, aspect, resize, quality, thumbnail, filesize, within, crop â
   assert.equal(UploadFormulas.within(1500, 1000).value, 0)
   assert.equal(UploadFormulas.crop(750, 1000).value, 75)
   assert.equal(UploadFormulas.area(1920, 1080).dst, 'payload')
-  assert.equal(qpuHexFamiliesOf().get('upload')?.length, 8)
+  assert.equal(hexFamiliesOf().get('upload')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'upload', program: ['resize'], params: [1920, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 960, `upload.resize at ${uuid}`)
-  qpuUuidReceiptOf('upload resize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('upload resize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; area 2073600, aspect 177, resize 960, quality 800000, thumbnail 1800, filesize 6220800, within 1, crop 75; crossing to payload')
 })

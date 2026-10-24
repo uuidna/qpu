@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TORNADO — scaffolded integer measures crossed to meteorology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TornadoFormulas {
 }
 
 for (const name of ['damageindex', 'durationmin', 'efscale', 'pathlength', 'pressuredeficit', 'vorticity', 'width', 'windspeed'] as const)
-  qpuHexRegisterOf('tornado', name, (TornadoFormulas[name] as (...x: unknown[]) => unknown).bind(TornadoFormulas))
+  hexRegisterOf('tornado', name, (TornadoFormulas[name] as (...x: unknown[]) => unknown).bind(TornadoFormulas))

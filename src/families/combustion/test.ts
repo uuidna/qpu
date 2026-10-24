@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CombustionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('combustion: airfuelratio, excessair, flametemp, heatrelease, stoichiometri
   assert.equal(CombustionFormulas.emissions(100, 3).value, 300)
   assert.equal(CombustionFormulas.calorific(4000, 100).value, 40)
   assert.equal(CombustionFormulas.heatrelease(5, 40).dst, 'thermochemistry')
-  assert.equal(qpuHexFamiliesOf().get('combustion')?.length, 8)
+  assert.equal(hexFamiliesOf().get('combustion')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'combustion', program: ['heatrelease'], params: [5, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `combustion.heatrelease at ${uuid}`)
-  qpuUuidReceiptOf('combustion heatrelease', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('combustion heatrelease', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; airfuelratio 15, excessair 20, flametemp 2100, heatrelease 200, stoichiometric 12, efficiency 85, emissions 300, calorific 40; crossing to thermochemistry')
 })

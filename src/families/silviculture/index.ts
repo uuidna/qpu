@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SILVICULTURE — GROWING A FOREST STAND, AS ARITHMETIC (stand mensuration, not by hand). Tending trees is numbers: the
@@ -31,4 +31,4 @@ export class SilvicultureFormulas {
 }
 
 for (const name of ['basalarea', 'density', 'growth', 'rotation', 'stocking', 'thinning', 'volume', 'yield'] as const)
-  qpuHexRegisterOf('silviculture', name, (SilvicultureFormulas[name] as (...x: unknown[]) => unknown).bind(SilvicultureFormulas))
+  hexRegisterOf('silviculture', name, (SilvicultureFormulas[name] as (...x: unknown[]) => unknown).bind(SilvicultureFormulas))

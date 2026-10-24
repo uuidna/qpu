@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ProofingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('proofing: prooftime, volumegain, temperaturefactor, humiditylevel, ferment
   assert.equal(ProofingFormulas.doughtemp(24, 3).value, 27)
   assert.equal(ProofingFormulas.yeastdose(1000, 100).value, 10)
   assert.equal(ProofingFormulas.prooftime(180, 2).dst, 'biochemistry')
-  assert.equal(qpuHexFamiliesOf().get('proofing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('proofing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'proofing', program: ['prooftime'], params: [180, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `proofing.prooftime at ${uuid}`)
-  qpuUuidReceiptOf('proofing prooftime', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('proofing prooftime', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; prooftime 90, volumegain 180, temperaturefactor 9, humiditylevel 75, fermentationdegree 90, overproofrisk 20, doughtemp 27, yeastdose 10; crossing to biochemistry')
 })

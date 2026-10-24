@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CERN — scaffolded integer measures crossed to physics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CernFormulas {
 }
 
 for (const name of ['bunchspacing', 'collisions', 'detectorlayers', 'energygev', 'luminosity', 'particlepairs', 'tracksperevent', 'triggerrate'] as const)
-  qpuHexRegisterOf('cern', name, (CernFormulas[name] as (...x: unknown[]) => unknown).bind(CernFormulas))
+  hexRegisterOf('cern', name, (CernFormulas[name] as (...x: unknown[]) => unknown).bind(CernFormulas))

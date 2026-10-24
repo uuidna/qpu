@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** APIOLOGY — scaffolded integer measures crossed to ecology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ApiologyFormulas {
 }
 
 for (const name of ['broodcycle', 'combcells', 'dancepaths', 'foragerange', 'hivepopulation', 'honeyyield', 'pollenloads', 'swarmthreshold'] as const)
-  qpuHexRegisterOf('apiology', name, (ApiologyFormulas[name] as (...x: unknown[]) => unknown).bind(ApiologyFormulas))
+  hexRegisterOf('apiology', name, (ApiologyFormulas[name] as (...x: unknown[]) => unknown).bind(ApiologyFormulas))

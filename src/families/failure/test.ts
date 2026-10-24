@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FailureFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('failure: rpn, severity, occurrence, detection, criticality, modecount, roo
   assert.equal(FailureFormulas.escaperate(1000, 950).value, 5, 'five percent escape')
   assert.equal(FailureFormulas.escaperate(1000, 1100).value, 0)
   assert.equal(FailureFormulas.rpn(8, 5, 4).dst, 'quality')
-  assert.equal(qpuHexFamiliesOf().get('failure')?.length, 8)
+  assert.equal(hexFamiliesOf().get('failure')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'failure', program: ['rpn'], params: [8, 5, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 160, `failure.rpn at ${uuid}`)
-  qpuUuidReceiptOf('failure rpn', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('failure rpn', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rpn 160, severity 21, occurrence 5, detection 80, criticality 40, modecount 48, rootcauses 30, escaperate 5; crossing to quality')
 })

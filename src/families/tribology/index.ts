@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TRIBOLOGY — THE SCIENCE OF RUBBING SURFACES, AS ARITHMETIC. Friction, wear, and lubrication are numbers: the friction
@@ -30,4 +30,4 @@ export class TribologyFormulas {
 }
 
 for (const name of ['contact', 'fatigue', 'friction', 'hardness', 'lubrication', 'traction', 'viscosity', 'wear'] as const)
-  qpuHexRegisterOf('tribology', name, (TribologyFormulas[name] as (...x: unknown[]) => unknown).bind(TribologyFormulas))
+  hexRegisterOf('tribology', name, (TribologyFormulas[name] as (...x: unknown[]) => unknown).bind(TribologyFormulas))

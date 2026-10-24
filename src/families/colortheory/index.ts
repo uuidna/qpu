@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** COLORTHEORY — COLOR AS ARITHMETIC (chosen by the registry, not by hand). A color is numbers: the complement of a hue,
  *  the luminance of a channel triple, the contrast between two tones, the gray of a pixel, a blend of two values, a hue
@@ -33,4 +33,4 @@ export class ColortheoryFormulas {
 }
 
 for (const name of ['blend', 'complement', 'contrastratio', 'grayscale', 'hueshift', 'luminance', 'saturation', 'tint'] as const)
-  qpuHexRegisterOf('colortheory', name, (ColortheoryFormulas[name] as (...x: unknown[]) => unknown).bind(ColortheoryFormulas))
+  hexRegisterOf('colortheory', name, (ColortheoryFormulas[name] as (...x: unknown[]) => unknown).bind(ColortheoryFormulas))

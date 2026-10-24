@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ChemFormulas — 8 exact-integer formulas of the chem domain, each at a hex address crossing to cross; develops the chem leads. */
@@ -31,4 +31,4 @@ export class ChemFormulas {
 }
 
 for (const name of ['bonds', 'dilution', 'isotopes', 'mass', 'molarity', 'moles', 'valence', 'yield'] as const)
-  qpuHexRegisterOf('chem', name, (ChemFormulas[name] as (...x: unknown[]) => unknown).bind(ChemFormulas))
+  hexRegisterOf('chem', name, (ChemFormulas[name] as (...x: unknown[]) => unknown).bind(ChemFormulas))

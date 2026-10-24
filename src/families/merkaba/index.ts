@@ -1,4 +1,4 @@
-import { qpuHexFamiliesOf, qpuHexRegisterOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRegisterOf, hexRunOf, qpuHexUuidOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { DOORS } from '../../mcp/discovery.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
@@ -17,7 +17,7 @@ const f = (id: string, formula: string, value: number, holds: boolean, name: str
   crossFormulaOf({ id, src: 'merkaba', dst: 'cross', formula, value, proof: PROOF, ...extra }, holds, { name: `merkaba.${name}`, params })
 
 /** The families a flow may pass through: every registered family that is not a door and not this one, sorted. */
-export const flowFamiliesOf = (): string[] => [...qpuHexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && x !== 'merkaba').sort()
+export const flowFamiliesOf = (): string[] => [...hexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && x !== 'merkaba').sort()
 /** A flow family's index in that ring, by name: the integer a flow takes (mirror(a, b, c), trinity, torus) for the family. */
 export const flowIndexOf = (name: string): number => { const i = flowFamiliesOf().indexOf(name); if (i < 0) throw new Error(`merkaba: no flow family ${name}`); return i }
 const numberOf = (r: unknown): number => (typeof r === 'object' && r !== null && 'value' in r ? Number((r as { value: unknown }).value) : typeof r === 'bigint' ? Number(r) : Number(r))
@@ -40,7 +40,7 @@ const stepOf = (family: string, value: number): { value: number; holds: boolean;
   const key = `${family}/${value}`
   const known = edges.get(key)
   if (known) return known
-  const first = qpuHexFamiliesOf().get(family)?.[0]
+  const first = hexFamiliesOf().get(family)?.[0]
   let out: { value: number; holds: boolean; formula: string }
   const args = first ? callArgs(first.arity, value) : null
   if (!first || !args) out = { value: 0, holds: false, formula: first?.name ?? '' }
@@ -82,7 +82,7 @@ export class MerkabaFormulas {
     const up = flowOf(a, b, c), down = flowOf(c, b, a)
     // the flow a → b → c is mirror(c, b, a); the mirror of (a, b, c) is the flow c → b → a
     const upHex = qpuHexUuidOf({ family: 'merkaba', program: ['mirror'], params: [c, b, a] }), downHex = qpuHexUuidOf({ family: 'merkaba', program: ['mirror'], params: [a, b, c] })
-    const [viaDown, viaUp] = await Promise.all([qpuHexRunOf(upHex, downHex, undefined, { store: false }), qpuHexRunOf(downHex, upHex, undefined, { store: false })]) as { value?: unknown; holds?: boolean }[]
+    const [viaDown, viaUp] = await Promise.all([hexRunOf(upHex, downHex, undefined, { store: false }), hexRunOf(downHex, upHex, undefined, { store: false })]) as { value?: unknown; holds?: boolean }[]
     const same = Number(viaDown?.value) === up.value && Number(viaUp?.value) === down.value
     return f('merkaba-torus', 'run(flow | referrer mirror) = flow ∧ run(mirror | referrer flow) = mirror', same ? up.value : 0, nat(a, b, c) && up.holds && down.holds && same, 'torus', [a, b, c], { up: up.value, down: down.value, viaDown: Number(viaDown?.value), viaUp: Number(viaUp?.value) })
   }
@@ -117,7 +117,7 @@ export class MerkabaFormulas {
   static develop(a: number, j: number, s: number): CrossFormula {
     const names = flowFamiliesOf()
     const family = names[a]
-    const formula = family ? qpuHexFamiliesOf().get(family)?.[j] : undefined
+    const formula = family ? hexFamiliesOf().get(family)?.[j] : undefined
     const n = names.length
     if (!family || !formula || s >= 2 * n) return f('merkaba-develop', 'develop(a, j, s)', 0, false, 'develop', [a, j, s], { rotations: 2 * n })
     const at = (fam: string, value: number): { value: number; holds: boolean; formula: string } => {
@@ -130,7 +130,7 @@ export class MerkabaFormulas {
     // SPLIT, NOT A SWEEP: a rotation of the rosetta is walked over a bounded hexbit window of the ring (hexbit^n = 64),
     // not all n families — a lead composes with its neighbours locally, so its slice is a window and the cost stays cool
     // (O(window), never O(families)). The 2n addresses are unchanged; only the walk inside each one is sliced.
-    const L = qpuLatticeNamesOf()
+    const L = latticeNamesOf()
     const window = Math.min(n, L.hexbit ** L.n)
     const order = Array.from({ length: window }, (_, k) => names[(start + dir * k + n * n) % n]!)
     const familyAt = order.indexOf(family) // precomputed once, not an O(n) scan per step
@@ -165,4 +165,4 @@ export class MerkabaFormulas {
 }
 
 for (const name of ['coil', 'develop', 'flows', 'merkaba', 'mirror', 'rosetta', 'spin', 'star', 'steps', 'torus', 'trinity'] as const)
-  qpuHexRegisterOf('merkaba', name, (MerkabaFormulas[name] as (...x: unknown[]) => unknown).bind(MerkabaFormulas))
+  hexRegisterOf('merkaba', name, (MerkabaFormulas[name] as (...x: unknown[]) => unknown).bind(MerkabaFormulas))

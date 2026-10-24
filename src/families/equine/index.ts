@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EQUINE — THE HORSE, AS ARITHMETIC (chosen by the registry, not by hand). A horse is numbers: speed over ground, the
@@ -30,4 +30,4 @@ export class EquineFormulas {
 }
 
 for (const name of ['bodycondition', 'feedratio', 'gestation', 'heartrate', 'height', 'recovery', 'speed', 'stride'] as const)
-  qpuHexRegisterOf('equine', name, (EquineFormulas[name] as (...x: unknown[]) => unknown).bind(EquineFormulas))
+  hexRegisterOf('equine', name, (EquineFormulas[name] as (...x: unknown[]) => unknown).bind(EquineFormulas))

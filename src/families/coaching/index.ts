@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COACHING — TRAINING LOAD AS ARITHMETIC. Preparing a body is numbers: how a macrocycle splits into blocks, the taper
@@ -31,4 +31,4 @@ export class CoachingFormulas {
 }
 
 for (const name of ['acwr', 'deload', 'overload', 'peaking', 'periodization', 'readiness', 'taper', 'workratio'] as const)
-  qpuHexRegisterOf('coaching', name, (CoachingFormulas[name] as (...x: unknown[]) => unknown).bind(CoachingFormulas))
+  hexRegisterOf('coaching', name, (CoachingFormulas[name] as (...x: unknown[]) => unknown).bind(CoachingFormulas))

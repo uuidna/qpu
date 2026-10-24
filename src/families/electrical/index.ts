@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELECTRICAL — ELECTRICAL ENGINEERING, AS ARITHMETIC (chosen by the public-API registry, not by hand). A circuit is
@@ -31,4 +31,4 @@ export class ElectricalFormulas {
 }
 
 for (const name of ['efficiency', 'frequency', 'impedance', 'load', 'power', 'powerfactor', 'resistance', 'transformer'] as const)
-  qpuHexRegisterOf('electrical', name, (ElectricalFormulas[name] as (...x: unknown[]) => unknown).bind(ElectricalFormulas))
+  hexRegisterOf('electrical', name, (ElectricalFormulas[name] as (...x: unknown[]) => unknown).bind(ElectricalFormulas))

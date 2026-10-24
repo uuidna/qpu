@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { KnotFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('knot: crossingnumber, genus, bridgenumber, writhe, unknottingnumber, compo
   assert.equal(KnotFormulas.determinant(1).value, 3, 'trefoil determinant')
   assert.equal(KnotFormulas.stickcount(3).value, 6, 'trefoil stick number')
   assert.equal(KnotFormulas.crossingnumber(3, 2).dst, 'topology')
-  assert.equal(qpuHexFamiliesOf().get('knot')?.length, 8)
+  assert.equal(hexFamiliesOf().get('knot')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'knot', program: ['crossingnumber'], params: [3, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `knot.crossingnumber at ${uuid}`)
-  qpuUuidReceiptOf('knot crossingnumber', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('knot crossingnumber', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; crossingnumber 3, genus 1, bridgenumber 2, writhe 3, unknottingnumber 3, components 2, determinant 3, stickcount 6; crossing to topology')
 })

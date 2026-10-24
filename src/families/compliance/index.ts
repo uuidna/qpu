@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COMPLIANCE — REGULATION AS ARITHMETIC. A regime is numbers: a turnover-based penalty, the gap between controls in
@@ -31,4 +31,4 @@ export class ComplianceFormulas {
 }
 
 for (const name of ['breach', 'coverage', 'deadline', 'penalty', 'remediation', 'reportable', 'retention', 'risk'] as const)
-  qpuHexRegisterOf('compliance', name, (ComplianceFormulas[name] as (...x: unknown[]) => unknown).bind(ComplianceFormulas))
+  hexRegisterOf('compliance', name, (ComplianceFormulas[name] as (...x: unknown[]) => unknown).bind(ComplianceFormulas))

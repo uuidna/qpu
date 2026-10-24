@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** NAVIGATION — FINDING THE WAY, AS ARITHMETIC (chosen by the public-API registry, not by hand). Getting there is numbers:
  *  the bearing to steer, the distance covered, the time still to run, how far off the planned line, the geometry of the fix,
@@ -33,4 +33,4 @@ export class NavigationFormulas {
 }
 
 for (const name of ['accuracy', 'bearing', 'crosstrack', 'dilution', 'distance', 'eta', 'heading', 'waypoint'] as const)
-  qpuHexRegisterOf('navigation', name, (NavigationFormulas[name] as (...x: unknown[]) => unknown).bind(NavigationFormulas))
+  hexRegisterOf('navigation', name, (NavigationFormulas[name] as (...x: unknown[]) => unknown).bind(NavigationFormulas))

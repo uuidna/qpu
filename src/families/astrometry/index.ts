@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ASTROMETRY — MEASURING WHERE THE STARS ARE, AS ARITHMETIC (positions, motions and the optics that read them, not by hand).
@@ -31,4 +31,4 @@ export class AstrometryFormulas {
 }
 
 for (const name of ['airmass', 'distance', 'fieldofview', 'magnitude', 'parallax', 'pixelscale', 'propermotion', 'resolution'] as const)
-  qpuHexRegisterOf('astrometry', name, (AstrometryFormulas[name] as (...x: unknown[]) => unknown).bind(AstrometryFormulas))
+  hexRegisterOf('astrometry', name, (AstrometryFormulas[name] as (...x: unknown[]) => unknown).bind(AstrometryFormulas))

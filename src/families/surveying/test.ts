@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SurveyingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('surveying: bearing, traverse, elevation, grade, area, contour, offset, clo
   assert.equal(SurveyingFormulas.closure(5000, 1).value, 5000, 'closure precision 1:5000')
   assert.equal(SurveyingFormulas.closure(5000, 0).value, 0, 'no misclosure, guarded division')
   assert.equal(SurveyingFormulas.bearing(100, 90).dst, 'civil')
-  assert.equal(qpuHexFamiliesOf().get('surveying')?.length, 8)
+  assert.equal(hexFamiliesOf().get('surveying')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'surveying', program: ['bearing'], params: [100, 90] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 190, `surveying.bearing at ${uuid}`)
-  qpuUuidReceiptOf('surveying bearing', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('surveying bearing', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bearing 190, traverse 660, elevation 102, grade 5, area 600, contour 3, offset 10, closure 5000; crossing to civil')
 })

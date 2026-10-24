@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHEMICAL — CHEMICAL ENGINEERING AS ARITHMETIC. Running a process is numbers: how much feed reacts, how much product
@@ -30,4 +30,4 @@ export class ChemicalFormulas {
 }
 
 for (const name of ['conversion', 'heattransfer', 'masstransfer', 'output', 'pressuredrop', 'reflux', 'residence', 'selectivity'] as const)
-  qpuHexRegisterOf('chemical', name, (ChemicalFormulas[name] as (...x: unknown[]) => unknown).bind(ChemicalFormulas))
+  hexRegisterOf('chemical', name, (ChemicalFormulas[name] as (...x: unknown[]) => unknown).bind(ChemicalFormulas))

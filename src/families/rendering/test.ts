@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RenderingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('rendering: fps, triangles, pixels, raytracing, culling, shading, latency, 
   assert.equal(RenderingFormulas.latency(2, 120).value, 16, 'two frames at 120 Hz')
   assert.equal(RenderingFormulas.fillrate(1000, 60).value, 60000)
   assert.equal(RenderingFormulas.fps(120, 2).dst, 'layout')
-  assert.equal(qpuHexFamiliesOf().get('rendering')?.length, 8)
+  assert.equal(hexFamiliesOf().get('rendering')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'rendering', program: ['fps'], params: [120, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `rendering.fps at ${uuid}`)
-  qpuUuidReceiptOf('rendering fps', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('rendering fps', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; fps 60, triangles 8, pixels 2073600, raytracing 8000, culling 25, shading 256, latency 16, fillrate 60000; crossing to layout')
 })

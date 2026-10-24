@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CricketFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('cricket: battingaverage, strikerate, bowlingaverage, economy, runrate, par
   assert.equal(CricketFormulas.boundary(30, 120).value, 25, 'a quarter to the rope')
   assert.equal(CricketFormulas.battingaverage(500, 0).value, 0, 'guard the empty dismissal')
   assert.equal(CricketFormulas.battingaverage(500, 10).dst, 'sports')
-  assert.equal(qpuHexFamiliesOf().get('cricket')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cricket')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cricket', program: ['strikerate'], params: [75, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 150, `cricket.strikerate at ${uuid}`)
-  qpuUuidReceiptOf('cricket strikerate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cricket strikerate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; battingaverage 50, strikerate 150, bowlingaverage 24, economy 6, runrate 600, partnership 60, required 900, boundary 25; crossing to sports')
 })

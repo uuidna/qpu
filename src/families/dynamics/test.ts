@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DynamicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('dynamics: force, momentum, impulse, kineticenergy, work, power, accelerati
   assert.equal(DynamicsFormulas.collision(3, 7, 5).value, 50, 'inelastic combined momentum')
   assert.equal(DynamicsFormulas.power(100, 0).value, 0)
   assert.equal(DynamicsFormulas.force(10, 5).dst, 'kinematics')
-  assert.equal(qpuHexFamiliesOf().get('dynamics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dynamics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dynamics', program: ['collision'], params: [3, 7, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `dynamics.collision at ${uuid}`)
-  qpuUuidReceiptOf('dynamics collision', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dynamics collision', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; force 50, momentum 200, impulse 200, kineticenergy 200, work 50, power 50, acceleration 20, collision 50; crossing to kinematics')
 })

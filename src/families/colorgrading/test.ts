@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ColorgradingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('colorgrading: gamma, contrast, saturation, whitebalance, luminance, gamut,
   assert.equal(ColorgradingFormulas.temperature(200, 30).value, 170, 'cooled by the shift')
   assert.equal(ColorgradingFormulas.temperature(10, 30).value, 0, 'floored at 0')
   assert.equal(ColorgradingFormulas.gamma(200, 90).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('colorgrading')?.length, 8)
+  assert.equal(hexFamiliesOf().get('colorgrading')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'colorgrading', program: ['gamma'], params: [200, 90] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 180, `colorgrading.gamma at ${uuid}`)
-  qpuUuidReceiptOf('colorgrading gamma', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('colorgrading gamma', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gamma 180, contrast 200, saturation 90, whitebalance 250, luminance 167, gamut 255, lift 55, temperature 170; crossing to optics')
 })

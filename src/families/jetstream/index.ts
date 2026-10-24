@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** JETSTREAM — scaffolded integer measures crossed to meteorology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class JetstreamFormulas {
 }
 
 for (const name of ['altitude', 'coresubsets', 'latitude', 'meandercount', 'rossbynumber', 'shearindex', 'waveamplitude', 'windspeed'] as const)
-  qpuHexRegisterOf('jetstream', name, (JetstreamFormulas[name] as (...x: unknown[]) => unknown).bind(JetstreamFormulas))
+  hexRegisterOf('jetstream', name, (JetstreamFormulas[name] as (...x: unknown[]) => unknown).bind(JetstreamFormulas))

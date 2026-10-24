@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CARBON — ACCOUNTING FOR EMISSIONS, AS ARITHMETIC. The carbon ledger is numbers: the footprint of an activity, what an
@@ -31,4 +31,4 @@ export class CarbonFormulas {
 }
 
 for (const name of ['budget', 'capture', 'credits', 'equivalent', 'footprint', 'intensity', 'offset', 'sequestration'] as const)
-  qpuHexRegisterOf('carbon', name, (CarbonFormulas[name] as (...x: unknown[]) => unknown).bind(CarbonFormulas))
+  hexRegisterOf('carbon', name, (CarbonFormulas[name] as (...x: unknown[]) => unknown).bind(CarbonFormulas))

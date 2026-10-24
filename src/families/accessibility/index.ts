@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACCESSIBILITY — WHAT A FRONTEND OWES EVERY READER, AS ARITHMETIC. Reading a page is numbers: the contrast between ink
@@ -31,4 +31,4 @@ export class AccessibilityFormulas {
 }
 
 for (const name of ['altcoverage', 'aria', 'contrastratio', 'focusorder', 'readinglevel', 'taptarget', 'textscale', 'wcagscore'] as const)
-  qpuHexRegisterOf('accessibility', name, (AccessibilityFormulas[name] as (...x: unknown[]) => unknown).bind(AccessibilityFormulas))
+  hexRegisterOf('accessibility', name, (AccessibilityFormulas[name] as (...x: unknown[]) => unknown).bind(AccessibilityFormulas))

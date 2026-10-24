@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONTRACT — THE MEASURES OF A BARGAIN AND ITS BREACH, ANY JURISDICTION. What a broken contract is worth is arithmetic
@@ -32,4 +32,4 @@ export class ContractFormulas {
 }
 
 for (const name of ['cure', 'deposit', 'expectation', 'liquidated', 'mitigation', 'penalty', 'reliance', 'restitution'] as const)
-  qpuHexRegisterOf('contract', name, (ContractFormulas[name] as (...x: unknown[]) => unknown).bind(ContractFormulas))
+  hexRegisterOf('contract', name, (ContractFormulas[name] as (...x: unknown[]) => unknown).bind(ContractFormulas))

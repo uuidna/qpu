@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** IRRIGATION — WATERING A FIELD, AS ARITHMETIC (chosen by the agronomy registry, not by hand). Watering is numbers: the
@@ -31,4 +31,4 @@ export class IrrigationFormulas {
 }
 
 for (const name of ['application', 'efficiency', 'evapotranspiration', 'flowrate', 'requirement', 'runtime', 'schedule', 'uniformity'] as const)
-  qpuHexRegisterOf('irrigation', name, (IrrigationFormulas[name] as (...x: unknown[]) => unknown).bind(IrrigationFormulas))
+  hexRegisterOf('irrigation', name, (IrrigationFormulas[name] as (...x: unknown[]) => unknown).bind(IrrigationFormulas))

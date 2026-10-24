@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ARBITRAGE — RISKLESS PRICE GAPS, AS ARITHMETIC. Trading is numbers: the bid-ask spread, net profit after fees, the
@@ -31,4 +31,4 @@ export class ArbitrageFormulas {
 }
 
 for (const name of ['breakeven', 'edge', 'netprofit', 'pricedifference', 'returnrate', 'spread', 'transactioncost', 'triangularrate'] as const)
-  qpuHexRegisterOf('arbitrage', name, (ArbitrageFormulas[name] as (...x: unknown[]) => unknown).bind(ArbitrageFormulas))
+  hexRegisterOf('arbitrage', name, (ArbitrageFormulas[name] as (...x: unknown[]) => unknown).bind(ArbitrageFormulas))

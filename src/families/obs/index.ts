@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OBS — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ObsFormulas {
 }
 
 for (const name of ['alertcombos', 'dashboardsubsets', 'errorrate', 'latencyp99', 'samplingrate', 'sloburn', 'throughput', 'uptime'] as const)
-  qpuHexRegisterOf('obs', name, (ObsFormulas[name] as (...x: unknown[]) => unknown).bind(ObsFormulas))
+  hexRegisterOf('obs', name, (ObsFormulas[name] as (...x: unknown[]) => unknown).bind(ObsFormulas))

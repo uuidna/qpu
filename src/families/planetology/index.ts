@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PLANETOLOGY — THE PHYSICS OF A WORLD, AS ARITHMETIC (integer proxies, no sqrt). What a planet is is numbers: surface
@@ -31,4 +31,4 @@ export class PlanetologyFormulas {
 }
 
 for (const name of ['albedo', 'density', 'equilibrium', 'escapevelocity', 'gravity', 'hillsphere', 'insolation', 'roche'] as const)
-  qpuHexRegisterOf('planetology', name, (PlanetologyFormulas[name] as (...x: unknown[]) => unknown).bind(PlanetologyFormulas))
+  hexRegisterOf('planetology', name, (PlanetologyFormulas[name] as (...x: unknown[]) => unknown).bind(PlanetologyFormulas))

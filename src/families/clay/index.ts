@@ -1,8 +1,8 @@
-import { qpuFacesOf, qpuHexRegisterOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
+import { facesOf, hexRegisterOf, hexFamiliesOf, hexRunOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
-import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, latticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
 import { leanRecomputed, leanAxioms, leanUnproven } from '../../quantum/processing/unit/lean.js'
-const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
+const L = { ...latticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** The σ-involution seals of "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
  *  doi:10.5281/zenodo.21781602), each computed exactly as the paper states it: σ is self-inverse (σ∘σ = id) and its
@@ -118,8 +118,8 @@ export type ClaySealDomain = {
  * - yangMills: arity 0 — one empty call
  * - others: arity-correct lattice walk (1…faces on each slot; riemann also includes named [1, 2])
  */
-export const claySealDomainOf = (name: ClaySealName, faces = qpuFacesOf().faces): ClaySealDomain => {
-  const arity = qpuHexFamiliesOf().get('clay')?.find((f) => f.name === name)?.arity ?? 0
+export const claySealDomainOf = (name: ClaySealName, faces = facesOf().faces): ClaySealDomain => {
+  const arity = hexFamiliesOf().get('clay')?.find((f) => f.name === name)?.arity ?? 0
   if (name === 'bsd') {
     const ms = Array.from({ length: Math.max(0, faces - 2) }, (_, k) => k + 3)
     if (!ms.includes(15)) ms.push(15)
@@ -145,14 +145,14 @@ export const claySealDomainOf = (name: ClaySealName, faces = qpuFacesOf().faces)
 }
 
 /** Total domain slots across the six seals — sync measure for goal.combinations coverage. */
-export const claySealDomainSizeOf = (faces = qpuFacesOf().faces): number =>
+export const claySealDomainSizeOf = (faces = facesOf().faces): number =>
   CLAY_SEALS.reduce((n, name) => n + claySealDomainOf(name, faces).params.length, 0)
 
 /**
  * Sync domain coverage: how many domain inputs hold under ClaySeals (no hex run).
  * Universal σ-involution on the domain ⟺ held === size.
  */
-export const claySealDomainCoverageOf = (faces = qpuFacesOf().faces) => {
+export const claySealDomainCoverageOf = (faces = facesOf().faces) => {
   const rows = CLAY_SEALS.map((name) => {
     const domain = claySealDomainOf(name, faces)
     const held = domain.params.filter((params) => {
@@ -177,7 +177,7 @@ export const claySealDomainCoverageOf = (faces = qpuFacesOf().faces) => {
 export const claySealWaveOf = async (i: number) => {
   const name = CLAY_SEALS[i]
   if (!name) return null
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const domain = claySealDomainOf(name, faces)
   const { discoverCapacityGateOf, gateCourtTrialOf } = await import('../../payload/plugins/gate-court.js')
   const { qpuNextOf } = await import('../../quantum/processing/unit/index.js')
@@ -185,7 +185,7 @@ export const claySealWaveOf = async (i: number) => {
   const runs = await Promise.all(domain.params.map(async (params) => {
     try {
       const hex = qpuHexUuidOf({ family: 'clay', program: [name], params })
-      const r = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; next?: unknown }
+      const r = (await hexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; next?: unknown }
       const holds = r.holds === true
       const rawNext = Object.prototype.hasOwnProperty.call(r, 'next') ? (r.next ?? null) : ('absent' as const)
       const court = gateCourtTrialOf({
@@ -297,7 +297,7 @@ export const clayPassOf = async (i: number, opts?: { related?: boolean; fullDisc
   const values = [...new Set(wave.values.filter((v) => Number.isSafeInteger(v) && v >= 3))]
   const slice = fullAllowed
     ? undefined
-    : (opts?.discoverSlice ?? { from: 0, count: qpuFacesOf().faces })
+    : (opts?.discoverSlice ?? { from: 0, count: facesOf().faces })
   const d = await qpuDiscoverOf(values, slice)
   const related = [...new Set(d.relations.filter((rel) => rel.ways.some((w) => w.family === 'clay' && w.program.includes(wave.name))).flatMap((rel) => rel.ways.filter((w) => w.family !== 'clay').map((w) => `${w.family}.${w.program.join('∘')} = ${rel.value}`)))]
   const seal = d.seals.find((s) => s.family === 'clay' && s.program.includes(wave.name))
@@ -314,7 +314,7 @@ export const clayPassOf = async (i: number, opts?: { related?: boolean; fullDisc
     relations: d.relations.length,
     proven: wave.involutive && (related.length > 0 || seal !== undefined),
     discover: slice
-      ? `slice from=${slice.from ?? 0} count=${slice.count ?? qpuFacesOf().faces}` as const
+      ? `slice from=${slice.from ?? 0} count=${slice.count ?? facesOf().faces}` as const
       : 'full-registry' as const,
     capacity: {
       case: capacity.case,
@@ -355,14 +355,14 @@ export class ClayPass {
  *  anchor holds and the disclosure is non-empty. Nothing is withheld. */
 export class ClayDisclosure {
   static disclosure(): CrossFormula {
-    const families = [...qpuHexFamiliesOf().keys()].sort()
+    const families = [...hexFamiliesOf().keys()].sort()
     // LEAN ALL FAMILIES WITHOUT EXCEPTION. The clay core σ_d(x) = d − x is proved in Lean universally — sigma_reflect
     // (∀ d x, x ≤ d → d − (d − x) = x) and sigma_midpoint (∀ d x, 2x = d → d − x = x) quantify over every Nat. So each
     // family, whatever its size, is an INSTANCE of those theorems: its reflection is self-inverse (σ∘σ = id) and fixed
     // at the midpoint of twice its scale. This verifies that instance per family; none is an exception.
     const sigma = (d: number, x: number) => d - x
     const leanedByFamily = families.map((fam) => {
-      const fs = qpuHexFamiliesOf().get(fam)
+      const fs = hexFamiliesOf().get(fam)
       const d = fs ? fs.length : 0
       const x = Math.floor(d / 2)
       const reflect = x <= d && sigma(d, sigma(d, x)) === x // sigma_reflect instance
@@ -404,8 +404,8 @@ export class ClayDisclosure {
     )
   }
 }
-qpuHexRegisterOf('clay', 'disclosure', (ClayDisclosure.disclosure as (...x: unknown[]) => unknown).bind(ClayDisclosure))
-qpuHexRegisterOf('clay', 'pass', (ClayPass.pass as (...x: unknown[]) => unknown).bind(ClayPass))
-qpuHexRegisterOf('clay', 'singularity', (ClaySeals.singularity as (...x: unknown[]) => unknown).bind(ClaySeals))
+hexRegisterOf('clay', 'disclosure', (ClayDisclosure.disclosure as (...x: unknown[]) => unknown).bind(ClayDisclosure))
+hexRegisterOf('clay', 'pass', (ClayPass.pass as (...x: unknown[]) => unknown).bind(ClayPass))
+hexRegisterOf('clay', 'singularity', (ClaySeals.singularity as (...x: unknown[]) => unknown).bind(ClaySeals))
 for (const name of ['bsd', 'hodge', 'navierStokes', 'pVsNp', 'riemann', 'yangMills'] as const)
-  qpuHexRegisterOf('clay', name, (ClaySeals[name] as (...x: unknown[]) => unknown).bind(ClaySeals))
+  hexRegisterOf('clay', name, (ClaySeals[name] as (...x: unknown[]) => unknown).bind(ClaySeals))

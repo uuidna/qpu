@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BiodiversityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('biodiversity: richness, evenness, shannon, simpson, endemism, turnover, ab
   assert.equal(BiodiversityFormulas.abundance(1000, 25).value, 40, 'count per area')
   assert.equal(BiodiversityFormulas.rarity(15, 100).value, 15)
   assert.equal(BiodiversityFormulas.richness(42).dst, 'ecology')
-  assert.equal(qpuHexFamiliesOf().get('biodiversity')?.length, 8)
+  assert.equal(hexFamiliesOf().get('biodiversity')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'biodiversity', program: ['evenness'], params: [1000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `biodiversity.evenness at ${uuid}`)
-  qpuUuidReceiptOf('biodiversity evenness', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('biodiversity evenness', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; richness 42, evenness 100, shannon 25, simpson 60, endemism 30, turnover 40, abundance 40, rarity 15; crossing to ecology')
 })

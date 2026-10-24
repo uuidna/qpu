@@ -8,7 +8,7 @@ import { writeFileSync } from 'node:fs'
 import '../src/mcp/families.js'
 import '../src/mcp/qpu-fused.js'
 import { publicDoorFetchOf } from '../src/payload/plugins/public.js'
-import { qpuMcpToolsListOf } from '../src/quantum/processing/unit/index.js'
+import { mcpToolsListOf } from '../src/quantum/processing/unit/index.js'
 
 const FORBIDDEN_OUT = /(?:^|\/)(lead-waves-receipt|gate-receipt|discovery-receipt)\.json$/
 const args = process.argv.slice(2)
@@ -46,7 +46,7 @@ const connectorCallOf = async (arguments_: Record<string, unknown>) => {
   return body.result
 }
 
-const tools = qpuMcpToolsListOf()
+const tools = mcpToolsListOf()
 const listBytes = JSON.stringify({ resultType: 'complete', tools }).length
 const bill = {
   doors: tools.length,

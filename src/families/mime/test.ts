@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MimeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('mime: gestures, illusiontypes, isolationpoints, sequenceorderings, gesture
   assert.equal(MimeFormulas.spacegrid(8, 8).value, 64)
   assert.equal(MimeFormulas.claritypct(90, 100).value, 90)
   assert.equal(MimeFormulas.gestures(12, 8).dst, 'kinematics')
-  assert.equal(qpuHexFamiliesOf().get('mime')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mime')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mime', program: ['gestures'], params: [12, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `mime.gestures at ${uuid}`)
-  qpuUuidReceiptOf('mime gestures', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mime gestures', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gestures 20, illusiontypes 12, isolationpoints 12, sequenceorderings 24, gesturepairs 66, tempobeats 60, spacegrid 64, claritypct 90; crossing to kinematics')
 })

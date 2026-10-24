@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MEMBRANE — THE CELL BOUNDARY, AS ARITHMETIC. A membrane is numbers: the resting potential across it, the Nernst
@@ -31,4 +31,4 @@ export class MembraneFormulas {
 }
 
 for (const name of ['capacitance', 'fluidity', 'nernst', 'permeability', 'restingpotential', 'selectivity', 'surfacearea', 'transportrate'] as const)
-  qpuHexRegisterOf('membrane', name, (MembraneFormulas[name] as (...x: unknown[]) => unknown).bind(MembraneFormulas))
+  hexRegisterOf('membrane', name, (MembraneFormulas[name] as (...x: unknown[]) => unknown).bind(MembraneFormulas))

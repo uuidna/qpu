@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ICONOGRAPHY — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class IconographyFormulas {
 }
 
 for (const name of ['attributepairs', 'canonratio', 'colorsubsets', 'compositionorderings', 'gesturetypes', 'haloforms', 'motifcombos', 'symbolcount'] as const)
-  qpuHexRegisterOf('iconography', name, (IconographyFormulas[name] as (...x: unknown[]) => unknown).bind(IconographyFormulas))
+  hexRegisterOf('iconography', name, (IconographyFormulas[name] as (...x: unknown[]) => unknown).bind(IconographyFormulas))

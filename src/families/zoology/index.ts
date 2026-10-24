@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ZOOLOGY — ANIMAL POPULATIONS AS ARITHMETIC. The living count is numbers: net population change, density over range,
@@ -30,4 +30,4 @@ export class ZoologyFormulas {
 }
 
 for (const name of ['density', 'fecundity', 'lifespan', 'metabolism', 'migration', 'population', 'predation', 'survival'] as const)
-  qpuHexRegisterOf('zoology', name, (ZoologyFormulas[name] as (...x: unknown[]) => unknown).bind(ZoologyFormulas))
+  hexRegisterOf('zoology', name, (ZoologyFormulas[name] as (...x: unknown[]) => unknown).bind(ZoologyFormulas))

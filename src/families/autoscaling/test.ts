@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AutoscalingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('autoscaling: desiredreplicas, targetutilization, scaleout, cooldown, headr
   assert.equal(AutoscalingFormulas.costperreplica(1000, 5).value, 200)
   assert.equal(AutoscalingFormulas.burst(10, 3).value, 30)
   assert.equal(AutoscalingFormulas.desiredreplicas(100, 30).dst, 'concurrency')
-  assert.equal(qpuHexFamiliesOf().get('autoscaling')?.length, 8)
+  assert.equal(hexFamiliesOf().get('autoscaling')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'autoscaling', program: ['desiredreplicas'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `autoscaling.desiredreplicas at ${uuid}`)
-  qpuUuidReceiptOf('autoscaling desiredreplicas', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('autoscaling desiredreplicas', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; desiredreplicas 4, targetutilization 70, scaleout 6, cooldown 60, headroom 40, queuebacklog 100, costperreplica 200, burst 30; crossing to concurrency')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STAFFING — PUTTING PEOPLE ON THE WORK, AS ARITHMETIC (chosen by the public-API registry, not by hand). A workforce is
@@ -31,4 +31,4 @@ export class StaffingFormulas {
 }
 
 for (const name of ['allocation', 'coverage', 'demand', 'headcount', 'overtime', 'ratio', 'shift', 'vacancy'] as const)
-  qpuHexRegisterOf('staffing', name, (StaffingFormulas[name] as (...x: unknown[]) => unknown).bind(StaffingFormulas))
+  hexRegisterOf('staffing', name, (StaffingFormulas[name] as (...x: unknown[]) => unknown).bind(StaffingFormulas))

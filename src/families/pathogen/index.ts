@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PathogenFormulas — 8 exact-integer formulas of the pathogen domain, each at a hex address crossing to cross; develops the pathogen leads. */
@@ -31,4 +31,4 @@ export class PathogenFormulas {
 }
 
 for (const name of ['combos', 'generations', 'incubation', 'mortality', 'r0', 'reservoir', 'strains', 'transmission'] as const)
-  qpuHexRegisterOf('pathogen', name, (PathogenFormulas[name] as (...x: unknown[]) => unknown).bind(PathogenFormulas))
+  hexRegisterOf('pathogen', name, (PathogenFormulas[name] as (...x: unknown[]) => unknown).bind(PathogenFormulas))

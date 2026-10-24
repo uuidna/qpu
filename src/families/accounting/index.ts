@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACCOUNTING — THE LEDGER, AND WHAT THE LEDGER OWES THE LAW. Double-entry is arithmetic: the books balance when debits
@@ -31,4 +31,4 @@ export class AccountingFormulas {
 }
 
 for (const name of ['accrue', 'balance', 'current', 'depreciation', 'equity', 'margin', 'net', 'tax'] as const)
-  qpuHexRegisterOf('accounting', name, (AccountingFormulas[name] as (...x: unknown[]) => unknown).bind(AccountingFormulas))
+  hexRegisterOf('accounting', name, (AccountingFormulas[name] as (...x: unknown[]) => unknown).bind(AccountingFormulas))

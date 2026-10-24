@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ResponsiveFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('responsive: breakpoint, fluidsize, columns, gutter, scalefactor, viewportu
   assert.equal(ResponsiveFormulas.density(320, 3).value, 960)
   assert.equal(ResponsiveFormulas.breakpoint(1280, 0).value, 0)
   assert.equal(ResponsiveFormulas.columns(1200, 300).dst, 'frontend')
-  assert.equal(qpuHexFamiliesOf().get('responsive')?.length, 8)
+  assert.equal(hexFamiliesOf().get('responsive')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'responsive', program: ['columns'], params: [1200, 300] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `responsive.columns at ${uuid}`)
-  qpuUuidReceiptOf('responsive columns', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('responsive columns', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; breakpoint 4, fluidsize 32, columns 4, gutter 8, scalefactor 32, viewportunits 720, aspectfit 900, density 960; crossing to frontend')
 })

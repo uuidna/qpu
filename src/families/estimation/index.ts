@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ESTIMATION — RECOVERING A TRUE VALUE FROM NOISY MEASUREMENTS, AS ARITHMETIC. Estimating is numbers: the mean squared
@@ -31,4 +31,4 @@ export class EstimationFormulas {
 }
 
 for (const name of ['bias', 'confidence', 'estimategain', 'innovation', 'likelihood', 'meansquareerror', 'residual', 'variance'] as const)
-  qpuHexRegisterOf('estimation', name, (EstimationFormulas[name] as (...x: unknown[]) => unknown).bind(EstimationFormulas))
+  hexRegisterOf('estimation', name, (EstimationFormulas[name] as (...x: unknown[]) => unknown).bind(EstimationFormulas))

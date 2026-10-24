@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENTERTAINMENT — MEDIA AND ITS AUDIENCE, AS ARITHMETIC (chosen by the registry). Content is numbers: the average rating,
@@ -30,4 +30,4 @@ export class EntertainmentFormulas {
 }
 
 for (const name of ['audience', 'bitrate', 'boxoffice', 'completion', 'rating', 'royalty', 'runtime', 'share'] as const)
-  qpuHexRegisterOf('entertainment', name, (EntertainmentFormulas[name] as (...x: unknown[]) => unknown).bind(EntertainmentFormulas))
+  hexRegisterOf('entertainment', name, (EntertainmentFormulas[name] as (...x: unknown[]) => unknown).bind(EntertainmentFormulas))

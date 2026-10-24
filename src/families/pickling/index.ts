@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PICKLING — scaffolded integer measures crossed to microbiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PicklingFormulas {
 }
 
 for (const name of ['acidity', 'brineratio', 'crunchretention', 'fermentdays', 'lacticacid', 'phlevel', 'saltpercent', 'shelflife'] as const)
-  qpuHexRegisterOf('pickling', name, (PicklingFormulas[name] as (...x: unknown[]) => unknown).bind(PicklingFormulas))
+  hexRegisterOf('pickling', name, (PicklingFormulas[name] as (...x: unknown[]) => unknown).bind(PicklingFormulas))

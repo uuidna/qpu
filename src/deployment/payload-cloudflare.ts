@@ -73,7 +73,7 @@ export const CLOUDFLARE_DB_ADAPTERS = {
 
 /**
  * Upload storage adapters on the combination `storage` axis (Payload 4 `storage: []`). FS bytes for media are these
- * adapters; content-addressed FS for the unit is qpuStorageOf over the same RAID bindings — not node:fs.
+ * adapters; content-addressed FS for the unit is storageOf over the same RAID bindings — not node:fs.
  * @wing cms
  * @kind constant
  */
@@ -98,7 +98,7 @@ export const PAYLOAD_WEBSITE_CLONE = {
   qpuOwns: [
     'db axis: qpu-raid | qpu-d1 | d1 | postgres',
     'storage axis: r2 | s3 | none',
-    'RAID DocStore / qpuStorageOf (FS native — no node:fs port)',
+    'RAID DocStore / storageOf (FS native — no node:fs port)',
     'MCP connector + publicPlugin',
     'cures formulas (contract.cure, adhesive.cure, concrete.cure, curing.curetime, …)',
     'healing formulas (dermatology.healing, podiatry.healing, shamanism.healingcombos, …)',
@@ -214,7 +214,7 @@ const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: stri
   // rows (users, form submissions, receipts) or import arbitrary docs, bypassing per-collection access. Gate both to an
   // admin: only an admin may run an export or an import (Wave XIV compliance, SOC2-CC6.1 / GDPR data-access control).
   'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: (t) => `importExportPlugin({ collections: [${t.map((x) => `{ slug: '${x}' }`).join(', ')}], overrideExportCollection: ({ collection }) => ({ ...collection, access: { ...collection.access, read: ${ADMIN_SRC}, create: ${ADMIN_SRC}, delete: ${ADMIN_SRC} } }), overrideImportCollection: ({ collection }) => ({ ...collection, access: { ...collection.access, read: ${ADMIN_SRC}, create: ${ADMIN_SRC}, delete: ${ADMIN_SRC} } }) })` },
-  mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: (t) => `mcpPlugin({ collections: { ${t.map((x) => `'${x}': { description: '${x}' }`).join(', ')} } })` },
+  mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: (t) => `mcpPlugin({ collections: { ${t.map((x) => `'${x}': { enabled: true, description: '${x}' }`).join(', ')} } })` },
   'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: (t) => `multiTenantPlugin({ collections: { ${t.map((x) => `'${x}': {}`).join(', ')} } })` },
   'nested-docs': { from: '@payloadcms/plugin-nested-docs', name: 'nestedDocsPlugin', call: (t) => `nestedDocsPlugin({ collections: ${slugs(t)} })` },
   redirects: { from: '@payloadcms/plugin-redirects', name: 'redirectsPlugin', call: (t) => `redirectsPlugin({ collections: ${slugs(t)} })` },
@@ -284,7 +284,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     c.storage === 's3' ? `import { s3Storage } from '@payloadcms/storage-s3'` : '',
     c.email === 'resend' ? `import { resendAdapter } from '@payloadcms/email-resend'` : '',
     plugins.includes('sentry') ? `import * as Sentry from '@sentry/nextjs'` : '',
-    `import { adminPlugin, billingPlugin, collectionPlugin, corsPlugin, domainsPlugin, editorPlugin, globalPlugin, permaculturePlugin, publicPlugin, seedPlugin, typescriptPlugin, upgradePlugin, videoPlugin } from '@uuidna/qpu/payload/plugins'`,
+    `import { adminPlugin, billingPlugin, collectionPlugin, corsPlugin, domainsPlugin, editorPlugin, globalPlugin, publicPlugin, seedPlugin, typescriptPlugin, upgradePlugin, videoPlugin } from '@uuidna/qpu/payload/plugins'`,
     ...plugins.map((p) => `import { ${PLUGIN_CODE[p].name} } from '${PLUGIN_CODE[p].from}'`),
     ...[...(app?.collections ?? []), ...(app?.globals ?? [])].map((x) => `import { ${x.name} } from '${x.from}'`),
     ...(app?.imports ?? []).map((x) => `import { ${x.name} } from '${x.from}'`),
@@ -338,7 +338,6 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     'upgradePlugin()',
     'videoPlugin()',
     'domainsPlugin()',
-    'permaculturePlugin()',
     'publicPlugin()',
   ].filter(Boolean)
   const qpuPlugins = [
@@ -402,7 +401,8 @@ const cloudflareWranglerOf = (c: CloudflareCombination, name: string, app?: Clou
 export type FrontendCtx = { name: string; head: string; collection: string; html: string; theme: string }
 export const ALT_FRONTENDS: Record<string, { deps: string[]; files: (x: FrontendCtx) => Record<string, string> }> = {
   vitepress: {
-    deps: ['vitepress', 'vue'],
+    // the newest VitePress published (2.0.0-alpha.20, 2026-09-04); the stable tag is 1.6.4, a prerelease is pinned on purpose
+    deps: ['vitepress@2.0.0-alpha.20', 'vue'],
     files: (x) => ({
       'vitepress/.vitepress/config.ts': `${x.head}\nimport { defineConfig } from 'vitepress'\nexport default defineConfig({ title: '${x.name}', description: 'A Payload site, delivered with VitePress.', cleanUrls: true })\n`,
       'vitepress/pages.data.ts': `${x.head}\nimport { defineLoader } from 'vitepress'\nconst base = process.env.PAYLOAD_URL || 'http://localhost:3000'\nexport default defineLoader({\n  async load() {\n    const r = await fetch(base + '/api/${x.collection}?limit=100&depth=0')\n    const { docs = [] } = (await r.json()) as { docs?: { title?: string; slug?: string; ${x.html}?: string }[] }\n    return docs.map((d) => ({ title: d.title || '', slug: d.slug || '', html: d.${x.html} || '' }))\n  },\n})\n`,

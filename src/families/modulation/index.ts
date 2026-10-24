@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MODULATION — IMPRESSING A MESSAGE ON A CARRIER, AS ARITHMETIC. A radio link is numbers: the modulation index, the
@@ -31,4 +31,4 @@ export class ModulationFormulas {
 }
 
 for (const name of ['bandwidth', 'bitrate', 'carrierpower', 'deviation', 'efficiency', 'index', 'sidebands', 'symbolrate'] as const)
-  qpuHexRegisterOf('modulation', name, (ModulationFormulas[name] as (...x: unknown[]) => unknown).bind(ModulationFormulas))
+  hexRegisterOf('modulation', name, (ModulationFormulas[name] as (...x: unknown[]) => unknown).bind(ModulationFormulas))

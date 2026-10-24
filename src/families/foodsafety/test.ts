@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FoodsafetyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('foodsafety: dangerzonehours, pathogenpairs, cookingtempc, coolingtime, con
   assert.equal(FoodsafetyFormulas.logreduction(5).value, 32)
   assert.equal(FoodsafetyFormulas.compliancepct(95, 100).value, 95)
   assert.equal(FoodsafetyFormulas.dangerzonehours(2, 2).dst, 'microbiology')
-  assert.equal(qpuHexFamiliesOf().get('foodsafety')?.length, 8)
+  assert.equal(hexFamiliesOf().get('foodsafety')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'foodsafety', program: ['dangerzonehours'], params: [2, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `foodsafety.dangerzonehours at ${uuid}`)
-  qpuUuidReceiptOf('foodsafety dangerzonehours', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('foodsafety dangerzonehours', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dangerzonehours 4, pathogenpairs 45, cookingtempc 75, coolingtime 180, contaminationrate 3, haccppoints 7, logreduction 32, compliancepct 95; crossing to microbiology')
 })

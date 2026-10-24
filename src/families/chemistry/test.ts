@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ChemistryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('chemistry: moles, concentration, ph, yield, mass, dilution, ratio, bonds â
   assert.equal(ChemistryFormulas.ratio(1, 4).value, 25)
   assert.equal(ChemistryFormulas.bonds(5).value, 4, 'a five-atom chain')
   assert.equal(ChemistryFormulas.moles(180, 18).dst, 'cern')
-  assert.equal(qpuHexFamiliesOf().get('chemistry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('chemistry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'chemistry', program: ['moles'], params: [180, 18] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `chemistry.moles at ${uuid}`)
-  qpuUuidReceiptOf('chemistry moles', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('chemistry moles', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; moles 10, concentration 500, ph 7, yield 80, mass 180, dilution 100, ratio 25, bonds 4; crossing to cern')
 })

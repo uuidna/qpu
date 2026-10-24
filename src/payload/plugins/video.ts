@@ -1,6 +1,6 @@
 import { CinemaFormulas } from '../../families/cinema/index.js'
 import { MediaFormulas } from '../../families/media/index.js'
-import { qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { clayPrizeOf } from './clay.js'
 import type { QpuPlugin } from './surface.js'
 
@@ -39,7 +39,7 @@ export const videoParseOf = (clip: { seconds: number; fps: number; width: number
 
 /** The parser recomputes on the lattice's own counts. This is not a lecture. */
 export const videoParserOf = () => {
-  const lattice = qpuLatticeNamesOf()
+  const lattice = latticeNamesOf()
   const reading = videoParseOf({
     seconds: lattice.coins,
     fps: lattice.seed,
@@ -48,7 +48,7 @@ export const videoParserOf = () => {
     chars: lattice.seed,
     max: lattice.coins,
   })
-  return { ...reading, kind: 'video-parser' as const, by: 'qpuLatticeNamesOf' }
+  return { ...reading, kind: 'video-parser' as const, by: 'latticeNamesOf' }
 }
 
 /** Every Clay-related video the tree names, then the video hosts the receipt already denies. Nothing is fetched. */

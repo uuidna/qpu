@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PARTITION — INTEGER PARTITIONS, BY THE BOOK. The ways of writing n as an unordered sum of positive parts, as exact
@@ -49,4 +49,4 @@ export class PartitionFormulas {
 }
 
 for (const name of ['atmosttwo', 'conjugatecells', 'distinctmax', 'durfee', 'durfeecells', 'exactone', 'exacttwo', 'ferrers', 'hook', 'oddavailable', 'p', 'pentagonal', 'rank', 'selfconjugatehook', 'triangular'] as const)
-  qpuHexRegisterOf('partition', name, (PartitionFormulas[name] as (...x: unknown[]) => unknown).bind(PartitionFormulas))
+  hexRegisterOf('partition', name, (PartitionFormulas[name] as (...x: unknown[]) => unknown).bind(PartitionFormulas))

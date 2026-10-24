@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TsunamiFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('tsunami: wavespeed, wavelength, runup, traveltime, amplitude, inundationdi
   assert.equal(TsunamiFormulas.energyindex(8, 1000).value, 8000)
   assert.equal(TsunamiFormulas.warningtime(3600, 60).value, 60)
   assert.equal(TsunamiFormulas.wavespeed(40000, 20).dst, 'oceanography')
-  assert.equal(qpuHexFamiliesOf().get('tsunami')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tsunami')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tsunami', program: ['wavespeed'], params: [40000, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2000, `tsunami.wavespeed at ${uuid}`)
-  qpuUuidReceiptOf('tsunami wavespeed', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tsunami wavespeed', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; wavespeed 2000, wavelength 200, runup 30, traveltime 30, amplitude 450, inundationdistance 3000, energyindex 8000, warningtime 60; crossing to oceanography')
 })

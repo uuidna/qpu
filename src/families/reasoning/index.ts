@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REASONING — DRAWING CONCLUSIONS, AS ARITHMETIC. Thinking is numbers: the steps an inference takes, how often it lands
@@ -31,4 +31,4 @@ export class ReasoningFormulas {
 }
 
 for (const name of ['accuracy', 'biasrate', 'confidencecalibration', 'deductionvalidity', 'inferencesteps', 'responselatency', 'syllogismscore', 'workingmemoryload'] as const)
-  qpuHexRegisterOf('reasoning', name, (ReasoningFormulas[name] as (...x: unknown[]) => unknown).bind(ReasoningFormulas))
+  hexRegisterOf('reasoning', name, (ReasoningFormulas[name] as (...x: unknown[]) => unknown).bind(ReasoningFormulas))

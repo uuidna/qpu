@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OBSERVABILITY — WATCHING THE CLOUD, AS ARITHMETIC. What the signals say: the error budget left, the SLO met, the
@@ -30,4 +30,4 @@ export class ObservabilityFormulas {
 }
 
 for (const name of ['apdex', 'cardinality', 'errorbudget', 'percentile', 'sampling', 'saturation', 'signal', 'slo'] as const)
-  qpuHexRegisterOf('observability', name, (ObservabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ObservabilityFormulas))
+  hexRegisterOf('observability', name, (ObservabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ObservabilityFormulas))

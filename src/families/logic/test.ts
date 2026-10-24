@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LogicFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('logic: truthtable, conjunction, disjunction, implication, equivalence, sat
   assert.equal(LogicFormulas.entropy(1, 4).value, 25)
   assert.equal(LogicFormulas.proof(10, 2).value, 5)
   assert.equal(LogicFormulas.truthtable(3).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('logic')?.length, 8)
+  assert.equal(hexFamiliesOf().get('logic')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'logic', program: ['conjunction'], params: [1, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 0, `logic.conjunction at ${uuid}`)
-  qpuUuidReceiptOf('logic conjunction', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('logic conjunction', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; truthtable 8, conjunction 0, disjunction 1, implication 1/0, equivalence 1, satisfiable 37, entropy 25, proof 5; crossing to code')
 })

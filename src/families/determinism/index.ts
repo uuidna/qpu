@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DETERMINISM — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DeterminismFormulas {
 }
 
 for (const name of ['branchingfactor', 'causallinks', 'causalsubsets', 'eventpairs', 'freedomdegrees', 'necessitylevel', 'predictabilityratio', 'statechains'] as const)
-  qpuHexRegisterOf('determinism', name, (DeterminismFormulas[name] as (...x: unknown[]) => unknown).bind(DeterminismFormulas))
+  hexRegisterOf('determinism', name, (DeterminismFormulas[name] as (...x: unknown[]) => unknown).bind(DeterminismFormulas))

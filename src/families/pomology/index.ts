@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POMOLOGY — THE SCIENCE OF FRUIT, AS ARITHMETIC. Growing fruit is numbers: the yield a block bears, sugar as °Brix, the
@@ -30,4 +30,4 @@ export class PomologyFormulas {
 }
 
 for (const name of ['brix', 'caliper', 'firmness', 'fruitset', 'harvestindex', 'thinning', 'treedensity', 'yield'] as const)
-  qpuHexRegisterOf('pomology', name, (PomologyFormulas[name] as (...x: unknown[]) => unknown).bind(PomologyFormulas))
+  hexRegisterOf('pomology', name, (PomologyFormulas[name] as (...x: unknown[]) => unknown).bind(PomologyFormulas))

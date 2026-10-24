@@ -16,7 +16,7 @@ const source = readFileSync(join(root, leanPath), 'utf8')
 const toolchain = readFileSync(join(root, 'lean-toolchain'), 'utf8').trim()
 
 // PRECOMPUTE THE PROOF OFF THE HOT PATH. Every theorem's recompute (holds + typeset formula + its range) is evaluated
-// here at build and embedded, so qpuLeanOf READS it instead of running ~290 leanRecomputeOf per cold isolate (~5.6s,
+// here at build and embedded, so leanOf READS it instead of running ~290 leanRecomputeOf per cold isolate (~5.6s,
 // which exceeded the Worker's CPU budget → 1102 on every door). Ground truth stays `lake build` + this build-time
 // recompute; the runtime only reads. Needs dist (lean-eval) — run `npm run build` first; lean.test guards staleness.
 const ev = await import(pathToFileURL(join(root, 'dist/quantum/processing/unit/lean-eval.js')).href)
@@ -35,15 +35,15 @@ for (const [name, theorem] of ev.leanTheoremBlocksOf(source)) {
 const idx = await import(pathToFileURL(join(root, 'dist/quantum/processing/unit/index.js')).href)
 const prf = await import(pathToFileURL(join(root, 'dist/quantum/processing/unit/proof.js')).href)
 const bigintSafe = (v) => JSON.parse(JSON.stringify(v, (_k, x) => (typeof x === 'bigint' ? x.toString() : x)))
-// REGENERATE FROM LIVE, NOT FROM THE EMBED. qpuComputerOf/qpuQuantumOf/qpuCircuitOf now READ embeddedConstants at
+// REGENERATE FROM LIVE, NOT FROM THE EMBED. computerOf/quantumOf/circuitOf now READ embeddedConstants at
 // runtime (the cool), so calling them here would read this file's own prior output — a circular regeneration that can
 // never correct a drift. The *LiveOf variants bypass the embed and compute from the lattice, so the embed is always a
-// fresh function of the source. qpuLeanOf stays live (it reads no embed; its heavy deps are the cooled three).
+// fresh function of the source. leanOf stays live (it reads no embed; its heavy deps are the cooled three).
 const embeddedConstants = {
-  computer: bigintSafe(idx.qpuComputerLiveOf()),
-  quantum: bigintSafe(idx.qpuQuantumLiveOf()),
-  circuit: bigintSafe(idx.qpuCircuitLiveOf()),
-  lean: bigintSafe(prf.qpuLeanOf()),
+  computer: bigintSafe(idx.computerLiveOf()),
+  quantum: bigintSafe(idx.quantumLiveOf()),
+  circuit: bigintSafe(idx.circuitLiveOf()),
+  lean: bigintSafe(prf.leanOf()),
 }
 
 // HOOK, NOT DUPLICATE. Count the kernel's axiom declarations and incompleteness markers (sorry/admit) ONCE here — in the

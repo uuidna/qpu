@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TradingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('trading: P&L, position, leverage, margin, notional, risk, stop, fee — bo
   assert.equal(TradingFormulas.stop(10, 15).value, 0, 'a stop cannot go below zero')
   assert.equal(TradingFormulas.fee(100000, 5).value, 50, '5 bps commission')
   assert.equal(TradingFormulas.pnl(100, 130, 10).dst, 'accounting', 'a trade books to the ledger')
-  assert.equal(qpuHexFamiliesOf().get('trading')?.length, 8)
+  assert.equal(hexFamiliesOf().get('trading')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'trading', program: ['notional'], params: [10, 130] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1300, `trading.notional at ${uuid}`)
-  qpuUuidReceiptOf('trading notional', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('trading notional', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; pnl 300/-300, position 76, leverage 5x, margin 10000, risk 2000, stop 115, fee 50 bps; crossing to accounting')
 })

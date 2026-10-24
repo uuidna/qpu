@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AnatomyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('anatomy: surface, ratio, symmetry, proportion, span, volume, mass, girth â
   assert.equal(AnatomyFormulas.mass(600, 2).value, 1200)
   assert.equal(AnatomyFormulas.girth(10).value, 60, 'circumference proxy')
   assert.equal(AnatomyFormulas.surface(170, 70).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('anatomy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('anatomy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'anatomy', program: ['ratio'], params: [80, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `anatomy.ratio at ${uuid}`)
-  qpuUuidReceiptOf('anatomy ratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('anatomy ratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; surface 11900, ratio 80, symmetry 90, proportion 25, span 20, volume 600, mass 1200, girth 60; crossing to med')
 })

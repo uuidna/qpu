@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SALINITY — THE SEAWATER SALT BUDGET, AS ARITHMETIC. How salty the sea is, as numbers: practical salinity from a
@@ -30,4 +30,4 @@ export class SalinityFormulas {
 }
 
 for (const name of ['absolute', 'chlorinity', 'conductivity', 'density', 'freezingpoint', 'haline', 'mixingratio', 'practical'] as const)
-  qpuHexRegisterOf('salinity', name, (SalinityFormulas[name] as (...x: unknown[]) => unknown).bind(SalinityFormulas))
+  hexRegisterOf('salinity', name, (SalinityFormulas[name] as (...x: unknown[]) => unknown).bind(SalinityFormulas))

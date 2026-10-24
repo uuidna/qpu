@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** KNOT — KNOT THEORY AS ARITHMETIC (chosen by the registry, not by hand). A knot is numbers: the crossings a diagram
@@ -31,4 +31,4 @@ export class KnotFormulas {
 }
 
 for (const name of ['bridgenumber', 'components', 'crossingnumber', 'determinant', 'genus', 'stickcount', 'unknottingnumber', 'writhe'] as const)
-  qpuHexRegisterOf('knot', name, (KnotFormulas[name] as (...x: unknown[]) => unknown).bind(KnotFormulas))
+  hexRegisterOf('knot', name, (KnotFormulas[name] as (...x: unknown[]) => unknown).bind(KnotFormulas))

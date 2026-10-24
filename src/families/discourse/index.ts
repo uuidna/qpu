@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DISCOURSE — CONNECTED TEXT ABOVE THE SENTENCE, AS ARITHMETIC (how utterances hang together, not single words). Running
@@ -31,4 +31,4 @@ export class DiscourseFormulas {
 }
 
 for (const name of ['anaphoradensity', 'coherence', 'cohesion', 'connectives', 'referencechains', 'topicshifts', 'turnlength', 'utterancecount'] as const)
-  qpuHexRegisterOf('discourse', name, (DiscourseFormulas[name] as (...x: unknown[]) => unknown).bind(DiscourseFormulas))
+  hexRegisterOf('discourse', name, (DiscourseFormulas[name] as (...x: unknown[]) => unknown).bind(DiscourseFormulas))

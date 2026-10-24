@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TlsFormulas } from './index.js'
 
 /** tls: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('tls: keybits, handshake, suites, sessions, certchain, ticketlife, resumpti
   assert.equal(TlsFormulas.ticketlife(86400, 3600).value, 24, 'ticketlife(86400, 3600)')
   assert.equal(TlsFormulas.resumption(80, 100).value, 80, 'resumption(80, 100)')
   assert.equal(TlsFormulas.combos(8, 2).value, 28, 'combos(8, 2)')
-  assert.equal(qpuHexFamiliesOf().get('tls')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tls')?.length, 8)
   for (const [name, params, expected] of [["keybits",[8],256],["handshake",[2,0],2],["suites",[5,3],15]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'tls', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `tls.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`tls ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`tls ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "keybits=256, handshake=2, suites=15")
 })

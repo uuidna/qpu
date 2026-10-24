@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AstrophysicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('astrophysics: schwarzschild, chandrasekhar, luminosity, redshift, jeans, e
   assert.equal(AstrophysicsFormulas.timescale(10, 1000).value, 100, 'nuclear timescale')
   assert.equal(AstrophysicsFormulas.chandrasekhar(0).value, 0)
   assert.equal(AstrophysicsFormulas.schwarzschild(10).dst, 'gravity')
-  assert.equal(qpuHexFamiliesOf().get('astrophysics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('astrophysics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'astrophysics', program: ['luminosity'], params: [2, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `astrophysics.luminosity at ${uuid}`)
-  qpuUuidReceiptOf('astrophysics luminosity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('astrophysics luminosity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; schwarzschild 30, chandrasekhar 100, luminosity 20, redshift 100, jeans 100, eddington 165000, tidal 1, timescale 100; crossing to gravity')
 })

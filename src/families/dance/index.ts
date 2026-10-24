@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** DANCE — MOVEMENT AS ARITHMETIC. The craft is numbers: the tempo a count keeps, the counts a bar holds, how in time the
  *  floor is, the steps a routine drills, the phrase a section spans, how high a jump clears, the turn an angle lands on, and
@@ -32,4 +32,4 @@ export class DanceFormulas {
 }
 
 for (const name of ['counts', 'elevation', 'phrase', 'rotation', 'stamina', 'steps', 'synchrony', 'tempo'] as const)
-  qpuHexRegisterOf('dance', name, (DanceFormulas[name] as (...x: unknown[]) => unknown).bind(DanceFormulas))
+  hexRegisterOf('dance', name, (DanceFormulas[name] as (...x: unknown[]) => unknown).bind(DanceFormulas))

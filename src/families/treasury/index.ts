@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TREASURY — CORPORATE FINANCE AS ARITHMETIC (chosen by the registry, not by hand). Holding money is numbers:
@@ -30,4 +30,4 @@ export class TreasuryFormulas {
 }
 
 for (const name of ['cashflow', 'conversion', 'hedge', 'interest', 'liquidity', 'maturity', 'reserve', 'workingcapital'] as const)
-  qpuHexRegisterOf('treasury', name, (TreasuryFormulas[name] as (...x: unknown[]) => unknown).bind(TreasuryFormulas))
+  hexRegisterOf('treasury', name, (TreasuryFormulas[name] as (...x: unknown[]) => unknown).bind(TreasuryFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PUPPETRY — scaffolded integer measures crossed to kinematics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PuppetryFormulas {
 }
 
 for (const name of ['articulationpoints', 'controlbars', 'gesturecombos', 'jointcount', 'manipulators', 'motionrange', 'riggingsubsets', 'strings'] as const)
-  qpuHexRegisterOf('puppetry', name, (PuppetryFormulas[name] as (...x: unknown[]) => unknown).bind(PuppetryFormulas))
+  hexRegisterOf('puppetry', name, (PuppetryFormulas[name] as (...x: unknown[]) => unknown).bind(PuppetryFormulas))

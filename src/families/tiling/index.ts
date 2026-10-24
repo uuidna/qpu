@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TILING — COVERING THE PLANE, AS ARITHMETIC (how shapes fill a surface without gap or overlap). Running a tiling is
@@ -31,4 +31,4 @@ export class TilingFormulas {
 }
 
 for (const name of ['aspectfit', 'coverage', 'gapratio', 'rowtiles', 'symmetryorder', 'tilecount', 'vertexconfig', 'waste'] as const)
-  qpuHexRegisterOf('tiling', name, (TilingFormulas[name] as (...x: unknown[]) => unknown).bind(TilingFormulas))
+  hexRegisterOf('tiling', name, (TilingFormulas[name] as (...x: unknown[]) => unknown).bind(TilingFormulas))

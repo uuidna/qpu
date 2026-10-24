@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ElectrocardiographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('electrocardiography: heartrate, qtinterval, printerval, qrsduration, rrave
   assert.equal(ElectrocardiographyFormulas.correctedqt(360, 900).value, 400, 'QT corrected to a 1000 ms cycle')
   assert.equal(ElectrocardiographyFormulas.intervalratio(400, 1000).value, 40, 'QT is 40% of the R-R')
   assert.equal(ElectrocardiographyFormulas.heartrate(1000).dst, 'cardiology')
-  assert.equal(qpuHexFamiliesOf().get('electrocardiography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('electrocardiography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'electrocardiography', program: ['heartrate'], params: [1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `electrocardiography.heartrate at ${uuid}`)
-  qpuUuidReceiptOf('electrocardiography heartrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('electrocardiography heartrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; heartrate 60, qtinterval 400, printerval 160, qrsduration 100, rraverage 1000, axisdeviation 6, correctedqt 400, intervalratio 40; crossing to cardiology')
 })

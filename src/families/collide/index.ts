@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COLLIDE AND DISSOLVE — THE FORMULAS GROW NEW DOMAINS THE WAY A BEAM DOES, PROVEN BY CERN. Two quanta collide and
@@ -43,4 +43,4 @@ export class CollideFormulas {
 }
 
 for (const name of ['balance', 'channels', 'collide', 'dissolve', 'events', 'gap', 'invariant', 'product', 'threshold'] as const)
-  qpuHexRegisterOf('collide', name, (CollideFormulas[name] as (...x: unknown[]) => unknown).bind(CollideFormulas))
+  hexRegisterOf('collide', name, (CollideFormulas[name] as (...x: unknown[]) => unknown).bind(CollideFormulas))

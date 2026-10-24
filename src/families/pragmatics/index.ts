@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PRAGMATICS — MEANING IN USE, AS ARITHMETIC. What an utterance does beyond what it says: implicature over what is
@@ -31,4 +31,4 @@ export class PragmaticsFormulas {
 }
 
 for (const name of ['cooperation', 'deixis', 'implicature', 'politeness', 'presupposition', 'relevance', 'speechact', 'turntaking'] as const)
-  qpuHexRegisterOf('pragmatics', name, (PragmaticsFormulas[name] as (...x: unknown[]) => unknown).bind(PragmaticsFormulas))
+  hexRegisterOf('pragmatics', name, (PragmaticsFormulas[name] as (...x: unknown[]) => unknown).bind(PragmaticsFormulas))

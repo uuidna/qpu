@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SPICETRADE — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SpicetradeFormulas {
 }
 
 for (const name of ['blendcombos', 'marginpct', 'originsubsets', 'priceindex', 'routepairs', 'spicecount', 'traderoutes', 'volumetons'] as const)
-  qpuHexRegisterOf('spicetrade', name, (SpicetradeFormulas[name] as (...x: unknown[]) => unknown).bind(SpicetradeFormulas))
+  hexRegisterOf('spicetrade', name, (SpicetradeFormulas[name] as (...x: unknown[]) => unknown).bind(SpicetradeFormulas))

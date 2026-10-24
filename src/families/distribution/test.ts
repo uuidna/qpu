@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DistributionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('distribution: hubs, spokes, coverage, density, dropsize, routes, echelon, 
   assert.equal(DistributionFormulas.reach(99, 95).value, 1, 'reach met')
   assert.equal(DistributionFormulas.reach(90, 95).value, 0)
   assert.equal(DistributionFormulas.hubs(100, 30).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('distribution')?.length, 8)
+  assert.equal(hexFamiliesOf().get('distribution')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'distribution', program: ['hubs'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `distribution.hubs at ${uuid}`)
-  qpuUuidReceiptOf('distribution hubs', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('distribution hubs', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; hubs 4, spokes 96, coverage 99, density 50, dropsize 100, routes 5000, echelon 900, reach 1; crossing to logistics')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DOMINOES — scaffolded integer measures crossed to combinatorics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DominoesFormulas {
 }
 
 for (const name of ['chainorderings', 'distinctpairs', 'doubles', 'handsubsets', 'layoutpaths', 'maxpip', 'pips', 'totaltiles'] as const)
-  qpuHexRegisterOf('dominoes', name, (DominoesFormulas[name] as (...x: unknown[]) => unknown).bind(DominoesFormulas))
+  hexRegisterOf('dominoes', name, (DominoesFormulas[name] as (...x: unknown[]) => unknown).bind(DominoesFormulas))

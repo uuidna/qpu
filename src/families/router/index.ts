@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RouterFormulas — 8 exact-integer formulas of the router domain, each at a hex address crossing to cross; develops the router leads. */
@@ -31,4 +31,4 @@ export class RouterFormulas {
 }
 
 for (const name of ['combos', 'hops', 'interfaces', 'latency', 'queues', 'routes', 'tables', 'ttl'] as const)
-  qpuHexRegisterOf('router', name, (RouterFormulas[name] as (...x: unknown[]) => unknown).bind(RouterFormulas))
+  hexRegisterOf('router', name, (RouterFormulas[name] as (...x: unknown[]) => unknown).bind(RouterFormulas))

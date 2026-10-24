@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StatisticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('statistics: mean, range, variance, zscore, percentile, correlation, confid
   assert.equal(StatisticsFormulas.confidence(5, 100).value, 5)
   assert.equal(StatisticsFormulas.sample(1000, 10).value, 100, 'a tenth of the population')
   assert.equal(StatisticsFormulas.mean(1000, 4).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('statistics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('statistics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'statistics', program: ['mean'], params: [1000, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 250, `statistics.mean at ${uuid}`)
-  qpuUuidReceiptOf('statistics mean', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('statistics mean', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mean 250, range 80, variance 200, zscore 250, percentile 75, correlation 80, confidence 5, sample 100; crossing to code')
 })

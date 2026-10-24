@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACOUSTICS — SOUND AS ARITHMETIC (chosen by the public-API registry, not by hand). A travelling wave is numbers:
@@ -31,4 +31,4 @@ export class AcousticsFormulas {
 }
 
 for (const name of ['attenuation', 'decibel', 'doppler', 'frequency', 'impedance', 'resonance', 'reverb', 'wavelength'] as const)
-  qpuHexRegisterOf('acoustics', name, (AcousticsFormulas[name] as (...x: unknown[]) => unknown).bind(AcousticsFormulas))
+  hexRegisterOf('acoustics', name, (AcousticsFormulas[name] as (...x: unknown[]) => unknown).bind(AcousticsFormulas))

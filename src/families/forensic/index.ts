@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FORENSIC EVIDENCE MATH — the computable core the court admits. Not opinion: the numbers an examiner must defend under
@@ -33,4 +33,4 @@ export class ForensicFormulas {
 }
 
 for (const name of ['bac', 'custody', 'error', 'likelihood', 'points', 'rarity', 'rmp'] as const)
-  qpuHexRegisterOf('forensic', name, (ForensicFormulas[name] as (...x: unknown[]) => unknown).bind(ForensicFormulas))
+  hexRegisterOf('forensic', name, (ForensicFormulas[name] as (...x: unknown[]) => unknown).bind(ForensicFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PACING — scaffolded integer measures crossed to sports. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PacingFormulas {
 }
 
 for (const name of ['effortzone', 'fade', 'lapaverage', 'negativesplit', 'pace', 'speed', 'spliteven', 'targettime'] as const)
-  qpuHexRegisterOf('pacing', name, (PacingFormulas[name] as (...x: unknown[]) => unknown).bind(PacingFormulas))
+  hexRegisterOf('pacing', name, (PacingFormulas[name] as (...x: unknown[]) => unknown).bind(PacingFormulas))

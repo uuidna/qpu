@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TURBINE — SPINNING MASS AS ARITHMETIC (chosen by the hardware registry, not by hand). A turbine is numbers: the power a
@@ -31,4 +31,4 @@ export class TurbineFormulas {
 }
 
 for (const name of ['capacity', 'efficiency', 'output', 'power', 'rpm', 'sweep', 'tipspeed', 'torque'] as const)
-  qpuHexRegisterOf('turbine', name, (TurbineFormulas[name] as (...x: unknown[]) => unknown).bind(TurbineFormulas))
+  hexRegisterOf('turbine', name, (TurbineFormulas[name] as (...x: unknown[]) => unknown).bind(TurbineFormulas))

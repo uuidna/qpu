@@ -64,7 +64,7 @@ const report = (title, names, graph, { allowLeads = true } = {}) => {
  */
 const portWaveOf = async (porting, unit, combinatorics, opts = {}) => {
   const { QPU_PORTS } = porting
-  const faces = unit.qpuFacesOf().faces
+  const faces = unit.facesOf().faces
   const surface = nodeSurface()
   const n = surface.length
   const from0 = Number(opts.from ?? 0)

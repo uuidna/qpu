@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CompositesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('composites: rule, fiberfraction, stiffness, strength, density, layup, anis
   assert.equal(CompositesFormulas.anisotropy(230, 10).value, 2300)
   assert.equal(CompositesFormulas.porosity(2, 100).value, 2)
   assert.equal(CompositesFormulas.rule(60, 40).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('composites')?.length, 8)
+  assert.equal(hexFamiliesOf().get('composites')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'composites', program: ['strength'], params: [5000, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `composites.strength at ${uuid}`)
-  qpuUuidReceiptOf('composites strength', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('composites strength', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rule 100, fiberfraction 60, stiffness 138, strength 50, density 1, layup 32, anisotropy 2300, porosity 2; crossing to materials')
 })

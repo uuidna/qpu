@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COUNTERPOINT — THE WRITING OF INDEPENDENT VOICES, AS ARITHMETIC. Species counterpoint is numbers: how many voices sound,
@@ -31,4 +31,4 @@ export class CounterpointFormulas {
 }
 
 for (const name of ['cantusspan', 'dissonancecount', 'imitationdelay', 'intervalconsonance', 'motioncontrary', 'parallelfifths', 'speciesratio', 'voicecount'] as const)
-  qpuHexRegisterOf('counterpoint', name, (CounterpointFormulas[name] as (...x: unknown[]) => unknown).bind(CounterpointFormulas))
+  hexRegisterOf('counterpoint', name, (CounterpointFormulas[name] as (...x: unknown[]) => unknown).bind(CounterpointFormulas))

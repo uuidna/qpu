@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SIXSIGMA — PROCESS QUALITY, AS ARITHMETIC (the DMAIC measures, every one an integer). A process is numbers: defects per
@@ -31,4 +31,4 @@ export class SixsigmaFormulas {
 }
 
 for (const name of ['cpk', 'defects', 'dpmo', 'dpu', 'opportunities', 'rolledthroughput', 'sigma', 'yield'] as const)
-  qpuHexRegisterOf('sixsigma', name, (SixsigmaFormulas[name] as (...x: unknown[]) => unknown).bind(SixsigmaFormulas))
+  hexRegisterOf('sixsigma', name, (SixsigmaFormulas[name] as (...x: unknown[]) => unknown).bind(SixsigmaFormulas))

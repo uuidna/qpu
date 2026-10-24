@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WALKABILITY — A NEIGHBOURHOOD ON FOOT, AS ARITHMETIC (chosen by the public-API registry, not by hand). How walkable a place
@@ -31,4 +31,4 @@ export class WalkabilityFormulas {
 }
 
 for (const name of ['amenityaccess', 'crossingdensity', 'pedestriansafety', 'sidewalkratio', 'slopepenalty', 'transitproximity', 'walkscore', 'walkshed'] as const)
-  qpuHexRegisterOf('walkability', name, (WalkabilityFormulas[name] as (...x: unknown[]) => unknown).bind(WalkabilityFormulas))
+  hexRegisterOf('walkability', name, (WalkabilityFormulas[name] as (...x: unknown[]) => unknown).bind(WalkabilityFormulas))

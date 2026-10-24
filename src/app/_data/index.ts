@@ -2,10 +2,10 @@ import config from '@payload-config'
 import { getPayload, type Where } from 'payload'
 import { headers } from 'next/headers'
 import { cache } from 'react'
-import { qpuHexFamiliesOf, qpuHexUuidOf, qpuMcpCallOf, qpuZoneHostOf } from '@uuidna/qpu'
+import { hexFamiliesOf, qpuHexUuidOf, mcpCallOf, zoneHostOf } from '@uuidna/qpu'
 // every hex family, fused door and MCP method registers itself on import: the generated registry is the one import
 import '@uuidna/qpu/mcp/families.js'
-import { qpuDataOf, qpuDataSourcesOf } from '@uuidna/qpu/mcp/qpu-fused.js'
+import { dataOf, dataSourcesOf } from '@uuidna/qpu/mcp/qpu-fused.js'
 import type { Doc, Footer, Form, Header, Page, Product, Search } from '@/payload-types'
 import discovery from '@root/discovery-receipt.json'
 
@@ -31,14 +31,14 @@ export const payloadOf = cache(async () => {
 
 /** EACH TENANT IS AN APP, AND THE MAIN WEBSITE MOUNTS ALL OF THEM. A tenant is a domain (src/collections/Tenants.ts);
  *  the multi-tenant plugin scopes every page and doc to one. The main website — a first-party/reserved zone host the
- *  unit's own formula qpuZoneHostOf names (qpu.uuidna.com, www, saas-fallback) — is NOT a tenant: it mounts every
+ *  unit's own formula zoneHostOf names (qpu.uuidna.com, www, saas-fallback) — is NOT a tenant: it mounts every
  *  tenant's content, so tenantOf is undefined there and the queries are unscoped. Any other host is a tenant's own
  *  domain, and its content is scoped to the tenant whose `domain` matches it — that host is the tenant's app. `cache`
  *  dedupes the lookup within a request. */
 export const tenantOf = cache(async (): Promise<string | undefined> => {
   // headers() throws outside a request (e.g. a build-time sitemap); there is no tenant then — mount all, unscoped.
   const host = await headers().then((h) => h.get('host')?.split(':')[0]).catch(() => undefined)
-  if (!host || qpuZoneHostOf(host)) return undefined // the main website mounts all tenants — no scope
+  if (!host || zoneHostOf(host)) return undefined // the main website mounts all tenants — no scope
   const match = (await (await payloadOf()).find({ collection: 'tenants', where: { domain: { equals: host } }, limit: 1, depth: 0 })).docs[0]
   return (match as { id?: string } | undefined)?.id
 })
@@ -51,7 +51,7 @@ const tenantWhere = async (): Promise<Where> => {
 export type Family = { name: string; formulas: { nibble: string; name: string; arity: number }[] }
 
 export const familiesOf = (): Family[] =>
-  [...qpuHexFamiliesOf()]
+  [...hexFamiliesOf()]
     .map(([name, formulas]) => ({ name, formulas: formulas.map((f, i) => ({ nibble: (i + 1).toString(16), name: f.name, arity: f.arity })) }))
     .sort((a, b) => a.name.localeCompare(b.name))
 
@@ -64,7 +64,7 @@ export const countsOf = (n: number) => {
 
 /** The page runs through the one public connector: tools/call cite { hex, full: true }. */
 export const citeFullOf = async (uuid: string) => {
-  const shown = (await qpuMcpCallOf('cite', { hex: uuid, full: true })) as { structuredContent?: { holds?: boolean; value?: unknown; receipt?: string; steps?: { formula: string; args: string[]; value: unknown }[]; error?: string } }
+  const shown = (await mcpCallOf('cite', { hex: uuid, full: true })) as { structuredContent?: { holds?: boolean; value?: unknown; receipt?: string; steps?: { formula: string; args: string[]; value: unknown }[]; error?: string } }
   return shown.structuredContent ?? {}
 }
 
@@ -73,7 +73,7 @@ export const runOf = async (family: string, program: string[], params: number[])
   return { uuid, run: await citeFullOf(uuid) }
 }
 
-export const liveOf = async () => Promise.all((await qpuDataSourcesOf()).map(async (l) => ({ ...l, result: (await qpuDataOf(l.source, l.args)) as { holds?: boolean; agrees?: boolean; reading?: unknown; receipt?: string; url?: string; denied?: string } })))
+export const liveOf = async () => Promise.all((await dataSourcesOf()).map(async (l) => ({ ...l, result: (await dataOf(l.source, l.args)) as { holds?: boolean; agrees?: boolean; reading?: unknown; receipt?: string; url?: string; denied?: string } })))
 
 import { receipts } from '@/receipts'
 export const receiptsOf = () => receipts
@@ -84,7 +84,7 @@ export const receiptsOf = () => receipts
  *  the ask reading when a formula is named (with its hex and value), or undefined when the words name nothing. */
 export const askOf = async (about: string): Promise<{ hex?: string; formula?: string; value?: unknown; holds?: boolean; answer?: string } | undefined> => {
   if (!about.trim()) return undefined
-  const r = (await qpuDataOf('ask', { about })) as { reading?: { hex?: string; formula?: string; value?: unknown; holds?: boolean; answer?: string }; agrees?: boolean }
+  const r = (await dataOf('ask', { about })) as { reading?: { hex?: string; formula?: string; value?: unknown; holds?: boolean; answer?: string }; agrees?: boolean }
   const reading = r?.reading
   return reading?.hex && r.agrees ? reading : undefined
 }

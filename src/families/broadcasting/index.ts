@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BROADCASTING — TRANSMISSION AS ARITHMETIC (chosen by the public-API registry, not by hand). Reaching an audience is
@@ -31,4 +31,4 @@ export class BroadcastingFormulas {
 }
 
 for (const name of ['bandwidth', 'bitrate', 'coverage', 'dropout', 'latency', 'rating', 'reach', 'share'] as const)
-  qpuHexRegisterOf('broadcasting', name, (BroadcastingFormulas[name] as (...x: unknown[]) => unknown).bind(BroadcastingFormulas))
+  hexRegisterOf('broadcasting', name, (BroadcastingFormulas[name] as (...x: unknown[]) => unknown).bind(BroadcastingFormulas))

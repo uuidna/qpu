@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LENSES — GEOMETRIC OPTICS AS ARITHMETIC (chosen by the public-API registry, not by hand). A lens is numbers: the
@@ -31,4 +31,4 @@ export class LensesFormulas {
 }
 
 for (const name of ['depthoffield', 'fieldofview', 'fnumber', 'focallength', 'imagedistance', 'magnification', 'numericalaperture', 'power'] as const)
-  qpuHexRegisterOf('lenses', name, (LensesFormulas[name] as (...x: unknown[]) => unknown).bind(LensesFormulas))
+  hexRegisterOf('lenses', name, (LensesFormulas[name] as (...x: unknown[]) => unknown).bind(LensesFormulas))

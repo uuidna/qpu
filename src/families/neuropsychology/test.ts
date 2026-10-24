@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NeuropsychologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('neuropsychology: iq, memoryquotient, lateralization, deficit, recovery, sp
   assert.equal(NeuropsychologyFormulas.processingspeed(120, 60).value, 120, 'items per minute')
   assert.equal(NeuropsychologyFormulas.executivefunction(48, 8).value, 40)
   assert.equal(NeuropsychologyFormulas.iq(12, 10).dst, 'neurology')
-  assert.equal(qpuHexFamiliesOf().get('neuropsychology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('neuropsychology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'neuropsychology', program: ['iq'], params: [12, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 120, `neuropsychology.iq at ${uuid}`)
-  qpuUuidReceiptOf('neuropsychology iq', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('neuropsychology iq', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; iq 120, memoryquotient 85, lateralization 20, deficit 25, recovery 60, span 7, processingspeed 120, executivefunction 40; crossing to neurology')
 })

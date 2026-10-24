@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LEXICON — A VOCABULARY, AS ARITHMETIC. Words are numbers: the type-token ratio of a text, the size of a vocabulary,
@@ -31,4 +31,4 @@ export class LexiconFormulas {
 }
 
 for (const name of ['coverage', 'frequencyrank', 'growthrate', 'hapaxlegomena', 'lexicaldensity', 'typetokenratio', 'vocabularysize', 'zipfscaled'] as const)
-  qpuHexRegisterOf('lexicon', name, (LexiconFormulas[name] as (...x: unknown[]) => unknown).bind(LexiconFormulas))
+  hexRegisterOf('lexicon', name, (LexiconFormulas[name] as (...x: unknown[]) => unknown).bind(LexiconFormulas))

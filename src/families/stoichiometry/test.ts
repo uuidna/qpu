@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StoichiometryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('stoichiometry: moles, molarmass, limiting, yield, molarity, dilution, perc
   assert.equal(StoichiometryFormulas.percentmass(2, 18).value, 11, 'hydrogen by mass in water')
   assert.equal(StoichiometryFormulas.empirical(2, 4).value, 2, 'CH₂ from C₂H₄')
   assert.equal(StoichiometryFormulas.moles(180, 18).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('stoichiometry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('stoichiometry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'stoichiometry', program: ['dilution'], params: [10, 2, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `stoichiometry.dilution at ${uuid}`)
-  qpuUuidReceiptOf('stoichiometry dilution', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('stoichiometry dilution', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; moles 10, molarmass 32, limiting 3, yield 80, molarity 3, dilution 5, percentmass 11, empirical 2; crossing to chemistry')
 })

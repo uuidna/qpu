@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OLIGOPOLY — scaffolded integer measures crossed to microeconomics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class OligopolyFormulas {
 }
 
 for (const name of ['collusiongain', 'concentration', 'cournotoutput', 'firms', 'hhindex', 'marketsharesubsets', 'reactionpairs', 'stabilityindex'] as const)
-  qpuHexRegisterOf('oligopoly', name, (OligopolyFormulas[name] as (...x: unknown[]) => unknown).bind(OligopolyFormulas))
+  hexRegisterOf('oligopoly', name, (OligopolyFormulas[name] as (...x: unknown[]) => unknown).bind(OligopolyFormulas))

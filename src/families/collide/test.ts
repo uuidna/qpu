@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CollideFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -27,10 +27,10 @@ test('collide: the CERN record holds, collisions and decays are exact, the gap c
   assert.equal(CollideFormulas.gap(20, 14).value, 6, 'six families still implied by the collisions')
   assert.equal(CollideFormulas.gap(14, 14).holds, true, 'no gap: the families cover the domains')
   // the family is registered and runs at its hex address
-  assert.equal(qpuHexFamiliesOf().get('collide')?.length, 9)
+  assert.equal(hexFamiliesOf().get('collide')?.length, 9)
   const uuid = qpuHexUuidOf({ family: 'collide', program: ['events'], params: [19, 2, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 38, `collide.events at ${uuid}`)
-  qpuUuidReceiptOf('collide events', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('collide events', contentUuidOf(run), { uuid })
   t.diagnostic('9 formulas; record 38 = 19·2 + 0 (theorem cern); dissolve 90→5, 38→19; channels 38=4; gap(20,14)=6 missing families')
 })

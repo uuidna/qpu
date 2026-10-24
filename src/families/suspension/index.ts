@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SUSPENSION — A CAR'S SUSPENSION, AS ARITHMETIC (a mechanical domain, not chosen by hand). Holding a wheel is numbers:
@@ -31,4 +31,4 @@ export class SuspensionFormulas {
 }
 
 for (const name of ['damping', 'frequency', 'load', 'ride', 'roll', 'springrate', 'stiffness', 'travel'] as const)
-  qpuHexRegisterOf('suspension', name, (SuspensionFormulas[name] as (...x: unknown[]) => unknown).bind(SuspensionFormulas))
+  hexRegisterOf('suspension', name, (SuspensionFormulas[name] as (...x: unknown[]) => unknown).bind(SuspensionFormulas))

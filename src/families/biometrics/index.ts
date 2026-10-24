@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOMETRICS — IDENTITY AS ARITHMETIC (chosen by the registry, not by hand). Matching people to templates is numbers:
@@ -30,4 +30,4 @@ export class BiometricsFormulas {
 }
 
 for (const name of ['accuracy', 'enrollment', 'far', 'frr', 'liveness', 'matchscore', 'templatesize', 'throughput'] as const)
-  qpuHexRegisterOf('biometrics', name, (BiometricsFormulas[name] as (...x: unknown[]) => unknown).bind(BiometricsFormulas))
+  hexRegisterOf('biometrics', name, (BiometricsFormulas[name] as (...x: unknown[]) => unknown).bind(BiometricsFormulas))

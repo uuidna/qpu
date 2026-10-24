@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THERMOCHEMISTRY — THE HEAT OF REACTIONS, AS ARITHMETIC (the energy a reaction gives or takes, counted exactly). Enthalpy
@@ -31,4 +31,4 @@ export class ThermochemistryFormulas {
 }
 
 for (const name of ['activationenergy', 'bondenergy', 'calorimetry', 'enthalpy', 'entropy', 'gibbs', 'heatcapacity', 'hesslaw'] as const)
-  qpuHexRegisterOf('thermochemistry', name, (ThermochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(ThermochemistryFormulas))
+  hexRegisterOf('thermochemistry', name, (ThermochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(ThermochemistryFormulas))

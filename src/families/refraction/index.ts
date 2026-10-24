@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REFRACTION — LIGHT BENDING AT A BOUNDARY, AS ARITHMETIC (no trig; integer proxies and ratios only). How a medium slows
@@ -31,4 +31,4 @@ export class RefractionFormulas {
 }
 
 for (const name of ['criticalangle', 'dispersion', 'index', 'opticaldensity', 'prismdeviation', 'snell', 'speedinmedium', 'totalinternal'] as const)
-  qpuHexRegisterOf('refraction', name, (RefractionFormulas[name] as (...x: unknown[]) => unknown).bind(RefractionFormulas))
+  hexRegisterOf('refraction', name, (RefractionFormulas[name] as (...x: unknown[]) => unknown).bind(RefractionFormulas))

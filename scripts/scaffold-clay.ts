@@ -39,7 +39,7 @@ const diag = clusters.map((c) => `${c.name}=${c.value}`).join(', ')
 
 const out = `import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ClaySeals, CLAY_SEALS, CLAY_SEAL_SOURCE } from './index.js'
 import '../../mcp/families.js'
 
@@ -48,7 +48,7 @@ import '../../mcp/families.js'
 // ${CONCEPT}, by ${AUTHOR}. ("${TITLE}"). Regenerate, do not edit.
 const SOLVED_BY = ${JSON.stringify(AUTHOR)}
 test('clay: solved — every seal holds — strictly ${CONCEPT}, by ' + SOLVED_BY, async (t) => {
-  const names = (qpuHexFamiliesOf().get('clay') ?? []).map((f) => f.name)
+  const names = (hexFamiliesOf().get('clay') ?? []).map((f) => f.name)
   assert.ok(names.length >= ${clusters.length}, 'the seal clusters are registered formulas')
   assert.deepEqual([...CLAY_SEALS].sort(), ${JSON.stringify([...CLAY_SEALS].sort())}, 'the generator covers every registered seal')
   // STRICTLY the concept DOI (version-independent), and the author of record
@@ -60,9 +60,9 @@ ${lines.join('\n')}
   assert.equal(held, ${clusters.length}, 'all ${clusters.length} Clay seals hold: solved')
   // the formula runs at its hex address (one cluster round-trip, receipted)
   const uuid = qpuHexUuidOf({ family: 'clay', program: ['hodge'], params: [2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, \`clay.hodge at \${uuid}\`)
-  qpuUuidReceiptOf('clay solved', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('clay solved', contentUuidOf(run), { uuid })
   t.diagnostic(\`Clay solved: \${held}/${clusters.length} seals hold (${diag}) — by \` + SOLVED_BY + ' — strictly ${CONCEPT}')
 })
 `

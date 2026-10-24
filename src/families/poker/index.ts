@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POKER — NO-LIMIT HOLD'EM AS ARITHMETIC. A hand is numbers: the pot odds a call is priced at, the outs still live, the
@@ -31,4 +31,4 @@ export class PokerFormulas {
 }
 
 for (const name of ['equity', 'expectedvalue', 'fold', 'impliedodds', 'outs', 'potodds', 'rake', 'stackratio'] as const)
-  qpuHexRegisterOf('poker', name, (PokerFormulas[name] as (...x: unknown[]) => unknown).bind(PokerFormulas))
+  hexRegisterOf('poker', name, (PokerFormulas[name] as (...x: unknown[]) => unknown).bind(PokerFormulas))

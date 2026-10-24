@@ -8,7 +8,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { installCloudflare, qpuHexDecodeOf, qpuHexUuidOf, qpuSitemapOf, unit } from './index.js'
+import { installCloudflare, hexDecodeOf, qpuHexUuidOf, sitemapOf, unit } from './index.js'
 
 export type QpuLinkEdge = {
   from: string
@@ -76,14 +76,14 @@ const kindOf = (href: string): 'zenodo' | 'github' | 'host' | undefined => {
 }
 
 /** Classified citation hrefs: Zenodo, this repository, and the host. ORCID and any other host are left out. */
-export const qpuCitationHrefsOf = (text: string): string[] =>
+export const citationHrefsOf = (text: string): string[] =>
   [...new Set(hrefsOf(text).map(canonicalOf).filter((href): href is string => href !== undefined))].sort()
 
 /**
  * The citation lines the files already print, kept in the bundle so an isolate without the repo
  * files parses the same hrefs. The test checks this set against CITATION.cff and .zenodo.json.
  */
-export const qpuBundledCitationOf = (): string =>
+export const bundledCitationOf = (): string =>
   [
     'url: https://qpu.uuidna.com',
     'repository-code: https://github.com/uuidna/qpu',
@@ -109,7 +109,7 @@ const fileTextOf = (name: string): string => {
 }
 
 /** CITATION.cff and the Zenodo description, notes, and related identifiers. Empty when the files are not on this isolate. */
-export const qpuCitationFileTextOf = (): string => {
+export const citationFileTextOf = (): string => {
   const cff = fileTextOf('CITATION.cff')
   const raw = fileTextOf('.zenodo.json')
   if (!raw) return cff
@@ -123,7 +123,7 @@ export const qpuCitationFileTextOf = (): string => {
 }
 
 const pagesOf = (): Set<string> => {
-  const locs = [...qpuSitemapOf().matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1] ?? '')
+  const locs = [...sitemapOf().matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1] ?? '')
   const pages = new Set<string>()
   for (const loc of locs) {
     const href = canonicalOf(loc)
@@ -136,7 +136,7 @@ const pagesOf = (): Set<string> => {
 const nextOf = (): { handle: string; uuid: string } | undefined => {
   try {
     const uuid = qpuHexUuidOf({ family: 'graph', program: ['edges'], params: [] })
-    const decoded = qpuHexDecodeOf(uuid)
+    const decoded = hexDecodeOf(uuid)
     if (decoded.holds && 'program' in decoded && decoded.program[0] === 'edges' && decoded.params.length === 0)
       return { handle: decoded.handle, uuid: decoded.uuid }
   } catch {
@@ -146,7 +146,7 @@ const nextOf = (): { handle: string; uuid: string } | undefined => {
 }
 
 const pairsOf = (text: string, pages: Set<string>, edges: Map<string, QpuLinkEdge>): void => {
-  const hrefs = qpuCitationHrefsOf(text)
+  const hrefs = citationHrefsOf(text)
   const external = hrefs.filter((href) => {
     const kind = kindOf(href)
     return kind === 'zenodo' || kind === 'github'
@@ -167,12 +167,12 @@ const pairsOf = (text: string, pages: Set<string>, edges: Map<string, QpuLinkEdg
  * Edges between the citation hrefs. One document pairs only the hrefs it contains.
  * The cite strings, the bundled citation lines, and the files when this isolate can read them.
  */
-export const qpuLinkGraphOf = (citeTexts: readonly string[]): QpuLinkGraph => {
+export const linkGraphOf = (citeTexts: readonly string[]): QpuLinkGraph => {
   const pages = pagesOf()
   const edges = new Map<string, QpuLinkEdge>()
   pairsOf([...citeTexts, installCloudflare.qpu].join('\n'), pages, edges)
-  pairsOf(qpuBundledCitationOf(), pages, edges)
-  const files = qpuCitationFileTextOf()
+  pairsOf(bundledCitationOf(), pages, edges)
+  const files = citationFileTextOf()
   if (files) pairsOf(files, pages, edges)
   const rows = [...edges.values()].sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to))
   const lead = [...new Set(rows.filter((edge) => edge.lead).flatMap((edge) => [edge.from, edge.to].filter((href) => kindOf(href) === 'host')))].sort()

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PasswordsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('passwords: entropybits, keyspacebits, lockoutwindow, rotationdays, minleng
   assert.equal(PasswordsFormulas.mfabonus(3, 20).value, 60)
   assert.equal(PasswordsFormulas.reuserisk(10, 3).value, 30, 'three in ten reused and breached')
   assert.equal(PasswordsFormulas.entropybits(16, 95).dst, 'hashing')
-  assert.equal(qpuHexFamiliesOf().get('passwords')?.length, 8)
+  assert.equal(hexFamiliesOf().get('passwords')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'passwords', program: ['entropybits'], params: [16, 95] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 96, `passwords.entropybits at ${uuid}`)
-  qpuUuidReceiptOf('passwords entropybits', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('passwords entropybits', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; entropybits 96, keyspacebits 64, lockoutwindow 10, rotationdays 30, minlengthscore 8, hashcost 600, mfabonus 60, reuserisk 30; crossing to hashing')
 })

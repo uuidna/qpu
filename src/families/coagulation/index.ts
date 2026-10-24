@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COAGULATION — THE CLOT AS ARITHMETIC. The coagulation panel is numbers: the INR ratio, prothrombin and partial
@@ -30,4 +30,4 @@ export class CoagulationFormulas {
 }
 
 for (const name of ['aptt', 'bleedingtime', 'clotretraction', 'fibrinogen', 'inr', 'plateletcount', 'prothrombintime', 'thrombinratio'] as const)
-  qpuHexRegisterOf('coagulation', name, (CoagulationFormulas[name] as (...x: unknown[]) => unknown).bind(CoagulationFormulas))
+  hexRegisterOf('coagulation', name, (CoagulationFormulas[name] as (...x: unknown[]) => unknown).bind(CoagulationFormulas))

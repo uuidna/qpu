@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EPISTEMOLOGY — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class EpistemologyFormulas {
 }
 
 for (const name of ['beliefstates', 'certaintydegree', 'doubtmargin', 'evidencecombos', 'gettiercases', 'inferencedepth', 'justificationpaths', 'truthconditions'] as const)
-  qpuHexRegisterOf('epistemology', name, (EpistemologyFormulas[name] as (...x: unknown[]) => unknown).bind(EpistemologyFormulas))
+  hexRegisterOf('epistemology', name, (EpistemologyFormulas[name] as (...x: unknown[]) => unknown).bind(EpistemologyFormulas))

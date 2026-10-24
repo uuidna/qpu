@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BACKEND — THE SERVICE LAYER AS ARITHMETIC (chosen by the public-API registry, not by hand). Serving requests is numbers:
@@ -31,4 +31,4 @@ export class BackendFormulas {
 }
 
 for (const name of ['cache', 'error', 'latency', 'pool', 'queue', 'requests', 'saturation', 'throughput'] as const)
-  qpuHexRegisterOf('backend', name, (BackendFormulas[name] as (...x: unknown[]) => unknown).bind(BackendFormulas))
+  hexRegisterOf('backend', name, (BackendFormulas[name] as (...x: unknown[]) => unknown).bind(BackendFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** JITTER — THE VARIANCE OF DELAY, AS ARITHMETIC (chosen by the public-API registry, not by hand). Packet timing is
@@ -31,4 +31,4 @@ export class JitterFormulas {
 }
 
 for (const name of ['absolute', 'bufferdepth', 'meandeviation', 'packetspacing', 'peaktopeak', 'playoutdelay', 'rfc3550estimate', 'variation'] as const)
-  qpuHexRegisterOf('jitter', name, (JitterFormulas[name] as (...x: unknown[]) => unknown).bind(JitterFormulas))
+  hexRegisterOf('jitter', name, (JitterFormulas[name] as (...x: unknown[]) => unknown).bind(JitterFormulas))

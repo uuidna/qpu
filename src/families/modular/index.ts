@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ModularFormulas — 8 exact-integer formulas of the modular domain, each at a hex address crossing to cross; develops the modular leads. */
@@ -31,4 +31,4 @@ export class ModularFormulas {
 }
 
 for (const name of ['classes', 'combos', 'gcd', 'inverse', 'order', 'power', 'residue', 'ring'] as const)
-  qpuHexRegisterOf('modular', name, (ModularFormulas[name] as (...x: unknown[]) => unknown).bind(ModularFormulas))
+  hexRegisterOf('modular', name, (ModularFormulas[name] as (...x: unknown[]) => unknown).bind(ModularFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MONORAIL — scaffolded integer measures crossed to kinematics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MonorailFormulas {
 }
 
 for (const name of ['accelrate', 'capacity', 'gradientpct', 'headwayseconds', 'speed', 'stations', 'throughput', 'traveltime'] as const)
-  qpuHexRegisterOf('monorail', name, (MonorailFormulas[name] as (...x: unknown[]) => unknown).bind(MonorailFormulas))
+  hexRegisterOf('monorail', name, (MonorailFormulas[name] as (...x: unknown[]) => unknown).bind(MonorailFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ExistentialismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('existentialism: freedomchoices, authenticitymodes, anguishindex, projector
   assert.equal(ExistentialismFormulas.situationsubsets(4).value, 16)
   assert.equal(ExistentialismFormulas.becomingstages(3, 2).value, 5)
   assert.equal(ExistentialismFormulas.freedomchoices(5).dst, 'philosophy')
-  assert.equal(qpuHexFamiliesOf().get('existentialism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('existentialism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'existentialism', program: ['freedomchoices'], params: [5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 32, `existentialism.freedomchoices at ${uuid}`)
-  qpuUuidReceiptOf('existentialism freedomchoices', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('existentialism freedomchoices', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; freedomchoices 32, authenticitymodes 3, anguishindex 60, projectorderings 24, facticitypairs 15, badfaithratio 40, situationsubsets 16, becomingstages 5; crossing to philosophy')
 })

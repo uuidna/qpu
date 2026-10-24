@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GRID — THE GRID BLOCKS USE CASE, AS ARITHMETIC (CardGrid/LinkGrid/LogoGrid/ContentGrid from payloadcms/website).
@@ -31,4 +31,4 @@ export class GridFormulas {
 }
 
 for (const name of ['aspect', 'auto', 'cells', 'density', 'fill', 'gap', 'rows', 'span'] as const)
-  qpuHexRegisterOf('grid', name, (GridFormulas[name] as (...x: unknown[]) => unknown).bind(GridFormulas))
+  hexRegisterOf('grid', name, (GridFormulas[name] as (...x: unknown[]) => unknown).bind(GridFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CreditscoreFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -21,10 +21,10 @@ test('creditscore: score, paymenthistory, utilization, riskbands, defaultprob, f
   assert.equal(CreditscoreFormulas.recovery(1000, 40).value, 600)
   assert.equal(CreditscoreFormulas.band(720).value, 7)
   assert.equal(CreditscoreFormulas.score(700, 50).dst, 'banking')
-  assert.equal(qpuHexFamiliesOf().get('creditscore')?.length, 15)
+  assert.equal(hexFamiliesOf().get('creditscore')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'creditscore', program: ['score'], params: [700, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 750, `creditscore.score at ${uuid}`)
-  qpuUuidReceiptOf('creditscore score', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('creditscore score', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; score 750, paymenthistory 35, utilization 30, riskbands 5, defaultprob 2, factorcombos 10, inquiries 7, tier 7; crossing to banking')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StellarFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('stellar: mainsequencelifetime, masslunminosity, schwarzschildradius, surfa
   assert.equal(StellarFormulas.massloss(100, 2, 100).value, 0, 'mass loss never goes negative')
   assert.equal(StellarFormulas.spectralclass(5800).value, 5)
   assert.equal(StellarFormulas.mainsequencelifetime(10, 1000).dst, 'astrophysics')
-  assert.equal(qpuHexFamiliesOf().get('stellar')?.length, 8)
+  assert.equal(hexFamiliesOf().get('stellar')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'stellar', program: ['schwarzschildradius'], params: [10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `stellar.schwarzschildradius at ${uuid}`)
-  qpuUuidReceiptOf('stellar schwarzschildradius', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('stellar schwarzschildradius', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mainsequencelifetime 100, masslunminosity 64, schwarzschildradius 30, surfacegravity 1000, effectivetemp 5796, corefusionrate 150, massloss 800, spectralclass 5; crossing to astrophysics')
 })

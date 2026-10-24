@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REFRIGERATION — MOVING HEAT, AS ARITHMETIC. The vapour-compression cycle is numbers: the coefficient of performance,
@@ -31,4 +31,4 @@ export class RefrigerationFormulas {
 }
 
 for (const name of ['capacity', 'cooling', 'cop', 'defrost', 'load', 'pulldown', 'subcool', 'superheat'] as const)
-  qpuHexRegisterOf('refrigeration', name, (RefrigerationFormulas[name] as (...x: unknown[]) => unknown).bind(RefrigerationFormulas))
+  hexRegisterOf('refrigeration', name, (RefrigerationFormulas[name] as (...x: unknown[]) => unknown).bind(RefrigerationFormulas))

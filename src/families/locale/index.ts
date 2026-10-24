@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOCALE — THE PAYLOAD CMS LOCALIZATION API, AS ARITHMETIC (locales, fallback, translated content). Localizing content is
@@ -31,4 +31,4 @@ export class LocaleFormulas {
 }
 
 for (const name of ['complete', 'coverage', 'fallback', 'fields', 'locales', 'rtl', 'storage', 'words'] as const)
-  qpuHexRegisterOf('locale', name, (LocaleFormulas[name] as (...x: unknown[]) => unknown).bind(LocaleFormulas))
+  hexRegisterOf('locale', name, (LocaleFormulas[name] as (...x: unknown[]) => unknown).bind(LocaleFormulas))

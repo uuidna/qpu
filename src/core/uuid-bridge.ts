@@ -7,7 +7,7 @@
 import { operationRegistry, listOperations, getOperation, executeOperation } from './operations.js'
 import { ExecutionResult } from './types.js'
 import { uuid as registry } from './uuid.js'
-import { qpuAddressReferrerOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { addressReferrerOf, uuidReceiptOf } from '../quantum/processing/unit/index.js'
 
 // ============================================================================
 // UUID OPERATION INDEX
@@ -21,7 +21,7 @@ interface UUIDIndexEntry {
 }
 
 const referrerOf = (inputs?: Record<string, unknown>): string | undefined =>
-  qpuAddressReferrerOf(typeof inputs?.referrer === 'string' ? inputs.referrer : undefined)
+  addressReferrerOf(typeof inputs?.referrer === 'string' ? inputs.referrer : undefined)
 
 /**
  * Addresses every core operation by its content UUID (registered in the UUID registry) and executes it by UUID, with a quantum receipt per execution.
@@ -70,11 +70,11 @@ export class UUIDBridge {
     const operationName = this.uuidToOperation.get(uuid)
     if (!operationName) {
       const result = { success: false, error: `Operation not found for UUID: ${uuid}` }
-      return { ...result, receipt: qpuUuidReceiptOf('op missing', uuid, result, referrerOf(inputs)).uuid }
+      return { ...result, receipt: uuidReceiptOf('op missing', uuid, result, referrerOf(inputs)).uuid }
     }
 
     const result = await executeOperation(operationName, inputs)
-    return { ...result, receipt: qpuUuidReceiptOf(`op ${operationName}`, uuid, result, referrerOf(inputs)).uuid }
+    return { ...result, receipt: uuidReceiptOf(`op ${operationName}`, uuid, result, referrerOf(inputs)).uuid }
   }
 
   /**

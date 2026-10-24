@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FUTURES — THE DERIVATIVES DOMAIN, AS ARITHMETIC. Trading a futures contract is numbers: the forward price under
@@ -31,4 +31,4 @@ export class FuturesFormulas {
 }
 
 for (const name of ['basis', 'contractvalue', 'forwardprice', 'maintenancemargin', 'marginrequirement', 'notional', 'rollyield', 'settlementprice'] as const)
-  qpuHexRegisterOf('futures', name, (FuturesFormulas[name] as (...x: unknown[]) => unknown).bind(FuturesFormulas))
+  hexRegisterOf('futures', name, (FuturesFormulas[name] as (...x: unknown[]) => unknown).bind(FuturesFormulas))

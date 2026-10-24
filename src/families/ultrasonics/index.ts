@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ULTRASONICS — SOUND ABOVE HEARING, AS ARITHMETIC. Pulses are numbers: the time a pulse takes there and back, the depth
@@ -31,4 +31,4 @@ export class UltrasonicsFormulas {
 }
 
 for (const name of ['acousticimpedance', 'attenuation', 'axialresolution', 'depth', 'dopplershift', 'nearfield', 'timeofflight', 'wavelength'] as const)
-  qpuHexRegisterOf('ultrasonics', name, (UltrasonicsFormulas[name] as (...x: unknown[]) => unknown).bind(UltrasonicsFormulas))
+  hexRegisterOf('ultrasonics', name, (UltrasonicsFormulas[name] as (...x: unknown[]) => unknown).bind(UltrasonicsFormulas))

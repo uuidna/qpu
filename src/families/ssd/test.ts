@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SsdFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('ssd: IOPS, throughput, TBW, over-provisioning, wear-levelling and DWPD —
   assert.equal(SsdFormulas.queuedepth(32).value, 32, 'outstanding requests')
   assert.equal(SsdFormulas.dwpd(730, 200, 365).value, 10, 'drive writes per day')
   assert.equal(SsdFormulas.iops(32, 100).dst, 'hardware')
-  assert.equal(qpuHexFamiliesOf().get('ssd')?.length, 10)
+  assert.equal(hexFamiliesOf().get('ssd')?.length, 10)
   const uuid = qpuHexUuidOf({ family: 'ssd', program: ['iops'], params: [32, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 320000, `ssd.iops at ${uuid}`)
-  qpuUuidReceiptOf('ssd iops', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ssd iops', contentUuidOf(run), { uuid })
   t.diagnostic('10 formulas; iops 320000, throughput 1280000, tbw 768, overprovision 32, wearleveling 10, channels 4, pagesize 4096, readlatency 50, queuedepth 32, dwpd 10; crossing to hardware')
 })

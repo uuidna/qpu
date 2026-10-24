@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EpigraphyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('epigraphy: characters, lineorderings, restorationpairs, damageratio, scrip
   assert.equal(EpigraphyFormulas.wordcount(600, 5).value, 120)
   assert.equal(EpigraphyFormulas.lacunae(12, 8).value, 20)
   assert.equal(EpigraphyFormulas.characters(20, 30).dst, 'archaeology')
-  assert.equal(qpuHexFamiliesOf().get('epigraphy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('epigraphy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'epigraphy', program: ['characters'], params: [20, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 600, `epigraphy.characters at ${uuid}`)
-  qpuUuidReceiptOf('epigraphy characters', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('epigraphy characters', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; characters 600, lineorderings 120, restorationpairs 45, damageratio 15, scriptsubsets 32, datingrange 300, wordcount 120, lacunae 20; crossing to archaeology')
 })

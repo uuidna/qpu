@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RefrigerationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('refrigeration: capacity, cooling, cop, defrost, load, pulldown, subcool, s
   assert.equal(RefrigerationFormulas.subcool(40, 33).value, 7)
   assert.equal(RefrigerationFormulas.superheat(50, 42).value, 8)
   assert.equal(RefrigerationFormulas.capacity(5, 12000).dst, 'cuisine')
-  assert.equal(qpuHexFamiliesOf().get('refrigeration')?.length, 8)
+  assert.equal(hexFamiliesOf().get('refrigeration')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'refrigeration', program: ['cop'], params: [1200, 400] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `refrigeration.cop at ${uuid}`)
-  qpuUuidReceiptOf('refrigeration cop', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('refrigeration cop', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; capacity 60000, cooling 2500, cop 3, defrost 4, load 800, pulldown 4, subcool 7, superheat 8; crossing to cuisine')
 })

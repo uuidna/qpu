@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BACKLASH — scaffolded integer measures crossed to control. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class BacklashFormulas {
 }
 
 for (const name of ['compensation', 'deadband', 'gearplay', 'hysteresis', 'lostmotion', 'positioningerror', 'reversaldelay', 'stiffnessloss'] as const)
-  qpuHexRegisterOf('backlash', name, (BacklashFormulas[name] as (...x: unknown[]) => unknown).bind(BacklashFormulas))
+  hexRegisterOf('backlash', name, (BacklashFormulas[name] as (...x: unknown[]) => unknown).bind(BacklashFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SocketFormulas — 8 exact-integer formulas of the socket domain, each at a hex address crossing to cross; develops the socket leads. */
@@ -31,4 +31,4 @@ export class SocketFormulas {
 }
 
 for (const name of ['backlog', 'buffers', 'combos', 'connections', 'handshake', 'ports', 'states', 'timeout'] as const)
-  qpuHexRegisterOf('socket', name, (SocketFormulas[name] as (...x: unknown[]) => unknown).bind(SocketFormulas))
+  hexRegisterOf('socket', name, (SocketFormulas[name] as (...x: unknown[]) => unknown).bind(SocketFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ICHTHYOLOGY — THE STUDY OF FISH, AS ARITHMETIC (chosen by the registry, not by hand). A fish is numbers: body
@@ -30,4 +30,4 @@ export class IchthyologyFormulas {
 }
 
 for (const name of ['buoyancy', 'condition', 'fecundity', 'gillrate', 'growth', 'mortality', 'schooling', 'trophic'] as const)
-  qpuHexRegisterOf('ichthyology', name, (IchthyologyFormulas[name] as (...x: unknown[]) => unknown).bind(IchthyologyFormulas))
+  hexRegisterOf('ichthyology', name, (IchthyologyFormulas[name] as (...x: unknown[]) => unknown).bind(IchthyologyFormulas))

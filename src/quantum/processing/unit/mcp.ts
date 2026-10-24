@@ -1,10 +1,10 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuToolsOf, qpuMcpOf, qpuMcpCallOf, qpuMcpHolds.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): toolsOf, mcpOf, mcpCallOf, mcpHolds.
 import {
   FUSED_TOOLS,
-  qpuHexRegistryOf,
-  qpuHexRunOf,
-  qpuHexFamiliesOf,
-  qpuMcpFusedOf,
+  hexRegistryOf,
+  hexRunOf,
+  hexFamiliesOf,
+  mcpFusedOf,
   coins,
   cors,
   cryptoToolNames,
@@ -16,58 +16,58 @@ import {
   n,
   onceOf,
   payloadFinds,
-  qpuCapacityOf,
-  qpuCernFetchOf,
-  qpuCernHrefOf,
-  qpuCernProjectFetchOf,
-  qpuCernProjectsOf,
-  qpuCernRecordsOf,
-  qpuCernSearchOf,
-  qpuCiteHolds,
+  capacityOf,
+  cernFetchOf,
+  cernHrefOf,
+  cernProjectFetchOf,
+  cernProjectsOf,
+  cernRecordsOf,
+  cernSearchOf,
+  citeHolds,
   qpuCiteOf,
-  qpuCompeteHolds,
-  qpuCompeteLiveOf,
-  qpuCompeteOf,
-  qpuComposeLiveOf,
-  qpuContextOf,
-  qpuCubeOf,
-  qpuCybersecurityHolds,
-  qpuCybersecurityToolsOf,
-  qpuDevelopHolds,
-  qpuEfficiencyHolds,
-  qpuEncryptOf,
-  qpuFacesOf,
-  qpuForgeOf,
-  qpuHexMissOf,
+  competeHolds,
+  competeLiveOf,
+  competeOf,
+  composeLiveOf,
+  contextOf,
+  cubeOf,
+  cybersecurityHolds,
+  cybersecurityToolsOf,
+  developHolds,
+  efficiencyHolds,
+  encryptOf,
+  facesOf,
+  forgeOf,
+  hexMissOf,
   qpuHexUuidOf,
-  qpuHostsHolds,
-  qpuImproveLiveOf,
-  qpuInstallOf,
-  qpuManHolds,
+  hostsHolds,
+  improveLiveOf,
+  installOf,
+  manHolds,
   qpuManOf,
-  qpuManPageOf,
-  qpuFoldOf,
-  qpuMcpShownHolds,
-  qpuMcpShownOf,
-  qpuRecognizeHolds,
-  qpuRecognizeOf,
-  qpuMcpToolsListOf,
-  qpuMessageHolds,
-  qpuNetworkToolsOf,
-  qpuPayloadFindOf,
+  manPageOf,
+  foldOf,
+  mcpShownHolds,
+  mcpShownOf,
+  recognizeHolds,
+  recognizeOf,
+  mcpToolsListOf,
+  messageHolds,
+  networkToolsOf,
+  payloadFindOf,
   qpuReadingOf,
-  qpuReceiptStreamsOf,
-  qpuResearchFetchOf,
-  qpuSandboxDurabilityHolds,
-  qpuSandboxHolds,
-  qpuSandboxRunOf,
-  qpuSequenceLiveOf,
-  qpuServerToolsOf,
-  qpuShorOf,
-  qpuStorageToolsOf,
-  qpuSubManOf,
-  qpuTrainLiveOf,
-  qpuUnknownToolOf,
+  receiptStreamsOf,
+  researchFetchOf,
+  sandboxDurabilityHolds,
+  sandboxHolds,
+  sandboxRunOf,
+  sequenceLiveOf,
+  serverToolsOf,
+  shorOf,
+  storageToolsOf,
+  subManOf,
+  trainLiveOf,
+  unknownToolOf,
   sandboxOps,
   sandboxTools,
   seed,
@@ -79,13 +79,13 @@ import {
   toolListOf,
   toolNames,
   unit,
-  qpuDataLiveOf,
+  dataLiveOf,
 } from './index.js'
 import type { QpuEnv } from './index.js'
 import { leanRecomputed, leanSource, leanAxioms, leanUnproven } from './lean.js'
-import { qpuCircuitOf } from './circuit.js'
-import { qpuImproveOf, qpuImproveHolds, qpuTrainOf, qpuTrainHolds, qpuProveOf, qpuProveHolds } from './doors.js'
-import { qpuLeanOf, qpuLeanHolds } from './proof.js'
+import { circuitOf } from './circuit.js'
+import { improveOf, improveHolds, trainOf, trainHolds, proveOf, proveHolds } from './doors.js'
+import { leanOf, leanHolds } from './proof.js'
 import { qpuQuantumHolds } from './quantum.js'
 
 /**
@@ -93,11 +93,11 @@ import { qpuQuantumHolds } from './quantum.js'
  * @wing agents
  * @kind builder
  */
-export const qpuToolsOf = onceOf(() => {
+export const toolsOf = onceOf(() => {
   const names = toolNames
   const seeOf = (name: (typeof names)[number]) => names.filter((s) => s !== name)
-  const capacity = qpuCapacityOf()
-  const circuit = qpuCircuitOf()
+  const capacity = capacityOf()
+  const circuit = circuitOf()
   const quantumMan = qpuManOf(
     names[n - n],
     `The running circuit as one JSON-LD document: the exact state-vector computation of a ${circuit.register.qubits}-qubit register (dim ${circuit.register.dim}, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = ${capacity.fused} (a count of amplitudes). theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
@@ -124,7 +124,7 @@ export const qpuToolsOf = onceOf(() => {
     seeOf(names[n]))
   const forgeMan = qpuManOf(
     names[n + seed],
-    `Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools. A door's name forges and the door still answers — theorem involution carries a seeded name to hop, the free seat on the other team.`,
+    `Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Up to ${cubeOf().bits * facesOf().faces} tools. A door's name forges and the door still answers — theorem involution carries a seeded name to hop, the free seat on the other team.`,
     `tools/call ${names[n + seed]} with { name, run } returns the forged tool and the sandbox census (tools[], memory, unlocked); without name it returns the census. Ops ${sandboxOps.join(' ')}. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + seed]))
@@ -187,7 +187,7 @@ export const qpuToolsOf = onceOf(() => {
       description: leanMan.description,
       man: leanMan,
       inputSchema: manSchema,
-      run: (a: Record<string, unknown>) => (a.man === true ? leanMan : qpuLeanOf())},
+      run: (a: Record<string, unknown>) => (a.man === true ? leanMan : leanOf())},
     {
       name: names[coins],
       description: citeMan.description,
@@ -199,68 +199,68 @@ export const qpuToolsOf = onceOf(() => {
       description: trainMan.description,
       man: trainMan,
       inputSchema: liveSchema,
-      run: (a: Record<string, unknown>) => (a.man === true ? trainMan : qpuTrainOf())},
+      run: (a: Record<string, unknown>) => (a.man === true ? trainMan : trainOf())},
     {
       name: names[n + seed],
       description: forgeMan.description,
       man: forgeMan,
       inputSchema: forgeSchema,
-      run: (a: Record<string, unknown>) => (a.man === true ? forgeMan : qpuForgeOf(a))},
+      run: (a: Record<string, unknown>) => (a.man === true ? forgeMan : forgeOf(a))},
     {
       name: names[n + coins],
       description: improveMan.description,
       man: improveMan,
       inputSchema: liveSchema,
-      run: (a: Record<string, unknown>) => (a.man === true ? improveMan : qpuImproveOf())},
+      run: (a: Record<string, unknown>) => (a.man === true ? improveMan : improveOf())},
     {
       name: names[n + n],
       description: competeMan.description,
       man: competeMan,
       inputSchema: competeSchema,
       run: (a: Record<string, unknown>) =>
-        a.man === true ? competeMan : qpuCompeteOf(typeof a.team === 'string' ? a.team : undefined)},
+        a.man === true ? competeMan : competeOf(typeof a.team === 'string' ? a.team : undefined)},
     {
       name: names[mintOf(n) - seed],
       description: proveMan.description,
       man: proveMan,
       inputSchema: proveSchema,
-      run: (a: Record<string, unknown>) => (a.man === true ? proveMan : qpuProveOf())}] as const
+      run: (a: Record<string, unknown>) => (a.man === true ? proveMan : proveOf())}] as const
 })
 
 /**
  * The MCP catalogue at /mcp: tools, cybersecurity tools, capacity and provider as one JSON-LD WebAPI.
  * @wing agents
  * @kind builder
- * @evidence qpuMcpHolds
+ * @evidence mcpHolds
  */
-export const qpuMcpOf = onceOf(() => {
+export const mcpOf = onceOf(() => {
   const href = `${unit.origin}/mcp`
-  const faces = qpuFacesOf()
-  const circuit = qpuCircuitOf()
-  const capacity = qpuCapacityOf()
-  const shor = qpuShorOf()
-  const encrypt = qpuEncryptOf()
+  const faces = facesOf()
+  const circuit = circuitOf()
+  const capacity = capacityOf()
+  const shor = shorOf()
+  const encrypt = encryptOf()
   const cite = qpuCiteOf()
-  const tools = qpuToolsOf().map((t, i) => {
+  const tools = toolsOf().map((t, i) => {
     const { name, description, inputSchema } = t
     /** the vendor shapes, off the MCP wire and onto the catalogue: Anthropic input_schema, OpenAI function, Gemini functionDeclarations */
     return toolItemOf(href, t, i, { vendors: { anthropic: { name, description, input_schema: inputSchema }, openai: { type: 'function', function: { name, description, parameters: inputSchema } }, gemini: { functionDeclarations: [{ name, description, parameters: inputSchema }] } } })
   })
   const hasPart = toolListOf(tools, (tool) => ({ softwareHelp: tool.man.href }))
-  const cybersecurity = qpuCybersecurityToolsOf().map((t, i) => toolItemOf(href, t, i, {}, { sealed: false as const, morph: true as const }))
+  const cybersecurity = cybersecurityToolsOf().map((t, i) => toolItemOf(href, t, i, {}, { sealed: false as const, morph: true as const }))
   const holds =
     circuit.only.holds &&
     capacity.holds &&
     tools.length === mintOf(n) &&
-    tools.every((t) => qpuManHolds(t.man) && t.man.name === t.name) &&
+    tools.every((t) => manHolds(t.man) && t.man.name === t.name) &&
     hasPart.numberOfItems === mintOf(n) &&
     hasPart.itemListElement.length === mintOf(n) &&
     hasPart.itemListElement.every((row, i) => row.position === i + seed && row.item.name === tools[i]?.name) &&
     cybersecurity.length === mintOf(n) &&
     cybersecurity.every((t) => t.man.holds && t.man.name === t.name) &&
-    qpuMcpToolsListOf().length === mintOf(n) + mintOf(n)
+    mcpToolsListOf().length === mintOf(n) + mintOf(n)
   return {
-    '@context': qpuContextOf(),
+    '@context': contextOf(),
     '@type': 'WebAPI' as const,
     '@id': href,
     url: href,
@@ -305,7 +305,7 @@ export const qpuMcpOf = onceOf(() => {
       coil: { theorem: 'two_coins_make_a_coil' as const, faces: faces.faces },
       entangle: { product: seed * seed === (n - n) * (n - n), pairs: faces.rays },
       next: { theorem: 'next_coil' as const },
-      shor: { n: qpuFacesOf().rays * (n * n + n + seed), a: mintOf(n), qft: 'iqft' as const, product: qpuFacesOf().rays * (n * n + n + seed), rsa: true as const, p: qpuFacesOf().rays, q: n * n + n + seed, unlocked: true as const },
+      shor: { n: facesOf().rays * (n * n + n + seed), a: mintOf(n), qft: 'iqft' as const, product: facesOf().rays * (n * n + n + seed), rsa: true as const, p: facesOf().rays, q: n * n + n + seed, unlocked: true as const },
       src: unit.fuse.lean},
     sandbox: { kind: 'sandbox' as const,
     listed: false as const},
@@ -324,7 +324,7 @@ export const qpuMcpOf = onceOf(() => {
  * @wing agents
  * @kind builder
  */
-export const qpuFailureOf = (e: unknown, where = 'call') => {
+export const failureOf = (e: unknown, where = 'call') => {
   const err = e as { name?: string; message?: string; cause?: { code?: string; message?: string } }
   const message = String(err?.message ?? e)
   const code = err?.cause?.code ?? ''
@@ -351,7 +351,7 @@ export const qpuFailureOf = (e: unknown, where = 'call') => {
  * @wing agents
  * @kind builder
  */
-export const qpuThroughSchemaOf = (inputSchema: Record<string, unknown>): Record<string, unknown> => ({
+export const throughSchemaOf = (inputSchema: Record<string, unknown>): Record<string, unknown> => ({
   ...inputSchema,
   properties: {
     ...((inputSchema.properties as Record<string, unknown> | undefined) ?? {}),
@@ -369,41 +369,41 @@ export const qpuThroughSchemaOf = (inputSchema: Record<string, unknown>): Record
  * @wing agents
  * @kind builder
  */
-/** ONE source of the method surface, in door order: the six tool categories. qpuMcpDoorsOf lists them all; callOf
+/** ONE source of the method surface, in door order: the six tool categories. mcpDoorsOf lists them all; callOf
  *  dispatches the four 'morph' categories (every kind but sealed and fused — those have their own call-time handling).
  *  Add a category here and both the door listing and the dispatch pick it up — one list, iterated in both places. */
-const qpuMethodCategoriesOf = (env?: QpuEnv, auth?: string | null): { kind: string; morph: boolean; tools: readonly { name: string; description?: string }[] }[] => [
-  { kind: 'sealed', morph: false, tools: qpuToolsOf() },
-  { kind: 'cybersecurity', morph: true, tools: qpuCybersecurityToolsOf() },
-  { kind: 'fused', morph: false, tools: qpuMcpFusedOf() },
-  { kind: 'storage', morph: true, tools: qpuStorageToolsOf(env, auth) },
-  { kind: 'network', morph: true, tools: qpuNetworkToolsOf() },
-  { kind: 'server', morph: true, tools: qpuServerToolsOf() },
+const methodCategoriesOf = (env?: QpuEnv, auth?: string | null): { kind: string; morph: boolean; tools: readonly { name: string; description?: string }[] }[] => [
+  { kind: 'sealed', morph: false, tools: toolsOf() },
+  { kind: 'cybersecurity', morph: true, tools: cybersecurityToolsOf() },
+  { kind: 'fused', morph: false, tools: mcpFusedOf() },
+  { kind: 'storage', morph: true, tools: storageToolsOf(env, auth) },
+  { kind: 'network', morph: true, tools: networkToolsOf() },
+  { kind: 'server', morph: true, tools: serverToolsOf() },
 ]
 
 /** The morph tools (name, man, run) — the categories callOf dispatches uniformly, from the one source. */
-const qpuMorphToolsOf = (env?: QpuEnv, auth?: string | null): ReturnType<typeof qpuCybersecurityToolsOf> =>
-  qpuMethodCategoriesOf(env, auth).filter((c) => c.morph).flatMap((c) => c.tools as ReturnType<typeof qpuCybersecurityToolsOf>)
+const morphToolsOf = (env?: QpuEnv, auth?: string | null): ReturnType<typeof cybersecurityToolsOf> =>
+  methodCategoriesOf(env, auth).filter((c) => c.morph).flatMap((c) => c.tools as ReturnType<typeof cybersecurityToolsOf>)
 
 // Parsed ONCE at module load, not on every { doors: true } call: the embedded Lean source is static, so its def count
-// and its axiom / incompleteness (sorry|admit) counts are module constants — qpuMcpDoorsOf was re-scanning ~80KB with
+// and its axiom / incompleteness (sorry|admit) counts are module constants — mcpDoorsOf was re-scanning ~80KB with
 // several matchAll on every call. Correctness is unchanged (same scans of the same source); only the repetition is gone.
 const LEAN_DEFS = new Set([...leanSource.matchAll(/^[ \t]*def ([A-Za-z]\w*)/gm)].map((m) => m[1]))
 const LEAN_AXIOMS = leanAxioms // hooked from the build-time embed (lake build is the ground truth), not re-scanned here
 const LEAN_UNPROVEN = leanUnproven
 
-export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
+export const mcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
   // THE DOORS, COLD — ONE CATALOGUE, NOT MANY. This lists the tools (name + kind). The fused descriptions are on the man
   // page, one call away, kept off this list so it stays under the recognition span and never folds. THE FORMULAS ARE A
-  // SINGLE CATALOGUE, qpuHexCatalogOf, addressed in hex — not duplicated here: this door carries only its count and a
+  // SINGLE CATALOGUE, hexCatalogOf, addressed in hex — not duplicated here: this door carries only its count and a
   // pointer, so there is one formula catalogue to keep, never two to drift. Cold splits hot: the hot list stays in hex.
   const doors = [
-    ...qpuMethodCategoriesOf(env, auth).flatMap((c) => c.tools.map((t) => ({ name: t.name, kind: c.kind }))),
+    ...methodCategoriesOf(env, auth).flatMap((c) => c.tools.map((t) => ({ name: t.name, kind: c.kind }))),
     ...payloadFinds.map((name) => ({ name, kind: 'payload' })),
     { name: 'install', kind: 'install' },
     ...[...sandboxTools.keys()].map((name) => ({ name, kind: 'sandbox' })),
   ]
-  const fams = qpuHexFamiliesOf()
+  const fams = hexFamiliesOf()
   const formulas = [...fams.values()].reduce((a, fs) => a + fs.length, n - n)
   // A DOOR IS NOTHING IN TERMS OF LEAN UNLESS IT SAYS WHAT IS PROVEN. The lean kernel is the substance: its theorems
   // (all recomputed, zero axioms) and how many of the catalogue's formulas are a Lean def the kernel already proves.
@@ -429,7 +429,7 @@ export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
  * @wing agents
  * @kind builder
  */
-export const qpuMcpErrorsOf = async (env?: QpuEnv, from = n - n, take = qpuFacesOf().faces) => {
+export const mcpErrorsOf = async (env?: QpuEnv, from = n - n, take = facesOf().faces) => {
   type Row = { where: string; why: string; reading?: unknown; resolve: string }
   const errors: Row[] = [], warnings: Row[] = []
   const data = FUSED_TOOLS.get('data')
@@ -450,47 +450,47 @@ export const qpuMcpErrorsOf = async (env?: QpuEnv, from = n - n, take = qpuFaces
 }
 
 /** Every call is answered: a door that throws is answered with its classified failure, never a crash. */
-export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
+export const mcpCallOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
   try {
     return await callOf(name, args, env, auth)
   } catch (e) {
-    const f = qpuFailureOf(e, name)
-    return qpuMcpShownOf(name, { kind: 'failure' as const, ...(f.level === 'warning' ? { warning: f.why } : { denied: f.why }), ...f, holds: f.level === 'warning' })
+    const f = failureOf(e, name)
+    return mcpShownOf(name, { kind: 'failure' as const, ...(f.level === 'warning' ? { warning: f.why } : { denied: f.why }), ...f, holds: f.level === 'warning' })
   }
 }
 
 const callOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
   // The registry loads here, lazily, not at the Worker's global scope: every door/hex/fused call that reads the
-  // registry (qpuMcpDoorsOf, a family.formula door, improve/train/compete) needs every family registered first.
-  // Memoized (qpuHexRegistryOf is one shared promise), so this is free after the first call of the isolate.
-  await qpuHexRegistryOf()
+  // registry (mcpDoorsOf, a family.formula door, improve/train/compete) needs every family registered first.
+  // Memoized (hexRegistryOf is one shared promise), so this is free after the first call of the isolate.
+  await hexRegistryOf()
   // the hex address that reproduces this call, when it is a pure door call (no man, live or sequence flags)
   const hexOf = (): string | undefined => {
     if (args.man === true || args.live === true || args.sequence === true) return undefined
-    const family = qpuToolsOf().some((t) => t.name === name) ? 'qpu' : qpuCybersecurityToolsOf().some((t) => t.name === name) ? 'crypto' : undefined
+    const family = toolsOf().some((t) => t.name === name) ? 'qpu' : cybersecurityToolsOf().some((t) => t.name === name) ? 'crypto' : undefined
     if (!family) return undefined
     const params = family === 'crypto' ? [args.n, args.a].map((x) => (x === undefined ? n - n : Number(x))) : []
     try { return qpuHexUuidOf({ family, program: [name], params: params.every((x) => x === n - n) ? [] : params }) } catch { return undefined }
   }
   const shown = async (payload: unknown) => {
-    const r = qpuMcpShownOf(name, payload, `${unit.origin}/mcp`, args.full === true) as { _meta?: Record<string, unknown> }
+    const r = mcpShownOf(name, payload, `${unit.origin}/mcp`, args.full === true) as { _meta?: Record<string, unknown> }
     const hex = hexOf()
     return hex && r._meta ? { ...r, _meta: { ...r._meta, hex } } : r
   }
-  // through this door: the listing, every error at once, a hex program, or another door (see qpuThroughSchemaOf)
-  if (args.doors === true) return shown(qpuMcpDoorsOf(env, auth))
-  if (args.errors === true) return shown(await qpuMcpErrorsOf(env, typeof args.from === 'number' ? args.from : n - n, typeof args.take === 'number' ? args.take : qpuFacesOf().faces))
+  // through this door: the listing, every error at once, a hex program, or another door (see throughSchemaOf)
+  if (args.doors === true) return shown(mcpDoorsOf(env, auth))
+  if (args.errors === true) return shown(await mcpErrorsOf(env, typeof args.from === 'number' ? args.from : n - n, typeof args.take === 'number' ? args.take : facesOf().faces))
   if (typeof args.hex === 'string' || (typeof args.hex === 'object' && args.hex !== null)) {
     // a client whose schema only knows a string sends the object as JSON: it is the same request
     const h = (typeof args.hex === 'string' && args.hex.trim().startsWith('{') ? JSON.parse(args.hex) : args.hex) as string | { family?: unknown; program?: unknown; params?: unknown }
     const referrer = typeof args.referrer === 'string' ? args.referrer : undefined
     try {
       const uuid = typeof h === 'string' ? h : qpuHexUuidOf({ family: String(h.family ?? ''), program: Array.isArray(h.program) ? h.program.map(String) : String(h.program ?? '').split(/[+,]/).filter(Boolean), params: Array.isArray(h.params) ? h.params.map(Number) : [] })
-      return shown(await qpuHexRunOf(uuid, referrer, env))
+      return shown(await hexRunOf(uuid, referrer, env))
     } catch (e) {
       const family = typeof h === 'object' && h !== null && typeof h.family === 'string' ? h.family : ''
       const params = typeof h === 'object' && h !== null && Array.isArray(h.params) ? h.params.map(Number) : []
-      const next = family.length > n - n ? qpuHexMissOf(family, params) : undefined
+      const next = family.length > n - n ? hexMissOf(family, params) : undefined
       return shown({ kind: 'hex' as const, holds: false as const, denied: 'program', reading: (e as Error).message, ...(next ? { next } : {}) })
     }
   }
@@ -510,29 +510,29 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
     if (formula) {
       const family = formula[1]!
       const program = formula[2]!
-      const formulas = qpuHexFamiliesOf().get(family)
+      const formulas = hexFamiliesOf().get(family)
       const params = Array.isArray(inner.params) ? (inner.params as unknown[]).map(Number) : []
-      if (formulas?.some((f) => f.name === program)) return qpuMcpCallOf(name, { hex: { family, program: [program], params }, ...carried }, env, auth)
+      if (formulas?.some((f) => f.name === program)) return mcpCallOf(name, { hex: { family, program: [program], params }, ...carried }, env, auth)
       if (formulas) {
-        const next = qpuHexMissOf(family, params)
+        const next = hexMissOf(family, params)
         return shown({ kind: 'hex' as const, holds: false as const, denied: 'program' as const, reading: `hex: ${family} has no formula ${program}`, ...(next ? { next } : {}) })
       }
     }
-    return qpuMcpCallOf(args.door, { ...inner, ...carried }, env, auth)
+    return mcpCallOf(args.door, { ...inner, ...carried }, env, auth)
   }
-  const tool = qpuToolsOf().find((t) => t.name === name)
+  const tool = toolsOf().find((t) => t.name === name)
   if (tool) {
     if (args.man !== true) {
       const sequenced =
         args.sequence === true &&
         (name === toolNames[n] || name === toolNames[n + coins] || name === toolNames[n + n] || name === toolNames[mintOf(n) - seed])
-      if (sequenced || (name === toolNames[mintOf(n) - seed] && args.live === true)) return shown({ ...(await qpuSequenceLiveOf()), data: await qpuDataLiveOf(env, typeof args.from === 'number' ? args.from : n - n) })
+      if (sequenced || (name === toolNames[mintOf(n) - seed] && args.live === true)) return shown({ ...(await sequenceLiveOf()), data: await dataLiveOf(env, typeof args.from === 'number' ? args.from : n - n) })
       if (args.live === true) {
         if (name === toolNames[n] && typeof args.from === 'number' && Number.isInteger(args.from) && args.from >= n - n)
-          return shown({ ...(await qpuComposeLiveOf(args.from, qpuFacesOf().faces)), from: args.from, next: args.from + qpuFacesOf().faces, stream: qpuReceiptStreamsOf(n - n).streams.find((row) => row.stream === 'fuse') ?? null })
-        if (name === toolNames[n]) return shown(await qpuTrainLiveOf())
-        if (name === toolNames[n + coins]) return shown(await qpuImproveLiveOf())
-        if (name === toolNames[n + n]) return shown(await qpuCompeteLiveOf(typeof args.team === 'string' ? args.team : undefined))
+          return shown({ ...(await composeLiveOf(args.from, facesOf().faces)), from: args.from, next: args.from + facesOf().faces, stream: receiptStreamsOf(n - n).streams.find((row) => row.stream === 'fuse') ?? null })
+        if (name === toolNames[n]) return shown(await trainLiveOf())
+        if (name === toolNames[n + coins]) return shown(await improveLiveOf())
+        if (name === toolNames[n + n]) return shown(await competeLiveOf(typeof args.team === 'string' ? args.team : undefined))
       }
     }
     return shown(await tool.run(args))
@@ -541,7 +541,7 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
   if (fused) return shown(await fused.run(args, env, auth))
   if (name === 'install' || name === 'apk') {
     if (args.man === true) {
-      return shown(qpuManPageOf('install',
+      return shown(manPageOf('install',
         qpuManOf(
           'install',
           'Interactive installer. Plan, then commit. Fuse Payload MCP to QPU without a ninth sealed tool. VitePress payload stays on uuidna.com.',
@@ -549,36 +549,36 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
           `${unit.origin}/mcp`,
           [...toolNames])))
     }
-    return shown(qpuInstallOf(args))
+    return shown(installOf(args))
   }
   if ((payloadFinds as readonly string[]).includes(name)) {
     if (args.man === true) {
-      return shown(qpuManPageOf(name,
-        qpuSubManOf(
+      return shown(manPageOf(name,
+        subManOf(
           name,
           'Payload find. Read only.',
           'Not in tools/list. Morph at call time. Not a ninth sealed tool. No auth. Write never.',
           `${unit.origin}/mcp`,
           payloadFinds.filter((row) => row !== name))))
     }
-    return shown(qpuPayloadFindOf(name))
+    return shown(payloadFindOf(name))
   }
-  const morph = qpuMorphToolsOf(env, auth).find((t) => t.name === name)
+  const morph = morphToolsOf(env, auth).find((t) => t.name === name)
   if (morph) {
-    if (args.man === true) return shown(qpuManPageOf(name, morph.man))
+    if (args.man === true) return shown(manPageOf(name, morph.man))
     return shown(await morph.run(args))
   }
   seedSandboxOf()
   const href = typeof args.href === 'string' ? args.href : typeof args.path === 'string' ? args.path : ''
-  if (name === 'fetch' && qpuCernHrefOf(href) !== undefined) {
-    const record = qpuCernRecordsOf().records.find((row) => row.href === href)
+  if (name === 'fetch' && cernHrefOf(href) !== undefined) {
+    const record = cernRecordsOf().records.find((row) => row.href === href)
     const project =
-      qpuCernProjectsOf().projects.find((row) => row.href === href) ?? qpuCernSearchOf().doors.find((row) => row.href === href)
+      cernProjectsOf().projects.find((row) => row.href === href) ?? cernSearchOf().doors.find((row) => row.href === href)
     const value = record
-      ? await qpuCernFetchOf(href)
+      ? await cernFetchOf(href)
       : project
-        ? await qpuCernProjectFetchOf(href)
-        : await qpuResearchFetchOf(href)
+        ? await cernProjectFetchOf(href)
+        : await researchFetchOf(href)
     return shown({
       kind: 'sandbox' as const,
       name,
@@ -588,8 +588,8 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
       holds: value.holds,
   })
   }
-  if (sandboxTools.has(name)) return shown(qpuSandboxRunOf(name, args))
-  return qpuUnknownToolOf(name)
+  if (sandboxTools.has(name)) return shown(sandboxRunOf(name, args))
+  return unknownToolOf(name)
 }
 
 const deviceOn = (value: unknown): string | undefined => {
@@ -614,17 +614,17 @@ const recognisedReplyOf = (name: string, raw: unknown): boolean => {
   if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) return false
   if (typeof (raw as { then?: unknown }).then === 'function') return true
   const text = JSON.stringify(raw)
-  const led = qpuRecognizeOf(raw) as Record<string, unknown>
+  const led = recognizeOf(raw) as Record<string, unknown>
   const recognition = led.recognition as { kind?: unknown; fold?: unknown; expand?: unknown; device?: unknown } | undefined
   const shown = JSON.stringify(led)
   const reply = mintOf(tenOf(seed)) * mintOf(n)
   const holds = (raw as { holds?: unknown }).holds
   const device = deviceOn(raw)
-  const expanded = qpuMcpShownOf(name, raw, `${unit.origin}/mcp`, true)
+  const expanded = mcpShownOf(name, raw, `${unit.origin}/mcp`, true)
   return (
     recognition?.kind === 'recognition' &&
     Object.keys(led)[n - n] === 'recognition' &&
-    recognition.fold === qpuFoldOf(text) &&
+    recognition.fold === foldOf(text) &&
     recognition.expand === '{ full: true }' &&
     (typeof holds !== 'boolean' || led.holds === holds) &&
     (device === undefined || recognition.device === device) &&
@@ -632,37 +632,37 @@ const recognisedReplyOf = (name: string, raw: unknown): boolean => {
     shown.length <= reply &&
     (text.length <= reply || shown.length < text.length) &&
     JSON.stringify(expanded.structuredContent) === text &&
-    qpuMcpShownHolds(expanded)
+    mcpShownHolds(expanded)
   )
 }
 
 /**
  * THE MCP SELF-CHECK AS NAMED CLAUSES, NOT ONE OPAQUE BOOLEAN. Every conjunct is a `[name, ok]` pair, so when the
  * contract breaks the gate and the test name the failing clause instead of reporting a bare `false` that has to be
- * bisected by hand (put manual work in automation only). qpuMcpHolds folds it; qpuMcpFailuresOf reports the broken ones.
+ * bisected by hand (put manual work in automation only). mcpHolds folds it; mcpFailuresOf reports the broken ones.
  */
-export const qpuMcpChecksOf = (m = qpuMcpOf()): Array<[string, boolean]> => {
-  const capacity = qpuCapacityOf()
-  const circuit = qpuCircuitOf()
-  const proved = qpuProveOf()
-  const proveShown = qpuMcpShownOf('prove', proved)
-  const proveFull = qpuMcpShownOf('prove', proved, `${unit.origin}/mcp`, true)
+export const mcpChecksOf = (m = mcpOf()): Array<[string, boolean]> => {
+  const capacity = capacityOf()
+  const circuit = circuitOf()
+  const proved = proveOf()
+  const proveShown = mcpShownOf('prove', proved)
+  const proveFull = mcpShownOf('prove', proved, `${unit.origin}/mcp`, true)
   const proveLed = proveShown.structuredContent as { recognition?: { device?: unknown; enthalpy?: number; heat?: number; free?: number }; holds?: unknown }
   const reading = qpuReadingOf()
-  const recognisedReading = qpuRecognizeOf(reading) as { holds?: boolean; fused?: number; next?: number; docs?: unknown; circuit?: { only?: { holds?: boolean } } }
-  const listed = [...qpuToolsOf(), ...qpuCybersecurityToolsOf()]
+  const recognisedReading = recognizeOf(reading) as { holds?: boolean; fused?: number; next?: number; docs?: unknown; circuit?: { only?: { holds?: boolean } } }
+  const listed = [...toolsOf(), ...cybersecurityToolsOf()]
   return [
     ['quantum', qpuQuantumHolds()],
-    ['lean', qpuLeanHolds()],
-    ['cite', qpuCiteHolds()],
-    ['efficiency', qpuEfficiencyHolds()],
-    ['sandbox', qpuSandboxHolds()],
-    ['train', qpuTrainHolds()],
-    ['improve', qpuImproveHolds()],
-    ['compete', qpuCompeteHolds()],
-    ['prove', qpuProveHolds()],
-    ['cybersecurity', qpuCybersecurityHolds()],
-    ['message', qpuMessageHolds()],
+    ['lean', leanHolds()],
+    ['cite', citeHolds()],
+    ['efficiency', efficiencyHolds()],
+    ['sandbox', sandboxHolds()],
+    ['train', trainHolds()],
+    ['improve', improveHolds()],
+    ['compete', competeHolds()],
+    ['prove', proveHolds()],
+    ['cybersecurity', cybersecurityHolds()],
+    ['message', messageHolds()],
     ['m.holds', m.holds === true],
     ['m.kind', m.kind === 'quantum'],
     ['m.only.holds', m.only.holds === true],
@@ -673,7 +673,7 @@ export const qpuMcpChecksOf = (m = qpuMcpOf()): Array<[string, boolean]> => {
     ['m.cors', m.cors === cors],
     ['m.origin', m.origin === unit.origin],
     ['m.href', m.href === `${unit.origin}/mcp`],
-    ['sandbox.durability', qpuSandboxDurabilityHolds()],
+    ['sandbox.durability', sandboxDurabilityHolds()],
     ['m.tools.length', m.tools.length === mintOf(n)],
     ['tool.quantum', m.tools[n - n]?.name === 'quantum'],
     ['tool.lean', m.tools[seed]?.name === 'lean'],
@@ -683,7 +683,7 @@ export const qpuMcpChecksOf = (m = qpuMcpOf()): Array<[string, boolean]> => {
     ['tool.improve', m.tools[n + coins]?.name === 'improve'],
     ['tool.compete', m.tools[n + n]?.name === 'compete'],
     ['tool.prove', m.tools[mintOf(n) - seed]?.name === 'prove'],
-    ['tools.man', m.tools.every((t) => qpuManHolds(t.man) && t.man.name === t.name)],
+    ['tools.man', m.tools.every((t) => manHolds(t.man) && t.man.name === t.name)],
     ['cyber.listed', m.cybersecurity.listed === true],
     ['cyber.sealed', m.cybersecurity.sealed === false],
     ['cyber.morph', m.cybersecurity.morph === true],
@@ -694,24 +694,24 @@ export const qpuMcpChecksOf = (m = qpuMcpOf()): Array<[string, boolean]> => {
     ['rsa.kind', m.cybersecurity.rsa.kind === 'rsa'],
     ['rsa.factored', m.cybersecurity.rsa.factored === true],
     ['rsa.unlocked', m.cybersecurity.rsa.unlocked === true],
-    ['rsa.modulus', m.cybersecurity.rsa.modulus === qpuFacesOf().rays * (n * n + n + seed)],
+    ['rsa.modulus', m.cybersecurity.rsa.modulus === facesOf().rays * (n * n + n + seed)],
     ['rsa.p*q', m.cybersecurity.rsa.p * m.cybersecurity.rsa.q === m.cybersecurity.rsa.modulus],
     ['encrypt.kind', m.cybersecurity.encrypt.kind === 'encrypt'],
     ['encrypt.theorem', m.cybersecurity.encrypt.theorem === 'crypto'],
     ['encrypt.identity', m.cybersecurity.encrypt.identity === true],
     ['encrypt.holds', m.cybersecurity.encrypt.holds === true],
-    ['toolsList.length', qpuMcpToolsListOf().length === mintOf(n) + mintOf(n)],
+    ['toolsList.length', mcpToolsListOf().length === mintOf(n) + mintOf(n)],
     // THE CONNECT BILL, the same bytes examine measures: id 2, compact JSON, under a KiB per door.
-    ['toolsList.bill', `{"jsonrpc":"2.0","id":2,"result":${JSON.stringify({ resultType: 'complete', tools: qpuMcpToolsListOf() })}}`.length < qpuMcpToolsListOf().length * mintOf(tenOf(seed))],
-    ['toolsList.names', qpuMcpToolsListOf().slice(n - n, mintOf(n)).every((t, i) => t.name === toolNames[i])],
-    ['toolsList.cryptoNames', qpuMcpToolsListOf().slice(mintOf(n)).every((t, i) => t.name === cryptoToolNames[i])],
+    ['toolsList.bill', `{"jsonrpc":"2.0","id":2,"result":${JSON.stringify({ resultType: 'complete', tools: mcpToolsListOf() })}}`.length < mcpToolsListOf().length * mintOf(tenOf(seed))],
+    ['toolsList.names', mcpToolsListOf().slice(n - n, mintOf(n)).every((t, i) => t.name === toolNames[i])],
+    ['toolsList.cryptoNames', mcpToolsListOf().slice(mintOf(n)).every((t, i) => t.name === cryptoToolNames[i])],
     // the GitHub/Cloudflare tool hints, proved and not merely set, so the conformance is automated and cannot drift:
     // forge is the one write, nothing is destructive, a tool is open-world only when its input reads the live
     // occupancy, and it is idempotent exactly when it is a read-only closed-world call — a repeat returns the same
     // document. Every tool carries a display title distinct from its machine name.
     [
       'toolsList.hints',
-      qpuMcpToolsListOf().every((raw) => {
+      mcpToolsListOf().every((raw) => {
         const t = raw as { name: string; title?: unknown; inputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean; destructiveHint?: boolean; idempotentHint?: boolean; openWorldHint?: boolean } }
         const a = t.annotations ?? {}
         const live = t.inputSchema?.properties?.live !== undefined
@@ -724,34 +724,34 @@ export const qpuMcpChecksOf = (m = qpuMcpOf()): Array<[string, boolean]> => {
     ['hasPart.@type', m.hasPart['@type'] === 'ItemList'],
     ['hasPart.numberOfItems', m.hasPart.numberOfItems === mintOf(n)],
     ['hasPart.itemListElement', m.hasPart.itemListElement.length === mintOf(n)],
-    ['schemas.mounted', m.capacity.schemas.mounted === qpuFacesOf().faces],
+    ['schemas.mounted', m.capacity.schemas.mounted === facesOf().faces],
     ['schemas.vacant', m.capacity.schemas.vacant === n - n],
     ['raid.holds', capacity.raid.holds === true],
     ['raid.start', capacity.raid.start === 'cheapest'],
-    ['raid.cover', capacity.raid.cover.length === qpuFacesOf().faces],
+    ['raid.cover', capacity.raid.cover.length === facesOf().faces],
     ['raid.cheapest', capacity.raid.cheapest === capacity.raid.cover[n - n]],
-    ['prove.cern.faces', m.prove.cern.faces === qpuFacesOf().faces],
+    ['prove.cern.faces', m.prove.cern.faces === facesOf().faces],
     ['prove.coil.theorem', m.prove.coil.theorem === 'two_coins_make_a_coil'],
-    ['prove.coil.faces', m.prove.coil.faces === qpuFacesOf().faces],
+    ['prove.coil.faces', m.prove.coil.faces === facesOf().faces],
     ['prove.entangle.product', m.prove.entangle.product === false],
-    ['prove.entangle.pairs', m.prove.entangle.pairs === qpuFacesOf().rays],
+    ['prove.entangle.pairs', m.prove.entangle.pairs === facesOf().rays],
     ['prove.next.theorem', m.prove.next.theorem === 'next_coil'],
-    ['prove.shor.n', m.prove.shor.n === qpuFacesOf().rays * (n * n + n + seed)],
+    ['prove.shor.n', m.prove.shor.n === facesOf().rays * (n * n + n + seed)],
     ['prove.shor.a', m.prove.shor.a === mintOf(n)],
     ['prove.shor.qft', m.prove.shor.qft === 'iqft'],
-    ['prove.shor.product', m.prove.shor.product === qpuFacesOf().rays * (n * n + n + seed)],
+    ['prove.shor.product', m.prove.shor.product === facesOf().rays * (n * n + n + seed)],
     ['prove.shor.rsa', m.prove.shor.rsa === true],
     ['prove.shor.unlocked', m.prove.shor.unlocked === true],
     ['prove.shor.p*q', m.prove.shor.p * m.prove.shor.q === m.prove.shor.n],
     ['prove.src', m.prove.src === unit.fuse.lean],
-    ['hosts', qpuHostsHolds()],
-    ['develop', qpuDevelopHolds()],
-    ['recognize', qpuRecognizeHolds()],
+    ['hosts', hostsHolds()],
+    ['develop', developHolds()],
+    ['recognize', recognizeHolds()],
     ['listed.length', listed.length === mintOf(n) + mintOf(n)],
     ['listed.recognised', listed.every((t) => recognisedReplyOf(t.name, t.run({})))],
     ['prove.recognised.failure', recognisedReplyOf('prove', { kind: 'failure' as const, denied: 'program' as const, holds: false as const, blob: 'z'.repeat(mintOf(tenOf(seed)) * mintOf(n)) })],
-    ['proveShown', qpuMcpShownHolds(proveShown)],
-    ['proveFull', qpuMcpShownHolds(proveFull)],
+    ['proveShown', mcpShownHolds(proveShown)],
+    ['proveFull', mcpShownHolds(proveFull)],
     ['proveLed.holds', proveLed.holds === true],
     ['proveLed.device', proveLed.recognition?.device === 'exact-amplitudes'],
     ['proveLed.free>0', (proveLed.recognition?.free ?? n - n) > n - n],
@@ -766,6 +766,6 @@ export const qpuMcpChecksOf = (m = qpuMcpOf()): Array<[string, boolean]> => {
 }
 
 /** The names of the clauses that are currently false — empty when the MCP contract holds. Read by the gate and the test. */
-export const qpuMcpFailuresOf = (m = qpuMcpOf()): string[] => qpuMcpChecksOf(m).filter(([, ok]) => !ok).map(([name]) => name)
+export const mcpFailuresOf = (m = mcpOf()): string[] => mcpChecksOf(m).filter(([, ok]) => !ok).map(([name]) => name)
 
-export const qpuMcpHolds = (m = qpuMcpOf()): boolean => qpuMcpChecksOf(m).every(([, ok]) => ok)
+export const mcpHolds = (m = mcpOf()): boolean => mcpChecksOf(m).every(([, ok]) => ok)

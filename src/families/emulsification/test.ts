@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EmulsificationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('emulsification: dropletsize, stabilityindex, emulsifierratio, phaseratio, 
   assert.equal(EmulsificationFormulas.surfacetension(72, 2).value, 36)
   assert.equal(EmulsificationFormulas.coalescencetime(3600, 60).value, 60)
   assert.equal(EmulsificationFormulas.dropletsize(1000, 50).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('emulsification')?.length, 8)
+  assert.equal(hexFamiliesOf().get('emulsification')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'emulsification', program: ['dropletsize'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `emulsification.dropletsize at ${uuid}`)
-  qpuUuidReceiptOf('emulsification dropletsize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('emulsification dropletsize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dropletsize 20, stabilityindex 90, emulsifierratio 3, phaseratio 233, viscosity 200, creamingrate 5, surfacetension 36, coalescencetime 60; crossing to chemistry')
 })

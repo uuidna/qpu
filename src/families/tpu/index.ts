@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TPU — THE TENSOR/AI ACCELERATOR, AS ARITHMETIC. A systolic array is numbers by the book: the MACs laid out across its
@@ -36,4 +36,4 @@ export class TpuFormulas {
 }
 
 for (const name of ['batch', 'dataflow', 'efficiency', 'latency', 'macs', 'memory', 'throughput', 'tiles', 'tops', 'utilization'] as const)
-  qpuHexRegisterOf('tpu', name, (TpuFormulas[name] as (...x: unknown[]) => unknown).bind(TpuFormulas))
+  hexRegisterOf('tpu', name, (TpuFormulas[name] as (...x: unknown[]) => unknown).bind(TpuFormulas))

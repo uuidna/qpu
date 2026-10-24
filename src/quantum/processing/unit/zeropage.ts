@@ -9,18 +9,18 @@ import {
   mintOf,
   n,
   onceOf,
-  qpuCapacityOf,
-  qpuCircuitOf,
-  qpuClayHolds,
+  capacityOf,
+  circuitOf,
+  clayHolds,
   qpuClayOf,
-  qpuCoilOf,
-  qpuCubeOf,
+  coilOf,
+  cubeOf,
   qpuEvidenceOf,
-  qpuFacesOf,
+  facesOf,
   qpuHandleOf,
-  qpuHexRunOf,
+  hexRunOf,
   qpuHexUuidOf,
-  qpuLatticeNamesOf,
+  latticeNamesOf,
   seed,
   ten,
   tenOf,
@@ -29,7 +29,7 @@ import {
 const none = n - n
 
 /** One unsigned byte is the span mintOf(vertices): the values 0 .. span − 1. */
-const spanOf = (): number => mintOf(qpuLatticeNamesOf().vertices)
+const spanOf = (): number => mintOf(latticeNamesOf().vertices)
 
 const readInt = (value: unknown): number | undefined => {
   const x = typeof value === 'number' || typeof value === 'bigint' || typeof value === 'string' ? Number(value) : Number.NaN
@@ -83,15 +83,15 @@ export type QpuAnalytics = {
  * holds when each integer equals the builder that produces it. The amplitude count is held here.
  * @wing lattice
  * @kind builder
- * @evidence qpuAnalyticsHolds
+ * @evidence analyticsHolds
  */
-export const qpuAnalyticsOf = onceOf((): QpuAnalytics => {
-  const lattice = qpuLatticeNamesOf()
-  const faces = qpuFacesOf()
-  const coil = qpuCoilOf()
+export const analyticsOf = onceOf((): QpuAnalytics => {
+  const lattice = latticeNamesOf()
+  const faces = facesOf()
+  const coil = coilOf()
   const clay = qpuClayOf()
   const handle = qpuHandleOf()
-  const capacity = qpuCapacityOf()
+  const capacity = capacityOf()
   const span = spanOf()
   const riemann = ClaySeals.riemann(seed, coins)
   const bsdNine = ClaySeals.bsd(n * n)
@@ -112,7 +112,7 @@ export const qpuAnalyticsOf = onceOf((): QpuAnalytics => {
   const amplitudeBytes = bytesOf(amplitudes)
   const fusedBytes = bytesOf(fused)
   const holds =
-    qpuClayHolds(clay) &&
+    clayHolds(clay) &&
     clay.clay === faces.faces &&
     clay.clay === coil.coil &&
     clay.clay === coins * faces.rays &&
@@ -190,15 +190,15 @@ export const qpuAnalyticsOf = onceOf((): QpuAnalytics => {
   }
 })
 
-export const qpuAnalyticsHolds = (a = qpuAnalyticsOf()): boolean =>
+export const analyticsHolds = (a = analyticsOf()): boolean =>
   a.holds === true &&
   a.kind === 'analytics' &&
   a.seed === seed &&
   a.coins === coins &&
   a.n === n &&
-  a.rays === qpuFacesOf().rays &&
+  a.rays === facesOf().rays &&
   a.clay === qpuClayOf().clay &&
-  a.modulus === chooseOf(qpuFacesOf().faces, coins) &&
+  a.modulus === chooseOf(facesOf().faces, coins) &&
   a.riemann === ClaySeals.riemann(seed, coins).value &&
   a.bsd === ClaySeals.bsd(n * n).value &&
   a.hodge === ClaySeals.hodge(coins).value &&
@@ -207,13 +207,13 @@ export const qpuAnalyticsHolds = (a = qpuAnalyticsOf()): boolean =>
   a.yangMills === ClaySeals.yangMills().value &&
   a.hz === TuneFormulas.fundamental().value &&
   a.amplitudes === qpuHandleOf().amplitudes &&
-  a.fused === qpuCapacityOf().fused &&
-  a.next === qpuCapacityOf().next &&
-  a.plane === qpuLatticeNamesOf().plane &&
+  a.fused === capacityOf().fused &&
+  a.next === capacityOf().next &&
+  a.plane === latticeNamesOf().plane &&
   !fitsByte(a.amplitudes)
 
 /** The summary holds the amplitude count. The prize line is said once, on the public sentence. */
-export const qpuAnalyticsSentenceOf = (a = qpuAnalyticsOf()): string =>
+export const analyticsSentenceOf = (a = analyticsOf()): string =>
   `Summarised analytics hold a Pravets 8M clay register: seed ${a.seed}, coins ${a.coins}, n ${a.n}, rays ${a.rays}, clay ${a.clay}, modulus ${a.modulus}, riemann ${a.riemann}, bsd ${a.bsd}, hodge ${a.hodge}, navierStokes ${a.navierStokes}, pVsNp ${a.pVsNp}, yangMills ${a.yangMills}, ${a.hz} as bytes ${a.low} and ${a.high}, amplitudes ${a.amplitudes}, fused ${a.fused}, next ${a.next}, plane ${a.plane}.`
 
 /** Read from the npm registry and the published tarball READMEs. Not a lattice integer. */
@@ -232,20 +232,20 @@ const zeropointNode = {
 } as const
 
 /** The homepage sentence: the sequence the package prints, the author's claim, and one prize line. */
-export const qpuPublicSentenceOf = (a = qpuAnalyticsOf()): string => {
+export const publicSentenceOf = (a = analyticsOf()): string => {
   const cite = qpuCiteOf()
   const z = zeropointNode
   return `Author's published sequence: ${z.name} ${z.version}, published ${z.published}, prints ${z.sequence} (that identifier is in the ${z.version} README, and in the README from version ${z.sequenceFrom} published ${z.sequenceFromDate}, including the August 2026 releases ${z.augustFrom} published ${z.augustFromDate} through ${z.augustTo} published ${z.augustToDate}; the package was first published ${z.created}). Author's claim: "${cite.prior.title}" (Rouschev, 2026, doi:${cite.prior.conceptdoi}). A prize is a lead.`
 }
 
 /** Visible record: the sentence, the amplitude summary, and the licence. A prize holds false. */
-export const qpuPublicOf = (a = qpuAnalyticsOf()) => {
+export const publicOf = (a = analyticsOf()) => {
   const cite = qpuCiteOf()
-  const sentence = qpuPublicSentenceOf(a)
+  const sentence = publicSentenceOf(a)
   return {
     prize: false as const,
     sentence,
-    lines: [sentence, qpuAnalyticsSentenceOf(a), cite.right] as const,
+    lines: [sentence, analyticsSentenceOf(a), cite.right] as const,
   }
 }
 
@@ -256,12 +256,12 @@ type ZeroCell = { address: number; name: string; value: number; fits: true; hex?
  * Amplitudes and fused are leads on this page (they do not fit in one byte) and integers in the analytics.
  * @wing lattice
  * @kind builder
- * @evidence qpuZeroPageHolds
+ * @evidence zeroPageHolds
  */
-export const qpuZeroPageOf = onceOf(async () => {
-  const a = qpuAnalyticsOf()
-  const lattice = qpuLatticeNamesOf()
-  const faces = qpuFacesOf()
+export const zeroPageOf = onceOf(async () => {
+  const a = analyticsOf()
+  const lattice = latticeNamesOf()
+  const faces = facesOf()
   const clay = qpuClayOf()
   const programs: { name: string; family: string; program: string; params: number[]; value: number }[] = [
     { name: 'modulus', family: 'Qpu.Mint', program: 'chooseOf', params: [faces.faces, coins], value: a.modulus },
@@ -276,7 +276,7 @@ export const qpuZeroPageOf = onceOf(async () => {
   ]
   const ran = await Promise.all(programs.map(async (row) => {
     const hex = qpuHexUuidOf({ family: row.family, program: [row.program], params: row.params })
-    const run = await qpuHexRunOf(hex, undefined, undefined, { store: false })
+    const run = await hexRunOf(hex, undefined, undefined, { store: false })
     const value = readInt((run as { value?: unknown }).value)
     return { ...row, hex, value, agrees: value === row.value && (run as { holds?: unknown }).holds === true }
   }))
@@ -304,7 +304,7 @@ export const qpuZeroPageOf = onceOf(async () => {
     { name: 'next' as const, value: a.next, bytes: bytesOf(a.next), fits: false as const },
   ]
   const holds =
-    qpuAnalyticsHolds(a) &&
+    analyticsHolds(a) &&
     cells.every((cell) => cell.fits === true && fitsByte(cell.value)) &&
     leads.every((lead) => lead.fits === false && !fitsByte(lead.value)) &&
     ran.every((row) => row.agrees) &&
@@ -312,8 +312,8 @@ export const qpuZeroPageOf = onceOf(async () => {
   return { kind: 'zeropage' as const, cells, leads, analytics: a, ran, holds }
 })
 
-export const qpuZeroPageHolds = async (page?: Awaited<ReturnType<typeof qpuZeroPageOf>>): Promise<boolean> => {
-  const got = page ?? await qpuZeroPageOf()
+export const zeroPageHolds = async (page?: Awaited<ReturnType<typeof zeroPageOf>>): Promise<boolean> => {
+  const got = page ?? await zeroPageOf()
   return got.holds === true && got.kind === 'zeropage' && got.analytics.holds === true && !fitsByte(got.analytics.amplitudes)
 }
 
@@ -415,7 +415,7 @@ export type QpuMachines = {
 
 /** A few dozen bytes: n dozens, and a dozen is twelve (vertices + hexbit). The byte string of the three integers is the other bar; the floor is the larger. */
 const floorBytesOf = (a: QpuAnalytics): number => {
-  const lattice = qpuLatticeNamesOf()
+  const lattice = latticeNamesOf()
   const dozen = lattice.vertices + lattice.hexbit
   const fewDozen = n * dozen
   const payload = a.amplitudeBytes.length + a.fusedBytes.length + bytesOf(a.next).length
@@ -432,15 +432,15 @@ const fitsWidth = (value: number, width: MachineWidth): boolean => {
 const registerOf = (value: number, width: MachineWidth): number => {
   if (fitsWidth(value, width)) return value
   if (width.kind === 'decimal') return tenOf(width.digits) - seed
-  if (width.kind === 'binary' && width.bits <= qpuCubeOf().bits) return mintOf(width.bits) - seed
+  if (width.kind === 'binary' && width.bits <= cubeOf().bits) return mintOf(width.bits) - seed
   return none
 }
 
 /** One step up the word ladder. A miss names that next address and stops. */
 const nextWordOf = (width: MachineWidth): string => {
-  const lattice = qpuLatticeNamesOf()
+  const lattice = latticeNamesOf()
   const word16 = lattice.vertices * coins
-  const word32 = qpuCubeOf().bits
+  const word32 = cubeOf().bits
   const word64 = word32 * coins
   if (width.kind === 'exact') return 'held'
   if (width.kind === 'decimal') return `${word64}-bit`
@@ -451,7 +451,7 @@ const nextWordOf = (width: MachineWidth): string => {
 }
 
 const stampOf = (values: readonly number[]): number => {
-  const radix = qpuLatticeNamesOf().vertices
+  const radix = latticeNamesOf().vertices
   let x = none
   for (const value of values) x = x * radix + value
   return x
@@ -463,7 +463,7 @@ const clayOnOf = (width: MachineWidth): MachineClay => {
     ClaySeals.hodge(coins),
     ClaySeals.yangMills(),
     ClaySeals.bsd(n * n),
-    ClaySeals.bsd(qpuFacesOf().faces + seed),
+    ClaySeals.bsd(facesOf().faces + seed),
     ClaySeals.navierStokes(n, n),
     ClaySeals.pVsNp(none),
   ]
@@ -472,9 +472,9 @@ const clayOnOf = (width: MachineWidth): MachineClay => {
   const computed = stampOf(projected)
   const fidelity = LawFormulas.fidelity(ordered, computed)
   const redirected = LawFormulas.redirected(ordered, computed)
-  const radix = qpuLatticeNamesOf().vertices
+  const radix = latticeNamesOf().vertices
   const faithful = latticeSeals.every((seal) => seal.value >= none && seal.value < radix)
-  const matched = faithful && fidelity.value === seed && latticeSeals.every((seal) => seal.holds === true) && qpuClayHolds()
+  const matched = faithful && fidelity.value === seed && latticeSeals.every((seal) => seal.holds === true) && clayHolds()
   return {
     riemann: projected[none]!,
     hodge: projected[seed]!,
@@ -483,7 +483,7 @@ const clayOnOf = (width: MachineWidth): MachineClay => {
     bsdFaces: projected[n + seed]!,
     navierStokes: projected[n + coins]!,
     pVsNp: projected[n + n]!,
-    holds: matched && ClaySeals.bsd(n * n).value === ClaySeals.bsd(qpuFacesOf().faces + seed).value,
+    holds: matched && ClaySeals.bsd(n * n).value === ClaySeals.bsd(facesOf().faces + seed).value,
     fidelity: fidelity.value,
     redirected: redirected.value,
     next: matched ? 'held' : nextWordOf(width),
@@ -491,7 +491,7 @@ const clayOnOf = (width: MachineWidth): MachineClay => {
 }
 
 const machineOf = (spec: MachineSpec, floor: number, a: QpuAnalytics, advantage?: boolean): QpuMachine => {
-  const lattice = qpuLatticeNamesOf()
+  const lattice = latticeNamesOf()
   const byteBits = lattice.vertices
   const fusedBits = bitsOf(a.fused)
   const fusedDigits = digitsOf(a.fused)
@@ -546,12 +546,12 @@ const machineOf = (spec: MachineSpec, floor: number, a: QpuAnalytics, advantage?
  * Clay runs only on a class whose published store holds the integers. A prize holds false.
  * @wing lattice
  * @kind builder
- * @evidence qpuMachinesHolds
+ * @evidence machinesHolds
  */
-export const qpuMachinesOf = onceOf((): QpuMachines => {
-  const a = qpuAnalyticsOf()
-  const lattice = qpuLatticeNamesOf()
-  const cube = qpuCubeOf()
+export const machinesOf = onceOf((): QpuMachines => {
+  const a = analyticsOf()
+  const lattice = latticeNamesOf()
+  const cube = cubeOf()
   const floor = floorBytesOf(a)
   const byteBits = lattice.vertices
   const word16 = byteBits * coins
@@ -571,7 +571,7 @@ export const qpuMachinesOf = onceOf((): QpuMachines => {
   const appleBytes = 4 * mintOf(ten)
   const pcBytes = word16 * mintOf(ten)
   const evidence = qpuEvidenceOf()
-  const device = qpuCircuitOf().register.kind
+  const device = circuitOf().register.kind
   const specs: MachineSpec[] = [
     {
       name: 'Pravets 8M',
@@ -681,7 +681,7 @@ export const qpuMachinesOf = onceOf((): QpuMachines => {
   ]
   const rows = specs.map((spec) => machineOf(spec, floor, a, spec.name === device ? evidence.scaling.advantage : undefined))
   const holds =
-    qpuAnalyticsHolds(a) &&
+    analyticsHolds(a) &&
     rows[none]?.name === 'Pravets 8M' &&
     rows.every((row) => row.lawful === seed && (row.integersHeld ? row.clay?.holds === true && row.clay.fidelity === seed && row.clay.next === 'held' : row.clay === undefined)) &&
     rows.every((row) => row.oneRegisterFidelity === seed || row.lead === true) &&
@@ -705,7 +705,7 @@ export const qpuMachinesOf = onceOf((): QpuMachines => {
   }
 })
 
-export const qpuMachinesHolds = (m = qpuMachinesOf()): boolean =>
+export const machinesHolds = (m = machinesOf()): boolean =>
   m.holds === true &&
   m.kind === 'machines' &&
   m.prize === false &&
@@ -715,7 +715,7 @@ export const qpuMachinesHolds = (m = qpuMachinesOf()): boolean =>
   m.rows.every((row) => row.integersHeld === row.amplitudesHeld && row.amplitudesHeld === row.fusedHeld)
 
 /** The summary holds every integer. Seals recompute. A prize is a lead. The naming scheme solves none of the problems it names. */
-export const qpuMachinesSentenceOf = (m = qpuMachinesOf()): string => {
+export const machinesSentenceOf = (m = machinesOf()): string => {
   const a = m.analytics
   const clay = m.rows[none]?.clay
   return `Machine classes hold seed ${a.seed}, coins ${a.coins}, n ${a.n}, rays ${a.rays}, clay ${a.clay}, modulus ${a.modulus}, hz ${a.hz}, amplitudes ${a.amplitudes}, fused ${a.fused}, next ${a.next}. Clay seals recompute: riemann ${clay?.riemann}, hodge ${clay?.hodge}, yangMills ${clay?.yangMills}, bsd ${clay?.bsd}, bsd ${clay?.bsdFaces}, navierStokes ${clay?.navierStokes}, pVsNp ${clay?.pVsNp}. A prize is a lead. The naming scheme solves none of the problems it names.`

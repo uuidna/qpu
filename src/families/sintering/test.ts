@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SinteringFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('sintering: densification, density, greendensity, holdtime, neckgrowth, por
   assert.equal(SinteringFormulas.shrinkage(100, 85).value, 15)
   assert.equal(SinteringFormulas.temperature(1500, 75).value, 1125, 'held below melting')
   assert.equal(SinteringFormulas.density(950, 1000).dst, 'metallurgy')
-  assert.equal(qpuHexFamiliesOf().get('sintering')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sintering')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sintering', program: ['density'], params: [950, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 95, `sintering.density at ${uuid}`)
-  qpuUuidReceiptOf('sintering density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sintering density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; densification 87, density 95, greendensity 500, holdtime 120, neckgrowth 30, porosity 5, shrinkage 15, temperature 1125; crossing to metallurgy')
 })

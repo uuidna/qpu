@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** KYC — KNOWING A CUSTOMER BEFORE SERVING THEM, AS ARITHMETIC (chosen by the registry, not by hand). Due diligence is
@@ -34,4 +34,4 @@ export class KycFormulas {
 }
 
 for (const name of Object.getOwnPropertyNames(KycFormulas).filter((k) => typeof (KycFormulas as unknown as Record<string, unknown>)[k] === 'function' && !['length', 'name', 'prototype'].includes(k)))
-  qpuHexRegisterOf('kyc', name, (KycFormulas as unknown as Record<string, (...y: unknown[]) => unknown>)[name]!.bind(KycFormulas))
+  hexRegisterOf('kyc', name, (KycFormulas as unknown as Record<string, (...y: unknown[]) => unknown>)[name]!.bind(KycFormulas))

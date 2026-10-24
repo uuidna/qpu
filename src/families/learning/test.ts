@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LearningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('learning: epochs, accuracy, loss, split, params, f1, overfit, throughput â
   assert.equal(LearningFormulas.overfit(90, 98).value, 0)
   assert.equal(LearningFormulas.throughput(6000, 60).value, 100, 'samples per second')
   assert.equal(LearningFormulas.epochs(60000, 32).dst, 'ml')
-  assert.equal(qpuHexFamiliesOf().get('learning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('learning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'learning', program: ['params'], params: [10, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `learning.params at ${uuid}`)
-  qpuUuidReceiptOf('learning params', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('learning params', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; epochs 1875, accuracy 95, loss 5, split 800, params 1000, f1 68, overfit 8, throughput 100; crossing to ml')
 })

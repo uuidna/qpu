@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THEATRE — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TheatreFormulas {
 }
 
 for (const name of ['acts', 'attendanceratio', 'blockingpaths', 'castsize', 'cueorderings', 'runtime', 'scenecombos', 'setsubsets'] as const)
-  qpuHexRegisterOf('theatre', name, (TheatreFormulas[name] as (...x: unknown[]) => unknown).bind(TheatreFormulas))
+  hexRegisterOf('theatre', name, (TheatreFormulas[name] as (...x: unknown[]) => unknown).bind(TheatreFormulas))

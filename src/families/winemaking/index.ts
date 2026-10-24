@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WINEMAKING — THE CELLAR AS ARITHMETIC (chosen by the registry, not by hand). Turning grapes into wine is numbers:
@@ -31,4 +31,4 @@ export class WinemakingFormulas {
 }
 
 for (const name of ['abv', 'acidity', 'blend', 'brix', 'extraction', 'fermentation', 'sulfite', 'yield'] as const)
-  qpuHexRegisterOf('winemaking', name, (WinemakingFormulas[name] as (...x: unknown[]) => unknown).bind(WinemakingFormulas))
+  hexRegisterOf('winemaking', name, (WinemakingFormulas[name] as (...x: unknown[]) => unknown).bind(WinemakingFormulas))

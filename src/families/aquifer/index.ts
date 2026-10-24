@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AQUIFER — GROUNDWATER AS ARITHMETIC. The subsurface is numbers: how fast a formation transmits water, how much it stores,
@@ -31,4 +31,4 @@ export class AquiferFormulas {
 }
 
 for (const name of ['drawdown', 'hydraulicconductivity', 'porosity', 'rechargerate', 'specificyield', 'storativity', 'transmissivity', 'wellyield'] as const)
-  qpuHexRegisterOf('aquifer', name, (AquiferFormulas[name] as (...x: unknown[]) => unknown).bind(AquiferFormulas))
+  hexRegisterOf('aquifer', name, (AquiferFormulas[name] as (...x: unknown[]) => unknown).bind(AquiferFormulas))

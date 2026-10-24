@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONIC — THE SECTIONS OF A CONE, AS ARITHMETIC. A conic is numbers: its eccentricity, the focal length, the directrix
@@ -31,4 +31,4 @@ export class ConicFormulas {
 }
 
 for (const name of ['directrix', 'discriminant', 'eccentricityscaled', 'focallength', 'latusrectum', 'semimajor', 'semiminor', 'vertexdistance'] as const)
-  qpuHexRegisterOf('conic', name, (ConicFormulas[name] as (...x: unknown[]) => unknown).bind(ConicFormulas))
+  hexRegisterOf('conic', name, (ConicFormulas[name] as (...x: unknown[]) => unknown).bind(ConicFormulas))

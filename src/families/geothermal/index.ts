@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GEOTHERMAL — THE HEAT UNDER THE GROUND, AS ARITHMETIC. A well is numbers: the gradient with depth, the power a flow
@@ -30,4 +30,4 @@ export class GeothermalFormulas {
 }
 
 for (const name of ['capacity', 'cop', 'drilling', 'efficiency', 'enthalpy', 'gradient', 'power', 'reinjection'] as const)
-  qpuHexRegisterOf('geothermal', name, (GeothermalFormulas[name] as (...x: unknown[]) => unknown).bind(GeothermalFormulas))
+  hexRegisterOf('geothermal', name, (GeothermalFormulas[name] as (...x: unknown[]) => unknown).bind(GeothermalFormulas))

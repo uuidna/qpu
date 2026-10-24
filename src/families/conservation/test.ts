@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConservationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('conservation: protected, population, corridor, threatened, restoration, ca
   assert.equal(ConservationFormulas.poaching(45, 300).value, 15)
   assert.equal(ConservationFormulas.viability(250, 500).value, 50, 'half of the minimum viable size')
   assert.equal(ConservationFormulas.protected(30, 100).dst, 'ecology')
-  assert.equal(qpuHexFamiliesOf().get('conservation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('conservation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'conservation', program: ['corridor'], params: [12, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `conservation.corridor at ${uuid}`)
-  qpuUuidReceiptOf('conservation corridor', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('conservation corridor', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; protected 30, population 40, corridor 3, threatened 12, restoration 25, carrying 125, poaching 15, viability 50; crossing to ecology')
 })

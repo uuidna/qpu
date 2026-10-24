@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WOODWORKING — THE WORKSHOP AS ARITHMETIC. Cutting and joining stock is numbers: board-feet in a slab, the moisture a
@@ -30,4 +30,4 @@ export class WoodworkingFormulas {
 }
 
 for (const name of ['boardfeet', 'expansion', 'hardness', 'jointstrength', 'kerf', 'moisture', 'usage', 'waste'] as const)
-  qpuHexRegisterOf('woodworking', name, (WoodworkingFormulas[name] as (...x: unknown[]) => unknown).bind(WoodworkingFormulas))
+  hexRegisterOf('woodworking', name, (WoodworkingFormulas[name] as (...x: unknown[]) => unknown).bind(WoodworkingFormulas))

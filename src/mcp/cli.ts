@@ -39,8 +39,8 @@ export const main = async (): Promise<void> => {
   }
   const inProcess = async (): Promise<Door> => {
     const unit = await import('../quantum/processing/unit/index.js')
-    await import(unit.qpuFamilyRegistryUrlOf())
-    return { list: async () => unit.qpuMcpToolsListOf(), call: async (name, args) => (await unit.qpuMcpCallOf(name, args)) as Called, close: async () => {} }
+    await import(unit.familyRegistryUrlOf())
+    return { list: async () => unit.mcpToolsListOf(), call: async (name, args) => (await unit.mcpCallOf(name, args)) as Called, close: async () => {} }
   }
 
   const door = await (local ? inProcess() : remote())

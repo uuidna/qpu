@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HydraulicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('hydraulics: pressure, flow, force, velocity, head, power, reynolds, lift â
   assert.equal(HydraulicsFormulas.reynolds(3, 50).value, 150, 'Reynolds proxy')
   assert.equal(HydraulicsFormulas.lift(100, 8).value, 800, 'press multiplier')
   assert.equal(HydraulicsFormulas.pressure(1000, 20).dst, 'hydrology')
-  assert.equal(qpuHexFamiliesOf().get('hydraulics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hydraulics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hydraulics', program: ['flow'], params: [20, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `hydraulics.flow at ${uuid}`)
-  qpuUuidReceiptOf('hydraulics flow', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hydraulics flow', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; pressure 50, flow 60, force 1000, velocity 3, head 100, power 6000, reynolds 150, lift 800; crossing to hydrology')
 })

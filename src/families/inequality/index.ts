@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INEQUALITY — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class InequalityFormulas {
 }
 
 for (const name of ['deciles', 'giniscaled', 'lorenzgap', 'palmaratio', 'percentilepairs', 'quintileratio', 'theilindex', 'topshare'] as const)
-  qpuHexRegisterOf('inequality', name, (InequalityFormulas[name] as (...x: unknown[]) => unknown).bind(InequalityFormulas))
+  hexRegisterOf('inequality', name, (InequalityFormulas[name] as (...x: unknown[]) => unknown).bind(InequalityFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONDUCTION — HEAT THROUGH A SOLID, AS ARITHMETIC (Fourier's law and its register of resistances). Conducting heat is
@@ -31,4 +31,4 @@ export class ConductionFormulas {
 }
 
 for (const name of ['fluxdensity', 'fourierlaw', 'gradient', 'parallelresistance', 'resistance', 'rvalue', 'seriesresistance', 'uvalue'] as const)
-  qpuHexRegisterOf('conduction', name, (ConductionFormulas[name] as (...x: unknown[]) => unknown).bind(ConductionFormulas))
+  hexRegisterOf('conduction', name, (ConductionFormulas[name] as (...x: unknown[]) => unknown).bind(ConductionFormulas))

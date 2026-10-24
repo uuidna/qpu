@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ElninoFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('elnino: oni, ssttanomaly, phasecount, cycleyears, teleconnections, intensi
   assert.equal(ElninoFormulas.durationmonths(9, 3).value, 12)
   assert.equal(ElninoFormulas.rainfallshift(100, 40).value, 60)
   assert.equal(ElninoFormulas.oni(20, 10).dst, 'climate')
-  assert.equal(qpuHexFamiliesOf().get('elnino')?.length, 8)
+  assert.equal(hexFamiliesOf().get('elnino')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'elnino', program: ['oni'], params: [20, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `elnino.oni at ${uuid}`)
-  qpuUuidReceiptOf('elnino oni', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('elnino oni', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; oni 2, ssttanomaly 5, phasecount 3, cycleyears 7, teleconnections 24, intensityindex 80, durationmonths 12, rainfallshift 60; crossing to climate')
 })

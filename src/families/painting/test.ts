@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PaintingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('painting: primarycolors, mixingcombos, layercount, huewheel, pigmentsubset
   assert.equal(PaintingFormulas.valuescale(9, 0).value, 9)
   assert.equal(PaintingFormulas.opacityratio(80, 100).value, 80)
   assert.equal(PaintingFormulas.primarycolors(3, 0).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('painting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('painting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'painting', program: ['primarycolors'], params: [3, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `painting.primarycolors at ${uuid}`)
-  qpuUuidReceiptOf('painting primarycolors', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('painting primarycolors', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; primarycolors 3, mixingcombos 66, layercount 8, huewheel 30, pigmentsubsets 64, canvasarea 1200, valuescale 9, opacityratio 80; crossing to optics')
 })

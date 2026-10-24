@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MAMMALOGY — THE STUDY OF MAMMALS, AS ARITHMETIC. A mammal's life is numbers: how long it carries young, how fast it burns
@@ -30,4 +30,4 @@ export class MammalogyFormulas {
 }
 
 for (const name of ['gestation', 'homerange', 'lactation', 'litter', 'metabolism', 'survival', 'territory', 'thermoneutral'] as const)
-  qpuHexRegisterOf('mammalogy', name, (MammalogyFormulas[name] as (...x: unknown[]) => unknown).bind(MammalogyFormulas))
+  hexRegisterOf('mammalogy', name, (MammalogyFormulas[name] as (...x: unknown[]) => unknown).bind(MammalogyFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VaccinationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('vaccination: coverage, herdthreshold, efficacy, dosesneeded, titer, booste
   assert.equal(VaccinationFormulas.seroconversion(990, 1000).value, 99)
   assert.equal(VaccinationFormulas.campaignreach(10, 100, 5).value, 5000, 'reach over the campaign')
   assert.equal(VaccinationFormulas.coverage(950, 1000).dst, 'immunology')
-  assert.equal(qpuHexFamiliesOf().get('vaccination')?.length, 8)
+  assert.equal(hexFamiliesOf().get('vaccination')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'vaccination', program: ['coverage'], params: [950, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 95, `vaccination.coverage at ${uuid}`)
-  qpuUuidReceiptOf('vaccination coverage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('vaccination coverage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coverage 95, herdthreshold 80, efficacy 95, dosesneeded 2000, titer 80, boosterinterval 6, seroconversion 99, campaignreach 5000; crossing to immunology')
 })

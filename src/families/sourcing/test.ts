@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SourcingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('sourcing: savings, spend, leadtime, suppliers, bid, award, qualification, 
   assert.equal(SourcingFormulas.qualification(45, 50).value, 90)
   assert.equal(SourcingFormulas.risk(4, 5).value, 20)
   assert.equal(SourcingFormulas.savings(1000, 850).dst, 'procurement')
-  assert.equal(qpuHexFamiliesOf().get('sourcing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sourcing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sourcing', program: ['suppliers'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `sourcing.suppliers at ${uuid}`)
-  qpuUuidReceiptOf('sourcing suppliers', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sourcing suppliers', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; savings 150, spend 10000, leadtime 35, suppliers 4, bid 3000, award 1, qualification 90, risk 20; crossing to procurement')
 })

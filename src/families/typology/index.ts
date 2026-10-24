@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TYPOLOGY — THE SHAPE OF LANGUAGES, AS ARITHMETIC (how languages vary, counted). Word order spread across a sample,
@@ -31,4 +31,4 @@ export class TypologyFormulas {
 }
 
 for (const name of ['consonantvowelratio', 'featurecount', 'geneticdistance', 'markednesscount', 'morphemecomplexity', 'phonemeinventory', 'syntheticindex', 'wordorderfreq'] as const)
-  qpuHexRegisterOf('typology', name, (TypologyFormulas[name] as (...x: unknown[]) => unknown).bind(TypologyFormulas))
+  hexRegisterOf('typology', name, (TypologyFormulas[name] as (...x: unknown[]) => unknown).bind(TypologyFormulas))

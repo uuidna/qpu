@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OdometryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('odometry: distance, wheelrevolutions, headingchange, positionerror, ticksp
   assert.equal(OdometryFormulas.slipcompensation(100, 95).value, 5)
   assert.equal(OdometryFormulas.pathdistance(500, 220).value, 720)
   assert.equal(OdometryFormulas.distance(360, 2).dst, 'kinematics')
-  assert.equal(qpuHexFamiliesOf().get('odometry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('odometry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'odometry', program: ['distance'], params: [360, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 720, `odometry.distance at ${uuid}`)
-  qpuUuidReceiptOf('odometry distance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('odometry distance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; distance 720, wheelrevolutions 3, headingchange 60, positionerror 2, ticksperrev 1440, driftrate 5, slipcompensation 5, pathdistance 720; crossing to kinematics')
 })

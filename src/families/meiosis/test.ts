@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MeiosisFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('meiosis: gametes, haploid, crossovers, recombinants, variation, diploidres
   assert.equal(MeiosisFormulas.segregation(100, 3, 4).value, 75, 'a 3:1 cross')
   assert.equal(MeiosisFormulas.segregation(100, 1, 0).value, 0)
   assert.equal(MeiosisFormulas.gametes(10).dst, 'genetics')
-  assert.equal(qpuHexFamiliesOf().get('meiosis')?.length, 8)
+  assert.equal(hexFamiliesOf().get('meiosis')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'meiosis', program: ['haploid'], params: [46] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 23, `meiosis.haploid at ${uuid}`)
-  qpuUuidReceiptOf('meiosis haploid', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('meiosis haploid', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gametes 40, haploid 23, crossovers 46, recombinants 15, variation 16, diploidrestore 46, chromatids 92, segregation 75; crossing to genetics')
 })

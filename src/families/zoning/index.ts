@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ZONING — LAND-USE LAW AS ARITHMETIC (chosen by the public-planning registry, not by hand). A parcel is numbers: the
@@ -31,4 +31,4 @@ export class ZoningFormulas {
 }
 
 for (const name of ['coverage', 'density', 'far', 'height', 'lotsize', 'openspace', 'parking', 'setback'] as const)
-  qpuHexRegisterOf('zoning', name, (ZoningFormulas[name] as (...x: unknown[]) => unknown).bind(ZoningFormulas))
+  hexRegisterOf('zoning', name, (ZoningFormulas[name] as (...x: unknown[]) => unknown).bind(ZoningFormulas))

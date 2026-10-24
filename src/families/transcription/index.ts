@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TRANSCRIPTION — READING DNA INTO RNA INTO PROTEIN, AS ARITHMETIC. The central dogma is numbers: codons per transcript,
@@ -30,4 +30,4 @@ export class TranscriptionFormulas {
 }
 
 for (const name of ['codons', 'elongationtime', 'expressionlevel', 'gcontent', 'mrnalength', 'promoterstrength', 'readthrough', 'splicevariants'] as const)
-  qpuHexRegisterOf('transcription', name, (TranscriptionFormulas[name] as (...x: unknown[]) => unknown).bind(TranscriptionFormulas))
+  hexRegisterOf('transcription', name, (TranscriptionFormulas[name] as (...x: unknown[]) => unknown).bind(TranscriptionFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NUMISMATICS — scaffolded integer measures crossed to archaeology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class NumismaticsFormulas {
 }
 
 for (const name of ['coincount', 'denominationorderings', 'dierotations', 'hoardsize', 'mintcombos', 'purity', 'varietysubsets', 'weightgrains'] as const)
-  qpuHexRegisterOf('numismatics', name, (NumismaticsFormulas[name] as (...x: unknown[]) => unknown).bind(NumismaticsFormulas))
+  hexRegisterOf('numismatics', name, (NumismaticsFormulas[name] as (...x: unknown[]) => unknown).bind(NumismaticsFormulas))

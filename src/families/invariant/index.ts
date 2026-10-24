@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INVARIANT — scaffolded integer measures crossed to logic. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class InvariantFormulas {
 }
 
 for (const name of ['checkpaths', 'clausesubsets', 'conditions', 'holdratio', 'preconditionpairs', 'stateorderings', 'strengthlevels', 'violations'] as const)
-  qpuHexRegisterOf('invariant', name, (InvariantFormulas[name] as (...x: unknown[]) => unknown).bind(InvariantFormulas))
+  hexRegisterOf('invariant', name, (InvariantFormulas[name] as (...x: unknown[]) => unknown).bind(InvariantFormulas))

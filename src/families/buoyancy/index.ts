@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BuoyancyFormulas — 8 exact-integer formulas of the buoyancy domain, each at a hex address crossing to cross; develops the buoyancy leads. */
@@ -31,4 +31,4 @@ export class BuoyancyFormulas {
 }
 
 for (const name of ['combos', 'density', 'displaced', 'floats', 'force', 'margin', 'volume', 'weight'] as const)
-  qpuHexRegisterOf('buoyancy', name, (BuoyancyFormulas[name] as (...x: unknown[]) => unknown).bind(BuoyancyFormulas))
+  hexRegisterOf('buoyancy', name, (BuoyancyFormulas[name] as (...x: unknown[]) => unknown).bind(BuoyancyFormulas))

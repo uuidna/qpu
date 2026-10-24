@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CargoFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cargo: teu, utilization, stowage, deadweight, manifest, palletize, contain
   assert.equal(CargoFormulas.containers(5000, 300).value, 17, 'containers for the unit run')
   assert.equal(CargoFormulas.loadfactor(800, 1000).value, 80)
   assert.equal(CargoFormulas.teu(300, 150).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('cargo')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cargo')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cargo', program: ['palletize'], params: [1000, 48] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 21, `cargo.palletize at ${uuid}`)
-  qpuUuidReceiptOf('cargo palletize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cargo palletize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; teu 600, utilization 95, stowage 16500, deadweight 48000, manifest 5000, palletize 21, containers 17, loadfactor 80; crossing to logistics')
 })

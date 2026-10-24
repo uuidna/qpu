@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FRONTEND — MANY FRONTENDS, ONE PAYLOAD API. Payload is headless: its REST, GraphQL and Local API feed any frontend —
@@ -32,4 +32,4 @@ export class FrontendFormulas {
 }
 
 for (const name of ['build', 'cache', 'fetch', 'frameworks', 'headless', 'hydration', 'isr', 'pages'] as const)
-  qpuHexRegisterOf('frontend', name, (FrontendFormulas[name] as (...x: unknown[]) => unknown).bind(FrontendFormulas))
+  hexRegisterOf('frontend', name, (FrontendFormulas[name] as (...x: unknown[]) => unknown).bind(FrontendFormulas))

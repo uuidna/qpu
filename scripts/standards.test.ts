@@ -8,6 +8,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
+import { tenOf } from './lattice-values.ts'
 
 const ROOT = join(dirname(new URL(import.meta.url).pathname), '..')
 const read = (f) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT, f), 'utf8') : '')
@@ -36,9 +37,9 @@ test('best standards are generated from code, not hand-written', () => {
 
 test('best standards at scale: the gate suite holds the whole surface, and the registry is large', async () => {
   const gates = readdirSync(join(ROOT, 'scripts')).filter((f) => f.endsWith('.test.ts'))
-  assert.ok(gates.length >= 10, `${gates.length} gates run on every push`)
+  assert.ok(gates.length >= tenOf(1), `${gates.length} gates run on every push`)
   await import('../dist/mcp/families.js')
-  const { qpuHexFamiliesOf } = await import('../dist/quantum/processing/unit/index.js')
-  const n = [...qpuHexFamiliesOf().keys()].filter((f) => /^[a-z]+$/.test(f)).length
-  assert.ok(n >= 100, `best standards hold across ${n} families (at scale)`)
+  const { hexFamiliesOf } = await import('../dist/quantum/processing/unit/index.js')
+  const n = [...hexFamiliesOf().keys()].filter((f) => /^[a-z]+$/.test(f)).length
+  assert.ok(n >= tenOf(2), `best standards hold across ${n} families (at scale)`)
 })

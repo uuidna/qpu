@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHOTODIODE — LIGHT TURNED INTO CURRENT, AS ARITHMETIC. A photodiode is numbers: how much current each watt of light
@@ -32,4 +32,4 @@ export class PhotodiodeFormulas {
 }
 
 for (const name of ['darkcurrent', 'photocurrent', 'quantumefficiency', 'responsivity', 'risetime', 'saturation', 'shuntresistance', 'snr'] as const)
-  qpuHexRegisterOf('photodiode', name, (PhotodiodeFormulas[name] as (...x: unknown[]) => unknown).bind(PhotodiodeFormulas))
+  hexRegisterOf('photodiode', name, (PhotodiodeFormulas[name] as (...x: unknown[]) => unknown).bind(PhotodiodeFormulas))

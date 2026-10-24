@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HumidityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('humidity: relative, absolute, specific, ratio, saturation, deficit, comfor
   assert.equal(HumidityFormulas.comfortindex(30, 50).value, 40)
   assert.equal(HumidityFormulas.mixingratio(16, 1000).value, 16)
   assert.equal(HumidityFormulas.relative(15, 20).dst, 'meteorology')
-  assert.equal(qpuHexFamiliesOf().get('humidity')?.length, 8)
+  assert.equal(hexFamiliesOf().get('humidity')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'humidity', program: ['relative'], params: [15, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `humidity.relative at ${uuid}`)
-  qpuUuidReceiptOf('humidity relative', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('humidity relative', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; relative 75, absolute 20, specific 20, ratio 12, saturation 20, deficit 5, comfortindex 40, mixingratio 16; crossing to meteorology')
 })

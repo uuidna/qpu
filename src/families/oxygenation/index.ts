@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OXYGENATION — GETTING OXYGEN FROM AIR TO BLOOD, AS ARITHMETIC. The breath is numbers: how saturated the blood is, the
@@ -31,4 +31,4 @@ export class OxygenationFormulas {
 }
 
 for (const name of ['alveolararterial', 'carryingcapacity', 'deliveryrate', 'extractionratio', 'oxygencontent', 'pao2fio2ratio', 'saturation', 'shuntfraction'] as const)
-  qpuHexRegisterOf('oxygenation', name, (OxygenationFormulas[name] as (...x: unknown[]) => unknown).bind(OxygenationFormulas))
+  hexRegisterOf('oxygenation', name, (OxygenationFormulas[name] as (...x: unknown[]) => unknown).bind(OxygenationFormulas))

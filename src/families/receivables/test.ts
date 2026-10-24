@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ReceivablesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('receivables: turnover, dso, aging, baddebt, collection, outstanding, facto
   assert.equal(ReceivablesFormulas.factoring(5000, 80).value, 4000, 'the factor advances four fifths')
   assert.equal(ReceivablesFormulas.terms(2000, 2).value, 40)
   assert.equal(ReceivablesFormulas.turnover(1000, 250).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('receivables')?.length, 8)
+  assert.equal(hexFamiliesOf().get('receivables')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'receivables', program: ['turnover'], params: [1000, 250] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `receivables.turnover at ${uuid}`)
-  qpuUuidReceiptOf('receivables turnover', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('receivables turnover', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; turnover 4, dso 50, aging 400, baddebt 300, collection 95, outstanding 250, factoring 4000, terms 40; crossing to accounting')
 })

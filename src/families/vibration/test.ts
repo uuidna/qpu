@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VibrationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('vibration: naturalfrequency, amplitude, dampingratio, resonance, period, a
   assert.equal(VibrationFormulas.transmissibility(300, 200).value, 150)
   assert.equal(VibrationFormulas.modeshape(3, 100).value, 300)
   assert.equal(VibrationFormulas.naturalfrequency(5000, 10).dst, 'mechanical')
-  assert.equal(qpuHexFamiliesOf().get('vibration')?.length, 8)
+  assert.equal(hexFamiliesOf().get('vibration')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'vibration', program: ['naturalfrequency'], params: [5000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 500, `vibration.naturalfrequency at ${uuid}`)
-  qpuUuidReceiptOf('vibration naturalfrequency', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('vibration naturalfrequency', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; naturalfrequency 500, amplitude 20, dampingratio 30, resonance 180, period 20, acceleration 500, transmissibility 25, modeshape 300; crossing to mechanical')
 })

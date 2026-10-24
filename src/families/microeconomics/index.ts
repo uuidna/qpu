@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MICROECONOMICS — THE BEHAVIOUR OF MARKETS AS ARITHMETIC (price and quantity, buyer and seller). Elasticity of demand,
@@ -30,4 +30,4 @@ export class MicroeconomicsFormulas {
 }
 
 for (const name of ['deadweight', 'elasticity', 'equilibrium', 'marginal', 'monopoly', 'profit', 'surplus', 'utility'] as const)
-  qpuHexRegisterOf('microeconomics', name, (MicroeconomicsFormulas[name] as (...x: unknown[]) => unknown).bind(MicroeconomicsFormulas))
+  hexRegisterOf('microeconomics', name, (MicroeconomicsFormulas[name] as (...x: unknown[]) => unknown).bind(MicroeconomicsFormulas))

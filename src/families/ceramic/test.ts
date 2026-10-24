@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CeramicFormulas } from './index.js'
 
 /** ceramic: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('ceramic: sinter, porosity, hardness, grains, shrink, density, phases, comb
   assert.equal(CeramicFormulas.density(3900, 1).value, 3900, 'density(3900, 1)')
   assert.equal(CeramicFormulas.phases(2, 1).value, 3, 'phases(2, 1)')
   assert.equal(CeramicFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('ceramic')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ceramic')?.length, 8)
   for (const [name, params, expected] of [["sinter",[1600,200],1400],["porosity",[5,100],5],["hardness",[9,1],9]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'ceramic', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `ceramic.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`ceramic ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`ceramic ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "sinter=1400, porosity=5, hardness=9")
 })

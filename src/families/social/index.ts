@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SOCIAL — AUDIENCE AND REACH, AS ARITHMETIC (chosen by the registry). A presence is numbers: the engagement rate, reach,
@@ -29,4 +29,4 @@ export class SocialFormulas {
 }
 
 for (const name of ['engagement', 'frequency', 'growth', 'impressions', 'influence', 'reach', 'sentiment', 'virality'] as const)
-  qpuHexRegisterOf('social', name, (SocialFormulas[name] as (...x: unknown[]) => unknown).bind(SocialFormulas))
+  hexRegisterOf('social', name, (SocialFormulas[name] as (...x: unknown[]) => unknown).bind(SocialFormulas))

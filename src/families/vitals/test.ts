@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VitalsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -20,10 +20,10 @@ test('vitals: lcp, inp, cls, ttfb, fcp, budget, score, regression — crossing t
   assert.equal(VitalsFormulas.regression(120, 100).value, 20, 'twenty worse than last release')
   assert.equal(VitalsFormulas.regression(90, 100).value, 0, 'an improvement is no regression')
   assert.equal(VitalsFormulas.lcp(2000).dst, 'obs')
-  assert.equal(qpuHexFamiliesOf().get('vitals')?.length, 8)
+  assert.equal(hexFamiliesOf().get('vitals')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'vitals', program: ['budget'], params: [50, 200] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `vitals.budget at ${uuid}`)
-  qpuUuidReceiptOf('vitals budget', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('vitals budget', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; lcp 1/0, inp 1/0, cls 1/0, ttfb 1/0, fcp 1/0, budget 25, score 80, regression 20/0; crossing to obs')
 })

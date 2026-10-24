@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HERMENEUTICS — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HermeneuticsFormulas {
 }
 
 for (const name of ['ambiguityspread', 'consensusratio', 'contextfactors', 'framingchoices', 'interpretivelayers', 'lensselections', 'methodcombos', 'principleorderings'] as const)
-  qpuHexRegisterOf('hermeneutics', name, (HermeneuticsFormulas[name] as (...x: unknown[]) => unknown).bind(HermeneuticsFormulas))
+  hexRegisterOf('hermeneutics', name, (HermeneuticsFormulas[name] as (...x: unknown[]) => unknown).bind(HermeneuticsFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HOVER — THE HOVERCARDS / HOVERHIGHLIGHTS USE CASE (payloadcms/website), AS ARITHMETIC. A pointer rests on a block and
@@ -31,4 +31,4 @@ export class HoverFormulas {
 }
 
 for (const name of ['cards', 'delay', 'depth', 'reveal', 'scale', 'stagger', 'transition', 'trigger'] as const)
-  qpuHexRegisterOf('hover', name, (HoverFormulas[name] as (...x: unknown[]) => unknown).bind(HoverFormulas))
+  hexRegisterOf('hover', name, (HoverFormulas[name] as (...x: unknown[]) => unknown).bind(HoverFormulas))

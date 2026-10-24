@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HARDWARE — the silicon's own arithmetic. SMT threads off cores, cache lines and bus bytes off widths, PCIe lanes and
@@ -31,4 +31,4 @@ export class HardwareFormulas {
 }
 
 for (const name of ['addressable', 'busBytes', 'cacheLines', 'dies', 'lanes', 'pins', 'tdpPerCore', 'threads'] as const)
-  qpuHexRegisterOf('hardware', name, (HardwareFormulas[name] as (...x: unknown[]) => unknown).bind(HardwareFormulas))
+  hexRegisterOf('hardware', name, (HardwareFormulas[name] as (...x: unknown[]) => unknown).bind(HardwareFormulas))

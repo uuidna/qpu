@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ANATOMY — THE BODY AS ARITHMETIC (chosen by the registry, not by hand). Form is numbers: a body-surface proxy, the
@@ -30,4 +30,4 @@ export class AnatomyFormulas {
 }
 
 for (const name of ['girth', 'mass', 'proportion', 'ratio', 'span', 'surface', 'symmetry', 'volume'] as const)
-  qpuHexRegisterOf('anatomy', name, (AnatomyFormulas[name] as (...x: unknown[]) => unknown).bind(AnatomyFormulas))
+  hexRegisterOf('anatomy', name, (AnatomyFormulas[name] as (...x: unknown[]) => unknown).bind(AnatomyFormulas))

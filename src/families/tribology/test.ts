@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TribologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('tribology: friction, wear, lubrication, contact, viscosity, hardness, trac
   assert.equal(TribologyFormulas.fatigue(1000000, 500).value, 2000, 'fatigue life')
   assert.equal(TribologyFormulas.friction(1, 0).value, 0, 'guard normal > 0')
   assert.equal(TribologyFormulas.friction(30, 100).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('tribology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tribology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tribology', program: ['contact'], params: [5000, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `tribology.contact at ${uuid}`)
-  qpuUuidReceiptOf('tribology contact', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tribology contact', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; friction 30, wear 20, lubrication 3, contact 200, viscosity 30, hardness 250, traction 15, fatigue 2000; crossing to materials')
 })

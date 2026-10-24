@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TaoismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('taoism: principles, trigrampairs, hexagrams, virtuecount, elementcombos, c
   assert.equal(TaoismFormulas.stageorderings(5).value, 120)
   assert.equal(TaoismFormulas.balanceratio(50, 100).value, 50)
   assert.equal(TaoismFormulas.principles(2, 0).dst, 'philosophy')
-  assert.equal(qpuHexFamiliesOf().get('taoism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('taoism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'taoism', program: ['principles'], params: [2, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `taoism.principles at ${uuid}`)
-  qpuUuidReceiptOf('taoism principles', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('taoism principles', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; principles 2, trigrampairs 28, hexagrams 64, virtuecount 3, elementcombos 10, chaptercount 81, stageorderings 120, balanceratio 50; crossing to philosophy')
 })

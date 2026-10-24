@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NEUROPSYCHOLOGY — THE MIND MEASURED, AS ARITHMETIC. The clinic's scores are numbers: the intelligence quotient from
@@ -31,4 +31,4 @@ export class NeuropsychologyFormulas {
 }
 
 for (const name of ['deficit', 'executivefunction', 'iq', 'lateralization', 'memoryquotient', 'processingspeed', 'recovery', 'span'] as const)
-  qpuHexRegisterOf('neuropsychology', name, (NeuropsychologyFormulas[name] as (...x: unknown[]) => unknown).bind(NeuropsychologyFormulas))
+  hexRegisterOf('neuropsychology', name, (NeuropsychologyFormulas[name] as (...x: unknown[]) => unknown).bind(NeuropsychologyFormulas))

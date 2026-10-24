@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CompensationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('compensation: salary, bonus, equity, raise, band, ratio, benefit, total â€
   assert.equal(CompensationFormulas.total(100000, 40000).value, 140000)
   assert.equal(CompensationFormulas.ratio(1000000, 0).value, 0)
   assert.equal(CompensationFormulas.salary(50, 2080).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('compensation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('compensation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'compensation', program: ['salary'], params: [50, 2080] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 104000, `compensation.salary at ${uuid}`)
-  qpuUuidReceiptOf('compensation salary', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('compensation salary', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; salary 104000, bonus 15600, equity 25000, raise 110000, band 100000, ratio 20, benefit 30000, total 140000; crossing to econ')
 })

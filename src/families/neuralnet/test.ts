@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NeuralnetFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('neuralnet: parameters, layers, neurons, weights, relu, fanin, flops, capac
   assert.equal(NeuralnetFormulas.flops(8192, 512).value, 16896)
   assert.equal(NeuralnetFormulas.capacity(512, 32).value, 16384)
   assert.equal(NeuralnetFormulas.parameters(100, 10).dst, 'neuroscience')
-  assert.equal(qpuHexFamiliesOf().get('neuralnet')?.length, 8)
+  assert.equal(hexFamiliesOf().get('neuralnet')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'neuralnet', program: ['neurons'], params: [4, 128] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 512, `neuralnet.neurons at ${uuid}`)
-  qpuUuidReceiptOf('neuralnet neurons', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('neuralnet neurons', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; parameters 1010, layers 5, neurons 512, weights 8192, relu 42, fanin 128, flops 16896, capacity 16384; crossing to neuroscience')
 })

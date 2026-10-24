@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AssayFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('assay: concentration, dilution, recovery, limitofdetection, standardcurve,
   assert.equal(AssayFormulas.replicates(300, 3).value, 100, 'mean of the replicates')
   assert.equal(AssayFormulas.concentration(1000, 0).value, 0, 'guarded divide by zero')
   assert.equal(AssayFormulas.concentration(1000, 50).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('assay')?.length, 8)
+  assert.equal(hexFamiliesOf().get('assay')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'assay', program: ['concentration'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `assay.concentration at ${uuid}`)
-  qpuUuidReceiptOf('assay concentration', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('assay concentration', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; concentration 20, dilution 20, recovery 95, limitofdetection 16, standardcurve 103, purity 99, yield 80, replicates 100; crossing to chemistry')
 })

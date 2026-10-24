@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DESALINATION — TURNING SEAWATER INTO FRESH WATER, AS ARITHMETIC (a reverse-osmosis train is numbers). Recovery ratio,
@@ -31,4 +31,4 @@ export class DesalinationFormulas {
 }
 
 for (const name of ['brine', 'energy', 'flux', 'osmotic', 'permeate', 'recovery', 'rejection', 'salinity'] as const)
-  qpuHexRegisterOf('desalination', name, (DesalinationFormulas[name] as (...x: unknown[]) => unknown).bind(DesalinationFormulas))
+  hexRegisterOf('desalination', name, (DesalinationFormulas[name] as (...x: unknown[]) => unknown).bind(DesalinationFormulas))

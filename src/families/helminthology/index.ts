@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HELMINTHOLOGY — scaffolded integer measures crossed to microbiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HelminthologyFormulas {
 }
 
 for (const name of ['eggcount', 'fecundity', 'hostcombos', 'lifecyclestages', 'prevalence', 'transmissionpaths', 'treatmentefficacy', 'wormburden'] as const)
-  qpuHexRegisterOf('helminthology', name, (HelminthologyFormulas[name] as (...x: unknown[]) => unknown).bind(HelminthologyFormulas))
+  hexRegisterOf('helminthology', name, (HelminthologyFormulas[name] as (...x: unknown[]) => unknown).bind(HelminthologyFormulas))

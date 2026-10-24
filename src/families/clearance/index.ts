@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CLEARANCE — DRUG ELIMINATION AS ARITHMETIC. How the body removes a drug is numbers: the kidney's renal clearance, the
@@ -31,4 +31,4 @@ export class ClearanceFormulas {
 }
 
 for (const name of ['extractionratio', 'filtration', 'firstpass', 'hepatic', 'ratio', 'renal', 'residual', 'total'] as const)
-  qpuHexRegisterOf('clearance', name, (ClearanceFormulas[name] as (...x: unknown[]) => unknown).bind(ClearanceFormulas))
+  hexRegisterOf('clearance', name, (ClearanceFormulas[name] as (...x: unknown[]) => unknown).bind(ClearanceFormulas))

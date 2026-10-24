@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MONITORING — SRE AND ALERTING, AS ARITHMETIC (chosen by the public-API registry, not by hand). Watching a running system
@@ -30,4 +30,4 @@ export class MonitoringFormulas {
 }
 
 for (const name of ['alerts', 'apdex', 'coverage', 'incidents', 'mttf', 'mttr', 'noise', 'uptime'] as const)
-  qpuHexRegisterOf('monitoring', name, (MonitoringFormulas[name] as (...x: unknown[]) => unknown).bind(MonitoringFormulas))
+  hexRegisterOf('monitoring', name, (MonitoringFormulas[name] as (...x: unknown[]) => unknown).bind(MonitoringFormulas))

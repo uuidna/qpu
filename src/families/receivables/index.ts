@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RECEIVABLES — MONEY OWED, AS ARITHMETIC (what a ledger is still waiting to collect). Open invoices are numbers: how
@@ -31,4 +31,4 @@ export class ReceivablesFormulas {
 }
 
 for (const name of ['aging', 'baddebt', 'collection', 'dso', 'factoring', 'outstanding', 'terms', 'turnover'] as const)
-  qpuHexRegisterOf('receivables', name, (ReceivablesFormulas[name] as (...x: unknown[]) => unknown).bind(ReceivablesFormulas))
+  hexRegisterOf('receivables', name, (ReceivablesFormulas[name] as (...x: unknown[]) => unknown).bind(ReceivablesFormulas))

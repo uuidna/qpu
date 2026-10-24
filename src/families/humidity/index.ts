@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HUMIDITY — WATER IN THE AIR, AS ARITHMETIC (the moisture a parcel carries, read as integers). Relative humidity against
@@ -31,4 +31,4 @@ export class HumidityFormulas {
 }
 
 for (const name of ['absolute', 'comfortindex', 'deficit', 'mixingratio', 'ratio', 'relative', 'saturation', 'specific'] as const)
-  qpuHexRegisterOf('humidity', name, (HumidityFormulas[name] as (...x: unknown[]) => unknown).bind(HumidityFormulas))
+  hexRegisterOf('humidity', name, (HumidityFormulas[name] as (...x: unknown[]) => unknown).bind(HumidityFormulas))

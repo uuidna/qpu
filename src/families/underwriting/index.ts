@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** UNDERWRITING — PRICING RISK, AS ARITHMETIC (chosen by the public-API registry, not by hand). Writing a policy is
@@ -31,4 +31,4 @@ export class UnderwritingFormulas {
 }
 
 for (const name of ['decline', 'exposure', 'loading', 'premium', 'ratio', 'reserve', 'risk', 'score'] as const)
-  qpuHexRegisterOf('underwriting', name, (UnderwritingFormulas[name] as (...x: unknown[]) => unknown).bind(UnderwritingFormulas))
+  hexRegisterOf('underwriting', name, (UnderwritingFormulas[name] as (...x: unknown[]) => unknown).bind(UnderwritingFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SatelliteFormulas — 8 exact-integer formulas of the satellite domain, each at a hex address crossing to cross; develops the satellite leads. */
@@ -31,4 +31,4 @@ export class SatelliteFormulas {
 }
 
 for (const name of ['altitude', 'bands', 'combos', 'constellation', 'coverage', 'inclination', 'period', 'velocity'] as const)
-  qpuHexRegisterOf('satellite', name, (SatelliteFormulas[name] as (...x: unknown[]) => unknown).bind(SatelliteFormulas))
+  hexRegisterOf('satellite', name, (SatelliteFormulas[name] as (...x: unknown[]) => unknown).bind(SatelliteFormulas))

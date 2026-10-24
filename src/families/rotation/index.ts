@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RotationFormulas — 8 exact-integer formulas of the rotation domain, each at a hex address crossing to cross; develops the rotation leads. */
@@ -31,4 +31,4 @@ export class RotationFormulas {
 }
 
 for (const name of ['angular', 'combos', 'inertia', 'radians', 'revolutions', 'rpm', 'spokes', 'torque'] as const)
-  qpuHexRegisterOf('rotation', name, (RotationFormulas[name] as (...x: unknown[]) => unknown).bind(RotationFormulas))
+  hexRegisterOf('rotation', name, (RotationFormulas[name] as (...x: unknown[]) => unknown).bind(RotationFormulas))

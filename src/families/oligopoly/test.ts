@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OligopolyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('oligopoly: firms, concentration, hhindex, collusiongain, reactionpairs, co
   assert.equal(OligopolyFormulas.marketsharesubsets(4).value, 16)
   assert.equal(OligopolyFormulas.stabilityindex(70, 100).value, 70)
   assert.equal(OligopolyFormulas.firms(4, 0).dst, 'microeconomics')
-  assert.equal(qpuHexFamiliesOf().get('oligopoly')?.length, 8)
+  assert.equal(hexFamiliesOf().get('oligopoly')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'oligopoly', program: ['firms'], params: [4, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `oligopoly.firms at ${uuid}`)
-  qpuUuidReceiptOf('oligopoly firms', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('oligopoly firms', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; firms 4, concentration 80, hhindex 100, collusiongain 2000, reactionpairs 6, cournotoutput 200, marketsharesubsets 16, stabilityindex 70; crossing to microeconomics')
 })

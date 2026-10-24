@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CYTOGENETICS — scaffolded integer measures crossed to genetics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CytogeneticsFormulas {
 }
 
 for (const name of ['aneuploidyrisk', 'banding', 'chromosomepairs', 'genesubsets', 'karyotypeorderings', 'ploidy', 'recombinationsites', 'translocationpairs'] as const)
-  qpuHexRegisterOf('cytogenetics', name, (CytogeneticsFormulas[name] as (...x: unknown[]) => unknown).bind(CytogeneticsFormulas))
+  hexRegisterOf('cytogenetics', name, (CytogeneticsFormulas[name] as (...x: unknown[]) => unknown).bind(CytogeneticsFormulas))

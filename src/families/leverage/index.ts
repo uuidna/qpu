@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LEVERAGE — HOW A BALANCE SHEET IS FINANCED, AS ARITHMETIC (chosen by the public-API registry, not by hand). Borrowing is
@@ -31,4 +31,4 @@ export class LeverageFormulas {
 }
 
 for (const name of ['capitalratio', 'debtratio', 'debttoequity', 'degreeofleverage', 'equitymultiplier', 'gearingratio', 'interestcoverage', 'marginratio'] as const)
-  qpuHexRegisterOf('leverage', name, (LeverageFormulas[name] as (...x: unknown[]) => unknown).bind(LeverageFormulas))
+  hexRegisterOf('leverage', name, (LeverageFormulas[name] as (...x: unknown[]) => unknown).bind(LeverageFormulas))

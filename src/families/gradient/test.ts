@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GradientFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('gradient: step, update, learningrate, momentum, norm, clip, decay, epoch â
   assert.equal(GradientFormulas.decay(100, 30).value, 70)
   assert.equal(GradientFormulas.epoch(1000, 32).value, 32, 'batches per epoch')
   assert.equal(GradientFormulas.step(100, 5).dst, 'linearalgebra')
-  assert.equal(qpuHexFamiliesOf().get('gradient')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gradient')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gradient', program: ['norm'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `gradient.norm at ${uuid}`)
-  qpuUuidReceiptOf('gradient norm', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gradient norm', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; step 500, update 70, learningrate 250, momentum 95, norm 25, clip 30, decay 70, epoch 32; crossing to linearalgebra')
 })

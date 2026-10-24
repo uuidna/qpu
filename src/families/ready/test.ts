@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ReadyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -25,8 +25,8 @@ test('ready: finds the registry gaps and proves not ready while any domain is un
   assert.equal(proof.holds, proof.value === 0)
   assert.equal(proof.ready, proof.holds)
   if (!proof.ready) assert.match(proof.verdict, /NOT READY/, 'it proves not ready with the count')
-  qpuUuidReceiptOf('ready proof', qpuContentUuidOf(proof), { uncovered: proof.value, ready: proof.ready })
+  uuidReceiptOf('ready proof', contentUuidOf(proof), { uncovered: proof.value, ready: proof.ready })
 
-  assert.equal(qpuHexFamiliesOf().get('ready')?.length, 4)
+  assert.equal(hexFamiliesOf().get('ready')?.length, 4)
   t.diagnostic(`4 formulas; ${proof.value} domains uncovered → ${proof.verdict}; coverage ${coverage.value}% (${coverage.covered}/${coverage.total}); next: ${gaps.slice.slice(0, 4).join(', ')}`)
 })

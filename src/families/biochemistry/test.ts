@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BiochemistryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('biochemistry: bonds, concentration, efficiency, equilibrium, michaelis, mo
   assert.equal(BiochemistryFormulas.ph(70, 10).value, 7)
   assert.equal(BiochemistryFormulas.turnover(1000, 10).value, 100, 'kcat proxy')
   assert.equal(BiochemistryFormulas.concentration(100, 4).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('biochemistry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('biochemistry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'biochemistry', program: ['turnover'], params: [1000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `biochemistry.turnover at ${uuid}`)
-  qpuUuidReceiptOf('biochemistry turnover', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('biochemistry turnover', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bonds 5, concentration 25, efficiency 80, equilibrium 200, michaelis 50, molarity 10, ph 7, turnover 100; crossing to chemistry')
 })

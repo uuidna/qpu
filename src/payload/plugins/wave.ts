@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { WaveFormulas, waveFamiliesOf } from '../../families/wave/index.js'
-import { qpuFacesOf, qpuHexFamiliesOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
+import { facesOf, hexFamiliesOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
 import { openMathScaleOf } from './clay.js'
 import type { QpuPlugin } from './surface.js'
 
@@ -72,7 +72,7 @@ const rawNextOf = (from: number, faces: number, r: { next?: unknown }): { rawNex
 const heldFormulasOf = async (answered: string[]): Promise<WaveSweepRow['heldFormulas']> => {
   const out: WaveSweepRow['heldFormulas'] = []
   for (const family of answered) {
-    const first = qpuHexFamiliesOf().get(family)?.[0]
+    const first = hexFamiliesOf().get(family)?.[0]
     if (!first || first.arity > 1) continue
     const params = first.arity === 0 ? [] : [3]
     let hex = ''
@@ -82,7 +82,7 @@ const heldFormulasOf = async (answered: string[]): Promise<WaveSweepRow['heldFor
       continue
     }
     try {
-      // Prefer the family's own CrossFormula (first.run) so a filled next:faces from qpuHexRunOf is not mistaken for raw next.
+      // Prefer the family's own CrossFormula (first.run) so a filled next:faces from hexRunOf is not mistaken for raw next.
       const direct = first.run(params.map(BigInt)) as { value?: unknown; holds?: boolean; next?: unknown; hex?: string }
       const value =
         typeof direct.value === 'bigint' || typeof direct.value === 'number'
@@ -168,7 +168,7 @@ const passOf = async (pass: number, fromStart: number, width: number, faces: num
  * Local unit compute only. Caller supplies from / width / passes — nothing is invented.
  */
 export const waveSweepGridOf = async (args: { from: number; width?: number; passes?: number }) => {
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const names = waveFamiliesOf()
   const from0 = args.from
   const width0 = args.width ?? faces * 2
@@ -196,7 +196,7 @@ export const waveSweepGridOf = async (args: { from: number; width?: number; pass
     kind: 'wave-sweep-grid' as const,
     formula: 'wave.sweep' as const,
     stride: faces,
-    lattice: { faces, coins: qpuFacesOf().coins, rays: qpuFacesOf().rays, familyCount: names.length },
+    lattice: { faces, coins: facesOf().coins, rays: facesOf().rays, familyCount: names.length },
     clayRelevantIndices: Object.fromEntries(['clay', 'cloud', 'lattice', 'perma', 'ceramics'].map((n) => [n, names.indexOf(n)])),
     passes: passes.map((p) => ({
       pass: p.pass,
@@ -243,7 +243,7 @@ export const waveSweepGridOf = async (args: { from: number; width?: number; pass
 export const publicWaveOf = async (request: Request): Promise<Response> => {
   const url = new URL(request.url)
   const from = Number(url.searchParams.get('from') ?? '434')
-  const width = Number(url.searchParams.get('width') ?? String(qpuFacesOf().faces * 2))
+  const width = Number(url.searchParams.get('width') ?? String(facesOf().faces * 2))
   const passes = Number(url.searchParams.get('passes') ?? '1')
   return Response.json(await waveSweepGridOf({ from, width, passes }), {
     headers: { 'cache-control': 'public, max-age=0, s-maxage=60, stale-while-revalidate=300' },
@@ -272,7 +272,7 @@ export const wavePlugin = (): QpuPlugin => (config) => ({
         afterRead: [
           async ({ doc }: { doc?: { from?: unknown; width?: unknown; passes?: unknown; reading?: unknown } | null }) => {
             if (!doc || typeof doc.from !== 'number' || !Number.isSafeInteger(doc.from) || doc.from < 0) return doc
-            const width = typeof doc.width === 'number' && Number.isSafeInteger(doc.width) && doc.width > 0 ? doc.width : qpuFacesOf().faces * 2
+            const width = typeof doc.width === 'number' && Number.isSafeInteger(doc.width) && doc.width > 0 ? doc.width : facesOf().faces * 2
             const passes = typeof doc.passes === 'number' && Number.isSafeInteger(doc.passes) && doc.passes > 0 ? doc.passes : 1
             const reading = await waveSweepGridOf({ from: doc.from, width, passes })
             return { ...doc, reading }

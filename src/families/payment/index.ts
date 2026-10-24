@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PAYMENT — PROCESSING A TRANSACTION, AS ARITHMETIC (chosen by the registry). A payment is numbers: the processing fee
@@ -30,4 +30,4 @@ export class PaymentFormulas {
 }
 
 for (const name of ['authorization', 'chargeback', 'decline', 'fee', 'fx', 'interchange', 'payout', 'settlement'] as const)
-  qpuHexRegisterOf('payment', name, (PaymentFormulas[name] as (...x: unknown[]) => unknown).bind(PaymentFormulas))
+  hexRegisterOf('payment', name, (PaymentFormulas[name] as (...x: unknown[]) => unknown).bind(PaymentFormulas))

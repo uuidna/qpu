@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { IngestionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('ingestion: eventrate, backpressure, bufferfill, watermark, lag, batchsize,
   assert.equal(IngestionFormulas.checkpoint(1050, 100).value, 1000)
   assert.equal(IngestionFormulas.backpressure(800, 1000).value, 0)
   assert.equal(IngestionFormulas.eventrate(6000, 60).dst, 'caching')
-  assert.equal(qpuHexFamiliesOf().get('ingestion')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ingestion')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ingestion', program: ['batchsize'], params: [1000, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 125, `ingestion.batchsize at ${uuid}`)
-  qpuUuidReceiptOf('ingestion batchsize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ingestion batchsize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; eventrate 100, backpressure 200, bufferfill 75, watermark 34, lag 500, batchsize 125, retrybudget 3, checkpoint 1000; crossing to caching')
 })

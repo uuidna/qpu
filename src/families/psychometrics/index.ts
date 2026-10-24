@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PSYCHOMETRICS — THE MEASUREMENT OF THE MIND, AS ARITHMETIC. A test is numbers: how reliably it repeats, how well it
@@ -31,4 +31,4 @@ export class PsychometricsFormulas {
 }
 
 for (const name of ['cronbach', 'discrimination', 'itemdifficulty', 'normalization', 'percentile', 'reliability', 'standardscore', 'validity'] as const)
-  qpuHexRegisterOf('psychometrics', name, (PsychometricsFormulas[name] as (...x: unknown[]) => unknown).bind(PsychometricsFormulas))
+  hexRegisterOf('psychometrics', name, (PsychometricsFormulas[name] as (...x: unknown[]) => unknown).bind(PsychometricsFormulas))

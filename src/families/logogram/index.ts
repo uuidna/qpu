@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOGOGRAM — scaffolded integer measures crossed to combinatorics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class LogogramFormulas {
 }
 
 for (const name of ['compoundpairs', 'frequencyrank', 'literacyratio', 'radicals', 'readingsper', 'semanticsubsets', 'strokeorderings', 'symbols'] as const)
-  qpuHexRegisterOf('logogram', name, (LogogramFormulas[name] as (...x: unknown[]) => unknown).bind(LogogramFormulas))
+  hexRegisterOf('logogram', name, (LogogramFormulas[name] as (...x: unknown[]) => unknown).bind(LogogramFormulas))

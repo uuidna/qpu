@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELEVATOR — scaffolded integer measures crossed to kinematics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ElevatorFormulas {
 }
 
 for (const name of ['accelrate', 'capacity', 'dispatchcombos', 'dutyload', 'floors', 'speed', 'traveltime', 'waittime'] as const)
-  qpuHexRegisterOf('elevator', name, (ElevatorFormulas[name] as (...x: unknown[]) => unknown).bind(ElevatorFormulas))
+  hexRegisterOf('elevator', name, (ElevatorFormulas[name] as (...x: unknown[]) => unknown).bind(ElevatorFormulas))

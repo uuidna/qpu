@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CALCULUS — THE CONTINUOUS MADE DISCRETE, AS ARITHMETIC. Change is numbers: the power rule on a monomial, an integral
@@ -30,4 +30,4 @@ export class CalculusFormulas {
 }
 
 for (const name of ['area', 'derivative', 'integral', 'limit', 'rate', 'series', 'slope', 'tangent'] as const)
-  qpuHexRegisterOf('calculus', name, (CalculusFormulas[name] as (...x: unknown[]) => unknown).bind(CalculusFormulas))
+  hexRegisterOf('calculus', name, (CalculusFormulas[name] as (...x: unknown[]) => unknown).bind(CalculusFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SemioticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('semiotics: signs, signifierpairs, codesubsets, denotationlevels, paradigmo
   assert.equal(SemioticsFormulas.iconindexsymbol(3, 0).value, 3)
   assert.equal(SemioticsFormulas.interpretantratio(70, 100).value, 70)
   assert.equal(SemioticsFormulas.signs(50, 30).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('semiotics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('semiotics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'semiotics', program: ['signs'], params: [50, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `semiotics.signs at ${uuid}`)
-  qpuUuidReceiptOf('semiotics signs', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('semiotics signs', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; signs 80, signifierpairs 190, codesubsets 64, denotationlevels 3, paradigmorderings 120, syntagmlength 24, iconindexsymbol 3, interpretantratio 70; crossing to linguistics')
 })

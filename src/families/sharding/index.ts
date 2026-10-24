@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SHARDING — SPLITTING A KEY SPACE ACROSS SHARDS, AS ARITHMETIC. Partitioning is numbers: the shards a key set needs, the
@@ -31,4 +31,4 @@ export class ShardingFormulas {
 }
 
 for (const name of ['fanout', 'hotspot', 'keyrange', 'placement', 'rebalance', 'resharding', 'shards', 'skew'] as const)
-  qpuHexRegisterOf('sharding', name, (ShardingFormulas[name] as (...x: unknown[]) => unknown).bind(ShardingFormulas))
+  hexRegisterOf('sharding', name, (ShardingFormulas[name] as (...x: unknown[]) => unknown).bind(ShardingFormulas))

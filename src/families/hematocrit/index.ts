@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HEMATOCRIT — THE RED CELL FRACTION, AS ARITHMETIC. A blood count is numbers: the packed cell volume, the mean
@@ -31,4 +31,4 @@ export class HematocritFormulas {
 }
 
 for (const name of ['bloodviscosity', 'hemoglobinratio', 'mch', 'mchc', 'mcv', 'packedcellvolume', 'plasmafraction', 'redcellcount'] as const)
-  qpuHexRegisterOf('hematocrit', name, (HematocritFormulas[name] as (...x: unknown[]) => unknown).bind(HematocritFormulas))
+  hexRegisterOf('hematocrit', name, (HematocritFormulas[name] as (...x: unknown[]) => unknown).bind(HematocritFormulas))

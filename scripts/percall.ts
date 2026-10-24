@@ -36,7 +36,7 @@ const DOORS = ['quantum', 'lean', 'cite', 'train', 'forge', 'improve', 'compete'
 
 /** The two ledgers this package counts as computing, read at a point in time. */
 export const markOf = (unit) => ({
-  computations: unit.qpuReceiptLedgerOf?.().length ?? 0,
+  computations: unit.receiptLedgerOf?.().length ?? 0,
   mint: unit.qpuMintReceiptOf?.().calls ?? 0,
 })
 

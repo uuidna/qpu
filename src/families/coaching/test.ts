@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CoachingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('coaching: periodization, taper, overload, workratio, readiness, acwr, peak
   assert.equal(CoachingFormulas.peaking(30, 80).value, 0)
   assert.equal(CoachingFormulas.deload(1000, 50).value, 500)
   assert.equal(CoachingFormulas.periodization(52, 4).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('coaching')?.length, 8)
+  assert.equal(hexFamiliesOf().get('coaching')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'coaching', program: ['acwr'], params: [300, 250] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 120, `coaching.acwr at ${uuid}`)
-  qpuUuidReceiptOf('coaching acwr', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('coaching acwr', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; periodization 13, taper 600, overload 110, workratio 2, readiness 90, acwr 120, peaking 50, deload 500; crossing to physiology')
 })

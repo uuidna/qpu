@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INTERCONNECT — BUSES AND LINKS, AS ARITHMETIC. A fabric is numbers by the book: the lanes a link set carries, raw
@@ -36,4 +36,4 @@ export class InterconnectFormulas {
 }
 
 for (const name of ['bandwidth', 'duplex', 'hops', 'lanes', 'latency', 'overhead', 'throughput', 'topology', 'transfers', 'width'] as const)
-  qpuHexRegisterOf('interconnect', name, (InterconnectFormulas[name] as (...x: unknown[]) => unknown).bind(InterconnectFormulas))
+  hexRegisterOf('interconnect', name, (InterconnectFormulas[name] as (...x: unknown[]) => unknown).bind(InterconnectFormulas))

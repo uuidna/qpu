@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ALTIMETRY — HEIGHT AS ARITHMETIC (chosen by the elevation registry, not by hand). Measuring the vertical is numbers:
@@ -31,4 +31,4 @@ export class AltimetryFormulas {
 }
 
 for (const name of ['contourinterval', 'densityaltitude', 'elevationgain', 'grade', 'hypsometric', 'pressurealtitude', 'slope', 'verticalspeed'] as const)
-  qpuHexRegisterOf('altimetry', name, (AltimetryFormulas[name] as (...x: unknown[]) => unknown).bind(AltimetryFormulas))
+  hexRegisterOf('altimetry', name, (AltimetryFormulas[name] as (...x: unknown[]) => unknown).bind(AltimetryFormulas))

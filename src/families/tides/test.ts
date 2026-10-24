@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TidesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('tides: amplitude, flowrate, harmonic, meanlevel, neaptide, period, range, 
   assert.equal(TidesFormulas.springtide(40, 90).value, 130, 'sun and moon pulls add')
   assert.equal(TidesFormulas.neaptide(40, 90).value, 0)
   assert.equal(TidesFormulas.range(312, 48).dst, 'oceanography')
-  assert.equal(qpuHexFamiliesOf().get('tides')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tides')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tides', program: ['range'], params: [312, 48] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 264, `tides.range at ${uuid}`)
-  qpuUuidReceiptOf('tides range', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tides range', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; amplitude 132, flowrate 2000, harmonic 200, meanlevel 180, neaptide 50, period 12, range 264, springtide 130; crossing to oceanography')
 })

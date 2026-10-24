@@ -1,7 +1,7 @@
 /**
  * RAID vs direct bindings — measured from the tree, no invented magnitudes.
  *
- * Cost/speed: Qpu.Hybrid (kvCost/r2Cost/hybridCost, kvSpeed/r2Speed/hybridSpeed) and qpuRaidOf cluster
+ * Cost/speed: Qpu.Hybrid (kvCost/r2Cost/hybridCost, kvSpeed/r2Speed/hybridSpeed) and raidOf cluster
  * (minimum / coordinated). Ops: storage-subrequests.json door counts. Security: write-auth fail-closed +
  * RAID faces shares. Usability: connector + Payload RAID adapter axis. Claim rows pass only when the
  * measured inequality holds; "magnitudes" is refused unless a named factor is ≥ mintOf(n).
@@ -10,10 +10,10 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   mintOf,
-  qpuHybridOf,
-  qpuLatticeNamesOf,
-  qpuRaidOf,
-  qpuStorageWriteAllowedHolds,
+  hybridOf,
+  latticeNamesOf,
+  raidOf,
+  storageWriteAllowedHolds,
 } from '../../quantum/processing/unit/index.js'
 import { cloudflareRaidAdaptersOf, PAYLOAD_WEBSITE_CLONE } from '../../deployment/payload-cloudflare.js'
 import { catalogPriceRelationOf } from './price-relation.js'
@@ -53,14 +53,14 @@ export type RaidClaimRow = {
  * Does not invent 10×/100× — reports the measured ratio, and refuses "magnitudes" unless ratio ≥ mintOf(n).
  */
 export const raidCompareOf = () => {
-  const hybrid = qpuHybridOf()
-  const raid = qpuRaidOf()
-  const lattice = qpuLatticeNamesOf()
+  const hybrid = hybridOf()
+  const raid = raidOf()
+  const lattice = latticeNamesOf()
   const adapters = cloudflareRaidAdaptersOf({ db: 'qpu-raid', storage: 'r2' })
   const ops = subrequestsOf()
   const access = modeAccessOf({ mode: 5, who: 'other' })
   const price = catalogPriceRelationOf('qpu-raid')
-  const writeAuth = qpuStorageWriteAllowedHolds()
+  const writeAuth = storageWriteAllowedHolds()
   const magnitudeFloor = mintOf(lattice.n)
 
   const kv = { cost: hybrid.kv.cost, speed: hybrid.kv.speed, name: 'STORAGE kv' as const }
@@ -98,7 +98,7 @@ export const raidCompareOf = () => {
       direct: 'uncoordinated placement',
       ratio: null,
       unit: 'raid.cluster.cost',
-      evidence: 'qpuRaidOf().cluster.cost === minimum ∧ holds',
+      evidence: 'raidOf().cluster.cost === minimum ∧ holds',
       pass: raid.cluster.cost === 'minimum' && raid.holds === true,
       note: 'identity on placement, not a dollar price',
     },
@@ -142,7 +142,7 @@ export const raidCompareOf = () => {
       direct: 'single-binding alone',
       ratio: null,
       unit: 'raid.cluster.speed',
-      evidence: 'qpuRaidOf().cluster.speed === coordinated ∧ holds',
+      evidence: 'raidOf().cluster.speed === coordinated ∧ holds',
       pass: raid.cluster.speed === 'coordinated' && raid.holds === true,
       note: 'identity on coordination',
     },
@@ -152,7 +152,7 @@ export const raidCompareOf = () => {
       raid: writeAuth,
       direct: 'open write without bearer',
       ratio: null,
-      unit: 'qpuStorageWriteAllowedHolds',
+      unit: 'storageWriteAllowedHolds',
       evidence: 'bound/wrong/unbound probe matrix',
       pass: writeAuth === true,
       note: 'Bearer QPU_WRITE_TOKEN; reads stay open',
@@ -164,7 +164,7 @@ export const raidCompareOf = () => {
       direct: 1,
       ratio: raid.faces / 1,
       unit: 'RAID faces / shares',
-      evidence: 'qpuRaidOf().faces (RAID 10 stripes×teams)',
+      evidence: 'raidOf().faces (RAID 10 stripes×teams)',
       pass: raid.faces > 1 && raid.holds === true,
       note: `share ratio ${raid.faces} — not security-bit magnitudes`,
     },

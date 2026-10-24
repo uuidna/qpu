@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MALACOLOGY — scaffolded integer measures crossed to zoology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MalacologyFormulas {
 }
 
 for (const name of ['aperturesize', 'chambercount', 'growthlines', 'radulateeth', 'shellcombos', 'shellwhorls', 'speciescount', 'spiralratio'] as const)
-  qpuHexRegisterOf('malacology', name, (MalacologyFormulas[name] as (...x: unknown[]) => unknown).bind(MalacologyFormulas))
+  hexRegisterOf('malacology', name, (MalacologyFormulas[name] as (...x: unknown[]) => unknown).bind(MalacologyFormulas))

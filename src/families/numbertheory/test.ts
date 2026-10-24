@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NumbertheoryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('numbertheory: gcd, lcm, totient, divisorcount, isprime, modpow, digitsum, 
   assert.equal(NumbertheoryFormulas.digitsum(12345).value, 15)
   assert.equal(NumbertheoryFormulas.factorialmod(5, 1000).value, 120)
   assert.equal(NumbertheoryFormulas.gcd(48, 36).dst, 'algebra')
-  assert.equal(qpuHexFamiliesOf().get('numbertheory')?.length, 8)
+  assert.equal(hexFamiliesOf().get('numbertheory')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'numbertheory', program: ['gcd'], params: [48, 36] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `numbertheory.gcd at ${uuid}`)
-  qpuUuidReceiptOf('numbertheory gcd', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('numbertheory gcd', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gcd 12, lcm 12, totient 6, divisorcount 5, isprime 1, modpow 24, digitsum 15, factorialmod 120; crossing to algebra')
 })

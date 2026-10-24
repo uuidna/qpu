@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DEADRECKONING — POSITION WITHOUT A FIX, AS ARITHMETIC (course and speed over elapsed time, the oldest navigation).
@@ -31,4 +31,4 @@ export class DeadreckoningFormulas {
 }
 
 for (const name of ['coursecorrection', 'distance', 'driftangle', 'elapsedtime', 'estimatedposition', 'positionerror', 'setandrift', 'speedmadegood'] as const)
-  qpuHexRegisterOf('deadreckoning', name, (DeadreckoningFormulas[name] as (...x: unknown[]) => unknown).bind(DeadreckoningFormulas))
+  hexRegisterOf('deadreckoning', name, (DeadreckoningFormulas[name] as (...x: unknown[]) => unknown).bind(DeadreckoningFormulas))

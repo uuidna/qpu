@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HYDROPONICS — SOILLESS GROWING, AS ARITHMETIC. Running a nutrient-film or deep-water bed is numbers: the conductivity of
@@ -31,4 +31,4 @@ export class HydroponicsFormulas {
 }
 
 for (const name of ['density', 'dosing', 'dwc', 'ec', 'flowrate', 'nutrientratio', 'ph', 'reservoir'] as const)
-  qpuHexRegisterOf('hydroponics', name, (HydroponicsFormulas[name] as (...x: unknown[]) => unknown).bind(HydroponicsFormulas))
+  hexRegisterOf('hydroponics', name, (HydroponicsFormulas[name] as (...x: unknown[]) => unknown).bind(HydroponicsFormulas))

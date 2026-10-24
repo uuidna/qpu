@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INCIDENT — RUNNING AN OUTAGE, AS ARITHMETIC (chosen by the operations registry, not by hand). Responding to failure is
@@ -31,4 +31,4 @@ export class IncidentFormulas {
 }
 
 for (const name of ['blastradius', 'errorbudget', 'mtta', 'mttr', 'postmortemscore', 'recurrence', 'severity', 'slaimpact'] as const)
-  qpuHexRegisterOf('incident', name, (IncidentFormulas[name] as (...x: unknown[]) => unknown).bind(IncidentFormulas))
+  hexRegisterOf('incident', name, (IncidentFormulas[name] as (...x: unknown[]) => unknown).bind(IncidentFormulas))

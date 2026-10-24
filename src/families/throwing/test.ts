@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ThrowingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('throwing: range, releasevelocity, flighttime, spin, momentum, peakheight, 
   assert.equal(ThrowingFormulas.effortratio(80, 100).value, 80)
   assert.equal(ThrowingFormulas.distancegain(300, 250).value, 50)
   assert.equal(ThrowingFormulas.range(20, 15).dst, 'kinematics')
-  assert.equal(qpuHexFamiliesOf().get('throwing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('throwing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'throwing', program: ['range'], params: [20, 15] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `throwing.range at ${uuid}`)
-  qpuUuidReceiptOf('throwing range', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('throwing range', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; range 300, releasevelocity 20, flighttime 10, spin 400, momentum 60, peakheight 225, effortratio 80, distancegain 50; crossing to kinematics')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CloudphysicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cloudphysics: dropletcount, condensationlevel, nucleipairs, albedo, optica
   assert.equal(CloudphysicsFormulas.phasesubsets(3).value, 8)
   assert.equal(CloudphysicsFormulas.precipefficiency(60, 100).value, 60)
   assert.equal(CloudphysicsFormulas.dropletcount(1000, 100).dst, 'physics')
-  assert.equal(qpuHexFamiliesOf().get('cloudphysics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cloudphysics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cloudphysics', program: ['dropletcount'], params: [1000, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100000, `cloudphysics.dropletcount at ${uuid}`)
-  qpuUuidReceiptOf('cloudphysics dropletcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cloudphysics dropletcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dropletcount 100000, condensationlevel 125, nucleipairs 66, albedo 70, opticalthickness 25, terminalvelocity 9, phasesubsets 8, precipefficiency 60; crossing to physics')
 })

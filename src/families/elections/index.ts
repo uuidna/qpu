@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELECTIONS — COUNTING THE VOTE, AS ARITHMETIC (chosen by the public registry, not by hand). A ballot is numbers: turnout
@@ -31,4 +31,4 @@ export class ElectionsFormulas {
 }
 
 for (const name of ['apportionment', 'margin', 'proportionality', 'seats', 'spoilage', 'swing', 'threshold', 'turnout'] as const)
-  qpuHexRegisterOf('elections', name, (ElectionsFormulas[name] as (...x: unknown[]) => unknown).bind(ElectionsFormulas))
+  hexRegisterOf('elections', name, (ElectionsFormulas[name] as (...x: unknown[]) => unknown).bind(ElectionsFormulas))

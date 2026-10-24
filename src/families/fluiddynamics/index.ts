@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FLUIDDYNAMICS — MOVING FLUID AS ARITHMETIC. Flow is numbers: the Reynolds number that sorts laminar from turbulent,
@@ -31,4 +31,4 @@ export class FluiddynamicsFormulas {
 }
 
 for (const name of ['bernoulli', 'flowrate', 'froude', 'machnumber', 'pressuredrop', 'reynolds', 'velocity', 'viscosity'] as const)
-  qpuHexRegisterOf('fluiddynamics', name, (FluiddynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(FluiddynamicsFormulas))
+  hexRegisterOf('fluiddynamics', name, (FluiddynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(FluiddynamicsFormulas))

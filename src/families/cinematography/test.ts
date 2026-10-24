@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CinematographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('cinematography: fstop, exposure, depthoffield, framerate, shutterangle, fo
   assert.equal(CinematographyFormulas.iso(100, 4).value, 400)
   assert.equal(CinematographyFormulas.aspect(1920, 1080).value, 177)
   assert.equal(CinematographyFormulas.fstop(50, 25).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('cinematography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cinematography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cinematography', program: ['framerate'], params: [1440, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 24, `cinematography.framerate at ${uuid}`)
-  qpuUuidReceiptOf('cinematography framerate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cinematography framerate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; fstop 2, exposure 4000, depthoffield 3000, framerate 24, shutterangle 48, focallength 70, iso 400, aspect 177; crossing to optics')
 })

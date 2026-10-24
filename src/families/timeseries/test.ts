@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TimeseriesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('timeseries: movingaverage, trend, seasonalindex, autocorrelation, lag, smo
   assert.equal(TimeseriesFormulas.differencing(150, 100).value, 50)
   assert.equal(TimeseriesFormulas.forecast(100, 5, 3).value, 115, 'carried three steps ahead')
   assert.equal(TimeseriesFormulas.movingaverage(100, 4).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('timeseries')?.length, 8)
+  assert.equal(hexFamiliesOf().get('timeseries')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'timeseries', program: ['forecast'], params: [100, 5, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 115, `timeseries.forecast at ${uuid}`)
-  qpuUuidReceiptOf('timeseries forecast', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('timeseries forecast', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; movingaverage 25, trend 30, seasonalindex 120, autocorrelation 80, lag 97, smoothing 150, differencing 50, forecast 115; crossing to statistics')
 })

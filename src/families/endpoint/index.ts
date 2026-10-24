@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENDPOINT — PAYLOAD'S CUSTOM ENDPOINTS AND REST + GRAPHQL API, AS ARITHMETIC (chosen by the CMS route registry, not by hand).
@@ -31,4 +31,4 @@ export class EndpointFormulas {
 }
 
 for (const name of ['auth', 'depth', 'error', 'latency', 'methods', 'payload', 'rate', 'status'] as const)
-  qpuHexRegisterOf('endpoint', name, (EndpointFormulas[name] as (...x: unknown[]) => unknown).bind(EndpointFormulas))
+  hexRegisterOf('endpoint', name, (EndpointFormulas[name] as (...x: unknown[]) => unknown).bind(EndpointFormulas))

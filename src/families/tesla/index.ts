@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THE PHYSICS TESLA'S PATENTS STATE, AS FORMULAS. The patents are the record (US 381,968 polyphase induction motor,
@@ -43,4 +43,4 @@ export class TeslaFormulas {
 }
 
 for (const name of ['earth', 'energy', 'field', 'period', 'quarter', 'resonance', 'schumann', 'slip', 'sync', 'turns', 'windings'] as const)
-  qpuHexRegisterOf('tesla', name, (TeslaFormulas[name] as (...x: unknown[]) => unknown).bind(TeslaFormulas))
+  hexRegisterOf('tesla', name, (TeslaFormulas[name] as (...x: unknown[]) => unknown).bind(TeslaFormulas))

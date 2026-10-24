@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EnvironmentFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('environment: emissions, exceedance, footprint, concentration, offset, expo
   assert.equal(EnvironmentFormulas.penalty(20, 500).value, 10000)
   assert.equal(EnvironmentFormulas.remediation(300, 50).value, 15000)
   assert.equal(EnvironmentFormulas.emissions(50, 24).dst, 'evidence')
-  assert.equal(qpuHexFamiliesOf().get('environment')?.length, 8)
+  assert.equal(hexFamiliesOf().get('environment')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'environment', program: ['exceedance'], params: [120, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `environment.exceedance at ${uuid}`)
-  qpuUuidReceiptOf('environment exceedance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('environment exceedance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; emissions 1200, exceedance 20, footprint 3000, concentration 5ppm, offset 700, exposure 320, penalty 10000, remediation 15000; crossing to evidence')
 })

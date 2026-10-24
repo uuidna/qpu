@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SculptureFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('sculpture: volume, masskg, removalratio, facetcount, supportpoints, scaler
   assert.equal(SculptureFormulas.toolpasses(50, 3).value, 150)
   assert.equal(SculptureFormulas.balancemargin(100, 30).value, 70)
   assert.equal(SculptureFormulas.volume(20, 20, 40).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('sculpture')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sculpture')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sculpture', program: ['volume'], params: [20, 20, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 16000, `sculpture.volume at ${uuid}`)
-  qpuUuidReceiptOf('sculpture volume', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sculpture volume', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; volume 16000, masskg 16, removalratio 40, facetcount 48, supportpoints 4, scaleratio 150, toolpasses 150, balancemargin 70; crossing to materials')
 })

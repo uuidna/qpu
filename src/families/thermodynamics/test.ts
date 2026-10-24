@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ThermodynamicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -18,10 +18,10 @@ test('thermodynamics: carnot, work, efficiency, entropy, heatflow, cop, expansio
   assert.equal(ThermodynamicsFormulas.gibbs(300, 1000).value, 0, 'free energy floored at zero when heat exceeds enthalpy')
   assert.equal(ThermodynamicsFormulas.gibbs(1000, 300).dst, 'heat')
   assert.equal(ThermodynamicsFormulas.carnot(400, 300).dst, 'heat')
-  assert.equal(qpuHexFamiliesOf().get('thermodynamics')?.length, 9)
+  assert.equal(hexFamiliesOf().get('thermodynamics')?.length, 9)
   const uuid = qpuHexUuidOf({ family: 'thermodynamics', program: ['work'], params: [100, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 500, `thermodynamics.work at ${uuid}`)
-  qpuUuidReceiptOf('thermodynamics work', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('thermodynamics work', contentUuidOf(run), { uuid })
   t.diagnostic('9 formulas; carnot 25, work 500, efficiency 40, entropy 4, heatflow 400, cop 300, expansion 1007, internal 300, gibbs 700; crossing to heat')
 })

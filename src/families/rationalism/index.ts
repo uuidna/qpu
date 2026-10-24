@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RATIONALISM — scaffolded integer measures crossed to logic. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class RationalismFormulas {
 }
 
 for (const name of ['aprioriratio', 'axioms', 'deductionchains', 'inferencepairs', 'innateideas', 'necessitylevels', 'premisesubsets', 'proofpaths'] as const)
-  qpuHexRegisterOf('rationalism', name, (RationalismFormulas[name] as (...x: unknown[]) => unknown).bind(RationalismFormulas))
+  hexRegisterOf('rationalism', name, (RationalismFormulas[name] as (...x: unknown[]) => unknown).bind(RationalismFormulas))

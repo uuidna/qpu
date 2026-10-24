@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RespirationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('respiration: atpyield, oxygenuptake, respiratoryquotient, minuteventilatio
   assert.equal(RespirationFormulas.glucoseoxidation(3, 6).value, 18, 'six O₂ per glucose')
   assert.equal(RespirationFormulas.gasexchange(100, 150).value, 0)
   assert.equal(RespirationFormulas.atpyield(2, 38).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('respiration')?.length, 8)
+  assert.equal(hexFamiliesOf().get('respiration')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'respiration', program: ['minuteventilation'], params: [500, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 6000, `respiration.minuteventilation at ${uuid}`)
-  qpuUuidReceiptOf('respiration minuteventilation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('respiration minuteventilation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; atpyield 76, oxygenuptake 250, respiratoryquotient 80, minuteventilation 6000, tidalvolume 500, gasexchange 50, metabolicrate 1250, glucoseoxidation 18; crossing to physiology')
 })

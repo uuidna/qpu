@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DermatologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('dermatology: tbsa, melanoma, uv, healing, lesions, pigmentation, severity,
   assert.equal(DermatologyFormulas.severity(30, 120).value, 25)
   assert.equal(DermatologyFormulas.hydration(60, 100).value, 60)
   assert.equal(DermatologyFormulas.tbsa(9, 2).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('dermatology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dermatology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dermatology', program: ['uv'], params: [8, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 240, `dermatology.uv at ${uuid}`)
-  qpuUuidReceiptOf('dermatology uv', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dermatology uv', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; tbsa 18, melanoma 10, uv 240, healing 75, lesions 20, pigmentation 40, severity 25, hydration 60; crossing to med')
 })

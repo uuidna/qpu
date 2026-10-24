@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WELFARE — SOCIAL PROVISION, AS ARITHMETIC (chosen by the registry, not by hand). The safety net is numbers: the share
@@ -31,4 +31,4 @@ export class WelfareFormulas {
 }
 
 for (const name of ['benefit', 'coverage', 'dependency', 'gini', 'mobility', 'poverty', 'replacement', 'transfer'] as const)
-  qpuHexRegisterOf('welfare', name, (WelfareFormulas[name] as (...x: unknown[]) => unknown).bind(WelfareFormulas))
+  hexRegisterOf('welfare', name, (WelfareFormulas[name] as (...x: unknown[]) => unknown).bind(WelfareFormulas))

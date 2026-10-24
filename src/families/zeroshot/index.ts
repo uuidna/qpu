@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ZEROSHOT — zero-shot learning as exact combinatorics, not a fabricated coverage number. The embedding matrix cells,
@@ -32,4 +32,4 @@ export class ZeroshotFormulas {
 }
 
 for (const name of ['attributes', 'comparisons', 'embeddings', 'partitions', 'prompts', 'seenClasses', 'signatures', 'transferPairs'] as const)
-  qpuHexRegisterOf('zeroshot', name, (ZeroshotFormulas[name] as (...x: unknown[]) => unknown).bind(ZeroshotFormulas))
+  hexRegisterOf('zeroshot', name, (ZeroshotFormulas[name] as (...x: unknown[]) => unknown).bind(ZeroshotFormulas))

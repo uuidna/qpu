@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TextFormulas — 8 exact-integer formulas of the text domain, each at a hex address crossing to cross; develops the text leads. */
@@ -31,4 +31,4 @@ export class TextFormulas {
 }
 
 for (const name of ['base64', 'bytes', 'chunks', 'entropybits', 'lines', 'pairs', 'tokens', 'words'] as const)
-  qpuHexRegisterOf('text', name, (TextFormulas[name] as (...x: unknown[]) => unknown).bind(TextFormulas))
+  hexRegisterOf('text', name, (TextFormulas[name] as (...x: unknown[]) => unknown).bind(TextFormulas))

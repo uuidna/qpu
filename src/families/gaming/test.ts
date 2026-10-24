@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GamingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('gaming: framerate, score, winrate, kd, xp, damage, latency, accuracy — c
   assert.equal(GamingFormulas.latency(45).value, 45)
   assert.equal(GamingFormulas.accuracy(80, 100).value, 80)
   assert.equal(GamingFormulas.score(1500, 3).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('gaming')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gaming')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gaming', program: ['framerate'], params: [3600, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `gaming.framerate at ${uuid}`)
-  qpuUuidReceiptOf('gaming framerate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gaming framerate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; framerate 60, score 4500, winrate 75, kd 250, xp 10000, damage 30, latency 45, accuracy 80; crossing to code')
 })

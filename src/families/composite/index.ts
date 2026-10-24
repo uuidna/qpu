@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CompositeFormulas — 8 exact-integer formulas of the composite domain, each at a hex address crossing to cross; develops the composite leads. */
@@ -31,4 +31,4 @@ export class CompositeFormulas {
 }
 
 for (const name of ['combos', 'fiberpct', 'layers', 'modulus', 'orientations', 'plies', 'strength', 'weight'] as const)
-  qpuHexRegisterOf('composite', name, (CompositeFormulas[name] as (...x: unknown[]) => unknown).bind(CompositeFormulas))
+  hexRegisterOf('composite', name, (CompositeFormulas[name] as (...x: unknown[]) => unknown).bind(CompositeFormulas))

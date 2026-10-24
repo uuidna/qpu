@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HeatindexFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('heatindex: apparenttemp, humidityfactor, dangerlevel, discomfortindex, coo
   assert.equal(HeatindexFormulas.riskpct(80, 100).value, 80)
   assert.equal(HeatindexFormulas.feelsdelta(45, 35).value, 10)
   assert.equal(HeatindexFormulas.apparenttemp(35, 5).dst, 'weather')
-  assert.equal(qpuHexFamiliesOf().get('heatindex')?.length, 8)
+  assert.equal(hexFamiliesOf().get('heatindex')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'heatindex', program: ['apparenttemp'], params: [35, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 40, `heatindex.apparenttemp at ${uuid}`)
-  qpuUuidReceiptOf('heatindex apparenttemp', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('heatindex apparenttemp', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; apparenttemp 40, humidityfactor 60, dangerlevel 4, discomfortindex 80, coolingload 300, exposureminutes 60, riskpct 80, feelsdelta 10; crossing to weather')
 })

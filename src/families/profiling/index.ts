@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROFILING — WHERE RUNNING CODE SPENDS ITSELF, AS ARITHMETIC. A profile is numbers: the share of time in a hotspot,
@@ -30,4 +30,4 @@ export class ProfilingFormulas {
 }
 
 for (const name of ['allocation', 'cachehit', 'flamegraph', 'gc', 'hotspot', 'overhead', 'speedup', 'throughput'] as const)
-  qpuHexRegisterOf('profiling', name, (ProfilingFormulas[name] as (...x: unknown[]) => unknown).bind(ProfilingFormulas))
+  hexRegisterOf('profiling', name, (ProfilingFormulas[name] as (...x: unknown[]) => unknown).bind(ProfilingFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** StarFormulas — 8 exact-integer formulas of the star domain, each at a hex address crossing to cross; develops the star leads. */
@@ -31,4 +31,4 @@ export class StarFormulas {
 }
 
 for (const name of ['classes', 'combos', 'lifetime', 'luminosity', 'magnitude', 'mass', 'parsecs', 'radius'] as const)
-  qpuHexRegisterOf('star', name, (StarFormulas[name] as (...x: unknown[]) => unknown).bind(StarFormulas))
+  hexRegisterOf('star', name, (StarFormulas[name] as (...x: unknown[]) => unknown).bind(StarFormulas))

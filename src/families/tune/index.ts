@@ -1,4 +1,4 @@
-import { mintOf, qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { mintOf, hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** A432 AS THE STARTER OF THE CHAIN, DIFFERENT WAVELENGTHS CROSSING THE FRACTAL AT ONCE. The fundamental is not chosen,
@@ -8,7 +8,7 @@ import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
  *  once by the mintOf doubling), and the fifths stack ×3/2 into the circle that never quite closes. Each wavelength is
  *  a natural; speed of sound 343 m/s gives the metre. The whole harmonic fractal crosses the lattice from 432. */
 
-const L = { ...qpuLatticeNamesOf() }
+const L = { ...latticeNamesOf() }
 const PLANE = L.coins * L.coins * L.rays // 28
 const A432 = mintOf(L.hexbit) * (PLANE - L.seed) // 16 · 27 = 432, from the lattice
 const SOUND = 343000 // mm/s, the speed of sound
@@ -42,4 +42,4 @@ export class TuneFormulas {
 }
 
 for (const name of ['cents', 'fifth', 'fractal', 'fundamental', 'harmonic', 'octave', 'wavelength'] as const)
-  qpuHexRegisterOf('tune', name, (TuneFormulas[name] as (...x: unknown[]) => unknown).bind(TuneFormulas))
+  hexRegisterOf('tune', name, (TuneFormulas[name] as (...x: unknown[]) => unknown).bind(TuneFormulas))

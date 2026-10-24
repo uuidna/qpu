@@ -1,6 +1,6 @@
 import { monitorFaultsOf, test, type QpuMonitorReading } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker, { qpuQuantumOf, qpuShorOf } from './index.js'
+import worker, { quantumOf, shorOf } from './index.js'
 
 /** LIVE WHEN ASKED. QPU_LIVE names the host to test (https://qpu.uuidna.com). Unset, the same requests go to the worker
  * in this process: the gate that runs before a deploy must not measure the host it is about to replace, or a change
@@ -48,7 +48,7 @@ const json = { accept: 'application/json' }
 test('live qpu.uuidna.com', async (t) => {
   const live = target ?? 'https://qpu.uuidna.com'
   t.diagnostic(`against ${where}`)
-  const local = qpuQuantumOf()
+  const local = quantumOf()
   const root = await liveFetch(live, { headers: json })
   await t.test('chat fetch is JSON quantum', async () => {
     assert.equal(root.status, 200)
@@ -289,7 +289,7 @@ test('live qpu.uuidna.com', async (t) => {
 test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at its reach holds', async (t) => {
   const live = target ?? 'https://qpu.uuidna.com'
   t.diagnostic(`against ${where}`)
-  const floor = qpuShorOf()
+  const floor = shorOf()
   /** Twenty seconds against a host; two in process, where reach.test already climbs this machine. The budget is a
    * guard: the climb is bounded by WIDTH, read from the host's own reply — once it says the state is sparse, a wider
    * modulus costs only its digits on the wire, so the climb doubles the width to a ceiling of 2^16 bits and stops

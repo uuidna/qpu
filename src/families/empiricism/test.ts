@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EmpiricismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('empiricism: observations, inductionsteps, evidencecombos, hypothesissubset
   assert.equal(EmpiricismFormulas.generalizationpaths(6, 2).value, 30)
   assert.equal(EmpiricismFormulas.certaintydegree(60, 100).value, 60)
   assert.equal(EmpiricismFormulas.observations(100, 5).dst, 'logic')
-  assert.equal(qpuHexFamiliesOf().get('empiricism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('empiricism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'empiricism', program: ['observations'], params: [100, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 500, `empiricism.observations at ${uuid}`)
-  qpuUuidReceiptOf('empiricism observations', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('empiricism observations', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; observations 500, inductionsteps 5, evidencecombos 120, hypothesissubsets 32, confirmationratio 70, samplepairs 66, generalizationpaths 30, certaintydegree 60; crossing to logic')
 })

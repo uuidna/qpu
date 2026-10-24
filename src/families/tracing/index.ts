@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TRACING — DISTRIBUTED REQUEST TRACING, AS ARITHMETIC (chosen by the registry, not by hand). A traced request is numbers:
@@ -31,4 +31,4 @@ export class TracingFormulas {
 }
 
 for (const name of ['criticalpath', 'fanout', 'latencybudget', 'overhead', 'samplerate', 'spancount', 'tailsampling', 'tracedepth'] as const)
-  qpuHexRegisterOf('tracing', name, (TracingFormulas[name] as (...x: unknown[]) => unknown).bind(TracingFormulas))
+  hexRegisterOf('tracing', name, (TracingFormulas[name] as (...x: unknown[]) => unknown).bind(TracingFormulas))

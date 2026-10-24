@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACCELEROMETER — A MOTION SENSOR, AS ARITHMETIC (chosen by the sensor registry, not by hand). Reading motion is numbers:
@@ -31,4 +31,4 @@ export class AccelerometerFormulas {
 }
 
 for (const name of ['bandwidth', 'fullscale', 'gforce', 'offset', 'samplerate', 'sensitivity', 'tilt', 'vibrationrms'] as const)
-  qpuHexRegisterOf('accelerometer', name, (AccelerometerFormulas[name] as (...x: unknown[]) => unknown).bind(AccelerometerFormulas))
+  hexRegisterOf('accelerometer', name, (AccelerometerFormulas[name] as (...x: unknown[]) => unknown).bind(AccelerometerFormulas))

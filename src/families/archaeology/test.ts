@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ArchaeologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('archaeology: carbon, stratum, age, artifacts, seriation, typology, excavat
   assert.equal(ArchaeologyFormulas.excavation(1000, 50).value, 20, 'days to dig')
   assert.equal(ArchaeologyFormulas.dating(25, 100).value, 25)
   assert.equal(ArchaeologyFormulas.carbon(3).dst, 'cern')
-  assert.equal(qpuHexFamiliesOf().get('archaeology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('archaeology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'archaeology', program: ['stratum'], params: [5, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `archaeology.stratum at ${uuid}`)
-  qpuUuidReceiptOf('archaeology stratum', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('archaeology stratum', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; carbon 17190, stratum 100, age 824, artifacts 30, seriation 350, typology 25, excavation 20, dating 25; crossing to cern')
 })

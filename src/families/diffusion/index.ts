@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DIFFUSION — TRANSPORT DOWN A GRADIENT, AS ARITHMETIC. Matter spreading is numbers: the flux through a face, the
@@ -31,4 +31,4 @@ export class DiffusionFormulas {
 }
 
 for (const name of ['concentrationdrop', 'effusionratio', 'fickrate', 'flux', 'gradient', 'meansquare', 'permeability', 'steadyflux'] as const)
-  qpuHexRegisterOf('diffusion', name, (DiffusionFormulas[name] as (...x: unknown[]) => unknown).bind(DiffusionFormulas))
+  hexRegisterOf('diffusion', name, (DiffusionFormulas[name] as (...x: unknown[]) => unknown).bind(DiffusionFormulas))

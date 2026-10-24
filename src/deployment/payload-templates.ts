@@ -1,4 +1,4 @@
-import { chooseOf, mintOf, qpuFoldOf, qpuHexFamiliesOf, qpuLatticeNamesOf, qpuMcpFusedOf, tenOf } from '../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, foldOf, hexFamiliesOf, latticeNamesOf, mcpFusedOf, tenOf } from '../quantum/processing/unit/index.js'
 import { CloudflareCombination, CloudflarePayload, CloudflareApp, cloudflarePayloadOf } from './payload-cloudflare.js'
 export {
   CLOUDFLARE_RUNTIMES,
@@ -77,7 +77,7 @@ export type ImageApp = {
   image: string
 }
 
-const L = qpuLatticeNamesOf()
+const L = latticeNamesOf()
 
 const IMAGE_DEFAULT: ImageApp = {
   name: '@uuidna/qpu', version: '1.0.0', license: 'CC-BY-NC-ND-4.0', author: 'Tsvetan Rouschev', repository: 'https://github.com/uuidna/qpu',
@@ -90,9 +90,9 @@ const IMAGE_DEFAULT: ImageApp = {
  *  does not move between light and dark — with its hue folded from the host's name, the destructive hue σ's reflection of
  *  it on the circle, the radius ten sixteenths. Written to src/css/theme.css by the repo script; nothing in it is chosen. */
 export const themeCssOf = (host: string): string => {
-  const L = qpuLatticeNamesOf()
+  const L = latticeNamesOf()
   const CIRCLE = 360 // degrees of hue
-  const hue = parseInt(qpuFoldOf(host).slice(0, L.hexbit), 16) % CIRCLE
+  const hue = parseInt(foldOf(host).slice(0, L.hexbit), 16) % CIRCLE
   const ink = (k: number) => k / L.rays
   const sixtyFourths = mintOf(chooseOf(L.hexbit, L.coins))
   const t = (l: number, c = 0, h = 0) => `oklch(calc(${l} + var(--t) * (1 - 2 * ${l})) ${c} ${h})`
@@ -277,8 +277,8 @@ export class PayloadTemplates {
           formulas: 'cross-domain-formulas.wasm',
           hardware: 'hardware-optimization-manifesto.wasm'
         },
-        modules: qpuMcpFusedOf().length + mintOf(L.hexbit), // the sealed doors and the fused ones
-        domains: qpuHexFamiliesOf().size, // the hex families
+        modules: mcpFusedOf().length + mintOf(L.hexbit), // the sealed doors and the fused ones
+        domains: hexFamiliesOf().size, // the hex families
         size: 'unmeasured',
         initTime: 'unmeasured',
         memoryLimit: 'host'
@@ -310,8 +310,8 @@ export class PayloadTemplates {
         runtime: 'node.js/v26+',
         binary: 'qpu-standalone',
         entrypoint: 'dist/quantum/processing/unit/boot.js',
-        modules: qpuMcpFusedOf().length + mintOf(L.hexbit),
-        domains: qpuHexFamiliesOf().size,
+        modules: mcpFusedOf().length + mintOf(L.hexbit),
+        domains: hexFamiliesOf().size,
         size: 'unmeasured',
         initTime: 'unmeasured',
         memoryLimit: 'host'

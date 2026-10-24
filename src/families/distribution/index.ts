@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DISTRIBUTION — MOVING GOODS TO THE EDGE, AS ARITHMETIC (chosen by the network registry, not by hand). A distribution
@@ -31,4 +31,4 @@ export class DistributionFormulas {
 }
 
 for (const name of ['coverage', 'density', 'dropsize', 'echelon', 'hubs', 'reach', 'routes', 'spokes'] as const)
-  qpuHexRegisterOf('distribution', name, (DistributionFormulas[name] as (...x: unknown[]) => unknown).bind(DistributionFormulas))
+  hexRegisterOf('distribution', name, (DistributionFormulas[name] as (...x: unknown[]) => unknown).bind(DistributionFormulas))

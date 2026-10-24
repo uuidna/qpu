@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EmploymentFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('employment: pay, overtime, severance, notice, redundancy, holiday — cros
   assert.equal(EmploymentFormulas.holiday(28, 183).value, 14, 'holiday accrued at mid-year')
   assert.equal(EmploymentFormulas.net(4000, 900).value, 3100)
   assert.equal(EmploymentFormulas.gross(160, 25).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('employment')?.length, 8)
+  assert.equal(hexFamiliesOf().get('employment')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'employment', program: ['severance'], params: [8, 500] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4000, `employment.severance at ${uuid}`)
-  qpuUuidReceiptOf('employment severance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('employment severance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gross 4000, overtimehours 5, overtime 150, severance 4000, notice 12, redundancy 6000, holiday 14, net 3100; crossing to law')
 })

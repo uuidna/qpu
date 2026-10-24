@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PuppetryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('puppetry: strings, jointcount, controlbars, manipulators, gesturecombos, a
   assert.equal(PuppetryFormulas.riggingsubsets(4).value, 16)
   assert.equal(PuppetryFormulas.motionrange(180, 2).value, 90)
   assert.equal(PuppetryFormulas.strings(9, 0).dst, 'kinematics')
-  assert.equal(qpuHexFamiliesOf().get('puppetry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('puppetry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'puppetry', program: ['strings'], params: [9, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9, `puppetry.strings at ${uuid}`)
-  qpuUuidReceiptOf('puppetry strings', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('puppetry strings', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; strings 9, jointcount 24, controlbars 3, manipulators 2, gesturecombos 120, articulationpoints 16, riggingsubsets 16, motionrange 90; crossing to kinematics')
 })

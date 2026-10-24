@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OceanographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('oceanography: pressure, salinity, density, tide, current, thermocline, wav
   assert.equal(OceanographyFormulas.wave(3, 8).value, 12)
   assert.equal(OceanographyFormulas.upwelling(1000, 50).value, 20)
   assert.equal(OceanographyFormulas.pressure(1000).dst, 'environment')
-  assert.equal(qpuHexFamiliesOf().get('oceanography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('oceanography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'oceanography', program: ['current'], params: [100, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `oceanography.current at ${uuid}`)
-  qpuUuidReceiptOf('oceanography current', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('oceanography current', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; pressure 100, salinity 35, density 1025, tide 6, current 4, thermocline 21, wave 12, upwelling 20; crossing to environment')
 })

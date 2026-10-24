@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NetworkingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('networking: bandwidth, latency, throughput, loss, hops, utilization, jitte
   assert.equal(NetworkingFormulas.jitter(50, 12).value, 38)
   assert.equal(NetworkingFormulas.subnet(1, 8).value, 256, 'a /24 holds 256 addresses')
   assert.equal(NetworkingFormulas.bandwidth(1000, 8).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('networking')?.length, 8)
+  assert.equal(hexFamiliesOf().get('networking')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'networking', program: ['utilization'], params: [750, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `networking.utilization at ${uuid}`)
-  qpuUuidReceiptOf('networking utilization', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('networking utilization', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bandwidth 125, latency 15, throughput 100, loss 3, hops 4, utilization 75, jitter 38, subnet 256; crossing to logistics')
 })

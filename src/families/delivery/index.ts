@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DELIVERY — LAST-MILE LOGISTICS, AS ARITHMETIC. Moving parcels is numbers: on-time rate, stops per route, first-attempt
@@ -30,4 +30,4 @@ export class DeliveryFormulas {
 }
 
 for (const name of ['density', 'eta', 'firstattempt', 'lastmile', 'ontime', 'productivity', 'returns', 'window'] as const)
-  qpuHexRegisterOf('delivery', name, (DeliveryFormulas[name] as (...x: unknown[]) => unknown).bind(DeliveryFormulas))
+  hexRegisterOf('delivery', name, (DeliveryFormulas[name] as (...x: unknown[]) => unknown).bind(DeliveryFormulas))

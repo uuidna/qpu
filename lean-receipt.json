@@ -1,11 +1,11 @@
 {
  "kind": "lean-receipt",
- "source": "03391f237867231f",
+ "source": "fc144184deefb123",
  "toolchain": "leanprover/lean4:v4.33.0",
- "theorems": 145,
- "served": 145,
- "verbatim": 145,
- "recomputed": 145,
+ "theorems": 215,
+ "served": 215,
+ "verbatim": 215,
+ "recomputed": 215,
  "holds": true,
  "crossHolds": true,
  "families": [
@@ -16,19 +16,6 @@
     "chooseOf"
    ],
    "theorems": 4
-  },
-  {
-   "family": "Shor",
-   "definitions": [
-    "powModAux",
-    "powMod",
-    "periodAux",
-    "periodOf",
-    "gcdAux",
-    "gcdOf",
-    "half"
-   ],
-   "theorems": 2
   },
   {
    "family": "Lattice",
@@ -50,9 +37,75 @@
    "theorems": 38
   },
   {
+   "family": "Annealing",
+   "definitions": [
+    "chimera",
+    "pegasus"
+   ],
+   "theorems": 1
+  },
+  {
+   "family": "Anyon",
+   "definitions": [
+    "fibAux",
+    "fibFusion",
+    "isingFusion"
+   ],
+   "theorems": 1
+  },
+  {
+   "family": "Cern",
+   "definitions": [],
+   "theorems": 1
+  },
+  {
    "family": "Circuit",
    "definitions": [],
    "theorems": 22
+  },
+  {
+   "family": "Clifford",
+   "definitions": [
+    "sympProd",
+    "symplectic",
+    "cliffordOrder"
+   ],
+   "theorems": 1
+  },
+  {
+   "family": "Coil",
+   "definitions": [
+    "theory",
+    "practice",
+    "coil"
+   ],
+   "theorems": 9
+  },
+  {
+   "family": "Combinatorics",
+   "definitions": [
+    "factorial",
+    "choose",
+    "triangular",
+    "ramsey22"
+   ],
+   "theorems": 13
+  },
+  {
+   "family": "Galois",
+   "definitions": [
+    "glProd",
+    "gl2"
+   ],
+   "theorems": 1
+  },
+  {
+   "family": "Grover",
+   "definitions": [
+    "groverIters",
+    "groverSize"
+   ],
+   "theorems": 1
   },
   {
    "family": "Hybrid",
@@ -67,13 +120,84 @@
    "theorems": 3
   },
   {
-   "family": "Coil",
+   "family": "Magic",
    "definitions": [
-    "theory",
-    "practice",
-    "coil"
+    "magicBlock",
+    "magicLogical",
+    "magicDistance",
+    "magicCubic"
    ],
-   "theorems": 9
+   "theorems": 1
+  },
+  {
+   "family": "Qaoa",
+   "definitions": [
+    "qaoaParams",
+    "qaoaZz",
+    "qaoaX"
+   ],
+   "theorems": 1
+  },
+  {
+   "family": "Qft",
+   "definitions": [
+    "qftGates",
+    "qftSwaps",
+    "qftDepth",
+    "qftStates"
+   ],
+   "theorems": 1
+  },
+  {
+   "family": "Shor",
+   "definitions": [
+    "powModAux",
+    "powMod",
+    "periodAux",
+    "periodOf",
+    "gcdAux",
+    "gcdOf",
+    "half",
+    "shorModulus",
+    "shorBase"
+   ],
+   "theorems": 2
+  },
+  {
+   "family": "Stabilizer",
+   "definitions": [
+    "stabProd",
+    "stabStates",
+    "paulis",
+    "stabSubgroup"
+   ],
+   "theorems": 1
+  },
+  {
+   "family": "Clay",
+   "definitions": [],
+   "theorems": 55
+  },
+  {
+   "family": "Cross",
+   "definitions": [],
+   "theorems": 16
+  },
+  {
+   "family": "Fuse",
+   "definitions": [],
+   "theorems": 1
+  },
+  {
+   "family": "Fusion",
+   "definitions": [
+    "fusionNp",
+    "fusionRegister",
+    "fusionMaxX",
+    "fusionBaselineQ",
+    "fusionBaselineC"
+   ],
+   "theorems": 3
   },
   {
    "family": "Physics",
@@ -91,19 +215,9 @@
    "theorems": 4
   },
   {
-   "family": "Cern",
+   "family": "Pi",
    "definitions": [],
-   "theorems": 1
-  },
-  {
-   "family": "Fuse",
-   "definitions": [],
-   "theorems": 1
-  },
-  {
-   "family": "Cross",
-   "definitions": [],
-   "theorems": 16
+   "theorems": 8
   },
   {
    "family": "Primes",
@@ -111,14 +225,18 @@
    "theorems": 13
   },
   {
-   "family": "Pi",
+   "family": "Sigma",
    "definitions": [],
-   "theorems": 8
+   "theorems": 13
   },
   {
-   "family": "Clay",
-   "definitions": [],
-   "theorems": 24
+   "family": "Surfacecode",
+   "definitions": [
+    "surfacePhysical",
+    "surfaceCorrectable",
+    "surfaceLogical"
+   ],
+   "theorems": 1
   }
  ],
  "familyLinks": [
@@ -126,6 +244,21 @@
    "from": "Lattice",
    "to": "Mint",
    "count": 50
+  },
+  {
+   "from": "Annealing",
+   "to": "Lattice",
+   "count": 3
+  },
+  {
+   "from": "Anyon",
+   "to": "Lattice",
+   "count": 2
+  },
+  {
+   "from": "Anyon",
+   "to": "Mint",
+   "count": 1
   },
   {
    "from": "Circuit",
@@ -138,14 +271,9 @@
    "count": 51
   },
   {
-   "from": "Hybrid",
-   "to": "Lattice",
-   "count": 21
-  },
-  {
-   "from": "Hybrid",
+   "from": "Clifford",
    "to": "Mint",
-   "count": 2
+   "count": 3
   },
   {
    "from": "Coil",
@@ -156,6 +284,131 @@
    "from": "Coil",
    "to": "Mint",
    "count": 5
+  },
+  {
+   "from": "Galois",
+   "to": "Mint",
+   "count": 1
+  },
+  {
+   "from": "Grover",
+   "to": "Lattice",
+   "count": 6
+  },
+  {
+   "from": "Grover",
+   "to": "Mint",
+   "count": 2
+  },
+  {
+   "from": "Hybrid",
+   "to": "Lattice",
+   "count": 21
+  },
+  {
+   "from": "Hybrid",
+   "to": "Mint",
+   "count": 2
+  },
+  {
+   "from": "Magic",
+   "to": "Lattice",
+   "count": 6
+  },
+  {
+   "from": "Qaoa",
+   "to": "Lattice",
+   "count": 1
+  },
+  {
+   "from": "Shor",
+   "to": "Lattice",
+   "count": 7
+  },
+  {
+   "from": "Shor",
+   "to": "Mint",
+   "count": 1
+  },
+  {
+   "from": "Stabilizer",
+   "to": "Mint",
+   "count": 4
+  },
+  {
+   "from": "Clay",
+   "to": "Hybrid",
+   "count": 2
+  },
+  {
+   "from": "Clay",
+   "to": "Mint",
+   "count": 31
+  },
+  {
+   "from": "Clay",
+   "to": "Lattice",
+   "count": 147
+  },
+  {
+   "from": "Clay",
+   "to": "Galois",
+   "count": 3
+  },
+  {
+   "from": "Clay",
+   "to": "Magic",
+   "count": 4
+  },
+  {
+   "from": "Clay",
+   "to": "Qft",
+   "count": 12
+  },
+  {
+   "from": "Clay",
+   "to": "Shor",
+   "count": 12
+  },
+  {
+   "from": "Clay",
+   "to": "Annealing",
+   "count": 5
+  },
+  {
+   "from": "Clay",
+   "to": "Qaoa",
+   "count": 19
+  },
+  {
+   "from": "Clay",
+   "to": "Anyon",
+   "count": 7
+  },
+  {
+   "from": "Clay",
+   "to": "Combinatorics",
+   "count": 29
+  },
+  {
+   "from": "Clay",
+   "to": "Grover",
+   "count": 8
+  },
+  {
+   "from": "Clay",
+   "to": "Coil",
+   "count": 2
+  },
+  {
+   "from": "Clay",
+   "to": "Clifford",
+   "count": 2
+  },
+  {
+   "from": "Clay",
+   "to": "Stabilizer",
+   "count": 3
   },
   {
    "from": "Cross",
@@ -173,16 +426,6 @@
    "count": 2
   },
   {
-   "from": "Primes",
-   "to": "Lattice",
-   "count": 36
-  },
-  {
-   "from": "Primes",
-   "to": "Mint",
-   "count": 6
-  },
-  {
    "from": "Pi",
    "to": "Lattice",
    "count": 26
@@ -193,61 +436,58 @@
    "count": 2
   },
   {
-   "from": "Clay",
+   "from": "Primes",
    "to": "Lattice",
-   "count": 56
+   "count": 36
   },
   {
-   "from": "Clay",
+   "from": "Primes",
    "to": "Mint",
-   "count": 14
+   "count": 6
   },
   {
-   "from": "Clay",
-   "to": "Hybrid",
-   "count": 2
+   "from": "Sigma",
+   "to": "Lattice",
+   "count": 18
   },
   {
-   "from": "Clay",
-   "to": "Coil",
-   "count": 2
-  },
-  {
-   "from": "Clay",
+   "from": "Sigma",
    "to": "Shor",
+   "count": 6
+  },
+  {
+   "from": "Sigma",
+   "to": "Mint",
+   "count": 1
+  },
+  {
+   "from": "Sigma",
+   "to": "Physics",
    "count": 4
+  },
+  {
+   "from": "Sigma",
+   "to": "Combinatorics",
+   "count": 2
+  },
+  {
+   "from": "Sigma",
+   "to": "Qft",
+   "count": 2
+  },
+  {
+   "from": "Sigma",
+   "to": "Grover",
+   "count": 2
+  },
+  {
+   "from": "Surfacecode",
+   "to": "Lattice",
+   "count": 5
   }
  ],
- "related": 133,
+ "related": 681,
  "rows": [
-  {
-   "name": "agents_hex_alphabet",
-   "family": "Clay",
-   "uuid": "2883acd1-1475-1ad6-8756-49eec13b9943",
-   "handle": "2883acd1",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "hexbit",
-    "mintOf"
-   ],
-   "formula": "177168bc1a9eab69"
-  },
-  {
-   "name": "agents_mcp_tools",
-   "family": "Clay",
-   "uuid": "2883acd1-1475-1ad6-8756-49eec13b9943",
-   "handle": "2883acd1",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "hexbit",
-    "mintOf"
-   ],
-   "formula": "177168bc1a9eab69"
-  },
   {
    "name": "all_complete",
    "family": "Cross",
@@ -320,15 +560,18 @@
   {
    "name": "all_shor",
    "family": "Shor",
-   "uuid": "83a6300c-7ce8-6e40-b3ef-3908739f5f02",
-   "handle": "83a6300c",
+   "uuid": "7f42fdc1-e9ab-19c1-a484-7f3135695690",
+   "handle": "7f42fdc1",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
-    "periodOf"
+    "coins",
+    "periodOf",
+    "shorBase",
+    "shorModulus"
    ],
-   "formula": "082ad821b3d24916"
+   "formula": "c6c901309690ff3b"
   },
   {
    "name": "all_sum",
@@ -378,6 +621,34 @@
     "seed"
    ],
    "formula": "24b287c9b842210c"
+  },
+  {
+   "name": "annealing_all",
+   "family": "Annealing",
+   "uuid": "d3c33f00-24d1-7140-8ec3-d1c3aa8a9b6a",
+   "handle": "d3c33f00",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "chimera",
+    "pegasus"
+   ],
+   "formula": "2daebe447bd30ccb"
+  },
+  {
+   "name": "anyon_all",
+   "family": "Anyon",
+   "uuid": "edcb0bb9-adb7-8035-bf9b-aef89a8ac6df",
+   "handle": "edcb0bb9",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "fibFusion",
+    "isingFusion"
+   ],
+   "formula": "8a0cafe05a746766"
   },
   {
    "name": "around",
@@ -497,6 +768,74 @@
    "formula": "067ce884308e691a"
   },
   {
+   "name": "choose_five_two",
+   "family": "Combinatorics",
+   "uuid": "7d1a557a-ff4a-2b44-ad16-d10745cb8c2a",
+   "handle": "7d1a557a",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose"
+   ],
+   "formula": "a68a4c265be07e01"
+  },
+  {
+   "name": "choose_pascal",
+   "family": "Combinatorics",
+   "uuid": "3677910c-499f-2be2-8cf8-09b01491edb9",
+   "handle": "3677910c",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "n, k ∈ [0, 32]",
+   "uses": [
+    "choose"
+   ],
+   "formula": "529c189585c99db1"
+  },
+  {
+   "name": "choose_symm_small",
+   "family": "Combinatorics",
+   "uuid": "cd011493-8d65-2ed7-aa0a-d9d819db8cb8",
+   "handle": "cd011493",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose"
+   ],
+   "formula": "87a3493d89792cad"
+  },
+  {
+   "name": "choose_zero",
+   "family": "Combinatorics",
+   "uuid": "6caf6693-eebf-6d37-878f-0251bcc51b77",
+   "handle": "6caf6693",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "n ∈ [0, 32]",
+   "uses": [
+    "choose"
+   ],
+   "formula": "49b7cdc01bfb9329"
+  },
+  {
+   "name": "choose_zero_succ",
+   "family": "Combinatorics",
+   "uuid": "339007af-6f96-3fd8-8f62-5c2ced290300",
+   "handle": "339007af",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "k ∈ [0, 32]",
+   "uses": [
+    "choose"
+   ],
+   "formula": "f8961250e2a619d4"
+  },
+  {
    "name": "circuit",
    "family": "Circuit",
    "uuid": "a60ce6bb-2599-2ef4-b226-a0673d7e3b4f",
@@ -531,54 +870,130 @@
    "formula": "82c82ee278f03791"
   },
   {
+   "name": "clay_sigma",
+   "family": "Sigma",
+   "uuid": "44fb5f8a-4d2a-2a48-9c5d-a1e626c76b59",
+   "handle": "44fb5f8a",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [],
+   "formula": "cb53003a11d8672c"
+  },
+  {
    "name": "clay_wings",
    "family": "Clay",
-   "uuid": "2e5df02b-7b4f-1925-87c5-a688e91b80ee",
-   "handle": "2e5df02b",
+   "uuid": "0cc1ce33-6ca0-4336-ac26-4f7693654d6d",
+   "handle": "0cc1ce33",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
-    "agents_hex_alphabet",
-    "agents_mcp_tools",
     "amplitudes",
     "bits",
+    "chimera",
+    "choose",
     "chooseOf",
-    "cms_payload_combinations",
-    "cms_payload_plugins",
+    "cliffordOrder",
     "coil",
     "coins",
-    "crypto_shor_factor_p",
-    "crypto_shor_factor_q",
-    "crypto_shor_modulus",
     "faces",
+    "factorial",
+    "fibFusion",
+    "glProd",
+    "groverIters",
+    "groverSize",
+    "half",
     "hexbit",
     "hybridSpeed",
+    "isingFusion",
+    "magicBlock",
+    "magicCubic",
     "mintOf",
     "n",
+    "paulis",
     "plane",
     "powMod",
-    "presentation_stylesheet_hz",
-    "quantum_shor_dim",
-    "quantum_shor_qubits",
+    "qaoaParams",
+    "qaoaX",
+    "qaoaZz",
+    "qftDepth",
+    "qftGates",
+    "qftStates",
     "rays",
-    "receipts_hex_program_nibbles",
-    "receipts_uuid_bits",
-    "receipts_uuid_digits",
-    "receipts_uuid_handle",
-    "receipts_uuid_params",
-    "receipts_uuid_program_section",
+    "relation_10",
+    "relation_1001",
+    "relation_1024",
+    "relation_105",
+    "relation_10518300",
+    "relation_1184040",
+    "relation_12",
+    "relation_128",
+    "relation_13",
     "relation_14",
+    "relation_15",
     "relation_16",
+    "relation_16384",
+    "relation_17",
+    "relation_196",
+    "relation_20475",
     "relation_21",
+    "relation_224",
+    "relation_24",
     "relation_25",
+    "relation_256",
+    "relation_268435456",
+    "relation_27",
     "relation_28",
+    "relation_3003",
+    "relation_3108105",
+    "relation_32",
+    "relation_3276",
+    "relation_3365856",
+    "relation_3432",
+    "relation_35",
+    "relation_35960",
+    "relation_36",
+    "relation_364",
+    "relation_378",
+    "relation_392",
+    "relation_40116600",
+    "relation_406",
+    "relation_42",
     "relation_4294967296",
+    "relation_471435600",
+    "relation_49",
+    "relation_496",
+    "relation_4960",
+    "relation_528",
+    "relation_56",
+    "relation_64",
+    "relation_65536",
+    "relation_70",
     "relation_8",
+    "relation_8192",
+    "relation_9",
+    "relation_91",
+    "relation_96",
     "seed",
+    "triangular",
     "vertices"
    ],
-   "formula": "b23419840da3e09a"
+   "formula": "f6991e26ac046966"
+  },
+  {
+   "name": "clifford_all",
+   "family": "Clifford",
+   "uuid": "141e979a-631f-33ae-8bef-8f26764abdaf",
+   "handle": "141e979a",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "cliffordOrder",
+    "symplectic"
+   ],
+   "formula": "05b55ae9c86ee952"
   },
   {
    "name": "cluster",
@@ -596,35 +1011,6 @@
     "rays"
    ],
    "formula": "094bf88d03adb074"
-  },
-  {
-   "name": "cms_payload_combinations",
-   "family": "Clay",
-   "uuid": "a64eb3c6-ab52-2277-b86b-d29a96a20365",
-   "handle": "a64eb3c6",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "faces",
-    "mintOf",
-    "n"
-   ],
-   "formula": "1d12778523144d12"
-  },
-  {
-   "name": "cms_payload_plugins",
-   "family": "Clay",
-   "uuid": "9ce9fe7c-eea9-86b9-a867-90531e2a4b57",
-   "handle": "9ce9fe7c",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "n",
-    "vertices"
-   ],
-   "formula": "5566cb1ec199065a"
   },
   {
    "name": "coil_efficiency",
@@ -731,48 +1117,6 @@
     "vertices"
    ],
    "formula": "4cd4fb0b2a2944d0"
-  },
-  {
-   "name": "crypto_shor_factor_p",
-   "family": "Clay",
-   "uuid": "7002ffc3-eaa8-632a-9bee-ea9164a334bb",
-   "handle": "7002ffc3",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "rays"
-   ],
-   "formula": "3b9accd9419072fb"
-  },
-  {
-   "name": "crypto_shor_factor_q",
-   "family": "Clay",
-   "uuid": "0b07124f-b263-87fa-862a-9a2679510339",
-   "handle": "0b07124f",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "faces",
-    "seed"
-   ],
-   "formula": "8b19224dc3e0ba10"
-  },
-  {
-   "name": "crypto_shor_modulus",
-   "family": "Clay",
-   "uuid": "c79c8a8a-1b30-666e-8a1d-ab1e722c61f9",
-   "handle": "c79c8a8a",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "chooseOf",
-    "coins",
-    "faces"
-   ],
-   "formula": "cfde4a50e853dc52"
   },
   {
    "name": "cube",
@@ -976,6 +1320,46 @@
    "formula": "ba86b69bd716ce56"
   },
   {
+   "name": "factorial_succ",
+   "family": "Combinatorics",
+   "uuid": "f8097a36-a75b-79ae-abb2-98c30602f5f9",
+   "handle": "f8097a36",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "over": "n ∈ [0, 32]",
+   "uses": [
+    "factorial"
+   ],
+   "formula": "75b261b1dffe067e"
+  },
+  {
+   "name": "factorial_three",
+   "family": "Combinatorics",
+   "uuid": "ed0adeea-0ed7-675a-be8e-8760f2e68c2d",
+   "handle": "ed0adeea",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "factorial"
+   ],
+   "formula": "2f7516aa6b4106f2"
+  },
+  {
+   "name": "factorial_zero",
+   "family": "Combinatorics",
+   "uuid": "4f0e5e54-c4c9-3f70-90ab-17635d389f01",
+   "handle": "4f0e5e54",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "factorial"
+   ],
+   "formula": "a8f9b9a3459d1758"
+  },
+  {
    "name": "fill",
    "family": "Lattice",
    "uuid": "e7e88a23-7aca-7b35-9300-529d2e0cf6df",
@@ -1098,6 +1482,59 @@
    "formula": "64121ef70f737948"
   },
   {
+   "name": "fusion_baseline",
+   "family": "Fusion",
+   "uuid": "b28b33b8-d32c-432c-a7f1-921348afbf14",
+   "handle": "b28b33b8",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "fusionBaselineC",
+    "fusionBaselineQ"
+   ],
+   "formula": "04d2cefc18211623"
+  },
+  {
+   "name": "fusion_max_x",
+   "family": "Fusion",
+   "uuid": "fac1e328-1ee6-6e53-b685-1e238af615f8",
+   "handle": "fac1e328",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "fusionMaxX"
+   ],
+   "formula": "42cd6a904f0f9246"
+  },
+  {
+   "name": "fusion_register",
+   "family": "Fusion",
+   "uuid": "c5856476-ce3a-35fc-9b33-30f704623dc0",
+   "handle": "c5856476",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "fusionRegister"
+   ],
+   "formula": "e6f7e398fd422426"
+  },
+  {
+   "name": "galois_all",
+   "family": "Galois",
+   "uuid": "52fd8956-de7c-192a-99a5-a27e3018012d",
+   "handle": "52fd8956",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "gl2"
+   ],
+   "formula": "e737d73f5fbf43e8"
+  },
+  {
    "name": "gates",
    "family": "Circuit",
    "uuid": "a6f8c5b5-d9e7-3422-942e-487ac05aef9c",
@@ -1125,6 +1562,20 @@
     "seed_eq"
    ],
    "formula": "37f3eb719eab5154"
+  },
+  {
+   "name": "grover_all",
+   "family": "Grover",
+   "uuid": "86f29298-5de9-2d92-99b3-2cef75319afe",
+   "handle": "86f29298",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "groverIters",
+    "groverSize"
+   ],
+   "formula": "be46b66dc71aa3cb"
   },
   {
    "name": "handle",
@@ -1387,6 +1838,22 @@
     "seed_eq"
    ],
    "formula": "f6c26eb90b78bf15"
+  },
+  {
+   "name": "magic_all",
+   "family": "Magic",
+   "uuid": "6ffb78b8-415a-5467-aea9-42d3aef24fce",
+   "handle": "6ffb78b8",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "magicBlock",
+    "magicCubic",
+    "magicDistance",
+    "magicLogical"
+   ],
+   "formula": "e3e281baa4bfbec7"
   },
   {
    "name": "measurement",
@@ -1965,22 +2432,6 @@
    "formula": "7d0f8cb969b611fe"
   },
   {
-   "name": "presentation_stylesheet_hz",
-   "family": "Clay",
-   "uuid": "6e3b1cf6-73fd-598c-8676-bcfad847f8cf",
-   "handle": "6e3b1cf6",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "hexbit",
-    "mintOf",
-    "plane",
-    "seed"
-   ],
-   "formula": "1af9076c2beb6466"
-  },
-  {
    "name": "prime_three",
    "family": "Primes",
    "uuid": "9ba04f1c-df59-2a68-b61b-101fb2528886",
@@ -2075,6 +2526,37 @@
    "formula": "2b4591d5e4f92975"
   },
   {
+   "name": "qaoa_all",
+   "family": "Qaoa",
+   "uuid": "1878d12f-e1cc-3354-ad78-95d54f67452a",
+   "handle": "1878d12f",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "qaoaParams",
+    "qaoaX",
+    "qaoaZz"
+   ],
+   "formula": "26a26782c89dcf69"
+  },
+  {
+   "name": "qft_all",
+   "family": "Qft",
+   "uuid": "a0e543d0-9261-541a-9c23-0135fd718bbb",
+   "handle": "a0e543d0",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "qftDepth",
+    "qftGates",
+    "qftStates",
+    "qftSwaps"
+   ],
+   "formula": "6e403a3a2fc2f1fa"
+  },
+  {
    "name": "quantum",
    "family": "Lattice",
    "uuid": "279930ad-8508-4b13-a0d6-d582784481f8",
@@ -2090,33 +2572,6 @@
     "seed"
    ],
    "formula": "ce850ee84d9a3c16"
-  },
-  {
-   "name": "quantum_shor_dim",
-   "family": "Clay",
-   "uuid": "ac10e93d-3666-16ec-b0fc-7a3b7957af87",
-   "handle": "ac10e93d",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "mintOf",
-    "n"
-   ],
-   "formula": "66e70ae64257579d"
-  },
-  {
-   "name": "quantum_shor_qubits",
-   "family": "Clay",
-   "uuid": "05b2395b-5e5a-159d-bbb7-becd1fb20a64",
-   "handle": "05b2395b",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "n"
-   ],
-   "formula": "d079d548c0eddf5f"
   },
   {
    "name": "qubits",
@@ -2152,99 +2607,212 @@
    "formula": "2ca2cf2e03dd7388"
   },
   {
-   "name": "receipts_hex_program_nibbles",
-   "family": "Clay",
-   "uuid": "58220fcd-6570-8d87-a97a-6feeb00e175a",
-   "handle": "58220fcd",
+   "name": "ramsey_three_three",
+   "family": "Combinatorics",
+   "uuid": "c2b586ab-ed16-8df4-a985-a47085f4d099",
+   "handle": "c2b586ab",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
-    "n",
-    "rays"
+    "triangular"
    ],
-   "formula": "b896fa455eca5453"
+   "formula": "8106862a6921acae"
   },
   {
-   "name": "receipts_uuid_bits",
-   "family": "Clay",
-   "uuid": "7492cb07-5b68-1dd4-b536-2e3795ee9ac6",
-   "handle": "7492cb07",
+   "name": "ramsey22_eq",
+   "family": "Combinatorics",
+   "uuid": "10ededd2-776b-7c00-967a-857292b573c8",
+   "handle": "10ededd2",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
+   "over": "n ∈ [0, 32]",
    "uses": [
-    "mintOf",
-    "rays"
+    "ramsey22"
    ],
-   "formula": "1eb5b6295a9b114e"
+   "formula": "27c465e621db9b0e"
   },
   {
-   "name": "receipts_uuid_digits",
+   "name": "relation_10",
    "family": "Clay",
-   "uuid": "baa72ecb-46be-166d-af2d-59014af32896",
-   "handle": "baa72ecb",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "bits"
-   ],
-   "formula": "ed420cbba9f6587a"
-  },
-  {
-   "name": "receipts_uuid_handle",
-   "family": "Clay",
-   "uuid": "22968267-b291-6337-842e-1c5ebea222b8",
-   "handle": "22968267",
-   "cross": "neither",
-   "holds": true,
-   "recomputed": true,
-   "uses": [
-    "vertices"
-   ],
-   "formula": "9accbf52bdd26bc0"
-  },
-  {
-   "name": "receipts_uuid_params",
-   "family": "Clay",
-   "uuid": "2ac3fa54-97a9-4efe-824a-f68aa9d608a0",
-   "handle": "2ac3fa54",
+   "uuid": "74f243ae-6a3c-377c-a9f0-9517e36249e3",
+   "handle": "74f243ae",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
     "hexbit",
-    "n"
+    "qftGates",
+    "triangular"
    ],
-   "formula": "bfc1830c65a4b839"
+   "formula": "e863fb838fedcfe6"
   },
   {
-   "name": "receipts_uuid_program_section",
+   "name": "relation_1001",
    "family": "Clay",
-   "uuid": "d4135ab7-5df7-32f6-a0bf-9b54ab9d8b43",
-   "handle": "d4135ab7",
+   "uuid": "4837438f-9e6c-1865-86aa-7e2e3fa2c112",
+   "handle": "4837438f",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
+    "choose",
+    "chooseOf",
+    "faces",
     "hexbit"
    ],
-   "formula": "cbebb514df27b3cd"
+   "formula": "0af1422e171f3705"
+  },
+  {
+   "name": "relation_1024",
+   "family": "Clay",
+   "uuid": "788b5793-f731-4b3a-bbeb-ad75fa06edbb",
+   "handle": "788b5793",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "hexbit",
+    "paulis",
+    "qaoaX",
+    "qaoaZz"
+   ],
+   "formula": "8dd55ea8b2f1ef13"
+  },
+  {
+   "name": "relation_105",
+   "family": "Clay",
+   "uuid": "273085e5-36ef-1802-b885-4a3ba2a8da27",
+   "handle": "273085e5",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "qftGates",
+    "triangular"
+   ],
+   "formula": "9b1e9e76cae89b14"
+  },
+  {
+   "name": "relation_10518300",
+   "family": "Clay",
+   "uuid": "5a2fcad9-bb0a-5954-a407-124823e2ad94",
+   "handle": "5a2fcad9",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "choose",
+    "chooseOf",
+    "vertices"
+   ],
+   "formula": "4b3d5973fb71b5bf"
+  },
+  {
+   "name": "relation_1184040",
+   "family": "Clay",
+   "uuid": "ff5a0583-4630-15f9-a50e-3e1ec2207ad2",
+   "handle": "ff5a0583",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "plane",
+    "rays"
+   ],
+   "formula": "bae44e847503e871"
+  },
+  {
+   "name": "relation_12",
+   "family": "Clay",
+   "uuid": "ed77f776-2ebd-73d4-96d4-889002ae994f",
+   "handle": "ed77f776",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "groverIters",
+    "hexbit",
+    "n",
+    "qaoaZz"
+   ],
+   "formula": "e3992f86f5b4a98e"
+  },
+  {
+   "name": "relation_128",
+   "family": "Clay",
+   "uuid": "d6ee5a02-de9e-1781-a1c4-5fef8ef7ed9d",
+   "handle": "d6ee5a02",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "chimera",
+    "hexbit",
+    "isingFusion",
+    "mintOf",
+    "rays",
+    "vertices"
+   ],
+   "formula": "7a7988934b098c48"
+  },
+  {
+   "name": "relation_13",
+   "family": "Clay",
+   "uuid": "bb21f9b8-7976-5075-a48c-8194c3bd367a",
+   "handle": "bb21f9b8",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "fibFusion",
+    "half",
+    "n",
+    "powMod",
+    "rays"
+   ],
+   "formula": "5cd8d6715d98d8e2"
   },
   {
    "name": "relation_14",
    "family": "Clay",
-   "uuid": "a9024a79-c52b-2f14-b919-a853ce782994",
-   "handle": "a9024a79",
+   "uuid": "54f7d7b1-706f-86b9-be59-a6b85e53251d",
+   "handle": "54f7d7b1",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
     "coil",
-    "faces"
+    "faces",
+    "qaoaParams",
+    "rays"
    ],
-   "formula": "d8aa6179f96bfa03"
+   "formula": "de6fb7274e29dd9e"
+  },
+  {
+   "name": "relation_15",
+   "family": "Clay",
+   "uuid": "f240112c-7312-4cc5-9a1b-e5531aa48db3",
+   "handle": "f240112c",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "glProd",
+    "hexbit",
+    "magicBlock",
+    "qftDepth",
+    "seed",
+    "vertices"
+   ],
+   "formula": "b28d50491d8d8b09"
   },
   {
    "name": "relation_16",
@@ -2266,22 +2834,128 @@
    "formula": "99659b6282e1a579"
   },
   {
+   "name": "relation_16384",
+   "family": "Clay",
+   "uuid": "c5695876-43b3-7fc9-9322-72664c77cb11",
+   "handle": "c5695876",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "groverSize",
+    "mintOf",
+    "qftStates",
+    "rays"
+   ],
+   "formula": "9e4e91badb4bbb3c"
+  },
+  {
+   "name": "relation_17",
+   "family": "Clay",
+   "uuid": "15708297-d191-27de-97ea-d257e322cf8a",
+   "handle": "15708297",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "coins",
+    "hexbit",
+    "n",
+    "plane",
+    "powMod",
+    "rays"
+   ],
+   "formula": "297a3c48d2d78097"
+  },
+  {
+   "name": "relation_196",
+   "family": "Clay",
+   "uuid": "ecaea9ce-336f-2211-b42e-601b46e2cd56",
+   "handle": "ecaea9ce",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "plane",
+    "qaoaZz",
+    "rays"
+   ],
+   "formula": "f74d556c603f7161"
+  },
+  {
+   "name": "relation_20475",
+   "family": "Clay",
+   "uuid": "6c039856-12e1-1e64-b92c-5395a521ae2a",
+   "handle": "6c039856",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "hexbit",
+    "plane"
+   ],
+   "formula": "b0fb9f096c4857bd"
+  },
+  {
    "name": "relation_21",
    "family": "Clay",
-   "uuid": "23187e30-f650-7282-8f96-0762bb1810e6",
-   "handle": "23187e30",
+   "uuid": "e292bf07-025f-70db-b152-d130afa8a4b6",
+   "handle": "e292bf07",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
     "chooseOf",
     "coins",
+    "fibFusion",
     "plane",
     "powMod",
     "rays",
     "vertices"
    ],
-   "formula": "5b815c9d9a14b2cf"
+   "formula": "9ae385eb6abf0bdf"
+  },
+  {
+   "name": "relation_224",
+   "family": "Clay",
+   "uuid": "81b15dd0-ba8d-2b76-99da-787962b64e79",
+   "handle": "81b15dd0",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "plane",
+    "qaoaZz",
+    "rays",
+    "vertices"
+   ],
+   "formula": "a784f0320aca5146"
+  },
+  {
+   "name": "relation_24",
+   "family": "Clay",
+   "uuid": "2e52efaf-b246-1bdd-a513-d60225dcd8fa",
+   "handle": "2e52efaf",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "cliffordOrder",
+    "faces",
+    "factorial",
+    "hexbit",
+    "n",
+    "powMod",
+    "seed"
+   ],
+   "formula": "982ac7a676d0fdff"
   },
   {
    "name": "relation_25",
@@ -2302,35 +2976,479 @@
    "formula": "236a170e8692e5e8"
   },
   {
-   "name": "relation_28",
+   "name": "relation_256",
    "family": "Clay",
-   "uuid": "7e79e543-93ab-75f6-ba1f-8eabd4c4d7be",
-   "handle": "7e79e543",
+   "uuid": "41332f90-62c5-228b-b92a-7204255289b2",
+   "handle": "41332f90",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
+    "bits",
+    "groverSize",
+    "hexbit",
+    "mintOf",
+    "qaoaZz",
+    "vertices"
+   ],
+   "formula": "5d9ef5c24c80ef8c"
+  },
+  {
+   "name": "relation_268435456",
+   "family": "Clay",
+   "uuid": "bb3e0ca6-78b9-6321-8b68-c650fe869656",
+   "handle": "bb3e0ca6",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "groverSize",
+    "mintOf",
+    "plane",
+    "qftStates"
+   ],
+   "formula": "a20f0287bd1373d1"
+  },
+  {
+   "name": "relation_27",
+   "family": "Clay",
+   "uuid": "63b08f5a-59ed-11dc-8a77-b8c3c3c3f746",
+   "handle": "63b08f5a",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "half",
+    "n",
+    "plane",
+    "powMod"
+   ],
+   "formula": "85701810420c395e"
+  },
+  {
+   "name": "relation_28",
+   "family": "Clay",
+   "uuid": "8b704da8-c18f-7b18-b91f-6573385d5d3c",
+   "handle": "8b704da8",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
     "chooseOf",
     "coins",
     "plane",
     "vertices"
    ],
-   "formula": "846c4b714b7f7c28"
+   "formula": "6c025cf737edd7a1"
+  },
+  {
+   "name": "relation_3003",
+   "family": "Clay",
+   "uuid": "2b6a66cc-6051-3876-a72e-7fdd90b3bfbe",
+   "handle": "2b6a66cc",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "faces",
+    "vertices"
+   ],
+   "formula": "d129589ec7bb2d05"
+  },
+  {
+   "name": "relation_3108105",
+   "family": "Clay",
+   "uuid": "8649a88c-182e-1425-99ca-9b842364597a",
+   "handle": "8649a88c",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "plane",
+    "vertices"
+   ],
+   "formula": "be519906027ab9b1"
+  },
+  {
+   "name": "relation_32",
+   "family": "Clay",
+   "uuid": "c3d4303b-ee15-1277-acbb-9e4da9bccf77",
+   "handle": "c3d4303b",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "chimera",
+    "coins",
+    "hexbit",
+    "qaoaZz",
+    "vertices"
+   ],
+   "formula": "3efef34c60188d59"
+  },
+  {
+   "name": "relation_3276",
+   "family": "Clay",
+   "uuid": "7dd7abab-ab26-8f67-a8f8-d9a6c136f0f6",
+   "handle": "7dd7abab",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "n",
+    "plane"
+   ],
+   "formula": "5493564e6579d49d"
+  },
+  {
+   "name": "relation_3365856",
+   "family": "Clay",
+   "uuid": "53d11ea5-321c-654b-9c3f-9269901a91ac",
+   "handle": "53d11ea5",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "choose",
+    "chooseOf",
+    "rays"
+   ],
+   "formula": "f437308a029a5b2f"
+  },
+  {
+   "name": "relation_3432",
+   "family": "Clay",
+   "uuid": "9aa8d963-f41a-5028-ae97-6a42b44f0486",
+   "handle": "9aa8d963",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "faces",
+    "rays"
+   ],
+   "formula": "f5c826919e7f1555"
+  },
+  {
+   "name": "relation_35",
+   "family": "Clay",
+   "uuid": "1880854d-6dfb-20ef-bf0f-043234eceb49",
+   "handle": "1880854d",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "chooseOf",
+    "hexbit",
+    "magicCubic",
+    "n",
+    "rays"
+   ],
+   "formula": "ee8a07bee301c9de"
+  },
+  {
+   "name": "relation_35960",
+   "family": "Clay",
+   "uuid": "0f4f7983-3b93-1e49-9813-edd13f4b75a4",
+   "handle": "0f4f7983",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "choose",
+    "chooseOf",
+    "hexbit",
+    "plane"
+   ],
+   "formula": "5ff63fb84a19355d"
+  },
+  {
+   "name": "relation_36",
+   "family": "Clay",
+   "uuid": "19f27181-d3a7-61db-b2ad-5b5467429f4b",
+   "handle": "19f27181",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "qftGates",
+    "triangular",
+    "vertices"
+   ],
+   "formula": "8e5a46f9f93524b0"
+  },
+  {
+   "name": "relation_364",
+   "family": "Clay",
+   "uuid": "38b5abb5-a2a7-561f-ba05-73b6e373e076",
+   "handle": "38b5abb5",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "faces",
+    "n"
+   ],
+   "formula": "e8e5c45ad0858fb5"
+  },
+  {
+   "name": "relation_378",
+   "family": "Clay",
+   "uuid": "caae206d-dc22-33e1-902c-dd8239ca16ba",
+   "handle": "caae206d",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "coins",
+    "plane"
+   ],
+   "formula": "12f82a6b45644dfd"
+  },
+  {
+   "name": "relation_392",
+   "family": "Clay",
+   "uuid": "53f90c2d-9f61-6a8c-8aac-47d5f5ef88cf",
+   "handle": "53f90c2d",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "chimera",
+    "faces",
+    "plane",
+    "qaoaZz",
+    "rays"
+   ],
+   "formula": "394c6e8ff9a232fa"
+  },
+  {
+   "name": "relation_40116600",
+   "family": "Clay",
+   "uuid": "2318b009-973c-418b-9e95-0f84da38018e",
+   "handle": "2318b009",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "faces",
+    "plane"
+   ],
+   "formula": "c126cf505379f105"
+  },
+  {
+   "name": "relation_406",
+   "family": "Clay",
+   "uuid": "ce3db332-e85f-4fd0-9d4b-3d4ff8274947",
+   "handle": "ce3db332",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "plane",
+    "qftGates",
+    "triangular"
+   ],
+   "formula": "0d51be307ff42af0"
+  },
+  {
+   "name": "relation_42",
+   "family": "Clay",
+   "uuid": "7004c670-0160-5026-809a-1fca1c84292f",
+   "handle": "7004c670",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "faces",
+    "glProd",
+    "n",
+    "qaoaZz"
+   ],
+   "formula": "66292b0b3ce6460e"
   },
   {
    "name": "relation_4294967296",
    "family": "Clay",
-   "uuid": "ed554819-789a-29d7-a704-8161faeb45f2",
-   "handle": "ed554819",
+   "uuid": "068c0662-3b18-1d29-aed5-b953d56f7111",
+   "handle": "068c0662",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
     "amplitudes",
     "bits",
-    "mintOf"
+    "mintOf",
+    "qftStates"
    ],
-   "formula": "ef5969808b4e599f"
+   "formula": "85ecb9636b3fd96c"
+  },
+  {
+   "name": "relation_471435600",
+   "family": "Clay",
+   "uuid": "9b352143-a272-21c4-80fa-bd9bdcb7a1c6",
+   "handle": "9b352143",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "choose",
+    "chooseOf",
+    "faces"
+   ],
+   "formula": "aa3465bc6f6ef4f5"
+  },
+  {
+   "name": "relation_49",
+   "family": "Clay",
+   "uuid": "1d8a0e8b-9432-34a4-a3ee-0016066d2863",
+   "handle": "1d8a0e8b",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "qaoaX",
+    "qaoaZz",
+    "rays"
+   ],
+   "formula": "98965610528c5d70"
+  },
+  {
+   "name": "relation_496",
+   "family": "Clay",
+   "uuid": "c1ff7d9f-97d9-22b0-97e7-f18d21092e02",
+   "handle": "c1ff7d9f",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "choose",
+    "chooseOf",
+    "coins"
+   ],
+   "formula": "6256e3ec5ac844e1"
+  },
+  {
+   "name": "relation_4960",
+   "family": "Clay",
+   "uuid": "9f4cc2c6-af53-50b8-b0e2-cbec22f3269e",
+   "handle": "9f4cc2c6",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "choose",
+    "chooseOf",
+    "n"
+   ],
+   "formula": "82516b074c753875"
+  },
+  {
+   "name": "relation_528",
+   "family": "Clay",
+   "uuid": "3941c9fe-42c0-1c8c-846b-06d308dda8cf",
+   "handle": "3941c9fe",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "qftGates",
+    "triangular"
+   ],
+   "formula": "d08475b9ecd258f2"
+  },
+  {
+   "name": "relation_56",
+   "family": "Clay",
+   "uuid": "dd6dccfe-0b3d-5961-ba82-2d785cf7fceb",
+   "handle": "dd6dccfe",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "n",
+    "plane",
+    "qaoaParams",
+    "vertices"
+   ],
+   "formula": "6c05d94822308e15"
+  },
+  {
+   "name": "relation_64",
+   "family": "Clay",
+   "uuid": "8902de92-57e1-20d2-9bae-1d31887f3f27",
+   "handle": "8902de92",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "groverSize",
+    "isingFusion",
+    "n",
+    "qaoaParams",
+    "rays"
+   ],
+   "formula": "0070fc3e9fd2be44"
+  },
+  {
+   "name": "relation_65536",
+   "family": "Clay",
+   "uuid": "524ca2cc-0e7d-86cc-adc6-f0a3b0b62ccf",
+   "handle": "524ca2cc",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "groverSize",
+    "paulis",
+    "rays",
+    "vertices"
+   ],
+   "formula": "8650e27cc2345076"
+  },
+  {
+   "name": "relation_70",
+   "family": "Clay",
+   "uuid": "6e329539-ca17-7e6c-ad66-784cc1b9dffc",
+   "handle": "6e329539",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "hexbit",
+    "vertices"
+   ],
+   "formula": "d731bc97e0239d3f"
   },
   {
    "name": "relation_8",
@@ -2347,6 +3465,72 @@
     "vertices"
    ],
    "formula": "85d6b5f5be88d29a"
+  },
+  {
+   "name": "relation_8192",
+   "family": "Clay",
+   "uuid": "fedc75ed-fb9d-2f7f-b939-6412a05f4676",
+   "handle": "fedc75ed",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "chimera",
+    "faces",
+    "isingFusion"
+   ],
+   "formula": "ab22a12fcddb8c83"
+  },
+  {
+   "name": "relation_9",
+   "family": "Clay",
+   "uuid": "6d89b67b-f162-783b-93db-e99632798a53",
+   "handle": "6d89b67b",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "coins",
+    "faces",
+    "n",
+    "plane",
+    "powMod"
+   ],
+   "formula": "83592bbede4a6fbe"
+  },
+  {
+   "name": "relation_91",
+   "family": "Clay",
+   "uuid": "d163ce36-bcd6-65bf-8cc8-c147380fb072",
+   "handle": "d163ce36",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "chooseOf",
+    "coins",
+    "faces"
+   ],
+   "formula": "4eef2faf20c26b5d"
+  },
+  {
+   "name": "relation_96",
+   "family": "Clay",
+   "uuid": "66192ef0-2de3-1c3c-bfc2-60dabcc98bcf",
+   "handle": "66192ef0",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "n",
+    "qaoaX",
+    "qaoaZz"
+   ],
+   "formula": "b277afa2a4975fd0"
   },
   {
    "name": "sciences",
@@ -2411,17 +3595,21 @@
   {
    "name": "shor",
    "family": "Shor",
-   "uuid": "c58a75c5-607b-171c-b68e-f734a8376a75",
-   "handle": "c58a75c5",
+   "uuid": "e5bdad8f-500c-11ab-9124-a5a4a266041a",
+   "handle": "e5bdad8f",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
    "uses": [
+    "coins",
     "gcdOf",
     "half",
-    "periodOf"
+    "periodOf",
+    "seed",
+    "shorBase",
+    "shorModulus"
    ],
-   "formula": "f1db5208cd6d3643"
+   "formula": "5722cb638c5b0c46"
   },
   {
    "name": "shor_factored",
@@ -2456,6 +3644,196 @@
    "formula": "549893e579702069"
   },
   {
+   "name": "shor_sigma",
+   "family": "Sigma",
+   "uuid": "500125e1-cbca-2e11-81c0-5bbfbc72e9f3",
+   "handle": "500125e1",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "faces",
+    "gcdOf",
+    "half",
+    "mintOf",
+    "periodOf",
+    "rays",
+    "seed",
+    "shorBase",
+    "shorModulus",
+    "sigma_midpoint"
+   ],
+   "formula": "c25fd51811f78baf"
+  },
+  {
+   "name": "sigma_choose",
+   "family": "Sigma",
+   "uuid": "953461b7-b43d-6411-a08c-d42dc46f16c5",
+   "handle": "953461b7",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "coins",
+    "rays",
+    "sigma_reflect"
+   ],
+   "formula": "efd89996f77b7ad4"
+  },
+  {
+   "name": "sigma_grover",
+   "family": "Sigma",
+   "uuid": "14d63eb1-46dc-8fed-87c9-e9fb54a1a869",
+   "handle": "14d63eb1",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "groverSize",
+    "seed",
+    "sigma_midpoint"
+   ],
+   "formula": "3f793b571706ab91"
+  },
+  {
+   "name": "sigma_hodge",
+   "family": "Sigma",
+   "uuid": "2d1d3933-132b-2f48-b843-c871c09b1081",
+   "handle": "2d1d3933",
+   "cross": "cross",
+   "holds": true,
+   "recomputed": true,
+   "over": "g ∈ [0, 32]",
+   "uses": [],
+   "formula": "2ef0d4ce4a855dec"
+  },
+  {
+   "name": "sigma_lattice",
+   "family": "Sigma",
+   "uuid": "b3802b45-3780-77eb-b24c-a9656bfaec37",
+   "handle": "b3802b45",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "sigma_midpoint",
+    "sigma_reflect",
+    "vertices"
+   ],
+   "formula": "3769f85d40c168b1"
+  },
+  {
+   "name": "sigma_midpoint",
+   "family": "Sigma",
+   "uuid": "fd14e4a5-8bfd-6b4e-bc7c-b260dec50e8a",
+   "handle": "fd14e4a5",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "d, x ∈ [0, 32]",
+   "uses": [],
+   "formula": "e0b9d8e5a8d34ce6"
+  },
+  {
+   "name": "sigma_pauli",
+   "family": "Sigma",
+   "uuid": "cb0a181e-45c9-4cfa-9c9b-0149b43b5c66",
+   "handle": "cb0a181e",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "n",
+    "seed",
+    "sigma_pvsnp"
+   ],
+   "formula": "c11cec7157442ad1"
+  },
+  {
+   "name": "sigma_planck",
+   "family": "Sigma",
+   "uuid": "ab72d923-2df9-21a3-a23e-1af2789a8bb7",
+   "handle": "ab72d923",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "boltzmann",
+    "photon",
+    "planck",
+    "sigma_midpoint",
+    "sigma_reflect"
+   ],
+   "formula": "636bbfea2a0ff384"
+  },
+  {
+   "name": "sigma_pvsnp",
+   "family": "Sigma",
+   "uuid": "f6bf6d70-bd15-347b-8e44-2a81ddf90478",
+   "handle": "f6bf6d70",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "m ∈ [0, 32]",
+   "uses": [],
+   "formula": "10c627e3a2468821"
+  },
+  {
+   "name": "sigma_qft",
+   "family": "Sigma",
+   "uuid": "e3f4da3f-bd2e-1458-835e-bcd238a3ef86",
+   "handle": "e3f4da3f",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "n",
+    "qftStates",
+    "seed",
+    "sigma_midpoint",
+    "sigma_reflect"
+   ],
+   "formula": "8e43c9fcdce39fb2"
+  },
+  {
+   "name": "sigma_reflect",
+   "family": "Sigma",
+   "uuid": "b83691f9-c37f-411e-98f4-f571756fbdf4",
+   "handle": "b83691f9",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "d, x ∈ [0, 32]",
+   "uses": [],
+   "formula": "ce6d1a7dccb53e76"
+  },
+  {
+   "name": "singularity",
+   "family": "Sigma",
+   "uuid": "aba34e52-0e1a-5ecc-a7f9-d2b525b32914",
+   "handle": "aba34e52",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "choose",
+    "coins",
+    "faces",
+    "groverSize",
+    "n",
+    "periodOf",
+    "planck",
+    "qftStates",
+    "rays",
+    "seed",
+    "sigma_midpoint"
+   ],
+   "formula": "dca7bc7576958c23"
+  },
+  {
    "name": "split_coin",
    "family": "Lattice",
    "uuid": "49204bb7-daea-2147-9bd6-d4d910feb131",
@@ -2473,6 +3851,20 @@
    "formula": "6b7b08b342ebe384"
   },
   {
+   "name": "stabilizer_all",
+   "family": "Stabilizer",
+   "uuid": "8ddaa3e2-fa43-8385-8a3e-16a1e5bf76ee",
+   "handle": "8ddaa3e2",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "paulis",
+    "stabStates"
+   ],
+   "formula": "38855da5be91b143"
+  },
+  {
    "name": "superconductivity",
    "family": "Physics",
    "uuid": "018eaae5-b1c4-198b-82fd-d7b521c697b6",
@@ -2488,6 +3880,21 @@
     "transmon"
    ],
    "formula": "46c4b1f2800229e3"
+  },
+  {
+   "name": "surfacecode_all",
+   "family": "Surfacecode",
+   "uuid": "05a24226-8b5c-2a79-994c-0ebe28d672ae",
+   "handle": "05a24226",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "surfaceCorrectable",
+    "surfaceLogical",
+    "surfacePhysical"
+   ],
+   "formula": "68599267696faf7a"
   },
   {
    "name": "teleport",
@@ -2530,6 +3937,46 @@
     "mintOf_zero"
    ],
    "formula": "d088155dcc52642d"
+  },
+  {
+   "name": "triangular_four",
+   "family": "Combinatorics",
+   "uuid": "7f550743-7354-2a00-be71-008591ce4001",
+   "handle": "7f550743",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "triangular"
+   ],
+   "formula": "21d5842b19528d80"
+  },
+  {
+   "name": "triangular_succ",
+   "family": "Combinatorics",
+   "uuid": "3852a12b-9d35-5a04-a024-a924e2512d7c",
+   "handle": "3852a12b",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "n ∈ [0, 32]",
+   "uses": [
+    "triangular"
+   ],
+   "formula": "cc27c54d9754e3d0"
+  },
+  {
+   "name": "triangular_zero",
+   "family": "Combinatorics",
+   "uuid": "77a68344-32a0-8968-9086-40c3972da9ea",
+   "handle": "77a68344",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "triangular"
+   ],
+   "formula": "597de22256e8dcef"
   },
   {
    "name": "twin_gap",

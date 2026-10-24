@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AVIATION — AIR LAW AND OPERATIONS, AS ARITHMETIC. Flight is numbers: carrier liability per kilogram, a delay, passenger
@@ -30,4 +30,4 @@ export class AviationFormulas {
 }
 
 for (const name of ['compensation', 'delay', 'duty', 'liability', 'noise', 'payload', 'range', 'separation'] as const)
-  qpuHexRegisterOf('aviation', name, (AviationFormulas[name] as (...x: unknown[]) => unknown).bind(AviationFormulas))
+  hexRegisterOf('aviation', name, (AviationFormulas[name] as (...x: unknown[]) => unknown).bind(AviationFormulas))

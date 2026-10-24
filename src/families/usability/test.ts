@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { UsabilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('usability: success, efficiency, errors, satisfaction, learnability, timeon
   assert.equal(UsabilityFormulas.sus(32).value, 80, 'SUS score proxy')
   assert.equal(UsabilityFormulas.retention(70, 100).value, 70)
   assert.equal(UsabilityFormulas.success(90, 100).dst, 'layout')
-  assert.equal(qpuHexFamiliesOf().get('usability')?.length, 8)
+  assert.equal(hexFamiliesOf().get('usability')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'usability', program: ['success'], params: [90, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `usability.success at ${uuid}`)
-  qpuUuidReceiptOf('usability success', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('usability success', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; success 90, efficiency 50, errors 3, satisfaction 80, learnability 25, timeontask 60, sus 80, retention 70; crossing to layout')
 })

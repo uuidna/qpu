@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CODICOLOGY — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CodicologyFormulas {
 }
 
 for (const name of ['bindingstages', 'collationpairs', 'completeness', 'foliocount', 'gatheringorderings', 'inkcombos', 'quires', 'rulingpatterns'] as const)
-  qpuHexRegisterOf('codicology', name, (CodicologyFormulas[name] as (...x: unknown[]) => unknown).bind(CodicologyFormulas))
+  hexRegisterOf('codicology', name, (CodicologyFormulas[name] as (...x: unknown[]) => unknown).bind(CodicologyFormulas))

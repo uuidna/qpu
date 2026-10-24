@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HarvestFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('harvest: ratescollected, losspercent, throughput, laborhours, machineeffic
   assert.equal(HarvestFormulas.windowdays(30, 12).value, 18)
   assert.equal(HarvestFormulas.windowdays(12, 30).value, 0)
   assert.equal(HarvestFormulas.ratescollected(40, 150).dst, 'agriculture')
-  assert.equal(qpuHexFamiliesOf().get('harvest')?.length, 8)
+  assert.equal(hexFamiliesOf().get('harvest')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'harvest', program: ['ratescollected'], params: [40, 150] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 6000, `harvest.ratescollected at ${uuid}`)
-  qpuUuidReceiptOf('harvest ratescollected', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('harvest ratescollected', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ratescollected 6000, losspercent 10, throughput 750, laborhours 96, machineefficiency 80, moisturecontent 14, storageyield 4700, windowdays 18; crossing to agriculture')
 })

@@ -2,7 +2,7 @@
 import { Operation, Result } from './types.js'
 import { uuid as registry } from '../core/uuid.js'
 import { uuidBridge } from '../core/uuid-bridge.js'
-import { qpuUuidReceiptOf, qpuProveOf, qpuProveHolds, qpuEmbedDriftOf, qpuMcpFailuresOf, qpuHexRegistryOf } from '../quantum/processing/unit/index.js'
+import { uuidReceiptOf, proveOf, proveHolds, embedDriftOf, mcpFailuresOf, hexRegistryOf } from '../quantum/processing/unit/index.js'
 
 interface DeploymentGateStatus {
   ok: boolean
@@ -42,11 +42,11 @@ export class ConsolidatedMCP {
     const workflow = this.getAllOperations().find((o) => o.uuid === address)
     if (workflow?.domain === 'operations') {
       const r = await this.executeWorkflow(workflow.id, context ?? {})
-      const receipt = qpuUuidReceiptOf(`workflow ${workflow.id}`, address, r, context?.referrer).uuid
+      const receipt = uuidReceiptOf(`workflow ${workflow.id}`, address, r, context?.referrer).uuid
       return { success: r.success === true, result: { uuid: address, operation: workflow.id, data: r, receipt }, ...(r.error ? { error: r.error } : {}) }
     }
     const error = `No operation at ${address}`
-    return { success: false, result: { uuid: address, receipt: qpuUuidReceiptOf('uuid missing', address, error, context?.referrer).uuid }, error }
+    return { success: false, result: { uuid: address, receipt: uuidReceiptOf('uuid missing', address, error, context?.referrer).uuid }, error }
   }
 
   /**
@@ -59,12 +59,12 @@ export class ConsolidatedMCP {
     // leads too: a broken clause or a stale cool names itself here and blocks the push, instead of surfacing only in CI.
     // The registry loads lazily in-handler (cold-init budget), so the gate loads it first to check the real serving
     // state — otherwise cite/clause checks that read the families see an empty registry and report a false failure.
-    await qpuHexRegistryOf()
-    const mcpFailures = qpuMcpFailuresOf().map((c) => `mcp:${c}`)
-    const embedDrift = qpuEmbedDriftOf().map((k) => `embed:${k}`)
+    await hexRegistryOf()
+    const mcpFailures = mcpFailuresOf().map((c) => `mcp:${c}`)
+    const embedDrift = embedDriftOf().map((k) => `embed:${k}`)
     const unresolved = [...[...verified].filter(([, ok]) => !ok).map(([uuid]) => uuid), ...mcpFailures, ...embedDrift]
     const categoryCount = new Set([...uuidBridge.listAll().map((e) => e.domain), ...this.getAllOperations().map((o) => o.domain)]).size
-    const proved = qpuProveHolds(qpuProveOf())
+    const proved = proveHolds(proveOf())
     const allVerified = unresolved.length === 0
     return {
       ok: verified.size > 0 && allVerified && proved,

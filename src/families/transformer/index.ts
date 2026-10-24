@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TRANSFORMER — THE IRON-CORE MACHINE, AS ARITHMETIC. A transformer is a ratio: the turns ratio sets how primary and
@@ -31,4 +31,4 @@ export class TransformerFormulas {
 }
 
 for (const name of ['efficiency', 'impedance', 'power', 'primary', 'ratio', 'regulation', 'secondary', 'turns'] as const)
-  qpuHexRegisterOf('transformer', name, (TransformerFormulas[name] as (...x: unknown[]) => unknown).bind(TransformerFormulas))
+  hexRegisterOf('transformer', name, (TransformerFormulas[name] as (...x: unknown[]) => unknown).bind(TransformerFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RefractionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('refraction: index, snell, criticalangle, dispersion, opticaldensity, speed
   assert.equal(RefractionFormulas.totalinternal(50, 48).value, 1, 'TIR occurs')
   assert.equal(RefractionFormulas.totalinternal(40, 48).value, 0)
   assert.equal(RefractionFormulas.index(300, 225).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('refraction')?.length, 8)
+  assert.equal(hexFamiliesOf().get('refraction')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'refraction', program: ['index'], params: [300, 225] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1333, `refraction.index at ${uuid}`)
-  qpuUuidReceiptOf('refraction index', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('refraction index', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; index 1333, snell 22, criticalangle 67, dispersion 10, opticaldensity 133, speedinmedium 225, prismdeviation 15, totalinternal 1; crossing to optics')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GPS — SATELLITE POSITIONING, AS ARITHMETIC (chosen by the registry, not by hand). A fix is numbers: the satellites in
@@ -31,4 +31,4 @@ export class GpsFormulas {
 }
 
 for (const name of ['accuracy', 'elevationmask', 'fixquality', 'hdop', 'pseudorange', 'satellites', 'trilateration', 'ttff'] as const)
-  qpuHexRegisterOf('gps', name, (GpsFormulas[name] as (...x: unknown[]) => unknown).bind(GpsFormulas))
+  hexRegisterOf('gps', name, (GpsFormulas[name] as (...x: unknown[]) => unknown).bind(GpsFormulas))

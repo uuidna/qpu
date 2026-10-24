@@ -1,45 +1,250 @@
 {
   "comment": "MEMORIES MOVED TO LEADS. The project's knowledge, held in qpu (self-sufficient) as leads rather than as private notes. state: crossed = realized by the build and verified by a gate; open = a frontier lead the free agent teams develop on the host (free, zero temp); standing = a rule that always applies. The develop automation and the gates process these; the teams optimise build and deploy at zero temp at all times, on the host — gated only on the deploy (law.lawful, the author's act).",
   "leads": [
-    { "name": "qpu-complete-self-sufficient", "state": "crossed", "lead": "all families+relations in qpu; verifies alone; qpu-MCP-only; merge-all done (1133)" },
-    { "name": "no-manual-docs", "state": "crossed", "lead": "docs generated/signed/tested from code; a hand .md is a lead — held by standards.test" },
-    { "name": "no-hand-lists", "state": "crossed", "lead": "registries generated from the filesystem; --repo; held by rules.test/payload.test" },
-    { "name": "hex-not-wrapped", "state": "crossed", "lead": "every computation a hex program at an address; split into slices; handle addressing" },
-    { "name": "uuid-version-crypto", "state": "crossed", "lead": "version spans all 8 RFC versions, crypto-folded — uuidVersionsOf, all 8 at once" },
-    { "name": "consolidation_naming", "state": "crossed", "lead": "minimise names; qpu_ prefix removed everywhere (bare, handle-addressed)" },
-    { "name": "one-word-dont-proliferate", "state": "crossed", "lead": "one word unless a combination; held by rule.named/audit.test" },
-    { "name": "mcp-only-compute", "state": "standing", "lead": "in qpu use ONLY mcp__qpu__*; never the uuidna gateway (disabled); no curl/node probes" },
-    { "name": "dont-ask-what-tools-can-answer", "state": "standing", "lead": "resolve from MCP/receipts/git/code and act, don't bounce to the user" },
-    { "name": "autonomous-no-next", "state": "standing", "lead": "self-drive the loop; don't ask for next when obvious" },
-    { "name": "no-locks-no-prose", "state": "standing", "lead": "never add refusals/locks or edit comments/receipts unless asked" },
-    { "name": "qpu-memory-constraint", "state": "standing", "lead": "route heavy compute through the QPU/host; local runs exhaust memory (clay OOM)" },
-    { "name": "leads-before-removal", "state": "standing", "lead": "never remove before developing the lead; uncrossed = a lead, never a block" },
-    { "name": "no-skips-splits", "state": "standing", "lead": "split the slow/heavy into its own slice/lane; never skip (fail at rising temp)" },
-    { "name": "mcp-drives-the-loop", "state": "crossed", "lead": "the gate/develop/prove ARE the loop; prefer improving the MCP over churning families" },
-    { "name": "domain-families-are-leads", "state": "crossed", "lead": "domain families are leads until gate.crossed; held by push.test/court.test" },
-    { "name": "mcp-court-author-protection", "state": "crossed", "lead": "law+author-protection (lawful floor, standing/violation/remedy) + court + forensic merged in" },
-    { "name": "tenant-is-an-app", "state": "crossed", "lead": "content tenant-scoped; users/tenants + engine global; derived by the generator" },
-    { "name": "family-schema-org", "state": "crossed", "lead": "crossSchemaOf emits families as schema.org DefinedTermSet/DataCatalog" },
-    { "name": "generated-no-drift", "state": "crossed", "lead": "generated artifacts a pure function of receipts; time->0, reads->temp 0" },
-    { "name": "ten-family-split-waves", "state": "crossed", "lead": "parallel lanes, one generator run, one test lane, one commit; time/temp near zero" },
-    { "name": "readme-is-the-lead", "state": "open", "lead": "the README is the main artifact to develop; generated, catalogs every family; develop on host" },
-    { "name": "cross-formulated-requests", "state": "crossed", "lead": "live families never answer from stored rows; the bridge graph" },
-    { "name": "cross-domain-complete", "state": "crossed", "lead": "cross-domain formula network — superseded by the merge + the bridge graph" },
-    { "name": "lean-served-gap", "state": "open", "lead": "theorems served vs aliases/cross-forms/foundations; clay.test verifies via the MCP" },
-    { "name": "mcp-github-cloudflare-patterns", "state": "crossed", "lead": "per-tool hints + human title adopted; toolsets/pagination remain open leads" },
-    { "name": "wave-tooling-state", "state": "crossed", "lead": "scaffold-family + generator recipe — superseded by the standing gates" },
-    { "name": "combinatoric-humanities-leads", "state": "open", "lead": "theology/philosophy/history as combinatoric lead sources; neutral counts; develop free on host" },
-    { "name": "qpu-gate-pitfalls", "state": "open", "lead": "HOT pages: /health and cold pages >40s from cold isolate / Payload init — the teams optimise at zero temp" },
-    { "name": "deploys-are-manual", "state": "open", "lead": "nothing deploys on push; every host version is a manual npm run ship (law.lawful, the author's act)" },
-    { "name": "shared-tree-sessions", "state": "open", "lead": "peers commit in the same tree; some files' writes don't persist — residual qpu_ remanded to host/peer" },
-    { "name": "verify-repo-and-deploy", "state": "open", "lead": "private uuidna/verify repo + verify.uuidna.com deploy — the source of the merged families" },
-    { "name": "standard-license", "state": "standing", "lead": "CC-BY-NC-ND-4.0 for all uuidna work; third-party deps keep theirs" },
-    { "name": "payload-deployment", "state": "crossed", "lead": "4-mode payload (browser/standalone/docker/k8s); payloadcms/website ported (payload.test)" },
-    { "name": "feedback_payload_templates", "state": "crossed", "lead": "always use payload templates; held by payload.test (conformance)" },
-    { "name": "pi-primes-dna-uuid-streams", "state": "open", "lead": "digits of pi and the prime sequence as UUID/DNA-like streams; crosses prime, numbertheory, crypt, numen when developed" },
-    { "name": "merkaba-medical-scans", "state": "open", "lead": "merkaba rotation renders a digital scan as a multidimensional moving graph of hidden aspects; crosses merkaba, tomography, signal when developed" },
-    { "name": "insurance-indemnity", "state": "crossed", "lead": "indemnity already lives in the insurance family (insurance.indemnity = min(claim, limit), with insurance.claim = max(0, loss − deductible)); court.indemnity would have duplicated it and overflowed the 15 nibble cap, so it was not added to court — law and order by the right family" },
-    { "name": "fuse-slice", "state": "open", "lead": "the full apis.guru fuse (2529 APIs, 438299 edges) OOMs the V8 heap in one process; split fuse-apis.mjs into API slices and merge the edge graph in full (as discovery.ts qpuDiscoverOf/qpuDiscoverMergeOf do) — minimise memory at scale, compute in full" },
-    { "name": "all-usable-as-hooks", "state": "open", "lead": "every executable is a hex-program address, so any hook — git pre-commit/pre-push, a Claude Code hook, or a scheduled task — can fire it via the MCP ({ hex } or family.formula): clay.disclosure, law.redirected/remedy/standing, gate.crossed/commit/push, discovery slice/merge. Wire the autonomous ones as active hooks (today the worker/hooks are stubs — qpu-gate-pitfalls)" }
+    {
+      "name": "qpu-complete-self-sufficient",
+      "state": "crossed",
+      "lead": "all families+relations in qpu; verifies alone; qpu-MCP-only; merge-all done (1133)"
+    },
+    {
+      "name": "no-manual-docs",
+      "state": "crossed",
+      "lead": "docs generated/signed/tested from code; a hand .md is a lead — held by standards.test"
+    },
+    {
+      "name": "no-hand-lists",
+      "state": "crossed",
+      "lead": "registries generated from the filesystem; --repo; held by rules.test/payload.test"
+    },
+    {
+      "name": "hex-not-wrapped",
+      "state": "crossed",
+      "lead": "every computation a hex program at an address; split into slices; handle addressing"
+    },
+    {
+      "name": "uuid-version-crypto",
+      "state": "crossed",
+      "lead": "version spans all 8 RFC versions, crypto-folded — uuidVersionsOf, all 8 at once"
+    },
+    {
+      "name": "consolidation_naming",
+      "state": "crossed",
+      "lead": "minimise names; qpu_ prefix removed everywhere (bare, handle-addressed)"
+    },
+    {
+      "name": "one-word-dont-proliferate",
+      "state": "crossed",
+      "lead": "one word unless a combination; held by rule.named/audit.test"
+    },
+    {
+      "name": "mcp-only-compute",
+      "state": "standing",
+      "lead": "in qpu use ONLY mcp__qpu__*; never the uuidna gateway (disabled); no curl/node probes"
+    },
+    {
+      "name": "dont-ask-what-tools-can-answer",
+      "state": "standing",
+      "lead": "resolve from MCP/receipts/git/code and act, don't bounce to the user"
+    },
+    {
+      "name": "autonomous-no-next",
+      "state": "standing",
+      "lead": "self-drive the loop; don't ask for next when obvious"
+    },
+    {
+      "name": "no-locks-no-prose",
+      "state": "standing",
+      "lead": "never add refusals/locks or edit comments/receipts unless asked"
+    },
+    {
+      "name": "qpu-memory-constraint",
+      "state": "standing",
+      "lead": "route heavy compute through the QPU/host; local runs exhaust memory (clay OOM)"
+    },
+    {
+      "name": "leads-before-removal",
+      "state": "standing",
+      "lead": "never remove before developing the lead; uncrossed = a lead, never a block"
+    },
+    {
+      "name": "no-skips-splits",
+      "state": "standing",
+      "lead": "split the slow/heavy into its own slice/lane; never skip (fail at rising temp)"
+    },
+    {
+      "name": "mcp-drives-the-loop",
+      "state": "crossed",
+      "lead": "the gate/develop/prove ARE the loop; prefer improving the MCP over churning families"
+    },
+    {
+      "name": "domain-families-are-leads",
+      "state": "crossed",
+      "lead": "domain families are leads until gate.crossed; held by push.test/court.test"
+    },
+    {
+      "name": "mcp-court-author-protection",
+      "state": "crossed",
+      "lead": "law+author-protection (lawful floor, standing/violation/remedy) + court + forensic merged in"
+    },
+    {
+      "name": "tenant-is-an-app",
+      "state": "crossed",
+      "lead": "content tenant-scoped; users/tenants + engine global; derived by the generator"
+    },
+    {
+      "name": "family-schema-org",
+      "state": "crossed",
+      "lead": "crossSchemaOf emits families as schema.org DefinedTermSet/DataCatalog"
+    },
+    {
+      "name": "generated-no-drift",
+      "state": "crossed",
+      "lead": "generated artifacts a pure function of receipts; time->0, reads->temp 0"
+    },
+    {
+      "name": "ten-family-split-waves",
+      "state": "crossed",
+      "lead": "parallel lanes, one generator run, one test lane, one commit; time/temp near zero"
+    },
+    {
+      "name": "readme-is-the-lead",
+      "state": "open",
+      "lead": "the README is the main artifact to develop; generated, catalogs every family; develop on host"
+    },
+    {
+      "name": "cross-formulated-requests",
+      "state": "crossed",
+      "lead": "live families never answer from stored rows; the bridge graph"
+    },
+    {
+      "name": "cross-domain-complete",
+      "state": "crossed",
+      "lead": "cross-domain formula network — superseded by the merge + the bridge graph"
+    },
+    {
+      "name": "lean-served-gap",
+      "state": "open",
+      "lead": "theorems served vs aliases/cross-forms/foundations; clay.test verifies via the MCP"
+    },
+    {
+      "name": "mcp-github-cloudflare-patterns",
+      "state": "crossed",
+      "lead": "per-tool hints + human title adopted; toolsets/pagination remain open leads"
+    },
+    {
+      "name": "wave-tooling-state",
+      "state": "crossed",
+      "lead": "scaffold-family + generator recipe — superseded by the standing gates"
+    },
+    {
+      "name": "combinatoric-humanities-leads",
+      "state": "open",
+      "lead": "theology/philosophy/history as combinatoric lead sources; neutral counts; develop free on host"
+    },
+    {
+      "name": "qpu-gate-pitfalls",
+      "state": "open",
+      "lead": "HOT pages: /health and cold pages >40s from cold isolate / Payload init — the teams optimise at zero temp"
+    },
+    {
+      "name": "deploys-are-manual",
+      "state": "open",
+      "lead": "nothing deploys on push; every host version is a manual npm run ship (law.lawful, the author's act)"
+    },
+    {
+      "name": "shared-tree-sessions",
+      "state": "open",
+      "lead": "peers commit in the same tree; some files' writes don't persist — residual qpu_ remanded to host/peer"
+    },
+    {
+      "name": "verify-repo-and-deploy",
+      "state": "open",
+      "lead": "private uuidna/verify repo + verify.uuidna.com deploy — the source of the merged families"
+    },
+    {
+      "name": "standard-license",
+      "state": "standing",
+      "lead": "CC-BY-NC-ND-4.0 for all uuidna work; third-party deps keep theirs"
+    },
+    {
+      "name": "payload-deployment",
+      "state": "crossed",
+      "lead": "4-mode payload (browser/standalone/docker/k8s); payloadcms/website ported (payload.test)"
+    },
+    {
+      "name": "feedback_payload_templates",
+      "state": "crossed",
+      "lead": "always use payload templates; held by payload.test (conformance)"
+    },
+    {
+      "name": "pi-primes-dna-uuid-streams",
+      "state": "open",
+      "lead": "digits of pi and the prime sequence as UUID/DNA-like streams; crosses prime, numbertheory, crypt, numen when developed"
+    },
+    {
+      "name": "merkaba-medical-scans",
+      "state": "open",
+      "lead": "merkaba rotation renders a digital scan as a multidimensional moving graph of hidden aspects; crosses merkaba, tomography, signal when developed"
+    },
+    {
+      "name": "insurance-indemnity",
+      "state": "crossed",
+      "lead": "indemnity already lives in the insurance family (insurance.indemnity = min(claim, limit), with insurance.claim = max(0, loss − deductible)); court.indemnity would have duplicated it and overflowed the 15 nibble cap, so it was not added to court — law and order by the right family"
+    },
+    {
+      "name": "fuse-slice",
+      "state": "open",
+      "lead": "the full apis.guru fuse (2529 APIs, 438299 edges) OOMs the V8 heap in one process; split fuse-apis.mjs into API slices and merge the edge graph in full (as discovery.ts qpuDiscoverOf/qpuDiscoverMergeOf do) — minimise memory at scale, compute in full"
+    },
+    {
+      "name": "all-usable-as-hooks",
+      "state": "open",
+      "lead": "every executable is a hex-program address, so any hook — git pre-commit/pre-push, a Claude Code hook, or a scheduled task — can fire it via the MCP ({ hex } or family.formula): clay.disclosure, law.redirected/remedy/standing, gate.crossed/commit/push, discovery slice/merge. Wire the autonomous ones as active hooks (today the worker/hooks are stubs — qpu-gate-pitfalls)"
+    },
+    {
+      "name": "xprize-quantum-applications",
+      "state": "open",
+      "lead": "XPRIZE Quantum Applications ($5M, sponsor Google Quantum AI) is Active on xprize.org/competitions; Phase II Wild Card registration closed 2026-03-04; the current entry window is unverified. Owes: confirm the current phase and entry window from go.xprize.org/prizes/qc-apps/guidelines."
+    },
+    {
+      "name": "xprize-water-scarcity",
+      "state": "open",
+      "lead": "XPRIZE Water Scarcity ($119M) is Active; desalination, not quantum or AI. Desalination tracks: qualification closed (Track A 2025-12-19, Track B 2026-03-20), semifinals Q4 2026, finals 2027-2028. Ideas Competition (\"The Value of Water\", $30,000 first prize) is listed on xprize.org/competitions/water and xprize.org/water with no entry status or deadline; the Guidelines 3.0 PDF did not decode here. Owes: the Ideas Competition's entry status and dates from its FAQ or resources page, or from the competition's contact (waterscarcity@xprize.org, not contacted)."
+    },
+    {
+      "name": "xprize-healthspan",
+      "state": "open",
+      "lead": "XPRIZE Healthspan ($101M) is Active; not quantum or AI; no deadline shown. Owes: its dates and whether any QPU door answers it."
+    },
+    {
+      "name": "xprize-wildfire",
+      "state": "open",
+      "lead": "XPRIZE Wildfire ($11M) is in Finals; not quantum or AI. Owes: the finalists and dates; no entry is open."
+    },
+    {
+      "name": "impact-xprize-carbon-removal",
+      "state": "open",
+      "lead": "Impact XPRIZE Carbon Removal ($100M); no status shown on the Active list. Owes: its status and dates."
+    },
+    {
+      "name": "impact-xprize-rainforest",
+      "state": "open",
+      "lead": "Impact XPRIZE Rainforest ($10M); no status shown on the Active list. Owes: its status and dates."
+    },
+    {
+      "name": "build-with-gemini",
+      "state": "open",
+      "lead": "Build with Gemini hackathon, $2M prize pool, linked from the xprize.org navigation; no dates shown there. Owes: its dates, eligibility and whether it is AI-only."
+    },
+    {
+      "name": "axiom-boundary-completion",
+      "state": "open",
+      "lead": "Assume boundary cases hold as axioms, derive cross-domain theorems from shared domains, and verify each completion with a proof certificate (once in src/quantum/processing/unit/axiom-proof-generator.ts, now in git history at HEAD). Owes: a Lean statement for the completion rule, and a check that the derived theorems are not vacuous."
+    },
+    {
+      "name": "uncommitted-qpu-tree",
+      "state": "open",
+      "lead": "The qpu working tree has 2,467 modified and 32 untracked entries (319,284 insertions, 11,725 deletions). They mix this session's edits with in-flight work that was already in the tree, including a 305,000-line generated test-receipt.json. Committing needs the owner to name which changes are theirs. Owes: the owner's decision per file group; the unit does not commit or restore others' in-flight work."
+    }
   ]
 }

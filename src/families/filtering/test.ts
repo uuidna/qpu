@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FilteringFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('filtering: cutoff, passband, stopband, rolloff, order, groupdelay, attenua
   assert.equal(FilteringFormulas.bandwidth(12000, 4).value, 3000, 'band around the centre')
   assert.equal(FilteringFormulas.passband(1000, 3000).value, 0)
   assert.equal(FilteringFormulas.cutoff(48000, 4).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('filtering')?.length, 8)
+  assert.equal(hexFamiliesOf().get('filtering')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'filtering', program: ['cutoff'], params: [48000, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12000, `filtering.cutoff at ${uuid}`)
-  qpuUuidReceiptOf('filtering cutoff', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('filtering cutoff', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; cutoff 12000, passband 2000, stopband 4500, rolloff 24, order 4, groupdelay 50, attenuation 72, bandwidth 3000; crossing to signal')
 })

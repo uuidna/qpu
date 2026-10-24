@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HoverFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('hover: delay, scale, reveal, transition, stagger, depth, cards, trigger â€
   assert.equal(HoverFormulas.cards(8).value, 8)
   assert.equal(HoverFormulas.trigger(25, 100).value, 25)
   assert.equal(HoverFormulas.delay(300).dst, 'frontend')
-  assert.equal(qpuHexFamiliesOf().get('hover')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hover')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hover', program: ['scale'], params: [200, 150] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `hover.scale at ${uuid}`)
-  qpuUuidReceiptOf('hover scale', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hover scale', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; delay 300, scale 300, reveal 40, transition 250, stagger 150, depth 3, cards 8, trigger 25; crossing to frontend')
 })

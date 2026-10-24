@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { chatSearchOf, distroOf, distroPathOf, CHAT_SEARCH_FRAMEWORKS } from './chat-search.js'
 import { MerkabaFormulas } from '../../families/merkaba/index.js'
 import { CombinatoricsFormulas } from '../../families/combinatorics/index.js'
-import { qpuFacesOf } from '../../quantum/processing/unit/index.js'
+import { facesOf } from '../../quantum/processing/unit/index.js'
 
 test('distro path: idea→chat→search→blueprint→docs→app→cure', () => {
   const path = distroPathOf('precision search')
@@ -27,7 +27,7 @@ test('chat+search seals token usage; frameworks named', async () => {
 })
 
 test('combinatorial distro: double-torus/rosetta manifold + outside-in/inside-out', async () => {
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const torus = await MerkabaFormulas.torus(0, 1, 2)
   const rosetta = MerkabaFormulas.rosetta(Math.min(faces, 7))
   const bin = CombinatoricsFormulas.binomial(faces)

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MoonFormulas — 8 exact-integer formulas of the moon domain, each at a hex address crossing to cross; develops the moon leads. */
@@ -31,4 +31,4 @@ export class MoonFormulas {
 }
 
 for (const name of ['combos', 'craters', 'diameter', 'distance', 'libration', 'period', 'phase', 'tides'] as const)
-  qpuHexRegisterOf('moon', name, (MoonFormulas[name] as (...x: unknown[]) => unknown).bind(MoonFormulas))
+  hexRegisterOf('moon', name, (MoonFormulas[name] as (...x: unknown[]) => unknown).bind(MoonFormulas))

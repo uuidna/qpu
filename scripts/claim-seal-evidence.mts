@@ -20,8 +20,8 @@ import { PermaFormulas } from '../src/families/perma/index.js'
 import { YiFormulas } from '../src/families/yi/index.js'
 import { MerkabaFormulas } from '../src/families/merkaba/index.js'
 import { CombinatoricsFormulas } from '../src/families/combinatorics/index.js'
-import { n, qpuFacesOf, qpuHandleOf, qpuNextOf, qpuStatementUuidOf } from '../src/quantum/processing/unit/index.js'
-import { qpuMachinesHolds, qpuMachinesOf, qpuPublicOf } from '../src/quantum/processing/unit/zeropage.js'
+import { n, facesOf, qpuHandleOf, qpuNextOf, statementUuidOf } from '../src/quantum/processing/unit/index.js'
+import { machinesHolds, machinesOf, publicOf } from '../src/quantum/processing/unit/zeropage.js'
 import { qpuCiteOf } from '../src/quantum/processing/unit/presentation.js'
 import { leanSource } from '../src/quantum/processing/unit/lean.js'
 
@@ -51,7 +51,7 @@ const rowOf = (name: string, params: number[], r: { hex?: string | null; value: 
   definition: r.formula,
 })
 
-const L = qpuFacesOf()
+const L = facesOf()
 const coins = L.coins
 const rays = L.rays
 const faces = L.faces
@@ -90,7 +90,7 @@ const cloudScale = {
 }
 
 // --- Pravets 8M index 0 ---
-const machines = qpuMachinesOf()
+const machines = machinesOf()
 const row0 = machines.rows[0]
 const pravets = {
   index: 0,
@@ -107,7 +107,7 @@ const pravets = {
       }
     : null,
   isPravets8M: row0?.name === 'Pravets 8M',
-  machinesHold: qpuMachinesHolds(machines),
+  machinesHold: machinesHolds(machines),
   networkMachine: networkMachineOf(),
 }
 
@@ -236,7 +236,7 @@ const handleNext = qpuHandleOf().next
 const merkabaCoilFaces = MerkabaFormulas.coil(faces)
 const merkabaCoilN = MerkabaFormulas.coil(n) // lattice n — holds; faces=14 does not
 const disclosure = ClayDisclosure.disclosure()
-const involutionLeanHex = qpuStatementUuidOf('involution')
+const involutionLeanHex = statementUuidOf('involution')
 const namedCalls = {
   merkabaCoilFaces: rowOf('merkaba.coil', [faces], merkabaCoilFaces),
   merkabaCoilN: rowOf('merkaba.coil', [n], merkabaCoilN),
@@ -257,7 +257,7 @@ const connectorPass0 = await connectorAnswerOf({ pass: 0 })
 // --- prize / citation / seven / poincaré (report tree state only; do not flip) ---
 const prize = clayPrizeOf()
 const open = openMathScaleOf()
-const face = qpuPublicOf()
+const face = publicOf()
 const cite = qpuCiteOf()
 const capacity = discoverCapacityGateOf()
 const court = gateCourtOf()

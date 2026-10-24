@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GridFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('grid: rows, gap, span, fill, cells, auto, aspect, density — crossing to 
   assert.equal(GridFormulas.aspect(16, 9).value, 177)
   assert.equal(GridFormulas.density(4, 16).value, 25)
   assert.equal(GridFormulas.rows(10, 3).dst, 'css')
-  assert.equal(qpuHexFamiliesOf().get('grid')?.length, 8)
+  assert.equal(hexFamiliesOf().get('grid')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'grid', program: ['rows'], params: [10, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `grid.rows at ${uuid}`)
-  qpuUuidReceiptOf('grid rows', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('grid rows', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rows 4, gap 48, span 50, fill 25, cells 12, auto 4, aspect 177, density 25; crossing to css')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AGRONOMY — THE SCIENCE OF THE FIELD, AS ARITHMETIC. Growing a crop is numbers: yield per area, the seeds a field takes,
@@ -30,4 +30,4 @@ export class AgronomyFormulas {
 }
 
 for (const name of ['density', 'harvest', 'moisture', 'nitrogen', 'output', 'rotation', 'seedrate', 'tillage'] as const)
-  qpuHexRegisterOf('agronomy', name, (AgronomyFormulas[name] as (...x: unknown[]) => unknown).bind(AgronomyFormulas))
+  hexRegisterOf('agronomy', name, (AgronomyFormulas[name] as (...x: unknown[]) => unknown).bind(AgronomyFormulas))

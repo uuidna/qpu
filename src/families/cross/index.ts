@@ -1,8 +1,8 @@
-import { qpuContentUuidOf, qpuUuidReceiptOf, qpuHexRegisterOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
-import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
-import { qpuContextOf, qpuHexDecodeOf, qpuHexFamiliesOf, qpuHexDiscoverOf } from '../../quantum/processing/unit/index.js'
+import { contentUuidOf, uuidReceiptOf, hexRegisterOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, hexParamMaxOf, latticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
+import { contextOf, hexDecodeOf, hexFamiliesOf, hexDiscoverOf } from '../../quantum/processing/unit/index.js'
 // the lattice names and the three formulas every number here is written in
-const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
+const L = { ...latticeNamesOf(), mintOf, chooseOf, tenOf }
 
 export interface CrossFormula {
   id: string
@@ -42,17 +42,17 @@ export interface DomainBridge {
 // graph fills itself as the families are exercised.
 const BRIDGES = new Map<string, string>()
 /** Each family's domain, as far as the families have sealed a formula — src → dst. A copy, so a caller cannot mutate it. */
-export const qpuCrossBridgesOf = (): Map<string, string> => new Map(BRIDGES)
+export const crossBridgesOf = (): Map<string, string> => new Map(BRIDGES)
 
 // FIND ALL OF A DOMAIN, AUTOMATICALLY AND TOKEN-FREE. The bridges fill only as a formula seals, so this seals every
 // family's first formula once (memoised — a local read on the seed, no MCP tokens, no hand list) then reads the graph.
-// qpuDomainOf('hardware') is every family that crosses to hardware; qpuRelatedOf(f) is f's siblings in its own domain —
+// domainOf('hardware') is every family that crosses to hardware; relatedOf(f) is f's siblings in its own domain —
 // the experts a standardised court convenes from related families.
 let sealed = false
 const sealAll = (): void => {
   if (sealed) return
   sealed = true
-  for (const fs of qpuHexFamiliesOf().values()) {
+  for (const fs of hexFamiliesOf().values()) {
     const f = fs[0]
     if (!f) continue
     const a = f.arity
@@ -66,17 +66,17 @@ export const qpuDomainsOf = (): Record<string, string[]> => { sealAll(); const m
 
 export const crossFormulaOf = (f: Omit<CrossFormula, 'uuid' | 'receipt' | 'holds' | 'hex' | 'hexExact'>, domain = true, call?: { name: string; params: number[] }): CrossFormula => {
   if (f.src && f.dst) BRIDGES.set(f.src, f.dst)
-  const uuid = qpuContentUuidOf({ src: f.src, dst: f.dst, formula: f.formula })
+  const uuid = contentUuidOf({ src: f.src, dst: f.dst, formula: f.formula })
   const holds = domain && Number.isFinite(f.value)
   // the formula's hex program: its handle, call then holds then receipt, its inputs as params when they are naturals that fit
-  const exact = call !== undefined && call.params.length <= 3 && call.params.every((x) => Number.isSafeInteger(x) && x >= 0 && x < qpuHexParamMaxOf(call.params.length))
+  const exact = call !== undefined && call.params.length <= 3 && call.params.every((x) => Number.isSafeInteger(x) && x >= 0 && x < hexParamMaxOf(call.params.length))
   let hex: string | undefined
   try {
     hex = call ? qpuHexUuidOf({ family: call.name.split('.')[0]!, program: [call.name.split('.')[1]!], params: exact ? call.params : [] }) : undefined
   } catch {
     hex = undefined
   }
-  return { ...f, uuid, holds, hex, hexExact: Boolean(hex) && exact, receipt: qpuUuidReceiptOf(`cross ${f.id}`, uuid, { value: f.value, holds }).uuid }
+  return { ...f, uuid, holds, hex, hexExact: Boolean(hex) && exact, receipt: uuidReceiptOf(`cross ${f.id}`, uuid, { value: f.value, holds }).uuid }
 }
 const nat = (...xs: number[]): boolean => xs.every((x) => Number.isFinite(x) && x >= 0)
 
@@ -208,7 +208,7 @@ export const crossDomainFormulas = new CrossDomainFormulas()
 // every bridge is a formula of the hex family `cross`, indexed by name
 for (const name of Object.getOwnPropertyNames(CrossDomainFormulas)) {
   const fn = (CrossDomainFormulas as unknown as Record<string, unknown>)[name]
-  if (typeof fn === 'function' && name !== 'allBridges') qpuHexRegisterOf('cross', name, (fn as (...x: unknown[]) => unknown).bind(CrossDomainFormulas))
+  if (typeof fn === 'function' && name !== 'allBridges') hexRegisterOf('cross', name, (fn as (...x: unknown[]) => unknown).bind(CrossDomainFormulas))
 }
 
 /**
@@ -225,10 +225,10 @@ for (const name of Object.getOwnPropertyNames(CrossDomainFormulas)) {
  * @evidence crossSchemaHolds
  */
 export const crossSchemaOf = (family: string) => {
-  const formulas = qpuHexFamiliesOf().get(family) ?? []
-  const id = qpuContentUuidOf({ schema: family, terms: formulas.map((t) => t.name) })
+  const formulas = hexFamiliesOf().get(family) ?? []
+  const id = contentUuidOf({ schema: family, terms: formulas.map((t) => t.name) })
   return {
-    '@context': qpuContextOf(),
+    '@context': contextOf(),
     '@type': 'DefinedTermSet' as const,
     '@id': `urn:uuid:${id}`,
     name: family,
@@ -249,7 +249,7 @@ export const crossSchemaHolds = (family = 'cross'): boolean => {
     s['@id'] === `urn:uuid:${s.identifier}` &&
     s.hasDefinedTerm.length > 0 &&
     s.hasDefinedTerm.every((term) => {
-      const d = qpuHexDecodeOf(term.identifier) as { family?: string | null; program?: string[] }
+      const d = hexDecodeOf(term.identifier) as { family?: string | null; program?: string[] }
       return d.family === family && Array.isArray(d.program) && d.program[0] === term.termCode
     })
   )
@@ -266,10 +266,10 @@ export const crossSchemaHolds = (family = 'cross'): boolean => {
  * @evidence crossSchemasHolds
  */
 export const crossSchemasOf = () => {
-  const families = [...qpuHexFamiliesOf().keys()].sort()
-  const id = qpuContentUuidOf({ catalog: 'families', families })
+  const families = [...hexFamiliesOf().keys()].sort()
+  const id = contentUuidOf({ catalog: 'families', families })
   return {
-    '@context': qpuContextOf(),
+    '@context': contextOf(),
     '@type': 'DataCatalog' as const,
     '@id': `urn:uuid:${id}`,
     name: 'uuidna families',
@@ -293,7 +293,7 @@ export const crossSchemasHolds = (): boolean => {
 /**
  * ORGANISE THE DISCOVERED RELATIONS AS ONE SCHEMA.ORG SCHEMA.
  *
- * The formulas discover each other (qpuHexDiscoverOf): no list is kept, every family's formulas are evaluated over the
+ * The formulas discover each other (hexDiscoverOf): no list is kept, every family's formulas are evaluated over the
  * lattice's own constants and each value two or more families reach is a relation. schema.org already has the type for a
  * vocabulary of addressed terms — a DefinedTermSet whose DefinedTerms are the relations. Each term is addressed by the
  * hex-program UUID of a way that reaches it, so the schema is not written beside the discovery but is the discovery's own
@@ -306,10 +306,10 @@ export const crossSchemasHolds = (): boolean => {
 export const crossDiscoverSchemaOf = () => {
   // the discoverer covers every hex family (a split walk under the hood when they outgrow one window); here the whole
   // discovery is consolidated as one schema.org set, so the lattice's relations are a standard-schema document too.
-  const relations = qpuHexDiscoverOf().relations
-  const id = qpuContentUuidOf({ schema: 'discover', values: relations.map((r) => r.value) })
+  const relations = hexDiscoverOf().relations
+  const id = contentUuidOf({ schema: 'discover', values: relations.map((r) => r.value) })
   return {
-    '@context': qpuContextOf(),
+    '@context': contextOf(),
     '@type': 'DefinedTermSet' as const,
     '@id': `urn:uuid:${id}`,
     name: 'discovered relations',
@@ -327,14 +327,14 @@ export const crossDiscoverSchemaOf = () => {
 /** The schema is schema.org-shaped and each term's address decodes to a way whose family is one the relation joins. */
 export const crossDiscoverSchemaHolds = (): boolean => {
   const s = crossDiscoverSchemaOf()
-  const byValue = new Map(qpuHexDiscoverOf().relations.map((r) => [r.value, r.families]))
+  const byValue = new Map(hexDiscoverOf().relations.map((r) => [r.value, r.families]))
   return (
     s['@context'][0] === 'https://schema.org' &&
     s['@type'] === 'DefinedTermSet' &&
     s['@id'] === `urn:uuid:${s.identifier}` &&
     s.hasDefinedTerm.length > 0 &&
     s.hasDefinedTerm.every((t) => {
-      const d = qpuHexDecodeOf(t.identifier) as { family?: string | null; holds?: boolean }
+      const d = hexDecodeOf(t.identifier) as { family?: string | null; holds?: boolean }
       return d.holds === true && d.family != null && (byValue.get(t.termCode) ?? []).includes(d.family)
     })
   )

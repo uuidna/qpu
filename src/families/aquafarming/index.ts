@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AQUAFARMING — RAISING FISH IN TANKS AND PONDS, AS ARITHMETIC. Running a farm is numbers: how densely a tank is stocked,
@@ -31,4 +31,4 @@ export class AquafarmingFormulas {
 }
 
 for (const name of ['biomass', 'feedrate', 'growthrate', 'harvestweight', 'oxygendemand', 'stockingdensity', 'survivalrate', 'waterexchange'] as const)
-  qpuHexRegisterOf('aquafarming', name, (AquafarmingFormulas[name] as (...x: unknown[]) => unknown).bind(AquafarmingFormulas))
+  hexRegisterOf('aquafarming', name, (AquafarmingFormulas[name] as (...x: unknown[]) => unknown).bind(AquafarmingFormulas))

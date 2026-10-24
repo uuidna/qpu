@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CampaignFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('campaign: reach, impressions, frequency, ctr, cpm, cpc, engagement, roi â€
   assert.equal(CampaignFormulas.roi(15000, 5000).value, 200, 'two hundred percent return')
   assert.equal(CampaignFormulas.roi(3000, 5000).value, 0)
   assert.equal(CampaignFormulas.reach(50000, 60).dst, 'marketing')
-  assert.equal(qpuHexFamiliesOf().get('campaign')?.length, 8)
+  assert.equal(hexFamiliesOf().get('campaign')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'campaign', program: ['reach'], params: [50000, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30000, `campaign.reach at ${uuid}`)
-  qpuUuidReceiptOf('campaign reach', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('campaign reach', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; reach 30000, impressions 90000, frequency 3, ctr 100, cpm 100, cpc 10, engagement 5, roi 200; crossing to marketing')
 })

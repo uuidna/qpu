@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BAROMETRY — AIR PRESSURE AS ARITHMETIC (chosen by the public-API registry, not by hand). Reading the barometer is
@@ -31,4 +31,4 @@ export class BarometryFormulas {
 }
 
 for (const name of ['altitudepressure', 'inchesmercury', 'millibars', 'pressuregradient', 'sealevel', 'stationpressure', 'tendency', 'trend'] as const)
-  qpuHexRegisterOf('barometry', name, (BarometryFormulas[name] as (...x: unknown[]) => unknown).bind(BarometryFormulas))
+  hexRegisterOf('barometry', name, (BarometryFormulas[name] as (...x: unknown[]) => unknown).bind(BarometryFormulas))

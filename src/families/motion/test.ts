@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MotionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('motion: duration, frames, fps, delay, stagger, total, progress, easing —
   assert.equal(MotionFormulas.progress(150, 300).value, 50, 'halfway')
   assert.equal(MotionFormulas.easing(12).value, 12)
   assert.equal(MotionFormulas.duration(0).dst, 'css')
-  assert.equal(qpuHexFamiliesOf().get('motion')?.length, 8)
+  assert.equal(hexFamiliesOf().get('motion')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'motion', program: ['frames'], params: [1000, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `motion.frames at ${uuid}`)
-  qpuUuidReceiptOf('motion frames', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('motion frames', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; duration 75/1000/0, frames 60, fps 60, delay 300, stagger 250, total 450, progress 50, easing 12; crossing to css')
 })

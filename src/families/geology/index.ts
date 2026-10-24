@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GEOLOGY — THE EARTH, AS ARITHMETIC (chosen by the public-API registry, not by hand). Reading the ground is numbers:
@@ -30,4 +30,4 @@ export class GeologyFormulas {
 }
 
 for (const name of ['age', 'density', 'depth', 'erosion', 'grade', 'magnitude', 'porosity', 'strata'] as const)
-  qpuHexRegisterOf('geology', name, (GeologyFormulas[name] as (...x: unknown[]) => unknown).bind(GeologyFormulas))
+  hexRegisterOf('geology', name, (GeologyFormulas[name] as (...x: unknown[]) => unknown).bind(GeologyFormulas))

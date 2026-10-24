@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ESCHATOLOGY — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class EschatologyFormulas {
 }
 
 for (const name of ['cyclelength', 'intervalspan', 'numbersum', 'outcomechoices', 'scenariocombos', 'stageorderings', 'symbolcount', 'tribulationphases'] as const)
-  qpuHexRegisterOf('eschatology', name, (EschatologyFormulas[name] as (...x: unknown[]) => unknown).bind(EschatologyFormulas))
+  hexRegisterOf('eschatology', name, (EschatologyFormulas[name] as (...x: unknown[]) => unknown).bind(EschatologyFormulas))

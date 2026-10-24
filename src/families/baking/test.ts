@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BakingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('baking: hydration, leavening, bakerspercent, ovenspring, crumb, proof, tem
   assert.equal(BakingFormulas.temperature(212).value, 100, 'boiling in Celsius')
   assert.equal(BakingFormulas.scaling(500, 3).value, 1500, 'flour for three loaves')
   assert.equal(BakingFormulas.hydration(70, 100).dst, 'cuisine')
-  assert.equal(qpuHexFamiliesOf().get('baking')?.length, 8)
+  assert.equal(hexFamiliesOf().get('baking')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'baking', program: ['hydration'], params: [70, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 70, `baking.hydration at ${uuid}`)
-  qpuUuidReceiptOf('baking hydration', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('baking hydration', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; hydration 70, leavening 200, bakerspercent 2, ovenspring 20, crumb 2, proof 3, temperature 100, scaling 1500; crossing to cuisine')
 })

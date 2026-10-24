@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REDUNDANCY — KEEPING A SYSTEM UP BY HAVING MORE THAN IT NEEDS, AS ARITHMETIC. Spare units, majority votes, quorum
@@ -31,4 +31,4 @@ export class RedundancyFormulas {
 }
 
 for (const name of ['activepassive', 'coverage', 'failover', 'nplusone', 'parallelreliability', 'quorum', 'sparecount', 'votingthreshold'] as const)
-  qpuHexRegisterOf('redundancy', name, (RedundancyFormulas[name] as (...x: unknown[]) => unknown).bind(RedundancyFormulas))
+  hexRegisterOf('redundancy', name, (RedundancyFormulas[name] as (...x: unknown[]) => unknown).bind(RedundancyFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HOSTING — WEB HOSTING AS ARITHMETIC (chosen by the public-API registry, not by hand). Serving sites is numbers: the
@@ -31,4 +31,4 @@ export class HostingFormulas {
 }
 
 for (const name of ['bandwidth', 'dns', 'domains', 'overage', 'ssl', 'storage', 'traffic', 'uptime'] as const)
-  qpuHexRegisterOf('hosting', name, (HostingFormulas[name] as (...x: unknown[]) => unknown).bind(HostingFormulas))
+  hexRegisterOf('hosting', name, (HostingFormulas[name] as (...x: unknown[]) => unknown).bind(HostingFormulas))

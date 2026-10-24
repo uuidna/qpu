@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PRINTMAKING — scaffolded integer measures crossed to materials. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PrintmakingFormulas {
 }
 
 for (const name of ['colorsubsets', 'editionsize', 'impressionorderings', 'inkcombos', 'platepasses', 'pressuresetting', 'registrationlayers', 'yieldratio'] as const)
-  qpuHexRegisterOf('printmaking', name, (PrintmakingFormulas[name] as (...x: unknown[]) => unknown).bind(PrintmakingFormulas))
+  hexRegisterOf('printmaking', name, (PrintmakingFormulas[name] as (...x: unknown[]) => unknown).bind(PrintmakingFormulas))

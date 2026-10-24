@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ETYMOLOGY — THE HISTORY OF WORDS, AS ARITHMETIC (chosen by the comparative registry, not by hand). The descent of words is
@@ -31,4 +31,4 @@ export class EtymologyFormulas {
 }
 
 for (const name of ['attestationage', 'borrowingshare', 'cognaterate', 'derivationchain', 'loanratio', 'reconstructionscore', 'rootdepth', 'soundchange'] as const)
-  qpuHexRegisterOf('etymology', name, (EtymologyFormulas[name] as (...x: unknown[]) => unknown).bind(EtymologyFormulas))
+  hexRegisterOf('etymology', name, (EtymologyFormulas[name] as (...x: unknown[]) => unknown).bind(EtymologyFormulas))

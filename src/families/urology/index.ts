@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** UROLOGY — THE URINARY TRACT AS ARITHMETIC (chosen by the clinical registry, not by hand). Measuring the tract is numbers:
@@ -30,4 +30,4 @@ export class UrologyFormulas {
 }
 
 for (const name of ['concentration', 'continence', 'flowrate', 'frequency', 'output', 'psa', 'residual', 'stone'] as const)
-  qpuHexRegisterOf('urology', name, (UrologyFormulas[name] as (...x: unknown[]) => unknown).bind(UrologyFormulas))
+  hexRegisterOf('urology', name, (UrologyFormulas[name] as (...x: unknown[]) => unknown).bind(UrologyFormulas))

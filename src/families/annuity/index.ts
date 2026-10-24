@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ANNUITY — A STREAM OF LEVEL PAYMENTS, AS ARITHMETIC (chosen by the public-API registry, not by hand). A loan or a savings
@@ -31,4 +31,4 @@ export class AnnuityFormulas {
 }
 
 for (const name of ['balance', 'futurevalue', 'interestportion', 'payment', 'periods', 'presentvalue', 'principalportion', 'totalpaid'] as const)
-  qpuHexRegisterOf('annuity', name, (AnnuityFormulas[name] as (...x: unknown[]) => unknown).bind(AnnuityFormulas))
+  hexRegisterOf('annuity', name, (AnnuityFormulas[name] as (...x: unknown[]) => unknown).bind(AnnuityFormulas))

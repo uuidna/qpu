@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MechanicalFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('mechanical: torque, power, stress, strain, gear, efficiency, thermal, spri
   assert.equal(MechanicalFormulas.thermal(1000, 25).value, 40)
   assert.equal(MechanicalFormulas.spring(500, 10).value, 50, 'spring rate')
   assert.equal(MechanicalFormulas.torque(100, 5).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('mechanical')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mechanical')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mechanical', program: ['torque'], params: [100, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 500, `mechanical.torque at ${uuid}`)
-  qpuUuidReceiptOf('mechanical torque', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mechanical torque', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; torque 500, power 1000, stress 50, strain 5, gear 300, efficiency 80, thermal 40, spring 50; crossing to materials')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RASTER — THE BITMAP IMAGE AS ARITHMETIC. A raster image is numbers: the pixels a frame holds, its resolution in
@@ -31,4 +31,4 @@ export class RasterFormulas {
 }
 
 for (const name of ['aspectratio', 'bitdepth', 'compression', 'dpi', 'filesize', 'megapixels', 'pixels', 'scaling'] as const)
-  qpuHexRegisterOf('raster', name, (RasterFormulas[name] as (...x: unknown[]) => unknown).bind(RasterFormulas))
+  hexRegisterOf('raster', name, (RasterFormulas[name] as (...x: unknown[]) => unknown).bind(RasterFormulas))

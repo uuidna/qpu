@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DividendFormulas — 8 exact-integer formulas of the dividend domain, each at a hex address crossing to cross; develops the dividend leads. */
@@ -31,4 +31,4 @@ export class DividendFormulas {
 }
 
 for (const name of ['combos', 'exdates', 'frequency', 'growth', 'payout', 'pershare', 'total', 'yield'] as const)
-  qpuHexRegisterOf('dividend', name, (DividendFormulas[name] as (...x: unknown[]) => unknown).bind(DividendFormulas))
+  hexRegisterOf('dividend', name, (DividendFormulas[name] as (...x: unknown[]) => unknown).bind(DividendFormulas))

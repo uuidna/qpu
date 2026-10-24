@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OpticsFormulas — 8 exact-integer formulas of the optics domain, each at a hex address crossing to cross; develops the optics leads. */
@@ -31,4 +31,4 @@ export class OpticsFormulas {
 }
 
 for (const name of ['aperturesteps', 'dpi', 'elements', 'fnumber', 'fov', 'magnify', 'megapixels', 'resolution'] as const)
-  qpuHexRegisterOf('optics', name, (OpticsFormulas[name] as (...x: unknown[]) => unknown).bind(OpticsFormulas))
+  hexRegisterOf('optics', name, (OpticsFormulas[name] as (...x: unknown[]) => unknown).bind(OpticsFormulas))

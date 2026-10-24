@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DEPRECIATION — THE BOOKS' FALL IN VALUE, AS ARITHMETIC (chosen by the asset registry, not by hand). An asset losing
@@ -31,4 +31,4 @@ export class DepreciationFormulas {
 }
 
 for (const name of ['accumulated', 'bookvalue', 'decliningbalance', 'rate', 'remaining', 'salvage', 'straightline', 'unitsofproduction'] as const)
-  qpuHexRegisterOf('depreciation', name, (DepreciationFormulas[name] as (...x: unknown[]) => unknown).bind(DepreciationFormulas))
+  hexRegisterOf('depreciation', name, (DepreciationFormulas[name] as (...x: unknown[]) => unknown).bind(DepreciationFormulas))

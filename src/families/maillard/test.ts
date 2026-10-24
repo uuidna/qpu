@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MaillardFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('maillard: reactionrate, browningindex, temperaturefactor, aminosugarratio,
   assert.equal(MaillardFormulas.timetocolor(300, 5).value, 60)
   assert.equal(MaillardFormulas.crustthickness(10, 3).value, 7)
   assert.equal(MaillardFormulas.reactionrate(75, 100).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('maillard')?.length, 8)
+  assert.equal(hexFamiliesOf().get('maillard')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'maillard', program: ['reactionrate'], params: [75, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `maillard.reactionrate at ${uuid}`)
-  qpuUuidReceiptOf('maillard reactionrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('maillard reactionrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; reactionrate 75, browningindex 72, temperaturefactor 6, aminosugarratio 66, flavorcompounds 96, phfactor 7, timetocolor 60, crustthickness 7; crossing to chemistry')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MOSAIC — scaffolded integer measures crossed to geometry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MosaicFormulas {
 }
 
 for (const name of ['colorcombos', 'coverage', 'gridcells', 'groutratio', 'symmetryorderings', 'tessellationangle', 'tilecount', 'tilesubsets'] as const)
-  qpuHexRegisterOf('mosaic', name, (MosaicFormulas[name] as (...x: unknown[]) => unknown).bind(MosaicFormulas))
+  hexRegisterOf('mosaic', name, (MosaicFormulas[name] as (...x: unknown[]) => unknown).bind(MosaicFormulas))

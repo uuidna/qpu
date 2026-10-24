@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ReverbFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('reverb: rt60, earlyreflections, decaytime, predelay, diffusion, dampingrat
   assert.equal(ReverbFormulas.roommodes(340, 5).value, 34, 'the fundamental room mode')
   assert.equal(ReverbFormulas.wetdrymix(30, 70).value, 30, 'wet share of the mix')
   assert.equal(ReverbFormulas.rt60(1000, 20).dst, 'acoustics')
-  assert.equal(qpuHexFamiliesOf().get('reverb')?.length, 8)
+  assert.equal(hexFamiliesOf().get('reverb')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'reverb', program: ['roommodes'], params: [340, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 34, `reverb.roommodes at ${uuid}`)
-  qpuUuidReceiptOf('reverb roommodes', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('reverb roommodes', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rt60 80, earlyreflections 100, decaytime 30, predelay 50, diffusion 70, dampingratio 75, roommodes 34, wetdrymix 30; crossing to acoustics')
 })

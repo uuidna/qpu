@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FORGING — SHAPING METAL UNDER LOAD, AS ARITHMETIC. A press deforms a billet and the shop floor is numbers: the force a
@@ -31,4 +31,4 @@ export class ForgingFormulas {
 }
 
 for (const name of ['dieload', 'draft', 'energy', 'flowstress', 'force', 'reduction', 'strain', 'upsetratio'] as const)
-  qpuHexRegisterOf('forging', name, (ForgingFormulas[name] as (...x: unknown[]) => unknown).bind(ForgingFormulas))
+  hexRegisterOf('forging', name, (ForgingFormulas[name] as (...x: unknown[]) => unknown).bind(ForgingFormulas))

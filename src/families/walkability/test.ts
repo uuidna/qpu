@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WalkabilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('walkability: walkscore, amenityaccess, sidewalkratio, crossingdensity, wal
   assert.equal(WalkabilityFormulas.transitproximity(200, 800).value, 75)
   assert.equal(WalkabilityFormulas.slopepenalty(8, 100).value, 8, 'an eight percent grade')
   assert.equal(WalkabilityFormulas.walkscore(45, 50).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('walkability')?.length, 8)
+  assert.equal(hexFamiliesOf().get('walkability')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'walkability', program: ['walkscore'], params: [45, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `walkability.walkscore at ${uuid}`)
-  qpuUuidReceiptOf('walkability walkscore', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('walkability walkscore', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; walkscore 90, amenityaccess 75, sidewalkratio 90, crossingdensity 6, walkshed 1200, pedestriansafety 95, transitproximity 75, slopepenalty 8; crossing to sociology')
 })

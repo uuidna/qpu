@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GlobalFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('global: fields, locales, versions, size, access, cached, depth, populated 
   assert.equal(GlobalFormulas.depth(3).value, 3)
   assert.equal(GlobalFormulas.populated(8, 10).value, 80)
   assert.equal(GlobalFormulas.fields(7).dst, 'payload')
-  assert.equal(qpuHexFamiliesOf().get('global')?.length, 8)
+  assert.equal(hexFamiliesOf().get('global')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'global', program: ['size'], params: [12, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 36, `global.size at ${uuid}`)
-  qpuUuidReceiptOf('global size', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('global size', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; fields 7, locales 99, versions 5, size 36, access 75, cached 90, depth 3, populated 80; crossing to payload')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CatalystFormulas — 8 exact-integer formulas of the catalyst domain, each at a hex address crossing to cross; develops the catalyst leads. */
@@ -31,4 +31,4 @@ export class CatalystFormulas {
 }
 
 for (const name of ['activation', 'combos', 'cycles', 'efficiency', 'loading', 'selectivity', 'sites', 'turnover'] as const)
-  qpuHexRegisterOf('catalyst', name, (CatalystFormulas[name] as (...x: unknown[]) => unknown).bind(CatalystFormulas))
+  hexRegisterOf('catalyst', name, (CatalystFormulas[name] as (...x: unknown[]) => unknown).bind(CatalystFormulas))

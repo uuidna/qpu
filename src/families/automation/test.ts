@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AutomationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('automation: throughput, uptime, cycletime, errorrate, savings, oee, paybac
   assert.equal(AutomationFormulas.payback(10000, 500).value, 20, 'runs to pay back')
   assert.equal(AutomationFormulas.coverage(750, 1000).value, 75)
   assert.equal(AutomationFormulas.throughput(600, 8).dst, 'robotics')
-  assert.equal(qpuHexFamiliesOf().get('automation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('automation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'automation', program: ['oee'], params: [90, 80] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 72, `automation.oee at ${uuid}`)
-  qpuUuidReceiptOf('automation oee', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('automation oee', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; throughput 75, uptime 99, cycletime 60, errorrate 0, savings 32, oee 72, payback 20, coverage 75; crossing to robotics')
 })

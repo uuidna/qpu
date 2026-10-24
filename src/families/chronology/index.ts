@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHRONOLOGY — scaffolded integer measures crossed to archaeology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ChronologyFormulas {
 }
 
 for (const name of ['datingerror', 'epochdivisions', 'eventorderings', 'overlapwindows', 'periodcount', 'sequencechoices', 'synchronisms', 'yearspan'] as const)
-  qpuHexRegisterOf('chronology', name, (ChronologyFormulas[name] as (...x: unknown[]) => unknown).bind(ChronologyFormulas))
+  hexRegisterOf('chronology', name, (ChronologyFormulas[name] as (...x: unknown[]) => unknown).bind(ChronologyFormulas))

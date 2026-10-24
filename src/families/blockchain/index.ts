@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BLOCKCHAIN — A LEDGER AS ARITHMETIC (chosen by the public-API registry, not by hand). A chain is numbers: transactions
@@ -31,4 +31,4 @@ export class BlockchainFormulas {
 }
 
 for (const name of ['blocktime', 'confirmation', 'difficulty', 'fee', 'finality', 'merkle', 'stake', 'throughput'] as const)
-  qpuHexRegisterOf('blockchain', name, (BlockchainFormulas[name] as (...x: unknown[]) => unknown).bind(BlockchainFormulas))
+  hexRegisterOf('blockchain', name, (BlockchainFormulas[name] as (...x: unknown[]) => unknown).bind(BlockchainFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DISPATCH — scaffolded integer measures crossed to logistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DispatchFormulas {
 }
 
 for (const name of ['assignmentrate', 'backlog', 'coverage', 'idletime', 'jobspershift', 'overtimeratio', 'queuewait', 'responsetime'] as const)
-  qpuHexRegisterOf('dispatch', name, (DispatchFormulas[name] as (...x: unknown[]) => unknown).bind(DispatchFormulas))
+  hexRegisterOf('dispatch', name, (DispatchFormulas[name] as (...x: unknown[]) => unknown).bind(DispatchFormulas))

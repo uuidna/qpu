@@ -142,7 +142,8 @@ export const teachingLeadsOf = ({ origin, school }) => {
 export const teachingNoteOf = ({ school }) => {
   if (!school) return 'train carried no school reading'
   const seated = school.seating?.seated ?? []
-  const reading = school.reading ?? []
+  // the host answers the teaching reading as a recognition, not always as a list: a non-list reading has no rows to count
+  const reading = Array.isArray(school.reading) ? school.reading : []
   const applied = reading.filter((row) => row.swap === 'application').length
   const entangled = reading.length - applied
   /* The share that teach both ways is the only figure here that does not move when a name is added to the
@@ -452,7 +453,9 @@ if (invoked) {
     const res = await get(`${origin}${catalog}`, {
       accept: 'application/json',
       method: 'POST',
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),
+      // { full: true } asks for the whole document; without it a door answers its recognition summary, and the
+      // lists this gatherer reads (seating, crowded) arrive as summaries rather than arrays.
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: { ...args, full: true } } }),
     })
     const shown = res.body?.result?.structuredContent ?? res.body?.result
     return {

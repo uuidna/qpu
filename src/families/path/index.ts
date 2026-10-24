@@ -1,7 +1,7 @@
-import { qpuContentUuidOf, qpuUuidReceiptOf, qpuHexRegisterOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
-import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
+import { contentUuidOf, uuidReceiptOf, hexRegisterOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, latticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
 // the lattice names and the three formulas every number here is written in
-const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
+const L = { ...latticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** The STANDARD of this family: every path carries this proof on its receipt. */
 const PROOF = 'a multi-hop path across domains: a real chain of two or more hops whose transform composes to a finite value; the cross-domain formula network walked hop by hop'
@@ -36,8 +36,8 @@ export interface MultihopResult {
  * @kind builder
  */
 export const domainPathOf = (p: DomainPath): DomainPath => {
-  const uuid = qpuContentUuidOf({ hops: p.hops, formula: p.formula, proof: PROOF })
-  return { ...p, uuid, holds: pathHolds(p), receipt: qpuUuidReceiptOf(`path ${p.hops.join('>')}`, uuid, p.value ?? null).uuid }
+  const uuid = contentUuidOf({ hops: p.hops, formula: p.formula, proof: PROOF })
+  return { ...p, uuid, holds: pathHolds(p), receipt: uuidReceiptOf(`path ${p.hops.join('>')}`, uuid, p.value ?? null).uuid }
 }
 
 /**
@@ -154,6 +154,6 @@ export const crossDomainPaths = new CrossDomainPaths()
 
 // every path is a formula of the hex family `path`
 const pathNames = Object.getOwnPropertyNames(CrossDomainPaths).filter((k) => typeof (CrossDomainPaths as unknown as Record<string, unknown>)[k] === 'function')
-for (const name of pathNames) qpuHexRegisterOf('path', name, (CrossDomainPaths as unknown as Record<string, () => unknown>)[name]!.bind(CrossDomainPaths))
+for (const name of pathNames) hexRegisterOf('path', name, (CrossDomainPaths as unknown as Record<string, () => unknown>)[name]!.bind(CrossDomainPaths))
 /** The hex program that returns a named path. @wing fusion @kind function */
 export const pathHexOf = (name: string): string => qpuHexUuidOf({ family: 'path', program: [name] })

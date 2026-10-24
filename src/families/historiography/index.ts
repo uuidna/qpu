@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HISTORIOGRAPHY — scaffolded integer measures crossed to sociology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HistoriographyFormulas {
 }
 
 for (const name of ['biasfactors', 'consensuslevel', 'crosschecks', 'interpretiveframes', 'narrativeorderings', 'periodizations', 'revisionspan', 'sourcecount'] as const)
-  qpuHexRegisterOf('historiography', name, (HistoriographyFormulas[name] as (...x: unknown[]) => unknown).bind(HistoriographyFormulas))
+  hexRegisterOf('historiography', name, (HistoriographyFormulas[name] as (...x: unknown[]) => unknown).bind(HistoriographyFormulas))

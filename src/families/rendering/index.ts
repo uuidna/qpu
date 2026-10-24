@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RENDERING — THE FRAME, AS ARITHMETIC (chosen by the public-API registry, not by hand). Drawing a picture is numbers:
@@ -31,4 +31,4 @@ export class RenderingFormulas {
 }
 
 for (const name of ['culling', 'fillrate', 'fps', 'latency', 'pixels', 'raytracing', 'shading', 'triangles'] as const)
-  qpuHexRegisterOf('rendering', name, (RenderingFormulas[name] as (...x: unknown[]) => unknown).bind(RenderingFormulas))
+  hexRegisterOf('rendering', name, (RenderingFormulas[name] as (...x: unknown[]) => unknown).bind(RenderingFormulas))

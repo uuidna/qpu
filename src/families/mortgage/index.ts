@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MORTGAGE — HOME LENDING AS ARITHMETIC. A loan on a house is numbers: loan-to-value, debt-to-income, the cash down, the
@@ -30,4 +30,4 @@ export class MortgageFormulas {
 }
 
 for (const name of ['affordability', 'downpayment', 'dti', 'equity', 'interestportion', 'ltv', 'pmi', 'principal'] as const)
-  qpuHexRegisterOf('mortgage', name, (MortgageFormulas[name] as (...x: unknown[]) => unknown).bind(MortgageFormulas))
+  hexRegisterOf('mortgage', name, (MortgageFormulas[name] as (...x: unknown[]) => unknown).bind(MortgageFormulas))

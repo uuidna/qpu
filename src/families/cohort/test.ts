@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CohortFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cohort: retention, size, engagement, revenue, stickiness, maturation, comp
   assert.equal(CohortFormulas.comparison(120, 100).value, 120)
   assert.equal(CohortFormulas.decay(700, 1000).value, 70)
   assert.equal(CohortFormulas.retention(850, 1000).dst, 'analytics')
-  assert.equal(qpuHexFamiliesOf().get('cohort')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cohort')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cohort', program: ['retention'], params: [850, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 85, `cohort.retention at ${uuid}`)
-  qpuUuidReceiptOf('cohort retention', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cohort retention', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; retention 85, size 1000, engagement 60, revenue 50, stickiness 30, maturation 100, comparison 120, decay 70; crossing to analytics')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GIS — GEOGRAPHIC INFORMATION SYSTEMS, AS ARITHMETIC. Space is numbers: the area of a tile, feature density, a buffer
@@ -30,4 +30,4 @@ export class GisFormulas {
 }
 
 for (const name of ['accuracy', 'area', 'buffer', 'density', 'overlay', 'proximity', 'resolution', 'slope'] as const)
-  qpuHexRegisterOf('gis', name, (GisFormulas[name] as (...x: unknown[]) => unknown).bind(GisFormulas))
+  hexRegisterOf('gis', name, (GisFormulas[name] as (...x: unknown[]) => unknown).bind(GisFormulas))

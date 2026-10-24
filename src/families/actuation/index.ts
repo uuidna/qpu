@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACTUATION — MOVING THE WORLD, AS ARITHMETIC (chosen by the public-API registry, not by hand). Driving a load is
@@ -31,4 +31,4 @@ export class ActuationFormulas {
 }
 
 for (const name of ['backlash', 'dutycycle', 'force', 'holdingtorque', 'responsetime', 'stiffness', 'stroke', 'thrust'] as const)
-  qpuHexRegisterOf('actuation', name, (ActuationFormulas[name] as (...x: unknown[]) => unknown).bind(ActuationFormulas))
+  hexRegisterOf('actuation', name, (ActuationFormulas[name] as (...x: unknown[]) => unknown).bind(ActuationFormulas))

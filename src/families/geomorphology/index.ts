@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GEOMORPHOLOGY — THE SHAPE OF THE LAND, AS ARITHMETIC. Reading a landscape is numbers: the slope of a hillside, how much
@@ -31,4 +31,4 @@ export class GeomorphologyFormulas {
 }
 
 for (const name of ['drainage', 'erosion', 'incision', 'relief', 'sediment', 'sinuosity', 'slope', 'weathering'] as const)
-  qpuHexRegisterOf('geomorphology', name, (GeomorphologyFormulas[name] as (...x: unknown[]) => unknown).bind(GeomorphologyFormulas))
+  hexRegisterOf('geomorphology', name, (GeomorphologyFormulas[name] as (...x: unknown[]) => unknown).bind(GeomorphologyFormulas))

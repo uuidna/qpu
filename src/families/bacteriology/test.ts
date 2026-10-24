@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BacteriologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('bacteriology: generationtime, cfu, dilution, growthrate, mic, biofilm, via
   assert.equal(BacteriologyFormulas.viability(750, 1000).value, 75, 'percent viable')
   assert.equal(BacteriologyFormulas.doublings(100, 3).value, 800, 'eightfold after three doublings')
   assert.equal(BacteriologyFormulas.generationtime(120, 6).dst, 'microbiology')
-  assert.equal(qpuHexFamiliesOf().get('bacteriology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('bacteriology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'bacteriology', program: ['doublings'], params: [100, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 800, `bacteriology.doublings at ${uuid}`)
-  qpuUuidReceiptOf('bacteriology doublings', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('bacteriology doublings', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; generationtime 20, cfu 50000, dilution 100, growthrate 3, mic 64, biofilm 5000, viability 75, doublings 800; crossing to microbiology')
 })

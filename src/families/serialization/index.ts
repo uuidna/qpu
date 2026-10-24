@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SERIALIZATION — TURNING STRUCTURE INTO BYTES, AS ARITHMETIC (chosen by the wire-format registry, not by hand). Writing
@@ -31,4 +31,4 @@ export class SerializationFormulas {
 }
 
 for (const name of ['batch', 'delta', 'encoding', 'framing', 'overhead', 'payload', 'schema', 'throughput'] as const)
-  qpuHexRegisterOf('serialization', name, (SerializationFormulas[name] as (...x: unknown[]) => unknown).bind(SerializationFormulas))
+  hexRegisterOf('serialization', name, (SerializationFormulas[name] as (...x: unknown[]) => unknown).bind(SerializationFormulas))

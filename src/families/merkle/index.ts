@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MERKLE — scaffolded integer measures crossed to graphtheory. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MerkleFormulas {
 }
 
 for (const name of ['hashcombos', 'leaves', 'nodecount', 'proofsize', 'rootpaths', 'siblingpairs', 'treeheight', 'verificationsteps'] as const)
-  qpuHexRegisterOf('merkle', name, (MerkleFormulas[name] as (...x: unknown[]) => unknown).bind(MerkleFormulas))
+  hexRegisterOf('merkle', name, (MerkleFormulas[name] as (...x: unknown[]) => unknown).bind(MerkleFormulas))

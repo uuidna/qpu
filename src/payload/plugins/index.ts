@@ -4,7 +4,7 @@ export { postQuantumUpgradeOf, upgradePlugin } from './upgrade.js'
 export { clayPrizeOf, claySealReadingsOf, openMathScaleOf, type ClaySealReading } from './clay.js'
 export { clayVideosOf, videoParseOf, videoParserOf, videoPlugin } from './video.js'
 export { domainReadingsOf, domainsPlugin } from './domains.js'
-export { connectorAnswerOf, connectorExamOf, connectorUseOf, permaAnswerOf, permaManOf, permaTenantOf, permaculturePlugin, permacultureVisionOf, publicConnectorOf, valueForMoneyOf } from './permaculture.js'
+export { connectorAnswerOf, connectorExamOf, connectorUseOf, permaTenantOf, publicConnectorOf, valueForMoneyOf } from './connector.js'
 export { raidCompareOf, raidCompareHolds, type RaidClaimRow } from './raid-compare.js'
 export {
   VERBOSITY_CAP,
@@ -178,5 +178,5 @@ import { CLOUDFLARE_PLUGINS } from '../../deployment/payload-cloudflare.js'
  *  surface plugins the generator emits are in every combination; the key names the optional official subset. */
 export const fusedPluginsOf = () => ({
   axis: [...CLOUDFLARE_PLUGINS],
-  always: ['editor', 'admin', 'collection', 'global', 'cors', 'typescript', 'seed', 'billing', 'upgrade', 'video', 'domains', 'permaculture', 'public', 'wave'] as const,
+  always: ['editor', 'admin', 'collection', 'global', 'cors', 'typescript', 'seed', 'billing', 'upgrade', 'video', 'domains', 'public', 'wave'] as const,
 })

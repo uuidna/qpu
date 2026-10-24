@@ -1,6 +1,6 @@
 /**
  * THE MCP CAPABILITY SURFACE IS GATED, NOT HOPED. mcp-capabilities.ts registers resources / prompts / completion /
- * logging through qpuMcpRegisterOf — the standard primitives every compatible MCP client reads, not only tool-callers,
+ * logging through mcpRegisterOf — the standard primitives every compatible MCP client reads, not only tool-callers,
  * and the way QPU's family-formula COMBINATIONS are exposed (qpu://hex, qpu://formulas/{family}, and qpu://hex/{uuid}
  * which RUNS a hex-program combination). mcp.test.ts gates the tools contract; this gates the rest, so a capability
  * cannot silently stop answering for the ecosystem. Driven through publicMcpOf — the same JSON-RPC a client sends.
@@ -8,9 +8,10 @@
  */
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { mintOf } from './lattice-values.ts'
 
 const idx = await import('../dist/quantum/processing/unit/index.js')
-if (idx.qpuHexRegistryOf) await idx.qpuHexRegistryOf()
+if (idx.hexRegistryOf) await idx.hexRegistryOf()
 const { publicMcpOf } = await import('../dist/payload/plugins/public.js')
 
 const rpc = async (method, params) => {
@@ -49,7 +50,7 @@ test('by default resources/list is the quantum computer core — the aggregates 
     assert.ok(core.includes(u), `core aggregate ${u} missing from the default listing`)
   }
   assert.ok(!core.some((u) => u.startsWith('qpu://formulas/')), 'the default listing spilled the families — they belong on request')
-  assert.ok(core.length <= 16, `the default listing is not lean: ${core.length} resources`)
+  assert.ok(core.length <= mintOf(4), `the default listing is not lean: ${core.length} resources`)
 })
 
 test('the rest on request: scope "all" reaches every family, scope "Qpu.Mint" is its scoped collection', async () => {
@@ -99,7 +100,7 @@ test('qpu://code states the unlimited code space as measured figures a fusing MC
   const c = JSON.parse((await rpc('resources/read', { uri: 'qpu://code' })).result.contents[0].text)
   assert.equal(c.addressBits, 122, 'the v8 UUID free-bit address space')
   assert.match(c.addresses, /^\d{36,}$/, 'the address count is 2^122, an astronomically large figure')
-  assert.equal(c.families, idx.qpuHexFamiliesOf().size, 'families derived from the live registry')
+  assert.equal(c.families, idx.hexFamiliesOf().size, 'families derived from the live registry')
   assert.ok(c.formulas > 0 && c.holds === true, 'formulas counted and the reading holds')
 })
 
@@ -133,7 +134,7 @@ test('hard fail on poison: the Clay surface states only what it recomputes — n
   assert.ok(!('holds' in c.recognised), 'recognised must carry no holds verdict')
   // solved and used are DERIVED, never hardcoded: solved is the seals’ conjunction; used counts the live registry
   assert.equal(c.solved, c.seals.every((s) => s.holds), 'solved is not the derived conjunction of the seals')
-  assert.equal(c.used.families, idx.qpuHexFamiliesOf().size, 'used.families is not derived from the live registry')
+  assert.equal(c.used.families, idx.hexFamiliesOf().size, 'used.families is not derived from the live registry')
 })
 
 test('hard fail fast on a hex violation: a malformed hex program address is an error, not a soft miss', async () => {

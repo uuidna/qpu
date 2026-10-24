@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NicFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('nic: line rate, goodput, packets per second, framing overhead, RSS queues 
   assert.equal(NicFormulas.latency(5, 10).value, 50, 'per-hop path latency')
   assert.equal(NicFormulas.bandwidth(16, 32).value, 512, 'lanes × per-lane Gb/s')
   assert.equal(NicFormulas.linerate(100).dst, 'hardware')
-  assert.equal(qpuHexFamiliesOf().get('nic')?.length, 10)
+  assert.equal(hexFamiliesOf().get('nic')?.length, 10)
   const uuid = qpuHexUuidOf({ family: 'nic', program: ['linerate'], params: [100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `nic.linerate at ${uuid}`)
-  qpuUuidReceiptOf('nic linerate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('nic linerate', contentUuidOf(run), { uuid })
   t.diagnostic('10 formulas; linerate 100, throughput 90, packets 833333, mtu 9000, overhead 18, duplex 200, queues 32, interrupts 16, latency 50, bandwidth 512; crossing to hardware')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CALENDAR — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CalendarFormulas {
 }
 
 for (const name of ['cyclepermutations', 'dayofweek', 'daysinyear', 'epochspan', 'intercalations', 'leapcycle', 'monthorderings', 'weekcombos'] as const)
-  qpuHexRegisterOf('calendar', name, (CalendarFormulas[name] as (...x: unknown[]) => unknown).bind(CalendarFormulas))
+  hexRegisterOf('calendar', name, (CalendarFormulas[name] as (...x: unknown[]) => unknown).bind(CalendarFormulas))

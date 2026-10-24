@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MoonFormulas } from './index.js'
 
 /** moon: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('moon: phase, distance, period, diameter, tides, libration, craters, combos
   assert.equal(MoonFormulas.libration(8, 1).value, 7, 'libration(8, 1)')
   assert.equal(MoonFormulas.craters(1000, 100).value, 100000, 'craters(1000, 100)')
   assert.equal(MoonFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('moon')?.length, 8)
+  assert.equal(hexFamiliesOf().get('moon')?.length, 8)
   for (const [name, params, expected] of [["phase",[29,8],5],["distance",[384,1000],384000],["period",[27,0],27]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'moon', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `moon.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`moon ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`moon ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "phase=5, distance=384000, period=27")
 })

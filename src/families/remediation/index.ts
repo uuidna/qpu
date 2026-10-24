@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REMEDIATION — CLEANING A CONTAMINATED SITE, AS ARITHMETIC. Removing pollution is numbers: how concentrated a contaminant
@@ -31,4 +31,4 @@ export class RemediationFormulas {
 }
 
 for (const name of ['cleanup', 'contaminant', 'dilution', 'exposure', 'halflife', 'reduction', 'threshold', 'volume'] as const)
-  qpuHexRegisterOf('remediation', name, (RemediationFormulas[name] as (...x: unknown[]) => unknown).bind(RemediationFormulas))
+  hexRegisterOf('remediation', name, (RemediationFormulas[name] as (...x: unknown[]) => unknown).bind(RemediationFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LeverageFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('leverage: debttoequity, debtratio, equitymultiplier, interestcoverage, cap
   assert.equal(LeverageFormulas.gearingratio(60, 40).value, 60, 'sixty percent geared')
   assert.equal(LeverageFormulas.gearingratio(0, 0).value, 0)
   assert.equal(LeverageFormulas.debttoequity(60, 40).dst, 'banking')
-  assert.equal(qpuHexFamiliesOf().get('leverage')?.length, 8)
+  assert.equal(hexFamiliesOf().get('leverage')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'leverage', program: ['interestcoverage'], params: [5000, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `leverage.interestcoverage at ${uuid}`)
-  qpuUuidReceiptOf('leverage interestcoverage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('leverage interestcoverage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; debttoequity 150, debtratio 40, equitymultiplier 400, interestcoverage 5, capitalratio 8, degreeofleverage 250, marginratio 12, gearingratio 60; crossing to banking')
 })

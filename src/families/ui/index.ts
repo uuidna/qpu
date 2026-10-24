@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** UI — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class UiFormulas {
 }
 
 for (const name of ['accessibilityscore', 'clickdepth', 'colorsubsets', 'elementcount', 'gridcells', 'layoutcombos', 'navpaths', 'responsiveness'] as const)
-  qpuHexRegisterOf('ui', name, (UiFormulas[name] as (...x: unknown[]) => unknown).bind(UiFormulas))
+  hexRegisterOf('ui', name, (UiFormulas[name] as (...x: unknown[]) => unknown).bind(UiFormulas))

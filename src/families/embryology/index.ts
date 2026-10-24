@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EMBRYOLOGY — EARLY DEVELOPMENT, AS ARITHMETIC. Growth is numbers: days gestated, cells per hour, the share of embryos
@@ -30,4 +30,4 @@ export class EmbryologyFormulas {
 }
 
 for (const name of ['blastocyst', 'cleavage', 'differentiation', 'fragmentation', 'gestation', 'implantation', 'morphology', 'viability'] as const)
-  qpuHexRegisterOf('embryology', name, (EmbryologyFormulas[name] as (...x: unknown[]) => unknown).bind(EmbryologyFormulas))
+  hexRegisterOf('embryology', name, (EmbryologyFormulas[name] as (...x: unknown[]) => unknown).bind(EmbryologyFormulas))

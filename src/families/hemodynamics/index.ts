@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HEMODYNAMICS — THE CIRCULATION, AS ARITHMETIC. Moving blood is numbers: the output of the heart per minute, the volume
@@ -31,4 +31,4 @@ export class HemodynamicsFormulas {
 }
 
 for (const name of ['cardiacoutput', 'ejectionfraction', 'meanarterialpressure', 'perfusionpressure', 'pulsepressure', 'pulserate', 'strokevolume', 'vascularresistance'] as const)
-  qpuHexRegisterOf('hemodynamics', name, (HemodynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(HemodynamicsFormulas))
+  hexRegisterOf('hemodynamics', name, (HemodynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(HemodynamicsFormulas))

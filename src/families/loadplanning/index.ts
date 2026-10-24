@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOADPLANNING — scaffolded integer measures crossed to supplychain. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class LoadplanningFormulas {
 }
 
 for (const name of ['axleload', 'cubicfill', 'loadbalance', 'palletspertruck', 'stackheight', 'utilization', 'voidspace', 'weightlimit'] as const)
-  qpuHexRegisterOf('loadplanning', name, (LoadplanningFormulas[name] as (...x: unknown[]) => unknown).bind(LoadplanningFormulas))
+  hexRegisterOf('loadplanning', name, (LoadplanningFormulas[name] as (...x: unknown[]) => unknown).bind(LoadplanningFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CustomerFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('customer: csat, nps, churn, retention, tickets, resolution, response, upse
   assert.equal(CustomerFormulas.response(600, 50).value, 12, 'minutes per ticket')
   assert.equal(CustomerFormulas.upsell(120, 1000).value, 12)
   assert.equal(CustomerFormulas.csat(900, 1000).dst, 'analytics')
-  assert.equal(qpuHexFamiliesOf().get('customer')?.length, 8)
+  assert.equal(hexFamiliesOf().get('customer')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'customer', program: ['retention'], params: [950, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 95, `customer.retention at ${uuid}`)
-  qpuUuidReceiptOf('customer retention', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('customer retention', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; csat 90, nps 50/-50, churn 5, retention 95, tickets 12, resolution 80, response 12, upsell 12; crossing to analytics')
 })

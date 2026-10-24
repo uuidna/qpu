@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CLOUDFLARE — THE WORKER BINDING SURFACE, AS ARITHMETIC. A Worker composes bindings: KV, R2, D1, Durable Objects,
@@ -55,4 +55,4 @@ export class CloudflareFormulas {
 }
 
 for (const name of ['apis', 'bindings', 'choose', 'compute', 'fanout', 'ordered', 'pairs', 'pipeline', 'reach', 'stateful', 'storage', 'subrequests', 'subsets', 'triples', 'usage'] as const)
-  qpuHexRegisterOf('cloudflare', name, (CloudflareFormulas[name] as (...x: unknown[]) => unknown).bind(CloudflareFormulas))
+  hexRegisterOf('cloudflare', name, (CloudflareFormulas[name] as (...x: unknown[]) => unknown).bind(CloudflareFormulas))

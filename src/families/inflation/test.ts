@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { InflationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('inflation: cpi, ratepct, realvalue, pricelevel, purchasingpower, indexorde
   assert.equal(InflationFormulas.basketitems(80, 1).value, 80)
   assert.equal(InflationFormulas.erosion(100, 96).value, 4)
   assert.equal(InflationFormulas.cpi(100, 3).dst, 'macroeconomics')
-  assert.equal(qpuHexFamiliesOf().get('inflation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('inflation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'inflation', program: ['cpi'], params: [100, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `inflation.cpi at ${uuid}`)
-  qpuUuidReceiptOf('inflation cpi', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('inflation cpi', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; cpi 300, ratepct 4, realvalue 960, pricelevel 108, purchasingpower 96, indexorderings 24, basketitems 80, erosion 4; crossing to macroeconomics')
 })

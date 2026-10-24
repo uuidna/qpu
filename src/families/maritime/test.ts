@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MaritimeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('maritime: demurrage, freight, general average, salvage, tonnage, draft, co
   assert.equal(MaritimeFormulas.collision(3, 4).value, 75, "three-quarters of the collision fault")
   assert.equal(MaritimeFormulas.limitation(5000, 60).value, 300000)
   assert.equal(MaritimeFormulas.freight(5000, 12).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('maritime')?.length, 8)
+  assert.equal(hexFamiliesOf().get('maritime')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'maritime', program: ['tonnage'], params: [100, 20, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 160, `maritime.tonnage at ${uuid}`)
-  qpuUuidReceiptOf('maritime tonnage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('maritime tonnage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; demurrage 3, freight 60000, generalaverage 4%, salvage 150000, tonnage 160, draft 20, collision 75%, limitation 300000; crossing to law')
 })

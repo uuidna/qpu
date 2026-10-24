@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CACHING — THE CACHE AS ARITHMETIC. A cache is numbers: how often it hits, how often it misses, how much it evicts,
@@ -30,4 +30,4 @@ export class CachingFormulas {
 }
 
 for (const name of ['eviction', 'hitrate', 'latency', 'missrate', 'speedup', 'ttl', 'utilization', 'warmup'] as const)
-  qpuHexRegisterOf('caching', name, (CachingFormulas[name] as (...x: unknown[]) => unknown).bind(CachingFormulas))
+  hexRegisterOf('caching', name, (CachingFormulas[name] as (...x: unknown[]) => unknown).bind(CachingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DroneFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('drone: flighttime, payload, rotorcount, range, thrust, batterykwh, maxalti
   assert.equal(DroneFormulas.maxaltitude(120, 1).value, 120)
   assert.equal(DroneFormulas.stabilitymargin(90, 100).value, 90)
   assert.equal(DroneFormulas.flighttime(5000, 100).dst, 'aerospace')
-  assert.equal(qpuHexFamiliesOf().get('drone')?.length, 8)
+  assert.equal(hexFamiliesOf().get('drone')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'drone', program: ['flighttime'], params: [5000, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `drone.flighttime at ${uuid}`)
-  qpuUuidReceiptOf('drone flighttime', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('drone flighttime', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; flighttime 50, payload 2000, rotorcount 4, range 10000, thrust 2000, batterykwh 100, maxaltitude 120, stabilitymargin 90; crossing to aerospace')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WinemakingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('winemaking: abv, brix, acidity, sulfite, yield, extraction, fermentation, 
   assert.equal(WinemakingFormulas.fermentation(24, 0, 12).value, 2, 'two °Brix a day')
   assert.equal(WinemakingFormulas.blend(60, 30, 10).value, 100, 'a hundred parts')
   assert.equal(WinemakingFormulas.abv(24, 6).dst, 'cuisine')
-  assert.equal(qpuHexFamiliesOf().get('winemaking')?.length, 8)
+  assert.equal(hexFamiliesOf().get('winemaking')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'winemaking', program: ['yield'], params: [5000, 650] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3250, `winemaking.yield at ${uuid}`)
-  qpuUuidReceiptOf('winemaking yield', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('winemaking yield', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; abv 9, brix 24, acidity 7, sulfite 10000, yield 3250, extraction 700, fermentation 2, blend 100; crossing to cuisine')
 })

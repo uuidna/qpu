@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BurndownFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('burndown: remaining, idealrate, actualrate, completionforecast, scopecreep
   assert.equal(BurndownFormulas.sprintprogress(40, 80).value, 50)
   assert.equal(BurndownFormulas.variance(50, 40).value, 10)
   assert.equal(BurndownFormulas.remaining(100, 40).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('burndown')?.length, 8)
+  assert.equal(hexFamiliesOf().get('burndown')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'burndown', program: ['velocity'], params: [120, 6] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `burndown.velocity at ${uuid}`)
-  qpuUuidReceiptOf('burndown velocity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('burndown velocity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; remaining 60, idealrate 10, actualrate 8, completionforecast 8, scopecreep 15, velocity 20, sprintprogress 50, variance 10; crossing to statistics')
 })

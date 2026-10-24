@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ASSAY — THE BENCH, AS ARITHMETIC (chosen by the registry, not by hand). A quantitative assay is numbers: concentration from
@@ -30,4 +30,4 @@ export class AssayFormulas {
 }
 
 for (const name of ['concentration', 'dilution', 'limitofdetection', 'purity', 'recovery', 'replicates', 'standardcurve', 'yield'] as const)
-  qpuHexRegisterOf('assay', name, (AssayFormulas[name] as (...x: unknown[]) => unknown).bind(AssayFormulas))
+  hexRegisterOf('assay', name, (AssayFormulas[name] as (...x: unknown[]) => unknown).bind(AssayFormulas))

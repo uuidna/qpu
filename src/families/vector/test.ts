@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VectorFormulas } from './index.js'
 
 /** vector: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -21,12 +21,12 @@ test('vector: dot, magnitude, dims, scale, components, crossprod, norm, combos',
   assert.equal(VectorFormulas.span(3, 5).value, 3, 'span(3, 5)')
   assert.equal(VectorFormulas.anglecosnum(1, 2, 3, 4).value, 11, 'anglecosnum(1, 2, 3, 4)')
   assert.equal(VectorFormulas.distance1(1, 2, 4, 6).value, 7, 'distance1(1, 2, 4, 6)')
-  assert.equal(qpuHexFamiliesOf().get('vector')?.length, 15)
+  assert.equal(hexFamiliesOf().get('vector')?.length, 15)
   for (const [name, params, expected] of [["dot",[3,4],12],["magnitude",[500,10],50],["dims",[3,0],3]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'vector', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `vector.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`vector ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`vector ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "dot=12, magnitude=50, dims=3")
 })

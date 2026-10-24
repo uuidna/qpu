@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { XaiFormulas } from './index.js'
 
 /** Explainable AI as exact combinatorics — SHAP coalitions, interactions, saliency pixels, LIME samples, attributions, anchors, heads, baselines. */
@@ -15,12 +15,12 @@ test('xai: coalitions, interactions, saliency, lime samples, attributions, ancho
   assert.equal(XaiFormulas.heads(12, 8).value, 96, '12 layers × 8 heads')
   assert.equal(XaiFormulas.baselines(4).value, 5, 'four features plus the all-off baseline')
   assert.equal(XaiFormulas.coalitions(4).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('xai')?.length, 8)
+  assert.equal(hexFamiliesOf().get('xai')?.length, 8)
   for (const [name, params, expected] of [['coalitions', [4], 16], ['interactions', [5], 10], ['heads', [12, 8], 96]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'xai', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `xai.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`xai ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`xai ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; 2^4 coalitions (A000079), 5 features→10 interactions, 12×8 heads')
 })

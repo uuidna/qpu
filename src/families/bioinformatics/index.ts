@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOINFORMATICS — SEQUENCE ANALYSIS AS ARITHMETIC (chosen by the domain registry, not by hand). Reading genomes is
@@ -31,4 +31,4 @@ export class BioinformaticsFormulas {
 }
 
 for (const name of ['alignment', 'coverage', 'evalue', 'expression', 'gccontent', 'identity', 'kmer', 'phylogeny'] as const)
-  qpuHexRegisterOf('bioinformatics', name, (BioinformaticsFormulas[name] as (...x: unknown[]) => unknown).bind(BioinformaticsFormulas))
+  hexRegisterOf('bioinformatics', name, (BioinformaticsFormulas[name] as (...x: unknown[]) => unknown).bind(BioinformaticsFormulas))

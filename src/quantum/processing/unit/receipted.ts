@@ -9,7 +9,7 @@ import { appendFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { test as nodeTest, type TestContext, type TestOptions } from 'node:test'
-import { qpuForeignReadsOf, qpuMintReceiptOf, qpuMintScopeOpenOf, qpuReceiptFoldOf, qpuReceiptLedgerOf, qpuServedLedgerOf } from './index.js'
+import { foreignReadsOf, qpuMintReceiptOf, mintScopeOpenOf, qpuReceiptFoldOf, receiptLedgerOf, servedLedgerOf } from './index.js'
 
 /** One receipts file PER RUN, named by the run: a test worker's parent is the `node --test` process the reporter runs in,
  * so workers append to the reporter's pid and the reporter reads its own. Two suites in one tree no longer share a file,
@@ -143,7 +143,7 @@ export const temperatureOf = (env = process.env): Temperature => {
 type Fn = (t: TestContext) => void | Promise<void>
 
 /** Distinct states, each counted: the same Bell state recorded a thousand times is one state carried by a thousand rows. */
-const statesOf = (slice: ReturnType<typeof qpuReceiptLedgerOf>): TestReceipt['states'] => {
+const statesOf = (slice: ReturnType<typeof receiptLedgerOf>): TestReceipt['states'] => {
   const seen = new Map<string, TestReceipt['states'][number]>()
   for (const r of slice) {
     if (r.amplitudes === undefined) continue
@@ -156,16 +156,16 @@ const statesOf = (slice: ReturnType<typeof qpuReceiptLedgerOf>): TestReceipt['st
 }
 
 const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void> => {
-  const from = qpuReceiptLedgerOf().length
-  const servedFrom = qpuServedLedgerOf().length
+  const from = receiptLedgerOf().length
+  const servedFrom = servedLedgerOf().length
   const mintFrom = qpuMintReceiptOf()
-  const foreignFrom = qpuForeignReadsOf()
+  const foreignFrom = foreignReadsOf()
   // open a fresh mint scope, so this row's chain folds THIS test's doublings and not the whole process's history
-  qpuMintScopeOpenOf()
+  mintScopeOpenOf()
   try {
     await fn(t)
   } finally {
-    const slice = qpuReceiptLedgerOf().slice(from)
+    const slice = receiptLedgerOf().slice(from)
     const mintTo = qpuMintReceiptOf()
     const kinds: Record<string, number> = {}
     for (const r of slice) kinds[r.name] = (kinds[r.name] ?? 0) + 1
@@ -190,9 +190,9 @@ const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void
       qubits,
       receipt: qpuReceiptFoldOf(slice),
       states: statesOf(slice),
-      mint: { calls: mintTo.calls - mintFrom.calls, chain: qpuMintScopeOpenOf() },
-      served: { count: qpuServedLedgerOf().length - servedFrom, folds: [...new Set(qpuServedLedgerOf().slice(servedFrom).map((r) => r.fold))] },
-      foreign: qpuForeignReadsOf() - foreignFrom,
+      mint: { calls: mintTo.calls - mintFrom.calls, chain: mintScopeOpenOf() },
+      served: { count: servedLedgerOf().length - servedFrom, folds: [...new Set(servedLedgerOf().slice(servedFrom).map((r) => r.fold))] },
+      foreign: foreignReadsOf() - foreignFrom,
       readings: { temperature: temperatureOf(), pid: process.pid },
     }
     appendFileSync(join(process.cwd(), RECEIPTS_FILE), `${JSON.stringify(row)}\n`)

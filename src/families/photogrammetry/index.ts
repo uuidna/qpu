@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHOTOGRAMMETRY — RECONSTRUCTING THE WORLD FROM OVERLAPPING IMAGES, AS ARITHMETIC. The scale a lens and altitude fix,
@@ -31,4 +31,4 @@ export class PhotogrammetryFormulas {
 }
 
 for (const name of ['accuracy', 'basedistance', 'gsd', 'overlap', 'parallax', 'reconstruction', 'scale', 'tiepoints'] as const)
-  qpuHexRegisterOf('photogrammetry', name, (PhotogrammetryFormulas[name] as (...x: unknown[]) => unknown).bind(PhotogrammetryFormulas))
+  hexRegisterOf('photogrammetry', name, (PhotogrammetryFormulas[name] as (...x: unknown[]) => unknown).bind(PhotogrammetryFormulas))

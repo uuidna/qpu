@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SoftwareFormulas } from './index.js'
 
 /** The engineering arithmetic — kloc, coverage, cyclomatic, defects, flags, hours, velocity, semver — each exact. */
@@ -22,12 +22,12 @@ test('software: kloc, coverage, cyclomatic, defects, flags, hours, velocity, sem
   assert.equal(SoftwareFormulas.teamsize(100, 40).value, 3, '100 hours at 40 each')
   assert.equal(SoftwareFormulas.builds(50, 3).value, 150, '50 commits of 3 builds')
   assert.equal(SoftwareFormulas.mttr(600, 8).value, 75, '600 downtime over 8 incidents')
-  assert.equal(qpuHexFamiliesOf().get('software')?.length, 15)
+  assert.equal(hexFamiliesOf().get('software')?.length, 15)
   for (const [name, params, expected] of [['kloc', [12345], 12], ['flags', [10], 1024], ['semver', [1, 2, 3], 1002003]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'software', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `software.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`software ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`software ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; 12345→12 kloc, cyclomatic 4, 2^10 flags, semver 1.2.3→1002003')
 })

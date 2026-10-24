@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WEAVING — THE LOOM AS ARITHMETIC. A woven cloth is numbers: the thread count (warp ends plus weft picks), the warp and
@@ -31,4 +31,4 @@ export class WeavingFormulas {
 }
 
 for (const name of ['cover', 'density', 'gsm', 'pickrate', 'threadcount', 'warp', 'weft', 'width'] as const)
-  qpuHexRegisterOf('weaving', name, (WeavingFormulas[name] as (...x: unknown[]) => unknown).bind(WeavingFormulas))
+  hexRegisterOf('weaving', name, (WeavingFormulas[name] as (...x: unknown[]) => unknown).bind(WeavingFormulas))

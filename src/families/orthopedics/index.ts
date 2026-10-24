@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ORTHOPEDICS — THE MUSCULOSKELETAL CLINIC, AS ARITHMETIC. Bones and joints are numbers: the range a joint moves through,
@@ -31,4 +31,4 @@ export class OrthopedicsFormulas {
 }
 
 for (const name of ['alignment', 'bonedensity', 'cobbangle', 'fractureload', 'gait', 'implantsize', 'legdiscrepancy', 'rangeofmotion'] as const)
-  qpuHexRegisterOf('orthopedics', name, (OrthopedicsFormulas[name] as (...x: unknown[]) => unknown).bind(OrthopedicsFormulas))
+  hexRegisterOf('orthopedics', name, (OrthopedicsFormulas[name] as (...x: unknown[]) => unknown).bind(OrthopedicsFormulas))

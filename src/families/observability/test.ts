@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ObservabilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('observability: errorbudget, slo, apdex, percentile, cardinality, sampling,
   assert.equal(ObservabilityFormulas.saturation(80, 100).value, 80)
   assert.equal(ObservabilityFormulas.signal(900, 100).value, 900)
   assert.equal(ObservabilityFormulas.slo(999, 1000).dst, 'cloud')
-  assert.equal(qpuHexFamiliesOf().get('observability')?.length, 8)
+  assert.equal(hexFamiliesOf().get('observability')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'observability', program: ['slo'], params: [999, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 99, `observability.slo at ${uuid}`)
-  qpuUuidReceiptOf('observability slo', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('observability slo', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; errorbudget 750, slo 99, apdex 95, percentile 99, cardinality 100, sampling 10, saturation 80, signal 900; crossing to cloud')
 })

@@ -9,9 +9,10 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
+import { faces } from './lattice-values.ts'
 
 const ROOT = join(dirname(new URL(import.meta.url).pathname), '..')
-const FACES = 14
+const FACES = faces
 const walk = (dir) => readdirSync(join(ROOT, dir), { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(`${dir}/${e.name}`) : /\.(ts|mjs|py)$/.test(e.name) ? [`${dir}/${e.name}`] : []))
 
 /** A team of k forms from 2s and 3s: k = 2a + 3b for some a,b ≥ 0. True for every k ≥ 2; false for 1 (solo). */
@@ -24,10 +25,10 @@ test('two and three form all team formations except solo', () => {
 
 test('all that is seen is in the queue; solo performs all team capabilities, teams of 2-3 collaborate', async (t) => {
   await import('../dist/mcp/families.js')
-  const { qpuHexFamiliesOf } = await import('../dist/quantum/processing/unit/index.js')
-  const queue = (qpuHexFamiliesOf().get('queue') ?? []).map((f) => f.name)
+  const { hexFamiliesOf } = await import('../dist/quantum/processing/unit/index.js')
+  const queue = (hexFamiliesOf().get('queue') ?? []).map((f) => f.name)
   assert.ok(queue.length > 0, 'the queue family processes')
-  const fams = new Set([...qpuHexFamiliesOf().keys()])
+  const fams = new Set([...hexFamiliesOf().keys()])
 
   // THE SHARED SKILL SURFACE lets a SOLO family perform ALL team capabilities: every family is a skill any single family
   // can invoke (the generated SKILL.md and the MCP), so one family alone does what a team does — self-sufficiency. Teams

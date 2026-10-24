@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LocaleFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('locale: coverage, fallback, locales, fields, words, rtl, complete, storage
   assert.equal(LocaleFormulas.complete(6, 8).value, 75)
   assert.equal(LocaleFormulas.storage(40, 7).value, 280)
   assert.equal(LocaleFormulas.coverage(750, 1000).dst, 'payload')
-  assert.equal(qpuHexFamiliesOf().get('locale')?.length, 8)
+  assert.equal(hexFamiliesOf().get('locale')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'locale', program: ['storage'], params: [40, 7] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 280, `locale.storage at ${uuid}`)
-  qpuUuidReceiptOf('locale storage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('locale storage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coverage 75, fallback 25, locales 7, fields 30, words 3800, rtl 25, complete 75, storage 280; crossing to payload')
 })

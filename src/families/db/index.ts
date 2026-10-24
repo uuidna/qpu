@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THE QPU OS DATABASE: UNLIMITED EXPERIMENTS, NO MIGRATIONS. Every database is an adapter facade over one store — the
@@ -55,4 +55,4 @@ export class DbFormulas {
 }
 
 for (const name of ['adapters', 'binding', 'browser', 'combinations', 'experiments', 'migrations', 'ported', 'stable'] as const)
-  qpuHexRegisterOf('db', name, (DbFormulas[name] as (...x: unknown[]) => unknown).bind(DbFormulas))
+  hexRegisterOf('db', name, (DbFormulas[name] as (...x: unknown[]) => unknown).bind(DbFormulas))

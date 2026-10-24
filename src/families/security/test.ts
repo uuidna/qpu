@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SecurityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('security: severity, patch, mttr, exposure, strength, detection, window, co
   assert.equal(SecurityFormulas.window(2460000, 2460030).value, 30, 'the exposure window in days')
   assert.equal(SecurityFormulas.coverage(180, 200).value, 90)
   assert.equal(SecurityFormulas.severity(90, 8).dst, 'access')
-  assert.equal(qpuHexFamiliesOf().get('security')?.length, 8)
+  assert.equal(hexFamiliesOf().get('security')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'security', program: ['severity'], params: [90, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 72, `security.severity at ${uuid}`)
-  qpuUuidReceiptOf('security severity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('security severity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; severity 72, patch 15, mttr 40, exposure 15, strength 64, detection 95, window 30, coverage 90; crossing to access')
 })

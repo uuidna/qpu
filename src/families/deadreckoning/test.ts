@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DeadreckoningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('deadreckoning: distance, driftangle, positionerror, elapsedtime, speedmade
   assert.equal(DeadreckoningFormulas.estimatedposition(100, 36).value, 136)
   assert.equal(DeadreckoningFormulas.coursecorrection(90, 75).value, 15)
   assert.equal(DeadreckoningFormulas.distance(12, 3).dst, 'navigation')
-  assert.equal(qpuHexFamiliesOf().get('deadreckoning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('deadreckoning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'deadreckoning', program: ['distance'], params: [12, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 36, `deadreckoning.distance at ${uuid}`)
-  qpuUuidReceiptOf('deadreckoning distance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('deadreckoning distance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; distance 36, driftangle 10, positionerror 20, elapsedtime 30, speedmadegood 12, setandrift 12, estimatedposition 136, coursecorrection 15; crossing to navigation')
 })

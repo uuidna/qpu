@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** QSEC — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class QsecFormulas {
 }
 
 for (const name of ['attackcost', 'attemptpairs', 'collisionresistance', 'entropybits', 'hashrounds', 'keybits', 'saltlength', 'strengthmargin'] as const)
-  qpuHexRegisterOf('qsec', name, (QsecFormulas[name] as (...x: unknown[]) => unknown).bind(QsecFormulas))
+  hexRegisterOf('qsec', name, (QsecFormulas[name] as (...x: unknown[]) => unknown).bind(QsecFormulas))

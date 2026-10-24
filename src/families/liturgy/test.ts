@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LiturgyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('liturgy: feastdays, cyclelength, hourorderings, rubriccombos, seasons, cha
   assert.equal(LiturgyFormulas.vestmentsubsets(5).value, 32)
   assert.equal(LiturgyFormulas.processionpaths(6, 2).value, 30)
   assert.equal(LiturgyFormulas.feastdays(40, 12).dst, 'anthropology')
-  assert.equal(qpuHexFamiliesOf().get('liturgy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('liturgy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'liturgy', program: ['feastdays'], params: [40, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 52, `liturgy.feastdays at ${uuid}`)
-  qpuUuidReceiptOf('liturgy feastdays', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('liturgy feastdays', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; feastdays 52, cyclelength 364, hourorderings 5040, rubriccombos 220, seasons 6, chantmodes 8, vestmentsubsets 32, processionpaths 30; crossing to anthropology')
 })

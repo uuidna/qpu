@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RAILWAY — RUNNING A LINE, AS ARITHMETIC. Moving trains is numbers: the headway between services, the seats a
@@ -31,4 +31,4 @@ export class RailwayFormulas {
 }
 
 for (const name of ['braking', 'capacity', 'dwell', 'gradient', 'headway', 'load', 'punctuality', 'throughput'] as const)
-  qpuHexRegisterOf('railway', name, (RailwayFormulas[name] as (...x: unknown[]) => unknown).bind(RailwayFormulas))
+  hexRegisterOf('railway', name, (RailwayFormulas[name] as (...x: unknown[]) => unknown).bind(RailwayFormulas))

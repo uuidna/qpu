@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CLOUD — THE REGISTRY'S LARGEST DOMAIN, AS ARITHMETIC (chosen by the public-API registry, not by hand). Running compute
@@ -30,4 +30,4 @@ export class CloudFormulas {
 }
 
 for (const name of ['cost', 'egress', 'latency', 'scale', 'sla', 'storage', 'throughput', 'uptime'] as const)
-  qpuHexRegisterOf('cloud', name, (CloudFormulas[name] as (...x: unknown[]) => unknown).bind(CloudFormulas))
+  hexRegisterOf('cloud', name, (CloudFormulas[name] as (...x: unknown[]) => unknown).bind(CloudFormulas))

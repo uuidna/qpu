@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RECOVERY — scaffolded integer measures crossed to physiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class RecoveryFormulas {
 }
 
 for (const name of ['heartratedrop', 'hydrationgap', 'musclerepair', 'overtrainingindex', 'readiness', 'recoveryrate', 'resttime', 'sleepdebt'] as const)
-  qpuHexRegisterOf('recovery', name, (RecoveryFormulas[name] as (...x: unknown[]) => unknown).bind(RecoveryFormulas))
+  hexRegisterOf('recovery', name, (RecoveryFormulas[name] as (...x: unknown[]) => unknown).bind(RecoveryFormulas))

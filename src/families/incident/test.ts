@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { IncidentFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('incident: mttr, mtta, errorbudget, blastradius, severity, postmortemscore,
   assert.equal(IncidentFormulas.slaimpact(120, 60).value, 1, 'SLA breached')
   assert.equal(IncidentFormulas.slaimpact(30, 60).value, 0)
   assert.equal(IncidentFormulas.mttr(600, 8).dst, 'reliability')
-  assert.equal(qpuHexFamiliesOf().get('incident')?.length, 8)
+  assert.equal(hexFamiliesOf().get('incident')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'incident', program: ['mttr'], params: [600, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `incident.mttr at ${uuid}`)
-  qpuUuidReceiptOf('incident mttr', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('incident mttr', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mttr 75, mtta 5, errorbudget 750, blastradius 6000, severity 20, postmortemscore 90, recurrence 2, slaimpact 1; crossing to reliability')
 })

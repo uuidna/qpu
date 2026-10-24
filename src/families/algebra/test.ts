@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AlgebraFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('algebra: linear, quadratic, discriminant, slope, factorial, gcd, power, ro
   assert.equal(AlgebraFormulas.power(2, 5).value, 32)
   assert.equal(AlgebraFormulas.roots(2, 3).value, -8, 'the roots discriminant may be negative')
   assert.equal(AlgebraFormulas.linear(3, 7).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('algebra')?.length, 8)
+  assert.equal(hexFamiliesOf().get('algebra')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'algebra', program: ['power'], params: [2, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 32, `algebra.power at ${uuid}`)
-  qpuUuidReceiptOf('algebra power', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('algebra power', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; linear 21, quadratic 50, discriminant 0/−3, slope 250, factorial 120, gcd 4, power 32, roots −8; crossing to code')
 })

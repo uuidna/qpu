@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OPTOMETRY — SEEING, AS ARITHMETIC. The eye measured: visual acuity on the Snellen 20/x scale, lens power in diopters,
@@ -31,4 +31,4 @@ export class OptometryFormulas {
 }
 
 for (const name of ['accommodation', 'acuity', 'astigmatism', 'contrast', 'diopter', 'field', 'pupil', 'refraction'] as const)
-  qpuHexRegisterOf('optometry', name, (OptometryFormulas[name] as (...x: unknown[]) => unknown).bind(OptometryFormulas))
+  hexRegisterOf('optometry', name, (OptometryFormulas[name] as (...x: unknown[]) => unknown).bind(OptometryFormulas))

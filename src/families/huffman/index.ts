@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HUFFMAN — PREFIX-CODE COMPRESSION, AS ARITHMETIC. A Huffman code is numbers: the average bits a symbol costs, how far the
@@ -31,4 +31,4 @@ export class HuffmanFormulas {
 }
 
 for (const name of ['averagelength', 'codelength', 'compressionratio', 'efficiency', 'leafcount', 'savedbits', 'treenodes', 'weightedpath'] as const)
-  qpuHexRegisterOf('huffman', name, (HuffmanFormulas[name] as (...x: unknown[]) => unknown).bind(HuffmanFormulas))
+  hexRegisterOf('huffman', name, (HuffmanFormulas[name] as (...x: unknown[]) => unknown).bind(HuffmanFormulas))

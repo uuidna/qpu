@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GisFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('gis: area, density, buffer, overlay, resolution, slope, proximity, accurac
   assert.equal(GisFormulas.proximity(120, 100).value, 0, 'beyond the threshold')
   assert.equal(GisFormulas.accuracy(95, 100).value, 95)
   assert.equal(GisFormulas.area(30, 20).dst, 'geography')
-  assert.equal(qpuHexFamiliesOf().get('gis')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gis')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gis', program: ['density'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `gis.density at ${uuid}`)
-  qpuUuidReceiptOf('gis density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gis density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; area 600, density 20, buffer 314, overlay 25, resolution 25, slope 15, proximity 70, accuracy 95; crossing to geography')
 })

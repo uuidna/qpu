@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BudgetingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('budgeting: variance, utilization, surplus, forecast, allocation, burnrate,
   assert.equal(BudgetingFormulas.savings(1000, 700).value, 300)
   assert.equal(BudgetingFormulas.surplus(3000, 5000).value, 0)
   assert.equal(BudgetingFormulas.variance(1100, 1000).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('budgeting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('budgeting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'budgeting', program: ['runway'], params: [24000, 2000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `budgeting.runway at ${uuid}`)
-  qpuUuidReceiptOf('budgeting runway', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('budgeting runway', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; variance 10, utilization 75, surplus 2000, forecast 1200, allocation 25, burnrate 2000, runway 12, savings 300; crossing to accounting')
 })

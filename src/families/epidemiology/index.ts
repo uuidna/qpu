@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EPIDEMIOLOGY — DISEASE SPREAD AS ARITHMETIC (chosen by the registry, not by hand). An outbreak is numbers: the basic
@@ -30,4 +30,4 @@ export class EpidemiologyFormulas {
 }
 
 for (const name of ['attack', 'doubling', 'fatality', 'herd', 'incidence', 'prevalence', 'r0', 'vaccine'] as const)
-  qpuHexRegisterOf('epidemiology', name, (EpidemiologyFormulas[name] as (...x: unknown[]) => unknown).bind(EpidemiologyFormulas))
+  hexRegisterOf('epidemiology', name, (EpidemiologyFormulas[name] as (...x: unknown[]) => unknown).bind(EpidemiologyFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ColorFormulas — 8 exact-integer formulas of the color domain, each at a hex address crossing to cross; develops the color leads. */
@@ -31,4 +31,4 @@ export class ColorFormulas {
 }
 
 for (const name of ['channels', 'contrast', 'depth', 'gradient', 'hexdigits', 'levels', 'pairs', 'palette'] as const)
-  qpuHexRegisterOf('color', name, (ColorFormulas[name] as (...x: unknown[]) => unknown).bind(ColorFormulas))
+  hexRegisterOf('color', name, (ColorFormulas[name] as (...x: unknown[]) => unknown).bind(ColorFormulas))

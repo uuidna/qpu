@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GOLF — THE ROUND, AS ARITHMETIC. Playing golf is numbers: the score relative to par (which may run under), a handicap
@@ -30,4 +30,4 @@ export class GolfFormulas {
 }
 
 for (const name of ['birdies', 'driving', 'fairways', 'greens', 'handicap', 'putts', 'score', 'scrambling'] as const)
-  qpuHexRegisterOf('golf', name, (GolfFormulas[name] as (...x: unknown[]) => unknown).bind(GolfFormulas))
+  hexRegisterOf('golf', name, (GolfFormulas[name] as (...x: unknown[]) => unknown).bind(GolfFormulas))

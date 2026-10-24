@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BACKHAUL — scaffolded integer measures crossed to logistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class BackhaulFormulas {
 }
 
 for (const name of ['cycledistance', 'deadheadratio', 'emptymiles', 'matchrate', 'payloadratio', 'revenuemiles', 'savings', 'utilization'] as const)
-  qpuHexRegisterOf('backhaul', name, (BackhaulFormulas[name] as (...x: unknown[]) => unknown).bind(BackhaulFormulas))
+  hexRegisterOf('backhaul', name, (BackhaulFormulas[name] as (...x: unknown[]) => unknown).bind(BackhaulFormulas))

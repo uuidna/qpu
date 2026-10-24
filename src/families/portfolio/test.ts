@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PortfolioFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('portfolio: allocation, beta, diversification, drawdown, income, rebalance,
   assert.equal(PortfolioFormulas.sharpe(200, 100).value, 200)
   assert.equal(PortfolioFormulas.weight(25, 100).value, 25)
   assert.equal(PortfolioFormulas.weight(25, 100).dst, 'trading')
-  assert.equal(qpuHexFamiliesOf().get('portfolio')?.length, 8)
+  assert.equal(hexFamiliesOf().get('portfolio')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'portfolio', program: ['diversification'], params: [30, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `portfolio.diversification at ${uuid}`)
-  qpuUuidReceiptOf('portfolio diversification', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('portfolio diversification', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; allocation 60, beta 120, diversification 3, drawdown 20, income 5, rebalance 10, sharpe 200, weight 25; crossing to trading')
 })

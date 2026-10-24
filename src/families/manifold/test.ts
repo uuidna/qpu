@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ManifoldFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('manifold: dimension, genus, bettinumber, eulercharacteristic, chartcount, 
   assert.equal(ManifoldFormulas.orientability(2, 1).value, 0)
   assert.equal(ManifoldFormulas.homologyrank(1, 2, 1).value, 4, 'the torus: b0 + b1 + b2')
   assert.equal(ManifoldFormulas.dimension(5, 2).dst, 'topology')
-  assert.equal(qpuHexFamiliesOf().get('manifold')?.length, 8)
+  assert.equal(hexFamiliesOf().get('manifold')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'manifold', program: ['chartcount'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `manifold.chartcount at ${uuid}`)
-  qpuUuidReceiptOf('manifold chartcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('manifold chartcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dimension 3, genus 1, bettinumber 6, eulercharacteristic 2, chartcount 4, boundarycomponents 3, orientability 1, homologyrank 4; crossing to topology')
 })

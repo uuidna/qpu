@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CytologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cytology: mitosis, ratio, viability, confluence, apoptosis, doubling, diam
   assert.equal(CytologyFormulas.diameter(12).value, 12)
   assert.equal(CytologyFormulas.passage(7).value, 7)
   assert.equal(CytologyFormulas.mitosis(5, 200).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('cytology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cytology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cytology', program: ['viability'], params: [950, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 95, `cytology.viability at ${uuid}`)
-  qpuUuidReceiptOf('cytology viability', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cytology viability', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mitosis 2, ratio 150, viability 95, confluence 80, apoptosis 5, doubling 8, diameter 12, passage 7; crossing to med')
 })

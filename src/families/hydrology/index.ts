@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HYDROLOGY — WATER SCIENCE, AS ARITHMETIC. Water on the land is numbers: the discharge a channel carries, the runoff a
@@ -31,4 +31,4 @@ export class HydrologyFormulas {
 }
 
 for (const name of ['drought', 'flow', 'infiltration', 'recharge', 'retention', 'runoff', 'volume', 'watershed'] as const)
-  qpuHexRegisterOf('hydrology', name, (HydrologyFormulas[name] as (...x: unknown[]) => unknown).bind(HydrologyFormulas))
+  hexRegisterOf('hydrology', name, (HydrologyFormulas[name] as (...x: unknown[]) => unknown).bind(HydrologyFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STEMMING — REDUCING WORDS TO THEIR ROOTS, AS ARITHMETIC (chosen by the morphology registry, not by hand). A stemmer is
@@ -31,4 +31,4 @@ export class StemmingFormulas {
 }
 
 for (const name of ['affixcount', 'conflationrate', 'indexreduction', 'overstemming', 'rootratio', 'stemlength', 'suffixstripped', 'understemming'] as const)
-  qpuHexRegisterOf('stemming', name, (StemmingFormulas[name] as (...x: unknown[]) => unknown).bind(StemmingFormulas))
+  hexRegisterOf('stemming', name, (StemmingFormulas[name] as (...x: unknown[]) => unknown).bind(StemmingFormulas))

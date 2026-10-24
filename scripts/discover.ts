@@ -9,20 +9,23 @@
 import fs from 'node:fs'
 import { mintOf, tenOf } from './lattice-values.js'
 import '../dist/mcp/families.js'
-import { qpuContentUuidOf, qpuUuidReceiptOf } from '../dist/quantum/processing/unit/index.js'
+import { contentUuidOf, uuidReceiptOf } from '../dist/quantum/processing/unit/index.js'
 import { qpuDiscoverOf } from '../dist/mcp/discovery.js'
-import { qpuDataOf, qpuSequencesOf } from '../dist/mcp/qpu-fused.js'
+import { dataOf, sequencesOf } from '../dist/mcp/qpu-fused.js'
 
 const numbersOf = (x) => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : [])
 // the live window: every public source read now, its numbers the discovery's inputs
 const sources = ['cern', 'nist', 'oeis', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'alpine', 'apis']
 const live = new Set()
 let sourcesAgree = 0
-for (const source of sources) { const r = await qpuDataOf(source, {}).catch(() => ({})); if (r.agrees === true) sourcesAgree++; for (const n of numbersOf(r.reading ?? {})) live.add(n) }
+// the reads are independent of one another, so they run at once; results are folded in source order, so the output is the same
+const sourceReplies = await Promise.all(sources.map((source) => dataOf(source, {}).catch(() => ({}))))
+for (const r of sourceReplies) { if (r.agrees === true) sourcesAgree++; for (const n of numbersOf(r.reading ?? {})) live.add(n) }
 // the sequences identified in OEIS (how many of the family formulas are public integer sequences)
-const seqs = await qpuSequencesOf()
+const seqs = await sequencesOf()
 let sequences = 0
-for (const s of seqs) { const r = await qpuDataOf('sequence', { family: s.family, formula: s.formula, fixed: s.fixed }).catch(() => ({})); if (r.agrees === true) sequences++ }
+const seqReplies = await Promise.all(seqs.map((s) => dataOf('sequence', { family: s.family, formula: s.formula, fixed: s.fixed }).catch(() => ({}))))
+for (const r of seqReplies) if (r.agrees === true) sequences++
 
 const d = await qpuDiscoverOf([...live].sort((a, b) => a - b).slice(0, mintOf(8)))
 const rows = d.relations.map((r) => ({ name: `${r.live ? 'live ' : ''}${r.families.join(' × ')}`, pass: r.families.length > 1, value: `${r.value} = ${r.ways.map((w) => `${w.family}.${w.program.join('∘')}(${w.params.join(', ')})`).join(' = ')}`, receipt: r.ways[0]?.receipt ?? '' }))
@@ -46,7 +49,7 @@ const doc = {
   holds: d.holds,
   rows,
 }
-doc.uuid = qpuContentUuidOf(doc.rows)
-doc.receipt = qpuUuidReceiptOf('discovery', doc.uuid, `${doc.relationsTotal} relations over ${doc.families} families`, 'scripts/discover.ts').uuid
+doc.uuid = contentUuidOf(doc.rows)
+doc.receipt = uuidReceiptOf('discovery', doc.uuid, `${doc.relationsTotal} relations over ${doc.families} families`, 'scripts/discover.ts').uuid
 fs.writeFileSync('discovery-receipt.json', JSON.stringify(doc, null, 1) + '\n')
 console.log(JSON.stringify({ families: doc.families, runs: doc.runs, relations: doc.relationsTotal, live: doc.liveRelations, seals: doc.seals, sequences: doc.sequences, unrelated: doc.unrelated }))

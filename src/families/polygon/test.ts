@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PolygonFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('polygon: interioranglesum, diagonals, exteriorangle, interiorangle, triang
   assert.equal(PolygonFormulas.sides(7).value, 7)
   assert.equal(PolygonFormulas.area(10, 4).value, 20)
   assert.equal(PolygonFormulas.interioranglesum(5).dst, 'geometry')
-  assert.equal(qpuHexFamiliesOf().get('polygon')?.length, 8)
+  assert.equal(hexFamiliesOf().get('polygon')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'polygon', program: ['diagonals'], params: [6] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9, `polygon.diagonals at ${uuid}`)
-  qpuUuidReceiptOf('polygon diagonals', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('polygon diagonals', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; interioranglesum 540, diagonals 9, exteriorangle 45, interiorangle 120, triangles 3, perimeter 20, sides 7, area 20; crossing to geometry')
 })

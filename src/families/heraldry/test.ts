@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HeraldryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('heraldry: tincturecount, chargecombos, quarterings, blazonorderings, field
   assert.equal(HeraldryFormulas.ordinaries(9, 0).value, 9)
   assert.equal(HeraldryFormulas.differencingmarks(3, 3).value, 9)
   assert.equal(HeraldryFormulas.tincturecount(5, 2).dst, 'anthropology')
-  assert.equal(qpuHexFamiliesOf().get('heraldry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('heraldry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'heraldry', program: ['tincturecount'], params: [5, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 7, `heraldry.tincturecount at ${uuid}`)
-  qpuUuidReceiptOf('heraldry tincturecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('heraldry tincturecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; tincturecount 7, chargecombos 220, quarterings 16, blazonorderings 24, fieldsubsets 16, marshallingpairs 28, ordinaries 9, differencingmarks 9; crossing to anthropology')
 })

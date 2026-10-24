@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ShippingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('shipping: teu, utilization, transittime, freightrate, demurrage, dwelltime
   assert.equal(ShippingFormulas.ontime(95, 100).value, 95, 'on-time share')
   assert.equal(ShippingFormulas.bunkerfuel(1000, 30).value, 30000)
   assert.equal(ShippingFormulas.teu(100, 2).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('shipping')?.length, 8)
+  assert.equal(hexFamiliesOf().get('shipping')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'shipping', program: ['teu'], params: [100, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `shipping.teu at ${uuid}`)
-  qpuUuidReceiptOf('shipping teu', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('shipping teu', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; teu 200, utilization 90, transittime 24, freightrate 200, demurrage 750, dwelltime 72, ontime 95, bunkerfuel 30000; crossing to logistics')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MicroscopyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('microscopy: magnification, resolution, numericalaperture, fieldofview, dep
   assert.equal(MicroscopyFormulas.workingdistance(300, 2).value, 150)
   assert.equal(MicroscopyFormulas.pixelsize(36000, 6000).value, 6)
   assert.equal(MicroscopyFormulas.magnification(40, 10).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('microscopy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('microscopy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'microscopy', program: ['magnification'], params: [40, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 400, `microscopy.magnification at ${uuid}`)
-  qpuUuidReceiptOf('microscopy magnification', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('microscopy magnification', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; magnification 400, resolution 125, numericalaperture 55, fieldofview 500, depthoffield 20, totalmag 800, workingdistance 150, pixelsize 6; crossing to optics')
 })

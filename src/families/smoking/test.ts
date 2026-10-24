@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SmokingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('smoking: smoketime, temperaturezone, phenoldeposition, moisturereduction, 
   assert.equal(SmokingFormulas.woodratio(30, 100).value, 30)
   assert.equal(SmokingFormulas.surfacecolor(8, 10).value, 80)
   assert.equal(SmokingFormulas.smoketime(6, 60).dst, 'microbiology')
-  assert.equal(qpuHexFamiliesOf().get('smoking')?.length, 8)
+  assert.equal(hexFamiliesOf().get('smoking')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'smoking', program: ['smoketime'], params: [6, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 360, `smoking.smoketime at ${uuid}`)
-  qpuUuidReceiptOf('smoking smoketime', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('smoking smoketime', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; smoketime 360, temperaturezone 110, phenoldeposition 70, moisturereduction 25, penetrationdepth 5, preservationindex 90, woodratio 30, surfacecolor 80; crossing to microbiology')
 })

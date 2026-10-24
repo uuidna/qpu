@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LATTICE — scaffolded integer measures crossed to crystallography. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class LatticeFormulas {
 }
 
 for (const name of ['coordinationnumber', 'latticevectors', 'millerindices', 'packingfraction', 'planepairs', 'points', 'symmetryorderings', 'unitcells'] as const)
-  qpuHexRegisterOf('lattice', name, (LatticeFormulas[name] as (...x: unknown[]) => unknown).bind(LatticeFormulas))
+  hexRegisterOf('lattice', name, (LatticeFormulas[name] as (...x: unknown[]) => unknown).bind(LatticeFormulas))

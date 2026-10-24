@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PokerFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('poker: potodds, outs, equity, expectedvalue, impliedodds, fold, stackratio
   assert.equal(PokerFormulas.stackratio(1000, 100).value, 10, 'ten pots behind')
   assert.equal(PokerFormulas.rake(200, 5).value, 10)
   assert.equal(PokerFormulas.potodds(90, 10).dst, 'probability')
-  assert.equal(qpuHexFamiliesOf().get('poker')?.length, 8)
+  assert.equal(hexFamiliesOf().get('poker')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'poker', program: ['equity'], params: [9, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 36, `poker.equity at ${uuid}`)
-  qpuUuidReceiptOf('poker equity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('poker equity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; potodds 10, outs 7, equity 36, expectedvalue 50, impliedodds 5, fold 75, stackratio 10, rake 10; crossing to probability')
 })

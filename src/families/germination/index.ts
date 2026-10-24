@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GERMINATION — SEEDS WAKING UP, AS ARITHMETIC (a seed lot measured as it sprouts). Germination is numbers: how many seeds
@@ -31,4 +31,4 @@ export class GerminationFormulas {
 }
 
 for (const name of ['energy', 'finalpercent', 'meantime', 'rate', 'speedindex', 'uniformity', 'viability', 'vigorindex'] as const)
-  qpuHexRegisterOf('germination', name, (GerminationFormulas[name] as (...x: unknown[]) => unknown).bind(GerminationFormulas))
+  hexRegisterOf('germination', name, (GerminationFormulas[name] as (...x: unknown[]) => unknown).bind(GerminationFormulas))

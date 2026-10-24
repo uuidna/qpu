@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OpticsFormulas } from './index.js'
 
 /** optics: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('optics: magnify, fnumber, dpi, megapixels, resolution, aperturesteps, fov,
   assert.equal(OpticsFormulas.aperturesteps(6).value, 64, 'aperturesteps(6)')
   assert.equal(OpticsFormulas.fov(180, 40).value, 140, 'fov(180, 40)')
   assert.equal(OpticsFormulas.elements(6, 2).value, 8, 'elements(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('optics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('optics')?.length, 8)
   for (const [name, params, expected] of [["magnify",[10,5],50],["fnumber",[200,50],4],["dpi",[3000,10],300]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'optics', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `optics.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`optics ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`optics ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "magnify=50, fnumber=4, dpi=300")
 })

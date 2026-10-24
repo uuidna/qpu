@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ClusteringFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('clustering: centroiddist, inertia, silhouette, purity, kselection, within,
   assert.equal(ClusteringFormulas.between(300, 1000).value, 0)
   assert.equal(ClusteringFormulas.density(1000, 10).value, 10, 'points per squared radius')
   assert.equal(ClusteringFormulas.centroiddist(3, 4).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('clustering')?.length, 8)
+  assert.equal(hexFamiliesOf().get('clustering')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'clustering', program: ['centroiddist'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `clustering.centroiddist at ${uuid}`)
-  qpuUuidReceiptOf('clustering centroiddist', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('clustering centroiddist', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; centroiddist 25, inertia 2000, silhouette 66, purity 80, kselection 20, within 200, between 700, density 10; crossing to statistics')
 })

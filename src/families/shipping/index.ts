@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SHIPPING — MOVING BOXES ACROSS THE SEA, AS ARITHMETIC. Container trade is numbers: twenty-foot equivalents on a hull,
@@ -31,4 +31,4 @@ export class ShippingFormulas {
 }
 
 for (const name of ['bunkerfuel', 'demurrage', 'dwelltime', 'freightrate', 'ontime', 'teu', 'transittime', 'utilization'] as const)
-  qpuHexRegisterOf('shipping', name, (ShippingFormulas[name] as (...x: unknown[]) => unknown).bind(ShippingFormulas))
+  hexRegisterOf('shipping', name, (ShippingFormulas[name] as (...x: unknown[]) => unknown).bind(ShippingFormulas))

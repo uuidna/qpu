@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SEMANTICS — MEANING AS ARITHMETIC (chosen by the registry, not by hand). What words and sentences mean is numbers:
@@ -31,4 +31,4 @@ export class SemanticsFormulas {
 }
 
 for (const name of ['ambiguity', 'coherence', 'density', 'distance', 'entailment', 'polysemy', 'sentiment', 'similarity'] as const)
-  qpuHexRegisterOf('semantics', name, (SemanticsFormulas[name] as (...x: unknown[]) => unknown).bind(SemanticsFormulas))
+  hexRegisterOf('semantics', name, (SemanticsFormulas[name] as (...x: unknown[]) => unknown).bind(SemanticsFormulas))

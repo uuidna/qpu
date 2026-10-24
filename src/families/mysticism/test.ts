@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MysticismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('mysticism: stages, ascentorderings, unionstates, virtuecombos, contemplati
   assert.equal(MysticismFormulas.numberpaths(10, 3).value, 720)
   assert.equal(MysticismFormulas.illuminationratio(70, 100).value, 70)
   assert.equal(MysticismFormulas.stages(3, 4).dst, 'philosophy')
-  assert.equal(qpuHexFamiliesOf().get('mysticism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mysticism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mysticism', program: ['stages'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 7, `mysticism.stages at ${uuid}`)
-  qpuUuidReceiptOf('mysticism stages', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mysticism stages', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; stages 7, ascentorderings 5040, unionstates 32, virtuecombos 35, contemplationlevels 9, darknesslight 60, numberpaths 720, illuminationratio 70; crossing to philosophy')
 })

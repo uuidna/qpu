@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HostingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('hosting: domains, dns, ssl, bandwidth, uptime, traffic, storage, overage â
   assert.equal(HostingFormulas.overage(120, 100).value, 20, 'past the quota')
   assert.equal(HostingFormulas.overage(80, 100).value, 0)
   assert.equal(HostingFormulas.domains(50, 3).dst, 'obs')
-  assert.equal(qpuHexFamiliesOf().get('hosting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hosting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hosting', program: ['dns'], params: [12, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `hosting.dns at ${uuid}`)
-  qpuUuidReceiptOf('hosting dns', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hosting dns', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; domains 150, dns 60, ssl 90, bandwidth 900, uptime 99, traffic 5000, storage 1000, overage 20; crossing to obs')
 })

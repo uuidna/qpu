@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BiophysicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('biophysics: diffusion, membrane, elasticity, osmosis, binding, conductance
   assert.equal(BiophysicsFormulas.folding(80, 100).value, 80, 'percent folded')
   assert.equal(BiophysicsFormulas.tension(600, 20).value, 30)
   assert.equal(BiophysicsFormulas.diffusion(10, 4).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('biophysics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('biophysics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'biophysics', program: ['elasticity'], params: [2000, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 400, `biophysics.elasticity at ${uuid}`)
-  qpuUuidReceiptOf('biophysics elasticity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('biophysics elasticity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; diffusion 25, membrane 25, elasticity 400, osmosis 3, binding 9, conductance 5, folding 80, tension 30; crossing to materials')
 })

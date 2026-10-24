@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GalaxyFormulas — 8 exact-integer formulas of the galaxy domain, each at a hex address crossing to cross; develops the galaxy leads. */
@@ -31,4 +31,4 @@ export class GalaxyFormulas {
 }
 
 for (const name of ['arms', 'blackholes', 'clusters', 'combos', 'diameter', 'redshift', 'stars', 'types'] as const)
-  qpuHexRegisterOf('galaxy', name, (GalaxyFormulas[name] as (...x: unknown[]) => unknown).bind(GalaxyFormulas))
+  hexRegisterOf('galaxy', name, (GalaxyFormulas[name] as (...x: unknown[]) => unknown).bind(GalaxyFormulas))

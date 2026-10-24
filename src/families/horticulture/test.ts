@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HorticultureFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('horticulture: spacing, germination, pruning, irrigation, fertilizer, ph, l
   assert.equal(HorticultureFormulas.lightdays(14, 90).value, 1260, 'light banked over the season')
   assert.equal(HorticultureFormulas.propagation(18, 24).value, 75)
   assert.equal(HorticultureFormulas.spacing(1000, 40).dst, 'botany')
-  assert.equal(qpuHexFamiliesOf().get('horticulture')?.length, 8)
+  assert.equal(hexFamiliesOf().get('horticulture')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'horticulture', program: ['spacing'], params: [1000, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `horticulture.spacing at ${uuid}`)
-  qpuUuidReceiptOf('horticulture spacing', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('horticulture spacing', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; spacing 25, germination 90, pruning 25, irrigation 50, fertilizer 8, ph 65, lightdays 1260, propagation 75; crossing to botany')
 })

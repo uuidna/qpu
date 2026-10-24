@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TOKENIZATION — TEXT MADE COUNTABLE, AS ARITHMETIC. Splitting text into tokens is numbers: the tokens a string yields,
@@ -31,4 +31,4 @@ export class TokenizationFormulas {
 }
 
 for (const name of ['avgtokenlength', 'charspertoken', 'compressionratio', 'fertility', 'oovrate', 'subwordratio', 'tokencount', 'vocabsize'] as const)
-  qpuHexRegisterOf('tokenization', name, (TokenizationFormulas[name] as (...x: unknown[]) => unknown).bind(TokenizationFormulas))
+  hexRegisterOf('tokenization', name, (TokenizationFormulas[name] as (...x: unknown[]) => unknown).bind(TokenizationFormulas))

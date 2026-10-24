@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { IconographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('iconography: symbolcount, attributepairs, gesturetypes, colorsubsets, comp
   assert.equal(IconographyFormulas.motifcombos(10, 3).value, 120)
   assert.equal(IconographyFormulas.canonratio(80, 100).value, 80)
   assert.equal(IconographyFormulas.symbolcount(12, 8).dst, 'anthropology')
-  assert.equal(qpuHexFamiliesOf().get('iconography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('iconography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'iconography', program: ['symbolcount'], params: [12, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `iconography.symbolcount at ${uuid}`)
-  qpuUuidReceiptOf('iconography symbolcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('iconography symbolcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; symbolcount 20, attributepairs 66, gesturetypes 15, colorsubsets 64, compositionorderings 120, haloforms 5, motifcombos 120, canonratio 80; crossing to anthropology')
 })

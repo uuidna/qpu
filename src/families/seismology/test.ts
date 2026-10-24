@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SeismologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -17,10 +17,10 @@ test('seismology: magnitude, energy, distance, intensity, aftershocks, epicenter
   assert.equal(SeismologyFormulas.frequency(500, 0).value, 0, 'years guarded')
   assert.equal(SeismologyFormulas.moment(1000, 3).value, 3000)
   assert.equal(SeismologyFormulas.distance(10, 5).dst, 'cern')
-  assert.equal(qpuHexFamiliesOf().get('seismology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('seismology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'seismology', program: ['distance'], params: [10, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `seismology.distance at ${uuid}`)
-  qpuUuidReceiptOf('seismology distance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('seismology distance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; magnitude 7, energy 49, distance 50, intensity 35, aftershocks 200, epicenter 75, frequency 5, moment 3000; crossing to cern')
 })

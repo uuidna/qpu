@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TRADING — THE ARITHMETIC OF A POSITION, BOOKED TO THE LEDGER. What a trade is worth and what it risks is arithmetic
@@ -31,4 +31,4 @@ export class TradingFormulas {
 }
 
 for (const name of ['fee', 'leverage', 'margin', 'notional', 'pnl', 'position', 'risk', 'stop'] as const)
-  qpuHexRegisterOf('trading', name, (TradingFormulas[name] as (...x: unknown[]) => unknown).bind(TradingFormulas))
+  hexRegisterOf('trading', name, (TradingFormulas[name] as (...x: unknown[]) => unknown).bind(TradingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { KinesiologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('kinesiology: rangeofmotion, flexion, extension, muscleactivation, jointang
   assert.equal(KinesiologyFormulas.balance(5, 10).value, 1, 'balance held')
   assert.equal(KinesiologyFormulas.balance(15, 10).value, 0)
   assert.equal(KinesiologyFormulas.rangeofmotion(150, 20).dst, 'anatomy')
-  assert.equal(qpuHexFamiliesOf().get('kinesiology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('kinesiology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'kinesiology', program: ['rangeofmotion'], params: [150, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 130, `kinesiology.rangeofmotion at ${uuid}`)
-  qpuUuidReceiptOf('kinesiology rangeofmotion', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('kinesiology rangeofmotion', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rangeofmotion 130, flexion 90, extension 60, muscleactivation 75, jointangle 90, momentarm 600, contraction 30, balance 1; crossing to anatomy')
 })

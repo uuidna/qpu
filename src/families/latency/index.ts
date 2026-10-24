@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LATENCY — WHERE THE TIME GOES, AS ARITHMETIC (chosen by the public-API registry, not by hand). Moving a packet is numbers:
@@ -31,4 +31,4 @@ export class LatencyFormulas {
 }
 
 for (const name of ['oneway', 'processing', 'propagation', 'queuing', 'roundtrip', 'serialization', 'total', 'transmission'] as const)
-  qpuHexRegisterOf('latency', name, (LatencyFormulas[name] as (...x: unknown[]) => unknown).bind(LatencyFormulas))
+  hexRegisterOf('latency', name, (LatencyFormulas[name] as (...x: unknown[]) => unknown).bind(LatencyFormulas))

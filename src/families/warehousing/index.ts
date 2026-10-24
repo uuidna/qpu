@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WAREHOUSING — THE FLOOR AS ARITHMETIC (chosen by the operations registry, not by hand). Running a warehouse is numbers:
@@ -30,4 +30,4 @@ export class WarehousingFormulas {
 }
 
 for (const name of ['accuracy', 'cube', 'dock', 'pickrate', 'slotting', 'throughput', 'turnover', 'utilization'] as const)
-  qpuHexRegisterOf('warehousing', name, (WarehousingFormulas[name] as (...x: unknown[]) => unknown).bind(WarehousingFormulas))
+  hexRegisterOf('warehousing', name, (WarehousingFormulas[name] as (...x: unknown[]) => unknown).bind(WarehousingFormulas))

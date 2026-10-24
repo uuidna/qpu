@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EclipseFormulas — 8 exact-integer formulas of the eclipse domain, each at a hex address crossing to cross; develops the eclipse leads. */
@@ -31,4 +31,4 @@ export class EclipseFormulas {
 }
 
 for (const name of ['combos', 'contacts', 'duration', 'frequency', 'magnitude', 'path', 'saros', 'types'] as const)
-  qpuHexRegisterOf('eclipse', name, (EclipseFormulas[name] as (...x: unknown[]) => unknown).bind(EclipseFormulas))
+  hexRegisterOf('eclipse', name, (EclipseFormulas[name] as (...x: unknown[]) => unknown).bind(EclipseFormulas))

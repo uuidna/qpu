@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TorsionFormulas — 8 exact-integer formulas of the torsion domain, each at a hex address crossing to cross; develops the torsion leads. */
@@ -31,4 +31,4 @@ export class TorsionFormulas {
 }
 
 for (const name of ['angle', 'combos', 'modulus', 'radius', 'sections', 'shear', 'torque', 'twist'] as const)
-  qpuHexRegisterOf('torsion', name, (TorsionFormulas[name] as (...x: unknown[]) => unknown).bind(TorsionFormulas))
+  hexRegisterOf('torsion', name, (TorsionFormulas[name] as (...x: unknown[]) => unknown).bind(TorsionFormulas))

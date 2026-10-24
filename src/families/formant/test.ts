@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FormantFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('formant: centerfrequency, bandwidth, f1f2ratio, vowelspace, formantspacing
   assert.equal(FormantFormulas.dispersion(3500, 500, 4).value, 1000)
   assert.equal(FormantFormulas.resonancepeak(12, 5).value, 60, 'gain times Q')
   assert.equal(FormantFormulas.centerfrequency(500, 700).dst, 'acoustics')
-  assert.equal(qpuHexFamiliesOf().get('formant')?.length, 8)
+  assert.equal(hexFamiliesOf().get('formant')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'formant', program: ['centerfrequency'], params: [500, 700] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 600, `formant.centerfrequency at ${uuid}`)
-  qpuUuidReceiptOf('formant centerfrequency', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('formant centerfrequency', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; centerfrequency 600, bandwidth 200, f1f2ratio 300, vowelspace 60000, formantspacing 1000, qfactor 3, dispersion 1000, resonancepeak 60; crossing to acoustics')
 })

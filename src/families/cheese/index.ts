@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHEESE — MAKING CHEESE, AS ARITHMETIC (the make sheet is numbers, not taste). Milk becomes curd by counting: yield from
@@ -30,4 +30,4 @@ export class CheeseFormulas {
 }
 
 for (const name of ['aging', 'cultureratio', 'fatindrymatter', 'moisture', 'phacidity', 'rennet', 'salt', 'yield'] as const)
-  qpuHexRegisterOf('cheese', name, (CheeseFormulas[name] as (...x: unknown[]) => unknown).bind(CheeseFormulas))
+  hexRegisterOf('cheese', name, (CheeseFormulas[name] as (...x: unknown[]) => unknown).bind(CheeseFormulas))

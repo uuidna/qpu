@@ -1,15 +1,15 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRegistryOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRegistryOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MerkabaFormulas, flowFamiliesOf } from './index.js'
 
 /** A flow passes 3 through three distinct families; mirror(c, b, a) is the flow a → b → c and mirror(a, b, c) its
  *  counter-rotation; a formation is counted by the star when the two meet; the torus runs each from the other's
  *  referrer. */
 test('merkaba: trinity flows cross three families, their mirrors counter-rotate, the formations are counted', async (t) => {
-  // complete the registry first: qpuHexRunOf (torus, the final loop) lazily loads families beyond families.js, so the
+  // complete the registry first: hexRunOf (torus, the final loop) lazily loads families beyond families.js, so the
   // ring must be whole before names is captured, or develop's n would outgrow names.length mid-test.
-  await qpuHexRegistryOf()
+  await hexRegistryOf()
   const names = flowFamiliesOf()
   assert.ok(names.length >= 3, 'at least three families flow')
   assert.ok(!names.includes('merkaba') && !names.includes('data') && !names.includes('gate'), 'no door and not itself: no flow recurses')
@@ -42,12 +42,12 @@ test('merkaba: trinity flows cross three families, their mirrors counter-rotate,
   assert.equal(new Set(slices.map((d) => d.rotation)).size, window.length, 'each address in the window is a distinct start, one way or the other')
   assert.equal(MerkabaFormulas.develop(999, 0, 0).holds, false, 'no such family: nothing develops')
   assert.equal(MerkabaFormulas.develop(0, 0, 2 * names.length).holds, false, 'a rotation past the ring is none')
-  assert.equal(qpuHexFamiliesOf().get('merkaba')?.length, 11)
+  assert.equal(hexFamiliesOf().get('merkaba')?.length, 11)
   for (const [name, params, expected] of [['trinity', [0, 1, 2], up.value], ['star', [n], star.value]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'merkaba', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid)) as { value?: unknown; holds?: boolean }
     assert.equal(Number(run.value), expected, `merkaba.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`merkaba ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`merkaba ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic(`${names.length} families flow; ${flows.value} flows, ${star.value} formations, a coil of ${coil.value}/${n} trinities, the rosetta turned each way: ${rosetta.value}`)
 })

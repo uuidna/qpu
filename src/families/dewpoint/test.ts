@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DewpointFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('dewpoint: approximation, comfortband, condensationlevel, depression, frost
   assert.equal(DewpointFormulas.lclheight(30, 20).value, 2280, 'LCL height in feet')
   assert.equal(DewpointFormulas.spread(30, 20).value, 10, 'the dewpoint depression')
   assert.equal(DewpointFormulas.approximation(30, 50).dst, 'climatology')
-  assert.equal(qpuHexFamiliesOf().get('dewpoint')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dewpoint')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dewpoint', program: ['approximation'], params: [30, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `dewpoint.approximation at ${uuid}`)
-  qpuUuidReceiptOf('dewpoint approximation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dewpoint approximation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; approximation 20, comfortband 1, condensationlevel 1250, depression 7, frostpoint 3, humidityfromdew 50, lclheight 2280, spread 10; crossing to climatology')
 })

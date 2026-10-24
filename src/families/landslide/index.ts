@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LANDSLIDE — scaffolded integer measures crossed to geology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class LandslideFormulas {
 }
 
 for (const name of ['debrisfraction', 'factorofsafety', 'rainfallthreshold', 'runoutdistance', 'slopeangle', 'susceptibility', 'velocity', 'volume'] as const)
-  qpuHexRegisterOf('landslide', name, (LandslideFormulas[name] as (...x: unknown[]) => unknown).bind(LandslideFormulas))
+  hexRegisterOf('landslide', name, (LandslideFormulas[name] as (...x: unknown[]) => unknown).bind(LandslideFormulas))

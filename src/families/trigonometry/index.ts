@@ -1,9 +1,9 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 // degrees of a half and a full turn, taken from the Lean theorems (Qpu.Pi.pi_half_turn = 180, pi_turn_degrees = 360)
 // via the lattice, never hardcoded.
-const { halfTurn, fullTurn } = qpuLatticeNamesOf()
+const { halfTurn, fullTurn } = latticeNamesOf()
 
 /** TRIGONOMETRY — THE RIGHT TRIANGLE AND THE WAVE, AS INTEGER ARITHMETIC. Angles turn into ratios scaled by a thousand
  *  (sine, cosine, tangent), the triangle closes (hypotenuse, squared as a proxy), degrees become milliradians, and a
@@ -35,4 +35,4 @@ export class TrigonometryFormulas {
 }
 
 for (const name of ['amplitude', 'cosine', 'hypotenuse', 'period', 'phase', 'radians', 'sine', 'tangent'] as const)
-  qpuHexRegisterOf('trigonometry', name, (TrigonometryFormulas[name] as (...x: unknown[]) => unknown).bind(TrigonometryFormulas))
+  hexRegisterOf('trigonometry', name, (TrigonometryFormulas[name] as (...x: unknown[]) => unknown).bind(TrigonometryFormulas))

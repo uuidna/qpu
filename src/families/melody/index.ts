@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MELODY — A TUNE AS ARITHMETIC. A melody is numbers: how wide it ranges, which way it moves, how much it steps versus
@@ -30,4 +30,4 @@ export class MelodyFormulas {
 }
 
 for (const name of ['contour', 'density', 'motifrepeat', 'phraselength', 'pitchclass', 'range', 'stepleap', 'transposition'] as const)
-  qpuHexRegisterOf('melody', name, (MelodyFormulas[name] as (...x: unknown[]) => unknown).bind(MelodyFormulas))
+  hexRegisterOf('melody', name, (MelodyFormulas[name] as (...x: unknown[]) => unknown).bind(MelodyFormulas))

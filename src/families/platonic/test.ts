@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PlatonicFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -23,10 +23,10 @@ test('platonic: Euler holds for every solid, the duals are the trinity pairs, th
   assert.equal(PlatonicFormulas.self(1).value, 0, 'the cube is not self-dual')
   assert.equal(PlatonicFormulas.sides(1).value, 4, 'a cube face is a square')
   assert.equal(PlatonicFormulas.meeting(1).value, 3, 'three faces meet at a cube vertex')
-  assert.equal(qpuHexFamiliesOf().get('platonic')?.length, 8)
+  assert.equal(hexFamiliesOf().get('platonic')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'platonic', program: ['faces'], params: [3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `platonic.faces(dodecahedron) at ${uuid}`)
-  qpuUuidReceiptOf('platonic faces', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('platonic faces', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; Euler=2 for all five; duals cube↔octa (8v=8f), dodeca↔icosa; tetrahedron self-dual; crossing to merkaba')
 })

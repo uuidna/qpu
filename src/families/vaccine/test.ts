@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VaccineFormulas } from './index.js'
 
 /** vaccine: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('vaccine: doses, efficacy, coverage, antigens, boosters, coldchain, batches
   assert.equal(VaccineFormulas.coldchain(8, 2).value, 6, 'coldchain(8, 2)')
   assert.equal(VaccineFormulas.batches(100, 1000).value, 100000, 'batches(100, 1000)')
   assert.equal(VaccineFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('vaccine')?.length, 8)
+  assert.equal(hexFamiliesOf().get('vaccine')?.length, 8)
   for (const [name, params, expected] of [["doses",[2,1],3],["efficacy",[95,100],95],["coverage",[70,100],70]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'vaccine', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `vaccine.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`vaccine ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`vaccine ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "doses=3, efficacy=95, coverage=70")
 })

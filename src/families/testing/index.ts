@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TESTING — THE DISCIPLINE OF VERIFICATION, AS ARITHMETIC. A test suite is numbers: how much of the code it covers, how
@@ -30,4 +30,4 @@ export class TestingFormulas {
 }
 
 for (const name of ['assertions', 'coverage', 'defects', 'duration', 'flakiness', 'mutation', 'passrate', 'regression'] as const)
-  qpuHexRegisterOf('testing', name, (TestingFormulas[name] as (...x: unknown[]) => unknown).bind(TestingFormulas))
+  hexRegisterOf('testing', name, (TestingFormulas[name] as (...x: unknown[]) => unknown).bind(TestingFormulas))

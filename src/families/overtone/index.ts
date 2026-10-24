@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OVERTONE — THE HARMONIC SERIES AS ARITHMETIC. A plucked string or blown pipe sounds a fundamental and its overtones:
@@ -31,4 +31,4 @@ export class OvertoneFormulas {
 }
 
 for (const name of ['fundamentalfrom', 'harmoniccount', 'harmonicfreq', 'harmonicnumber', 'inharmonicity', 'partialamplitude', 'seriessum', 'spectralcentroid'] as const)
-  qpuHexRegisterOf('overtone', name, (OvertoneFormulas[name] as (...x: unknown[]) => unknown).bind(OvertoneFormulas))
+  hexRegisterOf('overtone', name, (OvertoneFormulas[name] as (...x: unknown[]) => unknown).bind(OvertoneFormulas))

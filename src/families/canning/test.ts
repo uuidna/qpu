@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CanningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('canning: headspace, processtime, fvalue, yield, brine, seal, batch, steril
   assert.equal(CanningFormulas.sterilize(121, 116).value, 1, 'reaches sterilizing heat')
   assert.equal(CanningFormulas.sterilize(100, 116).value, 0)
   assert.equal(CanningFormulas.headspace(500, 450).dst, 'cuisine')
-  assert.equal(qpuHexFamiliesOf().get('canning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('canning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'canning', program: ['batch'], params: [100, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9, `canning.batch at ${uuid}`)
-  qpuUuidReceiptOf('canning batch', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('canning batch', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; headspace 50, processtime 24, fvalue 60, yield 850, brine 100, seal 96, batch 9, sterilize 1; crossing to cuisine')
 })

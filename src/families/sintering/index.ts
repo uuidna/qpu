@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SINTERING — CONSOLIDATING A POWDER COMPACT INTO A SOLID, AS ARITHMETIC. Firing a green part below its melting point is
@@ -31,4 +31,4 @@ export class SinteringFormulas {
 }
 
 for (const name of ['densification', 'density', 'greendensity', 'holdtime', 'neckgrowth', 'porosity', 'shrinkage', 'temperature'] as const)
-  qpuHexRegisterOf('sintering', name, (SinteringFormulas[name] as (...x: unknown[]) => unknown).bind(SinteringFormulas))
+  hexRegisterOf('sintering', name, (SinteringFormulas[name] as (...x: unknown[]) => unknown).bind(SinteringFormulas))

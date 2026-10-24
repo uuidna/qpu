@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ViticultureFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('viticulture: acidity, brix, cropload, density, fermentation, gdd, ripeness
   assert.equal(ViticultureFormulas.ripeness(220, 240).value, 91)
   assert.equal(ViticultureFormulas.tannin(900, 300).value, 3)
   assert.equal(ViticultureFormulas.brix(240, 1000).dst, 'agriculture')
-  assert.equal(qpuHexFamiliesOf().get('viticulture')?.length, 8)
+  assert.equal(hexFamiliesOf().get('viticulture')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'viticulture', program: ['gdd'], params: [30, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `viticulture.gdd at ${uuid}`)
-  qpuUuidReceiptOf('viticulture gdd', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('viticulture gdd', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; acidity 6, brix 24, cropload 3, density 4, fermentation 75, gdd 20, ripeness 91, tannin 3; crossing to agriculture')
 })

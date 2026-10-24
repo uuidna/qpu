@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THROWING — scaffolded integer measures crossed to kinematics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ThrowingFormulas {
 }
 
 for (const name of ['distancegain', 'effortratio', 'flighttime', 'momentum', 'peakheight', 'range', 'releasevelocity', 'spin'] as const)
-  qpuHexRegisterOf('throwing', name, (ThrowingFormulas[name] as (...x: unknown[]) => unknown).bind(ThrowingFormulas))
+  hexRegisterOf('throwing', name, (ThrowingFormulas[name] as (...x: unknown[]) => unknown).bind(ThrowingFormulas))

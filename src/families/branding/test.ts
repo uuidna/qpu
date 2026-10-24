@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BrandingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('branding: awareness, recall, consistency, equity, loyalty, sentiment, reac
   assert.equal(BrandingFormulas.nps(60, 20).value, 40, 'net promoters')
   assert.equal(BrandingFormulas.nps(20, 60).value, -40, 'net detractors')
   assert.equal(BrandingFormulas.awareness(750, 1000).dst, 'content')
-  assert.equal(qpuHexFamiliesOf().get('branding')?.length, 8)
+  assert.equal(hexFamiliesOf().get('branding')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'branding', program: ['awareness'], params: [750, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `branding.awareness at ${uuid}`)
-  qpuUuidReceiptOf('branding awareness', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('branding awareness', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; awareness 75, recall 60, consistency 75, equity 150, loyalty 40, sentiment 40/-40, reach 80, nps 40/-40; crossing to content')
 })

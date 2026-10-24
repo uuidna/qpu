@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** TRIANGULATION — FIXING POINTS FROM ANGLES AND A KNOWN BASE, AS ARITHMETIC (chosen by the public-API registry, not by
  *  hand). Locating a station is numbers: the triangle's closing angle, the squared base length, where two sightlines meet,
@@ -33,4 +33,4 @@ export class TriangulationFormulas {
 }
 
 for (const name of ['angleclosure', 'areacoords', 'baseline', 'bearingsum', 'intersection', 'networkredundancy', 'pointdensity', 'resection'] as const)
-  qpuHexRegisterOf('triangulation', name, (TriangulationFormulas[name] as (...x: unknown[]) => unknown).bind(TriangulationFormulas))
+  hexRegisterOf('triangulation', name, (TriangulationFormulas[name] as (...x: unknown[]) => unknown).bind(TriangulationFormulas))

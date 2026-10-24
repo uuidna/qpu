@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TracingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('tracing: spancount, criticalpath, samplerate, latencybudget, fanout, trace
   assert.equal(TracingFormulas.tailsampling(500, 300).value, 1, 'slow trace kept')
   assert.equal(TracingFormulas.tailsampling(100, 300).value, 0)
   assert.equal(TracingFormulas.spancount(50, 12).dst, 'observability')
-  assert.equal(qpuHexFamiliesOf().get('tracing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tracing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tracing', program: ['tracedepth'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `tracing.tracedepth at ${uuid}`)
-  qpuUuidReceiptOf('tracing tracedepth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tracing tracedepth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; spancount 600, criticalpath 500, samplerate 10, latencybudget 350, fanout 200, tracedepth 4, overhead 900, tailsampling 1; crossing to observability')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MutationFormulas — 8 exact-integer formulas of the mutation domain, each at a hex address crossing to cross; develops the mutation leads. */
@@ -31,4 +31,4 @@ export class MutationFormulas {
 }
 
 for (const name of ['combos', 'frequency', 'generations', 'hotspots', 'rate', 'silent', 'substitutions', 'types'] as const)
-  qpuHexRegisterOf('mutation', name, (MutationFormulas[name] as (...x: unknown[]) => unknown).bind(MutationFormulas))
+  hexRegisterOf('mutation', name, (MutationFormulas[name] as (...x: unknown[]) => unknown).bind(MutationFormulas))

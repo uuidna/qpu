@@ -1,4 +1,4 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuEncryptOf, qpuCybersecurityOf, qpuCybersecurityToolsOf.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): encryptOf, cybersecurityOf, cybersecurityToolsOf.
 import {
   coins,
   cryptoClaimOf,
@@ -8,17 +8,17 @@ import {
   mintOf,
   n,
   onceOf,
-  qpuCapacityHolds,
-  qpuEncryptHolds,
-  qpuEvidenceHolds,
+  capacityHolds,
+  encryptHolds,
+  evidenceHolds,
   qpuEvidenceOf,
-  qpuPurposeHolds,
-  qpuPurposeOf,
-  qpuRaidHolds,
-  qpuRaidOf,
-  qpuSequenceHolds,
+  purposeHolds,
+  purposeOf,
+  raidHolds,
+  raidOf,
+  sequenceHolds,
   qpuSequenceOf,
-  qpuSubManOf,
+  subManOf,
   seed,
   shorArgsOf,
   shorCountBits,
@@ -28,21 +28,21 @@ import {
   unit,
 } from './index.js'
 import type { QpuSubTool } from './index.js'
-import { qpuLeanOf, qpuLeanHolds } from './proof.js'
-import { qpuShorTryOf, qpuShorOf, qpuShorHolds } from './shor.js'
-import { qpuFacesOf, qpuCapacityOf } from './lattice.js'
+import { leanOf, leanHolds } from './proof.js'
+import { shorTryOf, shorOf, shorHolds } from './shor.js'
+import { facesOf, capacityOf } from './lattice.js'
 import { witnessOf, constructedSemiprimeOf } from './witness.js'
 
 /**
  * The split identity of theorem crypto: fused = split x share, recomputed; secrecy is reported false (it is an identity, not a cipher).
  * @wing crypto
  * @kind builder
- * @evidence qpuEncryptHolds
+ * @evidence encryptHolds
  */
-export const qpuEncryptOf = onceOf(() => {
-  const capacity = qpuCapacityOf()
+export const encryptOf = onceOf(() => {
+  const capacity = capacityOf()
   const crypt = capacity.crypt
-  const modulus = qpuFacesOf().rays * (n * n + n + seed)
+  const modulus = facesOf().rays * (n * n + n + seed)
   const publicKey = crypt.fused
   const ciphertext = crypt.split * crypt.share
   /** identity READ from the run: split * share lands on the independently computed fused. theorem crypto. */
@@ -75,15 +75,15 @@ export const qpuEncryptOf = onceOf(() => {
  * The cybersecurity door set: Shor on 91, RSA factoring, the encrypt identity, crypt split and RAID, with what each verifies.
  * @wing crypto
  * @kind builder
- * @evidence qpuCybersecurityHolds
+ * @evidence cybersecurityHolds
  */
-export const qpuCybersecurityOf = onceOf(() => {
-  const shor = qpuShorOf()
-  const capacity = qpuCapacityOf()
-  const raid = qpuRaidOf()
-  const purpose = qpuPurposeOf()
+export const cybersecurityOf = onceOf(() => {
+  const shor = shorOf()
+  const capacity = capacityOf()
+  const raid = raidOf()
+  const purpose = purposeOf()
   const evidence = qpuEvidenceOf()
-  const lean = qpuLeanOf()
+  const lean = leanOf()
   const sequence = qpuSequenceOf()
   const pairs = [
     [3, 5],
@@ -113,20 +113,20 @@ export const qpuCybersecurityOf = onceOf(() => {
     payload: shor.payload,
     unlocked: shor.unlocked,
     lock: shor.lock,
-    holds: shor.rsa.holds && table.length === qpuFacesOf().faces && table.every((row) => row.holds && row.p * row.q === row.modulus) && shor.unlocked === true,
+    holds: shor.rsa.holds && table.length === facesOf().faces && table.every((row) => row.holds && row.p * row.q === row.modulus) && shor.unlocked === true,
   }
-  const encrypt = qpuEncryptOf()
+  const encrypt = encryptOf()
   const crypto = [...lean.rows, ...lean.cover].find((r) => r.heading === 'crypto')
   const shorRow = [...lean.rows, ...lean.cover].find((r) => r.heading === 'shor')
   const tools = cryptoToolNames
   const holds =
-    qpuShorHolds(shor) &&
-    qpuCapacityHolds(capacity) &&
-    qpuRaidHolds(raid) &&
-    qpuPurposeHolds(purpose) &&
-    qpuEvidenceHolds(evidence) &&
-    qpuSequenceHolds(sequence) &&
-    qpuLeanHolds(lean) &&
+    shorHolds(shor) &&
+    capacityHolds(capacity) &&
+    raidHolds(raid) &&
+    purposeHolds(purpose) &&
+    evidenceHolds(evidence) &&
+    sequenceHolds(sequence) &&
+    leanHolds(lean) &&
     capacity.crypt.holds &&
     capacity.crypt.kind === 'crypto' &&
     raid.cluster.security === 'crypt' &&
@@ -139,10 +139,10 @@ export const qpuCybersecurityOf = onceOf(() => {
     rsa.holds &&
     rsa.kind === 'rsa' &&
     encrypt.holds &&
-    qpuEncryptHolds(encrypt) &&
-    table.length === qpuFacesOf().faces &&
+    encryptHolds(encrypt) &&
+    table.length === facesOf().faces &&
     table.every((row) => row.holds && row.rsa === true) &&
-    table[qpuFacesOf().faces - seed]!.p * table[qpuFacesOf().faces - seed]!.q === shor.n &&
+    table[facesOf().faces - seed]!.p * table[facesOf().faces - seed]!.q === shor.n &&
     crypto?.holds === true &&
     shorRow?.holds === true &&
     sequence.rungs.every((row, k) => row.cybersecurity === tools[k])
@@ -170,7 +170,7 @@ export const qpuCybersecurityOf = onceOf(() => {
  * @wing crypto
  * @kind builder
  */
-export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
+export const cybersecurityToolsOf = (): QpuSubTool[] => {
   const href = `${unit.origin}/mcp`
   const see = cryptoToolNames
   const schema = { type: 'object', properties: { man: { type: 'boolean' } } }
@@ -179,12 +179,12 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     type: 'object',
     properties: {
       man: { type: 'boolean' },
-      n: { type: 'string', description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits} — the exact witness circuit; the period is the multiplicative order of the base, found exactly by the period-finding (classical.period) one step at a time, so any n factors once its order is in reach (classical.resolvable; classical.beyond only past the simulatable cap). A base whose order is odd or has a^(r/2) ≡ -1 (mod n) is a bad base — try another a — and a base sharing a factor with n is handed over by gcd, not by period. Past 2^53 send n as a string of digits; \`read\` says how each argument was taken and \`exact\` carries every value as decimal text.` },
+      n: { type: 'string', description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits} — the exact witness circuit; the period is the multiplicative order of the base, found exactly by the period-finding (classical.period) one step at a time, so any n factors once its order is in reach (classical.resolvable; classical.beyond is never produced: the order search has no ceiling). A base whose order is odd or has a^(r/2) ≡ -1 (mod n) is a bad base — try another a — and a base sharing a factor with n is handed over by gcd, not by period. Past 2^53 send n as a string of digits; \`read\` says how each argument was taken and \`exact\` carries every value as decimal text.` },
       a: { type: 'string', description: `Base. Default ${defaults.base}. A base sharing a factor with n hands it over as Shor's first step.` }}}
   const named = `{ n, a } name the modulus and base; the run is theirs, whatever they are. Default ${defaults.modulus} and ${defaults.base}. Counting register ${shorCountBits} is the exact witness; the period is the base's multiplicative order, found exactly by the period-finding, so any n factors once its order is in reach (classical.resolvable, classical.beyond past the cap). An odd order or a^(r/2) ≡ -1 is a bad base (try another a); a shared factor is handed over by gcd.`
   /** What a caller is shown: the run's numbers while they are exact as numbers, the decimal strings from `exact` once
    * they would round (past 2^53) or overflow (past 2^1024). Never a null where a number was asked for. */
-  const shownOf = (shor: ReturnType<typeof qpuShorOf>) => {
+  const shownOf = (shor: ReturnType<typeof shorOf>) => {
     const e = shor.exact
     const safe = e.safe
     return {
@@ -202,16 +202,16 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[n - n],
       description: 'theorem shor. theorem crypto.',
-      man: qpuSubManOf(see[n - n], cryptoReadingOf().catalog, both, href, see.filter((s) => s !== see[n - n])),
+      man: subManOf(see[n - n], cryptoReadingOf().catalog, both, href, see.filter((s) => s !== see[n - n])),
       inputSchema: schema,
-      run: () => qpuCybersecurityOf()},
+      run: () => cybersecurityOf()},
     {
       name: see[seed],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[seed], cryptoReadingOf().shor!, `${factoring} Coprime base. ${named}`, href, see.filter((s) => s !== see[seed])),
+      man: subManOf(see[seed], cryptoReadingOf().shor!, `${factoring} Coprime base. ${named}`, href, see.filter((s) => s !== see[seed])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
-        const shor = qpuShorTryOf(a)
+        const shor = shorTryOf(a)
         const shown = shownOf(shor)
         return {
           kind: 'shor' as const,
@@ -239,58 +239,58 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[coins],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[coins], cryptoReadingOf().cmodexp!, `${factoring} Native h cnot. Compiled x swap csdg cmodexp. ${named}`, href, see.filter((s) => s !== see[coins])),
+      man: subManOf(see[coins], cryptoReadingOf().cmodexp!, `${factoring} Native h cnot. Compiled x swap csdg cmodexp. ${named}`, href, see.filter((s) => s !== see[coins])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
-        const shor = qpuShorTryOf(a)
+        const shor = shorTryOf(a)
         const shown = shownOf(shor)
         return { kind: 'cmodexp' as const, circuitry: shor.circuitry, exact: shor.exact, read: shor.read, rsa: { kind: 'rsa' as const, modulus: shown.n, a: shown.a, factored: shor.rsa.factored }, holds: shor.circuitry.holds && shor.read.holds }
       }},
     {
       name: see[n],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n], cryptoReadingOf().iqft!, `${factoring} Inverse QFT. Period continued-fraction. ${named}`, href, see.filter((s) => s !== see[n])),
+      man: subManOf(see[n], cryptoReadingOf().iqft!, `${factoring} Inverse QFT. Period continued-fraction. ${named}`, href, see.filter((s) => s !== see[n])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
-        const shor = qpuShorTryOf(a)
+        const shor = shorTryOf(a)
         const shown = shownOf(shor)
         return { kind: 'iqft' as const, qft: shor.qft, post: shor.post, classical: shor.classical, exact: shor.exact, read: shor.read, rsa: { kind: 'rsa' as const, modulus: shown.n, period: shor.post.period, factored: shor.rsa.factored }, holds: shor.qft.holds && shor.post.holds && shor.read.holds }
       }},
     {
       name: see[n + seed],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n + seed], cryptoReadingOf().shots!, `${factoring} Exact amplitudes. xx identity. ${named}`, href, see.filter((s) => s !== see[n + seed])),
+      man: subManOf(see[n + seed], cryptoReadingOf().shots!, `${factoring} Exact amplitudes. xx identity. ${named}`, href, see.filter((s) => s !== see[n + seed])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
-        const shor = qpuShorTryOf(a)
+        const shor = shorTryOf(a)
         const shown = shownOf(shor)
         return { kind: 'shots' as const, device: shor.device, measure: shor.measure, exact: shor.exact, read: shor.read, rsa: { kind: 'rsa' as const, modulus: shown.n, factored: shor.rsa.factored }, holds: shor.measure.holds && shor.read.holds }
       }},
     {
       name: see[n + coins],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n + coins], cryptoReadingOf().rsa!, `${factoring} JSON Nat. ${named}`, href, see.filter((s) => s !== see[n + coins])),
+      man: subManOf(see[n + coins], cryptoReadingOf().rsa!, `${factoring} JSON Nat. ${named}`, href, see.filter((s) => s !== see[n + coins])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const args = shorArgsOf(a)
-        if (args.modulus === undefined && args.base === undefined) return qpuCybersecurityOf().rsa
-        const shor = qpuShorTryOf(a)
+        if (args.modulus === undefined && args.base === undefined) return cybersecurityOf().rsa
+        const shor = shorTryOf(a)
         const shown = shownOf(shor)
         return { ...shown.rsa, a: shown.a, period: shor.post.period, by: shor.factors.by, exact: shor.exact, read: shor.read, classical: shor.classical, holds: shor.rsa.holds && shor.read.holds }
       }},
     {
       name: see[n + n],
       description: `theorem crypto. ${cryptoClaimOf()}.`,
-      man: qpuSubManOf(see[n + n], cryptoReadingOf().split!, encrypt, href, see.filter((s) => s !== see[n + n])),
+      man: subManOf(see[n + n], cryptoReadingOf().split!, encrypt, href, see.filter((s) => s !== see[n + n])),
       inputSchema: schema,
-      run: () => qpuEncryptOf()},
+      run: () => encryptOf()},
     {
       name: see[mintOf(n) - seed],
       description: 'theorem shor. theorem crypto.',
-      man: qpuSubManOf(see[mintOf(n) - seed], cryptoReadingOf().verify!, both, href, see.filter((s) => s !== see[mintOf(n) - seed])),
+      man: subManOf(see[mintOf(n) - seed], cryptoReadingOf().verify!, both, href, see.filter((s) => s !== see[mintOf(n) - seed])),
       inputSchema: schema,
       run: async () => {
-        const cyber = qpuCybersecurityOf()
+        const cyber = cybersecurityOf()
         // crypt.* security formulas — dynamic import keeps the cooled crypto module free of a families cycle.
         const { CryptFormulas } = await import('../../../families/crypt/index.js')
         const known = CryptFormulas.knownAnswers()

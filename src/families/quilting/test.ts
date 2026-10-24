@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { QuiltingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('quilting: blockcount, patchpairs, seamlength, patternorderings, colorsubse
   assert.equal(QuiltingFormulas.borderwidth(4, 2).value, 6)
   assert.equal(QuiltingFormulas.symmetryratio(90, 100).value, 90)
   assert.equal(QuiltingFormulas.blockcount(12, 12).dst, 'geometry')
-  assert.equal(qpuHexFamiliesOf().get('quilting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('quilting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'quilting', program: ['blockcount'], params: [12, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 144, `quilting.blockcount at ${uuid}`)
-  qpuUuidReceiptOf('quilting blockcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('quilting blockcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; blockcount 144, patchpairs 120, seamlength 400, patternorderings 120, colorsubsets 64, gridcells 400, borderwidth 6, symmetryratio 90; crossing to geometry')
 })

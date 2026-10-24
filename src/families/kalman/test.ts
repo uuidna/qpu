@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { KalmanFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('kalman: gain, predictedstate, updatedestimate, errorcovariance, innovation
   assert.equal(KalmanFormulas.processnoise(3, 4).value, 12)
   assert.equal(KalmanFormulas.steadygain(2, 6).value, 25, 'the gain it settles on')
   assert.equal(KalmanFormulas.gain(3, 1).dst, 'cybernetics')
-  assert.equal(qpuHexFamiliesOf().get('kalman')?.length, 8)
+  assert.equal(hexFamiliesOf().get('kalman')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'kalman', program: ['gain'], params: [3, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `kalman.gain at ${uuid}`)
-  qpuUuidReceiptOf('kalman gain', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('kalman gain', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gain 75, predictedstate 110, updatedestimate 106, errorcovariance 20, innovation 10, measurementresidual 4, processnoise 12, steadygain 25; crossing to cybernetics')
 })

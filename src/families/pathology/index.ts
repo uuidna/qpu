@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PATHOLOGY — DIAGNOSTIC TESTS AND SLIDES, AS ARITHMETIC. A diagnostic test is numbers: how often it catches disease
@@ -31,4 +31,4 @@ export class PathologyFormulas {
 }
 
 for (const name of ['cellularity', 'concordance', 'mitotic', 'positivity', 'precision', 'prevalence', 'sensitivity', 'specificity'] as const)
-  qpuHexRegisterOf('pathology', name, (PathologyFormulas[name] as (...x: unknown[]) => unknown).bind(PathologyFormulas))
+  hexRegisterOf('pathology', name, (PathologyFormulas[name] as (...x: unknown[]) => unknown).bind(PathologyFormulas))

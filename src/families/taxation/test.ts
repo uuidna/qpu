@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TaxationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('taxation: income, vat, bracket, deduction, effective, withholding, capital
   assert.equal(TaxationFormulas.capitalgains(15000, 10000).value, 5000)
   assert.equal(TaxationFormulas.liability(38000, 25).value, 9500)
   assert.equal(TaxationFormulas.income(50000, 20).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('taxation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('taxation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'taxation', program: ['liability'], params: [38000, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9500, `taxation.liability at ${uuid}`)
-  qpuUuidReceiptOf('taxation liability', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('taxation liability', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; income 10000, vat 200, bracket 10000, deduction 38000, effective 20, withholding 4333, capitalgains 5000, liability 9500; crossing to econ')
 })

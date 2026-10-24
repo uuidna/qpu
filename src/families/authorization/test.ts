@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AuthorizationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -17,10 +17,10 @@ test('authorization: rolecount, permissionmatrix, leastprivilege, policyeval, gr
   assert.equal(AuthorizationFormulas.accessreviewlag(100, 40).value, 60, 'reviews left overdue')
   assert.equal(AuthorizationFormulas.accessreviewlag(30, 50).value, 0)
   assert.equal(AuthorizationFormulas.rolecount(50, 4).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('authorization')?.length, 8)
+  assert.equal(hexFamiliesOf().get('authorization')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'authorization', program: ['rolecount'], params: [50, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `authorization.rolecount at ${uuid}`)
-  qpuUuidReceiptOf('authorization rolecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('authorization rolecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rolecount 200, permissionmatrix 600, leastprivilege 3, policyeval 1, grantratio 90, scopebreadth 96, separationofduty 5, accessreviewlag 60; crossing to networking')
 })

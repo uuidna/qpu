@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ErgometryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('ergometry: power, workdone, split, strokerate, energyrate, efficiency, dis
   assert.equal(ErgometryFormulas.distance(5, 500).value, 2500)
   assert.equal(ErgometryFormulas.caloriesper(3600, 60).value, 60)
   assert.equal(ErgometryFormulas.power(200, 5).dst, 'sports')
-  assert.equal(qpuHexFamiliesOf().get('ergometry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ergometry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ergometry', program: ['power'], params: [200, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `ergometry.power at ${uuid}`)
-  qpuUuidReceiptOf('ergometry power', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ergometry power', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; power 1000, workdone 30000, split 60, strokerate 60, energyrate 50, efficiency 25, distance 2500, caloriesper 60; crossing to sports')
 })

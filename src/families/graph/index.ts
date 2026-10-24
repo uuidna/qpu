@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GraphFormulas — 8 exact-integer formulas of the graph domain, each at a hex address crossing to cross; develops the graph leads. */
@@ -31,4 +31,4 @@ export class GraphFormulas {
 }
 
 for (const name of ['cliques', 'components', 'degree', 'density', 'diameter', 'edges', 'paths', 'spanning'] as const)
-  qpuHexRegisterOf('graph', name, (GraphFormulas[name] as (...x: unknown[]) => unknown).bind(GraphFormulas))
+  hexRegisterOf('graph', name, (GraphFormulas[name] as (...x: unknown[]) => unknown).bind(GraphFormulas))

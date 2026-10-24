@@ -14,8 +14,8 @@ import { QuantumFormulas } from '../../families/quantum/index.js'
 import { CLAY_SEALS, claySealWaveOf } from '../../families/clay/index.js'
 import {
   qpuHexUuidOf,
-  qpuMcpToolsListOf,
-  qpuServerSubmitOf,
+  mcpToolsListOf,
+  serverSubmitOf,
   unit,
   type QpuEnv,
 } from '../../quantum/processing/unit/index.js'
@@ -113,13 +113,13 @@ const GATE_ALIASES: Record<string, string> = {
   not: 'x',
   z: 'z',
   pauli_z: 'z',
-  cx: 'cnot',
-  cnot: 'cnot',
-  cnot_gate: 'cnot',
+  cx: 'cx',
+  cnot: 'cx',
+  cnot_gate: 'cx',
   cz: 'cz',
   swap: 'swap',
-  ccx: 'toffoli',
-  toffoli: 'toffoli',
+  ccx: 'ccx',
+  toffoli: 'ccx',
   reset: 'reset',
 }
 
@@ -144,9 +144,9 @@ export const nativeGateOf = (row: unknown): NativeGate | null => {
   const q = typeof r.q === 'number' ? r.q : qubits[0] ?? 0
   const c = typeof r.c === 'number' ? r.c : typeof r.control === 'number' ? r.control : qubits[0]
   const t = typeof r.t === 'number' ? r.t : qubits[1] ?? 1
-  if (name === 'cnot' || name === 'cz') return { name, c: c ?? 0, t: t ?? 1 }
+  if (name === 'cx' || name === 'cz') return { name, c: c ?? 0, t: t ?? 1 }
   if (name === 'swap') return { name, a: typeof r.a === 'number' ? r.a : q, b: typeof r.b === 'number' ? r.b : t }
-  if (name === 'toffoli') {
+  if (name === 'ccx') {
     return {
       name,
       c: typeof r.c === 'number' ? r.c : qubits[0] ?? 0,
@@ -211,7 +211,7 @@ export const nativeGatesFromOf = (input: Record<string, unknown>): { gates: Nati
 
 const connectBillOf = () => {
   // Lazy: avoid circular import at module load; gate-court trials the measured bill.
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete', tools }).length
   const doors = tools.length
   const qpuPrefixed = tools.filter((t) => t.name.startsWith('qpu_')).length
@@ -326,7 +326,7 @@ export const nativeAdaptersOf = (): {
       foreign: 'sampler.sample_ising(h, J, num_reads=100)',
       qpu: "hex { family:'quantum', program:['gatecount'], params:[n,k] } · connector { vendor:'dwave', gates:[...] }",
     }),
-    row(9, 'server', 'src/quantum/processing/unit qpuServerSubmitOf /server', ['circuit', 'job', 'backend', 'shots', 'results'], 'server_submit', { gates: [] }, 'server.submit', null, true, {
+    row(9, 'server', 'src/quantum/processing/unit serverSubmitOf /server', ['circuit', 'job', 'backend', 'shots', 'results'], 'server_submit', { gates: [] }, 'server.submit', null, true, {
       foreign: 'POST /server tools/call server_submit { gates }',
       qpu: 'tools/call server_submit { gates:[{name:h,q:0},{name:cnot,c:0,t:1}] }',
     }),
@@ -386,7 +386,7 @@ export const nativeAdaptersOf = (): {
       foreign: 'SHAP feature importance vector',
       qpu: 'hex xai / explainable formulas · MCP theorem bridge',
     }),
-    row(24, 'llm', 'src/integrations/llm-connector.ts · qpuHostsOf', ['tools/call', 'tenant'], 'connector', { model: true }, 'host.llm', null, false, {
+    row(24, 'llm', 'src/integrations/llm-connector.ts · hostsOf', ['tools/call', 'tenant'], 'connector', { model: true }, 'host.llm', null, false, {
       foreign: 'OpenAI/Anthropic chat.completions.create',
       qpu: "connector { model: '<llm>' } · formulatedModelsOf seats",
     }),
@@ -545,7 +545,7 @@ export const nativeJobOf = async (input: Record<string, unknown> = {}) => {
     }
   }
 
-  const job = qpuServerSubmitOf({
+  const job = serverSubmitOf({
     gates: gates.length
       ? gates
       : [
@@ -591,7 +591,7 @@ export const nativeJobOf = async (input: Record<string, unknown> = {}) => {
   return {
     kind: 'native-job' as const,
     vendor,
-    surface: 'qpuServerSubmitOf' as const,
+    surface: 'serverSubmitOf' as const,
     backend: unit.host,
     read,
     dropped,
@@ -626,7 +626,7 @@ export const nativeJobOf = async (input: Record<string, unknown> = {}) => {
       fullDiscover: 'qpuDiscoverOf OOMs ~4GB — seal-wave is the clay path',
       ticket: price.ticket,
       court: price.court,
-      foreignHardware: 'live IBM|Braket|Azure → formulated ticket hex + court-tried priceRelationOf on qpuServerSubmitOf',
+      foreignHardware: 'live IBM|Braket|Azure → formulated ticket hex + court-tried priceRelationOf on serverSubmitOf',
     },
   }
 }

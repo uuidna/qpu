@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NEUROLOGY — THE NERVOUS SYSTEM, AS ARITHMETIC (chosen by the public-API registry, not by hand). Clinical neurology is
@@ -30,4 +30,4 @@ export class NeurologyFormulas {
 }
 
 for (const name of ['conduction', 'glasgow', 'latency', 'perfusion', 'recovery', 'reflex', 'seizure', 'stroke'] as const)
-  qpuHexRegisterOf('neurology', name, (NeurologyFormulas[name] as (...x: unknown[]) => unknown).bind(NeurologyFormulas))
+  hexRegisterOf('neurology', name, (NeurologyFormulas[name] as (...x: unknown[]) => unknown).bind(NeurologyFormulas))

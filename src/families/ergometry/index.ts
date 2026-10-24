@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ERGOMETRY — scaffolded integer measures crossed to sports. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ErgometryFormulas {
 }
 
 for (const name of ['caloriesper', 'distance', 'efficiency', 'energyrate', 'power', 'split', 'strokerate', 'workdone'] as const)
-  qpuHexRegisterOf('ergometry', name, (ErgometryFormulas[name] as (...x: unknown[]) => unknown).bind(ErgometryFormulas))
+  hexRegisterOf('ergometry', name, (ErgometryFormulas[name] as (...x: unknown[]) => unknown).bind(ErgometryFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VulcanologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('vulcanology: vei, ejectavolume, explosivity, lavaflowrate, ashheight, repo
   assert.equal(VulcanologyFormulas.magmaviscosity(100, 4).value, 400)
   assert.equal(VulcanologyFormulas.hazardindex(80, 100).value, 80)
   assert.equal(VulcanologyFormulas.vei(4, 5).dst, 'geology')
-  assert.equal(qpuHexFamiliesOf().get('vulcanology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('vulcanology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'vulcanology', program: ['vei'], params: [4, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `vulcanology.vei at ${uuid}`)
-  qpuUuidReceiptOf('vulcanology vei', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('vulcanology vei', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; vei 5, ejectavolume 3000, explosivity 5, lavaflowrate 100, ashheight 12000, repose 800, magmaviscosity 400, hazardindex 80; crossing to geology')
 })

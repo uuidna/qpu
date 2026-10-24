@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CoffeeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('coffee: brewratio, extraction, tds, doseyield, grindsetting, watertemp, bl
   assert.equal(CoffeeFormulas.strength(14, 12).value, 1, 'strength met')
   assert.equal(CoffeeFormulas.strength(10, 12).value, 0)
   assert.equal(CoffeeFormulas.brewratio(500, 30).dst, 'cuisine')
-  assert.equal(qpuHexFamiliesOf().get('coffee')?.length, 8)
+  assert.equal(hexFamiliesOf().get('coffee')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'coffee', program: ['brewratio'], params: [500, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 16, `coffee.brewratio at ${uuid}`)
-  qpuUuidReceiptOf('coffee brewratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('coffee brewratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; brewratio 16, extraction 20, tds 14, doseyield 36, grindsetting 16, watertemp 93, bloomwater 60, strength 1; crossing to cuisine')
 })

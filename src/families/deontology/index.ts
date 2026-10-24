@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DEONTOLOGY — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DeontologyFormulas {
 }
 
 for (const name of ['conflictcount', 'duties', 'dutypairs', 'imperativesubsets', 'maximorderings', 'obligationchains', 'rightsduties', 'universalizability'] as const)
-  qpuHexRegisterOf('deontology', name, (DeontologyFormulas[name] as (...x: unknown[]) => unknown).bind(DeontologyFormulas))
+  hexRegisterOf('deontology', name, (DeontologyFormulas[name] as (...x: unknown[]) => unknown).bind(DeontologyFormulas))

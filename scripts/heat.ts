@@ -12,9 +12,9 @@
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
 import { HeatFormulas, heatOf } from '../dist/families/heat/index.js'
-import { qpuContentUuidOf, qpuUuidReceiptOf, qpuLatticeNamesOf, tenOf } from '../dist/quantum/processing/unit/index.js'
+import { contentUuidOf, uuidReceiptOf, latticeNamesOf, tenOf } from '../dist/quantum/processing/unit/index.js'
 import { coins, faces, vertices } from './lattice-values.js'
-const L = { ...qpuLatticeNamesOf(), tenOf }
+const L = { ...latticeNamesOf(), tenOf }
 
 const WINDOW = L.n * L.tenOf(L.seed)
 const DAY = 86400 // SI: seconds in a day, not a lattice quantity
@@ -151,7 +151,7 @@ const doc = {
   holds: heat.holds,
   rows: top.map((r) => ({ name: r.file, pass: !r.hot, value: `${r.temperature} mK · signal ${r.signal} · T₂ ${r.coherence}d · quality ${r.quality} · ${r.commits} commits/${r.days}d · ${r.fixes} fixes · ${r.lines} lines · split ${r.ways}`, receipt: r.receipt, hex: r.hex ?? '' })),
 }
-doc.uuid = qpuContentUuidOf(doc.rows)
-doc.receipt = qpuUuidReceiptOf('heat', doc.uuid, `${doc.hot}/${doc.files} hot`, 'scripts/heat.ts').uuid
+doc.uuid = contentUuidOf(doc.rows)
+doc.receipt = uuidReceiptOf('heat', doc.uuid, `${doc.hot}/${doc.files} hot`, 'scripts/heat.ts').uuid
 fs.writeFileSync('heat-receipt.json', JSON.stringify(doc, null, 1) + '\n')
 console.log(JSON.stringify({ files: doc.files, hot: doc.hot, threshold: doc.threshold, hottest: doc.hottest, mK: doc.hottestMilliKelvin }))

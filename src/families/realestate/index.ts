@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REALESTATE — PROPERTY INVESTMENT AS ARITHMETIC (chosen by the public-API registry, not by hand). Owning property is
@@ -31,4 +31,4 @@ export class RealestateFormulas {
 }
 
 for (const name of ['appreciation', 'caprate', 'equity', 'ltv', 'mortgage', 'occupancy', 'pricesqft', 'rentyield'] as const)
-  qpuHexRegisterOf('realestate', name, (RealestateFormulas[name] as (...x: unknown[]) => unknown).bind(RealestateFormulas))
+  hexRegisterOf('realestate', name, (RealestateFormulas[name] as (...x: unknown[]) => unknown).bind(RealestateFormulas))

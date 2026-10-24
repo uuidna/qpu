@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PlanetologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('planetology: gravity, escapevelocity, density, albedo, insolation, roche, 
   assert.equal(PlanetologyFormulas.hillsphere(1000, 10).value, 100)
   assert.equal(PlanetologyFormulas.equilibrium(1000, 30).value, 700, '⌊1000·70/100⌋')
   assert.equal(PlanetologyFormulas.gravity(1000, 10).dst, 'astronomy')
-  assert.equal(qpuHexFamiliesOf().get('planetology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('planetology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'planetology', program: ['density'], params: [5000, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `planetology.density at ${uuid}`)
-  qpuUuidReceiptOf('planetology density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('planetology density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gravity 10, escapevelocity 100, density 50, albedo 30, insolation 10, roche 200, hillsphere 100, equilibrium 700; crossing to astronomy')
 })

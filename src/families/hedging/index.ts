@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HEDGING — RISK OFFSET AS ARITHMETIC. A hedge is numbers: the ratio of a position that is covered, the net delta after a
@@ -30,4 +30,4 @@ export class HedgingFormulas {
 }
 
 for (const name of ['basis', 'coverage', 'delta', 'exposure', 'notional', 'offset', 'ratio', 'residual'] as const)
-  qpuHexRegisterOf('hedging', name, (HedgingFormulas[name] as (...x: unknown[]) => unknown).bind(HedgingFormulas))
+  hexRegisterOf('hedging', name, (HedgingFormulas[name] as (...x: unknown[]) => unknown).bind(HedgingFormulas))

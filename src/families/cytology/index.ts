@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CYTOLOGY — THE CELL, AS ARITHMETIC. Counting cells is numbers: how many divide, the nucleus against the cytoplasm,
@@ -30,4 +30,4 @@ export class CytologyFormulas {
 }
 
 for (const name of ['apoptosis', 'confluence', 'diameter', 'doubling', 'mitosis', 'passage', 'ratio', 'viability'] as const)
-  qpuHexRegisterOf('cytology', name, (CytologyFormulas[name] as (...x: unknown[]) => unknown).bind(CytologyFormulas))
+  hexRegisterOf('cytology', name, (CytologyFormulas[name] as (...x: unknown[]) => unknown).bind(CytologyFormulas))

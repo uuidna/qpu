@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PayrollFormulas — 8 exact-integer formulas of the payroll domain, each at a hex address crossing to cross; develops the payroll leads. */
@@ -31,4 +31,4 @@ export class PayrollFormulas {
 }
 
 for (const name of ['combos', 'deductions', 'employees', 'gross', 'net', 'overtime', 'periods', 'withholding'] as const)
-  qpuHexRegisterOf('payroll', name, (PayrollFormulas[name] as (...x: unknown[]) => unknown).bind(PayrollFormulas))
+  hexRegisterOf('payroll', name, (PayrollFormulas[name] as (...x: unknown[]) => unknown).bind(PayrollFormulas))

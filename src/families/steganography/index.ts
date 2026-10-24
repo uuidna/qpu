@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STEGANOGRAPHY — HIDING ONE MESSAGE INSIDE ANOTHER, AS ARITHMETIC. The craft is numbers: how many bits a cover can
@@ -31,4 +31,4 @@ export class SteganographyFormulas {
 }
 
 for (const name of ['capacity', 'detectability', 'distortion', 'embedding', 'extraction', 'payload', 'psnr', 'robustness'] as const)
-  qpuHexRegisterOf('steganography', name, (SteganographyFormulas[name] as (...x: unknown[]) => unknown).bind(SteganographyFormulas))
+  hexRegisterOf('steganography', name, (SteganographyFormulas[name] as (...x: unknown[]) => unknown).bind(SteganographyFormulas))

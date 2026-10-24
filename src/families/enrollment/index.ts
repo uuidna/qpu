@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENROLLMENT — THE REGISTRY'S STUDENT-BODY DOMAIN, AS ARITHMETIC (chosen by the public-API registry, not by hand). A
@@ -31,4 +31,4 @@ export class EnrollmentFormulas {
 }
 
 for (const name of ['attrition', 'capacity', 'fulltimeequivalent', 'rate', 'ratio', 'retention', 'waitlist', 'yield'] as const)
-  qpuHexRegisterOf('enrollment', name, (EnrollmentFormulas[name] as (...x: unknown[]) => unknown).bind(EnrollmentFormulas))
+  hexRegisterOf('enrollment', name, (EnrollmentFormulas[name] as (...x: unknown[]) => unknown).bind(EnrollmentFormulas))

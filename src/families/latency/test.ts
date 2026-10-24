@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LatencyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('latency: oneway, processing, propagation, queuing, roundtrip, serializatio
   assert.equal(LatencyFormulas.total(20, 3).value, 60, 'end-to-end across hops')
   assert.equal(LatencyFormulas.transmission(8000, 1000).value, 8)
   assert.equal(LatencyFormulas.roundtrip(25).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('latency')?.length, 8)
+  assert.equal(hexFamiliesOf().get('latency')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'latency', program: ['total'], params: [20, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `latency.total at ${uuid}`)
-  qpuUuidReceiptOf('latency total', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('latency total', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; oneway 25, processing 200, propagation 15, queuing 50, roundtrip 50, serialization 12, total 60, transmission 8; crossing to networking')
 })

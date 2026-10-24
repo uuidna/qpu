@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HYDRO — HYDROPOWER AS ARITHMETIC (chosen by the public registry, not by hand). A dam is numbers: the power a flow at a
@@ -30,4 +30,4 @@ export class HydroFormulas {
 }
 
 for (const name of ['capacity', 'efficiency', 'head', 'penstock', 'power', 'reservoir', 'storage', 'turbine'] as const)
-  qpuHexRegisterOf('hydro', name, (HydroFormulas[name] as (...x: unknown[]) => unknown).bind(HydroFormulas))
+  hexRegisterOf('hydro', name, (HydroFormulas[name] as (...x: unknown[]) => unknown).bind(HydroFormulas))

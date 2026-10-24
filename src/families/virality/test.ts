@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ViralityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('virality: coefficient, cycletime, shares, amplification, reach, engagement
   assert.equal(ViralityFormulas.saturation(2500, 10000).value, 25)
   assert.equal(ViralityFormulas.halflife(48).value, 48)
   assert.equal(ViralityFormulas.coefficient(200, 15).dst, 'content')
-  assert.equal(qpuHexFamiliesOf().get('virality')?.length, 8)
+  assert.equal(hexFamiliesOf().get('virality')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'virality', program: ['amplification'], params: [600, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `virality.amplification at ${uuid}`)
-  qpuUuidReceiptOf('virality amplification', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('virality amplification', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coefficient 30, cycletime 7, shares 25, amplification 12, reach 100, engagement 30, saturation 25, halflife 48; crossing to content')
 })

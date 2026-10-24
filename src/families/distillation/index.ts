@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DISTILLATION — SEPARATION AS ARITHMETIC. Splitting a mixture is numbers: the purity of a cut, the reflux ratio, the
@@ -31,4 +31,4 @@ export class DistillationFormulas {
 }
 
 for (const name of ['azeotrope', 'cut', 'plates', 'purity', 'recovery', 'reflux', 'temperature', 'volatility'] as const)
-  qpuHexRegisterOf('distillation', name, (DistillationFormulas[name] as (...x: unknown[]) => unknown).bind(DistillationFormulas))
+  hexRegisterOf('distillation', name, (DistillationFormulas[name] as (...x: unknown[]) => unknown).bind(DistillationFormulas))

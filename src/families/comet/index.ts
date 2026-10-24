@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CometFormulas — 8 exact-integer formulas of the comet domain, each at a hex address crossing to cross; develops the comet leads. */
@@ -31,4 +31,4 @@ export class CometFormulas {
 }
 
 for (const name of ['aphelion', 'combos', 'nucleus', 'orbits', 'outgassing', 'perihelion', 'period', 'tail'] as const)
-  qpuHexRegisterOf('comet', name, (CometFormulas[name] as (...x: unknown[]) => unknown).bind(CometFormulas))
+  hexRegisterOf('comet', name, (CometFormulas[name] as (...x: unknown[]) => unknown).bind(CometFormulas))

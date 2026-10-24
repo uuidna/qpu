@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RemotesensingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('remotesensing: ndvi, resolution, reflectance, classification, bands, revis
   assert.equal(RemotesensingFormulas.cloudcover(30, 100).value, 30)
   assert.equal(RemotesensingFormulas.swath(700, 10).value, 7000)
   assert.equal(RemotesensingFormulas.ndvi(80, 40).dst, 'geography')
-  assert.equal(qpuHexFamiliesOf().get('remotesensing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('remotesensing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'remotesensing', program: ['ndvi'], params: [80, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 33, `remotesensing.ndvi at ${uuid}`)
-  qpuUuidReceiptOf('remotesensing ndvi', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('remotesensing ndvi', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ndvi 33, resolution 4, reflectance 50, classification 90, bands 12, revisit 16, cloudcover 30, swath 7000; crossing to geography')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LiteracyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('literacy: wordsperminute, comprehension, fluency, readinglevel, vocabulary
   assert.equal(LiteracyFormulas.lexiledelta(800, 850).value, 0)
   assert.equal(LiteracyFormulas.fogindex(100, 5, 10).value, 12)
   assert.equal(LiteracyFormulas.wordsperminute(300, 60).dst, 'pedagogy')
-  assert.equal(qpuHexFamiliesOf().get('literacy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('literacy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'literacy', program: ['wordsperminute'], params: [300, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `literacy.wordsperminute at ${uuid}`)
-  qpuUuidReceiptOf('literacy wordsperminute', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('literacy wordsperminute', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; wordsperminute 300, comprehension 80, fluency 240, readinglevel 15, vocabulary 90, accuracy 95, lexiledelta 150, fogindex 12; crossing to pedagogy')
 })

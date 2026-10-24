@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SCHOLASTICISM — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ScholasticismFormulas {
 }
 
 for (const name of ['articleorderings', 'consensusratio', 'disputationstages', 'distinctionsubsets', 'objectioncombos', 'questionscount', 'summaparts', 'syllogismcount'] as const)
-  qpuHexRegisterOf('scholasticism', name, (ScholasticismFormulas[name] as (...x: unknown[]) => unknown).bind(ScholasticismFormulas))
+  hexRegisterOf('scholasticism', name, (ScholasticismFormulas[name] as (...x: unknown[]) => unknown).bind(ScholasticismFormulas))

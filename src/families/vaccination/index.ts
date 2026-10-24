@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VACCINATION — A PUBLIC-HEALTH DOMAIN, AS ARITHMETIC (chosen by the registry, not by hand). Immunising a population is
@@ -31,4 +31,4 @@ export class VaccinationFormulas {
 }
 
 for (const name of ['boosterinterval', 'campaignreach', 'coverage', 'dosesneeded', 'efficacy', 'herdthreshold', 'seroconversion', 'titer'] as const)
-  qpuHexRegisterOf('vaccination', name, (VaccinationFormulas[name] as (...x: unknown[]) => unknown).bind(VaccinationFormulas))
+  hexRegisterOf('vaccination', name, (VaccinationFormulas[name] as (...x: unknown[]) => unknown).bind(VaccinationFormulas))

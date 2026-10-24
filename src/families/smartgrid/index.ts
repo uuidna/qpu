@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SMARTGRID — scaffolded integer measures crossed to energy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SmartgridFormulas {
 }
 
 for (const name of ['demandresponse', 'loadcombos', 'meterdata', 'nodes', 'outagereduction', 'renewableshare', 'selfhealingpaths', 'stabilitymargin'] as const)
-  qpuHexRegisterOf('smartgrid', name, (SmartgridFormulas[name] as (...x: unknown[]) => unknown).bind(SmartgridFormulas))
+  hexRegisterOf('smartgrid', name, (SmartgridFormulas[name] as (...x: unknown[]) => unknown).bind(SmartgridFormulas))

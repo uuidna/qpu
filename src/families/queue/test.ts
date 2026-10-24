@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { QueueFormulas } from './index.js'
 
 /** queue: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('queue: throughput, latency, depth, waittime, slots, arrivals, service, com
   assert.equal(QueueFormulas.arrivals(10, 60).value, 600, 'arrivals(10, 60)')
   assert.equal(QueueFormulas.service(1000, 10).value, 100, 'service(1000, 10)')
   assert.equal(QueueFormulas.combos(8, 2).value, 28, 'combos(8, 2)')
-  assert.equal(qpuHexFamiliesOf().get('queue')?.length, 8)
+  assert.equal(hexFamiliesOf().get('queue')?.length, 8)
   for (const [name, params, expected] of [["throughput",[6000,60],100],["latency",[1000,100],10],["depth",[64,0],64]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'queue', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `queue.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`queue ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`queue ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "throughput=100, latency=10, depth=64")
 })

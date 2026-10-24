@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EcologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('ecology: population, density, diversity, carrying, biomass, predation, hab
   assert.equal(EcologyFormulas.habitat(45, 300).value, 15)
   assert.equal(EcologyFormulas.trophic(10000, 10).value, 1000, 'the 10% rule')
   assert.equal(EcologyFormulas.population(120, 80).dst, 'environment')
-  assert.equal(qpuHexFamiliesOf().get('ecology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ecology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ecology', program: ['carrying'], params: [10000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `ecology.carrying at ${uuid}`)
-  qpuUuidReceiptOf('ecology carrying', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ecology carrying', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; population 40 and −40, density 40, diversity 25, carrying 200, biomass 6000, predation 30, habitat 15, trophic 1000; crossing to environment')
 })

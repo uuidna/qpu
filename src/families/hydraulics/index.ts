@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HYDRAULICS — MOVING FLUID AS ARITHMETIC (pressure, continuity, Pascal's law, head, power, a Reynolds proxy, the
@@ -31,4 +31,4 @@ export class HydraulicsFormulas {
 }
 
 for (const name of ['flow', 'force', 'head', 'lift', 'power', 'pressure', 'reynolds', 'velocity'] as const)
-  qpuHexRegisterOf('hydraulics', name, (HydraulicsFormulas[name] as (...x: unknown[]) => unknown).bind(HydraulicsFormulas))
+  hexRegisterOf('hydraulics', name, (HydraulicsFormulas[name] as (...x: unknown[]) => unknown).bind(HydraulicsFormulas))

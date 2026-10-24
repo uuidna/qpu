@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BUNDLING — SHIPPING THE SMALLEST BUILD, AS ARITHMETIC (chosen by the build registry, not by hand). Packing a build is
@@ -31,4 +31,4 @@ export class BundlingFormulas {
 }
 
 for (const name of ['cachehash', 'chunks', 'dedupe', 'gzipratio', 'loadtime', 'minifyratio', 'splitpoints', 'treeshake'] as const)
-  qpuHexRegisterOf('bundling', name, (BundlingFormulas[name] as (...x: unknown[]) => unknown).bind(BundlingFormulas))
+  hexRegisterOf('bundling', name, (BundlingFormulas[name] as (...x: unknown[]) => unknown).bind(BundlingFormulas))

@@ -1,2 +1,2 @@
-/** GENERATED from package.json by scripts/version-lock.mjs (build) and scripts/embed-lean.mjs. Do not edit; bump package.json. */
+/** GENERATED from package.json by scripts/version-lock.ts (build) and scripts/embed-lean.ts. Do not edit; bump package.json. */
 export const packageVersion: string = "1.4.0"

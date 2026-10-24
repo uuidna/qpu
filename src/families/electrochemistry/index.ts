@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELECTROCHEMISTRY — CHARGE AS ARITHMETIC. Reactions are numbers: charge per electron (Faraday), cell potential across
@@ -30,4 +30,4 @@ export class ElectrochemistryFormulas {
 }
 
 for (const name of ['capacity', 'cellpotential', 'conductivity', 'current', 'efficiency', 'electrolysis', 'faraday', 'nernst'] as const)
-  qpuHexRegisterOf('electrochemistry', name, (ElectrochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(ElectrochemistryFormulas))
+  hexRegisterOf('electrochemistry', name, (ElectrochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(ElectrochemistryFormulas))

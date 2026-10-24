@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CRYSTALLOGRAPHY — THE STRUCTURE OF SOLIDS, AS ARITHMETIC. Diffraction and lattices are numbers: the Bragg order,
@@ -31,4 +31,4 @@ export class CrystallographyFormulas {
 }
 
 for (const name of ['bragg', 'coordination', 'density', 'miller', 'packing', 'spacing', 'symmetry', 'unitcell'] as const)
-  qpuHexRegisterOf('crystallography', name, (CrystallographyFormulas[name] as (...x: unknown[]) => unknown).bind(CrystallographyFormulas))
+  hexRegisterOf('crystallography', name, (CrystallographyFormulas[name] as (...x: unknown[]) => unknown).bind(CrystallographyFormulas))

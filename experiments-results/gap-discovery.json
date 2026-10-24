@@ -1,0 +1,28 @@
+{
+  "kind": "gap-discovery",
+  "measured": {
+    "families": 1150,
+    "withTest": 1147
+  },
+  "gaps": [
+    {
+      "id": "TEST-cal",
+      "kind": "family without a test file",
+      "family": "cal",
+      "lead": "write src/families/cal/test.ts"
+    },
+    {
+      "id": "TEST-kin",
+      "kind": "family without a test file",
+      "family": "kin",
+      "lead": "write src/families/kin/test.ts"
+    },
+    {
+      "id": "TEST-yi",
+      "kind": "family without a test file",
+      "family": "yi",
+      "lead": "write src/families/yi/test.ts"
+    }
+  ],
+  "holds": false
+}

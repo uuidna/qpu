@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PARASITOLOGY — HOST–PARASITE EPIDEMIOLOGY, AS ARITHMETIC (chosen by the public-API registry, not by hand). A parasite
@@ -32,4 +32,4 @@ export class ParasitologyFormulas {
 }
 
 for (const name of ['abundance', 'aggregation', 'burden', 'infectivity', 'intensity', 'lifecycle', 'prevalence', 'transmission'] as const)
-  qpuHexRegisterOf('parasitology', name, (ParasitologyFormulas[name] as (...x: unknown[]) => unknown).bind(ParasitologyFormulas))
+  hexRegisterOf('parasitology', name, (ParasitologyFormulas[name] as (...x: unknown[]) => unknown).bind(ParasitologyFormulas))

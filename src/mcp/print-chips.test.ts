@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import './families.js'
 import { chipRayLayersOf, printChipsOf } from './print-chips.js'
 import { imprintChipLicenseOf, verifyChipLicenseOf } from './chip-license.js'
-import { qpuMcpToolsListOf } from '../quantum/processing/unit/index.js'
+import { mcpToolsListOf } from '../quantum/processing/unit/index.js'
 
 test('chip ray layers: coinsÂ·rays=faces; topology.dimension(rays) holds', () => {
   const rays = chipRayLayersOf()
@@ -42,7 +42,7 @@ test('printChipsOf: ray-layered prints + license imprint; printers pass; bill â‰
   const stamp = readFileSync('docs/chips/qpu-chip-index.md', 'utf8')
   assert.ok(stamp.includes('Crypto-imprinted license'))
   assert.ok(stamp.includes(out.license.signature.slice(0, 16)))
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   assert.ok(tools.length <= 16)
   assert.equal(out.holds, true)
 })

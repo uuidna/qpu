@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NoisepollutionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('noisepollution: leq, daynight, exceedance, exposuredose, distanceattenuati
   assert.equal(NoisepollutionFormulas.limitmargin(65, 50).value, 15, 'headroom under the limit')
   assert.equal(NoisepollutionFormulas.annoyanceindex(70, 1000).value, 700)
   assert.equal(NoisepollutionFormulas.leq(3600, 60).dst, 'acoustics')
-  assert.equal(qpuHexFamiliesOf().get('noisepollution')?.length, 8)
+  assert.equal(hexFamiliesOf().get('noisepollution')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'noisepollution', program: ['leq'], params: [3600, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `noisepollution.leq at ${uuid}`)
-  qpuUuidReceiptOf('noisepollution leq', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('noisepollution leq', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; leq 60, daynight 60, exceedance 10, exposuredose 680, distanceattenuation 82, barrierloss 18, limitmargin 15, annoyanceindex 700; crossing to acoustics')
 })

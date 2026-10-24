@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WarehouseFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('warehouse: scanrows, partitionprune, columnsize, compressionratio, queryco
   assert.equal(WarehouseFormulas.cardinality(250, 1000).value, 25)
   assert.equal(WarehouseFormulas.clustering(1000, 8).value, 125, 'blocks touched')
   assert.equal(WarehouseFormulas.scanrows(10000, 25).dst, 'indexing')
-  assert.equal(qpuHexFamiliesOf().get('warehouse')?.length, 8)
+  assert.equal(hexFamiliesOf().get('warehouse')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'warehouse', program: ['clustering'], params: [1000, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 125, `warehouse.clustering at ${uuid}`)
-  qpuUuidReceiptOf('warehouse clustering', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('warehouse clustering', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; scanrows 2500, partitionprune 14, columnsize 8000, compressionratio 4, querycost 1100, materialized 976, cardinality 25, clustering 125; crossing to indexing')
 })

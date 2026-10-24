@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CssFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -19,10 +19,10 @@ test('css: the Tailwind/shadcn design tokens as arithmetic — spacing, rem, typ
   assert.equal(CssFormulas.contrast(55, 45).value, 120, 'low contrast fails AA')
   assert.equal(CssFormulas.grid(12, 16).value, 176, 'eleven gutters of 16px across 12 columns')
   assert.equal(CssFormulas.spacing(4).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('css')?.length, 8)
+  assert.equal(hexFamiliesOf().get('css')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'css', program: ['grid'], params: [12, 16] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 176, `css.grid at ${uuid}`)
-  qpuUuidReceiptOf('css grid', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('css grid', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; spacing 16, rem 150, type 16/20/25, screens 640/1024/1536, radius 8, leading 24, contrast 633/120, grid 176')
 })

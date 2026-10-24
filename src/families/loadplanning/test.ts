@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LoadplanningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('loadplanning: utilization, cubicfill, weightlimit, stackheight, palletsper
   assert.equal(LoadplanningFormulas.voidspace(60, 48).value, 12)
   assert.equal(LoadplanningFormulas.loadbalance(50, 50).value, 100)
   assert.equal(LoadplanningFormulas.utilization(900, 1000).dst, 'supplychain')
-  assert.equal(qpuHexFamiliesOf().get('loadplanning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('loadplanning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'loadplanning', program: ['utilization'], params: [900, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `loadplanning.utilization at ${uuid}`)
-  qpuUuidReceiptOf('loadplanning utilization', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('loadplanning utilization', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; utilization 90, cubicfill 80, weightlimit 2000, stackheight 6, palletspertruck 26, axleload 12000, voidspace 12, loadbalance 100; crossing to supplychain')
 })

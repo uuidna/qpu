@@ -17,7 +17,7 @@ const ROOT = join(dirname(new URL(import.meta.url).pathname), '..')
 
 test('audit the meaning of everything — naming and meaning, by the families, heard by the court', async (t) => {
   await import('../dist/mcp/families.js')
-  const { qpuHexRegisteredSizeOf } = await import('../dist/quantum/processing/unit/index.js')
+  const { hexRegisteredSizeOf } = await import('../dist/quantum/processing/unit/index.js')
   const docket = []
   const charge = (defendant, charge, skill, forum, remedy) => docket.push({ defendant, charge, skill, forum, remedy })
 
@@ -27,19 +27,19 @@ test('audit the meaning of everything — naming and meaning, by the families, h
     const file = `src/families/${fam}/index.ts`
     if (!existsSync(join(ROOT, file))) continue
     const src = readFileSync(join(ROOT, file), 'utf8')
-    const registered = qpuHexRegisteredSizeOf(fam) > 0
+    const registered = hexRegisteredSizeOf(fam) > 0
     if (!registered) continue
 
     // NAMING — rule's skill: one lowercase word; gravity's skill: the dir is the registered family; no residual prefix
     if (!/^[a-z]+$/.test(fam)) charge(fam, 'name is not one lowercase word', 'rule', 'law', 'rename to one word (a human picks it; law.standing)')
-    const registers = src.match(/qpuHexRegisterOf\('([a-zA-Z.]+)'/)
+    const registers = src.match(/hexRegisterOf\('([a-zA-Z.]+)'/)
     if (registers && registers[1] !== fam) charge(fam, `folder '${fam}' registers '${registers[1]}' — name and place disagree`, 'gravity', 'court', 'move/rename so the folder is the family (gravity --fix)')
     if (/\bqpu_[A-Za-z]+/.test(src)) charge(fam, 'carries a residual prefix', 'rule', 'law', 'drop the prefix (law.removable: remanded, not dropped)')
 
     // MEANING — registration IS the connection: a registered family is addressable as a hex program and its formulas
     // return a CrossFormula, so it means something and joins the graph (whether it uses the cross helper or builds its
     // own with the unit's primitives, as path does). An orphan would be a family that references neither.
-    if (!/CrossFormula|crossFormulaOf|qpuContentUuidOf/.test(src)) charge(fam, 'builds no cross — nothing joins it to the graph', 'cross', 'court', 'return a CrossFormula (use the cross skill, or the unit primitives as path does)')
+    if (!/CrossFormula|crossFormulaOf|contentUuidOf/.test(src)) charge(fam, 'builds no cross — nothing joins it to the graph', 'cross', 'court', 'return a CrossFormula (use the cross skill, or the unit primitives as path does)')
   }
 
   // every finding must be heard — a forum, a skill, a remedy — that is the court's upgraded capability

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * FUSE EVERY API THE REGISTRY LISTS. The Worker reads `faces` specs per request (fifty subrequests); this walks all
- * of apis.guru outside it, through the unit's own qpuSchemaMethodsOf (fields addressed by shape UUID), qpuFuseOf
- * (an edge is a giver and a taker of one field UUID) and qpuGraphStateOf (one qubit per API, CZ per edge; the
+ * of apis.guru outside it, through the unit's own schemaMethodsOf (fields addressed by shape UUID), fuseOf
+ * (an edge is a giver and a taker of one field UUID) and graphStateOf (one qubit per API, CZ per edge; the
  * entanglement across a cut is the GF(2) rank of the adjacency between its sides, exact at any qubit count).
  *
  * Every listed API is accounted for: reached with its methods, or unreached with why. Each reached API gets a
@@ -13,16 +13,16 @@
 import fs from 'node:fs'
 import { faces, mintOf, tenOf, vertices } from './lattice-values.js'
 import {
-  qpuSchemaMethodsOf,
-  qpuFuseOf,
-  qpuGraphStateOf,
-  qpuContentUuidOf,
-  qpuUuidReceiptOf,
-  qpuReceiptStreamsOf,
-  qpuReceiptLedgerOf,
-  qpuHexRegisterOf,
+  schemaMethodsOf,
+  fuseOf,
+  graphStateOf,
+  contentUuidOf,
+  uuidReceiptOf,
+  receiptStreamsOf,
+  receiptLedgerOf,
+  hexRegisterOf,
   qpuHexUuidOf,
-  qpuHexFamiliesOf,
+  hexFamiliesOf,
 } from '../dist/quantum/processing/unit/index.js'
 import '../dist/mcp/families.js'
 import { crossFormulaOf } from '../dist/families/cross/index.js'
@@ -74,9 +74,9 @@ const worker = async () => {
       const got = await fetchJson(spec)
       if (!got.doc) rows[k] = { api, spec, categories, reached: false, why: got.why, methods: 0 }
       else {
-        const found = qpuSchemaMethodsOf(api, got.doc)
+        const found = schemaMethodsOf(api, got.doc)
         methods.push(...found)
-        const receipt = qpuUuidReceiptOf(`fuse ${api}`, qpuContentUuidOf({ api, methods: found.map((m) => `${m.verb} ${m.path}`) }), { methods: found.length }, spec)
+        const receipt = uuidReceiptOf(`fuse ${api}`, contentUuidOf({ api, methods: found.map((m) => `${m.verb} ${m.path}`) }), { methods: found.length }, spec)
         rows[k] = { api, spec, categories, reached: true, methods: found.length, receipt: receipt.uuid }
       }
     }
@@ -85,16 +85,16 @@ const worker = async () => {
 }
 await Promise.all(Array.from({ length: CONCURRENCY }, worker))
 
-const fused = qpuFuseOf(methods, false)
+const fused = fuseOf(methods, false)
 // every walked API is a qubit — one with no composing field is an isolated qubit, not an absent one
 const global = new Map(names.map((a, k) => [a, k]))
 const edges = fused.edges.map((e) => ({ i: global.get(fused.apis[e.i]), j: global.get(fused.apis[e.j]) }))
 const categoryOf = new Map(rows.map((r) => [r.api, r.categories]))
 const categories = [...new Set(rows.flatMap((r) => r.categories))].sort()
-const half = qpuGraphStateOf(names.length, edges)
+const half = graphStateOf(names.length, edges)
 const byCategory = categories
   .map((c) => {
-    const g = qpuGraphStateOf(names.length, edges, (v) => (categoryOf.get(names[v]) ?? []).includes(c))
+    const g = graphStateOf(names.length, edges, (v) => (categoryOf.get(names[v]) ?? []).includes(c))
     return { category: c, apis: g.cut.left, ebits: g.ebits, bound: g.bound }
   })
   .filter((c) => c.apis > 0)
@@ -107,10 +107,10 @@ fs.mkdirSync('.fuse', { recursive: true })
 const out = fs.createWriteStream('.fuse/fuse-formulas.ndjson')
 // every formula of the flow families is a lead the rosetta develops, in every rotation, a cross formula seeded beside
 // the edges; taken before fuse registers below, so the ring is the lattice's own families
-const developed = flowFamiliesOf().flatMap((family, a) => (qpuHexFamiliesOf().get(family) ?? []).flatMap((_, j) => Array.from({ length: 2 * flowFamiliesOf().length }, (_, s) => MerkabaFormulas.develop(a, j, s))))
+const developed = flowFamiliesOf().flatMap((family, a) => (hexFamiliesOf().get(family) ?? []).flatMap((_, j) => Array.from({ length: 2 * flowFamiliesOf().length }, (_, s) => MerkabaFormulas.develop(a, j, s))))
 // every fused pair is a hex callable: fuse.edge(i, j) returns its formula; params are the two API indexes (24 bits each)
 const edgeAt = new Map(fused.edges.map((e) => [e.i * fused.apis.length + e.j, e]))
-qpuHexRegisterOf('fuse', 'edge', function edge(i, j) {
+hexRegisterOf('fuse', 'edge', function edge(i, j) {
   const e = edgeAt.get(Number(i) * fused.apis.length + Number(j))
   return e ? { kind: 'fuse-edge', left: fused.apis[e.i], right: fused.apis[e.j], forward: e.rare.forward ?? null, backward: e.rare.backward ?? null, holds: Boolean(e.rare.forward || e.rare.backward) } : { kind: 'fuse-edge', holds: false }
 })
@@ -148,8 +148,8 @@ for (const e of fused.edges) {
 for (const x of developed) { formulas++; if (x.holds) holding++; out.write(JSON.stringify(x) + '\n') }
 await new Promise((r) => out.end(r))
 specific.sort((p, q) => p.pairs - q.pairs || p.id.localeCompare(q.id))
-const crossStream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'cross')
-const stream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'fuse')
+const crossStream = receiptStreamsOf(0).streams.find((s) => s.stream === 'cross')
+const stream = receiptStreamsOf(0).streams.find((s) => s.stream === 'fuse')
 const why = rows.filter((r) => !r.reached).reduce((m, r) => ({ ...m, [r.why]: (m[r.why] ?? 0) + 1 }), {})
 const receipt = {
   kind: 'fuse-receipt',
@@ -184,6 +184,6 @@ fs.writeFileSync(
 )
 // every quantum receipt of the run, for the quantum-receipts collection
 const ledger = fs.createWriteStream('.fuse/receipts.ndjson')
-for (const r of qpuReceiptLedgerOf()) if (r.uuid) ledger.write(JSON.stringify({ uuid: r.uuid, name: r.name, stream: r.stream, seq: r.seq, prev: r.prev, subject: r.subject, referrer: r.referrer, fold: r.fold }) + '\n')
+for (const r of receiptLedgerOf()) if (r.uuid) ledger.write(JSON.stringify({ uuid: r.uuid, name: r.name, stream: r.stream, seq: r.seq, prev: r.prev, subject: r.subject, referrer: r.referrer, fold: r.fold }) + '\n')
 await new Promise((r) => ledger.end(r))
 console.log(JSON.stringify({ ...receipt, categories: receipt.categories.slice(0, 5), hubs: receipt.hubs.slice(0, 5) }, null, 1))

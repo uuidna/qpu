@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TanningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('tanning: offer, uptake, float, basicity, shrinkage, thickness, area, penet
   assert.equal(TanningFormulas.area(200, 150).value, 30000)
   assert.equal(TanningFormulas.penetration(80, 100).value, 80, 'the tan reached 80% of the cross-section')
   assert.equal(TanningFormulas.offer(15, 100).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('tanning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tanning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tanning', program: ['area'], params: [200, 150] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30000, `tanning.area at ${uuid}`)
-  qpuUuidReceiptOf('tanning area', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tanning area', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; offer 15, uptake 12, float 200, basicity 33, shrinkage 30, thickness 10, area 30000, penetration 80; crossing to chemistry')
 })

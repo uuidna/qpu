@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VeterinaryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('veterinary: dose, caloricrequirement, bcs, fluidtherapy, heartrate, medica
   assert.equal(VeterinaryFormulas.gestation(63, 63).value, 1, 'term reached')
   assert.equal(VeterinaryFormulas.gestation(30, 63).value, 0)
   assert.equal(VeterinaryFormulas.dose(10, 5).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('veterinary')?.length, 8)
+  assert.equal(hexFamiliesOf().get('veterinary')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'veterinary', program: ['heartrate'], params: [240, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 120, `veterinary.heartrate at ${uuid}`)
-  qpuUuidReceiptOf('veterinary heartrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('veterinary heartrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dose 50, caloricrequirement 600, bcs 110, fluidtherapy 4, heartrate 120, medicationinterval 8, bodyweightgain 5, gestation 1; crossing to physiology')
 })

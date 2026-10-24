@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COMPOSTING — TURNING ORGANIC MATTER, AS ARITHMETIC (the pile is numbers, not opinion). The carbon-to-nitrogen ratio,
@@ -31,4 +31,4 @@ export class CompostingFormulas {
 }
 
 for (const name of ['aeration', 'cnratio', 'decomposition', 'maturity', 'moisture', 'temperature', 'turnover', 'volume'] as const)
-  qpuHexRegisterOf('composting', name, (CompostingFormulas[name] as (...x: unknown[]) => unknown).bind(CompostingFormulas))
+  hexRegisterOf('composting', name, (CompostingFormulas[name] as (...x: unknown[]) => unknown).bind(CompostingFormulas))

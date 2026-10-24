@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PORTFOLIO — HOLDING A BOOK OF ASSETS, AS ARITHMETIC. An asset's weight in the book, the Sharpe ratio, how diversified
@@ -31,4 +31,4 @@ export class PortfolioFormulas {
 }
 
 for (const name of ['allocation', 'beta', 'diversification', 'drawdown', 'income', 'rebalance', 'sharpe', 'weight'] as const)
-  qpuHexRegisterOf('portfolio', name, (PortfolioFormulas[name] as (...x: unknown[]) => unknown).bind(PortfolioFormulas))
+  hexRegisterOf('portfolio', name, (PortfolioFormulas[name] as (...x: unknown[]) => unknown).bind(PortfolioFormulas))

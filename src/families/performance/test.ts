@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PerformanceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('performance: rating, productivity, goal, appraisal, improvement, utilizati
   assert.equal(PerformanceFormulas.throughput(100, 20).value, 5, 'tasks per day')
   assert.equal(PerformanceFormulas.score(90, 2).value, 180)
   assert.equal(PerformanceFormulas.rating(450, 5).dst, 'pedagogy')
-  assert.equal(qpuHexFamiliesOf().get('performance')?.length, 8)
+  assert.equal(hexFamiliesOf().get('performance')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'performance', program: ['rating'], params: [450, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `performance.rating at ${uuid}`)
-  qpuUuidReceiptOf('performance rating', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('performance rating', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rating 90, productivity 25, goal 80, appraisal 85, improvement 20, utilization 80, throughput 5, score 180; crossing to pedagogy')
 })

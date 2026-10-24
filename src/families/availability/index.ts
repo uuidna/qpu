@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AVAILABILITY — SERVICE RELIABILITY AS ARITHMETIC (chosen by the public-API registry, not by hand). Keeping a service up is
@@ -31,4 +31,4 @@ export class AvailabilityFormulas {
 }
 
 for (const name of ['downtime', 'mtbf', 'mttr', 'nines', 'outagecost', 'slabudget', 'steadystate', 'uptimepercent'] as const)
-  qpuHexRegisterOf('availability', name, (AvailabilityFormulas[name] as (...x: unknown[]) => unknown).bind(AvailabilityFormulas))
+  hexRegisterOf('availability', name, (AvailabilityFormulas[name] as (...x: unknown[]) => unknown).bind(AvailabilityFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BACKLOG — A PRODUCT BACKLOG AS ARITHMETIC (the queue of work ahead, not by hand). The backlog is numbers: the total size
@@ -31,4 +31,4 @@ export class BacklogFormulas {
 }
 
 for (const name of ['agedays', 'clearancetime', 'cycletime', 'groomingrate', 'prioritization', 'size', 'throughput', 'wipfill'] as const)
-  qpuHexRegisterOf('backlog', name, (BacklogFormulas[name] as (...x: unknown[]) => unknown).bind(BacklogFormulas))
+  hexRegisterOf('backlog', name, (BacklogFormulas[name] as (...x: unknown[]) => unknown).bind(BacklogFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PrintmakingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('printmaking: editionsize, platepasses, registrationlayers, inkcombos, impr
   assert.equal(PrintmakingFormulas.colorsubsets(5).value, 32)
   assert.equal(PrintmakingFormulas.yieldratio(90, 100).value, 90)
   assert.equal(PrintmakingFormulas.editionsize(50, 1).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('printmaking')?.length, 8)
+  assert.equal(hexFamiliesOf().get('printmaking')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'printmaking', program: ['editionsize'], params: [50, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `printmaking.editionsize at ${uuid}`)
-  qpuUuidReceiptOf('printmaking editionsize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('printmaking editionsize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; editionsize 50, platepasses 6, registrationlayers 4, inkcombos 28, impressionorderings 24, pressuresetting 25, colorsubsets 32, yieldratio 90; crossing to materials')
 })

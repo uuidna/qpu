@@ -1,10 +1,10 @@
 import { leanSource } from '../../quantum/processing/unit/lean.js'
-import { qpuFacesOf, qpuHexFamiliesOf, qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { facesOf, hexFamiliesOf, hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { leanCallOf, leanModelOf } from '../../quantum/processing/unit/lean-eval.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { flowFamiliesOf } from '../merkaba/index.js'
-import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
-const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
+import { chooseOf, mintOf, latticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
+const L = { ...latticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** Code quality by temperature and time, as Qpu.Physics measures a qubit. A file is hot when it keeps changing: its
  *  temperature in millikelvin is commits per thousand days (one commit a day is 1000 mK). Its signal is the unit's
@@ -78,7 +78,7 @@ export class HeatFormulas {
    *  Σ c·log₂ c bits over its outputs' multiplicities — Landauer's least for that batch. Zero exactly when the formula
    *  is reversible on it: a reversible computation erases nothing, an irreversible one cannot hide that it does. */
   static erasure(f: number, j: number, n: number): CrossFormula {
-    const family = flowFamiliesOf()[f], formula = family ? qpuHexFamiliesOf().get(family)?.[j] : undefined
+    const family = flowFamiliesOf()[f], formula = family ? hexFamiliesOf().get(family)?.[j] : undefined
     const counts = new Map<string, number>()
     let runs = 0
     for (let i = 0; formula && i < n; i++) {
@@ -103,8 +103,8 @@ export class HeatFormulas {
    *  theorem, and no clock is read here: the statement "slow" is never established, so it is false with its reason stated.
    *  `next` is the following formula's [f, j], so `--all` walks every formula of the ring. */
   static async slow(f: number, j: number): Promise<CrossFormula> {
-    const ring = flowFamiliesOf(), family = ring[f], formula = family ? qpuHexFamiliesOf().get(family)?.[j] : undefined
-    const after = family && j + 1 < (qpuHexFamiliesOf().get(family) ?? []).length ? [f, j + 1] : f + 1 < ring.length ? [f + 1, 0] : undefined
+    const ring = flowFamiliesOf(), family = ring[f], formula = family ? hexFamiliesOf().get(family)?.[j] : undefined
+    const after = family && j + 1 < (hexFamiliesOf().get(family) ?? []).length ? [f, j + 1] : f + 1 < ring.length ? [f + 1, 0] : undefined
     if (!formula) return heatCross('heat-slow', 'physics', 'slow(f, j): a formula is registered at (f, j)', 0, false, 'slow', [f, j], { proof: 'the registry', ...(after ? { next: after } : {}) })
     return heatCross('heat-slow', 'physics', `slow(${family}.${formula.name}) = a speed claim: not a theorem, no clock is read, so not established`, 0, false, 'slow', [f, j], { proof: 'no theorem: a wall-clock speed bound is not a proof', ...(after ? { next: after } : {}) })
   }
@@ -123,14 +123,14 @@ export class HeatFormulas {
   static split(k: number, primes: number): CrossFormula {
     const ps: number[] = []
     for (let x = 2; ps.length < primes; x++) if (ps.every((p) => x % p !== 0)) ps.push(x)
-    const jobs = ps.slice(0, qpuFacesOf().faces).map((p) => ({ p, residue: HeatFormulas.residue(k, p).value, call: { name: 'heat.residue', params: [k, p] } }))
+    const jobs = ps.slice(0, facesOf().faces).map((p) => ({ p, residue: HeatFormulas.residue(k, p).value, call: { name: 'heat.residue', params: [k, p] } }))
     const extra = { bits: k + 1, exact: ps.reduce((s, p) => s + Math.log2(p), 0) > k, jobs, proof: 'CRT: residues modulo coprime p determine a value below Πp' }
     return heatCross('heat-split', 'crypto', '2ᵏ ↦ (2ᵏ mod p)ₚ, one job per prime, joined by the Chinese remainder theorem', ps.length, nat(k, primes) && primes > 0, 'split', [k, primes], extra)
   }
 }
 
 for (const name of ['coherence', 'cooling', 'erasure', 'identity', 'landauer', 'quality', 'residue', 'signal', 'slow', 'split', 'temperature', 'ways'] as const)
-  qpuHexRegisterOf('heat', name, (HeatFormulas[name] as (...x: unknown[]) => unknown).bind(HeatFormulas))
+  hexRegisterOf('heat', name, (HeatFormulas[name] as (...x: unknown[]) => unknown).bind(HeatFormulas))
 
 /** One file as git measures it. */
 export type HeatReading = { file: string; commits: number; days: number; fixes: number; lines: number; age: number; since: number }

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RelativityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -18,10 +18,10 @@ test('relativity: energy, dilation, lorentz, momentum, redshift, curvature, hori
   assert.equal(RelativityFormulas.interval(50, 20).value, 30, 'space above time')
   assert.equal(RelativityFormulas.interval(20, 50).value, 0, 'folded to 0')
   assert.equal(RelativityFormulas.energy(2, 300).dst, 'gravity')
-  assert.equal(qpuHexFamiliesOf().get('relativity')?.length, 8)
+  assert.equal(hexFamiliesOf().get('relativity')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'relativity', program: ['curvature'], params: [100, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `relativity.curvature at ${uuid}`)
-  qpuUuidReceiptOf('relativity curvature', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('relativity curvature', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; energy 600, dilation 30, lorentz 50, momentum 100, redshift 100, curvature 25, horizon 21, interval 30; crossing to gravity')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TextilesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('textiles: threadcount, gsm, tensile, elongation, yarn, shrinkage, coverage
   assert.equal(TextilesFormulas.coverage(90, 10).value, 90)
   assert.equal(TextilesFormulas.drape(50, 100).value, 50)
   assert.equal(TextilesFormulas.threadcount(80, 60).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('textiles')?.length, 8)
+  assert.equal(hexFamiliesOf().get('textiles')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'textiles', program: ['threadcount'], params: [80, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 140, `textiles.threadcount at ${uuid}`)
-  qpuUuidReceiptOf('textiles threadcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('textiles threadcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; threadcount 140, gsm 250, tensile 20, elongation 20, yarn 100, shrinkage 5, coverage 90, drape 50; crossing to materials')
 })

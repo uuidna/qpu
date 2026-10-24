@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FERMENTATION — THE BIOCHEMISTRY OF CULTURE, AS ARITHMETIC (a living domain chosen for the registry, not by hand).
@@ -30,4 +30,4 @@ export class FermentationFormulas {
 }
 
 for (const name of ['biomass', 'conversion', 'ethanol', 'inoculation', 'output', 'ph', 'rate', 'temperature'] as const)
-  qpuHexRegisterOf('fermentation', name, (FermentationFormulas[name] as (...x: unknown[]) => unknown).bind(FermentationFormulas))
+  hexRegisterOf('fermentation', name, (FermentationFormulas[name] as (...x: unknown[]) => unknown).bind(FermentationFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CREED — scaffolded integer measures crossed to sociology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CreedFormulas {
 }
 
 for (const name of ['affirmationorderings', 'anathemacount', 'articlecount', 'clausecombos', 'consensusratio', 'councilcount', 'doctrinesubsets', 'variantcreeds'] as const)
-  qpuHexRegisterOf('creed', name, (CreedFormulas[name] as (...x: unknown[]) => unknown).bind(CreedFormulas))
+  hexRegisterOf('creed', name, (CreedFormulas[name] as (...x: unknown[]) => unknown).bind(CreedFormulas))

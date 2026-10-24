@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PolicyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('policy: costbenefit, impact, adoption, compliance, efficiency, reach, lag,
   assert.equal(PolicyFormulas.lag(90, 10).value, 0, 'never before enactment')
   assert.equal(PolicyFormulas.equity(1000, 4).value, 250)
   assert.equal(PolicyFormulas.costbenefit(300, 100).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('policy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('policy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'policy', program: ['adoption'], params: [30, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `policy.adoption at ${uuid}`)
-  qpuUuidReceiptOf('policy adoption', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('policy adoption', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; costbenefit 300, impact 25, adoption 75, compliance 80, efficiency 40, reach 75, lag 80, equity 250; crossing to law')
 })

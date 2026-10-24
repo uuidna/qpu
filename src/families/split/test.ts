@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SplitFormulas } from './index.js'
 
 /** Astronomical values split into primes, π and the crypto quantities, each a hex program at its address. */
@@ -50,12 +50,12 @@ test('split: prime factorisation, π-counting, totient, coprimality and the BBP 
   assert.equal(join(10, 3).exact, false)
   assert.equal(join(0, 3).value, 1, '2^0 = 1')
   assert.equal(join(10, 5).holds, true)
-  assert.equal(qpuHexFamiliesOf().get('split')?.length, 15)
+  assert.equal(hexFamiliesOf().get('split')?.length, 15)
   for (const [name, params, expected] of [['factor', [91], 13], ['totient', [9], 6], ['piHex', [0], 2], ['violation', [91, 3], 1], ['join', [10, 5], 1024], ['free', [91, 1000], Number(SplitFormulas.free(91, 1000).value)]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'split', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `split.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`split ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`split ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic(`11 formulas; 91 = 7 × 13; π = 3.243F6A88…₁₆; kelvin(91,1)=${few} mK, kelvin(91,1000)=${many} mK; violation(91,3)=1`)
 })

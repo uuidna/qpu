@@ -137,7 +137,7 @@ export const preCommit = async (): Promise<void> => {
   }
   // HARD FAIL on a qpu_ prefix: a qpu_-prefixed served tool must never creep in; the qpu MCP surface is bare-only.
   const toolNames = await import(pathToFileURL(path.join(ROOT, 'dist/quantum/processing/unit/index.js')).href)
-    .then((m) => ((m as { qpuMcpToolsListOf?: () => { name: string }[] }).qpuMcpToolsListOf?.() ?? []).map((t) => t.name), () => [] as string[])
+    .then((m) => ((m as { mcpToolsListOf?: () => { name: string }[] }).mcpToolsListOf?.() ?? []).map((t) => t.name), () => [] as string[])
   const prefixed = toolNames.filter((n) => n.startsWith('qpu_'))
   if (prefixed.length) {
     console.log(`  ✗ qpu_ prefix in the MCP: ${prefixed.join(', ')} — commit blocked (the qpu mcp is bare-only)`)

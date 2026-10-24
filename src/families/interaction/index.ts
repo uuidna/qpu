@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INTERACTION — HUMAN-COMPUTER INTERACTION, AS ARITHMETIC. The press and the answer are numbers: Fitts's index of
@@ -30,4 +30,4 @@ export class InteractionFormulas {
 }
 
 for (const name of ['affordance', 'clicks', 'feedback', 'fitts', 'flow', 'gestures', 'responsetime', 'targetsize'] as const)
-  qpuHexRegisterOf('interaction', name, (InteractionFormulas[name] as (...x: unknown[]) => unknown).bind(InteractionFormulas))
+  hexRegisterOf('interaction', name, (InteractionFormulas[name] as (...x: unknown[]) => unknown).bind(InteractionFormulas))

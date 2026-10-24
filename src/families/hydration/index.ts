@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HYDRATION — scaffolded integer measures crossed to physiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HydrationFormulas {
 }
 
 for (const name of ['concentration', 'dailyneed', 'deficit', 'electrolyteneed', 'fluidbalance', 'replacementrate', 'sweatloss', 'urineoutput'] as const)
-  qpuHexRegisterOf('hydration', name, (HydrationFormulas[name] as (...x: unknown[]) => unknown).bind(HydrationFormulas))
+  hexRegisterOf('hydration', name, (HydrationFormulas[name] as (...x: unknown[]) => unknown).bind(HydrationFormulas))

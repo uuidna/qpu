@@ -7,14 +7,14 @@ import { AccessFormulas } from '../../families/access/index.js'
 import { ClaySeals, CLAY_SEALS } from '../../families/clay/index.js'
 import { permaTrinityOf } from '../../families/perma/index.js'
 import {
-  qpuHarnessesOf,
-  qpuHexFamiliesOf,
-  qpuMcpToolsListOf,
-  qpuStandardsOf,
+  harnessesOf,
+  hexFamiliesOf,
+  mcpToolsListOf,
+  standardsOf,
   unit,
   type QpuEnv,
 } from '../../quantum/processing/unit/index.js'
-import { qpuTenantZoneOf, qpuZoneOf } from '../../quantum/processing/unit/presentation.js'
+import { tenantZoneOf, qpuZoneOf } from '../../quantum/processing/unit/presentation.js'
 import { domainReadingsOf } from './domains.js'
 import type { QpuPlugin } from './surface.js'
 
@@ -64,12 +64,12 @@ const fused = (door: string, note: string, args: Record<string, unknown> = {}): 
   note,
 })
 
-const zoneOf = () => qpuTenantZoneOf()
+const zoneOf = () => tenantZoneOf()
 
 /** Every formulated tenant the tree names (zone hosts + perma client + root). */
 export const formulatedTenantsOf = (): TenantRecord[] => {
   const z = zoneOf()
-  const tools = new Set(qpuMcpToolsListOf().map((t) => t.name))
+  const tools = new Set(mcpToolsListOf().map((t) => t.name))
   const accessOk = AccessFormulas.tenant(1, 1, 1)
 
   const zoneRows: TenantRecord[] = qpuZoneOf().hosts.filter((h) => h.qpu).map((h) => {
@@ -163,7 +163,7 @@ export const formulatedTenantsOf = (): TenantRecord[] => {
     underZone: !z.reserved.includes('perma'),
     reserved: false,
     models: [
-      fused('permaculture', 'tenant document'),
+      fused('connector', 'tenant document', { tenant: 'perma', full: true }),
       fused('connector', 'tenant surface', { tenant: 'perma' }),
       fused('domains', 'domain readings'),
       fused('hex', 'clay.bsd + perma'),
@@ -222,9 +222,9 @@ export const tenantResolveOf = (ask: { tenant?: string; host?: string; domain?: 
 }
 
 export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: QpuEnv) => {
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete', tools }).length
-  const harnesses = qpuHarnessesOf()
+  const harnesses = harnessesOf()
   const rows = formulatedTenantsOf()
   const z = zoneOf()
 
@@ -236,7 +236,7 @@ export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: Q
       zone: z.zone,
       own: z.own,
       reserved: z.reserved,
-      standards: qpuStandardsOf(),
+      standards: standardsOf(),
       tenants: rows.map((t) => ({
         slug: t.slug,
         name: t.name,
@@ -285,7 +285,7 @@ export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: Q
 
   let document: unknown = null
   if (tenant.slug === 'perma' && (args.full === true || args.document === true)) {
-    const { permaTenantOf } = await import('./permaculture.js')
+    const { permaTenantOf } = await import('./connector.js')
     document = permaTenantOf()
   }
   if ((tenant.slug === 'qpu' || tenant.host === unit.host) && args.point === true) {
@@ -313,7 +313,7 @@ export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: Q
     needs: tenant.needs,
     model,
     document,
-    familiesRegistered: qpuHexFamiliesOf().size,
+    familiesRegistered: hexFamiliesOf().size,
     served: {
       tenant: tenant.slug,
       model: model?.door ?? null,

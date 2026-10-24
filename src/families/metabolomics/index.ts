@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** METABOLOMICS — THE SMALL-MOLECULE CHEMISTRY OF A CELL, AS ARITHMETIC. The metabolites a sample holds are numbers:
@@ -31,4 +31,4 @@ export class MetabolomicsFormulas {
 }
 
 for (const name of ['concentration', 'coverage', 'flux', 'foldchange', 'pathway', 'ratio', 'retention', 'turnover'] as const)
-  qpuHexRegisterOf('metabolomics', name, (MetabolomicsFormulas[name] as (...x: unknown[]) => unknown).bind(MetabolomicsFormulas))
+  hexRegisterOf('metabolomics', name, (MetabolomicsFormulas[name] as (...x: unknown[]) => unknown).bind(MetabolomicsFormulas))

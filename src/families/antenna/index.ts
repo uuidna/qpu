@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AntennaFormulas — 8 exact-integer formulas of the antenna domain, each at a hex address crossing to cross; develops the antenna leads. */
@@ -31,4 +31,4 @@ export class AntennaFormulas {
 }
 
 for (const name of ['arrays', 'bands', 'beamwidth', 'elements', 'frequency', 'gain', 'pairs', 'wavelength'] as const)
-  qpuHexRegisterOf('antenna', name, (AntennaFormulas[name] as (...x: unknown[]) => unknown).bind(AntennaFormulas))
+  hexRegisterOf('antenna', name, (AntennaFormulas[name] as (...x: unknown[]) => unknown).bind(AntennaFormulas))

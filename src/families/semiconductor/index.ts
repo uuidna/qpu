@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SEMICONDUCTOR — DEVICE PHYSICS AS ARITHMETIC (chosen by the fabrication registry, not by hand). A chip is numbers:
@@ -31,4 +31,4 @@ export class SemiconductorFormulas {
 }
 
 for (const name of ['bandgap', 'carrier', 'diesyield', 'doping', 'junction', 'mobility', 'resistivity', 'threshold'] as const)
-  qpuHexRegisterOf('semiconductor', name, (SemiconductorFormulas[name] as (...x: unknown[]) => unknown).bind(SemiconductorFormulas))
+  hexRegisterOf('semiconductor', name, (SemiconductorFormulas[name] as (...x: unknown[]) => unknown).bind(SemiconductorFormulas))

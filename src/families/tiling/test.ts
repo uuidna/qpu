@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TilingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('tiling: tilecount, coverage, gapratio, vertexconfig, symmetryorder, rowtil
   assert.equal(TilingFormulas.waste(1000, 850).value, 150)
   assert.equal(TilingFormulas.aspectfit(1600, 400).value, 4, 'the height divides the width four times')
   assert.equal(TilingFormulas.tilecount(100, 50, 10).dst, 'geometry')
-  assert.equal(qpuHexFamiliesOf().get('tiling')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tiling')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tiling', program: ['tilecount'], params: [100, 50, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `tiling.tilecount at ${uuid}`)
-  qpuUuidReceiptOf('tiling tilecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tiling tilecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; tilecount 50, coverage 90, gapratio 2, vertexconfig 120, symmetryorder 12, rowtiles 40, waste 150, aspectfit 4; crossing to geometry')
 })

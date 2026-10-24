@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VolatilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,10 +22,10 @@ test('volatility: range, annualized, historicalband, beta, variance, impliedmove
   assert.equal(VolatilityFormulas.beta2(10, 4).value, 2)
   assert.equal(VolatilityFormulas.beta(150, 0).value, 0)
   assert.equal(VolatilityFormulas.range(150, 90).dst, 'trading')
-  assert.equal(qpuHexFamiliesOf().get('volatility')?.length, 15)
+  assert.equal(hexFamiliesOf().get('volatility')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'volatility', program: ['beta'], params: [150, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 150, `volatility.beta at ${uuid}`)
-  qpuUuidReceiptOf('volatility beta', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('volatility beta', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; range 60, annualized 32, historicalband 20, beta 150, variance 100, impliedmove 50, zscore 2, drawdown 25; crossing to trading')
 })

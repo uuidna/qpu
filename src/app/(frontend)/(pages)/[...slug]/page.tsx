@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
-import { qpuHexDecodeOf } from '@uuidna/qpu'
+import { hexDecodeOf } from '@uuidna/qpu'
 import { askOf, citeFullOf, docOf, docsOf, familiesOf, payloadOf, runOf } from '@/app/_data'
 import { metadataOf } from '@/utilities/metadataOf'
 
@@ -21,7 +21,7 @@ const resolve = async (path: string[]) => {
   const segs = path.map((s) => decodeURIComponent(s))
   if (segs.length === 1) {
     const [x] = segs as [string]
-    const decoded = UUID.test(x) ? qpuHexDecodeOf(x) : null
+    const decoded = UUID.test(x) ? hexDecodeOf(x) : null
     return {
       doc: await docOf(x),
       family: familiesOf().find((f) => f.name === x),

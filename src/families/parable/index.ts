@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PARABLE — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ParableFormulas {
 }
 
 for (const name of ['charactercount', 'elementcount', 'interpretationpaths', 'meaninglayers', 'moralcount', 'motifcombos', 'narrativeorderings', 'symbolpairs'] as const)
-  qpuHexRegisterOf('parable', name, (ParableFormulas[name] as (...x: unknown[]) => unknown).bind(ParableFormulas))
+  hexRegisterOf('parable', name, (ParableFormulas[name] as (...x: unknown[]) => unknown).bind(ParableFormulas))

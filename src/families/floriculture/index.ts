@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FLORICULTURE — GROWING CUT FLOWERS AND ORNAMENTALS, AS ARITHMETIC (chosen by the public-API registry, not by hand).
@@ -31,4 +31,4 @@ export class FloricultureFormulas {
 }
 
 for (const name of ['bloomrate', 'forcing', 'gradeout', 'petalcount', 'spacing', 'stemlength', 'vaselife', 'yield'] as const)
-  qpuHexRegisterOf('floriculture', name, (FloricultureFormulas[name] as (...x: unknown[]) => unknown).bind(FloricultureFormulas))
+  hexRegisterOf('floriculture', name, (FloricultureFormulas[name] as (...x: unknown[]) => unknown).bind(FloricultureFormulas))

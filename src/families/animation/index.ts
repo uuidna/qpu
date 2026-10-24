@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ANIMATION — MOTION AS ARITHMETIC (chosen by the registry, not by hand). Making things move is numbers: the frames a
@@ -31,4 +31,4 @@ export class AnimationFormulas {
 }
 
 for (const name of ['cel', 'duration', 'easing', 'frames', 'keyframes', 'onionskin', 'playback', 'tweening'] as const)
-  qpuHexRegisterOf('animation', name, (AnimationFormulas[name] as (...x: unknown[]) => unknown).bind(AnimationFormulas))
+  hexRegisterOf('animation', name, (AnimationFormulas[name] as (...x: unknown[]) => unknown).bind(AnimationFormulas))

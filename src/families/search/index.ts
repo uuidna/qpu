@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SEARCH — INFORMATION RETRIEVAL, AS ARITHMETIC (chosen by the public-API registry, not by hand). Retrieval is numbers:
@@ -30,4 +30,4 @@ export class SearchFormulas {
 }
 
 for (const name of ['coverage', 'f1', 'hits', 'index', 'latency', 'precision', 'recall', 'throughput'] as const)
-  qpuHexRegisterOf('search', name, (SearchFormulas[name] as (...x: unknown[]) => unknown).bind(SearchFormulas))
+  hexRegisterOf('search', name, (SearchFormulas[name] as (...x: unknown[]) => unknown).bind(SearchFormulas))

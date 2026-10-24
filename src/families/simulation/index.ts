@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SIMULATION — RUNNING A MODEL, AS ARITHMETIC (chosen by the public-API registry, not by hand). A simulation is numbers:
@@ -31,4 +31,4 @@ export class SimulationFormulas {
 }
 
 for (const name of ['accuracy', 'convergence', 'iterations', 'montecarlo', 'resolution', 'speedup', 'stability', 'timestep'] as const)
-  qpuHexRegisterOf('simulation', name, (SimulationFormulas[name] as (...x: unknown[]) => unknown).bind(SimulationFormulas))
+  hexRegisterOf('simulation', name, (SimulationFormulas[name] as (...x: unknown[]) => unknown).bind(SimulationFormulas))

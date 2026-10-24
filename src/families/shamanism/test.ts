@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ShamanismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('shamanism: trancestates, journeyorderings, spiritallies, drumbeats, cosmic
   assert.equal(ShamanismFormulas.initiationstages(5, 0).value, 5)
   assert.equal(ShamanismFormulas.ecstasyratio(80, 100).value, 80)
   assert.equal(ShamanismFormulas.trancestates(3, 2).dst, 'anthropology')
-  assert.equal(qpuHexFamiliesOf().get('shamanism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('shamanism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'shamanism', program: ['trancestates'], params: [3, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `shamanism.trancestates at ${uuid}`)
-  qpuUuidReceiptOf('shamanism trancestates', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('shamanism trancestates', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; trancestates 5, journeyorderings 24, spiritallies 45, drumbeats 120, cosmiclayers 3, healingcombos 28, initiationstages 5, ecstasyratio 80; crossing to anthropology')
 })

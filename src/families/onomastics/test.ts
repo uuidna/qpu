@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OnomasticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('onomastics: namecount, surnamepairs, orderingchoices, frequencyrank, patro
   assert.equal(OnomasticsFormulas.variantspellings(20, 3).value, 60)
   assert.equal(OnomasticsFormulas.distributionratio(40, 100).value, 40)
   assert.equal(OnomasticsFormulas.namecount(1000, 2).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('onomastics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('onomastics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'onomastics', program: ['namecount'], params: [1000, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2000, `onomastics.namecount at ${uuid}`)
-  qpuUuidReceiptOf('onomastics namecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('onomastics namecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; namecount 2000, surnamepairs 1225, orderingchoices 120, frequencyrank 100, patronymiclayers 4, etymsubsets 32, variantspellings 60, distributionratio 40; crossing to linguistics')
 })

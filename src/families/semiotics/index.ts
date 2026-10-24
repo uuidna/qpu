@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SEMIOTICS — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SemioticsFormulas {
 }
 
 for (const name of ['codesubsets', 'denotationlevels', 'iconindexsymbol', 'interpretantratio', 'paradigmorderings', 'signifierpairs', 'signs', 'syntagmlength'] as const)
-  qpuHexRegisterOf('semiotics', name, (SemioticsFormulas[name] as (...x: unknown[]) => unknown).bind(SemioticsFormulas))
+  hexRegisterOf('semiotics', name, (SemioticsFormulas[name] as (...x: unknown[]) => unknown).bind(SemioticsFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SSD — NAND FLASH SOLID-STATE STORAGE, AS ARITHMETIC. A drive is numbers by the book: IOPS from queue depth and
@@ -36,4 +36,4 @@ export class SsdFormulas {
 }
 
 for (const name of ['channels', 'dwpd', 'iops', 'overprovision', 'pagesize', 'queuedepth', 'readlatency', 'tbw', 'throughput', 'wearleveling'] as const)
-  qpuHexRegisterOf('ssd', name, (SsdFormulas[name] as (...x: unknown[]) => unknown).bind(SsdFormulas))
+  hexRegisterOf('ssd', name, (SsdFormulas[name] as (...x: unknown[]) => unknown).bind(SsdFormulas))

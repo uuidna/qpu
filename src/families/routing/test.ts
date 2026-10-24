@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RoutingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('routing: depth, params, redirect, match, nested, lazy, catchall, prefetch 
   assert.equal(RoutingFormulas.catchall(2).value, 2)
   assert.equal(RoutingFormulas.prefetch(75, 100).value, 75)
   assert.equal(RoutingFormulas.depth(5).dst, 'frontend')
-  assert.equal(qpuHexFamiliesOf().get('routing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('routing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'routing', program: ['match'], params: [50, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `routing.match at ${uuid}`)
-  qpuUuidReceiptOf('routing match', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('routing match', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; depth 5, params 25, redirect 1, match 50, nested 3, lazy 20, catchall 2, prefetch 75; crossing to frontend')
 })

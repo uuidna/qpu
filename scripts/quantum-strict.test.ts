@@ -8,6 +8,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import QUANTUM from '../dist/quantum/kernel/index.js'
 import { leanRecomputed } from '../dist/quantum/processing/unit/lean.js'
+import { tenOf } from './lattice-values.ts'
 
 test('strict quantum: the kernel computes every capability exactly (verify is total)', () => {
   const v = QUANTUM.verify()
@@ -29,7 +30,7 @@ test('strict quantum: Shor factors UNLIMITED n exactly, not one baked integer', 
     assert.equal(f[0] * f[1], n, `Shor(${n}) = [${f}] must multiply back to ${n} exactly`)
     factored++
   }
-  assert.ok(factored >= 10, `the unlimited theorem factors many n, not one — only ${factored} succeeded`)
+  assert.ok(factored >= tenOf(1), `the unlimited theorem factors many n, not one — only ${factored} succeeded`)
 })
 
 test('strict quantum: Grover and the entangled states are exact (surds, not decimals)', () => {

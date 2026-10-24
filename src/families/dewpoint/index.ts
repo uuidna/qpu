@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DEWPOINT — THE TEMPERATURE THE AIR MUST COOL TO FOR WATER TO CONDENSE, AS ARITHMETIC. Moist air is numbers: the
@@ -31,4 +31,4 @@ export class DewpointFormulas {
 }
 
 for (const name of ['approximation', 'comfortband', 'condensationlevel', 'depression', 'frostpoint', 'humidityfromdew', 'lclheight', 'spread'] as const)
-  qpuHexRegisterOf('dewpoint', name, (DewpointFormulas[name] as (...x: unknown[]) => unknown).bind(DewpointFormulas))
+  hexRegisterOf('dewpoint', name, (DewpointFormulas[name] as (...x: unknown[]) => unknown).bind(DewpointFormulas))

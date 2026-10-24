@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GENEALOGY — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class GenealogyFormulas {
 }
 
 for (const name of ['ancestorsatdepth', 'branchingfactor', 'cousindegree', 'descendants', 'generations', 'lineagepaths', 'marriagelinks', 'siblingpairs'] as const)
-  qpuHexRegisterOf('genealogy', name, (GenealogyFormulas[name] as (...x: unknown[]) => unknown).bind(GenealogyFormulas))
+  hexRegisterOf('genealogy', name, (GenealogyFormulas[name] as (...x: unknown[]) => unknown).bind(GenealogyFormulas))

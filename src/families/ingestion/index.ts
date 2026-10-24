@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INGESTION — THE STREAM AT THE DOOR, AS ARITHMETIC (chosen by the public-API registry, not by hand). Taking events in is
@@ -31,4 +31,4 @@ export class IngestionFormulas {
 }
 
 for (const name of ['backpressure', 'batchsize', 'bufferfill', 'checkpoint', 'eventrate', 'lag', 'retrybudget', 'watermark'] as const)
-  qpuHexRegisterOf('ingestion', name, (IngestionFormulas[name] as (...x: unknown[]) => unknown).bind(IngestionFormulas))
+  hexRegisterOf('ingestion', name, (IngestionFormulas[name] as (...x: unknown[]) => unknown).bind(IngestionFormulas))

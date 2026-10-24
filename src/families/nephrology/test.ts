@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NephrologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('nephrology: gfr, clearance, creatinine, filtration, dialysis, proteinuria,
   assert.equal(NephrologyFormulas.electrolyte(140, 1).value, 140)
   assert.equal(NephrologyFormulas.reabsorption(99, 100).value, 99, 'tubular reabsorption')
   assert.equal(NephrologyFormulas.gfr(12000, 100).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('nephrology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('nephrology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'nephrology', program: ['gfr'], params: [12000, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 120, `nephrology.gfr at ${uuid}`)
-  qpuUuidReceiptOf('nephrology gfr', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('nephrology gfr', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gfr 120, clearance 100, creatinine 10, filtration 20, dialysis 70, proteinuria 150, electrolyte 140, reabsorption 99; crossing to med')
 })

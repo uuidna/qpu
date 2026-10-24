@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SOLVENCY — THE BALANCE SHEET AS ARITHMETIC (chosen by the regulatory-capital registry, not by hand). Whether a firm can
@@ -31,4 +31,4 @@ export class SolvencyFormulas {
 }
 
 for (const name of ['buffer', 'capital', 'coverage', 'leverage', 'margin', 'mcr', 'ratio', 'scr'] as const)
-  qpuHexRegisterOf('solvency', name, (SolvencyFormulas[name] as (...x: unknown[]) => unknown).bind(SolvencyFormulas))
+  hexRegisterOf('solvency', name, (SolvencyFormulas[name] as (...x: unknown[]) => unknown).bind(SolvencyFormulas))

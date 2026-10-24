@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STREAMING — DELIVERING MEDIA, AS ARITHMETIC (chosen by the public-API registry, not by hand). Serving a stream is
@@ -31,4 +31,4 @@ export class StreamingFormulas {
 }
 
 for (const name of ['bandwidth', 'bitrate', 'buffer', 'concurrency', 'latency', 'quality', 'rebuffer', 'startup'] as const)
-  qpuHexRegisterOf('streaming', name, (StreamingFormulas[name] as (...x: unknown[]) => unknown).bind(StreamingFormulas))
+  hexRegisterOf('streaming', name, (StreamingFormulas[name] as (...x: unknown[]) => unknown).bind(StreamingFormulas))

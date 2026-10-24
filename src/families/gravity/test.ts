@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GravityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -26,10 +26,10 @@ test('gravity: the physics, and the balance of slow, hot code by time and temper
   assert.equal(GravityFormulas.equilibrium(6000, 1, 100).value, 60, 'light work moves 60 to balance the heavy at 1')
 
   assert.equal(GravityFormulas.load(200, 30).dst, 'heat')
-  assert.equal(qpuHexFamiliesOf().get('gravity')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gravity')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gravity', program: ['balance'], params: [6000, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 98, `gravity.balance at ${uuid}`)
-  qpuUuidReceiptOf('gravity balance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gravity balance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; weight 700, force 100, potential 20, freefall 4; load slow=6000 fast=100, balance 98% (out of balance), equilibrium 60; crossing to heat')
 })

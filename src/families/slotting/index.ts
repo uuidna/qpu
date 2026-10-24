@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SLOTTING — scaffolded integer measures crossed to supplychain. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SlottingFormulas {
 }
 
 for (const name of ['congestionindex', 'goldenzone', 'pickdensity', 'picksperslot', 'replenishrate', 'traveltime', 'utilizationrate', 'velocityrank'] as const)
-  qpuHexRegisterOf('slotting', name, (SlottingFormulas[name] as (...x: unknown[]) => unknown).bind(SlottingFormulas))
+  hexRegisterOf('slotting', name, (SlottingFormulas[name] as (...x: unknown[]) => unknown).bind(SlottingFormulas))

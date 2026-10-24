@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHENOMENOLOGY — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PhenomenologyFormulas {
 }
 
 for (const name of ['consciousnessmodes', 'epochestages', 'experiencepairs', 'givennessratio', 'horizonlayers', 'intentionalacts', 'noesisnoema', 'reductions'] as const)
-  qpuHexRegisterOf('phenomenology', name, (PhenomenologyFormulas[name] as (...x: unknown[]) => unknown).bind(PhenomenologyFormulas))
+  hexRegisterOf('phenomenology', name, (PhenomenologyFormulas[name] as (...x: unknown[]) => unknown).bind(PhenomenologyFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PumpFormulas — 8 exact-integer formulas of the pump domain, each at a hex address crossing to cross; develops the pump leads. */
@@ -31,4 +31,4 @@ export class PumpFormulas {
 }
 
 for (const name of ['combos', 'efficiency', 'flow', 'head', 'impellers', 'power', 'stages', 'throughput'] as const)
-  qpuHexRegisterOf('pump', name, (PumpFormulas[name] as (...x: unknown[]) => unknown).bind(PumpFormulas))
+  hexRegisterOf('pump', name, (PumpFormulas[name] as (...x: unknown[]) => unknown).bind(PumpFormulas))

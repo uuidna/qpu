@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BASKETBALL — THE GAME AS ARITHMETIC. A box score is numbers: shooting percentages, free throws, efficiency, rebounds
@@ -30,4 +30,4 @@ export class BasketballFormulas {
 }
 
 for (const name of ['assists', 'efficiency', 'fieldgoal', 'freethrow', 'pace', 'plusminus', 'rebounds', 'truepct'] as const)
-  qpuHexRegisterOf('basketball', name, (BasketballFormulas[name] as (...x: unknown[]) => unknown).bind(BasketballFormulas))
+  hexRegisterOf('basketball', name, (BasketballFormulas[name] as (...x: unknown[]) => unknown).bind(BasketballFormulas))

@@ -35,11 +35,11 @@ theorem clay_sigma : 2 - (2 - 1) = 1 ∧ 1 - (1 - 0) = 0 ∧ 1 - (1 - 1) = 1 ∧
     so the factoring is a theorem of the clay kernel, not a step beside it. Witness (a = 8, n = 91): order 4, midpoint 2,
     a² = 64, and the ∓1 split is exactly 7 and 13. -/
 theorem shor_sigma :
-    periodOf 8 91 = 4 ∧
-    periodOf 8 91 - periodOf 8 91 / 2 = periodOf 8 91 / 2 ∧
-    gcdOf (half 8 91 - 1) 91 = 7 ∧ gcdOf (half 8 91 + 1) 91 = 13 ∧
-    gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 :=
-  ⟨rfl, sigma_midpoint (periodOf 8 91) (periodOf 8 91 / 2) rfl, rfl, rfl, rfl⟩
+    periodOf shorBase shorModulus = mintOf coins ∧
+    periodOf shorBase shorModulus - periodOf shorBase shorModulus / coins = periodOf shorBase shorModulus / coins ∧
+    gcdOf (half shorBase shorModulus - seed) shorModulus = rays ∧ gcdOf (half shorBase shorModulus + seed) shorModulus = faces - seed ∧
+    gcdOf (half shorBase shorModulus - seed) shorModulus * gcdOf (half shorBase shorModulus + seed) shorModulus = shorModulus :=
+  ⟨rfl, sigma_midpoint (periodOf shorBase shorModulus) (periodOf shorBase shorModulus / coins) rfl, rfl, rfl, rfl⟩
 
 /-- Clay's core is not only crypto: the same involution surfaces at the Planck scale and beyond. σ_h(x) = h − x on
     Planck's constant h (SI exact digits) is self-inverse (sigma_reflect, here reflecting Boltzmann's k), and its fixed

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BlackholeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('blackhole: schwarzschildradius, hawkingtemp, entropy, photonsphere, isco, 
   assert.equal(BlackholeFormulas.accretionrate(1000, 4).value, 250)
   assert.equal(BlackholeFormulas.accretionrate(1000, 0).value, 0)
   assert.equal(BlackholeFormulas.schwarzschildradius(10).dst, 'astrophysics')
-  assert.equal(qpuHexFamiliesOf().get('blackhole')?.length, 8)
+  assert.equal(hexFamiliesOf().get('blackhole')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'blackhole', program: ['isco'], params: [10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `blackhole.isco at ${uuid}`)
-  qpuUuidReceiptOf('blackhole isco', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('blackhole isco', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; schwarzschildradius 30, hawkingtemp 1000, entropy 10000, photonsphere 45, isco 90, tidalforce 250, evaporationtime 1000, accretionrate 250; crossing to astrophysics')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CosmogonyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cosmogony: stageorderings, elementcombos, creationdays, emanationlevels, d
   assert.equal(CosmogonyFormulas.principlesubsets(4).value, 16)
   assert.equal(CosmogonyFormulas.orderfromchaos(100, 30).value, 70)
   assert.equal(CosmogonyFormulas.stageorderings(5).dst, 'philosophy')
-  assert.equal(qpuHexFamiliesOf().get('cosmogony')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cosmogony')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cosmogony', program: ['stageorderings'], params: [5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 120, `cosmogony.stageorderings at ${uuid}`)
-  qpuUuidReceiptOf('cosmogony stageorderings', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cosmogony stageorderings', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; stageorderings 120, elementcombos 10, creationdays 7, emanationlevels 128, dualitypairs 8, cyclelength 4000, principlesubsets 16, orderfromchaos 70; crossing to philosophy')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SECURITIES — INSTRUMENTS AND MARKETS, AS ARITHMETIC. A security is numbers: market capitalization, the price/earnings
@@ -30,4 +30,4 @@ export class SecuritiesFormulas {
 }
 
 for (const name of ['coupon', 'dilution', 'dividend', 'gain', 'marketcap', 'pe', 'split', 'spread'] as const)
-  qpuHexRegisterOf('securities', name, (SecuritiesFormulas[name] as (...x: unknown[]) => unknown).bind(SecuritiesFormulas))
+  hexRegisterOf('securities', name, (SecuritiesFormulas[name] as (...x: unknown[]) => unknown).bind(SecuritiesFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RhetoricFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('rhetoric: ethos, pathos, logos, persuasion, cadence, emphasis, clarity, de
   assert.equal(RhetoricFormulas.clarity(90, 100).value, 90)
   assert.equal(RhetoricFormulas.devices(7).value, 7)
   assert.equal(RhetoricFormulas.ethos(100, 4).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('rhetoric')?.length, 8)
+  assert.equal(hexFamiliesOf().get('rhetoric')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'rhetoric', program: ['ethos'], params: [100, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `rhetoric.ethos at ${uuid}`)
-  qpuUuidReceiptOf('rhetoric ethos', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('rhetoric ethos', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ethos 25, pathos 25, logos 5, persuasion 75, cadence 10, emphasis 10, clarity 90, devices 7; crossing to linguistics')
 })

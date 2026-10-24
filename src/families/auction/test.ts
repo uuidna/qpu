@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AuctionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('auction: clearing, competition, estimate, increment, premium, proxy, reser
   assert.equal(AuctionFormulas.reserve(400, 500).value, 0, 'under the floor clears nothing')
   assert.equal(AuctionFormulas.selltrough(80, 100).value, 80, 'sell-through percent')
   assert.equal(AuctionFormulas.clearing(150, 100).dst, 'trading')
-  assert.equal(qpuHexFamiliesOf().get('auction')?.length, 8)
+  assert.equal(hexFamiliesOf().get('auction')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'auction', program: ['competition'], params: [90, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `auction.competition at ${uuid}`)
-  qpuUuidReceiptOf('auction competition', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('auction competition', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; clearing 150, competition 3, estimate 120, increment 100, premium 250, proxy 200, reserve 300, selltrough 80; crossing to trading')
 })

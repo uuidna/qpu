@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ShardingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('sharding: shards, keyrange, rebalance, hotspot, fanout, skew, placement, r
   assert.equal(ShardingFormulas.resharding(1000, 4, 8).value, 500, 'half migrate on a double')
   assert.equal(ShardingFormulas.skew(100, 300).value, 0)
   assert.equal(ShardingFormulas.shards(1000, 256).dst, 'indexing')
-  assert.equal(qpuHexFamiliesOf().get('sharding')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sharding')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sharding', program: ['shards'], params: [1000, 256] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `sharding.shards at ${uuid}`)
-  qpuUuidReceiptOf('sharding shards', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sharding shards', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; shards 4, keyrange 4096, rebalance 250, hotspot 9, fanout 48, skew 380, placement 8, resharding 500; crossing to indexing')
 })

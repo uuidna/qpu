@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REVERB — A ROOM'S TAIL, AS ARITHMETIC. The sound after the sound is numbers: the Sabine decay of a volume against its
@@ -31,4 +31,4 @@ export class ReverbFormulas {
 }
 
 for (const name of ['dampingratio', 'decaytime', 'diffusion', 'earlyreflections', 'predelay', 'roommodes', 'rt60', 'wetdrymix'] as const)
-  qpuHexRegisterOf('reverb', name, (ReverbFormulas[name] as (...x: unknown[]) => unknown).bind(ReverbFormulas))
+  hexRegisterOf('reverb', name, (ReverbFormulas[name] as (...x: unknown[]) => unknown).bind(ReverbFormulas))

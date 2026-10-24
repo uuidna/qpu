@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AnesthesiologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('anesthesiology: mac, dosage, infusionrate, mapp, bloodloss, oxygenation, r
   assert.equal(AnesthesiologyFormulas.depth(45, 60).value, 1, 'adequate depth')
   assert.equal(AnesthesiologyFormulas.depth(70, 60).value, 0)
   assert.equal(AnesthesiologyFormulas.mac(70, 50).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('anesthesiology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('anesthesiology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'anesthesiology', program: ['mapp'], params: [120, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `anesthesiology.mapp at ${uuid}`)
-  qpuUuidReceiptOf('anesthesiology mapp', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('anesthesiology mapp', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mac 120, dosage 140, infusionrate 50, mapp 80, bloodloss 1666, oxygenation 200, reversal 3500, depth 1; crossing to physiology')
 })

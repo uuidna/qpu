@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONVERSION — THE FUNNEL AS ARITHMETIC (chosen by the growth registry, not by hand). Turning traffic into customers is
@@ -31,4 +31,4 @@ export class ConversionFormulas {
 }
 
 for (const name of ['bounce', 'cart', 'checkout', 'cpa', 'funnel', 'rate', 'roas', 'uplift'] as const)
-  qpuHexRegisterOf('conversion', name, (ConversionFormulas[name] as (...x: unknown[]) => unknown).bind(ConversionFormulas))
+  hexRegisterOf('conversion', name, (ConversionFormulas[name] as (...x: unknown[]) => unknown).bind(ConversionFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ShintoFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('shinto: kamicount, shrinecombos, ritualstages, purificationtypes, festival
   assert.equal(ShintoFormulas.prayerpairs(10, 2).value, 45)
   assert.equal(ShintoFormulas.harmonyratio(80, 100).value, 80)
   assert.equal(ShintoFormulas.kamicount(8, 1000).dst, 'anthropology')
-  assert.equal(qpuHexFamiliesOf().get('shinto')?.length, 8)
+  assert.equal(hexFamiliesOf().get('shinto')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'shinto', program: ['kamicount'], params: [8, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 8000, `shinto.kamicount at ${uuid}`)
-  qpuUuidReceiptOf('shinto kamicount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('shinto kamicount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; kamicount 8000, shrinecombos 66, ritualstages 120, purificationtypes 5, festivaldays 20, offeringsubsets 32, prayerpairs 45, harmonyratio 80; crossing to anthropology')
 })

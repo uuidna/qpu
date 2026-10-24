@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PALEOCLIMATE — scaffolded integer measures crossed to climate. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PaleoclimateFormulas {
 }
 
 for (const name of ['co2ppm', 'correlationpairs', 'cyclelength', 'interglacials', 'isotoperatio', 'proxyrecords', 'resolutionyears', 'temperatureanomaly'] as const)
-  qpuHexRegisterOf('paleoclimate', name, (PaleoclimateFormulas[name] as (...x: unknown[]) => unknown).bind(PaleoclimateFormulas))
+  hexRegisterOf('paleoclimate', name, (PaleoclimateFormulas[name] as (...x: unknown[]) => unknown).bind(PaleoclimateFormulas))

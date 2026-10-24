@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MIME — scaffolded integer measures crossed to kinematics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MimeFormulas {
 }
 
 for (const name of ['claritypct', 'gesturepairs', 'gestures', 'illusiontypes', 'isolationpoints', 'sequenceorderings', 'spacegrid', 'tempobeats'] as const)
-  qpuHexRegisterOf('mime', name, (MimeFormulas[name] as (...x: unknown[]) => unknown).bind(MimeFormulas))
+  hexRegisterOf('mime', name, (MimeFormulas[name] as (...x: unknown[]) => unknown).bind(MimeFormulas))

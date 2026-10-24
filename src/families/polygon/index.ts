@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POLYGON — THE SHAPE OF A CLOSED FIGURE, AS ARITHMETIC. A polygon of n sides is numbers: the interior angles sum, the
@@ -30,4 +30,4 @@ export class PolygonFormulas {
 }
 
 for (const name of ['area', 'diagonals', 'exteriorangle', 'interiorangle', 'interioranglesum', 'perimeter', 'sides', 'triangles'] as const)
-  qpuHexRegisterOf('polygon', name, (PolygonFormulas[name] as (...x: unknown[]) => unknown).bind(PolygonFormulas))
+  hexRegisterOf('polygon', name, (PolygonFormulas[name] as (...x: unknown[]) => unknown).bind(PolygonFormulas))

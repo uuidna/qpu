@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ChordFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('chord: notecount, intervalspan, inversioncount, triadquality, extensiondeg
   assert.equal(ChordFormulas.rootposition(2, 0).value, 0)
   assert.equal(ChordFormulas.stackedthirds(4).value, 3, 'four notes stack three thirds')
   assert.equal(ChordFormulas.notecount(3, 4).dst, 'music')
-  assert.equal(qpuHexFamiliesOf().get('chord')?.length, 8)
+  assert.equal(hexFamiliesOf().get('chord')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'chord', program: ['voicingwidth'], params: [24, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 8, `chord.voicingwidth at ${uuid}`)
-  qpuUuidReceiptOf('chord voicingwidth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('chord voicingwidth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; notecount 7, intervalspan 12, inversioncount 4, triadquality 7, extensiondegree 7, voicingwidth 8, rootposition 1, stackedthirds 3; crossing to music')
 })

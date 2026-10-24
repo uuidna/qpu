@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WeatherFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('weather: heatindex, windchill, dewpoint, pressure, precipitation, humidity
   assert.equal(WeatherFormulas.visibility(12).value, 12)
   assert.equal(WeatherFormulas.uv(7).value, 7)
   assert.equal(WeatherFormulas.heatindex(30, 80).dst, 'environment')
-  assert.equal(qpuHexFamiliesOf().get('weather')?.length, 8)
+  assert.equal(hexFamiliesOf().get('weather')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'weather', program: ['heatindex'], params: [30, 80] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 38, `weather.heatindex at ${uuid}`)
-  qpuUuidReceiptOf('weather heatindex', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('weather heatindex', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; heatindex 38, windchill 5/0, dewpoint 15, pressure 913/0, precipitation 15, humidity 80, visibility 12, uv 7; crossing to environment')
 })

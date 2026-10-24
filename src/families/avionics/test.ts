@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AvionicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('avionics: airspeed, altitudehold, headingerror, glidepath, fuelflow, climb
   assert.equal(AvionicsFormulas.navtolerance(2, 5).value, 1, 'within tolerance')
   assert.equal(AvionicsFormulas.navtolerance(9, 5).value, 0)
   assert.equal(AvionicsFormulas.airspeed(4500, 9).dst, 'aerodynamics')
-  assert.equal(qpuHexFamiliesOf().get('avionics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('avionics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'avionics', program: ['airspeed'], params: [4500, 9] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 500, `avionics.airspeed at ${uuid}`)
-  qpuUuidReceiptOf('avionics airspeed', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('avionics airspeed', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; airspeed 500, altitudehold 200, headingerror 20, glidepath 15, fuelflow 1800, climbrate 1500, transponder 1, navtolerance 1; crossing to aerodynamics')
 })

@@ -1,7 +1,7 @@
 import '../../../mcp/families.js'
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from './index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf } from './index.js'
 import { RuleFormulas, ruleIndexOf as ix } from '../../../families/rule/index.js'
 import { MerkabaFormulas, flowFamiliesOf, flowIndexOf as fx } from '../../../families/merkaba/index.js'
 
@@ -11,7 +11,7 @@ const chainedOf = (first: 'nibbles', second: 'free' | 'compositions', i: number)
 /** A family is addressed by its name, never by the integer it has in a sorted registry (a new family shifts that
  *  integer): ix(name) is the index rule.* counts by, fx(name) the index merkaba flows by. What depends on the registry
  *  itself — the formulas it serves in all, the ordered triples of the first n flow families that flow — is read from it. */
-const formulasOf = (): string => String([...qpuHexFamiliesOf().values()].reduce((sum, fs) => sum + fs.length, 0))
+const formulasOf = (): string => String([...hexFamiliesOf().values()].reduce((sum, fs) => sum + fs.length, 0))
 const flowsOf = (n: number): string => {
   const m = Math.min(n, flowFamiliesOf().length)
   let count = 0
@@ -27,7 +27,7 @@ const flowsOf = (n: number): string => {
 test('next: fourteen superpositions recompute the integer their families return', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -343,7 +343,7 @@ test('next: fourteen superpositions recompute the integer their families return'
 test('next: the window at 13 recomputes the integer its families return', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -590,7 +590,7 @@ test('next: the window at 13 recomputes the integer its families return', async 
 test('next: the window at 50 recomputes the integer its families return', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -761,7 +761,7 @@ test('next: the window at 50 recomputes the integer its families return', async 
 test('next: the window at 72 recomputes the integer its families return', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -924,7 +924,7 @@ test('next: the window at 72 recomputes the integer its families return', async 
 test('next: the window at 750 recomputes the integer its families return', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -1060,7 +1060,7 @@ test('next: the window at 750 recomputes the integer its families return', async
 test('next: the window at 81 recomputes the integer its families return', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -1172,7 +1172,7 @@ test('next: the window at 81 recomputes the integer its families return', async 
 test('next: the window at 199 recomputes the integer its families return', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -1310,7 +1310,7 @@ test('next: the window at 199 recomputes the integer its families return', async
 test('next: the window at 679 recomputes the integer its families return', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -1425,7 +1425,7 @@ test('next: the window at 679 recomputes the integer its families return', async
   const offReturned = []
   for (const [family, program, params] of off662) {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, false, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     offReturned.push({ call: `${family}.${program.join('∘')}(${params.join(', ')})`, value: String(run.value), uuid })
   }

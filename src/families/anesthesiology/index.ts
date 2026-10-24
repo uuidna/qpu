@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ANESTHESIOLOGY — THE OPERATING ROOM AS ARITHMETIC. Keeping a patient under is numbers: the minimum alveolar
@@ -31,4 +31,4 @@ export class AnesthesiologyFormulas {
 }
 
 for (const name of ['bloodloss', 'depth', 'dosage', 'infusionrate', 'mac', 'mapp', 'oxygenation', 'reversal'] as const)
-  qpuHexRegisterOf('anesthesiology', name, (AnesthesiologyFormulas[name] as (...x: unknown[]) => unknown).bind(AnesthesiologyFormulas))
+  hexRegisterOf('anesthesiology', name, (AnesthesiologyFormulas[name] as (...x: unknown[]) => unknown).bind(AnesthesiologyFormulas))

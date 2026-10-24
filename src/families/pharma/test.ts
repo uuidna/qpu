@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PharmaFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('pharma: dose, halflife, clearance, loading, bioavailability, interval, the
   assert.equal(PharmaFormulas.therapeutic(10, 100).value, 1000, 'therapeutic index')
   assert.equal(PharmaFormulas.steadystate(500, 8).value, 62)
   assert.equal(PharmaFormulas.dose(70, 10).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('pharma')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pharma')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pharma', program: ['clearance'], params: [1000, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 250, `pharma.clearance at ${uuid}`)
-  qpuUuidReceiptOf('pharma clearance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pharma clearance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dose 700, halflife 125, clearance 250, loading 200, bioavailability 80, interval 24, therapeutic 1000, steadystate 62; crossing to med')
 })

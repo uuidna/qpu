@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** APOCRYPHA — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ApocryphaFormulas {
 }
 
 for (const name of ['bookcount', 'canonpairs', 'disputedratio', 'inclusionsubsets', 'manuscriptcombos', 'orderingchoices', 'readingorders', 'versetotal'] as const)
-  qpuHexRegisterOf('apocrypha', name, (ApocryphaFormulas[name] as (...x: unknown[]) => unknown).bind(ApocryphaFormulas))
+  hexRegisterOf('apocrypha', name, (ApocryphaFormulas[name] as (...x: unknown[]) => unknown).bind(ApocryphaFormulas))

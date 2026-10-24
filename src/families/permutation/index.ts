@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PERMUTATION — THE SYMMETRIC GROUP, AS ARITHMETIC. A permutation of n is numbers by the book (Stanley EC1): the n!
@@ -52,4 +52,4 @@ export class PermutationFormulas {
 }
 
 for (const name of ['ascents', 'choose', 'cycles', 'derangements', 'descents', 'eulerian', 'excedances', 'factorial', 'fixedpoints', 'inversions', 'involutions', 'majorindex', 'ncycles', 'permutations', 'transpositions'] as const)
-  qpuHexRegisterOf('permutation', name, (PermutationFormulas[name] as (...x: unknown[]) => unknown).bind(PermutationFormulas))
+  hexRegisterOf('permutation', name, (PermutationFormulas[name] as (...x: unknown[]) => unknown).bind(PermutationFormulas))

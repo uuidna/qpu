@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ScrabbleFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('scrabble: tiles, lettervalues, rackcombos, wordpermutations, boardcells, b
   assert.equal(ScrabbleFormulas.blanktiles(2, 0).value, 2)
   assert.equal(ScrabbleFormulas.scoremultiplier(3, 3).value, 9)
   assert.equal(ScrabbleFormulas.tiles(100, 0).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('scrabble')?.length, 8)
+  assert.equal(hexFamiliesOf().get('scrabble')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'scrabble', program: ['tiles'], params: [100, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `scrabble.tiles at ${uuid}`)
-  qpuUuidReceiptOf('scrabble tiles', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('scrabble tiles', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; tiles 100, lettervalues 26, rackcombos 21, wordpermutations 5040, boardcells 225, bingobonus 50, blanktiles 2, scoremultiplier 9; crossing to statistics')
 })

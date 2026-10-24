@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TRANSLATION — THE LANGUAGE-SERVICE DOMAIN, AS ARITHMETIC (chosen by the registry, not by hand). Moving text between
@@ -31,4 +31,4 @@ export class TranslationFormulas {
 }
 
 for (const name of ['bleu', 'coverage', 'edit', 'expansion', 'fuzzy', 'glossary', 'quality', 'throughput'] as const)
-  qpuHexRegisterOf('translation', name, (TranslationFormulas[name] as (...x: unknown[]) => unknown).bind(TranslationFormulas))
+  hexRegisterOf('translation', name, (TranslationFormulas[name] as (...x: unknown[]) => unknown).bind(TranslationFormulas))

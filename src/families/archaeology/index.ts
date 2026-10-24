@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ARCHAEOLOGY — DIGGING THE PAST, AS ARITHMETIC. The record is numbers: radiocarbon age from half-lives, the depth of
@@ -31,4 +31,4 @@ export class ArchaeologyFormulas {
 }
 
 for (const name of ['age', 'artifacts', 'carbon', 'dating', 'excavation', 'seriation', 'stratum', 'typology'] as const)
-  qpuHexRegisterOf('archaeology', name, (ArchaeologyFormulas[name] as (...x: unknown[]) => unknown).bind(ArchaeologyFormulas))
+  hexRegisterOf('archaeology', name, (ArchaeologyFormulas[name] as (...x: unknown[]) => unknown).bind(ArchaeologyFormulas))

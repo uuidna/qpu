@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PARTITIONING — SPLITTING A KEYSPACE ACROSS NODES, AS ARITHMETIC (chosen by the data-layout registry, not by hand). Laying
@@ -31,4 +31,4 @@ export class PartitioningFormulas {
 }
 
 for (const name of ['coalesce', 'fanout', 'hotpartition', 'keyspacesplit', 'partitions', 'rangewidth', 'rebalance', 'skew'] as const)
-  qpuHexRegisterOf('partitioning', name, (PartitioningFormulas[name] as (...x: unknown[]) => unknown).bind(PartitioningFormulas))
+  hexRegisterOf('partitioning', name, (PartitioningFormulas[name] as (...x: unknown[]) => unknown).bind(PartitioningFormulas))

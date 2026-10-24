@@ -17,16 +17,16 @@ import {
   pureArgs,
   pureTools,
   qpuCiteOf,
-  qpuCssOf,
-  qpuFacesOf,
-  qpuHexFamiliesOf,
-  qpuMcpCallOf,
-  qpuMcpDiscoverOf,
-  qpuMcpOf,
-  qpuMcpToolsListOf,
-  qpuNetworkToolsOf,
-  qpuStorageWriteAllowedOf,
-  qpuStepsOf,
+  cssOf,
+  facesOf,
+  hexFamiliesOf,
+  mcpCallOf,
+  mcpDiscoverOf,
+  mcpOf,
+  mcpToolsListOf,
+  networkToolsOf,
+  storageWriteAllowedOf,
+  stepsOf,
   rpcCodes,
   rpcErrorOf,
   rpcMethods,
@@ -37,7 +37,7 @@ import {
   unit,
   type QpuEnv,
 } from '../../quantum/processing/unit/index.js'
-import { qpuMachinesHolds, qpuMachinesOf } from '../../quantum/processing/unit/zeropage.js'
+import { machinesHolds, machinesOf } from '../../quantum/processing/unit/zeropage.js'
 import { openMathScaleOf } from './clay.js'
 import { usageBillOf } from './billing.js'
 import { accessModePlugin } from './access-mode.js'
@@ -130,8 +130,8 @@ export const variantLeadOf = async () => {
   const { formulatedProductVariantOf } = await import('./ecommerce.js')
   const axis = pluginAxisLengthOf()
   const binomial = CombinatoricsFormulas.binomial(axis)
-  const faces = qpuFacesOf().faces
-  const registered = [...qpuHexFamiliesOf()].flatMap(([family, fs]) => fs.map((f) => ({ family, name: f.name, arity: f.arity })))
+  const faces = facesOf().faces
+  const registered = [...hexFamiliesOf()].flatMap(([family, fs]) => fs.map((f) => ({ family, name: f.name, arity: f.arity })))
   const product = registered.filter((f) => f.name === 'product')
   const variant = registered.filter((f) => f.name.toLowerCase().includes('variant'))
   const paired = registered.filter((f) => f.name.toLowerCase().includes('product') && f.name.toLowerCase().includes('variant'))
@@ -159,14 +159,14 @@ export const variantLeadOf = async () => {
 /** Previous page is the request referer. Next page is the lattice step. The counts are the plugin axis, the face slice, and waves of that slice. */
 export const navigationOf = async () => {
   const axis = pluginAxisLengthOf()
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const binomial = CombinatoricsFormulas.binomial(axis)
   const slice = RuleFormulas.slice()
   const cap = RuleFormulas.cap()
   const waves = WaveFormulas.waves(faces)
   const agents = WaveFormulas.agents(faces)
   const saved = WaveFormulas.saved(faces)
-  const steps = qpuStepsOf()
+  const steps = stepsOf()
   return {
     page: '/' as const,
     previous: { field: null as null, file: 'src/collections/Pages.ts' as const },
@@ -184,7 +184,7 @@ export const navigationOf = async () => {
     agents: readingOf('wave.agents', agents, [faces]),
     saved: readingOf('wave.saved', saved, [faces]),
     pieces: [
-      { piece: 'breadcrumb' as const, file: 'src/components/ui/breadcrumb.tsx', renders: 'src/components/Public/index.tsx' },
+      { piece: 'breadcrumb' as const, file: 'src/components/ui/breadcrumb.tsx', renders: 'src/components/Page.tsx' },
       { piece: 'doc-breadcrumb' as const, file: 'src/components/Doc/index.tsx', renders: 'src/components/Doc/index.tsx', referer: null as null, next: null as null },
       { piece: 'program-breadcrumb' as const, file: 'src/components/Program/index.tsx', renders: 'src/components/Program/index.tsx', referer: null as null, next: null as null },
       { piece: 'header' as const, file: 'src/components/Header/index.tsx', referer: null as null, next: null as null },
@@ -198,11 +198,11 @@ export const navigationOf = async () => {
 
 /**
  * The network the tree already has: net_* doors, the machine list, the unit host.
- * qpuNetworkMcpOf has no slot for a machine row. That absence is the lead.
+ * networkMcpOf has no slot for a machine row. That absence is the lead.
  * Scale is cloud.scale, and only when perNode > 0. The call is the one cloud/test.ts already makes.
  */
 export const networkMachineOf = () => {
-  const machines = qpuMachinesOf()
+  const machines = machinesOf()
   const row = machines.rows[0]
   const load = 100
   const perNode = 30
@@ -211,12 +211,12 @@ export const networkMachineOf = () => {
   return {
     kind: 'network-machine' as const,
     file: 'src/quantum/processing/unit/index.ts' as const,
-    catalog: 'qpuNetworkMcpOf' as const,
+    catalog: 'networkMcpOf' as const,
     host: unit.host,
-    doors: qpuNetworkToolsOf().map((tool) => tool.name),
+    doors: networkToolsOf().map((tool) => tool.name),
     machineList: 'src/quantum/processing/unit/zeropage.ts' as const,
     lead: true as const,
-    absent: 'src/quantum/processing/unit/index.ts qpuNetworkMcpOf has hop, when, lanes, routes, channels, and holds. qpuComputerOf network has kind, href, hop, and holds. Neither has a slot for a machine row. The net_* doors stay on that catalog. The machine list stays in src/quantum/processing/unit/zeropage.ts. unit.host stays the unit host. No second network is added.',
+    absent: 'src/quantum/processing/unit/index.ts networkMcpOf has hop, when, lanes, routes, channels, and holds. computerOf network has kind, href, hop, and holds. Neither has a slot for a machine row. The net_* doors stay on that catalog. The machine list stays in src/quantum/processing/unit/zeropage.ts. unit.host stays the unit host. No second network is added.',
     index: 0 as const,
     pravets: here && row
       ? {
@@ -230,7 +230,7 @@ export const networkMachineOf = () => {
           registerNext: row.registerNext,
         }
       : null,
-    machinesHold: qpuMachinesHolds(machines),
+    machinesHold: machinesHolds(machines),
     scale: scale
       ? { ...readingOf('cloud.scale', scale, [load, perNode]), condition: 'perNode > 0' as const }
       : null,
@@ -240,8 +240,8 @@ export const networkMachineOf = () => {
 /** Doors the unit already lists. Descriptions are not copied onto the page. */
 export const doorsOf = async () => {
   try {
-    const { qpuMcpDoorsOf } = await import('../../quantum/processing/unit/mcp.js')
-    const d = qpuMcpDoorsOf()
+    const { mcpDoorsOf } = await import('../../quantum/processing/unit/mcp.js')
+    const d = mcpDoorsOf()
     return {
       doors: d.doors.map((row) => ({ name: row.name, kind: row.kind })),
       formulas: d.formulas,
@@ -253,7 +253,7 @@ export const doorsOf = async () => {
       doors: [] as { name: string; kind: string }[],
       formulas: 0,
       holds: false,
-      absent: `src/quantum/processing/unit/mcp.ts qpuMcpDoorsOf did not answer: ${e instanceof Error ? e.message : String(e)}`,
+      absent: `src/quantum/processing/unit/mcp.ts mcpDoorsOf did not answer: ${e instanceof Error ? e.message : String(e)}`,
     }
   }
 }
@@ -286,13 +286,13 @@ export const componentsOf = () => [
   { file: 'src/components/Relations/index.tsx', renders: 'discovery relations, identities, seals', page: true },
   { file: 'src/components/LiveTable/index.tsx', renders: 'live source rows', page: true },
   { file: 'src/components/blocks/_generic.tsx', renders: 'the shared block vocabulary', page: true },
-  { file: 'src/components/Public/index.tsx', renders: 'license, variant, doors, network, access console, block reach', page: true },
-  { file: 'src/components/Public/AccessPanel.tsx', renders: 'chmod access console on the public surface', page: true },
-  { file: 'src/components/Public/ConnectorUsePanel.tsx', renders: 'connector { use: true } agent map — listed bill vs fused routes', page: true },
-  { file: 'src/components/Public/SealWavePanel.tsx', renders: 'clay seal-wave console via connector pass/seal', page: true },
-  { file: 'src/components/Public/NativeAdaptersPanel.tsx', renders: 'native compute job console — vendor submit + priceRelation ticket', page: true },
-  { file: 'src/components/Public/ObservePanel.tsx', renders: 'connector { observe: true } / { verbosity } receipt observability console', page: true },
-  { file: 'src/components/Public/PrintChipsPanel.tsx', renders: 'connector { chips: true } ray-layered chip print + crypto license imprint', page: true },
+  { file: 'src/components/Page.tsx', renders: 'license, variant, doors, network, access console, block reach', page: true },
+  { file: 'src/components/AccessPanel.tsx', renders: 'chmod access console on the public surface', page: true },
+  { file: 'src/components/ConnectorUsePanel.tsx', renders: 'connector { use: true } agent map — listed bill vs fused routes', page: true },
+  { file: 'src/components/SealWavePanel.tsx', renders: 'clay seal-wave console via connector pass/seal', page: true },
+  { file: 'src/components/NativeAdaptersPanel.tsx', renders: 'native compute job console — vendor submit + priceRelation ticket', page: true },
+  { file: 'src/components/ObservePanel.tsx', renders: 'connector { observe: true } / { verbosity } receipt observability console', page: true },
+  { file: 'src/components/PrintChipsPanel.tsx', renders: 'connector { chips: true } ray-layered chip print + crypto license imprint', page: true },
   { file: 'src/components/ui/badge.tsx', renders: 'a badge', page: true },
   { file: 'src/components/ui/breadcrumb.tsx', renders: 'a breadcrumb', page: true },
   { file: 'src/components/ui/button.tsx', renders: 'a button', page: true },
@@ -312,7 +312,7 @@ export const accessSurfaceOf = async () => {
   const reading = modeAccessOf({ mode: 5, who: 'other' })
   const enums = unixModeEnumsOf()
   const catalog = formulatedCatalogOf()
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete' as const, tools }).length
   const products = [...catalog.products, ...catalog.services]
     .filter((row) => row.enums.some((e) => String(e).startsWith('access')))
@@ -342,7 +342,7 @@ export const accessSurfaceOf = async () => {
       seals: [...CLAY_SEALS],
       note: 'claySealWaveOf; discover.capacity gate × court.standard' as const,
       court: 'tools/call connector { court: true, case: discover.capacity }' as const,
-      faces: qpuFacesOf().faces,
+      faces: facesOf().faces,
       executeGate: 'unix mode x via connector { access: true, mode, who }' as const,
     },
     endpoint: '/api/qpu/access' as const,
@@ -352,9 +352,9 @@ export const accessSurfaceOf = async () => {
 
 export const publicSurfaceOf = async () => {
   const { reactorStatsOf } = await import('../../families/reactor/index.js')
-  const { qpuAnalyticsOf } = await import('../../quantum/processing/unit/zeropage.js')
+  const { analyticsOf } = await import('../../quantum/processing/unit/zeropage.js')
   // Live formulas only on the Worker (no heat-receipt import). README merges the committed heat-receipt.
-  const analytics = qpuAnalyticsOf()
+  const analytics = analyticsOf()
   const reactor = reactorStatsOf()
   return {
     kind: 'public-surface' as const,
@@ -367,8 +367,8 @@ export const publicSurfaceOf = async () => {
     access: await accessSurfaceOf(),
     forms: formFieldsOf(),
     components: componentsOf(),
-    document: '/api/qpu/permaculture?full=true' as const,
-    schema: '/api/qpu/permaculture?man=true' as const,
+    document: '/mcp' as const,
+    schema: '/mcp' as const,
     stats: {
       kind: 'register-stats' as const,
       register: {
@@ -418,7 +418,7 @@ export const publicCiteOf = (): Response =>
 
 /** The lattice stylesheet Payload serves at /api/qpu/css (public URL /qpu.css). */
 export const publicCssOf = (): Response =>
-  new Response(qpuCssOf().css, { status: found, headers: { ...headers, 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=60, stale-while-revalidate=60' } })
+  new Response(cssOf().css, { status: found, headers: { ...headers, 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=60, stale-while-revalidate=60' } })
 
 /**
  * Fused MCP over Streamable HTTP. tools/list is the measured connect bill (sealed + cybersecurity morph doors).
@@ -462,7 +462,7 @@ export const publicMcpOf = async (request: Request, env?: QpuEnv): Promise<Respo
     }
     if (body.id === undefined) return new Response(null, { status: 202, headers: { ...headers } })
     if (body.method === 'initialize' || body.method === 'server/discover') {
-      return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpDiscoverOf(body.params?.protocolVersion) })
+      return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: mcpDiscoverOf(body.params?.protocolVersion) })
     }
     if (body.method === 'ping') {
       return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: {} })
@@ -470,7 +470,7 @@ export const publicMcpOf = async (request: Request, env?: QpuEnv): Promise<Respo
     const envelope = (id: unknown, resultBody: string) =>
       new Response(`{"jsonrpc":"2.0","id":${JSON.stringify(id ?? null)},"result":${resultBody}}`, { status: found, headers: { ...headers, ...rpcMedia } })
     if (body.method === 'tools/list') {
-      return envelope(body.id, servedOf('tools/list', () => ({ resultType: 'complete' as const, tools: qpuMcpToolsListOf() })).body)
+      return envelope(body.id, servedOf('tools/list', () => ({ resultType: 'complete' as const, tools: mcpToolsListOf() })).body)
     }
     if (body.method === 'tools/call') {
       const name = typeof body.params?.name === 'string' ? body.params.name : ''
@@ -484,13 +484,13 @@ export const publicMcpOf = async (request: Request, env?: QpuEnv): Promise<Respo
           SERVED.push({ key, fold: hit.etag })
           return envelope(body.id, hit.body)
         }
-        const called = await qpuMcpCallOf(name, args, env, request.headers.get('authorization'))
+        const called = await mcpCallOf(name, args, env, request.headers.get('authorization'))
         if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
         // redact secrets only — do not compact recognition replies (fold equality)
         const { redactSecretsOf } = await import('./tokens.js')
         return envelope(body.id, servedOf(key, () => redactSecretsOf(called)).body)
       }
-      const called = await qpuMcpCallOf(name, args, env, request.headers.get('authorization'))
+      const called = await mcpCallOf(name, args, env, request.headers.get('authorization'))
       if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
       const { redactSecretsOf } = await import('./tokens.js')
       return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: redactSecretsOf(called) })
@@ -507,7 +507,7 @@ export const publicMcpOf = async (request: Request, env?: QpuEnv): Promise<Respo
     }
     return jsonOf(rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods, ...MCP_EXTENSIONS.keys()] }))
   }
-  return new Response(JSON.stringify(qpuMcpOf()), { status: found, headers: { ...headers, 'content-type': 'application/ld+json; charset=utf-8', 'cache-control': 'public, max-age=60, stale-while-revalidate=60' } })
+  return new Response(JSON.stringify(mcpOf()), { status: found, headers: { ...headers, 'content-type': 'application/ld+json; charset=utf-8', 'cache-control': 'public, max-age=60, stale-while-revalidate=60' } })
 }
 
 /**
@@ -577,7 +577,7 @@ export const publicDoorFetchOf = async (request: Request, env?: QpuEnv): Promise
   }
   if (path === '/api/qpu/cloudflare') {
     // Account inventory + wrangler subprocesses: gate on the write bearer and never answer an anonymous caller.
-    if (!qpuStorageWriteAllowedOf(env, request.headers.get('authorization')))
+    if (!storageWriteAllowedOf(env, request.headers.get('authorization')))
       return jsonOf({ holds: false, denied: 'cloudflare account inventory needs Authorization: Bearer QPU_WRITE_TOKEN' }, lost)
     const { publicCloudflareOf } = await import('./cloudflare-account.js')
     return publicCloudflareOf(request)

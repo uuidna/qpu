@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MediaFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('media: aspect, gallery, lazy, caption, sizes, fit, load, ratio — crossin
   assert.equal(MediaFormulas.ratio(1600, 900).value, 1, 'landscape')
   assert.equal(MediaFormulas.ratio(900, 1600).value, 0)
   assert.equal(MediaFormulas.aspect(1600, 900).dst, 'payload')
-  assert.equal(qpuHexFamiliesOf().get('media')?.length, 8)
+  assert.equal(hexFamiliesOf().get('media')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'media', program: ['gallery'], params: [10, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `media.gallery at ${uuid}`)
-  qpuUuidReceiptOf('media gallery', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('media gallery', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; aspect 177, gallery 4, lazy 60, caption 1, sizes 5, fit 80, load 20, ratio 1; crossing to payload')
 })

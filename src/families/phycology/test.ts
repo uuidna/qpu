@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhycologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('phycology: chlorophyll, biomass, productivity, bloomdensity, growthrate, l
   assert.equal(PhycologyFormulas.nutrientuptake(99, 95).value, 1, 'uptake meets demand')
   assert.equal(PhycologyFormulas.nutrientuptake(90, 95).value, 0)
   assert.equal(PhycologyFormulas.chlorophyll(500, 8).dst, 'botany')
-  assert.equal(qpuHexFamiliesOf().get('phycology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('phycology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'phycology', program: ['bloomdensity'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `phycology.bloomdensity at ${uuid}`)
-  qpuUuidReceiptOf('phycology bloomdensity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('phycology bloomdensity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; chlorophyll 4000, biomass 5000, productivity 50, bloomdensity 4, growthrate 99, lipidcontent 30, turbidity 900, nutrientuptake 1; crossing to botany')
 })

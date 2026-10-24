@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CODING — ERROR-CORRECTING CODES AS ARITHMETIC. A code is numbers: the rate at which bits carry information, the
@@ -31,4 +31,4 @@ export class CodingFormulas {
 }
 
 for (const name of ['blocklength', 'coderate', 'codingefficiency', 'errorcorrection', 'hammingdistance', 'overhead', 'parityanbits', 'redundancy'] as const)
-  qpuHexRegisterOf('coding', name, (CodingFormulas[name] as (...x: unknown[]) => unknown).bind(CodingFormulas))
+  hexRegisterOf('coding', name, (CodingFormulas[name] as (...x: unknown[]) => unknown).bind(CodingFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LICENSING — SOFTWARE ENTITLEMENT AS ARITHMETIC (chosen by the public-API registry, not by hand). Holding a licence is
@@ -31,4 +31,4 @@ export class LicensingFormulas {
 }
 
 for (const name of ['compliance', 'entitlement', 'overage', 'renewal', 'seats', 'term', 'truecost', 'utilization'] as const)
-  qpuHexRegisterOf('licensing', name, (LicensingFormulas[name] as (...x: unknown[]) => unknown).bind(LicensingFormulas))
+  hexRegisterOf('licensing', name, (LicensingFormulas[name] as (...x: unknown[]) => unknown).bind(LicensingFormulas))

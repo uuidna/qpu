@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NUMEROLOGY, DECODED — EXACT MATH, UNVERIFIED MEANING. Every operation here is a deterministic function of a natural
@@ -34,4 +34,4 @@ export class NumenFormulas {
 }
 
 for (const name of ['depth', 'master', 'mirror', 'nine', 'palindrome', 'reduce', 'root'] as const)
-  qpuHexRegisterOf('numen', name, (NumenFormulas[name] as (...x: unknown[]) => unknown).bind(NumenFormulas))
+  hexRegisterOf('numen', name, (NumenFormulas[name] as (...x: unknown[]) => unknown).bind(NumenFormulas))

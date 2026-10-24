@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PaginationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('pagination: pages, pageoffset, totalpages, itemsonpage, signatures, column
   assert.equal(PaginationFormulas.charsperpage(66, 45).value, 2970)
   assert.equal(PaginationFormulas.pagerange(5, 20).value, 100, 'last item shown on the page')
   assert.equal(PaginationFormulas.pages(95, 10).dst, 'typography')
-  assert.equal(qpuHexFamiliesOf().get('pagination')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pagination')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pagination', program: ['pages'], params: [95, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `pagination.pages at ${uuid}`)
-  qpuUuidReceiptOf('pagination pages', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pagination pages', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; pages 10, pageoffset 80, totalpages 10, itemsonpage 5, signatures 7, columns 4, charsperpage 2970, pagerange 100; crossing to typography')
 })

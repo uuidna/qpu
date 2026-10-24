@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MOTIVATION — WHAT DRIVES ACTION, AS ARITHMETIC (Vroom expectancy theory, Hull drive theory, Bandura self-efficacy).
@@ -31,4 +31,4 @@ export class MotivationFormulas {
 }
 
 for (const name of ['drive', 'expectancy', 'goalgradient', 'incentive', 'instrumentality', 'persistence', 'selfefficacy', 'valence'] as const)
-  qpuHexRegisterOf('motivation', name, (MotivationFormulas[name] as (...x: unknown[]) => unknown).bind(MotivationFormulas))
+  hexRegisterOf('motivation', name, (MotivationFormulas[name] as (...x: unknown[]) => unknown).bind(MotivationFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DRIVER — the arithmetic the kernel driver counts in. DMA ring entries and 4K pages off a buffer, the payload a frame
@@ -46,4 +46,4 @@ export class DriverFormulas {
 }
 
 for (const name of ['bandwidth', 'buffers', 'coalesce', 'completion', 'descBytes', 'dmaPages', 'doorbell', 'irq', 'latency', 'mmio', 'payload', 'pps', 'queues', 'ring', 'throughput'] as const)
-  qpuHexRegisterOf('driver', name, (DriverFormulas[name] as (...x: unknown[]) => unknown).bind(DriverFormulas))
+  hexRegisterOf('driver', name, (DriverFormulas[name] as (...x: unknown[]) => unknown).bind(DriverFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HydrationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('hydration: dailyneed, sweatloss, replacementrate, deficit, electrolyteneed
   assert.equal(HydrationFormulas.fluidbalance(2500, 2000).value, 500)
   assert.equal(HydrationFormulas.concentration(600, 2).value, 300)
   assert.equal(HydrationFormulas.dailyneed(70, 35).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('hydration')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hydration')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hydration', program: ['dailyneed'], params: [70, 35] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2450, `hydration.dailyneed at ${uuid}`)
-  qpuUuidReceiptOf('hydration dailyneed', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hydration dailyneed', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dailyneed 2450, sweatloss 120, replacementrate 75, deficit 500, electrolyteneed 200, urineoutput 62, fluidbalance 500, concentration 300; crossing to physiology')
 })

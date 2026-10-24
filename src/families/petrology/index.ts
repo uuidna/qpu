@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PETROLOGY — ROCKS AS ARITHMETIC (chosen by the mineral registry, not by hand). A rock is numbers: the color index of its
@@ -31,4 +31,4 @@ export class PetrologyFormulas {
 }
 
 for (const name of ['colorindex', 'crystallization', 'differentiation', 'graindensity', 'meltfraction', 'modalcomposition', 'porosity', 'silicacontent'] as const)
-  qpuHexRegisterOf('petrology', name, (PetrologyFormulas[name] as (...x: unknown[]) => unknown).bind(PetrologyFormulas))
+  hexRegisterOf('petrology', name, (PetrologyFormulas[name] as (...x: unknown[]) => unknown).bind(PetrologyFormulas))

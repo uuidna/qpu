@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOCATION — SPACE AND DISTANCE, AS ARITHMETIC (chosen by the registry). A place is numbers: Manhattan and Chebyshev
@@ -30,4 +30,4 @@ export class LocationFormulas {
 }
 
 for (const name of ['box', 'chebyshev', 'eta', 'grid', 'manhattan', 'speed', 'within', 'zoom'] as const)
-  qpuHexRegisterOf('location', name, (LocationFormulas[name] as (...x: unknown[]) => unknown).bind(LocationFormulas))
+  hexRegisterOf('location', name, (LocationFormulas[name] as (...x: unknown[]) => unknown).bind(LocationFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PolyphonyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('polyphony: voicecount, maxpolyphony, voiceleadingcost, independenceindex, 
   assert.equal(PolyphonyFormulas.textureindex(24, 4).value, 6, 'notes per voice')
   assert.equal(PolyphonyFormulas.activevoices(16, 4).value, 12)
   assert.equal(PolyphonyFormulas.voicecount(4, 3).dst, 'music')
-  assert.equal(qpuHexFamiliesOf().get('polyphony')?.length, 8)
+  assert.equal(hexFamiliesOf().get('polyphony')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'polyphony', program: ['voicecount'], params: [4, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `polyphony.voicecount at ${uuid}`)
-  qpuUuidReceiptOf('polyphony voicecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('polyphony voicecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; voicecount 12, maxpolyphony 16, voiceleadingcost 7, independenceindex 75, densityratio 70, overlapcount 7, textureindex 6, activevoices 12; crossing to music')
 })

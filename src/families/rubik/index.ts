@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RUBIK — scaffolded integer measures crossed to combinatorics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class RubikFormulas {
 }
 
 for (const name of ['cornerperms', 'cubies', 'edgepairs', 'faces', 'godsnumber', 'movesubsets', 'solvedratio', 'stickers'] as const)
-  qpuHexRegisterOf('rubik', name, (RubikFormulas[name] as (...x: unknown[]) => unknown).bind(RubikFormulas))
+  hexRegisterOf('rubik', name, (RubikFormulas[name] as (...x: unknown[]) => unknown).bind(RubikFormulas))

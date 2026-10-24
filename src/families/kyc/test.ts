@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { KycFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,10 +22,10 @@ test('kyc: completeness, screening, risk, aml, diligence, ubo, expiry, monitorin
   assert.equal(KycFormulas.expiry(100, 365).value, 0, 'an overdue review floors at zero, never negative')
   assert.equal(KycFormulas.monitoring(12, 4).value, 3, 'twelve reviews over four periods = three per period')
   assert.equal(KycFormulas.completeness(18, 20).dst, 'law', 'kyc crosses into law — what the law requires before service')
-  assert.equal(qpuHexFamiliesOf().get('kyc')?.length, 8)
+  assert.equal(hexFamiliesOf().get('kyc')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'kyc', program: ['completeness'], params: [18, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `kyc.completeness at ${uuid}`)
-  qpuUuidReceiptOf('kyc completeness', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('kyc completeness', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas (FATF/AML due diligence); completeness 90, screening 3bps, risk 70, aml 1/0, diligence 1/0, ubo 80, expiry 265/0, monitoring 3; crossing to law — a measure, never a legal conclusion')
 })

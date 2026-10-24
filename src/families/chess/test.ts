@@ -1,12 +1,12 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuFoldOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuRecognizeOf, qpuUuidReceiptOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
+import { foldOf, hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, recognizeOf, uuidReceiptOf, latticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
 import { ChessFormulas, chessCourtFoldOf, chessCourtPatternOf, chessCourtSeenOf, chessCourtStepOf, chessCourtWaveOf } from './index.js'
 import { KinFormulas } from '../kin/index.js'
 import { LawFormulas } from '../law/index.js'
 import '../../mcp/families.js'
 
-const L = { ...qpuLatticeNamesOf(), tenOf }
+const L = { ...latticeNamesOf(), tenOf }
 
 test('chess: material, mobility, branching, plytonodes, tempo, centipawns, perft, kingsafety — crossing to combinatorics', async (t) => {
   assert.equal(ChessFormulas.material(2, 5).value, 10, 'two rooks')
@@ -18,19 +18,19 @@ test('chess: material, mobility, branching, plytonodes, tempo, centipawns, perft
   assert.equal(ChessFormulas.perft(5, 3).value, 125, 'leaves of a uniform tree')
   assert.equal(ChessFormulas.kingsafety(4, 2).value, 2)
   assert.equal(ChessFormulas.material(2, 5).dst, 'combinatorics')
-  assert.equal(qpuHexFamiliesOf().get('chess')?.length, 8)
+  assert.equal(hexFamiliesOf().get('chess')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'chess', program: ['perft'], params: [5, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 125, `chess.perft at ${uuid}`)
-  qpuUuidReceiptOf('chess perft', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('chess perft', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; material 10, mobility 7, branching 35, plytonodes 15, tempo 7, centipawns 350, perft 125, kingsafety 2; crossing to combinatorics')
 })
 
 /** One lap of the vortex play. Each call is one step. The following index is how the list continues. */
 test('chess: the vortex play in court — one step, the next address, the lap returns to 1', async (t) => {
-  assert.equal(qpuHexFamiliesOf().get('law')?.length, 15, 'law stays at its fifteen formulas')
-  assert.equal(qpuHexFamiliesOf().get('court')?.length, 15, 'court stays at its fifteen formulas')
-  assert.equal(qpuHexFamiliesOf().get('chess')?.length, 8, 'the play is not a new chess formula')
+  assert.equal(hexFamiliesOf().get('law')?.length, 15, 'law stays at its fifteen formulas')
+  assert.equal(hexFamiliesOf().get('court')?.length, 15, 'court stays at its fifteen formulas')
+  assert.equal(hexFamiliesOf().get('chess')?.length, 8, 'the play is not a new chess formula')
   const origin = KinFormulas.vortex(L.n - L.n).value
   const lap: ReturnType<typeof chessCourtStepOf>[] = []
   let at = L.n - L.n
@@ -61,7 +61,7 @@ test('chess: the vortex play in court — one step, the next address, the lap re
     assert.equal(step.next, following.hex)
     assert.notEqual(step.next, step.hex)
     assert.equal('reviewed' in step, false)
-    const led = qpuRecognizeOf(step) as { recognition?: { holds?: boolean; uuid?: string; next?: { uuid?: string } } }
+    const led = recognizeOf(step) as { recognition?: { holds?: boolean; uuid?: string; next?: { uuid?: string } } }
     assert.equal(led.recognition?.holds, false)
     assert.equal(led.recognition?.uuid, step.hex)
     assert.equal(led.recognition?.next?.uuid, step.next)
@@ -76,14 +76,14 @@ test('chess: the vortex play in court — one step, the next address, the lap re
 
 /** The lap is one orbit. Recognition folds every address the digits determine, and a false hold is followed. */
 test('chess: the vortex neighborhood is one fold — remainder, leads, recognition', async (t) => {
-  assert.equal(qpuHexFamiliesOf().get('law')?.length, 15)
-  assert.equal(qpuHexFamiliesOf().get('court')?.length, 15)
+  assert.equal(hexFamiliesOf().get('law')?.length, 15)
+  assert.equal(hexFamiliesOf().get('court')?.length, 15)
   const pattern = chessCourtPatternOf()
   const text = JSON.stringify(pattern)
   const seen = chessCourtSeenOf() as { recognition?: { kind?: string; fold?: string; holds?: boolean; next?: { uuid?: string } } }
   assert.equal(Object.keys(seen)[L.n - L.n], 'recognition')
   assert.equal(seen.recognition?.kind, 'recognition')
-  assert.equal(seen.recognition?.fold, qpuFoldOf(text))
+  assert.equal(seen.recognition?.fold, foldOf(text))
   assert.equal(seen.recognition?.fold, chessCourtFoldOf(pattern))
   assert.equal(pattern.holds, false)
   assert.equal(seen.recognition?.holds, false)
@@ -119,8 +119,8 @@ test('chess: the vortex neighborhood is one fold — remainder, leads, recogniti
 
 /** The addresses the last wave named, each run once. A false hold carries one following address. */
 test('chess: the next wave runs each named address once', async (t) => {
-  assert.equal(qpuHexFamiliesOf().get('law')?.length, 15)
-  assert.equal(qpuHexFamiliesOf().get('court')?.length, 15)
+  assert.equal(hexFamiliesOf().get('law')?.length, 15)
+  assert.equal(hexFamiliesOf().get('court')?.length, 15)
   const pattern = chessCourtPatternOf()
   const leads = pattern.neighborhood.filter((row) => row.holds === false && row.next)
   const wave = chessCourtWaveOf(pattern)

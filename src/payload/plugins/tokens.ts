@@ -17,24 +17,21 @@ import { HeatFormulas, heatThresholdOf } from '../../families/heat/index.js'
 import { TextFormulas } from '../../families/text/index.js'
 import { flowFamiliesOf } from '../../families/merkaba/index.js'
 import {
-  qpuFacesOf,
-  qpuHexFamiliesOf,
+  facesOf,
+  hexFamiliesOf,
   qpuHexUuidOf,
-  qpuLatticeNamesOf,
-  qpuMcpToolsListOf,
+  latticeNamesOf,
+  mcpToolsListOf,
   tenOf,
 } from '../../quantum/processing/unit/index.js'
 import type { QpuPlugin } from './surface.js'
 
-const L = { ...qpuLatticeNamesOf(), tenOf }
+const L = { ...latticeNamesOf(), tenOf }
 const REDACTED = '[redacted]' as const
 /** Four bytes per LLM token — presentation.ts tokens: 'four bytes'. */
 const BYTES_PER_TOKEN = 4
-/** Cap related/array dumps so seal-wave-style OOM cannot recur. Depth is walk depth, not coins.
- *  MAX_ARRAY is compactOf's cap (sealPayloadOf); the redact-only pass never truncates (fold equality, full: true). */
-const MAX_ARRAY = L.faces
-const MAX_STRING = tenOf(L.hexbit) // 10000 chars
-const MAX_DEPTH = L.faces // 14 — deep enough for usage/matrix trees; related arrays still sliced to faces
+/** Depth is a cycle guard, not a data cap: no string, array or related list is truncated (no caps in code). */
+const MAX_DEPTH = L.faces // 14 — deep enough for usage/matrix trees
 
 const SECRET_KEY =
   /^(authorization|auth|bearer|api[_-]?key|x[_-]?api[_-]?key|access[_-]?token|secret|password|passwd|credential|private[_-]?key|client[_-]?secret|write[_-]?token|patentsview[_-]?api[_-]?key|ibm[_-]?qiskit[_-]?token|qpu[_-]?write[_-]?token|payload[_-]?secret|accesskeyid|secretaccesskey|aws[_-]?secret|s3[_-]?access|s3[_-]?secret)$/i
@@ -51,7 +48,7 @@ const hexOf = (family: string, formula: string, params: number[]): string | null
 }
 
 const connectBillOf = () => {
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const bytes = JSON.stringify({ resultType: 'complete' as const, tools }).length
   const qpuPrefixed = tools.filter((t) => t.name.startsWith('qpu_')).length
   return {
@@ -76,7 +73,7 @@ export const redactSecretsOf = (value: unknown, depth = 0): unknown => {
   if (depth > MAX_DEPTH) return REDACTED
   if (typeof value === 'string') {
     if (secretsInOf(value)) return value.replace(SECRET_VALUE, REDACTED)
-    return value.length > MAX_STRING ? `${value.slice(0, MAX_STRING)}…` : value
+    return value
   }
   if (typeof value !== 'object' || value === null) return value
   // redact-only: never truncate here (the caller relies on fold equality and on full: true meaning the whole
@@ -95,27 +92,15 @@ export const redactSecretsOf = (value: unknown, depth = 0): unknown => {
 }
 
 /**
- * Compact a payload: truncate huge related arrays / strings, cap depth.
- * Seal-wave OOM lesson — never dump unbounded related/discover rows on the wire.
+ * Compact a payload: the cycle guard (depth) is the only bound. Strings, arrays and related lists pass whole.
  */
 export const compactOf = (value: unknown, depth = 0): unknown => {
   if (depth > MAX_DEPTH) return { truncated: true as const, depth }
-  if (typeof value === 'string') return value.length > MAX_STRING ? `${value.slice(0, MAX_STRING)}…` : value
+  if (typeof value === 'string') return value
   if (typeof value !== 'object' || value === null) return value
-  if (Array.isArray(value)) {
-    const slice = value.slice(0, MAX_ARRAY).map((v) => compactOf(v, depth + 1))
-    return value.length > MAX_ARRAY ? [...slice, { truncated: value.length - MAX_ARRAY }] : slice
-  }
+  if (Array.isArray(value)) return value.map((v) => compactOf(v, depth + 1))
   const out: Record<string, unknown> = {}
-  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-    // related / discover / edges are the known OOM vectors
-    if ((k === 'related' || k === 'discover' || k === 'edges' || k === 'jobs' || k === 'meets') && Array.isArray(v)) {
-      out[k] = compactOf(v.slice(0, L.faces), depth + 1)
-      if (v.length > L.faces) out[`${k}Truncated`] = v.length - L.faces
-      continue
-    }
-    out[k] = compactOf(v, depth + 1)
-  }
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) out[k] = compactOf(v, depth + 1)
   return out
 }
 
@@ -219,7 +204,7 @@ export type WaitRow = {
 /** Static + lattice-measured wait audit, sorted by cost (ms) descending. */
 export const waitsAuditOf = (args: Record<string, unknown> = {}) => {
   const deadline = L.tenOf(L.hexbit) // 10000
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const ring = flowFamiliesOf().length
   const rows: WaitRow[] = [
     {
@@ -351,7 +336,7 @@ export const waitsAuditOf = (args: Record<string, unknown> = {}) => {
 
 /** Follow heat.slow `next` for take steps — compact, no related dumps. */
 export const slowChainOf = async (args: Record<string, unknown> = {}) => {
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const take = typeof args.take === 'number' && Number.isSafeInteger(args.take) && args.take > 0
     ? Math.min(args.take, faces)
     : faces
@@ -375,7 +360,7 @@ export const slowChainOf = async (args: Record<string, unknown> = {}) => {
   }[] = []
   for (let n = 0; n < take; n++) {
     const family = ring[f]
-    const formulas = family ? qpuHexFamiliesOf().get(family) : undefined
+    const formulas = family ? hexFamiliesOf().get(family) : undefined
     const formula = formulas?.[j]
     if (!family || !formula) break
     const r = (await HeatFormulas.slow(f, j)) as unknown as {
@@ -538,15 +523,15 @@ export const onlineModeOf = async (args: Record<string, unknown> = {}) => {
 
   // ── formula/unit live CERN: offline learn vs online experience ──
   {
-    const { qpuCernLearnOf } = await import('../../quantum/processing/unit/index.js')
-    const learn = qpuCernLearnOf()
+    const { cernLearnOf } = await import('../../quantum/processing/unit/index.js')
+    const learn = cernLearnOf()
     const target: TokenTarget = { who: 'unit.cern.learn', door: 'data', tool: 'cern', family: 'cern', panel: 'unit' }
     cells.push({
       level: 'formula/unit',
       mode: 'offline',
       pass: learn.holds === true,
       holds: learn.holds === true,
-      note: 'qpuCernLearnOf occupancy lattice — offline exact',
+      note: 'cernLearnOf occupancy lattice — offline exact',
       target,
       usage: tokenUsageOf(target, { holds: learn.holds }),
     })
@@ -554,7 +539,7 @@ export const onlineModeOf = async (args: Record<string, unknown> = {}) => {
 
   // ── MCP/connector offline: local connectorAnswerOf seals ──
   {
-    const { connectorUseOf } = await import('./permaculture.js')
+    const { connectorUseOf } = await import('./connector.js')
     const use = connectorUseOf()
     const leakProbe = sealPayloadOf({
       authorization: 'Bearer FAKESECRET_e2f3g4h5i6j7k8l9m0n1',

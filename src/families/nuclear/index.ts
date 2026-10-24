@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NUCLEAR — THE PHYSICS OF THE REACTOR CORE, AS ARITHMETIC. Nuclei are numbers: atoms left after a run of half-lives,
@@ -30,4 +30,4 @@ export class NuclearFormulas {
 }
 
 for (const name of ['activity', 'binding', 'criticality', 'decay', 'dose', 'enrichment', 'fission', 'shielding'] as const)
-  qpuHexRegisterOf('nuclear', name, (NuclearFormulas[name] as (...x: unknown[]) => unknown).bind(NuclearFormulas))
+  hexRegisterOf('nuclear', name, (NuclearFormulas[name] as (...x: unknown[]) => unknown).bind(NuclearFormulas))

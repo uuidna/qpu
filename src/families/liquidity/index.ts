@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LIQUIDITY — SOLVENCY AND SURVIVAL, AS ARITHMETIC (chosen by the public-API registry, not by hand). A balance sheet is
@@ -30,4 +30,4 @@ export class LiquidityFormulas {
 }
 
 for (const name of ['burnrate', 'cashratio', 'coverageratio', 'currentratio', 'lcr', 'netstablefunding', 'quickratio', 'workingcapital'] as const)
-  qpuHexRegisterOf('liquidity', name, (LiquidityFormulas[name] as (...x: unknown[]) => unknown).bind(LiquidityFormulas))
+  hexRegisterOf('liquidity', name, (LiquidityFormulas[name] as (...x: unknown[]) => unknown).bind(LiquidityFormulas))

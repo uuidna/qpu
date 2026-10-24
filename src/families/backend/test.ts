@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BackendFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('backend: requests, latency, error, pool, cache, queue, throughput, saturat
   assert.equal(BackendFormulas.throughput(6000, 60).value, 100, 'requests per second')
   assert.equal(BackendFormulas.saturation(75, 100).value, 75)
   assert.equal(BackendFormulas.requests(500, 60).dst, 'obs')
-  assert.equal(qpuHexFamiliesOf().get('backend')?.length, 8)
+  assert.equal(hexFamiliesOf().get('backend')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'backend', program: ['throughput'], params: [6000, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `backend.throughput at ${uuid}`)
-  qpuUuidReceiptOf('backend throughput', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('backend throughput', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; requests 30000, latency 50, error 3, pool 100, cache 95, queue 200, throughput 100, saturation 75; crossing to obs')
 })

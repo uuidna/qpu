@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AccessibilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('accessibility: contrastratio, taptarget, textscale, wcagscore, altcoverage
   assert.equal(AccessibilityFormulas.aria(90, 120).value, 75)
   assert.equal(AccessibilityFormulas.readinglevel(1200, 100).value, 12, 'twelfth-grade passage')
   assert.equal(AccessibilityFormulas.contrastratio(95, 5).dst, 'frontend')
-  assert.equal(qpuHexFamiliesOf().get('accessibility')?.length, 8)
+  assert.equal(hexFamiliesOf().get('accessibility')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'accessibility', program: ['focusorder'], params: [100, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9, `accessibility.focusorder at ${uuid}`)
-  qpuUuidReceiptOf('accessibility focusorder', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('accessibility focusorder', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; contrastratio 1000, taptarget 1, textscale 24, wcagscore 90, altcoverage 80, focusorder 9, aria 75, readinglevel 12; crossing to frontend')
 })

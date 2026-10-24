@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHOTOVOLTAIC — SOLAR GENERATION AS ARITHMETIC (sunlight into electricity, by the numbers). A panel's DC power from its
@@ -31,4 +31,4 @@ export class PhotovoltaicFormulas {
 }
 
 for (const name of ['array', 'derate', 'efficiency', 'fillfactor', 'irradiance', 'payback', 'power', 'yield'] as const)
-  qpuHexRegisterOf('photovoltaic', name, (PhotovoltaicFormulas[name] as (...x: unknown[]) => unknown).bind(PhotovoltaicFormulas))
+  hexRegisterOf('photovoltaic', name, (PhotovoltaicFormulas[name] as (...x: unknown[]) => unknown).bind(PhotovoltaicFormulas))

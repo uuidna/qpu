@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AmortizationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('amortization: schedulepayment, principalportion, interestportion, remainin
   assert.equal(AmortizationFormulas.extrapayment(12000, 800, 200).value, 12, 'paid off a year sooner')
   assert.equal(AmortizationFormulas.intangible(50000, 10).value, 5000)
   assert.equal(AmortizationFormulas.schedulepayment(24000, 24).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('amortization')?.length, 8)
+  assert.equal(hexFamiliesOf().get('amortization')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'amortization', program: ['payoffmonths'], params: [12500, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 13, `amortization.payoffmonths at ${uuid}`)
-  qpuUuidReceiptOf('amortization payoffmonths', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('amortization payoffmonths', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; schedulepayment 1000, principalportion 850, interestportion 300, remainingbalance 42000, payoffmonths 13, totalcost 360000, extrapayment 12, intangible 5000; crossing to accounting')
 })

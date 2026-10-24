@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { JournalismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('journalism: readability, inverted, sources, deadline, engagement, wordcoun
   assert.equal(JournalismFormulas.factcheck(9, 10).value, 90)
   assert.equal(JournalismFormulas.bias(3, 300).value, 1)
   assert.equal(JournalismFormulas.readability(300, 20).dst, 'content')
-  assert.equal(qpuHexFamiliesOf().get('journalism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('journalism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'journalism', program: ['sources'], params: [8, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `journalism.sources at ${uuid}`)
-  qpuUuidReceiptOf('journalism sources', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('journalism sources', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; readability 15, inverted 20, sources 80, deadline 4, engagement 5, wordcount 960, factcheck 90, bias 1; crossing to content')
 })

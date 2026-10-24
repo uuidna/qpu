@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CheckersFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('checkers: squares, playablesquares, pieces, movepaths, kingrows, jumpcombo
   assert.equal(CheckersFormulas.positionsubsets(8).value, 256)
   assert.equal(CheckersFormulas.branchingfactor(8, 2).value, 10)
   assert.equal(CheckersFormulas.squares(8, 8).dst, 'graphtheory')
-  assert.equal(qpuHexFamiliesOf().get('checkers')?.length, 8)
+  assert.equal(hexFamiliesOf().get('checkers')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'checkers', program: ['squares'], params: [8, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 64, `checkers.squares at ${uuid}`)
-  qpuUuidReceiptOf('checkers squares', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('checkers squares', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; squares 64, playablesquares 32, pieces 24, movepaths 56, kingrows 2, jumpcombos 66, positionsubsets 256, branchingfactor 10; crossing to graphtheory')
 })

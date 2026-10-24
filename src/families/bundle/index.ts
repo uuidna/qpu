@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BUNDLE — A JS BUILD BUNDLE, AS ARITHMETIC. Shipping a web app is numbers: the chunks a module count splits into, how
@@ -31,4 +31,4 @@ export class BundleFormulas {
 }
 
 for (const name of ['budget', 'chunks', 'dedupe', 'entry', 'gzip', 'overhead', 'split', 'treeshake'] as const)
-  qpuHexRegisterOf('bundle', name, (BundleFormulas[name] as (...x: unknown[]) => unknown).bind(BundleFormulas))
+  hexRegisterOf('bundle', name, (BundleFormulas[name] as (...x: unknown[]) => unknown).bind(BundleFormulas))

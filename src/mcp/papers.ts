@@ -162,9 +162,9 @@ export const papersOf = async (args: Record<string, unknown> = {}): Promise<{
     waited: held ? 'dist' : null,
   }))
 
-  const { qpuHexFamiliesOf, qpuHexUuidOf } = await import('../quantum/processing/unit/index.js')
+  const { hexFamiliesOf, qpuHexUuidOf } = await import('../quantum/processing/unit/index.js')
   let matched = 0
-  for (const [family, formulas] of qpuHexFamiliesOf()) {
+  for (const [family, formulas] of hexFamiliesOf()) {
     for (const formula of formulas) {
       if (!NEEDLE.test(family) && !NEEDLE.test(formula.name)) continue
       matched += 1

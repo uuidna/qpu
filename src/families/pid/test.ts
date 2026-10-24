@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PidFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('pid: proportional, integral, derivative, output, ziegler, tuning, windup, 
   assert.equal(PidFormulas.setpoint(100, 70).value, 30)
   assert.equal(PidFormulas.setpoint(70, 100).value, 0)
   assert.equal(PidFormulas.output(60, 12, 5).dst, 'dynamics')
-  assert.equal(qpuHexFamiliesOf().get('pid')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pid')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pid', program: ['output'], params: [60, 12, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 77, `pid.output at ${uuid}`)
-  qpuUuidReceiptOf('pid output', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pid output', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; proportional 150, integral 80, derivative 30, output 77, ziegler 6, tuning 12, windup 300, setpoint 30; crossing to dynamics')
 })

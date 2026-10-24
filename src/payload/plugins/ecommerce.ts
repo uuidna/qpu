@@ -18,15 +18,15 @@ import { RuleFormulas } from '../../families/rule/index.js'
 import { packageVersion } from '../../quantum/processing/unit/version.js'
 import {
   mintOf,
-  qpuCybersecurityToolsOf,
-  qpuFacesOf,
-  qpuHarnessesOf,
-  qpuHexFamiliesOf,
+  cybersecurityToolsOf,
+  facesOf,
+  harnessesOf,
+  hexFamiliesOf,
   qpuHexUuidOf,
-  qpuHostsOf,
-  qpuLatticeNamesOf,
-  qpuMcpToolsListOf,
-  qpuTenantZoneOf,
+  hostsOf,
+  latticeNamesOf,
+  mcpToolsListOf,
+  tenantZoneOf,
   unit,
 } from '../../quantum/processing/unit/index.js'
 import { CLOUDFLARE_PLUGINS } from '../../deployment/payload-cloudflare.js'
@@ -36,11 +36,11 @@ import { clayPrizeOf, openMathScaleOf } from './clay.js'
 import { nativeAdapterEnumOf } from './native-adapters.js'
 import { catalogPriceRelationOf, type PriceRelation } from './price-relation.js'
 import type { QpuPlugin } from './surface.js'
-import { qpuPublicOf } from '../../quantum/processing/unit/zeropage.js'
+import { publicOf } from '../../quantum/processing/unit/zeropage.js'
 
 export const FUSED_SALE_DOORS = [
   'hex', 'data', 'discover', 'crypt', 'np', 'upgrade', 'video', 'domains',
-  'connector', 'permaculture', 'hologram', 'papers', 'api',
+  'connector', 'hologram', 'papers', 'api',
 ] as const
 
 export const ECOMMERCE_FORMULAS = [
@@ -165,7 +165,7 @@ export type FormulatedModel = {
   call: string
   schema: string
   result: string
-  source: 'qpuHostsOf'
+  source: 'hostsOf'
 }
 
 const hexOf = (family: string, formula: string, zeros: number[]): string | null => {
@@ -198,7 +198,7 @@ const mcp = (
  * Full MCP tenant registry with models/needs lives in tenants.ts formulatedTenantsOf.
  */
 export const ecommerceSoldTenantsOf = () => {
-  const zone = qpuTenantZoneOf()
+  const zone = tenantZoneOf()
   const sold: FormulatedTenant[] = [
     {
       slug: zone.own,
@@ -232,7 +232,7 @@ const familyEnum = (
   improves: readonly EnumImproves[],
   source: string,
 ): FormulatedEnum => {
-  const reg = qpuHexFamiliesOf().get(family) ?? []
+  const reg = hexFamiliesOf().get(family) ?? []
   return {
     name,
     label,
@@ -256,9 +256,9 @@ const familyEnum = (
   }
 }
 
-/** LLM seats (qpuHostsOf) — specific models MCP serves per face. */
+/** LLM seats (hostsOf) — specific models MCP serves per face. */
 export const formulatedModelsOf = (): FormulatedModel[] => {
-  const hosts = qpuHostsOf()
+  const hosts = hostsOf()
   return hosts.nodes.map((node, face) => ({
     face,
     llm: node.llm,
@@ -266,7 +266,7 @@ export const formulatedModelsOf = (): FormulatedModel[] => {
     call: node.call,
     schema: node.schema,
     result: node.result,
-    source: 'qpuHostsOf' as const,
+    source: 'hostsOf' as const,
   }))
 }
 
@@ -277,11 +277,11 @@ export const formulatedModelsOf = (): FormulatedModel[] => {
 export const formulatedEnumsOf = (): FormulatedEnum[] => {
   const tenants = formulatedTenantsOf()
   const models = formulatedModelsOf()
-  const tools = qpuMcpToolsListOf()
-  const harnesses = qpuHarnessesOf()
-  const lattice = qpuLatticeNamesOf()
-  const faces = qpuFacesOf()
-  const ecommerceFamily = qpuHexFamiliesOf().get('ecommerce') ?? []
+  const tools = mcpToolsListOf()
+  const harnesses = harnessesOf()
+  const lattice = latticeNamesOf()
+  const faces = facesOf()
+  const ecommerceFamily = hexFamiliesOf().get('ecommerce') ?? []
 
   const tenantEnum: FormulatedEnum = {
     name: 'tenant',
@@ -300,7 +300,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'llm',
     label: 'Host LLM seat',
     collection: 'variantTypes',
-    source: 'qpuHostsOf().llms · connector { model }',
+    source: 'hostsOf().llms · connector { model }',
     options: models.map((m) =>
       mcp(m.llm, `${m.llm}@${m.hostHarness}`, 'connector', { model: m.llm, llm: m.llm }, {
         address: `host.llm.${m.llm}`,
@@ -313,7 +313,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'hostHarness',
     label: 'Host harness',
     collection: 'variantTypes',
-    source: 'qpuHostsOf().harnesses',
+    source: 'hostsOf().harnesses',
     options: models.map((m) =>
       mcp(m.hostHarness, m.hostHarness, 'connector', { model: m.hostHarness }, {
         address: `host.harness.${m.hostHarness}`,
@@ -326,7 +326,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'door',
     label: 'Sealed MCP door',
     collection: 'variantTypes',
-    source: 'qpuMcpToolsListOf · tools/call <door>',
+    source: 'mcpToolsListOf · tools/call <door>',
     options: tools.map((t) =>
       mcp(t.name, t.name, t.name, {}, { address: `door.${t.name}`, params: [] }),
     ),
@@ -336,7 +336,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'fusedDoor',
     label: 'Fused MCP door',
     collection: 'variantTypes',
-    source: 'qpuMcpFuseOf · tools/call <fused>',
+    source: 'mcpFuseOf · tools/call <fused>',
     options: FUSED_SALE_DOORS.map((d) =>
       mcp(d, d, d, d === 'connector' ? { ecommerce: true } : {}, {
         address: `fused.${d}`,
@@ -349,7 +349,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'harness',
     label: 'Connector harness',
     collection: 'variantTypes',
-    source: 'qpuHarnessesOf().rows',
+    source: 'harnessesOf().rows',
     options: harnesses.rows.map((r) =>
       mcp(r.harness, r.harness, 'connector', { harness: r.harness }, {
         address: `harness.${r.kind}`,
@@ -362,7 +362,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'harnessKind',
     label: 'Harness kind',
     collection: 'variantTypes',
-    source: 'qpuHarnessesOf().rows.kind',
+    source: 'harnessesOf().rows.kind',
     options: [...new Set(harnesses.rows.map((r) => r.kind))].map((k) =>
       mcp(k, k, 'connector', { kind: k }, { address: `harness.kind.${k}`, params: [] }),
     ),
@@ -393,8 +393,8 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'arity',
     label: 'Formula arity',
     collection: 'variantTypes',
-    source: 'qpuHexFamiliesOf().arity',
-    options: [...new Set([...qpuHexFamiliesOf()].flatMap(([, fs]) => fs.map((f) => f.arity)))]
+    source: 'hexFamiliesOf().arity',
+    options: [...new Set([...hexFamiliesOf()].flatMap(([, fs]) => fs.map((f) => f.arity)))]
       .sort((a, b) => a - b)
       .map((a) =>
         mcp(String(a), `arity ${a}`, 'hex', { arity: a }, {
@@ -408,7 +408,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'lattice',
     label: 'Lattice name',
     collection: 'variantTypes',
-    source: 'qpuLatticeNamesOf',
+    source: 'latticeNamesOf',
     options: Object.keys(lattice).map((k) =>
       mcp(k, k, 'connector', { point: true, lattice: k }, {
         address: `lattice.${k}`,
@@ -444,7 +444,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
   }
 
   // Combinatorics: width/from/passes are 2ⁿ or faces-multiples — not arbitrary select ints.
-  const L = qpuLatticeNamesOf()
+  const L = latticeNamesOf()
   const bin4 = CombinatoricsFormulas.binomial(4) // 16 = tools/list size
   const bin3 = CombinatoricsFormulas.binomial(3) // 8 = harnesses / sealed half / chmod triad
   const bin2 = CombinatoricsFormulas.binomial(2) // 4
@@ -509,7 +509,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
   }
 
   // Security: crypto morph doors + crypt family — choosing a value is a verified hex/holds path.
-  const cryptoTools = qpuCybersecurityToolsOf()
+  const cryptoTools = cybersecurityToolsOf()
   const known = CryptFormulas.knownAnswers()
   const grover256 = CryptFormulas.symmetricQuantumBits(256)
   const grover128 = CryptFormulas.symmetricQuantumBits(128)
@@ -524,7 +524,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'cryptoMorph',
     label: 'Cybersecurity morph door',
     collection: 'variantTypes',
-    source: 'qpuCybersecurityToolsOf · tools/call crypto_* (morph, on tools/list)',
+    source: 'cybersecurityToolsOf · tools/call crypto_* (morph, on tools/list)',
     options: cryptoTools.map((t) =>
       mcp(t.name, t.name, t.name, {}, {
         address: `cyber.${t.name}`,
@@ -596,7 +596,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
     name: 'latticeScale',
     label: 'Lattice coins/rays/faces',
     collection: 'variantTypes',
-    source: 'qpuFacesOf / rule.slice · connector { point: true }',
+    source: 'facesOf / rule.slice · connector { point: true }',
     options: [
       mcp(`coins:${coinsN}`, `coins=${coinsN}`, 'connector', { point: true }, {
         address: 'lattice.coins', params: [],
@@ -826,7 +826,7 @@ export const formulatedEnumsOf = (): FormulatedEnum[] => {
  * Variations = enum options (door/hex/params). price = catalogPriceRelationOf(slug).
  */
 export const formulatedCatalogOf = () => {
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete' as const, tools }).length
   const tenants = formulatedTenantsOf()
   const models = formulatedModelsOf()
@@ -834,8 +834,8 @@ export const formulatedCatalogOf = () => {
   const bill = usageBillOf()
   const prize = clayPrizeOf()
   const open = openMathScaleOf()
-  const face = qpuPublicOf()
-  const faces = qpuFacesOf()
+  const face = publicOf()
+  const faces = facesOf()
   const ecommerce = enums.find((e) => e.name === 'ecommerceFormula')!
 
   const products = [
@@ -1144,7 +1144,7 @@ export const formulatedProductVariantOf = () => {
     },
     combinatorics: {
       axis: CLOUDFLARE_PLUGINS.length,
-      faces: qpuFacesOf().faces,
+      faces: facesOf().faces,
       variantFactor: catalog.enums.length,
     },
     goal: catalog.goal,

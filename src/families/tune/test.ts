@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TuneFormulas } from './index.js'
 
 /** A432 derived from the lattice starts the chain: the string harmonics, the octave fractal, the fifths that spiral —
@@ -18,12 +18,12 @@ test('tune: A432 from the lattice seeds the harmonic fractal — string modes, o
   assert.equal(TuneFormulas.cents(3, 2).value, 702, 'a just fifth is 702 cents')
   assert.equal(TuneFormulas.cents(2, 1).value, 1200, 'an octave is 1200 cents')
   assert.equal(TuneFormulas.fractal(8).value, 4, 'eight harmonics span four octave bands')
-  assert.equal(qpuHexFamiliesOf().get('tune')?.length, 7)
+  assert.equal(hexFamiliesOf().get('tune')?.length, 7)
   for (const [name, params, expected] of [['fundamental', [], 432], ['harmonic', [3], 1296], ['octave', [4], 6912]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'tune', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `tune.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`tune ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`tune ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('7 formulas; A432 = 16·27 from the lattice; harmonics n·432, octaves ·2^k, fifth 648, octave 1200 cents, fractal depth ⌊log₂ n⌋+1')
 })

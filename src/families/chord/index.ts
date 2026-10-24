@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHORD — HARMONY AS ARITHMETIC. A chord is numbers: how many notes it holds, the semitone span of its outer voices,
@@ -31,4 +31,4 @@ export class ChordFormulas {
 }
 
 for (const name of ['extensiondegree', 'intervalspan', 'inversioncount', 'notecount', 'rootposition', 'stackedthirds', 'triadquality', 'voicingwidth'] as const)
-  qpuHexRegisterOf('chord', name, (ChordFormulas[name] as (...x: unknown[]) => unknown).bind(ChordFormulas))
+  hexRegisterOf('chord', name, (ChordFormulas[name] as (...x: unknown[]) => unknown).bind(ChordFormulas))

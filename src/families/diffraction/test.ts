@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DiffractionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('diffraction: gratingorder, slitspacing, resolvingpower, fringespacing, bra
   assert.equal(DiffractionFormulas.pathdifference(300, 4).value, 1200)
   assert.equal(DiffractionFormulas.slitspacing(10000, 0).value, 0)
   assert.equal(DiffractionFormulas.gratingorder(3, 500).dst, 'electromagnetism')
-  assert.equal(qpuHexFamiliesOf().get('diffraction')?.length, 8)
+  assert.equal(hexFamiliesOf().get('diffraction')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'diffraction', program: ['gratingorder'], params: [3, 500] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1500, `diffraction.gratingorder at ${uuid}`)
-  qpuUuidReceiptOf('diffraction gratingorder', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('diffraction gratingorder', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gratingorder 1500, slitspacing 20, resolvingpower 1200, fringespacing 10000, braggangle 2, aperture 20, rayleighcriterion 61, pathdifference 1200; crossing to electromagnetism')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** USABILITY — HOW WELL PEOPLE SUCCEED WITH THE INTERFACE, AS ARITHMETIC. Task success, time efficiency, error rate,
@@ -30,4 +30,4 @@ export class UsabilityFormulas {
 }
 
 for (const name of ['efficiency', 'errors', 'learnability', 'retention', 'satisfaction', 'success', 'sus', 'timeontask'] as const)
-  qpuHexRegisterOf('usability', name, (UsabilityFormulas[name] as (...x: unknown[]) => unknown).bind(UsabilityFormulas))
+  hexRegisterOf('usability', name, (UsabilityFormulas[name] as (...x: unknown[]) => unknown).bind(UsabilityFormulas))

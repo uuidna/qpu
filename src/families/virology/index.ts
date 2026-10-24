@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VIROLOGY — THE VIRUS, AS ARITHMETIC. Counting virus is numbers: titer by plaque assay, viral load per volume, burst size,
@@ -30,4 +30,4 @@ export class VirologyFormulas {
 }
 
 for (const name of ['clearance', 'infectivity', 'latency', 'load', 'mutation', 'neutralization', 'replication', 'titer'] as const)
-  qpuHexRegisterOf('virology', name, (VirologyFormulas[name] as (...x: unknown[]) => unknown).bind(VirologyFormulas))
+  hexRegisterOf('virology', name, (VirologyFormulas[name] as (...x: unknown[]) => unknown).bind(VirologyFormulas))

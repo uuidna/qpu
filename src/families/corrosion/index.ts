@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CorrosionFormulas — 8 exact-integer formulas of the corrosion domain, each at a hex address crossing to cross; develops the corrosion leads. */
@@ -31,4 +31,4 @@ export class CorrosionFormulas {
 }
 
 for (const name of ['coating', 'combos', 'lifetime', 'loss', 'pits', 'potential', 'rate', 'zones'] as const)
-  qpuHexRegisterOf('corrosion', name, (CorrosionFormulas[name] as (...x: unknown[]) => unknown).bind(CorrosionFormulas))
+  hexRegisterOf('corrosion', name, (CorrosionFormulas[name] as (...x: unknown[]) => unknown).bind(CorrosionFormulas))

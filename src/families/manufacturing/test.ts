@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ManufacturingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('manufacturing: throughput, oee, defects, cycletime, yield, takt, inventory
   assert.equal(ManufacturingFormulas.inventory(500, 50).value, 10, 'turns')
   assert.equal(ManufacturingFormulas.capacity(12, 100).value, 1200)
   assert.equal(ManufacturingFormulas.throughput(1200, 8).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('manufacturing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('manufacturing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'manufacturing', program: ['throughput'], params: [1200, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 150, `manufacturing.throughput at ${uuid}`)
-  qpuUuidReceiptOf('manufacturing throughput', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('manufacturing throughput', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; throughput 150, oee 72, defects 0, cycletime 4, yield 95, takt 120, inventory 10, capacity 1200; crossing to econ')
 })

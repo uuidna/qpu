@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AlloysFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('alloys: carbonequivalent, composition, conductivity, density, hardness, me
   assert.equal(AlloysFormulas.phasefraction(3, 4).value, 75)
   assert.equal(AlloysFormulas.tensile(40000, 80).value, 500, 'tensile strength in MPa')
   assert.equal(AlloysFormulas.hardness(600, 3).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('alloys')?.length, 8)
+  assert.equal(hexFamiliesOf().get('alloys')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'alloys', program: ['hardness'], params: [600, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `alloys.hardness at ${uuid}`)
-  qpuUuidReceiptOf('alloys hardness', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('alloys hardness', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; carbonequivalent 40, composition 88, conductivity 290, density 8000, hardness 200, meltingpoint 1311, phasefraction 75, tensile 500; crossing to materials')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STEPS — THE STEPS BLOCK USE CASE FROM payloadcms/website, AS ARITHMETIC. A step-by-step flow (onboarding, a tutorial)
@@ -31,4 +31,4 @@ export class StepsFormulas {
 }
 
 for (const name of ['completion', 'count', 'current', 'depth', 'duration', 'order', 'progress', 'remaining'] as const)
-  qpuHexRegisterOf('steps', name, (StepsFormulas[name] as (...x: unknown[]) => unknown).bind(StepsFormulas))
+  hexRegisterOf('steps', name, (StepsFormulas[name] as (...x: unknown[]) => unknown).bind(StepsFormulas))

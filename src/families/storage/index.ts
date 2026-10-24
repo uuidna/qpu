@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STORAGE — OBJECT AND BLOCK STORAGE, AS ARITHMETIC (chosen by the public-API registry, not by hand). Keeping bytes is
@@ -30,4 +30,4 @@ export class StorageFormulas {
 }
 
 for (const name of ['capacity', 'cost', 'dedup', 'iops', 'redundancy', 'throughput', 'tier', 'used'] as const)
-  qpuHexRegisterOf('storage', name, (StorageFormulas[name] as (...x: unknown[]) => unknown).bind(StorageFormulas))
+  hexRegisterOf('storage', name, (StorageFormulas[name] as (...x: unknown[]) => unknown).bind(StorageFormulas))

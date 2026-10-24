@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AudiologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('audiology: threshold, loss, discrimination, gain, frequency, masking, reve
   assert.equal(AudiologyFormulas.tinnitus(6000, 4000).value, 150)
   assert.equal(AudiologyFormulas.loss(10, 0).value, 0, 'guarded division')
   assert.equal(AudiologyFormulas.discrimination(45, 50).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('audiology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('audiology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'audiology', program: ['frequency'], params: [8000, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4000, `audiology.frequency at ${uuid}`)
-  qpuUuidReceiptOf('audiology frequency', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('audiology frequency', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; threshold 40, loss 240, discrimination 90, gain 300, frequency 4000, masking 400, reverberation 5, tinnitus 150; crossing to med')
 })

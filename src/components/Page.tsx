@@ -3,10 +3,10 @@ import { headers } from 'next/headers'
 import { Badge } from '@/components/ui/badge'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { FormulaReadings, listedOf } from '@/components/Readings'
-import { AccessPanel, type AccessReading } from '@/components/Public/AccessPanel'
+import { AccessPanel, type AccessReading } from '@/components/AccessPanel'
 import { payloadLeadsOf } from '@uuidna/qpu/payload/plugins'
 import { pluginAxisLengthOf, publicSurfaceOf } from '@uuidna/qpu/payload/plugins'
-import { qpuFacesOf } from '@uuidna/qpu'
+import { facesOf } from '@uuidna/qpu'
 import type { Page } from '@/payload-types'
 
 const crumbOf = (b: { doc?: unknown; url?: string | null; label?: string | null }) => {
@@ -19,7 +19,7 @@ export async function PublicSurface({ breadcrumbs }: { breadcrumbs?: Page['bread
   const surface = await publicSurfaceOf()
   const referer = (await headers()).get('referer')
   const { license, variant, doors, navigation: nav, network, access, stats } = surface
-  const lattice = qpuFacesOf()
+  const lattice = facesOf()
   const trail = (breadcrumbs ?? []).filter((b) => b.label).slice(0, -1).map(crumbOf).filter((b) => b.href)
   const families = new Set(variant.product.map((row) => row.family).concat(variant.variant.map((row) => row.family)))
   const readings = [nav.binomial, nav.slice, nav.cap, nav.waves, nav.agents, nav.saved]

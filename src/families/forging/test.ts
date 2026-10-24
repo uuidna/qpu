@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ForgingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('forging: force, reduction, strain, dieload, flowstress, upsetratio, energy
   assert.equal(ForgingFormulas.energy(10000, 5).value, 50000)
   assert.equal(ForgingFormulas.draft(100, 60).value, 40)
   assert.equal(ForgingFormulas.force(500, 20).dst, 'metallurgy')
-  assert.equal(qpuHexFamiliesOf().get('forging')?.length, 8)
+  assert.equal(hexFamiliesOf().get('forging')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'forging', program: ['upsetratio'], params: [90, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `forging.upsetratio at ${uuid}`)
-  qpuUuidReceiptOf('forging upsetratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('forging upsetratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; force 10000, reduction 75, strain 20, dieload 2500, flowstress 900, upsetratio 3, energy 50000, draft 40; crossing to metallurgy')
 })

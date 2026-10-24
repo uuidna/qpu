@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AUTOSCALING — ELASTIC CAPACITY, AS ARITHMETIC (chosen by the public-API registry, not by hand). Right-sizing a running
@@ -31,4 +31,4 @@ export class AutoscalingFormulas {
 }
 
 for (const name of ['burst', 'cooldown', 'costperreplica', 'desiredreplicas', 'headroom', 'queuebacklog', 'scaleout', 'targetutilization'] as const)
-  qpuHexRegisterOf('autoscaling', name, (AutoscalingFormulas[name] as (...x: unknown[]) => unknown).bind(AutoscalingFormulas))
+  hexRegisterOf('autoscaling', name, (AutoscalingFormulas[name] as (...x: unknown[]) => unknown).bind(AutoscalingFormulas))

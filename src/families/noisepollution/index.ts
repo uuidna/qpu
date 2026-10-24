@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NOISEPOLLUTION — ENVIRONMENTAL NOISE, AS ARITHMETIC (chosen by the public-API registry, not by hand). Unwanted sound is
@@ -32,4 +32,4 @@ export class NoisepollutionFormulas {
 }
 
 for (const name of ['annoyanceindex', 'barrierloss', 'daynight', 'distanceattenuation', 'exceedance', 'exposuredose', 'leq', 'limitmargin'] as const)
-  qpuHexRegisterOf('noisepollution', name, (NoisepollutionFormulas[name] as (...x: unknown[]) => unknown).bind(NoisepollutionFormulas))
+  hexRegisterOf('noisepollution', name, (NoisepollutionFormulas[name] as (...x: unknown[]) => unknown).bind(NoisepollutionFormulas))

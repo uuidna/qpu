@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CODE — THE CODE/CODEFEATURE BLOCK, AS ARITHMETIC (the syntax-display block from the public-API website registry, not by hand).
@@ -31,4 +31,4 @@ export class CodeFormulas {
 }
 
 for (const name of ['density', 'highlight', 'indent', 'languages', 'lines', 'snippet', 'tokens', 'wrap'] as const)
-  qpuHexRegisterOf('code', name, (CodeFormulas[name] as (...x: unknown[]) => unknown).bind(CodeFormulas))
+  hexRegisterOf('code', name, (CodeFormulas[name] as (...x: unknown[]) => unknown).bind(CodeFormulas))

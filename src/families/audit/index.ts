@@ -9,7 +9,7 @@
  */
 
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
-import { qpuHexRegisterOf, qpuRecognizeHolds } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, recognizeHolds } from '../../quantum/processing/unit/index.js'
 
 // the law of this family: a compliance fusion holds only over lawful inputs — finite, non-negative scores
 const nat = (...xs: number[]): boolean => xs.every((x) => Number.isFinite(x) && x >= 0)
@@ -343,9 +343,9 @@ export class AuditFormulas {
   /** AUDIT THE REPLIES: every reply is audited by its recognition fold (content-addressed; enthalpy, heat, free). The
    *  audit holds when the recognition self-check holds — the fold is the per-reply audit. value = 1 when it holds. */
   static replies(): CrossFormula {
-    const holds = qpuRecognizeHolds()
+    const holds = recognizeHolds()
     const extra: Record<string, unknown> = { court: 'receipts · /qpu/court' }
-    return crossFormulaOf({ id: 'audit-replies', src: 'audit', dst: 'receipts', formula: 'replies() = recognition holds — every reply is audited by its fold', value: holds ? 1 : 0, proof: 'qpuRecognizeHolds: a reply folds deterministically and carries enthalpy, heat, free — the fold audits the reply', ...extra }, holds, { name: 'audit.replies', params: [] })
+    return crossFormulaOf({ id: 'audit-replies', src: 'audit', dst: 'receipts', formula: 'replies() = recognition holds — every reply is audited by its fold', value: holds ? 1 : 0, proof: 'recognizeHolds: a reply folds deterministically and carries enthalpy, heat, free — the fold audits the reply', ...extra }, holds, { name: 'audit.replies', params: [] })
   }
 
   /** AUDIT ALL REALTIME: every live check of the slice that does not hold is a gap. The audit holds when each gap is a
@@ -374,4 +374,4 @@ export const auditFormulas = new AuditFormulas()
 // reachability sweep, since they run the live gate walk). They stay callable methods that delegate to the gate; the
 // only new registered formula is the cheap, pure reply-fold audit. The gates remain the tools; audit routes to them.
 for (const name of ['gdprIsoNistFusion', 'healthcareComplianceFusion', 'paymentSecurityFusion', 'replies', 'supplyChainRiskFormula'] as const)
-  qpuHexRegisterOf('audit', name, (AuditFormulas as unknown as Record<string, (...y: unknown[]) => unknown>)[name]!.bind(AuditFormulas))
+  hexRegisterOf('audit', name, (AuditFormulas as unknown as Record<string, (...y: unknown[]) => unknown>)[name]!.bind(AuditFormulas))

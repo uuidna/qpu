@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TaxFormulas — 8 exact-integer formulas of the tax domain, each at a hex address crossing to cross; develops the tax leads. */
@@ -31,4 +31,4 @@ export class TaxFormulas {
 }
 
 for (const name of ['bracket', 'brackets', 'combos', 'credits', 'deductions', 'effective', 'liability', 'taxable'] as const)
-  qpuHexRegisterOf('tax', name, (TaxFormulas[name] as (...x: unknown[]) => unknown).bind(TaxFormulas))
+  hexRegisterOf('tax', name, (TaxFormulas[name] as (...x: unknown[]) => unknown).bind(TaxFormulas))

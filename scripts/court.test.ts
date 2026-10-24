@@ -19,9 +19,9 @@ const walk = (dir) => readdirSync(join(ROOT, dir), { withFileTypes: true }).flat
 
 test('all unresolved are sent to court: every open charge gets a forum and a remedy', async (t) => {
   await import('../dist/mcp/families.js')
-  const { qpuHexFamiliesOf, qpuHexRegisteredSizeOf, qpuHexFamilyCapOf, qpuHexUuidOf } = await import('../dist/quantum/processing/unit/index.js')
-  const cap = qpuHexFamilyCapOf()
-  const families = qpuHexFamiliesOf()
+  const { hexFamiliesOf, hexRegisteredSizeOf, hexFamilyCapOf, qpuHexUuidOf } = await import('../dist/quantum/processing/unit/index.js')
+  const cap = hexFamilyCapOf()
+  const families = hexFamiliesOf()
   const offPath = new Set(offPathOf(entriesOf(), DOORS).map((m) => m.family))
   const handles = new Map()
   const docket = []
@@ -29,8 +29,8 @@ test('all unresolved are sent to court: every open charge gets a forum and a rem
 
   // open charges from the families: each requests, so each is heard
   for (const [fam, formulas] of families) {
-    if (DOORS.has(fam) || fam.startsWith('Qpu.') || qpuHexRegisteredSizeOf(fam) === 0) continue
-    const n = qpuHexRegisteredSizeOf(fam)
+    if (DOORS.has(fam) || fam.startsWith('Qpu.') || hexRegisteredSizeOf(fam) === 0) continue
+    const n = hexRegisteredSizeOf(fam)
     if (!/^[a-z]+$/.test(fam)) charge(fam, 'name is not one lowercase word', 'law', 'rename to one word (law.standing for the author; a human picks it)')
     if (n > cap) charge(fam, `${n} formulas exceed the nibble of ${cap}`, 'court', 'split into a new family (court apportions the formulas)')
     if (offPath.has(fam)) charge(fam, 'off its meaningful path', 'gravity', 'gravity --fix moves it to zero point (autonomous)')

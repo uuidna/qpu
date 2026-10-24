@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RetailFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('retail: markup, margin, turnover, footfall, basket, shrinkage, restock, sa
   assert.equal(RetailFormulas.restock(50, 75).value, 0)
   assert.equal(RetailFormulas.sales(40, 25).value, 1000)
   assert.equal(RetailFormulas.markup(50, 80).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('retail')?.length, 8)
+  assert.equal(hexFamiliesOf().get('retail')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'retail', program: ['footfall'], params: [200, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `retail.footfall at ${uuid}`)
-  qpuUuidReceiptOf('retail footfall', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('retail footfall', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; markup 60, margin 37, turnover 12, footfall 20, basket 50, shrinkage 3, restock 1, sales 1000; crossing to econ')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DEMOGRAPHY — A POPULATION AS ARITHMETIC. The study of a people is numbers: how many are born and die per thousand,
@@ -31,4 +31,4 @@ export class DemographyFormulas {
 }
 
 for (const name of ['birthrate', 'deathrate', 'dependencyratio', 'doublingtime', 'lifeexpectancy', 'medianage', 'naturalincrease', 'sexratio'] as const)
-  qpuHexRegisterOf('demography', name, (DemographyFormulas[name] as (...x: unknown[]) => unknown).bind(DemographyFormulas))
+  hexRegisterOf('demography', name, (DemographyFormulas[name] as (...x: unknown[]) => unknown).bind(DemographyFormulas))

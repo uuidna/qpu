@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SolventFormulas — 8 exact-integer formulas of the solvent domain, each at a hex address crossing to cross; develops the solvent leads. */
@@ -31,4 +31,4 @@ export class SolventFormulas {
 }
 
 for (const name of ['combos', 'dilution', 'layers', 'molarity', 'ph', 'polarity', 'solubility', 'volume'] as const)
-  qpuHexRegisterOf('solvent', name, (SolventFormulas[name] as (...x: unknown[]) => unknown).bind(SolventFormulas))
+  hexRegisterOf('solvent', name, (SolventFormulas[name] as (...x: unknown[]) => unknown).bind(SolventFormulas))

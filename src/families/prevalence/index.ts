@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PREVALENCE — HOW WIDESPREAD A CONDITION IS, AS ARITHMETIC (an epidemiology domain, drawn the way the registry draws a
@@ -31,4 +31,4 @@ export class PrevalenceFormulas {
 }
 
 for (const name of ['adjustedrate', 'burden', 'caseload', 'confidencewidth', 'lifetimeprevalence', 'periodprevalence', 'pointprevalence', 'ratio'] as const)
-  qpuHexRegisterOf('prevalence', name, (PrevalenceFormulas[name] as (...x: unknown[]) => unknown).bind(PrevalenceFormulas))
+  hexRegisterOf('prevalence', name, (PrevalenceFormulas[name] as (...x: unknown[]) => unknown).bind(PrevalenceFormulas))

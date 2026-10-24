@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ElectromagnetismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('electromagnetism: coulomb, field, flux, induction, wave, impedance, poynti
   assert.equal(ElectromagnetismFormulas.poynting(12, 9).value, 108)
   assert.equal(ElectromagnetismFormulas.capacitance(1000, 8).value, 125)
   assert.equal(ElectromagnetismFormulas.coulomb(6, 7).dst, 'magnetism')
-  assert.equal(qpuHexFamiliesOf().get('electromagnetism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('electromagnetism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'electromagnetism', program: ['flux'], params: [4, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `electromagnetism.flux at ${uuid}`)
-  qpuUuidReceiptOf('electromagnetism flux', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('electromagnetism flux', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coulomb 42, field 4, flux 100, induction 125, wave 300, impedance 24, poynting 108, capacitance 125; crossing to magnetism')
 })

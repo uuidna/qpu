@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ATTENTION — THE MIND'S COMPUTE BUDGET, AS ARITHMETIC. What a focused mind spends is numbers: time on task, targets
@@ -30,4 +30,4 @@ export class AttentionFormulas {
 }
 
 for (const name of ['distraction', 'focus', 'selective', 'span', 'sustained', 'switching', 'vigilance', 'workload'] as const)
-  qpuHexRegisterOf('attention', name, (AttentionFormulas[name] as (...x: unknown[]) => unknown).bind(AttentionFormulas))
+  hexRegisterOf('attention', name, (AttentionFormulas[name] as (...x: unknown[]) => unknown).bind(AttentionFormulas))

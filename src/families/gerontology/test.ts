@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GerontologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('gerontology: lifeexpectancy, telomerelength, frailtyindex, biologicalage, 
   assert.equal(GerontologyFormulas.survivalfraction(60, 100).value, 60)
   assert.equal(GerontologyFormulas.doublingtime(3650, 365).value, 10)
   assert.equal(GerontologyFormulas.lifeexpectancy(75, 5).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('gerontology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gerontology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gerontology', program: ['lifeexpectancy'], params: [75, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `gerontology.lifeexpectancy at ${uuid}`)
-  qpuUuidReceiptOf('gerontology lifeexpectancy', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gerontology lifeexpectancy', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; lifeexpectancy 80, telomerelength 7000, frailtyindex 30, biologicalage 80, functionaldecline 20, comorbiditypairs 28, survivalfraction 60, doublingtime 10; crossing to physiology')
 })

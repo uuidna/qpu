@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RunesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('runes: futharkletters, inscriptionpairs, stavecount, orderingchoices, boun
   assert.equal(RunesFormulas.rowdivisions(3, 0).value, 3)
   assert.equal(RunesFormulas.legibility(70, 100).value, 70)
   assert.equal(RunesFormulas.futharkletters(24, 0).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('runes')?.length, 8)
+  assert.equal(hexFamiliesOf().get('runes')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'runes', program: ['futharkletters'], params: [24, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 24, `runes.futharkletters at ${uuid}`)
-  qpuUuidReceiptOf('runes futharkletters', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('runes futharkletters', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; futharkletters 24, inscriptionpairs 120, stavecount 32, orderingchoices 720, boundrunes 5, magicsubsets 32, rowdivisions 3, legibility 70; crossing to linguistics')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FatigueFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('fatigue: amplitude, cyclestofailure, endurancelimit, meanstress, minerdama
   assert.equal(FatigueFormulas.stressrange(300, 100).value, 200)
   assert.equal(FatigueFormulas.stressratio(10, 100).value, 10, 'R ratio as a percent')
   assert.equal(FatigueFormulas.amplitude(300, 100).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('fatigue')?.length, 8)
+  assert.equal(hexFamiliesOf().get('fatigue')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'fatigue', program: ['safetyfactor'], params: [600, 200] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `fatigue.safetyfactor at ${uuid}`)
-  qpuUuidReceiptOf('fatigue safetyfactor', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('fatigue safetyfactor', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; amplitude 100, cyclestofailure 200, endurancelimit 200, meanstress 200, minerdamage 25, safetyfactor 3, stressrange 200, stressratio 10; crossing to materials')
 })

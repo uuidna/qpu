@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ZerotrustFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('zerotrust: trustscore, microsegments, verificationrate, blastradius, conti
   assert.equal(ZerotrustFormulas.policycoverage(180, 200).value, 90)
   assert.equal(ZerotrustFormulas.attacksurface(50, 12).value, 600)
   assert.equal(ZerotrustFormulas.trustscore(90, 100).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('zerotrust')?.length, 8)
+  assert.equal(hexFamiliesOf().get('zerotrust')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'zerotrust', program: ['microsegments'], params: [100, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 13, `zerotrust.microsegments at ${uuid}`)
-  qpuUuidReceiptOf('zerotrust microsegments', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('zerotrust microsegments', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; trustscore 90, microsegments 13, verificationrate 95, blastradius 50, continuousauth 12, deviceposture 96, policycoverage 90, attacksurface 600; crossing to networking')
 })

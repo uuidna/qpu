@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ORTHOGRAPHY — WRITING SYSTEMS, AS ARITHMETIC. How a script spells its language is numbers: how regular the spelling
@@ -31,4 +31,4 @@ export class OrthographyFormulas {
 }
 
 for (const name of ['capitals', 'density', 'diacritics', 'errors', 'graphemes', 'legibility', 'syllables', 'transparency'] as const)
-  qpuHexRegisterOf('orthography', name, (OrthographyFormulas[name] as (...x: unknown[]) => unknown).bind(OrthographyFormulas))
+  hexRegisterOf('orthography', name, (OrthographyFormulas[name] as (...x: unknown[]) => unknown).bind(OrthographyFormulas))

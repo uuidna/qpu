@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ElevatorFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('elevator: capacity, speed, floors, traveltime, waittime, dispatchcombos, a
   assert.equal(ElevatorFormulas.accelrate(100, 10).value, 10)
   assert.equal(ElevatorFormulas.dutyload(80, 100).value, 80)
   assert.equal(ElevatorFormulas.capacity(10, 80).dst, 'kinematics')
-  assert.equal(qpuHexFamiliesOf().get('elevator')?.length, 8)
+  assert.equal(hexFamiliesOf().get('elevator')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'elevator', program: ['capacity'], params: [10, 80] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 800, `elevator.capacity at ${uuid}`)
-  qpuUuidReceiptOf('elevator capacity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('elevator capacity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; capacity 800, speed 10, floors 40, traveltime 16, waittime 30, dispatchcombos 28, accelrate 10, dutyload 80; crossing to kinematics')
 })

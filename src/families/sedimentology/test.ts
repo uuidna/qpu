@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SedimentologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('sedimentology: grainsize, sorting, roundness, settlingvelocity, porosity, 
   assert.equal(SedimentologyFormulas.bedform(5, 0).value, 0)
   assert.equal(SedimentologyFormulas.maturity(90, 10).value, 90, 'quartz share of the population')
   assert.equal(SedimentologyFormulas.grainsize(500, 100).dst, 'geomorphology')
-  assert.equal(qpuHexFamiliesOf().get('sedimentology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sedimentology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sedimentology', program: ['grainsize'], params: [500, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `sedimentology.grainsize at ${uuid}`)
-  qpuUuidReceiptOf('sedimentology grainsize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sedimentology grainsize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; grainsize 300, sorting 600, roundness 80, settlingvelocity 500, porosity 30, sedimentload 2000, bedform 30, maturity 90; crossing to geomorphology')
 })

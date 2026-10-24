@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OUTBREAK — THE SHAPE OF AN EPIDEMIC, AS ARITHMETIC (an outbreak is the counts it leaves behind, nothing more). Spread is
@@ -31,4 +31,4 @@ export class OutbreakFormulas {
 }
 
 for (const name of ['attackrate', 'casefatality', 'cumulativecases', 'doublingtime', 'generationinterval', 'growthfactor', 'herdimmunity', 'reproduction'] as const)
-  qpuHexRegisterOf('outbreak', name, (OutbreakFormulas[name] as (...x: unknown[]) => unknown).bind(OutbreakFormulas))
+  hexRegisterOf('outbreak', name, (OutbreakFormulas[name] as (...x: unknown[]) => unknown).bind(OutbreakFormulas))

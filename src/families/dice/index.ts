@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DICE — TABLETOP CHANCE AS ARITHMETIC. Rolling dice is numbers: the outcomes a pool can show, the sum you expect, the
@@ -30,4 +30,4 @@ export class DiceFormulas {
 }
 
 for (const name of ['advantage', 'combinations', 'expectedsum', 'mode', 'outcomes', 'probabilitypct', 'range', 'variance'] as const)
-  qpuHexRegisterOf('dice', name, (DiceFormulas[name] as (...x: unknown[]) => unknown).bind(DiceFormulas))
+  hexRegisterOf('dice', name, (DiceFormulas[name] as (...x: unknown[]) => unknown).bind(DiceFormulas))

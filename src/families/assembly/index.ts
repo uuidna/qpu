@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ASSEMBLY — THE PRODUCTION LINE AS ARITHMETIC (chosen by the manufacturing registry, not by hand). Building a product is
@@ -31,4 +31,4 @@ export class AssemblyFormulas {
 }
 
 for (const name of ['balance', 'cycle', 'efficiency', 'stations', 'takt', 'throughput', 'wip', 'yield'] as const)
-  qpuHexRegisterOf('assembly', name, (AssemblyFormulas[name] as (...x: unknown[]) => unknown).bind(AssemblyFormulas))
+  hexRegisterOf('assembly', name, (AssemblyFormulas[name] as (...x: unknown[]) => unknown).bind(AssemblyFormulas))

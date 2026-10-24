@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MINERALOGY — MINERALS AS ARITHMETIC (chosen by the materials registry, not by hand). A mineral is numbers: hardness on
@@ -30,4 +30,4 @@ export class MineralogyFormulas {
 }
 
 for (const name of ['cleavage', 'crystallinity', 'density', 'grade', 'hardness', 'purity', 'refraction', 'specific'] as const)
-  qpuHexRegisterOf('mineralogy', name, (MineralogyFormulas[name] as (...x: unknown[]) => unknown).bind(MineralogyFormulas))
+  hexRegisterOf('mineralogy', name, (MineralogyFormulas[name] as (...x: unknown[]) => unknown).bind(MineralogyFormulas))

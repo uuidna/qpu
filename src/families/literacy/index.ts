@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LITERACY — READING, AS ARITHMETIC (chosen by the registry, not by hand). How a reader meets a text is numbers: words a
@@ -30,4 +30,4 @@ export class LiteracyFormulas {
 }
 
 for (const name of ['accuracy', 'comprehension', 'fluency', 'fogindex', 'lexiledelta', 'readinglevel', 'vocabulary', 'wordsperminute'] as const)
-  qpuHexRegisterOf('literacy', name, (LiteracyFormulas[name] as (...x: unknown[]) => unknown).bind(LiteracyFormulas))
+  hexRegisterOf('literacy', name, (LiteracyFormulas[name] as (...x: unknown[]) => unknown).bind(LiteracyFormulas))

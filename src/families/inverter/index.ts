@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INVERTER — DC→AC POWER CONVERSION, AS ARITHMETIC (chosen by the hardware registry, not by hand). A power inverter is
@@ -31,4 +31,4 @@ export class InverterFormulas {
 }
 
 for (const name of ['clipping', 'dcac', 'efficiency', 'loss', 'power', 'powerfactor', 'rating', 'thd'] as const)
-  qpuHexRegisterOf('inverter', name, (InverterFormulas[name] as (...x: unknown[]) => unknown).bind(InverterFormulas))
+  hexRegisterOf('inverter', name, (InverterFormulas[name] as (...x: unknown[]) => unknown).bind(InverterFormulas))

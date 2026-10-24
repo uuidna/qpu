@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MYTHOGRAPHY — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MythographyFormulas {
 }
 
 for (const name of ['archetypecombos', 'culturesubsets', 'diffusionlinks', 'motifpairs', 'mythcount', 'typeindex', 'variantpaths', 'versioncount'] as const)
-  qpuHexRegisterOf('mythography', name, (MythographyFormulas[name] as (...x: unknown[]) => unknown).bind(MythographyFormulas))
+  hexRegisterOf('mythography', name, (MythographyFormulas[name] as (...x: unknown[]) => unknown).bind(MythographyFormulas))

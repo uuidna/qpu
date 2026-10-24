@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SCALES — THE TWELVE-TONE GRID, AS ARITHMETIC. A musical scale is numbers: degrees per octave, a mode shifted around the
@@ -31,4 +31,4 @@ export class ScalesFormulas {
 }
 
 for (const name of ['chromaticfill', 'degrees', 'intervalpattern', 'keydistance', 'modeshift', 'pentatonicnotes', 'tetrachord', 'transposition'] as const)
-  qpuHexRegisterOf('scales', name, (ScalesFormulas[name] as (...x: unknown[]) => unknown).bind(ScalesFormulas))
+  hexRegisterOf('scales', name, (ScalesFormulas[name] as (...x: unknown[]) => unknown).bind(ScalesFormulas))

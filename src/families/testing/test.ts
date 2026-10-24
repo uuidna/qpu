@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TestingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('testing: coverage, passrate, flakiness, defects, regression, assertions, m
   assert.equal(TestingFormulas.mutation(76, 100).value, 76, 'mutants killed')
   assert.equal(TestingFormulas.duration(4200).value, 4200)
   assert.equal(TestingFormulas.coverage(850, 1000).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('testing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('testing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'testing', program: ['coverage'], params: [850, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 85, `testing.coverage at ${uuid}`)
-  qpuUuidReceiptOf('testing coverage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('testing coverage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coverage 85, passrate 99, flakiness 3, defects 1, regression 5, assertions 3, mutation 76, duration 4200; crossing to code')
 })

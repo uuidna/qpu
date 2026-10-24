@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GEOMETRY — SHAPE AS ARITHMETIC (areas, perimeters, volumes, squared lengths). A triangle's area, a regular polygon's
@@ -31,4 +31,4 @@ export class GeometryFormulas {
 }
 
 for (const name of ['angle', 'area', 'circle', 'diagonal', 'perimeter', 'pythagorean', 'rectangle', 'volume'] as const)
-  qpuHexRegisterOf('geometry', name, (GeometryFormulas[name] as (...x: unknown[]) => unknown).bind(GeometryFormulas))
+  hexRegisterOf('geometry', name, (GeometryFormulas[name] as (...x: unknown[]) => unknown).bind(GeometryFormulas))

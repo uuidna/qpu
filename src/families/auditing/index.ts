@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AUDITING — THE AUDIT AS ARITHMETIC. An audit is numbers: the materiality threshold against the total, the sample a
@@ -31,4 +31,4 @@ export class AuditingFormulas {
 }
 
 for (const name of ['compliance', 'coverage', 'errorrate', 'findings', 'materiality', 'risk', 'samplesize', 'variance'] as const)
-  qpuHexRegisterOf('auditing', name, (AuditingFormulas[name] as (...x: unknown[]) => unknown).bind(AuditingFormulas))
+  hexRegisterOf('auditing', name, (AuditingFormulas[name] as (...x: unknown[]) => unknown).bind(AuditingFormulas))

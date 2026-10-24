@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CometFormulas } from './index.js'
 
 /** comet: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('comet: period, tail, nucleus, perihelion, orbits, outgassing, aphelion, co
   assert.equal(CometFormulas.outgassing(5, 100).value, 5, 'outgassing(5, 100)')
   assert.equal(CometFormulas.aphelion(35, 1).value, 35, 'aphelion(35, 1)')
   assert.equal(CometFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('comet')?.length, 8)
+  assert.equal(hexFamiliesOf().get('comet')?.length, 8)
   for (const [name, params, expected] of [["period",[76,1],76],["tail",[100,1000],100000],["nucleus",[10,1],10]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'comet', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `comet.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`comet ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`comet ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "period=76, tail=100000, nucleus=10")
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONFECTIONERY — scaffolded integer measures crossed to chemistry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ConfectioneryFormulas {
 }
 
 for (const name of ['bloomtemp', 'cocoaratio', 'crystalsize', 'recipecombos', 'sugarstage', 'temperaturecurve', 'temperingstages', 'yieldpct'] as const)
-  qpuHexRegisterOf('confectionery', name, (ConfectioneryFormulas[name] as (...x: unknown[]) => unknown).bind(ConfectioneryFormulas))
+  hexRegisterOf('confectionery', name, (ConfectioneryFormulas[name] as (...x: unknown[]) => unknown).bind(ConfectioneryFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CriminologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('criminology: rate, clearance, recidivism, conviction, deterrence, victimiz
   assert.equal(CriminologyFormulas.severity(1000, 50).value, 20, 'harm per incident')
   assert.equal(CriminologyFormulas.arrest(75, 100).value, 75)
   assert.equal(CriminologyFormulas.rate(500, 100000).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('criminology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('criminology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'criminology', program: ['clearance'], params: [60, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `criminology.clearance at ${uuid}`)
-  qpuUuidReceiptOf('criminology clearance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('criminology clearance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rate 500, clearance 60, recidivism 40, conviction 80, deterrence 30, victimization 250, severity 20, arrest 75; crossing to law')
 })

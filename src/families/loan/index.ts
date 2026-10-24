@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LoanFormulas — 8 exact-integer formulas of the loan domain, each at a hex address crossing to cross; develops the loan leads. */
@@ -31,4 +31,4 @@ export class LoanFormulas {
 }
 
 for (const name of ['amortization', 'combos', 'interest', 'ltv', 'payment', 'points', 'principal', 'term'] as const)
-  qpuHexRegisterOf('loan', name, (LoanFormulas[name] as (...x: unknown[]) => unknown).bind(LoanFormulas))
+  hexRegisterOf('loan', name, (LoanFormulas[name] as (...x: unknown[]) => unknown).bind(LoanFormulas))

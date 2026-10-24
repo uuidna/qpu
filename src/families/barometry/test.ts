@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BarometryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('barometry: sealevel, tendency, altitudepressure, millibars, pressuregradie
   assert.equal(BarometryFormulas.trend(4048, 4).value, 1012, 'the running mean')
   assert.equal(BarometryFormulas.inchesmercury(1013).value, 299)
   assert.equal(BarometryFormulas.sealevel(1000, 80).dst, 'weather')
-  assert.equal(qpuHexFamiliesOf().get('barometry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('barometry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'barometry', program: ['sealevel'], params: [1000, 80] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1010, `barometry.sealevel at ${uuid}`)
-  qpuUuidReceiptOf('barometry sealevel', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('barometry sealevel', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; sealevel 1010, tendency 3, altitudepressure 913, millibars 1010, pressuregradient 12, stationpressure 1000, trend 1012, inchesmercury 299; crossing to weather')
 })

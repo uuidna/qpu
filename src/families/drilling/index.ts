@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DRILLING — SINKING A WELLBORE, AS ARITHMETIC. Making hole is numbers: how fast the bit cuts rock, the mud that balances
@@ -31,4 +31,4 @@ export class DrillingFormulas {
 }
 
 for (const name of ['annular', 'bitlife', 'hydrostatic', 'kick', 'mudweight', 'ropenetration', 'torque', 'wob'] as const)
-  qpuHexRegisterOf('drilling', name, (DrillingFormulas[name] as (...x: unknown[]) => unknown).bind(DrillingFormulas))
+  hexRegisterOf('drilling', name, (DrillingFormulas[name] as (...x: unknown[]) => unknown).bind(DrillingFormulas))

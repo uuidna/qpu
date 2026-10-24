@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LIMNOLOGY — INLAND WATERS AS ARITHMETIC (lakes, ponds, reservoirs). The state of a body of water is numbers: dissolved
@@ -30,4 +30,4 @@ export class LimnologyFormulas {
 }
 
 for (const name of ['clarity', 'oxygen', 'ph', 'productivity', 'residence', 'stratification', 'trophic', 'turbidity'] as const)
-  qpuHexRegisterOf('limnology', name, (LimnologyFormulas[name] as (...x: unknown[]) => unknown).bind(LimnologyFormulas))
+  hexRegisterOf('limnology', name, (LimnologyFormulas[name] as (...x: unknown[]) => unknown).bind(LimnologyFormulas))

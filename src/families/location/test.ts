@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LocationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('location: manhattan, chebyshev, box, grid, within, speed, eta, zoom — cr
   assert.equal(LocationFormulas.eta(300, 75).value, 4)
   assert.equal(LocationFormulas.zoom(2560, 256).value, 10)
   assert.equal(LocationFormulas.manhattan(3, 4).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('location')?.length, 8)
+  assert.equal(hexFamiliesOf().get('location')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'location', program: ['box'], params: [30, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1200, `location.box at ${uuid}`)
-  qpuUuidReceiptOf('location box', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('location box', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; manhattan 7, chebyshev 4, box 1200, grid 2, within 1, speed 75, eta 4, zoom 10; crossing to cross')
 })

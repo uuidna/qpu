@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROPERTY — REAL ESTATE AS ARITHMETIC. The worth and the financing of land are numbers: the loan-to-value, the
@@ -31,4 +31,4 @@ export class PropertyFormulas {
 }
 
 for (const name of ['afford', 'appreciation', 'cap', 'equity', 'ltv', 'mortgage', 'payment', 'stampduty'] as const)
-  qpuHexRegisterOf('property', name, (PropertyFormulas[name] as (...x: unknown[]) => unknown).bind(PropertyFormulas))
+  hexRegisterOf('property', name, (PropertyFormulas[name] as (...x: unknown[]) => unknown).bind(PropertyFormulas))

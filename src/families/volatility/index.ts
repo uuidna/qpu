@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VOLATILITY — PRICE MOVEMENT, AS ARITHMETIC. How much a market moves is numbers: the day's range, the annualized swing,
@@ -38,4 +38,4 @@ export class VolatilityFormulas {
 }
 
 for (const name of ['annualized', 'beta', 'beta2', 'drawdown', 'drawdown2', 'excessreturn', 'historicalband', 'impliedmove', 'meandeviation', 'range', 'range2', 'sumsquares', 'valueatrisk', 'variance', 'zscore'] as const)
-  qpuHexRegisterOf('volatility', name, (VolatilityFormulas[name] as (...x: unknown[]) => unknown).bind(VolatilityFormulas))
+  hexRegisterOf('volatility', name, (VolatilityFormulas[name] as (...x: unknown[]) => unknown).bind(VolatilityFormulas))

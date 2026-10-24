@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BiogeographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('biogeography: speciescount, endemismratio, rangesize, dispersalpaths, isla
   assert.equal(BiogeographyFormulas.habitatsubsets(6).value, 64)
   assert.equal(BiogeographyFormulas.turnoverrate(40, 100).value, 40)
   assert.equal(BiogeographyFormulas.speciescount(500, 10).dst, 'geography')
-  assert.equal(qpuHexFamiliesOf().get('biogeography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('biogeography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'biogeography', program: ['speciescount'], params: [500, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5000, `biogeography.speciescount at ${uuid}`)
-  qpuUuidReceiptOf('biogeography speciescount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('biogeography speciescount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; speciescount 5000, endemismratio 30, rangesize 60000, dispersalpaths 120, islandpairs 105, latitudegradient 100, habitatsubsets 64, turnoverrate 40; crossing to geography')
 })

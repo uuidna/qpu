@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PendulumFormulas — 8 exact-integer formulas of the pendulum domain, each at a hex address crossing to cross; develops the pendulum leads. */
@@ -31,4 +31,4 @@ export class PendulumFormulas {
 }
 
 for (const name of ['amplitude', 'bobmass', 'combos', 'energy', 'frequency', 'length', 'period', 'swings'] as const)
-  qpuHexRegisterOf('pendulum', name, (PendulumFormulas[name] as (...x: unknown[]) => unknown).bind(PendulumFormulas))
+  hexRegisterOf('pendulum', name, (PendulumFormulas[name] as (...x: unknown[]) => unknown).bind(PendulumFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MonopolyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('monopoly: marketshare, markup, deadweightloss, lernerindex, outputreductio
   assert.equal(MonopolyFormulas.barriersubsets(5).value, 32)
   assert.equal(MonopolyFormulas.profitmax(10000, 2).value, 5000)
   assert.equal(MonopolyFormulas.marketshare(90, 100).dst, 'microeconomics')
-  assert.equal(qpuHexFamiliesOf().get('monopoly')?.length, 8)
+  assert.equal(hexFamiliesOf().get('monopoly')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'monopoly', program: ['marketshare'], params: [90, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `monopoly.marketshare at ${uuid}`)
-  qpuUuidReceiptOf('monopoly marketshare', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('monopoly marketshare', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; marketshare 90, markup 40, deadweightloss 50, lernerindex 40, outputreduction 400, pricemargin 50, barriersubsets 32, profitmax 5000; crossing to microeconomics')
 })

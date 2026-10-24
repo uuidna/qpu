@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VETERINARY — ANIMAL MEDICINE AS ARITHMETIC (weight-based dosing and the vitals that frame it). A patient is numbers:
@@ -31,4 +31,4 @@ export class VeterinaryFormulas {
 }
 
 for (const name of ['bcs', 'bodyweightgain', 'caloricrequirement', 'dose', 'fluidtherapy', 'gestation', 'heartrate', 'medicationinterval'] as const)
-  qpuHexRegisterOf('veterinary', name, (VeterinaryFormulas[name] as (...x: unknown[]) => unknown).bind(VeterinaryFormulas))
+  hexRegisterOf('veterinary', name, (VeterinaryFormulas[name] as (...x: unknown[]) => unknown).bind(VeterinaryFormulas))

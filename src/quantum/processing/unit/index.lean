@@ -236,9 +236,13 @@ def periodOf (a m : Nat) : Nat := periodAux m a m 1
 def gcdAux : Nat → Nat → Nat → Nat | 0, a, _ => a | fuel + 1, a, b => if b = 0 then a else gcdAux fuel b (a % b)
 def gcdOf (a b : Nat) : Nat := gcdAux (a + b) a b
 def half (a m : Nat) : Nat := powMod a (periodOf a m / 2) m
-theorem shor : periodOf 8 91 % 2 = 0 ∧ half 8 91 < 91 - 1 ∧ 1 < gcdOf (half 8 91 - 1) 91 ∧ gcdOf (half 8 91 - 1) 91 < 91 ∧ gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
+/-- the Shor modulus, named by the lattice: rays · (faces − seed) = 7 · 13 -/
+def shorModulus : Nat := rays * (faces - seed)
+/-- the Shor base, named by the lattice: mintOf n = 2^3 -/
+def shorBase : Nat := mintOf n
+theorem shor : periodOf shorBase shorModulus % coins = 0 ∧ half shorBase shorModulus < shorModulus - seed ∧ seed < gcdOf (half shorBase shorModulus - seed) shorModulus ∧ gcdOf (half shorBase shorModulus - seed) shorModulus < shorModulus ∧ gcdOf (half shorBase shorModulus - seed) shorModulus * gcdOf (half shorBase shorModulus + seed) shorModulus = shorModulus := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
 -- 6 theorem complete landscape
-theorem all_shor : periodOf 8 91 % 2 = 0 := rfl
+theorem all_shor : periodOf shorBase shorModulus % coins = 0 := rfl
 
 /-! # Qpu.Stabilizer
 Stabilizer-formalism counts for Clifford-circuit simulation, exact Nat built on the doubling mintOf: the number of
@@ -405,6 +409,29 @@ The fused API registry: qubits, composing pairs, specificity buckets, cut entang
 -- qubits + formulas. Snapshot integers, as theorem cern holds CMS counts.
 theorem fuse : 2247 + 282 = 2529 ∧ 94598 + 343701 = 438299 ∧ 406 + 1565 + 3389 + 6011 + 12801 + 414127 = 438299 ∧ 448 ≤ 1264 ∧ 362 ≤ 955 ∧ 301 ≤ 340 ∧ 252 ≤ 284 ∧ 144 ≤ 166 ∧ 2529 + 438299 = 440828 := ⟨rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
 
+/-! # Qpu.Fusion
+Google Benchmark I, fusion 1/√x (arXiv:2610.23832): the register width, the domain and the quoted baseline, checked by the kernel. -/
+
+def fusionNp : Nat := 10
+def fusionRegister : Nat := 2 * fusionNp + 2
+def fusionMaxX : Nat := 3 * (2 ^ fusionNp - 2) ^ 2
+def fusionBaselineQ : Nat := 260
+def fusionBaselineC : Nat := 7988
+
+theorem fusion_register : fusionRegister = 22 := rfl
+theorem fusion_max_x : fusionMaxX = 3133452 := rfl
+theorem fusion_baseline : fusionBaselineQ * fusionBaselineC = 2076880 := rfl
+
+/-- The squared tolerance in units of (2^-64 turns)², scaled by x: tol(x) = 2^-24/√x turns. -/
+def fusionTolSquared : Nat := 2 ^ 80
+theorem fusion_tolerance : fusionTolSquared = 2 ^ 128 / 2 ^ 48 := rfl
+
+/-- r is ⌊2^64/√x⌋: r·r·x ≤ 2^128 < (r+1)·(r+1)·x. -/
+def fusionFloor (r x : Nat) : Prop := r * r * x ≤ 2 ^ 128 ∧ 2 ^ 128 < (r + 1) * (r + 1) * x
+
+/-- A shot with error e/den (units of 2^-64 turns) is within tolerance at x: e·e·x ≤ 2^80·den². -/
+def fusionAccepts (e x den : Nat) : Prop := e * e * x ≤ fusionTolSquared * den * den
+
 /-! # Qpu.Physics
 Planck and Boltzmann (SI exact digits), transmon temperature, BCS gaps of aluminium and niobium, cooling. -/
 
@@ -514,11 +541,11 @@ theorem clay_sigma : 2 - (2 - 1) = 1 ∧ 1 - (1 - 0) = 0 ∧ 1 - (1 - 1) = 1 ∧
     so the factoring is a theorem of the clay kernel, not a step beside it. Witness (a = 8, n = 91): order 4, midpoint 2,
     a² = 64, and the ∓1 split is exactly 7 and 13. -/
 theorem shor_sigma :
-    periodOf 8 91 = 4 ∧
-    periodOf 8 91 - periodOf 8 91 / 2 = periodOf 8 91 / 2 ∧
-    gcdOf (half 8 91 - 1) 91 = 7 ∧ gcdOf (half 8 91 + 1) 91 = 13 ∧
-    gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 :=
-  ⟨rfl, sigma_midpoint (periodOf 8 91) (periodOf 8 91 / 2) rfl, rfl, rfl, rfl⟩
+    periodOf shorBase shorModulus = mintOf coins ∧
+    periodOf shorBase shorModulus - periodOf shorBase shorModulus / coins = periodOf shorBase shorModulus / coins ∧
+    gcdOf (half shorBase shorModulus - seed) shorModulus = rays ∧ gcdOf (half shorBase shorModulus + seed) shorModulus = faces - seed ∧
+    gcdOf (half shorBase shorModulus - seed) shorModulus * gcdOf (half shorBase shorModulus + seed) shorModulus = shorModulus :=
+  ⟨rfl, sigma_midpoint (periodOf shorBase shorModulus) (periodOf shorBase shorModulus / coins) rfl, rfl, rfl, rfl⟩
 
 /-- Clay's core is not only crypto: the same involution surfaces at the Planck scale and beyond. σ_h(x) = h − x on
     Planck's constant h (SI exact digits) is self-inverse (sigma_reflect, here reflecting Boltzmann's k), and its fixed

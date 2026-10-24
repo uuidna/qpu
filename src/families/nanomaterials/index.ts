@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NANOMATERIALS — THE NANOSCALE AS ARITHMETIC (chosen by the materials registry, not by hand). A nanoparticle is numbers:
@@ -31,4 +31,4 @@ export class NanomaterialsFormulas {
 }
 
 for (const name of ['aspectratio', 'bandgap', 'confinement', 'dispersion', 'loading', 'quantumyield', 'surfacearea', 'surfacevolume'] as const)
-  qpuHexRegisterOf('nanomaterials', name, (NanomaterialsFormulas[name] as (...x: unknown[]) => unknown).bind(NanomaterialsFormulas))
+  hexRegisterOf('nanomaterials', name, (NanomaterialsFormulas[name] as (...x: unknown[]) => unknown).bind(NanomaterialsFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AbsorptionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('absorption: coefficient, nrc, sabins, transmissionloss, porosity, reductio
   assert.equal(AbsorptionFormulas.panelresonance(6000, 40).value, 150)
   assert.equal(AbsorptionFormulas.impedance(1, 340).value, 340, 'characteristic impedance of air')
   assert.equal(AbsorptionFormulas.coefficient(80, 100).dst, 'acoustics')
-  assert.equal(qpuHexFamiliesOf().get('absorption')?.length, 8)
+  assert.equal(hexFamiliesOf().get('absorption')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'absorption', program: ['coefficient'], params: [80, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `absorption.coefficient at ${uuid}`)
-  qpuUuidReceiptOf('absorption coefficient', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('absorption coefficient', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coefficient 80, nrc 70, sabins 15000, transmissionloss 90, porosity 25, reductionindex 45, panelresonance 150, impedance 340; crossing to acoustics')
 })

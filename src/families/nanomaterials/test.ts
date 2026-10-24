@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NanomaterialsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('nanomaterials: surfacearea, aspectratio, bandgap, quantumyield, loading, d
   assert.equal(NanomaterialsFormulas.confinement(3600, 6).value, 100, 'confinement energy at radius 6')
   assert.equal(NanomaterialsFormulas.confinement(3600, 0).value, 0)
   assert.equal(NanomaterialsFormulas.surfacearea(1000, 6).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('nanomaterials')?.length, 8)
+  assert.equal(hexFamiliesOf().get('nanomaterials')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'nanomaterials', program: ['confinement'], params: [3600, 6] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `nanomaterials.confinement at ${uuid}`)
-  qpuUuidReceiptOf('nanomaterials confinement', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('nanomaterials confinement', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; surfacearea 6000, aspectratio 20, bandgap 1420, quantumyield 80, loading 20, dispersion 60, surfacevolume 6, confinement 100; crossing to materials')
 })

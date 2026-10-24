@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PSYCHIATRY — CLINICAL MENTAL-HEALTH MEASURES, AS ARITHMETIC. Scoring a condition is numbers: the PHQ-9 total, severity
@@ -30,4 +30,4 @@ export class PsychiatryFormulas {
 }
 
 for (const name of ['adherence', 'phq', 'relapse', 'remission', 'response', 'risk', 'severity', 'wellbeing'] as const)
-  qpuHexRegisterOf('psychiatry', name, (PsychiatryFormulas[name] as (...x: unknown[]) => unknown).bind(PsychiatryFormulas))
+  hexRegisterOf('psychiatry', name, (PsychiatryFormulas[name] as (...x: unknown[]) => unknown).bind(PsychiatryFormulas))

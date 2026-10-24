@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SPINNING — YARN SPINNING, AS ARITHMETIC (the mill floor reduced to numbers). A fibre becomes a yarn by counting it,
@@ -31,4 +31,4 @@ export class SpinningFormulas {
 }
 
 for (const name of ['count', 'denier', 'draft', 'evenness', 'tenacity', 'tex', 'twist', 'yield'] as const)
-  qpuHexRegisterOf('spinning', name, (SpinningFormulas[name] as (...x: unknown[]) => unknown).bind(SpinningFormulas))
+  hexRegisterOf('spinning', name, (SpinningFormulas[name] as (...x: unknown[]) => unknown).bind(SpinningFormulas))

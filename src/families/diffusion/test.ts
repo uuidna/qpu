@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DiffusionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('diffusion: flux, gradient, meansquare, permeability, fickrate, concentrati
   assert.equal(DiffusionFormulas.steadyflux(50, 50).value, 1, 'steady state')
   assert.equal(DiffusionFormulas.steadyflux(50, 40).value, 0)
   assert.equal(DiffusionFormulas.flux(5, 20).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('diffusion')?.length, 8)
+  assert.equal(hexFamiliesOf().get('diffusion')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'diffusion', program: ['flux'], params: [5, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `diffusion.flux at ${uuid}`)
-  qpuUuidReceiptOf('diffusion flux', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('diffusion flux', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; flux 100, gradient 20, meansquare 100, permeability 15, fickrate 50, concentrationdrop 65, effusionratio 200, steadyflux 1; crossing to chemistry')
 })

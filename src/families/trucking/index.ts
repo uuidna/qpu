@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TRUCKING — FREIGHT HAULING AS ARITHMETIC (chosen by the public-API registry, not by hand). Moving freight is numbers:
@@ -31,4 +31,4 @@ export class TruckingFormulas {
 }
 
 for (const name of ['costpermile', 'deadhead', 'fuelefficiency', 'hoursofservice', 'loadfactor', 'payload', 'turnaround', 'utilization'] as const)
-  qpuHexRegisterOf('trucking', name, (TruckingFormulas[name] as (...x: unknown[]) => unknown).bind(TruckingFormulas))
+  hexRegisterOf('trucking', name, (TruckingFormulas[name] as (...x: unknown[]) => unknown).bind(TruckingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FrontogenesisFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('frontogenesis: temperaturegradient, frontspeed, fronttypes, convergencerat
   assert.equal(FrontogenesisFormulas.liftingindex(10, 4).value, 6)
   assert.equal(FrontogenesisFormulas.intensification(80, 100).value, 80)
   assert.equal(FrontogenesisFormulas.temperaturegradient(100, 4).dst, 'meteorology')
-  assert.equal(qpuHexFamiliesOf().get('frontogenesis')?.length, 8)
+  assert.equal(hexFamiliesOf().get('frontogenesis')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'frontogenesis', program: ['temperaturegradient'], params: [100, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `frontogenesis.temperaturegradient at ${uuid}`)
-  qpuUuidReceiptOf('frontogenesis temperaturegradient', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('frontogenesis temperaturegradient', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; temperaturegradient 25, frontspeed 60, fronttypes 4, convergencerate 15, baroclinicity 70, pressuretrough 23, liftingindex 6, intensification 80; crossing to meteorology')
 })

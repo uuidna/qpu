@@ -14,7 +14,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { qpuHexFamiliesOf, qpuHexUuidOf, qpuCiteOf, qpuFoldOf, qpuHexRunOf } from '../dist/quantum/processing/unit/index.js'
+import { hexFamiliesOf, qpuHexUuidOf, qpuCiteOf, foldOf, hexRunOf } from '../dist/quantum/processing/unit/index.js'
 import { CLOUDFLARE_RUNTIMES, CLOUDFLARE_DATABASES, CLOUDFLARE_STORAGE, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, cloudflareCombinations, cloudflareKeyOf } from '../dist/deployment/payload-templates.js'
 import { mintOf } from './lattice-values.js'
 // every family registers on import of the generated registry — the one import that is the whole surface
@@ -24,10 +24,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const site = (qpuCiteOf()).website
 
 // the families as the registry holds them: name → formulas, each with its nibble (1-based hex), name and arity
-const families = [...qpuHexFamiliesOf()]
+const families = [...hexFamiliesOf()]
   .map(([name, formulas]) => ({
     name,
-    handle: qpuFoldOf(name).slice(0, mintOf(3)), // the 8-hex handle: the compact address a call routes by (token-free)
+    handle: foldOf(name).slice(0, mintOf(3)), // the 8-hex handle: the compact address a call routes by (token-free)
     formulas: formulas.map((f, i) => ({ nibble: (i + 1).toString(mintOf(4)), name: f.name, arity: f.arity })),
   }))
   .sort((a, b) => a.name.localeCompare(b.name))
@@ -83,7 +83,7 @@ console.log(`wrote .claude/skills/qpu-families/SKILL.md — ${families.length} f
 // enumerator so the number in the skill can never drift from what cloudflareCombinations() actually yields.
 const axes = { runtime: CLOUDFLARE_RUNTIMES, db: CLOUDFLARE_DATABASES, storage: CLOUDFLARE_STORAGE, email: CLOUDFLARE_EMAIL, frontend: CLOUDFLARE_FRONTENDS }
 const binomialUuid = qpuHexUuidOf({ family: 'combinatorics', program: ['binomial'], params: [CLOUDFLARE_PLUGINS.length] })
-const binomial = await qpuHexRunOf(binomialUuid)
+const binomial = await hexRunOf(binomialUuid)
 const pluginSubsets = binomial.value // 2^|plugins|, with receipt binomial.receipt
 const axisProduct = Object.values(axes).reduce((p, a) => p * a.length, 1)
 const total = axisProduct * pluginSubsets

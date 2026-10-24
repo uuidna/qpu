@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ActivationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,10 +22,10 @@ test('activation: relu, leakyrelu, step, hardsigmoid, saturate, threshold, clamp
   assert.equal(ActivationFormulas.deadzone(30, 10).value, 30, 'outside the dead zone')
   assert.equal(ActivationFormulas.deadzone(5, 10).value, 0)
   assert.equal(ActivationFormulas.relu(10, 3).dst, 'neuroscience')
-  assert.equal(qpuHexFamiliesOf().get('activation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('activation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'activation', program: ['clamp'], params: [150, 10, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `activation.clamp at ${uuid}`)
-  qpuUuidReceiptOf('activation clamp', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('activation clamp', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; relu 7, leakyrelu 6, step 1, hardsigmoid 25, saturate 100, threshold 8, clamp 100, deadzone 30; crossing to neuroscience')
 })

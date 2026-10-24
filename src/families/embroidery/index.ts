@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EMBROIDERY — scaffolded integer measures crossed to geometry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class EmbroideryFormulas {
 }
 
 for (const name of ['coverage', 'densitypersqcm', 'motifsubsets', 'patternpairs', 'stitchcount', 'stitchorderings', 'stitchtypes', 'threadcolors'] as const)
-  qpuHexRegisterOf('embroidery', name, (EmbroideryFormulas[name] as (...x: unknown[]) => unknown).bind(EmbroideryFormulas))
+  hexRegisterOf('embroidery', name, (EmbroideryFormulas[name] as (...x: unknown[]) => unknown).bind(EmbroideryFormulas))

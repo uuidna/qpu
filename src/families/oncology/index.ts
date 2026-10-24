@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ONCOLOGY — THE MEASURE OF A TUMOUR, AS ARITHMETIC (chosen by the clinical registry, not by hand). Cancer is numbers:
@@ -30,4 +30,4 @@ export class OncologyFormulas {
 }
 
 for (const name of ['burden', 'dose', 'doubling', 'grade', 'remission', 'response', 'staging', 'survival'] as const)
-  qpuHexRegisterOf('oncology', name, (OncologyFormulas[name] as (...x: unknown[]) => unknown).bind(OncologyFormulas))
+  hexRegisterOf('oncology', name, (OncologyFormulas[name] as (...x: unknown[]) => unknown).bind(OncologyFormulas))

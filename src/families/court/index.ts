@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THE COURT, FOR A LAW FIRM OR A BENCH — THE ARITHMETIC A MATTER TURNS ON, ANY JURISDICTION, A LEAD UNTIL REVIEWED.
@@ -79,4 +79,4 @@ export class CourtFormulas {
 }
 
 for (const name of ['apportion', 'barred', 'cap', 'compliant', 'costs', 'damages', 'distribution', 'fee', 'interest', 'liquidated', 'penalty', 'possession', 'restitution', 'settlement', 'standard'] as const)
-  qpuHexRegisterOf('court', name, (CourtFormulas[name] as (...x: unknown[]) => unknown).bind(CourtFormulas))
+  hexRegisterOf('court', name, (CourtFormulas[name] as (...x: unknown[]) => unknown).bind(CourtFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LicensingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('licensing: seats, utilization, renewal, compliance, truecost, overage, ter
   assert.equal(LicensingFormulas.term(2024, 3).value, 2027)
   assert.equal(LicensingFormulas.entitlement(1000, 250).value, 750)
   assert.equal(LicensingFormulas.seats(100, 5).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('licensing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('licensing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'licensing', program: ['seats'], params: [100, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `licensing.seats at ${uuid}`)
-  qpuUuidReceiptOf('licensing seats', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('licensing seats', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; seats 20, utilization 90, renewal 1200, compliance 1, truecost 1000, overage 20, term 2027, entitlement 750; crossing to law')
 })

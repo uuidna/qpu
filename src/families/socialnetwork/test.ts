@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SocialnetworkFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('socialnetwork: density, degreecentrality, clustering, reciprocity, pathlen
   assert.equal(SocialnetworkFormulas.components(10, 7).value, 3, 'three islands')
   assert.equal(SocialnetworkFormulas.homophily(35, 50).value, 70)
   assert.equal(SocialnetworkFormulas.density(10, 18).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('socialnetwork')?.length, 8)
+  assert.equal(hexFamiliesOf().get('socialnetwork')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'socialnetwork', program: ['density'], params: [10, 18] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 40, `socialnetwork.density at ${uuid}`)
-  qpuUuidReceiptOf('socialnetwork density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('socialnetwork density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; density 40, degreecentrality 50, clustering 25, reciprocity 60, pathlength 4, betweenness 25, components 3, homophily 70; crossing to statistics')
 })

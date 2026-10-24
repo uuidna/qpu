@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EmbryologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('embryology: gestation, cleavage, viability, implantation, blastocyst, frag
   assert.equal(EmbryologyFormulas.morphology(5).value, 5)
   assert.equal(EmbryologyFormulas.differentiation(50, 100).value, 50)
   assert.equal(EmbryologyFormulas.gestation(280).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('embryology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('embryology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'embryology', program: ['cleavage'], params: [8, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `embryology.cleavage at ${uuid}`)
-  qpuUuidReceiptOf('embryology cleavage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('embryology cleavage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gestation 280, cleavage 2, viability 80, implantation 50, blastocyst 50, fragmentation 20, morphology 5, differentiation 50; crossing to med')
 })

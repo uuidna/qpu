@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ESTIMATING — A CONSTRUCTION ESTIMATE, AS ARITHMETIC (what a cost estimator computes before a job is built). Pricing a
@@ -31,4 +31,4 @@ export class EstimatingFormulas {
 }
 
 for (const name of ['bid', 'contingency', 'labor', 'markup', 'material', 'overhead', 'takeoff', 'unitcost'] as const)
-  qpuHexRegisterOf('estimating', name, (EstimatingFormulas[name] as (...x: unknown[]) => unknown).bind(EstimatingFormulas))
+  hexRegisterOf('estimating', name, (EstimatingFormulas[name] as (...x: unknown[]) => unknown).bind(EstimatingFormulas))

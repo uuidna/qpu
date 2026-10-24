@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SAVINGS — PERSONAL SAVING AS ARITHMETIC. What a saver tracks is numbers: simple interest earned, the balance it grows
@@ -31,4 +31,4 @@ export class SavingsFormulas {
 }
 
 for (const name of ['apy', 'deposit', 'emergencyfund', 'futurevalue', 'goalmonths', 'interest', 'rate', 'simplegrowth'] as const)
-  qpuHexRegisterOf('savings', name, (SavingsFormulas[name] as (...x: unknown[]) => unknown).bind(SavingsFormulas))
+  hexRegisterOf('savings', name, (SavingsFormulas[name] as (...x: unknown[]) => unknown).bind(SavingsFormulas))

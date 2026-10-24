@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SOUNDDESIGN — scaffolded integer measures crossed to acoustics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SounddesignFormulas {
 }
 
 for (const name of ['channelsubsets', 'cuepoints', 'dynamicrangedb', 'frequencybands', 'layers', 'loudnesslufs', 'mixpairs', 'reverbms'] as const)
-  qpuHexRegisterOf('sounddesign', name, (SounddesignFormulas[name] as (...x: unknown[]) => unknown).bind(SounddesignFormulas))
+  hexRegisterOf('sounddesign', name, (SounddesignFormulas[name] as (...x: unknown[]) => unknown).bind(SounddesignFormulas))

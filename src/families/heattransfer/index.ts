@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HEATTRANSFER — HOW HEAT MOVES, AS ARITHMETIC. The three modes and the numbers engineers size exchangers by: conduction
@@ -31,4 +31,4 @@ export class HeattransferFormulas {
 }
 
 for (const name of ['biot', 'conduction', 'convection', 'effectiveness', 'fourier', 'lmtd', 'nusselt', 'radiation'] as const)
-  qpuHexRegisterOf('heattransfer', name, (HeattransferFormulas[name] as (...x: unknown[]) => unknown).bind(HeattransferFormulas))
+  hexRegisterOf('heattransfer', name, (HeattransferFormulas[name] as (...x: unknown[]) => unknown).bind(HeattransferFormulas))

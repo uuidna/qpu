@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WINDCHILL — HOW COLD THE AIR FEELS, AS ARITHMETIC. The wind steals heat: the chill index, the apparent temperature once
@@ -31,4 +31,4 @@ export class WindchillFormulas {
 }
 
 for (const name of ['apparenttemp', 'effectivetemp', 'exposurerisk', 'frostbitetime', 'gustadjust', 'heatindex', 'index', 'windfactor'] as const)
-  qpuHexRegisterOf('windchill', name, (WindchillFormulas[name] as (...x: unknown[]) => unknown).bind(WindchillFormulas))
+  hexRegisterOf('windchill', name, (WindchillFormulas[name] as (...x: unknown[]) => unknown).bind(WindchillFormulas))

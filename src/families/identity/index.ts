@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** IDENTITY — WHO A REQUEST BELONGS TO, AS ARITHMETIC (chosen by the registry, not by hand). Verifying a person is
@@ -33,4 +33,4 @@ export class IdentityFormulas {
 }
 
 for (const name of Object.getOwnPropertyNames(IdentityFormulas).filter((k) => typeof (IdentityFormulas as unknown as Record<string, unknown>)[k] === 'function' && !['length', 'name', 'prototype'].includes(k)))
-  qpuHexRegisterOf('identity', name, (IdentityFormulas as unknown as Record<string, (...y: unknown[]) => unknown>)[name]!.bind(IdentityFormulas))
+  hexRegisterOf('identity', name, (IdentityFormulas as unknown as Record<string, (...y: unknown[]) => unknown>)[name]!.bind(IdentityFormulas))

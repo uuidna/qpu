@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SCREENWRITING — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ScreenwritingFormulas {
 }
 
 for (const name of ['acts', 'beatcombos', 'charactercount', 'dialogueratio', 'pagesperminute', 'plotpaths', 'scenecount', 'structuresubsets'] as const)
-  qpuHexRegisterOf('screenwriting', name, (ScreenwritingFormulas[name] as (...x: unknown[]) => unknown).bind(ScreenwritingFormulas))
+  hexRegisterOf('screenwriting', name, (ScreenwritingFormulas[name] as (...x: unknown[]) => unknown).bind(ScreenwritingFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DRAYAGE — scaffolded integer measures crossed to supplychain. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DrayageFormulas {
 }
 
 for (const name of ['chassisutilization', 'containersperday', 'costpermove', 'demurrage', 'dualmoves', 'milesperload', 'turntime', 'waittime'] as const)
-  qpuHexRegisterOf('drayage', name, (DrayageFormulas[name] as (...x: unknown[]) => unknown).bind(DrayageFormulas))
+  hexRegisterOf('drayage', name, (DrayageFormulas[name] as (...x: unknown[]) => unknown).bind(DrayageFormulas))

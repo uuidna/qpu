@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TIDES — THE RISE AND FALL OF THE SEA, AS ARITHMETIC. A tide is numbers: the range between high and low water, the
@@ -31,4 +31,4 @@ export class TidesFormulas {
 }
 
 for (const name of ['amplitude', 'flowrate', 'harmonic', 'meanlevel', 'neaptide', 'period', 'range', 'springtide'] as const)
-  qpuHexRegisterOf('tides', name, (TidesFormulas[name] as (...x: unknown[]) => unknown).bind(TidesFormulas))
+  hexRegisterOf('tides', name, (TidesFormulas[name] as (...x: unknown[]) => unknown).bind(TidesFormulas))

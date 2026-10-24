@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SPELEOLOGY — CAVE SCIENCE, AS ARITHMETIC. A cave is numbers: how deep it goes, how far its passages run, how long a
@@ -30,4 +30,4 @@ export class SpeleologyFormulas {
 }
 
 for (const name of ['chambers', 'depth', 'dissolution', 'extent', 'gradient', 'humidity', 'speleothem', 'survey'] as const)
-  qpuHexRegisterOf('speleology', name, (SpeleologyFormulas[name] as (...x: unknown[]) => unknown).bind(SpeleologyFormulas))
+  hexRegisterOf('speleology', name, (SpeleologyFormulas[name] as (...x: unknown[]) => unknown).bind(SpeleologyFormulas))

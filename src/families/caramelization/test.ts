@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CaramelizationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('caramelization: temperaturethreshold, browningrate, sugarconversion, massl
   assert.equal(CaramelizationFormulas.activationstage(170, 30).value, 5)
   assert.equal(CaramelizationFormulas.residualsugar(100, 90).value, 10)
   assert.equal(CaramelizationFormulas.temperaturethreshold(160, 170).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('caramelization')?.length, 8)
+  assert.equal(hexFamiliesOf().get('caramelization')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'caramelization', program: ['temperaturethreshold'], params: [160, 170] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 170, `caramelization.temperaturethreshold at ${uuid}`)
-  qpuUuidReceiptOf('caramelization temperaturethreshold', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('caramelization temperaturethreshold', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; temperaturethreshold 170, browningrate 80, sugarconversion 90, masslosspct 15, colorindex 80, timeattemp 60, activationstage 5, residualsugar 10; crossing to chemistry')
 })

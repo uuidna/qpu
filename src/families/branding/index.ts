@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BRANDING — A BRAND'S STANDING, AS ARITHMETIC (chosen by the public-API registry, not by hand). A brand is numbers:
@@ -31,4 +31,4 @@ export class BrandingFormulas {
 }
 
 for (const name of ['awareness', 'consistency', 'equity', 'loyalty', 'nps', 'reach', 'recall', 'sentiment'] as const)
-  qpuHexRegisterOf('branding', name, (BrandingFormulas[name] as (...x: unknown[]) => unknown).bind(BrandingFormulas))
+  hexRegisterOf('branding', name, (BrandingFormulas[name] as (...x: unknown[]) => unknown).bind(BrandingFormulas))

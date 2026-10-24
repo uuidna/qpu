@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REMOTE SENSING — EARTH OBSERVATION AS ARITHMETIC (chosen by the registry, not by hand). Reading the planet from orbit is
@@ -31,4 +31,4 @@ export class RemotesensingFormulas {
 }
 
 for (const name of ['bands', 'classification', 'cloudcover', 'ndvi', 'reflectance', 'resolution', 'revisit', 'swath'] as const)
-  qpuHexRegisterOf('remotesensing', name, (RemotesensingFormulas[name] as (...x: unknown[]) => unknown).bind(RemotesensingFormulas))
+  hexRegisterOf('remotesensing', name, (RemotesensingFormulas[name] as (...x: unknown[]) => unknown).bind(RemotesensingFormulas))

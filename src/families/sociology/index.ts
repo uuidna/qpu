@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SOCIOLOGY — SOCIAL SCIENCE, AS ARITHMETIC. Society is numbers: how unequal a share is, how many move between strata,
@@ -30,4 +30,4 @@ export class SociologyFormulas {
 }
 
 for (const name of ['cohesion', 'cohort', 'diffusion', 'gini', 'mobility', 'network', 'participation', 'segregation'] as const)
-  qpuHexRegisterOf('sociology', name, (SociologyFormulas[name] as (...x: unknown[]) => unknown).bind(SociologyFormulas))
+  hexRegisterOf('sociology', name, (SociologyFormulas[name] as (...x: unknown[]) => unknown).bind(SociologyFormulas))

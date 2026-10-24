@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HeattransferFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('heattransfer: conduction, convection, radiation, lmtd, nusselt, biot, four
   assert.equal(HeattransferFormulas.effectiveness(80, 100).value, 80, 'exchanger effectiveness %')
   assert.equal(HeattransferFormulas.effectiveness(60, 100).value, 60)
   assert.equal(HeattransferFormulas.conduction(50, 20, 10).dst, 'thermodynamics')
-  assert.equal(qpuHexFamiliesOf().get('heattransfer')?.length, 8)
+  assert.equal(hexFamiliesOf().get('heattransfer')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'heattransfer', program: ['conduction'], params: [50, 20, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `heattransfer.conduction at ${uuid}`)
-  qpuUuidReceiptOf('heattransfer conduction', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('heattransfer conduction', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; conduction 100, convection 1000, radiation 65, lmtd 30, nusselt 40, biot 15, fourier 25, effectiveness 80; crossing to thermodynamics')
 })

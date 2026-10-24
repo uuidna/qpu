@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GOVERNANCE — THE RULE OF A BODY, AS ARITHMETIC. Deciding together is numbers: whether a meeting has quorum, whether a
@@ -31,4 +31,4 @@ export class GovernanceFormulas {
 }
 
 for (const name of ['accountability', 'compliance', 'majority', 'quorum', 'representation', 'term', 'transparency', 'turnout'] as const)
-  qpuHexRegisterOf('governance', name, (GovernanceFormulas[name] as (...x: unknown[]) => unknown).bind(GovernanceFormulas))
+  hexRegisterOf('governance', name, (GovernanceFormulas[name] as (...x: unknown[]) => unknown).bind(GovernanceFormulas))

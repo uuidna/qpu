@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THERMOCOUPLE — A SENSOR, AS ARITHMETIC (chosen by the public-API registry, not by hand). A junction of two metals is a
@@ -31,4 +31,4 @@ export class ThermocoupleFormulas {
 }
 
 for (const name of ['coldjunction', 'driftcompensation', 'emf', 'linearization', 'rangespan', 'resolution', 'sensitivity', 'temperature'] as const)
-  qpuHexRegisterOf('thermocouple', name, (ThermocoupleFormulas[name] as (...x: unknown[]) => unknown).bind(ThermocoupleFormulas))
+  hexRegisterOf('thermocouple', name, (ThermocoupleFormulas[name] as (...x: unknown[]) => unknown).bind(ThermocoupleFormulas))

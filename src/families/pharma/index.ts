@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHARMA — PHARMACOLOGY / PHARMACOKINETICS, AS ARITHMETIC (dosing by the numbers, not by hand). A drug in a body is numbers:
@@ -31,4 +31,4 @@ export class PharmaFormulas {
 }
 
 for (const name of ['bioavailability', 'clearance', 'dose', 'halflife', 'interval', 'loading', 'steadystate', 'therapeutic'] as const)
-  qpuHexRegisterOf('pharma', name, (PharmaFormulas[name] as (...x: unknown[]) => unknown).bind(PharmaFormulas))
+  hexRegisterOf('pharma', name, (PharmaFormulas[name] as (...x: unknown[]) => unknown).bind(PharmaFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EMPLOYMENT — WORK AND ITS ENTITLEMENTS AS ARITHMETIC. Pay and the end of a job are numbers the jurisdiction's code
@@ -31,4 +31,4 @@ export class EmploymentFormulas {
 }
 
 for (const name of ['gross', 'holiday', 'net', 'notice', 'overtime', 'overtimehours', 'redundancy', 'severance'] as const)
-  qpuHexRegisterOf('employment', name, (EmploymentFormulas[name] as (...x: unknown[]) => unknown).bind(EmploymentFormulas))
+  hexRegisterOf('employment', name, (EmploymentFormulas[name] as (...x: unknown[]) => unknown).bind(EmploymentFormulas))

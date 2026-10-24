@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ProbabilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('probability: odds, conditional, expected, bayes, combinations, variance, e
   assert.equal(ProbabilityFormulas.entropy(8).value, 8, 'outcomes as bits proxy')
   assert.equal(ProbabilityFormulas.independence(30, 60).value, 50)
   assert.equal(ProbabilityFormulas.odds(1, 4).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('probability')?.length, 8)
+  assert.equal(hexFamiliesOf().get('probability')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'probability', program: ['odds'], params: [1, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `probability.odds at ${uuid}`)
-  qpuUuidReceiptOf('probability odds', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('probability odds', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; odds 25, conditional 50, expected 50, bayes 20, combinations 10, variance 40, entropy 8, independence 50; crossing to code')
 })

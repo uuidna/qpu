@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FrictionFormulas — 8 exact-integer formulas of the friction domain, each at a hex address crossing to cross; develops the friction leads. */
@@ -31,4 +31,4 @@ export class FrictionFormulas {
 }
 
 for (const name of ['coefficient', 'combos', 'distance', 'force', 'heat', 'normal', 'surfaces', 'work'] as const)
-  qpuHexRegisterOf('friction', name, (FrictionFormulas[name] as (...x: unknown[]) => unknown).bind(FrictionFormulas))
+  hexRegisterOf('friction', name, (FrictionFormulas[name] as (...x: unknown[]) => unknown).bind(FrictionFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SUBSIDENCE — scaffolded integer measures crossed to geology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SubsidenceFormulas {
 }
 
 for (const name of ['compaction', 'consolidationtime', 'cumulative', 'influencedepth', 'rate', 'riskindex', 'settlement', 'withdrawalvolume'] as const)
-  qpuHexRegisterOf('subsidence', name, (SubsidenceFormulas[name] as (...x: unknown[]) => unknown).bind(SubsidenceFormulas))
+  hexRegisterOf('subsidence', name, (SubsidenceFormulas[name] as (...x: unknown[]) => unknown).bind(SubsidenceFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LINEARALGEBRA — THE SMALL-DIMENSION LINEAR OPERATIONS, AS ARITHMETIC. Vectors and 2x2 matrices are numbers: the dot of
@@ -45,4 +45,4 @@ export class LinearalgebraFormulas {
 }
 
 for (const name of ['characteristicdegree', 'cross', 'determinant2x2', 'dot2', 'matrixelements', 'norm1', 'nullity', 'orthogonal', 'outerproduct', 'projection', 'rank', 'ranknullity', 'scalarmul', 'span', 'trace2'] as const)
-  qpuHexRegisterOf('linearalgebra', name, (LinearalgebraFormulas[name] as (...x: unknown[]) => unknown).bind(LinearalgebraFormulas))
+  hexRegisterOf('linearalgebra', name, (LinearalgebraFormulas[name] as (...x: unknown[]) => unknown).bind(LinearalgebraFormulas))

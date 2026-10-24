@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CROPYIELD — GROWING FOOD, AS ARITHMETIC (chosen by the agronomy registry, not by hand). A field's harvest is numbers:
@@ -31,4 +31,4 @@ export class CropyieldFormulas {
 }
 
 for (const name of ['biomassratio', 'harvestindex', 'lossadjusted', 'moisturecorrected', 'perhectare', 'plantdensity', 'totalproduction', 'yieldgap'] as const)
-  qpuHexRegisterOf('cropyield', name, (CropyieldFormulas[name] as (...x: unknown[]) => unknown).bind(CropyieldFormulas))
+  hexRegisterOf('cropyield', name, (CropyieldFormulas[name] as (...x: unknown[]) => unknown).bind(CropyieldFormulas))

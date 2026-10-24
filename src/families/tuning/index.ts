@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TUNING — MUSICAL INTONATION AS ARITHMETIC (chosen by the registry, not by hand). Tuning is numbers: cents between
@@ -31,4 +31,4 @@ export class TuningFormulas {
 }
 
 for (const name of ['beatfrequency', 'centsoffset', 'equaltempered', 'frequencyratio', 'octaveratio', 'pythagoreancomma', 'referencepitch', 'semitoneratio'] as const)
-  qpuHexRegisterOf('tuning', name, (TuningFormulas[name] as (...x: unknown[]) => unknown).bind(TuningFormulas))
+  hexRegisterOf('tuning', name, (TuningFormulas[name] as (...x: unknown[]) => unknown).bind(TuningFormulas))

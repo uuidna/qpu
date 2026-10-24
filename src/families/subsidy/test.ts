@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SubsidyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('subsidy: amount, costtotal, pricereduction, beneficiaries, efficiencyloss,
   assert.equal(SubsidyFormulas.budgetpct(5, 100).value, 5)
   assert.equal(SubsidyFormulas.multipliereffect(1000, 2).value, 2000)
   assert.equal(SubsidyFormulas.amount(500, 2).dst, 'macroeconomics')
-  assert.equal(qpuHexFamiliesOf().get('subsidy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('subsidy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'subsidy', program: ['amount'], params: [500, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `subsidy.amount at ${uuid}`)
-  qpuUuidReceiptOf('subsidy amount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('subsidy amount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; amount 1000, costtotal 100000, pricereduction 30, beneficiaries 10000, efficiencyloss 30, passthrough 60, budgetpct 5, multipliereffect 2000; crossing to macroeconomics')
 })

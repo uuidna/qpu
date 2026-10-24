@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** API — the web interface's own arithmetic. Pages of a result set, a per-second rate-limit budget, exponential retry
@@ -44,4 +44,4 @@ export class ApiFormulas {
 // 13 formulas, not 15: `api` is a contested family — the api-door registers two more (call, operations) to the same
 // nibble, so api's own set leaves room (13 + 2 = 15). throughput and versions were the two most generic additions, dropped.
 for (const name of ['backoff', 'latency', 'methods', 'offset', 'pages', 'pagesize', 'payload', 'quota', 'ratelimit', 'remaining', 'retries', 'statusClass', 'window'] as const)
-  qpuHexRegisterOf('api', name, (ApiFormulas[name] as (...x: unknown[]) => unknown).bind(ApiFormulas))
+  hexRegisterOf('api', name, (ApiFormulas[name] as (...x: unknown[]) => unknown).bind(ApiFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** QUILTING — scaffolded integer measures crossed to geometry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class QuiltingFormulas {
 }
 
 for (const name of ['blockcount', 'borderwidth', 'colorsubsets', 'gridcells', 'patchpairs', 'patternorderings', 'seamlength', 'symmetryratio'] as const)
-  qpuHexRegisterOf('quilting', name, (QuiltingFormulas[name] as (...x: unknown[]) => unknown).bind(QuiltingFormulas))
+  hexRegisterOf('quilting', name, (QuiltingFormulas[name] as (...x: unknown[]) => unknown).bind(QuiltingFormulas))

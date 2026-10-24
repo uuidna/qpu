@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PetroleumFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('petroleum: api, recovery, porosity, permeability, refined, depth, flow, sa
   assert.equal(PetroleumFormulas.flow(500, 24).value, 12000, 'rate over hours')
   assert.equal(PetroleumFormulas.saturation(70, 100).value, 70)
   assert.equal(PetroleumFormulas.api(1000).dst, 'energy')
-  assert.equal(qpuHexFamiliesOf().get('petroleum')?.length, 8)
+  assert.equal(hexFamiliesOf().get('petroleum')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'petroleum', program: ['flow'], params: [500, 24] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12000, `petroleum.flow at ${uuid}`)
-  qpuUuidReceiptOf('petroleum flow', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('petroleum flow', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; api 10, recovery 30, porosity 20, permeability 20, refined 45, depth 3500, flow 12000, saturation 70; crossing to energy')
 })

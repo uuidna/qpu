@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BOTANY — PLANT GROWTH AS ARITHMETIC. The life of a crop is numbers: light captured into sugar, seeds that sprout,
@@ -30,4 +30,4 @@ export class BotanyFormulas {
 }
 
 for (const name of ['chlorophyll', 'cropyield', 'germination', 'growth', 'leafarea', 'photosynthesis', 'pollination', 'transpiration'] as const)
-  qpuHexRegisterOf('botany', name, (BotanyFormulas[name] as (...x: unknown[]) => unknown).bind(BotanyFormulas))
+  hexRegisterOf('botany', name, (BotanyFormulas[name] as (...x: unknown[]) => unknown).bind(BotanyFormulas))

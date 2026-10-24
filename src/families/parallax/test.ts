@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ParallaxFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('parallax: angle, arcseconds, baseline, distance, errorbudget, parsecs, pro
   assert.equal(ParallaxFormulas.propermotion(1000, 10).value, 100)
   assert.equal(ParallaxFormulas.tangentialvelocity(10, 100).value, 4740, 'km/s')
   assert.equal(ParallaxFormulas.distance(10).dst, 'astronomy')
-  assert.equal(qpuHexFamiliesOf().get('parallax')?.length, 8)
+  assert.equal(hexFamiliesOf().get('parallax')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'parallax', program: ['distance'], params: [10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100000, `parallax.distance at ${uuid}`)
-  qpuUuidReceiptOf('parallax distance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('parallax distance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; angle 100, arcseconds 7200, baseline 1000, distance 100000, errorbudget 250, parsecs 100, propermotion 100, tangentialvelocity 4740; crossing to astronomy')
 })

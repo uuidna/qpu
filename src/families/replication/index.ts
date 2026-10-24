@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REPLICATION — KEEPING COPIES IN AGREEMENT, AS ARITHMETIC. A distributed store is numbers: how far a follower lags, the
@@ -31,4 +31,4 @@ export class ReplicationFormulas {
 }
 
 for (const name of ['consistency', 'divergence', 'factor', 'failover', 'lag', 'quorum', 'sync', 'throughput'] as const)
-  qpuHexRegisterOf('replication', name, (ReplicationFormulas[name] as (...x: unknown[]) => unknown).bind(ReplicationFormulas))
+  hexRegisterOf('replication', name, (ReplicationFormulas[name] as (...x: unknown[]) => unknown).bind(ReplicationFormulas))

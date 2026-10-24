@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SCHEDULING — PROJECT TIME AS ARITHMETIC. A plan is numbers: the critical path through parallel legs, the slack a task
@@ -31,4 +31,4 @@ export class SchedulingFormulas {
 }
 
 for (const name of ['criticalpath', 'duration', 'float', 'lateness', 'leadlag', 'makespan', 'slack', 'utilization'] as const)
-  qpuHexRegisterOf('scheduling', name, (SchedulingFormulas[name] as (...x: unknown[]) => unknown).bind(SchedulingFormulas))
+  hexRegisterOf('scheduling', name, (SchedulingFormulas[name] as (...x: unknown[]) => unknown).bind(SchedulingFormulas))

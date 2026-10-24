@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BRAKING — STOPPING A VEHICLE, AS ARITHMETIC. The brake is numbers: how far it takes to stop, the force a pedal makes,
@@ -30,4 +30,4 @@ export class BrakingFormulas {
 }
 
 for (const name of ['bias', 'deceleration', 'distance', 'fade', 'force', 'pad', 'pressure', 'torque'] as const)
-  qpuHexRegisterOf('braking', name, (BrakingFormulas[name] as (...x: unknown[]) => unknown).bind(BrakingFormulas))
+  hexRegisterOf('braking', name, (BrakingFormulas[name] as (...x: unknown[]) => unknown).bind(BrakingFormulas))

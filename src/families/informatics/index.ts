@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INFORMATICS — INFORMATION MEASURED AS INTEGERS (the arithmetic a search index and a codec actually run). Entropy per
@@ -30,4 +30,4 @@ export class InformaticsFormulas {
 }
 
 for (const name of ['bandwidth', 'bits', 'compression', 'entropy', 'index', 'precision', 'recall', 'redundancy'] as const)
-  qpuHexRegisterOf('informatics', name, (InformaticsFormulas[name] as (...x: unknown[]) => unknown).bind(InformaticsFormulas))
+  hexRegisterOf('informatics', name, (InformaticsFormulas[name] as (...x: unknown[]) => unknown).bind(InformaticsFormulas))

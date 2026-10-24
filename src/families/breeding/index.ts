@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BREEDING — SELECTIVE BREEDING AS ARITHMETIC (chosen by the registry, not by hand). Improving a population is numbers:
@@ -31,4 +31,4 @@ export class BreedingFormulas {
 }
 
 for (const name of ['breedingvalue', 'conceptionrate', 'effectivepopulation', 'geneticgain', 'heritability', 'inbreeding', 'progenycount', 'selectiondifferential'] as const)
-  qpuHexRegisterOf('breeding', name, (BreedingFormulas[name] as (...x: unknown[]) => unknown).bind(BreedingFormulas))
+  hexRegisterOf('breeding', name, (BreedingFormulas[name] as (...x: unknown[]) => unknown).bind(BreedingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SpeleologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('speleology: depth, extent, speleothem, dissolution, survey, gradient, humi
   assert.equal(SpeleologyFormulas.humidity(95, 100).value, 95)
   assert.equal(SpeleologyFormulas.chambers(42).value, 42)
   assert.equal(SpeleologyFormulas.depth(2197).dst, 'geology')
-  assert.equal(qpuHexFamiliesOf().get('speleology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('speleology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'speleology', program: ['extent'], params: [12, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 600, `speleology.extent at ${uuid}`)
-  qpuUuidReceiptOf('speleology extent', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('speleology extent', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; depth 2197, extent 600, speleothem 25, dissolution 15, survey 75, gradient 15, humidity 95, chambers 42; crossing to geology')
 })

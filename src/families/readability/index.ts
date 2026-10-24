@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** READABILITY — HOW HARD A TEXT IS TO READ, AS ARITHMETIC. Reading is numbers: words per sentence, syllables per word,
@@ -30,4 +30,4 @@ export class ReadabilityFormulas {
 }
 
 for (const name of ['automatedindex', 'colemanliau', 'fleschkincaid', 'fleschscaled', 'gunningfog', 'smogscaled', 'syllablesperword', 'wordspersentence'] as const)
-  qpuHexRegisterOf('readability', name, (ReadabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ReadabilityFormulas))
+  hexRegisterOf('readability', name, (ReadabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ReadabilityFormulas))

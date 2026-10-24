@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STAINEDGLASS — scaffolded integer measures crossed to optics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class StainedglassFormulas {
 }
 
 for (const name of ['cameleadlength', 'colorcombos', 'leadlines', 'panecount', 'panelsubsets', 'refractionindex', 'symmetryorderings', 'transmittance'] as const)
-  qpuHexRegisterOf('stainedglass', name, (StainedglassFormulas[name] as (...x: unknown[]) => unknown).bind(StainedglassFormulas))
+  hexRegisterOf('stainedglass', name, (StainedglassFormulas[name] as (...x: unknown[]) => unknown).bind(StainedglassFormulas))

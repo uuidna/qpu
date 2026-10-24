@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LATINSQUARE — THE LATIN SQUARE, AS ARITHMETIC. A Latin square of order n is an n×n array on n symbols, each symbol
@@ -49,4 +49,4 @@ export class LatinSquareFormulas {
 }
 
 for (const name of ['cells', 'cols', 'conjugates', 'firstrow', 'intercalate', 'isotopy', 'mols', 'order', 'orthogonalpairs', 'paratopy', 'reduced', 'rows', 'subsquare', 'symbols', 'transversal'] as const)
-  qpuHexRegisterOf('latinsquare', name, (LatinSquareFormulas[name] as (...x: unknown[]) => unknown).bind(LatinSquareFormulas))
+  hexRegisterOf('latinsquare', name, (LatinSquareFormulas[name] as (...x: unknown[]) => unknown).bind(LatinSquareFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CausalFormulas } from './index.js'
 
 /** Causal inference as exact combinatorics — DAG edges, chains, backdoor sets, counterfactual worlds, forks, conditionings, mediation. */
@@ -17,12 +17,12 @@ test('causal: edges, chains, backdoor sets, counterfactuals, confounded, forks, 
   assert.equal(CausalFormulas.conditionings(4).value, 15, '2^4 − 1 non-empty conditioning sets')
   assert.equal(CausalFormulas.mediation(3).value, 4, 'direct plus three mediators')
   assert.equal(CausalFormulas.edges(5).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('causal')?.length, 8)
+  assert.equal(hexFamiliesOf().get('causal')?.length, 8)
   for (const [name, params, expected] of [['edges', [5], 10], ['backdoorSets', [3], 8], ['conditionings', [4], 15]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'causal', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `causal.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`causal ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`causal ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; 5 nodes→10 edges (A000217), 2^3 backdoor sets, 2^4−1 conditionings')
 })

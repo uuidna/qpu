@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ChromatographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('chromatography: capacity, efficiency, peakarea, plates, resolution, retent
   assert.equal(ChromatographyFormulas.rf(30, 60).value, 50)
   assert.equal(ChromatographyFormulas.selectivity(150, 100).value, 150, 'separation factor ·100')
   assert.equal(ChromatographyFormulas.retention(300, 60).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('chromatography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('chromatography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'chromatography', program: ['resolution'], params: [100, 20, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `chromatography.resolution at ${uuid}`)
-  qpuUuidReceiptOf('chromatography resolution', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('chromatography resolution', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; capacity 400, efficiency 2, peakarea 10000, plates 25600, resolution 5, retention 240, rf 50, selectivity 150; crossing to chemistry')
 })

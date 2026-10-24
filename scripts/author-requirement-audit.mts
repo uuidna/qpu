@@ -26,7 +26,7 @@ const author = JSON.parse(readFileSync('/tmp/author-surface-evidence.json', 'utf
   yiComplement: { call: string; hex: string | null; holds: boolean }
   citationRead: {
     legalCitation: { contentUuid: string; holds: boolean; lead: boolean; doiPassed: string }
-    citeDoor: { priorConcept: string; qpuCiteHolds: boolean; priorTitle: string }
+    citeDoor: { priorConcept: string; citeHolds: boolean; priorTitle: string }
     papersDoor: { holds: boolean; rowCount: number }
   }
   domainCoverage: { universal: boolean; size: number; held: number }
@@ -110,7 +110,7 @@ const audit: Row[] = [
     req: 'papers + cite READ (prior DOI)',
     status:
       author.citationRead.papersDoor.holds &&
-      author.citationRead.citeDoor.qpuCiteHolds &&
+      author.citationRead.citeDoor.citeHolds &&
       author.citationRead.citeDoor.priorConcept === '10.5281/zenodo.21781602'
         ? 'proven'
         : 'open',
@@ -147,7 +147,7 @@ const audit: Row[] = [
   {
     req: 'prize remains false',
     status: author.blockersAsTreeState.prize === false ? 'tree-resolved' : 'open',
-    evidence: 'qpuPublicOf().prize=false as const; no author-faithful flip',
+    evidence: 'publicOf().prize=false as const; no author-faithful flip',
   },
   {
     req: 'citation.holds false / lead true',

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PatentFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('patent: term, priority, royalty, damages, claims, infringement, novelty â€
   assert.equal(PatentFormulas.novelty(0).value, 1, 'novel: no prior art')
   assert.equal(PatentFormulas.novelty(2).value, 0, 'anticipated by prior art')
   assert.equal(PatentFormulas.term(2026, 20).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('patent')?.length, 8)
+  assert.equal(hexFamiliesOf().get('patent')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'patent', program: ['term'], params: [2026, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2046, `patent.term at ${uuid}`)
-  qpuUuidReceiptOf('patent term', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('patent term', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; term 2046, priority 1, royalty 20000, damages 30000, claims 20, infringement 8000, novelty 1; crossing to law')
 })

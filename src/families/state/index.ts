@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STATE — WEB APP STATE MANAGEMENT, AS ARITHMETIC (stores, actions, selectors, rerenders, memoization, immutability).
@@ -31,4 +31,4 @@ export class StateFormulas {
 }
 
 for (const name of ['actions', 'depth', 'diff', 'hydration', 'memoized', 'rerenders', 'selectors', 'stores'] as const)
-  qpuHexRegisterOf('state', name, (StateFormulas[name] as (...x: unknown[]) => unknown).bind(StateFormulas))
+  hexRegisterOf('state', name, (StateFormulas[name] as (...x: unknown[]) => unknown).bind(StateFormulas))

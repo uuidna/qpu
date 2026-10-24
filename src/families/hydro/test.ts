@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HydroFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('hydro: power, head, capacity, efficiency, storage, turbine, penstock, rese
   assert.equal(HydroFormulas.reservoir(800, 300).value, 500)
   assert.equal(HydroFormulas.reservoir(300, 800).value, 0, 'never negative')
   assert.equal(HydroFormulas.power(100, 50).dst, 'energy')
-  assert.equal(qpuHexFamiliesOf().get('hydro')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hydro')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hydro', program: ['head'], params: [2000, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `hydro.head at ${uuid}`)
-  qpuUuidReceiptOf('hydro head', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hydro head', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; power 4905, head 2, capacity 45, efficiency 90, storage 20, turbine 3000, penstock 20, reservoir 500; crossing to energy')
 })

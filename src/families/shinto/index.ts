@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SHINTO — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ShintoFormulas {
 }
 
 for (const name of ['festivaldays', 'harmonyratio', 'kamicount', 'offeringsubsets', 'prayerpairs', 'purificationtypes', 'ritualstages', 'shrinecombos'] as const)
-  qpuHexRegisterOf('shinto', name, (ShintoFormulas[name] as (...x: unknown[]) => unknown).bind(ShintoFormulas))
+  hexRegisterOf('shinto', name, (ShintoFormulas[name] as (...x: unknown[]) => unknown).bind(ShintoFormulas))

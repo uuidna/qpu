@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DESIGNTHEORY — BLOCK DESIGNS AS ARITHMETIC. A balanced incomplete block design (BIBD) is numbers by the book
@@ -47,4 +47,4 @@ export class DesignTheoryFormulas {
 }
 
 for (const name of ['affinelines', 'affinepoints', 'blockcount', 'blocks', 'blocksizes', 'fisher', 'incidences', 'lambdacheck', 'lineorder', 'pairs', 'points', 'projectiveorder', 'replication', 'replications', 'steinertriples'] as const)
-  qpuHexRegisterOf('designtheory', name, (DesignTheoryFormulas[name] as (...x: unknown[]) => unknown).bind(DesignTheoryFormulas))
+  hexRegisterOf('designtheory', name, (DesignTheoryFormulas[name] as (...x: unknown[]) => unknown).bind(DesignTheoryFormulas))

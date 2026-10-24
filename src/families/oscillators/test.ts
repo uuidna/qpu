@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OscillatorsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('oscillators: frequency, period, dutycycle, phase, resonance, harmonics, ji
   assert.equal(OscillatorsFormulas.jitter(5000, 100).value, 50)
   assert.equal(OscillatorsFormulas.stability(5, 10000).value, 500, 'five hundred ppm')
   assert.equal(OscillatorsFormulas.frequency(1000, 5).dst, 'electronics')
-  assert.equal(qpuHexFamiliesOf().get('oscillators')?.length, 8)
+  assert.equal(hexFamiliesOf().get('oscillators')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'oscillators', program: ['frequency'], params: [1000, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `oscillators.frequency at ${uuid}`)
-  qpuUuidReceiptOf('oscillators frequency', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('oscillators frequency', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; frequency 200, period 10, dutycycle 75, phase 90, resonance 1000, harmonics 1320, jitter 50, stability 500; crossing to electronics')
 })

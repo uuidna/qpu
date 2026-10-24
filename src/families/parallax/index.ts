@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PARALLAX — THE GEOMETRY OF DISTANCE, AS ARITHMETIC. A nearby star shifts against the far background as the Earth
@@ -31,4 +31,4 @@ export class ParallaxFormulas {
 }
 
 for (const name of ['angle', 'arcseconds', 'baseline', 'distance', 'errorbudget', 'parsecs', 'propermotion', 'tangentialvelocity'] as const)
-  qpuHexRegisterOf('parallax', name, (ParallaxFormulas[name] as (...x: unknown[]) => unknown).bind(ParallaxFormulas))
+  hexRegisterOf('parallax', name, (ParallaxFormulas[name] as (...x: unknown[]) => unknown).bind(ParallaxFormulas))

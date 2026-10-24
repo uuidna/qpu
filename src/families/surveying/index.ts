@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** SURVEYING — THE FIELD BOOK AS ARITHMETIC (chosen by the land-survey registry, not by hand). Running a traverse is
  *  numbers: the forward bearing off a back-bearing, the chained length of the legs, the height of instrument carried
@@ -34,4 +34,4 @@ export class SurveyingFormulas {
 }
 
 for (const name of ['area', 'bearing', 'closure', 'contour', 'elevation', 'grade', 'offset', 'traverse'] as const)
-  qpuHexRegisterOf('surveying', name, (SurveyingFormulas[name] as (...x: unknown[]) => unknown).bind(SurveyingFormulas))
+  hexRegisterOf('surveying', name, (SurveyingFormulas[name] as (...x: unknown[]) => unknown).bind(SurveyingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ManipulatorFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('manipulator: dof, reach, payload, workspace, jointrange, repeatability, li
   assert.equal(ManipulatorFormulas.singularities(2, 1, 2).value, 5, 'wrist, elbow, shoulder')
   assert.equal(ManipulatorFormulas.payload(100, 0).value, 0)
   assert.equal(ManipulatorFormulas.dof(6, 0).dst, 'kinematics')
-  assert.equal(qpuHexFamiliesOf().get('manipulator')?.length, 8)
+  assert.equal(hexFamiliesOf().get('manipulator')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'manipulator', program: ['payload'], params: [600, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `manipulator.payload at ${uuid}`)
-  qpuUuidReceiptOf('manipulator payload', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('manipulator payload', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dof 6, reach 1200, payload 200, workspace 500, jointrange 180, repeatability 12, linkspeed 250, singularities 5; crossing to kinematics')
 })

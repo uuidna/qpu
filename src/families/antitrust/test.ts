@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AntitrustFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('antitrust: share, HHI, concentration, dominance, markup, damages, fine, me
   assert.equal(AntitrustFormulas.fine(1000000, 10).value, 100000)
   assert.equal(AntitrustFormulas.merger(40, 30).value, 70, 'combined post-merger share')
   assert.equal(AntitrustFormulas.share(40, 100).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('antitrust')?.length, 8)
+  assert.equal(hexFamiliesOf().get('antitrust')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'antitrust', program: ['hhi'], params: [40, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2500, `antitrust.hhi at ${uuid}`)
-  qpuUuidReceiptOf('antitrust hhi', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('antitrust hhi', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; share 40, hhi 2500, concentration 70, dominance 1, margin 40/-67, damages 500000, fine 100000, merger 70; crossing to law')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TrigonometryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,10 +22,10 @@ test('trigonometry: sine, cosine, tangent, hypotenuse, radians, period, amplitud
   assert.equal(TrigonometryFormulas.phase(90, 360).value, 90)
   assert.equal(TrigonometryFormulas.phase(5, 0).value, 0)
   assert.equal(TrigonometryFormulas.sine(90).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('trigonometry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('trigonometry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'trigonometry', program: ['hypotenuse'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `trigonometry.hypotenuse at ${uuid}`)
-  qpuUuidReceiptOf('trigonometry hypotenuse', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('trigonometry hypotenuse', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; sine 1000/0/500, cosine 1000/0/500, tangent 1000, hypotenuse 25, radians 3, period 25, amplitude 4, phase 90; crossing to code')
 })

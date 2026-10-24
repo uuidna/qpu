@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VULCANOLOGY — scaffolded integer measures crossed to geology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class VulcanologyFormulas {
 }
 
 for (const name of ['ashheight', 'ejectavolume', 'explosivity', 'hazardindex', 'lavaflowrate', 'magmaviscosity', 'repose', 'vei'] as const)
-  qpuHexRegisterOf('vulcanology', name, (VulcanologyFormulas[name] as (...x: unknown[]) => unknown).bind(VulcanologyFormulas))
+  hexRegisterOf('vulcanology', name, (VulcanologyFormulas[name] as (...x: unknown[]) => unknown).bind(VulcanologyFormulas))

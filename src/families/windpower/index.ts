@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WINDPOWER — scaffolded integer measures crossed to energy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class WindpowerFormulas {
 }
 
 for (const name of ['availability', 'capacityfactor', 'cutinspeed', 'farmoutput', 'ratedpower', 'sweptarea', 'tipspeedratio', 'turbineoutput'] as const)
-  qpuHexRegisterOf('windpower', name, (WindpowerFormulas[name] as (...x: unknown[]) => unknown).bind(WindpowerFormulas))
+  hexRegisterOf('windpower', name, (WindpowerFormulas[name] as (...x: unknown[]) => unknown).bind(WindpowerFormulas))

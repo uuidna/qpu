@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STORYBOARDING — scaffolded integer measures crossed to geometry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class StoryboardingFormulas {
 }
 
 for (const name of ['aspectratio', 'coverage', 'framesize', 'gridcells', 'panels', 'sequenceorderings', 'shotcombos', 'transitiontypes'] as const)
-  qpuHexRegisterOf('storyboarding', name, (StoryboardingFormulas[name] as (...x: unknown[]) => unknown).bind(StoryboardingFormulas))
+  hexRegisterOf('storyboarding', name, (StoryboardingFormulas[name] as (...x: unknown[]) => unknown).bind(StoryboardingFormulas))

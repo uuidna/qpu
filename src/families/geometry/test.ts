@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GeometryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('geometry: area, perimeter, rectangle, circle, volume, pythagorean, angle, 
   assert.equal(GeometryFormulas.angle(720, 0).value, 0, 'guarded division')
   assert.equal(GeometryFormulas.diagonal(3, 4).value, 25)
   assert.equal(GeometryFormulas.area(10, 4).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('geometry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('geometry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'geometry', program: ['rectangle'], params: [8, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 24, `geometry.rectangle at ${uuid}`)
-  qpuUuidReceiptOf('geometry rectangle', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('geometry rectangle', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; area 20, perimeter 30, rectangle 24, circle 314, volume 120, pythagorean 25, angle 120, diagonal 25; crossing to code')
 })

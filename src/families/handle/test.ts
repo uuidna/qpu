@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HandleFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -26,10 +26,10 @@ test('handle: a UUID is the product of four 8-hex handles handling each other â€
   assert.equal(HandleFormulas.tamper(32).value, 4294967296, 'forging a 32-bit seal is 2^32 work; verifying is O(1)')
   assert.equal(HandleFormulas.tamper(0).value, 1, 'a zero-bit seal is trivial')
   assert.equal(HandleFormulas.trinity(2, 3, 4).dst, 'merkaba')
-  assert.equal(qpuHexFamiliesOf().get('handle')?.length, 15)
+  assert.equal(hexFamiliesOf().get('handle')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'handle', program: ['compose'], params: [5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 120, `handle.compose at ${uuid}`)
-  qpuUuidReceiptOf('handle compose', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('handle compose', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; hexits 8, bits 32, count 4, nibbles 32, space 2^32, offset 0..24, pair 256, trinity 24, compose P(5,4)=120, choose C(5,4)=5, compression 4, same 1/0, index 7, plugin 1, tamper 2^32; crossing to merkaba')
 })

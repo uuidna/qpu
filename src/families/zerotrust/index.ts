@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ZEROTRUST — DEFENSIVE POSTURE, AS ARITHMETIC (never trust, always verify). A posture is numbers: the trust score from
@@ -31,4 +31,4 @@ export class ZerotrustFormulas {
 }
 
 for (const name of ['attacksurface', 'blastradius', 'continuousauth', 'deviceposture', 'microsegments', 'policycoverage', 'trustscore', 'verificationrate'] as const)
-  qpuHexRegisterOf('zerotrust', name, (ZerotrustFormulas[name] as (...x: unknown[]) => unknown).bind(ZerotrustFormulas))
+  hexRegisterOf('zerotrust', name, (ZerotrustFormulas[name] as (...x: unknown[]) => unknown).bind(ZerotrustFormulas))

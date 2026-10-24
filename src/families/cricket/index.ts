@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CRICKET — THE GAME AS ARITHMETIC (the scorecard, not opinion). Playing is numbers: a batter's average and strike rate, a
@@ -30,4 +30,4 @@ export class CricketFormulas {
 }
 
 for (const name of ['battingaverage', 'boundary', 'bowlingaverage', 'economy', 'partnership', 'required', 'runrate', 'strikerate'] as const)
-  qpuHexRegisterOf('cricket', name, (CricketFormulas[name] as (...x: unknown[]) => unknown).bind(CricketFormulas))
+  hexRegisterOf('cricket', name, (CricketFormulas[name] as (...x: unknown[]) => unknown).bind(CricketFormulas))

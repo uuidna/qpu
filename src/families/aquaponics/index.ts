@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AQUAPONICS — scaffolded integer measures crossed to agriculture. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class AquaponicsFormulas {
 }
 
 for (const name of ['bacteriastrains', 'feedratio', 'fishdensity', 'nitrogencycle', 'phbalance', 'plantgrowbeds', 'watervolume', 'yieldratio'] as const)
-  qpuHexRegisterOf('aquaponics', name, (AquaponicsFormulas[name] as (...x: unknown[]) => unknown).bind(AquaponicsFormulas))
+  hexRegisterOf('aquaponics', name, (AquaponicsFormulas[name] as (...x: unknown[]) => unknown).bind(AquaponicsFormulas))

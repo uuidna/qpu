@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SCULPTURE — scaffolded integer measures crossed to materials. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SculptureFormulas {
 }
 
 for (const name of ['balancemargin', 'facetcount', 'masskg', 'removalratio', 'scaleratio', 'supportpoints', 'toolpasses', 'volume'] as const)
-  qpuHexRegisterOf('sculpture', name, (SculptureFormulas[name] as (...x: unknown[]) => unknown).bind(SculptureFormulas))
+  hexRegisterOf('sculpture', name, (SculptureFormulas[name] as (...x: unknown[]) => unknown).bind(SculptureFormulas))

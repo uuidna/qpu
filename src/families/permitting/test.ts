@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PermittingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('permitting: approval, backlog, cycletime, expiry, fee, inspections, queue,
   assert.equal(PermittingFormulas.queue(100, 8).value, 13, 'windows for the day\'s arrivals')
   assert.equal(PermittingFormulas.throughput(600, 30).value, 20, 'permits per day')
   assert.equal(PermittingFormulas.approval(900, 1000).dst, 'governance')
-  assert.equal(qpuHexFamiliesOf().get('permitting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('permitting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'permitting', program: ['queue'], params: [100, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 13, `permitting.queue at ${uuid}`)
-  qpuUuidReceiptOf('permitting queue', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('permitting queue', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; approval 90, backlog 180, cycletime 30, expiry 465, fee 15000, inspections 450, queue 13, throughput 20; crossing to governance')
 })

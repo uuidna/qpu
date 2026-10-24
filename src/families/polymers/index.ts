@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POLYMERS — MACROMOLECULES AS ARITHMETIC (chosen by the materials registry, not by hand). A chain is numbers: the degree
@@ -31,4 +31,4 @@ export class PolymersFormulas {
 }
 
 for (const name of ['crosslink', 'crystallinity', 'degreeofpolymerization', 'elongation', 'glasstransition', 'molecularweight', 'tensilestrength', 'viscosity'] as const)
-  qpuHexRegisterOf('polymers', name, (PolymersFormulas[name] as (...x: unknown[]) => unknown).bind(PolymersFormulas))
+  hexRegisterOf('polymers', name, (PolymersFormulas[name] as (...x: unknown[]) => unknown).bind(PolymersFormulas))

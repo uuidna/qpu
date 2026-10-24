@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AutomotiveFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -20,10 +20,10 @@ test('automotive: power, economy, acceleration, braking, displacement, emissions
   assert.equal(AutomotiveFormulas.range(600, 20).value, 30)
   assert.equal(AutomotiveFormulas.range(600, 0).value, 0, 'guard consumption > 0')
   assert.equal(AutomotiveFormulas.power(300, 5252).dst, 'transport')
-  assert.equal(qpuHexFamiliesOf().get('automotive')?.length, 8)
+  assert.equal(hexFamiliesOf().get('automotive')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'automotive', program: ['economy'], params: [400, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 40, `automotive.economy at ${uuid}`)
-  qpuUuidReceiptOf('automotive economy', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('automotive economy', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; power 300, economy 40, acceleration 25, braking 40, displacement 72, emissions 20, ratio 390, range 30; crossing to transport')
 })

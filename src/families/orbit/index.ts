@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** ORBIT — A BODY AROUND A PRIMARY, AS ARITHMETIC. A trajectory is numbers: the period to come round, the semi-major
  *  axis of the ellipse, how eccentric it is, the far and near points, the speed along the path, the plane's tilt, and how
@@ -32,4 +32,4 @@ export class OrbitFormulas {
 }
 
 for (const name of ['apoapsis', 'eccentricity', 'inclination', 'meananomaly', 'periapsis', 'period', 'semimajoraxis', 'velocity'] as const)
-  qpuHexRegisterOf('orbit', name, (OrbitFormulas[name] as (...x: unknown[]) => unknown).bind(OrbitFormulas))
+  hexRegisterOf('orbit', name, (OrbitFormulas[name] as (...x: unknown[]) => unknown).bind(OrbitFormulas))

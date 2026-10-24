@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VOLCANOLOGY — ERUPTIONS AS ARITHMETIC. The explosivity index, effusion rate, lava viscosity, ash loading, magma
@@ -30,4 +30,4 @@ export class VolcanologyFormulas {
 }
 
 for (const name of ['ash', 'effusion', 'gas', 'magma', 'pyroclastic', 'repose', 'vei', 'viscosity'] as const)
-  qpuHexRegisterOf('volcanology', name, (VolcanologyFormulas[name] as (...x: unknown[]) => unknown).bind(VolcanologyFormulas))
+  hexRegisterOf('volcanology', name, (VolcanologyFormulas[name] as (...x: unknown[]) => unknown).bind(VolcanologyFormulas))

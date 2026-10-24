@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ComparisonFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('comparison: cells, rows, columns, coverage, highlight, diff, winner, sprea
   assert.equal(ComparisonFormulas.winner(90, 95).value, 0)
   assert.equal(ComparisonFormulas.spread(100, 20).value, 80)
   assert.equal(ComparisonFormulas.cells(5, 3).dst, 'frontend')
-  assert.equal(qpuHexFamiliesOf().get('comparison')?.length, 8)
+  assert.equal(hexFamiliesOf().get('comparison')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'comparison', program: ['cells'], params: [5, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `comparison.cells at ${uuid}`)
-  qpuUuidReceiptOf('comparison cells', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('comparison cells', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; cells 15, rows 5, columns 3, coverage 60, highlight 66, diff 50, winner 1, spread 80; crossing to frontend')
 })

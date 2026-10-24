@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DiceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('dice: outcomes, expectedsum, probabilitypct, range, combinations, variance
   assert.equal(DiceFormulas.mode(6, 3).value, 10, 'most common sum of 3d6')
   assert.equal(DiceFormulas.advantage(6).value, 4, 'expected higher of two d6, floored')
   assert.equal(DiceFormulas.outcomes(6, 2).dst, 'probability')
-  assert.equal(qpuHexFamiliesOf().get('dice')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dice')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dice', program: ['outcomes'], params: [6, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 36, `dice.outcomes at ${uuid}`)
-  qpuUuidReceiptOf('dice outcomes', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dice outcomes', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; outcomes 36, expectedsum 7, probabilitypct 16, range 10, combinations 15, variance 2, mode 10, advantage 4; crossing to probability')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MONOPOLY — scaffolded integer measures crossed to microeconomics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MonopolyFormulas {
 }
 
 for (const name of ['barriersubsets', 'deadweightloss', 'lernerindex', 'marketshare', 'markup', 'outputreduction', 'pricemargin', 'profitmax'] as const)
-  qpuHexRegisterOf('monopoly', name, (MonopolyFormulas[name] as (...x: unknown[]) => unknown).bind(MonopolyFormulas))
+  hexRegisterOf('monopoly', name, (MonopolyFormulas[name] as (...x: unknown[]) => unknown).bind(MonopolyFormulas))

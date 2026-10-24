@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PsuFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('psu: watts, efficiency, headroom, rails and the load picture — crossing 
   assert.equal(PsuFormulas.ripple(50).value, 50, 'ripple in mV')
   assert.equal(PsuFormulas.peak(600, 2).value, 1200, 'continuous × factor')
   assert.equal(PsuFormulas.watts(12, 50).dst, 'hardware')
-  assert.equal(qpuHexFamiliesOf().get('psu')?.length, 10)
+  assert.equal(hexFamiliesOf().get('psu')?.length, 10)
   const uuid = qpuHexUuidOf({ family: 'psu', program: ['watts'], params: [12, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 600, `psu.watts at ${uuid}`)
-  qpuUuidReceiptOf('psu watts', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('psu watts', contentUuidOf(run), { uuid })
   t.diagnostic('10 formulas; watts 600, efficiency 90%, headroom 250, rails 80, loadpercent 70%, dissipation 60, current 50, redundancy 1, ripple 50, peak 1200; crossing to hardware')
 })

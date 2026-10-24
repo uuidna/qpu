@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONVECTION — HEAT CARRIED BY A MOVING FLUID, AS ARITHMETIC. Running a flow is numbers: the heat flux a surface sheds, the
@@ -31,4 +31,4 @@ export class ConvectionFormulas {
 }
 
 for (const name of ['boundarylayer', 'coefficient', 'filmtemp', 'grashof', 'heatflux', 'prandtl', 'rayleigh', 'reynolds'] as const)
-  qpuHexRegisterOf('convection', name, (ConvectionFormulas[name] as (...x: unknown[]) => unknown).bind(ConvectionFormulas))
+  hexRegisterOf('convection', name, (ConvectionFormulas[name] as (...x: unknown[]) => unknown).bind(ConvectionFormulas))

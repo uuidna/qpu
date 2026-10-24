@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MTBF — RELIABILITY AS ARITHMETIC. Running hardware is numbers: mean time between failures, the failure rate per million
@@ -30,4 +30,4 @@ export class MtbfFormulas {
 }
 
 for (const name of ['cumulativehours', 'failurerate', 'fits', 'hazardrate', 'meantime', 'mttr', 'operatinglife', 'uptime'] as const)
-  qpuHexRegisterOf('mtbf', name, (MtbfFormulas[name] as (...x: unknown[]) => unknown).bind(MtbfFormulas))
+  hexRegisterOf('mtbf', name, (MtbfFormulas[name] as (...x: unknown[]) => unknown).bind(MtbfFormulas))

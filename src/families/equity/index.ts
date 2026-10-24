@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EquityFormulas — 8 exact-integer formulas of the equity domain, each at a hex address crossing to cross; develops the equity leads. */
@@ -31,4 +31,4 @@ export class EquityFormulas {
 }
 
 for (const name of ['classes', 'combos', 'dividendyield', 'eps', 'float', 'marketcap', 'pe', 'shares'] as const)
-  qpuHexRegisterOf('equity', name, (EquityFormulas[name] as (...x: unknown[]) => unknown).bind(EquityFormulas))
+  hexRegisterOf('equity', name, (EquityFormulas[name] as (...x: unknown[]) => unknown).bind(EquityFormulas))

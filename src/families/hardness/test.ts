@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HardnessFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('hardness: brinell, vickers, rockwell, knoop, tensileestimate, indentation,
   assert.equal(HardnessFormulas.loadratio(150, 10).value, 1500)
   assert.equal(HardnessFormulas.scaleconvert(200, 150).value, 300)
   assert.equal(HardnessFormulas.brinell(3000, 10).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('hardness')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hardness')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hardness', program: ['brinell'], params: [3000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `hardness.brinell at ${uuid}`)
-  qpuUuidReceiptOf('hardness brinell', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hardness brinell', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; brinell 300, vickers 185, rockwell 70, knoop 142, tensileestimate 690, indentation 10, loadratio 1500, scaleconvert 300; crossing to materials')
 })

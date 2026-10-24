@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GREENSPACE — URBAN NATURE, AS ARITHMETIC (chosen by the public-API registry, not by hand). A city's green is numbers:
@@ -31,4 +31,4 @@ export class GreenspaceFormulas {
 }
 
 for (const name of ['biodiversity', 'canopycover', 'connectivity', 'coolingeffect', 'parkaccess', 'percapita', 'recreationcapacity', 'stormwater'] as const)
-  qpuHexRegisterOf('greenspace', name, (GreenspaceFormulas[name] as (...x: unknown[]) => unknown).bind(GreenspaceFormulas))
+  hexRegisterOf('greenspace', name, (GreenspaceFormulas[name] as (...x: unknown[]) => unknown).bind(GreenspaceFormulas))

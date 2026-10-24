@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BreedingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('breeding: heritability, inbreeding, selectiondifferential, geneticgain, br
   assert.equal(BreedingFormulas.conceptionrate(85, 100).value, 85)
   assert.equal(BreedingFormulas.progenycount(50, 8, 90).value, 360, 'surviving offspring')
   assert.equal(BreedingFormulas.heritability(40, 100).dst, 'zoology')
-  assert.equal(qpuHexFamiliesOf().get('breeding')?.length, 8)
+  assert.equal(hexFamiliesOf().get('breeding')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'breeding', program: ['effectivepopulation'], params: [20, 80] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 64, `breeding.effectivepopulation at ${uuid}`)
-  qpuUuidReceiptOf('breeding effectivepopulation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('breeding effectivepopulation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; heritability 40, inbreeding 50, selectiondifferential 20, geneticgain 8, breedingvalue 20, effectivepopulation 64, conceptionrate 85, progenycount 360; crossing to zoology')
 })

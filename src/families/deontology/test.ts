@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DeontologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('deontology: duties, maximorderings, dutypairs, universalizability, imperat
   assert.equal(DeontologyFormulas.rightsduties(5, 2).value, 10)
   assert.equal(DeontologyFormulas.conflictcount(12, 8).value, 4)
   assert.equal(DeontologyFormulas.duties(7, 3).dst, 'philosophy')
-  assert.equal(qpuHexFamiliesOf().get('deontology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('deontology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'deontology', program: ['duties'], params: [7, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `deontology.duties at ${uuid}`)
-  qpuUuidReceiptOf('deontology duties', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('deontology duties', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; duties 10, maximorderings 24, dutypairs 45, universalizability 80, imperativesubsets 16, obligationchains 20, rightsduties 10, conflictcount 4; crossing to philosophy')
 })

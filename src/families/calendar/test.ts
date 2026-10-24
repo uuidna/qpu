@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CalendarFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('calendar: daysinyear, leapcycle, weekcombos, monthorderings, intercalation
   assert.equal(CalendarFormulas.epochspan(2000, 1).value, 1999)
   assert.equal(CalendarFormulas.cyclepermutations(7, 3).value, 210)
   assert.equal(CalendarFormulas.daysinyear(360, 5).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('calendar')?.length, 8)
+  assert.equal(hexFamiliesOf().get('calendar')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'calendar', program: ['daysinyear'], params: [360, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 365, `calendar.daysinyear at ${uuid}`)
-  qpuUuidReceiptOf('calendar daysinyear', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('calendar daysinyear', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; daysinyear 365, leapcycle 25, weekcombos 21, monthorderings 720, intercalations 2, dayofweek 1, epochspan 1999, cyclepermutations 210; crossing to statistics')
 })

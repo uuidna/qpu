@@ -1,8 +1,8 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { designJdOf, sunLongitudeOf } from '../hd/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** THE CALENDAR'S DRIFT, CROSSED INTO THE WHEEL. A Human Design chart is read off the tropical ecliptic at an instant;
  *  the instant comes from a calendar, and calendars drift. The Julian year (365.25 d) runs 11 min 14 s a year ahead of
@@ -69,4 +69,4 @@ export class CalFormulas {
 }
 
 for (const name of ['coin', 'dayPer', 'designDays', 'faces', 'gatesPrecessed', 'gregorianDrift', 'julianDrift', 'leap', 'lunarDrift', 'metonicDrift', 'pairs', 'precession', 'sarosShift', 'sunSpeed'] as const)
-  qpuHexRegisterOf('cal', name, (CalFormulas[name] as (...x: unknown[]) => unknown).bind(CalFormulas))
+  hexRegisterOf('cal', name, (CalFormulas[name] as (...x: unknown[]) => unknown).bind(CalFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TypologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('typology: wordorderfreq, morphemecomplexity, phonemeinventory, consonantvo
   assert.equal(TypologyFormulas.geneticdistance(144, 100).value, 44, 'features not shared')
   assert.equal(TypologyFormulas.geneticdistance(100, 144).value, 0)
   assert.equal(TypologyFormulas.wordorderfreq(600, 1200).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('typology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('typology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'typology', program: ['phonemeinventory'], params: [22, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 27, `typology.phonemeinventory at ${uuid}`)
-  qpuUuidReceiptOf('typology phonemeinventory', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('typology phonemeinventory', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; wordorderfreq 50, morphemecomplexity 30000, phonemeinventory 27, consonantvowelratio 440, syntheticindex 255, markednesscount 18, featurecount 576, geneticdistance 44; crossing to linguistics')
 })

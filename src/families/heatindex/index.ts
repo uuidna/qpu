@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HEATINDEX — scaffolded integer measures crossed to weather. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HeatindexFormulas {
 }
 
 for (const name of ['apparenttemp', 'coolingload', 'dangerlevel', 'discomfortindex', 'exposureminutes', 'feelsdelta', 'humidityfactor', 'riskpct'] as const)
-  qpuHexRegisterOf('heatindex', name, (HeatindexFormulas[name] as (...x: unknown[]) => unknown).bind(HeatindexFormulas))
+  hexRegisterOf('heatindex', name, (HeatindexFormulas[name] as (...x: unknown[]) => unknown).bind(HeatindexFormulas))

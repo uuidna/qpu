@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FpgaFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('fpga: LUTs, flip-flops, DSP, block-RAM, fMAX, utilisation and throughput �
   assert.equal(FpgaFormulas.io(8, 50).value, 400, 'banks × per-bank')
   assert.equal(FpgaFormulas.power(800, 25).value, 20000, 'LUTs × per-LUT µW')
   assert.equal(FpgaFormulas.luts(100, 8).dst, 'hardware')
-  assert.equal(qpuHexFamiliesOf().get('fpga')?.length, 10)
+  assert.equal(hexFamiliesOf().get('fpga')?.length, 10)
   const uuid = qpuHexUuidOf({ family: 'fpga', program: ['luts'], params: [100, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 800, `fpga.luts at ${uuid}`)
-  qpuUuidReceiptOf('fpga luts', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('fpga luts', contentUuidOf(run), { uuid })
   t.diagnostic('10 formulas; luts 800, ffs 1600, dsp 480, bram 14400, fmax 500, utilization 60%, pipeline 8, throughput 1000, io 400, power 20000; crossing to hardware')
 })

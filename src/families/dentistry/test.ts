@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DentistryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('dentistry: decay, plaque, anesthetic, recall, restoration, pocket, fluorid
   assert.equal(DentistryFormulas.fluoride(2000, 1500).value, 0)
   assert.equal(DentistryFormulas.extraction(1, 32).value, 3)
   assert.equal(DentistryFormulas.decay(3, 32).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('dentistry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dentistry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dentistry', program: ['decay'], params: [3, 32] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9, `dentistry.decay at ${uuid}`)
-  qpuUuidReceiptOf('dentistry decay', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dentistry decay', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; decay 9, plaque 25, anesthetic 140, recall 4, restoration 80, pocket 4, fluoride 1, extraction 3; crossing to med')
 })

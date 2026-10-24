@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MarinationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('marination: penetrationdepth, aciduptake, tenderization, marinatetime, sal
   assert.equal(MarinationFormulas.phshift(60, 45).value, 15)
   assert.equal(MarinationFormulas.weightgain(8, 100).value, 8)
   assert.equal(MarinationFormulas.penetrationdepth(20, 4).dst, 'biochemistry')
-  assert.equal(qpuHexFamiliesOf().get('marination')?.length, 8)
+  assert.equal(hexFamiliesOf().get('marination')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'marination', program: ['penetrationdepth'], params: [20, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `marination.penetrationdepth at ${uuid}`)
-  qpuUuidReceiptOf('marination penetrationdepth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('marination penetrationdepth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; penetrationdepth 5, aciduptake 15, tenderization 40, marinatetime 240, saltdiffusion 10, flavorload 60, phshift 15, weightgain 8; crossing to biochemistry')
 })

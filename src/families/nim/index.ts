@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NIM — scaffolded integer measures crossed to logic. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class NimFormulas {
 }
 
 for (const name of ['grundyvalue', 'heapmax', 'heaps', 'movecombos', 'parity', 'positionsubsets', 'totalstones', 'winningmoves'] as const)
-  qpuHexRegisterOf('nim', name, (NimFormulas[name] as (...x: unknown[]) => unknown).bind(NimFormulas))
+  hexRegisterOf('nim', name, (NimFormulas[name] as (...x: unknown[]) => unknown).bind(NimFormulas))

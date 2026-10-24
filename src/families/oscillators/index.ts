@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** OSCILLATORS — PERIODIC SIGNALS AS ARITHMETIC. A running oscillator is numbers: its frequency from the cycles it turns
  *  in a span, the period of one cycle, the duty a square wave holds high, the phase a shift lands at, the resonant point of
@@ -33,4 +33,4 @@ export class OscillatorsFormulas {
 }
 
 for (const name of ['dutycycle', 'frequency', 'harmonics', 'jitter', 'period', 'phase', 'resonance', 'stability'] as const)
-  qpuHexRegisterOf('oscillators', name, (OscillatorsFormulas[name] as (...x: unknown[]) => unknown).bind(OscillatorsFormulas))
+  hexRegisterOf('oscillators', name, (OscillatorsFormulas[name] as (...x: unknown[]) => unknown).bind(OscillatorsFormulas))

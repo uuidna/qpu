@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SilageFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('silage: drymatter, density, fermentationloss, phlevel, packingdensity, fee
   assert.equal(SilageFormulas.capacity(50, 4).value, 200)
   assert.equal(SilageFormulas.moisture(650, 1000).value, 65)
   assert.equal(SilageFormulas.drymatter(350, 1000).dst, 'agriculture')
-  assert.equal(qpuHexFamiliesOf().get('silage')?.length, 8)
+  assert.equal(hexFamiliesOf().get('silage')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'silage', program: ['feedout'], params: [3000, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `silage.feedout at ${uuid}`)
-  qpuUuidReceiptOf('silage feedout', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('silage feedout', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; drymatter 35, density 700, fermentationloss 8, phlevel 42, packingdensity 7200, feedout 100, capacity 200, moisture 65; crossing to agriculture')
 })

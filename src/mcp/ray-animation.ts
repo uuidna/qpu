@@ -21,7 +21,7 @@ const q = (x: number) => Math.round(x * 100) / 100 // a short, deterministic dec
 
 /** The UUID's animation as a standalone SVG string. Deterministic in (uuid, meta): a representation of running the
  *  program at `uuid`, selected by content type, never a separate address. */
-export const qpuRaySvgOf = (uuid: string, meta: { title?: string; holds?: boolean } = {}): string => {
+export const raySvgOf = (uuid: string, meta: { title?: string; holds?: boolean } = {}): string => {
   const nibbles = nibblesOf(uuid)
   const n = nibbles.length || NIBBLES
   const sum = nibbles.reduce((a, b) => a + b, 0)
@@ -55,4 +55,4 @@ export const qpuRaySvgOf = (uuid: string, meta: { title?: string; holds?: boolea
 }
 
 /** The URL at which a UUID's animation surfaces — the address itself with the image representation, no family prefix. */
-export const qpuRayUrlOf = (origin: string, uuid: string): string => `${origin.replace(/\/$/, '')}/${encodeURIComponent(uuid)}.svg`
+export const rayUrlOf = (origin: string, uuid: string): string => `${origin.replace(/\/$/, '')}/${encodeURIComponent(uuid)}.svg`

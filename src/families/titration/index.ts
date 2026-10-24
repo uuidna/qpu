@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TITRATION — VOLUMETRIC ANALYSIS, AS ARITHMETIC. A titration is numbers: the titrant volume to the equivalence point,
@@ -31,4 +31,4 @@ export class TitrationFormulas {
 }
 
 for (const name of ['backtitration', 'buffer', 'concentration', 'endpoint', 'equivalence', 'indicator', 'normality', 'titer'] as const)
-  qpuHexRegisterOf('titration', name, (TitrationFormulas[name] as (...x: unknown[]) => unknown).bind(TitrationFormulas))
+  hexRegisterOf('titration', name, (TitrationFormulas[name] as (...x: unknown[]) => unknown).bind(TitrationFormulas))

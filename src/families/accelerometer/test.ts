@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AccelerometerFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('accelerometer: gforce, sensitivity, bandwidth, tilt, vibrationrms, offset,
   assert.equal(AccelerometerFormulas.fullscale(8).value, 16)
   assert.equal(AccelerometerFormulas.samplerate(6000, 60).value, 100, 'samples per second')
   assert.equal(AccelerometerFormulas.gforce(2000, 1000).dst, 'mechanical')
-  assert.equal(qpuHexFamiliesOf().get('accelerometer')?.length, 8)
+  assert.equal(hexFamiliesOf().get('accelerometer')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'accelerometer', program: ['tilt'], params: [500, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 45, `accelerometer.tilt at ${uuid}`)
-  qpuUuidReceiptOf('accelerometer tilt', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('accelerometer tilt', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gforce 2, sensitivity 250, bandwidth 500, tilt 45, vibrationrms 707, offset 2, fullscale 16, samplerate 100; crossing to mechanical')
 })

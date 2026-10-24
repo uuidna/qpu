@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LANDUSE — PLANNING A PARCEL AS ARITHMETIC. How land is allotted is numbers: the residential share of a site, how much is
@@ -30,4 +30,4 @@ export class LanduseFormulas {
 }
 
 for (const name of ['buildableratio', 'developable', 'impervious', 'openspaceratio', 'parcelcount', 'residentialshare', 'setbackarea', 'zoningmix'] as const)
-  qpuHexRegisterOf('landuse', name, (LanduseFormulas[name] as (...x: unknown[]) => unknown).bind(LanduseFormulas))
+  hexRegisterOf('landuse', name, (LanduseFormulas[name] as (...x: unknown[]) => unknown).bind(LanduseFormulas))

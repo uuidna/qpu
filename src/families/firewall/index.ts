@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FIREWALL — PACKET POLICY AS ARITHMETIC (chosen by the networking registry, not by hand). Filtering traffic is numbers:
@@ -30,4 +30,4 @@ export class FirewallFormulas {
 }
 
 for (const name of ['blockrate', 'connections', 'coverage', 'falseblock', 'inspection', 'latency', 'rules', 'throughput'] as const)
-  qpuHexRegisterOf('firewall', name, (FirewallFormulas[name] as (...x: unknown[]) => unknown).bind(FirewallFormulas))
+  hexRegisterOf('firewall', name, (FirewallFormulas[name] as (...x: unknown[]) => unknown).bind(FirewallFormulas))

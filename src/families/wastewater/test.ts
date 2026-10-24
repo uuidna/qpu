@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WastewaterFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('wastewater: aeration, bod, clarifier, cod, loading, removal, retention, sl
   assert.equal(WastewaterFormulas.sludge(150, 7).value, 1050)
   assert.equal(WastewaterFormulas.removal(100, 100).value, 0, 'nothing removed')
   assert.equal(WastewaterFormulas.removal(200, 20).dst, 'hydrology')
-  assert.equal(qpuHexFamiliesOf().get('wastewater')?.length, 8)
+  assert.equal(hexFamiliesOf().get('wastewater')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'wastewater', program: ['removal'], params: [200, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `wastewater.removal at ${uuid}`)
-  qpuUuidReceiptOf('wastewater removal', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('wastewater removal', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; aeration 34, bod 60000, clarifier 30, cod 400, loading 120, removal 90, retention 24, sludge 1050; crossing to hydrology')
 })

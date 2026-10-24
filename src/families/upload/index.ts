@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** UPLOAD — THE PAYLOAD CMS UPLOAD / MEDIA API, AS ARITHMETIC. An uploaded image is numbers: its pixel area, its aspect
@@ -30,4 +30,4 @@ export class UploadFormulas {
 }
 
 for (const name of ['area', 'aspect', 'crop', 'filesize', 'quality', 'resize', 'thumbnail', 'within'] as const)
-  qpuHexRegisterOf('upload', name, (UploadFormulas[name] as (...x: unknown[]) => unknown).bind(UploadFormulas))
+  hexRegisterOf('upload', name, (UploadFormulas[name] as (...x: unknown[]) => unknown).bind(UploadFormulas))

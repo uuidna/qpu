@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REINSURANCE — INSURANCE OF INSURERS, AS ARITHMETIC (a carrier cedes part of a risk so a loss is shared, not borne alone).
@@ -31,4 +31,4 @@ export class ReinsuranceFormulas {
 }
 
 for (const name of ['attachment', 'cession', 'layer', 'quota', 'recovery', 'retention', 'surplus', 'treaty'] as const)
-  qpuHexRegisterOf('reinsurance', name, (ReinsuranceFormulas[name] as (...x: unknown[]) => unknown).bind(ReinsuranceFormulas))
+  hexRegisterOf('reinsurance', name, (ReinsuranceFormulas[name] as (...x: unknown[]) => unknown).bind(ReinsuranceFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NuclearphysicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('nuclearphysics: halflife, decay, bindingenergy, massdefect, criticality, a
   assert.equal(NuclearphysicsFormulas.dose(1000, 50).value, 20)
   assert.equal(NuclearphysicsFormulas.fission(100, 200).value, 20000)
   assert.equal(NuclearphysicsFormulas.halflife(1000, 3).dst, 'thermodynamics')
-  assert.equal(qpuHexFamiliesOf().get('nuclearphysics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('nuclearphysics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'nuclearphysics', program: ['halflife'], params: [1000, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 125, `nuclearphysics.halflife at ${uuid}`)
-  qpuUuidReceiptOf('nuclearphysics halflife', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('nuclearphysics halflife', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; halflife 125, decay 875, bindingenergy 448, massdefect 9, criticality 1, activity 100, dose 20, fission 20000; crossing to thermodynamics')
 })

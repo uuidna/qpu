@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CURRICULUM — A COURSE OF STUDY, AS ARITHMETIC (chosen by the public-API registry, not by hand). Designing a programme
@@ -32,4 +32,4 @@ export class CurriculumFormulas {
 }
 
 for (const name of ['alignment', 'contacthours', 'coursecount', 'coverage', 'credithours', 'pacing', 'prerequisitedepth', 'workload'] as const)
-  qpuHexRegisterOf('curriculum', name, (CurriculumFormulas[name] as (...x: unknown[]) => unknown).bind(CurriculumFormulas))
+  hexRegisterOf('curriculum', name, (CurriculumFormulas[name] as (...x: unknown[]) => unknown).bind(CurriculumFormulas))

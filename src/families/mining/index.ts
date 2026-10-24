@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MINING — MINERAL EXTRACTION ECONOMICS, AS ARITHMETIC. Pulling metal from rock is numbers: the grade of the ore, how
@@ -31,4 +31,4 @@ export class MiningFormulas {
 }
 
 for (const name of ['cost', 'cutoff', 'grade', 'recovery', 'reserves', 'stripping', 'throughput', 'yield'] as const)
-  qpuHexRegisterOf('mining', name, (MiningFormulas[name] as (...x: unknown[]) => unknown).bind(MiningFormulas))
+  hexRegisterOf('mining', name, (MiningFormulas[name] as (...x: unknown[]) => unknown).bind(MiningFormulas))

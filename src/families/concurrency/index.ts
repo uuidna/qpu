@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONCURRENCY — PARALLEL COMPUTE, AS ARITHMETIC. The limits of running work at once are numbers: Amdahl's speedup, raw
@@ -35,4 +35,4 @@ export class ConcurrencyFormulas {
 }
 
 for (const name of ['amdahl', 'contention', 'deadlock', 'latency', 'scalability', 'speedup', 'steal', 'throughput', 'utilization'] as const)
-  qpuHexRegisterOf('concurrency', name, (ConcurrencyFormulas[name] as (...x: unknown[]) => unknown).bind(ConcurrencyFormulas))
+  hexRegisterOf('concurrency', name, (ConcurrencyFormulas[name] as (...x: unknown[]) => unknown).bind(ConcurrencyFormulas))

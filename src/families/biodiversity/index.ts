@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIODIVERSITY — LIFE'S VARIETY, AS ARITHMETIC (chosen by the ecology registry, not by hand). A community is numbers:
@@ -31,4 +31,4 @@ export class BiodiversityFormulas {
 }
 
 for (const name of ['abundance', 'endemism', 'evenness', 'rarity', 'richness', 'shannon', 'simpson', 'turnover'] as const)
-  qpuHexRegisterOf('biodiversity', name, (BiodiversityFormulas[name] as (...x: unknown[]) => unknown).bind(BiodiversityFormulas))
+  hexRegisterOf('biodiversity', name, (BiodiversityFormulas[name] as (...x: unknown[]) => unknown).bind(BiodiversityFormulas))

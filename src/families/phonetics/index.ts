@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHONETICS — THE SOUNDS OF SPEECH, AS ARITHMETIC. The voice is numbers: formant frequencies over harmonics, pitch as
@@ -31,4 +31,4 @@ export class PhoneticsFormulas {
 }
 
 for (const name of ['duration', 'formant', 'intensity', 'pitch', 'rate', 'sonority', 'voicing', 'vowels'] as const)
-  qpuHexRegisterOf('phonetics', name, (PhoneticsFormulas[name] as (...x: unknown[]) => unknown).bind(PhoneticsFormulas))
+  hexRegisterOf('phonetics', name, (PhoneticsFormulas[name] as (...x: unknown[]) => unknown).bind(PhoneticsFormulas))

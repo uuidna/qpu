@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DataqualityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('dataquality: accuracy, completeness, consistency, duplicaterate, freshness
   assert.equal(DataqualityFormulas.uniqueness(900, 1000).value, 90)
   assert.equal(DataqualityFormulas.validity(970, 1000).value, 97)
   assert.equal(DataqualityFormulas.completeness(950, 1000).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('dataquality')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dataquality')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dataquality', program: ['completeness'], params: [950, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 95, `dataquality.completeness at ${uuid}`)
-  qpuUuidReceiptOf('dataquality completeness', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dataquality completeness', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; accuracy 98, completeness 95, consistency 88, duplicaterate 3, freshness 50, nullrate 5, uniqueness 90, validity 97; crossing to statistics')
 })

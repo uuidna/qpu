@@ -1,4 +1,4 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuQuantumOf, qpuQuantumHolds.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): quantumOf, qpuQuantumHolds.
 import {
   coins,
   cors,
@@ -6,37 +6,37 @@ import {
   mintOf,
   n,
   onceOf,
-  qpuCapacityHolds,
-  qpuCapacityOf,
-  qpuContextOf,
-  qpuCssHolds,
-  qpuCssOf,
-  qpuCubeOf,
-  qpuDesignHolds,
-  qpuDesignOf,
-  qpuEvidenceHolds,
+  capacityHolds,
+  capacityOf,
+  contextOf,
+  cssHolds,
+  cssOf,
+  cubeOf,
+  designHolds,
+  designOf,
+  evidenceHolds,
   qpuEvidenceOf,
-  qpuFacesOf,
-  qpuGenesisHolds,
-  qpuGenesisOf,
-  qpuGlossaryOf,
+  facesOf,
+  genesisHolds,
+  genesisOf,
+  glossaryOf,
   qpuHandleOf,
-  qpuNeuroHolds,
-  qpuNeuroOf,
-  qpuPurposeHolds,
-  qpuPurposeOf,
-  qpuSequenceHolds,
+  neuroHolds,
+  neuroOf,
+  purposeHolds,
+  purposeOf,
+  sequenceHolds,
   qpuSequenceOf,
-  qpuShorHolds,
-  qpuShorOf,
-  qpuSpeedHolds,
-  qpuSpeedOf,
+  shorHolds,
+  shorOf,
+  speedHolds,
+  speedOf,
   schemaOrg,
   seed,
   unit,
 } from './index.js'
-import { qpuCircuitOf, qpuCircuitHolds } from './circuit.js'
-import { qpuDocsOf, qpuDocsHolds } from './readme.js'
+import { circuitOf, circuitHolds } from './circuit.js'
+import { qpuDocsOf, docsHolds } from './readme.js'
 import { embeddedConstants } from './embedded.js'
 
 /**
@@ -45,25 +45,25 @@ import { embeddedConstants } from './embedded.js'
  * @kind builder
  * @evidence qpuQuantumHolds
  */
-/** Runtime reads the drift-checked embed so a cold isolate never JIT-compiles qpuQuantumLiveOf; falls back to live.
- *  The gate recomputes live at push via qpuQuantumLiveOf (embed-lean regenerates + the drift-guard asserts equality). */
-export const qpuQuantumOf = onceOf((): ReturnType<typeof qpuQuantumLiveOf> => (embeddedConstants.quantum as ReturnType<typeof qpuQuantumLiveOf> | undefined) ?? qpuQuantumLiveOf())
-export const qpuQuantumLiveOf = onceOf(() => {
-  const cube = qpuCubeOf()
+/** Runtime reads the drift-checked embed so a cold isolate never JIT-compiles quantumLiveOf; falls back to live.
+ *  The gate recomputes live at push via quantumLiveOf (embed-lean regenerates + the drift-guard asserts equality). */
+export const quantumOf = onceOf((): ReturnType<typeof quantumLiveOf> => (embeddedConstants.quantum as ReturnType<typeof quantumLiveOf> | undefined) ?? quantumLiveOf())
+export const quantumLiveOf = onceOf(() => {
+  const cube = cubeOf()
   const handle = qpuHandleOf()
-  const faces = qpuFacesOf()
+  const faces = facesOf()
   const fused = faces.faces * handle.kv.amplitudes
   const docs = qpuDocsOf()
-  const capacity = qpuCapacityOf()
-  const speed = qpuSpeedOf()
-  const circuit = qpuCircuitOf()
-  const shor = qpuShorOf()
+  const capacity = capacityOf()
+  const speed = speedOf()
+  const circuit = circuitOf()
+  const shor = shorOf()
   const sequence = qpuSequenceOf()
-  const neuro = qpuNeuroOf()
-  const design = qpuDesignOf()
-  const genesis = qpuGenesisOf()
-  const css = qpuCssOf('', genesis)
-  const purpose = qpuPurposeOf(circuit, shor, sequence, capacity)
+  const neuro = neuroOf()
+  const design = designOf()
+  const genesis = genesisOf()
+  const css = cssOf('', genesis)
+  const purpose = purposeOf(circuit, shor, sequence, capacity)
   const evidence = qpuEvidenceOf(circuit, shor)
   const holds =
     unit.holds &&
@@ -74,14 +74,14 @@ export const qpuQuantumLiveOf = onceOf(() => {
     capacity.holds &&
     speed.holds &&
     circuit.holds &&
-    qpuShorHolds(shor) &&
+    shorHolds(shor) &&
     sequence.holds &&
     purpose.holds &&
     evidence.holds &&
     neuro.holds &&
     design.holds &&
-    qpuGenesisHolds(genesis) &&
-    qpuCssHolds(css) &&
+    genesisHolds(genesis) &&
+    cssHolds(css) &&
     fused === faces.faces * mintOf(cube.bits + seed) &&
     fused === faces.faces * mintOf(cube.vertices * cube.hexbit + seed) &&
     mintOf(cube.hexbit) === mintOf(n + seed) &&
@@ -89,7 +89,7 @@ export const qpuQuantumLiveOf = onceOf(() => {
     mintOf(cube.bits + seed) === handle.amplitudes + handle.amplitudes &&
     faces.faces * mintOf(cube.bits + coins) === fused + fused
   return {
-    '@context': qpuContextOf(),
+    '@context': contextOf(),
     '@type': 'SoftwareApplication' as const,
     '@id': unit.origin,
     kind: 'quantum' as const,
@@ -123,7 +123,7 @@ export const qpuQuantumLiveOf = onceOf(() => {
       proxy: cors === '*',
       secure: unit.origin.startsWith('https')},
     docs,
-    glossary: qpuGlossaryOf(),
+    glossary: glossaryOf(),
     ui: {
       prove: 'prove' as const,
       href: `${unit.origin}/mcp`},
@@ -137,7 +137,7 @@ export const qpuQuantumLiveOf = onceOf(() => {
   }
 })
 
-export const qpuQuantumHolds = (q = qpuQuantumOf()): boolean =>
+export const qpuQuantumHolds = (q = quantumOf()): boolean =>
   q.holds === true &&
   q.kind === 'quantum' &&
   q.only.holds === true &&
@@ -147,22 +147,22 @@ export const qpuQuantumHolds = (q = qpuQuantumOf()): boolean =>
   q.host === unit.host &&
   q.cors === cors &&
   q.ui.prove === 'prove' &&
-  qpuDocsHolds(q.docs) &&
-  qpuCapacityHolds(q.capacity) &&
-  qpuSpeedHolds(q.speed) &&
-  qpuCircuitHolds(q.circuit) &&
-  qpuShorHolds(q.shor) &&
+  docsHolds(q.docs) &&
+  capacityHolds(q.capacity) &&
+  speedHolds(q.speed) &&
+  circuitHolds(q.circuit) &&
+  shorHolds(q.shor) &&
   q.shor.factors.p * q.shor.factors.q === q.shor.n &&
   q.shor.rsa.kind === 'rsa' &&
   q.shor.rsa.factored === true &&
   q.shor.rsa.p * q.shor.rsa.q === q.shor.n &&
-  qpuSequenceHolds(q.sequence) &&
-  qpuPurposeHolds(q.purpose) &&
-  qpuEvidenceHolds(q.evidence) &&
-  qpuNeuroHolds(q.neuro) &&
-  qpuDesignHolds(q.design) &&
-  qpuGenesisHolds(q.genesis) &&
-  qpuCssHolds(q.css) &&
+  sequenceHolds(q.sequence) &&
+  purposeHolds(q.purpose) &&
+  evidenceHolds(q.evidence) &&
+  neuroHolds(q.neuro) &&
+  designHolds(q.design) &&
+  genesisHolds(q.genesis) &&
+  cssHolds(q.css) &&
   q.css.keyframes === seed &&
   q.neuro.test.holds === true &&
   q.sequence.rungs.length === mintOf(n) &&

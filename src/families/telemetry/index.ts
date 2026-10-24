@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TELEMETRY — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TelemetryFormulas {
 }
 
 for (const name of ['aggregationpaths', 'cardinality', 'dimensionsubsets', 'ingestrate', 'metrics', 'retentiondays', 'samplingrate', 'spanpairs'] as const)
-  qpuHexRegisterOf('telemetry', name, (TelemetryFormulas[name] as (...x: unknown[]) => unknown).bind(TelemetryFormulas))
+  hexRegisterOf('telemetry', name, (TelemetryFormulas[name] as (...x: unknown[]) => unknown).bind(TelemetryFormulas))

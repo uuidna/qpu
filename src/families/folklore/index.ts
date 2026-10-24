@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FOLKLORE — scaffolded integer measures crossed to sociology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class FolkloreFormulas {
 }
 
 for (const name of ['collectionsize', 'diffusionrate', 'motifcombos', 'performercount', 'regionsubsets', 'taletypes', 'transmissionpaths', 'variantorderings'] as const)
-  qpuHexRegisterOf('folklore', name, (FolkloreFormulas[name] as (...x: unknown[]) => unknown).bind(FolkloreFormulas))
+  hexRegisterOf('folklore', name, (FolkloreFormulas[name] as (...x: unknown[]) => unknown).bind(FolkloreFormulas))

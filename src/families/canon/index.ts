@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THE HOLY BOOKS, NUMBERED — EXACT COUNTS AND EXACT WAYS, UNVERIFIED MEANING. A canon is a count: the books it holds,
@@ -46,4 +46,4 @@ export class CanonFormulas {
 }
 
 for (const name of ['books', 'chapters', 'gospels', 'orderings', 'psalms', 'selections', 'suras', 'testaments'] as const)
-  qpuHexRegisterOf('canon', name, (CanonFormulas[name] as (...x: unknown[]) => unknown).bind(CanonFormulas))
+  hexRegisterOf('canon', name, (CanonFormulas[name] as (...x: unknown[]) => unknown).bind(CanonFormulas))

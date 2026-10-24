@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HARDNESS — RESISTANCE TO INDENTATION, AS ARITHMETIC. Measuring how a material resists a pressed indenter is numbers:
@@ -31,4 +31,4 @@ export class HardnessFormulas {
 }
 
 for (const name of ['brinell', 'indentation', 'knoop', 'loadratio', 'rockwell', 'scaleconvert', 'tensileestimate', 'vickers'] as const)
-  qpuHexRegisterOf('hardness', name, (HardnessFormulas[name] as (...x: unknown[]) => unknown).bind(HardnessFormulas))
+  hexRegisterOf('hardness', name, (HardnessFormulas[name] as (...x: unknown[]) => unknown).bind(HardnessFormulas))

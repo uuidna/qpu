@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EMPIRICISM — scaffolded integer measures crossed to logic. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class EmpiricismFormulas {
 }
 
 for (const name of ['certaintydegree', 'confirmationratio', 'evidencecombos', 'generalizationpaths', 'hypothesissubsets', 'inductionsteps', 'observations', 'samplepairs'] as const)
-  qpuHexRegisterOf('empiricism', name, (EmpiricismFormulas[name] as (...x: unknown[]) => unknown).bind(EmpiricismFormulas))
+  hexRegisterOf('empiricism', name, (EmpiricismFormulas[name] as (...x: unknown[]) => unknown).bind(EmpiricismFormulas))

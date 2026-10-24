@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** IMMUNOLOGY — THE IMMUNE RESPONSE, AS ARITHMETIC (chosen by the registry, not by hand). The response is numbers: the
@@ -31,4 +31,4 @@ export class ImmunologyFormulas {
 }
 
 for (const name of ['affinity', 'boost', 'cellcount', 'cytokine', 'neutralization', 'response', 'seroconversion', 'titer'] as const)
-  qpuHexRegisterOf('immunology', name, (ImmunologyFormulas[name] as (...x: unknown[]) => unknown).bind(ImmunologyFormulas))
+  hexRegisterOf('immunology', name, (ImmunologyFormulas[name] as (...x: unknown[]) => unknown).bind(ImmunologyFormulas))

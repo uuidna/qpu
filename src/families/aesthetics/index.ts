@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AESTHETICS — VISUAL JUDGEMENT AS ARITHMETIC (chosen by the design registry, not by hand). Beauty is numbers:
@@ -31,4 +31,4 @@ export class AestheticsFormulas {
 }
 
 for (const name of ['balance', 'contrast', 'golden', 'harmony', 'proportion', 'rhythm', 'symmetry', 'unity'] as const)
-  qpuHexRegisterOf('aesthetics', name, (AestheticsFormulas[name] as (...x: unknown[]) => unknown).bind(AestheticsFormulas))
+  hexRegisterOf('aesthetics', name, (AestheticsFormulas[name] as (...x: unknown[]) => unknown).bind(AestheticsFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SHOGI — scaffolded integer measures crossed to graphtheory. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ShogiFormulas {
 }
 
 for (const name of ['branchingfactor', 'dropcombos', 'handsubsets', 'movepaths', 'pieces', 'promotions', 'rankcount', 'squares'] as const)
-  qpuHexRegisterOf('shogi', name, (ShogiFormulas[name] as (...x: unknown[]) => unknown).bind(ShogiFormulas))
+  hexRegisterOf('shogi', name, (ShogiFormulas[name] as (...x: unknown[]) => unknown).bind(ShogiFormulas))

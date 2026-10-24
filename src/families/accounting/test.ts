@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AccountingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('accounting: the ledger balances and reports — equity, net, depreciation,
   assert.equal(AccountingFormulas.accrue(10000, 8, 365).value, 800, 'a year of interest')
   assert.equal(AccountingFormulas.tax(50000, 20).value, 10000, '20% tax')
   assert.equal(AccountingFormulas.net(200000, 150000).dst, 'law', 'the ledger is read by the law')
-  assert.equal(qpuHexFamiliesOf().get('accounting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('accounting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'accounting', program: ['net'], params: [200000, 150000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50000, `accounting.net at ${uuid}`)
-  qpuUuidReceiptOf('accounting net', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('accounting net', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; balance 1, equity 40000/-40000, net 50000, depreciation 5000, margin 25%, current 150, accrue 800, tax 10000; crossing to law')
 })

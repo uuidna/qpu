@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PacketFormulas — 8 exact-integer formulas of the packet domain, each at a hex address crossing to cross; develops the packet leads. */
@@ -31,4 +31,4 @@ export class PacketFormulas {
 }
 
 for (const name of ['checksum', 'flags', 'fragments', 'headerbits', 'mtu', 'pairs', 'payload', 'throughput'] as const)
-  qpuHexRegisterOf('packet', name, (PacketFormulas[name] as (...x: unknown[]) => unknown).bind(PacketFormulas))
+  hexRegisterOf('packet', name, (PacketFormulas[name] as (...x: unknown[]) => unknown).bind(PacketFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PartnerFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('partner: directory, filter, tier, commission, leads, rating, regions, list
   assert.equal(PartnerFormulas.regions(240, 6).value, 40)
   assert.equal(PartnerFormulas.listing(80, 200).value, 40)
   assert.equal(PartnerFormulas.directory(250).dst, 'frontend')
-  assert.equal(qpuHexFamiliesOf().get('partner')?.length, 8)
+  assert.equal(hexFamiliesOf().get('partner')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'partner', program: ['filter'], params: [45, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 45, `partner.filter at ${uuid}`)
-  qpuUuidReceiptOf('partner filter', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('partner filter', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; directory 250, filter 45, tier 25, commission 1500, leads 25, rating 47, regions 40, listing 40; crossing to frontend')
 })

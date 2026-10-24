@@ -5,7 +5,7 @@ import { useState, useTransition } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
-/** Circuit vendors that land on qpuServerSubmitOf via connector { vendor, gates|qasm }. */
+/** Circuit vendors that land on serverSubmitOf via connector { vendor, gates|qasm }. */
 const CIRCUIT_VENDORS = [
   'qiskit',
   'braket',
@@ -227,7 +227,7 @@ export function NativeAdaptersPanel({ canExecute, pendingAccess }: Props) {
           </p>
         </div>
         <p className="text-sm text-muted-foreground">
-          Foreign circuit shapes → <code className="font-mono text-xs">qpuServerSubmitOf</code> through the connector.
+          Foreign circuit shapes → <code className="font-mono text-xs">serverSubmitOf</code> through the connector.
           Price is <code className="font-mono text-xs">priceRelationOf</code> (formulated ticket, not a cloud dollar SKU).
         </p>
       </header>

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CLIMBING — THE SPORT, AS ARITHMETIC. A route is numbers: the grade climbed, the height gained, the length of each
@@ -30,4 +30,4 @@ export class ClimbingFormulas {
 }
 
 for (const name of ['effort', 'gain', 'grade', 'grip', 'pitch', 'rope', 'sendrate', 'steepness'] as const)
-  qpuHexRegisterOf('climbing', name, (ClimbingFormulas[name] as (...x: unknown[]) => unknown).bind(ClimbingFormulas))
+  hexRegisterOf('climbing', name, (ClimbingFormulas[name] as (...x: unknown[]) => unknown).bind(ClimbingFormulas))

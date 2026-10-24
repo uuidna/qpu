@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHEESEMAKING — scaffolded integer measures crossed to microbiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CheesemakingFormulas {
 }
 
 for (const name of ['agingdays', 'culturecombos', 'culturestrains', 'moisture', 'phlevel', 'rennetdrops', 'saltpct', 'yield'] as const)
-  qpuHexRegisterOf('cheesemaking', name, (CheesemakingFormulas[name] as (...x: unknown[]) => unknown).bind(CheesemakingFormulas))
+  hexRegisterOf('cheesemaking', name, (CheesemakingFormulas[name] as (...x: unknown[]) => unknown).bind(CheesemakingFormulas))

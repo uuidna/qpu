@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AstrometryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('astrometry: parallax, distance, propermotion, magnitude, airmass, resoluti
   assert.equal(AstrometryFormulas.fieldofview(36, 50).value, 720)
   assert.equal(AstrometryFormulas.pixelscale(3600, 1800).value, 2, 'sky per pixel')
   assert.equal(AstrometryFormulas.parallax(1000, 50).dst, 'astronomy')
-  assert.equal(qpuHexFamiliesOf().get('astrometry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('astrometry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'astrometry', program: ['airmass'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `astrometry.airmass at ${uuid}`)
-  qpuUuidReceiptOf('astrometry airmass', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('astrometry airmass', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; parallax 20, distance 100, propermotion 90, magnitude 150, airmass 4, resolution 500, fieldofview 720, pixelscale 2; crossing to astronomy')
 })

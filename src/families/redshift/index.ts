@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REDSHIFT — THE LIGHT OF RECEDING GALAXIES, AS ARITHMETIC. A spectral line arrives stretched: the shift z, the recession
@@ -30,4 +30,4 @@ export class RedshiftFormulas {
 }
 
 for (const name of ['comovingdistance', 'dopplerz', 'hubbledistance', 'lookbacktime', 'recessionvelocity', 'scalefactor', 'wavelengthshift', 'z'] as const)
-  qpuHexRegisterOf('redshift', name, (RedshiftFormulas[name] as (...x: unknown[]) => unknown).bind(RedshiftFormulas))
+  hexRegisterOf('redshift', name, (RedshiftFormulas[name] as (...x: unknown[]) => unknown).bind(RedshiftFormulas))

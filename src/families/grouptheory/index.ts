@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GROUPTHEORY — FINITE GROUPS AS ARITHMETIC. The structure of a finite group is counting: the order of a direct product,
@@ -34,4 +34,4 @@ export class GrouptheoryFormulas {
 }
 
 for (const name of ['cosetcount', 'cosets', 'cyclicorder', 'elementorder', 'generatorpower', 'order', 'subgroupindex', 'symmetricorder'] as const)
-  qpuHexRegisterOf('grouptheory', name, (GrouptheoryFormulas[name] as (...x: unknown[]) => unknown).bind(GrouptheoryFormulas))
+  hexRegisterOf('grouptheory', name, (GrouptheoryFormulas[name] as (...x: unknown[]) => unknown).bind(GrouptheoryFormulas))

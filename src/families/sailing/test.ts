@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SailingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('sailing: ballast, bearing, drift, heel, hullspeed, sailarea, tack, vmg —
   assert.equal(SailingFormulas.tack(100, 4).value, 25)
   assert.equal(SailingFormulas.vmg(100, 90).value, 100)
   assert.equal(SailingFormulas.bearing(450).dst, 'oceanography')
-  assert.equal(qpuHexFamiliesOf().get('sailing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sailing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sailing', program: ['tack'], params: [100, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `sailing.tack at ${uuid}`)
-  qpuUuidReceiptOf('sailing tack', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sailing tack', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ballast 40, bearing 90, drift 12, heel 25, hullspeed 60, sailarea 20, tack 25, vmg 100; crossing to oceanography')
 })

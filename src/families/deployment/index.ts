@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DEPLOYMENT — SHIPPING AS ARITHMETIC (the DORA measures, by hand only in name). How often a release goes out, how long a
@@ -31,4 +31,4 @@ export class DeploymentFormulas {
 }
 
 for (const name of ['availability', 'canary', 'failrate', 'frequency', 'leadtime', 'mttr', 'replicas', 'rollback'] as const)
-  qpuHexRegisterOf('deployment', name, (DeploymentFormulas[name] as (...x: unknown[]) => unknown).bind(DeploymentFormulas))
+  hexRegisterOf('deployment', name, (DeploymentFormulas[name] as (...x: unknown[]) => unknown).bind(DeploymentFormulas))

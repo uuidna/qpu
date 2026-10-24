@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PromotionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('promotion: discount, redemption, lift, coupon, bundle, markdown, spiff, in
   assert.equal(PromotionFormulas.incremental(500, 320).value, 180)
   assert.equal(PromotionFormulas.bundle(900, 1200).value, 0)
   assert.equal(PromotionFormulas.discount(1000, 25).dst, 'marketing')
-  assert.equal(qpuHexFamiliesOf().get('promotion')?.length, 8)
+  assert.equal(hexFamiliesOf().get('promotion')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'promotion', program: ['lift'], params: [1500, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `promotion.lift at ${uuid}`)
-  qpuUuidReceiptOf('promotion lift', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('promotion lift', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; discount 250, redemption 15, lift 50, coupon 10000, bundle 201, markdown 25, spiff 1000, incremental 180; crossing to marketing')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PaleontologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('paleontology: age, decay, completeness, diversity, stratum, extinction, si
   assert.equal(PaleontologyFormulas.size(12, 100).value, 1200)
   assert.equal(PaleontologyFormulas.abundance(600, 20).value, 30)
   assert.equal(PaleontologyFormulas.age(2, 5730).dst, 'geology')
-  assert.equal(qpuHexFamiliesOf().get('paleontology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('paleontology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'paleontology', program: ['decay'], params: [1000, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 125, `paleontology.decay at ${uuid}`)
-  qpuUuidReceiptOf('paleontology decay', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('paleontology decay', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; age 11460, decay 125, completeness 30, diversity 3, stratum 20, extinction 75, size 1200, abundance 30; crossing to geology')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RESPONSIVE — LAYING OUT A SCREEN, AS ARITHMETIC. A responsive design is numbers: the breakpoint a width lands in, a
@@ -31,4 +31,4 @@ export class ResponsiveFormulas {
 }
 
 for (const name of ['aspectfit', 'breakpoint', 'columns', 'density', 'fluidsize', 'gutter', 'scalefactor', 'viewportunits'] as const)
-  qpuHexRegisterOf('responsive', name, (ResponsiveFormulas[name] as (...x: unknown[]) => unknown).bind(ResponsiveFormulas))
+  hexRegisterOf('responsive', name, (ResponsiveFormulas[name] as (...x: unknown[]) => unknown).bind(ResponsiveFormulas))

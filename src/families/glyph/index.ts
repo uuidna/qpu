@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SYMBOLOGY, DECODED — EXACT INDICES, UNVERIFIED MEANING. The symbol systems are wheels of fixed size: 12 zodiac signs,
@@ -30,4 +30,4 @@ export class GlyphFormulas {
 }
 
 for (const name of ['arcana', 'element', 'planet', 'rune', 'systems', 'zodiac'] as const)
-  qpuHexRegisterOf('glyph', name, (GlyphFormulas[name] as (...x: unknown[]) => unknown).bind(GlyphFormulas))
+  hexRegisterOf('glyph', name, (GlyphFormulas[name] as (...x: unknown[]) => unknown).bind(GlyphFormulas))

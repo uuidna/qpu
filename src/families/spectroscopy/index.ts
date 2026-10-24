@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SPECTROSCOPY — LIGHT MEASURED AS ARITHMETIC. The energy of a photon, the wavenumber of a wave, how much a sample absorbs,
@@ -30,4 +30,4 @@ export class SpectroscopyFormulas {
 }
 
 for (const name of ['absorbance', 'beer', 'energy', 'intensity', 'linewidth', 'resolution', 'shift', 'wavenumber'] as const)
-  qpuHexRegisterOf('spectroscopy', name, (SpectroscopyFormulas[name] as (...x: unknown[]) => unknown).bind(SpectroscopyFormulas))
+  hexRegisterOf('spectroscopy', name, (SpectroscopyFormulas[name] as (...x: unknown[]) => unknown).bind(SpectroscopyFormulas))

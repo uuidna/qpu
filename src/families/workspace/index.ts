@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WORKSPACE — scaffolded integer measures crossed to robotics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class WorkspaceFormulas {
 }
 
 for (const name of ['area', 'coveragepct', 'dexterityindex', 'envelopeheight', 'jointrange', 'reachradius', 'singularitymargin', 'volume'] as const)
-  qpuHexRegisterOf('workspace', name, (WorkspaceFormulas[name] as (...x: unknown[]) => unknown).bind(WorkspaceFormulas))
+  hexRegisterOf('workspace', name, (WorkspaceFormulas[name] as (...x: unknown[]) => unknown).bind(WorkspaceFormulas))

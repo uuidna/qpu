@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ONBOARDING — BRINGING A NEW HIRE UP TO SPEED, AS ARITHMETIC. Getting someone productive is numbers: the ramp a plan
@@ -31,4 +31,4 @@ export class OnboardingFormulas {
 }
 
 for (const name of ['checklist', 'completion', 'enablement', 'mentoring', 'milestone', 'rampup', 'satisfaction', 'timetoproductive'] as const)
-  qpuHexRegisterOf('onboarding', name, (OnboardingFormulas[name] as (...x: unknown[]) => unknown).bind(OnboardingFormulas))
+  hexRegisterOf('onboarding', name, (OnboardingFormulas[name] as (...x: unknown[]) => unknown).bind(OnboardingFormulas))

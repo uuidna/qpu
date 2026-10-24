@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SENTIMENT — OPINION AS ARITHMETIC (chosen by the opinion-mining registry, not by hand). Reading a corpus is numbers:
@@ -31,4 +31,4 @@ export class SentimentFormulas {
 }
 
 for (const name of ['agreement', 'confidence', 'intensity', 'mixedratio', 'netscore', 'polarity', 'subjectivity', 'valence'] as const)
-  qpuHexRegisterOf('sentiment', name, (SentimentFormulas[name] as (...x: unknown[]) => unknown).bind(SentimentFormulas))
+  hexRegisterOf('sentiment', name, (SentimentFormulas[name] as (...x: unknown[]) => unknown).bind(SentimentFormulas))

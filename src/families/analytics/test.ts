@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AnalyticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('analytics: rate, ctr, bounce, retention, arpu, ltv, cac, funnel — crossi
   assert.equal(AnalyticsFormulas.cac(30000, 1000).value, 30)
   assert.equal(AnalyticsFormulas.funnel(1000, 50).value, 5, 'five percent reach the bottom')
   assert.equal(AnalyticsFormulas.rate(50, 1000).dst, 'ml')
-  assert.equal(qpuHexFamiliesOf().get('analytics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('analytics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'analytics', program: ['ltv'], params: [50, 24] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1200, `analytics.ltv at ${uuid}`)
-  qpuUuidReceiptOf('analytics ltv', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('analytics ltv', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rate 5, ctr 3, bounce 40, retention 30, arpu 50, ltv 1200, cac 30, funnel 5; crossing to ml')
 })

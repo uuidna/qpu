@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PlasmaFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -20,10 +20,10 @@ test('plasma: temperature, density, debye, confinement, ionization, fusion, magn
   assert.equal(PlasmaFormulas.near(4, 3).holds, false, 'past k is not a near lead')
   assert.equal(PlasmaFormulas.temperature(1000, 40).dst, 'energy')
   assert.equal(PlasmaFormulas.hue(3, 64).dst, 'colortheory')
-  assert.equal(qpuHexFamiliesOf().get('plasma')?.length, 11)
+  assert.equal(hexFamiliesOf().get('plasma')?.length, 11)
   const uuid = qpuHexUuidOf({ family: 'plasma', program: ['density'], params: [1000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `plasma.density at ${uuid}`)
-  qpuUuidReceiptOf('plasma density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('plasma density', contentUuidOf(run), { uuid })
   t.diagnostic('11 formulas; temperature 25, density 100, debye 100, confinement 50, ionization 99, fusion 1000, magnetic 20, frequency 300, bytes 8, hue 16, near 1; physics crosses to energy, the fingerprint hue crosses to colortheory')
 })

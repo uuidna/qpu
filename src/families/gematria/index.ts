@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GEMATRIA — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class GematriaFormulas {
 }
 
 for (const name of ['alphabetsize', 'cipherorderings', 'equivalences', 'lettervalue', 'reductionmod', 'substitutions', 'valuesum', 'wordtotal'] as const)
-  qpuHexRegisterOf('gematria', name, (GematriaFormulas[name] as (...x: unknown[]) => unknown).bind(GematriaFormulas))
+  hexRegisterOf('gematria', name, (GematriaFormulas[name] as (...x: unknown[]) => unknown).bind(GematriaFormulas))

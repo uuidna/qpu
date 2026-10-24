@@ -18,7 +18,7 @@ const idx = await import('../dist/quantum/processing/unit/index.js')
 const { ClayDisclosure } = await import('../dist/families/clay/index.js')
 
 const gate = await core.consolidatedMCP.runDeploymentGate()
-const families = idx.qpuHexFamiliesOf().size
+const families = idx.hexFamiliesOf().size
 const disc = ClayDisclosure.disclosure()
 
 // COMPLETE — the deployment gate (every operation resolves, embed matches, prove holds). LEAN — answered by clay: the

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ZoroastrianismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('zoroastrianism: principles, amesha, dualitypairs, hymncount, fireranks, pr
   assert.equal(ZoroastrianismFormulas.gathasubsets(5).value, 32)
   assert.equal(ZoroastrianismFormulas.cosmiccycles(3, 1000).value, 3000)
   assert.equal(ZoroastrianismFormulas.principles(3, 0).dst, 'philosophy')
-  assert.equal(qpuHexFamiliesOf().get('zoroastrianism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('zoroastrianism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'zoroastrianism', program: ['principles'], params: [3, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `zoroastrianism.principles at ${uuid}`)
-  qpuUuidReceiptOf('zoroastrianism principles', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('zoroastrianism principles', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; principles 3, amesha 7, dualitypairs 1, hymncount 17, fireranks 3, prayerorderings 120, gathasubsets 32, cosmiccycles 3000; crossing to philosophy')
 })

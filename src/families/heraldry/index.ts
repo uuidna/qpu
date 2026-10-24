@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HERALDRY — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HeraldryFormulas {
 }
 
 for (const name of ['blazonorderings', 'chargecombos', 'differencingmarks', 'fieldsubsets', 'marshallingpairs', 'ordinaries', 'quarterings', 'tincturecount'] as const)
-  qpuHexRegisterOf('heraldry', name, (HeraldryFormulas[name] as (...x: unknown[]) => unknown).bind(HeraldryFormulas))
+  hexRegisterOf('heraldry', name, (HeraldryFormulas[name] as (...x: unknown[]) => unknown).bind(HeraldryFormulas))

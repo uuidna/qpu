@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DAIRY — THE HERD, AS ARITHMETIC (chosen by the agricultural registry, not by hand). Milk is numbers: yield per cow,
@@ -31,4 +31,4 @@ export class DairyFormulas {
 }
 
 for (const name of ['butterfat', 'conception', 'feedefficiency', 'lactation', 'output', 'persistency', 'protein', 'somatic'] as const)
-  qpuHexRegisterOf('dairy', name, (DairyFormulas[name] as (...x: unknown[]) => unknown).bind(DairyFormulas))
+  hexRegisterOf('dairy', name, (DairyFormulas[name] as (...x: unknown[]) => unknown).bind(DairyFormulas))

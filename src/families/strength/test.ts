@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StrengthFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('strength: volume, intensity, tonnage, density, relativestrength, restratio
   assert.equal(StrengthFormulas.progression(105, 100).value, 5)
   assert.equal(StrengthFormulas.workcapacity(20, 50).value, 1000)
   assert.equal(StrengthFormulas.volume(100, 5, 3).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('strength')?.length, 8)
+  assert.equal(hexFamiliesOf().get('strength')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'strength', program: ['volume'], params: [100, 5, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1500, `strength.volume at ${uuid}`)
-  qpuUuidReceiptOf('strength volume', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('strength volume', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; volume 1500, intensity 80, tonnage 5000, density 100, relativestrength 200, restratio 3, progression 5, workcapacity 1000; crossing to physiology')
 })

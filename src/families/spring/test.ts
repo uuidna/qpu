@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SpringFormulas } from './index.js'
 
 /** spring: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('spring: force, constant, coils, deflection, energy, series, parallelsum, c
   assert.equal(SpringFormulas.series(100, 200).value, 300, 'series(100, 200)')
   assert.equal(SpringFormulas.parallelsum(50, 50).value, 100, 'parallelsum(50, 50)')
   assert.equal(SpringFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('spring')?.length, 8)
+  assert.equal(hexFamiliesOf().get('spring')?.length, 8)
   for (const [name, params, expected] of [["force",[50,10],500],["constant",[20,1],20],["coils",[10,2],12]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'spring', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `spring.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`spring ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`spring ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "force=500, constant=20, coils=12")
 })

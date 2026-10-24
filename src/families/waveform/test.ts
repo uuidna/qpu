@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WaveformFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('waveform: period, amplitude, rmsvalue, dutycycle, crestfactor, peaktopeak,
   assert.equal(WaveformFormulas.frequencyfromperiod(1000).value, 1000)
   assert.equal(WaveformFormulas.slewrate(1000, 50).value, 20)
   assert.equal(WaveformFormulas.period(1000).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('waveform')?.length, 8)
+  assert.equal(hexFamiliesOf().get('waveform')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'waveform', program: ['period'], params: [1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `waveform.period at ${uuid}`)
-  qpuUuidReceiptOf('waveform period', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('waveform period', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; period 1000, amplitude 40, rmsvalue 707, dutycycle 25, crestfactor 1414, peaktopeak 70, frequencyfromperiod 1000, slewrate 20; crossing to signal')
 })

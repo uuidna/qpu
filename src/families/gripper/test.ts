@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GripperFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('gripper: gripforce, strokewidth, payloadlimit, closetime, fingercount, fri
   assert.equal(GripperFormulas.contactpressure(200, 4).value, 50)
   assert.equal(GripperFormulas.slipmargin(80, 100).value, 80)
   assert.equal(GripperFormulas.gripforce(50, 4).dst, 'robotics')
-  assert.equal(qpuHexFamiliesOf().get('gripper')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gripper')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gripper', program: ['gripforce'], params: [50, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `gripper.gripforce at ${uuid}`)
-  qpuUuidReceiptOf('gripper gripforce', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gripper gripforce', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gripforce 200, strokewidth 80, payloadlimit 100, closetime 20, fingercount 3, frictionhold 100, contactpressure 50, slipmargin 80; crossing to robotics')
 })

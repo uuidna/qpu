@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ButcheryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('butchery: yield, primalcuts, weightkg, cutcombos, boneratio, aginggraysday
   assert.equal(ButcheryFormulas.portionsper(300, 2).value, 150)
   assert.equal(ButcheryFormulas.gradescore(90, 100).value, 90)
   assert.equal(ButcheryFormulas.yield(60, 100).dst, 'agriculture')
-  assert.equal(qpuHexFamiliesOf().get('butchery')?.length, 8)
+  assert.equal(hexFamiliesOf().get('butchery')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'butchery', program: ['yield'], params: [60, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `butchery.yield at ${uuid}`)
-  qpuUuidReceiptOf('butchery yield', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('butchery yield', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; yield 60, primalcuts 8, weightkg 300, cutcombos 220, boneratio 15, aginggraysdays 21, portionsper 150, gradescore 90; crossing to agriculture')
 })

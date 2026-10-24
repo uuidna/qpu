@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VENTILATION — MOVING AIR THROUGH THE LUNGS, AS ARITHMETIC. Breathing is numbers: the minute volume a tidal breath at a
@@ -31,4 +31,4 @@ export class VentilationFormulas {
 }
 
 for (const name of ['airwayresistance', 'alveolarventilation', 'compliance', 'deadspace', 'minutevolume', 'oxygendelivery', 'respiratoryrate', 'ventilationperfusion'] as const)
-  qpuHexRegisterOf('ventilation', name, (VentilationFormulas[name] as (...x: unknown[]) => unknown).bind(VentilationFormulas))
+  hexRegisterOf('ventilation', name, (VentilationFormulas[name] as (...x: unknown[]) => unknown).bind(VentilationFormulas))

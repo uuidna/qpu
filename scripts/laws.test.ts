@@ -18,19 +18,19 @@ const ROOT = join(dirname(new URL(import.meta.url).pathname), '..')
 
 test('every family has its strict standards and laws, and is agnostic (reusable in all dimensions)', async (t) => {
   await import('../dist/mcp/families.js')
-  const { qpuHexRegisteredSizeOf } = await import('../dist/quantum/processing/unit/index.js')
+  const { hexRegisteredSizeOf } = await import('../dist/quantum/processing/unit/index.js')
   const breaches = []
   for (const e of readdirSync(join(ROOT, 'src/families'), { withFileTypes: true })) {
     if (!e.isDirectory()) continue
     const fam = e.name
     const file = join(ROOT, 'src/families', fam, 'index.ts')
-    if (!existsSync(file) || qpuHexRegisteredSizeOf(fam) === 0) continue
+    if (!existsSync(file) || hexRegisteredSizeOf(fam) === 0) continue
     const src = readFileSync(file, 'utf8')
     const need = []
     if (!/^[a-z]+$/.test(fam)) need.push('a one-word name')
     if (!/\bPROOF\b|proof:/.test(src)) need.push('a declared PROOF (its standard)')
     if (!/\bnat\(|holds\b/.test(src)) need.push('a domain law (nat/holds guard)')
-    if (!/CrossFormula|crossFormulaOf|qpuContentUuidOf/.test(src)) need.push('a crossing into its jurisdiction')
+    if (!/CrossFormula|crossFormulaOf|contentUuidOf/.test(src)) need.push('a crossing into its jurisdiction')
     if (/\bfrom\s*'node:/.test(src) || /\brequire\(\s*'node:/.test(src)) need.push('agnosticism (it imports node:*)')
     if (need.length) breaches.push(`${fam} lacks: ${need.join('; ')}`)
   }

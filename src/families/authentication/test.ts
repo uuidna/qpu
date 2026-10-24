@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AuthenticationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('authentication: entropy, falsereject, falseaccept, sessions, lockout, toke
   assert.equal(AuthenticationFormulas.strength(4, 12).value, 48)
   assert.equal(AuthenticationFormulas.mfa(3).value, 3)
   assert.equal(AuthenticationFormulas.entropy(62, 8).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('authentication')?.length, 8)
+  assert.equal(hexFamiliesOf().get('authentication')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'authentication', program: ['sessions'], params: [100, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `authentication.sessions at ${uuid}`)
-  qpuUuidReceiptOf('authentication sessions', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('authentication sessions', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; entropy 496, falsereject 2, falseaccept 1, sessions 4, lockout 3, tokenlife 3600, strength 48, mfa 3; crossing to code')
 })

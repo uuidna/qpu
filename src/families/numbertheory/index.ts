@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NUMBERTHEORY — THE ARITHMETIC OF THE WHOLE NUMBERS, AS EXACT INTEGERS. The oldest formulas: the greatest common divisor
@@ -37,4 +37,4 @@ export class NumbertheoryFormulas {
 }
 
 for (const name of ['digitsum', 'divisorcount', 'factorialmod', 'gcd', 'isprime', 'lcm', 'modpow', 'totient'] as const)
-  qpuHexRegisterOf('numbertheory', name, (NumbertheoryFormulas[name] as (...x: unknown[]) => unknown).bind(NumbertheoryFormulas))
+  hexRegisterOf('numbertheory', name, (NumbertheoryFormulas[name] as (...x: unknown[]) => unknown).bind(NumbertheoryFormulas))

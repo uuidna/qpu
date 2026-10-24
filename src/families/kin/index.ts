@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THE COUNTS PEOPLE ASK ABOUT, AS COMBINATORICS: the Tzolkin and the Dreamspell (a kin of 13 tones × 20 seals, its
@@ -71,4 +71,4 @@ export class KinFormulas {
 }
 
 for (const name of ['biorhythm', 'bits', 'combinations', 'crossed', 'cycle', 'digitalRoot', 'dootKin', 'dreamspellDrift', 'enneagram', 'kin', 'period', 'pillar', 'seal', 'tone', 'vortex'] as const)
-  qpuHexRegisterOf('kin', name, (KinFormulas[name] as (...x: unknown[]) => unknown).bind(KinFormulas))
+  hexRegisterOf('kin', name, (KinFormulas[name] as (...x: unknown[]) => unknown).bind(KinFormulas))

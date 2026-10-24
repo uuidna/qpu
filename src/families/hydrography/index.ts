@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HYDROGRAPHY — scaffolded integer measures crossed to oceanography. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HydrographyFormulas {
 }
 
 for (const name of ['chartscale', 'currentspeed', 'depth', 'isobathinterval', 'shoalcount', 'soundingdensity', 'surveycoverage', 'tidalrange'] as const)
-  qpuHexRegisterOf('hydrography', name, (HydrographyFormulas[name] as (...x: unknown[]) => unknown).bind(HydrographyFormulas))
+  hexRegisterOf('hydrography', name, (HydrographyFormulas[name] as (...x: unknown[]) => unknown).bind(HydrographyFormulas))

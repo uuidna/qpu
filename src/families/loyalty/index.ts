@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOYALTY — A RETAIL LOYALTY PROGRAM, AS ARITHMETIC. A member's standing is numbers: points earned on spend, the tier those
@@ -31,4 +31,4 @@ export class LoyaltyFormulas {
 }
 
 for (const name of ['churn', 'lifetime', 'points', 'redemption', 'repeat', 'retention', 'reward', 'tier'] as const)
-  qpuHexRegisterOf('loyalty', name, (LoyaltyFormulas[name] as (...x: unknown[]) => unknown).bind(LoyaltyFormulas))
+  hexRegisterOf('loyalty', name, (LoyaltyFormulas[name] as (...x: unknown[]) => unknown).bind(LoyaltyFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GraphtheoryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('graphtheory: edges, density, degree, handshake, treeedges, components, pla
   assert.equal(GraphtheoryFormulas.cyclomatic(15, 10, 1).value, 6, 'independent cycles')
   assert.equal(GraphtheoryFormulas.density(45, 1).value, 0)
   assert.equal(GraphtheoryFormulas.edges(10).dst, 'algebra')
-  assert.equal(qpuHexFamiliesOf().get('graphtheory')?.length, 8)
+  assert.equal(hexFamiliesOf().get('graphtheory')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'graphtheory', program: ['edges'], params: [10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 45, `graphtheory.edges at ${uuid}`)
-  qpuUuidReceiptOf('graphtheory edges', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('graphtheory edges', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; edges 45, density 100, degree 9, handshake 90, treeedges 9, components 3, planaredges 24, cyclomatic 6; crossing to algebra')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AnimismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('animism: spiritcount, entitypairs, ritualtypes, totemsubsets, offeringcomb
   assert.equal(AnimismFormulas.ancestorlayers(5, 0).value, 5)
   assert.equal(AnimismFormulas.animacyratio(70, 100).value, 70)
   assert.equal(AnimismFormulas.spiritcount(100, 10).dst, 'anthropology')
-  assert.equal(qpuHexFamiliesOf().get('animism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('animism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'animism', program: ['spiritcount'], params: [100, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `animism.spiritcount at ${uuid}`)
-  qpuUuidReceiptOf('animism spiritcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('animism spiritcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; spiritcount 1000, entitypairs 66, ritualtypes 8, totemsubsets 32, offeringcombos 28, seasonalcycles 4, ancestorlayers 5, animacyratio 70; crossing to anthropology')
 })

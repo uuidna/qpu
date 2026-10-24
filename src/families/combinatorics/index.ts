@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COMBINATORICS — COUNTING, AS ARITHMETIC. The ways to arrange and choose are exact integers: n factorial, the ordered
@@ -56,4 +56,4 @@ export class CombinatoricsFormulas {
 }
 
 for (const name of ['binomial', 'catalan', 'combinations', 'derangement', 'factorial', 'multichoose', 'permutations', 'stars'] as const)
-  qpuHexRegisterOf('combinatorics', name, (CombinatoricsFormulas[name] as (...x: unknown[]) => unknown).bind(CombinatoricsFormulas))
+  hexRegisterOf('combinatorics', name, (CombinatoricsFormulas[name] as (...x: unknown[]) => unknown).bind(CombinatoricsFormulas))

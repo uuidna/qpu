@@ -27,3 +27,6 @@ next-env.d.ts
 .release-*.json
 .system-status.json
 deployment.log
+
+# private prompt leads (verbatim conversation text)
+scripts/leads.prompts.json

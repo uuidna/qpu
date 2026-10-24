@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELNINO — scaffolded integer measures crossed to climate. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ElninoFormulas {
 }
 
 for (const name of ['cycleyears', 'durationmonths', 'intensityindex', 'oni', 'phasecount', 'rainfallshift', 'ssttanomaly', 'teleconnections'] as const)
-  qpuHexRegisterOf('elnino', name, (ElninoFormulas[name] as (...x: unknown[]) => unknown).bind(ElninoFormulas))
+  hexRegisterOf('elnino', name, (ElninoFormulas[name] as (...x: unknown[]) => unknown).bind(ElninoFormulas))

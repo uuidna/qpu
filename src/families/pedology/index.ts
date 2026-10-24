@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PEDOLOGY — SOIL SCIENCE, AS ARITHMETIC. The soil is numbers: pore space, how much water it holds, how acid it runs,
@@ -30,4 +30,4 @@ export class PedologyFormulas {
 }
 
 for (const name of ['erosion', 'fertility', 'infiltration', 'moisture', 'organic', 'ph', 'porosity', 'texture'] as const)
-  qpuHexRegisterOf('pedology', name, (PedologyFormulas[name] as (...x: unknown[]) => unknown).bind(PedologyFormulas))
+  hexRegisterOf('pedology', name, (PedologyFormulas[name] as (...x: unknown[]) => unknown).bind(PedologyFormulas))

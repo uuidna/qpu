@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SOLID — THREE-DIMENSIONAL SHAPE, AS ARITHMETIC. A solid is numbers: the volume a cube, cuboid, prism or pyramid
@@ -30,4 +30,4 @@ export class SolidFormulas {
 }
 
 for (const name of ['cubesurface', 'cubevolume', 'cuboidsurface', 'cuboidvolume', 'cylindervolumeproxy', 'prismvolume', 'pyramidvolume', 'spherevolumeproxy'] as const)
-  qpuHexRegisterOf('solid', name, (SolidFormulas[name] as (...x: unknown[]) => unknown).bind(SolidFormulas))
+  hexRegisterOf('solid', name, (SolidFormulas[name] as (...x: unknown[]) => unknown).bind(SolidFormulas))

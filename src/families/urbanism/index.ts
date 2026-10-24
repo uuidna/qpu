@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** URBANISM — THE SHAPE OF A CITY, AS ARITHMETIC (chosen by the registry, not by hand). A settlement is numbers: dwelling
@@ -31,4 +31,4 @@ export class UrbanismFormulas {
 }
 
 for (const name of ['blocksize', 'density', 'floorarearatio', 'intersectiondensity', 'jobshousing', 'mixeduse', 'populationdensity', 'servicecoverage'] as const)
-  qpuHexRegisterOf('urbanism', name, (UrbanismFormulas[name] as (...x: unknown[]) => unknown).bind(UrbanismFormulas))
+  hexRegisterOf('urbanism', name, (UrbanismFormulas[name] as (...x: unknown[]) => unknown).bind(UrbanismFormulas))

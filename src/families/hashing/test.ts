@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HashingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('hashing: bucket, loadfactor, collisions, probe, birthday, modulo, resize, 
   assert.equal(HashingFormulas.resize(1024, 2).value, 2048, 'capacity doubled')
   assert.equal(HashingFormulas.distribution(5000, 1000).value, 5)
   assert.equal(HashingFormulas.bucket(12345, 1000).dst, 'indexing')
-  assert.equal(qpuHexFamiliesOf().get('hashing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hashing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hashing', program: ['bucket'], params: [12345, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 345, `hashing.bucket at ${uuid}`)
-  qpuUuidReceiptOf('hashing bucket', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hashing bucket', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bucket 345, loadfactor 75, collisions 500, probe 3, birthday 435, modulo 2, resize 2048, distribution 5; crossing to indexing')
 })

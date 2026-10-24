@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NoiseFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('noise: snr, sumlevels, attenuation, exposuredose, nr, maskingthreshold, fl
   assert.equal(NoiseFormulas.dynamicrange(120, 20).value, 100)
   assert.equal(NoiseFormulas.snr(30, 90).value, 0)
   assert.equal(NoiseFormulas.snr(90, 30).dst, 'acoustics')
-  assert.equal(qpuHexFamiliesOf().get('noise')?.length, 8)
+  assert.equal(hexFamiliesOf().get('noise')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'noise', program: ['snr'], params: [90, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `noise.snr at ${uuid}`)
-  qpuUuidReceiptOf('noise snr', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('noise snr', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; snr 60, sumlevels 100, attenuation 55, exposuredose 680, nr 65, maskingthreshold 40, floor 50, dynamicrange 100; crossing to acoustics')
 })

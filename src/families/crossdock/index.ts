@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CROSSDOCK — scaffolded integer measures crossed to supplychain. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CrossdockFormulas {
 }
 
 for (const name of ['doorsneeded', 'dwelltime', 'flowrate', 'sortaccuracy', 'stagingarea', 'throughput', 'touchcount', 'transferlag'] as const)
-  qpuHexRegisterOf('crossdock', name, (CrossdockFormulas[name] as (...x: unknown[]) => unknown).bind(CrossdockFormulas))
+  hexRegisterOf('crossdock', name, (CrossdockFormulas[name] as (...x: unknown[]) => unknown).bind(CrossdockFormulas))

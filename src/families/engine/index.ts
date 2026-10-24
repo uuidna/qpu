@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EngineFormulas — 8 exact-integer formulas of the engine domain, each at a hex address crossing to cross; develops the engine leads. */
@@ -31,4 +31,4 @@ export class EngineFormulas {
 }
 
 for (const name of ['compression', 'cylinders', 'displacement', 'firingorders', 'power', 'rpm', 'torque', 'valves'] as const)
-  qpuHexRegisterOf('engine', name, (EngineFormulas[name] as (...x: unknown[]) => unknown).bind(EngineFormulas))
+  hexRegisterOf('engine', name, (EngineFormulas[name] as (...x: unknown[]) => unknown).bind(EngineFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TransliterationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('transliteration: mappings, charpairs, schemeorderings, ambiguouschars, rev
   assert.equal(TransliterationFormulas.schemesubsets(4).value, 16)
   assert.equal(TransliterationFormulas.coverage(98, 100).value, 98)
   assert.equal(TransliterationFormulas.mappings(26, 2).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('transliteration')?.length, 8)
+  assert.equal(hexFamiliesOf().get('transliteration')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'transliteration', program: ['mappings'], params: [26, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 52, `transliteration.mappings at ${uuid}`)
-  qpuUuidReceiptOf('transliteration mappings', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('transliteration mappings', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mappings 52, charpairs 325, schemeorderings 24, ambiguouschars 6, reversibility 95, diacriticcount 12, schemesubsets 16, coverage 98; crossing to linguistics')
 })

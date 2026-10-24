@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COGENERATION — scaffolded integer measures crossed to thermodynamics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CogenerationFormulas {
 }
 
 for (const name of ['carnotlimit', 'electricaloutput', 'fuelinput', 'heatoutput', 'heatrecovery', 'powertoheat', 'primaryenergysaving', 'totalefficiency'] as const)
-  qpuHexRegisterOf('cogeneration', name, (CogenerationFormulas[name] as (...x: unknown[]) => unknown).bind(CogenerationFormulas))
+  hexRegisterOf('cogeneration', name, (CogenerationFormulas[name] as (...x: unknown[]) => unknown).bind(CogenerationFormulas))

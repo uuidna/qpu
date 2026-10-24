@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FeedlotFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('feedlot: rationcost, dailygain, daysonfeed, dryintake, feedefficiency, ene
   assert.equal(FeedlotFormulas.breakeven(900, 1200).value, 75, 'cents per pound')
   assert.equal(FeedlotFormulas.dailygain(100, 0).value, 0)
   assert.equal(FeedlotFormulas.rationcost(500, 8).dst, 'nutrition')
-  assert.equal(qpuHexFamiliesOf().get('feedlot')?.length, 8)
+  assert.equal(hexFamiliesOf().get('feedlot')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'feedlot', program: ['dailygain'], params: [360, 180] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `feedlot.dailygain at ${uuid}`)
-  qpuUuidReceiptOf('feedlot dailygain', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('feedlot dailygain', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rationcost 4000, dailygain 2, daysonfeed 200, dryintake 20, feedefficiency 6, energydensity 60, proteinratio 15, breakeven 75; crossing to nutrition')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ODOMETRY — scaffolded integer measures crossed to kinematics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class OdometryFormulas {
 }
 
 for (const name of ['distance', 'driftrate', 'headingchange', 'pathdistance', 'positionerror', 'slipcompensation', 'ticksperrev', 'wheelrevolutions'] as const)
-  qpuHexRegisterOf('odometry', name, (OdometryFormulas[name] as (...x: unknown[]) => unknown).bind(OdometryFormulas))
+  hexRegisterOf('odometry', name, (OdometryFormulas[name] as (...x: unknown[]) => unknown).bind(OdometryFormulas))

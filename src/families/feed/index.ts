@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf, qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, hexFamiliesOf } from '../../quantum/processing/unit/index.js'
 import { DOORS } from '../../mcp/discovery.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
@@ -12,7 +12,7 @@ const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >=
 const f = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
   crossFormulaOf({ id, src: 'feed', dst: 'cross', formula, value, proof: PROOF, ...extra }, holds, { name: `feed.${name}`, params })
 
-const domainsOf = (): string[] => [...qpuHexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && !x.startsWith('Qpu.')).sort()
+const domainsOf = (): string[] => [...hexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && !x.startsWith('Qpu.')).sort()
 
 export class FeedFormulas {
   /** THE LATEST NEWS FOR THE i-th FAMILY'S DOMAIN: data.news queried for the family's own words — live, everywhere, anytime.
@@ -20,8 +20,8 @@ export class FeedFormulas {
   static async domain(i: number): Promise<CrossFormula> {
     const name = domainsOf()[i]
     if (!name) return f('feed-domain', 'domain(i)', 0, false, 'domain', [i])
-    const { qpuDataOf } = await import('../../mcp/qpu-fused.js')
-    const r = (await qpuDataOf('news', { about: name })) as { reading?: { leads?: { title: string; points: number }[] } }
+    const { dataOf } = await import('../../mcp/qpu-fused.js')
+    const r = (await dataOf('news', { about: name })) as { reading?: { leads?: { title: string; points: number }[] } }
     const leads = r.reading?.leads ?? []
     return f('feed-domain', 'domain(i) = |latest stories about the i-th family\'s domain|', leads.length, nat(i) && leads.length > 0, 'domain', [i], { family: name, headlines: leads.slice(0, 8).map((l) => l.title) })
   }
@@ -31,11 +31,11 @@ export class FeedFormulas {
   static async leads(i: number): Promise<CrossFormula> {
     const name = domainsOf()[i]
     if (!name) return f('feed-leads', 'leads(i)', 0, false, 'leads', [i])
-    const { qpuDataOf } = await import('../../mcp/qpu-fused.js')
+    const { dataOf } = await import('../../mcp/qpu-fused.js')
     const [news, open, research] = await Promise.all([
-      qpuDataOf('news', { about: name }).then((r) => (r as { reading?: { leads?: { title: string }[] } }).reading?.leads ?? []).catch(() => []),
-      qpuDataOf('unanswered', { about: name, site: 'stackoverflow' }).then((r) => (r as { reading?: { leads?: { title: string }[] } }).reading?.leads ?? []).catch(() => []),
-      qpuDataOf('research', { family: name }).then((r) => Number((r as { reading?: { matched?: number } }).reading?.matched ?? 0)).catch(() => 0),
+      dataOf('news', { about: name }).then((r) => (r as { reading?: { leads?: { title: string }[] } }).reading?.leads ?? []).catch(() => []),
+      dataOf('unanswered', { about: name, site: 'stackoverflow' }).then((r) => (r as { reading?: { leads?: { title: string }[] } }).reading?.leads ?? []).catch(() => []),
+      dataOf('research', { family: name }).then((r) => Number((r as { reading?: { matched?: number } }).reading?.matched ?? 0)).catch(() => 0),
     ])
     const total = news.length + open.length + research
     return f('feed-leads', 'leads(i) = |the i-th family\'s specific leads: news + open questions + research APIs|', total, nat(i) && total > 0, 'leads', [i], { family: name, news: news.length, questions: open.length, apis: research, sample: [...news, ...open].slice(0, 8).map((l) => l.title) })
@@ -57,4 +57,4 @@ export class FeedFormulas {
 }
 
 for (const name of ['domain', 'leads', 'reach', 'recency', 'relevance', 'score', 'signal', 'trend', 'velocity'] as const)
-  qpuHexRegisterOf('feed', name, (FeedFormulas[name] as (...x: unknown[]) => unknown).bind(FeedFormulas))
+  hexRegisterOf('feed', name, (FeedFormulas[name] as (...x: unknown[]) => unknown).bind(FeedFormulas))

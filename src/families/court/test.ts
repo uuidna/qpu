@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CourtFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -36,10 +36,10 @@ test('court: standard of proof, damages, interest, costs, apportionment, settlem
   assert.equal(CourtFormulas.damages(1000, 5, 3).src, 'court')
   assert.equal(CourtFormulas.restitution(10000, 120, 500).dst, 'law')
   // registered and runs at its hex address
-  assert.equal(qpuHexFamiliesOf().get('court')?.length, 15)
+  assert.equal(hexFamiliesOf().get('court')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'court', program: ['restitution'], params: [10000, 120, 500] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12500, `court.restitution at ${uuid}`)
-  qpuUuidReceiptOf('court restitution', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('court restitution', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas across legal instances, jurisdiction-agnostic; restitution 12500, penalty 1100, possession 0/1, distribution 30000, liquidated 1/0, barred 1/0, compliant 1/0; a lead crossing to law until reviewed')
 })

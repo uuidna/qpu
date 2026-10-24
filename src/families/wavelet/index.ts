@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WAVELET — MULTIRESOLUTION ANALYSIS AS ARITHMETIC (chosen by the transform registry, not by hand). A wavelet decomposition
@@ -31,4 +31,4 @@ export class WaveletFormulas {
 }
 
 for (const name of ['coefficients', 'compression', 'decomposition', 'detailcoeffs', 'energy', 'levels', 'scale', 'vanishingmoments'] as const)
-  qpuHexRegisterOf('wavelet', name, (WaveletFormulas[name] as (...x: unknown[]) => unknown).bind(WaveletFormulas))
+  hexRegisterOf('wavelet', name, (WaveletFormulas[name] as (...x: unknown[]) => unknown).bind(WaveletFormulas))

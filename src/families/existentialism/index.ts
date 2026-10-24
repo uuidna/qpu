@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EXISTENTIALISM — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ExistentialismFormulas {
 }
 
 for (const name of ['anguishindex', 'authenticitymodes', 'badfaithratio', 'becomingstages', 'facticitypairs', 'freedomchoices', 'projectorderings', 'situationsubsets'] as const)
-  qpuHexRegisterOf('existentialism', name, (ExistentialismFormulas[name] as (...x: unknown[]) => unknown).bind(ExistentialismFormulas))
+  hexRegisterOf('existentialism', name, (ExistentialismFormulas[name] as (...x: unknown[]) => unknown).bind(ExistentialismFormulas))

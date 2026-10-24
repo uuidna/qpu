@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TelescopeFormulas — 8 exact-integer formulas of the telescope domain, each at a hex address crossing to cross; develops the telescope leads. */
@@ -31,4 +31,4 @@ export class TelescopeFormulas {
 }
 
 for (const name of ['aperture', 'combos', 'fieldofview', 'focalratio', 'lightgrasp', 'magnification', 'mirrors', 'resolution'] as const)
-  qpuHexRegisterOf('telescope', name, (TelescopeFormulas[name] as (...x: unknown[]) => unknown).bind(TelescopeFormulas))
+  hexRegisterOf('telescope', name, (TelescopeFormulas[name] as (...x: unknown[]) => unknown).bind(TelescopeFormulas))

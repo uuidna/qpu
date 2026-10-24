@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FolkloreFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('folklore: taletypes, motifcombos, variantorderings, transmissionpaths, reg
   assert.equal(FolkloreFormulas.diffusionrate(60, 100).value, 60)
   assert.equal(FolkloreFormulas.collectionsize(300, 200).value, 500)
   assert.equal(FolkloreFormulas.taletypes(200, 100).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('folklore')?.length, 8)
+  assert.equal(hexFamiliesOf().get('folklore')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'folklore', program: ['taletypes'], params: [200, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `folklore.taletypes at ${uuid}`)
-  qpuUuidReceiptOf('folklore taletypes', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('folklore taletypes', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; taletypes 300, motifcombos 1140, variantorderings 120, transmissionpaths 336, regionsubsets 64, performercount 60, diffusionrate 60, collectionsize 500; crossing to sociology')
 })

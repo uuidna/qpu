@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PestFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('pest: economicthreshold, infestationrate, controlefficacy, damageindex, po
   assert.equal(PestFormulas.survivingfraction(20, 100).value, 20)
   assert.equal(PestFormulas.trapcount(1000, 40).value, 25, 'traps for the field')
   assert.equal(PestFormulas.economicthreshold(500, 20).dst, 'ecology')
-  assert.equal(qpuHexFamiliesOf().get('pest')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pest')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pest', program: ['trapcount'], params: [1000, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `pest.trapcount at ${uuid}`)
-  qpuUuidReceiptOf('pest trapcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pest trapcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; economicthreshold 25, infestationrate 15, controlefficacy 80, damageindex 450, populationgrowth 1250, treatmentcost 600, survivingfraction 20, trapcount 25; crossing to ecology')
 })

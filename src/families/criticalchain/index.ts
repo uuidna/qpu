@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CRITICALCHAIN — CRITICAL CHAIN PROJECT MANAGEMENT, AS ARITHMETIC. Protecting a plan is numbers: the project buffer at the
@@ -31,4 +31,4 @@ export class CriticalchainFormulas {
 }
 
 for (const name of ['aggregation', 'bufferconsumption', 'chainlength', 'feedingbuffer', 'fevermargin', 'projectbuffer', 'resourcebuffer', 'safetyremoved'] as const)
-  qpuHexRegisterOf('criticalchain', name, (CriticalchainFormulas[name] as (...x: unknown[]) => unknown).bind(CriticalchainFormulas))
+  hexRegisterOf('criticalchain', name, (CriticalchainFormulas[name] as (...x: unknown[]) => unknown).bind(CriticalchainFormulas))

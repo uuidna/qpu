@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DYEING — THE BATH AS ARITHMETIC. Putting colour on fibre is numbers: the depth of shade on weight of fabric, the
@@ -31,4 +31,4 @@ export class DyeingFormulas {
 }
 
 for (const name of ['concentration', 'exhaustion', 'fastness', 'fixation', 'liquorratio', 'shade', 'temperature', 'uptake'] as const)
-  qpuHexRegisterOf('dyeing', name, (DyeingFormulas[name] as (...x: unknown[]) => unknown).bind(DyeingFormulas))
+  hexRegisterOf('dyeing', name, (DyeingFormulas[name] as (...x: unknown[]) => unknown).bind(DyeingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BacklashFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('backlash: deadband, compensation, hysteresis, lostmotion, positioningerror
   assert.equal(BacklashFormulas.reversaldelay(100, 20).value, 5)
   assert.equal(BacklashFormulas.stiffnessloss(10, 100).value, 10)
   assert.equal(BacklashFormulas.deadband(100, 97).dst, 'control')
-  assert.equal(qpuHexFamiliesOf().get('backlash')?.length, 8)
+  assert.equal(hexFamiliesOf().get('backlash')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'backlash', program: ['deadband'], params: [100, 97] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `backlash.deadband at ${uuid}`)
-  qpuUuidReceiptOf('backlash deadband', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('backlash deadband', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; deadband 3, compensation 95, hysteresis 5, lostmotion 5, positioningerror 2, gearplay 3, reversaldelay 5, stiffnessloss 10; crossing to control')
 })

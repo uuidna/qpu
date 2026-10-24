@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** KINSHIP — BLOOD RELATION AS ARITHMETIC (the genealogy of a pedigree reduced to exact counts). How close two people are is
@@ -32,4 +32,4 @@ export class KinshipFormulas {
 }
 
 for (const name of ['ancestorcount', 'coefficientrelatedness', 'consanguinity', 'cousindegree', 'degreeremoval', 'descendants', 'generationdistance', 'lineagedepth'] as const)
-  qpuHexRegisterOf('kinship', name, (KinshipFormulas[name] as (...x: unknown[]) => unknown).bind(KinshipFormulas))
+  hexRegisterOf('kinship', name, (KinshipFormulas[name] as (...x: unknown[]) => unknown).bind(KinshipFormulas))

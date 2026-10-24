@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FLEET — RUNNING A FLEET AS ARITHMETIC. Vehicles are numbers: how many are up, how much they are down, how hard they
@@ -30,4 +30,4 @@ export class FleetFormulas {
 }
 
 for (const name of ['availability', 'downtime', 'idle', 'lifecycle', 'maintenance', 'replacement', 'telematics', 'utilization'] as const)
-  qpuHexRegisterOf('fleet', name, (FleetFormulas[name] as (...x: unknown[]) => unknown).bind(FleetFormulas))
+  hexRegisterOf('fleet', name, (FleetFormulas[name] as (...x: unknown[]) => unknown).bind(FleetFormulas))

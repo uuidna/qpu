@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhotodiodeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('photodiode: responsivity, photocurrent, quantumefficiency, darkcurrent, sn
   assert.equal(PhotodiodeFormulas.saturation(500, 400).value, 1, 'saturated')
   assert.equal(PhotodiodeFormulas.saturation(300, 400).value, 0)
   assert.equal(PhotodiodeFormulas.responsivity(1000, 2).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('photodiode')?.length, 8)
+  assert.equal(hexFamiliesOf().get('photodiode')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'photodiode', program: ['photocurrent'], params: [500, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2000, `photodiode.photocurrent at ${uuid}`)
-  qpuUuidReceiptOf('photodiode photocurrent', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('photodiode photocurrent', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; responsivity 500, photocurrent 2000, quantumefficiency 80, darkcurrent 500, snr 125, risetime 1100, shuntresistance 250, saturation 1; crossing to optics')
 })

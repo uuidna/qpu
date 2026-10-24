@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NEPHROLOGY — THE KIDNEY, AS ARITHMETIC (chosen by the medical registry, not by hand). Renal function is numbers:
@@ -30,4 +30,4 @@ export class NephrologyFormulas {
 }
 
 for (const name of ['clearance', 'creatinine', 'dialysis', 'electrolyte', 'filtration', 'gfr', 'proteinuria', 'reabsorption'] as const)
-  qpuHexRegisterOf('nephrology', name, (NephrologyFormulas[name] as (...x: unknown[]) => unknown).bind(NephrologyFormulas))
+  hexRegisterOf('nephrology', name, (NephrologyFormulas[name] as (...x: unknown[]) => unknown).bind(NephrologyFormulas))

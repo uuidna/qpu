@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RADIOLOGY — MEDICAL IMAGING AS ARITHMETIC. Imaging and radiation are numbers: absorbed dose behind shielding, the
@@ -31,4 +31,4 @@ export class RadiologyFormulas {
 }
 
 for (const name of ['attenuation', 'contrast', 'coverage', 'dose', 'exposure', 'halflife', 'resolution', 'uptake'] as const)
-  qpuHexRegisterOf('radiology', name, (RadiologyFormulas[name] as (...x: unknown[]) => unknown).bind(RadiologyFormulas))
+  hexRegisterOf('radiology', name, (RadiologyFormulas[name] as (...x: unknown[]) => unknown).bind(RadiologyFormulas))

@@ -15,9 +15,9 @@ const DOORS = new Set(['qpu', 'crypto', 'api', 'data', 'gate'])
 
 test('every family is a gate: discovery and development complete, or it explains exactly how, before push', async () => {
   await import('../dist/mcp/families.js')
-  const { qpuHexFamiliesOf, qpuHexRegisteredSizeOf, qpuHexFamilyCapOf, qpuHexUuidOf } = await import('../dist/quantum/processing/unit/index.js')
-  const cap = qpuHexFamilyCapOf()
-  const families = qpuHexFamiliesOf()
+  const { hexFamiliesOf, hexRegisteredSizeOf, hexFamilyCapOf, qpuHexUuidOf } = await import('../dist/quantum/processing/unit/index.js')
+  const cap = hexFamilyCapOf()
+  const families = hexFamiliesOf()
   // the path gate, gravity's own: a family whose registering file is off its meaningful path (mcp/door families excepted)
   const offPath = new Set(offPathOf(entriesOf(), DOORS).map((m) => m.family))
   const handles = new Map()
@@ -26,12 +26,12 @@ test('every family is a gate: discovery and development complete, or it explains
 
   for (const [fam, formulas] of families) {
     // only the registered file-families gate the push — the Lean families (Qpu.*) and the doors are not developed here
-    if (DOORS.has(fam) || fam.startsWith('Qpu.') || qpuHexRegisteredSizeOf(fam) === 0) continue
-    const n = qpuHexRegisteredSizeOf(fam)
+    if (DOORS.has(fam) || fam.startsWith('Qpu.') || hexRegisteredSizeOf(fam) === 0) continue
+    const n = hexRegisteredSizeOf(fam)
 
     // DEVELOPMENT — the family's own formulas
     if (n === 0) req(fam, 'develops no formula', `add a static formula to src/families/${fam}/index.ts and register it, then npx tsx scripts/payload-cloudflare.ts --repo`, false)
-    if (!/^[a-z]+$/.test(fam)) req(fam, 'the name is not one lowercase word', `rename the folder and the qpuHexRegisterOf('${fam}') call to one /^[a-z]+$/ word, then --repo (a human picks the word)`, false)
+    if (!/^[a-z]+$/.test(fam)) req(fam, 'the name is not one lowercase word', `rename the folder and the hexRegisterOf('${fam}') call to one /^[a-z]+$/ word, then --repo (a human picks the word)`, false)
     if (n > cap) req(fam, `${n} formulas exceed the nibble of ${cap}`, `split it: move formulas ${cap + 1}+ into a new one-word family folder (the nibble holds ${cap}), then --repo`, false)
 
     // DISCOVERY — the family's place in the graph
@@ -59,14 +59,14 @@ test('qpu is complete: the families compute both sides — clay and the double t
   await import('../dist/mcp/families.js')
   const { CoilFormulas } = await import('../dist/families/coil/index.js')
   // one side: clay — 2·7 coins = 1+6 coils = clay
-  const clay = typeof unit.qpuClayHolds === 'function' ? unit.qpuClayHolds() : unit.qpuClayOf().holds
+  const clay = typeof unit.clayHolds === 'function' ? unit.clayHolds() : unit.qpuClayOf().holds
   assert.equal(clay, true, 'the clay side holds (2·7 coins = 1+6 coils = clay)')
   // the other side: the double torus — the coil family, the fold/coil duality (2·90 = 3·60) and genus two
   assert.equal(CoilFormulas.turn(2, 3).holds, true, 'the double-torus side holds — fold equals coil (180°)')
   assert.equal(CoilFormulas.genus().value, unit.coins, 'the double torus has genus two (coins)')
   // and complete in all human perceptions, delivered via the device hardware (the Payload UI renders these through the
   // device's display and audio): qpu computes sight (colour, optics, hologram), sound (audio, tune), and signal (wave).
-  const families = unit.qpuHexFamiliesOf()
+  const families = unit.hexFamiliesOf()
   for (const sense of ['color', 'optics', 'holo', 'audio', 'tune', 'signal', 'wave'])
     assert.ok((families.get(sense)?.length ?? 0) > 0, `qpu computes the ${sense} perception, delivered to the human via the device`)
   // both sides computed and all perceptions delivered → qpu is complete

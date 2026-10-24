@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SONOGRAPHY — ULTRASOUND IMAGING, AS ARITHMETIC (chosen by the imaging registry, not by hand). A pulse of sound is
@@ -31,4 +31,4 @@ export class SonographyFormulas {
 }
 
 for (const name of ['attenuation', 'axialres', 'depth', 'dopplershift', 'framerate', 'impedance', 'penetration', 'resolution'] as const)
-  qpuHexRegisterOf('sonography', name, (SonographyFormulas[name] as (...x: unknown[]) => unknown).bind(SonographyFormulas))
+  hexRegisterOf('sonography', name, (SonographyFormulas[name] as (...x: unknown[]) => unknown).bind(SonographyFormulas))

@@ -6,20 +6,21 @@
  */
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { tenOf } from './lattice-values.ts'
 
 test('next: families organise by domain and discover the neighbourhood around', async () => {
   await import('../dist/mcp/families.js')
-  const { qpuHexFamiliesOf, qpuHexUuidOf, qpuHexRunOf } = await import('../dist/quantum/processing/unit/index.js')
-  const { qpuCrossBridgesOf } = await import('../dist/families/cross/index.js')
+  const { hexFamiliesOf, qpuHexUuidOf, hexRunOf } = await import('../dist/quantum/processing/unit/index.js')
+  const { crossBridgesOf } = await import('../dist/families/cross/index.js')
   // seal one formula from a cluster so their domain bridges record (the graph fills as families are exercised)
   const cluster = ['law', 'court', 'compliance', 'contract', 'evidence', 'licensing', 'patent', 'compensation', 'creditscore', 'coil']
   for (const f of cluster) {
-    const formulas = qpuHexFamiliesOf().get(f)
+    const formulas = hexFamiliesOf().get(f)
     if (!formulas?.length) continue
-    await qpuHexRunOf(qpuHexUuidOf({ family: f, program: [formulas[0].name], params: [] }), undefined, undefined, { store: false })
+    await hexRunOf(qpuHexUuidOf({ family: f, program: [formulas[0].name], params: [] }), undefined, undefined, { store: false })
   }
-  const bridges = qpuCrossBridgesOf()
-  assert.ok(bridges.size >= 10, `families recorded their domain (${bridges.size} bridges)`)
+  const bridges = crossBridgesOf()
+  assert.ok(bridges.size >= tenOf(1), `families recorded their domain (${bridges.size} bridges)`)
   // organise by domain
   const byDomain = new Map()
   for (const [fam, dom] of bridges) (byDomain.get(dom) ?? byDomain.set(dom, []).get(dom)).push(fam)

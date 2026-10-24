@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HOOK — THE PAYLOAD CMS LIFECYCLE HOOKS API, AS ARITHMETIC. The hooks a document walks on its way through the CMS are
@@ -34,4 +34,4 @@ export class HookFormulas {
 }
 
 for (const name of ['chain', 'coverage', 'depth', 'failures', 'fired', 'latency', 'mutations', 'order'] as const)
-  qpuHexRegisterOf('hook', name, (HookFormulas[name] as (...x: unknown[]) => unknown).bind(HookFormulas))
+  hexRegisterOf('hook', name, (HookFormulas[name] as (...x: unknown[]) => unknown).bind(HookFormulas))

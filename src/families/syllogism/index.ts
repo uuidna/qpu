@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SYLLOGISM — scaffolded integer measures crossed to logic. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SyllogismFormulas {
 }
 
 for (const name of ['conclusionpaths', 'distributionchecks', 'figurecount', 'moodcount', 'premisepairs', 'soundnessratio', 'termorderings', 'validforms'] as const)
-  qpuHexRegisterOf('syllogism', name, (SyllogismFormulas[name] as (...x: unknown[]) => unknown).bind(SyllogismFormulas))
+  hexRegisterOf('syllogism', name, (SyllogismFormulas[name] as (...x: unknown[]) => unknown).bind(SyllogismFormulas))

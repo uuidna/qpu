@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** KERNING — THE SPACING BETWEEN LETTERS, AS ARITHMETIC (in font design units, an em divided into 1000). Fitting type is
@@ -31,4 +31,4 @@ export class KerningFormulas {
 }
 
 for (const name of ['advancewidth', 'emratio', 'optical', 'pairadjust', 'sidebearing', 'tracking', 'units', 'wordspacing'] as const)
-  qpuHexRegisterOf('kerning', name, (KerningFormulas[name] as (...x: unknown[]) => unknown).bind(KerningFormulas))
+  hexRegisterOf('kerning', name, (KerningFormulas[name] as (...x: unknown[]) => unknown).bind(KerningFormulas))

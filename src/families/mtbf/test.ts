@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MtbfFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('mtbf: meantime, failurerate, mttr, uptime, hazardrate, cumulativehours, fi
   assert.equal(MtbfFormulas.operatinglife(50000, 12000).value, 38000, 'hours of life left')
   assert.equal(MtbfFormulas.operatinglife(10000, 12000).value, 0)
   assert.equal(MtbfFormulas.meantime(8760, 3).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('mtbf')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mtbf')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mtbf', program: ['meantime'], params: [8760, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2920, `mtbf.meantime at ${uuid}`)
-  qpuUuidReceiptOf('mtbf meantime', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mtbf meantime', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; meantime 2920, failurerate 5, mttr 8, uptime 99, hazardrate 2, cumulativehours 50000, fits 1000, operatinglife 38000; crossing to statistics')
 })

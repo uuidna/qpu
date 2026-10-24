@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { JobFormulas } from './index.js'
 
 /** Work splits across agents that each find their own slice from their index; the reduce is log rounds; the optimum
@@ -25,12 +25,12 @@ test('job: a job splits across agents by index with no coordinator; the reduce i
   assert.ok(all.value > 0 && all.holds, 'the default job discovers relations across the lattice')
   assert.ok((all.agents ?? 0) >= 1 && (all.rounds ?? -1) >= 0, 'the discovery job is split across agents with a reduce')
   assert.ok((all.relations ?? []).length <= 3, 'the first n relations ride in the reading')
-  assert.equal(qpuHexFamiliesOf().get('job')?.length, 8)
+  assert.equal(hexFamiliesOf().get('job')?.length, 8)
   for (const [name, params, expected] of [['makespan', [10, 3], 4], ['rounds', [8], 3], ['optimal', [100], Number(opt.value)]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'job', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `job.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`job ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`job ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic(`8 formulas; 10 across 3 → 4,3,3; reduce of 8 in 3 rounds; optimal(100) = ${opt.value}; the default job discovered ${all.value} relations across ${all.agents} agents`)
 })

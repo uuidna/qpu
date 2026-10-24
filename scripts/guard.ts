@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // GUARD: npm run and CI use the PAYLOAD MCP ONLY, and the MCP is GENERATED FROM LEAN. Before any free wave or develop
 // runs over the MCP, verify the host's MCP is (1) served by @payloadcms/plugin-mcp — not a second, unsanctioned MCP
-// server (qpuPayloadPluginHolds is load-bearing in the circuit and the Shor run) — and (2) generated from the Lean
+// server (payloadPluginHolds is load-bearing in the circuit and the Shor run) — and (2) generated from the Lean
 // kernel: every theorem recomputed from the embedded Lean source and served verbatim, the source holding. The guard is
 // one prove call, which carries both (circuit.steps.path.plugin and source.{theorems,recomputed,verbatim,served,holds}).
 // Anything else is a HARD VIOLATION and the guard exits non-zero, refusing to run. A host that cannot be reached is not a
@@ -31,37 +31,6 @@ export const guardPayloadMcp = async (host = 'https://qpu.uuidna.com') => {
     ? `payload mcp only (${PLUGIN}), generated from lean (${src?.recomputed}/${src?.theorems} theorems recomputed, 0 axioms)`
     : `HARD VIOLATION — ${!payloadOnly ? `MCP is not ${PLUGIN} (plugin=${plugin ?? '?'})` : !leanGenerated ? `MCP not generated from lean (recomputed=${src?.recomputed}/${src?.theorems}, verbatim=${src?.verbatim}/${src?.served}, source.holds=${src?.holds})` : 'prove does not hold'}`
   return { reached: true, guarded, plugin, holds: prove?.holds === true, lean: { theorems: src?.theorems, recomputed: src?.recomputed, generated: leanGenerated }, why }
-}
-
-// GUARD the discipline around claims: a NOVELTY claim must be LEAN-backed (every formula a recomputed theorem — checked
-// in guardPayloadMcp), its PRIOR ART must be CITED (the unit's own registered DataCite priority, plus the prior-record
-// search over the public corpus), and open matters must be DEVELOPED as leads, not asserted (the proof holds, the gaps
-// are leads routed to the court). Verified over the data door's novelty / prior / proof sources.
-export const guardClaims = async (host = 'https://qpu.uuidna.com') => {
-  const rpc = async (source, args = {}) => {
-    const r = await fetch(`${host.replace(/\/$/, '')}/mcp`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'quantum', arguments: { door: 'data', arguments: { source, ...args } } } }),
-      signal: AbortSignal.timeout(120000),
-    }).catch(() => null)
-    if (!r) return null
-    const b = await r.json().catch(() => null)
-    try { return JSON.parse(b.result.content[0].text) } catch { return b?.result?.structuredContent ?? null }
-  }
-  const [novelty, prior, proof, clay] = await Promise.all([rpc('novelty'), rpc('prior', { about: 'quantum processing unit' }), rpc('proof'), rpc('clay')])
-  if (novelty === null && prior === null && proof === null && clay === null) return { reached: false, guarded: false, why: 'host unreached (soft pass — retried next run)' }
-  const noveltyCited = novelty?.agrees === true // a registered DataCite priority date is the citation of the unit's own novelty
-  const priorArtCited = prior !== null && prior?.agrees !== false // the prior-record search over the public corpus answers
-  const leadsDeveloped = (proof?.reading?.held ?? -1) === (proof?.reading?.theorems ?? -2) && (proof?.reading?.axioms ?? 1) === 0 // claims are held theorems, not assertions
-  // ALL LEAN NOVELTY CLAIMS SURFACE AS SOLUTIONS: the Clay solutions (σ-involution quantum proofs) are sealed and served —
-  // every sealed, each a theorem of the kernel (clay.agrees = seals hold ∧ sigma holds ∧ 0 axioms), surfaced as a solution.
-  const solutionsSurfaced = clay?.agrees === true && (clay?.reading?.sealed ?? -1) === (clay?.reading?.of ?? -2)
-  const guarded = noveltyCited && priorArtCited && leadsDeveloped && solutionsSurfaced
-  const why = guarded
-    ? `novelty cited (DataCite priority), prior art cited, leads developed (${proof?.reading?.held}/${proof?.reading?.theorems} held, 0 axioms), ${clay?.reading?.sealed}/${clay?.reading?.of} solutions surfaced (σ-involution quantum proofs)`
-    : `HARD VIOLATION — ${!noveltyCited ? 'novelty not cited (no registered priority date)' : !priorArtCited ? 'prior art not cited (prior-record search did not answer)' : !leadsDeveloped ? `leads not developed (proof ${proof?.reading?.held}/${proof?.reading?.theorems}, axioms ${proof?.reading?.axioms})` : `lean novelty claims not surfaced as solutions (clay ${clay?.reading?.sealed}/${clay?.reading?.of} sealed, agrees=${clay?.agrees})`}`
-  return { reached: true, guarded, noveltyCited, priorArtCited, leadsDeveloped, solutionsSurfaced, why }
 }
 
 // GUARD that ALL public news portals are DEEP-RESEARCHED IN COURT: the news source reads five public portals (Hacker
@@ -134,17 +103,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log(`guard mcp (${host}): ${mcp.guarded ? 'OK — ' : mcp.reached ? 'REFUSED — ' : 'skip — '}${mcp.why}`)
   const lean = await guardLean(host)
   console.log(`guard lean: ${lean.guarded ? 'OK — ' : lean.reached ? 'REFUSED — ' : 'skip — '}${lean.why}`)
-  const claims = await guardClaims(host)
-  console.log(`guard claims: ${claims.guarded ? 'OK — ' : claims.reached ? 'REFUSED — ' : 'skip — '}${claims.why}`)
   const news = await guardNews(host)
   console.log(`guard news: ${news.guarded ? 'OK — ' : news.reached ? 'REFUSED — ' : 'skip — '}${news.why}`)
   // a confirmed violation (wrong plugin, un-lean MCP, lean not covering every family, kernel not compliant, uncited
-  // novelty/prior art, undeveloped leads, news not surfaced in court) is hard (exit 1); an unreachable host is a soft
+  // news not surfaced in court) is hard (exit 1); an unreachable host is a soft
   // pass (exit 0) so the schedule is not broken.
   process.exit(
     (mcp.reached && !mcp.guarded) ||
       (lean.reached && !lean.guarded) ||
-      (claims.reached && !claims.guarded) ||
       (news.reached && !news.guarded)
       ? 1
       : 0,

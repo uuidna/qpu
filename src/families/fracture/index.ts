@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FRACTURE — HOW SOLIDS BREAK, AS ARITHMETIC. When a crack runs is numbers: the toughness a material holds, the stress
@@ -31,4 +31,4 @@ export class FractureFormulas {
 }
 
 for (const name of ['crackgrowth', 'criticalcrack', 'energyrelease', 'failurestress', 'griffith', 'notchsensitivity', 'stressintensity', 'toughness'] as const)
-  qpuHexRegisterOf('fracture', name, (FractureFormulas[name] as (...x: unknown[]) => unknown).bind(FractureFormulas))
+  hexRegisterOf('fracture', name, (FractureFormulas[name] as (...x: unknown[]) => unknown).bind(FractureFormulas))

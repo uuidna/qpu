@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PulleyFormulas — 8 exact-integer formulas of the pulley domain, each at a hex address crossing to cross; develops the pulley leads. */
@@ -31,4 +31,4 @@ export class PulleyFormulas {
 }
 
 for (const name of ['advantage', 'combos', 'effort', 'load', 'ratio', 'segments', 'tension', 'wheels'] as const)
-  qpuHexRegisterOf('pulley', name, (PulleyFormulas[name] as (...x: unknown[]) => unknown).bind(PulleyFormulas))
+  hexRegisterOf('pulley', name, (PulleyFormulas[name] as (...x: unknown[]) => unknown).bind(PulleyFormulas))

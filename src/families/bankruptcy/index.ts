@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BANKRUPTCY — INSOLVENCY AS ARITHMETIC. What an estate pays and keeps is numbers: the dividend in cents on the dollar,
@@ -31,4 +31,4 @@ export class BankruptcyFormulas {
 }
 
 for (const name of ['discharge', 'dividend', 'estate', 'preference', 'priority', 'ratio', 'shortfall', 'unsecured'] as const)
-  qpuHexRegisterOf('bankruptcy', name, (BankruptcyFormulas[name] as (...x: unknown[]) => unknown).bind(BankruptcyFormulas))
+  hexRegisterOf('bankruptcy', name, (BankruptcyFormulas[name] as (...x: unknown[]) => unknown).bind(BankruptcyFormulas))

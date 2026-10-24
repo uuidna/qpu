@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CostingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('costing: unitcost, markup, margin, breakeven, overhead, absorption, contri
   assert.equal(CostingFormulas.contribution(30, 50).value, 0, 'never negative')
   assert.equal(CostingFormulas.target(100, 40).value, 60, 'target cost for a 40% margin')
   assert.equal(CostingFormulas.unitcost(1000, 40).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('costing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('costing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'costing', program: ['target'], params: [100, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `costing.target at ${uuid}`)
-  qpuUuidReceiptOf('costing target', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('costing target', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; unitcost 25, markup 50, margin 25, breakeven 200, overhead 30, absorption 90, contribution 20, target 60; crossing to accounting')
 })

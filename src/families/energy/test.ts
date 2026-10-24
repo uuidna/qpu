@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EnergyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('energy: power, energy, efficiency, load, cost, capacity, carbon, storage â
   assert.equal(EnergyFormulas.carbon(1000, 420).value, 420, 'grams emitted')
   assert.equal(EnergyFormulas.storage(90, 100).value, 90, 'state of charge')
   assert.equal(EnergyFormulas.power(240, 10).dst, 'obs')
-  assert.equal(qpuHexFamiliesOf().get('energy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('energy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'energy', program: ['power'], params: [240, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2400, `energy.power at ${uuid}`)
-  qpuUuidReceiptOf('energy power', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('energy power', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; power 2400, energy 7200, efficiency 85, load 80, cost 75, capacity 8000, carbon 420, storage 90; crossing to obs')
 })

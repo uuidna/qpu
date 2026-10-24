@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MACROECONOMICS — THE WHOLE ECONOMY, AS ARITHMETIC (chosen by the public-API registry, not by hand). An economy is
@@ -31,4 +31,4 @@ export class MacroeconomicsFormulas {
 }
 
 for (const name of ['debt', 'deficit', 'gdp', 'growth', 'inflation', 'multiplier', 'unemployment', 'velocity'] as const)
-  qpuHexRegisterOf('macroeconomics', name, (MacroeconomicsFormulas[name] as (...x: unknown[]) => unknown).bind(MacroeconomicsFormulas))
+  hexRegisterOf('macroeconomics', name, (MacroeconomicsFormulas[name] as (...x: unknown[]) => unknown).bind(MacroeconomicsFormulas))

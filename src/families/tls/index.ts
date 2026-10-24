@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TlsFormulas — 8 exact-integer formulas of the tls domain, each at a hex address crossing to cross; develops the tls leads. */
@@ -31,4 +31,4 @@ export class TlsFormulas {
 }
 
 for (const name of ['certchain', 'combos', 'handshake', 'keybits', 'resumption', 'sessions', 'suites', 'ticketlife'] as const)
-  qpuHexRegisterOf('tls', name, (TlsFormulas[name] as (...x: unknown[]) => unknown).bind(TlsFormulas))
+  hexRegisterOf('tls', name, (TlsFormulas[name] as (...x: unknown[]) => unknown).bind(TlsFormulas))

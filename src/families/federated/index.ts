@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FEDERATED — federated learning as exact combinatorics, not a fabricated coverage number. Model exchanges over rounds
@@ -32,4 +32,4 @@ export class FederatedFormulas {
 }
 
 for (const name of ['aggregated', 'cohorts', 'exchanges', 'params', 'quorum', 'shards', 'straggle', 'updates'] as const)
-  qpuHexRegisterOf('federated', name, (FederatedFormulas[name] as (...x: unknown[]) => unknown).bind(FederatedFormulas))
+  hexRegisterOf('federated', name, (FederatedFormulas[name] as (...x: unknown[]) => unknown).bind(FederatedFormulas))

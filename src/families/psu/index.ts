@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PSU — THE POWER SUPPLY UNIT, AS ARITHMETIC. A supply is numbers by the book: watts from volts and amps, conversion
@@ -36,4 +36,4 @@ export class PsuFormulas {
 }
 
 for (const name of ['current', 'dissipation', 'efficiency', 'headroom', 'loadpercent', 'peak', 'rails', 'redundancy', 'ripple', 'watts'] as const)
-  qpuHexRegisterOf('psu', name, (PsuFormulas[name] as (...x: unknown[]) => unknown).bind(PsuFormulas))
+  hexRegisterOf('psu', name, (PsuFormulas[name] as (...x: unknown[]) => unknown).bind(PsuFormulas))

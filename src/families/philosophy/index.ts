@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHILOSOPHY — REASONING AS ARITHMETIC (argument and ethics measured, not asserted). An argument is numbers: how many of
@@ -31,4 +31,4 @@ export class PhilosophyFormulas {
 }
 
 for (const name of ['consensus', 'consistency', 'entailment', 'premises', 'syllogism', 'utility', 'validity', 'virtue'] as const)
-  qpuHexRegisterOf('philosophy', name, (PhilosophyFormulas[name] as (...x: unknown[]) => unknown).bind(PhilosophyFormulas))
+  hexRegisterOf('philosophy', name, (PhilosophyFormulas[name] as (...x: unknown[]) => unknown).bind(PhilosophyFormulas))

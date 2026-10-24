@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RedundancyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('redundancy: activepassive, coverage, failover, nplusone, parallelreliabili
   assert.equal(RedundancyFormulas.votingthreshold(5).value, 3, 'majority of five')
   assert.equal(RedundancyFormulas.failover(1000, 1).value, 0)
   assert.equal(RedundancyFormulas.activepassive(100, 50).dst, 'reliability')
-  assert.equal(qpuHexFamiliesOf().get('redundancy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('redundancy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'redundancy', program: ['failover'], params: [1000, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 250, `redundancy.failover at ${uuid}`)
-  qpuUuidReceiptOf('redundancy failover', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('redundancy failover', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; activepassive 50, coverage 90, failover 250, nplusone 9, parallelreliability 95, quorum 5, sparecount 2, votingthreshold 3; crossing to reliability')
 })

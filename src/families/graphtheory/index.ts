@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GRAPHTHEORY — THE SHAPE OF A NETWORK, AS ARITHMETIC. A graph is counted: the edges a complete graph holds, how dense it
@@ -31,4 +31,4 @@ export class GraphtheoryFormulas {
 }
 
 for (const name of ['components', 'cyclomatic', 'degree', 'density', 'edges', 'handshake', 'planaredges', 'treeedges'] as const)
-  qpuHexRegisterOf('graphtheory', name, (GraphtheoryFormulas[name] as (...x: unknown[]) => unknown).bind(GraphtheoryFormulas))
+  hexRegisterOf('graphtheory', name, (GraphtheoryFormulas[name] as (...x: unknown[]) => unknown).bind(GraphtheoryFormulas))

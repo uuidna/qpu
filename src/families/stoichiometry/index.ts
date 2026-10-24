@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STOICHIOMETRY — THE BOOKKEEPING OF A REACTION, AS ARITHMETIC. A reaction is numbers: moles from a mass, molar mass
@@ -30,4 +30,4 @@ export class StoichiometryFormulas {
 }
 
 for (const name of ['dilution', 'empirical', 'limiting', 'molarity', 'molarmass', 'moles', 'percentmass', 'yield'] as const)
-  qpuHexRegisterOf('stoichiometry', name, (StoichiometryFormulas[name] as (...x: unknown[]) => unknown).bind(StoichiometryFormulas))
+  hexRegisterOf('stoichiometry', name, (StoichiometryFormulas[name] as (...x: unknown[]) => unknown).bind(StoichiometryFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FIELD — THE PAYLOAD CMS FIELD API, AS ARITHMETIC (chosen by the field registry, not by hand). A field schema is numbers:
@@ -31,4 +31,4 @@ export class FieldFormulas {
 }
 
 for (const name of ['depth', 'group', 'indexed', 'length', 'localized', 'options', 'required', 'unique'] as const)
-  qpuHexRegisterOf('field', name, (FieldFormulas[name] as (...x: unknown[]) => unknown).bind(FieldFormulas))
+  hexRegisterOf('field', name, (FieldFormulas[name] as (...x: unknown[]) => unknown).bind(FieldFormulas))

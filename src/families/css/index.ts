@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CSS — THE DESIGN SYSTEM AS ARITHMETIC, LEARNED FROM TAILWIND AND SHADCN. A design token is a number on a scale: the
@@ -33,4 +33,4 @@ export class CssFormulas {
 }
 
 for (const name of ['contrast', 'grid', 'leading', 'radius', 'rem', 'screen', 'spacing', 'type'] as const)
-  qpuHexRegisterOf('css', name, (CssFormulas[name] as (...x: unknown[]) => unknown).bind(CssFormulas))
+  hexRegisterOf('css', name, (CssFormulas[name] as (...x: unknown[]) => unknown).bind(CssFormulas))

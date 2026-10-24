@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** METEORITICS — THE FALL OF ROCK, AS ARITHMETIC (chosen by the astronomy registry, not by hand). A meteor is numbers:
@@ -31,4 +31,4 @@ export class MeteoriticsFormulas {
 }
 
 for (const name of ['ablation', 'composition', 'crater', 'energy', 'flux', 'magnitude', 'survival', 'velocity'] as const)
-  qpuHexRegisterOf('meteoritics', name, (MeteoriticsFormulas[name] as (...x: unknown[]) => unknown).bind(MeteoriticsFormulas))
+  hexRegisterOf('meteoritics', name, (MeteoriticsFormulas[name] as (...x: unknown[]) => unknown).bind(MeteoriticsFormulas))

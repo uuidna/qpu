@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CarbonFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('carbon: footprint, offset, sequestration, intensity, credits, capture, equ
   assert.equal(CarbonFormulas.equivalent(8, 28).value, 224, 'methane as CO₂-equivalent')
   assert.equal(CarbonFormulas.budget(1000, 600).value, 400)
   assert.equal(CarbonFormulas.footprint(100, 5).dst, 'climate')
-  assert.equal(qpuHexFamiliesOf().get('carbon')?.length, 8)
+  assert.equal(hexFamiliesOf().get('carbon')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'carbon', program: ['capture'], params: [1000, 90] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 900, `carbon.capture at ${uuid}`)
-  qpuUuidReceiptOf('carbon capture', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('carbon capture', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; footprint 500, offset 700, sequestration 1000, intensity 50, credits 250, capture 900, equivalent 224, budget 400; crossing to climate')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CASTING — POURING METAL, AS ARITHMETIC. A foundry is numbers: the shrinkage from hot to cold, how long the pour takes,
@@ -31,4 +31,4 @@ export class CastingFormulas {
 }
 
 for (const name of ['coolingrate', 'fluidity', 'gatingratio', 'pouringtime', 'risering', 'shrinkage', 'solidification', 'yield'] as const)
-  qpuHexRegisterOf('casting', name, (CastingFormulas[name] as (...x: unknown[]) => unknown).bind(CastingFormulas))
+  hexRegisterOf('casting', name, (CastingFormulas[name] as (...x: unknown[]) => unknown).bind(CastingFormulas))

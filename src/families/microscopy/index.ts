@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MICROSCOPY — SEEING THE SMALL, AS ARITHMETIC. The light microscope is numbers: total magnification from the lenses,
@@ -31,4 +31,4 @@ export class MicroscopyFormulas {
 }
 
 for (const name of ['depthoffield', 'fieldofview', 'magnification', 'numericalaperture', 'pixelsize', 'resolution', 'totalmag', 'workingdistance'] as const)
-  qpuHexRegisterOf('microscopy', name, (MicroscopyFormulas[name] as (...x: unknown[]) => unknown).bind(MicroscopyFormulas))
+  hexRegisterOf('microscopy', name, (MicroscopyFormulas[name] as (...x: unknown[]) => unknown).bind(MicroscopyFormulas))

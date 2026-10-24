@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SuspensionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('suspension: springrate, damping, ride, travel, roll, stiffness, frequency,
   assert.equal(SuspensionFormulas.frequency(64000, 400).value, 160)
   assert.equal(SuspensionFormulas.load(1600, 4).value, 400, 'weight over four corners')
   assert.equal(SuspensionFormulas.springrate(1000, 50).dst, 'automotive')
-  assert.equal(qpuHexFamiliesOf().get('suspension')?.length, 8)
+  assert.equal(hexFamiliesOf().get('suspension')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'suspension', program: ['springrate'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `suspension.springrate at ${uuid}`)
-  qpuUuidReceiptOf('suspension springrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('suspension springrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; springrate 20, damping 1200, ride 280, travel 180, roll 1500, stiffness 50000, frequency 160, load 400; crossing to automotive')
 })

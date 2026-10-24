@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OnboardingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('onboarding: rampup, completion, milestone, enablement, timetoproductive, c
   assert.equal(OnboardingFormulas.satisfaction(90, 80).value, 1, 'satisfaction met')
   assert.equal(OnboardingFormulas.satisfaction(70, 80).value, 0)
   assert.equal(OnboardingFormulas.rampup(30, 2).dst, 'pedagogy')
-  assert.equal(qpuHexFamiliesOf().get('onboarding')?.length, 8)
+  assert.equal(hexFamiliesOf().get('onboarding')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'onboarding', program: ['milestone'], params: [10, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `onboarding.milestone at ${uuid}`)
-  qpuUuidReceiptOf('onboarding milestone', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('onboarding milestone', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rampup 60, completion 80, milestone 3, enablement 900, timetoproductive 30, checklist 10, mentoring 60, satisfaction 1; crossing to pedagogy')
 })

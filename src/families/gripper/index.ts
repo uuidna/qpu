@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GRIPPER — scaffolded integer measures crossed to robotics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class GripperFormulas {
 }
 
 for (const name of ['closetime', 'contactpressure', 'fingercount', 'frictionhold', 'gripforce', 'payloadlimit', 'slipmargin', 'strokewidth'] as const)
-  qpuHexRegisterOf('gripper', name, (GripperFormulas[name] as (...x: unknown[]) => unknown).bind(GripperFormulas))
+  hexRegisterOf('gripper', name, (GripperFormulas[name] as (...x: unknown[]) => unknown).bind(GripperFormulas))

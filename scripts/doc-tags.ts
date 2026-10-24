@@ -17,13 +17,13 @@ export const WINGS = [
   ['presentation', 'Presentation & discovery', 'Stylesheets, schemas, SEO zones, citation and the documents a reader or crawler sees.'],
 ]
 const RULES = [
-  [/Fold|Receipt|ContentUuid|ShapeUuid|FieldUuid|Message|SeatHandle|ServedLedger|ServedMemo|^qpuContextOf$/, 'receipts'],
+  [/Fold|Receipt|ContentUuid|ShapeUuid|FieldUuid|Message|SeatHandle|ServedLedger|ServedMemo|^contextOf$/, 'receipts'],
   [/Cube|Handle|Faces|Electronics|Balance|Capacity|Speed|^chooseOf|^tenOf/, 'lattice'],
   [/Encrypt|Cybersecurity/, 'crypto'],
   [/Lean|^quantumModeOf$|CrossReading/, 'proof'],
   [/Raid|PayloadDb|Storage|DocDb|DocStore/, 'storage'],
   [/Cern|Research|Citations|Teaching|ForeignReads|QPU_TEACHING/, 'science'],
-  [/Fuse|Compose|Probe|^qpuCrossOf|GraphState|SchemaMethods|Apis/, 'fusion'],
+  [/Fuse|Compose|Probe|^crossOf|GraphState|SchemaMethods|Apis/, 'fusion'],
   [/PayloadMcp|PayloadFind|Fusion|Intelligence|Cloudflare|cloudflare|CLOUDFLARE|PayloadTemplates|payloadTemplates/, 'cms'],
   [/Genesis|Pentagram|Access|Hologram|Css|Reflect|Presence|SeoZone|Cite|Schemas|WellKnown|Robots|Zone/, 'presentation'],
   [/Circuit|Computer|Quantum|Reading|Purpose|Evidence|Prove|Integrity|Neuro|Design|Vm|Sequence|Improve|Ideas/, 'quantum'],

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EARNED VALUE — PROJECT CONTROL AS ARITHMETIC. A project is three running numbers: the budgeted cost of the work planned
@@ -31,4 +31,4 @@ export class EarnedvalueFormulas {
 }
 
 for (const name of ['costvariance', 'cpi', 'eac', 'etc', 'schedulevariance', 'spi', 'tcpi', 'vac'] as const)
-  qpuHexRegisterOf('earnedvalue', name, (EarnedvalueFormulas[name] as (...x: unknown[]) => unknown).bind(EarnedvalueFormulas))
+  hexRegisterOf('earnedvalue', name, (EarnedvalueFormulas[name] as (...x: unknown[]) => unknown).bind(EarnedvalueFormulas))

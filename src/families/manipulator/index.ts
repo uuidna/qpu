@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MANIPULATOR — A ROBOT ARM, AS ARITHMETIC (chosen by the mechanism registry, not by hand). A manipulator is numbers:
@@ -31,4 +31,4 @@ export class ManipulatorFormulas {
 }
 
 for (const name of ['dof', 'jointrange', 'linkspeed', 'payload', 'reach', 'repeatability', 'singularities', 'workspace'] as const)
-  qpuHexRegisterOf('manipulator', name, (ManipulatorFormulas[name] as (...x: unknown[]) => unknown).bind(ManipulatorFormulas))
+  hexRegisterOf('manipulator', name, (ManipulatorFormulas[name] as (...x: unknown[]) => unknown).bind(ManipulatorFormulas))

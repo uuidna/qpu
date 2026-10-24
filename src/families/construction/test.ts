@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConstructionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('construction: area, volume, materials, cost, crew, progress, load, waste â
   assert.equal(ConstructionFormulas.load(1000, 4).value, 250)
   assert.equal(ConstructionFormulas.waste(5, 100).value, 5)
   assert.equal(ConstructionFormulas.area(10, 8).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('construction')?.length, 8)
+  assert.equal(hexFamiliesOf().get('construction')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'construction', program: ['area'], params: [10, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `construction.area at ${uuid}`)
-  qpuUuidReceiptOf('construction area', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('construction area', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; area 80, volume 240, materials 2000, cost 3500, crew 15, progress 25, load 250, waste 5; crossing to econ')
 })

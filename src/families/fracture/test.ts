@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FractureFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('fracture: toughness, stressintensity, criticalcrack, energyrelease, griffi
   assert.equal(FractureFormulas.crackgrowth(1000, 3).value, 3000)
   assert.equal(FractureFormulas.failurestress(200, 4).value, 50, 'the stress a crack runs at')
   assert.equal(FractureFormulas.toughness(50, 4).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('fracture')?.length, 8)
+  assert.equal(hexFamiliesOf().get('fracture')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'fracture', program: ['criticalcrack'], params: [200, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `fracture.criticalcrack at ${uuid}`)
-  qpuUuidReceiptOf('fracture criticalcrack', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('fracture criticalcrack', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; toughness 200, stressintensity 400, criticalcrack 4, energyrelease 20, griffith 500, notchsensitivity 80, crackgrowth 3000, failurestress 50; crossing to materials')
 })

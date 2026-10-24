@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CLIMATOLOGY — THE LONG-RUN STATE OF THE ATMOSPHERE, AS ARITHMETIC. Climate is numbers: a temperature anomaly above a
@@ -31,4 +31,4 @@ export class ClimatologyFormulas {
 }
 
 for (const name of ['albedo', 'anomaly', 'aridity', 'carbon', 'degreeday', 'forcing', 'seasonality', 'trend'] as const)
-  qpuHexRegisterOf('climatology', name, (ClimatologyFormulas[name] as (...x: unknown[]) => unknown).bind(ClimatologyFormulas))
+  hexRegisterOf('climatology', name, (ClimatologyFormulas[name] as (...x: unknown[]) => unknown).bind(ClimatologyFormulas))

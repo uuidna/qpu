@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ImmigrationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('immigration: points, residence, continuous, quota, sponsorship, overstay, 
   assert.equal(ImmigrationFormulas.naturalization(6, 5).value, 1)
   assert.equal(ImmigrationFormulas.dependents(2, 3).value, 5)
   assert.equal(ImmigrationFormulas.points(50, 20, 20).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('immigration')?.length, 8)
+  assert.equal(hexFamiliesOf().get('immigration')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'immigration', program: ['points'], params: [50, 20, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `immigration.points at ${uuid}`)
-  qpuUuidReceiptOf('immigration points', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('immigration points', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; points 90, residence 1, continuous 1, quota 3000, sponsorship 1, overstay 35, naturalization 1, dependents 5; crossing to law')
 })

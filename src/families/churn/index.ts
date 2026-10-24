@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHURN — SUBSCRIPTION ATTRITION, AS ARITHMETIC. Keeping customers is numbers: the rate they leave, the share retained,
@@ -30,4 +30,4 @@ export class ChurnFormulas {
 }
 
 for (const name of ['cohortdecay', 'lifetime', 'netrevenue', 'rate', 'reactivation', 'retention', 'risk', 'tenure'] as const)
-  qpuHexRegisterOf('churn', name, (ChurnFormulas[name] as (...x: unknown[]) => unknown).bind(ChurnFormulas))
+  hexRegisterOf('churn', name, (ChurnFormulas[name] as (...x: unknown[]) => unknown).bind(ChurnFormulas))

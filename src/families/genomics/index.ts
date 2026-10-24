@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GENOMICS — SEQUENCE AND VARIATION, AS ARITHMETIC. Reading a genome is numbers: how deep the reads cover it, the GC
@@ -31,4 +31,4 @@ export class GenomicsFormulas {
 }
 
 for (const name of ['assembly', 'coverage', 'gccontent', 'heterozygosity', 'mutation', 'n50', 'snp', 'synteny'] as const)
-  qpuHexRegisterOf('genomics', name, (GenomicsFormulas[name] as (...x: unknown[]) => unknown).bind(GenomicsFormulas))
+  hexRegisterOf('genomics', name, (GenomicsFormulas[name] as (...x: unknown[]) => unknown).bind(GenomicsFormulas))

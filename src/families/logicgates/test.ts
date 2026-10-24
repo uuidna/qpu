@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LogicgatesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('logicgates: and, or, xor, nand, nor, mux, fanout, propagation — crossing
   assert.equal(LogicgatesFormulas.fanout(4, 8).value, 32)
   assert.equal(LogicgatesFormulas.propagation(10, 2).value, 20, 'delay down the chain')
   assert.equal(LogicgatesFormulas.and(1, 1).dst, 'electronics')
-  assert.equal(qpuHexFamiliesOf().get('logicgates')?.length, 8)
+  assert.equal(hexFamiliesOf().get('logicgates')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'logicgates', program: ['fanout'], params: [4, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 32, `logicgates.fanout at ${uuid}`)
-  qpuUuidReceiptOf('logicgates fanout', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('logicgates fanout', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; and 1, or 1, xor 0, nand 0, nor 1, mux 1, fanout 32, propagation 20; crossing to electronics')
 })

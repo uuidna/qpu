@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BUTCHERY — scaffolded integer measures crossed to agriculture. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ButcheryFormulas {
 }
 
 for (const name of ['aginggraysdays', 'boneratio', 'cutcombos', 'gradescore', 'portionsper', 'primalcuts', 'weightkg', 'yield'] as const)
-  qpuHexRegisterOf('butchery', name, (ButcheryFormulas[name] as (...x: unknown[]) => unknown).bind(ButcheryFormulas))
+  hexRegisterOf('butchery', name, (ButcheryFormulas[name] as (...x: unknown[]) => unknown).bind(ButcheryFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BuddhismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('buddhism: nobletruths, pathfactors, preceptsubsets, suttacount, pathorderi
   assert.equal(BuddhismFormulas.rebirthrealms(6, 0).value, 6)
   assert.equal(BuddhismFormulas.meditationcombos(8, 2).value, 28)
   assert.equal(BuddhismFormulas.nobletruths(4, 0).dst, 'philosophy')
-  assert.equal(qpuHexFamiliesOf().get('buddhism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('buddhism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'buddhism', program: ['nobletruths'], params: [4, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `buddhism.nobletruths at ${uuid}`)
-  qpuUuidReceiptOf('buddhism nobletruths', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('buddhism nobletruths', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; nobletruths 4, pathfactors 8, preceptsubsets 32, suttacount 10000, pathorderings 40320, aggregates 5, rebirthrealms 6, meditationcombos 28; crossing to philosophy')
 })

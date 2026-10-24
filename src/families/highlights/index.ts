@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HIGHLIGHTS — THE StickyHighlights/HoverHighlights USE CASE FROM payloadcms/website, AS ARITHMETIC. A page of sticky,
@@ -31,4 +31,4 @@ export class HighlightsFormulas {
 }
 
 for (const name of ['active', 'duration', 'items', 'parallax', 'reveal', 'scroll', 'sticky', 'threshold'] as const)
-  qpuHexRegisterOf('highlights', name, (HighlightsFormulas[name] as (...x: unknown[]) => unknown).bind(HighlightsFormulas))
+  hexRegisterOf('highlights', name, (HighlightsFormulas[name] as (...x: unknown[]) => unknown).bind(HighlightsFormulas))

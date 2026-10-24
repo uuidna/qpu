@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ECONOMIC DAMAGES — the forensic economist's and actuary's arithmetic. Present and future value at a discount rate
@@ -28,4 +28,4 @@ export class EconFormulas {
 }
 
 for (const name of ['annuity', 'future', 'life', 'lost', 'present', 'worklife'] as const)
-  qpuHexRegisterOf('econ', name, (EconFormulas[name] as (...x: unknown[]) => unknown).bind(EconFormulas))
+  hexRegisterOf('econ', name, (EconFormulas[name] as (...x: unknown[]) => unknown).bind(EconFormulas))

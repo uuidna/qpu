@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DIETETICS — scaffolded integer measures crossed to nutrition. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DieteticsFormulas {
 }
 
 for (const name of ['bmi', 'caloriesneeded', 'deficit', 'macropct', 'mealsperday', 'nutrientcombos', 'proteingrams', 'waterml'] as const)
-  qpuHexRegisterOf('dietetics', name, (DieteticsFormulas[name] as (...x: unknown[]) => unknown).bind(DieteticsFormulas))
+  hexRegisterOf('dietetics', name, (DieteticsFormulas[name] as (...x: unknown[]) => unknown).bind(DieteticsFormulas))

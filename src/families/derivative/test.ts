@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DerivativeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('derivative: intrinsic, payoff, notional, margin, leverage, breakeven, mone
   assert.equal(DerivativeFormulas.moneyness(90, 100).value, 0)
   assert.equal(DerivativeFormulas.settlement(120, 100, 10).value, 200, 'long future settles up')
   assert.equal(DerivativeFormulas.intrinsic(150, 100).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('derivative')?.length, 8)
+  assert.equal(hexFamiliesOf().get('derivative')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'derivative', program: ['intrinsic'], params: [150, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `derivative.intrinsic at ${uuid}`)
-  qpuUuidReceiptOf('derivative intrinsic', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('derivative intrinsic', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; intrinsic 50, payoff 500, notional 50000, margin 10000, leverage 5, breakeven 105, moneyness 1, settlement 200; crossing to econ')
 })

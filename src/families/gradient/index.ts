@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GRADIENT — DESCENT AS ARITHMETIC (chosen by the optimizer registry, not by hand). Training is numbers: the step a run
@@ -30,4 +30,4 @@ export class GradientFormulas {
 }
 
 for (const name of ['clip', 'decay', 'epoch', 'learningrate', 'momentum', 'norm', 'step', 'update'] as const)
-  qpuHexRegisterOf('gradient', name, (GradientFormulas[name] as (...x: unknown[]) => unknown).bind(GradientFormulas))
+  hexRegisterOf('gradient', name, (GradientFormulas[name] as (...x: unknown[]) => unknown).bind(GradientFormulas))

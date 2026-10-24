@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LensesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('lenses: focallength, magnification, fnumber, power, imagedistance, fieldof
   assert.equal(LensesFormulas.depthoffield(50, 2, 25).value, 50)
   assert.equal(LensesFormulas.imagedistance(20, 30).value, 0, 'no real image inside the focal length')
   assert.equal(LensesFormulas.focallength(30, 60).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('lenses')?.length, 8)
+  assert.equal(hexFamiliesOf().get('lenses')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'lenses', program: ['focallength'], params: [30, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `lenses.focallength at ${uuid}`)
-  qpuUuidReceiptOf('lenses focallength', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('lenses focallength', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; focallength 20, magnification 4, fnumber 2, power 20, imagedistance 60, fieldofview 720, numericalaperture 500, depthoffield 50; crossing to optics')
 })

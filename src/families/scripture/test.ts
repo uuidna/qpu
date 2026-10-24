@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ScriptureFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('scripture: wordtotal, versesperchapter, chaptersperbook, lexicaltypes, con
   assert.equal(ScriptureFormulas.crossreferences(340, 10).value, 3400)
   assert.equal(ScriptureFormulas.readingplan(1189, 365).value, 3)
   assert.equal(ScriptureFormulas.wordtotal(1000, 12).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('scripture')?.length, 8)
+  assert.equal(hexFamiliesOf().get('scripture')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'scripture', program: ['wordtotal'], params: [1000, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12000, `scripture.wordtotal at ${uuid}`)
-  qpuUuidReceiptOf('scripture wordtotal', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('scripture wordtotal', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; wordtotal 12000, versesperchapter 26, chaptersperbook 18, lexicaltypes 4000, concordancepairs 190, translationways 120, crossreferences 3400, readingplan 3; crossing to linguistics')
 })

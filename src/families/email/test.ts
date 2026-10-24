@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EmailFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('email: deliverability, spam, optout, hardbounce, reputation, clickrate, hy
   assert.equal(EmailFormulas.throttle(1200, 500).value, 500, 'the limit caps the send')
   assert.equal(EmailFormulas.throttle(300, 500).value, 300, 'under the limit, all sent')
   assert.equal(EmailFormulas.deliverability(980, 1000).dst, 'messaging')
-  assert.equal(qpuHexFamiliesOf().get('email')?.length, 8)
+  assert.equal(hexFamiliesOf().get('email')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'email', program: ['hygiene'], params: [900, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `email.hygiene at ${uuid}`)
-  qpuUuidReceiptOf('email hygiene', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('email hygiene', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; deliverability 98, spam 0, optout 0, hardbounce 2, reputation 0, clickrate 25, hygiene 90, throttle 500/300; crossing to messaging')
 })

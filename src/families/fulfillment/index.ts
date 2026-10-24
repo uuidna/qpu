@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FULFILLMENT — ORDER FULFILLMENT AS ARITHMETIC (chosen by the operations registry, not by hand). Getting orders out the
@@ -31,4 +31,4 @@ export class FulfillmentFormulas {
 }
 
 for (const name of ['accuracy', 'backorder', 'cycle', 'pack', 'perfectorder', 'pick', 'rate', 'ship'] as const)
-  qpuHexRegisterOf('fulfillment', name, (FulfillmentFormulas[name] as (...x: unknown[]) => unknown).bind(FulfillmentFormulas))
+  hexRegisterOf('fulfillment', name, (FulfillmentFormulas[name] as (...x: unknown[]) => unknown).bind(FulfillmentFormulas))

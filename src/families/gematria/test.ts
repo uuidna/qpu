@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GematriaFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('gematria: lettervalue, wordtotal, equivalences, cipherorderings, alphabets
   assert.equal(GematriaFormulas.substitutions(22, 2).value, 0)
   assert.equal(GematriaFormulas.reductionmod(60, 9).value, 6)
   assert.equal(GematriaFormulas.lettervalue(22, 1).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('gematria')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gematria')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gematria', program: ['lettervalue'], params: [22, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 22, `gematria.lettervalue at ${uuid}`)
-  qpuUuidReceiptOf('gematria lettervalue', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gematria lettervalue', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; lettervalue 22, wordtotal 60, equivalences 231, cipherorderings 120, alphabetsize 22, valuesum 400, substitutions 0, reductionmod 6; crossing to linguistics')
 })

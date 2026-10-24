@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RELATIVITY — SPACETIME AS ARITHMETIC. Energy, time dilation, the beta fraction of light speed, momentum, gravitational
@@ -30,4 +30,4 @@ export class RelativityFormulas {
 }
 
 for (const name of ['curvature', 'dilation', 'energy', 'horizon', 'interval', 'lorentz', 'momentum', 'redshift'] as const)
-  qpuHexRegisterOf('relativity', name, (RelativityFormulas[name] as (...x: unknown[]) => unknown).bind(RelativityFormulas))
+  hexRegisterOf('relativity', name, (RelativityFormulas[name] as (...x: unknown[]) => unknown).bind(RelativityFormulas))

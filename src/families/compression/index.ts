@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COMPRESSION — PACKING DATA SMALL, AS ARITHMETIC. Making data smaller is numbers: the ratio against the original, the
@@ -30,4 +30,4 @@ export class CompressionFormulas {
 }
 
 for (const name of ['bitrate', 'dictionary', 'entropy', 'fidelity', 'ratio', 'redundancy', 'savings', 'throughput'] as const)
-  qpuHexRegisterOf('compression', name, (CompressionFormulas[name] as (...x: unknown[]) => unknown).bind(CompressionFormulas))
+  hexRegisterOf('compression', name, (CompressionFormulas[name] as (...x: unknown[]) => unknown).bind(CompressionFormulas))

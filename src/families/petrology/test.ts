@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PetrologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('petrology: colorindex, silicacontent, porosity, graindensity, differentiat
   assert.equal(PetrologyFormulas.modalcomposition(250, 1000).value, 25, 'point-count share')
   assert.equal(PetrologyFormulas.meltfraction(10, 40).value, 25)
   assert.equal(PetrologyFormulas.colorindex(15, 100).dst, 'geochemistry')
-  assert.equal(qpuHexFamiliesOf().get('petrology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('petrology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'petrology', program: ['colorindex'], params: [15, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `petrology.colorindex at ${uuid}`)
-  qpuUuidReceiptOf('petrology colorindex', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('petrology colorindex', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; colorindex 15, silicacontent 72, porosity 15, graindensity 2650, differentiation 90, crystallization 80, modalcomposition 25, meltfraction 25; crossing to geochemistry')
 })

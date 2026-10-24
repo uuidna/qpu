@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SWAPS — AN INTEREST-RATE SWAP AS ARITHMETIC. A swap is numbers: the fixed leg at a coupon rate, the floating leg at an
@@ -31,4 +31,4 @@ export class SwapsFormulas {
 }
 
 for (const name of ['accruedinterest', 'fixedleg', 'floatingleg', 'netpayment', 'notionalvalue', 'presentvalue', 'spreadbasis', 'swaprate'] as const)
-  qpuHexRegisterOf('swaps', name, (SwapsFormulas[name] as (...x: unknown[]) => unknown).bind(SwapsFormulas))
+  hexRegisterOf('swaps', name, (SwapsFormulas[name] as (...x: unknown[]) => unknown).bind(SwapsFormulas))

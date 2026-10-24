@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VALUATION — WHAT A COMPANY IS WORTH, AS ARITHMETIC. Pricing a business is numbers: the price-to-earnings and
@@ -31,4 +31,4 @@ export class ValuationFormulas {
 }
 
 for (const name of ['bookvalue', 'ebitda', 'enterprise', 'fairvalue', 'marketcap', 'multiple', 'pb', 'pe'] as const)
-  qpuHexRegisterOf('valuation', name, (ValuationFormulas[name] as (...x: unknown[]) => unknown).bind(ValuationFormulas))
+  hexRegisterOf('valuation', name, (ValuationFormulas[name] as (...x: unknown[]) => unknown).bind(ValuationFormulas))

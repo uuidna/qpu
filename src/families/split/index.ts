@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { leanSource } from '../../quantum/processing/unit/lean.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
@@ -146,4 +146,4 @@ export class SplitFormulas {
 }
 
 for (const name of ['coprime', 'factor', 'free', 'join', 'kelvin', 'landauer', 'least', 'omega', 'piHex', 'prime', 'primes', 'quantum', 'secondlaw', 'totient', 'violation'] as const)
-  qpuHexRegisterOf('split', name, (SplitFormulas[name] as (...x: unknown[]) => unknown).bind(SplitFormulas))
+  hexRegisterOf('split', name, (SplitFormulas[name] as (...x: unknown[]) => unknown).bind(SplitFormulas))

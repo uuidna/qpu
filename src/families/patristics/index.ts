@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PATRISTICS — scaffolded integer measures crossed to sociology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PatristicsFormulas {
 }
 
 for (const name of ['citationtotal', 'councilcombos', 'eracount', 'fathercount', 'influencepairs', 'orthodoxyratio', 'translationways', 'worksorderings'] as const)
-  qpuHexRegisterOf('patristics', name, (PatristicsFormulas[name] as (...x: unknown[]) => unknown).bind(PatristicsFormulas))
+  hexRegisterOf('patristics', name, (PatristicsFormulas[name] as (...x: unknown[]) => unknown).bind(PatristicsFormulas))

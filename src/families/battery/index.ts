@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BatteryFormulas — 8 exact-integer formulas of the battery domain, each at a hex address crossing to cross; develops the battery leads. */
@@ -31,4 +31,4 @@ export class BatteryFormulas {
 }
 
 for (const name of ['capacity', 'cells', 'chargepct', 'cyclelife', 'packs', 'runtime', 'seriescombos', 'voltage'] as const)
-  qpuHexRegisterOf('battery', name, (BatteryFormulas[name] as (...x: unknown[]) => unknown).bind(BatteryFormulas))
+  hexRegisterOf('battery', name, (BatteryFormulas[name] as (...x: unknown[]) => unknown).bind(BatteryFormulas))

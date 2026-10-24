@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { UltrasonicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('ultrasonics: timeofflight, depth, wavelength, attenuation, dopplershift, a
   assert.equal(UltrasonicsFormulas.acousticimpedance(1000, 1500).value, 1500000)
   assert.equal(UltrasonicsFormulas.nearfield(20, 5).value, 20)
   assert.equal(UltrasonicsFormulas.timeofflight(7500, 1500).dst, 'acoustics')
-  assert.equal(qpuHexFamiliesOf().get('ultrasonics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ultrasonics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ultrasonics', program: ['wavelength'], params: [1500, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `ultrasonics.wavelength at ${uuid}`)
-  qpuUuidReceiptOf('ultrasonics wavelength', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ultrasonics wavelength', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; timeofflight 10, depth 3000, wavelength 300, attenuation 150, dopplershift 20, axialresolution 300, acousticimpedance 1500000, nearfield 20; crossing to acoustics')
 })

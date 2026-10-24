@@ -1,34 +1,34 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuPayloadMcpOf, qpuPayloadFindOf, qpuFusionOf, qpuIntelligenceOf.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): payloadMcpOf, payloadFindOf, fusionOf, intelligenceOf.
 import {
   coins,
   mintOf,
   n,
   onceOf,
   payloadFinds,
-  qpuCernCatalogsHold,
-  qpuCernLearnOf,
-  qpuCernProjectsOf,
-  qpuHostsOf,
-  qpuInstallOf,
-  qpuPayloadPluginHolds,
-  qpuPayloadPluginOf,
+  cernCatalogsHold,
+  cernLearnOf,
+  cernProjectsOf,
+  hostsOf,
+  installOf,
+  payloadPluginHolds,
+  payloadPluginOf,
   theorem,
   toolNames,
 } from './index.js'
-import { qpuCircuitOf } from './circuit.js'
-import { qpuFacesOf, qpuCapacityOf } from './lattice.js'
-import { qpuHologramOf, qpuSchemasOf } from './presentation.js'
+import { circuitOf } from './circuit.js'
+import { facesOf, capacityOf } from './lattice.js'
+import { qpuHologramOf, schemasOf } from './presentation.js'
 
 /**
  * The Payload MCP the unit describes: collections, find-only tools, the database plugin and its write path.
  * @wing cms
  * @kind builder
- * @evidence qpuPayloadMcpHolds
+ * @evidence payloadMcpHolds
  */
-export const qpuPayloadMcpOf = onceOf(() => {
-  const faces = qpuFacesOf()
-  const schemas = qpuSchemasOf()
-  const plugin = qpuPayloadPluginOf()
+export const payloadMcpOf = onceOf(() => {
+  const faces = facesOf()
+  const schemas = schemasOf()
+  const plugin = payloadPluginOf()
   const tools = payloadFinds.map((name, i) => ({
     name,
     collection: name.slice('find'.length).toLowerCase(),
@@ -40,7 +40,7 @@ export const qpuPayloadMcpOf = onceOf(() => {
     face: (i + faces.rays + faces.rays) % faces.faces,
     merge: 'storage' as const}))
   const holds =
-    qpuPayloadPluginHolds(plugin) &&
+    payloadPluginHolds(plugin) &&
     tools.length === mintOf(coins) &&
     tools.every((row) => row.find && !row.create && !row.update && !row.delete && row.sealed === false && row.merge === 'storage') &&
     schemas.merge === 'storage' &&
@@ -67,10 +67,10 @@ export const qpuPayloadMcpOf = onceOf(() => {
  * One Payload collection's find tool, sealed against writes.
  * @wing cms
  * @kind builder
- * @evidence qpuPayloadFindHolds
+ * @evidence payloadFindHolds
  */
-export const qpuPayloadFindOf = (name: string) => {
-  const payload = qpuPayloadMcpOf()
+export const payloadFindOf = (name: string) => {
+  const payload = payloadMcpOf()
   const plugin = payload.plugin
   const tool = payload.tools.find((row) => row.name === name)
   if (!tool) {
@@ -107,17 +107,17 @@ export const qpuPayloadFindOf = (name: string) => {
  * Fusion of catalogues, hosts, schemas, Payload, install and hologram readings over the fused capacity.
  * @wing cms
  * @kind builder
- * @evidence qpuFusionHolds
+ * @evidence fusionHolds
  */
-export const qpuFusionOf = onceOf(() => {
-  const capacity = qpuCapacityOf()
-  const learn = qpuCernLearnOf()
-  const tetra = qpuCernProjectsOf()
-  const hosts = qpuHostsOf()
-  const faces = qpuFacesOf()
-  const schemas = qpuSchemasOf()
-  const payload = qpuPayloadMcpOf()
-  const install = qpuInstallOf({ verb: 'ask' })
+export const fusionOf = onceOf(() => {
+  const capacity = capacityOf()
+  const learn = cernLearnOf()
+  const tetra = cernProjectsOf()
+  const hosts = hostsOf()
+  const faces = facesOf()
+  const schemas = schemasOf()
+  const payload = payloadMcpOf()
+  const install = installOf({ verb: 'ask' })
   const hologram = qpuHologramOf()
   const plugins = {
     n: hologram.pentagram.points}
@@ -126,7 +126,7 @@ export const qpuFusionOf = onceOf(() => {
     learn.holds &&
     learn.lattice.occupied === faces.faces &&
     learn.lattice.vacant === n - n &&
-    qpuCernCatalogsHold(learn.catalogs) &&
+    cernCatalogsHold(learn.catalogs) &&
     tetra.projects.length === mintOf(coins) &&
     coins + coins === mintOf(coins) &&
     theorem.handle(capacity.fused, capacity.faces, capacity.kv.amplitudes) &&
@@ -163,11 +163,11 @@ export const qpuFusionOf = onceOf(() => {
  * The 'intelligence' reading: the fusion test over free online research.
  * @wing cms
  * @kind builder
- * @evidence qpuIntelligenceHolds
+ * @evidence intelligenceHolds
  */
-export const qpuIntelligenceOf = onceOf(() => {
-  const circuit = qpuCircuitOf()
-  const fusion = qpuFusionOf()
+export const intelligenceOf = onceOf(() => {
+  const circuit = circuitOf()
+  const fusion = fusionOf()
   const holds = circuit.holds && circuit.only.holds && fusion.holds
   return {
     kind: 'intelligence' as const,

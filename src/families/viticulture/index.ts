@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VITICULTURE — THE GROWING OF GRAPES FOR WINE, AS ARITHMETIC (chosen by the agriculture registry, not by hand). A vineyard
@@ -30,4 +30,4 @@ export class ViticultureFormulas {
 }
 
 for (const name of ['acidity', 'brix', 'cropload', 'density', 'fermentation', 'gdd', 'ripeness', 'tannin'] as const)
-  qpuHexRegisterOf('viticulture', name, (ViticultureFormulas[name] as (...x: unknown[]) => unknown).bind(ViticultureFormulas))
+  hexRegisterOf('viticulture', name, (ViticultureFormulas[name] as (...x: unknown[]) => unknown).bind(ViticultureFormulas))

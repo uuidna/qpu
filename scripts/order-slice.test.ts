@@ -1,12 +1,13 @@
 /**
  * ORDER-FINDING IS A SPLIT, NOT A CAP. The multiplicative order a Shor factorisation needs is walked in hexbit-wide
- * slices (qpuOrderSliceOf): each slice carries its running power out, the caller caches it in that slice's hex folder
+ * slices (orderSliceOf): each slice carries its running power out, the caller caches it in that slice's hex folder
  * and resumes at `next`, so live memory is O(1) and the reach has no ceiling — a slice at a time, for any order. The
  * factors fall out of the recovered order (gcd(base^(r/2) ± 1, n)), and the slice cache is cleaned up at the end.
  * Needs dist — run `npm run build` first. Discovered by the scripts/*.test.ts glob, run in CI.
  */
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { mintOf, tenOf } from './lattice-values.ts'
 
 const idx = await import('../dist/quantum/processing/unit/index.js')
 
@@ -21,13 +22,13 @@ test('order-finding splits into hexbit folders, caches each slice, factors from 
   let cur = 1n
   let order = null
   let guard = 0
-  cache.set(from.toString(16), cur)
-  while (order === null && guard++ < 1_000_000) {
-    const s = idx.qpuOrderSliceOf(base, modulus, from, cur)
+  cache.set(from.toString(mintOf(4)), cur)
+  while (order === null && guard++ < tenOf(6)) {
+    const s = idx.orderSliceOf(base, modulus, from, cur)
     if (s.order !== null) { order = s.order; break }
     from = s.next
     cur = s.cur
-    cache.set(from.toString(16), cur) // cache this slice's carried power, hex-addressed
+    cache.set(from.toString(mintOf(4)), cur) // cache this slice's carried power, hex-addressed
   }
   assert.equal(order, 656, 'the exact multiplicative order, recovered across hexbit slices')
   assert.ok(cache.size > 1, 'the walk really spanned more than one hexbit folder (a true split)')

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ImageFormulas — 8 exact-integer formulas of the image domain, each at a hex address crossing to cross; develops the image leads. */
@@ -31,4 +31,4 @@ export class ImageFormulas {
 }
 
 for (const name of ['aspect', 'blocks', 'bytesrgb', 'channels', 'mipmaps', 'palettebits', 'pixels', 'stride'] as const)
-  qpuHexRegisterOf('image', name, (ImageFormulas[name] as (...x: unknown[]) => unknown).bind(ImageFormulas))
+  hexRegisterOf('image', name, (ImageFormulas[name] as (...x: unknown[]) => unknown).bind(ImageFormulas))

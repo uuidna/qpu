@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EntomologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('entomology: colony, metamorphosis, swarm, foraging, infestation, pollinati
   assert.equal(EntomologyFormulas.lifecycle(1000, 950).value, 95, 'hatch rate')
   assert.equal(EntomologyFormulas.wingbeat(12000, 60).value, 200, 'beats per second')
   assert.equal(EntomologyFormulas.colony(50000, 1).dst, 'ecology')
-  assert.equal(qpuHexFamiliesOf().get('entomology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('entomology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'entomology', program: ['swarm'], params: [12000, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4000, `entomology.swarm at ${uuid}`)
-  qpuUuidReceiptOf('entomology swarm', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('entomology swarm', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; colony 50001, metamorphosis 4, swarm 4000, foraging 30, infestation 25, pollination 45, lifecycle 95, wingbeat 200; crossing to ecology')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** QUERY — THE PAYLOAD LOCAL API, AS ARITHMETIC (find/where/depth/pagination/sort/limit, not by hand). A query is numbers:
@@ -31,4 +31,4 @@ export class QueryFormulas {
 }
 
 for (const name of ['depth', 'hit', 'limit', 'pages', 'population', 'skip', 'sort', 'where'] as const)
-  qpuHexRegisterOf('query', name, (QueryFormulas[name] as (...x: unknown[]) => unknown).bind(QueryFormulas))
+  hexRegisterOf('query', name, (QueryFormulas[name] as (...x: unknown[]) => unknown).bind(QueryFormulas))

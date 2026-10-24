@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AsteroidFormulas — 8 exact-integer formulas of the asteroid domain, each at a hex address crossing to cross; develops the asteroid leads. */
@@ -31,4 +31,4 @@ export class AsteroidFormulas {
 }
 
 for (const name of ['albedo', 'belt', 'combos', 'count', 'diameter', 'families', 'mass', 'rotation'] as const)
-  qpuHexRegisterOf('asteroid', name, (AsteroidFormulas[name] as (...x: unknown[]) => unknown).bind(AsteroidFormulas))
+  hexRegisterOf('asteroid', name, (AsteroidFormulas[name] as (...x: unknown[]) => unknown).bind(AsteroidFormulas))

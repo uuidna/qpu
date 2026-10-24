@@ -1,5 +1,5 @@
 import { concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, hexOf, hkdf, randomBytes, sha256, utf8, uuidFromBytesOf, type Bytes } from '../../core/crypt.js'
-import { qpuHexRegisterOf, qpuHologramOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, qpuHologramOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** One fragment of the hologram: a signed, SHA-256-chained UUID in its scale's stream that carries the root of all scales. */
@@ -138,4 +138,4 @@ export class HoloFormulas {
 }
 
 for (const name of ['forgery', 'proofDepth'] as const)
-  qpuHexRegisterOf('holo', name, (HoloFormulas[name] as (...x: unknown[]) => unknown).bind(HoloFormulas))
+  hexRegisterOf('holo', name, (HoloFormulas[name] as (...x: unknown[]) => unknown).bind(HoloFormulas))

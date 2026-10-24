@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DRONE — scaffolded integer measures crossed to aerospace. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DroneFormulas {
 }
 
 for (const name of ['batterykwh', 'flighttime', 'maxaltitude', 'payload', 'range', 'rotorcount', 'stabilitymargin', 'thrust'] as const)
-  qpuHexRegisterOf('drone', name, (DroneFormulas[name] as (...x: unknown[]) => unknown).bind(DroneFormulas))
+  hexRegisterOf('drone', name, (DroneFormulas[name] as (...x: unknown[]) => unknown).bind(DroneFormulas))

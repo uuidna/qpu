@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CalculusFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('calculus: derivative, integral, slope, area, limit, rate, series, tangent 
   assert.equal(CalculusFormulas.series(8, 3).value, 24, 'a partial sum proxy')
   assert.equal(CalculusFormulas.tangent(5, 6).value, 30)
   assert.equal(CalculusFormulas.derivative(3, 4).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('calculus')?.length, 8)
+  assert.equal(hexFamiliesOf().get('calculus')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'calculus', program: ['area'], params: [6, 7] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 42, `calculus.area at ${uuid}`)
-  qpuUuidReceiptOf('calculus area', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('calculus area', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; derivative 12, integral 3, slope 5, area 42, limit 25, rate 5, series 24, tangent 30; crossing to code')
 })

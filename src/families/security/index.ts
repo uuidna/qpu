@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SECURITY — INFORMATION-SECURITY OPERATIONS, AS ARITHMETIC (chosen by the registry). A posture is numbers: the adjusted
@@ -30,4 +30,4 @@ export class SecurityFormulas {
 }
 
 for (const name of ['coverage', 'detection', 'exposure', 'mttr', 'patch', 'severity', 'strength', 'window'] as const)
-  qpuHexRegisterOf('security', name, (SecurityFormulas[name] as (...x: unknown[]) => unknown).bind(SecurityFormulas))
+  hexRegisterOf('security', name, (SecurityFormulas[name] as (...x: unknown[]) => unknown).bind(SecurityFormulas))

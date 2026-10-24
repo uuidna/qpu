@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROPULSION — MOVING MASS, AS ARITHMETIC (chosen by the engineering registry, not by hand). A thrust chamber is numbers:
@@ -31,4 +31,4 @@ export class PropulsionFormulas {
 }
 
 for (const name of ['bypass', 'compression', 'efficiency', 'exhaust', 'massflow', 'power', 'specificfuel', 'thrust'] as const)
-  qpuHexRegisterOf('propulsion', name, (PropulsionFormulas[name] as (...x: unknown[]) => unknown).bind(PropulsionFormulas))
+  hexRegisterOf('propulsion', name, (PropulsionFormulas[name] as (...x: unknown[]) => unknown).bind(PropulsionFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SynthesisFormulas } from './index.js'
 
 /** Program synthesis as exact combinatorics — Halstead length and vocabulary, tokens, examples, rewrites, paths, candidates, effort. */
@@ -16,12 +16,12 @@ test('synthesis: length, vocabulary, tokens, examples, rewrites, paths, candidat
   assert.equal(SynthesisFormulas.candidates(50, 40).holds, false, 'and does not hold')
   assert.equal(SynthesisFormulas.effort(8, 6).value, 48, 'length × vocabulary')
   assert.equal(SynthesisFormulas.length(3, 5).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('synthesis')?.length, 8)
+  assert.equal(hexFamiliesOf().get('synthesis')?.length, 8)
   for (const [name, params, expected] of [['length', [3, 5], 8], ['paths', [4], 16], ['candidates', [3, 4], 81]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'synthesis', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `synthesis.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`synthesis ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`synthesis ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; Halstead length 8, 2^4 paths, 3^4 candidates, overflow → does not hold')
 })

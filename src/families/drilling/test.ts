@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DrillingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('drilling: ropenetration, mudweight, torque, wob, hydrostatic, annular, bit
   assert.equal(DrillingFormulas.kick(5500, 5200).value, 300, 'underbalance a kick enters on')
   assert.equal(DrillingFormulas.kick(5000, 5200).value, 0)
   assert.equal(DrillingFormulas.ropenetration(1200, 10).dst, 'geology')
-  assert.equal(qpuHexFamiliesOf().get('drilling')?.length, 8)
+  assert.equal(hexFamiliesOf().get('drilling')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'drilling', program: ['ropenetration'], params: [1200, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 120, `drilling.ropenetration at ${uuid}`)
-  qpuUuidReceiptOf('drilling ropenetration', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('drilling ropenetration', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ropenetration 120, mudweight 52, torque 6000, wob 10000, hydrostatic 5200, annular 119, bitlife 1800, kick 300; crossing to geology')
 })

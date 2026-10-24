@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DRAG — AERODYNAMIC RESISTANCE, AS ARITHMETIC. Moving through air is numbers: the drag force on a body, its drag
@@ -31,4 +31,4 @@ export class DragFormulas {
 }
 
 for (const name of ['coefficient', 'dynamicpressure', 'force', 'frontalarea', 'induced', 'parasitic', 'reynolds', 'terminalvelocity'] as const)
-  qpuHexRegisterOf('drag', name, (DragFormulas[name] as (...x: unknown[]) => unknown).bind(DragFormulas))
+  hexRegisterOf('drag', name, (DragFormulas[name] as (...x: unknown[]) => unknown).bind(DragFormulas))

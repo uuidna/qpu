@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HASHING — THE HASH TABLE, AS ARITHMETIC (chosen by the public-API registry, not by hand). Placing keys is numbers:
@@ -31,4 +31,4 @@ export class HashingFormulas {
 }
 
 for (const name of ['birthday', 'bucket', 'collisions', 'distribution', 'loadfactor', 'modulo', 'probe', 'resize'] as const)
-  qpuHexRegisterOf('hashing', name, (HashingFormulas[name] as (...x: unknown[]) => unknown).bind(HashingFormulas))
+  hexRegisterOf('hashing', name, (HashingFormulas[name] as (...x: unknown[]) => unknown).bind(HashingFormulas))

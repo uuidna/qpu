@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PaleographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('paleography: letterforms, scriptorderings, ligaturepairs, abbreviationsubs
   assert.equal(PaleographyFormulas.minusculeratio(70, 100).value, 70)
   assert.equal(PaleographyFormulas.graphemecombos(22, 3).value, 1540)
   assert.equal(PaleographyFormulas.letterforms(26, 4).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('paleography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('paleography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'paleography', program: ['letterforms'], params: [26, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 104, `paleography.letterforms at ${uuid}`)
-  qpuUuidReceiptOf('paleography letterforms', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('paleography letterforms', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; letterforms 104, scriptorderings 120, ligaturepairs 105, abbreviationsubsets 64, dateestimate 400, handcount 5, minusculeratio 70, graphemecombos 1540; crossing to linguistics')
 })

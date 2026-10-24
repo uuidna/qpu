@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PowerfactorFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('powerfactor: ratio, realpower, apparentpower, reactivepower, correction, p
   assert.equal(PowerfactorFormulas.capacitorkvar(600, 10).value, 60)
   assert.equal(PowerfactorFormulas.efficiency(95, 100).value, 95)
   assert.equal(PowerfactorFormulas.ratio(80, 100).dst, 'electronics')
-  assert.equal(qpuHexFamiliesOf().get('powerfactor')?.length, 8)
+  assert.equal(hexFamiliesOf().get('powerfactor')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'powerfactor', program: ['ratio'], params: [80, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `powerfactor.ratio at ${uuid}`)
-  qpuUuidReceiptOf('powerfactor ratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('powerfactor ratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ratio 80, realpower 800, apparentpower 1000, reactivepower 200, correction 20, phaseangle 90, capacitorkvar 60, efficiency 95; crossing to electronics')
 })

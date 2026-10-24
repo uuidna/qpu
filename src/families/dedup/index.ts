@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DEDUP — CONTENT-ADDRESSED STORAGE, AS ARITHMETIC. The RAID array fingerprints what it carries: identical bytes share
@@ -48,4 +48,4 @@ export class DedupFormulas {
 }
 
 for (const name of ['blocks', 'chunk', 'decref', 'deduped', 'fingerprint', 'hit', 'incref', 'logical', 'physical', 'pinned', 'ratio', 'refcount', 'releasable', 'released', 'saved'] as const)
-  qpuHexRegisterOf('dedup', name, (DedupFormulas[name] as (...x: unknown[]) => unknown).bind(DedupFormulas))
+  hexRegisterOf('dedup', name, (DedupFormulas[name] as (...x: unknown[]) => unknown).bind(DedupFormulas))

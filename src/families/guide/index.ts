@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf, qpuHexFamiliesOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, hexFamiliesOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
 import { DOORS } from '../../mcp/discovery.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
@@ -12,7 +12,7 @@ const f = (id: string, formula: string, value: number, holds: boolean, name: str
   crossFormulaOf({ id, src: 'guide', dst: 'cross', formula, value, proof: PROOF, ...extra }, holds, { name: `guide.${name}`, params })
 
 /** The families a caller can run: every registered family that is not a door and not a Lean prefix, sorted. */
-const menu = (): string[] => [...qpuHexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && !x.startsWith('Qpu.')).sort()
+const menu = (): string[] => [...hexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && !x.startsWith('Qpu.')).sort()
 
 export class GuideFormulas {
   /** THE MENU: how many families you can run, and their names in the reading. Start here. */
@@ -20,14 +20,14 @@ export class GuideFormulas {
   /** THE FORMULAS of the i-th family (the menu's order): their names and how many inputs each takes. */
   static formulas(i: number): CrossFormula {
     const name = menu()[i]
-    const fs = name ? qpuHexFamiliesOf().get(name) ?? [] : []
+    const fs = name ? hexFamiliesOf().get(name) ?? [] : []
     return f('guide-formulas', 'formulas(i) = |formulas of the i-th family|', fs.length, name !== undefined, 'formulas', [i], { family: name, formulas: fs.map((x) => `${x.name}(${x.arity}${x.live ? ', live' : ''})`) })
   }
   /** A READY-TO-RUN EXAMPLE for the i-th family: the call to paste, its hex address, and the value it returns (run over
    *  the seed inputs). value is that result; the reading is copy-paste. A live formula is named as a reading, not run. */
   static example(i: number): CrossFormula {
     const name = menu()[i]
-    const fs = name ? qpuHexFamiliesOf().get(name) ?? [] : []
+    const fs = name ? hexFamiliesOf().get(name) ?? [] : []
     const fn = fs.find((x) => !x.live) ?? fs[0]
     if (!name || !fn) return f('guide-example', 'example(i)', 0, false, 'example', [i])
     const params = Array.from({ length: fn.arity }, () => 3)
@@ -53,4 +53,4 @@ export class GuideFormulas {
 }
 
 for (const name of ['example', 'families', 'formulas', 'ways'] as const)
-  qpuHexRegisterOf('guide', name, (GuideFormulas[name] as (...x: unknown[]) => unknown).bind(GuideFormulas))
+  hexRegisterOf('guide', name, (GuideFormulas[name] as (...x: unknown[]) => unknown).bind(GuideFormulas))

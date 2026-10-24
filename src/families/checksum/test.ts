@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ChecksumFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('checksum: modular, onescomplement, crcbits, fletcher, xorsum, detectionrat
   assert.equal(ChecksumFormulas.overhead(32, 1000).value, 3)
   assert.equal(ChecksumFormulas.blocksremainder(1000, 64).value, 40, 'bytes in the last block')
   assert.equal(ChecksumFormulas.modular(1000, 256).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('checksum')?.length, 8)
+  assert.equal(hexFamiliesOf().get('checksum')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'checksum', program: ['modular'], params: [1000, 256] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 232, `checksum.modular at ${uuid}`)
-  qpuUuidReceiptOf('checksum modular', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('checksum modular', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; modular 232, onescomplement 211, crcbits 1032, fletcher 5130, xorsum 6, detectionrate 99, overhead 3, blocksremainder 40; crossing to networking')
 })

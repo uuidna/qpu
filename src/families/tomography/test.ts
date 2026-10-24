@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TomographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('tomography: slices, projections, voxels, reconstruction, hounsfield, pitch
   assert.equal(TomographyFormulas.coverage(64, 1).value, 64)
   assert.equal(TomographyFormulas.hounsfield(1000, 1000).value, 0)
   assert.equal(TomographyFormulas.slices(300, 5).dst, 'radiology')
-  assert.equal(qpuHexFamiliesOf().get('tomography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tomography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tomography', program: ['slices'], params: [300, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `tomography.slices at ${uuid}`)
-  qpuUuidReceiptOf('tomography slices', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tomography slices', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; slices 60, projections 360, voxels 26214400, reconstruction 184320, hounsfield 1000, pitch 150, exposure 600, coverage 64; crossing to radiology')
 })

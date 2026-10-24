@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LUMINOSITY — THE RADIANT OUTPUT OF A STAR, AS ARITHMETIC. How bright a star burns is numbers: the Stefan–Boltzmann
@@ -31,4 +31,4 @@ export class LuminosityFormulas {
 }
 
 for (const name of ['apparentbrightness', 'bolometric', 'eddingtonlimit', 'fluxratio', 'inversesquare', 'luminosityclass', 'radiusfromtemp', 'stefanboltzmann'] as const)
-  qpuHexRegisterOf('luminosity', name, (LuminosityFormulas[name] as (...x: unknown[]) => unknown).bind(LuminosityFormulas))
+  hexRegisterOf('luminosity', name, (LuminosityFormulas[name] as (...x: unknown[]) => unknown).bind(LuminosityFormulas))

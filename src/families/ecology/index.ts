@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ECOLOGY — ECOSYSTEMS AND BIODIVERSITY, AS ARITHMETIC. Life in a place is numbers: a population's net change, how
@@ -31,4 +31,4 @@ export class EcologyFormulas {
 }
 
 for (const name of ['biomass', 'carrying', 'density', 'diversity', 'habitat', 'population', 'predation', 'trophic'] as const)
-  qpuHexRegisterOf('ecology', name, (EcologyFormulas[name] as (...x: unknown[]) => unknown).bind(EcologyFormulas))
+  hexRegisterOf('ecology', name, (EcologyFormulas[name] as (...x: unknown[]) => unknown).bind(EcologyFormulas))

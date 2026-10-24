@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MUSIC — MUSIC THEORY & AUDIO, AS ARITHMETIC. The sounding world is numbers: an interval in semitones, the octave a note
@@ -30,4 +30,4 @@ export class MusicFormulas {
 }
 
 for (const name of ['bars', 'beats', 'bpm', 'frequency', 'interval', 'octave', 'tempo', 'transpose'] as const)
-  qpuHexRegisterOf('music', name, (MusicFormulas[name] as (...x: unknown[]) => unknown).bind(MusicFormulas))
+  hexRegisterOf('music', name, (MusicFormulas[name] as (...x: unknown[]) => unknown).bind(MusicFormulas))

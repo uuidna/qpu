@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EMAIL — DELIVERABILITY AND SENDER REPUTATION, AS ARITHMETIC (distinct from generic messaging transport). Sending mail is
@@ -31,4 +31,4 @@ export class EmailFormulas {
 }
 
 for (const name of ['clickrate', 'deliverability', 'hardbounce', 'hygiene', 'optout', 'reputation', 'spam', 'throttle'] as const)
-  qpuHexRegisterOf('email', name, (EmailFormulas[name] as (...x: unknown[]) => unknown).bind(EmailFormulas))
+  hexRegisterOf('email', name, (EmailFormulas[name] as (...x: unknown[]) => unknown).bind(EmailFormulas))

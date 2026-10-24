@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOMECHANICS — THE BODY AS MECHANISM, AS ARITHMETIC. Movement is numbers: the torque a muscle makes about a joint, the
@@ -31,4 +31,4 @@ export class BiomechanicsFormulas {
 }
 
 for (const name of ['gait', 'groundreaction', 'impulse', 'leverage', 'moment', 'power', 'torque', 'workload'] as const)
-  qpuHexRegisterOf('biomechanics', name, (BiomechanicsFormulas[name] as (...x: unknown[]) => unknown).bind(BiomechanicsFormulas))
+  hexRegisterOf('biomechanics', name, (BiomechanicsFormulas[name] as (...x: unknown[]) => unknown).bind(BiomechanicsFormulas))

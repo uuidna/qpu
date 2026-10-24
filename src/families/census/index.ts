@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CENSUS — COUNTING A POPULATION, AS ARITHMETIC (chosen by the public-data registry, not by hand). A census is numbers:
@@ -30,4 +30,4 @@ export class CensusFormulas {
 }
 
 for (const name of ['apportionment', 'density', 'dependency', 'growth', 'medianage', 'participation', 'response', 'undercount'] as const)
-  qpuHexRegisterOf('census', name, (CensusFormulas[name] as (...x: unknown[]) => unknown).bind(CensusFormulas))
+  hexRegisterOf('census', name, (CensusFormulas[name] as (...x: unknown[]) => unknown).bind(CensusFormulas))

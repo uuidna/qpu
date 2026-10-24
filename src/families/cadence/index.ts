@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CADENCE — HOW A HARMONIC PHRASE ARRIVES, AS ARITHMETIC. The close of a phrase is numbers: how far the root moves, how
@@ -31,4 +31,4 @@ export class CadenceFormulas {
 }
 
 for (const name of ['approachinterval', 'chordspan', 'finalitytype', 'harmonicrhythm', 'phraselength', 'resolutionstrength', 'rootmotion', 'tensionrelease'] as const)
-  qpuHexRegisterOf('cadence', name, (CadenceFormulas[name] as (...x: unknown[]) => unknown).bind(CadenceFormulas))
+  hexRegisterOf('cadence', name, (CadenceFormulas[name] as (...x: unknown[]) => unknown).bind(CadenceFormulas))

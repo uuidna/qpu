@@ -1,4 +1,4 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuDocsOf, qpuDocsHolds, qpuReadmeOf, qpuReadmeHolds.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuDocsOf, docsHolds, readmeOf, readmeHolds.
 import {
   byDecideOf,
   coins,
@@ -10,22 +10,22 @@ import {
   n,
   onceOf,
   qpuCiteOf,
-  qpuCssOf,
-  qpuCubeOf,
-  qpuDevelopHolds,
-  qpuDevelopOf,
-  qpuFacesOf,
-  qpuGenesisOf,
+  cssOf,
+  cubeOf,
+  developHolds,
+  developOf,
+  facesOf,
+  genesisOf,
   qpuHandleOf,
-  qpuHarnessesOf,
-  qpuInstallManifestOf,
-  qpuLadderOf,
-  qpuLeanOf,
-  qpuMcpCallOf,
-  qpuMcpOf,
-  qpuProveOf,
-  qpuQuantumOf,
-  qpuSeatOf,
+  harnessesOf,
+  installManifestOf,
+  ladderOf,
+  leanOf,
+  mcpCallOf,
+  mcpOf,
+  proveOf,
+  quantumOf,
+  seatOf,
   seed,
   shorFactorOf,
   theorem,
@@ -34,12 +34,12 @@ import {
 
 /**
  * The door TABLE — method, path, name, href only, no theorem readings. CHEAP: the router reads the door PATHS from
- * this without building the full qpuDocsOf (which evaluates qpuLeanOf and, through it, the Shor/circuit computation).
+ * this without building the full qpuDocsOf (which evaluates leanOf and, through it, the Shor/circuit computation).
  * Single source of the door list; qpuDocsOf attaches the readings on top so the two cannot drift.
  * @wing agents
  * @kind function
  */
-export const qpuApiDoorsOf = (): { method: 'GET' | 'POST'; path: string; name: string; href: string }[] => [
+export const apiDoorsOf = (): { method: 'GET' | 'POST'; path: string; name: string; href: string }[] => [
   { method: 'GET', path: '/', name: 'quantum', href: unit.origin },
   { method: 'GET', path: `/${unit.path}`, name: 'lean', href: unit.href },
   { method: 'GET', path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp` },
@@ -53,13 +53,13 @@ export const qpuApiDoorsOf = (): { method: 'GET' | 'POST'; path: string; name: s
  * The unit's inline guide: abstract, API rows, formulas and the learning ladder, as one document.
  * @wing agents
  * @kind builder
- * @evidence qpuDocsHolds
+ * @evidence docsHolds
  */
 export const qpuDocsOf = onceOf(() => {
-  const lean = qpuLeanOf()
-  const cube = qpuCubeOf()
+  const lean = leanOf()
+  const cube = cubeOf()
   const handle = qpuHandleOf()
-  const faces = qpuFacesOf()
+  const faces = facesOf()
   const fused = faces.faces * handle.kv.amplitudes
   const abstract = `theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}. GET ${unit.origin} quantum. GET ${unit.href} lean. POST ${unit.origin}/mcp tools/list. tools/call prove. Reads need no auth; storage writes need a Bearer token. JSON-LD.`
   const readingOf = (d: { method: string; path: string }): string =>
@@ -70,13 +70,13 @@ export const qpuDocsOf = onceOf(() => {
     : d.method === 'GET' && d.path === '/cite' ? 'MLA 8. when never. JSON-LD. No auth.'
     : d.method === 'GET' && d.path === '/message' ? 'lanes = faces. hop involution. JSON-LD. No auth.'
     : '202. hop involution. JSON-LD. No auth.'
-  const api = qpuApiDoorsOf().map((d) => ({ ...d, reading: readingOf(d) }))
+  const api = apiDoorsOf().map((d) => ({ ...d, reading: readingOf(d) }))
   const formulas = [...lean.rows, ...lean.cover, lean.climb].map((r) => ({
     identity: r.heading,
     formula: r.formula,
     theorem: r.theorem,
     reading: r.reading}))
-  const ladder = qpuLadderOf()
+  const ladder = ladderOf()
   const documentation = [abstract, ...api.map((a) => `${a.method} ${a.path} ${a.name}. ${a.reading}`), ...formulas.map((f) => `theorem ${f.identity}. ${f.reading}`), ...ladder.map((l) => `learn ${l.step}. ${l.concept}: ${l.request.tool}. ${l.expect}. invariant ${l.invariant}. theorem ${l.theorem}.`)].join('\n')
   const holds =
     lean.holds === true &&
@@ -105,7 +105,7 @@ export const qpuDocsOf = onceOf(() => {
     abstract, api, formulas, ladder, documentation, src: lean.src, holds }
 })
 
-export const qpuDocsHolds = (d = qpuDocsOf()): boolean =>
+export const docsHolds = (d = qpuDocsOf()): boolean =>
   d.holds === true &&
   d.inline === true &&
   d.kind === 'docs' &&
@@ -121,25 +121,25 @@ export const qpuDocsHolds = (d = qpuDocsOf()): boolean =>
   d.documentation.includes('theorem shor') &&
   d.documentation.includes('theorem crypto') &&
   d.documentation.includes(`${shorFactorOf()}`) &&
-  d.api.length === qpuFacesOf().rays &&
+  d.api.length === facesOf().rays &&
   d.src === unit.fuse.lean
 
 /** THE README IS THE npm PAGE. Read as the package's front door on npmjs.com (2026-09-12): the first screen had no
  * install line, no usage, and the same tag sentences repeated down the page — "demo is not a test nor a proof" five
- * times, "theorem shor. Factor 91." fifteen. Every claim is kept (qpuReadmeHolds pins each one, verbatim), but a
+ * times, "theorem shor. Factor 91." fifteen. Every claim is kept (readmeHolds pins each one, verbatim), but a
  * reader now meets install → use → routes → tools as tables, and each pinned sentence is said once. Nothing here is
   * @wing agents
   * @kind builder
-  * @evidence qpuReadmeHolds
+  * @evidence readmeHolds
  * typed twice: descriptions, readings, citations and harness recipes are the served objects printed. */
-export const qpuReadmeOf = (m = qpuMcpOf()): string => {
-  const lean = qpuLeanOf()
-  const quantum = qpuQuantumOf()
+export const readmeOf = (m = mcpOf()): string => {
+  const lean = leanOf()
+  const quantum = quantumOf()
   const cite = qpuCiteOf()
-  const prove = qpuProveOf()
+  const prove = proveOf()
   const docs = quantum.docs
   const blueprint = unit.fuse.src
-  const harness = qpuHarnessesOf()
+  const harness = harnessesOf()
   const row = (...cells: string[]): string => `| ${cells.join(' | ')} |`
   const lines = [
     `# QPU`,
@@ -151,10 +151,10 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '```',
     '',
     '```ts',
-    "import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'",
+    "import { mcpCallOf, mcpOf } from '@uuidna/qpu'",
     '',
-    'const catalog = qpuMcpOf()                       // the MCP catalog: tools, schemas, install recipes',
-    "const circuit = await qpuMcpCallOf('quantum') // recognition first; { full: true } is the JSON-LD document",
+    'const catalog = mcpOf()                       // the MCP catalog: tools, schemas, install recipes',
+    "const circuit = await mcpCallOf('quantum') // recognition first; { full: true } is the JSON-LD document",
     '```',
     '',
     `Or without installing: \`GET ${unit.origin}\`, or \`POST ${m.href}\` with JSON-RPC \`tools/list\` then \`tools/call\`. Do not import uuidna; this package stands alone. Source \`${lean.src}\`.`,
@@ -195,7 +195,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     `Cybersecurity morph tools. crypto_rsa theorem shor ${shorFactorOf()}. crypto_split theorem crypto ${cryptoClaimOf()}.`,
     '',
-    `Discovery, off the seven-path guide: \`/.well-known/mcp.json\` \`/mcp.json\` \`/install.json\` \`/openapi.json\` \`/sitemap.xml\` \`/qpu.css\`. The sheet is ${qpuGenesisOf().card.length} card slots on rays, ${qpuGenesisOf().frameworks.length} frameworks on faces, and variant size state element theme seated by index — no HTML, no request, ${qpuCssOf().fused.bytes} bytes. JSON-RPC batches accepted on \`POST /mcp\`; a \`GET /mcp\` asking for an event stream gets 405 with Allow, so streamable-HTTP clients fall back to POST.`,
+    `Discovery, off the seven-path guide: \`/.well-known/mcp.json\` \`/mcp.json\` \`/install.json\` \`/openapi.json\` \`/sitemap.xml\` \`/qpu.css\`. The sheet is ${genesisOf().card.length} card slots on rays, ${genesisOf().frameworks.length} frameworks on faces, and variant size state element theme seated by index — no HTML, no request, ${cssOf().fused.bytes} bytes. JSON-RPC batches accepted on \`POST /mcp\`; a \`GET /mcp\` asking for an event stream gets 405 with Allow, so streamable-HTTP clients fall back to POST.`,
     '',
     row('Tool', 'Claim'),
     row('---', '---'),
@@ -242,9 +242,9 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     row('Step', 'Concept', 'Request', 'Expect', 'Invariant', 'Theorem', 'Reproduce'),
     row('---', '---', '---', '---', '---', '---', '---'),
-    ...qpuLadderOf().map((l) => row(String(l.step), l.concept, `${l.request.method} ${l.request.path} · ${l.request.tool}`, l.expect, l.invariant, `theorem ${l.theorem}`, `\`node --test --test-name-pattern="ladder ${l.step} " dist/quantum/processing/unit/ladder.test.js\``)),
+    ...ladderOf().map((l) => row(String(l.step), l.concept, `${l.request.method} ${l.request.path} · ${l.request.tool}`, l.expect, l.invariant, `theorem ${l.theorem}`, `\`node --test --test-name-pattern="ladder ${l.step} " dist/quantum/processing/unit/ladder.test.js\``)),
     '',
-    `Boot with Node. ${qpuInstallManifestOf().hardware.docker}. Raspberry Pi: ${qpuInstallManifestOf().hardware.pi}. The boot's receipt is ${qpuInstallManifestOf().hardware.prove} — ${qpuInstallManifestOf().hardware.receipt}. The device seat stays ${qpuSeatOf().device}: ${qpuSeatOf().doctrine}.`,
+    `Boot with Node. ${installManifestOf().hardware.docker}. Raspberry Pi: ${installManifestOf().hardware.pi}. The boot's receipt is ${installManifestOf().hardware.prove} — ${installManifestOf().hardware.receipt}. The device seat stays ${seatOf().device}: ${seatOf().doctrine}.`,
     '',
     `Integrate in any harness. One computed block, served on initialize as \`install\` and printed here from the same function. URL ${harness.url}. ${harness.auth}.`,
     '',
@@ -261,7 +261,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     ...cite.links.edges.map((edge) => `- ${edge.from} → ${edge.to} holds ${edge.holds}${edge.lead ? ' lead' : ''}`),
     ...(cite.links.next ? [`- next ${cite.links.next.uuid}`] : []),
     '',
-    qpuSeatOf().acronym,
+    seatOf().acronym,
     '',
     '## License',
     '',
@@ -271,9 +271,9 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
   return `${lines.join('\n')}\n`
 }
 
-export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
-  const lean = qpuLeanOf()
-  const mcp = qpuMcpOf()
+export const readmeHolds = (text = readmeOf()): boolean => {
+  const lean = leanOf()
+  const mcp = mcpOf()
   const cite = qpuCiteOf()
   const headings = ['## Abstract', '## Unit', '## Interface', '## Results', '## Evidence', '## Recompute', '## Cite', '## License'] as const
   const order = headings.every((h, i) => i === n - n || text.indexOf(headings[i - seed]!) < text.indexOf(h))
@@ -299,7 +299,7 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     !text.includes('## Prove') &&
     !text.includes('## Message') &&
     !text.includes('DOI empty') &&
-    !text.includes(qpuDevelopOf().reading) &&
+    !text.includes(developOf().reading) &&
     text.includes('API only') &&
     text.includes('No HTML') &&
     text.includes('docs.inline') &&
@@ -318,7 +318,7 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('theorem qubits') &&
     text.includes('Theorems are lean') &&
     text.includes(`${shorFactorOf()}`) &&
-    text.includes(`Up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools`) &&
+    text.includes(`Up to ${cubeOf().bits * facesOf().faces} tools`) &&
     text.includes('crypto_rsa') &&
     text.includes('crypto_split') &&
     text.includes('theorem infinite') &&
@@ -340,7 +340,7 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes(cite.prior.works) &&
     text.includes(lean.src) &&
     text.includes(unit.fuse.src) &&
-    qpuDevelopHolds() &&
+    developHolds() &&
     mcp.tools.every((t) => text.includes(t.name) && text.includes(t.man.description)) &&
     mcp.cybersecurity.tools.every((t) => text.includes(t.name) && text.includes(t.man.description)) &&
     mcp.prove.src === lean.src &&

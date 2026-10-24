@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LeverFormulas } from './index.js'
 
 /** lever: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('lever: ratio, effort, load, moment, arm, advantage, classes, combos', asyn
   assert.equal(LeverFormulas.advantage(400, 100).value, 4, 'advantage(400, 100)')
   assert.equal(LeverFormulas.classes(3, 0).value, 3, 'classes(3, 0)')
   assert.equal(LeverFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('lever')?.length, 8)
+  assert.equal(hexFamiliesOf().get('lever')?.length, 8)
   for (const [name, params, expected] of [["ratio",[200,50],4],["effort",[1000,4],250],["load",[250,4],1000]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'lever', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `lever.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`lever ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`lever ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "ratio=4, effort=250, load=1000")
 })

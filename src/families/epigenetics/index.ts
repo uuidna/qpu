@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EPIGENETICS — HERITABLE CHANGE WITHOUT CHANGING THE SEQUENCE, AS ARITHMETIC. Marks and their rates are numbers:
@@ -31,4 +31,4 @@ export class EpigeneticsFormulas {
 }
 
 for (const name of ['acetylation', 'chromatin', 'clock', 'expression', 'imprinting', 'inheritance', 'methylation', 'remodeling'] as const)
-  qpuHexRegisterOf('epigenetics', name, (EpigeneticsFormulas[name] as (...x: unknown[]) => unknown).bind(EpigeneticsFormulas))
+  hexRegisterOf('epigenetics', name, (EpigeneticsFormulas[name] as (...x: unknown[]) => unknown).bind(EpigeneticsFormulas))

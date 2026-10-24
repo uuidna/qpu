@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DesignTheoryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -23,10 +23,10 @@ test('designtheory: BIBD flag counts, the design identity, Fisher, Steiner tripl
   assert.equal(DesignTheoryFormulas.affinepoints(3).value, 9, 'n² points of AG(2,3)')
   assert.equal(DesignTheoryFormulas.affinelines(3).value, 12, 'n² + n lines of AG(2,3)')
   assert.equal(DesignTheoryFormulas.incidences(7, 3).dst, 'combinatorics')
-  assert.equal(qpuHexFamiliesOf().get('designtheory')?.length, 15)
+  assert.equal(hexFamiliesOf().get('designtheory')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'designtheory', program: ['incidences'], params: [7, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 21, `designtheory.incidences at ${uuid}`)
-  qpuUuidReceiptOf('designtheory incidences', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('designtheory incidences', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas on the 2-(7,3,1) Fano design and finite planes; incidences 21, blocksizes 21, lambdacheck 6, replication 3, blocks 7, fisher 1/0, steinertriples 7, points 7, pairs 21, projectiveorder 7, replications 3, blockcount 7, lineorder 3, affinepoints 9, affinelines 12; crossing to combinatorics')
 })

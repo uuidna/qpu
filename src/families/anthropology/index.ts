@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ANTHROPOLOGY — THE STUDY OF PEOPLES, AS ARITHMETIC. Kin per generation, how far a trait diffuses, lineage per founder,
@@ -30,4 +30,4 @@ export class AnthropologyFormulas {
 }
 
 for (const name of ['artifacts', 'diffusion', 'kinship', 'language', 'lineage', 'migration', 'ritual', 'stratigraphy'] as const)
-  qpuHexRegisterOf('anthropology', name, (AnthropologyFormulas[name] as (...x: unknown[]) => unknown).bind(AnthropologyFormulas))
+  hexRegisterOf('anthropology', name, (AnthropologyFormulas[name] as (...x: unknown[]) => unknown).bind(AnthropologyFormulas))

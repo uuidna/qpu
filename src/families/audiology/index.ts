@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AUDIOLOGY — HEARING AS ARITHMETIC (a clinical measure, not advice). The audiogram is numbers: the threshold in decibels,
@@ -30,4 +30,4 @@ export class AudiologyFormulas {
 }
 
 for (const name of ['discrimination', 'frequency', 'gain', 'loss', 'masking', 'reverberation', 'threshold', 'tinnitus'] as const)
-  qpuHexRegisterOf('audiology', name, (AudiologyFormulas[name] as (...x: unknown[]) => unknown).bind(AudiologyFormulas))
+  hexRegisterOf('audiology', name, (AudiologyFormulas[name] as (...x: unknown[]) => unknown).bind(AudiologyFormulas))

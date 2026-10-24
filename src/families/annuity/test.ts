@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AnnuityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('annuity: futurevalue, presentvalue, payment, totalpaid, interestportion, p
   assert.equal(AnnuityFormulas.periods(1200, 100).value, 12, 'periods to clear the total')
   assert.equal(AnnuityFormulas.balance(1000, 300).value, 700)
   assert.equal(AnnuityFormulas.futurevalue(100, 12).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('annuity')?.length, 8)
+  assert.equal(hexFamiliesOf().get('annuity')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'annuity', program: ['futurevalue'], params: [100, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1200, `annuity.futurevalue at ${uuid}`)
-  qpuUuidReceiptOf('annuity futurevalue', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('annuity futurevalue', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; futurevalue 1200, presentvalue 1080, payment 100, totalpaid 1200, interestportion 50, principalportion 50, periods 12, balance 700; crossing to accounting')
 })

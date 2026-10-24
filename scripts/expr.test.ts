@@ -8,6 +8,7 @@
  */
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { faces, tenOf } from './lattice-values.ts'
 
 test('real family formulas reproduce exactly from { params, expr } data', async () => {
   const { exprFormulaOf } = await import('../dist/quantum/processing/unit/expr.js')
@@ -16,11 +17,11 @@ test('real family formulas reproduce exactly from { params, expr } data', async 
     // aerospace.lift = ⌊coeff · area / 100⌋
     ['lift', ['coeff', 'area'], 'floor(coeff * area / 100)', [[30, 200], 60, true]],
     // aerospace.orbit = ⌊radius³ / mass⌋ — and division by zero holds false, value 0 (the hand guard `&& mass > 0`)
-    ['orbit', ['radius', 'mass'], 'floor(radius * radius * radius / mass)', [[10, 4], 250, true], [[10, 0], 0, false]],
+    ['orbit', ['radius', 'mass'], 'floor(radius * radius * radius / mass)', [[tenOf(1), 4], 250, true], [[tenOf(1), 0], 0, false]],
     // aerospace.range = ⌊fuel / burn⌋ — burn 0 → 0, holds false
-    ['range', ['fuel', 'burn'], 'floor(fuel / burn)', [[100, 7], 14, true], [[100, 0], 0, false]],
+    ['range', ['fuel', 'burn'], 'floor(fuel / burn)', [[tenOf(2), 7], faces, true], [[tenOf(2), 0], 0, false]],
     // aerospace.payload = max(0, gross − dry) — never below zero, always holds for naturals
-    ['payload', ['gross', 'dry'], 'max(0, gross - dry)', [[500, 120], 380, true], [[100, 300], 0, true]],
+    ['payload', ['gross', 'dry'], 'max(0, gross - dry)', [[500, 120], 380, true], [[tenOf(2), 300], 0, true]],
     // aerospace.mach = ⌊speed · 100 / sound⌋
     ['mach', ['speed', 'sound'], 'floor(speed * 100 / sound)', [[340, 343], 99, true]],
     // a negative (non-natural) argument holds false — the `nat(...)` guard, here derived

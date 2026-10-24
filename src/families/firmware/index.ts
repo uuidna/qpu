@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FIRMWARE — the image's own arithmetic. Flash sectors and pages off an image, 32-bit words and 16-bit checksum words
@@ -45,4 +45,4 @@ export class FirmwareFormulas {
 }
 
 for (const name of ['bootBlocks', 'checksumWords', 'crc', 'flashcycles', 'freespace', 'image', 'isr', 'otaDelta', 'pages', 'sectors', 'slots', 'stack', 'version', 'watchdog', 'words'] as const)
-  qpuHexRegisterOf('firmware', name, (FirmwareFormulas[name] as (...x: unknown[]) => unknown).bind(FirmwareFormulas))
+  hexRegisterOf('firmware', name, (FirmwareFormulas[name] as (...x: unknown[]) => unknown).bind(FirmwareFormulas))

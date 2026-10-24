@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MycologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('mycology: colonization, decomposition, efficiency, fruiting, germination, 
   assert.equal(MycologyFormulas.mycelium(50, 4).value, 200)
   assert.equal(MycologyFormulas.spore(10000, 100).value, 100, 'spores per unit area')
   assert.equal(MycologyFormulas.growth(100, 3).dst, 'agriculture')
-  assert.equal(qpuHexFamiliesOf().get('mycology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mycology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mycology', program: ['colonization'], params: [750, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `mycology.colonization at ${uuid}`)
-  qpuUuidReceiptOf('mycology colonization', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mycology colonization', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; colonization 75, decomposition 30, efficiency 50, fruiting 10, germination 45, growth 800, mycelium 200, spore 100; crossing to agriculture')
 })

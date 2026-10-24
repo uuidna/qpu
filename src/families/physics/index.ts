@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHYSICS — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PhysicsFormulas {
 }
 
 for (const name of ['degreesoffreedom', 'density', 'energylevels', 'force', 'momentum', 'power', 'pressure', 'work'] as const)
-  qpuHexRegisterOf('physics', name, (PhysicsFormulas[name] as (...x: unknown[]) => unknown).bind(PhysicsFormulas))
+  hexRegisterOf('physics', name, (PhysicsFormulas[name] as (...x: unknown[]) => unknown).bind(PhysicsFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CARDIOLOGY — THE HEART, AS ARITHMETIC (chosen by the registry, not by hand). A beating heart is numbers: the fraction
@@ -31,4 +31,4 @@ export class CardiologyFormulas {
 }
 
 for (const name of ['bmi', 'ejection', 'map', 'output', 'pulse', 'qtc', 'risk', 'target'] as const)
-  qpuHexRegisterOf('cardiology', name, (CardiologyFormulas[name] as (...x: unknown[]) => unknown).bind(CardiologyFormulas))
+  hexRegisterOf('cardiology', name, (CardiologyFormulas[name] as (...x: unknown[]) => unknown).bind(CardiologyFormulas))

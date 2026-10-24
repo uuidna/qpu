@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DISTILLING — scaffolded integer measures crossed to chemistry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DistillingFormulas {
 }
 
 for (const name of ['abv', 'boilingpoint', 'cuts', 'distillationruns', 'platecombos', 'puritypct', 'refluxratio', 'yieldliters'] as const)
-  qpuHexRegisterOf('distilling', name, (DistillingFormulas[name] as (...x: unknown[]) => unknown).bind(DistillingFormulas))
+  hexRegisterOf('distilling', name, (DistillingFormulas[name] as (...x: unknown[]) => unknown).bind(DistillingFormulas))

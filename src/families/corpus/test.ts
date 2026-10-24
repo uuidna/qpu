@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CorpusFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('corpus: annotationcoverage, balancescore, concordancehits, frequencyperm, 
   assert.equal(CorpusFormulas.sampledwords(500, 2000).value, 1000000, 'a million sampled words')
   assert.equal(CorpusFormulas.typetoken(40, 100).value, 40)
   assert.equal(CorpusFormulas.typetoken(40, 100).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('corpus')?.length, 8)
+  assert.equal(hexFamiliesOf().get('corpus')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'corpus', program: ['typetoken'], params: [40, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 40, `corpus.typetoken at ${uuid}`)
-  qpuUuidReceiptOf('corpus typetoken', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('corpus typetoken', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; annotationcoverage 90, balancescore 80, concordancehits 480, frequencyperm 3, hapaxratio 50, keyness 110, sampledwords 1000000, typetoken 40; crossing to linguistics')
 })

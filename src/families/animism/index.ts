@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ANIMISM — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class AnimismFormulas {
 }
 
 for (const name of ['ancestorlayers', 'animacyratio', 'entitypairs', 'offeringcombos', 'ritualtypes', 'seasonalcycles', 'spiritcount', 'totemsubsets'] as const)
-  qpuHexRegisterOf('animism', name, (AnimismFormulas[name] as (...x: unknown[]) => unknown).bind(AnimismFormulas))
+  hexRegisterOf('animism', name, (AnimismFormulas[name] as (...x: unknown[]) => unknown).bind(AnimismFormulas))

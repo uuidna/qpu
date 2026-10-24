@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { PublicSurface } from '@/components/Public'
+import { PublicSurface } from '@/components/Page'
 import { pageOf } from '@/app/_data'
 import { HOME } from '@/fields/link'
 import { metadataOf } from '@/utilities/metadataOf'

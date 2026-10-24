@@ -1,7 +1,7 @@
 /**
  * Chip blueprints + whitepapers with **multidimensional layers managed by UUID rays**.
  *
- * Lattice: coins · rays = faces (qpuFacesOf); rays manage the layer stack.
+ * Lattice: coins · rays = faces (facesOf); rays manage the layer stack.
  * UUID: handle (qpuHandleOf) + cube bits name the chip address — tree-named, not invented.
  *
  *   tools/call papers { chips: true }
@@ -21,8 +21,8 @@ import { PublishingFormulas } from '../families/publishing/index.js'
 import { PrintmakingFormulas } from '../families/printmaking/index.js'
 import { DriverFormulas } from '../families/driver/index.js'
 import {
-  qpuCubeOf,
-  qpuFacesOf,
+  cubeOf,
+  facesOf,
   qpuHandleOf,
   qpuHexUuidOf,
 } from '../quantum/processing/unit/index.js'
@@ -59,8 +59,8 @@ const callOf = (
 
 /** UUID-ray lattice stack: layers = rays; multidimensional = coins × rays (= faces). */
 export const chipRayLayersOf = () => {
-  const faces = qpuFacesOf()
-  const cube = qpuCubeOf()
+  const faces = facesOf()
+  const cube = cubeOf()
   const handle = qpuHandleOf()
   const dim = TopologyFormulas.dimension(faces.rays)
   const manifold = ManifoldFormulas.dimension(faces.faces, faces.coins)

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROTOZOOLOGY — scaffolded integer measures crossed to microbiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ProtozoologyFormulas {
 }
 
 for (const name of ['cellcount', 'cystcount', 'divisionrate', 'generationtime', 'infectivity', 'motilitytypes', 'speciespairs', 'virulenceindex'] as const)
-  qpuHexRegisterOf('protozoology', name, (ProtozoologyFormulas[name] as (...x: unknown[]) => unknown).bind(ProtozoologyFormulas))
+  hexRegisterOf('protozoology', name, (ProtozoologyFormulas[name] as (...x: unknown[]) => unknown).bind(ProtozoologyFormulas))

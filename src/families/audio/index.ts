@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AudioFormulas — 8 exact-integer formulas of the audio domain, each at a hex address crossing to cross; develops the audio leads. */
@@ -31,4 +31,4 @@ export class AudioFormulas {
 }
 
 for (const name of ['bitdepth', 'bitrate', 'blocks', 'channels', 'duration', 'frames', 'samples', 'streambytes'] as const)
-  qpuHexRegisterOf('audio', name, (AudioFormulas[name] as (...x: unknown[]) => unknown).bind(AudioFormulas))
+  hexRegisterOf('audio', name, (AudioFormulas[name] as (...x: unknown[]) => unknown).bind(AudioFormulas))

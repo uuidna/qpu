@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NumerologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('numerology: digitsum, numbercombos, cyclewheel, gematriatotal, masternumbe
   assert.equal(NumerologyFormulas.harmonicsum(1, 2, 3).value, 6)
   assert.equal(NumerologyFormulas.permutationcount(5, 3).value, 60)
   assert.equal(NumerologyFormulas.digitsum(3, 6, 9).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('numerology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('numerology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'numerology', program: ['digitsum'], params: [3, 6, 9] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 18, `numerology.digitsum at ${uuid}`)
-  qpuUuidReceiptOf('numerology digitsum', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('numerology digitsum', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; digitsum 18, numbercombos 120, cyclewheel 8, gematriatotal 220, masternumbers 33, repetitions 14, harmonicsum 6, permutationcount 60; crossing to statistics')
 })

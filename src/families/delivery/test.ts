@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DeliveryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('delivery: ontime, density, firstattempt, lastmile, window, returns, eta, p
   assert.equal(DeliveryFormulas.eta(600, 50).value, 12, 'hours to arrival')
   assert.equal(DeliveryFormulas.productivity(96, 8).value, 12, 'deliveries per hour')
   assert.equal(DeliveryFormulas.ontime(950, 1000).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('delivery')?.length, 8)
+  assert.equal(hexFamiliesOf().get('delivery')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'delivery', program: ['density'], params: [120, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `delivery.density at ${uuid}`)
-  qpuUuidReceiptOf('delivery density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('delivery density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ontime 95, density 15, firstattempt 88, lastmile 5, window 90, returns 3, eta 12, productivity 12; crossing to logistics')
 })

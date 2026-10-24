@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GpsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('gps: satellites, trilateration, hdop, fixquality, pseudorange, ttff, accur
   assert.equal(GpsFormulas.accuracy(2, 5).value, 10)
   assert.equal(GpsFormulas.elevationmask(24, 9).value, 15)
   assert.equal(GpsFormulas.satellites(31, 7).dst, 'navigation')
-  assert.equal(qpuHexFamiliesOf().get('gps')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gps')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gps', program: ['hdop'], params: [100, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `gps.hdop at ${uuid}`)
-  qpuUuidReceiptOf('gps hdop', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gps hdop', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; satellites 24, trilateration 4, hdop 12, fixquality 1, pseudorange 20400, ttff 45, accuracy 10, elevationmask 15; crossing to navigation')
 })

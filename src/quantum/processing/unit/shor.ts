@@ -1,4 +1,4 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuShorTryOf, qpuShorTryHolds, qpuShorOf, qpuShorReceiptsOf, qpuShorReceiptsHolds, qpuShorHolds.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): shorTryOf, shorTryHolds, shorOf, shorReceiptsOf, shorReceiptsHolds, shorHolds.
 import {
   b0,
   b1,
@@ -16,13 +16,13 @@ import {
   modOf,
   n,
   payloadDbKey,
-  qpuComputerOf,
-  qpuCubeOf,
-  qpuFacesOf,
-  qpuPayloadPluginHolds,
-  qpuPayloadPluginOf,
+  computerOf,
+  cubeOf,
+  facesOf,
+  payloadPluginHolds,
+  payloadPluginOf,
   qpuReceiptFoldOf,
-  qpuReceiptLedgerOf,
+  receiptLedgerOf,
   receiptSparseOf,
   sDeviceOf,
   sEqualOf,
@@ -48,25 +48,25 @@ import {
  * found (a period, a gcd factor, or nothing), the sparse state means no modulus is past the host's reach, and `read`
   * @wing agents
   * @kind builder
-  * @evidence qpuShorTryHolds
+  * @evidence shorTryHolds
  * says how each argument was taken. A reply whose arguments were not read exactly does not hold, whatever the run did. */
-export const qpuShorTryOf = (a: Record<string, unknown>) => {
+export const shorTryOf = (a: Record<string, unknown>) => {
   const args = shorArgsOf(a)
-  const shor = qpuShorOf(args.modulus, args.base)
+  const shor = shorOf(args.modulus, args.base)
   return { ...shor, read: args.read, holds: shor.holds && args.read.holds }
 }
 
-export const qpuShorTryHolds = (x?: ReturnType<typeof qpuShorTryOf>): boolean => x !== undefined && x.holds === true
+export const shorTryHolds = (x?: ReturnType<typeof shorTryOf>): boolean => x !== undefined && x.holds === true
 
 /** Shor on the sparse exact state vector. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation
  * circuitry. Inverse QFT. XX noise applied twice, which is the identity. Shots enumerate the support. Factors. Every number below is exact in `exact` as decimal text; the number
   * @wing agents
   * @kind builder
-  * @evidence qpuShorHolds
+  * @evidence shorHolds
  * fields round past 2^53 and `exact.safe` says whether they did. */
-export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigint, withAmplitudes = false) => {
-  const plugin = qpuPayloadPluginOf()
-  const computer = qpuComputerOf()
+export const shorOf = (modulusArg?: number | bigint, baseArg?: number | bigint, withAmplitudes = false) => {
+  const plugin = payloadPluginOf()
+  const computer = computerOf()
   const defaults = shorDefaultsOf()
   const modulus = BigInt(modulusArg ?? defaults.modulus)
   const base = BigInt(baseArg ?? defaults.base)
@@ -103,7 +103,7 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
   for (let y = n - n; y < qftSize; y++) weights.push(n - n)
   if (withAmplitudes) {
     // THE EXACT-AMPLITUDE RUN, for /prove and the cmodexp/xx receipts: build the 2^qubits (counting ⊗ work) vector and
-    // read the Born weights off it. The heavy path, taken only through qpuShorReceiptsOf.
+    // read the Born weights off it. The heavy path, taken only through shorReceiptsOf.
     let state = sPrepareOf()
     state = sXOf(state, workOff)
     state = sHOf(state, n - n)
@@ -271,7 +271,7 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
   }
   const circuitry = {
     kind: 'cmodexp' as const,
-    native: ['h', 'cnot'] as const,
+    native: ['h', 'cx'] as const,
     compiled: ['x', 'swap', 'csdg', 'cmodexp'] as const,
     mul,
     gates,
@@ -354,7 +354,7 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
   }
   /** Beside the run, never in it, and exact for any modulus: whether there is a ring, whether the base is a unit in it,
    * and the base's multiplicative order, found exactly by the period-finding — resolvable means that order is in reach
-   * (the period was recovered), beyond means it runs past the simulatable cap. Any modulus factors once it is in reach. */
+   * (the period was recovered), beyond is never produced: the order search has no ceiling. Any modulus factors once its order is found. */
   const classicalPeriod = classicalRun.order
   const resolvable = classicalRun.unit && classicalPeriod > n - n
   const classical = {
@@ -380,7 +380,7 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     factors.holds &&
     rsa.holds &&
     computer.holds &&
-    qpuPayloadPluginHolds(plugin)
+    payloadPluginHolds(plugin)
   return {
     kind: 'shor' as const,
     theorem: 'shor' as const,
@@ -408,12 +408,12 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
 /** The receipts of one Shor run: the folds, and the exact amplitudes of the modexp and noise states, the ledger gained
   * @wing receipts
   * @kind builder
-  * @evidence qpuShorReceiptsHolds
- * after `from`. Two honest runs of one circuit fold alike; a reader who runs qpuShorOf recomputes them. */
-export const qpuShorReceiptsOf = (from: number) => {
-  // the exact-amplitude run records the cmodexp + xx receipts (qpuShorOf is arithmetic by default and records none)
-  qpuShorOf(undefined, undefined, true)
-  const rows = qpuReceiptLedgerOf().slice(from)
+  * @evidence shorReceiptsHolds
+ * after `from`. Two honest runs of one circuit fold alike; a reader who runs shorOf recomputes them. */
+export const shorReceiptsOf = (from: number) => {
+  // the exact-amplitude run records the cmodexp + xx receipts (shorOf is arithmetic by default and records none)
+  shorOf(undefined, undefined, true)
+  const rows = receiptLedgerOf().slice(from)
   return {
     kind: 'receipts' as const,
     rows,
@@ -422,25 +422,25 @@ export const qpuShorReceiptsOf = (from: number) => {
   }
 }
 
-export const qpuShorReceiptsHolds = (x?: ReturnType<typeof qpuShorReceiptsOf>): boolean => x !== undefined && x.holds === true
+export const shorReceiptsHolds = (x?: ReturnType<typeof shorReceiptsOf>): boolean => x !== undefined && x.holds === true
 
-export const qpuShorHolds = (s = qpuShorOf()): boolean =>
+export const shorHolds = (s = shorOf()): boolean =>
   s.holds === true &&
   s.kind === 'shor' &&
   s.theorem === 'shor' &&
   s.device === 'exact-amplitudes' &&
-  s.n === qpuFacesOf().rays * (n * n + n + seed) &&
+  s.n === facesOf().rays * (n * n + n + seed) &&
   s.n > n * (n + coins) &&
   s.a === mintOf(n) &&
   s.unlocked === true &&
   s.lock === false &&
-  s.circuitry.work > qpuCubeOf().hexbit &&
+  s.circuitry.work > cubeOf().hexbit &&
   s.circuitry.qubits === n * n &&
   s.coprime === true &&
   gcdOf(s.a, s.n) === seed &&
   s.circuitry.kind === 'cmodexp' &&
   s.circuitry.native[n - n] === 'h' &&
-  s.circuitry.native[seed] === 'cnot' &&
+  s.circuitry.native[seed] === 'cx' &&
   s.circuitry.holds === true &&
   s.qft.kind === 'iqft' &&
   s.qft.holds === true &&

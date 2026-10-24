@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NURSING — BEDSIDE CARE AS ARITHMETIC (chosen by the clinical registry, not by hand). Caring for patients is numbers:
@@ -31,4 +31,4 @@ export class NursingFormulas {
 }
 
 for (const name of ['acuity', 'dosage', 'droprate', 'fluid', 'handwash', 'medication', 'ratio', 'workload'] as const)
-  qpuHexRegisterOf('nursing', name, (NursingFormulas[name] as (...x: unknown[]) => unknown).bind(NursingFormulas))
+  hexRegisterOf('nursing', name, (NursingFormulas[name] as (...x: unknown[]) => unknown).bind(NursingFormulas))

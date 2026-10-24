@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GearFormulas — 8 exact-integer formulas of the gear domain, each at a hex address crossing to cross; develops the gear leads. */
@@ -31,4 +31,4 @@ export class GearFormulas {
 }
 
 for (const name of ['backlash', 'mesh', 'pairs', 'ratio', 'rpm', 'stages', 'teeth', 'torque'] as const)
-  qpuHexRegisterOf('gear', name, (GearFormulas[name] as (...x: unknown[]) => unknown).bind(GearFormulas))
+  hexRegisterOf('gear', name, (GearFormulas[name] as (...x: unknown[]) => unknown).bind(GearFormulas))

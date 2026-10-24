@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SEDIMENTOLOGY — THE MAKING OF SEDIMENT, AS ARITHMETIC. A clast is numbers: its mean grain diameter, how well the grains
@@ -31,4 +31,4 @@ export class SedimentologyFormulas {
 }
 
 for (const name of ['bedform', 'grainsize', 'maturity', 'porosity', 'roundness', 'sedimentload', 'settlingvelocity', 'sorting'] as const)
-  qpuHexRegisterOf('sedimentology', name, (SedimentologyFormulas[name] as (...x: unknown[]) => unknown).bind(SedimentologyFormulas))
+  hexRegisterOf('sedimentology', name, (SedimentologyFormulas[name] as (...x: unknown[]) => unknown).bind(SedimentologyFormulas))

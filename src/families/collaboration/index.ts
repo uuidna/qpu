@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COLLABORATION — TEAM WORK AS ARITHMETIC (chosen by the registry). A team is numbers: task completion, per-member
@@ -30,4 +30,4 @@ export class CollaborationFormulas {
 }
 
 for (const name of ['backlog', 'cycle', 'meeting', 'response', 'tasks', 'throughput', 'utilization', 'workload'] as const)
-  qpuHexRegisterOf('collaboration', name, (CollaborationFormulas[name] as (...x: unknown[]) => unknown).bind(CollaborationFormulas))
+  hexRegisterOf('collaboration', name, (CollaborationFormulas[name] as (...x: unknown[]) => unknown).bind(CollaborationFormulas))

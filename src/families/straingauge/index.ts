@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STRAINGAUGE — THE BONDED RESISTANCE STRAIN GAUGE, AS ARITHMETIC. Measuring deformation is numbers: the gauge factor
@@ -31,4 +31,4 @@ export class StraingaugeFormulas {
 }
 
 for (const name of ['bridgeoutput', 'gaugefactor', 'microstrain', 'resistancechange', 'sensitivity', 'strain', 'stress', 'temperatureerror'] as const)
-  qpuHexRegisterOf('straingauge', name, (StraingaugeFormulas[name] as (...x: unknown[]) => unknown).bind(StraingaugeFormulas))
+  hexRegisterOf('straingauge', name, (StraingaugeFormulas[name] as (...x: unknown[]) => unknown).bind(StraingaugeFormulas))

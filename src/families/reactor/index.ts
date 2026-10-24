@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { HeatFormulas, heatThresholdOf } from '../heat/index.js'
 import { PlasmaFormulas } from '../plasma/index.js'
@@ -75,7 +75,7 @@ export class ReactorFormulas {
 }
 
 for (const name of ['coldfusion', 'refactor', 'ways'] as const)
-  qpuHexRegisterOf('reactor', name, (ReactorFormulas[name] as (...x: unknown[]) => unknown).bind(ReactorFormulas))
+  hexRegisterOf('reactor', name, (ReactorFormulas[name] as (...x: unknown[]) => unknown).bind(ReactorFormulas))
 
 /**
  * Live zero / temp / time / heat / cold-fusion integers for README and homepage tables.

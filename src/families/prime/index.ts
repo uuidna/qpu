@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PrimeFormulas — 8 exact-integer formulas of the prime domain, each at a hex address crossing to cross; develops the prime leads. */
@@ -31,4 +31,4 @@ export class PrimeFormulas {
 }
 
 for (const name of ['combos', 'count', 'factors', 'gaps', 'product', 'sieve', 'totient', 'twins'] as const)
-  qpuHexRegisterOf('prime', name, (PrimeFormulas[name] as (...x: unknown[]) => unknown).bind(PrimeFormulas))
+  hexRegisterOf('prime', name, (PrimeFormulas[name] as (...x: unknown[]) => unknown).bind(PrimeFormulas))

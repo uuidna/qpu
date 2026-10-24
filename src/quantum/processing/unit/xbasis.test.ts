@@ -6,7 +6,7 @@
  */
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import { qpuQuantumOf, qpuReadingOf } from './index.js'
+import { quantumOf, qpuReadingOf } from './index.js'
 
 const popcount = (s: number): number => s.toString(2).split('').filter((c) => c === '1').length
 // (-1)^(x·s) for a 3-qubit basis state x: the sign that the Hadamard puts on outcome s.
@@ -50,11 +50,11 @@ const checkWeights = (x: XbasisLike) => {
 }
 
 test('xbasis: the GHZ X-basis amplitude is zero exactly on odd-parity outcomes', () => {
-  checkAmplitudes(xbasisOf(qpuQuantumOf()))
+  checkAmplitudes(xbasisOf(quantumOf()))
 })
 
 test('xbasis: the coin X-basis weight is positive on every outcome, and is labelled a weight', () => {
-  const x = xbasisOf(qpuQuantumOf())
+  const x = xbasisOf(quantumOf())
   checkWeights(x)
   assert.equal(x.ghz.kind, 'amplitude', 'the GHZ values are amplitudes')
   assert.equal(x.coin.kind, 'weight', 'the coin values are weights, never amplitudes')
@@ -69,7 +69,7 @@ test('xbasis: the served tool reading carries the same amplitudes and weights, a
 })
 
 test('xbasis: adding it leaves the document holds as the self-consistency it was', () => {
-  const doc = qpuQuantumOf()
+  const doc = quantumOf()
   assert.equal(doc.circuit.holds, true, 'circuit.holds is unchanged by the X-basis block')
   assert.equal(doc.holds, true, 'the quantum document still holds')
   assert.equal(doc.circuit.xbasis.basis, 'x')

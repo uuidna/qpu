@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ERGONOMICS — THE WORKPLACE ON THE BODY, AS ARITHMETIC (chosen by the registry, not by hand). Work put on a person is
@@ -31,4 +31,4 @@ export class ErgonomicsFormulas {
 }
 
 for (const name of ['fatigue', 'illumination', 'lift', 'noise', 'posture', 'reach', 'repetition', 'strain'] as const)
-  qpuHexRegisterOf('ergonomics', name, (ErgonomicsFormulas[name] as (...x: unknown[]) => unknown).bind(ErgonomicsFormulas))
+  hexRegisterOf('ergonomics', name, (ErgonomicsFormulas[name] as (...x: unknown[]) => unknown).bind(ErgonomicsFormulas))

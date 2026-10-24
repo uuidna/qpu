@@ -22,9 +22,9 @@ test('gravity: meaningful paths — every family sits at src/families/<name>/ind
 
 test('gravity: meaningful routing — every family routes at a unique hex handle (no collision)', async () => {
   await import('../dist/mcp/families.js')
-  const { qpuHexFamiliesOf, qpuHexUuidOf } = await import('../dist/quantum/processing/unit/index.js')
+  const { hexFamiliesOf, qpuHexUuidOf } = await import('../dist/quantum/processing/unit/index.js')
   const handles = new Map()
-  for (const [fam, formulas] of qpuHexFamiliesOf()) {
+  for (const [fam, formulas] of hexFamiliesOf()) {
     if (!formulas.length) continue
     const handle = qpuHexUuidOf({ family: fam, program: [formulas[0].name], params: [] }).split('-')[0]
     const other = handles.get(handle)
@@ -47,13 +47,13 @@ test('gravity: the trinity coordinates a move — gravity, rule and gate must al
 
 test('gravity: the equilibrium agrees — every family around the center observes and holds', async () => {
   await import('../dist/mcp/families.js')
-  const { qpuHexFamiliesOf, qpuHexUuidOf, qpuHexRegisteredSizeOf } = await import('../dist/quantum/processing/unit/index.js')
-  const families = qpuHexFamiliesOf()
+  const { hexFamiliesOf, qpuHexUuidOf, hexRegisteredSizeOf } = await import('../dist/quantum/processing/unit/index.js')
+  const families = hexFamiliesOf()
   const handleOf = (fam) => {
     const fs = families.get(fam)
     return fs?.length ? qpuHexUuidOf({ family: fam, program: [fs[0].name], params: [] }).split('-')[0] : null
   }
-  const c = consensusOf(families, { handleOf, registered: (f) => qpuHexRegisteredSizeOf(f) > 0 })
+  const c = consensusOf(families, { handleOf, registered: (f) => hexRegisteredSizeOf(f) > 0 })
   assert.ok(c.agreed, 'the equilibrium disagrees: ' + c.observers.filter((o) => !o.holds).map((o) => `${o.by}: ${o.why}`).join('; '))
   assert.ok(c.count > 0, 'the equilibrium has families')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TURNAROUND — scaffolded integer measures crossed to logistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TurnaroundFormulas {
 }
 
 for (const name of ['berthutilization', 'cyclecount', 'delayminutes', 'dockoccupancy', 'gatetime', 'idlegap', 'loadtime', 'servicerate'] as const)
-  qpuHexRegisterOf('turnaround', name, (TurnaroundFormulas[name] as (...x: unknown[]) => unknown).bind(TurnaroundFormulas))
+  hexRegisterOf('turnaround', name, (TurnaroundFormulas[name] as (...x: unknown[]) => unknown).bind(TurnaroundFormulas))

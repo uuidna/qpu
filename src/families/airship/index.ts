@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AIRSHIP — scaffolded integer measures crossed to aerospace. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class AirshipFormulas {
 }
 
 for (const name of ['ballastratio', 'buoyancymargin', 'heliumfraction', 'lengthm', 'lift', 'maxspeed', 'payload', 'volume'] as const)
-  qpuHexRegisterOf('airship', name, (AirshipFormulas[name] as (...x: unknown[]) => unknown).bind(AirshipFormulas))
+  hexRegisterOf('airship', name, (AirshipFormulas[name] as (...x: unknown[]) => unknown).bind(AirshipFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OntologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('ontology: categories, entitysubsets, relationpairs, hierarchydepth, predic
   assert.equal(OntologyFormulas.modalstates(3, 4).value, 12)
   assert.equal(OntologyFormulas.partonomylinks(10, 3).value, 30)
   assert.equal(OntologyFormulas.categories(10, 0).dst, 'philosophy')
-  assert.equal(qpuHexFamiliesOf().get('ontology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ontology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ontology', program: ['categories'], params: [10, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `ontology.categories at ${uuid}`)
-  qpuUuidReceiptOf('ontology categories', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ontology categories', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; categories 10, entitysubsets 64, relationpairs 28, hierarchydepth 5, predicatecombos 220, substanceorderings 120, modalstates 12, partonomylinks 30; crossing to philosophy')
 })

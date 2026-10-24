@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SOILSCIENCE — THE GROUND AS ARITHMETIC. What a soil is, is numbers: pore space, how heavy it packs, the water it holds,
@@ -30,4 +30,4 @@ export class SoilscienceFormulas {
 }
 
 for (const name of ['bulkdensity', 'cationexchange', 'fieldcapacity', 'infiltration', 'organicmatter', 'porosity', 'salinity', 'texture'] as const)
-  qpuHexRegisterOf('soilscience', name, (SoilscienceFormulas[name] as (...x: unknown[]) => unknown).bind(SoilscienceFormulas))
+  hexRegisterOf('soilscience', name, (SoilscienceFormulas[name] as (...x: unknown[]) => unknown).bind(SoilscienceFormulas))

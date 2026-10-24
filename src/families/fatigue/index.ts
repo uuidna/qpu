@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FATIGUE — METAL FATIGUE AS ARITHMETIC (how a material fails under repeated load, not one pull). Cyclic loading is numbers:
@@ -31,4 +31,4 @@ export class FatigueFormulas {
 }
 
 for (const name of ['amplitude', 'cyclestofailure', 'endurancelimit', 'meanstress', 'minerdamage', 'safetyfactor', 'stressrange', 'stressratio'] as const)
-  qpuHexRegisterOf('fatigue', name, (FatigueFormulas[name] as (...x: unknown[]) => unknown).bind(FatigueFormulas))
+  hexRegisterOf('fatigue', name, (FatigueFormulas[name] as (...x: unknown[]) => unknown).bind(FatigueFormulas))

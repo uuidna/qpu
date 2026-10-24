@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HERPETOLOGY — THE STUDY OF REPTILES AND AMPHIBIANS, AS ARITHMETIC. Cold-blooded life is numbers: heat carried over
@@ -30,4 +30,4 @@ export class HerpetologyFormulas {
 }
 
 for (const name of ['clutch', 'growth', 'incubation', 'metabolism', 'scalation', 'survival', 'thermoregulation', 'venom'] as const)
-  qpuHexRegisterOf('herpetology', name, (HerpetologyFormulas[name] as (...x: unknown[]) => unknown).bind(HerpetologyFormulas))
+  hexRegisterOf('herpetology', name, (HerpetologyFormulas[name] as (...x: unknown[]) => unknown).bind(HerpetologyFormulas))

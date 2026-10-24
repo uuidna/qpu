@@ -48,8 +48,8 @@ export const VALUES = 'lattice-values.ts'
  * table answers "what is this number called" with the name a reader recognises — `faces` over `coins * rays`.
  */
 export const vocabularyOf = (u = unit) => {
-  const faces = u.qpuFacesOf()
-  const cube = u.qpuCubeOf()
+  const faces = u.facesOf()
+  const cube = u.cubeOf()
   const named = [
     ['faces', faces.faces],
     ['rays', faces.rays],
@@ -69,7 +69,7 @@ export const vocabularyOf = (u = unit) => {
 }
 
 /** Below the cube's vertices a number is usually structure — an index, an arity — and is left alone. */
-export const floorOf = (u = unit) => u.qpuCubeOf().vertices
+export const floorOf = (u = unit) => u.cubeOf().vertices
 
 /** Which lattice names an expression uses, so only those are imported. */
 export const namesUsedOf = (expressions) => {
@@ -158,7 +158,7 @@ export const findingsOf = (text, table, floor, _file = 'x.mjs') => {
      * kernel knowing the answer this package refuses everywhere else. The literal is load-bearing BECAUSE
      * it is not the formula.
      */
-    if (/\b(mintOf|tenOf|chooseOf|qpuFacesOf|qpuCubeOf|faces|rays|coins|vertices|hexbit|bits)\b/.test(lineTextOf(start))) continue
+    if (/\b(mintOf|tenOf|chooseOf|facesOf|cubeOf|faces|rays|coins|vertices|hexbit|bits)\b/.test(lineTextOf(start))) continue
     const value = Number(match[1].replace(/_/g, ''))
     const expression = table.get(value)
     if (!expression || !Number.isSafeInteger(value) || value < floor) continue
@@ -198,8 +198,8 @@ if (invoked) {
   const fix = process.argv.includes('--fix')
   const table = vocabularyOf()
   const floor = floorOf()
-  const faces = unit.qpuFacesOf()
-  const cube = unit.qpuCubeOf()
+  const faces = unit.facesOf()
+  const cube = unit.cubeOf()
 
   /* The generated constants, so a script names the lattice without needing dist to exist. Committed, and
    * rewritten here from the lattice rather than typed. */

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ForestryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('forestry: volume, density, carbon, growth, canopy, harvest, rotation, rege
   assert.equal(ForestryFormulas.rotation(40, 60).value, 0)
   assert.equal(ForestryFormulas.regeneration(1500, 4).value, 6000)
   assert.equal(ForestryFormulas.volume(30, 20).dst, 'environment')
-  assert.equal(qpuHexFamiliesOf().get('forestry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('forestry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'forestry', program: ['density'], params: [1200, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `forestry.density at ${uuid}`)
-  qpuUuidReceiptOf('forestry density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('forestry density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; volume 18, density 300, carbon 2350, growth 20, canopy 70, harvest 300, rotation 1, regeneration 6000; crossing to environment')
 })

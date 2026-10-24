@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MixologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('mixology: abv, dilution, ratio, sugarcontent, servings, pour, balance, str
   assert.equal(MixologyFormulas.balance(20, 12).value, 8)
   assert.equal(MixologyFormulas.strength(40, 90).value, 36, 'millilitres of pure alcohol')
   assert.equal(MixologyFormulas.abv(40, 100).dst, 'cuisine')
-  assert.equal(qpuHexFamiliesOf().get('mixology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mixology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mixology', program: ['ratio'], params: [60, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `mixology.ratio at ${uuid}`)
-  qpuUuidReceiptOf('mixology ratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mixology ratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; abv 40, dilution 25, ratio 3, sugarcontent 100, servings 15, pour 90, balance 8, strength 36; crossing to cuisine')
 })

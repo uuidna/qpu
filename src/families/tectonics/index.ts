@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TECTONICS — PLATE MOTION AS ARITHMETIC (chosen by the registry, not by hand). Moving plates are numbers: how fast a
@@ -31,4 +31,4 @@ export class TectonicsFormulas {
 }
 
 for (const name of ['convergence', 'displacement', 'elevation', 'platevelocity', 'slip', 'spreadingrate', 'straindrate', 'stress'] as const)
-  qpuHexRegisterOf('tectonics', name, (TectonicsFormulas[name] as (...x: unknown[]) => unknown).bind(TectonicsFormulas))
+  hexRegisterOf('tectonics', name, (TectonicsFormulas[name] as (...x: unknown[]) => unknown).bind(TectonicsFormulas))

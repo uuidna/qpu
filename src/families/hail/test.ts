@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HailFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('hail: diametermm, layers, updraftspeed, terminalvelocity, kineticenergy, d
   assert.equal(HailFormulas.growthtime(600, 60).value, 10)
   assert.equal(HailFormulas.massg(1000, 10).value, 100)
   assert.equal(HailFormulas.diametermm(20, 1).dst, 'meteorology')
-  assert.equal(qpuHexFamiliesOf().get('hail')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hail')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hail', program: ['diametermm'], params: [20, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `hail.diametermm at ${uuid}`)
-  qpuUuidReceiptOf('hail diametermm', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hail diametermm', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; diametermm 20, layers 15, updraftspeed 60, terminalvelocity 90, kineticenergy 1000, damagescale 5, growthtime 10, massg 100; crossing to meteorology')
 })

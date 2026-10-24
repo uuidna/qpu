@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NIC — THE NETWORK INTERFACE CARD, AS ARITHMETIC. A network adapter is numbers by the book: the line rate, goodput
@@ -35,4 +35,4 @@ export class NicFormulas {
 }
 
 for (const name of ['bandwidth', 'duplex', 'interrupts', 'latency', 'linerate', 'mtu', 'overhead', 'packets', 'queues', 'throughput'] as const)
-  qpuHexRegisterOf('nic', name, (NicFormulas[name] as (...x: unknown[]) => unknown).bind(NicFormulas))
+  hexRegisterOf('nic', name, (NicFormulas[name] as (...x: unknown[]) => unknown).bind(NicFormulas))

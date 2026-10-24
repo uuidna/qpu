@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MagnetometryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('magnetometry: fieldstrength, anomaly, declination, inclination, gradient, 
   assert.equal(MagnetometryFormulas.susceptibility(1000, 100).value, 10)
   assert.equal(MagnetometryFormulas.reversalcount(5, 3).value, 8)
   assert.equal(MagnetometryFormulas.fieldstrength(50000, 1).dst, 'geology')
-  assert.equal(qpuHexFamiliesOf().get('magnetometry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('magnetometry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'magnetometry', program: ['fieldstrength'], params: [50000, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50000, `magnetometry.fieldstrength at ${uuid}`)
-  qpuUuidReceiptOf('magnetometry fieldstrength', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('magnetometry fieldstrength', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; fieldstrength 50000, anomaly 2000, declination 12, inclination 90, gradient 20, surveylines 400, susceptibility 10, reversalcount 8; crossing to geology')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ProjectFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('project: progress, budget, schedule, velocity, risk, burndown, milestone, 
   assert.equal(ProjectFormulas.overrun(14, 10).value, 4, 'four over the plan')
   assert.equal(ProjectFormulas.overrun(8, 10).value, 0, 'under the plan, no overrun')
   assert.equal(ProjectFormulas.progress(75, 100).dst, 'collaboration')
-  assert.equal(qpuHexFamiliesOf().get('project')?.length, 8)
+  assert.equal(hexFamiliesOf().get('project')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'project', program: ['velocity'], params: [120, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `project.velocity at ${uuid}`)
-  qpuUuidReceiptOf('project velocity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('project velocity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; progress 75, budget 60, schedule 33, velocity 30, risk 15, burndown 40, milestone 62, overrun 4; crossing to collaboration')
 })

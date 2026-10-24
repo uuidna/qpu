@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ROUTE — scaffolded integer measures crossed to networking. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class RouteFormulas {
 }
 
 for (const name of ['bandwidthsum', 'hopcount', 'hoporderings', 'latencysum', 'pathcombos', 'redundantpaths', 'routingtable', 'shortestpath'] as const)
-  qpuHexRegisterOf('route', name, (RouteFormulas[name] as (...x: unknown[]) => unknown).bind(RouteFormulas))
+  hexRegisterOf('route', name, (RouteFormulas[name] as (...x: unknown[]) => unknown).bind(RouteFormulas))

@@ -1,6 +1,6 @@
 import { CLAY_SEALS, ClaySeals } from '../../families/clay/index.js'
 import { qpuCiteOf } from '../../quantum/processing/unit/presentation.js'
-import { qpuPublicOf } from '../../quantum/processing/unit/zeropage.js'
+import { publicOf } from '../../quantum/processing/unit/zeropage.js'
 
 /**
  * Prize / citation as the tree already computes them (holds false, lead true for the naming-scheme statement).
@@ -11,7 +11,7 @@ const RULES = 'https://www.claymath.org/wp-content/uploads/2022/03/millennium_pr
 
 export const clayPrizeOf = () => {
   const cite = qpuCiteOf()
-  const face = qpuPublicOf()
+  const face = publicOf()
   const citation = {
     statement: 'clay solved in august' as const,
     words: 'This file is a naming scheme. It solves none of the problems it names' as const,

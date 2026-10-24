@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PIEZOELECTRIC — THE DIRECT AND CONVERSE EFFECTS, AS ARITHMETIC. A stressed crystal makes charge, a charged crystal
@@ -31,4 +31,4 @@ export class PiezoelectricFormulas {
 }
 
 for (const name of ['capacitance', 'charge', 'chargeconstant', 'couplingfactor', 'displacement', 'energyharvest', 'resonantfrequency', 'voltage'] as const)
-  qpuHexRegisterOf('piezoelectric', name, (PiezoelectricFormulas[name] as (...x: unknown[]) => unknown).bind(PiezoelectricFormulas))
+  hexRegisterOf('piezoelectric', name, (PiezoelectricFormulas[name] as (...x: unknown[]) => unknown).bind(PiezoelectricFormulas))

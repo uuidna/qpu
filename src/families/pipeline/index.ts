@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PIPELINE — A CI/CD PIPELINE AS ARITHMETIC (the stages a build runs, not a wall of YAML). Running a pipeline is numbers:
@@ -31,4 +31,4 @@ export class PipelineFormulas {
 }
 
 for (const name of ['bottleneck', 'cachehit', 'duration', 'parallelism', 'queue', 'stages', 'successrate', 'throughput'] as const)
-  qpuHexRegisterOf('pipeline', name, (PipelineFormulas[name] as (...x: unknown[]) => unknown).bind(PipelineFormulas))
+  hexRegisterOf('pipeline', name, (PipelineFormulas[name] as (...x: unknown[]) => unknown).bind(PipelineFormulas))

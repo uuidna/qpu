@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TRAJECTORY — scaffolded integer measures crossed to kinematics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TrajectoryFormulas {
 }
 
 for (const name of ['acceleration', 'blendradius', 'displacement', 'jerklimit', 'pathlength', 'peakvelocity', 'segmenttime', 'traversaltime'] as const)
-  qpuHexRegisterOf('trajectory', name, (TrajectoryFormulas[name] as (...x: unknown[]) => unknown).bind(TrajectoryFormulas))
+  hexRegisterOf('trajectory', name, (TrajectoryFormulas[name] as (...x: unknown[]) => unknown).bind(TrajectoryFormulas))

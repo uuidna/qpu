@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PendulumFormulas } from './index.js'
 
 /** pendulum: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('pendulum: period, frequency, length, swings, amplitude, energy, bobmass, c
   assert.equal(PendulumFormulas.energy(50, 2).value, 100, 'energy(50, 2)')
   assert.equal(PendulumFormulas.bobmass(5, 1).value, 5, 'bobmass(5, 1)')
   assert.equal(PendulumFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('pendulum')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pendulum')?.length, 8)
   for (const [name, params, expected] of [["period",[200,10],20],["frequency",[100,5],20],["length",[2,1],2]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'pendulum', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `pendulum.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`pendulum ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`pendulum ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "period=20, frequency=20, length=2")
 })

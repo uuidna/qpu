@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NEUROSCIENCE — THE BRAIN AS ARITHMETIC. The nervous system is numbers: spikes per second, the membrane potential across the
@@ -31,4 +31,4 @@ export class NeuroscienceFormulas {
 }
 
 for (const name of ['conduction', 'connectivity', 'firing', 'plasticity', 'potential', 'refractory', 'synapse', 'threshold'] as const)
-  qpuHexRegisterOf('neuroscience', name, (NeuroscienceFormulas[name] as (...x: unknown[]) => unknown).bind(NeuroscienceFormulas))
+  hexRegisterOf('neuroscience', name, (NeuroscienceFormulas[name] as (...x: unknown[]) => unknown).bind(NeuroscienceFormulas))

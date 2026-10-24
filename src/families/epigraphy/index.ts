@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EPIGRAPHY — scaffolded integer measures crossed to archaeology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class EpigraphyFormulas {
 }
 
 for (const name of ['characters', 'damageratio', 'datingrange', 'lacunae', 'lineorderings', 'restorationpairs', 'scriptsubsets', 'wordcount'] as const)
-  qpuHexRegisterOf('epigraphy', name, (EpigraphyFormulas[name] as (...x: unknown[]) => unknown).bind(EpigraphyFormulas))
+  hexRegisterOf('epigraphy', name, (EpigraphyFormulas[name] as (...x: unknown[]) => unknown).bind(EpigraphyFormulas))

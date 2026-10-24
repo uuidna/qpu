@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EnzymeFormulas — 8 exact-integer formulas of the enzyme domain, each at a hex address crossing to cross; develops the enzyme leads. */
@@ -31,4 +31,4 @@ export class EnzymeFormulas {
 }
 
 for (const name of ['activesites', 'combos', 'inhibition', 'km', 'ph', 'substrates', 'turnover', 'vmax'] as const)
-  qpuHexRegisterOf('enzyme', name, (EnzymeFormulas[name] as (...x: unknown[]) => unknown).bind(EnzymeFormulas))
+  hexRegisterOf('enzyme', name, (EnzymeFormulas[name] as (...x: unknown[]) => unknown).bind(EnzymeFormulas))

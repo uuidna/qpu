@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PEST — INTEGRATED PEST MANAGEMENT AS ARITHMETIC. Deciding when and how to act on a pest is numbers: the economic
@@ -31,4 +31,4 @@ export class PestFormulas {
 }
 
 for (const name of ['controlefficacy', 'damageindex', 'economicthreshold', 'infestationrate', 'populationgrowth', 'survivingfraction', 'trapcount', 'treatmentcost'] as const)
-  qpuHexRegisterOf('pest', name, (PestFormulas[name] as (...x: unknown[]) => unknown).bind(PestFormulas))
+  hexRegisterOf('pest', name, (PestFormulas[name] as (...x: unknown[]) => unknown).bind(PestFormulas))

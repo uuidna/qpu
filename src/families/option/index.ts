@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OptionFormulas — 8 exact-integer formulas of the option domain, each at a hex address crossing to cross; develops the option leads. */
@@ -31,4 +31,4 @@ export class OptionFormulas {
 }
 
 for (const name of ['breakeven', 'combos', 'contracts', 'expiry', 'greeks', 'intrinsic', 'premium', 'strike'] as const)
-  qpuHexRegisterOf('option', name, (OptionFormulas[name] as (...x: unknown[]) => unknown).bind(OptionFormulas))
+  hexRegisterOf('option', name, (OptionFormulas[name] as (...x: unknown[]) => unknown).bind(OptionFormulas))

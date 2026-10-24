@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VET — VETERINARY MEDICINE, AS ARITHMETIC. Treating animals is numbers: a dose by body weight, age in dog years, the
@@ -31,4 +31,4 @@ export class VetFormulas {
 }
 
 for (const name of ['age', 'bodyscore', 'dose', 'feed', 'fluids', 'gestation', 'herd', 'vaccination'] as const)
-  qpuHexRegisterOf('vet', name, (VetFormulas[name] as (...x: unknown[]) => unknown).bind(VetFormulas))
+  hexRegisterOf('vet', name, (VetFormulas[name] as (...x: unknown[]) => unknown).bind(VetFormulas))

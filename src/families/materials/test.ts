@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MaterialsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('materials: stress, strain, density, modulus, hardness, fatigue, thermal, y
   assert.equal(MaterialsFormulas.yield(50, 100).value, 1, 'under yield strength')
   assert.equal(MaterialsFormulas.yield(150, 100).value, 0)
   assert.equal(MaterialsFormulas.stress(1000, 10).dst, 'cern')
-  assert.equal(qpuHexFamiliesOf().get('materials')?.length, 8)
+  assert.equal(hexFamiliesOf().get('materials')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'materials', program: ['stress'], params: [1000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `materials.stress at ${uuid}`)
-  qpuUuidReceiptOf('materials stress', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('materials stress', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; stress 100, strain 5, density 100, modulus 100, hardness 100, fatigue 1, thermal 120, yield 1; crossing to cern')
 })

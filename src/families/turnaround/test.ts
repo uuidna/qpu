@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TurnaroundFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('turnaround: gatetime, dockoccupancy, loadtime, cyclecount, delayminutes, b
   assert.equal(TurnaroundFormulas.servicerate(480, 60).value, 8)
   assert.equal(TurnaroundFormulas.idlegap(60, 45).value, 15)
   assert.equal(TurnaroundFormulas.gatetime(240, 4).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('turnaround')?.length, 8)
+  assert.equal(hexFamiliesOf().get('turnaround')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'turnaround', program: ['gatetime'], params: [240, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `turnaround.gatetime at ${uuid}`)
-  qpuUuidReceiptOf('turnaround gatetime', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('turnaround gatetime', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gatetime 60, dockoccupancy 75, loadtime 50, cyclecount 8, delayminutes 30, berthutilization 83, servicerate 8, idlegap 15; crossing to logistics')
 })

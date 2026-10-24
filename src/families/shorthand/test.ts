@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ShorthandFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('shorthand: strokesperword, compression, symbolcount, speedwpm, abbreviatio
   assert.equal(ShorthandFormulas.outlinepairs(12, 2).value, 66)
   assert.equal(ShorthandFormulas.legibilityratio(85, 100).value, 85)
   assert.equal(ShorthandFormulas.strokesperword(20, 4).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('shorthand')?.length, 8)
+  assert.equal(hexFamiliesOf().get('shorthand')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'shorthand', program: ['strokesperword'], params: [20, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `shorthand.strokesperword at ${uuid}`)
-  qpuUuidReceiptOf('shorthand strokesperword', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('shorthand strokesperword', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; strokesperword 5, compression 400, symbolcount 52, speedwpm 120, abbreviationsubsets 64, strokesaved 15, outlinepairs 66, legibilityratio 85; crossing to signal')
 })

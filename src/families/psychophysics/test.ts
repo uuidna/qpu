@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PsychophysicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('psychophysics: weberfraction, jnd, thresholds, stevenspower, sensitivity, 
   assert.equal(PsychophysicsFormulas.adaptation(100, 3, 10).value, 70)
   assert.equal(PsychophysicsFormulas.magnitude(25, 4).value, 100)
   assert.equal(PsychophysicsFormulas.weberfraction(5, 100).dst, 'neuroscience')
-  assert.equal(qpuHexFamiliesOf().get('psychophysics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('psychophysics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'psychophysics', program: ['thresholds'], params: [75, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `psychophysics.thresholds at ${uuid}`)
-  qpuUuidReceiptOf('psychophysics thresholds', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('psychophysics thresholds', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; weberfraction 50, jnd 10, thresholds 75, stevenspower 60, sensitivity 400, reactiontime 220, adaptation 70, magnitude 100; crossing to neuroscience')
 })

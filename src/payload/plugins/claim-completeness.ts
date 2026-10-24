@@ -15,10 +15,10 @@ import { DataqualityFormulas } from '../../families/dataquality/index.js'
 import { PermaFormulas } from '../../families/perma/index.js'
 import { clayOf } from '../../core/showcase.js'
 import { CLAY_PROBLEMS } from '../../mcp/clay-automated-solver.js'
-import { qpuFacesOf, qpuNextOf } from '../../quantum/processing/unit/index.js'
+import { facesOf, qpuNextOf } from '../../quantum/processing/unit/index.js'
 import { qpuCiteOf } from '../../quantum/processing/unit/presentation.js'
-import { qpuCiteHolds } from '../../quantum/processing/unit/index.js'
-import { qpuMachinesHolds, qpuMachinesOf, qpuPublicOf } from '../../quantum/processing/unit/zeropage.js'
+import { citeHolds } from '../../quantum/processing/unit/index.js'
+import { machinesHolds, machinesOf, publicOf } from '../../quantum/processing/unit/zeropage.js'
 import { clayPrizeOf, claySealReadingsOf, openMathScaleOf } from './clay.js'
 import { discoverCapacityGateOf, gateCourtTrialOf } from './gate-court.js'
 import { goalOf } from './goal.js'
@@ -74,12 +74,12 @@ const courtOf = (
 /**
  * Citation / prize mechanism (read-only).
  * legal.citation.holds is a literal false on the naming-scheme statement — no formula flips it.
- * qpuCiteHolds is a different predicate (package DOI/archive shape) and does not set legal.citation.
+ * citeHolds is a different predicate (package DOI/archive shape) and does not set legal.citation.
  */
 export const citationPrizeMechanismOf = () => {
   const prize = clayPrizeOf()
   const open = openMathScaleOf()
-  const face = qpuPublicOf()
+  const face = publicOf()
   const cite = qpuCiteOf()
   return {
     kind: 'citation-prize-mechanism' as const,
@@ -97,14 +97,14 @@ export const citationPrizeMechanismOf = () => {
       conceptdoi: cite.conceptdoi,
       priorConcept: cite.prior.conceptdoi,
       priorTitle: cite.prior.title,
-      qpuCiteHolds: qpuCiteHolds(cite),
-      note: 'qpuCiteHolds ≠ legal.citation.holds — archive/DOI shape vs naming-scheme statement',
+      citeHolds: citeHolds(cite),
+      note: 'citeHolds ≠ legal.citation.holds — archive/DOI shape vs naming-scheme statement',
     },
     prize: {
       value: face.prize,
       billed: prize.billed,
       holds: prize.holds,
-      source: 'qpuPublicOf().prize is false as const — a prize is a lead',
+      source: 'publicOf().prize is false as const — a prize is a lead',
       whatWouldMakePrizeTrue: 'No formula sets prize true. Institute award is outside the tree (award.recorded stays false).',
     },
     award: { recorded: open.award.recorded },
@@ -185,7 +185,7 @@ export const poincareCallableSurfacesOf = () => {
  * Reports proven vs incomplete; leaves prize/citation/award untouched; goal stays OPEN.
  */
 export const claimCompletenessAuditOf = async () => {
-  const L = qpuFacesOf()
+  const L = facesOf()
   const coins = L.coins
   const rays = L.rays
   const faces = L.faces
@@ -195,7 +195,7 @@ export const claimCompletenessAuditOf = async () => {
   const domainCoverage = claySealDomainCoverageOf()
   const goal = goalOf({ k: 1 })
   const capacity = discoverCapacityGateOf()
-  const machines = qpuMachinesOf()
+  const machines = machinesOf()
   const row0 = machines.rows[0]
 
   const lattice = {
@@ -250,7 +250,7 @@ export const claimCompletenessAuditOf = async () => {
   const audit = {
     'lattice coins=2 / rays=7 / faces=14': lattice.match && lattice.perma.every((r) => r.holds) ? 'proven' : 'incomplete',
     'cloud.scale(100,30)': cloudScale.holds ? 'proven' : 'incomplete',
-    'Pravets 8M rows[0]': row0?.name === 'Pravets 8M' && qpuMachinesHolds(machines) ? 'proven' : 'incomplete',
+    'Pravets 8M rows[0]': row0?.name === 'Pravets 8M' && machinesHolds(machines) ? 'proven' : 'incomplete',
     'six ClaySeals hex/value/holds': sealReadings.every((s) => s.hex && s.holds) ? 'proven' : 'incomplete',
     'domain-wave universal 0..5': sealWaves.every((s) => s.universal) ? 'proven' : 'incomplete',
     'domain coverage sync': domainCoverage.universal ? 'proven' : 'incomplete',
@@ -259,7 +259,7 @@ export const claimCompletenessAuditOf = async () => {
     'Poincaré callable surfaces (no mint)': poincare.allSurfacesHold && poincare.allCourtsAllow ? 'proven' : 'incomplete',
     'coil.star(6)=7 seven naming': poincare.surfaces.find((s) => s.surface === 'coil.star')?.holds === true ? 'proven' : 'incomplete',
     'dataquality.completeness(6,7)=85': poincare.surfaces.find((s) => s.surface === 'dataquality.completeness')?.value === 85 ? 'proven' : 'incomplete',
-    'package cite (qpuCiteHolds)': mechanism.packageCite.qpuCiteHolds ? 'proven' : 'incomplete',
+    'package cite (citeHolds)': mechanism.packageCite.citeHolds ? 'proven' : 'incomplete',
     'seventh Clay name as seal formula': 'absent',
     'legal.citation.holds': (mechanism.legalCitation.holds as boolean) === true ? 'proven' : 'incomplete',
     'prize true': (mechanism.prize.value as boolean) === true ? 'proven' : 'incomplete',
@@ -297,7 +297,7 @@ export const claimCompletenessAuditOf = async () => {
       index: 0,
       name: row0?.name ?? null,
       isPravets8M: row0?.name === 'Pravets 8M',
-      machinesHold: qpuMachinesHolds(machines),
+      machinesHold: machinesHolds(machines),
     },
     domainCoverage,
     sealReadings,

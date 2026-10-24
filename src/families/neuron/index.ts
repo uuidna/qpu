@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NeuronFormulas — 8 exact-integer formulas of the neuron domain, each at a hex address crossing to cross; develops the neuron leads. */
@@ -31,4 +31,4 @@ export class NeuronFormulas {
 }
 
 for (const name of ['axonlength', 'combos', 'dendrites', 'layers', 'refractory', 'spikes', 'synapses', 'threshold'] as const)
-  qpuHexRegisterOf('neuron', name, (NeuronFormulas[name] as (...x: unknown[]) => unknown).bind(NeuronFormulas))
+  hexRegisterOf('neuron', name, (NeuronFormulas[name] as (...x: unknown[]) => unknown).bind(NeuronFormulas))

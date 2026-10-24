@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ReasoningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('reasoning: inferencesteps, accuracy, deductionvalidity, biasrate, workingm
   assert.equal(ReasoningFormulas.confidencecalibration(80, 60).value, 20, 'overconfident by twenty')
   assert.equal(ReasoningFormulas.confidencecalibration(50, 70).value, 0)
   assert.equal(ReasoningFormulas.inferencesteps(5, 3).dst, 'cognition')
-  assert.equal(qpuHexFamiliesOf().get('reasoning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('reasoning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'reasoning', program: ['inferencesteps'], params: [5, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `reasoning.inferencesteps at ${uuid}`)
-  qpuUuidReceiptOf('reasoning inferencesteps', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('reasoning inferencesteps', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; inferencesteps 15, accuracy 90, deductionvalidity 1, biasrate 5, workingmemoryload 28, responselatency 50, syllogismscore 40, confidencecalibration 20; crossing to cognition')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PedagogyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('pedagogy: mastery, retention, ratio, completion, engagement, progress, gai
   assert.equal(PedagogyFormulas.gain(50, 60).value, 0, 'never negative')
   assert.equal(PedagogyFormulas.pace(24, 12).value, 2, 'lessons per week')
   assert.equal(PedagogyFormulas.mastery(18, 20).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('pedagogy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pedagogy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pedagogy', program: ['mastery'], params: [18, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `pedagogy.mastery at ${uuid}`)
-  qpuUuidReceiptOf('pedagogy mastery', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pedagogy mastery', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mastery 90, retention 70, ratio 25, completion 80, engagement 90, progress 75, gain 25, pace 2; crossing to sociology')
 })

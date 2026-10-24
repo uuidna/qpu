@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PaleoclimateFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('paleoclimate: proxyrecords, temperatureanomaly, co2ppm, cyclelength, isoto
   assert.equal(PaleoclimateFormulas.resolutionyears(10000, 100).value, 100)
   assert.equal(PaleoclimateFormulas.correlationpairs(12, 2).value, 66)
   assert.equal(PaleoclimateFormulas.proxyrecords(40, 20).dst, 'climate')
-  assert.equal(qpuHexFamiliesOf().get('paleoclimate')?.length, 8)
+  assert.equal(hexFamiliesOf().get('paleoclimate')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'paleoclimate', program: ['proxyrecords'], params: [40, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `paleoclimate.proxyrecords at ${uuid}`)
-  qpuUuidReceiptOf('paleoclimate proxyrecords', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('paleoclimate proxyrecords', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; proxyrecords 60, temperatureanomaly 30, co2ppm 280, cyclelength 41000, isotoperatio 90, interglacials 5, resolutionyears 100, correlationpairs 66; crossing to climate')
 })

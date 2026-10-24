@@ -1,10 +1,10 @@
-import { qpuFoldOf, qpuHexDecodeOf, qpuHexFamiliesOf, qpuHexRegisterOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuRecognizeOf } from '../../quantum/processing/unit/index.js'
+import { foldOf, hexDecodeOf, hexFamiliesOf, hexRegisterOf, qpuHexUuidOf, latticeNamesOf, recognizeOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { KinFormulas } from '../kin/index.js'
 import { LawFormulas } from '../law/index.js'
 import '../court/index.js'
 
-const L = { ...qpuLatticeNamesOf() }
+const L = { ...latticeNamesOf() }
 
 /** CHESS — THE GAME TREE AS ARITHMETIC. A position is numbers: material on the board, the moves a side has, the branching
  *  factor of the search, the nodes a full tree holds, the tempo spent, the score in centipawns, the perft count at a depth,
@@ -35,7 +35,7 @@ export class ChessFormulas {
 }
 
 for (const name of ['branching', 'centipawns', 'kingsafety', 'material', 'mobility', 'perft', 'plytonodes', 'tempo'] as const)
-  qpuHexRegisterOf('chess', name, (ChessFormulas[name] as (...x: unknown[]) => unknown).bind(ChessFormulas))
+  hexRegisterOf('chess', name, (ChessFormulas[name] as (...x: unknown[]) => unknown).bind(ChessFormulas))
 
 /** How far `kin.vortex` walks before its first digit returns. The play reads that length from the formula. */
 const vortexPeriodOf = (): number => {
@@ -142,7 +142,7 @@ interface FormulaReading {
 /** The next address a false hold already opens, read by recognition. One lead, one next. */
 const openedLeadOf = (row: FormulaReading): string | undefined => {
   if (row.holds !== false || !row.hex) return undefined
-  const led = qpuRecognizeOf(row) as { recognition?: { next?: { uuid?: string } } }
+  const led = recognizeOf(row) as { recognition?: { next?: { uuid?: string } } }
   const uuid = led.recognition?.next?.uuid
   return uuid && uuid !== row.hex ? uuid : undefined
 }
@@ -173,7 +173,7 @@ export const chessCourtPatternOf = (): ChessCourtPattern => {
   const neighborhood: ChessCourtAddress[] = []
   const families = ['law', 'court'] as const
   for (const family of families) {
-    const formulas = qpuHexFamiliesOf().get(family) ?? []
+    const formulas = hexFamiliesOf().get(family) ?? []
     for (const formula of formulas) {
       if (formula.name === 'reviewed') continue
       const calls: { params: number[]; step?: ChessCourtStep }[] = []
@@ -221,11 +221,11 @@ export const chessCourtPatternOf = (): ChessCourtPattern => {
 
 /** One address, run. Fidelity holds only when the two digits agree. reviewed is never called. */
 const runAddressOf = (uuid: string): ChessCourtAddress => {
-  const decoded = qpuHexDecodeOf(uuid)
+  const decoded = hexDecodeOf(uuid)
   if (!decoded.holds || !('family' in decoded) || !decoded.family) throw new Error(`no court at ${uuid}`)
   const name = decoded.program[L.n - L.n]
   if (!name || name === 'reviewed') throw new Error(`reviewed is not run at ${uuid}`)
-  const formula = qpuHexFamiliesOf().get(decoded.family)?.find((row) => row.name === name)
+  const formula = hexFamiliesOf().get(decoded.family)?.find((row) => row.name === name)
   if (!formula) throw new Error(`no formula ${decoded.family}.${name}`)
   const raw = formula.run(decoded.params.map((p) => BigInt(p))) as FormulaReading
   const value = Number(raw.value)
@@ -235,7 +235,7 @@ const runAddressOf = (uuid: string): ChessCourtAddress => {
 
 /** The next formula of the same arity that does not hold, same digits. reviewed is skipped, not run. */
 const familyLeadOf = (family: string, name: string, params: number[]): string | undefined => {
-  const formulas = qpuHexFamiliesOf().get(family)
+  const formulas = hexFamiliesOf().get(family)
   if (!formulas) return undefined
   const at = formulas.findIndex((row) => row.name === name)
   if (at < L.n - L.n) return undefined
@@ -287,7 +287,7 @@ export const chessCourtWaveOf = (pattern: ChessCourtPattern = chessCourtPatternO
   })
 
 /** One reply. Recognition leads, and its fold is the whole neighborhood. */
-export const chessCourtSeenOf = (): unknown => qpuRecognizeOf(chessCourtPatternOf())
+export const chessCourtSeenOf = (): unknown => recognizeOf(chessCourtPatternOf())
 
 /** The fold of the pattern, so the addresses are one document. */
-export const chessCourtFoldOf = (pattern: ChessCourtPattern = chessCourtPatternOf()): string => qpuFoldOf(JSON.stringify(pattern))
+export const chessCourtFoldOf = (pattern: ChessCourtPattern = chessCourtPatternOf()): string => foldOf(JSON.stringify(pattern))

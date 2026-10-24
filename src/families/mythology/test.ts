@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MythologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('mythology: pantheonsize, deitypairs, archetypecount, narrativeorderings, m
   assert.equal(MythologyFormulas.questcombos(10, 3).value, 120)
   assert.equal(MythologyFormulas.variantcount(40, 20).value, 60)
   assert.equal(MythologyFormulas.pantheonsize(12, 3).dst, 'anthropology')
-  assert.equal(qpuHexFamiliesOf().get('mythology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mythology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mythology', program: ['pantheonsize'], params: [12, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `mythology.pantheonsize at ${uuid}`)
-  qpuUuidReceiptOf('mythology pantheonsize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mythology pantheonsize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; pantheonsize 15, deitypairs 66, archetypecount 14, narrativeorderings 720, motifsubsets 32, genealogylinks 36, questcombos 120, variantcount 60; crossing to anthropology')
 })

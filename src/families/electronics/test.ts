@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ElectronicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('electronics: ohm, power, series, parallel, charge, capacitance, frequency,
   assert.equal(ElectronicsFormulas.frequency(1000, 10).value, 100)
   assert.equal(ElectronicsFormulas.efficiency(80, 100).value, 80, 'percent')
   assert.equal(ElectronicsFormulas.power(12, 3).dst, 'energy')
-  assert.equal(qpuHexFamiliesOf().get('electronics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('electronics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'electronics', program: ['series'], params: [6, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9, `electronics.series at ${uuid}`)
-  qpuUuidReceiptOf('electronics series', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('electronics series', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ohm 4, power 36, series 9, parallel 2, charge 50, capacitance 20, frequency 100, efficiency 80; crossing to energy')
 })

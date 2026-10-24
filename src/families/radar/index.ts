@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RadarFormulas — 8 exact-integer formulas of the radar domain, each at a hex address crossing to cross; develops the radar leads. */
@@ -31,4 +31,4 @@ export class RadarFormulas {
 }
 
 for (const name of ['channels', 'dwell', 'pairs', 'pulses', 'range', 'resolution', 'sweeps', 'targets'] as const)
-  qpuHexRegisterOf('radar', name, (RadarFormulas[name] as (...x: unknown[]) => unknown).bind(RadarFormulas))
+  hexRegisterOf('radar', name, (RadarFormulas[name] as (...x: unknown[]) => unknown).bind(RadarFormulas))

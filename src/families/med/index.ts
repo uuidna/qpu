@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MED — THE CLINICAL AND FORENSIC-MEDICAL ARITHMETIC THAT BECOMES EVIDENCE. What a clinician or a medical examiner
@@ -32,4 +32,4 @@ export class MedFormulas {
 }
 
 for (const name of ['bmi', 'causation', 'dose', 'frequency', 'gcs', 'impairment', 'map', 'packyears'] as const)
-  qpuHexRegisterOf('med', name, (MedFormulas[name] as (...x: unknown[]) => unknown).bind(MedFormulas))
+  hexRegisterOf('med', name, (MedFormulas[name] as (...x: unknown[]) => unknown).bind(MedFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhotographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('photography: exposure, fstop, depthoffield, iso, megapixels, crop, dynamic
   assert.equal(PhotographyFormulas.dynamicrange(3).value, 8, 'three stops double to eight')
   assert.equal(PhotographyFormulas.composition(2, 3).value, 66)
   assert.equal(PhotographyFormulas.exposure(8, 125).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('photography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('photography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'photography', program: ['megapixels'], params: [4000, 3000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `photography.megapixels at ${uuid}`)
-  qpuUuidReceiptOf('photography megapixels', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('photography megapixels', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; exposure 1000, fstop 20, depthoffield 25, iso 400, megapixels 12, crop 150, dynamicrange 8, composition 66; crossing to optics')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SprintFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('sprint: velocity, acceleration, stridelength, stridefrequency, splittime, 
   assert.equal(SprintFormulas.distancecovered(10, 10).value, 100)
   assert.equal(SprintFormulas.reactiontime(200, 150).value, 50)
   assert.equal(SprintFormulas.velocity(100, 10).dst, 'kinematics')
-  assert.equal(qpuHexFamiliesOf().get('sprint')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sprint')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sprint', program: ['velocity'], params: [100, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `sprint.velocity at ${uuid}`)
-  qpuUuidReceiptOf('sprint velocity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sprint velocity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; velocity 10, acceleration 5, stridelength 125, stridefrequency 8, splittime 100, topspeed 12, distancecovered 100, reactiontime 50; crossing to kinematics')
 })

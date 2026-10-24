@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EVIDENCE — WHAT A TRIBUNAL WEIGHS, AS ARITHMETIC, ANY JURISDICTION. Whether a fact is in evidence is a set of
@@ -33,4 +33,4 @@ export class EvidenceFormulas {
 }
 
 for (const name of ['admissible', 'authentication', 'chain', 'corroboration', 'hearsay', 'margin', 'relevance', 'sufficiency', 'weight'] as const)
-  qpuHexRegisterOf('evidence', name, (EvidenceFormulas[name] as (...x: unknown[]) => unknown).bind(EvidenceFormulas))
+  hexRegisterOf('evidence', name, (EvidenceFormulas[name] as (...x: unknown[]) => unknown).bind(EvidenceFormulas))

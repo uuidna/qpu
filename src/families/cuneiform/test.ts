@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CuneiformFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cuneiform: signs, wedgesper, signpairs, periodcount, tabletsubsets, stroke
   assert.equal(CuneiformFormulas.logovalues(100, 0).value, 100)
   assert.equal(CuneiformFormulas.attestationratio(60, 100).value, 60)
   assert.equal(CuneiformFormulas.signs(600, 1).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('cuneiform')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cuneiform')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cuneiform', program: ['signs'], params: [600, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 600, `cuneiform.signs at ${uuid}`)
-  qpuUuidReceiptOf('cuneiform signs', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cuneiform signs', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; signs 600, wedgesper 7, signpairs 190, periodcount 5, tabletsubsets 64, strokeorderings 120, logovalues 100, attestationratio 60; crossing to linguistics')
 })

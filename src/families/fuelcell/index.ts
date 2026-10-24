@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FUELCELL — scaffolded integer measures crossed to energy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class FuelcellFormulas {
 }
 
 for (const name of ['cellvoltage', 'currentdensity', 'degradation', 'efficiency', 'h2consumption', 'powerdensity', 'stackcells', 'stackvoltage'] as const)
-  qpuHexRegisterOf('fuelcell', name, (FuelcellFormulas[name] as (...x: unknown[]) => unknown).bind(FuelcellFormulas))
+  hexRegisterOf('fuelcell', name, (FuelcellFormulas[name] as (...x: unknown[]) => unknown).bind(FuelcellFormulas))

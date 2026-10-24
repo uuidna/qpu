@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RECTIFIER — scaffolded integer measures crossed to electronics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class RectifierFormulas {
 }
 
 for (const name of ['conductionangle', 'diodecount', 'efficiency', 'formfactor', 'loadcombos', 'outputvoltage', 'pivrating', 'ripplefactor'] as const)
-  qpuHexRegisterOf('rectifier', name, (RectifierFormulas[name] as (...x: unknown[]) => unknown).bind(RectifierFormulas))
+  hexRegisterOf('rectifier', name, (RectifierFormulas[name] as (...x: unknown[]) => unknown).bind(RectifierFormulas))

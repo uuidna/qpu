@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EMULSIFICATION — scaffolded integer measures crossed to chemistry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class EmulsificationFormulas {
 }
 
 for (const name of ['coalescencetime', 'creamingrate', 'dropletsize', 'emulsifierratio', 'phaseratio', 'stabilityindex', 'surfacetension', 'viscosity'] as const)
-  qpuHexRegisterOf('emulsification', name, (EmulsificationFormulas[name] as (...x: unknown[]) => unknown).bind(EmulsificationFormulas))
+  hexRegisterOf('emulsification', name, (EmulsificationFormulas[name] as (...x: unknown[]) => unknown).bind(EmulsificationFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INDEXING — THE DATABASE INDEX, AS ARITHMETIC. Choosing an index is numbers: how selective a predicate is, how distinct a
@@ -30,4 +30,4 @@ export class IndexingFormulas {
 }
 
 for (const name of ['bloat', 'cardinality', 'coverage', 'depth', 'fanout', 'scan', 'selectivity', 'speedup'] as const)
-  qpuHexRegisterOf('indexing', name, (IndexingFormulas[name] as (...x: unknown[]) => unknown).bind(IndexingFormulas))
+  hexRegisterOf('indexing', name, (IndexingFormulas[name] as (...x: unknown[]) => unknown).bind(IndexingFormulas))

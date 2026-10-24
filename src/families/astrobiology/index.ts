@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ASTROBIOLOGY — THE SEARCH FOR LIFE, AS ARITHMETIC. Where life can sit (the habitable zone), how many worlds might
@@ -31,4 +31,4 @@ export class AstrobiologyFormulas {
 }
 
 for (const name of ['abiogenesis', 'biosignature', 'drake', 'extremophile', 'habitablezone', 'metabolism', 'oxygenation', 'panspermia'] as const)
-  qpuHexRegisterOf('astrobiology', name, (AstrobiologyFormulas[name] as (...x: unknown[]) => unknown).bind(AstrobiologyFormulas))
+  hexRegisterOf('astrobiology', name, (AstrobiologyFormulas[name] as (...x: unknown[]) => unknown).bind(AstrobiologyFormulas))

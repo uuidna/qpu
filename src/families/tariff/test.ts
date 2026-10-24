@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TariffFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('tariff: ratepct, revenue, deadweightloss, importprice, quotafill, protecti
   assert.equal(TariffFormulas.schedulesubsets(5).value, 32)
   assert.equal(TariffFormulas.tradereduction(15, 100).value, 15)
   assert.equal(TariffFormulas.ratepct(25, 100).dst, 'macroeconomics')
-  assert.equal(qpuHexFamiliesOf().get('tariff')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tariff')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tariff', program: ['ratepct'], params: [25, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `tariff.ratepct at ${uuid}`)
-  qpuUuidReceiptOf('tariff ratepct', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tariff ratepct', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ratepct 25, revenue 25000, deadweightloss 50, importprice 125, quotafill 80, protectioneffect 25, schedulesubsets 32, tradereduction 15; crossing to macroeconomics')
 })

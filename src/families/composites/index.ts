@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COMPOSITES — FIBER-REINFORCED MATERIALS, AS ARITHMETIC. A laminate is numbers: the rule of mixtures, the fiber
@@ -30,4 +30,4 @@ export class CompositesFormulas {
 }
 
 for (const name of ['anisotropy', 'density', 'fiberfraction', 'layup', 'porosity', 'rule', 'stiffness', 'strength'] as const)
-  qpuHexRegisterOf('composites', name, (CompositesFormulas[name] as (...x: unknown[]) => unknown).bind(CompositesFormulas))
+  hexRegisterOf('composites', name, (CompositesFormulas[name] as (...x: unknown[]) => unknown).bind(CompositesFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AlertingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('alerting: threshold, falsepositiverate, mttd, escalation, noiseratio, dedu
   assert.equal(AlertingFormulas.severityscore(4, 5).value, 20)
   assert.equal(AlertingFormulas.flappingindex(12, 60).value, 20)
   assert.equal(AlertingFormulas.threshold(80, 70).dst, 'observability')
-  assert.equal(qpuHexFamiliesOf().get('alerting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('alerting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'alerting', program: ['mttd'], params: [600, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `alerting.mttd at ${uuid}`)
-  qpuUuidReceiptOf('alerting mttd', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('alerting mttd', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; threshold 1, falsepositiverate 15, mttd 30, escalation 15, noiseratio 80, deduplication 850, severityscore 20, flappingindex 20; crossing to observability')
 })

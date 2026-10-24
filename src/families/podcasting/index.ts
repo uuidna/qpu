@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PODCASTING — RELEASING AUDIO, AS ARITHMETIC (chosen by the public-API registry, not by hand). A show is numbers:
@@ -31,4 +31,4 @@ export class PodcastingFormulas {
 }
 
 for (const name of ['adload', 'bitrate', 'cadence', 'completion', 'downloads', 'growth', 'rank', 'retention'] as const)
-  qpuHexRegisterOf('podcasting', name, (PodcastingFormulas[name] as (...x: unknown[]) => unknown).bind(PodcastingFormulas))
+  hexRegisterOf('podcasting', name, (PodcastingFormulas[name] as (...x: unknown[]) => unknown).bind(PodcastingFormulas))

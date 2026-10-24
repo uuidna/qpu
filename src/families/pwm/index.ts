@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PWM — scaffolded integer measures crossed to electronics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PwmFormulas {
 }
 
 for (const name of ['averagevoltage', 'dutycycle', 'effectivepower', 'frequency', 'onpulse', 'period', 'resolution', 'ripple'] as const)
-  qpuHexRegisterOf('pwm', name, (PwmFormulas[name] as (...x: unknown[]) => unknown).bind(PwmFormulas))
+  hexRegisterOf('pwm', name, (PwmFormulas[name] as (...x: unknown[]) => unknown).bind(PwmFormulas))

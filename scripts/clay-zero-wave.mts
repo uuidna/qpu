@@ -5,7 +5,7 @@
  * Reads the registry from source. Does not call gate.leads or scripts/discover.mjs.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
-import { qpuHexFamiliesOf, qpuHexUuidOf, qpuContentUuidOf } from '../src/quantum/processing/unit/index.js'
+import { hexFamiliesOf, qpuHexUuidOf, contentUuidOf } from '../src/quantum/processing/unit/index.js'
 import '../src/mcp/families.js'
 import { MerkabaFormulas, flowFamiliesOf } from '../src/families/merkaba/index.js'
 import { WaveFormulas, waveFamiliesOf } from '../src/families/wave/index.js'
@@ -44,7 +44,7 @@ const stepOf = (family: string, value: number): Step => {
   const key = `${family}/${value}`
   const known = cache.get(key)
   if (known) return known
-  const first = qpuHexFamiliesOf().get(family)?.[0]
+  const first = hexFamiliesOf().get(family)?.[0]
   let out: Step
   if (!first || !Number.isSafeInteger(value) || value < 0) out = { value: 0, holds: false, formula: first?.name ?? '' }
   else if (first.arity > 1) {
@@ -83,7 +83,7 @@ const turnOf = (order: string[]) => {
     const s = stepOf(family, value)
     let hex = ''
     try {
-      const arity = qpuHexFamiliesOf().get(family)?.find((f) => f.name === s.formula)?.arity ?? 0
+      const arity = hexFamiliesOf().get(family)?.find((f) => f.name === s.formula)?.arity ?? 0
       const params = s.skipped || arity > 1 ? [] : arity === 0 ? [] : [input]
       hex = qpuHexUuidOf({ family, program: [s.formula], params })
     } catch { /* params do not fit the section */ }
@@ -202,7 +202,7 @@ const developed: Record<string, unknown>[] = []
 const seen = new Set<string>()
 const waveReturn = { hex: mass.hex, value: mass.value, holds: mass.holds, next: mass.next }
 for (const edge of named) {
-  const address = edge.hex || qpuContentUuidOf({ family: edge.family, formula: edge.formula, input: edge.input })
+  const address = edge.hex || contentUuidOf({ family: edge.family, formula: edge.formula, input: edge.input })
   if (seen.has(address)) continue
   seen.add(address)
   const namedHere = namedBy.has(address) || (massive.family === edge.family && (massive.signals as string[]).includes(address))
@@ -220,7 +220,7 @@ for (const edge of named) {
   })
 }
 
-const citationAddress = qpuContentUuidOf({ where: 'legal.citation', doi: '10.5281/zenodo.22178675' })
+const citationAddress = contentUuidOf({ where: 'legal.citation', doi: '10.5281/zenodo.22178675' })
 if (!seen.has(citationAddress)) {
   developed.push({
     address: citationAddress,
@@ -230,7 +230,7 @@ if (!seen.has(citationAddress)) {
     wave: { hex: mass.hex, value: mass.value, holds: mass.holds, next: mass.next },
   })
 }
-const tagAddress = qpuContentUuidOf({ where: 'tag', formula: null })
+const tagAddress = contentUuidOf({ where: 'tag', formula: null })
 developed.push({
   address: tagAddress,
   where: 'tag',

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** YIELD — WHAT AN INVESTMENT RETURNS, AS ARITHMETIC (chosen by the finance registry, not by hand). Return is numbers:
@@ -31,4 +31,4 @@ export class YieldFormulas {
 }
 
 for (const name of ['couponrate', 'current', 'dividendyield', 'effective', 'nominal', 'realyield', 'taxequivalent', 'yieldtomaturity'] as const)
-  qpuHexRegisterOf('yield', name, (YieldFormulas[name] as (...x: unknown[]) => unknown).bind(YieldFormulas))
+  hexRegisterOf('yield', name, (YieldFormulas[name] as (...x: unknown[]) => unknown).bind(YieldFormulas))

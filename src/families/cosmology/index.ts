@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COSMOLOGY — THE EXPANDING UNIVERSE, AS ARITHMETIC. The large-scale numbers: the Hubble rate from a velocity over a
@@ -31,4 +31,4 @@ export class CosmologyFormulas {
 }
 
 for (const name of ['age', 'curvature', 'density', 'expansion', 'horizon', 'hubble', 'recession', 'temperature'] as const)
-  qpuHexRegisterOf('cosmology', name, (CosmologyFormulas[name] as (...x: unknown[]) => unknown).bind(CosmologyFormulas))
+  hexRegisterOf('cosmology', name, (CosmologyFormulas[name] as (...x: unknown[]) => unknown).bind(CosmologyFormulas))

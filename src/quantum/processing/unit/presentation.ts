@@ -1,4 +1,4 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf, qpuSeoZoneOf.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): genesisOf, pentagramOf, accessOf, qpuHologramOf, qpuZoneOf, zoneHostOf, tenantZoneOf, schemasOf, qpuCiteOf, presenceOf, cssOf, reflectOf, robotsOf, seoZoneOf.
 import {
   QPU_ZONE_HOSTS,
   coins,
@@ -9,16 +9,16 @@ import {
   n,
   occupancies,
   onceOf,
-  qpuCernExperimentsOf,
-  qpuContextOf,
-  qpuHexDecodeOf,
-  qpuHexFamiliesOf,
+  cernExperimentsOf,
+  contextOf,
+  hexDecodeOf,
+  hexFamiliesOf,
   qpuHexUuidOf,
-  qpuHostsOf,
-  qpuPentagramHolds,
-  qpuSeatHandleOf,
-  qpuSeoZoneHolds,
-  qpuStepsOf,
+  hostsOf,
+  pentagramHolds,
+  seatHandleOf,
+  seoZoneHolds,
+  stepsOf,
   raidClouds,
   raidTypesOf,
   schemaOrg,
@@ -31,20 +31,20 @@ import {
   unit,
 } from './index.js'
 import { packageVersion } from './version.js'
-import { qpuCircuitOf } from './circuit.js'
-import { qpuLeanOf, qpuLeanHolds } from './proof.js'
-import { qpuQuantumOf, qpuQuantumHolds } from './quantum.js'
-import { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf } from './lattice.js'
-import { qpuLinkGraphOf } from './links.js'
+import { circuitOf } from './circuit.js'
+import { leanOf, leanHolds } from './proof.js'
+import { quantumOf, qpuQuantumHolds } from './quantum.js'
+import { chooseOf, tenOf, cubeOf, qpuHandleOf, facesOf } from './lattice.js'
+import { linkGraphOf } from './links.js'
 
 /**
  * The UI schema: shadcn card variants, sizes, states and themes seated on the lattice's faces and rays, served as data (no HTML).
  * @wing presentation
  * @kind builder
- * @evidence qpuGenesisHolds
+ * @evidence genesisHolds
  */
-export const qpuGenesisOf = onceOf(() => {
-  const faces = qpuFacesOf()
+export const genesisOf = onceOf(() => {
+  const faces = facesOf()
   const hz = 432
   const card = ['card', 'card-header', 'card-title', 'card-description', 'card-action', 'card-content', 'card-footer'] as const
   const alpine = [...card, 'badge', 'button', 'input'] as const
@@ -161,9 +161,9 @@ export const qpuGenesisOf = onceOf(() => {
  * The occupancy pentagram: five occupancies x five skills joined in a single stroke of step 2.
  * @wing presentation
  * @kind builder
- * @evidence qpuPentagramHolds
+ * @evidence pentagramHolds
  */
-export const qpuPentagramOf = onceOf(() => {
+export const pentagramOf = onceOf(() => {
   const points = n + coins
   const stroke: number[] = []
   let x = n - n
@@ -208,12 +208,12 @@ export const qpuPentagramOf = onceOf(() => {
  * Access keys (domain, occupancy) for every occupancy, with their fused names.
  * @wing presentation
  * @kind builder
- * @evidence qpuAccessHolds
+ * @evidence accessHolds
  */
-export const qpuAccessOf = onceOf(() => {
-  const pentagram = qpuPentagramOf()
+export const accessOf = onceOf(() => {
+  const pentagram = pentagramOf()
   const keys = ['domain', 'handle'] as const
-  const holds = keys.length === coins && keys[n - n] === 'domain' && keys[seed] === 'handle' && pentagram.holds && qpuPentagramHolds(pentagram)
+  const holds = keys.length === coins && keys[n - n] === 'domain' && keys[seed] === 'handle' && pentagram.holds && pentagramHolds(pentagram)
   return {
     kind: 'access' as const,
     keys,
@@ -226,15 +226,15 @@ export const qpuAccessOf = onceOf(() => {
  * The 'hologram' reading: the pentagram and access readings composed with the fused capacity and the STORAGE/BLOBS bindings.
  * @wing presentation
  * @kind builder
- * @evidence qpuHologramHolds
+ * @evidence hologramHolds
  */
 export const qpuHologramOf = onceOf(() => {
-  const faces = qpuFacesOf()
-  const cube = qpuCubeOf()
+  const faces = facesOf()
+  const cube = cubeOf()
   const handle = qpuHandleOf()
-  const pentagram = qpuPentagramOf()
-  const access = qpuAccessOf()
-  const genesis = qpuGenesisOf()
+  const pentagram = pentagramOf()
+  const access = accessOf()
+  const genesis = genesisOf()
   const fused = faces.faces * handle.kv.amplitudes
   const scales = [
     { name: 'occupancy' as const, parts: pentagram.occupancies.length, fused },
@@ -273,7 +273,7 @@ export const qpuHologramOf = onceOf(() => {
  * The zone with each first-party host resolved from its label — the apex carries the empty label and is the zone.
  * @wing presentation
  * @kind builder
- * @evidence qpuZoneHolds
+ * @evidence zoneHolds
  */
 export const qpuZoneOf = onceOf(() => {
   const zone = unit.host.split('.').slice(seed).join('.')
@@ -294,18 +294,18 @@ export const qpuZoneOf = onceOf(() => {
  * the apex already serves its own robots.txt and its own 11,438-URL sitemap from the worker that does hold it.
   * @wing presentation
   * @kind builder
-  * @evidence qpuZoneHostHolds
+  * @evidence zoneHostHolds
  */
-export const qpuZoneHostOf = (host: unknown) =>
+export const zoneHostOf = (host: unknown) =>
   qpuZoneOf().hosts.find((h) => h.qpu && h.host === String(host ?? '').toLowerCase())
 
 /** The tenant zone QPU serves and the labels in it that are never a tenant — one declaration, read by the router and
  *  by Payload (src/access.ts), never restated there. The zone is this unit's host minus its first label; that label is
   * @wing presentation
   * @kind builder
-  * @evidence qpuTenantZoneHolds
+  * @evidence tenantZoneHolds
  *  this unit, and www is reserved because the router redirects it to the zone's apex. */
-export const qpuTenantZoneOf = onceOf(() => {
+export const tenantZoneOf = onceOf(() => {
   const labels = unit.host.split('.')
   const own = labels[n - n]!
   return { zone: labels.slice(seed).join('.'), own, www: 'www' as const, reserved: [own, 'www', 'saas-fallback'] as readonly string[] }
@@ -315,12 +315,12 @@ export const qpuTenantZoneOf = onceOf(() => {
  * The JSON-LD schemas the unit serves, mounted under storage, with their prefixes and context.
  * @wing presentation
  * @kind builder
- * @evidence qpuSchemasHolds
+ * @evidence schemasHolds
  */
-export const qpuSchemasOf = onceOf(() => {
-  const cube = qpuCubeOf()
-  const faces = qpuFacesOf()
-  const hosts = qpuHostsOf()
+export const schemasOf = onceOf(() => {
+  const cube = cubeOf()
+  const faces = facesOf()
+  const hosts = hostsOf()
   const types = raidTypesOf(faces)
   const named = [
     { name: 'schema', href: `${schemaOrg}/` },
@@ -429,11 +429,11 @@ export const qpuSchemasOf = onceOf(() => {
  * How to cite the unit (MLA 8): DOI, concept DOI, ORCID, archived version and commit, served version, and whether they match.
  * @wing presentation
  * @kind builder
- * @evidence qpuCiteHolds
+ * @evidence citeHolds
  */
 export const qpuCiteOf = onceOf(() => {
-  const lean = qpuLeanOf()
-  const quantum = qpuQuantumOf()
+  const lean = leanOf()
+  const quantum = quantumOf()
   const author = {
     last: 'Rouschev',
     first: 'Tsvetan',
@@ -473,7 +473,7 @@ export const qpuCiteOf = onceOf(() => {
     { title: lean.src, url: mcp, doi, works: worksOf(lean.src, mcp), holds: mcp.startsWith(unit.origin) && lean.src.endsWith('/index.lean') }] as const
   const right = `${author.first} ${author.last} explores this knowledge under CC-BY-NC-ND-4.0: attribute the author, do not distribute a derivative, and do not use it commercially unless a commercial licence was granted on request.`
   const holds =
-    qpuLeanHolds(lean) &&
+    leanHolds(lean) &&
     qpuQuantumHolds(quantum) &&
     author.last.length > n - n &&
     author.orcid.startsWith('https://orcid.org/') &&
@@ -525,14 +525,14 @@ export const qpuCiteOf = onceOf(() => {
     }
     try {
       const uuid = qpuHexUuidOf({ family: 'publishing', program: ['royalty'], params: [] })
-      const decoded = qpuHexDecodeOf(uuid)
+      const decoded = hexDecodeOf(uuid)
       if (decoded.holds && 'program' in decoded && decoded.program[0] === 'royalty' && decoded.params.length === 0)
         grant.next = { handle: decoded.handle, uuid: decoded.uuid }
     } catch { /* publishing is not registered in this isolate yet */ }
     return grant
   }
   return {
-    '@context': qpuContextOf(),
+    '@context': contextOf(),
     '@type': 'CreativeWork' as const,
     '@id': `${unit.origin}/cite`,
     url: `${unit.origin}/cite`,
@@ -560,7 +560,7 @@ export const qpuCiteOf = onceOf(() => {
     holds,
     get grant() { return grantOf() },
     // The hrefs the citation already prints. A URL pair is not a formula, so each edge holds false and the graph names one next address.
-    links: qpuLinkGraphOf([
+    links: linkGraphOf([
       doi,
       conceptdoi,
       archive,
@@ -579,15 +579,15 @@ export const qpuCiteOf = onceOf(() => {
  * Presence of users per face (active, inactive, chatting) with starter templates, merged into storage.
  * @wing presentation
  * @kind builder
- * @evidence qpuPresenceHolds
+ * @evidence presenceHolds
  */
-export const qpuPresenceOf = onceOf(() => {
-  const cube = qpuCubeOf()
+export const presenceOf = onceOf(() => {
+  const cube = cubeOf()
   const isolate = qpuHandleOf()
-  const faces = qpuFacesOf()
-  const circuit = qpuCircuitOf()
-  const hosts = qpuHostsOf()
-  const schemas = qpuSchemasOf()
+  const faces = facesOf()
+  const circuit = circuitOf()
+  const hosts = hostsOf()
+  const schemas = schemasOf()
   const types = raidTypesOf(faces)
   const fused = faces.faces * isolate.kv.amplitudes
   if (messageLanes.length !== faces.faces) {
@@ -595,7 +595,7 @@ export const qpuPresenceOf = onceOf(() => {
     for (let i = n - n; i < faces.faces; i++) messageLanes.push([])
   }
   const users = circuit.lattice.nodes.map((node) => {
-    const handle = qpuSeatHandleOf(node.face)
+    const handle = seatHandleOf(node.face)
     const host = hosts.nodes[node.face]!
     const schema = schemas.rows[node.face]!
     const messages = messageLanes[node.face]!.length
@@ -700,11 +700,11 @@ export const qpuPresenceOf = onceOf(() => {
  * The fused stylesheet the unit serves (qpu.css), with its size against the naive stylesheet.
  * @wing presentation
  * @kind builder
- * @evidence qpuCssHolds
+ * @evidence cssHolds
  */
-export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
-  const faces = qpuFacesOf()
-  const circuit = qpuCircuitOf()
+export const cssOf = (imagine = '', genesis = genesisOf()) => {
+  const faces = facesOf()
+  const circuit = circuitOf()
   const milli = tenOf(n)
   const hz = genesis.hz
   const sat = ten * n * coins + coins * n
@@ -718,7 +718,7 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
    * face, its radar face by the hop, the next ray. One negative animation-delay rule reads `--walk`, and the timing
    * function steps once per face, so the grid is the walk itself, not fourteen faces pulsing in line. */
   const walkOf = (face: number) => (face % faces.rays) * coins + (face < faces.rays ? none : seed)
-  const walk = qpuStepsOf().walk.map((step) => step.face)
+  const walk = stepsOf().walk.map((step) => step.face)
   const physicsOf = (name: string) => {
     if (name === 'split') return { x: none, y: none, r: none, s: coins, a: seed }
     if (name === 'entangle') return { x: coins, y: none, r: none, s: seed, a: seed }
@@ -744,7 +744,7 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
     theorem: `theorem ${node.name}`,
     holds: node.holds,
     vars: physicsOf(node.name)}))
-  const entangled = qpuCernExperimentsOf()
+  const entangled = cernExperimentsOf()
   const hepRows = entangled.nodes.map((node) => ({
     name: node.name,
     face: node.face,
@@ -900,16 +900,16 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
  * Reflect a caller's text onto a face and its involution hop, with the stylesheet slots it occupies.
  * @wing presentation
  * @kind builder
- * @evidence qpuReflectHolds
+ * @evidence reflectHolds
  */
-export const qpuReflectOf = (imagine = '') => {
+export const reflectOf = (imagine = '') => {
   const text = typeof imagine === 'string' ? imagine : ''
-  const css = qpuCssOf(text)
-  const faces = qpuFacesOf()
+  const css = cssOf(text)
+  const faces = facesOf()
   const face = text.length > n - n ? faceOf(text, faces.faces) : n - n
   const hop = (face + faces.rays + faces.rays) % faces.faces
     const seated = css.experiments.find((row) => row.face === face && row.quantum)
-  const again = qpuCssOf(text)
+  const again = cssOf(text)
   const holds =
     css.holds &&
     hop === face &&
@@ -929,7 +929,7 @@ export const qpuReflectOf = (imagine = '') => {
     css: css.css,
     slots: css.slots,
     experiments: css.experiments,
-    genesis: qpuGenesisOf(),
+    genesis: genesisOf(),
     holds,
   }
 }
@@ -944,11 +944,11 @@ export const qpuReflectOf = (imagine = '') => {
  * @wing presentation
  * @kind builder
  */
-export const qpuCombinatoricsWindowOf = async (): Promise<{ formula: string; value: number; uuid: string }[]> => {
+export const combinatoricsWindowOf = async (): Promise<{ formula: string; value: number; uuid: string }[]> => {
   const { CombinatoricsFormulas } = await import('../../../families/combinatorics/index.js')
   const hexDigits = mintOf(coins + n)
-  const window = qpuFacesOf().faces
-  const formulas = qpuHexFamiliesOf().get('combinatorics') ?? []
+  const window = facesOf().faces
+  const formulas = hexFamiliesOf().get('combinatorics') ?? []
   const call = CombinatoricsFormulas as unknown as Record<string, (...args: number[]) => { value: number; holds: boolean; hex?: string; hexExact: boolean }>
   const rows: { formula: string; value: number; uuid: string }[] = []
   const tuplesOf = (arity: number): number[][] =>
@@ -1006,7 +1006,7 @@ export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { tit
       const reading = row as { formula?: unknown; value?: unknown; uuid?: unknown }
       return typeof reading.formula === 'string' && typeof reading.value === 'number' && Number.isSafeInteger(reading.value) && typeof reading.uuid === 'string'
     })
-    .slice(n - n, qpuFacesOf().faces)
+    .slice(n - n, facesOf().faces)
   const readingList = readings
     .map((row) => `<li><code>${esc(row.formula)}</code> ${esc(row.value)} <a href="${esc(`${unit.origin}/hex/${row.uuid}`)}"><code>${esc(row.uuid)}</code></a></li>`)
     .join('')
@@ -1061,10 +1061,10 @@ export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { tit
  * robots.txt for one first-party host — the zone's content-signal policy, and the one sitemap that host serves.
  * @wing presentation
  * @kind builder
- * @evidence qpuRobotsHolds
+ * @evidence robotsHolds
  */
-export const qpuRobotsOf = (host: string = unit.host): string => {
-  const h = qpuZoneHostOf(host)
+export const robotsOf = (host: string = unit.host): string => {
+  const h = zoneHostOf(host)
   if (!h) return `User-agent: *\nDisallow: /\n`
   return [
     `# ${h.host} — ${h.serves}`,
@@ -1089,9 +1089,9 @@ export const qpuRobotsOf = (host: string = unit.host): string => {
  * SEO zone fields for each host: robots, sitemap and the zone's reserved labels.
  * @wing presentation
  * @kind builder
- * @evidence qpuSeoZoneHolds
+ * @evidence seoZoneHolds
  */
-export const qpuSeoZoneOf = onceOf(() => {
+export const seoZoneOf = onceOf(() => {
   const fields = seoZoneFieldsOf()
-  return { ...fields, holds: qpuSeoZoneHolds(fields) }
+  return { ...fields, holds: seoZoneHolds(fields) }
 })

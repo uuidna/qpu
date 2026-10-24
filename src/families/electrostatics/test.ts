@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ElectrostaticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('electrostatics: coulomb, field, potential, capacitance, energy, flux, dipo
   assert.equal(ElectrostaticsFormulas.charge(20, 5).value, 100)
   assert.equal(ElectrostaticsFormulas.capacitance(100, 0).value, 0, 'guarded divisor')
   assert.equal(ElectrostaticsFormulas.coulomb(12, 15, 3).dst, 'electrical')
-  assert.equal(qpuHexFamiliesOf().get('electrostatics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('electrostatics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'electrostatics', program: ['coulomb'], params: [12, 15, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `electrostatics.coulomb at ${uuid}`)
-  qpuUuidReceiptOf('electrostatics coulomb', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('electrostatics coulomb', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coulomb 20, field 4, potential 25, capacitance 20, energy 30, flux 125, dipole 63, charge 100; crossing to electrical')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DOSIMETRY — RADIATION DOSE AS ARITHMETIC (chosen by the physics registry, not by hand). Dose is numbers: energy
@@ -31,4 +31,4 @@ export class DosimetryFormulas {
 }
 
 for (const name of ['absorbeddose', 'cumulative', 'doserate', 'effectivedose', 'equivalentdose', 'exposuretime', 'fractionation', 'shielding'] as const)
-  qpuHexRegisterOf('dosimetry', name, (DosimetryFormulas[name] as (...x: unknown[]) => unknown).bind(DosimetryFormulas))
+  hexRegisterOf('dosimetry', name, (DosimetryFormulas[name] as (...x: unknown[]) => unknown).bind(DosimetryFormulas))

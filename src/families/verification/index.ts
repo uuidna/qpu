@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VERIFICATION — scaffolded integer measures crossed to logic. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class VerificationFormulas {
 }
 
 for (const name of ['assertions', 'casecombos', 'counterexamples', 'coveragepct', 'invariantsubsets', 'passrate', 'proofobligations', 'stateorderings'] as const)
-  qpuHexRegisterOf('verification', name, (VerificationFormulas[name] as (...x: unknown[]) => unknown).bind(VerificationFormulas))
+  hexRegisterOf('verification', name, (VerificationFormulas[name] as (...x: unknown[]) => unknown).bind(VerificationFormulas))

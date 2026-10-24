@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PALEONTOLOGY — THE FOSSIL RECORD, AS ARITHMETIC. Deep time is numbers: elapsed age by half-lives, the carbon that
@@ -31,4 +31,4 @@ export class PaleontologyFormulas {
 }
 
 for (const name of ['abundance', 'age', 'completeness', 'decay', 'diversity', 'extinction', 'size', 'stratum'] as const)
-  qpuHexRegisterOf('paleontology', name, (PaleontologyFormulas[name] as (...x: unknown[]) => unknown).bind(PaleontologyFormulas))
+  hexRegisterOf('paleontology', name, (PaleontologyFormulas[name] as (...x: unknown[]) => unknown).bind(PaleontologyFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SeoFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -23,13 +23,13 @@ test('seo: no useless prefix, shallow depth, clean slug — and the Google test 
   assert.equal(SeoFormulas.meta(150).value, 1)
   assert.equal(SeoFormulas.crawl(95, 100).value, 95)
   // the live google() is registered as a live reading (async → live)
-  const g = qpuHexFamiliesOf().get('seo')?.find((f) => f.name === 'google')
+  const g = hexFamiliesOf().get('seo')?.find((f) => f.name === 'google')
   assert.ok(g?.live === true, 'seo.google is a live reading (Google PageSpeed Insights)')
   assert.equal(SeoFormulas.prefix(1, 1).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('seo')?.length, 9)
+  assert.equal(hexFamiliesOf().get('seo')?.length, 9)
   const uuid = qpuHexUuidOf({ family: 'seo', program: ['slug'], params: [5, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `seo.slug at ${uuid}`)
-  qpuUuidReceiptOf('seo slug', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('seo slug', contentUuidOf(run), { uuid })
   t.diagnostic('9 formulas; prefix 0 clean / 2 dead, depth ≤3, slug 3, canonical 1, redirect 1, title/meta within limits, crawl 95; google() live at PageSpeed Insights')
 })

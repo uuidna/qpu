@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RayFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -36,11 +36,11 @@ test('ray: 32 rays, each carrying a nibble; opposites across the centre, every s
   // the cross destination
   assert.equal(RayFormulas.opposite(0).dst, 'merkaba', 'ray crosses to merkaba')
   // the registry
-  assert.equal(qpuHexFamiliesOf().get('ray')?.length, 15)
+  assert.equal(hexFamiliesOf().get('ray')?.length, 15)
   // run one formula as a hex program
   const uuid = qpuHexUuidOf({ family: 'ray', program: ['address'], params: [10, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 165, `ray.address(10, 5) at ${uuid}`)
-  qpuUuidReceiptOf('ray address', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ray address', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; 32 rays / 128 bits / 122 free; opposite (i+16)%32, double-opposite closes; stream = distinct rays; crossing to merkaba')
 })

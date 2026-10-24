@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PENTOMINO — scaffolded integer measures crossed to combinatorics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PentominoFormulas {
 }
 
 for (const name of ['boardarea', 'cells', 'coverage', 'orientations', 'pieces', 'placementcombos', 'symmetryorderings', 'tilingsubsets'] as const)
-  qpuHexRegisterOf('pentomino', name, (PentominoFormulas[name] as (...x: unknown[]) => unknown).bind(PentominoFormulas))
+  hexRegisterOf('pentomino', name, (PentominoFormulas[name] as (...x: unknown[]) => unknown).bind(PentominoFormulas))

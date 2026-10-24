@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RealestateFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('realestate: appreciation, caprate, equity, ltv, mortgage, occupancy, price
   assert.equal(RealestateFormulas.pricesqft(200000, 1000).value, 200)
   assert.equal(RealestateFormulas.rentyield(1000, 120000).value, 10, 'annual rent yield %')
   assert.equal(RealestateFormulas.caprate(8, 100).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('realestate')?.length, 8)
+  assert.equal(hexFamiliesOf().get('realestate')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'realestate', program: ['ltv'], params: [80, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `realestate.ltv at ${uuid}`)
-  qpuUuidReceiptOf('realestate ltv', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('realestate ltv', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; appreciation 50, caprate 8, equity 200, ltv 80, mortgage 60, occupancy 95, pricesqft 200, rentyield 10; crossing to accounting')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FAMILY — FAMILY LAW AS ARITHMETIC. A matter is numbers the jurisdiction's guidelines set: child support as a share of
@@ -31,4 +31,4 @@ export class FamilyFormulas {
 }
 
 for (const name of ['arrears', 'children', 'division', 'imputed', 'maintenance', 'majority', 'overnights', 'support'] as const)
-  qpuHexRegisterOf('family', name, (FamilyFormulas[name] as (...x: unknown[]) => unknown).bind(FamilyFormulas))
+  hexRegisterOf('family', name, (FamilyFormulas[name] as (...x: unknown[]) => unknown).bind(FamilyFormulas))

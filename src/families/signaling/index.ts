@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SIGNALING — CELL SIGNAL TRANSDUCTION, AS ARITHMETIC. A signal passing through a cell is numbers: how many receptors a
@@ -31,4 +31,4 @@ export class SignalingFormulas {
 }
 
 for (const name of ['amplification', 'cascadegain', 'desensitization', 'dissociation', 'ec50', 'receptoroccupancy', 'responsetime', 'secondmessenger'] as const)
-  qpuHexRegisterOf('signaling', name, (SignalingFormulas[name] as (...x: unknown[]) => unknown).bind(SignalingFormulas))
+  hexRegisterOf('signaling', name, (SignalingFormulas[name] as (...x: unknown[]) => unknown).bind(SignalingFormulas))

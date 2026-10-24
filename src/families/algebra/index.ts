@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ALGEBRA — THE SCHOOL FORMULAS AS INTEGER ARITHMETIC. A line, a parabola, a discriminant, a slope, a factorial, the
@@ -30,4 +30,4 @@ export class AlgebraFormulas {
 }
 
 for (const name of ['discriminant', 'factorial', 'gcd', 'linear', 'power', 'quadratic', 'roots', 'slope'] as const)
-  qpuHexRegisterOf('algebra', name, (AlgebraFormulas[name] as (...x: unknown[]) => unknown).bind(AlgebraFormulas))
+  hexRegisterOf('algebra', name, (AlgebraFormulas[name] as (...x: unknown[]) => unknown).bind(AlgebraFormulas))

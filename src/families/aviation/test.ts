@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AviationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -17,10 +17,10 @@ test('aviation: liability, delay, compensation, range, payload, duty, separation
   assert.equal(AviationFormulas.separation(1000, 500).value, 1, 'adequate separation')
   assert.equal(AviationFormulas.noise(95, 85).value, 10)
   assert.equal(AviationFormulas.liability(1000, 22).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('aviation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('aviation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'aviation', program: ['compensation'], params: [5000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 600, `aviation.compensation at ${uuid}`)
-  qpuUuidReceiptOf('aviation compensation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('aviation compensation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; liability 22000, delay 180, compensation 250/400/600, range 8000, payload 35000, duty 1, separation 1, noise 10; crossing to law')
 })

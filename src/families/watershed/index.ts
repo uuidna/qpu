@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WATERSHED — A DRAINAGE BASIN AS ARITHMETIC. Water on a catchment is numbers: the runoff a storm sheds, how finely
@@ -31,4 +31,4 @@ export class WatershedFormulas {
 }
 
 for (const name of ['basinrelief', 'catchmentarea', 'drainagedensity', 'infiltration', 'peakflow', 'runoff', 'streamorder', 'timeofconcentration'] as const)
-  qpuHexRegisterOf('watershed', name, (WatershedFormulas[name] as (...x: unknown[]) => unknown).bind(WatershedFormulas))
+  hexRegisterOf('watershed', name, (WatershedFormulas[name] as (...x: unknown[]) => unknown).bind(WatershedFormulas))

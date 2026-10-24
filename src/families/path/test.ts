@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CrossDomainPaths, pathHexOf } from './index.js'
 import '../../mcp/families.js'
 
@@ -21,19 +21,19 @@ test('path: the seven named cross-domain paths each hold — a real chain (≥2 
   assert.equal(walk.intermediate.length, chain.hops.length - 1, 'one intermediate per edge')
   assert.deepEqual(walk.path, chain.hops)
   // the family is the hex registry: every named path is a hex program that returns the path
-  const fam = qpuHexFamiliesOf().get('path')
+  const fam = hexFamiliesOf().get('path')
   assert.ok((fam?.length ?? 0) >= 7, 'at least the seven named paths are registered')
-  const run = (await qpuHexRunOf(pathHexOf('qualityToRisk'))) as { holds?: boolean; handle?: string }
+  const run = (await hexRunOf(pathHexOf('qualityToRisk'))) as { holds?: boolean; handle?: string }
   assert.equal(run.holds, true, 'qualityToRisk holds when recomputed from its hex program')
   assert.ok(pathHexOf('qualityToRisk').startsWith(`${run.handle}-`), 'the run is the hex program path.qualityToRisk')
-  qpuUuidReceiptOf('path qualityToRisk', qpuContentUuidOf(run), { uuid: pathHexOf('qualityToRisk') })
+  uuidReceiptOf('path qualityToRisk', contentUuidOf(run), { uuid: pathHexOf('qualityToRisk') })
   t.diagnostic('7 named paths, each a real ≥2-hop chain with a finite value and a receipt; executePath walks one transform per edge; registered as the hex family path')
 })
 
 test('path: anomalyToResponse and dataFlowCompressML meet the superposition the unit reaches', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -65,7 +65,7 @@ test('path: anomalyToResponse and dataFlowCompressML meet the superposition the 
 test('path: secureDataPathQSec meets the superposition the unit reaches', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }

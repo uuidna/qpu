@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DATAQUALITY — THE STATE OF A TABLE, AS ARITHMETIC (chosen by the public-API registry, not by hand). A dataset's health is
@@ -31,4 +31,4 @@ export class DataqualityFormulas {
 }
 
 for (const name of ['accuracy', 'completeness', 'consistency', 'duplicaterate', 'freshness', 'nullrate', 'uniqueness', 'validity'] as const)
-  qpuHexRegisterOf('dataquality', name, (DataqualityFormulas[name] as (...x: unknown[]) => unknown).bind(DataqualityFormulas))
+  hexRegisterOf('dataquality', name, (DataqualityFormulas[name] as (...x: unknown[]) => unknown).bind(DataqualityFormulas))

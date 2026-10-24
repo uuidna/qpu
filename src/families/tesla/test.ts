@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TeslaFormulas } from './index.js'
 
 /** The physics the patents state, exact: a 60 Hz two-pole field turns 3600 rpm; a 4-pole, 1800; a tuned circuit's
@@ -21,13 +21,13 @@ test('tesla: the relations the patents claim hold as formulas, and cross the lat
   assert.equal(TeslaFormulas.period(150).value, 6667)
   assert.equal(TeslaFormulas.energy(1000000, 10000).value, 50000000, '1 µF at 10 kV holds 50 J = 50 000 000 µJ')
   assert.equal(TeslaFormulas.windings(2, 7).value, 14, 'the lattice coil: coins × rays = faces')
-  assert.equal(qpuHexFamiliesOf().get('tesla')?.length, 11)
+  assert.equal(hexFamiliesOf().get('tesla')?.length, 11)
   for (const [name, params, expected] of [['sync', [60, 2], 3600], ['schumann', [1], 7830], ['windings', [2, 7], 14]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'tesla', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid)) as { value?: unknown; holds?: boolean }
     assert.equal(Number(run.value), expected, `tesla.${name} at ${uuid}`)
     assert.equal(run.holds, true)
-    qpuUuidReceiptOf(`tesla ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`tesla ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('11 formulas; windings(2, 7) = 14 = faces: the cross with Qpu.Coil')
 })

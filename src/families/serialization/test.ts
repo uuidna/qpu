@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SerializationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('serialization: overhead, payload, throughput, framing, encoding, schema, d
   assert.equal(SerializationFormulas.delta(8, 16).value, 128)
   assert.equal(SerializationFormulas.batch(1000, 64).value, 16, 'sixteen batches for the run')
   assert.equal(SerializationFormulas.overhead(12, 100).dst, 'compression')
-  assert.equal(qpuHexFamiliesOf().get('serialization')?.length, 8)
+  assert.equal(hexFamiliesOf().get('serialization')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'serialization', program: ['batch'], params: [1000, 64] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 16, `serialization.batch at ${uuid}`)
-  qpuUuidReceiptOf('serialization batch', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('serialization batch', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; overhead 1200, payload 3800, throughput 100, framing 4000, encoding 400, schema 60, delta 128, batch 16; crossing to compression')
 })

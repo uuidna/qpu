@@ -59,12 +59,12 @@ const countOf = (v) => (Number.isSafeInteger(v) && v >= 0 ? v : undefined)
  */
 const legalOf = async (doc) => {
   await import('../dist/families/law/index.js')
-  const { qpuHexUuidOf, qpuHexDecodeOf, qpuEvidenceOf } = await import('../dist/quantum/processing/unit/index.js')
+  const { qpuHexUuidOf, hexDecodeOf, qpuEvidenceOf } = await import('../dist/quantum/processing/unit/index.js')
   const { LawFormulas } = await import('../dist/families/law/index.js')
   const evidence = qpuEvidenceOf()
   const addressOf = (name, params) => {
     const uuid = qpuHexUuidOf({ family: 'law', program: [name], params })
-    return { handle: qpuHexDecodeOf(uuid).handle, uuid }
+    return { handle: hexDecodeOf(uuid).handle, uuid }
   }
   const called = (name, params, row) => {
     const item = { value: row.value, holds: row.holds === true, ...addressOf(name, params) }
@@ -164,7 +164,7 @@ if (kind === 'registry') {
   const line = (name, r, params) => { const row = { name: `gate.${name}(${params.join(', ')})`, pass: r.holds === true, value: `${r.value}${r.family ? ` ${r.family}` : ''}${r.failing?.length ? ` failing ${r.failing.join(', ')}` : ''}${r.uncrossed !== undefined ? ` uncrossed ${r.uncrossed}` : ''}`, receipt: r.receipt ?? '' }; rows.push(row); console.log(`  ${row.pass ? '✓' : '✗'} ${row.name} = ${row.value}`); return r }
   if (mode === 'commit') {
     const staged = execSync('git diff --cached --name-only', { encoding: 'utf8' }).split('\n').filter((f) => /^src\/(families\/[^/]+\/index|mcp\/[^/]+)\.ts$/.test(f) && fs.existsSync(f))
-    const named = [...new Set(staged.flatMap((f) => [...fs.readFileSync(f, 'utf8').matchAll(/qpuHexRegisterOf\('([^']+)'/g)].map((m) => m[1])))]
+    const named = [...new Set(staged.flatMap((f) => [...fs.readFileSync(f, 'utf8').matchAll(/hexRegisterOf\('([^']+)'/g)].map((m) => m[1])))]
     const missing = named.filter((f) => !sorted.includes(f))
     if (missing.length) console.log(`  ~ not on the host yet (ship first): ${missing.join(', ')}`)
     for (const family of named.filter((f) => sorted.includes(f))) holds &&= line('commit', await hex('gate', 'commit', [sorted.indexOf(family)]), [sorted.indexOf(family)]).holds === true

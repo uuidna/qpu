@@ -1,8 +1,8 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DbFormulas, PORTED_DB } from './index.js'
-import { qpuDataOf } from '../../mcp/qpu-fused.js'
+import { dataOf } from '../../mcp/qpu-fused.js'
 import '../../mcp/families.js'
 
 /** QPU OS runs databases as adapter facades over one Cloudflare-binding store: no migrations, Postgres and SQLite in the
@@ -24,7 +24,7 @@ test('db: no migrations on bindings, Postgres/SQLite in the browser, Mongo a fac
   assert.equal(DbFormulas.combinations().value, 7 * 4)
   assert.equal(DbFormulas.experiments(1000000).value, 1000000, 'experiments are unbounded — every config an address')
   // PORT AND TEST ALL: every official Payload db adapter read live is ported into the family
-  const eco = (((await qpuDataOf('payload', { category: 0 })) as { reading?: { plugins?: { ecosystem?: { package: string; kind: string }[] } } }).reading?.plugins?.ecosystem ?? [])
+  const eco = (((await dataOf('payload', { category: 0 })) as { reading?: { plugins?: { ecosystem?: { package: string; kind: string }[] } } }).reading?.plugins?.ecosystem ?? [])
   const livePayloadDbs = eco.filter((e) => e.kind === 'db adapter').map((e) => e.package)
   if (livePayloadDbs.length) {
     const missing = livePayloadDbs.filter((p) => !(PORTED_DB as readonly string[]).includes(p))
@@ -33,12 +33,12 @@ test('db: no migrations on bindings, Postgres/SQLite in the browser, Mongo a fac
   assert.equal(DbFormulas.adapters().value, 7, 'five Payload databases + two QPU-native')
   assert.equal(DbFormulas.ported(4).value, 1, 'mongodb ports db-mongodb')
   assert.equal(DbFormulas.ported(5).value, 0, 'qpu-raid is QPU-native')
-  assert.equal(qpuHexFamiliesOf().get('db')?.length, 8)
+  assert.equal(hexFamiliesOf().get('db')?.length, 8)
   for (const [name, params, expected] of [['migrations', [1], 0], ['browser', [1], 1], ['stable', [4, 0], 0], ['ported', [2], 1]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'db', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `db.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`db ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`db ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('6 formulas; 0 migrations on bindings; postgres+sqlite in the browser, mongo a facade; 20 adapter×mode combinations; experiments unbounded')
 })

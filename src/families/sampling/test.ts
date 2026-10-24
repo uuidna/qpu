@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SamplingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('sampling: samplesize, marginoferror, standarderror, stratum, cluster, syst
   assert.equal(SamplingFormulas.finitecorrection(1000, 100).value, 90)
   assert.equal(SamplingFormulas.finitecorrection(1000, 1000).value, 0)
   assert.equal(SamplingFormulas.samplesize(10000, 5).dst, 'probability')
-  assert.equal(qpuHexFamiliesOf().get('sampling')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sampling')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sampling', program: ['cluster'], params: [1000, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `sampling.cluster at ${uuid}`)
-  qpuUuidReceiptOf('sampling cluster', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sampling cluster', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; samplesize 500, marginoferror 50, standarderror 10, stratum 143, cluster 25, systematic 20, weight 20000, finitecorrection 90; crossing to probability')
 })

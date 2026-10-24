@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ProfilingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('profiling: hotspot, throughput, allocation, speedup, overhead, cachehit, f
   assert.equal(ProfilingFormulas.flamegraph(640, 8).value, 80)
   assert.equal(ProfilingFormulas.gc(3, 1000).value, 3, 'collections per thousand')
   assert.equal(ProfilingFormulas.hotspot(30, 120).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('profiling')?.length, 8)
+  assert.equal(hexFamiliesOf().get('profiling')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'profiling', program: ['throughput'], params: [6000, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `profiling.throughput at ${uuid}`)
-  qpuUuidReceiptOf('profiling throughput', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('profiling throughput', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; hotspot 25, throughput 100, allocation 20, speedup 300, overhead 20, cachehit 95, flamegraph 80, gc 3; crossing to code')
 })

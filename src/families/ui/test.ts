@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { UiFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('ui: clickdepth, layoutcombos, elementcount, responsiveness, navpaths, grid
   assert.equal(UiFormulas.colorsubsets(4).value, 16)
   assert.equal(UiFormulas.accessibilityscore(85, 100).value, 85)
   assert.equal(UiFormulas.clickdepth(3, 2).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('ui')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ui')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ui', program: ['clickdepth'], params: [3, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `ui.clickdepth at ${uuid}`)
-  qpuUuidReceiptOf('ui clickdepth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ui clickdepth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; clickdepth 5, layoutcombos 56, elementcount 80, responsiveness 90, navpaths 30, gridcells 96, colorsubsets 16, accessibilityscore 85; crossing to statistics')
 })

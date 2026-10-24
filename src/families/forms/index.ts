@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FORMS — WEB FORMS AND SURVEYS, AS ARITHMETIC (chosen by the public-API registry, not by hand). A form is numbers:
@@ -30,4 +30,4 @@ export class FormsFormulas {
 }
 
 for (const name of ['abandonment', 'completion', 'conversion', 'dropoff', 'fields', 'response', 'time', 'validation'] as const)
-  qpuHexRegisterOf('forms', name, (FormsFormulas[name] as (...x: unknown[]) => unknown).bind(FormsFormulas))
+  hexRegisterOf('forms', name, (FormsFormulas[name] as (...x: unknown[]) => unknown).bind(FormsFormulas))

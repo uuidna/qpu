@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MYRMECOLOGY — scaffolded integer measures crossed to zoology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MyrmecologyFormulas {
 }
 
 for (const name of ['broodstages', 'castecount', 'colonysize', 'foragingpaths', 'nestchambers', 'pheromonetrails', 'tandempairs', 'workerratio'] as const)
-  qpuHexRegisterOf('myrmecology', name, (MyrmecologyFormulas[name] as (...x: unknown[]) => unknown).bind(MyrmecologyFormulas))
+  hexRegisterOf('myrmecology', name, (MyrmecologyFormulas[name] as (...x: unknown[]) => unknown).bind(MyrmecologyFormulas))

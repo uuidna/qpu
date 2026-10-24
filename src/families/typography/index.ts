@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TYPOGRAPHY — WEB TYPE, AS ARITHMETIC. Setting text is numbers: the measure (line length) against the ideal, the modular
@@ -31,4 +31,4 @@ export class TypographyFormulas {
 }
 
 for (const name of ['leading', 'measure', 'rhythm', 'scale', 'tracking', 'weight', 'widows', 'words'] as const)
-  qpuHexRegisterOf('typography', name, (TypographyFormulas[name] as (...x: unknown[]) => unknown).bind(TypographyFormulas))
+  hexRegisterOf('typography', name, (TypographyFormulas[name] as (...x: unknown[]) => unknown).bind(TypographyFormulas))

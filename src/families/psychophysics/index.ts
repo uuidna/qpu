@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PSYCHOPHYSICS — THE LAW BETWEEN STIMULUS AND SENSATION, AS ARITHMETIC. How much a stimulus must change to be felt is
@@ -31,4 +31,4 @@ export class PsychophysicsFormulas {
 }
 
 for (const name of ['adaptation', 'jnd', 'magnitude', 'reactiontime', 'sensitivity', 'stevenspower', 'thresholds', 'weberfraction'] as const)
-  qpuHexRegisterOf('psychophysics', name, (PsychophysicsFormulas[name] as (...x: unknown[]) => unknown).bind(PsychophysicsFormulas))
+  hexRegisterOf('psychophysics', name, (PsychophysicsFormulas[name] as (...x: unknown[]) => unknown).bind(PsychophysicsFormulas))

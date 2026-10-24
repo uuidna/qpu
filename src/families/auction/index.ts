@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AUCTION — THE MARKET, AS ARITHMETIC (chosen by the public-API registry, not by hand). A sale is numbers: the next bid
@@ -31,4 +31,4 @@ export class AuctionFormulas {
 }
 
 for (const name of ['clearing', 'competition', 'estimate', 'increment', 'premium', 'proxy', 'reserve', 'selltrough'] as const)
-  qpuHexRegisterOf('auction', name, (AuctionFormulas[name] as (...x: unknown[]) => unknown).bind(AuctionFormulas))
+  hexRegisterOf('auction', name, (AuctionFormulas[name] as (...x: unknown[]) => unknown).bind(AuctionFormulas))

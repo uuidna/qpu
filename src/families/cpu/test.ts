@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CpuFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('cpu: cores, threads, IPC, MIPS, the pipeline, Amdahl and speedup — cross
   assert.equal(CpuFormulas.speedup(100, 4).value, 25, 'serial over parallel')
   assert.equal(CpuFormulas.turbo(3000, 500).value, 3500, 'base + boost')
   assert.equal(CpuFormulas.cores(4, 8).dst, 'hardware')
-  assert.equal(qpuHexFamiliesOf().get('cpu')?.length, 10)
+  assert.equal(hexFamiliesOf().get('cpu')?.length, 10)
   const uuid = qpuHexUuidOf({ family: 'cpu', program: ['cores'], params: [4, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 32, `cpu.cores at ${uuid}`)
-  qpuUuidReceiptOf('cpu cores', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cpu cores', contentUuidOf(run), { uuid })
   t.diagnostic('10 formulas; cores 32, threads 64, ipc 4, mips 12000, pipeline 14, cacheline 2, tdp 120, amdahl 100, speedup 25, turbo 3500; crossing to hardware')
 })

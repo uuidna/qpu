@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MAGNETOMETRY — scaffolded integer measures crossed to geology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MagnetometryFormulas {
 }
 
 for (const name of ['anomaly', 'declination', 'fieldstrength', 'gradient', 'inclination', 'reversalcount', 'surveylines', 'susceptibility'] as const)
-  qpuHexRegisterOf('magnetometry', name, (MagnetometryFormulas[name] as (...x: unknown[]) => unknown).bind(MagnetometryFormulas))
+  hexRegisterOf('magnetometry', name, (MagnetometryFormulas[name] as (...x: unknown[]) => unknown).bind(MagnetometryFormulas))

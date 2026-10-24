@@ -1,5 +1,5 @@
 import { ed25519PublicKey, ed25519Sign, fromHex, hexOf, md5, sha256, sha512, x25519 } from '../../core/crypt.js'
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 const nat = (...xs: number[]): boolean => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
@@ -52,4 +52,4 @@ export class CryptFormulas {
 }
 
 for (const name of ['aeadTagBits', 'curveClassicalBits', 'curveQuantumBits', 'hashCollisionBits', 'knownAnswers', 'nonceCollision', 'symmetricQuantumBits', 'tagForgery'] as const)
-  qpuHexRegisterOf('crypt', name, (CryptFormulas[name] as (...x: unknown[]) => unknown).bind(CryptFormulas))
+  hexRegisterOf('crypt', name, (CryptFormulas[name] as (...x: unknown[]) => unknown).bind(CryptFormulas))

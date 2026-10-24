@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EtlFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('etl: throughput, rejectrate, batchwindow, transformcost, dedupe, latency, 
   assert.equal(EtlFormulas.skew(100, 30).value, 70, 'partition skew')
   assert.equal(EtlFormulas.skew(30, 100).value, 0)
   assert.equal(EtlFormulas.throughput(6000, 60).dst, 'compression')
-  assert.equal(qpuHexFamiliesOf().get('etl')?.length, 8)
+  assert.equal(hexFamiliesOf().get('etl')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'etl', program: ['batchwindow'], params: [1000, 250] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `etl.batchwindow at ${uuid}`)
-  qpuUuidReceiptOf('etl batchwindow', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('etl batchwindow', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; throughput 100, rejectrate 5, batchwindow 4, transformcost 5000, dedupe 100, latency 50, loadfactor 90, skew 70; crossing to compression')
 })

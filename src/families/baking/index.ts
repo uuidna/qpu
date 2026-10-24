@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BAKING — THE BAKER'S ARITHMETIC (chosen by the registry, not by hand). A loaf is numbers: water against flour as a
@@ -30,4 +30,4 @@ export class BakingFormulas {
 }
 
 for (const name of ['bakerspercent', 'crumb', 'hydration', 'leavening', 'ovenspring', 'proof', 'scaling', 'temperature'] as const)
-  qpuHexRegisterOf('baking', name, (BakingFormulas[name] as (...x: unknown[]) => unknown).bind(BakingFormulas))
+  hexRegisterOf('baking', name, (BakingFormulas[name] as (...x: unknown[]) => unknown).bind(BakingFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ORBITAL — KEPLERIAN MECHANICS AS ARITHMETIC (chosen by the public-API registry, not by hand). A closed orbit is numbers:
@@ -31,4 +31,4 @@ export class OrbitalFormulas {
 }
 
 for (const name of ['apoapsis', 'deltav', 'eccentricity', 'inclination', 'periapsis', 'period', 'semimajor', 'velocity'] as const)
-  qpuHexRegisterOf('orbital', name, (OrbitalFormulas[name] as (...x: unknown[]) => unknown).bind(OrbitalFormulas))
+  hexRegisterOf('orbital', name, (OrbitalFormulas[name] as (...x: unknown[]) => unknown).bind(OrbitalFormulas))

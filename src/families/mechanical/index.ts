@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MECHANICAL — MECHANICAL ENGINEERING AS ARITHMETIC (chosen by the registry, not by hand). A machine is numbers: the
@@ -31,4 +31,4 @@ export class MechanicalFormulas {
 }
 
 for (const name of ['efficiency', 'gear', 'power', 'spring', 'strain', 'stress', 'thermal', 'torque'] as const)
-  qpuHexRegisterOf('mechanical', name, (MechanicalFormulas[name] as (...x: unknown[]) => unknown).bind(MechanicalFormulas))
+  hexRegisterOf('mechanical', name, (MechanicalFormulas[name] as (...x: unknown[]) => unknown).bind(MechanicalFormulas))

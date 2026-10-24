@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SimulationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('simulation: timestep, convergence, montecarlo, stability, resolution, spee
   assert.equal(SimulationFormulas.accuracy(990, 1000).value, 99)
   assert.equal(SimulationFormulas.iterations(42).value, 42)
   assert.equal(SimulationFormulas.timestep(1000, 100).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('simulation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('simulation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'simulation', program: ['timestep'], params: [1000, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `simulation.timestep at ${uuid}`)
-  qpuUuidReceiptOf('simulation timestep', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('simulation timestep', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; timestep 10, convergence 5, montecarlo 78, stability 95, resolution 20, speedup 800, accuracy 99, iterations 42; crossing to code')
 })

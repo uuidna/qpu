@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POLYPHONY — MANY VOICES AT ONCE, AS ARITHMETIC. Several independent lines sounding together are numbers: how many
@@ -31,4 +31,4 @@ export class PolyphonyFormulas {
 }
 
 for (const name of ['activevoices', 'densityratio', 'independenceindex', 'maxpolyphony', 'overlapcount', 'textureindex', 'voicecount', 'voiceleadingcost'] as const)
-  qpuHexRegisterOf('polyphony', name, (PolyphonyFormulas[name] as (...x: unknown[]) => unknown).bind(PolyphonyFormulas))
+  hexRegisterOf('polyphony', name, (PolyphonyFormulas[name] as (...x: unknown[]) => unknown).bind(PolyphonyFormulas))

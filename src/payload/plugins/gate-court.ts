@@ -17,14 +17,14 @@ import { CloudFormulas } from '../../families/cloud/index.js'
 import { CombinatoricsFormulas } from '../../families/combinatorics/index.js'
 import { CourtFormulas } from '../../families/court/index.js'
 import { LawFormulas } from '../../families/law/index.js'
-import { qpuCrossBridgesOf } from '../../families/cross/index.js'
+import { crossBridgesOf } from '../../families/cross/index.js'
 import {
-  qpuFacesOf,
-  qpuHexFamiliesOf,
+  facesOf,
+  hexFamiliesOf,
   qpuHexUuidOf,
-  qpuLeanOf,
-  qpuMcpToolsListOf,
-  qpuStatementUuidOf,
+  leanOf,
+  mcpToolsListOf,
+  statementUuidOf,
 } from '../../quantum/processing/unit/index.js'
 import { modeAccessOf, modeBitsOf } from './access-mode.js'
 import { goalStateOf } from './goal.js'
@@ -150,15 +150,15 @@ export const gateCourtTrialOf = (input: {
   const violationCall = callOf('law.violation', [against], violation, 'law')
   const redirectedCall = callOf('law.redirected', [required, confidence], redirected, 'law')
   // THE COURT INVOLVES ALL FAMILIES. The jury is the whole registry — every registered family, not only the subject's
-  // domain siblings — so no case is tried by a hand-picked bench. This lists family NAMES only (qpuHexFamiliesOf keys);
+  // domain siblings — so no case is tried by a hand-picked bench. This lists family NAMES only (hexFamiliesOf keys);
   // it never runs a family's formula, so the re-entrant trial cannot deadlock. The domain still names the subject's own
   // field and its siblings, but the panel is the full court; a lattice slice is shown, the whole count stands behind it.
   const subject = input.gate.name.split('.')[0]!
-  const bridges = qpuCrossBridgesOf()
+  const bridges = crossBridgesOf()
   const domain = bridges.get(subject)
   const siblings = domain ? [...bridges].filter(([s, d]) => d === domain && s !== subject).map(([s]) => s).sort() : []
-  const jury = [...qpuHexFamiliesOf().keys()].filter((s) => s !== subject).sort()
-  const experts = { subject, domain, siblings: siblings.length, count: jury.length, all: true as const, panel: jury.slice(0, qpuFacesOf().faces) }
+  const jury = [...hexFamiliesOf().keys()].filter((s) => s !== subject).sort()
+  const experts = { subject, domain, siblings: siblings.length, count: jury.length, all: true as const, panel: jury.slice(0, facesOf().faces) }
   const forum = `${subject} · /qpu/court`
   const allow =
     input.gate.holds === true &&
@@ -195,7 +195,7 @@ export const gateCourtTrialOf = (input: {
 }
 
 export const connectBillGateOf = (): GateCourtCase => {
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete', tools }).length
   const doors = tools.length
   const qpuPrefixed = tools.filter((t) => t.name.startsWith('qpu_')).length
@@ -226,8 +226,8 @@ export const discoverCapacityGateOf = (): GateCourtCase & {
   nodes: number
   path: 'full-registry' | 'seal-wave'
 } => {
-  const faces = qpuFacesOf().faces
-  const families = qpuHexFamiliesOf().size
+  const faces = facesOf().faces
+  const families = hexFamiliesOf().size
   const scale = CloudFormulas.scale(families, Math.max(1, faces))
   const nodes = Number(scale.value)
   // THE CLAIM THIS CASE DECIDES IS THE SEAL-WAVE PATH: the registry is covered by ⌈families/faces⌉ passes of one faces
@@ -356,14 +356,14 @@ type LeanRow = { heading: string; theorem: string; formula: string; holds: boole
 export const toolCourtCasesOf = (): GateCourtCase[] => {
   // A tool is a case only where a theorem answers for it: its name or its domain suffix (crypto_shor → shor) is a Lean
   // heading. Tools with no theorem yet are leads, not cases. No hand list.
-  const want = new Set(qpuMcpToolsListOf().flatMap((t) => { const nm = t.name.replace(/^qpu_/, ''); return [nm, nm.slice(nm.lastIndexOf('_') + 1)] }))
-  const lean = qpuLeanOf() as unknown as { rows: readonly LeanRow[]; cover: readonly LeanRow[]; climb: LeanRow }
+  const want = new Set(mcpToolsListOf().flatMap((t) => { const nm = t.name.replace(/^qpu_/, ''); return [nm, nm.slice(nm.lastIndexOf('_') + 1)] }))
+  const lean = leanOf() as unknown as { rows: readonly LeanRow[]; cover: readonly LeanRow[]; climb: LeanRow }
   const seen = new Set<string>()
   const rows = [...lean.rows, ...lean.cover, lean.climb].filter((r) => want.has(r.heading) && !seen.has(r.heading) && seen.add(r.heading))
   return rows.map((r) =>
     gateCourtTrialOf({
       case: `tool.${r.heading}`,
-      gate: callOf('lean.' + r.heading, [], { hex: qpuStatementUuidOf(r.theorem), value: r.holds ? 1 : 0, holds: r.holds, formula: r.formula }, 'lean'),
+      gate: callOf('lean.' + r.heading, [], { hex: statementUuidOf(r.theorem), value: r.holds ? 1 : 0, holds: r.holds, formula: r.formula }, 'lean'),
       confidence: r.holds ? 100 : 0,
       note: `court tries the ${r.heading} tool as its lean theorem — only lean evidence`,
     }),

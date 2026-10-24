@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROTOTYPING — THE EARLY-BUILD LOOP, AS ARITHMETIC. A prototype is numbers: how faithful to the final it is, how many
@@ -31,4 +31,4 @@ export class PrototypingFormulas {
 }
 
 for (const name of ['coverage', 'feedback', 'fidelity', 'interactivity', 'iterations', 'reuse', 'validation', 'velocity'] as const)
-  qpuHexRegisterOf('prototyping', name, (PrototypingFormulas[name] as (...x: unknown[]) => unknown).bind(PrototypingFormulas))
+  hexRegisterOf('prototyping', name, (PrototypingFormulas[name] as (...x: unknown[]) => unknown).bind(PrototypingFormulas))

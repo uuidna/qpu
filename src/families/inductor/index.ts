@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INDUCTOR — scaffolded integer measures crossed to electronics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class InductorFormulas {
 }
 
 for (const name of ['coupling', 'energy', 'inductance', 'quality', 'reactance', 'seriessum', 'timeconstant', 'turnspairs'] as const)
-  qpuHexRegisterOf('inductor', name, (InductorFormulas[name] as (...x: unknown[]) => unknown).bind(InductorFormulas))
+  hexRegisterOf('inductor', name, (InductorFormulas[name] as (...x: unknown[]) => unknown).bind(InductorFormulas))

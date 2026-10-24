@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PARTNER — THE PARTNERS/PARTNERFILTERS USE CASE FROM payloadcms/website, AS ARITHMETIC. A partner directory with
@@ -31,4 +31,4 @@ export class PartnerFormulas {
 }
 
 for (const name of ['commission', 'directory', 'filter', 'leads', 'listing', 'rating', 'regions', 'tier'] as const)
-  qpuHexRegisterOf('partner', name, (PartnerFormulas[name] as (...x: unknown[]) => unknown).bind(PartnerFormulas))
+  hexRegisterOf('partner', name, (PartnerFormulas[name] as (...x: unknown[]) => unknown).bind(PartnerFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ATMOSPHERIC — THE AIR ABOVE THE GROUND, AS ARITHMETIC (chosen by the registry, not by hand). The atmosphere is numbers:
@@ -30,4 +30,4 @@ export class AtmosphericFormulas {
 }
 
 for (const name of ['aerosol', 'coriolis', 'humidity', 'lapserate', 'ozone', 'pressure', 'stability', 'windshear'] as const)
-  qpuHexRegisterOf('atmospheric', name, (AtmosphericFormulas[name] as (...x: unknown[]) => unknown).bind(AtmosphericFormulas))
+  hexRegisterOf('atmospheric', name, (AtmosphericFormulas[name] as (...x: unknown[]) => unknown).bind(AtmosphericFormulas))

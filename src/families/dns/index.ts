@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DnsFormulas — 8 exact-integer formulas of the dns domain, each at a hex address crossing to cross; develops the dns leads. */
@@ -31,4 +31,4 @@ export class DnsFormulas {
 }
 
 for (const name of ['cachehit', 'combos', 'labels', 'nameservers', 'queries', 'records', 'ttl', 'zones'] as const)
-  qpuHexRegisterOf('dns', name, (DnsFormulas[name] as (...x: unknown[]) => unknown).bind(DnsFormulas))
+  hexRegisterOf('dns', name, (DnsFormulas[name] as (...x: unknown[]) => unknown).bind(DnsFormulas))

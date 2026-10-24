@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RecoveryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('recovery: resttime, heartratedrop, sleepdebt, recoveryrate, musclerepair, 
   assert.equal(RecoveryFormulas.overtrainingindex(120, 100).value, 120)
   assert.equal(RecoveryFormulas.hydrationgap(3000, 2500).value, 500)
   assert.equal(RecoveryFormulas.resttime(48, 2).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('recovery')?.length, 8)
+  assert.equal(hexFamiliesOf().get('recovery')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'recovery', program: ['resttime'], params: [48, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 96, `recovery.resttime at ${uuid}`)
-  qpuUuidReceiptOf('recovery resttime', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('recovery resttime', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; resttime 96, heartratedrop 60, sleepdebt 16, recoveryrate 80, musclerepair 100, readiness 85, overtrainingindex 120, hydrationgap 500; crossing to physiology')
 })

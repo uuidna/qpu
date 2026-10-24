@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NebulaFormulas } from './index.js'
 
 /** nebula: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('nebula: radius, density, types, temperature, ionization, lightyears, stars
   assert.equal(NebulaFormulas.lightyears(5, 1).value, 5, 'lightyears(5, 1)')
   assert.equal(NebulaFormulas.stars(100, 1).value, 100, 'stars(100, 1)')
   assert.equal(NebulaFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('nebula')?.length, 8)
+  assert.equal(hexFamiliesOf().get('nebula')?.length, 8)
   for (const [name, params, expected] of [["radius",[10,1],10],["density",[100,1],100],["types",[4,0],4]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'nebula', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `nebula.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`nebula ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`nebula ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "radius=10, density=100, types=4")
 })

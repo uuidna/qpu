@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROTEOMICS — THE PROTEIN CENSUS, AS ARITHMETIC (chosen by the biochemistry registry, not by hand). Measuring proteins is
@@ -31,4 +31,4 @@ export class ProteomicsFormulas {
 }
 
 for (const name of ['abundance', 'coverage', 'digestion', 'expression', 'foldchange', 'interaction', 'isoelectric', 'massspec'] as const)
-  qpuHexRegisterOf('proteomics', name, (ProteomicsFormulas[name] as (...x: unknown[]) => unknown).bind(ProteomicsFormulas))
+  hexRegisterOf('proteomics', name, (ProteomicsFormulas[name] as (...x: unknown[]) => unknown).bind(ProteomicsFormulas))

@@ -18,6 +18,7 @@ import Qpu.Stabilizer
 import Qpu.Clay
 import Qpu.Cross
 import Qpu.Fuse
+import Qpu.Fusion
 import Qpu.Physics
 import Qpu.Pi
 import Qpu.Primes

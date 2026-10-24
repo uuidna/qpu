@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MIGRATION — HUMAN MOVEMENT, AS ARITHMETIC (chosen by the public-API registry, not by hand). People moving is numbers:
@@ -31,4 +31,4 @@ export class MigrationFormulas {
 }
 
 for (const name of ['grossflow', 'integrationindex', 'netmigration', 'pushpull', 'rate', 'remittanceshare', 'returnrate', 'settlementratio'] as const)
-  qpuHexRegisterOf('migration', name, (MigrationFormulas[name] as (...x: unknown[]) => unknown).bind(MigrationFormulas))
+  hexRegisterOf('migration', name, (MigrationFormulas[name] as (...x: unknown[]) => unknown).bind(MigrationFormulas))

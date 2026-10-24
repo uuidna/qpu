@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TriangulationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('triangulation: angleclosure, areacoords, baseline, bearingsum, intersectio
   assert.equal(TriangulationFormulas.pointdensity(1000, 4).value, 250)
   assert.equal(TriangulationFormulas.resection(100, 120, 140).value, 360, 'three observed angles')
   assert.equal(TriangulationFormulas.baseline(3, 4).dst, 'surveying')
-  assert.equal(qpuHexFamiliesOf().get('triangulation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('triangulation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'triangulation', program: ['baseline'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `triangulation.baseline at ${uuid}`)
-  qpuUuidReceiptOf('triangulation baseline', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('triangulation baseline', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; angleclosure 50, areacoords 100, baseline 25, bearingsum 40, intersection 20, networkredundancy 4, pointdensity 250, resection 360; crossing to surveying')
 })

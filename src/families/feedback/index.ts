@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FEEDBACK — CLOSED-LOOP CONTROL, AS ARITHMETIC. A feedback loop is numbers: the closed-loop gain a loop settles to,
@@ -31,4 +31,4 @@ export class FeedbackFormulas {
 }
 
 for (const name of ['closedloopgain', 'dampingratio', 'errorsignal', 'looptransfer', 'overshoot', 'sensitivity', 'settlingtime', 'steadystateerror'] as const)
-  qpuHexRegisterOf('feedback', name, (FeedbackFormulas[name] as (...x: unknown[]) => unknown).bind(FeedbackFormulas))
+  hexRegisterOf('feedback', name, (FeedbackFormulas[name] as (...x: unknown[]) => unknown).bind(FeedbackFormulas))

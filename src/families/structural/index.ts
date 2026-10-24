@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STRUCTURAL — STRUCTURAL ENGINEERING, AS ARITHMETIC. A standing structure is numbers: the bending moment a force makes
@@ -31,4 +31,4 @@ export class StructuralFormulas {
 }
 
 for (const name of ['buckling', 'deflection', 'moment', 'reinforcement', 'safetyfactor', 'seismic', 'shear', 'slenderness'] as const)
-  qpuHexRegisterOf('structural', name, (StructuralFormulas[name] as (...x: unknown[]) => unknown).bind(StructuralFormulas))
+  hexRegisterOf('structural', name, (StructuralFormulas[name] as (...x: unknown[]) => unknown).bind(StructuralFormulas))

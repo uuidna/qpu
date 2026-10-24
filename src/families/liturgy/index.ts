@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LITURGY — scaffolded integer measures crossed to anthropology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class LiturgyFormulas {
 }
 
 for (const name of ['chantmodes', 'cyclelength', 'feastdays', 'hourorderings', 'processionpaths', 'rubriccombos', 'seasons', 'vestmentsubsets'] as const)
-  qpuHexRegisterOf('liturgy', name, (LiturgyFormulas[name] as (...x: unknown[]) => unknown).bind(LiturgyFormulas))
+  hexRegisterOf('liturgy', name, (LiturgyFormulas[name] as (...x: unknown[]) => unknown).bind(LiturgyFormulas))

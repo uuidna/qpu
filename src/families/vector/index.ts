@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VectorFormulas — 8 exact-integer formulas of the vector domain, each at a hex address crossing to cross; develops the vector leads. */
@@ -45,4 +45,4 @@ export class VectorFormulas {
 }
 
 for (const name of ['anglecosnum', 'chebyshev', 'combos', 'components', 'crossprod', 'dims', 'distance1', 'dot', 'magnitude', 'norm', 'parallelogram', 'scale', 'span', 'squaredmagnitude', 'unit'] as const)
-  qpuHexRegisterOf('vector', name, (VectorFormulas[name] as (...x: unknown[]) => unknown).bind(VectorFormulas))
+  hexRegisterOf('vector', name, (VectorFormulas[name] as (...x: unknown[]) => unknown).bind(VectorFormulas))

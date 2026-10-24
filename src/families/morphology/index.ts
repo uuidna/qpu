@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MORPHOLOGY — WORD STRUCTURE, AS ARITHMETIC. The shape of words is numbers: morphemes per word, how much of a
@@ -30,4 +30,4 @@ export class MorphologyFormulas {
 }
 
 for (const name of ['affixation', 'allomorphy', 'density', 'derivation', 'inflection', 'morphemes', 'productivity', 'transparency'] as const)
-  qpuHexRegisterOf('morphology', name, (MorphologyFormulas[name] as (...x: unknown[]) => unknown).bind(MorphologyFormulas))
+  hexRegisterOf('morphology', name, (MorphologyFormulas[name] as (...x: unknown[]) => unknown).bind(MorphologyFormulas))

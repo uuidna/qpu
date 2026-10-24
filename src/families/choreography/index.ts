@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHOREOGRAPHY — scaffolded integer measures crossed to kinematics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ChoreographyFormulas {
 }
 
 for (const name of ['beatspermeasure', 'dancers', 'formationorderings', 'phrasecount', 'spacingmeters', 'stepcombos', 'symmetrygroups', 'syncratio'] as const)
-  qpuHexRegisterOf('choreography', name, (ChoreographyFormulas[name] as (...x: unknown[]) => unknown).bind(ChoreographyFormulas))
+  hexRegisterOf('choreography', name, (ChoreographyFormulas[name] as (...x: unknown[]) => unknown).bind(ChoreographyFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TpuFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('tpu: MACs, TOPS, tiles, throughput, utilisation and the systolic dataflow 
   assert.equal(TpuFormulas.batch(10000, 256).value, 40, 'passes to cover the samples')
   assert.equal(TpuFormulas.efficiency(75, 100).value, 75, 'useful ops of the peak')
   assert.equal(TpuFormulas.macs(256, 256).dst, 'hardware')
-  assert.equal(qpuHexFamiliesOf().get('tpu')?.length, 10)
+  assert.equal(hexFamiliesOf().get('tpu')?.length, 10)
   const uuid = qpuHexUuidOf({ family: 'tpu', program: ['macs'], params: [256, 256] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 65536, `tpu.macs at ${uuid}`)
-  qpuUuidReceiptOf('tpu macs', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tpu macs', contentUuidOf(run), { uuid })
   t.diagnostic('10 formulas; macs 65536, tops 91750400, tiles 4, throughput 45875200, utilization 75%, dataflow 8192, latency 1280, memory 2000000, batch 40, efficiency 75%; crossing to hardware')
 })

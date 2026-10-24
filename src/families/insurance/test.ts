@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { InsuranceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -23,10 +23,10 @@ test('insurance: premium, claim, coinsurance, indemnity, loss ratio, reserve, su
   assert.equal(InsuranceFormulas.frequencyseverity(3, 4).value, 12)
   assert.equal(InsuranceFormulas.solvencymargin(100, 70).value, 30)
   assert.equal(InsuranceFormulas.claim(5000, 500).dst, 'law', 'coverage is decided by the policy and the court')
-  assert.equal(qpuHexFamiliesOf().get('insurance')?.length, 15)
+  assert.equal(hexFamiliesOf().get('insurance')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'insurance', program: ['indemnity'], params: [8000, 5000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5000, `insurance.indemnity at ${uuid}`)
-  qpuUuidReceiptOf('insurance indemnity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('insurance indemnity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; premium 2000, claim 4500, coinsurance 6000, indemnity 5000, lossratio 70%, reserve 20000, subrogation 8000, copay 800; crossing to law')
 })

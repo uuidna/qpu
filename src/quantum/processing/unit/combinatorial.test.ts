@@ -2,30 +2,30 @@
  * A COMBINATION IS AN ADDRESS, AND THE ADDRESS COMES BACK.
  *
  * The unit computed 342 teaching combinations and 36 mixed ones and addressed none: a row was the two strings
- * it was made of. qpuShapeUuidOf answers "are these the same thing" and cannot answer "which thing is this",
+ * it was made of. shapeUuidOf answers "are these the same thing" and cannot answer "which thing is this",
  * because it is a fold. All 438 are round-tripped here, not a sample — a codec that wraps at the four
  * thousandth is what the params cap exists to name.
  */
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import {
-  qpuCallOfUuid,
-  qpuCallUuidOf,
-  qpuCombinatorialDoorsHolds,
-  qpuCombinatorialDoorsOf,
-  qpuCombinatorialHolds,
-  qpuContentUuidHolds,
-  qpuHexDecodeOf,
-  qpuHexFamiliesOf,
+  callOfUuid,
+  callUuidOf,
+  combinatorialDoorsHolds,
+  combinatorialDoorsOf,
+  combinatorialHolds,
+  contentUuidHolds,
+  hexDecodeOf,
+  hexFamiliesOf,
   qpuHexUuidOf,
-  qpuMixedOf,
+  mixedOf,
   QPU_EXPERIMENTS,
   QPU_TEACHING_DOMAINS,
   QPU_TEACHING_SUBJECTS,
-  qpuShapeUuidHolds,
-  qpuShapeUuidSealHolds,
-  qpuTeachingPairsOf,
-  qpuUuidReceiptHolds,
+  shapeUuidHolds,
+  shapeUuidSealHolds,
+  teachingPairsOf,
+  uuidReceiptHolds,
 } from './index.js'
 import { leanCallOf, leanModelOf } from './lean-eval.js'
 
@@ -63,8 +63,8 @@ test('periodAux with the unit test and the carried power reaches what the fuel l
 const RFC9562 =/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 
 test('every door is derived from its own surface, and no two collide', () => {
-  const doors = qpuCombinatorialDoorsOf()
-  assert.equal(qpuCombinatorialDoorsHolds(doors), true)
+  const doors = combinatorialDoorsOf()
+  assert.equal(combinatorialDoorsHolds(doors), true)
   assert.deepEqual(doors.collisions, [], 'two surfaces folding to one hex would address each other’s combinations')
   assert.deepEqual(doors.rows.map((r) => r.door).sort(), ['mixed', 'teaching', 'zone'])
 
@@ -72,31 +72,31 @@ test('every door is derived from its own surface, and no two collide', () => {
   // variant. A surface past the cap would wrap onto another combination's address, so the table refuses.
   assert.equal(doors.cap, 4096)
   for (const row of doors.rows) assert.ok(row.combinations <= doors.cap, `${row.door} has ${row.combinations} combinations`)
-  assert.equal(qpuCombinatorialDoorsHolds({ ...doors, cap: 8 }), false, 'the predicate bites when a surface is past the cap')
-  assert.equal(qpuCombinatorialDoorsHolds({ ...doors, collisions: [{ hex: 'dead', doors: ['a', 'b'] }] } as never), false)
+  assert.equal(combinatorialDoorsHolds({ ...doors, cap: 8 }), false, 'the predicate bites when a surface is past the cap')
+  assert.equal(combinatorialDoorsHolds({ ...doors, collisions: [{ hex: 'dead', doors: ['a', 'b'] }] } as never), false)
 })
 
 test('all 438 combinations mint, decode back to themselves, and verify', () => {
-  assert.equal(qpuCombinatorialHolds(), true)
+  assert.equal(combinatorialHolds(), true)
 
   const seen = new Set<string>()
   let minted = 0
-  for (const row of qpuCombinatorialDoorsOf().rows) {
+  for (const row of combinatorialDoorsOf().rows) {
     for (let index = 0; index < row.combinations; index++) {
       minted += 1
     }
   }
-  assert.equal(minted, qpuCombinatorialDoorsOf().combinations)
+  assert.equal(minted, combinatorialDoorsOf().combinations)
 
   // distinct across every surface at once: a door outside the address would collide index-for-index
-  for (const pair of qpuTeachingPairsOf().pairs) if (pair.uuid) seen.add(pair.uuid)
-  for (const pair of qpuMixedOf().pairs) if (pair.uuid) seen.add(pair.uuid)
-  assert.equal(seen.size, qpuTeachingPairsOf().pairs.length + qpuMixedOf().pairs.length)
+  for (const pair of teachingPairsOf().pairs) if (pair.uuid) seen.add(pair.uuid)
+  for (const pair of mixedOf().pairs) if (pair.uuid) seen.add(pair.uuid)
+  assert.equal(seen.size, teachingPairsOf().pairs.length + mixedOf().pairs.length)
   for (const uuid of seen) assert.match(uuid, RFC9562, 'an address that is not a UUID is a UUID-shaped thing')
 
   // A corpus that is not this corpus gets no address, by absence rather than by crashing — the arm that broke
   // when the addresses first went in.
-  const invented = qpuTeachingPairsOf([
+  const invented = teachingPairsOf([
     { subject: 'invented', domain: 'nowhere', direction: 'practice to theory', what: 'x', source: 'x', year: 1 },
   ] as never)
   assert.equal(invented.pairs.length, 1)
@@ -104,8 +104,8 @@ test('all 438 combinations mint, decode back to themselves, and verify', () => {
 })
 
 test('a tampered address is refused in every field, and an unknown door is named rather than thrown at', () => {
-  const uuid = qpuCallUuidOf('teaching', 'bell ringing', 'astronomy')
-  const decoded = qpuCallOfUuid(uuid)
+  const uuid = callUuidOf('teaching', 'bell ringing', 'astronomy')
+  const decoded = callOfUuid(uuid)
   assert.equal(decoded.door, 'teaching')
   assert.equal(decoded.left, 'bell ringing')
   assert.equal(decoded.right, 'astronomy')
@@ -115,41 +115,41 @@ test('a tampered address is refused in every field, and an unknown door is named
   // that — so `verified` recomputes the address from the pair it claims. Every field is in the fold.
   const flip = (s: string, at: number): string => s.slice(0, at) + ((parseInt(s[at]!, 16) + 1) % 16).toString(16) + s.slice(at + 1)
   for (const [field, at] of [['handle', 2], ['check', 16], ['variant', 19], ['params', 21], ['envelope', 25]] as const) {
-    assert.equal(qpuCallOfUuid(flip(uuid, at)).verified, false, `a tampered ${field} must not verify`)
+    assert.equal(callOfUuid(flip(uuid, at)).verified, false, `a tampered ${field} must not verify`)
   }
-  assert.notEqual(qpuCallOfUuid(flip(uuid, 21)).index, decoded.index, 'the params flip does decode to another combination — which is why verify exists')
+  assert.notEqual(callOfUuid(flip(uuid, 21)).index, decoded.index, 'the params flip does decode to another combination — which is why verify exists')
 
   // An address of a surface this unit does not compute is a fact about this unit, not a malformed uuid.
-  const foreign = qpuCallOfUuid('00000000-ffff-8000-8000-000000000000')
+  const foreign = callOfUuid('00000000-ffff-8000-8000-000000000000')
   assert.equal(foreign.door, null)
   assert.equal(foreign.verified, false)
   assert.equal(foreign.hex, 'ffff')
 
   // but a string that is not an address at all is refused, and an off-axis combination is refused at mint
-  assert.throws(() => qpuCallOfUuid('not-a-uuid'), /not a uuid/)
-  assert.throws(() => qpuCallUuidOf('teaching', 'bell ringing', 'no such domain'), /does not carry the combination/)
-  assert.throws(() => qpuCallUuidOf('no such door', 'a', 'b'), /unknown combinatorial door/)
+  assert.throws(() => callOfUuid('not-a-uuid'), /not a uuid/)
+  assert.throws(() => callUuidOf('teaching', 'bell ringing', 'no such domain'), /does not carry the combination/)
+  assert.throws(() => callUuidOf('no such door', 'a', 'b'), /unknown combinatorial door/)
 })
 
 test('the readings carry the addresses, so the codec has consumers and not only a test', () => {
   // Next door: 251 doors, a collision-free hex each, an encode/decode pair — and zero callers, because the
   // resolver meant to use it reimplemented its three lines inline. A codec only its own suite calls is dead.
-  const teaching = qpuTeachingPairsOf()
+  const teaching = teachingPairsOf()
   assert.equal(teaching.pairs.length, QPU_TEACHING_SUBJECTS.length * QPU_TEACHING_DOMAINS.length, 'every subject against every domain')
   for (const pair of teaching.pairs) {
-    assert.equal(pair.uuid, qpuCallUuidOf('teaching', pair.subject, pair.domain), 'the row carries the address the codec mints')
-    const back = qpuCallOfUuid(pair.uuid!)
+    assert.equal(pair.uuid, callUuidOf('teaching', pair.subject, pair.domain), 'the row carries the address the codec mints')
+    const back = callOfUuid(pair.uuid!)
     assert.equal(back.left, pair.subject)
     assert.equal(back.right, pair.domain)
     assert.equal(back.verified, true)
   }
 
-  const mixed = qpuMixedOf()
+  const mixed = mixedOf()
   const fields = new Set(QPU_EXPERIMENTS.flatMap((row) => [row.left, row.right]))
   assert.equal(mixed.pairs.length, (fields.size * (fields.size - 1)) / 2, 'every field against every other, once')
   for (const pair of mixed.pairs) {
-    assert.equal(pair.uuid, qpuCallUuidOf('mixed', pair.left, pair.right))
-    assert.equal(qpuCallOfUuid(pair.uuid!).verified, true)
+    assert.equal(pair.uuid, callUuidOf('mixed', pair.left, pair.right))
+    assert.equal(callOfUuid(pair.uuid!).verified, true)
   }
 })
 
@@ -157,11 +157,11 @@ test('the crypto family decides the version: all eight are in play, every hex ad
   // Mint the first formula of every family at its hex address, decode it back, and collect the versions worn.
   const versions = new Set<number>()
   let addressed = 0
-  for (const [family, formulas] of qpuHexFamiliesOf()) {
+  for (const [family, formulas] of hexFamiliesOf()) {
     const first = formulas[0]
     if (!first) continue
     const uuid = qpuHexUuidOf({ family, program: [first.name] })
-    const back = qpuHexDecodeOf(uuid)
+    const back = hexDecodeOf(uuid)
     assert.match(uuid, RFC9562, `${family} minted a UUID-shaped non-UUID`)
     assert.equal(back.holds, true, `${family} did not decode back`)
     assert.equal(back.sealed, true, `${family} wears a version its content does not decide`)
@@ -178,19 +178,19 @@ test('the crypto family decides the version: all eight are in play, every hex ad
   assert.ok(versions.size > 1, `the version nibble is still effectively hardcoded: only ${[...versions].join(', ')} seen across ${addressed} families`)
 
   // a tampered middle names a version its content does not: flipping a program nibble breaks the seal
-  const [family, formulas] = [...qpuHexFamiliesOf()].find(([, f]) => f.length > 1)!
+  const [family, formulas] = [...hexFamiliesOf()].find(([, f]) => f.length > 1)!
   const uuid = qpuHexUuidOf({ family, program: [formulas[0]!.name] })
   const bare = uuid.replace(/-/g, '')
   const flipped = `${bare.slice(0, 13)}${((parseInt(bare[13]!, 16) + 1) % 16).toString(16)}${bare.slice(14)}`
   const grouped = `${flipped.slice(0, 8)}-${flipped.slice(8, 12)}-${flipped.slice(12, 16)}-${flipped.slice(16, 20)}-${flipped.slice(20)}`
-  assert.equal(qpuHexDecodeOf(grouped).sealed, false, 'a tampered program nibble still passed the crypto seal')
+  assert.equal(hexDecodeOf(grouped).sealed, false, 'a tampered program nibble still passed the crypto seal')
 })
 
 test('the content, shape, seal and receipt identities still hold once the version is the crypto family\'s', () => {
   // the shape codec: RFC shape (any version 1..8), determinism, and content-sensitivity, with its sealed widths
-  assert.equal(qpuShapeUuidHolds(), true, 'the content UUID no longer holds its RFC shape')
-  assert.equal(qpuShapeUuidSealHolds(), true, 'the sealed widths drifted')
-  assert.equal(qpuContentUuidHolds(), true, 'the same content stopped giving the same UUID')
+  assert.equal(shapeUuidHolds(), true, 'the content UUID no longer holds its RFC shape')
+  assert.equal(shapeUuidSealHolds(), true, 'the sealed widths drifted')
+  assert.equal(contentUuidHolds(), true, 'the same content stopped giving the same UUID')
   // the receipt UUID: deterministic per (payload, referrer), distinct across referrers and across values
-  assert.equal(qpuUuidReceiptHolds(), true, 'the receipt identity drifted')
+  assert.equal(uuidReceiptHolds(), true, 'the receipt identity drifted')
 })

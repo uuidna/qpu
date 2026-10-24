@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GLYCOLYSIS — THE EMBDEN–MEYERHOF PATHWAY, AS ARITHMETIC (the stoichiometry every cell runs, not chosen by hand). Breaking
@@ -31,4 +31,4 @@ export class GlycolysisFormulas {
 }
 
 for (const name of ['flux', 'gluconeogenesis', 'glucoseconsumed', 'lactate', 'nadh', 'netatp', 'phosphorylation', 'pyruvate'] as const)
-  qpuHexRegisterOf('glycolysis', name, (GlycolysisFormulas[name] as (...x: unknown[]) => unknown).bind(GlycolysisFormulas))
+  hexRegisterOf('glycolysis', name, (GlycolysisFormulas[name] as (...x: unknown[]) => unknown).bind(GlycolysisFormulas))

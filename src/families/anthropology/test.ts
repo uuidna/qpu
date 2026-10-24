@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AnthropologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('anthropology: kinship, diffusion, lineage, artifacts, stratigraphy, langua
   assert.equal(AnthropologyFormulas.migration(1000, 25).value, 40, 'distance per generation')
   assert.equal(AnthropologyFormulas.ritual(9, 12).value, 75)
   assert.equal(AnthropologyFormulas.kinship(120, 4).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('anthropology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('anthropology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'anthropology', program: ['lineage'], params: [900, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 300, `anthropology.lineage at ${uuid}`)
-  qpuUuidReceiptOf('anthropology lineage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('anthropology lineage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; kinship 30, diffusion 25, lineage 300, artifacts 50, stratigraphy 30, language 30, migration 40, ritual 75; crossing to sociology')
 })

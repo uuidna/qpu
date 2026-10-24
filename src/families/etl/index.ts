@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ETL — EXTRACT, TRANSFORM, LOAD AS ARITHMETIC (chosen by the data-pipeline registry, not by hand). Moving data is
@@ -31,4 +31,4 @@ export class EtlFormulas {
 }
 
 for (const name of ['batchwindow', 'dedupe', 'latency', 'loadfactor', 'rejectrate', 'skew', 'throughput', 'transformcost'] as const)
-  qpuHexRegisterOf('etl', name, (EtlFormulas[name] as (...x: unknown[]) => unknown).bind(EtlFormulas))
+  hexRegisterOf('etl', name, (EtlFormulas[name] as (...x: unknown[]) => unknown).bind(EtlFormulas))

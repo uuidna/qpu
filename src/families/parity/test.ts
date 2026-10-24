@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ParityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('parity: evenbit, checkbits, syndrome, hammingbits, coveragebits, detectrat
   assert.equal(ParityFormulas.overhead(3, 4).value, 75)
   assert.equal(ParityFormulas.correctable(3).value, 1, 'distance 3 corrects one error')
   assert.equal(ParityFormulas.evenbit(7).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('parity')?.length, 8)
+  assert.equal(hexFamiliesOf().get('parity')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'parity', program: ['checkbits'], params: [64, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 8, `parity.checkbits at ${uuid}`)
-  qpuUuidReceiptOf('parity checkbits', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('parity checkbits', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; evenbit 1, checkbits 8, syndrome 5, hammingbits 3, coveragebits 7, detectrate 99, overhead 75, correctable 1; crossing to signal')
 })

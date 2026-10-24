@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GRAVIMETRY — scaffolded integer measures crossed to geology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class GravimetryFormulas {
 }
 
 for (const name of ['anomaly', 'bouguercorrection', 'densitycontrast', 'freeaircorrection', 'gradient', 'stationspacing', 'surveypoints', 'terraincorrection'] as const)
-  qpuHexRegisterOf('gravimetry', name, (GravimetryFormulas[name] as (...x: unknown[]) => unknown).bind(GravimetryFormulas))
+  hexRegisterOf('gravimetry', name, (GravimetryFormulas[name] as (...x: unknown[]) => unknown).bind(GravimetryFormulas))

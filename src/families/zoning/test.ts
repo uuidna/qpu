@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ZoningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('zoning: far, coverage, setback, density, height, parking, openspace, lotsi
   assert.equal(ZoningFormulas.openspace(10000, 4000).value, 6000)
   assert.equal(ZoningFormulas.lotsize(50000, 5000).value, 10, 'ten lots from the parcel')
   assert.equal(ZoningFormulas.density(120, 4).dst, 'governance')
-  assert.equal(qpuHexFamiliesOf().get('zoning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('zoning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'zoning', program: ['density'], params: [120, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `zoning.density at ${uuid}`)
-  qpuUuidReceiptOf('zoning density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('zoning density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; far 150, coverage 40, setback 65, density 30, height 5, parking 100, openspace 6000, lotsize 10; crossing to governance')
 })

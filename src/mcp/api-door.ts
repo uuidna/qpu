@@ -1,18 +1,16 @@
 import { packageVersion } from '../quantum/processing/unit/version.js'
-import { qpuContentUuidOf, qpuFacesOf, qpuHexRegisterOf, qpuHexUuidOf, qpuMcpFuseOf, qpuSchemaMethodsOf, qpuUuidReceiptOf, type QpuMethod } from '../quantum/processing/unit/index.js'
+import { contentUuidOf, facesOf, hexRegisterOf, qpuHexUuidOf, mcpFuseOf, schemaMethodsOf, uuidReceiptOf, type QpuMethod } from '../quantum/processing/unit/index.js'
 import { crossFormulaOf } from '../families/cross/index.js'
 
 /** EVERY PUBLIC API IS AN ADDRESS. The APIs.guru registry lists every public API with an OpenAPI document; the unit
- *  reads the registry, reads an API's document, and derives its operations (qpuSchemaMethodsOf). A request is then a
+ *  reads the registry, reads an API's document, and derives its operations (schemaMethodsOf). A request is then a
  *  hex program of the family `api`: call(i, j, s) — the i-th API of the registry, its j-th operation, the s-th
  *  parameter choice — three 16-bit naturals in one RFC 9562 v8 UUID. Nothing names an API by hand: the registry
  *  orders them, the document orders the operations, the parameters are content-addressed. The fused door `api`
  *  lists, resolves and calls through that address. Reads only (GET): reads need no auth. */
 
 const REGISTRY = 'https://api.apis.guru/v2/list.json'
-const DEADLINE = 15000
 const WINDOW = 600000
-const EXCERPT = 2048
 const ua = { 'user-agent': `qpu.uuidna.com/${packageVersion} (+https://qpu.uuidna.com)` }
 
 type Entry = { preferred?: string; versions?: Record<string, { swaggerUrl?: string; info?: { title?: string; 'x-apisguru-categories'?: string[] } }> }
@@ -24,19 +22,12 @@ let registry: { at: number; names: string[]; entries: Record<string, Entry> } | 
 const specs = new Map<string, { at: number; api: Promise<Api> }>()
 
 // a read is tried twice: a moment's failure (a timeout, a dropped connection) is not the document's state
-// what one read may hold: a document past this is named, not parsed — a Worker isolate has 128 MB, and a multi-megabyte
-// OpenAPI document parses to many times its bytes
-const BYTES = 2 ** 20
 const json = async (url: string, accept = 'application/json'): Promise<unknown> => {
   for (let attempt = 0; ; attempt++) {
     try {
-      const r = await fetch(url, { headers: { accept, ...ua }, signal: AbortSignal.timeout(DEADLINE) })
+      const r = await fetch(url, { headers: { accept, ...ua } })
       if (!r.ok) throw new Error(`${url} answered ${r.status}`)
-      const length = Number(r.headers.get('content-length') ?? 0)
-      if (length > BYTES) throw new Error(`${url} answered ${r.status}: ${length} bytes, past the ${BYTES} one read holds`)
-      const text = await r.text()
-      if (text.length > BYTES) throw new Error(`${url} answered ${r.status}: ${text.length} bytes, past the ${BYTES} one read holds`)
-      return JSON.parse(text)
+      return JSON.parse(await r.text())
     } catch (e) {
       if (attempt === 1 || /answered \d{3}/.test(String((e as Error).message))) throw e
     }
@@ -93,7 +84,7 @@ export const apiOf = async (which: number | string): Promise<Api> => {
       // secured: the document asks a credential of every request (a global security requirement, or schemes it declares)
       const schemes = Object.keys(((doc.components as { securitySchemes?: object } | undefined)?.securitySchemes ?? (doc.securityDefinitions as object | undefined) ?? {}))
       const secured = (Array.isArray(doc.security) && doc.security.length > 0) || schemes.length > 0
-      return { ...base, server: serverOf(doc, base.spec, api), ...(doc.servers || doc.host ? {} : { guessed: true }), secured, operations: operationsOf(doc, qpuSchemaMethodsOf(api, doc)) }
+      return { ...base, server: serverOf(doc, base.spec, api), ...(doc.servers || doc.host ? {} : { guessed: true }), secured, operations: operationsOf(doc, schemaMethodsOf(api, doc)) }
     } catch (e) {
       return { ...base, why: (e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message }
     }
@@ -103,7 +94,7 @@ export const apiOf = async (which: number | string): Promise<Api> => {
 }
 
 /** The address of a request: the s-th parameter choice is the content address of the parameters, folded to 16 bits. */
-export const apiSeedOf = (params: Record<string, unknown>): number => (Object.keys(params).length ? parseInt(qpuContentUuidOf(params).slice(0, 4), 16) : 0)
+export const apiSeedOf = (params: Record<string, unknown>): number => (Object.keys(params).length ? parseInt(contentUuidOf(params).slice(0, 4), 16) : 0)
 
 // the request an operation makes with these parameters: path parameters templated, the rest as the query
 const urlOf = (api: Api, op: Operation, params: Record<string, unknown>): string => {
@@ -129,7 +120,7 @@ export const apiCallOf = async (which: number | string, operation: number, param
   const seed = apiSeedOf(params)
   const hex = (() => { try { return qpuHexUuidOf({ family: 'api', program: ['call'], params: [api.index, operation, seed] }) } catch { return undefined } })()
   const base = { api: api.api, index: api.index, operation, verb: op?.verb ?? '', url: '', status: 0, type: '', bytes: 0, excerpt: null as unknown, ...(hex ? { hex } : {}) }
-  const sealed = (r: Omit<Reading, 'receipt'>): Reading => ({ ...r, receipt: qpuUuidReceiptOf(`api ${r.api}`, qpuContentUuidOf({ url: r.url, status: r.status, excerpt: r.excerpt }), { status: r.status }, r.url).uuid })
+  const sealed = (r: Omit<Reading, 'receipt'>): Reading => ({ ...r, receipt: uuidReceiptOf(`api ${r.api}`, contentUuidOf({ url: r.url, status: r.status, excerpt: r.excerpt }), { status: r.status }, r.url).uuid })
   if (!op) return sealed({ ...base, why: api.why ?? `no operation ${operation} of ${api.operations.length}` })
   if (!api.server) return sealed({ ...base, why: 'the document names no server: resolved to a path, not an address' })
   const url = urlOf(api, op, params)
@@ -157,17 +148,14 @@ export const apiCallOf = async (which: number | string, operation: number, param
   // to the spec's resolved server+path (no host injection), within the deadline; the credential is never receipted.
   if (op.verb !== 'get' && readOnly) return sealed({ ...base, url, why: `${op.verb} is a write: not made from the reproducible api.call(i, j, s) formula — call the api tool { api, operation, params } to make it` })
   const headers: Record<string, string> = { accept: 'application/json, */*;q=0.5', ...ua, ...(credential ? { authorization: credential } : {}), ...(body !== undefined ? { 'content-type': 'application/json' } : {}) }
-  const once = () => fetch(url, { method: op.verb.toUpperCase(), headers, ...(body !== undefined ? { body } : {}), signal: AbortSignal.timeout(DEADLINE) })
+  const once = () => fetch(url, { method: op.verb.toUpperCase(), headers, ...(body !== undefined ? { body } : {}) })
   try {
     const r = await once().catch(once)
     const type = r.headers.get('content-type') ?? ''
-    // bound the body read: a reply that declares more than the cap is not read whole into the isolate (Wave XIII) — only
-    // an excerpt is kept anyway, so a 3 MB reply cannot exhaust memory. The deadline already bounds the time.
-    const declared = Number(r.headers.get('content-length') ?? 0)
-    if (declared > EXCERPT * 64) return sealed({ ...base, url, status: r.status, type, bytes: declared, excerpt: `body ${declared} bytes exceeds the ${EXCERPT * 64}-byte read cap: not read whole`, ...credentialWithheld })
-    const text = (await r.text()).slice(0, EXCERPT * 64)
-    let excerpt: unknown = text.slice(0, EXCERPT)
-    if (/json/.test(type)) { try { excerpt = JSON.parse(text.length > EXCERPT * 8 ? text.slice(0, EXCERPT * 8) : text) } catch { /* an excerpt of the text stands */ } }
+    // the whole body is read: no size or time cap truncates what the API answers
+    const text = await r.text()
+    let excerpt: unknown = text
+    if (/json/.test(type)) { try { excerpt = JSON.parse(text) } catch { /* the text stands */ } }
     return sealed({ ...base, url, status: r.status, type, bytes: text.length, excerpt, ...credentialWithheld })
   } catch (e) {
     return sealed({ ...base, url, why: (e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message })
@@ -175,11 +163,11 @@ export const apiCallOf = async (which: number | string, operation: number, param
 }
 
 // the family `api`: operations(i) counts an API's operations; call(i, j, s) makes its j-th operation's request
-qpuHexRegisterOf('api', 'operations', (async (i: number) => {
+hexRegisterOf('api', 'operations', (async (i: number) => {
   const api = await apiOf(i)
   return crossFormulaOf({ id: 'api-operations', src: 'api', dst: 'fusion', formula: 'operations(i) = |paths × verbs| of the i-th API', value: api.operations.length, proof: api.spec || REGISTRY }, api.why === undefined, { name: 'api.operations', params: [i] })
 }) as (...x: unknown[]) => unknown)
-qpuHexRegisterOf('api', 'call', (async (i: number, j: number, s: number) => {
+hexRegisterOf('api', 'call', (async (i: number, j: number, s: number) => {
   const r = await apiCallOf(i, j, s === 0 ? {} : { seed: s }, true)
   return crossFormulaOf({ id: 'api-call', src: 'api', dst: 'fusion', formula: 'call(i, j, s): the s-th request of the j-th operation of the i-th API; value its HTTP status', value: r.status, proof: r.url || REGISTRY }, r.why === undefined, { name: 'api.call', params: [i, j, s] })
 }) as (...x: unknown[]) => unknown)
@@ -232,7 +220,7 @@ export const apiSearchOf = async (words: string[], take = 14, from = 0) => {
   return { kind: 'api-search' as const, words: terms, matched: named.length, from, scanned, read: read.length, readable: read.filter((x) => x.free !== undefined).length, apis: read, more: named.slice(scanned).map((x) => x.api), ...(scanned < named.length ? { next: scanned } : {}) }
 }
 
-qpuMcpFuseOf('api', {
+mcpFuseOf('api', {
   description: "Every public API as an address: {} the registry and how to address it; { api } (name or index) its operations; { api, operation, params } makes that read through api.call(i, j, s) and returns the reading with its hex address; { walk: true, from, take } walks a slice of the registry (fused: document read; used: a read made); { search } finds APIs by words in their names, titles, categories and operations.",
   inputSchema: { type: 'object', properties: { api: { type: ['string', 'integer'] }, operation: { type: 'integer' }, params: { type: 'object' }, walk: { type: 'boolean' }, from: { type: 'integer' }, take: { type: 'integer' }, search: { type: ['string', 'array'], items: { type: 'string' } } } },
   run: async (a) => {
@@ -241,7 +229,7 @@ qpuMcpFuseOf('api', {
     if (a.walk === true) return apiWalkOf(typeof a.from === 'number' ? a.from : 0, typeof a.take === 'number' ? a.take : Infinity)
     if (a.api === undefined) {
       const reg = await apiRegistryOf()
-      return { kind: 'api' as const, registry: REGISTRY, listed: reg.names.length, address: 'api.call(i, j, s): the i-th API of the registry, its j-th operation, the s-th parameter choice — one hex-program UUID', first: reg.names.slice(0, qpuFacesOf().faces), holds: reg.names.length > 0 }
+      return { kind: 'api' as const, registry: REGISTRY, listed: reg.names.length, address: 'api.call(i, j, s): the i-th API of the registry, its j-th operation, the s-th parameter choice — one hex-program UUID', first: reg.names.slice(0, facesOf().faces), holds: reg.names.length > 0 }
     }
     const which = typeof a.api === 'number' ? a.api : String(a.api)
     if (typeof a.operation !== 'number') {

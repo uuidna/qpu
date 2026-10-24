@@ -10,12 +10,12 @@ import { ChecksumFormulas } from '../src/families/checksum/index.js'
 import { clayPrizeOf, openMathScaleOf } from '../src/payload/plugins/clay.js'
 import {
   qpuCiteOf,
-  qpuCiteHolds,
-  qpuContentUuidOf,
-  qpuStatementUuidOf,
+  citeHolds,
+  contentUuidOf,
+  statementUuidOf,
   qpuNextOf,
 } from '../src/quantum/processing/unit/index.js'
-import { qpuPublicOf } from '../src/quantum/processing/unit/zeropage.js'
+import { publicOf } from '../src/quantum/processing/unit/zeropage.js'
 import { citationPrizeMechanismOf } from '../src/payload/plugins/claim-completeness.js'
 import { papersOf } from '../src/mcp/papers.js'
 import { goalOf } from '../src/payload/plugins/goal.js'
@@ -45,11 +45,11 @@ const involutionBeyond = [
 ]
 const cite = qpuCiteOf()
 const prize = clayPrizeOf()
-const face = qpuPublicOf()
+const face = publicOf()
 const mechanism = citationPrizeMechanismOf()
 const papers = await papersOf()
-const citationUuid = qpuContentUuidOf({ where: 'legal.citation', doi: DOI })
-const leanInvHex = qpuStatementUuidOf('involution')
+const citationUuid = contentUuidOf({ where: 'legal.citation', doi: DOI })
+const leanInvHex = statementUuidOf('involution')
 const goal = goalOf({ k: 1 })
 const cov = claySealDomainCoverageOf()
 const treeNext = qpuNextOf().next
@@ -77,7 +77,7 @@ const out = {
       priorConcept: cite.prior.conceptdoi,
       priorTitle: cite.prior.title,
       priorDoi: cite.prior.doi,
-      qpuCiteHolds: qpuCiteHolds(cite),
+      citeHolds: citeHolds(cite),
     },
     papersDoor: {
       kind: papers.kind,

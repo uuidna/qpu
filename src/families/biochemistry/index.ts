@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOCHEMISTRY — THE CHEMISTRY OF LIFE, AS ARITHMETIC (chosen by the public-API registry, not by hand). Reactions are
@@ -31,4 +31,4 @@ export class BiochemistryFormulas {
 }
 
 for (const name of ['bonds', 'concentration', 'efficiency', 'equilibrium', 'michaelis', 'molarity', 'ph', 'turnover'] as const)
-  qpuHexRegisterOf('biochemistry', name, (BiochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(BiochemistryFormulas))
+  hexRegisterOf('biochemistry', name, (BiochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(BiochemistryFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CARAMELIZATION — scaffolded integer measures crossed to chemistry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CaramelizationFormulas {
 }
 
 for (const name of ['activationstage', 'browningrate', 'colorindex', 'masslosspct', 'residualsugar', 'sugarconversion', 'temperaturethreshold', 'timeattemp'] as const)
-  qpuHexRegisterOf('caramelization', name, (CaramelizationFormulas[name] as (...x: unknown[]) => unknown).bind(CaramelizationFormulas))
+  hexRegisterOf('caramelization', name, (CaramelizationFormulas[name] as (...x: unknown[]) => unknown).bind(CaramelizationFormulas))

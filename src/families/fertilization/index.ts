@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FERTILIZATION — FEEDING A CROP, AS ARITHMETIC (a measure crossed to agronomy). Growing is numbers: the nitrogen a crop
@@ -31,4 +31,4 @@ export class FertilizationFormulas {
 }
 
 for (const name of ['applicationrate', 'efficiency', 'leachingloss', 'nitrogenrate', 'npkratio', 'nutrientuptake', 'soiltestindex', 'splitapplication'] as const)
-  qpuHexRegisterOf('fertilization', name, (FertilizationFormulas[name] as (...x: unknown[]) => unknown).bind(FertilizationFormulas))
+  hexRegisterOf('fertilization', name, (FertilizationFormulas[name] as (...x: unknown[]) => unknown).bind(FertilizationFormulas))

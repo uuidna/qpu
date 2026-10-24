@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DIFFRACTION — WAVES BENT AND SPREAD BY APERTURES AND GRATINGS, AS ARITHMETIC (integer proxies, no trigonometry). The
@@ -31,4 +31,4 @@ export class DiffractionFormulas {
 }
 
 for (const name of ['aperture', 'braggangle', 'fringespacing', 'gratingorder', 'pathdifference', 'rayleighcriterion', 'resolvingpower', 'slitspacing'] as const)
-  qpuHexRegisterOf('diffraction', name, (DiffractionFormulas[name] as (...x: unknown[]) => unknown).bind(DiffractionFormulas))
+  hexRegisterOf('diffraction', name, (DiffractionFormulas[name] as (...x: unknown[]) => unknown).bind(DiffractionFormulas))

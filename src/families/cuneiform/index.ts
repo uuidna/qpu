@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CUNEIFORM — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CuneiformFormulas {
 }
 
 for (const name of ['attestationratio', 'logovalues', 'periodcount', 'signpairs', 'signs', 'strokeorderings', 'tabletsubsets', 'wedgesper'] as const)
-  qpuHexRegisterOf('cuneiform', name, (CuneiformFormulas[name] as (...x: unknown[]) => unknown).bind(CuneiformFormulas))
+  hexRegisterOf('cuneiform', name, (CuneiformFormulas[name] as (...x: unknown[]) => unknown).bind(CuneiformFormulas))

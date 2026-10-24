@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TANNING — TURNING HIDE INTO LEATHER, AS ARITHMETIC. The tannery is numbers: the agent offered on hide weight, how much
@@ -31,4 +31,4 @@ export class TanningFormulas {
 }
 
 for (const name of ['area', 'basicity', 'float', 'offer', 'penetration', 'shrinkage', 'thickness', 'uptake'] as const)
-  qpuHexRegisterOf('tanning', name, (TanningFormulas[name] as (...x: unknown[]) => unknown).bind(TanningFormulas))
+  hexRegisterOf('tanning', name, (TanningFormulas[name] as (...x: unknown[]) => unknown).bind(TanningFormulas))

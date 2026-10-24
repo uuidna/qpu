@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MEIOSIS — THE REDUCTION DIVISION, AS ARITHMETIC. The cell halves its chromosomes and shuffles them: the gametes one
@@ -31,4 +31,4 @@ export class MeiosisFormulas {
 }
 
 for (const name of ['chromatids', 'crossovers', 'diploidrestore', 'gametes', 'haploid', 'recombinants', 'segregation', 'variation'] as const)
-  qpuHexRegisterOf('meiosis', name, (MeiosisFormulas[name] as (...x: unknown[]) => unknown).bind(MeiosisFormulas))
+  hexRegisterOf('meiosis', name, (MeiosisFormulas[name] as (...x: unknown[]) => unknown).bind(MeiosisFormulas))

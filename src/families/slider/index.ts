@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SLIDER — THE CAROUSEL BLOCK FROM payloadcms/website, AS ARITHMETIC (a front-end use case, not chosen by hand). A slider is
@@ -31,4 +31,4 @@ export class SliderFormulas {
 }
 
 for (const name of ['autoplay', 'gap', 'index', 'loop', 'pages', 'slides', 'transition', 'visible'] as const)
-  qpuHexRegisterOf('slider', name, (SliderFormulas[name] as (...x: unknown[]) => unknown).bind(SliderFormulas))
+  hexRegisterOf('slider', name, (SliderFormulas[name] as (...x: unknown[]) => unknown).bind(SliderFormulas))

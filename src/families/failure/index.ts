@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FAILURE — FMEA AS ARITHMETIC (failure mode and effects analysis, as numbers). Reliability is counting: the risk priority
@@ -30,4 +30,4 @@ export class FailureFormulas {
 }
 
 for (const name of ['criticality', 'detection', 'escaperate', 'modecount', 'occurrence', 'rootcauses', 'rpn', 'severity'] as const)
-  qpuHexRegisterOf('failure', name, (FailureFormulas[name] as (...x: unknown[]) => unknown).bind(FailureFormulas))
+  hexRegisterOf('failure', name, (FailureFormulas[name] as (...x: unknown[]) => unknown).bind(FailureFormulas))

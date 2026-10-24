@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ExcavationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('excavation: volume, cut, fill, swell, compaction, haul, slope, bench — c
   assert.equal(ExcavationFormulas.slope(8, 2).value, 16)
   assert.equal(ExcavationFormulas.bench(20, 6).value, 4, 'benches down the face')
   assert.equal(ExcavationFormulas.volume(10, 5, 2).dst, 'civil')
-  assert.equal(qpuHexFamiliesOf().get('excavation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('excavation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'excavation', program: ['haul'], params: [100, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9, `excavation.haul at ${uuid}`)
-  qpuUuidReceiptOf('excavation haul', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('excavation haul', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; volume 100, cut 120, fill 500, swell 125, compaction 100, haul 9, slope 16, bench 4; crossing to civil')
 })

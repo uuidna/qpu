@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DERMATOLOGY — THE SKIN, AS ARITHMETIC. Reading the skin is numbers: burned surface, a melanoma score, a UV dose, how a
@@ -30,4 +30,4 @@ export class DermatologyFormulas {
 }
 
 for (const name of ['healing', 'hydration', 'lesions', 'melanoma', 'pigmentation', 'severity', 'tbsa', 'uv'] as const)
-  qpuHexRegisterOf('dermatology', name, (DermatologyFormulas[name] as (...x: unknown[]) => unknown).bind(DermatologyFormulas))
+  hexRegisterOf('dermatology', name, (DermatologyFormulas[name] as (...x: unknown[]) => unknown).bind(DermatologyFormulas))

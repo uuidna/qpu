@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LeanFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('lean: valueadd, waste, flow, pull, kanban, changeover, oee, leadtime — c
   assert.equal(LeanFormulas.oee(90, 95, 99).value, 84)
   assert.equal(LeanFormulas.leadtime(10, 30, 5).value, 45, 'forty-five minutes end to end')
   assert.equal(LeanFormulas.valueadd(30, 120).dst, 'manufacturing')
-  assert.equal(qpuHexFamiliesOf().get('lean')?.length, 8)
+  assert.equal(hexFamiliesOf().get('lean')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'lean', program: ['kanban'], params: [120, 5, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `lean.kanban at ${uuid}`)
-  qpuUuidReceiptOf('lean kanban', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('lean kanban', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; valueadd 25, waste 90, flow 50, pull 60, kanban 30, changeover 120, oee 84, leadtime 45; crossing to manufacturing')
 })

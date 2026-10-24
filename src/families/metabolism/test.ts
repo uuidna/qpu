@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MetabolismFormulas } from './index.js'
 
 /** metabolism: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('metabolism: bmr, atp, calories, pathways, glucose, oxygen, enzymes, combos
   assert.equal(MetabolismFormulas.oxygen(250, 1).value, 250, 'oxygen(250, 1)')
   assert.equal(MetabolismFormulas.enzymes(100, 5).value, 500, 'enzymes(100, 5)')
   assert.equal(MetabolismFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('metabolism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('metabolism')?.length, 8)
   for (const [name, params, expected] of [["bmr",[1500,1],1500],["atp",[36,1],36],["calories",[2000,1],2000]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'metabolism', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `metabolism.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`metabolism ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`metabolism ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "bmr=1500, atp=36, calories=2000")
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SEMICONDUCTORS — THE DEVICE PHYSICS OF A CHIP, AS ARITHMETIC. A fabricated part is numbers: the bandgap left after
@@ -31,4 +31,4 @@ export class SemiconductorsFormulas {
 }
 
 for (const name of ['bandgap', 'doping', 'junction', 'mobility', 'resistivity', 'threshold', 'wafer', 'yield'] as const)
-  qpuHexRegisterOf('semiconductors', name, (SemiconductorsFormulas[name] as (...x: unknown[]) => unknown).bind(SemiconductorsFormulas))
+  hexRegisterOf('semiconductors', name, (SemiconductorsFormulas[name] as (...x: unknown[]) => unknown).bind(SemiconductorsFormulas))

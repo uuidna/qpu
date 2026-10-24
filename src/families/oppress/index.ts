@@ -1,4 +1,4 @@
-import { qpuFacesOf, qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { facesOf, hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OPPRESS — the lattice face count. A count. It names no person. */
@@ -10,10 +10,10 @@ const c = (id: string, formula: string, value: number, holds: boolean, name: str
 export class OppressFormulas {
   /** The face count the lattice already computed. value faces. */
   static oppress(): CrossFormula {
-    const faces = qpuFacesOf()
+    const faces = facesOf()
     const count = faces.faces
     return c('oppress-oppress', 'oppress() = faces', count, faces.holds && Number.isSafeInteger(count) && count >= 0, 'oppress', [])
   }
 }
 
-qpuHexRegisterOf('oppress', 'oppress', (OppressFormulas.oppress as (...x: unknown[]) => unknown).bind(OppressFormulas))
+hexRegisterOf('oppress', 'oppress', (OppressFormulas.oppress as (...x: unknown[]) => unknown).bind(OppressFormulas))

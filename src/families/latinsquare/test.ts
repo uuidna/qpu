@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LatinSquareFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -23,10 +23,10 @@ test('latinsquare: cells, symbols, rows, mols, transversal, conjugates, reduced 
   assert.equal(LatinSquareFormulas.reduced(1).value, 1, 'R-factor at n = 1')
   assert.equal(LatinSquareFormulas.orthogonalpairs(2).value, 0, 'no orthogonal pairs at n = 2')
   assert.equal(LatinSquareFormulas.cells(4).dst, 'combinatorics')
-  assert.equal(qpuHexFamiliesOf().get('latinsquare')?.length, 15)
+  assert.equal(hexFamiliesOf().get('latinsquare')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'latinsquare', program: ['cells'], params: [4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 16, `latinsquare.cells at ${uuid}`)
-  qpuUuidReceiptOf('latinsquare cells', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('latinsquare cells', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; cells 16, symbols 4, rows 4, cols 4, mols 3, orthogonalpairs 3, transversal 4, conjugates 6, reduced 144, order 4, firstrow 24, isotopy 13824, paratopy 82944, subsquare 4, intercalate 6; crossing to combinatorics')
 })

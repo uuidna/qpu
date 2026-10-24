@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MARITIME — ADMIRALTY AS ARITHMETIC. Shipping law is numbers: demurrage for laytime over-run, freight by tonnage,
@@ -30,4 +30,4 @@ export class MaritimeFormulas {
 }
 
 for (const name of ['collision', 'demurrage', 'draft', 'freight', 'generalaverage', 'limitation', 'salvage', 'tonnage'] as const)
-  qpuHexRegisterOf('maritime', name, (MaritimeFormulas[name] as (...x: unknown[]) => unknown).bind(MaritimeFormulas))
+  hexRegisterOf('maritime', name, (MaritimeFormulas[name] as (...x: unknown[]) => unknown).bind(MaritimeFormulas))

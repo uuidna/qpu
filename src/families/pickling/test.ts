@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PicklingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('pickling: acidity, brineratio, phlevel, fermentdays, saltpercent, lacticac
   assert.equal(PicklingFormulas.shelflife(12, 30).value, 360)
   assert.equal(PicklingFormulas.crunchretention(80, 100).value, 80)
   assert.equal(PicklingFormulas.acidity(4, 100).dst, 'microbiology')
-  assert.equal(qpuHexFamiliesOf().get('pickling')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pickling')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pickling', program: ['acidity'], params: [4, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `pickling.acidity at ${uuid}`)
-  qpuUuidReceiptOf('pickling acidity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pickling acidity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; acidity 4, brineratio 5, phlevel 3, fermentdays 14, saltpercent 5, lacticacid 8, shelflife 360, crunchretention 80; crossing to microbiology')
 })

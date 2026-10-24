@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INTERESTRATE — scaffolded integer measures crossed to banking. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class InterestrateFormulas {
 }
 
 for (const name of ['apr', 'compoundperiods', 'discountfactor', 'doublingyears', 'realrate', 'simpleinterest', 'spread', 'yieldcurve'] as const)
-  qpuHexRegisterOf('interestrate', name, (InterestrateFormulas[name] as (...x: unknown[]) => unknown).bind(InterestrateFormulas))
+  hexRegisterOf('interestrate', name, (InterestrateFormulas[name] as (...x: unknown[]) => unknown).bind(InterestrateFormulas))

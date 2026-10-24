@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CloudflareFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,10 +22,10 @@ test('cloudflare: the Worker binding surface and its combinatorial usage — cro
   assert.equal(CloudflareFormulas.subrequests().value, 1000, 'the paid subrequest ceiling')
   assert.equal(CloudflareFormulas.reach(22, 300).value, 6600, 'bindings across colos')
   assert.equal(CloudflareFormulas.subsets(22).dst, 'cloud')
-  assert.equal(qpuHexFamiliesOf().get('cloudflare')?.length, 15)
+  assert.equal(hexFamiliesOf().get('cloudflare')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'cloudflare', program: ['choose'], params: [5, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `cloudflare.choose at ${uuid}`)
-  qpuUuidReceiptOf('cloudflare choose', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cloudflare choose', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; 22 bindings, 2^22 subsets, usage 4194303, pairs 231, triples 1540, choose/ordered, apis 176, storage 3, stateful 6, compute 6, subrequests 1000, reach 6600; crossing to cloud')
 })

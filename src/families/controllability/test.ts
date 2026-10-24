@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ControllabilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('controllability: matrixrank, reachablestates, controllabilitymatrix, degre
   assert.equal(ControllabilityFormulas.modescontrolled(10, 3).value, 7, 'modes the inputs reach')
   assert.equal(ControllabilityFormulas.modescontrolled(3, 5).value, 0)
   assert.equal(ControllabilityFormulas.controllabilitymatrix(5, 2).dst, 'control')
-  assert.equal(qpuHexFamiliesOf().get('controllability')?.length, 8)
+  assert.equal(hexFamiliesOf().get('controllability')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'controllability', program: ['controllabilitymatrix'], params: [5, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `controllability.controllabilitymatrix at ${uuid}`)
-  qpuUuidReceiptOf('controllability controllabilitymatrix', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('controllability controllabilitymatrix', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; matrixrank 4, reachablestates 5, controllabilitymatrix 10, degree 4, inputcoupling 21, statedimension 15, gramiantrace 48, modescontrolled 7; crossing to control')
 })

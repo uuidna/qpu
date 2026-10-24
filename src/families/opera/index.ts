@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OPERA — scaffolded integer measures crossed to music. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class OperaFormulas {
 }
 
 for (const name of ['acts', 'arias', 'dynamicspan', 'ensemblecombos', 'orchestrasize', 'rangeoctaves', 'scoreorderings', 'voicetypes'] as const)
-  qpuHexRegisterOf('opera', name, (OperaFormulas[name] as (...x: unknown[]) => unknown).bind(OperaFormulas))
+  hexRegisterOf('opera', name, (OperaFormulas[name] as (...x: unknown[]) => unknown).bind(OperaFormulas))

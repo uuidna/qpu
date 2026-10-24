@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OrthographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('orthography: transparency, graphemes, errors, density, capitals, diacritic
   assert.equal(OrthographyFormulas.legibility(980, 1000).value, 98)
   assert.equal(OrthographyFormulas.syllables(4).value, 4)
   assert.equal(OrthographyFormulas.transparency(900, 1000).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('orthography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('orthography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'orthography', program: ['density'], params: [5000, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `orthography.density at ${uuid}`)
-  qpuUuidReceiptOf('orthography density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('orthography density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; transparency 90, graphemes 130, errors 5, density 5, capitals 3, diacritics 20, legibility 98, syllables 4; crossing to linguistics')
 })

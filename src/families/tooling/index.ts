@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TOOLING — THE MACHINE SHOP AS ARITHMETIC (cutting tools, molds and their upkeep). Making parts is numbers: how many
@@ -31,4 +31,4 @@ export class ToolingFormulas {
 }
 
 for (const name of ['cavities', 'depth', 'feed', 'life', 'maintenance', 'speed', 'utilization', 'wear'] as const)
-  qpuHexRegisterOf('tooling', name, (ToolingFormulas[name] as (...x: unknown[]) => unknown).bind(ToolingFormulas))
+  hexRegisterOf('tooling', name, (ToolingFormulas[name] as (...x: unknown[]) => unknown).bind(ToolingFormulas))

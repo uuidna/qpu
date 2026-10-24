@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ARPEGGIO — A BROKEN CHORD, AS ARITHMETIC. Playing a chord one note at a time is numbers: the span between lowest and
@@ -30,4 +30,4 @@ export class ArpeggioFormulas {
 }
 
 for (const name of ['cyclelength', 'noteduration', 'notespan', 'patternrepeats', 'rangeoctaves', 'sweeprate', 'totalnotes', 'velocitycurve'] as const)
-  qpuHexRegisterOf('arpeggio', name, (ArpeggioFormulas[name] as (...x: unknown[]) => unknown).bind(ArpeggioFormulas))
+  hexRegisterOf('arpeggio', name, (ArpeggioFormulas[name] as (...x: unknown[]) => unknown).bind(ArpeggioFormulas))

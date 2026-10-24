@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SEISMOLOGY — EARTHQUAKE SCIENCE, AS ARITHMETIC. A quake is numbers: the Richter magnitude of an amplitude, the log-energy it
@@ -31,4 +31,4 @@ export class SeismologyFormulas {
 }
 
 for (const name of ['aftershocks', 'distance', 'energy', 'epicenter', 'frequency', 'intensity', 'magnitude', 'moment'] as const)
-  qpuHexRegisterOf('seismology', name, (SeismologyFormulas[name] as (...x: unknown[]) => unknown).bind(SeismologyFormulas))
+  hexRegisterOf('seismology', name, (SeismologyFormulas[name] as (...x: unknown[]) => unknown).bind(SeismologyFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ROCKETRY — LAUNCH VEHICLES AS ARITHMETIC (chosen by the public-API registry, not by hand). Getting mass to orbit is
@@ -31,4 +31,4 @@ export class RocketryFormulas {
 }
 
 for (const name of ['deltav', 'impulse', 'isp', 'massratio', 'payload', 'staging', 'thrust', 'twr'] as const)
-  qpuHexRegisterOf('rocketry', name, (RocketryFormulas[name] as (...x: unknown[]) => unknown).bind(RocketryFormulas))
+  hexRegisterOf('rocketry', name, (RocketryFormulas[name] as (...x: unknown[]) => unknown).bind(RocketryFormulas))

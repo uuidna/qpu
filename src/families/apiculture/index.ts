@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** APICULTURE — BEEKEEPING, AS ARITHMETIC (chosen by the registry, not by hand). Running an apiary is numbers: honey off the
@@ -30,4 +30,4 @@ export class ApicultureFormulas {
 }
 
 for (const name of ['foraging', 'honey', 'mite', 'overwinter', 'pollination', 'population', 'queen', 'swarming'] as const)
-  qpuHexRegisterOf('apiculture', name, (ApicultureFormulas[name] as (...x: unknown[]) => unknown).bind(ApicultureFormulas))
+  hexRegisterOf('apiculture', name, (ApicultureFormulas[name] as (...x: unknown[]) => unknown).bind(ApicultureFormulas))

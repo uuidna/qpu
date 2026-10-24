@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EVAPOTRANSPIRATION — THE FIELD'S WATER BUDGET, AS ARITHMETIC. The water a crop and its soil return to the air is
@@ -31,4 +31,4 @@ export class EvapotranspirationFormulas {
 }
 
 for (const name of ['actual', 'cropcoefficient', 'cropwateruse', 'irrigationneed', 'netirrigation', 'potential', 'reference', 'waterdeficit'] as const)
-  qpuHexRegisterOf('evapotranspiration', name, (EvapotranspirationFormulas[name] as (...x: unknown[]) => unknown).bind(EvapotranspirationFormulas))
+  hexRegisterOf('evapotranspiration', name, (EvapotranspirationFormulas[name] as (...x: unknown[]) => unknown).bind(EvapotranspirationFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AXIOLOGY — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class AxiologyFormulas {
 }
 
 for (const name of ['commensurability', 'hierarchydepth', 'intrinsicextrinsic', 'normsubsets', 'preferenceorderings', 'rankings', 'valuepairs', 'valuetypes'] as const)
-  qpuHexRegisterOf('axiology', name, (AxiologyFormulas[name] as (...x: unknown[]) => unknown).bind(AxiologyFormulas))
+  hexRegisterOf('axiology', name, (AxiologyFormulas[name] as (...x: unknown[]) => unknown).bind(AxiologyFormulas))

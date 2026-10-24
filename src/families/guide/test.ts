@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GuideFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -23,10 +23,10 @@ test('guide: the menu, a family listing, a runnable example, and the ways in —
   assert.ok(ways.ways.some((w) => w.includes('ask')), 'the chat entry point is named')
 
   assert.equal((GuideFormulas.families() as unknown as { dst: string }).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('guide')?.length, 4)
+  assert.equal(hexFamiliesOf().get('guide')?.length, 4)
   const uuid = qpuHexUuidOf({ family: 'guide', program: ['formulas'], params: [0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), forms.value, `guide.formulas at ${uuid}`)
-  qpuUuidReceiptOf('guide formulas', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('guide formulas', contentUuidOf(run), { uuid })
   t.diagnostic(`4 formulas; ${fams.value} families on the menu; example(0): ${ex.call}; ${ways.value} ways in`)
 })

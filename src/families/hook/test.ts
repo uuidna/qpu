@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HookFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('hook: chain, latency, order, mutations, failures, depth, coverage, fired â
   assert.equal(HookFormulas.coverage(8, 10).value, 80)
   assert.equal(HookFormulas.fired(10, 6).value, 60)
   assert.equal(HookFormulas.chain(6, 100).dst, 'payload')
-  assert.equal(qpuHexFamiliesOf().get('hook')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hook')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hook', program: ['chain'], params: [6, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 600, `hook.chain at ${uuid}`)
-  qpuUuidReceiptOf('hook chain', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hook chain', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; chain 600, latency 50, order 1, mutations 25, failures 5, depth 3, coverage 80, fired 60; crossing to payload')
 })

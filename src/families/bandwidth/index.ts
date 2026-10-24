@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BandwidthFormulas — 8 exact-integer formulas of the bandwidth domain, each at a hex address crossing to cross; develops the bandwidth leads. */
@@ -31,4 +31,4 @@ export class BandwidthFormulas {
 }
 
 for (const name of ['bits', 'channels', 'combos', 'duplex', 'goodput', 'lanes', 'overhead', 'utilization'] as const)
-  qpuHexRegisterOf('bandwidth', name, (BandwidthFormulas[name] as (...x: unknown[]) => unknown).bind(BandwidthFormulas))
+  hexRegisterOf('bandwidth', name, (BandwidthFormulas[name] as (...x: unknown[]) => unknown).bind(BandwidthFormulas))

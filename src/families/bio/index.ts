@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BioFormulas — 8 exact-integer formulas of the bio domain, each at a hex address crossing to cross; develops the bio leads. */
@@ -31,4 +31,4 @@ export class BioFormulas {
 }
 
 for (const name of ['bmi', 'cells', 'colonies', 'dosage', 'doubling', 'generations', 'halflife', 'population'] as const)
-  qpuHexRegisterOf('bio', name, (BioFormulas[name] as (...x: unknown[]) => unknown).bind(BioFormulas))
+  hexRegisterOf('bio', name, (BioFormulas[name] as (...x: unknown[]) => unknown).bind(BioFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HedgingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('hedging: ratio, delta, exposure, coverage, basis, notional, offset, residu
   assert.equal(HedgingFormulas.residual(1000, 600).value, 400, 'risk left unhedged')
   assert.equal(HedgingFormulas.delta(300, 500).value, 0, 'fully hedged, no net delta')
   assert.equal(HedgingFormulas.ratio(75, 100).dst, 'trading')
-  assert.equal(qpuHexFamiliesOf().get('hedging')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hedging')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hedging', program: ['ratio'], params: [75, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `hedging.ratio at ${uuid}`)
-  qpuUuidReceiptOf('hedging ratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hedging ratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ratio 75, delta 200, exposure 10000, coverage 80, basis 5, notional 10000, offset 250, residual 400; crossing to trading')
 })

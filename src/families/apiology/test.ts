@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ApiologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('apiology: hivepopulation, combcells, foragerange, pollenloads, dancepaths,
   assert.equal(ApiologyFormulas.broodcycle(16, 5).value, 21)
   assert.equal(ApiologyFormulas.swarmthreshold(60, 100).value, 60)
   assert.equal(ApiologyFormulas.hivepopulation(50000, 1).dst, 'ecology')
-  assert.equal(qpuHexFamiliesOf().get('apiology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('apiology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'apiology', program: ['hivepopulation'], params: [50000, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50000, `apiology.hivepopulation at ${uuid}`)
-  qpuUuidReceiptOf('apiology hivepopulation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('apiology hivepopulation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; hivepopulation 50000, combcells 48000, foragerange 5000, pollenloads 600, dancepaths 56, honeyyield 30, broodcycle 21, swarmthreshold 60; crossing to ecology')
 })

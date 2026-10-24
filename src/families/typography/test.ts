@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TypographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('typography: measure, scale, tracking, leading, words, widows, weight, rhyt
   assert.equal(TypographyFormulas.weight(4).value, 400)
   assert.equal(TypographyFormulas.rhythm(10, 24).value, 240)
   assert.equal(TypographyFormulas.measure(66, 66).dst, 'css')
-  assert.equal(qpuHexFamiliesOf().get('typography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('typography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'typography', program: ['scale'], params: [16, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `typography.scale at ${uuid}`)
-  qpuUuidReceiptOf('typography scale', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('typography scale', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; measure 1, scale 25, tracking 8, leading 24, words 110, widows 1, weight 400, rhythm 240; crossing to css')
 })

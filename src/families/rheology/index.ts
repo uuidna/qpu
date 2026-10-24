@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RHEOLOGY — THE FLOW AND DEFORMATION OF MATTER, AS ARITHMETIC. Materials under stress are numbers: viscosity from stress
@@ -31,4 +31,4 @@ export class RheologyFormulas {
 }
 
 for (const name of ['elasticity', 'flow', 'modulus', 'relaxation', 'shear', 'thixotropy', 'viscosity', 'yielding'] as const)
-  qpuHexRegisterOf('rheology', name, (RheologyFormulas[name] as (...x: unknown[]) => unknown).bind(RheologyFormulas))
+  hexRegisterOf('rheology', name, (RheologyFormulas[name] as (...x: unknown[]) => unknown).bind(RheologyFormulas))

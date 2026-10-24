@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WaterqualityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('waterquality: wqi, dissolvedoxygen, bod, turbidity, hardness, phindex, nit
   assert.equal(WaterqualityFormulas.nitrate(45, 50).value, 90, 'percent of the safe limit')
   assert.equal(WaterqualityFormulas.coliform(1000, 100).value, 10, 'CFU per unit volume')
   assert.equal(WaterqualityFormulas.wqi(270, 3).dst, 'hydrology')
-  assert.equal(qpuHexFamiliesOf().get('waterquality')?.length, 8)
+  assert.equal(hexFamiliesOf().get('waterquality')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'waterquality', program: ['wqi'], params: [270, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `waterquality.wqi at ${uuid}`)
-  qpuUuidReceiptOf('waterquality wqi', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('waterquality wqi', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; wqi 90, dissolvedoxygen 80, bod 6, turbidity 20, hardness 120, phindex 2, nitrate 90, coliform 10; crossing to hydrology')
 })

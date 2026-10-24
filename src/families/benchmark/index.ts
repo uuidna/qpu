@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BENCHMARK — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class BenchmarkFormulas {
 }
 
 for (const name of ['efficiency', 'iterationpairs', 'latencyp50', 'opspersec', 'percentilesubsets', 'speedup', 'throughput', 'variance'] as const)
-  qpuHexRegisterOf('benchmark', name, (BenchmarkFormulas[name] as (...x: unknown[]) => unknown).bind(BenchmarkFormulas))
+  hexRegisterOf('benchmark', name, (BenchmarkFormulas[name] as (...x: unknown[]) => unknown).bind(BenchmarkFormulas))

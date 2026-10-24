@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AntibodyFormulas — 8 exact-integer formulas of the antibody domain, each at a hex address crossing to cross; develops the antibody leads. */
@@ -31,4 +31,4 @@ export class AntibodyFormulas {
 }
 
 for (const name of ['affinity', 'chains', 'combos', 'epitopes', 'halflife', 'isotypes', 'neutralization', 'titer'] as const)
-  qpuHexRegisterOf('antibody', name, (AntibodyFormulas[name] as (...x: unknown[]) => unknown).bind(AntibodyFormulas))
+  hexRegisterOf('antibody', name, (AntibodyFormulas[name] as (...x: unknown[]) => unknown).bind(AntibodyFormulas))

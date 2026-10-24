@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GEOCHEMISTRY — EARTH'S MATTER AS RATIOS (chosen by the registry, not by hand). Reading rock, water, and crust is numbers:
@@ -30,4 +30,4 @@ export class GeochemistryFormulas {
 }
 
 for (const name of ['age', 'enrichment', 'isotope', 'partition', 'ph', 'salinity', 'saturation', 'weathering'] as const)
-  qpuHexRegisterOf('geochemistry', name, (GeochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(GeochemistryFormulas))
+  hexRegisterOf('geochemistry', name, (GeochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(GeochemistryFormulas))

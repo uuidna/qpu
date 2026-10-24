@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ReadabilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('readability: wordspersentence, syllablesperword, fleschscaled, fleschkinca
   assert.equal(ReadabilityFormulas.gunningfog(100, 5, 10).value, 12, 'fog index')
   assert.equal(ReadabilityFormulas.smogscaled(30, 30).value, 8)
   assert.equal(ReadabilityFormulas.wordspersentence(120, 6).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('readability')?.length, 8)
+  assert.equal(hexFamiliesOf().get('readability')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'readability', program: ['gunningfog'], params: [100, 5, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `readability.gunningfog at ${uuid}`)
-  qpuUuidReceiptOf('readability gunningfog', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('readability gunningfog', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; wordspersentence 20, syllablesperword 150, fleschscaled 60, fleschkincaid 8, colemanliau 12, automatedindex 12, gunningfog 12, smogscaled 8; crossing to linguistics')
 })

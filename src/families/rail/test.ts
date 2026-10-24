@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RailFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('rail: capacity, headway, gradient, gauge, tonnage, dwell, throughput, cons
   assert.equal(RailFormulas.throughput(20, 800).value, 16000, 'passengers an hour')
   assert.equal(RailFormulas.consist(1000, 80).value, 13, 'cars for the load')
   assert.equal(RailFormulas.capacity(10, 80).dst, 'transport')
-  assert.equal(qpuHexFamiliesOf().get('rail')?.length, 8)
+  assert.equal(hexFamiliesOf().get('rail')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'rail', program: ['consist'], params: [1000, 80] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 13, `rail.consist at ${uuid}`)
-  qpuUuidReceiptOf('rail consist', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('rail consist', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; capacity 800, headway 15, gradient 25, gauge 1400, tonnage 2400, dwell 75, throughput 16000, consist 13; crossing to transport')
 })

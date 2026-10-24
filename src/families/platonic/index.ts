@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PLATONIC — COMPLEX RELATIONS MANAGED SIMPLY, AND THE TRINITY PAIRS. Every convex regular solid is a TRINITY of three
@@ -44,4 +44,4 @@ export class PlatonicFormulas {
 }
 
 for (const name of ['dual', 'edges', 'euler', 'faces', 'meeting', 'self', 'sides', 'vertices'] as const)
-  qpuHexRegisterOf('platonic', name, (PlatonicFormulas[name] as (...x: unknown[]) => unknown).bind(PlatonicFormulas))
+  hexRegisterOf('platonic', name, (PlatonicFormulas[name] as (...x: unknown[]) => unknown).bind(PlatonicFormulas))

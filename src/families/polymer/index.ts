@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PolymerFormulas — 8 exact-integer formulas of the polymer domain, each at a hex address crossing to cross; develops the polymer leads. */
@@ -31,4 +31,4 @@ export class PolymerFormulas {
 }
 
 for (const name of ['branches', 'chains', 'combos', 'crosslinks', 'degree', 'molweight', 'monomers', 'tg'] as const)
-  qpuHexRegisterOf('polymer', name, (PolymerFormulas[name] as (...x: unknown[]) => unknown).bind(PolymerFormulas))
+  hexRegisterOf('polymer', name, (PolymerFormulas[name] as (...x: unknown[]) => unknown).bind(PolymerFormulas))

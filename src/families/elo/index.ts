@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELO — RATINGS AS ARITHMETIC. A player's strength is a number, and every move of that number is integer arithmetic:
@@ -31,4 +31,4 @@ export class EloFormulas {
 }
 
 for (const name of ['decay', 'expectedscore', 'kfactor', 'performance', 'provisional', 'ratingdiff', 'update', 'winprobability'] as const)
-  qpuHexRegisterOf('elo', name, (EloFormulas[name] as (...x: unknown[]) => unknown).bind(EloFormulas))
+  hexRegisterOf('elo', name, (EloFormulas[name] as (...x: unknown[]) => unknown).bind(EloFormulas))

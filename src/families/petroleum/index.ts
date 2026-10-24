@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PETROLEUM — THE OIL-AND-GAS DOMAIN, AS ARITHMETIC (chosen by the registry, not by hand). A barrel is numbers: API gravity
@@ -30,4 +30,4 @@ export class PetroleumFormulas {
 }
 
 for (const name of ['api', 'depth', 'flow', 'permeability', 'porosity', 'recovery', 'refined', 'saturation'] as const)
-  qpuHexRegisterOf('petroleum', name, (PetroleumFormulas[name] as (...x: unknown[]) => unknown).bind(PetroleumFormulas))
+  hexRegisterOf('petroleum', name, (PetroleumFormulas[name] as (...x: unknown[]) => unknown).bind(PetroleumFormulas))

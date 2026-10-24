@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EMOTION — AFFECT AS ARITHMETIC. Feeling is numbers: the balance of positive over negative, arousal above a resting
@@ -31,4 +31,4 @@ export class EmotionFormulas {
 }
 
 for (const name of ['arousal', 'contagion', 'empathy', 'intensity', 'recovery', 'regulation', 'stress', 'valence'] as const)
-  qpuHexRegisterOf('emotion', name, (EmotionFormulas[name] as (...x: unknown[]) => unknown).bind(EmotionFormulas))
+  hexRegisterOf('emotion', name, (EmotionFormulas[name] as (...x: unknown[]) => unknown).bind(EmotionFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MosaicFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('mosaic: tilecount, tessellationangle, groutratio, colorcombos, symmetryord
   assert.equal(MosaicFormulas.tilesubsets(5).value, 32)
   assert.equal(MosaicFormulas.coverage(95, 100).value, 95)
   assert.equal(MosaicFormulas.tilecount(40, 30).dst, 'geometry')
-  assert.equal(qpuHexFamiliesOf().get('mosaic')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mosaic')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mosaic', program: ['tilecount'], params: [40, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1200, `mosaic.tilecount at ${uuid}`)
-  qpuUuidReceiptOf('mosaic tilecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mosaic tilecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; tilecount 1200, tessellationangle 60, groutratio 10, colorcombos 220, symmetryorderings 24, gridcells 2500, tilesubsets 32, coverage 95; crossing to geometry')
 })

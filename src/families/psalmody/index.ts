@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PSALMODY — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PsalmodyFormulas {
 }
 
 for (const name of ['acrosticletters', 'antiphonchoices', 'meterfeet', 'parallelismpairs', 'psalmcount', 'strophesubsets', 'toneorderings', 'versesum'] as const)
-  qpuHexRegisterOf('psalmody', name, (PsalmodyFormulas[name] as (...x: unknown[]) => unknown).bind(PsalmodyFormulas))
+  hexRegisterOf('psalmody', name, (PsalmodyFormulas[name] as (...x: unknown[]) => unknown).bind(PsalmodyFormulas))

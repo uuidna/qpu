@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TectonicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('tectonics: spreadingrate, straindrate, displacement, slip, convergence, el
   assert.equal(TectonicsFormulas.stress(1000, 20).value, 50)
   assert.equal(TectonicsFormulas.platevelocity(300, 6).value, 50)
   assert.equal(TectonicsFormulas.spreadingrate(100, 2).dst, 'seismology')
-  assert.equal(qpuHexFamiliesOf().get('tectonics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tectonics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tectonics', program: ['spreadingrate'], params: [100, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `tectonics.spreadingrate at ${uuid}`)
-  qpuUuidReceiptOf('tectonics spreadingrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tectonics spreadingrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; spreadingrate 50, straindrate 10, displacement 50000, slip 125, convergence 70, elevation 60, stress 50, platevelocity 50; crossing to seismology')
 })

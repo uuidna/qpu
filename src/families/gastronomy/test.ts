@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GastronomyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('gastronomy: portioncost, platecost, foodcostpercent, yield, menuprice, cov
   assert.equal(GastronomyFormulas.margin(900, 300).value, 600, 'profit on the plate')
   assert.equal(GastronomyFormulas.margin(300, 900).value, 0)
   assert.equal(GastronomyFormulas.portioncost(2000, 8).dst, 'cuisine')
-  assert.equal(qpuHexFamiliesOf().get('gastronomy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gastronomy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gastronomy', program: ['covers'], params: [60, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 180, `gastronomy.covers at ${uuid}`)
-  qpuUuidReceiptOf('gastronomy covers', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gastronomy covers', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; portioncost 250, platecost 450, foodcostpercent 30, yield 750, menuprice 900, covers 180, waste 20, margin 600; crossing to cuisine')
 })

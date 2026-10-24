@@ -1,16 +1,16 @@
 ---
-uuid: "332a630b-f4da-7799-90f1-8d199dea6957"
+uuid: "7551b6aa-3384-337d-a352-660ec3fc98d0"
 title: "MCP & agents"
-description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 119 capabilities; 46 of 55 evidence predicates hold."
+description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 119 capabilities; 45 of 55 evidence predicates hold."
 og:title: "MCP & agents — @uuidna/qpu"
-og:description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 119 capabilities; 46 of 55 evidence predicates hold."
+og:description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 119 capabilities; 45 of 55 evidence predicates hold."
 og:type: article
 og:url: "https://github.com/uuidna/qpu/blob/main/docs/agents.md"
 og:image: "https://opengraph.githubassets.com/qpu/uuidna/qpu"
 og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "MCP & agents"
-twitter:description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 119 capabilities; 46 of 55 evidence predicates hold."
+twitter:description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 119 capabilities; 45 of 55 evidence predicates hold."
 version: "1.4.0"
 ---
 # MCP & agents
@@ -21,7 +21,7 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 |---|---|
 | Capabilities | 119 |
 | With an evidence predicate | 55 |
-| Predicates that hold now | 46 |
+| Predicates that hold now | 45 |
 | Live (need the network; checked by the live doors) | 2 |
 
 | Capability | Kind | What it does | Evidence | Status |
@@ -108,7 +108,7 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 | [`qpuShorTryOf`](../src/quantum/processing/unit/shor.ts#L53) | builder | Shor as a caller asked for it: the run on their n and a, whatever they are. | `qpuShorTryHolds` | checked on each call (needs inputs) |
 | [`qpuSitemapOf`](../src/quantum/processing/unit/index.ts#L9988) | builder | sitemap.xml for one first-party host — only URLs on that host, because a crawler ignores the rest. | `qpuSitemapHolds` | holds |
 | [`qpuSpecServerOf`](../src/quantum/processing/unit/index.ts#L7570) | builder | The server a document declares, which is where its methods actually live. | `qpuSpecServerHolds` | holds |
-| [`qpuStandardsOf`](../src/quantum/processing/unit/index.ts#L7049) | builder | WHAT THIS TREE HOLDS ITSELF TO, SERVED RATHER THAN RUN BY HAND. | `qpuStandardsHolds` | holds |
+| [`qpuStandardsOf`](../src/quantum/processing/unit/index.ts#L7049) | builder | WHAT THIS TREE HOLDS ITSELF TO, SERVED RATHER THAN RUN BY HAND. | `qpuStandardsHolds` | **false** |
 | [`qpuStepsOf`](../src/quantum/processing/unit/index.ts#L3605) | builder | AUTONOMOUS STEPS, COMPUTED FROM THE LATTICE (the captain, 2026-09-12). | `qpuStepsHolds` | holds |
 | [`qpuSubCatalogOf`](../src/quantum/processing/unit/index.ts#L3297) | builder | A sub-server's JSON-LD WebAPI catalogue: its tools as SoftwareApplication items and an ItemList. | `qpuSubCatalogHolds` | checked on each call (needs inputs) |
 | [`qpuSubManOf`](../src/quantum/processing/unit/index.ts#L3225) | builder | A man page for a sub-server tool (storage, network, server), synopsis on that server's href. | `qpuSubManHolds` | checked on each call (needs inputs) |

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MONASTICISM — scaffolded integer measures crossed to sociology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MonasticismFormulas {
 }
 
 for (const name of ['communitysize', 'dailycycle', 'hoursofprayer', 'obediencelevels', 'officeorderings', 'ruleclauses', 'silenceratio', 'vowcombos'] as const)
-  qpuHexRegisterOf('monasticism', name, (MonasticismFormulas[name] as (...x: unknown[]) => unknown).bind(MonasticismFormulas))
+  hexRegisterOf('monasticism', name, (MonasticismFormulas[name] as (...x: unknown[]) => unknown).bind(MonasticismFormulas))

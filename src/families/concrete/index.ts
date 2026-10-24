@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONCRETE — THE POUR, AS ARITHMETIC (what a mix is, before it sets). Placing concrete is numbers: the volume of a form,
@@ -31,4 +31,4 @@ export class ConcreteFormulas {
 }
 
 for (const name of ['cement', 'cure', 'mix', 'rebar', 'slump', 'strength', 'volume', 'watercement'] as const)
-  qpuHexRegisterOf('concrete', name, (ConcreteFormulas[name] as (...x: unknown[]) => unknown).bind(ConcreteFormulas))
+  hexRegisterOf('concrete', name, (ConcreteFormulas[name] as (...x: unknown[]) => unknown).bind(ConcreteFormulas))

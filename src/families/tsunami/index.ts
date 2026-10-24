@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TSUNAMI — scaffolded integer measures crossed to oceanography. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TsunamiFormulas {
 }
 
 for (const name of ['amplitude', 'energyindex', 'inundationdistance', 'runup', 'traveltime', 'warningtime', 'wavelength', 'wavespeed'] as const)
-  qpuHexRegisterOf('tsunami', name, (TsunamiFormulas[name] as (...x: unknown[]) => unknown).bind(TsunamiFormulas))
+  hexRegisterOf('tsunami', name, (TsunamiFormulas[name] as (...x: unknown[]) => unknown).bind(TsunamiFormulas))

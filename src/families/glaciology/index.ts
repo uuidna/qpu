@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GLACIOLOGY — ICE AS ARITHMETIC. The life of a glacier is numbers: the mass it gains minus the mass it loses, how fast it
@@ -31,4 +31,4 @@ export class GlaciologyFormulas {
 }
 
 for (const name of ['age', 'albedo', 'calving', 'equilibrium', 'flow', 'massbalance', 'melt', 'retreat'] as const)
-  qpuHexRegisterOf('glaciology', name, (GlaciologyFormulas[name] as (...x: unknown[]) => unknown).bind(GlaciologyFormulas))
+  hexRegisterOf('glaciology', name, (GlaciologyFormulas[name] as (...x: unknown[]) => unknown).bind(GlaciologyFormulas))

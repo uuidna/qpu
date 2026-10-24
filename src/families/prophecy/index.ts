@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROPHECY — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ProphecyFormulas {
 }
 
 for (const name of ['fulfillmentratio', 'interpretationcombos', 'intervalspan', 'numbersum', 'sequencepaths', 'subsetreadings', 'symbolcount', 'timecycles'] as const)
-  qpuHexRegisterOf('prophecy', name, (ProphecyFormulas[name] as (...x: unknown[]) => unknown).bind(ProphecyFormulas))
+  hexRegisterOf('prophecy', name, (ProphecyFormulas[name] as (...x: unknown[]) => unknown).bind(ProphecyFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONTROLLABILITY — WHETHER A SYSTEM CAN BE STEERED, AS ARITHMETIC. A linear system is controllable when inputs can drive
@@ -32,4 +32,4 @@ export class ControllabilityFormulas {
 }
 
 for (const name of ['controllabilitymatrix', 'degree', 'gramiantrace', 'inputcoupling', 'matrixrank', 'modescontrolled', 'reachablestates', 'statedimension'] as const)
-  qpuHexRegisterOf('controllability', name, (ControllabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ControllabilityFormulas))
+  hexRegisterOf('controllability', name, (ControllabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ControllabilityFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SESSIONMGMT — THE LIFETIME OF A LOGIN, AS ARITHMETIC. A session is numbers: when it goes idle, its absolute ceiling,
@@ -30,4 +30,4 @@ export class SessionmgmtFormulas {
 }
 
 for (const name of ['absolutetimeout', 'activesessions', 'cleanupinterval', 'concurrentlimit', 'expirymargin', 'idletimeout', 'renewalwindow', 'tokenttl'] as const)
-  qpuHexRegisterOf('sessionmgmt', name, (SessionmgmtFormulas[name] as (...x: unknown[]) => unknown).bind(SessionmgmtFormulas))
+  hexRegisterOf('sessionmgmt', name, (SessionmgmtFormulas[name] as (...x: unknown[]) => unknown).bind(SessionmgmtFormulas))

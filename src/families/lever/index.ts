@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LeverFormulas — 8 exact-integer formulas of the lever domain, each at a hex address crossing to cross; develops the lever leads. */
@@ -31,4 +31,4 @@ export class LeverFormulas {
 }
 
 for (const name of ['advantage', 'arm', 'classes', 'combos', 'effort', 'load', 'moment', 'ratio'] as const)
-  qpuHexRegisterOf('lever', name, (LeverFormulas[name] as (...x: unknown[]) => unknown).bind(LeverFormulas))
+  hexRegisterOf('lever', name, (LeverFormulas[name] as (...x: unknown[]) => unknown).bind(LeverFormulas))

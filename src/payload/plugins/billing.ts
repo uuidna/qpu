@@ -1,4 +1,4 @@
-import { qpuLatticeNamesOf, qpuServedLedgerOf } from '../../quantum/processing/unit/index.js'
+import { latticeNamesOf, servedLedgerOf } from '../../quantum/processing/unit/index.js'
 import type { QpuPlugin } from './surface.js'
 
 /**
@@ -11,16 +11,16 @@ import type { QpuPlugin } from './surface.js'
  * open: the repo's margin formulas take two amounts and name no industry rate, so the rate is a lead and is not filled.
  */
 export const usageBillOf = () => {
-  const lattice = qpuLatticeNamesOf()
+  const lattice = latticeNamesOf()
   const kvCost = lattice.coins
   const r2Cost = lattice.seed
   const hybridCost = kvCost + r2Cost
-  const units = qpuServedLedgerOf().length
+  const units = servedLedgerOf().length
   const charged = units * hybridCost
   const billed = charged
   return {
     kind: 'usage-bill' as const,
-    meter: 'qpuServedLedgerOf' as const,
+    meter: 'servedLedgerOf' as const,
     units,
     cost: { kvCost, r2Cost, hybridCost, by: 'Qpu.Hybrid kvCost = coins, r2Cost = seed' },
     charged,

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** KINESIOLOGY — HUMAN MOVEMENT AS ARITHMETIC (chosen by the registry, not by hand). Motion is numbers: the range a joint
@@ -31,4 +31,4 @@ export class KinesiologyFormulas {
 }
 
 for (const name of ['balance', 'contraction', 'extension', 'flexion', 'jointangle', 'momentarm', 'muscleactivation', 'rangeofmotion'] as const)
-  qpuHexRegisterOf('kinesiology', name, (KinesiologyFormulas[name] as (...x: unknown[]) => unknown).bind(KinesiologyFormulas))
+  hexRegisterOf('kinesiology', name, (KinesiologyFormulas[name] as (...x: unknown[]) => unknown).bind(KinesiologyFormulas))

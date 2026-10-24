@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AUTH — THE PAYLOAD CMS AUTHENTICATION API, AS ARITHMETIC. Signing in is numbers: whether a lockout trips, the life left
@@ -30,4 +30,4 @@ export class AuthFormulas {
 }
 
 for (const name of ['apikeys', 'expiry', 'failratio', 'lockout', 'sessions', 'strength', 'token', 'verified'] as const)
-  qpuHexRegisterOf('auth', name, (AuthFormulas[name] as (...x: unknown[]) => unknown).bind(AuthFormulas))
+  hexRegisterOf('auth', name, (AuthFormulas[name] as (...x: unknown[]) => unknown).bind(AuthFormulas))

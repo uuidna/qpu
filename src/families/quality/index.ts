@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** QUALITY — MANUFACTURING QUALITY AS ARITHMETIC (chosen by the registry, not by hand). Making things well is numbers:
@@ -30,4 +30,4 @@ export class QualityFormulas {
 }
 
 for (const name of ['capability', 'conformance', 'defectrate', 'firstpass', 'rework', 'satisfaction', 'scrap', 'sigma'] as const)
-  qpuHexRegisterOf('quality', name, (QualityFormulas[name] as (...x: unknown[]) => unknown).bind(QualityFormulas))
+  hexRegisterOf('quality', name, (QualityFormulas[name] as (...x: unknown[]) => unknown).bind(QualityFormulas))

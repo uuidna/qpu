@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SpicetradeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('spicetrade: spicecount, routepairs, priceindex, originsubsets, traderoutes
   assert.equal(SpicetradeFormulas.blendcombos(15, 3).value, 455)
   assert.equal(SpicetradeFormulas.marginpct(40, 100).value, 40)
   assert.equal(SpicetradeFormulas.spicecount(40, 20).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('spicetrade')?.length, 8)
+  assert.equal(hexFamiliesOf().get('spicetrade')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'spicetrade', program: ['spicecount'], params: [40, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `spicetrade.spicecount at ${uuid}`)
-  qpuUuidReceiptOf('spicetrade spicecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('spicetrade spicecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; spicecount 60, routepairs 66, priceindex 300, originsubsets 64, traderoutes 24, volumetons 5000, blendcombos 455, marginpct 40; crossing to statistics')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SoilscienceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('soilscience: porosity, bulkdensity, fieldcapacity, cationexchange, organic
   assert.equal(SoilscienceFormulas.texture(40, 40).value, 20, 'the clay fraction')
   assert.equal(SoilscienceFormulas.texture(60, 60).value, 0)
   assert.equal(SoilscienceFormulas.porosity(130, 265).dst, 'ecology')
-  assert.equal(qpuHexFamiliesOf().get('soilscience')?.length, 8)
+  assert.equal(hexFamiliesOf().get('soilscience')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'soilscience', program: ['porosity'], params: [130, 265] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `soilscience.porosity at ${uuid}`)
-  qpuUuidReceiptOf('soilscience porosity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('soilscience porosity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; porosity 50, bulkdensity 1300, fieldcapacity 18, cationexchange 30, organicmatter 34, infiltration 30, salinity 2560, texture 20; crossing to ecology')
 })

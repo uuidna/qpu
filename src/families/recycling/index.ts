@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RECYCLING — MATERIAL RECOVERY AS ARITHMETIC (chosen by the registry, not by hand). Reclaiming material is numbers:
@@ -31,4 +31,4 @@ export class RecyclingFormulas {
 }
 
 for (const name of ['contamination', 'diversion', 'energy', 'landfill', 'purity', 'rate', 'recovery', 'throughput'] as const)
-  qpuHexRegisterOf('recycling', name, (RecyclingFormulas[name] as (...x: unknown[]) => unknown).bind(RecyclingFormulas))
+  hexRegisterOf('recycling', name, (RecyclingFormulas[name] as (...x: unknown[]) => unknown).bind(RecyclingFormulas))

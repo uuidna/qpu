@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RHYTHM — MUSICAL TIME AS ARITHMETIC. A tempo is a beat duration, a measure is beats stacked, a beat splits into
@@ -30,4 +30,4 @@ export class RhythmFormulas {
 }
 
 for (const name of ['beatduration', 'measurelength', 'notespermeasure', 'polyrhythm', 'subdivision', 'swingratio', 'syncopation', 'tupletduration'] as const)
-  qpuHexRegisterOf('rhythm', name, (RhythmFormulas[name] as (...x: unknown[]) => unknown).bind(RhythmFormulas))
+  hexRegisterOf('rhythm', name, (RhythmFormulas[name] as (...x: unknown[]) => unknown).bind(RhythmFormulas))

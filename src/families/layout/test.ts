@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LayoutFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('layout: span, columns, aspect, basis, grow, gap, order, track — crossing
   assert.equal(LayoutFormulas.order(13, 12).value, 0)
   assert.equal(LayoutFormulas.track(1200, 12).value, 100)
   assert.equal(LayoutFormulas.span(6, 12).dst, 'css')
-  assert.equal(qpuHexFamiliesOf().get('layout')?.length, 8)
+  assert.equal(hexFamiliesOf().get('layout')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'layout', program: ['span'], params: [6, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `layout.span at ${uuid}`)
-  qpuUuidReceiptOf('layout span', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('layout span', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; span 50, columns 12, aspect 177, basis 50, grow 25, gap 24, order 1, track 100; crossing to css')
 })

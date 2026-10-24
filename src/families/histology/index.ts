@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HISTOLOGY — THE TISSUE SLIDE, AS ARITHMETIC. Reading a stained section is numbers: the stained fraction, section thickness,
@@ -30,4 +30,4 @@ export class HistologyFormulas {
 }
 
 for (const name of ['density', 'fibrosis', 'grade', 'infiltration', 'magnification', 'necrosis', 'staining', 'thickness'] as const)
-  qpuHexRegisterOf('histology', name, (HistologyFormulas[name] as (...x: unknown[]) => unknown).bind(HistologyFormulas))
+  hexRegisterOf('histology', name, (HistologyFormulas[name] as (...x: unknown[]) => unknown).bind(HistologyFormulas))

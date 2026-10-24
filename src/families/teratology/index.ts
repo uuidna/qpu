@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TERATOLOGY — scaffolded integer measures crossed to physiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TeratologyFormulas {
 }
 
 for (const name of ['criticalwindows', 'doseresponse', 'exposurepairs', 'incidence', 'malformationrate', 'riskindex', 'stageorderings', 'thresholddose'] as const)
-  qpuHexRegisterOf('teratology', name, (TeratologyFormulas[name] as (...x: unknown[]) => unknown).bind(TeratologyFormulas))
+  hexRegisterOf('teratology', name, (TeratologyFormulas[name] as (...x: unknown[]) => unknown).bind(TeratologyFormulas))

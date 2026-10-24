@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FITNESS — EXERCISE SCIENCE, AS ARITHMETIC (chosen by the public-API registry, not by hand). Training is numbers: the
@@ -31,4 +31,4 @@ export class FitnessFormulas {
 }
 
 for (const name of ['calories', 'heartrate', 'onerm', 'pace', 'progress', 'recovery', 'volume', 'zone'] as const)
-  qpuHexRegisterOf('fitness', name, (FitnessFormulas[name] as (...x: unknown[]) => unknown).bind(FitnessFormulas))
+  hexRegisterOf('fitness', name, (FitnessFormulas[name] as (...x: unknown[]) => unknown).bind(FitnessFormulas))

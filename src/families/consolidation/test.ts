@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConsolidationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('consolidation: shipmentsmerged, fillimprovement, costsavings, ordersperloa
   assert.equal(ConsolidationFormulas.splitcount(100, 30).value, 4)
   assert.equal(ConsolidationFormulas.poolingratio(8, 10).value, 80)
   assert.equal(ConsolidationFormulas.shipmentsmerged(100, 40).dst, 'supplychain')
-  assert.equal(qpuHexFamiliesOf().get('consolidation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('consolidation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'consolidation', program: ['shipmentsmerged'], params: [100, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `consolidation.shipmentsmerged at ${uuid}`)
-  qpuUuidReceiptOf('consolidation shipmentsmerged', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('consolidation shipmentsmerged', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; shipmentsmerged 60, fillimprovement 20, costsavings 30, ordersperload 30, freightclass 5, densitygain 120, splitcount 4, poolingratio 80; crossing to supplychain')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TELECOM — THE NETWORK, AS ARITHMETIC (chosen by the registry). A link is numbers: bandwidth, propagation latency,
@@ -30,4 +30,4 @@ export class TelecomFormulas {
 }
 
 for (const name of ['bandwidth', 'capacity', 'coverage', 'erlang', 'jitter', 'latency', 'packet', 'signal'] as const)
-  qpuHexRegisterOf('telecom', name, (TelecomFormulas[name] as (...x: unknown[]) => unknown).bind(TelecomFormulas))
+  hexRegisterOf('telecom', name, (TelecomFormulas[name] as (...x: unknown[]) => unknown).bind(TelecomFormulas))

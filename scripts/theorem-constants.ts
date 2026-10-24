@@ -3,7 +3,7 @@
  * THEOREMS IN CODE, NOT HARDCODED CONSTANTS. Lean feeds the rest: a value a theorem proves is written in the families as
  * the lattice name the unit exports, never as a bare literal. This codemod sweeps every family and rewrites the degree
  * constants the Lean module Qpu.Pi proves — 180 (pi_half_turn) and 360 (pi_turn_degrees) — to the lattice names
- * `halfTurn` / `fullTurn` from qpuLatticeNamesOf().
+ * `halfTurn` / `fullTurn` from latticeNamesOf().
  *
  * It only rewrites CODE idioms (ASCII operators: `* 360`, `% 360`, `Math.PI / 180`, the angle-wheel ± ops). It never
  * touches the `·`-middot formula strings (those are the receipt's prose) and never a bare `/ 180` that is not a
@@ -32,19 +32,19 @@ const RULES = [
   [/-180\b/g, '-halfTurn', 'halfTurn'],              // if (d <= -180)
 ]
 
-/** Put qpuLatticeNamesOf into the unit import, and a `const { halfTurn, fullTurn } = qpuLatticeNamesOf()` binding for the
+/** Put latticeNamesOf into the unit import, and a `const { halfTurn, fullTurn } = latticeNamesOf()` binding for the
  *  names used, right after the import block. Idempotent. */
 const ensureBinding = (src, needed) => {
   let out = src
-  if (/const \{[^}]*\} = qpuLatticeNamesOf\(\)/.test(out)) {
+  if (/const \{[^}]*\} = latticeNamesOf\(\)/.test(out)) {
     // extend the existing destructure with any missing names
-    out = out.replace(/const \{([^}]*)\} = qpuLatticeNamesOf\(\)/, (m, inner) => {
+    out = out.replace(/const \{([^}]*)\} = latticeNamesOf\(\)/, (m, inner) => {
       const have = new Set(inner.split(',').map((s) => s.trim()).filter(Boolean))
       for (const nm of needed) have.add(nm)
-      return `const { ${[...have].sort().join(', ')} } = qpuLatticeNamesOf()`
+      return `const { ${[...have].sort().join(', ')} } = latticeNamesOf()`
     })
   } else {
-    const bind = `const { ${[...needed].sort().join(', ')} } = qpuLatticeNamesOf()`
+    const bind = `const { ${[...needed].sort().join(', ')} } = latticeNamesOf()`
     const lines = out.split('\n')
     let last = -1
     for (let i = 0; i < lines.length; i++) if (/^import /.test(lines[i])) last = i
@@ -52,12 +52,12 @@ const ensureBinding = (src, needed) => {
     out = lines.join('\n')
   }
   // make sure the symbol is imported from the unit
-  if (!/qpuLatticeNamesOf/.test(out.split('\n').filter((l) => l.includes('qpuLatticeNamesOf')).join(''))) { /* bound but not imported */ }
-  if (new RegExp(`import \\{[^}]*\\} from ${UNIT.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`).test(out) && !/qpuLatticeNamesOf[^=]/.test(out.split('qpuLatticeNamesOf()')[0] ?? out)) {
+  if (!/latticeNamesOf/.test(out.split('\n').filter((l) => l.includes('latticeNamesOf')).join(''))) { /* bound but not imported */ }
+  if (new RegExp(`import \\{[^}]*\\} from ${UNIT.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`).test(out) && !/latticeNamesOf[^=]/.test(out.split('latticeNamesOf()')[0] ?? out)) {
     out = out.replace(new RegExp(`import \\{([^}]*)\\} from ${UNIT.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`), (m, inner) =>
-      inner.includes('qpuLatticeNamesOf') ? m : `import {${inner.replace(/\s*$/, '')}, qpuLatticeNamesOf } from ${UNIT}`)
+      inner.includes('latticeNamesOf') ? m : `import {${inner.replace(/\s*$/, '')}, latticeNamesOf } from ${UNIT}`)
   } else if (!new RegExp(`from ${UNIT.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`).test(out)) {
-    out = `import { qpuLatticeNamesOf } from ${UNIT}\n` + out
+    out = `import { latticeNamesOf } from ${UNIT}\n` + out
   }
   return out
 }

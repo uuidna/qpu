@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DOSAGE — PRESCRIBING AS ARITHMETIC (chosen by the clinical registry, not by hand). A dose is numbers: amount by body
@@ -31,4 +31,4 @@ export class DosageFormulas {
 }
 
 for (const name of ['cumulative', 'daily', 'divided', 'maintenance', 'maximum', 'pediatric', 'perbsa', 'perweight'] as const)
-  qpuHexRegisterOf('dosage', name, (DosageFormulas[name] as (...x: unknown[]) => unknown).bind(DosageFormulas))
+  hexRegisterOf('dosage', name, (DosageFormulas[name] as (...x: unknown[]) => unknown).bind(DosageFormulas))

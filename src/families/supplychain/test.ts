@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SupplychainFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('supplychain: leadtime, turnover, fillrate, safetystock, reorder, backorder
   assert.equal(SupplychainFormulas.utilization(80, 100).value, 80)
   assert.equal(SupplychainFormulas.cycle(20, 100).value, 5, 'five time units in work')
   assert.equal(SupplychainFormulas.leadtime(10, 17).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('supplychain')?.length, 8)
+  assert.equal(hexFamiliesOf().get('supplychain')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'supplychain', program: ['turnover'], params: [1000, 250] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `supplychain.turnover at ${uuid}`)
-  qpuUuidReceiptOf('supplychain turnover', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('supplychain turnover', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; leadtime 7, turnover 4, fillrate 95, safetystock 150, reorder 200, backorder 5, utilization 80, cycle 5; crossing to logistics')
 })

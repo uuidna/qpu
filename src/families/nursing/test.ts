@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NursingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -20,10 +20,10 @@ test('nursing: dosage, droprate, ratio, acuity, handwash, fluid, medication, wor
   assert.equal(NursingFormulas.workload(12, 8).value, 1, 'tasks per hour')
   assert.equal(NursingFormulas.workload(12, 0).value, 0)
   assert.equal(NursingFormulas.dosage(70, 5).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('nursing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('nursing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'nursing', program: ['ratio'], params: [24, 6] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `nursing.ratio at ${uuid}`)
-  qpuUuidReceiptOf('nursing ratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('nursing ratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; dosage 350, droprate 2, ratio 4, acuity 7, handwash 90, fluid 500, medication 95, workload 1; crossing to med')
 })

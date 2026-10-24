@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GlaciologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('glaciology: massbalance, flow, retreat, albedo, melt, calving, equilibrium
   assert.equal(GlaciologyFormulas.equilibrium(60, 100).value, 60)
   assert.equal(GlaciologyFormulas.age(1000, 25).value, 40)
   assert.equal(GlaciologyFormulas.flow(12, 100).dst, 'climate')
-  assert.equal(qpuHexFamiliesOf().get('glaciology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('glaciology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'glaciology', program: ['flow'], params: [12, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1200, `glaciology.flow at ${uuid}`)
-  qpuUuidReceiptOf('glaciology flow', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('glaciology flow', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; massbalance 30/−20, flow 1200, retreat 50, albedo 80, melt 29, calving 120, equilibrium 60, age 40; crossing to climate')
 })

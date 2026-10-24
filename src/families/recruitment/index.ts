@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RECRUITMENT — HIRING AS ARITHMETIC (chosen by the registry, not by hand). Hiring is numbers: the funnel across stages,
@@ -30,4 +30,4 @@ export class RecruitmentFormulas {
 }
 
 for (const name of ['acceptance', 'costperhire', 'funnel', 'offer', 'retention', 'sourcing', 'timetofill', 'yield'] as const)
-  qpuHexRegisterOf('recruitment', name, (RecruitmentFormulas[name] as (...x: unknown[]) => unknown).bind(RecruitmentFormulas))
+  hexRegisterOf('recruitment', name, (RecruitmentFormulas[name] as (...x: unknown[]) => unknown).bind(RecruitmentFormulas))

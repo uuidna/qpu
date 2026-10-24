@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BayesianFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('bayesian: posterior, likelihood, prior, evidence, oddsratio, bayesfactor, 
   assert.equal(BayesianFormulas.update(333, 4000).value, 1332, 'posterior odds from prior odds and the factor')
   assert.equal(BayesianFormulas.marginal(300, 100, 100).value, 500)
   assert.equal(BayesianFormulas.posterior(250, 800, 400).dst, 'probability')
-  assert.equal(qpuHexFamiliesOf().get('bayesian')?.length, 8)
+  assert.equal(hexFamiliesOf().get('bayesian')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'bayesian', program: ['posterior'], params: [250, 800, 400] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 500, `bayesian.posterior at ${uuid}`)
-  qpuUuidReceiptOf('bayesian posterior', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('bayesian posterior', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; posterior 500, likelihood 900, prior 250, evidence 400, oddsratio 333, bayesfactor 4000, update 1332, marginal 500; crossing to probability')
 })

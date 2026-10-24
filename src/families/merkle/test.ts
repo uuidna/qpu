@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MerkleFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('merkle: leaves, treeheight, proofsize, hashcombos, nodecount, siblingpairs
   assert.equal(MerkleFormulas.rootpaths(4, 2).value, 12)
   assert.equal(MerkleFormulas.verificationsteps(4, 1).value, 5)
   assert.equal(MerkleFormulas.leaves(4).dst, 'graphtheory')
-  assert.equal(qpuHexFamiliesOf().get('merkle')?.length, 8)
+  assert.equal(hexFamiliesOf().get('merkle')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'merkle', program: ['leaves'], params: [4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 16, `merkle.leaves at ${uuid}`)
-  qpuUuidReceiptOf('merkle leaves', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('merkle leaves', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; leaves 16, treeheight 4, proofsize 128, hashcombos 28, nodecount 30, siblingpairs 120, rootpaths 12, verificationsteps 5; crossing to graphtheory')
 })

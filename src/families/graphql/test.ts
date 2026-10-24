@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GraphqlFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('graphql: querydepth, complexity, resolvers, nplusone, fieldcount, batchsiz
   assert.equal(GraphqlFormulas.cachehit(950, 1000).value, 95)
   assert.equal(GraphqlFormulas.fragmentreuse(600, 8).value, 75)
   assert.equal(GraphqlFormulas.querydepth(20, 5).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('graphql')?.length, 8)
+  assert.equal(hexFamiliesOf().get('graphql')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'graphql', program: ['batchsize'], params: [1000, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 34, `graphql.batchsize at ${uuid}`)
-  qpuUuidReceiptOf('graphql batchsize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('graphql batchsize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; querydepth 100, complexity 150, resolvers 100, nplusone 101, fieldcount 320, batchsize 34, cachehit 95, fragmentreuse 75; crossing to networking')
 })

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Qpu/Clay.lean, discovered, not written: the formulas discover each other (qpuHexDiscoverOf) — every family's Lean
+ * Qpu/Clay.lean, discovered, not written: the formulas discover each other (hexDiscoverOf) — every family's Lean
  * formulas are evaluated over the lattice's own constants and each value two or more families reach is a relation.
  * No list is kept; nothing is enumerated by hand. Each relation stated over the constant names becomes a theorem
  * proved by rfl, and clay_wings is their conjunction. The same discovery is consolidated as one schema.org
@@ -28,7 +28,7 @@ const nameOf = new Map([...consts].reverse().map((c) => [c.value.toString(), c.t
 // raised limit), so walk every window via `next` and union the ways by value — discover ALL, not one window's worth.
 const merged = new Map()
 for (let from = 0; from !== undefined; ) {
-  const d = u.qpuHexDiscoverOf(from)
+  const d = u.hexDiscoverOf(from)
   for (const r of d.relations) {
     const ways = merged.get(r.value) ?? merged.set(r.value, new Map()).get(r.value)
     for (const w of r.ways) if (!ways.has(w.hex)) ways.set(w.hex, w)

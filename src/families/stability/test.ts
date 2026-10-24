@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StabilityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('stability: gainmargin, phasemargin, crossoverfrequency, poles, zeros, rout
   assert.equal(StabilityFormulas.marginratio(200, 50).value, 400)
   assert.equal(StabilityFormulas.dampingfactor(70, 100).value, 70, 'seventy percent of critical')
   assert.equal(StabilityFormulas.gainmargin(200, 100).dst, 'control')
-  assert.equal(qpuHexFamiliesOf().get('stability')?.length, 8)
+  assert.equal(hexFamiliesOf().get('stability')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'stability', program: ['crossoverfrequency'], params: [1000, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 250, `stability.crossoverfrequency at ${uuid}`)
-  qpuUuidReceiptOf('stability crossoverfrequency', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('stability crossoverfrequency', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gainmargin 200, phasemargin 45, crossoverfrequency 250, poles 7, zeros 3, routhcriterion 1, marginratio 400, dampingfactor 70; crossing to control')
 })

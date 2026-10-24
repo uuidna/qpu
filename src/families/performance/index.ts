@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PERFORMANCE — THE WORKFORCE AS ARITHMETIC (appraisal, not opinion). A review is numbers: the average rating, output per
@@ -31,4 +31,4 @@ export class PerformanceFormulas {
 }
 
 for (const name of ['appraisal', 'goal', 'improvement', 'productivity', 'rating', 'score', 'throughput', 'utilization'] as const)
-  qpuHexRegisterOf('performance', name, (PerformanceFormulas[name] as (...x: unknown[]) => unknown).bind(PerformanceFormulas))
+  hexRegisterOf('performance', name, (PerformanceFormulas[name] as (...x: unknown[]) => unknown).bind(PerformanceFormulas))

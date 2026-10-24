@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LEMMATIZATION — REDUCING WORD FORMS TO THEIR LEMMA, AS ARITHMETIC. Normalizing text is numbers: how many lemmas a form
@@ -31,4 +31,4 @@ export class LemmatizationFormulas {
 }
 
 for (const name of ['accuracy', 'ambiguityrate', 'coverage', 'formsperlemma', 'inflectionratio', 'lemmacount', 'posmatch', 'reductionratio'] as const)
-  qpuHexRegisterOf('lemmatization', name, (LemmatizationFormulas[name] as (...x: unknown[]) => unknown).bind(LemmatizationFormulas))
+  hexRegisterOf('lemmatization', name, (LemmatizationFormulas[name] as (...x: unknown[]) => unknown).bind(LemmatizationFormulas))

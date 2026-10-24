@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VERSION — PAYLOAD'S VERSIONS/DRAFTS API, AS ARITHMETIC (chosen by the CMS API registry, not by hand). Keeping document
@@ -31,4 +31,4 @@ export class VersionFormulas {
 }
 
 for (const name of ['autosave', 'churn', 'drafts', 'keep', 'prune', 'published', 'restore', 'scheduled'] as const)
-  qpuHexRegisterOf('version', name, (VersionFormulas[name] as (...x: unknown[]) => unknown).bind(VersionFormulas))
+  hexRegisterOf('version', name, (VersionFormulas[name] as (...x: unknown[]) => unknown).bind(VersionFormulas))

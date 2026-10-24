@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ABSORPTION — SOUND SWALLOWED BY A MATERIAL, AS ARITHMETIC. How much of a sound a surface takes in rather than returns:
@@ -31,4 +31,4 @@ export class AbsorptionFormulas {
 }
 
 for (const name of ['coefficient', 'impedance', 'nrc', 'panelresonance', 'porosity', 'reductionindex', 'sabins', 'transmissionloss'] as const)
-  qpuHexRegisterOf('absorption', name, (AbsorptionFormulas[name] as (...x: unknown[]) => unknown).bind(AbsorptionFormulas))
+  hexRegisterOf('absorption', name, (AbsorptionFormulas[name] as (...x: unknown[]) => unknown).bind(AbsorptionFormulas))

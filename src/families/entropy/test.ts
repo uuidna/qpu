@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EntropyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('entropy: shannon, maxentropy, jointentropy, conditionalentropy, mutualinfo
   assert.equal(EntropyFormulas.informationgain(16, 10).value, 6, 'bits a measurement buys')
   assert.equal(EntropyFormulas.perplexity(5).value, 32, 'branching factor of five bits')
   assert.equal(EntropyFormulas.shannon(1000).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('entropy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('entropy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'entropy', program: ['shannon'], params: [1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9, `entropy.shannon at ${uuid}`)
-  qpuUuidReceiptOf('entropy shannon', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('entropy shannon', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; shannon 9, maxentropy 10, jointentropy 18, conditionalentropy 9, mutualinformation 3, relativeentropy 2, informationgain 6, perplexity 32; crossing to statistics')
 })

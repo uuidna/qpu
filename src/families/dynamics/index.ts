@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DYNAMICS — NEWTONIAN MOTION, AS ARITHMETIC. A moving body is numbers: the force an acceleration needs, momentum, the
@@ -31,4 +31,4 @@ export class DynamicsFormulas {
 }
 
 for (const name of ['acceleration', 'collision', 'force', 'impulse', 'kineticenergy', 'momentum', 'power', 'work'] as const)
-  qpuHexRegisterOf('dynamics', name, (DynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(DynamicsFormulas))
+  hexRegisterOf('dynamics', name, (DynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(DynamicsFormulas))

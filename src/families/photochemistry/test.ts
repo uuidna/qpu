@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhotochemistryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('photochemistry: quantumyield, absorbance, photonflux, actinometry, bleachi
   assert.equal(PhotochemistryFormulas.lifetime(5000, 100).value, 50)
   assert.equal(PhotochemistryFormulas.conversion(750, 1000).value, 75, 'percent conversion')
   assert.equal(PhotochemistryFormulas.quantumyield(90, 100).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('photochemistry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('photochemistry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'photochemistry', program: ['photonflux'], params: [6000, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `photochemistry.photonflux at ${uuid}`)
-  qpuUuidReceiptOf('photochemistry photonflux', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('photochemistry photonflux', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; quantumyield 90, absorbance 600, photonflux 100, actinometry 9000, bleaching 600, excitation 2000, lifetime 50, conversion 75; crossing to optics')
 })

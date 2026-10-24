@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GeoFormulas — 8 exact-integer formulas of the geo domain, each at a hex address crossing to cross; develops the geo leads. */
@@ -31,4 +31,4 @@ export class GeoFormulas {
 }
 
 for (const name of ['arcseconds', 'area', 'degrees', 'gridcells', 'quadkeys', 'tiles', 'waypoints', 'zoomcells'] as const)
-  qpuHexRegisterOf('geo', name, (GeoFormulas[name] as (...x: unknown[]) => unknown).bind(GeoFormulas))
+  hexRegisterOf('geo', name, (GeoFormulas[name] as (...x: unknown[]) => unknown).bind(GeoFormulas))

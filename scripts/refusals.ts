@@ -35,7 +35,7 @@ export const theoremsOf = (text) => new Set([...text.matchAll(/theorem\s+([a-z_]
  *
  * This gate asked whether two theorem names appeared near a refusal, and I satisfied it by writing
  * twenty-four comments — 39 of 39 "cross-grounded", 0 remaining, and not one refusal changed. Checking the
- * pairs against the tree's own qpuCrossReadingOf says NONE of the five pairings is a cross: cube with clay
+ * pairs against the tree's own crossReadingOf says NONE of the five pairings is a cross: cube with clay
  * is asymmetric with asymmetric, two products and no sum; cern with involution is neither with neither;
  * `false` and `names` are not Lean theorems at all. The gate and the truth were inverted.
  *
@@ -49,7 +49,7 @@ export const readingsOf = async (root) => {
   const byName = {}
   for (const line of lean.split('\n')) {
     const named = line.match(/^theorem ([a-z_]+)/)
-    if (named) byName[named[1]] = unit.qpuCrossReadingOf(line)
+    if (named) byName[named[1]] = unit.crossReadingOf(line)
   }
   return byName
 }

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NuclearpowerFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('nuclearpower: thermaloutput, electricaloutput, efficiency, fuelburnup, cap
   assert.equal(NuclearpowerFormulas.coolingloops(4, 0).value, 4)
   assert.equal(NuclearpowerFormulas.decayheat(7, 100).value, 7)
   assert.equal(NuclearpowerFormulas.thermaloutput(3, 1000).dst, 'energy')
-  assert.equal(qpuHexFamiliesOf().get('nuclearpower')?.length, 8)
+  assert.equal(hexFamiliesOf().get('nuclearpower')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'nuclearpower', program: ['thermaloutput'], params: [3, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3000, `nuclearpower.thermaloutput at ${uuid}`)
-  qpuUuidReceiptOf('nuclearpower thermaloutput', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('nuclearpower thermaloutput', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; thermaloutput 3000, electricaloutput 1000, efficiency 33, fuelburnup 45, capacityfactor 90, halflifecycles 3, coolingloops 4, decayheat 7; crossing to energy')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SurveyFormulas — 8 exact-integer formulas of the survey domain, each at a hex address crossing to cross; develops the survey leads. */
@@ -31,4 +31,4 @@ export class SurveyFormulas {
 }
 
 for (const name of ['angles', 'arcseconds', 'area', 'bearings', 'combos', 'gridcells', 'stations', 'traverse'] as const)
-  qpuHexRegisterOf('survey', name, (SurveyFormulas[name] as (...x: unknown[]) => unknown).bind(SurveyFormulas))
+  hexRegisterOf('survey', name, (SurveyFormulas[name] as (...x: unknown[]) => unknown).bind(SurveyFormulas))

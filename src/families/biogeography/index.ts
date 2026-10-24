@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOGEOGRAPHY — scaffolded integer measures crossed to geography. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class BiogeographyFormulas {
 }
 
 for (const name of ['dispersalpaths', 'endemismratio', 'habitatsubsets', 'islandpairs', 'latitudegradient', 'rangesize', 'speciescount', 'turnoverrate'] as const)
-  qpuHexRegisterOf('biogeography', name, (BiogeographyFormulas[name] as (...x: unknown[]) => unknown).bind(BiogeographyFormulas))
+  hexRegisterOf('biogeography', name, (BiogeographyFormulas[name] as (...x: unknown[]) => unknown).bind(BiogeographyFormulas))

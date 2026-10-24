@@ -66,7 +66,7 @@ for (const c of caps) {
   if (/Live|Fetch/.test(c.evidence)) { results.set(c.evidence, 'live'); continue }
   try {
     let v = f()
-    // a predicate over a value (x?: ReturnType<typeof qpuXOf>) is asked of the builder's own output
+    // a predicate over a value (x?: ReturnType<typeof xOf>) is asked of the builder's own output
     const builder = unit[c.evidence.replace(/Holds$/, 'Of')] ?? await predicateOf(c.evidence.replace(/Holds$/, 'Of'))
     if (v === false && typeof builder === 'function') {
       if (builder.length > 0) { results.set(c.evidence, 'on-call'); continue }
@@ -86,7 +86,7 @@ const statusOf = (c) => (c.evidence ? results.get(c.evidence) : '—')
 const esc = (s) => String(s).replace(/\|/g, '\\|')
 const yamlStr = (s) => JSON.stringify(String(s))
 const frontmatter = (slug, title, description) =>
-  ['---', `uuid: ${yamlStr(unit.qpuContentUuidOf({ slug, title, description }))}`, `title: ${yamlStr(title)}`, `description: ${yamlStr(description)}`, `og:title: ${yamlStr(`${title} — @uuidna/qpu`)}`, `og:description: ${yamlStr(description)}`,
+  ['---', `uuid: ${yamlStr(unit.contentUuidOf({ slug, title, description }))}`, `title: ${yamlStr(title)}`, `description: ${yamlStr(description)}`, `og:title: ${yamlStr(`${title} — @uuidna/qpu`)}`, `og:description: ${yamlStr(description)}`,
     `og:type: article`, `og:url: ${yamlStr(`${REPO}/blob/main/docs/${slug}.md`)}`, `og:image: ${yamlStr(OG_IMAGE)}`, `og:site_name: "@uuidna/qpu"`,
     `twitter:card: summary_large_image`, `twitter:title: ${yamlStr(title)}`, `twitter:description: ${yamlStr(description)}`, `version: ${yamlStr(pkg.version)}`, '---', ''].join('\n')
 const link = (c) => `[\`${c.name}\`](../${c.file}#L${c.line})`
@@ -115,13 +115,13 @@ for (const [slug, title, blurb] of WINGS) {
   const { leanSource } = await import(path.join(ROOT, 'dist/quantum/processing/unit/lean.js'))
   const { leanLinksOf } = await import(path.join(ROOT, 'dist/quantum/processing/unit/lean-eval.js'))
   const g = leanLinksOf(leanSource)
-  const fams = unit.qpuHexFamiliesOf()
-  const disc = unit.qpuHexDiscoverOf()
+  const fams = unit.hexFamiliesOf()
+  const disc = unit.hexDiscoverOf()
   pages.proof = pages.proof.replace(/\nGenerated from the inline docs/, [
     '', '## Lean families', '',
     'index.lean is the bundle of these modules (scripts/lean-bundle.ts); `npm run lean` builds the modules with Lake, checks the bundle matches them, and checks the bundle with Lean. Each module with definitions is a hex family: its handle is the fold of its name and each definition is one program nibble.', '',
     '| Module | Hex handle | Formulas (nibble: name) | Theorems | Uses |', '|---|---|---|---|---|',
-    ...g.families.map((f) => { const h = fams.get(`Qpu.${f.family}`); return `| [Qpu.${f.family}](../src/quantum/processing/unit/lean/Qpu/${f.family}.lean) | ${h ? `\`${unit.qpuFoldOf(`Qpu.${f.family}`).slice(0, 8)}\`` : '—'} | ${h ? h.map((x, i) => `${(i + 1).toString(16)}: ${x.name}`).join(', ') : '—'} | ${f.theorems} | ${g.familyLinks.filter((l) => l.from === f.family).map((l) => `${l.to} (${l.count})`).join(', ') || '—'} |` }),
+    ...g.families.map((f) => { const h = fams.get(`Qpu.${f.family}`); return `| [Qpu.${f.family}](../src/quantum/processing/unit/lean/Qpu/${f.family}.lean) | ${h ? `\`${unit.foldOf(`Qpu.${f.family}`).slice(0, 8)}\`` : '—'} | ${h ? h.map((x, i) => `${(i + 1).toString(16)}: ${x.name}`).join(', ') : '—'} | ${f.theorems} | ${g.familyLinks.filter((l) => l.from === f.family).map((l) => `${l.to} (${l.count})`).join(', ') || '—'} |` }),
     '', `${g.related.length} pairs of definitions are related by at least one theorem. Strongest: ${g.related.slice(0, 6).map((r) => `${r.pair.join(' ~ ')} (${r.by.length})`).join(', ')}.`, '',
     '## Discovered relations', '', 'Every formula evaluated over the lattice constants; values reached by formulas of two or more families, each way as a runnable hex program (`GET /hex/<uuid>`).', '',
     '| Value | Families | Ways (hex) |', '|---|---|---|',
@@ -149,7 +149,7 @@ pages.comparison = frontmatter('comparison', 'Comparison', 'What @uuidna/qpu doe
   `| Physical hardware | none | IBM Quantum | Google Quantum AI (by access) | IonQ, Rigetti, IQM, QuEra and others | via plugins | none |`,
   `| Formal proof | ${lean ? `${lean.theorems} Lean 4 theorems, all served and recomputed (${lean.recomputed}/${lean.theorems})` : '—'} | none | none | none | none | none |`,
   `| Content-addressed results | RFC 9562 v8 UUIDs and chained quantum receipts on every computation | job ids | none | task ARNs | none | none |`,
-  `| Agent interface | MCP server (/mcp), ${unit.qpuMcpToolsListOf ? unit.qpuMcpToolsListOf().length : '—'} tools | SDK (Python) | SDK (Python) | SDK and API | SDK (Python) | call tools through MCP or function calling |`,
+  `| Agent interface | MCP server (/mcp), ${unit.mcpToolsListOf ? unit.mcpToolsListOf().length : '—'} tools | SDK (Python) | SDK (Python) | SDK and API | SDK (Python) | call tools through MCP or function calling |`,
   `| Document database | MongoDB query/update semantics on Cloudflare KV+R2 or D1, Payload adapter | — | — | — | — | — |`,
   `| API fusion | ${fuse ? `${fuse.reached} APIs, ${fuse.edges} composing pairs, ${fuse.formulas?.produced ?? '—'} cross formulas` : '—'} | — | — | — | — | — |`,
   `| CMS on the edge | ${pcf ? `${pcf.combinations} Next.js + Payload configurations on Workers` : '—'} | — | — | — | — | — |`,
@@ -220,7 +220,7 @@ for (const [slug, md] of Object.entries(pages)) {
 // code's. A hand-written Markdown file is a lead (scripts/leads.ts: manualDocLeadsOf), not a page.
 // the same pages as Payload content: the docs collection, upserted on init by content UUID (the public site)
 // id: the UUID of the slug, so a page has one address however many isolates seed it; uuid: the UUID of its content
-const docRows = docs.map((d) => ({ id: unit.qpuShapeUuidOf(`docs/${d.slug}`), ...d, uuid: unit.qpuContentUuidOf(d) }))
+const docRows = docs.map((d) => ({ id: unit.shapeUuidOf(`docs/${d.slug}`), ...d, uuid: unit.contentUuidOf(d) }))
 files['src/seed/docs.ts'] = `/** Generated by scripts/generate-docs.ts — the documentation as Payload content, upserted on init. */
 import type { Payload } from 'payload'
 

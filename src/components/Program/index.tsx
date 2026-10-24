@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { qpuHarnessesOf } from '@uuidna/qpu'
+import { harnessesOf } from '@uuidna/qpu'
 import { usageBillOf } from '@uuidna/qpu/payload/plugins'
 import { Fragment } from 'react'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
@@ -51,7 +51,7 @@ export function RunCard({ uuid, run }: { uuid: string; run: Run }) {
         <p className="text-xs text-muted-foreground">
           Permalink <Link href={`/${uuid}`} className="font-mono underline">/{uuid}</Link>
           {' · '}
-          <code className="font-mono">POST {qpuHarnessesOf().url}</code>
+          <code className="font-mono">POST {harnessesOf().url}</code>
           {' '}
           <code className="font-mono">tools/call cite {'{'} &quot;hex&quot;: &quot;{uuid}&quot; {'}'}</code>
           {' · '}

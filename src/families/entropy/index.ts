@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENTROPY — INFORMATION MEASURED IN BITS, AS ARITHMETIC. A source of `symbols` carries ⌊log2 symbols⌋ bits (Shannon),
@@ -32,4 +32,4 @@ export class EntropyFormulas {
 }
 
 for (const name of ['conditionalentropy', 'informationgain', 'jointentropy', 'maxentropy', 'mutualinformation', 'perplexity', 'relativeentropy', 'shannon'] as const)
-  qpuHexRegisterOf('entropy', name, (EntropyFormulas[name] as (...x: unknown[]) => unknown).bind(EntropyFormulas))
+  hexRegisterOf('entropy', name, (EntropyFormulas[name] as (...x: unknown[]) => unknown).bind(EntropyFormulas))

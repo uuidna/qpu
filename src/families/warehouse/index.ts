@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WAREHOUSE — THE ANALYTIC STORE, AS ARITHMETIC (chosen by the public-API registry, not by hand). A columnar warehouse is
@@ -31,4 +31,4 @@ export class WarehouseFormulas {
 }
 
 for (const name of ['cardinality', 'clustering', 'columnsize', 'compressionratio', 'materialized', 'partitionprune', 'querycost', 'scanrows'] as const)
-  qpuHexRegisterOf('warehouse', name, (WarehouseFormulas[name] as (...x: unknown[]) => unknown).bind(WarehouseFormulas))
+  hexRegisterOf('warehouse', name, (WarehouseFormulas[name] as (...x: unknown[]) => unknown).bind(WarehouseFormulas))

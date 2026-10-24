@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EDITING — THE CUTTING ROOM AS ARITHMETIC (chosen by the public-API registry, not by hand). Assembling a cut is numbers:
@@ -31,4 +31,4 @@ export class EditingFormulas {
 }
 
 for (const name of ['assembly', 'coverage', 'cuts', 'pacing', 'ripple', 'runtime', 'timeline', 'transition'] as const)
-  qpuHexRegisterOf('editing', name, (EditingFormulas[name] as (...x: unknown[]) => unknown).bind(EditingFormulas))
+  hexRegisterOf('editing', name, (EditingFormulas[name] as (...x: unknown[]) => unknown).bind(EditingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HalflifeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('halflife: elapsedlives, remaining, decayed, constant, meanlife, activity, 
   assert.equal(HalflifeFormulas.fraction(100, 2).value, 25, 'a quarter remains after two half-lives')
   assert.equal(HalflifeFormulas.generations(10, 3).value, 80)
   assert.equal(HalflifeFormulas.remaining(1000, 3).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('halflife')?.length, 8)
+  assert.equal(hexFamiliesOf().get('halflife')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'halflife', program: ['remaining'], params: [1000, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 125, `halflife.remaining at ${uuid}`)
-  qpuUuidReceiptOf('halflife remaining', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('halflife remaining', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; elapsedlives 4, remaining 125, decayed 875, constant 69, meanlife 1443, activity 69, fraction 25, generations 80; crossing to chemistry')
 })

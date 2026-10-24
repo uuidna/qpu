@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VIBRATION — MECHANICAL OSCILLATION AS ARITHMETIC. A vibrating structure is numbers: the natural frequency set by
@@ -31,4 +31,4 @@ export class VibrationFormulas {
 }
 
 for (const name of ['acceleration', 'amplitude', 'dampingratio', 'modeshape', 'naturalfrequency', 'period', 'resonance', 'transmissibility'] as const)
-  qpuHexRegisterOf('vibration', name, (VibrationFormulas[name] as (...x: unknown[]) => unknown).bind(VibrationFormulas))
+  hexRegisterOf('vibration', name, (VibrationFormulas[name] as (...x: unknown[]) => unknown).bind(VibrationFormulas))

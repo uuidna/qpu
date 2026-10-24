@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STATICS — RIGID BODIES AT REST, AS ARITHMETIC (forces that cancel, no motion yet). A body holds still when every
@@ -31,4 +31,4 @@ export class StaticsFormulas {
 }
 
 for (const name of ['centroid', 'equilibrium', 'friction', 'moment', 'normalforce', 'reaction', 'shear', 'truss'] as const)
-  qpuHexRegisterOf('statics', name, (StaticsFormulas[name] as (...x: unknown[]) => unknown).bind(StaticsFormulas))
+  hexRegisterOf('statics', name, (StaticsFormulas[name] as (...x: unknown[]) => unknown).bind(StaticsFormulas))

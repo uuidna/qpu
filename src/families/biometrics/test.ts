@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BiometricsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('biometrics: far, frr, accuracy, enrollment, matchscore, templatesize, thro
   assert.equal(BiometricsFormulas.throughput(6000, 60).value, 100, 'verifications per second')
   assert.equal(BiometricsFormulas.liveness(99, 100).value, 99)
   assert.equal(BiometricsFormulas.far(2, 10000).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('biometrics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('biometrics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'biometrics', program: ['accuracy'], params: [990, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 99, `biometrics.accuracy at ${uuid}`)
-  qpuUuidReceiptOf('biometrics accuracy', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('biometrics accuracy', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; far 2, frr 50, accuracy 99, enrollment 95, matchscore 80, templatesize 2048, throughput 100, liveness 99; crossing to code')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EDUCATION — ACADEMICS AS ARITHMETIC (chosen by the registry, not by hand). Learning is numbers: a grade out of a maximum,
@@ -30,4 +30,4 @@ export class EducationFormulas {
 }
 
 for (const name of ['attendance', 'completion', 'cost', 'credits', 'gpa', 'grade', 'pass', 'ratio'] as const)
-  qpuHexRegisterOf('education', name, (EducationFormulas[name] as (...x: unknown[]) => unknown).bind(EducationFormulas))
+  hexRegisterOf('education', name, (EducationFormulas[name] as (...x: unknown[]) => unknown).bind(EducationFormulas))

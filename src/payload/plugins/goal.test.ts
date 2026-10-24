@@ -1,11 +1,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { CombinatoricsFormulas } from '../../families/combinatorics/index.js'
-import { qpuFacesOf } from '../../quantum/processing/unit/index.js'
+import { facesOf } from '../../quantum/processing/unit/index.js'
 import { goalOf, goalStateOf } from './goal.js'
 
 test('goal computes from combinatorics and is court-tried', () => {
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const g = goalOf({ k: 1 })
   assert.equal(g.kind, 'goal')
   assert.equal(g.state, 'OPEN')
@@ -32,7 +32,7 @@ test('goal computes from combinatorics and is court-tried', () => {
 })
 
 test('goal measure grows with C(faces,k); LEAD when k out of range fails holds', () => {
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const g1 = goalOf({ k: 1 })
   const g2 = goalOf({ k: 2 })
   assert.ok(g2.measure > g1.measure)

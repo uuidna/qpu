@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CodingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('coding: coderate, redundancy, hammingdistance, blocklength, errorcorrectio
   assert.equal(CodingFormulas.parityanbits(4).value, 0)
   assert.equal(CodingFormulas.overhead(3, 4).value, 75)
   assert.equal(CodingFormulas.coderate(4, 7).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('coding')?.length, 8)
+  assert.equal(hexFamiliesOf().get('coding')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'coding', program: ['blocklength'], params: [4, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 7, `coding.blocklength at ${uuid}`)
-  qpuUuidReceiptOf('coding blocklength', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('coding blocklength', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coderate 57, redundancy 3, hammingdistance 5, blocklength 7, errorcorrection 2, codingefficiency 50, parityanbits 1, overhead 75; crossing to signal')
 })

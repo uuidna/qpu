@@ -8,7 +8,7 @@ import { CombinatoricsFormulas } from '../../families/combinatorics/index.js'
 import { CryptFormulas } from '../../families/crypt/index.js'
 import {
   qpuHexUuidOf,
-  qpuMcpToolsListOf,
+  mcpToolsListOf,
   type QpuEnv,
 } from '../../quantum/processing/unit/index.js'
 import type { QpuPlugin } from './surface.js'
@@ -209,7 +209,7 @@ export const publicAccessOf = async (request?: Request, _env?: QpuEnv): Promise<
     ...(mode !== null && mode !== undefined && /^\d+$/.test(mode) ? { mode: Number(mode) } : {}),
     ...(who ? { who: who as (typeof UGO)[number] } : {}),
   })
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete', tools }).length
   return Response.json(
     {

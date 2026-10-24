@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REDISTRICTING — DRAWING DISTRICTS, AS ARITHMETIC (one person, one vote, made numbers). Population deviation from the
@@ -31,4 +31,4 @@ export class RedistrictingFormulas {
 }
 
 for (const name of ['compactness', 'competitiveness', 'deviation', 'districts', 'efficiencygap', 'malapportionment', 'population', 'quota'] as const)
-  qpuHexRegisterOf('redistricting', name, (RedistrictingFormulas[name] as (...x: unknown[]) => unknown).bind(RedistrictingFormulas))
+  hexRegisterOf('redistricting', name, (RedistrictingFormulas[name] as (...x: unknown[]) => unknown).bind(RedistrictingFormulas))

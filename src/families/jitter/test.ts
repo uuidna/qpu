@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { JitterFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('jitter: variation, meandeviation, bufferdepth, peaktopeak, playoutdelay, r
   assert.equal(JitterFormulas.packetspacing(1000, 50).value, 20, 'milliseconds between packets')
   assert.equal(JitterFormulas.absolute(200, 150).value, 50)
   assert.equal(JitterFormulas.variation(50, 30).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('jitter')?.length, 8)
+  assert.equal(hexFamiliesOf().get('jitter')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'jitter', program: ['bufferdepth'], params: [20, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `jitter.bufferdepth at ${uuid}`)
-  qpuUuidReceiptOf('jitter bufferdepth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('jitter bufferdepth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; variation 20, meandeviation 50, bufferdepth 60, peaktopeak 80, playoutdelay 90, rfc3550estimate 18, packetspacing 20, absolute 50; crossing to networking')
 })

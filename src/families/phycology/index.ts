@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHYCOLOGY — THE STUDY OF ALGAE, AS ARITHMETIC (chosen by the public-API registry, not by hand). Algae are numbers:
@@ -31,4 +31,4 @@ export class PhycologyFormulas {
 }
 
 for (const name of ['biomass', 'bloomdensity', 'chlorophyll', 'growthrate', 'lipidcontent', 'nutrientuptake', 'productivity', 'turbidity'] as const)
-  qpuHexRegisterOf('phycology', name, (PhycologyFormulas[name] as (...x: unknown[]) => unknown).bind(PhycologyFormulas))
+  hexRegisterOf('phycology', name, (PhycologyFormulas[name] as (...x: unknown[]) => unknown).bind(PhycologyFormulas))

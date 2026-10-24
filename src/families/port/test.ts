@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PortFormulas } from './index.js'
 
 /** The porting arithmetic, checked against the known numbers: ELF's magic, a struct's C-ABI size and offsets, the
@@ -26,12 +26,12 @@ test('port: magic identification, C-ABI struct layout, data-model widths and end
   assert.equal(PortFormulas.long(2).value, 4, 'LLP64 long is 4 — where Windows ports break')
   assert.equal(PortFormulas.swap(0x12345678, 4).value, 0x78563412, 'four bytes reversed')
   assert.equal(PortFormulas.swap(PortFormulas.swap(0x1234, 2).value, 2).value, 0x1234, 'swap is its own inverse')
-  assert.equal(qpuHexFamiliesOf().get('port')?.length, 8)
+  assert.equal(hexFamiliesOf().get('port')?.length, 8)
   for (const [name, params, expected] of [['layout', [0x14], 8], ['word', [1], 8], ['swap', [0x1234, 2], 0x3412]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'port', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid)) as { value?: unknown; holds?: boolean }
     assert.equal(Number(run.value), expected, `port.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`port ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`port ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; { char; int } = 8 bytes; LP64 ptr 8, LLP64 long 4; swap is an involution')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CPU — THE CENTRAL PROCESSOR, AS ARITHMETIC. A CPU is numbers by the book: total cores across its dies, hardware
@@ -36,4 +36,4 @@ export class CpuFormulas {
 }
 
 for (const name of ['amdahl', 'cacheline', 'cores', 'ipc', 'mips', 'pipeline', 'speedup', 'tdp', 'threads', 'turbo'] as const)
-  qpuHexRegisterOf('cpu', name, (CpuFormulas[name] as (...x: unknown[]) => unknown).bind(CpuFormulas))
+  hexRegisterOf('cpu', name, (CpuFormulas[name] as (...x: unknown[]) => unknown).bind(CpuFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COMBUSTION — BURNING FUEL, AS ARITHMETIC. Mixing and burning is numbers: the air a fuel needs, the extra air supplied,
@@ -31,4 +31,4 @@ export class CombustionFormulas {
 }
 
 for (const name of ['airfuelratio', 'calorific', 'efficiency', 'emissions', 'excessair', 'flametemp', 'heatrelease', 'stoichiometric'] as const)
-  qpuHexRegisterOf('combustion', name, (CombustionFormulas[name] as (...x: unknown[]) => unknown).bind(CombustionFormulas))
+  hexRegisterOf('combustion', name, (CombustionFormulas[name] as (...x: unknown[]) => unknown).bind(CombustionFormulas))

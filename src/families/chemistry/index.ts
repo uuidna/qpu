@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHEMISTRY — WET-LAB STOICHIOMETRY, AS ARITHMETIC (chosen by the registry, not by hand). Reactions are numbers: moles
@@ -30,4 +30,4 @@ export class ChemistryFormulas {
 }
 
 for (const name of ['bonds', 'concentration', 'dilution', 'mass', 'moles', 'ph', 'ratio', 'yield'] as const)
-  qpuHexRegisterOf('chemistry', name, (ChemistryFormulas[name] as (...x: unknown[]) => unknown).bind(ChemistryFormulas))
+  hexRegisterOf('chemistry', name, (ChemistryFormulas[name] as (...x: unknown[]) => unknown).bind(ChemistryFormulas))

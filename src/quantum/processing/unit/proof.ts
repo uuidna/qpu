@@ -1,4 +1,4 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuLeanOf, qpuLeanHolds.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): leanOf, leanHolds.
 import {
   bitOf,
   byDecideOf,
@@ -12,24 +12,24 @@ import {
   mintOf,
   n,
   onceOf,
-  qpuClayHolds,
-  qpuCoilEfficiencyHolds,
-  qpuCoilHolds,
-  qpuComputerHolds,
-  qpuContextOf,
-  qpuCrossReadingOf,
-  qpuCubeOf,
-  qpuElectronicsHolds,
-  qpuFacesOf,
-  qpuFollowHolds,
+  clayHolds,
+  coilEfficiencyHolds,
+  coilHolds,
+  computerHolds,
+  contextOf,
+  crossReadingOf,
+  cubeOf,
+  electronicsHolds,
+  facesOf,
+  followHolds,
   qpuHandleOf,
-  qpuHybridHolds,
-  qpuLeanSourceOf,
+  hybridHolds,
+  leanSourceOf,
   qpuNextHolds,
   qpuNextOf,
-  qpuPayloadDbHolds,
-  qpuShapeUuidOf,
-  qpuShorHolds,
+  payloadDbHolds,
+  shapeUuidOf,
+  shorHolds,
   schemaOrg,
   seed,
   shorFactorOf,
@@ -41,18 +41,18 @@ import {
 import type { QpuLeanRow } from './index.js'
 import { leanSource, leanRecomputed } from './lean.js'
 import { leanModelOf, leanRecomputeOf, leanTheoremBlocksOf, leanLinksOf } from './lean-eval.js'
-import { qpuCircuitOf } from './circuit.js'
+import { circuitOf } from './circuit.js'
 
 /**
  * Every theorem of index.lean as a row: statement verbatim, LaTeX, reading, cross reading, statement UUID and holds recomputed by lean-eval.
  * @wing proof
  * @kind builder
- * @evidence qpuLeanHolds
+ * @evidence leanHolds
  */
-export const qpuLeanOf = onceOf(() => {
-  const cube = qpuCubeOf()
+export const leanOf = onceOf(() => {
+  const cube = cubeOf()
   const handle = qpuHandleOf()
-  const faces = qpuFacesOf()
+  const faces = facesOf()
   const fused = faces.faces * handle.kv.amplitudes
   const mintHolds = mintOf(n + seed) === mintOf(n) + mintOf(n)
   const cubeHolds = cube.holds
@@ -121,7 +121,7 @@ export const qpuLeanOf = onceOf(() => {
       theorem: 'theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, around⟩',
       formula: '\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}',
       reading: `holds ${harmonicHolds && aroundHolds}. Coil efficiency in clusters. coins times rays is faces. rays plus rays is faces.`,
-      holds: harmonicHolds && aroundHolds && qpuCoilEfficiencyHolds(),
+      holds: harmonicHolds && aroundHolds && coilEfficiencyHolds(),
   },
     {
       heading: 'energy',
@@ -214,11 +214,11 @@ export const qpuLeanOf = onceOf(() => {
     {
       heading: 'shor',
       theorem:
-        'theorem shor : periodOf 8 91 % 2 = 0 ∧ half 8 91 < 91 - 1 ∧ 1 < gcdOf (half 8 91 - 1) 91 ∧ gcdOf (half 8 91 - 1) 91 < 91 ∧ gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩',
+        'theorem shor : periodOf shorBase shorModulus % coins = 0 ∧ half shorBase shorModulus < shorModulus - seed ∧ seed < gcdOf (half shorBase shorModulus - seed) shorModulus ∧ gcdOf (half shorBase shorModulus - seed) shorModulus < shorModulus ∧ gcdOf (half shorBase shorModulus - seed) shorModulus * gcdOf (half shorBase shorModulus + seed) shorModulus = shorModulus := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩',
       formula:
-        '\\mathrm{periodOf}(8,91)\\bmod 2=0\\land\\mathrm{half}(8,91)<91-1\\land 1<\\mathrm{gcdOf}(\\mathrm{half}(8,91)-1,91)\\land\\mathrm{gcdOf}(\\mathrm{half}(8,91)-1,91)<91\\land\\mathrm{gcdOf}(\\mathrm{half}(8,91)-1,91)\\cdot\\mathrm{gcdOf}(\\mathrm{half}(8,91)+1,91)=91',
+        '\\mathrm{periodOf}(\\mathrm{shorBase},\\mathrm{shorModulus})\\bmod \\mathrm{coins}=0\\land\\mathrm{half}(\\mathrm{shorBase},\\mathrm{shorModulus})<\\mathrm{shorModulus}-\\mathrm{seed}\\land\\mathrm{seed}<\\mathrm{gcdOf}(\\mathrm{half}(\\mathrm{shorBase},\\mathrm{shorModulus})-\\mathrm{seed},\\mathrm{shorModulus})\\land\\mathrm{gcdOf}(\\mathrm{half}(\\mathrm{shorBase},\\mathrm{shorModulus})-\\mathrm{seed},\\mathrm{shorModulus})<\\mathrm{shorModulus}\\land\\mathrm{gcdOf}(\\mathrm{half}(\\mathrm{shorBase},\\mathrm{shorModulus})-\\mathrm{seed},\\mathrm{shorModulus})\\cdot\\mathrm{gcdOf}(\\mathrm{half}(\\mathrm{shorBase},\\mathrm{shorModulus})+\\mathrm{seed},\\mathrm{shorModulus})=\\mathrm{shorModulus}',
       reading: `theorem shor. periodOf 8 91 is decided by fuel recursion inside the kernel. half is powMod a (r / 2) N. gcdOf (half - 1) N * gcdOf (half + 1) N = N. Period and factors are absent from the statement. rfl and Nat.le_of_ble_eq_true. ${shorFactorOf()}. Never Math. Never by decide. demo is not a test nor a proof.`,
-      holds: qpuShorHolds(),
+      holds: shorHolds(),
   },
     {
       heading: 'follow_the_coins',
@@ -226,7 +226,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{app}+\\mathrm{coins}=\\mathrm{app}+\\mathrm{theory}+\\mathrm{practice}',
       reading:
         'Follow the coins in any practical application. Occupancy skill framework electronics. Step coins. Hop theory plus practice. Never Math. Never by decide.',
-      holds: qpuFollowHolds(),
+      holds: followHolds(),
   },
     {
       heading: 'two_coins_make_a_coil',
@@ -234,7 +234,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{coil}=\\mathrm{faces}',
       reading:
         'Two coins make a coil. windings coins. coil coins times rays. Faces of the winding. Never Math. Never by decide.',
-      holds: qpuCoilHolds(),
+      holds: coilHolds(),
   },
     {
       heading: 'electronics',
@@ -242,7 +242,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{coil}=\\mathrm{faces}',
       reading:
         'Coils are used in electronics. Two coins make a coil. Never Math. Never by decide.',
-      holds: qpuElectronicsHolds(),
+      holds: electronicsHolds(),
   },
     {
       heading: 'coil_efficiency',
@@ -250,7 +250,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{coil}=\\mathrm{faces}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}',
       reading:
         'Measure coil efficiency in clusters. Teams coins. Stripes rays. Measure coil. Remainder none. Unity seed. RAID cluster cover. Never Math. Never by decide.',
-      holds: qpuCoilEfficiencyHolds(),
+      holds: coilEfficiencyHolds(),
   },
     {
       heading: 'next_coil',
@@ -294,7 +294,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins})=\\mathrm{rays}',
       reading:
         'One plus six. Seed plus mintOf n minus coins is rays. Never Math. Never by decide.',
-      holds: seed + (mintOf(n) - coins) === qpuFacesOf().rays,
+      holds: seed + (mintOf(n) - coins) === facesOf().rays,
   },
     {
       heading: 'two_x_seven_coins',
@@ -302,7 +302,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{coins}\\cdot\\mathrm{rays}=(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}',
       reading:
         'Two times seven coins. Coins times rays is one plus six times coins. Never Math. Never by decide.',
-      holds: qpuClayHolds() && coins * qpuFacesOf().rays === (seed + (mintOf(n) - coins)) * coins,
+      holds: clayHolds() && coins * facesOf().rays === (seed + (mintOf(n) - coins)) * coins,
   },
     {
       heading: 'clay',
@@ -310,7 +310,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{coins}\\cdot\\mathrm{rays}=(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}\\land(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}=\\mathrm{coil}',
       reading:
         'Two times seven coins equals one plus six coils equals clay. Each coil is coins windings. Clay is coil is faces. Never Math. Never by decide.',
-      holds: qpuClayHolds(),
+      holds: clayHolds(),
   },
     {
       heading: 'integrity',
@@ -389,7 +389,7 @@ export const qpuLeanOf = onceOf(() => {
       theorem: 'theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩',
       formula: 'n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
       reading: 'n = 3. mintOf n = vertices. (0 ^^^ 1) ^^^ 2 = 3. (3 ^^^ 1) ^^^ 1 = 3. The row holds only when the circuit\'s step checks (circuit.steps) hold as well: initialize, gates, interfere, measure and noise, with the device computed as exact-amplitudes: the exact state-vector computation holds every amplitude as an exact integer.',
-      holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && qpuCircuitOf().steps.holds,
+      holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && circuitOf().steps.holds,
   },
     {
       heading: 'temperature',
@@ -461,7 +461,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '1\\cdot 1\\neq 0\\cdot 0',
       reading:
         'Bell. H then CNOT. Entanglement is the product test 1·1 ≠ 0·0. Two coins make a coil. Prove all pairs. Even parity is not the proof. |++⟩ is separable.',
-      holds: 1 * 1 !== (n - n) * (n - n) && qpuCoilHolds(),
+      holds: 1 * 1 !== (n - n) * (n - n) && coilHolds(),
   },
     {
       heading: 'ghz',
@@ -564,7 +564,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
       reading:
         'Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. Hybrid storage. Measure hybrid speed and cost. KV added amplitudes. Scaled. Infinite.',
-      holds: aroundHolds && harmonicHolds && theorem.around(faces.faces, coins, faces.rays) && theorem.harmonic(faces.faces, faces.rays) && qpuHybridHolds(),
+      holds: aroundHolds && harmonicHolds && theorem.around(faces.faces, coins, faces.rays) && theorem.harmonic(faces.faces, faces.rays) && hybridHolds(),
   },
     {
       heading: 'hybrid_cost',
@@ -572,7 +572,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{coins}+\\mathrm{seed}=n',
       reading:
         'Measure hybrid storage cost. KV cost coins. R2 cost seed. Hybrid cost coins plus seed is n. Minimum cost. Never Math. Never by decide.',
-      holds: qpuHybridHolds() && coins + seed === n,
+      holds: hybridHolds() && coins + seed === n,
   },
     {
       heading: 'hybrid_speed',
@@ -580,7 +580,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{rays}+\\mathrm{seed}=\\mathrm{mintOf}(n)',
       reading:
         'Measure hybrid storage speed. KV speed rays. R2 speed seed. Hybrid speed rays plus seed is mintOf n. Coordinated speed. Never Math. Never by decide.',
-      holds: qpuHybridHolds() && qpuFacesOf().rays + seed === mintOf(n),
+      holds: hybridHolds() && facesOf().rays + seed === mintOf(n),
   },
     {
       heading: 'hybrid',
@@ -588,7 +588,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '\\mathrm{coins}+\\mathrm{seed}=n\\land\\mathrm{rays}+\\mathrm{seed}=\\mathrm{mintOf}(n)\\land\\mathrm{coins}=\\mathrm{seed}+\\mathrm{seed}',
       reading:
         'Measure hybrid storage speed and cost. Two bindings. STORAGE kv. BLOBS r2. Coordinated speed mintOf n. Minimum cost n. KV faster and costlier. R2 cheaper and slower. QPU hybrid storage hosts the Payload database. Unity seed. Remainder none. Collections pages users media tenants. Secrets never. Native Alpine Linux. musl. busybox. overlayfs. KV upper. R2 lower. KV work. Next is the double. No last k. Stores by content address. Inodes. Referrer access link. Privacy. Redundancy. Last link deleted frees the inode. Never Math. Never by decide.',
-      holds: qpuHybridHolds() && qpuPayloadDbHolds() && coins + seed === n && qpuFacesOf().rays + seed === mintOf(n) && coins === seed + seed,
+      holds: hybridHolds() && payloadDbHolds() && coins + seed === n && facesOf().rays + seed === mintOf(n) && coins === seed + seed,
   },
     {
       heading: 'computer',
@@ -596,7 +596,7 @@ export const qpuLeanOf = onceOf(() => {
       formula: '(1\\oplus 3)=2\\land(6\\oplus 1)=7\\land\\mathrm{mintOf}(0)=1',
       reading:
         'Exact state-vector computation of the circuit. SWAP. Toffoli. Reset. H and Toffoli are computationally universal. Coupling compile collapse shots feedforward bitflip readout isolate qram network jobs.',
-      holds: xorOf(seed, n) === coins && xorOf(xorOf(bitOf(seed), bitOf(coins)), seed) === mintOf(n) - seed && mintOf(n - n) === seed && qpuComputerHolds(),
+      holds: xorOf(seed, n) === coins && xorOf(xorOf(bitOf(seed), bitOf(coins)), seed) === mintOf(n) - seed && mintOf(n - n) === seed && computerHolds(),
   },
     {
       heading: 'server',
@@ -645,7 +645,7 @@ export const qpuLeanOf = onceOf(() => {
   const nameOf = (r: QpuLeanRow) => /^theorem (\w+)/.exec(r.theorem)?.[1] ?? r.heading
   const curated = [...rows, ...cover, climb]
   const servedNames = new Set(curated.map(nameOf))
-  const uuidOfTheorem = new Map(blocks.map(([name, theorem]) => [name, qpuShapeUuidOf(statementOf(theorem))]))
+  const uuidOfTheorem = new Map(blocks.map(([name, theorem]) => [name, shapeUuidOf(statementOf(theorem))]))
   const sameAs = (name: string) => blocks.filter(([other]) => other !== name && uuidOfTheorem.get(other) === uuidOfTheorem.get(name)).map(([other]) => other)
   const rest = blocks
     .filter(([name]) => !servedNames.has(name))
@@ -657,14 +657,14 @@ export const qpuLeanOf = onceOf(() => {
         heading: name,
         theorem,
         formula: r.formula,
-        reading: `holds ${r.holds}. ${qpuCrossReadingOf(theorem)}.${r.over ? ` over ${r.over}.` : ''}${same.length ? ` same as ${same.join(', ')}.` : ''}`,
+        reading: `holds ${r.holds}. ${crossReadingOf(theorem)}.${r.over ? ` over ${r.over}.` : ''}${same.length ? ` same as ${same.join(', ')}.` : ''}`,
         holds: r.holds,
       })
     })
   const recomputed = [...curated, ...rest].map((r) => (leanRecomputed[nameOf(r)] ?? leanRecomputeOf(r.theorem, leanModel)).holds)
   const served = [...cover, ...rest]
   const src = unit.fuse.lean
-  const source = { ...qpuLeanSourceOf(rows, served, climb), recomputed: recomputed.filter(Boolean).length }
+  const source = { ...leanSourceOf(rows, served, climb), recomputed: recomputed.filter(Boolean).length }
   const holds =
     source.holds &&
     source.served === source.theorems &&
@@ -677,7 +677,7 @@ export const qpuLeanOf = onceOf(() => {
     formulaOf(climb.formula) &&
     src.endsWith('/index.lean')
   return {
-    '@context': qpuContextOf(),
+    '@context': contextOf(),
     '@type': 'Dataset' as const,
     '@id': unit.href,
     url: unit.href,
@@ -694,7 +694,7 @@ export const qpuLeanOf = onceOf(() => {
   }
 })
 
-export const qpuLeanHolds = (l = qpuLeanOf()): boolean =>
+export const leanHolds = (l = leanOf()): boolean =>
   l.holds === true &&
   l.src === unit.fuse.lean &&
   l['@context'][n - n] === schemaOrg &&

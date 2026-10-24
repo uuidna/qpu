@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HORTICULTURE — GROWING PLANTS, AS ARITHMETIC. The garden is numbers: how far apart to set plants in a bed, what fraction
@@ -31,4 +31,4 @@ export class HorticultureFormulas {
 }
 
 for (const name of ['fertilizer', 'germination', 'irrigation', 'lightdays', 'ph', 'propagation', 'pruning', 'spacing'] as const)
-  qpuHexRegisterOf('horticulture', name, (HorticultureFormulas[name] as (...x: unknown[]) => unknown).bind(HorticultureFormulas))
+  hexRegisterOf('horticulture', name, (HorticultureFormulas[name] as (...x: unknown[]) => unknown).bind(HorticultureFormulas))

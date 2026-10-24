@@ -46,7 +46,11 @@ const mcpCall = async (args: Record<string, unknown>): Promise<McpReply> => {
       params: { name: 'connector', arguments: args },
     }),
   })
-  return (await r.json()) as McpReply
+  const body = (await r.json()) as McpReply
+  // the connector answers as an MCP content envelope whose text is the JSON reading: unwrap it, so the panel shows the reading
+  const text = (body as { result?: { content?: { text?: unknown }[] } }).result?.content?.[0]?.text
+  if (typeof text === 'string') { try { return { ...body, result: JSON.parse(text) } } catch { /* not JSON: keep the envelope */ } }
+  return body
 }
 
 const previewOf = (body: unknown): string => {
@@ -122,7 +126,7 @@ export function ConnectorUsePanel({ canRead, canExecute, pendingAccess }: Props)
         return
       }
       setActive(label)
-      setRunLog(`${label} · ${route.does} · ${previewOf(reply.result)}`)
+      setRunLog(`${label} · ${route.does}\n${JSON.stringify(reply.result, null, 2)}`)
     })
   }
 
@@ -247,7 +251,7 @@ export function ConnectorUsePanel({ canRead, canExecute, pendingAccess }: Props)
         </div>
       ) : null}
 
-      <pre className="overflow-x-auto border bg-muted/40 p-3 font-mono text-xs whitespace-pre-wrap">{runLog}</pre>
+      <pre className="max-h-96 overflow-auto border bg-muted/40 p-3 font-mono text-xs whitespace-pre-wrap">{runLog}</pre>
     </section>
   )
 }

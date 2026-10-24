@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** IDEALISM — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class IdealismFormulas {
 }
 
 for (const name of ['absolutelevels', 'conceptpairs', 'dialecticstages', 'mindcategories', 'phenomenasubsets', 'representationmodes', 'syntheticunity', 'thesisorderings'] as const)
-  qpuHexRegisterOf('idealism', name, (IdealismFormulas[name] as (...x: unknown[]) => unknown).bind(IdealismFormulas))
+  hexRegisterOf('idealism', name, (IdealismFormulas[name] as (...x: unknown[]) => unknown).bind(IdealismFormulas))

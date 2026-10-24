@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ProofFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('proof: steps, lemmas, caseorderings, dependencypairs, branchsubsets, qed, 
   assert.equal(ProofFormulas.axiomsused(5, 3).value, 8)
   assert.equal(ProofFormulas.inferencepaths(6, 3).value, 120)
   assert.equal(ProofFormulas.steps(10, 5).dst, 'logic')
-  assert.equal(qpuHexFamiliesOf().get('proof')?.length, 8)
+  assert.equal(hexFamiliesOf().get('proof')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'proof', program: ['steps'], params: [10, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `proof.steps at ${uuid}`)
-  qpuUuidReceiptOf('proof steps', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('proof steps', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; steps 15, lemmas 16, caseorderings 24, dependencypairs 45, branchsubsets 32, qed 100, axiomsused 8, inferencepaths 120; crossing to logic')
 })

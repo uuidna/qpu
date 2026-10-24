@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RELIABILITY — RUNNING SYSTEMS AS ARITHMETIC. How long a thing runs between failures and how fast it comes back: mean
@@ -30,4 +30,4 @@ export class ReliabilityFormulas {
 }
 
 for (const name of ['availability', 'failurerate', 'mtbf', 'mttr', 'nines', 'redundancy', 'reliability', 'survival'] as const)
-  qpuHexRegisterOf('reliability', name, (ReliabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ReliabilityFormulas))
+  hexRegisterOf('reliability', name, (ReliabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ReliabilityFormulas))

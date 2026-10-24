@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhotometryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('photometry: magnitude, flux, colorindex, absolutemagnitude, distancemodulu
   assert.equal(PhotometryFormulas.extinction(3, 2).value, 6)
   assert.equal(PhotometryFormulas.signaltonoise(1000, 20).value, 50, 'signal over the noise')
   assert.equal(PhotometryFormulas.magnitude(25, 10).dst, 'astronomy')
-  assert.equal(qpuHexFamiliesOf().get('photometry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('photometry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'photometry', program: ['flux'], params: [10000, 5, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `photometry.flux at ${uuid}`)
-  qpuUuidReceiptOf('photometry flux', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('photometry flux', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; magnitude 15, flux 20, colorindex 3, absolutemagnitude 5, distancemodulus 15, apparentmagnitude 20, extinction 6, signaltonoise 50; crossing to astronomy')
 })

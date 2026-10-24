@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AERODYNAMICS — FLIGHT AS ARITHMETIC. The forces a wing meets are numbers: lift and drag from a coefficient over an
@@ -31,4 +31,4 @@ export class AerodynamicsFormulas {
 }
 
 for (const name of ['drag', 'lift', 'mach', 'pressure', 'ratio', 'reynolds', 'stall', 'thrust'] as const)
-  qpuHexRegisterOf('aerodynamics', name, (AerodynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(AerodynamicsFormulas))
+  hexRegisterOf('aerodynamics', name, (AerodynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(AerodynamicsFormulas))

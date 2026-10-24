@@ -11,40 +11,40 @@ import {
   n,
   networkHref,
   qpuCiteOf,
-  qpuForeignReadsOf,
-  qpuHexCatalogOf,
-  qpuHexRegistryOf,
-  qpuHexRunOf,
-  qpuHexToolsOf,
-  qpuHarnessesOf,
-  qpuInstallManifestOf,
-  qpuLeanOf,
-  qpuMcpCallOf,
-  qpuMessageOf,
+  foreignReadsOf,
+  hexCatalogOf,
+  hexRegistryOf,
+  hexRunOf,
+  hexToolsOf,
+  harnessesOf,
+  installManifestOf,
+  leanOf,
+  mcpCallOf,
+  messageOf,
   qpuMintReceiptOf,
-  qpuNetworkMcpOf,
-  qpuNetworkToolsOf,
-  qpuOpenApiOf,
-  qpuProveHolds,
-  qpuQuantumOf,
-  qpuReceiptStreamsOf,
-  qpuRobotsOf,
-  qpuRouterOf,
-  qpuServerMcpOf,
-  qpuServerSubmitOf,
-  qpuServerToolsOf,
-  qpuServedLedgerOf,
-  qpuSitemapOf,
-  qpuStorageListOf,
-  qpuStorageMaintainOf,
-  qpuStorageMcpOf,
-  qpuStorageOf,
-  qpuStorageToolsOf,
-  qpuSubRpcOf,
-  qpuTenantZoneOf,
+  networkMcpOf,
+  networkToolsOf,
+  openApiOf,
+  proveHolds,
+  quantumOf,
+  receiptStreamsOf,
+  robotsOf,
+  routerOf,
+  serverMcpOf,
+  serverSubmitOf,
+  serverToolsOf,
+  servedLedgerOf,
+  sitemapOf,
+  storageListOf,
+  storageMaintainOf,
+  storageMcpOf,
+  storageOf,
+  storageToolsOf,
+  subRpcOf,
+  tenantZoneOf,
   qpuPageOf,
-  qpuWellKnownOf,
-  qpuZoneHostOf,
+  wellKnownOf,
+  zoneHostOf,
   rpcCodes,
   rpcErrorOf,
   seed,
@@ -59,7 +59,7 @@ import {
 import type { QpuEnv, Served } from './index.js'
 import { leanSource } from './lean.js'
 import { packageVersion } from './version.js'
-import { qpuRaySvgOf } from '../../../mcp/ray-animation.js'
+import { raySvgOf } from '../../../mcp/ray-animation.js'
 
 /** Public doors Payload owns. Paths only — handlers load from the plugin so this module does not cycle with it. */
 const PUBLIC_DOORS = {
@@ -103,7 +103,7 @@ export const worker = {
     // A mutable-URL doc (/, /qpu.css, discovery, robots, sitemap) keeps its URL while its bytes change on a deploy, so
     // `no-cache` makes every browser and the edge revalidate the content-fold ETag before serving: an unchanged asset
     // 304s cheaply (no body), a changed one is served fresh the instant it ships — never the stale copy an s-maxage
-    // window would have held for up to an hour. The ETag below is qpuFoldOf of the body, so it moves iff the asset does.
+    // window would have held for up to an hour. The ETag below is foldOf of the body, so it moves iff the asset does.
     const revalidated = { 'cache-control': 'public, no-cache' } as const
     // A content-addressed URL (a hex-program UUID in the path → its .svg/og picture) names bytes that cannot change under
     // that URL — a changed program is a different URL — so it is safe to cache immutably and never revalidate.
@@ -115,8 +115,8 @@ export const worker = {
       if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: emptyHeaders({ etag: row.etag, ...revalidated }) })
       return new Response(row.body, { status: found, headers: { ...headers, ...routeHeaders, etag: row.etag, ...revalidated } })
     }
-    // THE SELF-PROOF IS A BUILD/BOOT INVARIANT, NOT A PER-REQUEST COST. qpuIntegrityOf runs qpuQuantumOf (the Shor
-    // state-vector simulation) and qpuLeanOf (all 204 theorem holds) — together ~5.6s on a cold isolate. Running them in
+    // THE SELF-PROOF IS A BUILD/BOOT INVARIANT, NOT A PER-REQUEST COST. integrityOf runs quantumOf (the Shor
+    // state-vector simulation) and leanOf (all 204 theorem holds) — together ~5.6s on a cold isolate. Running them in
     // this gate on every isolate's FIRST request blew the Worker's CPU budget before any route resolved: 1102 on every
     // door (even static /qpu.css), the response never completed, nothing cached, so every isolate stayed cold — a death
     // spiral. The unit still proves itself end to end — at /, /prove, /ready, /lean, and in CI (boot --prove gates the
@@ -128,12 +128,12 @@ export const worker = {
     const url = new URL(request.url)
     const raw = url.pathname.replace(/\/$/, '') || '/'
     const path = raw === '/index.html' ? '/' : raw
-    const route = qpuRouterOf(request.headers.get('referer') ?? '', path)
+    const route = routerOf(request.headers.get('referer') ?? '', path)
     routeHeaders = { 'x-qpu-seat': route.seat, 'x-qpu-door': route.door }
     // QPU SERVES ALL LICENSED SITES (the captain, 2026-09-13). A tenant site lives one level under the zone —
     // <slug>.uuidna.com, the level Cloudflare's free certificate covers — and reaches this unit through a *.<zone> route.
     // It is forwarded whole to Payload over the binding, Host preserved, so Payload's tenancy rules decide what it is. The
-    // zone and its reserved labels are qpuTenantZoneOf, the one declaration Payload reads too (payload src/access.ts,
+    // zone and its reserved labels are tenantZoneOf, the one declaration Payload reads too (payload src/access.ts,
     // tenantSlugOf); www keeps redirecting to the apex.
     // THE CRAWLABLE PAIR IS ANSWERED HERE FOR EVERY FIRST-PARTY HOST, ahead of both the tenant forward and the
     // named gate, and it is the ONLY thing this widening takes over. Everything else on a sibling host continues
@@ -145,20 +145,20 @@ export const worker = {
     // Taking the pair costs nothing that was being served: each of those hosts 404ed /robots.txt and
     // /sitemap.xml, so Cloudflare's managed default stood in — a file that names no sitemap at all. Off the
     // seven-path guide like the other discovery doors, so no sealed count moves.
-    const zoneHost = qpuZoneHostOf(url.hostname)
+    const zoneHost = zoneHostOf(url.hostname)
     if (url.protocol === 'https:' && zoneHost !== undefined) {
       if (path === '/robots.txt')
-        return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...revalidated, 'content-type': 'text/plain; charset=utf-8' } })
+        return new Response(robotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...revalidated, 'content-type': 'text/plain; charset=utf-8' } })
       if (path === '/sitemap.xml')
-        return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...revalidated, 'content-type': 'application/xml; charset=utf-8' } })
+        return new Response(sitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...revalidated, 'content-type': 'application/xml; charset=utf-8' } })
       // THE DISCOVERY RECORD IS THE SAME DOCUMENT ON EVERY NAME, because it describes ONE endpoint and that
       // endpoint is this unit's. A sibling serving a copy that named itself would be the duplicate this whole
       // surface exists to avoid; a sibling serving nothing would leave the <loc> its own sitemap carries
       // unanswerable, which is the soft 404 the sitemap law here forbids — and did forbid while this shipped
       // one, measured live at faf8e51 before it was caught.
-      if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => qpuWellKnownOf()))
+      if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => wellKnownOf()))
     }
-    const { zone, www, reserved } = qpuTenantZoneOf()
+    const { zone, www, reserved } = tenantZoneOf()
     const label = url.hostname.endsWith(`.${zone}`) ? url.hostname.slice(0, url.hostname.length - zone.length - seed) : ''
     if (url.protocol === 'https:' && label === www) {
       return new Response(null, { status: found + ten * ten + seed, headers: { location: `https://${zone}${url.pathname}${url.search}` } })
@@ -210,40 +210,40 @@ export const worker = {
     // The public-door aliases (/mcp, /cite, /qpu.css) — served directly by the unit, not through Payload.
     if (PUBLIC_DOORS[path as keyof typeof PUBLIC_DOORS]) return publicDoorOf()
     if (path === '/health') return jsonOf({ status: 'healthy', holds: true })
-    if (path === '/ready') return jsonOf({ status: 'ready', version: packageVersion, holds: qpuProveHolds() })
+    if (path === '/ready') return jsonOf({ status: 'ready', version: packageVersion, holds: proveHolds() })
     if (path === '/receipts' || path.startsWith('/receipts/')) {
-      const all = qpuReceiptStreamsOf()
+      const all = receiptStreamsOf()
       const stream = path.slice('/receipts/'.length)
       if (path === '/receipts') return pageOrServed('/receipts', () => ({ ...all, streams: all.streams.map(({ recent, ...head }) => head) }), { title: '@uuidna/qpu — receipts', description: 'Every quantum-receipt stream — head, length, chain and whether it holds.' })
       const row = all.streams.find((s) => s.stream === stream)
       return row ? pageOrServed(path, () => row, { title: `@uuidna/qpu — receipts ${stream}`, description: `The ${stream} quantum-receipt stream and its recent receipts.` }) : jsonOf({ kind: 'receipts' as const, stream, length: n - n, holds: false as const }, lost)
     }
-    if (path === '/metrics') return pageOrServed('/metrics', () => ({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: qpuServedLedgerOf().length }), { title: '@uuidna/qpu — metrics', description: 'Mint receipt, foreign reads, and the receipt and served-ledger counts.' })
+    if (path === '/metrics') return pageOrServed('/metrics', () => ({ mint: qpuMintReceiptOf(), foreign: foreignReadsOf(), receipts: RECEIPTS.length, served: servedLedgerOf().length }), { title: '@uuidna/qpu — metrics', description: 'Mint receipt, foreign reads, and the receipt and served-ledger counts.' })
     if (path === `/${unit.fuse.lean}`) {
       return new Response(leanSource, { status: found, headers: { ...headers, ...revalidated, 'content-type': 'text/plain; charset=utf-8' } })
     }
     if (path === '/') {
       // A crawler or browser gets the landing page as crawlable HTML (qpuPageOf); an API client keeps the quantum JSON.
-      const { qpuAnalyticsOf, qpuPublicOf } = await import('./zeropage.js')
-      const { qpuCombinatoricsWindowOf } = await import('./presentation.js')
-      const analytics = qpuAnalyticsOf()
-      const face = qpuPublicOf(analytics)
-      const readings = await qpuCombinatoricsWindowOf()
-      return pageOrServed('/', () => ({ ...qpuQuantumOf(), analytics, public: face.lines, prize: face.prize, links: qpuCiteOf().links, readings }), {
+      const { analyticsOf, publicOf } = await import('./zeropage.js')
+      const { combinatoricsWindowOf } = await import('./presentation.js')
+      const analytics = analyticsOf()
+      const face = publicOf(analytics)
+      const readings = await combinatoricsWindowOf()
+      return pageOrServed('/', () => ({ ...quantumOf(), analytics, public: face.lines, prize: face.prize, links: qpuCiteOf().links, readings }), {
         title: '@uuidna/qpu — an exact quantum processing unit',
         description: 'Lean-checked theorems, formula families as hex-program UUIDs, live public-data checks and quantum receipts, served over MCP.',
       })
     }
-    if (path === `/${unit.path}`) return pageOrServed(`/${unit.path}`, () => qpuLeanOf(), { title: '@uuidna/qpu — the Lean proof', description: 'Every theorem recomputed and typeset, each a hex-program UUID.' })
+    if (path === `/${unit.path}`) return pageOrServed(`/${unit.path}`, () => leanOf(), { title: '@uuidna/qpu — the Lean proof', description: 'Every theorem recomputed and typeset, each a hex-program UUID.' })
     // DISCOVERY DOORS — extras off the seven-path guide (the README names extras as allowed).
-    if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => qpuWellKnownOf()))
+    if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => wellKnownOf()))
     if (path === '/mcp.json') { const to = new URL(request.url); to.pathname = '/api/qpu/mcp'; return publicDoorOf(new Request(to, request)) }
-    if (path === '/install.json') return servedResponse(servedOf(path, () => qpuInstallManifestOf()))
+    if (path === '/install.json') return servedResponse(servedOf(path, () => installManifestOf()))
     // THE UNIVERSAL CONNECTOR: mount QPU in ANY app, not only Claude — one GET returns the ready-to-paste config for
     // every harness (Claude Code, Cursor, VS Code, Codex, Gemini, the Anthropic/OpenAI APIs, raw HTTP), from the one
-    // generated source (qpuHarnessesOf), so the wire and the README cannot disagree and nothing is a hand list.
-    if (path === '/connector' || path === '/connector.json' || path === '/mount' || path === '/mount.json') return servedResponse(servedOf('/connector', () => qpuHarnessesOf()))
-    if (path === '/openapi.json') return servedResponse(servedOf(path, () => qpuOpenApiOf()))
+    // generated source (harnessesOf), so the wire and the README cannot disagree and nothing is a hand list.
+    if (path === '/connector' || path === '/connector.json' || path === '/mount' || path === '/mount.json') return servedResponse(servedOf('/connector', () => harnessesOf()))
+    if (path === '/openapi.json') return servedResponse(servedOf(path, () => openApiOf()))
     const rpcBodyOf = async <X extends object>() =>
       (await request.json().catch(() => ({}))) as { method?: string; params?: { name?: string; arguments?: Record<string, unknown> }; id?: unknown } & X
     const authedOf = (x: { holds?: boolean; denied?: unknown } | object) =>
@@ -254,7 +254,7 @@ export const worker = {
       const asked = args.doors === true || args.errors === true || typeof args.hex === 'string' || (typeof args.hex === 'object' && args.hex !== null) || typeof args.door === 'string'
       if (!asked) return undefined
       const name = typeof body.params?.name === 'string' ? body.params.name : ''
-      const called = await qpuMcpCallOf(name, args, env, request.headers.get('authorization'))
+      const called = await mcpCallOf(name, args, env, request.headers.get('authorization'))
       if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
       return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: called })
     }
@@ -263,9 +263,9 @@ export const worker = {
         const body = await rpcBodyOf<{ gates?: unknown }>()
         const via = await throughOf(body)
         if (via) return via
-        const rpc = await qpuSubRpcOf(body, qpuServerToolsOf(), serverHref)
+        const rpc = await subRpcOf(body, serverToolsOf(), serverHref)
         if (rpc) return jsonOf(rpc)
-        return jsonOf(qpuServerSubmitOf(body))
+        return jsonOf(serverSubmitOf(body))
       }
       if (path.startsWith('/server/') && path.length > '/server/'.length) {
         const id = Number(path.slice('/server/'.length))
@@ -275,38 +275,38 @@ export const worker = {
         return jsonOf({ kind: 'result' as const, id, holds: false as const, denied: 'job' as const, why: 'jobs are not stored; the result is returned inline with the submit, and an id lives only as long as the isolate that ran it' }, lost)
       }
       // the job-server catalog is static per deploy: ETag + 304 so a free wave re-reading it revalidates instead of re-sending.
-      return servedResponse(servedOf('/server', () => qpuServerMcpOf()))
+      return servedResponse(servedOf('/server', () => serverMcpOf()))
     }
     if (path === '/hex' || path.startsWith('/hex/')) {
       // the hex catalogue and the hex tools enumerate every family, so the registry loads here (lazily, memoized)
-      await qpuHexRegistryOf()
+      await hexRegistryOf()
       if (request.method === 'POST') {
         const body = await rpcBodyOf()
         const via = await throughOf(body)
         if (via) return via
-        const rpc = await qpuSubRpcOf(body, qpuHexToolsOf(env), hexHref)
+        const rpc = await subRpcOf(body, hexToolsOf(env), hexHref)
         if (rpc) return jsonOf(rpc)
       }
       const program = path.slice('/hex/'.length)
       // a GET is a read: it never persists (store: false), so an unauthenticated GET /hex/<uuid> cannot write a db/hex
       // row and bypass the storage write bearer (Wave XIII). The value is a deterministic function of the uuid, so a
       // re-read recomputes it; persistence belongs to the authorized write paths, not an anonymous read.
-      if (program) return jsonOf(await qpuHexRunOf(program, undefined, env, { store: false }))
+      if (program) return jsonOf(await hexRunOf(program, undefined, env, { store: false }))
       // the hex catalogue enumerates every family and is static per deploy: ETag + 304 so a free wave re-reading the whole
       // catalogue (the biggest static reply) revalidates instead of recomputing and re-sending it every request.
-      return servedResponse(servedOf('/hex', () => qpuHexCatalogOf()))
+      return servedResponse(servedOf('/hex', () => hexCatalogOf()))
     }
     if (path === '/network' || path.startsWith('/network/')) {
       if (request.method === 'POST') {
         const body = await rpcBodyOf<{ channel?: unknown; body?: unknown }>()
         const via = await throughOf(body)
         if (via) return via
-        const rpc = await qpuSubRpcOf(body, qpuNetworkToolsOf(), networkHref)
+        const rpc = await subRpcOf(body, networkToolsOf(), networkHref)
         if (rpc) return jsonOf(rpc)
-        const send = qpuNetworkToolsOf().find((t) => t.name === 'net_send')
+        const send = networkToolsOf().find((t) => t.name === 'net_send')
         return jsonOf(send ? await send.run(body) : { holds: false as const })
       }
-      return jsonOf(qpuNetworkMcpOf())
+      return jsonOf(networkMcpOf())
     }
     if (path === '/storage' || path.startsWith('/storage/')) {
       // a malformed percent-escape (e.g. /storage/%) makes decodeURIComponent throw URIError; take the raw slice then
@@ -319,39 +319,39 @@ export const worker = {
         const via = await throughOf(body)
         if (via) return via
         const auth = request.headers.get('authorization')
-        const rpc = await qpuSubRpcOf(body, qpuStorageToolsOf(env, auth), storageHref)
+        const rpc = await subRpcOf(body, storageToolsOf(env, auth), storageHref)
         if (rpc) return jsonOf(rpc)
         if (body.maintain === true) {
-          const kept = await qpuStorageMaintainOf(env, auth)
+          const kept = await storageMaintainOf(env, auth)
           return authedOf(kept)
         }
         if (typeof body.key === 'string') {
-          const put = await qpuStorageOf(env, { method: 'PUT', key: body.key, value: body.value, auth })
+          const put = await storageOf(env, { method: 'PUT', key: body.key, value: body.value, auth })
           return authedOf(put)
         }
       }
       if (request.method === 'PUT' || request.method === 'POST') {
         const value = await request.json().catch(() => null)
-        const put = await qpuStorageOf(env, { method: 'PUT', key, value, auth: request.headers.get('authorization') })
+        const put = await storageOf(env, { method: 'PUT', key, value, auth: request.headers.get('authorization') })
         return authedOf(put)
       }
       if (request.method === 'DELETE') {
-        const del = await qpuStorageOf(env, { method: 'DELETE', key, auth: request.headers.get('authorization') })
+        const del = await storageOf(env, { method: 'DELETE', key, auth: request.headers.get('authorization') })
         return authedOf(del)
       }
       // GET /storage?prefix=…&limit=… — the links under a prefix, ascending, with their documents (uuidna.com/live reads it)
       const listPrefix = new URL(request.url).searchParams.get('prefix')
-      if (path === '/storage' && listPrefix !== null) return jsonOf(await qpuStorageListOf(env, listPrefix, Number(new URL(request.url).searchParams.get('limit') ?? '')))
-      if (path === '/storage') return jsonOf(await qpuStorageMcpOf(env))
-      return jsonOf(await qpuStorageOf(env, { method: 'GET', key }))
+      if (path === '/storage' && listPrefix !== null) return jsonOf(await storageListOf(env, listPrefix, Number(new URL(request.url).searchParams.get('limit') ?? '')))
+      if (path === '/storage') return jsonOf(await storageMcpOf(env))
+      return jsonOf(await storageOf(env, { method: 'GET', key }))
     }
     if (path === '/message') {
       if (request.method === 'POST') {
         const body = (await request.json().catch(() => ({}))) as { lane?: unknown; body?: unknown }
-        const sent = qpuMessageOf(body)
+        const sent = messageOf(body)
         return jsonOf(sent, 'accepted' in sent && sent.accepted === true ? found + coins : found)
       }
-      return servedResponse(servedOf('/message', () => qpuMessageOf()))
+      return servedResponse(servedOf('/message', () => messageOf()))
     }
     // THE UNIT RECOGNISES ANYTHING: a hex-program UUID pattern ANYWHERE in the path is the program, routing itself —
     // no family prefix (not /hex, not /ray). One UUID runs; several in the path are a stream, run in order; a `.svg`
@@ -372,13 +372,13 @@ export const worker = {
         }
       }
       if (programs.length) {
-        await qpuHexRegistryOf()
+        await hexRegistryOf()
         if (wantsSvg) {
-          const run = (await qpuHexRunOf(programs[0]!, undefined, env).catch(() => undefined)) as { holds?: unknown } | undefined
+          const run = (await hexRunOf(programs[0]!, undefined, env).catch(() => undefined)) as { holds?: unknown } | undefined
           const holds = !(run && typeof run === 'object' && run.holds === false)
-          return new Response(qpuRaySvgOf(programs[0]!, { title: unit.host, holds }), { status: found, headers: { ...headers, ...routeHeaders, ...immutable, 'content-type': 'image/svg+xml; charset=utf-8' } })
+          return new Response(raySvgOf(programs[0]!, { title: unit.host, holds }), { status: found, headers: { ...headers, ...routeHeaders, ...immutable, 'content-type': 'image/svg+xml; charset=utf-8' } })
         }
-        const runs = await Promise.all(programs.map((p) => qpuHexRunOf(p, undefined, env)))
+        const runs = await Promise.all(programs.map((p) => hexRunOf(p, undefined, env)))
         const held = (r: unknown) => !(r && typeof r === 'object' && (r as { holds?: unknown }).holds === false)
         return jsonOf(programs.length === 1 ? runs[0] : { kind: 'stream' as const, programs, runs, holds: runs.every(held) })
       }

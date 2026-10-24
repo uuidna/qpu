@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ANALYTICS — MEASUREMENT OF A PRODUCT, AS ARITHMETIC (chosen by the registry). The health of a product is ratios:
@@ -30,4 +30,4 @@ export class AnalyticsFormulas {
 }
 
 for (const name of ['arpu', 'bounce', 'cac', 'ctr', 'funnel', 'ltv', 'rate', 'retention'] as const)
-  qpuHexRegisterOf('analytics', name, (AnalyticsFormulas[name] as (...x: unknown[]) => unknown).bind(AnalyticsFormulas))
+  hexRegisterOf('analytics', name, (AnalyticsFormulas[name] as (...x: unknown[]) => unknown).bind(AnalyticsFormulas))

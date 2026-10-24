@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AquafarmingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('aquafarming: stockingdensity, biomass, feedrate, oxygendemand, survivalrat
   assert.equal(AquafarmingFormulas.growthrate(500, 50, 90).value, 5, 'grams gained per day')
   assert.equal(AquafarmingFormulas.harvestweight(900, 250).value, 225000)
   assert.equal(AquafarmingFormulas.stockingdensity(1000, 20).dst, 'ichthyology')
-  assert.equal(qpuHexFamiliesOf().get('aquafarming')?.length, 8)
+  assert.equal(hexFamiliesOf().get('aquafarming')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'aquafarming', program: ['stockingdensity'], params: [1000, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `aquafarming.stockingdensity at ${uuid}`)
-  qpuUuidReceiptOf('aquafarming stockingdensity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('aquafarming stockingdensity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; stockingdensity 50, biomass 100000, feedrate 1500, oxygendemand 250, survivalrate 90, waterexchange 120, growthrate 5, harvestweight 225000; crossing to ichthyology')
 })

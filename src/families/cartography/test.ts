@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CartographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('cartography: area, bearing, contour, distance, distortion, resolution, sca
   assert.equal(CartographyFormulas.scale(50000, 25).value, 2000)
   assert.equal(CartographyFormulas.zoom(1, 2).value, 16, 'four tiles per level, twice')
   assert.equal(CartographyFormulas.area(40, 25).dst, 'geography')
-  assert.equal(qpuHexFamiliesOf().get('cartography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cartography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cartography', program: ['area'], params: [40, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `cartography.area at ${uuid}`)
-  qpuUuidReceiptOf('cartography area', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cartography area', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; area 1000, bearing 90, contour 10, distance 50000, distortion 120, resolution 100, scale 2000, zoom 16; crossing to geography')
 })

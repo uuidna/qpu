@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CLOUDPHYSICS — scaffolded integer measures crossed to physics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CloudphysicsFormulas {
 }
 
 for (const name of ['albedo', 'condensationlevel', 'dropletcount', 'nucleipairs', 'opticalthickness', 'phasesubsets', 'precipefficiency', 'terminalvelocity'] as const)
-  qpuHexRegisterOf('cloudphysics', name, (CloudphysicsFormulas[name] as (...x: unknown[]) => unknown).bind(CloudphysicsFormulas))
+  hexRegisterOf('cloudphysics', name, (CloudphysicsFormulas[name] as (...x: unknown[]) => unknown).bind(CloudphysicsFormulas))

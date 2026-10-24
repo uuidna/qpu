@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ElectrolyteFormulas — 8 exact-integer formulas of the electrolyte domain, each at a hex address crossing to cross; develops the electrolyte leads. */
@@ -31,4 +31,4 @@ export class ElectrolyteFormulas {
 }
 
 for (const name of ['cells', 'combos', 'conductivity', 'ions', 'mobility', 'molarity', 'ph', 'voltage'] as const)
-  qpuHexRegisterOf('electrolyte', name, (ElectrolyteFormulas[name] as (...x: unknown[]) => unknown).bind(ElectrolyteFormulas))
+  hexRegisterOf('electrolyte', name, (ElectrolyteFormulas[name] as (...x: unknown[]) => unknown).bind(ElectrolyteFormulas))

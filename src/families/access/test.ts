@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AccessFormulas } from './index.js'
 
 /** Access is a formula: who reads, who writes, the role lattice, tenant isolation; and the security screen flags any
@@ -29,12 +29,12 @@ test('access: read/write/role/tenant formulated, and the security screen names e
   assert.equal(AccessFormulas.token(256).holds, true, '256-bit token is strong')
   assert.equal(AccessFormulas.token(128).holds, false, '128-bit token is below the floor')
   // the registry serves exactly the formulas the class states: none implemented and left unaddressable, none addressed that is not stated
-  assert.deepEqual((qpuHexFamiliesOf().get('access') ?? []).map((f) => f.name).sort(), Object.getOwnPropertyNames(AccessFormulas).filter((k) => typeof (AccessFormulas as unknown as Record<string, unknown>)[k] === 'function').sort())
+  assert.deepEqual((hexFamiliesOf().get('access') ?? []).map((f) => f.name).sort(), Object.getOwnPropertyNames(AccessFormulas).filter((k) => typeof (AccessFormulas as unknown as Record<string, unknown>)[k] === 'function').sort())
   for (const [name, params, expected] of [['read', [2, 0], 1], ['screen', [0b11111], 5], ['tenant', [5, 6, 1], 0]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'access', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `access.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`access ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`access ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('10 formulas; published reads to all, drafts to users; admin or owner writes; super crosses tenants; the screen names every failed check; root, rank, grant, sudo')
 })

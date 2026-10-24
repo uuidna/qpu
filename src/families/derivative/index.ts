@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DERIVATIVE — OPTIONS AND FUTURES, AS ARITHMETIC (chosen by the public-API registry, not by hand). A contract on a price is
@@ -31,4 +31,4 @@ export class DerivativeFormulas {
 }
 
 for (const name of ['breakeven', 'intrinsic', 'leverage', 'margin', 'moneyness', 'notional', 'payoff', 'settlement'] as const)
-  qpuHexRegisterOf('derivative', name, (DerivativeFormulas[name] as (...x: unknown[]) => unknown).bind(DerivativeFormulas))
+  hexRegisterOf('derivative', name, (DerivativeFormulas[name] as (...x: unknown[]) => unknown).bind(DerivativeFormulas))

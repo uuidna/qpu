@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHECKSUM — ERROR DETECTION, AS ARITHMETIC. A message carries a small number derived from its bytes so the far end can
@@ -31,4 +31,4 @@ export class ChecksumFormulas {
 }
 
 for (const name of ['blocksremainder', 'crcbits', 'detectionrate', 'fletcher', 'modular', 'onescomplement', 'overhead', 'xorsum'] as const)
-  qpuHexRegisterOf('checksum', name, (ChecksumFormulas[name] as (...x: unknown[]) => unknown).bind(ChecksumFormulas))
+  hexRegisterOf('checksum', name, (ChecksumFormulas[name] as (...x: unknown[]) => unknown).bind(ChecksumFormulas))

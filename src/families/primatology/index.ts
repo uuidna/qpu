@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PRIMATOLOGY — PRIMATE FIELD DATA AS ARITHMETIC (chosen by the registry, not by hand). A troop is numbers: the brain
@@ -31,4 +31,4 @@ export class PrimatologyFormulas {
 }
 
 for (const name of ['dominance', 'encephalization', 'foraging', 'grooming', 'kinship', 'maturity', 'tooluse', 'troop'] as const)
-  qpuHexRegisterOf('primatology', name, (PrimatologyFormulas[name] as (...x: unknown[]) => unknown).bind(PrimatologyFormulas))
+  hexRegisterOf('primatology', name, (PrimatologyFormulas[name] as (...x: unknown[]) => unknown).bind(PrimatologyFormulas))

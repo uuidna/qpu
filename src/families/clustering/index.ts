@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CLUSTERING — UNSUPERVISED GROUPING, AS ARITHMETIC (chosen by the registry, not by hand). Finding groups in data is
@@ -31,4 +31,4 @@ export class ClusteringFormulas {
 }
 
 for (const name of ['between', 'centroiddist', 'density', 'inertia', 'kselection', 'purity', 'silhouette', 'within'] as const)
-  qpuHexRegisterOf('clustering', name, (ClusteringFormulas[name] as (...x: unknown[]) => unknown).bind(ClusteringFormulas))
+  hexRegisterOf('clustering', name, (ClusteringFormulas[name] as (...x: unknown[]) => unknown).bind(ClusteringFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ScalesFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('scales: degrees, modeshift, tetrachord, intervalpattern, transposition, pe
   assert.equal(ScalesFormulas.chromaticfill(60, 72).value, 12, 'an octave of semitones')
   assert.equal(ScalesFormulas.keydistance(1).value, 7, 'one step of fifths is a fifth')
   assert.equal(ScalesFormulas.degrees(7, 2).dst, 'music')
-  assert.equal(qpuHexFamiliesOf().get('scales')?.length, 8)
+  assert.equal(hexFamiliesOf().get('scales')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'scales', program: ['degrees'], params: [7, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 14, `scales.degrees at ${uuid}`)
-  qpuUuidReceiptOf('scales degrees', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('scales degrees', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; degrees 14, modeshift 3, tetrachord 10, intervalpattern 6, transposition 2, pentatonicnotes 15, chromaticfill 12, keydistance 7; crossing to music')
 })

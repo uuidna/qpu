@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THE I CHING AS COMBINATORICS. A hexagram is six lines, each yin (0) or yang (1): the 64 of 2⁶, read bottom to top
@@ -54,4 +54,4 @@ export class YiFormulas {
 }
 
 for (const name of ['change', 'complement', 'figures', 'inverse', 'lower', 'nuclear', 'upper', 'withYang', 'yang'] as const)
-  qpuHexRegisterOf('yi', name, (YiFormulas[name] as (...x: unknown[]) => unknown).bind(YiFormulas))
+  hexRegisterOf('yi', name, (YiFormulas[name] as (...x: unknown[]) => unknown).bind(YiFormulas))

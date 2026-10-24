@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POLLINATION — THE TRANSFER OF POLLEN, AS ARITHMETIC. Reproduction is numbers: the fruit a flower sets, how often a
@@ -30,4 +30,4 @@ export class PollinationFormulas {
 }
 
 for (const name of ['crosspollination', 'foragerange', 'fruitset', 'hivedensity', 'pollenviability', 'seedset', 'visitationrate', 'yielddependence'] as const)
-  qpuHexRegisterOf('pollination', name, (PollinationFormulas[name] as (...x: unknown[]) => unknown).bind(PollinationFormulas))
+  hexRegisterOf('pollination', name, (PollinationFormulas[name] as (...x: unknown[]) => unknown).bind(PollinationFormulas))

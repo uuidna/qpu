@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHOCOLATE — THE CHOCOLATIER'S CRAFT, AS ARITHMETIC. Making chocolate is numbers: the cacao percentage of a bar, whether
@@ -31,4 +31,4 @@ export class ChocolateFormulas {
 }
 
 for (const name of ['cacaopercent', 'cocoabutter', 'conche', 'crystalseed', 'meltpoint', 'sugarratio', 'temper', 'viscosity'] as const)
-  qpuHexRegisterOf('chocolate', name, (ChocolateFormulas[name] as (...x: unknown[]) => unknown).bind(ChocolateFormulas))
+  hexRegisterOf('chocolate', name, (ChocolateFormulas[name] as (...x: unknown[]) => unknown).bind(ChocolateFormulas))

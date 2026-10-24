@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BILINGUALISM — THE TWO-LANGUAGE MIND, AS ARITHMETIC. Speaking two languages is numbers: which language dominates, how
@@ -31,4 +31,4 @@ export class BilingualismFormulas {
 }
 
 for (const name of ['balanceindex', 'codeswitchrate', 'dominanceratio', 'exposurehours', 'interferencerate', 'lexicalaccess', 'proficiencygap', 'transferrate'] as const)
-  qpuHexRegisterOf('bilingualism', name, (BilingualismFormulas[name] as (...x: unknown[]) => unknown).bind(BilingualismFormulas))
+  hexRegisterOf('bilingualism', name, (BilingualismFormulas[name] as (...x: unknown[]) => unknown).bind(BilingualismFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MitosisFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('mitosis: cellcount, chromosomes, cyclelength, doublingtime, generations, g
   assert.equal(MitosisFormulas.mitoticindex(50, 1000).value, 5)
   assert.equal(MitosisFormulas.phasefraction(6, 24).value, 25)
   assert.equal(MitosisFormulas.cellcount(5, 3).dst, 'genetics')
-  assert.equal(qpuHexFamiliesOf().get('mitosis')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mitosis')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mitosis', program: ['cellcount'], params: [5, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 40, `mitosis.cellcount at ${uuid}`)
-  qpuUuidReceiptOf('mitosis cellcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mitosis cellcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; cellcount 40, chromosomes 4600, cyclelength 24, doublingtime 12, generations 2, growthfraction 30, mitoticindex 5, phasefraction 25; crossing to genetics')
 })

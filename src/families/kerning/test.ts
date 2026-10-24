@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { KerningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('kerning: pairadjust, tracking, emratio, sidebearing, advancewidth, wordspa
   assert.equal(KerningFormulas.units(3, 1000).value, 3000, 'three ems at a thousand units')
   assert.equal(KerningFormulas.optical(72, 950).value, 68, 'seventy-two scaled to 95%')
   assert.equal(KerningFormulas.pairadjust(120, 40).dst, 'typography')
-  assert.equal(qpuHexFamiliesOf().get('kerning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('kerning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'kerning', program: ['pairadjust'], params: [120, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `kerning.pairadjust at ${uuid}`)
-  qpuUuidReceiptOf('kerning pairadjust', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('kerning pairadjust', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; pairadjust 80, tracking 200, emratio 750, sidebearing 160, advancewidth 660, wordspacing 1000, units 3000, optical 68; crossing to typography')
 })

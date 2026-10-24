@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StorageFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('storage: capacity, used, redundancy, iops, throughput, dedup, tier, cost â
   assert.equal(StorageFormulas.tier(700, 300).value, 1000)
   assert.equal(StorageFormulas.cost(2000, 5).value, 100)
   assert.equal(StorageFormulas.capacity(1000, 5).dst, 'cloud')
-  assert.equal(qpuHexFamiliesOf().get('storage')?.length, 8)
+  assert.equal(hexFamiliesOf().get('storage')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'storage', program: ['capacity'], params: [1000, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5000, `storage.capacity at ${uuid}`)
-  qpuUuidReceiptOf('storage capacity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('storage capacity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; capacity 5000, used 700, redundancy 1500, iops 500, throughput 100, dedup 25, tier 1000, cost 100; crossing to cloud')
 })

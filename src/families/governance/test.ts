@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GovernanceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('governance: quorum, majority, transparency, accountability, representation
   assert.equal(GovernanceFormulas.compliance(19, 20).value, 95)
   assert.equal(GovernanceFormulas.turnout(660, 1000).value, 66)
   assert.equal(GovernanceFormulas.quorum(6, 10).dst, 'law')
-  assert.equal(qpuHexFamiliesOf().get('governance')?.length, 8)
+  assert.equal(hexFamiliesOf().get('governance')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'governance', program: ['quorum'], params: [6, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `governance.quorum at ${uuid}`)
-  qpuUuidReceiptOf('governance quorum', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('governance quorum', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; quorum 60, majority 60, transparency 90, accountability 90, representation 5, term 400, compliance 95, turnout 66; crossing to law')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FPGA — THE RECONFIGURABLE FABRIC, AS ARITHMETIC. An FPGA is numbers by the book: look-up tables and flip-flops
@@ -35,4 +35,4 @@ export class FpgaFormulas {
 }
 
 for (const name of ['bram', 'dsp', 'ffs', 'fmax', 'io', 'luts', 'pipeline', 'power', 'throughput', 'utilization'] as const)
-  qpuHexRegisterOf('fpga', name, (FpgaFormulas[name] as (...x: unknown[]) => unknown).bind(FpgaFormulas))
+  hexRegisterOf('fpga', name, (FpgaFormulas[name] as (...x: unknown[]) => unknown).bind(FpgaFormulas))

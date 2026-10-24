@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StreamFormulas } from './index.js'
 
 /** stream: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('stream: chunks, buffers, throughput, windows, backpressure, segments, pipe
   assert.equal(StreamFormulas.segments(10000, 188).value, 53, 'segments(10000, 188)')
   assert.equal(StreamFormulas.pipes(3, 0).value, 3, 'pipes(3, 0)')
   assert.equal(StreamFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('stream')?.length, 8)
+  assert.equal(hexFamiliesOf().get('stream')?.length, 8)
   for (const [name, params, expected] of [["buffers",[8,4096],32768],["windows",[64,1024],65536],["backpressure",[80,100],80]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'stream', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `stream.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`stream ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`stream ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "buffers=32768, windows=65536, backpressure=80")
 })

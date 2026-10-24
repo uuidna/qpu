@@ -129,7 +129,7 @@ function formatVersion(v: Version): string {
 
 /**
  * Code-point order of the whole version string. software.semver packs major, minor, and patch as integers;
- * no formula sorts text. text.order is that lead, and qpuHexMissOf has no address for it: hex params are
+ * no formula sorts text. text.order is that lead, and hexMissOf has no address for it: hex params are
  * naturals, and a version is a string. This comparison is the code.
  */
 export const VERSION_ORDER_LEAD = 'text.order'

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ASSESSMENT — MEASURING WHAT A LEARNER KNOWS, AS ARITHMETIC. Grading is numbers: a raw score as a percentage, a
@@ -31,4 +31,4 @@ export class AssessmentFormulas {
 }
 
 for (const name of ['gradecurve', 'improvement', 'masterylevel', 'passrate', 'percentile', 'rubricscore', 'score', 'weightedmean'] as const)
-  qpuHexRegisterOf('assessment', name, (AssessmentFormulas[name] as (...x: unknown[]) => unknown).bind(AssessmentFormulas))
+  hexRegisterOf('assessment', name, (AssessmentFormulas[name] as (...x: unknown[]) => unknown).bind(AssessmentFormulas))

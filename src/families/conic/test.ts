@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConicFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('conic: eccentricityscaled, focallength, directrix, latusrectum, semimajor,
   assert.equal(ConicFormulas.vertexdistance(5, 2).value, 3, 'vertex past the offset')
   assert.equal(ConicFormulas.vertexdistance(2, 5).value, 0)
   assert.equal(ConicFormulas.eccentricityscaled(3, 5).dst, 'geometry')
-  assert.equal(qpuHexFamiliesOf().get('conic')?.length, 8)
+  assert.equal(hexFamiliesOf().get('conic')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'conic', program: ['semiminor'], params: [5, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9, `conic.semiminor at ${uuid}`)
-  qpuUuidReceiptOf('conic semiminor', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('conic semiminor', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; eccentricityscaled 60, focallength 16, directrix 6, latusrectum 3, semimajor 5, semiminor 9, discriminant 17, vertexdistance 3; crossing to geometry')
 })

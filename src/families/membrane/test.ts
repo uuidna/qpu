@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MembraneFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('membrane: restingpotential, nernst, permeability, fluidity, surfacearea, t
   assert.equal(MembraneFormulas.selectivity(95, 100).value, 95, 'highly selective')
   assert.equal(MembraneFormulas.selectivity(50, 100).value, 50)
   assert.equal(MembraneFormulas.restingpotential(90, 20).dst, 'biochemistry')
-  assert.equal(qpuHexFamiliesOf().get('membrane')?.length, 8)
+  assert.equal(hexFamiliesOf().get('membrane')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'membrane', program: ['transportrate'], params: [6000, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `membrane.transportrate at ${uuid}`)
-  qpuUuidReceiptOf('membrane transportrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('membrane transportrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; restingpotential 70, nernst 122, permeability 20, fluidity 30, surfacearea 300, transportrate 100, capacitance 100, selectivity 95; crossing to biochemistry')
 })

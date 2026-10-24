@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TennisFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('tennis: firstserve, acerate, breakpoints, winners, rally, dominance, serve
   assert.equal(TennisFormulas.servespeed(200).value, 200)
   assert.equal(TennisFormulas.returnpct(30, 50).value, 60)
   assert.equal(TennisFormulas.firstserve(60, 100).dst, 'sports')
-  assert.equal(qpuHexFamiliesOf().get('tennis')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tennis')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tennis', program: ['dominance'], params: [6, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `tennis.dominance at ${uuid}`)
-  qpuUuidReceiptOf('tennis dominance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tennis dominance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; firstserve 60, acerate 12, breakpoints 37, winners 200, rally 4, dominance 60, servespeed 200, returnpct 60; crossing to sports')
 })

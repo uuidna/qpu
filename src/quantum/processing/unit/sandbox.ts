@@ -1,4 +1,4 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuSandboxEpochOf, qpuSandboxEpochHolds, qpuSandboxOf, qpuSandboxRunOf, qpuSandboxRunHolds.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): sandboxEpochOf, sandboxEpochHolds, sandboxOf, sandboxRunOf, sandboxRunHolds.
 import {
   bagOf,
   forgeNameOf,
@@ -8,13 +8,13 @@ import {
   opQuantumHolds,
   opQuantumOf,
   openSchema,
-  qpuContentUuidOf,
-  qpuCubeOf,
-  qpuFacesOf,
-  qpuManHolds,
-  qpuManPageOf,
-  qpuAddressReferrerOf,
-  qpuUuidReceiptOf,
+  contentUuidOf,
+  cubeOf,
+  facesOf,
+  manHolds,
+  manPageOf,
+  addressReferrerOf,
+  uuidReceiptOf,
   quantumRelatedNamesOf,
   runOpOf,
   sandboxCore,
@@ -33,23 +33,23 @@ import {
  * The sandbox's write epoch: advances when a forge changes a tool, so memoised readings of the sandbox refresh.
  * @wing agents
  * @kind builder
- * @evidence qpuSandboxEpochHolds
+ * @evidence sandboxEpochHolds
  */
-export const qpuSandboxEpochOf = (): number => sandboxEpoch
+export const sandboxEpochOf = (): number => sandboxEpoch
 
 /** It only ever rises, and it starts at the ground state — a counter that could fall would alias two sandboxes. */
-export const qpuSandboxEpochHolds = (epoch = qpuSandboxEpochOf()): boolean => Number.isSafeInteger(epoch) && epoch >= 0
+export const sandboxEpochHolds = (epoch = sandboxEpochOf()): boolean => Number.isSafeInteger(epoch) && epoch >= 0
 
 /**
  * The in-memory sandbox census: ops, host shims (all in memory), heap, forged tools; nothing touches disk, network or eval.
  * @wing agents
  * @kind builder
- * @evidence qpuSandboxHolds
+ * @evidence sandboxHolds
  */
-export const qpuSandboxOf = onceOf(() => {
+export const sandboxOf = onceOf(() => {
   seedSandboxOf()
-  const faces = qpuFacesOf()
-  const cube = qpuCubeOf()
+  const faces = facesOf()
+  const cube = cubeOf()
   const tools = [...sandboxTools.values()].map((t) => ({
     name: t.name,
     team: t.team,
@@ -76,7 +76,7 @@ export const qpuSandboxOf = onceOf(() => {
     quantum.value?.register?.holds === true &&
     quantum.value?.related?.length === related.length &&
     quantum.value?.holds === true &&
-    tools.every((t) => qpuManHolds(t.man)) &&
+    tools.every((t) => manHolds(t.man)) &&
     sandboxHeap.size <= cube.bits
   const has = (name: string) => tools.some((t) => t.name === name)
   return {
@@ -107,20 +107,20 @@ export const qpuSandboxOf = onceOf(() => {
  * Run a sandbox tool by name with arguments; the run is a quantum receipt in the sandbox stream.
  * @wing agents
  * @kind builder
- * @evidence qpuSandboxRunHolds
+ * @evidence sandboxRunHolds
  */
-export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}) => {
+export const sandboxRunOf = (name: string, args: Record<string, unknown> = {}) => {
   seedSandboxOf()
   const tool = sandboxTools.get(name)
   // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
   if (!tool) return { holds: false as const, denied: 'tool' as const,
     unlocked: true as const }
-  if (args.man === true) return qpuManPageOf(name, tool.man)
+  if (args.man === true) return manPageOf(name, tool.man)
   const value = runOpOf(tool.run, sandboxHeap, jsonOf(args), n - n)
   const bag = bagOf(args)
-  const address = qpuAddressReferrerOf(typeof bag.referrer === 'string' ? bag.referrer : undefined)
+  const address = addressReferrerOf(typeof bag.referrer === 'string' ? bag.referrer : undefined)
   const argsFold = address ? bag : Object.fromEntries(Object.entries(bag).filter(([key]) => key !== 'referrer'))
-  const receipt = qpuUuidReceiptOf(`sandbox ${name}`, qpuContentUuidOf(tool.run), { args: argsFold, value }, address ?? `${unit.origin}/mcp`)
+  const receipt = uuidReceiptOf(`sandbox ${name}`, contentUuidOf(tool.run), { args: argsFold, value }, address ?? `${unit.origin}/mcp`)
   return {
     kind: 'sandbox' as const,
     receipt,
@@ -129,10 +129,10 @@ export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}
     ray: tool.ray,
     idea: tool.idea,
     value,
-    memory: sandboxHeap.size <= qpuCubeOf().bits,
+    memory: sandboxHeap.size <= cubeOf().bits,
     unlocked: tool.run.op === 'quantum' || tool.run.op === 'unlocked' || name.startsWith('call_') || name.startsWith('read_'),
     holds: value !== undefined,
   }
 }
 
-export const qpuSandboxRunHolds = (x?: ReturnType<typeof qpuSandboxRunOf>): boolean => x !== undefined && x.holds === true
+export const sandboxRunHolds = (x?: ReturnType<typeof sandboxRunOf>): boolean => x !== undefined && x.holds === true

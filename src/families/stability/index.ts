@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STABILITY — CONTROL-SYSTEM MARGINS, AS ARITHMETIC. Whether a feedback loop holds is numbers: how much the gain can grow
@@ -31,4 +31,4 @@ export class StabilityFormulas {
 }
 
 for (const name of ['crossoverfrequency', 'dampingfactor', 'gainmargin', 'marginratio', 'phasemargin', 'poles', 'routhcriterion', 'zeros'] as const)
-  qpuHexRegisterOf('stability', name, (StabilityFormulas[name] as (...x: unknown[]) => unknown).bind(StabilityFormulas))
+  hexRegisterOf('stability', name, (StabilityFormulas[name] as (...x: unknown[]) => unknown).bind(StabilityFormulas))

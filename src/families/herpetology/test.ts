@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HerpetologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('herpetology: thermoregulation, venom, clutch, incubation, metabolism, grow
   assert.equal(HerpetologyFormulas.survival(80, 100).value, 80, 'percent of the clutch')
   assert.equal(HerpetologyFormulas.scalation(170, 10).value, 17)
   assert.equal(HerpetologyFormulas.thermoregulation(30, 20).dst, 'zoology')
-  assert.equal(qpuHexFamiliesOf().get('herpetology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('herpetology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'herpetology', program: ['clutch'], params: [100, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `herpetology.clutch at ${uuid}`)
-  qpuUuidReceiptOf('herpetology clutch', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('herpetology clutch', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; thermoregulation 10, venom 5, clutch 25, incubation 60, metabolism 4, growth 30, survival 80, scalation 17; crossing to zoology')
 })

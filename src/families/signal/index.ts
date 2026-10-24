@@ -1,4 +1,4 @@
-import { qpuFoldOf, qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { foldOf, hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { drbgOf, randomBytes, sha256, utf8 } from '../../core/crypt.js'
 
@@ -45,7 +45,7 @@ const randomBits = (n: number, draw: (k: number) => Uint8Array): number[] => {
   return Array.from({ length: n }, (_, i) => (bytes[i >> 3]! >> (i & 7)) & 1)
 }
 
-const foldBits = (s: string): bigint => BigInt(`0x${qpuFoldOf(s)}`)
+const foldBits = (s: string): bigint => BigInt(`0x${foldOf(s)}`)
 
 const popcount = (x: bigint): number => {
   let c = 0
@@ -65,7 +65,7 @@ export class QuantumSecureSignalling {
     const draw = seed ? drbgOf(seed) : randomBytes
     const bits = randomBits(n, draw)
     const basis = randomBits(n, draw)
-    const hash = qpuFoldOf(JSON.stringify({ bits, basis }))
+    const hash = foldOf(JSON.stringify({ bits, basis }))
     return { id: `key-${hash}`, bits, basis, hash }
   }
 
@@ -93,7 +93,7 @@ export class QuantumSecureSignalling {
   }
 
   static sign(data: unknown, key: QuantumKey): SecureSignal {
-    const hash = qpuFoldOf(JSON.stringify({ payload: data, key: key.hash }))
+    const hash = foldOf(JSON.stringify({ payload: data, key: key.hash }))
     return { id: `sig-${hash}`, payload: data, dims: key.bits.length, hash, verified: false }
   }
 
@@ -101,7 +101,7 @@ export class QuantumSecureSignalling {
   // detects an accidental change to payload or key id — it is NOT unforgeable (no secret key, a 64-bit fold is not
   // collision-resistant). For an unforgeable signature use the ed25519 path in core/crypt (ed25519Sign/Verify).
   static verify(sig: SecureSignal, key: QuantumKey): boolean {
-    return qpuFoldOf(JSON.stringify({ payload: sig.payload, key: key.hash })) === sig.hash
+    return foldOf(JSON.stringify({ payload: sig.payload, key: key.hash })) === sig.hash
   }
 
   static encode(sig: SecureSignal, dims: number): number[] {
@@ -132,7 +132,7 @@ export class QuantumSecureSignalling {
   }
 
   static fold(signals: SecureSignal[]): string {
-    return qpuFoldOf(signals.map((s) => s.hash).join(''))
+    return foldOf(signals.map((s) => s.hash).join(''))
   }
 
   static distribute(n: number, dims: number, k: number): Map<string, SecureSignal[]> {
@@ -180,4 +180,4 @@ export class SignalFormulas {
 }
 
 for (const name of ['detection', 'hops', 'keyBits', 'keyspace', 'qber', 'siftedBits'] as const)
-  qpuHexRegisterOf('signal', name, (SignalFormulas[name] as (...x: unknown[]) => unknown).bind(SignalFormulas))
+  hexRegisterOf('signal', name, (SignalFormulas[name] as (...x: unknown[]) => unknown).bind(SignalFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FEEDLOT — CATTLE FINISHING, AS ARITHMETIC (chosen by the public-API registry, not by hand). Finishing cattle is
@@ -31,4 +31,4 @@ export class FeedlotFormulas {
 }
 
 for (const name of ['breakeven', 'dailygain', 'daysonfeed', 'dryintake', 'energydensity', 'feedefficiency', 'proteinratio', 'rationcost'] as const)
-  qpuHexRegisterOf('feedlot', name, (FeedlotFormulas[name] as (...x: unknown[]) => unknown).bind(FeedlotFormulas))
+  hexRegisterOf('feedlot', name, (FeedlotFormulas[name] as (...x: unknown[]) => unknown).bind(FeedlotFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REGRESSION — LEAST-SQUARES FITTING, AS ARITHMETIC (chosen by the registry, not by hand). Fitting a line to points is
@@ -31,4 +31,4 @@ export class RegressionFormulas {
 }
 
 for (const name of ['intercept', 'leverage', 'mse', 'prediction', 'residual', 'rsquared', 'slope', 'sse'] as const)
-  qpuHexRegisterOf('regression', name, (RegressionFormulas[name] as (...x: unknown[]) => unknown).bind(RegressionFormulas))
+  hexRegisterOf('regression', name, (RegressionFormulas[name] as (...x: unknown[]) => unknown).bind(RegressionFormulas))

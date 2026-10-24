@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PilgrimageFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('pilgrimage: stagecount, routeorderings, stationpairs, distance, daysrequir
   assert.equal(PilgrimageFormulas.groupsize(40, 1).value, 40)
   assert.equal(PilgrimageFormulas.restpoints(600, 50).value, 12)
   assert.equal(PilgrimageFormulas.stagecount(12, 2).dst, 'anthropology')
-  assert.equal(qpuHexFamiliesOf().get('pilgrimage')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pilgrimage')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pilgrimage', program: ['stagecount'], params: [12, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 14, `pilgrimage.stagecount at ${uuid}`)
-  qpuUuidReceiptOf('pilgrimage stagecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pilgrimage stagecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; stagecount 14, routeorderings 720, stationpairs 91, distance 600, daysrequired 30, waypointsubsets 32, groupsize 40, restpoints 12; crossing to anthropology')
 })

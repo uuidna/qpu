@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BudgetFormulas — 8 exact-integer formulas of the budget domain, each at a hex address crossing to cross; develops the budget leads. */
@@ -31,4 +31,4 @@ export class BudgetFormulas {
 }
 
 for (const name of ['allocated', 'categories', 'combos', 'quarters', 'spent', 'surplus', 'utilization', 'variance'] as const)
-  qpuHexRegisterOf('budget', name, (BudgetFormulas[name] as (...x: unknown[]) => unknown).bind(BudgetFormulas))
+  hexRegisterOf('budget', name, (BudgetFormulas[name] as (...x: unknown[]) => unknown).bind(BudgetFormulas))

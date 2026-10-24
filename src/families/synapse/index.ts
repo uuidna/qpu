@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SynapseFormulas — 8 exact-integer formulas of the synapse domain, each at a hex address crossing to cross; develops the synapse leads. */
@@ -31,4 +31,4 @@ export class SynapseFormulas {
 }
 
 for (const name of ['cleft', 'combos', 'delay', 'plasticity', 'receptors', 'strength', 'transmitters', 'vesicles'] as const)
-  qpuHexRegisterOf('synapse', name, (SynapseFormulas[name] as (...x: unknown[]) => unknown).bind(SynapseFormulas))
+  hexRegisterOf('synapse', name, (SynapseFormulas[name] as (...x: unknown[]) => unknown).bind(SynapseFormulas))

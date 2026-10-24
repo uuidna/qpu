@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VITALS — GOOGLE CORE WEB VITALS, AS ARITHMETIC (the thresholds a page is graded by, not by hand). A page's field data is
@@ -32,4 +32,4 @@ export class VitalsFormulas {
 }
 
 for (const name of ['budget', 'cls', 'fcp', 'inp', 'lcp', 'regression', 'score', 'ttfb'] as const)
-  qpuHexRegisterOf('vitals', name, (VitalsFormulas[name] as (...x: unknown[]) => unknown).bind(VitalsFormulas))
+  hexRegisterOf('vitals', name, (VitalsFormulas[name] as (...x: unknown[]) => unknown).bind(VitalsFormulas))

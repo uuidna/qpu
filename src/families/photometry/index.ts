@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHOTOMETRY — MEASURING STARLIGHT, AS ARITHMETIC (the brightness of things). Light is numbers: the magnitude of a
@@ -31,4 +31,4 @@ export class PhotometryFormulas {
 }
 
 for (const name of ['absolutemagnitude', 'apparentmagnitude', 'colorindex', 'distancemodulus', 'extinction', 'flux', 'magnitude', 'signaltonoise'] as const)
-  qpuHexRegisterOf('photometry', name, (PhotometryFormulas[name] as (...x: unknown[]) => unknown).bind(PhotometryFormulas))
+  hexRegisterOf('photometry', name, (PhotometryFormulas[name] as (...x: unknown[]) => unknown).bind(PhotometryFormulas))

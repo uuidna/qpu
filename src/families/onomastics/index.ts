@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ONOMASTICS — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class OnomasticsFormulas {
 }
 
 for (const name of ['distributionratio', 'etymsubsets', 'frequencyrank', 'namecount', 'orderingchoices', 'patronymiclayers', 'surnamepairs', 'variantspellings'] as const)
-  qpuHexRegisterOf('onomastics', name, (OnomasticsFormulas[name] as (...x: unknown[]) => unknown).bind(OnomasticsFormulas))
+  hexRegisterOf('onomastics', name, (OnomasticsFormulas[name] as (...x: unknown[]) => unknown).bind(OnomasticsFormulas))

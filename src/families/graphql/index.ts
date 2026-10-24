@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GRAPHQL — SERVING A GRAPH, AS ARITHMETIC (chosen by the public-API registry, not by hand). A query is numbers: how deep
@@ -31,4 +31,4 @@ export class GraphqlFormulas {
 }
 
 for (const name of ['batchsize', 'cachehit', 'complexity', 'fieldcount', 'fragmentreuse', 'nplusone', 'querydepth', 'resolvers'] as const)
-  qpuHexRegisterOf('graphql', name, (GraphqlFormulas[name] as (...x: unknown[]) => unknown).bind(GraphqlFormulas))
+  hexRegisterOf('graphql', name, (GraphqlFormulas[name] as (...x: unknown[]) => unknown).bind(GraphqlFormulas))

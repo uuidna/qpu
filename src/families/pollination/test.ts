@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PollinationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('pollination: fruitset, visitationrate, pollenviability, hivedensity, seeds
   assert.equal(PollinationFormulas.foragerange(15, 40).value, 600)
   assert.equal(PollinationFormulas.yielddependence(1000, 75).value, 750, 'yield owed to pollination')
   assert.equal(PollinationFormulas.fruitset(45, 60).dst, 'botany')
-  assert.equal(qpuHexFamiliesOf().get('pollination')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pollination')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pollination', program: ['fruitset'], params: [45, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `pollination.fruitset at ${uuid}`)
-  qpuUuidReceiptOf('pollination fruitset', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pollination fruitset', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; fruitset 75, visitationrate 120, pollenviability 90, hivedensity 30, seedset 3000, crosspollination 96, foragerange 600, yielddependence 750; crossing to botany')
 })

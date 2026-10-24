@@ -1,17 +1,18 @@
+import { KAGGLE_COMPETITION } from '../../quantum/competitions/kaggle.js'
 import { permaTrinityOf } from '../../families/perma/index.js'
 import { ContractFormulas } from '../../families/contract/index.js'
 import { EvidenceFormulas } from '../../families/evidence/index.js'
 import { LawFormulas } from '../../families/law/index.js'
 import {
-  qpuFacesOf,
-  qpuHarnessesOf,
+  facesOf,
+  harnessesOf,
   qpuManOf,
-  qpuMcpFusedOf,
-  qpuMcpToolsListOf,
-  qpuRecognizeOf,
-  qpuStandardsOf,
+  mcpFusedOf,
+  mcpToolsListOf,
+  recognizeOf,
+  standardsOf,
 } from '../../quantum/processing/unit/index.js'
-import { qpuTenantZoneOf } from '../../quantum/processing/unit/presentation.js'
+import { tenantZoneOf } from '../../quantum/processing/unit/presentation.js'
 import type { QpuEnv } from '../../quantum/processing/unit/index.js'
 import { usageBillOf } from './billing.js'
 import { openMathScaleOf } from './clay.js'
@@ -20,19 +21,18 @@ import { postQuantumUpgradeOf } from './upgrade.js'
 import { payloadLeadsOf } from './leads.js'
 import { pointOf } from './point.js'
 import { waveSweepGridOf } from './wave.js'
-import type { QpuPlugin } from './surface.js'
 
 /**
  * perma.family is a commercial client of this unit, not a second app. A tenant under the zone is one label
- * (qpuTenantZoneOf): the slug is the family name `perma`. The client name carries a dot, so it is not itself a
+ * (tenantZoneOf): the slug is the family name `perma`. The client name carries a dot, so it is not itself a
  * zone label. The bill is the usage meter. The margin place stays empty. The prize is not this bill.
  */
 const SLUG = 'perma'
 
-/** The connectors qpuHarnessesOf already names, each checked by that function. No efficiency formula takes this count.
+/** The connectors harnessesOf already names, each checked by that function. No efficiency formula takes this count.
  *  benchmark.efficiency and the other efficiency formulas are not called. Unconfirmed novelty is not billed. */
 export const connectorExamOf = () => {
-  const harnesses = qpuHarnessesOf()
+  const harnesses = harnessesOf()
   const reviewed = LawFormulas.reviewed(0)
   return {
     kind: 'connector-exam' as const,
@@ -49,9 +49,9 @@ export const connectorExamOf = () => {
  *  A secured API and a write that needs a bearer stay outside. No second protocol.
  *  Combinatorial wave.sweep grids ride this same connector: tools/call connector { from, width, passes }. */
 export const publicConnectorOf = () => {
-  const harnesses = qpuHarnessesOf()
+  const harnesses = harnessesOf()
   const exam = connectorExamOf()
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const fused = harnesses.rows.filter((row) => JSON.stringify(row.config).includes(harnesses.url) || row.how.includes(harnesses.url))
   return {
     kind: 'connector' as const,
@@ -153,7 +153,7 @@ export const publicConnectorOf = () => {
       { where: 'storage-write' as const, why: 'A storage write needs Authorization: Bearer. That token is not handed to a public caller.' },
       { where: 'googleapis.com:books' as const, why: 'Secured. Not called.' },
       { where: 'nytimes.com:books_api' as const, why: 'Secured. Not called.' },
-      { where: 'stdio' as const, why: 'The porting table names stdio. qpuHarnessesOf has no stdio row.' },
+      { where: 'stdio' as const, why: 'The porting table names stdio. harnessesOf has no stdio row.' },
       { where: 'legal-document-draft' as const, why: 'QPU does not mint contracts or Drive files. Law/court/point are formulated readings; prose drafting stays with the host agent.' },
       { where: 'google-drive-mcp' as const, why: 'Drive browse/create is another MCP host. QPU connector does not proxy Drive tools.' },
     ],
@@ -168,8 +168,8 @@ export const publicConnectorOf = () => {
  */
 export const connectorUseOf = () => {
   const base = publicConnectorOf()
-  const tools = qpuMcpToolsListOf()
-  const fused = qpuMcpFusedOf()
+  const tools = mcpToolsListOf()
+  const fused = mcpFusedOf()
   const listBytes = JSON.stringify({ resultType: 'complete' as const, tools }).length
   const qpuPrefixed = tools.filter((t) => t.name.startsWith('qpu_')).length
   const billHolds = tools.length <= 16 && listBytes < 16384 && qpuPrefixed === 0
@@ -263,12 +263,12 @@ export const connectorUseOf = () => {
  * Grid args go through this door — not a parallel private CLI path.
  */
 export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null) => {
-  const { qpuManOf: manOf, qpuStorageWriteAllowedOf } = await import('../../quantum/processing/unit/index.js')
+  const { qpuManOf: manOf, storageWriteAllowedOf } = await import('../../quantum/processing/unit/index.js')
   if (args.cloudflare === true || args.cf === true || args.wrangler === true) {
     // The Cloudflare account inventory (KV/R2/D1/Pages ids, secret NAMES) is operator reconnaissance, not a public read:
     // gate it behind the operator write token, the same credential storage writes require, so the fused connector tool
     // cannot expose it unauthenticated (it is reachable with auth via its own HTTP transport). Returns a lead, not data.
-    if (!qpuStorageWriteAllowedOf(env, auth)) return { denied: 'cloudflare account inventory requires the operator token (Bearer QPU_WRITE_TOKEN)', connector: publicConnectorOf() }
+    if (!storageWriteAllowedOf(env, auth)) return { denied: 'cloudflare account inventory requires the operator token (Bearer QPU_WRITE_TOKEN)', connector: publicConnectorOf() }
     const { cloudflareAccountOf } = await import('./cloudflare-account.js')
     return { ...(await cloudflareAccountOf(args)), connector: publicConnectorOf() }
   }
@@ -294,6 +294,27 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
     const { chatSearchOf } = await import('./chat-search.js')
     return { ...(await chatSearchOf(args)), connector: publicConnectorOf() }
   }
+  if (args.send === true) {
+    // THE WAVES ARE SENT THROUGH THE CONNECTOR: each wave's units are independent and run at once (see send.ts)
+    const { sendWavesOf } = await import('./send.js')
+    return { ...(await sendWavesOf(args, env, auth)), connector: publicConnectorOf() }
+  }
+  if (typeof args.source === 'string') {
+    // EVERY HOST READ GOES THROUGH THE CONNECTOR: a source is the data door, dispatched by name in the same MCP call. A
+    // failure answers with the door's own `resolve` as its next step, so the caller is pointed at what to do next.
+    const { mcpCallOf } = await import('../../quantum/processing/unit/mcp.js')
+    const raw = (await mcpCallOf('data', args, env, auth)) as Record<string, unknown>
+    // the door answers as an MCP content envelope; the reading is its JSON text, so it is unwrapped to the reading itself
+    const text = Array.isArray(raw.content) ? (raw.content[0] as { text?: unknown } | undefined)?.text : undefined
+    let parsed: Record<string, unknown> | null = null
+    if (typeof text === 'string') { try { parsed = JSON.parse(text) as Record<string, unknown> } catch { parsed = null } }
+    const reply = parsed ?? raw
+    if (reply.kind === 'failure' || 'denied' in reply || 'warning' in reply) {
+      const resolve = typeof reply.resolve === 'string' ? reply.resolve : 'the source did not answer; see the sources this host serves'
+      return { ...reply, next: [resolve, "tools/call connector { source: 'all' } lists every source this host serves"], connector: publicConnectorOf() }
+    }
+    return { ...reply, connector: publicConnectorOf() }
+  }
   if (args.man === true) {
     return manOf(
       'connector',
@@ -318,6 +339,141 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
   ) {
     const { waitsAnswerOf } = await import('./tokens.js')
     return { ...(await waitsAnswerOf(args)), connector: publicConnectorOf() }
+  }
+  if (args.metrics === true || args.metric === true) {
+    // THE LIVE QUANTUM METRICS, ONE READING: the readings the doors already hold, composed, never recomputed here.
+    // A snapshot per call: this transport pushes nothing, so the reading says so rather than implying a stream.
+    // Only the fields reported are read: the door readings are memoized (onceOf), and only holds is taken from prove.
+    const { baseline, baselineScore } = await import('../../quantum/processing/unit/fusion.js')
+    const u = await import('../../quantum/processing/unit/index.js')
+    const improve = u.improveOf()
+    const compete = u.competeOf()
+    const prove = u.proveOf()
+    const evidence = u.qpuEvidenceOf()
+    // Each metric in the Lall et al. format: definition, methodology, assumptions, limitations, and what to report with it.
+    // The unit's axes are its own integer scores, not physical measurements, and the fields say so.
+    const lall = <T>(value: T, fields: { definition: string; methodology: string; assumptions: string; limitations: string; reportWith: string }) => ({ value, ...fields })
+    return {
+      kind: 'metrics' as const,
+      call: 'tools/call connector { metrics: true }' as const,
+      standard: 'Lall et al., A review and collection of metrics and benchmarks for quantum computers, arXiv:2502.06717' as const,
+      device: evidence.provenance.device,
+      throughoutput: lall(
+        { before: improve.before.throughoutput, after: improve.after.throughoutput, delta: improve.delta.throughoutput },
+        {
+          definition: 'Total count of fused amplitudes served by the unit; doubling takes next = fused + fused.',
+          methodology: 'faces × handle amplitudes, read before and after one doubling pass.',
+          assumptions: 'Amplitudes are exact integers; the count is taken on the unit itself.',
+          limitations: 'Counts amplitudes, not wall-clock time or hardware work.',
+          reportWith: 'faces, handle amplitudes, the doubling pass.',
+        },
+      ),
+      quality: lall(
+        { before: improve.before.quality, after: improve.after.quality },
+        {
+          definition: "The unit's integer quality score on the improve door: the face count once improved.",
+          methodology: 'Before: the genesis value; after: faces.faces.',
+          assumptions: 'The face count is the quality the unit is built to.',
+          limitations: 'A structural count, not a fidelity or error-rate measure.',
+          reportWith: 'faces, genesis value.',
+        },
+      ),
+      speed: lall(
+        { before: improve.before.speed, after: improve.after.speed },
+        {
+          definition: 'Fused amplitudes divided by the tokens of the reply (throughput).',
+          methodology: 'throughputOf(fused, readTokens) before; throughputOf(next, callTokens) after.',
+          assumptions: 'Tokens of the reply stand in for the work done.',
+          limitations: 'A token-based proxy, not seconds of execution.',
+          reportWith: 'readTokens, callTokens.',
+        },
+      ),
+      security: lall(
+        { before: improve.before.security, after: improve.after.security },
+        {
+          definition: "The unit's integer security score on the improve door.",
+          methodology: 'Before: seed; after: ten.',
+          assumptions: 'The score is a design constant of the unit.',
+          limitations: 'A score, not a bound on cryptographic strength.',
+          reportWith: 'seed, ten.',
+        },
+      ),
+      compression: lall(improve.compression, {
+        definition: 'Size of the composed reply: fused bytes against the naive bytes, and the saving between them.',
+        methodology: 'Measured on the reply the improve door composes.',
+        assumptions: 'The reply is the unit output being compared.',
+        limitations: 'Measures one reply, not a general compression ratio.',
+        reportWith: 'fused, naive, saved.',
+      }),
+      durability: lall(improve.durability, {
+        definition: 'Put/get rounds that persist and stay isolated across the sandbox shims.',
+        methodology: 'Each round writes and reads back through the in-memory shims.',
+        assumptions: 'The shims behave as the sandbox declares.',
+        limitations: 'In-memory shims only; no real disk or network is exercised.',
+        reportWith: 'rounds, persist, isolate.',
+      }),
+      compete: lall(
+        { contest: compete.contest, winner: compete.winner },
+        {
+          definition: 'The read team and the call team compared on throughoutput; the winner is the higher.',
+          methodology: 'Both teams scored on the same contest by competeOf.',
+          assumptions: 'The two teams answer the same question.',
+          limitations: 'Two teams inside the unit, not an external benchmark.',
+          reportWith: 'contest, both teams\' scores.',
+        },
+      ),
+      prove: lall(
+        { holds: prove.holds },
+        {
+          definition: 'The conjunction of every Lean row, the Shor run and the evidence block.',
+          methodology: 'Recomputed from the unit source fold by proveOf.',
+          assumptions: 'The Lean source is the one served and checked.',
+          limitations: 'Proves the unit against itself, not against external hardware.',
+          reportWith: 'source fold, theorem count, the Shor run.',
+        },
+      ),
+      scaling: lall(
+        { qubits: evidence.scaling.qubits, depth: evidence.scaling.depth, exact: evidence.scaling.exact, advantage: evidence.scaling.advantage },
+        {
+          definition: 'Qubits and depth of the exact circuit; advantage holds when the exact register outgrows the classical work.',
+          methodology: 'Read from the evidence block by qpuEvidenceOf.',
+          assumptions: 'Exact integer state-vector simulation on the unit.',
+          limitations: 'Simulated only; advantage is false at 3 qubits and is not hardware advantage.',
+          reportWith: 'device, qubits, depth, classical baseline (not yet measured).',
+        },
+      ),
+      cross: lall(evidence.cross.holds, {
+        definition: 'Ideal and noisy samplers agree with each other on the circuit.',
+        methodology: 'Read from the cross block of the evidence.',
+        assumptions: 'The noisy sampler is the noise model the unit declares.',
+        limitations: 'Agreement inside the simulator, not on a device.',
+        reportWith: 'ideal and noisy sampler outputs.',
+      }),
+      fault: lall(evidence.fault.holds, {
+        definition: 'The fault reading from the evidence: a code and its logical suppression.',
+        methodology: 'Read from the fault block of the evidence.',
+        assumptions: 'The code model the unit declares.',
+        limitations: 'A reading of the declared code, not a hardware error-correction run.',
+        reportWith: 'code, distance, physical and logical error rates (not yet measured on hardware).',
+      }),
+      kaggle: lall(
+        {
+          competition: KAGGLE_COMPETITION.name,
+          benchmarks: KAGGLE_COMPETITION.benchmarks,
+          measured: { Q: evidence.scaling.qubits, T: null, toffoli: null },
+        },
+        {
+          definition: 'Circuit cost of the three Google Quantum AI benchmarks: qubit count Q times a gate-cost term (Toffoli, T, or repetition overhead) per benchmark. Lower is better.',
+          methodology: 'Q is the total qubit count. T and Toffoli counts come from the benchmark circuit as the verifier counts them. Scores are produced only by the benchmark verifier.',
+          assumptions: 'Q and the gate counts are taken on the circuit submitted, and the verifier accepts it.',
+          limitations: 'The unit implements none of the three benchmark circuits and runs no kickmix verifier, so no score is claimed. The Q shown is the 3-qubit Shor circuit, not a benchmark circuit; T and Toffoli are not counted for it.',
+          reportWith: 'submitted circuit, Q, Toffoli count, T count, verifier result, phase tolerance.',
+        },
+      ),
+      holds: improve.holds === true && compete.holds === true && prove.holds === true && evidence.holds === true,
+      realtime: { mode: 'snapshot' as const, push: false as const, note: 'recomputed on each call; this transport sends no server-pushed updates' },
+      connector: publicConnectorOf(),
+    }
   }
   if (args.observe === true || args.observability === true || typeof args.verbosity === 'number' || typeof args.level === 'number') {
     const { observeOf } = await import('./observability.js')
@@ -372,6 +528,13 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
   if (args.adapters === true || args.native === true || typeof args.vendor === 'string' || Array.isArray(args.gates) || typeof args.qasm === 'string' || Array.isArray(args.instructions)) {
     const { nativeAnswerOf } = await import('./native-adapters.js')
     return { ...(await nativeAnswerOf(args)), connector: publicConnectorOf() }
+  }
+  if (typeof args.claim === 'string' || args.schema !== undefined) {
+    // A CLAIM THROUGH THE CONNECTOR: the fused court door rules on it, so the claim rule has one implementation
+    const { mcpCallOf } = await import('../../quantum/processing/unit/mcp.js')
+    const raw = (await mcpCallOf('court', args)) as { content?: { text?: string }[] }
+    const text = raw.content?.[0]?.text
+    return { ...(text ? JSON.parse(text) : raw), connector: publicConnectorOf() }
   }
   if (args.court === true || args.trial === true || typeof args.case === 'string') {
     // THE COURT IS REACHED ONLY IN HEX QUANTUM. The connector no longer tries the court itself; the trial runs through
@@ -453,7 +616,7 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
   }
   if (args.enums === true) {
     const { formulatedEnumsOf } = await import('./ecommerce.js')
-    const tools = (await import('../../quantum/processing/unit/index.js')).qpuMcpToolsListOf()
+    const tools = (await import('../../quantum/processing/unit/index.js')).mcpToolsListOf()
     const listBytes = JSON.stringify({ resultType: 'complete', tools }).length
     return {
       kind: 'enums' as const,
@@ -526,7 +689,7 @@ export const valueForMoneyOf = () => {
 }
 
 export const permaTenantOf = () => {
-  const zone = qpuTenantZoneOf()
+  const zone = tenantZoneOf()
   const underZone = !SLUG.includes('.') && !SLUG.includes('*') && !zone.reserved.includes(SLUG)
   const trinity = permaTrinityOf()
   const usage = usageBillOf()
@@ -540,7 +703,7 @@ export const permaTenantOf = () => {
   const domains = domainReadingsOf()
   return {
     kind: 'perma-tenant' as const,
-    standards: qpuStandardsOf(),
+    standards: standardsOf(),
     client: 'perma.family' as const,
     slug: SLUG,
     host: `${SLUG}.${zone.zone}`,
@@ -565,44 +728,3 @@ export const permaTenantOf = () => {
     holds: underZone && trinity.holds === true && bill.holds === true,
   }
 }
-
-/** Default is the recognition. { full: true } is the document. { man: true } is the schema page. */
-export const permaManOf = () => qpuManOf(
-  'permaculture',
-  'perma.family is a tenant of this unit. clay.bsd is the author\'s seal arithmetic, recomputed. The citation row is a lead.',
-  'The reply is the recognition. { full: true } is the document. { man: true } is this page. The walk is the clay seals, then the domains on this path. No price is confirmed.',
-  'https://qpu.uuidna.com/mcp',
-  ['hex', 'law', 'clay'],
-)
-
-export const permaAnswerOf = (args: { full?: boolean; man?: boolean } = {}) => {
-  if (args.man === true) return permaManOf()
-  const doc = permaTenantOf()
-  return args.full === true ? doc : qpuRecognizeOf(doc)
-}
-
-export const permacultureVisionOf = () => {
-  const tenant = permaTenantOf()
-  return {
-    kind: 'permaculture-vision' as const,
-    asked: 'permaculture' as const,
-    tenant,
-    upgrade: tenant.upgrade,
-    citation: tenant.citation,
-    gateway: payloadLeadsOf(),
-    holds: false as const,
-    lead: true as const,
-  }
-}
-
-export const permaculturePlugin = (): QpuPlugin => (config) => ({
-  ...config,
-  endpoints: [...(config.endpoints ?? []), {
-    path: '/qpu/permaculture',
-    method: 'get' as const,
-    handler: (req: { url?: string }) => {
-      const url = req?.url ?? ''
-      return Response.json(permaAnswerOf({ full: /[?&]full=true(?:&|$)/.test(url), man: /[?&]man=true(?:&|$)/.test(url) }))
-    },
-  }],
-})

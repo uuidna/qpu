@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GolfFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('golf: score, handicap, fairways, greens, putts, driving, scrambling, birdi
   assert.equal(GolfFormulas.scrambling(4, 6).value, 66)
   assert.equal(GolfFormulas.birdies(15, 5).value, 3, 'birdies per round')
   assert.equal(GolfFormulas.score(68, 72).dst, 'sports')
-  assert.equal(qpuHexFamiliesOf().get('golf')?.length, 8)
+  assert.equal(hexFamiliesOf().get('golf')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'golf', program: ['putts'], params: [30, 18] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1, `golf.putts at ${uuid}`)
-  qpuUuidReceiptOf('golf putts', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('golf putts', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; score -4/3, handicap 5, fairways 71, greens 66, putts 1, driving 270, scrambling 66, birdies 3; crossing to sports')
 })

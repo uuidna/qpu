@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MESSAGING — DELIVERY AT SCALE, AS ARITHMETIC (chosen by the registry). A message stream is numbers: the delivery rate,
@@ -30,4 +30,4 @@ export class MessagingFormulas {
 }
 
 for (const name of ['bounce', 'cost', 'delivery', 'latency', 'open', 'queue', 'retry', 'throughput'] as const)
-  qpuHexRegisterOf('messaging', name, (MessagingFormulas[name] as (...x: unknown[]) => unknown).bind(MessagingFormulas))
+  hexRegisterOf('messaging', name, (MessagingFormulas[name] as (...x: unknown[]) => unknown).bind(MessagingFormulas))

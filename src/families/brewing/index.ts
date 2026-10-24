@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BREWING — THE BREWHOUSE AS ARITHMETIC. A batch is numbers: alcohol from the gravity drop, how far the yeast
@@ -30,4 +30,4 @@ export class BrewingFormulas {
 }
 
 for (const name of ['abv', 'attenuation', 'carbonation', 'efficiency', 'gravity', 'ibu', 'mash', 'srm'] as const)
-  qpuHexRegisterOf('brewing', name, (BrewingFormulas[name] as (...x: unknown[]) => unknown).bind(BrewingFormulas))
+  hexRegisterOf('brewing', name, (BrewingFormulas[name] as (...x: unknown[]) => unknown).bind(BrewingFormulas))

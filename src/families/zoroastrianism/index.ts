@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ZOROASTRIANISM — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ZoroastrianismFormulas {
 }
 
 for (const name of ['amesha', 'cosmiccycles', 'dualitypairs', 'fireranks', 'gathasubsets', 'hymncount', 'prayerorderings', 'principles'] as const)
-  qpuHexRegisterOf('zoroastrianism', name, (ZoroastrianismFormulas[name] as (...x: unknown[]) => unknown).bind(ZoroastrianismFormulas))
+  hexRegisterOf('zoroastrianism', name, (ZoroastrianismFormulas[name] as (...x: unknown[]) => unknown).bind(ZoroastrianismFormulas))

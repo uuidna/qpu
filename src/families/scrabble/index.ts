@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SCRABBLE — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ScrabbleFormulas {
 }
 
 for (const name of ['bingobonus', 'blanktiles', 'boardcells', 'lettervalues', 'rackcombos', 'scoremultiplier', 'tiles', 'wordpermutations'] as const)
-  qpuHexRegisterOf('scrabble', name, (ScrabbleFormulas[name] as (...x: unknown[]) => unknown).bind(ScrabbleFormulas))
+  hexRegisterOf('scrabble', name, (ScrabbleFormulas[name] as (...x: unknown[]) => unknown).bind(ScrabbleFormulas))

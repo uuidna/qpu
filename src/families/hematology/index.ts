@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HEMATOLOGY — THE BLOOD, AS ARITHMETIC (a med measure, not advice). Counting what a blood panel reports: packed-cell
@@ -30,4 +30,4 @@ export class HematologyFormulas {
 }
 
 for (const name of ['clotting', 'differential', 'hematocrit', 'hemoglobin', 'inr', 'mcv', 'oxygen', 'platelets'] as const)
-  qpuHexRegisterOf('hematology', name, (HematologyFormulas[name] as (...x: unknown[]) => unknown).bind(HematologyFormulas))
+  hexRegisterOf('hematology', name, (HematologyFormulas[name] as (...x: unknown[]) => unknown).bind(HematologyFormulas))

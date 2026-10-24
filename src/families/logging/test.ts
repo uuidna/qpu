@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LoggingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('logging: ingestrate, retention, samplingrate, storagecost, errorratio, ind
   assert.equal(LoggingFormulas.compressionsavings(1000, 400).value, 600, 'bytes saved')
   assert.equal(LoggingFormulas.compressionsavings(400, 1000).value, 0)
   assert.equal(LoggingFormulas.ingestrate(60000, 60).dst, 'observability')
-  assert.equal(qpuHexFamiliesOf().get('logging')?.length, 8)
+  assert.equal(hexFamiliesOf().get('logging')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'logging', program: ['rotationcount'], params: [1000, 300] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `logging.rotationcount at ${uuid}`)
-  qpuUuidReceiptOf('logging rotationcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('logging rotationcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ingestrate 1000, retention 15000, samplingrate 10, storagecost 5000, errorratio 5, indexsize 50000, rotationcount 4, compressionsavings 600; crossing to observability')
 })

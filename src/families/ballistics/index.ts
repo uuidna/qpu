@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BALLISTICS — THE FLIGHT OF A PROJECTILE, AS EVIDENCE. A shot is physics over mass, velocity and distance: kinetic
@@ -31,4 +31,4 @@ export class BallisticsFormulas {
 }
 
 for (const name of ['drop', 'energy', 'momentum', 'penetration', 'recoil', 'spread', 'time', 'velocity'] as const)
-  qpuHexRegisterOf('ballistics', name, (BallisticsFormulas[name] as (...x: unknown[]) => unknown).bind(BallisticsFormulas))
+  hexRegisterOf('ballistics', name, (BallisticsFormulas[name] as (...x: unknown[]) => unknown).bind(BallisticsFormulas))

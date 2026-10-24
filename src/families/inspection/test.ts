@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { InspectionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('inspection: defectrate, sampling, aql, acceptance, firstpass, rework, scra
   assert.equal(InspectionFormulas.scrap(25, 1000).value, 2)
   assert.equal(InspectionFormulas.coverage(800, 1000).value, 80, 'coverage percent')
   assert.equal(InspectionFormulas.defectrate(50, 1000).dst, 'quality')
-  assert.equal(qpuHexFamiliesOf().get('inspection')?.length, 8)
+  assert.equal(hexFamiliesOf().get('inspection')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'inspection', program: ['sampling'], params: [1000, 40] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 25, `inspection.sampling at ${uuid}`)
-  qpuUuidReceiptOf('inspection sampling', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('inspection sampling', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; defectrate 5, sampling 25, aql 8, acceptance 1, firstpass 95, rework 300, scrap 2, coverage 80; crossing to quality')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PulmonologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('pulmonology: fev1, tidal, saturation, compliance, deadspace, peakflow, res
   assert.equal(PulmonologyFormulas.resistance(20, 4).value, 5)
   assert.equal(PulmonologyFormulas.diffusion(250, 10).value, 25)
   assert.equal(PulmonologyFormulas.fev1(80, 100).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('pulmonology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pulmonology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pulmonology', program: ['tidal'], params: [500, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 6000, `pulmonology.tidal at ${uuid}`)
-  qpuUuidReceiptOf('pulmonology tidal', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pulmonology tidal', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; fev1 80, tidal 6000, saturation 98, compliance 100, deadspace 30, peakflow 600, resistance 5, diffusion 25; crossing to med')
 })

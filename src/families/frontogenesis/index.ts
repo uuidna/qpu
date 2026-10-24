@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FRONTOGENESIS — scaffolded integer measures crossed to meteorology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class FrontogenesisFormulas {
 }
 
 for (const name of ['baroclinicity', 'convergencerate', 'frontspeed', 'fronttypes', 'intensification', 'liftingindex', 'pressuretrough', 'temperaturegradient'] as const)
-  qpuHexRegisterOf('frontogenesis', name, (FrontogenesisFormulas[name] as (...x: unknown[]) => unknown).bind(FrontogenesisFormulas))
+  hexRegisterOf('frontogenesis', name, (FrontogenesisFormulas[name] as (...x: unknown[]) => unknown).bind(FrontogenesisFormulas))

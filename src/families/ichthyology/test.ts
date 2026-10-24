@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { IchthyologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('ichthyology: condition, fecundity, schooling, growth, buoyancy, gillrate, 
   assert.equal(IchthyologyFormulas.mortality(10, 100).value, 10)
   assert.equal(IchthyologyFormulas.trophic(4).value, 4)
   assert.equal(IchthyologyFormulas.condition(1000, 10).dst, 'zoology')
-  assert.equal(qpuHexFamiliesOf().get('ichthyology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ichthyology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ichthyology', program: ['schooling'], params: [6000, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `ichthyology.schooling at ${uuid}`)
-  qpuUuidReceiptOf('ichthyology schooling', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ichthyology schooling', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; condition 100000, fecundity 50, schooling 100, growth 50, buoyancy 5, gillrate 60, mortality 10, trophic 4; crossing to zoology')
 })

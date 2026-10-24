@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PSYCH — FORENSIC PSYCHIATRY AS EVIDENCE. The questions a court puts to a psychiatrist resolve to thresholds and
@@ -31,4 +31,4 @@ export class PsychFormulas {
 }
 
 for (const name of ['capacity', 'competency', 'dangerousness', 'insanity', 'malingering', 'recidivism', 'restoration', 'risk'] as const)
-  qpuHexRegisterOf('psych', name, (PsychFormulas[name] as (...x: unknown[]) => unknown).bind(PsychFormulas))
+  hexRegisterOf('psych', name, (PsychFormulas[name] as (...x: unknown[]) => unknown).bind(PsychFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RAIL — RUNNING A RAILWAY, AS ARITHMETIC (chosen by the public-API registry, not by hand). A railway is numbers: the seats
@@ -31,4 +31,4 @@ export class RailFormulas {
 }
 
 for (const name of ['capacity', 'consist', 'dwell', 'gauge', 'gradient', 'headway', 'throughput', 'tonnage'] as const)
-  qpuHexRegisterOf('rail', name, (RailFormulas[name] as (...x: unknown[]) => unknown).bind(RailFormulas))
+  hexRegisterOf('rail', name, (RailFormulas[name] as (...x: unknown[]) => unknown).bind(RailFormulas))

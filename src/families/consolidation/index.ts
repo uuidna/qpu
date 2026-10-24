@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONSOLIDATION — scaffolded integer measures crossed to supplychain. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ConsolidationFormulas {
 }
 
 for (const name of ['costsavings', 'densitygain', 'fillimprovement', 'freightclass', 'ordersperload', 'poolingratio', 'shipmentsmerged', 'splitcount'] as const)
-  qpuHexRegisterOf('consolidation', name, (ConsolidationFormulas[name] as (...x: unknown[]) => unknown).bind(ConsolidationFormulas))
+  hexRegisterOf('consolidation', name, (ConsolidationFormulas[name] as (...x: unknown[]) => unknown).bind(ConsolidationFormulas))

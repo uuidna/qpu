@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GpuFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -23,10 +23,10 @@ test('gpu: cores, warps, occupancy, FLOPS, bandwidth and the roofline model — 
   assert.equal(GpuFormulas.speedup(1024, 32).value, 32, 'SIMT lane speedup')
   assert.equal(GpuFormulas.util(6144, 8192).value, 75, 'busy cores of the total')
   assert.equal(GpuFormulas.cores(128, 64).dst, 'hardware')
-  assert.equal(qpuHexFamiliesOf().get('gpu')?.length, 15)
+  assert.equal(hexFamiliesOf().get('gpu')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'gpu', program: ['cores'], params: [128, 64] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 8192, `gpu.cores at ${uuid}`)
-  qpuUuidReceiptOf('gpu cores', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gpu cores', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; cores 8192, warpsize 32, warps 4, occupancy 75%, grid 262144, blocks 40, flops 32768, bandwidth 3200, intensity 4, ridge 11, bound 0/1, shared 32768, hide 1/0, speedup 32, util 75%; crossing to hardware')
 })

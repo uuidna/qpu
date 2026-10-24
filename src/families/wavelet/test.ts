@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WaveletFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('wavelet: levels, scale, coefficients, compression, decomposition, energy, 
   assert.equal(WaveletFormulas.detailcoeffs(1000, 16).value, 63)
   assert.equal(WaveletFormulas.compression(1000, 1000).value, 0, 'nothing dropped')
   assert.equal(WaveletFormulas.levels(1024, 128).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('wavelet')?.length, 8)
+  assert.equal(hexFamiliesOf().get('wavelet')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'wavelet', program: ['levels'], params: [1024, 128] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 8, `wavelet.levels at ${uuid}`)
-  qpuUuidReceiptOf('wavelet levels', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('wavelet levels', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; levels 8, scale 21, coefficients 256, compression 90, decomposition 8, energy 4096, vanishingmoments 4, detailcoeffs 63; crossing to signal')
 })

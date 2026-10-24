@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PERMITTING — THE PERMIT PIPELINE, AS ARITHMETIC. A permitting office is numbers: the backlog of filed-but-unprocessed
@@ -31,4 +31,4 @@ export class PermittingFormulas {
 }
 
 for (const name of ['approval', 'backlog', 'cycletime', 'expiry', 'fee', 'inspections', 'queue', 'throughput'] as const)
-  qpuHexRegisterOf('permitting', name, (PermittingFormulas[name] as (...x: unknown[]) => unknown).bind(PermittingFormulas))
+  hexRegisterOf('permitting', name, (PermittingFormulas[name] as (...x: unknown[]) => unknown).bind(PermittingFormulas))

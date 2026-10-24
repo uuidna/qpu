@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LAYOUT — CSS FLEXBOX/GRID, LEARNED FROM TAILWIND, AS ARITHMETIC. A page's shape is numbers: the width a column span
@@ -30,4 +30,4 @@ export class LayoutFormulas {
 }
 
 for (const name of ['aspect', 'basis', 'columns', 'gap', 'grow', 'order', 'span', 'track'] as const)
-  qpuHexRegisterOf('layout', name, (LayoutFormulas[name] as (...x: unknown[]) => unknown).bind(LayoutFormulas))
+  hexRegisterOf('layout', name, (LayoutFormulas[name] as (...x: unknown[]) => unknown).bind(LayoutFormulas))

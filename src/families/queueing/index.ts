@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** QUEUEING — WAITING LINES AS ARITHMETIC (chosen by the public-API registry, not by hand). A line is numbers:
@@ -31,4 +31,4 @@ export class QueueingFormulas {
 }
 
 for (const name of ['arrivalrate', 'averagequeue', 'idleprobability', 'littleslaw', 'servicerate', 'systemlength', 'utilization', 'waitingtime'] as const)
-  qpuHexRegisterOf('queueing', name, (QueueingFormulas[name] as (...x: unknown[]) => unknown).bind(QueueingFormulas))
+  hexRegisterOf('queueing', name, (QueueingFormulas[name] as (...x: unknown[]) => unknown).bind(QueueingFormulas))

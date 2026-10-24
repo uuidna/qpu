@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CastingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('casting: shrinkage, pouringtime, solidification, yield, risering, gatingra
   assert.equal(CastingFormulas.fluidity(50, 3).value, 150, 'flow length from superheat')
   assert.equal(CastingFormulas.coolingrate(600, 60).value, 10, 'degrees per second')
   assert.equal(CastingFormulas.shrinkage(1010, 1000).dst, 'manufacturing')
-  assert.equal(qpuHexFamiliesOf().get('casting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('casting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'casting', program: ['pouringtime'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `casting.pouringtime at ${uuid}`)
-  qpuUuidReceiptOf('casting pouringtime', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('casting pouringtime', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; shrinkage 10, pouringtime 20, solidification 100, yield 80, risering 300, gatingratio 4, fluidity 150, coolingrate 10; crossing to manufacturing')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MITOSIS — CELL DIVISION AS ARITHMETIC. A dividing population is numbers: cells after a run of doublings, generations in a
@@ -31,4 +31,4 @@ export class MitosisFormulas {
 }
 
 for (const name of ['cellcount', 'chromosomes', 'cyclelength', 'doublingtime', 'generations', 'growthfraction', 'mitoticindex', 'phasefraction'] as const)
-  qpuHexRegisterOf('mitosis', name, (MitosisFormulas[name] as (...x: unknown[]) => unknown).bind(MitosisFormulas))
+  hexRegisterOf('mitosis', name, (MitosisFormulas[name] as (...x: unknown[]) => unknown).bind(MitosisFormulas))

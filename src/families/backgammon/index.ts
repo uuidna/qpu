@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BACKGAMMON — scaffolded integer measures crossed to probability. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class BackgammonFormulas {
 }
 
 for (const name of ['bearoffperms', 'checkers', 'dicecombos', 'doublescube', 'pipcount', 'points', 'rolloutcomes', 'winprob'] as const)
-  qpuHexRegisterOf('backgammon', name, (BackgammonFormulas[name] as (...x: unknown[]) => unknown).bind(BackgammonFormulas))
+  hexRegisterOf('backgammon', name, (BackgammonFormulas[name] as (...x: unknown[]) => unknown).bind(BackgammonFormulas))

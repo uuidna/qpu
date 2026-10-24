@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ALERTING — THE ALARM LAYER, AS ARITHMETIC (what wakes an on-call engineer, in numbers). An alert fires when a signal
@@ -31,4 +31,4 @@ export class AlertingFormulas {
 }
 
 for (const name of ['deduplication', 'escalation', 'falsepositiverate', 'flappingindex', 'mttd', 'noiseratio', 'severityscore', 'threshold'] as const)
-  qpuHexRegisterOf('alerting', name, (AlertingFormulas[name] as (...x: unknown[]) => unknown).bind(AlertingFormulas))
+  hexRegisterOf('alerting', name, (AlertingFormulas[name] as (...x: unknown[]) => unknown).bind(AlertingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CernFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cern: energygev, collisions, luminosity, detectorlayers, particlepairs, bu
   assert.equal(CernFormulas.tracksperevent(100, 10).value, 1000)
   assert.equal(CernFormulas.triggerrate(40000, 40).value, 1000)
   assert.equal(CernFormulas.energygev(7000, 2).dst, 'physics')
-  assert.equal(qpuHexFamiliesOf().get('cern')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cern')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cern', program: ['energygev'], params: [7000, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 14000, `cern.energygev at ${uuid}`)
-  qpuUuidReceiptOf('cern energygev', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cern energygev', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; energygev 14000, collisions 40000, luminosity 600, detectorlayers 7, particlepairs 66, bunchspacing 25, tracksperevent 1000, triggerrate 1000; crossing to physics')
 })

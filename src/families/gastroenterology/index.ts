@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GASTROENTEROLOGY — THE GUT, AS ARITHMETIC. Moving, absorbing and clearing is numbers: transit speed, the fraction
@@ -30,4 +30,4 @@ export class GastroenterologyFormulas {
 }
 
 for (const name of ['absorption', 'bleeding', 'bmi', 'clearance', 'enzyme', 'motility', 'ph', 'transit'] as const)
-  qpuHexRegisterOf('gastroenterology', name, (GastroenterologyFormulas[name] as (...x: unknown[]) => unknown).bind(GastroenterologyFormulas))
+  hexRegisterOf('gastroenterology', name, (GastroenterologyFormulas[name] as (...x: unknown[]) => unknown).bind(GastroenterologyFormulas))

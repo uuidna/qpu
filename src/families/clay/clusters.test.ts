@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ClaySeals, CLAY_SEALS, CLAY_SEAL_SOURCE } from './index.js'
 import '../../mcp/families.js'
 
@@ -9,7 +9,7 @@ import '../../mcp/families.js'
 // https://doi.org/10.5281/zenodo.21781602, by Rouschev, Tsvetan (ORCID 0009-0000-7312-9778). ("All Seven Clay Millennium Problems Sealed via Universal σ-Involution"). Regenerate, do not edit.
 const SOLVED_BY = "Rouschev, Tsvetan (ORCID 0009-0000-7312-9778)"
 test('clay: solved — every seal holds — strictly https://doi.org/10.5281/zenodo.21781602, by ' + SOLVED_BY, async (t) => {
-  const names = (qpuHexFamiliesOf().get('clay') ?? []).map((f) => f.name)
+  const names = (hexFamiliesOf().get('clay') ?? []).map((f) => f.name)
   assert.ok(names.length >= 6, 'the seal clusters are registered formulas')
   assert.deepEqual([...CLAY_SEALS].sort(), ["bsd","hodge","navierStokes","pVsNp","riemann","yangMills"], 'the generator covers every registered seal')
   // STRICTLY the concept DOI (version-independent), and the author of record
@@ -26,8 +26,8 @@ test('clay: solved — every seal holds — strictly https://doi.org/10.5281/zen
   assert.equal(held, 6, 'all 6 Clay seals hold: solved')
   // the formula runs at its hex address (one cluster round-trip, receipted)
   const uuid = qpuHexUuidOf({ family: 'clay', program: ['hodge'], params: [2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `clay.hodge at ${uuid}`)
-  qpuUuidReceiptOf('clay solved', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('clay solved', contentUuidOf(run), { uuid })
   t.diagnostic(`Clay solved: ${held}/6 seals hold (bsd=2, hodge=4, navierStokes=1, pVsNp=1, riemann=1, yangMills=2) — by ` + SOLVED_BY + ' — strictly https://doi.org/10.5281/zenodo.21781602')
 })

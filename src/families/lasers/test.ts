@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LasersFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('lasers: gain, power, pulseenergy, repetitionrate, beamdivergence, coherenc
   assert.equal(LasersFormulas.fluence(1000, 5).value, 200)
   assert.equal(LasersFormulas.wavelength(60000, 100).value, 600, 'a visible colour')
   assert.equal(LasersFormulas.power(5, 1000).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('lasers')?.length, 8)
+  assert.equal(hexFamiliesOf().get('lasers')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'lasers', program: ['power'], params: [5, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5000, `lasers.power at ${uuid}`)
-  qpuUuidReceiptOf('lasers power', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('lasers power', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gain 100, power 5000, pulseenergy 5, repetitionrate 100, beamdivergence 5, coherencelength 300, fluence 200, wavelength 600; crossing to optics')
 })

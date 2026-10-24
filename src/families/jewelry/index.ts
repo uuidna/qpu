@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** JEWELRY — scaffolded integer measures crossed to materials. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class JewelryFormulas {
 }
 
 for (const name of ['caratweight', 'facetcount', 'karatfineness', 'metalgrams', 'pricetotal', 'settingprongs', 'stonecombos', 'symmetryorderings'] as const)
-  qpuHexRegisterOf('jewelry', name, (JewelryFormulas[name] as (...x: unknown[]) => unknown).bind(JewelryFormulas))
+  hexRegisterOf('jewelry', name, (JewelryFormulas[name] as (...x: unknown[]) => unknown).bind(JewelryFormulas))

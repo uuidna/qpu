@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ASTRONOMY — THE SKY AS ARITHMETIC. Measuring the heavens is integers: how much brighter one star is than another, a
@@ -31,4 +31,4 @@ export class AstronomyFormulas {
 }
 
 for (const name of ['albedo', 'density', 'escape', 'luminosity', 'magnitude', 'orbital', 'parallax', 'redshift'] as const)
-  qpuHexRegisterOf('astronomy', name, (AstronomyFormulas[name] as (...x: unknown[]) => unknown).bind(AstronomyFormulas))
+  hexRegisterOf('astronomy', name, (AstronomyFormulas[name] as (...x: unknown[]) => unknown).bind(AstronomyFormulas))

@@ -5,7 +5,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid'
-import { qpuShapeUuidOf } from '../quantum/processing/unit/index.js'
+import { shapeUuidOf } from '../quantum/processing/unit/index.js'
 
 // ============================================================================
 // TYPES
@@ -35,7 +35,7 @@ interface Index {
 // ============================================================================
 
 /**
- * The UUID registry: register resources by UUID and index them by domain, resource and type; deterministic() gives content UUIDs (qpuShapeUuidOf).
+ * The UUID registry: register resources by UUID and index them by domain, resource and type; deterministic() gives content UUIDs (shapeUuidOf).
  * @wing receipts
  * @kind class
  */
@@ -126,7 +126,7 @@ export class UUID {
   // GENERATION: Deterministic and random
 
   deterministic(domain: string, resource: string): string {
-    return qpuShapeUuidOf(`${domain}::${resource}`)
+    return shapeUuidOf(`${domain}::${resource}`)
   }
 
   random(): string {

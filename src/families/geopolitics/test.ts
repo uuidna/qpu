@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GeopoliticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('geopolitics: powerindex, allianceweight, tradedependency, bordertension, i
   assert.equal(GeopoliticsFormulas.stabilityindex(70, 85).value, 1, 'stability target met')
   assert.equal(GeopoliticsFormulas.stabilityindex(70, 50).value, 0)
   assert.equal(GeopoliticsFormulas.powerindex(50, 30, 20).dst, 'governance')
-  assert.equal(qpuHexFamiliesOf().get('geopolitics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('geopolitics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'geopolitics', program: ['powerindex'], params: [50, 30, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `geopolitics.powerindex at ${uuid}`)
-  qpuUuidReceiptOf('geopolitics powerindex', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('geopolitics powerindex', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; powerindex 100, allianceweight 96, tradedependency 25, bordertension 3, influencescore 60, sanctionimpact 700, balanceofpower 150, stabilityindex 1; crossing to governance')
 })

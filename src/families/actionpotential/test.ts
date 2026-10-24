@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ActionpotentialFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('actionpotential: amplitude, conductionvelocity, depolarization, frequency,
   assert.equal(ActionpotentialFormulas.refractoryperiod(1, 3).value, 4)
   assert.equal(ActionpotentialFormulas.threshold(70, 15).value, 85)
   assert.equal(ActionpotentialFormulas.conductionvelocity(120, 2).dst, 'neurology')
-  assert.equal(qpuHexFamiliesOf().get('actionpotential')?.length, 8)
+  assert.equal(hexFamiliesOf().get('actionpotential')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'actionpotential', program: ['conductionvelocity'], params: [120, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `actionpotential.conductionvelocity at ${uuid}`)
-  qpuUuidReceiptOf('actionpotential conductionvelocity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('actionpotential conductionvelocity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; amplitude 70, conductionvelocity 60, depolarization 25, frequency 50, overshoot 15, propagationtime 2, refractoryperiod 4, threshold 85; crossing to neurology')
 })

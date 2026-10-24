@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CALLIGRAPHY — scaffolded integer measures crossed to geometry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CalligraphyFormulas {
 }
 
 for (const name of ['flourishsubsets', 'glyphpairs', 'letterspacing', 'penangle', 'slantdegree', 'strokecount', 'strokeorderings', 'xheight'] as const)
-  qpuHexRegisterOf('calligraphy', name, (CalligraphyFormulas[name] as (...x: unknown[]) => unknown).bind(CalligraphyFormulas))
+  hexRegisterOf('calligraphy', name, (CalligraphyFormulas[name] as (...x: unknown[]) => unknown).bind(CalligraphyFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OSMOSIS — THE MOVEMENT OF WATER ACROSS A MEMBRANE, AS ARITHMETIC. Osmosis is numbers: the pressure a solute exerts,
@@ -31,4 +31,4 @@ export class OsmosisFormulas {
 }
 
 for (const name of ['equilibrium', 'gradient', 'netflux', 'osmolarity', 'osmoticpressure', 'reflectioncoeff', 'tonicity', 'waterpotential'] as const)
-  qpuHexRegisterOf('osmosis', name, (OsmosisFormulas[name] as (...x: unknown[]) => unknown).bind(OsmosisFormulas))
+  hexRegisterOf('osmosis', name, (OsmosisFormulas[name] as (...x: unknown[]) => unknown).bind(OsmosisFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LIFT — HOW A WING HOLDS THE AIR UP, AS ARITHMETIC (the forces a finite wing trades for altitude). Flying is numbers:
@@ -31,4 +31,4 @@ export class LiftFormulas {
 }
 
 for (const name of ['angleofattack', 'aspectratio', 'circulation', 'coefficient', 'force', 'liftdragratio', 'loading', 'stallmargin'] as const)
-  qpuHexRegisterOf('lift', name, (LiftFormulas[name] as (...x: unknown[]) => unknown).bind(LiftFormulas))
+  hexRegisterOf('lift', name, (LiftFormulas[name] as (...x: unknown[]) => unknown).bind(LiftFormulas))

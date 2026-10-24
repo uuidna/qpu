@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AmplifiersFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('amplifiers: gain, decibels, bandwidth, slewrate, inputimpedance, outputpow
   assert.equal(AmplifiersFormulas.efficiency(50, 0).value, 0)
   assert.equal(AmplifiersFormulas.cmrr(10000, 10).value, 1000)
   assert.equal(AmplifiersFormulas.gain(1000, 5).dst, 'electronics')
-  assert.equal(qpuHexFamiliesOf().get('amplifiers')?.length, 8)
+  assert.equal(hexFamiliesOf().get('amplifiers')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'amplifiers', program: ['gain'], params: [1000, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `amplifiers.gain at ${uuid}`)
-  qpuUuidReceiptOf('amplifiers gain', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('amplifiers gain', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gain 200, decibels 100, bandwidth 19980, slewrate 50, inputimpedance 5000, outputpower 600, efficiency 80, cmrr 1000; crossing to electronics')
 })

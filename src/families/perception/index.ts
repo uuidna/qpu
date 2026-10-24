@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PERCEPTION — SENSING AS ARITHMETIC (how a system turns stimulus into a read). Detection thresholds, Weber's just-noticeable
@@ -30,4 +30,4 @@ export class PerceptionFormulas {
 }
 
 for (const name of ['acuity', 'adaptation', 'contrast', 'illusion', 'latency', 'sensitivity', 'threshold', 'weber'] as const)
-  qpuHexRegisterOf('perception', name, (PerceptionFormulas[name] as (...x: unknown[]) => unknown).bind(PerceptionFormulas))
+  hexRegisterOf('perception', name, (PerceptionFormulas[name] as (...x: unknown[]) => unknown).bind(PerceptionFormulas))

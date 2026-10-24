@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ContentFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('content: blocks, reuse, media, sections, depth, words, toc, richtext — c
   assert.equal(ContentFormulas.toc(8).value, 8)
   assert.equal(ContentFormulas.richtext(1000, 20).value, 50, 'words per block')
   assert.equal(ContentFormulas.blocks(5).dst, 'payload')
-  assert.equal(qpuHexFamiliesOf().get('content')?.length, 8)
+  assert.equal(hexFamiliesOf().get('content')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'content', program: ['richtext'], params: [1000, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `content.richtext at ${uuid}`)
-  qpuUuidReceiptOf('content richtext', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('content richtext', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; blocks 5, reuse 30, media 40, sections 6, depth 3, words 100, toc 8, richtext 50; crossing to payload')
 })

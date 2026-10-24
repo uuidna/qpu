@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TAXATION — WHAT A TAX SYSTEM OWES, AS ARITHMETIC (chosen by the public fiscal registry, not by hand). A tax system is
@@ -31,4 +31,4 @@ export class TaxationFormulas {
 }
 
 for (const name of ['bracket', 'capitalgains', 'deduction', 'effective', 'income', 'liability', 'vat', 'withholding'] as const)
-  qpuHexRegisterOf('taxation', name, (TaxationFormulas[name] as (...x: unknown[]) => unknown).bind(TaxationFormulas))
+  hexRegisterOf('taxation', name, (TaxationFormulas[name] as (...x: unknown[]) => unknown).bind(TaxationFormulas))

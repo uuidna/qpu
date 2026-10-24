@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LinguisticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('linguistics: syllables, lexical, readability, cognates, phonemes, frequenc
   assert.equal(LinguisticsFormulas.morphemes(200, 3).value, 600)
   assert.equal(LinguisticsFormulas.distance(5, 20).value, 25, 'edit distance %')
   assert.equal(LinguisticsFormulas.syllables(100, 2).dst, 'ml')
-  assert.equal(qpuHexFamiliesOf().get('linguistics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('linguistics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'linguistics', program: ['readability'], params: [500, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `linguistics.readability at ${uuid}`)
-  qpuUuidReceiptOf('linguistics readability', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('linguistics readability', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; syllables 200, lexical 40, readability 20, cognates 30, phonemes 44, frequency 50, morphemes 600, distance 25; crossing to ml')
 })

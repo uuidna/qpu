@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WATERQUALITY — THE STATE OF WATER, AS ARITHMETIC (chosen by the environmental registry, not by hand). A sample is numbers:
@@ -31,4 +31,4 @@ export class WaterqualityFormulas {
 }
 
 for (const name of ['bod', 'coliform', 'dissolvedoxygen', 'hardness', 'nitrate', 'phindex', 'turbidity', 'wqi'] as const)
-  qpuHexRegisterOf('waterquality', name, (WaterqualityFormulas[name] as (...x: unknown[]) => unknown).bind(WaterqualityFormulas))
+  hexRegisterOf('waterquality', name, (WaterqualityFormulas[name] as (...x: unknown[]) => unknown).bind(WaterqualityFormulas))

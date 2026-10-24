@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexDecodeOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuRecognizeOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexDecodeOf, hexFamiliesOf, hexRunOf, qpuHexUuidOf, recognizeOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LawFormulas } from './index.js'
 
 /** The court arithmetic, jurisdiction-agnostic, and the advice gate: nothing holds as advice until reviewed true. */
@@ -56,20 +56,20 @@ test('law: limitation, deadline, quorum, majority, super-majority, notice — an
   assert.equal((LawFormulas.removable(1, 0, 0) as unknown as { refused?: string }).refused, 'a lead is never removed')
   assert.equal(LawFormulas.removable(0, 1, 0).holds, false, 'still referenced: refused')
   assert.equal(LawFormulas.removable(0, 0, 1).holds, false, 'an entry point: refused')
-  assert.equal(qpuHexFamiliesOf().get('law')?.length, 15)
+  assert.equal(hexFamiliesOf().get('law')?.length, 15)
   for (const [name, params, expected] of [['limitation', [6], 2190], ['supermajority', [6, 9, 66], 1], ['reviewed', [1], 1], ['fast', [90121, 400], 89721]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'law', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `law.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`law ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`law ${name}`, contentUuidOf(run), { uuid })
   }
   // one wave: this lead's address, and the next lead's address. The following call repeats the rule.
   const leadReplyOf = (row: { holds: boolean; value: number; hex?: string; formula?: string }) => {
-    const led = qpuRecognizeOf(row) as { recognition?: { holds?: boolean; handle?: string; uuid?: string; value?: number; next?: { handle?: string; uuid?: string } } }
+    const led = recognizeOf(row) as { recognition?: { holds?: boolean; handle?: string; uuid?: string; value?: number; next?: { handle?: string; uuid?: string } } }
     return { led, recognition: led.recognition, bytes: JSON.stringify(led).length, formula: row.formula?.split('(')[0] ?? '' }
   }
   const followOf = (uuid: string) => {
-    const decoded = qpuHexDecodeOf(uuid)
+    const decoded = hexDecodeOf(uuid)
     const name = decoded.holds && 'program' in decoded ? decoded.program[0] : undefined
     if (!name || !(name in LawFormulas)) throw new Error(`no law formula at ${uuid}`)
     const row = (LawFormulas[name as keyof typeof LawFormulas] as (...xs: number[]) => ReturnType<typeof LawFormulas.fast>)(...(decoded.holds && 'params' in decoded ? decoded.params : []))

@@ -1,14 +1,14 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import { qpuAnalyticsHolds, qpuAnalyticsOf, qpuAnalyticsSentenceOf, qpuMachinesHolds, qpuMachinesOf, qpuMachinesSentenceOf, qpuPublicOf, qpuZeroPageHolds, qpuZeroPageOf } from './zeropage.js'
+import { analyticsHolds, analyticsOf, analyticsSentenceOf, machinesHolds, machinesOf, machinesSentenceOf, publicOf, zeroPageHolds, zeroPageOf } from './zeropage.js'
 
 /** The byte page recomputes, and the summarised analytics hold every integer, including the amplitude count. */
 test('zero page: analytics hold the register, the byte, and the counts past one byte', async (t) => {
-  const page = await qpuZeroPageOf()
-  const a = qpuAnalyticsOf()
+  const page = await zeroPageOf()
+  const a = analyticsOf()
   assert.equal(a.holds, true)
-  assert.equal(qpuAnalyticsHolds(a), true)
-  assert.equal(await qpuZeroPageHolds(page), true)
+  assert.equal(analyticsHolds(a), true)
+  assert.equal(await zeroPageHolds(page), true)
   const cell = (name: string) => page.cells.find((row) => row.name === name)
   for (const name of ['seed', 'coins', 'n', 'rays', 'clay', 'modulus', 'riemann', 'bsd', 'hodge', 'navierStokes', 'pVsNp', 'yangMills'] as const) {
     assert.equal(cell(name)?.value, a[name], name)
@@ -21,7 +21,7 @@ test('zero page: analytics hold the register, the byte, and the counts past one 
   assert.equal(page.leads.find((lead) => lead.name === 'fused')?.fits, false)
   assert.equal(a.next, a.fused + a.fused)
   assert.notEqual(a.plane, a.fused)
-  const face = qpuPublicOf(a)
+  const face = publicOf(a)
   assert.equal(face.prize, false)
   assert.equal(face.sentence.includes('zeropoint-node 1.5.8'), true)
   assert.equal(face.sentence.includes('2026-09-07'), true)
@@ -31,7 +31,7 @@ test('zero page: analytics hold the register, the byte, and the counts past one 
   assert.equal(face.sentence.includes('doi:10.5281/zenodo.21781602'), true)
   assert.equal(face.sentence.endsWith('A prize is a lead.'), true)
   assert.equal(face.lines.filter((line) => line.includes('A prize is a lead.')).length, 1)
-  assert.equal(qpuAnalyticsSentenceOf(a).includes(String(a.amplitudes)), true)
+  assert.equal(analyticsSentenceOf(a).includes(String(a.amplitudes)), true)
   assert.equal(face.lines.some((line) => line.includes('CC-BY-NC-ND-4.0')), true)
   assert.equal(/is solved|prize was awarded|without holding/i.test(face.lines.join('\n')), false)
   t.diagnostic(face.sentence)
@@ -39,10 +39,10 @@ test('zero page: analytics hold the register, the byte, and the counts past one 
 
 /** Word-size classes. Clay recomputes on every class whose store holds the integers. A one-register miss is a lead. */
 test('machines: Pravets first, clay on every class that holds the integers', async (t) => {
-  const m = qpuMachinesOf()
+  const m = machinesOf()
   const a = m.analytics
   assert.equal(m.holds, true)
-  assert.equal(qpuMachinesHolds(m), true)
+  assert.equal(machinesHolds(m), true)
   assert.equal(m.prize, false)
   assert.equal(m.catalogEnds, false)
   assert.equal(m.walk.measured, false)
@@ -117,7 +117,7 @@ test('machines: Pravets first, clay on every class that holds the integers', asy
       assert.equal(item.lead, true, item.name)
     }
   }
-  const sentence = qpuMachinesSentenceOf(m)
+  const sentence = machinesSentenceOf(m)
   assert.equal(sentence.includes(String(a.amplitudes)), true)
   assert.equal(sentence.includes(String(a.fused)), true)
   assert.equal(sentence.includes('A prize is a lead.'), true)

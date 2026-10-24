@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONSTRUCTION — BUILDING & CONSTRUCTION, AS ARITHMETIC (chosen by the public-API registry, not by hand). Putting up a
@@ -30,4 +30,4 @@ export class ConstructionFormulas {
 }
 
 for (const name of ['area', 'cost', 'crew', 'load', 'materials', 'progress', 'volume', 'waste'] as const)
-  qpuHexRegisterOf('construction', name, (ConstructionFormulas[name] as (...x: unknown[]) => unknown).bind(ConstructionFormulas))
+  hexRegisterOf('construction', name, (ConstructionFormulas[name] as (...x: unknown[]) => unknown).bind(ConstructionFormulas))

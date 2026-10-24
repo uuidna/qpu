@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MIXING — THE MIXING CONSOLE AS ARITHMETIC. Summing signals is numbers: gain applied to a level, headroom under a
@@ -31,4 +31,4 @@ export class MixingFormulas {
 }
 
 for (const name of ['bus', 'compression', 'crossfade', 'gain', 'headroom', 'loudness', 'pan', 'ratio'] as const)
-  qpuHexRegisterOf('mixing', name, (MixingFormulas[name] as (...x: unknown[]) => unknown).bind(MixingFormulas))
+  hexRegisterOf('mixing', name, (MixingFormulas[name] as (...x: unknown[]) => unknown).bind(MixingFormulas))

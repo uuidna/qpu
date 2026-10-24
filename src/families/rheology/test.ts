@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RheologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('rheology: viscosity, shear, modulus, yielding, thixotropy, elasticity, flo
   assert.equal(RheologyFormulas.flow(1000, 25).value, 40)
   assert.equal(RheologyFormulas.relaxation(600, 12).value, 50)
   assert.equal(RheologyFormulas.viscosity(1000, 20).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('rheology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('rheology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'rheology', program: ['shear'], params: [600, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 200, `rheology.shear at ${uuid}`)
-  qpuUuidReceiptOf('rheology shear', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('rheology shear', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; viscosity 50, shear 200, modulus 30, yielding 60, thixotropy 150, elasticity 80, flow 40, relaxation 50; crossing to materials')
 })

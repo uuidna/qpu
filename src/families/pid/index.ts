@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PID — THE CONTROL LOOP, AS ARITHMETIC. A controller is numbers: the proportional, integral and derivative terms on the
@@ -31,4 +31,4 @@ export class PidFormulas {
 }
 
 for (const name of ['derivative', 'integral', 'output', 'proportional', 'setpoint', 'tuning', 'windup', 'ziegler'] as const)
-  qpuHexRegisterOf('pid', name, (PidFormulas[name] as (...x: unknown[]) => unknown).bind(PidFormulas))
+  hexRegisterOf('pid', name, (PidFormulas[name] as (...x: unknown[]) => unknown).bind(PidFormulas))

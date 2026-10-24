@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf, qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, hexFamiliesOf } from '../../quantum/processing/unit/index.js'
 import { DOORS } from '../../mcp/discovery.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
@@ -14,14 +14,14 @@ const p = (id: string, formula: string, value: number, holds: boolean, name: str
   crossFormulaOf({ id, src: 'payload', dst: 'cross', formula, value, proof: PROOF, ...extra }, holds, { name: `payload.${name}`, params })
 
 /** The families the lattice can turn into collections: every registered family that is not a door, sorted. */
-const collectionsOf = (): string[] => [...qpuHexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && !x.startsWith('Qpu.')).sort()
+const collectionsOf = (): string[] => [...hexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && !x.startsWith('Qpu.')).sort()
 
 export class PayloadFormulas {
   /** IMAGINE the Payload collection config for the i-th family: its formulas as number fields, the court hooks and access.
    *  value is the field count; the reading is the collection config, ready for payload.config. */
   static imagine(i: number): CrossFormula {
     const name = collectionsOf()[i]
-    const fs = name ? qpuHexFamiliesOf().get(name) ?? [] : []
+    const fs = name ? hexFamiliesOf().get(name) ?? [] : []
     const fields = fs.map((x) => ({ name: x.name, type: 'number', admin: { description: `${x.arity} input${x.arity === 1 ? '' : 's'}${x.live ? ', live' : ''}` } }))
     const collection = name
       ? {
@@ -35,7 +35,7 @@ export class PayloadFormulas {
     return p('payload-imagine', 'imagine(i) = the Payload collection the i-th family becomes (formulas → number fields, court hooks, standing access)', fields.length, name !== undefined && fields.length > 0, 'imagine', [i], { family: name, collection })
   }
   /** FIELDS: how many Payload fields the i-th family's collection has (one per formula). */
-  static fields(i: number): CrossFormula { const name = collectionsOf()[i]; const n = name ? (qpuHexFamiliesOf().get(name) ?? []).length : 0; return p('payload-fields', 'fields(i) = |formulas of the i-th family| (one number field each)', n, name !== undefined && n > 0, 'fields', [i], { family: name }) }
+  static fields(i: number): CrossFormula { const name = collectionsOf()[i]; const n = name ? (hexFamiliesOf().get(name) ?? []).length : 0; return p('payload-fields', 'fields(i) = |formulas of the i-th family| (one number field each)', n, name !== undefined && n > 0, 'fields', [i], { family: name }) }
   /** COLLECTIONS: how many Payload collections the lattice would define — one per family. */
   static collections(): CrossFormula { const c = collectionsOf().length; return p('payload-collections', 'collections() = |families| (one collection each)', c, c > 0, 'collections', [], { collections: collectionsOf() }) }
   /** COVERAGE of the Payload API surface as a percentage: the features the unit uses over the features available. The
@@ -44,4 +44,4 @@ export class PayloadFormulas {
 }
 
 for (const name of ['collections', 'coverage', 'fields', 'imagine'] as const)
-  qpuHexRegisterOf('payload', name, (PayloadFormulas[name] as (...x: unknown[]) => unknown).bind(PayloadFormulas))
+  hexRegisterOf('payload', name, (PayloadFormulas[name] as (...x: unknown[]) => unknown).bind(PayloadFormulas))

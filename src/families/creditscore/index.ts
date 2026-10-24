@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CREDITSCORE — scaffolded integer measures crossed to banking. Every output an exact finite nonnegative integer. */
@@ -27,4 +27,4 @@ export class CreditscoreFormulas {
 }
 
 for (const name of ['band', 'defaultprob', 'delinquency', 'dti', 'expectedloss', 'exposureatdefault', 'factorcombos', 'inquiries', 'paymenthistory', 'recovery', 'riskbands', 'score', 'tier', 'utilization', 'utilization2'] as const)
-  qpuHexRegisterOf('creditscore', name, (CreditscoreFormulas[name] as (...x: unknown[]) => unknown).bind(CreditscoreFormulas))
+  hexRegisterOf('creditscore', name, (CreditscoreFormulas[name] as (...x: unknown[]) => unknown).bind(CreditscoreFormulas))

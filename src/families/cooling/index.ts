@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COOLING — THERMAL MANAGEMENT, AS ARITHMETIC. A cooling solution is numbers by the book: the watts a thermal resistance
@@ -36,4 +36,4 @@ export class CoolingFormulas {
 }
 
 for (const name of ['airflow', 'deltat', 'dissipation', 'duty', 'fanpower', 'headroom', 'heatsink', 'liquidflow', 'margin', 'thermalresistance'] as const)
-  qpuHexRegisterOf('cooling', name, (CoolingFormulas[name] as (...x: unknown[]) => unknown).bind(CoolingFormulas))
+  hexRegisterOf('cooling', name, (CoolingFormulas[name] as (...x: unknown[]) => unknown).bind(CoolingFormulas))

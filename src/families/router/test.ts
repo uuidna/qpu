@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RouterFormulas } from './index.js'
 
 /** router: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('router: routes, hops, ttl, tables, interfaces, latency, queues, combos', a
   assert.equal(RouterFormulas.latency(1000, 100).value, 10, 'latency(1000, 100)')
   assert.equal(RouterFormulas.queues(8, 2).value, 16, 'queues(8, 2)')
   assert.equal(RouterFormulas.combos(8, 2).value, 28, 'combos(8, 2)')
-  assert.equal(qpuHexFamiliesOf().get('router')?.length, 8)
+  assert.equal(hexFamiliesOf().get('router')?.length, 8)
   for (const [name, params, expected] of [["routes",[1000,4],4000],["hops",[16,0],16],["ttl",[64,1],63]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'router', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `router.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`router ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`router ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "routes=4000, hops=16, ttl=63")
 })

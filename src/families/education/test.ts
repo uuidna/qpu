@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EducationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('education: grade, gpa, attendance, pass, ratio, completion, credits, cost 
   assert.equal(EducationFormulas.credits(5, 3).value, 15)
   assert.equal(EducationFormulas.cost(15, 200).value, 3000)
   assert.equal(EducationFormulas.grade(85, 100).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('education')?.length, 8)
+  assert.equal(hexFamiliesOf().get('education')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'education', program: ['grade'], params: [85, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 85, `education.grade at ${uuid}`)
-  qpuUuidReceiptOf('education grade', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('education grade', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; grade 85, gpa 4, attendance 90, pass 90, ratio 15, completion 80, credits 15, cost 3000; crossing to cross')
 })

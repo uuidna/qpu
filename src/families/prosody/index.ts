@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROSODY — THE MUSIC OF SPEECH, AS ARITHMETIC. The spoken line is numbers: syllables per line, the share that carry stress,
@@ -30,4 +30,4 @@ export class ProsodyFormulas {
 }
 
 for (const name of ['meterfeet', 'pausecount', 'pitchrange', 'rhythmindex', 'speechrate', 'stressratio', 'syllablecount', 'tempo'] as const)
-  qpuHexRegisterOf('prosody', name, (ProsodyFormulas[name] as (...x: unknown[]) => unknown).bind(ProsodyFormulas))
+  hexRegisterOf('prosody', name, (ProsodyFormulas[name] as (...x: unknown[]) => unknown).bind(ProsodyFormulas))

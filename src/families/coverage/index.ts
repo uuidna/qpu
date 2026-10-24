@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COVERAGE — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CoverageFormulas {
 }
 
 for (const name of ['branches', 'combinatorialt', 'functionpairs', 'lines', 'mutationscore', 'pathsubsets', 'testcount', 'uncovered'] as const)
-  qpuHexRegisterOf('coverage', name, (CoverageFormulas[name] as (...x: unknown[]) => unknown).bind(CoverageFormulas))
+  hexRegisterOf('coverage', name, (CoverageFormulas[name] as (...x: unknown[]) => unknown).bind(CoverageFormulas))

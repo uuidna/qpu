@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SonographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('sonography: depth, resolution, framerate, attenuation, impedance, dopplers
   assert.equal(SonographyFormulas.axialres(500, 4).value, 1000)
   assert.equal(SonographyFormulas.penetration(60000, 5).value, 12000)
   assert.equal(SonographyFormulas.depth(1540, 100).dst, 'radiology')
-  assert.equal(qpuHexFamiliesOf().get('sonography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sonography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sonography', program: ['depth'], params: [1540, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 77000, `sonography.depth at ${uuid}`)
-  qpuUuidReceiptOf('sonography depth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sonography depth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; depth 77000, resolution 30, framerate 10, attenuation 50, impedance 1540000, dopplershift 500, axialres 1000, penetration 12000; crossing to radiology')
 })

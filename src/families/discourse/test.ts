@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DiscourseFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('discourse: cohesion, coherence, turnlength, referencechains, topicshifts, 
   assert.equal(DiscourseFormulas.anaphoradensity(50, 5000).value, 10, 'anaphors per thousand tokens')
   assert.equal(DiscourseFormulas.utterancecount(4, 25).value, 100, 'utterances spoken')
   assert.equal(DiscourseFormulas.cohesion(45, 100).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('discourse')?.length, 8)
+  assert.equal(hexFamiliesOf().get('discourse')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'discourse', program: ['turnlength'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `discourse.turnlength at ${uuid}`)
-  qpuUuidReceiptOf('discourse turnlength', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('discourse turnlength', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; cohesion 45, coherence 60, turnlength 20, referencechains 4, topicshifts 6, connectives 20, anaphoradensity 10, utterancecount 100; crossing to linguistics')
 })

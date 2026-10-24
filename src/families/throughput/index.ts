@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THROUGHPUT — MOVING BITS, AS ARITHMETIC. Carrying a load across a link is numbers: the useful bits per second, how much
@@ -31,4 +31,4 @@ export class ThroughputFormulas {
 }
 
 for (const name of ['bandwidthdelay', 'effectiverate', 'efficiency', 'goodput', 'overheadratio', 'saturation', 'utilization', 'windowsize'] as const)
-  qpuHexRegisterOf('throughput', name, (ThroughputFormulas[name] as (...x: unknown[]) => unknown).bind(ThroughputFormulas))
+  hexRegisterOf('throughput', name, (ThroughputFormulas[name] as (...x: unknown[]) => unknown).bind(ThroughputFormulas))

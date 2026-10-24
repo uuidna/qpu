@@ -13,13 +13,14 @@
  */
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { tenOf } from './lattice-values.ts'
 
 import { DEBTS, verdictOf } from './debts.js'
 
 test('a rise in any single debt fails, whatever the total did', () => {
   const rows = [
     { name: 'walls', count: 24 },
-    { name: 'refusals', count: 10 },
+    { name: 'refusals', count: tenOf(1) },
   ]
   /* ONE PART ROSE WHILE THE OTHER FELL. A sum would have called this progress — 34 against a floor of 43 —
    * and let walls grow behind refusals' improvement. Each debt ratchets on its own, which is the entire

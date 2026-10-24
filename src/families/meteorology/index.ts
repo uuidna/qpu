@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** METEOROLOGY — THE WEATHER, AS ARITHMETIC (chosen by the public-API registry, not by hand). Reading the sky is numbers:
@@ -31,4 +31,4 @@ export class MeteorologyFormulas {
 }
 
 for (const name of ['dewpoint', 'heatindex', 'humidity', 'lapse', 'precipitation', 'pressure', 'visibility', 'windchill'] as const)
-  qpuHexRegisterOf('meteorology', name, (MeteorologyFormulas[name] as (...x: unknown[]) => unknown).bind(MeteorologyFormulas))
+  hexRegisterOf('meteorology', name, (MeteorologyFormulas[name] as (...x: unknown[]) => unknown).bind(MeteorologyFormulas))

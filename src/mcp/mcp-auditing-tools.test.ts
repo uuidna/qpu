@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { MCP_AUDITING_TOOLS, AUDITING_TOOLS, initializeAuditingTools } from './mcp-auditing-tools.js'
-import { qpuMcpOf } from '../quantum/processing/unit/mcp.js'
+import { mcpOf } from '../quantum/processing/unit/mcp.js'
 
 // Run from the repository root, as `npm run test:scripts` does.
 const lean = readFileSync(resolve('src/quantum/processing/unit/index.lean'), 'utf8')
@@ -28,7 +28,7 @@ test('no audit returns the legacy hardcoded figures', async () => {
 })
 
 test('mcp_tool_audit counts the served catalogue and reports no failing checks', async () => {
-  const m = qpuMcpOf()
+  const m = mcpOf()
   const served = m.tools.length + m.cybersecurity.tools.length
   const r = (await run('mcp_tool_audit')) as { total_tools: number; discoverable_count: number; issues: string[] }
   assert.equal(r.total_tools, served)

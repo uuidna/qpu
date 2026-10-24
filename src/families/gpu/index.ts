@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GPU — THE GRAPHICS/COMPUTE PROCESSOR, AS ARITHMETIC. A GPU is numbers by the book: total cores across its streaming
@@ -47,4 +47,4 @@ export class GpuFormulas {
 }
 
 for (const name of ['bandwidth', 'blocks', 'bound', 'cores', 'flops', 'grid', 'hide', 'intensity', 'occupancy', 'ridge', 'shared', 'speedup', 'util', 'warps', 'warpsize'] as const)
-  qpuHexRegisterOf('gpu', name, (GpuFormulas[name] as (...x: unknown[]) => unknown).bind(GpuFormulas))
+  hexRegisterOf('gpu', name, (GpuFormulas[name] as (...x: unknown[]) => unknown).bind(GpuFormulas))

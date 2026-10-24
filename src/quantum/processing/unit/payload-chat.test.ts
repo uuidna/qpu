@@ -1,8 +1,8 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker, { qpuFoldOf, qpuMcpToolsListOf } from './index.js'
+import worker, { foldOf, mcpToolsListOf } from './index.js'
 import '../../../mcp/families.js'
-import { qpuDataOf } from '../../../mcp/qpu-fused.js'
+import { dataOf } from '../../../mcp/qpu-fused.js'
 
 const NIBBLE = [0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4]
 const hueOf = (distance: number) => Math.floor((distance * 360) / 64)
@@ -33,10 +33,10 @@ test('chat: ask calls Payload MCP findDocuments and exposes formula, integer, fo
       },
     },
   }
-  const reply = (await qpuDataOf('ask', { about: 'plasma hue docs 3 64' }, env as never)) as { reading?: Record<string, unknown> }
+  const reply = (await dataOf('ask', { about: 'plasma hue docs 3 64' }, env as never)) as { reading?: Record<string, unknown> }
   const reading = reply.reading ?? {}
-  const fold = qpuFoldOf('plasma.hue=16')
-  const content = qpuFoldOf('16')
+  const fold = foldOf('plasma.hue=16')
+  const content = foldOf('16')
   let distance = 0
   for (let i = 0; i < fold.length; i++) distance += NIBBLE[(parseInt(fold[i]!, 16) ^ parseInt(content[i]!, 16)) & 15] ?? 0
   assert.equal(called, '/api/mcp')
@@ -54,7 +54,7 @@ test('chat: ask calls Payload MCP findDocuments and exposes formula, integer, fo
   assert.equal(shown.includes('referer'), false)
   assert.equal('question' in reading, false)
   assert.equal('email' in reading, false)
-  assert.equal(JSON.stringify(qpuMcpToolsListOf()).length < 16384, true)
+  assert.equal(JSON.stringify(mcpToolsListOf()).length < 16384, true)
 })
 
 /** qpu.uuidna.com /mcp is served DIRECTLY by the unit (eda8c77: the public doors answer at unit speed, no Payload cold

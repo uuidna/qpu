@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LEXICOGRAPHY — THE MAKING OF DICTIONARIES, AS ARITHMETIC. A dictionary is numbers: how many headwords it holds, how many
@@ -31,4 +31,4 @@ export class LexicographyFormulas {
 }
 
 for (const name of ['coverage', 'crossref', 'definitionlength', 'frequencyrank', 'headwords', 'lemmaratio', 'polysemy', 'senses'] as const)
-  qpuHexRegisterOf('lexicography', name, (LexicographyFormulas[name] as (...x: unknown[]) => unknown).bind(LexicographyFormulas))
+  hexRegisterOf('lexicography', name, (LexicographyFormulas[name] as (...x: unknown[]) => unknown).bind(LexicographyFormulas))

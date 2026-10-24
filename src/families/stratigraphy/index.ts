@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STRATIGRAPHY — THE LAYERED ROCK RECORD, AS ARITHMETIC (reading a section as numbers, not by hand). A column of strata is
@@ -31,4 +31,4 @@ export class StratigraphyFormulas {
 }
 
 for (const name of ['age', 'compaction', 'correlation', 'depositionrate', 'sequence', 'subsidence', 'thickness', 'unconformity'] as const)
-  qpuHexRegisterOf('stratigraphy', name, (StratigraphyFormulas[name] as (...x: unknown[]) => unknown).bind(StratigraphyFormulas))
+  hexRegisterOf('stratigraphy', name, (StratigraphyFormulas[name] as (...x: unknown[]) => unknown).bind(StratigraphyFormulas))

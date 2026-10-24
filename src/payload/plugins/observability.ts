@@ -11,7 +11,7 @@
  */
 import { ObservabilityFormulas } from '../../families/observability/index.js'
 import { LoggingFormulas } from '../../families/logging/index.js'
-import { qpuHexUuidOf, qpuMcpToolsListOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexUuidOf, mcpToolsListOf } from '../../quantum/processing/unit/index.js'
 import type { QpuPlugin } from './surface.js'
 
 /** Cap = 3 → four levels (silent / holds / doors+ms / full). Combinatorial, not prose. */
@@ -169,7 +169,7 @@ export type ObserveReading = {
 }
 
 const connectBillOf = () => {
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const bytes = JSON.stringify({ resultType: 'complete' as const, tools }).length
   const qpuPrefixed = tools.filter((t) => t.name.startsWith('qpu_')).length
   return {

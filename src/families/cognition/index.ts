@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COGNITION — THE MIND AS ARITHMETIC. Thinking is numbers: cognitive load against capacity, mean reaction time, accuracy,
@@ -30,4 +30,4 @@ export class CognitionFormulas {
 }
 
 for (const name of ['accuracy', 'bias', 'fluency', 'load', 'processing', 'reaction', 'span', 'workingmemory'] as const)
-  qpuHexRegisterOf('cognition', name, (CognitionFormulas[name] as (...x: unknown[]) => unknown).bind(CognitionFormulas))
+  hexRegisterOf('cognition', name, (CognitionFormulas[name] as (...x: unknown[]) => unknown).bind(CognitionFormulas))

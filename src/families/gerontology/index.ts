@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GERONTOLOGY — scaffolded integer measures crossed to physiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class GerontologyFormulas {
 }
 
 for (const name of ['biologicalage', 'comorbiditypairs', 'doublingtime', 'frailtyindex', 'functionaldecline', 'lifeexpectancy', 'survivalfraction', 'telomerelength'] as const)
-  qpuHexRegisterOf('gerontology', name, (GerontologyFormulas[name] as (...x: unknown[]) => unknown).bind(GerontologyFormulas))
+  hexRegisterOf('gerontology', name, (GerontologyFormulas[name] as (...x: unknown[]) => unknown).bind(GerontologyFormulas))

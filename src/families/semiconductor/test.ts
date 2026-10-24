@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SemiconductorFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('semiconductor: bandgap, carrier, diesyield, doping, junction, mobility, re
   assert.equal(SemiconductorFormulas.resistivity(5, 1).value, 5)
   assert.equal(SemiconductorFormulas.threshold(700).value, 700, 'threshold voltage in mV')
   assert.equal(SemiconductorFormulas.bandgap(1120).dst, 'electronics')
-  assert.equal(qpuHexFamiliesOf().get('semiconductor')?.length, 8)
+  assert.equal(hexFamiliesOf().get('semiconductor')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'semiconductor', program: ['mobility'], params: [1400, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 700, `semiconductor.mobility at ${uuid}`)
-  qpuUuidReceiptOf('semiconductor mobility', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('semiconductor mobility', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bandgap 1120, carrier 1000, diesyield 90, doping 5, junction 10000, mobility 700, resistivity 5, threshold 700; crossing to electronics')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MorphologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('morphology: morphemes, inflection, derivation, affixation, productivity, a
   assert.equal(MorphologyFormulas.transparency(70, 100).value, 70)
   assert.equal(MorphologyFormulas.density(150, 100).value, 150)
   assert.equal(MorphologyFormulas.morphemes(300, 100).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('morphology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('morphology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'morphology', program: ['derivation'], params: [50, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `morphology.derivation at ${uuid}`)
-  qpuUuidReceiptOf('morphology derivation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('morphology derivation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; morphemes 3, inflection 75, derivation 5, affixation 150, productivity 0, allomorphy 3, transparency 70, density 150; crossing to linguistics')
 })

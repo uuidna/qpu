@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ECOMMERCE — A STOREFRONT, AS ARITHMETIC (chosen by the registry). A sale is numbers: the cart total, a discount, the
@@ -30,4 +30,4 @@ export class EcommerceFormulas {
 }
 
 for (const name of ['aov', 'cart', 'conversion', 'discount', 'inventory', 'margin', 'refund', 'shipping'] as const)
-  qpuHexRegisterOf('ecommerce', name, (EcommerceFormulas[name] as (...x: unknown[]) => unknown).bind(EcommerceFormulas))
+  hexRegisterOf('ecommerce', name, (EcommerceFormulas[name] as (...x: unknown[]) => unknown).bind(EcommerceFormulas))

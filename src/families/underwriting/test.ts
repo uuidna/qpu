@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { UnderwritingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('underwriting: risk, premium, loading, score, decline, exposure, reserve, r
   assert.equal(UnderwritingFormulas.reserve(1000, 400).value, 600, 'still owed')
   assert.equal(UnderwritingFormulas.ratio(600, 1000).value, 60, 'loss ratio')
   assert.equal(UnderwritingFormulas.risk(50, 10).dst, 'insurance')
-  assert.equal(qpuHexFamiliesOf().get('underwriting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('underwriting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'underwriting', program: ['score'], params: [850, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 170, `underwriting.score at ${uuid}`)
-  qpuUuidReceiptOf('underwriting score', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('underwriting score', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; risk 500, premium 120, loading 30, score 170, decline 1, exposure 50000, reserve 600, ratio 60; crossing to insurance')
 })

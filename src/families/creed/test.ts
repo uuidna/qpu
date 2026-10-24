@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CreedFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('creed: articlecount, clausecombos, affirmationorderings, doctrinesubsets, 
   assert.equal(CreedFormulas.consensusratio(85, 100).value, 85)
   assert.equal(CreedFormulas.variantcreeds(3, 4).value, 7)
   assert.equal(CreedFormulas.articlecount(10, 2).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('creed')?.length, 8)
+  assert.equal(hexFamiliesOf().get('creed')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'creed', program: ['articlecount'], params: [10, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `creed.articlecount at ${uuid}`)
-  qpuUuidReceiptOf('creed articlecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('creed articlecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; articlecount 12, clausecombos 220, affirmationorderings 120, doctrinesubsets 64, councilcount 7, anathemacount 10, consensusratio 85, variantcreeds 7; crossing to sociology')
 })

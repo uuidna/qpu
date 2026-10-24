@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PARITY — ERROR DETECTION AND CORRECTION, AS ARITHMETIC. A bitstream protected is numbers: the even-parity bit over the
@@ -31,4 +31,4 @@ export class ParityFormulas {
 }
 
 for (const name of ['checkbits', 'correctable', 'coveragebits', 'detectrate', 'evenbit', 'hammingbits', 'overhead', 'syndrome'] as const)
-  qpuHexRegisterOf('parity', name, (ParityFormulas[name] as (...x: unknown[]) => unknown).bind(ParityFormulas))
+  hexRegisterOf('parity', name, (ParityFormulas[name] as (...x: unknown[]) => unknown).bind(ParityFormulas))

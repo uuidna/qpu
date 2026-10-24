@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GelatinizationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('gelatinization: onsettemp, swellingratio, waterabsorption, peakviscosity, 
   assert.equal(GelatinizationFormulas.granuleexpansion(5, 4).value, 20)
   assert.equal(GelatinizationFormulas.pasteclarity(70, 100).value, 70)
   assert.equal(GelatinizationFormulas.onsettemp(60, 65).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('gelatinization')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gelatinization')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gelatinization', program: ['onsettemp'], params: [60, 65] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 65, `gelatinization.onsettemp at ${uuid}`)
-  qpuUuidReceiptOf('gelatinization onsettemp', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gelatinization onsettemp', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; onsettemp 65, swellingratio 300, waterabsorption 150, peakviscosity 600, starchconversion 85, setbacktemp 45, granuleexpansion 20, pasteclarity 70; crossing to chemistry')
 })

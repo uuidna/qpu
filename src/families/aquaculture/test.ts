@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AquacultureFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('aquaculture: fcr, density, oxygen, growth, survival, biomass, feeding, amm
   assert.equal(AquacultureFormulas.feeding(60, 2000).value, 3, 'daily ration percent')
   assert.equal(AquacultureFormulas.ammonia(1000, 50).value, 20)
   assert.equal(AquacultureFormulas.fcr(150, 100).dst, 'fishery')
-  assert.equal(qpuHexFamiliesOf().get('aquaculture')?.length, 8)
+  assert.equal(hexFamiliesOf().get('aquaculture')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'aquaculture', program: ['density'], params: [1000, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `aquaculture.density at ${uuid}`)
-  qpuUuidReceiptOf('aquaculture density', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('aquaculture density', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; fcr 150, density 20, oxygen 160, growth 450, survival 90, biomass 2000, feeding 3, ammonia 20; crossing to fishery')
 })

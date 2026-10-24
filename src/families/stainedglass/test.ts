@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StainedglassFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('stainedglass: panecount, leadlines, transmittance, colorcombos, cameleadle
   assert.equal(StainedglassFormulas.panelsubsets(5).value, 32)
   assert.equal(StainedglassFormulas.symmetryorderings(4).value, 24)
   assert.equal(StainedglassFormulas.panecount(12, 8).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('stainedglass')?.length, 8)
+  assert.equal(hexFamiliesOf().get('stainedglass')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'stainedglass', program: ['panecount'], params: [12, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 96, `stainedglass.panecount at ${uuid}`)
-  qpuUuidReceiptOf('stainedglass panecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('stainedglass panecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; panecount 96, leadlines 60, transmittance 70, colorcombos 120, cameleadlength 300, refractionindex 1, panelsubsets 32, symmetryorderings 24; crossing to optics')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** OPENDATA — OPEN DATASETS AND OPEN-DATA PORTALS, AS ARITHMETIC (what a catalogue of public datasets measures, not by hand). A
@@ -31,4 +31,4 @@ export class OpendataFormulas {
 }
 
 for (const name of ['completeness', 'coverage', 'downloads', 'formats', 'freshness', 'license', 'records', 'size'] as const)
-  qpuHexRegisterOf('opendata', name, (OpendataFormulas[name] as (...x: unknown[]) => unknown).bind(OpendataFormulas))
+  hexRegisterOf('opendata', name, (OpendataFormulas[name] as (...x: unknown[]) => unknown).bind(OpendataFormulas))

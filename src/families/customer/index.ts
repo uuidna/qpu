@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CUSTOMER — THE CRM / CUSTOMER-RELATION DOMAIN, AS ARITHMETIC. Keeping customers is numbers: how satisfied they are,
@@ -30,4 +30,4 @@ export class CustomerFormulas {
 }
 
 for (const name of ['churn', 'csat', 'nps', 'resolution', 'response', 'retention', 'tickets', 'upsell'] as const)
-  qpuHexRegisterOf('customer', name, (CustomerFormulas[name] as (...x: unknown[]) => unknown).bind(CustomerFormulas))
+  hexRegisterOf('customer', name, (CustomerFormulas[name] as (...x: unknown[]) => unknown).bind(CustomerFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HuffmanFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('huffman: averagelength, codelength, compressionratio, efficiency, leafcoun
   assert.equal(HuffmanFormulas.treenodes(8).value, 15, 'a full binary tree over eight leaves')
   assert.equal(HuffmanFormulas.weightedpath(12, 4).value, 48)
   assert.equal(HuffmanFormulas.averagelength(100, 25).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('huffman')?.length, 8)
+  assert.equal(hexFamiliesOf().get('huffman')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'huffman', program: ['treenodes'], params: [8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `huffman.treenodes at ${uuid}`)
-  qpuUuidReceiptOf('huffman treenodes', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('huffman treenodes', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; averagelength 4, codelength 30, compressionratio 400, efficiency 90, leafcount 8, savedbits 700, treenodes 15, weightedpath 48; crossing to signal')
 })

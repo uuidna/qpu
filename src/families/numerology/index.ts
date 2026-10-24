@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NUMEROLOGY — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class NumerologyFormulas {
 }
 
 for (const name of ['cyclewheel', 'digitsum', 'gematriatotal', 'harmonicsum', 'masternumbers', 'numbercombos', 'permutationcount', 'repetitions'] as const)
-  qpuHexRegisterOf('numerology', name, (NumerologyFormulas[name] as (...x: unknown[]) => unknown).bind(NumerologyFormulas))
+  hexRegisterOf('numerology', name, (NumerologyFormulas[name] as (...x: unknown[]) => unknown).bind(NumerologyFormulas))

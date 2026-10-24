@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** IMMIGRATION — STATUS AS ARITHMETIC. Who may enter and stay is numbers the system sets: a points-based score, the
@@ -31,4 +31,4 @@ export class ImmigrationFormulas {
 }
 
 for (const name of ['continuous', 'dependents', 'naturalization', 'overstay', 'points', 'quota', 'residence', 'sponsorship'] as const)
-  qpuHexRegisterOf('immigration', name, (ImmigrationFormulas[name] as (...x: unknown[]) => unknown).bind(ImmigrationFormulas))
+  hexRegisterOf('immigration', name, (ImmigrationFormulas[name] as (...x: unknown[]) => unknown).bind(ImmigrationFormulas))

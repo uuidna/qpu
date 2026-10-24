@@ -8,7 +8,7 @@ import {
   tokenUsageOf,
   waitsAuditOf,
 } from './tokens.js'
-import { qpuMcpToolsListOf } from '../../quantum/processing/unit/index.js'
+import { mcpToolsListOf } from '../../quantum/processing/unit/index.js'
 import '../../mcp/families.js'
 
 test('seal: Bearer / apiKey / sk- never echoed', () => {
@@ -51,7 +51,7 @@ test('waits audit sorted by cost; connect bill ≤16', () => {
   for (let i = 1; i < w.rows.length; i++) {
     assert.ok(w.rows[i - 1]!.ms >= w.rows[i]!.ms, 'sorted by ms desc')
   }
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   assert.ok(tools.length <= 16)
   assert.equal(w.connectBill.holds, true)
 })

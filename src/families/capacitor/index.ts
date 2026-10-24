@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CAPACITOR — scaffolded integer measures crossed to electronics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CapacitorFormulas {
 }
 
 for (const name of ['charge', 'energy', 'leakage', 'parallelsum', 'reactance', 'seriescombos', 'timeconstant', 'voltagerating'] as const)
-  qpuHexRegisterOf('capacitor', name, (CapacitorFormulas[name] as (...x: unknown[]) => unknown).bind(CapacitorFormulas))
+  hexRegisterOf('capacitor', name, (CapacitorFormulas[name] as (...x: unknown[]) => unknown).bind(CapacitorFormulas))

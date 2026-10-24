@@ -1,6 +1,6 @@
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
-import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
-const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, hexParamMaxOf, latticeNamesOf, tenOf, uuidReceiptOf } from '../quantum/processing/unit/index.js'
+const L = { ...latticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** One way a value is reached: a hex-program UUID (family handle, formula nibbles, params split by their count) and its run. */
 export type Way = { family: string; program: string[]; params: number[]; hex: string; receipt?: string }
@@ -16,7 +16,7 @@ export type Seal = { family: string; program: string[]; kind: 'fixed' | 'involut
 export const DOORS = new Set(['qpu', 'crypto', 'api', 'data', 'lead', 'gate'])
 const SMALL = Array.from({ length: L.mintOf(L.hexbit) }, (_, i) => i + L.seed)
 // the params section splits by count: one 48-bit natural, two 24-bit, three 16-bit
-const fits = (params: number[]) => params.every((p) => Number.isSafeInteger(p) && p >= 0 && p < qpuHexParamMaxOf(params.length))
+const fits = (params: number[]) => params.every((p) => Number.isSafeInteger(p) && p >= 0 && p < hexParamMaxOf(params.length))
 
 const valueOf = (run: { value?: unknown; holds?: boolean }): string | null => {
   if (run.holds !== true) return null
@@ -64,7 +64,7 @@ export type Discovered = ReturnType<typeof envelopeOf>
  *  counts and seals concatenated, the live keys unioned, and every cross recomputed over the union — the same relations
  *  one monolithic sweep would have found, computed in slices that each stay within a call's limits (no skips, no caps
  *  raised; the whole lattice, in full). */
-export const qpuDiscoverMergeOf = (parts: Discovered[]): Discovered => {
+export const discoverMergeOf = (parts: Discovered[]): Discovered => {
   const reached = new Map<string, Way[]>()
   for (const p of parts)
     for (const [value, ways] of p.ways) {
@@ -79,12 +79,12 @@ export const qpuDiscoverMergeOf = (parts: Discovered[]): Discovered => {
 
 export const qpuDiscoverOf = async (live: number[] = [], slice?: { from?: number; count?: number }) => {
   const liveSet = new Set(live.filter((x) => Number.isSafeInteger(x) && x >= 0).map(String))
-  const liveInputs = live.filter((x) => Number.isSafeInteger(x) && x >= 0 && x < qpuHexParamMaxOf(L.seed))
+  const liveInputs = live.filter((x) => Number.isSafeInteger(x) && x >= 0 && x < hexParamMaxOf(L.seed))
   const reached = new Map<string, Way[]>()
   const perFamily: Record<string, { programs: number; runs: number }> = {}
   const seals: Seal[] = []
-  // a family slice stays within a call's limits; the caller merges the slices back in full with qpuDiscoverMergeOf
-  const all = [...qpuHexFamiliesOf()]
+  // a family slice stays within a call's limits; the caller merges the slices back in full with discoverMergeOf
+  const all = [...hexFamiliesOf()]
   const from = Math.max(0, slice?.from ?? 0)
   const entries = slice ? all.slice(from, from + (slice.count ?? all.length)) : all
   for (const [family, formulas] of entries) {
@@ -128,9 +128,9 @@ export const qpuDiscoverOf = async (live: number[] = [], slice?: { from?: number
         const bounded = fed !== undefined && fed.every((p) => Number.isSafeInteger(p) && p >= 0 && p < (lean ? L.mintOf(L.hexbit) + L.seed : L.mintOf(L.hexbit * L.hexbit)))
         if (program.length === 2 && !(inner && outer) && !(inner?.holds && bounded)) continue
         if (program.length === 2 && inner && outer) {
-          run = { value: outer.value ?? undefined, holds: inner.holds && outer.holds, receipt: qpuUuidReceiptOf(`hex ${family}`, hex, { value: outer.value, holds: inner.holds && outer.holds }).uuid }
+          run = { value: outer.value ?? undefined, holds: inner.holds && outer.holds, receipt: uuidReceiptOf(`hex ${family}`, hex, { value: outer.value, holds: inner.holds && outer.holds }).uuid }
         } else {
-          run = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; receipt?: string }
+          run = (await hexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; receipt?: string }
           perFamily[family]!.runs++
         }
         const value = valueOf(run)

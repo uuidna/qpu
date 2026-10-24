@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LINGUISTICS — LANGUAGE ANALYSIS, AS ARITHMETIC (chosen by the registry, not by hand). Reading a corpus is numbers:
@@ -31,4 +31,4 @@ export class LinguisticsFormulas {
 }
 
 for (const name of ['cognates', 'distance', 'frequency', 'lexical', 'morphemes', 'phonemes', 'readability', 'syllables'] as const)
-  qpuHexRegisterOf('linguistics', name, (LinguisticsFormulas[name] as (...x: unknown[]) => unknown).bind(LinguisticsFormulas))
+  hexRegisterOf('linguistics', name, (LinguisticsFormulas[name] as (...x: unknown[]) => unknown).bind(LinguisticsFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CosmologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('cosmology: hubble, recession, age, density, expansion, horizon, curvature,
   assert.equal(CosmologyFormulas.curvature(27, 30).value, 900, 'Omega · 1000')
   assert.equal(CosmologyFormulas.temperature(1100, 2).value, 2202, 'CMB scaling')
   assert.equal(CosmologyFormulas.hubble(1400, 20).dst, 'gravity')
-  assert.equal(qpuHexFamiliesOf().get('cosmology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cosmology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cosmology', program: ['recession'], params: [70, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 700, `cosmology.recession at ${uuid}`)
-  qpuUuidReceiptOf('cosmology recession', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cosmology recession', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; hubble 70, recession 700, age 20, density 250, expansion 7, horizon 4200, curvature 900, temperature 2202; crossing to gravity')
 })

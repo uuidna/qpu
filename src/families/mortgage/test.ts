@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MortgageFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('mortgage: ltv, dti, downpayment, principal, interestportion, equity, pmi, 
   assert.equal(MortgageFormulas.pmi(75, 80).value, 0)
   assert.equal(MortgageFormulas.affordability(12000, 4).value, 48000)
   assert.equal(MortgageFormulas.ltv(160, 200).dst, 'banking')
-  assert.equal(qpuHexFamiliesOf().get('mortgage')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mortgage')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mortgage', program: ['ltv'], params: [160, 200] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `mortgage.ltv at ${uuid}`)
-  qpuUuidReceiptOf('mortgage ltv', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mortgage ltv', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ltv 80, dti 40, downpayment 40, principal 700, interestportion 250, equity 20000, pmi 1, affordability 48000; crossing to banking')
 })

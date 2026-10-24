@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SpringFormulas — 8 exact-integer formulas of the spring domain, each at a hex address crossing to cross; develops the spring leads. */
@@ -31,4 +31,4 @@ export class SpringFormulas {
 }
 
 for (const name of ['coils', 'combos', 'constant', 'deflection', 'energy', 'force', 'parallelsum', 'series'] as const)
-  qpuHexRegisterOf('spring', name, (SpringFormulas[name] as (...x: unknown[]) => unknown).bind(SpringFormulas))
+  hexRegisterOf('spring', name, (SpringFormulas[name] as (...x: unknown[]) => unknown).bind(SpringFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STEERING — scaffolded integer measures crossed to control. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SteeringFormulas {
 }
 
 for (const name of ['ackermannangle', 'correctiongain', 'slipangle', 'steeringratio', 'turnradius', 'understeer', 'wheelbaseratio', 'yawrate'] as const)
-  qpuHexRegisterOf('steering', name, (SteeringFormulas[name] as (...x: unknown[]) => unknown).bind(SteeringFormulas))
+  hexRegisterOf('steering', name, (SteeringFormulas[name] as (...x: unknown[]) => unknown).bind(SteeringFormulas))

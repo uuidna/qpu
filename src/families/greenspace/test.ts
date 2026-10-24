@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GreenspaceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('greenspace: percapita, canopycover, parkaccess, biodiversity, coolingeffec
   assert.equal(GreenspaceFormulas.recreationcapacity(10000, 50).value, 200, 'visitors the space holds')
   assert.equal(GreenspaceFormulas.connectivity(18, 20).value, 90)
   assert.equal(GreenspaceFormulas.percapita(9000, 300).dst, 'geography')
-  assert.equal(qpuHexFamiliesOf().get('greenspace')?.length, 8)
+  assert.equal(hexFamiliesOf().get('greenspace')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'greenspace', program: ['percapita'], params: [9000, 300] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `greenspace.percapita at ${uuid}`)
-  qpuUuidReceiptOf('greenspace percapita', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('greenspace percapita', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; percapita 30, canopycover 40, parkaccess 75, biodiversity 50, coolingeffect 60, stormwater 4000, recreationcapacity 200, connectivity 90; crossing to geography')
 })

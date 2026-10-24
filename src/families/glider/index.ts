@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GLIDER — scaffolded integer measures crossed to aerospace. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class GliderFormulas {
 }
 
 for (const name of ['aspectratio', 'glideratio', 'liftdragpairs', 'range', 'sinkrate', 'stallspeed', 'thermalgain', 'wingspan'] as const)
-  qpuHexRegisterOf('glider', name, (GliderFormulas[name] as (...x: unknown[]) => unknown).bind(GliderFormulas))
+  hexRegisterOf('glider', name, (GliderFormulas[name] as (...x: unknown[]) => unknown).bind(GliderFormulas))

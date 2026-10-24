@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOGICGATES — DIGITAL LOGIC AS ARITHMETIC (chosen by the gate-level registry, not by hand). A gate is numbers: the
@@ -31,4 +31,4 @@ export class LogicgatesFormulas {
 }
 
 for (const name of ['and', 'fanout', 'mux', 'nand', 'nor', 'or', 'propagation', 'xor'] as const)
-  qpuHexRegisterOf('logicgates', name, (LogicgatesFormulas[name] as (...x: unknown[]) => unknown).bind(LogicgatesFormulas))
+  hexRegisterOf('logicgates', name, (LogicgatesFormulas[name] as (...x: unknown[]) => unknown).bind(LogicgatesFormulas))

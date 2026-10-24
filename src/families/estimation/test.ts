@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EstimationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('estimation: meansquareerror, bias, variance, confidence, residual, likelih
   assert.equal(EstimationFormulas.estimategain(30, 70).value, 30, 'Kalman-style gain')
   assert.equal(EstimationFormulas.bias(40, 50).value, 0)
   assert.equal(EstimationFormulas.meansquareerror(1000, 10).dst, 'cybernetics')
-  assert.equal(qpuHexFamiliesOf().get('estimation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('estimation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'estimation', program: ['meansquareerror'], params: [1000, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `estimation.meansquareerror at ${uuid}`)
-  qpuUuidReceiptOf('estimation meansquareerror', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('estimation meansquareerror', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; meansquareerror 100, bias 8, variance 100, confidence 95, residual 15, likelihood 75, innovation 20, estimategain 30; crossing to cybernetics')
 })

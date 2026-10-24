@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** InvoiceFormulas — 8 exact-integer formulas of the invoice domain, each at a hex address crossing to cross; develops the invoice leads. */
@@ -31,4 +31,4 @@ export class InvoiceFormulas {
 }
 
 for (const name of ['combos', 'discount', 'duedays', 'lineitems', 'overdue', 'subtotal', 'tax', 'total'] as const)
-  qpuHexRegisterOf('invoice', name, (InvoiceFormulas[name] as (...x: unknown[]) => unknown).bind(InvoiceFormulas))
+  hexRegisterOf('invoice', name, (InvoiceFormulas[name] as (...x: unknown[]) => unknown).bind(InvoiceFormulas))

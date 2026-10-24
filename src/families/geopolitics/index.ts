@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GEOPOLITICS — STATES AND BLOCS AS ARITHMETIC (purely quantitative, neutral indices; no advice). Standing between
@@ -31,4 +31,4 @@ export class GeopoliticsFormulas {
 }
 
 for (const name of ['allianceweight', 'balanceofpower', 'bordertension', 'influencescore', 'powerindex', 'sanctionimpact', 'stabilityindex', 'tradedependency'] as const)
-  qpuHexRegisterOf('geopolitics', name, (GeopoliticsFormulas[name] as (...x: unknown[]) => unknown).bind(GeopoliticsFormulas))
+  hexRegisterOf('geopolitics', name, (GeopoliticsFormulas[name] as (...x: unknown[]) => unknown).bind(GeopoliticsFormulas))

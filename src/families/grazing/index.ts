@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GRAZING — MANAGED PASTURE AS ARITHMETIC. Running a herd on land is numbers: the stocking rate per hectare, the land's
@@ -30,4 +30,4 @@ export class GrazingFormulas {
 }
 
 for (const name of ['animalunits', 'carryingcapacity', 'dmintake', 'forageutilization', 'pasturedays', 'restperiod', 'rotationcycle', 'stockingrate'] as const)
-  qpuHexRegisterOf('grazing', name, (GrazingFormulas[name] as (...x: unknown[]) => unknown).bind(GrazingFormulas))
+  hexRegisterOf('grazing', name, (GrazingFormulas[name] as (...x: unknown[]) => unknown).bind(GrazingFormulas))

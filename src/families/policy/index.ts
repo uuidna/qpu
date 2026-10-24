@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POLICY — PUBLIC POLICY AS ARITHMETIC (chosen by the registry, not by hand). Weighing a policy is numbers: the benefit
@@ -31,4 +31,4 @@ export class PolicyFormulas {
 }
 
 for (const name of ['adoption', 'compliance', 'costbenefit', 'efficiency', 'equity', 'impact', 'lag', 'reach'] as const)
-  qpuHexRegisterOf('policy', name, (PolicyFormulas[name] as (...x: unknown[]) => unknown).bind(PolicyFormulas))
+  hexRegisterOf('policy', name, (PolicyFormulas[name] as (...x: unknown[]) => unknown).bind(PolicyFormulas))

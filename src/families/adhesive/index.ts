@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AdhesiveFormulas — 8 exact-integer formulas of the adhesive domain, each at a hex address crossing to cross; develops the adhesive leads. */
@@ -31,4 +31,4 @@ export class AdhesiveFormulas {
 }
 
 for (const name of ['bondstrength', 'combos', 'coverage', 'cure', 'layers', 'peel', 'shear', 'viscosity'] as const)
-  qpuHexRegisterOf('adhesive', name, (AdhesiveFormulas[name] as (...x: unknown[]) => unknown).bind(AdhesiveFormulas))
+  hexRegisterOf('adhesive', name, (AdhesiveFormulas[name] as (...x: unknown[]) => unknown).bind(AdhesiveFormulas))

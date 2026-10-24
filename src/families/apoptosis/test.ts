@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ApoptosisFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('apoptosis: deathrate, survivalfraction, caspaseactivity, turnover, clearan
   assert.equal(ApoptosisFormulas.apoptoticindex(15, 1000).value, 15, 'apoptotic cells per thousand')
   assert.equal(ApoptosisFormulas.halflife(240, 4).value, 60)
   assert.equal(ApoptosisFormulas.deathrate(250, 1000).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('apoptosis')?.length, 8)
+  assert.equal(hexFamiliesOf().get('apoptosis')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'apoptosis', program: ['clearance'], params: [1000, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 34, `apoptosis.clearance at ${uuid}`)
-  qpuUuidReceiptOf('apoptosis clearance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('apoptosis clearance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; deathrate 25, survivalfraction 75, caspaseactivity 2000, turnover 200, clearance 34, netgrowth 500, apoptoticindex 15, halflife 60; crossing to physiology')
 })

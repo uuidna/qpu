@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SEROLOGY — scaffolded integer measures crossed to immunology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SerologyFormulas {
 }
 
 for (const name of ['antibodypairs', 'antigencombos', 'bindingaffinity', 'crossreactivity', 'dilutionfactor', 'panelsubsets', 'seroconversion', 'titer'] as const)
-  qpuHexRegisterOf('serology', name, (SerologyFormulas[name] as (...x: unknown[]) => unknown).bind(SerologyFormulas))
+  hexRegisterOf('serology', name, (SerologyFormulas[name] as (...x: unknown[]) => unknown).bind(SerologyFormulas))

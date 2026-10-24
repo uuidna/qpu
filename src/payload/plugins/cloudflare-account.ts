@@ -12,7 +12,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { qpuFacesOf } from '../../quantum/processing/unit/index.js'
+import { facesOf } from '../../quantum/processing/unit/index.js'
 import type { QpuPlugin } from './surface.js'
 
 // Computed on use, not at module load: a top-level import.meta.url URL throws when the plugin index is imported in a
@@ -70,7 +70,7 @@ const parseWhoami = (text: string) => {
     email,
     accountName,
     accountId,
-    scopes: scopes.slice(0, qpuFacesOf().faces * 4),
+    scopes: scopes.slice(0, facesOf().faces * 4),
     missingScopes: missing,
     auth: email && accountId ? ('oauth' as const) : ('unknown' as const),
   }
@@ -227,7 +227,7 @@ export const cloudflareAccountOf = async (args: Record<string, unknown> = {}) =>
       holds: (raid as { holds?: boolean })?.holds === true,
       note: 'RAID vs direct — measured Qpu.Hybrid; see connector { raid: true }' as const,
     },
-    errors: errors.slice(0, qpuFacesOf().faces),
+    errors: errors.slice(0, facesOf().faces),
     goal: 'OPEN' as const,
     holds,
     note: 'wrangler OAuth exploration · secret names only · API tokens never echoed · token-sealed' as const,

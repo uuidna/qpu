@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SounddesignFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('sounddesign: layers, frequencybands, reverbms, mixpairs, dynamicrangedb, c
   assert.equal(SounddesignFormulas.channelsubsets(6).value, 64)
   assert.equal(SounddesignFormulas.loudnesslufs(23, 9).value, 14)
   assert.equal(SounddesignFormulas.layers(12, 8).dst, 'acoustics')
-  assert.equal(qpuHexFamiliesOf().get('sounddesign')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sounddesign')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sounddesign', program: ['layers'], params: [12, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `sounddesign.layers at ${uuid}`)
-  qpuUuidReceiptOf('sounddesign layers', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sounddesign layers', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; layers 20, frequencybands 20, reverbms 2000, mixpairs 120, dynamicrangedb 96, cuepoints 40, channelsubsets 64, loudnesslufs 14; crossing to acoustics')
 })

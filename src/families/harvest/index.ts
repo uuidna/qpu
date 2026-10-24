@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HARVEST — BRINGING A CROP IN, AS ARITHMETIC (chosen by the public-API registry, not by hand). Reaping is numbers: the
@@ -31,4 +31,4 @@ export class HarvestFormulas {
 }
 
 for (const name of ['laborhours', 'losspercent', 'machineefficiency', 'moisturecontent', 'ratescollected', 'storageyield', 'throughput', 'windowdays'] as const)
-  qpuHexRegisterOf('harvest', name, (HarvestFormulas[name] as (...x: unknown[]) => unknown).bind(HarvestFormulas))
+  hexRegisterOf('harvest', name, (HarvestFormulas[name] as (...x: unknown[]) => unknown).bind(HarvestFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACTIVATION — THE NONLINEARITIES OF A NEURON, AS ARITHMETIC (what fires and how hard). A pre-activation is a number;
@@ -30,4 +30,4 @@ export class ActivationFormulas {
 }
 
 for (const name of ['clamp', 'deadzone', 'hardsigmoid', 'leakyrelu', 'relu', 'saturate', 'step', 'threshold'] as const)
-  qpuHexRegisterOf('activation', name, (ActivationFormulas[name] as (...x: unknown[]) => unknown).bind(ActivationFormulas))
+  hexRegisterOf('activation', name, (ActivationFormulas[name] as (...x: unknown[]) => unknown).bind(ActivationFormulas))

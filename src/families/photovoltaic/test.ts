@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhotovoltaicFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('photovoltaic: power, efficiency, irradiance, yield, array, fillfactor, der
   assert.equal(PhotovoltaicFormulas.derate(100, 150).value, 0)
   assert.equal(PhotovoltaicFormulas.payback(2000, 500).value, 4, 'years to recover the cost')
   assert.equal(PhotovoltaicFormulas.power(12, 8).dst, 'energy')
-  assert.equal(qpuHexFamiliesOf().get('photovoltaic')?.length, 8)
+  assert.equal(hexFamiliesOf().get('photovoltaic')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'photovoltaic', program: ['power'], params: [12, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 96, `photovoltaic.power at ${uuid}`)
-  qpuUuidReceiptOf('photovoltaic power', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('photovoltaic power', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; power 96, efficiency 22, irradiance 500, yield 1500, array 4000, fillfactor 80, derate 800, payback 4; crossing to energy')
 })

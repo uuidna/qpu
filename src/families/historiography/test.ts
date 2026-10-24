@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HistoriographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('historiography: sourcecount, narrativeorderings, biasfactors, periodizatio
   assert.equal(HistoriographyFormulas.consensuslevel(70, 100).value, 70)
   assert.equal(HistoriographyFormulas.revisionspan(200, 50).value, 150)
   assert.equal(HistoriographyFormulas.sourcecount(40, 20).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('historiography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('historiography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'historiography', program: ['sourcecount'], params: [40, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `historiography.sourcecount at ${uuid}`)
-  qpuUuidReceiptOf('historiography sourcecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('historiography sourcecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; sourcecount 60, narrativeorderings 120, biasfactors 6, periodizations 120, crosschecks 48, interpretiveframes 32, consensuslevel 70, revisionspan 150; crossing to sociology')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RetirementFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('retirement: nestegg, withdrawalrate, replacementratio, contributions, year
   assert.equal(RetirementFormulas.shortfall(60000, 45000).value, 15000, 'the savings gap')
   assert.equal(RetirementFormulas.shortfall(45000, 60000).value, 0)
   assert.equal(RetirementFormulas.nestegg(50000, 30).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('retirement')?.length, 8)
+  assert.equal(hexFamiliesOf().get('retirement')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'retirement', program: ['nestegg'], params: [50000, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1500000, `retirement.nestegg at ${uuid}`)
-  qpuUuidReceiptOf('retirement nestegg', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('retirement nestegg', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; nestegg 1500000, withdrawalrate 4, replacementratio 80, contributions 180000, yearsofincome 30, matchvalue 3000, drawdown 48000, shortfall 15000; crossing to econ')
 })

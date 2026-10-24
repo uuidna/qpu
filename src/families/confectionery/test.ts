@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConfectioneryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('confectionery: sugarstage, crystalsize, temperaturecurve, temperingstages,
   assert.equal(ConfectioneryFormulas.recipecombos(10, 3).value, 120)
   assert.equal(ConfectioneryFormulas.yieldpct(95, 100).value, 95)
   assert.equal(ConfectioneryFormulas.sugarstage(150, 160).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('confectionery')?.length, 8)
+  assert.equal(hexFamiliesOf().get('confectionery')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'confectionery', program: ['sugarstage'], params: [150, 160] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 160, `confectionery.sugarstage at ${uuid}`)
-  qpuUuidReceiptOf('confectionery sugarstage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('confectionery sugarstage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; sugarstage 160, crystalsize 25, temperaturecurve 150, temperingstages 3, cocoaratio 70, bloomtemp 7, recipecombos 120, yieldpct 95; crossing to chemistry')
 })

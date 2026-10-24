@@ -6,9 +6,9 @@
  * `measured: false`. Nothing here is a constant.
  */
 import { leanSource, leanRecomputed } from '../quantum/processing/unit/lean.js'
-import { qpuMcpOf, qpuMcpChecksOf } from '../quantum/processing/unit/mcp.js'
+import { mcpOf, mcpChecksOf } from '../quantum/processing/unit/mcp.js'
 // families.js must stay imported here: its side effects register the hex families, and cite's
-// grant.next (checked by qpuMcpChecksOf) reads the 'graph' family. Without it the cite check fails
+// grant.next (checked by mcpChecksOf) reads the 'graph' family. Without it the cite check fails
 // depending only on load order, so the audit would report a defect the served unit does not have.
 import { families } from './families.js'
 import { REGISTRY_SNAPSHOT } from './registry.js'
@@ -87,12 +87,12 @@ const theoremCoverage = (_args: Args = {}) => {
 
 /** MCP tool catalogue: every served tool, its schema, its man page, and the catalogue's own checks. */
 const toolAudit = (_args: Args = {}) => {
-  const m = qpuMcpOf()
+  const m = mcpOf()
   const doors = m.tools as unknown as Array<{ name: string; inputSchema?: { type?: string } }>
   const cyber = m.cybersecurity.tools as unknown as Array<{ name: string; man?: { holds?: boolean } }>
   const names = [...doors.map((t) => t.name), ...cyber.map((t) => t.name)]
   const schemaIssues = doors.filter((t) => t.inputSchema?.type !== 'object').map((t) => t.name)
-  const issues = qpuMcpChecksOf(m).filter(([, ok]) => !ok).map(([name]) => name)
+  const issues = mcpChecksOf(m).filter(([, ok]) => !ok).map(([name]) => name)
   return {
     total_tools: names.length,
     registered_count: names.filter((n) => n.length > 0).length,

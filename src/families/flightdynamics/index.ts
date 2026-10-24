@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FLIGHTDYNAMICS — THE AIRCRAFT IN MOTION, AS ARITHMETIC (an aircraft's flight envelope is numbers). Load factor,
@@ -30,4 +30,4 @@ export class FlightdynamicsFormulas {
 }
 
 for (const name of ['bankangle', 'climbgradient', 'loadfactor', 'rangefactor', 'stallspeed', 'thrusttoweight', 'turnrate', 'wingloading'] as const)
-  qpuHexRegisterOf('flightdynamics', name, (FlightdynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(FlightdynamicsFormulas))
+  hexRegisterOf('flightdynamics', name, (FlightdynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(FlightdynamicsFormulas))

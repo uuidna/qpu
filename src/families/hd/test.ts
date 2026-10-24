@@ -1,7 +1,7 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import type { TestContext } from 'node:test'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CENTERS, CENTER_GATES, CHANNELS, HdFormulas, chartOf, gateLineOf, designJdOf } from './index.js'
 import { CalFormulas } from '../cal/index.js'
 import { YiFormulas } from '../yi/index.js'
@@ -66,7 +66,7 @@ test('hd: the design day is 70–100 days before birth and the chart defines cha
     assert.ok(chart.holds)
     assert.ok(['none', 'single', 'split', 'triple split', 'quadruple split'].includes(chart.definition))
     assert.equal(HdFormulas.design(jd * 1440).value, Math.round(chart.designJd * 1440), 'design takes and gives the minute')
-    qpuUuidReceiptOf(`hd chart ${jd}`, qpuContentUuidOf(chart), { gates: chart.gates.length, definition: chart.definition })
+    uuidReceiptOf(`hd chart ${jd}`, contentUuidOf(chart), { gates: chart.gates.length, definition: chart.definition })
   }
 })
 
@@ -95,17 +95,17 @@ test("cal: the calendar's drift explains the wheel — a day per 128 Julian or 3
   assert.equal(KinFormulas.combinations(8).value, 64 ** 8)
   assert.equal(KinFormulas.combinations(13).holds, false, '64¹³ does not fit a number: not claimed')
   assert.equal(KinFormulas.bits(13).value, 112, 'a 13-body chart carries ~112 bits')
-  assert.equal(qpuHexFamiliesOf().get('cal')?.length, 14)
-  assert.equal(qpuHexFamiliesOf().get('kin')?.length, 15, 'a family holds fifteen formulas: one nibble')
+  assert.equal(hexFamiliesOf().get('cal')?.length, 14)
+  assert.equal(hexFamiliesOf().get('kin')?.length, 15, 'a family holds fifteen formulas: one nibble')
 })
 
 test('hd: every formula of the family runs as a hex program', async () => {
-  const family = qpuHexFamiliesOf().get('hd')
+  const family = hexFamiliesOf().get('hd')
   assert.ok(family && family.length === 14, `hd registers 14 formulas: ${family?.map((f) => f.name).join(', ')}`)
   const probes: [string, number[], number][] = [['gate', [3020], 41], ['line', [3020], 1], ['center', [41], 9], ['channel', [30, 41], 1], ['channel', [30, 42], 0], ['channels', [10], 3], ['definition', [7], 4], ['cells', [], 768], ['ut', [1200, 720], 2160], ['mean', [0], 720], ['mean', [3450], 660], ['code', [20000101], 2000 * 372], ['jdm', [2000 * 372, 2160], 2451545 * 1440], ['chart', [2451545 * 1440], chartOf(2451545).defined.length]]
   for (const [name, params, expected] of probes) {
     const uuid = qpuHexUuidOf({ family: 'hd', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid)) as { value?: unknown; holds?: boolean }
     assert.equal(Number(run.value), expected, `hd.${name}(${params.join(', ')}) = ${expected} at ${uuid}`)
     assert.equal(run.holds, true)
   }
@@ -117,7 +117,7 @@ live('hd: the live host answers the same at the address', async (t) => {
   const r = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'cite', arguments: { hex: uuid } } }), signal: AbortSignal.timeout(DEADLINE) })
   const body = (await r.json()) as { result?: { structuredContent?: { value?: unknown; holds?: boolean; denied?: string } } }
   const live = body.result?.structuredContent
-  qpuUuidReceiptOf('hd live', qpuContentUuidOf(live ?? {}), { host })
+  uuidReceiptOf('hd live', contentUuidOf(live ?? {}), { host })
   assert.equal(live?.denied, undefined, `the host runs the family: ${JSON.stringify(live).slice(0, 200)}`)
   assert.equal(Number(live?.value), 41, `the host answers hd.gate(302.0°) = 41 at ${uuid}`)
   t.diagnostic(`hd.gate(3020) = 41 at ${uuid}, live and here`)
@@ -186,7 +186,7 @@ test('cal: the Day Out of Time is a coin — a leap year holds both uncounted da
 test('hd: ut and definition meet the superpositions the unit still reaches', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -225,7 +225,7 @@ test('hd: ut and definition meet the superpositions the unit still reaches', asy
 test('hd: sun∘mean meets the kin the unit still reaches', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }

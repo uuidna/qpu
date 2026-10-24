@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GELATINIZATION — scaffolded integer measures crossed to chemistry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class GelatinizationFormulas {
 }
 
 for (const name of ['granuleexpansion', 'onsettemp', 'pasteclarity', 'peakviscosity', 'setbacktemp', 'starchconversion', 'swellingratio', 'waterabsorption'] as const)
-  qpuHexRegisterOf('gelatinization', name, (GelatinizationFormulas[name] as (...x: unknown[]) => unknown).bind(GelatinizationFormulas))
+  hexRegisterOf('gelatinization', name, (GelatinizationFormulas[name] as (...x: unknown[]) => unknown).bind(GelatinizationFormulas))

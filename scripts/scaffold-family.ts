@@ -60,7 +60,7 @@ const indexOf = (spec) => {
   const names = methods.map((m) => m[0])
   const proof = `${fam} counts: ` + methods.map(([name, op]) => `${name}${OPS[op].text}`).join('; ')
   const lines = []
-  lines.push(`import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'`)
+  lines.push(`import { hexRegisterOf } from '../../quantum/processing/unit/index.js'`)
   lines.push(`import { crossFormulaOf, type CrossFormula } from '../cross/index.js'`)
   lines.push('')
   lines.push(`/** ${Cls} — ${names.length} exact-integer formulas of the ${fam} domain, each at a hex address crossing to ${dst}; develops the ${fam} leads. */`)
@@ -81,7 +81,7 @@ const indexOf = (spec) => {
   lines.push('}')
   lines.push('')
   lines.push(`for (const name of [${names.map((x) => `'${x}'`).sort().join(', ')}] as const)`)
-  lines.push(`  qpuHexRegisterOf('${fam}', name, (${Cls}[name] as (...x: unknown[]) => unknown).bind(${Cls}))`)
+  lines.push(`  hexRegisterOf('${fam}', name, (${Cls}[name] as (...x: unknown[]) => unknown).bind(${Cls}))`)
   return lines.join('\n') + '\n'
 }
 
@@ -93,19 +93,19 @@ const testOf = (spec) => {
   const lines = []
   lines.push(`import { test } from '../../quantum/processing/unit/receipted.js'`)
   lines.push(`import assert from 'node:assert/strict'`)
-  lines.push(`import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'`)
+  lines.push(`import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'`)
   lines.push(`import { ${Cls} } from './index.js'`)
   lines.push('')
   lines.push(`/** ${fam}: ${rows.length} exact-integer formulas, each recomputed from the palette and run at its hex address. */`)
   lines.push(`test('${fam}: ${rows.map((r) => r.name).join(', ')}', async (t) => {`)
   for (const r of rows)
     lines.push(`  assert.equal(${Cls}.${r.name}(${r.args.join(', ')}).value, ${r.value}, '${r.name}(${r.args.join(', ')})')`)
-  lines.push(`  assert.equal(qpuHexFamiliesOf().get('${fam}')?.length, ${rows.length})`)
+  lines.push(`  assert.equal(hexFamiliesOf().get('${fam}')?.length, ${rows.length})`)
   lines.push(`  for (const [name, params, expected] of ${JSON.stringify(runnable.map((r) => [r.name, r.args, r.value]))} as [string, number[], number][]) {`)
   lines.push(`    const uuid = qpuHexUuidOf({ family: '${fam}', program: [name], params })`)
-  lines.push(`    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }`)
+  lines.push(`    const run = (await hexRunOf(uuid)) as { value?: unknown }`)
   lines.push(`    assert.equal(Number(run.value), expected, \`${fam}.\${name} at \${uuid}\`)`)
-  lines.push(`    qpuUuidReceiptOf(\`${fam} \${name}\`, qpuContentUuidOf(run), { uuid })`)
+  lines.push(`    uuidReceiptOf(\`${fam} \${name}\`, contentUuidOf(run), { uuid })`)
   lines.push(`  }`)
   lines.push(`  t.diagnostic('${rows.length} formulas; ' + ${JSON.stringify(runnable.map((r) => `${r.name}=${r.value}`).join(', '))})`)
   lines.push(`})`)

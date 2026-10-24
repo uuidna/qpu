@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ObsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('obs: uptime, errorrate, latencyp99, throughput, alertcombos, sloburn, samp
   assert.equal(ObsFormulas.samplingrate(10, 100).value, 10)
   assert.equal(ObsFormulas.dashboardsubsets(5).value, 32)
   assert.equal(ObsFormulas.uptime(999, 1000).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('obs')?.length, 8)
+  assert.equal(hexFamiliesOf().get('obs')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'obs', program: ['uptime'], params: [999, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 99, `obs.uptime at ${uuid}`)
-  qpuUuidReceiptOf('obs uptime', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('obs uptime', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; uptime 99, errorrate 5, latencyp99 50, throughput 100, alertcombos 45, sloburn 5, samplingrate 10, dashboardsubsets 32; crossing to statistics')
 })

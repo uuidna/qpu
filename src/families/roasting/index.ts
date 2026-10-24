@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ROASTING — COFFEE ROASTING AS ARITHMETIC (a craft the registry can measure, not run by hand). A roast is numbers:
@@ -31,4 +31,4 @@ export class RoastingFormulas {
 }
 
 for (const name of ['agtron', 'batchsize', 'charge', 'density', 'developmenttime', 'moisture', 'rampspeed', 'weightloss'] as const)
-  qpuHexRegisterOf('roasting', name, (RoastingFormulas[name] as (...x: unknown[]) => unknown).bind(RoastingFormulas))
+  hexRegisterOf('roasting', name, (RoastingFormulas[name] as (...x: unknown[]) => unknown).bind(RoastingFormulas))

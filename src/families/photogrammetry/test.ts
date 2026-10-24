@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhotogrammetryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('photogrammetry: scale, overlap, gsd, basedistance, parallax, accuracy, tie
   assert.equal(PhotogrammetryFormulas.tiepoints(900, 1000).value, 90, 'tie points matched')
   assert.equal(PhotogrammetryFormulas.reconstruction(10000, 50).value, 200, 'points per image')
   assert.equal(PhotogrammetryFormulas.scale(50, 10000).dst, 'cartography')
-  assert.equal(qpuHexFamiliesOf().get('photogrammetry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('photogrammetry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'photogrammetry', program: ['overlap'], params: [80, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `photogrammetry.overlap at ${uuid}`)
-  qpuUuidReceiptOf('photogrammetry overlap', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('photogrammetry overlap', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; scale 5000, overlap 80, gsd 50, basedistance 2000, parallax 25, accuracy 2, tiepoints 90, reconstruction 200; crossing to cartography')
 })

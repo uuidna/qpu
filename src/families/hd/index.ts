@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn, halfTurn } = qpuLatticeNamesOf()
+const { fullTurn, halfTurn } = latticeNamesOf()
 
 /** HUMAN DESIGN, THE STRUCTURE ONLY. The Rave Mandala is a wheel of 64 gates (the I Ching hexagrams) of 360/64° each,
  *  six lines of a gate's arc each, anchored at gate 41 at 302°; nine centers partition the 64 gates; 36 channels join
@@ -172,4 +172,4 @@ export class HdFormulas {
 }
 
 for (const name of ['cells', 'center', 'channel', 'channels', 'chart', 'code', 'definition', 'design', 'gate', 'jdm', 'line', 'mean', 'sun', 'ut'] as const)
-  qpuHexRegisterOf('hd', name, (HdFormulas[name] as (...x: unknown[]) => unknown).bind(HdFormulas))
+  hexRegisterOf('hd', name, (HdFormulas[name] as (...x: unknown[]) => unknown).bind(HdFormulas))

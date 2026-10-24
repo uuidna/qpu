@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ONTOLOGY — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class OntologyFormulas {
 }
 
 for (const name of ['categories', 'entitysubsets', 'hierarchydepth', 'modalstates', 'partonomylinks', 'predicatecombos', 'relationpairs', 'substanceorderings'] as const)
-  qpuHexRegisterOf('ontology', name, (OntologyFormulas[name] as (...x: unknown[]) => unknown).bind(OntologyFormulas))
+  hexRegisterOf('ontology', name, (OntologyFormulas[name] as (...x: unknown[]) => unknown).bind(OntologyFormulas))

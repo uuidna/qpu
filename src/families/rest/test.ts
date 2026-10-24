@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RestFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('rest: throughput, latency, payloadsize, statusclass, ratelimit, cachettl, 
   assert.equal(RestFormulas.errorrate(50, 1000).value, 5)
   assert.equal(RestFormulas.errorrate(1000, 1000).value, 100)
   assert.equal(RestFormulas.throughput(6000, 60).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('rest')?.length, 8)
+  assert.equal(hexFamiliesOf().get('rest')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'rest', program: ['pagination'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `rest.pagination at ${uuid}`)
-  qpuUuidReceiptOf('rest pagination', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('rest pagination', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; throughput 100, latency 50, payloadsize 2560, statusclass 4, ratelimit 16, cachettl 180, pagination 4, errorrate 5; crossing to networking')
 })

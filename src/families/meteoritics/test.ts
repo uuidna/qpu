@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MeteoriticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('meteoritics: energy, crater, ablation, flux, velocity, composition, magnit
   assert.equal(MeteoriticsFormulas.survival(100, 70).value, 30, 'mass through the air')
   assert.equal(MeteoriticsFormulas.survival(50, 80).value, 0)
   assert.equal(MeteoriticsFormulas.energy(10, 20).dst, 'astronomy')
-  assert.equal(qpuHexFamiliesOf().get('meteoritics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('meteoritics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'meteoritics', program: ['crater'], params: [2000, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 400, `meteoritics.crater at ${uuid}`)
-  qpuUuidReceiptOf('meteoritics crater', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('meteoritics crater', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; energy 2000, crater 400, ablation 70, flux 20, velocity 100, composition 25, magnitude 100, survival 30; crossing to astronomy')
 })

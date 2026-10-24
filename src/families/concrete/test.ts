@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConcreteFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('concrete: volume, cement, watercement, slump, strength, cure, mix, rebar â
   assert.equal(ConcreteFormulas.mix(1, 2, 4).value, 7, 'a 1:2:4 mix is seven parts')
   assert.equal(ConcreteFormulas.rebar(100, 20).value, 5, 'five bars across the span')
   assert.equal(ConcreteFormulas.volume(10, 4, 2).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('concrete')?.length, 8)
+  assert.equal(hexFamiliesOf().get('concrete')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'concrete', program: ['rebar'], params: [100, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `concrete.rebar at ${uuid}`)
-  qpuUuidReceiptOf('concrete rebar', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('concrete rebar', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; volume 80, cement 560, watercement 50, slump 75, strength 28, cure 21, mix 7, rebar 5; crossing to materials')
 })

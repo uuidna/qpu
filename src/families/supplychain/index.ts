@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SUPPLYCHAIN — MOVING GOODS, AS ARITHMETIC (chosen by the registry, not by hand). A supply chain is numbers: how long an
@@ -31,4 +31,4 @@ export class SupplychainFormulas {
 }
 
 for (const name of ['backorder', 'cycle', 'fillrate', 'leadtime', 'reorder', 'safetystock', 'turnover', 'utilization'] as const)
-  qpuHexRegisterOf('supplychain', name, (SupplychainFormulas[name] as (...x: unknown[]) => unknown).bind(SupplychainFormulas))
+  hexRegisterOf('supplychain', name, (SupplychainFormulas[name] as (...x: unknown[]) => unknown).bind(SupplychainFormulas))

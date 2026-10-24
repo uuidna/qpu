@@ -16,7 +16,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { PayloadTemplates, cloudflareCombinations, cloudflareKeyOf, cloudflareCombinationOf, CLOUDFLARE_PLUGINS, CLOUDFLARE_FRONTENDS, ALT_FRONTENDS } from '../dist/deployment/payload-templates.js'
-import { bootPort, qpuCiteOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf, qpuHexUuidOf, qpuHexRunOf } from '../dist/quantum/processing/unit/index.js'
+import { bootPort, qpuCiteOf, contentUuidOf, uuidReceiptOf, receiptStreamsOf, qpuHexUuidOf, hexRunOf } from '../dist/quantum/processing/unit/index.js'
 // every family registers on import — so the combinatorics family that seals the combination count is callable here
 await import('../dist/mcp/families.js')
 import { themeCssOf } from '../dist/deployment/payload-templates.js'
@@ -45,7 +45,7 @@ const REPO_COLLECTIONS = modulesOf('collections', 'ts').map(fromConfig('collecti
 const REPO_GLOBALS = modulesOf('globals', 'ts').map(fromConfig('globals'))
 // the hex families, fused doors and MCP methods register themselves on import: the modules that do so are found by
 // what they call, and every importer (the Worker, the site, the receipts, the README) imports this one registry
-const registers = (f) => /\b(qpuHexRegisterOf|qpuMcpFuseOf|qpuMcpRegisterOf)\(/.test(fs.readFileSync(f, 'utf8'))
+const registers = (f) => /\b(hexRegisterOf|mcpFuseOf|mcpRegisterOf)\(/.test(fs.readFileSync(f, 'utf8'))
 const registering = [
   // every family is a folder: src/families/<name>/index.ts (its test beside it as test.ts)
   ...fs.readdirSync(path.join(SRC, 'families'), { withFileTypes: true }).filter((e) => e.isDirectory() && fs.existsSync(path.join(SRC, 'families', e.name, 'index.ts')) && registers(path.join(SRC, 'families', e.name, 'index.ts'))).map((e) => ({ name: e.name, from: `../families/${e.name}/index.js`, key: e.name })),
@@ -172,8 +172,8 @@ if (process.argv.includes('--repo')) {
   }
   // the registries just written are read by the config and the frontend: the import map and the types follow them
   for (const cmd of ['generate:importmap', 'generate:types']) execSync(`npx payload ${cmd}`, { cwd: ROOT, stdio: 'pipe', env: { ...process.env, PAYLOAD_CONFIG_PATH: `${SRC}/payload.config.ts` } })
-  const uuid = qpuContentUuidOf({ ...REPO, image: REPO_IMAGE })
-  const row = { key: REPO.key, uuid, image: REPO_IMAGE.image, receipt: qpuUuidReceiptOf('payload-cf repo', uuid, REPO.key, 'scripts/payload-cloudflare.ts --repo').uuid, files: Object.keys(written), dependencies: t.dependencies }
+  const uuid = contentUuidOf({ ...REPO, image: REPO_IMAGE })
+  const row = { key: REPO.key, uuid, image: REPO_IMAGE.image, receipt: uuidReceiptOf('payload-cf repo', uuid, REPO.key, 'scripts/payload-cloudflare.ts --repo').uuid, files: Object.keys(written), dependencies: t.dependencies }
   // the app compiled against the installed packages, exactly as next build checks it
   let out = ''
   try { execSync('npx tsc -p tsconfig.payload.json --noEmit --incremental false', { cwd: ROOT, stdio: 'pipe' }) } catch (e) { out = `${e.stdout}${e.stderr}` }
@@ -182,13 +182,82 @@ if (process.argv.includes('--repo')) {
   process.exit(errors.length ? 1 : 0)
 }
 
+/* THE GOOGLE COMPETITION'S APP (Kaggle "Verifiable Quantum Circuit Compilation", arXiv:2610.23832). Its names are the
+ * competition's own: the benchmarks fusion, dqi and chemistry, and the cost terms Q, C, T, R, lambda_eff, T_tot, Q_tot as
+ * the paper defines them. The collections live beside it under apps/<slug>/src/collections. OpenNext on Cloudflare, every
+ * collection on the QPU document database (qpu-raid), no upload storage and no email. */
+const KAGGLE_NAME = 'google-verifiable-quantum-circuit-compilation'
+const KAGGLE_OUT = `apps/${KAGGLE_NAME}`
+const KAGGLE = {
+  key: 'opennext/qpu-raid/none/none/shadcn/mcp',
+  app: {
+    root: 'src',
+    collections: [
+      { name: 'Users', from: './collections/Users', slug: 'users' },
+      { name: 'Fusion', from: './collections/Fusion', slug: 'fusion' },
+      { name: 'Dqi', from: './collections/Dqi', slug: 'dqi' },
+      { name: 'Chemistry', from: './collections/Chemistry', slug: 'chemistry' },
+    ],
+    adminUser: 'users',
+    title: 'Google Verifiable Quantum Circuit Compilation',
+    // the frontend is the app's own shadcn site: Tailwind and the shadcn primitives from the template, and the pages that
+    // read the Payload REST API are written by the app; the template's sample pages are left out
+    own: [
+      'src/app/(frontend)/page.tsx', 'src/app/(frontend)/layout.tsx', 'src/app/(frontend)/site.ts', 'src/app/(frontend)/pages/[slug]/page.tsx',
+    ],
+    origins: ['http://localhost:5173'],
+    // the Payload MCP plugin exposes the three benchmark collections; the VitePress site reads them through it
+    targets: { mcp: ['fusion', 'dqi', 'chemistry'] },
+  },
+}
+if (process.argv.includes('--kaggle')) {
+  const t = PayloadTemplates.cloudflarePayload(cloudflareCombinationOf(KAGGLE.key), KAGGLE_NAME, KAGGLE.app)
+  for (const [f, text] of Object.entries(t.files)) {
+    const full = path.join(KAGGLE_OUT, f)
+    fs.mkdirSync(path.dirname(full), { recursive: true })
+    fs.writeFileSync(full, text)
+  }
+  // every package at its latest published version (npm dist-tags.latest, read at generation); a name that already carries a
+  // version keeps it. @uuidna/qpu is this repository: its newest published build is older than the source the app's
+  // adapter comes from, so it is the local package
+  const latestOf = (dep: string) => execSync(`npm view ${dep} dist-tags.latest`, { encoding: 'utf8' }).trim()
+  const pinned = t.dependencies.map((d) => {
+    if (d.lastIndexOf('@') > 0) return d
+    if (d === '@uuidna/qpu') return `${d}@file:${path.relative(KAGGLE_OUT, ROOT) || '.'}`
+    return `${d}@${latestOf(d)}`
+  })
+  fs.writeFileSync(path.join(KAGGLE_OUT, 'dependencies.txt'), pinned.join('\n') + '\n')
+  // the app runs on its own: package.json (the pinned set above, and the scripts that run it) and the tsconfig the Next
+  // build reads, with the two aliases the template imports (@/ is src, @payload-config is the Payload config)
+  const at = (d: string) => d.lastIndexOf('@')
+  const pkgJson = {
+    name: KAGGLE_NAME, version: '1.0.0', private: true, type: 'module',
+    scripts: { dev: 'next dev', build: 'next build', start: 'next start', 'vitepress:dev': 'vitepress dev vitepress', 'vitepress:build': 'vitepress build vitepress' },
+    dependencies: Object.fromEntries(pinned.map((d) => [d.slice(0, at(d)), d.slice(at(d) + 1)])),
+  }
+  fs.writeFileSync(path.join(KAGGLE_OUT, 'package.json'), JSON.stringify(pkgJson, null, 2) + '\n')
+  const tsconfig = {
+    compilerOptions: {
+      target: 'ES2022', lib: ['dom', 'dom.iterable', 'esnext'], module: 'esnext', moduleResolution: 'bundler', jsx: 'react-jsx', strict: true, noEmit: true,
+      skipLibCheck: true, esModuleInterop: true, resolveJsonModule: true, isolatedModules: true, incremental: true, allowJs: true,
+      plugins: [{ name: 'next' }],
+      paths: { '@/*': ['./src/*'], '@payload-config': ['./src/payload.config.ts'] },
+    },
+    include: ['next-env.d.ts', 'src/**/*.ts', 'src/**/*.tsx', '.next/types/**/*.ts'],
+    exclude: ['node_modules', 'vitepress', '.next', '.open-next'],
+  }
+  fs.writeFileSync(path.join(KAGGLE_OUT, 'tsconfig.json'), JSON.stringify(tsconfig, null, 2) + '\n')
+  console.log(JSON.stringify({ key: t.key, uuid: contentUuidOf(t.combination), out: KAGGLE_OUT, files: Object.keys(t.files) }, null, 1))
+  process.exit(0)
+}
+
 if (arg('--emit')) {
   const t = PayloadTemplates.cloudflarePayload(cloudflareCombinationOf(arg('--emit')), path.basename(arg('--out') ?? 'payload-cloudflare'))
   const out = arg('--out') ?? '.'
   fs.mkdirSync(out, { recursive: true })
   for (const [f, text] of Object.entries(t.files)) fs.writeFileSync(path.join(out, f), text)
   fs.writeFileSync(path.join(out, 'dependencies.txt'), t.dependencies.join('\n') + '\n')
-  console.log(JSON.stringify({ key: t.key, uuid: qpuContentUuidOf(t.combination), files: Object.keys(t.files), dependencies: t.dependencies }, null, 1))
+  console.log(JSON.stringify({ key: t.key, uuid: contentUuidOf(t.combination), files: Object.keys(t.files), dependencies: t.dependencies }, null, 1))
   process.exit(0)
 }
 
@@ -200,8 +269,8 @@ const axes = { runtime: new Set(), db: new Set(), storage: new Set(), email: new
 let total = 0
 for (const c of cloudflareCombinations()) {
   const key = cloudflareKeyOf(c)
-  const uuid = qpuContentUuidOf(c)
-  const r = qpuUuidReceiptOf(`payload-cf ${key}`, uuid, key, 'scripts/payload-cloudflare.ts')
+  const uuid = contentUuidOf(c)
+  const r = uuidReceiptOf(`payload-cf ${key}`, uuid, key, 'scripts/payload-cloudflare.ts')
   manifest.write(JSON.stringify({ key, uuid, receipt: r.uuid }) + '\n')
   for (const a of Object.keys(axes)) axes[a].add(c[a])
   total++
@@ -212,7 +281,7 @@ await new Promise((r) => manifest.end(r))
 // binomial(n) = 2ⁿ gives the plugin subsets, times the axis cardinalities. The enumerator and the family must agree —
 // a mismatch means the plugin axis drifted from what the family computes, and the run fails rather than ship a wrong count.
 const binomialUuid = qpuHexUuidOf({ family: 'combinatorics', program: ['binomial'], params: [CLOUDFLARE_PLUGINS.length] })
-const binomial = await qpuHexRunOf(binomialUuid)
+const binomial = await hexRunOf(binomialUuid)
 const pluginSubsets = binomial.value
 const familyCombinations = axes.runtime.size * axes.db.size * axes.storage.size * axes.email.size * axes.frontend.size * pluginSubsets
 if (!(binomial.holds === true) || familyCombinations !== total)
@@ -268,7 +337,7 @@ const frontends = CLOUDFLARE_FRONTENDS.map((frontend) => {
   return { frontend, files: files.length, ok: missing.length === 0, missing }
 })
 
-const stream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'payload-cf')
+const stream = receiptStreamsOf(0).streams.find((s) => s.stream === 'payload-cf')
 const receipt = {
   kind: 'payload-cf-receipt',
   axes: Object.fromEntries(Object.entries(axes).map(([k, v]) => [k, [...v]])),

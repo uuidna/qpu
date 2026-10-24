@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TelecomFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('telecom: bandwidth, latency, erlang, coverage, signal, packet, jitter, cap
   assert.equal(TelecomFormulas.jitter(50, 12).value, 38)
   assert.equal(TelecomFormulas.capacity(1000, 40).value, 25)
   assert.equal(TelecomFormulas.bandwidth(1000, 8).dst, 'obs')
-  assert.equal(qpuHexFamiliesOf().get('telecom')?.length, 8)
+  assert.equal(hexFamiliesOf().get('telecom')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'telecom', program: ['jitter'], params: [50, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 38, `telecom.jitter at ${uuid}`)
-  qpuUuidReceiptOf('telecom jitter', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('telecom jitter', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bandwidth 1000, latency 15, erlang 180, coverage 200, signal 60/-10, packet 98, jitter 38, capacity 25; crossing to obs')
 })

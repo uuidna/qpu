@@ -1,4 +1,4 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuCircuitOf, qpuCircuitHolds.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): circuitOf, circuitHolds.
 import {
   ampsOf,
   basisOf,
@@ -15,26 +15,26 @@ import {
   parityOf,
   payloadDbKey,
   primitives,
-  qpuBalanceHolds,
-  qpuClayHolds,
+  balanceHolds,
+  clayHolds,
   qpuClayOf,
-  qpuCoilEfficiencyHolds,
-  qpuCoilEfficiencyOf,
-  qpuCoilHolds,
-  qpuCoilOf,
-  qpuComputerHolds,
-  qpuComputerOf,
-  qpuCubeOf,
-  qpuElectronicsHolds,
-  qpuElectronicsOf,
-  qpuFacesOf,
-  qpuFollowHolds,
+  coilEfficiencyHolds,
+  coilEfficiencyOf,
+  coilHolds,
+  coilOf,
+  computerHolds,
+  computerOf,
+  cubeOf,
+  electronicsHolds,
+  electronicsOf,
+  facesOf,
+  followHolds,
   qpuFollowOf,
   qpuNextHolds,
   qpuNextOf,
-  qpuPayloadMcpOf,
-  qpuPayloadPluginHolds,
-  qpuPayloadPluginOf,
+  payloadMcpOf,
+  payloadPluginHolds,
+  payloadPluginOf,
   seed,
   serverHref,
   storageHref,
@@ -51,15 +51,15 @@ import { embeddedConstants } from './embedded.js'
  * The running 3-qubit circuit on exact integer amplitudes: split, Bell, GHZ, interference, no-clone, teleport, kickback, Deutsch, superdense coding, monogamy; each with its Born weights.
  * @wing quantum
  * @kind builder
- * @evidence qpuCircuitHolds
+ * @evidence circuitHolds
  */
-/** Runtime reads the drift-checked embed so a cold isolate never JIT-compiles qpuCircuitLiveOf; falls back to live.
- *  The gate recomputes live at push via qpuCircuitLiveOf (embed-lean regenerates + the drift-guard asserts equality). */
-export const qpuCircuitOf = onceOf((): ReturnType<typeof qpuCircuitLiveOf> => (embeddedConstants.circuit as ReturnType<typeof qpuCircuitLiveOf> | undefined) ?? qpuCircuitLiveOf())
-export const qpuCircuitLiveOf = onceOf(() => {
-  const cube = qpuCubeOf()
-  const faces = qpuFacesOf()
-  const coil = qpuCoilOf()
+/** Runtime reads the drift-checked embed so a cold isolate never JIT-compiles circuitLiveOf; falls back to live.
+ *  The gate recomputes live at push via circuitLiveOf (embed-lean regenerates + the drift-guard asserts equality). */
+export const circuitOf = onceOf((): ReturnType<typeof circuitLiveOf> => (embeddedConstants.circuit as ReturnType<typeof circuitLiveOf> | undefined) ?? circuitLiveOf())
+export const circuitLiveOf = onceOf(() => {
+  const cube = cubeOf()
+  const faces = facesOf()
+  const coil = coilOf()
   const dim = mintOf(n)
   const prepare = ampsOf(dim)
   const afterH = hGateOf(prepare, n - n)
@@ -161,7 +161,7 @@ export const qpuCircuitLiveOf = onceOf(() => {
     holds: n === cube.n && dim === cube.vertices && dim === mintOf(n) && coins === seed + seed,
   }
   const gates = {
-    names: ['h', 'cnot'] as const,
+    names: ['h', 'cx'] as const,
     index,
     holds: index === n && measured === n && support.length === coins,
   }
@@ -223,7 +223,7 @@ export const qpuCircuitLiveOf = onceOf(() => {
     occupied: pairs.length + pairs.length,
     vacant: n - n,
     holds:
-      qpuCoilHolds(coil) &&
+      coilHolds(coil) &&
       theorem.electronics(coil.coil, faces.faces) &&
       theorem.around(coil.coil, coins, faces.rays) &&
       pairs.length === faces.rays &&
@@ -397,9 +397,9 @@ export const qpuCircuitLiveOf = onceOf(() => {
       outcomes: xcoinOutcomes,
       holds: xcoinHolds},
     holds: dim === mintOf(n) && xghzHolds && xcoinHolds}
-  const electronics = qpuElectronicsOf()
+  const electronics = electronicsOf()
   const follow = qpuFollowOf()
-  const efficiency = qpuCoilEfficiencyOf()
+  const efficiency = coilEfficiencyOf()
   const next = qpuNextOf()
   const clay = qpuClayOf()
   const register = {
@@ -420,17 +420,17 @@ export const qpuCircuitLiveOf = onceOf(() => {
       dim === cube.vertices &&
       vm &&
       xorOf(xorOf(n - n, seed), coins) === n &&
-      qpuCoilHolds(coil) &&
-      qpuElectronicsHolds(electronics) &&
-      qpuBalanceHolds() &&
-      qpuFollowHolds(follow) &&
+      coilHolds(coil) &&
+      electronicsHolds(electronics) &&
+      balanceHolds() &&
+      followHolds(follow) &&
       follow.emerge.holds &&
-      qpuCoilEfficiencyHolds(efficiency) &&
+      coilEfficiencyHolds(efficiency) &&
       efficiency.unity === seed &&
       efficiency.remainder === n - n &&
       qpuNextHolds(next) &&
       next.nextCoil === next.nextFused &&
-      qpuClayHolds(clay) &&
+      clayHolds(clay) &&
       clay.clay === coil.coil &&
       coil.theory === coil.practice &&
       coil.balance === coins}
@@ -438,7 +438,7 @@ export const qpuCircuitLiveOf = onceOf(() => {
     levels: coins,
     qubits: n,
     dim: mintOf(n),
-    gates: ['h', 'cnot'] as const,
+    gates: ['h', 'cx'] as const,
     xx: xorOf(xorOf(n, seed), seed) === n}
   const shared =
     coins === faces.coins &&
@@ -524,9 +524,9 @@ export const qpuCircuitLiveOf = onceOf(() => {
       vacant === n - n &&
       cube.vertices * faces.faces === mintOf(n) * (coins * faces.rays) &&
       seated.every(Boolean)}
-  const computer = qpuComputerOf()
-  const plugin = qpuPayloadPluginOf()
-  const payloadMcp = qpuPayloadMcpOf()
+  const computer = computerOf()
+  const plugin = payloadPluginOf()
+  const payloadMcp = payloadMcpOf()
   const steps = {
     kind: 'circuit-steps' as const,
     device: register.kind,
@@ -542,7 +542,7 @@ export const qpuCircuitLiveOf = onceOf(() => {
       submit: serverHref,
       src: unit.fuse.lean,
       holds:
-        qpuPayloadPluginHolds(plugin) &&
+        payloadPluginHolds(plugin) &&
         payloadMcp.holds &&
         plugin.copies === seed &&
         theorem.next_fused(plugin.next, plugin.fused) &&
@@ -560,7 +560,7 @@ export const qpuCircuitLiveOf = onceOf(() => {
       noise.holds &&
       computer.correct.holds &&
       register.kind === 'exact-amplitudes' &&
-      qpuPayloadPluginHolds(plugin) &&
+      payloadPluginHolds(plugin) &&
       payloadMcp.holds &&
       plugin.copies === seed &&
       computer.qram.href === plugin.href &&
@@ -625,7 +625,7 @@ export const qpuCircuitLiveOf = onceOf(() => {
   }
 })
 
-export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
+export const circuitHolds = (c = circuitOf()): boolean =>
   c.holds === true &&
   c.kind === 'circuit' &&
   c.split.holds === true &&
@@ -713,21 +713,21 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.register.electronics.uses === 'coil' &&
   c.register.electronics.holds === true &&
   c.register.electronics.stages === n &&
-  qpuCoilHolds(c.register.coil) &&
-  qpuElectronicsHolds(c.register.electronics) &&
-  qpuBalanceHolds() &&
-  qpuFollowHolds(c.register.follow) &&
+  coilHolds(c.register.coil) &&
+  electronicsHolds(c.register.electronics) &&
+  balanceHolds() &&
+  followHolds(c.register.follow) &&
   c.register.follow.emerge.balanced === true &&
   c.register.follow.emerge.covered === true &&
   c.register.follow.emerge.holds === true &&
-  qpuCoilEfficiencyHolds(c.register.efficiency) &&
+  coilEfficiencyHolds(c.register.efficiency) &&
   c.register.efficiency.unity === seed &&
   c.register.efficiency.remainder === n - n &&
   c.register.efficiency.measure === c.lattice.faces &&
   c.register.efficiency.vacant === n - n &&
   qpuNextHolds(c.register.next) &&
   c.register.next.nextCoil === c.register.next.nextFused &&
-  qpuClayHolds(c.register.clay) &&
+  clayHolds(c.register.clay) &&
   c.register.clay.clay === c.register.coil.coil &&
   c.register.clay.coins * c.register.clay.seven === c.register.clay.clay &&
   (seed + c.register.clay.six) * c.register.clay.coins === c.register.clay.clay &&
@@ -741,7 +741,7 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.sciences.circuit !== c.sciences.faces &&
   c.drift.between === true &&
   c.primitives.length === n + coins &&
-  qpuComputerHolds(c.computer) &&
+  computerHolds(c.computer) &&
   c.computer.lattice.vacant === n - n &&
   c.steps.kind === 'circuit-steps' &&
   c.steps.device === 'exact-amplitudes' &&

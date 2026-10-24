@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { IdealismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('idealism: mindcategories, phenomenasubsets, dialecticstages, conceptpairs,
   assert.equal(IdealismFormulas.syntheticunity(90, 100).value, 90)
   assert.equal(IdealismFormulas.thesisorderings(5, 2).value, 20)
   assert.equal(IdealismFormulas.mindcategories(12, 0).dst, 'philosophy')
-  assert.equal(qpuHexFamiliesOf().get('idealism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('idealism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'idealism', program: ['mindcategories'], params: [12, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `idealism.mindcategories at ${uuid}`)
-  qpuUuidReceiptOf('idealism mindcategories', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('idealism mindcategories', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mindcategories 12, phenomenasubsets 64, dialecticstages 6, conceptpairs 45, absolutelevels 3, representationmodes 12, syntheticunity 90, thesisorderings 20; crossing to philosophy')
 })

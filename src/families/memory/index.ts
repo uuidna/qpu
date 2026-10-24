@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MEMORY — HOW WHAT IS LEARNED IS KEPT, LOST, AND FOUND AGAIN, AS ARITHMETIC. Retention of what was learned, the
@@ -31,4 +31,4 @@ export class MemoryFormulas {
 }
 
 for (const name of ['consolidation', 'forgetting', 'interference', 'recall', 'recognition', 'retention', 'spacing', 'span'] as const)
-  qpuHexRegisterOf('memory', name, (MemoryFormulas[name] as (...x: unknown[]) => unknown).bind(MemoryFormulas))
+  hexRegisterOf('memory', name, (MemoryFormulas[name] as (...x: unknown[]) => unknown).bind(MemoryFormulas))

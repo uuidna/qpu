@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** COIL — THE 7-STAR ROSETTA AND THE DOUBLE TORUS, AS ARITHMETIC. Clay is a rosetta of seven: six rays around one
  *  centre (6 + 1). The zero is that star laid flat — a 6×7 matrix, forty-two either way it is read (6×7 = 7×6). Fold the
@@ -40,4 +40,4 @@ export class CoilFormulas {
 }
 
 for (const name of ['coil', 'dims', 'dual', 'fold', 'genus', 'matrix', 'signal', 'spin', 'star', 'turn'] as const)
-  qpuHexRegisterOf('coil', name, (CoilFormulas[name] as (...x: unknown[]) => unknown).bind(CoilFormulas))
+  hexRegisterOf('coil', name, (CoilFormulas[name] as (...x: unknown[]) => unknown).bind(CoilFormulas))

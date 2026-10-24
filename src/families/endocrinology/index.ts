@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENDOCRINOLOGY — THE HORMONE SYSTEM, AS ARITHMETIC. The glands and their signals are numbers: insulin resistance from
@@ -30,4 +30,4 @@ export class EndocrinologyFormulas {
 }
 
 for (const name of ['a1c', 'cortisol', 'feedback', 'halflife', 'homa', 'secretion', 'sensitivity', 'thyroid'] as const)
-  qpuHexRegisterOf('endocrinology', name, (EndocrinologyFormulas[name] as (...x: unknown[]) => unknown).bind(EndocrinologyFormulas))
+  hexRegisterOf('endocrinology', name, (EndocrinologyFormulas[name] as (...x: unknown[]) => unknown).bind(EndocrinologyFormulas))

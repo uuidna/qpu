@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GLOMERULAR — THE KIDNEY'S FILTER, AS ARITHMETIC. The glomerulus is numbers: what the tubule excretes, the clearance of
@@ -30,4 +30,4 @@ export class GlomerularFormulas {
 }
 
 for (const name of ['clearance', 'creatinineclearance', 'excretion', 'filteredload', 'filtrationfraction', 'filtrationrate', 'plasmaflow', 'reabsorption'] as const)
-  qpuHexRegisterOf('glomerular', name, (GlomerularFormulas[name] as (...x: unknown[]) => unknown).bind(GlomerularFormulas))
+  hexRegisterOf('glomerular', name, (GlomerularFormulas[name] as (...x: unknown[]) => unknown).bind(GlomerularFormulas))

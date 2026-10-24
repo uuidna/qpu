@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MYCOLOGY — THE GROWTH OF FUNGI, AS ARITHMETIC (chosen by the registry, not by hand). Fungal life is numbers: biomass
@@ -30,4 +30,4 @@ export class MycologyFormulas {
 }
 
 for (const name of ['colonization', 'decomposition', 'efficiency', 'fruiting', 'germination', 'growth', 'mycelium', 'spore'] as const)
-  qpuHexRegisterOf('mycology', name, (MycologyFormulas[name] as (...x: unknown[]) => unknown).bind(MycologyFormulas))
+  hexRegisterOf('mycology', name, (MycologyFormulas[name] as (...x: unknown[]) => unknown).bind(MycologyFormulas))

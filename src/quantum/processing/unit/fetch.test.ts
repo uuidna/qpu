@@ -1,9 +1,9 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { qpuGetOf } from '../../../mcp/qpu-fused.js'
+import { getOf } from '../../../mcp/qpu-fused.js'
 
 // THE DATA DOOR'S FETCH RETRIES A TRANSIENT FAILURE, NOT A SETTLED ONE. A 5xx, a 429 (rate limit) or a dropped
-// connection is a blip the next attempt may clear, so qpuGetOf retries it a few times with a short backoff within one
+// connection is a blip the next attempt may clear, so getOf retries it a few times with a short backoff within one
 // deadline; a flaky public source no longer fails a whole lead feed. A 4xx below 429 is the client's own and fails
 // fast — a real 404 is not worth another attempt. The fetch is stubbed so the contract is exercised without a network.
 const probe = async (impl: (attempt: number) => Response): Promise<{ calls: number; status: number; threw: string }> => {
@@ -11,7 +11,7 @@ const probe = async (impl: (attempt: number) => Response): Promise<{ calls: numb
   let calls = 0
   globalThis.fetch = (async () => impl(++calls)) as unknown as typeof fetch
   try {
-    const r = await qpuGetOf('https://example.test/x')
+    const r = await getOf('https://example.test/x')
     return { calls, status: r.status, threw: '' }
   } catch (e) {
     return { calls, status: 0, threw: (e as Error).message }

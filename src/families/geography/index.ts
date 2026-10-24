@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GEOGRAPHY — THE SHAPE OF THE LAND, AS ARITHMETIC (chosen by the public-API registry, not by hand). Place is numbers:
@@ -31,4 +31,4 @@ export class GeographyFormulas {
 }
 
 for (const name of ['area', 'connectivity', 'density', 'distance', 'elevation', 'gradient', 'urbanization', 'watershed'] as const)
-  qpuHexRegisterOf('geography', name, (GeographyFormulas[name] as (...x: unknown[]) => unknown).bind(GeographyFormulas))
+  hexRegisterOf('geography', name, (GeographyFormulas[name] as (...x: unknown[]) => unknown).bind(GeographyFormulas))

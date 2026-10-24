@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BufferFormulas — 8 exact-integer formulas of the buffer domain, each at a hex address crossing to cross; develops the buffer leads. */
@@ -31,4 +31,4 @@ export class BufferFormulas {
 }
 
 for (const name of ['combos', 'overflow', 'pages', 'refills', 'ring', 'size', 'slots', 'watermark'] as const)
-  qpuHexRegisterOf('buffer', name, (BufferFormulas[name] as (...x: unknown[]) => unknown).bind(BufferFormulas))
+  hexRegisterOf('buffer', name, (BufferFormulas[name] as (...x: unknown[]) => unknown).bind(BufferFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TimbreFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('timbre: attacktime, brightness, formant, harmonicratio, inharmonicity, odd
   assert.equal(TimbreFormulas.rolloff(850, 1000).value, 85)
   assert.equal(TimbreFormulas.spectralcentroid(5000, 100).value, 50)
   assert.equal(TimbreFormulas.brightness(300, 1000).dst, 'acoustics')
-  assert.equal(qpuHexFamiliesOf().get('timbre')?.length, 8)
+  assert.equal(hexFamiliesOf().get('timbre')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'timbre', program: ['brightness'], params: [300, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `timbre.brightness at ${uuid}`)
-  qpuUuidReceiptOf('timbre brightness', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('timbre brightness', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; attacktime 10, brightness 30, formant 30, harmonicratio 80, inharmonicity 30, oddevenratio 150, rolloff 85, spectralcentroid 50; crossing to acoustics')
 })

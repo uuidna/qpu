@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LoanFormulas } from './index.js'
 
 /** loan: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('loan: principal, interest, payment, term, ltv, amortization, points, combo
   assert.equal(LoanFormulas.amortization(20000, 360).value, 55, 'amortization(20000, 360)')
   assert.equal(LoanFormulas.points(2, 0).value, 2, 'points(2, 0)')
   assert.equal(LoanFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('loan')?.length, 8)
+  assert.equal(hexFamiliesOf().get('loan')?.length, 8)
   for (const [name, params, expected] of [["principal",[20000,1],20000],["interest",[5,100],5],["payment",[24000,360],66]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'loan', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `loan.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`loan ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`loan ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "principal=20000, interest=5, payment=66")
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BATHYMETRY — THE SEAFLOOR AS ARITHMETIC. Mapping depth is numbers: the two-way echo that gives depth, the sounding time a
@@ -31,4 +31,4 @@ export class BathymetryFormulas {
 }
 
 for (const name of ['contourinterval', 'depth', 'echodelay', 'gridresolution', 'profilearea', 'slope', 'soundingtime', 'swathwidth'] as const)
-  qpuHexRegisterOf('bathymetry', name, (BathymetryFormulas[name] as (...x: unknown[]) => unknown).bind(BathymetryFormulas))
+  hexRegisterOf('bathymetry', name, (BathymetryFormulas[name] as (...x: unknown[]) => unknown).bind(BathymetryFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DeploymentFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('deployment: frequency, leadtime, failrate, mttr, rollback, availability, c
   assert.equal(DeploymentFormulas.canary(9, 10).value, 90)
   assert.equal(DeploymentFormulas.replicas(7).value, 7)
   assert.equal(DeploymentFormulas.frequency(30, 30).dst, 'cloud')
-  assert.equal(qpuHexFamiliesOf().get('deployment')?.length, 8)
+  assert.equal(hexFamiliesOf().get('deployment')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'deployment', program: ['availability'], params: [999, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 99, `deployment.availability at ${uuid}`)
-  qpuUuidReceiptOf('deployment availability', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('deployment availability', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; frequency 1, leadtime 60, failrate 5, mttr 120, rollback 2, availability 99, canary 90, replicas 7; crossing to cloud')
 })

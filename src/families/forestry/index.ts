@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FORESTRY — FOREST MANAGEMENT, AS ARITHMETIC (chosen by the registry, not by hand). A managed forest is numbers: the log
@@ -31,4 +31,4 @@ export class ForestryFormulas {
 }
 
 for (const name of ['canopy', 'carbon', 'density', 'growth', 'harvest', 'regeneration', 'rotation', 'volume'] as const)
-  qpuHexRegisterOf('forestry', name, (ForestryFormulas[name] as (...x: unknown[]) => unknown).bind(ForestryFormulas))
+  hexRegisterOf('forestry', name, (ForestryFormulas[name] as (...x: unknown[]) => unknown).bind(ForestryFormulas))

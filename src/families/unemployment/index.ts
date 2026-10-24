@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** UNEMPLOYMENT — scaffolded integer measures crossed to macroeconomics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class UnemploymentFormulas {
 }
 
 for (const name of ['durationweeks', 'jobseekers', 'labourforce', 'naturalrate', 'okunsgap', 'participationrate', 'ratepct', 'unemployed'] as const)
-  qpuHexRegisterOf('unemployment', name, (UnemploymentFormulas[name] as (...x: unknown[]) => unknown).bind(UnemploymentFormulas))
+  hexRegisterOf('unemployment', name, (UnemploymentFormulas[name] as (...x: unknown[]) => unknown).bind(UnemploymentFormulas))

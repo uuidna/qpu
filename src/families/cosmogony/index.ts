@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COSMOGONY — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CosmogonyFormulas {
 }
 
 for (const name of ['creationdays', 'cyclelength', 'dualitypairs', 'elementcombos', 'emanationlevels', 'orderfromchaos', 'principlesubsets', 'stageorderings'] as const)
-  qpuHexRegisterOf('cosmogony', name, (CosmogonyFormulas[name] as (...x: unknown[]) => unknown).bind(CosmogonyFormulas))
+  hexRegisterOf('cosmogony', name, (CosmogonyFormulas[name] as (...x: unknown[]) => unknown).bind(CosmogonyFormulas))

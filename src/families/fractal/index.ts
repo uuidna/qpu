@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FRACTAL — SELF-SIMILARITY AS ARITHMETIC. A shape made of smaller copies of itself is numbers: the pieces after an
@@ -31,4 +31,4 @@ export class FractalFormulas {
 }
 
 for (const name of ['boxcount', 'dimensionscaled', 'hausdorffscaled', 'iterationdepth', 'perimetergrowth', 'piececount', 'scaleratio', 'selfsimilarity'] as const)
-  qpuHexRegisterOf('fractal', name, (FractalFormulas[name] as (...x: unknown[]) => unknown).bind(FractalFormulas))
+  hexRegisterOf('fractal', name, (FractalFormulas[name] as (...x: unknown[]) => unknown).bind(FractalFormulas))

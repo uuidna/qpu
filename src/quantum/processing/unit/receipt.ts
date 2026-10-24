@@ -13,7 +13,7 @@
 //   node --test --test-reporter=./dist/quantum/processing/unit/receipt.js dist/quantum/processing/unit/*.test.js
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join, relative } from 'node:path'
-import { qpuFoldOf } from './index.js'
+import { foldOf } from './index.js'
 import { receiptsFileOf, type TestReceipt } from './receipted.js'
 
 interface TestEvent { type: string; data: { name?: string; file?: string; nesting?: number; details?: { error?: { message?: string } } } }
@@ -51,7 +51,7 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     })
   }
   const receipts = receiptsOf()
-  const none: TestReceipt = { name: '', computations: 0, kinds: {}, dims: {}, dim: '0', qubits: 0, receipt: qpuFoldOf(''), states: [], mint: { calls: 0, chain: '' }, served: { count: 0, folds: [] }, foreign: 0, readings: { temperature: { measured: false, why: 'no record' }, pid: 0 } }
+  const none: TestReceipt = { name: '', computations: 0, kinds: {}, dims: {}, dim: '0', qubits: 0, receipt: foldOf(''), states: [], mint: { calls: 0, chain: '' }, served: { count: 0, folds: [] }, foreign: 0, readings: { temperature: { measured: false, why: 'no record' }, pid: 0 } }
   const rows: Row[] = events.map((e) => {
     const got = receipts.get(e.name) ?? none
     return { name: e.name, file: e.file, nesting: e.nesting, pass: e.pass, computations: got.computations, kinds: got.kinds, dims: got.dims, dim: got.dim, qubits: got.qubits, receipt: got.receipt, states: got.states, mint: got.mint, served: got.served ?? { count: 0, folds: [] }, foreign: got.foreign ?? 0 }
@@ -100,8 +100,8 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
    */
   const computed = sorted.filter((r) => r.foreign === 0)
   const read = sorted.filter((r) => r.foreign > 0)
-  const fold = qpuFoldOf(computed.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}`).join('\u0000'))
-  const reading = qpuFoldOf(read.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}:${r.served.folds.join(',')}`).join('\u0000'))
+  const fold = foldOf(computed.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}`).join('\u0000'))
+  const reading = foldOf(read.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}:${r.served.folds.join(',')}`).join('\u0000'))
   const foreignReads = rows.reduce((acc, r) => acc + r.foreign, 0)
   const proof = {
     kind: 'test-receipt',

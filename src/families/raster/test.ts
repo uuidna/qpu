@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RasterFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('raster: pixels, dpi, filesize, aspectratio, megapixels, bitdepth, compress
   assert.equal(RasterFormulas.compression(1000, 100).value, 10, 'ten to one')
   assert.equal(RasterFormulas.scaling(500, 2).value, 1000)
   assert.equal(RasterFormulas.pixels(1920, 1080).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('raster')?.length, 8)
+  assert.equal(hexFamiliesOf().get('raster')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'raster', program: ['pixels'], params: [1920, 1080] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2073600, `raster.pixels at ${uuid}`)
-  qpuUuidReceiptOf('raster pixels', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('raster pixels', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; pixels 2073600, dpi 300, filesize 3000, aspectratio 177, megapixels 12, bitdepth 24, compression 10, scaling 1000; crossing to optics')
 })

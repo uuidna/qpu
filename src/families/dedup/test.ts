@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DedupFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -25,10 +25,10 @@ test('dedup: content-addressed storage — fingerprint, dedup savings, reference
   assert.equal(DedupFormulas.releasable(0, 0).value, 1, 'unreferenced and no legal hold: releasable')
   assert.equal(DedupFormulas.releasable(0, 1).value, 0, 'a legal hold keeps it, referenced or not')
   assert.equal(DedupFormulas.released(0).dst, 'raid')
-  assert.equal(qpuHexFamiliesOf().get('dedup')?.length, 15)
+  assert.equal(hexFamiliesOf().get('dedup')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'dedup', program: ['saved'], params: [9, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 800, `dedup.saved at ${uuid}`)
-  qpuUuidReceiptOf('dedup saved', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dedup saved', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; fingerprint 1/0, deduped 1, hit 8, saved 800, logical 900, physical 100, ratio 900%, blocks 3, chunk 3, refcount 3, incref 4, decref 0, pinned 1, released 1/0, releasable 1/0; crossing to raid')
 })

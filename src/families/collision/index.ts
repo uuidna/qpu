@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CollisionFormulas — 8 exact-integer formulas of the collision domain, each at a hex address crossing to cross; develops the collision leads. */
@@ -31,4 +31,4 @@ export class CollisionFormulas {
 }
 
 for (const name of ['bodies', 'deltav', 'energy', 'force', 'impulse', 'momentum', 'pairs', 'restitution'] as const)
-  qpuHexRegisterOf('collision', name, (CollisionFormulas[name] as (...x: unknown[]) => unknown).bind(CollisionFormulas))
+  hexRegisterOf('collision', name, (CollisionFormulas[name] as (...x: unknown[]) => unknown).bind(CollisionFormulas))

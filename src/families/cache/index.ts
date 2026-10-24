@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CacheFormulas — 8 exact-integer formulas of the cache domain, each at a hex address crossing to cross; develops the cache leads. */
@@ -31,4 +31,4 @@ export class CacheFormulas {
 }
 
 for (const name of ['blocks', 'combos', 'hitpct', 'levels', 'lines', 'sets', 'tagbits', 'ways'] as const)
-  qpuHexRegisterOf('cache', name, (CacheFormulas[name] as (...x: unknown[]) => unknown).bind(CacheFormulas))
+  hexRegisterOf('cache', name, (CacheFormulas[name] as (...x: unknown[]) => unknown).bind(CacheFormulas))

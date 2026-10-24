@@ -1,5 +1,5 @@
 import type { Payload } from 'payload'
-import { qpuCiteOf, qpuContentUuidOf, qpuFacesOf, qpuInstallOf, qpuPurposeOf } from '@uuidna/qpu'
+import { qpuCiteOf, contentUuidOf, facesOf, installOf, purposeOf } from '@uuidna/qpu'
 // the app consumes QPU through the package (its built dist), not src internals — so a bundler never recompiles the
 // index<->lattice core and the Payload-default app stays close to the template.
 import { formulatedCatalogOf, saleRoyaltyOf } from '@uuidna/qpu/payload/plugins'
@@ -28,11 +28,11 @@ const url = (href: string, label: string): NavItem => ({ url: href, label })
 // what the unit says of itself: the citation (origin, author, DOIs, licence), the install manifest (the repository), the
 // purpose (the platform, its qubits, the factoring)
 const cite = qpuCiteOf() as unknown as { href: string; website: string; doi: string; identifier: string; author: { first: string; last: string; orcid: string }; '@context': [string, Record<string, string>] }
-const repo = /[?&]url=(https:\/\/github\.com\/[^&]+)/.exec((qpuInstallOf() as unknown as { cloudflare: { qpu: string } }).cloudflare.qpu)?.[1] ?? cite.href
+const repo = /[?&]url=(https:\/\/github\.com\/[^&]+)/.exec((installOf() as unknown as { cloudflare: { qpu: string } }).cloudflare.qpu)?.[1] ?? cite.href
 const packageName = `@${repo.replace(/^https:\/\/github\.com\//, '')}`
 const cc = cite['@context'][1].cc ?? ''
 const licence = { url: cc, name: `CC ${(/licenses\/([a-z-]+)\/([\d.]+)/.exec(cc)?.[1] ?? '').toUpperCase()} ${/licenses\/[a-z-]+\/([\d.]+)/.exec(cc)?.[1] ?? ''}`.trim() }
-const purpose = qpuPurposeOf() as unknown as { nature: { platform: string; qubits: number }; cybersecurity: { n: number; factors: readonly [number, number] } }
+const purpose = purposeOf() as unknown as { nature: { platform: string; qubits: number }; cybersecurity: { n: number; factors: readonly [number, number] } }
 void purpose
 // THE ROOT TENANT. This site is one app, and the multi-tenant plugin scopes every doc to a tenant, so the seed's own
 // content must be stamped with one — the tenant whose domain is this host, which is the same tenant a request to this
@@ -109,7 +109,7 @@ async function seedReceipts(payload: Payload) {
   for (let i = 0; i < receipts.length; i++) {
     const r = receipts[i]!
     const doc = r.doc as { uuid?: unknown }
-    const fold = qpuContentUuidOf(doc)
+    const fold = contentUuidOf(doc)
     const uuid = typeof doc.uuid === 'string' ? doc.uuid : fold
     const row = { uuid, name: r.name, stream: 'receipts', seq: i, prev, subject: r.file, referrer: `${genesis}/${r.name}`, fold }
     const found = (await payload.find({ collection: 'quantum-receipts', where: { uuid: { equals: uuid } }, limit: 1, depth: 0, overrideAccess: true })).docs
@@ -120,7 +120,7 @@ async function seedReceipts(payload: Payload) {
 
 /** The seed's state as the site reports it at /api/seed: done, or the cursor and the last failure of a slice. */
 export async function seedStateOf(payload: Payload) {
-  const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
+  const fingerprint = contentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
   const done = (await payload.kv.get<string>('seed')) === fingerprint
   const cursor = await payload.kv.get<{ docs: number; site: boolean; receipts: boolean; index: number }>(`seed:${fingerprint}`)
   const error = await payload.kv.get<{ message: string; when: string }>(`seed:error:${fingerprint}`)
@@ -129,19 +129,19 @@ export async function seedStateOf(payload: Payload) {
 
 export async function seed(payload: Payload) {
   try { await seedSliceOf(payload) } catch (e) {
-    const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
+    const fingerprint = contentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
     await payload.kv.set(`seed:error:${fingerprint}`, { message: String((e as { message?: string })?.message ?? e).slice(0, 500) }).catch(() => undefined)
     throw e
   }
 }
 
 async function seedSliceOf(payload: Payload) {
-  const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
+  const fingerprint = contentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
   if ((await payload.kv.get<string>('seed')) === fingerprint) return
   // RESUMED, NOT WRITTEN AT ONCE: a request may make only so many storage calls, so each call of the seed does one
   // slice (faces docs) and keeps its cursor under the content's own address; the next request continues.
   const key = `seed:${fingerprint}`
-  const take = qpuFacesOf().faces
+  const take = facesOf().faces
   const cursor = (await payload.kv.get<{ docs: number; site: boolean; receipts: boolean; index: number }>(key)) ?? { docs: 0, site: false, receipts: false, index: 0 }
   if (cursor.docs < generated.length) {
     await upsertDocs(payload, cursor.docs, take)

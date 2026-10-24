@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WELDING — JOINING METAL, AS ARITHMETIC (chosen by the materials registry, not by hand). A weld is numbers: heat input
@@ -31,4 +31,4 @@ export class WeldingFormulas {
 }
 
 for (const name of ['deposition', 'dilution', 'duty', 'heatinput', 'penetration', 'porosity', 'strength', 'travelspeed'] as const)
-  qpuHexRegisterOf('welding', name, (WeldingFormulas[name] as (...x: unknown[]) => unknown).bind(WeldingFormulas))
+  hexRegisterOf('welding', name, (WeldingFormulas[name] as (...x: unknown[]) => unknown).bind(WeldingFormulas))

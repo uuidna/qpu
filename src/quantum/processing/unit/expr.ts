@@ -5,8 +5,8 @@
  * parameters: a survey of the whole corpus finds only `+ - * / % **` and the functions floor, ceil, round, trunc, abs,
  * sqrt, log, sin, cos, pow, min, max. So a formula need not be a hand-written TypeScript body; it is `{ name, params,
  * expr }` — data that lives in a nested document (a FuseFormulas row), carrying its own programmable combinatorics. This
- * module compiles such an expression ONCE into the `(…args) => value` that `qpuHexRegisterOf` takes, so the unit's one
- * hex engine (`qpuHexRunOf`, an accumulator fold with no per-formula code) runs, holds-checks and receipts every family
+ * module compiles such an expression ONCE into the `(…args) => value` that `hexRegisterOf` takes, so the unit's one
+ * hex engine (`hexRunOf`, an accumulator fold with no per-formula code) runs, holds-checks and receipts every family
  * the same way. Store the data, register through here, and qpu verifies all it computes on its own.
  *
  * HOLDS IS THE ORIGINAL'S HOLDS, DERIVED NOT DECLARED. The hand bodies guarded the natural domain and the zero divisor
@@ -149,18 +149,18 @@ const evalNode = (node: Node, vars: readonly number[], ctx: Ctx): number => {
 export type FormulaSpec = { name: string; params: readonly string[]; expr: string; dst?: string; sources?: readonly string[]; proof?: string }
 
 /** What one compiled formula returns: the value and whether it holds (natural inputs, no zero divisor, finite result) —
- *  the shape `qpuHexRunOf` already reads (`{ value, holds }`). */
+ *  the shape `hexRunOf` already reads (`{ value, holds }`). */
 export type FormulaResult = { value: number; holds: boolean }
 
 /**
- * Compile a formula spec into the `(…args) => { value, holds }` that `qpuHexRegisterOf` takes. The expression is parsed
+ * Compile a formula spec into the `(…args) => { value, holds }` that `hexRegisterOf` takes. The expression is parsed
  * once; each call binds the arguments to the named parameters, evaluates, and derives holds the way the hand body did.
  * The returned function's `length` equals the parameter count, so the registry reads the arity straight from it.
  */
 export const exprFormulaOf = (spec: FormulaSpec): ((...args: number[]) => FormulaResult) => {
   const ast = parse(spec.expr, spec.params)
   const arity = spec.params.length
-  // a function whose own `length` is the arity (qpuHexFamiliesOf reads fn.length): build it with that many named slots
+  // a function whose own `length` is the arity (hexFamiliesOf reads fn.length): build it with that many named slots
   const run = (...args: number[]): FormulaResult => {
     const nat = args.length >= arity && args.slice(0, arity).every((x) => Number.isSafeInteger(x) && x >= 0)
     const ctx: Ctx = { dividedByZero: false }

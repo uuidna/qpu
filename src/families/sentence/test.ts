@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SentenceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('sentence: terms combine and reduce — concurrent, consecutive, credit, pa
   assert.equal(SentenceFormulas.mandatory(24, 36).value, 36, 'above the minimum, the computed term stands')
   assert.equal(SentenceFormulas.enhance(60, 50).value, 90, 'a 50% enhancement')
   assert.equal(SentenceFormulas.fine(30, 50).value, 1500, 'thirty day-fine units at 50')
-  assert.equal(qpuHexFamiliesOf().get('sentence')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sentence')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sentence', program: ['consecutive'], params: [60, 36] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 96, `sentence.consecutive at ${uuid}`)
-  qpuUuidReceiptOf('sentence consecutive', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sentence consecutive', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; concurrent 60, consecutive 96, credit 46, parole 30, mandatory 24, enhance 90, fine 1500; crossing to law')
 })

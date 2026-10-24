@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EvapotranspirationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('evapotranspiration: reference, cropcoefficient, actual, waterdeficit, irri
   assert.equal(EvapotranspirationFormulas.netirrigation(100, 60).value, 40)
   assert.equal(EvapotranspirationFormulas.waterdeficit(10, 25).value, 0, 'no deficit when supply meets demand')
   assert.equal(EvapotranspirationFormulas.reference(25, 200).dst, 'hydrology')
-  assert.equal(qpuHexFamiliesOf().get('evapotranspiration')?.length, 8)
+  assert.equal(hexFamiliesOf().get('evapotranspiration')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'evapotranspiration', program: ['actual'], params: [50, 80] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 40, `evapotranspiration.actual at ${uuid}`)
-  qpuUuidReceiptOf('evapotranspiration actual', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('evapotranspiration actual', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; reference 50, cropcoefficient 80, actual 40, waterdeficit 15, irrigationneed 20, potential 240, cropwateruse 1200, netirrigation 40; crossing to hydrology')
 })

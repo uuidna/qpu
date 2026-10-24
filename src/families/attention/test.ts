@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AttentionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('attention: focus, vigilance, distraction, span, switching, selective, sust
   assert.equal(AttentionFormulas.sustained(90, 120).value, 75)
   assert.equal(AttentionFormulas.workload(80, 100).value, 80)
   assert.equal(AttentionFormulas.focus(45, 60).dst, 'psychology')
-  assert.equal(qpuHexFamiliesOf().get('attention')?.length, 8)
+  assert.equal(hexFamiliesOf().get('attention')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'attention', program: ['focus'], params: [45, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `attention.focus at ${uuid}`)
-  qpuUuidReceiptOf('attention focus', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('attention focus', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; focus 75, vigilance 80, distraction 3, span 25, switching 4, selective 30, sustained 75, workload 80; crossing to psychology')
 })

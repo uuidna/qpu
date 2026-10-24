@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FluiddynamicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('fluiddynamics: reynolds, flowrate, pressuredrop, velocity, bernoulli, visc
   assert.equal(FluiddynamicsFormulas.froude(20, 10, 2).value, 20)
   assert.equal(FluiddynamicsFormulas.machnumber(680, 340).value, 200, 'Mach 2.00')
   assert.equal(FluiddynamicsFormulas.flowrate(5, 20).dst, 'aerodynamics')
-  assert.equal(qpuHexFamiliesOf().get('fluiddynamics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('fluiddynamics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'fluiddynamics', program: ['flowrate'], params: [5, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `fluiddynamics.flowrate at ${uuid}`)
-  qpuUuidReceiptOf('fluiddynamics flowrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('fluiddynamics flowrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; reynolds 300, flowrate 100, pressuredrop 200, velocity 40, bernoulli 200, viscosity 50, froude 20, machnumber 200; crossing to aerodynamics')
 })

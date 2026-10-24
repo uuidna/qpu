@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HeliophysicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('heliophysics: coronalmass, cycle, flareclass, flux, irradiance, magneticin
   assert.equal(HeliophysicsFormulas.solarwind(2000, 400).value, 5)
   assert.equal(HeliophysicsFormulas.sunspot(5, 32).value, 82, 'the Wolf number')
   assert.equal(HeliophysicsFormulas.coronalmass(12, 1000).dst, 'astronomy')
-  assert.equal(qpuHexFamiliesOf().get('heliophysics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('heliophysics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'heliophysics', program: ['flux'], params: [6000, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `heliophysics.flux at ${uuid}`)
-  qpuUuidReceiptOf('heliophysics flux', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('heliophysics flux', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coronalmass 12000, cycle 6, flareclass 5, flux 100, irradiance 1361, magneticindex 7, solarwind 5, sunspot 82; crossing to astronomy')
 })

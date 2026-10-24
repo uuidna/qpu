@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BondFormulas — 8 exact-integer formulas of the bond domain, each at a hex address crossing to cross; develops the bond leads. */
@@ -31,4 +31,4 @@ export class BondFormulas {
 }
 
 for (const name of ['combos', 'coupon', 'duration', 'facevalue', 'maturity', 'payments', 'rating', 'yield'] as const)
-  qpuHexRegisterOf('bond', name, (BondFormulas[name] as (...x: unknown[]) => unknown).bind(BondFormulas))
+  hexRegisterOf('bond', name, (BondFormulas[name] as (...x: unknown[]) => unknown).bind(BondFormulas))

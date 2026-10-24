@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MotivationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('motivation: expectancy, valence, instrumentality, drive, incentive, persis
   assert.equal(MotivationFormulas.goalgradient(100, 30).value, 4, 'steps left to the goal')
   assert.equal(MotivationFormulas.selfefficacy(7, 8).value, 87)
   assert.equal(MotivationFormulas.expectancy(8, 10).dst, 'psychology')
-  assert.equal(qpuHexFamiliesOf().get('motivation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('motivation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'motivation', program: ['goalgradient'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `motivation.goalgradient at ${uuid}`)
-  qpuUuidReceiptOf('motivation goalgradient', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('motivation goalgradient', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; expectancy 80, valence 60, instrumentality 90, drive 42, incentive 200, persistence 12, goalgradient 4, selfefficacy 87; crossing to psychology')
 })

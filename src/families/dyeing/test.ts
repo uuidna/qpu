@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DyeingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('dyeing: shade, liquorratio, exhaustion, fixation, concentration, temperatu
   assert.equal(DyeingFormulas.fastness(4, 5).value, 4, 'average grey-scale rating')
   assert.equal(DyeingFormulas.uptake(5, 10).value, 50)
   assert.equal(DyeingFormulas.shade(3, 100).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('dyeing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('dyeing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'dyeing', program: ['exhaustion'], params: [85, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 85, `dyeing.exhaustion at ${uuid}`)
-  qpuUuidReceiptOf('dyeing exhaustion', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('dyeing exhaustion', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; shade 3, liquorratio 20, exhaustion 85, fixation 90, concentration 5, temperature 90, fastness 4, uptake 50; crossing to chemistry')
 })

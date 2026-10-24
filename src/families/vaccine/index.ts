@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** VaccineFormulas — 8 exact-integer formulas of the vaccine domain, each at a hex address crossing to cross; develops the vaccine leads. */
@@ -31,4 +31,4 @@ export class VaccineFormulas {
 }
 
 for (const name of ['antigens', 'batches', 'boosters', 'coldchain', 'combos', 'coverage', 'doses', 'efficacy'] as const)
-  qpuHexRegisterOf('vaccine', name, (VaccineFormulas[name] as (...x: unknown[]) => unknown).bind(VaccineFormulas))
+  hexRegisterOf('vaccine', name, (VaccineFormulas[name] as (...x: unknown[]) => unknown).bind(VaccineFormulas))

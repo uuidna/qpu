@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PerceptionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('perception: threshold, weber, acuity, contrast, adaptation, sensitivity, i
   assert.equal(PerceptionFormulas.illusion(120, 100).value, 120, 'perceived 20% larger than actual')
   assert.equal(PerceptionFormulas.latency(250).value, 250, 'a quarter-second reaction')
   assert.equal(PerceptionFormulas.threshold(45, 100).dst, 'neuroscience')
-  assert.equal(qpuHexFamiliesOf().get('perception')?.length, 8)
+  assert.equal(hexFamiliesOf().get('perception')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'perception', program: ['acuity'], params: [600, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `perception.acuity at ${uuid}`)
-  qpuUuidReceiptOf('perception acuity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('perception acuity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; threshold 45, weber 2, acuity 60, contrast 800, adaptation 70, sensitivity 90, illusion 120, latency 250; crossing to neuroscience')
 })

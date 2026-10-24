@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BANKING — THE BALANCE SHEET OF A BANK, AS ARITHMETIC. A bank is numbers over its deposits and capital: the reserve
@@ -31,4 +31,4 @@ export class BankingFormulas {
 }
 
 for (const name of ['apr', 'capital', 'credit', 'liquidity', 'loan', 'multiplier', 'reserve', 'spread'] as const)
-  qpuHexRegisterOf('banking', name, (BankingFormulas[name] as (...x: unknown[]) => unknown).bind(BankingFormulas))
+  hexRegisterOf('banking', name, (BankingFormulas[name] as (...x: unknown[]) => unknown).bind(BankingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ProteomicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('proteomics: abundance, massspec, coverage, foldchange, isoelectric, digest
   assert.equal(ProteomicsFormulas.interaction(120, 40).value, 3, 'partners per protein')
   assert.equal(ProteomicsFormulas.expression(50000, 1000).value, 50, 'copies per cell')
   assert.equal(ProteomicsFormulas.abundance(25, 100).dst, 'biochemistry')
-  assert.equal(qpuHexFamiliesOf().get('proteomics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('proteomics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'proteomics', program: ['massspec'], params: [2400, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 800, `proteomics.massspec at ${uuid}`)
-  qpuUuidReceiptOf('proteomics massspec', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('proteomics massspec', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; abundance 25, massspec 800, coverage 30, foldchange 300, isoelectric 7, digestion 90, interaction 3, expression 50; crossing to biochemistry')
 })

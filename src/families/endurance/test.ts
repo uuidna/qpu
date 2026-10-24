@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EnduranceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('endurance: vo2proxy, timetoexhaustion, aerobicratio, lactatethreshold, hea
   assert.equal(EnduranceFormulas.distancecapacity(10, 42).value, 420)
   assert.equal(EnduranceFormulas.fatigueindex(30, 300).value, 10)
   assert.equal(EnduranceFormulas.vo2proxy(3500, 70).dst, 'physiology')
-  assert.equal(qpuHexFamiliesOf().get('endurance')?.length, 8)
+  assert.equal(hexFamiliesOf().get('endurance')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'endurance', program: ['vo2proxy'], params: [3500, 70] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `endurance.vo2proxy at ${uuid}`)
-  qpuUuidReceiptOf('endurance vo2proxy', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('endurance vo2proxy', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; vo2proxy 50, timetoexhaustion 300, aerobicratio 80, lactatethreshold 85, heartratereserve 130, trainingload 600, distancecapacity 420, fatigueindex 10; crossing to physiology')
 })

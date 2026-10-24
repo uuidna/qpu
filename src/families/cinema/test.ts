@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CinemaFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cinema: boxoffice, roi, runtime, aspect, shots, rating, occupancy, frames 
   assert.equal(CinemaFormulas.occupancy(180, 200).value, 90, 'the house is nine-tenths full')
   assert.equal(CinemaFormulas.frames(60, 24).value, 1440, 'a minute at film rate')
   assert.equal(CinemaFormulas.boxoffice(1000, 12).dst, 'content')
-  assert.equal(qpuHexFamiliesOf().get('cinema')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cinema')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cinema', program: ['shots'], params: [600, 120] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `cinema.shots at ${uuid}`)
-  qpuUuidReceiptOf('cinema shots', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cinema shots', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; boxoffice 12000, roi 300, runtime 120, aspect 239, shots 5, rating 9, occupancy 90, frames 1440; crossing to content')
 })

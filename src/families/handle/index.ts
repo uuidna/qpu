@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HANDLE — A UUID IS THE PRODUCT OF HANDLES HANDLING EACH OTHER. The hexbit handle is 8 hex digits (32 bits); a UUID is
@@ -51,4 +51,4 @@ export class HandleFormulas {
 }
 
 for (const name of ['bits', 'choose', 'compose', 'compression', 'count', 'hexits', 'index', 'nibbles', 'offset', 'pair', 'plugin', 'same', 'space', 'tamper', 'trinity'] as const)
-  qpuHexRegisterOf('handle', name, (HandleFormulas[name] as (...x: unknown[]) => unknown).bind(HandleFormulas))
+  hexRegisterOf('handle', name, (HandleFormulas[name] as (...x: unknown[]) => unknown).bind(HandleFormulas))

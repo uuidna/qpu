@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EXCAVATION — EARTHWORK AS ARITHMETIC (chosen by the registry, not by hand). Moving ground is numbers: the volume of a
@@ -31,4 +31,4 @@ export class ExcavationFormulas {
 }
 
 for (const name of ['bench', 'compaction', 'cut', 'fill', 'haul', 'slope', 'swell', 'volume'] as const)
-  qpuHexRegisterOf('excavation', name, (ExcavationFormulas[name] as (...x: unknown[]) => unknown).bind(ExcavationFormulas))
+  hexRegisterOf('excavation', name, (ExcavationFormulas[name] as (...x: unknown[]) => unknown).bind(ExcavationFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BandwidthFormulas } from './index.js'
 
 /** bandwidth: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('bandwidth: bits, utilization, duplex, channels, overhead, goodput, lanes, 
   assert.equal(BandwidthFormulas.goodput(9400, 10).value, 940, 'goodput(9400, 10)')
   assert.equal(BandwidthFormulas.lanes(4, 25).value, 100, 'lanes(4, 25)')
   assert.equal(BandwidthFormulas.combos(8, 2).value, 28, 'combos(8, 2)')
-  assert.equal(qpuHexFamiliesOf().get('bandwidth')?.length, 8)
+  assert.equal(hexFamiliesOf().get('bandwidth')?.length, 8)
   for (const [name, params, expected] of [["bits",[1000,1000],1000000],["utilization",[80,100],80],["duplex",[1000,2],2000]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'bandwidth', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `bandwidth.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`bandwidth ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`bandwidth ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "bits=1000000, utilization=80, duplex=2000")
 })

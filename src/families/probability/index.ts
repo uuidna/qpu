@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROBABILITY — CHANCE AS ARITHMETIC (odds, conditional chance, expectation, Bayes, combinations, variance, entropy,
@@ -30,4 +30,4 @@ export class ProbabilityFormulas {
 }
 
 for (const name of ['bayes', 'combinations', 'conditional', 'entropy', 'expected', 'independence', 'odds', 'variance'] as const)
-  qpuHexRegisterOf('probability', name, (ProbabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ProbabilityFormulas))
+  hexRegisterOf('probability', name, (ProbabilityFormulas[name] as (...x: unknown[]) => unknown).bind(ProbabilityFormulas))

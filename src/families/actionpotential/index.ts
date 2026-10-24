@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACTIONPOTENTIAL — THE NERVE IMPULSE, AS ARITHMETIC. The spike a neuron fires is numbers: how fast it conducts, how far
@@ -31,4 +31,4 @@ export class ActionpotentialFormulas {
 }
 
 for (const name of ['amplitude', 'conductionvelocity', 'depolarization', 'frequency', 'overshoot', 'propagationtime', 'refractoryperiod', 'threshold'] as const)
-  qpuHexRegisterOf('actionpotential', name, (ActionpotentialFormulas[name] as (...x: unknown[]) => unknown).bind(ActionpotentialFormulas))
+  hexRegisterOf('actionpotential', name, (ActionpotentialFormulas[name] as (...x: unknown[]) => unknown).bind(ActionpotentialFormulas))

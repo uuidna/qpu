@@ -17,13 +17,13 @@ const main = async () => {
   )
   const { priceRelationOf } = await import('../src/payload/plugins/price-relation.ts')
   const { modeAccessOf } = await import('../src/payload/plugins/access-mode.ts')
-  const { qpuMcpToolsListOf } = await import('../src/quantum/processing/unit/index.ts')
+  const { mcpToolsListOf } = await import('../src/quantum/processing/unit/index.ts')
   const { scrypt, pbkdf2Sha512, checkPrime, hexOf, ed25519Sign, ed25519Verify, ed25519PublicKey } =
     await import('../src/core/crypt.ts')
 
   const gaps: string[] = []
 
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const bytes = JSON.stringify({ resultType: 'complete', tools }).length
   const bill = { doors: tools.length, bytes, under16384: bytes < 16384, qpu_: tools.filter((t) => t.name.startsWith('qpu_')).length }
   log('tools/list bill', { ...bill, names: tools.map((t) => t.name) })

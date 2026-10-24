@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SafetyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('safety: incidentrate, severity, risk, nearmiss, compliance, exposure, marg
   assert.equal(SafetyFormulas.margin(70, 100).value, 0, 'over the limit, clamped')
   assert.equal(SafetyFormulas.training(80, 100).value, 80)
   assert.equal(SafetyFormulas.incidentrate(3, 200000).dst, 'construction')
-  assert.equal(qpuHexFamiliesOf().get('safety')?.length, 8)
+  assert.equal(hexFamiliesOf().get('safety')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'safety', program: ['risk'], params: [4, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `safety.risk at ${uuid}`)
-  qpuUuidReceiptOf('safety risk', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('safety risk', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; incidentrate 3, severity 5, risk 20, nearmiss 10, compliance 95, exposure 400, margin 30, training 80; crossing to construction')
 })

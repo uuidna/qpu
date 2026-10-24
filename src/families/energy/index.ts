@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENERGY — THE ENERGY/POWER INDUSTRY, AS ARITHMETIC (chosen by the public-API registry, not by hand). Generation and
@@ -30,4 +30,4 @@ export class EnergyFormulas {
 }
 
 for (const name of ['capacity', 'carbon', 'cost', 'efficiency', 'energy', 'load', 'power', 'storage'] as const)
-  qpuHexRegisterOf('energy', name, (EnergyFormulas[name] as (...x: unknown[]) => unknown).bind(EnergyFormulas))
+  hexRegisterOf('energy', name, (EnergyFormulas[name] as (...x: unknown[]) => unknown).bind(EnergyFormulas))

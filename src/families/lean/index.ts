@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LEAN — MANUFACTURING FLOW AS ARITHMETIC (the shop floor measured, not narrated). Lean production is numbers: the share of
@@ -31,4 +31,4 @@ export class LeanFormulas {
 }
 
 for (const name of ['changeover', 'flow', 'kanban', 'leadtime', 'oee', 'pull', 'valueadd', 'waste'] as const)
-  qpuHexRegisterOf('lean', name, (LeanFormulas[name] as (...x: unknown[]) => unknown).bind(LeanFormulas))
+  hexRegisterOf('lean', name, (LeanFormulas[name] as (...x: unknown[]) => unknown).bind(LeanFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TOXICOLOGY — HOW A DOSE MEETS A BODY, AS ARITHMETIC. Poison is numbers: the lethal dose for a body mass, the dose
@@ -31,4 +31,4 @@ export class ToxicologyFormulas {
 }
 
 for (const name of ['bioaccumulation', 'clearance', 'dose', 'exposure', 'halflife', 'ld50', 'margin', 'therapeuticindex'] as const)
-  qpuHexRegisterOf('toxicology', name, (ToxicologyFormulas[name] as (...x: unknown[]) => unknown).bind(ToxicologyFormulas))
+  hexRegisterOf('toxicology', name, (ToxicologyFormulas[name] as (...x: unknown[]) => unknown).bind(ToxicologyFormulas))

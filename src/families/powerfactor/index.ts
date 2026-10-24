@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POWERFACTOR — scaffolded integer measures crossed to electronics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PowerfactorFormulas {
 }
 
 for (const name of ['apparentpower', 'capacitorkvar', 'correction', 'efficiency', 'phaseangle', 'ratio', 'reactivepower', 'realpower'] as const)
-  qpuHexRegisterOf('powerfactor', name, (PowerfactorFormulas[name] as (...x: unknown[]) => unknown).bind(PowerfactorFormulas))
+  hexRegisterOf('powerfactor', name, (PowerfactorFormulas[name] as (...x: unknown[]) => unknown).bind(PowerfactorFormulas))

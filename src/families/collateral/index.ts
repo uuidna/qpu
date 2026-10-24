@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COLLATERAL — SECURED LENDING, AS ARITHMETIC (chosen by the public-API registry, not by hand). Backing a loan is
@@ -31,4 +31,4 @@ export class CollateralFormulas {
 }
 
 for (const name of ['callthreshold', 'collateralvalue', 'coverageratio', 'haircut', 'loantovalue', 'marginrequirement', 'overcollateralization', 'shortfall'] as const)
-  qpuHexRegisterOf('collateral', name, (CollateralFormulas[name] as (...x: unknown[]) => unknown).bind(CollateralFormulas))
+  hexRegisterOf('collateral', name, (CollateralFormulas[name] as (...x: unknown[]) => unknown).bind(CollateralFormulas))

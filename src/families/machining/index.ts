@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MACHINING — SUBTRACTIVE MANUFACTURING, AS ARITHMETIC (chosen by the registry, not by hand). Cutting metal is numbers:
@@ -30,4 +30,4 @@ export class MachiningFormulas {
 }
 
 for (const name of ['chipload', 'cuttingspeed', 'feedrate', 'materialremoval', 'passrate', 'surfacefinish', 'toollife', 'tolerance'] as const)
-  qpuHexRegisterOf('machining', name, (MachiningFormulas[name] as (...x: unknown[]) => unknown).bind(MachiningFormulas))
+  hexRegisterOf('machining', name, (MachiningFormulas[name] as (...x: unknown[]) => unknown).bind(MachiningFormulas))

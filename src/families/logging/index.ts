@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOGGING — RUNNING COMPUTE WRITES A RECORD, AS ARITHMETIC (chosen by the public-API registry, not by hand). A log stream
@@ -31,4 +31,4 @@ export class LoggingFormulas {
 }
 
 for (const name of ['compressionsavings', 'errorratio', 'indexsize', 'ingestrate', 'retention', 'rotationcount', 'samplingrate', 'storagecost'] as const)
-  qpuHexRegisterOf('logging', name, (LoggingFormulas[name] as (...x: unknown[]) => unknown).bind(LoggingFormulas))
+  hexRegisterOf('logging', name, (LoggingFormulas[name] as (...x: unknown[]) => unknown).bind(LoggingFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EventsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('events: attendance, capacity, revenue, costperattendee, engagement, noshow
   assert.equal(EventsFormulas.satisfaction(850, 200).value, 4)
   assert.equal(EventsFormulas.conversion(25, 100).value, 25)
   assert.equal(EventsFormulas.attendance(90, 100).dst, 'tourism')
-  assert.equal(qpuHexFamiliesOf().get('events')?.length, 8)
+  assert.equal(hexFamiliesOf().get('events')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'events', program: ['attendance'], params: [90, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `events.attendance at ${uuid}`)
-  qpuUuidReceiptOf('events attendance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('events attendance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; attendance 90, capacity 90, revenue 10000, costperattendee 50, engagement 3, noshow 10, satisfaction 4, conversion 25; crossing to tourism')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHROMATOGRAPHY — SEPARATION SCIENCE, AS ARITHMETIC. A column resolves a mixture into peaks: the time an analyte is held,
@@ -31,4 +31,4 @@ export class ChromatographyFormulas {
 }
 
 for (const name of ['capacity', 'efficiency', 'peakarea', 'plates', 'resolution', 'retention', 'rf', 'selectivity'] as const)
-  qpuHexRegisterOf('chromatography', name, (ChromatographyFormulas[name] as (...x: unknown[]) => unknown).bind(ChromatographyFormulas))
+  hexRegisterOf('chromatography', name, (ChromatographyFormulas[name] as (...x: unknown[]) => unknown).bind(ChromatographyFormulas))

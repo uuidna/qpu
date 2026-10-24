@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RAM — DRAM MAIN MEMORY, AS ARITHMETIC. A memory system is numbers by the book: total capacity across modules, the
@@ -35,4 +35,4 @@ export class RamFormulas {
 }
 
 for (const name of ['bandwidth', 'banks', 'burst', 'capacity', 'caslatency', 'channels', 'latency', 'ranks', 'refresh', 'utilization'] as const)
-  qpuHexRegisterOf('ram', name, (RamFormulas[name] as (...x: unknown[]) => unknown).bind(RamFormulas))
+  hexRegisterOf('ram', name, (RamFormulas[name] as (...x: unknown[]) => unknown).bind(RamFormulas))

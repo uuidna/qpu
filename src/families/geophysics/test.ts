@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GeophysicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('geophysics: seismicvelocity, gravity, magnetic, heatflow, density, resisti
   assert.equal(GeophysicsFormulas.magnitude(7).value, 7, 'the amplitude itself')
   assert.equal(GeophysicsFormulas.isostasy(33, 100).value, 33)
   assert.equal(GeophysicsFormulas.seismicvelocity(6000, 2).dst, 'geology')
-  assert.equal(qpuHexFamiliesOf().get('geophysics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('geophysics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'geophysics', program: ['seismicvelocity'], params: [6000, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3000, `geophysics.seismicvelocity at ${uuid}`)
-  qpuUuidReceiptOf('geophysics seismicvelocity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('geophysics seismicvelocity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; seismicvelocity 3000, gravity 10, magnetic 1000, heatflow 90, density 3000, resistivity 60, magnitude 7, isostasy 33; crossing to geology')
 })

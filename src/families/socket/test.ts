@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SocketFormulas } from './index.js'
 
 /** socket: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
@@ -13,12 +13,12 @@ test('socket: ports, backlog, connections, timeout, buffers, states, handshake, 
   assert.equal(SocketFormulas.states(11, 0).value, 11, 'states(11, 0)')
   assert.equal(SocketFormulas.handshake(3, 0).value, 3, 'handshake(3, 0)')
   assert.equal(SocketFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('socket')?.length, 8)
+  assert.equal(hexFamiliesOf().get('socket')?.length, 8)
   for (const [name, params, expected] of [["ports",[16],65536],["backlog",[128,0],128],["connections",[1000,4],4000]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'socket', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `socket.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`socket ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`socket ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; ' + "ports=65536, backlog=128, connections=4000")
 })

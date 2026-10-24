@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OrnithologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('ornithology: wingload, clutch, migration, fledging, aspect, flock, song, s
   assert.equal(OrnithologyFormulas.song(240, 60).value, 4, 'notes per second')
   assert.equal(OrnithologyFormulas.survival(45, 100).value, 45)
   assert.equal(OrnithologyFormulas.wingload(1200, 40).dst, 'zoology')
-  assert.equal(qpuHexFamiliesOf().get('ornithology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ornithology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ornithology', program: ['clutch'], params: [48, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `ornithology.clutch at ${uuid}`)
-  qpuUuidReceiptOf('ornithology clutch', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ornithology clutch', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; wingload 30, clutch 4, migration 200, fledging 75, aspect 1200, flock 20, song 4, survival 45; crossing to zoology')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AirqualityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('airquality: aqi, pm25index, ozone, exceedance, concentration, exposureinde
   assert.equal(AirqualityFormulas.ventilation(100, 60).value, 100, 'air changes an hour')
   assert.equal(AirqualityFormulas.dispersion(900, 9).value, 100)
   assert.equal(AirqualityFormulas.aqi(50, 2).dst, 'environment')
-  assert.equal(qpuHexFamiliesOf().get('airquality')?.length, 8)
+  assert.equal(hexFamiliesOf().get('airquality')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'airquality', program: ['aqi'], params: [50, 2] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `airquality.aqi at ${uuid}`)
-  qpuUuidReceiptOf('airquality aqi', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('airquality aqi', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; aqi 100, pm25index 200, ozone 80, exceedance 20, concentration 50, exposureindex 1200, ventilation 100, dispersion 100; crossing to environment')
 })

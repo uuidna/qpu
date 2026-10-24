@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENVIRONMENT — POLLUTION AND ITS LIMITS, AS EVIDENCE. Harm to the environment is numbers: emissions over time, the
@@ -31,4 +31,4 @@ export class EnvironmentFormulas {
 }
 
 for (const name of ['concentration', 'emissions', 'exceedance', 'exposure', 'footprint', 'offset', 'penalty', 'remediation'] as const)
-  qpuHexRegisterOf('environment', name, (EnvironmentFormulas[name] as (...x: unknown[]) => unknown).bind(EnvironmentFormulas))
+  hexRegisterOf('environment', name, (EnvironmentFormulas[name] as (...x: unknown[]) => unknown).bind(EnvironmentFormulas))

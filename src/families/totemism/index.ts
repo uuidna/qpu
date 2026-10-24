@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TOTEMISM — scaffolded integer measures crossed to sociology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TotemismFormulas {
 }
 
 for (const name of ['clans', 'descentgroups', 'emblemcombos', 'exogamyratio', 'kinshipsubsets', 'lineageorderings', 'taboocount', 'totempairs'] as const)
-  qpuHexRegisterOf('totemism', name, (TotemismFormulas[name] as (...x: unknown[]) => unknown).bind(TotemismFormulas))
+  hexRegisterOf('totemism', name, (TotemismFormulas[name] as (...x: unknown[]) => unknown).bind(TotemismFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SlottingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('slotting: pickdensity, traveltime, velocityrank, utilizationrate, replenis
   assert.equal(SlottingFormulas.picksperslot(800, 40).value, 20)
   assert.equal(SlottingFormulas.congestionindex(30, 100).value, 30)
   assert.equal(SlottingFormulas.pickdensity(500, 50).dst, 'supplychain')
-  assert.equal(qpuHexFamiliesOf().get('slotting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('slotting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'slotting', program: ['pickdensity'], params: [500, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10, `slotting.pickdensity at ${uuid}`)
-  qpuUuidReceiptOf('slotting pickdensity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('slotting pickdensity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; pickdensity 10, traveltime 50, velocityrank 9, utilizationrate 85, replenishrate 100, goldenzone 20, picksperslot 20, congestionindex 30; crossing to supplychain')
 })

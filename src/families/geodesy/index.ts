@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GEODESY — THE SHAPE OF THE EARTH, AS ARITHMETIC (chosen by the registry, not by hand). Measuring the planet is numbers:
@@ -31,4 +31,4 @@ export class GeodesyFormulas {
 }
 
 for (const name of ['arc', 'baseline', 'convergence', 'datum', 'elevation', 'flattening', 'geoid', 'precision'] as const)
-  qpuHexRegisterOf('geodesy', name, (GeodesyFormulas[name] as (...x: unknown[]) => unknown).bind(GeodesyFormulas))
+  hexRegisterOf('geodesy', name, (GeodesyFormulas[name] as (...x: unknown[]) => unknown).bind(GeodesyFormulas))

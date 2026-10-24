@@ -3,8 +3,8 @@ import { CloudFormulas } from '../../families/cloud/index.js'
 import { LawFormulas } from '../../families/law/index.js'
 import { PermaFormulas, permaTrinityOf } from '../../families/perma/index.js'
 import { YiFormulas } from '../../families/yi/index.js'
-import { qpuFacesOf, qpuMcpToolsListOf } from '../../quantum/processing/unit/index.js'
-import { qpuPublicOf } from '../../quantum/processing/unit/zeropage.js'
+import { facesOf, mcpToolsListOf } from '../../quantum/processing/unit/index.js'
+import { publicOf } from '../../quantum/processing/unit/zeropage.js'
 import { usageBillOf } from './billing.js'
 import { claimCompletenessAuditOf } from './claim-completeness.js'
 import { clayPrizeOf, claySealReadingsOf, openMathScaleOf } from './clay.js'
@@ -33,7 +33,7 @@ const callOf = (name: string, params: number[], r: { hex?: string; value: number
  * prize / citation / connect bill are reported as the tree already computes them.
  */
 export const pointOf = async () => {
-  const L = qpuFacesOf()
+  const L = facesOf()
   const coins = L.coins
   const rays = L.rays
   const faces = L.faces
@@ -68,11 +68,11 @@ export const pointOf = async () => {
   const trinity = permaTrinityOf()
   const disclosure = ClayDisclosure.disclosure()
   const scale = CloudFormulas.scale(100, 30)
-  const tools = qpuMcpToolsListOf()
+  const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete' as const, tools }).length
   const prize = clayPrizeOf()
   const open = openMathScaleOf()
-  const face = qpuPublicOf()
+  const face = publicOf()
   const qpuPrefixed = tools.filter((t) => t.name.startsWith('qpu_')).length
   const connectBill = {
     doors: tools.length,

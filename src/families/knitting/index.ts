@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** KNITTING — FABRIC FORMATION AS ARITHMETIC. A knit is a grid of loops: the gauge (stitches per 10 cm), the courses
@@ -31,4 +31,4 @@ export class KnittingFormulas {
 }
 
 for (const name of ['courses', 'gauge', 'gsm', 'looplength', 'productivity', 'stitch', 'tightness', 'wales'] as const)
-  qpuHexRegisterOf('knitting', name, (KnittingFormulas[name] as (...x: unknown[]) => unknown).bind(KnittingFormulas))
+  hexRegisterOf('knitting', name, (KnittingFormulas[name] as (...x: unknown[]) => unknown).bind(KnittingFormulas))

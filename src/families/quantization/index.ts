@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** QUANTIZATION — CONTINUOUS AMPLITUDE MADE DISCRETE, AS ARITHMETIC. Mapping a signal onto a finite ladder is numbers: the
@@ -31,4 +31,4 @@ export class QuantizationFormulas {
 }
 
 for (const name of ['bits', 'coderate', 'dynamicrange', 'levels', 'quantizationerror', 'resolution', 'snr', 'stepsize'] as const)
-  qpuHexRegisterOf('quantization', name, (QuantizationFormulas[name] as (...x: unknown[]) => unknown).bind(QuantizationFormulas))
+  hexRegisterOf('quantization', name, (QuantizationFormulas[name] as (...x: unknown[]) => unknown).bind(QuantizationFormulas))

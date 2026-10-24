@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BIOINDICATOR — LIVING THINGS AS A MEASURE OF THEIR ENVIRONMENT, AS ARITHMETIC (chosen by the ecological-survey registry, not by
@@ -31,4 +31,4 @@ export class BioindicatorFormulas {
 }
 
 for (const name of ['abundanceratio', 'biotic', 'diversityindex', 'evenness', 'pollutionload', 'sensitivity', 'speciesrichness', 'tolerancescore'] as const)
-  qpuHexRegisterOf('bioindicator', name, (BioindicatorFormulas[name] as (...x: unknown[]) => unknown).bind(BioindicatorFormulas))
+  hexRegisterOf('bioindicator', name, (BioindicatorFormulas[name] as (...x: unknown[]) => unknown).bind(BioindicatorFormulas))

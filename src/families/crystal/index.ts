@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CrystalFormulas — 8 exact-integer formulas of the crystal domain, each at a hex address crossing to cross; develops the crystal leads. */
@@ -31,4 +31,4 @@ export class CrystalFormulas {
 }
 
 for (const name of ['atoms', 'combos', 'defects', 'faces', 'lattice', 'planes', 'spacing', 'symmetry'] as const)
-  qpuHexRegisterOf('crystal', name, (CrystalFormulas[name] as (...x: unknown[]) => unknown).bind(CrystalFormulas))
+  hexRegisterOf('crystal', name, (CrystalFormulas[name] as (...x: unknown[]) => unknown).bind(CrystalFormulas))

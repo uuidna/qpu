@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RHEUMATOLOGY — DISEASE ACTIVITY AS ARITHMETIC. Measuring inflammatory joint disease is numbers: the composite
@@ -31,4 +31,4 @@ export class RheumatologyFormulas {
 }
 
 for (const name of ['crp', 'das28', 'esr', 'flareindex', 'inflammation', 'jointcount', 'mobility', 'painscore'] as const)
-  qpuHexRegisterOf('rheumatology', name, (RheumatologyFormulas[name] as (...x: unknown[]) => unknown).bind(RheumatologyFormulas))
+  hexRegisterOf('rheumatology', name, (RheumatologyFormulas[name] as (...x: unknown[]) => unknown).bind(RheumatologyFormulas))

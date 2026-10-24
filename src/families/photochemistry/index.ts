@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHOTOCHEMISTRY — LIGHT DRIVING REACTIONS, AS ARITHMETIC (chosen by the public-API registry, not by hand). A photon
@@ -31,4 +31,4 @@ export class PhotochemistryFormulas {
 }
 
 for (const name of ['absorbance', 'actinometry', 'bleaching', 'conversion', 'excitation', 'lifetime', 'photonflux', 'quantumyield'] as const)
-  qpuHexRegisterOf('photochemistry', name, (PhotochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(PhotochemistryFormulas))
+  hexRegisterOf('photochemistry', name, (PhotochemistryFormulas[name] as (...x: unknown[]) => unknown).bind(PhotochemistryFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SUBSIDY — scaffolded integer measures crossed to macroeconomics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SubsidyFormulas {
 }
 
 for (const name of ['amount', 'beneficiaries', 'budgetpct', 'costtotal', 'efficiencyloss', 'multipliereffect', 'passthrough', 'pricereduction'] as const)
-  qpuHexRegisterOf('subsidy', name, (SubsidyFormulas[name] as (...x: unknown[]) => unknown).bind(SubsidyFormulas))
+  hexRegisterOf('subsidy', name, (SubsidyFormulas[name] as (...x: unknown[]) => unknown).bind(SubsidyFormulas))

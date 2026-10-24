@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TotemismFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('totemism: clans, totempairs, lineageorderings, taboocount, kinshipsubsets,
   assert.equal(TotemismFormulas.descentgroups(4, 3).value, 12)
   assert.equal(TotemismFormulas.exogamyratio(60, 100).value, 60)
   assert.equal(TotemismFormulas.clans(8, 4).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('totemism')?.length, 8)
+  assert.equal(hexFamiliesOf().get('totemism')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'totemism', program: ['clans'], params: [8, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `totemism.clans at ${uuid}`)
-  qpuUuidReceiptOf('totemism clans', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('totemism clans', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; clans 12, totempairs 66, lineageorderings 120, taboocount 15, kinshipsubsets 32, emblemcombos 120, descentgroups 12, exogamyratio 60; crossing to sociology')
 })

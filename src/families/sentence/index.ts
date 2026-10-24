@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SENTENCE — THE CRIMINAL ARITHMETIC, ANY JURISDICTION. How terms combine and reduce is arithmetic over the numbers the
@@ -31,4 +31,4 @@ export class SentenceFormulas {
 }
 
 for (const name of ['concurrent', 'consecutive', 'credit', 'enhance', 'fine', 'goodtime', 'mandatory', 'parole'] as const)
-  qpuHexRegisterOf('sentence', name, (SentenceFormulas[name] as (...x: unknown[]) => unknown).bind(SentenceFormulas))
+  hexRegisterOf('sentence', name, (SentenceFormulas[name] as (...x: unknown[]) => unknown).bind(SentenceFormulas))

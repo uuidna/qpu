@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LIDAR — LIGHT DETECTION AND RANGING, AS ARITHMETIC. A pulse of light goes out and comes back: the range is the round-trip
@@ -31,4 +31,4 @@ export class LidarFormulas {
 }
 
 for (const name of ['accuracy', 'noise', 'penetration', 'pointdensity', 'range', 'resolution', 'returns', 'swath'] as const)
-  qpuHexRegisterOf('lidar', name, (LidarFormulas[name] as (...x: unknown[]) => unknown).bind(LidarFormulas))
+  hexRegisterOf('lidar', name, (LidarFormulas[name] as (...x: unknown[]) => unknown).bind(LidarFormulas))

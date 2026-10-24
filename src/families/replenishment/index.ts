@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** REPLENISHMENT — KEEPING THE SHELF FULL, AS ARITHMETIC (chosen by the inventory registry, not by hand). Restocking is
@@ -30,4 +30,4 @@ export class ReplenishmentFormulas {
 }
 
 for (const name of ['cycle', 'eoq', 'fill', 'leadtime', 'parlevel', 'reorder', 'safetystock', 'stockout'] as const)
-  qpuHexRegisterOf('replenishment', name, (ReplenishmentFormulas[name] as (...x: unknown[]) => unknown).bind(ReplenishmentFormulas))
+  hexRegisterOf('replenishment', name, (ReplenishmentFormulas[name] as (...x: unknown[]) => unknown).bind(ReplenishmentFormulas))

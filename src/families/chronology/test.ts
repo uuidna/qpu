@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ChronologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('chronology: yearspan, eventorderings, periodcount, overlapwindows, datinge
   assert.equal(ChronologyFormulas.epochdivisions(3000, 500).value, 6)
   assert.equal(ChronologyFormulas.synchronisms(12, 5).value, 60)
   assert.equal(ChronologyFormulas.yearspan(1500, 500).dst, 'archaeology')
-  assert.equal(qpuHexFamiliesOf().get('chronology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('chronology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'chronology', program: ['yearspan'], params: [1500, 500] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `chronology.yearspan at ${uuid}`)
-  qpuUuidReceiptOf('chronology yearspan', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('chronology yearspan', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; yearspan 1000, eventorderings 720, periodcount 7, overlapwindows 45, datingerror 5, sequencechoices 336, epochdivisions 6, synchronisms 60; crossing to archaeology')
 })

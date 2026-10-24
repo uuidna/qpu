@@ -1,0 +1,62 @@
+[
+ {
+  "claim": "combinatorics.agrees = true",
+  "expect": "true",
+  "rerun": "verified",
+  "reason": "research agrees is true"
+ },
+ {
+  "claim": "research.matched = 999 (family combinatorics)",
+  "expect": "999",
+  "rerun": "denied",
+  "reason": "research family is cal, the claim says 999"
+ },
+ {
+  "claim": "nosuchsource.x = 1",
+  "expect": "1",
+  "rerun": "error",
+  "reason": "Remote end closed connection without response"
+ },
+ {
+  "claim": "research.agrees = true (family combinatorics)",
+  "expect": "true",
+  "rerun": "error",
+  "reason": "<urlopen error [Errno 61] Connection refused>"
+ },
+ {
+  "claim": "npm latest version of the qpu package is 1.4.0",
+  "expect": "1.4.0",
+  "rerun": "error",
+  "reason": "<urlopen error [Errno 61] Connection refused>"
+ },
+ {
+  "claim": "XPRIZE Quantum Applications is active",
+  "expect": "active",
+  "rerun": "error",
+  "reason": "<urlopen error [Errno 61] Connection refused>"
+ },
+ {
+  "claim": "XPRIZE Quantum Applications prize is 5 million dollars",
+  "expect": "5",
+  "rerun": "error",
+  "reason": "<urlopen error [Errno 61] Connection refused>"
+ },
+ {
+  "claim": "XPRIZE Quantum Applications phase II wild card registration closed on 2026-03-04",
+  "expect": "2026-03-04",
+  "rerun": "error",
+  "reason": "<urlopen error [Errno 61] Connection refused>"
+ },
+ {
+  "claim": "Google Quantum AI sponsors XPRIZE Quantum Applications",
+  "expect": "Google",
+  "rerun": "error",
+  "reason": "<urlopen error [Errno 61] Connection refused>"
+ },
+ {
+  "claim": "the 1000-bit modulus factors into two primes",
+  "expect": "true",
+  "rerun": "error",
+  "reason": "<urlopen error [Errno 61] Connection refused>"
+ }
+]

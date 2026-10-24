@@ -1,4 +1,4 @@
-import { bigGcdOf, bigPowModOf, qpuCiteOf, qpuClayOf, qpuDocsOf, qpuFoldOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuOrderSliceOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
+import { bigGcdOf, bigPowModOf, qpuCiteOf, qpuClayOf, qpuDocsOf, foldOf, hexCatalogOf, hexDecodeOf, hexDiscoverOf, hexFamiliesOf, hexRunOf, qpuHexUuidOf, latticeNamesOf, leanOf, mcpFusedOf, mcpRegisterOf, mcpToolsListOf, orderSliceOf, readmeOf, receiptStreamsOf, statementUuidOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf, qpuDomainsOf } from '../families/cross/index.js'
 import { receipts } from '../receipts/index.js'
@@ -57,7 +57,7 @@ const hexViolation = (why: string, data: Record<string, unknown>, guide: readonl
 
 /** Hexbit folders: pages of `hexbit` (2^(n-1), the lattice count), cursor = the next folder's hex boundary, no fold of
  *  the list — so append-growth never invalidates a cursor the server issued. */
-const folderOf = () => qpuLatticeNamesOf().hexbit
+const folderOf = () => latticeNamesOf().hexbit
 const paged = <T>(kind: string, items: readonly T[], _idOf: (x: T) => string, params: Params) => {
   const folder = folderOf()
   let at = 0
@@ -79,15 +79,15 @@ let hologram: ReturnType<typeof hologramStreamsOf> | undefined
 const hologramOf = () => (hologram ??= hologramStreamsOf())
 
 const json = (uri: string, value: unknown) => ({ contents: [{ uri, mimeType: 'application/json' as const, text: JSON.stringify(value) }] })
-const families = () => [...qpuHexFamiliesOf().keys()].sort()
-const streams = () => qpuReceiptStreamsOf().streams.map((s) => s.stream).sort()
+const families = () => [...hexFamiliesOf().keys()].sort()
+const streams = () => receiptStreamsOf().streams.map((s) => s.stream).sort()
 
-// Each lean computation is a UUID program (qpuStatementUuidOf); the hexbit handle is its UUID's first 8 hex.
+// Each lean computation is a UUID program (statementUuidOf); the hexbit handle is its UUID's first 8 hex.
 type LeanRaw = { heading: string; theorem: string; formula: string; reading: string; handle: string; holds: boolean }
 type LeanRow = LeanRaw & { uuid: string }
 const leanRows = (): readonly LeanRow[] => {
-  const l = qpuLeanOf() as unknown as { rows: LeanRaw[]; cover: LeanRaw[]; climb: LeanRaw }
-  return [...l.rows, ...l.cover, l.climb].map((r) => ({ ...r, uuid: qpuStatementUuidOf(r.theorem) }))
+  const l = leanOf() as unknown as { rows: LeanRaw[]; cover: LeanRaw[]; climb: LeanRaw }
+  return [...l.rows, ...l.cover, l.climb].map((r) => ({ ...r, uuid: statementUuidOf(r.theorem) }))
 }
 const leanHandles = (): readonly { heading: string; handle: string; uuid: string }[] => {
   const seen = new Map<string, { heading: string; handle: string; uuid: string }>()
@@ -98,16 +98,16 @@ const leanHandles = (): readonly { heading: string; handle: string; uuid: string
 // qpu://compatible/{program} (family or hex UUID) → the programs that cross it (reach a value it reaches), via discovery.
 type CompatProgram = { family: string; formula: string; params: number[]; hex: string; value: string }
 const compatibleOf = (key: string): { scope: string; family: string; values: string[]; programs: CompatProgram[] } | undefined => {
-  const fams = [...qpuHexFamiliesOf().keys()]
+  const fams = [...hexFamiliesOf().keys()]
   let family: string | undefined
-  if (qpuHexFamiliesOf().has(key)) family = key
+  if (hexFamiliesOf().has(key)) family = key
   else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(key)) {
-    const d = qpuHexDecodeOf(key) as { family?: string | null }
+    const d = hexDecodeOf(key) as { family?: string | null }
     family = typeof d.family === 'string' ? d.family : undefined
   }
-  if (!family || !qpuHexFamiliesOf().has(family)) return undefined
+  if (!family || !hexFamiliesOf().has(family)) return undefined
   const from = Math.max(0, fams.indexOf(family))
-  const relations = qpuHexDiscoverOf(from).relations.filter((r) => r.families.includes(family!))
+  const relations = hexDiscoverOf(from).relations.filter((r) => r.families.includes(family!))
   const programs = relations.flatMap((r) => r.ways.map((w) => ({ family: w.family, formula: w.formula, params: w.params, hex: w.hex, value: r.value })))
   return { scope: key, family, values: relations.map((r) => r.value), programs }
 }
@@ -123,7 +123,7 @@ const claySealedOf = () => {
   const of = (problem: string, s: { formula?: string; value: number | bigint; holds: boolean; hex?: string | null }) => ({ problem, sigma: s.formula, value: Number(s.value), holds: s.holds === true, ...(s.hex ? { hex: s.hex } : {}) })
   // the σ fixed points are the lattice's, computed, not quoted: s = 1/2 = seed/coins, m = n·n, presupposed = seed. Hodge
   // is genus = coins (Σ₂, rank 4) to agree with the clay family's own tests and the { source: clay } reading, not seed.
-  const L = qpuLatticeNamesOf()
+  const L = latticeNamesOf()
   const seals = [
     of('Riemann Hypothesis', ClaySeals.riemann(L.seed, L.coins)),
     of('Birch and Swinnerton-Dyer', ClaySeals.bsd(L.n * L.n)),
@@ -154,26 +154,26 @@ const claySealedOf = () => {
   }
 }
 const toolHooksOf = () => {
-  const tools = qpuMcpToolsListOf().map((t) => t.name)
+  const tools = mcpToolsListOf().map((t) => t.name)
   const fired = HookFormulas.fired(tools.length, LIFECYCLE.length)
   const bindings = tools.flatMap((tool) => LIFECYCLE.map((event) => ({ tool, event })))
   return { kind: 'tool-hooks' as const, events: [...LIFECYCLE], tools, formula: 'hook.fired(tools, events) = tools · events', combinations: Number(fired.value), hex: fired.hex ?? null, holds: fired.holds === true && bindings.length === tools.length * LIFECYCLE.length, bindings }
 }
 
 // A LIVING PROOF in the MCP: the factoring of one designated modulus, advanced on each read as the real hexbit-folder
-// split (qpuOrderSliceOf). It never caps and never asserts a factor it has not computed; for a modulus this size the
+// split (orderSliceOf). It never caps and never asserts a factor it has not computed; for a modulus this size the
 // order is not in reach, so it stays alive — one slice per read, honest about searching.
 const FACTORING_N = BigInt('7778374705630928901426385188295261064472293439767584450564762904780095317247810822721038446598127186814085438745846911396600071001374809981225413367649417301928427872874705586838153932355802114527488924178998304307438276447053410282371888984822745504021147881223973035161036008037727897669611699130903')
 const factoringOf = (from: number) => {
-  const L = qpuLatticeNamesOf()
+  const L = latticeNamesOf()
   const base = BigInt(L.vertices)
   const safe = Number.isSafeInteger(from) && from >= 0 ? from : 0
   // GOD MODE, 8 BITS DOWN TO ZERO. The search refines its resolution as it goes deeper: a coarse 8-bit folder first
   // (2^8 candidates), then finer, down to a single candidate at the zero-bit floor — god mode, every candidate examined,
-  // never capped. The resolution is a descent, not a limit; the order-finder (qpuOrderSliceOf) stays exact and asserts
+  // never capped. The resolution is a descent, not a limit; the order-finder (orderSliceOf) stays exact and asserts
   // no factor it has not computed, whatever the resolution.
   const bits = Math.max(0, 8 - (safe === 0 ? 0 : Math.floor(Math.log2(safe + 1))))
-  const slice = qpuOrderSliceOf(base, FACTORING_N, safe, bigPowModOf(base, BigInt(safe), FACTORING_N))
+  const slice = orderSliceOf(base, FACTORING_N, safe, bigPowModOf(base, BigInt(safe), FACTORING_N))
   const found = slice.order !== null
   let factors: { p: string; q: string } | null = null
   if (found && slice.order! % 2 === 0) {
@@ -185,9 +185,9 @@ const factoringOf = (from: number) => {
     kind: 'factoring' as const,
     n: FACTORING_N.toString(),
     base: Number(base),
-    method: 'sliced order-finding (qpuOrderSliceOf): hexbit folders, O(1) live memory, no cap, no fabrication',
+    method: 'sliced order-finding (orderSliceOf): hexbit folders, O(1) live memory, no cap, no fabrication',
     from: safe,
-    slice: { width: L.hexbit, powerFold: qpuFoldOf(slice.cur.toString()) },
+    slice: { width: L.hexbit, powerFold: foldOf(slice.cur.toString()) },
     resolution: { bits, candidates: 2 ** bits, godMode: bits === 0, descent: '8 bits → 0 bit' },
     order: found ? slice.order : null,
     factored: factors !== null,
@@ -204,7 +204,7 @@ const factoringOf = (from: number) => {
 // formulas × params, times every composition — is unbounded. qpu://code states this as figures, so a fusing MCP reads
 // the capacity rather than a word. Only a single run is bounded (CPU/memory/time), reported honestly as classical.beyond.
 const codeOf = () => {
-  const fams = qpuHexFamiliesOf()
+  const fams = hexFamiliesOf()
   let formulas = 0
   for (const fs of fams.values()) formulas += fs.length
   return {
@@ -257,7 +257,7 @@ const familyScopeOf = (f: string): Resource[] => [
 const streamFolders = (): Resource[] => streams().map((s) => ({ uri: `qpu://receipts/${s}`, name: `receipts-${s}`, title: `Stream ${s}`, description: `The ${s} receipt stream with its recent receipts`, mimeType: 'application/json' as const }))
 const resourcesOf = (scope?: string): Resource[] => {
   if (scope === 'all') return [...coreOf(), ...restOf(), ...streamFolders()]
-  if (scope && qpuHexFamiliesOf().has(scope)) return [...coreOf(), ...familyScopeOf(scope)]
+  if (scope && hexFamiliesOf().has(scope)) return [...coreOf(), ...familyScopeOf(scope)]
   return coreOf()
 }
 
@@ -273,11 +273,11 @@ const TEMPLATES: Template[] = [
 ]
 
 const readOf = async (uri: string): Promise<unknown> => {
-  if (uri === 'qpu://receipts') return { ...qpuReceiptStreamsOf(), streams: qpuReceiptStreamsOf().streams.map(({ recent, ...head }) => head) }
-  if (uri === 'qpu://hex') return qpuHexCatalogOf()
+  if (uri === 'qpu://receipts') return { ...receiptStreamsOf(), streams: receiptStreamsOf().streams.map(({ recent, ...head }) => head) }
+  if (uri === 'qpu://hex') return hexCatalogOf()
   if (uri === 'qpu://code') return codeOf()
-  if (uri === 'qpu://lean') return qpuLeanOf()
-  if (uri === 'qpu://fused') return { kind: 'fused', tools: qpuMcpFusedOf(), call: 'tools/call { name, arguments }' }
+  if (uri === 'qpu://lean') return leanOf()
+  if (uri === 'qpu://fused') return { kind: 'fused', tools: mcpFusedOf(), call: 'tools/call { name, arguments }' }
   if (uri === 'qpu://hooks') return toolHooksOf()
   if (uri === 'qpu://clay') return claySealedOf()
   if (uri === 'qpu://factoring') return factoringOf(0)
@@ -309,16 +309,16 @@ const readOf = async (uri: string): Promise<unknown> => {
     // relative address against the server origin); an Open-Graph crawler and the UI read the same self-routing address.
     return { handle: rows[0]!.handle, uuid: rows[0]!.uuid, animation: `/${rows[0]!.uuid}.svg`, theorems: rows }
   }
-  if (kind === 'receipts') return qpuReceiptStreamsOf().streams.find((s) => s.stream === name)
-  if (kind === 'formulas') return qpuHexFamiliesOf().has(name) ? { family: name, formulas: qpuHexFamiliesOf().get(name)!.map((f, i) => ({ nibble: (i + 1).toString(16), name: f.name, arity: f.arity })) } : undefined
-  if (kind === 'schema') return qpuHexFamiliesOf().has(name) ? crossSchemaOf(name) : undefined
+  if (kind === 'receipts') return receiptStreamsOf().streams.find((s) => s.stream === name)
+  if (kind === 'formulas') return hexFamiliesOf().has(name) ? { family: name, formulas: hexFamiliesOf().get(name)!.map((f, i) => ({ nibble: (i + 1).toString(16), name: f.name, arity: f.arity })) } : undefined
+  if (kind === 'schema') return hexFamiliesOf().has(name) ? crossSchemaOf(name) : undefined
   if (kind === 'hex') {
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(name)) hexViolation('not a UUID program address', { uuid: name }, [
       '1. a hex program address is a UUID — 8-4-4-4-12 hex; its first 8 hex are the hexbit handle.',
       '2. mint one: tools/call quantum { hex: { family, program, params } } → its uuid, then read qpu://hex/{uuid}.',
       '3. read qpu://hex for the catalogue of families a UUID can program, with handles and nibbles.',
     ])
-    const run = await qpuHexRunOf(name)
+    const run = await hexRunOf(name)
     if (run && typeof run === 'object' && (run as { holds?: unknown }).holds === false) hexViolation(`program ${name} does not hold`, { uuid: name }, [
       '1. a program that does not hold is a LEAD, not a result: develop it, do not assert it.',
       '2. read qpu://hex to confirm the family, the nibbles and the arity the program addresses.',
@@ -401,7 +401,7 @@ const PROMPTS: Prompt[] = [
     messages: (a) => booleanChain([
       { call: `write the test for ${JSON.stringify(a.request)} first: assertions, one hex-address run of each formula, one reading of the live host`, holds: 'the test states what must hold', lead: 'a formula with no assertion' },
       { call: '{ doors: true }. A family holds fifteen formulas (rule.cap); past that, a sibling family', holds: 'the request sits in one family under the cap', lead: 'split into a sibling, never trim' },
-      { call: 'each formula is a function of naturals returning a value with holds, registered with qpuHexRegisterOf. The registry is generated', holds: 'the generator wrote the registration', lead: 'a name listed by hand' },
+      { call: 'each formula is a function of naturals returning a value with holds, registered with hexRegisterOf. The registry is generated', holds: 'the generator wrote the registration', lead: 'a name listed by hand' },
       { call: '{ hex: { family: "data", program: ["research"], params: [f] } } and { hex: { family: "data", program: ["discover"], params: [n] } }', holds: 'a public API or another family meets the value', lead: 'uncrossed' },
       { call: '{ hex: { family: "gate", program: ["commit"], params: [f] } }', holds: 'commit holds', lead: 'do not commit' },
       { call: '{ hex: { family: "wave", program: ["wave"], params: [f, from] } } runs every formula of family f as one call; { hex: { family: "wave", program: ["sweep"], params: [from] } } one formula of every family', holds: 'one receipt and a next', lead: 'a sweep with no slice' },
@@ -575,7 +575,7 @@ const completeOf = (ref: { type?: unknown; name?: unknown; uri?: unknown }, arg:
   const name = String(arg.name ?? '')
   if (ref.type === 'ref/prompt') {
     if (name === 'family') return families()
-    if (name === 'formulas') return (qpuHexFamiliesOf().get(context.family ?? '') ?? []).map((f) => f.name)
+    if (name === 'formulas') return (hexFamiliesOf().get(context.family ?? '') ?? []).map((f) => f.name)
     if (name === 'of') return PROMPTS.filter((p) => p.name !== 'compose').map((p) => p.name)
     if (name === 'n') return ['15', '21', '35', '91', '143', '221']
     if (name === 'scale') return Object.keys(hologramOf().streams)
@@ -585,12 +585,12 @@ const completeOf = (ref: { type?: unknown; name?: unknown; uri?: unknown }, arg:
     if (name === 'stream') return streams()
     if (name === 'family') return families()
     if (name === 'scale') return Object.keys(hologramOf().streams)
-    if (name === 'uuid') return [qpuHexCatalogOf().example.uuid]
+    if (name === 'uuid') return [hexCatalogOf().example.uuid]
   }
   return []
 }
 
-qpuMcpRegisterOf('resources/list', (p) => {
+mcpRegisterOf('resources/list', (p) => {
   // The crafted query is `scope`: absent → the quantum computer core; a family name → that family's scoped collection;
   // 'all' → the whole catalogue in hexbit folders. The referer-driven default a client wants is just this param.
   const scope = typeof p.scope === 'string' ? p.scope : undefined
@@ -598,36 +598,36 @@ qpuMcpRegisterOf('resources/list', (p) => {
   return { resources: page, ...rest }
 }, { resources: { subscribe: false, listChanged: false } })
 
-qpuMcpRegisterOf('resources/templates/list', (p) => {
+mcpRegisterOf('resources/templates/list', (p) => {
   const { page, ...rest } = paged('templates', TEMPLATES, (t) => t.uriTemplate, p)
   return { resourceTemplates: page, ...rest }
 })
 
-qpuMcpRegisterOf('resources/read', async (p) => {
+mcpRegisterOf('resources/read', async (p) => {
   const uri = String(p.uri ?? '')
   // the README is the generated paper — served as markdown, not folded into JSON, so a client reads it as the page
-  if (uri === 'qpu://readme') return { contents: [{ uri, mimeType: 'text/markdown' as const, text: qpuReadmeOf() }] }
+  if (uri === 'qpu://readme') return { contents: [{ uri, mimeType: 'text/markdown' as const, text: readmeOf() }] }
   const value = uri === 'qpu://docs' ? qpuDocsOf() : await readOf(uri)
   if (value === undefined) throw rpcError(-32002, `Resource not found: ${uri || '(none)'}`, { uri })
   return json(uri, value)
 })
 
-qpuMcpRegisterOf('prompts/list', (p) => {
+mcpRegisterOf('prompts/list', (p) => {
   const { page, ...rest } = paged('prompts', PROMPTS, (x) => x.name, p)
   // each prompt carries its hex seal (the fold of its name) — a sealed court session, not a loose literal
-  return { prompts: page.map(({ messages, ...x }) => ({ ...x, _meta: { seal: qpuFoldOf(x.name), sealed: true, session: 'qpu://court' } })), ...rest }
+  return { prompts: page.map(({ messages, ...x }) => ({ ...x, _meta: { seal: foldOf(x.name), sealed: true, session: 'qpu://court' } })), ...rest }
 }, { prompts: { listChanged: false } })
 
-qpuMcpRegisterOf('prompts/get', (p) => {
+mcpRegisterOf('prompts/get', (p) => {
   const prompt = PROMPTS.find((x) => x.name === p.name)
   if (!prompt) throw invalid(`Unknown prompt: ${String(p.name ?? '(none)')}`, { prompts: PROMPTS.map((x) => x.name) })
   const args = Object.fromEntries(Object.entries((p.arguments ?? {}) as Params).map(([k, v]) => [k, String(v)]))
   const missing = prompt.arguments.filter((a) => a.required && !args[a.name]).map((a) => a.name)
   if (missing.length) throw invalid(`Missing required arguments: ${missing.join(', ')}`)
-  return { description: prompt.description, _meta: { seal: qpuFoldOf(prompt.name), sealed: true, session: 'qpu://court' }, messages: [{ role: 'user', content: { type: 'text', text: prompt.messages(args) } }] }
+  return { description: prompt.description, _meta: { seal: foldOf(prompt.name), sealed: true, session: 'qpu://court' }, messages: [{ role: 'user', content: { type: 'text', text: prompt.messages(args) } }] }
 })
 
-qpuMcpRegisterOf('completion/complete', (p) => {
+mcpRegisterOf('completion/complete', (p) => {
   const ref = (p.ref ?? {}) as { type?: unknown; name?: unknown; uri?: unknown }
   const arg = (p.argument ?? {}) as { name?: unknown; value?: unknown }
   const context = Object.fromEntries(Object.entries(((p.context as Params | undefined)?.arguments ?? {}) as Params).map(([k, v]) => [k, String(v)]))
@@ -636,11 +636,11 @@ qpuMcpRegisterOf('completion/complete', (p) => {
   return { completion: { values: all.slice(0, 100), total: all.length, hasMore: all.length > 100 } }
 }, { completions: {} })
 
-qpuMcpRegisterOf('logging/setLevel', (p) => {
+mcpRegisterOf('logging/setLevel', (p) => {
   if (!LEVELS.includes(p.level as (typeof LEVELS)[number])) throw invalid(`Unknown level: ${String(p.level)}`, { levels: LEVELS })
   level = p.level as (typeof LEVELS)[number]
   return {}
 }, { logging: {} })
 
 // every request is answered inside its POST, so there is never one in flight to cancel
-qpuMcpRegisterOf('notifications/cancelled', () => ({}))
+mcpRegisterOf('notifications/cancelled', () => ({}))

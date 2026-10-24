@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { IncidenceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('incidence: rate, cumulative, persontime, relativerisk, attributablerisk, o
   assert.equal(IncidenceFormulas.riskdifference(40, 10).value, 30)
   assert.equal(IncidenceFormulas.standardized(120, 100).value, 120, 'twenty percent above expected')
   assert.equal(IncidenceFormulas.rate(50, 100000).dst, 'epidemiology')
-  assert.equal(qpuHexFamiliesOf().get('incidence')?.length, 8)
+  assert.equal(hexFamiliesOf().get('incidence')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'incidence', program: ['rate'], params: [50, 100000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `incidence.rate at ${uuid}`)
-  qpuUuidReceiptOf('incidence rate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('incidence rate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rate 50, cumulative 25, persontime 30, relativerisk 400, attributablerisk 75, oddsratio 400, riskdifference 30, standardized 120; crossing to epidemiology')
 })

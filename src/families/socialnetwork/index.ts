@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SOCIALNETWORK — THE SHAPE OF WHO CONNECTS TO WHOM, AS ARITHMETIC (chosen by the public-API registry, not by hand). A
@@ -31,4 +31,4 @@ export class SocialnetworkFormulas {
 }
 
 for (const name of ['betweenness', 'clustering', 'components', 'degreecentrality', 'density', 'homophily', 'pathlength', 'reciprocity'] as const)
-  qpuHexRegisterOf('socialnetwork', name, (SocialnetworkFormulas[name] as (...x: unknown[]) => unknown).bind(SocialnetworkFormulas))
+  hexRegisterOf('socialnetwork', name, (SocialnetworkFormulas[name] as (...x: unknown[]) => unknown).bind(SocialnetworkFormulas))

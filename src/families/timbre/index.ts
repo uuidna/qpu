@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TIMBRE — THE COLOUR OF A SOUND, AS ARITHMETIC (what the ear hears past pitch and loudness). Timbre is numbers: how much
@@ -31,4 +31,4 @@ export class TimbreFormulas {
 }
 
 for (const name of ['attacktime', 'brightness', 'formant', 'harmonicratio', 'inharmonicity', 'oddevenratio', 'rolloff', 'spectralcentroid'] as const)
-  qpuHexRegisterOf('timbre', name, (TimbreFormulas[name] as (...x: unknown[]) => unknown).bind(TimbreFormulas))
+  hexRegisterOf('timbre', name, (TimbreFormulas[name] as (...x: unknown[]) => unknown).bind(TimbreFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HAZARD — DANGER AS ARITHMETIC. Risk is likelihood times consequence; exposure, toxicity, probability, mitigation and
@@ -30,4 +30,4 @@ export class HazardFormulas {
 }
 
 for (const name of ['dilution', 'evacuation', 'exposure', 'mitigation', 'probability', 'risk', 'spread', 'toxicity'] as const)
-  qpuHexRegisterOf('hazard', name, (HazardFormulas[name] as (...x: unknown[]) => unknown).bind(HazardFormulas))
+  hexRegisterOf('hazard', name, (HazardFormulas[name] as (...x: unknown[]) => unknown).bind(HazardFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PORTING AS COMBINATORICS. Moving code between platforms is layout arithmetic over open, published formats: a binary
@@ -76,4 +76,4 @@ export class PortFormulas {
 }
 
 for (const name of ['align', 'layout', 'long', 'magic', 'offset', 'pad', 'swap', 'word'] as const)
-  qpuHexRegisterOf('port', name, (PortFormulas[name] as (...x: unknown[]) => unknown).bind(PortFormulas))
+  hexRegisterOf('port', name, (PortFormulas[name] as (...x: unknown[]) => unknown).bind(PortFormulas))

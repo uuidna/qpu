@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FERRY — scaffolded integer measures crossed to logistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class FerryFormulas {
 }
 
 for (const name of ['capacity', 'crossingtime', 'dailycrossings', 'loadfactor', 'routepairs', 'throughput', 'turnaroundmin', 'vehicledecks'] as const)
-  qpuHexRegisterOf('ferry', name, (FerryFormulas[name] as (...x: unknown[]) => unknown).bind(FerryFormulas))
+  hexRegisterOf('ferry', name, (FerryFormulas[name] as (...x: unknown[]) => unknown).bind(FerryFormulas))

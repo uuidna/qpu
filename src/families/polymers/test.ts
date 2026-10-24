@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PolymersFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('polymers: degreeofpolymerization, molecularweight, crystallinity, glasstra
   assert.equal(PolymersFormulas.crosslink(50000, 25).value, 2000, 'mass between crosslinks')
   assert.equal(PolymersFormulas.viscosity(250, 100).value, 250)
   assert.equal(PolymersFormulas.degreeofpolymerization(28000, 28).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('polymers')?.length, 8)
+  assert.equal(hexFamiliesOf().get('polymers')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'polymers', program: ['degreeofpolymerization'], params: [28000, 28] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1000, `polymers.degreeofpolymerization at ${uuid}`)
-  qpuUuidReceiptOf('polymers degreeofpolymerization', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('polymers degreeofpolymerization', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; degreeofpolymerization 1000, molecularweight 28000, crystallinity 65, glasstransition 318, tensilestrength 50, elongation 150, crosslink 2000, viscosity 250; crossing to materials')
 })

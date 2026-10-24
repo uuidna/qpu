@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RHETORIC — THE ART OF PERSUASION, AS ARITHMETIC. The classical appeals are numbers: credibility per source (ethos),
@@ -31,4 +31,4 @@ export class RhetoricFormulas {
 }
 
 for (const name of ['cadence', 'clarity', 'devices', 'emphasis', 'ethos', 'logos', 'pathos', 'persuasion'] as const)
-  qpuHexRegisterOf('rhetoric', name, (RhetoricFormulas[name] as (...x: unknown[]) => unknown).bind(RhetoricFormulas))
+  hexRegisterOf('rhetoric', name, (RhetoricFormulas[name] as (...x: unknown[]) => unknown).bind(RhetoricFormulas))

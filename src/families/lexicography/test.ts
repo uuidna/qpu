@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LexicographyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('lexicography: headwords, senses, coverage, polysemy, definitionlength, cro
   assert.equal(LexicographyFormulas.frequencyrank(5000, 1000).value, 5, 'frequency band')
   assert.equal(LexicographyFormulas.lemmaratio(6000, 1500).value, 4, 'inflected forms per lemma')
   assert.equal(LexicographyFormulas.headwords(500, 40).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('lexicography')?.length, 8)
+  assert.equal(hexFamiliesOf().get('lexicography')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'lexicography', program: ['polysemy'], params: [3000, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `lexicography.polysemy at ${uuid}`)
-  qpuUuidReceiptOf('lexicography polysemy', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('lexicography polysemy', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; headwords 20000, senses 3000, coverage 95, polysemy 3, definitionlength 20, crossref 4000, frequencyrank 5, lemmaratio 4; crossing to linguistics')
 })

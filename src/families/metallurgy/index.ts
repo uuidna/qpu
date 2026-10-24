@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** METALLURGY — THE SCIENCE OF METALS, AS ARITHMETIC (chosen by the materials registry, not by hand). Working metal is
@@ -30,4 +30,4 @@ export class MetallurgyFormulas {
 }
 
 for (const name of ['alloy', 'corrosion', 'ductility', 'fatigue', 'grain', 'hardness', 'modulus', 'tensile'] as const)
-  qpuHexRegisterOf('metallurgy', name, (MetallurgyFormulas[name] as (...x: unknown[]) => unknown).bind(MetallurgyFormulas))
+  hexRegisterOf('metallurgy', name, (MetallurgyFormulas[name] as (...x: unknown[]) => unknown).bind(MetallurgyFormulas))

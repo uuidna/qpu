@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DevtoolsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('devtools: coverage, build, complexity, debt, churn, ratio, bugs, velocity 
   assert.equal(DevtoolsFormulas.bugs(5000, 8).value, 40)
   assert.equal(DevtoolsFormulas.velocity(120, 6).value, 20)
   assert.equal(DevtoolsFormulas.coverage(850, 1000).dst, 'obs')
-  assert.equal(qpuHexFamiliesOf().get('devtools')?.length, 8)
+  assert.equal(hexFamiliesOf().get('devtools')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'devtools', program: ['complexity'], params: [12, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `devtools.complexity at ${uuid}`)
-  qpuUuidReceiptOf('devtools complexity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('devtools complexity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coverage 85, build 600, complexity 4, debt 80, churn 420, ratio 50, bugs 40, velocity 20; crossing to obs')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CompostingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('composting: cnratio, moisture, temperature, maturity, volume, turnover, ae
   assert.equal(CompostingFormulas.aeration(500, 100).value, 5)
   assert.equal(CompostingFormulas.decomposition(1000, 400).value, 60, 'percent broken down')
   assert.equal(CompostingFormulas.cnratio(300, 10).dst, 'ecology')
-  assert.equal(qpuHexFamiliesOf().get('composting')?.length, 8)
+  assert.equal(hexFamiliesOf().get('composting')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'composting', program: ['turnover'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `composting.turnover at ${uuid}`)
-  qpuUuidReceiptOf('composting turnover', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('composting turnover', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; cnratio 30, moisture 60, temperature 65, maturity 1, volume 6, turnover 4, aeration 5, decomposition 60; crossing to ecology')
 })

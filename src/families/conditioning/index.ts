@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONDITIONING — TRAINING THE BODY, AS ARITHMETIC (chosen by the exercise-science registry, not by hand). Getting fit is
@@ -31,4 +31,4 @@ export class ConditioningFormulas {
 }
 
 for (const name of ['heartrate', 'intensity', 'load', 'onerepmax', 'recovery', 'trainingzone', 'vo2max', 'volume'] as const)
-  qpuHexRegisterOf('conditioning', name, (ConditioningFormulas[name] as (...x: unknown[]) => unknown).bind(ConditioningFormulas))
+  hexRegisterOf('conditioning', name, (ConditioningFormulas[name] as (...x: unknown[]) => unknown).bind(ConditioningFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MANIFOLD — THE SHAPE OF SPACE, AS ARITHMETIC. A manifold is counted: its dimension, the genus of a surface, the Betti
@@ -30,4 +30,4 @@ export class ManifoldFormulas {
 }
 
 for (const name of ['bettinumber', 'boundarycomponents', 'chartcount', 'dimension', 'eulercharacteristic', 'genus', 'homologyrank', 'orientability'] as const)
-  qpuHexRegisterOf('manifold', name, (ManifoldFormulas[name] as (...x: unknown[]) => unknown).bind(ManifoldFormulas))
+  hexRegisterOf('manifold', name, (ManifoldFormulas[name] as (...x: unknown[]) => unknown).bind(ManifoldFormulas))

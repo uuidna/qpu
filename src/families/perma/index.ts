@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PERMA — A TRINITY OF THE LATTICE'S OWN COUNTS. Three faces: coins, rays, and the faces their product is. qpuClayOf
@@ -13,30 +13,30 @@ const p = (id: string, formula: string, value: number, holds: boolean, name: str
 export class PermaFormulas {
   /** First face: the lattice's coins. value x. holds when x is that count. */
   static coins(x: number): CrossFormula {
-    const coins = qpuLatticeNamesOf().coins
+    const coins = latticeNamesOf().coins
     return p('perma-coins', 'coins(x) = x; holds when x is the lattice coins', x, nat(x) && x === coins, 'coins', [x])
   }
 
   /** Second face: the lattice's rays. value x. holds when x is that count. */
   static rays(x: number): CrossFormula {
-    const rays = qpuLatticeNamesOf().rays
+    const rays = latticeNamesOf().rays
     return p('perma-rays', 'rays(x) = x; holds when x is the lattice rays', x, nat(x) && x === rays, 'rays', [x])
   }
 
   /** Third face: the product the lattice already names faces. value x · y. holds when x is coins, y is rays, and the product is faces. */
   static faces(x: number, y: number): CrossFormula {
-    const lattice = qpuLatticeNamesOf()
+    const lattice = latticeNamesOf()
     const value = x * y
     return p('perma-faces', 'faces(x, y) = x · y; holds when x is coins, y is rays, and the product is the lattice faces', value, nat(x, y) && x === lattice.coins && y === lattice.rays && value === lattice.faces, 'faces', [x, y])
   }
 }
 
 for (const name of ['coins', 'faces', 'rays'] as const)
-  qpuHexRegisterOf('perma', name, (PermaFormulas[name] as (...x: unknown[]) => unknown).bind(PermaFormulas))
+  hexRegisterOf('perma', name, (PermaFormulas[name] as (...x: unknown[]) => unknown).bind(PermaFormulas))
 
 /** The three faces, each recomputed on the lattice's own counts. A face that does not hold stays a lead. */
 export const permaTrinityOf = () => {
-  const lattice = qpuLatticeNamesOf()
+  const lattice = latticeNamesOf()
   const coins = PermaFormulas.coins(lattice.coins)
   const rays = PermaFormulas.rays(lattice.rays)
   const faces = PermaFormulas.faces(lattice.coins, lattice.rays)

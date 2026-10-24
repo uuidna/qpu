@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GenomicsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('genomics: coverage, gccontent, snp, heterozygosity, assembly, n50, mutatio
   assert.equal(GenomicsFormulas.mutation(100, 10).value, 10)
   assert.equal(GenomicsFormulas.synteny(8, 10).value, 80, 'conserved blocks')
   assert.equal(GenomicsFormulas.coverage(3000, 100).dst, 'genetics')
-  assert.equal(qpuHexFamiliesOf().get('genomics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('genomics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'genomics', program: ['coverage'], params: [3000, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `genomics.coverage at ${uuid}`)
-  qpuUuidReceiptOf('genomics coverage', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('genomics coverage', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coverage 30, gccontent 50, snp 10, heterozygosity 5, assembly 25, n50 5000, mutation 10, synteny 80; crossing to genetics')
 })

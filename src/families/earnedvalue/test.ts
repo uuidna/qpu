@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { EarnedvalueFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('earnedvalue: cpi, spi, costvariance, schedulevariance, eac, etc, tcpi, vac
   assert.equal(EarnedvalueFormulas.vac(2000, 1800).value, 200, 'variance at completion')
   assert.equal(EarnedvalueFormulas.cpi(800, 0).value, 0)
   assert.equal(EarnedvalueFormulas.cpi(800, 1000).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('earnedvalue')?.length, 8)
+  assert.equal(hexFamiliesOf().get('earnedvalue')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'earnedvalue', program: ['cpi'], params: [800, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `earnedvalue.cpi at ${uuid}`)
-  qpuUuidReceiptOf('earnedvalue cpi', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('earnedvalue cpi', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; cpi 80, spi 90, costvariance 200, schedulevariance 100, eac 2500, etc 1200, tcpi 120, vac 200; crossing to econ')
 })

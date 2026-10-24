@@ -9,9 +9,9 @@
  *   QPU_LIVE=https://host npx tsx scripts/site-receipt.ts
  */
 import fs from 'node:fs'
-import { qpuContentUuidOf, qpuLatticeNamesOf, qpuUuidReceiptOf, tenOf } from '../dist/quantum/processing/unit/index.js'
+import { contentUuidOf, latticeNamesOf, uuidReceiptOf, tenOf } from '../dist/quantum/processing/unit/index.js'
 
-const L = qpuLatticeNamesOf()
+const L = latticeNamesOf()
 const host = process.env.QPU_LIVE ?? 'https://qpu.uuidna.com'
 const take = L.faces
 const call = async (args) => {
@@ -44,7 +44,7 @@ const doc = {
   holds: rows.length > 0 && failing.length === 0,
   rows: rows.map((r) => ({ name: r.path, pass: r.status === 200 && Boolean(r.title), value: `${r.status} ${r.ms}ms${r.title ? ` · ${r.title}` : ''}${r.error ? ` · ${r.error}` : ''}`, receipt: '' })),
 }
-doc.uuid = qpuContentUuidOf(doc.rows)
-doc.receipt = qpuUuidReceiptOf('site', doc.uuid, `${doc.answered}/${doc.addresses}`, 'scripts/site-receipt.ts').uuid
+doc.uuid = contentUuidOf(doc.rows)
+doc.receipt = uuidReceiptOf('site', doc.uuid, `${doc.answered}/${doc.addresses}`, 'scripts/site-receipt.ts').uuid
 fs.writeFileSync('site-receipt.json', JSON.stringify(doc, null, 1) + '\n')
 console.log(JSON.stringify({ addresses: doc.addresses, answered: doc.answered, titled: doc.titled, sitemapMs, slowest: doc.slowest, failing: failing.map((r) => `${r.path} ${r.status}`) }))

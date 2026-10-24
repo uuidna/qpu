@@ -3,10 +3,10 @@
  *
  * Same reading for every harness: MCP `connector { about|chat|search|idea }`, Payload `/api/qpu/chat`,
  * Next Public panel, stdio/boot, Worker (publicDoorFetchOf). No framework lock-in. RAID-native ask lives in
- * qpuDataOf; search is api-door + search.* formulas (Payload search collection is optional, not required).
+ * dataOf; search is api-door + search.* formulas (Payload search collection is optional, not required).
  * Papers/blueprints/docs fuse through papersOf when asked. Token-sealed. Goal stays OPEN.
  */
-import { qpuFacesOf, qpuHarnessesOf, type QpuEnv } from '../../quantum/processing/unit/index.js'
+import { facesOf, harnessesOf, type QpuEnv } from '../../quantum/processing/unit/index.js'
 import { SearchFormulas } from '../../families/search/index.js'
 import { ContractFormulas } from '../../families/contract/index.js'
 import type { QpuPlugin } from './surface.js'
@@ -40,7 +40,7 @@ const wordsOf = (s: string): string[] =>
  * Distro path map: any idea through chat/search to blueprints/docs/apps — formulated stages, not marketing.
  */
 export const distroPathOf = (idea: string) => {
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const cure = ContractFormulas.cure(7, 14)
   const stages = [
     {
@@ -50,7 +50,7 @@ export const distroPathOf = (idea: string) => {
     },
     {
       stage: 'chat' as const,
-      via: 'qpuDataOf ask · tools/call connector { chat: true, about }' as const,
+      via: 'dataOf ask · tools/call connector { chat: true, about }' as const,
       does: 'human-intelligence communication: words → formula hex/value/fold/hue' as const,
     },
     {
@@ -86,7 +86,7 @@ export const distroPathOf = (idea: string) => {
     idea: idea || null,
     stages,
     frameworks: [...CHAT_SEARCH_FRAMEWORKS],
-    harnesses: qpuHarnessesOf().rows.map((r) => r.harness),
+    harnesses: harnessesOf().rows.map((r) => r.harness),
     faces,
     cure: { family: 'contract' as const, formula: 'cure' as const, hex: cure.hex ?? null, value: cure.value, holds: cure.holds === true },
     note: 'one path · no framework lock-in · token-sealed replies' as const,
@@ -116,12 +116,12 @@ export const chatSearchOf = async (
   const wantPapers = args.papers === true || args.blueprint === true || args.docs === true || args.print === true || args.chips === true
   const wantApp = args.app === true || args.apps === true || args.panel === true
   const path = distroPathOf(idea)
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
 
   let chat: Record<string, unknown> | null = null
   if (wantChat && idea) {
-    const { qpuDataOf } = await import('../../mcp/qpu-fused.js')
-    const r = (await qpuDataOf('ask', { about: idea }, env)) as {
+    const { dataOf } = await import('../../mcp/qpu-fused.js')
+    const r = (await dataOf('ask', { about: idea }, env)) as {
       reading?: Record<string, unknown>
       agrees?: boolean
       url?: string
@@ -206,7 +206,7 @@ export const chatSearchOf = async (
     }
   }
 
-  const harnesses = qpuHarnessesOf()
+  const harnesses = harnessesOf()
   const chatHolds = chat === null ? true : chat.agrees === true || (chat.reading !== null && typeof chat.reading === 'object')
   const searchHolds = search === null ? true : search.holds === true
   const papersHolds = papers === null ? true : papers.holds === true
@@ -292,7 +292,7 @@ export const distroOf = async (
   const { sealPayloadOf, tokenUsageOf, secretsInOf } = await import('./tokens.js')
   const { CombinatoricsFormulas } = await import('../../families/combinatorics/index.js')
   const { MerkabaFormulas } = await import('../../families/merkaba/index.js')
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const k = typeof args.k === 'number' && Number.isSafeInteger(args.k) && args.k > 0 ? Math.min(args.k, faces) : 2
   const passesN = typeof args.passes === 'number' && Number.isSafeInteger(args.passes) && args.passes > 0 ? Math.min(args.passes, 4) : 2
   const width0 = typeof args.width === 'number' && Number.isSafeInteger(args.width) && args.width > 0 ? args.width : faces * 2
@@ -467,7 +467,7 @@ export const distroOf = async (
     })
   }
   {
-    const h = qpuHarnessesOf()
+    const h = harnessesOf()
     hops.push({
       dir: 'inside-out',
       layer: 'harnesses',
@@ -479,7 +479,7 @@ export const distroOf = async (
 
   // ─── OUTSIDE-IN: harness → MCP → connector → formula ───
   {
-    const h = qpuHarnessesOf()
+    const h = harnessesOf()
     hops.push({
       dir: 'outside-in',
       layer: 'harness→url',

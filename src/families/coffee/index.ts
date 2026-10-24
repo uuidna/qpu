@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COFFEE — BREWING AS ARITHMETIC. A cup is numbers: the water-to-coffee ratio, the extraction yield, dissolved solids,
@@ -30,4 +30,4 @@ export class CoffeeFormulas {
 }
 
 for (const name of ['bloomwater', 'brewratio', 'doseyield', 'extraction', 'grindsetting', 'strength', 'tds', 'watertemp'] as const)
-  qpuHexRegisterOf('coffee', name, (CoffeeFormulas[name] as (...x: unknown[]) => unknown).bind(CoffeeFormulas))
+  hexRegisterOf('coffee', name, (CoffeeFormulas[name] as (...x: unknown[]) => unknown).bind(CoffeeFormulas))

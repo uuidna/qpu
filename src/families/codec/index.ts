@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CodecFormulas — 8 exact-integer formulas of the codec domain, each at a hex address crossing to cross; develops the codec leads. */
@@ -31,4 +31,4 @@ export class CodecFormulas {
 }
 
 for (const name of ['bitrate', 'blocksize', 'channels', 'combos', 'frames', 'latency', 'ratio', 'samples'] as const)
-  qpuHexRegisterOf('codec', name, (CodecFormulas[name] as (...x: unknown[]) => unknown).bind(CodecFormulas))
+  hexRegisterOf('codec', name, (CodecFormulas[name] as (...x: unknown[]) => unknown).bind(CodecFormulas))

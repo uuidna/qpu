@@ -12,11 +12,11 @@ if (argv.length > 0 || process.stdin.isTTY === true) {
 } else {
   globalThis.console = new Console(process.stderr, process.stderr)
 
-  const { default: worker, qpuHarnessesOf, rpcErrorOf, qpuFamilyRegistryUrlOf } = await import('./index.js')
+  const { default: worker, harnessesOf, rpcErrorOf, familyRegistryUrlOf } = await import('./index.js')
   const { publicDoorFetchOf } = await import('../../../payload/plugins/public.js')
-  await import(qpuFamilyRegistryUrlOf())
+  await import(familyRegistryUrlOf())
 
-  const { url } = qpuHarnessesOf()
+  const { url } = harnessesOf()
   const token = process.env.QPU_WRITE_TOKEN
   const env: { QPU_HOST: string; QPU_WRITE_TOKEN?: string; PAYLOAD: { fetch: (request: Request) => Promise<Response> } } = {
     QPU_HOST: new URL(url).hostname,

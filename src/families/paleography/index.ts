@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PALEOGRAPHY — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PaleographyFormulas {
 }
 
 for (const name of ['abbreviationsubsets', 'dateestimate', 'graphemecombos', 'handcount', 'letterforms', 'ligaturepairs', 'minusculeratio', 'scriptorderings'] as const)
-  qpuHexRegisterOf('paleography', name, (PaleographyFormulas[name] as (...x: unknown[]) => unknown).bind(PaleographyFormulas))
+  hexRegisterOf('paleography', name, (PaleographyFormulas[name] as (...x: unknown[]) => unknown).bind(PaleographyFormulas))

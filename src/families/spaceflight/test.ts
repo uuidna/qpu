@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SpaceflightFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('spaceflight: deltav, escapevelocity, orbitalperiod, payloadfraction, stage
   assert.equal(SpaceflightFormulas.apogee(400, 1).value, 400)
   assert.equal(SpaceflightFormulas.twr(150, 100).value, 1)
   assert.equal(SpaceflightFormulas.deltav(9400, 1).dst, 'aerospace')
-  assert.equal(qpuHexFamiliesOf().get('spaceflight')?.length, 8)
+  assert.equal(hexFamiliesOf().get('spaceflight')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'spaceflight', program: ['deltav'], params: [9400, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 9400, `spaceflight.deltav at ${uuid}`)
-  qpuUuidReceiptOf('spaceflight deltav', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('spaceflight deltav', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; deltav 9400, escapevelocity 11000, orbitalperiod 90, payloadfraction 4, stageorderings 6, burntime 240, apogee 400, twr 1; crossing to aerospace')
 })

@@ -11,13 +11,13 @@
 // 0.1.9 shipped four sitemaps listing /.well-known/mcp.json on hosts that answered 404 for it, a soft 404
 // published by the law against soft 404s, and the suite was green throughout — an in-suite test can only ask
 // what this unit answers, and a sibling host is answered by Cloudflare's routing, not by this process.
-import { qpuLeanOf, qpuMcpOf, qpuQuantumOf, qpuRobotsOf, qpuSeoZoneOf, qpuSitemapOf } from '../dist/quantum/processing/unit/index.js'
+import { leanOf, mcpOf, quantumOf, robotsOf, seoZoneOf, sitemapOf } from '../dist/quantum/processing/unit/index.js'
 
 const origin = (process.argv[2] ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
 const pages = [
-  ['/', () => qpuQuantumOf()],
-  ['/quantum/processing/unit', () => qpuLeanOf()],
-  ['/mcp', () => qpuMcpOf()],
+  ['/', () => quantumOf()],
+  ['/quantum/processing/unit', () => leanOf()],
+  ['/mcp', () => mcpOf()],
 ]
 const attempts = Number(process.env.VERIFY_ATTEMPTS ?? 24) || 24
 const waitMs = 5000
@@ -45,15 +45,15 @@ const firstDifference = (a, b, path = '$') => {
  */
 const zoneFaultsOf = async () => {
   const faults = []
-  for (const host of qpuSeoZoneOf().hosts) {
-    for (const [path, built] of [['/robots.txt', qpuRobotsOf(host.host)], ['/sitemap.xml', qpuSitemapOf(host.host)]]) {
+  for (const host of seoZoneOf().hosts) {
+    for (const [path, built] of [['/robots.txt', robotsOf(host.host)], ['/sitemap.xml', sitemapOf(host.host)]]) {
       const res = await fetch(`${host.origin}${path}`).catch((e) => ({ status: 0, text: async () => String(e) }))
       const served = await res.text()
       if (res.status === 0) { faults.push(`${host.origin}${path}: unreachable — ${served.slice(0, 60)}`); continue }
       if (res.status !== 200) { faults.push(`${host.origin}${path}: HTTP ${res.status} — Cloudflare's managed default stands in wherever this answers 404`); continue }
       if (served !== built) faults.push(`${host.origin}${path}: serves ${served.length} bytes, this build computes ${built.length}`)
     }
-    for (const loc of [...qpuSitemapOf(host.host).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])) {
+    for (const loc of [...sitemapOf(host.host).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])) {
       const res = await fetch(loc, { redirect: 'manual' }).catch(() => ({ status: 0 }))
       if (res.status === 0) faults.push(`${loc}: listed in ${host.host}'s sitemap and unreachable`)
       else if (res.status !== 200) faults.push(`${loc}: listed in ${host.host}'s sitemap and answers ${res.status} — a soft 404 the crawler drops and a reader believes`)
@@ -79,7 +79,7 @@ for (let attempt = 1; attempt <= attempts; attempt++) {
       console.error(`verify-live: the pages match and the zone's crawlable surface does not — ${faults.length} fault(s)`)
       process.exit(1)
     }
-    console.log(`verify-live: ${qpuSeoZoneOf().hosts.length} host(s) serve the pair this build computes, every <loc> answering`)
+    console.log(`verify-live: ${seoZoneOf().hosts.length} host(s) serve the pair this build computes, every <loc> answering`)
     process.exit(0)
   }
   const bad = results.find((r) => !r.equal)

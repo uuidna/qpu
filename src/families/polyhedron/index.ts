@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POLYHEDRON — A SOLID AS ARITHMETIC (chosen by the shape registry, not by hand). A polyhedron is counting: the Euler
@@ -31,4 +31,4 @@ export class PolyhedronFormulas {
 }
 
 for (const name of ['dihedralcount', 'edges', 'eulercharacteristic', 'faces', 'facesatvertex', 'surfacearea', 'vertices', 'volume'] as const)
-  qpuHexRegisterOf('polyhedron', name, (PolyhedronFormulas[name] as (...x: unknown[]) => unknown).bind(PolyhedronFormulas))
+  hexRegisterOf('polyhedron', name, (PolyhedronFormulas[name] as (...x: unknown[]) => unknown).bind(PolyhedronFormulas))

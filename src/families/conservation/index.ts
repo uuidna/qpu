@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONSERVATION — PROTECTING LIFE, AS ARITHMETIC. The work of keeping species and habitats alive is numbers: the share of
@@ -31,4 +31,4 @@ export class ConservationFormulas {
 }
 
 for (const name of ['carrying', 'corridor', 'poaching', 'population', 'protected', 'restoration', 'threatened', 'viability'] as const)
-  qpuHexRegisterOf('conservation', name, (ConservationFormulas[name] as (...x: unknown[]) => unknown).bind(ConservationFormulas))
+  hexRegisterOf('conservation', name, (ConservationFormulas[name] as (...x: unknown[]) => unknown).bind(ConservationFormulas))

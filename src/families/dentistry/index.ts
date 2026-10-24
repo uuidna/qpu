@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DENTISTRY — DENTAL MEDICINE, AS ARITHMETIC (chosen by the registry, not by hand). Dental care is numbers: decay as a
@@ -31,4 +31,4 @@ export class DentistryFormulas {
 }
 
 for (const name of ['anesthetic', 'decay', 'extraction', 'fluoride', 'plaque', 'pocket', 'recall', 'restoration'] as const)
-  qpuHexRegisterOf('dentistry', name, (DentistryFormulas[name] as (...x: unknown[]) => unknown).bind(DentistryFormulas))
+  hexRegisterOf('dentistry', name, (DentistryFormulas[name] as (...x: unknown[]) => unknown).bind(DentistryFormulas))

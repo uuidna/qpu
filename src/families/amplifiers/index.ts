@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AMPLIFIERS — SIGNAL AMPLIFICATION AS ARITHMETIC (chosen by the component registry, not by hand). An amplifier is numbers:
@@ -31,4 +31,4 @@ export class AmplifiersFormulas {
 }
 
 for (const name of ['bandwidth', 'cmrr', 'decibels', 'efficiency', 'gain', 'inputimpedance', 'outputpower', 'slewrate'] as const)
-  qpuHexRegisterOf('amplifiers', name, (AmplifiersFormulas[name] as (...x: unknown[]) => unknown).bind(AmplifiersFormulas))
+  hexRegisterOf('amplifiers', name, (AmplifiersFormulas[name] as (...x: unknown[]) => unknown).bind(AmplifiersFormulas))

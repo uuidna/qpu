@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StaffingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('staffing: headcount, coverage, shift, ratio, demand, allocation, overtime,
   assert.equal(StaffingFormulas.vacancy(100, 80).value, 20, 'twenty seats open')
   assert.equal(StaffingFormulas.vacancy(80, 100).value, 0)
   assert.equal(StaffingFormulas.headcount(50, 4).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('staffing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('staffing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'staffing', program: ['shift'], params: [100, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 13, `staffing.shift at ${uuid}`)
-  qpuUuidReceiptOf('staffing shift', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('staffing shift', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; headcount 200, coverage 90, shift 13, ratio 10, demand 100, allocation 400, overtime 10, vacancy 20; crossing to logistics')
 })

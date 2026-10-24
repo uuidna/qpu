@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** WEBSITE — USE ALL OF PAYLOADCMS/WEBSITE. The reference app is the strict example of the Payload way; this family reads
@@ -15,8 +15,8 @@ export class WebsiteFormulas {
   /** THE FULL SURFACE of payloadcms/website, read live: its src dirs, blocks, collections and the official plugins — the
    *  whole set the unit should use. value the total (dirs + blocks + collections); the reading lists every one. */
   static async survey(): Promise<CrossFormula> {
-    const { qpuDataOf } = await import('../../mcp/qpu-fused.js')
-    const r = (await qpuDataOf('payload', {})) as { reading?: { website?: { dirs?: string[]; blocks?: string[]; collections?: string[] }; plugins?: { plugins?: number; notYetFused?: string[] } } }
+    const { dataOf } = await import('../../mcp/qpu-fused.js')
+    const r = (await dataOf('payload', {})) as { reading?: { website?: { dirs?: string[]; blocks?: string[]; collections?: string[] }; plugins?: { plugins?: number; notYetFused?: string[] } } }
     const site = r.reading?.website
     const dirs = site?.dirs ?? [], blocks = site?.blocks ?? [], collections = site?.collections ?? []
     const total = dirs.length + blocks.length + collections.length
@@ -39,4 +39,4 @@ export class WebsiteFormulas {
 }
 
 for (const name of ['blocks', 'collections', 'coverage', 'dirs', 'gap', 'parity', 'plugins', 'survey'] as const)
-  qpuHexRegisterOf('website', name, (WebsiteFormulas[name] as (...x: unknown[]) => unknown).bind(WebsiteFormulas))
+  hexRegisterOf('website', name, (WebsiteFormulas[name] as (...x: unknown[]) => unknown).bind(WebsiteFormulas))

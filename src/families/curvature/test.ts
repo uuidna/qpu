@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CurvatureFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('curvature: gaussian, mean, radiusofcurvature, totalcurvature, sectional, g
   assert.equal(CurvatureFormulas.defect(300).value, 60, 'angular defect at a vertex')
   assert.equal(CurvatureFormulas.defect(400).value, 0)
   assert.equal(CurvatureFormulas.gaussian(3, 5).dst, 'topology')
-  assert.equal(qpuHexFamiliesOf().get('curvature')?.length, 8)
+  assert.equal(hexFamiliesOf().get('curvature')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'curvature', program: ['gaussian'], params: [3, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `curvature.gaussian at ${uuid}`)
-  qpuUuidReceiptOf('curvature gaussian', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('curvature gaussian', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gaussian 15, mean 5, radiusofcurvature 20, totalcurvature 100, sectional 5, geodesicdeviation 24, anglesum 180, defect 60; crossing to topology')
 })

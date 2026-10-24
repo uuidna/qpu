@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PremiumFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('premium: gross, net, rate, pure, expense, profit, installment, earned — 
   assert.equal(PremiumFormulas.installment(1200, 12).value, 100, 'twelve equal installments')
   assert.equal(PremiumFormulas.earned(1200, 6, 12).value, 600, 'half the term earned')
   assert.equal(PremiumFormulas.gross(1000, 20).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('premium')?.length, 8)
+  assert.equal(hexFamiliesOf().get('premium')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'premium', program: ['gross'], params: [1000, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1200, `premium.gross at ${uuid}`)
-  qpuUuidReceiptOf('premium gross', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('premium gross', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gross 1200, net 1020, rate 50, pure 40, expense 250, profit 150, installment 100, earned 600; crossing to econ')
 })

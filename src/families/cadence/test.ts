@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CadenceFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('cadence: rootmotion, resolutionstrength, chordspan, phraselength, harmonic
   assert.equal(CadenceFormulas.finalitytype(5, 3).value, 1, 'authentic arrival')
   assert.equal(CadenceFormulas.finalitytype(2, 3).value, 0)
   assert.equal(CadenceFormulas.rootmotion(0, 7).dst, 'music')
-  assert.equal(qpuHexFamiliesOf().get('cadence')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cadence')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cadence', program: ['harmonicrhythm'], params: [8, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `cadence.harmonicrhythm at ${uuid}`)
-  qpuUuidReceiptOf('cadence harmonicrhythm', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cadence harmonicrhythm', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; rootmotion 7, resolutionstrength 12, chordspan 16, phraselength 16, harmonicrhythm 2, tensionrelease 75, approachinterval 1, finalitytype 1; crossing to music')
 })

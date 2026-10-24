@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ForensicFormulas } from './index.js'
 
 /** The forensic measures a court admits — match probability, likelihood ratio, custody, minutiae, error, BAC — each exact. */
@@ -17,12 +17,12 @@ test('forensic: DNA rmp, likelihood ratio, chain of custody, minutiae, error rat
   assert.equal(ForensicFormulas.rarity(1000000, 8000000000).value, 8000, '1-in-a-million trait: 8000 others on Earth')
   assert.equal(ForensicFormulas.bac(80).value, 1, '0.08% is the per-se limit')
   assert.equal(ForensicFormulas.bac(50).value, 0)
-  assert.equal(qpuHexFamiliesOf().get('forensic')?.length, 7)
+  assert.equal(hexFamiliesOf().get('forensic')?.length, 7)
   for (const [name, params, expected] of [['rmp', [13], 13], ['points', [12], 1], ['bac', [80], 1]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'forensic', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `forensic.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`forensic ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`forensic ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('7 formulas; rmp 1-in-10^13, LR ×1000, custody unbroken ≥1, 12 minutiae, 2% error admissible, BAC 0.08%')
 })

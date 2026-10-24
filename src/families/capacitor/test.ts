@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CapacitorFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('capacitor: charge, energy, reactance, timeconstant, seriescombos, voltager
   assert.equal(CapacitorFormulas.parallelsum(100, 200).value, 300)
   assert.equal(CapacitorFormulas.leakage(1, 100).value, 1)
   assert.equal(CapacitorFormulas.charge(100, 12).dst, 'electronics')
-  assert.equal(qpuHexFamiliesOf().get('capacitor')?.length, 8)
+  assert.equal(hexFamiliesOf().get('capacitor')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'capacitor', program: ['charge'], params: [100, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1200, `capacitor.charge at ${uuid}`)
-  qpuUuidReceiptOf('capacitor charge', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('capacitor charge', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; charge 1200, energy 600, reactance 95, timeconstant 1000, seriescombos 28, voltagerating 25, parallelsum 300, leakage 1; crossing to electronics')
 })

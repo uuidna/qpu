@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PathologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('pathology: sensitivity, specificity, precision, prevalence, mitotic, cellu
   assert.equal(PathologyFormulas.concordance(18, 20).value, 90)
   assert.equal(PathologyFormulas.positivity(45, 150).value, 30)
   assert.equal(PathologyFormulas.sensitivity(90, 100).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('pathology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('pathology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'pathology', program: ['concordance'], params: [18, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `pathology.concordance at ${uuid}`)
-  qpuUuidReceiptOf('pathology concordance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('pathology concordance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; sensitivity 90, specificity 95, precision 80, prevalence 5, mitotic 3, cellularity 500, concordance 90, positivity 30; crossing to med')
 })

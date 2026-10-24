@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MatrixFormulas — 8 exact-integer formulas of the matrix domain, each at a hex address crossing to cross; develops the matrix leads. */
@@ -45,4 +45,4 @@ export class MatrixFormulas {
 }
 
 for (const name of ['adds', 'characteristicdegree', 'combos', 'determinant', 'elements', 'identitytrace', 'minors', 'mults', 'nullity', 'offdiagonal', 'rank', 'ranknullity', 'symmetricentries', 'trace', 'transpose'] as const)
-  qpuHexRegisterOf('matrix', name, (MatrixFormulas[name] as (...x: unknown[]) => unknown).bind(MatrixFormulas))
+  hexRegisterOf('matrix', name, (MatrixFormulas[name] as (...x: unknown[]) => unknown).bind(MatrixFormulas))

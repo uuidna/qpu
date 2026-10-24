@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TOPONYMY — scaffolded integer measures crossed to geography. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ToponymyFormulas {
 }
 
 for (const name of ['densityper', 'distributionsubsets', 'elementpairs', 'etymologypaths', 'languagelayers', 'placecount', 'suffixcombos', 'variantspellings'] as const)
-  qpuHexRegisterOf('toponymy', name, (ToponymyFormulas[name] as (...x: unknown[]) => unknown).bind(ToponymyFormulas))
+  hexRegisterOf('toponymy', name, (ToponymyFormulas[name] as (...x: unknown[]) => unknown).bind(ToponymyFormulas))

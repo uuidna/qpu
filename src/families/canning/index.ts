@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CANNING — HOME & COMMERCIAL PRESERVING, AS ARITHMETIC. Putting up food is numbers: the headspace a jar leaves, the
@@ -31,4 +31,4 @@ export class CanningFormulas {
 }
 
 for (const name of ['batch', 'brine', 'fvalue', 'headspace', 'processtime', 'seal', 'sterilize', 'yield'] as const)
-  qpuHexRegisterOf('canning', name, (CanningFormulas[name] as (...x: unknown[]) => unknown).bind(CanningFormulas))
+  hexRegisterOf('canning', name, (CanningFormulas[name] as (...x: unknown[]) => unknown).bind(CanningFormulas))

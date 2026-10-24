@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FourierFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('fourier: binwidth, fftoperations, frequencyresolution, fundamentalfrequenc
   assert.equal(FourierFormulas.nyquist(44100).value, 22050)
   assert.equal(FourierFormulas.spectralpower(3, 4).value, 25, 'squared magnitude')
   assert.equal(FourierFormulas.binwidth(44100, 441).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('fourier')?.length, 8)
+  assert.equal(hexFamiliesOf().get('fourier')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'fourier', program: ['harmonics'], params: [440, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2200, `fourier.harmonics at ${uuid}`)
-  qpuUuidReceiptOf('fourier harmonics', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('fourier harmonics', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; binwidth 100, fftoperations 10240, frequencyresolution 200, fundamentalfrequency 441, harmonics 2200, leakage 150, nyquist 22050, spectralpower 25; crossing to signal')
 })

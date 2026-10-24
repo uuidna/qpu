@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RamseyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -23,10 +23,10 @@ test('ramsey: small Ramsey numbers, the party size, Erdős–Szekeres, pigeonhol
   assert.equal(RamseyFormulas.schur3().value, 13, 'Schur S(3) = 13')
   assert.equal(RamseyFormulas.vdw23().value, 9, 'van der Waerden W(2,3) = 9')
   assert.equal(RamseyFormulas.r33().dst, 'combinatorics')
-  assert.equal(qpuHexFamiliesOf().get('ramsey')?.length, 15)
+  assert.equal(hexFamiliesOf().get('ramsey')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'ramsey', program: ['r33'], params: [] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 6, `ramsey.r33 at ${uuid}`)
-  qpuUuidReceiptOf('ramsey r33', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ramsey r33', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; R(2,5)=5, R(3,3)=6, R(3,4)=9, R(3,5)=14, R(4,4)=18, party 6, threshold 6, 2^10=1024, eszbound 6/10, K_6 15 edges, C(6,2)=15, C(30,15), pigeon 4, mono 3, Schur S(3)=13, W(2,3)=9; crossing to combinatorics')
 })

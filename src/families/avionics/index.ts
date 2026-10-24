@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** AVIONICS — FLIGHT INSTRUMENTS AS ARITHMETIC. The numbers a cockpit reads: airspeed from distance over time, altitude-hold
  *  deviation, heading error wrapped to the shortest turn, the glide ratio, fuel burn, climb rate, a transponder squawk's
@@ -33,4 +33,4 @@ export class AvionicsFormulas {
 }
 
 for (const name of ['airspeed', 'altitudehold', 'climbrate', 'fuelflow', 'glidepath', 'headingerror', 'navtolerance', 'transponder'] as const)
-  qpuHexRegisterOf('avionics', name, (AvionicsFormulas[name] as (...x: unknown[]) => unknown).bind(AvionicsFormulas))
+  hexRegisterOf('avionics', name, (AvionicsFormulas[name] as (...x: unknown[]) => unknown).bind(AvionicsFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EXCHANGERATE — scaffolded integer measures crossed to banking. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ExchangerateFormulas {
 }
 
 for (const name of ['conversioncombos', 'crossrate', 'forwardpoints', 'peggedmargin', 'pippips', 'reservemonths', 'spread', 'volatilitypct'] as const)
-  qpuHexRegisterOf('exchangerate', name, (ExchangerateFormulas[name] as (...x: unknown[]) => unknown).bind(ExchangerateFormulas))
+  hexRegisterOf('exchangerate', name, (ExchangerateFormulas[name] as (...x: unknown[]) => unknown).bind(ExchangerateFormulas))

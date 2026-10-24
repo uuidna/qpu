@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { InterleavingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('interleaving: depth, span, blocksize, delay, burstprotection, matrixcells,
   assert.equal(InterleavingFormulas.spreadfactor(240, 8).value, 30)
   assert.equal(InterleavingFormulas.latency(32, 5).value, 160)
   assert.equal(InterleavingFormulas.depth(4, 8).dst, 'signal')
-  assert.equal(qpuHexFamiliesOf().get('interleaving')?.length, 8)
+  assert.equal(hexFamiliesOf().get('interleaving')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'interleaving', program: ['depth'], params: [4, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 32, `interleaving.depth at ${uuid}`)
-  qpuUuidReceiptOf('interleaving depth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('interleaving depth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; depth 32, span 320, blocksize 125, delay 25, burstprotection 40, matrixcells 256, spreadfactor 30, latency 160; crossing to signal')
 })

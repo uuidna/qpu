@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DEMOGRAPHICS — POPULATION STATISTICS, AS ARITHMETIC. A population is numbers: births and deaths per thousand, natural
@@ -30,4 +30,4 @@ export class DemographicsFormulas {
 }
 
 for (const name of ['birthrate', 'deathrate', 'density', 'dependency', 'growth', 'life', 'median', 'migration'] as const)
-  qpuHexRegisterOf('demographics', name, (DemographicsFormulas[name] as (...x: unknown[]) => unknown).bind(DemographicsFormulas))
+  hexRegisterOf('demographics', name, (DemographicsFormulas[name] as (...x: unknown[]) => unknown).bind(DemographicsFormulas))

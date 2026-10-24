@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TILLAGE — WORKING THE SOIL, AS ARITHMETIC (a field operation, not a stored row). Breaking ground is numbers: the depth
@@ -31,4 +31,4 @@ export class TillageFormulas {
 }
 
 for (const name of ['depth', 'drafforce', 'fieldcapacity', 'fuelperhectare', 'passes', 'residuecover', 'soildisturbance', 'workingwidth'] as const)
-  qpuHexRegisterOf('tillage', name, (TillageFormulas[name] as (...x: unknown[]) => unknown).bind(TillageFormulas))
+  hexRegisterOf('tillage', name, (TillageFormulas[name] as (...x: unknown[]) => unknown).bind(TillageFormulas))

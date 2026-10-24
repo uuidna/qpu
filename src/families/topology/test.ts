@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TopologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('topology: euler, genus, connectivity, betti, dimension, homology, neighbor
   assert.equal(TopologyFormulas.neighborhood(10, 5).value, 50)
   assert.equal(TopologyFormulas.boundary(30, 100).value, 30)
   assert.equal(TopologyFormulas.euler(6, 12, 8).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('topology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('topology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'topology', program: ['connectivity'], params: [100, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `topology.connectivity at ${uuid}`)
-  qpuUuidReceiptOf('topology connectivity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('topology connectivity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; euler 2 and −2, genus 0/2, connectivity 4, betti 3, dimension 3, homology 3, neighborhood 50, boundary 30; crossing to code')
 })

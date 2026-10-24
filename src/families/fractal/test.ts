@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FractalFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('fractal: boxcount, dimensionscaled, hausdorffscaled, iterationdepth, perim
   assert.equal(FractalFormulas.scaleratio(100, 0).value, 0)
   assert.equal(FractalFormulas.selfsimilarity(5, 3).value, 15)
   assert.equal(FractalFormulas.piececount(3, 4).dst, 'topology')
-  assert.equal(qpuHexFamiliesOf().get('fractal')?.length, 8)
+  assert.equal(hexFamiliesOf().get('fractal')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'fractal', program: ['piececount'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 81, `fractal.piececount at ${uuid}`)
-  qpuUuidReceiptOf('fractal piececount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('fractal piececount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; boxcount 8, dimensionscaled 666, hausdorffscaled 1500, iterationdepth 15, perimetergrowth 48, piececount 81, scaleratio 25, selfsimilarity 15; crossing to topology')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROJECT — PROJECT MANAGEMENT AS ARITHMETIC (chosen by the public-API registry, not by hand). Running a project is
@@ -31,4 +31,4 @@ export class ProjectFormulas {
 }
 
 for (const name of ['budget', 'burndown', 'milestone', 'overrun', 'progress', 'risk', 'schedule', 'velocity'] as const)
-  qpuHexRegisterOf('project', name, (ProjectFormulas[name] as (...x: unknown[]) => unknown).bind(ProjectFormulas))
+  hexRegisterOf('project', name, (ProjectFormulas[name] as (...x: unknown[]) => unknown).bind(ProjectFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ColortheoryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('colortheory: complement, luminance, contrastratio, grayscale, blend, huesh
   assert.equal(ColortheoryFormulas.saturation(200, 50).value, 75)
   assert.equal(ColortheoryFormulas.tint(100, 50).value, 177, 'lightened toward white')
   assert.equal(ColortheoryFormulas.complement(120).dst, 'colorgrading')
-  assert.equal(qpuHexFamiliesOf().get('colortheory')?.length, 8)
+  assert.equal(hexFamiliesOf().get('colortheory')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'colortheory', program: ['saturation'], params: [200, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `colortheory.saturation at ${uuid}`)
-  qpuUuidReceiptOf('colortheory saturation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('colortheory saturation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; complement 240, luminance 53, contrastratio 5200, grayscale 120, blend 100, hueshift 60, saturation 75, tint 177; crossing to colorgrading')
 })

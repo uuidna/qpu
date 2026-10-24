@@ -4,11 +4,11 @@ import Link from 'next/link'
 import { useEffect, useState, useTransition } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { SealWavePanel } from '@/components/Public/SealWavePanel'
-import { NativeAdaptersPanel } from '@/components/Public/NativeAdaptersPanel'
-import { ConnectorUsePanel } from '@/components/Public/ConnectorUsePanel'
-import { ObservePanel } from '@/components/Public/ObservePanel'
-import { PrintChipsPanel } from '@/components/Public/PrintChipsPanel'
+import { SealWavePanel } from '@/components/SealWavePanel'
+import { NativeAdaptersPanel } from '@/components/NativeAdaptersPanel'
+import { ConnectorUsePanel } from '@/components/ConnectorUsePanel'
+import { ObservePanel } from '@/components/ObservePanel'
+import { PrintChipsPanel } from '@/components/PrintChipsPanel'
 
 export type AccessDecides = {
   read: boolean

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DesalinationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('desalination: recovery, salinity, permeate, rejection, flux, osmotic, brin
   assert.equal(DesalinationFormulas.brine(400, 1000).value, 0, 'mass balance never goes negative')
   assert.equal(DesalinationFormulas.energy(1500, 500).value, 3, 'kWh per cubic metre')
   assert.equal(DesalinationFormulas.recovery(45, 100).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('desalination')?.length, 8)
+  assert.equal(hexFamiliesOf().get('desalination')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'desalination', program: ['flux'], params: [1200, 60] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `desalination.flux at ${uuid}`)
-  qpuUuidReceiptOf('desalination flux', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('desalination flux', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; recovery 45, salinity 35, permeate 450, rejection 99, flux 20, osmotic 10500, brine 550, energy 3; crossing to chemistry')
 })

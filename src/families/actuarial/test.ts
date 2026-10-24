@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ActuarialFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -21,10 +21,10 @@ test('actuarial: mortality, lossratio, reserve, annuity, premium, lifeexpectancy
   assert.equal(ActuarialFormulas.combinedratio(60, 30, 100).value, 90)
   assert.equal(ActuarialFormulas.survival(100, 7).value, 93)
   assert.equal(ActuarialFormulas.mortality(5, 1000).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('actuarial')?.length, 15)
+  assert.equal(hexFamiliesOf().get('actuarial')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'actuarial', program: ['premium'], params: [1000, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1200, `actuarial.premium at ${uuid}`)
-  qpuUuidReceiptOf('actuarial premium', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('actuarial premium', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; mortality 5, lossratio 70, reserve 2000, annuity 1200, premium 1200, lifeexpectancy 80, discount 1000, solvency 150; crossing to accounting')
 })

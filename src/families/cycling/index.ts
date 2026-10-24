@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CYCLING — RIDING A BICYCLE, AS ARITHMETIC. The ride is numbers: cadence in revolutions per minute, power at the pedal,
@@ -30,4 +30,4 @@ export class CyclingFormulas {
 }
 
 for (const name of ['cadence', 'distance', 'efficiency', 'ftp', 'gearratio', 'gradient', 'power', 'speed'] as const)
-  qpuHexRegisterOf('cycling', name, (CyclingFormulas[name] as (...x: unknown[]) => unknown).bind(CyclingFormulas))
+  hexRegisterOf('cycling', name, (CyclingFormulas[name] as (...x: unknown[]) => unknown).bind(CyclingFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MEALPLANNING — scaffolded integer measures crossed to nutrition. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MealplanningFormulas {
 }
 
 for (const name of ['budgetpermeal', 'caloriesperday', 'ingredientpairs', 'meals', 'portions', 'prepminutes', 'varietysubsets', 'weeklyorderings'] as const)
-  qpuHexRegisterOf('mealplanning', name, (MealplanningFormulas[name] as (...x: unknown[]) => unknown).bind(MealplanningFormulas))
+  hexRegisterOf('mealplanning', name, (MealplanningFormulas[name] as (...x: unknown[]) => unknown).bind(MealplanningFormulas))

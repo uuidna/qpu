@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SixsigmaFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('sixsigma: cpk, defects, dpmo, dpu, opportunities, rolledthroughput, sigma,
   assert.equal(SixsigmaFormulas.sigma(600, 100).value, 6, 'six sigma')
   assert.equal(SixsigmaFormulas.yield(950, 1000).value, 95, 'first-pass yield')
   assert.equal(SixsigmaFormulas.sigma(600, 100).dst, 'quality')
-  assert.equal(qpuHexFamiliesOf().get('sixsigma')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sixsigma')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sixsigma', program: ['sigma'], params: [600, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 6, `sixsigma.sigma at ${uuid}`)
-  qpuUuidReceiptOf('sixsigma sigma', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sixsigma sigma', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; cpk 133, defects 3000, dpmo 5000, dpu 20, opportunities 5000, rolledthroughput 76, sigma 6, yield 95; crossing to quality')
 })

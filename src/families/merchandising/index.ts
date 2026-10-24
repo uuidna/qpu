@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MERCHANDISING — SHELVING A CATALOGUE AS ARITHMETIC (chosen by the public-API registry, not by hand). Selling goods is
@@ -31,4 +31,4 @@ export class MerchandisingFormulas {
 }
 
 for (const name of ['assortment', 'facings', 'gmroi', 'margin', 'markup', 'planogram', 'sellthrough', 'turnover'] as const)
-  qpuHexRegisterOf('merchandising', name, (MerchandisingFormulas[name] as (...x: unknown[]) => unknown).bind(MerchandisingFormulas))
+  hexRegisterOf('merchandising', name, (MerchandisingFormulas[name] as (...x: unknown[]) => unknown).bind(MerchandisingFormulas))

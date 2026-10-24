@@ -1,0 +1,97 @@
+[
+ {
+  "name": "readme-is-the-lead",
+  "verdict": "verified",
+  "reason": "scripts/generate-readme.ts writes and checks README.md against the receipts"
+ },
+ {
+  "name": "lean-served-gap",
+  "verdict": "verified",
+  "reason": "215 theorems served, equal to the Lean source"
+ },
+ {
+  "name": "combinatoric-humanities-leads",
+  "verdict": "verified",
+  "reason": "the research on the combinatorics family agreed with its public sources (recorded court verdict)"
+ },
+ {
+  "name": "qpu-gate-pitfalls",
+  "verdict": "unverified",
+  "reason": "/health answered warm in 143 ms; the cold isolate the lead names is not measured here"
+ },
+ {
+  "name": "deploys-are-manual",
+  "verdict": "unverified",
+  "reason": "deploy on push in: publish.yml"
+ },
+ {
+  "name": "shared-tree-sessions",
+  "verdict": "unverified",
+  "reason": "peer sessions and write persistence cannot be read from the repository"
+ },
+ {
+  "name": "verify-repo-and-deploy",
+  "verdict": "unverified",
+  "reason": "uuidna/verify answers 404: it is private or absent, so it cannot be read here"
+ },
+ {
+  "name": "pi-primes-dna-uuid-streams",
+  "verdict": "verified",
+  "reason": "families prime, numbertheory, crypt, numen exist"
+ },
+ {
+  "name": "merkaba-medical-scans",
+  "verdict": "verified",
+  "reason": "families merkaba, tomography, signal exist"
+ },
+ {
+  "name": "fuse-slice",
+  "verdict": "verified",
+  "reason": "theorem fuse states 2529 APIs and 438299 edges"
+ },
+ {
+  "name": "all-usable-as-hooks",
+  "verdict": "unverified",
+  "reason": "a design claim with no checkable value; no source reports whether every executable is addressable as a hook"
+ },
+ {
+  "name": "xprize-quantum-applications",
+  "verdict": "verified",
+  "reason": "listed on xprize.org with a $5 Million prize; the guidelines state the Wild Card registration closed on March 4, 2026"
+ },
+ {
+  "name": "xprize-water-scarcity",
+  "verdict": "verified",
+  "reason": "XPRIZE Water Scarcity is listed with a $119 Million prize"
+ },
+ {
+  "name": "xprize-healthspan",
+  "verdict": "verified",
+  "reason": "XPRIZE Healthspan is listed with a $101 Million prize"
+ },
+ {
+  "name": "xprize-wildfire",
+  "verdict": "unverified",
+  "reason": "XPRIZE Wildfire is listed, but the Finals status is not on the page"
+ },
+ {
+  "name": "impact-xprize-carbon-removal",
+  "verdict": "unverified",
+  "reason": "no Impact XPRIZE Carbon Removal competition page answers on xprize.org; the lead cannot be confirmed here"
+ },
+ {
+  "name": "impact-xprize-rainforest",
+  "verdict": "verified",
+  "reason": "the Rainforest competition page is on xprize.org and prints the $10 Million prize; no status or dates are on the page"
+ },
+ {
+  "name": "build-with-gemini",
+  "verdict": "verified",
+  "reason": "the page links Build with Gemini, a 2-million prize pool"
+ },
+ {
+  "name": "axiom-boundary-completion",
+  "verdict": "verified",
+  "reason": "src/quantum/processing/unit/axiom-proof-generator.ts exists at HEAD"
+ }
+]

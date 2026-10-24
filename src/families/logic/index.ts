@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LOGIC — PROPOSITIONAL REASONING AS ARITHMETIC. Truth is numbers: the rows of a truth table, AND and OR over 0/1 (or
@@ -30,4 +30,4 @@ export class LogicFormulas {
 }
 
 for (const name of ['conjunction', 'disjunction', 'entropy', 'equivalence', 'implication', 'proof', 'satisfiable', 'truthtable'] as const)
-  qpuHexRegisterOf('logic', name, (LogicFormulas[name] as (...x: unknown[]) => unknown).bind(LogicFormulas))
+  hexRegisterOf('logic', name, (LogicFormulas[name] as (...x: unknown[]) => unknown).bind(LogicFormulas))

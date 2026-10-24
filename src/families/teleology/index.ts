@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TELEOLOGY — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class TeleologyFormulas {
 }
 
 for (const name of ['causallevels', 'directednessratio', 'endscount', 'finalcauses', 'goalpairs', 'meanschains', 'orderingpaths', 'purposesubsets'] as const)
-  qpuHexRegisterOf('teleology', name, (TeleologyFormulas[name] as (...x: unknown[]) => unknown).bind(TeleologyFormulas))
+  hexRegisterOf('teleology', name, (TeleologyFormulas[name] as (...x: unknown[]) => unknown).bind(TeleologyFormulas))

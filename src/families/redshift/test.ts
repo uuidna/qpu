@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RedshiftFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('redshift: z, recessionvelocity, hubbledistance, wavelengthshift, lookbackt
   assert.equal(RedshiftFormulas.comovingdistance(100, 4000).value, 400)
   assert.equal(RedshiftFormulas.z(500, 700).value, 0)
   assert.equal(RedshiftFormulas.z(700, 500).dst, 'cosmology')
-  assert.equal(qpuHexFamiliesOf().get('redshift')?.length, 8)
+  assert.equal(hexFamiliesOf().get('redshift')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'redshift', program: ['hubbledistance'], params: [7000, 70] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `redshift.hubbledistance at ${uuid}`)
-  qpuUuidReceiptOf('redshift hubbledistance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('redshift hubbledistance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; z 400, recessionvelocity 3000, hubbledistance 100, wavelengthshift 200, lookbacktime 100, scalefactor 500, dopplerz 100, comovingdistance 400; crossing to cosmology')
 })

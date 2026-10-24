@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENTOMOLOGY — THE STUDY OF INSECTS, AS ARITHMETIC. Colonies are counted: workers plus queens, the stages of a
@@ -31,4 +31,4 @@ export class EntomologyFormulas {
 }
 
 for (const name of ['colony', 'foraging', 'infestation', 'lifecycle', 'metamorphosis', 'pollination', 'swarm', 'wingbeat'] as const)
-  qpuHexRegisterOf('entomology', name, (EntomologyFormulas[name] as (...x: unknown[]) => unknown).bind(EntomologyFormulas))
+  hexRegisterOf('entomology', name, (EntomologyFormulas[name] as (...x: unknown[]) => unknown).bind(EntomologyFormulas))

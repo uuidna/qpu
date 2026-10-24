@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COLORGRADING — THE GRADE AS ARITHMETIC. A grade is numbers: gamma scaling, contrast gain, saturation, white balance,
@@ -30,4 +30,4 @@ export class ColorgradingFormulas {
 }
 
 for (const name of ['contrast', 'gamma', 'gamut', 'lift', 'luminance', 'saturation', 'temperature', 'whitebalance'] as const)
-  qpuHexRegisterOf('colorgrading', name, (ColorgradingFormulas[name] as (...x: unknown[]) => unknown).bind(ColorgradingFormulas))
+  hexRegisterOf('colorgrading', name, (ColorgradingFormulas[name] as (...x: unknown[]) => unknown).bind(ColorgradingFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HOVERCRAFT — scaffolded integer measures crossed to physics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class HovercraftFormulas {
 }
 
 for (const name of ['clearance', 'cushionforce', 'efficiency', 'fanpower', 'liftpressure', 'payload', 'skirtarea', 'speed'] as const)
-  qpuHexRegisterOf('hovercraft', name, (HovercraftFormulas[name] as (...x: unknown[]) => unknown).bind(HovercraftFormulas))
+  hexRegisterOf('hovercraft', name, (HovercraftFormulas[name] as (...x: unknown[]) => unknown).bind(HovercraftFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CERAMICS — THE FIRED-CLAY TRADE, AS ARITHMETIC (chosen by the materials registry, not by hand). Working clay is numbers:
@@ -31,4 +31,4 @@ export class CeramicsFormulas {
 }
 
 for (const name of ['density', 'firing', 'glaze', 'hardness', 'porosity', 'shrinkage', 'thermalshock', 'vitrification'] as const)
-  qpuHexRegisterOf('ceramics', name, (CeramicsFormulas[name] as (...x: unknown[]) => unknown).bind(CeramicsFormulas))
+  hexRegisterOf('ceramics', name, (CeramicsFormulas[name] as (...x: unknown[]) => unknown).bind(CeramicsFormulas))

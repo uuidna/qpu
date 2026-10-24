@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhoneticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('phonetics: formant, pitch, rate, voicing, duration, intensity, sonority, v
   assert.equal(PhoneticsFormulas.sonority(7).value, 7)
   assert.equal(PhoneticsFormulas.vowels(4, 10).value, 40)
   assert.equal(PhoneticsFormulas.formant(2400, 3).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('phonetics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('phonetics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'phonetics', program: ['rate'], params: [15, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `phonetics.rate at ${uuid}`)
-  qpuUuidReceiptOf('phonetics rate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('phonetics rate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; formant 800, pitch 220, rate 5, voicing 60, duration 120, intensity 70, sonority 7, vowels 40; crossing to linguistics')
 })

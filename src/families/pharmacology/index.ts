@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHARMACOLOGY — DOSING AS ARITHMETIC (chosen by the registry, not by hand). How a drug moves through the body is
@@ -31,4 +31,4 @@ export class PharmacologyFormulas {
 }
 
 for (const name of ['bioavailability', 'bound', 'clearance', 'dose', 'elimination', 'halflife', 'loading', 'therapeutic'] as const)
-  qpuHexRegisterOf('pharmacology', name, (PharmacologyFormulas[name] as (...x: unknown[]) => unknown).bind(PharmacologyFormulas))
+  hexRegisterOf('pharmacology', name, (PharmacologyFormulas[name] as (...x: unknown[]) => unknown).bind(PharmacologyFormulas))

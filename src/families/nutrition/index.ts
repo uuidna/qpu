@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NUTRITION — FOOD AS ARITHMETIC (chosen by the registry, not by hand). Eating is numbers: the energy in grams of a
@@ -31,4 +31,4 @@ export class NutritionFormulas {
 }
 
 for (const name of ['bmr', 'carbs', 'deficit', 'energy', 'fat', 'hydration', 'macros', 'protein'] as const)
-  qpuHexRegisterOf('nutrition', name, (NutritionFormulas[name] as (...x: unknown[]) => unknown).bind(NutritionFormulas))
+  hexRegisterOf('nutrition', name, (NutritionFormulas[name] as (...x: unknown[]) => unknown).bind(NutritionFormulas))

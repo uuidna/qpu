@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PropulsionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('propulsion: thrust, efficiency, specificfuel, bypass, compression, power, 
   assert.equal(PropulsionFormulas.exhaust(850).value, 850, 'exhaust holds the reading')
   assert.equal(PropulsionFormulas.massflow(12, 300).value, 3600)
   assert.equal(PropulsionFormulas.thrust(300, 20).dst, 'aerospace')
-  assert.equal(qpuHexFamiliesOf().get('propulsion')?.length, 8)
+  assert.equal(hexFamiliesOf().get('propulsion')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'propulsion', program: ['thrust'], params: [300, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 6000, `propulsion.thrust at ${uuid}`)
-  qpuUuidReceiptOf('propulsion thrust', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('propulsion thrust', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; thrust 6000, efficiency 80, specificfuel 5, bypass 900, compression 4000, power 10000, exhaust 850, massflow 3600; crossing to aerospace')
 })

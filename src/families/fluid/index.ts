@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FluidFormulas — 8 exact-integer formulas of the fluid domain, each at a hex address crossing to cross; develops the fluid leads. */
@@ -31,4 +31,4 @@ export class FluidFormulas {
 }
 
 for (const name of ['flow', 'head', 'litres', 'pipearea', 'pressuredrop', 'throughput', 'valves', 'volume'] as const)
-  qpuHexRegisterOf('fluid', name, (FluidFormulas[name] as (...x: unknown[]) => unknown).bind(FluidFormulas))
+  hexRegisterOf('fluid', name, (FluidFormulas[name] as (...x: unknown[]) => unknown).bind(FluidFormulas))

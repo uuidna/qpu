@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SCREENING — DIAGNOSTIC TEST PERFORMANCE, AS ARITHMETIC (chosen by the public-health registry, not by hand). A screening
@@ -32,4 +32,4 @@ export class ScreeningFormulas {
 }
 
 for (const name of ['falsepositiverate', 'npv', 'numbertoscreen', 'ppv', 'prevalenceadjusted', 'sensitivity', 'specificity', 'youdenindex'] as const)
-  qpuHexRegisterOf('screening', name, (ScreeningFormulas[name] as (...x: unknown[]) => unknown).bind(ScreeningFormulas))
+  hexRegisterOf('screening', name, (ScreeningFormulas[name] as (...x: unknown[]) => unknown).bind(ScreeningFormulas))

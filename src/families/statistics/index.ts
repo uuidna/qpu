@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** STATISTICS — DESCRIPTIVE AND INFERENTIAL MEASURES, AS ARITHMETIC. Summarising data is numbers: the mean, the spread
@@ -30,4 +30,4 @@ export class StatisticsFormulas {
 }
 
 for (const name of ['confidence', 'correlation', 'mean', 'percentile', 'range', 'sample', 'variance', 'zscore'] as const)
-  qpuHexRegisterOf('statistics', name, (StatisticsFormulas[name] as (...x: unknown[]) => unknown).bind(StatisticsFormulas))
+  hexRegisterOf('statistics', name, (StatisticsFormulas[name] as (...x: unknown[]) => unknown).bind(StatisticsFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SWINE — PIG HUSBANDRY AS ARITHMETIC. Raising pigs is numbers: the litter a sow raises, feed turned into gain, the gain a
@@ -30,4 +30,4 @@ export class SwineFormulas {
 }
 
 for (const name of ['averagedailygain', 'farrowing', 'feedconversion', 'leanness', 'litter', 'market', 'mortality', 'weaning'] as const)
-  qpuHexRegisterOf('swine', name, (SwineFormulas[name] as (...x: unknown[]) => unknown).bind(SwineFormulas))
+  hexRegisterOf('swine', name, (SwineFormulas[name] as (...x: unknown[]) => unknown).bind(SwineFormulas))

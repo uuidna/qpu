@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CAUSAL — causal inference as exact combinatorics, not a fabricated coverage number. The edges a DAG on n nodes can
@@ -32,4 +32,4 @@ export class CausalFormulas {
 }
 
 for (const name of ['backdoorSets', 'chains', 'conditionings', 'confounded', 'counterfactuals', 'edges', 'forks', 'mediation'] as const)
-  qpuHexRegisterOf('causal', name, (CausalFormulas[name] as (...x: unknown[]) => unknown).bind(CausalFormulas))
+  hexRegisterOf('causal', name, (CausalFormulas[name] as (...x: unknown[]) => unknown).bind(CausalFormulas))

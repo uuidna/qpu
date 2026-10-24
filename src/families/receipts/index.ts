@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RECEIPTS — scaffolded integer measures crossed to accounting. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ReceiptsFormulas {
 }
 
 for (const name of ['chainlength', 'discountpct', 'itemcount', 'linepairs', 'orderings', 'subtotal', 'taxamount', 'total'] as const)
-  qpuHexRegisterOf('receipts', name, (ReceiptsFormulas[name] as (...x: unknown[]) => unknown).bind(ReceiptsFormulas))
+  hexRegisterOf('receipts', name, (ReceiptsFormulas[name] as (...x: unknown[]) => unknown).bind(ReceiptsFormulas))

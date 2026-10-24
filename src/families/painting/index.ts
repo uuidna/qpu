@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PAINTING — scaffolded integer measures crossed to optics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PaintingFormulas {
 }
 
 for (const name of ['canvasarea', 'huewheel', 'layercount', 'mixingcombos', 'opacityratio', 'pigmentsubsets', 'primarycolors', 'valuescale'] as const)
-  qpuHexRegisterOf('painting', name, (PaintingFormulas[name] as (...x: unknown[]) => unknown).bind(PaintingFormulas))
+  hexRegisterOf('painting', name, (PaintingFormulas[name] as (...x: unknown[]) => unknown).bind(PaintingFormulas))

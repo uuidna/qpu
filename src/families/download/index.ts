@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DOWNLOAD — THE DOWNLOAD BLOCK USE CASE FROM payloadcms/website, AS ARITHMETIC. A file served to a browser is numbers:
@@ -31,4 +31,4 @@ export class DownloadFormulas {
 }
 
 for (const name of ['checksum', 'chunks', 'eta', 'formats', 'progress', 'rate', 'resume', 'size'] as const)
-  qpuHexRegisterOf('download', name, (DownloadFormulas[name] as (...x: unknown[]) => unknown).bind(DownloadFormulas))
+  hexRegisterOf('download', name, (DownloadFormulas[name] as (...x: unknown[]) => unknown).bind(DownloadFormulas))

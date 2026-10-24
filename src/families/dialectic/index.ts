@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** DIALECTIC — scaffolded integer measures crossed to logic. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class DialecticFormulas {
 }
 
 for (const name of ['argumentpairs', 'contradictioncount', 'premisepaths', 'resolutiondepth', 'stageorderings', 'syntheses', 'thesisantithesis', 'validmoves'] as const)
-  qpuHexRegisterOf('dialectic', name, (DialecticFormulas[name] as (...x: unknown[]) => unknown).bind(DialecticFormulas))
+  hexRegisterOf('dialectic', name, (DialecticFormulas[name] as (...x: unknown[]) => unknown).bind(DialecticFormulas))

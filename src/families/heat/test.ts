@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { verifyHex } from '../verify.js'
 import { HeatFormulas } from './index.js'
 import '../../mcp/families.js'
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { flowFamiliesOf } from '../merkaba/index.js'
 
 /** CODE QUALITY AS PHYSICS. A file's temperature is its commits over its days; its coherence the days it holds per fix;
@@ -40,7 +40,7 @@ test('heat: temperature, coherence, cooling and the Landauer floor — exact, cr
 })
 
 test('heat.slow is never established: a speed claim is not a theorem and reads no clock', async () => {
-  qpuHexRegisterOf('zzslow', 'spin', () => 1)
+  hexRegisterOf('zzslow', 'spin', () => 1)
   const r = (await HeatFormulas.slow(flowFamiliesOf().indexOf('zzslow'), 0)) as unknown as { value: number; holds: boolean; formula: string }
   assert.equal(r.holds, false, 'the statement is not established')
   assert.equal(r.value, 0)

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TokenizationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('tokenization: tokencount, avgtokenlength, vocabsize, subwordratio, compres
   assert.equal(TokenizationFormulas.fertility(130, 100).value, 130, 'tokens per word, scaled')
   assert.equal(TokenizationFormulas.tokencount(1000, 0).value, 0)
   assert.equal(TokenizationFormulas.tokencount(1000, 4).dst, 'linguistics')
-  assert.equal(qpuHexFamiliesOf().get('tokenization')?.length, 8)
+  assert.equal(hexFamiliesOf().get('tokenization')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'tokenization', program: ['tokencount'], params: [1000, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 250, `tokenization.tokencount at ${uuid}`)
-  qpuUuidReceiptOf('tokenization tokencount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('tokenization tokencount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; tokencount 250, avgtokenlength 4, vocabsize 50256, subwordratio 130, compressionratio 400, oovrate 5, charspertoken 4, fertility 130; crossing to linguistics')
 })

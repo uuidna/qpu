@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CYBERNETICS — THE SCIENCE OF CONTROL AND COMMUNICATION, AS ARITHMETIC. A system steering itself is numbers: feedback as a
@@ -30,4 +30,4 @@ export class CyberneticsFormulas {
 }
 
 for (const name of ['control', 'entropy', 'feedback', 'gain', 'homeostasis', 'latency', 'setpoint', 'stability'] as const)
-  qpuHexRegisterOf('cybernetics', name, (CyberneticsFormulas[name] as (...x: unknown[]) => unknown).bind(CyberneticsFormulas))
+  hexRegisterOf('cybernetics', name, (CyberneticsFormulas[name] as (...x: unknown[]) => unknown).bind(CyberneticsFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COVENANT — scaffolded integer measures crossed to philosophy. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CovenantFormulas {
 }
 
 for (const name of ['blessingcurses', 'clausecombos', 'conditionsubsets', 'fulfillmentratio', 'obligationpairs', 'partycount', 'renewalcycle', 'stageorderings'] as const)
-  qpuHexRegisterOf('covenant', name, (CovenantFormulas[name] as (...x: unknown[]) => unknown).bind(CovenantFormulas))
+  hexRegisterOf('covenant', name, (CovenantFormulas[name] as (...x: unknown[]) => unknown).bind(CovenantFormulas))

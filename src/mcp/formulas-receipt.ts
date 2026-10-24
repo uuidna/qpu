@@ -3,7 +3,7 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { sha256, utf8 } from '../core/crypt.js'
 import { attacksOf } from '../core/crypt-attacks.js'
-import { qpuContentUuidOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { contentUuidOf, hexFamiliesOf, hexRunOf, qpuHexUuidOf, uuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { CrossDomainFormulas, type CrossFormula } from '../families/cross/index.js'
 import { CryptFormulas } from '../families/crypt/index.js'
 import { HoloFormulas, hologramStreamsOf, holoStreamHolds } from '../families/holo/index.js'
@@ -13,7 +13,7 @@ import { qpuDiscoverOf } from './discovery.js'
 // every family registers itself on import, so discovery reaches all of them
 import '../families/path/index.js'
 import '../families/audit/index.js'
-import { qpuDataOf, qpuDataSourcesOf } from './qpu-fused.js'
+import { dataOf, dataSourcesOf } from './qpu-fused.js'
 import { NpFormulas, certifyUnreachable, disjointUnion, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, reachCounts, verifyColoring, verifyHamCycle, verifySubsetSum } from '../families/np/index.js'
 import { QuantumSecureSignalling, SIGNAL_READING_SEED, SignalFormulas } from '../families/signal/index.js'
 import { BB84_RAW, SecureChat } from './secure-chat-rbac.js'
@@ -121,13 +121,13 @@ export const formulasReceiptOf = async (root = process.cwd()) => {
   for (const [family, f, from, expect = true] of evaluated) {
     let hexAgrees: boolean | undefined
     if (f.hex && f.hexExact) {
-      const run = await qpuHexRunOf(f.hex)
+      const run = await hexRunOf(f.hex)
       hexAgrees = 'value' in run && run.value === f.value
     }
     rows.push({ name: `${family} ${f.id}`, family, pass: f.holds === expect && hexAgrees !== false, value: f.value, formula: f.formula, from, hex: f.hex, hexAgrees, receipt: f.receipt })
   }
   const minted = (name: string, family: string, pass: boolean, value: number | string, from: string) =>
-    rows.push({ name, family, pass, value, from, receipt: qpuUuidReceiptOf(`formulas ${name}`, qpuContentUuidOf({ name, pass, value }), { pass, value }).uuid })
+    rows.push({ name, family, pass, value, from, receipt: uuidReceiptOf(`formulas ${name}`, contentUuidOf({ name, pass, value }), { pass, value }).uuid })
   for (const a of attacks.value) minted(`attack ${a.name}`, 'attack', a.resisted, `${a.breaches}/${a.trials}`, a.detail)
   for (const [scale, entries] of Object.entries(hologram.streams)) minted(`hologram ${scale}`, 'holo', holoStreamHolds(entries, hologram.publicKeys), entries.length, entries.at(-1)?.uuid ?? '')
   const colour3 = findColoring(petersen, 3)
@@ -169,7 +169,7 @@ const numbersOf = (x: unknown): number[] =>
 
 /** Every live source the unit names, read now; their numbers fed to discovery across every family as the hex UUID splits it. */
 export const discoveryReceiptOf = async () => {
-  const sources = await Promise.all((await qpuDataSourcesOf()).map(async (s) => ({ ...s, result: (await qpuDataOf(s.source, s.args)) as { agrees?: boolean; denied?: string; reading?: unknown; receipt?: string; url?: string } })))
+  const sources = await Promise.all((await dataSourcesOf()).map(async (s) => ({ ...s, result: (await dataOf(s.source, s.args)) as { agrees?: boolean; denied?: string; reading?: unknown; receipt?: string; url?: string } })))
   // at scale: every API the fuse walked live (npm run fuse) gives its method count; with the live sources' numbers they
   // are discovery's inputs across every family
   const walked = fs.existsSync('.fuse/fused-apis.json') ? (JSON.parse(fs.readFileSync('.fuse/fused-apis.json', 'utf8')) as { rows: { reached?: boolean; methods?: number }[] }).rows.filter((r) => r.reached && typeof r.methods === 'number') : []
@@ -232,7 +232,7 @@ const PROOF_CITED: InvoluteRow = { formula: 'logic.proof(10, 2)', hex: '03c762b6
 
 /** The formula whose own comment names it an involution. Arity 1 takes one recorded amount. A wider signature is not filled. */
 const involutionOf = (root: string): { family: string; name: string; arity: number } | undefined => {
-  const families = qpuHexFamiliesOf()
+  const families = hexFamiliesOf()
   const hits: { family: string; name: string; arity: number }[] = []
   const dir = path.join(root, 'src', 'families')
   for (const family of fs.readdirSync(dir).sort()) {
@@ -277,7 +277,7 @@ export const involuteOf = async (root = process.cwd()) => {
     if (!params) continue
     seen.add(row.value)
     const hex = qpuHexUuidOf({ family: named.family, program: [named.name], params })
-    const run = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; steps?: { reading?: Record<string, unknown> }[] }
+    const run = (await hexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; steps?: { reading?: Record<string, unknown> }[] }
     const reading = run.steps?.at(-1)?.reading
     const next = reading && 'next' in reading ? (reading.next as number | string | null) : null
     if (followed === null && next !== null && next !== undefined) followed = next
@@ -286,7 +286,7 @@ export const involuteOf = async (root = process.cwd()) => {
   }
   if (named && named.arity === 0) {
     const hex = qpuHexUuidOf({ family: named.family, program: [named.name], params: [] })
-    const run = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; steps?: { reading?: Record<string, unknown> }[] }
+    const run = (await hexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; steps?: { reading?: Record<string, unknown> }[] }
     const reading = run.steps?.at(-1)?.reading
     const next = reading && 'next' in reading ? (reading.next as number | string | null) : null
     if (next !== null && next !== undefined) followed = next
@@ -295,7 +295,7 @@ export const involuteOf = async (root = process.cwd()) => {
   }
   const proofName = typeof followed === 'string' ? followed : null
   if (proofName === 'logic.proof') {
-    const called = (await qpuHexRunOf(PROOF_CITED.hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; steps?: { reading?: Record<string, unknown> }[] }
+    const called = (await hexRunOf(PROOF_CITED.hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; steps?: { reading?: Record<string, unknown> }[] }
     const reading = called.steps?.at(-1)?.reading
     const next = reading && 'next' in reading ? (reading.next as number | string | null) : null
     const value = typeof called.value === 'number' ? called.value : typeof called.value === 'string' && /^\d+$/.test(called.value) ? Number(called.value) : PROOF_CITED.value

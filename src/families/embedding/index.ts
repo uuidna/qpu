@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EMBEDDING — VECTORS AS ARITHMETIC. An embedding is a table of integer coordinates: how big the table is, the size of a
@@ -31,4 +31,4 @@ export class EmbeddingFormulas {
 }
 
 for (const name of ['cosine', 'dimensions', 'dotsim', 'hamming', 'l2sq', 'lookup', 'projection', 'tablesize'] as const)
-  qpuHexRegisterOf('embedding', name, (EmbeddingFormulas[name] as (...x: unknown[]) => unknown).bind(EmbeddingFormulas))
+  hexRegisterOf('embedding', name, (EmbeddingFormulas[name] as (...x: unknown[]) => unknown).bind(EmbeddingFormulas))

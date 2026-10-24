@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConvectionFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('convection: heatflux, coefficient, reynolds, prandtl, grashof, rayleigh, f
   assert.equal(ConvectionFormulas.filmtemp(100, 20).value, 60)
   assert.equal(ConvectionFormulas.boundarylayer(100, 50).value, 10, 'layer thickness')
   assert.equal(ConvectionFormulas.reynolds(100, 2, 4).dst, 'thermodynamics')
-  assert.equal(qpuHexFamiliesOf().get('convection')?.length, 8)
+  assert.equal(hexFamiliesOf().get('convection')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'convection', program: ['reynolds'], params: [100, 2, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `convection.reynolds at ${uuid}`)
-  qpuUuidReceiptOf('convection reynolds', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('convection reynolds', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; heatflux 1000, coefficient 200, reynolds 50, prandtl 7, grashof 600, rayleigh 4200, filmtemp 60, boundarylayer 10; crossing to thermodynamics')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EXEGESIS — scaffolded integer measures crossed to linguistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ExegesisFormulas {
 }
 
 for (const name of ['clauseorderings', 'lexemecombos', 'morphemecount', 'parsepaths', 'rootmatches', 'semanticrange', 'senseoptions', 'variantreadings'] as const)
-  qpuHexRegisterOf('exegesis', name, (ExegesisFormulas[name] as (...x: unknown[]) => unknown).bind(ExegesisFormulas))
+  hexRegisterOf('exegesis', name, (ExegesisFormulas[name] as (...x: unknown[]) => unknown).bind(ExegesisFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TIMESERIES — A SEQUENCE OVER TIME, AS ARITHMETIC. A run of readings is numbers: the moving average over a window, the
@@ -31,4 +31,4 @@ export class TimeseriesFormulas {
 }
 
 for (const name of ['autocorrelation', 'differencing', 'forecast', 'lag', 'movingaverage', 'seasonalindex', 'smoothing', 'trend'] as const)
-  qpuHexRegisterOf('timeseries', name, (TimeseriesFormulas[name] as (...x: unknown[]) => unknown).bind(TimeseriesFormulas))
+  hexRegisterOf('timeseries', name, (TimeseriesFormulas[name] as (...x: unknown[]) => unknown).bind(TimeseriesFormulas))

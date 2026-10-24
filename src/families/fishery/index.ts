@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FISHERY — FISHERIES SCIENCE, AS ARITHMETIC (chosen by the public-API registry, not by hand). A fishery is numbers: the
@@ -31,4 +31,4 @@ export class FisheryFormulas {
 }
 
 for (const name of ['biomass', 'bycatch', 'catch', 'cpue', 'mortality', 'quota', 'spawning', 'sustainable'] as const)
-  qpuHexRegisterOf('fishery', name, (FisheryFormulas[name] as (...x: unknown[]) => unknown).bind(FisheryFormulas))
+  hexRegisterOf('fishery', name, (FisheryFormulas[name] as (...x: unknown[]) => unknown).bind(FisheryFormulas))

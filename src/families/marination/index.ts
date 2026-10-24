@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MARINATION — scaffolded integer measures crossed to biochemistry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MarinationFormulas {
 }
 
 for (const name of ['aciduptake', 'flavorload', 'marinatetime', 'penetrationdepth', 'phshift', 'saltdiffusion', 'tenderization', 'weightgain'] as const)
-  qpuHexRegisterOf('marination', name, (MarinationFormulas[name] as (...x: unknown[]) => unknown).bind(MarinationFormulas))
+  hexRegisterOf('marination', name, (MarinationFormulas[name] as (...x: unknown[]) => unknown).bind(MarinationFormulas))

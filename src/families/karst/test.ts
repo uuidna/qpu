@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { KarstFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('karst: cavelength, dissolutionrate, sinkholedensity, conduitpairs, porosit
   assert.equal(KarstFormulas.passageorderings(5).value, 120)
   assert.equal(KarstFormulas.aquiferdepth(300, 50).value, 250)
   assert.equal(KarstFormulas.cavelength(2000, 3).dst, 'geology')
-  assert.equal(qpuHexFamiliesOf().get('karst')?.length, 8)
+  assert.equal(hexFamiliesOf().get('karst')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'karst', program: ['cavelength'], params: [2000, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 6000, `karst.cavelength at ${uuid}`)
-  qpuUuidReceiptOf('karst cavelength', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('karst cavelength', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; cavelength 6000, dissolutionrate 10, sinkholedensity 10, conduitpairs 45, porosity 30, rechargerate 100, passageorderings 120, aquiferdepth 250; crossing to geology')
 })

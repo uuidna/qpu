@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EXOPLANET — A DISTANT WORLD, AS ARITHMETIC (chosen by the transit-survey registry, not by hand). Finding a planet is
@@ -31,4 +31,4 @@ export class ExoplanetFormulas {
 }
 
 for (const name of ['equilibriumtemp', 'habitablezone', 'massratio', 'orbitalperiod', 'radiusratio', 'semiamplitude', 'transitdepth', 'transitduration'] as const)
-  qpuHexRegisterOf('exoplanet', name, (ExoplanetFormulas[name] as (...x: unknown[]) => unknown).bind(ExoplanetFormulas))
+  hexRegisterOf('exoplanet', name, (ExoplanetFormulas[name] as (...x: unknown[]) => unknown).bind(ExoplanetFormulas))

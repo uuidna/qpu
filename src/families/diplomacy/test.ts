@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DiplomacyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('diplomacy: consensus, leverage, treaty, tension, alliance, sanction, conce
   assert.equal(DiplomacyFormulas.concession(30, 40).value, 75)
   assert.equal(DiplomacyFormulas.summit(24, 6).value, 4, 'resolutions per session')
   assert.equal(DiplomacyFormulas.consensus(3, 4).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('diplomacy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('diplomacy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'diplomacy', program: ['consensus'], params: [3, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `diplomacy.consensus at ${uuid}`)
-  qpuUuidReceiptOf('diplomacy consensus', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('diplomacy consensus', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; consensus 75, leverage 5, treaty 90, tension 10, alliance 40, sanction 25, concession 75, summit 4; crossing to sociology')
 })

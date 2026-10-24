@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** INTERFERENCE — SUPERPOSITION OF WAVES, AS ARITHMETIC. When two waves overlap, the result is numbers: amplitudes that add
  *  in phase or cancel out of phase, the visibility of the fringes, optical path through a medium, the phase difference a path
@@ -33,4 +33,4 @@ export class InterferenceFormulas {
 }
 
 for (const name of ['beatfrequency', 'constructive', 'destructive', 'fringecount', 'opticalpath', 'phasedifference', 'thinfilm', 'visibility'] as const)
-  qpuHexRegisterOf('interference', name, (InterferenceFormulas[name] as (...x: unknown[]) => unknown).bind(InterferenceFormulas))
+  hexRegisterOf('interference', name, (InterferenceFormulas[name] as (...x: unknown[]) => unknown).bind(InterferenceFormulas))

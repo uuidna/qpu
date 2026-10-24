@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DistillationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('distillation: purity, reflux, plates, volatility, recovery, cut, temperatu
   assert.equal(DistillationFormulas.temperature(78).value, 78, 'ethanol boiling point')
   assert.equal(DistillationFormulas.azeotrope(96, 4).value, 96, 'the ethanol-water azeotrope')
   assert.equal(DistillationFormulas.purity(95, 100).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('distillation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('distillation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'distillation', program: ['plates'], params: [300, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `distillation.plates at ${uuid}`)
-  qpuUuidReceiptOf('distillation plates', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('distillation plates', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; purity 95, reflux 400, plates 12, volatility 240, recovery 85, cut 5, temperature 78, azeotrope 96; crossing to chemistry')
 })

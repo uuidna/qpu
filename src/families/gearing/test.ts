@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { GearingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('gearing: ratio, torqueout, speedout, efficiency, mechanicaladvantage, back
   assert.equal(GearingFormulas.toothcount(20, 3).value, 60)
   assert.equal(GearingFormulas.reductionstages(3, 3).value, 9)
   assert.equal(GearingFormulas.ratio(60, 20).dst, 'robotics')
-  assert.equal(qpuHexFamiliesOf().get('gearing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('gearing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'gearing', program: ['ratio'], params: [60, 20] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `gearing.ratio at ${uuid}`)
-  qpuUuidReceiptOf('gearing ratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('gearing ratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; ratio 3, torqueout 30, speedout 1000, efficiency 95, mechanicaladvantage 4, backlashangle 2, toothcount 60, reductionstages 9; crossing to robotics')
 })

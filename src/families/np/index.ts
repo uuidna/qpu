@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 export type Graph = { n: number; edges: [number, number][] }
@@ -182,4 +182,4 @@ export class NpFormulas {
 }
 
 for (const name of ['edgeBit', 'isSpace', 'isTime', 'reachGcd', 'sparseWidth', 'subsetSum'] as const)
-  qpuHexRegisterOf('np', name, (NpFormulas[name] as (...x: unknown[]) => unknown).bind(NpFormulas))
+  hexRegisterOf('np', name, (NpFormulas[name] as (...x: unknown[]) => unknown).bind(NpFormulas))

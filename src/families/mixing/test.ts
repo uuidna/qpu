@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MixingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('mixing: gain, headroom, pan, compression, ratio, loudness, crossfade, bus 
   assert.equal(MixingFormulas.crossfade(100, 200, 25).value, 125, 'a quarter of the way to the second source')
   assert.equal(MixingFormulas.bus(8, 125).value, 1000)
   assert.equal(MixingFormulas.gain(100, 3).dst, 'acoustics')
-  assert.equal(qpuHexFamiliesOf().get('mixing')?.length, 8)
+  assert.equal(hexFamiliesOf().get('mixing')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'mixing', program: ['ratio'], params: [100, 25] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `mixing.ratio at ${uuid}`)
-  qpuUuidReceiptOf('mixing ratio', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('mixing ratio', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gain 300, headroom 6, pan 25, compression 55, ratio 4, loudness 75, crossfade 125, bus 1000; crossing to acoustics')
 })

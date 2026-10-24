@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SoccerFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('soccer: possession, conversion, passaccuracy, xg, cleansheets, goaldiff, d
   assert.equal(SoccerFormulas.distance(10500, 90).value, 116)
   assert.equal(SoccerFormulas.points(10, 5).value, 35, 'ten wins and five draws')
   assert.equal(SoccerFormulas.possession(60, 90).dst, 'sports')
-  assert.equal(qpuHexFamiliesOf().get('soccer')?.length, 8)
+  assert.equal(hexFamiliesOf().get('soccer')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'soccer', program: ['points'], params: [10, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 35, `soccer.points at ${uuid}`)
-  qpuUuidReceiptOf('soccer points', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('soccer points', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; possession 66, conversion 25, passaccuracy 80, xg 3, cleansheets 31, goaldiff 10/-10, distance 116, points 35; crossing to sports')
 })

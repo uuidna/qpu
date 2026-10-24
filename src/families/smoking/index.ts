@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SMOKING — scaffolded integer measures crossed to microbiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SmokingFormulas {
 }
 
 for (const name of ['moisturereduction', 'penetrationdepth', 'phenoldeposition', 'preservationindex', 'smoketime', 'surfacecolor', 'temperaturezone', 'woodratio'] as const)
-  qpuHexRegisterOf('smoking', name, (SmokingFormulas[name] as (...x: unknown[]) => unknown).bind(SmokingFormulas))
+  hexRegisterOf('smoking', name, (SmokingFormulas[name] as (...x: unknown[]) => unknown).bind(SmokingFormulas))

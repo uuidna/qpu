@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACQUISITION — GROWTH AS ARITHMETIC (chosen by the registry, not by hand). Getting customers is numbers: what each one
@@ -31,4 +31,4 @@ export class AcquisitionFormulas {
 }
 
 for (const name of ['cac', 'channel', 'conversion', 'ltvratio', 'organic', 'payback', 'roi', 'velocity'] as const)
-  qpuHexRegisterOf('acquisition', name, (AcquisitionFormulas[name] as (...x: unknown[]) => unknown).bind(AcquisitionFormulas))
+  hexRegisterOf('acquisition', name, (AcquisitionFormulas[name] as (...x: unknown[]) => unknown).bind(AcquisitionFormulas))

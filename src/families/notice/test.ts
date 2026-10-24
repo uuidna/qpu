@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NoticeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('notice: severity, dismiss, cta, duration, stack, priority, impressions, au
   assert.equal(NoticeFormulas.impressions(80, 100).value, 80)
   assert.equal(NoticeFormulas.autohide(10).value, 10)
   assert.equal(NoticeFormulas.severity(3).dst, 'frontend')
-  assert.equal(qpuHexFamiliesOf().get('notice')?.length, 8)
+  assert.equal(hexFamiliesOf().get('notice')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'notice', program: ['cta'], params: [45, 300] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `notice.cta at ${uuid}`)
-  qpuUuidReceiptOf('notice cta', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('notice cta', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; severity 3, dismiss 25, cta 15, duration 5000, stack 4, priority 1, impressions 80, autohide 10; crossing to frontend')
 })

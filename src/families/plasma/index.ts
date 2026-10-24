@@ -1,7 +1,7 @@
-import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, latticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
-const { fullTurn } = qpuLatticeNamesOf()
+const { fullTurn } = latticeNamesOf()
 
 /** PLASMA — THE FOURTH STATE OF MATTER, AS ARITHMETIC. An ionized gas is numbers: temperature per particle, number density
  *  in a volume, the Debye screening length, how long energy stays confined, the fraction ionized, the fusion gain Q, the
@@ -42,4 +42,4 @@ export class PlasmaFormulas {
 }
 
 for (const name of ['bytes', 'confinement', 'debye', 'density', 'frequency', 'fusion', 'hue', 'ionization', 'magnetic', 'near', 'temperature'] as const)
-  qpuHexRegisterOf('plasma', name, (PlasmaFormulas[name] as (...x: unknown[]) => unknown).bind(PlasmaFormulas))
+  hexRegisterOf('plasma', name, (PlasmaFormulas[name] as (...x: unknown[]) => unknown).bind(PlasmaFormulas))

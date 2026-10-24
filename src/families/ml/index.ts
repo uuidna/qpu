@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ML — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class MlFormulas {
 }
 
 for (const name of ['accuracy', 'epochs', 'f1score', 'featurecombos', 'gradientsteps', 'layersubsets', 'learningrate', 'parameters'] as const)
-  qpuHexRegisterOf('ml', name, (MlFormulas[name] as (...x: unknown[]) => unknown).bind(MlFormulas))
+  hexRegisterOf('ml', name, (MlFormulas[name] as (...x: unknown[]) => unknown).bind(MlFormulas))

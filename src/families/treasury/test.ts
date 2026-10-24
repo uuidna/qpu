@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TreasuryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('treasury: liquidity, workingcapital, cashflow, interest, maturity, hedge, 
   assert.equal(TreasuryFormulas.reserve(120, 100).value, 120)
   assert.equal(TreasuryFormulas.conversion(75, 100).value, 75)
   assert.equal(TreasuryFormulas.cashflow(100, 60).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('treasury')?.length, 8)
+  assert.equal(hexFamiliesOf().get('treasury')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'treasury', program: ['interest'], params: [1000, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `treasury.interest at ${uuid}`)
-  qpuUuidReceiptOf('treasury interest', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('treasury interest', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; liquidity 200, workingcapital 200, cashflow 40/-40, interest 50, maturity 90, hedge 80, reserve 120, conversion 75; crossing to accounting')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CURING — scaffolded integer measures crossed to microbiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CuringFormulas {
 }
 
 for (const name of ['brinestrength', 'curetime', 'microbialreduction', 'nitritelevel', 'phlevel', 'saltconcentration', 'wateractivity', 'weightloss'] as const)
-  qpuHexRegisterOf('curing', name, (CuringFormulas[name] as (...x: unknown[]) => unknown).bind(CuringFormulas))
+  hexRegisterOf('curing', name, (CuringFormulas[name] as (...x: unknown[]) => unknown).bind(CuringFormulas))

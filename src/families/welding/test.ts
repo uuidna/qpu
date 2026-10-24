@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { WeldingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('welding: heatinput, travelspeed, deposition, penetration, dilution, porosi
   assert.equal(WeldingFormulas.duty(6, 10).value, 60, 'duty cycle percent')
   assert.equal(WeldingFormulas.strength(85, 100).value, 85, 'joint efficiency')
   assert.equal(WeldingFormulas.heatinput(24, 200).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('welding')?.length, 8)
+  assert.equal(hexFamiliesOf().get('welding')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'welding', program: ['penetration'], params: [8, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 80, `welding.penetration at ${uuid}`)
-  qpuUuidReceiptOf('welding penetration', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('welding penetration', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; heatinput 4800, travelspeed 5, deposition 1800, penetration 80, dilution 30, porosity 5, duty 60, strength 85; crossing to materials')
 })

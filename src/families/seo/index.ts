@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf, qpuCiteOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, qpuCiteOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SEO — CLEAN URLS, PROVEN AT GOOGLE. The best URL has NO useless prefix: content lives at its slug, not under a dead
@@ -48,4 +48,4 @@ export class SeoFormulas {
 }
 
 for (const name of ['canonical', 'crawl', 'depth', 'google', 'meta', 'prefix', 'redirect', 'slug', 'title'] as const)
-  qpuHexRegisterOf('seo', name, (SeoFormulas[name] as (...x: unknown[]) => unknown).bind(SeoFormulas))
+  hexRegisterOf('seo', name, (SeoFormulas[name] as (...x: unknown[]) => unknown).bind(SeoFormulas))

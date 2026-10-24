@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AUTHORIZATION — DEFENSIVE ACCESS-CONTROL AS ARITHMETIC. Who may do what is numbers: the roles a user base carries, the
@@ -31,4 +31,4 @@ export class AuthorizationFormulas {
 }
 
 for (const name of ['accessreviewlag', 'grantratio', 'leastprivilege', 'permissionmatrix', 'policyeval', 'rolecount', 'scopebreadth', 'separationofduty'] as const)
-  qpuHexRegisterOf('authorization', name, (AuthorizationFormulas[name] as (...x: unknown[]) => unknown).bind(AuthorizationFormulas))
+  hexRegisterOf('authorization', name, (AuthorizationFormulas[name] as (...x: unknown[]) => unknown).bind(AuthorizationFormulas))

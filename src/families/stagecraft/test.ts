@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StagecraftFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('stagecraft: flats, riggingpoints, stagearea, scenechanges, trusscombos, si
   assert.equal(StagecraftFormulas.weightkg(50, 20).value, 1000)
   assert.equal(StagecraftFormulas.loadmargin(1000, 800).value, 200)
   assert.equal(StagecraftFormulas.flats(12, 8).dst, 'geometry')
-  assert.equal(qpuHexFamiliesOf().get('stagecraft')?.length, 8)
+  assert.equal(hexFamiliesOf().get('stagecraft')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'stagecraft', program: ['flats'], params: [12, 8] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `stagecraft.flats at ${uuid}`)
-  qpuUuidReceiptOf('stagecraft flats', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('stagecraft flats', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; flats 20, riggingpoints 80, stagearea 120, scenechanges 8, trusscombos 45, sightlines 30, weightkg 1000, loadmargin 200; crossing to geometry')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CalligraphyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('calligraphy: strokecount, penangle, xheight, letterspacing, strokeordering
   assert.equal(CalligraphyFormulas.glyphpairs(26, 2).value, 325)
   assert.equal(CalligraphyFormulas.slantdegree(120, 10).value, 12)
   assert.equal(CalligraphyFormulas.strokecount(8, 4).dst, 'geometry')
-  assert.equal(qpuHexFamiliesOf().get('calligraphy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('calligraphy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'calligraphy', program: ['strokecount'], params: [8, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 12, `calligraphy.strokecount at ${uuid}`)
-  qpuUuidReceiptOf('calligraphy strokecount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('calligraphy strokecount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; strokecount 12, penangle 90, xheight 50, letterspacing 36, strokeorderings 120, flourishsubsets 16, glyphpairs 325, slantdegree 12; crossing to geometry')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NOTICE — THE BANNER/CALLOUT/STATEMENT NOTICE USE CASE (payloadcms/website), AS ARITHMETIC. A notice shown to a reader
@@ -31,4 +31,4 @@ export class NoticeFormulas {
 }
 
 for (const name of ['autohide', 'cta', 'dismiss', 'duration', 'impressions', 'priority', 'severity', 'stack'] as const)
-  qpuHexRegisterOf('notice', name, (NoticeFormulas[name] as (...x: unknown[]) => unknown).bind(NoticeFormulas))
+  hexRegisterOf('notice', name, (NoticeFormulas[name] as (...x: unknown[]) => unknown).bind(NoticeFormulas))

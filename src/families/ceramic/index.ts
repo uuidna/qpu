@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CeramicFormulas — 8 exact-integer formulas of the ceramic domain, each at a hex address crossing to cross; develops the ceramic leads. */
@@ -31,4 +31,4 @@ export class CeramicFormulas {
 }
 
 for (const name of ['combos', 'density', 'grains', 'hardness', 'phases', 'porosity', 'shrink', 'sinter'] as const)
-  qpuHexRegisterOf('ceramic', name, (CeramicFormulas[name] as (...x: unknown[]) => unknown).bind(CeramicFormulas))
+  hexRegisterOf('ceramic', name, (CeramicFormulas[name] as (...x: unknown[]) => unknown).bind(CeramicFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MAGNETISM — THE FIELD AS ARITHMETIC. The physics of fields and forces is numbers: a solenoid's field from its current and
@@ -31,4 +31,4 @@ export class MagnetismFormulas {
 }
 
 for (const name of ['dipole', 'field', 'flux', 'force', 'induction', 'permeability', 'reluctance', 'torque'] as const)
-  qpuHexRegisterOf('magnetism', name, (MagnetismFormulas[name] as (...x: unknown[]) => unknown).bind(MagnetismFormulas))
+  hexRegisterOf('magnetism', name, (MagnetismFormulas[name] as (...x: unknown[]) => unknown).bind(MagnetismFormulas))

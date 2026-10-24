@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CRIMINOLOGY — CRIME AS ARITHMETIC, MEASURED AGAINST THE LAW. Policing and justice are numbers: crime rate per
@@ -31,4 +31,4 @@ export class CriminologyFormulas {
 }
 
 for (const name of ['arrest', 'clearance', 'conviction', 'deterrence', 'rate', 'recidivism', 'severity', 'victimization'] as const)
-  qpuHexRegisterOf('criminology', name, (CriminologyFormulas[name] as (...x: unknown[]) => unknown).bind(CriminologyFormulas))
+  hexRegisterOf('criminology', name, (CriminologyFormulas[name] as (...x: unknown[]) => unknown).bind(CriminologyFormulas))

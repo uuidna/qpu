@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HVAC — HEATING, VENTILATION AND AIR CONDITIONING, AS ARITHMETIC (chosen by the equipment registry, not by hand). Conditioning
@@ -31,4 +31,4 @@ export class HvacFormulas {
 }
 
 for (const name of ['airflow', 'coolingload', 'ducting', 'latentheat', 'sensibleheat', 'setpoint', 'tonnage', 'ventilation'] as const)
-  qpuHexRegisterOf('hvac', name, (HvacFormulas[name] as (...x: unknown[]) => unknown).bind(HvacFormulas))
+  hexRegisterOf('hvac', name, (HvacFormulas[name] as (...x: unknown[]) => unknown).bind(HvacFormulas))

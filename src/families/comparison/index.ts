@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COMPARISON — THE ComparisonTable USE CASE FROM payloadcms/website, AS ARITHMETIC. A comparison table is numbers: the
@@ -31,4 +31,4 @@ export class ComparisonFormulas {
 }
 
 for (const name of ['cells', 'columns', 'coverage', 'diff', 'highlight', 'rows', 'spread', 'winner'] as const)
-  qpuHexRegisterOf('comparison', name, (ComparisonFormulas[name] as (...x: unknown[]) => unknown).bind(ComparisonFormulas))
+  hexRegisterOf('comparison', name, (ComparisonFormulas[name] as (...x: unknown[]) => unknown).bind(ComparisonFormulas))

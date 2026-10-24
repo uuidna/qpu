@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AUTHENTICATION — PROVING WHO IS THERE, AS ARITHMETIC (chosen by the identity registry, not by hand). Access is numbers:
@@ -31,4 +31,4 @@ export class AuthenticationFormulas {
 }
 
 for (const name of ['entropy', 'falseaccept', 'falsereject', 'lockout', 'mfa', 'sessions', 'strength', 'tokenlife'] as const)
-  qpuHexRegisterOf('authentication', name, (AuthenticationFormulas[name] as (...x: unknown[]) => unknown).bind(AuthenticationFormulas))
+  hexRegisterOf('authentication', name, (AuthenticationFormulas[name] as (...x: unknown[]) => unknown).bind(AuthenticationFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AdminFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('admin: columns, components, density, groups, hidden, load, nav, preview â€
   assert.equal(AdminFormulas.nav(10, 5).value, 2, 'two nav items per group')
   assert.equal(AdminFormulas.preview(3, 6).value, 50, 'half the collections previewed')
   assert.equal(AdminFormulas.columns(3, 5).dst, 'payload')
-  assert.equal(qpuHexFamiliesOf().get('admin')?.length, 8)
+  assert.equal(hexFamiliesOf().get('admin')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'admin', program: ['columns'], params: [3, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 60, `admin.columns at ${uuid}`)
-  qpuUuidReceiptOf('admin columns', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('admin columns', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; columns 60, components 20, density 5, groups 3, hidden 10, load 800, nav 2, preview 50; crossing to payload')
 })

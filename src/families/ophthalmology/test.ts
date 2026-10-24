@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OphthalmologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('ophthalmology: accommodation, astigmatism, cylinderpower, diopter, iop, pu
   assert.equal(OphthalmologyFormulas.visualacuity(20, 40).value, 50)
   assert.equal(OphthalmologyFormulas.visualacuity(20, 20).value, 100, 'normal acuity')
   assert.equal(OphthalmologyFormulas.diopter(500).dst, 'optics')
-  assert.equal(qpuHexFamiliesOf().get('ophthalmology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('ophthalmology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'ophthalmology', program: ['diopter'], params: [500] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `ophthalmology.diopter at ${uuid}`)
-  qpuUuidReceiptOf('ophthalmology diopter', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('ophthalmology diopter', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; accommodation 9, astigmatism 2, cylinderpower 5, diopter 2, iop 16, pupildistance 63, refractiveerror 4, visualacuity 50; crossing to optics')
 })

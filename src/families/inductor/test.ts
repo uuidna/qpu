@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { InductorFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('inductor: inductance, reactance, energy, timeconstant, turnspairs, quality
   assert.equal(InductorFormulas.seriessum(100, 200).value, 300)
   assert.equal(InductorFormulas.coupling(90, 100).value, 90)
   assert.equal(InductorFormulas.inductance(100, 1).dst, 'electronics')
-  assert.equal(qpuHexFamiliesOf().get('inductor')?.length, 8)
+  assert.equal(hexFamiliesOf().get('inductor')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'inductor', program: ['inductance'], params: [100, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `inductor.inductance at ${uuid}`)
-  qpuUuidReceiptOf('inductor inductance', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('inductor inductance', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; inductance 100, reactance 6280, energy 50, timeconstant 10, turnspairs 45, quality 50, seriessum 300, coupling 90; crossing to electronics')
 })

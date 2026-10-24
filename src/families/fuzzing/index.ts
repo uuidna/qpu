@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FUZZING — scaffolded integer measures crossed to statistics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class FuzzingFormulas {
 }
 
 for (const name of ['coveragepct', 'crashcombos', 'inputspace', 'iterations', 'mutationpaths', 'seedcount', 'throughput', 'uniquecrashes'] as const)
-  qpuHexRegisterOf('fuzzing', name, (FuzzingFormulas[name] as (...x: unknown[]) => unknown).bind(FuzzingFormulas))
+  hexRegisterOf('fuzzing', name, (FuzzingFormulas[name] as (...x: unknown[]) => unknown).bind(FuzzingFormulas))

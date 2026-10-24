@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CLAIMS — THE WORK OF PAYING A LOSS, AS ARITHMETIC (chosen by the public-API registry, not by hand). Settling claims is
@@ -31,4 +31,4 @@ export class ClaimsFormulas {
 }
 
 for (const name of ['deductible', 'frequency', 'incurred', 'lossratio', 'payout', 'reserve', 'settlement', 'severity'] as const)
-  qpuHexRegisterOf('claims', name, (ClaimsFormulas[name] as (...x: unknown[]) => unknown).bind(ClaimsFormulas))
+  hexRegisterOf('claims', name, (ClaimsFormulas[name] as (...x: unknown[]) => unknown).bind(ClaimsFormulas))

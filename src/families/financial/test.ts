@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FinancialFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('financial: breakeven, payback, roi, margin, leverage, burn, runway, compou
   assert.equal(FinancialFormulas.runway(300000, 30000).value, 10, 'ten months')
   assert.equal(FinancialFormulas.compound(1000, 10, 3).value, 1331, '1000 at 10% for three periods')
   assert.equal(FinancialFormulas.roi(15000, 10000).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('financial')?.length, 8)
+  assert.equal(hexFamiliesOf().get('financial')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'financial', program: ['compound'], params: [1000, 10, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1331, `financial.compound at ${uuid}`)
-  qpuUuidReceiptOf('financial compound', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('financial compound', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; breakeven 2500, payback 5, roi 50, margin 40, leverage 3, burn 30000, runway 10, compound 1331; crossing to accounting')
 })

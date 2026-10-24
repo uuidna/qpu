@@ -16,10 +16,10 @@ if (invoked) {
   const unit = await import(pathToFileURL(dist).href)
 
   // Gather RAID structure facts
-  const faces = unit.qpuFacesOf().faces
-  const rays = unit.qpuFacesOf().rays
-  const coins = unit.qpuFacesOf().coins
-  const redundancyHolds = unit.qpuStorageRedundancyHolds()
+  const faces = unit.facesOf().faces
+  const rays = unit.facesOf().rays
+  const coins = unit.facesOf().coins
+  const redundancyHolds = unit.storageRedundancyHolds()
 
   // Load baseline
   const baseline = JSON.parse(readFileSync(join(process.cwd(), 'storage-subrequests.json'), 'utf8'))

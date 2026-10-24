@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { TitrationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('titration: equivalence, concentration, endpoint, normality, titer, buffer,
   assert.equal(TitrationFormulas.indicator(3, 11).value, 7, 'transition midpoint')
   assert.equal(TitrationFormulas.backtitration(50, 12).value, 38, 'the unreacted excess')
   assert.equal(TitrationFormulas.equivalence(25, 2, 1).dst, 'chemistry')
-  assert.equal(qpuHexFamiliesOf().get('titration')?.length, 8)
+  assert.equal(hexFamiliesOf().get('titration')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'titration', program: ['equivalence'], params: [25, 2, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `titration.equivalence at ${uuid}`)
-  qpuUuidReceiptOf('titration equivalence', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('titration equivalence', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; equivalence 50, concentration 10, endpoint 25, normality 6, titer 40, buffer 10, indicator 7, backtitration 38; crossing to chemistry')
 })

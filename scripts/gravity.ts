@@ -23,7 +23,7 @@ const ROOT = join(dirname(new URL(import.meta.url).pathname), '..')
 export const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]))
 
 /** The family a module registers, or null — read from the source. */
-export const familyOf = (src) => src.match(/qpuHexRegisterOf\('([a-zA-Z.]+)'/)?.[1] ?? null
+export const familyOf = (src) => src.match(/hexRegisterOf\('([a-zA-Z.]+)'/)?.[1] ?? null
 
 /**
  * The moves gravity would make: for each entry { file, family }, the family file that is off its meaningful path
@@ -114,14 +114,14 @@ if (process.argv[1]?.endsWith('gravity.ts')) {
     }
   } else {
     // the whole equilibrium observes: load the registry and ask the families around the center whether they agree
-    const { qpuHexFamiliesOf, qpuHexUuidOf, qpuHexRegisteredSizeOf } = await import('../dist/quantum/processing/unit/index.js')
+    const { hexFamiliesOf, qpuHexUuidOf, hexRegisteredSizeOf } = await import('../dist/quantum/processing/unit/index.js')
     await import('../dist/mcp/families.js')
-    const families = qpuHexFamiliesOf()
+    const families = hexFamiliesOf()
     const handleOf = (fam) => {
       const fs = families.get(fam)
       return fs?.length ? qpuHexUuidOf({ family: fam, program: [fs[0].name], params: [] }).split('-')[0] : null
     }
-    const registered = (f) => qpuHexRegisteredSizeOf(f) > 0
+    const registered = (f) => hexRegisteredSizeOf(f) > 0
     const consensus = consensusOf(families, { handleOf, registered })
     if (!consensus.agreed) {
       console.log('✗ the equilibrium does not agree — the families around the center are not all in balance:')

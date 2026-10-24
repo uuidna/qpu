@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CONTENT — THE CONTENT-COMPOSITION USE CASE FROM payloadcms/website, AS ARITHMETIC. A page is built from blocks
@@ -31,4 +31,4 @@ export class ContentFormulas {
 }
 
 for (const name of ['blocks', 'depth', 'media', 'reuse', 'richtext', 'sections', 'toc', 'words'] as const)
-  qpuHexRegisterOf('content', name, (ContentFormulas[name] as (...x: unknown[]) => unknown).bind(ContentFormulas))
+  hexRegisterOf('content', name, (ContentFormulas[name] as (...x: unknown[]) => unknown).bind(ContentFormulas))

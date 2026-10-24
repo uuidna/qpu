@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PASSWORDS — DEFENSIVE STRENGTH, AS ARITHMETIC (chosen by the public-API registry, not by hand). A credential policy is
@@ -32,4 +32,4 @@ export class PasswordsFormulas {
 }
 
 for (const name of ['entropybits', 'hashcost', 'keyspacebits', 'lockoutwindow', 'mfabonus', 'minlengthscore', 'reuserisk', 'rotationdays'] as const)
-  qpuHexRegisterOf('passwords', name, (PasswordsFormulas[name] as (...x: unknown[]) => unknown).bind(PasswordsFormulas))
+  hexRegisterOf('passwords', name, (PasswordsFormulas[name] as (...x: unknown[]) => unknown).bind(PasswordsFormulas))

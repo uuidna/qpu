@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AlloyFormulas — 8 exact-integer formulas of the alloy domain, each at a hex address crossing to cross; develops the alloy leads. */
@@ -31,4 +31,4 @@ export class AlloyFormulas {
 }
 
 for (const name of ['combos', 'density', 'grains', 'hardness', 'meltpoint', 'parts', 'phases', 'ratio'] as const)
-  qpuHexRegisterOf('alloy', name, (AlloyFormulas[name] as (...x: unknown[]) => unknown).bind(AlloyFormulas))
+  hexRegisterOf('alloy', name, (AlloyFormulas[name] as (...x: unknown[]) => unknown).bind(AlloyFormulas))

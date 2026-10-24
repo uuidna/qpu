@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PASTEURIZATION — HEAT APPLIED TO CONTROL MICROBIAL LOAD, AS ARITHMETIC (chosen by the process registry, not by hand).
@@ -31,4 +31,4 @@ export class PasteurizationFormulas {
 }
 
 for (const name of ['cooling', 'dvalue', 'holdtime', 'lethality', 'reduction', 'temperature', 'throughput', 'zvalue'] as const)
-  qpuHexRegisterOf('pasteurization', name, (PasteurizationFormulas[name] as (...x: unknown[]) => unknown).bind(PasteurizationFormulas))
+  hexRegisterOf('pasteurization', name, (PasteurizationFormulas[name] as (...x: unknown[]) => unknown).bind(PasteurizationFormulas))

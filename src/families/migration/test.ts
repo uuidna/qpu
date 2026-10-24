@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MigrationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('migration: netmigration, grossflow, rate, pushpull, remittanceshare, settl
   assert.equal(MigrationFormulas.returnrate(250, 1000).value, 25)
   assert.equal(MigrationFormulas.integrationindex(60, 90, 3).value, 51)
   assert.equal(MigrationFormulas.netmigration(5000, 3000).dst, 'sociology')
-  assert.equal(qpuHexFamiliesOf().get('migration')?.length, 8)
+  assert.equal(hexFamiliesOf().get('migration')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'migration', program: ['rate'], params: [2000, 50000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 40, `migration.rate at ${uuid}`)
-  qpuUuidReceiptOf('migration rate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('migration rate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; netmigration 2000, grossflow 8000, rate 40, pushpull 40, remittanceshare 20, settlementratio 80, returnrate 25, integrationindex 51; crossing to sociology')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ELECTROMAGNETISM — FIELDS AND CHARGES, AS ARITHMETIC (chosen by the public-API registry, not by hand). Charge,
@@ -31,4 +31,4 @@ export class ElectromagnetismFormulas {
 }
 
 for (const name of ['capacitance', 'coulomb', 'field', 'flux', 'impedance', 'induction', 'poynting', 'wave'] as const)
-  qpuHexRegisterOf('electromagnetism', name, (ElectromagnetismFormulas[name] as (...x: unknown[]) => unknown).bind(ElectromagnetismFormulas))
+  hexRegisterOf('electromagnetism', name, (ElectromagnetismFormulas[name] as (...x: unknown[]) => unknown).bind(ElectromagnetismFormulas))

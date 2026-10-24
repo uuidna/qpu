@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CyberneticsFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cybernetics: feedback, gain, setpoint, stability, latency, entropy, contro
   assert.equal(CyberneticsFormulas.control(90, 30).value, 300)
   assert.equal(CyberneticsFormulas.homeostasis(95, 100).value, 95, 'regulated against the perturbation')
   assert.equal(CyberneticsFormulas.feedback(150, 100).dst, 'robotics')
-  assert.equal(qpuHexFamiliesOf().get('cybernetics')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cybernetics')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cybernetics', program: ['feedback'], params: [150, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 150, `cybernetics.feedback at ${uuid}`)
-  qpuUuidReceiptOf('cybernetics feedback', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cybernetics feedback', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; feedback 150, gain 200, setpoint 70, stability 80, latency 50, entropy 16, control 300, homeostasis 95; crossing to robotics')
 })

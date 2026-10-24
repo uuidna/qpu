@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SYNTHESIS — program synthesis as exact combinatorics, not a fabricated coverage number. Halstead length and
@@ -32,4 +32,4 @@ export class SynthesisFormulas {
 }
 
 for (const name of ['candidates', 'effort', 'examples', 'length', 'paths', 'rewrites', 'tokens', 'vocabulary'] as const)
-  qpuHexRegisterOf('synthesis', name, (SynthesisFormulas[name] as (...x: unknown[]) => unknown).bind(SynthesisFormulas))
+  hexRegisterOf('synthesis', name, (SynthesisFormulas[name] as (...x: unknown[]) => unknown).bind(SynthesisFormulas))

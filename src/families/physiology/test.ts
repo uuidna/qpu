@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhysiologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('physiology: bmr, vo2, clearance, gfr, osmolality, ph, tidal, saturation â€
   assert.equal(PhysiologyFormulas.saturation(98, 100).value, 98)
   assert.equal(PhysiologyFormulas.saturation(5, 0).value, 0, 'guarded division')
   assert.equal(PhysiologyFormulas.bmr(70, 24).dst, 'med')
-  assert.equal(qpuHexFamiliesOf().get('physiology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('physiology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'physiology', program: ['vo2'], params: [3500, 70] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 50, `physiology.vo2 at ${uuid}`)
-  qpuUuidReceiptOf('physiology vo2', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('physiology vo2', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bmr 1680, vo2 50, clearance 120, gfr 90, osmolality 285, ph 74, tidal 6000, saturation 98; crossing to med')
 })

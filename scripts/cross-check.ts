@@ -13,20 +13,21 @@
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
 import { tenOf } from './lattice-values.js'
+import { faces } from './lattice-values.ts'
 import '../dist/mcp/families.js'
-import { qpuContentUuidOf, qpuHexFamiliesOf, qpuUuidReceiptOf } from '../dist/quantum/processing/unit/index.js'
-import { DataFormulas, qpuDataOf } from '../dist/mcp/qpu-fused.js'
+import { contentUuidOf, hexFamiliesOf, uuidReceiptOf } from '../dist/quantum/processing/unit/index.js'
+import { DataFormulas, dataOf } from '../dist/mcp/qpu-fused.js'
 import { DOORS, qpuDiscoverOf } from '../dist/mcp/discovery.js'
 
-const sorted = () => [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f)).sort()
+const sorted = () => [...hexFamiliesOf().keys()].filter((f) => !DOORS.has(f)).sort()
 const numbersOf = (x) => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : [])
 
 // which families a staged module registers: read off the module, as the registry is
-const familiesOfModule = (file) => [...new Set([...fs.readFileSync(file, 'utf8').matchAll(/qpuHexRegisterOf\('([^']+)'/g)].map((m) => m[1]))]
+const familiesOfModule = (file) => [...new Set([...fs.readFileSync(file, 'utf8').matchAll(/hexRegisterOf\('([^']+)'/g)].map((m) => m[1]))]
 const staged = process.argv.includes('--staged')
 const named = process.argv.slice(2).filter((a) => !a.startsWith('--'))
 const families = staged
-  ? [...new Set(execSync('git diff --cached --name-only', { encoding: 'utf8' }).split('\n').filter((f) => /^src\/(families\/[^/]+\/index|mcp\/[^/]+)\.ts$/.test(f) && fs.existsSync(f)).flatMap(familiesOfModule))].filter((f) => qpuHexFamiliesOf().has(f))
+  ? [...new Set(execSync('git diff --cached --name-only', { encoding: 'utf8' }).split('\n').filter((f) => /^src\/(families\/[^/]+\/index|mcp\/[^/]+)\.ts$/.test(f) && fs.existsSync(f)).flatMap(familiesOfModule))].filter((f) => hexFamiliesOf().has(f))
   : named.length ? named : sorted()
 if (!families.length) {
   console.log('cross-check: no formula module staged')
@@ -36,14 +37,28 @@ if (!families.length) {
 // the live readings the theorems are checked against, as discovery's inputs, plus every research reading's numbers
 const live = new Set()
 for (const source of ['cern', 'nist', 'oeis', 'zenodo', 'apis']) {
-  const r = await qpuDataOf(source, {})
+  const r = await dataOf(source, {})
   for (const x of numbersOf(r.reading ?? {})) live.add(x)
 }
 const rows = []
-for (const family of families) {
-  const f = sorted().indexOf(family)
-  const research = await DataFormulas.research(f)
-  const readings = research.reading?.readings ?? []
+// A POOL, NOT ONE AT A TIME: the reads are network-bound, so 14 families are read at once (the lattice width, as develop
+// runs them), each slot taking the next family as it frees. Rows keep the family order; each finishes on the terminal as it does.
+const readsOf = new Array(families.length)
+let next = 0
+const slots = Array.from({ length: Math.min(faces, families.length) }, async () => {
+  while (next < families.length) {
+    const i = next++
+    const family = families[i]
+    const f = sorted().indexOf(family)
+    const research = await DataFormulas.research(f)
+    const readings = research.reading?.readings ?? []
+    readsOf[i] = { family, f, research, readings }
+    const got = readings.filter((r) => r.status > 0).length
+    console.log(`  ${got > 0 ? '✓' : '·'} ${family}: ${readings.length} read, ${got} answered`)
+  }
+})
+await Promise.all(slots)
+for (const { family, f, research, readings } of readsOf) {
   for (const r of readings) for (const x of numbersOf(r.excerpt ?? {})) live.add(x)
   rows.push({ family, f, research })
 }
@@ -66,8 +81,8 @@ const doc = {
   holds: rows.every((r) => r.pass),
   rows: rows.map((r) => ({ name: `family ${r.family}`, pass: r.pass, value: `${r.matched} APIs named, ${r.answered.length} answered (${r.answered.slice(0, 4).join(', ')}); ${r.relations} cross-family values, ${r.liveRelations} with live readings, crossing ${r.crossed.slice(0, 8).join(' ')}`, receipt: r.research.receipt ?? '' })),
 }
-doc.uuid = qpuContentUuidOf(doc.rows)
-doc.receipt = qpuUuidReceiptOf('cross-check', doc.uuid, `${rows.filter((r) => r.pass).length}/${rows.length}`, 'scripts/cross-check.ts').uuid
+doc.uuid = contentUuidOf(doc.rows)
+doc.receipt = uuidReceiptOf('cross-check', doc.uuid, `${rows.filter((r) => r.pass).length}/${rows.length}`, 'scripts/cross-check.ts').uuid
 fs.writeFileSync('cross-check-receipt.json', JSON.stringify(doc, null, 1) + '\n')
 for (const r of doc.rows) console.log(`  ${r.pass ? '✓' : '✗'} ${r.name}: ${r.value}`)
 console.log(`cross-check: ${rows.filter((r) => r.pass).length}/${rows.length} families crossed with the public record (${live.size} live numbers)`)

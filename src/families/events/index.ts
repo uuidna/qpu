@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** EVENTS — RUNNING A GATHERING, AS ARITHMETIC (chosen by the public-API registry, not by hand). An event is numbers:
@@ -30,4 +30,4 @@ export class EventsFormulas {
 }
 
 for (const name of ['attendance', 'capacity', 'conversion', 'costperattendee', 'engagement', 'noshow', 'revenue', 'satisfaction'] as const)
-  qpuHexRegisterOf('events', name, (EventsFormulas[name] as (...x: unknown[]) => unknown).bind(EventsFormulas))
+  hexRegisterOf('events', name, (EventsFormulas[name] as (...x: unknown[]) => unknown).bind(EventsFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PATHPLANNING — MOVING A BODY THROUGH SPACE, AS ARITHMETIC (chosen by the registry, not by hand). A plan is numbers:
@@ -31,4 +31,4 @@ export class PathplanningFormulas {
 }
 
 for (const name of ['chebyshev', 'clearance', 'euclidsq', 'heuristic', 'manhattan', 'nodesexpanded', 'pathcost', 'smoothness'] as const)
-  qpuHexRegisterOf('pathplanning', name, (PathplanningFormulas[name] as (...x: unknown[]) => unknown).bind(PathplanningFormulas))
+  hexRegisterOf('pathplanning', name, (PathplanningFormulas[name] as (...x: unknown[]) => unknown).bind(PathplanningFormulas))

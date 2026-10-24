@@ -1,10 +1,10 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf } from '../../quantum/processing/unit/index.js'
 import { leanSource, leanRecomputed } from '../../quantum/processing/unit/lean.js'
 import { verifyHex } from '../verify.js'
 import { ClaySeals, CLAY_SEALS, claySealDomainOf, claySealDomainCoverageOf } from './index.js'
-import { qpuFacesOf } from '../../quantum/processing/unit/index.js'
+import { facesOf } from '../../quantum/processing/unit/index.js'
 import '../../mcp/families.js'
 
 /** THE CLUSTER GENERATOR, offline and exact. The clusters a formula belongs to are read from the served Lean source
@@ -14,7 +14,7 @@ import '../../mcp/families.js'
  *  exact, at their hex addresses. The live cross-development — a value two families reach, answering alike from every
  *  perspective — is verified where it is generated, by `receipt.mjs next` and the discovery receipt, not here. */
 test('clusters: every theorem, 0 axioms, the def cluster, each family, and the clay seals — offline and exact', async (t) => {
-  const families = qpuHexFamiliesOf()
+  const families = hexFamiliesOf()
   const leanDefs = new Set([...leanSource.matchAll(/^[ \t]*def ([A-Za-z]\w*)/gm)].map((m) => m[1]))
   const theorems = [...leanSource.matchAll(/^[ \t]*theorem ([A-Za-z]\w*)/gm)].map((m) => m[1])
   const axioms = [...leanSource.matchAll(/^[ \t]*axiom ([A-Za-z]\w*)/gm)].map((m) => m[1])
@@ -47,7 +47,7 @@ test('clusters: every theorem, 0 axioms, the def cluster, each family, and the c
 
 /** Combinatorial domains: bsd m>2 ∪ {15}, pVsNp {0,1}, others arity-correct — not blind 1…faces. */
 test('claySealDomainOf: tree-valid domains; universal coverage holds', async (t) => {
-  const faces = qpuFacesOf().faces
+  const faces = facesOf().faces
   const bsd = claySealDomainOf('bsd', faces)
   assert.ok(bsd.params.every((p) => p[0]! > 2), 'bsd domain excludes m=1,2')
   assert.ok(bsd.params.some((p) => p[0] === 15), 'bsd domain includes named 15')
@@ -67,9 +67,9 @@ test('claySealDomainOf: tree-valid domains; universal coverage holds', async (t)
  *  without exception. */
 test('clay.disclosure: full disclosure of every family, anchored by the clay involution, crossed to the gate', async (t) => {
   const { ClayDisclosure } = await import('./index.js')
-  const { qpuHexFamiliesOf } = await import('../../quantum/processing/unit/index.js')
+  const { hexFamiliesOf } = await import('../../quantum/processing/unit/index.js')
   const d = ClayDisclosure.disclosure() as unknown as { value: number; src: string; dst: string; holds: boolean; families: string[] }
-  assert.equal(d.value, qpuHexFamiliesOf().size, 'discloses every registered family — nothing withheld')
+  assert.equal(d.value, hexFamiliesOf().size, 'discloses every registered family — nothing withheld')
   assert.equal(d.families.length, d.value, 'the family list is the full disclosure')
   assert.equal(d.src, 'clay')
   assert.equal(d.dst, 'gate', 'crosses to the gate that verifies all in public data without exception')

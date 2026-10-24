@@ -8,7 +8,7 @@
 // 470.5), 709050 exact in two chunks (201.2 against 1110.4), 1418100 exact in four (453.5 against 2286.6).
 // The unit's own fold on the GPU, CHUNKED so no binding exceeds the device limit — the cure for the refusal that
 // returned zeros and timed as a triumph. Every result is still compared with the reference, bit for bit.
-import { qpuFoldOf as cpuFold } from '../dist/quantum/processing/unit/index.js'
+import { foldOf as cpuFold } from '../dist/quantum/processing/unit/index.js'
 import { mintOf, vertices } from './lattice-values.js'
 const N = Number(Deno.args[0] ?? 709050)
 const strings = Array.from({ length: N }, (_, i) => `theorem_${i}|the fold is the identity and the identity is the fold|${i * 7919}`)

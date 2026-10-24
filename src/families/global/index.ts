@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GLOBAL — THE PAYLOAD CMS GLOBALS API, AS ARITHMETIC (the single-document site config: settings, header, footer, nav,
@@ -31,4 +31,4 @@ export class GlobalFormulas {
 }
 
 for (const name of ['access', 'cached', 'depth', 'fields', 'locales', 'populated', 'size', 'versions'] as const)
-  qpuHexRegisterOf('global', name, (GlobalFormulas[name] as (...x: unknown[]) => unknown).bind(GlobalFormulas))
+  hexRegisterOf('global', name, (GlobalFormulas[name] as (...x: unknown[]) => unknown).bind(GlobalFormulas))

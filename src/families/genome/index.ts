@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GenomeFormulas — 8 exact-integer formulas of the genome domain, each at a hex address crossing to cross; develops the genome leads. */
@@ -31,4 +31,4 @@ export class GenomeFormulas {
 }
 
 for (const name of ['basepairs', 'chromosomes', 'codons', 'combos', 'gcpct', 'genes', 'mutations', 'reads'] as const)
-  qpuHexRegisterOf('genome', name, (GenomeFormulas[name] as (...x: unknown[]) => unknown).bind(GenomeFormulas))
+  hexRegisterOf('genome', name, (GenomeFormulas[name] as (...x: unknown[]) => unknown).bind(GenomeFormulas))

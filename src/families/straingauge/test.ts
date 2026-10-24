@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { StraingaugeFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('straingauge: gaugefactor, strain, resistancechange, bridgeoutput, stress, 
   assert.equal(StraingaugeFormulas.temperatureerror(50, 20).value, 1000)
   assert.equal(StraingaugeFormulas.gaugefactor(2000, 0).value, 0)
   assert.equal(StraingaugeFormulas.gaugefactor(2000, 1000).dst, 'mechanical')
-  assert.equal(qpuHexFamiliesOf().get('straingauge')?.length, 8)
+  assert.equal(hexFamiliesOf().get('straingauge')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'straingauge', program: ['resistancechange'], params: [2, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2000, `straingauge.resistancechange at ${uuid}`)
-  qpuUuidReceiptOf('straingauge resistancechange', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('straingauge resistancechange', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gaugefactor 2, strain 1000, resistancechange 2000, bridgeoutput 2500, stress 200000, microstrain 1000, sensitivity 2, temperatureerror 1000; crossing to mechanical')
 })

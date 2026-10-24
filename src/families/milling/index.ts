@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MILLING — TURNING GRAIN INTO FLOUR, AS ARITHMETIC (the mill is numbers). Extraction rate, flour yield, grinding
@@ -30,4 +30,4 @@ export class MillingFormulas {
 }
 
 for (const name of ['blend', 'bran', 'extraction', 'fineness', 'flour', 'moisture', 'throughput', 'yield'] as const)
-  qpuHexRegisterOf('milling', name, (MillingFormulas[name] as (...x: unknown[]) => unknown).bind(MillingFormulas))
+  hexRegisterOf('milling', name, (MillingFormulas[name] as (...x: unknown[]) => unknown).bind(MillingFormulas))

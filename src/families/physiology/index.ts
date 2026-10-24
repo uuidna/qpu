@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PHYSIOLOGY — THE LIVING BODY, AS ARITHMETIC. The numbers a clinic reads: basal metabolic rate, oxygen uptake per
@@ -30,4 +30,4 @@ export class PhysiologyFormulas {
 }
 
 for (const name of ['bmr', 'clearance', 'gfr', 'osmolality', 'ph', 'saturation', 'tidal', 'vo2'] as const)
-  qpuHexRegisterOf('physiology', name, (PhysiologyFormulas[name] as (...x: unknown[]) => unknown).bind(PhysiologyFormulas))
+  hexRegisterOf('physiology', name, (PhysiologyFormulas[name] as (...x: unknown[]) => unknown).bind(PhysiologyFormulas))

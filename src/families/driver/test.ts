@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DriverFormulas } from './index.js'
 
 /** The kernel driver's arithmetic — ring entries, DMA pages, frame payload, pps, queues, IRQ, MMIO, descriptors. */
@@ -22,12 +22,12 @@ test('driver: ring, dmaPages, payload, pps, queues, irq, mmio, descBytes', async
   assert.equal(DriverFormulas.bandwidth(16, 1000).value, 16000, '16 lanes at 1000 each')
   assert.equal(DriverFormulas.completion(256, 100).value, 156, '256-entry ring with 100 inflight')
   assert.equal(DriverFormulas.doorbell(8, 4).value, 32, '8 queues of 4 doorbells')
-  assert.equal(qpuHexFamiliesOf().get('driver')?.length, 15)
+  assert.equal(hexFamiliesOf().get('driver')?.length, 15)
   for (const [name, params, expected] of [['ring', [4096, 16], 256], ['queues', [8], 16], ['mmio', [4], 16384]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'driver', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    const run = (await hexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `driver.${name} at ${uuid}`)
-    qpuUuidReceiptOf(`driver ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`driver ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic('8 formulas; 4096/16=256 ring, 5000→2 DMA pages, 1500−42=1458 payload, 8→16 queues')
 })

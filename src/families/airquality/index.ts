@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** AIRQUALITY — BREATHING ROOM, AS ARITHMETIC (chosen by the public-API registry, not by hand). What is in the air is
@@ -31,4 +31,4 @@ export class AirqualityFormulas {
 }
 
 for (const name of ['aqi', 'concentration', 'dispersion', 'exceedance', 'exposureindex', 'ozone', 'pm25index', 'ventilation'] as const)
-  qpuHexRegisterOf('airquality', name, (AirqualityFormulas[name] as (...x: unknown[]) => unknown).bind(AirqualityFormulas))
+  hexRegisterOf('airquality', name, (AirqualityFormulas[name] as (...x: unknown[]) => unknown).bind(AirqualityFormulas))

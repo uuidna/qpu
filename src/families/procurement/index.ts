@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROCUREMENT — BUYING AS ARITHMETIC (chosen by the registry, not by hand). Sourcing is numbers: the savings a
@@ -31,4 +31,4 @@ export class ProcurementFormulas {
 }
 
 for (const name of ['compliance', 'discount', 'eoq', 'leadtime', 'quality', 'savings', 'spend', 'supplier'] as const)
-  qpuHexRegisterOf('procurement', name, (ProcurementFormulas[name] as (...x: unknown[]) => unknown).bind(ProcurementFormulas))
+  hexRegisterOf('procurement', name, (ProcurementFormulas[name] as (...x: unknown[]) => unknown).bind(ProcurementFormulas))

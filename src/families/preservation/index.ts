@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PRESERVATION — scaffolded integer measures crossed to microbiology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class PreservationFormulas {
 }
 
 for (const name of ['methodsubsets', 'microbialreduction', 'phlevel', 'saltpct', 'shelflifedays', 'spoilagerate', 'temperaturec', 'wateractivity'] as const)
-  qpuHexRegisterOf('preservation', name, (PreservationFormulas[name] as (...x: unknown[]) => unknown).bind(PreservationFormulas))
+  hexRegisterOf('preservation', name, (PreservationFormulas[name] as (...x: unknown[]) => unknown).bind(PreservationFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CLIMATE — CLIMATE SCIENCE, AS ARITHMETIC. Warming is numbers: emissions from activity, the carbon budget left,
@@ -31,4 +31,4 @@ export class ClimateFormulas {
 }
 
 for (const name of ['anomaly', 'budget', 'emissions', 'intensity', 'offset', 'renewable', 'sealevel', 'warming'] as const)
-  qpuHexRegisterOf('climate', name, (ClimateFormulas[name] as (...x: unknown[]) => unknown).bind(ClimateFormulas))
+  hexRegisterOf('climate', name, (ClimateFormulas[name] as (...x: unknown[]) => unknown).bind(ClimateFormulas))

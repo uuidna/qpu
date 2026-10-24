@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BAYESIAN — INFERENCE AS ARITHMETIC (probabilities as per-mille integers, never floats). Belief is numbers: the posterior
@@ -31,4 +31,4 @@ export class BayesianFormulas {
 }
 
 for (const name of ['bayesfactor', 'evidence', 'likelihood', 'marginal', 'oddsratio', 'posterior', 'prior', 'update'] as const)
-  qpuHexRegisterOf('bayesian', name, (BayesianFormulas[name] as (...x: unknown[]) => unknown).bind(BayesianFormulas))
+  hexRegisterOf('bayesian', name, (BayesianFormulas[name] as (...x: unknown[]) => unknown).bind(BayesianFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CAMPAIGN — RUNNING AN AD CAMPAIGN, AS ARITHMETIC. Spending to be seen is numbers: the people reached, the impressions
@@ -30,4 +30,4 @@ export class CampaignFormulas {
 }
 
 for (const name of ['cpc', 'cpm', 'ctr', 'engagement', 'frequency', 'impressions', 'reach', 'roi'] as const)
-  qpuHexRegisterOf('campaign', name, (CampaignFormulas[name] as (...x: unknown[]) => unknown).bind(CampaignFormulas))
+  hexRegisterOf('campaign', name, (CampaignFormulas[name] as (...x: unknown[]) => unknown).bind(CampaignFormulas))

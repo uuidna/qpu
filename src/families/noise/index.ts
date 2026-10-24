@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NOISE — ACOUSTIC LEVELS AS ARITHMETIC (chosen by the registry, not by hand). Sound is numbers: signal over noise,
@@ -31,4 +31,4 @@ export class NoiseFormulas {
 }
 
 for (const name of ['attenuation', 'dynamicrange', 'exposuredose', 'floor', 'maskingthreshold', 'nr', 'snr', 'sumlevels'] as const)
-  qpuHexRegisterOf('noise', name, (NoiseFormulas[name] as (...x: unknown[]) => unknown).bind(NoiseFormulas))
+  hexRegisterOf('noise', name, (NoiseFormulas[name] as (...x: unknown[]) => unknown).bind(NoiseFormulas))

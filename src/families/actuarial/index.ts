@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACTUARIAL — RISK AS ARITHMETIC (chosen by the registry, not by hand). Insurance is numbers: mortality per mille,
@@ -44,4 +44,4 @@ export class ActuarialFormulas {
 }
 
 for (const name of ['annuity', 'combinedratio', 'discount', 'expectedclaims', 'exposure', 'lifeexpectancy', 'lossratio', 'lossratio2', 'mortality', 'premium', 'purepremium', 'reserve', 'reserve2', 'solvency', 'survival'] as const)
-  qpuHexRegisterOf('actuarial', name, (ActuarialFormulas[name] as (...x: unknown[]) => unknown).bind(ActuarialFormulas))
+  hexRegisterOf('actuarial', name, (ActuarialFormulas[name] as (...x: unknown[]) => unknown).bind(ActuarialFormulas))

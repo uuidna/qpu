@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BURNDOWN — A SPRINT'S PROGRESS, AS ARITHMETIC (chosen by the registry, not by hand). Finishing work is numbers: the work
@@ -30,4 +30,4 @@ export class BurndownFormulas {
 }
 
 for (const name of ['actualrate', 'completionforecast', 'idealrate', 'remaining', 'scopecreep', 'sprintprogress', 'variance', 'velocity'] as const)
-  qpuHexRegisterOf('burndown', name, (BurndownFormulas[name] as (...x: unknown[]) => unknown).bind(BurndownFormulas))
+  hexRegisterOf('burndown', name, (BurndownFormulas[name] as (...x: unknown[]) => unknown).bind(BurndownFormulas))

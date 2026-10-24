@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TOPOLOGY — THE SHAPE OF SPACE, AS ARITHMETIC (chosen by the registry, not by hand). The invariants that survive
@@ -31,4 +31,4 @@ export class TopologyFormulas {
 }
 
 for (const name of ['betti', 'boundary', 'connectivity', 'dimension', 'euler', 'genus', 'homology', 'neighborhood'] as const)
-  qpuHexRegisterOf('topology', name, (TopologyFormulas[name] as (...x: unknown[]) => unknown).bind(TopologyFormulas))
+  hexRegisterOf('topology', name, (TopologyFormulas[name] as (...x: unknown[]) => unknown).bind(TopologyFormulas))

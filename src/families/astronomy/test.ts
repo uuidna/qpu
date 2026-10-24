@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { AstronomyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('astronomy: magnitude, luminosity, parallax, redshift, escape, orbital, den
   assert.equal(AstronomyFormulas.density(1000, 8).value, 125)
   assert.equal(AstronomyFormulas.albedo(30, 100).value, 30, 'per cent reflected')
   assert.equal(AstronomyFormulas.luminosity(3, 5).dst, 'gravity')
-  assert.equal(qpuHexFamiliesOf().get('astronomy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('astronomy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'astronomy', program: ['parallax'], params: [100, 50] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2000, `astronomy.parallax at ${uuid}`)
-  qpuUuidReceiptOf('astronomy parallax', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('astronomy parallax', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; magnitude 4, luminosity 45, parallax 2000, redshift 100, escape 100, orbital 73, density 125, albedo 30; crossing to gravity')
 })

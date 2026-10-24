@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PROMOTION — RUNNING A SALE, AS ARITHMETIC (chosen by the campaign registry, not by hand). Moving product is numbers:
@@ -31,4 +31,4 @@ export class PromotionFormulas {
 }
 
 for (const name of ['bundle', 'coupon', 'discount', 'incremental', 'lift', 'markdown', 'redemption', 'spiff'] as const)
-  qpuHexRegisterOf('promotion', name, (PromotionFormulas[name] as (...x: unknown[]) => unknown).bind(PromotionFormulas))
+  hexRegisterOf('promotion', name, (PromotionFormulas[name] as (...x: unknown[]) => unknown).bind(PromotionFormulas))

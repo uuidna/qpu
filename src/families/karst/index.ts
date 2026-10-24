@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** KARST — scaffolded integer measures crossed to geology. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class KarstFormulas {
 }
 
 for (const name of ['aquiferdepth', 'cavelength', 'conduitpairs', 'dissolutionrate', 'passageorderings', 'porosity', 'rechargerate', 'sinkholedensity'] as const)
-  qpuHexRegisterOf('karst', name, (KarstFormulas[name] as (...x: unknown[]) => unknown).bind(KarstFormulas))
+  hexRegisterOf('karst', name, (KarstFormulas[name] as (...x: unknown[]) => unknown).bind(KarstFormulas))

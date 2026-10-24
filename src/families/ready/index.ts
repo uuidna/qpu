@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf, qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf, hexFamiliesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { apiRegistryOf } from '../../mcp/api-door.js'
 import { DOORS } from '../../mcp/discovery.js'
@@ -21,7 +21,7 @@ const categoriesOf = async (): Promise<Map<string, number>> => {
   return cats
 }
 /** The family names (doors and the Lean prefix stripped), lowercased — what a category is checked against. */
-const familyNames = (): Set<string> => new Set([...qpuHexFamiliesOf().keys()].filter((x) => !DOORS.has(x)).map((x) => x.toLowerCase().replace(/^qpu\./, '')))
+const familyNames = (): Set<string> => new Set([...hexFamiliesOf().keys()].filter((x) => !DOORS.has(x)).map((x) => x.toLowerCase().replace(/^qpu\./, '')))
 // a category is covered when a family name meets it whole, or meets one of its words (developer_tools → devtools via "tools")
 const isCovered = (fams: Set<string>, c: string): boolean => {
   const tokens = c.split(/[^a-z0-9]+/).filter((t) => t.length > 3)
@@ -67,4 +67,4 @@ export class ReadyFormulas {
 }
 
 for (const name of ['coverage', 'domains', 'gaps', 'proof'] as const)
-  qpuHexRegisterOf('ready', name, (ReadyFormulas[name] as (...x: unknown[]) => unknown).bind(ReadyFormulas))
+  hexRegisterOf('ready', name, (ReadyFormulas[name] as (...x: unknown[]) => unknown).bind(ReadyFormulas))

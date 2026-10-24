@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SentimentFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('sentiment: polarity, netscore, subjectivity, intensity, agreement, confide
   assert.equal(SentimentFormulas.mixedratio(30, 90).value, 33, 'weaker over stronger')
   assert.equal(SentimentFormulas.valence(60, 30, 10).value, 60, 'positive share')
   assert.equal(SentimentFormulas.polarity(80, 20).dst, 'semantics')
-  assert.equal(qpuHexFamiliesOf().get('sentiment')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sentiment')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sentiment', program: ['netscore'], params: [75, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 75, `sentiment.netscore at ${uuid}`)
-  qpuUuidReceiptOf('sentiment netscore', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sentiment netscore', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; polarity 60, netscore 75, subjectivity 40, intensity 63, agreement 90, confidence 95, mixedratio 33, valence 60; crossing to semantics')
 })

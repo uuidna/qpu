@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PODIATRY — THE FOOT, AS ARITHMETIC (chosen by the clinical registry, not by hand). The foot is numbers: the arch index,
@@ -30,4 +30,4 @@ export class PodiatryFormulas {
 }
 
 for (const name of ['arch', 'balance', 'callus', 'gait', 'healing', 'pressure', 'pronation', 'stride'] as const)
-  qpuHexRegisterOf('podiatry', name, (PodiatryFormulas[name] as (...x: unknown[]) => unknown).bind(PodiatryFormulas))
+  hexRegisterOf('podiatry', name, (PodiatryFormulas[name] as (...x: unknown[]) => unknown).bind(PodiatryFormulas))

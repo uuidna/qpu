@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PhotosynthesisFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('photosynthesis: lightefficiency, carbonfixation, oxygenrelease, quantumyie
   assert.equal(PhotosynthesisFormulas.chlorophyll(1000, 4).value, 250)
   assert.equal(PhotosynthesisFormulas.assimilation(1000, 250).value, 4, 'carbon per unit chlorophyll')
   assert.equal(PhotosynthesisFormulas.lightefficiency(84, 100).dst, 'botany')
-  assert.equal(qpuHexFamiliesOf().get('photosynthesis')?.length, 8)
+  assert.equal(hexFamiliesOf().get('photosynthesis')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'photosynthesis', program: ['grossproduction'], params: [50, 12] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 600, `photosynthesis.grossproduction at ${uuid}`)
-  qpuUuidReceiptOf('photosynthesis grossproduction', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('photosynthesis grossproduction', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; lightefficiency 84, carbonfixation 300, oxygenrelease 500, quantumyield 12, grossproduction 600, netproduction 500, chlorophyll 250, assimilation 4; crossing to botany')
 })

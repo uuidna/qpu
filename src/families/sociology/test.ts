@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SociologyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('sociology: gini, mobility, network, cohesion, segregation, participation, 
   assert.equal(SociologyFormulas.diffusion(25, 100).value, 25)
   assert.equal(SociologyFormulas.cohort(42).value, 42)
   assert.equal(SociologyFormulas.gini(20, 100).dst, 'econ')
-  assert.equal(qpuHexFamiliesOf().get('sociology')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sociology')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sociology', program: ['gini'], params: [20, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 20, `sociology.gini at ${uuid}`)
-  qpuUuidReceiptOf('sociology gini', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sociology gini', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; gini 20, mobility 30, network 100, cohesion 5, segregation 40, participation 60, diffusion 25, cohort 42; crossing to econ')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SHORTHAND — scaffolded integer measures crossed to signal. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class ShorthandFormulas {
 }
 
 for (const name of ['abbreviationsubsets', 'compression', 'legibilityratio', 'outlinepairs', 'speedwpm', 'strokesaved', 'strokesperword', 'symbolcount'] as const)
-  qpuHexRegisterOf('shorthand', name, (ShorthandFormulas[name] as (...x: unknown[]) => unknown).bind(ShorthandFormulas))
+  hexRegisterOf('shorthand', name, (ShorthandFormulas[name] as (...x: unknown[]) => unknown).bind(ShorthandFormulas))

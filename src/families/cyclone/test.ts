@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CycloneFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('cyclone: category, windspeed, pressuredrop, radius, stormsurge, rainfall, 
   assert.equal(CycloneFormulas.eyediameter(60, 2).value, 30)
   assert.equal(CycloneFormulas.intensityindex(90, 100).value, 90)
   assert.equal(CycloneFormulas.category(4, 5).dst, 'meteorology')
-  assert.equal(qpuHexFamiliesOf().get('cyclone')?.length, 8)
+  assert.equal(hexFamiliesOf().get('cyclone')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'cyclone', program: ['category'], params: [4, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `cyclone.category at ${uuid}`)
-  qpuUuidReceiptOf('cyclone category', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('cyclone category', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; category 5, windspeed 150, pressuredrop 63, radius 100, stormsurge 6, rainfall 300, eyediameter 30, intensityindex 90; crossing to meteorology')
 })

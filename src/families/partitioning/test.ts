@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PartitioningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('partitioning: partitions, keyspacesplit, skew, rebalance, hotpartition, ra
   assert.equal(PartitioningFormulas.fanout(10, 5).value, 50)
   assert.equal(PartitioningFormulas.skew(80, 100).value, 0)
   assert.equal(PartitioningFormulas.partitions(1000, 30).dst, 'sharding')
-  assert.equal(qpuHexFamiliesOf().get('partitioning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('partitioning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'partitioning', program: ['partitions'], params: [1000, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 34, `partitioning.partitions at ${uuid}`)
-  qpuUuidReceiptOf('partitioning partitions', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('partitioning partitions', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; partitions 34, keyspacesplit 125, skew 50, rebalance 400, hotpartition 25, rangewidth 100, coalesce 25, fanout 50; crossing to sharding')
 })

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SessionmgmtFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('sessionmgmt: idletimeout, absolutetimeout, concurrentlimit, tokenttl, rene
   assert.equal(SessionmgmtFormulas.expirymargin(3600, 1200).value, 2400)
   assert.equal(SessionmgmtFormulas.cleanupinterval(1000, 30).value, 34, 'thirty-four sweeps')
   assert.equal(SessionmgmtFormulas.idletimeout(15, 30).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('sessionmgmt')?.length, 8)
+  assert.equal(hexFamiliesOf().get('sessionmgmt')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'sessionmgmt', program: ['concurrentlimit'], params: [100, 5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 500, `sessionmgmt.concurrentlimit at ${uuid}`)
-  qpuUuidReceiptOf('sessionmgmt concurrentlimit', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('sessionmgmt concurrentlimit', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; idletimeout 930, absolutetimeout 28800, concurrentlimit 500, tokenttl 4600, renewalwindow 900, activesessions 380, expirymargin 2400, cleanupinterval 34; crossing to networking')
 })

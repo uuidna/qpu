@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** COMPRESS — scaffolded integer measures crossed to signal. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CompressFormulas {
 }
 
 for (const name of ['blockcombos', 'codelength', 'dictionarysize', 'entropybits', 'huffmandepth', 'ratio', 'savedbits', 'throughput'] as const)
-  qpuHexRegisterOf('compress', name, (CompressFormulas[name] as (...x: unknown[]) => unknown).bind(CompressFormulas))
+  hexRegisterOf('compress', name, (CompressFormulas[name] as (...x: unknown[]) => unknown).bind(CompressFormulas))

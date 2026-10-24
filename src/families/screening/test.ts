@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ScreeningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('screening: sensitivity, specificity, ppv, npv, falsepositiverate, prevalen
   assert.equal(ScreeningFormulas.youdenindex(90, 85).value, 75, 'sens + spec − 100')
   assert.equal(ScreeningFormulas.numbertoscreen(1000, 10).value, 100, 'screen 100 to find one case')
   assert.equal(ScreeningFormulas.sensitivity(90, 10).dst, 'epidemiology')
-  assert.equal(qpuHexFamiliesOf().get('screening')?.length, 8)
+  assert.equal(hexFamiliesOf().get('screening')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'screening', program: ['sensitivity'], params: [90, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 90, `screening.sensitivity at ${uuid}`)
-  qpuUuidReceiptOf('screening sensitivity', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('screening sensitivity', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; sensitivity 90, specificity 85, ppv 60, npv 70, falsepositiverate 15, prevalenceadjusted 500, youdenindex 75, numbertoscreen 100; crossing to epidemiology')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SOFTWARE — the engineering arithmetic above the driver. Thousands of lines, test coverage, cyclomatic complexity,
@@ -46,4 +46,4 @@ export class SoftwareFormulas {
 }
 
 for (const name of ['builds', 'coverage', 'cyclomatic', 'debt', 'defects', 'density', 'effort', 'flags', 'hours', 'kloc', 'mttr', 'semver', 'teamsize', 'throughput', 'velocity'] as const)
-  qpuHexRegisterOf('software', name, (SoftwareFormulas[name] as (...x: unknown[]) => unknown).bind(SoftwareFormulas))
+  hexRegisterOf('software', name, (SoftwareFormulas[name] as (...x: unknown[]) => unknown).bind(SoftwareFormulas))

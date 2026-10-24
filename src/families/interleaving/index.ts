@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INTERLEAVING — SPREADING SYMBOLS SO A BURST OF NOISE HITS MANY CODEWORDS AT ONCE, AS ARITHMETIC. A block interleaver is
@@ -31,4 +31,4 @@ export class InterleavingFormulas {
 }
 
 for (const name of ['blocksize', 'burstprotection', 'delay', 'depth', 'latency', 'matrixcells', 'span', 'spreadfactor'] as const)
-  qpuHexRegisterOf('interleaving', name, (InterleavingFormulas[name] as (...x: unknown[]) => unknown).bind(InterleavingFormulas))
+  hexRegisterOf('interleaving', name, (InterleavingFormulas[name] as (...x: unknown[]) => unknown).bind(InterleavingFormulas))

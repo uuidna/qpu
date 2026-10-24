@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PATENT — INTELLECTUAL PROPERTY AS ARITHMETIC. The life of a right and its worth are numbers: the term from the filing
@@ -31,4 +31,4 @@ export class PatentFormulas {
 }
 
 for (const name of ['claims', 'damages', 'infringement', 'maintenance', 'novelty', 'priority', 'royalty', 'term'] as const)
-  qpuHexRegisterOf('patent', name, (PatentFormulas[name] as (...x: unknown[]) => unknown).bind(PatentFormulas))
+  hexRegisterOf('patent', name, (PatentFormulas[name] as (...x: unknown[]) => unknown).bind(PatentFormulas))

@@ -1,7 +1,7 @@
 /**
  * LEAN FEEDS THE REST — A FAMILY NEVER HARDCODES A VALUE A THEOREM PROVES. The degree constants the Lean module Qpu.Pi
  * proves (180 = pi_half_turn, 360 = pi_turn_degrees) are written in the families as the lattice names halfTurn / fullTurn
- * from qpuLatticeNamesOf(), not as literals. The codemod scripts/theorem-constants.ts --check reports any family that
+ * from latticeNamesOf(), not as literals. The codemod scripts/theorem-constants.ts --check reports any family that
  * still types one in; this gate holds it at zero. Deterministic, token-free.
  */
 import test from 'node:test'

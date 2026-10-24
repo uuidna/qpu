@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SUDOKU — scaffolded integer measures crossed to combinatorics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class SudokuFormulas {
 }
 
 for (const name of ['boxes', 'candidatesubsets', 'cells', 'difficultyindex', 'emptycells', 'givens', 'pairelims', 'rowperms'] as const)
-  qpuHexRegisterOf('sudoku', name, (SudokuFormulas[name] as (...x: unknown[]) => unknown).bind(SudokuFormulas))
+  hexRegisterOf('sudoku', name, (SudokuFormulas[name] as (...x: unknown[]) => unknown).bind(SudokuFormulas))

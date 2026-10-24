@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { FeedbackFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('feedback: closedloopgain, dampingratio, errorsignal, looptransfer, oversho
   assert.equal(FeedbackFormulas.settlingtime(5, 4).value, 20)
   assert.equal(FeedbackFormulas.steadystateerror(100, 9).value, 10)
   assert.equal(FeedbackFormulas.closedloopgain(1000, 9).dst, 'control')
-  assert.equal(qpuHexFamiliesOf().get('feedback')?.length, 8)
+  assert.equal(hexFamiliesOf().get('feedback')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'feedback', program: ['closedloopgain'], params: [1000, 9] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 100, `feedback.closedloopgain at ${uuid}`)
-  qpuUuidReceiptOf('feedback closedloopgain', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('feedback closedloopgain', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; closedloopgain 100, dampingratio 50, errorsignal 30, looptransfer 150, overshoot 20, sensitivity 25, settlingtime 20, steadystateerror 10; crossing to control')
 })

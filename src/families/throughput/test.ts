@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ThroughputFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('throughput: goodput, utilization, bandwidthdelay, effectiverate, overheadr
   assert.equal(ThroughputFormulas.saturation(90, 100).value, 0)
   assert.equal(ThroughputFormulas.efficiency(90, 100).value, 90)
   assert.equal(ThroughputFormulas.goodput(6000, 60).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('throughput')?.length, 8)
+  assert.equal(hexFamiliesOf().get('throughput')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'throughput', program: ['windowsize'], params: [5000, 1000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 5, `throughput.windowsize at ${uuid}`)
-  qpuUuidReceiptOf('throughput windowsize', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('throughput windowsize', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; goodput 100, utilization 75, bandwidthdelay 5000, effectiverate 950, overheadratio 4, windowsize 5, saturation 1, efficiency 90; crossing to networking')
 })

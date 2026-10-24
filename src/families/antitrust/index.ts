@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ANTITRUST — COMPETITION AS ARITHMETIC. Market power is numbers: a firm's market share, the Herfindahl index, the
@@ -31,4 +31,4 @@ export class AntitrustFormulas {
 }
 
 for (const name of ['concentration', 'damages', 'dominance', 'fine', 'hhi', 'margin', 'merger', 'share'] as const)
-  qpuHexRegisterOf('antitrust', name, (AntitrustFormulas[name] as (...x: unknown[]) => unknown).bind(AntitrustFormulas))
+  hexRegisterOf('antitrust', name, (AntitrustFormulas[name] as (...x: unknown[]) => unknown).bind(AntitrustFormulas))

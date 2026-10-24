@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RATELIMITING — ADMITTING TRAFFIC, AS ARITHMETIC. A limiter is numbers: the tokens a bucket holds, the rate a leak
@@ -31,4 +31,4 @@ export class RatelimitingFormulas {
 }
 
 for (const name of ['burstcapacity', 'leakyrate', 'quotaremaining', 'refillrate', 'retryafter', 'throttlemargin', 'tokenbucket', 'windowcount'] as const)
-  qpuHexRegisterOf('ratelimiting', name, (RatelimitingFormulas[name] as (...x: unknown[]) => unknown).bind(RatelimitingFormulas))
+  hexRegisterOf('ratelimiting', name, (RatelimitingFormulas[name] as (...x: unknown[]) => unknown).bind(RatelimitingFormulas))

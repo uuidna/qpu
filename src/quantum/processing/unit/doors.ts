@@ -1,4 +1,4 @@
-// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuProveOf, qpuProveHolds, qpuTrainOf, qpuTrainHolds, qpuImproveOf, qpuImproveHolds.
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): proveOf, proveHolds, trainOf, trainHolds, improveOf, improveHolds.
 import {
   byDecideOf,
   coins,
@@ -11,63 +11,63 @@ import {
   opQuantumHolds,
   opQuantumOf,
   payloadDbKey,
-  qpuCapacityOf,
-  qpuCernHolds,
-  qpuCernOf,
-  qpuCoilHolds,
-  qpuCoilOf,
-  qpuCssOf,
-  qpuCubeOf,
-  qpuDryHolds,
-  qpuDryOf,
-  qpuEfficiencyOf,
-  qpuEncryptHolds,
-  qpuEncryptOf,
-  qpuEvidenceHolds,
+  capacityOf,
+  cernHolds,
+  cernOf,
+  coilHolds,
+  coilOf,
+  cssOf,
+  cubeOf,
+  dryHolds,
+  dryOf,
+  efficiencyOf,
+  encryptHolds,
+  encryptOf,
+  evidenceHolds,
   qpuEvidenceOf,
-  qpuFacesOf,
-  qpuFoldOf,
-  qpuGenesisOf,
-  qpuGlossaryOf,
+  facesOf,
+  foldOf,
+  genesisOf,
+  glossaryOf,
   qpuHandleOf,
-  qpuIdeasOf,
-  qpuIntegrityHolds,
-  qpuIntegrityOf,
-  qpuIntelligenceHolds,
-  qpuIntelligenceOf,
-  qpuLeanHolds,
-  qpuLeanOf,
-  qpuNeuroHolds,
-  qpuNeuroOf,
+  ideasOf,
+  integrityHolds,
+  integrityOf,
+  intelligenceHolds,
+  intelligenceOf,
+  leanHolds,
+  leanOf,
+  neuroHolds,
+  neuroOf,
   qpuNextHolds,
   qpuNextOf,
-  qpuPurposeHolds,
-  qpuPurposeOf,
+  purposeHolds,
+  purposeOf,
   qpuReadingOf,
   qpuReceiptFoldOf,
-  qpuReceiptLedgerOf,
-  qpuReflectHolds,
-  qpuSandboxDurabilityHolds,
-  qpuSandboxDurabilityOf,
-  qpuSandboxOf,
-  qpuSandboxRunOf,
+  receiptLedgerOf,
+  reflectHolds,
+  sandboxDurabilityHolds,
+  sandboxDurabilityOf,
+  sandboxOf,
+  sandboxRunOf,
   qpuSequenceOf,
-  qpuShorHolds,
-  qpuShorOf,
-  qpuShorReceiptsOf,
-  qpuStandardsOf,
-  qpuStepsHolds,
-  qpuStepsOf,
-  qpuTeachingCensusHolds,
-  qpuTeachingCensusOf,
-  qpuTeachingPairsHolds,
-  qpuTeachingPairsOf,
-  qpuTeachingReadingHolds,
-  qpuTeachingReadingOf,
-  qpuTeachingSeatingHolds,
-  qpuTeachingSeatingOf,
-  qpuVmHolds,
-  qpuVmOf,
+  shorHolds,
+  shorOf,
+  shorReceiptsOf,
+  standardsOf,
+  stepsHolds,
+  stepsOf,
+  teachingCensusHolds,
+  teachingCensusOf,
+  teachingPairsHolds,
+  teachingPairsOf,
+  teachingReadingHolds,
+  teachingReadingOf,
+  teachingSeatingHolds,
+  teachingSeatingOf,
+  vmHolds,
+  vmOf,
   quantumRelatedNamesOf,
   sandboxHost,
   seed,
@@ -78,46 +78,46 @@ import {
   unit,
 } from './index.js'
 import { leanSource } from './lean.js'
-import { qpuCircuitOf } from './circuit.js'
+import { circuitOf } from './circuit.js'
 
 /**
  * Improve by doubling: before and after readings of quality, speed, security and throughoutput, with the unlocked quantum door.
  * @wing quantum
  * @kind builder
- * @evidence qpuImproveHolds
+ * @evidence improveHolds
  */
-export const qpuImproveOf = onceOf(() => {
-  const faces = qpuFacesOf()
+export const improveOf = onceOf(() => {
+  const faces = facesOf()
   const handle = qpuHandleOf()
-  const efficiency = qpuEfficiencyOf()
-  const sandbox = qpuSandboxOf()
+  const efficiency = efficiencyOf()
+  const sandbox = sandboxOf()
   const fused = faces.faces * handle.kv.amplitudes
   const next = fused + fused
   const readTokens = efficiency.rows.reduce((s, r) => s + r.readTokens, n - n)
   const callTokens = efficiency.rows.reduce((s, r) => s + r.callTokens, n - n)
-  const ideas = qpuIdeasOf()
+  const ideas = ideasOf()
   const proofs = ideas.ideas.every((idea) => {
-    const call = qpuSandboxRunOf(forgeNameOf('call', idea.name)) as { value: unknown }
-    const read = qpuSandboxRunOf(forgeNameOf('read', idea.name)) as { value: unknown }
+    const call = sandboxRunOf(forgeNameOf('call', idea.name)) as { value: unknown }
+    const read = sandboxRunOf(forgeNameOf('read', idea.name)) as { value: unknown }
     return call.value === true && read.value === true
   })
   const used = sandboxHost.map((name) => {
     if (name === 'eval' || name === 'fn') {
-      const run = qpuSandboxRunOf(name, { run: { op: 'mint', k: n } }) as { value: unknown; holds: boolean }
+      const run = sandboxRunOf(name, { run: { op: 'mint', k: n } }) as { value: unknown; holds: boolean }
       return { name, value: run.value, holds: run.holds && run.value === mintOf(n) }
     }
     if (name === 'fs' || name === 'disk') {
-      qpuSandboxRunOf(name, { method: 'write', path: '/improve', value: next })
-      const run = qpuSandboxRunOf(name, { method: 'read', path: '/improve' }) as { value: unknown }
+      sandboxRunOf(name, { method: 'write', path: '/improve', value: next })
+      const run = sandboxRunOf(name, { method: 'read', path: '/improve' }) as { value: unknown }
       return { name, value: run.value, holds: run.value === next }
     }
     if (name === 'net') {
-      qpuSandboxRunOf(name, { method: 'send', channel: 'improve', value: next })
-      const run = qpuSandboxRunOf(name, { method: 'recv', channel: 'improve' }) as { value: unknown }
+      sandboxRunOf(name, { method: 'send', channel: 'improve', value: next })
+      const run = sandboxRunOf(name, { method: 'recv', channel: 'improve' }) as { value: unknown }
       return { name, value: run.value, holds: run.value === next }
     }
     if (name === 'fetch') {
-      const run = qpuSandboxRunOf(name, { path: '/' }) as {
+      const run = sandboxRunOf(name, { path: '/' }) as {
         value?: {
           kind?: string
           unlocked?: boolean
@@ -141,17 +141,17 @@ export const qpuImproveOf = onceOf(() => {
           run.value.hostEscape === false}
     }
     if (name === 'process') {
-      const run = qpuSandboxRunOf(name) as { value: { cwd?: string; hostEscape?: boolean } }
+      const run = sandboxRunOf(name) as { value: { cwd?: string; hostEscape?: boolean } }
       return { name, value: run.value?.cwd, holds: run.value?.cwd === '/memory' && run.value?.hostEscape === false }
     }
     if (name === 'import' || name === 'require') {
-      const run = qpuSandboxRunOf(name, { name: unit.kind }) as { value: { href?: string; hostEscape?: boolean } }
+      const run = sandboxRunOf(name, { name: unit.kind }) as { value: { href?: string; hostEscape?: boolean } }
       return { name, value: run.value?.href, holds: run.value?.href === unit.href && run.value?.hostEscape === false }
     }
-    const run = qpuSandboxRunOf(name, { run: { op: 'mint', k: n } }) as { value: unknown }
+    const run = sandboxRunOf(name, { run: { op: 'mint', k: n } }) as { value: unknown }
     return { name, value: run.value, holds: run.value === mintOf(n) }
   })
-  const durability = qpuSandboxDurabilityOf()
+  const durability = sandboxDurabilityOf()
   const unlocked = opQuantumOf()
   const quantum = {
     kind: 'quantum' as const,
@@ -177,8 +177,8 @@ export const qpuImproveOf = onceOf(() => {
     speed: after.speed - before.speed,
     security: after.security - before.security,
     throughoutput: after.throughoutput - before.throughoutput}
-  const css = qpuCssOf()
-  const reflect = qpuReflectHolds()
+  const css = cssOf()
+  const reflect = reflectHolds()
   const documentation = [
     'RECEIPT',
     `    improve used unlocked quantum. next = fused + fused.`,
@@ -238,7 +238,7 @@ export const qpuImproveOf = onceOf(() => {
   }
 })
 
-export const qpuImproveHolds = (i = qpuImproveOf()): boolean =>
+export const improveHolds = (i = improveOf()): boolean =>
   i.holds === true &&
   i.kind === 'improve' &&
   i.quantum.holds === true &&
@@ -262,24 +262,24 @@ export const qpuImproveHolds = (i = qpuImproveOf()): boolean =>
  * Two teams of seven agents run the lattice walk: steps, challenges, sandbox tools and the next door to call.
  * @wing agents
  * @kind builder
- * @evidence qpuTrainHolds
+ * @evidence trainHolds
  */
-export const qpuTrainOf = onceOf(() => {
-  const faces = qpuFacesOf()
-  const teaching = qpuTeachingPairsOf()
-  const cube = qpuCubeOf()
-  const genesis = qpuGenesisOf()
-  const efficiency = qpuEfficiencyOf()
+export const trainOf = onceOf(() => {
+  const faces = facesOf()
+  const teaching = teachingPairsOf()
+  const cube = cubeOf()
+  const genesis = genesisOf()
+  const efficiency = efficiencyOf()
   const quantum = qpuReadingOf()
-  const sandbox = qpuSandboxOf()
-  const vm = qpuVmOf()
+  const sandbox = sandboxOf()
+  const vm = vmOf()
   const fused = quantum.fused
   const next = quantum.next
   const involution = genesis.holds
   const crypto = fused === faces.faces * mintOf(cube.vertices * cube.hexbit + seed)
   const named = unit.holds && !unit.host.includes('*')
   const axes = ['quality', 'speed', 'security'] as const
-  const ideas = qpuIdeasOf().ideas
+  const ideas = ideasOf().ideas
   const scoreOf = (name: 'read' | 'call') => {
     const tokens = efficiency.rows.reduce((s, r) => s + (name === 'read' ? r.readTokens : r.callTokens), n - n)
     const quality = genesis.holds ? (name === 'call' ? genesis.occupied : n) : n - n
@@ -355,7 +355,7 @@ export const qpuTrainOf = onceOf(() => {
     speed: call.speed > read.speed ? ('call' as const) : ('read' as const),
     security: call.security > read.security ? ('call' as const) : ('read' as const)}
   const nextTasks = ['improve', 'compete'] as const
-  const dry = qpuDryOf(genesis)
+  const dry = dryOf(genesis)
   const holds =
     efficiency.holds === true &&
     quantum.holds === true &&
@@ -379,14 +379,14 @@ export const qpuTrainOf = onceOf(() => {
     winner.security === 'call' &&
     challenges.every((c) => c.holds && c.winner === 'call' && c.left === c.right) &&
     nextTasks.length === coins &&
-    qpuVmHolds(vm) &&
-    qpuDryHolds(dry)
+    vmHolds(vm) &&
+    dryHolds(dry)
   return {
     kind: 'train' as const,
     module: 'agent efficiency' as const,
     before: 'next' as const,
     dry,
-    steps: qpuStepsOf(),
+    steps: stepsOf(),
     divide: { teams: coins, agents: faces.rays, challenges: faces.faces } as const,
     sandbox: {
       kind: sandbox.kind,
@@ -423,14 +423,14 @@ export const qpuTrainOf = onceOf(() => {
      * the school corpus and the API discovery sit here too. Six commands and six outputs become one
      * reading, and its holds IS folded into the door's, unlike the discovery beside it: these are counts of
      * this tree's own files, so a bad one is this tree's fault and should fail it. */
-    standards: qpuStandardsOf(),
+    standards: standardsOf(),
     school: {
       kind: 'teaching' as const,
       theorem: 'involution' as const,
       swap: 'both directions must teach, or it is an application rather than an entanglement' as const,
-      seating: qpuTeachingSeatingOf(teaching),
-      census: qpuTeachingCensusOf(),
-      reading: qpuTeachingReadingOf(teaching),
+      seating: teachingSeatingOf(teaching),
+      census: teachingCensusOf(),
+      reading: teachingReadingOf(teaching),
       /* THE CARTESIAN PRODUCT IS NOT A DENOMINATOR, and `undecided` alone reads as though it were. Widening
        * the vocabulary from nine subjects and nine domains to nineteen and eighteen took the grid from 81
        * cells to 342, so a corpus that got RICHER reported 282 undecided where it had reported 31 — the same
@@ -444,16 +444,16 @@ export const qpuTrainOf = onceOf(() => {
       combinations: teaching.pairs.length,
       evidenced: teaching.pairs.filter((row) => row.swap !== 'undecided').length,
       undecided: teaching.pairs.filter((row) => row.swap === 'undecided').length,
-      holds: qpuTeachingPairsHolds(teaching) && qpuTeachingSeatingHolds() && qpuTeachingCensusHolds() && qpuTeachingReadingHolds(),
+      holds: teachingPairsHolds(teaching) && teachingSeatingHolds() && teachingCensusHolds() && teachingReadingHolds(),
   },
     holds,
   }
 })
 
-export const qpuTrainHolds = (t = qpuTrainOf()): boolean =>
+export const trainHolds = (t = trainOf()): boolean =>
   t.holds === true &&
   t.kind === 'train' &&
-  qpuStepsHolds(t.steps) &&
+  stepsHolds(t.steps) &&
   t.before === 'next' &&
   t.divide.teams === coins &&
   t.divide.agents === t.challenges.length / coins &&
@@ -467,32 +467,32 @@ export const qpuTrainHolds = (t = qpuTrainOf()): boolean =>
   t.vm.next === t.vm.replicas + t.vm.replicas &&
   t.vm.holds === true &&
   t.vm.agents === coins * t.divide.agents &&
-  qpuSandboxDurabilityHolds() &&
+  sandboxDurabilityHolds() &&
   t.next[n - n] === 'improve' &&
   t.next[seed] === 'compete' &&
-  qpuDryHolds(t.dry)
+  dryHolds(t.dry)
 
 /**
  * Prove the unit end to end: every Lean row, the Shor run, the circuit steps, the source fold and the evidence block; holds is their conjunction.
  * @wing quantum
  * @kind builder
- * @evidence qpuProveHolds
+ * @evidence proveHolds
  */
-export const qpuProveOf = onceOf(() => {
-  const lean = qpuLeanOf()
-  const cern = qpuCernOf()
-  const integrity = qpuIntegrityOf()
-  const circuit = qpuCircuitOf()
-  const ledgerFrom = qpuReceiptLedgerOf().length
-  const shor = qpuShorOf()
-  const receipts = qpuShorReceiptsOf(ledgerFrom)
-  const encrypt = qpuEncryptOf()
-  const intelligence = qpuIntelligenceOf()
-  const neuro = qpuNeuroOf()
-  const coil = qpuCoilOf()
+export const proveOf = onceOf(() => {
+  const lean = leanOf()
+  const cern = cernOf()
+  const integrity = integrityOf()
+  const circuit = circuitOf()
+  const ledgerFrom = receiptLedgerOf().length
+  const shor = shorOf()
+  const receipts = shorReceiptsOf(ledgerFrom)
+  const encrypt = encryptOf()
+  const intelligence = intelligenceOf()
+  const neuro = neuroOf()
+  const coil = coilOf()
   const next = qpuNextOf()
   const sequence = qpuSequenceOf()
-  const purpose = qpuPurposeOf(circuit, shor, sequence, qpuCapacityOf())
+  const purpose = purposeOf(circuit, shor, sequence, capacityOf())
   const evidence = qpuEvidenceOf(circuit, shor)
   const theorems = [...lean.rows, ...lean.cover, lean.climb]
   const ui = {
@@ -511,21 +511,21 @@ export const qpuProveOf = onceOf(() => {
       circuit.entangle.holds &&
       circuit.entangle.product === false &&
       circuit.entangle.coil.holds &&
-      qpuCoilHolds(coil) &&
+      coilHolds(coil) &&
       theorem.electronics(coil.coil, coil.faces) &&
       circuit.entangle.coil.pairs.length === coil.rays}
   const holds =
-    qpuLeanHolds(lean) &&
-    qpuCernHolds(cern) &&
-    qpuIntegrityHolds(integrity) &&
-    qpuIntelligenceHolds(intelligence) &&
-    qpuNeuroHolds(neuro) &&
-    qpuCoilHolds(coil) &&
+    leanHolds(lean) &&
+    cernHolds(cern) &&
+    integrityHolds(integrity) &&
+    intelligenceHolds(intelligence) &&
+    neuroHolds(neuro) &&
+    coilHolds(coil) &&
     qpuNextHolds(next) &&
     circuit.holds &&
     circuit.steps.holds &&
-    qpuShorHolds(shor) &&
-    qpuEncryptHolds(encrypt) &&
+    shorHolds(shor) &&
+    encryptHolds(encrypt) &&
     purpose.holds &&
     evidence.holds &&
     shor.factors.p * shor.factors.q === shor.n &&
@@ -601,7 +601,7 @@ export const qpuProveOf = onceOf(() => {
     src: lean.src,
     source: lean.source,
     receipts,
-    glossary: qpuGlossaryOf(),
+    glossary: glossaryOf(),
     lean,
     theorems,
     cern,
@@ -615,7 +615,7 @@ export const qpuProveOf = onceOf(() => {
   }
 })
 
-export const qpuProveHolds = (p = qpuProveOf()): boolean =>
+export const proveHolds = (p = proveOf()): boolean =>
   p.holds === true &&
   p.kind === 'prove' &&
   p.only.holds === true &&
@@ -633,7 +633,7 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.circuit.steps.path.submit === `${unit.origin}/server` &&
   p.circuit.holds === true &&
   p.shor.holds === true &&
-  p.shor.n === qpuFacesOf().rays * (n * n + n + seed) &&
+  p.shor.n === facesOf().rays * (n * n + n + seed) &&
   p.shor.a === mintOf(n) &&
   p.shor.unlocked === true &&
   p.shor.coprime === true &&
@@ -646,13 +646,13 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.shor.rsa.kind === 'rsa' &&
   p.shor.rsa.modulus === p.shor.n &&
   p.shor.rsa.factored === true &&
-  qpuEncryptHolds(p.encrypt) &&
+  encryptHolds(p.encrypt) &&
   p.encrypt.theorem === 'crypto' &&
   p.encrypt.identity === true &&
-  qpuPurposeHolds(p.purpose) &&
+  purposeHolds(p.purpose) &&
   p.purpose.cybersecurity.product === p.shor.n &&
   p.purpose.nature.platform === p.circuit.steps.device &&
-  qpuEvidenceHolds(p.evidence) &&
+  evidenceHolds(p.evidence) &&
   p.evidence.provenance.device === p.circuit.steps.device &&
   p.evidence.provenance.shots === p.shor.shots &&
   p.evidence.scaling.exact === true &&
@@ -665,7 +665,7 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.entangle.theorem === 'entangle' &&
   p.entangle.product === false &&
   p.entangle.holds === true &&
-  p.entangle.pairs === qpuFacesOf().rays &&
+  p.entangle.pairs === facesOf().rays &&
   p.entangle.coil === p.coil.coil &&
   p.next.theorem === 'next_coil' &&
   p.next.holds === true &&
@@ -675,17 +675,17 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   qpuNextHolds() &&
   p.src === unit.fuse.lean &&
   p.source.holds === true &&
-  p.source.fold === qpuFoldOf(leanSource) &&
+  p.source.fold === foldOf(leanSource) &&
   p.source.verbatim === p.source.served &&
   p.receipts.holds === true &&
   p.receipts.fold === qpuReceiptFoldOf(p.receipts.rows) &&
-  qpuLeanHolds(p.lean) &&
-  qpuCernHolds(p.cern) &&
-  qpuIntegrityHolds(p.integrity) &&
-  qpuIntelligenceHolds(p.intelligence) &&
+  leanHolds(p.lean) &&
+  cernHolds(p.cern) &&
+  integrityHolds(p.integrity) &&
+  intelligenceHolds(p.intelligence) &&
   p.intelligence.test === 'fusion' &&
   p.intelligence.research === 'free online' &&
-  qpuNeuroHolds(p.neuro) &&
+  neuroHolds(p.neuro) &&
   p.neuro.test.holds === true &&
   p.ui.door === 'prove' &&
   p.theorems.length === p.lean.rows.length + p.lean.cover.length + seed &&

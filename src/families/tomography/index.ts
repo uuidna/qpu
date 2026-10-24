@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** TOMOGRAPHY — IMAGING A VOLUME SLICE BY SLICE, AS ARITHMETIC (reconstructing a body from its projections). Scanning
@@ -31,4 +31,4 @@ export class TomographyFormulas {
 }
 
 for (const name of ['coverage', 'exposure', 'hounsfield', 'pitch', 'projections', 'reconstruction', 'slices', 'voxels'] as const)
-  qpuHexRegisterOf('tomography', name, (TomographyFormulas[name] as (...x: unknown[]) => unknown).bind(TomographyFormulas))
+  hexRegisterOf('tomography', name, (TomographyFormulas[name] as (...x: unknown[]) => unknown).bind(TomographyFormulas))

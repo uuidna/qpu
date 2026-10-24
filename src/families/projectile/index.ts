@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ProjectileFormulas — 8 exact-integer formulas of the projectile domain, each at a hex address crossing to cross; develops the projectile leads. */
@@ -31,4 +31,4 @@ export class ProjectileFormulas {
 }
 
 for (const name of ['angle', 'arc', 'combos', 'height', 'impact', 'range', 'time', 'velocity'] as const)
-  qpuHexRegisterOf('projectile', name, (ProjectileFormulas[name] as (...x: unknown[]) => unknown).bind(ProjectileFormulas))
+  hexRegisterOf('projectile', name, (ProjectileFormulas[name] as (...x: unknown[]) => unknown).bind(ProjectileFormulas))

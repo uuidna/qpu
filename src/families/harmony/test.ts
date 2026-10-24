@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HarmonyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('harmony: interval, chordquality, consonance, keysignature, voiceleading, t
   assert.equal(HarmonyFormulas.cadence(7, 0).value, 1, 'V → I rises a fourth')
   assert.equal(HarmonyFormulas.cadence(0, 7).value, 0)
   assert.equal(HarmonyFormulas.interval(60, 67).dst, 'music')
-  assert.equal(qpuHexFamiliesOf().get('harmony')?.length, 8)
+  assert.equal(hexFamiliesOf().get('harmony')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'harmony', program: ['interval'], params: [60, 67] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 7, `harmony.interval at ${uuid}`)
-  qpuUuidReceiptOf('harmony interval', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('harmony interval', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; interval 7, chordquality 3, consonance 1, keysignature 1, voiceleading 5, tension 75, inversion 8, cadence 1; crossing to music')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ENTERPRISE — ERP AND PROCUREMENT, AS ARITHMETIC (chosen by the public-API registry, not by hand). Running a business is
@@ -31,4 +31,4 @@ export class EnterpriseFormulas {
 }
 
 for (const name of ['approval', 'leadtime', 'po', 'procurement', 'reorder', 'sla', 'turnover', 'utilization'] as const)
-  qpuHexRegisterOf('enterprise', name, (EnterpriseFormulas[name] as (...x: unknown[]) => unknown).bind(EnterpriseFormulas))
+  hexRegisterOf('enterprise', name, (EnterpriseFormulas[name] as (...x: unknown[]) => unknown).bind(EnterpriseFormulas))

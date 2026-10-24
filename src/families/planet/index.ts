@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PlanetFormulas — 8 exact-integer formulas of the planet domain, each at a hex address crossing to cross; develops the planet leads. */
@@ -31,4 +31,4 @@ export class PlanetFormulas {
 }
 
 for (const name of ['axialtilt', 'combos', 'day', 'gravity', 'moons', 'orbit', 'radius', 'rings'] as const)
-  qpuHexRegisterOf('planet', name, (PlanetFormulas[name] as (...x: unknown[]) => unknown).bind(PlanetFormulas))
+  hexRegisterOf('planet', name, (PlanetFormulas[name] as (...x: unknown[]) => unknown).bind(PlanetFormulas))

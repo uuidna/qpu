@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** IOT — DEVICES AND TELEMETRY, AS ARITHMETIC (chosen by the registry). A sensor fleet is numbers: samples taken, battery
@@ -30,4 +30,4 @@ export class IotFormulas {
 }
 
 for (const name of ['battery', 'duty', 'heartbeat', 'latency', 'payload', 'range', 'sampling', 'telemetry'] as const)
-  qpuHexRegisterOf('iot', name, (IotFormulas[name] as (...x: unknown[]) => unknown).bind(IotFormulas))
+  hexRegisterOf('iot', name, (IotFormulas[name] as (...x: unknown[]) => unknown).bind(IotFormulas))

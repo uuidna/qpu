@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CURVATURE — HOW A SURFACE BENDS, AS ARITHMETIC. Bending is numbers: the Gaussian product of principal curvatures, their
@@ -31,4 +31,4 @@ export class CurvatureFormulas {
 }
 
 for (const name of ['anglesum', 'defect', 'gaussian', 'geodesicdeviation', 'mean', 'radiusofcurvature', 'sectional', 'totalcurvature'] as const)
-  qpuHexRegisterOf('curvature', name, (CurvatureFormulas[name] as (...x: unknown[]) => unknown).bind(CurvatureFormulas))
+  hexRegisterOf('curvature', name, (CurvatureFormulas[name] as (...x: unknown[]) => unknown).bind(CurvatureFormulas))

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** KINEMATICS — MOTION AS ARITHMETIC (chosen by the mechanics registry, not by hand). Moving bodies are numbers: speed over
@@ -30,4 +30,4 @@ export class KinematicsFormulas {
 }
 
 for (const name of ['acceleration', 'displacement', 'freefall', 'impulse', 'kinetic', 'momentum', 'projectile', 'velocity'] as const)
-  qpuHexRegisterOf('kinematics', name, (KinematicsFormulas[name] as (...x: unknown[]) => unknown).bind(KinematicsFormulas))
+  hexRegisterOf('kinematics', name, (KinematicsFormulas[name] as (...x: unknown[]) => unknown).bind(KinematicsFormulas))

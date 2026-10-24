@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HashFormulas — 8 exact-integer formulas of the hash domain, each at a hex address crossing to cross; develops the hash leads. */
@@ -31,4 +31,4 @@ export class HashFormulas {
 }
 
 for (const name of ['bitsperkey', 'buckets', 'collisions', 'combos', 'digestbits', 'loadpct', 'probes', 'seeds'] as const)
-  qpuHexRegisterOf('hash', name, (HashFormulas[name] as (...x: unknown[]) => unknown).bind(HashFormulas))
+  hexRegisterOf('hash', name, (HashFormulas[name] as (...x: unknown[]) => unknown).bind(HashFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NumeracyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('numeracy: problemsolved, accuracy, factfluency, placevalue, operationspeed
   assert.equal(NumeracyFormulas.growth(85, 60).value, 25, 'the gain')
   assert.equal(NumeracyFormulas.growth(50, 70).value, 0)
   assert.equal(NumeracyFormulas.problemsolved(20, 15).dst, 'pedagogy')
-  assert.equal(qpuHexFamiliesOf().get('numeracy')?.length, 8)
+  assert.equal(hexFamiliesOf().get('numeracy')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'numeracy', program: ['operationspeed'], params: [120, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 30, `numeracy.operationspeed at ${uuid}`)
-  qpuUuidReceiptOf('numeracy operationspeed', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('numeracy operationspeed', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; problemsolved 300, accuracy 90, factfluency 40, placevalue 700, operationspeed 30, errorrate 5, masterypercent 75, growth 25; crossing to pedagogy')
 })

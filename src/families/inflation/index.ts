@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** INFLATION — scaffolded integer measures crossed to macroeconomics. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class InflationFormulas {
 }
 
 for (const name of ['basketitems', 'cpi', 'erosion', 'indexorderings', 'pricelevel', 'purchasingpower', 'ratepct', 'realvalue'] as const)
-  qpuHexRegisterOf('inflation', name, (InflationFormulas[name] as (...x: unknown[]) => unknown).bind(InflationFormulas))
+  hexRegisterOf('inflation', name, (InflationFormulas[name] as (...x: unknown[]) => unknown).bind(InflationFormulas))

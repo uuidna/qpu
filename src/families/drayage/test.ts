@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { DrayageFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('drayage: costpermove, turntime, containersperday, chassisutilization, wait
   assert.equal(DrayageFormulas.demurrage(3, 150).value, 450)
   assert.equal(DrayageFormulas.dualmoves(40, 100).value, 40)
   assert.equal(DrayageFormulas.costpermove(150, 4).dst, 'supplychain')
-  assert.equal(qpuHexFamiliesOf().get('drayage')?.length, 8)
+  assert.equal(hexFamiliesOf().get('drayage')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'drayage', program: ['costpermove'], params: [150, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 600, `drayage.costpermove at ${uuid}`)
-  qpuUuidReceiptOf('drayage costpermove', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('drayage costpermove', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; costpermove 600, turntime 60, containersperday 12, chassisutilization 80, waittime 60, milesperload 100, demurrage 450, dualmoves 40; crossing to supplychain')
 })

@@ -12,7 +12,7 @@ import {
 } from '../src/families/clay/index.js'
 import { clayOf } from '../src/core/showcase.js'
 import { claySealReadingsOf } from '../src/payload/plugins/clay.js'
-import { qpuAnalyticsOf } from '../src/quantum/processing/unit/zeropage.js'
+import { analyticsOf } from '../src/quantum/processing/unit/zeropage.js'
 import { qpuNextOf } from '../src/quantum/processing/unit/index.js'
 import { writeFileSync } from 'fs'
 
@@ -31,7 +31,7 @@ const claimed = showcase.filter((p) => p.status === 'CLAIMED')
 const nonClaimable = showcase.filter((p) => p.status !== 'CLAIMED')
 const readings = claySealReadingsOf()
 const treeNext = qpuNextOf().next
-const a = qpuAnalyticsOf()
+const a = analyticsOf()
 
 const README_REGISTER = {
   coins: 2,

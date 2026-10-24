@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** PREMIUM — INSURANCE PRICING, AS ARITHMETIC (chosen by the actuarial registry, not by hand). Pricing a policy is
@@ -31,4 +31,4 @@ export class PremiumFormulas {
 }
 
 for (const name of ['earned', 'expense', 'gross', 'installment', 'net', 'profit', 'pure', 'rate'] as const)
-  qpuHexRegisterOf('premium', name, (PremiumFormulas[name] as (...x: unknown[]) => unknown).bind(PremiumFormulas))
+  hexRegisterOf('premium', name, (PremiumFormulas[name] as (...x: unknown[]) => unknown).bind(PremiumFormulas))

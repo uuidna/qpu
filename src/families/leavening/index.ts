@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** LEAVENING — scaffolded integer measures crossed to biochemistry. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class LeaveningFormulas {
 }
 
 for (const name of ['acidityph', 'co2volume', 'doublingtime', 'fermentationrate', 'gasretention', 'ovenspring', 'riseratio', 'yeastactivity'] as const)
-  qpuHexRegisterOf('leavening', name, (LeaveningFormulas[name] as (...x: unknown[]) => unknown).bind(LeaveningFormulas))
+  hexRegisterOf('leavening', name, (LeaveningFormulas[name] as (...x: unknown[]) => unknown).bind(LeaveningFormulas))

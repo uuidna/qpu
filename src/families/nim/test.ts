@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { NimFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('nim: heaps, totalstones, movecombos, positionsubsets, grundyvalue, winning
   assert.equal(NimFormulas.heapmax(7, 5).value, 7)
   assert.equal(NimFormulas.parity(15, 2).value, 1)
   assert.equal(NimFormulas.heaps(3, 0).dst, 'logic')
-  assert.equal(qpuHexFamiliesOf().get('nim')?.length, 8)
+  assert.equal(hexFamiliesOf().get('nim')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'nim', program: ['heaps'], params: [3, 0] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3, `nim.heaps at ${uuid}`)
-  qpuUuidReceiptOf('nim heaps', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('nim heaps', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; heaps 3, totalstones 15, movecombos 105, positionsubsets 64, grundyvalue 3, winningmoves 3, heapmax 7, parity 1; crossing to logic')
 })

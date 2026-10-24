@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RAY — A HEX-PROGRAM UUID SEEN AS PROGRAMMABLE RAYS AND STREAMS. An RFC 9562 v8 UUID is 32 hex nibbles / 128 bits; a
@@ -51,4 +51,4 @@ export class RayFormulas {
 }
 
 for (const name of ['address', 'angle', 'bits', 'closes', 'foldpair', 'free', 'magnitude', 'nibbles', 'opposite', 'parity', 'programlen', 'ray', 'sectors', 'stream', 'sweep'] as const)
-  qpuHexRegisterOf('ray', name, (RayFormulas[name] as (...x: unknown[]) => unknown).bind(RayFormulas))
+  hexRegisterOf('ray', name, (RayFormulas[name] as (...x: unknown[]) => unknown).bind(RayFormulas))

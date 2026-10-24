@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ConcurrencyFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,11 +22,11 @@ test('concurrency: amdahl, speedup, throughput, utilization, contention, latency
   assert.equal(steal.value, stolen, 'steal returns the scheduler stolen-task count')
   assert.equal(steal.holds, Number.isSafeInteger(stolen) && stolen >= 0)
   assert.equal(ConcurrencyFormulas.amdahl(90, 10).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('concurrency')?.length, 9)
+  assert.equal(hexFamiliesOf().get('concurrency')?.length, 9)
   const uuid = qpuHexUuidOf({ family: 'concurrency', program: ['steal'], params: [stolen] })
-  const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+  const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
   assert.equal(Number(run.value), stolen, `concurrency.steal at ${uuid}`)
   assert.equal(run.holds, steal.holds)
-  qpuUuidReceiptOf('concurrency steal', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('concurrency steal', contentUuidOf(run), { uuid })
   t.diagnostic(`9 formulas; amdahl 10, speedup 400, throughput 100, utilization 75, contention 30, latency 50, deadlock 3, scalability 800, steal ${stolen} holds ${run.holds} at ${uuid}; crossing to code`)
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NGRAM — LANGUAGE-MODEL COUNTING, AS ARITHMETIC (the n-gram model is counts over a corpus, nothing else). How many n-grams a
@@ -31,4 +31,4 @@ export class NgramFormulas {
 }
 
 for (const name of ['backoffweight', 'conditionalcount', 'count', 'coverage', 'laplacesmoothing', 'perplexityproxy', 'probability', 'vocabularysize'] as const)
-  qpuHexRegisterOf('ngram', name, (NgramFormulas[name] as (...x: unknown[]) => unknown).bind(NgramFormulas))
+  hexRegisterOf('ngram', name, (NgramFormulas[name] as (...x: unknown[]) => unknown).bind(NgramFormulas))

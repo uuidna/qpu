@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ASTROPHYSICS — THE SKY, AS ARITHMETIC (chosen by the public-API registry, not by hand). A star's reach is numbers:
@@ -31,4 +31,4 @@ export class AstrophysicsFormulas {
 }
 
 for (const name of ['chandrasekhar', 'eddington', 'jeans', 'luminosity', 'redshift', 'schwarzschild', 'tidal', 'timescale'] as const)
-  qpuHexRegisterOf('astrophysics', name, (AstrophysicsFormulas[name] as (...x: unknown[]) => unknown).bind(AstrophysicsFormulas))
+  hexRegisterOf('astrophysics', name, (AstrophysicsFormulas[name] as (...x: unknown[]) => unknown).bind(AstrophysicsFormulas))

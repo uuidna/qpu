@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BathymetryFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('bathymetry: depth, soundingtime, slope, echodelay, gridresolution, swathwi
   assert.equal(BathymetryFormulas.profilearea(500, 40).value, 20000)
   assert.equal(BathymetryFormulas.contourinterval(1000, 10).value, 100, 'ten contours over 1000 m')
   assert.equal(BathymetryFormulas.depth(1500, 4).dst, 'oceanography')
-  assert.equal(qpuHexFamiliesOf().get('bathymetry')?.length, 8)
+  assert.equal(hexFamiliesOf().get('bathymetry')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'bathymetry', program: ['depth'], params: [1500, 4] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 3000, `bathymetry.depth at ${uuid}`)
-  qpuUuidReceiptOf('bathymetry depth', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('bathymetry depth', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; depth 3000, soundingtime 4, slope 30, echodelay 1000, gridresolution 100, swathwidth 21000, profilearea 20000, contourinterval 100; crossing to oceanography')
 })

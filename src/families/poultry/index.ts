@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** POULTRY — THE FLOCK AS ARITHMETIC (chosen by the agriculture registry, not by hand). Running a flock is numbers: the
@@ -30,4 +30,4 @@ export class PoultryFormulas {
 }
 
 for (const name of ['density', 'dressing', 'eggmass', 'feedconversion', 'hatchability', 'laying', 'mortality', 'uniformity'] as const)
-  qpuHexRegisterOf('poultry', name, (PoultryFormulas[name] as (...x: unknown[]) => unknown).bind(PoultryFormulas))
+  hexRegisterOf('poultry', name, (PoultryFormulas[name] as (...x: unknown[]) => unknown).bind(PoultryFormulas))

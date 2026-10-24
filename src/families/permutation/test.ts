@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { PermutationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,10 +22,10 @@ test('permutation: factorial, inversions, derangements, involutions, Eulerian an
   assert.equal(PermutationFormulas.permutations(5, 2).value, 20, '5!/(5−2)!')
   assert.equal(PermutationFormulas.transpositions(5).value, 4, 'minimum adjacent transpositions n−1')
   assert.equal(PermutationFormulas.factorial(5).dst, 'combinatorics')
-  assert.equal(qpuHexFamiliesOf().get('permutation')?.length, 15)
+  assert.equal(hexFamiliesOf().get('permutation')?.length, 15)
   const uuid = qpuHexUuidOf({ family: 'permutation', program: ['factorial'], params: [5] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 120, `permutation.factorial at ${uuid}`)
-  qpuUuidReceiptOf('permutation factorial', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('permutation factorial', contentUuidOf(run), { uuid })
   t.diagnostic('15 formulas; ascents 4, choose 10, cycles 5, derangements 9, descents 4, eulerian 11, excedances 4, factorial 120/1, fixedpoints 3, involutions 10, inversions 10, majorindex 10, ncycles 24, permutations 20, transpositions 4; crossing to combinatorics')
 })

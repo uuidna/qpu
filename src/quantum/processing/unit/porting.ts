@@ -18,7 +18,7 @@
 export type Port = { domain: string; relates: readonly string[]; how?: string; lead?: boolean }
 export const QPU_PORTS: Record<string, Port> = {
   // storage domain — RAID-native DocStore / content-addressed FS (not node:fs on disk)
-  fs: { domain: 'storage', relates: ['path', 'stream', 'os', 'sqlite'], how: 'qpuStorageOf / qpuDocDbOf over RAID DocStore (KV+R2 qpu-raid, d1DocStore, or memory) — address GET/PUT/DELETE, not node:fs' },
+  fs: { domain: 'storage', relates: ['path', 'stream', 'os', 'sqlite'], how: 'storageOf / qpuDocDbOf over RAID DocStore (KV+R2 qpu-raid, d1DocStore, or memory) — address GET/PUT/DELETE, not node:fs' },
   path: { domain: 'storage', relates: ['fs', 'url'], how: 'content address / handle/row on RAID; not a host filesystem path' },
   sqlite: { domain: 'storage', relates: ['fs', 'db'], how: 'qpu-d1 d1DocStore / qpuDocDbOf — content-addressed; combination db axis, not a sqlite port into the core' },
   // net domain — readings and the edge, never a raw socket
@@ -40,7 +40,7 @@ export const QPU_PORTS: Record<string, Port> = {
   perf_hooks: { domain: 'compute', relates: ['process'], how: 'every call is timed into its receipt (percall) — no separate clock' },
   timers: { domain: 'compute', relates: [], how: 'the runtime’s own timers (Web) — setTimeout/AbortSignal.timeout' },
   v8: { domain: 'compute', relates: ['process'], how: 'lattice / compute_machine readings — engine capacity as formulas, not V8 inspector APIs' },
-  inspector: { domain: 'compute', relates: ['process'], how: 'the receipt is the trace — qpuUuidReceiptOf / percall, not node:inspector' },
+  inspector: { domain: 'compute', relates: ['process'], how: 'the receipt is the trace — uuidReceiptOf / percall, not node:inspector' },
   trace_events: { domain: 'compute', relates: ['process'], how: 'the receipt is the trace — same door as inspector' },
   diagnostics_channel: { domain: 'compute', relates: ['events'], how: 'heat.slow / observability formulas — monitoring as arithmetic, not node:diagnostics_channel' },
   async_hooks: { domain: 'compute', relates: ['process'], how: 'sandbox epoch + receipt chain — async context is the receipted call, not AsyncLocalStorage' },
@@ -56,7 +56,7 @@ export const QPU_PORTS: Record<string, Port> = {
   cluster: { domain: 'sandbox', relates: ['child_process', 'worker_threads'], how: 'the edge scales the isolate — Workers/anycast, not node:cluster forking' },
   wasi: { domain: 'sandbox', relates: ['vm'], how: 'Worker isolate + sandbox is the guest boundary — WASI-shaped host capability without a wasi runtime in the core' },
   // install domain — the manifest, regenerated from the filesystem
-  module: { domain: 'install', relates: ['fs', 'vm'], how: 'qpuInstallOf — the manifest; the registry regenerates from the filesystem' },
+  module: { domain: 'install', relates: ['fs', 'vm'], how: 'installOf — the manifest; the registry regenerates from the filesystem' },
   sea: { domain: 'install', relates: ['module'], how: 'standalone deploy mode in PayloadTemplates — single-executable as a delivery shell, not a core import' },
   // value domain — Web values and the stream/events families
   stream: { domain: 'value', relates: ['events', 'buffer', 'fs'], how: 'the stream family; the hex engine folds a program like a stream' },
@@ -65,7 +65,7 @@ export const QPU_PORTS: Record<string, Port> = {
   string_decoder: { domain: 'value', relates: ['buffer'], how: 'TextDecoder — a Web value' },
   util: { domain: 'value', relates: ['sys'], how: 'src/core/ops — the unit’s own helpers' },
   sys: { domain: 'value', relates: ['util'], how: 'an alias of util — src/core/ops' },
-  constants: { domain: 'value', relates: [], how: 'the lattice constants (qpuLatticeNamesOf) — named, not imported' },
+  constants: { domain: 'value', relates: [], how: 'the lattice constants (latticeNamesOf) — named, not imported' },
   domain: { domain: 'value', relates: ['events'], how: 'deprecated in node; errors ride the receipt — domain modules are receipt failures, not node:domain' },
   // compress domain — compression is a formula
   zlib: { domain: 'compress', relates: ['stream', 'buffer'], how: 'the compress cross (dst: compress) — compression is a formula' },
@@ -124,7 +124,7 @@ export const QPU_DEPS: Record<string, Port> = {
   '@payloadcms/plugin-form-builder': { domain: 'plugin', relates: ['payload'], lead: true },
   '@payloadcms/plugin-import-export': { domain: 'plugin', relates: ['payload'], lead: true },
   '@payloadcms/plugin-redirects': { domain: 'plugin', relates: ['payload'], lead: true },
-  '@payloadcms/plugin-mcp': { domain: 'plugin', relates: ['payload', 'module'], lead: true, how: 'qpu serves its own MCP (qpuMcpOf); this exposes payload collections' },
+  '@payloadcms/plugin-mcp': { domain: 'plugin', relates: ['payload', 'module'], lead: true, how: 'qpu serves its own MCP (mcpOf); this exposes payload collections' },
   '@payloadcms/plugin-sentry': { domain: 'plugin', relates: ['payload', '@sentry/nextjs'], lead: true },
   '@payloadcms/plugin-stripe': { domain: 'plugin', relates: ['payload'], lead: true },
   '@payloadcms/plugin-cloud-storage': { domain: 'plugin', relates: ['payload'], lead: true },
@@ -145,7 +145,7 @@ export const QPU_DEPS: Record<string, Port> = {
   // obs — monitoring
   '@sentry/nextjs': { domain: 'obs', relates: ['next'], how: 'monitoring is formulas (heat.slow)', lead: true },
   // mcp — qpu IS the server; the sdk is the client shell
-  '@modelcontextprotocol/sdk': { domain: 'mcp', relates: ['module'], lead: true, how: 'qpu serves its own MCP (qpuMcpOf, tools/list + tools/call); the sdk is the shell client only' },
+  '@modelcontextprotocol/sdk': { domain: 'mcp', relates: ['module'], lead: true, how: 'qpu serves its own MCP (mcpOf, tools/list + tools/call); the sdk is the shell client only' },
   // value/build — types and the compiler; compiling is not computing, it stays
   '@types/node': { domain: 'value', relates: [], lead: true, how: 'types for the node builtins the ports cover' },
   typescript: { domain: 'build', relates: [], lead: true, how: 'compiling, not computing — the build tool stays' },
@@ -163,7 +163,7 @@ export const PORTING_STEPS: readonly string[] = [
 ]
 
 /** The MCP's answer to "how do I port this / why was my dependency refused": the steps, the port map, and the rule. */
-export const qpuPortingOf = () => ({
+export const portingOf = () => ({
   kind: 'porting' as const,
   rule: 'The compute core (the unit and every family) takes no external dependency and no node builtin. Port it, do not depend on it.',
   steps: PORTING_STEPS,

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NANOTECHNOLOGY — THE VERY SMALL, AS ARITHMETIC (chosen by the public-API registry, not by hand). Working at the
@@ -31,4 +31,4 @@ export class NanotechnologyFormulas {
 }
 
 for (const name of ['aspectratio', 'bandgap', 'coating', 'dispersion', 'particlecount', 'quantumconfinement', 'surfacevolume', 'yieldrate'] as const)
-  qpuHexRegisterOf('nanotechnology', name, (NanotechnologyFormulas[name] as (...x: unknown[]) => unknown).bind(NanotechnologyFormulas))
+  hexRegisterOf('nanotechnology', name, (NanotechnologyFormulas[name] as (...x: unknown[]) => unknown).bind(NanotechnologyFormulas))

@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { RouteFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('route: hopcount, pathcombos, shortestpath, bandwidthsum, routingtable, hop
   assert.equal(RouteFormulas.redundantpaths(3).value, 8)
   assert.equal(RouteFormulas.latencysum(10, 20, 30).value, 60)
   assert.equal(RouteFormulas.hopcount(5, 3).dst, 'networking')
-  assert.equal(qpuHexFamiliesOf().get('route')?.length, 8)
+  assert.equal(hexFamiliesOf().get('route')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'route', program: ['hopcount'], params: [5, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 8, `route.hopcount at ${uuid}`)
-  qpuUuidReceiptOf('route hopcount', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('route hopcount', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; hopcount 8, pathcombos 45, shortestpath 25, bandwidthsum 400, routingtable 150, hoporderings 120, redundantpaths 8, latencysum 60; crossing to networking')
 })

@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** SolarFormulas — 8 exact-integer formulas of the solar domain, each at a hex address crossing to cross; develops the solar leads. */
@@ -31,4 +31,4 @@ export class SolarFormulas {
 }
 
 for (const name of ['array', 'combos', 'daily', 'efficiency', 'irradiance', 'output', 'panels', 'strings'] as const)
-  qpuHexRegisterOf('solar', name, (SolarFormulas[name] as (...x: unknown[]) => unknown).bind(SolarFormulas))
+  hexRegisterOf('solar', name, (SolarFormulas[name] as (...x: unknown[]) => unknown).bind(SolarFormulas))

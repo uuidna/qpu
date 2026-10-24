@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { VerificationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('verification: assertions, casecombos, stateorderings, coveragepct, invaria
   assert.equal(VerificationFormulas.proofobligations(20, 10).value, 30)
   assert.equal(VerificationFormulas.passrate(95, 100).value, 95)
   assert.equal(VerificationFormulas.assertions(50, 3).dst, 'logic')
-  assert.equal(qpuHexFamiliesOf().get('verification')?.length, 8)
+  assert.equal(hexFamiliesOf().get('verification')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'verification', program: ['assertions'], params: [50, 3] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 150, `verification.assertions at ${uuid}`)
-  qpuUuidReceiptOf('verification assertions', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('verification assertions', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; assertions 150, casecombos 220, stateorderings 120, coveragepct 90, invariantsubsets 32, counterexamples 2, proofobligations 30, passrate 95; crossing to logic')
 })

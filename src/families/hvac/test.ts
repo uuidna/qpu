@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HvacFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('hvac: coolingload, airflow, tonnage, ducting, ventilation, sensibleheat, l
   assert.equal(HvacFormulas.setpoint(72, 75).value, 1, 'setpoint held')
   assert.equal(HvacFormulas.setpoint(78, 75).value, 0)
   assert.equal(HvacFormulas.coolingload(600, 25).dst, 'mechanical')
-  assert.equal(qpuHexFamiliesOf().get('hvac')?.length, 8)
+  assert.equal(hexFamiliesOf().get('hvac')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'hvac', program: ['ducting'], params: [1200, 800] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 2, `hvac.ducting at ${uuid}`)
-  qpuUuidReceiptOf('hvac ducting', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('hvac ducting', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; coolingload 15000, airflow 1200, tonnage 3, ducting 2, ventilation 300, sensibleheat 20000, latentheat 25000, setpoint 1; crossing to mechanical')
 })

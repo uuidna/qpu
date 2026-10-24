@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACCESS, FORMULATED, AND SECURITY SCREENED. Who may read or write a resource is not a function hidden in a collection
@@ -59,4 +59,4 @@ export class AccessFormulas {
 }
 
 for (const name of ['grant', 'rank', 'read', 'role', 'root', 'screen', 'sudo', 'tenant', 'token', 'write'] as const)
-  qpuHexRegisterOf('access', name, (AccessFormulas[name] as (...x: unknown[]) => unknown).bind(AccessFormulas))
+  hexRegisterOf('access', name, (AccessFormulas[name] as (...x: unknown[]) => unknown).bind(AccessFormulas))

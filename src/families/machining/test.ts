@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MachiningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -17,10 +17,10 @@ test('machining: chipload, cuttingspeed, feedrate, materialremoval, passrate, su
   assert.equal(MachiningFormulas.tolerance(5, 10000).value, 500, 'ppm')
   assert.equal(MachiningFormulas.tolerance(5, 0).value, 0)
   assert.equal(MachiningFormulas.chipload(100, 4).dst, 'manufacturing')
-  assert.equal(qpuHexFamiliesOf().get('machining')?.length, 8)
+  assert.equal(hexFamiliesOf().get('machining')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'machining', program: ['feedrate'], params: [5, 2000] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 10000, `machining.feedrate at ${uuid}`)
-  qpuUuidReceiptOf('machining feedrate', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('machining feedrate', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; chipload 25, cuttingspeed 314, feedrate 10000, materialremoval 30, passrate 95, surfacefinish 32, toollife 400, tolerance 500; crossing to manufacturing')
 })

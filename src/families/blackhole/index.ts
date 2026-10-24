@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** BLACKHOLE — A BLACK HOLE AS ARITHMETIC (integer proxies, one measure per curvature fact). A black hole is numbers: the
@@ -31,4 +31,4 @@ export class BlackholeFormulas {
 }
 
 for (const name of ['accretionrate', 'entropy', 'evaporationtime', 'hawkingtemp', 'isco', 'photonsphere', 'schwarzschildradius', 'tidalforce'] as const)
-  qpuHexRegisterOf('blackhole', name, (BlackholeFormulas[name] as (...x: unknown[]) => unknown).bind(BlackholeFormulas))
+  hexRegisterOf('blackhole', name, (BlackholeFormulas[name] as (...x: unknown[]) => unknown).bind(BlackholeFormulas))

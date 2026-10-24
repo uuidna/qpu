@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { OxygenationFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('oxygenation: saturation, oxygencontent, pao2fio2ratio, alveolararterial, d
   assert.equal(OxygenationFormulas.carryingcapacity(15).value, 20)
   assert.equal(OxygenationFormulas.shuntfraction(20, 19, 15).value, 20, 'shunt fraction')
   assert.equal(OxygenationFormulas.saturation(97, 100).dst, 'pulmonology')
-  assert.equal(qpuHexFamiliesOf().get('oxygenation')?.length, 8)
+  assert.equal(hexFamiliesOf().get('oxygenation')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'oxygenation', program: ['saturation'], params: [97, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 97, `oxygenation.saturation at ${uuid}`)
-  qpuUuidReceiptOf('oxygenation saturation', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('oxygenation saturation', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; saturation 97, oxygencontent 1455, pao2fio2ratio 200, alveolararterial 10, deliveryrate 1000, extractionratio 25, carryingcapacity 20, shuntfraction 20; crossing to pulmonology')
 })

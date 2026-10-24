@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** CHECKERS — scaffolded integer measures crossed to graphtheory. Every output an exact finite nonnegative integer. */
@@ -20,4 +20,4 @@ export class CheckersFormulas {
 }
 
 for (const name of ['branchingfactor', 'jumpcombos', 'kingrows', 'movepaths', 'pieces', 'playablesquares', 'positionsubsets', 'squares'] as const)
-  qpuHexRegisterOf('checkers', name, (CheckersFormulas[name] as (...x: unknown[]) => unknown).bind(CheckersFormulas))
+  hexRegisterOf('checkers', name, (CheckersFormulas[name] as (...x: unknown[]) => unknown).bind(CheckersFormulas))

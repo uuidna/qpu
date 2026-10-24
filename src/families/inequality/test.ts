@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { InequalityFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,10 @@ test('inequality: giniscaled, quintileratio, palmaratio, lorenzgap, percentilepa
   assert.equal(InequalityFormulas.deciles(10, 0).value, 10)
   assert.equal(InequalityFormulas.theilindex(350, 100).value, 3)
   assert.equal(InequalityFormulas.giniscaled(40, 1).dst, 'statistics')
-  assert.equal(qpuHexFamiliesOf().get('inequality')?.length, 8)
+  assert.equal(hexFamiliesOf().get('inequality')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'inequality', program: ['giniscaled'], params: [40, 1] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 40, `inequality.giniscaled at ${uuid}`)
-  qpuUuidReceiptOf('inequality giniscaled', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('inequality giniscaled', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; giniscaled 40, quintileratio 8, palmaratio 2, lorenzgap 10, percentilepairs 45, topshare 20, deciles 10, theilindex 3; crossing to statistics')
 })

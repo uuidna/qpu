@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MedFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -16,10 +16,10 @@ test('med: clinical and forensic-medical arithmetic read into evidence', async (
   assert.equal(MedFormulas.causation(250, 100).value, 250, 'relative risk 2.5 — causation more likely than not')
   assert.equal(MedFormulas.frequency(8).value, 3, 'every eight hours is thrice daily')
   assert.equal(MedFormulas.bmi(80, 180).dst, 'evidence', 'a medical finding is read into evidence')
-  assert.equal(qpuHexFamiliesOf().get('med')?.length, 8)
+  assert.equal(hexFamiliesOf().get('med')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'med', program: ['gcs'], params: [4, 5, 6] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 15, `med.gcs at ${uuid}`)
-  qpuUuidReceiptOf('med gcs', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('med gcs', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; bmi 24, dose 350, gcs 15/3, map 93, packyears 15, impairment 30, causation 250, frequency 3; crossing to evidence')
 })

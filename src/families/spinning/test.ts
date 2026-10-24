@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { SpinningFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('spinning: count, twist, denier, tenacity, draft, yield, evenness, tex — 
   assert.equal(SpinningFormulas.evenness(200, 100).value, 0)
   assert.equal(SpinningFormulas.tex(40, 1000).value, 40)
   assert.equal(SpinningFormulas.count(1000, 20).dst, 'materials')
-  assert.equal(qpuHexFamiliesOf().get('spinning')?.length, 8)
+  assert.equal(hexFamiliesOf().get('spinning')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'spinning', program: ['draft'], params: [800, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 8, `spinning.draft at ${uuid}`)
-  qpuUuidReceiptOf('spinning draft', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('spinning draft', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; count 50, twist 20, denier 100, tenacity 9, draft 8, yield 95, evenness 88, tex 40; crossing to materials')
 })

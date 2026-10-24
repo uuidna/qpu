@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { BacklogFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -15,10 +15,10 @@ test('backlog: agedays, clearancetime, cycletime, groomingrate, prioritization, 
   assert.equal(BacklogFormulas.throughput(60, 5).value, 12, 'items per sprint')
   assert.equal(BacklogFormulas.wipfill(8, 10).value, 80)
   assert.equal(BacklogFormulas.size(50, 3).dst, 'logistics')
-  assert.equal(qpuHexFamiliesOf().get('backlog')?.length, 8)
+  assert.equal(hexFamiliesOf().get('backlog')?.length, 8)
   const uuid = qpuHexUuidOf({ family: 'backlog', program: ['clearancetime'], params: [100, 30] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+  const run = (await hexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `backlog.clearancetime at ${uuid}`)
-  qpuUuidReceiptOf('backlog clearancetime', qpuContentUuidOf(run), { uuid })
+  uuidReceiptOf('backlog clearancetime', contentUuidOf(run), { uuid })
   t.diagnostic('8 formulas; agedays 30, clearancetime 4, cycletime 25, groomingrate 75, prioritization 25, size 150, throughput 12, wipfill 80; crossing to logistics')
 })

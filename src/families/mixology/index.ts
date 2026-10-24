@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** MIXOLOGY — THE DRINK AS ARITHMETIC (chosen by the recipe registry, not by hand). Mixing a cocktail is numbers: the ABV
@@ -31,4 +31,4 @@ export class MixologyFormulas {
 }
 
 for (const name of ['abv', 'balance', 'dilution', 'pour', 'ratio', 'servings', 'strength', 'sugarcontent'] as const)
-  qpuHexRegisterOf('mixology', name, (MixologyFormulas[name] as (...x: unknown[]) => unknown).bind(MixologyFormulas))
+  hexRegisterOf('mixology', name, (MixologyFormulas[name] as (...x: unknown[]) => unknown).bind(MixologyFormulas))

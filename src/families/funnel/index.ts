@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** FUNNEL — THE CONVERSION FUNNEL, AS ARITHMETIC. A user journey is numbers: how many convert of those who entered, where they
@@ -31,4 +31,4 @@ export class FunnelFormulas {
 }
 
 for (const name of ['abandonment', 'bottleneck', 'conversion', 'dropoff', 'steprate', 'throughput', 'value', 'velocity'] as const)
-  qpuHexRegisterOf('funnel', name, (FunnelFormulas[name] as (...x: unknown[]) => unknown).bind(FunnelFormulas))
+  hexRegisterOf('funnel', name, (FunnelFormulas[name] as (...x: unknown[]) => unknown).bind(FunnelFormulas))

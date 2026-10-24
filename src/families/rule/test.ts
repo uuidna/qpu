@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { hexFamiliesOf, hexRunOf, qpuHexUuidOf, contentUuidOf, uuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import '../../mcp/families.js'
 import { RuleFormulas, ruleIndexOf as ix } from './index.js'
 import { flowIndexOf as fx } from '../merkaba/index.js'
@@ -20,13 +20,13 @@ test('rule: no family is past its nibble, none is truncated, and every rule runs
     assert.ok(Number(RuleFormulas.nibbles(i).value) + Number(RuleFormulas.free(i).value) === 15)
   }
   const total = Number(RuleFormulas.formulas().value)
-  assert.equal(total, [...qpuHexFamiliesOf().values()].reduce((s, fs) => s + fs.length, 0))
+  assert.equal(total, [...hexFamiliesOf().values()].reduce((s, fs) => s + fs.length, 0))
   // the rules at their addresses
   for (const [name, params] of [['over', []], ['cap', []], ['truncated', [0]]] as [string, number[]][]) {
     const uuid = qpuHexUuidOf({ family: 'rule', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid)) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `rule.${name} holds at ${uuid}`)
-    qpuUuidReceiptOf(`rule ${name}`, qpuContentUuidOf(run), { uuid })
+    uuidReceiptOf(`rule ${name}`, contentUuidOf(run), { uuid })
   }
   t.diagnostic(`${n} families, ${total} formulas, none truncated`)
 })
@@ -36,7 +36,7 @@ test('rule: no family is past its nibble, none is truncated, and every rule runs
 test('rule: compositions agrees with the superpositions that still meet', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -102,7 +102,7 @@ test('rule: compositions agrees with the superpositions that still meet', async 
 test('rule: eight README integers still meet, and kin × rule = 196 holds false', async (t) => {
   const at = async (family: string, program: string[], params: number[]) => {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
     assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
     return String(run.value)
   }
@@ -315,7 +315,7 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
   const returned = []
   for (const [family, program, params] of leadWays) {
     const uuid = qpuHexUuidOf({ family, program, params })
-    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown }
+    const run = (await hexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown }
     returned.push({ call: `${family}.${program.join('∘')}(${params.join(', ')})`, value: String(run.value), uuid })
   }
   const meets = new Set(returned.filter((row) => row.value === '196').map((row) => row.call.split('.')[0]))
