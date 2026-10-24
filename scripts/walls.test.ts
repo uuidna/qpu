@@ -43,7 +43,7 @@ test('A BARE WALL IS CAUGHT — the arm without which a reading of zero means no
 test('EACH OF THE FOUR NAMED CAUSES CLEARS, including the one the printed cure recommends', () => {
   const fixtures = {
     'host.mjs': '// cannot read it — no filesystem in this host\n',
-    'theorem.mjs': '// cannot exceed it, by theorem qpu_balance_holds\n',
+    'theorem.mjs': '// cannot exceed it, by theorem balance_holds\n',
     'construction.mjs': '// cannot happen by construction\n',
     'boundary.mjs': '// cannot classify it from the name alone, which is the declared boundary of this reader\n',
   }
