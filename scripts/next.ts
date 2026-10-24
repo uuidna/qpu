@@ -55,7 +55,7 @@ console.log(`  scripts gate: ${failing.length ? `${failing.length} failing — o
 if (process.argv.includes('--all')) {
   console.log('next --all: automatic release, refused unless every check is green')
   try {
-    execSync('./node_modules/.bin/tsx scripts/release.ts --auto --action deploy', { stdio: 'inherit' })
+    execSync('./node_modules/.bin/tsx scripts/release.ts --auto', { stdio: 'inherit' })
   } catch {
     console.log('next --all: the release did not run; see the checks above')
   }

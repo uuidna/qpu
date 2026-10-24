@@ -55,14 +55,15 @@ if (auto) {
     console.log('release refused: automatic release needs every check green.')
     process.exit(2)
   }
-  const cmd = ACTIONS[action ?? '']
-  if (!cmd) { console.log('release refused: --action deploy|publish is required with --auto.'); process.exit(2) }
-  console.log(`release: ${action}, automatic on green`)
-  execSync(cmd, { stdio: 'inherit' })
+  // every check is green: push the committed commits, then deploy, then publish. Nothing here commits anyone's edits.
+  console.log('release: automatic on green — push, deploy, publish')
+  execSync('git push origin HEAD', { stdio: 'inherit' })
+  execSync(ACTIONS.deploy, { stdio: 'inherit' })
+  execSync(ACTIONS.publish, { stdio: 'inherit' })
   process.exit(0)
 }
 
-if (!approvedBy || !action || !(action in ACTIONS)) {
+if (!auto && (!approvedBy || !action || !(action in ACTIONS))) {
   console.log('release refused: a release needs --approved-by <your name> and --action deploy|publish, typed by the person releasing.')
   process.exit(2)
 }
