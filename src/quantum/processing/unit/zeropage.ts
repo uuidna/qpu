@@ -11,7 +11,6 @@ import {
   onceOf,
   capacityOf,
   circuitOf,
-  clayHolds,
   qpuClayOf,
   coilOf,
   cubeOf,
@@ -112,7 +111,7 @@ export const analyticsOf = onceOf((): QpuAnalytics => {
   const amplitudeBytes = bytesOf(amplitudes)
   const fusedBytes = bytesOf(fused)
   const holds =
-    clayHolds(clay) &&
+    clay.holds &&
     clay.clay === faces.faces &&
     clay.clay === coil.coil &&
     clay.clay === coins * faces.rays &&
@@ -474,7 +473,7 @@ const clayOnOf = (width: MachineWidth): MachineClay => {
   const redirected = LawFormulas.redirected(ordered, computed)
   const radix = latticeNamesOf().vertices
   const faithful = latticeSeals.every((seal) => seal.value >= none && seal.value < radix)
-  const matched = faithful && fidelity.value === seed && latticeSeals.every((seal) => seal.holds === true) && clayHolds()
+  const matched = faithful && fidelity.value === seed && latticeSeals.every((seal) => seal.holds === true) && qpuClayOf().holds
   return {
     riemann: projected[none]!,
     hodge: projected[seed]!,

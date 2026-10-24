@@ -711,7 +711,7 @@ export const qpuNextHolds = (x = qpuNextOf()): boolean =>
  * 2×7 coins = 1+6 coils = clay. Each coil is coins windings.
  * @wing agents
  * @kind builder
- * @evidence clayHolds
+ * @evidence qpuClayOf
  */
 export const qpuClayOf = onceOf(() => {
   const coil = coilOf()
@@ -741,8 +741,6 @@ export const qpuClayOf = onceOf(() => {
   }
 })
 
-/** The identities are checked once, inside qpuClayOf's holds; this reads that verdict and its tags. */
-export const clayHolds = (c = qpuClayOf()): boolean => c.holds === true && c.kind === 'clay' && c.theorem === 'clay'
 
 export const genesisHolds = (g = genesisOf()): boolean =>
   g.holds === true &&

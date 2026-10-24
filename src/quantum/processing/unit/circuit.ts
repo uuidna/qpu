@@ -16,7 +16,6 @@ import {
   payloadDbKey,
   primitives,
   balanceHolds,
-  clayHolds,
   qpuClayOf,
   coilEfficiencyHolds,
   coilEfficiencyOf,
@@ -430,7 +429,7 @@ export const circuitLiveOf = onceOf(() => {
       efficiency.remainder === n - n &&
       qpuNextHolds(next) &&
       next.nextCoil === next.nextFused &&
-      clayHolds(clay) &&
+      clay.holds &&
       clay.clay === coil.coil &&
       coil.theory === coil.practice &&
       coil.balance === coins}
@@ -727,7 +726,7 @@ export const circuitHolds = (c = circuitOf()): boolean =>
   c.register.efficiency.vacant === n - n &&
   qpuNextHolds(c.register.next) &&
   c.register.next.nextCoil === c.register.next.nextFused &&
-  clayHolds(c.register.clay) &&
+  c.register.clay.holds &&
   c.register.clay.clay === c.register.coil.coil &&
   c.register.clay.coins * c.register.clay.seven === c.register.clay.clay &&
   (seed + c.register.clay.six) * c.register.clay.coins === c.register.clay.clay &&

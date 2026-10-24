@@ -12,7 +12,7 @@ import {
   mintOf,
   n,
   onceOf,
-  clayHolds,
+  qpuClayOf,
   coilEfficiencyHolds,
   coilHolds,
   computerHolds,
@@ -302,7 +302,7 @@ export const leanOf = onceOf(() => {
       formula: '\\mathrm{coins}\\cdot\\mathrm{rays}=(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}',
       reading:
         'Two times seven coins. Coins times rays is one plus six times coins. Never Math. Never by decide.',
-      holds: clayHolds() && coins * facesOf().rays === (seed + (mintOf(n) - coins)) * coins,
+      holds: qpuClayOf().holds && coins * facesOf().rays === (seed + (mintOf(n) - coins)) * coins,
   },
     {
       heading: 'clay',
@@ -310,7 +310,7 @@ export const leanOf = onceOf(() => {
       formula: '\\mathrm{coins}\\cdot\\mathrm{rays}=(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}\\land(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}=\\mathrm{coil}',
       reading:
         'Two times seven coins equals one plus six coils equals clay. Each coil is coins windings. Clay is coil is faces. Never Math. Never by decide.',
-      holds: clayHolds(),
+      holds: qpuClayOf().holds,
   },
     {
       heading: 'integrity',

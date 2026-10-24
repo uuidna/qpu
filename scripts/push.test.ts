@@ -59,7 +59,7 @@ test('qpu is complete: the families compute both sides — clay and the double t
   await import('../dist/mcp/families.js')
   const { CoilFormulas } = await import('../dist/families/coil/index.js')
   // one side: clay — 2·7 coins = 1+6 coils = clay
-  const clay = typeof unit.clayHolds === 'function' ? unit.clayHolds() : unit.qpuClayOf().holds
+  const clay = unit.qpuClayOf().holds
   assert.equal(clay, true, 'the clay side holds (2·7 coins = 1+6 coils = clay)')
   // the other side: the double torus — the coil family, the fold/coil duality (2·90 = 3·60) and genus two
   assert.equal(CoilFormulas.turn(2, 3).holds, true, 'the double-torus side holds — fold equals coil (180°)')
