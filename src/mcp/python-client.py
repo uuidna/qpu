@@ -49,23 +49,23 @@ class QPUMCPClient:
 
     def coverage_report(self) -> Dict[str, Any]:
         """Get dynamic coverage report"""
-        return self.call_tool("qpu_coverage_report")
+        return self.call_tool("coverage_report")
 
     def deployment_readiness(self) -> Dict[str, Any]:
         """Check deployment readiness"""
-        return self.call_tool("qpu_deployment_readiness")
+        return self.call_tool("deployment_readiness")
 
     def theorem_summary(self) -> Dict[str, Any]:
         """Get theorem summary from live data"""
-        return self.call_tool("qpu_theorem_summary")
+        return self.call_tool("theorem_summary")
 
     def api_mapping(self, domain: str = "all") -> Dict[str, Any]:
         """Get API mappings for a domain"""
-        return self.call_tool("qpu_api_mapping", {"domain": domain})
+        return self.call_tool("api_mapping", {"domain": domain})
 
     def deployment_timeline(self) -> Dict[str, Any]:
         """Get deployment timeline"""
-        return self.call_tool("qpu_deployment_timeline")
+        return self.call_tool("deployment_timeline")
 
 
 def main():

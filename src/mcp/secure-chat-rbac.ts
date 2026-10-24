@@ -613,7 +613,7 @@ export const mcpSecureChatOps = {
   domain: 'communication',
   operations: [
     {
-      name: 'qpu_user_register',
+      name: 'user_register',
       description: 'Register user with role and issue access token',
       handler: async (req: { userId: string; role: Role }) => ({
         token: secureChat.registerUser(req.userId, req.role),
@@ -622,7 +622,7 @@ export const mcpSecureChatOps = {
       })
     },
     {
-      name: 'qpu_send_secure_message',
+      name: 'send_secure_message',
       description: 'Send quantum-encrypted message with RBAC payload access',
       handler: async (req: {
         tokenId: string
@@ -645,7 +645,7 @@ export const mcpSecureChatOps = {
       }
     },
     {
-      name: 'qpu_read_secure_message',
+      name: 'read_secure_message',
       description: 'Read encrypted message with access logging',
       handler: async (req: { messageId: string; tokenId: string }) => {
         const message = secureChat.readMessage(req.messageId, req.tokenId)
@@ -661,7 +661,7 @@ export const mcpSecureChatOps = {
       }
     },
     {
-      name: 'qpu_decrypt_message_body',
+      name: 'decrypt_message_body',
       description: 'Decrypt quantum-encrypted message body',
       handler: async (req: { messageId: string; tokenId: string }) => {
         const message = secureChat.readMessage(req.messageId, req.tokenId)
@@ -678,7 +678,7 @@ export const mcpSecureChatOps = {
       }
     },
     {
-      name: 'qpu_channel_broadcast',
+      name: 'channel_broadcast',
       description: 'Broadcast to channel with RBAC enforcement',
       handler: async (req: {
         channelId: string
@@ -699,7 +699,7 @@ export const mcpSecureChatOps = {
       }
     },
     {
-      name: 'qpu_access_log',
+      name: 'access_log',
       description: 'Get payload access audit log',
       handler: async (req: { payloadId: string }) => {
         const log = secureChat.getAccessLog(req.payloadId)
@@ -707,7 +707,7 @@ export const mcpSecureChatOps = {
       }
     },
     {
-      name: 'qpu_revoke_access',
+      name: 'revoke_access',
       description: 'Revoke user access token',
       handler: async (req: { tokenId: string }) => {
         secureChat.revokeAccess(req.tokenId)
