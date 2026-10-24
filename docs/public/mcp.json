@@ -14,7 +14,8 @@
           "name": {
             "enum": [
               "Willow",
-              "Sycamore"
+              "Sycamore",
+              "Sycamore23"
             ]
           }
         }
@@ -125,7 +126,8 @@
           "device": {
             "enum": [
               "Willow",
-              "Sycamore"
+              "Sycamore",
+              "Sycamore23"
             ],
             "description": "validate the circuit against this device first"
           },
@@ -582,7 +584,11 @@
               "sycamore_gates",
               "echoes_preprint",
               "campus",
-              "campus_announcement"
+              "campus_announcement",
+              "qsim",
+              "qualtran",
+              "openfermion",
+              "cirq_known_devices"
             ]
           }
         }

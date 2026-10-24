@@ -238,3 +238,12 @@ test('the algorithm tool factors N = 15 by Shor\'s order finding, and runs the Q
   const sw = (sweep.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
   assert.ok(Number(sw[4]![1]) > Number(sw[5]![1]), 'the expected cut at the best angles beats the random baseline')
 })
+
+test('every device the processor tool names is served, and Sycamore23 has 23 qubits', () => {
+  const s23 = call('processor', { name: 'Sycamore23' })
+  assert.ok('result' in s23 && (s23.result as { structuredContent: { qubits: number } }).structuredContent.qubits === 23)
+  for (const topic of ['qsim', 'qualtran', 'openfermion', 'cirq_known_devices']) {
+    const r = call('statements', { topic })
+    assert.ok('result' in r && (r.result as { structuredContent: { statements: { text: string }[] } }).structuredContent.statements[0]!.text.length > 20, topic)
+  }
+})

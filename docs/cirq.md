@@ -25,3 +25,7 @@ The state-vector simulator is exact for the sizes Cirq documents, about 20 qubit
 The Cirq page also states facts this repository does not reproduce: Cirq's simulators use float32 by default, where this simulator uses float64. qsim is recommended for deep circuits up to 30 qubits, and the QVM's Willow noise data is public but is not in this repository, so the QVM here takes its noise as options.
 
 The wave-function part of qsim is covered by the state-vector simulator. qsim itself is a separate library, and this repository does not implement it.
+
+## Checked against Cirq's source
+
+The noise channel definitions and the insert strategies are checked against Cirq's own source on GitHub (`cirq-core/cirq/ops/common_channels.py` and `cirq-core/cirq/circuits/insert_strategy.py`). The Kraus operators for amplitude damping, phase damping, generalized amplitude damping and reset agree with Cirq's, and so do the mixture weights of bit flip, phase flip, depolarize and asymmetric depolarize. The four insert strategies follow Cirq's docstrings, including EARLIEST's first-moment fall-back.

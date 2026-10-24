@@ -22,7 +22,8 @@ A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the
     "name": {
       "enum": [
         "Willow",
-        "Sycamore"
+        "Sycamore",
+        "Sycamore23"
       ]
     }
   }
@@ -136,7 +137,8 @@ Compile a circuit from its operations, placed by an insert strategy, and simulat
     "device": {
       "enum": [
         "Willow",
-        "Sycamore"
+        "Sycamore",
+        "Sycamore23"
       ],
       "description": "validate the circuit against this device first"
     },
@@ -611,7 +613,11 @@ The statements quantumai.google and its PDF make: the Cirq description, the defi
         "sycamore_gates",
         "echoes_preprint",
         "campus",
-        "campus_announcement"
+        "campus_announcement",
+        "qsim",
+        "qualtran",
+        "openfermion",
+        "cirq_known_devices"
       ]
     }
   }

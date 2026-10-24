@@ -1,8 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { PROCESSORS, SYCAMORE, WILLOW, averageConnectivityOf, belowThresholdOf, couplersOf, deviceOf, fitsProcessor } from './processor.js'
-import { Circuit, applied, CZ, GridQubit, H } from './cirq.js'
-import { keyOf } from './cirq.js'
+import { PROCESSORS, SYCAMORE, SYCAMORE23, WILLOW, averageConnectivityOf, belowThresholdOf, couplersOf, deviceOf, fitsProcessor } from './processor.js'
+import { Circuit, applied, CZ, GridQubit, H, keyOf } from './cirq.js'
 
 test('Willow has 105 sites on the spec sheet grid, all distinct', () => {
   assert.equal(WILLOW.qubits, 105)
@@ -62,4 +61,11 @@ test('Sycamore, from its printed diagram: 54 qubits and 88 couplers, as the devi
   const device = deviceOf(SYCAMORE)
   device.validateCircuit(new Circuit([applied(CZ, SYCAMORE.couplers[0]![0], SYCAMORE.couplers[0]![1])]))
   assert.throws(() => device.validateOperation(applied(CZ, SYCAMORE.sites[0]!, SYCAMORE.sites[SYCAMORE.sites.length - 1]!)), /does not couple/)
+})
+
+test('Sycamore23, from the known_devices source: 23 qubits, all on the Sycamore grid, with its own couplers', () => {
+  assert.equal(SYCAMORE23.qubits, 23)
+  const sycamore = new Set(SYCAMORE.sites.map(keyOf))
+  for (const q of SYCAMORE23.sites) assert.ok(sycamore.has(keyOf(q)), `${keyOf(q)} is on Sycamore`)
+  assert.ok(SYCAMORE23.couplers.length > 0 && SYCAMORE23.couplers.length < SYCAMORE.couplers.length)
 })

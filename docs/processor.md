@@ -55,3 +55,5 @@ The paper the homepage links as Nature, "Quantum error correction below the surf
 ## Sycamore
 
 The Google devices page prints Sycamore's device diagram: each character cell is a qubit at its row and column, and its 54 filled cells are the stated 54 qubits. Row and column neighbours give the 88 couplers the page states, and the tests check both counts. The page states two-qubit gates `cirq.ISWAP**0.5` (32 ns) and the Sycamore gate, equivalent to FSimGate(π/2, π/6), at 12 ns.
+
+Cirq's known_devices source on GitHub defines the same 54-cell grid, and its Sycamore23, the 23-qubit subset, is served as a device too. The source builds couplers from neighbours and lists no coupler set.

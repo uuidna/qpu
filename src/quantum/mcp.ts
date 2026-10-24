@@ -4,7 +4,7 @@
 
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
-import { DEVICES, PROCESSORS, SYCAMORE, WILLOW, deviceOf } from './processor.js'
+import { DEVICES, PROCESSORS, WILLOW, deviceOf } from './processor.js'
 import { algorithmWidget, circuitWidget, echoBenchmarkWidget, echoWidget, leadsWidget, processorWidget, roadmapWidget, softwareWidget, statementsWidget } from './widgets.js'
 import { APPLICATIONS, ROADMAP } from './roadmap.js'
 import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qaoaSweep, qftOperations, seededWeights, shorCircuit, shorFactors, teleportationCircuit, type Graph } from './algorithms.js'
@@ -130,7 +130,11 @@ const TOOLS: Tool[] = [
     description: 'A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.',
     inputSchema: { type: 'object', required: ['name'], properties: { name: { enum: Object.keys(DEVICES) } } },
     run: (args) => {
-      if (args.name === SYCAMORE.name) return { name: SYCAMORE.name, qubits: SYCAMORE.qubits, couplers: SYCAMORE.couplers.length, statedQubits: SYCAMORE.statedQubits, statedCouplers: SYCAMORE.statedCouplers, layout: SYCAMORE.layout }
+      const deviceName = String(args.name)
+      if (deviceName !== 'Willow' && deviceName in DEVICES) {
+        const device = DEVICES[deviceName as keyof typeof DEVICES]
+        return { name: device.name, qubits: device.qubits, couplers: device.couplers.length, layout: 'layout' in device ? device.layout : '', ...('statedQubits' in device ? { statedQubits: device.statedQubits, statedCouplers: device.statedCouplers } : {}) }
+      }
       const processor = PROCESSORS[args.name as keyof typeof PROCESSORS] ?? reject(`processor ${String(args.name)} is not described here`)
       return { name: processor.name, technology: processor.technology, qubits: processor.qubits, statedAverageConnectivity: processor.statedAverageConnectivity, typicalConnectivity: processor.typicalConnectivity, chips: processor.chips, magicStateCultivation: processor.magicStateCultivation, errorCorrectionPreprint: processor.errorCorrectionPreprint }
     },

@@ -99,15 +99,16 @@ export const deviceOf = (processor: { readonly sites: readonly Site[]; readonly 
 /** The processors this repository describes, by their Google name. */
 export const PROCESSORS = { Willow: WILLOW } as const
 
-/** Sycamore's printed device diagram, from Google's devices page: each character cell is a qubit at its row and column, and
- *  a dash is no qubit. The diagram's 54 filled cells are the stated 54 qubits, and their row and column neighbours are the 88
- *  couplers the same page states. */
-const SYCAMORE_DIAGRAM: readonly string[] = [
+/** A device grid as Cirq's known_devices source writes it: each character cell is a qubit at its row and column, a dash is none. */
+const gridSites = (rows: readonly string[]): readonly Site[] =>
+  rows.flatMap((line, r) => [...line].flatMap((cell, c): Site[] => (cell === '-' ? [] : [GridQubit.of(r, c)])))
+
+/** Sycamore's printed device diagram, from Google's devices page and Cirq's known_devices source (the same 54 cells): 54 qubits,
+ *  and the couplers their row and column neighbours give, which the page states as 88. */
+const SYCAMORE_SITES = gridSites([
   '-----AB---', '----ABCD--', '---ABCDEF-', '--ABCDEFGH', '-ABCDEFGHI',
   'ABCDEFGHI-', '-CDEFGHI--', '--EFGHI---', '---GHI----', '----I-----',
-]
-const SYCAMORE_SITES: readonly Site[] = SYCAMORE_DIAGRAM.flatMap((line, r) =>
-  [...line].flatMap((cell, c): Site[] => (cell === '-' ? [] : [GridQubit.of(r, c)])))
+])
 
 /** Sycamore: 54 qubits on the printed diagram, with the couplers its row and column neighbours give. The page states 54 qubits
  *  and 88 couplers, both checked in the tests. */
@@ -118,11 +119,24 @@ export const SYCAMORE = {
   couplers: couplersOf(SYCAMORE_SITES),
   statedQubits: 54,
   statedCouplers: 88,
-  layout: 'the printed device diagram on the Google devices page',
+  layout: 'the printed device diagram on the Google devices page, and the grid in Cirq\'s known_devices source',
+} as const
+
+/** Sycamore23, the 23-qubit subset of Sycamore in Cirq's known_devices source: its grid, and the couplers of its neighbours. */
+const SYCAMORE23_SITES = gridSites([
+  '----------', '----------', '----------', '--A-------', '-ABC------',
+  'ABCDE-----', '-CDEFG----', '--EFGHI---', '---GHI----', '----I-----',
+])
+export const SYCAMORE23 = {
+  name: 'Sycamore23',
+  qubits: SYCAMORE23_SITES.length,
+  sites: SYCAMORE23_SITES,
+  couplers: couplersOf(SYCAMORE23_SITES),
+  layout: 'the Sycamore23 grid in Cirq\'s known_devices source',
 } as const
 
 /** Every device this repository can build a circuit against, by its name. */
-export const DEVICES = { Willow: WILLOW, Sycamore: SYCAMORE } as const
+export const DEVICES = { Willow: WILLOW, Sycamore: SYCAMORE, Sycamore23: SYCAMORE23 } as const
 
 /** True when a circuit's qubit count fits the processor. */
 export const fitsProcessor = (processor: { qubits: number }, qubits: number): boolean => qubits <= processor.qubits
