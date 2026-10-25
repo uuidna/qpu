@@ -1067,6 +1067,10 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
       "type": "boolean",
       "description": "the wave over the textbook: every example's verification requests on public datasets and APIs, for any client device to fetch"
     },
+    "example": {
+      "type": "string",
+      "description": "with verify: one example only, so a device at the edge walks the textbook within the Worker's budget"
+    },
     "results": {
       "type": "array",
       "items": {
