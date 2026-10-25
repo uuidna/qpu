@@ -106,6 +106,10 @@ export default defineConfig({
         "link": "/match"
       },
       {
+        "text": "Theorems",
+        "link": "/theorems"
+      },
+      {
         "text": "Verification",
         "link": "/verification"
       },
@@ -197,6 +201,10 @@ export default defineConfig({
           {
             "text": "Match",
             "link": "/match"
+          },
+          {
+            "text": "Theorems",
+            "link": "/theorems"
           },
           {
             "text": "Verification",

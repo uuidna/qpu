@@ -2,7 +2,7 @@
 // prose that disagrees with a measurement is rewritten from the measurement. Dependency-free and deterministic.
 //   1. exports under src/quantum that no test, tool, example or other module references → lead "unproven export"
 //   2. files under src/quantum that nothing imports and that are not tests → lead "orphan file"
-//   3. the README's measured table is regenerated from git, tsc, the test receipt, lake build, the kernel census and tools/list
+//   3. the README's measured table is regenerated from git, tsc, the test receipt, lake build, the theorem ledger and tools/list
 import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -65,11 +65,27 @@ const tests = step('test')?.counts ?? {}
 const lean = step('lean')?.counts ?? {}
 const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: unknown[] } }).result.tools.length
 const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/toolchains/leanprover--lean4---v4.33.0/bin/lake`, 'lake'].find((p) => p === 'lake' || existsSync(p))!
-const census = sh(lake, ['env', 'lean', 'scripts/census.lean'])
-const kernel = /kernel-accepted\): (\d+)/.exec(census)?.[1] ?? '?'
-const axioms = /axioms used by any theorem: \[([^\]]*)\]/.exec(census)?.[1] ?? '?'
-const sorried = /sorryAx: (\d+)/.exec(census)?.[1] ?? '?'
-const declared = tracked.filter((f) => f.endsWith('.lean') && !f.startsWith('scripts/')).reduce((n, f) => n + (readFileSync(join(ROOT, f), 'utf8').match(/^\s*theorem /gm) ?? []).length, 0)
+// The theorem ledger: every kernel-accepted theorem of the Qpu modules with its statement and axioms, one JSON line each
+// (scripts/theorems.lean), written as build output and as a page; the counts below are taken from it, never from prose.
+type TheoremRow = { key: string; module: string; statement: string; axioms: string[] }
+const ledgerText = sh(lake, ['env', 'lean', 'scripts/theorems.lean'])
+const ledger: TheoremRow[] = ledgerText.split('\n').filter((l) => l.startsWith('{')).flatMap((l) => { try { return [JSON.parse(l) as TheoremRow] } catch { return [] } })
+if (!ledger.length) leads.push({ id: 'theorem-ledger-empty', source: 'scripts/theorems.lean', statement: 'the theorem ledger came back empty', status: 'open', reason: ledgerText.trim().split('\n').slice(-3).join(' | ') || 'no output' })
+// The compiler's own names: equation lemmas, match splitters, the _proof_N and _simp_N auxiliaries, structure and recursor boilerplate.
+const GENERATED = /\.(eq_\d+|eq_def|match_\d+|proof_\d+|_proof(?:_\d+)+|_simp(?:_\d+)+|_sunfold|_unfold|inj|injEq|sizeOf_spec|noConfusion\w*|casesOn\w*|rec\w*|below\w*|brecOn\w*|brecOn\.eq|ibelow\w*|binductionOn\w*)$/
+const handWritten = ledger.filter((r) => !r.key.startsWith('_private.') && !GENERATED.test(r.key))
+const generated = ledger.length - handWritten.length
+const kernel = ledger.length ? String(ledger.length) : '?'
+const axioms = ledger.length ? [...new Set(ledger.flatMap((r) => r.axioms))].filter((a) => a !== 'sorryAx').sort().join(', ') : '?'
+const sorried = ledger.length ? String(ledger.filter((r) => r.axioms.includes('sorryAx')).length) : '?'
+writeFileSync(join(ROOT, 'docs', 'public', 'theorems.ndjson'), ledger.map((r) => JSON.stringify(r)).join('\n') + '\n')
+const perModule = new Map<string, number>()
+for (const r of handWritten) perModule.set(r.module, (perModule.get(r.module) ?? 0) + 1)
+writeFileSync(join(ROOT, 'docs', 'theorems.md'), ['---', 'title: Theorems', 'order: 47', '---', '', '# The theorem ledger', '',
+  `Every theorem the Lean kernel accepted in the Qpu modules, read from the environment by \`scripts/theorems.lean\` on ${new Date().toISOString().slice(0, 10)}: ${ledger.length} constants, of which ${handWritten.length} hand-written and ${generated} equation and match lemmas the compiler generated beside them; ${sorried} depend on \`sorryAx\`; axioms used: ${axioms}. The ledger is also served as \`/theorems.ndjson\`, one JSON line per theorem, the form offered to the unit's deposit door.`, '',
+  '| Module | Hand-written theorems |', '|---|---:|', ...[...perModule.entries()].sort().map(([m, n]) => `| ${m} | ${n} |`), '',
+  '| Key | Statement | Axioms |', '|---|---|---|', ...handWritten.map((r) => `| \`${r.key}\` | \`${r.statement.replace(/\|/g, '\\|').replace(/`/g, "'")}\` | ${r.axioms.join(', ') || '—'} |`), ''].join('\n'))
+const declared = tracked.filter((f) => f.endsWith('.lean') && !f.startsWith('scripts/')).reduce((n, f) => n + (readFileSync(join(ROOT, f), 'utf8').match(/^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+)?theorem /gm) ?? []).length, 0)
 const modules = tracked.filter((f) => /src\/quantum\/processing\/unit\/lean\/Qpu(\/|\.lean$)/.test(f)).length
 const deps = Object.keys(JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).dependencies ?? {}).length
 const verification = existsSync(join(ROOT, 'docs', 'public', 'verification.json')) ? JSON.parse(readFileSync(join(ROOT, 'docs', 'public', 'verification.json'), 'utf8')) : null
@@ -81,7 +97,7 @@ const rows: [string, string][] = [
   ['Type check (`tsc --noEmit`)', step('typecheck')?.status === 'green' ? '0 errors' : step('typecheck')?.status ?? 'not yet run'],
   ['Runtime dependencies', String(deps)],
   ['Lean 4 modules built (`lake build`, Lean 4.33.0)', lean.jobs ? `${modules} modules, ${lean.jobs} jobs, 0 errors` : `${modules} modules`],
-  ['Theorems declared / accepted by the kernel', `${declared} / ${kernel}`],
+  ['Theorems declared / accepted by the kernel', `${declared} / ${kernel} (${handWritten.length} hand-written, ${generated} generated equation lemmas)`],
   ['Theorems using `sorry`', String(sorried)],
   ['Axioms any theorem depends on', axioms.split(',').map((a) => `\`${a.trim()}\``).join(', ')],
   ['Self-audit checks', step('audit')?.counts?.checks ? `${step('audit').counts.checks} of ${step('audit').counts.checksTotal} pass` : 'see docs/audit'],

@@ -9,7 +9,7 @@ it, the Sycamore and Sycamore23 grids from Cirq's `known_devices`, a Cirq-style 
 (state vector and density matrix), the Quantum Echoes protocol with the benchmark Google states, the textbook
 algorithms of the Cirq page (QFT, phase estimation, Grover, teleportation, QAOA, Shor for N ≤ 21), numpy's Mersenne
 Twister so the QAOA page's instance is reproduced exactly, and a registry of every lead followed on quantumai.google.
-Beside it, a Lean 4 library `Qpu` of 216 theorems about the unit's integers, checked by the Lean kernel with no `sorry`
+Beside it, a Lean 4 library `Qpu` of theorems about the unit's integers (the table below counts them), checked by the Lean kernel with no `sorry`
 and no axiom beyond `propext` and `Quot.sound`. The MCP handler is a pure function: it imports nothing from Node,
 performs no I/O, and returns each result with a widget. There is no server, no network access and no hardware access
 in this tree.
@@ -19,15 +19,15 @@ Every figure below was measured on this tree on 2026-10-25 with the commands in 
 | Measure | Value |
 |---|---:|
 | Tracked files | 140 |
-| Source files under `src/quantum` (TypeScript) | 25 (6,570 lines) |
+| Source files under `src/quantum` (TypeScript) | 25 (6,571 lines) |
 | MCP tools | 18 |
 | Tests (`node --test`) | 149 pass, 0 fail of 149 |
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 0 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 33 modules, 35 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 476 / 976 |
+| Theorems declared / accepted by the kernel | 476 / 976 (477 hand-written, 499 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
-| Axioms any theorem depends on | `Quot.sound`, `Classical.choice`, `propext` |
+| Axioms any theorem depends on | `Classical.choice`, `Quot.sound`, `propext` |
 | Self-audit checks | 170 of 170 pass |
 | Cross-verification requests (free public sources) | 2638 requests, 2621 reachable on 2026-10-25 |
 | Servers, workers, network calls in the handler | 0 |
@@ -76,7 +76,7 @@ No order or factor beyond those bounds is computed anywhere in this tree.
 
 ## 4. What the Lean library proves, and what it does not
 
-The 216 theorems are statements about natural numbers computed by the unit's own definitions: `Mint` (doubling and
+The theorems are statements about natural numbers computed by the unit's own definitions: `Mint` (doubling and
 binomials, with `mintOf (a + b) = mintOf a * mintOf b` by induction), `Lattice` and `Cross` (identities between the
 unit's named constants), `Clay` (55 `relation_N` theorems, each stating that two or three of the unit's expressions
 evaluate to the same integer N, closed by `rfl`), `Shor` (`powMod`, `periodOf`, `gcdOf` as fuelled recursions, and

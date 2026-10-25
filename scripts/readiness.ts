@@ -15,8 +15,9 @@ const ROOT = process.cwd()
 const UNIT = process.env.UUIDNA_MCP ?? 'https://uuidna.com/mcp'
 const rpc = async (name: string, args: unknown): Promise<any> => {
   const res = await fetch(UNIT, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-next (ceccec@psg.bg)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
-  const body = await res.json() as { result?: { structuredContent?: unknown; content?: { text: string }[] }; error?: { message: string } }
+  const body = await res.json() as { result?: { structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
   if (body.error) throw new Error(body.error.message)
+  if (body.result?.isError) throw new Error(body.result.content?.[0]?.text ?? 'the door refused without a text')
   return body.result?.structuredContent ?? (body.result?.content?.[0] ? JSON.parse(body.result.content[0].text) : body.result)
 }
 
@@ -98,8 +99,19 @@ const main = async () => {
   try { unitAddress = (await rpc('compute_address', { value: probe })).address ?? null } catch { unitAddress = null }
   const address = { probe, here: uuidOf(probe), unit: unitAddress, agree: unitAddress === uuidOf(probe), note: unitAddress === uuidOf(probe) ? 'the unit and this tree name the same content identically' : "this tree's uuidOf is the unit's published shapeUuidOf; the compute_address door uses a builder not in the sources this tree can read — an open lead, not a claim" }
 
+  // 5. deposit: can qpu's own proofs be cited at the border? One hand-written kernel theorem is offered to the unit's deposit_trial
+  //    each run, with its key and its exact statement; the answer or the refusal is the measurement (lead gap-theorems-unsealed).
+  const ledgerPath = join(ROOT, 'docs', 'public', 'theorems.ndjson')
+  const probeKey = 'clay_sigma'
+  const probeRow = existsSync(ledgerPath) ? readFileSync(ledgerPath, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l) as { key: string; statement: string }).find((r) => r.key === probeKey) : undefined
+  let deposit: { key: string; statement: string | null; deposited: boolean; answer: unknown; refusal: string | null }
+  try {
+    const answer = await rpc('deposit_trial', { claim: `qpu kernel theorem ${probeKey}`, deposits: [{ party: 'qpu', proof: probeKey }, ...(probeRow ? [{ party: 'qpu', proof: probeRow.statement }] : [])] })
+    deposit = { key: probeKey, statement: probeRow?.statement ?? null, deposited: Boolean((answer as { deposited?: boolean }).deposited), answer, refusal: null }
+  } catch (err) { deposit = { key: probeKey, statement: probeRow?.statement ?? null, deposited: false, answer: null, refusal: (err as Error).message } }
+
   const date = new Date().toISOString()
-  const out = { license: LICENSE.attribution, date, unit: UNIT, measured: verification?.date ?? null, classes, judged, readiness, auras, address, rights: { receipt: rights.receipt, imprint: rights.imprint, licenseAddress: rights.licenseAddress, drift } }
+  const out = { license: LICENSE.attribution, date, unit: UNIT, measured: verification?.date ?? null, classes, judged, readiness, deposit, auras, address, rights: { receipt: rights.receipt, imprint: rights.imprint, licenseAddress: rights.licenseAddress, drift } }
   writeFileSync(join(ROOT, 'docs', 'public', 'readiness.json'), JSON.stringify(out, null, 1) + '\n')
   const page = ['---', 'title: Readiness', 'order: 53', '---', '', '# The unit judges the tree', '',
     `Asked of the uuidna MCP at ${UNIT} by \`npm run next\` on ${date}. The verdicts are the unit's; this tree only carries them.`, '',
@@ -112,9 +124,10 @@ const main = async () => {
     '## Auras', '', 'The A432-tuned colour the unit folds from each example block\'s content address (hue steps by 432/12 = 36°; artistic, not physics, in the unit\'s own words).', '',
     '| Block | Example | Hue | HSL | CMYK |', '|---|---|---:|---|---|', ...Object.entries(auras).map(([id, a]: [string, any]) => `| ${id} | ${a.example} | ${a.hue ?? '—'} | ${a.hsl ?? a.error ?? ''} | ${a.cmyk ? a.cmyk.join(', ') : ''} |`), '',
     '## Address agreement', '', `Probe \`${address.probe}\`: here ${address.here}, unit ${address.unit ?? 'no answer'} — ${address.agree ? 'agree' : 'disagree'}. ${address.note}`, '',
+    '## Deposit at the border', '', deposit.refusal ? `The unit's deposit_trial refused \`${deposit.key}\` (and its exact statement) on ${date.slice(0, 10)}: ${deposit.refusal}. qpu's proofs are not citable at the border; lead gap-theorems-unsealed stays blocked on the unit's door.` : `deposit_trial answered for \`${deposit.key}\`: deposited ${deposit.deposited}; ${JSON.stringify(deposit.answer).slice(0, 400)}`, '',
     '## Rights', '', drift.length ? `Drift between the unit's rights and this tree's licence module: ${drift.join('; ')}` : `This tree's licence module matches the unit's rights (address ${rights.licenseAddress}, imprint ${rights.imprint}, receipt ${rights.receipt}).`, ''].join('\n')
   writeFileSync(join(ROOT, 'docs', 'readiness.md'), page)
-  console.log(`readiness: ${readiness.ready ? 'ready' : 'not ready'} — ${readiness.why} | served ${classes.served} refuted ${classes.refuted} trial ${classes.trial} | auras ${Object.keys(auras).length} | rights drift ${drift.length} | address ${address.agree ? 'agree' : 'disagree'}`)
+  console.log(`readiness: ${readiness.ready ? 'ready' : 'not ready'} — ${readiness.why} | served ${classes.served} refuted ${classes.refuted} trial ${classes.trial} | deposit ${deposit.refusal ? 'refused' : deposit.deposited ? 'deposited' : 'answered'} | auras ${Object.keys(auras).length} | rights drift ${drift.length} | address ${address.agree ? 'agree' : 'disagree'}`)
   if (drift.length) process.exitCode = 1
 }
 main().catch((e) => { console.error(e); process.exit(1) })

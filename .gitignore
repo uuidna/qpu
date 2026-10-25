@@ -28,3 +28,5 @@ docs/leads.md
 docs/public/imprints.ndjson
 docs/public/site.json
 docs/public/next.lock
+docs/public/theorems.ndjson
+docs/theorems.md
