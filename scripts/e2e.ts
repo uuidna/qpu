@@ -7,6 +7,7 @@ import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import type { E2eRequest, E2eAnswer } from '../src/quantum/e2e.ts'
+import { mountThroughClaude } from './claude-mount.ts'
 
 const ROOT = process.cwd()
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'e2e', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
@@ -32,10 +33,13 @@ const main = async () => {
   }
   const remaining = queue.length
   const r = call({ answers, hosts: plan.hosts })
+  // the mount through Claude's connector: one request with the registration, only when the tenant's key is present
+  const claudeMount = process.env.QPU_OFFLINE === '1' ? { phase: 'offline' as const, note: 'offline: not asked' } : await mountThroughClaude()
+  console.log(`e2e: mount through Claude: ${claudeMount.phase} — ${claudeMount.note}`)
   const date = new Date().toISOString()
   mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
   const { page, decoded, ...rest } = r
-  writeFileSync(join(ROOT, 'docs', 'public', 'e2e.json'), JSON.stringify({ license: LICENSE.attribution, date, ms: Date.now() - started, partial: remaining > 0, remaining, selftest: { passed: selftest.passed }, ...rest, decoded: decoded.map((d: { copies: unknown; errors: unknown; [k: string]: unknown }) => ({ ...d, copies: undefined, errors: undefined })) }, null, 1) + '\n')
+  writeFileSync(join(ROOT, 'docs', 'public', 'e2e.json'), JSON.stringify({ license: LICENSE.attribution, date, ms: Date.now() - started, partial: remaining > 0, remaining, selftest: { passed: selftest.passed }, claudeMount, ...rest, decoded: decoded.map((d: { copies: unknown; errors: unknown; [k: string]: unknown }) => ({ ...d, copies: undefined, errors: undefined })) }, null, 1) + '\n')
   writeFileSync(join(ROOT, 'docs', 'e2e.md'), page.replace(/\n\n$/, remaining ? `\n\n${remaining} request(s) wait for the next quantum.\n` : '\n'))
   for (const e of r.errors) appendFileSync(join(ROOT, 'docs', 'public', 'e2e.ndjson'), JSON.stringify({ date, ...e }) + '\n')
   // the referer collects the coins: one ledger line per run credits the teleports to the blocks that asked; a teleport deposits nothing (the entanglement was paid when the block was computed)

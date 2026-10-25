@@ -43,5 +43,8 @@
     "wrangler": "^4.152.0"
   },
   "description": "The Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes with the benchmark Google states, and one MCP surface that compiles them on request.",
-  "homepage": "https://github.com/uuidna/qpu"
+  "homepage": "https://github.com/uuidna/qpu",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0"
+  }
 }

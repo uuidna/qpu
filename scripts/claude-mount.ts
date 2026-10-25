@@ -1,0 +1,37 @@
+// The mount through Claude's MCP connector, as a pass of the gate: a Messages request carries the registration extend answers
+// (the server and its toolset under one name) and asks Claude to call one door of this catalogue; the hash it reports is
+// compared with the block computed here. Runs only when the tenant's key is in the environment (ANTHROPIC_API_KEY, or
+// ANTHROPIC_API_KEY_<TENANT>); without it, the pass says what it needs and the lead stands. The official SDK, never raw HTTP.
+import Anthropic from '@anthropic-ai/sdk'
+import { handle } from '../src/quantum/mcp.ts'
+
+export type ClaudeMount = { phase: 'needs-key' | 'mounted' | 'differs' | 'refused' | 'failed'; model?: string; sha256Here?: string; sha256ByClaude?: string | null; stopReason?: string; servedBy?: string; usage?: { input: number; output: number }; note: string }
+
+export const mountThroughClaude = async (origin = 'https://qpu.uuidna.com'): Promise<ClaudeMount> => {
+  const key = process.env.ANTHROPIC_API_KEY ?? process.env.ANTHROPIC_API_KEY_UUIDNA ?? process.env.ANTHROPIC_API_KEY_PSG
+  const reg = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'extend', arguments: { direction: 'out', host: `${origin}/mcp` } } }) as { result: { structuredContent: { outward: { claude: { model: string; betas: string[]; mcp_servers: { type: 'url'; url: string; name: string }[]; tools: { type: 'mcp_toolset'; mcp_server_name: string }[] } } } } }).result.structuredContent.outward.claude
+  const here = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'seal', arguments: { text: 'qpu' } } }) as { result: { structuredContent: { sha256: string } } }).result.structuredContent.sha256
+  if (!key) return { phase: 'needs-key', sha256Here: here, note: `no ANTHROPIC_API_KEY in the environment: the registration stands (${reg.mcp_servers[0]!.url} as ${reg.mcp_servers[0]!.name}); the mount is the tenant's act with its key` }
+  const client = new Anthropic({ apiKey: key })
+  try {
+    // fallbacks: "default" is on: a refusal by the safety classifiers re-runs the same request on a fallback model inside the call
+    const response = await client.beta.messages.create({
+      model: reg.model,
+      max_tokens: 1024,
+      betas: [...reg.betas, 'server-side-fallback-2026-07-01'],
+      fallbacks: 'default',
+      mcp_servers: reg.mcp_servers.map((s) => ({ type: 'url' as const, url: s.url, name: s.name })),
+      tools: reg.tools.map((t) => ({ type: 'mcp_toolset' as const, mcp_server_name: t.mcp_server_name })),
+      messages: [{ role: 'user', content: 'Call the qpu tool named seal with the argument text set to the string qpu, and reply with only the sha256 value it returns, nothing else.' }],
+    })
+    const text = response.content.filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === 'text').map((b) => b.text).join(' ')
+    const reported = /[0-9a-f]{64}/.exec(text)?.[0] ?? null
+    const usage = { input: response.usage.input_tokens, output: response.usage.output_tokens }
+    if (response.stop_reason === 'refusal') return { phase: 'refused', model: response.model, sha256Here: here, sha256ByClaude: reported, stopReason: response.stop_reason, usage, note: `declined by the safety classifiers (${response.stop_details?.category ?? 'no category'})` }
+    const called = response.content.some((b) => b.type === 'mcp_tool_use' || b.type === 'mcp_tool_result')
+    return { phase: reported === here ? 'mounted' : 'differs', model: response.model, servedBy: response.model, sha256Here: here, sha256ByClaude: reported, stopReason: response.stop_reason ?? undefined, usage, note: reported === here ? `Claude mounted ${reg.mcp_servers[0]!.name} through the connector${called ? ', called the seal door' : ''} and reported the hash computed here` : `the hash Claude reported (${reported ?? 'none'}) is not the one computed here: a lead` }
+  } catch (e) {
+    const err = e as Error & { status?: number }
+    return { phase: 'failed', sha256Here: here, note: `${err.constructor?.name ?? 'Error'}${err.status ? ` ${err.status}` : ''}: ${err.message.slice(0, 160)}` }
+  }
+}
