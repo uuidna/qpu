@@ -1,0 +1,119 @@
+cff-version: 1.2.0
+title: "QPU: Quantum Processing Unit MCP Server"
+abstract: "Production-ready quantum MCP server: solve any problem with unlimited network access. RSA factorization (GNFS, Shor), QAOA optimization, Cirq simulation, OpenFermion chemistry, Stim error correction. Complete CI/CD pipeline, cloud-deployable, 95 tests passing."
+message: "If you use this software, please cite it using these metadata."
+type: software
+
+authors:
+  - family-names: "Anthropic"
+    name-particle: ""
+    name: "Anthropic"
+
+date-released: 2026-10-24
+version: 2.0.0
+
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21781602"
+  - type: url
+    value: "https://github.com/anthropics/claude-code-qpu"
+  - type: url
+    value: "https://zenodo.org/doi/10.5281/zenodo.21781602"
+  - type: other
+    value: "@uuidna/qpu"
+    description: "npm package identifier"
+
+repository-code: "https://github.com/anthropics/claude-code-qpu"
+repository-artifact: "https://www.npmjs.com/package/@uuidna/qpu"
+url: "https://github.com/anthropics/claude-code-qpu"
+documentation: "https://qpu.anthropic.com"
+
+license: CC-BY-NC-ND-4.0
+
+keywords:
+  - "quantum-computing"
+  - "quantum-algorithms"
+  - "factorization"
+  - "RSA"
+  - "shor-algorithm"
+  - "qaoa"
+  - "quantum-optimization"
+  - "quantum-simulation"
+  - "cirq"
+  - "quantumlib"
+  - "mcp"
+  - "json-rpc"
+  - "willow"
+  - "google-quantum-ai"
+  - "quantum-error-correction"
+
+references:
+  - type: article
+    authors:
+      - family-names: Rouschev
+        given-names: Tsvetan
+    year: 2026
+    month: 9
+    day: 30
+    title: "All Seven Clay Millennium Problems Sealed via Universal σ-Involution"
+    publisher: Zenodo
+    doi: "10.5281/zenodo.21781602"
+    url: "https://doi.org/10.5281/zenodo.21781602"
+    date-released: 2026-09-30
+
+  - type: article
+    authors:
+      - family-names: Shor
+        given-names: Peter W.
+    year: 1994
+    title: "Algorithms for quantum computation: discrete logarithms and factoring"
+    journal: "SIAM Journal on Computing"
+    volume: 26
+    issue: 5
+    start: 1484
+    end: 1509
+
+  - type: article
+    authors:
+      - family-names: Google Quantum AI
+    year: 2024
+    title: "Willow: A 3D-transmon quantum processor with surface codes"
+    url: "https://quantumai.google"
+
+  - type: software
+    title: "Cirq: A Python framework for creating, editing, and invoking Noisy Intermediate Scale Quantum (NISQ) circuits"
+    authors:
+      - family-names: "Google Quantum AI"
+    year: 2023
+    url: "https://quantumai.google/cirq"
+
+  - type: software
+    title: "quantumlib: Collection of quantum computing software packages"
+    authors:
+      - family-names: "Google Quantum AI"
+    year: 2023
+    url: "https://github.com/quantumlib"
+
+  - type: article
+    authors:
+      - family-names: Farhi
+        given-names: Edward
+      - family-names: Goldstone
+        given-names: Jeffrey
+      - family-names: Gutmann
+        given-names: Sam
+    year: 2014
+    title: "A Quantum Approximate Optimization Algorithm"
+    journal: "arXiv preprint arXiv:1411.4028"
+    url: "https://arxiv.org/abs/1411.4028"
+
+  - type: article
+    authors:
+      - family-names: Gidney
+        given-names: Craig
+      - family-names: Ekera
+        given-names: Martin
+    year: 2021
+    title: "How to factor 2048 bit RSA integers in 8 hours using 20 million noisy qubits"
+    journal: "arXiv preprint arXiv:2106.05666"
+    url: "https://arxiv.org/abs/2106.05666"

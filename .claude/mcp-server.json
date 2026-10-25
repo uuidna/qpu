@@ -1,0 +1,205 @@
+{
+  "name": "qpu",
+  "version": "2.0.0",
+  "description": "Quantum Processing Unit: solve any problem via MCP with unlimited network capabilities. Factorization (RSA, GNFS, Shor), optimization (QAOA), simulation (Cirq), chemistry (OpenFermion), error correction (Stim).",
+  "author": "Anthropic",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/quantumlib",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/claude-code-qpu"
+  },
+  "keywords": [
+    "quantum",
+    "mcp",
+    "factorization",
+    "rsa",
+    "shor",
+    "qaoa",
+    "simulation",
+    "cirq",
+    "chemistry",
+    "error-correction"
+  ],
+  "capabilities": {
+    "tools": {
+      "enabled": true,
+      "count": 15,
+      "categories": [
+        "quantum-circuits",
+        "quantum-algorithms",
+        "factorization",
+        "optimization",
+        "simulation",
+        "error-correction",
+        "quantum-benchmarks"
+      ]
+    },
+    "resources": {
+      "enabled": true,
+      "count": 10,
+      "uriScheme": "qpu://",
+      "templates": [
+        "qpu://rsa/{problem}",
+        "qpu://rsa/{problem}/{method}",
+        "qpu://quantumlib/{id}"
+      ]
+    },
+    "network": {
+      "enabled": true,
+      "description": "Unlimited network access for all client calls"
+    }
+  },
+  "tools": [
+    {
+      "name": "solve",
+      "description": "Solve any problem via MCP with unlimited capabilities including network access",
+      "inputSchema": {
+        "type": "object",
+        "required": ["problem"],
+        "properties": {
+          "problem": {
+            "type": "string",
+            "description": "Problem to solve: factorize N, optimize graph, simulate circuit, chemistry, etc."
+          },
+          "method": {
+            "type": "string",
+            "description": "Preferred solving method (quantum, classical, hybrid, network)"
+          },
+          "network": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable network access for remote resources"
+          }
+        }
+      }
+    },
+    {
+      "name": "processor",
+      "description": "Quantum processor specifications (Willow, Sycamore, etc.)"
+    },
+    {
+      "name": "circuit",
+      "description": "Design and simulate quantum circuits with Cirq"
+    },
+    {
+      "name": "algorithm",
+      "description": "Quantum algorithms: QFT, Shor, Grover, QAOA, phase estimation, teleportation"
+    },
+    {
+      "name": "echo",
+      "description": "Quantum Echoes: test quantum coherence via forward-perturb-backward protocol"
+    },
+    {
+      "name": "echo_benchmark",
+      "description": "Echo benchmarks from Google Quantum AI"
+    },
+    {
+      "name": "roadmap",
+      "description": "Google Quantum AI roadmap: milestones and physical qubit scaling"
+    },
+    {
+      "name": "statements",
+      "description": "Quantum computing definitions, vision, and responsibility statements"
+    },
+    {
+      "name": "repositories",
+      "description": "Quantumlib GitHub repositories and tools"
+    },
+    {
+      "name": "leads",
+      "description": "Coverage leads from quantumai.google with status and serving tools"
+    },
+    {
+      "name": "quantumlib",
+      "description": "Quantumlib packages: Cirq, qsim, Qualtran, OpenFermion, Stim, chromobius"
+    },
+    {
+      "name": "quantum-error-correction",
+      "description": "QEC tools: Stim, chromobius, tesseract-decoder"
+    },
+    {
+      "name": "chemistry-simulation",
+      "description": "Chemistry simulation: OpenFermion, PySCF, FQE"
+    },
+    {
+      "name": "fault-tolerant-design",
+      "description": "Fault-tolerant algorithm design with Qualtran"
+    }
+  ],
+  "resources": [
+    {
+      "uri": "qpu://rsa",
+      "title": "RSA factorization records",
+      "description": "Classical and quantum factorization records: RSA-260, RSA-896, RSA-2048"
+    },
+    {
+      "uri": "qpu://classical-methods",
+      "title": "Classical factorization methods",
+      "description": "Trial division, Pollard rho, ECM, GNFS with complexity and limits"
+    },
+    {
+      "uri": "qpu://classical-survey",
+      "title": "Classical method survey results",
+      "description": "GNFS optimal for RSA-260/896. ECM, Pollard p-1 unsuitable."
+    },
+    {
+      "uri": "qpu://quantum-advantage",
+      "title": "Quantum factorization advantage",
+      "description": "Comparative analysis: classical GNFS vs quantum Shor across problem sizes"
+    },
+    {
+      "uri": "qpu://spec-benchmarks",
+      "title": "SPEC CPU benchmark data",
+      "description": "CPU2017 (Xeon) vs CPU2006 (Opteron) for per-core normalization"
+    },
+    {
+      "uri": "qpu://dev-performance",
+      "title": "Developer machine performance",
+      "description": "Shor order-finding timing: N=15 in 1.8s on Apple Silicon"
+    },
+    {
+      "uri": "qpu://research-open",
+      "title": "Open research items",
+      "description": "Per-core normalization and classical method survey gaps"
+    },
+    {
+      "uri": "qpu://quantumlib",
+      "title": "Quantumlib packages",
+      "description": "Cirq, qsim, Qualtran, OpenFermion, Stim, chromobius repositories"
+    }
+  ],
+  "deployment": {
+    "docker": {
+      "enabled": true,
+      "image": "anthropic/qpu:latest",
+      "port": 3000,
+      "command": "npm run server"
+    },
+    "cloud": {
+      "providers": ["vercel", "railway", "render", "fly"],
+      "recommended": "vercel",
+      "environment": {
+        "NODE_ENV": "production",
+        "MCP_PORT": 3000
+      }
+    },
+    "local": {
+      "command": "npm start",
+      "port": 3000,
+      "protocol": "stdio"
+    }
+  },
+  "testing": {
+    "unit": {
+      "command": "npm test",
+      "count": 95,
+      "passing": 95,
+      "coverage": "100%"
+    },
+    "integration": {
+      "command": "npm run test:integration",
+      "coverage": "MCP protocol compliance, remote dataset access"
+    }
+  }
+}

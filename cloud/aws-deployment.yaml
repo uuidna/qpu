@@ -1,0 +1,256 @@
+# AWS ECS/Fargate Deployment (WAVE 5)
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Quantum Platform Cloud Deployment on AWS'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: production
+    AllowedValues: [dev, staging, production]
+  Region:
+    Type: String
+    Default: us-east-1
+  InstanceType:
+    Type: String
+    Default: t3.large
+
+Resources:
+  # VPC & Networking
+  QuantumVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: quantum-vpc
+
+  QuantumPublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref QuantumVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs '']
+      MapPublicIpOnLaunch: true
+
+  QuantumPrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref QuantumVPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: !Select [1, !GetAZs '']
+
+  # ECS Cluster
+  QuantumCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: quantum-platform
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+
+  # ECR Repository
+  QuantumRegistry:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: quantum-platform
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      EncryptionConfiguration:
+        EncryptionType: AES256
+
+  # ECS Task Definition
+  QuantumTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: quantum-platform
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: '2048'
+      Memory: '4096'
+      ExecutionRoleArn: !GetAtt QuantumECSTaskExecutionRole.Arn
+      TaskRoleArn: !GetAtt QuantumECSTaskRole.Arn
+      ContainerDefinitions:
+        - Name: quantum-platform
+          Image: !Sub '${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/quantum-platform:latest'
+          PortMappings:
+            - ContainerPort: 3001
+              Protocol: tcp
+            - ContainerPort: 3002
+              Protocol: tcp
+            - ContainerPort: 3003
+              Protocol: tcp
+            - ContainerPort: 3004
+              Protocol: tcp
+            - ContainerPort: 3005
+              Protocol: tcp
+          Environment:
+            - Name: NODE_ENV
+              Value: !Ref Environment
+            - Name: AWS_REGION
+              Value: !Ref AWS::Region
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref QuantumLogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+
+  # CloudWatch Logs
+  QuantumLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /ecs/quantum-platform
+      RetentionInDays: 30
+
+  # ECS Service
+  QuantumService:
+    Type: AWS::ECS::Service
+    DependsOn: QuantumLoadBalancerListener
+    Properties:
+      ServiceName: quantum-platform
+      Cluster: !Ref QuantumCluster
+      TaskDefinition: !Ref QuantumTaskDefinition
+      DesiredCount: 3
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          Subnets:
+            - !Ref QuantumPrivateSubnet
+          SecurityGroups:
+            - !Ref QuantumSecurityGroup
+      LoadBalancers:
+        - ContainerName: quantum-platform
+          ContainerPort: 3001
+          TargetGroupArn: !Ref QuantumTargetGroup
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+
+  # Auto Scaling
+  QuantumServiceScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MaxCapacity: 10
+      MinCapacity: 3
+      ResourceId: !Sub 'service/${QuantumCluster}/quantum-platform'
+      RoleARN: !Sub 'arn:aws:iam::${AWS::AccountId}:role/ecsAutoscaleRole'
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
+
+  QuantumServiceScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: quantum-cpu-scaling
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref QuantumServiceScalingTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageCPUUtilization
+        TargetValue: 70.0
+
+  # Load Balancer
+  QuantumLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Type: application
+      Scheme: internet-facing
+      Subnets:
+        - !Ref QuantumPublicSubnet
+
+  QuantumTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 3001
+      Protocol: HTTP
+      TargetType: ip
+      VpcId: !Ref QuantumVPC
+      HealthCheckEnabled: true
+      HealthCheckPath: /health
+
+  QuantumLoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref QuantumTargetGroup
+      LoadBalancerArn: !Ref QuantumLoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  # Security Group
+  QuantumSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Quantum Platform Security Group
+      VpcId: !Ref QuantumVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3001
+          ToPort: 3005
+          SourceSecurityGroupId: !Ref QuantumLoadBalancerSecurityGroup
+
+  QuantumLoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Load Balancer Security Group
+      VpcId: !Ref QuantumVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  # IAM Roles
+  QuantumECSTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  QuantumECSTaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: QuantumPlatformPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:GetObject'
+                  - 's3:PutObject'
+                Resource: 'arn:aws:s3:::quantum-platform-*'
+              - Effect: Allow
+                Action:
+                  - 'kms:Decrypt'
+                  - 'kms:DescribeKey'
+                Resource: '*'
+
+Outputs:
+  LoadBalancerDNS:
+    Value: !GetAtt QuantumLoadBalancer.DNSName
+    Description: Load Balancer DNS Name
+  ClusterName:
+    Value: !Ref QuantumCluster
+    Description: ECS Cluster Name
+  ServiceName:
+    Value: !GetAtt QuantumService.Name
+    Description: ECS Service Name

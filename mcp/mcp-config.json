@@ -1,0 +1,71 @@
+{
+  "name": "Quantum Computing MCP Ecosystem",
+  "version": "1.0.0",
+  "description": "Complete MCP server ecosystem for quantum computing: error mitigation, circuit orchestration, multi-provider execution",
+  "servers": [
+    {"name": "quantum-core-mcp", "command": "npx ts-node mcp/quantum-core-server.ts", "enabled": true, "tools": 33, "includes": ["error-mitigation", "circuit-orchestrator", "extended-providers"]},
+    {"name": "quantum-execution-mcp", "command": "npx ts-node mcp/quantum-execution-server.ts", "enabled": true, "tools": 9, "includes": ["multi-provider"]},
+    {"name": "quantum-science-mcp", "command": "npx ts-node mcp/quantum-science-server.ts", "enabled": true, "tools": 15, "includes": ["quantum-ml", "chemistry"]},
+    {"name": "quantum-publishing-mcp", "command": "npx ts-node mcp/quantum-publishing-server.ts", "enabled": true, "tools": 13, "includes": ["publication", "benchmarking"]},
+    {"name": "quantum-ml-advanced-mcp", "command": "npx ts-node mcp/quantum-ml-advanced-server.ts", "enabled": true, "tools": 17, "includes": ["hybrid-qnn", "vqe", "distributed-training"]},
+    {"name": "enterprise-mcp", "command": "npx ts-node mcp/enterprise-server.ts", "enabled": true, "tools": 30, "includes": ["auth", "billing", "audit"]}
+  ],
+  "integration": {
+    "claude_ai": {
+      "setup": "npm install @modelcontextprotocol/sdk && npm run build:mcp",
+      "deployment": "./scripts/start-mcp-servers.sh"
+    },
+    "claude_code": {
+      "config_path": ".claude/claude.json",
+      "environment": "Add MCP_SERVERS_DIR environment variable"
+    },
+    "claude_api": {
+      "note": "Use with claude-3.5-sonnet for best results",
+      "integration": "See https://modelcontextprotocol.io/docs/api"
+    }
+  },
+  "capabilities": {
+    "errorMitigation": {
+      "techniques": ["ZNE", "PEC", "SymmetryVerification", "DynamicalDecoupling"],
+      "autoSelect": true,
+      "composable": true
+    },
+    "circuitManagement": {
+      "transpilation": true,
+      "optimization": true,
+      "validation": true,
+      "fidelityEstimation": true,
+      "fullPipeline": true
+    },
+    "multiProvider": {
+      "providers": ["Google Willow", "IBM Quantum", "IonQ", "Rigetti QCS", "AWS Braket"],
+      "batchExecution": true,
+      "intelligentRouting": true,
+      "costEstimation": true
+    }
+  },
+  "requirements": {
+    "node": ">=18.0.0",
+    "typescript": ">=5.0.0",
+    "dependencies": [
+      "@modelcontextprotocol/sdk@^1.0.0"
+    ]
+  },
+  "performance": {
+    "errorMitigationMCP": {
+      "startupTime": "500ms",
+      "toolResponseTime": "10-50ms",
+      "maxConcurrentTools": 10
+    },
+    "circuitOrchestratorMCP": {
+      "startupTime": "600ms",
+      "toolResponseTime": "20-100ms",
+      "maxConcurrentTools": 5
+    },
+    "multiProviderMCP": {
+      "startupTime": "700ms",
+      "toolResponseTime": "50-200ms",
+      "maxConcurrentTools": 3
+    }
+  }
+}

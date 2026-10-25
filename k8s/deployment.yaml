@@ -1,0 +1,182 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quantum-platform
+  namespace: quantum
+  labels:
+    app: quantum-platform
+    version: wave5
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: quantum-platform
+  template:
+    metadata:
+      labels:
+        app: quantum-platform
+        version: wave5
+    spec:
+      serviceAccountName: quantum-platform
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+
+      containers:
+      - name: quantum-platform
+        image: quantum-platform:wave5-latest
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: core
+          containerPort: 3001
+        - name: execution
+          containerPort: 3002
+        - name: science
+          containerPort: 3003
+        - name: publishing
+          containerPort: 3004
+        - name: enterprise
+          containerPort: 3005
+
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: quantum-secrets
+              key: database-url
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: quantum-secrets
+              key: jwt-secret
+
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+
+      volumes:
+      - name: config
+        configMap:
+          name: quantum-config
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - quantum-platform
+              topologyKey: kubernetes.io/hostname
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quantum-platform
+  namespace: quantum
+  labels:
+    app: quantum-platform
+spec:
+  type: LoadBalancer
+  selector:
+    app: quantum-platform
+  ports:
+  - name: core
+    port: 3001
+    targetPort: 3001
+  - name: execution
+    port: 3002
+    targetPort: 3002
+  - name: science
+    port: 3003
+    targetPort: 3003
+  - name: publishing
+    port: 3004
+    targetPort: 3004
+  - name: enterprise
+    port: 3005
+    targetPort: 3005
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: quantum-platform-hpa
+  namespace: quantum
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: quantum-platform
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 30
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+      selectPolicy: Max

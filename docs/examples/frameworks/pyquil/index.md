@@ -1,0 +1,45 @@
+# PYQUIL Framework
+
+## Supported Examples
+
+- [PyQuil Grover Search](../examples/pyquil-grover.md)
+
+## Key Use Cases
+
+- [Quantum Key Distribution](../usecases/qkd-quantum-key-distribution.md)
+- [Distributed Quantum Computing](../usecases/distributed-quantum-computing.md)
+- [Quantum Sensing](../usecases/quantum-sensing-gravity.md)
+- [Quantum Teleportation](../usecases/quantum-teleportation.md)
+
+## Integration
+
+Run pyquil circuits via QPU:
+
+```javascript
+const result = await mcpTool('framework/compute', {
+  framework: 'pyquil',
+  circuitJson: '...',
+  provider: 'auto'  // Or specify: ibm-quantum, google-cirq, ionq, rigetti
+})
+```
+
+## Performance
+
+```
+Framework:    pyquil
+Serialization: ~30-50ms
+Execution:     ~2000ms
+Total:         ~2030-2050ms
+```
+
+## Advanced Features
+
+- Circuit conversion between frameworks
+- Benchmark across providers
+- Automatic framework detection
+- Execution history tracking
+
+## Learn More
+
+- [Framework Integration Guide](/guides/framework-integration.md)
+- [Examples at Scale](/guides/examples-at-scale.md)

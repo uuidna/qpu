@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+
+/**
+ * Git Pre-commit Hook - Naming & Simplification Enforcement
+ * Checks for:
+ * - Complex filenames (ALL-CAPS, excessive hyphens)
+ * - Caps violations in code
+ * - Unnecessary naming complexity
+ */
+
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+
+function getChangedFiles() {
+  try {
+    // Get added and modified files (not deletions)
+    const output = execSync('git diff --cached --name-only --diff-filter=ACM', { encoding: 'utf-8' });
+    return output.trim().split('\n').filter(f => f);
+  } catch {
+    return [];
+  }
+}
+
+function checkNaming(filename) {
+  const basename = path.basename(filename);
+  const errors = [];
+
+  // Check for markdown files with ALL-CAPS naming
+  if (filename.endsWith('.md')) {
+    // Pattern: ALL-CAPS-WITH-HYPHENS (too complex)
+    if (/^[A-Z][A-Z0-9\-]+\.md$/.test(basename) && basename.includes('-')) {
+      // Allow specific system docs
+      const allowed = [
+        'README.md',
+        'CITE.md',
+        'LICENSE.md'
+      ];
+
+      if (!allowed.includes(basename)) {
+        errors.push(`Complex naming: ${basename} → simplify to lowercase with hyphens`);
+      }
+    }
+  }
+
+  // Check for excessive complexity (3+ words with hyphens)
+  const parts = basename.split(/[\-\.]/).filter(p => p);
+  if (parts.length > 4) {
+    errors.push(`Name too long: ${basename} (${parts.length} parts) → consolidate`);
+  }
+
+  return errors;
+}
+
+function main() {
+  const changedFiles = getChangedFiles();
+  const allErrors = [];
+
+  console.log('🔍 Checking naming conventions...\n');
+
+  for (const file of changedFiles) {
+    const errors = checkNaming(file);
+    if (errors.length > 0) {
+      allErrors.push(`\n📄 ${file}`);
+      errors.forEach(e => allErrors.push(`   ❌ ${e}`));
+    }
+  }
+
+  if (allErrors.length > 0) {
+    console.log(allErrors.join('\n'));
+    console.log('\n⚠️  Naming violations detected. Use simpler names when possible.\n');
+    process.exit(1);
+  }
+
+  console.log(`✅ Naming check passed (${changedFiles.length} files)\n`);
+  process.exit(0);
+}
+
+main();

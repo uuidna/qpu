@@ -1,0 +1,56 @@
+{
+  "id": "qml-classification-toolset",
+  "name": "Quantum Classification with Neural Networks",
+  "description": "Classify data using quantum neural network circuits",
+  "category": "usecase",
+  "tools": [
+    {
+      "name": "qml-prepare-data",
+      "description": "Encode classical data into quantum state",
+      "command": "qpu examples run pennylane-deutsch-jozsa --encode-data",
+      "inputs": {
+        "exampleId": "pennylane-deutsch-jozsa",
+        "provider": "ionq",
+        "shots": "1000"
+      },
+      "outputs": [
+        "receipt",
+        "fidelity",
+        "nativeComputation",
+        "hardwareMetrics"
+      ]
+    },
+    {
+      "name": "qml-train-classifier",
+      "description": "Train variational quantum classifier",
+      "command": "qpu examples run pennylane-deutsch-jozsa --train --epochs 100",
+      "inputs": {
+        "exampleId": "pennylane-deutsch-jozsa",
+        "provider": "ionq",
+        "shots": "1000"
+      },
+      "outputs": [
+        "receipt",
+        "fidelity",
+        "nativeComputation",
+        "hardwareMetrics"
+      ]
+    },
+    {
+      "name": "qml-evaluate-accuracy",
+      "description": "Evaluate classifier on test set",
+      "command": "qpu examples run pennylane-deutsch-jozsa --evaluate",
+      "inputs": {
+        "exampleId": "pennylane-deutsch-jozsa",
+        "provider": "ionq",
+        "shots": "1000"
+      },
+      "outputs": [
+        "receipt",
+        "fidelity",
+        "nativeComputation",
+        "hardwareMetrics"
+      ]
+    }
+  ]
+}

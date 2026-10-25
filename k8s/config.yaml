@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: quantum
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quantum-config
+  namespace: quantum
+data:
+  mcp-config.json: |
+    {
+      "servers": [
+        {"name": "quantum-core", "port": 3001, "enabled": true},
+        {"name": "quantum-execution", "port": 3002, "enabled": true},
+        {"name": "quantum-science", "port": 3003, "enabled": true},
+        {"name": "quantum-publishing", "port": 3004, "enabled": true},
+        {"name": "enterprise", "port": 3005, "enabled": true}
+      ],
+      "deployment": "cloud",
+      "region": "multi-region",
+      "monitoring": true
+    }
+  prometheus-rules.yaml: |
+    groups:
+    - name: quantum_platform
+      rules:
+      - alert: HighCPUUsage
+        expr: container_cpu_usage_seconds_total > 0.8
+        for: 5m
+      - alert: HighMemoryUsage
+        expr: container_memory_usage_bytes > 1.8Gi
+        for: 5m
+      - alert: PodRestarts
+        expr: rate(kube_pod_container_status_restarts_total[1h]) > 0
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: quantum-platform
+  namespace: quantum
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: quantum-platform
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/logs", "services"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: quantum-platform
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: quantum-platform
+subjects:
+- kind: ServiceAccount
+  name: quantum-platform
+  namespace: quantum
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: quantum-secrets
+  namespace: quantum
+type: Opaque
+stringData:
+  database-url: "postgres://user:password@postgres.quantum.svc.cluster.local:5432/quantum"
+  jwt-secret: "your-jwt-secret-key-change-in-production"
+  api-key: "your-api-key-change-in-production"

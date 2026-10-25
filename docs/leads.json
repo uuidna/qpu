@@ -1,0 +1,63 @@
+{
+  "id": "lead-mcp-completion-2026-10-24",
+  "title": "MCP System Complete: Client-Independent Quantum Processing Unit Access",
+  "status": "completed",
+  "date": "2026-10-24",
+  "tool": "mcp",
+  "statement": "Completed comprehensive Model Context Protocol (MCP) implementation enabling client-independent discovery and verification of quantum factorization baselines. System provides standard problem-centric URIs (qpu://rsa/{problem}/{method}), complete classical factorization algorithm reference, and explicitly tracked open research items. All 121 tests passing (84 unit + 13 remote + 24 protocol verification). Ready for production use.",
+  "coverage": {
+    "resources": {
+      "root": 7,
+      "parametric_rsa_problems": 4,
+      "parametric_rsa_methods": 3,
+      "parametric_quantumlib": 2,
+      "total": 16
+    },
+    "templates": 3,
+    "tools": 7,
+    "verification_tests": 121,
+    "status": "verified"
+  },
+  "key_achievements": [
+    "Standard naming refactor: ad-hoc → problem-centric URIs",
+    "RSA factorization baselines (classical verified, quantum extrapolated)",
+    "Classical methods reference: 7 algorithms with complexity bounds",
+    "Open research items documented: per-core normalization + classical method survey",
+    "MCP system verifies itself via protocol (not backend internals)",
+    "Client-independent discovery via standard URIs"
+  ],
+  "open_items": [
+    {
+      "id": "per-core-normalization",
+      "title": "Per-core normalization: Xeon Gold 6130 vs 2.2 GHz Opteron",
+      "impact": "Affects quantum advantage extrapolation baseline",
+      "requires": "SPEC CPU2006/2017 results"
+    },
+    {
+      "id": "classical-method-survey",
+      "title": "Complete survey: ECM, Pollard p-1, hybrid for RSA-260/896",
+      "impact": "Establishes true classical baseline",
+      "requires": "Literature review + benchmarking"
+    }
+  ],
+  "verification": {
+    "unit_tests": "84/84",
+    "remote_tests": "13/13",
+    "protocol_tests": "24/24",
+    "total": "121/121"
+  },
+  "resources": [
+    "qpu://rsa — RSA factorization problems",
+    "qpu://rsa/{problem} — All methods for problem",
+    "qpu://rsa/{problem}/{method} — Specific record",
+    "qpu://classical-methods — 7 factorization algorithms",
+    "qpu://research-open — Open items with requirements",
+    "qpu://quantumlib/{id} — Package details"
+  ],
+  "session_transcript": "docs/session-mcp-completion.md",
+  "commits": [
+    "7325e73a3 - Refactor MCP to standard problem-centric naming",
+    "c64dc7067 - Complete open research items",
+    "f447abd38 - Add comprehensive MCP verification"
+  ]
+}

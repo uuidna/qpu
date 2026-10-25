@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": [
+      "ES2022"
+    ],
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "types": [
+      "node"
+    ],
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "files": [
+    "src/quantum/quantum-solver.ts",
+    "src/mcp/quantum-proofs-mcp.ts",
+    "src/mcp/quantum-optimizer-mcp.ts",
+    "src/mcp/list.ts",
+    "src/types.ts",
+    "src/constants.ts",
+    "src/examples.ts",
+    "src/integration.ts"
+  ]
+}

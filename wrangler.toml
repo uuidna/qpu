@@ -1,0 +1,38 @@
+name = "uuidna-qpu"
+type = "javascript"
+main = "dist/worker.js"
+compatibility_date = "2024-12-16"
+account_id = "833ef8eaf4ae2d917549f76765477475"
+
+# Deploy to authorized uuidna-qpu CloudFlare Worker
+# via automated npm run ship flow
+
+[env.production]
+name = "uuidna-qpu"
+routes = [
+  { pattern = "qpu.uuidna.com", zone_name = "uuidna.com" }
+]
+
+[env.staging]
+name = "uuidna-qpu-staging"
+routes = [
+  { pattern = "staging-qpu.uuidna.com", zone_name = "uuidna.com" }
+]
+
+# Environment variables
+[env.production.vars]
+ENVIRONMENT = "production"
+LOG_LEVEL = "info"
+MCP_TIMEOUT = "30000"
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+LOG_LEVEL = "debug"
+MCP_TIMEOUT = "30000"
+
+
+# Build configuration
+[build]
+command = "npm run build:worker"
+cwd = "."
+watch_paths = ["src/**/*.ts"]

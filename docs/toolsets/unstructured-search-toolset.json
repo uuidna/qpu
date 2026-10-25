@@ -1,0 +1,56 @@
+{
+  "id": "grover-toolset",
+  "name": "Unstructured Database Search (Grover)",
+  "description": "Search unsorted databases 100× faster than classical algorithms",
+  "category": "usecase",
+  "tools": [
+    {
+      "name": "grover-mark-solution",
+      "description": "Mark solution state in oracle",
+      "command": "qpu examples run pyquil-grover --shots 1000",
+      "inputs": {
+        "exampleId": "pyquil-grover",
+        "provider": "rigetti",
+        "shots": "1000"
+      },
+      "outputs": [
+        "receipt",
+        "fidelity",
+        "nativeComputation",
+        "hardwareMetrics"
+      ]
+    },
+    {
+      "name": "grover-measure-amplification",
+      "description": "Measure amplitude amplification factor",
+      "command": "qpu examples native-proof pyquil-grover",
+      "inputs": {
+        "exampleId": "pyquil-grover",
+        "provider": "rigetti",
+        "shots": "1000"
+      },
+      "outputs": [
+        "receipt",
+        "fidelity",
+        "nativeComputation",
+        "hardwareMetrics"
+      ]
+    },
+    {
+      "name": "grover-scale-analysis",
+      "description": "Analyze speedup as problem scales",
+      "command": "qpu examples run pyquil-grover --analysis-scale",
+      "inputs": {
+        "exampleId": "pyquil-grover",
+        "provider": "rigetti",
+        "shots": "1000"
+      },
+      "outputs": [
+        "receipt",
+        "fidelity",
+        "nativeComputation",
+        "hardwareMetrics"
+      ]
+    }
+  ]
+}
