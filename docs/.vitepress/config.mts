@@ -383,6 +383,10 @@ export default defineConfig({
           {
             "text": "dashboard",
             "link": "/mcp#dashboard"
+          },
+          {
+            "text": "clone",
+            "link": "/mcp#clone"
           }
         ]
       },

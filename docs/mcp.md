@@ -28,7 +28,7 @@ the tree knows itself: its leads, its self-audit, any statement matched or prove
 
 **Tests itself:** server only: the audit audits the audit; toolbox → toolbox: match is the judge of readiness and the engine of imagine.
 
-Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify), [metrics](#metrics), [textbook](#textbook), [css](#css), [dashboard](#dashboard).
+Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify), [metrics](#metrics), [textbook](#textbook), [css](#css), [dashboard](#dashboard), [clone](#clone).
 
 ## Toolbox `flow`
 
@@ -1164,6 +1164,26 @@ A bounded tool laid out whole, so the user's decision in the UI is final: every 
     },
     "origin": {
       "type": "string"
+    }
+  }
+}
+```
+
+## clone
+
+A toolbox cloned whole: its toolset (every tool's name, description and schema), its skillset (idea, instructions, directions, examples with what they show), and its selftest run now, as one document another host mounts or a client follows door by door. The quantum state of a computation is never cloned (all_noclone); its classical description is, and this is it. Without a toolbox: every toolbox's clone address.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "toolbox": {
+      "type": "string",
+      "description": "the toolbox to clone; omit for the index"
+    },
+    "as": {
+      "type": "string",
+      "description": "the name the clone carries at its new host"
     }
   }
 }

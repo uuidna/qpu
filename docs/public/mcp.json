@@ -1062,6 +1062,26 @@
       }
     },
     {
+      "name": "clone",
+      "description": "A toolbox cloned whole: its toolset (every tool's name, description and schema), its skillset (idea, instructions, directions, examples with what they show), and its selftest run now, as one document another host mounts or a client follows door by door. The quantum state of a computation is never cloned (all_noclone); its classical description is, and this is it. Without a toolbox: every toolbox's clone address.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "toolbox": {
+            "type": "string",
+            "description": "the toolbox to clone; omit for the index"
+          },
+          "as": {
+            "type": "string",
+            "description": "the name the clone carries at its new host"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "tree"
+      }
+    },
+    {
       "name": "discover",
       "description": "Discovery before use. Without answers: every request the client must make for the contracts of the hosts this tree talks to (MCP tools/list and catalogue doors, the verifiers' OpenAPI, index or identify documents, /.well-known/qpu.json). With answers: the follow-ups still to fetch (catalogue doors whose contract is unread) and, once none remain, the discovery: hosts, doors with what they take and answer, capabilities by which clients choose doors, and the leads (hosts with no machine contract). Pure; the client fetches.",
       "inputSchema": {
