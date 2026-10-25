@@ -3,6 +3,11 @@
   "version": "1.4.0",
   "type": "module",
   "license": "CC-BY-NC-ND-4.0",
+  "author": {
+    "name": "Tsvetan Rouschev",
+    "email": "ceccec@psg.bg",
+    "url": "https://orcid.org/0009-0000-7312-9778"
+  },
   "engines": {
     "node": ">=26"
   },
