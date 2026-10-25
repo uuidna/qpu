@@ -1,0 +1,26 @@
+// The discovery document: what this tree serves, from the handler alone — the same at the Worker and at the Payload app; pure.
+import { handle } from './mcp.js'
+import { EXAMPLES } from './examples.js'
+import { LEADS } from './leads.js'
+import { LICENSE } from './license.js'
+import { KEY } from './theme.js'
+import { VERSION } from './version.js'
+import { TENANTS, tenantOf } from './tenants.js'
+import { DEFAULT_MCP_HOSTS } from './discovery.js'
+import { ROLES } from './roles.js'
+
+export const discoveryOf = (origin: string, env?: Record<string, unknown>) => {
+  const tenant = tenantOf(new URL(origin).hostname)
+  const version = VERSION
+  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }
+  const names = list.result.tools.map((t) => t.name)
+  return {
+    name: '@uuidna/qpu', kind: 'qpu', mcp: `${origin}/mcp`, docket: `${origin}/docket`, methods: ['initialize', 'tools/list', 'tools/call'],
+    version, versioning: 'quantum: versions coexist — every block and every page is addressed by content, so an earlier version\'s addresses answer beside the new one\'s and a migration moves no address; the e2e gate reads each host\'s version and decodes hosts on different versions as copies of one value', tenant, tenants: Object.entries(TENANTS).map(([host, t]) => ({ host, tenant: t, docket: `https://${host}/docket` })), mcpHosts: (((env as Record<string, string | undefined> | undefined)?.[`QPU_MCP_HOSTS_${tenant.toUpperCase()}`]) ?? DEFAULT_MCP_HOSTS.join(',')).split(',').map((s) => s.trim()).filter(Boolean), mcpHostsNote: 'tenant configurable: QPU_MCP_HOSTS_<TENANT> names the MCP hosts this tenant discovers and extends; QPU_MCP_TOKEN_<HOST>_<TENANT> its token per host; Cloudflare\'s servers are discovered by default, the documentation one in the open, the others when the tenant brings its OAuth token', roles: ROLES, rbac: 'one Worker, one docket per tenant (host); roles asked of the RBAC MCP host when one is configured (a Payload MCP plugin managing every MCP server\'s roles over MCP itself), otherwise one writer and one admin token per tenant; a token at another tenant\'s host holds no role there and the answer names the procedure',
+    tools: names, examples: EXAMPLES.length, leads: LEADS.length,
+    bounds: { shorN: 21, qubits: 6, bits: 8, nodes: 12, note: 'the exact state-vector simulator; every bound is in each tool\'s input schema' },
+    key: KEY, license: { spdx: LICENSE.spdx, url: LICENSE.url, address: LICENSE.address, imprint: LICENSE.imprint, author: LICENSE.author, orcid: LICENSE.orcid },
+    reverse: { host: 'uuidna.com', mcp: 'https://uuidna.com/mcp', note: 'this tree asks the unit for readiness, rights and auras each run; the unit fans out to this host' },
+    honest: 'A pure handler over HTTP: no hardware, no network inside the tools, nothing factored beyond N ≤ 21.',
+  }
+}

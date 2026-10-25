@@ -23,7 +23,7 @@ export const accessibilityOf = (html: string): string[] => {
   const tables = html.match(/<table\b[\s\S]*?<\/table>/gi) ?? []
   const unheaded = tables.filter((t) => !/<th\b/i.test(t)).length
   if (unheaded) misses.push(`${unheaded} table(s) without a header cell`)
-  const links = html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? []
+  const links: string[] = html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? []
   const wordless = links.filter((a) => !/\baria-label="[^"]+"/i.test(a) && a.replace(/<[^>]*>/g, '').trim() === '').length
   if (wordless) misses.push(`${wordless} link(s) without words`)
   if (!/<h[1-6]\b|role="heading"/i.test(html)) misses.push('no heading to land on')

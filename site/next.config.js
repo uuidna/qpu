@@ -60,7 +60,7 @@ const nextConfig = withBundleAnalyzer({
     return { beforeFiles: [{ source: '/:uuid([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})', destination: `${QPU_ORIGIN}/u/:uuid` }, { source: '/mcp', destination: `${QPU_ORIGIN}/mcp` }, { source: '/docket/:path*', destination: `${QPU_ORIGIN}/docket/:path*` }, { source: '/.well-known/qpu.json', destination: `${QPU_ORIGIN}/.well-known/qpu.json` }] }
   },
   reactStrictMode: true,
-  transpilePackages: ['@payloadcms/v3-preview-runtime', '@payloadcms/v4-preview-runtime'],
+  transpilePackages: ['@payloadcms/v3-preview-runtime', '@payloadcms/v4-preview-runtime', '@uuidna/qpu'], // the QPU's handler, linked as a package, compiled here
   images: {
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year,
     remotePatterns: [

@@ -17,7 +17,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 
 | Method | Path | Takes | Answers | Authorization |
 |---|---|---|---|---|
-| POST | `/mcp` | JSON-RPC 2.0: initialize, tools/list, tools/call &#123; name, arguments &#125; | the result with structuredContent and _meta (widget, block, theme, jsonLd, payload, license); ETag the content hash, X-Qpu-Address the block address, X-Qpu-Version — errors: JSON-RPC -32601 (no such tool or method), -32602 (invalid params, with the bound the schema names), -32700 (parse error) | none for every pure tool; a tenant's tokens only for the docket |
+| POST | `/mcp` | JSON-RPC 2.0: initialize, tools/list, tools/call &#123; name, arguments &#125; | the result with structuredContent and _meta (widget, block, theme, jsonLd, payload, license); ETag the content hash, X-Qpu-Address the block address, X-Qpu-Version; streamed by default as the MCP streamable transport's event when the client accepts text/event-stream, JSON otherwise — errors: JSON-RPC -32601 (no such tool or method), -32602 (invalid params, with the bound the schema names), -32700 (parse error) | none for every pure tool; a tenant's tokens only for the docket |
 | GET | `/.well-known/qpu.json` | nothing | the discovery document: mcp, docket, methods, tools, bounds, version, tenants, mcpHosts, roles, licence, the reverse (the unit) | none |
 | GET | `/` | accept: application/json for the discovery document; otherwise the web OS | the discovery document or the site | none |
 | GET | `/&lt;uuid&gt; or /u/&lt;uuid&gt;` | a content-addressed v8 UUID | the block's page (the widget, prev and next, the theme from the UUID); immutable, ETag the address, 304 to If-None-Match | none |

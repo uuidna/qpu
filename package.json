@@ -2,6 +2,12 @@
   "name": "@uuidna/qpu",
   "version": "1.4.0",
   "type": "module",
+  "exports": {
+    "./mcp": "./src/quantum/mcp.ts",
+    "./discovery-document": "./src/quantum/discovery-document.ts",
+    "./version": "./src/quantum/version.ts",
+    "./blocks": "./src/quantum/blocks.ts"
+  },
   "license": "CC-BY-NC-ND-4.0",
   "author": {
     "name": "Tsvetan Rouschev",

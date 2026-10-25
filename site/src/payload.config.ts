@@ -1,6 +1,8 @@
 import { revalidateRedirects } from '@hooks/revalidateRedirects'
 import { Qpu } from './blocks/Qpu/config'
 import { Tenants } from './collections/Tenants'
+import { Entries } from './collections/Entries'
+import { qpuEndpoints } from './payload.qpu.endpoints'
 import { qpuPlugins } from './payload.qpu.config'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
@@ -300,6 +302,7 @@ export default buildConfig({
   ],
   collections: [
     Tenants, // the multi-tenant plugin's own collection: the hosts that name the tenants
+    Entries, // the docket: content-addressed entries over MongoDB, the Worker's Durable Object replaced
     CaseStudies,
     CommunityHelp,
     Docs,

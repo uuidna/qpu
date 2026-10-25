@@ -11,6 +11,8 @@ import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, type
 import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.js'
 import { LOCALES as LANGS, translateOf } from './quantum/i18n.js'
 import { DEFAULT_MCP_HOSTS } from './quantum/discovery.js'
+import { discoveryOf } from './quantum/discovery-document.js'
+import { ROLES, type Role } from './quantum/roles.js'
 import { hashOf as contentHashOf } from './quantum/e2e.js'
 import { VERSION } from './quantum/version.js'
 
@@ -23,12 +25,6 @@ export type Env = { QPU_WRITE_TOKEN?: string; QPU_ADMIN_TOKEN?: string; QPU_DATA
  * at another tenant's host — is not an incident but a procedure: the answer names the role, the header and who issues it. */
 import { TENANTS, tenantOf } from './quantum/tenants.js'
 export { TENANTS, tenantOf }
-export type Role = 'reader' | 'writer' | 'admin'
-export const ROLES: Readonly<Record<Role, { may: string; header: string | null; issued: string }>> = {
-  reader: { may: 'GET: read the docket, the discovery document, every tool over POST /mcp', header: null, issued: 'no token: every reader is a reader' },
-  writer: { may: 'POST /docket: append entries, commitments and reveals to this tenant\'s docket', header: 'Authorization: Bearer <writer token of this tenant>', issued: 'by the author, one wrangler secret per tenant (QPU_WRITE_TOKEN_<TENANT>) or the shared QPU_WRITE_TOKEN' },
-  admin: { may: 'DELETE /docket/<id>: delete an unlinked entry of this tenant\'s docket', header: 'Authorization: Bearer <admin token of this tenant>', issued: 'by the author, one wrangler secret per tenant (QPU_ADMIN_TOKEN_<TENANT>) or the shared QPU_ADMIN_TOKEN' },
-}
 /** The role a request holds at a tenant. Asked first of the RBAC MCP host when one is configured (every MCP server's roles
  * managed in one place, over MCP itself); the tenant secrets answer when none is, or when the host does not. */
 export const roleAt = async (env: Env, tenant: string, host: string, token: string | undefined, fetcher: (url: string, init: RequestInit) => Promise<Response> = fetch): Promise<{ role: Role; collision?: string; by: 'rbac-mcp' | 'tenant-secrets' }> => {
@@ -70,21 +66,7 @@ const involuted = (request: Request, address: string | null, response: Response,
 const addressOfReply = (reply: unknown): string | null => { const r = reply as { result?: { _meta?: { block?: { meta?: { id?: string } } } } }; return r.result?._meta?.block?.meta?.id ?? null }
 
 /** What this tree is, stated from its own values: nothing here is typed that the handler does not compute. */
-export const discoveryOf = (origin: string, env?: Env) => {
-  const tenant = tenantOf(new URL(origin).hostname)
-  const version = VERSION
-  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }
-  const names = list.result.tools.map((t) => t.name)
-  return {
-    name: '@uuidna/qpu', kind: 'qpu', mcp: `${origin}/mcp`, docket: `${origin}/docket`, methods: ['initialize', 'tools/list', 'tools/call'],
-    version, versioning: 'quantum: versions coexist — every block and every page is addressed by content, so an earlier version\'s addresses answer beside the new one\'s and a migration moves no address; the e2e gate reads each host\'s version and decodes hosts on different versions as copies of one value', tenant, tenants: Object.entries(TENANTS).map(([host, t]) => ({ host, tenant: t, docket: `https://${host}/docket` })), mcpHosts: (((env as unknown as Record<string, string | undefined>)?.[`QPU_MCP_HOSTS_${tenant.toUpperCase()}`]) ?? DEFAULT_MCP_HOSTS.join(',')).split(',').map((s) => s.trim()).filter(Boolean), mcpHostsNote: 'tenant configurable: QPU_MCP_HOSTS_<TENANT> names the MCP hosts this tenant discovers and extends; QPU_MCP_TOKEN_<HOST>_<TENANT> its token per host; Cloudflare\'s servers are discovered by default, the documentation one in the open, the others when the tenant brings its OAuth token', roles: ROLES, rbac: 'one Worker, one docket per tenant (host); roles asked of the RBAC MCP host when one is configured (a Payload MCP plugin managing every MCP server\'s roles over MCP itself), otherwise one writer and one admin token per tenant; a token at another tenant\'s host holds no role there and the answer names the procedure',
-    tools: names, examples: EXAMPLES.length, leads: LEADS.length,
-    bounds: { shorN: 21, qubits: 6, bits: 8, nodes: 12, note: 'the exact state-vector simulator; every bound is in each tool\'s input schema' },
-    key: KEY, license: { spdx: LICENSE.spdx, url: LICENSE.url, address: LICENSE.address, imprint: LICENSE.imprint, author: LICENSE.author, orcid: LICENSE.orcid },
-    reverse: { host: 'uuidna.com', mcp: 'https://uuidna.com/mcp', note: 'this tree asks the unit for readiness, rights and auras each run; the unit fans out to this host' },
-    honest: 'A pure handler over HTTP: no hardware, no network inside the tools, nothing factored beyond N ≤ 21.',
-  }
-}
+export { discoveryOf }
 
 /** The docket: one table of content-addressed entries and four verbs.
  *    GET  /docket?kind=&since=      the stream as a cursor
