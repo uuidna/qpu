@@ -18,8 +18,8 @@ Every figure below was measured on this tree on 2026-10-25 with the commands in 
 
 | Measure | Value |
 |---|---:|
-| Tracked files | 188 |
-| Source files under `src/quantum` (TypeScript) | 38 (8,471 lines) |
+| Tracked files | 1544 |
+| Source files under `src/quantum` (TypeScript) | 38 (8,472 lines) |
 | MCP tools | 41 |
 | Tests (`node --test`) | 154 pass, 0 fail of 154 |
 | Type check (`tsc --noEmit`) | 0 errors |

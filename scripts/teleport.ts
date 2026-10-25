@@ -6,13 +6,18 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { balancerLoad, balancerSnapshot } from '../src/quantum/mcp.ts'
+import { uuidOf } from '../src/quantum/blocks.ts'
 
 const DIR = join(process.cwd(), 'docs', 'public', 'blocks')
 const started = Date.now()
+// a block is a function of its arguments AND of the code that computed it: every file of blocks carries the code's fingerprint (the
+// sizes and times of every source under src/quantum), and a file from other code is not teleported — it would be a block of earlier code
+const fingerprintOf = (): string => { const parts: string[] = []; const walk = (d: string) => { for (const f of readdirSync(d)) { const p = join(d, f); const st = statSync(p); if (st.isDirectory()) walk(p); else if (/\.ts$/.test(f)) parts.push(`${p}:${st.size}:${st.mtimeMs}`) } }; try { walk(join(process.cwd(), 'src', 'quantum')) } catch { /* no sources: no fingerprint */ } return uuidOf(parts.join('\n')) }
+const FINGERPRINT = fingerprintOf()
 let loaded = 0, files = 0, bytes = 0
 if (existsSync(DIR)) {
   for (const f of readdirSync(DIR).filter((f) => f.endsWith('.json'))) {
-    try { const text = readFileSync(join(DIR, f), 'utf8'); bytes += text.length; const n = balancerLoad(JSON.parse(text)); loaded += n; files += 1 } catch { /* a torn file is skipped; the next step rewrites it */ }
+    try { const text = readFileSync(join(DIR, f), 'utf8'); const parsed = JSON.parse(text) as { fingerprint?: string; blocks?: unknown[] }; if (parsed.fingerprint !== FINGERPRINT || !Array.isArray(parsed.blocks)) continue; bytes += text.length; const n = balancerLoad(parsed.blocks as Parameters<typeof balancerLoad>[0]); loaded += n; files += 1 } catch { /* a torn file is skipped; the next step rewrites it */ }
   }
 }
 const teleported = { files, blocks: loaded, bytes, ms: Date.now() - started }
@@ -23,7 +28,7 @@ process.on('exit', () => {
     if (!fresh.length) return
     mkdirSync(DIR, { recursive: true })
     const name = `${(process.argv[1] ?? 'step').split('/').pop()!.replace(/\.ts$/, '')}-${process.pid}.json`
-    writeFileSync(join(DIR, name), JSON.stringify(fresh))
+    writeFileSync(join(DIR, name), JSON.stringify({ fingerprint: FINGERPRINT, blocks: fresh }))
     console.log(`teleport: ${fresh.length} block(s) left for the next step (${(statSync(join(DIR, name)).size / 1024).toFixed(0)} KB)`)
   } catch { /* nothing left: the next step computes */ }
 })
