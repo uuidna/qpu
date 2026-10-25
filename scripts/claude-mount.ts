@@ -19,7 +19,8 @@ export const mountThroughClaude = async (origin = 'https://qpu.uuidna.com'): Pro
   const client = new Anthropic({ apiKey: key })
   try {
     // fallbacks: "default" is on: a refusal by the safety classifiers re-runs the same request on a fallback model inside the call
-    const response = await client.beta.messages.create({
+    // streaming by default: the message is gathered from the stream, so a long turn never hits a request timeout
+    const stream = client.beta.messages.stream({
       model: reg.model,
       max_tokens: 1024,
       betas: [...reg.betas, 'server-side-fallback-2026-07-01'],
@@ -28,6 +29,7 @@ export const mountThroughClaude = async (origin = 'https://qpu.uuidna.com'): Pro
       tools: reg.tools.map((t) => ({ type: 'mcp_toolset' as const, mcp_server_name: t.mcp_server_name })),
       messages: [{ role: 'user', content: 'Call the qpu tool named seal with the argument text set to the string qpu, and reply with only the sha256 value it returns, nothing else.' }],
     })
+    const response = await stream.finalMessage()
     const text = response.content.filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === 'text').map((b) => b.text).join(' ')
     const reported = /[0-9a-f]{64}/.exec(text)?.[0] ?? null
     const usage = { input: response.usage.input_tokens, output: response.usage.output_tokens }

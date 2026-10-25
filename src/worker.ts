@@ -55,6 +55,9 @@ export const roleOf = (env: Env, tenant: string, token: string | undefined): { r
 
 const LICENSE_HEADERS = { 'X-Qpu-Version': VERSION, 'Link': `<${LICENSE.url}>; rel="license"`, 'X-License': LICENSE.spdx, 'X-Copyright': LICENSE.copyright, 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }
 const json = (body: unknown, status = 200, extra: Record<string, string> = {}): Response => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', ...LICENSE_HEADERS, ...extra } })
+/** Streaming by default: a client that accepts text/event-stream receives the reply as the MCP streamable transport's event (event: message, data: the JSON-RPC reply), the same headers kept; a client that does not receives JSON. */
+const streams = (request: Request): boolean => /text\/event-stream/.test(request.headers.get('accept') ?? '')
+const replyOf = (request: Request, body: unknown, status = 200, extra: Record<string, string> = {}): Response => (streams(request) && status === 200 ? new Response(`event: message\ndata: ${JSON.stringify(body)}\n\n`, { status, headers: { 'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-cache', ...LICENSE_HEADERS, ...extra } }) : json(body, status, extra))
 /** The involution that costs Cloudflare nothing: a reply is addressed by its block (content), so a client that holds the address asks with If-None-Match and receives 304 — no body computed, no bytes sent; a reply the address names is immutable and cacheable for a year anywhere between. */
 const involuted = (request: Request, address: string | null, response: Response, content?: string): Response => {
   if (!address) return response
@@ -484,9 +487,9 @@ export const worker = {
       // A checkout plan is executed here, with the tenant's key the handler never holds: the answer carries Stripe's session url.
       const params = (message as { params?: { name?: string; arguments?: { op?: string } } }).params
       // a cached reply is an involution: the block address is its ETag; the same arguments at any host answer the same address (tools/call is pure), so If-None-Match answers 304
-      if ('result' in reply && params?.name !== 'stripe' && params?.name !== 'metrics') return involuted(request, addressOfReply(reply), json(reply), contentHashOf((reply as { result: { structuredContent?: unknown } }).result.structuredContent))
+      if ('result' in reply && params?.name !== 'stripe' && params?.name !== 'metrics') return involuted(request, addressOfReply(reply), replyOf(request, reply), contentHashOf((reply as { result: { structuredContent?: unknown } }).result.structuredContent))
       if (params?.name === 'stripe' && params.arguments?.op === 'plan' && 'result' in reply) return json(await stripeCheckout(reply as { result: { structuredContent: { plan: { url: string; form: Record<string, string>; headers: Record<string, string>; secret: string } } } }, url, env))
-      return json(reply)
+      return replyOf(request, reply)
     }
     // Stripe per tenant: the webhook endpoint, the licence state, both under the docket since every event is an entry.
     if (path === '/docket/stripe' && request.method === 'POST') return stripeWebhook(request, url, env)
