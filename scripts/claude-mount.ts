@@ -3,15 +3,19 @@
 // compared with the block computed here. Runs only when the tenant's key is in the environment (ANTHROPIC_API_KEY, or
 // ANTHROPIC_API_KEY_<TENANT>); without it, the pass says what it needs and the lead stands. The official SDK, never raw HTTP.
 import Anthropic from '@anthropic-ai/sdk'
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { handle } from '../src/quantum/mcp.ts'
 
 export type ClaudeMount = { phase: 'needs-key' | 'mounted' | 'differs' | 'refused' | 'failed'; model?: string; sha256Here?: string; sha256ByClaude?: string | null; stopReason?: string; servedBy?: string; usage?: { input: number; output: number }; note: string }
 
 export const mountThroughClaude = async (origin = 'https://qpu.uuidna.com'): Promise<ClaudeMount> => {
-  const key = process.env.ANTHROPIC_API_KEY ?? process.env.ANTHROPIC_API_KEY_UUIDNA ?? process.env.ANTHROPIC_API_KEY_PSG
+  // the key from the environment or .dev.vars (the file the Worker's secrets live in, ignored by git); its value is never printed or carried
+  const vars: Record<string, string> = existsSync(join(process.cwd(), '.dev.vars')) ? Object.fromEntries(readFileSync(join(process.cwd(), '.dev.vars'), 'utf8').split('\n').filter((l) => /^[A-Z_0-9]+=/.test(l)).map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).replace(/^"|"$/g, '')])) : {}
+  const key = process.env.ANTHROPIC_API_KEY ?? process.env.ANTHROPIC_API_KEY_UUIDNA ?? process.env.ANTHROPIC_API_KEY_PSG ?? vars.ANTHROPIC_API_KEY ?? vars.ANTHROPIC_API_KEY_UUIDNA ?? vars.ANTHROPIC_API_KEY_PSG
   const reg = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'extend', arguments: { direction: 'out', host: `${origin}/mcp` } } }) as { result: { structuredContent: { outward: { claude: { model: string; betas: string[]; mcp_servers: { type: 'url'; url: string; name: string }[]; tools: { type: 'mcp_toolset'; mcp_server_name: string }[] } } } } }).result.structuredContent.outward.claude
   const here = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'seal', arguments: { text: 'qpu' } } }) as { result: { structuredContent: { sha256: string } } }).result.structuredContent.sha256
-  if (!key) return { phase: 'needs-key', sha256Here: here, note: `no ANTHROPIC_API_KEY in the environment: the registration stands (${reg.mcp_servers[0]!.url} as ${reg.mcp_servers[0]!.name}); the mount is the tenant's act with its key` }
+  if (!key) return { phase: 'needs-key', sha256Here: here, note: `no ANTHROPIC_API_KEY in the environment or .dev.vars: the registration stands (${reg.mcp_servers[0]!.url} as ${reg.mcp_servers[0]!.name}); the mount is the tenant's act with its key` }
   const client = new Anthropic({ apiKey: key })
   try {
     // fallbacks: "default" is on: a refusal by the safety classifiers re-runs the same request on a fallback model inside the call
