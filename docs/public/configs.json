@@ -1,5 +1,5 @@
 {
- "date": "2026-10-25T22:30:13.748Z",
+ "date": "2026-10-25T22:35:40.692Z",
  "tested": 9,
  "kinds": 9,
  "closed": true,
@@ -8,16 +8,16 @@
   {
    "kind": "payload",
    "torus": {
-    "address": "9e2f3a46-d551-7a26-9bbc-d0b81d9bc2be",
-    "seed": 1,
-    "reflection": 9,
+    "address": "a73e31cf-62c0-407a-8336-a8a6e3b64e62",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
-     7,
-     4,
-     1
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 1699
+    "bytes": 1693
    }
   },
   {
@@ -53,7 +53,7 @@
   {
    "kind": "pwa",
    "torus": {
-    "address": "e4cc12dd-c113-7035-b7da-f0c9fc05a9ee",
+    "address": "dac843af-fe61-8256-b118-a347892208a6",
     "seed": 4,
     "reflection": 6,
     "trinity": [
@@ -62,7 +62,7 @@
      1
     ],
     "closed": true,
-    "bytes": 823
+    "bytes": 821
    }
   },
   {
@@ -113,16 +113,16 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "d8652363-8f88-368c-a2da-edc09637f45e",
-    "seed": 4,
-    "reflection": 6,
+    "address": "e481ff7a-14d1-3579-ae6f-229c3a67efd6",
+    "seed": 7,
+    "reflection": 3,
     "trinity": [
      7,
      4,
      1
     ],
     "closed": true,
-    "bytes": 16069
+    "bytes": 16067
    }
   },
   {

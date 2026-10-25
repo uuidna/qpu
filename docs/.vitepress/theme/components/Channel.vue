@@ -18,7 +18,7 @@ const mirror = computed(() => reflectionOf(props.uuid))
         <tr><td>referrer handle · flags</td><td><a :href="`/h/${ch.message.referrer.handle}`">{{ ch.message.referrer.handle }}</a> · {{ ch.message.referrer.flags }}</td></tr>
         <tr><td>colour</td><td><span :style="{ display: 'inline-block', width: '1em', height: '1em', background: ch.message.colour.rgb, verticalAlign: 'middle' }" /> {{ ch.message.colour.rgb }}</td></tr>
         <tr><td>vortex (ℤ/9)</td><td>seed {{ ch.message.vortex.seed }} · reflection {{ ch.message.vortex.reflection }} · {{ ch.message.vortex.polarity }}</td></tr>
-        <tr><td>mirror (σ)</td><td><a :href="`/u/${mirror.mirror}`"><code>{{ mirror.mirror }}</code></a></td></tr>
+        <tr><td>mirror (σ)</td><td><a :href="`/${mirror.mirror}`"><code>{{ mirror.mirror }}</code></a></td></tr>
       </tbody>
     </table>
   </details>

@@ -23,5 +23,5 @@ export const qpuEnv = {
   DATABASE_URI: "the RAID docket of the tenant (the mongo tool's language), as the site's MongoDB",
   PAYLOAD_SECRET: "the tenant's",
   R2: "Cloudflare R2 through the bindings MCP once the tenant's token opens it (the site's vercel-blob until then)",
-  QPU_ORIGIN: "https://qpu.uuidna.com: the Worker that computes every qpu block and every /u/<uuid> page",
+  QPU_ORIGIN: "https://qpu.uuidna.com: the Worker that computes every qpu block and every /<uuid> page",
 }

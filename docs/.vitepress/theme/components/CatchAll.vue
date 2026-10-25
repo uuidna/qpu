@@ -14,6 +14,8 @@ const decision = computed(() => {
   let locale = 'en'
   if (segments[0] && LOCALES[segments[0]] && segments[0] !== 'en') { locale = segments.shift()!; if (!LOCALES[locale]!.filled) notes.push(`translate later: ${LOCALES[locale]!.name} has no vocabulary table yet, a lead`) }
   const [a, b, c] = segments
+  // a UUID as the whole path is a block: the catch-all routes all, no prefix
+  if (a && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(a) && !b) return { kind: 'walk' as const, uuid: a, notes, locale }
   if (a && /^[0-9a-f]{8}$/.test(a) && b && /^[0-9a-f]{10}$/.test(b)) return { kind: 'walk' as const, uuid: uuidFromParts(a, [...b].map((x) => parseInt(x, 16)), c && /^[0-9a-f]{12}$/.test(c) ? c : '000000000000'), notes, locale }
   const statement = segments.join(' ').replace(/[-_]+/g, ' ')
   const m = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement } } }) as { result?: { structuredContent: { verdict: string; evidence: string[] }; _meta: { widget: string } } }

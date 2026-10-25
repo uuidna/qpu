@@ -28,7 +28,7 @@ the run of the tree as tools: discover the hosts, verify the leads, let the unit
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [shard-share](https://qpu.uuidna.com/u/bd36b286-0a4d-5f08-af8a-dcd0a2d71e00) | shard | textbook_shards_cover | The share of seven items for shard 1 of 4: the items at positions 1 and 5; the shares of all four shards cover the seven exactly once, proven by the kernel. |
+| [shard-share](https://qpu.uuidna.com/bd36b286-0a4d-5f08-af8a-dcd0a2d71e00) | shard | textbook_shards_cover | The share of seven items for shard 1 of 4: the items at positions 1 and 5; the shares of all four shards cover the seven exactly once, proven by the kernel. |
 
 ## language
 
@@ -36,9 +36,9 @@ any language and dialect, offline and token-free: translation by vocabulary both
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [translate-bg](https://qpu.uuidna.com/u/ed6bcf7a-234c-29d5-b382-dfaa610efb85) | translate | — | English to Bulgarian by vocabulary: the labels and verdicts translate; a word with no entry stays and is reported. |
-| [translate-coverage](https://qpu.uuidna.com/u/8b70ad63-4536-8151-a3ce-d1d8a77c6018) | translate | — | The vocabulary measured: for every locale, which surface terms have no entry — the leads of the tables, updated from measurement. |
-| [prose-clay-bg](https://qpu.uuidna.com/u/64deda51-4d2d-28f9-b6df-f409d33b8611) | prose | — | Programmable prose in Bulgarian from the clay tool's answer and the tree toolbox's skill: the numbers are the tool's, the words the vocabulary's, the rest reported. |
+| [translate-bg](https://qpu.uuidna.com/ed6bcf7a-234c-29d5-b382-dfaa610efb85) | translate | — | English to Bulgarian by vocabulary: the labels and verdicts translate; a word with no entry stays and is reported. |
+| [translate-coverage](https://qpu.uuidna.com/8b70ad63-4536-8151-a3ce-d1d8a77c6018) | translate | — | The vocabulary measured: for every locale, which surface terms have no entry — the leads of the tables, updated from measurement. |
+| [prose-clay-bg](https://qpu.uuidna.com/64deda51-4d2d-28f9-b6df-f409d33b8611) | prose | — | Programmable prose in Bulgarian from the clay tool's answer and the tree toolbox's skill: the numbers are the tool's, the words the vocabulary's, the rest reported. |
 
 ## raid
 
@@ -46,8 +46,8 @@ the docket as a database: MongoDB's query and update language ported as pure fun
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [mongo-find](https://qpu.uuidna.com/u/1414fbf3-422d-884b-b064-fbc22dd29e1a) | mongo | — | A Mongo filter over documents read from the docket: operators, array membership, sort; the match is computed here, the storage is the docket. |
-| [mongo-update](https://qpu.uuidna.com/u/9c706a9b-63c2-84ca-9df8-963846faa839) | mongo | — | An update computed as a new document and a new entry linked to the one it replaces: entries are immutable and content-addressed, so history is kept. |
+| [mongo-find](https://qpu.uuidna.com/1414fbf3-422d-884b-b064-fbc22dd29e1a) | mongo | — | A Mongo filter over documents read from the docket: operators, array membership, sort; the match is computed here, the storage is the docket. |
+| [mongo-update](https://qpu.uuidna.com/9c706a9b-63c2-84ca-9df8-963846faa839) | mongo | — | An update computed as a new document and a new entry linked to the one it replaces: entries are immutable and content-addressed, so history is kept. |
 
 ## billing
 
@@ -55,9 +55,9 @@ Stripe per tenant: a licence bought at one tenant is an entry valid on the domai
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [stripe-plan](https://qpu.uuidna.com/u/0f3f9e6c-761f-27bf-bdc7-d01bd43c2e44) | stripe | — | A checkout plan for a yearly commercial licence of acme on two domains, bought at tenant psg: the form Stripe takes, the metadata the webhook brings back, the tenant secret the Worker alone holds. |
-| [stripe-catalogue](https://qpu.uuidna.com/u/eb91379d-fd77-54aa-b35f-1d9a1521b028) | stripe | textbook_prices_are_variants_times_currencies | The QPU as a product line for tenant uuidna: seven variants over five products, each a Stripe price form in two currencies, the a432 default at zero. |
-| [stripe-webhook](https://qpu.uuidna.com/u/f36aa4c4-fd37-183c-881f-2b05009e9b41) | stripe | — | A checkout completed at tenant psg, its signature verified with psg's webhook secret, read into one licence entry granting acme on both domains. |
+| [stripe-plan](https://qpu.uuidna.com/0f3f9e6c-761f-27bf-bdc7-d01bd43c2e44) | stripe | — | A checkout plan for a yearly commercial licence of acme on two domains, bought at tenant psg: the form Stripe takes, the metadata the webhook brings back, the tenant secret the Worker alone holds. |
+| [stripe-catalogue](https://qpu.uuidna.com/eb91379d-fd77-54aa-b35f-1d9a1521b028) | stripe | textbook_prices_are_variants_times_currencies | The QPU as a product line for tenant uuidna: seven variants over five products, each a Stripe price form in two currencies, the a432 default at zero. |
+| [stripe-webhook](https://qpu.uuidna.com/f36aa4c4-fd37-183c-881f-2b05009e9b41) | stripe | — | A checkout completed at tenant psg, its signature verified with psg's webhook secret, read into one licence entry granting acme on both domains. |
 
 ## legal
 
@@ -65,8 +65,8 @@ the legal and security audit of this MCP through MCP: the author's claims judged
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [legal-audit-offline](https://qpu.uuidna.com/u/5601fc0c-ac8f-4474-afec-de76277834c6) | legal | textbook_uuid_is_36 | Phase two with no answers (offline): the claims, the tree's security checks, and the audit's own content address over the SHA-256 of every input — change a source and the address changes. |
-| [legal-plan](https://qpu.uuidna.com/u/b3cda968-f2ac-73bc-8b91-55c2923c43cf) | legal | — | Phase one on fixture texts and a three-door discovery: the claims gathered (licence, author, metadata, measured table, perspectives), the tree's security checks, and the plan — one forensics call per claim, the rights and security doors once, free by default. |
+| [legal-audit-offline](https://qpu.uuidna.com/5601fc0c-ac8f-4474-afec-de76277834c6) | legal | textbook_uuid_is_36 | Phase two with no answers (offline): the claims, the tree's security checks, and the audit's own content address over the SHA-256 of every input — change a source and the address changes. |
+| [legal-plan](https://qpu.uuidna.com/b3cda968-f2ac-73bc-8b91-55c2923c43cf) | legal | — | Phase one on fixture texts and a three-door discovery: the claims gathered (licence, author, metadata, measured table, perspectives), the tree's security checks, and the plan — one forensics call per claim, the rights and security doors once, free by default. |
 
 ## repository
 
@@ -74,7 +74,7 @@ the repository watched: every workspace, branch, tag and release here compared w
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [repository-watch](https://qpu.uuidna.com/u/c285faf0-637d-1a98-b289-104fc8b5dedb) | repository | — | Fixture facts against fixture answers: two local branches unpushed, one remote branch not here, a local tag not pushed, a remote tag not fetched, a moved tag, a release whose tag is gone, a version with a tag and no release, a Zenodo version without a release, a second workspace: ten leads. |
+| [repository-watch](https://qpu.uuidna.com/c285faf0-637d-1a98-b289-104fc8b5dedb) | repository | — | Fixture facts against fixture answers: two local branches unpushed, one remote branch not here, a local tag not pushed, a remote tag not fetched, a moved tag, a release whose tag is gone, a version with a tag and no release, a Zenodo version without a release, a second workspace: ten leads. |
 
 ## standards
 
@@ -82,9 +82,9 @@ the standards fused: schema.org on every block, page and offer; ISO 8601, 639-1,
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [jsonld-block](https://qpu.uuidna.com/u/2e424e67-737c-4a54-8ea4-cc03870622c6) | jsonld | — | A block as schema.org JSON-LD: a CreativeWork of the SoftwareApplication, the author a Person with an ORCID, the licence a URL, the date ISO 8601. |
-| [jsonld-catalogue](https://qpu.uuidna.com/u/96f24cc3-58ca-1b50-9a8a-e499d75800c8) | jsonld | — | The whole catalogue as an OfferCatalog of Offers priced in ISO 4217 EUR, each a UnitPriceSpecification by month or year where recurring. |
-| [codes-plan](https://qpu.uuidna.com/u/9323b500-e973-5c40-aded-583bed9657c8) | codes | — | What the codes tool would validate and where the CLDR lists are: eleven locales, three currencies, the tenants' countries. |
+| [jsonld-block](https://qpu.uuidna.com/2e424e67-737c-4a54-8ea4-cc03870622c6) | jsonld | — | A block as schema.org JSON-LD: a CreativeWork of the SoftwareApplication, the author a Person with an ORCID, the licence a URL, the date ISO 8601. |
+| [jsonld-catalogue](https://qpu.uuidna.com/96f24cc3-58ca-1b50-9a8a-e499d75800c8) | jsonld | — | The whole catalogue as an OfferCatalog of Offers priced in ISO 4217 EUR, each a UnitPriceSpecification by month or year where recurring. |
+| [codes-plan](https://qpu.uuidna.com/9323b500-e973-5c40-aded-583bed9657c8) | codes | — | What the codes tool would validate and where the CLDR lists are: eleven locales, three currencies, the tenants' countries. |
 
 ## payload
 
@@ -92,19 +92,19 @@ Payload's plugin schema as the one shape of every result: nested docs of lexical
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [configure-versions](https://qpu.uuidna.com/u/3da2344a-eb1a-59af-8c18-cb505253a3b1) | configure | — | Versions define development and development defines versions: the current version from its single source, the next number from what the catalogue changed since the last tag (tools added: the minor digit carries), kept to single digits with a build address, the open leads as the version's plan, Payload's versioning over the RAID (every version an entry, never overwritten, no cap). |
-| [configure-migration](https://qpu.uuidna.com/u/c83cf226-f49c-4d3d-b2ac-19b6d578166e) | configure | textbook_providers_are_tenants_plus_operator | A provider added or moved at 100 % uptime: deploy beside, mirror the docket by address, decode old and new as copies through the gate, route, and the rollback is the earlier version still answering. |
-| [configure-api](https://qpu.uuidna.com/u/fa87b542-c648-164a-affc-47cc12010362) | configure | — | The QPU's API overview as data, the way platform.claude.com's overview is one for the Claude API: one MCP endpoint and every surface around it, the headers, the authorization (none for every pure tool), the content addressing and its involution, the tools by toolbox, the MCP connector for Claude and for any client, quick tests, limits and errors; docs/api.md is written from it. |
-| [configure-fullstack](https://qpu.uuidna.com/u/24d2d224-013f-77b4-8b09-e7dce80c2b8d) | configure | — | QPU's full stack from the source of payloadcms.com (MIT): its twelve collections, thirty blocks, globals and fields kept, the qpu block added, search, multi-tenant and mcp added to its four plugins, the database the RAID, storage and deploy at Cloudflare; two source files and a README generated for the fork. |
-| [configure-all](https://qpu.uuidna.com/u/554d1425-8d3f-36b7-a674-b9002826fdf6) | configure | textbook_reflection_sums_to_ten | Every configuration MCP computes, tested around the torus: Payload's plugins, the Worker, the tenants' variable names, the manifest, the registration, the versions, the migration, the full stack; each with its address, seed, reflection and trinity, every loop closed. |
-| [configure-payload](https://qpu.uuidna.com/u/e5e64172-bb69-7ff0-914d-57ed27699ebc) | configure | textbook_plugin_combinations | Payload configured by MCP: eight default plugins over the one pages collection, the lexical block qpu with its UUID logic fields, the tenants in multi-tenant, 256 combinations. |
-| [configure-wrangler-drift](https://qpu.uuidna.com/u/d77b6ee8-c418-3df8-8e60-26cf6e748e59) | configure | — | The Worker configuration compared to a text a client holds: every differing path is a lead, nothing is rewritten by the tool. |
-| [configure-tenant-missing](https://qpu.uuidna.com/u/e9516f13-0da0-11fd-8a06-47350fe0f658) | configure | — | Each tenant's variable names and which an environment lacks: Stripe keys and the Cloudflare MCP tokens are the operator's to set; values never travel. |
-| [payload-theorems-plan](https://qpu.uuidna.com/u/c821dff2-0c65-2569-a3d1-d5b2579f3ca9) | payload | — | The textbook's axioms replaced by theorems through the Payload MCP plugin, as a client: the endpoint, the authorization the tenant sends, the tools/list request, and the steps — the find and update doors picked by what they take, every qpu block without a theorem given the kernel-accepted key its example names. |
-| [payload-theorems-update](https://qpu.uuidna.com/u/b984e50b-3205-7b9c-a13e-4886e530c5aa) | payload | — | With the Payload MCP's answers: the find and update doors recognised by what they take, two pages read, one qpu block without a theorem given textbook_plugin_combinations (the example configure-payload), one already naming its theorem left as it is; one update request emitted. |
-| [payload-website](https://qpu.uuidna.com/u/5abe7801-0df3-5793-aa3f-3cbdf46d5b04) | payload | textbook_website_plugins_partition | The source of payloadcms.com (github.com/payloadcms/website, MIT) read as a tree: twelve collections, thirty blocks, seven globals, ten fields, its own opsCounter plugin, and the four default plugins its config mounts; the live page's block types contentGrid and cta have their blocks in the source — the site is what Payload computes, verified. |
-| [payload-skills](https://qpu.uuidna.com/u/bae0c712-289e-4b01-b24a-a5b0b5418bd7) | payload | textbook_skills_documents | Payload's skills for agents (github.com/payloadcms/skills) read as a tree: two skills, payload and cms-migration, their fourteen references, each mapped to the tool of this tree that enacts it; names and paths as facts, no text carried. |
-| [payload-doc](https://qpu.uuidna.com/u/192e1f43-a210-652b-b281-7c0ae0a67c1a) | payload | textbook_uuid_is_36 | The clay result as a Payload document: a lexical root with a heading, one qpu block of UUID logic and the licence paragraph; nested under its referer; the SEO fields from the block's Open Graph. |
+| [configure-versions](https://qpu.uuidna.com/3da2344a-eb1a-59af-8c18-cb505253a3b1) | configure | — | Versions define development and development defines versions: the current version from its single source, the next number from what the catalogue changed since the last tag (tools added: the minor digit carries), kept to single digits with a build address, the open leads as the version's plan, Payload's versioning over the RAID (every version an entry, never overwritten, no cap). |
+| [configure-migration](https://qpu.uuidna.com/c83cf226-f49c-4d3d-b2ac-19b6d578166e) | configure | textbook_providers_are_tenants_plus_operator | A provider added or moved at 100 % uptime: deploy beside, mirror the docket by address, decode old and new as copies through the gate, route, and the rollback is the earlier version still answering. |
+| [configure-api](https://qpu.uuidna.com/fa87b542-c648-164a-affc-47cc12010362) | configure | — | The QPU's API overview as data, the way platform.claude.com's overview is one for the Claude API: one MCP endpoint and every surface around it, the headers, the authorization (none for every pure tool), the content addressing and its involution, the tools by toolbox, the MCP connector for Claude and for any client, quick tests, limits and errors; docs/api.md is written from it. |
+| [configure-fullstack](https://qpu.uuidna.com/24d2d224-013f-77b4-8b09-e7dce80c2b8d) | configure | — | QPU's full stack from the source of payloadcms.com (MIT): its twelve collections, thirty blocks, globals and fields kept, the qpu block added, search, multi-tenant and mcp added to its four plugins, the database the RAID, storage and deploy at Cloudflare; two source files and a README generated for the fork. |
+| [configure-all](https://qpu.uuidna.com/554d1425-8d3f-36b7-a674-b9002826fdf6) | configure | textbook_reflection_sums_to_ten | Every configuration MCP computes, tested around the torus: Payload's plugins, the Worker, the tenants' variable names, the manifest, the registration, the versions, the migration, the full stack; each with its address, seed, reflection and trinity, every loop closed. |
+| [configure-payload](https://qpu.uuidna.com/e5e64172-bb69-7ff0-914d-57ed27699ebc) | configure | textbook_plugin_combinations | Payload configured by MCP: eight default plugins over the one pages collection, the lexical block qpu with its UUID logic fields, the tenants in multi-tenant, 256 combinations. |
+| [configure-wrangler-drift](https://qpu.uuidna.com/d77b6ee8-c418-3df8-8e60-26cf6e748e59) | configure | — | The Worker configuration compared to a text a client holds: every differing path is a lead, nothing is rewritten by the tool. |
+| [configure-tenant-missing](https://qpu.uuidna.com/e9516f13-0da0-11fd-8a06-47350fe0f658) | configure | — | Each tenant's variable names and which an environment lacks: Stripe keys and the Cloudflare MCP tokens are the operator's to set; values never travel. |
+| [payload-theorems-plan](https://qpu.uuidna.com/c821dff2-0c65-2569-a3d1-d5b2579f3ca9) | payload | — | The textbook's axioms replaced by theorems through the Payload MCP plugin, as a client: the endpoint, the authorization the tenant sends, the tools/list request, and the steps — the find and update doors picked by what they take, every qpu block without a theorem given the kernel-accepted key its example names. |
+| [payload-theorems-update](https://qpu.uuidna.com/b984e50b-3205-7b9c-a13e-4886e530c5aa) | payload | — | With the Payload MCP's answers: the find and update doors recognised by what they take, two pages read, one qpu block without a theorem given textbook_plugin_combinations (the example configure-payload), one already naming its theorem left as it is; one update request emitted. |
+| [payload-website](https://qpu.uuidna.com/5abe7801-0df3-5793-aa3f-3cbdf46d5b04) | payload | textbook_website_plugins_partition | The source of payloadcms.com (github.com/payloadcms/website, MIT) read as a tree: twelve collections, thirty blocks, seven globals, ten fields, its own opsCounter plugin, and the four default plugins its config mounts; the live page's block types contentGrid and cta have their blocks in the source — the site is what Payload computes, verified. |
+| [payload-skills](https://qpu.uuidna.com/bae0c712-289e-4b01-b24a-a5b0b5418bd7) | payload | textbook_skills_documents | Payload's skills for agents (github.com/payloadcms/skills) read as a tree: two skills, payload and cms-migration, their fourteen references, each mapped to the tool of this tree that enacts it; names and paths as facts, no text carried. |
+| [payload-doc](https://qpu.uuidna.com/192e1f43-a210-652b-b281-7c0ae0a67c1a) | payload | textbook_uuid_is_36 | The clay result as a Payload document: a lexical root with a heading, one qpu block of UUID logic and the licence paragraph; nested under its referer; the SEO fields from the block's Open Graph. |
 
 ## extension
 
@@ -112,10 +112,10 @@ QPU the natural extension of every MCP and every MCP of QPU: a host's tools read
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [extend-out](https://qpu.uuidna.com/u/ac90951a-c876-4f72-b0c5-c369d6dc5927) | extend | — | This catalogue as the registration any MCP client mounts: every tool as tools/list serves it, grouped by toolbox, at this tree's own endpoint; and as the Claude API mounts it, through the Messages API's MCP connector (mcp_servers with the mcp_toolset, beta mcp-client-2025-11-20), the tenant's key in the request. |
-| [extend-in-request](https://qpu.uuidna.com/u/60207721-dba7-8b46-8a0b-3bd8006d6aa1) | extend | textbook_integrations_are_ten | Without the host's tools: the one tools/list request the client makes of Cloudflare's documentation server (no token needed there), and the integration matrix: every MCP this tree knows, its token name and what the tree does with it once open (GitHub → the repository watch through its doors; Cloudflare's eight → the verifier, the mirrors, the metrics, the wave, the audit, the prose, the tenants, the textbook; the Claude API → the operator agent, and outward the Messages API registration that mounts this catalogue). |
-| [extend-in-docs](https://qpu.uuidna.com/u/052bb3af-623f-6678-ac68-32ddb917a682) | extend | — | Cloudflare's documentation server read into this catalogue: one door, docs.mcp.cloudflare.com:search_cloudflare_documentation, taking a query. |
-| [extend-call-served](https://qpu.uuidna.com/u/52a25f3d-761f-1f58-b5c4-87ec72b54981) | extend | — | A foreign door served and its event-stream answer read back into the text the host returned. |
+| [extend-out](https://qpu.uuidna.com/ac90951a-c876-4f72-b0c5-c369d6dc5927) | extend | — | This catalogue as the registration any MCP client mounts: every tool as tools/list serves it, grouped by toolbox, at this tree's own endpoint; and as the Claude API mounts it, through the Messages API's MCP connector (mcp_servers with the mcp_toolset, beta mcp-client-2025-11-20), the tenant's key in the request. |
+| [extend-in-request](https://qpu.uuidna.com/60207721-dba7-8b46-8a0b-3bd8006d6aa1) | extend | textbook_integrations_are_ten | Without the host's tools: the one tools/list request the client makes of Cloudflare's documentation server (no token needed there), and the integration matrix: every MCP this tree knows, its token name and what the tree does with it once open (GitHub → the repository watch through its doors; Cloudflare's eight → the verifier, the mirrors, the metrics, the wave, the audit, the prose, the tenants, the textbook; the Claude API → the operator agent, and outward the Messages API registration that mounts this catalogue). |
+| [extend-in-docs](https://qpu.uuidna.com/052bb3af-623f-6678-ac68-32ddb917a682) | extend | — | Cloudflare's documentation server read into this catalogue: one door, docs.mcp.cloudflare.com:search_cloudflare_documentation, taking a query. |
+| [extend-call-served](https://qpu.uuidna.com/52a25f3d-761f-1f58-b5c4-87ec72b54981) | extend | — | A foreign door served and its event-stream answer read back into the text the host returned. |
 
 ## crypto
 
@@ -123,8 +123,8 @@ the split folds: what a place cannot hold is folded into pieces it can, each add
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [fold-ledger](https://qpu.uuidna.com/u/eea79f99-1ff0-46a2-a881-c96dbb0ffcad) | fold | textbook_fold_mirror | A forty-row ledger folded under a bound of 600 bytes: the pieces, each with its address, SHA-256 and key range, the root over them, the mirror piece of each across the fold, and the one piece the key k27 sits in — decided by comparisons, the whole never read for it. |
-| [seal-text](https://qpu.uuidna.com/u/eaa24aba-a098-80b0-9d9f-00be85766747) | seal | — | SHA-256, the HMAC under a test key and the fold address of one text, the same at every host. |
+| [fold-ledger](https://qpu.uuidna.com/eea79f99-1ff0-46a2-a881-c96dbb0ffcad) | fold | textbook_fold_mirror | A forty-row ledger folded under a bound of 600 bytes: the pieces, each with its address, SHA-256 and key range, the root over them, the mirror piece of each across the fold, and the one piece the key k27 sits in — decided by comparisons, the whole never read for it. |
+| [seal-text](https://qpu.uuidna.com/eaa24aba-a098-80b0-9d9f-00be85766747) | seal | — | SHA-256, the HMAC under a test key and the fold address of one text, the same at every host. |
 
 ## tree
 
@@ -132,26 +132,26 @@ the tree knows itself: its leads, its self-audit, any statement matched or prove
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [vortex-trinity](https://qpu.uuidna.com/u/d60075fc-d392-294f-b1dc-99f141dc0fda) | verify | triad_reflect | The 9-vortex of a UUID read whole: the seed, its reflection under σ_10, the trinity it belongs to and the trinity it reflects into at the same time (3, 6, 9 ↔ 7, 4, 1; 2, 5, 8 into itself), and whether it sits in the key's trinity; stated by the kernel as triad_reflect. |
-| [css-stylesheet](https://qpu.uuidna.com/u/e208a362-7157-1bab-8f26-dba497d529b6) | css | textbook_reflection_sums_to_ten | The UI as CSS: the stylesheet from the key 432 with the rules that draw every block from its own custom properties, and the thirteen variables one UUID sets on its block root, its vortex seed and the seed's reflection summing to 10; no script anywhere. |
-| [dashboard-processor](https://qpu.uuidna.com/u/94f87633-ecc2-61e4-af84-f06b4b5e262a) | dashboard | — | The processor tool laid out whole: its one facet (three devices) and the three combinations, each a final cell drawn by its own UUID with a link to its walk page, so the click is the decision. |
-| [dashboard-algorithm-narrowed](https://qpu.uuidna.com/u/1ade21c5-1024-3c26-a5c1-12b3a15de2be) | dashboard | — | The algorithm tool with its name fixed to shor: the space of every combination counted whole, and the next facet open as cells that narrow it further, until one combination remains and its cell is the walk. |
-| [dashboard-index](https://qpu.uuidna.com/u/05b9b86e-2305-6a98-8923-e744a0f13386) | dashboard | — | Every tool with the size of its input space: how many combinations its enumerable facets admit, which properties stay free, and the address of its own dashboard. |
-| [leads-all](https://qpu.uuidna.com/u/81e9c1a0-45b6-8632-b9a6-de3f30637515) | leads | — | Every lead with its status; the counts add up to the total. |
-| [clay-register](https://qpu.uuidna.com/u/47444080-5364-8243-b4b5-dda883e07009) | clay | — | The 54 Clay relations recomputed in exact integer arithmetic: all hold, the widest value needs 33 bits (amplitudes = 2^32), three 16-bit limbs on an 8-bit machine. |
-| [clay-reflection](https://qpu.uuidna.com/u/e7865186-29a6-3005-9a18-65e1b152f2d8) | clay | triad_reflect | The register read by the technique: every relation's value as a vortex seed with its σ_10 reflection and both trinities, the relations whose seeds reflect each other paired, the fixed ones (seed 5) and the ones in the key's trinity named, and the plan to ask the unit's sequence door every value. |
-| [clay-relation-15](https://qpu.uuidna.com/u/20e51f9f-aec0-2af3-89df-e9eea59639d3) | clay | relation_15 | One relation: magicBlock = glProd hexbit seed = qftDepth vertices = 15. |
-| [verify-seal-and-content](https://qpu.uuidna.com/u/25dcba9d-b75a-7ace-83de-696a09e5ca55) | verify | — | One UUID checked cheaply: its seal from its own 31 nibbles, and its content by one fold. |
-| [verify-tampered](https://qpu.uuidna.com/u/f93184e4-21a7-3659-8487-c672c549479f) | verify | — | A UUID with one nibble changed: the content-decided version no longer agrees, and no content was needed to see it. |
-| [match-willow](https://qpu.uuidna.com/u/b48ee89b-7274-2ed2-be93-49e96f8c2f15) | match | — | Any statement, matched: this one is served by the processor tool. |
-| [match-glagolitic](https://qpu.uuidna.com/u/041db96e-7eb1-5b03-8061-d6e5146c3dcb) | match | — | A Glagolitic numeral read as the integer 15 before the match: served by the algorithm tool, factored 3 × 5 in the reflection. |
-| [match-bulgarian](https://qpu.uuidna.com/u/29ffb847-0fe5-8f00-94d2-4906dce3071e) | match | — | A statement in Bulgarian with a Glagolitic numeral, translated by vocabulary offline, matched, and answered with its verdict in Bulgarian. |
-| [match-theorem-first](https://qpu.uuidna.com/u/2d9ddf6e-29c8-1560-a159-b10bd6acf0d9) | match | mersenne_127 | Solved first by the QPU textbook: the statement names a kernel-accepted theorem, so it is served by that theorem, proven, before any tool is called. |
-| [match-pattern-fold](https://qpu.uuidna.com/u/47f5a791-9a8f-140b-b7ee-f058649d9f53) | match | — | Pattern recognition for splitting: a statement that asks to split a quoted text under a bound opens the fold door — the pieces under 12 bytes, each addressed, the whole by its root, the bound a reflective boundary — and the recognition itself is sealed by the call's content address. |
-| [match-pattern-seal](https://qpu.uuidna.com/u/48bb17ba-d5ac-6adf-8332-98967201a0da) | match | — | Pattern recognition for sealing: a statement that asks to seal a quoted text, with a key, opens the seal door — SHA-256, the fold address and the HMAC under the key — and the recognition is sealed by its own address. |
-| [match-pattern-uuid](https://qpu.uuidna.com/u/51128ead-da96-269f-a616-c5954d747cda) | match | — | Pattern recognition: a UUID in the statement opens the verify door before any token match; the match names the pattern and carries the verification. |
-| [match-pattern-dashboard](https://qpu.uuidna.com/u/c4e0d882-e648-73e1-8745-ecf91b956890) | match | — | Pattern recognition: "dashboard of &lt;tool&gt;" lays the tool out whole. |
-| [match-rsa-2048](https://qpu.uuidna.com/u/0cf11a61-f025-10c2-9d48-4ce83d2f4ee2) | match | — | Any statement, proved impossible from the schema: algorithm.N is bounded to 21; the cluster names what is served instead. |
+| [vortex-trinity](https://qpu.uuidna.com/d60075fc-d392-294f-b1dc-99f141dc0fda) | verify | triad_reflect | The 9-vortex of a UUID read whole: the seed, its reflection under σ_10, the trinity it belongs to and the trinity it reflects into at the same time (3, 6, 9 ↔ 7, 4, 1; 2, 5, 8 into itself), and whether it sits in the key's trinity; stated by the kernel as triad_reflect. |
+| [css-stylesheet](https://qpu.uuidna.com/e208a362-7157-1bab-8f26-dba497d529b6) | css | textbook_reflection_sums_to_ten | The UI as CSS: the stylesheet from the key 432 with the rules that draw every block from its own custom properties, and the thirteen variables one UUID sets on its block root, its vortex seed and the seed's reflection summing to 10; no script anywhere. |
+| [dashboard-processor](https://qpu.uuidna.com/94f87633-ecc2-61e4-af84-f06b4b5e262a) | dashboard | — | The processor tool laid out whole: its one facet (three devices) and the three combinations, each a final cell drawn by its own UUID with a link to its walk page, so the click is the decision. |
+| [dashboard-algorithm-narrowed](https://qpu.uuidna.com/1ade21c5-1024-3c26-a5c1-12b3a15de2be) | dashboard | — | The algorithm tool with its name fixed to shor: the space of every combination counted whole, and the next facet open as cells that narrow it further, until one combination remains and its cell is the walk. |
+| [dashboard-index](https://qpu.uuidna.com/05b9b86e-2305-6a98-8923-e744a0f13386) | dashboard | — | Every tool with the size of its input space: how many combinations its enumerable facets admit, which properties stay free, and the address of its own dashboard. |
+| [leads-all](https://qpu.uuidna.com/81e9c1a0-45b6-8632-b9a6-de3f30637515) | leads | — | Every lead with its status; the counts add up to the total. |
+| [clay-register](https://qpu.uuidna.com/47444080-5364-8243-b4b5-dda883e07009) | clay | — | The 54 Clay relations recomputed in exact integer arithmetic: all hold, the widest value needs 33 bits (amplitudes = 2^32), three 16-bit limbs on an 8-bit machine. |
+| [clay-reflection](https://qpu.uuidna.com/e7865186-29a6-3005-9a18-65e1b152f2d8) | clay | triad_reflect | The register read by the technique: every relation's value as a vortex seed with its σ_10 reflection and both trinities, the relations whose seeds reflect each other paired, the fixed ones (seed 5) and the ones in the key's trinity named, and the plan to ask the unit's sequence door every value. |
+| [clay-relation-15](https://qpu.uuidna.com/20e51f9f-aec0-2af3-89df-e9eea59639d3) | clay | relation_15 | One relation: magicBlock = glProd hexbit seed = qftDepth vertices = 15. |
+| [verify-seal-and-content](https://qpu.uuidna.com/25dcba9d-b75a-7ace-83de-696a09e5ca55) | verify | — | One UUID checked cheaply: its seal from its own 31 nibbles, and its content by one fold. |
+| [verify-tampered](https://qpu.uuidna.com/f93184e4-21a7-3659-8487-c672c549479f) | verify | — | A UUID with one nibble changed: the content-decided version no longer agrees, and no content was needed to see it. |
+| [match-willow](https://qpu.uuidna.com/b48ee89b-7274-2ed2-be93-49e96f8c2f15) | match | — | Any statement, matched: this one is served by the processor tool. |
+| [match-glagolitic](https://qpu.uuidna.com/041db96e-7eb1-5b03-8061-d6e5146c3dcb) | match | — | A Glagolitic numeral read as the integer 15 before the match: served by the algorithm tool, factored 3 × 5 in the reflection. |
+| [match-bulgarian](https://qpu.uuidna.com/29ffb847-0fe5-8f00-94d2-4906dce3071e) | match | — | A statement in Bulgarian with a Glagolitic numeral, translated by vocabulary offline, matched, and answered with its verdict in Bulgarian. |
+| [match-theorem-first](https://qpu.uuidna.com/2d9ddf6e-29c8-1560-a159-b10bd6acf0d9) | match | mersenne_127 | Solved first by the QPU textbook: the statement names a kernel-accepted theorem, so it is served by that theorem, proven, before any tool is called. |
+| [match-pattern-fold](https://qpu.uuidna.com/47f5a791-9a8f-140b-b7ee-f058649d9f53) | match | — | Pattern recognition for splitting: a statement that asks to split a quoted text under a bound opens the fold door — the pieces under 12 bytes, each addressed, the whole by its root, the bound a reflective boundary — and the recognition itself is sealed by the call's content address. |
+| [match-pattern-seal](https://qpu.uuidna.com/48bb17ba-d5ac-6adf-8332-98967201a0da) | match | — | Pattern recognition for sealing: a statement that asks to seal a quoted text, with a key, opens the seal door — SHA-256, the fold address and the HMAC under the key — and the recognition is sealed by its own address. |
+| [match-pattern-uuid](https://qpu.uuidna.com/51128ead-da96-269f-a616-c5954d747cda) | match | — | Pattern recognition: a UUID in the statement opens the verify door before any token match; the match names the pattern and carries the verification. |
+| [match-pattern-dashboard](https://qpu.uuidna.com/c4e0d882-e648-73e1-8745-ecf91b956890) | match | — | Pattern recognition: "dashboard of &lt;tool&gt;" lays the tool out whole. |
+| [match-rsa-2048](https://qpu.uuidna.com/0cf11a61-f025-10c2-9d48-4ce83d2f4ee2) | match | — | Any statement, proved impossible from the schema: algorithm.N is bounded to 21; the cluster names what is served instead. |
 
 ## google
 
@@ -159,26 +159,26 @@ the Google Quantum AI layer: the Willow processor as its spec sheet states it, C
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [processor-willow](https://qpu.uuidna.com/u/193550e8-665b-6a96-a507-30b5b6e1fee7) | processor | — | How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47. |
-| [processor-sycamore](https://qpu.uuidna.com/u/9aff481b-3d9c-7ad9-90fd-2bb260c75498) | processor | — | Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated. |
-| [circuit-hadamard-amplitudes](https://qpu.uuidna.com/u/8b5cf7ba-6215-7914-b48e-ec77199aaec6) | circuit | — | A Hadamard gives two amplitudes of 1/√2. |
-| [circuit-hadamard-sampled](https://qpu.uuidna.com/u/306a00f0-cfb3-7a39-aad3-f97d9716fca4) | circuit | — | The same circuit measured: 400 bitstrings, each 0 or 1, in a histogram. |
-| [circuit-bit-flip-noise](https://qpu.uuidna.com/u/348a636f-4e19-8c71-8e08-bec16ba9fd1f) | circuit | — | An X gate under a bit-flip channel of p = 0.1 on the density matrix: probability 0.1 of reading 0, purity 0.1² + 0.9² = 0.82. Noise does not sample; it returns the mixed state. |
-| [echo-returns](https://qpu.uuidna.com/u/baabb9d4-2479-5c36-a086-3518ac22a5fb) | echo | — | H forward, Z, H back is X: the echo is destroyed, so the return probability is 0. |
-| [echo-benchmark](https://qpu.uuidna.com/u/280b026a-c46d-81c1-b912-e511c19b3629) | echo_benchmark | — | Quantum Echoes as Google states it: Willow, 105 qubits, the 13,000× figure (Google's, not this tree's). |
-| [roadmap-all](https://qpu.uuidna.com/u/22b7bc87-0cf8-11bf-aa7b-50c319494a76) | roadmap | — | The six roadmap milestones and the four application bands. |
-| [roadmap-milestone-3](https://qpu.uuidna.com/u/0f5f0f93-b0ab-56fa-9efa-7c6ecd1e3d95) | roadmap | — | One milestone by number. |
-| [algorithm-shor-15](https://qpu.uuidna.com/u/6b74c2ba-f20a-54e9-b4e9-6bf43fa50fa4) | algorithm | — | Shor's circuit on the state-vector simulator: order 4 and factors 3 × 5 for N = 15, a = 7. |
-| [algorithm-qft-3](https://qpu.uuidna.com/u/5fd59e04-d761-8e01-becf-a6ae57a47291) | algorithm | — | The QFT of \|5⟩ on three qubits: eight amplitudes of equal magnitude. |
-| [algorithm-grover](https://qpu.uuidna.com/u/1ba7b772-0dd5-8e1b-8920-5a1f99a11dfd) | algorithm | — | Grover on two qubits finds the marked \|00⟩ with certainty. |
-| [algorithm-teleportation](https://qpu.uuidna.com/u/d7b77038-1a7d-193e-a79b-360d6eb7b58a) | algorithm | — | Teleportation: the received state matches the message on X, Y and Z. |
-| [algorithm-phase-estimation](https://qpu.uuidna.com/u/2c1b84e8-4e11-7943-a99b-5d3ff553c371) | algorithm | — | Phase estimation reads θ = 0.25 exactly in three bits. |
-| [algorithm-qaoa](https://qpu.uuidna.com/u/b2d82153-9d7a-63d9-904e-37bd98d44c10) | algorithm | — | QAOA on the Cirq page's instance, sampled from the state's probabilities. |
-| [software](https://qpu.uuidna.com/u/941ef62e-d97b-2438-bfc8-22ae9e5da781) | software | — | The Software page tools; only Cirq is implemented here. |
-| [statements-cirq](https://qpu.uuidna.com/u/cf045c24-4162-80c8-af47-3aef3773ea54) | statements | — | One statement by topic. |
-| [repositories](https://qpu.uuidna.com/u/c8ff34b6-4a58-49f5-8fb8-ae6ede24fd0c) | repositories | — | The fifteen quantumlib repositories. |
-| [qec-bit-flip-0.1](https://qpu.uuidna.com/u/34ef4c03-bee3-3cea-b2f7-2970fe3a447e) | quantum-error-correction | — | The three-qubit repetition code on the density matrix at p = 0.1: logical error 3p² − 2p³ = 0.028, below the raw 0.1. |
-| [chemistry-h2](https://qpu.uuidna.com/u/a67a70bc-0295-108e-a2e0-fdbc56563622) | chemistry-simulation | — | H₂ in STO-3G at 0.7414 Å: the Hartree–Fock energy from the simulator is −1.1167 Ha and the variational minimum lies below it near −1.137 Ha. |
-| [ftqc-all](https://qpu.uuidna.com/u/f41cbc11-4002-37a1-94a3-fa5c4a912429) | fault-tolerant-design | — | Resource counts read from six circuits this tree builds; one Toffoli costs 7 T gates by the cited decomposition. |
-| [quantumlib-cirq](https://qpu.uuidna.com/u/36105ef6-31bc-5d51-8b73-105065cc1b1f) | quantumlib | — | What this tree implements of Cirq, as a cross-reference of its exports. |
+| [processor-willow](https://qpu.uuidna.com/193550e8-665b-6a96-a507-30b5b6e1fee7) | processor | — | How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47. |
+| [processor-sycamore](https://qpu.uuidna.com/9aff481b-3d9c-7ad9-90fd-2bb260c75498) | processor | — | Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated. |
+| [circuit-hadamard-amplitudes](https://qpu.uuidna.com/8b5cf7ba-6215-7914-b48e-ec77199aaec6) | circuit | — | A Hadamard gives two amplitudes of 1/√2. |
+| [circuit-hadamard-sampled](https://qpu.uuidna.com/306a00f0-cfb3-7a39-aad3-f97d9716fca4) | circuit | — | The same circuit measured: 400 bitstrings, each 0 or 1, in a histogram. |
+| [circuit-bit-flip-noise](https://qpu.uuidna.com/348a636f-4e19-8c71-8e08-bec16ba9fd1f) | circuit | — | An X gate under a bit-flip channel of p = 0.1 on the density matrix: probability 0.1 of reading 0, purity 0.1² + 0.9² = 0.82. Noise does not sample; it returns the mixed state. |
+| [echo-returns](https://qpu.uuidna.com/baabb9d4-2479-5c36-a086-3518ac22a5fb) | echo | — | H forward, Z, H back is X: the echo is destroyed, so the return probability is 0. |
+| [echo-benchmark](https://qpu.uuidna.com/280b026a-c46d-81c1-b912-e511c19b3629) | echo_benchmark | — | Quantum Echoes as Google states it: Willow, 105 qubits, the 13,000× figure (Google's, not this tree's). |
+| [roadmap-all](https://qpu.uuidna.com/22b7bc87-0cf8-11bf-aa7b-50c319494a76) | roadmap | — | The six roadmap milestones and the four application bands. |
+| [roadmap-milestone-3](https://qpu.uuidna.com/0f5f0f93-b0ab-56fa-9efa-7c6ecd1e3d95) | roadmap | — | One milestone by number. |
+| [algorithm-shor-15](https://qpu.uuidna.com/6b74c2ba-f20a-54e9-b4e9-6bf43fa50fa4) | algorithm | — | Shor's circuit on the state-vector simulator: order 4 and factors 3 × 5 for N = 15, a = 7. |
+| [algorithm-qft-3](https://qpu.uuidna.com/5fd59e04-d761-8e01-becf-a6ae57a47291) | algorithm | — | The QFT of \|5⟩ on three qubits: eight amplitudes of equal magnitude. |
+| [algorithm-grover](https://qpu.uuidna.com/1ba7b772-0dd5-8e1b-8920-5a1f99a11dfd) | algorithm | — | Grover on two qubits finds the marked \|00⟩ with certainty. |
+| [algorithm-teleportation](https://qpu.uuidna.com/d7b77038-1a7d-193e-a79b-360d6eb7b58a) | algorithm | — | Teleportation: the received state matches the message on X, Y and Z. |
+| [algorithm-phase-estimation](https://qpu.uuidna.com/2c1b84e8-4e11-7943-a99b-5d3ff553c371) | algorithm | — | Phase estimation reads θ = 0.25 exactly in three bits. |
+| [algorithm-qaoa](https://qpu.uuidna.com/b2d82153-9d7a-63d9-904e-37bd98d44c10) | algorithm | — | QAOA on the Cirq page's instance, sampled from the state's probabilities. |
+| [software](https://qpu.uuidna.com/941ef62e-d97b-2438-bfc8-22ae9e5da781) | software | — | The Software page tools; only Cirq is implemented here. |
+| [statements-cirq](https://qpu.uuidna.com/cf045c24-4162-80c8-af47-3aef3773ea54) | statements | — | One statement by topic. |
+| [repositories](https://qpu.uuidna.com/c8ff34b6-4a58-49f5-8fb8-ae6ede24fd0c) | repositories | — | The fifteen quantumlib repositories. |
+| [qec-bit-flip-0.1](https://qpu.uuidna.com/34ef4c03-bee3-3cea-b2f7-2970fe3a447e) | quantum-error-correction | — | The three-qubit repetition code on the density matrix at p = 0.1: logical error 3p² − 2p³ = 0.028, below the raw 0.1. |
+| [chemistry-h2](https://qpu.uuidna.com/a67a70bc-0295-108e-a2e0-fdbc56563622) | chemistry-simulation | — | H₂ in STO-3G at 0.7414 Å: the Hartree–Fock energy from the simulator is −1.1167 Ha and the variational minimum lies below it near −1.137 Ha. |
+| [ftqc-all](https://qpu.uuidna.com/f41cbc11-4002-37a1-94a3-fa5c4a912429) | fault-tolerant-design | — | Resource counts read from six circuits this tree builds; one Toffoli costs 7 T gates by the cited decomposition. |
+| [quantumlib-cirq](https://qpu.uuidna.com/36105ef6-31bc-5d51-8b73-105065cc1b1f) | quantumlib | — | What this tree implements of Cirq, as a cross-reference of its exports. |
 

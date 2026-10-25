@@ -7,7 +7,7 @@ const ch = computed(() => channelOf(props.uuid))
 const tools = computed(() => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: Parameters<typeof compileOf>[1] } }).result.tools)
 const compiled = computed(() => compileOf(ch.value.program, tools.value, ch.value.message))
 const result = computed(() => (compiled.value.next ? handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: compiled.value.next.tool, arguments: compiled.value.next.arguments, _meta: props.prev ? { prev: props.prev } : undefined } }) as { result?: { _meta: { widget: string } }; error?: { message: string } } : null))
-const next = computed(() => `/u/${uuidFromParts(ch.value.handle, [...ch.value.program.slice(1), ch.value.program[0]!], ch.value.tail)}`)
+const next = computed(() => `/${uuidFromParts(ch.value.handle, [...ch.value.program.slice(1), ch.value.program[0]!], ch.value.tail)}`)
 </script>
 <template>
   <section>

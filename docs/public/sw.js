@@ -33,7 +33,7 @@ self.addEventListener('fetch', (e) => {
     // online, the live surfaces, and every navigation: the network first (a page follows its deploy), the cache when the network fails
     if (mode === 'online' || e.request.mode === 'navigate' || NETWORK_FIRST.some((re) => re.test(url.pathname))) { log(url.pathname, mode, 'network-first'); return fetch(e.request).then((res) => { log(url.pathname, mode, 'network ' + res.status + (res.redirected ? ' redirected ' + res.url : '')); return keep(e.request, res) }).catch((err) => { log(url.pathname, mode, 'network failed: ' + err.message); return fallback(e.request) }) }
     // a UUID page and the built assets are content: whatever they say never changes; everything else is served from the cache and refreshed behind
-    const immutable = /^\/u\/[0-9a-f-]{36}$/.test(url.pathname) || /\/assets\//.test(url.pathname)
+    const immutable = /^\/(?:u\/)?[0-9a-f-]{36}$/.test(url.pathname) || /\/assets\//.test(url.pathname)
     log(url.pathname, mode, immutable ? 'cache-first' : 'stale-while-revalidate')
     return caches.match(e.request).then((cached) => { const fresh = fetch(e.request).then((res) => keep(e.request, res)).catch(() => cached || fallback(e.request)); return cached && immutable ? cached : cached ? (fresh, cached) : fresh })
   }))

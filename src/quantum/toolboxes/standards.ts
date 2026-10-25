@@ -56,7 +56,7 @@ export const STANDARDS_BOX: Toolbox = {
       const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
       const b = blockJsonLdOf({ tool: 'clay', id: 'x', description: 'd', date: '2026-01-01T00:00:00.000Z' })
       check('standards:block', b['@type'] === 'CreativeWork' && (b.author as { '@id': string })['@id'] === 'https://orcid.org/0009-0000-7312-9778' && b.dateModified === '2026-01-01T00:00:00.000Z' && b.inLanguage === 'en', 'CreativeWork with ORCID author, ISO 8601 date, ISO 639-1 language')
-      const p = pageJsonLdOf({ url: 'https://qpu.uuidna.com/u/abc', title: 't', description: 'd', uuid: 'abc', locale: 'bg' })
+      const p = pageJsonLdOf({ url: 'https://qpu.uuidna.com/abc', title: 't', description: 'd', uuid: 'abc', locale: 'bg' })
       check('standards:page', p['@type'] === 'WebPage' && p.identifier === 'abc' && p.inLanguage === 'bg' && (p.isPartOf as { url: string }).url === 'https://qpu.uuidna.com', 'WebPage with identifier and locale')
       const o = offerJsonLdOf({ product: 'qpu-domain', variant: 'yearly', unit: 'domain', interval: 'year', currency: 'bgn', amount: 84500, description: 'd' })
       check('standards:offer', o.priceCurrency === 'BGN' && o.price === '845.00' && (o.priceSpecification as { unitCode: string }).unitCode === 'ANN', 'Offer in ISO 4217 with a yearly UnitPriceSpecification')

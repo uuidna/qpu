@@ -1168,7 +1168,7 @@ The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmon
 
 ## dashboard
 
-A bounded tool laid out whole, so the user's decision in the UI is final: every value each property admits (an enum, a boolean, an integer range, the ends of a numeric bound, the textbook's values where a string is free), the whole space reachable by fixing one facet at a time (each cell narrows the dashboard until one combination remains, whose cell is its walk page /u/&lt;uuid&gt;), every cell drawn by its own UUID's CSS. Without a tool: every tool with the size of its space.
+A bounded tool laid out whole, so the user's decision in the UI is final: every value each property admits (an enum, a boolean, an integer range, the ends of a numeric bound, the textbook's values where a string is free), the whole space reachable by fixing one facet at a time (each cell narrows the dashboard until one combination remains, whose cell is its walk page /&lt;uuid&gt;), every cell drawn by its own UUID's CSS. Without a tool: every tool with the size of its space.
 
 ```json
 {

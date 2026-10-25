@@ -1,8 +1,8 @@
 // Every UUID the tree knows gets a page: the example blocks, the receipts of the stream, the imagined leads by their statements.
 import { existsSync, readFileSync } from 'node:fs'
-import { handle } from '../../src/quantum/mcp.ts'
-import { EXAMPLES } from '../../src/quantum/examples.ts'
-import { uuidOf } from '../../src/quantum/blocks.ts'
+import { handle } from '../src/quantum/mcp.ts'
+import { EXAMPLES } from '../src/quantum/examples.ts'
+import { uuidOf } from '../src/quantum/blocks.ts'
 export default {
   paths() {
     const ids = new Set<string>()

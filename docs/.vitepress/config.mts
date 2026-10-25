@@ -28,7 +28,7 @@ export default defineConfig({
     const title = ch.handle + ' · ' + ch.program.join('') + ' · @uuidna/qpu'
     const description = 'UUID ' + uuid + ': handle ' + ch.handle + ', program ' + ch.program.join('') + ', tail ' + ch.tail + ', seal ' + (sealOf(uuid).valid ? 'valid' : 'invalid') + '. CC-BY-NC-ND-4.0 © Tsvetan Rouschev.'
     const swatch = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="' + accent + '"/><text x="60" y="340" font-family="monospace" font-size="72" fill="#fff">' + ch.handle + '</text></svg>')
-    return [jsonLd, ['meta', { property: 'og:title', content: title }], ['meta', { property: 'og:description', content: description }], ['meta', { property: 'og:type', content: 'website' }], ['meta', { property: 'og:url', content: 'https://qpu.uuidna.com/u/' + uuid }], ['meta', { property: 'og:image', content: swatch }], ['meta', { name: 'description', content: description }], ['meta', { name: 'uuidna:handle', content: ch.handle }], ['meta', { name: 'uuidna:aura', content: accent }]]
+    return [jsonLd, ['meta', { property: 'og:title', content: title }], ['meta', { property: 'og:description', content: description }], ['meta', { property: 'og:type', content: 'website' }], ['meta', { property: 'og:url', content: 'https://qpu.uuidna.com/' + uuid }], ['meta', { property: 'og:image', content: swatch }], ['meta', { name: 'description', content: description }], ['meta', { name: 'uuidna:handle', content: ch.handle }], ['meta', { name: 'uuidna:aura', content: accent }]]
   },
   // prev and next from the superposition: a receipt's prev is the receipt before it; next is the program rotated
   transformPageData(pageData) {
@@ -40,8 +40,8 @@ export default defineConfig({
     if (existsSync('docs/public/receipts.ndjson')) for (const line of readFileSync('docs/public/receipts.ndjson', 'utf8').split('\n').filter(Boolean)) { try { const r = JSON.parse(line) as { id: string; prev?: string | null }; if (r.id === uuid && r.prev) prev = r.prev } catch { /* lead */ } }
     pageData.title = ch.handle + ' · ' + ch.program.join('')
     pageData.frontmatter.uuid = uuid
-    pageData.frontmatter.prev = prev ? { text: 'previous receipt ' + prev.slice(0, 8), link: '/u/' + prev } : { text: 'family ' + ch.handle, link: '/h/' + ch.handle }
-    pageData.frontmatter.next = { text: 'next: the program rotated ' + next.slice(0, 8), link: '/u/' + next }
+    pageData.frontmatter.prev = prev ? { text: 'previous receipt ' + prev.slice(0, 8), link: '/' + prev } : { text: 'family ' + ch.handle, link: '/h/' + ch.handle }
+    pageData.frontmatter.next = { text: 'next: the program rotated ' + next.slice(0, 8), link: '/' + next }
   },
   buildEnd(siteConfig) {
     writeFileSync('docs/public/site.json', JSON.stringify({ pages: siteConfig.pages.length, built: new Date().toISOString(), license: 'CC-BY-NC-ND-4.0 © Tsvetan Rouschev' }) + '\n')
@@ -188,6 +188,10 @@ export default defineConfig({
       {
         "text": "Metrics",
         "link": "/metrics"
+      },
+      {
+        "text": "UUID",
+        "link": "/[uuid]"
       }
     ],
     sidebar: [
@@ -325,6 +329,10 @@ export default defineConfig({
           {
             "text": "Metrics",
             "link": "/metrics"
+          },
+          {
+            "text": "UUID",
+            "link": "/[uuid]"
           }
         ]
       },

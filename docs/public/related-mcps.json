@@ -1,8 +1,8 @@
 {
- "date": "2026-10-25T22:09:27.501Z",
+ "date": "2026-10-25T22:32:50.533Z",
  "partial": false,
  "remaining": 0,
- "fetched": 0,
+ "fetched": 11,
  "leads": 45,
  "withServers": 44,
  "related": [
@@ -4520,12 +4520,44 @@
   {
    "lead": "old-site-removal-gated",
    "words": [
+    "payload",
     "worker",
-    "pages",
-    "site"
+    "json"
    ],
-   "servers": 9,
+   "servers": 12,
    "serverList": [
+    {
+     "name": "co.com.elyraon/payload-validator",
+     "description": "Deterministic JSON API payload validation with bounded JSON Schema and structured pass/fail errors.",
+     "remotes": [
+      "https://elyreon-payload-validator.colt2822.workers.dev/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "com.freshypenguin/ao-payload-rescue",
+     "description": "Safely repairs JSON that fails a known schema. Deterministic only; refuses ambiguous repairs.",
+     "remotes": [
+      "https://ao-payload-rescue-production.up.railway.app/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "com.gumballtools/payload-validator",
+     "description": "Validate JSON, YAML, XML and CSV with exact line/column errors and silent-corruption warnings.",
+     "remotes": [
+      "https://payload-validator.gumballtools.com/api/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "com.textforagents/customs-house-for-agent-payloads",
+     "description": "Classify, declare, and bond agent payload crossings — filing, bond, signed entry receipts.",
+     "remotes": [
+      "https://textforagents.com/products/customs-house-for-agent-payloads/mcp"
+     ],
+     "word": "payload"
+    },
     {
      "name": "com.rankworker/mcp",
      "description": "Create and manage SEO content plans, articles, projects, and publishing integrations in RankWorker.",
@@ -4543,61 +4575,77 @@
      "word": "worker"
     },
     {
-     "name": "ai.simplepages/simplepages",
-     "description": "Build and edit landing pages from your AI assistant, and pull how they are performing.",
+     "name": "ai.smithery/keremurat-json",
+     "description": "Compare two JSON files deeply without worrying about key or array order. Detect missing, extra, an…",
      "remotes": [
-      "https://simplepages.ai/api/mcp"
+      "https://server.smithery.ai/@keremurat/json/mcp"
      ],
-     "word": "pages"
+     "word": "json"
     },
     {
-     "name": "art.huebloom/coloring-pages",
-     "description": "Find printable coloring pages, browse themed collections, and get previews and original PDF links.",
+     "name": "ai.smithery/keremurat-jsonmcp",
+     "description": "Compare two JSON files deeply, ignoring order, to surface every difference. Get a clear, structure…",
      "remotes": [
-      "https://mcp.huebloom.art/mcp"
+      "https://server.smithery.ai/@keremurat/jsonmcp/mcp"
      ],
-     "word": "pages"
+     "word": "json"
     },
     {
-     "name": "click.myagents/pagespeed",
-     "description": "Notas do Lighthouse, Core Web Vitals e o que corrigir em qualquer página",
+     "name": "com.gumballtools/json-to-types",
+     "description": "Convert JSON samples into TypeScript interfaces and Zod schemas, with inference caveats.",
      "remotes": [
-      "https://pagespeed.mcp.myagents.click/mcp"
+      "https://json-to-types.gumballtools.com/api/mcp"
      ],
-     "word": "pages"
+     "word": "json"
     },
     {
-     "name": "click.mymarketing/pages",
-     "description": "Páginas, rascunhos, publicação e redirecionamentos",
-     "remotes": [
-      "https://pages.worker.mymarketing.click/mcp"
-     ],
-     "word": "pages"
-    },
-    {
-     "name": "co.encorehq/encore-pages",
-     "description": "Compose, edit, and visually verify Encore pages — the client-facing surface of the Encore studio.",
-     "remotes": [
-      "https://encore-pages-mcp.vercel.app/mcp"
-     ],
-     "word": "pages"
-    },
-    {
-     "name": "ai.1clickwebsite/mcp",
-     "description": "Build and edit WordPress websites for local service businesses and run Lead Gen demo-site batches.",
-     "remotes": [
-      "https://www.1clickwebsite.ai/api/mcp"
-     ],
-     "word": "site"
-    },
-    {
-     "name": "ai.clize/sites",
-     "description": "Ship a real marketing site from your coding agent: domain, HTTPS and a working inbox.",
+     "name": "com.json2video/mcp",
+     "description": "Create videos with AI agents: render JSON2Video movies, check status, validate JSON, use templates.",
      "remotes": [],
-     "word": "site"
+     "word": "json"
+    },
+    {
+     "name": "com.pythonanywhere.cryptopulse/json-repair",
+     "description": "Repair malformed JSON, DNS lookup, extract URLs. Pay per call USDC on Base via x402.",
+     "remotes": [
+      "https://cryptopulse.pythonanywhere.com/mcp-json"
+     ],
+     "word": "json"
+    },
+    {
+     "name": "dev.agentdiet/json-repair",
+     "description": "Repairs truncated or malformed LLM JSON outputs (trailing commas, markdown fences, single quotes).",
+     "remotes": [
+      "https://json-repair.agentdiet.dev/mcp"
+     ],
+     "word": "json"
     }
    ],
    "extended": [
+    {
+     "server": "co.com.elyraon/payload-validator",
+     "url": "https://elyreon-payload-validator.colt2822.workers.dev/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "com.freshypenguin/ao-payload-rescue",
+     "url": "https://ao-payload-rescue-production.up.railway.app/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "com.gumballtools/payload-validator",
+     "url": "https://payload-validator.gumballtools.com/api/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.textforagents/customs-house-for-agent-payloads",
+     "url": "https://textforagents.com/products/customs-house-for-agent-payloads/mcp",
+     "status": 200,
+     "doors": 4
+    },
     {
      "server": "com.rankworker/mcp",
      "url": "https://mcp.rankworker.com/",
@@ -4611,40 +4659,34 @@
      "doors": 0
     },
     {
-     "server": "ai.simplepages/simplepages",
-     "url": "https://simplepages.ai/api/mcp",
-     "status": 401,
+     "server": "ai.smithery/keremurat-json",
+     "url": "https://server.smithery.ai/@keremurat/json/mcp",
+     "status": 404,
      "doors": 0
     },
     {
-     "server": "art.huebloom/coloring-pages",
-     "url": "https://mcp.huebloom.art/mcp",
+     "server": "ai.smithery/keremurat-jsonmcp",
+     "url": "https://server.smithery.ai/@keremurat/jsonmcp/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "com.gumballtools/json-to-types",
+     "url": "https://json-to-types.gumballtools.com/api/mcp",
      "status": 200,
-     "doors": 3
+     "doors": 1
     },
     {
-     "server": "click.myagents/pagespeed",
-     "url": "https://pagespeed.mcp.myagents.click/mcp",
-     "status": 401,
+     "server": "com.pythonanywhere.cryptopulse/json-repair",
+     "url": "https://cryptopulse.pythonanywhere.com/mcp-json",
+     "status": 404,
      "doors": 0
     },
     {
-     "server": "click.mymarketing/pages",
-     "url": "https://pages.worker.mymarketing.click/mcp",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "co.encorehq/encore-pages",
-     "url": "https://encore-pages-mcp.vercel.app/mcp",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "ai.1clickwebsite/mcp",
-     "url": "https://www.1clickwebsite.ai/api/mcp",
-     "status": 401,
-     "doors": 0
+     "server": "dev.agentdiet/json-repair",
+     "url": "https://json-repair.agentdiet.dev/mcp",
+     "status": 200,
+     "doors": 2
     }
    ]
   },
