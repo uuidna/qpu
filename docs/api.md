@@ -53,7 +53,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 
 ## Tools
 
-41 tools in 12 toolboxes; every tool's schema is in [the MCP reference](/mcp) and every example in [the textbook](/examples).
+42 tools in 12 toolboxes; every tool's schema is in [the MCP reference](/mcp) and every example in [the textbook](/examples).
 
 | Tool | Toolbox | What it answers |
 |---|---|---|
@@ -85,6 +85,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 | `readiness` | flow | The unit judges the tree. Phase one (verification, discovery, present, ledger): every lead judged by measurement into se |
 | `imagine` | flow | Imagination leads all leads: every lead (or the subset named) matched with the reflection on — hidden factors, angles, m |
 | `e2e` | flow | The end-to-end gate as a repetition code. Without answers: every combination the dashboards lay out and every example of |
+| `shard` | flow | A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose po |
 | `translate` | language | Translation by vocabulary, offline, both ways: text, from, to. A word no table knows stays as it is and is reported, nev |
 | `prose` | language | Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox's idea,  |
 | `mongo` | raid | The ported MongoDB over the docket, pure. find: &#123;collection, docs, filter, sort, skip, limit&#125; → the matching documents ( |

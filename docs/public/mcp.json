@@ -1276,6 +1276,34 @@
       }
     },
     {
+      "name": "shard",
+      "description": "A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard's index — the shares cover the list exactly once, proven by the kernel (textbook_shards_cover, textbook_shards_disjoint). The clients of the flow take their share from this door and leave what they settled for the merge; nothing is decided by hand.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "list": {
+            "type": "array",
+            "description": "the items (or their ids)"
+          },
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "selftest": {
+            "type": "boolean",
+            "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "flow"
+      }
+    },
+    {
       "name": "translate",
       "description": "Translation by vocabulary, offline, both ways: text, from, to. A word no table knows stays as it is and is reported, never guessed; Glagolitic numerals are read as integers. Without text: the vocabulary measured — for every locale, the surface terms with no entry (the leads of the tables).",
       "inputSchema": {

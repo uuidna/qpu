@@ -5,6 +5,7 @@ import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
+import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
@@ -52,9 +53,14 @@ const main = async () => {
   const answers: unknown[] = []
   const calls = offline ? [] : (plan.plan.calls as { door: string; host: string; arguments: Record<string, unknown> }[])
   // minimum time: four calls in flight; cheapest price: free doors only, each asked once, nothing retried blindly
-  const queue = [...calls]; const inFlight = new Set<Promise<void>>()
+  if (isMerge) answers.push(...gatherShards<typeof answers>('legal', []))
+  const answered = new Set(answers.map((a) => `${a.host}:${a.door}:${JSON.stringify(a.arguments)}`))
+  const queue = shareOf(calls.filter((c) => !answered.has(`${c.host}:${c.door}:${JSON.stringify(c.arguments)}`))); const inFlight = new Set<Promise<void>>()
+  console.log(`legal (${shardLabel()}): ${queue.length} call(s)`)
+  const before = answers.length
   const one = async (c: typeof calls[number]) => { try { answers.push({ ...c, answer: await rpc(hostUrl(c.host), c.door, c.arguments) }) } catch (e) { answers.push({ ...c, refusal: (e as Error).message }) } }
   while (queue.length || inFlight.size) { while (queue.length && inFlight.size < 4) { const p = one(queue.shift()!).finally(() => inFlight.delete(p)); inFlight.add(p) } if (inFlight.size) await Promise.race(inFlight) }
+  if (isShard) { leaveShard('legal', answers.slice(before)); console.log(`legal: ${shardLabel()} answered ${answers.length - before}`); process.exit(0) }
   const audit = call({ texts, discovery, agents, theoremKeys: ledger, answers })
   const date = new Date().toISOString()
   writeFileSync(outPath, JSON.stringify({ license: LICENSE.attribution, date, inputs, online: !offline, id: audit.id, sha256: audit.sha256, inputHashes: audit.inputs, selftest: { passed: selftest.passed }, by: audit.by, agents: plan.plan.agents, calls: calls.length, ...audit.audit, answers }, null, 1) + '\n')

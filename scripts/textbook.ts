@@ -5,6 +5,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
+import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 const ROOT = process.cwd()
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'textbook', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
@@ -19,8 +20,11 @@ const main = async () => {
   const vpath = join(ROOT, 'docs', 'public', 'verification.json')
   const fetched: { url: string; status: number; ok: boolean; contracted?: string }[] = existsSync(vpath) ? ((JSON.parse(readFileSync(vpath, 'utf8')) as { results?: { url: string; status: number; ok: boolean; contracted?: string }[] }).results ?? []) : []
   const have = new Set(fetched.map((r) => r.url))
-  const missing = (plan.requestList as { url: string }[]).filter((r) => !have.has(r.url))
+  if (isMerge) for (const r of gatherShards<{ url: string; status: number; ok: boolean; contracted?: string }[]>('textbook', [])) if (!have.has(r.url)) { fetched.push(r); have.add(r.url) }
+  const missing = shareOf((plan.requestList as { url: string }[]).filter((r) => !have.has(r.url)))
+  console.log(`textbook (${shardLabel()}): ${missing.length} to fetch`)
   if (process.env.QPU_OFFLINE !== '1') for (const r of missing) { try { const res = await fetch(r.url, { headers: { accept: '*/*', 'user-agent': 'uuidna-qpu-textbook (ceccec@psg.bg)' }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); fetched.push({ url: r.url, status: res.status, ok: res.ok }) } catch { fetched.push({ url: r.url, status: 0, ok: false }) } await new Promise((t) => setTimeout(t, 250)) }
+  if (isShard) { leaveShard('textbook', fetched.filter((r) => missing.some((m) => m.url === r.url))); console.log(`textbook: ${shardLabel()} fetched its share`); process.exit(0) }
   const v = call({ results: fetched })
   // the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client: when the tenant names its
   // instance (QPU_PAYLOAD_URL) and its key (QPU_PAYLOAD_API_KEY, sent as Authorization and never held by a tool), the pages whose

@@ -38,7 +38,7 @@ the run of the tree as tools: discover the hosts, verify the leads, let the unit
 
 **Tests itself:** server only: each tool on fixtures; server → client: every request a tool emits is one the client can answer; client → server: answers read back into data and pages; toolbox → toolbox: discovery feeds wave and readiness, wave feeds readiness, match feeds imagine and the judge.
 
-Tools: [discover](#discover), [wave](#wave), [readiness](#readiness), [imagine](#imagine), [e2e](#e2e).
+Tools: [discover](#discover), [wave](#wave), [readiness](#readiness), [imagine](#imagine), [e2e](#e2e), [shard](#shard).
 
 ## Toolbox `language`
 
@@ -1394,6 +1394,34 @@ The end-to-end gate as a repetition code. Without answers: every combination the
       "items": {
         "type": "object"
       }
+    },
+    "selftest": {
+      "type": "boolean",
+      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+    }
+  }
+}
+```
+
+## shard
+
+A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard's index — the shares cover the list exactly once, proven by the kernel (textbook_shards_cover, textbook_shards_disjoint). The clients of the flow take their share from this door and leave what they settled for the merge; nothing is decided by hand.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "list": {
+      "type": "array",
+      "description": "the items (or their ids)"
+    },
+    "index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 1
     },
     "selftest": {
       "type": "boolean",

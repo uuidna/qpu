@@ -111,7 +111,14 @@ export const flowSelftestOf = (handle: (m: Rpc) => any, examples: readonly Examp
   // imagine: the matcher feeds the imagination (toolbox → toolbox), on a subset
   safe('imagine:subset', () => { const im = imagineOf(handle, examples, leads, ['willow-spec', 'learn']); check('imagine:subset', im.leads === 2 && im.rows.length === 2 && Object.values(im.verdicts).reduce((a, b) => a + b, 0) === 2 && im.imagined.some((l) => l.id.startsWith('application-')) && imaginePageOf(im, '2026-01-01', 10).includes('| willow-spec |'), `${im.rows.map((r) => `${r.lead}:${r.verdict}`).join(' ')}; ${im.imaginedLeads} imagined`) })
 
-    // leads first: the registry asked with a lead's words, its answer read into related servers and the requests that extend them
+    // sharding: the shares of n shards cover the list exactly once
+  {
+    const list = Array.from({ length: 23 }, (_, i) => i)
+    const shares = [0, 1, 2, 3].map((i) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'shard', arguments: { list, index: i, count: 4 } } }) as { result: { structuredContent: { shareList: number[] } } }).result.structuredContent.shareList)
+    const union = shares.flat().sort((a, b) => a - b)
+    check('shard:shares-cover-exactly-once', union.length === 23 && union.every((v, k) => v === k) && shares.every((s, i) => s.every((v) => v % 4 === i)), `four shares of 23 items: ${shares.map((s) => s.length).join('+')} = 23, each item once`)
+  }
+  // leads first: the registry asked with a lead's words, its answer read into related servers and the requests that extend them
   {
     const lead = { id: 'x', statement: 'Cloudflare MCP servers answer 401 without a token; the documentation server answers in the open' }
     const reqs = registryRequestsOf(lead)

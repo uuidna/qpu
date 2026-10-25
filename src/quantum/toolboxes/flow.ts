@@ -57,6 +57,23 @@ const e2e = toolOf('flow', {
   widget: flowWidget,
 })
 
+/** The share of a list among n shards: every item whose index mod n is the shard's index; proven to cover the list exactly once by textbook_shards_cover and textbook_shards_disjoint. */
+export const shareOf = <T>(list: readonly T[], index: number, count: number): T[] => list.filter((_, k) => k % count === index)
+const shard = toolOf('flow', {
+  name: 'shard',
+  description: 'A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard\'s index — the shares cover the list exactly once, proven by the kernel (textbook_shards_cover, textbook_shards_disjoint). The clients of the flow take their share from this door and leave what they settled for the merge; nothing is decided by hand.',
+  inputSchema: { type: 'object', properties: { list: { type: 'array', description: 'the items (or their ids)' }, index: { type: 'integer', minimum: 0 }, count: { type: 'integer', minimum: 1 }, ...SELFTEST } },
+  run: (args, ctx) => selftestOr(args, ctx, () => {
+    const list = Array.isArray(args.list) ? args.list : []
+    const count = typeof args.count === 'number' && args.count >= 1 ? Math.floor(args.count) : 1
+    const index = typeof args.index === 'number' && args.index >= 0 ? Math.floor(args.index) : 0
+    if (index >= count) throw new Error(`shard ${index} of ${count}: the index is below the count (textbook_shards_cover)`)
+    const share = shareOf(list, index, count)
+    return { index, count, items: list.length, share: share.length, shareList: share, theorems: ['textbook_shards_cover', 'textbook_shards_disjoint'], covers: 'every item in exactly one shard' }
+  }),
+  widget: flowWidget,
+})
+
 const wave = toolOf('flow', {
   name: 'wave',
   description: 'The verification wave. Without results: every request the surface\'s leads and tree facts need, once per URL with the leads it serves. With results (each request plus status, ok, ms and the body text): what came back read into one-line notes, a check of each request against the OpenAPI contract its host published (from discovery), and a summary by verifier. Pure; the client fetches.',
@@ -115,8 +132,9 @@ const imagine = toolOf('flow', {
 export const FLOW: Toolbox = {
   name: 'flow',
   idea: 'the run of the tree as tools: discover the hosts, verify the leads, let the unit judge, imagine the next leads; the client only fetches and writes',
-  tools: [discover, wave, readiness, imagine, e2e],
+  tools: [discover, wave, readiness, imagine, e2e, shard],
   examples: [
+    { id: 'shard-share', tool: 'shard', theorem: 'textbook_shards_cover', arguments: { list: ['a', 'b', 'c', 'd', 'e', 'f', 'g'], index: 1, count: 4 }, shows: 'The share of seven items for shard 1 of 4: the items at positions 1 and 5; the shares of all four shards cover the seven exactly once, proven by the kernel.', expect: (s) => (s.share === 2 && s.shareList.join() === 'b,f' && s.items === 7 && s.theorems.length === 2 ? null : `${s.share} ${s.shareList}`) },
     { id: 'discover-lead-registry', tool: 'discover', arguments: { lead: 'payload-skills-used' }, shows: 'Leads first: a lead\'s distinctive words asked of the public MCP registry (registry.modelcontextprotocol.io) before any guess about which MCP serves it; the client fetches, and the answers name the related servers and the request that extends each through qpu.', expect: (s) => (s.phase === 'registry' && s.requests >= 1 && s.requestList.every((r: { url: string }) => r.url.startsWith('https://registry.modelcontextprotocol.io/v0/servers?search=')) ? null : `${s.phase} ${s.requests}`) },
     { id: 'discover-requests', tool: 'discover', arguments: { mcpHosts: ['https://uuidna.com/mcp'] }, shows: 'Phase one of discovery: the requests a client makes for every contract — the unit\'s tools/list, its catalogue door, its well-known file, and the verifiers\' contract documents.', expect: (s) => (s.phase === 'requests' && s.requests >= 3 + VERIFIERS.filter((v) => v.contract).length ? null : `${s.phase}, ${s.requests} requests`) },
     { id: 'wave-requests', tool: 'wave', arguments: { leads: ['willow-spec', 'repo-cirq'] }, shows: 'Phase one of the wave: the requests two leads need, once per URL, each naming the leads it serves.', expect: (s) => (s.phase === 'requests' && s.leads === 2 && s.requests > 0 && s.requestList.every((r: { leads: string[] }) => r.leads.length > 0) ? null : `${s.phase}, ${s.requests} requests for ${s.leads} leads`) },

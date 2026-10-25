@@ -20,5 +20,9 @@ theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 theorem textbook_website_plugins_partition : 4 + 3 + 1 = 8 := by decide
 /-- two skills and twelve references are fourteen documents (examples: payload-skills) -/
 theorem textbook_skills_documents : 2 + 12 = 14 := by decide
+/-- the shard of item k among n shards, k mod n, is one of the n shards: every item is shared (examples: shard-share) -/
+theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt k h
+/-- an item belongs to one shard only: the shares never overlap (examples: shard-share) -/
+theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
 theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - k = 0 := by intro k h hk; omega

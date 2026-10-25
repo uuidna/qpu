@@ -1,5 +1,5 @@
 {
- "date": "2026-10-25T22:06:14.936Z",
+ "date": "2026-10-25T22:12:47.051Z",
  "tested": 9,
  "kinds": 9,
  "closed": true,
@@ -68,13 +68,13 @@
   {
    "kind": "mcp",
    "torus": {
-    "address": "7ffc9504-c8e3-6f66-a6b7-4ad68fc923e7",
-    "seed": 6,
-    "reflection": 4,
+    "address": "2e67f5ff-5167-4064-8643-012611266b07",
+    "seed": 7,
+    "reflection": 3,
     "trinity": [
-     3,
-     6,
-     9
+     7,
+     4,
+     1
     ],
     "closed": true,
     "bytes": 669
@@ -128,7 +128,7 @@
   {
    "kind": "api",
    "torus": {
-    "address": "002d3592-1de1-1b0c-8c5b-c40c5641fae3",
+    "address": "254960e7-083d-7680-98da-4af02153dbc8",
     "seed": 2,
     "reflection": 8,
     "trinity": [
@@ -137,7 +137,7 @@
      8
     ],
     "closed": true,
-    "bytes": 13265
+    "bytes": 13436
    }
   }
  ]

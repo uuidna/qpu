@@ -6,6 +6,7 @@ import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
+import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
 import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
@@ -45,9 +46,16 @@ const main = async () => {
   // the border: every discovered door, asked
   const hostUrl = (host: string) => (discovery?.hosts as { host: string; kind: string; contract: string }[] | undefined)?.find((h) => h.host === host && h.kind === 'mcp')?.contract ?? UNIT
   const border: { door: string; host: string; arguments: Record<string, unknown>; answer?: unknown; refusal?: string }[] = []
-  for (const c of plan.borderPlan as { door: string; host: string; arguments: Record<string, unknown> }[]) {
-    try { border.push({ ...c, answer: await rpc(hostUrl(c.host), c.door, c.arguments) }) } catch (e) { border.push({ ...c, refusal: (e as Error).message }) }
+  if (isMerge) border.push(...gatherShards<typeof border>('readiness', []))
+  const asked = new Set(border.map((b) => `${b.host}:${b.door}:${JSON.stringify(b.arguments)}`))
+  const borderShare = shareOf((plan.borderPlan as { door: string; host: string; arguments: Record<string, unknown> }[]).filter((c) => !asked.has(`${c.host}:${c.door}:${JSON.stringify(c.arguments)}`)))
+  console.log(`readiness (${shardLabel()}): ${borderShare.length} border call(s)`)
+  const mine: typeof border = []
+  for (const c of borderShare) {
+    try { const entry = { ...c, answer: await rpc(hostUrl(c.host), c.door, c.arguments) }; border.push(entry); mine.push(entry) } catch (e) { const entry = { ...c, refusal: (e as Error).message }; border.push(entry); mine.push(entry) }
   }
+  // a shard leaves its border answers and stops: the unit's own asks (readiness, rights, address, auras, the vortex, the sequence) are the merge's
+  if (isShard) { leaveShard('readiness', mine); console.log(`readiness: ${shardLabel()} made ${mine.length} border call(s)`); process.exit(0) }
   // the unit: readiness, rights, address, auras
   const unitCalls = plan.unitPlan as { name: string; arguments: Record<string, unknown>; example?: string }[]
   const ask = async (name: string) => rpc(UNIT, name, unitCalls.find((c) => c.name === name)!.arguments)

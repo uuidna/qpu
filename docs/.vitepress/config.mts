@@ -452,6 +452,10 @@ export default defineConfig({
           {
             "text": "e2e",
             "link": "/mcp#e2e"
+          },
+          {
+            "text": "shard",
+            "link": "/mcp#shard"
           }
         ]
       },
