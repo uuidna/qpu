@@ -1827,9 +1827,15 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "wrangler",
         "tenant",
         "pwa",
-        "mcp"
+        "mcp",
+        "versions",
+        "migration"
       ],
       "description": "omit for all"
+    },
+    "lastTag": {
+      "type": "object",
+      "description": "{ version, tools }: the last tag and the tools it served, from the repository tool; with it, kind versions computes the next number"
     },
     "current": {
       "type": "string",

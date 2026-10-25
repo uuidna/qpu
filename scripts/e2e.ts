@@ -21,7 +21,7 @@ const main = async () => {
   const answers: E2eAnswer[] = []
   const one = async (r: E2eRequest) => {
     const t0 = Date.now()
-    try { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: r.accept, 'user-agent': 'uuidna-qpu-e2e (ceccec@psg.bg)', ...(r.headers ?? {}) }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(20000) }); answers.push({ ...r, status: res.status, ms: Date.now() - t0, text: await res.text(), etag: res.headers.get('etag'), address: res.headers.get('x-qpu-address') }) }
+    try { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: r.accept, 'user-agent': 'uuidna-qpu-e2e (ceccec@psg.bg)', ...(r.headers ?? {}) }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(20000) }); answers.push({ ...r, status: res.status, ms: Date.now() - t0, text: await res.text(), etag: res.headers.get('etag'), address: res.headers.get('x-qpu-address'), version: res.headers.get('x-qpu-version') }) }
     catch (e) { answers.push({ ...r, status: 0, ms: Date.now() - t0, text: `fetch failed: ${(e as Error).message}` }) }
   }
   const inFlight = new Set<Promise<void>>()
@@ -39,7 +39,7 @@ const main = async () => {
   for (const e of r.errors) appendFileSync(join(ROOT, 'docs', 'public', 'e2e.ndjson'), JSON.stringify({ date, ...e }) + '\n')
   // the referer collects the coins: one ledger line per run credits the teleports to the blocks that asked; a teleport deposits nothing (the entanglement was paid when the block was computed)
   if (r.involutions) appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date, client: 'e2e', door: 'teleport', deposit: 0, gate: null, receipt: null, clean: !r.errors.some((e: { got: string }) => String(e.got).startsWith('HTTP 304 unverified')), surface: null, teleports: r.involutions, materialised: r.materialised, referers: r.referers }) + '\n')
-  console.log(`e2e: ${r.combos} combinations, ${r.copies} copies (${r.involutions} teleported by involution, ${r.materialised} materialised here, ${r.referers} referers collected) in ${((Date.now() - started) / 1000).toFixed(1)} s — ${JSON.stringify(r.outcomes)}; p=${r.physicalErrorRate.toFixed(4)}, logical ${r.logicalErrorRate.toFixed(4)}; ${r.errors.length} error block(s) streamed, ${r.leads.length} lead(s)${remaining ? `; ${remaining} remain for the next quantum` : ''}`)
+  console.log(`e2e: versions ${r.versions.join(', ') || 'unnamed'}; ${r.combos} combinations, ${r.copies} copies (${r.involutions} teleported by involution, ${r.materialised} materialised here, ${r.referers} referers collected) in ${((Date.now() - started) / 1000).toFixed(1)} s — ${JSON.stringify(r.outcomes)}; p=${r.physicalErrorRate.toFixed(4)}, logical ${r.logicalErrorRate.toFixed(4)}; ${r.errors.length} error block(s) streamed, ${r.leads.length} lead(s)${remaining ? `; ${remaining} remain for the next quantum` : ''}`)
   if (process.argv.includes('--strict') && r.outcomes.uncorrectable) process.exit(1)
 }
 main().catch((e) => { console.error(e); process.exit(1) })

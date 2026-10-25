@@ -9,6 +9,7 @@ import { seedOf, trinityOf } from '../clay-register.js'
 import { TENANTS } from '../tenants.js'
 import { CLOUDFLARE_MCP, DEFAULT_MCP_HOSTS } from '../discovery.js'
 import { KEY, hueOf } from '../theme.js'
+import { VERSION } from '../version.js'
 import { blockJsonLdOf } from '../standards.js'
 import { LICENSE } from '../license.js'
 import { flowWidget } from '../widgets.js'
@@ -78,7 +79,7 @@ export const siteOf = (ctx: Context, origin: string) => {
   const useCases = [...new Set(docs.map((d) => d.toolbox))].map((toolbox) => ({ toolbox, pages: docs.filter((d) => d.toolbox === toolbox).length, tools: [...new Set(docs.filter((d) => d.toolbox === toolbox).map((d) => d.tool))] }))
   return { reference: { site: 'https://payloadcms.com', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', shape: 'docs with layout blocks (blockType), meta (title, description), breadcrumbs: the site is what Payload computes; discovery reads it as the standard payload-site' }, origin, useCases: useCases.length, pages: docs.length, byUseCase: useCases, docs, collection: { slug: 'pages', totalDocs: docs.length, docs: docs.filter((d) => 'uuid' in d).map((d) => ({ id: d.uuid, title: d.title, slug: `/u/${d.uuid}`, layout: [{ blockType: 'qpu', tool: d.tool, uuid: d.uuid }], meta: { title: d.title, description: d.description }, breadcrumbs: [{ doc: d.uuid, url: `/u/${d.uuid}`, label: d.title }] })) } }
 }
-const configKinds = ['payload', 'wrangler', 'tenant', 'pwa', 'mcp'] as const
+const configKinds = ['payload', 'wrangler', 'tenant', 'pwa', 'mcp', 'versions', 'migration'] as const
 type ConfigKind = typeof configKinds[number]
 /** The torus of a configuration: its address, seed and reflection, and whether the loop closes (config → text → config at the same address). */
 const torusOf = (config: unknown) => {
@@ -99,13 +100,60 @@ const varsOf = (tenant: string) => {
     note: 'names only: the operator sets the values as wrangler secrets; a tool never reads or carries a value',
   }
 }
-export const configOf = (kind: ConfigKind, ctx: Context, p: { version?: string; description?: string } = {}) => {
+/** The next version, defined by development, kept as low as the architecture allows: every component is one digit (0–9); a
+ *  patch never moves the number (the change lives in the content address: build metadata +fold); a tool new carries the
+ *  minor digit, and at 10 the major; a tool gone carries the major; the major past 9 returns to 1 with the epoch counted in
+ *  the build metadata — so the lifespan of every single-digit combination is infinite: within a version, every state is an
+ *  address, and the number changes only when the catalogue changes shape. */
+export const nextVersionOf = (current: string, toolsNow: readonly string[], lastTag: { version: string; tools: readonly string[]; epoch?: number }): { next: string; bump: 'major' | 'minor' | 'none'; epoch: number; build: string; added: string[]; removed: string[]; digits: 'single' } => {
+  const added = toolsNow.filter((t) => !lastTag.tools.includes(t)), removed = lastTag.tools.filter((t) => !toolsNow.includes(t))
+  const bump = removed.length ? 'major' : added.length ? 'minor' : 'none'
+  const [ma, mi] = lastTag.version.replace(/^v/, '').split('.').map((n) => Number(n) || 0) as [number, number]
+  let epoch = lastTag.epoch ?? 1
+  let major = ma, minor = mi
+  if (bump === 'minor') { minor += 1; if (minor > 9) { minor = 0; major += 1 } }
+  if (bump === 'major') { major += 1; minor = 0 }
+  if (major > 9) { major = 1; epoch += 1 }
+  const build = uuidOf(`catalogue${toolsNow.join(',')}`).slice(0, 8)
+  const next = bump === 'none' ? `${ma}.${mi}.0` : `${major}.${minor}.0`
+  void current
+  return { next: `${next}+e${epoch}.${build}`, bump, epoch, build, added, removed, digits: 'single' }
+}
+export const configOf = (kind: ConfigKind, ctx: Context, p: { version?: string; description?: string; lastTag?: { version: string; tools: readonly string[] } } = {}) => {
   const hosts = Object.keys(TENANTS)
   switch (kind) {
     case 'payload': return { collections: [{ slug: 'pages', fields: ['lexical', 'tenant'], note: 'the plugins\' own collection; the fields are the plugins\'' }], plugins: PAYLOAD_PLUGINS.map((p) => ({ [p.name]: { package: p.pkg, ...p.options } })), combinations: 2 ** PAYLOAD_PLUGINS.length, combinationNote: 'every subset of the plugins is a configuration; the dashboard of this tool enumerates them by address' }
     case 'wrangler': return { $schema: 'node_modules/wrangler/config-schema.json', name: 'qpu', main: 'src/worker.ts', compatibility_date: '2026-10-01', workers_dev: true, assets: { directory: './docs/.vitepress/dist', binding: 'ASSETS', run_worker_first: true, not_found_handling: 'none' }, routes: hosts.map((h) => ({ pattern: h, custom_domain: true })), durable_objects: { bindings: [{ name: 'DOCKET', class_name: 'DocketObject' }] }, migrations: [{ tag: 'v1', new_sqlite_classes: ['DocketObject'] }], observability: { enabled: true } }
     case 'tenant': return { tenants: [...Object.values(TENANTS), 'ceci'].map(varsOf), mcpHostsDefault: DEFAULT_MCP_HOSTS }
     case 'pwa': { const accent = `hsl(${hueOf(KEY)} 62% 44%)`; return { name: '@uuidna/qpu', short_name: 'qpu', description: p.description ?? '', id: '/', start_url: '/', scope: '/', display: 'standalone', orientation: 'any', background_color: '#0b0b0f', theme_color: accent, lang: 'en', dir: 'ltr', categories: ['developer', 'education', 'productivity'], icons: [{ src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }, { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' }], shortcuts: [{ name: 'Every tool laid out', url: '/u/' + uuidOf('dashboard{}'), description: 'the dashboard index: every tool with the size of its space' }, { name: 'Examples', url: '/examples' }, { name: 'Stream', url: '/stream' }, { name: 'Readiness', url: '/readiness' }], related_applications: [], prefer_related_applications: false, license: 'CC-BY-NC-ND-4.0', version: p.version ?? null } }
+    case 'versions': {
+      const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result.tools.map((t) => t.name)
+      const open = ctx.leads.filter((l) => l.status === 'open' || l.status === 'partial')
+      return {
+        current: VERSION, source: 'package.json, injected at generation into src/quantum/version.ts; the Worker names it on every reply (X-Qpu-Version) and in its discovery document',
+        // development defines the version: the next number follows what the catalogue changed since the last tag the repository tool read
+        lifespan: 'infinite by architecture: every component a single digit, a patch never moves the number (the change is its content address, carried as build metadata), a tool new carries the minor digit and at 10 the major, the major past 9 returns to 1 with the epoch counted; within a version every state is an address',
+        next: p.lastTag ? nextVersionOf(VERSION, tools, p.lastTag) : null, nextNeeds: p.lastTag ? null : 'lastTag { version, tools }: the last tag and the tools it served, from the repository tool\'s watch; without it the next number is not guessed',
+        // the version defines development: the leads open at it are its plan, each settled lead a step of the next version
+        defines: { openLeads: open.length, byStatus: { open: open.filter((l) => l.status === 'open').length, partial: open.filter((l) => l.status === 'partial').length }, plan: open.map((l) => l.id) },
+        // Payload's versioning over the RAID: every version of a document is an entry addressed by its content, prev the earlier version, never overwritten; drafts are commitments, published the reveal; no cap on versions per document
+        payload: { collections: { pages: { versions: { drafts: { autosave: true }, maxPerDoc: 0 } } }, overRaid: 'a version is a docket entry (fold address + SHA-256), its prev the earlier version; both answer by address, so a reader on either version reads whole; a draft is a commitment entry, publishing reveals it into the same address' },
+        quantum: 'versions coexist: every block and page is addressed by content, the service worker keeps a shell per version, the ETag is the content hash, so an earlier version\'s addresses answer beside the new one\'s and nothing is invalidated by a release',
+      }
+    }
+    case 'migration': return {
+      uptime: '100 %: no address is moved, so no reader waits',
+      providers: [...hosts.map((h) => `https://${h}/mcp`), 'https://qpu.ceci.workers.dev/mcp'],
+      addProvider: 'deploy the same Worker at the new provider; name its endpoint among the gate\'s hosts (QPU_E2E_HOSTS) and among the tenant\'s MCP hosts; the docket mirrors heal by address; the gate decodes old and new as copies of one value',
+      steps: [
+        { step: 1, name: 'deploy beside', does: 'the new version is deployed beside the old one; both answer every address (content addressing, ETag by content, a shell per version in the service worker)' },
+        { step: 2, name: 'mirror', does: 'the docket of each tenant is mirrored to the new provider by address; a missing entry heals from any mirror' },
+        { step: 3, name: 'decode', does: 'the e2e gate calls every combination on old and new hosts and decodes them as copies of one logical value; the migration is finished when every combination agrees and no erasure remains; a flip is a lead, never a cut-over' },
+        { step: 4, name: 'route', does: 'the custom domains point at the new provider; the old one keeps answering until the gate has agreed once more from the new route' },
+        { step: 5, name: 'rollback', does: 'the earlier version\'s addresses still answer: routing back is the whole rollback' },
+      ],
+      measuredBy: 'the e2e gate: versions per host, outcomes per combination, erasures per host; uptime is whole while every combination agrees',
+    }
     case 'mcp': { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'extend', arguments: { direction: 'out' } } }) as { result: { structuredContent: { outward: { mcpServers: unknown; tools: unknown[] } } } }; return { mcpServers: r.result.structuredContent.outward.mcpServers, tools: r.result.structuredContent.outward.tools.length, hosts: DEFAULT_MCP_HOSTS } }
   }
 }
@@ -123,10 +171,10 @@ const stripJsonc = (text: string) => text.replace(/^\s*\/\/.*$/gm, '').replace(/
 const configure = toolOf('payload', {
   name: 'configure',
   description: 'MCP configures Payload and the rest: Payload\'s default plugins (lexical with the one qpu block, nested-docs, seo, search, redirects, form-builder, multi-tenant, mcp) in all their combinations with no custom collection; the Worker\'s wrangler configuration from the tenants; each tenant\'s variable names (never values); the PWA manifest; the MCP registration. Every configuration carries its torus: address, seed, reflection and trinity, and whether the loop closes (config → text → config at the same address). With current (the text a client holds), the drift: every path that differs, each a lead. Without kind: all of them, tested.',
-  inputSchema: { type: 'object', properties: { kind: { type: 'string', enum: [...configKinds], description: 'omit for all' }, current: { type: 'string', description: 'the configuration text the client holds (JSON or JSONC): compared, the drift answered' }, version: { type: 'string' }, description: { type: 'string' }, env: { type: 'array', items: { type: 'string' }, description: 'the variable NAMES the client\'s environment holds: which of a tenant\'s are missing (values never travel)' }, selftest: { type: 'boolean' } } },
+  inputSchema: { type: 'object', properties: { kind: { type: 'string', enum: [...configKinds], description: 'omit for all' }, lastTag: { type: 'object', description: '{ version, tools }: the last tag and the tools it served, from the repository tool; with it, kind versions computes the next number' }, current: { type: 'string', description: 'the configuration text the client holds (JSON or JSONC): compared, the drift answered' }, version: { type: 'string' }, description: { type: 'string' }, env: { type: 'array', items: { type: 'string' }, description: 'the variable NAMES the client\'s environment holds: which of a tenant\'s are missing (values never travel)' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...PAYLOAD.skill.selftest(ctx) }
-    const p = { version: typeof args.version === 'string' ? args.version : undefined, description: typeof args.description === 'string' ? args.description : undefined }
+    const p = { version: typeof args.version === 'string' ? args.version : undefined, description: typeof args.description === 'string' ? args.description : undefined, lastTag: args.lastTag && typeof args.lastTag === 'object' ? args.lastTag as { version: string; tools: string[] } : undefined }
     if (typeof args.kind === 'string') {
       if (!configKinds.includes(args.kind as ConfigKind)) throw new Error(`no configuration ${args.kind}; the kinds are ${configKinds.join(', ')}`)
       const kind = args.kind as ConfigKind
@@ -147,7 +195,9 @@ export const PAYLOAD: Toolbox = {
   idea: 'Payload\'s plugin schema as the one shape of every result: nested docs of lexical documents whose blocks are programmable UUID logic, SEO from the block, no custom collection, a few kilobytes computed once',
   tools: [payload, configure],
   examples: [
-    { id: 'configure-all', tool: 'configure', arguments: {}, shows: 'Every configuration MCP computes, tested around the torus: Payload\'s plugins, the Worker, the tenants\' variable names, the manifest, the registration; each with its address, seed, reflection and trinity, every loop closed.', expect: (s) => (s.kinds === 5 && s.tested === 5 && s.closed === true && s.configs.every((c: { torus: { reflection: number; seed: number } }) => c.torus.seed + c.torus.reflection === 10) ? null : `${s.tested}/${s.kinds} closed`) },
+    { id: 'configure-versions', tool: 'configure', arguments: { kind: 'versions', lastTag: { version: 'v1.4.0', tools: ['processor', 'circuit', 'clay'] } }, shows: 'Versions define development and development defines versions: the current version from its single source, the next number from what the catalogue changed since the last tag (tools added: the minor digit carries), kept to single digits with a build address, the open leads as the version\'s plan, Payload\'s versioning over the RAID (every version an entry, never overwritten, no cap).', expect: (s) => (s.config.current === '1.4.0' && s.config.next.bump === 'minor' && s.config.next.next.startsWith('1.5.0+e1.') && s.config.next.digits === 'single' && s.config.next.added.length >= 30 && s.config.defines.openLeads > 0 && s.config.payload.collections.pages.versions.maxPerDoc === 0 && s.torus.closed ? null : JSON.stringify(s.config.next).slice(0, 120)) },
+    { id: 'configure-migration', tool: 'configure', arguments: { kind: 'migration' }, shows: 'A provider added or moved at 100 % uptime: deploy beside, mirror the docket by address, decode old and new as copies through the gate, route, and the rollback is the earlier version still answering.', expect: (s) => (s.config.steps.length === 5 && s.config.providers.length === 3 && s.config.uptime.startsWith('100') ? null : `${s.config.steps?.length} steps`) },
+    { id: 'configure-all', tool: 'configure', arguments: {}, shows: 'Every configuration MCP computes, tested around the torus: Payload\'s plugins, the Worker, the tenants\' variable names, the manifest, the registration, the versions, the migration; each with its address, seed, reflection and trinity, every loop closed.', expect: (s) => (s.kinds === 7 && s.tested === 7 && s.closed === true && s.configs.every((c: { torus: { reflection: number; seed: number } }) => c.torus.seed + c.torus.reflection === 10) ? null : `${s.tested}/${s.kinds} closed`) },
     { id: 'configure-payload', tool: 'configure', arguments: { kind: 'payload' }, shows: 'Payload configured by MCP: eight default plugins over the one pages collection, the lexical block qpu with its UUID logic fields, the tenants in multi-tenant, 256 combinations.', expect: (s) => (s.config.plugins.length === 8 && s.config.combinations === 256 && s.config.collections.length === 1 && s.config.plugins[0].lexical.blocks[0] === 'qpu' && s.torus.closed ? null : `${s.config.plugins?.length} plugins`) },
     { id: 'configure-wrangler-drift', tool: 'configure', arguments: { kind: 'wrangler', current: '{ "name": "qpu", "main": "src/worker.ts", "routes": [] }' }, shows: 'The Worker configuration compared to a text a client holds: every differing path is a lead, nothing is rewritten by the tool.', expect: (s) => (s.driftCount >= 5 && s.drift.includes('routes') && s.leads.every((l: { status: string }) => l.status === 'open') ? null : `${s.driftCount} drift`) },
     { id: 'configure-tenant-missing', tool: 'configure', arguments: { kind: 'tenant', env: ['QPU_WRITE_TOKEN_UUIDNA', 'QPU_ADMIN_TOKEN_UUIDNA', 'QPU_DATA_KEY'] }, shows: 'Each tenant\'s variable names and which an environment lacks: Stripe keys and the Cloudflare MCP tokens are the operator\'s to set; values never travel.', expect: (s) => (s.missing.length === 3 && s.missing[0].tenant === 'uuidna' && s.missing[0].secrets.includes('STRIPE_SECRET_KEY_UUIDNA') && s.missing[0].secrets.includes('QPU_MCP_TOKEN_BINDINGS_MCP_CLOUDFLARE_COM_UUIDNA') && !s.missing[0].secrets.includes('QPU_WRITE_TOKEN_UUIDNA') ? null : JSON.stringify(s.missing?.[0]).slice(0, 120)) },
@@ -176,6 +226,12 @@ export const PAYLOAD: Toolbox = {
       const pl = configOf('payload', ctx) as { plugins: Record<string, unknown>[]; combinations: number }
       check('configure:payload-plugins', pl.plugins.length === 8 && pl.combinations === 256 && pl.plugins.some((p) => 'multi-tenant' in p), 'the eight default plugins, 256 combinations, the tenants in multi-tenant')
       const m = configOf('mcp', ctx) as { tools: number; mcpServers: { qpu: { url: string } } }
+      const nv = nextVersionOf('1.4.0', ['a', 'b', 'c'], { version: 'v1.4.0', tools: ['a', 'b'] }); const rm = nextVersionOf('1.4.0', ['a'], { version: '1.4.0', tools: ['a', 'b'] }); const same = nextVersionOf('1.4.0', ['a', 'b'], { version: '1.4.0', tools: ['a', 'b'] })
+      check('configure:development-defines-the-version', nv.next.startsWith('1.5.0+e1.') && nv.bump === 'minor' && rm.next.startsWith('2.0.0+e1.') && same.next.startsWith('1.4.0+e1.') && same.bump === 'none', `a tool added: ${nv.next}; a tool gone: ${rm.next}; nothing changed: ${same.next} (the number stays; the build address moves)`)
+      const carry = nextVersionOf('1.9.0', ['a', 'b'], { version: '1.9.0', tools: ['a'] }); const wrap = nextVersionOf('9.3.0', ['a'], { version: '9.3.0', tools: ['a', 'b'] })
+      check('configure:single-digits-infinite-lifespan', carry.next.startsWith('2.0.0+e1.') && wrap.next.startsWith('1.0.0+e2.') && wrap.epoch === 2 && same.build === nextVersionOf('1.4.0', ['a', 'b'], { version: '1.4.0', tools: ['a', 'b'] }).build, `minor carries at 10: ${carry.next}; major past 9 returns to 1 with the epoch: ${wrap.next}; the build address is a function of the catalogue`)
+      const mg = configOf('migration', ctx) as { steps: unknown[]; uptime: string }
+      check('configure:migration-at-whole-uptime', mg.steps.length === 5 && mg.uptime.startsWith('100'), 'five steps, no address moved')
       check('configure:mcp-registration', m.tools >= 36 && m.mcpServers.qpu.url.endsWith('/mcp'), `the registration of ${m.tools} tools, through the extension toolbox`)
       return { passed: checks.every((c) => c.passed), checks }
     },

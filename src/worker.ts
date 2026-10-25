@@ -12,6 +12,7 @@ import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.js'
 import { LOCALES as LANGS, translateOf } from './quantum/i18n.js'
 import { DEFAULT_MCP_HOSTS } from './quantum/discovery.js'
 import { hashOf as contentHashOf } from './quantum/e2e.js'
+import { VERSION } from './quantum/version.js'
 
 /** The slice of the Workers runtime this file uses, typed here so the tree needs no runtime types package to typecheck. */
 export type Storage = { get<T>(key: string): Promise<T | undefined>; put(key: string, value: unknown): Promise<void>; delete(key: string): Promise<unknown>; list<T>(opts?: { prefix?: string }): Promise<Map<string, T>> }
@@ -52,7 +53,7 @@ export const roleOf = (env: Env, tenant: string, token: string | undefined): { r
   return other ? { role: 'reader', collision: `a token of tenant ${other} presented at tenant ${tenant}: tokens are per tenant; ask the author for a ${tenant} token (${ROLES.writer.issued})` } : { role: 'reader' }
 }
 
-const LICENSE_HEADERS = { 'Link': `<${LICENSE.url}>; rel="license"`, 'X-License': LICENSE.spdx, 'X-Copyright': LICENSE.copyright, 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }
+const LICENSE_HEADERS = { 'X-Qpu-Version': VERSION, 'Link': `<${LICENSE.url}>; rel="license"`, 'X-License': LICENSE.spdx, 'X-Copyright': LICENSE.copyright, 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }
 const json = (body: unknown, status = 200, extra: Record<string, string> = {}): Response => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', ...LICENSE_HEADERS, ...extra } })
 /** The involution that costs Cloudflare nothing: a reply is addressed by its block (content), so a client that holds the address asks with If-None-Match and receives 304 — no body computed, no bytes sent; a reply the address names is immutable and cacheable for a year anywhere between. */
 const involuted = (request: Request, address: string | null, response: Response, content?: string): Response => {
@@ -68,11 +69,12 @@ const addressOfReply = (reply: unknown): string | null => { const r = reply as {
 /** What this tree is, stated from its own values: nothing here is typed that the handler does not compute. */
 export const discoveryOf = (origin: string, env?: Env) => {
   const tenant = tenantOf(new URL(origin).hostname)
+  const version = VERSION
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }
   const names = list.result.tools.map((t) => t.name)
   return {
     name: '@uuidna/qpu', kind: 'qpu', mcp: `${origin}/mcp`, docket: `${origin}/docket`, methods: ['initialize', 'tools/list', 'tools/call'],
-    tenant, tenants: Object.entries(TENANTS).map(([host, t]) => ({ host, tenant: t, docket: `https://${host}/docket` })), mcpHosts: (((env as unknown as Record<string, string | undefined>)?.[`QPU_MCP_HOSTS_${tenant.toUpperCase()}`]) ?? DEFAULT_MCP_HOSTS.join(',')).split(',').map((s) => s.trim()).filter(Boolean), mcpHostsNote: 'tenant configurable: QPU_MCP_HOSTS_<TENANT> names the MCP hosts this tenant discovers and extends; QPU_MCP_TOKEN_<HOST>_<TENANT> its token per host; Cloudflare\'s servers are discovered by default, the documentation one in the open, the others when the tenant brings its OAuth token', roles: ROLES, rbac: 'one Worker, one docket per tenant (host); roles asked of the RBAC MCP host when one is configured (a Payload MCP plugin managing every MCP server\'s roles over MCP itself), otherwise one writer and one admin token per tenant; a token at another tenant\'s host holds no role there and the answer names the procedure',
+    version, versioning: 'quantum: versions coexist — every block and every page is addressed by content, so an earlier version\'s addresses answer beside the new one\'s and a migration moves no address; the e2e gate reads each host\'s version and decodes hosts on different versions as copies of one value', tenant, tenants: Object.entries(TENANTS).map(([host, t]) => ({ host, tenant: t, docket: `https://${host}/docket` })), mcpHosts: (((env as unknown as Record<string, string | undefined>)?.[`QPU_MCP_HOSTS_${tenant.toUpperCase()}`]) ?? DEFAULT_MCP_HOSTS.join(',')).split(',').map((s) => s.trim()).filter(Boolean), mcpHostsNote: 'tenant configurable: QPU_MCP_HOSTS_<TENANT> names the MCP hosts this tenant discovers and extends; QPU_MCP_TOKEN_<HOST>_<TENANT> its token per host; Cloudflare\'s servers are discovered by default, the documentation one in the open, the others when the tenant brings its OAuth token', roles: ROLES, rbac: 'one Worker, one docket per tenant (host); roles asked of the RBAC MCP host when one is configured (a Payload MCP plugin managing every MCP server\'s roles over MCP itself), otherwise one writer and one admin token per tenant; a token at another tenant\'s host holds no role there and the answer names the procedure',
     tools: names, examples: EXAMPLES.length, leads: LEADS.length,
     bounds: { shorN: 21, qubits: 6, bits: 8, nodes: 12, note: 'the exact state-vector simulator; every bound is in each tool\'s input schema' },
     key: KEY, license: { spdx: LICENSE.spdx, url: LICENSE.url, address: LICENSE.address, imprint: LICENSE.imprint, author: LICENSE.author, orcid: LICENSE.orcid },
