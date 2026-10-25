@@ -7,6 +7,7 @@
 
 import * as cirq from './cirq.js'
 import { SITEMAP_CHILD_CHARACTERS, SITEMAP_FETCHED, SITEMAP_PAGES } from './sitemap.js'
+import { recomputeClay } from './clay-register.js'
 
 export type LeadStatus = 'served' | 'partial' | 'blocked' | 'out_of_scope' | 'open'
 
@@ -232,6 +233,10 @@ export const SITEMAP_LEADS: readonly Lead[] = (() => {
   return SITEMAP_PAGES.filter(([path]) => !covered.has(path)).map(([path, lastmod]) => sitemapLead(path, lastmod))
 })()
 
+/** Every relation of the Clay register as a lead: served by the clay tool, its integers facts for the wave (OEIS, Wikipedia),
+ * its statement reflected by the imagination, its value read by the unit's sequence door at readiness. */
+export const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: `src/quantum/processing/unit/lean/Qpu/Clay.lean ${r.name}`, statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
+
 export const LEADS: readonly Lead[] = [
   // Every perspective on the QPU, as an implemented lead: served by the tool that is that perspective, or honest about what it owes.
   { id: 'perspective-factorer', source: 'src/quantum/algorithms.ts', statement: 'The QPU as the factorer: Shor on the exact simulator for every N within its bound, and the bound itself the honest answer beyond it.', status: 'served', tool: 'algorithm' },
@@ -293,7 +298,7 @@ export const LEADS: readonly Lead[] = [
   { id: 'gap-verdict-vocabulary', source: 'src/quantum/match.ts VERDICTS', statement: 'The unit says VERIFIED / UNVERIFIED / REFUTED and PROVEN / NOT-PROVEN; this tree says served / impossible / unknown. A mapping table translates a verdict crossing the border.', status: 'served', tool: 'match', reason: 'wired on 2026-10-25' },
   { id: 'address-agreement', source: 'uuidna.com/mcp compute_address', statement: 'The unit names a value by compute_address; this tree names content by uuidOf, ported one for one from the unit\'s published shapeUuidOf (two FNV-1a 64 folds, 8-4-4-4-12, a content-decided version nibble). For the probe "qpu" the two differ, so the door uses a builder outside the sources this tree can read.', status: 'partial', tool: 'audit', reason: 'the readiness step records the agreement each run; until the door\'s builder is published or the unit adopts shapeUuidOf for the door, the two addresses are both carried and neither is claimed to be the other' },
   { id: 'pravets-8m-recompute', source: 'statement', statement: 'The 54 Clay.lean relations are integer identities between the unit\'s constants whose widest value needs 33 bits (amplitudes = 2^32), three 16-bit limbs; the receipts are 64-bit folds beside SHA-256: an 8-bit machine such as the Pravets 8M can recompute the register in 16-bit software arithmetic and compare content addresses, verifying that the kernel check happened without running the kernel.', status: 'partial', tool: 'clay', reason: 'the kernel check, the census and the recompute with its limb count run here (clay tool: maxBits 33, maxLimbs16 3); the 16-bit-limb recomputer itself and the receipt-chain comparison on an 8-bit machine are not yet in this tree' },
-...HAND_LEADS, ...SITEMAP_LEADS]
+...HAND_LEADS, ...SITEMAP_LEADS, ...CLAY_LEADS]
 
 /** The leads by status: the counts the leads tool reports. */
 export const leadCounts = (leads: readonly Lead[] = LEADS): Record<LeadStatus, number> => {

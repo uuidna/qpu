@@ -7,7 +7,7 @@ import { EXAMPLES } from './examples.js'
 import { auditOf } from './audit.js'
 import { blockOf, verifyOf, uuidOf } from './blocks.js'
 import { INSTRUCTIONS, LICENSE } from './license.js'
-import { recomputeClay } from './clay-register.js'
+import { recomputeClay, reflectionOfRegister } from './clay-register.js'
 import { matchOf } from './match.js'
 import { LOCALES } from './i18n.js'
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
@@ -587,9 +587,16 @@ const OWN: Tool[] = [
   tool({
     name: 'clay',
     description: 'The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N statement parsed and evaluated, each side\'s value and the bit width it needs reported. What the Lean kernel accepted by rfl, redone with + − × ÷ on naturals only, so a small machine can redo the same sums and compare addresses. Nothing here is a proof of an open problem: the relations are identities between the unit\'s own constants.',
-    inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' } } },
+    inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' }, technique: { type: 'string', enum: ['reflection'], description: 'the register read by the σ-reflection technique: every value\'s vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit\'s sequence answers compared' }, unit: { type: 'array', items: { type: 'object' }, description: 'the unit\'s run_sequence answers per value ({ value, answer | refusal })' } } },
     run: (args) => {
       const all = recomputeClay()
+      if (args.technique === 'reflection') {
+        const reading = reflectionOfRegister(all.relations)
+        const unit = Array.isArray(args.unit) ? (args.unit as { value: number; answer?: { seed?: number; reflection?: number; fixed?: boolean }; refusal?: string }[]) : []
+        const compared = unit.map((u) => { const mine = reading.readings.find((r) => r.value === u.value); return { value: u.value, tree: mine ? { seed: mine.seed, reflection: mine.reflection } : null, unit: u.answer ? { seed: u.answer.seed, reflection: u.answer.reflection } : null, refusal: u.refusal ?? null, agree: !!mine && !!u.answer && u.answer.seed === mine.seed && u.answer.reflection === mine.reflection } })
+        const disagreements = compared.filter((c) => c.unit && !c.agree)
+        return { ...all, technique: 'reflection', pairsCount: reading.pairs.length, fixedCount: reading.fixed.length, tunedCount: reading.tuned.length, seeds: Object.keys(reading.bySeed).length, unitAsked: compared.length, unitAgree: compared.filter((c) => c.agree).length, unitDisagree: disagreements.length, unitRefused: compared.filter((c) => c.refusal).length, ...reading, compared, unitPlan: [...new Set(reading.readings.map((r) => r.value))].map((value) => ({ name: 'run_sequence', arguments: { input: value } })), leads: disagreements.map((d) => ({ id: `clay-sequence-${d.value}`, source: 'uuidna.com/mcp run_sequence', statement: `the unit reads ${d.value} as seed ${d.unit?.seed} reflection ${d.unit?.reflection}; this tree reads seed ${d.tree?.seed} reflection ${d.tree?.reflection}`, status: 'open', reason: 'two readings of one value: the digital root is decidable, so one of the two is wrong and the kernel can say which' })) }
+      }
       if (args.name) { const r = all.relations.find((x) => x.name === args.name); if (!r) throw new Error(`${String(args.name)} is not one of ${all.relations.map((x) => x.name).join(', ')}`); return { ...all, relations: [r] } }
       return all
     },

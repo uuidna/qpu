@@ -1001,6 +1001,20 @@ The Clay register recomputed in exact integer arithmetic: the Lean definitions o
     "name": {
       "type": "string",
       "description": "one relation, e.g. relation_15; omit for all"
+    },
+    "technique": {
+      "type": "string",
+      "enum": [
+        "reflection"
+      ],
+      "description": "the register read by the σ-reflection technique: every value's vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit's sequence answers compared"
+    },
+    "unit": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the unit's run_sequence answers per value ({ value, answer | refusal })"
     }
   }
 }
@@ -1285,6 +1299,13 @@ Imagination leads all leads: every lead (or the subset named) matched with the r
         "type": "string"
       },
       "description": "lead ids to imagine; default all"
+    },
+    "statements": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "ad-hoc statements {id, statement} to imagine instead: the rest of the leads from any text"
     },
     "selftest": {
       "type": "boolean",

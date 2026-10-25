@@ -24,9 +24,9 @@ const APPLICATIONS: { family: string; entry: string; verifier: string }[] = [
 ]
 
 /** Every lead (or the subset named) imagined. Pure; the matcher is built once. */
-export const imagineOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], subset?: readonly string[]): Imagination => {
+export const imagineOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], subset?: readonly string[], statements?: readonly { id: string; statement: string }[]): Imagination => {
   const match = matcherOf(handle, examples, leads)
-  const chosen = subset ? leads.filter((l) => subset.includes(l.id)) : leads
+  const chosen: readonly Lead[] = statements ? statements.map((s) => ({ id: s.id, source: 'statement', statement: s.statement, status: 'open' as const })) : subset ? leads.filter((l) => subset.includes(l.id)) : leads
   const verdicts: Record<string, number> = { served: 0, impossible: 0, unknown: 0 }
   const rows: ImagineRow[] = []
   const imagined = new Map<string, Lead>()

@@ -66,7 +66,7 @@ const readiness = toolOf('flow', {
     const sources = sourcesOf(judged, ctx.leads)
     const plan = borderPlanOf(discovery, probe)
     const auraSubjects = blockIdsOf(ctx)
-    const unitPlan = [{ name: 'check_release_readiness', arguments: { sources } }, { name: 'get_rights', arguments: {} }, { name: 'compute_address', arguments: { value: 'qpu' } }, { name: 'get_vortex_reflection', arguments: {} }, { name: 'get_triad', arguments: {} }, { name: 'compute_double_torus', arguments: { addresses: auraSubjects.map((a) => a.id) } }, ...auraSubjects.map((a) => ({ name: 'compute_aura', arguments: { subject: a.id }, example: a.example }))]
+    const unitPlan = [{ name: 'check_release_readiness', arguments: { sources } }, { name: 'get_rights', arguments: {} }, { name: 'compute_address', arguments: { value: 'qpu' } }, { name: 'get_vortex_reflection', arguments: {} }, { name: 'get_triad', arguments: {} }, { name: 'compute_double_torus', arguments: { addresses: auraSubjects.map((a) => a.id) } }, ...((ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: { technique: 'reflection' } } }) as { result?: { structuredContent: { unitPlan: { name: string; arguments: Record<string, unknown> }[] } } }).result?.structuredContent.unitPlan ?? []), ...auraSubjects.map((a) => ({ name: 'compute_aura', arguments: { subject: a.id }, example: a.example }))]
     const base = { probe, judged, classes, sources, borderPlan: plan.calls, unfillable: plan.unfillable, unitPlan, leads: ctx.leads.length }
     if (!Array.isArray(args.border) || !args.unit) return { phase: 'plan' as const, served: classes.served, refuted: classes.refuted, trial: classes.trial, borderCalls: plan.calls.length, unitCalls: unitPlan.length, ...base }
     const border = [...borderOf(args.border as BorderAnswer[]), ...plan.unfillable]
@@ -81,10 +81,10 @@ const readiness = toolOf('flow', {
 const imagine = toolOf('flow', {
   name: 'imagine',
   description: 'Imagination leads all leads: every lead (or the subset named) matched with the reflection on — hidden factors, angles, mirror queries, cluster, verification requests — every reflection that finds something a new open lead, every untried enum value of every schema a lead, every application family an adaptor to build. Pure.',
-  inputSchema: { type: 'object', properties: { leads: { type: 'array', items: { type: 'string' }, description: 'lead ids to imagine; default all' }, ...SELFTEST } },
+  inputSchema: { type: 'object', properties: { leads: { type: 'array', items: { type: 'string' }, description: 'lead ids to imagine; default all' }, statements: { type: 'array', items: { type: 'object' }, description: 'ad-hoc statements {id, statement} to imagine instead: the rest of the leads from any text' }, ...SELFTEST } },
   run: (args, ctx) => selftestOr(args, ctx, () => {
     const started = Date.now()
-    const im = imagineOf(ctx.handle, ctx.examples, ctx.leads, Array.isArray(args.leads) ? args.leads.map(String) : undefined)
+    const im = imagineOf(ctx.handle, ctx.examples, ctx.leads, Array.isArray(args.leads) ? args.leads.map(String) : undefined, Array.isArray(args.statements) ? (args.statements as { id: string; statement: string }[]) : undefined)
     return { leads: im.leads, served: im.verdicts.served ?? 0, impossible: im.verdicts.impossible ?? 0, unknown: im.verdicts.unknown ?? 0, verifyRequests: im.verifyRequests, imaginedLeads: im.imaginedLeads, ms: Date.now() - started, imagination: im, page: imaginePageOf(im, new Date().toISOString(), Date.now() - started) }
   }),
   widget: flowWidget,

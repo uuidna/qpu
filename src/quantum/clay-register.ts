@@ -104,3 +104,17 @@ export const recomputeClay = (): { relations: Relation[]; total: number; holding
   const maxBits = Math.max(...relations.map((r) => r.bits))
   return { relations, total: relations.length, holding, maxBits, maxLimbs16: limbs16Of(maxBits), ledger }
 }
+
+/** The technique applied to the register: every relation's value read as a vortex seed with its σ_10 reflection and both
+ * trinities; relations whose seeds reflect each other paired; the fixed ones (seed 5) named; the key's trinity (3, 6, 9) marked. */
+export type ClayReading = { name: string; value: number; seed: number; reflection: number; trinity: number[]; reflected: number[]; tuned: boolean; fixed: boolean }
+export const seedOf = (n: number): number => (n === 0 ? 0 : 1 + ((n - 1) % 9))
+export const trinityOf = (seed: number): number[] => (seed === 0 ? [] : seed % 3 === 0 ? [3, 6, 9] : [7, 4, 1].includes(seed) ? [7, 4, 1] : [2, 5, 8])
+export const reflectionOfRegister = (relations: readonly Relation[]): { readings: ClayReading[]; bySeed: Record<string, string[]>; byTrinity: Record<string, string[]>; pairs: { a: string; b: string; seeds: [number, number] }[]; fixed: string[]; tuned: string[] } => {
+  const readings = relations.map((r) => { const value = r.sides[0]!.value; const seed = seedOf(value); const trinity = trinityOf(seed); return { name: r.name, value, seed, reflection: seed === 0 ? 0 : 10 - seed, trinity, reflected: trinity.map((x) => 10 - x), tuned: trinity[0] === 3, fixed: seed === 5 } })
+  const bySeed: Record<string, string[]> = {}; const byTrinity: Record<string, string[]> = {}
+  for (const x of readings) { (bySeed[String(x.seed)] ??= []).push(x.name); (byTrinity[x.trinity.join(',') || 'zero'] ??= []).push(x.name) }
+  const pairs: { a: string; b: string; seeds: [number, number] }[] = []
+  for (const a of readings) for (const b of readings) if (a.name < b.name && a.seed + b.seed === 10 && a.seed !== 5) pairs.push({ a: a.name, b: b.name, seeds: [a.seed, b.seed] })
+  return { readings, bySeed, byTrinity, pairs, fixed: readings.filter((x) => x.fixed).map((x) => x.name), tuned: readings.filter((x) => x.tuned).map((x) => x.name) }
+}

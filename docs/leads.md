@@ -2632,3 +2632,57 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `page:reference/python/qsimcirq/qsim_decide/detect_gpu` | open | — | API reference of qsimcirq.qsim_decide.detect_gpu, not implemented here | in the sitemap (lastmod 2025-07-24); fetchable; no tool follows this page yet |
 | `page:reference/python/qsimcirq/qsim_decide/detect_instructions` | open | — | API reference of qsimcirq.qsim_decide.detect_instructions, not implemented here | in the sitemap (lastmod 2025-07-24); fetchable; no tool follows this page yet |
 | `page:robots.txt` | out_of_scope | — | the crawler rules file | site plumbing, not content |
+| `clay-relation_8` | served | clay | relation_8: vertices = hybridSpeed ∧ vertices = mintOf n = 8 (4 bits, seed 8) |  |
+| `clay-relation_15` | served | clay | relation_15: magicBlock = glProd hexbit seed ∧ magicBlock = qftDepth vertices = 15 (4 bits, seed 6) |  |
+| `clay-relation_16` | served | clay | relation_16: mintOf hexbit = powMod coins rays plane ∧ mintOf hexbit = powMod coins hexbit bits = 16 (5 bits, seed 7) |  |
+| `clay-relation_32` | served | clay | relation_32: bits = chimera coins ∧ bits = qaoaZz vertices hexbit = 32 (6 bits, seed 5) |  |
+| `clay-relation_128` | served | clay | relation_128: mintOf rays = chimera hexbit ∧ mintOf rays = isingFusion vertices = 128 (8 bits, seed 2) |  |
+| `clay-relation_28` | served | clay | relation_28: plane = chooseOf vertices coins ∧ plane = choose vertices coins = 28 (5 bits, seed 1) |  |
+| `clay-relation_256` | served | clay | relation_256: mintOf vertices = groverSize hexbit ∧ mintOf vertices = qaoaZz vertices bits = 256 (9 bits, seed 4) |  |
+| `clay-relation_10` | served | clay | relation_10: triangular hexbit = qftGates hexbit = 10 (4 bits, seed 1) |  |
+| `clay-relation_14` | served | clay | relation_14: faces = coil ∧ faces = qaoaParams rays = 14 (4 bits, seed 5) |  |
+| `clay-relation_21` | served | clay | relation_21: chooseOf rays coins = fibFusion vertices ∧ chooseOf rays coins = powMod rays coins plane = 21 (5 bits, seed 3) |  |
+| `clay-relation_25` | served | clay | relation_25: powMod n hexbit plane = powMod n faces bits ∧ powMod n hexbit plane = powMod n plane plane = 25 (5 bits, seed 7) |  |
+| `clay-relation_64` | served | clay | relation_64: isingFusion rays = groverSize n ∧ isingFusion rays = qaoaParams bits = 64 (7 bits, seed 1) |  |
+| `clay-relation_16384` | served | clay | relation_16384: mintOf faces = groverSize rays ∧ mintOf faces = qftStates faces = 16384 (15 bits, seed 4) |  |
+| `clay-relation_13` | served | clay | relation_13: fibFusion rays = powMod n n faces ∧ fibFusion rays = half n faces = 13 (4 bits, seed 4) |  |
+| `clay-relation_24` | served | clay | relation_24: powMod faces n bits = cliffordOrder seed ∧ powMod faces n bits = factorial hexbit = 24 (5 bits, seed 6) |  |
+| `clay-relation_35` | served | clay | relation_35: magicCubic = chooseOf rays n ∧ magicCubic = chooseOf rays hexbit = 35 (6 bits, seed 8) |  |
+| `clay-relation_105` | served | clay | relation_105: triangular faces = qftGates faces = 105 (7 bits, seed 6) |  |
+| `clay-relation_268435456` | served | clay | relation_268435456: mintOf plane = groverSize faces ∧ mintOf plane = qftStates plane = 268435456 (29 bits, seed 7) |  |
+| `clay-relation_4294967296` | served | clay | relation_4294967296: amplitudes = mintOf bits ∧ amplitudes = qftStates bits = 4294967296 (33 bits, seed 4) |  |
+| `clay-relation_9` | served | clay | relation_9: powMod n coins bits = powMod n coins faces ∧ powMod n coins bits = powMod n coins plane = 9 (4 bits, seed 9) |  |
+| `clay-relation_12` | served | clay | relation_12: groverIters hexbit = qaoaZz n hexbit ∧ groverIters hexbit = qaoaZz hexbit n = 12 (4 bits, seed 3) |  |
+| `clay-relation_17` | served | clay | relation_17: powMod n hexbit bits = powMod n plane bits ∧ powMod n hexbit bits = powMod rays coins bits = 17 (5 bits, seed 8) |  |
+| `clay-relation_56` | served | clay | relation_56: chooseOf vertices n = choose vertices n ∧ chooseOf vertices n = qaoaParams plane = 56 (6 bits, seed 2) |  |
+| `clay-relation_70` | served | clay | relation_70: chooseOf vertices hexbit = choose vertices hexbit = 70 (7 bits, seed 7) |  |
+| `clay-relation_1024` | served | clay | relation_1024: qaoaZz bits bits = qaoaX bits bits ∧ qaoaZz bits bits = paulis hexbit = 1024 (11 bits, seed 7) |  |
+| `clay-relation_27` | served | clay | relation_27: powMod n n bits = powMod n n plane ∧ powMod n n bits = half n plane = 27 (5 bits, seed 9) |  |
+| `clay-relation_36` | served | clay | relation_36: triangular vertices = qftGates vertices = 36 (6 bits, seed 9) |  |
+| `clay-relation_42` | served | clay | relation_42: glProd n coins = qaoaZz n faces ∧ glProd n coins = qaoaZz faces n = 42 (6 bits, seed 6) |  |
+| `clay-relation_49` | served | clay | relation_49: qaoaZz rays rays = qaoaX rays rays = 49 (6 bits, seed 4) |  |
+| `clay-relation_91` | served | clay | relation_91: chooseOf faces coins = choose faces coins = 91 (7 bits, seed 1) |  |
+| `clay-relation_96` | served | clay | relation_96: qaoaZz n bits = qaoaZz bits n ∧ qaoaZz n bits = qaoaX n bits = 96 (7 bits, seed 6) |  |
+| `clay-relation_196` | served | clay | relation_196: qaoaZz rays plane = qaoaZz faces faces ∧ qaoaZz rays plane = qaoaZz plane rays = 196 (8 bits, seed 7) |  |
+| `clay-relation_224` | served | clay | relation_224: qaoaZz rays bits = qaoaZz vertices plane ∧ qaoaZz rays bits = qaoaZz bits rays = 224 (8 bits, seed 8) |  |
+| `clay-relation_364` | served | clay | relation_364: chooseOf faces n = choose faces n = 364 (9 bits, seed 4) |  |
+| `clay-relation_378` | served | clay | relation_378: chooseOf plane coins = choose plane coins = 378 (9 bits, seed 9) |  |
+| `clay-relation_392` | served | clay | relation_392: chimera rays = qaoaZz faces plane ∧ chimera rays = qaoaZz plane faces = 392 (9 bits, seed 5) |  |
+| `clay-relation_406` | served | clay | relation_406: triangular plane = qftGates plane = 406 (9 bits, seed 1) |  |
+| `clay-relation_496` | served | clay | relation_496: chooseOf bits coins = choose bits coins = 496 (9 bits, seed 1) |  |
+| `clay-relation_528` | served | clay | relation_528: triangular bits = qftGates bits = 528 (10 bits, seed 6) |  |
+| `clay-relation_1001` | served | clay | relation_1001: chooseOf faces hexbit = choose faces hexbit = 1001 (10 bits, seed 2) |  |
+| `clay-relation_3003` | served | clay | relation_3003: chooseOf faces vertices = choose faces vertices = 3003 (12 bits, seed 6) |  |
+| `clay-relation_3276` | served | clay | relation_3276: chooseOf plane n = choose plane n = 3276 (12 bits, seed 9) |  |
+| `clay-relation_3432` | served | clay | relation_3432: chooseOf faces rays = choose faces rays = 3432 (12 bits, seed 3) |  |
+| `clay-relation_4960` | served | clay | relation_4960: chooseOf bits n = choose bits n = 4960 (13 bits, seed 1) |  |
+| `clay-relation_8192` | served | clay | relation_8192: chimera bits = isingFusion faces = 8192 (14 bits, seed 2) |  |
+| `clay-relation_20475` | served | clay | relation_20475: chooseOf plane hexbit = choose plane hexbit = 20475 (15 bits, seed 9) |  |
+| `clay-relation_35960` | served | clay | relation_35960: chooseOf bits hexbit = chooseOf bits plane ∧ chooseOf bits hexbit = choose bits hexbit = 35960 (16 bits, seed 5) |  |
+| `clay-relation_65536` | served | clay | relation_65536: groverSize vertices = paulis rays = 65536 (17 bits, seed 7) |  |
+| `clay-relation_1184040` | served | clay | relation_1184040: chooseOf plane rays = choose plane rays = 1184040 (21 bits, seed 9) |  |
+| `clay-relation_3108105` | served | clay | relation_3108105: chooseOf plane vertices = choose plane vertices = 3108105 (22 bits, seed 9) |  |
+| `clay-relation_3365856` | served | clay | relation_3365856: chooseOf bits rays = choose bits rays = 3365856 (22 bits, seed 9) |  |
+| `clay-relation_10518300` | served | clay | relation_10518300: chooseOf bits vertices = choose bits vertices = 10518300 (24 bits, seed 9) |  |
+| `clay-relation_40116600` | served | clay | relation_40116600: chooseOf plane faces = choose plane faces = 40116600 (26 bits, seed 9) |  |
+| `clay-relation_471435600` | served | clay | relation_471435600: chooseOf bits faces = choose bits faces = 471435600 (29 bits, seed 3) |  |
