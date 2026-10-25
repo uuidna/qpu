@@ -109,6 +109,7 @@ import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS } from './theorems-index.js
 import { matcherOf } from './match.js'
 import { sha256, utf8, hex } from './hmac.js'
 import { flowWidget } from './widgets.js'
+import { cssOf, varsOf, KEY } from './theme.js'
 import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
 import { BILLING } from './toolboxes/billing.js'
@@ -702,9 +703,18 @@ const textbook = toolOf('tree', {
   widget: flowWidget,
 })
 
+/** The UI as CSS, served: the stylesheet from the key and, for a UUID, the custom properties its block root carries. */
+const css = toolOf('tree', {
+  name: 'css',
+  description: 'The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmonics, and the rules that draw every block from its own custom properties with no script, motion only where the device allows it, off-screen blocks at no cost) and, for a uuid, the custom properties its block root carries (hue, CMYK, accent, tail colour and angle, the 9-vortex seed and period). Computed once; a device renders at the cost of CSS.',
+  inputSchema: { type: 'object', properties: { uuid: { type: 'string', description: 'a UUID whose block variables to compute' } } },
+  run: (args) => { const stylesheet = cssOf(); const vars = typeof args.uuid === 'string' ? varsOf(args.uuid) : null; return { key: KEY, bytes: stylesheet.length, rules: (stylesheet.match(/\{/g) ?? []).length, variables: vars ? Object.keys(vars).length : 0, script: false, uuid: typeof args.uuid === 'string' ? args.uuid : null, vars, stylesheet } },
+  widget: flowWidget,
+})
+
 export const TOOLBOXES: Toolbox[] = [
   { name: 'google', idea: 'the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories', tools: OWN.filter((t) => t.toolbox === 'google'), examples: [], skill: { instructions: 'Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.', directions: ['server only: every example replays as documented (the audit)'], selftest: (ctx) => { const checks = ctx.examples.filter((e) => OWN.some((t) => t.name === e.tool && t.toolbox === 'google')).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); const why = 'error' in r ? r.error.message : e.expect(r.result.structuredContent); return { id: `google:${e.id}`, passed: why === null, evidence: why ?? e.shows } }); return { passed: checks.every((c) => c.passed), checks } } } },
-  { name: 'tree', idea: 'the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time', tools: [...OWN.filter((t) => t.toolbox === 'tree'), metrics, textbook], examples: [], skill: { instructions: 'audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.', directions: ['server only: the audit audits the audit', 'toolbox → toolbox: match is the judge of readiness and the engine of imagine'], selftest: (ctx) => { const m = matchOf('How many qubits does Willow have?', ctx.handle, ctx.examples, ctx.leads); return { passed: m.verdict === 'served', checks: [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }] } } } },
+  { name: 'tree', idea: 'the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time', tools: [...OWN.filter((t) => t.toolbox === 'tree'), metrics, textbook, css], examples: [], skill: { instructions: 'audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.', directions: ['server only: the audit audits the audit', 'toolbox → toolbox: match is the judge of readiness and the engine of imagine'], selftest: (ctx) => { const m = matchOf('How many qubits does Willow have?', ctx.handle, ctx.examples, ctx.leads); return { passed: m.verdict === 'served', checks: [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }] } } } },
   FLOW,
   LANGUAGE,
   RAID,

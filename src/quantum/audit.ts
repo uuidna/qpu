@@ -62,7 +62,9 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     const r = reply.result
     const shape = Array.isArray(r.content) && r.content[0]?.type === 'text' && 'structuredContent' in r && typeof r._meta?.widget === 'string' && r._meta.widget.length > 0
     check(`license:${e.id}`, r._meta?.license?.spdx === 'CC-BY-NC-ND-4.0' && r._meta.widget.includes('data-license="CC-BY-NC-ND-4.0"') && r._meta?.block?.license === 'CC-BY-NC-ND-4.0', r._meta?.license ? 'result, widget and block carry the licence' : 'no licence on the result')
-    const a11y = accessibilityOf(r._meta?.widget ?? '')
+    const w: string = r._meta?.widget ?? ''
+    check(`css-vars:${e.id}`, w.includes('class="qpu-block"') && w.includes('--qpu-accent:') && w.includes('--qpu-angle:') && w.includes('--qpu-period:') && !/style="[^"]*#[0-9a-f]{3,6}\b/i.test(w), 'the block root carries its UUID\'s custom properties and no hex colour; the stylesheet draws it')
+    const a11y = accessibilityOf(w)
     check(`accessibility:${e.id}`, a11y.length === 0, a11y.length ? a11y.join('; ') : 'images named, tables headed, links worded, a heading present')
     const why = e.expect(r.structuredContent)
     check(`example:${e.id}`, shape && why === null, why ?? (shape ? e.shows : 'result lacks content, structuredContent or a widget'))

@@ -375,6 +375,10 @@ export default defineConfig({
           {
             "text": "textbook",
             "link": "/mcp#textbook"
+          },
+          {
+            "text": "css",
+            "link": "/mcp#css"
           }
         ]
       },

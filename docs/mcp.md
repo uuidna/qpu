@@ -28,7 +28,7 @@ the tree knows itself: its leads, its self-audit, any statement matched or prove
 
 **Tests itself:** server only: the audit audits the audit; toolbox → toolbox: match is the judge of readiness and the engine of imagine.
 
-Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify), [metrics](#metrics), [textbook](#textbook).
+Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify), [metrics](#metrics), [textbook](#textbook), [css](#css).
 
 ## Toolbox `flow`
 
@@ -1111,6 +1111,22 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
         "module"
       ],
       "description": "one category to list; omit for all"
+    }
+  }
+}
+```
+
+## css
+
+The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmonics, and the rules that draw every block from its own custom properties with no script, motion only where the device allows it, off-screen blocks at no cost) and, for a uuid, the custom properties its block root carries (hue, CMYK, accent, tail colour and angle, the 9-vortex seed and period). Computed once; a device renders at the cost of CSS.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "a UUID whose block variables to compute"
     }
   }
 }
