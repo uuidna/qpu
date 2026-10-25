@@ -5,6 +5,7 @@ import { Hero } from '@components/Hero/index'
 import { PayloadRedirects } from '@components/PayloadRedirects'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave'
 import { RenderBlocks } from '@components/RenderBlocks/index'
+import { QpuPage } from '@blocks/Qpu/page'
 import { fetchPage, fetchPages } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 import { unstable_cache } from 'next/cache'
@@ -23,6 +24,8 @@ const Page = async ({
 }) => {
   const { isEnabled: draft } = await draftMode()
   const { slug } = await params
+  // a UUID as the whole path is a block: the app renders it from the handler, no Worker behind it (the catch-all makes prefixes useless)
+  if (Array.isArray(slug) && slug.length === 1 && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(slug[0])) return <QpuPage uuid={slug[0]} />
   const url = '/' + (Array.isArray(slug) ? slug.join('/') : slug)
 
   const page = await getPage(slug, draft)

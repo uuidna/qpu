@@ -52,12 +52,12 @@ const blobStore = process.env.BLOB_STORE_ID
     ]
   : []
 
-const QPU_ORIGIN = process.env.QPU_ORIGIN ?? 'https://qpu.uuidna.com'
 const nextConfig = withBundleAnalyzer({
   // the rewrites below are QPU's (CC-BY-NC-ND-4.0, see NOTICE.qpu.md); the rest of this file is the MIT fork's
   // a UUID anywhere as the path is a block: the page is the QPU's own, teleported from the Worker (addressed by content, cached a year); no prefix
   async rewrites() {
-    return { beforeFiles: [{ source: '/:uuid([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})', destination: `${QPU_ORIGIN}/u/:uuid` }, { source: '/mcp', destination: `${QPU_ORIGIN}/mcp` }, { source: '/docket/:path*', destination: `${QPU_ORIGIN}/docket/:path*` }, { source: '/.well-known/qpu.json', destination: `${QPU_ORIGIN}/.well-known/qpu.json` }] }
+    // consolidated: every address the Worker served is the app's own — the MCP plugin at /api/mcp, the entries collection at /api/entries, the discovery endpoint at /api/qpu; a UUID path is rendered by the app's own page through the catch-all
+    return { beforeFiles: [{ source: '/mcp', destination: '/api/mcp' }, { source: '/docket/:path*', destination: '/api/entries/:path*' }, { source: '/.well-known/qpu.json', destination: '/api/qpu' }] }
   },
   reactStrictMode: true,
   transpilePackages: ['@payloadcms/v3-preview-runtime', '@payloadcms/v4-preview-runtime', '@uuidna/qpu'], // the QPU's handler, linked as a package, compiled here
