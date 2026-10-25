@@ -28,8 +28,8 @@ Every figure below was measured on this tree on 2026-10-25 with the commands in 
 | Theorems declared / accepted by the kernel | 480 / 980 (481 hand-written, 499 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
-| Self-audit checks | 522 of 522 pass |
-| Cross-verification requests (free public sources) | 2638 requests, 2621 reachable on 2026-10-25 |
+| Self-audit checks | 531 of 531 pass |
+| Cross-verification requests (free public sources) | wave in flight: 400 of 2755 fetched |
 | Servers, workers, network calls in the handler | 0 |
 
 ## 1. What the tree contains

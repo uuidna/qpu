@@ -105,7 +105,8 @@ const rows: [string, string][] = [
   ['Theorems using `sorry`', String(sorried)],
   ['Axioms used by the kernel-accepted theorems', axioms.split(',').map((a) => `\`${a.trim()}\``).join(', ')],
   ['Self-audit checks', step('audit')?.counts?.checks ? `${step('audit').counts.checks} of ${step('audit').counts.checksTotal} pass` : 'see docs/audit'],
-  ['Cross-verification requests (free public sources)', verification ? `${verification.requests} requests, ${Object.values(verification.summary as Record<string, { ok: number }>).reduce((n, s) => n + s.ok, 0)} reachable on ${verification.date.slice(0, 10)}` : 'not yet run'],
+  // a wave in flight writes its file partially (no summary yet): read as in progress, never as a stop
+  ['Cross-verification requests (free public sources)', verification?.summary ? `${verification.requests} requests, ${Object.values(verification.summary as Record<string, { ok: number }>).reduce((n, s) => n + s.ok, 0)} reachable on ${verification.date.slice(0, 10)}` : verification ? `wave in flight: ${verification.done ?? 0} of ${verification.requests ?? '?'} fetched` : 'not yet run'],
   ['Servers, workers, network calls in the handler', '0'],
 ]
 const readme = join(ROOT, 'README.md')
