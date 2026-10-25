@@ -609,7 +609,9 @@ export const handle = (message: Rpc): Reply => {
       if (!found) return fail(METHOD_NOT_FOUND, `no tool ${String(params.name)}; the tools are ${TOOLS.map((t) => t.name).join(', ')}`)
       const { structured, widget } = found.call((params.arguments ?? {}) as Record<string, unknown>)
       const block = blockOf(found.name, (params.arguments ?? {}) as Record<string, unknown>, structured, widget, found.description)
-      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { widget: block.html, openGraph: block.openGraph, block: block.shadcn, theme: block.theme, license: LICENSE } } }
+      // the referer of a call: who sent it, carried as _meta.prev, echoed so a chain of calls knows its previous step across domains
+      const prev = typeof (params._meta as { prev?: unknown } | undefined)?.prev === 'string' ? (params._meta as { prev: string }).prev : undefined
+      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, ...(prev ? { prev } : {}) } } }
     }
     return fail(METHOD_NOT_FOUND, `method ${message.method} is not served`)
   } catch (error) {

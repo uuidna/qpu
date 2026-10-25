@@ -10,6 +10,11 @@ import type { Rpc } from './audit.js'
 import { factsOf, verifyRequestsOf, type VerifyRequest } from './verifiers.js'
 
 export type Verdict = 'served' | 'impossible' | 'unknown'
+/** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.
+ *  verify_claim: VERIFIED / UNVERIFIED / REFUTED; due process: PROVEN / NOT-PROVEN / REFUTED. */
+export const VERDICTS: Record<string, Verdict> = { VERIFIED: 'served', PROVEN: 'served', REFUTED: 'impossible', UNVERIFIED: 'unknown', 'NOT-PROVEN': 'unknown', NOT_PROVEN: 'unknown' }
+export const verdictOf = (foreign: string): Verdict | undefined => VERDICTS[foreign.toUpperCase().replace(/\s+/g, '-')]
+export const foreignVerdictsOf = (v: Verdict): string[] => Object.entries(VERDICTS).filter(([, ours]) => ours === v).map(([theirs]) => theirs)
 export type Candidate = { kind: 'tool' | 'example' | 'lead'; id: string; score: number; hits: number; text: string }
 export type Reflection = {
   /** integers in the statement factored by the surface's own Shor tool when inside its bound; beyond it, the bound is the answer */
@@ -42,13 +47,15 @@ export type Match = {
   lead: Lead
 }
 
+/** The surface's own names: they name where, never what, so they count for nothing in coverage. */
+const BRAND = new Set(['qpu', 'uuidna', 'mcp', 'tool', 'tools'])
 const STOP = new Set(['the', 'a', 'an', 'of', 'to', 'in', 'on', 'for', 'and', 'or', 'is', 'are', 'it', 'its', 'with', 'as', 'by', 'at', 'from', 'this', 'that', 'be', 'can', 'do', 'does', 'what', 'how', 'me', 'i', 'you', 'we', 'please', 'show', 'give', 'run', 'use', 'using'])
 export const tokens = (text: string): string[] => text.toLowerCase().replace(/[^a-z0-9.\s_-]/g, ' ').split(/[\s_-]+/).map((t) => t.replace(/^\.+|\.+$/g, '')).filter((t) => t.length > 1 && !STOP.has(t))
 
 const overlap = (a: string[], b: string[]): number => {
   const set = new Set(b)
   let n = 0
-  for (const t of new Set(a)) if (set.has(t)) n += 1
+  for (const t of new Set(a)) if (set.has(t) && !BRAND.has(t)) n += 1
   return n
 }
 
@@ -226,8 +233,9 @@ export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example
     const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: call })
     if ('result' in reply) return { statement, verdict: 'served', evidence: [`found in the reflection: ${f.text}`], tool, call, result: reply.result.structuredContent, candidates, cluster: [f, ...cluster], verify, reflection, lead: { id: slug(statement), source: 'statement', statement, status: 'served', tool } }
   }
-  const coverage = top ? top.hits / Math.max(1, q.length) : 0
-  if (top && top.hits >= 2 && coverage < 0.34 && found.length === 0) {
+  const substantive = q.filter((t) => !BRAND.has(t))
+  const coverage = top ? top.hits / Math.max(1, substantive.length) : 0
+  if (top && top.hits >= 2 && coverage < 0.5 && found.length === 0) {
     const reason = `the best match covers ${Math.round(coverage * 100)}% of the statement's words (${top.kind} ${top.id}); too little to serve it honestly; proposed as a new lead to develop`
     return { statement, verdict: 'unknown', evidence: [reason], candidates, cluster, verify, reflection, lead: { id: slug(statement), source: 'statement', statement, status: 'blocked', reason } }
   }

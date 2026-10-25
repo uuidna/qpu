@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { handle } from './mcp.js'
 import { EXAMPLES } from './examples.js'
 import { LEADS } from './leads.js'
-import { matchOf, tokens } from './match.js'
+import { matchOf, tokens, verdictOf, foreignVerdictsOf } from './match.js'
 
 const match = (statement: string) => matchOf(statement, handle, EXAMPLES, LEADS)
 
@@ -45,4 +45,21 @@ test('the match tool is served over MCP and agrees with the direct call', () => 
 
 test('tokens drop stop words and keep numbers', () => {
   assert.deepEqual(tokens('Show me the 105 qubits of Willow'), ['105', 'qubits', 'willow'])
+})
+
+test('the surface\'s own names never count as coverage: a question about uuidna and qpu that nothing answers is unknown, a lead', () => {
+  const m = match('are uuidna and qpu developing alife now?')
+  assert.equal(m.verdict, 'unknown')
+  assert.equal(m.lead.status, 'blocked')
+  assert.ok((m.lead.reason ?? '').includes('lead'))
+})
+
+test('a verdict crossing the border is translated by table, and a call carries its referer in _meta', () => {
+  assert.equal(verdictOf('VERIFIED'), 'served'); assert.equal(verdictOf('UNVERIFIED'), 'unknown'); assert.equal(verdictOf('REFUTED'), 'impossible'); assert.equal(verdictOf('NOT-PROVEN'), 'unknown'); assert.equal(verdictOf('nonsense'), undefined)
+  assert.deepEqual(foreignVerdictsOf('impossible'), ['REFUTED'])
+  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'processor', arguments: { name: 'Willow' }, _meta: { prev: 'https://uuidna.com/docket/abc' } } }) as { result: { _meta: { prev?: string; openGraph: Record<string, string> } } }
+  assert.equal(r.result._meta.prev, 'https://uuidna.com/docket/abc')
+  assert.equal(r.result._meta.openGraph['og:see_also'], 'https://uuidna.com/docket/abc')
+  const plain = handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'processor', arguments: { name: 'Willow' } } }) as { result: { _meta: { prev?: string } } }
+  assert.equal(plain.result._meta.prev, undefined)
 })
