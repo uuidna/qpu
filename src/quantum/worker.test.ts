@@ -234,6 +234,26 @@ test('the cheap docket read verifies seals and fingerprints without decrypting',
   assert.ok(r.fragments.every((f) => f.present && f.seal) && r.parities.every((p) => p.present))
 })
 
+test('a single UUID unfurls into its page from the id alone: head, Open Graph, swatch and licence need no lookup; the body loads client-side', async () => {
+  const e = env()
+  const { id } = await (await post(e, { kind: 'reading', from: 'sensor.test', body: { quantity: 'temperature', unit: 'K', value: 293 } })).json() as { id: string }
+  const r = await worker.fetch(req(`/docket/${id}`, { headers: { accept: 'text/html' } }), e)
+  assert.equal(r.status, 200)
+  const html = await r.text()
+  assert.ok(html.includes(`<meta property="og:url" content="https://qpu.test/docket/${id}">`))
+  assert.ok(html.includes('property="og:image" content="data:image/svg+xml'))
+  assert.ok(html.includes(`uuidna:handle" content="${id.slice(0, 8)}"`))
+  assert.ok(html.includes('uuidna:seal" content="true"'))
+  assert.ok(html.includes('CC-BY-NC-ND-4.0') && html.includes('--a432-hue: 72;'))
+  assert.ok(!html.includes('temperature'), 'the body is not in the head: it loads client-side')
+  const unknown = uuidOf('never stored')
+  const page = await worker.fetch(req(`/docket/${unknown}?og`), e)
+  assert.equal(page.status, 200, 'a UUID with no entry here still unfurls')
+  assert.ok((await page.text()).includes(unknown.slice(0, 8)))
+  const json = await worker.fetch(req(`/docket/${unknown}`), e)
+  assert.equal(json.status, 404)
+})
+
 test('unknown routes answer with the route list, health answers, and OPTIONS allows the cross-origin client', async () => {
   const r = await worker.fetch(req('/nowhere'), env())
   assert.equal(r.status, 404)

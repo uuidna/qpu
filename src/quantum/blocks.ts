@@ -52,7 +52,24 @@ export const verifyOf = (uuid: string, content?: string, prev?: { id: string }, 
     { check: 'next', passed: next === undefined ? null : next.prev === uuid, evidence: next === undefined ? 'no successor given' : `next.prev ${next.prev ?? 'none'} vs ${uuid}` },
   ]
   const decided = checks.filter((c) => c.passed !== null)
-  return { uuid, valid: decided.every((c) => c.passed), checks, decided: decided.length, cost: 'one modular power for the seal, one fold for the content, two string equalities for the neighbours', bound: 'the fold is tamper-evident and separates content; it is not collision-resistant against an adversary who searches for one. The docket and the receipts carry a SHA-256 beside it for that case.' }
+  return { uuid, channel: channelOf(uuid), valid: decided.every((c) => c.passed), checks, decided: decided.length, cost: 'one modular power for the seal, one fold for the content, two string equalities for the neighbours', bound: 'the fold is tamper-evident and separates content; it is not collision-resistant against an adversary who searches for one. The docket and the receipts carry a SHA-256 beside it for that case.' }
+}
+
+/** The channel a UUID is: handle (8 hex, the family), the hex PROGRAM (the twelve middle nibbles; the version and variant nibbles
+ *  are kept, the other ten are one formula index each), and the MESSAGE in the tail (12 hex = 48 bits: one 48-bit natural, two
+ *  24-bit, or three 16-bit). Read from the id alone, so a page's head is computable without any lookup. */
+export const channelOf = (uuid: string) => {
+  const hex = uuid.replace(/-/g, '')
+  const handle = hex.slice(0, 8)
+  const middle = hex.slice(8, 20)
+  const tail = hex.slice(20, 32)
+  const program = [...middle].map((c, i) => ({ nibble: c, kept: i === 4 || i === 8, value: parseInt(c, 16) })).filter((n) => !n.kept).map((n) => n.value)
+  return {
+    uuid, handle, middle, tail, program, version: middle[4]!, variant: middle[8]!,
+    message: { one48: parseInt(tail, 16), two24: [parseInt(tail.slice(0, 6), 16), parseInt(tail.slice(6), 16)], three16: [parseInt(tail.slice(0, 4), 16), parseInt(tail.slice(4, 8), 16), parseInt(tail.slice(8), 16)] },
+    door: `qpu://${handle}`,
+    words: `${handle} · program ${program.join('')} · tail ${tail}`,
+  }
 }
 
 /** Canonical JSON text (sorted keys), the form the unit addresses a JSON value by. */

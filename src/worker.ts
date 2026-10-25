@@ -7,8 +7,8 @@ import { handle, type Rpc } from './quantum/mcp.js'
 import { EXAMPLES } from './quantum/examples.js'
 import { LEADS } from './quantum/leads.js'
 import { LICENSE } from './quantum/license.js'
-import { KEY } from './quantum/theme.js'
-import { uuidOf, sealOf } from './quantum/blocks.js'
+import { uuidOf, sealOf, channelOf } from './quantum/blocks.js'
+import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.js'
 
 /** The slice of the Workers runtime this file uses, typed here so the tree needs no runtime types package to typecheck. */
 export type Storage = { get<T>(key: string): Promise<T | undefined>; put(key: string, value: unknown): Promise<void>; delete(key: string): Promise<unknown>; list<T>(opts?: { prefix?: string }): Promise<Map<string, T>> }
@@ -35,7 +35,11 @@ export const discoveryOf = (origin: string) => {
 /** The docket: one table of content-addressed entries and four verbs.
  *    GET  /docket?kind=&since=      the stream as a cursor
  *    GET  /docket/:id[?cheap][?heal] one entry: its body reassembled and re-hashed (parity rebuilds one lost fragment); `cheap`
- *                                     checks seal and fingerprints without decrypting; `heal` fetches a failing entry from the mirrors
+ *                                     checks seal and fingerprints without decrypting; `heal` fetches a failing entry from the mirrors.
+ *                                     Asked for text/html (or ?og), the id is a PAGE whose head — SEO and Open Graph tags, the aura
+ *                                     swatch, the licence — is computed from the UUID ALONE (handle, hex program, message tail), with no
+ *                                     lookup and no decryption; the body loads client-side from the JSON route. A UUID with no entry here
+ *                                     still unfurls.
  *    POST /docket                    { kind, from, body, links? } writes content; { kind, from, address, sha256 } with no body is a
  *                                     COMMITMENT (fingerprints now, witnessed by every mirror that records it); writing the content
  *                                     later REVEALS it into the same entry. Same content twice is stored once. Same address with a
@@ -118,7 +122,10 @@ export class Docket {
     const id = url.pathname.split('/').filter(Boolean)[1]
     if (id && !ID.test(id)) return json({ error: 'an entry id is a content-addressed RFC 9562 v8 UUID' }, 400)
     try {
-      if (request.method === 'GET' && id) return await this.read(id, url.searchParams.has('cheap'), url.searchParams.has('heal'))
+      if (request.method === 'GET' && id) {
+        if (url.searchParams.has('og') || /text\/html/.test(request.headers.get('accept') ?? '')) return pageOf(id, url.origin)
+        return await this.read(id, url.searchParams.has('cheap'), url.searchParams.has('heal'))
+      }
       if (request.method === 'GET') return await this.list(url.searchParams.get('kind'), url.searchParams.get('since'))
       if (request.method === 'POST' && !id) return await this.write(request)
       if (request.method === 'DELETE' && id) return await this.remove(id)
@@ -261,6 +268,35 @@ export class Docket {
     await this.storage.delete(`row:${id}`)
     return json({ id, deleted: true, releasedLinks: m.links }, 200)
   }
+}
+
+/** The page a UUID unfurls into, computed from the id alone: head from the channel (handle, hex program, message tail), the seal,
+ *  the aura swatch as an inline SVG data URL, the licence. The body loads client-side from the JSON route; a crawler reads the head. */
+const escapeHtml = (t: string): string => t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
+export const pageOf = (id: string, origin: string): Response => {
+  const ch = channelOf(id)
+  const seal = sealOf(id)
+  const accent = accentOfUuid(id)
+  const swatch = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="${accent}"/><text x="60" y="340" font-family="monospace" font-size="72" fill="#fff">${ch.handle}</text><text x="60" y="440" font-family="monospace" font-size="40" fill="#fff">${ch.middle} · ${ch.tail}</text></svg>`)}`
+  const title = `${ch.handle} · ${ch.program.join('')} · @uuidna/qpu`
+  const description = `Docket entry ${id}: handle ${ch.handle}, hex program ${ch.program.join('')} (version ${ch.version}, variant ${ch.variant}), message ${ch.message.one48} as one 48-bit natural, ${ch.message.two24.join('/')} as two 24-bit, ${ch.message.three16.join('/')} as three 16-bit; seal ${seal.valid ? 'valid' : 'invalid'}. ${LICENSE.spdx} © ${LICENSE.author}.`
+  const og: Record<string, string> = { 'og:type': 'website', 'og:site_name': '@uuidna/qpu', 'og:url': `${origin}/docket/${id}`, 'og:title': title, 'og:description': description, 'og:image': swatch, 'og:image:width': '1200', 'og:image:height': '630', 'article:author': LICENSE.author, license: `${LICENSE.spdx} ${LICENSE.url}`, 'twitter:card': 'summary_large_image' }
+  const meta = Object.entries(og).map(([k, v]) => `<meta property="${escapeHtml(k)}" content="${escapeHtml(v)}">`).join('\n')
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(description)}">
+${meta}
+<meta name="license" content="${LICENSE.spdx}"><meta name="copyright" content="${escapeHtml(LICENSE.copyright)}"><link rel="license" href="${LICENSE.url}"><link rel="canonical" href="${origin}/docket/${id}">
+<meta name="uuidna:handle" content="${ch.handle}"><meta name="uuidna:program" content="${ch.program.join('')}"><meta name="uuidna:tail" content="${ch.tail}"><meta name="uuidna:seal" content="${seal.valid}"><meta name="uuidna:aura" content="${escapeHtml(accent)}"><meta name="uuidna:key" content="${KEY}">
+<style>${cssOf()}:root{--font-sans:system-ui,sans-serif;--text-primary:#111;--text-secondary:#555;--surface-1:#f4f4f5;--surface-2:#fff;--border:#ddd;--radius:8px;--pad-md:12px;--pad-sm:8px;--gap-md:12px;--gap-sm:8px;--gap-xs:4px;--font-size-footnote:12px}body{margin:0;padding:16px;background:#fafafa;font-family:var(--font-sans);color:var(--text-primary)}@media (prefers-color-scheme: dark){:root{--text-primary:#eee;--text-secondary:#aaa;--surface-1:#1c1c1e;--surface-2:#111;--border:#333}body{background:#000}}pre{white-space:pre-wrap;background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);padding:var(--pad-md)}</style></head>
+<body data-block="${id}" style="--block-accent: ${escapeHtml(accent)}; border-left: 3px solid var(--block-accent); padding-left: 8px;">
+<h1 style="font-family:monospace">${ch.handle}</h1>
+<p>hex program <code>${ch.program.join('')}</code> · message tail <code>${ch.tail}</code> · seal ${seal.valid ? '✓' : '✗'} · hue ${hueOf(KEY)}° · cmyk ${Object.values(cmykOfUuid(id)).map((v) => v.toFixed(2)).join(' ')}</p>
+<noscript><p>The entry's body loads from <a href="${origin}/docket/${id}">${origin}/docket/${id}</a>; this head was computed from the UUID alone.</p></noscript>
+<pre id="body">loading ${origin}/docket/${id} …</pre>
+<p style="font-size:12px;color:var(--text-secondary)">© <a href="${LICENSE.orcid}" style="color:inherit">${LICENSE.author}</a> · <a href="${LICENSE.url}" style="color:inherit">${LICENSE.spdx}</a> · commercial use by licence (${LICENSE.contact})</p>
+<script>fetch(${JSON.stringify(`${origin}/docket/${id}`)},{headers:{accept:'application/json'}}).then(r=>r.json()).then(j=>{document.getElementById('body').textContent=JSON.stringify(j,null,2)}).catch(e=>{document.getElementById('body').textContent='no entry on this mirror: '+e})</script>
+</body></html>`
+  return new Response(html, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
 }
 
 export const worker = {

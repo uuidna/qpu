@@ -5,7 +5,7 @@ import { EXAMPLES } from './examples.js'
 import { LEADS } from './leads.js'
 import { matchOf, reflectionsOf } from './match.js'
 import { factsOf, verifyRequestsOf, VERIFIERS } from './verifiers.js'
-import { blockOf, foldOf, uuidOf, sealOf, verifyOf } from './blocks.js'
+import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf } from './blocks.js'
 import { TREE_FACTS } from './verifiers.js'
 import { KEY, cssOf, cmykOfUuid, accentOfUuid, hueOf, HARMONICS } from './theme.js'
 
@@ -132,4 +132,16 @@ test('a UUID verifies cheaply: the seal from its own nibbles, the content by one
   const broken = verifyOf(u, 'qpu', p, { id: next.id, prev: 'elsewhere' }, self)
   assert.equal(broken.valid, false)
   assert.equal(verifyOf(u).decided, 1)
+})
+
+test('the channel of a UUID is read from the id alone: handle, hex program with version and variant kept, message tail in three readings', () => {
+  const u = uuidOf('qpu')
+  const ch = channelOf(u)
+  assert.equal(ch.handle, u.slice(0, 8))
+  assert.equal(ch.middle.length, 12); assert.equal(ch.tail.length, 12)
+  assert.equal(ch.program.length, 10)
+  assert.equal(ch.version, u.replace(/-/g, '')[12]); assert.equal(ch.variant, u.replace(/-/g, '')[16])
+  assert.equal(ch.message.one48, parseInt(ch.tail, 16))
+  assert.equal(ch.message.three16.length, 3)
+  assert.equal(verifyOf(u).channel.handle, ch.handle)
 })
