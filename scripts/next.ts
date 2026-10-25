@@ -33,6 +33,7 @@ const steps: Step[] = [
   { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'] },
   { name: 'metrics', cmd: 'node', args: ['--import', 'tsx', 'scripts/metrics.ts'], budgetMs: 120_000 }, // always: the run's artefacts read into one measure
   { name: 'docs:build', cmd: 'npx', args: ['vitepress', 'build', 'docs'], skip: fast ? 'fast' : undefined },
+  { name: 'trunk', cmd: 'node', args: ['--import', 'tsx', 'scripts/trunk.ts'] }, // always: main fast-forwarded locally when green; never pushed
   { name: 'publish', cmd: 'node', args: ['--import', 'tsx', 'scripts/publish.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 },
 ]
 const LICENSE_LINE = 'CC-BY-NC-ND-4.0 © Tsvetan Rouschev (https://orcid.org/0009-0000-7312-9778); commercial use by licence (ceccec@psg.bg)'

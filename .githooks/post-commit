@@ -8,4 +8,6 @@ fs.mkdirSync("docs/public", { recursive: true })
 fs.appendFileSync("docs/public/imprints.ndjson", JSON.stringify({ commit: head, receipt: receipt?.id ?? null, sha256: receipt?.sha256 ?? null, date: new Date().toISOString() }) + "\n")
 console.log(`imprint: commit ${head.slice(0, 8)} ↔ receipt ${receipt?.id ?? "none"}`)
 '
+# the trunk follows the commit: main fast-forwarded to the new HEAD when the flow was green
+node --import tsx scripts/trunk.ts
 exit 0

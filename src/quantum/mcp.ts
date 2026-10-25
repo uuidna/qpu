@@ -114,6 +114,8 @@ import { RAID } from './toolboxes/raid.js'
 import { BILLING } from './toolboxes/billing.js'
 import { LEGAL } from './toolboxes/legal.js'
 import { REPOSITORY } from './toolboxes/repository.js'
+import { STANDARDS_BOX } from './toolboxes/standards.js'
+import { blockJsonLdOf } from './standards.js'
 
 /** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
 // The tools of this host's own two toolboxes, named below; `tool` is the host-side helper until each is a file of its own.
@@ -708,6 +710,7 @@ export const TOOLBOXES: Toolbox[] = [
   BILLING,
   LEGAL,
   REPOSITORY,
+  STANDARDS_BOX,
 ]
 const TOOLS: Tool[] = TOOLBOXES.flatMap((b) => b.tools)
 const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS } }
@@ -742,7 +745,7 @@ export const handle = (message: Rpc): Reply => {
       const block = blockOf(found.name, args, structured, widget, found.description)
       // the referer of a call: who sent it, carried as _meta.prev, echoed so a chain of calls knows its previous step across domains
       const prev = typeof (params._meta as { prev?: unknown } | undefined)?.prev === 'string' ? (params._meta as { prev: string }).prev : undefined
-      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, ...(prev ? { prev } : {}) } } }
+      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLdOf({ tool: found.name, id: block.id, description: found.description.slice(0, 300), toolbox: found.toolbox, url: `urn:uuid:${block.id}` }), widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, ...(prev ? { prev } : {}) } } }
     }
     return fail(METHOD_NOT_FOUND, `method ${message.method} is not served`)
   } catch (error) {

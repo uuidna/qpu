@@ -90,6 +90,16 @@ the repository watched: every workspace, branch, tag and release here compared w
 
 Tools: [repository](#repository).
 
+## Toolbox `standards`
+
+the standards fused: schema.org on every block, page and offer; ISO 8601, 639-1, 4217 and 3166-1 in every date, language, price and country, validated against the CLDR lists discovery reads as contracts.
+
+**Skill.** jsonld needs no fetch. codes: the client fetches the three CLDR documents the plan names (GET, free, no credential) and calls codes with them; a code the standard does not know is a lead. The discover step reads schema.org's vocabulary and the CLDR lists as contracts; every tools/call result carries _meta.jsonLd and every documentation page a JSON-LD script.
+
+**Tests itself:** server only: JSON-LD shapes on fixtures; CLDR fixtures read into code sets; the tree's codes validated; client → server: the CLDR lists come from Unicode's repository; toolbox → toolbox: offers come from the billing catalogue, locales from the language toolbox, the contracts from discovery.
+
+Tools: [jsonld](#jsonld), [codes](#codes).
+
 ## processor
 
 A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.
@@ -1522,6 +1532,98 @@ Workspaces, branches, tags and releases watched and verified online, pure. Phase
       "type": "array",
       "items": {
         "type": "object"
+      }
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## jsonld
+
+schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of the catalogue (product, variant, currency). The author a Person with an ORCID, the licence a URL, dates ISO 8601, languages ISO 639-1, currencies ISO 4217. Every tools/call result already carries its block's JSON-LD in _meta.jsonLd; every documentation page carries its own in its head.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "block",
+        "page",
+        "offer",
+        "catalogue"
+      ]
+    },
+    "tool": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "uuid": {
+      "type": "string"
+    },
+    "locale": {
+      "type": "string",
+      "enum": [
+        "en",
+        "bg",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "ru",
+        "zh",
+        "ja",
+        "pt",
+        "nl"
+      ]
+    },
+    "product": {
+      "type": "string"
+    },
+    "variant": {
+      "type": "string"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## codes
+
+The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1): every locale of the language toolbox, every currency of the catalogue, the tenants' countries. Without the lists: what would be checked and where the lists are. A code the standard does not know is a lead, never a guess.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "cldr": {
+      "type": "object",
+      "description": "{ languages, currencies, territories }: the CLDR JSON documents as fetched"
+    },
+    "territories": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
     "selftest": {

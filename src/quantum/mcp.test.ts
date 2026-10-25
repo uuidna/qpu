@@ -6,7 +6,7 @@ import { LEADS, cleanupSubjectsOf } from './leads.js'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
-test('tools/list serves the thirty tools in eight toolboxes with input schemas, and initialize names the server', () => {
+test('tools/list serves the thirty-two tools in nine toolboxes with input schemas, and initialize names the server', () => {
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
   assert.ok('result' in init && (init.result as { serverInfo: { name: string } }).serverInfo.name === 'qpu')
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
@@ -23,7 +23,8 @@ test('tools/list serves the thirty tools in eight toolboxes with input schemas, 
     billing: ['stripe'],
     legal: ['legal'],
     repository: ['repository'],
-  }, 'every tool names its toolbox in _meta, and the eight toolboxes hold the thirty tools')
+    standards: ['jsonld', 'codes'],
+  }, 'every tool names its toolbox in _meta, and the nine toolboxes hold the thirty-two tools')
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 

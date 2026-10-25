@@ -23,6 +23,7 @@ import { RAID } from './toolboxes/raid.js'
 import { BILLING } from './toolboxes/billing.js'
 import { LEGAL } from './toolboxes/legal.js'
 import { REPOSITORY } from './toolboxes/repository.js'
+import { STANDARDS_BOX } from './toolboxes/standards.js'
 
 export const EXAMPLES: Example[] = [
   ...FLOW.examples,
@@ -31,6 +32,7 @@ export const EXAMPLES: Example[] = [
   ...BILLING.examples,
   ...LEGAL.examples,
   ...REPOSITORY.examples,
+  ...STANDARDS_BOX.examples,
   { id: 'textbook-categories', tool: 'textbook', arguments: {}, shows: 'The textbook as an adapter: every example categorised for reuse by toolbox, tool, theorem and module; the categories are computed, never written.', expect: (s) => (s.examples >= 49 && s.categories === 4 && s.toolboxCount >= 8 && s.textbook.theorem['relation_15']?.includes('clay-relation-15') ? null : `${s.examples} examples, ${s.categories} categories, ${s.toolboxCount} toolboxes`) },
   { id: 'textbook-reuse', tool: 'textbook', arguments: { reuse: 'clay-relation-15' }, shows: 'One example reused by id: replayed, its result returned, as documented.', expect: (s) => (s.reused === 'clay-relation-15' && s.asDocumented === true && s.theorem === 'relation_15' ? null : `${s.reused} ${s.asDocumented} ${s.why}`) },
   { id: 'metrics-live', tool: 'metrics', arguments: {}, shows: 'The tree\'s metrics computed now: tools, toolboxes, examples and how many a theorem backs, the kernel\'s counts, leads by status, the audit, the balancer.', expect: (s) => (s.tools >= 29 && s.theoremsKernel === 976 && s.theoremsHandWritten > 0 && s.examplesBackedByTheorems >= 1 && (s.auditNested === true || s.auditFailed === 0) ? null : `${s.tools} tools, kernel ${s.theoremsKernel}, backed ${s.examplesBackedByTheorems}, failed ${s.auditFailed}`) },

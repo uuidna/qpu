@@ -3,6 +3,7 @@
 // fetches. An MCP host is asked for tools/list and, where it serves one, its catalogue door; an API host for the OpenAPI,
 // index or identify document the verifiers registry names; both domains for /.well-known/qpu.json.
 import type { Verifier } from './verifiers.js'
+import { STANDARDS, detectStandard } from './standards.js'
 
 export type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract'
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string }
@@ -28,6 +29,7 @@ export const discoveryRequestsOf = (mcpHosts: readonly string[], verifiers: read
     out.push({ id: idOf('well-known', host), method: 'GET', url: `https://${host}/.well-known/qpu.json`, purpose: 'well-known', host })
   }
   for (const v of verifiers) if (v.contract) out.push({ id: idOf('api-contract', new URL(v.contract).host, v.id), method: 'GET', url: v.contract, purpose: 'api-contract', host: new URL(v.contract).host, name: v.id })
+  for (const st of STANDARDS) out.push({ id: idOf('api-contract', new URL(st.contract).host, st.id), method: 'GET', url: st.contract, purpose: 'api-contract', host: new URL(st.contract).host, name: st.id })
   return out
 }
 
@@ -76,6 +78,7 @@ export const detect = (r: { status: number; type: string; text: string }): { det
   if (r.status === 0) return { detected: 'unreachable', note: r.text.slice(0, 120) }
   if (r.status >= 400) return { detected: `HTTP ${r.status}`, note: 'no contract at this address' }
   const t = r.text.trim()
+  const standard = detectStandard(t); if (standard) return standard
   try {
     const j = JSON.parse(t) as Record<string, unknown>
     if (j.openapi || j.swagger) { const paths = Object.keys((j.paths as object) ?? {}); return { detected: `openapi ${j.openapi ?? j.swagger}`, note: `${paths.length} paths, ${t.length.toLocaleString('en-US')} chars`, paths } }
@@ -118,6 +121,7 @@ export const discoveryOf = (answers: readonly Answer[], verifiers: readonly Veri
     hosts.push({ host, kind: 'mcp', contract: list.url, status: 200, detected: 'mcp tools/list', note, doors })
     if (wk) hosts.push({ host, kind: 'well-known', contract: wk.url, status: wk.status, ...detect(wk) })
   }
+  for (const st of STANDARDS) { const a = answers.find((x) => x.purpose === 'api-contract' && x.name === st.id); hosts.push(a ? { host: a.host, kind: 'api', contract: st.contract, status: a.status, ...detect(a) } : { host: new URL(st.contract).host, kind: 'api', contract: st.contract, status: 0, detected: 'not asked', note: `${st.name}: the client did not fetch this standard` }) }
   for (const v of verifiers) {
     if (!v.contract) { hosts.push({ host: new URL(v.docs).host, kind: 'api', contract: v.docs, status: 0, detected: 'no machine contract named', note: `${v.id}: the registry names documentation for humans only; a lead` }); continue }
     const a = answers.find((x) => x.purpose === 'api-contract' && x.name === v.id)
@@ -132,7 +136,7 @@ export const discoveryOf = (answers: readonly Answer[], verifiers: readonly Veri
     addressing: doors.filter((d) => d.takes.includes('value') && d.answers.includes('address')).map((d) => d.name),
     rbac: doors.filter((d) => d.takes.includes('token') && d.answers.includes('role')).map((d) => d.name),
   }
-  const leads = hosts.filter((h) => h.kind === 'api' && !/^openapi|json index|oai-pmh/.test(h.detected)).map((h) => ({ id: `contract-${h.host}`, source: h.contract, statement: `${h.host} publishes no machine-readable contract at the address the registry names (${h.detected})`, status: 'open' as const, reason: 'the client is built from documentation read by a person; an OpenAPI or index document would let it be built from the host' }))
+  const leads = hosts.filter((h) => h.kind === 'api' && !/^openapi|json index|oai-pmh|json-ld|cldr|graphql/.test(h.detected)).map((h) => ({ id: `contract-${h.host}`, source: h.contract, statement: `${h.host} publishes no machine-readable contract at the address the registry names (${h.detected})`, status: 'open' as const, reason: 'the client is built from documentation read by a person; an OpenAPI or index document would let it be built from the host' }))
   return { hosts, doors, capabilities, leads }
 }
 

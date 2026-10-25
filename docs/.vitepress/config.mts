@@ -2,6 +2,7 @@
 import { defineConfig } from 'vitepress'
 import { channelOf, sealOf, uuidFromParts } from '../../src/quantum/blocks.ts'
 import { accentOfUuid } from '../../src/quantum/theme.ts'
+import { pageJsonLdOf } from '../../src/quantum/standards.ts'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 
 export default defineConfig({
@@ -19,12 +20,15 @@ export default defineConfig({
   // the head of a UUID page is computed from the id alone: Open Graph, the aura swatch, the seal
   transformHead({ pageData }) {
     const uuid = (pageData.params as { uuid?: string } | undefined)?.uuid
-    if (!uuid) return []
+    const route = '/' + pageData.relativePath.replace(/(^|/)index.md$/, '$1').replace(/.md$/, '')
+    const ld = pageJsonLdOf({ url: 'https://qpu.uuidna.com' + route, title: pageData.title || '@uuidna/qpu', description: pageData.description || 'The Google Quantum AI layer as one MCP surface', uuid, locale: route.startsWith('/bg/') ? 'bg' : 'en' })
+    const jsonLd: [string, Record<string, string>, string] = ['script', { type: 'application/ld+json' }, JSON.stringify(ld)]
+    if (!uuid) return [jsonLd]
     const ch = channelOf(uuid); const accent = accentOfUuid(uuid)
     const title = ch.handle + ' · ' + ch.program.join('') + ' · @uuidna/qpu'
     const description = 'UUID ' + uuid + ': handle ' + ch.handle + ', program ' + ch.program.join('') + ', tail ' + ch.tail + ', seal ' + (sealOf(uuid).valid ? 'valid' : 'invalid') + '. CC-BY-NC-ND-4.0 © Tsvetan Rouschev.'
     const swatch = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="' + accent + '"/><text x="60" y="340" font-family="monospace" font-size="72" fill="#fff">' + ch.handle + '</text></svg>')
-    return [['meta', { property: 'og:title', content: title }], ['meta', { property: 'og:description', content: description }], ['meta', { property: 'og:type', content: 'website' }], ['meta', { property: 'og:url', content: 'https://qpu.uuidna.com/u/' + uuid }], ['meta', { property: 'og:image', content: swatch }], ['meta', { name: 'description', content: description }], ['meta', { name: 'uuidna:handle', content: ch.handle }], ['meta', { name: 'uuidna:aura', content: accent }]]
+    return [jsonLd, ['meta', { property: 'og:title', content: title }], ['meta', { property: 'og:description', content: description }], ['meta', { property: 'og:type', content: 'website' }], ['meta', { property: 'og:url', content: 'https://qpu.uuidna.com/u/' + uuid }], ['meta', { property: 'og:image', content: swatch }], ['meta', { name: 'description', content: description }], ['meta', { name: 'uuidna:handle', content: ch.handle }], ['meta', { name: 'uuidna:aura', content: accent }]]
   },
   // prev and next from the superposition: a receipt's prev is the receipt before it; next is the program rotated
   transformPageData(pageData) {
@@ -441,6 +445,19 @@ export default defineConfig({
           {
             "text": "repository",
             "link": "/mcp#repository"
+          }
+        ]
+      },
+      {
+        "text": "Toolbox standards",
+        "items": [
+          {
+            "text": "jsonld",
+            "link": "/mcp#jsonld"
+          },
+          {
+            "text": "codes",
+            "link": "/mcp#codes"
           }
         ]
       }

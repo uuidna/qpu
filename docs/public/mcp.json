@@ -1442,6 +1442,98 @@
       "_meta": {
         "toolbox": "repository"
       }
+    },
+    {
+      "name": "jsonld",
+      "description": "schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of the catalogue (product, variant, currency). The author a Person with an ORCID, the licence a URL, dates ISO 8601, languages ISO 639-1, currencies ISO 4217. Every tools/call result already carries its block's JSON-LD in _meta.jsonLd; every documentation page carries its own in its head.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "block",
+              "page",
+              "offer",
+              "catalogue"
+            ]
+          },
+          "tool": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "uuid": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "bg",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "ru",
+              "zh",
+              "ja",
+              "pt",
+              "nl"
+            ]
+          },
+          "product": {
+            "type": "string"
+          },
+          "variant": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "standards"
+      }
+    },
+    {
+      "name": "codes",
+      "description": "The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1): every locale of the language toolbox, every currency of the catalogue, the tenants' countries. Without the lists: what would be checked and where the lists are. A code the standard does not know is a lead, never a guess.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "cldr": {
+            "type": "object",
+            "description": "{ languages, currencies, territories }: the CLDR JSON documents as fetched"
+          },
+          "territories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "standards"
+      }
     }
   ]
 }
