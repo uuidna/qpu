@@ -5,7 +5,7 @@ import { EXAMPLES } from './examples.js'
 import { LEADS } from './leads.js'
 import { matchOf, reflectionsOf } from './match.js'
 import { factsOf, verifyRequestsOf, VERIFIERS } from './verifiers.js'
-import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf } from './blocks.js'
+import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf, tailReadingsOf, reflectionOf } from './blocks.js'
 import { TREE_FACTS } from './verifiers.js'
 import { KEY, cssOf, cmykOfUuid, accentOfUuid, hueOf, HARMONICS } from './theme.js'
 import { translateOf, LOCALES } from './i18n.js'
@@ -158,4 +158,34 @@ test('translation is offline, token-free and bidirectional by vocabulary; what n
   const noTable = translateOf('next', 'en', 'de')
   assert.ok(noTable.via.startsWith('no table'))
   assert.equal(LOCALES.bg!.filled, true); assert.equal(LOCALES.de!.filled, false)
+})
+
+test('the tail reads every way at once: naturals, six ASCII characters, a timestamp, a referrer handle with flags, a colour, a coordinate', () => {
+  const text = tailReadingsOf('717075202020') // "qpu   "
+  assert.equal(text.text6, 'qpu   ')
+  const ms = Date.UTC(2026, 9, 25, 12, 0, 0)
+  const stamp = tailReadingsOf(ms.toString(16).padStart(12, '0'))
+  assert.equal(stamp.timestamp, new Date(ms).toISOString())
+  assert.equal(stamp.one48, ms)
+  const r = tailReadingsOf('9452c2d40003')
+  assert.equal(r.referrer.handle, '9452c2d4'); assert.equal(r.referrer.flags, 3)
+  assert.equal(r.colour.rgb, '#9452c2')
+  assert.ok(r.coordinate.lat >= -90 && r.coordinate.lat <= 90 && r.coordinate.lon >= -180 && r.coordinate.lon <= 180)
+  assert.equal(tailReadingsOf('ffffffffffff').text6, null)
+  assert.equal(channelOf(uuidOf('qpu')).message.three16.length, 3)
+  const v = tailReadingsOf('000000000008').vortex
+  assert.deepEqual([v.seed, v.reflection, v.fixed, v.polarity], [8, 2, false, 'plus'])
+  assert.equal(tailReadingsOf('000000000005').vortex.fixed, true)
+  assert.equal(tailReadingsOf('000000000012').vortex.seed, 9)
+})
+
+test('the reflection mirrors every part at once and reflecting twice returns the parts', () => {
+  const u = uuidOf('qpu')
+  const r = reflectionOf(u)
+  assert.equal(r.mirror.length, 36); assert.equal(sealOf(r.mirror).valid, true)
+  assert.deepEqual(r.program, channelOf(u).program.map((n) => 15 - n))
+  assert.equal(r.fixed, 0)
+  const back = reflectionOf(r.mirror)
+  assert.equal(back.handle, channelOf(u).handle); assert.deepEqual(back.program, channelOf(u).program); assert.equal(back.tail, channelOf(u).tail)
+  assert.equal(verifyOf(u).reflection.mirror, r.mirror)
 })

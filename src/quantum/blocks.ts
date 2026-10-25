@@ -86,7 +86,26 @@ export const verifyOf = (uuid: string, content?: string, prev?: { id: string }, 
     { check: 'next', passed: next === undefined ? null : next.prev === uuid, evidence: next === undefined ? 'no successor given' : `next.prev ${next.prev ?? 'none'} vs ${uuid}` },
   ]
   const decided = checks.filter((c) => c.passed !== null)
-  return { uuid, channel: channelOf(uuid), valid: decided.every((c) => c.passed), checks, decided: decided.length, cost: 'one modular power for the seal, one fold for the content, two string equalities for the neighbours', bound: 'the fold is tamper-evident and separates content; it is not collision-resistant against an adversary who searches for one. The docket and the receipts carry a SHA-256 beside it for that case.' }
+  return { uuid, channel: channelOf(uuid), reflection: reflectionOf(uuid), valid: decided.every((c) => c.passed), checks, decided: decided.length, cost: 'one modular power for the seal, one fold for the content, two string equalities for the neighbours', bound: 'the fold is tamper-evident and separates content; it is not collision-resistant against an adversary who searches for one. The docket and the receipts carry a SHA-256 beside it for that case.' }
+}
+
+/** The tail read every way at once — the program's step decides which reading it means. */
+export const tailReadingsOf = (tail: string) => {
+  const one48 = parseInt(tail, 16)
+  const bytes = [...Array(6).keys()].map((i) => parseInt(tail.slice(i * 2, i * 2 + 2), 16))
+  const text6 = bytes.every((b) => b >= 32 && b < 127) ? String.fromCharCode(...bytes) : null
+  const date = new Date(one48)
+  const timestamp = one48 >= Date.UTC(1970, 0, 2) && one48 <= Date.UTC(2100, 0, 1) ? date.toISOString() : null
+  const two24 = [parseInt(tail.slice(0, 6), 16), parseInt(tail.slice(6), 16)]
+  return {
+    one48, two24, three16: [parseInt(tail.slice(0, 4), 16), parseInt(tail.slice(4, 8), 16), parseInt(tail.slice(8), 16)],
+    text6, timestamp,
+    referrer: { handle: tail.slice(0, 8), flags: parseInt(tail.slice(8), 16) },
+    colour: { rgb: `#${tail.slice(0, 6)}`, key: parseInt(tail.slice(6), 16) / 0xffffff },
+    coordinate: { lat: Math.round((two24[0]! / 0xffffff * 180 - 90) * 1e6) / 1e6, lon: Math.round((two24[1]! / 0xffffff * 360 - 180) * 1e6) / 1e6 },
+    // the unit's ℤ/9 convention (run_sequence): the digital root is the seed, its dz-mirror 10 − d the reflection, 5 the fixed point
+    vortex: (() => { const seed = one48 === 0 ? 0 : 1 + ((one48 - 1) % 9); return { seed, reflection: seed === 0 ? 0 : 10 - seed, fixed: seed === 5, polarity: seed === 0 ? 'zero' : seed < 5 ? 'minus' : seed > 5 ? 'plus' : 'fixed' } })(),
+  }
 }
 
 /** The channel a UUID is: handle (8 hex, the family), the hex PROGRAM (the twelve middle nibbles; the version and variant nibbles
@@ -100,10 +119,22 @@ export const channelOf = (uuid: string) => {
   const program = [...middle].map((c, i) => ({ nibble: c, kept: i === 4 || i === 8, value: parseInt(c, 16) })).filter((n) => !n.kept).map((n) => n.value)
   return {
     uuid, handle, middle, tail, program, version: middle[4]!, variant: middle[8]!,
-    message: { one48: parseInt(tail, 16), two24: [parseInt(tail.slice(0, 6), 16), parseInt(tail.slice(6), 16)], three16: [parseInt(tail.slice(0, 4), 16), parseInt(tail.slice(4, 8), 16), parseInt(tail.slice(8), 16)] },
+    message: tailReadingsOf(tail),
     door: `qpu://${handle}`,
     words: `${handle} · program ${program.join('')} · tail ${tail}`,
   }
+}
+
+/** The reflection of an address: σ applied to every part at once — each program nibble to 15 − n, the tail to its 48-bit complement
+ *  (so every reading mirrors), the handle to its complement family — stamped into a valid address. Reflecting twice returns the
+ *  parts (Qpu.Sigma: σ_d(σ_d(x)) = x); the version nibble is decided afresh each time, so only the parts round-trip, by design. */
+export const reflectionOf = (uuid: string) => {
+  const ch = channelOf(uuid)
+  const handle = [...ch.handle].map((c) => (15 - parseInt(c, 16)).toString(16)).join('')
+  const program = ch.program.map((n) => 15 - n)
+  const tail = [...ch.tail].map((c) => (15 - parseInt(c, 16)).toString(16)).join('')
+  const mirror = uuidFromParts(handle, program, tail)
+  return { of: uuid, mirror, handle, program, tail, readings: tailReadingsOf(tail), fixed: ch.program.filter((n) => n === 15 - n).length, note: 'σ_15 on nibbles has no fixed point; the pair is two states held at once' }
 }
 
 /** Canonical JSON text (sorted keys), the form the unit addresses a JSON value by. */
