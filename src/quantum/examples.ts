@@ -31,6 +31,7 @@ export const EXAMPLES: Example[] = [
   ...BILLING.examples,
   ...LEGAL.examples,
   ...REPOSITORY.examples,
+  { id: 'metrics-live', tool: 'metrics', arguments: {}, shows: 'The tree\'s metrics computed now: tools, toolboxes, examples and how many a theorem backs, the kernel\'s counts, leads by status, the audit, the balancer.', expect: (s) => (s.tools >= 29 && s.theoremsKernel === 976 && s.theoremsHandWritten > 0 && s.examplesBackedByTheorems >= 1 && (s.auditNested === true || s.auditFailed === 0) ? null : `${s.tools} tools, kernel ${s.theoremsKernel}, backed ${s.examplesBackedByTheorems}, failed ${s.auditFailed}`) },
   { id: 'processor-willow', tool: 'processor', arguments: { name: 'Willow' }, shows: 'How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47.',
     expect: (s) => (s.qubits === 105 && s.statedAverageConnectivity === 3.47 ? null : `qubits ${s.qubits}, connectivity ${s.statedAverageConnectivity}`) },
   { id: 'processor-sycamore', tool: 'processor', arguments: { name: 'Sycamore' }, shows: 'Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated.',

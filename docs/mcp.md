@@ -22,13 +22,13 @@ Tools: [processor](#processor), [circuit](#circuit), [echo](#echo), [echo_benchm
 
 ## Toolbox `tree`
 
-the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply.
+the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time.
 
 **Skill.** audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.
 
 **Tests itself:** server only: the audit audits the audit; toolbox → toolbox: match is the judge of readiness and the engine of imagine.
 
-Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify).
+Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify), [metrics](#metrics).
 
 ## Toolbox `flow`
 
@@ -1034,6 +1034,22 @@ Cheap verification of one UUID: its seal (the version nibble the other 31 nibble
         }
       },
       "description": "the successor in the chain"
+    }
+  }
+}
+```
+
+## metrics
+
+The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel's theorem counts from its own index, leads by status, the audit's checks, the balancer's memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "artefacts": {
+      "type": "object",
+      "description": "the run's artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree's own counts alone"
     }
   }
 }

@@ -156,6 +156,10 @@ export default defineConfig({
       {
         "text": "Repository",
         "link": "/repository"
+      },
+      {
+        "text": "Metrics",
+        "link": "/metrics"
       }
     ],
     sidebar: [
@@ -265,6 +269,10 @@ export default defineConfig({
           {
             "text": "Repository",
             "link": "/repository"
+          },
+          {
+            "text": "Metrics",
+            "link": "/metrics"
           }
         ]
       },
@@ -347,6 +355,10 @@ export default defineConfig({
           {
             "text": "verify",
             "link": "/mcp#verify"
+          },
+          {
+            "text": "metrics",
+            "link": "/mcp#metrics"
           }
         ]
       },

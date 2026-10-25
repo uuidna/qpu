@@ -952,6 +952,22 @@
       }
     },
     {
+      "name": "metrics",
+      "description": "The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel's theorem counts from its own index, leads by status, the audit's checks, the balancer's memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "artefacts": {
+            "type": "object",
+            "description": "the run's artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree's own counts alone"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "tree"
+      }
+    },
+    {
       "name": "discover",
       "description": "Discovery before use. Without answers: every request the client must make for the contracts of the hosts this tree talks to (MCP tools/list and catalogue doors, the verifiers' OpenAPI, index or identify documents, /.well-known/qpu.json). With answers: the follow-ups still to fetch (catalogue doors whose contract is unread) and, once none remain, the discovery: hosts, doors with what they take and answer, capabilities by which clients choose doors, and the leads (hosts with no machine contract). Pure; the client fetches.",
       "inputSchema": {

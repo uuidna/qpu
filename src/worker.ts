@@ -459,7 +459,7 @@ export const worker = {
     const url = new URL(request.url)
     const path = url.pathname.replace(/\/$/, '') || '/'
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: LICENSE_HEADERS })
-    if (path === '/health') return json({ status: 'healthy', tools: discoveryOf(url.origin).tools.length, license: LICENSE.spdx })
+    if (path === '/health') { const m = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'metrics', arguments: {} } }) as { result?: { structuredContent: unknown } }; return json({ status: 'healthy', tenant: tenantOf(url.hostname), license: LICENSE.spdx, metrics: m.result?.structuredContent ?? null }) }
     if (path === '/.well-known/qpu.json' || (path === '/' && request.method === 'GET')) return json(discoveryOf(url.origin))
     if ((path === '/mcp' || path === '/') && request.method === 'POST') {
       let message: Rpc

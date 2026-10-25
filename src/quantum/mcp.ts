@@ -105,6 +105,8 @@ const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
  *  structured result and the widget that shows it. */
 import { toolOf, type Tool, type Toolbox, type Context } from './toolbox.js'
 import { FLOW } from './toolboxes/flow.js'
+import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS } from './theorems-index.js'
+import { flowWidget } from './widgets.js'
 import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
 import { BILLING } from './toolboxes/billing.js'
@@ -566,7 +568,7 @@ const OWN: Tool[] = [
     name: 'audit',
     description: 'The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays as documented, every served lead names a served tool, and the error paths answer as JSON-RPC requires. Each check carries its evidence; a failed check is a lead, not a ruling.',
     inputSchema: { type: 'object', properties: {} },
-    run: () => auditOf(handle, EXAMPLES, LEADS, TOOLBOXES),
+    run: () => { const was = auditing; auditing = true; try { return auditOf(handle, EXAMPLES, LEADS, TOOLBOXES) } finally { auditing = was } },
     widget: auditWidget,
   }),
   tool({
@@ -596,9 +598,59 @@ const OWN: Tool[] = [
   }),
 ]
 
+/** Results by block address, once per process: the memory of the balancer. */
+const BALANCER = new Map<string, { structured: unknown; widget: string }>()
+/** Observability: per tool, how often it was asked, how often it computed (a miss), how long the misses took, how many bytes they produced. */
+const OBSERVED = new Map<string, { calls: number; misses: number; ms: number; bytes: number }>()
+const NESTED: number[] = []
+
+/** The computable metrics of the tree, in real time: what the registries, the kernel's index and one audit say right now. */
+type RunArtefacts = { receipt?: { steps?: { name: string; status: string; ms: number }[] }; sizes?: Record<string, number>; discovery?: { hosts?: { kind: string; detected: string }[]; doors?: unknown[]; capabilities?: Record<string, string[]> }; verification?: { summary?: Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }> }; readiness?: { classes?: { served: number; refuted: number; trial: number }; readiness?: { ready: boolean }; border?: { doors?: unknown[]; sealedBy?: string[] } }; repository?: { branches?: { agree: string[]; local: number }; tags?: { agree: string[]; local: number; mismatch: string[] }; leads?: unknown[] }; legal?: { claims?: number; verdicts?: Record<string, number>; violations?: number; refusals?: number; securityPassed?: number; securityTotal?: number; id?: string }; docket?: { entries?: number; root?: string | null; mirrors?: number }; receipts?: { count?: number; last?: string | null } }
+/** What the run's artefacts add to the metrics: textbook APIs autodiscovered and covered, verification on public datasets, the border, the repository watched, the legal audit, the RAID's signalling (docket entries chained to a root), the receipt chain. */
+const coverageOf = (a: RunArtefacts): Record<string, unknown> => {
+  const v = Object.values(a.verification?.summary ?? {})
+  const sum = (k: 'requests' | 'ok' | 'contracted' | 'uncontracted') => v.reduce((n, s) => n + (s[k] ?? 0), 0)
+  const hosts = a.discovery?.hosts ?? []
+  return {
+    discoveredHosts: hosts.length, hostsWithContract: hosts.filter((h) => /^openapi|json index|oai-pmh|graphql|mcp tools/.test(h.detected)).length, discoveredDoors: a.discovery?.doors?.length ?? 0, capabilities: Object.fromEntries(Object.entries(a.discovery?.capabilities ?? {}).map(([k, v]) => [k, v.length])),
+    verificationRequests: sum('requests'), verificationReachable: sum('ok'), verificationContracted: sum('contracted'), verificationOutsideContract: sum('uncontracted'), verificationReachableRatio: sum('requests') ? Number((sum('ok') / sum('requests')).toFixed(3)) : null,
+    readinessClasses: a.readiness?.classes ?? null, ready: a.readiness?.readiness?.ready ?? null, borderDoors: a.readiness?.border?.doors?.length ?? 0, borderSealedBy: a.readiness?.border?.sealedBy?.length ?? 0,
+    repositoryBranchesAgree: a.repository?.branches ? `${a.repository.branches.agree.length}/${a.repository.branches.local}` : null, repositoryTagsAgree: a.repository?.tags ? `${a.repository.tags.agree.length}/${a.repository.tags.local}` : null, repositoryTagsMoved: a.repository?.tags?.mismatch.length ?? 0, repositoryLeads: a.repository?.leads?.length ?? 0,
+    legalClaims: a.legal?.claims ?? 0, legalVerdicts: a.legal?.verdicts ?? null, legalViolations: a.legal?.violations ?? 0, legalRefusals: a.legal?.refusals ?? 0, legalSecurity: a.legal ? `${a.legal.securityPassed}/${a.legal.securityTotal}` : null, legalAudit: a.legal?.id ?? null,
+    docketEntries: a.docket?.entries ?? 0, docketRoot: a.docket?.root ?? null, docketMirrors: a.docket?.mirrors ?? 0, receipts: a.receipts?.count ?? 0, lastReceipt: a.receipts?.last ?? null,
+    // verbosity: how many bytes each artefact carries; the pages are read by people, the json by tools — both are counted, neither capped
+    verbosityBytes: a.sizes ?? null, verbosityTotalBytes: a.sizes ? Object.values(a.sizes).reduce((n, b) => n + b, 0) : null,
+    // performance per cost unit: the cost units are milliseconds of the flow and requests to other hosts; the yield is settled leads
+    stepMs: a.receipt?.steps ? Object.fromEntries(a.receipt.steps.filter((s) => s.status !== 'skipped').map((s) => [s.name, s.ms])) : null,
+    flowMs: a.receipt?.steps?.reduce((n, s) => n + s.ms, 0) ?? null,
+    msPerVerificationRequest: sum('requests') && a.receipt?.steps ? Number(((a.receipt.steps.find((s) => s.name === 'verify')?.ms ?? 0) / sum('requests')).toFixed(1)) : null,
+    requestsPerSettledLead: a.readiness?.classes && sum('requests') ? Number((sum('requests') / Math.max(1, a.readiness.classes.served + a.readiness.classes.refuted)).toFixed(2)) : null,
+    msPerSettledLead: a.readiness?.classes && a.receipt?.steps ? Number((a.receipt.steps.reduce((n, s) => n + s.ms, 0) / Math.max(1, a.readiness.classes.served + a.readiness.classes.refuted)).toFixed(1)) : null,
+  }
+}
+// The audit replays every example, the metrics example among them; metrics inside an audit must not start another audit.
+let auditing = false
+const auditNow = (): { total: number; passed: number; failed: number } | null => { if (auditing) return null; auditing = true; try { const a = auditOf(handle, EXAMPLES, LEADS, TOOLBOXES); return { total: a.total, passed: a.passed, failed: a.failed } } finally { auditing = false } }
+const metricsOf = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
+  const audit = auditNow()
+  const byStatus: Record<string, number> = {}; for (const l of LEADS) byStatus[l.status] = (byStatus[l.status] ?? 0) + 1
+  const backed = EXAMPLES.filter((e) => e.theorem)
+  return {
+    tools: TOOLS.length, toolboxes: TOOLBOXES.length, examples: EXAMPLES.length, examplesBackedByTheorems: backed.length, examplesBackedRatio: Number((backed.length / EXAMPLES.length).toFixed(3)),
+    theoremsKernel: KERNEL_THEOREMS, theoremsHandWritten: THEOREMS.length, lemmasGenerated: GENERATED_LEMMAS, leads: LEADS.length, leadsByStatus: byStatus,
+    auditChecks: audit?.total ?? null, auditPassed: audit?.passed ?? null, auditFailed: audit?.failed ?? null, auditNested: audit === null, selftests: TOOLBOXES.map((b) => b.name), balancer: BALANCER.size, license: LICENSE.spdx, at: new Date().toISOString(),
+    // observability of this process: calls served from memory against computed, and where the computed milliseconds went
+    toolCalls: [...OBSERVED.values()].reduce((n, o) => n + o.calls, 0), toolMisses: [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0), toolMs: [...OBSERVED.values()].reduce((n, o) => n + o.ms, 0),
+    slowestTools: [...OBSERVED.entries()].sort((x, y) => y[1].ms - x[1].ms).slice(0, 6).map(([name, o]) => `${name} ${o.ms} ms / ${o.misses} computed / ${o.calls} asked / ${o.bytes} bytes`),
+    msPerComputedCall: (() => { const m = [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0); return m ? Number(([...OBSERVED.values()].reduce((n, o) => n + o.ms, 0) / m).toFixed(1)) : null })(),
+    ...coverageOf(artefacts),
+  }
+}
+const metrics = toolOf('tree', { name: 'metrics', description: 'The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel\'s theorem counts from its own index, leads by status, the audit\'s checks, the balancer\'s memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.', inputSchema: { type: 'object', properties: { artefacts: { type: 'object', description: 'the run\'s artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree\'s own counts alone' } } }, run: (args) => metricsOf((args.artefacts ?? {}) as RunArtefacts), widget: flowWidget })
+
 export const TOOLBOXES: Toolbox[] = [
   { name: 'google', idea: 'the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories', tools: OWN.filter((t) => t.toolbox === 'google'), examples: [], skill: { instructions: 'Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.', directions: ['server only: every example replays as documented (the audit)'], selftest: (ctx) => { const checks = ctx.examples.filter((e) => OWN.some((t) => t.name === e.tool && t.toolbox === 'google')).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); const why = 'error' in r ? r.error.message : e.expect(r.result.structuredContent); return { id: `google:${e.id}`, passed: why === null, evidence: why ?? e.shows } }); return { passed: checks.every((c) => c.passed), checks } } } },
-  { name: 'tree', idea: 'the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply', tools: OWN.filter((t) => t.toolbox === 'tree'), examples: [], skill: { instructions: 'audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.', directions: ['server only: the audit audits the audit', 'toolbox → toolbox: match is the judge of readiness and the engine of imagine'], selftest: (ctx) => { const m = matchOf('How many qubits does Willow have?', ctx.handle, ctx.examples, ctx.leads); return { passed: m.verdict === 'served', checks: [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }] } } } },
+  { name: 'tree', idea: 'the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time', tools: [...OWN.filter((t) => t.toolbox === 'tree'), metrics], examples: [], skill: { instructions: 'audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.', directions: ['server only: the audit audits the audit', 'toolbox → toolbox: match is the judge of readiness and the engine of imagine'], selftest: (ctx) => { const m = matchOf('How many qubits does Willow have?', ctx.handle, ctx.examples, ctx.leads); return { passed: m.verdict === 'served', checks: [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }] } } } },
   FLOW,
   LANGUAGE,
   RAID,
@@ -607,8 +659,6 @@ export const TOOLBOXES: Toolbox[] = [
   REPOSITORY,
 ]
 const TOOLS: Tool[] = TOOLBOXES.flatMap((b) => b.tools)
-/** Results by block address, once per process: the memory of the balancer. */
-const BALANCER = new Map<string, { structured: unknown; widget: string }>()
 const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS } }
 
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
@@ -628,9 +678,16 @@ export const handle = (message: Rpc): Reply => {
       // memory after — the heavy computation inverted, the hardware cooled, the battery saved (lead qpu-balancer-perspective).
       const args = (params.arguments ?? {}) as Record<string, unknown>
       const address = uuidOf(`${found.name}${JSON.stringify(args)}`)
-      const cached = BALANCER.get(address)
+      const cached = found.name === 'metrics' ? undefined : BALANCER.get(address)
+      // exclusive time: a tool that calls tools (audit, metrics, match) is charged only for its own milliseconds; the nested ones are theirs
+      const started = Date.now(); NESTED.push(0)
       const { structured, widget } = cached ?? found.call(args, CONTEXT)
       if (!cached) BALANCER.set(address, { structured, widget })
+      const children = NESTED.pop() ?? 0; const elapsed = Date.now() - started
+      if (NESTED.length) NESTED[NESTED.length - 1]! += elapsed
+      const o = OBSERVED.get(found.name) ?? { calls: 0, misses: 0, ms: 0, bytes: 0 }
+      o.calls += 1; if (!cached) { o.misses += 1; o.ms += elapsed - children; o.bytes += widget.length + JSON.stringify(structured).length }
+      OBSERVED.set(found.name, o)
       const block = blockOf(found.name, args, structured, widget, found.description)
       // the referer of a call: who sent it, carried as _meta.prev, echoed so a chain of calls knows its previous step across domains
       const prev = typeof (params._meta as { prev?: unknown } | undefined)?.prev === 'string' ? (params._meta as { prev: string }).prev : undefined

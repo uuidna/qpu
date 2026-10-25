@@ -30,6 +30,7 @@ const steps: Step[] = [
   { name: 'repository', cmd: 'node', args: ['--import', 'tsx', 'scripts/repository.ts'], budgetMs: 300_000 }, // always: workspaces, branches, tags, releases; offline the local facts
   { name: 'legal', cmd: 'node', args: ['--import', 'tsx', 'scripts/legal.ts'], budgetMs: 600_000 }, // always: cached by inputs, the pure half offline
   { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'] },
+  { name: 'metrics', cmd: 'node', args: ['--import', 'tsx', 'scripts/metrics.ts'], budgetMs: 120_000 }, // always: the run's artefacts read into one measure
   { name: 'docs:build', cmd: 'npx', args: ['vitepress', 'build', 'docs'], skip: fast ? 'fast' : undefined },
   { name: 'publish', cmd: 'node', args: ['--import', 'tsx', 'scripts/publish.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 },
 ]

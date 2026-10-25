@@ -52,7 +52,7 @@ export type Match = {
 
 /** The surface's own names: they name where, never what, so they count for nothing in coverage. */
 const BRAND = new Set(['qpu', 'uuidna', 'mcp', 'tool', 'tools'])
-const STOP = new Set(['the', 'a', 'an', 'of', 'to', 'in', 'on', 'for', 'and', 'or', 'is', 'are', 'it', 'its', 'with', 'as', 'by', 'at', 'from', 'this', 'that', 'be', 'can', 'do', 'does', 'what', 'how', 'me', 'i', 'you', 'we', 'please', 'show', 'give', 'run', 'use', 'using'])
+const STOP = new Set(['the', 'a', 'an', 'of', 'to', 'in', 'on', 'for', 'and', 'or', 'is', 'are', 'it', 'its', 'with', 'as', 'by', 'at', 'from', 'this', 'that', 'be', 'can', 'do', 'does', 'what', 'how', 'me', 'i', 'you', 'we', 'please', 'show', 'give', 'run', 'use', 'using', 'now', 'today', 'here', 'there', 'then', 'just', 'also', 'very', 'any', 'all', 'some', 'one', 'two', 'not', 'no', 'yes', 'has', 'have', 'had', 'was', 'were', 'will', 'would', 'should', 'may', 'might', 'into', 'over', 'under', 'than', 'when', 'where', 'which', 'who', 'why'])
 export const tokens = (text: string): string[] => text.toLowerCase().replace(/[^a-z0-9.\s_-]/g, ' ').split(/[\s_-]+/).map((t) => t.replace(/^\.+|\.+$/g, '')).filter((t) => t.length > 1 && !STOP.has(t))
 
 const overlap = (a: string[], b: string[]): number => {

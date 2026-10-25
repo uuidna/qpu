@@ -310,7 +310,8 @@ test('unknown routes answer with the route list, health answers, and OPTIONS all
   const r = await worker.fetch(req('/nowhere'), env())
   assert.equal(r.status, 404)
   const h = await worker.fetch(req('/health'), env())
-  assert.equal(((await h.json()) as { tools: number }).tools, TOOL_COUNT)
+  const health = (await h.json()) as { status: string; tenant: string; metrics: { tools: number; auditPassed: number; auditChecks: number } }
+  assert.equal(health.metrics.tools, TOOL_COUNT); assert.equal(health.tenant, 'local'); assert.equal(health.metrics.auditPassed, health.metrics.auditChecks)
   const o = await worker.fetch(req('/mcp', { method: 'OPTIONS' }), env())
   assert.equal(o.status, 204)
 })
