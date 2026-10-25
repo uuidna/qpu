@@ -62,7 +62,7 @@ export const securityOf = (texts: Texts): { id: string; passed: boolean; evidenc
 const DOOR_PURPOSE: Record<string, Call['purpose']> = { get_legal_facts: 'legal', get_rights: 'legal', get_laws: 'legal', compute_license: 'licence', compute_prior_art: 'prior-art', get_due_process: 'due-process', audit_security: 'security', audit_cloudflare: 'security', detect_traitors: 'security', get_conformance: 'security', get_fingerprint: 'security', audit_full_anti_fraud: 'security', get_guard_lessons: 'security' }
 
 /** The calls: every claim to the forensic and verification doors; the legal, licence, prior-art, due-process and security doors once. */
-export const planOf = (claims: readonly Claim[], discovery: Pick<Discovery, 'doors'> | null, agents: readonly string[] | null, theoremKeys: readonly string[]): { calls: Call[]; agents: string[]; by: 'operator' | 'free-by-default'; absent: string[] } => {
+export const planOf = (claims: readonly Claim[], discovery: Pick<Discovery, 'doors'> | null, agents: readonly string[] | null, theoremKeys: readonly string[]): { calls: Call[]; agents: string[]; by: 'operator' | 'free-by-default'; absent: string[]; operatorAgents: { id: string; endpoint: string; model: string; key: string; version: string; chosen: boolean; note: string }[] } => {
   const doors = discovery?.doors ?? []
   const has = (name: string) => doors.find((d) => d.name === name)
   const chosen: string[] = agents?.length ? [...agents] : [...Object.keys(DOOR_PURPOSE), 'compute_forensics', 'verify_claim'].filter((n) => has(n))
@@ -79,7 +79,7 @@ export const planOf = (claims: readonly Claim[], discovery: Pick<Discovery, 'doo
     else if (name === 'get_due_process') calls.push({ door: name, host: host(name), arguments: { claims: claims.map((c) => c.text) }, purpose: 'due-process' })
     else calls.push({ door: name, host: host(name), arguments: {}, purpose: DOOR_PURPOSE[name] ?? 'security' })
   }
-  return { calls, agents: chosen, by: agents?.length ? 'operator' : 'free-by-default', absent }
+  return { calls, agents: chosen, by: agents?.length ? 'operator' : 'free-by-default', absent, operatorAgents: [{ id: 'claude-api', endpoint: 'https://api.anthropic.com/v1/messages', model: 'claude-opus-5-5', key: 'ANTHROPIC_API_KEY[_<TENANT>]', version: '2023-06-01', chosen: !!agents?.includes('claude-api'), note: 'an operator agent: it joins the audit only when the operator names it (agents: ["claude-api"]) and the tenant\'s key is in the client\'s request; the free doors are the default and are never overridden' }] }
 }
 
 export type Finding = { claim: string; door: string; verdict: string | null; clean: boolean | null; violations: number; violationKinds: string[]; note: string; receipt: string | null; refusal: string | null }

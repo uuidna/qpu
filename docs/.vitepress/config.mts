@@ -58,6 +58,10 @@ export default defineConfig({
     footer: { message: 'CC-BY-NC-ND-4.0 — attribute the author, no derivatives, commercial use of the QPU framework, over UUID or by any other means, by licence (ceccec@psg.bg); the a432 harmonic default is free to all under attribution.', copyright: '© Tsvetan Rouschev · https://orcid.org/0009-0000-7312-9778' },
     nav: [
       {
+        "text": "API",
+        "link": "/api"
+      },
+      {
         "text": "Processor",
         "link": "/processor"
       },
@@ -190,6 +194,10 @@ export default defineConfig({
       {
         "text": "Pages",
         "items": [
+          {
+            "text": "API",
+            "link": "/api"
+          },
           {
             "text": "Processor",
             "link": "/processor"

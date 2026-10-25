@@ -474,7 +474,7 @@ export const THEOREMS: readonly { key: string; module: string; statement: string
   {"key":"tetra","module":"Qpu.Lattice","statement":"coins + coins = mintOf coins"},
   {"key":"textbook_configurations_closed","module":"Qpu.Textbook","statement":"∀ (k : Nat), k ≤ 8 → k = 8 → 8 - k = 0"},
   {"key":"textbook_fold_mirror","module":"Qpu.Textbook","statement":"∀ (n i : Nat), i ≤ n → i + (n - i) = n"},
-  {"key":"textbook_integrations_are_nine","module":"Qpu.Textbook","statement":"8 + 1 = 9"},
+  {"key":"textbook_integrations_are_ten","module":"Qpu.Textbook","statement":"8 + 1 + 1 = 10"},
   {"key":"textbook_plugin_combinations","module":"Qpu.Textbook","statement":"2 ^ 8 = 256"},
   {"key":"textbook_prices_are_variants_times_currencies","module":"Qpu.Textbook","statement":"7 * 2 = 14"},
   {"key":"textbook_providers_are_tenants_plus_operator","module":"Qpu.Textbook","statement":"2 + 1 = 3"},

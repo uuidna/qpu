@@ -12,8 +12,8 @@ theorem textbook_uuid_is_36 : 32 + 4 = 36 := by decide
 theorem textbook_reflection_sums_to_ten (s : Nat) (h : s ≤ 10) : s + (10 - s) = 10 := by omega
 /-- piece i and its mirror n − i sum to the boundary n (examples: fold-ledger) -/
 theorem textbook_fold_mirror (n i : Nat) (h : i ≤ n) : i + (n - i) = n := by omega
-/-- Cloudflare's eight servers and GitHub's one are nine integrations (examples: extend-in-request) -/
-theorem textbook_integrations_are_nine : 8 + 1 = 9 := by decide
+/-- Cloudflare's eight servers, GitHub's one and the Claude API are ten integrations (examples: extend-in-request) -/
+theorem textbook_integrations_are_ten : 8 + 1 + 1 = 10 := by decide
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/

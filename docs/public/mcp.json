@@ -1749,7 +1749,8 @@
               "mcp",
               "versions",
               "migration",
-              "fullstack"
+              "fullstack",
+              "api"
             ],
             "description": "omit for all"
           },

@@ -22,9 +22,20 @@ export const CLOUDFLARE_MCP: readonly { host: string; url: string; about: string
 export const GITHUB_MCP: readonly { host: string; url: string; about: string }[] = [
   { host: 'api.githubcopilot.com', url: 'https://api.githubcopilot.com/mcp/', about: 'GitHub: repositories, branches, tags, releases, issues, pull requests, actions of the tenant\'s account' },
 ]
+/** The Claude API (platform.claude.com/docs/en/api/overview, read 2026-10-25): one endpoint for messages, the MCP connector that mounts any MCP server into a request, the Models door; every door needs the tenant's key (x-api-key, anthropic-version). */
+export const CLAUDE_API = {
+  docs: 'https://platform.claude.com/docs/en/api/overview',
+  messages: 'https://api.anthropic.com/v1/messages',
+  models: 'https://api.anthropic.com/v1/models',
+  version: '2023-06-01',
+  key: 'ANTHROPIC_API_KEY[_<TENANT>]',
+  model: 'claude-opus-5-5',
+  mcpConnector: { beta: 'mcp-client-2025-11-20', note: 'mcp_servers: [{ type: url, url, name }] with tools: [{ type: mcp_toolset, mcp_server_name }] — both halves, or the request is refused' },
+} as const
 /** Every MCP this tree knows how to integrate, with what it does with each once the tenant's token opens it. */
 export const KNOWN_MCP: readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[] = [
   ...CLOUDFLARE_MCP.map((c) => ({ ...c, auth: (c.host === 'docs.mcp.cloudflare.com' ? 'none' : 'token') as 'none' | 'token', maps: c.host === 'docs.mcp.cloudflare.com' ? 'the verifier cloudflare-docs: a fact on developers.cloudflare.com is searched there (search_cloudflare_documentation)' : c.host === 'bindings.mcp.cloudflare.com' ? 'the docket\'s mirrors: KV, R2, D1 and Durable Objects of the tenant read as mirrors to heal by address' : c.host === 'observability.mcp.cloudflare.com' ? 'the metrics tool: the Worker\'s logs and analytics beside the balancer\'s own counts' : c.host === 'browser.mcp.cloudflare.com' ? 'the verification wave: a page rendered at the edge when a verifier needs the page as a browser sees it' : c.host === 'radar.mcp.cloudflare.com' ? 'the legal audit: internet-wide facts as public datasets' : c.host === 'ai-gateway.mcp.cloudflare.com' ? 'the prose tool: generation logged through the tenant\'s gateway, never a token of this tree' : c.host === 'dns-analytics.mcp.cloudflare.com' ? 'the tenants: the custom domains\' DNS read per tenant' : 'the textbook: the tenant\'s indexed documents as a textbook to categorise' })),
+  { host: 'api.anthropic.com', url: CLAUDE_API.messages, about: 'the Claude API: messages, the MCP connector that mounts this catalogue into a request, the Models door', auth: 'token' as const, maps: 'the operator agent of the legal audit and the prose tool when the tenant\'s key opens it (never by default: free doors first); outward, extend answers the Messages API registration that mounts this catalogue (mcp_servers + mcp_toolset, beta mcp-client-2025-11-20)' },
   ...GITHUB_MCP.map((g) => ({ ...g, auth: 'token' as const, maps: 'the repository toolbox: branches, tags and releases watched through the doors list_branches, list_tags and list_releases instead of the REST contract; the next-leads docket as issues when the tenant asks' })),
 ]
 /** The hosts discovered when a tenant names none: the unit, this tree, Cloudflare's eight servers and GitHub's. */
