@@ -359,6 +359,10 @@ export default defineConfig({
           {
             "text": "metrics",
             "link": "/mcp#metrics"
+          },
+          {
+            "text": "textbook",
+            "link": "/mcp#textbook"
           }
         ]
       },

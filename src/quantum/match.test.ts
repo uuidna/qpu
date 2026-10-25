@@ -81,3 +81,12 @@ test('a statement in Bulgarian is translated by vocabulary offline before the ma
   const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement: 'Разложи Ⰺⰴ с Shor', locale: 'bg' } } })
   assert.equal((r as { result: { structuredContent: { read: { locale: string } } } }).result.structuredContent.read.locale, 'bg')
 })
+
+test('a statement is solved first by the QPU textbook: a kernel-accepted theorem serves it before any tool, and the flow toolboxes are never called to serve', () => {
+  const m = matchOf('relation 15', handle, EXAMPLES, LEADS)
+  assert.equal(m.verdict, 'served'); assert.equal(m.theorem, 'relation_15'); assert.equal(m.tool, undefined); assert.ok(m.evidence[0]!.startsWith('proven by the kernel'))
+  const w = matchOf('How many qubits does Willow have?', handle, EXAMPLES, LEADS)
+  assert.equal(w.verdict, 'served'); assert.equal(w.tool, 'processor'); assert.equal(w.theorem, undefined, 'a statement no theorem states is served by its tool')
+  const flow = matchOf('discover every host and verify the wave and judge readiness and imagine the leads', handle, EXAMPLES, LEADS)
+  assert.ok(!['discover', 'wave', 'readiness', 'imagine', 'legal', 'repository', 'stripe', 'metrics'].includes(flow.tool ?? ''), `the matcher never calls a flow tool to serve: ${flow.verdict} via ${flow.tool}`)
+})

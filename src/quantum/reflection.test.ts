@@ -30,9 +30,11 @@ test('beyond the bound the reflection says so instead of factoring classically',
 test('the mirror forms of a statement find a served tool the digital tokens missed', () => {
   const qs = reflectionsOf('the hydrogen energy')
   assert.ok(qs.some((q) => q.includes('chemistry')))
-  const m = match('energy')
+  const bare = match('energy')
+  assert.equal(bare.verdict, 'served'); assert.equal(bare.theorem, 'energy', 'the bare word names a kernel-accepted theorem: the textbook answers first')
+  const m = match('the hydrogen energy')
   assert.equal(m.verdict, 'served')
-  assert.equal(m.tool, 'chemistry-simulation')
+  assert.equal(m.tool, 'chemistry-simulation', 'two words name no theorem; the mirror finds the chemistry tool')
 })
 
 test('every matched lead yields verification requests across every adaptor that can see its facts', () => {

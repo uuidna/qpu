@@ -9,6 +9,7 @@ import type { Lead } from './leads.js'
 import type { Rpc } from './audit.js'
 import { factsOf, verifyRequestsOf, type VerifyRequest } from './verifiers.js'
 import { numeralsOf, translateOf } from './i18n.js'
+import { THEOREMS } from './theorems-index.js'
 
 export type Verdict = 'served' | 'impossible' | 'unknown'
 /** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.
@@ -16,7 +17,7 @@ export type Verdict = 'served' | 'impossible' | 'unknown'
 export const VERDICTS: Record<string, Verdict> = { VERIFIED: 'served', PROVEN: 'served', REFUTED: 'impossible', UNVERIFIED: 'unknown', 'NOT-PROVEN': 'unknown', NOT_PROVEN: 'unknown' }
 export const verdictOf = (foreign: string): Verdict | undefined => VERDICTS[foreign.toUpperCase().replace(/\s+/g, '-')]
 export const foreignVerdictsOf = (v: Verdict): string[] => Object.entries(VERDICTS).filter(([, ours]) => ours === v).map(([theirs]) => theirs)
-export type Candidate = { kind: 'tool' | 'example' | 'lead'; id: string; score: number; hits: number; text: string }
+export type Candidate = { kind: 'tool' | 'example' | 'lead' | 'theorem'; id: string; score: number; hits: number; text: string }
 export type Reflection = {
   /** integers in the statement factored by the surface's own Shor tool when inside its bound; beyond it, the bound is the answer */
   factors: { n: number; factors?: string; order?: string; by: string }[]
@@ -35,6 +36,8 @@ export type Match = {
   verdict: Verdict
   evidence: string[]
   tool?: string
+  /** the kernel-accepted theorem that serves the statement, when the textbook answers first */
+  theorem?: string
   call?: { name: string; arguments: Record<string, unknown> }
   result?: unknown
   candidates: Candidate[]
@@ -132,7 +135,9 @@ export const reflectionsOf = (statement: string): string[] => {
 const slug = (text: string): string => tokens(text).slice(0, 6).join('-') || 'statement'
 
 /** Tools the matcher lists but never calls: calling itself or the audit from inside a match would recurse without end. */
-const META = new Set(['match', 'audit'])
+/** Tools the matcher never calls to serve a statement: the judges of the tree and every toolbox that fetches, bills or audits; the textbook is google, clay, leads, language and raid. */
+const META = new Set(['match', 'audit', 'verify', 'metrics'])
+const META_TOOLBOXES = new Set(['flow', 'legal', 'repository', 'billing'])
 
 /** A matcher with its index built once: tools, examples and leads tokenised and weighted, so every lead can be imagined in one run. */
 /** Shor's factoring of a small N on the simulator is deterministic: once per process. */
@@ -157,8 +162,9 @@ export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example
 const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string) => Match) => {
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
   const allTools: ToolSpec[] = 'result' in list ? list.result.tools : []
-  const tools = allTools.filter((t) => !META.has(t.name))
-  const examples = allExamples.filter((e) => !META.has(e.tool))
+  const tools = allTools.filter((t) => !META.has(t.name) && !META_TOOLBOXES.has((t as { _meta?: { toolbox?: string } })._meta?.toolbox ?? ''))
+  const callable = new Set(tools.map((t) => t.name))
+  const examples = allExamples.filter((e) => callable.has(e.tool))
   const toolText = (t: ToolSpec) => `${t.name} ${t.description} ${Object.keys(t.inputSchema.properties ?? {}).join(' ')} ${Object.values(t.inputSchema.properties ?? {}).flatMap((p) => (p.enum ?? []).map(String)).join(' ')}`
   // an example's arguments enter the index by their words, never by their keys or their punctuation: a key named `now` is not a statement about now
   const leaves = (v: unknown): string[] => (typeof v === 'string' ? [v] : typeof v === 'number' ? [String(v)] : Array.isArray(v) ? v.flatMap(leaves) : v && typeof v === 'object' ? Object.values(v as Record<string, unknown>).flatMap(leaves) : [])
@@ -167,6 +173,7 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
   const w = weightsOf([...tools.map(toolText), ...examples.map(exampleText), ...leads.map(leadText)])
   const toolTok = tools.map((t) => tokens(toolText(t)))
   const exTok = examples.map((e) => tokens(exampleText(e)))
+  const theoremTok = THEOREMS.map((t) => tokens(`${t.key} ${t.key.replace(/_/g, ' ')} ${t.statement}`))
   const leadTok = leads.map((l) => tokens(leadText(l)))
   const servedLeads = new Set(leads.filter((l) => l.status === 'served').map((l) => l.id))
   const bounds: { property: string; d: number }[] = tools.flatMap((t) => Object.entries(t.inputSchema.properties ?? {}).filter(([, p]) => typeof p.maximum === 'number').map(([property, p]) => ({ property, d: p.maximum as number })))
@@ -183,6 +190,28 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
       if (value > p.maximum || (typeof p.minimum === 'number' && value < p.minimum)) {
         evidence.push(`${t.name}.${property} is bounded to [${p.minimum ?? '…'}, ${p.maximum}] by its schema; the statement asks for ${phrase}${p.description ? ` (${p.description})` : ''}`)
       }
+    }
+  }
+  // 2. Solve first by the QPU textbook: a statement that names a kernel-accepted theorem (its key, or the words of its statement)
+  //    is served by that theorem, proven, before any tool is called.
+  const substantiveQ = q.filter((t) => !BRAND.has(t))
+  if (substantiveQ.length) {
+    // the textbook answers when the statement names a theorem: every word of its key is in the statement, and either the key has
+    // two words or more (mersenne 127, sigma reflect, relation 15) or the statement is little more than the key (a one-word key
+    // such as `qubits` or `energy` serves only the bare word; a question about Willow's qubits stays with the processor tool, the hydrogen energy with the mirror's chemistry)
+    let best: { key: string; statement: string; hits: number } | null = null
+    for (const [i, th] of THEOREMS.entries()) {
+      const keyWords = th.key.toLowerCase().split(/[_.]+/).filter((k) => k.length > 1)
+      const named = keyWords.length > 0 && keyWords.every((k) => q.includes(k)) && (keyWords.length >= 2 || substantiveQ.length === 1)
+      if (!named) continue
+      const hits = overlap(q, theoremTok[i]!) + 2
+      if (!best || hits > best.hits || (hits === best.hits && th.key.length > best.key.length)) best = { key: th.key, statement: th.statement, hits }
+    }
+    if (best) {
+      // the next steps, combinatorially: every other theorem of the same module, the textbook's neighbourhood, ranked by the words shared
+      const module = THEOREMS.find((t) => t.key === best!.key)?.module
+      const cluster: Candidate[] = THEOREMS.map((t, i) => ({ t, i })).filter(({ t }) => t.module === module && t.key !== best!.key).map(({ t, i }) => ({ kind: 'theorem' as const, id: t.key, score: overlap(q, theoremTok[i]!), hits: overlap(q, theoremTok[i]!), text: t.statement })).sort((a, b) => b.score - a.score)
+      return { statement, verdict: 'served', theorem: best.key, evidence: [`proven by the kernel: theorem ${best.key}: ${best.statement}`, `next steps in the textbook: ${cluster.length} theorem(s) of ${module}`], candidates: [{ kind: 'theorem', id: best.key, score: best.hits, hits: best.hits, text: best.statement }], cluster, verify: [], reflection: { factors: [], angles: [], queries: [], leads: [], found: [] }, lead: { id: slug(statement), source: 'statement', statement, status: 'served', tool: 'clay', reason: `theorem ${best.key}` } }
     }
   }
   const candidates: Candidate[] = []

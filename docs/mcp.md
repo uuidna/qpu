@@ -28,7 +28,7 @@ the tree knows itself: its leads, its self-audit, any statement matched or prove
 
 **Tests itself:** server only: the audit audits the audit; toolbox → toolbox: match is the judge of readiness and the engine of imagine.
 
-Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify), [metrics](#metrics).
+Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify), [metrics](#metrics), [textbook](#textbook).
 
 ## Toolbox `flow`
 
@@ -1050,6 +1050,32 @@ The computable metrics of this tree in real time: tools and toolboxes, examples 
     "artefacts": {
       "type": "object",
       "description": "the run's artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree's own counts alone"
+    }
+  }
+}
+```
+
+## textbook
+
+The QPU textbook as an adapter: every example categorised for reuse — by toolbox, by tool, by the kernel-accepted theorem that backs it, by that theorem's module — and, with reuse: &lt;example id&gt;, that example replayed and its result returned. The categories are computed from the registries, never written by hand.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "reuse": {
+      "type": "string",
+      "description": "an example id to replay"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "toolbox",
+        "tool",
+        "theorem",
+        "module"
+      ],
+      "description": "one category to list; omit for all"
     }
   }
 }
