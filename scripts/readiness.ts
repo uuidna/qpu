@@ -1,7 +1,7 @@
 // The client of the readiness tool: it measures what only a client can (which cleanup subjects are present, the theorem
 // ledger on disk, the verification and discovery of this run), asks the tool for its plan, makes the border calls and the
 // unit calls the plan names against the MCP hosts, hands the answers back, and writes what the tool returns. Selftest first.
-import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync, appendFileSync, mkdirSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import './teleport.ts'
@@ -12,6 +12,7 @@ import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
 const ROOT = process.cwd()
+mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 // the coins paid at the wire, one line per call, kept by this payer (the unit's own register is per process and silent)
 const account = (door: string, body: unknown) => { const d = depositOf(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'readiness', ...d }) + '\n') }
 const UNIT = process.env.UUIDNA_MCP ?? 'https://uuidna.com/mcp'
@@ -26,7 +27,7 @@ const rpc = async (url: string, name: string, args: unknown): Promise<any> => {
   return body.result?.structuredContent ?? (body.result?.content?.[0] ? JSON.parse(body.result.content[0].text) : body.result)
 }
 // the unit's answers kept a day by call address (an aura by its block id, a sequence by its value): a run asks only what is new
-const cachePath = join(ROOT, 'docs', 'public', 'unit-cache.json')
+const cachePath = join(ROOT, '.qpu', 'cache', 'unit-cache.json')
 const unitCache: Record<string, { at: string; answer: unknown }> = existsSync(cachePath) ? (() => { try { return JSON.parse(readFileSync(cachePath, 'utf8')) } catch { return {} } })() : {}
 const cached = async (name: string, args: unknown): Promise<unknown> => { const key = `${name}${JSON.stringify(args)}`; const c = unitCache[key]; if (c && Date.now() - Date.parse(c.at) < 86_400_000) return c.answer; const answer = await rpc(UNIT, name, args); unitCache[key] = { at: new Date().toISOString(), answer }; writeFileSync(cachePath, JSON.stringify(unitCache) + '\n'); return answer }
 const readJson = (name: string) => { const p = join(ROOT, 'docs', 'public', name); return existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')) : undefined }

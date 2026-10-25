@@ -55,7 +55,7 @@ const concurrent: { pid: number; date: string } | null = (() => { try { const l 
 if (concurrent) console.log(`⚠ another next run (pid ${concurrent.pid}, since ${concurrent.date}) is writing the same files; recorded as a lead, this run continues`)
 writeFileSync(lockPath, JSON.stringify({ pid: process.pid, date: receipt.date }) + '\n')
 // the blocks teleported between this run's steps start empty: a block from an earlier run was computed by earlier code
-rmSync(join(ROOT, 'docs', 'public', 'blocks'), { recursive: true, force: true })
+rmSync(join(ROOT, '.qpu', 'blocks'), { recursive: true, force: true })
 process.on('exit', () => { try { const l = JSON.parse(readFileSync(lockPath, 'utf8')) as { pid: number }; if (l.pid === process.pid) unlinkSync(lockPath) } catch { /* already gone */ } })
 const spawned = (s: Step): Promise<{ status: number | null; out: string; timedOut: boolean }> => new Promise((resolve) => {
   const child = spawn(s.cmd, s.args, { cwd: ROOT, shell: process.platform === 'win32', env: { ...process.env, FORCE_COLOR: '0', QPU_OFFLINE: offline ? '1' : '' } })

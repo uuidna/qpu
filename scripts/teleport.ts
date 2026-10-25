@@ -8,7 +8,7 @@ import { join } from 'node:path'
 import { balancerLoad, balancerSnapshot } from '../src/quantum/mcp.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
-const DIR = join(process.cwd(), 'docs', 'public', 'blocks')
+const DIR = join(process.cwd(), '.qpu', 'blocks')
 const started = Date.now()
 // a block is a function of its arguments AND of the code that computed it: every file of blocks carries the code's fingerprint (the
 // sizes and times of every source under src/quantum), and a file from other code is not teleported — it would be a block of earlier code

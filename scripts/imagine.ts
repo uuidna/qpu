@@ -1,6 +1,6 @@
 // The client of the imagine tool: fast when clean (the imagination is a function of the leads, the examples and the tools),
 // otherwise one call, and the files written. Selftest first. Pure computation; no network.
-import { writeFileSync, existsSync, readFileSync } from 'node:fs'
+import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
@@ -10,6 +10,7 @@ import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
 const ROOT = process.cwd()
+mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'imagine', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
 const toolsNow = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
 const inputs = uuidOf(JSON.stringify({ leads: LEADS, examples: EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, arguments: e.arguments, shows: e.shows })), tools: toolsNow }))
@@ -23,7 +24,7 @@ console.log(`imagine selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.
 // hash is new, in chunks, for no longer than the quantum; the rest wait for the next run, said so in the file
 const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
 const started = Date.now()
-const rowsPath = join(ROOT, 'docs', 'public', 'imagination-rows.json')
+const rowsPath = join(ROOT, '.qpu', 'cache', 'imagination-rows.json')
 type Kept = { hash: string; row: unknown; opened: unknown[]; verify: number; verdict: string }
 const kept: Record<string, Kept> = existsSync(rowsPath) ? (() => { try { return JSON.parse(readFileSync(rowsPath, 'utf8')) } catch { return {} } })() : {}
 const toolsHash = uuidOf(JSON.stringify(toolsNow))

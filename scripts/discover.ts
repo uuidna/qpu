@@ -10,6 +10,7 @@ import { LEADS } from '../src/quantum/leads.ts'
 import type { Request, Answer } from '../src/quantum/discovery.ts'
 
 const ROOT = process.cwd()
+mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const UA = 'uuidna-qpu-discover (ceccec@psg.bg)'
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'discover', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
@@ -24,7 +25,7 @@ const main = async () => {
   // from what is answered so far is written either way, marked partial while requests remain
   const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
   const started0 = Date.now()
-  const cachePath = join(ROOT, 'docs', 'public', 'discovery-answers.json')
+  const cachePath = join(ROOT, '.qpu', 'cache', 'discovery-answers.json')
   const cache: Record<string, Answer & { at: string }> = existsSync(cachePath) ? (() => { try { return JSON.parse(readFileSync(cachePath, 'utf8')) } catch { return {} } })() : {}
   const fresh = (a: { at: string }) => Date.now() - Date.parse(a.at) < 86_400_000
   const answers: Answer[] = []
