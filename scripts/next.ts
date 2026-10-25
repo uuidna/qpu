@@ -5,7 +5,7 @@
 // exits green so nothing downstream stops. `--strict` exits red instead; `--offline` skips the network.
 import { spawnSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { appendFileSync, existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs'
+import { appendFileSync, existsSync, readFileSync, writeFileSync, unlinkSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
@@ -54,6 +54,8 @@ const alive = (pid: number): boolean => { try { process.kill(pid, 0); return tru
 const concurrent: { pid: number; date: string } | null = (() => { try { const l = JSON.parse(readFileSync(lockPath, 'utf8')) as { pid: number; date: string }; return alive(l.pid) ? l : null } catch { return null } })()
 if (concurrent) console.log(`⚠ another next run (pid ${concurrent.pid}, since ${concurrent.date}) is writing the same files; recorded as a lead, this run continues`)
 writeFileSync(lockPath, JSON.stringify({ pid: process.pid, date: receipt.date }) + '\n')
+// the blocks teleported between this run's steps start empty: a block from an earlier run was computed by earlier code
+rmSync(join(ROOT, 'docs', 'public', 'blocks'), { recursive: true, force: true })
 process.on('exit', () => { try { const l = JSON.parse(readFileSync(lockPath, 'utf8')) as { pid: number }; if (l.pid === process.pid) unlinkSync(lockPath) } catch { /* already gone */ } })
 const spawned = (s: Step): Promise<{ status: number | null; out: string; timedOut: boolean }> => new Promise((resolve) => {
   const child = spawn(s.cmd, s.args, { cwd: ROOT, shell: process.platform === 'win32', env: { ...process.env, FORCE_COLOR: '0', QPU_OFFLINE: offline ? '1' : '' } })
@@ -71,7 +73,7 @@ const run = async (s: Step): Promise<boolean> => {
   const out = r.out
   const ok = r.status === 0 && !r.timedOut
   const counts: Record<string, number> = {}
-  for (const [k, re] of Object.entries({ tests: /ℹ tests (\d+)/, pass: /ℹ pass (\d+)/, fail: /ℹ fail (\d+)/, checks: /(\d+)\/(\d+) checks pass/, jobs: /Build completed successfully \((\d+) jobs\)/, requests: /verify: (\d+) requests, (\d+) reachable/, ready: /readiness: (ready)/, imagined: /(\d+) imagined leads/ })) {
+  for (const [k, re] of Object.entries({ teleportedIn: /teleport: (\d+) blocks from/, blocksLeft: /teleport: (\d+) block\(s\) left/, keptToday: /(\d+) kept from today/, reused: /(\d+) answers kept from today/, imaginedKept: /imagine: (\d+) of \d+ leads kept/, involutions: /\((\d+) teleported by involution/, tests: /ℹ tests (\d+)/, pass: /ℹ pass (\d+)/, fail: /ℹ fail (\d+)/, checks: /(\d+)\/(\d+) checks pass/, jobs: /Build completed successfully \((\d+) jobs\)/, requests: /verify: (\d+) requests, (\d+) reachable/, ready: /readiness: (ready)/, imagined: /(\d+) imagined leads/ })) {
     const m = re.exec(out); if (m) counts[k] = Number(m[1]); if (m && k === 'checks') counts.checksTotal = Number(m[2]); if (m && k === 'requests') counts.reachable = Number(m[2])
   }
   const failingLines = [...new Set(out.split('\n').filter((l) => /^(✖|not ok) /.test(l)))]
@@ -100,7 +102,13 @@ for (const s of failed) { console.log(`↻ retry ${s.name}`); if (!(await run(s)
 const red = stillRed.length > 0
 const wallMs = Date.now() - wall0
 const sumMs = receipt.steps.reduce((n, x) => n + x.ms, 0)
-Object.assign(receipt, { wallMs, sumMs, speedup: wallMs ? Number((sumMs / wallMs).toFixed(2)) : null, waves: [...new Set(steps.map((s) => s.wave))].length })
+// the quantum advantage of the run, measured and nothing else: what it did not compute classically — the blocks teleported
+// between its steps, the answers kept from an earlier quantum, the copies proven at the edge by involution — and the waves'
+// speedup; a sum of what was skipped beside what was done, never a claim about the world
+const sumCount = (k: string) => receipt.steps.reduce((n, x) => n + (x.counts?.[k] ?? 0), 0)
+const advantage = { speedup: wallMs ? Number((sumMs / wallMs).toFixed(2)) : null, teleportedBlocks: sumCount('teleportedIn'), blocksLeft: sumCount('blocksLeft'), keptFromEarlierQuanta: sumCount('keptToday') + sumCount('reused') + sumCount('imaginedKept'), involutions: sumCount('involutions'), honest: 'measured from this run\'s own outputs: blocks another step computed and this one did not, answers an earlier quantum settled and this run did not fetch, copies the edge proved by hash without a body, and the steps\' summed time over the wall time' }
+Object.assign(receipt, { wallMs, sumMs, speedup: advantage.speedup, waves: [...new Set(steps.map((s) => s.wave))].length, advantage })
+console.log(`advantage: ${advantage.teleportedBlocks} blocks teleported between steps, ${advantage.keptFromEarlierQuanta} answers kept from earlier quanta, ${advantage.involutions} copies proven by involution`)
 console.log(`waves: ${[...new Set(steps.map((s) => s.wave))].length}; steps ${(sumMs / 1000).toFixed(1)} s summed, ${(wallMs / 1000).toFixed(1)} s on the wall: speedup ×${wallMs ? (sumMs / wallMs).toFixed(2) : '—'}`)
 
 // The docket: every red step as an open lead with its evidence, accumulated across runs and deduplicated by id.

@@ -120,6 +120,16 @@ QPU the natural extension of every MCP and every MCP of QPU: a host's tools read
 
 Tools: [extend](#extend).
 
+## Toolbox `crypto`
+
+the split folds: what a place cannot hold is folded into pieces it can, each addressed by content and the whole by its pieces; a key names its piece; the bound is a reflective boundary that decides by comparison before computing.
+
+**Skill.** fold &#123; text, bound &#125; before sending a payload to a place with a limit (an isolate, a request, a quantum): send the pieces, each under the bound; a reader asks fold &#123; text, bound, key &#125; to learn which piece a key sits in and reads that piece alone; fold &#123; pieces, root &#125; checks the whole came back. seal names any text the way blocks and pieces are named.
+
+**Tests itself:** server only: a ledger folded under a bound, pieces under the bound, keys located, the root recomputed from the pieces, a wrong piece named; toolbox → toolbox: the fold address is the balancer's and the docket's (blocks.ts), the hash the billing toolbox's (hmac.ts), the seed and trinity the Clay register's; client → server: the unit's doors answer from one piece (rowsForKeys) or the baked root — this is the fold they need.
+
+Tools: [fold](#fold), [seal](#seal).
+
 ## processor
 
 A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.
@@ -1661,6 +1671,14 @@ Workspaces, branches, tags and releases watched and verified online, pure. Phase
 {
   "type": "object",
   "properties": {
+    "via": {
+      "type": "string",
+      "enum": [
+        "rest",
+        "mcp"
+      ],
+      "description": "mcp: the three facts through GitHub's MCP doors (list_branches, list_tags, list_releases) with the tenant's token in the client's request; default rest"
+    },
     "local": {
       "type": "object",
       "description": "{ remote, head, branch, version, worktrees, branches, tags, conceptDoi }"
@@ -1900,6 +1918,73 @@ QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, to
     "answer": {
       "type": "string",
       "description": "what the host answered the call: read back"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## fold
+
+The split folds: a payload larger than a place can hold is folded into pieces under the bound (bytes), each addressed by its content (fold address and SHA-256), the whole by its pieces (a root over their hashes); a key names the one piece it sits in (by address, or by the key range of its rows), so a door answers from that piece and never from the whole. The bound is a reflective boundary: piece i mirrors piece n−1−i, the excess is reflected into the count of pieces, decided by integer comparisons before anything is computed. With pieces (index, text, sha256?) and a root: the whole unfolded and the root checked, the wrong pieces named.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "text": {
+      "type": "string",
+      "description": "the payload: rows as lines (ndjson, csv) fold at rows"
+    },
+    "bound": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "bytes a piece may hold; e.g. what an isolate, a request or a quantum holds"
+    },
+    "key": {
+      "type": "string",
+      "description": "a key to locate: the piece it sits in"
+    },
+    "pieces": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "pieces to unfold: { index, text, sha256? }"
+    },
+    "root": {
+      "type": "string"
+    },
+    "withPieces": {
+      "type": "boolean",
+      "description": "carry the pieces' texts in the answer (default: addresses and hashes only)"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## seal
+
+SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure and the same at every host; the fold address of the text beside them, so a block, a piece and a message are named by one scheme.
+
+```json
+{
+  "type": "object",
+  "required": [
+    "text"
+  ],
+  "properties": {
+    "text": {
+      "type": "string"
+    },
+    "key": {
+      "type": "string",
+      "description": "HMAC key, when a keyed seal is wanted"
     },
     "selftest": {
       "type": "boolean"

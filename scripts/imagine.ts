@@ -2,6 +2,7 @@
 // otherwise one call, and the files written. Selftest first. Pure computation; no network.
 import { writeFileSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
 import { LEADS } from '../src/quantum/leads.ts'

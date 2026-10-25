@@ -3,6 +3,7 @@
 // check is recorded, never a stop. Network; skipped by `next --offline`.
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import type { Request, Answer } from '../src/quantum/discovery.ts'

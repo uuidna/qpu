@@ -3,7 +3,7 @@
 // request the client fetches, the answer read back whether JSON or an event stream. Outward, this catalogue is expressed as
 // the registration any MCP client mounts (tools/list as every client receives it, the mcpServers fragment). Pure: no fetch.
 import { toolOf, type Toolbox, type Context } from '../toolbox.js'
-import { doorOf, dataOf, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, type Door } from '../discovery.js'
+import { doorOf, dataOf, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, KNOWN_MCP, type Door } from '../discovery.js'
 import { flowWidget } from '../widgets.js'
 
 type ForeignTool = { name: string; description?: string; inputSchema?: { properties?: Record<string, unknown>; required?: string[] }; outputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean } }
@@ -48,7 +48,7 @@ const extend = toolOf('extension', {
       const read = answerOf(args.answer)
       return { phase: 'served' as const, host: hostOf(host), door: `${hostOf(host)}:${c.tool}`, request, ok: read.ok, result: read.result, error: read.error }
     }
-    const out: Record<string, unknown> = { host: hostOf(host), direction, defaults: DEFAULT_MCP_HOSTS, cloudflare: CLOUDFLARE_MCP }
+    const out: Record<string, unknown> = { host: hostOf(host), direction, defaults: DEFAULT_MCP_HOSTS, cloudflare: CLOUDFLARE_MCP, integrations: KNOWN_MCP.map((k) => ({ host: k.host, url: k.url, auth: k.auth, token: k.auth === 'token' ? `QPU_MCP_TOKEN_${k.host.toUpperCase().replace(/[.-]/g, '_')}[_<TENANT>]` : null, about: k.about, maps: k.maps })) }
     if (direction !== 'out') {
       if (args.tools === undefined) return { ...out, phase: 'requests' as const, requests: 1, requestList: [{ id: `extend:${hostOf(host)}`, method: 'POST' as const, url: host, accept: 'application/json, text/event-stream', body: rpcBody('tools/list') }], note: 'the client fetches the host\'s tools/list (with the tenant\'s token where the host asks for one) and calls again with tools' }
       const doors = inwardOf(host, toolsOfAnswer(args.tools))
@@ -71,7 +71,7 @@ export const EXTENSION: Toolbox = {
   tools: [extend],
   examples: [
     { id: 'extend-out', tool: 'extend', arguments: { direction: 'out' }, shows: 'This catalogue as the registration any MCP client mounts: every tool as tools/list serves it, grouped by toolbox, at this tree\'s own endpoint.', expect: (s) => (s.phase === 'registration' && s.outward.tools.length >= 36 && s.outward.mcpServers.qpu.url === 'https://qpu.uuidna.com/mcp' && s.outward.mcpServers.qpu.toolboxes.includes('extension') ? null : `${s.phase} ${s.outward?.tools?.length}`) },
-    { id: 'extend-in-request', tool: 'extend', arguments: { direction: 'in', host: 'https://docs.mcp.cloudflare.com/mcp' }, shows: 'Without the host\'s tools: the one tools/list request the client makes of Cloudflare\'s documentation server (no token needed there).', expect: (s) => (s.phase === 'requests' && s.requestList[0].method === 'POST' && s.requestList[0].body.method === 'tools/list' && s.cloudflare.length === 8 ? null : s.phase) },
+    { id: 'extend-in-request', tool: 'extend', arguments: { direction: 'in', host: 'https://docs.mcp.cloudflare.com/mcp' }, shows: 'Without the host\'s tools: the one tools/list request the client makes of Cloudflare\'s documentation server (no token needed there), and the integration matrix: every MCP this tree knows, its token name and what the tree does with it once open (GitHub → the repository watch through its doors; Cloudflare\'s eight → the verifier, the mirrors, the metrics, the wave, the audit, the prose, the tenants, the textbook).', expect: (s) => (s.phase === 'requests' && s.requestList[0].method === 'POST' && s.requestList[0].body.method === 'tools/list' && s.cloudflare.length === 8 && s.integrations.length === 9 && s.integrations.some((i: { host: string; auth: string }) => i.host === 'api.githubcopilot.com' && i.auth === 'token') && s.integrations.filter((i: { auth: string }) => i.auth === 'none').length === 1 ? null : `${s.phase} ${s.integrations?.length}`) },
     { id: 'extend-in-docs', tool: 'extend', arguments: { direction: 'in', host: 'https://docs.mcp.cloudflare.com/mcp', tools: DOCS_FIXTURE }, shows: 'Cloudflare\'s documentation server read into this catalogue: one door, docs.mcp.cloudflare.com:search_cloudflare_documentation, taking a query.', expect: (s) => (s.phase === 'extended' && s.inward === 1 && s.doors[0].as === 'docs.mcp.cloudflare.com:search_cloudflare_documentation' && s.doors[0].takes.includes('query') && s.catalogue === s.mineCount + 1 ? null : JSON.stringify(s.doors?.[0]).slice(0, 120)) },
     { id: 'extend-call-served', tool: 'extend', arguments: { host: 'https://docs.mcp.cloudflare.com/mcp', call: { tool: 'search_cloudflare_documentation', arguments: { query: 'workers assets' } }, answer: STREAM_FIXTURE }, shows: 'A foreign door served and its event-stream answer read back into the text the host returned.', expect: (s) => (s.phase === 'served' && s.ok && String(s.result).includes('developers.cloudflare.com/workers') && s.request.body.params.name === 'search_cloudflare_documentation' ? null : `${s.phase} ${s.ok} ${s.error ?? ''}`) },
   ],

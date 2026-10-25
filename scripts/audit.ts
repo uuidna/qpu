@@ -1,4 +1,5 @@
 // `npm run audit`: the MCP surface audits itself and exits non-zero on any failed check.
+import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 
 const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: {} } })

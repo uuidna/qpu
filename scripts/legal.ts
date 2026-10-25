@@ -3,6 +3,7 @@
 // the answers back and writes what the tool returns. Selftest first. Network; skipped by `next --offline`.
 import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
+import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { depositOf } from '../src/quantum/coins.ts'
 import { LICENSE } from '../src/quantum/license.ts'

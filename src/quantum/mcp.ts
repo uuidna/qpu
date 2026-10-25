@@ -118,6 +118,8 @@ import { REPOSITORY } from './toolboxes/repository.js'
 import { STANDARDS_BOX } from './toolboxes/standards.js'
 import { PAYLOAD, payloadDocOf } from './toolboxes/payload.js'
 import { EXTENSION } from './toolboxes/extension.js'
+import { factsOf, verifyRequestsOf } from './verifiers.js'
+import { CRYPTO } from './toolboxes/crypto.js'
 import { blockJsonLdOf } from './standards.js'
 
 /** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
@@ -614,12 +616,19 @@ const OWN: Tool[] = [
 
 /** Results by block address, once per process: the memory of the balancer. */
 const BALANCER = new Map<string, { structured: unknown; widget: string }>()
+/** The blocks teleported into this balancer by a client (computed by another process), so a snapshot can leave only the new ones. */
+const TELEPORTED = new Set<string>()
+let TELEPORT_HITS = 0
+/** The balancer's blocks as data, for a client to carry to another process: all of them, or only those this process computed. Pure. */
+export const balancerSnapshot = (p: { onlyNew?: boolean } = {}): { address: string; structured: unknown; widget: string }[] => [...BALANCER.entries()].filter(([a]) => !p.onlyNew || !TELEPORTED.has(a)).map(([address, v]) => ({ address, ...v }))
+/** Blocks computed elsewhere, teleported into this balancer: a block already here is kept (first computed wins); returns how many arrived. Pure. */
+export const balancerLoad = (blocks: readonly { address: string; structured: unknown; widget: string }[]): number => { let n = 0; for (const b of blocks) { if (typeof b.address !== 'string' || BALANCER.has(b.address)) continue; BALANCER.set(b.address, { structured: b.structured, widget: b.widget }); TELEPORTED.add(b.address); n += 1 } return n }
 /** Observability: per tool, how often it was asked, how often it computed (a miss), how long the misses took, how many bytes they produced. */
 const OBSERVED = new Map<string, { calls: number; misses: number; ms: number; bytes: number }>()
 const NESTED: number[] = []
 
 /** The computable metrics of the tree, in real time: what the registries, the kernel's index and one audit say right now. */
-type RunArtefacts = { e2e?: { combos?: number; copies?: number; involutions?: number; outcomes?: Record<string, number>; competition?: { saved?: number; msMajority?: number; winners?: Record<string, number> } }; coins?: { calls: number; coins: number; byDoor: Record<string, number>; gated: number; unclean: number }; receipt?: { steps?: { name: string; status: string; ms: number }[] }; sizes?: Record<string, number>; discovery?: { hosts?: { kind: string; detected: string }[]; doors?: unknown[]; capabilities?: Record<string, string[]> }; verification?: { summary?: Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }> }; readiness?: { classes?: { served: number; refuted: number; trial: number }; readiness?: { ready: boolean }; border?: { doors?: unknown[]; sealedBy?: string[] } }; repository?: { branches?: { agree: string[]; local: number }; tags?: { agree: string[]; local: number; mismatch: string[] }; leads?: unknown[] }; legal?: { claims?: number; verdicts?: Record<string, number>; violations?: number; refusals?: number; securityPassed?: number; securityTotal?: number; id?: string }; docket?: { entries?: number; root?: string | null; mirrors?: number }; receipts?: { count?: number; last?: string | null } }
+type RunArtefacts = { advantageByUnit?: unknown; e2e?: { combos?: number; copies?: number; involutions?: number; outcomes?: Record<string, number>; competition?: { saved?: number; msMajority?: number; winners?: Record<string, number> } }; coins?: { calls: number; coins: number; byDoor: Record<string, number>; gated: number; unclean: number }; receipt?: { steps?: { name: string; status: string; ms: number }[] }; sizes?: Record<string, number>; discovery?: { hosts?: { kind: string; detected: string }[]; doors?: unknown[]; capabilities?: Record<string, string[]> }; verification?: { summary?: Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }> }; readiness?: { classes?: { served: number; refuted: number; trial: number }; readiness?: { ready: boolean }; border?: { doors?: unknown[]; sealedBy?: string[] } }; repository?: { branches?: { agree: string[]; local: number }; tags?: { agree: string[]; local: number; mismatch: string[] }; leads?: unknown[] }; legal?: { claims?: number; verdicts?: Record<string, number>; violations?: number; refusals?: number; securityPassed?: number; securityTotal?: number; id?: string }; docket?: { entries?: number; root?: string | null; mirrors?: number }; receipts?: { count?: number; last?: string | null } }
 /** What the run's artefacts add to the metrics: textbook APIs autodiscovered and covered, verification on public datasets, the border, the repository watched, the legal audit, the RAID's signalling (docket entries chained to a root), the receipt chain. */
 const coverageOf = (a: RunArtefacts): Record<string, unknown> => {
   // the load: a block is paid once when computed (a miss of the balancer, a coin at a gated door); every re-ask is a teleport, free — the cache by address here, the involution (304 by content hash) at the edge
@@ -660,11 +669,11 @@ const metricsOf = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
     theoremsKernel: KERNEL_THEOREMS, theoremsHandWritten: THEOREMS.length, lemmasGenerated: GENERATED_LEMMAS, leads: LEADS.length, leadsByStatus: byStatus,
     auditChecks: audit?.total ?? null, auditPassed: audit?.passed ?? null, auditFailed: audit?.failed ?? null, auditNested: audit === null, selftests: TOOLBOXES.map((b) => b.name), balancer: BALANCER.size, license: LICENSE.spdx, at: new Date().toISOString(),
     // observability of this process: calls served from memory against computed, and where the computed milliseconds went
-    toolCalls: [...OBSERVED.values()].reduce((n, o) => n + o.calls, 0), toolMisses: [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0), toolMs: [...OBSERVED.values()].reduce((n, o) => n + o.ms, 0),
+    balancerTeleported: TELEPORTED.size, balancerTeleportHits: TELEPORT_HITS, toolCalls: [...OBSERVED.values()].reduce((n, o) => n + o.calls, 0), toolMisses: [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0), toolMs: [...OBSERVED.values()].reduce((n, o) => n + o.ms, 0),
     slowestTools: [...OBSERVED.entries()].sort((x, y) => y[1].ms - x[1].ms).slice(0, 6).map(([name, o]) => `${name} ${o.ms} ms / ${o.misses} computed / ${o.calls} asked / ${o.bytes} bytes`),
     msPerComputedCall: (() => { const m = [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0); return m ? Number(([...OBSERVED.values()].reduce((n, o) => n + o.ms, 0) / m).toFixed(1)) : null })(),
     ...coverageOf(artefacts),
-    gateCombos: artefacts.e2e?.combos ?? null, gateCopies: artefacts.e2e?.copies ?? null, gateInvolutions: artefacts.e2e?.involutions ?? null, gateOutcomes: artefacts.e2e?.outcomes ?? null, gateMsSaved: artefacts.e2e?.competition?.saved ?? null, gateWinners: artefacts.e2e?.competition?.winners ?? null,
+    advantageByUnit: artefacts.advantageByUnit ?? null, gateCombos: artefacts.e2e?.combos ?? null, gateCopies: artefacts.e2e?.copies ?? null, gateInvolutions: artefacts.e2e?.involutions ?? null, gateOutcomes: artefacts.e2e?.outcomes ?? null, gateMsSaved: artefacts.e2e?.competition?.saved ?? null, gateWinners: artefacts.e2e?.competition?.winners ?? null,
   }
 }
 const metrics = toolOf('tree', { name: 'metrics', description: 'The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel\'s theorem counts from its own index, leads by status, the audit\'s checks, the balancer\'s memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.', inputSchema: { type: 'object', properties: { artefacts: { type: 'object', description: 'the run\'s artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree\'s own counts alone' } } }, run: (args) => metricsOf((args.artefacts ?? {}) as RunArtefacts), widget: flowWidget })
@@ -701,7 +710,9 @@ const textbook = toolOf('tree', {
       // one example at a time when asked: a device at the edge walks the textbook example by example within the Worker's budget
       const chosenExamples = typeof args.example === 'string' ? EXAMPLES.filter((e) => e.id === args.example) : EXAMPLES
       if (typeof args.example === 'string' && !chosenExamples.length) throw new Error(`no example ${args.example}`)
-      const perExample = chosenExamples.map((e) => ({ id: e.id, tool: e.tool, theorem: e.theorem ?? null, requests: match(e.shows).verify.map((r) => ({ verifier: r.verifier, url: r.url, check: r.check })) }))
+      // the textbook verifies what each example states: the facts of its own sentence and arguments, not of every lead that shares a word with it (that asked 2,946 requests and 20 s of matching for 68 examples)
+      const perExample = chosenExamples.map((e) => ({ id: e.id, tool: e.tool, theorem: e.theorem ?? null, requests: factsOf({ id: e.id, source: 'statement', statement: `${e.shows} ${JSON.stringify(e.arguments)}`, status: 'open' }).flatMap(verifyRequestsOf).map((r) => ({ verifier: r.verifier, url: r.url, check: r.check })) }))
+      void match
       const requests = new Map<string, { verifier: string; url: string; check: string; examples: string[] }>()
       for (const ex of perExample) for (const r of ex.requests) { const cur = requests.get(r.url) ?? { ...r, examples: [] }; if (!cur.examples.includes(ex.id)) cur.examples.push(ex.id); requests.set(r.url, cur) }
       if (!Array.isArray(args.results)) return { phase: 'requests' as const, examples: chosenExamples.length, withRequests: perExample.filter((x) => x.requests.length).length, provenByTheorem: perExample.filter((x) => x.theorem).length, requests: requests.size, requestList: [...requests.values()], compliance: 'GET only, free public sources, a named user agent, no credential, a timeout on every request, each request checked against the host\'s discovered contract; nothing is written anywhere by this wave' }
@@ -814,6 +825,7 @@ export const TOOLBOXES: Toolbox[] = [
   STANDARDS_BOX,
   PAYLOAD,
   EXTENSION,
+  CRYPTO,
 ]
 const TOOLS: Tool[] = TOOLBOXES.flatMap((b) => b.tools)
 const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS } }
@@ -839,7 +851,7 @@ export const handle = (message: Rpc): Reply => {
       // exclusive time: a tool that calls tools (audit, metrics, match) is charged only for its own milliseconds; the nested ones are theirs
       const started = Date.now(); NESTED.push(0)
       const { structured, widget } = cached ?? found.call(args, CONTEXT)
-      if (!cached) BALANCER.set(address, { structured, widget })
+      if (!cached) BALANCER.set(address, { structured, widget }); else if (TELEPORTED.has(address)) TELEPORT_HITS += 1
       const children = NESTED.pop() ?? 0; const elapsed = Date.now() - started
       if (NESTED.length) NESTED[NESTED.length - 1]! += elapsed
       const o = OBSERVED.get(found.name) ?? { calls: 0, misses: 0, ms: 0, bytes: 0 }

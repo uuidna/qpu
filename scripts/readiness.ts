@@ -4,6 +4,7 @@
 import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
+import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { depositOf } from '../src/quantum/coins.ts'
 import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'

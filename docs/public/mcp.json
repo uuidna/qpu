@@ -1541,6 +1541,14 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "via": {
+            "type": "string",
+            "enum": [
+              "rest",
+              "mcp"
+            ],
+            "description": "mcp: the three facts through GitHub's MCP doors (list_branches, list_tags, list_releases) with the tenant's token in the client's request; default rest"
+          },
           "local": {
             "type": "object",
             "description": "{ remote, head, branch, version, worktrees, branches, tags, conceptDoi }"
@@ -1788,6 +1796,73 @@
       },
       "_meta": {
         "toolbox": "extension"
+      }
+    },
+    {
+      "name": "fold",
+      "description": "The split folds: a payload larger than a place can hold is folded into pieces under the bound (bytes), each addressed by its content (fold address and SHA-256), the whole by its pieces (a root over their hashes); a key names the one piece it sits in (by address, or by the key range of its rows), so a door answers from that piece and never from the whole. The bound is a reflective boundary: piece i mirrors piece n−1−i, the excess is reflected into the count of pieces, decided by integer comparisons before anything is computed. With pieces (index, text, sha256?) and a root: the whole unfolded and the root checked, the wrong pieces named.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "the payload: rows as lines (ndjson, csv) fold at rows"
+          },
+          "bound": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "bytes a piece may hold; e.g. what an isolate, a request or a quantum holds"
+          },
+          "key": {
+            "type": "string",
+            "description": "a key to locate: the piece it sits in"
+          },
+          "pieces": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "pieces to unfold: { index, text, sha256? }"
+          },
+          "root": {
+            "type": "string"
+          },
+          "withPieces": {
+            "type": "boolean",
+            "description": "carry the pieces' texts in the answer (default: addresses and hashes only)"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "crypto"
+      }
+    },
+    {
+      "name": "seal",
+      "description": "SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure and the same at every host; the fold address of the text beside them, so a block, a piece and a message are named by one scheme.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string",
+            "description": "HMAC key, when a keyed seal is wanted"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "crypto"
       }
     }
   ]

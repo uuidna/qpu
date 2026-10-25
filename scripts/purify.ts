@@ -6,6 +6,7 @@
 import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
 import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'

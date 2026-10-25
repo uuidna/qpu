@@ -522,6 +522,19 @@ export default defineConfig({
             "link": "/mcp#extend"
           }
         ]
+      },
+      {
+        "text": "Toolbox crypto",
+        "items": [
+          {
+            "text": "fold",
+            "link": "/mcp#fold"
+          },
+          {
+            "text": "seal",
+            "link": "/mcp#seal"
+          }
+        ]
       }
     ],
   },

@@ -3,6 +3,7 @@
 // here is typed by hand except the pages themselves. Run as `npm run docs:gen`; the site never reads a hand-written config.
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import './teleport.ts'
 import { handle, TOOLBOXES as toolboxes } from '../src/quantum/mcp.js'
 import { cssOf, hueOf, KEY } from '../src/quantum/theme.js'
 import { uuidOf } from '../src/quantum/blocks.js'

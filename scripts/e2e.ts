@@ -3,6 +3,7 @@
 // blocks appended to the UUID stream. Selftest first. Hosts from QPU_E2E_HOSTS (comma separated), else the tool's default.
 import { writeFileSync, mkdirSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
+import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import type { E2eRequest, E2eAnswer } from '../src/quantum/e2e.ts'

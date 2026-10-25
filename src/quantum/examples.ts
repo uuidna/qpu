@@ -25,6 +25,7 @@ import { LEGAL } from './toolboxes/legal.js'
 import { REPOSITORY } from './toolboxes/repository.js'
 import { STANDARDS_BOX } from './toolboxes/standards.js'
 import { EXTENSION } from './toolboxes/extension.js'
+import { CRYPTO } from './toolboxes/crypto.js'
 import { PAYLOAD } from './toolboxes/payload.js'
 
 export const EXAMPLES: Example[] = [
@@ -37,6 +38,7 @@ export const EXAMPLES: Example[] = [
   ...STANDARDS_BOX.examples,
   ...PAYLOAD.examples,
   ...EXTENSION.examples,
+  ...CRYPTO.examples,
   { id: 'textbook-categories', tool: 'textbook', arguments: {}, shows: 'The textbook as an adapter: every example categorised for reuse by toolbox, tool, theorem and module; the categories are computed, never written.', expect: (s) => (s.examples >= 49 && s.categories === 4 && s.toolboxCount >= 8 && s.textbook.theorem['relation_15']?.includes('clay-relation-15') ? null : `${s.examples} examples, ${s.categories} categories, ${s.toolboxCount} toolboxes`) },
   { id: 'textbook-reuse', tool: 'textbook', arguments: { reuse: 'clay-relation-15' }, shows: 'One example reused by id: replayed, its result returned, as documented.', expect: (s) => (s.reused === 'clay-relation-15' && s.asDocumented === true && s.theorem === 'relation_15' ? null : `${s.reused} ${s.asDocumented} ${s.why}`) },
   { id: 'vortex-trinity', tool: 'verify', arguments: { uuid: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, theorem: 'triad_reflect', shows: 'The 9-vortex of a UUID read whole: the seed, its reflection under σ_10, the trinity it belongs to and the trinity it reflects into at the same time (3, 6, 9 ↔ 7, 4, 1; 2, 5, 8 into itself), and whether it sits in the key\'s trinity; stated by the kernel as triad_reflect.', expect: (s) => { const v = s.channel?.message?.vortex; return v && v.seed + v.reflection === 10 && v.trinity.length === 3 && v.reflected.every((x: number, i: number) => x + v.trinity[i] === 10) && v.trinity.includes(v.seed) && v.reflected.includes(v.reflection) ? null : JSON.stringify(v) } },

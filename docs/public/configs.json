@@ -1,5 +1,5 @@
 {
- "date": "2026-10-25T20:17:45.647Z",
+ "date": "2026-10-25T20:45:15.753Z",
  "tested": 7,
  "kinds": 7,
  "closed": true,
@@ -38,16 +38,16 @@
   {
    "kind": "tenant",
    "torus": {
-    "address": "80b735ff-8534-881c-9f66-f0ccc2013b46",
-    "seed": 7,
-    "reflection": 3,
+    "address": "919c47d0-1189-1aa6-8d2d-a8c161c16979",
+    "seed": 4,
+    "reflection": 6,
     "trinity": [
      7,
      4,
      1
     ],
     "closed": true,
-    "bytes": 2467
+    "bytes": 2504
    }
   },
   {
@@ -68,31 +68,31 @@
   {
    "kind": "mcp",
    "torus": {
-    "address": "5efb51cc-a687-4a1b-887e-76b61fd8567f",
-    "seed": 1,
-    "reflection": 9,
+    "address": "7ffc9504-c8e3-6f66-a6b7-4ad68fc923e7",
+    "seed": 6,
+    "reflection": 4,
     "trinity": [
-     7,
-     4,
-     1
+     3,
+     6,
+     9
     ],
     "closed": true,
-    "bytes": 623
+    "bytes": 669
    }
   },
   {
    "kind": "versions",
    "torus": {
-    "address": "7527a7e1-901e-5a5b-9851-c9bd305b9b37",
-    "seed": 1,
-    "reflection": 9,
+    "address": "0d3c9e0c-445c-6a2f-abf2-9af7cc376bb1",
+    "seed": 6,
+    "reflection": 4,
     "trinity": [
-     7,
-     4,
-     1
+     3,
+     6,
+     9
     ],
     "closed": true,
-    "bytes": 138326
+    "bytes": 138382
    }
   },
   {

@@ -4,26 +4,33 @@
 // for the concept DOI, each checked against the contract discovery found. Phase two reads the answers into agreement and
 // leads: a local branch with no remote, a remote branch not here, a tag here and not there or there and not here, a release
 // without its tag, a package version with no tag, a Zenodo version with no release. Nothing here runs git or fetches.
+import { answerOf } from './extension.js'
 import { toolOf, type Toolbox } from '../toolbox.js'
 import { contractedOf } from '../wave.js'
 import { flowWidget } from '../widgets.js'
 
 export type Local = { remote: string | null; head: string; branch: string; version: string; worktrees: { path: string; head: string; branch: string | null }[]; branches: { name: string; upstream: string | null; head: string }[]; tags: { name: string; commit: string }[]; conceptDoi?: string | null }
-export type Request = { id: string; url: string; purpose: 'branches' | 'tags' | 'releases' | 'zenodo'; contracted: 'yes' | 'no' | 'unknown' }
+export type Request = { id: string; url: string; purpose: 'branches' | 'tags' | 'releases' | 'zenodo'; contracted: 'yes' | 'no' | 'unknown'; method?: 'POST'; body?: unknown; via?: 'rest' | 'mcp' }
+/** GitHub's MCP: the doors that watch a repository, with the arguments the server's own contract names. */
+export const GITHUB_MCP_URL = 'https://api.githubcopilot.com/mcp/'
+const GITHUB_DOORS: Record<'branches' | 'tags' | 'releases', string> = { branches: 'list_branches', tags: 'list_tags', releases: 'list_releases' }
 export type Answer = Request & { status: number; text: string }
 export type Watch = { remote: string | null; owner: string | null; repo: string | null; head: string; branch: string; version: string; worktrees: number; branches: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[] }; tags: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[]; mismatch: string[] }; releases: { count: number | null; latest: string | null; withoutTag: string[]; versionHasTag: boolean; versionHasRelease: boolean | null }; zenodo: { versions: number | null; latest: string | null; withoutRelease: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; refusals: string[] }
 
 export const ownerRepoOf = (remote: string | null): { owner: string; repo: string } | null => { const m = remote ? /github\.com[:/]([^/]+)\/([^/.]+)(?:\.git)?$/.exec(remote) : null; return m ? { owner: m[1]!, repo: m[2]! } : null }
 
-export const watchRequestsOf = (local: Local, contracts: Readonly<Record<string, readonly string[]>> = {}): Request[] => {
+export const watchRequestsOf = (local: Local, contracts: Readonly<Record<string, readonly string[]>> = {}, via: 'rest' | 'mcp' = 'rest'): Request[] => {
   const or = ownerRepoOf(local.remote); const out: Request[] = []
   const req = (id: string, url: string, purpose: Request['purpose']) => out.push({ id, url, purpose, contracted: contractedOf(url, contracts) })
+  // through GitHub's MCP, when the tenant's token opens it: the same three facts through the doors, one tools/call each; the token travels in the client's request
+  if (or && via === 'mcp') { for (const purpose of ['branches', 'tags', 'releases'] as const) out.push({ id: purpose, url: GITHUB_MCP_URL, purpose, contracted: 'yes', method: 'POST', via: 'mcp', body: { jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: GITHUB_DOORS[purpose], arguments: { owner: or.owner, repo: or.repo, perPage: 100 } } } }); if (local.conceptDoi) req('zenodo', `https://zenodo.org/api/records?q=conceptdoi:%22${local.conceptDoi}%22&allversions=1&size=25`, 'zenodo'); return out }
   if (or) { req('branches', `https://api.github.com/repos/${or.owner}/${or.repo}/branches?per_page=100`, 'branches'); req('tags', `https://api.github.com/repos/${or.owner}/${or.repo}/tags?per_page=100`, 'tags'); req('releases', `https://api.github.com/repos/${or.owner}/${or.repo}/releases?per_page=100`, 'releases') }
   if (local.conceptDoi) req('zenodo', `https://zenodo.org/api/records?q=conceptdoi:%22${local.conceptDoi}%22&allversions=1&size=25`, 'zenodo')
   return out
 }
 
-const parse = <T>(a: Answer | undefined): T | null => { if (!a || a.status !== 200) return null; try { return JSON.parse(a.text) as T } catch { return null } }
+// an answer read whether REST (the JSON body) or MCP (the door's structured content, or the JSON its text carries, whether JSON or an event stream)
+const parse = <T>(a: Answer | undefined): T | null => { if (!a || a.status !== 200) return null; try { if ((a as { via?: string }).via === 'mcp') { const r = answerOf(a.text); return r.ok ? (typeof r.result === 'string' ? JSON.parse(r.result) : r.result) as T : null } return JSON.parse(a.text) as T } catch { return null } }
 
 export const watchOf = (local: Local, answers: readonly Answer[]): Watch => {
   const or = ownerRepoOf(local.remote)
@@ -69,12 +76,12 @@ export const watchPageOf = (w: Watch, date: string): string => ['---', 'title: R
 const repository = toolOf('repository', {
   name: 'repository',
   description: 'Workspaces, branches, tags and releases watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.',
-  inputSchema: { type: 'object', properties: { local: { type: 'object', description: '{ remote, head, branch, version, worktrees, branches, tags, conceptDoi }' }, contracts: { type: 'object' }, answers: { type: 'array', items: { type: 'object' } }, selftest: { type: 'boolean' } } },
+  inputSchema: { type: 'object', properties: { via: { type: 'string', enum: ['rest', 'mcp'], description: 'mcp: the three facts through GitHub\'s MCP doors (list_branches, list_tags, list_releases) with the tenant\'s token in the client\'s request; default rest' }, local: { type: 'object', description: '{ remote, head, branch, version, worktrees, branches, tags, conceptDoi }' }, contracts: { type: 'object' }, answers: { type: 'array', items: { type: 'object' } }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...REPOSITORY.skill.selftest(ctx) }
     const local = args.local as Local | undefined
     if (!local) throw new Error('repository needs local: the facts the client gathered with git')
-    if (!Array.isArray(args.answers)) { const requests = watchRequestsOf(local, (args.contracts ?? {}) as Record<string, string[]>); return { phase: 'requests' as const, requests: requests.length, requestList: requests } }
+    if (!Array.isArray(args.answers)) { const requests = watchRequestsOf(local, (args.contracts ?? {}) as Record<string, string[]>, args.via === 'mcp' ? 'mcp' : 'rest'); return { phase: 'requests' as const, requests: requests.length, requestList: requests } }
     const w = watchOf(local, args.answers as Answer[])
     return { phase: 'watch' as const, branches: w.branches.local, tags: w.tags.local, releases: w.releases.count ?? -1, leads: w.leads.length, refusals: w.refusals.length, watch: w, page: watchPageOf(w, new Date().toISOString()) }
   },
@@ -113,6 +120,17 @@ export const REPOSITORY: Toolbox = {
       const refused = watchOf(LOCAL, [{ ...ANSWERS[0]!, status: 403, text: 'rate limited' }])
       check('repository:refusal', refused.refusals.length === 1 && refused.branches.remote === null, 'a refused request is recorded, never read as agreement')
       check('repository:page', watchPageOf(w, '2026-01-01').includes('| tags | 3 | 3 | 1 | waves-complete | v1.0.1 |'), 'the page renders the tags row')
+            {
+        const viaMcp = watchRequestsOf(LOCAL, {}, 'mcp')
+        const stream = (v: unknown) => 'event: message\ndata: ' + JSON.stringify({ jsonrpc: '2.0', id: 1, result: { content: [{ type: 'text', text: JSON.stringify(v) }] } }) + '\n\n'
+        const mcpAnswers: Answer[] = [
+          { ...viaMcp[0]!, status: 200, text: stream([{ name: 'main', commit: { sha: '1111' } }, { name: 'rebuild/phase-1', commit: { sha: '2222' } }]) } as Answer,
+          { ...viaMcp[1]!, status: 200, text: stream([{ name: 'v1.4.0', commit: { sha: '4444' } }]) } as Answer,
+          { ...viaMcp[2]!, status: 200, text: stream([{ tag_name: 'v1.4.0', name: 'v1.4.0', draft: false, prerelease: false, published_at: '2026-10-01T00:00:00Z' }]) } as Answer,
+        ]
+        const wm = watchOf(LOCAL, mcpAnswers)
+        check('repository:github-mcp-doors', viaMcp.filter((r) => r.via === 'mcp').length === 3 && viaMcp.every((r) => r.via !== 'mcp' || (r.method === 'POST' && (r.body as { params: { name: string } }).params.name.startsWith('list_'))) && wm.branches.remote === 2 && wm.tags.remote === 1 && wm.releases.count === 1, `three doors (${viaMcp.filter((r) => r.via === 'mcp').map((r) => (r.body as { params: { name: string } }).params.name).join(', ')}), their event-stream answers read into ${wm.branches.remote} branches, ${wm.tags.remote} tags, ${wm.releases.count} release(s)`)
+      }
       return { passed: checks.every((c) => c.passed), checks }
     },
   },

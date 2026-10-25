@@ -3,6 +3,7 @@
 // free public sources, a named user agent, no credential, a timeout — then joined back and sealed. Offline: the plan alone.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 const ROOT = process.cwd()

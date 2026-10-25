@@ -2,6 +2,7 @@
 // writes), hands the bodies back with the contracts discovery found, and writes what the tool returns. Selftest first.
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import type { WaveRequest, WaveResult } from '../src/quantum/wave.ts'
