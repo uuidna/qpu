@@ -70,15 +70,30 @@ const fold = toolOf('crypto', {
 
 const seal = toolOf('crypto', {
   name: 'seal',
-  description: 'SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant\'s secret never travels here), pure and the same at every host; the fold address of the text beside them, so a block, a piece and a message are named by one scheme.',
-  inputSchema: { type: 'object', required: ['text'], properties: { text: { type: 'string' }, key: { type: 'string', description: 'HMAC key, when a keyed seal is wanted' }, selftest: { type: 'boolean' } } },
+  description: 'SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant\'s secret never travels here), pure and the same at every host; the fold address of the text beside them, so a block, a piece and a message are named by one scheme. With sign (ML-DSA-44, ML-DSA-65 or ML-DSA-87, FIPS 204): the post-quantum signature plan over the 32-byte digest, executed by the host with its signing key through Web Crypto; a tenant verifies with the public key the answer carries, never the secret.',
+  inputSchema: { type: 'object', required: ['text'], properties: { text: { type: 'string' }, key: { type: 'string', description: 'HMAC key, when a keyed seal is wanted' }, sign: { type: ['string', 'boolean'], description: 'a post-quantum signature over the digest: ML-DSA-44, ML-DSA-65 (true) or ML-DSA-87' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...CRYPTO.skill.selftest(ctx) }
     const text = String(args.text)
-    return { bytes: utf8(text).length, sha256: sha(text), address: uuidOf(text), ...(typeof args.key === 'string' ? { hmac: hex(hmacSha256(utf8(args.key), utf8(text))) } : {}), postQuantum: POST_QUANTUM }
+    const digest = sha(text)
+    return { bytes: utf8(text).length, sha256: digest, address: uuidOf(text), ...(typeof args.key === 'string' ? { hmac: hex(hmacSha256(utf8(args.key), utf8(text))) } : {}), ...(args.sign ? { signature: signaturePlanOf(digest, args.sign) } : {}), postQuantum: POST_QUANTUM }
   },
   widget: flowWidget,
 })
+
+/** The ML-DSA parameter sets of FIPS 204 (table 2 of the standard: public key and signature sizes in bytes) and the Web Crypto names Workers and Node give them. */
+export const ML_DSA = {
+  'ML-DSA-44': { category: 2, publicKey: 1312, signature: 2420 },
+  'ML-DSA-65': { category: 3, publicKey: 1952, signature: 3309 },
+  'ML-DSA-87': { category: 5, publicKey: 2592, signature: 4627 },
+} as const
+export type MlDsa = keyof typeof ML_DSA
+export type SignaturePlan = { algorithm: MlDsa; fips: 204; over: 'sha256'; message: string; signed: string; executedBy: 'host'; keyVar: string; webcrypto: { flag: string; generateKey: { name: MlDsa }; sign: { name: MlDsa }; keyFormat: 'jwk'; kty: 'AKP'; since: string }; sizes: { publicKey: number; signature: number }; verify: string; value?: string; publicKey?: Record<string, unknown>; keyed?: 'secret' | 'ephemeral'; phase?: 'planned' | 'signed' | 'unsupported'; note?: string }
+/** The signature plan, pure: what the host signs (the 32 bytes of the digest), with which algorithm, under which key variable, through which Web Crypto call; the host fills value, publicKey and keyed. */
+export const signaturePlanOf = (digest: string, sign: unknown): SignaturePlan => {
+  const algorithm: MlDsa = sign === true || sign === 'ML-DSA-65' ? 'ML-DSA-65' : sign === 'ML-DSA-44' ? 'ML-DSA-44' : sign === 'ML-DSA-87' ? 'ML-DSA-87' : (() => { throw new Error(`sign is ML-DSA-44, ML-DSA-65 or ML-DSA-87 (FIPS 204), not ${JSON.stringify(sign)}`) })()
+  return { algorithm, fips: 204, over: 'sha256', message: digest, signed: 'the 32 bytes of the SHA-256 digest (256 bits, whatever the text\'s length)', executedBy: 'host', keyVar: 'QPU_SIGNING_KEY[_<TENANT>] (a private JWK of kty AKP; absent, the host signs with a key it generates for its own lifetime and says so)', webcrypto: { flag: 'webcrypto_modern_algorithms', generateKey: { name: algorithm }, sign: { name: algorithm }, keyFormat: 'jwk', kty: 'AKP', since: POST_QUANTUM.workers.changelog }, sizes: { publicKey: ML_DSA[algorithm].publicKey, signature: ML_DSA[algorithm].signature }, verify: `crypto.subtle.verify({ name: '${algorithm}' }, publicKey, signature, bytesOf(sha256)) with the public key the answer carries: no secret needed`, phase: 'planned' }
+}
 
 /** What this seal is against a quantum adversary, and what NIST standardised: read at CSRC on 2026-10-25, carried as the standards nist-fips-203/204/205 discovery reads. */
 export const POST_QUANTUM = {
@@ -89,7 +104,9 @@ export const POST_QUANTUM = {
     { fips: 205, name: 'SLH-DSA (Stateless Hash-Based Digital Signature)', published: '2024-08-13', at: 'https://csrc.nist.gov/pubs/fips/205/final' },
   ],
   selected: [{ name: 'HQC (key encapsulation)', on: '2025-03-11', report: 'NIST IR 8545', at: 'https://csrc.nist.gov/projects/post-quantum-cryptography' }],
-  here: 'signatures over folds with ML-DSA or SLH-DSA are not implemented in this tree: lead pqc-signature-over-folds; the fold, the hash and the HMAC stand',
+  workers: { changelog: 'https://developers.cloudflare.com/changelog/post/2026-09-28-webcrypto-modern-algorithms/', read: '2026-10-26', says: 'the Workers Web Crypto API supports ML-KEM-768, ML-KEM-1024, ML-DSA-44, ML-DSA-65 and ML-DSA-87 under the webcrypto_modern_algorithms compatibility flag, with getPublicKey(), SubtleCrypto.supports() and JWKs of kty AKP' },
+  node: { version: 'v26.0.0', measured: '2026-10-26', says: 'crypto.sign/verify with ml-dsa-44/65/87 and slh-dsa-sha2-128s; Web Crypto ML-DSA-65 marked experimental' },
+  here: 'seal { text, sign } plans an ML-DSA signature over the digest (pure); the Worker executes it at the edge with the tenant\'s signing key or an ephemeral one, and the gate verifies the answer at every host with the public key alone; SLH-DSA (FIPS 205) is not in Workers Web Crypto and stays a lead',
 } as const
 const LEDGER = Array.from({ length: 40 }, (_, i) => JSON.stringify({ key: `k${String(i).padStart(2, '0')}`, value: i * i, note: 'a row of the ledger' })).join('\n')
 
@@ -99,6 +116,7 @@ export const CRYPTO: Toolbox = {
   tools: [fold, seal],
   examples: [
     { id: 'fold-ledger', tool: 'fold', theorem: 'textbook_fold_mirror', arguments: { text: LEDGER, bound: 600, key: 'k27' }, shows: 'A forty-row ledger folded under a bound of 600 bytes: the pieces, each with its address, SHA-256 and key range, the root over them, the mirror piece of each across the fold, and the one piece the key k27 sits in — decided by comparisons, the whole never read for it.', expect: (s) => (s.phase === 'folded' && !s.fits && s.count >= 4 && s.pieces.every((p: { reflection: number; index: number }) => p.reflection === s.count - 1 - p.index) && s.located && s.located.why.includes('k27') === false && s.located.index >= 0 && s.decision.startsWith('ask piece') ? null : `${s.phase} ${s.count} ${JSON.stringify(s.located)}`) },
+    { id: 'seal-sign', tool: 'seal', theorem: 'textbook_signature_over_digest', arguments: { text: 'qpu', sign: 'ML-DSA-65' }, shows: 'The post-quantum signature plan over one text: ML-DSA-65 (FIPS 204) over the 32 bytes of its SHA-256, the Web Crypto call and flag the host uses, the key variable, the sizes of key and signature; served at a host, the plan carries the signature and the public key a tenant verifies without any secret.', expect: (s) => (s.signature?.algorithm === 'ML-DSA-65' && s.signature.message === s.sha256 && s.signature.sizes.signature === 3309 && s.signature.sizes.publicKey === 1952 && s.signature.webcrypto.flag === 'webcrypto_modern_algorithms' ? null : JSON.stringify(s.signature)) },
     { id: 'seal-text', tool: 'seal', arguments: { text: 'qpu', key: 'test' }, shows: 'SHA-256, the HMAC under a test key and the fold address of one text, the same at every host.', expect: (s) => (s.sha256.length === 64 && s.hmac.length === 64 && /^[0-9a-f-]{36}$/.test(s.address) && s.bytes === 3 ? null : JSON.stringify(s)) },
   ],
   skill: {
@@ -121,6 +139,8 @@ export const CRYPTO: Toolbox = {
       check('crypto:whole-fits', one.fits && one.count === 1 && one.pieces[0]!.reflection === 0, 'a payload under the bound is one piece, its own mirror')
       const big = foldOf('x'.repeat(2500), 1000)
       check('crypto:row-cut-at-characters', big.count === 3 && big.pieces.every((p) => p.bytes <= 1000), 'a single row above the bound is cut at characters')
+      const plan = signaturePlanOf(sha('qpu'), true); let refused = ''; try { signaturePlanOf(sha('qpu'), 'RSA') } catch (e) { refused = (e as Error).message }
+      check('crypto:signature-plan', plan.algorithm === 'ML-DSA-65' && plan.fips === 204 && plan.message === sha('qpu') && plan.sizes.signature === ML_DSA['ML-DSA-65'].signature && plan.executedBy === 'host' && /FIPS 204/.test(refused), `sign: true plans ML-DSA-65 over the digest, ${plan.sizes.signature}-byte signatures; a non-FIPS-204 name is refused`)
       check('crypto:seal', sha('abc') === 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad' && hex(hmacSha256(utf8('key'), utf8('The quick brown fox jumps over the lazy dog'))) === 'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8', 'SHA-256 and HMAC-SHA256 agree with the published vectors')
       void row
       return { passed: checks.every((c) => c.passed), checks }

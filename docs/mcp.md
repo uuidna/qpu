@@ -2031,7 +2031,7 @@ The split folds: a payload larger than a place can hold is folded into pieces un
 
 ## seal
 
-SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure and the same at every host; the fold address of the text beside them, so a block, a piece and a message are named by one scheme.
+SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure and the same at every host; the fold address of the text beside them, so a block, a piece and a message are named by one scheme. With sign (ML-DSA-44, ML-DSA-65 or ML-DSA-87, FIPS 204): the post-quantum signature plan over the 32-byte digest, executed by the host with its signing key through Web Crypto; a tenant verifies with the public key the answer carries, never the secret.
 
 ```json
 {
@@ -2046,6 +2046,13 @@ SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a t
     "key": {
       "type": "string",
       "description": "HMAC key, when a keyed seal is wanted"
+    },
+    "sign": {
+      "type": [
+        "string",
+        "boolean"
+      ],
+      "description": "a post-quantum signature over the digest: ML-DSA-44, ML-DSA-65 (true) or ML-DSA-87"
     },
     "selftest": {
       "type": "boolean"

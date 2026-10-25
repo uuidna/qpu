@@ -6,6 +6,8 @@
   "name": "qpu",
   "main": "src/worker.ts",
   "compatibility_date": "2026-10-01",
+  // ML-DSA (FIPS 204) in Web Crypto: the seal tool's signature plan is executed at the edge (Cloudflare changelog 2026-09-28)
+  "compatibility_flags": ["webcrypto_modern_algorithms"],
   "workers_dev": true,
   // the built site served by the same Worker: the web OS installable at every tenant; the Worker runs first so /mcp, /docket and /.well-known stay its own
   "assets": { "directory": "./docs/.vitepress/dist", "binding": "ASSETS", "run_worker_first": true, "not_found_handling": "none" },

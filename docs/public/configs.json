@@ -1,9 +1,11 @@
 {
- "date": "2026-10-25T23:29:24.131Z",
+ "date": "2026-10-25T23:38:43.734Z",
  "tested": 9,
  "kinds": 9,
  "closed": true,
- "wranglerDrift": [],
+ "wranglerDrift": [
+  "compatibility_flags"
+ ],
  "configs": [
   {
    "kind": "payload",
@@ -83,16 +85,16 @@
   {
    "kind": "versions",
    "torus": {
-    "address": "545fb5f7-79b4-263a-ab28-6bfb851f5f03",
-    "seed": 3,
-    "reflection": 7,
+    "address": "503b04f0-3860-7832-9772-10b5c21e53e6",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 138553
+    "bytes": 138526
    }
   },
   {

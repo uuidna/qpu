@@ -15,11 +15,12 @@ import { discoveryOf } from './quantum/discovery-document.js'
 import { ROLES, type Role } from './quantum/roles.js'
 import { hashOf as contentHashOf } from './quantum/e2e.js'
 import { VERSION } from './quantum/version.js'
+import type { SignaturePlan } from './quantum/toolboxes/crypto.js'
 
 /** The slice of the Workers runtime this file uses, typed here so the tree needs no runtime types package to typecheck. */
 export type Storage = { get<T>(key: string): Promise<T | undefined>; put(key: string, value: unknown): Promise<void>; delete(key: string): Promise<unknown>; list<T>(opts?: { prefix?: string }): Promise<Map<string, T>> }
 export type DocketStub = { fetch(request: Request): Promise<Response> }
-export type Env = { QPU_WRITE_TOKEN?: string; QPU_ADMIN_TOKEN?: string; QPU_DATA_KEY?: string; QPU_MIRRORS?: string; /** the MCP host that manages roles (a Payload MCP plugin): tools/call of QPU_RBAC_TOOL with { token, tenant, host } answers { role } */ QPU_RBAC_MCP?: string; QPU_RBAC_TOOL?: string; /** the built site, served as static assets by the same Worker: the web OS */ ASSETS?: { fetch(request: Request): Promise<Response> }; DOCKET?: { idFromName(name: string): unknown; get(id: unknown): DocketStub }; [tenantToken: string]: unknown }
+export type Env = { QPU_WRITE_TOKEN?: string; /** the tenant's ML-DSA signing key (a private JWK of kty AKP): QPU_SIGNING_KEY_<TENANT>, or this one for every tenant */ QPU_SIGNING_KEY?: string; QPU_ADMIN_TOKEN?: string; QPU_DATA_KEY?: string; QPU_MIRRORS?: string; /** the MCP host that manages roles (a Payload MCP plugin): tools/call of QPU_RBAC_TOOL with { token, tenant, host } answers { role } */ QPU_RBAC_MCP?: string; QPU_RBAC_TOOL?: string; /** the built site, served as static assets by the same Worker: the web OS */ ASSETS?: { fetch(request: Request): Promise<Response> }; DOCKET?: { idFromName(name: string): unknown; get(id: unknown): DocketStub }; [tenantToken: string]: unknown }
 
 /** Tenants: one Worker, several hosts, each host its own docket and its own tokens. A security collision — one tenant's token
  * at another tenant's host — is not an incident but a procedure: the answer names the role, the header and who issues it. */
@@ -453,6 +454,41 @@ const stripeCheckout = async (reply: { result: { structuredContent: { plan: { ur
 }
 export { stripeCheckout }
 
+/** The post-quantum signature executed at the edge: the plan seal { sign } answered is filled with the ML-DSA signature over the
+ * 32 bytes of the digest, through Web Crypto (webcrypto_modern_algorithms), under the tenant's signing key QPU_SIGNING_KEY_<TENANT>
+ * (a private JWK of kty AKP) or QPU_SIGNING_KEY — absent, a key generated for this isolate's lifetime, said so (keyed: ephemeral).
+ * The public key travels with the signature: a tenant verifies without any secret. The handler never holds the key. */
+type Alg = Parameters<typeof crypto.subtle.sign>[0]
+type Jwk = Record<string, unknown>
+type KeyPair = { privateKey: CryptoKey; publicKey: CryptoKey }
+const ephemeralKeys = new Map<string, Promise<KeyPair>>()
+const signingKeyOf = async (algorithm: string, env: Env, tenant: string): Promise<{ pair: KeyPair; keyed: 'secret' | 'ephemeral' }> => {
+  const jwk = env[`QPU_SIGNING_KEY_${tenant.toUpperCase()}`] ?? env.QPU_SIGNING_KEY
+  if (typeof jwk === 'string' && jwk.trim()) {
+    const priv = JSON.parse(jwk) as Jwk
+    const privateKey = await crypto.subtle.importKey('jwk', priv as never, { name: algorithm } as unknown as Alg, true, ['sign'])
+    const publicKey = await crypto.subtle.importKey('jwk', { ...priv, priv: undefined } as never, { name: algorithm } as unknown as Alg, true, ['verify'])
+    return { pair: { privateKey, publicKey }, keyed: 'secret' }
+  }
+  if (!ephemeralKeys.has(algorithm)) ephemeralKeys.set(algorithm, crypto.subtle.generateKey({ name: algorithm } as unknown as Alg, true, ['sign', 'verify']) as unknown as Promise<KeyPair>)
+  return { pair: await ephemeralKeys.get(algorithm)!, keyed: 'ephemeral' }
+}
+const bytesOfHex = (h: string): Uint8Array => new Uint8Array((h.match(/../g) ?? []).map((x) => parseInt(x, 16)))
+export const signAtEdge = async (reply: { result: { structuredContent: { sha256: string; signature: SignaturePlan } } }, env: Env, tenant: string): Promise<unknown> => {
+  const sc = reply.result.structuredContent
+  const plan = sc.signature
+  try {
+    const { pair, keyed } = await signingKeyOf(plan.algorithm, env, tenant)
+    const value = new Uint8Array(await crypto.subtle.sign({ name: plan.algorithm } as unknown as Alg, pair.privateKey, buf(bytesOfHex(sc.sha256))))
+    const publicKey = await crypto.subtle.exportKey('jwk', pair.publicKey) as Record<string, unknown>
+    const signature: SignaturePlan = { ...plan, phase: 'signed', value: b64(value), publicKey, keyed, note: keyed === 'secret' ? `signed under ${plan.keyVar.split(' ')[0]} at tenant ${tenant}` : `signed under a key of this isolate's lifetime at tenant ${tenant}: set QPU_SIGNING_KEY_${tenant.toUpperCase()} for a stable one` }
+    return { ...reply, result: { ...reply.result, structuredContent: { ...sc, signature } } }
+  } catch (e) {
+    const signature: SignaturePlan = { ...plan, phase: 'unsupported', note: `the edge did not sign: ${(e as Error).message}; the plan stands (flag ${plan.webcrypto.flag})` }
+    return { ...reply, result: { ...reply.result, structuredContent: { ...sc, signature } } }
+  }
+}
+
 export const worker = {
   async fetch(request: Request, env: Env = {}): Promise<Response> {
     const url = new URL(request.url)
@@ -469,7 +505,8 @@ export const worker = {
       // A checkout plan is executed here, with the tenant's key the handler never holds: the answer carries Stripe's session url.
       const params = (message as { params?: { name?: string; arguments?: { op?: string } } }).params
       // a cached reply is an involution: the block address is its ETag; the same arguments at any host answer the same address (tools/call is pure), so If-None-Match answers 304
-      if ('result' in reply && params?.name !== 'stripe' && params?.name !== 'metrics') return involuted(request, addressOfReply(reply), replyOf(request, reply), contentHashOf((reply as { result: { structuredContent?: unknown } }).result.structuredContent))
+      if ('result' in reply && params?.name !== 'stripe' && params?.name !== 'metrics' && !(params?.name === 'seal' && (params.arguments as { sign?: unknown } | undefined)?.sign)) return involuted(request, addressOfReply(reply), replyOf(request, reply), contentHashOf((reply as { result: { structuredContent?: unknown } }).result.structuredContent))
+      if (params?.name === 'seal' && (params.arguments as { sign?: unknown } | undefined)?.sign && 'result' in reply) return replyOf(request, await signAtEdge(reply as { result: { structuredContent: { sha256: string; signature: SignaturePlan } } }, env, tenantOf(url.hostname)))
       if (params?.name === 'stripe' && params.arguments?.op === 'plan' && 'result' in reply) return json(await stripeCheckout(reply as { result: { structuredContent: { plan: { url: string; form: Record<string, string>; headers: Record<string, string>; secret: string } } } }, url, env))
       return replyOf(request, reply)
     }

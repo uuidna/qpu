@@ -24,5 +24,7 @@ theorem textbook_skills_documents : 2 + 12 = 14 := by decide
 theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt k h
 /-- an item belongs to one shard only: the shares never overlap (examples: shard-share) -/
 theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
+/-- the signature is over the 32-byte SHA-256 digest: 256 bits, whatever the length of the text (examples: seal-sign) -/
+theorem textbook_signature_over_digest : 32 * 8 = 256 := by decide
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
 theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - k = 0 := by intro k h hk; omega

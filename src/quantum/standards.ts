@@ -15,6 +15,7 @@ export const STANDARDS: readonly { id: string; name: string; contract: string; k
   // Payload's own skills for agents (github.com/payloadcms/skills): read as a tree, every SKILL.md a skill, every reference a door the payload toolbox maps; no licence is declared there, so only names, paths and sizes are read, never the text
   // the source of payloadcms.com (github.com/payloadcms/website, MIT): the tree read for its collections, blocks, globals, fields and plugins, the proof that the site is what Payload computes
   // the Claude API's overview, read as a page; its Models door answers 401 until a tenant's key opens it (discovery names it, never guesses)
+  { id: 'cloudflare-webcrypto-modern', name: 'Cloudflare changelog 2026-09-28: Web Crypto adds ML-KEM and ML-DSA (webcrypto_modern_algorithms)', contract: 'https://developers.cloudflare.com/changelog/post/2026-09-28-webcrypto-modern-algorithms/', kind: 'reference' },
   { id: 'claude-api', name: 'Claude API overview (platform.claude.com)', contract: 'https://platform.claude.com/docs/en/api/overview', kind: 'reference' },
   { id: 'payload-website', name: 'payloadcms/website, the source of payloadcms.com (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/website/git/trees/main?recursive=1', kind: 'reference' },
   { id: 'payload-skills', name: 'payloadcms/skills, Payload\'s skills for AI agents (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/skills/git/trees/main?recursive=1', kind: 'reference' },
