@@ -106,6 +106,8 @@ const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
 import { toolOf, type Tool, type Toolbox, type Context } from './toolbox.js'
 import { FLOW } from './toolboxes/flow.js'
 import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS } from './theorems-index.js'
+import { matcherOf } from './match.js'
+import { sha256, utf8, hex } from './hmac.js'
 import { flowWidget } from './widgets.js'
 import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
@@ -654,7 +656,7 @@ const metrics = toolOf('tree', { name: 'metrics', description: 'The computable m
 const textbook = toolOf('tree', {
   name: 'textbook',
   description: 'The QPU textbook as an adapter: every example categorised for reuse — by toolbox, by tool, by the kernel-accepted theorem that backs it, by that theorem\'s module — and, with reuse: <example id>, that example replayed and its result returned. The categories are computed from the registries, never written by hand.',
-  inputSchema: { type: 'object', properties: { reuse: { type: 'string', description: 'an example id to replay' }, category: { type: 'string', enum: ['toolbox', 'tool', 'theorem', 'module'], description: 'one category to list; omit for all' } } },
+  inputSchema: { type: 'object', properties: { verify: { type: 'boolean', description: 'the wave over the textbook: every example\'s verification requests on public datasets and APIs, for any client device to fetch' }, results: { type: 'array', items: { type: 'object' }, description: 'the requests fetched (url, status, ok, contracted), joined back by url and sealed' }, reuse: { type: 'string', description: 'an example id to replay' }, category: { type: 'string', enum: ['toolbox', 'tool', 'theorem', 'module'], description: 'one category to list; omit for all' } } },
   run: (args) => {
     const boxOf = new Map(TOOLBOXES.flatMap((b) => b.tools.map((t) => [t.name, b.name] as const)))
     const group = <K extends string>(key: (e: (typeof EXAMPLES)[number]) => K | null) => { const out: Record<string, string[]> = {}; for (const e of EXAMPLES) { const k = key(e); if (k !== null) (out[k] ??= []).push(e.id) } return out }
@@ -671,6 +673,22 @@ const textbook = toolOf('tree', {
       if (r.error) throw new Error(r.error.message)
       const why = e.expect(r.result!.structuredContent)
       return { reused: e.id, tool: e.tool, toolbox: boxOf.get(e.tool) ?? 'none', theorem: e.theorem ?? null, shows: e.shows, asDocumented: why === null, why, result: r.result!.structuredContent }
+    }
+    // the wave over the textbook: every example's statement emits its verification requests through the match tool (the leads it
+    // names and their facts), deduplicated by url; results fetched by any client device are joined back by url, so the wave the
+    // flow already fetched costs nothing more; the outcome is sealed by its content address
+    if (args.verify === true || Array.isArray(args.results)) {
+      const match = matcherOf(handle, EXAMPLES, LEADS)
+      const perExample = EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, theorem: e.theorem ?? null, requests: match(e.shows).verify.map((r) => ({ verifier: r.verifier, url: r.url, check: r.check })) }))
+      const requests = new Map<string, { verifier: string; url: string; check: string; examples: string[] }>()
+      for (const ex of perExample) for (const r of ex.requests) { const cur = requests.get(r.url) ?? { ...r, examples: [] }; if (!cur.examples.includes(ex.id)) cur.examples.push(ex.id); requests.set(r.url, cur) }
+      if (!Array.isArray(args.results)) return { phase: 'requests' as const, examples: EXAMPLES.length, withRequests: perExample.filter((x) => x.requests.length).length, provenByTheorem: perExample.filter((x) => x.theorem).length, requests: requests.size, requestList: [...requests.values()], compliance: 'GET only, free public sources, a named user agent, no credential, a timeout on every request, each request checked against the host\'s discovered contract; nothing is written anywhere by this wave' }
+      const results = args.results as { url: string; status: number; ok: boolean; contracted?: string }[]
+      const byUrl = new Map(results.map((r) => [r.url, r]))
+      const verified = perExample.map((ex) => { const rs = ex.requests.map((r) => byUrl.get(r.url)); const reachable = rs.filter((r) => r?.ok).length; const unfetched = rs.filter((r) => !r).length; return { id: ex.id, tool: ex.tool, theorem: ex.theorem, requests: ex.requests.length, reachable, unreachable: ex.requests.length - reachable - unfetched, unfetched, contracted: rs.filter((r) => r?.contracted === 'yes').length, state: ex.theorem ? 'proven' : ex.requests.length === 0 ? 'no public source named' : unfetched === ex.requests.length ? 'unfetched' : reachable === ex.requests.length ? 'verified online' : reachable ? 'partly reachable' : 'unreachable' } })
+      const content = JSON.stringify({ verified, results: results.map((r) => [r.url, r.status]) })
+      const states = verified.reduce<Record<string, number>>((acc, v) => ({ ...acc, [v.state]: (acc[v.state] ?? 0) + 1 }), {})
+      return { phase: 'verified' as const, id: uuidOf(content), sha256: hex(sha256(utf8(content))), examples: EXAMPLES.length, requests: requests.size, fetched: [...requests.keys()].filter((u) => byUrl.has(u)).length, ...Object.fromEntries(Object.entries(states).map(([k, v]) => [`state:${k}`, v])), states, verified }
     }
     const chosen = typeof args.category === 'string' ? { [args.category]: categories[args.category as keyof typeof categories] } : categories
     return { examples: EXAMPLES.length, backedByTheorems: EXAMPLES.filter((e) => e.theorem).length, categories: Object.keys(chosen).length, ...Object.fromEntries(Object.entries(chosen).map(([k, v]) => [`${k}Count`, Object.keys(v).length])), textbook: chosen }

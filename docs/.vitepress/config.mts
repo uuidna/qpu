@@ -90,6 +90,10 @@ export default defineConfig({
         "link": "/clay"
       },
       {
+        "text": "Textbook",
+        "link": "/textbook"
+      },
+      {
         "text": "Examples",
         "link": "/examples"
       },
@@ -201,6 +205,10 @@ export default defineConfig({
           {
             "text": "Clay register",
             "link": "/clay"
+          },
+          {
+            "text": "Textbook",
+            "link": "/textbook"
           },
           {
             "text": "Examples",

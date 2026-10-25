@@ -1063,6 +1063,17 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
 {
   "type": "object",
   "properties": {
+    "verify": {
+      "type": "boolean",
+      "description": "the wave over the textbook: every example's verification requests on public datasets and APIs, for any client device to fetch"
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the requests fetched (url, status, ok, contracted), joined back by url and sealed"
+    },
     "reuse": {
       "type": "string",
       "description": "an example id to replay"
