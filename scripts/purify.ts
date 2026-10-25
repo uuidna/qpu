@@ -8,7 +8,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { handle } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
-import { LEADS } from '../src/quantum/leads.ts'
+import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { VERIFIERS, factsOf, verifyRequestsOf } from '../src/quantum/verifiers.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
@@ -33,6 +33,15 @@ for (const f of files) {
   const stem = f.replace(/\.ts$/, '')
   const imported = files.some((g) => g !== f && new RegExp(`from '\\./${stem}\\.(js|ts)'`).test(text[g]!)) || new RegExp(`from '(?:\\.\\./)+src/quantum/${stem}\\.ts'`).test(all)
   if (!imported && !f.endsWith('.test.ts') && f !== 'mcp.ts') leads.push({ id: `orphan-${stem}`, source: `src/quantum/${f}`, statement: `${f} is imported by nothing`, status: 'open', reason: 'an orphan is unproven; fold it in or remove it' })
+}
+
+// A cleanup lead is settled only while its subject stays absent: the status is a measurement, re-taken each run, never a memory.
+const presentOf = (subjects: ReturnType<typeof cleanupSubjectsOf>): string[] => !subjects ? [] : subjects.kind === 'branches'
+  ? subjects.names.filter((b) => execFileSync('git', ['branch', '--list', b], { cwd: ROOT, encoding: 'utf8' }).trim() !== '')
+  : subjects.names.filter((path) => existsSync(join(ROOT, path)))
+for (const l of LEADS) {
+  const present = presentOf(cleanupSubjectsOf(l))
+  if (present.length) leads.push({ id: `${l.id}-returned`, source: l.source, statement: `${l.id} records a removal, yet ${present.join(', ')} is present again`, status: 'open', reason: 'a cleanup is settled only while its subject stays absent; remove it or reopen the lead' })
 }
 
 const doubled = (served.match(/&amp;#\d+;|&amp;[a-z]+;/g) ?? []).length

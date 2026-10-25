@@ -12,6 +12,14 @@ export type LeadStatus = 'served' | 'partial' | 'blocked' | 'out_of_scope' | 'op
 
 export type Lead = { id: string; source: string; statement: string; status: LeadStatus; tool?: string; reason?: string; lastmod?: string }
 
+// A cleanup lead names what was removed: file paths, or git branches. Its settlement is a measurement (is the subject still absent?)
+// taken by the scripts that can see the tree; this parse is the pure half, shared so purify and readiness measure the same thing.
+export const cleanupSubjectsOf = (l: Lead): { kind: 'branches' | 'paths'; names: string[] } | null => {
+  if (!l.id.startsWith('cleanup-') || l.status !== 'out_of_scope') return null
+  const branches = /^git branches (.+)$/.exec(l.source)
+  return branches ? { kind: 'branches', names: branches[1]!.split(/,\s*/) } : { kind: 'paths', names: [l.source.split(/\s/)[0]!.replace(/\/$/, '')] }
+}
+
 const FETCHED = SITEMAP_FETCHED
 
 /** The leads followed by hand: each read from its page, PDF or repository, with the tool that serves it. */
@@ -225,9 +233,9 @@ export const SITEMAP_LEADS: readonly Lead[] = (() => {
 })()
 
 export const LEADS: readonly Lead[] = [
-  { id: 'cleanup-auto-release-script', source: 'scripts/auto-release.ts (untracked, orphan lineage)', statement: 'A release script with VERSION hard-coded to 1.1.0 that force-pushed a tag and created a GitHub release; it bypassed the single-source version and the flow.', status: 'out_of_scope', reason: 'removed on 2026-10-25; releases run through `npm run next` and the author\'s deploy, never a forced tag' },
-  { id: 'cleanup-next-build-dir', source: '.next/ (untracked, 8 KB here)', statement: 'A Next.js build directory left by the orphan lineage, where it reached 1.1 GB; nothing on this branch builds with Next.', status: 'out_of_scope', reason: 'removed on 2026-10-25; generated data is build output or a docket entry, never tree pollution' },
-  { id: 'cleanup-stale-branches', source: 'git branches snapshot/pre-purge, purge/google-only', statement: 'Two local branches from an earlier attempt at the same split: the same content as origin/main on a rewritten history, one tracking 237k build-artefact files.', status: 'out_of_scope', reason: 'deleted locally on 2026-10-25; origin/main and rebuild/phase-1 carry the history; orphan/v1.1.1-audit is kept as evidence' },
+  { id: 'cleanup-auto-release-script', source: 'scripts/auto-release.ts (untracked, orphan lineage)', statement: 'A release script with VERSION hard-coded to 1.1.0 that force-pushed a tag and created a GitHub release; it bypassed the single-source version and the flow.', status: 'out_of_scope', reason: 'removed on 2026-10-25, absence measured each run by purify and readiness; releases run through `npm run next` and the author\'s deploy, never a forced tag' },
+  { id: 'cleanup-next-build-dir', source: '.next/ (untracked, 8 KB here)', statement: 'A Next.js build directory left by the orphan lineage, where it reached 1.1 GB; nothing on this branch builds with Next.', status: 'out_of_scope', reason: 'removed on 2026-10-25, absence measured each run by purify and readiness; generated data is build output or a docket entry, never tree pollution' },
+  { id: 'cleanup-stale-branches', source: 'git branches snapshot/pre-purge, purge/google-only', statement: 'Two local branches from an earlier attempt at the same split: the same content as origin/main on a rewritten history, one tracking 237k build-artefact files.', status: 'out_of_scope', reason: 'deleted locally on 2026-10-25, absence measured each run by purify and readiness; origin/main and rebuild/phase-1 carry the history; orphan/v1.1.1-audit is kept as evidence' },
   { id: 'cleanup-fnv1a-consolidated', source: 'src/quantum/blocks.ts', statement: 'A 32-bit FNV-1a hash beside the unit\'s 64-bit fold: two folds for one job.', status: 'served', tool: 'verify', reason: 'consolidated on 2026-10-25 into foldOf, the unit\'s fold; every address, receipt and fingerprint uses one construction' },
   { id: 'human-device-blocks', source: 'src/quantum/blocks.ts, src/quantum/widgets.ts', statement: 'Every tool result is a block a human device renders: HTML on the host\'s design tokens, Open Graph metadata for a link preview, a shadcn registry item for an app, the attribution line, the a432 accent. Screen, phone, kiosk or chat host, the same block.', status: 'served', tool: 'audit', reason: 'the audit checks every result carries widget, Open Graph, block and licence' },
   { id: 'mcp-ui-extension', source: 'modelcontextprotocol.io (MCP Apps / UI extension)', statement: 'The MCP UI extension lets a host render interactive views a server declares; this tree declares its widgets in _meta.widget as HTML and its blocks as shadcn registry items.', status: 'partial', tool: 'audit', reason: 'the html and block are served; the extension\'s declared resource scheme and the host handshake are not implemented here, and the specification is still moving' },

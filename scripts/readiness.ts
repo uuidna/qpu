@@ -2,10 +2,11 @@
 // tree's lead sources, the A432 aura of every example block, and the current rights facts, and records each answer with
 // its receipt. The handler stays pure; this script is the client. Network; skipped by `next --offline`.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { handle } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
-import { LEADS } from '../src/quantum/leads.ts'
+import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
@@ -24,7 +25,12 @@ const main = async () => {
   for (const l of LEADS) {
     const host = (/^(?:https?:\/\/)?([a-z0-9.-]+\.[a-z]{2,})/i.exec(l.source) ?? [])[1] ?? l.source.split(/[,/ ]/)[0] ?? 'other'
     const s = byHost.get(host) ?? { source: host, settled: 0, open: [] }
-    if (l.status === 'served') s.settled += 1
+    const subjects = cleanupSubjectsOf(l)
+    const present = !subjects ? [] : subjects.kind === 'branches'
+      ? subjects.names.filter((b) => execFileSync('git', ['branch', '--list', b], { cwd: ROOT, encoding: 'utf8' }).trim() !== '')
+      : subjects.names.filter((path) => existsSync(join(ROOT, path)))
+    if (l.status === 'served' || (subjects && !present.length)) s.settled += 1 // a cleanup is settled by the measured absence of its subject
+    else if (present.length) s.open.push({ what: `${l.id}: ${present.join(', ')} is present again`, owes: 'a cleanup is settled only while its subject stays absent' })
     else s.open.push({ what: `${l.id}: ${l.statement}`, owes: l.reason ?? l.status })
     byHost.set(host, s)
   }

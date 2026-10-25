@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { handle } from './mcp.js'
+import { LEADS, cleanupSubjectsOf } from './leads.js'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
@@ -153,7 +154,7 @@ test('the circuit tool places operations by the insert strategy and the Toffoli 
 })
 
 test('every lead that is served or partial names a tool the server serves, and every other lead says why', async () => {
-  const { LEADS } = await import('./leads.js')
+
   const served = new Set(((handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result).tools.map((t) => t.name))
   for (const lead of LEADS) {
     if (lead.status === 'served' || lead.status === 'partial') assert.ok(lead.tool && served.has(lead.tool), `${lead.id} names no served tool`)
@@ -254,4 +255,13 @@ test('the repositories tool serves the seventeen quantumlib repositories, and fi
   assert.ok('result' in all && (all.result as { structuredContent: { repositories: unknown[]; total: number } }).structuredContent.total === 15)
   const py = call('repositories', { language: 'Python' })
   assert.ok('result' in py && (py.result as { structuredContent: { repositories: { language: string }[] } }).structuredContent.repositories.every((r) => r.language === 'Python'))
+})
+
+test('a cleanup lead parses to the subjects whose absence settles it: paths or git branches, and nothing else parses', () => {
+  const cleanups = LEADS.filter((l) => cleanupSubjectsOf(l))
+  assert.equal(cleanups.length, 3)
+  assert.deepEqual(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-auto-release-script')!), { kind: 'paths', names: ['scripts/auto-release.ts'] })
+  assert.deepEqual(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-next-build-dir')!), { kind: 'paths', names: ['.next'] })
+  assert.deepEqual(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-stale-branches')!), { kind: 'branches', names: ['snapshot/pre-purge', 'purge/google-only'] })
+  assert.equal(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-fnv1a-consolidated')!), null, 'a cleanup served by a tool is settled by that tool, not by absence')
 })
