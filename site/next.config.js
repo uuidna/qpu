@@ -56,8 +56,9 @@ const nextConfig = withBundleAnalyzer({
   // the rewrites below are QPU's (CC-BY-NC-ND-4.0, see NOTICE.qpu.md); the rest of this file is the MIT fork's
   // a UUID anywhere as the path is a block: the page is the QPU's own, teleported from the Worker (addressed by content, cached a year); no prefix
   async rewrites() {
-    // consolidated: every address the Worker served is the app's own — the MCP plugin at /api/mcp, the entries collection at /api/entries, the discovery endpoint at /api/qpu; a UUID path is rendered by the app's own page through the catch-all
-    return { beforeFiles: [{ source: '/mcp', destination: '/api/mcp' }, { source: '/docket/:path*', destination: '/api/entries/:path*' }, { source: '/.well-known/qpu.json', destination: '/api/qpu' }] }
+    // consolidated, no prefix: a UUID is one address — the entry's JSON when the client accepts application/json (the entries collection's own door), the block's page otherwise (the catch-all); the list is the collection's /api/entries; the MCP plugin at /api/mcp; the discovery at /api/qpu
+    const UUID = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+    return { beforeFiles: [{ source: `/:uuid(${UUID})`, has: [{ type: 'header', key: 'accept', value: '(.*application/json.*)' }], destination: '/api/entries/:uuid' }, { source: '/mcp', destination: '/api/mcp' }, { source: '/.well-known/qpu.json', destination: '/api/qpu' }] }
   },
   reactStrictMode: true,
   transpilePackages: ['@payloadcms/v3-preview-runtime', '@payloadcms/v4-preview-runtime', '@uuidna/qpu'], // the QPU's handler, linked as a package, compiled here
