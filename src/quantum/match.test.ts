@@ -4,6 +4,7 @@ import { handle } from './mcp.js'
 import { EXAMPLES } from './examples.js'
 import { LEADS } from './leads.js'
 import { matchOf, tokens, verdictOf, foreignVerdictsOf } from './match.js'
+import { GLAGOLITIC, glagoliticOf, numeralsOf, translateOf } from './i18n.js'
 
 const match = (statement: string) => matchOf(statement, handle, EXAMPLES, LEADS)
 
@@ -62,4 +63,21 @@ test('a verdict crossing the border is translated by table, and a call carries i
   assert.equal(r.result._meta.openGraph['og:see_also'], 'https://uuidna.com/docket/abc')
   const plain = handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'processor', arguments: { name: 'Willow' } } }) as { result: { _meta: { prev?: string } } }
   assert.equal(plain.result._meta.prev, undefined)
+})
+
+test('Glagolitic numerals round-trip through the table and are read as integers before a match', () => {
+  assert.equal(Object.keys(GLAGOLITIC).length, 28)
+  for (const n of [1, 9, 10, 15, 99, 105, 432, 999, 1000, 1999]) assert.equal(numeralsOf(glagoliticOf(n)!).numerals[0]!.value, n, `${n}`)
+  assert.equal(glagoliticOf(2000), null, 'above the table is a lead, never guessed')
+  assert.deepEqual(numeralsOf('Factor Ⰺⰴ with Shor'), { text: 'Factor 15 with Shor', numerals: [{ glyphs: 'Ⰺⰴ', value: 15 }] })
+  const m = matchOf('Factor Ⰺⰴ with Shor', handle, EXAMPLES, LEADS)
+  assert.equal(m.verdict, 'served'); assert.equal(m.tool, 'algorithm'); assert.equal(m.reflection.factors[0]?.factors, '3 × 5'); assert.equal(m.read?.numerals[0]?.value, 15)
+})
+
+test('a statement in Bulgarian is translated by vocabulary offline before the match and the verdict comes back in Bulgarian', () => {
+  assert.equal(translateOf('Разложи 15 с Shor', 'bg', 'en').text, 'Factor 15 with Shor')
+  const m = matchOf('Разложи Ⰺⰴ с Shor', handle, EXAMPLES, LEADS, 'bg')
+  assert.equal(m.verdict, 'served'); assert.equal(m.read?.verdictIn, 'обслужена'); assert.deepEqual(m.read?.untranslated, ['shor'], 'a name stays as it is and is reported, never guessed')
+  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement: 'Разложи Ⰺⰴ с Shor', locale: 'bg' } } })
+  assert.equal((r as { result: { structuredContent: { read: { locale: string } } } }).result.structuredContent.read.locale, 'bg')
 })

@@ -47,7 +47,7 @@ export const factsOf = (lead: Lead): Fact[] => {
   if (/arxiv\s*(\d{4}\.\d{4,5})/i.test(src)) facts.push({ kind: 'preprint', value: /arxiv\s*(\d{4}\.\d{4,5})/i.exec(src)![1]!, lead: lead.id })
   else if (/10\.\d{4,9}\/\S+/.test(src)) facts.push({ kind: 'doi', value: /10\.\d{4,9}\/\S+/.exec(src)![0]!, lead: lead.id })
   else if (/^repo-/.test(lead.id)) facts.push({ kind: 'repository', value: lead.id.replace(/^repo-/, ''), lead: lead.id })
-  else if (/^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(src) || src.startsWith('http')) facts.push({ kind: 'page', value: src.split(',')[0]!.trim(), detail: { statement: lead.statement }, lead: lead.id })
+  else if (/^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(src) || src.startsWith('http')) facts.push({ kind: 'page', value: src.split(/[,;]/)[0]!.trim().split(/\s/)[0]!, detail: { statement: lead.statement }, lead: lead.id })
   for (const n of lead.statement.match(/\b\d{2,}\b/g) ?? []) facts.push({ kind: 'integer', value: n, lead: lead.id })
   return facts
 }

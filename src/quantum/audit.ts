@@ -11,6 +11,23 @@ type Lead = { id: string; status: string; tool?: string; reason?: string }
 type ToolSpec = { name: string; description: string; inputSchema: { type?: string; required?: string[]; properties?: Record<string, unknown> } }
 
 /** Audit a handler against the example registry and the leads it serves. Pure: no I/O. */
+/** What a screen reader or a braille display needs of a widget, measured on its HTML: a name on every image, a header row on every
+ * table, words in every link, a heading to land on. Each miss is named; an empty list is a pass. */
+export const accessibilityOf = (html: string): string[] => {
+  const misses: string[] = []
+  const imgs = html.match(/<img\b[^>]*>/gi) ?? []
+  const unnamed = imgs.filter((t) => !/\balt="[^"]+"/i.test(t)).length
+  if (unnamed) misses.push(`${unnamed} image(s) without alt text`)
+  const tables = html.match(/<table\b[\s\S]*?<\/table>/gi) ?? []
+  const unheaded = tables.filter((t) => !/<th\b/i.test(t)).length
+  if (unheaded) misses.push(`${unheaded} table(s) without a header cell`)
+  const links = html.match(/<a\b[^>]*>[\s\S]*?<\/a>/gi) ?? []
+  const wordless = links.filter((a) => !/\baria-label="[^"]+"/i.test(a) && a.replace(/<[^>]*>/g, '').trim() === '').length
+  if (wordless) misses.push(`${wordless} link(s) without words`)
+  if (!/<h[1-6]\b|role="heading"/i.test(html)) misses.push('no heading to land on')
+  return misses
+}
+
 export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[]): Audit => {
   const checks: Check[] = []
   const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
@@ -42,6 +59,8 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     const r = reply.result
     const shape = Array.isArray(r.content) && r.content[0]?.type === 'text' && 'structuredContent' in r && typeof r._meta?.widget === 'string' && r._meta.widget.length > 0
     check(`license:${e.id}`, r._meta?.license?.spdx === 'CC-BY-NC-ND-4.0' && r._meta.widget.includes('data-license="CC-BY-NC-ND-4.0"') && r._meta?.block?.license === 'CC-BY-NC-ND-4.0', r._meta?.license ? 'result, widget and block carry the licence' : 'no licence on the result')
+    const a11y = accessibilityOf(r._meta?.widget ?? '')
+    check(`accessibility:${e.id}`, a11y.length === 0, a11y.length ? a11y.join('; ') : 'images named, tables headed, links worded, a heading present')
     const why = e.expect(r.structuredContent)
     check(`example:${e.id}`, shape && why === null, why ?? (shape ? e.shows : 'result lacks content, structuredContent or a widget'))
   }

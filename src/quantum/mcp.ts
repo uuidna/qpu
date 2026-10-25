@@ -9,6 +9,7 @@ import { blockOf, verifyOf } from './blocks.js'
 import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay } from './clay-register.js'
 import { matchOf } from './match.js'
+import { LOCALES } from './i18n.js'
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
 import { DEVICES, PROCESSORS, deviceOf, willowNoiseOf } from './processor.js'
@@ -570,8 +571,8 @@ const TOOLS: Tool[] = [
   tool({
     name: 'match',
     description: 'Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the surface proves it cannot, from a schema bound the statement exceeds, a lead whose reason says why, or the handler\'s own refusal; the cluster then names the served possibilities around it and verify names the live sources the client\'s MCP can check. unknown: nothing matches, and the statement comes back as a new lead to develop.',
-    inputSchema: { type: 'object', required: ['statement'], properties: { statement: { type: 'string', description: 'any prompt or statement' } } },
-    run: (args) => matchOf(String(args.statement ?? ''), handle, EXAMPLES, LEADS),
+    inputSchema: { type: 'object', required: ['statement'], properties: { statement: { type: 'string', description: 'any prompt or statement; Glagolitic numerals are read as integers' }, locale: { type: 'string', enum: Object.keys(LOCALES), description: 'the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it' } } },
+    run: (args) => matchOf(String(args.statement ?? ''), handle, EXAMPLES, LEADS, args.locale === undefined ? undefined : String(args.locale)),
     widget: matchWidget,
   }),
   tool({

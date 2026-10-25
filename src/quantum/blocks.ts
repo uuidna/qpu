@@ -148,10 +148,14 @@ const describe = (structured: unknown): string => {
   return text.length <= 200 ? text : text.slice(0, 197) + '…'
 }
 
+const escapeOf = (t: string): string => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
 export const blockOf = (tool: string, args: Record<string, unknown>, structured: unknown, html: string, description: string): Block => {
   const query = Object.keys(args).length ? '?' + new URLSearchParams(Object.entries(args).map(([k, v]) => [k, typeof v === 'string' ? v : JSON.stringify(v)])).toString() : ''
   const id = uuidOf(`${tool}${JSON.stringify(args)}`)
-  const wrapped = wrapOf(id, html + attributionHtml())
+  // A heading to land on: what a screen reader announces first, and what the audit's accessibility check measures.
+  const heading = `<div role="heading" aria-level="2" style="font-size: var(--font-size-footnote); color: var(--text-muted); margin-bottom: var(--gap-sm, 6px);">${tool} · ${escapeOf(description)}</div>`
+  const wrapped = wrapOf(id, heading + html + attributionHtml())
   return {
     id,
     html: wrapped,

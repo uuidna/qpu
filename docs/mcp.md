@@ -865,7 +865,24 @@ Any statement, matched against everything the surface can do. served: a call ans
   "properties": {
     "statement": {
       "type": "string",
-      "description": "any prompt or statement"
+      "description": "any prompt or statement; Glagolitic numerals are read as integers"
+    },
+    "locale": {
+      "type": "string",
+      "enum": [
+        "en",
+        "bg",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "ru",
+        "zh",
+        "ja",
+        "pt",
+        "nl"
+      ],
+      "description": "the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it"
     }
   }
 }

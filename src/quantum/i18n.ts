@@ -12,6 +12,7 @@ export const LOCALES: Record<string, { name: string; native: string; filled: boo
 
 /** English → Bulgarian for every term the surface emits. The inverse is derived, so the table reads both ways. */
 const BG: Record<string, string> = {
+  factor: 'разложи', with: 'с', qubits: 'кубита', 'how many': 'колко', have: 'има', numeral: 'числител', numerals: 'числители',
   tool: 'инструмент', tools: 'инструменти', example: 'пример', examples: 'примери', lead: 'следа', leads: 'следи', verifier: 'проверител', verifiers: 'проверители',
   block: 'блок', receipt: 'разписка', receipts: 'разписки', previous: 'предишен', next: 'следващ', program: 'програма', handle: 'дръжка', tail: 'опашка',
   seal: 'печат', valid: 'валиден', invalid: 'невалиден', served: 'обслужена', partial: 'частична', blocked: 'блокирана', open: 'отворена', 'out of scope': 'извън обхват',
@@ -43,4 +44,30 @@ export const translateOf = (text: string, from: string, to: string): { text: str
   const known = new Set(Object.keys(table).flatMap((k) => k.split(' ')).concat(Object.values(table).flatMap((v) => v.split(' '))))
   const untranslated = [...new Set((out.match(/[\p{L}]+/gu) ?? []).map((w) => w.toLowerCase()))].filter((w) => !known.has(w) && !/^[0-9a-f]{8,}$/.test(w))
   return { text: out.replace(/\s{2,}/g, ' ').trim(), untranslated, via: `vocabulary ${from}→${to}, ${hit.size} phrase(s)` }
+}
+
+/** The Glagolitic numerals, additive like the Cyrillic system: each letter carries the value of its alphabetic place, units,
+ * tens and hundreds, then Ⱍ for 1000 (en.wikipedia.org/wiki/Glagolitic_numerals). Values above 1000 are not in this table:
+ * a lead, never guessed. */
+export const GLAGOLITIC: Readonly<Record<string, number>> = {
+  'Ⰰ': 1, 'Ⰱ': 2, 'Ⰲ': 3, 'Ⰳ': 4, 'Ⰴ': 5, 'Ⰵ': 6, 'Ⰶ': 7, 'Ⰷ': 8, 'Ⰸ': 9,
+  'Ⰺ': 10, 'Ⰻ': 20, 'Ⰼ': 30, 'Ⰽ': 40, 'Ⰾ': 50, 'Ⰿ': 60, 'Ⱀ': 70, 'Ⱁ': 80, 'Ⱂ': 90,
+  'Ⱃ': 100, 'Ⱄ': 200, 'Ⱅ': 300, 'Ⱆ': 400, 'Ⱇ': 500, 'Ⱈ': 600, 'Ⱉ': 700, 'Ⱋ': 800, 'Ⱌ': 900,
+  'Ⱍ': 1000,
+}
+// Glagolitic has a lower case (U+2C30..) with the same values; the table is written in capitals and read in both.
+const GLAGOLITIC_RUN = new RegExp(`[${Object.keys(GLAGOLITIC).map((g) => g + g.toLowerCase()).join('')}]+`, 'gu')
+/** An integer 1..1999 written in Glagolitic numerals, largest letter first; null beyond the table. */
+export const glagoliticOf = (n: number): string | null => {
+  if (!Number.isInteger(n) || n < 1 || n > 1999) return null
+  const letters = Object.entries(GLAGOLITIC).sort((a, b) => b[1] - a[1])
+  let rest = n, out = ''
+  for (const [glyph, value] of letters) while (rest >= value) { out += glyph; rest -= value }
+  return rest === 0 ? out : null
+}
+/** Every run of Glagolitic letters in a text read as one additive numeral and written as digits; the runs are reported. */
+export const numeralsOf = (text: string): { text: string; numerals: { glyphs: string; value: number }[] } => {
+  const numerals: { glyphs: string; value: number }[] = []
+  const out = text.replace(GLAGOLITIC_RUN, (glyphs) => { const value = [...glyphs].reduce((n, g) => n + GLAGOLITIC[g.toUpperCase()]!, 0); numerals.push({ glyphs, value }); return String(value) })
+  return { text: out, numerals }
 }

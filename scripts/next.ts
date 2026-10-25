@@ -5,7 +5,7 @@
 // exits green so nothing downstream stops. `--strict` exits red instead; `--offline` skips the network.
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { appendFileSync, existsSync, readFileSync, writeFileSync, unlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
@@ -37,6 +37,13 @@ const receipt: { license: string; date: string; head: string; steps: { name: str
   head: spawnSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).stdout.trim(),
   steps: [],
 }
+// Two runs in one tree write the same files under docs/public; the second is not stopped, it is recorded as a lead of this run.
+const lockPath = join(ROOT, 'docs', 'public', 'next.lock')
+const alive = (pid: number): boolean => { try { process.kill(pid, 0); return true } catch { return false } }
+const concurrent: { pid: number; date: string } | null = (() => { try { const l = JSON.parse(readFileSync(lockPath, 'utf8')) as { pid: number; date: string }; return alive(l.pid) ? l : null } catch { return null } })()
+if (concurrent) console.log(`⚠ another next run (pid ${concurrent.pid}, since ${concurrent.date}) is writing the same files; recorded as a lead, this run continues`)
+writeFileSync(lockPath, JSON.stringify({ pid: process.pid, date: receipt.date }) + '\n')
+process.on('exit', () => { try { const l = JSON.parse(readFileSync(lockPath, 'utf8')) as { pid: number }; if (l.pid === process.pid) unlinkSync(lockPath) } catch { /* already gone */ } })
 const run = (s: Step) => {
   if (s.skip) { receipt.steps.push({ name: s.name, status: 'skipped', ms: 0, tail: s.skip }); console.log(`· ${s.name}: skipped (${s.skip})`); return true }
   const started = Date.now()
@@ -73,6 +80,7 @@ const opened: NextLead[] = stillRed.map((s) => {
   const step = receipt.steps.filter((x) => x.name === s.name).at(-1)!
   return { id: `next-${s.name}-${receipt.head}`, source: `npm run next ${receipt.date}`, statement: `${s.name} is red at ${receipt.head}`, status: 'open', reason: 'a stop is a lead to follow next; stopping is the failure', evidence: step.tail, head: receipt.head, date: receipt.date }
 })
+if (concurrent) opened.push({ id: `next-concurrent-${receipt.head}-${receipt.date.slice(11, 19).replace(/:/g, '')}`, source: `npm run next ${receipt.date}`, statement: `two next runs wrote docs/public at once (this run beside pid ${concurrent.pid} started ${concurrent.date})`, status: 'open', reason: 'the flow has no queue: a run that starts while another writes the same files can read a half-written artefact; serialise the runs or give each its own output', evidence: `lock ${lockPath}`, head: receipt.head, date: receipt.date })
 const leadsNow = [...previous.filter((l) => !opened.some((o) => o.id === l.id)), ...opened]
 writeFileSync(docket, JSON.stringify(leadsNow, null, 1) + '\n')
 const docketPage = ['---', 'title: Next leads', 'order: 50', '---', '', '# Leads opened by `npm run next`', '', 'Every red step of every run, as an open lead with its evidence. The next run follows them; a lead closes when its step is green again.', '', '| Lead | Opened | Evidence |', '|---|---|---|', ...leadsNow.map((l) => `| ${l.id} | ${l.date} | ${l.evidence.replace(/\|/g, '\\|').replace(/\n/g, '<br>').slice(0, 600)} |`), ''].join('\n')

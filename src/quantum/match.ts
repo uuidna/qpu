@@ -8,6 +8,7 @@ import type { Example } from './examples.js'
 import type { Lead } from './leads.js'
 import type { Rpc } from './audit.js'
 import { factsOf, verifyRequestsOf, type VerifyRequest } from './verifiers.js'
+import { numeralsOf, translateOf } from './i18n.js'
 
 export type Verdict = 'served' | 'impossible' | 'unknown'
 /** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.
@@ -45,6 +46,8 @@ export type Match = {
   reflection: Reflection
   /** the statement as a lead: served with its tool, or blocked/out of scope with the proof, or a new lead to develop */
   lead: Lead
+  /** how the statement was read before matching: Glagolitic numerals as integers, a locale translated by vocabulary, offline */
+  read?: { given: string; numerals: { glyphs: string; value: number }[]; locale?: string; untranslated: string[]; verdictIn?: string }
 }
 
 /** The surface's own names: they name where, never what, so they count for nothing in coverage. */
@@ -132,7 +135,18 @@ const slug = (text: string): string => tokens(text).slice(0, 6).join('-') || 'st
 const META = new Set(['match', 'audit'])
 
 /** A matcher with its index built once: tools, examples and leads tokenised and weighted, so every lead can be imagined in one run. */
-export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string) => Match) => {
+export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string, locale?: string) => Match) => {
+  const inner = innerMatcherOf(handle, allExamples, leads)
+  return (given: string, locale?: string): Match => {
+    const num = numeralsOf(given)
+    const tr = locale && locale !== 'en' ? translateOf(num.text, locale, 'en') : null
+    const m = inner(tr ? tr.text : num.text)
+    if (!num.numerals.length && !tr) return m
+    return { ...m, read: { given, numerals: num.numerals, locale, untranslated: tr?.untranslated ?? [], verdictIn: tr ? translateOf(m.verdict, 'en', locale!).text : undefined } }
+  }
+}
+
+const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string) => Match) => {
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
   const allTools: ToolSpec[] = 'result' in list ? list.result.tools : []
   const tools = allTools.filter((t) => !META.has(t.name))
@@ -266,4 +280,4 @@ export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example
   }
 }
 
-export const matchOf = (statement: string, handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): Match => matcherOf(handle, allExamples, leads)(statement)
+export const matchOf = (statement: string, handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[], locale?: string): Match => matcherOf(handle, allExamples, leads)(statement, locale)

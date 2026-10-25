@@ -1,6 +1,7 @@
 #!/bin/sh
-# The imprint: the receipt pre-commit just wrote, the purity and leads it found, and the last readiness verdict, appended to
-# every commit message as trailers. Programmatic, never typed. $1 is the message file; $2 the source (merge, squash, commit…).
+# The imprint: the receipt pre-commit just wrote, the purity and leads it found, the last readiness verdict, and the unit's
+# signature over the message, appended to every commit message as trailers. Programmatic, never typed. $1 is the message
+# file; $2 the source (merge, squash, commit…). The signature is a network step: offline, the trailer says unsigned.
 MSG="$1"; SRC="$2"
 case "$SRC" in merge|squash) exit 0;; esac
 node --import tsx -e '
@@ -20,6 +21,19 @@ const trailers = [
 let msg = fs.readFileSync(path, "utf8")
 if (msg.includes("\nReceipt: ")) process.exit(0)
 const body = msg.replace(/\s+$/, "")
-fs.writeFileSync(path, `${body}\n\n${trailers.join("\n")}\n`)
+// The unit signs the message with its Receipt trailer inside, so the unit'"'"'s fold dates this receipt (gap-time-witness).
+const THEOREMS = ["sealed_theorem_not_forged", "honesty_gate_is_theorem_not_oracle"]
+const sign = async () => {
+  if (process.env.QPU_OFFLINE === "1") return "unsigned (offline)"
+  const message = `${body}\n\n${trailers.slice(0, 2).join("\n")}\nBacked by theorem ${THEOREMS[0]} and theorem ${THEOREMS[1]}.`
+  try {
+    const res = await fetch(process.env.UUIDNA_MCP ?? "https://uuidna.com/mcp", { method: "POST", headers: { "content-type": "application/json", accept: "application/json", "user-agent": "uuidna-qpu-hook (ceccec@psg.bg)" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "sign_commit", arguments: { message, theorems: THEOREMS } } }), signal: AbortSignal.timeout(20000) })
+    if (!res.ok) return `unsigned (the hosted door answered HTTP ${res.status}; lead gap-sign-door-hosted)`
+    const j = await res.json(); const out = j.result?.structuredContent ?? (j.result?.content?.[0] ? JSON.parse(j.result.content[0].text) : null)
+    if (!out) return `unsigned (${j.error?.message ?? "no answer"})`
+    return out.signed ? `${out.verdict} address ${out.address} fold ${out.fold} (uuidna.com sign_commit, cites ${out.cited.join(", ")})` : `refused: ${out.reason}`
+  } catch (e) { return `unsigned (${e.message.slice(0, 60)})` }
+}
+sign().then((signature) => { trailers.push(`Signed-by-unit: ${signature}`); fs.writeFileSync(path, `${body}\n\n${trailers.join("\n")}\n`) })
 ' "$MSG"
 exit 0
