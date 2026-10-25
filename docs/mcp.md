@@ -1867,7 +1867,8 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "pwa",
         "mcp",
         "versions",
-        "migration"
+        "migration",
+        "fullstack"
       ],
       "description": "omit for all"
     },

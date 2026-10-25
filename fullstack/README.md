@@ -1,0 +1,3 @@
+# QPU full stack
+
+The source of payloadcms.com (MIT) is the full stack: fork github.com/payloadcms/website, keep its 12 collections, 30 blocks, 5 globals and 10 fields, and apply the two generated files: `src/blocks/Qpu/config.ts` (the qpu block, the shape every tools/call result carries in _meta.payload) and `src/payload.qpu.config.ts` (the qpu block spread into every blocks field, the plugins MCP configures here beside the site's own, the database the RAID). Deploy at Cloudflare beside this Worker: the Worker runs first and keeps /mcp, /docket and /.well-known; the app serves the pages. Every step at whole uptime: configure { kind: 'migration' }.

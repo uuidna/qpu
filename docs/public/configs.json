@@ -1,7 +1,7 @@
 {
- "date": "2026-10-25T21:03:53.479Z",
- "tested": 7,
- "kinds": 7,
+ "date": "2026-10-25T21:06:37.523Z",
+ "tested": 8,
+ "kinds": 8,
  "closed": true,
  "wranglerDrift": [],
  "configs": [
@@ -83,7 +83,7 @@
   {
    "kind": "versions",
    "torus": {
-    "address": "4d534f39-7f2f-3ff0-9c23-3f0cdf0be85b",
+    "address": "f19fb88f-e859-784d-aad5-3e41afc49d64",
     "seed": 1,
     "reflection": 9,
     "trinity": [
@@ -92,7 +92,7 @@
      1
     ],
     "closed": true,
-    "bytes": 138409
+    "bytes": 138444
    }
   },
   {
@@ -108,6 +108,21 @@
     ],
     "closed": true,
     "bytes": 1434
+   }
+  },
+  {
+   "kind": "fullstack",
+   "torus": {
+    "address": "7c6741ec-0d68-6a13-b9cc-6664c8eac17d",
+    "seed": 8,
+    "reflection": 2,
+    "trinity": [
+     2,
+     5,
+     8
+    ],
+    "closed": true,
+    "bytes": 5186
    }
   }
  ]

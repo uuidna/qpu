@@ -1737,7 +1737,8 @@
               "pwa",
               "mcp",
               "versions",
-              "migration"
+              "migration",
+              "fullstack"
             ],
             "description": "omit for all"
           },

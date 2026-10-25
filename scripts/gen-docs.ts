@@ -65,6 +65,9 @@ const configured = (args: Record<string, unknown>) => (handle({ jsonrpc: '2.0', 
 writeFileSync(join(DOCS, 'public', 'manifest.webmanifest'), JSON.stringify(configured({ kind: 'pwa', version: pkg.version, description: pkg.description }).config, null, 1) + '\n')
 // every configuration MCP computes, with the drift of the files the tree holds: a drift is a lead, never a rewrite
 const wranglerDrift = configured({ kind: 'wrangler', current: readFileSync(join(ROOT, 'wrangler.jsonc'), 'utf8') })
+const fullstack = configured({ kind: 'fullstack' })
+for (const [path, text] of Object.entries(fullstack.config.files as Record<string, string>)) { mkdirSync(join(ROOT, path, '..'), { recursive: true }); writeFileSync(join(ROOT, path), text) }
+console.log(`fullstack: ${Object.keys(fullstack.config.files).length} files generated from ${fullstack.config.repository} (${fullstack.config.licence})`)
 const configs = configured({})
 writeFileSync(join(DOCS, 'public', 'configs.json'), JSON.stringify({ date: new Date().toISOString(), tested: configs.tested, kinds: configs.kinds, closed: configs.closed, wranglerDrift: wranglerDrift.drift, configs: configs.configs.map((c: { kind: string; torus: unknown }) => ({ kind: c.kind, torus: c.torus })) }, null, 1) + '\n')
 console.log(`configure: ${configs.tested}/${configs.kinds} configurations closed around the torus; wrangler drift ${wranglerDrift.driftCount}${wranglerDrift.driftCount ? `: ${wranglerDrift.drift.join(', ')}` : ''}`)
