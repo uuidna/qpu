@@ -217,3 +217,15 @@ export const relatedOf = (lead: string, answers: readonly { id: string; word?: s
   const extend = [...servers.values()].flatMap((s) => s.remotes.map((url) => ({ id: `extend:${lead}:${s.name}:${new URL(url).host}`, server: s.name, method: 'POST' as const, url, accept: 'application/json, text/event-stream', body: rpcBody('tools/list') })))
   return { lead, asked: answers.length, answered, servers: [...servers.values()], extend }
 }
+
+/** The foreign doors that answer a lead best: a remote's tools/list read into doors, each scored by the words it shares with the lead (its name and description against the lead's statement), the top ones proposed — never called: calling another's server is the operator's act. */
+export const bestDoorsOf = (lead: { id: string; statement: string }, remotes: readonly { server: string; url: string; tools: readonly { name: string; description?: string }[] }[], at = 3): { server: string; url: string; door: string; score: number; shared: string[] }[] => {
+  const words = new Set(registryWordsOf(lead, 12))
+  const out: { server: string; url: string; door: string; score: number; shared: string[] }[] = []
+  for (const r of remotes) for (const t of r.tools) {
+    const text = `${t.name.replace(/[_-]+/g, ' ')} ${t.description ?? ''}`.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/)
+    const shared = [...new Set(text.filter((w) => words.has(w)))]
+    if (shared.length) out.push({ server: r.server, url: r.url, door: t.name, score: shared.length, shared })
+  }
+  return out.sort((a, b) => b.score - a.score || a.door.localeCompare(b.door)).slice(0, at)
+}

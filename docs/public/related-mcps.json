@@ -1,5 +1,5 @@
 {
- "date": "2026-10-25T23:10:37.406Z",
+ "date": "2026-10-25T23:19:49.203Z",
  "partial": false,
  "remaining": 0,
  "fetched": 0,
@@ -121,6 +121,39 @@
      "status": 0,
      "doors": 0
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "au.com.aiframework/australian-ai-governance-framework",
+     "url": "https://aiframework.com.au/api/mcp.php",
+     "door": "get_ai_governance_framework",
+     "score": 3,
+     "shared": [
+      "framework",
+      "document",
+      "links"
+     ]
+    },
+    {
+     "server": "com.airolloutframework/ai-rollout-framework",
+     "url": "https://airolloutframework.com/mcp",
+     "door": "get_pricing",
+     "score": 2,
+     "shared": [
+      "links",
+      "framework"
+     ]
+    },
+    {
+     "server": "com.airolloutframework/ai-rollout-framework",
+     "url": "https://airolloutframework.com/mcp",
+     "door": "search_knowledge_base",
+     "score": 2,
+     "shared": [
+      "framework",
+      "links"
+     ]
+    }
    ]
   },
   {
@@ -187,6 +220,40 @@
      "url": "https://www.accentvoice.com/agent/mcp",
      "status": 200,
      "doors": 4
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.github.DigbyO/colour-memory",
+     "url": "https://colour-memory-api-production.up.railway.app/mcp",
+     "door": "house_specify",
+     "score": 3,
+     "shared": [
+      "colour",
+      "accent",
+      "result"
+     ]
+    },
+    {
+     "server": "io.github.DigbyO/colour-memory",
+     "url": "https://colour-memory-api-production.up.railway.app/mcp",
+     "door": "palette_light_dark",
+     "score": 3,
+     "shared": [
+      "accent",
+      "result",
+      "colour"
+     ]
+    },
+    {
+     "server": "io.github.DigbyO/colour-memory",
+     "url": "https://colour-memory-api-production.up.railway.app/mcp",
+     "door": "agent_brief",
+     "score": 2,
+     "shared": [
+      "colour",
+      "result"
+     ]
     }
    ]
   },
@@ -299,6 +366,36 @@
      "status": 200,
      "doors": 1
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.procedurecostchecker/site",
+     "url": "https://procedurecostchecker.com/mcp",
+     "door": "submit_enquiry",
+     "score": 2,
+     "shared": [
+      "procedure",
+      "token"
+     ]
+    },
+    {
+     "server": "io.github.lazymac2x/cron-collision-detector",
+     "url": "https://api.lazy-mac.com/cron-collision-detector/mcp",
+     "door": "analyze_cron_collisions",
+     "score": 1,
+     "shared": [
+      "collision"
+     ]
+    },
+    {
+     "server": "com.procedurecostchecker/site",
+     "url": "https://procedurecostchecker.com/mcp",
+     "door": "dataset_columns",
+     "score": 1,
+     "shared": [
+      "procedure"
+     ]
+    }
    ]
   },
   {
@@ -388,6 +485,35 @@
      "status": 200,
      "doors": 6
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "ai.advisorsai/store-readiness",
+     "url": "https://advisorsai.ai/store-readiness-mcp",
+     "door": "advisors_store_readiness_check",
+     "score": 1,
+     "shared": [
+      "readiness"
+     ]
+    },
+    {
+     "server": "io.github.kerne-protocol/honesty-index",
+     "url": "https://kerne.fi/api/mcp",
+     "door": "get_board",
+     "score": 1,
+     "shared": [
+      "honesty"
+     ]
+    },
+    {
+     "server": "io.github.kerne-protocol/honesty-index",
+     "url": "https://kerne.fi/api/mcp",
+     "door": "get_methodology",
+     "score": 1,
+     "shared": [
+      "decide"
+     ]
+    }
    ]
   },
   {
@@ -448,6 +574,35 @@
      "url": "https://jetoperatingcost.com/mcp",
      "status": 200,
      "doors": 5
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.jetoperatingcost/site",
+     "url": "https://jetoperatingcost.com/mcp",
+     "door": "calculate",
+     "score": 1,
+     "shared": [
+      "operating"
+     ]
+    },
+    {
+     "server": "com.jetoperatingcost/site",
+     "url": "https://jetoperatingcost.com/mcp",
+     "door": "enquiry_describe",
+     "score": 1,
+     "shared": [
+      "operating"
+     ]
+    },
+    {
+     "server": "com.jetoperatingcost/site",
+     "url": "https://jetoperatingcost.com/mcp",
+     "door": "enquiry_fields",
+     "score": 1,
+     "shared": [
+      "operating"
+     ]
     }
    ]
   },
@@ -634,6 +789,38 @@
      "status": 200,
      "doors": 14
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.capawesome/ionic-framework-mcp",
+     "url": "https://ionic-framework-mcp.capawesome.io/mcp",
+     "door": "get_component_usage",
+     "score": 2,
+     "shared": [
+      "framework",
+      "writing"
+     ]
+    },
+    {
+     "server": "io.capawesome/ionic-framework-mcp",
+     "url": "https://ionic-framework-mcp.capawesome.io/mcp",
+     "door": "get_doc_page",
+     "score": 2,
+     "shared": [
+      "framework",
+      "writing"
+     ]
+    },
+    {
+     "server": "io.capawesome/ionic-framework-mcp",
+     "url": "https://ionic-framework-mcp.capawesome.io/mcp",
+     "door": "search_docs",
+     "score": 2,
+     "shared": [
+      "framework",
+      "configuration"
+     ]
+    }
    ]
   },
   {
@@ -784,6 +971,36 @@
      "url": "https://openapi-1779155638284.mcpize.run/mcp",
      "status": 401,
      "doors": 0
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.gumballtools/payload-validator",
+     "url": "https://payload-validator.gumballtools.com/api/mcp",
+     "door": "validate_json",
+     "score": 2,
+     "shared": [
+      "payload",
+      "database"
+     ]
+    },
+    {
+     "server": "ai.getvda/memcached-mongodb-redis-compose-generator",
+     "url": "https://memcached-mongodb-redis-compose-generator.getvda.ai/mcp",
+     "door": "invoke",
+     "score": 1,
+     "shared": [
+      "database"
+     ]
+    },
+    {
+     "server": "com.gumballtools/payload-validator",
+     "url": "https://payload-validator.gumballtools.com/api/mcp",
+     "door": "validate_auto",
+     "score": 1,
+     "shared": [
+      "payload"
+     ]
     }
    ]
   },
@@ -1027,6 +1244,41 @@
      "url": "https://uiiepdcaepkawfwaiyuq.supabase.co/functions/v1/japan-physical-capability-mcp",
      "status": 200,
      "doors": 2
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.whenisbins/bin-collections",
+     "url": "https://whenisbins.com/mcp",
+     "door": "get_collections",
+     "score": 3,
+     "shared": [
+      "collection",
+      "chosen",
+      "reads"
+     ]
+    },
+    {
+     "server": "com.faceabot/capability-network",
+     "url": "https://faceabot.com/api/mcp",
+     "door": "offer_capability",
+     "score": 3,
+     "shared": [
+      "capability",
+      "endpoint",
+      "other"
+     ]
+    },
+    {
+     "server": "com.faceabot/capability-network",
+     "url": "https://faceabot.com/api/mcp",
+     "door": "solve_need",
+     "score": 3,
+     "shared": [
+      "capability",
+      "chosen",
+      "other"
+     ]
     }
    ]
   },
@@ -1291,6 +1543,39 @@
      "status": 0,
      "doors": 0
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.mcpbundles/uk-environmental-intelligence",
+     "url": "https://mcp.mcpbundles.com/bundle/uk-environmental-intelligence/",
+     "door": "ea-search-water-bodies-8a7",
+     "score": 3,
+     "shared": [
+      "environment",
+      "discover",
+      "flow"
+     ]
+    },
+    {
+     "server": "ai.flowcastle/flowcastle",
+     "url": "https://api.flowcastle.ai/api/mcp",
+     "door": "apply_actions",
+     "score": 2,
+     "shared": [
+      "flow",
+      "publish"
+     ]
+    },
+    {
+     "server": "ai.flowcastle/flowcastle",
+     "url": "https://api.flowcastle.ai/api/mcp",
+     "door": "deploy_application",
+     "score": 2,
+     "shared": [
+      "publish",
+      "flow"
+     ]
+    }
    ]
   },
   {
@@ -1388,6 +1673,37 @@
      "status": 401,
      "doors": 0
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "app.worldmonitor/mcp",
+     "url": "https://worldmonitor.app/mcp",
+     "door": "get_sources",
+     "score": 2,
+     "shared": [
+      "licence",
+      "platform"
+     ]
+    },
+    {
+     "server": "ai.daishi/world",
+     "url": "https://daishi.ai/mcp",
+     "door": "register_agent",
+     "score": 2,
+     "shared": [
+      "world",
+      "worlds"
+     ]
+    },
+    {
+     "server": "app.worldmonitor/mcp",
+     "url": "https://worldmonitor.app/mcp",
+     "door": "extract_entities",
+     "score": 1,
+     "shared": [
+      "world"
+     ]
+    }
    ]
   },
   {
@@ -1399,7 +1715,8 @@
    ],
    "servers": 0,
    "serverList": [],
-   "extended": []
+   "extended": [],
+   "bestDoors": []
   },
   {
    "lead": "language-video",
@@ -1460,7 +1777,8 @@
      "status": 401,
      "doors": 0
     }
-   ]
+   ],
+   "bestDoors": []
   },
   {
    "lead": "language-traditions",
@@ -1619,6 +1937,36 @@
      "status": 200,
      "doors": 95
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "ai.machinerelations/mri",
+     "url": "https://machinerelations.ai/mcp",
+     "door": "mri_list_categories",
+     "score": 2,
+     "shared": [
+      "relations",
+      "vocabulary"
+     ]
+    },
+    {
+     "server": "app.worldmonitor/mcp",
+     "url": "https://worldmonitor.app/mcp",
+     "door": "extract_entities",
+     "score": 1,
+     "shared": [
+      "world"
+     ]
+    },
+    {
+     "server": "app.worldmonitor/mcp",
+     "url": "https://worldmonitor.app/mcp",
+     "door": "get_alert_digest",
+     "score": 1,
+     "shared": [
+      "vocabulary"
+     ]
+    }
    ]
   },
   {
@@ -1715,6 +2063,41 @@
      "url": "https://api.agent4.io/v1/mcp",
      "status": 200,
      "doors": 50
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "build_knowledge_index",
+     "score": 3,
+     "shared": [
+      "documents",
+      "only",
+      "names"
+     ]
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "create_agent",
+     "score": 3,
+     "shared": [
+      "names",
+      "only",
+      "tenant"
+     ]
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "create_share",
+     "score": 3,
+     "shared": [
+      "only",
+      "names",
+      "tenant"
+     ]
     }
    ]
   },
@@ -1889,6 +2272,38 @@
      "status": 200,
      "doors": 8
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "list_mcp_servers",
+     "score": 2,
+     "shared": [
+      "tenant",
+      "secret"
+     ]
+    },
+    {
+     "server": "io.github.ChanghuLiu/uk-premises-licence-mcp",
+     "url": "https://uk-premises-licence-mcp-production.up.railway.app/mcp",
+     "door": "premises_licence_preflight",
+     "score": 2,
+     "shared": [
+      "licence",
+      "scenario"
+     ]
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "set_custom_domain",
+     "score": 2,
+     "shared": [
+      "tenant",
+      "domains"
+     ]
+    }
    ]
   },
   {
@@ -2048,6 +2463,35 @@
      "status": 200,
      "doors": 2
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.theoddsgap/answers",
+     "url": "https://theoddsgap.com/assistant/v1/mcp",
+     "door": "game_lines",
+     "score": 1,
+     "shared": [
+      "example"
+     ]
+    },
+    {
+     "server": "app.siteprint/examples",
+     "url": "https://siteprint.app/api/mcp",
+     "door": "get_example_design",
+     "score": 1,
+     "shared": [
+      "example"
+     ]
+    },
+    {
+     "server": "app.siteprint/examples",
+     "url": "https://siteprint.app/api/mcp",
+     "door": "get_setup",
+     "score": 1,
+     "shared": [
+      "client"
+     ]
+    }
    ]
   },
   {
@@ -2080,6 +2524,26 @@
      "url": "https://www.hemelion.com/mcp",
      "status": 200,
      "doors": 6
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.hemelion/decision-reflection",
+     "url": "https://www.hemelion.com/mcp",
+     "door": "hemelion_choose_reflection_mode",
+     "score": 1,
+     "shared": [
+      "reflection"
+     ]
+    },
+    {
+     "server": "com.hemelion/decision-reflection",
+     "url": "https://www.hemelion.com/mcp",
+     "door": "hemelion_map_mindscan_episode",
+     "score": 1,
+     "shared": [
+      "reflection"
+     ]
     }
    ]
   },
@@ -2205,6 +2669,36 @@
      "url": "https://api.agent4.io/v1/mcp",
      "status": 200,
      "doors": 50
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "import_storyline",
+     "score": 2,
+     "shared": [
+      "payload",
+      "tenant"
+     ]
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "add_knowledge_file",
+     "score": 1,
+     "shared": [
+      "server"
+     ]
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "build_knowledge_index",
+     "score": 1,
+     "shared": [
+      "roles"
+     ]
     }
    ]
   },
@@ -2463,6 +2957,36 @@
      "status": 200,
      "doors": 7
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "ai.mekler/agent-discovery",
+     "url": "https://e4rdb2jtk6.execute-api.us-east-1.amazonaws.com/mcp",
+     "door": "get_service",
+     "score": 2,
+     "shared": [
+      "contract",
+      "endpoint"
+     ]
+    },
+    {
+     "server": "com.whenisbins/bin-collections",
+     "url": "https://whenisbins.com/mcp",
+     "door": "check_lookup",
+     "score": 1,
+     "shared": [
+      "collection"
+     ]
+    },
+    {
+     "server": "com.agentic-endpoints/agentic-endpoints",
+     "url": "https://agentic-endpoints.com/mcp",
+     "door": "credits_trial",
+     "score": 1,
+     "shared": [
+      "endpoint"
+     ]
+    }
    ]
   },
   {
@@ -2682,6 +3206,36 @@
      "status": 500,
      "doors": 0
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "door": "get_block_info",
+     "score": 2,
+     "shared": [
+      "block",
+      "default"
+     ]
+    },
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "door": "get_address_info",
+     "score": 1,
+     "shared": [
+      "block"
+     ]
+    },
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "door": "get_block_number",
+     "score": 1,
+     "shared": [
+      "block"
+     ]
+    }
    ]
   },
   {
@@ -2789,7 +3343,8 @@
      "status": 401,
      "doors": 0
     }
-   ]
+   ],
+   "bestDoors": []
   },
   {
    "lead": "iot-adapter-cluster",
@@ -2903,6 +3458,37 @@
      "url": "https://gateway.pipeworx.io/docket-alarm/mcp",
      "status": 200,
      "doors": 45
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.github.pipeworx-io/docket-alarm",
+     "url": "https://gateway.pipeworx.io/docket-alarm/mcp",
+     "door": "docketalarm_get_docket",
+     "score": 2,
+     "shared": [
+      "docket",
+      "entries"
+     ]
+    },
+    {
+     "server": "com.docketnexus/docketnexus",
+     "url": "https://mcp.docketnexus.com/mcp",
+     "door": "get_case_docket",
+     "score": 2,
+     "shared": [
+      "docket",
+      "entries"
+     ]
+    },
+    {
+     "server": "io.github.pipeworx-io/docket-alarm",
+     "url": "https://gateway.pipeworx.io/docket-alarm/mcp",
+     "door": "bet_research",
+     "score": 1,
+     "shared": [
+      "entries"
+     ]
     }
    ]
   },
@@ -3099,6 +3685,42 @@
      "status": 200,
      "doors": 10
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "dev.afriref/reference-data",
+     "url": "https://afriref.dev/mcp",
+     "door": "next_filings",
+     "score": 4,
+     "shared": [
+      "national",
+      "public",
+      "verified",
+      "against"
+     ]
+    },
+    {
+     "server": "com.hamptonsverified/hamptons-verified",
+     "url": "https://hamptonsverified.com/api/ai/mcp",
+     "door": "golden_hour",
+     "score": 3,
+     "shared": [
+      "verified",
+      "public",
+      "weather"
+     ]
+    },
+    {
+     "server": "dev.afriref/reference-data",
+     "url": "https://afriref.dev/mcp",
+     "door": "list_series",
+     "score": 3,
+     "shared": [
+      "exists",
+      "public",
+      "against"
+     ]
+    }
    ]
   },
   {
@@ -3147,6 +3769,35 @@
      "status": 401,
      "doors": 0
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.thousand-api/thousand-api",
+     "url": "https://mcp.thousand-api.com/mcp",
+     "door": "convert.unit",
+     "score": 1,
+     "shared": [
+      "values"
+     ]
+    },
+    {
+     "server": "com.thousand-api/thousand-api",
+     "url": "https://mcp.thousand-api.com/mcp",
+     "door": "data.query_json",
+     "score": 1,
+     "shared": [
+      "values"
+     ]
+    },
+    {
+     "server": "com.thousand-api/thousand-api",
+     "url": "https://mcp.thousand-api.com/mcp",
+     "door": "datetime.add_business_days",
+     "score": 1,
+     "shared": [
+      "after"
+     ]
+    }
    ]
   },
   {
@@ -3188,7 +3839,8 @@
      "status": 401,
      "doors": 0
     }
-   ]
+   ],
+   "bestDoors": []
   },
   {
    "lead": "gap-time-witness",
@@ -3367,6 +4019,38 @@
      "status": 200,
      "doors": 8
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.wenreceipts/site",
+     "url": "https://wenreceipts.com/mcp",
+     "door": "dataset_provenance",
+     "score": 2,
+     "shared": [
+      "date",
+      "receipts"
+     ]
+    },
+    {
+     "server": "io.github.theluckystrike/expense-tracker-receipts-mileage",
+     "url": "https://mcp.zovo.one/mcp/expense-tracker",
+     "door": "expense_summary",
+     "score": 2,
+     "shared": [
+      "date",
+      "receipts"
+     ]
+    },
+    {
+     "server": "com.dropwatchhq/agent-receipts",
+     "url": "https://agent-receipts.dropwatchhq.com/mcp",
+     "door": "issue_receipt",
+     "score": 2,
+     "shared": [
+      "receipt",
+      "receipts"
+     ]
+    }
    ]
   },
   {
@@ -3454,6 +4138,27 @@
      "status": 200,
      "doors": 7
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.github.simulatorarts/docugrip",
+     "url": "https://docugrip.com/api/mcp",
+     "door": "find_pdf_tool",
+     "score": 2,
+     "shared": [
+      "returns",
+      "check"
+     ]
+    },
+    {
+     "server": "io.github.simulatorarts/docugrip",
+     "url": "https://docugrip.com/api/mcp",
+     "door": "plan_pdf_job",
+     "score": 1,
+     "shared": [
+      "returns"
+     ]
+    }
    ]
   },
   {
@@ -3536,6 +4241,35 @@
      "url": "https://am-lich.com/mcp",
      "status": 200,
      "doors": 0
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.agtnames/agt",
+     "url": "https://agtnames.com/api/mcp",
+     "door": "agt_namehash",
+     "score": 1,
+     "shared": [
+      "compute"
+     ]
+    },
+    {
+     "server": "com.agtnames/agt",
+     "url": "https://agtnames.com/api/mcp",
+     "door": "agt_resolve",
+     "score": 1,
+     "shared": [
+      "content"
+     ]
+    },
+    {
+     "server": "com.airaptr/raptr-names",
+     "url": "https://api.airaptr.com/names/mcp",
+     "door": "check_domain",
+     "score": 1,
+     "shared": [
+      "names"
+     ]
     }
    ]
   },
@@ -3675,6 +4409,38 @@
      "url": "https://compareanswering.com/mcp",
      "status": 200,
      "doors": 6
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.answeringservicecompare/site",
+     "url": "https://answeringservicecompare.com/mcp",
+     "door": "enquiry_describe",
+     "score": 2,
+     "shared": [
+      "answering",
+      "nothing"
+     ]
+    },
+    {
+     "server": "com.answeringservicepicker/site",
+     "url": "https://answeringservicepicker.com/mcp",
+     "door": "enquiry_describe",
+     "score": 2,
+     "shared": [
+      "answering",
+      "nothing"
+     ]
+    },
+    {
+     "server": "com.answeringservicequotes/site",
+     "url": "https://answeringservicequotes.com/mcp",
+     "door": "enquiry_describe",
+     "score": 2,
+     "shared": [
+      "answering",
+      "nothing"
+     ]
     }
    ]
   },
@@ -3911,6 +4677,38 @@
      "status": 200,
      "doors": 3
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "ai.rocketlist/rocketlist",
+     "url": "https://rocketlist.ai/mcp",
+     "door": "hiring_stats",
+     "score": 2,
+     "shared": [
+      "default",
+      "list"
+     ]
+    },
+    {
+     "server": "ai.rocketlist/rocketlist",
+     "url": "https://rocketlist.ai/mcp",
+     "door": "search_companies",
+     "score": 2,
+     "shared": [
+      "list",
+      "default"
+     ]
+    },
+    {
+     "server": "ai.rocketlist/rocketlist",
+     "url": "https://rocketlist.ai/mcp",
+     "door": "search_jobs",
+     "score": 2,
+     "shared": [
+      "list",
+      "default"
+     ]
+    }
    ]
   },
   {
@@ -4047,6 +4845,35 @@
      "url": "https://llm-orchestration-observability-agent.getvda.ai/mcp",
      "status": 200,
      "doors": 2
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.github.TheRundown/documentation",
+     "url": "https://docs.therundown.io/mcp",
+     "door": "query_docs_filesystem_the_rundown_api",
+     "score": 1,
+     "shared": [
+      "documentation"
+     ]
+    },
+    {
+     "server": "io.github.TheRundown/documentation",
+     "url": "https://docs.therundown.io/mcp",
+     "door": "search_the_rundown_api",
+     "score": 1,
+     "shared": [
+      "documentation"
+     ]
+    },
+    {
+     "server": "ai.getvda/llm-observability-orchestration",
+     "url": "https://llm-observability-orchestration.getvda.ai/mcp",
+     "door": "selftest",
+     "score": 1,
+     "shared": [
+      "capability"
+     ]
     }
    ]
   },
@@ -4213,6 +5040,35 @@
      "status": 401,
      "doors": 0
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "ai.coldstate/knowledge",
+     "url": "https://cold-api.coldstate.ai/mcp",
+     "door": "coldstate_batch_search",
+     "score": 1,
+     "shared": [
+      "call"
+     ]
+    },
+    {
+     "server": "ai.coldstate/knowledge",
+     "url": "https://cold-api.coldstate.ai/mcp",
+     "door": "coldstate_capabilities",
+     "score": 1,
+     "shared": [
+      "call"
+     ]
+    },
+    {
+     "server": "com.canonicai/canonicai-answers",
+     "url": "https://canonicai.com/api/mcp",
+     "door": "list_answers",
+     "score": 1,
+     "shared": [
+      "answers"
+     ]
+    }
    ]
   },
   {
@@ -4357,6 +5213,38 @@
      "url": "https://fips.808bits.com/mcp",
      "status": 200,
      "doors": 6
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.selisesignature/signature",
+     "url": "https://signaturemcp.selise.biz/mcp",
+     "door": "prepare_and_send_free_signature_document",
+     "score": 2,
+     "shared": [
+      "signature",
+      "without"
+     ]
+    },
+    {
+     "server": "com.selisesignature/signature",
+     "url": "https://signaturemcp.selise.biz/mcp",
+     "door": "prepare_free_signature_document",
+     "score": 2,
+     "shared": [
+      "signature",
+      "without"
+     ]
+    },
+    {
+     "server": "com.selisesignature/signature",
+     "url": "https://signaturemcp.selise.biz/mcp",
+     "door": "send_prepared_signature_document",
+     "score": 2,
+     "shared": [
+      "signature",
+      "without"
+     ]
     }
    ]
   },
@@ -4514,6 +5402,35 @@
      "url": "https://dubai-property-signal.airblock2026.workers.dev/mcp",
      "status": 200,
      "doors": 5
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "door": "get_address_info",
+     "score": 1,
+     "shared": [
+      "block"
+     ]
+    },
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "door": "get_block_info",
+     "score": 1,
+     "shared": [
+      "block"
+     ]
+    },
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "door": "get_block_number",
+     "score": 1,
+     "shared": [
+      "block"
+     ]
     }
    ]
   },
@@ -4688,6 +5605,42 @@
      "status": 200,
      "doors": 2
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.gumballtools/payload-validator",
+     "url": "https://payload-validator.gumballtools.com/api/mcp",
+     "door": "validate_auto",
+     "score": 4,
+     "shared": [
+      "payload",
+      "json",
+      "content",
+      "entry"
+     ]
+    },
+    {
+     "server": "com.gumballtools/payload-validator",
+     "url": "https://payload-validator.gumballtools.com/api/mcp",
+     "door": "validate_json",
+     "score": 4,
+     "shared": [
+      "json",
+      "payload",
+      "content",
+      "entry"
+     ]
+    },
+    {
+     "server": "com.gumballtools/json-to-types",
+     "url": "https://json-to-types.gumballtools.com/api/mcp",
+     "door": "json_to_types",
+     "score": 2,
+     "shared": [
+      "json",
+      "payload"
+     ]
+    }
    ]
   },
   {
@@ -4858,6 +5811,35 @@
      "url": "https://textforagents.com/products/customs-house-for-agent-payloads/mcp",
      "status": 200,
      "doors": 4
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "ai.dablock/visibility-index",
+     "url": "https://dablock.ai/mcp",
+     "door": "get_brand_visibility",
+     "score": 1,
+     "shared": [
+      "slug"
+     ]
+    },
+    {
+     "server": "ai.dablock/visibility-index",
+     "url": "https://dablock.ai/mcp",
+     "door": "list_tracked_brands",
+     "score": 1,
+     "shared": [
+      "slug"
+     ]
+    },
+    {
+     "server": "com.gumballtools/payload-validator",
+     "url": "https://payload-validator.gumballtools.com/api/mcp",
+     "door": "validate_auto",
+     "score": 1,
+     "shared": [
+      "payload"
+     ]
     }
    ]
   },
@@ -5148,6 +6130,38 @@
      "status": 402,
      "doors": 0
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.a2awire/benchmark-access-change-request-recertify-2026-09-15-b578285f",
+     "url": "https://a2awire.com/mcp/benchmarks/access-change-request-recertify-2026-09-15-b578285f/http",
+     "door": "register",
+     "score": 2,
+     "shared": [
+      "name",
+      "registration"
+     ]
+    },
+    {
+     "server": "com.a2awire/benchmark-access-request-review-2026-09-10-81479355",
+     "url": "https://a2awire.com/mcp/benchmarks/access-request-review-2026-09-10-81479355/http",
+     "door": "register",
+     "score": 2,
+     "shared": [
+      "name",
+      "registration"
+     ]
+    },
+    {
+     "server": "com.a2awire/benchmark-refund-request-audit-2026-09-10-2b20046e",
+     "url": "https://a2awire.com/mcp/benchmarks/refund-request-audit-2026-09-10-2b20046e/http",
+     "door": "register",
+     "score": 2,
+     "shared": [
+      "name",
+      "registration"
+     ]
+    }
    ]
   },
   {
@@ -5357,6 +6371,35 @@
      "status": 200,
      "doors": 11
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.claude.platform/docs",
+     "url": "https://platform.claude.com/docs/mcp",
+     "door": "search_docs",
+     "score": 1,
+     "shared": [
+      "claude"
+     ]
+    },
+    {
+     "server": "app.founderhood/founderhood",
+     "url": "https://founderhood.app/api/mcp",
+     "door": "submit_listing",
+     "score": 1,
+     "shared": [
+      "under"
+     ]
+    },
+    {
+     "server": "com.claude-world/worlds-knowledge",
+     "url": "https://mcp.claude-world.com/mcp",
+     "door": "worlds_compare_cli_workflows",
+     "score": 1,
+     "shared": [
+      "claude"
+     ]
+    }
    ]
   },
   {
@@ -5474,7 +6517,8 @@
      "status": 401,
      "doors": 0
     }
-   ]
+   ],
+   "bestDoors": []
   },
   {
    "lead": "learn-map",
@@ -5560,6 +6604,36 @@
      "url": "https://api.roroquantum.com/mcp",
      "status": 200,
      "doors": 5
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.roroquantum/roro-quantum",
+     "url": "https://api.roroquantum.com/mcp",
+     "door": "search_lessons",
+     "score": 2,
+     "shared": [
+      "quantum",
+      "computing"
+     ]
+    },
+    {
+     "server": "com.roroquantum/roro-quantum",
+     "url": "https://api.roroquantum.com/mcp",
+     "door": "about_roro_quantum",
+     "score": 1,
+     "shared": [
+      "quantum"
+     ]
+    },
+    {
+     "server": "com.quantum-expectations/quantum-expectations",
+     "url": "https://www.quantum-expectations.com/api/mcp",
+     "door": "compare_hardware_scenarios",
+     "score": 1,
+     "shared": [
+      "quantum"
+     ]
     }
    ]
   },
@@ -5658,7 +6732,8 @@
      "status": 400,
      "doors": 0
     }
-   ]
+   ],
+   "bestDoors": []
   },
   {
    "lead": "cirq-google-integration",
@@ -5750,6 +6825,17 @@
      "url": "https://api.m2mcent.com/agentic-payroll-processor-mcp/sse",
      "status": 402,
      "doors": 0
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.theaiintegrationhub/use-cases",
+     "url": "https://www.theaiintegrationhub.com/mcp",
+     "door": "get_ai_services",
+     "score": 1,
+     "shared": [
+      "integration"
+     ]
     }
    ]
   },
@@ -5882,6 +6968,40 @@
      "status": 200,
      "doors": 5
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.github.TheRundown/documentation",
+     "url": "https://docs.therundown.io/mcp",
+     "door": "search_the_rundown_api",
+     "score": 3,
+     "shared": [
+      "examples",
+      "references",
+      "documentation"
+     ]
+    },
+    {
+     "server": "io.github.Vonage/vonage-documentation-mcp",
+     "url": "https://documentation-mcp.vonage.dev/mcp",
+     "door": "vonage_docs_search",
+     "score": 3,
+     "shared": [
+      "documentation",
+      "tutorials",
+      "references"
+     ]
+    },
+    {
+     "server": "io.github.TheRundown/documentation",
+     "url": "https://docs.therundown.io/mcp",
+     "door": "query_docs_filesystem_the_rundown_api",
+     "score": 2,
+     "shared": [
+      "documentation",
+      "examples"
+     ]
+    }
    ]
   },
   {
@@ -5951,6 +7071,37 @@
      "status": 401,
      "doors": 0
     }
+   ],
+   "bestDoors": [
+    {
+     "server": "co.cosmicchemistry/vedic-astrology",
+     "url": "https://cosmicchemistry.co/mcp",
+     "door": "indu_lagna_money_sign",
+     "score": 2,
+     "shared": [
+      "checked",
+      "against"
+     ]
+    },
+    {
+     "server": "co.cosmicchemistry/vedic-astrology",
+     "url": "https://cosmicchemistry.co/mcp",
+     "door": "vehicle_purchase_dates",
+     "score": 2,
+     "shared": [
+      "checked",
+      "against"
+     ]
+    },
+    {
+     "server": "co.cosmicchemistry/vedic-astrology",
+     "url": "https://cosmicchemistry.co/mcp",
+     "door": "raj_yoga",
+     "score": 1,
+     "shared": [
+      "against"
+     ]
+    }
    ]
   },
   {
@@ -5989,6 +7140,18 @@
      "url": "https://a2awire.com/mcp/data/devtowatch-dev-to-developer-blog-tutorial-firehose-11f3ce/http",
      "status": 200,
      "doors": 16
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.a2awire/data-developer-blog-programming-tutorial-community",
+     "url": "https://a2awire.com/mcp/data/devtowatch-dev-to-developer-blog-tutorial-firehose-11f3ce/http",
+     "door": "data_preview",
+     "score": 2,
+     "shared": [
+      "programming",
+      "guides"
+     ]
     }
    ]
   }

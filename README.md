@@ -19,7 +19,7 @@ Every figure below was measured on this tree on 2026-10-25 with the commands in 
 | Measure | Value |
 |---|---:|
 | Tracked files | 1563 |
-| Source files under `src/quantum` (TypeScript) | 41 (8,576 lines) |
+| Source files under `src/quantum` (TypeScript) | 41 (8,590 lines) |
 | MCP tools | 42 |
 | Tests (`node --test`) | 154 pass, 0 fail of 154 |
 | Type check (`tsc --noEmit`) | 0 errors |
@@ -28,7 +28,7 @@ Every figure below was measured on this tree on 2026-10-25 with the commands in 
 | Theorems declared / accepted by the kernel | 492 / 995 (493 hand-written, 502 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
-| Self-audit checks | 730 of 730 pass |
+| Self-audit checks | 731 of 731 pass |
 | Cross-verification requests (free public sources) | 2799 requests, 2756 reachable on 2026-10-25 |
 | Servers, workers, network calls in the handler | 0 |
 
