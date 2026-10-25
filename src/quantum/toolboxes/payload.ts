@@ -69,7 +69,8 @@ export const siteOf = (ctx: Context, origin: string) => {
   const list = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string; _meta?: { toolbox?: string } }[] } }).result.tools
   const boxOf = new Map(list.map((t) => [t.name, t._meta?.toolbox ?? 'none']))
   const heavy = new Set(['audit', 'metrics', 'imagine', 'discover', 'wave', 'readiness', 'e2e', 'textbook', 'clone'])
-  const docs = ctx.examples.filter((e) => !heavy.has(e.tool) && !e.arguments.selftest).map((e) => {
+  // the site never lays itself out inside itself: the example that is this very call is skipped (it would replay every example again, inside the first replay)
+  const docs = ctx.examples.filter((e) => !heavy.has(e.tool) && !e.arguments.selftest && !(e.tool === 'payload' && e.arguments.site)).map((e) => {
     const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }) as { result?: { _meta: { block: { meta: { id: string } }; openGraph: Record<string, string> } }; error?: { message: string } }
     if (!r.result) return { id: e.id, tool: e.tool, toolbox: boxOf.get(e.tool) ?? 'none', error: r.error?.message ?? 'no result' }
     const uuid = r.result._meta.block.meta.id

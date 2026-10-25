@@ -1,0 +1,149 @@
+{
+ "id": "ddc23a70-6b45-2977-8d1a-0bb90c75f365",
+ "sha256": "d55a6a91ae1cbc8b8f37620dca8ac87cd17faa76e04bc9a80c318e15e86d368d",
+ "license": "CC-BY-NC-ND-4.0 © Tsvetan Rouschev (https://orcid.org/0009-0000-7312-9778); commercial use by licence (ceccec@psg.bg)",
+ "date": "2026-10-25T20:16:47.588Z",
+ "head": "cb071975",
+ "steps": [
+  {
+   "name": "clay:gen",
+   "status": "green",
+   "ms": 129,
+   "tail": "gen-clay: 54 relations",
+   "counts": {}
+  },
+  {
+   "name": "docs:gen",
+   "status": "green",
+   "ms": 3009,
+   "tail": "use cases: 10 toolboxes, 65 pages, reference https://payloadcms.com\nconfigure: 7/7 configurations closed around the torus; wrangler drift 0\ndocs: 32 pages, 39 tools, config written",
+   "counts": {}
+  },
+  {
+   "name": "typecheck",
+   "status": "green",
+   "ms": 887,
+   "tail": "",
+   "counts": {}
+  },
+  {
+   "name": "lean",
+   "status": "green",
+   "ms": 972,
+   "tail": "Build completed successfully (35 jobs).",
+   "counts": {
+    "jobs": 35
+   }
+  },
+  {
+   "name": "audit",
+   "status": "green",
+   "ms": 3594,
+   "tail": "✓ example-ids-unique — 76 unique ids\n✓ leads:served-have-tools — 248 served leads name a served tool\n✓ leads:others-have-reasons — 2437 non-served leads carry a reason\n✓ error:unknown-tool — {\"code\":-32601,\"message\":\"no tool no-such-tool; the tools are processor, circuit\n✓ error:unknown-method — {\"code\":-32601,\"message\":\"method no/such is not served\"}\n✓ error:invalid-params — {\"code\":-32602,\"message\":\"processor Mars is not described here\"}\n\n634/634 checks pass over 39 tools, 76 examples, 2685 leads",
+   "counts": {
+    "checks": 634,
+    "checksTotal": 634
+   }
+  },
+  {
+   "name": "test",
+   "status": "green",
+   "ms": 4375,
+   "tail": "ℹ tests 154\nℹ suites 0\nℹ pass 154\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 4291.414833",
+   "counts": {
+    "tests": 154,
+    "pass": 154,
+    "fail": 0
+   }
+  },
+  {
+   "name": "imagine",
+   "status": "skipped",
+   "ms": 0,
+   "tail": "fast"
+  },
+  {
+   "name": "discover",
+   "status": "skipped",
+   "ms": 0,
+   "tail": "offline"
+  },
+  {
+   "name": "verify",
+   "status": "skipped",
+   "ms": 0,
+   "tail": "offline"
+  },
+  {
+   "name": "readiness",
+   "status": "skipped",
+   "ms": 0,
+   "tail": "offline"
+  },
+  {
+   "name": "e2e",
+   "status": "skipped",
+   "ms": 0,
+   "tail": "offline"
+  },
+  {
+   "name": "repository",
+   "status": "green",
+   "ms": 330,
+   "tail": "repository selftest: pass (6/6)\nrepository: 3 branches, 27 tags, releases not reached, 0 lead(s), 0 refusal(s) (offline: local facts only)",
+   "counts": {}
+  },
+  {
+   "name": "legal",
+   "status": "green",
+   "ms": 395,
+   "tail": "legal selftest: pass (8/8)\nlegal: 41 claims, 0 calls (offline: the pure half), violations 0, refusals 0, drift 0, security 10/10 (free-by-default); audit 68ae37e4-0b08-4f1f-841c-160f5c2c130b",
+   "counts": {}
+  },
+  {
+   "name": "textbook",
+   "status": "green",
+   "ms": 210,
+   "tail": "textbook: inputs unchanged (217e2e43-a58e-1724-97c8-3460819f76c2); sealed wave 9d13aec9-5784-4be7-a043-efec80604d5a stands",
+   "counts": {}
+  },
+  {
+   "name": "metrics",
+   "status": "green",
+   "ms": 3168,
+   "tail": "metrics: coins paid 310 over 172 gated calls; 39 tools, 5/76 examples backed by theorems, audit 634/634, discovered 275 doors, verification 0/0, docket 0 entries; verbosity 5232678 bytes, flow 13901 ms, 5.4 ms and null requests per settled lead; computed calls 93 of 279 at 27.4 ms",
+   "counts": {}
+  },
+  {
+   "name": "purify",
+   "status": "green",
+   "ms": 8062,
+   "tail": "purify: 2760 addresses scanned, 0 collision(s)\npurify: README measured table rewritten from the measurements\npurify: 0 lead(s) opened; kernel theorems 980, sorry 0, tools 39\ngraph: 2887 nodes, 6722 edges",
+   "counts": {}
+  },
+  {
+   "name": "docs:build",
+   "status": "skipped",
+   "ms": 0,
+   "tail": "fast"
+  },
+  {
+   "name": "publish",
+   "status": "skipped",
+   "ms": 0,
+   "tail": "offline"
+  },
+  {
+   "name": "trunk",
+   "status": "green",
+   "ms": 170,
+   "tail": "trunk: main is HEAD already (cb071975)",
+   "counts": {}
+  }
+ ],
+ "wallMs": 16227,
+ "sumMs": 25301,
+ "speedup": 1.56,
+ "waves": 7,
+ "prev": "92b19da5-3934-5987-af90-4daeb2732c65"
+}

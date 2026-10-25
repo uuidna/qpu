@@ -1,5 +1,5 @@
 {
- "date": "2026-10-25T19:59:28.304Z",
+ "date": "2026-10-25T20:17:45.647Z",
  "tested": 7,
  "kinds": 7,
  "closed": true,
@@ -83,16 +83,16 @@
   {
    "kind": "versions",
    "torus": {
-    "address": "c511272f-b5a5-75c2-96cd-2cc5ae79b383",
-    "seed": 5,
-    "reflection": 5,
+    "address": "7527a7e1-901e-5a5b-9851-c9bd305b9b37",
+    "seed": 1,
+    "reflection": 9,
     "trinity": [
-     2,
-     5,
-     8
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 138294
+    "bytes": 138326
    }
   },
   {

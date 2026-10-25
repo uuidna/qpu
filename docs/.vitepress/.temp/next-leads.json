@@ -1,0 +1,702 @@
+[
+ {
+  "id": "legal-seal-broken-16e9e58d",
+  "source": "docs/public/legal.json",
+  "statement": "the sealed legal audit 16e9e58d-ecd3-2123-81ac-2c07eda01f9a recomputed to cb619988-04c9-1c6e-bda9-7bd77816e33e from its own stored answers",
+  "status": "open",
+  "reason": "a sealed result that does not recompute to itself was altered after sealing, or the tool that seals it changed; both are measured here",
+  "evidence": "16e9e58d-ecd3-2123-81ac-2c07eda01f9a ≠ cb619988-04c9-1c6e-bda9-7bd77816e33e",
+  "head": "",
+  "date": "2026-10-25T15:11:09.550Z"
+ },
+ {
+  "id": "branch-only-local-orphan-v1-1-1-audit",
+  "source": "repository watch",
+  "statement": "branch orphan/v1.1.1-audit exists here and not at uuidna/qpu",
+  "status": "open",
+  "reason": "unpushed work, or a local experiment: push it, or record why it stays local",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-local-rebuild-phase-1",
+  "source": "repository watch",
+  "statement": "branch rebuild/phase-1 exists here and not at uuidna/qpu",
+  "status": "open",
+  "reason": "unpushed work, or a local experiment: push it, or record why it stays local",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-claude-epic-roentgen-6cb451",
+  "source": "repository watch",
+  "statement": "branch claude/epic-roentgen-6cb451 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-claude-hungry-cerf-2cd7f0",
+  "source": "repository watch",
+  "statement": "branch claude/hungry-cerf-2cd7f0 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-claude-quantumai-shots-leads",
+  "source": "repository watch",
+  "statement": "branch claude/quantumai-shots-leads exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-github-actions-actions-cache-6",
+  "source": "repository watch",
+  "statement": "branch dependabot/github_actions/actions/cache-6 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-github-actions-actions-dependency-review-action-5",
+  "source": "repository watch",
+  "statement": "branch dependabot/github_actions/actions/dependency-review-action-5 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-github-actions-actions-setup-go-7",
+  "source": "repository watch",
+  "statement": "branch dependabot/github_actions/actions/setup-go-7 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-github-actions-actions-setup-python-7",
+  "source": "repository watch",
+  "statement": "branch dependabot/github_actions/actions/setup-python-7 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-github-actions-docker-setup-buildx-action-4",
+  "source": "repository watch",
+  "statement": "branch dependabot/github_actions/docker/setup-buildx-action-4 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-github-actions-github-codeql-action-4",
+  "source": "repository watch",
+  "statement": "branch dependabot/github_actions/github/codeql-action-4 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-github-actions-slackapi-slack-github-action-4",
+  "source": "repository watch",
+  "statement": "branch dependabot/github_actions/slackapi/slack-github-action-4 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-github-actions-softprops-action-gh-release-3",
+  "source": "repository watch",
+  "statement": "branch dependabot/github_actions/softprops/action-gh-release-3 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-33c6ea190d",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-33c6ea190d exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-55d95af3b8",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-55d95af3b8 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-060a00e35a",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-060a00e35a exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-65ddfe7063",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-65ddfe7063 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-81ce7bc970",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-81ce7bc970 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-858a25b108",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-858a25b108 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-009567d294",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-009567d294 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-99628edb6e",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-99628edb6e exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-744871fdab",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-744871fdab exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-95998942a3",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-95998942a3 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-560475150c",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-560475150c exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-be3a654101",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-be3a654101 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-dependabot-npm-and-yarn-toolchain-cd13871474",
+  "source": "repository watch",
+  "statement": "branch dependabot/npm_and_yarn/toolchain-cd13871474 exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-fix-publish-readme-module",
+  "source": "repository watch",
+  "statement": "branch fix/publish-readme-module exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-harden-push-waves",
+  "source": "repository watch",
+  "statement": "branch harden/push-waves exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-release-v1-1-0-clean",
+  "source": "repository watch",
+  "statement": "branch release/v1.1.0-clean exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "branch-only-remote-two-fourteens",
+  "source": "repository watch",
+  "statement": "branch two-fourteens exists at the remote and not here",
+  "status": "open",
+  "reason": "fetch it, or it is another workspace's",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v0-2-3-automation",
+  "source": "repository watch",
+  "statement": "tag v0.2.3-automation exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v0-2-4-hybrid-automation",
+  "source": "repository watch",
+  "statement": "tag v0.2.4-hybrid-automation exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v0-3-0-full-automation",
+  "source": "repository watch",
+  "statement": "tag v0.3.0-full-automation exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v0-4-0",
+  "source": "repository watch",
+  "statement": "tag v0.4.0 exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v0-5-0",
+  "source": "repository watch",
+  "statement": "tag v0.5.0 exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v1-1-1",
+  "source": "repository watch",
+  "statement": "tag v1.1.1 exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v1-2-0",
+  "source": "repository watch",
+  "statement": "tag v1.2.0 exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v1-3-0",
+  "source": "repository watch",
+  "statement": "tag v1.3.0 exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v1-3-1",
+  "source": "repository watch",
+  "statement": "tag v1.3.1 exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v1-3-2",
+  "source": "repository watch",
+  "statement": "tag v1.3.2 exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-only-local-v1-4-0",
+  "source": "repository watch",
+  "statement": "tag v1.4.0 exists here and not at the remote",
+  "status": "open",
+  "reason": "a tag that is not pushed is not a release: push it or delete it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-1-1",
+  "source": "repository watch",
+  "statement": "tag v0.1.1 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-1-2",
+  "source": "repository watch",
+  "statement": "tag v0.1.2 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-1-3",
+  "source": "repository watch",
+  "statement": "tag v0.1.3 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-1-4",
+  "source": "repository watch",
+  "statement": "tag v0.1.4 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-1-5",
+  "source": "repository watch",
+  "statement": "tag v0.1.5 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-1-6",
+  "source": "repository watch",
+  "statement": "tag v0.1.6 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-1-7",
+  "source": "repository watch",
+  "statement": "tag v0.1.7 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-1-8",
+  "source": "repository watch",
+  "statement": "tag v0.1.8 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-1-9",
+  "source": "repository watch",
+  "statement": "tag v0.1.9 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-2-0",
+  "source": "repository watch",
+  "statement": "tag v0.2.0 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v0-2-1",
+  "source": "repository watch",
+  "statement": "tag v0.2.1 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v1-0-0",
+  "source": "repository watch",
+  "statement": "tag v1.0.0 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v1-0-1",
+  "source": "repository watch",
+  "statement": "tag v1.0.1 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-v1-1-0",
+  "source": "repository watch",
+  "statement": "tag v1.1.0 points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "tag-moved-waves-complete",
+  "source": "repository watch",
+  "statement": "tag waves-complete points at different commits here and at the remote",
+  "status": "open",
+  "reason": "a moved tag is a rewritten release: the two commits are the evidence",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "version-without-release-v1.4.0",
+  "source": "repository watch",
+  "statement": "no GitHub release for v1.4.0",
+  "status": "open",
+  "reason": "the release is the author's act; the Zenodo webhook archives it",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:17:09.955Z"
+ },
+ {
+  "id": "zenodo-without-release-1-1-0",
+  "source": "repository watch",
+  "statement": "Zenodo holds version 1.1.0 and GitHub has no release for it",
+  "status": "open",
+  "reason": "a Zenodo version without its release: the orphan lineage, or a manual upload",
+  "evidence": "https://github.com/uuidna/qpu.git",
+  "head": "02e935f8",
+  "date": "2026-10-25T15:19:25.386Z"
+ },
+ {
+  "id": "next-concurrent-25c28781-162011",
+  "source": "npm run next 2026-10-25T16:20:11.102Z",
+  "statement": "two next runs wrote docs/public at once (this run beside pid 49617 started 2026-10-25T16:16:38.456Z)",
+  "status": "open",
+  "reason": "the flow has no queue: a run that starts while another writes the same files can read a half-written artefact; serialise the runs or give each its own output",
+  "evidence": "lock /Users/ceci/github/uuidna/qpu/docs/public/next.lock",
+  "head": "25c28781",
+  "date": "2026-10-25T16:20:11.102Z"
+ },
+ {
+  "id": "next-purify-ceeacd39",
+  "source": "npm run next 2026-10-25T16:40:39.487Z",
+  "statement": "purify is red at ceeacd39",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "TypeError: Cannot convert undefined or null to object\n    at Object.values (<anonymous>)\n    at <anonymous> (/Users/ceci/github/uuidna/qpu/scripts/purify.ts:108:117)\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:642:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.0.0",
+  "head": "ceeacd39",
+  "date": "2026-10-25T16:40:39.487Z"
+ },
+ {
+  "id": "next-typecheck-ad7ef557",
+  "source": "npm run next 2026-10-25T17:55:46.921Z",
+  "statement": "typecheck is red at ad7ef557",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "\u001b[96msrc/quantum/leads.ts\u001b[0m:\u001b[93m180\u001b[0m:\u001b[93m5\u001b[0m - \u001b[91merror\u001b[0m\u001b[90m TS2353: \u001b[0mObject literal may only specify known properties, and 'id' does not exist in type '[symbol: string, exported: string, note: string]'.\n\n\u001b[7m180\u001b[0m   { id: 'qpu-extends-every-mcp', date: '2026-10-25', source: 'https://qpu.uuidna.com/mcp', statement: 'QPU is the natural extension of every MCP and every MCP of QPU: a host\\'s tools/list read into doors of this catalogue (extend, direction in), a foreign door served by one request the client fetches with the tenant\\'s token, this catalogue mounted by any MCP client (extend, direction out); Cloudflare\\'s eight servers are extended by default, the documentation one in the open, the other seven when a tenant brings its OAuth token', status: 'served', evidence: 'extension toolbox: 8 selftest checks pass (inward on fixture, event-stream tools/list, outward registration, identity on the own catalogue, served answer, refusal, request without token, discovery asks every Cloudflare host); live: docs.mcp.cloudflare.com answers search_cloudflare_documentation over an event stream; bindings and observability answer HTTP 401 without a token' },\n\u001b[7m   \u001b[0m \u001b[91m    ~~\u001b[0m\n\n\nFound 1 error in src/quantum/leads.ts\u001b[90m:180\u001b[0m",
+  "head": "ad7ef557",
+  "date": "2026-10-25T17:55:46.921Z"
+ },
+ {
+  "id": "next-repository-ad7ef557",
+  "source": "npm run next 2026-10-25T17:55:46.921Z",
+  "statement": "repository is red at ad7ef557",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:54)\n    at Array.filter (<anonymous>)\n    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:47)\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:642:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.0.0",
+  "head": "ad7ef557",
+  "date": "2026-10-25T17:55:46.921Z"
+ },
+ {
+  "id": "next-legal-ad7ef557",
+  "source": "npm run next 2026-10-25T17:55:46.921Z",
+  "statement": "legal is red at ad7ef557",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:54)\n    at Array.filter (<anonymous>)\n    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:47)\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:642:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.0.0",
+  "head": "ad7ef557",
+  "date": "2026-10-25T17:55:46.921Z"
+ },
+ {
+  "id": "next-textbook-ad7ef557",
+  "source": "npm run next 2026-10-25T17:55:46.921Z",
+  "statement": "textbook is red at ad7ef557",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:54)\n    at Array.filter (<anonymous>)\n    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:47)\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:642:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.0.0",
+  "head": "ad7ef557",
+  "date": "2026-10-25T17:55:46.921Z"
+ },
+ {
+  "id": "next-purify-ad7ef557",
+  "source": "npm run next 2026-10-25T17:55:46.921Z",
+  "statement": "purify is red at ad7ef557",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:54)\n    at Array.filter (<anonymous>)\n    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:47)\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:642:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.0.0",
+  "head": "ad7ef557",
+  "date": "2026-10-25T17:55:46.921Z"
+ },
+ {
+  "id": "next-metrics-ad7ef557",
+  "source": "npm run next 2026-10-25T17:55:46.921Z",
+  "statement": "metrics is red at ad7ef557",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:54)\n    at Array.filter (<anonymous>)\n    at <anonymous> (/Users/ceci/github/uuidna/qpu/src/quantum/leads.ts:183:47)\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:642:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v26.0.0",
+  "head": "ad7ef557",
+  "date": "2026-10-25T17:55:46.921Z"
+ },
+ {
+  "id": "next-audit-ad7ef557",
+  "source": "npm run next 2026-10-25T17:56:17.353Z",
+  "statement": "audit is red at ad7ef557",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "✓ example-ids-unique — 68 unique ids\n✗ leads:served-have-tools — qpu-extends-every-mcp→none\n✓ leads:others-have-reasons — 2434 non-served leads carry a reason\n✓ error:unknown-tool — {\"code\":-32601,\"message\":\"no tool no-such-tool; the tools are processor, circuit\n✓ error:unknown-method — {\"code\":-32601,\"message\":\"method no/such is not served\"}\n✓ error:invalid-params — {\"code\":-32602,\"message\":\"processor Mars is not described here\"}\n\n572/573 checks pass over 37 tools, 68 examples, 2678 leads",
+  "head": "ad7ef557",
+  "date": "2026-10-25T17:56:17.353Z"
+ },
+ {
+  "id": "next-docs:gen-ad7ef557",
+  "source": "npm run next 2026-10-25T18:01:07.606Z",
+  "statement": "docs:gen is red at ad7ef557",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "    at addChunk (node:internal/streams/readable:564:12)\n    at readableAddChunkPushByteMode (node:internal/streams/readable:515:3)\n    at Readable.push (node:internal/streams/readable:395:5)\n    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {\n  name: 'TransformError'\n}\n\nNode.js v26.0.0",
+  "head": "ad7ef557",
+  "date": "2026-10-25T18:01:07.606Z"
+ },
+ {
+  "id": "next-test-ad7ef557",
+  "source": "npm run next 2026-10-25T19:02:43.216Z",
+  "statement": "test is red at ad7ef557",
+  "status": "open",
+  "reason": "a stop is a lead to follow next; stopping is the failure",
+  "evidence": "✖ the algorithm tool factors N = 15 by Shor's order finding, and runs the QAOA sweep on request (919.102792ms)\n✖ failing tests:\n      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '3 × 5 (verified: product = 15)',\n    expected: '3 × 5',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }",
+  "head": "ad7ef557",
+  "date": "2026-10-25T19:02:43.216Z"
+ }
+]
