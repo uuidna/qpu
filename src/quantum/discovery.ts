@@ -178,3 +178,31 @@ export const discoveryPageOf = (d: Discovery, date: string): string => ['---', '
   '## Doors', '', `${d.doors.length} doors across ${d.hosts.filter((h) => h.kind === 'mcp').length} MCP host(s).`, '',
   '| Host | Door | Takes | Required | Answers | Read-only | From |', '|---|---|---|---|---|---|---|', ...d.doors.map((x) => `| ${x.host} | ${x.name} | ${x.takes.join(', ') || '—'} | ${x.required.join(', ') || '—'} | ${x.answers.join(', ') || '—'} | ${x.readOnly === null ? '?' : x.readOnly} | ${x.contract} |`), '',
   '## Leads', '', ...(d.leads.length ? d.leads.map((l) => `- \`${l.id}\`: ${l.statement}`) : ['none: every API host published a contract']), ''].join('\n')
+
+/** The public MCP registry: a lead's distinctive words asked there first, before any guess about which MCP serves it. */
+export const MCP_REGISTRY = 'https://registry.modelcontextprotocol.io/v0/servers'
+const REGISTRY_STOP = new Set(['the', 'a', 'an', 'of', 'to', 'in', 'on', 'for', 'and', 'or', 'is', 'are', 'it', 'its', 'with', 'by', 'as', 'at', 'from', 'this', 'that', 'every', 'any', 'all', 'no', 'not', 'be', 'into', 'over', 'through', 'here', 'there', 'one', 'two', 'per', 'via', 'tool', 'tools', 'lead', 'leads', 'qpu', 'tree', 'unit', 'served', 'open'])
+/** The words of a lead worth asking: its own, without the stop words, the longest first; each a registry search. */
+export const registryWordsOf = (lead: { id: string; statement: string; source?: string }, at = 3): string[] => {
+  const words = lead.statement.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).filter((w) => w.length > 3 && !REGISTRY_STOP.has(w) && !/^\d+$/.test(w))
+  const counts = new Map<string, number>(); for (const w of words) counts.set(w, (counts.get(w) ?? 0) + 1)
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || b[0].length - a[0].length).slice(0, at).map(([w]) => w)
+}
+export type RegistryRequest = { id: string; lead: string; word: string; method: 'GET'; url: string; accept: string }
+export const registryRequestsOf = (lead: { id: string; statement: string; source?: string }, at = 3): RegistryRequest[] => registryWordsOf(lead, at).map((word) => ({ id: `registry:${lead.id}:${word}`, lead: lead.id, word, method: 'GET' as const, url: `${MCP_REGISTRY}?search=${encodeURIComponent(word)}&limit=10`, accept: 'application/json' }))
+export type RelatedServer = { name: string; description: string; remotes: string[]; word: string }
+/** The registry's answers read into the servers related to the lead, and the one tools/list request per remote that extends each through qpu. */
+export const relatedOf = (lead: string, answers: readonly { id: string; word?: string; status: number; text: string }[]): { lead: string; asked: number; answered: number; servers: RelatedServer[]; extend: { id: string; server: string; method: 'POST'; url: string; accept: string; body: unknown }[] } => {
+  const servers = new Map<string, RelatedServer>()
+  let answered = 0
+  for (const a of answers) {
+    if (a.status !== 200) continue
+    try {
+      const j = JSON.parse(a.text) as { servers?: { server?: { name?: string; description?: string; remotes?: { url?: string }[] }; name?: string; description?: string; remotes?: { url?: string }[] }[] }
+      answered += 1
+      for (const x of j.servers ?? []) { const srv = x.server ?? x; const name = srv.name ?? ''; if (!name || servers.has(name)) continue; servers.set(name, { name, description: (srv.description ?? '').slice(0, 200), remotes: (srv.remotes ?? []).map((r) => r.url).filter((u): u is string => typeof u === 'string' && /^https?:\/\//.test(u)), word: a.word ?? '' }) }
+    } catch { /* not the registry's shape: nothing related read from it */ }
+  }
+  const extend = [...servers.values()].flatMap((s) => s.remotes.map((url) => ({ id: `extend:${lead}:${s.name}:${new URL(url).host}`, server: s.name, method: 'POST' as const, url, accept: 'application/json, text/event-stream', body: rpcBody('tools/list') })))
+  return { lead, asked: answers.length, answered, servers: [...servers.values()], extend }
+}

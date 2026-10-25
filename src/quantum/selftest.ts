@@ -12,6 +12,7 @@ import { pagesOf, judgeOf, sourcesOf, borderPlanOf, borderOf, readinessPageOf } 
 import { imagineOf, imaginePageOf } from './imagine.js'
 import { matcherOf } from './match.js'
 import { e2eOf, valueOf, type E2eAnswer } from './e2e.js'
+import { registryRequestsOf, relatedOf } from './discovery.js'
 
 const UNIT = 'https://unit.test/mcp'
 const rpcOk = (result: unknown) => JSON.stringify({ jsonrpc: '2.0', id: 1, result })
@@ -110,7 +111,15 @@ export const flowSelftestOf = (handle: (m: Rpc) => any, examples: readonly Examp
   // imagine: the matcher feeds the imagination (toolbox → toolbox), on a subset
   safe('imagine:subset', () => { const im = imagineOf(handle, examples, leads, ['willow-spec', 'learn']); check('imagine:subset', im.leads === 2 && im.rows.length === 2 && Object.values(im.verdicts).reduce((a, b) => a + b, 0) === 2 && im.imagined.some((l) => l.id.startsWith('application-')) && imaginePageOf(im, '2026-01-01', 10).includes('| willow-spec |'), `${im.rows.map((r) => `${r.lead}:${r.verdict}`).join(' ')}; ${im.imaginedLeads} imagined`) })
 
-    // the gate as a repetition code, on fixtures: one host agrees, one flips, one is erased; then no majority
+    // leads first: the registry asked with a lead's words, its answer read into related servers and the requests that extend them
+  {
+    const lead = { id: 'x', statement: 'Cloudflare MCP servers answer 401 without a token; the documentation server answers in the open' }
+    const reqs = registryRequestsOf(lead)
+    const answer = JSON.stringify({ servers: [{ server: { name: 'com.cloudflare.mcp/mcp', description: 'Cloudflare MCP servers', remotes: [{ url: 'https://docs.mcp.cloudflare.com/mcp' }, { url: 'https://bindings.mcp.cloudflare.com/mcp' }] } }, { server: { name: 'x/none', description: 'no remote', remotes: [] } }] })
+    const rel = relatedOf('x', reqs.map((r) => ({ id: r.id, word: r.word, status: 200, text: answer })))
+    check('discover:lead-asks-the-registry-first', reqs.length >= 1 && reqs.every((r) => r.url.includes('registry.modelcontextprotocol.io/v0/servers?search=')) && rel.servers.length === 2 && rel.extend.length === 2 && rel.extend.every((e) => (e.body as { method: string }).method === 'tools/list'), `${reqs.map((r) => r.word).join(', ')} asked; ${rel.servers.length} related, ${rel.extend.length} remote(s) to extend`)
+  }
+  // the gate as a repetition code, on fixtures: one host agrees, one flips, one is erased; then no majority
   {
     const base = { combo: 'c1', tool: 'clay', toolbox: 'tree', from: 'example' as const, arguments: {}, url: '', method: 'POST' as const, accept: '', headers: {}, body: null, local: 'L' }
     const ok = JSON.stringify({ jsonrpc: '2.0', id: 1, result: { structuredContent: { v: 1 } } })

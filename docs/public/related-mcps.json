@@ -1,0 +1,986 @@
+{
+ "date": "2026-10-25T20:59:21.233Z",
+ "partial": true,
+ "remaining": 104,
+ "fetched": 77,
+ "leads": 8,
+ "withServers": 8,
+ "related": [
+  {
+   "lead": "perspective-database",
+   "words": [
+    "content-addressed",
+    "framework",
+    "database"
+   ],
+   "servers": 8,
+   "serverList": [
+    {
+     "name": "au.com.aiframework/australian-ai-governance-framework",
+     "description": "Australian AI governance framework mapped to the Privacy Act and sector laws your AI use triggers.",
+     "remotes": [
+      "https://aiframework.com.au/api/mcp.php"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "com.ailawframework/ai-law-framework",
+     "description": "Decide whether AI may be used for a legal task, who drafts and who checks. Australian law.",
+     "remotes": [
+      "https://ailawframework.com/mcp"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "com.ailawframework/firm-brain",
+     "description": "A signed-in firm's own AI policies, know-how and adopted precedents. Needs a firm account (OAuth).",
+     "remotes": [
+      "https://ailawframework.com/mcp/firm"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "com.airolloutframework/ai-rollout-framework",
+     "description": "90-day AI adoption framework for managers: overview, pricing, FAQ and an AI readiness assessment.",
+     "remotes": [
+      "https://airolloutframework.com/mcp"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "io.capawesome/ionic-framework-mcp",
+     "description": "Unofficial MCP server for the Ionic Framework documentation, components and blog.",
+     "remotes": [
+      "https://ionic-framework-mcp.capawesome.io/mcp"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "io.github.81labsapps-ops/framework-mcp",
+     "description": "Verified, version-pinned Expo SDK docs for coding agents over remote MCP (Streamable HTTP).",
+     "remotes": [
+      "https://framework-mcp-production.up.railway.app/mcp"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "ai.argushq/enforcement-database",
+     "description": "Search Argus HQ public FDA enforcement data: warning letters, recalls, approvals, 483s.",
+     "remotes": [
+      "https://argushq.ai/api/mcp"
+     ],
+     "word": "database"
+    },
+    {
+     "name": "ai.haymon/database",
+     "description": "Database MCP server for MySQL, MariaDB, PostgreSQL & SQLite",
+     "remotes": [],
+     "word": "database"
+    }
+   ],
+   "extended": [
+    {
+     "server": "au.com.aiframework/australian-ai-governance-framework",
+     "url": "https://aiframework.com.au/api/mcp.php",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.ailawframework/ai-law-framework",
+     "url": "https://ailawframework.com/mcp",
+     "status": 200,
+     "doors": 19
+    },
+    {
+     "server": "com.ailawframework/firm-brain",
+     "url": "https://ailawframework.com/mcp/firm",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.airolloutframework/ai-rollout-framework",
+     "url": "https://airolloutframework.com/mcp",
+     "status": 200,
+     "doors": 9
+    },
+    {
+     "server": "io.capawesome/ionic-framework-mcp",
+     "url": "https://ionic-framework-mcp.capawesome.io/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "io.github.81labsapps-ops/framework-mcp",
+     "url": "https://framework-mcp-production.up.railway.app/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "ai.argushq/enforcement-database",
+     "url": "https://argushq.ai/api/mcp",
+     "status": 0,
+     "doors": 0
+    }
+   ]
+  },
+  {
+   "lead": "perspective-harmonic",
+   "words": [
+    "harmonic",
+    "colour",
+    "accent"
+   ],
+   "servers": 5,
+   "serverList": [
+    {
+     "name": "io.github.DigbyO/colour-memory",
+     "description": "Cultural color intelligence. Every colour anchored to a person, a year, and a consequence.",
+     "remotes": [
+      "https://colour-memory-api-production.up.railway.app/mcp"
+     ],
+     "word": "colour"
+    },
+    {
+     "name": "io.github.thecolourfoundation/rune",
+     "description": "Evidence-traced codebase understanding and security scanning for AI agents over MCP.",
+     "remotes": [],
+     "word": "colour"
+    },
+    {
+     "name": "uk.co.allpaintcolours/mcp",
+     "description": "Every UK paint colour, matched across brands by ΔE and priced; palettes, planner projects, trends.",
+     "remotes": [
+      "https://mcp.allpaintcolours.co.uk/mcp"
+     ],
+     "word": "colour"
+    },
+    {
+     "name": "com.accentvoice/site",
+     "description": "Search and read Accent's public website: cloud phone, contact center, pricing, support guides.",
+     "remotes": [
+      "https://www.accentvoice.com/agent/mcp"
+     ],
+     "word": "accent"
+    },
+    {
+     "name": "io.github.accentist/buyking-mcp",
+     "description": "세일프라자 AI 사자왕 Bㅏ이킹의 핫딜 시맨틱 검색 서버. 쿠팡, 알리익스프레스, 11번가, G마켓 등 국내외 방대한 초특가/핫딜 정보를 시맨틱 검색으로 제공합니다.",
+     "remotes": [],
+     "word": "accent"
+    }
+   ],
+   "extended": [
+    {
+     "server": "io.github.DigbyO/colour-memory",
+     "url": "https://colour-memory-api-production.up.railway.app/mcp",
+     "status": 200,
+     "doors": 92
+    },
+    {
+     "server": "uk.co.allpaintcolours/mcp",
+     "url": "https://mcp.allpaintcolours.co.uk/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.accentvoice/site",
+     "url": "https://www.accentvoice.com/agent/mcp",
+     "status": 200,
+     "doors": 4
+    }
+   ]
+  },
+  {
+   "lead": "perspective-tenants",
+   "words": [
+    "host",
+    "collision",
+    "procedure"
+   ],
+   "servers": 7,
+   "serverList": [
+    {
+     "name": "ai.borealhost/mcp",
+     "description": "Agent-native web hosting — deploy sites, manage DNS, register domains, scale infrastructure",
+     "remotes": [
+      "https://borealhost.ai/mcp/"
+     ],
+     "word": "host"
+    },
+    {
+     "name": "ai.hostingbrain/intelligence",
+     "description": "European hosting & domain market intelligence: M&A tracking, operator dossiers, screening.",
+     "remotes": [
+      "https://mcp.hostingbrain.ai/mcp"
+     ],
+     "word": "host"
+    },
+    {
+     "name": "ca.maplev/tesla-collision-parts",
+     "description": "Search Tesla Model 3 and Model Y collision parts by OE number. CAD prices, BC delivery, read-only.",
+     "remotes": [
+      "https://qfksopxmphtdmajlbcik.supabase.co/functions/v1/mcp"
+     ],
+     "word": "collision"
+    },
+    {
+     "name": "io.github.Evozim/agent-collision-preventer-mcp",
+     "description": "Premium agentic endpoint for agent-collision-preventer-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/agent-collision-preventer-mcp/sse"
+     ],
+     "word": "collision"
+    },
+    {
+     "name": "io.github.lazymac2x/cron-collision-detector",
+     "description": "Cloudflare Workers MCP server: cron-collision-detector",
+     "remotes": [
+      "https://api.lazy-mac.com/cron-collision-detector/mcp"
+     ],
+     "word": "collision"
+    },
+    {
+     "name": "com.procedurecostchecker/site",
+     "description": "Procedure Cost Checker: the site's own MCP server — dataset, enquiry (enquiry = a human handoff,...",
+     "remotes": [
+      "https://procedurecostchecker.com/mcp"
+     ],
+     "word": "procedure"
+    },
+    {
+     "name": "io.github.builtforai/procedure-coverage",
+     "description": "Medicare coverage and fee-schedule amounts for CPT/HCPCS codes against a diagnosis",
+     "remotes": [
+      "https://medicalclaim.ai/mcp"
+     ],
+     "word": "procedure"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.borealhost/mcp",
+     "url": "https://borealhost.ai/mcp/",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.hostingbrain/intelligence",
+     "url": "https://mcp.hostingbrain.ai/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ca.maplev/tesla-collision-parts",
+     "url": "https://qfksopxmphtdmajlbcik.supabase.co/functions/v1/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "io.github.Evozim/agent-collision-preventer-mcp",
+     "url": "https://api.m2mcent.com/agent-collision-preventer-mcp/sse",
+     "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.lazymac2x/cron-collision-detector",
+     "url": "https://api.lazy-mac.com/cron-collision-detector/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "com.procedurecostchecker/site",
+     "url": "https://procedurecostchecker.com/mcp",
+     "status": 200,
+     "doors": 10
+    },
+    {
+     "server": "io.github.builtforai/procedure-coverage",
+     "url": "https://medicalclaim.ai/mcp",
+     "status": 200,
+     "doors": 1
+    }
+   ]
+  },
+  {
+   "lead": "perspective-court",
+   "words": [
+    "readiness",
+    "theorems",
+    "honesty"
+   ],
+   "servers": 6,
+   "serverList": [
+    {
+     "name": "ai.advisorsai/store-readiness",
+     "description": "One read-only public-page readiness check with a signed, recheckable evidence receipt.",
+     "remotes": [
+      "https://advisorsai.ai/store-readiness-mcp"
+     ],
+     "word": "readiness"
+    },
+    {
+     "name": "com.actablesite/readiness",
+     "description": "Read-only public website readiness and AI crawler-policy checks.",
+     "remotes": [
+      "https://actablesite.com/mcp"
+     ],
+     "word": "readiness"
+    },
+    {
+     "name": "com.bridgetoagent/ai-readiness",
+     "description": "Is a website ready for AI shopping agents? Readiness score (0-100) + agent shopping simulation.",
+     "remotes": [
+      "https://www.bridgetoagent.com/api/mcp"
+     ],
+     "word": "readiness"
+    },
+    {
+     "name": "com.honestysupport/support",
+     "description": "Remote IT from a person. Agents read the price, open a task, and pay by card or USDC.",
+     "remotes": [
+      "https://honestysupport.com/mcp"
+     ],
+     "word": "honesty"
+    },
+    {
+     "name": "io.github.kerne-protocol/honesty-index",
+     "description": "Advertised versus realized yield for stablecoin vaults, signed hourly, reproducible from chain.",
+     "remotes": [
+      "https://kerne.fi/api/mcp"
+     ],
+     "word": "honesty"
+    },
+    {
+     "name": "io.github.lkopietz3-byte/honesty-mcp",
+     "description": "MCP server exposing 11 honesty-SDK kits (grounding, trust, audit, corroboration) as agent tools.",
+     "remotes": [],
+     "word": "honesty"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.advisorsai/store-readiness",
+     "url": "https://advisorsai.ai/store-readiness-mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "com.actablesite/readiness",
+     "url": "https://actablesite.com/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "com.bridgetoagent/ai-readiness",
+     "url": "https://www.bridgetoagent.com/api/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "com.honestysupport/support",
+     "url": "https://honestysupport.com/mcp",
+     "status": 422,
+     "doors": 0
+    },
+    {
+     "server": "io.github.kerne-protocol/honesty-index",
+     "url": "https://kerne.fi/api/mcp",
+     "status": 200,
+     "doors": 6
+    }
+   ]
+  },
+  {
+   "lead": "raid-virtualizes-os",
+   "words": [
+    "development",
+    "virtualise",
+    "operating"
+   ],
+   "servers": 4,
+   "serverList": [
+    {
+     "name": "com.daedalmap/world-development-indicators",
+     "description": "World Bank World Development Indicators: curated country-year economy, health, education and more.",
+     "remotes": [
+      "https://app.daedalmap.com/mcp/world_bank_wdi"
+     ],
+     "word": "development"
+    },
+    {
+     "name": "com.daedalusdevelopmentgroup/ddg-agent-services-mcp",
+     "description": "Pay-per-call x402 gateway: agent tools, OpenAI-compatible LLM, market data, RPC, security audits.",
+     "remotes": [],
+     "word": "development"
+    },
+    {
+     "name": "com.iwebdevelopment/afas",
+     "description": "AFAS AI Connect: hosted MCP server for AFAS Profit.",
+     "remotes": [
+      "https://mcp-afas.iwebdevelopment.com"
+     ],
+     "word": "development"
+    },
+    {
+     "name": "com.jetoperatingcost/site",
+     "description": "Jet Operating Cost: the site's own MCP server — calculator, enquiry (enquiry = a human handoff,...",
+     "remotes": [
+      "https://jetoperatingcost.com/mcp"
+     ],
+     "word": "operating"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.daedalmap/world-development-indicators",
+     "url": "https://app.daedalmap.com/mcp/world_bank_wdi",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.iwebdevelopment/afas",
+     "url": "https://mcp-afas.iwebdevelopment.com",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.jetoperatingcost/site",
+     "url": "https://jetoperatingcost.com/mcp",
+     "status": 200,
+     "doors": 5
+    }
+   ]
+  },
+  {
+   "lead": "payload-port-cloudflare",
+   "words": [
+    "framework",
+    "payload",
+    "raid"
+   ],
+   "servers": 14,
+   "serverList": [
+    {
+     "name": "au.com.aiframework/australian-ai-governance-framework",
+     "description": "Australian AI governance framework mapped to the Privacy Act and sector laws your AI use triggers.",
+     "remotes": [
+      "https://aiframework.com.au/api/mcp.php"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "com.ailawframework/ai-law-framework",
+     "description": "Decide whether AI may be used for a legal task, who drafts and who checks. Australian law.",
+     "remotes": [
+      "https://ailawframework.com/mcp"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "com.ailawframework/firm-brain",
+     "description": "A signed-in firm's own AI policies, know-how and adopted precedents. Needs a firm account (OAuth).",
+     "remotes": [
+      "https://ailawframework.com/mcp/firm"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "com.airolloutframework/ai-rollout-framework",
+     "description": "90-day AI adoption framework for managers: overview, pricing, FAQ and an AI readiness assessment.",
+     "remotes": [
+      "https://airolloutframework.com/mcp"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "io.capawesome/ionic-framework-mcp",
+     "description": "Unofficial MCP server for the Ionic Framework documentation, components and blog.",
+     "remotes": [
+      "https://ionic-framework-mcp.capawesome.io/mcp"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "io.github.81labsapps-ops/framework-mcp",
+     "description": "Verified, version-pinned Expo SDK docs for coding agents over remote MCP (Streamable HTTP).",
+     "remotes": [
+      "https://framework-mcp-production.up.railway.app/mcp"
+     ],
+     "word": "framework"
+    },
+    {
+     "name": "co.com.elyraon/payload-validator",
+     "description": "Deterministic JSON API payload validation with bounded JSON Schema and structured pass/fail errors.",
+     "remotes": [
+      "https://elyreon-payload-validator.colt2822.workers.dev/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "com.freshypenguin/ao-payload-rescue",
+     "description": "Safely repairs JSON that fails a known schema. Deterministic only; refuses ambiguous repairs.",
+     "remotes": [
+      "https://ao-payload-rescue-production.up.railway.app/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "com.gumballtools/payload-validator",
+     "description": "Validate JSON, YAML, XML and CSV with exact line/column errors and silent-corruption warnings.",
+     "remotes": [
+      "https://payload-validator.gumballtools.com/api/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "com.textforagents/customs-house-for-agent-payloads",
+     "description": "Classify, declare, and bond agent payload crossings — filing, bond, signed entry receipts.",
+     "remotes": [
+      "https://textforagents.com/products/customs-house-for-agent-payloads/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "ai.dinglebear/unraid",
+     "description": "Rust MCP server and CLI for Unraid GraphQL operations across NAS, Docker, VM, and storage workflows.",
+     "remotes": [],
+     "word": "raid"
+    },
+    {
+     "name": "ai.dinglebear/unraid-mcp",
+     "description": "MCP server for Unraid API — provides tools to interact with an Unraid server's GraphQL API.",
+     "remotes": [],
+     "word": "raid"
+    },
+    {
+     "name": "ai.dinglebear/unraid-rmcp",
+     "description": "Rust MCP server and CLI for Unraid GraphQL, NAS, Docker, VM, and storage workflows.",
+     "remotes": [],
+     "word": "raid"
+    },
+    {
+     "name": "io.github.AlterAIDev/alter-onboarding",
+     "description": "Guide developers from setup through a verified, policy-aware, audited Alter API call.",
+     "remotes": [
+      "https://mcp.alterauth.com/mcp"
+     ],
+     "word": "raid"
+    }
+   ],
+   "extended": [
+    {
+     "server": "au.com.aiframework/australian-ai-governance-framework",
+     "url": "https://aiframework.com.au/api/mcp.php",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.ailawframework/ai-law-framework",
+     "url": "https://ailawframework.com/mcp",
+     "status": 200,
+     "doors": 19
+    },
+    {
+     "server": "com.ailawframework/firm-brain",
+     "url": "https://ailawframework.com/mcp/firm",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.airolloutframework/ai-rollout-framework",
+     "url": "https://airolloutframework.com/mcp",
+     "status": 200,
+     "doors": 9
+    },
+    {
+     "server": "io.capawesome/ionic-framework-mcp",
+     "url": "https://ionic-framework-mcp.capawesome.io/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "io.github.81labsapps-ops/framework-mcp",
+     "url": "https://framework-mcp-production.up.railway.app/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "co.com.elyraon/payload-validator",
+     "url": "https://elyreon-payload-validator.colt2822.workers.dev/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "com.freshypenguin/ao-payload-rescue",
+     "url": "https://ao-payload-rescue-production.up.railway.app/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "com.gumballtools/payload-validator",
+     "url": "https://payload-validator.gumballtools.com/api/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.textforagents/customs-house-for-agent-payloads",
+     "url": "https://textforagents.com/products/customs-house-for-agent-payloads/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "io.github.AlterAIDev/alter-onboarding",
+     "url": "https://mcp.alterauth.com/mcp",
+     "status": 200,
+     "doors": 14
+    }
+   ]
+  },
+  {
+   "lead": "payload-db-adapter-docket",
+   "words": [
+    "mongodb",
+    "payload",
+    "entries"
+   ],
+   "servers": 11,
+   "serverList": [
+    {
+     "name": "ai.getvda/elasticsearch-mongodb-redis-stack-generator-elasticsearch-elasticsearch",
+     "description": "Elasticsearch + MongoDB + Redis Stack Generator (Elasticsearch/Elasticsearch)",
+     "remotes": [
+      "https://elasticsearch-mongodb-redis-stack-generator-el-d8f067.getvda.ai/mcp"
+     ],
+     "word": "mongodb"
+    },
+    {
+     "name": "ai.getvda/memcached-mongodb-redis-compose-generator",
+     "description": "Memcached + MongoDB + Redis Compose Generator",
+     "remotes": [
+      "https://memcached-mongodb-redis-compose-generator.getvda.ai/mcp"
+     ],
+     "word": "mongodb"
+    },
+    {
+     "name": "ai.getvda/rabbitmq-elasticsearch-mongodb-stack-generator",
+     "description": "RabbitMQ + Elasticsearch + MongoDB Stack Generator",
+     "remotes": [
+      "https://rabbitmq-elasticsearch-mongodb-stack-generator.getvda.ai/mcp"
+     ],
+     "word": "mongodb"
+    },
+    {
+     "name": "ai.getvda/rabbitmq-postgres-mongodb-stack-generator",
+     "description": "RabbitMQ + Postgres + MongoDB Stack Generator",
+     "remotes": [
+      "https://rabbitmq-postgres-mongodb-stack-generator.getvda.ai/mcp"
+     ],
+     "word": "mongodb"
+    },
+    {
+     "name": "io.github.infoinlet-marketplace/mcp-mongodb",
+     "description": "Read-only MongoDB for AI agents — find, aggregate (no write stages), count, stats.",
+     "remotes": [],
+     "word": "mongodb"
+    },
+    {
+     "name": "io.github.mongodb-js/mongodb-mcp-server",
+     "description": "MongoDB Model Context Protocol Server",
+     "remotes": [],
+     "word": "mongodb"
+    },
+    {
+     "name": "co.com.elyraon/payload-validator",
+     "description": "Deterministic JSON API payload validation with bounded JSON Schema and structured pass/fail errors.",
+     "remotes": [
+      "https://elyreon-payload-validator.colt2822.workers.dev/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "com.freshypenguin/ao-payload-rescue",
+     "description": "Safely repairs JSON that fails a known schema. Deterministic only; refuses ambiguous repairs.",
+     "remotes": [
+      "https://ao-payload-rescue-production.up.railway.app/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "com.gumballtools/payload-validator",
+     "description": "Validate JSON, YAML, XML and CSV with exact line/column errors and silent-corruption warnings.",
+     "remotes": [
+      "https://payload-validator.gumballtools.com/api/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "com.textforagents/customs-house-for-agent-payloads",
+     "description": "Classify, declare, and bond agent payload crossings — filing, bond, signed entry receipts.",
+     "remotes": [
+      "https://textforagents.com/products/customs-house-for-agent-payloads/mcp"
+     ],
+     "word": "payload"
+    },
+    {
+     "name": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
+     "description": "Plain-English transactions to balanced journal entries, adjusting and closing entries.",
+     "remotes": [
+      "https://openapi-1779155638284.mcpize.run/mcp"
+     ],
+     "word": "entries"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.getvda/elasticsearch-mongodb-redis-stack-generator-elasticsearch-elasticsearch",
+     "url": "https://elasticsearch-mongodb-redis-stack-generator-el-d8f067.getvda.ai/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "ai.getvda/memcached-mongodb-redis-compose-generator",
+     "url": "https://memcached-mongodb-redis-compose-generator.getvda.ai/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "ai.getvda/rabbitmq-elasticsearch-mongodb-stack-generator",
+     "url": "https://rabbitmq-elasticsearch-mongodb-stack-generator.getvda.ai/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "ai.getvda/rabbitmq-postgres-mongodb-stack-generator",
+     "url": "https://rabbitmq-postgres-mongodb-stack-generator.getvda.ai/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "co.com.elyraon/payload-validator",
+     "url": "https://elyreon-payload-validator.colt2822.workers.dev/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "com.freshypenguin/ao-payload-rescue",
+     "url": "https://ao-payload-rescue-production.up.railway.app/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "com.gumballtools/payload-validator",
+     "url": "https://payload-validator.gumballtools.com/api/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.textforagents/customs-house-for-agent-payloads",
+     "url": "https://textforagents.com/products/customs-house-for-agent-payloads/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
+     "url": "https://openapi-1779155638284.mcpize.run/mcp",
+     "status": 401,
+     "doors": 0
+    }
+   ]
+  },
+  {
+   "lead": "payload-mcp-plugin-doors",
+   "words": [
+    "door",
+    "collection",
+    "capability"
+   ],
+   "servers": 17,
+   "serverList": [
+    {
+     "name": "ai.agent-bev/bev-door",
+     "description": "Agentic B2B hub for beer, wine and spirits across Europe.",
+     "remotes": [
+      "https://mcp.bev-buyer.ai/mcp"
+     ],
+     "word": "door"
+    },
+    {
+     "name": "app.doorbase/market-data",
+     "description": "US rental market data by zip: rent, cap rates, vacancy, hazard risk, rent trends. Free, no auth.",
+     "remotes": [
+      "https://doorbase.app/mcp"
+     ],
+     "word": "door"
+    },
+    {
+     "name": "ca.commercialgaragedoorman/business-card",
+     "description": "Commercial Garage Doorman, Hamilton area commercial door service: business facts and site search.",
+     "remotes": [
+      "https://www.commercialgaragedoorman.ca/mcp"
+     ],
+     "word": "door"
+    },
+    {
+     "name": "ca.garagedoorman/business-card",
+     "description": "Garage Doorman, Grimsby ON residential garage door repair: business facts, site search, quotes.",
+     "remotes": [
+      "https://www.garagedoorman.ca/mcp"
+     ],
+     "word": "door"
+    },
+    {
+     "name": "co.botdoor/botdoor",
+     "description": "Let AI agents post to social media with human approval: schedule, first comments, threads.",
+     "remotes": [
+      "https://botdoor.co/api/mcp"
+     ],
+     "word": "door"
+    },
+    {
+     "name": "ai.saifs/collections-optimizer",
+     "description": "Prioritise overdue accounts by recovery uplift and recommend a compliant contact strategy.",
+     "remotes": [
+      "https://collections-optimizer-mcp.saifs.ai/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "com.whenisbins/bin-collections",
+     "description": "UK household bin collection dates by address, council-sourced. Free anonymous use, with limits",
+     "remotes": [
+      "https://whenisbins.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.Evozim/debt-collection-bot-mcp",
+     "description": "Premium agentic endpoint for debt-collection-bot-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/debt-collection-bot-mcp/sse"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.jediapps/jedi-collection-sort",
+     "description": "Manage Shopify collection sorting by chat: strategies, assignments, and on-demand sorts.",
+     "remotes": [
+      "https://api.collection-sort.jediapps.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.ssskay/myfigurecollection-api",
+     "description": "Read MyFigureCollection.net: search figures, JAN barcode lookup, shop prices, collections and clubs.",
+     "remotes": [],
+     "word": "collection"
+    },
+    {
+     "name": "io.moderncollections/mcp",
+     "description": "Place overdue B2B invoices for collection and track outreach, payments and remittances.",
+     "remotes": [
+      "https://api.moderncollections.io/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "me.remem/collections",
+     "description": "Browse Bible verse collections from Remember Me, a free memorization app in 48 languages",
+     "remotes": [
+      "https://mcp.remem.me/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "com.faceabot/capability-network",
+     "description": "Agent discovery, signed contributions, and moderated information, offers and needs.",
+     "remotes": [
+      "https://faceabot.com/api/mcp"
+     ],
+     "word": "capability"
+    },
+    {
+     "name": "com.textforagents/capability-diet-tool-pruning",
+     "description": "Per-task-type tool manifests with reversible JIT demotion, compiled from fleet telemetry.",
+     "remotes": [
+      "https://textforagents.com/products/capability-diet-tool-pruning/mcp"
+     ],
+     "word": "capability"
+    },
+    {
+     "name": "io.github.capabilityhostprotocol/capabilities-txt-registry",
+     "description": "Discover what websites across the agentic web can do — query the capabilities.txt registry.",
+     "remotes": [
+      "https://capabilitiestxt.org/api/mcp"
+     ],
+     "word": "capability"
+    },
+    {
+     "name": "io.github.capabilityhostprotocol/chp",
+     "description": "Learn and adopt the Capability Host Protocol — the agentic web's open evidence layer.",
+     "remotes": [
+      "https://capabilityhostprotocol.com/api/mcp"
+     ],
+     "word": "capability"
+    },
+    {
+     "name": "io.github.furoito/japan-physical-capability",
+     "description": "Physical-world store verification in Japan for AI agents with structured evidence.",
+     "remotes": [
+      "https://uiiepdcaepkawfwaiyuq.supabase.co/functions/v1/japan-physical-capability-mcp"
+     ],
+     "word": "capability"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.agent-bev/bev-door",
+     "url": "https://mcp.bev-buyer.ai/mcp",
+     "status": 200,
+     "doors": 9
+    },
+    {
+     "server": "app.doorbase/market-data",
+     "url": "https://doorbase.app/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "ca.commercialgaragedoorman/business-card",
+     "url": "https://www.commercialgaragedoorman.ca/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "ca.garagedoorman/business-card",
+     "url": "https://www.garagedoorman.ca/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "co.botdoor/botdoor",
+     "url": "https://botdoor.co/api/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "ai.saifs/collections-optimizer",
+     "url": "https://collections-optimizer-mcp.saifs.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.whenisbins/bin-collections",
+     "url": "https://whenisbins.com/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "io.github.Evozim/debt-collection-bot-mcp",
+     "url": "https://api.m2mcent.com/debt-collection-bot-mcp/sse",
+     "status": 402,
+     "doors": 0
+    }
+   ]
+  }
+ ]
+}

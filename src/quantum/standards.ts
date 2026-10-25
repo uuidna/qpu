@@ -7,6 +7,15 @@ import { LICENSE } from './license.js'
 export const STANDARDS: readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[] = [
   // the reference site: payloadcms.com is built of what Payload computes (its REST answers Payload's own shape: docs with blocks, meta, breadcrumbs), as qpu.uuidna.com is built of what qpu computes
   { id: 'payload-site', name: 'payloadcms.com, built with Payload (REST pages)', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', kind: 'reference' },
+  // NIST's first post-quantum standards, read at CSRC on 2026-10-25: FIPS 203, 204 and 205 published August 13, 2024; HQC selected March 11, 2025 (NIST IR 8545)
+  { id: 'nist-fips-203', name: 'NIST FIPS 203, Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)', contract: 'https://csrc.nist.gov/pubs/fips/203/final', kind: 'reference' },
+  { id: 'nist-fips-204', name: 'NIST FIPS 204, Module-Lattice-Based Digital Signature Standard (ML-DSA)', contract: 'https://csrc.nist.gov/pubs/fips/204/final', kind: 'reference' },
+  { id: 'nist-fips-205', name: 'NIST FIPS 205, Stateless Hash-Based Digital Signature Standard (SLH-DSA)', contract: 'https://csrc.nist.gov/pubs/fips/205/final', kind: 'reference' },
+  { id: 'nist-pqc', name: 'NIST Post-Quantum Cryptography project (the selections, HQC among them)', contract: 'https://csrc.nist.gov/projects/post-quantum-cryptography', kind: 'reference' },
+  // Payload's own skills for agents (github.com/payloadcms/skills): read as a tree, every SKILL.md a skill, every reference a door the payload toolbox maps; no licence is declared there, so only names, paths and sizes are read, never the text
+  // the source of payloadcms.com (github.com/payloadcms/website, MIT): the tree read for its collections, blocks, globals, fields and plugins, the proof that the site is what Payload computes
+  { id: 'payload-website', name: 'payloadcms/website, the source of payloadcms.com (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/website/git/trees/main?recursive=1', kind: 'reference' },
+  { id: 'payload-skills', name: 'payloadcms/skills, Payload\'s skills for AI agents (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/skills/git/trees/main?recursive=1', kind: 'reference' },
   { id: 'schema-org', name: 'schema.org vocabulary (JSON-LD)', contract: 'https://schema.org/version/latest/schemaorg-current-https.jsonld', kind: 'vocabulary' },
   { id: 'cldr-languages', name: 'Unicode CLDR language names (ISO 639)', contract: 'https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/cldr-localenames-full/main/en/languages.json', kind: 'codes' },
   { id: 'cldr-currencies', name: 'Unicode CLDR currency names (ISO 4217)', contract: 'https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/cldr-numbers-full/main/en/currencies.json', kind: 'codes' },
@@ -48,6 +57,7 @@ export const validateOf = (codes: Codes, mine: { locales: readonly string[]; cur
 }
 /** Which standard document a text is: the schema.org JSON-LD vocabulary, or a CLDR list. */
 export const detectStandard = (text: string): { detected: string; note: string } | null => {
+  try { const j = JSON.parse(text) as { sha?: string; tree?: { path: string; type: string; size?: number }[]; truncated?: boolean }; if (Array.isArray(j.tree) && typeof j.sha === 'string') { const skills = j.tree.filter((e) => /\/SKILL\.md$/.test(e.path)).map((e) => e.path.split('/').slice(-2, -1)[0]); const refs = j.tree.filter((e) => /\/reference\/[^/]+\.md$/.test(e.path)).length; return { detected: 'github tree', note: `${j.tree.length} entries${j.truncated ? ' (truncated)' : ''}; ${skills.length} skill(s): ${skills.join(', ')}; ${refs} reference(s)` } } } catch { /* not a tree */ }
   try { const j = JSON.parse(text) as { docs?: { layout?: { blockType: string }[]; meta?: object; breadcrumbs?: unknown[]; createdAt?: string }[]; totalDocs?: number }; if (Array.isArray(j.docs) && j.docs[0] && typeof j.docs[0].createdAt === 'string') { const d = j.docs[0]; return { detected: 'payload rest', note: `${j.totalDocs ?? j.docs.length} docs; blocks ${(d.layout ?? []).map((b) => b.blockType).join(', ') || 'none'}; ${d.meta ? 'seo meta' : 'no meta'}; ${Array.isArray(d.breadcrumbs) ? `${d.breadcrumbs.length} breadcrumb(s)` : 'no breadcrumbs'}: the site is the product's own output` } } } catch { /* not payload */ }
   try {
     const j = JSON.parse(text) as Record<string, unknown>

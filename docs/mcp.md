@@ -1217,6 +1217,14 @@ Discovery before use. Without answers: every request the client must make for th
 {
   "type": "object",
   "properties": {
+    "lead": {
+      "type": "string",
+      "description": "a lead id: its words are asked of the public MCP registry first; with answers, the related servers and their extend requests"
+    },
+    "statement": {
+      "type": "string",
+      "description": "with lead: the statement of a lead not in the registry"
+    },
     "mcpHosts": {
       "type": "array",
       "items": {
@@ -1799,6 +1807,18 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 {
   "type": "object",
   "properties": {
+    "website": {
+      "description": "true: the requests for payloadcms.com's source tree and one live page; the tree as answered: its collections, blocks, globals, fields and plugins, and whether the live page's blocks have a block in the source"
+    },
+    "liveBlockTypes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "skills": {
+      "description": "true: the request for Payload's skills tree (github.com/payloadcms/skills); the tree as answered: every skill and reference mapped to the tool of this tree that enacts it"
+    },
     "site": {
       "type": "boolean",
       "description": "the site as its own use cases: every toolbox a use case, every example a page document, as payloadcms.com is built of what Payload computes"

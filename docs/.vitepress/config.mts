@@ -162,6 +162,10 @@ export default defineConfig({
         "link": "/imagination"
       },
       {
+        "text": "Related MCPs",
+        "link": "/related-mcps"
+      },
+      {
         "text": "Stream",
         "link": "/stream"
       },
@@ -289,6 +293,10 @@ export default defineConfig({
           {
             "text": "Imagination",
             "link": "/imagination"
+          },
+          {
+            "text": "Related MCPs",
+            "link": "/related-mcps"
           },
           {
             "text": "Stream",

@@ -75,11 +75,22 @@ const seal = toolOf('crypto', {
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...CRYPTO.skill.selftest(ctx) }
     const text = String(args.text)
-    return { bytes: utf8(text).length, sha256: sha(text), address: uuidOf(text), ...(typeof args.key === 'string' ? { hmac: hex(hmacSha256(utf8(args.key), utf8(text))) } : {}) }
+    return { bytes: utf8(text).length, sha256: sha(text), address: uuidOf(text), ...(typeof args.key === 'string' ? { hmac: hex(hmacSha256(utf8(args.key), utf8(text))) } : {}), postQuantum: POST_QUANTUM }
   },
   widget: flowWidget,
 })
 
+/** What this seal is against a quantum adversary, and what NIST standardised: read at CSRC on 2026-10-25, carried as the standards nist-fips-203/204/205 discovery reads. */
+export const POST_QUANTUM = {
+  thisSeal: 'SHA-256 and HMAC-SHA256 are symmetric: Grover\'s search halves their bits, so 256 bits keep 128 against a quantum adversary; no public-key step is taken here, so nothing of this seal falls to Shor',
+  standards: [
+    { fips: 203, name: 'ML-KEM (Module-Lattice-Based Key-Encapsulation Mechanism)', published: '2024-08-13', at: 'https://csrc.nist.gov/pubs/fips/203/final' },
+    { fips: 204, name: 'ML-DSA (Module-Lattice-Based Digital Signature)', published: '2024-08-13', at: 'https://csrc.nist.gov/pubs/fips/204/final' },
+    { fips: 205, name: 'SLH-DSA (Stateless Hash-Based Digital Signature)', published: '2024-08-13', at: 'https://csrc.nist.gov/pubs/fips/205/final' },
+  ],
+  selected: [{ name: 'HQC (key encapsulation)', on: '2025-03-11', report: 'NIST IR 8545', at: 'https://csrc.nist.gov/projects/post-quantum-cryptography' }],
+  here: 'signatures over folds with ML-DSA or SLH-DSA are not implemented in this tree: lead pqc-signature-over-folds; the fold, the hash and the HMAC stand',
+} as const
 const LEDGER = Array.from({ length: 40 }, (_, i) => JSON.stringify({ key: `k${String(i).padStart(2, '0')}`, value: i * i, note: 'a row of the ledger' })).join('\n')
 
 export const CRYPTO: Toolbox = {
