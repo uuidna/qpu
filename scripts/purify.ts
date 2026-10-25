@@ -100,7 +100,7 @@ const rows: [string, string][] = [
   ['Lean 4 modules built (`lake build`, Lean 4.33.0)', lean.jobs ? `${modules} modules, ${lean.jobs} jobs, 0 errors` : `${modules} modules`],
   ['Theorems declared / accepted by the kernel', `${declared} / ${kernel} (${handWritten.length} hand-written, ${generated} generated equation lemmas)`],
   ['Theorems using `sorry`', String(sorried)],
-  ['Axioms any theorem depends on', axioms.split(',').map((a) => `\`${a.trim()}\``).join(', ')],
+  ['Axioms used by the kernel-accepted theorems', axioms.split(',').map((a) => `\`${a.trim()}\``).join(', ')],
   ['Self-audit checks', step('audit')?.counts?.checks ? `${step('audit').counts.checks} of ${step('audit').counts.checksTotal} pass` : 'see docs/audit'],
   ['Cross-verification requests (free public sources)', verification ? `${verification.requests} requests, ${Object.values(verification.summary as Record<string, { ok: number }>).reduce((n, s) => n + s.ok, 0)} reachable on ${verification.date.slice(0, 10)}` : 'not yet run'],
   ['Servers, workers, network calls in the handler', '0'],

@@ -34,3 +34,5 @@ docs/public/discovery.json
 docs/discovery.md
 .dev.vars
 .wrangler
+docs/public/legal.json
+docs/legal.md

@@ -8,6 +8,8 @@ import { cssOf } from '../src/quantum/theme.js'
 import { LEADS } from '../src/quantum/leads.js'
 
 const ROOT = process.cwd()
+// Text that reaches a page is escaped once here: an angle bracket in a lead or a description is text, never a tag.
+const cell = (t: string): string => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|')
 const DOCS = join(ROOT, 'docs')
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { name: string; description: string; homepage?: string; repository?: string }
 
@@ -31,11 +33,11 @@ const mcpPage = [
   'organised in toolboxes, each one idea complete with its toolset and its skillset (instructions, directions, selftest, examples);',
   '`tools/list` names each tool\'s toolbox in `_meta.toolbox`, and `initialize` carries every toolbox\'s instructions.',
   '',
-  ...toolboxes.flatMap((b) => [`## Toolbox \`${b.name}\``, '', `${b.idea}.`, '', `**Skill.** ${b.skill.instructions}`, '', `**Tests itself:** ${b.skill.directions.join('; ')}.`, '', `Tools: ${b.tools.map((t) => `[${t.name}](#${t.name})`).join(', ')}.`, '']),
+  ...toolboxes.flatMap((b) => [`## Toolbox \`${b.name}\``, '', `${cell(b.idea)}.`, '', `**Skill.** ${cell(b.skill.instructions)}`, '', `**Tests itself:** ${b.skill.directions.join('; ')}.`, '', `Tools: ${b.tools.map((t) => `[${t.name}](#${t.name})`).join(', ')}.`, '']),
   ...tools.flatMap((t) => [
     `## ${t.name}`,
     '',
-    t.description,
+    cell(t.description),
     '',
     '```json',
     JSON.stringify(t.inputSchema, null, 2),
@@ -62,7 +64,7 @@ const leadsPage = [
   '',
   '| Lead | Status | Tool | Statement | Reason |',
   '| --- | --- | --- | --- | --- |',
-  ...LEADS.map((l) => `| \`${l.id}\` | ${l.status} | ${l.tool ?? '—'} | ${l.statement} | ${l.reason ?? ''} |`),
+  ...LEADS.map((l) => `| \`${l.id}\` | ${l.status} | ${l.tool ?? '—'} | ${cell(l.statement)} | ${cell(l.reason ?? '')} |`),
   '',
 ].join('\n')
 writeFileSync(join(DOCS, 'leads.md'), leadsPage)

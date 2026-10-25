@@ -64,11 +64,21 @@ Tools: [mongo](#mongo).
 
 Stripe per tenant: a licence bought at one tenant is an entry valid on the domains it names, every event idempotent and linked, every signature verified with the tenant's own secret, every refusal a lead.
 
-**Skill.** Per tenant the author sets two wrangler secrets, STRIPE_SECRET_KEY_<TENANT> and STRIPE_WEBHOOK_SECRET_<TENANT>, and registers https://<host>/docket/stripe as the webhook endpoint at Stripe. A client calls stripe plan and the Worker executes the plan with the tenant key, answering the session url. Stripe posts events to the tenant's endpoint; the Worker calls stripe webhook with the raw body, the Stripe-Signature header and the tenant secret, writes the entry it gets to the tenant docket (mirrors carry it to the others), and answers 200 on a duplicate. Any host answers stripe state for a subject at its domain from the entries it holds.
+**Skill.** Per tenant the author sets two wrangler secrets, STRIPE_SECRET_KEY_&lt;TENANT&gt; and STRIPE_WEBHOOK_SECRET_&lt;TENANT&gt;, and registers https://&lt;host&gt;/docket/stripe as the webhook endpoint at Stripe. A client calls stripe plan and the Worker executes the plan with the tenant key, answering the session url. Stripe posts events to the tenant's endpoint; the Worker calls stripe webhook with the raw body, the Stripe-Signature header and the tenant secret, writes the entry it gets to the tenant docket (mirrors carry it to the others), and answers 200 on a duplicate. Any host answers stripe state for a subject at its domain from the entries it holds.
 
 **Tests itself:** server only: SHA-256 and HMAC vectors, the signature round trip, every event type to its state, every scenario between tenants; client → server: the Worker hands the raw body, the header and the secret; the handler never holds a key; toolbox → toolbox: entries are addressed with the tree's uuidOf, kept in the raid docket, verified by the tree toolbox's verify.
 
 Tools: [stripe](#stripe).
+
+## Toolbox `legal`
+
+the legal and security audit of this MCP through MCP: the author's claims judged by the unit's forensic, legal and security doors, free agents by default, the operator alone overriding, beside the tree's own checks of its sources.
+
+**Skill.** The client reads the tree's texts (README, CITATION.cff, .zenodo.json, package.json, src/worker.ts, the billing and hmac modules, mcp.ts), the discovery and the theorem ledger, calls legal for the plan, makes every call against its host, and calls legal again with the answers; it writes legal.json and the page. Agents are the free doors discovery found; the operator overrides with agents: [...] and nothing else does. A refusal is recorded, never retried blindly.
+
+**Tests itself:** server only: claims from fixture metadata, security checks on fixture sources, the plan, the audit of fixture answers; client → server: the texts come from the tree, the answers from the doors; toolbox → toolbox: the doors come from discovery; the claims include every perspective lead; the licence module is the measure of drift.
+
+Tools: [legal](#legal).
 
 ## processor
 
@@ -562,7 +572,7 @@ The Google Quantum AI roadmap: its six milestones, their physical-qubit scale, a
 
 ## algorithm
 
-The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits, from input x), phase_estimation (of θ with 1 to 8 bits), grover (two qubits, marked |00>), teleportation (the message state, sent and received), qaoa (depth 1 on the first 2 to 12 sorted qubits of the Sycamore device, the page's instance, with the expected cut), and shor (order finding for N from 3 to 21, the state-vector bound). Each returns its summary and a table.
+The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits, from input x), phase_estimation (of θ with 1 to 8 bits), grover (two qubits, marked \|00&gt;), teleportation (the message state, sent and received), qaoa (depth 1 on the first 2 to 12 sorted qubits of the Sycamore device, the page's instance, with the expected cut), and shor (order finding for N from 3 to 21, the state-vector bound). Each returns its summary and a table.
 
 ```json
 {
@@ -1373,6 +1383,51 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
     },
     "domain": {
       "type": "string"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## legal
+
+The full legal and security audit with forensic analysis, through MCP. Phase one (texts, discovery, agents?, theoremKeys?): the author's claims gathered from the tree and its metadata, this tree's own security checks over its sources, and the plan of calls to the unit's forensic, verification, legal, licence, prior-art, due-process and security doors — free agents found by discovery by default, the operator's own list when given. Phase two (plus answers): verdicts per claim, drift against this tree's licence, the findings, the page. Recomputable facts, not legal advice.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "texts": {
+      "type": "object",
+      "description": "{ readme, citation, zenodo, package, worker, billing, hmac, mcp }: the texts of the tree"
+    },
+    "discovery": {
+      "type": "object"
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "the operator's override: the doors to use; omit for the free doors discovery found"
+    },
+    "theoremKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "citeTheorem": {
+      "type": "string",
+      "description": "the sealed guarantee of the unit's court cited beside every legal claim; default legal_only_the_proven_is_admitted, a key its due-process door names"
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
     },
     "selftest": {
       "type": "boolean"

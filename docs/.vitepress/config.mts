@@ -148,6 +148,10 @@ export default defineConfig({
       {
         "text": "Stream",
         "link": "/stream"
+      },
+      {
+        "text": "Legal",
+        "link": "/legal"
       }
     ],
     sidebar: [
@@ -249,6 +253,10 @@ export default defineConfig({
           {
             "text": "Stream",
             "link": "/stream"
+          },
+          {
+            "text": "Legal",
+            "link": "/legal"
           }
         ]
       },
@@ -383,6 +391,15 @@ export default defineConfig({
           {
             "text": "stripe",
             "link": "/mcp#stripe"
+          }
+        ]
+      },
+      {
+        "text": "Toolbox legal",
+        "items": [
+          {
+            "text": "legal",
+            "link": "/mcp#legal"
           }
         ]
       }

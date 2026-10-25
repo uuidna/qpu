@@ -27,6 +27,7 @@ const steps: Step[] = [
   { name: 'discover', cmd: 'node', args: ['--import', 'tsx', 'scripts/discover.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 600_000 },
   { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 1_800_000 },
   { name: 'readiness', cmd: 'node', args: ['--import', 'tsx', 'scripts/readiness.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 },
+  { name: 'legal', cmd: 'node', args: ['--import', 'tsx', 'scripts/legal.ts'], budgetMs: 600_000 }, // always: cached by inputs, the pure half offline
   { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'] },
   { name: 'docs:build', cmd: 'npx', args: ['vitepress', 'build', 'docs'], skip: fast ? 'fast' : undefined },
   { name: 'publish', cmd: 'node', args: ['--import', 'tsx', 'scripts/publish.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 },
@@ -48,7 +49,7 @@ process.on('exit', () => { try { const l = JSON.parse(readFileSync(lockPath, 'ut
 const run = (s: Step) => {
   if (s.skip) { receipt.steps.push({ name: s.name, status: 'skipped', ms: 0, tail: s.skip }); console.log(`· ${s.name}: skipped (${s.skip})`); return true }
   const started = Date.now()
-  const r = spawnSync(s.cmd, s.args, { cwd: ROOT, encoding: 'utf8', shell: process.platform === 'win32', env: { ...process.env, FORCE_COLOR: '0' }, maxBuffer: 1 << 28, timeout: s.budgetMs ?? 600_000, killSignal: 'SIGKILL' })
+  const r = spawnSync(s.cmd, s.args, { cwd: ROOT, encoding: 'utf8', shell: process.platform === 'win32', env: { ...process.env, FORCE_COLOR: '0', QPU_OFFLINE: offline ? '1' : '' }, maxBuffer: 1 << 28, timeout: s.budgetMs ?? 600_000, killSignal: 'SIGKILL' })
   if (r.error && (r.error as NodeJS.ErrnoException).code === 'ETIMEDOUT') console.log(`⏱ ${s.name}: exceeded its budget of ${(s.budgetMs ?? 600_000) / 1000} s and was killed; a hang is a lead, not a stop`)
   const out = `${r.stdout ?? ''}${r.stderr ?? ''}`
   const ok = r.status === 0 && !r.error

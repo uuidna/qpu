@@ -19,12 +19,14 @@ import { FLOW } from './toolboxes/flow.js'
 import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
 import { BILLING } from './toolboxes/billing.js'
+import { LEGAL } from './toolboxes/legal.js'
 
 export const EXAMPLES: Example[] = [
   ...FLOW.examples,
   ...LANGUAGE.examples,
   ...RAID.examples,
   ...BILLING.examples,
+  ...LEGAL.examples,
   { id: 'processor-willow', tool: 'processor', arguments: { name: 'Willow' }, shows: 'How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47.',
     expect: (s) => (s.qubits === 105 && s.statedAverageConnectivity === 3.47 ? null : `qubits ${s.qubits}, connectivity ${s.statedAverageConnectivity}`) },
   { id: 'processor-sycamore', tool: 'processor', arguments: { name: 'Sycamore' }, shows: 'Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated.',

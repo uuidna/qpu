@@ -1312,6 +1312,51 @@
       "_meta": {
         "toolbox": "billing"
       }
+    },
+    {
+      "name": "legal",
+      "description": "The full legal and security audit with forensic analysis, through MCP. Phase one (texts, discovery, agents?, theoremKeys?): the author's claims gathered from the tree and its metadata, this tree's own security checks over its sources, and the plan of calls to the unit's forensic, verification, legal, licence, prior-art, due-process and security doors — free agents found by discovery by default, the operator's own list when given. Phase two (plus answers): verdicts per claim, drift against this tree's licence, the findings, the page. Recomputable facts, not legal advice.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "texts": {
+            "type": "object",
+            "description": "{ readme, citation, zenodo, package, worker, billing, hmac, mcp }: the texts of the tree"
+          },
+          "discovery": {
+            "type": "object"
+          },
+          "agents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "the operator's override: the doors to use; omit for the free doors discovery found"
+          },
+          "theoremKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "citeTheorem": {
+            "type": "string",
+            "description": "the sealed guarantee of the unit's court cited beside every legal claim; default legal_only_the_proven_is_admitted, a key its due-process door names"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "legal"
+      }
     }
   ]
 }
