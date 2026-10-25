@@ -22,8 +22,28 @@ const main = async () => {
   const missing = (plan.requestList as { url: string }[]).filter((r) => !have.has(r.url))
   if (process.env.QPU_OFFLINE !== '1') for (const r of missing) { try { const res = await fetch(r.url, { headers: { accept: '*/*', 'user-agent': 'uuidna-qpu-textbook (ceccec@psg.bg)' }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); fetched.push({ url: r.url, status: res.status, ok: res.ok }) } catch { fetched.push({ url: r.url, status: 0, ok: false }) } await new Promise((t) => setTimeout(t, 250)) }
   const v = call({ results: fetched })
+  // the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client: when the tenant names its
+  // instance (QPU_PAYLOAD_URL) and its key (QPU_PAYLOAD_API_KEY, sent as Authorization and never held by a tool), the pages whose
+  // qpu blocks lack a theorem are found and updated with the kernel-accepted key; otherwise the plan is written and the lead stands
+  const vars: Record<string, string> = existsSync(join(ROOT, '.dev.vars')) ? Object.fromEntries(readFileSync(join(ROOT, '.dev.vars'), 'utf8').split('\n').filter((l) => /^[A-Z_0-9]+=/.test(l)).map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).replace(/^"|"$/g, '')])) : {}
+  const payloadUrl = process.env.QPU_PAYLOAD_URL ?? vars.QPU_PAYLOAD_URL, payloadKey = process.env.QPU_PAYLOAD_API_KEY ?? vars.QPU_PAYLOAD_API_KEY, payloadAuth = process.env.QPU_PAYLOAD_AUTH_COLLECTION ?? vars.QPU_PAYLOAD_AUTH_COLLECTION ?? 'users'
+  const payloadCall = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { theorems: true, payloadUrl: payloadUrl ?? undefined, ...args } } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+  const post = async (r: { url: string; body: unknown }) => { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', authorization: `${payloadAuth} API-Key ${payloadKey}` }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(30000) }); return await res.text() }
+  let theorems: unknown = payloadCall({})
+  if (payloadUrl && payloadKey && process.env.QPU_OFFLINE !== '1') {
+    try {
+      const plan = theorems as { requestList: { url: string; body: unknown }[] }
+      const list = await post(plan.requestList[0]!)
+      let step = payloadCall({ answers: { list } })
+      if (step.phase === 'find') { const found = await post(step.requestList[0]); step = payloadCall({ answers: { list, found } }) }
+      let sent = 0
+      if (step.phase === 'update') for (const u of step.requestList as { url: string; body: unknown }[]) { await post(u); sent += 1 }
+      theorems = { ...step, sent }
+      console.log(`textbook: through the Payload MCP at ${payloadUrl}: ${step.phase}${step.phase === 'update' ? `, ${step.axioms} axiom(s) in ${step.pages} page(s), ${sent} replaced by theorems` : ''}`)
+    } catch (e) { theorems = { phase: 'refused', error: (e as Error).message.slice(0, 120) }; console.log(`textbook: the Payload MCP did not answer: ${(e as Error).message.slice(0, 80)}`) }
+  } else console.log(`textbook: no Payload MCP named (QPU_PAYLOAD_URL, QPU_PAYLOAD_API_KEY): the plan is written, the lead stands`)
   const date = new Date().toISOString()
-  writeFileSync(join(ROOT, 'docs', 'public', 'textbook.json'), JSON.stringify({ license: LICENSE.attribution, date, inputs, online: process.env.QPU_OFFLINE !== '1', fromWave: plan.requests - missing.length, fetchedHere: process.env.QPU_OFFLINE !== '1' ? missing.length : 0, compliance: plan.compliance, ...v }, null, 1) + '\n')
+  writeFileSync(join(ROOT, 'docs', 'public', 'textbook.json'), JSON.stringify({ license: LICENSE.attribution, date, inputs, theoremsViaPayloadMcp: theorems, online: process.env.QPU_OFFLINE !== '1', fromWave: plan.requests - missing.length, fetchedHere: process.env.QPU_OFFLINE !== '1' ? missing.length : 0, compliance: plan.compliance, ...v }, null, 1) + '\n')
   writeFileSync(join(ROOT, 'docs', 'textbook.md'), ['---', 'title: Textbook', 'order: 44', '---', '', '# The textbook, verified online', '', `Every example of the surface, categorised for reuse by the \`textbook\` tool, and its public sources fetched by this device on ${date}: ${v.requests} requests (${plan.requests - missing.length} already in the wave), the outcome sealed as \`${v.id}\`. ${plan.compliance}.`, '', `States: ${Object.entries(v.states).map(([k, n]) => `${k} ${n}`).join(', ')}.`, '', '| Example | Tool | Theorem | Requests | Reachable | Contract | State |', '|---|---|---|---:|---:|---:|---|', ...(v.verified as { id: string; tool: string; theorem: string | null; requests: number; reachable: number; contracted: number; state: string }[]).map((x) => `| ${x.id} | ${x.tool} | ${x.theorem ?? '—'} | ${x.requests} | ${x.reachable} | ${x.contracted} | ${x.state} |`), ''].join('\n'))
   console.log(`textbook: ${v.examples} examples, ${v.requests} requests (${plan.requests - missing.length} from the wave, ${missing.length} ${process.env.QPU_OFFLINE === '1' ? 'unfetched offline' : 'fetched here'}); ${Object.entries(v.states).map(([k, n]) => `${k} ${n}`).join(', ')}; sealed ${v.id}`)
 }

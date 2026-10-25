@@ -1,5 +1,5 @@
 {
- "date": "2026-10-25T21:19:39.885Z",
+ "date": "2026-10-25T21:28:57.464Z",
  "tested": 8,
  "kinds": 8,
  "closed": true,
@@ -83,16 +83,16 @@
   {
    "kind": "versions",
    "torus": {
-    "address": "cc3bfb33-e6b9-24e2-bec3-8e4f5c679b9c",
-    "seed": 3,
-    "reflection": 7,
+    "address": "bd10bfe2-02b2-5e31-9f29-65b3ee0e8529",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 138469
+    "bytes": 138505
    }
   },
   {
@@ -113,16 +113,16 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "ad0c1d65-b59f-228a-a61d-b5556fd005ef",
-    "seed": 5,
-    "reflection": 5,
+    "address": "ddbb2616-2758-6fc1-b261-2976e33db9c5",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 6638
+    "bytes": 6828
    }
   }
  ]

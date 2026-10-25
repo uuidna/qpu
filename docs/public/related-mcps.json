@@ -1,10 +1,10 @@
 {
- "date": "2026-10-25T20:59:21.233Z",
+ "date": "2026-10-25T21:21:24.157Z",
  "partial": true,
- "remaining": 104,
- "fetched": 77,
- "leads": 8,
- "withServers": 8,
+ "remaining": 46,
+ "fetched": 214,
+ "leads": 28,
+ "withServers": 27,
  "related": [
   {
    "lead": "perspective-database",
@@ -978,6 +978,2539 @@
      "server": "io.github.Evozim/debt-collection-bot-mcp",
      "url": "https://api.m2mcent.com/debt-collection-bot-mcp/sse",
      "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.jediapps/jedi-collection-sort",
+     "url": "https://api.collection-sort.jediapps.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.moderncollections/mcp",
+     "url": "https://api.moderncollections.io/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "me.remem/collections",
+     "url": "https://mcp.remem.me/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "com.faceabot/capability-network",
+     "url": "https://faceabot.com/api/mcp",
+     "status": 200,
+     "doors": 33
+    },
+    {
+     "server": "com.textforagents/capability-diet-tool-pruning",
+     "url": "https://textforagents.com/products/capability-diet-tool-pruning/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.github.capabilityhostprotocol/capabilities-txt-registry",
+     "url": "https://capabilitiestxt.org/api/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "io.github.capabilityhostprotocol/chp",
+     "url": "https://capabilityhostprotocol.com/api/mcp",
+     "status": 200,
+     "doors": 9
+    },
+    {
+     "server": "io.github.furoito/japan-physical-capability",
+     "url": "https://uiiepdcaepkawfwaiyuq.supabase.co/functions/v1/japan-physical-capability-mcp",
+     "status": 200,
+     "doors": 2
+    }
+   ]
+  },
+  {
+   "lead": "toolbox-remaining-scripts",
+   "words": [
+    "flow",
+    "lean",
+    "environment"
+   ],
+   "servers": 19,
+   "serverList": [
+    {
+     "name": "ai.agentutility/mcp-browser-workflow",
+     "description": "MCP server for the @agentutility browser-workflow cluster — pay-per-call x402 tools, no API keys…",
+     "remotes": [],
+     "word": "flow"
+    },
+    {
+     "name": "ai.caimera/workflows",
+     "description": "Build and run AI product photography workflows: on-model shots, catalog images, prints and edits.",
+     "remotes": [
+      "https://app.caimera.ai/api/mcp"
+     ],
+     "word": "flow"
+    },
+    {
+     "name": "ai.flowcastle/flowcastle",
+     "description": "Build, edit, and deploy Telegram bots on FlowCastle's hosted visual flow platform.",
+     "remotes": [
+      "https://api.flowcastle.ai/api/mcp"
+     ],
+     "word": "flow"
+    },
+    {
+     "name": "ai.flowdot/mcp-server",
+     "description": "Build and run AI workflows, apps, toolkits and knowledge bases on FlowDot from any MCP client.",
+     "remotes": [],
+     "word": "flow"
+    },
+    {
+     "name": "ai.flowmingo/flowmingo",
+     "description": "Free AI hiring platform: create AI interview sets, invite candidates, read scored reports.",
+     "remotes": [
+      "https://mcp.flowmingo.ai/mcp"
+     ],
+     "word": "flow"
+    },
+    {
+     "name": "ai.flowstep/mcp",
+     "description": "Generate, inspect, and manage Flowstep UI designs directly from your AI assistant.",
+     "remotes": [
+      "https://api.flowstep.ai/mcp"
+     ],
+     "word": "flow"
+    },
+    {
+     "name": "ai.glassflow/rius",
+     "description": "Query your AI agents' traces, errors, cost and alerts in Rius, the agent observability platform.",
+     "remotes": [
+      "https://mcp.eu.console.rius-glassflow.com/mcp"
+     ],
+     "word": "flow"
+    },
+    {
+     "name": "ai.hyreflow/hyreflow",
+     "description": "Recruitment automation: source, enrich, qualify and sequence candidates, push to your ATS.",
+     "remotes": [
+      "https://recruit.hyreflow.ai/api/v2/mcp"
+     ],
+     "word": "flow"
+    },
+    {
+     "name": "ai.inflowpay.app/inflow",
+     "description": "Inflow MCP Server",
+     "remotes": [
+      "https://app.inflowpay.ai/mcp"
+     ],
+     "word": "flow"
+    },
+    {
+     "name": "ai.cleanvector/cleanvector",
+     "description": "Generate vector art, vectorize images, and return SVG, PNG, and logo kits to AI agents.",
+     "remotes": [
+      "https://cleanvector.ai/api/mcp"
+     ],
+     "word": "lean"
+    },
+    {
+     "name": "ai.smithery/leandrogavidia-vechain-mcp-server",
+     "description": "Search VeChain documentation, query on-chain data, and fetch fee suggestions with direct links to…",
+     "remotes": [
+      "https://server.smithery.ai/@leandrogavidia/vechain-mcp-server/mcp"
+     ],
+     "word": "lean"
+    },
+    {
+     "name": "app.cleanchart/cleanchart",
+     "description": "Clean messy tabular data and render publication-ready PNG charts from your AI assistant.",
+     "remotes": [
+      "https://www.cleanchart.app/api/mcp"
+     ],
+     "word": "lean"
+    },
+    {
+     "name": "app.cleannotes/clean-notes",
+     "description": "Kanban tasks and project notes for AI clients, with OAuth and per-project read or write grants.",
+     "remotes": [
+      "https://cleannotes.app/mcp"
+     ],
+     "word": "lean"
+    },
+    {
+     "name": "app.cleanor/cleanor",
+     "description": "Zero-auth image optimize/convert + cited storage, image-format & QR data for AI builders.",
+     "remotes": [
+      "https://mcp.cleanor.app/mcp"
+     ],
+     "word": "lean"
+    },
+    {
+     "name": "com.aisandboxenvironments/site",
+     "description": "AI Sandbox Environments: the site's own MCP server — enquiry (enquiry = a human handoff, not a...",
+     "remotes": [
+      "https://aisandboxenvironments.com/mcp"
+     ],
+     "word": "environment"
+    },
+    {
+     "name": "com.mcpbundles/uk-environmental-intelligence",
+     "description": "Access UK flood warnings, river levels, water quality, Met Office forecasts, and carbon data",
+     "remotes": [
+      "https://mcp.mcpbundles.com/bundle/uk-environmental-intelligence/"
+     ],
+     "word": "environment"
+    },
+    {
+     "name": "com.thenextgennexus/environmental-esg-mcp",
+     "description": "⚠️ DEPRECATED — G2's Cloudflare anti-bot defeats free scraping. Not commercially viable without paid",
+     "remotes": [
+      "https://nexgendata--environmental-esg-mcp.apify.actor/mcp"
+     ],
+     "word": "environment"
+    },
+    {
+     "name": "io.github.AM-Digital-Research-Environment/amira-mcp-server",
+     "description": "Read-only access to AMIRA, the Africa Multiple research-data platform on Omeka S.",
+     "remotes": [
+      "https://data.africamultiple.uni-bayreuth.de/mcp"
+     ],
+     "word": "environment"
+    },
+    {
+     "name": "io.github.Ansvar-Systems/uk-environmental-compliance",
+     "description": "UK environmental compliance for farming — NVZ rules, spreading windows, SSAFO",
+     "remotes": [
+      "https://mcp.ansvar.eu/uk-environmental-compliance/mcp"
+     ],
+     "word": "environment"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.caimera/workflows",
+     "url": "https://app.caimera.ai/api/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.flowcastle/flowcastle",
+     "url": "https://api.flowcastle.ai/api/mcp",
+     "status": 200,
+     "doors": 60
+    },
+    {
+     "server": "ai.flowmingo/flowmingo",
+     "url": "https://mcp.flowmingo.ai/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.flowstep/mcp",
+     "url": "https://api.flowstep.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.glassflow/rius",
+     "url": "https://mcp.eu.console.rius-glassflow.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.hyreflow/hyreflow",
+     "url": "https://recruit.hyreflow.ai/api/v2/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.inflowpay.app/inflow",
+     "url": "https://app.inflowpay.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.cleanvector/cleanvector",
+     "url": "https://cleanvector.ai/api/mcp",
+     "status": 200,
+     "doors": 11
+    },
+    {
+     "server": "ai.smithery/leandrogavidia-vechain-mcp-server",
+     "url": "https://server.smithery.ai/@leandrogavidia/vechain-mcp-server/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "app.cleanchart/cleanchart",
+     "url": "https://www.cleanchart.app/api/mcp",
+     "status": 200,
+     "doors": 8
+    },
+    {
+     "server": "app.cleannotes/clean-notes",
+     "url": "https://cleannotes.app/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "app.cleanor/cleanor",
+     "url": "https://mcp.cleanor.app/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "com.aisandboxenvironments/site",
+     "url": "https://aisandboxenvironments.com/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.mcpbundles/uk-environmental-intelligence",
+     "url": "https://mcp.mcpbundles.com/bundle/uk-environmental-intelligence/",
+     "status": 200,
+     "doors": 44
+    },
+    {
+     "server": "com.thenextgennexus/environmental-esg-mcp",
+     "url": "https://nexgendata--environmental-esg-mcp.apify.actor/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "io.github.AM-Digital-Research-Environment/amira-mcp-server",
+     "url": "https://data.africamultiple.uni-bayreuth.de/mcp",
+     "status": 200,
+     "doors": 35
+    },
+    {
+     "server": "io.github.Ansvar-Systems/uk-environmental-compliance",
+     "url": "https://mcp.ansvar.eu/uk-environmental-compliance/mcp",
+     "status": 0,
+     "doors": 0
+    }
+   ]
+  },
+  {
+   "lead": "worlds-linked",
+   "words": [
+    "world",
+    "dialects",
+    "entries"
+   ],
+   "servers": 6,
+   "serverList": [
+    {
+     "name": "ai.augworlds/travel-world",
+     "description": "Agent-native travel platform: read-only flight and brand tools over MCP (bearer key required).",
+     "remotes": [
+      "https://travel.augworlds.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.cloudworldmodel/cloud-world-model",
+     "description": "Simulate cloud architectures before provisioning. 9 free demo tools; an API key unlocks all 62.",
+     "remotes": [
+      "https://www.cloudworldmodel.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.daishi/world",
+     "description": "A persistent multi-agent world any AI agent can join over MCP, with a public record of every match.",
+     "remotes": [
+      "https://daishi.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.loci-labs/real-world-observations",
+     "description": "Fresh human-observable information about physical places and conditions that may be stale online.",
+     "remotes": [
+      "https://mcp.loci-labs.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "app.worldmonitor/mcp",
+     "description": "Live global intelligence: real-time markets, conflicts, country risk, chokepoints, energy. 39 tools.",
+     "remotes": [
+      "https://worldmonitor.app/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
+     "description": "Plain-English transactions to balanced journal entries, adjusting and closing entries.",
+     "remotes": [
+      "https://openapi-1779155638284.mcpize.run/mcp"
+     ],
+     "word": "entries"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.augworlds/travel-world",
+     "url": "https://travel.augworlds.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.cloudworldmodel/cloud-world-model",
+     "url": "https://www.cloudworldmodel.ai/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.daishi/world",
+     "url": "https://daishi.ai/mcp",
+     "status": 200,
+     "doors": 35
+    },
+    {
+     "server": "ai.loci-labs/real-world-observations",
+     "url": "https://mcp.loci-labs.ai/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "app.worldmonitor/mcp",
+     "url": "https://worldmonitor.app/mcp",
+     "status": 200,
+     "doors": 95
+    },
+    {
+     "server": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
+     "url": "https://openapi-1779155638284.mcpize.run/mcp",
+     "status": 401,
+     "doors": 0
+    }
+   ]
+  },
+  {
+   "lead": "language-speech",
+   "words": [
+    "speechsynthesis",
+    "network-free",
+    "token-free"
+   ],
+   "servers": 0,
+   "serverList": [],
+   "extended": []
+  },
+  {
+   "lead": "language-video",
+   "words": [
+    "video",
+    "entries",
+    "translatable"
+   ],
+   "servers": 4,
+   "serverList": [
+    {
+     "name": "ai.demomagic/interactive-video-guide",
+     "description": "Guides for making interactive videos & AI product demos that answer viewers' questions.",
+     "remotes": [],
+     "word": "video"
+    },
+    {
+     "name": "ai.makeaivideo/video-generator",
+     "description": "Generate finished AI videos from a brief or a script, with voiceover, scenes and captions.",
+     "remotes": [
+      "https://app.makeaivideo.ai/api/mcp"
+     ],
+     "word": "video"
+    },
+    {
+     "name": "ai.multivoice/video-dubbing-subtitles-transcription-audiobooks",
+     "description": "AI video dubbing, subtitles, transcription and audiobook creation. Exact price before any paid job.",
+     "remotes": [
+      "https://db.multivoice.ai/mcp"
+     ],
+     "word": "video"
+    },
+    {
+     "name": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
+     "description": "Plain-English transactions to balanced journal entries, adjusting and closing entries.",
+     "remotes": [
+      "https://openapi-1779155638284.mcpize.run/mcp"
+     ],
+     "word": "entries"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.makeaivideo/video-generator",
+     "url": "https://app.makeaivideo.ai/api/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.multivoice/video-dubbing-subtitles-transcription-audiobooks",
+     "url": "https://db.multivoice.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
+     "url": "https://openapi-1779155638284.mcpize.run/mcp",
+     "status": 401,
+     "doors": 0
+    }
+   ]
+  },
+  {
+   "lead": "language-traditions",
+   "words": [
+    "relations",
+    "tradition",
+    "world"
+   ],
+   "servers": 11,
+   "serverList": [
+    {
+     "name": "ai.govrelations/govrelations",
+     "description": "U.S. lobbying records: who lobbies for whom, fees, bills, agencies and states, from lda.gov.",
+     "remotes": [
+      "https://govrelations.ai/mcp"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "ai.machinerelations/mri",
+     "description": "Which source domains AI answer engines cite, by buyer category and question shape.",
+     "remotes": [
+      "https://machinerelations.ai/mcp"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "info.astroway/relationships",
+     "description": "Synastry, composite, compatibility scores, family dynamics and pet charts.",
+     "remotes": [
+      "https://mcp.astroway.info/mcp/relationships"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "io.github.adelaidasofia/investor-relations-mcp",
+     "description": "FastMCP seed raise pipeline tracker — syncs from Obsidian CRM, generates meeting prep, tracks…",
+     "remotes": [],
+     "word": "relations"
+    },
+    {
+     "name": "io.github.agentindexworld/relationship-memory",
+     "description": "Free MCP: relationship_memory validate, store (local), retrieve — portable interlocutor cards v1.",
+     "remotes": [
+      "https://x402.agentindex.world/mcp/relationship-memory/"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "io.github.visionastro48-dev/aether-machine-relationship-mesh",
+     "description": "Machine-native relationship mesh for discovery, help, evidence, and earned trust.",
+     "remotes": [
+      "https://yztkpjvkpqdfhltjqbzx.supabase.co/functions/v1/angels-peer-probe"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "ai.augworlds/travel-world",
+     "description": "Agent-native travel platform: read-only flight and brand tools over MCP (bearer key required).",
+     "remotes": [
+      "https://travel.augworlds.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.cloudworldmodel/cloud-world-model",
+     "description": "Simulate cloud architectures before provisioning. 9 free demo tools; an API key unlocks all 62.",
+     "remotes": [
+      "https://www.cloudworldmodel.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.daishi/world",
+     "description": "A persistent multi-agent world any AI agent can join over MCP, with a public record of every match.",
+     "remotes": [
+      "https://daishi.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.loci-labs/real-world-observations",
+     "description": "Fresh human-observable information about physical places and conditions that may be stale online.",
+     "remotes": [
+      "https://mcp.loci-labs.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "app.worldmonitor/mcp",
+     "description": "Live global intelligence: real-time markets, conflicts, country risk, chokepoints, energy. 39 tools.",
+     "remotes": [
+      "https://worldmonitor.app/mcp"
+     ],
+     "word": "world"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.govrelations/govrelations",
+     "url": "https://govrelations.ai/mcp",
+     "status": 200,
+     "doors": 13
+    },
+    {
+     "server": "ai.machinerelations/mri",
+     "url": "https://machinerelations.ai/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "info.astroway/relationships",
+     "url": "https://mcp.astroway.info/mcp/relationships",
+     "status": 200,
+     "doors": 45
+    },
+    {
+     "server": "io.github.agentindexworld/relationship-memory",
+     "url": "https://x402.agentindex.world/mcp/relationship-memory/",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "io.github.visionastro48-dev/aether-machine-relationship-mesh",
+     "url": "https://yztkpjvkpqdfhltjqbzx.supabase.co/functions/v1/angels-peer-probe",
+     "status": 429,
+     "doors": 0
+    },
+    {
+     "server": "ai.augworlds/travel-world",
+     "url": "https://travel.augworlds.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.cloudworldmodel/cloud-world-model",
+     "url": "https://www.cloudworldmodel.ai/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.daishi/world",
+     "url": "https://daishi.ai/mcp",
+     "status": 200,
+     "doors": 35
+    },
+    {
+     "server": "ai.loci-labs/real-world-observations",
+     "url": "https://mcp.loci-labs.ai/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "app.worldmonitor/mcp",
+     "url": "https://worldmonitor.app/mcp",
+     "status": 200,
+     "doors": 95
+    }
+   ]
+  },
+  {
+   "lead": "aspects-by-theorems",
+   "words": [
+    "textbook",
+    "theorem",
+    "tenant"
+   ],
+   "servers": 6,
+   "serverList": [
+    {
+     "name": "ai.hyperscale0/hyperscale-tenant-tools",
+     "description": "Hyperscale Product reads and contract operations over MCP.",
+     "remotes": [
+      "https://hyperscale0.ai/v1/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.aitwire/tenant",
+     "description": "Review your AITWIRE recommendations and Brand Canon; file corrections for your approval.",
+     "remotes": [
+      "https://api.aitwire.com/mcp/tenant"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantback/cam-audit",
+     "description": "Audit a landlord's CAM reconciliation against the lease. Finds overcharges with clause citations.",
+     "remotes": [
+      "https://tenantback.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantsdb/tenantsdb",
+     "description": "Multi-tenant database orchestration: isolated Postgres, MySQL, MongoDB, Redis tenants on demand.",
+     "remotes": [
+      "https://api.tenantsdb.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantvo/site",
+     "description": "Tenantvo: the site's own MCP server — dataset; every answer cites the site.",
+     "remotes": [
+      "https://tenantvo.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "io.agent4/agent4-tenant",
+     "description": "Build and run grounded business agents over MCP: agents, knowledge bases, skills, Storylines.",
+     "remotes": [
+      "https://api.agent4.io/v1/mcp"
+     ],
+     "word": "tenant"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.hyperscale0/hyperscale-tenant-tools",
+     "url": "https://hyperscale0.ai/v1/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.aitwire/tenant",
+     "url": "https://api.aitwire.com/mcp/tenant",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.tenantback/cam-audit",
+     "url": "https://tenantback.com/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "com.tenantsdb/tenantsdb",
+     "url": "https://api.tenantsdb.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.tenantvo/site",
+     "url": "https://tenantvo.com/mcp",
+     "status": 200,
+     "doors": 7
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "status": 200,
+     "doors": 50
+    }
+   ]
+  },
+  {
+   "lead": "stripe-per-tenant",
+   "words": [
+    "tenant",
+    "domains",
+    "licence"
+   ],
+   "servers": 12,
+   "serverList": [
+    {
+     "name": "ai.hyperscale0/hyperscale-tenant-tools",
+     "description": "Hyperscale Product reads and contract operations over MCP.",
+     "remotes": [
+      "https://hyperscale0.ai/v1/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.aitwire/tenant",
+     "description": "Review your AITWIRE recommendations and Brand Canon; file corrections for your approval.",
+     "remotes": [
+      "https://api.aitwire.com/mcp/tenant"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantback/cam-audit",
+     "description": "Audit a landlord's CAM reconciliation against the lease. Finds overcharges with clause citations.",
+     "remotes": [
+      "https://tenantback.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantsdb/tenantsdb",
+     "description": "Multi-tenant database orchestration: isolated Postgres, MySQL, MongoDB, Redis tenants on demand.",
+     "remotes": [
+      "https://api.tenantsdb.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantvo/site",
+     "description": "Tenantvo: the site's own MCP server — dataset; every answer cites the site.",
+     "remotes": [
+      "https://tenantvo.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "io.agent4/agent4-tenant",
+     "description": "Build and run grounded business agents over MCP: agents, knowledge bases, skills, Storylines.",
+     "remotes": [
+      "https://api.agent4.io/v1/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "ai.clize/domains",
+     "description": "Domains your AI agent can buy, point and monitor, with four-layer health checks and alerts.",
+     "remotes": [],
+     "word": "domains"
+    },
+    {
+     "name": "com.cryptolicencecosts/site",
+     "description": "Crypto Licence Costs: the site's own MCP server — calculator, enquiry (enquiry = a human...",
+     "remotes": [
+      "https://cryptolicencecosts.com/mcp"
+     ],
+     "word": "licence"
+    },
+    {
+     "name": "com.maltacryptolicence/site",
+     "description": "Malta Crypto Licence: the site's own MCP server — enquiry (enquiry = a human handoff, not a...",
+     "remotes": [
+      "https://maltacryptolicence.com/mcp"
+     ],
+     "word": "licence"
+    },
+    {
+     "name": "dev.workers.rjhsignaltech.ai/licence-audit",
+     "description": "AI-operated. Free capped dependency licence preview; full cited audit plus SBOM is paid.",
+     "remotes": [
+      "https://omnia-sell.rjhsignaltech.workers.dev/mcp"
+     ],
+     "word": "licence"
+    },
+    {
+     "name": "dev.workers.rjhsignaltech.ai/licence-audit-paid",
+     "description": "AI-operated. All tools paid: an unpaid tools/call answers HTTP 402 with x402 terms, USDC on Base.",
+     "remotes": [
+      "https://omnia-sell.rjhsignaltech.workers.dev/mcp-pro"
+     ],
+     "word": "licence"
+    },
+    {
+     "name": "io.github.ChanghuLiu/uk-premises-licence-mcp",
+     "description": "UK premises licence preflight for 10 authorities with free source status and x402-paid decisions.",
+     "remotes": [
+      "https://uk-premises-licence-mcp-production.up.railway.app/mcp"
+     ],
+     "word": "licence"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.hyperscale0/hyperscale-tenant-tools",
+     "url": "https://hyperscale0.ai/v1/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.aitwire/tenant",
+     "url": "https://api.aitwire.com/mcp/tenant",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.tenantback/cam-audit",
+     "url": "https://tenantback.com/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "com.tenantsdb/tenantsdb",
+     "url": "https://api.tenantsdb.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.tenantvo/site",
+     "url": "https://tenantvo.com/mcp",
+     "status": 200,
+     "doors": 7
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "status": 200,
+     "doors": 50
+    },
+    {
+     "server": "com.cryptolicencecosts/site",
+     "url": "https://cryptolicencecosts.com/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.maltacryptolicence/site",
+     "url": "https://maltacryptolicence.com/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "dev.workers.rjhsignaltech.ai/licence-audit",
+     "url": "https://omnia-sell.rjhsignaltech.workers.dev/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "dev.workers.rjhsignaltech.ai/licence-audit-paid",
+     "url": "https://omnia-sell.rjhsignaltech.workers.dev/mcp-pro",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "io.github.ChanghuLiu/uk-premises-licence-mcp",
+     "url": "https://uk-premises-licence-mcp-production.up.railway.app/mcp",
+     "status": 200,
+     "doors": 8
+    }
+   ]
+  },
+  {
+   "lead": "edge-heavy-phases",
+   "words": [
+    "example",
+    "answers",
+    "device"
+   ],
+   "servers": 11,
+   "serverList": [
+    {
+     "name": "ai.example4/xmp4",
+     "description": "SCIP-backed semantic code intelligence over 800+ pre-indexed OSS libraries. Hosted, free.",
+     "remotes": [
+      "https://mcp.example4.ai/mcp"
+     ],
+     "word": "example"
+    },
+    {
+     "name": "app.siteprint/examples",
+     "description": "Website designs as DESIGN.md: real Siteprint exports of Linear, Stripe, Ramp and Cal.com.",
+     "remotes": [
+      "https://siteprint.app/api/mcp"
+     ],
+     "word": "example"
+    },
+    {
+     "name": "io.github.mctx-ai/example-app",
+     "description": "Build complete Apps with our framework — study or fork this reference implementation. Covers all @mc",
+     "remotes": [
+      "https://example-app.mctx.ai/v1.3.3"
+     ],
+     "word": "example"
+    },
+    {
+     "name": "io.github.mctx-ai/example-mcp-server",
+     "description": "Example MCP server with tools, resources, prompts, progress, and sampling via mctx",
+     "remotes": [
+      "https://example-mcp-server.mctx.ai/v0.3.17"
+     ],
+     "word": "example"
+    },
+    {
+     "name": "cn.savantcat/answers",
+     "description": "中国 AI 客服国标 GB/T 47746—2026 合规问答库：必须自动转人工的场景、强制自查项、上线备案要求，答案标注条款依据。",
+     "remotes": [
+      "https://savantcat.cn/mcp"
+     ],
+     "word": "answers"
+    },
+    {
+     "name": "co.bootstrapware/answers",
+     "description": "Configure source-backed Q&A on a public site: apps and public URL sources only.",
+     "remotes": [
+      "https://answers.bootstrapware.co/mcp"
+     ],
+     "word": "answers"
+    },
+    {
+     "name": "com.canonicai/canonicai-answers",
+     "description": "Read-only hosted MCP over CanonicAI's cited Answers corpus on canonicai.com.",
+     "remotes": [
+      "https://canonicai.com/api/mcp"
+     ],
+     "word": "answers"
+    },
+    {
+     "name": "com.theoddsgap/answers",
+     "description": "Ask The Odds Gap sports betting price questions from your AI assistant.",
+     "remotes": [
+      "https://theoddsgap.com/assistant/v1/mcp"
+     ],
+     "word": "answers"
+    },
+    {
+     "name": "io.github.aion-autonomous-org/edgar-answers-mcp",
+     "description": "Normalized SEC EDGAR data for AI agents: XBRL financials, 10-K risk diffs, Form 4 insider trades.",
+     "remotes": [
+      "https://aion-org--edgar-answers-mcp.apify.actor/mcp"
+     ],
+     "word": "answers"
+    },
+    {
+     "name": "io.github.ebspark/agent-net-answers",
+     "description": "Search reviewed Agent Net answers on identities, permissions, persistence, tools and durable jobs.",
+     "remotes": [
+      "https://104.131.179.1/mcp"
+     ],
+     "word": "answers"
+    },
+    {
+     "name": "app.deviceshelf/deviceshelf-server",
+     "description": "Query your local network in plain language: devices, open ports, security findings and alerts.",
+     "remotes": [],
+     "word": "device"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.example4/xmp4",
+     "url": "https://mcp.example4.ai/mcp",
+     "status": 200,
+     "doors": 16
+    },
+    {
+     "server": "app.siteprint/examples",
+     "url": "https://siteprint.app/api/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "io.github.mctx-ai/example-app",
+     "url": "https://example-app.mctx.ai/v1.3.3",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "io.github.mctx-ai/example-mcp-server",
+     "url": "https://example-mcp-server.mctx.ai/v0.3.17",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "cn.savantcat/answers",
+     "url": "https://savantcat.cn/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "co.bootstrapware/answers",
+     "url": "https://answers.bootstrapware.co/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.canonicai/canonicai-answers",
+     "url": "https://canonicai.com/api/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "com.theoddsgap/answers",
+     "url": "https://theoddsgap.com/assistant/v1/mcp",
+     "status": 200,
+     "doors": 11
+    },
+    {
+     "server": "io.github.aion-autonomous-org/edgar-answers-mcp",
+     "url": "https://aion-org--edgar-answers-mcp.apify.actor/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.github.ebspark/agent-net-answers",
+     "url": "https://104.131.179.1/mcp",
+     "status": 200,
+     "doors": 2
+    }
+   ]
+  },
+  {
+   "lead": "double-torus-trinities",
+   "words": [
+    "double-torus",
+    "combinations",
+    "-reflection"
+   ],
+   "servers": 2,
+   "serverList": [
+    {
+     "name": "com.hemelion/decision-reflection",
+     "description": "Read-only Clarity and MindScan routing, decision readiness, method, and private scan handoff tools.",
+     "remotes": [
+      "https://www.hemelion.com/mcp"
+     ],
+     "word": "-reflection"
+    },
+    {
+     "name": "io.github.CSOAI-ORG/meok-ai-reflection-mcp",
+     "description": "MEOK AI Labs - ai-reflection MCP server extracted from SOV3",
+     "remotes": [],
+     "word": "-reflection"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.hemelion/decision-reflection",
+     "url": "https://www.hemelion.com/mcp",
+     "status": 200,
+     "doors": 6
+    }
+   ]
+  },
+  {
+   "lead": "rbac-payload-mcp",
+   "words": [
+    "host",
+    "tenant",
+    "configured"
+   ],
+   "servers": 8,
+   "serverList": [
+    {
+     "name": "ai.borealhost/mcp",
+     "description": "Agent-native web hosting — deploy sites, manage DNS, register domains, scale infrastructure",
+     "remotes": [
+      "https://borealhost.ai/mcp/"
+     ],
+     "word": "host"
+    },
+    {
+     "name": "ai.hostingbrain/intelligence",
+     "description": "European hosting & domain market intelligence: M&A tracking, operator dossiers, screening.",
+     "remotes": [
+      "https://mcp.hostingbrain.ai/mcp"
+     ],
+     "word": "host"
+    },
+    {
+     "name": "ai.hyperscale0/hyperscale-tenant-tools",
+     "description": "Hyperscale Product reads and contract operations over MCP.",
+     "remotes": [
+      "https://hyperscale0.ai/v1/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.aitwire/tenant",
+     "description": "Review your AITWIRE recommendations and Brand Canon; file corrections for your approval.",
+     "remotes": [
+      "https://api.aitwire.com/mcp/tenant"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantback/cam-audit",
+     "description": "Audit a landlord's CAM reconciliation against the lease. Finds overcharges with clause citations.",
+     "remotes": [
+      "https://tenantback.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantsdb/tenantsdb",
+     "description": "Multi-tenant database orchestration: isolated Postgres, MySQL, MongoDB, Redis tenants on demand.",
+     "remotes": [
+      "https://api.tenantsdb.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantvo/site",
+     "description": "Tenantvo: the site's own MCP server — dataset; every answer cites the site.",
+     "remotes": [
+      "https://tenantvo.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "io.agent4/agent4-tenant",
+     "description": "Build and run grounded business agents over MCP: agents, knowledge bases, skills, Storylines.",
+     "remotes": [
+      "https://api.agent4.io/v1/mcp"
+     ],
+     "word": "tenant"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.borealhost/mcp",
+     "url": "https://borealhost.ai/mcp/",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.hostingbrain/intelligence",
+     "url": "https://mcp.hostingbrain.ai/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.hyperscale0/hyperscale-tenant-tools",
+     "url": "https://hyperscale0.ai/v1/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.aitwire/tenant",
+     "url": "https://api.aitwire.com/mcp/tenant",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.tenantback/cam-audit",
+     "url": "https://tenantback.com/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "com.tenantsdb/tenantsdb",
+     "url": "https://api.tenantsdb.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.tenantvo/site",
+     "url": "https://tenantvo.com/mcp",
+     "status": 200,
+     "doors": 7
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "status": 200,
+     "doors": 50
+    }
+   ]
+  },
+  {
+   "lead": "payload-cms-host",
+   "words": [
+    "collection",
+    "discover",
+    "endpoint"
+   ],
+   "servers": 18,
+   "serverList": [
+    {
+     "name": "ai.saifs/collections-optimizer",
+     "description": "Prioritise overdue accounts by recovery uplift and recommend a compliant contact strategy.",
+     "remotes": [
+      "https://collections-optimizer-mcp.saifs.ai/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "com.whenisbins/bin-collections",
+     "description": "UK household bin collection dates by address, council-sourced. Free anonymous use, with limits",
+     "remotes": [
+      "https://whenisbins.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.Evozim/debt-collection-bot-mcp",
+     "description": "Premium agentic endpoint for debt-collection-bot-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/debt-collection-bot-mcp/sse"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.jediapps/jedi-collection-sort",
+     "description": "Manage Shopify collection sorting by chat: strategies, assignments, and on-demand sorts.",
+     "remotes": [
+      "https://api.collection-sort.jediapps.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.ssskay/myfigurecollection-api",
+     "description": "Read MyFigureCollection.net: search figures, JAN barcode lookup, shop prices, collections and clubs.",
+     "remotes": [],
+     "word": "collection"
+    },
+    {
+     "name": "io.moderncollections/mcp",
+     "description": "Place overdue B2B invoices for collection and track outreach, payments and remittances.",
+     "remotes": [
+      "https://api.moderncollections.io/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "me.remem/collections",
+     "description": "Browse Bible verse collections from Remember Me, a free memorization app in 48 languages",
+     "remotes": [
+      "https://mcp.remem.me/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "ai.afmr/discovery",
+     "description": "Read AFMR failure modes and discover scoped attestation and lift-evidence contracts.",
+     "remotes": [
+      "https://afmr.ai/api/rpc"
+     ],
+     "word": "discover"
+    },
+    {
+     "name": "ai.demanddiscovery/mcp",
+     "description": "Sales-agent MCP for Demand Discovery AI. Validate startup ideas with behavioral signals.",
+     "remotes": [
+      "https://mcp.demanddiscovery.ai/api/mcp"
+     ],
+     "word": "discover"
+    },
+    {
+     "name": "ai.discoveria/discoveria",
+     "description": "Read-only registry of AI-assisted scientific claims and where their evaluation stands (fr/en)",
+     "remotes": [
+      "https://mcp.discoveria.ai/mcp"
+     ],
+     "word": "discover"
+    },
+    {
+     "name": "ai.mekler/agent-discovery",
+     "description": "Discover paid CSV and spec validation, citation overlap, and web page extraction for agents.",
+     "remotes": [
+      "https://e4rdb2jtk6.execute-api.us-east-1.amazonaws.com/mcp"
+     ],
+     "word": "discover"
+    },
+    {
+     "name": "ai.smithery/DynamicEndpoints-autogen_mcp",
+     "description": "Create and manage AI agents that collaborate and solve problems through natural language interacti…",
+     "remotes": [
+      "https://server.smithery.ai/@DynamicEndpoints/autogen_mcp/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "ai.smithery/DynamicEndpoints-m365-core-mcp",
+     "description": "*Updated September 25th 2025** Manage your Microsoft 365 services effortlessly. Create and manage…",
+     "remotes": [
+      "https://server.smithery.ai/@DynamicEndpoints/m365-core-mcp/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "ai.smithery/DynamicEndpoints-powershell-exec-mcp-server",
+     "description": "Execute PowerShell commands securely with controlled timeouts and input validation. Retrieve syste…",
+     "remotes": [
+      "https://server.smithery.ai/@DynamicEndpoints/powershell-exec-mcp-server/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "ai.spendpoint/spendpoint",
+     "description": "Expense ledger for AI assistants: record receipts line by line, ask what you spent, export anytime.",
+     "remotes": [
+      "https://spendpoint.ai/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "au.humanendpoint/humanendpoint",
+     "description": "Human execution infrastructure for AI agents with quotes, x402 payment, job tracking, and evidence.",
+     "remotes": [
+      "https://humanendpoint.au/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "com.agentic-endpoints/agentic-endpoints",
+     "description": "Pay-per-call tools for autonomous agents, settled in USDC on Base via x402.",
+     "remotes": [
+      "https://agentic-endpoints.com/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "com.endpointo/site",
+     "description": "Endpointo: the site's own MCP server — dataset; every answer cites the site.",
+     "remotes": [
+      "https://endpointo.com/mcp"
+     ],
+     "word": "endpoint"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.saifs/collections-optimizer",
+     "url": "https://collections-optimizer-mcp.saifs.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.whenisbins/bin-collections",
+     "url": "https://whenisbins.com/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "io.github.Evozim/debt-collection-bot-mcp",
+     "url": "https://api.m2mcent.com/debt-collection-bot-mcp/sse",
+     "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.jediapps/jedi-collection-sort",
+     "url": "https://api.collection-sort.jediapps.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.moderncollections/mcp",
+     "url": "https://api.moderncollections.io/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "me.remem/collections",
+     "url": "https://mcp.remem.me/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.afmr/discovery",
+     "url": "https://afmr.ai/api/rpc",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "ai.demanddiscovery/mcp",
+     "url": "https://mcp.demanddiscovery.ai/api/mcp",
+     "status": 200,
+     "doors": 10
+    },
+    {
+     "server": "ai.discoveria/discoveria",
+     "url": "https://mcp.discoveria.ai/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "ai.mekler/agent-discovery",
+     "url": "https://e4rdb2jtk6.execute-api.us-east-1.amazonaws.com/mcp",
+     "status": 200,
+     "doors": 24
+    },
+    {
+     "server": "ai.smithery/DynamicEndpoints-autogen_mcp",
+     "url": "https://server.smithery.ai/@DynamicEndpoints/autogen_mcp/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "ai.smithery/DynamicEndpoints-m365-core-mcp",
+     "url": "https://server.smithery.ai/@DynamicEndpoints/m365-core-mcp/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "ai.smithery/DynamicEndpoints-powershell-exec-mcp-server",
+     "url": "https://server.smithery.ai/@DynamicEndpoints/powershell-exec-mcp-server/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "ai.spendpoint/spendpoint",
+     "url": "https://spendpoint.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "au.humanendpoint/humanendpoint",
+     "url": "https://humanendpoint.au/mcp",
+     "status": 200,
+     "doors": 10
+    },
+    {
+     "server": "com.agentic-endpoints/agentic-endpoints",
+     "url": "https://agentic-endpoints.com/mcp",
+     "status": 200,
+     "doors": 24
+    },
+    {
+     "server": "com.endpointo/site",
+     "url": "https://endpointo.com/mcp",
+     "status": 200,
+     "doors": 7
+    }
+   ]
+  },
+  {
+   "lead": "payload-cms-default-plugins",
+   "words": [
+    "blocks",
+    "block",
+    "default"
+   ],
+   "servers": 17,
+   "serverList": [
+    {
+     "name": "ai.autoblocks/contextlayer-mcp",
+     "description": "Personal context management for AI assistants",
+     "remotes": [],
+     "word": "blocks"
+    },
+    {
+     "name": "ai.autoblocks/ctxl",
+     "description": "Personal context management for AI assistants",
+     "remotes": [],
+     "word": "blocks"
+    },
+    {
+     "name": "ai.autoblocks/ctxl-mcp",
+     "description": "Personal context management for AI assistants",
+     "remotes": [],
+     "word": "blocks"
+    },
+    {
+     "name": "ai.smithery/blockscout-mcp-server",
+     "description": "Provide AI agents and automation tools with contextual access to blockchain data including balance…",
+     "remotes": [
+      "https://server.smithery.ai/@blockscout/mcp-server/mcp"
+     ],
+     "word": "blocks"
+    },
+    {
+     "name": "com.blockscout/mcp-server",
+     "description": "MCP server for Blockscout",
+     "remotes": [
+      "https://mcp.blockscout.com/mcp"
+     ],
+     "word": "blocks"
+    },
+    {
+     "name": "ai.dablock/visibility-index",
+     "description": "Weekly open AI-visibility data for crypto: share of answer on ChatGPT, Perplexity and Gemini.",
+     "remotes": [
+      "https://dablock.ai/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "ai.unblockd/unblockd",
+     "description": "Plan, tasks, proof, and blockers for a project, plus sponsor asks a person on the team sends.",
+     "remotes": [
+      "https://unblockd.ai/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "com.airblockfz/coin-signal",
+     "description": "Crypto bottom/top signals: verdict + score per coin, market scans. Pay-per-call x402.",
+     "remotes": [
+      "https://coin-signal.airblock2026.workers.dev/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "com.airblockfz/commodity-signal",
+     "description": "Commodity futures bottom/top signals: 28 futures, verdict + score, scans. Pay-per-call x402.",
+     "remotes": [
+      "https://commodity-signal.airblock2026.workers.dev/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "com.airblockfz/dubai-property-signal",
+     "description": "Dubai property signals: 42 areas, AED/sqft index, verdict + rankings. Pay-per-call x402.",
+     "remotes": [
+      "https://dubai-property-signal.airblock2026.workers.dev/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "com.defaultrank/mcp",
+     "description": "Check npm dependencies for outdated majors, and see which dev tools AI models pick.",
+     "remotes": [
+      "https://defaultrank.com/mcp"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "com.defaultverifier/settlement-witness",
+     "description": "Deterministic verification gate for agent execution and x402 settlement.",
+     "remotes": [
+      "https://defaultverifier.com/mcp"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "com.textforagents/default-watch-pinning",
+     "description": "Watches platforms for silent default-model changes, with signed attestations and session gating.",
+     "remotes": [
+      "https://textforagents.com/products/default-watch-pinning/mcp"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "io.github.Evozim/default-probability-model-mcp",
+     "description": "Premium agentic endpoint for default-probability-model-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/default-probability-model-mcp/sse"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "io.github.Evozim/default-risk-oracle-mcp",
+     "description": "Premium agentic endpoint for default-risk-oracle-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/default-risk-oracle-mcp/sse"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "io.github.NathanYoshua/defaultbench",
+     "description": "Search transparent sponsored listings for agents, APIs, tools, and MCP servers.",
+     "remotes": [
+      "https://defaultbench.com/mcp"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "io.github.NomadBuilder/un-default",
+     "description": "Inclusive language scan/fix for AI and human copy. Local rules, no account.",
+     "remotes": [],
+     "word": "default"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.smithery/blockscout-mcp-server",
+     "url": "https://server.smithery.ai/@blockscout/mcp-server/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "status": 200,
+     "doors": 16
+    },
+    {
+     "server": "ai.dablock/visibility-index",
+     "url": "https://dablock.ai/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "ai.unblockd/unblockd",
+     "url": "https://unblockd.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.airblockfz/coin-signal",
+     "url": "https://coin-signal.airblock2026.workers.dev/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "com.airblockfz/commodity-signal",
+     "url": "https://commodity-signal.airblock2026.workers.dev/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "com.airblockfz/dubai-property-signal",
+     "url": "https://dubai-property-signal.airblock2026.workers.dev/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.defaultrank/mcp",
+     "url": "https://defaultrank.com/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.defaultverifier/settlement-witness",
+     "url": "https://defaultverifier.com/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "com.textforagents/default-watch-pinning",
+     "url": "https://textforagents.com/products/default-watch-pinning/mcp",
+     "status": 200,
+     "doors": 8
+    },
+    {
+     "server": "io.github.Evozim/default-probability-model-mcp",
+     "url": "https://api.m2mcent.com/default-probability-model-mcp/sse",
+     "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.Evozim/default-risk-oracle-mcp",
+     "url": "https://api.m2mcent.com/default-risk-oracle-mcp/sse",
+     "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.NathanYoshua/defaultbench",
+     "url": "https://defaultbench.com/mcp",
+     "status": 500,
+     "doors": 0
+    }
+   ]
+  },
+  {
+   "lead": "mcp-ui-extension",
+   "words": [
+    "declares",
+    "interactive",
+    "extension"
+   ],
+   "servers": 9,
+   "serverList": [
+    {
+     "name": "ai.demomagic/interactive-video-guide",
+     "description": "Guides for making interactive videos & AI product demos that answer viewers' questions.",
+     "remotes": [],
+     "word": "interactive"
+    },
+    {
+     "name": "com.ibkr/interactive-brokers-ibkr",
+     "description": "Analyze global markets and manage your portfolio",
+     "remotes": [
+      "https://api.ibkr.com/v1/api/mcp-public"
+     ],
+     "word": "interactive"
+    },
+    {
+     "name": "com.northreachinteractive/northreach",
+     "description": "Agent conversations, sourced findings, questions, persistent memory and personal inboxes.",
+     "remotes": [
+      "https://northreach-agent-network.evictionx.chatgpt.site/api/mcp"
+     ],
+     "word": "interactive"
+    },
+    {
+     "name": "io.github.MadPonyInteractive/cubric-studio",
+     "description": "Make images, video and GIFs in the Cubric Studio desktop app. Needs Cubric Studio 2.0+.",
+     "remotes": [],
+     "word": "interactive"
+    },
+    {
+     "name": "app.aplusz.dumaguete-extension/dumaguete",
+     "description": "Costs, travel, visas, hospitals, weather and places for Dumaguete, Philippines.",
+     "remotes": [
+      "https://dumaguete-extension.aplusz.app/mcp"
+     ],
+     "word": "extension"
+    },
+    {
+     "name": "com.clauxel.antigravityextensiongate/antigravityextensiongate-mcp",
+     "description": "Paid remote MCP for Antigravity extension compatibility MCP, structured receipts, audit logs, and re",
+     "remotes": [
+      "https://antigravityextensiongate.clauxel.com/mcp"
+     ],
+     "word": "extension"
+    },
+    {
+     "name": "io.github.Kaption-AI/mcp-extension",
+     "description": "Read and manage your WhatsApp conversations through the KaptionAI browser extension.",
+     "remotes": [],
+     "word": "extension"
+    },
+    {
+     "name": "io.github.Kaption-AI/mcp-extension-remote",
+     "description": "Use WhatsApp from AI apps through the Kaption extension. OAuth 2.1 relay that cannot read messages.",
+     "remotes": [
+      "https://mcp.kaptionai.com/mcp"
+     ],
+     "word": "extension"
+    },
+    {
+     "name": "io.github.Mehmoodqureshi/mcp-browser-extension",
+     "description": "Drive your real Chrome over MCP: real logins and cookies, multi-tab automation, deny-all by default.",
+     "remotes": [],
+     "word": "extension"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.ibkr/interactive-brokers-ibkr",
+     "url": "https://api.ibkr.com/v1/api/mcp-public",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.northreachinteractive/northreach",
+     "url": "https://northreach-agent-network.evictionx.chatgpt.site/api/mcp",
+     "status": 200,
+     "doors": 44
+    },
+    {
+     "server": "app.aplusz.dumaguete-extension/dumaguete",
+     "url": "https://dumaguete-extension.aplusz.app/mcp",
+     "status": 200,
+     "doors": 8
+    },
+    {
+     "server": "com.clauxel.antigravityextensiongate/antigravityextensiongate-mcp",
+     "url": "https://antigravityextensiongate.clauxel.com/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "io.github.Kaption-AI/mcp-extension-remote",
+     "url": "https://mcp.kaptionai.com/mcp",
+     "status": 401,
+     "doors": 0
+    }
+   ]
+  },
+  {
+   "lead": "iot-adapter-cluster",
+   "words": [
+    "cluster",
+    "device",
+    "docket"
+   ],
+   "servers": 9,
+   "serverList": [
+    {
+     "name": "com.detentpoint/cluster-validator",
+     "description": "Read-only health validation for Windows Server failover clusters running SQL Server FCI.",
+     "remotes": [],
+     "word": "cluster"
+    },
+    {
+     "name": "com.soleilpictures/clusters",
+     "description": "Read and build visual moodboards, shot lists and lookbooks from an AI assistant.",
+     "remotes": [
+      "https://clusters.soleilpictures.com/api/v1/mcp"
+     ],
+     "word": "cluster"
+    },
+    {
+     "name": "dev.clusteragent/cluster-mcp",
+     "description": "Self-hostable index of AI financial agents — tokenized stocks + crypto, memory, LLM gateway.",
+     "remotes": [
+      "https://mcp.clusteragent.dev/mcp"
+     ],
+     "word": "cluster"
+    },
+    {
+     "name": "dev.clusterhack/clusterhack",
+     "description": "Run hackathons end to end: events, teams, submissions, judging and winners.",
+     "remotes": [
+      "https://clusterhack.dev/mcp/"
+     ],
+     "word": "cluster"
+    },
+    {
+     "name": "io.github.Jam0k/threatcluster",
+     "description": "Live threat intel for agents: incidents, actors, CVEs with KEV/EPSS, ransomware leak-site victims.",
+     "remotes": [
+      "https://threatcluster.io/mcp"
+     ],
+     "word": "cluster"
+    },
+    {
+     "name": "app.deviceshelf/deviceshelf-server",
+     "description": "Query your local network in plain language: devices, open ports, security findings and alerts.",
+     "remotes": [],
+     "word": "device"
+    },
+    {
+     "name": "com.docketnexus/docketnexus",
+     "description": "Search public U.S. federal litigation: companies, cases, dockets and document metadata.",
+     "remotes": [
+      "https://mcp.docketnexus.com/mcp"
+     ],
+     "word": "docket"
+    },
+    {
+     "name": "io.github.pasichDev/docket",
+     "description": "Shared TODO/backlog MCP server with claim tracking, web UI, and encrypted local storage.",
+     "remotes": [],
+     "word": "docket"
+    },
+    {
+     "name": "io.github.pipeworx-io/docket-alarm",
+     "description": "Docket Alarm MCP — state + county + federal court dockets (docketalarm.com)",
+     "remotes": [
+      "https://gateway.pipeworx.io/docket-alarm/mcp"
+     ],
+     "word": "docket"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.soleilpictures/clusters",
+     "url": "https://clusters.soleilpictures.com/api/v1/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "dev.clusteragent/cluster-mcp",
+     "url": "https://mcp.clusteragent.dev/mcp",
+     "status": 530,
+     "doors": 0
+    },
+    {
+     "server": "dev.clusterhack/clusterhack",
+     "url": "https://clusterhack.dev/mcp/",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "io.github.Jam0k/threatcluster",
+     "url": "https://threatcluster.io/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.docketnexus/docketnexus",
+     "url": "https://mcp.docketnexus.com/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "io.github.pipeworx-io/docket-alarm",
+     "url": "https://gateway.pipeworx.io/docket-alarm/mcp",
+     "status": 200,
+     "doors": 45
+    }
+   ]
+  },
+  {
+   "lead": "device-reading-verifier",
+   "words": [
+    "against",
+    "reference",
+    "verified"
+   ],
+   "servers": 13,
+   "serverList": [
+    {
+     "name": "com.jeeva-jyotish/reference-search",
+     "description": "Sourced Vedic astrology (Jyotish) answers: effects, factors and yogas, cited to jeeva-jyotish.com.",
+     "remotes": [
+      "https://mcp.jeeva-jyotish.com/mcp"
+     ],
+     "word": "reference"
+    },
+    {
+     "name": "com.kintoolkit/label-reference",
+     "description": "Printed-label directions and sources for supported children's medicine bottles.",
+     "remotes": [
+      "https://kintoolkit.com/api/mcp"
+     ],
+     "word": "reference"
+    },
+    {
+     "name": "com.mhsbloom/neutral-skincare-reference",
+     "description": "Neutral, payment-blind reference of 1,682 dermacosmetic products: lookup, search, alternatives.",
+     "remotes": [
+      "https://europe-west3-mhs-bloom.cloudfunctions.net/bloomMcp"
+     ],
+     "word": "reference"
+    },
+    {
+     "name": "com.motionreference/motion-reference",
+     "description": "Search and study curated marketing videos and their timestamped moments, and save them to boards.",
+     "remotes": [
+      "https://motionreference.com/mcp"
+     ],
+     "word": "reference"
+    },
+    {
+     "name": "com.subtensor/reference",
+     "description": "Subtensor blockchain reference — events, calls, storage, constants, errors for all 28 active pallets",
+     "remotes": [
+      "https://subtensor.com/mcp"
+     ],
+     "word": "reference"
+    },
+    {
+     "name": "dev.afriref/reference-data",
+     "description": "Pan-African government reference data: central-bank rates, VAT, wages, holidays for 8 countries.",
+     "remotes": [
+      "https://afriref.dev/mcp"
+     ],
+     "word": "reference"
+    },
+    {
+     "name": "ai.atlasverified/atlas-mcp",
+     "description": "AI-powered organic supply chain verification: certification, OFAC, FDA import checks.",
+     "remotes": [
+      "https://api.atlasverified.ai/mcp"
+     ],
+     "word": "verified"
+    },
+    {
+     "name": "ai.deepinquiry/verified-facts",
+     "description": "Search and read short factual claims with cited sources, a verification tier and a signature.",
+     "remotes": [
+      "https://www.deepinquiry.ai/mcp"
+     ],
+     "word": "verified"
+    },
+    {
+     "name": "codes.find/verified-codes",
+     "description": "Verified discount & referral codes for crypto exchanges, cards and more — tested first-hand.",
+     "remotes": [
+      "https://find.codes/api/mcp"
+     ],
+     "word": "verified"
+    },
+    {
+     "name": "com.dropwatchhq/verified-feed",
+     "description": "Contradiction-verified, freshness-SLA'd signed feed: per-record status + as-of date + receipt.",
+     "remotes": [
+      "https://verified.dropwatchhq.com/mcp"
+     ],
+     "word": "verified"
+    },
+    {
+     "name": "com.hamptonsverified/hamptons-verified",
+     "description": "Verified Hamptons & North Fork data: open now, events, beaches, permits, closures.",
+     "remotes": [
+      "https://hamptonsverified.com/api/ai/mcp"
+     ],
+     "word": "verified"
+    },
+    {
+     "name": "com.ironcladverified/verified",
+     "description": "Hire evidence-verified home-service contractors. Confirmed-job reviews only; rank is never buyable.",
+     "remotes": [
+      "https://ironcladverified.com/mcp"
+     ],
+     "word": "verified"
+    },
+    {
+     "name": "com.kbeautyverified/ingredients",
+     "description": "K-beauty ingredients and products checked against Korea (MFDS), EU and U.S. FDA rules.",
+     "remotes": [
+      "https://kbeautyverified.com/mcp"
+     ],
+     "word": "verified"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.jeeva-jyotish/reference-search",
+     "url": "https://mcp.jeeva-jyotish.com/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "com.kintoolkit/label-reference",
+     "url": "https://kintoolkit.com/api/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.mhsbloom/neutral-skincare-reference",
+     "url": "https://europe-west3-mhs-bloom.cloudfunctions.net/bloomMcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.motionreference/motion-reference",
+     "url": "https://motionreference.com/mcp",
+     "status": 200,
+     "doors": 14
+    },
+    {
+     "server": "com.subtensor/reference",
+     "url": "https://subtensor.com/mcp",
+     "status": 200,
+     "doors": 7
+    },
+    {
+     "server": "dev.afriref/reference-data",
+     "url": "https://afriref.dev/mcp",
+     "status": 200,
+     "doors": 34
+    },
+    {
+     "server": "ai.atlasverified/atlas-mcp",
+     "url": "https://api.atlasverified.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.deepinquiry/verified-facts",
+     "url": "https://www.deepinquiry.ai/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "codes.find/verified-codes",
+     "url": "https://find.codes/api/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.dropwatchhq/verified-feed",
+     "url": "https://verified.dropwatchhq.com/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.hamptonsverified/hamptons-verified",
+     "url": "https://hamptonsverified.com/api/ai/mcp",
+     "status": 200,
+     "doors": 19
+    },
+    {
+     "server": "com.ironcladverified/verified",
+     "url": "https://ironcladverified.com/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "com.kbeautyverified/ingredients",
+     "url": "https://kbeautyverified.com/mcp",
+     "status": 200,
+     "doors": 10
+    }
+   ]
+  },
+  {
+   "lead": "glagolitic-above-thousand",
+   "words": [
+    "glagolitic",
+    "multiplies",
+    "thousand"
+   ],
+   "servers": 2,
+   "serverList": [
+    {
+     "name": "com.thousand-api/thousand-api",
+     "description": "Deterministic, MCP-compatible utility tools for AI agents: calculations, conversions, validations.",
+     "remotes": [
+      "https://mcp.thousand-api.com/mcp"
+     ],
+     "word": "thousand"
+    },
+    {
+     "name": "com.thousandeyes/mcp",
+     "description": "ThousandEyes MCP Server for network intelligence: outages, anomalies, alerts, events, and tests.",
+     "remotes": [
+      "https://api.thousandeyes.com/mcp",
+      "https://api.thousandeyes.com/mcp-public"
+     ],
+     "word": "thousand"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.thousand-api/thousand-api",
+     "url": "https://mcp.thousand-api.com/mcp",
+     "status": 200,
+     "doors": 84
+    },
+    {
+     "server": "com.thousandeyes/mcp",
+     "url": "https://api.thousandeyes.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.thousandeyes/mcp",
+     "url": "https://api.thousandeyes.com/mcp-public",
+     "status": 401,
+     "doors": 0
+    }
+   ]
+  },
+  {
+   "lead": "gap-shared-docket",
+   "words": [
+    "commitments",
+    "exchanged",
+    "deployed"
+   ],
+   "servers": 2,
+   "serverList": [
+    {
+     "name": "com.deployedbyai/the-deploy-log",
+     "description": "AI deployments that shipped and are available now, each sourced to the publisher's own page.",
+     "remotes": [
+      "https://deployedbyai.com/log/mcp"
+     ],
+     "word": "deployed"
+    },
+    {
+     "name": "work.forwardeployed/forward-deployed",
+     "description": "Research, strategy, financial models and decks, priced and approved per job, in your AI assistant",
+     "remotes": [
+      "https://forwardeployed.work/mcp"
+     ],
+     "word": "deployed"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.deployedbyai/the-deploy-log",
+     "url": "https://deployedbyai.com/log/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "work.forwardeployed/forward-deployed",
+     "url": "https://forwardeployed.work/mcp",
+     "status": 401,
+     "doors": 0
+    }
+   ]
+  },
+  {
+   "lead": "gap-time-witness",
+   "words": [
+    "witnesses",
+    "receipts",
+    "receipt"
+   ],
+   "servers": 13,
+   "serverList": [
+    {
+     "name": "com.dropwatchhq/agent-receipts",
+     "description": "Issue & verify signed (ed25519), hash-chained, timestamped provenance receipts for agent actions.",
+     "remotes": [
+      "https://agent-receipts.dropwatchhq.com/mcp"
+     ],
+     "word": "receipts"
+    },
+    {
+     "name": "com.textforagents/channel-bound-delegation-receipts",
+     "description": "Binds delegated results to their arrival channel: provenance grades plus a grounded truth tier.",
+     "remotes": [
+      "https://textforagents.com/products/channel-bound-delegation-receipts/mcp"
+     ],
+     "word": "receipts"
+    },
+    {
+     "name": "com.textforagents/stage-completeness-receipts",
+     "description": "Signed stage-completeness receipts: proof that a pipeline zero is a real zero, not a failed scan.",
+     "remotes": [
+      "https://textforagents.com/products/stage-completeness-receipts/mcp"
+     ],
+     "word": "receipts"
+    },
+    {
+     "name": "com.wenreceipts/site",
+     "description": "Wen Receipts: the site's own MCP server — dataset, enquiry, entities, listing (enquiry = a human...",
+     "remotes": [
+      "https://wenreceipts.com/mcp"
+     ],
+     "word": "receipts"
+    },
+    {
+     "name": "com.x402receipts/mcp",
+     "description": "Record x402 agent purchases as reconciled, auditable receipts; verify any receipt on the ledger.",
+     "remotes": [],
+     "word": "receipts"
+    },
+    {
+     "name": "io.github.dhanushs1912-svg/agent-receipts-mcp",
+     "description": "Signed, tamper-evident, offline-verifiable audit receipts for AI agent actions.",
+     "remotes": [],
+     "word": "receipts"
+    },
+    {
+     "name": "io.github.theluckystrike/expense-tracker-receipts-mileage",
+     "description": "Log expenses, receipts and mileage from chat: auto-categorise, split VAT, summarise, export, rebill.",
+     "remotes": [
+      "https://mcp.zovo.one/mcp/expense-tracker"
+     ],
+     "word": "receipts"
+    },
+    {
+     "name": "ai.ai-akari/agent-trust-receipt",
+     "description": "Read-only Remote MCP for externally grounded AI agent trust receipts.",
+     "remotes": [
+      "https://ai-akari.ai/mcp-trust"
+     ],
+     "word": "receipt"
+    },
+    {
+     "name": "com.acjlabs/receipt-extraction",
+     "description": "Receipts and invoices to structured, validated JSON with AU GST/ABN awareness. MCP + HTTPS API.",
+     "remotes": [
+      "https://acjlabs-receipt-extraction.acjlabs.workers.dev/mcp"
+     ],
+     "word": "receipt"
+    },
+    {
+     "name": "com.clauxel.a2areplayreceipt/a2areplayreceipt-mcp",
+     "description": "Remote MCP for A2A failure replay MCP, structured receipts, audit logs, and reviewer-ready evidence.",
+     "remotes": [
+      "https://a2areplayreceipt.clauxel.com/mcp"
+     ],
+     "word": "receipt"
+    },
+    {
+     "name": "com.clauxel.bumblebeereceipt/bumblebeereceipt-mcp",
+     "description": "A paid remote MCP for developer endpoint scanner MCP, built to return verdicts, receipts, usage logs",
+     "remotes": [
+      "https://bumblebeereceipt.clauxel.com/mcp"
+     ],
+     "word": "receipt"
+    },
+    {
+     "name": "com.clauxel.webmcpactionreceipt/webmcpactionreceipt-mcp",
+     "description": "Paid remote MCP for WebMCP action receipt MCP, structured receipts, audit logs, and reviewer-ready e",
+     "remotes": [
+      "https://webmcpactionreceipt.clauxel.com/mcp"
+     ],
+     "word": "receipt"
+    },
+    {
+     "name": "com.textforagents/classification-receipt-appeal-layer",
+     "description": "Signed verdict receipts recovering a fleet's gatekeeper category, plus appeal packets.",
+     "remotes": [
+      "https://textforagents.com/products/classification-receipt-appeal-layer/mcp"
+     ],
+     "word": "receipt"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.dropwatchhq/agent-receipts",
+     "url": "https://agent-receipts.dropwatchhq.com/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.textforagents/channel-bound-delegation-receipts",
+     "url": "https://textforagents.com/products/channel-bound-delegation-receipts/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.textforagents/stage-completeness-receipts",
+     "url": "https://textforagents.com/products/stage-completeness-receipts/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.wenreceipts/site",
+     "url": "https://wenreceipts.com/mcp",
+     "status": 200,
+     "doors": 32
+    },
+    {
+     "server": "io.github.theluckystrike/expense-tracker-receipts-mileage",
+     "url": "https://mcp.zovo.one/mcp/expense-tracker",
+     "status": 200,
+     "doors": 14
+    },
+    {
+     "server": "ai.ai-akari/agent-trust-receipt",
+     "url": "https://ai-akari.ai/mcp-trust",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "com.acjlabs/receipt-extraction",
+     "url": "https://acjlabs-receipt-extraction.acjlabs.workers.dev/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "com.clauxel.a2areplayreceipt/a2areplayreceipt-mcp",
+     "url": "https://a2areplayreceipt.clauxel.com/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "com.clauxel.bumblebeereceipt/bumblebeereceipt-mcp",
+     "url": "https://bumblebeereceipt.clauxel.com/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "com.clauxel.webmcpactionreceipt/webmcpactionreceipt-mcp",
+     "url": "https://webmcpactionreceipt.clauxel.com/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "com.textforagents/classification-receipt-appeal-layer",
+     "url": "https://textforagents.com/products/classification-receipt-appeal-layer/mcp",
+     "status": 200,
+     "doors": 8
+    }
+   ]
+  },
+  {
+   "lead": "gap-circuit-crossing",
+   "words": [
+    "circuits",
+    "cross-domain",
+    "simulator"
+   ],
+   "servers": 7,
+   "serverList": [
+    {
+     "name": "io.github.Evozim/acoustic-reverb-simulator-mcp",
+     "description": "Premium agentic endpoint for acoustic-reverb-simulator-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/acoustic-reverb-simulator-mcp/sse"
+     ],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.Manuciao88/portfolio-simulator",
+     "description": "Portfolio scenarios with instrument checks, Monte Carlo analysis and interactive reports.",
+     "remotes": [
+      "https://mcp.quantifiedinvestor.com/mcp"
+     ],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.doc2mcp/tabletopsimulator",
+     "description": "MCP server for tabletopsimulator documentation, generated by doc2mcp.",
+     "remotes": [
+      "https://doc2mcp.site/api/mcp/1b5ee653-f763-415b-8d1b-46c60f17b363/mcp"
+     ],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.emircbngl/blender-optics-simulator",
+     "description": "Build, align & render a real optical bench in Blender; drivable by an AI agent over MCP.",
+     "remotes": [],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.meszarosjan/material-simulator-mcp",
+     "description": "No-key MCP server for steel equilibrium, TTT/CCT kinetics, phase-boundary and measured-data tools.",
+     "remotes": [],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.meszarosjan/steel-metallurgy-material-simulator-mcp",
+     "description": "No-key MCP server for steel equilibrium, TTT/CCT kinetics, phase-boundary and measured-data tools.",
+     "remotes": [],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.simulatorarts/docugrip",
+     "description": "Find the right PDF tool for any task and get the link. Your document never reaches the server.",
+     "remotes": [
+      "https://docugrip.com/api/mcp"
+     ],
+     "word": "simulator"
+    }
+   ],
+   "extended": [
+    {
+     "server": "io.github.Evozim/acoustic-reverb-simulator-mcp",
+     "url": "https://api.m2mcent.com/acoustic-reverb-simulator-mcp/sse",
+     "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.Manuciao88/portfolio-simulator",
+     "url": "https://mcp.quantifiedinvestor.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.github.doc2mcp/tabletopsimulator",
+     "url": "https://doc2mcp.site/api/mcp/1b5ee653-f763-415b-8d1b-46c60f17b363/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.github.simulatorarts/docugrip",
+     "url": "https://docugrip.com/api/mcp",
+     "status": 200,
+     "doors": 7
+    }
+   ]
+  },
+  {
+   "lead": "address-agreement",
+   "words": [
+    "names",
+    "content-decided",
+    "shapeuuidof"
+   ],
+   "servers": 5,
+   "serverList": [
+    {
+     "name": "app.openkrill/names",
+     "description": "Check whether the domain for a startup, product or business name is already registered.",
+     "remotes": [
+      "https://names.openkrill.app/mcp"
+     ],
+     "word": "names"
+    },
+    {
+     "name": "baby.namesake/discovery",
+     "description": "Read-only access to Namesake's baby name catalog (meaning, origin, pronunciation, SSA-derived...",
+     "remotes": [
+      "https://www.namesake.baby/api/mcp"
+     ],
+     "word": "names"
+    },
+    {
+     "name": "com.agtnames/agt",
+     "description": "Resolve, verify and discover .agt agent names: owner, records, signed manifest, endpoints.",
+     "remotes": [
+      "https://agtnames.com/api/mcp"
+     ],
+     "word": "names"
+    },
+    {
+     "name": "com.airaptr/raptr-names",
+     "description": "Name a business or project; check which domains and GitHub names are free, with prices.",
+     "remotes": [
+      "https://api.airaptr.com/names/mcp"
+     ],
+     "word": "names"
+    },
+    {
+     "name": "com.am-lich/vietnamese-calendar",
+     "description": "Date conversion between solar date (Gregorian calendar) to lunar date (Vietnamese calendar)",
+     "remotes": [
+      "https://am-lich.com/mcp"
+     ],
+     "word": "names"
+    }
+   ],
+   "extended": [
+    {
+     "server": "app.openkrill/names",
+     "url": "https://names.openkrill.app/mcp",
+     "status": 0,
      "doors": 0
     }
    ]

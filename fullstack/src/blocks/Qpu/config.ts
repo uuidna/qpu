@@ -14,5 +14,6 @@ export const Qpu: Block = {
     { name: 'arguments', type: 'json', admin: { description: 'the arguments, so the block recomputes anywhere' } },
     { name: 'prev', type: 'text', admin: { description: 'the referer block' } },
     { name: 'next', type: 'text', admin: { description: 'the program rotated: the next step' } },
+    { name: 'theorem', type: 'text', admin: { description: 'the kernel-accepted theorem that makes this block true; written by the QPU as a client of this MCP, read from the textbook' } },
   ],
 }

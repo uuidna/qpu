@@ -23,6 +23,7 @@ import Qpu.Physics
 import Qpu.Pi
 import Qpu.Primes
 import Qpu.Sigma
+import Qpu.Textbook
 import Qpu.Surfacecode
 import Qpu.Leads.CausalInference
 import Qpu.Leads.ExplainableAI

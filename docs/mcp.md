@@ -1807,6 +1807,17 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 {
   "type": "object",
   "properties": {
+    "theorems": {
+      "type": "boolean",
+      "description": "the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client: the plan, then with answers { list, found } the update requests"
+    },
+    "payloadUrl": {
+      "type": "string",
+      "description": "the tenant's Payload origin; its MCP is at /api/mcp"
+    },
+    "answers": {
+      "type": "object"
+    },
     "website": {
       "description": "true: the requests for payloadcms.com's source tree and one live page; the tree as answered: its collections, blocks, globals, fields and plugins, and whether the live page's blocks have a block in the source"
     },

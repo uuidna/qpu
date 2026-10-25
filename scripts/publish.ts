@@ -3,6 +3,7 @@
 // output only, ignored by git. Configure QPU_DOCKETS (comma-separated URLs ending in /docket) and QPU_WRITE_TOKEN.
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { createHash } from 'node:crypto'
 import { execSync } from 'node:child_process'
 import { channelOf, uuidFromParts, uuidOf } from '../src/quantum/blocks.ts'
 
@@ -43,12 +44,15 @@ const main = async () => {
     const commit = execSync('git rev-parse HEAD', { cwd: ROOT, encoding: 'utf8' }).trim()
     // inside a run the receipt is provisional (no id yet: the run stamps it last); its address then is the content address of what it holds so far, said so
     const receiptId = receipt.id ?? uuidOf(JSON.stringify(receipt.steps ?? receipt))
+    // a commitment names an address and a 64-hex sha256: for a provisional receipt, the SHA-256 of what it holds so far; it links the receipt entry this run just wrote, never an undefined id
+    const receiptSha = receipt.sha256 ?? createHash('sha256').update(JSON.stringify(receipt.steps ?? receipt)).digest('hex')
+    const receiptEntry = results.find((r) => r.kind === 'receipt' && r.id)?.id
     if (!receipt.id) console.log(`publish: the receipt is provisional (the run stamps it last); published under the address of its steps so far, ${receiptId}`)
     const ch = channelOf(receiptId)
     const address = uuidFromParts(commit.slice(0, 8), ch.program, ch.tail)
     for (const docket of dockets) {
       try {
-        const res = await fetch(docket, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ kind: 'imprint', from, address, sha256: (receipt.sha256 ?? 'provisional'), links: [receipt.id] }), signal: AbortSignal.timeout(30000) })
+        const res = await fetch(docket, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ kind: 'imprint', from, address, sha256: receiptSha, links: receiptEntry ? [receiptEntry] : [] }), signal: AbortSignal.timeout(30000) })
         const r = await res.json().catch(() => ({})) as { id?: string }
         results.push({ kind: `imprint:${commit.slice(0, 8)}`, docket, status: res.status, id: r.id })
       } catch (e) { results.push({ kind: `imprint:${commit.slice(0, 8)}`, docket, status: 0 }); console.error(`publish: imprint → ${docket}: ${(e as Error).message}`) }
