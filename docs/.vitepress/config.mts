@@ -460,6 +460,15 @@ export default defineConfig({
             "link": "/mcp#codes"
           }
         ]
+      },
+      {
+        "text": "Toolbox payload",
+        "items": [
+          {
+            "text": "payload",
+            "link": "/mcp#payload"
+          }
+        ]
       }
     ],
   },

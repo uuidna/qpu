@@ -100,6 +100,16 @@ the standards fused: schema.org on every block, page and offer; ISO 8601, 639-1,
 
 Tools: [jsonld](#jsonld), [codes](#codes).
 
+## Toolbox `payload`
+
+Payload's plugin schema as the one shape of every result: nested docs of lexical documents whose blocks are programmable UUID logic, SEO from the block, no custom collection, a few kilobytes computed once.
+
+**Skill.** A Payload host with the default plugins (lexical, nested-docs, seo) stores _meta.payload of any result as it is: the lexical field is the document, nestedDocs.parent the parent relation, seo the plugin's fields; the block's uuid is the id. A device renders the block from its uuid alone (the walk) and never recomputes what the balancer computed.
+
+**Tests itself:** server only: the document shape on a fixture block; the next uuid is the program rotated; the breadcrumbs follow the chain; toolbox → toolbox: the block's Open Graph and JSON-LD come from the tree and standards toolboxes; client → server: a Payload host reads the document; the device reads the uuid.
+
+Tools: [payload](#payload).
+
 ## processor
 
 A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.
@@ -1625,6 +1635,44 @@ The tree's ISO codes validated against the CLDR lists a client fetched (language
       "items": {
         "type": "string"
       }
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## payload
+
+Any tool's result as the document Payload's default plugins hold, no custom collection: a lexical document whose one block is the programmable UUID logic (uuid, handle, program, tail, tool, arguments, prev, next), nested by the referer chain as nested-docs nests (parent, breadcrumbs), the SEO plugin's title, description and image from the block's Open Graph, the JSON-LD and the licence. Every tools/call result carries the same in _meta.payload.
+
+```json
+{
+  "type": "object",
+  "required": [
+    "tool"
+  ],
+  "properties": {
+    "tool": {
+      "type": "string"
+    },
+    "arguments": {
+      "type": "object"
+    },
+    "prev": {
+      "type": "string",
+      "description": "the referer block's uuid"
+    },
+    "chain": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "the referers before prev, oldest first"
+    },
+    "origin": {
+      "type": "string"
     },
     "selftest": {
       "type": "boolean"

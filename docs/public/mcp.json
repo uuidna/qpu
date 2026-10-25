@@ -1534,6 +1534,44 @@
       "_meta": {
         "toolbox": "standards"
       }
+    },
+    {
+      "name": "payload",
+      "description": "Any tool's result as the document Payload's default plugins hold, no custom collection: a lexical document whose one block is the programmable UUID logic (uuid, handle, program, tail, tool, arguments, prev, next), nested by the referer chain as nested-docs nests (parent, breadcrumbs), the SEO plugin's title, description and image from the block's Open Graph, the JSON-LD and the licence. Every tools/call result carries the same in _meta.payload.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "tool"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string"
+          },
+          "arguments": {
+            "type": "object"
+          },
+          "prev": {
+            "type": "string",
+            "description": "the referer block's uuid"
+          },
+          "chain": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "the referers before prev, oldest first"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "payload"
+      }
     }
   ]
 }
