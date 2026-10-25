@@ -1,21 +1,25 @@
 // The client of the readiness tool: it measures what only a client can (which cleanup subjects are present, the theorem
 // ledger on disk, the verification and discovery of this run), asks the tool for its plan, makes the border calls and the
 // unit calls the plan names against the MCP hosts, hands the answers back, and writes what the tool returns. Selftest first.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { handle } from '../src/quantum/mcp.ts'
+import { depositOf } from '../src/quantum/coins.ts'
 import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
 const ROOT = process.cwd()
+// the coins paid at the wire, one line per call, kept by this payer (the unit's own register is per process and silent)
+const account = (door: string, body: unknown) => { const d = depositOf(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'readiness', ...d }) + '\n') }
 const UNIT = process.env.UUIDNA_MCP ?? 'https://uuidna.com/mcp'
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'readiness', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
 const rpc = async (url: string, name: string, args: unknown): Promise<any> => {
   const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-next (ceccec@psg.bg)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
   if (res.status !== 200) throw new Error(`HTTP ${res.status}`)
   const body = await res.json() as { result?: { structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
+  account(name, body)
   if (body.error) throw new Error(body.error.message)
   if (body.result?.isError) throw new Error(body.result.content?.[0]?.text ?? 'the door refused without a text')
   return body.result?.structuredContent ?? (body.result?.content?.[0] ? JSON.parse(body.result.content[0].text) : body.result)

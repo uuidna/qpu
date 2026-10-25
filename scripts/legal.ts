@@ -1,12 +1,15 @@
 // The client of the legal tool: it reads the tree's texts, the discovery and the theorem ledger, asks the tool for its plan,
 // makes every call against its host (free agents by default; QPU_AUDIT_AGENTS, the operator's own list, overrides), hands
 // the answers back and writes what the tool returns. Selftest first. Network; skipped by `next --offline`.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { handle } from '../src/quantum/mcp.ts'
+import { depositOf } from '../src/quantum/coins.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
 const ROOT = process.cwd()
+// the coins paid at the wire, one line per call, kept by this payer (the unit's own register is per process and silent)
+const account = (door: string, body: unknown) => { const d = depositOf(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'legal', ...d }) + '\n') }
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'legal', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
 const text = (f: string) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT, f), 'utf8') : undefined)
 const readJson = (f: string) => { const t = text(f); return t ? JSON.parse(t) : undefined }
@@ -14,6 +17,7 @@ const rpc = async (url: string, name: string, args: unknown): Promise<unknown> =
   const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-legal (ceccec@psg.bg)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
   if (res.status !== 200) throw new Error(`HTTP ${res.status}`)
   const body = await res.json() as { result?: { structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
+  account(name, body)
   if (body.error) throw new Error(body.error.message)
   if (body.result?.isError) throw new Error(body.result.content?.[0]?.text ?? 'the door refused without a text')
   return body.result?.structuredContent ?? (body.result?.content?.[0] ? JSON.parse(body.result.content[0].text) : body.result)
