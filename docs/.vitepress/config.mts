@@ -379,6 +379,10 @@ export default defineConfig({
           {
             "text": "css",
             "link": "/mcp#css"
+          },
+          {
+            "text": "dashboard",
+            "link": "/mcp#dashboard"
           }
         ]
       },

@@ -28,7 +28,7 @@ the tree knows itself: its leads, its self-audit, any statement matched or prove
 
 **Tests itself:** server only: the audit audits the audit; toolbox → toolbox: match is the judge of readiness and the engine of imagine.
 
-Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify), [metrics](#metrics), [textbook](#textbook), [css](#css).
+Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify), [metrics](#metrics), [textbook](#textbook), [css](#css), [dashboard](#dashboard).
 
 ## Toolbox `flow`
 
@@ -1127,6 +1127,29 @@ The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmon
     "uuid": {
       "type": "string",
       "description": "a UUID whose block variables to compute"
+    }
+  }
+}
+```
+
+## dashboard
+
+A bounded tool laid out whole, so the user's decision in the UI is final: every value each property admits (an enum, a boolean, an integer range, the ends of a numeric bound, the textbook's values where a string is free), the whole space reachable by fixing one facet at a time (each cell narrows the dashboard until one combination remains, whose cell is its walk page /u/&lt;uuid&gt;), every cell drawn by its own UUID's CSS. Without a tool: every tool with the size of its space.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "tool": {
+      "type": "string",
+      "description": "the tool to lay out; omit for the index of all"
+    },
+    "fixed": {
+      "type": "object",
+      "description": "the facets already decided; the dashboard shows the rest"
+    },
+    "origin": {
+      "type": "string"
     }
   }
 }

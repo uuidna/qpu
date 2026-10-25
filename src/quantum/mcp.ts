@@ -712,9 +712,64 @@ const css = toolOf('tree', {
   widget: flowWidget,
 })
 
+/** A bounded tool laid out whole: every value each property admits (an enum, a boolean, an integer range, the ends of a
+ * numeric bound, the textbook's values where a string is free), every combination of them with its block address and its
+ * walk page, rendered as a grid of cells each drawn by its own UUID's CSS — so the user's click in the UI is the decision,
+ * final, and nothing is computed until it is made. */
+type Facet = { property: string; kind: 'enum' | 'boolean' | 'range' | 'textbook' | 'free'; required: boolean; values: unknown[]; domain: string; space: number }
+const facetsOf = (name: string): { facets: Facet[]; tool: Tool | undefined } => {
+  const tool = TOOLS.find((t) => t.name === name) as (Tool & { inputSchema: { properties?: Record<string, { type?: string; enum?: unknown[]; minimum?: number; maximum?: number }>; required?: string[] } }) | undefined
+  if (!tool) return { facets: [], tool: undefined }
+  const props = tool.inputSchema.properties ?? {}; const required = new Set(tool.inputSchema.required ?? [])
+  const textbook = (prop: string): unknown[] => { const vals: unknown[] = []; for (const e of EXAMPLES) if (e.tool === name && prop in e.arguments) { const v = e.arguments[prop]; if (!vals.some((x) => JSON.stringify(x) === JSON.stringify(v))) vals.push(v) } return vals }
+  const facets: Facet[] = Object.entries(props).filter(([prop]) => prop !== 'selftest').map(([prop, spec]) => {
+    const tb = textbook(prop)
+    if (Array.isArray(spec.enum)) return { property: prop, kind: 'enum' as const, required: required.has(prop), values: spec.enum, domain: `one of ${spec.enum.length}`, space: spec.enum.length }
+    if (spec.type === 'boolean') return { property: prop, kind: 'boolean' as const, required: required.has(prop), values: [false, true], domain: 'false or true', space: 2 }
+    if ((spec.type === 'integer' || spec.type === 'number') && typeof spec.minimum === 'number' && typeof spec.maximum === 'number') {
+      const size = spec.type === 'integer' ? spec.maximum - spec.minimum + 1 : Infinity
+      const values = spec.type === 'integer' && size <= 24 ? Array.from({ length: size }, (_, i) => spec.minimum! + i) : [...new Set([spec.minimum, ...tb.filter((v) => typeof v === 'number'), spec.maximum])]
+      return { property: prop, kind: 'range' as const, required: required.has(prop), values, domain: `${spec.type} in [${spec.minimum}, ${spec.maximum}]${values.length < size ? ` (${values.length} shown: the ends and the textbook's; any value in the range is yours to type)` : ''}`, space: size }
+    }
+    if (tb.length) return { property: prop, kind: 'textbook' as const, required: required.has(prop), values: tb, domain: `${tb.length} value(s) the textbook uses`, space: tb.length }
+    return { property: prop, kind: 'free' as const, required: required.has(prop), values: [], domain: `${spec.type ?? 'any'}: free, no value enumerable`, space: Infinity }
+  })
+  return { facets, tool: tool as unknown as Tool }
+}
+const dashboard = toolOf('tree', {
+  name: 'dashboard',
+  description: 'A bounded tool laid out whole, so the user\'s decision in the UI is final: every value each property admits (an enum, a boolean, an integer range, the ends of a numeric bound, the textbook\'s values where a string is free), the whole space reachable by fixing one facet at a time (each cell narrows the dashboard until one combination remains, whose cell is its walk page /u/<uuid>), every cell drawn by its own UUID\'s CSS. Without a tool: every tool with the size of its space.',
+  inputSchema: { type: 'object', properties: { tool: { type: 'string', description: 'the tool to lay out; omit for the index of all' }, fixed: { type: 'object', description: 'the facets already decided; the dashboard shows the rest' }, origin: { type: 'string' } } },
+  run: (args) => {
+    const origin = typeof args.origin === 'string' ? args.origin : ''
+    if (typeof args.tool !== 'string') return { tools: TOOLS.length, index: TOOLS.map((t) => { const { facets } = facetsOf(t.name); const enumerable = facets.filter((f) => f.values.length); return { tool: t.name, toolbox: t.toolbox, facets: facets.length, enumerable: enumerable.length, free: facets.filter((f) => f.kind === 'free').map((f) => f.property), combinations: enumerable.reduce((n, f) => n * f.values.length, 1), space: facets.some((f) => f.space === Infinity) ? 'unbounded' : facets.reduce((n, f) => n * f.space, 1), dashboard: `${origin}/u/${uuidOf(`dashboard${JSON.stringify({ tool: t.name })}`)}` } }) }
+    const { facets, tool } = facetsOf(args.tool)
+    if (!tool) throw new Error(`no tool ${args.tool}`)
+    const fixed = (args.fixed && typeof args.fixed === 'object' ? args.fixed : {}) as Record<string, unknown>
+    const enumerable = facets.filter((f) => f.values.length)
+    const open = enumerable.filter((f) => !(f.property in fixed))
+    const freeRequired = facets.filter((f) => f.kind === 'free' && f.required && !(f.property in fixed)).map((f) => f.property)
+    const space = enumerable.reduce((n, f) => n * f.values.length, 1)
+    // the whole space is reachable by fixing one facet at a time: the cells of this dashboard are the values of the facets still open
+    // (the required ones first, else the first open one); a cell fixes its value and leads to the narrower dashboard, until every
+    // enumerable facet is fixed and the cell is the walk page of that one combination — the click is the decision, final
+    const next = open.filter((f) => f.required).length ? open.filter((f) => f.required) : open.slice(0, 1)
+    let combos: Record<string, unknown>[] = [{ ...fixed }]
+    for (const f of next) combos = combos.flatMap((c) => f.values.map((v) => ({ ...c, [f.property]: v })))
+    const final = (c: Record<string, unknown>) => enumerable.every((f) => f.property in c)
+    const cells = combos.map((c) => { const leaf = final(c); const id = leaf ? uuidOf(`${args.tool}${JSON.stringify(c)}`) : uuidOf(`dashboard${JSON.stringify({ tool: args.tool, fixed: c })}`); return { arguments: c, uuid: id, url: `${origin}/u/${id}`, final: leaf, vars: varsOf(id) } })
+    const chip = (text: string, style = '') => `<span style="display:inline-block; padding: 2px 8px; margin: 2px; border-radius: 999px; background: var(--surface-1); font-size: var(--font-size-footnote); ${style}">${text.replace(/[&<>]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[ch]!)}</span>`
+    const html = `<div style="display: grid; gap: var(--gap-md);"><div role="heading" aria-level="3">${args.tool}: ${space.toLocaleString('en-US')} combination(s) of ${enumerable.length} facet(s), ${Object.keys(fixed).length} fixed, ${cells.length} cell(s) here${freeRequired.length ? `; ${freeRequired.join(', ')} is yours to type` : ''}</div>` +
+      facets.map((f) => `<div data-facet="${f.property}"><strong>${f.property}</strong> <small>${f.domain}${f.required ? ', required' : ''}${f.property in fixed ? `, fixed to ${JSON.stringify(fixed[f.property])}` : ''}</small><div>${f.values.map((v) => chip(JSON.stringify(v), f.property in fixed && JSON.stringify(fixed[f.property]) === JSON.stringify(v) ? 'outline: 2px solid var(--a432-accent);' : '')).join('')}${f.values.length ? '' : chip('free')}</div></div>`).join('') +
+      `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--gap-sm, 6px);">${cells.map((c) => `<a href="${c.url}" data-block="${c.uuid}" style="${Object.entries(c.vars).map(([k, v]) => `${k}: ${v}`).join('; ')}; display: block; border-left: 3px solid var(--qpu-accent); padding: 4px 8px; border-radius: var(--radius); background: var(--surface-1); color: var(--text-primary); text-decoration: none; font-size: var(--font-size-footnote);" title="${c.uuid}">${c.final ? '▶ ' : '▸ '}${Object.entries(c.arguments).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(' ').replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]!) || 'no arguments'}</a>`).join('')}</div></div>`
+    return { tool: args.tool, facets: facets.length, enumerable: enumerable.length, fixed: Object.keys(fixed).length, combinations: space, cells: cells.length, final: cells.filter((c) => c.final).length, space: facets.some((f) => f.space === Infinity) ? 'unbounded' : facets.reduce((n, f) => n * f.space, 1), freeRequired, facetList: facets, cellList: cells.map(({ arguments: a, uuid, url, final: leaf }) => ({ arguments: a, uuid, url, final: leaf })), html }
+  },
+  widget: (d: { html?: string; tools?: number; index?: { tool: string; combinations: number; space: unknown; dashboard: string }[] }) => d.html ?? `<div style="display: grid; gap: var(--gap-sm, 6px);"><div role="heading" aria-level="3">${d.tools} tools, each laid out whole</div>${(d.index ?? []).map((i) => `<a href="${i.dashboard}" style="display: block; padding: 4px 8px; background: var(--surface-1); border-radius: var(--radius); color: var(--text-primary); text-decoration: none;">${i.tool}: ${i.combinations} combination(s), space ${i.space}</a>`).join('')}</div>`,
+})
+
 export const TOOLBOXES: Toolbox[] = [
   { name: 'google', idea: 'the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories', tools: OWN.filter((t) => t.toolbox === 'google'), examples: [], skill: { instructions: 'Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.', directions: ['server only: every example replays as documented (the audit)'], selftest: (ctx) => { const checks = ctx.examples.filter((e) => OWN.some((t) => t.name === e.tool && t.toolbox === 'google')).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); const why = 'error' in r ? r.error.message : e.expect(r.result.structuredContent); return { id: `google:${e.id}`, passed: why === null, evidence: why ?? e.shows } }); return { passed: checks.every((c) => c.passed), checks } } } },
-  { name: 'tree', idea: 'the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time', tools: [...OWN.filter((t) => t.toolbox === 'tree'), metrics, textbook, css], examples: [], skill: { instructions: 'audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.', directions: ['server only: the audit audits the audit', 'toolbox → toolbox: match is the judge of readiness and the engine of imagine'], selftest: (ctx) => { const m = matchOf('How many qubits does Willow have?', ctx.handle, ctx.examples, ctx.leads); return { passed: m.verdict === 'served', checks: [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }] } } } },
+  { name: 'tree', idea: 'the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time', tools: [...OWN.filter((t) => t.toolbox === 'tree'), metrics, textbook, css, dashboard], examples: [], skill: { instructions: 'audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.', directions: ['server only: the audit audits the audit', 'toolbox → toolbox: match is the judge of readiness and the engine of imagine'], selftest: (ctx) => { const m = matchOf('How many qubits does Willow have?', ctx.handle, ctx.examples, ctx.leads); return { passed: m.verdict === 'served', checks: [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }] } } } },
   FLOW,
   LANGUAGE,
   RAID,
