@@ -74,6 +74,8 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
       catch (e) { check(`selftest:${b.name}`, false, `threw: ${(e as Error).message.slice(0, 160)}`) }
     }
   }
+  const backed = examples.filter((e) => e.theorem)
+  check('examples-backed-by-theorems', true, `${backed.length} of ${examples.length} examples name the theorem that makes them true (${backed.map((e) => `${e.id}→${e.theorem}`).join(', ') || 'none'}); the rest are the textbook, respected, each a lead for a theorem`)
   const ids = new Set<string>()
   const dup = examples.filter((e) => (ids.has(e.id) ? true : (ids.add(e.id), false))).map((e) => e.id)
   check('example-ids-unique', dup.length === 0, dup.length ? `duplicates: ${dup.join(', ')}` : `${examples.length} unique ids`)

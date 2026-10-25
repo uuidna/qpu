@@ -109,6 +109,7 @@ import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
 import { BILLING } from './toolboxes/billing.js'
 import { LEGAL } from './toolboxes/legal.js'
+import { REPOSITORY } from './toolboxes/repository.js'
 
 /** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
 // The tools of this host's own two toolboxes, named below; `tool` is the host-side helper until each is a file of its own.
@@ -603,6 +604,7 @@ export const TOOLBOXES: Toolbox[] = [
   RAID,
   BILLING,
   LEGAL,
+  REPOSITORY,
 ]
 const TOOLS: Tool[] = TOOLBOXES.flatMap((b) => b.tools)
 /** Results by block address, once per process: the memory of the balancer. */

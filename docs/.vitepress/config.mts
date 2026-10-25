@@ -152,6 +152,10 @@ export default defineConfig({
       {
         "text": "Legal",
         "link": "/legal"
+      },
+      {
+        "text": "Repository",
+        "link": "/repository"
       }
     ],
     sidebar: [
@@ -257,6 +261,10 @@ export default defineConfig({
           {
             "text": "Legal",
             "link": "/legal"
+          },
+          {
+            "text": "Repository",
+            "link": "/repository"
           }
         ]
       },
@@ -400,6 +408,15 @@ export default defineConfig({
           {
             "text": "legal",
             "link": "/mcp#legal"
+          }
+        ]
+      },
+      {
+        "text": "Toolbox repository",
+        "items": [
+          {
+            "text": "repository",
+            "link": "/mcp#repository"
           }
         ]
       }

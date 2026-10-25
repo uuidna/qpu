@@ -2,6 +2,8 @@
 // them again on request: three readers of one list, so the documentation cannot say what the tools do not do.
 
 export type Example = {
+  /** the kernel-accepted theorem that makes this example true, where one stands: quality is proven by theorems; the example is the textbook */
+  theorem?: string
   /** a stable id, used by the docs anchors and the audit report */
   id: string
   tool: string
@@ -20,6 +22,7 @@ import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
 import { BILLING } from './toolboxes/billing.js'
 import { LEGAL } from './toolboxes/legal.js'
+import { REPOSITORY } from './toolboxes/repository.js'
 
 export const EXAMPLES: Example[] = [
   ...FLOW.examples,
@@ -27,6 +30,7 @@ export const EXAMPLES: Example[] = [
   ...RAID.examples,
   ...BILLING.examples,
   ...LEGAL.examples,
+  ...REPOSITORY.examples,
   { id: 'processor-willow', tool: 'processor', arguments: { name: 'Willow' }, shows: 'How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47.',
     expect: (s) => (s.qubits === 105 && s.statedAverageConnectivity === 3.47 ? null : `qubits ${s.qubits}, connectivity ${s.statedAverageConnectivity}`) },
   { id: 'processor-sycamore', tool: 'processor', arguments: { name: 'Sycamore' }, shows: 'Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated.',
@@ -75,7 +79,7 @@ export const EXAMPLES: Example[] = [
     expect: (s) => (JSON.stringify(s).includes('Cirq') ? null : 'no Cirq entry') },
   { id: 'clay-register', tool: 'clay', arguments: {}, shows: 'The 54 Clay relations recomputed in exact integer arithmetic: all hold, the widest value needs 33 bits (amplitudes = 2^32), three 16-bit limbs on an 8-bit machine.',
     expect: (s) => (s.total === 54 && s.holding === 54 && s.maxBits === 33 && s.maxLimbs16 === 3 ? null : `${s.holding}/${s.total}, ${s.maxBits} bits, ${s.maxLimbs16} limbs`) },
-  { id: 'clay-relation-15', tool: 'clay', arguments: { name: 'relation_15' }, shows: 'One relation: magicBlock = glProd hexbit seed = qftDepth vertices = 15.',
+  { id: 'clay-relation-15', tool: 'clay', arguments: { name: 'relation_15' }, theorem: 'relation_15', shows: 'One relation: magicBlock = glProd hexbit seed = qftDepth vertices = 15.',
     expect: (s) => (s.relations?.[0]?.sides?.every((x: { value: number }) => x.value === 15) ? null : JSON.stringify(s.relations?.[0]?.sides)) },
   { id: 'verify-seal-and-content', tool: 'verify', arguments: { uuid: '70a13419-52d5-2702-a236-d17851bf2b4a', content: 'qpu' }, shows: 'One UUID checked cheaply: its seal from its own 31 nibbles, and its content by one fold.',
     expect: (s) => (s.valid === true && s.decided === 2 ? null : JSON.stringify(s.checks)) },

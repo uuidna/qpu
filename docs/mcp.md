@@ -80,6 +80,16 @@ the legal and security audit of this MCP through MCP: the author's claims judged
 
 Tools: [legal](#legal).
 
+## Toolbox `repository`
+
+the repository watched: every workspace, branch, tag and release here compared with the remote and the archive online, every disagreement a lead.
+
+**Skill.** The client gathers with git: the remote url, HEAD, the branch, package.json's version, worktree list, every branch with its upstream and head, every tag with its commit, and the concept DOI from .zenodo.json's related identifiers; calls repository for the requests; fetches them (GitHub needs no token for public reads); calls again with the answers; writes repository.json and the page; its leads join the next-leads docket. Offline, the local facts alone are written.
+
+**Tests itself:** server only: fixture facts against fixture answers give every kind of lead once; client → server: git facts in, GitHub and Zenodo bodies in; toolbox → toolbox: requests checked against the contracts discovery found; leads feed readiness.
+
+Tools: [repository](#repository).
+
 ## processor
 
 A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.
@@ -1422,6 +1432,34 @@ The full legal and security audit with forensic analysis, through MCP. Phase one
     "citeTheorem": {
       "type": "string",
       "description": "the sealed guarantee of the unit's court cited beside every legal claim; default legal_only_the_proven_is_admitted, a key its due-process door names"
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## repository
+
+Workspaces, branches, tags and releases watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "local": {
+      "type": "object",
+      "description": "{ remote, head, branch, version, worktrees, branches, tags, conceptDoi }"
+    },
+    "contracts": {
+      "type": "object"
     },
     "answers": {
       "type": "array",
