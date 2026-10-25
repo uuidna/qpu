@@ -86,6 +86,10 @@ export default defineConfig({
         "link": "/graph"
       },
       {
+        "text": "Readiness",
+        "link": "/readiness"
+      },
+      {
         "text": "Imagination",
         "link": "/imagination"
       }
@@ -171,6 +175,10 @@ export default defineConfig({
             "link": "/graph"
           },
           {
+            "text": "Readiness",
+            "link": "/readiness"
+          },
+          {
             "text": "Imagination",
             "link": "/imagination"
           }
@@ -246,6 +254,10 @@ export default defineConfig({
           {
             "text": "clay",
             "link": "/mcp#clay"
+          },
+          {
+            "text": "verify",
+            "link": "/mcp#verify"
           }
         ]
       }

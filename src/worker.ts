@@ -7,8 +7,9 @@ import { handle, type Rpc } from './quantum/mcp.js'
 import { EXAMPLES } from './quantum/examples.js'
 import { LEADS } from './quantum/leads.js'
 import { LICENSE } from './quantum/license.js'
-import { uuidOf, sealOf, channelOf } from './quantum/blocks.js'
+import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, type Step } from './quantum/blocks.js'
 import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.js'
+import { LOCALES as LANGS, translateOf } from './quantum/i18n.js'
 
 /** The slice of the Workers runtime this file uses, typed here so the tree needs no runtime types package to typecheck. */
 export type Storage = { get<T>(key: string): Promise<T | undefined>; put(key: string, value: unknown): Promise<void>; delete(key: string): Promise<unknown>; list<T>(opts?: { prefix?: string }): Promise<Map<string, T>> }
@@ -123,7 +124,7 @@ export class Docket {
     if (id && !ID.test(id)) return json({ error: 'an entry id is a content-addressed RFC 9562 v8 UUID' }, 400)
     try {
       if (request.method === 'GET' && id) {
-        if (url.searchParams.has('og') || /text\/html/.test(request.headers.get('accept') ?? '')) return pageOf(id, url.origin)
+        if (url.searchParams.has('og') || /text\/html/.test(request.headers.get('accept') ?? '')) { const nx = nextOf(id, url.origin); return pageOf(id, url.origin, { prev: refererOf(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled }) }
         return await this.read(id, url.searchParams.has('cheap'), url.searchParams.has('heal'))
       }
       if (request.method === 'GET') return await this.list(url.searchParams.get('kind'), url.searchParams.get('since'))
@@ -273,7 +274,19 @@ export class Docket {
 /** The page a UUID unfurls into, computed from the id alone: head from the channel (handle, hex program, message tail), the seal,
  *  the aura swatch as an inline SVG data URL, the licence. The body loads client-side from the JSON route; a crawler reads the head. */
 const escapeHtml = (t: string): string => t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
-export const pageOf = (id: string, origin: string): Response => {
+export type Superposition = { prev?: string; next?: { href: string; label: string }; compiled?: Step[]; result?: unknown; notes?: string[]; locale?: string }
+/** The next step of an id: its program compiled against the tools, the first step executed, and the href that continues the walk. */
+export const nextOf = (id: string, origin: string): { href: string; label: string; compiled: Step[]; result: unknown } => {
+  const ch = channelOf(id)
+  const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: Parameters<typeof compileOf>[1] } }).result.tools
+  const { steps, next } = compileOf(ch.program, tools, ch.message)
+  const reply = next ? handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: next.tool, arguments: next.arguments } }) as { result?: { structuredContent: unknown; _meta: { widget: string } }; error?: unknown } : undefined
+  const rotated = [...ch.program.slice(1), ch.program[0]!] // the walk continues: the program rotates one nibble per step
+  return { href: `${origin}/${ch.handle}/${rotated.map((n) => n.toString(16)).join('')}/${ch.tail}`, label: next ? `${next.tool} ${JSON.stringify(next.arguments)}` : 'no step', compiled: steps, result: reply?.result ? { structured: reply.result.structuredContent, widget: reply.result._meta.widget } : reply?.error }
+}
+export const pageOf = (id: string, origin: string, sp: Superposition = {}): Response => {
+  const locale = sp.locale ?? 'en'
+  const t = (text: string) => translateOf(text, 'en', locale).text
   const ch = channelOf(id)
   const seal = sealOf(id)
   const accent = accentOfUuid(id)
@@ -282,21 +295,65 @@ export const pageOf = (id: string, origin: string): Response => {
   const description = `Docket entry ${id}: handle ${ch.handle}, hex program ${ch.program.join('')} (version ${ch.version}, variant ${ch.variant}), message ${ch.message.one48} as one 48-bit natural, ${ch.message.two24.join('/')} as two 24-bit, ${ch.message.three16.join('/')} as three 16-bit; seal ${seal.valid ? 'valid' : 'invalid'}. ${LICENSE.spdx} © ${LICENSE.author}.`
   const og: Record<string, string> = { 'og:type': 'website', 'og:site_name': '@uuidna/qpu', 'og:url': `${origin}/docket/${id}`, 'og:title': title, 'og:description': description, 'og:image': swatch, 'og:image:width': '1200', 'og:image:height': '630', 'article:author': LICENSE.author, license: `${LICENSE.spdx} ${LICENSE.url}`, 'twitter:card': 'summary_large_image' }
   const meta = Object.entries(og).map(([k, v]) => `<meta property="${escapeHtml(k)}" content="${escapeHtml(v)}">`).join('\n')
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(title)}</title>
+  const html = `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(title)}</title>
 <meta name="description" content="${escapeHtml(description)}">
 ${meta}
 <meta name="license" content="${LICENSE.spdx}"><meta name="copyright" content="${escapeHtml(LICENSE.copyright)}"><link rel="license" href="${LICENSE.url}"><link rel="canonical" href="${origin}/docket/${id}">
+${sp.prev ? `<link rel="prev" href="${escapeHtml(sp.prev)}">` : ''}${sp.next ? `<link rel="next" href="${escapeHtml(sp.next.href)}">` : ''}
 <meta name="uuidna:handle" content="${ch.handle}"><meta name="uuidna:program" content="${ch.program.join('')}"><meta name="uuidna:tail" content="${ch.tail}"><meta name="uuidna:seal" content="${seal.valid}"><meta name="uuidna:aura" content="${escapeHtml(accent)}"><meta name="uuidna:key" content="${KEY}">
 <style>${cssOf()}:root{--font-sans:system-ui,sans-serif;--text-primary:#111;--text-secondary:#555;--surface-1:#f4f4f5;--surface-2:#fff;--border:#ddd;--radius:8px;--pad-md:12px;--pad-sm:8px;--gap-md:12px;--gap-sm:8px;--gap-xs:4px;--font-size-footnote:12px}body{margin:0;padding:16px;background:#fafafa;font-family:var(--font-sans);color:var(--text-primary)}@media (prefers-color-scheme: dark){:root{--text-primary:#eee;--text-secondary:#aaa;--surface-1:#1c1c1e;--surface-2:#111;--border:#333}body{background:#000}}pre{white-space:pre-wrap;background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);padding:var(--pad-md)}</style></head>
 <body data-block="${id}" style="--block-accent: ${escapeHtml(accent)}; border-left: 3px solid var(--block-accent); padding-left: 8px;">
 <h1 style="font-family:monospace">${ch.handle}</h1>
-<p>hex program <code>${ch.program.join('')}</code> · message tail <code>${ch.tail}</code> · seal ${seal.valid ? '✓' : '✗'} · hue ${hueOf(KEY)}° · cmyk ${Object.values(cmykOfUuid(id)).map((v) => v.toFixed(2)).join(' ')}</p>
+<p>${t('hex program')} <code>${ch.program.join('')}</code> · ${t('message tail')} <code>${ch.tail}</code> · ${t('seal')} ${seal.valid ? '✓' : '✗'} · hue ${hueOf(KEY)}° · cmyk ${Object.values(cmykOfUuid(id)).map((v) => v.toFixed(2)).join(' ')}</p>
+${sp.notes?.length ? `<p style="color:var(--text-secondary)">${sp.notes.map(escapeHtml).join(' · ')}</p>` : ''}
+${sp.compiled ? `<h2>${t('Program')}</h2><table><thead><tr><th>#</th><th>nibble</th><th>tool</th><th>arguments</th></tr></thead><tbody>${sp.compiled.map((st, i) => `<tr><td>${i}</td><td>${st.nibble.toString(16)}</td><td>${escapeHtml(st.tool)}</td><td><code>${escapeHtml(JSON.stringify(st.arguments))}</code></td></tr>`).join('')}</tbody></table>` : ''}
+${sp.result && typeof sp.result === 'object' && 'widget' in (sp.result as object) ? `<h2>${t('Next, executed')}</h2>${(sp.result as { widget: string }).widget}` : sp.result ? `<h2>Next</h2><pre>${escapeHtml(JSON.stringify(sp.result, null, 2))}</pre>` : ''}
+<nav style="display:flex;justify-content:space-between;gap:16px;margin:24px 0;border-top:0.5px solid var(--border);padding-top:12px"><span>${sp.prev ? `← <a href="${escapeHtml(sp.prev)}">${t('previous')}</a>` : ''}</span><span>${sp.next ? `<a href="${escapeHtml(sp.next.href)}">${t('next')}: ${escapeHtml(sp.next.label.slice(0, 80))}</a> →` : ''}</span></nav>
 <noscript><p>The entry's body loads from <a href="${origin}/docket/${id}">${origin}/docket/${id}</a>; this head was computed from the UUID alone.</p></noscript>
 <pre id="body">loading ${origin}/docket/${id} …</pre>
-<p style="font-size:12px;color:var(--text-secondary)">© <a href="${LICENSE.orcid}" style="color:inherit">${LICENSE.author}</a> · <a href="${LICENSE.url}" style="color:inherit">${LICENSE.spdx}</a> · commercial use by licence (${LICENSE.contact})</p>
+<p style="font-size:12px;color:var(--text-secondary)">© <a href="${LICENSE.orcid}" style="color:inherit">${LICENSE.author}</a> · <a href="${LICENSE.url}" style="color:inherit">${LICENSE.spdx}</a> · ${t('commercial use by licence')} (${LICENSE.contact})</p>
 <script>fetch(${JSON.stringify(`${origin}/docket/${id}`)},{headers:{accept:'application/json'}}).then(r=>r.json()).then(j=>{document.getElementById('body').textContent=JSON.stringify(j,null,2)}).catch(e=>{document.getElementById('body').textContent='no entry on this mirror: '+e})</script>
 </body></html>`
   return new Response(html, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
+}
+
+/** The referer, when it names a page of this unit or any http origin: the previous step of the walk. */
+export const refererOf = (request: Request): string | undefined => { const r = request.headers.get('referer'); return r && /^https?:\/\//.test(r) ? r : undefined }
+
+/** Catch all, decide and translate later. A path is read as handle / program / tail where it is hex (the walk), a locale prefix
+ *  is stripped and recorded as a translation lead, and anything else is put to the match tool as a statement: served, proved
+ *  impossible, or returned as a lead. Nothing ends in a bare 404 without a decision. */
+export const catchAll = (request: Request, url: URL, env: Env): Response | Promise<Response> => {
+  const segments = url.pathname.split('/').filter(Boolean).map(decodeURIComponent)
+  const notes: string[] = []
+  let locale = 'en'
+  if (segments[0] && LANGS[segments[0]] && segments[0] !== 'en') { locale = segments[0]; segments.shift(); if (!LANGS[locale]!.filled) notes.push(`translate later: ${LANGS[locale]!.name} (${locale}) has no vocabulary table yet, a lead; served in English`) }
+  const t = (text: string) => { const r = translateOf(text, 'en', locale); if (r.untranslated.length && locale !== 'en') for (const w of r.untranslated) notes.push(`translate later: "${w}" (${locale})`); return r.text }
+  const wantsPage = url.searchParams.has('og') || /text\/html/.test(request.headers.get('accept') ?? '')
+  const [a, b, c] = segments
+  if (a && /^[0-9a-f]{8}$/.test(a)) {
+    const program = b && /^[0-9a-f]{10}$/.test(b) ? [...b].map((x) => parseInt(x, 16)) : undefined
+    const tail = c && /^[0-9a-f]{12}$/.test(c) ? c : '000000000000'
+    if (program) {
+      const id = uuidFromParts(a, program, tail)
+      const nx = nextOf(id, url.origin)
+      if (!wantsPage) return json({ id, handle: a, program, tail, next: { href: nx.href, label: nx.label }, compiled: nx.compiled, result: nx.result && typeof nx.result === 'object' && 'structured' in (nx.result as object) ? (nx.result as { structured: unknown }).structured : nx.result, prev: refererOf(request) ?? null, notes })
+      return pageOf(id, url.origin, { prev: refererOf(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled, result: nx.result, notes, locale })
+    }
+    // the family: the handle alone; its entries on this mirror, and the sixteen doors a first nibble opens
+    const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result.tools.filter((t) => !['audit', 'match', 'verify'].includes(t.name))
+    const doors = [...Array(16).keys()].map((n) => ({ nibble: n.toString(16), tool: tools[n % tools.length]!.name, href: `${url.origin}/${a}/${n.toString(16).repeat(10)}/${tail}` }))
+    const family = async () => { if (!env.DOCKET) return [] as unknown[]; const res = await env.DOCKET.get(env.DOCKET.idFromName('qpu')).fetch(new Request(`${url.origin}/docket`)); const j = await res.json() as { entries: { id: string }[] }; return j.entries.filter((e) => e.id.startsWith(a)) }
+    return family().then((entries) => wantsPage
+      ? new Response(`<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><title>${a} · @uuidna/qpu</title><meta property="og:title" content="${a} · family · @uuidna/qpu"><meta property="og:url" content="${url.origin}/${a}"><link rel="license" href="${LICENSE.url}">${refererOf(request) ? `<link rel="prev" href="${escapeHtml(refererOf(request)!)}">` : ''}<style>${cssOf()}body{font-family:system-ui;padding:16px}</style></head><body><h1 style="font-family:monospace">${a}</h1>${notes.length ? `<p>${notes.map(escapeHtml).join(' · ')}</p>` : ''}<h2>${t('Entries of this family here')}</h2><ul>${(entries as { id: string }[]).map((e) => `<li><a href="${url.origin}/docket/${e.id}">${e.id}</a></li>`).join('') || `<li>${t('none on this mirror')}</li>`}</ul><h2>${t('Doors: the first nibble chooses next')}</h2><table><tbody>${doors.map((d) => `<tr><td>${d.nibble}</td><td>${d.tool}</td><td><a href="${d.href}">${d.href.replace(url.origin, '')}</a></td></tr>`).join('')}</tbody></table><p style="font-size:12px">© ${LICENSE.author} · ${LICENSE.spdx}</p></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
+      : json({ handle: a, entries, doors, prev: refererOf(request) ?? null, notes }))
+  }
+  // not a walk: decide by matching the path as a statement
+  const statement = segments.join(' ').replace(/[-_]+/g, ' ')
+  const decision = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement } } }) as { result?: { structuredContent: { verdict: string; evidence: string[]; lead: unknown }; _meta: { widget: string } } }
+  const m = decision.result?.structuredContent
+  if (!wantsPage) return json({ error: `no route ${url.pathname}`, decided: m ? { verdict: m.verdict, evidence: m.evidence, lead: m.lead } : null, notes, routes: ['GET /', 'GET /.well-known/qpu.json', 'GET /health', 'POST /mcp', 'GET|POST|DELETE /docket', 'GET /<handle>[/<program>[/<tail>]]'] }, 404)
+  return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(statement)} · decided · @uuidna/qpu</title><meta property="og:title" content="${escapeHtml(statement)} · ${escapeHtml(m?.verdict ?? 'undecided')}"><meta property="og:url" content="${escapeHtml(url.href)}"><link rel="license" href="${LICENSE.url}"><style>${cssOf()}body{font-family:system-ui;padding:16px}</style></head><body><h1>${escapeHtml(statement)}</h1><p>${t('Caught: this path is not a walk. Decided by the match tool')}: <strong>${escapeHtml(m?.verdict ?? 'undecided')}</strong>.${notes.length ? ' ' + notes.map(escapeHtml).join(' · ') : ''}</p>${decision.result?._meta.widget ?? ''}<p style="font-size:12px">© ${LICENSE.author} · ${LICENSE.spdx}</p></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
 }
 
 export const worker = {
@@ -319,7 +376,7 @@ export const worker = {
       if (!env.DOCKET) return json({ error: 'no DOCKET binding on this deployment' }, 503)
       return env.DOCKET.get(env.DOCKET.idFromName('qpu')).fetch(request)
     }
-    return json({ error: `no route ${path}`, routes: ['GET /', 'GET /.well-known/qpu.json', 'GET /health', 'POST /mcp', 'GET|POST /docket'] }, 404)
+    return catchAll(request, url, env)
   },
 }
 

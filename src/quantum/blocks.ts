@@ -21,15 +21,49 @@ const bigPowMod = (base: bigint, exp: bigint, modulus: bigint): bigint => { if (
  *  laid out 12+1+3 | variant | 3+12 as 8-4-4-4-12, the variant nibble from the low fold (8..b), and the version nibble
  *  DECIDED by the content: 1 + (rest^rays mod C(faces, coins)) mod mintOf(n) = 1 + (rest^7 mod 91) mod 8, so a tampered
  *  middle wears a version its content does not. The same text gives the same UUID here and at uuidna.com. */
-export const uuidOf = (text: string): string => {
-  const high = foldOf(text)
-  const low = foldOf(`${text}\u0000shape`)
-  const variant = ((parseInt(low.slice(0, 1), 16) % 4) + 8).toString(16)
-  const digits = `${high.slice(0, 12)}${high.slice(15, 16)}${high.slice(12, 15)}${variant}${low.slice(1, 4)}${low.slice(4, 16)}`
+/** 32 hex digits stamped and grouped 8-4-4-4-12: the version nibble (position 12) is DECIDED by the other 31. */
+export const stampOf = (digits: string): string => {
   const rest = `${digits.slice(0, 12)}${digits.slice(13)}`
   const version = (1 + Number(bigPowMod(BigInt(`0x${rest}`), 7n, 91n) % 8n)).toString(16)
   return `${digits.slice(0, 8)}-${digits.slice(8, 12)}-${version}${digits.slice(13, 16)}-${digits.slice(16, 20)}-${digits.slice(20, 32)}`
 }
+export const uuidOf = (text: string): string => {
+  const high = foldOf(text)
+  const low = foldOf(`${text}\u0000shape`)
+  const variant = ((parseInt(low.slice(0, 1), 16) % 4) + 8).toString(16)
+  return stampOf(`${high.slice(0, 12)}${high.slice(15, 16)}${high.slice(12, 15)}${variant}${low.slice(1, 4)}${low.slice(4, 16)}`)
+}
+/** A UUID reassembled from its parts: handle (8 hex), ten program nibbles, tail (12 hex); the variant nibble is 8 and the version is
+ *  decided by the stamp, so the result is a valid, sealed address whose channel reads back the same handle, program and tail. */
+export const uuidFromParts = (handle: string, program: readonly number[], tail: string): string => {
+  if (!/^[0-9a-f]{8}$/.test(handle) || program.length !== 10 || program.some((n) => !Number.isInteger(n) || n < 0 || n > 15) || !/^[0-9a-f]{12}$/.test(tail)) throw new Error('a handle is 8 hex, a program ten nibbles 0..15, a tail 12 hex')
+  const p = program.map((n) => n.toString(16))
+  const middle = `${p.slice(0, 4).join('')}0${p.slice(4, 7).join('')}8${p.slice(7, 10).join('')}` // version slot filled by the stamp
+  return stampOf(`${handle}${middle}${tail}`)
+}
+/** A program compiled against the tools: each nibble picks a tool, enum parameters are chosen by the nibble, integer parameters
+ *  come from the tail's three 16-bit readings clamped into the schema's bounds. The first step is `next`. */
+export type Step = { nibble: number; tool: string; arguments: Record<string, unknown> }
+export const compileOf = (program: readonly number[], tools: readonly { name: string; inputSchema: { properties?: Record<string, { type?: string; enum?: unknown[]; minimum?: number; maximum?: number; default?: unknown }>; required?: string[] } }[], message: { three16: readonly number[] }): { steps: Step[]; next: Step | undefined } => {
+  const usable = tools.filter((t) => !['audit', 'match', 'verify'].includes(t.name))
+  const steps: Step[] = program.map((nibble, i) => {
+    const tool = usable[nibble % usable.length]!
+    const args: Record<string, unknown> = {}
+    let k = 0
+    for (const [name, spec] of Object.entries(tool.inputSchema.properties ?? {})) {
+      const required = tool.inputSchema.required?.includes(name)
+      if (spec.enum && (required || nibble % 2 === 1)) args[name] = spec.enum[(nibble + i) % spec.enum.length]
+      else if ((spec.type === 'integer' || spec.type === 'number') && (required || typeof spec.default !== 'undefined')) {
+        const raw = message.three16[k++ % 3]!
+        if (spec.type === 'number' && typeof spec.maximum !== 'number') args[name] = Math.round((raw / 65536) * 1e4) / 1e4 // an unbounded number reads the tail as a fraction
+        else { const lo = spec.minimum ?? 0, hi = spec.maximum ?? Math.max(lo, raw); args[name] = lo + (raw % (hi - lo + 1)) }
+      }
+    }
+    return { nibble, tool: tool.name, arguments: args }
+  })
+  return { steps, next: steps[0] }
+}
+
 /** The cheap check without the content: the version nibble the other 31 nibbles decide, read back. A tampered middle wears a
  *  version its content does not; one modular power tells. Shape and variant are checked too. */
 export const sealOf = (uuid: string): { valid: boolean; shape: boolean; variant: boolean; version: { found: string; expected: string; agree: boolean } } => {

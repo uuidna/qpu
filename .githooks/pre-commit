@@ -1,0 +1,6 @@
+#!/bin/sh
+# Pre-commit is `next` itself, offline and fast: generation, typecheck, tests, Lean, audit, purify. Whatever honesty it finds is
+# already in the leads docket when the commit lands; it never blocks. The generated files it rewrote join the commit.
+npm run next -- --offline --fast
+git add -u -- docs/public/mcp.json docs/mcp.md docs/.vitepress/config.mts src/quantum/clay-statements.ts README.md 2>/dev/null
+exit 0

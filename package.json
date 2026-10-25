@@ -32,7 +32,8 @@
     "deploy": "npm run next -- --offline && wrangler deploy",
     "publish": "node --import tsx scripts/publish.ts",
     "clay:gen": "node --import tsx scripts/gen-clay.ts",
-    "pretest": "node --import tsx scripts/gen-clay.ts && npx tsx scripts/gen-docs.ts"
+    "pretest": "node --import tsx scripts/gen-clay.ts && npx tsx scripts/gen-docs.ts",
+    "next:fast": "node --import tsx scripts/next.ts --offline --fast"
   },
   "devDependencies": {
     "@types/node": "26.6.4",

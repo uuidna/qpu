@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { worker, Docket, discoveryOf, FRAGMENT_BYTES, STRIPE, sameToken, type Storage, type Env } from '../worker.js'
-import { uuidOf } from './blocks.js'
+import { uuidOf, channelOf, uuidFromParts } from './blocks.js'
 
 const KEY = Buffer.from(new Uint8Array(32).map((_, i) => i * 7 + 1)).toString('base64')
 const memory = (): Storage & { map: Map<string, unknown> } => { const m = new Map<string, unknown>(); return { map: m, async get<T>(k: string) { return m.get(k) as T | undefined }, async put(k, v) { m.set(k, v) }, async delete(k) { return m.delete(k) }, async list<T>(o?: { prefix?: string }) { return new Map([...m].filter(([k]) => !o?.prefix || k.startsWith(o.prefix))) as Map<string, T> } } }
@@ -252,6 +252,37 @@ test('a single UUID unfurls into its page from the id alone: head, Open Graph, s
   assert.ok((await page.text()).includes(unknown.slice(0, 8)))
   const json = await worker.fetch(req(`/docket/${unknown}`), e)
   assert.equal(json.status, 404)
+})
+
+test('the walk: a handle opens its family, a program compiles and executes next, the referer is prev, a locale is a translation lead', async () => {
+  const e = env()
+  const { id: u } = await (await post(e, { kind: 'receipt', from: 'qpu.test', body: 'qpu' })).json() as { id: string }
+  const ch = channelOf(u)
+  const fam = await (await worker.fetch(req(`/${ch.handle}`), e)).json() as { handle: string; entries: { id: string }[]; doors: { nibble: string; tool: string; href: string }[] }
+  assert.equal(fam.handle, ch.handle); assert.equal(fam.doors.length, 16); assert.ok(fam.entries.some((x) => x.id === u))
+  const walk = await worker.fetch(req(`/${ch.handle}/${ch.program.map((n) => n.toString(16)).join('')}/${ch.tail}`, { headers: { accept: 'text/html', referer: 'https://qpu.test/docket/' + u } }), e)
+  assert.equal(walk.status, 200)
+  const html = await walk.text()
+  assert.ok(html.includes(`<link rel="prev" href="https://qpu.test/docket/${u}">`))
+  assert.ok(html.includes('<link rel="next" href="https://qpu.test/' + ch.handle + '/'))
+  assert.ok(html.includes('<h2>Program</h2>') && html.includes('Next, executed'))
+  const walkJson = await (await worker.fetch(req(`/${ch.handle}/${ch.program.map((n) => n.toString(16)).join('')}/${ch.tail}`), e)).json() as { id: string; next: { href: string }; compiled: { tool: string }[]; result: unknown }
+  assert.equal(walkJson.id, uuidFromParts(ch.handle, ch.program, ch.tail)); assert.equal(walkJson.compiled.length, 10); assert.ok(walkJson.result)
+  const bgPage = await (await worker.fetch(req(`/bg/${ch.handle}`, { headers: { accept: 'text/html' } }), e)).text()
+  assert.ok(bgPage.includes('<html lang="bg">') && bgPage.includes('Врати') && bgPage.includes('семейство'))
+  const de = await (await worker.fetch(req(`/de/${ch.handle}`), e)).json() as { notes: string[] }
+  assert.ok(de.notes[0]!.startsWith('translate later: German'))
+})
+
+test('catch all, decide later: a path that is not a walk is put to the match tool and comes back decided, never a bare 404', async () => {
+  const e = env()
+  const page = await worker.fetch(req('/how-many-qubits-does-willow-have', { headers: { accept: 'text/html' } }), e)
+  assert.equal(page.status, 200)
+  assert.ok((await page.text()).includes('Decided by the match tool: <strong>served</strong>'))
+  const j = await worker.fetch(req('/nowhere'), e)
+  assert.equal(j.status, 404)
+  const d = await j.json() as { decided: { verdict: string; lead: { status: string } } }
+  assert.ok(['unknown', 'impossible', 'served'].includes(d.decided.verdict))
 })
 
 test('unknown routes answer with the route list, health answers, and OPTIONS allows the cross-origin client', async () => {

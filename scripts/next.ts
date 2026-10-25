@@ -12,6 +12,7 @@ import { uuidOf } from '../src/quantum/blocks.ts'
 const ROOT = process.cwd()
 const offline = process.argv.includes('--offline')
 const strict = process.argv.includes('--strict')
+const fast = process.argv.includes('--fast') // the pre-commit form: the cheap steps only; the long and the networked wait for the full run
 const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/toolchains/leanprover--lean4---v4.33.0/bin/lake`, 'lake'].find((p) => p === 'lake' || existsSync(p))!
 
 type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs?: number }
@@ -22,12 +23,12 @@ const steps: Step[] = [
   { name: 'test', cmd: 'node', args: ['--import', 'tsx', '--test', 'src/quantum/*.test.ts'], budgetMs: 300_000 },
   { name: 'lean', cmd: lake, args: ['build'] },
   { name: 'audit', cmd: 'node', args: ['--import', 'tsx', 'scripts/audit.ts'] },
-  { name: 'imagine', cmd: 'node', args: ['--import', 'tsx', 'scripts/imagine.ts'], budgetMs: 900_000 },
-  { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : undefined, budgetMs: 1_800_000 },
-  { name: 'readiness', cmd: 'node', args: ['--import', 'tsx', 'scripts/readiness.ts'], skip: offline ? 'offline' : undefined, budgetMs: 300_000 },
+  { name: 'imagine', cmd: 'node', args: ['--import', 'tsx', 'scripts/imagine.ts'], budgetMs: 900_000, skip: fast ? 'fast' : undefined },
+  { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 1_800_000 },
+  { name: 'readiness', cmd: 'node', args: ['--import', 'tsx', 'scripts/readiness.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 },
   { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'] },
-  { name: 'docs:build', cmd: 'npx', args: ['vitepress', 'build', 'docs'] },
-  { name: 'publish', cmd: 'node', args: ['--import', 'tsx', 'scripts/publish.ts'], skip: offline ? 'offline' : undefined, budgetMs: 300_000 },
+  { name: 'docs:build', cmd: 'npx', args: ['vitepress', 'build', 'docs'], skip: fast ? 'fast' : undefined },
+  { name: 'publish', cmd: 'node', args: ['--import', 'tsx', 'scripts/publish.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 },
 ]
 const LICENSE_LINE = 'CC-BY-NC-ND-4.0 © Tsvetan Rouschev (https://orcid.org/0009-0000-7312-9778); commercial use by licence (ceccec@psg.bg)'
 const receipt: { license: string; date: string; head: string; steps: { name: string; status: 'green' | 'red' | 'skipped'; ms: number; tail: string; counts?: Record<string, number> }[] } = {

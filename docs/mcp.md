@@ -886,3 +886,56 @@ The Clay register recomputed in exact integer arithmetic: the Lean definitions o
   }
 }
 ```
+
+## verify
+
+Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content needed), its content (one fold), and its neighbours in a chain (the predecessor it names and the successor that names it). Each check is independent; a check without its input is not decided rather than passed.
+
+```json
+{
+  "type": "object",
+  "required": [
+    "uuid"
+  ],
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "the UUID to verify"
+    },
+    "content": {
+      "type": "string",
+      "description": "the text the UUID should be the address of"
+    },
+    "prev": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "description": "the predecessor in the chain"
+    },
+    "self": {
+      "type": "object",
+      "properties": {
+        "prev": {
+          "type": "string"
+        }
+      },
+      "description": "what this entry names as its predecessor"
+    },
+    "next": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "prev": {
+          "type": "string"
+        }
+      },
+      "description": "the successor in the chain"
+    }
+  }
+}
+```

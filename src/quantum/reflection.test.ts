@@ -8,6 +8,7 @@ import { factsOf, verifyRequestsOf, VERIFIERS } from './verifiers.js'
 import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf } from './blocks.js'
 import { TREE_FACTS } from './verifiers.js'
 import { KEY, cssOf, cmykOfUuid, accentOfUuid, hueOf, HARMONICS } from './theme.js'
+import { translateOf, LOCALES } from './i18n.js'
 
 const match = (statement: string) => matchOf(statement, handle, EXAMPLES, LEADS)
 
@@ -144,4 +145,17 @@ test('the channel of a UUID is read from the id alone: handle, hex program with 
   assert.equal(ch.message.one48, parseInt(ch.tail, 16))
   assert.equal(ch.message.three16.length, 3)
   assert.equal(verifyOf(u).channel.handle, ch.handle)
+})
+
+test('translation is offline, token-free and bidirectional by vocabulary; what no table knows is left as is and reported', () => {
+  const bg = translateOf('The next step: a tool, an example, a lead; verdict impossible', 'en', 'bg')
+  assert.ok(bg.text.includes('следващ') && bg.text.includes('инструмент') && bg.text.includes('следа') && bg.text.includes('невъзможно'))
+  const back = translateOf(bg.text, 'bg', 'en')
+  assert.ok(back.text.includes('next') && back.text.includes('tool') && back.text.includes('impossible'))
+  const unknown = translateOf('quantum chromodynamics', 'en', 'bg')
+  assert.deepEqual(unknown.untranslated, ['quantum', 'chromodynamics'])
+  assert.equal(unknown.text, 'quantum chromodynamics')
+  const noTable = translateOf('next', 'en', 'de')
+  assert.ok(noTable.via.startsWith('no table'))
+  assert.equal(LOCALES.bg!.filled, true); assert.equal(LOCALES.de!.filled, false)
 })
