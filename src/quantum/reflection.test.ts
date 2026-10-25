@@ -191,3 +191,19 @@ test('the reflection mirrors every part at once and reflecting twice returns the
   assert.equal(back.handle, channelOf(u).handle); assert.deepEqual(back.program, channelOf(u).program); assert.equal(back.tail, channelOf(u).tail)
   assert.equal(verifyOf(u).reflection.mirror, r.mirror)
 })
+
+test('every vortex seed carries its trinity and the reflected trinity at the same time, and reflecting twice is the seed', () => {
+  const seen = new Set<string>()
+  for (let i = 1; i <= 36; i++) {
+    const u = uuidOf(`trinity ${i}`)
+    const v = channelOf(u).message.vortex
+    if (v.seed === 0) continue
+    assert.equal(v.seed + v.reflection, 10); assert.equal(10 - v.reflection, v.seed, 'σ_10 is an involution: sigma_ten_involution')
+    assert.ok(v.trinity.includes(v.seed) && v.reflected.includes(v.reflection))
+    assert.deepEqual(v.reflected, v.trinity.map((x: number) => 10 - x))
+    if (v.trinity[0] === 3) assert.deepEqual(v.reflected, [7, 4, 1]); if (v.trinity[0] === 7) assert.deepEqual(v.reflected, [3, 6, 9]); if (v.trinity[0] === 2) assert.deepEqual(v.reflected, [8, 5, 2])
+    assert.equal(v.tuned, v.trinity[0] === 3); assert.equal(v.key, 432)
+    seen.add(v.trinity.join())
+  }
+  assert.deepEqual([...seen].sort(), ['2,5,8', '3,6,9', '7,4,1'], 'all three trinities occur across the seeds')
+})

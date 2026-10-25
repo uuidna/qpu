@@ -104,7 +104,10 @@ export const tailReadingsOf = (tail: string) => {
     colour: { rgb: `#${tail.slice(0, 6)}`, key: parseInt(tail.slice(6), 16) / 0xffffff },
     coordinate: { lat: Math.round((two24[0]! / 0xffffff * 180 - 90) * 1e6) / 1e6, lon: Math.round((two24[1]! / 0xffffff * 360 - 180) * 1e6) / 1e6 },
     // the unit's ℤ/9 convention (run_sequence): the digital root is the seed, its dz-mirror 10 − d the reflection, 5 the fixed point
-    vortex: (() => { const seed = one48 === 0 ? 0 : 1 + ((one48 - 1) % 9); return { seed, reflection: seed === 0 ? 0 : 10 - seed, fixed: seed === 5, polarity: seed === 0 ? 'zero' : seed < 5 ? 'minus' : seed > 5 ? 'plus' : 'fixed' } })(),
+    // the 9-vortex: the seed, its reflection under σ_10 (the involution the kernel holds: 10 - (10 - x) = x), the trinity the
+    // seed belongs to and the trinity it reflects into at the same time — 3, 6, 9 reflect to 7, 4, 1 and back; 2, 5, 8 reflect
+    // into themselves with 5 fixed — and whether the seed sits in the key's trinity (432 → 4 + 3 + 2 = 9 → 3, 6, 9)
+    vortex: (() => { const seed = one48 === 0 ? 0 : 1 + ((one48 - 1) % 9); const trinity = seed === 0 ? [] : seed % 3 === 0 ? [3, 6, 9] : [7, 4, 1].includes(seed) ? [7, 4, 1] : [2, 5, 8]; const reflected = trinity.map((x) => 10 - x); return { seed, reflection: seed === 0 ? 0 : 10 - seed, fixed: seed === 5, polarity: seed === 0 ? 'zero' : seed < 5 ? 'minus' : seed > 5 ? 'plus' : 'fixed', trinity, reflected, tuned: trinity[0] === 3, key: KEY } })(),
   }
 }
 

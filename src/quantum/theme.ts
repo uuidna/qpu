@@ -19,7 +19,7 @@ export const rgbOfCmyk = ({ c, m, y, k }: Cmyk): [number, number, number] => [Ma
 export const accentOfUuid = (uuid: string): string => { const [r, g, b] = rgbOfCmyk(cmykOfUuid(uuid)); return `rgb(${r} ${g} ${b})` }
 
 /** The whole visual state of a block as custom properties computed from its UUID alone: the accent from the middle part as
- * CMYK, the tail as a colour and an angle, the 9-vortex seed as a period. Computed once at the source; the stylesheet does the
+ * CMYK, the tail as a colour and an angle, the 9-vortex seed, its σ_10 reflection and its trinity as a period and a class. Computed once at the source; the stylesheet does the
  * rest with no script, so a device renders at the cost of CSS and nothing else. */
 export const varsOf = (uuid: string): Record<string, string> => {
   const hex = uuid.replace(/-/g, '')
@@ -33,7 +33,7 @@ export const varsOf = (uuid: string): Record<string, string> => {
   return {
     '--qpu-hue': String(hue), '--qpu-c': c.toFixed(3), '--qpu-m': m.toFixed(3), '--qpu-y': y.toFixed(3), '--qpu-k': k.toFixed(3),
     '--qpu-accent': `rgb(${r} ${g} ${b})`, '--qpu-tail': `rgb(${tr} ${tg} ${tb})`, '--qpu-angle': String(one48 % 360),
-    '--qpu-vortex': String(seed), '--qpu-period': `${(seed || 9) * KEY}ms`, '--block-accent': `rgb(${r} ${g} ${b})`,
+    '--qpu-vortex': String(seed), '--qpu-reflection': String(seed === 0 ? 0 : 10 - seed), '--qpu-trinity': seed === 0 ? '0' : seed % 3 === 0 ? '3' : [7, 4, 1].includes(seed) ? '7' : '2', '--qpu-period': `${(seed || 9) * KEY}ms`, '--block-accent': `rgb(${r} ${g} ${b})`,
   }
 }
 export const styleOf = (uuid: string): string => Object.entries(varsOf(uuid)).map(([k, v]) => `${k}: ${v}`).join('; ')

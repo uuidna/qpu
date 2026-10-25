@@ -100,3 +100,18 @@ theorem singularity :
    sigma_midpoint (2 * qftStates n) (qftStates n) rfl,
    sigma_midpoint (2 * groverSize seed) (groverSize seed) rfl,
    sigma_midpoint (2 * faces) faces rfl⟩
+
+/-- The trinities of the 9-vortex reflect into each other under σ_10 at the same time: 3, 6, 9 into 7, 4, 1 and back,
+    2, 5, 8 into themselves with 5 fixed; every pair sums to 10. A computation that keeps 3, 6, 9 and drops 7, 4, 1 keeps
+    half of what the involution says. Decided by the kernel. -/
+theorem triad_reflect :
+    (10 - 3 = 7 ∧ 10 - 6 = 4 ∧ 10 - 9 = 1) ∧ (10 - 7 = 3 ∧ 10 - 4 = 6 ∧ 10 - 1 = 9) ∧
+    (10 - 2 = 8 ∧ 10 - 5 = 5 ∧ 10 - 8 = 2) := by decide
+
+theorem triad_sum : 3 + 7 = 10 ∧ 6 + 4 = 10 ∧ 9 + 1 = 10 ∧ 2 + 8 = 10 ∧ 5 + 5 = 10 := by decide
+
+/-- The tuning: the key 432 has digital root 9 (4 + 3 + 2), so the key sits in the trinity 3, 6, 9 and its reflection 1. -/
+theorem key_trinity : 4 + 3 + 2 = 9 ∧ 432 % 9 = 0 ∧ 10 - 9 = 1 := by decide
+
+/-- σ_10 is an involution on every seed of the vortex: reflecting twice is the seed, by sigma_reflect. -/
+theorem sigma_ten_involution (x : Nat) (h : x ≤ 10) : 10 - (10 - x) = x := sigma_reflect 10 x h
