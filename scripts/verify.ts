@@ -6,6 +6,7 @@ import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import type { WaveRequest, WaveResult } from '../src/quantum/wave.ts'
+import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 
 const ROOT = process.cwd()
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'wave', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
@@ -21,9 +22,12 @@ const main = async () => {
   const kept: WaveResult[] = []
   if (existsSync(vpath0)) { try { const prev = JSON.parse(readFileSync(vpath0, 'utf8')) as { date?: string; results?: WaveResult[] }; if (prev.date && Date.now() - Date.parse(prev.date) < 86_400_000) for (const r of prev.results ?? []) if (r.url && typeof r.status === 'number') kept.push(r) } catch { /* nothing kept */ } }
   const keyOf = (r: WaveRequest) => (r.method === 'POST' ? `${r.url}#${JSON.stringify(r.body)}` : r.url)
+  // the merge gathers what the shards fetched, as if kept from today
+  if (isMerge) for (const r of gatherShards<WaveResult[]>('verify', [])) if (!kept.some((k) => keyOf(k) === keyOf(r))) kept.push(r)
   const have = new Set(kept.map(keyOf))
   const all = plan.requestList as WaveRequest[]
-  const queue = all.filter((r) => !have.has(keyOf(r)))
+  const queue = shareOf(all.filter((r) => !have.has(keyOf(r))))
+  console.log(`verify (${shardLabel()})`)
   console.log(`verify: ${all.length} requests, ${all.length - queue.length} kept from today, ${queue.length} to fetch in a quantum of ${QUANTUM_MS / 1000} s`)
   const discoveryPath = join(ROOT, 'docs', 'public', 'discovery.json')
   const contracts: Record<string, string[]> = {}
@@ -50,6 +54,8 @@ const main = async () => {
     if (inFlight.size) await Promise.race(inFlight)
   }
   const remaining = queue.length
+  // a shard leaves what it fetched and stops here: the merge writes the artefacts
+  if (isShard) { const mine = results.filter((r) => !have.has(keyOf(r))); leaveShard('verify', mine); console.log(`verify: ${shardLabel()} fetched ${mine.length}, ${remaining} remain`); return }
   const read = call({ results, contracts })
   const date = new Date().toISOString()
   mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })

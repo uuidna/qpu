@@ -8,6 +8,7 @@ import { EXAMPLES } from '../src/quantum/examples.ts'
 import { LEADS } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
+import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
@@ -29,7 +30,9 @@ type Kept = { hash: string; row: unknown; opened: unknown[]; verify: number; ver
 const kept: Record<string, Kept> = existsSync(rowsPath) ? (() => { try { return JSON.parse(readFileSync(rowsPath, 'utf8')) } catch { return {} } })() : {}
 const toolsHash = uuidOf(JSON.stringify(toolsNow))
 const hashOf = (l: { id: string; statement: string; status: string }) => uuidOf(`${l.id}${l.statement}${l.status}${toolsHash}`)
-const todo = LEADS.filter((l) => kept[l.id]?.hash !== hashOf(l))
+if (isMerge) Object.assign(kept, gatherShards<Record<string, Kept>>('imagine', {}))
+const todo = shareOf(LEADS.filter((l) => kept[l.id]?.hash !== hashOf(l)))
+console.log(`imagine (${shardLabel()})`)
 console.log(`imagine: ${todo.length} of ${LEADS.length} leads to imagine, quantum ${QUANTUM_MS / 1000} s`)
 let done = 0
 // chunks of ten: the hand-written leads at the head are heavy (every integer reflected, every mirror query matched), so the quantum is checked often
@@ -38,10 +41,11 @@ for (let i = 0; i < todo.length && Date.now() - started < QUANTUM_MS; i += 10) {
   const r = call({ leads: chunk.map((l) => l.id) })
   for (const row of r.imagination.rows as { lead: string; verdict: string; verify: number }[]) { const l = chunk.find((x) => x.id === row.lead)!; kept[l.id] = { hash: hashOf(l), row, opened: (r.imagination.imagined as { source: string }[]).filter((x) => x.source === `reflection of lead ${l.id}`), verify: row.verify, verdict: row.verdict } }
   done += chunk.length
-  writeFileSync(rowsPath, JSON.stringify(kept) + '\n')
+  if (!isShard) writeFileSync(rowsPath, JSON.stringify(kept) + '\n')
   if (done % 100 === 0) console.log(`imagine: ${done} imagined, ${((Date.now() - started) / 1000).toFixed(1)} s`)
 }
 const remaining = todo.length - done
+if (isShard) { const mine: Record<string, Kept> = {}; for (const l of todo.slice(0, done)) if (kept[l.id]) mine[l.id] = kept[l.id]!; leaveShard('imagine', mine); console.log(`imagine: ${shardLabel()} imagined ${done}, ${remaining} remain`); process.exit(0) }
 // the whole imagination from what is kept: every lead's row and the leads it opened, plus the schema and application leads (cheap, always)
 const schema = call({ leads: [] })
 const rows = LEADS.map((l) => kept[l.id]?.row).filter(Boolean) as { verdict: string; verify: number }[]

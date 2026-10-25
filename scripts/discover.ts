@@ -8,6 +8,7 @@ import { handle } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { LEADS } from '../src/quantum/leads.ts'
 import type { Request, Answer } from '../src/quantum/discovery.ts'
+import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
@@ -27,6 +28,9 @@ const main = async () => {
   const started0 = Date.now()
   const cachePath = join(ROOT, '.qpu', 'cache', 'discovery-answers.json')
   const cache: Record<string, Answer & { at: string }> = existsSync(cachePath) ? (() => { try { return JSON.parse(readFileSync(cachePath, 'utf8')) } catch { return {} } })() : {}
+  if (isMerge) Object.assign(cache, gatherShards<Record<string, Answer & { at: string }>>('discover', {}))
+  const shardCache: Record<string, Answer & { at: string }> = {}
+  console.log(`discover (${shardLabel()})`)
   const fresh = (a: { at: string }) => Date.now() - Date.parse(a.at) < 86_400_000
   const answers: Answer[] = []
   let remaining = 0, fetched = 0, reused = 0
@@ -40,15 +44,17 @@ const main = async () => {
   let phase = call({ ...(mcpHosts.length ? { mcpHosts } : {}), auth })
   console.log(`discover: ${mcpHosts.length || 'the default'} MCP hosts, ${Object.keys(auth).length} with a tenant token`)
   while (phase.phase !== 'discovery') {
-    const list = phase.requestList as Request[]
+    const list = isShard ? shareOf(phase.requestList as Request[]) : (phase.requestList as Request[])
     remaining = 0
     for (const r of list) {
       const c = cache[r.id]
       if (c && fresh(c) && c.status !== 0) { answers.push({ ...r, status: c.status, type: c.type, text: c.text }); reused += 1; continue }
       if (Date.now() - started0 >= QUANTUM_MS) { remaining += 1; continue }
-      const a = await fetchOne(r); answers.push(a); fetched += 1; cache[r.id] = { ...a, at: new Date().toISOString() }
+      const a = await fetchOne(r); answers.push(a); fetched += 1; cache[r.id] = { ...a, at: new Date().toISOString() }; shardCache[r.id] = cache[r.id]!
       await sleep(r.purpose === 'contract' ? 150 : 300)
     }
+    // a shard leaves its answers and stops after the first phase: the merge runs every phase with everything kept
+    if (isShard) { leaveShard('discover', shardCache); console.log(`discover: ${shardLabel()} fetched ${fetched}, ${remaining} remain`); return }
     writeFileSync(cachePath, JSON.stringify(cache) + '\n')
     if (remaining) { phase = call({ answers }); if (phase.phase !== 'discovery') { const more = (phase.requestList as Request[]).filter((r) => !answers.some((a) => a.id === r.id)); remaining += more.length; phase = call({ answers: [...answers, ...more.map((r) => ({ ...r, status: 0, type: '', text: 'not fetched in this quantum' }))] }) } break }
     phase = call({ answers })
@@ -60,7 +66,7 @@ const main = async () => {
   // leads first: every hand-written lead still open asks the registry for related MCPs (cached a day, within what is left of the quantum), then each remote's tools/list is read so the related doors are known through qpu
   const related: { lead: string; words: string[]; servers: number; serverList: unknown[]; extended: { server: string; url: string; status: number; doors: number }[] }[] = []
   let relatedFetched = 0, relatedRemaining = 0
-  for (const l of LEADS.filter((x) => (x.status === 'open' || x.status === 'partial') && x.source !== 'statement' && !/^(sitemap|page:|clay-|lead:)/.test(x.id))) {
+  for (const l of shareOf(LEADS.filter((x) => (x.status === 'open' || x.status === 'partial') && x.source !== 'statement' && !/^(sitemap|page:|clay-|lead:)/.test(x.id)))) {
     const plan = call({ lead: l.id })
     const got: unknown[] = []
     for (const r of plan.requestList as Request[]) {

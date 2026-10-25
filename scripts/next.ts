@@ -19,7 +19,7 @@ const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/t
 
 // quantum multitasking is the natural speedup: steps that need nothing from each other run at once, in waves; a wave waits for
 // the one before it (the generators before the checks, the checks before the readers, the readers before the site)
-type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs?: number; wave: number }
+type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs?: number; wave: number; /** a long single task split into short multitasks: n shards at once (QPU_SHARD=i/n), then one merge (QPU_SHARD=merge) */ shards?: number }
 const steps: Step[] = [
   { name: 'clay:gen', cmd: 'node', args: ['--import', 'tsx', 'scripts/gen-clay.ts'], wave: 1 },
   { name: 'docs:gen', cmd: 'npx', args: ['tsx', 'scripts/gen-docs.ts'], wave: 1 },
@@ -27,9 +27,9 @@ const steps: Step[] = [
   { name: 'test', cmd: 'node', args: ['--import', 'tsx', '--test', 'src/quantum/*.test.ts'], budgetMs: 300_000, wave: 2 },
   { name: 'lean', cmd: lake, args: ['build'], wave: 2 },
   { name: 'audit', cmd: 'node', args: ['--import', 'tsx', 'scripts/audit.ts'], wave: 2 },
-  { name: 'imagine', cmd: 'node', args: ['--import', 'tsx', 'scripts/imagine.ts'], budgetMs: 300_000, skip: fast ? 'fast' : undefined, wave: 3 }, // a quantum: the leads not yet imagined, as many as fit; the rest next run
-  { name: 'discover', cmd: 'node', args: ['--import', 'tsx', 'scripts/discover.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3 }, // a quantum: contracts kept a day, the rest fetched as far as the quantum goes
-  { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3 }, // a quantum: today's results kept by url, the rest fetched as far as the quantum goes
+  { name: 'imagine', cmd: 'node', args: ['--import', 'tsx', 'scripts/imagine.ts'], budgetMs: 300_000, skip: fast ? 'fast' : undefined, wave: 3, shards: 4 }, // a quantum: the leads not yet imagined, as many as fit; the rest next run
+  { name: 'discover', cmd: 'node', args: ['--import', 'tsx', 'scripts/discover.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 }, // a quantum: contracts kept a day, the rest fetched as far as the quantum goes
+  { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 }, // a quantum: today's results kept by url, the rest fetched as far as the quantum goes
   { name: 'readiness', cmd: 'node', args: ['--import', 'tsx', 'scripts/readiness.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3 },
   { name: 'e2e', cmd: 'node', args: ['--import', 'tsx', 'scripts/e2e.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3 }, // the gate as a repetition code: every combination on every host, decoded by majority; a quantum
   { name: 'repository', cmd: 'node', args: ['--import', 'tsx', 'scripts/repository.ts'], budgetMs: 300_000, wave: 3 }, // always: workspaces, branches, tags, releases; offline the local facts
@@ -57,8 +57,8 @@ writeFileSync(lockPath, JSON.stringify({ pid: process.pid, date: receipt.date })
 // the blocks teleported between this run's steps start empty: a block from an earlier run was computed by earlier code
 rmSync(join(ROOT, '.qpu', 'blocks'), { recursive: true, force: true })
 process.on('exit', () => { try { const l = JSON.parse(readFileSync(lockPath, 'utf8')) as { pid: number }; if (l.pid === process.pid) unlinkSync(lockPath) } catch { /* already gone */ } })
-const spawned = (s: Step): Promise<{ status: number | null; out: string; timedOut: boolean }> => new Promise((resolve) => {
-  const child = spawn(s.cmd, s.args, { cwd: ROOT, shell: process.platform === 'win32', env: { ...process.env, FORCE_COLOR: '0', QPU_OFFLINE: offline ? '1' : '' } })
+const spawned = (s: Step, shard?: string): Promise<{ status: number | null; out: string; timedOut: boolean }> => new Promise((resolve) => {
+  const child = spawn(s.cmd, s.args, { cwd: ROOT, shell: process.platform === 'win32', env: { ...process.env, FORCE_COLOR: '0', QPU_OFFLINE: offline ? '1' : '', ...(shard ? { QPU_SHARD: shard } : {}) } })
   let out = ''; let timedOut = false
   child.stdout.on('data', (d) => { out += d }); child.stderr.on('data', (d) => { out += d })
   const timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL') }, s.budgetMs ?? 600_000)
@@ -68,7 +68,8 @@ const spawned = (s: Step): Promise<{ status: number | null; out: string; timedOu
 const run = async (s: Step): Promise<boolean> => {
   if (s.skip) { receipt.steps.push({ name: s.name, status: 'skipped', ms: 0, tail: s.skip }); console.log(`· ${s.name}: skipped (${s.skip})`); return true }
   const started = Date.now()
-  const r = await spawned(s)
+  // short multitasks: the shards run at once, each with its share and its own budget, then the merge; the outputs are read as one
+  const r = s.shards && !s.skip ? await (async () => { const parts = await Promise.all(Array.from({ length: s.shards! }, (_, i) => spawned(s, `${i}/${s.shards}`))); const merge = await spawned(s, 'merge'); return { status: parts.every((p) => p.status === 0) && merge.status === 0 ? 0 : (parts.find((p) => p.status !== 0)?.status ?? merge.status), out: [...parts.map((p) => p.out), merge.out].join('\n'), timedOut: parts.some((p) => p.timedOut) || merge.timedOut } })() : await spawned(s)
   if (r.timedOut) console.log(`⏱ ${s.name}: exceeded its budget of ${(s.budgetMs ?? 600_000) / 1000} s and was killed; a hang is a lead, not a stop`)
   const out = r.out
   const ok = r.status === 0 && !r.timedOut

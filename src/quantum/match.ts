@@ -10,6 +10,7 @@ import type { Rpc } from './audit.js'
 import { factsOf, verifyRequestsOf, type VerifyRequest } from './verifiers.js'
 import { numeralsOf, translateOf } from './i18n.js'
 import { THEOREMS } from './theorems-index.js'
+import { uuidOf } from './blocks.js'
 
 export type Verdict = 'served' | 'impossible' | 'unknown'
 /** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.
@@ -31,7 +32,7 @@ export type Reflection = {
   leads: Lead[]
 }
 
-export type Match = {
+export type Match = { /** the content address of the recognised call: a recognition is a block like any other */ sealed?: string;
   statement: string
   verdict: Verdict
   evidence: string[]
@@ -166,10 +167,14 @@ export const PATTERNS: readonly Pattern[] = [
   { name: 'metrics', test: /\b(metrics|how many (?:tools|examples|theorems|leads)|coins paid)\b/i, tool: 'metrics', args: () => ({}), shows: 'the tree\'s metrics now' },
   { name: 'textbook', test: /\b(?:reuse|replay) (?:example )?([a-z0-9-]+)/i, tool: 'textbook', args: (m) => ({ reuse: m[1]!.toLowerCase() }), shows: 'an example reused by id' },
   { name: 'shor', test: /\bfactor(?:ise|ize)?\s+(\d+)\b/i, tool: 'algorithm', args: (m) => ({ name: 'shor', N: Number(m[1]) }), shows: 'an integer factored by Shor within the bound' },
+  // splitting: what a place cannot hold is folded into pieces under a bound; the statement names the bound (bytes) and, in quotes, the text — or is itself the text
+  { name: 'fold', test: /\b(?:split|fold|shard)\b[^"'\n]*?(?:"([^"]+)"|'([^']+)')?[^"'\n]*?\b(?:under|into pieces of|by|bound(?: of)?)\s+(\d+)\s*(?:bytes?|b)?\b/i, tool: 'fold', args: (m, statement) => ({ text: m[1] ?? m[2] ?? statement, bound: Number(m[3]) }), shows: 'a text folded into pieces under a bound: each piece addressed, the whole by its root, the bound a reflective boundary' },
+  // sealing: a text named by its SHA-256, its fold address and, with a key, its HMAC
+  { name: 'seal', test: /\b(?:seal|sha-?256|hmac|hash)\b\s*(?:of\s+|:\s*)?(?:"([^"]+)"|'([^']+)')?(?:.*?\bwith (?:the )?key\s+(?:"([^"]+)"|'([^']+)'|(\S+)))?/i, tool: 'seal', args: (m, statement) => ({ text: m[1] ?? m[2] ?? statement, ...(m[3] ?? m[4] ?? m[5] ? { key: m[3] ?? m[4] ?? m[5] } : {}) }), shows: 'a text sealed: SHA-256, the fold address, and the HMAC under the key named' },
 ]
 /** The pattern a statement carries, if any, and the call it makes; the first pattern that matches wins, in the order above. */
-export const patternOf = (statement: string): { pattern: Pattern; call: { name: string; arguments: Record<string, unknown> } } | null => {
-  for (const p of PATTERNS) { const m = statement.match(p.test); if (m) return { pattern: p, call: { name: p.tool, arguments: p.args(m, statement) } } }
+export const patternOf = (statement: string): { pattern: Pattern; call: { name: string; arguments: Record<string, unknown> }; sealed: string } | null => {
+  for (const p of PATTERNS) { const m = statement.match(p.test); if (m) { const call = { name: p.tool, arguments: p.args(m, statement) }; return { pattern: p, call, sealed: uuidOf(`${call.name}${JSON.stringify(call.arguments)}`) } } }
   return null
 }
 
@@ -184,11 +189,11 @@ export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example
       if (recognised && recognised.call.name !== 'leads') {
         const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: recognised.call.name, arguments: recognised.call.arguments } })
         const base = inner(text)
-        if ('result' in reply) return { ...base, verdict: 'served' as const, tool: recognised.call.name, call: recognised.call, result: reply.result.structuredContent, evidence: [`pattern ${recognised.pattern.name}: ${recognised.pattern.shows}; ${recognised.call.name} answered`, ...base.evidence], pattern: recognised.pattern.name, lead: { ...base.lead, status: 'served' as const, tool: recognised.call.name } }
-        return { ...base, evidence: [`pattern ${recognised.pattern.name}: ${recognised.call.name} refused: ${reply.error.message}`, ...base.evidence], pattern: recognised.pattern.name }
+        if ('result' in reply) return { ...base, verdict: 'served' as const, tool: recognised.call.name, call: recognised.call, result: reply.result.structuredContent, sealed: recognised.sealed, evidence: [`pattern ${recognised.pattern.name}: ${recognised.pattern.shows}; ${recognised.call.name} answered`, ...base.evidence], pattern: recognised.pattern.name, lead: { ...base.lead, status: 'served' as const, tool: recognised.call.name } }
+        return { ...base, sealed: recognised.sealed, evidence: [`pattern ${recognised.pattern.name}: ${recognised.call.name} refused: ${reply.error.message}`, ...base.evidence], pattern: recognised.pattern.name }
       }
       const base = inner(text)
-      return recognised ? { ...base, pattern: recognised.pattern.name } : base
+      return recognised ? { ...base, pattern: recognised.pattern.name, sealed: recognised.sealed } : base
     })()
     if (!num.numerals.length && !tr) return m
     return { ...m, read: { given, numerals: num.numerals, locale, untranslated: tr?.untranslated ?? [], verdictIn: tr ? translateOf(m.verdict, 'en', locale!).text : undefined } }
