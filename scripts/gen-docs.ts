@@ -4,6 +4,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { handle } from '../src/quantum/mcp.js'
+import { cssOf } from '../src/quantum/theme.js'
 import { LEADS } from '../src/quantum/leads.js'
 
 const ROOT = process.cwd()
@@ -42,6 +43,7 @@ const mcpPage = [
 writeFileSync(join(DOCS, 'mcp.md'), mcpPage)
 
 mkdirSync(join(DOCS, 'public'), { recursive: true })
+writeFileSync(join(DOCS, 'public', 'a432.css'), cssOf())
 writeFileSync(join(DOCS, 'public', 'mcp.json'), JSON.stringify({ name: pkg.name, protocol: 'JSON-RPC 2.0', tools }, null, 2) + '\n')
 
 /** The leads page: every lead on quantumai.google with its status and the tool that serves it, from the lead registry. */
@@ -91,7 +93,9 @@ export default defineConfig({
   title: ${JSON.stringify(pkg.name)},
   description: ${JSON.stringify(pkg.description)},
   cleanUrls: true,
+  head: [['link', { rel: 'stylesheet', href: '/uuidna.css' }], ['link', { rel: 'stylesheet', href: '/a432.css' }], ['link', { rel: 'license', href: 'https://uuidna.com/license' }], ['meta', { name: 'license', content: 'CC-BY-NC-ND-4.0' }], ['meta', { name: 'copyright', content: '© 2025 Tsvetan Rouschev (ceccec@psg.bg)' }], ['meta', { property: 'uuidna:rights', content: '459a7ef3-7a8b-8d8e-893a-099292addcd5' }], ['meta', { property: 'uuidna:canonical', content: 'https://uuidna.com' }]],
   themeConfig: {
+    footer: { message: 'CC-BY-NC-ND-4.0 — attribute the author, no derivatives, commercial use of the QPU framework, over UUID or by any other means, by licence (ceccec@psg.bg); the a432 harmonic default is free to all under attribution.', copyright: '© Tsvetan Rouschev · https://orcid.org/0009-0000-7312-9778' },
     nav: ${JSON.stringify(nav, null, 2).replace(/\n/g, '\n    ')},
     sidebar: ${JSON.stringify(sidebar, null, 2).replace(/\n/g, '\n    ')},
   },

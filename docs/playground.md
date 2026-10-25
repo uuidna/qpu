@@ -11,6 +11,7 @@ Call a tool in the browser. The page runs the same `handle` function the MCP sur
 import { ref } from 'vue'
 import { handle } from '../src/quantum/mcp.ts'
 
+const tools = handle({ jsonrpc: '2.0', id: 0, method: 'tools/list' }).result.tools.map((t) => t.name)
 const tool = ref('processor')
 const args = ref('{"name": "Willow"}')
 const out = ref('')
@@ -27,7 +28,7 @@ const run = () => {
 }
 </script>
 
-<label>Tool <select v-model="tool"><option>processor</option><option>circuit</option><option>echo</option><option>echo_benchmark</option></select></label>
+<label>Tool <select v-model="tool"><option v-for="t in tools" :key="t">{{ t }}</option></select></label>
 
 <label>Arguments (JSON)<textarea v-model="args" rows="6" style="width: 100%; font-family: monospace"></textarea></label>
 

@@ -143,12 +143,97 @@ export const leadsWidget = (d: { leads: readonly { id: string; status: string; t
       ['Partial', String(d.counts.partial ?? 0)],
       ['Blocked', String(d.counts.blocked ?? 0)],
       ['Out of scope', String(d.counts.out_of_scope ?? 0)],
+      ['Open', String(d.counts.open ?? 0)],
     ]),
     table(['Lead', 'Status', 'Tool', 'Statement'], d.leads.map((l) => [l.id, l.status, l.tool ?? '—', l.statement])),
+  ])
+
+export const quantumlibWidget = (d: { repositories: readonly { name: string; language: string; description: string; implementedHere: readonly string[]; tools: readonly string[]; note: string }[]; total: number; emulated: number }): string =>
+  stack([
+    cards([['Repositories', String(d.total)], ['With an emulation here', String(d.emulated)]]),
+    table(['Repository', 'Language', 'Implemented here', 'Tools', 'Note'], d.repositories.map((r) => [r.name, r.language, r.implementedHere.join(', ') || '—', r.tools.join(', ') || '—', r.note])),
+  ])
+
+export const errorCorrectionWidget = (d: { code: string; channel: string; logical: string; at: { p: number; physicalError: number; logicalError: number; textbook: number | null }; sweep: readonly { p: number; physicalError: number; logicalError: number }[]; breakEven: number | null; helpsAtP: boolean }): string =>
+  stack([
+    cards([
+      ['Code', d.code], ['Channel', d.channel], ['Logical state', `|${d.logical}⟩`],
+      ['Physical error at p', d.at.physicalError.toFixed(6)], ['Logical error at p', d.at.logicalError.toFixed(6)],
+      ['Break-even p (bisected)', d.breakEven === null ? 'none in the sweep' : d.breakEven.toFixed(6)],
+    ]),
+    table(['p', 'Physical error', 'Logical error', 'Code helps'], d.sweep.map((s) => [s.p.toFixed(4), s.physicalError.toFixed(6), s.logicalError.toFixed(6), s.logicalError < s.physicalError ? 'yes' : 'no'])),
+    ...d.sweep.map((s) => bar(s.logicalError * 100)),
+  ])
+
+export const chemistryWidget = (d: { molecule: { bondLength: number; hartreeFock: number; fci: number }; terms: readonly { label: string; coefficient: number }[]; vqe: { best: { theta: number; energy: number }; grid: readonly { theta: number; energy: number }[] } | null; at: { theta: number; energy: number } | null }): string =>
+  stack([
+    cards([
+      ['Bond length (Å)', d.molecule.bondLength.toFixed(4)],
+      ['Hartree-Fock (Ha)', d.molecule.hartreeFock.toFixed(6)],
+      ['Full CI (Ha)', d.molecule.fci.toFixed(6)],
+      ...(d.vqe ? [['VQE minimum (Ha)', d.vqe.best.energy.toFixed(6)] as [string, string], ['θ at the minimum', d.vqe.best.theta.toFixed(6)] as [string, string]] : []),
+      ...(d.at ? [[`E(θ = ${d.at.theta})`, d.at.energy.toFixed(6)] as [string, string]] : []),
+    ]),
+    table(['Term', 'Coefficient (Ha)'], d.terms.map((t) => [t.label, t.coefficient.toFixed(8)])),
+    ...(d.vqe ? [table(['θ', 'Energy (Ha)'], d.vqe.grid.map((g) => [g.theta.toFixed(4), g.energy.toFixed(6)]))] : []),
+  ])
+
+export const resourcesWidget = (d: { circuits: readonly { name: string; count: { qubits: number; depth: number; operations: number; twoQubitGates: number; tCount: number; complete: boolean; gates: readonly { name: string; count: number; class: string }[] } }[] }): string =>
+  stack([
+    table(['Circuit', 'Qubits', 'Depth', 'Operations', 'Two-qubit gates', 'T-count', 'Complete'], d.circuits.map((c) => [c.name, String(c.count.qubits), String(c.count.depth), String(c.count.operations), String(c.count.twoQubitGates), String(c.count.tCount), c.count.complete ? 'yes' : 'no: rotations or undecomposed gates uncounted'])),
+    ...d.circuits.map((c) => table([`${c.name}: gate`, 'Count', 'Class'], c.count.gates.map((g) => [g.name, String(g.count), g.class]))),
   ])
 
 export const repositoriesWidget = (d: { repositories: readonly { name: string; description: string; language: string }[]; total: number }): string =>
   stack([
     cards([['Repositories', String(d.total)], ['Shown', String(d.repositories.length)]]),
     table(['Repository', 'Language', 'Description'], d.repositories.map((r) => [r.name, r.language, r.description])),
+  ])
+
+/** The audit as cards and a table: the counts, then every check with its evidence. */
+export const auditWidget = (d: { total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: readonly { id: string; passed: boolean; evidence: string }[] }): string =>
+  stack([
+    cards([
+      ['Checks', String(d.total)],
+      ['Passed', String(d.passed)],
+      ['Failed', String(d.failed)],
+      ['Tools', String(d.tools)],
+      ['Examples', String(d.examples)],
+      ['Leads', String(d.leads)],
+    ]),
+    table(['Check', 'Result', 'Evidence'], d.checks.map((c) => [c.id, c.passed ? '✓' : '✗', c.evidence])),
+  ])
+
+/** The match as its verdict, its evidence, and the ranked candidates. */
+export const matchWidget = (d: { statement: string; verdict: string; evidence: string[]; tool?: string; candidates: readonly { kind: string; id: string; score: number; text: string }[]; cluster: readonly { kind: string; id: string; score: number; text: string }[]; verify: readonly { verifier: string; url: string; check: string }[]; reflection: { factors: readonly { n: number; factors?: string; by: string }[]; angles: readonly { x: number; property: string; d: number; sigma: number; angle: number }[]; queries: readonly string[]; leads: readonly { id: string; statement: string }[] }; lead: { id: string; status: string; reason?: string } }): string =>
+  stack([
+    cards([
+      ['Statement', d.statement],
+      ['Verdict', d.verdict],
+      ['Tool', d.tool ?? '—'],
+      ['Lead', `${d.lead.id} (${d.lead.status})`],
+    ]),
+    table(['Evidence'], d.evidence.map((e) => [e])),
+    table(['Served possibility', 'Kind', 'Score', 'Text'], d.cluster.map((c) => [c.id, c.kind, String(c.score), c.text])),
+    table(['Verify live via', 'URL', 'Check'], d.verify.map((v) => [v.verifier, v.url, v.check])),
+    table(['Reflection: n', 'Hidden factors', 'By'], d.reflection.factors.map((f) => [String(f.n), f.factors ?? '—', f.by])),
+    table(['Reflection: x', 'Bound', 'σ_d(x)', 'QFT angle'], d.reflection.angles.map((a) => [String(a.x), `${a.property} ≤ ${a.d}`, String(a.sigma), a.angle.toFixed(4)])),
+    table(['Mirror query'], d.reflection.queries.map((q) => [q])),
+    table(['Lead to develop', 'Statement'], d.reflection.leads.map((l) => [l.id, l.statement])),
+    table(['Kind', 'Candidate', 'Score', 'Text'], d.candidates.map((c) => [c.kind, c.id, String(c.score), c.text])),
+  ])
+
+/** The Clay register: the totals, then every relation with its sides, values and width. */
+export const clayWidget = (d: { total: number; holding: number; maxBits: number; relations: readonly { name: string; statement: string; sides: readonly { expression: string; value: number }[]; holds: boolean; bits: number }[] }): string =>
+  stack([
+    cards([['Relations', String(d.total)], ['Holding', String(d.holding)], ['Widest value', `${d.maxBits} bits`]]),
+    table(['Relation', 'Holds', 'Bits', 'Sides'], d.relations.map((r) => [r.name, r.holds ? '✓' : '✗', String(r.bits), r.sides.map((s) => `${s.expression} = ${s.value}`).join(' · ')])),
+  ])
+
+/** One UUID's cheap checks, each with its evidence. */
+export const verifyWidget = (d: { uuid: string; valid: boolean; decided: number; cost: string; checks: readonly { check: string; passed: boolean | null; evidence: string }[] }): string =>
+  stack([
+    cards([['UUID', d.uuid], ['Valid', d.valid ? '✓' : '✗'], ['Checks decided', String(d.decided)]]),
+    table(['Check', 'Result', 'Evidence'], d.checks.map((c) => [c.check, c.passed === null ? 'not decided' : c.passed ? '✓' : '✗', c.evidence])),
+    table(['Cost'], [[d.cost]]),
   ])

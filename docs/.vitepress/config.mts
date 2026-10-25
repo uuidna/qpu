@@ -5,7 +5,9 @@ export default defineConfig({
   title: "@uuidna/qpu",
   description: "The Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes with the benchmark Google states, and one MCP surface that compiles them on request.",
   cleanUrls: true,
+  head: [['link', { rel: 'stylesheet', href: '/uuidna.css' }], ['link', { rel: 'stylesheet', href: '/a432.css' }], ['link', { rel: 'license', href: 'https://uuidna.com/license' }], ['meta', { name: 'license', content: 'CC-BY-NC-ND-4.0' }], ['meta', { name: 'copyright', content: '© 2025 Tsvetan Rouschev (ceccec@psg.bg)' }], ['meta', { property: 'uuidna:rights', content: '459a7ef3-7a8b-8d8e-893a-099292addcd5' }], ['meta', { property: 'uuidna:canonical', content: 'https://uuidna.com' }]],
   themeConfig: {
+    footer: { message: 'CC-BY-NC-ND-4.0 — attribute the author, no derivatives, commercial use of the QPU framework, over UUID or by any other means, by licence (ceccec@psg.bg); the a432 harmonic default is free to all under attribution.', copyright: '© Tsvetan Rouschev · https://orcid.org/0009-0000-7312-9778' },
     nav: [
       {
         "text": "Processor",
@@ -40,12 +42,52 @@ export default defineConfig({
         "link": "/mcp"
       },
       {
+        "text": "Clay register",
+        "link": "/clay"
+      },
+      {
+        "text": "Examples",
+        "link": "/examples"
+      },
+      {
         "text": "Leads",
         "link": "/leads"
       },
       {
+        "text": "Audit",
+        "link": "/audit"
+      },
+      {
+        "text": "Match",
+        "link": "/match"
+      },
+      {
+        "text": "Verification",
+        "link": "/verification"
+      },
+      {
+        "text": "Receipts",
+        "link": "/receipts"
+      },
+      {
+        "text": "Next leads",
+        "link": "/next-leads"
+      },
+      {
         "text": "Playground",
         "link": "/playground"
+      },
+      {
+        "text": "Purify",
+        "link": "/purify"
+      },
+      {
+        "text": "Graph",
+        "link": "/graph"
+      },
+      {
+        "text": "Imagination",
+        "link": "/imagination"
       }
     ],
     sidebar: [
@@ -85,12 +127,52 @@ export default defineConfig({
             "link": "/mcp"
           },
           {
+            "text": "Clay register",
+            "link": "/clay"
+          },
+          {
+            "text": "Examples",
+            "link": "/examples"
+          },
+          {
             "text": "Leads",
             "link": "/leads"
           },
           {
+            "text": "Audit",
+            "link": "/audit"
+          },
+          {
+            "text": "Match",
+            "link": "/match"
+          },
+          {
+            "text": "Verification",
+            "link": "/verification"
+          },
+          {
+            "text": "Receipts",
+            "link": "/receipts"
+          },
+          {
+            "text": "Next leads",
+            "link": "/next-leads"
+          },
+          {
             "text": "Playground",
             "link": "/playground"
+          },
+          {
+            "text": "Purify",
+            "link": "/purify"
+          },
+          {
+            "text": "Graph",
+            "link": "/graph"
+          },
+          {
+            "text": "Imagination",
+            "link": "/imagination"
           }
         ]
       },
@@ -136,6 +218,34 @@ export default defineConfig({
           {
             "text": "leads",
             "link": "/mcp#leads"
+          },
+          {
+            "text": "quantumlib",
+            "link": "/mcp#quantumlib"
+          },
+          {
+            "text": "quantum-error-correction",
+            "link": "/mcp#quantum-error-correction"
+          },
+          {
+            "text": "chemistry-simulation",
+            "link": "/mcp#chemistry-simulation"
+          },
+          {
+            "text": "fault-tolerant-design",
+            "link": "/mcp#fault-tolerant-design"
+          },
+          {
+            "text": "audit",
+            "link": "/mcp#audit"
+          },
+          {
+            "text": "match",
+            "link": "/mcp#match"
+          },
+          {
+            "text": "clay",
+            "link": "/mcp#clay"
           }
         ]
       }

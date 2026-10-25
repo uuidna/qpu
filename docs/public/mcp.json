@@ -479,7 +479,7 @@
     },
     {
       "name": "algorithm",
-      "description": "The textbook algorithms of the Cirq page: qft and inverse_qft (on n qubits, from input x), phase_estimation (of θ with bits bits), grover (two qubits, marked |00>), teleportation (the message state, sent and received), and qaoa (depth 1 on the first nodes of the Willow device, with the expected cut). Each returns its summary and a table.",
+      "description": "The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits, from input x), phase_estimation (of θ with 1 to 8 bits), grover (two qubits, marked |00>), teleportation (the message state, sent and received), qaoa (depth 1 on the first 2 to 12 sorted qubits of the Sycamore device, the page's instance, with the expected cut), and shor (order finding for N from 3 to 21, the state-vector bound). Each returns its summary and a table.",
       "inputSchema": {
         "type": "object",
         "required": [
@@ -574,7 +574,7 @@
     },
     {
       "name": "statements",
-      "description": "The statements quantumai.google and its PDF make: the Cirq description, the definition of quantum computing, progress, responsibility, the vision, the hardware, the Willow Early Access Program and neutral atoms. With a topic, only that one.",
+      "description": "The statements quantumai.google, its PDFs and the quantumlib repositories make, each as the page states it: Cirq, the definition of quantum computing, progress, responsibility, the vision, the hardware and the full stack, the Willow Early Access Program, neutral atoms, the Sycamore gates, the Weber datasheet, the Quantum Echoes preprint, the campus, qsim, Qualtran, OpenFermion, the Cirq guide pages followed, the Resources, Research, journey, lab and Qubit Game pages, the QEC milestone, the APS summit pages and the sitemap. With a topic, only that one.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -612,7 +612,16 @@
               "cirq_basics",
               "qsimcirq",
               "basis_change",
-              "sitemap"
+              "sitemap",
+              "resources",
+              "qubit_game",
+              "lab_tour",
+              "learn_map",
+              "research",
+              "qec_milestone",
+              "weber_datasheet",
+              "full_stack",
+              "aps_summit"
             ]
           }
         }
@@ -633,7 +642,7 @@
     },
     {
       "name": "leads",
-      "description": "Every lead on quantumai.google and its PDF, with its status (served, partial, blocked or out of scope), the tool that serves it, and the reason where it is partial, blocked or out of scope.",
+      "description": "Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it is not served. The whole list is returned; nothing is truncated.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -642,8 +651,181 @@
               "served",
               "partial",
               "blocked",
-              "out_of_scope"
+              "out_of_scope",
+              "open"
             ]
+          }
+        }
+      }
+    },
+    {
+      "name": "quantumlib",
+      "description": "The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it: the exports of cirq.ts that stand for Cirq's classes, and the parts of qsim, OpenFermion, Qualtran, Stim and ReCirq the other tools emulate, named from the code that runs here. A cross-reference computed at call time, not a catalogue.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "repository": {
+            "type": "string",
+            "description": "only the repository with this name"
+          }
+        }
+      }
+    },
+    {
+      "name": "quantum-error-correction",
+      "description": "The three-qubit repetition code, simulated on the density matrix: a logical qubit encoded, a channel (bit_flip, phase_flip or depolarize) of probability p acting once on each data qubit, syndromes extracted and corrected by majority, and the logical error read from the simulated state against the raw error of an unencoded qubit, at the p given and over a sweep. The break-even p is bisected from the simulation; the textbook 3p² − 2p³ is reported beside it where it applies. The encoding, syndrome and correction gates are noiseless (the code-capacity model). The quantumlib QEC packages are listed as cited data.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "enum": [
+              "bit_flip",
+              "phase_flip"
+            ],
+            "default": "bit_flip"
+          },
+          "channel": {
+            "enum": [
+              "bit_flip",
+              "phase_flip",
+              "depolarize"
+            ],
+            "default": "bit_flip"
+          },
+          "p": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.1
+          },
+          "logical": {
+            "enum": [
+              "0",
+              "1",
+              "+",
+              "-"
+            ],
+            "default": "0",
+            "description": "the logical state encoded; |+⟩ and |−⟩ are eigenstates of the logical X a matched code can miss, so they show no error from it"
+          },
+          "sweep": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "description": "the probabilities to sweep; by default 0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6"
+          }
+        }
+      }
+    },
+    {
+      "name": "chemistry-simulation",
+      "description": "Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. A bond length in ångström, or one θ to evaluate.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bond_length": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "default": 0.7414,
+            "description": "the H–H distance in ångström; 0.7414 is the tutorial's"
+          },
+          "theta": {
+            "type": "number",
+            "description": "evaluate the energy at this θ only, instead of sweeping"
+          },
+          "steps": {
+            "type": "integer",
+            "minimum": 4,
+            "default": 180,
+            "description": "grid points of the sweep over [−π/2, π/2)"
+          }
+        }
+      }
+    },
+    {
+      "name": "fault-tolerant-design",
+      "description": "Resource counts read from the circuits this repository builds: the QFT on n qubits, Grover, teleportation, Shor for N up to 21, the QAOA instance and the repetition-code cycle. For each: gates by name, two-qubit gates, depth in moments, and the T-count of the gates whose Clifford+T cost is stated (Toffoli 7, T 1, controlled-S 3; Cliffordness computed from each unitary). Rotations and undecomposed gates are listed and left uncounted, and the count says whether it is complete. Qualtran is the cited library for the general case.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "circuit": {
+            "enum": [
+              "qft",
+              "grover",
+              "teleportation",
+              "shor",
+              "qaoa",
+              "qec",
+              "all"
+            ],
+            "default": "all"
+          },
+          "qubits": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "default": 3,
+            "description": "qft: the register size"
+          },
+          "N": {
+            "type": "integer",
+            "minimum": 3,
+            "maximum": 21,
+            "default": 15,
+            "description": "shor: the modulus"
+          },
+          "a": {
+            "type": "integer",
+            "minimum": 2,
+            "default": 7,
+            "description": "shor: the base"
+          },
+          "nodes": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 12,
+            "default": 12,
+            "description": "qaoa: the nodes of the page's instance"
+          }
+        }
+      }
+    },
+    {
+      "name": "audit",
+      "description": "The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays as documented, every served lead names a served tool, and the error paths answer as JSON-RPC requires. Each check carries its evidence; a failed check is a lead, not a ruling.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "match",
+      "description": "Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the surface proves it cannot, from a schema bound the statement exceeds, a lead whose reason says why, or the handler's own refusal; the cluster then names the served possibilities around it and verify names the live sources the client's MCP can check. unknown: nothing matches, and the statement comes back as a new lead to develop.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "statement"
+        ],
+        "properties": {
+          "statement": {
+            "type": "string",
+            "description": "any prompt or statement"
+          }
+        }
+      }
+    },
+    {
+      "name": "clay",
+      "description": "The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N statement parsed and evaluated, each side's value and the bit width it needs reported. What the Lean kernel accepted by rfl, redone with + − × ÷ on naturals only, so a small machine can redo the same sums and compare addresses. Nothing here is a proof of an open problem: the relations are identities between the unit's own constants.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "one relation, e.g. relation_15; omit for all"
           }
         }
       }

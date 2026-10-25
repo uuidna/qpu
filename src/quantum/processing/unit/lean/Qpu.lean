@@ -24,3 +24,9 @@ import Qpu.Pi
 import Qpu.Primes
 import Qpu.Sigma
 import Qpu.Surfacecode
+import Qpu.Leads.CausalInference
+import Qpu.Leads.ExplainableAI
+import Qpu.Leads.FederatedLearning
+import Qpu.Leads.ProgramSynthesis
+import Qpu.Leads.ZeroShotLearning
+import Qpu.Leads.HarmonicClosure

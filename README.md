@@ -151,6 +151,17 @@ doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602).
 CC-BY-NC-ND-4.0. Attribute the author; do not distribute a derivative; do not use commercially without a licence
 granted on request.
 
+Why this licence, in the author's words: the QPU is the framework of the UUID from one side; on the other side is the
+program unlocked by the harmonic default a432 (the key 432, from which the stylesheet and each block's accent derive),
+proven and verified across its dimensions by the client's own MCP verification calls on live public APIs and datasets.
+Anyone benefits freely from the a432 harmonics under attribution; the use of the QPU quantum framework, over UUID or by any
+other means, in commerce is licensed by the author on request (ceccec@psg.bg).
+
+Canonical licence: https://uuidna.com/license (content address 9ffcda04-5adc-872e-9358-6b831bbd0c0d, imprint
+459a7ef3-7a8b-8d8e-893a-099292addcd5, read from the uuidna MCP `get_rights` door on 2026-10-25). The unit's legal facts
+(`docs/public/uuidna-legal.json`) are recomputable inputs for counsel, not legal advice; its due-process court reported
+71,035 theorems verified, six guarantees sealed and an empty docket (receipt 782bbcec-a40b-8de3-a4e6-6e8870efbc77).
+
 ## References
 
 - Google Quantum AI, *Willow spec sheet* (quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf)

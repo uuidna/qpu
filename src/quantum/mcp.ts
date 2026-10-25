@@ -2,15 +2,25 @@
 // call. The handler does no I/O and imports nothing from Node, so the same code runs in a browser OS, where a caller
 // compiles whatever it needs by calling a tool. Tool names and figures follow Google Quantum AI (quantumai.google).
 
+import * as cirq from './cirq.js'
+import { EXAMPLES } from './examples.js'
+import { auditOf } from './audit.js'
+import { blockOf, verifyOf } from './blocks.js'
+import { INSTRUCTIONS, LICENSE } from './license.js'
+import { recomputeClay } from './clay-register.js'
+import { matchOf } from './match.js'
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
-import { DEVICES, PROCESSORS, WILLOW, deviceOf, willowNoiseOf } from './processor.js'
-import { algorithmWidget, circuitWidget, echoBenchmarkWidget, echoWidget, leadsWidget, processorWidget, repositoriesWidget, roadmapWidget, softwareWidget, statementsWidget } from './widgets.js'
+import { DEVICES, PROCESSORS, deviceOf, willowNoiseOf } from './processor.js'
+import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, matchWidget, clayWidget, verifyWidget } from './widgets.js'
 import { APPLICATIONS, ROADMAP } from './roadmap.js'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, type Graph } from './algorithms.js'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.js'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.js'
-import { LEADS, type LeadStatus } from './leads.js'
+import { LEADS, leadCounts, type LeadStatus } from './leads.js'
 import { REPOSITORIES } from './repositories.js'
+import { breakEvenOf, codePoint, repetitionCycle, channelOf as qecChannelOf, textbookLogicalError, type ErrorChannel, type LogicalState, type RepetitionCode } from './qec.js'
+import { BOHR_ANGSTROM, STO3G_H, TUTORIAL_ENERGIES, ansatzCircuit, energyAt, hydrogen, hydrogenHamiltonian, tutorialChecks, vqeSweep } from './chemistry.js'
+import { CLIFFORD_CHECK_ARITY, countResources } from './counting.js'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 export type Reply =
@@ -226,7 +236,7 @@ const TOOLS: Tool[] = [
   }),
   tool({
     name: 'algorithm',
-    description: 'The textbook algorithms of the Cirq page: qft and inverse_qft (on n qubits, from input x), phase_estimation (of θ with bits bits), grover (two qubits, marked |00>), teleportation (the message state, sent and received), and qaoa (depth 1 on the first nodes of the Willow device, with the expected cut). Each returns its summary and a table.',
+    description: 'The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits, from input x), phase_estimation (of θ with 1 to 8 bits), grover (two qubits, marked |00>), teleportation (the message state, sent and received), qaoa (depth 1 on the first 2 to 12 sorted qubits of the Sycamore device, the page\'s instance, with the expected cut), and shor (order finding for N from 3 to 21, the state-vector bound). Each returns its summary and a table.',
     inputSchema: {
       type: 'object',
       required: ['name'],
@@ -362,7 +372,7 @@ const TOOLS: Tool[] = [
   }),
   tool({
     name: 'statements',
-    description: 'The statements quantumai.google and its PDF make: the Cirq description, the definition of quantum computing, progress, responsibility, the vision, the hardware, the Willow Early Access Program and neutral atoms. With a topic, only that one.',
+    description: 'The statements quantumai.google, its PDFs and the quantumlib repositories make, each as the page states it: Cirq, the definition of quantum computing, progress, responsibility, the vision, the hardware and the full stack, the Willow Early Access Program, neutral atoms, the Sycamore gates, the Weber datasheet, the Quantum Echoes preprint, the campus, qsim, Qualtran, OpenFermion, the Cirq guide pages followed, the Resources, Research, journey, lab and Qubit Game pages, the QEC milestone, the APS summit pages and the sitemap. With a topic, only that one.',
     inputSchema: { type: 'object', properties: { topic: { enum: Object.keys(STATEMENTS) } } },
     run: (args) => {
       const topic = args.topic as StatementTopic | undefined
@@ -385,16 +395,202 @@ const TOOLS: Tool[] = [
   }),
   tool({
     name: 'leads',
-    description: 'Every lead on quantumai.google and its PDF, with its status (served, partial, blocked or out of scope), the tool that serves it, and the reason where it is partial, blocked or out of scope.',
-    inputSchema: { type: 'object', properties: { status: { enum: ['served', 'partial', 'blocked', 'out_of_scope'] } } },
+    description: 'Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it is not served. The whole list is returned; nothing is truncated.',
+    inputSchema: { type: 'object', properties: { status: { enum: ['served', 'partial', 'blocked', 'out_of_scope', 'open'] } } },
     run: (args) => {
       const status = args.status as LeadStatus | undefined
+      if (status !== undefined && !['served', 'partial', 'blocked', 'out_of_scope', 'open'].includes(status)) reject(`status ${String(status)} is not one of served, partial, blocked, out_of_scope, open`)
       const leads = LEADS.filter((l) => status === undefined || l.status === status)
-      const counts = { served: 0, partial: 0, blocked: 0, out_of_scope: 0 }
-      for (const l of LEADS) counts[l.status] += 1
-      return { leads, counts, total: LEADS.length }
+      return { leads, counts: leadCounts(), total: LEADS.length }
     },
     widget: leadsWidget,
+  }),
+  tool({
+    name: 'quantumlib',
+    description: 'The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it: the exports of cirq.ts that stand for Cirq\'s classes, and the parts of qsim, OpenFermion, Qualtran, Stim and ReCirq the other tools emulate, named from the code that runs here. A cross-reference computed at call time, not a catalogue.',
+    inputSchema: { type: 'object', properties: { repository: { type: 'string', description: 'only the repository with this name' } } },
+    run: (args) => {
+      const name = args.repository === undefined ? undefined : String(args.repository)
+      if (name !== undefined && !REPOSITORIES.some((r) => r.name === name)) reject(`repository ${name} is not one of ${REPOSITORIES.map((r) => r.name).join(', ')}`)
+      const exportsOf = (predicate: (key: string, value: unknown) => boolean): string[] => Object.entries(cirq).filter(([k, v]) => predicate(k, v)).map(([k]) => k).sort()
+      const gates = exportsOf((_, v) => typeof v === 'object' && v !== null && 'arity' in v && 'matrix' in v)
+      const classes = exportsOf((_, v) => typeof v === 'function' && /^class\s/.test(Function.prototype.toString.call(v)))
+      const functions = exportsOf((_, v) => typeof v === 'function' && !/^class\s/.test(Function.prototype.toString.call(v)))
+      const objects = exportsOf((k, v) => typeof v === 'object' && v !== null && !('arity' in v) && !gates.includes(k))
+      const toolNames = TOOLS.map((t) => t.name)
+      const has = (...names: string[]) => names.filter((n) => toolNames.includes(n))
+      const cross: Record<string, { implementedHere: string[]; tools: string[]; note: string }> = {
+        Cirq: { implementedHere: [...classes, ...objects, ...gates, ...functions], tools: has('circuit', 'algorithm', 'echo'), note: `the exports of cirq.ts: ${classes.length} classes, ${objects.length} qubit constructors, ${gates.length} gates and ${functions.length} functions, each named after the Cirq class or function it stands for` },
+        qsim: { implementedHere: ['Simulator'], tools: has('circuit', 'algorithm'), note: 'the same state-vector computation, in TypeScript, bounded at 20 qubits, without qsim\'s gate fusion, single precision or vector instructions' },
+        OpenFermion: { implementedHere: ['hydrogen', 'hydrogenHamiltonian'], tools: has('chemistry-simulation'), note: 'what MolecularData and jordan_wigner produce for one molecule, H₂ in STO-3G: the integrals and the Pauli-term qubit Hamiltonian, computed here and checked against the OpenFermion tutorial\'s printed energies' },
+        Qualtran: { implementedHere: ['countResources', 'isClifford'], tools: has('fault-tolerant-design'), note: 'resource counts (gates, two-qubit gates, depth, T-count) read from built circuits; no bloqs, no algorithm library' },
+        Stim: { implementedHere: ['repetitionCycle'], tools: has('quantum-error-correction'), note: 'the repetition code cycle is simulated as a density matrix with Toffoli corrections, not as a stabilizer tableau with measured syndromes; Stim\'s stabilizer simulation is not emulated' },
+        ReCirq: { implementedHere: ['pageInstance', 'qaoaSweep', 'qaoaEstimate'], tools: has('algorithm', 'statements'), note: 'the QAOA max-cut experiment of the Cirq page is built here; the KPZ, HFVQE, QC-QMC and OTOC experiments are served as statements of their pages' },
+      }
+      const repositories = REPOSITORIES.filter((r) => name === undefined || r.name === name).map((r) => ({ ...r, url: `https://github.com/quantumlib/${r.name}`, ...(cross[r.name] ?? { implementedHere: [], tools: [], note: 'nothing of this repository is implemented or emulated here' }) }))
+      return { organization: 'quantumlib', url: 'https://github.com/quantumlib', repositories, total: REPOSITORIES.length, emulated: REPOSITORIES.filter((r) => r.name in cross).length }
+    },
+    widget: quantumlibWidget,
+  }),
+  tool({
+    name: 'quantum-error-correction',
+    description: 'The three-qubit repetition code, simulated on the density matrix: a logical qubit encoded, a channel (bit_flip, phase_flip or depolarize) of probability p acting once on each data qubit, syndromes extracted and corrected by majority, and the logical error read from the simulated state against the raw error of an unencoded qubit, at the p given and over a sweep. The break-even p is bisected from the simulation; the textbook 3p² − 2p³ is reported beside it where it applies. The encoding, syndrome and correction gates are noiseless (the code-capacity model). The quantumlib QEC packages are listed as cited data.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        code: { enum: ['bit_flip', 'phase_flip'], default: 'bit_flip' },
+        channel: { enum: ['bit_flip', 'phase_flip', 'depolarize'], default: 'bit_flip' },
+        p: { type: 'number', minimum: 0, maximum: 1, default: 0.1 },
+        logical: { enum: ['0', '1', '+', '-'], default: '0', description: 'the logical state encoded; |+⟩ and |−⟩ are eigenstates of the logical X a matched code can miss, so they show no error from it' },
+        sweep: { type: 'array', items: { type: 'number', minimum: 0, maximum: 1 }, description: 'the probabilities to sweep; by default 0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6' },
+      },
+    },
+    run: (args) => {
+      const code = (args.code ?? 'bit_flip') as RepetitionCode
+      const channel = (args.channel ?? 'bit_flip') as ErrorChannel
+      const logical = (args.logical ?? '0') as LogicalState
+      const p = Number(args.p ?? 0.1)
+      if (!['bit_flip', 'phase_flip'].includes(code)) reject('code is bit_flip or phase_flip')
+      if (!['bit_flip', 'phase_flip', 'depolarize'].includes(channel)) reject('channel is bit_flip, phase_flip or depolarize')
+      if (!['0', '1', '+', '-'].includes(logical)) reject('logical is 0, 1, + or -')
+      if (!(p >= 0 && p <= 1)) reject('p is a probability between 0 and 1')
+      const grid = (args.sweep as number[] | undefined) ?? [0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+      if (!grid.every((q) => typeof q === 'number' && q >= 0 && q <= 1)) reject('every sweep value is a probability between 0 and 1')
+      const sweep = grid.map((q) => ({ ...codePoint(code, channel, q, logical), textbook: textbookLogicalError(code, channel, logical, q) }))
+      const at = { ...codePoint(code, channel, p, logical), textbook: textbookLogicalError(code, channel, logical, p) }
+      const breakEven = breakEvenOf(code, channel, logical, sweep)
+      const deviations = sweep.filter((s) => s.textbook !== null).map((s) => Math.abs(s.logicalError - (s.textbook as number)))
+      const circuit = repetitionCycle(code, qecChannelOf(channel, p), logical)
+      return {
+        code, channel, logical, at, sweep, breakEven,
+        helpsAtP: at.logicalError < at.physicalError,
+        observed: breakEven === null
+          ? `over the sweep the code ${sweep.every((s) => s.logicalError < s.physicalError) ? 'always' : 'never'} lowers the error below the unencoded qubit's`
+          : `the code lowers the error below the unencoded qubit's for p below ${breakEven.toFixed(6)}, and raises it above; the crossing is bisected from simulated points`,
+        textbook: { formula: '3p² − 2p³ for a matched code and channel on a logical |0⟩ or |1⟩', source: 'Nielsen & Chuang, Quantum Computation and Quantum Information, §10.1.1', maxDeviationOverSweep: deviations.length ? Math.max(...deviations) : null },
+        model: 'code-capacity: the channel acts once on each data qubit; encoding, syndrome extraction, Toffoli correction and decoding are noiseless; every error is Tr of the simulated density matrix on the decoded qubit',
+        circuit: { qubits: circuit.qubits.length, moments: circuit.moments.length, operations: circuit.operations.length },
+        packages: REPOSITORIES.filter((r) => ['Stim', 'chromobius', 'tesseract-decoder'].includes(r.name)).map((r) => ({ ...r, url: `https://github.com/quantumlib/${r.name}`, source: 'the quantumlib repository list, as it states them' })),
+      }
+    },
+    widget: errorCorrectionWidget,
+  }),
+  tool({
+    name: 'chemistry-simulation',
+    description: 'Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. A bond length in ångström, or one θ to evaluate.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        bond_length: { type: 'number', exclusiveMinimum: 0, default: 0.7414, description: 'the H–H distance in ångström; 0.7414 is the tutorial\'s' },
+        theta: { type: 'number', description: 'evaluate the energy at this θ only, instead of sweeping' },
+        steps: { type: 'integer', minimum: 4, default: 180, description: 'grid points of the sweep over [−π/2, π/2)' },
+      },
+    },
+    run: (args) => {
+      const bondLength = Number(args.bond_length ?? TUTORIAL_ENERGIES.bondLengthDefault)
+      if (!(bondLength > 0)) reject('bond_length is a positive distance in ångström')
+      const molecule = hydrogen(bondLength)
+      const terms = hydrogenHamiltonian(molecule)
+      const theta = args.theta === undefined ? undefined : Number(args.theta)
+      if (theta !== undefined && !Number.isFinite(theta)) reject('theta is a number')
+      const steps = Number(args.steps ?? 180)
+      if (!Number.isInteger(steps) || steps < 4) reject('steps is an integer of at least 4')
+      const vqe = theta === undefined ? vqeSweep(terms, steps) : null
+      const ansatz = ansatzCircuit(theta ?? vqe!.best.theta)
+      return {
+        molecule,
+        basis: { name: 'STO-3G', hydrogen: STO3G_H, bohrAngstrom: BOHR_ANGSTROM },
+        mapping: 'two qubits: line:0 is the orbital of the spin-up electron (|0⟩ = g, |1⟩ = u), line:1 the spin-down electron\'s; the Hartree-Fock state is |00⟩; the nuclear repulsion is in the identity term',
+        terms,
+        ansatz: { gate: ansatz.operations[0]!.kind === 'gate' ? ansatz.operations[0]!.gate.name : '', state: 'cos θ |00⟩ + sin θ |11⟩' },
+        hartreeFockFromSimulator: energyAt(terms, 0),
+        vqe,
+        at: theta === undefined ? null : { theta, energy: energyAt(terms, theta) },
+        checks: { source: TUTORIAL_ENERGIES.source, points: tutorialChecks(), note: 'the nuclear repulsion, Hartree-Fock, full-CI and orbital energies agree with the printed figures to about 10⁻¹⁵ Ha; MP2 differs by about 4 × 10⁻⁷ Ha at both lengths, and the page states no convergence settings for its MP2' },
+        units: 'hartree; bond length in ångström',
+      }
+    },
+    widget: chemistryWidget,
+  }),
+  tool({
+    name: 'fault-tolerant-design',
+    description: 'Resource counts read from the circuits this repository builds: the QFT on n qubits, Grover, teleportation, Shor for N up to 21, the QAOA instance and the repetition-code cycle. For each: gates by name, two-qubit gates, depth in moments, and the T-count of the gates whose Clifford+T cost is stated (Toffoli 7, T 1, controlled-S 3; Cliffordness computed from each unitary). Rotations and undecomposed gates are listed and left uncounted, and the count says whether it is complete. Qualtran is the cited library for the general case.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        circuit: { enum: ['qft', 'grover', 'teleportation', 'shor', 'qaoa', 'qec', 'all'], default: 'all' },
+        qubits: { type: 'integer', minimum: 1, maximum: 6, default: 3, description: 'qft: the register size' },
+        N: { type: 'integer', minimum: 3, maximum: 21, default: 15, description: 'shor: the modulus' },
+        a: { type: 'integer', minimum: 2, default: 7, description: 'shor: the base' },
+        nodes: { type: 'integer', minimum: 2, maximum: 12, default: 12, description: 'qaoa: the nodes of the page\'s instance' },
+      },
+    },
+    run: (args) => {
+      const which = String(args.circuit ?? 'all')
+      const n = Number(args.qubits ?? 3)
+      const N = Number(args.N ?? 15)
+      const a = Number(args.a ?? 7)
+      const nodes = Number(args.nodes ?? 12)
+      if (!Number.isInteger(n) || n < 1 || n > 6) reject('qubits is an integer from 1 to 6')
+      if (!Number.isInteger(N) || N < 3 || N > 21) reject('N is an integer from 3 to 21')
+      if (!Number.isInteger(a) || a < 2 || a >= N || gcdOf(a, N) !== 1) reject('a must be an integer from 2 to N−1 with no common factor with N')
+      if (!Number.isInteger(nodes) || nodes < 2 || nodes > 12) reject('nodes is an integer from 2 to 12')
+      const builders: Record<string, () => Circuit> = {
+        qft: () => new Circuit().append(qftOperations(LineQubit.range(n))),
+        grover: groverCircuit,
+        teleportation: teleportationCircuit,
+        shor: () => shorCircuit(N, a),
+        qaoa: () => qaoaCircuit(pageInstance(DEVICES.Sycamore, nodes), 0.5, 0.25),
+        qec: () => repetitionCycle('bit_flip', { name: 'bit_flip', p: 0.1 }, '0'),
+      }
+      if (which !== 'all' && !(which in builders)) reject(`circuit ${which} is not one of ${Object.keys(builders).join(', ')}, all`)
+      const names = which === 'all' ? Object.keys(builders) : [which]
+      const circuits = names.map((name) => ({ name: name === 'qft' ? `qft on ${n} qubits` : name === 'shor' ? `shor N=${N} a=${a}` : name === 'qaoa' ? `qaoa on ${nodes} nodes (alpha = 0.5, beta = 0.25)` : name === 'qec' ? 'repetition code cycle (bit flip, p = 0.1)' : name, count: countResources(builders[name]!()) }))
+      return {
+        circuits,
+        costs: {
+          toffoli: { tCount: 7, source: 'Nielsen & Chuang, Quantum Computation and Quantum Information, figure 4.9; Amy, Maslov, Mosca, Roetteler, IEEE TCAD 32, 818 (2013)' },
+          t: { tCount: 1, source: 'T = Z**0.25; X**0.25 = H·T·H' },
+          controlled_s: { tCount: 3, source: 'CS = (T⊗T)·CNOT·(I⊗T†)·CNOT, verified as a matrix product in counting.test.ts' },
+          clifford: `computed from each unitary: it conjugates every Pauli string to a Pauli string, checked up to ${CLIFFORD_CHECK_ARITY} qubits`,
+          uncounted: 'arbitrary-angle rotations (CZ**t at other t, ZZ**t, exp(−iθP)) and gates not decomposed here (Shor\'s modular multiplications) are listed, not costed; no synthesis figure is invented',
+        },
+        library: { name: 'Qualtran', description: REPOSITORIES.find((r) => r.name === 'Qualtran')!.description, url: 'https://github.com/quantumlib/Qualtran', note: 'the quantumlib library for resource estimation of fault-tolerant algorithms; not implemented here' },
+      }
+    },
+    widget: resourcesWidget,
+  }),
+  tool({
+    name: 'audit',
+    description: 'The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays as documented, every served lead names a served tool, and the error paths answer as JSON-RPC requires. Each check carries its evidence; a failed check is a lead, not a ruling.',
+    inputSchema: { type: 'object', properties: {} },
+    run: () => auditOf(handle, EXAMPLES, LEADS),
+    widget: auditWidget,
+  }),
+  tool({
+    name: 'match',
+    description: 'Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the surface proves it cannot, from a schema bound the statement exceeds, a lead whose reason says why, or the handler\'s own refusal; the cluster then names the served possibilities around it and verify names the live sources the client\'s MCP can check. unknown: nothing matches, and the statement comes back as a new lead to develop.',
+    inputSchema: { type: 'object', required: ['statement'], properties: { statement: { type: 'string', description: 'any prompt or statement' } } },
+    run: (args) => matchOf(String(args.statement ?? ''), handle, EXAMPLES, LEADS),
+    widget: matchWidget,
+  }),
+  tool({
+    name: 'clay',
+    description: 'The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N statement parsed and evaluated, each side\'s value and the bit width it needs reported. What the Lean kernel accepted by rfl, redone with + − × ÷ on naturals only, so a small machine can redo the same sums and compare addresses. Nothing here is a proof of an open problem: the relations are identities between the unit\'s own constants.',
+    inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' } } },
+    run: (args) => {
+      const all = recomputeClay()
+      if (args.name) { const r = all.relations.find((x) => x.name === args.name); if (!r) throw new Error(`${String(args.name)} is not one of ${all.relations.map((x) => x.name).join(', ')}`); return { ...all, relations: [r] } }
+      return all
+    },
+    widget: clayWidget,
+  }),
+  tool({
+    name: 'verify',
+    description: 'Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content needed), its content (one fold), and its neighbours in a chain (the predecessor it names and the successor that names it). Each check is independent; a check without its input is not decided rather than passed.',
+    inputSchema: { type: 'object', required: ['uuid'], properties: { uuid: { type: 'string', description: 'the UUID to verify' }, content: { type: 'string', description: 'the text the UUID should be the address of' }, prev: { type: 'object', properties: { id: { type: 'string' } }, description: 'the predecessor in the chain' }, self: { type: 'object', properties: { prev: { type: 'string' } }, description: 'what this entry names as its predecessor' }, next: { type: 'object', properties: { id: { type: 'string' }, prev: { type: 'string' } }, description: 'the successor in the chain' } } },
+    run: (args) => verifyOf(String(args.uuid ?? ''), typeof args.content === 'string' ? args.content : undefined, args.prev as { id: string } | undefined, args.next as { id: string; prev?: string } | undefined, args.self as { prev?: string } | undefined),
+    widget: verifyWidget,
   }),
 ]
 
@@ -406,13 +602,14 @@ export const handle = (message: Rpc): Reply => {
   const fail = (code: number, text: string): Reply => ({ jsonrpc: '2.0', id, error: { code, message: text } })
   const params = (message.params ?? {}) as Record<string, unknown>
   try {
-    if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'qpu', version: '1.4.0' } } }
+    if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'qpu', version: '1.4.0' , license: LICENSE.spdx, author: LICENSE.author }, instructions: INSTRUCTIONS } }
     if (message.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools: TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) } }
     if (message.method === 'tools/call') {
       const found = TOOLS.find((t) => t.name === params.name)
       if (!found) return fail(METHOD_NOT_FOUND, `no tool ${String(params.name)}; the tools are ${TOOLS.map((t) => t.name).join(', ')}`)
       const { structured, widget } = found.call((params.arguments ?? {}) as Record<string, unknown>)
-      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { widget } } }
+      const block = blockOf(found.name, (params.arguments ?? {}) as Record<string, unknown>, structured, widget, found.description)
+      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { widget: block.html, openGraph: block.openGraph, block: block.shadcn, theme: block.theme, license: LICENSE } } }
     }
     return fail(METHOD_NOT_FOUND, `method ${message.method} is not served`)
   } catch (error) {

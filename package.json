@@ -17,13 +17,29 @@
     "docs:gen": "tsx scripts/gen-docs.ts",
     "docs:dev": "npm run docs:gen && vitepress dev docs",
     "docs:build": "npm run docs:gen && vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "audit": "node --import tsx scripts/audit.ts",
+    "test:e2e": "npm run docs:build",
+    "next": "node --import tsx scripts/next.ts",
+    "verify": "node --import tsx scripts/verify.ts",
+    "lean": "lake build",
+    "next:watch": "node --watch-path=src --watch-path=scripts --watch-path=docs/index.md --import tsx scripts/next.ts --offline",
+    "next:strict": "node --import tsx scripts/next.ts --strict",
+    "purify": "node --import tsx scripts/purify.ts",
+    "readiness": "node --import tsx scripts/readiness.ts",
+    "imagine": "node --import tsx scripts/imagine.ts",
+    "dev:worker": "wrangler dev",
+    "deploy": "npm run next -- --offline && wrangler deploy",
+    "publish": "node --import tsx scripts/publish.ts",
+    "clay:gen": "node --import tsx scripts/gen-clay.ts",
+    "pretest": "node --import tsx scripts/gen-clay.ts && npx tsx scripts/gen-docs.ts"
   },
   "devDependencies": {
     "@types/node": "26.6.4",
     "tsx": "4.22.4",
     "typescript": "7.0.2",
-    "vitepress": "2.0.0-alpha.20"
+    "vitepress": "2.0.0-alpha.20",
+    "wrangler": "^4.0.0"
   },
   "description": "The Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes with the benchmark Google states, and one MCP surface that compiles them on request.",
   "homepage": "https://github.com/uuidna/qpu"

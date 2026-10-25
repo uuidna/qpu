@@ -50,9 +50,8 @@ export const TOFFOLI: Gate = {
   }),
 }
 
-/** Cirq's gate power, G**t: the +1 eigenspace keeps its phase and the −1 eigenspace takes e^{iπt}, so X**0.5 is the square
- *  root of NOT, as Cirq documents. Exact for the involutions here (G·G = I); any other gate is refused, not approximated. */
-export const powerOf = (gate: Gate, t: number): Gate => {
+/** Refuses a gate that is not an involution (G·G ≠ I): the powers and exponentials here are exact for involutions only. */
+const assertInvolution = (gate: Gate, what: string): void => {
   const dim = 1 << gate.arity
   const at = (m: [number, number][], r: number, s: number) => m[r * dim + s]!
   for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
@@ -63,8 +62,16 @@ export const powerOf = (gate: Gate, t: number): Gate => {
       si += ar * bi + ai * br
     }
     const id = r === s ? 1 : 0
-    if (Math.abs(sr - id) > 1e-12 || Math.abs(si) > 1e-12) throw new Error(`${gate.name} is not an involution, so its power is not defined here`)
+    if (Math.abs(sr - id) > 1e-12 || Math.abs(si) > 1e-12) throw new Error(`${gate.name} is not an involution, so its ${what} is not defined here`)
   }
+}
+
+/** Cirq's gate power, G**t: the +1 eigenspace keeps its phase and the −1 eigenspace takes e^{iπt}, so X**0.5 is the square
+ *  root of NOT, as Cirq documents. Exact for the involutions here (G·G = I); any other gate is refused, not approximated. */
+export const powerOf = (gate: Gate, t: number): Gate => {
+  assertInvolution(gate, 'power')
+  const dim = 1 << gate.arity
+  const at = (m: [number, number][], r: number, s: number) => m[r * dim + s]!
   const [cr, ci] = [Math.cos(Math.PI * t), Math.sin(Math.PI * t)]
   const matrix: [number, number][] = []
   for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
@@ -76,6 +83,43 @@ export const powerOf = (gate: Gate, t: number): Gate => {
     matrix.push([pr + cr * mr - ci * mi, pi + cr * mi + ci * mr])
   }
   return { name: `${gate.name}**${t}`, arity: gate.arity, matrix }
+}
+
+/** The exponential exp(−iθG) of an involution G, without a global phase: cos θ·I − i sin θ·G. This is the rotation a
+ *  variational ansatz applies, exp(−iθ Y⊗X) for H₂; Cirq writes it as G**(2θ/π) up to the phase e^{iθ}, which an expectation
+ *  value cannot see. Any gate that is not an involution is refused. */
+export const exponentialOf = (gate: Gate, theta: number): Gate => {
+  assertInvolution(gate, 'exponential')
+  const dim = 1 << gate.arity
+  const [cs, sn] = [Math.cos(theta), Math.sin(theta)]
+  const matrix: [number, number][] = []
+  for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
+    const [gr, gi] = gate.matrix[r * dim + s]!
+    const id = r === s ? 1 : 0
+    // −i·sinθ·(gr + i·gi) = sinθ·gi − i·sinθ·gr
+    matrix.push([cs * id + sn * gi, -sn * gr])
+  }
+  return { name: `exp(−i·${theta}·${gate.name})`, arity: gate.arity, matrix }
+}
+
+/** The tensor product of single-qubit Paulis, P₁⊗P₂⊗…, as one gate on as many qubits: the first Pauli acts on the first qubit
+ *  given. Every Pauli string squares to the identity, so it is an involution: powerOf and exponentialOf apply to it. */
+export const pauliProduct = (paulis: readonly ('X' | 'Y' | 'Z' | 'I')[]): Gate => {
+  const single: Record<'X' | 'Y' | 'Z' | 'I', Gate> = { X, Y, Z, I: { name: 'I', arity: 1, matrix: [c(1), c(0), c(0), c(1)] } }
+  const factors = paulis.map((p) => single[p])
+  let matrix: [number, number][] = [c(1)]
+  let dim = 1
+  for (const f of factors) {
+    const next: [number, number][] = []
+    for (let r = 0; r < dim * 2; r++) for (let s = 0; s < dim * 2; s++) {
+      const [ar, ai] = matrix[Math.floor(r / 2) * dim + Math.floor(s / 2)]!
+      const [br, bi] = f.matrix[(r % 2) * 2 + (s % 2)]!
+      next.push([ar * br - ai * bi, ar * bi + ai * br])
+    }
+    matrix = next
+    dim *= 2
+  }
+  return { name: paulis.join('⊗'), arity: paulis.length, matrix }
 }
 
 /** The adjoint of a gate, G†: the conjugate transpose of its unitary. It is the inverse of any gate, so an echo can run
@@ -90,7 +134,10 @@ export const adjointOf = (gate: Gate): Gate => {
   return { name: `${gate.name}†`, arity: gate.arity, matrix }
 }
 
-export type Operation = { kind: 'gate'; gate: Gate; qubits: Qubit[] } | { kind: 'measure'; key: string; qubits: Qubit[] }
+export type Operation =
+  | { kind: 'gate'; gate: Gate; qubits: Qubit[] }
+  | { kind: 'measure'; key: string; qubits: Qubit[] }
+  | { kind: 'channel'; channel: Channel; qubits: Qubit[] }
 
 /** Cirq's operation form: a gate applied to qubits. gate(...qubits) returns the operation. */
 export const applied = (gate: Gate, ...qubits: Qubit[]): Operation => {
@@ -100,6 +147,10 @@ export const applied = (gate: Gate, ...qubits: Qubit[]): Operation => {
 
 /** cirq.measure(*qubits, key=...): tags the measured qubits' results with the key. */
 export const measure = (qubits: Qubit[], key: string): Operation => ({ kind: 'measure', key, qubits })
+
+/** A channel placed in the circuit, as Cirq's cirq.bit_flip(p).on(q) is: the noise acts on each qubit named, where the
+ *  operation sits, and nowhere else. The density-matrix simulator applies it exactly; the state-vector simulator refuses it. */
+export const noisy = (channel: Channel, ...qubits: Qubit[]): Operation => ({ kind: 'channel', channel, qubits })
 
 const touches = (op: Operation, qubits: Set<string>): boolean => op.qubits.some((q) => qubits.has(keyOf(q)))
 
@@ -300,7 +351,10 @@ export class Simulator {
   /** The final wave function: a list of amplitudes, one per basis state, with the qubit order of circuit.qubits. */
   simulate(circuit: Circuit): { amplitudes: [number, number][]; qubits: Qubit[] } {
     const { state, order, indexOf } = this.initial(circuit)
-    for (const op of circuit.operations) if (op.kind === 'gate') applyGate(state, op.gate, op.qubits.map(indexOf))
+    for (const op of circuit.operations) {
+      if (op.kind === 'channel') throw new Error(`a ${op.channel.name} channel runs on the density matrix, not on a state vector`)
+      if (op.kind === 'gate') applyGate(state, op.gate, op.qubits.map(indexOf))
+    }
     return { amplitudes: Array.from(state.re, (r, k) => [r, state.im[k]!] as [number, number]), qubits: order }
   }
 
@@ -312,6 +366,7 @@ export class Simulator {
       const { state, indexOf } = this.initial(circuit)
       const bits = new Map<string, number[]>()
       for (const op of circuit.operations) {
+        if (op.kind === 'channel') throw new Error(`a ${op.channel.name} channel runs on the density matrix, not on a state vector`)
         if (op.kind === 'gate') applyGate(state, op.gate, op.qubits.map(indexOf))
         else bits.set(op.key, op.qubits.map((q) => measureQubit(state, indexOf(q), this.random)))
       }
@@ -452,7 +507,8 @@ export type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: n
 
 /** Cirq's DensityMatrixSimulator: the state as a density matrix, so a noisy channel acts exactly rather than by sampling.
  *  A gate acts as U ρ U†; with a depolarizing probability p, each gate is followed by the depolarizing channel on each of
- *  its qubits. A pure state has purity 1; noise lowers it. Exact for up to 8 qubits. */
+ *  its qubits. A channel placed in the circuit (noisy) acts where it sits, on its qubits only, and draws no gate noise.
+ *  A pure state has purity 1; noise lowers it. Exact for up to 8 qubits. */
 export class DensityMatrixSimulator {
   simulate(circuit: Circuit, channels: readonly Channel[] | ((arity: number) => readonly Channel[]) = []): DensityResult {
     if (typeof channels === 'function') [1, 2].forEach((arity) => channels(arity).forEach(krausOf))
@@ -465,6 +521,11 @@ export class DensityMatrixSimulator {
     let rho: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
     rho.re[0] = 1
     for (const op of circuit.operations) {
+      if (op.kind === 'channel') {
+        krausOf(op.channel)
+        for (const q of op.qubits) rho = channelOn(rho, pos.get(keyOf(q))!, op.channel, n)
+        continue
+      }
       if (op.kind !== 'gate') continue
       const indices = op.qubits.map((q) => pos.get(keyOf(q))!)
       rho = conjugate(unitaryOf(op.gate, indices, n), rho, dim)

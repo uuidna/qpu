@@ -1,19 +1,28 @@
-// Every lead on quantumai.google and its linked PDF, with its status and the MCP tool that serves it. A lead is served when a
-// tool answers it, partial when a tool answers part of it (the reason says which part), blocked when the page could not be
-// read (the reason says why), and out of scope when it is not content this repository carries (a video, a careers page).
+// Every lead on quantumai.google, its linked PDFs and the quantumlib repositories, with its status and the MCP tool that serves
+// it. A lead is served when a tool answers it, partial when a tool answers part of it (the reason says which part), blocked when
+// the page could not be read (the reason says why, with the date and status code), out of scope when it is not technical content
+// this repository carries (a video, a jobs listing, a crawler file), and open when it is a page of the sitemap that is fetchable
+// and no tool follows yet. The hand-written leads come first; then every page of the sitemap (read whole, sitemap.ts) that no
+// hand-written lead already names is a lead of its own, so nothing the site lists is dropped.
 
-export type LeadStatus = 'served' | 'partial' | 'blocked' | 'out_of_scope'
+import * as cirq from './cirq.js'
+import { SITEMAP_CHILD_CHARACTERS, SITEMAP_FETCHED, SITEMAP_PAGES } from './sitemap.js'
 
-export type Lead = { id: string; source: string; statement: string; status: LeadStatus; tool?: string; reason?: string }
+export type LeadStatus = 'served' | 'partial' | 'blocked' | 'out_of_scope' | 'open'
 
-export const LEADS: readonly Lead[] = [
+export type Lead = { id: string; source: string; statement: string; status: LeadStatus; tool?: string; reason?: string; lastmod?: string }
+
+const FETCHED = SITEMAP_FETCHED
+
+/** The leads followed by hand: each read from its page, PDF or repository, with the tool that serves it. */
+export const HAND_LEADS: readonly Lead[] = [
   { id: 'willow-spec', source: 'quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf', statement: 'Willow: 105 qubits, the grid, two chips with their figures', status: 'served', tool: 'processor' },
   { id: 'willow-blog', source: 'blog.google, Willow', statement: 'Willow error correction below threshold; random circuit sampling', status: 'served', tool: 'processor' },
   { id: 'magic-state', source: 'blog.google, magic state cultivation', statement: '40-fold error reduction, 99.99% logical fidelity, color code to surface code', status: 'served', tool: 'processor' },
   { id: 'echoes-blog', source: 'blog.google, Quantum Echoes', statement: 'OTOC protocol on the 105-qubit array; 13,000x; molecules of 15 and 28 atoms', status: 'served', tool: 'echo_benchmark' },
   { id: 'echoes-preprint', source: 'arXiv 2506.10191', statement: 'The Quantum Echoes preprint and its abstract', status: 'served', tool: 'statements' },
   { id: 'echoes-protocol', source: 'research.google/blog/a-verifiable-quantum-advantage', statement: 'forward, perturb, backward, measure, repeated k times', status: 'served', tool: 'echo' },
-  { id: 'roadmap', source: 'services.google.com PDF, roadmap figure', statement: 'Six milestones, physical-qubit scale, Milestone 3 in progress', status: 'served', tool: 'roadmap' },
+  { id: 'roadmap', source: 'services.google.com PDF, roadmap figure; quantumai.google/roadmap', statement: 'Six milestones, physical-qubit scale, Milestone 3 in progress', status: 'served', tool: 'roadmap' },
   { id: 'applications', source: 'services.google.com PDF, applications figure', statement: 'Predicted applications by physical-qubit band, 50k to 50M', status: 'served', tool: 'roadmap' },
   { id: 'neutral-atoms', source: 'blog.google, neutral atom quantum computers', statement: 'Expansion to neutral atoms; no Google device figures stated', status: 'served', tool: 'statements' },
   { id: 'early-access', source: 'quantumai.google/willowearlyaccess', statement: 'Willow Early Access Program, deadline May 15, 2026', status: 'served', tool: 'statements' },
@@ -26,17 +35,17 @@ export const LEADS: readonly Lead[] = [
   { id: 'qvm', source: 'quantumai.google/cirq/simulate/quantum_virtual_machine; github.com/quantumlib/Cirq engine source; the Willow spec sheet', statement: 'Virtual processor: a device with noise. The Willow noise is completed from the spec sheet\'s published medians (single-qubit depolarizing at 1.5 × the gate error, two-qubit at 0.75 × per qubit), which reproduces the sheet\'s single-qubit error exactly; Google\'s per-qubit calibration, T1 and readout are not on any public page, so they are not applied', status: 'served', tool: 'circuit' },
   { id: 'textbook-algorithms', source: 'quantumai.google/cirq/experiments/textbook_algorithms', statement: 'Teleportation, QFT and its inverse, phase estimation, Grover on two qubits', status: 'served', tool: 'algorithm' },
   { id: 'qaoa', source: 'quantumai.google/cirq/experiments/qaoa/qaoa_maxcut; github.com/quantumlib/Cirq', statement: 'QAOA max-cut at p = 1 on Sycamore: the first twelve sorted qubits, their couplers in networkx order, numpy\'s seed-11 weights (reproduced exactly), the 5 by 5 sweep, and the estimate_cost objective sampled at 20,000 shots', status: 'served', tool: 'algorithm' },
-  { id: 'shor', source: 'quantumai.google/cirq/experiments/textbook_algorithms', statement: 'Shor\'s order finding, the later use of phase estimation the page names', status: 'served', tool: 'algorithm' },
-  { id: 'qsim', source: 'github.com/quantumlib/qsim', statement: 'qsim: a fast state-vector simulator with a Cirq interface, Apache-2.0', status: 'served', tool: 'statements' },
-  { id: 'research', source: 'quantumai.google/research/publications', statement: 'Research publications', status: 'blocked', reason: 'the page is not in the sitemap and returns 404; the research pages list has no publication list in the fetch' },
+  { id: 'shor', source: 'quantumai.google/cirq/experiments/textbook_algorithms; quantumai.google/cirq/experiments/shor', statement: 'Shor\'s order finding, the later use of phase estimation the page names', status: 'served', tool: 'algorithm' },
+  { id: 'qsim', source: 'github.com/quantumlib/qsim; quantumai.google/qsim', statement: 'qsim: a fast state-vector simulator with a Cirq interface, Apache-2.0', status: 'served', tool: 'statements' },
+  { id: 'research', source: 'quantumai.google/research (quantumai.google/research/publications returns 404)', statement: 'Research publications: the page\'s title and description', status: 'partial', tool: 'statements', reason: `on ${FETCHED} quantumai.google/research returned HTTP 200 with the title "Research Publications" and the site description, which the research statement serves; its publication list is rendered by script and is not in the fetched HTML; research/publications returned HTTP 404` },
   { id: 'echoes-nature', source: 'arXiv 2506.10191, Constructive interference at the edge of quantum ergodic dynamics (published in Nature as Observation of constructive interference at the edge of quantum ergodicity)', statement: '103-qubit superconducting processor; second-order OTOC; the Nature paper\'s claims, with the preprint\'s stated figures', status: 'served', tool: 'statements' },
   { id: 'willow-nature', source: 'arXiv 2408.13687, Quantum error correction below the surface code threshold (the paper the homepage links as Nature)', statement: 'distance-5 and distance-7 memories; Λ = 2.14 ± 0.02; a 101-qubit distance-7 code; 0.143% logical error per cycle; 63 μs decoder latency', status: 'served', tool: 'processor' },
-  { id: 'learn-map', source: 'quantumai.google/learn/map', statement: 'Our quantum computing journey', status: 'blocked', reason: 'the page is not in the sitemap and returns 404 to the fetch' },
+  { id: 'learn-map', source: 'quantumai.google/learn/map', statement: 'Our quantum computing journey: the page\'s title and description', status: 'partial', tool: 'statements', reason: `on ${FETCHED} the page returned HTTP 200 (it was 404 to the earlier fetch) with its title and description, which the learn_map statement serves; the journey itself is an interactive map in a frame from dreamcoat-guggenheim.uc.r.appspot.com, whose text is not in the fetched HTML` },
   { id: 'campus-announcement', source: 'blog.google, Unveiling our new Quantum AI campus (May 18, 2021)', statement: 'The campus announcement: the data center, labs, fabrication and the 1,000,000-qubit target', status: 'served', tool: 'statements' },
   { id: 'sycamore-gates', source: 'quantumai.google/cirq/google/devices', statement: 'Sycamore\'s two-qubit gates and their durations', status: 'served', tool: 'statements' },
   { id: 'sycamore23', source: 'github.com/quantumlib/Cirq known_devices.py', statement: 'Sycamore23: the 23-qubit subset of Sycamore', status: 'served', tool: 'processor' },
-  { id: 'qualtran', source: 'github.com/quantumlib/Qualtran', statement: 'Qualtran: abstractions for quantum programs and a library of algorithms, experimental', status: 'served', tool: 'statements' },
-  { id: 'openfermion', source: 'github.com/quantumlib/OpenFermion', statement: 'OpenFermion: compiling and analyzing quantum algorithms to simulate fermionic systems', status: 'served', tool: 'statements' },
+  { id: 'qualtran', source: 'github.com/quantumlib/Qualtran; quantumai.google/qualtran', statement: 'Qualtran: abstractions for quantum programs and a library of algorithms, experimental', status: 'served', tool: 'statements' },
+  { id: 'openfermion', source: 'github.com/quantumlib/OpenFermion; quantumai.google/openfermion', statement: 'OpenFermion: compiling and analyzing quantum algorithms to simulate fermionic systems', status: 'served', tool: 'statements' },
   { id: 'cirq-noise-source', source: 'github.com/quantumlib/Cirq cirq-core/cirq/ops/common_channels.py', statement: 'The noise channel definitions, checked against Cirq\'s source: bit_flip, phase_flip, depolarize, asymmetric_depolarize, phase_damp, amplitude_damp, generalized_amplitude_damp, reset', status: 'served', tool: 'circuit' },
   { id: 'cirq-insert-source', source: 'github.com/quantumlib/Cirq cirq-core/cirq/circuits/insert_strategy.py', statement: 'The four insert strategies, checked against Cirq\'s source', status: 'served', tool: 'circuit' },
   { id: 'repo-cirq', source: 'github.com/quantumlib/Cirq', statement: 'Cirq: the NISQ circuit framework', status: 'served', tool: 'repositories' },
@@ -54,8 +63,8 @@ export const LEADS: readonly Lead[] = [
   { id: 'repo-openfermion-psi4', source: 'github.com/quantumlib/OpenFermion-Psi4', statement: 'OpenFermion-Psi4: the Psi4 plugin', status: 'served', tool: 'repositories' },
   { id: 'repo-qchack-2021-challenge', source: 'github.com/quantumlib/qchack-2021-challenge', statement: 'qchack-2021-challenge: the Quantum Coalition Hackathon 2021 challenge', status: 'served', tool: 'repositories' },
   { id: 'repo-openfermion-cirq', source: 'github.com/quantumlib/OpenFermion-Cirq', statement: 'OpenFermion-Cirq: quantum circuits for chemistry and materials simulation', status: 'served', tool: 'repositories' },
-  { id: 'repo-github', source: 'github.com/quantumlib/.github', statement: 'organization configuration', status: 'out_of_scope', reason: 'organization configuration for the quantumlib repositories, not a library or a result' },
-  { id: 'repo-allstar', source: 'github.com/quantumlib/.allstar', statement: 'organization configuration', status: 'out_of_scope', reason: 'organization configuration for the quantumlib repositories, not a library or a result' },
+  { id: 'repo-github', source: 'github.com/quantumlib/.github', statement: 'organization configuration: the profile README, a markdownlint configuration and a code of conduct', status: 'out_of_scope', reason: `fetched on ${FETCHED}: the repository has no description and holds the organization profile, .markdownlintrc and CODE_OF_CONDUCT.md; configuration for the quantumlib repositories, not a library or a result` },
+  { id: 'repo-allstar', source: 'github.com/quantumlib/.allstar', statement: 'organization configuration: the default Allstar policy files', status: 'out_of_scope', reason: `fetched on ${FETCHED}: a public archive holding allstar.yaml, binary_artifacts.yaml and branch_protection.yaml, described as the default Allstar configuration that points to google/allstar-config; security policy for the repositories, not a library or a result` },
   { id: 'cirq-pauli', source: 'quantumai.google/cirq/build/pauli_observables', statement: 'the page\'s stated content, served as the pauli_observables statement', status: 'served', tool: 'statements' },
   { id: 'cirq-noise-representation', source: 'quantumai.google/cirq/noise/representing_noise', statement: 'the page\'s stated content, served as the noise_representation statement', status: 'served', tool: 'statements' },
   { id: 'cirq-histograms', source: 'quantumai.google/cirq/simulate/state_histograms', statement: 'the page\'s stated content, served as the histograms statement', status: 'served', tool: 'statements' },
@@ -72,16 +81,166 @@ export const LEADS: readonly Lead[] = [
   { id: 'cirq-basics', source: 'quantumai.google/cirq/start/basics', statement: 'the page\'s stated content, served as the cirq_basics statement', status: 'served', tool: 'statements' },
   { id: 'qsimcirq-tutorial', source: 'quantumai.google/qsim/tutorials/qsimcirq', statement: 'the page\'s stated content, served as the qsimcirq statement', status: 'served', tool: 'statements' },
   { id: 'openfermion-basis-change', source: 'quantumai.google/openfermion/tutorials/circuits_1_basis_change', statement: 'the page\'s stated content, served as the basis_change statement', status: 'served', tool: 'statements' },
-  { id: 'sitemap', source: 'quantumai.google/sitemap.xml and sitemap_0_of_1.xml', statement: 'The site\'s sitemap, of which the first 100,000 characters list 225 pages', status: 'partial', tool: 'statements', reason: 'the child sitemap is more than a million characters; only its first 100,000 are read, so the remaining pages (mostly reference pages) are not each followed' },
-  { id: 'learn', source: 'quantumai.google/learn', statement: 'Learn overview', status: 'blocked', reason: 'the page is not in the sitemap and returns 404 to the fetch' },
+  { id: 'sitemap', source: 'quantumai.google/sitemap.xml and sitemap_0_of_1.xml', statement: `The site's sitemap, read whole on ${FETCHED}: an index naming one child of ${SITEMAP_CHILD_CHARACTERS.toLocaleString('en-US')} characters listing ${SITEMAP_PAGES.length.toLocaleString('en-US')} pages, every one of them a lead here`, status: 'served', tool: 'leads' },
+  { id: 'learn', source: 'quantumai.google/learn', statement: 'Learn overview', status: 'blocked', reason: `the path is not in the sitemap and returned HTTP 404 on ${FETCHED}; its children learn/map and learn/lab are in the sitemap and are served` },
   { id: 'lab', source: 'quantumai.google/lab', statement: 'Discover the Quantum AI campus: the Santa Barbara campus, its quantum data center, labs and fabrication', status: 'served', tool: 'statements' },
   { id: 'sycamore', source: 'quantumai.google/cirq/google/devices, printed diagram; github.com/quantumlib/Cirq known_devices.py', statement: 'Sycamore: 54 qubits and 88 couplers, its printed layout, its two-qubit gates', status: 'served', tool: 'processor' },
   { id: 'quantum-computer', source: 'quantumai.google/quantumcomputer', statement: 'Superconducting hardware, cryogenic environment, Santa Barbara', status: 'served', tool: 'statements' },
-  { id: 'what-is-qc', source: 'quantumai.google/whatisqc, PDF', statement: 'What quantum computing is: superposition, interference, the problems expected', status: 'served', tool: 'statements' },
+  { id: 'what-is-qc', source: 'quantumai.google/whatisqc; quantumai.google/site-assets/downloads/what-is-quantum-computing.pdf', statement: 'What quantum computing is: superposition, interference, the problems expected', status: 'served', tool: 'statements' },
   { id: 'progress-pdf', source: 'services.google.com PDF, progress', statement: 'Progress since 2014, Milestones 1 and 2', status: 'served', tool: 'statements' },
   { id: 'vision-pdf', source: 'services.google.com PDF, vision', statement: 'Classical and quantum computers together', status: 'served', tool: 'statements' },
   { id: 'responsibility-pdf', source: 'services.google.com PDF, responsibilities', statement: 'Honest reporting, RSA risk, post-quantum cryptography, SPHINCS+, collaboration', status: 'served', tool: 'statements' },
-  { id: 'coursera', source: 'coursera.org, quantum error correction course', statement: 'An external course', status: 'out_of_scope', reason: 'an external course, not content on quantumai.google' },
-  { id: 'videos', source: 'youtube, Willow and Quantum Echoes videos', statement: 'Videos', status: 'out_of_scope', reason: 'video content, not carried by this repository' },
-  { id: 'careers', source: 'google.com careers, quantum', statement: 'Careers', status: 'out_of_scope', reason: 'a jobs listing, not technical content' },
+  { id: 'coursera', source: 'coursera.org/learn/quantum-error-correction, as quantumai.google/resources describes it', statement: 'The Resources page\'s description of the course: a free introduction to quantum error correction, hands-on with Stim and Crumble', status: 'served', tool: 'statements' },
+  { id: 'videos', source: 'youtube.com/c/QuantumAI, as quantumai.google/resources describes it', statement: 'Educational videos: how-to videos on programming quantum computers, scientific breakthroughs, and new tools', status: 'partial', tool: 'statements', reason: 'the Resources page\'s description of the videos is served as the resources statement; the videos themselves are not text and are not carried' },
+  { id: 'careers', source: 'google.com/about/careers, the Careers link of quantumai.google (quantumai.google/careers returns 404)', statement: 'Careers', status: 'out_of_scope', reason: `the site's Careers link targets Google's job search filtered to quantum in California, Munich, Seattle and Zurich; quantumai.google/careers returned HTTP 404 on ${FETCHED}; a jobs listing, not technical content` },
+  // the leads of v1.1.0 restored, each judged against the tools on this branch
+  { id: 'qpu-quantumlib', source: 'github.com/quantumlib', statement: 'The quantumlib GitHub organization: fifteen active repositories for quantum computing, with what this repository implements of each', status: 'served', tool: 'quantumlib' },
+  { id: 'cirq-framework', source: 'github.com/quantumlib/Cirq', statement: 'Cirq: a Python framework for quantum circuit design, optimization, and simulation', status: 'served', tool: 'quantumlib' },
+  { id: 'qsim-simulator', source: 'github.com/quantumlib/qsim', statement: 'qsim: a high-performance quantum circuit simulator with C++ backend and Cirq interface', status: 'served', tool: 'quantumlib' },
+  { id: 'qualtran-algorithms', source: 'github.com/quantumlib/Qualtran', statement: 'Qualtran: abstractions and libraries for writing fault-tolerant quantum algorithms', status: 'served', tool: 'quantumlib' },
+  { id: 'openfermion-simulation', source: 'github.com/quantumlib/OpenFermion', statement: 'OpenFermion: a library for simulating fermionic systems with quantum computers', status: 'served', tool: 'quantumlib' },
+  { id: 'stim-stabilizer', source: 'github.com/quantumlib/Stim', statement: 'Stim: a high-performance stabilizer code simulator', status: 'served', tool: 'quantumlib' },
+  { id: 'chromobius-decoder', source: 'github.com/quantumlib/chromobius', statement: 'chromobius: a Möbius decoder for color code quantum error correction', status: 'served', tool: 'quantumlib' },
+  { id: 'recirq-experiments', source: 'github.com/quantumlib/ReCirq', statement: 'ReCirq: research modules and experiment implementations using Cirq', status: 'served', tool: 'quantumlib' },
+  { id: 'tesseract-qec-decoder', source: 'github.com/quantumlib/tesseract-decoder', statement: 'tesseract-decoder: a search-based quantum error correction decoder', status: 'served', tool: 'quantumlib' },
+  { id: 'openfermion-pyscf', source: 'github.com/quantumlib/OpenFermion-PySCF', statement: 'OpenFermion-PySCF: plugin for the PySCF computational chemistry package', status: 'served', tool: 'quantumlib' },
+  { id: 'openfermion-fqe', source: 'github.com/quantumlib/OpenFermion-FQE', statement: 'OpenFermion-FQE: the fermionic quantum emulator for exact simulations', status: 'served', tool: 'quantumlib' },
+  { id: 'openfermion-cirq', source: 'github.com/quantumlib/OpenFermion-Cirq', statement: 'OpenFermion-Cirq: quantum circuits for chemistry and materials simulation', status: 'served', tool: 'quantumlib' },
+  { id: 'unitary-library', source: 'github.com/quantumlib/unitary', statement: 'unitary: an API library of common operations for adding quantum behaviours to games', status: 'served', tool: 'quantumlib' },
+  { id: 'typedunits-library', source: 'github.com/quantumlib/TypedUnits', statement: 'TypedUnits: a Python library for type-safe unit and dimension calculations', status: 'served', tool: 'quantumlib' },
+  { id: 'quantumlib-ecosystem', source: 'github.com/quantumlib', statement: 'The quantumlib ecosystem: Cirq as foundation, qsim for simulation, Qualtran for algorithms, OpenFermion for chemistry, Stim for error correction', status: 'served', tool: 'quantumlib' },
+  { id: 'cirq-google-integration', source: 'github.com/quantumlib/Cirq cirq-google module', statement: 'Cirq-Google: integration with Google Quantum AI hardware and the Willow processor', status: 'partial', tool: 'circuit', reason: 'the circuit tool validates circuits against the Willow, Sycamore and Sycamore23 devices and applies Willow\'s spec-sheet noise, as a virtual engine does; the engine client (programs, jobs, reservations) is described in the google_concepts statement and not implemented' },
+  { id: 'quantumlib-documentation', source: 'quantumai.google and github.com/quantumlib docs', statement: 'Quantumlib documentation: tutorials, API references, and examples for all packages', status: 'partial', tool: 'leads', reason: 'every documentation page of quantumai.google is a lead here, from the sitemap read whole; the repositories\' own documentation on github.com is not fetched' },
+  { id: 'error-correction-threshold', source: 'quantumai.google/quantumcomputer; arXiv 2408.13687', statement: 'Error correction below threshold: the logical error falls as the code distance grows, Λ = 2.14 per distance step', status: 'served', tool: 'processor' },
+  { id: 'magic-state-cultivation-lead', source: 'blog.google, magic state cultivation', statement: 'Magic state cultivation: 40-fold error reduction, 99.99% logical fidelity, color code to surface code transition', status: 'served', tool: 'processor' },
+  { id: 'neutral-atom-expansion', source: 'blog.google, neutral atom quantum computers', statement: 'Neutral atom quantum computers: expansion beyond superconducting to alternative qubit platforms', status: 'served', tool: 'statements' },
+  { id: 'quantum-advantage-verification', source: 'quantumai.google, Quantum Echoes', statement: 'Quantum advantage verification: the OTOC protocol on the 105-qubit array, stated as the first verifiable quantum advantage', status: 'served', tool: 'echo_benchmark' },
+  { id: 'cryogenic-engineering', source: 'quantumai.google/quantumcomputer; blog.google, the campus announcement', statement: 'Cryogenic engineering: superconducting qubits need specialized cryogenic environments and custom control electronics; the cryostats reach about 10 millikelvin', status: 'served', tool: 'statements' },
+  { id: 'qubit-scaling-architecture', source: 'quantumai.google/quantumcomputer; the Willow spec sheet', statement: 'Qubit scaling and chip architecture: qubit quality improved while the count grows; Willow has 105 qubits per its spec sheet (the v1.1.0 lead said 70+, the 2023 chip\'s count)', status: 'served', tool: 'processor' },
+  { id: 'tunable-coupler-dynamics', source: 'quantumai.google/quantumcomputer', statement: 'Tunable qubits and couplers: dynamic performance adjustment and optimization for faster gates and operations', status: 'served', tool: 'statements' },
+  { id: 'gate-development', source: 'quantumai.google/quantumcomputer; the Willow spec sheet', statement: 'Gate development and calibration: the single- and two-qubit gate errors the spec sheet states, applied as noise by the circuit tool', status: 'served', tool: 'processor' },
+  { id: 'chip-fabrication-precision', source: 'quantumai.google/quantumcomputer; quantumai.google/lab', statement: 'Chip fabrication and calibration: Willow built in the Santa Barbara fabrication facility; error correction informs chip architecture, gate development, fabrication and calibration', status: 'served', tool: 'statements' },
+  { id: 'full-stack-integration', source: 'quantumai.google/quantumcomputer', statement: 'Full-stack integration: hardware, control and decoding electronics, cryostats, the operating system and user-facing software', status: 'served', tool: 'statements' },
+  { id: 'hybrid-quantum-classical', source: 'quantumai.google/software; quantumai.google/cirq/experiments/qaoa/qaoa_maxcut', statement: 'Hybrid quantum-classical algorithms: a classical outer loop over quantum expectation values, the QAOA sweep and the VQE sweep', status: 'served', tool: 'algorithm' },
+  { id: 'chemistry-simulation-lead', source: 'quantumai.google/software, OpenFermion; quantumai.google/openfermion/tutorials/intro_to_openfermion', statement: 'Chemistry simulation: H₂ in STO-3G as a two-qubit Pauli Hamiltonian, its integrals computed here and checked against the tutorial\'s printed energies, and a VQE sweep on the simulator', status: 'partial', tool: 'chemistry-simulation', reason: 'one molecule, H₂ in its minimal basis, is compiled and solved here; OpenFermion\'s general compilation of molecules and materials is not implemented' },
+  { id: 'quantum-error-correction-course', source: 'quantumai.google/resources, Coursera', statement: 'Quantum error correction education: a hands-on Coursera course on QEC for all skill levels, with Stim and Crumble', status: 'served', tool: 'statements' },
+  { id: 'qubit-game-interactive', source: 'quantumai.google/resources; quantumai.google/education/thequbitgame', statement: 'Interactive learning: the Qubit Game, building a quantum computer one qubit at a time, from keeping qubits cool to blocking cosmic rays', status: 'served', tool: 'statements' },
+  { id: 'lab-tour-virtual', source: 'quantumai.google/resources; quantumai.google/learn/lab', statement: 'Virtual lab tour: the Santa Barbara campus, from space down to the cryostat', status: 'served', tool: 'statements' },
+  { id: 'error-correction-journey', source: 'quantumai.google/resources; quantumai.google/learn/map', statement: 'Error correction journey: from the NISQ era to the mountain of error correction, as the Resources page and the journey page state it', status: 'served', tool: 'statements' },
+  { id: 'educational-videos', source: 'quantumai.google/resources', statement: 'Educational videos: how-to guides on programming quantum computers, breakthroughs, and new tools', status: 'partial', tool: 'statements', reason: 'the page\'s description of the videos is served; the videos are not text and are not carried' },
+  { id: 'superconducting-qubit-focus', source: 'quantumai.google/quantumcomputer', statement: 'Superconducting qubit focus: specialized cryogenic environments and custom control electronics', status: 'served', tool: 'statements' },
+  { id: 'santa-barbara-campus', source: 'quantumai.google/lab', statement: 'Santa Barbara quantum campus: hardware teams, fabrication facility, data center, research labs', status: 'served', tool: 'statements' },
+  { id: 'willow-design-principles', source: 'quantumai.google/quantumcomputer; the Willow spec sheet', statement: 'Willow design: 105 qubits per the spec sheet (the v1.1.0 lead said 70, the 2023 chip\'s count), tunable qubits and couplers, the full-system approach to error correction', status: 'served', tool: 'processor' },
+  { id: 'calibration-software', source: 'quantumai.google/quantumcomputer', statement: 'Calibration and error correction software: managing the entire quantum system and control electronics', status: 'served', tool: 'statements' },
+  // leads the whole sitemap added
+  { id: 'resources', source: 'quantumai.google/resources', statement: 'Educational Resources: the Coursera course, the whitepaper, the lab tour, the videos, the journey and the Qubit Game, as the page lists them', status: 'served', tool: 'statements' },
+  { id: 'qec-milestone', source: 'quantumai.google/qecmilestone', statement: 'Milestone 2: the first demonstration of a logical qubit prototype, with the Nature paper the page links', status: 'served', tool: 'statements' },
+  { id: 'weber-datasheet', source: 'quantumai.google/hardware/datasheet/weber; quantumai.google/hardware/datasheet/weber.pdf', statement: 'The Weber processor datasheet (May 14, 2021): 53 qubits, gate durations, typical errors and T1', status: 'served', tool: 'statements' },
+  { id: 'aps-summit', source: 'quantumai.google/apsglobalphysics; quantumai.google/apsglobalphysics2026', statement: 'The APS Global Physics Summit event pages: sessions, booth, the Willow Early Access Program announcement', status: 'served', tool: 'statements' },
+  { id: 'student-opportunities', source: 'quantumai.google/site-assets/downloads/qai-student-opportunities.pdf', statement: 'Student opportunities: the student researcher program, internships of 12 to 14 weeks, the PhD fellowship', status: 'out_of_scope', reason: `the PDF (1,807,623 bytes, fetched on ${FETCHED}) describes recruiting programs and points to careers.google.com; a programs listing, not technical content` },
+  { id: 'home', source: 'quantumai.google', statement: 'The home page: Willow, Quantum Echoes, the Nature papers and the Early Access Program it links', status: 'served', tool: 'statements' },
+  { id: 'qubit-game-page', source: 'quantumai.google/education/thequbitgame', statement: 'The Qubit Game: "Build a quantum computer, one qubit at a time."', status: 'served', tool: 'statements' },
+  { id: 'learn-lab', source: 'quantumai.google/learn/lab', statement: 'Discover the Quantum AI campus: the virtual walk through the headquarters', status: 'served', tool: 'statements' },
 ]
+
+/** The Cirq API symbols the sitemap documents that this repository implements, each with the export here that stands for it.
+ *  Only entries whose export exists in cirq.ts are used, so the list cannot name an implementation that is not there. */
+const CIRQ_SYMBOLS: readonly [symbol: string, exported: string, note: string][] = [
+  ['Circuit', 'Circuit', 'moments, append with an insert strategy, qubits in key order'],
+  ['Moment', 'Moment', 'operations on disjoint qubits'],
+  ['Simulator', 'Simulator', 'simulate (the state vector) and run (sampled bitstrings), up to 20 qubits'],
+  ['DensityMatrixSimulator', 'DensityMatrixSimulator', 'exact channels, up to 8 qubits'],
+  ['Device', 'Device', 'validate_operation, validate_moment, validate_circuit'],
+  ['LineQubit', 'LineQubit', 'of and range'],
+  ['GridQubit', 'GridQubit', 'of and square'],
+  ['NamedQubit', 'NamedQubit', 'of'],
+  ['Qid', 'keyOf', 'the qubit key that orders and compares qubits'],
+  ['X', 'X', ''], ['Y', 'Y', ''], ['Z', 'Z', ''], ['H', 'H', ''], ['CZ', 'CZ', ''], ['CNOT', 'CNOT', ''], ['CX', 'CNOT', ''], ['SWAP', 'SWAP', ''], ['TOFFOLI', 'TOFFOLI', ''], ['CCX', 'TOFFOLI', ''], ['CCNOT', 'TOFFOLI', ''], ['ZZ', 'ZZ', ''],
+  ['S', 'powerOf', 'Z**0.5'], ['T', 'powerOf', 'Z**0.25'],
+  ['XPowGate', 'powerOf', 'X**t'], ['YPowGate', 'powerOf', 'Y**t'], ['ZPowGate', 'powerOf', 'Z**t'], ['HPowGate', 'powerOf', 'H**t'], ['CZPowGate', 'powerOf', 'CZ**t'], ['CXPowGate', 'powerOf', 'CNOT**t'], ['CNotPowGate', 'powerOf', 'CNOT**t'], ['SwapPowGate', 'powerOf', 'SWAP**t'], ['ZZPowGate', 'powerOf', 'ZZ**t'], ['CCXPowGate', 'powerOf', 'TOFFOLI**t'], ['CCZPowGate', 'powerOf', 'CCZ**t is not built; TOFFOLI**t is'],
+  ['Gate', 'applied', 'a gate is its name, arity and unitary'], ['GateOperation', 'applied', 'gate.on(*qubits)'], ['Operation', 'applied', ''],
+  ['MeasurementGate', 'measure', ''], ['measure', 'measure', ''],
+  ['InsertStrategy', 'Circuit', 'EARLIEST, NEW, INLINE, NEW_THEN_INLINE'],
+  ['Result', 'Result', 'measurements and histogram'],
+  ['inverse', 'adjointOf', 'the adjoint of a gate'], ['unitary', 'applied', 'every gate carries its unitary'],
+  ['bit_flip', 'noisy', ''], ['phase_flip', 'noisy', ''], ['depolarize', 'noisy', ''], ['asymmetric_depolarize', 'noisy', ''], ['amplitude_damp', 'noisy', ''], ['phase_damp', 'noisy', ''], ['generalized_amplitude_damp', 'noisy', ''], ['reset', 'noisy', ''],
+  ['BitFlipChannel', 'noisy', ''], ['PhaseFlipChannel', 'noisy', ''], ['DepolarizingChannel', 'noisy', ''], ['AsymmetricDepolarizingChannel', 'noisy', ''], ['AmplitudeDampingChannel', 'noisy', ''], ['PhaseDampingChannel', 'noisy', ''], ['GeneralizedAmplitudeDampingChannel', 'noisy', ''], ['ResetChannel', 'noisy', ''],
+  ['kraus', 'noisy', 'each channel is its Kraus operators'],
+  ['PauliString', 'expectationOf', 'a Pauli observable by qubit'], ['DensePauliString', 'pauliProduct', 'a Pauli string as one gate'],
+  ['qft', 'Circuit', 'qftOperations in algorithms.ts'], ['QuantumFourierTransformGate', 'Circuit', 'qftOperations in algorithms.ts'],
+]
+
+const CIRQ_IMPLEMENTED = new Map(CIRQ_SYMBOLS.filter(([, exported]) => exported in cirq).map(([symbol, exported, note]) => [symbol, { exported, note }]))
+
+/** The paths a hand-written lead names on quantumai.google, so the sitemap's leads do not repeat them. */
+const coveredPaths = (): Set<string> => {
+  const covered = new Set<string>()
+  for (const lead of HAND_LEADS) {
+    for (const match of lead.source.matchAll(/quantumai\.google\/([^\s;,()]+)/g)) covered.add(match[1]!.replace(/^static\//, ''))
+    if (lead.source === 'quantumai.google') covered.add('')
+  }
+  return covered
+}
+
+const OTHER_VENDORS: Record<string, string> = {
+  cirq_ionq: 'IonQ\'s trapped-ion hardware integration in Cirq',
+  cirq_aqt: 'AQT\'s trapped-ion hardware integration in Cirq',
+  cirq_pasqal: 'Pasqal\'s neutral-atom hardware integration in Cirq',
+  cirq_web: 'Cirq\'s web visualisation package',
+}
+
+/** The lead one page of the sitemap makes, by what the page is and what this repository implements of it. */
+const sitemapLead = (path: string, lastmod: string): Lead => {
+  const base = { id: `page:${path || 'home'}`, source: `quantumai.google/${path}`, lastmod }
+  const open = (statement: string): Lead => ({ ...base, statement, status: 'open', reason: `in the sitemap (lastmod ${lastmod}); fetchable; no tool follows this page yet` })
+  if (path.startsWith('?hl=')) return { ...base, statement: `the home page in another language (${path.slice(4)})`, status: 'out_of_scope', reason: 'a language variant of the home page; the English page is the lead' }
+  if (path === 'robots.txt') return { ...base, statement: 'the crawler rules file', status: 'out_of_scope', reason: 'site plumbing, not content' }
+  if (/^google[0-9a-f]+$/.test(path)) return { ...base, statement: 'a site-verification token page', status: 'out_of_scope', reason: 'site plumbing, not content' }
+  const reference = /^reference\/(python|cc)\/([^/]+)\/(.+)$/.exec(path)
+  if (reference) {
+    const [, , pkg, symbol] = reference as unknown as [string, string, string, string]
+    if (pkg === 'cirq') {
+      const found = CIRQ_IMPLEMENTED.get(symbol)
+      if (found) return { ...base, statement: `API reference of cirq.${symbol}; implemented here as ${found.exported}${found.note ? ` (${found.note})` : ''}`, status: 'served', tool: 'circuit' }
+      return open(`API reference of cirq.${symbol.replace(/\//g, '.')}, not implemented here`)
+    }
+    if (pkg === 'cirq_google') {
+      if (symbol === 'Sycamore' || symbol === 'Sycamore23' || symbol === 'devices/known_devices') return { ...base, statement: `API reference of cirq_google.${symbol.replace(/\//g, '.')}; the device is built here from the same grid`, status: 'served', tool: 'processor' }
+      return open(`API reference of cirq_google.${symbol.replace(/\//g, '.')}, not implemented here`)
+    }
+    if (pkg === 'openfermion') {
+      if (symbol === 'chem/MolecularData' || symbol === 'ops/QubitOperator') return { ...base, statement: `API reference of openfermion.${symbol.replace(/\//g, '.')}; for H₂ in STO-3G its content (the integrals, the Pauli-term Hamiltonian) is computed here`, status: 'partial', tool: 'chemistry-simulation', reason: 'one molecule in its minimal basis is computed here; the general class is not implemented' }
+      return open(`API reference of openfermion.${symbol.replace(/\//g, '.')}, not implemented here`)
+    }
+    if (pkg in OTHER_VENDORS) return { ...base, statement: `API reference of ${pkg}.${symbol.replace(/\//g, '.')}`, status: 'out_of_scope', reason: `${OTHER_VENDORS[pkg]}, not Google Quantum AI's layer` }
+    return open(`API reference of ${pkg}.${symbol.replace(/\//g, '.')}, not implemented here`)
+  }
+  return open(`the page ${path}`)
+}
+
+/** The leads of the sitemap's pages that no hand-written lead names, in the sitemap's sorted order. */
+export const SITEMAP_LEADS: readonly Lead[] = (() => {
+  const covered = coveredPaths()
+  return SITEMAP_PAGES.filter(([path]) => !covered.has(path)).map(([path, lastmod]) => sitemapLead(path, lastmod))
+})()
+
+export const LEADS: readonly Lead[] = [
+  { id: 'cleanup-auto-release-script', source: 'scripts/auto-release.ts (untracked, orphan lineage)', statement: 'A release script with VERSION hard-coded to 1.1.0 that force-pushed a tag and created a GitHub release; it bypassed the single-source version and the flow.', status: 'out_of_scope', reason: 'removed on 2026-10-25; releases run through `npm run next` and the author\'s deploy, never a forced tag' },
+  { id: 'cleanup-next-build-dir', source: '.next/ (untracked, 8 KB here)', statement: 'A Next.js build directory left by the orphan lineage, where it reached 1.1 GB; nothing on this branch builds with Next.', status: 'out_of_scope', reason: 'removed on 2026-10-25; generated data is build output or a docket entry, never tree pollution' },
+  { id: 'cleanup-stale-branches', source: 'git branches snapshot/pre-purge, purge/google-only', statement: 'Two local branches from an earlier attempt at the same split: the same content as origin/main on a rewritten history, one tracking 237k build-artefact files.', status: 'out_of_scope', reason: 'deleted locally on 2026-10-25; origin/main and rebuild/phase-1 carry the history; orphan/v1.1.1-audit is kept as evidence' },
+  { id: 'cleanup-fnv1a-consolidated', source: 'src/quantum/blocks.ts', statement: 'A 32-bit FNV-1a hash beside the unit\'s 64-bit fold: two folds for one job.', status: 'served', tool: 'verify', reason: 'consolidated on 2026-10-25 into foldOf, the unit\'s fold; every address, receipt and fingerprint uses one construction' },
+  { id: 'human-device-blocks', source: 'src/quantum/blocks.ts, src/quantum/widgets.ts', statement: 'Every tool result is a block a human device renders: HTML on the host\'s design tokens, Open Graph metadata for a link preview, a shadcn registry item for an app, the attribution line, the a432 accent. Screen, phone, kiosk or chat host, the same block.', status: 'served', tool: 'audit', reason: 'the audit checks every result carries widget, Open Graph, block and licence' },
+  { id: 'mcp-ui-extension', source: 'modelcontextprotocol.io (MCP Apps / UI extension)', statement: 'The MCP UI extension lets a host render interactive views a server declares; this tree declares its widgets in _meta.widget as HTML and its blocks as shadcn registry items.', status: 'partial', tool: 'audit', reason: 'the html and block are served; the extension\'s declared resource scheme and the host handshake are not implemented here, and the specification is still moving' },
+  { id: 'iot-adapter-cluster', source: 'the docket contract (src/worker.ts)', statement: 'Any device is an adaptor: a sensor or actuator writes readings as entries { kind: reading, from: device, body } to the docket and reads commands back from it; the docket is agnostic, so a cluster of devices is a cluster of mirrors and writers, each entry fingerprinted, sealed, replicated and healable.', status: 'open', reason: 'the docket accepts such entries today; no device driver, firmware or edge gateway is in this tree; the first device, its reading schema and its verifier are the next leads' },
+  { id: 'device-reading-verifier', source: 'src/quantum/verifiers.ts', statement: 'A device reading is verified like any fact: against a public reference where one exists (a weather station against a national service, a clock against NTP, a spectrum against NIST lines).', status: 'open', reason: 'no reading kind is registered yet; add the fact kind and its free verifier with the first device' },
+  { id: 'accessibility-device', source: 'the human-device lead', statement: 'A human device includes a screen reader, a braille display, a voice assistant: the block\'s HTML carries structure and text, so the same block is spoken or read; the a432 accent is decoration a reader can ignore.', status: 'partial', tool: 'audit', reason: 'the html is structured (cards, tables, attribution); no accessibility audit has run on the widgets; that audit is the lead' },
+  { id: 'address-agreement', source: 'uuidna.com/mcp compute_address', statement: 'The unit names a value by compute_address; this tree names content by uuidOf, ported one for one from the unit\'s published shapeUuidOf (two FNV-1a 64 folds, 8-4-4-4-12, a content-decided version nibble). For the probe "qpu" the two differ, so the door uses a builder outside the sources this tree can read.', status: 'partial', tool: 'audit', reason: 'the readiness step records the agreement each run; until the door\'s builder is published or the unit adopts shapeUuidOf for the door, the two addresses are both carried and neither is claimed to be the other' },
+  { id: 'pravets-8m-recompute', source: 'statement', statement: 'The 55 Clay.lean relations are integer identities between the unit\'s constants within 32-bit arithmetic, and the receipts are 32-bit FNV-1a hashes: an 8-bit machine such as the Pravets 8M can recompute both and compare content addresses, verifying that the kernel check happened without running the kernel.', status: 'partial', tool: 'audit', reason: 'the kernel check and the census run here; a 32-bit-only recomputer of the Clay relations and of the receipt chain is not yet in this tree' },
+...HAND_LEADS, ...SITEMAP_LEADS]
+
+/** The leads by status: the counts the leads tool reports. */
+export const leadCounts = (leads: readonly Lead[] = LEADS): Record<LeadStatus, number> => {
+  const counts: Record<LeadStatus, number> = { served: 0, partial: 0, blocked: 0, out_of_scope: 0, open: 0 }
+  for (const l of leads) counts[l.status] += 1
+  return counts
+}

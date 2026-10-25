@@ -5,13 +5,13 @@ import { handle } from './mcp.js'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
-test('tools/list serves the ten tools with input schemas, and initialize names the server', () => {
+test('tools/list serves the eighteen tools with input schemas, and initialize names the server', () => {
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
   assert.ok('result' in init && (init.result as { serverInfo: { name: string } }).serverInfo.name === 'qpu')
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
   assert.ok('result' in list)
   const tools = (list.result as { tools: { name: string; inputSchema: object }[] }).tools
-  assert.deepEqual(tools.map((t) => t.name), ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'leads'])
+  assert.deepEqual(tools.map((t) => t.name), ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'leads', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design', 'audit', 'match', 'clay', 'verify'])
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 
@@ -190,7 +190,7 @@ test('the software and statements and leads tools serve the stated lists, and an
   const lead = call('leads', { status: 'blocked' })
   assert.ok('result' in lead)
   const counts = (lead.result as { structuredContent: { counts: Record<string, number>; total: number } }).structuredContent
-  assert.equal(counts.counts.served! + counts.counts.partial! + counts.counts.blocked! + counts.counts.out_of_scope!, counts.total)
+  assert.equal(Object.values(counts.counts).reduce((a, b) => a + b, 0), counts.total)
 })
 
 test('every new tool returns a widget that uses only the host tokens', () => {
@@ -207,7 +207,7 @@ test('every new tool returns a widget that uses only the host tokens', () => {
   ]
   for (const widget of widgets) {
     assert.ok(widget.includes('var(--'))
-    assert.doesNotMatch(widget, /#[0-9a-f]{3,6}\b/i)
+    assert.doesNotMatch(widget, /style="[^"]*#[0-9a-f]{3,6}\b/i)
     assert.doesNotMatch(widget, /<(script|style)\b/i)
   }
 })

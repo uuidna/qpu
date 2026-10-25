@@ -1,0 +1,3 @@
+#!/bin/sh
+# The platform runs itself before anything leaves this machine. Offline: the verification wave runs in CI.
+npm run next -- --offline
