@@ -274,6 +274,23 @@ test('the walk: a handle opens its family, a program compiles and executes next,
   assert.ok(de.notes[0]!.startsWith('translate later: German'))
 })
 
+test('a commit handle is a handle in qpu: its imprint commitment carries the commit as handle, links the receipt, opens a family and walks on', async () => {
+  const e = env()
+  const receipt = { id: 'r', steps: ['green'] }
+  const { id: receiptId, sha256 } = await (await post(e, { kind: 'receipt', from: 'qpu.test', body: receipt })).json() as { id: string; sha256: string }
+  const commit = '9452c2d4'
+  const ch = channelOf(receiptId)
+  const address = uuidFromParts(commit, ch.program, ch.tail)
+  const c = await post(e, { kind: 'imprint', from: 'qpu.test', address, sha256, links: [receiptId] })
+  assert.equal(c.status, 201)
+  const fam = await (await worker.fetch(req(`/${commit}`), e)).json() as { entries: { id: string; kind: string }[] }
+  assert.ok(fam.entries.some((x) => x.id === address && x.kind === 'imprint'))
+  const linked = await (await worker.fetch(req(`/docket/${receiptId}`), e)).json() as { refs: number }
+  assert.equal(linked.refs, 1)
+  const walk = await (await worker.fetch(req(`/${commit}/${ch.program.map((n) => n.toString(16)).join('')}/${ch.tail}`), e)).json() as { id: string; compiled: unknown[] }
+  assert.equal(walk.id, address); assert.equal(walk.compiled.length, 10)
+})
+
 test('catch all, decide later: a path that is not a walk is put to the match tool and comes back decided, never a bare 404', async () => {
   const e = env()
   const page = await worker.fetch(req('/how-many-qubits-does-willow-have', { headers: { accept: 'text/html' } }), e)

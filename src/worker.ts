@@ -45,6 +45,9 @@ export const discoveryOf = (origin: string) => {
  *                                     COMMITMENT (fingerprints now, witnessed by every mirror that records it); writing the content
  *                                     later REVEALS it into the same entry. Same content twice is stored once. Same address with a
  *                                     different SHA-256 is a fold COLLISION: both kept, both fingerprinted, a collision lead written.
+ *                                     A COMMIT'S IMPRINT is a commitment whose address carries the commit's eight hex as handle (the
+ *                                     receipt's program and tail behind it) and links the receipt, so /<commit> opens the commit's family
+ *                                     and /<commit>/<program>/<tail> walks on from the receipt's own program.
  *                                     A write REPLICATES: the same entry is forwarded to every configured mirror in the same call
  *                                     and the answer says where it landed.
  *    DELETE /docket/:id              refused while any link points at the entry; releases its links and unshared fragments.
@@ -152,8 +155,11 @@ export class Docket {
       if (!e.address || !e.sha256 || !ID.test(e.address) || !/^[0-9a-f]{64}$/.test(e.sha256)) return json({ error: 'a commitment names an address (v8 UUID) and a sha256 (64 hex)' }, 400)
       const existing = await this.entry(e.address)
       if (existing) return json({ id: existing.id, sha256: existing.sha256, committedAt: existing.committedAt ?? existing.date, revealed: existing.fragments.length > 0, duplicate: true }, 200)
+      const clinks = [...new Set(e.links ?? [])]
+      for (const l of clinks) { if (!ID.test(l)) return json({ error: `link ${l} is not an entry id` }, 400); if (!(await this.entry(l))) return json({ error: `link ${l} names no entry` }, 404) }
       const witness = uuidOf(JSON.stringify({ address: e.address, sha256: e.sha256, from: e.from, date }))
-      const row: Entry = { id: e.address, kind: e.kind, from: e.from, date, bytes: 0, sha256: e.sha256, fragments: [], lengths: [], parities: [], links: [], committedAt: date, witness }
+      const row: Entry = { id: e.address, kind: e.kind, from: e.from, date, bytes: 0, sha256: e.sha256, fragments: [], lengths: [], parities: [], links: clinks, committedAt: date, witness }
+      for (const l of clinks) await this.bump('ref', l, 1)
       await this.storage.put(`row:${row.id}`, row)
       return json({ id: row.id, sha256: row.sha256, committedAt: date, witness, revealed: false, committed: true, landed: await this.replicate(request, e) }, 201)
     }
