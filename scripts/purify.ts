@@ -16,7 +16,10 @@ const ROOT = process.cwd()
 const Q = join(ROOT, 'src', 'quantum')
 const files = readdirSync(Q).filter((f) => f.endsWith('.ts'))
 const text = Object.fromEntries(files.map((f) => [f, readFileSync(join(Q, f), 'utf8')]))
-const all = Object.values(text).join('\n') + readdirSync(join(ROOT, 'docs')).filter((f) => f.endsWith('.md')).map((f) => readFileSync(join(ROOT, 'docs', f), 'utf8')).join('\n')
+// Proof by use is sought in every tracked source text of the tree (TypeScript, Vue, Markdown, Lean), not one folder: a page's component is a use.
+const tracked = execFileSync('git', ['ls-files'], { cwd: ROOT, encoding: 'utf8' }).trim().split('\n')
+const served = Object.values(text).join('\n') + readdirSync(join(ROOT, 'docs')).filter((f) => f.endsWith('.md')).map((f) => readFileSync(join(ROOT, 'docs', f), 'utf8')).join('\n')
+const all = served + '\n' + tracked.filter((f) => /\.(ts|mts|vue|md|lean)$/.test(f) && !f.startsWith('docs/audit/') && existsSync(join(ROOT, f))).map((f) => readFileSync(join(ROOT, f), 'utf8')).join('\n')
 
 type Lead = { id: string; source: string; statement: string; status: 'open'; reason: string }
 const leads: Lead[] = []
@@ -28,12 +31,12 @@ for (const f of files) {
     if (uses <= 1) leads.push({ id: `unproven-${f.replace(/\.ts$/, '')}-${name}`, source: `src/quantum/${f}`, statement: `export ${name} in ${f} is referenced by nothing: no test, tool, example, page or module`, status: 'open', reason: 'not proven by use; harden with a test or soften by removal' })
   }
   const stem = f.replace(/\.ts$/, '')
-  const imported = files.some((g) => g !== f && new RegExp(`from '\\./${stem}\\.(js|ts)'`).test(text[g]!)) || /import .* from '\.\.\/src\/quantum\/${stem}\.ts'/.test(all)
+  const imported = files.some((g) => g !== f && new RegExp(`from '\\./${stem}\\.(js|ts)'`).test(text[g]!)) || new RegExp(`from '(?:\\.\\./)+src/quantum/${stem}\\.ts'`).test(all)
   if (!imported && !f.endsWith('.test.ts') && f !== 'mcp.ts') leads.push({ id: `orphan-${stem}`, source: `src/quantum/${f}`, statement: `${f} is imported by nothing`, status: 'open', reason: 'an orphan is unproven; fold it in or remove it' })
 }
 
-const doubled = (all.match(/&amp;#\d+;|&amp;[a-z]+;/g) ?? []).length
-if (doubled) leads.push({ id: 'double-escaped-entities', source: 'src/quantum', statement: `${doubled} double-escaped HTML entities (e.g. &amp;#39;) in served text: titles were escaped at the source and again by the widget`, status: 'open', reason: 'decode entities where the text enters; escape once where it leaves' })
+const doubled = (served.match(/&amp;#\d+;|&amp;[a-z]+;/g) ?? []).length
+if (doubled) leads.push({ id: 'double-escaped-entities', source: 'src/quantum', statement: `${doubled} double-escaped HTML entities (an ampersand escaped twice) in served text: titles were escaped at the source and again by the widget`, status: 'open', reason: 'decode entities where the text enters; escape once where it leaves' })
 
 // Collisions are leads: every text the tree addresses (example texts, lead statements) folded; two different texts at one address is a lead.
 const addressed = new Map<string, Set<string>>()
@@ -45,7 +48,6 @@ console.log(`purify: ${addressed.size} addresses scanned, ${collisions} collisio
 
 // Measurements for the README table.
 const sh = (cmd: string, args: string[]): string => { const r = spawnSync(cmd, args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 }); return `${r.stdout ?? ''}${r.stderr ?? ''}` }
-const tracked = execFileSync('git', ['ls-files'], { cwd: ROOT, encoding: 'utf8' }).trim().split('\n')
 const tsSources = tracked.filter((f) => /^src\/quantum\/[^/]+\.ts$/.test(f) && !f.endsWith('.test.ts'))
 const tsLines = tsSources.reduce((n, f) => n + readFileSync(join(ROOT, f), 'utf8').split('\n').length, 0)
 const receipt = existsSync(join(ROOT, 'docs', 'public', 'receipt.json')) ? JSON.parse(readFileSync(join(ROOT, 'docs', 'public', 'receipt.json'), 'utf8')) : { steps: [] }

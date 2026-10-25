@@ -2,7 +2,6 @@
 // headings — and a table per language translates it both ways. A word with no entry stays as it is and is reported as a
 // lead, never guessed. Free text inside entries is not translated. Any language or dialect is one more table.
 
-export type Locale = 'en' | 'bg'
 export const LOCALES: Record<string, { name: string; native: string; filled: boolean }> = {
   en: { name: 'English', native: 'English', filled: true },
   bg: { name: 'Bulgarian', native: 'Български', filled: true },
