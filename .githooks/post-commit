@@ -1,0 +1,11 @@
+#!/bin/sh
+# The commit names its receipt; the stream names the commit: one line appended beside the receipt it was made under.
+node --import tsx -e '
+const fs = require("node:fs")
+const head = require("node:child_process").execSync("git rev-parse HEAD", { encoding: "utf8" }).trim()
+let receipt = null; try { receipt = JSON.parse(fs.readFileSync("docs/public/receipt.json", "utf8")) } catch {}
+fs.mkdirSync("docs/public", { recursive: true })
+fs.appendFileSync("docs/public/imprints.ndjson", JSON.stringify({ commit: head, receipt: receipt?.id ?? null, sha256: receipt?.sha256 ?? null, date: new Date().toISOString() }) + "\n")
+console.log(`imprint: commit ${head.slice(0, 8)} ↔ receipt ${receipt?.id ?? "none"}`)
+'
+exit 0

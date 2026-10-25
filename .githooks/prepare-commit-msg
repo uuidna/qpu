@@ -1,0 +1,25 @@
+#!/bin/sh
+# The imprint: the receipt pre-commit just wrote, the purity and leads it found, and the last readiness verdict, appended to
+# every commit message as trailers. Programmatic, never typed. $1 is the message file; $2 the source (merge, squash, commit…).
+MSG="$1"; SRC="$2"
+case "$SRC" in merge|squash) exit 0;; esac
+node --import tsx -e '
+const fs = require("node:fs"); const path = process.argv[1]
+const read = (f) => { try { return JSON.parse(fs.readFileSync(f, "utf8")) } catch { return null } }
+const r = read("docs/public/receipt.json"), p = read("docs/public/purify-leads.json"), n = read("docs/public/next-leads.json"), rd = read("docs/public/readiness.json")
+const steps = r ? r.steps.filter((s) => s.status !== "skipped").map((s) => `${s.name}=${s.status}`).join(" ") : "none"
+const trailers = [
+  `Receipt: ${r?.id ?? "none"}`,
+  `Receipt-SHA256: ${r?.sha256 ?? "none"}`,
+  `Next: ${steps}`,
+  `Purity-leads: ${Array.isArray(p) ? p.length : "unmeasured"}`,
+  `Next-leads: ${Array.isArray(n) ? n.length : "unmeasured"}`,
+  `Readiness: ${rd ? `${rd.readiness.ready ? "ready" : "not ready"} (${rd.readiness.receipt}, ${rd.date.slice(0, 10)})` : "unmeasured here (network step)"}`,
+  `License: CC-BY-NC-ND-4.0 (c) Tsvetan Rouschev`,
+]
+let msg = fs.readFileSync(path, "utf8")
+if (msg.includes("\nReceipt: ")) process.exit(0)
+const body = msg.replace(/\s+$/, "")
+fs.writeFileSync(path, `${body}\n\n${trailers.join("\n")}\n`)
+' "$MSG"
+exit 0
