@@ -6,6 +6,7 @@ import { uuidFromParts } from '../../../../src/quantum/blocks.ts'
 import { translateOf, LOCALES } from '../../../../src/quantum/i18n.ts'
 import Compile from './Compile.vue'
 import Channel from './Channel.vue'
+import Speak from './Speak.vue'
 const route = useRoute()
 const decision = computed(() => {
   const segments = route.path.split('/').filter(Boolean).map(decodeURIComponent)
@@ -31,7 +32,7 @@ const prev = typeof document !== 'undefined' && document.referrer ? document.ref
     </template>
     <template v-else>
       <h1>{{ decision.statement }}</h1>
-      <p>{{ t('Caught: this path is not a walk. Decided by the match tool') }}: <strong>{{ decision.verdict }}</strong></p>
+      <p>{{ t('Caught: this path is not a walk. Decided by the match tool') }}: <strong>{{ t(decision.verdict) }}</strong> <Speak :text="`${decision.statement}. ${t('Caught: this path is not a walk. Decided by the match tool')}: ${t(decision.verdict)}`" :locale="decision.locale" /></p>
       <div v-html="decision.widget" />
     </template>
   </div>

@@ -4,8 +4,8 @@
 import type { Example } from './examples.js'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
-export type Check = { id: string; passed: boolean; evidence: string }
-export type Audit = { total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
+export type Check = { id: string; passed: boolean; evidence: string; /** milliseconds since the previous check: where the audit's time goes */ ms?: number }
+export type Audit = { /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
 
 type Lead = { id: string; status: string; tool?: string; reason?: string }
 type ToolSpec = { name: string; description: string; inputSchema: { type?: string; required?: string[]; properties?: Record<string, unknown> } }
@@ -28,9 +28,10 @@ export const accessibilityOf = (html: string): string[] => {
   return misses
 }
 
-export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[]): Audit => {
+export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = []): Audit => {
   const checks: Check[] = []
-  const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
+  let clock = Date.now()
+  const check = (id: string, passed: boolean, evidence: string) => { const now = Date.now(); checks.push({ id, passed, evidence, ms: now - clock }); clock = now }
   const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
@@ -64,6 +65,15 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     const why = e.expect(r.structuredContent)
     check(`example:${e.id}`, shape && why === null, why ?? (shape ? e.shows : 'result lacks content, structuredContent or a widget'))
   }
+  // Toolboxes: every tool names one the host composes, every toolbox tests itself in its directions, every check is recorded.
+  if (toolboxes.length) {
+    const named = new Map(toolboxes.flatMap((b) => b.tools.map((t) => [t.name, b.name] as const)))
+    for (const t of tools) { const meta = (t as { _meta?: { toolbox?: string } })._meta; check(`toolbox:${t.name}`, typeof meta?.toolbox === 'string' && named.get(t.name) === meta.toolbox, meta?.toolbox ? `in ${meta.toolbox}` : 'names no toolbox') }
+    for (const b of toolboxes) {
+      try { const r = b.skill.selftest({ handle, examples, leads }); for (const c of r.checks) { check(`selftest:${b.name}:${c.id}`, c.passed, c.evidence); if (c.ms !== undefined) checks.at(-1)!.ms = c.ms } check(`selftest:${b.name}`, r.passed, `${r.checks.filter((c) => c.passed).length} of ${r.checks.length} checks pass`) }
+      catch (e) { check(`selftest:${b.name}`, false, `threw: ${(e as Error).message.slice(0, 160)}`) }
+    }
+  }
   const ids = new Set<string>()
   const dup = examples.filter((e) => (ids.has(e.id) ? true : (ids.add(e.id), false))).map((e) => e.id)
   check('example-ids-unique', dup.length === 0, dup.length ? `duplicates: ${dup.join(', ')}` : `${examples.length} unique ids`)
@@ -81,5 +91,5 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   check('error:invalid-params', 'error' in badArgs && badArgs.error.code === -32602, JSON.stringify(badArgs.error ?? badArgs.result).slice(0, 80))
 
   const passed = checks.filter((c) => c.passed).length
-  return { total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
+  return { slowest: [...checks].sort((a, b) => (b.ms ?? 0) - (a.ms ?? 0)).slice(0, 8).map((c) => `${c.id} ${c.ms} ms`), total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
 }

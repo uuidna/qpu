@@ -23,7 +23,7 @@ const BG: Record<string, string> = {
   executed: 'изпълнено', loading: 'зареждане', none: 'няма', version: 'версия', variant: 'вариант', hue: 'нюанс', here: 'тук', chooses: 'избира', the: '', of: 'на',
   'commercial use by licence': 'търговска употреба по лиценз', 'caught': 'уловено', 'this path is not a walk': 'този път не е обход', 'by the match tool': 'от инструмента за съвпадение',
 }
-const TABLES: Record<string, Record<string, string>> = { bg: BG }
+export const TABLES: Record<string, Record<string, string>> = { bg: BG }
 const inverted = (t: Record<string, string>): Record<string, string> => Object.fromEntries(Object.entries(t).filter(([, v]) => v).map(([k, v]) => [v, k]))
 
 /** Translate text between two locales by vocabulary, longest phrase first, case-aware; report every word no table knows. */

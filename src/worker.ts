@@ -14,17 +14,53 @@ import { LOCALES as LANGS, translateOf } from './quantum/i18n.js'
 /** The slice of the Workers runtime this file uses, typed here so the tree needs no runtime types package to typecheck. */
 export type Storage = { get<T>(key: string): Promise<T | undefined>; put(key: string, value: unknown): Promise<void>; delete(key: string): Promise<unknown>; list<T>(opts?: { prefix?: string }): Promise<Map<string, T>> }
 export type DocketStub = { fetch(request: Request): Promise<Response> }
-export type Env = { QPU_WRITE_TOKEN?: string; QPU_DATA_KEY?: string; QPU_MIRRORS?: string; DOCKET?: { idFromName(name: string): unknown; get(id: unknown): DocketStub } }
+export type Env = { QPU_WRITE_TOKEN?: string; QPU_ADMIN_TOKEN?: string; QPU_DATA_KEY?: string; QPU_MIRRORS?: string; /** the MCP host that manages roles (a Payload MCP plugin): tools/call of QPU_RBAC_TOOL with { token, tenant, host } answers { role } */ QPU_RBAC_MCP?: string; QPU_RBAC_TOOL?: string; DOCKET?: { idFromName(name: string): unknown; get(id: unknown): DocketStub }; [tenantToken: string]: unknown }
+
+/** Tenants: one Worker, several hosts, each host its own docket and its own tokens. A security collision — one tenant's token
+ * at another tenant's host — is not an incident but a procedure: the answer names the role, the header and who issues it. */
+export const TENANTS: Readonly<Record<string, string>> = { 'qpu.uuidna.com': 'uuidna', 'qpu.psg.bg': 'psg' }
+export const tenantOf = (hostname: string): string => TENANTS[hostname] ?? (hostname.endsWith('.workers.dev') ? 'ceci' : 'local')
+export type Role = 'reader' | 'writer' | 'admin'
+export const ROLES: Readonly<Record<Role, { may: string; header: string | null; issued: string }>> = {
+  reader: { may: 'GET: read the docket, the discovery document, every tool over POST /mcp', header: null, issued: 'no token: every reader is a reader' },
+  writer: { may: 'POST /docket: append entries, commitments and reveals to this tenant\'s docket', header: 'Authorization: Bearer <writer token of this tenant>', issued: 'by the author, one wrangler secret per tenant (QPU_WRITE_TOKEN_<TENANT>) or the shared QPU_WRITE_TOKEN' },
+  admin: { may: 'DELETE /docket/<id>: delete an unlinked entry of this tenant\'s docket', header: 'Authorization: Bearer <admin token of this tenant>', issued: 'by the author, one wrangler secret per tenant (QPU_ADMIN_TOKEN_<TENANT>) or the shared QPU_ADMIN_TOKEN' },
+}
+/** The role a request holds at a tenant. Asked first of the RBAC MCP host when one is configured (every MCP server's roles
+ * managed in one place, over MCP itself); the tenant secrets answer when none is, or when the host does not. */
+export const roleAt = async (env: Env, tenant: string, host: string, token: string | undefined, fetcher: (url: string, init: RequestInit) => Promise<Response> = fetch): Promise<{ role: Role; collision?: string; by: 'rbac-mcp' | 'tenant-secrets' }> => {
+  if (env.QPU_RBAC_MCP && token) {
+    try {
+      const res = await fetcher(env.QPU_RBAC_MCP, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: env.QPU_RBAC_TOOL ?? 'role', arguments: { token, tenant, host } } }), signal: AbortSignal.timeout(5000) })
+      const j = await res.json() as { result?: { structuredContent?: { role?: string }; content?: { text: string }[] } }
+      const role = j.result?.structuredContent?.role ?? (j.result?.content?.[0] ? (JSON.parse(j.result.content[0].text) as { role?: string }).role : undefined)
+      if (role === 'reader' || role === 'writer' || role === 'admin') return { role, by: 'rbac-mcp' }
+    } catch { /* the RBAC host did not answer: the tenant secrets decide, and the answer says so */ }
+  }
+  return { ...roleOf(env, tenant, token), by: 'tenant-secrets' }
+}
+/** The role a request holds at a tenant, from its token alone; a token of another tenant holds no role here and says so. */
+export const roleOf = (env: Env, tenant: string, token: string | undefined): { role: Role; collision?: string } => {
+  const T = tenant.toUpperCase()
+  const tokenOf = (kind: 'WRITE' | 'ADMIN', t: string) => (env[`QPU_${kind}_TOKEN_${t.toUpperCase()}`] as string | undefined) ?? (env[`QPU_${kind}_TOKEN`] as string | undefined)
+  if (!token) return { role: 'reader' }
+  if (sameToken(token, tokenOf('ADMIN', T))) return { role: 'admin' }
+  if (sameToken(token, tokenOf('WRITE', T))) return { role: 'writer' }
+  const other = Object.values(TENANTS).concat('ceci', 'local').find((t) => t !== tenant && (sameToken(token, tokenOf('WRITE', t)) || sameToken(token, tokenOf('ADMIN', t))))
+  return other ? { role: 'reader', collision: `a token of tenant ${other} presented at tenant ${tenant}: tokens are per tenant; ask the author for a ${tenant} token (${ROLES.writer.issued})` } : { role: 'reader' }
+}
 
 const LICENSE_HEADERS = { 'Link': `<${LICENSE.url}>; rel="license"`, 'X-License': LICENSE.spdx, 'X-Copyright': LICENSE.copyright, 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }
 const json = (body: unknown, status = 200, extra: Record<string, string> = {}): Response => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', ...LICENSE_HEADERS, ...extra } })
 
 /** What this tree is, stated from its own values: nothing here is typed that the handler does not compute. */
 export const discoveryOf = (origin: string) => {
+  const tenant = tenantOf(new URL(origin).hostname)
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }
   const names = list.result.tools.map((t) => t.name)
   return {
     name: '@uuidna/qpu', kind: 'qpu', mcp: `${origin}/mcp`, docket: `${origin}/docket`, methods: ['initialize', 'tools/list', 'tools/call'],
+    tenant, tenants: Object.entries(TENANTS).map(([host, t]) => ({ host, tenant: t, docket: `https://${host}/docket` })), roles: ROLES, rbac: 'one Worker, one docket per tenant (host); roles asked of the RBAC MCP host when one is configured (a Payload MCP plugin managing every MCP server\'s roles over MCP itself), otherwise one writer and one admin token per tenant; a token at another tenant\'s host holds no role there and the answer names the procedure',
     tools: names, examples: EXAMPLES.length, leads: LEADS.length,
     bounds: { shorN: 21, qubits: 6, bits: 8, nodes: 12, note: 'the exact state-vector simulator; every bound is in each tool\'s input schema' },
     key: KEY, license: { spdx: LICENSE.spdx, url: LICENSE.url, address: LICENSE.address, imprint: LICENSE.imprint, author: LICENSE.author, orcid: LICENSE.orcid },
@@ -356,7 +392,7 @@ export const catchAll = (request: Request, url: URL, env: Env): Response | Promi
     // the family: the handle alone; its entries on this mirror, and the sixteen doors a first nibble opens
     const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result.tools.filter((t) => !['audit', 'match', 'verify'].includes(t.name))
     const doors = [...Array(16).keys()].map((n) => ({ nibble: n.toString(16), tool: tools[n % tools.length]!.name, href: `${url.origin}/${a}/${n.toString(16).repeat(10)}/${tail}` }))
-    const family = async () => { if (!env.DOCKET) return [] as unknown[]; const res = await env.DOCKET.get(env.DOCKET.idFromName('qpu')).fetch(new Request(`${url.origin}/docket`)); const j = await res.json() as { entries: { id: string }[] }; return j.entries.filter((e) => e.id.startsWith(a)) }
+    const family = async () => { if (!env.DOCKET) return [] as unknown[]; const res = await env.DOCKET.get(env.DOCKET.idFromName(tenantOf(url.hostname))).fetch(new Request(`${url.origin}/docket`)); const j = await res.json() as { entries: { id: string }[] }; return j.entries.filter((e) => e.id.startsWith(a)) }
     return family().then((entries) => wantsPage
       ? new Response(`<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><title>${a} · @uuidna/qpu</title><meta property="og:title" content="${a} · family · @uuidna/qpu"><meta property="og:url" content="${url.origin}/${a}"><link rel="license" href="${LICENSE.url}">${refererOf(request) ? `<link rel="prev" href="${escapeHtml(refererOf(request)!)}">` : ''}<style>${cssOf()}body{font-family:system-ui;padding:16px}</style></head><body><h1 style="font-family:monospace">${a}</h1>${notes.length ? `<p>${notes.map(escapeHtml).join(' · ')}</p>` : ''}<h2>${t('Entries of this family here')}</h2><ul>${(entries as { id: string }[]).map((e) => `<li><a href="${url.origin}/docket/${e.id}">${e.id}</a></li>`).join('') || `<li>${t('none on this mirror')}</li>`}</ul><h2>${t('Doors: the first nibble chooses next')}</h2><table><tbody>${doors.map((d) => `<tr><td>${d.nibble}</td><td>${d.tool}</td><td><a href="${d.href}">${d.href.replace(url.origin, '')}</a></td></tr>`).join('')}</tbody></table><p style="font-size:12px">© ${LICENSE.author} · ${LICENSE.spdx}</p></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
       : json({ handle: a, entries, doors, prev: refererOf(request) ?? null, notes }))
@@ -369,6 +405,55 @@ export const catchAll = (request: Request, url: URL, env: Env): Response | Promi
   return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(statement)} · decided · @uuidna/qpu</title><meta property="og:title" content="${escapeHtml(statement)} · ${escapeHtml(m?.verdict ?? 'undecided')}"><meta property="og:url" content="${escapeHtml(url.href)}"><link rel="license" href="${LICENSE.url}"><style>${cssOf()}body{font-family:system-ui;padding:16px}</style></head><body><h1>${escapeHtml(statement)}</h1><p>${t('Caught: this path is not a walk. Decided by the match tool')}: <strong>${escapeHtml(m?.verdict ?? 'undecided')}</strong>.${notes.length ? ' ' + notes.map(escapeHtml).join(' · ') : ''}</p>${decision.result?._meta.widget ?? ''}<p style="font-size:12px">© ${LICENSE.author} · ${LICENSE.spdx}</p></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
 }
 
+/** The docket's licence entries at a tenant, as the billing toolbox reads them. */
+const licenceEntries = async (origin: string, tenant: string, env: Env): Promise<unknown[]> => {
+  if (!env.DOCKET) return []
+  const res = await env.DOCKET.get(env.DOCKET.idFromName(tenant)).fetch(new Request(`${origin}/docket`))
+  const j = await res.json() as { entries?: { id: string; kind?: string }[] }
+  const docket = env.DOCKET.get(env.DOCKET.idFromName(tenant))
+  const rows = (j.entries ?? []).filter((e) => e.kind === 'licence')
+  // the listing carries metadata only; each licence entry is read whole (the cheap read) for its body and links
+  const full = await Promise.all(rows.map(async (e) => { const r = await docket.fetch(new Request(`${origin}/docket/${e.id}`)); const d = await r.json() as { id?: string; kind?: string; from?: string; body?: unknown; links?: string[] }; return d.body ? { id: e.id, kind: 'licence', from: d.from, body: d.body, links: d.links ?? [] } : null }))
+  return full.filter((x) => x !== null)
+}
+const call = (name: string, args: Record<string, unknown>) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent: any }; error?: { message: string } }
+/** Stripe posts here per tenant; the tenant's webhook secret verifies; one entry per event lands in the tenant docket. */
+const stripeWebhook = async (request: Request, url: URL, env: Env): Promise<Response> => {
+  const tenant = tenantOf(url.hostname)
+  const secret = env[`STRIPE_WEBHOOK_SECRET_${tenant.toUpperCase()}`] as string | undefined
+  if (!secret) return json({ error: `tenant ${tenant} has no STRIPE_WEBHOOK_SECRET_${tenant.toUpperCase()}`, procedure: 'the author sets the tenant\'s webhook secret as a wrangler secret and registers this endpoint at Stripe' }, 503)
+  const payload = await request.text()
+  const entries = await licenceEntries(url.origin, tenant, env)
+  const r = call('stripe', { op: 'webhook', tenant, payload, signature: request.headers.get('stripe-signature') ?? '', secret, entries })
+  if (r.error) return json({ error: r.error.message }, 400)
+  const out = r.result!.structuredContent
+  if (!out.valid) return json({ refused: out.why, lead: out.lead }, 400)
+  if (!out.entry || out.duplicate) return json({ received: out.event ?? null, state: out.state ?? null, duplicate: Boolean(out.duplicate) })
+  if (!env.DOCKET) return json({ error: 'no DOCKET binding on this deployment' }, 503)
+  const headers = new Headers({ 'content-type': 'application/json', 'x-qpu-tenant': tenant, 'x-qpu-role': 'writer', 'x-qpu-roles-by': 'stripe-signature' })
+  const stored = await env.DOCKET.get(env.DOCKET.idFromName(tenant)).fetch(new Request(`${url.origin}/docket`, { method: 'POST', headers, body: JSON.stringify(out.entry) }))
+  const sj = await stored.json() as { id?: string; duplicate?: boolean; error?: string }
+  return json({ received: out.event, type: out.type, state: out.state, entry: sj.id ?? out.entry.id, duplicate: Boolean(sj.duplicate), stored: stored.status < 300 }, stored.status < 300 ? 200 : stored.status)
+}
+/** The licence state of a subject at this domain, from the entries this tenant holds (mirrors carry the other tenants' grants). */
+const stripeState = async (subject: string, url: URL, env: Env): Promise<Response> => {
+  const tenant = tenantOf(url.hostname)
+  const r = call('stripe', { op: 'state', tenant, subject: decodeURIComponent(subject), domain: url.hostname, entries: await licenceEntries(url.origin, tenant, env) })
+  return r.error ? json({ error: r.error.message }, 400) : json(r.result!.structuredContent)
+}
+/** A checkout plan executed with the tenant's secret key; without a key the plan is returned with its procedure. */
+const stripeCheckout = async (reply: { result: { structuredContent: { plan: { url: string; form: Record<string, string>; headers: Record<string, string>; secret: string } } } }, url: URL, env: Env, fetcher: (url: string, init: RequestInit) => Promise<Response> = fetch): Promise<unknown> => {
+  const plan = reply.result.structuredContent.plan
+  const key = env[plan.secret] as string | undefined
+  if (!key) return { ...reply, result: { ...reply.result, structuredContent: { ...reply.result.structuredContent, executed: false, procedure: `tenant ${tenantOf(url.hostname)} has no ${plan.secret}: the author sets it as a wrangler secret; until then the plan is returned, not sent` } } }
+  try {
+    const res = await fetcher(plan.url, { method: 'POST', headers: { ...plan.headers, authorization: `Bearer ${key}` }, body: new URLSearchParams(plan.form).toString(), signal: AbortSignal.timeout(20000) })
+    const session = await res.json() as { id?: string; url?: string; error?: { message?: string } }
+    return { ...reply, result: { ...reply.result, structuredContent: { ...reply.result.structuredContent, plan: { ...plan, form: Object.keys(plan.form) }, executed: res.ok, session: session.id ?? null, url: session.url ?? null, error: session.error?.message ?? null } } }
+  } catch (e) { return { ...reply, result: { ...reply.result, structuredContent: { ...reply.result.structuredContent, executed: false, error: (e as Error).message } } } }
+}
+export { stripeCheckout }
+
 export const worker = {
   async fetch(request: Request, env: Env = {}): Promise<Response> {
     const url = new URL(request.url)
@@ -379,15 +464,24 @@ export const worker = {
     if ((path === '/mcp' || path === '/') && request.method === 'POST') {
       let message: Rpc
       try { message = await request.json() as Rpc } catch { return json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'parse error' } }, 400) }
-      return json(handle(message))
+      const reply = handle(message)
+      // A checkout plan is executed here, with the tenant's key the handler never holds: the answer carries Stripe's session url.
+      const params = (message as { params?: { name?: string; arguments?: { op?: string } } }).params
+      if (params?.name === 'stripe' && params.arguments?.op === 'plan' && 'result' in reply) return json(await stripeCheckout(reply as { result: { structuredContent: { plan: { url: string; form: Record<string, string>; headers: Record<string, string>; secret: string } } } }, url, env))
+      return json(reply)
     }
+    // Stripe per tenant: the webhook endpoint, the licence state, both under the docket since every event is an entry.
+    if (path === '/docket/stripe' && request.method === 'POST') return stripeWebhook(request, url, env)
+    if (path.startsWith('/docket/stripe/') && request.method === 'GET') return stripeState(path.slice('/docket/stripe/'.length), url, env)
     if (path === '/docket' || path.startsWith('/docket/')) {
-      if (request.method === 'POST' || request.method === 'DELETE') {
-        const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '')
-        if (!sameToken(token, env.QPU_WRITE_TOKEN)) return json({ error: 'docket writes and deletions carry Authorization: Bearer QPU_WRITE_TOKEN' }, 401)
-      }
+      const tenant = tenantOf(url.hostname)
+      const { role, collision, by } = await roleAt(env, tenant, url.hostname, request.headers.get('authorization')?.replace(/^Bearer\s+/i, ''))
+      const need: Role | null = request.method === 'DELETE' ? 'admin' : request.method === 'POST' ? 'writer' : null
+      if (need && role === 'reader') return json({ error: `${request.method} ${path} at tenant ${tenant} needs the ${need} role`, procedure: ROLES[need], tenant, role, rolesBy: by, ...(collision ? { collision, lead: { id: `rbac-collision-${tenant}`, statement: collision, status: 'open', reason: 'a security collision is a procedure: the token is per tenant' } } : {}) }, collision ? 403 : 401)
+      if (need === 'admin' && role !== 'admin') return json({ error: `${request.method} ${path} at tenant ${tenant} needs the admin role; this token holds ${role}`, procedure: ROLES.admin, tenant, role, rolesBy: by }, 403)
       if (!env.DOCKET) return json({ error: 'no DOCKET binding on this deployment' }, 503)
-      return env.DOCKET.get(env.DOCKET.idFromName('qpu')).fetch(request)
+      const headers = new Headers(request.headers); headers.set('x-qpu-tenant', tenant); headers.set('x-qpu-role', role); headers.set('x-qpu-roles-by', by)
+      return env.DOCKET.get(env.DOCKET.idFromName(tenant)).fetch(new Request(request, { headers }))
     }
     return catchAll(request, url, env)
   },

@@ -102,6 +102,10 @@ export default defineConfig({
         "link": "/audit"
       },
       {
+        "text": "Discovery",
+        "link": "/discovery"
+      },
+      {
         "text": "Match",
         "link": "/match"
       },
@@ -199,6 +203,10 @@ export default defineConfig({
             "link": "/audit"
           },
           {
+            "text": "Discovery",
+            "link": "/discovery"
+          },
+          {
             "text": "Match",
             "link": "/match"
           },
@@ -245,7 +253,7 @@ export default defineConfig({
         ]
       },
       {
-        "text": "MCP tools",
+        "text": "Toolbox google",
         "items": [
           {
             "text": "processor",
@@ -284,10 +292,6 @@ export default defineConfig({
             "link": "/mcp#repositories"
           },
           {
-            "text": "leads",
-            "link": "/mcp#leads"
-          },
-          {
             "text": "quantumlib",
             "link": "/mcp#quantumlib"
           },
@@ -302,6 +306,15 @@ export default defineConfig({
           {
             "text": "fault-tolerant-design",
             "link": "/mcp#fault-tolerant-design"
+          }
+        ]
+      },
+      {
+        "text": "Toolbox tree",
+        "items": [
+          {
+            "text": "leads",
+            "link": "/mcp#leads"
           },
           {
             "text": "audit",
@@ -318,6 +331,58 @@ export default defineConfig({
           {
             "text": "verify",
             "link": "/mcp#verify"
+          }
+        ]
+      },
+      {
+        "text": "Toolbox flow",
+        "items": [
+          {
+            "text": "discover",
+            "link": "/mcp#discover"
+          },
+          {
+            "text": "wave",
+            "link": "/mcp#wave"
+          },
+          {
+            "text": "readiness",
+            "link": "/mcp#readiness"
+          },
+          {
+            "text": "imagine",
+            "link": "/mcp#imagine"
+          }
+        ]
+      },
+      {
+        "text": "Toolbox language",
+        "items": [
+          {
+            "text": "translate",
+            "link": "/mcp#translate"
+          },
+          {
+            "text": "prose",
+            "link": "/mcp#prose"
+          }
+        ]
+      },
+      {
+        "text": "Toolbox raid",
+        "items": [
+          {
+            "text": "mongo",
+            "link": "/mcp#mongo"
+          }
+        ]
+      },
+      {
+        "text": "Toolbox billing",
+        "items": [
+          {
+            "text": "stripe",
+            "link": "/mcp#stripe"
           }
         ]
       }

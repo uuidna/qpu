@@ -1,11 +1,16 @@
 {
-  // The QPU Worker: the pure handler over HTTP at /mcp, the discovery document, and the Durable Object docket.
-  // Deploy is the author's act (`npm run deploy`); nothing here deploys on its own. QPU_WRITE_TOKEN is a wrangler secret.
+  // The QPU Worker: the pure handler over HTTP at /mcp, the discovery document, and the Durable Object docket, one per tenant.
+  // One Worker serves qpu.ceci.workers.dev and the custom domains of both tenants; tokens are wrangler secrets, per tenant
+  // (QPU_WRITE_TOKEN_UUIDNA, QPU_WRITE_TOKEN_PSG, QPU_ADMIN_TOKEN_*) or shared (QPU_WRITE_TOKEN, QPU_ADMIN_TOKEN), never committed.
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "uuidna-qpu",
+  "name": "qpu",
   "main": "src/worker.ts",
   "compatibility_date": "2026-10-01",
-  "routes": [{ "pattern": "qpu.uuidna.com", "custom_domain": true }],
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "qpu.uuidna.com", "custom_domain": true },
+    { "pattern": "qpu.psg.bg", "custom_domain": true }
+  ],
   "durable_objects": { "bindings": [{ "name": "DOCKET", "class_name": "DocketObject" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DocketObject"] }],
   "observability": { "enabled": true }

@@ -5,7 +5,7 @@
 import * as cirq from './cirq.js'
 import { EXAMPLES } from './examples.js'
 import { auditOf } from './audit.js'
-import { blockOf, verifyOf } from './blocks.js'
+import { blockOf, verifyOf, uuidOf } from './blocks.js'
 import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay } from './clay-register.js'
 import { matchOf } from './match.js'
@@ -103,18 +103,16 @@ const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
 
 /** One tool: its name, what it does, its input schema (JSON Schema 2020-12), and the call that compiles or reads it: the
  *  structured result and the widget that shows it. */
-type Tool = { name: string; description: string; inputSchema: object; call: (args: Record<string, unknown>) => { structured: unknown; widget: string } }
+import { toolOf, type Tool, type Toolbox, type Context } from './toolbox.js'
+import { FLOW } from './toolboxes/flow.js'
+import { LANGUAGE } from './toolboxes/language.js'
+import { RAID } from './toolboxes/raid.js'
+import { BILLING } from './toolboxes/billing.js'
 
 /** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
-const tool = <T>(spec: { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>) => T; widget: (data: T) => string }): Tool => ({
-  name: spec.name,
-  description: spec.description,
-  inputSchema: spec.inputSchema,
-  call: (args) => {
-    const data = spec.run(args)
-    return { structured: data, widget: spec.widget(data) }
-  },
-})
+// The tools of this host's own two toolboxes, named below; `tool` is the host-side helper until each is a file of its own.
+const TREE = new Set(['leads', 'audit', 'match', 'clay', 'verify'])
+const tool = <T>(spec: { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>) => T; widget: (data: T) => string }): Tool => toolOf(TREE.has(spec.name) ? 'tree' : 'google', { ...spec, run: (args) => spec.run(args) })
 
 const QUBIT_SCHEMA = {
   oneOf: [
@@ -136,7 +134,8 @@ const MEASURE_SCHEMA = { type: 'object', required: ['key', 'qubits'], properties
 
 const reject = (what: string): never => { throw new ParamError(what) }
 
-const TOOLS: Tool[] = [
+
+const OWN: Tool[] = [
   tool({
     name: 'processor',
     description: 'A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.',
@@ -565,7 +564,7 @@ const TOOLS: Tool[] = [
     name: 'audit',
     description: 'The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays as documented, every served lead names a served tool, and the error paths answer as JSON-RPC requires. Each check carries its evidence; a failed check is a lead, not a ruling.',
     inputSchema: { type: 'object', properties: {} },
-    run: () => auditOf(handle, EXAMPLES, LEADS),
+    run: () => auditOf(handle, EXAMPLES, LEADS, TOOLBOXES),
     widget: auditWidget,
   }),
   tool({
@@ -595,6 +594,19 @@ const TOOLS: Tool[] = [
   }),
 ]
 
+export const TOOLBOXES: Toolbox[] = [
+  { name: 'google', idea: 'the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories', tools: OWN.filter((t) => t.toolbox === 'google'), examples: [], skill: { instructions: 'Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.', directions: ['server only: every example replays as documented (the audit)'], selftest: (ctx) => { const checks = ctx.examples.filter((e) => OWN.some((t) => t.name === e.tool && t.toolbox === 'google')).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); const why = 'error' in r ? r.error.message : e.expect(r.result.structuredContent); return { id: `google:${e.id}`, passed: why === null, evidence: why ?? e.shows } }); return { passed: checks.every((c) => c.passed), checks } } } },
+  { name: 'tree', idea: 'the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply', tools: OWN.filter((t) => t.toolbox === 'tree'), examples: [], skill: { instructions: 'audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.', directions: ['server only: the audit audits the audit', 'toolbox → toolbox: match is the judge of readiness and the engine of imagine'], selftest: (ctx) => { const m = matchOf('How many qubits does Willow have?', ctx.handle, ctx.examples, ctx.leads); return { passed: m.verdict === 'served', checks: [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }] } } } },
+  FLOW,
+  LANGUAGE,
+  RAID,
+  BILLING,
+]
+const TOOLS: Tool[] = TOOLBOXES.flatMap((b) => b.tools)
+/** Results by block address, once per process: the memory of the balancer. */
+const BALANCER = new Map<string, { structured: unknown; widget: string }>()
+const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS } }
+
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
 
 /** Answer one JSON-RPC message: initialize, tools/list, or tools/call. Anything else is method not found. */
@@ -603,13 +615,19 @@ export const handle = (message: Rpc): Reply => {
   const fail = (code: number, text: string): Reply => ({ jsonrpc: '2.0', id, error: { code, message: text } })
   const params = (message.params ?? {}) as Record<string, unknown>
   try {
-    if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'qpu', version: '1.4.0' , license: LICENSE.spdx, author: LICENSE.author }, instructions: INSTRUCTIONS } }
-    if (message.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools: TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) } }
+    if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'qpu', version: '1.4.0' , license: LICENSE.spdx, author: LICENSE.author }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` } }
+    if (message.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools: TOOLS.map(({ name, description, inputSchema, toolbox }) => ({ name, description, inputSchema, _meta: { toolbox } })) } }
     if (message.method === 'tools/call') {
       const found = TOOLS.find((t) => t.name === params.name)
       if (!found) return fail(METHOD_NOT_FOUND, `no tool ${String(params.name)}; the tools are ${TOOLS.map((t) => t.name).join(', ')}`)
-      const { structured, widget } = found.call((params.arguments ?? {}) as Record<string, unknown>)
-      const block = blockOf(found.name, (params.arguments ?? {}) as Record<string, unknown>, structured, widget, found.description)
+      // The balancer: every tool is pure, so a call is a function of its block address; computed once per process, served from
+      // memory after — the heavy computation inverted, the hardware cooled, the battery saved (lead qpu-balancer-perspective).
+      const args = (params.arguments ?? {}) as Record<string, unknown>
+      const address = uuidOf(`${found.name}${JSON.stringify(args)}`)
+      const cached = BALANCER.get(address)
+      const { structured, widget } = cached ?? found.call(args, CONTEXT)
+      if (!cached) BALANCER.set(address, { structured, widget })
+      const block = blockOf(found.name, args, structured, widget, found.description)
       // the referer of a call: who sent it, carried as _meta.prev, echoed so a chain of calls knows its previous step across domains
       const prev = typeof (params._meta as { prev?: unknown } | undefined)?.prev === 'string' ? (params._meta as { prev: string }).prev : undefined
       return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, ...(prev ? { prev } : {}) } } }

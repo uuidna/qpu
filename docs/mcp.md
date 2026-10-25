@@ -6,7 +6,69 @@ order: 40
 # MCP tools
 
 The handler in `src/quantum/mcp.ts` answers `initialize`, `tools/list` and `tools/call` as JSON-RPC 2.0. Its tools take typed
-POST parameters described by the JSON Schema below, and they compile the circuit they describe on each call.
+POST parameters described by the JSON Schema below, and they compile the circuit they describe on each call. The tools are
+organised in toolboxes, each one idea complete with its toolset and its skillset (instructions, directions, selftest, examples);
+`tools/list` names each tool's toolbox in `_meta.toolbox`, and `initialize` carries every toolbox's instructions.
+
+## Toolbox `google`
+
+the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories.
+
+**Skill.** Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.
+
+**Tests itself:** server only: every example replays as documented (the audit).
+
+Tools: [processor](#processor), [circuit](#circuit), [echo](#echo), [echo_benchmark](#echo_benchmark), [roadmap](#roadmap), [algorithm](#algorithm), [software](#software), [statements](#statements), [repositories](#repositories), [quantumlib](#quantumlib), [quantum-error-correction](#quantum-error-correction), [chemistry-simulation](#chemistry-simulation), [fault-tolerant-design](#fault-tolerant-design).
+
+## Toolbox `tree`
+
+the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply.
+
+**Skill.** audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.
+
+**Tests itself:** server only: the audit audits the audit; toolbox → toolbox: match is the judge of readiness and the engine of imagine.
+
+Tools: [leads](#leads), [audit](#audit), [match](#match), [clay](#clay), [verify](#verify).
+
+## Toolbox `flow`
+
+the run of the tree as tools: discover the hosts, verify the leads, let the unit judge, imagine the next leads; the client only fetches and writes.
+
+**Skill.** Use the flow toolbox in phases. discover: call once for the request list, fetch every request as given (POST bodies verbatim), call again with the answers until the phase is "discovery"; write discovery.json and the page. wave: call for the request list, fetch each URL once (pace per host), call again with status, ok, ms and the body text, plus the contracts from the discovery; write verification.json and the page. readiness: call with the verification, the discovery, the cleanup subjects you measured present and the theorem ledger; make the border calls and the unit calls it returns, against the MCP hosts; call again with their answers; write readiness.json and the page. imagine: call once; write imagination.json and the page. Before a live run, call any flow tool with selftest and record the result; a failed check is a lead, never a stop.
+
+**Tests itself:** server only: each tool on fixtures; server → client: every request a tool emits is one the client can answer; client → server: answers read back into data and pages; toolbox → toolbox: discovery feeds wave and readiness, wave feeds readiness, match feeds imagine and the judge.
+
+Tools: [discover](#discover), [wave](#wave), [readiness](#readiness), [imagine](#imagine).
+
+## Toolbox `language`
+
+any language and dialect, offline and token-free: translation by vocabulary both ways, the vocabulary measured against every term the surface emits, and prose programmed from a tool's result and its toolbox's skill.
+
+**Skill.** translate takes text, from and to and answers by vocabulary; call it without text to measure the tables and get the missing terms per locale, which are the leads to fill (from the unit's vocabulary door where discovery finds one, or by a person). prose takes a tool, its arguments and a locale and renders the answer as sentences; feed its untranslated words back as vocabulary leads.
+
+**Tests itself:** server only: every table reads both ways (en→locale→en returns the term); toolbox → toolbox: prose renders the tree and flow toolboxes' answers; numerals read by the match toolbox's reader; client → server: the coverage phase hands the client the missing terms to fill.
+
+Tools: [translate](#translate), [prose](#prose).
+
+## Toolbox `raid`
+
+the docket as a database: MongoDB's query and update language ported as pure functions over content-addressed entries, so any document framework (Payload first) stores on the RAID through its mongodb adapter.
+
+**Skill.** A client that is a database adapter (Payload's mongodb adapter interface) reads a collection's rows from the docket (GET /docket?collection=…, the bodies), calls mongo with the op and the rows, and writes the entries the tool returns (POST /docket, writer role) or deletes the ids (DELETE, admin role; a linked entry is refused and kept). Every query is pure and recomputable; every write is content-addressed and linked to what it replaces.
+
+**Tests itself:** server only: the query language on a sample collection; toolbox → toolbox: entries are addressed with the tree's uuidOf and verified by the tree toolbox's verify; client → server: the rows come from the docket; the entries go back to it.
+
+Tools: [mongo](#mongo).
+
+## Toolbox `billing`
+
+Stripe per tenant: a licence bought at one tenant is an entry valid on the domains it names, every event idempotent and linked, every signature verified with the tenant's own secret, every refusal a lead.
+
+**Skill.** Per tenant the author sets two wrangler secrets, STRIPE_SECRET_KEY_<TENANT> and STRIPE_WEBHOOK_SECRET_<TENANT>, and registers https://<host>/docket/stripe as the webhook endpoint at Stripe. A client calls stripe plan and the Worker executes the plan with the tenant key, answering the session url. Stripe posts events to the tenant's endpoint; the Worker calls stripe webhook with the raw body, the Stripe-Signature header and the tenant secret, writes the entry it gets to the tenant docket (mirrors carry it to the others), and answers 200 on a duplicate. Any host answers stripe state for a subject at its domain from the entries it holds.
+
+**Tests itself:** server only: SHA-256 and HMAC vectors, the signature round trip, every event type to its state, every scenario between tenants; client → server: the Worker hands the raw body, the header and the secret; the handler never holds a key; toolbox → toolbox: entries are addressed with the tree's uuidOf, kept in the raid docket, verified by the tree toolbox's verify.
+
+Tools: [stripe](#stripe).
 
 ## processor
 
@@ -673,27 +735,6 @@ The repositories of the quantumlib GitHub organization, as its list states them:
 }
 ```
 
-## leads
-
-Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it is not served. The whole list is returned; nothing is truncated.
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "status": {
-      "enum": [
-        "served",
-        "partial",
-        "blocked",
-        "out_of_scope",
-        "open"
-      ]
-    }
-  }
-}
-```
-
 ## quantumlib
 
 The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it: the exports of cirq.ts that stand for Cirq's classes, and the parts of qsim, OpenFermion, Qualtran, Stim and ReCirq the other tools emulate, named from the code that runs here. A cross-reference computed at call time, not a catalogue.
@@ -841,6 +882,27 @@ Resource counts read from the circuits this repository builds: the QFT on n qubi
 }
 ```
 
+## leads
+
+Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it is not served. The whole list is returned; nothing is truncated.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "status": {
+      "enum": [
+        "served",
+        "partial",
+        "blocked",
+        "out_of_scope",
+        "open"
+      ]
+    }
+  }
+}
+```
+
 ## audit
 
 The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays as documented, every served lead names a served tool, and the error paths answer as JSON-RPC requires. Each check carries its evidence; a failed check is a lead, not a ruling.
@@ -952,6 +1014,368 @@ Cheap verification of one UUID: its seal (the version nibble the other 31 nibble
         }
       },
       "description": "the successor in the chain"
+    }
+  }
+}
+```
+
+## discover
+
+Discovery before use. Without answers: every request the client must make for the contracts of the hosts this tree talks to (MCP tools/list and catalogue doors, the verifiers' OpenAPI, index or identify documents, /.well-known/qpu.json). With answers: the follow-ups still to fetch (catalogue doors whose contract is unread) and, once none remain, the discovery: hosts, doors with what they take and answer, capabilities by which clients choose doors, and the leads (hosts with no machine contract). Pure; the client fetches.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "mcpHosts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "MCP endpoints to ask; default the unit and this tree's own"
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the requests answered: each request as emitted plus status, type and text"
+    },
+    "selftest": {
+      "type": "boolean",
+      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+    }
+  }
+}
+```
+
+## wave
+
+The verification wave. Without results: every request the surface's leads and tree facts need, once per URL with the leads it serves. With results (each request plus status, ok, ms and the body text): what came back read into one-line notes, a check of each request against the OpenAPI contract its host published (from discovery), and a summary by verifier. Pure; the client fetches.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "description": "host → OpenAPI path templates, from the discovery"
+    },
+    "leads": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "lead ids to restrict the wave to; default all"
+    },
+    "selftest": {
+      "type": "boolean",
+      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+    }
+  }
+}
+```
+
+## readiness
+
+The unit judges the tree. Phase one (verification, discovery, present, ledger): every lead judged by measurement into served, refuted or trial; the sources as the unit's readiness door takes them; the border plan — every discovered door that takes a statement and answers a verdict, with a hand-written theorem filled in; and the unit plan, the calls the client makes. Phase two (plus border answers and unit answers): the border read, and the page. Pure; the client asks the unit.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "verification": {
+      "type": "object",
+      "description": "the wave tool's results phase"
+    },
+    "discovery": {
+      "type": "object",
+      "description": "the discover tool's discovery phase"
+    },
+    "present": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "cleanup subjects the client measured as present (paths or branches)"
+    },
+    "ledger": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "theorem rows {key, statement} from the theorem ledger"
+    },
+    "probeKey": {
+      "type": "string",
+      "description": "the hand-written theorem offered at the border; default clay_sigma"
+    },
+    "border": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "phase two: the border calls answered ({door, host, arguments, answer | refusal})"
+    },
+    "unit": {
+      "type": "object",
+      "description": "phase two: the unit's answers (readiness, auras, rights, address)"
+    },
+    "selftest": {
+      "type": "boolean",
+      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+    }
+  }
+}
+```
+
+## imagine
+
+Imagination leads all leads: every lead (or the subset named) matched with the reflection on — hidden factors, angles, mirror queries, cluster, verification requests — every reflection that finds something a new open lead, every untried enum value of every schema a lead, every application family an adaptor to build. Pure.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "leads": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "lead ids to imagine; default all"
+    },
+    "selftest": {
+      "type": "boolean",
+      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+    }
+  }
+}
+```
+
+## translate
+
+Translation by vocabulary, offline, both ways: text, from, to. A word no table knows stays as it is and is reported, never guessed; Glagolitic numerals are read as integers. Without text: the vocabulary measured — for every locale, the surface terms with no entry (the leads of the tables).
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "text": {
+      "type": "string"
+    },
+    "from": {
+      "type": "string",
+      "enum": [
+        "en",
+        "bg",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "ru",
+        "zh",
+        "ja",
+        "pt",
+        "nl"
+      ]
+    },
+    "to": {
+      "type": "string",
+      "enum": [
+        "en",
+        "bg",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "ru",
+        "zh",
+        "ja",
+        "pt",
+        "nl"
+      ]
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## prose
+
+Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox's idea, the tool's scalar answers, the toolbox's instructions — every word from the vocabulary, every number from the tool, every unknown word reported.
+
+```json
+{
+  "type": "object",
+  "required": [
+    "tool"
+  ],
+  "properties": {
+    "tool": {
+      "type": "string"
+    },
+    "arguments": {
+      "type": "object"
+    },
+    "locale": {
+      "type": "string",
+      "enum": [
+        "en",
+        "bg",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "ru",
+        "zh",
+        "ja",
+        "pt",
+        "nl"
+      ]
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## mongo
+
+The ported MongoDB over the docket, pure. find: {collection, docs, filter, sort, skip, limit} → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: {collection, docs: [new]} → the entries to write, content-addressed. update: {collection, docs, filter, update} → for each match the new document and the entry that replaces it (linked to the old). delete: {collection, docs, filter} → the ids to delete, if unlinked. The client reads the docket rows and writes what comes back.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "op": {
+      "type": "string",
+      "enum": [
+        "find",
+        "insert",
+        "update",
+        "delete"
+      ]
+    },
+    "collection": {
+      "type": "string"
+    },
+    "docs": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the collection's documents as read from the docket (their bodies)"
+    },
+    "filter": {
+      "type": "object"
+    },
+    "update": {
+      "type": "object"
+    },
+    "sort": {
+      "type": "object"
+    },
+    "skip": {
+      "type": "integer"
+    },
+    "limit": {
+      "type": "integer"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## stripe
+
+Stripe per tenant, pure, the QPU as a product with its variants. catalogue: every product and variant (domain, tenant, seat, metered, enterprise; month, year, metered; eur, usd, bgn) as the forms Stripe takes, per tenant. usage: metered calls from docket entries as a usage record. settle: the author's compensation from Stripe's own net figures, by product and tenant, as a settlement entry. plan: a checkout session request for a commercial licence (subject, domains, mode, price or amount) that the Worker sends with the tenant's secret key. webhook: the Stripe-Signature verified with the tenant's webhook secret (HMAC-SHA256, timestamp tolerance), the event read into one idempotent licence entry (granted, renewed, revoked, disputed, failed, noted) linked to what it changes. state: the licence state of a subject at a domain from its entries, at any tenant. The handler holds no key; the Worker executes plans and the docket keeps the entries.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "op": {
+      "type": "string",
+      "enum": [
+        "plan",
+        "webhook",
+        "state",
+        "catalogue",
+        "usage",
+        "settle"
+      ]
+    },
+    "currencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "from": {
+      "type": "integer"
+    },
+    "to": {
+      "type": "integer"
+    },
+    "transactions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "settle: Stripe balance transactions {id, amount, fee, net, currency, product?, variant?, tenant?}"
+    },
+    "tenant": {
+      "type": "string"
+    },
+    "host": {
+      "type": "string"
+    },
+    "checkout": {
+      "type": "object",
+      "description": "plan: { subject, domains, mode, price | amount, currency, successUrl, cancelUrl, customerEmail? }"
+    },
+    "payload": {
+      "type": "string",
+      "description": "webhook: the raw body"
+    },
+    "signature": {
+      "type": "string",
+      "description": "webhook: the Stripe-Signature header"
+    },
+    "secret": {
+      "type": "string",
+      "description": "webhook: the tenant's webhook secret (the Worker passes it; a client never has it)"
+    },
+    "now": {
+      "type": "integer",
+      "description": "webhook/state: unix seconds; default the current time"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "webhook/state: the subject's licence entries as read from the docket"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "selftest": {
+      "type": "boolean"
     }
   }
 }

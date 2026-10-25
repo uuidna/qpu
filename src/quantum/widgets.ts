@@ -237,3 +237,10 @@ export const verifyWidget = (d: { uuid: string; valid: boolean; decided: number;
     table(['Check', 'Result', 'Evidence'], d.checks.map((c) => [c.check, c.passed === null ? 'not decided' : c.passed ? '✓' : '✗', c.evidence])),
     table(['Cost'], [[d.cost]]),
   ])
+
+/** A flow tool's result: its scalar fields as cards (phase, counts, verdicts), its check table when it is a selftest. */
+export const flowWidget = (d: Record<string, unknown>): string => {
+  const scalars = Object.entries(d).filter(([, v]) => typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean').map(([k, v]) => [k, String(v)] as [string, string])
+  const checks = Array.isArray(d.checks) ? (d.checks as { id: string; passed: boolean; evidence: string }[]) : null
+  return stack([cards(scalars), ...(checks ? [table(['Check', 'Passed', 'Evidence'], checks.map((c) => [c.id, c.passed ? '✓' : '✗', c.evidence]))] : [])])
+}

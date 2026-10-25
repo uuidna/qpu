@@ -1,22 +1,26 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { worker, Docket, discoveryOf, FRAGMENT_BYTES, STRIPE, sameToken, type Storage, type Env } from '../worker.js'
+import { handle } from './mcp.js'
+import { worker, Docket, discoveryOf, roleAt, stripeCheckout, FRAGMENT_BYTES, STRIPE, sameToken, type Storage, type Env } from '../worker.js'
 import { uuidOf, channelOf, uuidFromParts } from './blocks.js'
+import { signatureOf } from './toolboxes/billing.js'
 
 const KEY = Buffer.from(new Uint8Array(32).map((_, i) => i * 7 + 1)).toString('base64')
 const memory = (): Storage & { map: Map<string, unknown> } => { const m = new Map<string, unknown>(); return { map: m, async get<T>(k: string) { return m.get(k) as T | undefined }, async put(k, v) { m.set(k, v) }, async delete(k) { return m.delete(k) }, async list<T>(o?: { prefix?: string }) { return new Map([...m].filter(([k]) => !o?.prefix || k.startsWith(o.prefix))) as Map<string, T> } } }
-const env = (store = memory(), dataKey: string | null = KEY, mirrors: string[] = [], fetcher?: (url: string, init?: RequestInit) => Promise<Response>): Env & { store: typeof store } => { const key = dataKey === null ? undefined : dataKey; const d = new Docket(store, key, mirrors, fetcher, 'test-token'); return { store, QPU_WRITE_TOKEN: 'test-token', QPU_DATA_KEY: key, DOCKET: { idFromName: () => 'qpu', get: () => ({ fetch: (r: Request) => d.fetch(r) }) } } }
+const env = (store = memory(), dataKey: string | null = KEY, mirrors: string[] = [], fetcher?: (url: string, init?: RequestInit) => Promise<Response>): Env & { store: typeof store } => { const key = dataKey === null ? undefined : dataKey; const d = new Docket(store, key, mirrors, fetcher, 'test-token'); return { store, QPU_WRITE_TOKEN: 'test-token', QPU_ADMIN_TOKEN: 'admin-token', QPU_DATA_KEY: key, DOCKET: { idFromName: () => 'qpu', get: () => ({ fetch: (r: Request) => d.fetch(r) }) } } }
 const auth = { authorization: 'Bearer test-token', 'content-type': 'application/json' }
+const admin = { authorization: 'Bearer admin-token', 'content-type': 'application/json' }
+const TOOL_COUNT = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: unknown[] } }).result.tools.length
 const post = (e: Env, entry: unknown) => worker.fetch(req('/docket', { method: 'POST', headers: auth, body: JSON.stringify(entry) }), e)
 const req = (path: string, init?: RequestInit) => new Request(`https://qpu.test${path}`, init)
 
-test('POST /mcp serves the handler: tools/list names the eighteen tools and every response carries the licence', async () => {
+test('POST /mcp serves the handler: tools/list names every tool of every toolbox and every response carries the licence', async () => {
   const r = await worker.fetch(req('/mcp', { method: 'POST', body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) }), env())
   assert.equal(r.status, 200)
   assert.equal(r.headers.get('x-license'), 'CC-BY-NC-ND-4.0')
   assert.ok(r.headers.get('link')!.includes('rel="license"'))
   const body = await r.json() as { result: { tools: { name: string }[] } }
-  assert.equal(body.result.tools.length, 18)
+  assert.equal(body.result.tools.length, TOOL_COUNT)
   const call = await worker.fetch(req('/mcp', { method: 'POST', body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'algorithm', arguments: { name: 'shor', N: 15, a: 7 } } }) }), env())
   const data = await call.json() as { result: { structuredContent: { summary: string[][] } } }
   assert.equal(data.result.structuredContent.summary.find((r) => r[0] === 'Factors')?.[1], '3 × 5')
@@ -25,7 +29,7 @@ test('POST /mcp serves the handler: tools/list names the eighteen tools and ever
 test('the discovery document states only what the tree is', async () => {
   const d = discoveryOf('https://qpu.test')
   assert.equal(d.mcp, 'https://qpu.test/mcp')
-  assert.equal(d.tools.length, 18)
+  assert.equal(d.tools.length, TOOL_COUNT)
   assert.equal(d.bounds.shorN, 21)
   assert.equal(d.key, 432)
   assert.equal(d.license.spdx, 'CC-BY-NC-ND-4.0')
@@ -102,15 +106,15 @@ test('links raise reference counts; an entry is deletable only when nothing link
   const b = ((await (await post(e, { kind: 'receipt', from: 'qpu.test', body: { r: 1 }, links: [a] })).json()) as { id: string }).id
   const readA = await worker.fetch(req(`/docket/${a}`), e)
   assert.equal(((await readA.json()) as { refs: number }).refs, 1)
-  const refused = await worker.fetch(req(`/docket/${a}`, { method: 'DELETE', headers: auth }), e)
+  const refused = await worker.fetch(req(`/docket/${a}`, { method: 'DELETE', headers: admin }), e)
   assert.equal(refused.status, 409)
   const bad = await post(e, { kind: 'receipt', from: 'qpu.test', body: { r: 2 }, links: ['00000000-0000-8000-8000-000000000000'] })
   assert.equal(bad.status, 404)
-  const delB = await worker.fetch(req(`/docket/${b}`, { method: 'DELETE', headers: auth }), e)
+  const delB = await worker.fetch(req(`/docket/${b}`, { method: 'DELETE', headers: admin }), e)
   assert.equal(delB.status, 200)
   const refsAfter = ((await (await worker.fetch(req(`/docket/${a}`), e)).json()) as { refs: number }).refs
   assert.equal(refsAfter, 0)
-  const delA = await worker.fetch(req(`/docket/${a}`, { method: 'DELETE', headers: auth }), e)
+  const delA = await worker.fetch(req(`/docket/${a}`, { method: 'DELETE', headers: admin }), e)
   assert.equal(delA.status, 200)
   assert.equal([...e.store.map.keys()].filter((k) => k.startsWith('frag:') || k.startsWith('row:')).length, 0, 'fragments nobody references are gone')
   assert.ok(sameToken('abc', 'abc') && !sameToken('abc', 'abd') && !sameToken(undefined, 'abc'))
@@ -147,7 +151,7 @@ test('a fold collision is a lead: the second content is kept under its SHA-256, 
   assert.equal(lead.kind, 'collision')
   assert.deepEqual(lead.links, [first.id])
   assert.ok(lead.body.statement.includes('fold collision'))
-  const refused = await worker.fetch(req(`/docket/${first.id}`, { method: 'DELETE', headers: auth }), e)
+  const refused = await worker.fetch(req(`/docket/${first.id}`, { method: 'DELETE', headers: admin }), e)
   assert.equal(refused.status, 409, 'the collided entry is linked by its lead and cannot be deleted')
 })
 
@@ -306,7 +310,68 @@ test('unknown routes answer with the route list, health answers, and OPTIONS all
   const r = await worker.fetch(req('/nowhere'), env())
   assert.equal(r.status, 404)
   const h = await worker.fetch(req('/health'), env())
-  assert.equal(((await h.json()) as { tools: number }).tools, 18)
+  assert.equal(((await h.json()) as { tools: number }).tools, TOOL_COUNT)
   const o = await worker.fetch(req('/mcp', { method: 'OPTIONS' }), env())
   assert.equal(o.status, 204)
+})
+
+test('tenants by host and roles by token: a writer token cannot delete, a token of one tenant holds no role at another and the answer names the procedure', async () => {
+  const e = env()
+  const ids = new Set<string>()
+  const dockets = { ...e, DOCKET: { idFromName: (n: string) => { ids.add(n); return e.DOCKET!.idFromName(n) }, get: (id: unknown) => e.DOCKET!.get(id) } }
+  const uuid = await worker.fetch(new Request('https://qpu.uuidna.com/docket'), dockets)
+  const psg = await worker.fetch(new Request('https://qpu.psg.bg/docket'), dockets)
+  assert.equal(uuid.status, 200); assert.equal(psg.status, 200)
+  assert.deepEqual([...ids].sort(), ['psg', 'uuidna'], 'one docket per tenant, named by the host\'s tenant')
+  const writerDelete = await worker.fetch(new Request('https://qpu.psg.bg/docket/x', { method: 'DELETE', headers: auth }), dockets)
+  assert.equal(writerDelete.status, 403)
+  const body = (await writerDelete.json()) as { procedure: { header: string }; role: string }
+  assert.equal(body.role, 'writer'); assert.ok(body.procedure.header.includes('admin token'))
+  const other = { ...e, QPU_WRITE_TOKEN_UUIDNA: 'u-token', QPU_WRITE_TOKEN_PSG: 'p-token', QPU_WRITE_TOKEN: undefined }
+  const collision = await worker.fetch(new Request('https://qpu.psg.bg/docket', { method: 'POST', headers: { authorization: 'Bearer u-token', 'content-type': 'application/json' }, body: '{}' }), other)
+  assert.equal(collision.status, 403)
+  const c = (await collision.json()) as { collision: string; lead: { id: string } }
+  assert.ok(c.collision.includes('tenant uuidna presented at tenant psg')); assert.equal(c.lead.id, 'rbac-collision-psg')
+  const reader = await worker.fetch(new Request('https://qpu.psg.bg/docket', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' }), other)
+  assert.equal(reader.status, 401)
+  const d = discoveryOf('https://qpu.psg.bg')
+  assert.equal(d.tenant, 'psg'); assert.equal(d.roles.admin.header?.includes('admin token'), true)
+})
+
+test('roles are asked of the RBAC MCP host first and fall back to the tenant secrets when it is silent', async () => {
+  const e = { ...env(), QPU_RBAC_MCP: 'https://rbac.test/mcp', QPU_RBAC_TOOL: 'role' }
+  const asked: unknown[] = []
+  const answering = async (_url: string, init: RequestInit) => { asked.push(JSON.parse(String(init.body))); return new Response(JSON.stringify({ jsonrpc: '2.0', id: 1, result: { structuredContent: { role: 'admin' } } }), { headers: { 'content-type': 'application/json' } }) }
+  const r = await roleAt(e, 'psg', 'qpu.psg.bg', 'any-token', answering)
+  assert.deepEqual(r, { role: 'admin', by: 'rbac-mcp' })
+  assert.deepEqual((asked[0] as { params: { name: string; arguments: unknown } }).params, { name: 'role', arguments: { token: 'any-token', tenant: 'psg', host: 'qpu.psg.bg' } })
+  const silent = async () => { throw new Error('unreachable') }
+  assert.deepEqual(await roleAt(e, 'psg', 'qpu.psg.bg', 'test-token', silent), { role: 'writer', by: 'tenant-secrets' })
+  assert.deepEqual(await roleAt(env(), 'psg', 'qpu.psg.bg', 'admin-token', silent), { role: 'admin', by: 'tenant-secrets' })
+})
+
+test('Stripe per tenant on the Worker: the webhook verified with the tenant secret lands one entry, a replay is a duplicate, the state is read at the domain, and a checkout runs with the tenant key', async () => {
+  const secret = 'whsec_psg'
+  const e = { ...env(), STRIPE_WEBHOOK_SECRET_PSG: secret, STRIPE_SECRET_KEY_PSG: 'sk_test_psg' }
+  const payload = JSON.stringify({ id: 'evt_w1', type: 'checkout.session.completed', created: 1_700_000_000, data: { object: { customer: 'cus_9', amount_total: 100, currency: 'eur', metadata: { subject: 'acme', domains: 'qpu.psg.bg,qpu.uuidna.com' } } } })
+  const sig = signatureOf(secret, Math.floor(Date.now() / 1000), payload)
+  const hook = (body: string, signature: string) => worker.fetch(new Request('https://qpu.psg.bg/docket/stripe', { method: 'POST', headers: { 'stripe-signature': signature, 'content-type': 'application/json' }, body }), e)
+  const first = await hook(payload, sig); assert.equal(first.status, 200)
+  const f = (await first.json()) as { state: string; duplicate: boolean; stored: boolean }
+  assert.equal(f.state, 'granted'); assert.equal(f.duplicate, false); assert.equal(f.stored, true)
+  const again = await hook(payload, sig); const a = (await again.json()) as { duplicate: boolean }
+  assert.equal(a.duplicate, true, 'the same event again is a duplicate, nothing changes')
+  const forged = await hook(payload.replace('100', '1'), sig); assert.equal(forged.status, 400)
+  const state = (await (await worker.fetch(new Request('https://qpu.psg.bg/docket/stripe/acme'), e)).json()) as { state: string; entries: number }
+  assert.equal(state.state, 'licensed'); assert.equal(state.entries, 1)
+  const elsewhere = (await (await worker.fetch(new Request('https://qpu.ceci.workers.dev/docket/stripe/acme'), e)).json()) as { state: string }
+  assert.equal(elsewhere.state, 'unlicensed', 'the ceci docket holds no entry for acme: a licence is where its entries are')
+  const unconfigured = await worker.fetch(new Request('https://qpu.uuidna.com/docket/stripe', { method: 'POST', headers: { 'stripe-signature': sig }, body: payload }), e)
+  assert.equal(unconfigured.status, 503)
+  const sent: { url: string; auth: string | undefined; body: string }[] = []
+  const stripeApi = async (url: string, init: RequestInit) => { sent.push({ url, auth: (init.headers as Record<string, string>).authorization, body: String(init.body) }); return new Response(JSON.stringify({ id: 'cs_1', url: 'https://checkout.stripe.com/c/cs_1' }), { headers: { 'content-type': 'application/json' } }) }
+  const planned = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'stripe', arguments: { op: 'plan', tenant: 'psg', host: 'qpu.psg.bg', checkout: { subject: 'acme', successUrl: 'https://qpu.psg.bg/ok', cancelUrl: 'https://qpu.psg.bg/no', amount: 100 } } } }) as { result: { structuredContent: { plan: { url: string; form: Record<string, string>; headers: Record<string, string>; secret: string } } } }
+  const executed = (await stripeCheckout(planned, new URL('https://qpu.psg.bg/mcp'), e, stripeApi)) as { result: { structuredContent: { executed: boolean; url: string } } }
+  assert.equal(executed.result.structuredContent.executed, true); assert.equal(executed.result.structuredContent.url, 'https://checkout.stripe.com/c/cs_1')
+  assert.equal(sent[0]!.auth, 'Bearer sk_test_psg'); assert.ok(sent[0]!.body.includes('metadata%5Bsubject%5D=acme'))
 })

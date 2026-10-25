@@ -30,3 +30,7 @@ docs/public/site.json
 docs/public/next.lock
 docs/public/theorems.ndjson
 docs/theorems.md
+docs/public/discovery.json
+docs/discovery.md
+.dev.vars
+.wrangler

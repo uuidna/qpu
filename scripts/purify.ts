@@ -17,7 +17,8 @@ const Q = join(ROOT, 'src', 'quantum')
 const files = readdirSync(Q).filter((f) => f.endsWith('.ts'))
 const text = Object.fromEntries(files.map((f) => [f, readFileSync(join(Q, f), 'utf8')]))
 // Proof by use is sought in every tracked source text of the tree (TypeScript, Vue, Markdown, Lean), not one folder: a page's component is a use.
-const tracked = execFileSync('git', ['ls-files'], { cwd: ROOT, encoding: 'utf8' }).trim().split('\n')
+// tracked and new alike: a file written this run proves use as much as one committed; what git ignores stays out
+const tracked = [...new Set(execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { cwd: ROOT, encoding: 'utf8' }).trim().split('\n').filter(Boolean))]
 const served = Object.values(text).join('\n') + readdirSync(join(ROOT, 'docs')).filter((f) => f.endsWith('.md')).map((f) => readFileSync(join(ROOT, 'docs', f), 'utf8')).join('\n')
 const all = served + '\n' + tracked.filter((f) => /\.(ts|mts|vue|md|lean)$/.test(f) && !f.startsWith('docs/audit/') && existsSync(join(ROOT, f))).map((f) => readFileSync(join(ROOT, f), 'utf8')).join('\n')
 
@@ -31,7 +32,7 @@ for (const f of files) {
     if (uses <= 1) leads.push({ id: `unproven-${f.replace(/\.ts$/, '')}-${name}`, source: `src/quantum/${f}`, statement: `export ${name} in ${f} is referenced by nothing: no test, tool, example, page or module`, status: 'open', reason: 'not proven by use; harden with a test or soften by removal' })
   }
   const stem = f.replace(/\.ts$/, '')
-  const imported = files.some((g) => g !== f && new RegExp(`from '\\./${stem}\\.(js|ts)'`).test(text[g]!)) || new RegExp(`from '(?:\\.\\./)+src/quantum/${stem}\\.ts'`).test(all)
+  const imported = files.some((g) => g !== f && new RegExp(`from '\\./${stem}\\.(js|ts)'`).test(text[g]!)) || new RegExp(`from '(?:\\.\\./)+(?:src/quantum/)?${stem}\\.(js|ts)'`).test(all)
   if (!imported && !f.endsWith('.test.ts') && f !== 'mcp.ts') leads.push({ id: `orphan-${stem}`, source: `src/quantum/${f}`, statement: `${f} is imported by nothing`, status: 'open', reason: 'an orphan is unproven; fold it in or remove it' })
 }
 

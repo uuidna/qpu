@@ -6,13 +6,22 @@ import { LEADS, cleanupSubjectsOf } from './leads.js'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
-test('tools/list serves the eighteen tools with input schemas, and initialize names the server', () => {
+test('tools/list serves the twenty-six tools in six toolboxes with input schemas, and initialize names the server', () => {
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
   assert.ok('result' in init && (init.result as { serverInfo: { name: string } }).serverInfo.name === 'qpu')
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
   assert.ok('result' in list)
   const tools = (list.result as { tools: { name: string; inputSchema: object }[] }).tools
-  assert.deepEqual(tools.map((t) => t.name), ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'leads', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design', 'audit', 'match', 'clay', 'verify'])
+  const byToolbox: Record<string, string[]> = {}
+  for (const t of tools as { name: string; _meta?: { toolbox?: string } }[]) (byToolbox[t._meta?.toolbox ?? 'none'] ??= []).push(t.name)
+  assert.deepEqual(byToolbox, {
+    google: ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design'],
+    tree: ['leads', 'audit', 'match', 'clay', 'verify'],
+    flow: ['discover', 'wave', 'readiness', 'imagine'],
+    language: ['translate', 'prose'],
+    raid: ['mongo'],
+    billing: ['stripe'],
+  }, 'every tool names its toolbox in _meta, and the six toolboxes hold the twenty-six tools')
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 

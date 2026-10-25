@@ -135,8 +135,16 @@ const slug = (text: string): string => tokens(text).slice(0, 6).join('-') || 'st
 const META = new Set(['match', 'audit'])
 
 /** A matcher with its index built once: tools, examples and leads tokenised and weighted, so every lead can be imagined in one run. */
+/** Shor's factoring of a small N on the simulator is deterministic: once per process. */
+const SHOR = new Map<number, any>()
+const INDEXES = new WeakMap<readonly Lead[], WeakMap<readonly Example[], (statement: string) => Match>>()
+const indexOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string) => Match) => {
+  const byExamples = INDEXES.get(leads) ?? new WeakMap(); INDEXES.set(leads, byExamples)
+  const found = byExamples.get(allExamples); if (found) return found
+  const built = innerMatcherOf(handle, allExamples, leads); byExamples.set(allExamples, built); return built
+}
 export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string, locale?: string) => Match) => {
-  const inner = innerMatcherOf(handle, allExamples, leads)
+  const inner = indexOf(handle, allExamples, leads)
   return (given: string, locale?: string): Match => {
     const num = numeralsOf(given)
     const tr = locale && locale !== 'en' ? translateOf(num.text, locale, 'en') : null
@@ -152,7 +160,9 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
   const tools = allTools.filter((t) => !META.has(t.name))
   const examples = allExamples.filter((e) => !META.has(e.tool))
   const toolText = (t: ToolSpec) => `${t.name} ${t.description} ${Object.keys(t.inputSchema.properties ?? {}).join(' ')} ${Object.values(t.inputSchema.properties ?? {}).flatMap((p) => (p.enum ?? []).map(String)).join(' ')}`
-  const exampleText = (e: Example) => `${e.tool} ${e.id} ${e.shows} ${JSON.stringify(e.arguments)}`
+  // an example's arguments enter the index by their words, never by their keys or their punctuation: a key named `now` is not a statement about now
+  const leaves = (v: unknown): string[] => (typeof v === 'string' ? [v] : typeof v === 'number' ? [String(v)] : Array.isArray(v) ? v.flatMap(leaves) : v && typeof v === 'object' ? Object.values(v as Record<string, unknown>).flatMap(leaves) : [])
+  const exampleText = (e: Example) => `${e.tool} ${e.id} ${e.shows} ${leaves(e.arguments).join(' ')}`
   const leadText = (l: Lead) => `${l.id} ${l.statement} ${l.source} ${l.tool ?? ''} ${l.reason ?? ''}`
   const w = weightsOf([...tools.map(toolText), ...examples.map(exampleText), ...leads.map(leadText)])
   const toolTok = tools.map((t) => tokens(toolText(t)))
@@ -202,7 +212,7 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
   const factors: Reflection['factors'] = integers.map((n) => {
     const shor = tools.find((t) => t.name === 'algorithm')?.inputSchema.properties?.N
     if (shor && typeof shor.maximum === 'number' && n <= shor.maximum && n >= (shor.minimum ?? 3)) {
-      const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'algorithm', arguments: { name: 'shor', N: n } } })
+      const reply = SHOR.get(n) ?? (() => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'algorithm', arguments: { name: 'shor', N: n } } }); SHOR.set(n, r); return r })()
       if ('result' in reply) {
         const rows: unknown[][] = reply.result.structuredContent?.summary ?? []
         const f = rows.find((r) => r[0] === 'Factors')?.[1] as string | undefined

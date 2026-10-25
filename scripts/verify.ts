@@ -1,76 +1,48 @@
-// The client side of cross-verification, run by `npm run next`: every verify request the surface emits for every lead
-// is fetched once from its free public source, and what came back is written as data (docs/public/verification.json)
-// and as a page (docs/verification.md). No cap on the walk; a pause between requests to the same host.
-import { writeFileSync, mkdirSync } from 'node:fs'
+// The client of the wave tool: it asks for the requests, fetches each once (a pool in flight, paced per host, progressive
+// writes), hands the bodies back with the contracts discovery found, and writes what the tool returns. Selftest first.
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { LEADS } from '../src/quantum/leads.ts'
-import { factsOf, verifyRequestsOf, TREE_FACTS } from '../src/quantum/verifiers.ts'
+import { handle } from '../src/quantum/mcp.ts'
+import { LICENSE } from '../src/quantum/license.ts'
+import type { WaveRequest, WaveResult } from '../src/quantum/wave.ts'
 
 const ROOT = process.cwd()
-
-const main = async () => {
-const requests = new Map<string, { verifier: string; url: string; check: string; leads: string[] }>()
-const add = (id: string, f: Parameters<typeof verifyRequestsOf>[0]) => { for (const r of verifyRequestsOf(f)) { const cur = requests.get(r.url) ?? { verifier: r.verifier, url: r.url, check: r.check, leads: [] }; if (!cur.leads.includes(id)) cur.leads.push(id); requests.set(r.url, cur) } }
-for (const lead of LEADS) for (const f of factsOf(lead)) add(lead.id, f)
-for (const f of TREE_FACTS) add(`tree:${f.kind}:${f.value}`, f)
-type Result = { verifier: string; url: string; status: number; ok: boolean; ms: number; note: string; check: string; leads: string[] }
-const results: Result[] = []
-const byHost = new Map<string, number>()
+const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'wave', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
-const noteOf = (verifier: string, text: string): string => {
-  const title = () => { const m = /<title>([^<]*)<\/title>/i.exec(text); return m ? `title="${m[1]!.trim().slice(0, 100)}"` : `${text.length} chars` }
-  try {
-    if (verifier === 'oeis') { const j = JSON.parse(text); return `${Array.isArray(j) ? j.length : j.results?.length ?? j.count ?? 0} sequence results` }
-    if (verifier === 'github') { const j = JSON.parse(text); return `description="${(j.description ?? '').slice(0, 80)}" language=${j.language}` }
-    if (verifier === 'zenodo' || verifier === 'datacite') { const j = JSON.parse(text); return JSON.stringify(j.metadata?.creators?.[0] ?? j.data?.attributes?.creators?.[0] ?? {}).slice(0, 120) }
-    if (verifier === 'wikipedia') { const j = JSON.parse(text); return `extract="${(j.extract ?? '').slice(0, 100)}"` }
-  } catch { /* fall through to the title */ }
-  if (verifier === 'arxiv') { const t = /<title>([^<]+)<\/title>/g; t.exec(text); const m = t.exec(text); return m ? `entry="${m[1]!.trim().slice(0, 100)}"` : 'no entry' }
-  return title()
+const main = async () => {
+  const selftest = call({ selftest: true })
+  console.log(`wave selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
+  const plan = call({})
+  const queue = [...(plan.requestList as WaveRequest[])]
+  const discoveryPath = join(ROOT, 'docs', 'public', 'discovery.json')
+  const contracts: Record<string, string[]> = {}
+  if (existsSync(discoveryPath)) { try { for (const h of (JSON.parse(readFileSync(discoveryPath, 'utf8')) as { hosts: { host: string; paths?: string[] }[] }).hosts) if (h.paths?.length) contracts[h.host] = h.paths } catch { /* no discovery: every request uncontracted, said so by the tool */ } }
+  const results: WaveResult[] = []
+  const byHost = new Map<string, number>()
+  const inFlight = new Set<Promise<void>>()
+  const POOL = 8
+  let i = 0
+  const one = async (r: WaveRequest) => {
+    const host = new URL(r.url).host
+    const pace = r.verifier === 'source-page' ? 250 : 1200
+    const wait = Math.max(0, (byHost.get(host) ?? 0) + pace - Date.now())
+    byHost.set(host, Date.now() + wait)
+    if (wait) await sleep(wait)
+    const started = Date.now()
+    try { const res = await fetch(r.url, { headers: { accept: '*/*', 'user-agent': 'uuidna-qpu-verify (ceccec@psg.bg)' }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); results.push({ ...r, status: res.status, ok: res.ok, ms: Date.now() - started, text: await res.text() }) }
+    catch (e) { results.push({ ...r, status: 0, ok: false, ms: Date.now() - started, text: `fetch failed: ${(e as Error).message}` }) }
+    i += 1
+    if (i % 50 === 0) { console.log(`verify ${i}/${queue.length + i}`); writeFileSync(join(ROOT, 'docs', 'public', 'verification.json'), JSON.stringify({ date: new Date().toISOString(), partial: true, leads: plan.leads, requests: plan.requests, done: i, results: call({ results, contracts }).results }, null, 1) + '\n') }
+  }
+  while (queue.length || inFlight.size) {
+    while (queue.length && inFlight.size < POOL) { const p = one(queue.shift()!).finally(() => inFlight.delete(p)); inFlight.add(p) }
+    if (inFlight.size) await Promise.race(inFlight)
+  }
+  const read = call({ results, contracts })
+  const date = new Date().toISOString()
+  mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
+  writeFileSync(join(ROOT, 'docs', 'public', 'verification.json'), JSON.stringify({ license: LICENSE.attribution, date, selftest: { passed: selftest.passed }, leads: plan.leads, requests: read.requests, summary: read.summary, results: read.results }, null, 1) + '\n')
+  writeFileSync(join(ROOT, 'docs', 'verification.md'), read.page)
+  console.log(`verify: ${read.requests} requests, ${read.reachable} reachable; ${JSON.stringify(read.summary)}`)
 }
-let i = 0
-// A pool of fetches in flight, paced per host: latency, not politeness, dominated a serial walk of a 2,600-request wave.
-const queue = [...requests.values()]
-const inFlight = new Set<Promise<void>>()
-const POOL = 8
-const one = async (r: { verifier: string; url: string; check: string; leads: string[] }) => {
-  const host = new URL(r.url).host
-  const pace = r.verifier === 'source-page' ? 250 : 1200
-  const wait = Math.max(0, (byHost.get(host) ?? 0) + pace - Date.now())
-  byHost.set(host, Date.now() + wait)
-  if (wait) await sleep(wait)
-  const started = Date.now()
-  let status = 0, ok = false, note = ''
-  try {
-    const res = await fetch(r.url, { headers: { accept: '*/*', 'user-agent': 'uuidna-qpu-verify (ceccec@psg.bg)' }, redirect: 'follow', signal: AbortSignal.timeout(20000) })
-    status = res.status; ok = res.ok; note = noteOf(r.verifier, await res.text())
-  } catch (e) { note = `fetch failed: ${(e as Error).message}` }
-  results.push({ verifier: r.verifier, url: r.url, status, ok, ms: Date.now() - started, note, check: r.check, leads: r.leads })
-  i += 1
-  if (i % 50 === 0) { console.log(`verify ${i}/${requests.size}`); writeFileSync(join(ROOT, 'docs', 'public', 'verification.json'), JSON.stringify({ date: new Date().toISOString(), partial: true, leads: LEADS.length, requests: requests.size, done: i, results }, null, 1) + '\n') }
-}
-while (queue.length || inFlight.size) {
-  while (queue.length && inFlight.size < POOL) { const p = one(queue.shift()!).finally(() => inFlight.delete(p)); inFlight.add(p) }
-  if (inFlight.size) await Promise.race(inFlight)
-}
-results.sort((a, b) => a.verifier.localeCompare(b.verifier) || a.url.localeCompare(b.url))
-const date = new Date().toISOString()
-const summary: Record<string, { requests: number; ok: number }> = {}
-for (const r of results) { const s = summary[r.verifier] ?? (summary[r.verifier] = { requests: 0, ok: 0 }); s.requests += 1; if (r.ok) s.ok += 1 }
-mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
-writeFileSync(join(ROOT, 'docs', 'public', 'verification.json'), JSON.stringify({ license: 'CC-BY-NC-ND-4.0 © Tsvetan Rouschev; commercial use by licence (ceccec@psg.bg)', date, leads: LEADS.length, requests: requests.size, summary, results }, null, 1) + '\n')
-const page = [
-  '---', 'title: Verification', 'order: 48', '---', '',
-  '# Cross-verification on live public sources', '',
-  `Generated by \`npm run next\` on ${date}. Every verify request the surface emits for its ${LEADS.length} leads was fetched once by this`,
-  'repository acting as the client MCP; the handler itself did no I/O. A failed or missing row is a lead, not a ruling.', '',
-  '| Verifier | Requests | Reachable |', '|---|---:|---:|',
-  ...Object.entries(summary).map(([v, s]) => `| ${v} | ${s.requests} | ${s.ok} |`), '',
-  '| Verifier | Status | What came back | Check | Leads |', '|---|---:|---|---|---|',
-  ...results.map((r) => `| ${r.verifier} | ${r.status || 'none'} | ${r.note.replace(/\|/g, '\\|')} | ${r.check.replace(/\|/g, '\\|')} | ${r.leads.join(', ')} |`), '',
-].join('\n')
-writeFileSync(join(ROOT, 'docs', 'verification.md'), page)
-console.log(`verify: ${requests.size} requests, ${results.filter((r) => r.ok).length} reachable; ${JSON.stringify(summary)}`)
-}
-
 main().catch((e) => { console.error(e); process.exit(1) })

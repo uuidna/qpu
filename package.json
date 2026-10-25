@@ -29,7 +29,7 @@
     "readiness": "node --import tsx scripts/readiness.ts",
     "imagine": "node --import tsx scripts/imagine.ts",
     "dev:worker": "wrangler dev",
-    "deploy": "npm run next -- --offline && wrangler deploy",
+    "deploy": "npm run next -- --offline --fast --strict && wrangler deploy",
     "publish": "node --import tsx scripts/publish.ts",
     "clay:gen": "node --import tsx scripts/gen-clay.ts",
     "pretest": "node --import tsx scripts/gen-clay.ts && npx tsx scripts/gen-docs.ts",
@@ -40,7 +40,7 @@
     "tsx": "4.22.4",
     "typescript": "7.0.2",
     "vitepress": "2.0.0-alpha.20",
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.152.0"
   },
   "description": "The Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes with the benchmark Google states, and one MCP surface that compiles them on request.",
   "homepage": "https://github.com/uuidna/qpu"

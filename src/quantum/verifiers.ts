@@ -7,32 +7,32 @@ import type { Lead } from './leads.js'
 export type FactKind = 'integer' | 'factors' | 'repository' | 'page' | 'preprint' | 'doi' | 'constant' | 'dataset'
 export type Fact = { kind: FactKind; value: string; detail?: Record<string, string | number>; lead?: string }
 export type VerifyRequest = { verifier: string; url: string; method: 'GET'; accept: string; check: string; via: string }
-export type Verifier = { id: string; name: string; kind: 'api' | 'page'; free: true; docs: string; verifies: readonly FactKind[]; /** narrows a kind to the facts this adaptor actually holds */ only?: (fact: Fact) => boolean; requestOf: (fact: Fact) => { url: string; accept: string; check: string } }
+export type Verifier = { id: string; name: string; kind: 'api' | 'page'; free: true; docs: string; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string; verifies: readonly FactKind[]; /** narrows a kind to the facts this adaptor actually holds */ only?: (fact: Fact) => boolean; requestOf: (fact: Fact) => { url: string; accept: string; check: string ; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string} }
 
 export const VIA = "the client's own MCP fetches it; this handler does no I/O"
 
 export const VERIFIERS: readonly Verifier[] = [
   { id: 'oeis', name: 'The On-Line Encyclopedia of Integer Sequences', kind: 'api', free: true, docs: 'https://oeis.org/wiki/JSON_Format,_Compressed_Files', verifies: ['integer', 'factors'],
     requestOf: (f) => ({ url: `https://oeis.org/search?fmt=json&q=${encodeURIComponent(f.value)}`, accept: 'application/json', check: f.kind === 'factors' ? `the integer ${f.value} appears in the results; A027746 (prime factorisation rows) lists ${f.detail?.factors ?? 'its factors'}` : `the integer ${f.value} appears in at least one sequence` }) },
-  { id: 'github', name: 'GitHub REST API, quantumlib organization', kind: 'api', free: true, docs: 'https://docs.github.com/en/rest/repos/repos', verifies: ['repository'],
+  { id: 'github', name: 'GitHub REST API, quantumlib organization', kind: 'api', free: true, docs: 'https://docs.github.com/en/rest/repos/repos', contract: 'https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json', verifies: ['repository'],
     requestOf: (f) => ({ url: `https://api.github.com/repos/quantumlib/${encodeURIComponent(f.value)}`, accept: 'application/vnd.github+json', check: `description and language equal the repositories tool's entry for ${f.value}${f.detail?.language ? ` (${f.detail.language})` : ''}` }) },
   { id: 'source-page', name: 'The statement\'s own source page', kind: 'page', free: true, docs: 'https://quantumai.google', verifies: ['page'],
     requestOf: (f) => ({ url: f.value.startsWith('http') ? f.value : `https://${f.value}`, accept: 'text/html', check: f.detail?.statement ? `the page states: ${f.detail.statement}` : 'the page is reachable and states what the lead says' }) },
-  { id: 'arxiv', name: 'arXiv API', kind: 'api', free: true, docs: 'https://info.arxiv.org/help/api/index.html', verifies: ['preprint'],
+  { id: 'arxiv', name: 'arXiv API', kind: 'api', free: true, docs: 'https://info.arxiv.org/help/api/index.html', contract: 'https://export.arxiv.org/oai2?verb=Identify', verifies: ['preprint'],
     requestOf: (f) => ({ url: `https://export.arxiv.org/api/query?id_list=${encodeURIComponent(f.value)}`, accept: 'application/atom+xml', check: `the entry's title and abstract match the statements tool's echoes_preprint topic` }) },
-  { id: 'datacite', name: 'DataCite REST API', kind: 'api', free: true, docs: 'https://support.datacite.org/docs/api', verifies: ['doi'],
+  { id: 'datacite', name: 'DataCite REST API', kind: 'api', free: true, docs: 'https://support.datacite.org/docs/api', contract: 'https://api.datacite.org/', verifies: ['doi'],
     requestOf: (f) => ({ url: `https://api.datacite.org/dois/${encodeURIComponent(f.value)}`, accept: 'application/vnd.api+json', check: `the DOI resolves; creators name Rouschev, Tsvetan with ORCID 0009-0000-7312-9778` }) },
-  { id: 'zenodo', name: 'Zenodo REST API', kind: 'api', free: true, docs: 'https://developers.zenodo.org', verifies: ['doi'], only: (f) => /^10\.5281\//.test(f.value),
+  { id: 'zenodo', name: 'Zenodo REST API', kind: 'api', free: true, docs: 'https://developers.zenodo.org', contract: 'https://zenodo.org/api/', verifies: ['doi'], only: (f) => /^10\.5281\//.test(f.value),
     requestOf: (f) => ({ url: `https://zenodo.org/api/records/${encodeURIComponent(f.value.replace(/^10\.5281\/zenodo\./, ''))}`, accept: 'application/json', check: `metadata.creators[0].name is Rouschev, Tsvetan and metadata.title matches` }) },
   { id: 'doi-org', name: 'The DOI resolver', kind: 'api', free: true, docs: 'https://www.doi.org/the-identifier/resources/factsheets/doi-resolution-documentation', verifies: ['doi'],
     requestOf: (f) => ({ url: `https://doi.org/api/handles/${encodeURIComponent(f.value)}`, accept: 'application/json', check: 'the handle resolves to a URL (responseCode 1)' }) },
-  { id: 'crossref', name: 'Crossref REST API', kind: 'api', free: true, docs: 'https://api.crossref.org/swagger-ui/index.html', verifies: ['doi'], only: (f) => !/^10\.(5281|7483)\//.test(f.value),
+  { id: 'crossref', name: 'Crossref REST API', kind: 'api', free: true, docs: 'https://api.crossref.org/swagger-ui/index.html', contract: 'https://api.crossref.org/swagger-docs', verifies: ['doi'], only: (f) => !/^10\.(5281|7483)\//.test(f.value),
     requestOf: (f) => ({ url: `https://api.crossref.org/works/${encodeURIComponent(f.value)}`, accept: 'application/json', check: 'the DOI is registered at Crossref' }) },
-  { id: 'cern-opendata', name: 'CERN Open Data portal API', kind: 'api', free: true, docs: 'https://opendata.cern.ch/docs/cod-api', verifies: ['doi', 'dataset'], only: (f) => f.kind === 'dataset' || /^10\.7483\//.test(f.value),
+  { id: 'cern-opendata', name: 'CERN Open Data portal API', kind: 'api', free: true, docs: 'https://opendata.cern.ch/docs/cod-api', contract: 'https://opendata.cern.ch/api/records/?size=1', verifies: ['doi', 'dataset'], only: (f) => f.kind === 'dataset' || /^10\.7483\//.test(f.value),
     requestOf: (f) => ({ url: f.kind === 'dataset' ? `https://opendata.cern.ch/api/records/${encodeURIComponent(f.value)}` : `https://opendata.cern.ch/api/records/?q=doi:%22${encodeURIComponent(f.value)}%22`, accept: 'application/json', check: 'the record exists and its title matches the reference' }) },
   { id: 'nist-codata', name: 'NIST CODATA fundamental physical constants', kind: 'api', free: true, docs: 'https://physics.nist.gov/cuu/Constants/', verifies: ['constant'],
     requestOf: (f) => ({ url: `https://physics.nist.gov/cgi-bin/cuu/Value?${encodeURIComponent(f.value)}`, accept: 'text/html', check: `the CODATA value of ${f.value} agrees with Qpu.Physics to the precision the Lean file states` }) },
-  { id: 'wikipedia', name: 'Wikipedia REST summary', kind: 'api', free: true, docs: 'https://en.wikipedia.org/api/rest_v1/', verifies: ['integer', 'repository', 'preprint'],
+  { id: 'wikipedia', name: 'Wikipedia REST summary', kind: 'api', free: true, docs: 'https://en.wikipedia.org/api/rest_v1/', contract: 'https://en.wikipedia.org/api/rest_v1/?spec', verifies: ['integer', 'repository', 'preprint'],
     requestOf: (f) => ({ url: `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(String(f.detail?.title ?? f.value))}`, accept: 'application/json', check: 'the summary agrees with the lead\'s statement' }) },
 ]
 

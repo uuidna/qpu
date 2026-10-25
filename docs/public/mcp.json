@@ -19,6 +19,9 @@
             ]
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -276,6 +279,9 @@
             "description": "the noise of a Willow chip, from its spec sheet medians, after every gate"
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -453,6 +459,9 @@
             }
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -461,6 +470,9 @@
       "inputSchema": {
         "type": "object",
         "properties": {}
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -475,6 +487,9 @@
             "maximum": 6
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -562,6 +577,9 @@
             "default": 0
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -570,6 +588,9 @@
       "inputSchema": {
         "type": "object",
         "properties": {}
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -625,6 +646,9 @@
             ]
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -638,24 +662,9 @@
             "description": "only repositories whose primary language is this"
           }
         }
-      }
-    },
-    {
-      "name": "leads",
-      "description": "Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it is not served. The whole list is returned; nothing is truncated.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "enum": [
-              "served",
-              "partial",
-              "blocked",
-              "out_of_scope",
-              "open"
-            ]
-          }
-        }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -669,6 +678,9 @@
             "description": "only the repository with this name"
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -718,6 +730,9 @@
             "description": "the probabilities to sweep; by default 0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6"
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -743,6 +758,9 @@
             "description": "grid points of the sweep over [−π/2, π/2)"
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
       }
     },
     {
@@ -791,6 +809,30 @@
             "description": "qaoa: the nodes of the page's instance"
           }
         }
+      },
+      "_meta": {
+        "toolbox": "google"
+      }
+    },
+    {
+      "name": "leads",
+      "description": "Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it is not served. The whole list is returned; nothing is truncated.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "served",
+              "partial",
+              "blocked",
+              "out_of_scope",
+              "open"
+            ]
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "tree"
       }
     },
     {
@@ -799,6 +841,9 @@
       "inputSchema": {
         "type": "object",
         "properties": {}
+      },
+      "_meta": {
+        "toolbox": "tree"
       }
     },
     {
@@ -832,6 +877,9 @@
             "description": "the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it"
           }
         }
+      },
+      "_meta": {
+        "toolbox": "tree"
       }
     },
     {
@@ -845,6 +893,9 @@
             "description": "one relation, e.g. relation_15; omit for all"
           }
         }
+      },
+      "_meta": {
+        "toolbox": "tree"
       }
     },
     {
@@ -895,6 +946,371 @@
             "description": "the successor in the chain"
           }
         }
+      },
+      "_meta": {
+        "toolbox": "tree"
+      }
+    },
+    {
+      "name": "discover",
+      "description": "Discovery before use. Without answers: every request the client must make for the contracts of the hosts this tree talks to (MCP tools/list and catalogue doors, the verifiers' OpenAPI, index or identify documents, /.well-known/qpu.json). With answers: the follow-ups still to fetch (catalogue doors whose contract is unread) and, once none remain, the discovery: hosts, doors with what they take and answer, capabilities by which clients choose doors, and the leads (hosts with no machine contract). Pure; the client fetches.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mcpHosts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "MCP endpoints to ask; default the unit and this tree's own"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "the requests answered: each request as emitted plus status, type and text"
+          },
+          "selftest": {
+            "type": "boolean",
+            "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "flow"
+      }
+    },
+    {
+      "name": "wave",
+      "description": "The verification wave. Without results: every request the surface's leads and tree facts need, once per URL with the leads it serves. With results (each request plus status, ok, ms and the body text): what came back read into one-line notes, a check of each request against the OpenAPI contract its host published (from discovery), and a summary by verifier. Pure; the client fetches.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "contracts": {
+            "type": "object",
+            "description": "host → OpenAPI path templates, from the discovery"
+          },
+          "leads": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "lead ids to restrict the wave to; default all"
+          },
+          "selftest": {
+            "type": "boolean",
+            "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "flow"
+      }
+    },
+    {
+      "name": "readiness",
+      "description": "The unit judges the tree. Phase one (verification, discovery, present, ledger): every lead judged by measurement into served, refuted or trial; the sources as the unit's readiness door takes them; the border plan — every discovered door that takes a statement and answers a verdict, with a hand-written theorem filled in; and the unit plan, the calls the client makes. Phase two (plus border answers and unit answers): the border read, and the page. Pure; the client asks the unit.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "verification": {
+            "type": "object",
+            "description": "the wave tool's results phase"
+          },
+          "discovery": {
+            "type": "object",
+            "description": "the discover tool's discovery phase"
+          },
+          "present": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "cleanup subjects the client measured as present (paths or branches)"
+          },
+          "ledger": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "theorem rows {key, statement} from the theorem ledger"
+          },
+          "probeKey": {
+            "type": "string",
+            "description": "the hand-written theorem offered at the border; default clay_sigma"
+          },
+          "border": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "phase two: the border calls answered ({door, host, arguments, answer | refusal})"
+          },
+          "unit": {
+            "type": "object",
+            "description": "phase two: the unit's answers (readiness, auras, rights, address)"
+          },
+          "selftest": {
+            "type": "boolean",
+            "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "flow"
+      }
+    },
+    {
+      "name": "imagine",
+      "description": "Imagination leads all leads: every lead (or the subset named) matched with the reflection on — hidden factors, angles, mirror queries, cluster, verification requests — every reflection that finds something a new open lead, every untried enum value of every schema a lead, every application family an adaptor to build. Pure.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "leads": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "lead ids to imagine; default all"
+          },
+          "selftest": {
+            "type": "boolean",
+            "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "flow"
+      }
+    },
+    {
+      "name": "translate",
+      "description": "Translation by vocabulary, offline, both ways: text, from, to. A word no table knows stays as it is and is reported, never guessed; Glagolitic numerals are read as integers. Without text: the vocabulary measured — for every locale, the surface terms with no entry (the leads of the tables).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string",
+            "enum": [
+              "en",
+              "bg",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "ru",
+              "zh",
+              "ja",
+              "pt",
+              "nl"
+            ]
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "en",
+              "bg",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "ru",
+              "zh",
+              "ja",
+              "pt",
+              "nl"
+            ]
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "language"
+      }
+    },
+    {
+      "name": "prose",
+      "description": "Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox's idea, the tool's scalar answers, the toolbox's instructions — every word from the vocabulary, every number from the tool, every unknown word reported.",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "tool"
+        ],
+        "properties": {
+          "tool": {
+            "type": "string"
+          },
+          "arguments": {
+            "type": "object"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "en",
+              "bg",
+              "de",
+              "fr",
+              "es",
+              "it",
+              "ru",
+              "zh",
+              "ja",
+              "pt",
+              "nl"
+            ]
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "language"
+      }
+    },
+    {
+      "name": "mongo",
+      "description": "The ported MongoDB over the docket, pure. find: {collection, docs, filter, sort, skip, limit} → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: {collection, docs: [new]} → the entries to write, content-addressed. update: {collection, docs, filter, update} → for each match the new document and the entry that replaces it (linked to the old). delete: {collection, docs, filter} → the ids to delete, if unlinked. The client reads the docket rows and writes what comes back.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "op": {
+            "type": "string",
+            "enum": [
+              "find",
+              "insert",
+              "update",
+              "delete"
+            ]
+          },
+          "collection": {
+            "type": "string"
+          },
+          "docs": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "the collection's documents as read from the docket (their bodies)"
+          },
+          "filter": {
+            "type": "object"
+          },
+          "update": {
+            "type": "object"
+          },
+          "sort": {
+            "type": "object"
+          },
+          "skip": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "raid"
+      }
+    },
+    {
+      "name": "stripe",
+      "description": "Stripe per tenant, pure, the QPU as a product with its variants. catalogue: every product and variant (domain, tenant, seat, metered, enterprise; month, year, metered; eur, usd, bgn) as the forms Stripe takes, per tenant. usage: metered calls from docket entries as a usage record. settle: the author's compensation from Stripe's own net figures, by product and tenant, as a settlement entry. plan: a checkout session request for a commercial licence (subject, domains, mode, price or amount) that the Worker sends with the tenant's secret key. webhook: the Stripe-Signature verified with the tenant's webhook secret (HMAC-SHA256, timestamp tolerance), the event read into one idempotent licence entry (granted, renewed, revoked, disputed, failed, noted) linked to what it changes. state: the licence state of a subject at a domain from its entries, at any tenant. The handler holds no key; the Worker executes plans and the docket keeps the entries.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "op": {
+            "type": "string",
+            "enum": [
+              "plan",
+              "webhook",
+              "state",
+              "catalogue",
+              "usage",
+              "settle"
+            ]
+          },
+          "currencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "from": {
+            "type": "integer"
+          },
+          "to": {
+            "type": "integer"
+          },
+          "transactions": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "settle: Stripe balance transactions {id, amount, fee, net, currency, product?, variant?, tenant?}"
+          },
+          "tenant": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "checkout": {
+            "type": "object",
+            "description": "plan: { subject, domains, mode, price | amount, currency, successUrl, cancelUrl, customerEmail? }"
+          },
+          "payload": {
+            "type": "string",
+            "description": "webhook: the raw body"
+          },
+          "signature": {
+            "type": "string",
+            "description": "webhook: the Stripe-Signature header"
+          },
+          "secret": {
+            "type": "string",
+            "description": "webhook: the tenant's webhook secret (the Worker passes it; a client never has it)"
+          },
+          "now": {
+            "type": "integer",
+            "description": "webhook/state: unix seconds; default the current time"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "webhook/state: the subject's licence entries as read from the docket"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "billing"
       }
     }
   ]

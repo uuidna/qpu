@@ -9,6 +9,7 @@ import Compile from './components/Compile.vue'
 import AuraBar from './components/AuraBar.vue'
 import CatchAll from './components/CatchAll.vue'
 import HandleSearch from './components/HandleSearch.vue'
+import Speak from './components/Speak.vue'
 import type { Theme } from 'vitepress'
 
 export default {
@@ -22,5 +23,6 @@ export default {
     app.component('AuraBar', AuraBar)
     app.component('CatchAll', CatchAll)
     app.component('HandleSearch', HandleSearch)
+    app.component('Speak', Speak)
   },
 } satisfies Theme
