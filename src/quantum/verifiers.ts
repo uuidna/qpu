@@ -4,7 +4,7 @@
 
 import type { Lead } from './leads.js'
 
-export type FactKind = 'integer' | 'factors' | 'repository' | 'page' | 'preprint' | 'doi' | 'constant' | 'dataset'
+export type FactKind = 'integer' | 'factors' | 'repository' | 'page' | 'preprint' | 'doi' | 'constant' | 'dataset' | 'sequence'
 export type Fact = { kind: FactKind; value: string; detail?: Record<string, string | number>; lead?: string }
 export type VerifyRequest = { verifier: string; url: string; method: 'GET'; accept: string; check: string; via: string }
 export type Verifier = { id: string; name: string; kind: 'api' | 'page'; free: true; docs: string; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string; verifies: readonly FactKind[]; /** narrows a kind to the facts this adaptor actually holds */ only?: (fact: Fact) => boolean; requestOf: (fact: Fact) => { url: string; accept: string; check: string ; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string} }
@@ -12,8 +12,8 @@ export type Verifier = { id: string; name: string; kind: 'api' | 'page'; free: t
 export const VIA = "the client's own MCP fetches it; this handler does no I/O"
 
 export const VERIFIERS: readonly Verifier[] = [
-  { id: 'oeis', name: 'The On-Line Encyclopedia of Integer Sequences', kind: 'api', free: true, docs: 'https://oeis.org/wiki/JSON_Format,_Compressed_Files', verifies: ['integer', 'factors'],
-    requestOf: (f) => ({ url: `https://oeis.org/search?fmt=json&q=${encodeURIComponent(f.value)}`, accept: 'application/json', check: f.kind === 'factors' ? `the integer ${f.value} appears in the results; A027746 (prime factorisation rows) lists ${f.detail?.factors ?? 'its factors'}` : `the integer ${f.value} appears in at least one sequence` }) },
+  { id: 'oeis', name: 'The On-Line Encyclopedia of Integer Sequences', kind: 'api', free: true, docs: 'https://oeis.org/wiki/JSON_Format,_Compressed_Files', verifies: ['integer', 'factors', 'sequence'],
+    requestOf: (f) => ({ url: `https://oeis.org/search?fmt=json&q=${encodeURIComponent(f.kind === 'sequence' ? `id:${f.value}` : f.value)}`, accept: 'application/json', check: f.kind === 'sequence' ? `the sequence ${f.value} exists and its name agrees with the lead: ${f.detail?.title ?? ''}` : f.kind === 'factors' ? `the integer ${f.value} appears in the results; A027746 (prime factorisation rows) lists ${f.detail?.factors ?? 'its factors'}` : `the integer ${f.value} appears in at least one sequence` }) },
   { id: 'github', name: 'GitHub REST API, quantumlib organization', kind: 'api', free: true, docs: 'https://docs.github.com/en/rest/repos/repos', contract: 'https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json', verifies: ['repository'],
     requestOf: (f) => ({ url: `https://api.github.com/repos/quantumlib/${encodeURIComponent(f.value)}`, accept: 'application/vnd.github+json', check: `description and language equal the repositories tool's entry for ${f.value}${f.detail?.language ? ` (${f.detail.language})` : ''}` }) },
   { id: 'source-page', name: 'The statement\'s own source page', kind: 'page', free: true, docs: 'https://quantumai.google', verifies: ['page'],
@@ -32,7 +32,7 @@ export const VERIFIERS: readonly Verifier[] = [
     requestOf: (f) => ({ url: f.kind === 'dataset' ? `https://opendata.cern.ch/api/records/${encodeURIComponent(f.value)}` : `https://opendata.cern.ch/api/records/?q=doi:%22${encodeURIComponent(f.value)}%22`, accept: 'application/json', check: 'the record exists and its title matches the reference' }) },
   { id: 'nist-codata', name: 'NIST CODATA fundamental physical constants', kind: 'api', free: true, docs: 'https://physics.nist.gov/cuu/Constants/', verifies: ['constant'],
     requestOf: (f) => ({ url: `https://physics.nist.gov/cgi-bin/cuu/Value?${encodeURIComponent(f.value)}`, accept: 'text/html', check: `the CODATA value of ${f.value} agrees with Qpu.Physics to the precision the Lean file states` }) },
-  { id: 'wikipedia', name: 'Wikipedia REST summary', kind: 'api', free: true, docs: 'https://en.wikipedia.org/api/rest_v1/', contract: 'https://en.wikipedia.org/api/rest_v1/?spec', verifies: ['integer', 'repository', 'preprint'],
+  { id: 'wikipedia', name: 'Wikipedia REST summary', kind: 'api', free: true, docs: 'https://en.wikipedia.org/api/rest_v1/', contract: 'https://en.wikipedia.org/api/rest_v1/?spec', verifies: ['integer', 'repository', 'preprint', 'sequence'],
     requestOf: (f) => ({ url: `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(String(f.detail?.title ?? f.value))}`, accept: 'application/json', check: 'the summary agrees with the lead\'s statement' }) },
 ]
 
@@ -44,6 +44,7 @@ export const verifyRequestsOf = (fact: Fact): VerifyRequest[] =>
 export const factsOf = (lead: Lead): Fact[] => {
   const facts: Fact[] = []
   const src = lead.source
+  for (const m of src.matchAll(/\b(A\d{6})\b/g)) facts.push({ kind: 'sequence', value: m[1]!, detail: { title: (/wiki\/([A-Za-z_()]+)/.exec(src)?.[1] ?? 'Digital_root') }, lead: lead.id })
   if (/arxiv\s*(\d{4}\.\d{4,5})/i.test(src)) facts.push({ kind: 'preprint', value: /arxiv\s*(\d{4}\.\d{4,5})/i.exec(src)![1]!, lead: lead.id })
   else if (/10\.\d{4,9}\/\S+/.test(src)) facts.push({ kind: 'doi', value: /10\.\d{4,9}\/\S+/.exec(src)![0]!, lead: lead.id })
   else if (/^repo-/.test(lead.id)) facts.push({ kind: 'repository', value: lead.id.replace(/^repo-/, ''), lead: lead.id })

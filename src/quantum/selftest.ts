@@ -53,7 +53,7 @@ export const flowSelftestOf = (handle: (m: Rpc) => any, examples: readonly Examp
   const unit = discovery.hosts.find((h) => h.host === 'unit.test' && h.kind === 'mcp')
   const unitDoors = unit?.doors ?? []
   check('discover:doors-read', unitDoors.length === 5 && unitDoors.some((d) => d.name === 'verify_claim' && d.contract === 'catalogue' && d.required.join() === 'statement'), `${unitDoors.length} doors: ${unitDoors.map((d) => d.name).join(', ')}`)
-  check('discover:capabilities', discovery.capabilities.statementVerdict.join() === 'verify_claim' && discovery.capabilities.signing.join() === 'sign_commit' && discovery.capabilities.rbac.length === 0, JSON.stringify(discovery.capabilities))
+  check('discover:capabilities', discovery.capabilities.statementVerdict.join() === 'verify_claim' && discovery.capabilities.signing.join() === 'sign_commit' && discovery.capabilities.rbac.length === 0 && discovery.capabilities.metaphysics.length === 0, JSON.stringify(discovery.capabilities))
   const gh = discovery.hosts.find((h) => h.host === 'raw.githubusercontent.com')
   check('discover:openapi-paths', gh?.detected === 'openapi 3.1.0' && gh.paths?.length === 2, `${gh?.detected}: ${gh?.paths?.join(', ')}`)
   check('discover:openapi-yaml', discovery.hosts.find((h) => h.host === 'en.wikipedia.org')?.paths?.join() === '/page/summary/{title}', 'yaml paths read')

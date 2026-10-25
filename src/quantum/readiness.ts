@@ -87,7 +87,17 @@ export const borderOf = (answers: readonly BorderAnswer[]): Border[] => answers.
   return { door: x.door, host: x.host, args: Object.keys(x.arguments ?? {}), verdict, receipt: typeof a.receipt === 'string' ? a.receipt : null, sealed, note: typeof a.note === 'string' ? a.note : null, refusal: null }
 })
 
-export type UnitAnswers = { readiness: { ready: boolean; why: string; settled: number; asked: number; answered: number; receipt: string }; auras: Record<string, { example: string; hue?: number; hsl?: string; cmyk?: number[]; error?: string }>; rights: { receipt?: string; imprint?: string; licenseAddress?: string; drift: string[] }; address: { probe: string; here: string; unit: string | null; agree: boolean; note: string } }
+/** The tree's own vortex: the doubling cycle and the trinities, each with its σ_10 reflection, as every tail is read. */
+export const TREE_VORTEX = { forward: [1, 2, 4, 8, 7, 5, 3, 6, 9], reflected: [9, 8, 6, 2, 3, 5, 7, 4, 1], trinities: [[3, 6, 9], [7, 4, 1], [2, 5, 8]], fixed: [5] }
+/** The unit's vortex doors read against the tree's: agreement is measured, a one-sided triad is named. */
+export const vortexOf = (unit: { reflection?: { forward?: number[]; reflected?: number[]; involution?: boolean; pairsSumTen?: boolean; fixedPoints?: number[] } | null; triad?: number[] | null; doubleTorus?: { dims?: string[]; root?: string } | null }): { agree: boolean; why: string; triadOneSided: boolean; forward: number[] | null; reflected: number[] | null; doubleTorusRoot: string | null; dims: number } => {
+  const r = unit.reflection
+  const sameSet = (a: number[] | undefined, b: number[]) => !!a && a.length === b.length && [...a].sort().join() === [...b].sort().join()
+  const agree = !!r && sameSet(r.forward, TREE_VORTEX.forward) && sameSet(r.reflected, TREE_VORTEX.reflected) && r.involution === true && r.pairsSumTen === true && (r.reflected ?? []).every((x, i) => x + (r.forward ?? [])[i]! === 10)
+  const triadOneSided = Array.isArray(unit.triad) && unit.triad.join() === '3,6,9'
+  return { agree, why: !r ? 'the unit\'s reflection door was not reached' : agree ? 'the unit\'s forward and reflected vortex are the tree\'s, an involution with pairs summing to 10' : `the unit\'s vortex differs: forward ${r.forward?.join(',')}, reflected ${r.reflected?.join(',')}`, triadOneSided, forward: r?.forward ?? null, reflected: r?.reflected ?? null, doubleTorusRoot: unit.doubleTorus?.root ?? null, dims: unit.doubleTorus?.dims?.length ?? 0 }
+}
+export type UnitAnswers = { vortex?: { reflection?: unknown; triad?: number[] | null; doubleTorus?: { dims?: string[]; root?: string } | null } | null; readiness: { ready: boolean; why: string; settled: number; asked: number; answered: number; receipt: string }; auras: Record<string, { example: string; hue?: number; hsl?: string; cmyk?: number[]; error?: string }>; rights: { receipt?: string; imprint?: string; licenseAddress?: string; drift: string[] }; address: { probe: string; here: string; unit: string | null; agree: boolean; note: string } }
 
 /** The readiness page, from the judgement, the border and the unit's answers. */
 export const readinessPageOf = (p: { unit: string; date: string; measured: string | null; discovered: string | null; probe: { key: string; statement: string | null }; judged: Judged[]; classes: { served: number; refuted: number; trial: number }; sources: Source[]; border: Border[]; sealedBy: string[]; answers: UnitAnswers }): string => {
@@ -105,6 +115,7 @@ export const readinessPageOf = (p: { unit: string; date: string; measured: strin
     '## Address agreement', '', `Probe \`${a.address.probe}\`: here ${a.address.here}, unit ${a.address.unit ?? 'no answer'} — ${a.address.agree ? 'agree' : 'disagree'}. ${a.address.note}`, '',
     '## The border', '', `\`${p.probe.key}\` (${p.probe.statement ?? 'statement not in the ledger yet'}) offered to every door discovery found that takes a statement and answers a verdict (${p.border.length} door(s), discovered ${p.discovered?.slice(0, 10) ?? 'never'}). ${p.sealedBy.length ? `Sealed or verified by: ${p.sealedBy.join(', ')}.` : "No door sealed or verified it: qpu's proofs are not citable at the border; lead gap-theorems-unsealed stays blocked on the unit's doors."}`, '',
     '| Door | Asked with | Verdict | Receipt | Note or refusal |', '|---|---|---|---|---|', ...p.border.map((b) => `| ${b.door} | ${b.args.join(', ') || '—'} | ${b.verdict ?? '—'} | ${b.receipt ?? '—'} | ${(b.note ?? b.refusal ?? '').replace(/\|/g, '\\|').slice(0, 200)} |`), '',
+    '## The vortex, cross-checked with the unit', '', (() => { const v = vortexOf((a.vortex ?? {}) as Parameters<typeof vortexOf>[0]); return `${v.why}. ${v.triadOneSided ? 'The unit\'s triad door answers 3, 6, 9 alone; this tree carries 7, 4, 1 beside it (triad_reflect).' : ''} ${v.doubleTorusRoot ? `The tree\'s ${v.dims} block addresses folded on the unit\'s double torus: root \`${v.doubleTorusRoot}\`.` : 'The double torus was not reached.'}` })(), '',
     '## Rights', '', a.rights.drift.length ? `Drift between the unit's rights and this tree's licence module: ${a.rights.drift.join('; ')}` : `This tree's licence module matches the unit's rights (address ${a.rights.licenseAddress}, imprint ${a.rights.imprint}, receipt ${a.rights.receipt}).`, ''].join('\n')
 }
 export { TAKES }

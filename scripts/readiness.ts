@@ -53,12 +53,15 @@ const main = async () => {
   const address = { probe: 'qpu', here: uuidOf('qpu'), unit: unitAddress, agree: unitAddress === uuidOf('qpu'), note: unitAddress === uuidOf('qpu') ? 'the unit and this tree name the same content identically' : "this tree's uuidOf is the unit's published shapeUuidOf; the compute_address door uses a builder not in the sources this tree can read — an open lead, not a claim" }
   const auras: Record<string, unknown> = {}
   for (const c of unitCalls.filter((x) => x.name === 'compute_aura')) { const id = String(c.arguments.subject); try { auras[id] = { example: c.example, ...(await rpc(UNIT, 'compute_aura', c.arguments)) } } catch (err) { auras[id] = { example: c.example, error: (err as Error).message } } }
-  const unit = { readiness, auras, rights: { receipt: rights.receipt, imprint: rights.imprint, licenseAddress: rights.licenseAddress, drift }, address }
+  // the metaphysical doors: the unit's vortex reflection against the tree's, its triad, and the tree's block addresses on its double torus
+  const door = async (name: string) => { try { return await ask(name) } catch (e) { return { refusal: (e as Error).message } } }
+  const vortex = { reflection: await door('get_vortex_reflection'), triad: await door('get_triad'), doubleTorus: await door('compute_double_torus') }
+  const unit = { vortex, readiness, auras, rights: { receipt: rights.receipt, imprint: rights.imprint, licenseAddress: rights.licenseAddress, drift }, address }
   const judged = call({ verification, discovery, present, ledger, border, unit, unitUrl: UNIT })
   const date = new Date().toISOString()
-  writeFileSync(join(ROOT, 'docs', 'public', 'readiness.json'), JSON.stringify({ license: LICENSE.attribution, date, unit: UNIT, selftest: { passed: selftest.passed }, measured: verification?.date ?? null, discovered: discovery?.date ?? null, classes: judged.classes, judged: judged.judged, readiness, border: { key: judged.probe.key, statement: judged.probe.statement, doors: judged.border, sealedBy: judged.sealedByDoors }, auras, address, rights: unit.rights }, null, 1) + '\n')
+  writeFileSync(join(ROOT, 'docs', 'public', 'readiness.json'), JSON.stringify({ license: LICENSE.attribution, date, unit: UNIT, selftest: { passed: selftest.passed }, measured: verification?.date ?? null, discovered: discovery?.date ?? null, classes: judged.classes, judged: judged.judged, readiness, vortex, border: { key: judged.probe.key, statement: judged.probe.statement, doors: judged.border, sealedBy: judged.sealedByDoors }, auras, address, rights: unit.rights }, null, 1) + '\n')
   writeFileSync(join(ROOT, 'docs', 'readiness.md'), judged.page)
-  console.log(`readiness: ${readiness.ready ? 'ready' : 'not ready'} — ${readiness.why} | served ${judged.served} refuted ${judged.refuted} trial ${judged.trial} | border ${judged.border.length} door(s), sealed by ${judged.sealedBy} | auras ${Object.keys(auras).length} | rights drift ${drift.length} | address ${address.agree ? 'agree' : 'disagree'}`)
+  console.log(`readiness: ${readiness.ready ? 'ready' : 'not ready'} — ${readiness.why} | served ${judged.served} refuted ${judged.refuted} trial ${judged.trial} | border ${judged.border.length} door(s), sealed by ${judged.sealedBy} | vortex ${(vortex.reflection as { involution?: boolean }).involution === true ? 'agrees' : 'differs or unreached'} | torus ${(vortex.doubleTorus as { root?: string }).root ? 'rooted' : 'unreached'} | auras ${Object.keys(auras).length} | rights drift ${drift.length} | address ${address.agree ? 'agree' : 'disagree'}`)
   if (drift.length) process.exitCode = 1
 }
 main().catch((e) => { console.error(e); process.exit(1) })
