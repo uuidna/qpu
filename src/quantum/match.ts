@@ -121,7 +121,8 @@ const MIRROR: Record<string, string[]> = {
   molecule: ['chemistry', 'hydrogen', 'h2'], chemistry: ['hydrogen', 'molecule'], energy: ['chemistry', 'hydrogen'],
   code: ['repetition', 'correction', 'stim'], decoder: ['chromobius', 'tesseract', 'stim'], paper: ['preprint', 'arxiv', 'statements'],
 }
-const stem = (t: string): string => t.replace(/(ing|ed|es|s)$/, '')
+/** The stem of a word: one form for token/tokens, server/servers, list/listing, so a door and a lead meet on the word, not its ending. */
+export const stem = (t: string): string => t.replace(/(ing|ed|es|s)$/, '')
 
 /** The statement in its mirror forms: stems, the sources' synonyms and complements, and the number-free analog. */
 export const reflectionsOf = (statement: string): string[] => {

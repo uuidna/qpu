@@ -4,6 +4,7 @@
 // index or identify document the verifiers registry names; both domains for /.well-known/qpu.json.
 import type { Verifier } from './verifiers.js'
 import { STANDARDS, detectStandard } from './standards.js'
+import { stem } from './match.js'
 
 export type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract'
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
@@ -218,12 +219,12 @@ export const relatedOf = (lead: string, answers: readonly { id: string; word?: s
   return { lead, asked: answers.length, answered, servers: [...servers.values()], extend }
 }
 
-/** The foreign doors that answer a lead best: a remote's tools/list read into doors, each scored by the words it shares with the lead (its name and description against the lead's statement), the top ones proposed — never called: calling another's server is the operator's act. */
+/** The foreign doors that answer a lead best: a remote's tools/list read into doors, each scored by the stems it shares with the lead (its name and description against the lead's statement, token meeting tokens, server meeting servers), the top ones proposed — never called: calling another's server is the operator's act. */
 export const bestDoorsOf = (lead: { id: string; statement: string }, remotes: readonly { server: string; url: string; tools: readonly { name: string; description?: string }[] }[], at = 3): { server: string; url: string; door: string; score: number; shared: string[] }[] => {
-  const words = new Set(registryWordsOf(lead, 12))
+  const words = new Set(registryWordsOf(lead, 12).map(stem))
   const out: { server: string; url: string; door: string; score: number; shared: string[] }[] = []
   for (const r of remotes) for (const t of r.tools) {
-    const text = `${t.name.replace(/[_-]+/g, ' ')} ${t.description ?? ''}`.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/)
+    const text = `${t.name.replace(/[_-]+/g, ' ')} ${t.description ?? ''}`.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).map(stem)
     const shared = [...new Set(text.filter((w) => words.has(w)))]
     if (shared.length) out.push({ server: r.server, url: r.url, door: t.name, score: shared.length, shared })
   }
