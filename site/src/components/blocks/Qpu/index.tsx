@@ -1,3 +1,5 @@
+// Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)
+// Added to the MIT fork of payloadcms/website (Copyright (c) 2023 Payload); this file is QPU's: see NOTICE.qpu.md.
 // The qpu block, rendered: the block names a tool and its arguments; the page asks the QPU Worker for the block (one tools/call,
 // the content hash named with If-None-Match so an unchanged block costs the edge nothing) and renders the widget the handler
 // computed. The page never computes: it carries what the QPU computed, as payloadcms.com carries what Payload computed.

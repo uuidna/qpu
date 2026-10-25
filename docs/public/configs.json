@@ -1,5 +1,5 @@
 {
- "date": "2026-10-25T21:17:04.329Z",
+ "date": "2026-10-25T21:19:39.885Z",
  "tested": 8,
  "kinds": 8,
  "closed": true,
@@ -113,16 +113,16 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "cf5452c0-35ae-3d95-b2bd-207411f2db51",
-    "seed": 9,
-    "reflection": 1,
+    "address": "ad0c1d65-b59f-228a-a61d-b5556fd005ef",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 5359
+    "bytes": 6638
    }
   }
  ]
