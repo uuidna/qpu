@@ -38,7 +38,7 @@ the run of the tree as tools: discover the hosts, verify the leads, let the unit
 
 **Tests itself:** server only: each tool on fixtures; server → client: every request a tool emits is one the client can answer; client → server: answers read back into data and pages; toolbox → toolbox: discovery feeds wave and readiness, wave feeds readiness, match feeds imagine and the judge.
 
-Tools: [discover](#discover), [wave](#wave), [readiness](#readiness), [imagine](#imagine).
+Tools: [discover](#discover), [wave](#wave), [readiness](#readiness), [imagine](#imagine), [e2e](#e2e).
 
 ## Toolbox `language`
 
@@ -104,11 +104,21 @@ Tools: [jsonld](#jsonld), [codes](#codes).
 
 Payload's plugin schema as the one shape of every result: nested docs of lexical documents whose blocks are programmable UUID logic, SEO from the block, no custom collection, a few kilobytes computed once.
 
-**Skill.** A Payload host with the default plugins (lexical, nested-docs, seo) stores _meta.payload of any result as it is: the lexical field is the document, nestedDocs.parent the parent relation, seo the plugin's fields; the block's uuid is the id. A device renders the block from its uuid alone (the walk) and never recomputes what the balancer computed.
+**Skill.** configure: a client calls it with no kind to test every configuration around the torus, with kind and current (its file text) to learn the drift as leads, with kind tenant and the names of its environment to learn what the operator still has to set; gen-docs writes the manifest from kind pwa. A Payload host with the default plugins (lexical, nested-docs, seo) stores _meta.payload of any result as it is: the lexical field is the document, nestedDocs.parent the parent relation, seo the plugin's fields; the block's uuid is the id. A device renders the block from its uuid alone (the walk) and never recomputes what the balancer computed.
 
 **Tests itself:** server only: the document shape on a fixture block; the next uuid is the program rotated; the breadcrumbs follow the chain; toolbox → toolbox: the block's Open Graph and JSON-LD come from the tree and standards toolboxes; client → server: a Payload host reads the document; the device reads the uuid.
 
-Tools: [payload](#payload).
+Tools: [payload](#payload), [configure](#configure).
+
+## Toolbox `extension`
+
+QPU the natural extension of every MCP and every MCP of QPU: a host's tools read into doors of this catalogue by the same reading discovery uses, a foreign door served by one request the client fetches, and this catalogue expressed as the registration any MCP client mounts; tenant configurable through the hosts and tokens a tenant names.
+
+**Skill.** Inward: call extend with a host (direction in); fetch the one request it emits, adding the tenant's bearer token where the host asks for one (QPU_MCP_TOKEN_&lt;HOST&gt;); call again with tools and the host's doors join the catalogue as host:tool. Serve one: extend with call &#123; tool, arguments &#125;; fetch the request; call again with answer. Outward: extend with direction out gives the registration (mcpServers fragment) any MCP client mounts. The discover tool extends the default hosts (the unit, this tree, Cloudflare's eight servers) on every run; a tenant names its own hosts with QPU_MCP_HOSTS[_&lt;TENANT&gt;].
+
+**Tests itself:** server only: a fixture tools/list read into doors; an event-stream answer read back; the registration from this catalogue; client → server: the client fetches tools/list and tools/call of the foreign host, token in the request, never in the tool; server → client: every answer the host gives is read the same way discovery reads it (JSON or event stream, error, refusal); toolbox → toolbox: the door reading is discovery's own (doorOf); the matcher never calls a foreign door to serve a statement; QPU extended by itself is the identity.
+
+Tools: [extend](#extend).
 
 ## processor
 
@@ -1202,7 +1212,11 @@ Discovery before use. Without answers: every request the client must make for th
       "items": {
         "type": "string"
       },
-      "description": "MCP endpoints to ask; default the unit and this tree's own"
+      "description": "MCP endpoints to ask; default the unit, this tree's own and Cloudflare's eight servers; a tenant names its own"
+    },
+    "auth": {
+      "type": "object",
+      "description": "host → bearer token, the tenant's own: forwarded as the authorization header of the requests emitted, never kept"
     },
     "answers": {
       "type": "array",
@@ -1335,6 +1349,42 @@ Imagination leads all leads: every lead (or the subset named) matched with the r
 }
 ```
 
+## e2e
+
+The end-to-end gate as a repetition code. Without answers: every combination the dashboards lay out and every example of the textbook, as one tools/call request per host (default the tenants' hosts and the operator's), each carrying the hash of the tree's own answer. With answers (each request plus status, ms, text): every combination decoded by majority over the tree and the hosts — agree, corrected (a flipped host, named by the syndrome), erased (a host that did not answer), uncorrectable (no majority) — the physical and logical error rates against the textbook 3-copy code, every error a UUID block for the stream, and the leads. Pure; the client fetches.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "hosts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "MCP endpoints to call; default https://<tenant host>/mcp for every tenant and the operator's workers.dev"
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "only these tools' combinations; default every tool"
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "selftest": {
+      "type": "boolean",
+      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+    }
+  }
+}
+```
+
 ## translate
 
 Translation by vocabulary, offline, both ways: text, from, to. A word no table knows stays as it is and is reported, never guessed; Glagolitic numerals are read as integers. Without text: the vocabulary measured — for every locale, the surface terms with no entry (the leads of the tables).
@@ -1427,7 +1477,7 @@ Programmable prose: call a tool with its arguments and render its result as sent
 
 ## mongo
 
-The ported MongoDB over the docket, pure. find: {collection, docs, filter, sort, skip, limit} → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: {collection, docs: [new]} → the entries to write, content-addressed. update: {collection, docs, filter, update} → for each match the new document and the entry that replaces it (linked to the old). delete: {collection, docs, filter} → the ids to delete, if unlinked. The client reads the docket rows and writes what comes back.
+The ported MongoDB over the docket, pure. find: &#123;collection, docs, filter, sort, skip, limit&#125; → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: &#123;collection, docs: [new]&#125; → the entries to write, content-addressed. update: &#123;collection, docs, filter, update&#125; → for each match the new document and the entry that replaces it (linked to the old). delete: &#123;collection, docs, filter&#125; → the ids to delete, if unlinked. The client reads the docket rows and writes what comes back.
 
 ```json
 {
@@ -1730,10 +1780,11 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 ```json
 {
   "type": "object",
-  "required": [
-    "tool"
-  ],
   "properties": {
+    "site": {
+      "type": "boolean",
+      "description": "the site as its own use cases: every toolbox a use case, every example a page document, as payloadcms.com is built of what Payload computes"
+    },
     "tool": {
       "type": "string"
     },
@@ -1753,6 +1804,96 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
     },
     "origin": {
       "type": "string"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## configure
+
+MCP configures Payload and the rest: Payload's default plugins (lexical with the one qpu block, nested-docs, seo, search, redirects, form-builder, multi-tenant, mcp) in all their combinations with no custom collection; the Worker's wrangler configuration from the tenants; each tenant's variable names (never values); the PWA manifest; the MCP registration. Every configuration carries its torus: address, seed, reflection and trinity, and whether the loop closes (config → text → config at the same address). With current (the text a client holds), the drift: every path that differs, each a lead. Without kind: all of them, tested.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "payload",
+        "wrangler",
+        "tenant",
+        "pwa",
+        "mcp"
+      ],
+      "description": "omit for all"
+    },
+    "current": {
+      "type": "string",
+      "description": "the configuration text the client holds (JSON or JSONC): compared, the drift answered"
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "env": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "the variable NAMES the client's environment holds: which of a tenant's are missing (values never travel)"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## extend
+
+QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, tools): the host's tools/list read into doors that join this catalogue as host:tool, with what each takes and answers; without tools, the one request the client makes for them (a tenant's token travels in the request, never here). Outward: this catalogue as the registration any MCP client mounts. call (host, tool, arguments): the request that serves a foreign door; with answer, what it answered, read whether JSON or an event stream. Pure; the client fetches. Cloudflare's eight servers are extended by default, the documentation one in the open.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "direction": {
+      "type": "string",
+      "enum": [
+        "in",
+        "out",
+        "both"
+      ],
+      "description": "default both"
+    },
+    "host": {
+      "type": "string",
+      "description": "the MCP endpoint; default this tree's own"
+    },
+    "tools": {
+      "description": "the host's tools/list answer: its tools array, its JSON-RPC envelope, or the raw text (JSON or event stream)"
+    },
+    "call": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "type": "string"
+        },
+        "arguments": {
+          "type": "object"
+        }
+      },
+      "description": "a foreign door to serve: the request is emitted"
+    },
+    "answer": {
+      "type": "string",
+      "description": "what the host answered the call: read back"
     },
     "selftest": {
       "type": "boolean"

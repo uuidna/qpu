@@ -3,15 +3,16 @@
 // against the host's discovered OpenAPI paths, and a summary. No I/O here.
 import { factsOf, verifyRequestsOf, TREE_FACTS, type Fact } from './verifiers.js'
 import type { Lead } from './leads.js'
+import { dataOf } from './discovery.js'
 
-export type WaveRequest = { verifier: string; url: string; check: string; leads: string[] }
+export type WaveRequest = { verifier: string; url: string; check: string; leads: string[]; method?: 'GET' | 'POST'; body?: unknown; accept?: string }
 export type WaveResult = WaveRequest & { status: number; ok: boolean; ms: number; text?: string; note?: string; contracted?: 'yes' | 'no' | 'unknown' }
 export type WaveSummary = Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }>
 
 /** Every request, once per URL, with every lead it serves. */
 export const waveRequestsOf = (leads: readonly Lead[], treeFacts: readonly Fact[] = TREE_FACTS): WaveRequest[] => {
   const requests = new Map<string, WaveRequest>()
-  const add = (id: string, f: Fact) => { for (const r of verifyRequestsOf(f)) { const cur = requests.get(r.url) ?? { verifier: r.verifier, url: r.url, check: r.check, leads: [] }; if (!cur.leads.includes(id)) cur.leads.push(id); requests.set(r.url, cur) } }
+  const add = (id: string, f: Fact) => { for (const r of verifyRequestsOf(f)) { const key = r.method === 'POST' ? `${r.url}#${JSON.stringify(r.body)}` : r.url; const cur = requests.get(key) ?? { verifier: r.verifier, url: r.url, check: r.check, leads: [], ...(r.method === 'POST' ? { method: r.method, body: r.body, accept: r.accept } : {}) }; if (!cur.leads.includes(id)) cur.leads.push(id); requests.set(key, cur) } }
   for (const lead of leads) for (const f of factsOf(lead)) add(lead.id, f)
   for (const f of treeFacts) add(`tree:${f.kind}:${f.value}`, f)
   return [...requests.values()]
@@ -25,6 +26,7 @@ export const noteOf = (verifier: string, text: string): string => {
     if (verifier === 'github') { const j = JSON.parse(text); return `description="${(j.description ?? '').slice(0, 80)}" language=${j.language}` }
     if (verifier === 'zenodo' || verifier === 'datacite') { const j = JSON.parse(text); return JSON.stringify(j.metadata?.creators?.[0] ?? j.data?.attributes?.creators?.[0] ?? {}).slice(0, 120) }
     if (verifier === 'wikipedia') { const j = JSON.parse(text); return `extract="${(j.extract ?? '').slice(0, 100)}"` }
+    if (verifier === 'cloudflare-docs') { const j = JSON.parse(dataOf(text)); const body: string = j.result?.content?.[0]?.text ?? JSON.stringify(j.error ?? j.result ?? '').slice(0, 100); return `${(body.match(/<url>|"url"|https:\/\/developers\.cloudflare\.com/g) ?? []).length} result(s): ${body.replace(/\s+/g, ' ').slice(0, 100)}` }
   } catch { /* fall through to the title */ }
   if (verifier === 'arxiv') { const t = /<title>([^<]+)<\/title>/g; t.exec(text); const m = t.exec(text); return m ? `entry="${m[1]!.trim().slice(0, 100)}"` : 'no entry' }
   return title()

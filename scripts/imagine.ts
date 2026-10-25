@@ -14,12 +14,42 @@ const toolsNow = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
 const inputs = uuidOf(JSON.stringify({ leads: LEADS, examples: EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, arguments: e.arguments, shows: e.shows })), tools: toolsNow }))
 const outPath = join(ROOT, 'docs', 'public', 'imagination.json')
 if (existsSync(outPath)) {
-  try { const prev = JSON.parse(readFileSync(outPath, 'utf8')) as { inputs?: string; imaginedLeads?: number; leads?: number }; if (prev.inputs === inputs) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } } catch { /* re-imagine */ }
+  try { const prev = JSON.parse(readFileSync(outPath, 'utf8')) as { inputs?: string; imaginedLeads?: number; leads?: number }; if (prev.inputs === inputs && !(prev as { partial?: boolean }).partial) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } } catch { /* re-imagine */ }
 }
 const selftest = call({ selftest: true })
 console.log(`imagine selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
-const r = call({})
+// the quantum: every lead imagined once per (statement, tools) and kept by its own hash; a run imagines only the leads whose
+// hash is new, in chunks, for no longer than the quantum; the rest wait for the next run, said so in the file
+const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
+const started = Date.now()
+const rowsPath = join(ROOT, 'docs', 'public', 'imagination-rows.json')
+type Kept = { hash: string; row: unknown; opened: unknown[]; verify: number; verdict: string }
+const kept: Record<string, Kept> = existsSync(rowsPath) ? (() => { try { return JSON.parse(readFileSync(rowsPath, 'utf8')) } catch { return {} } })() : {}
+const toolsHash = uuidOf(JSON.stringify(toolsNow))
+const hashOf = (l: { id: string; statement: string; status: string }) => uuidOf(`${l.id}${l.statement}${l.status}${toolsHash}`)
+const todo = LEADS.filter((l) => kept[l.id]?.hash !== hashOf(l))
+console.log(`imagine: ${todo.length} of ${LEADS.length} leads to imagine, quantum ${QUANTUM_MS / 1000} s`)
+let done = 0
+// chunks of ten: the hand-written leads at the head are heavy (every integer reflected, every mirror query matched), so the quantum is checked often
+for (let i = 0; i < todo.length && Date.now() - started < QUANTUM_MS; i += 10) {
+  const chunk = todo.slice(i, i + 10)
+  const r = call({ leads: chunk.map((l) => l.id) })
+  for (const row of r.imagination.rows as { lead: string; verdict: string; verify: number }[]) { const l = chunk.find((x) => x.id === row.lead)!; kept[l.id] = { hash: hashOf(l), row, opened: (r.imagination.imagined as { source: string }[]).filter((x) => x.source === `reflection of lead ${l.id}`), verify: row.verify, verdict: row.verdict } }
+  done += chunk.length
+  writeFileSync(rowsPath, JSON.stringify(kept) + '\n')
+  if (done % 100 === 0) console.log(`imagine: ${done} imagined, ${((Date.now() - started) / 1000).toFixed(1)} s`)
+}
+const remaining = todo.length - done
+// the whole imagination from what is kept: every lead's row and the leads it opened, plus the schema and application leads (cheap, always)
+const schema = call({ leads: [] })
+const rows = LEADS.map((l) => kept[l.id]?.row).filter(Boolean) as { verdict: string; verify: number }[]
+const verdicts: Record<string, number> = { served: 0, impossible: 0, unknown: 0 }; for (const r of rows) verdicts[r.verdict] = (verdicts[r.verdict] ?? 0) + 1
+const imagined = new Map<string, unknown>(); for (const l of LEADS) for (const o of kept[l.id]?.opened ?? []) { const id = (o as { id: string }).id; if (!imagined.has(id)) imagined.set(id, o) }
+for (const o of schema.imagination.imagined as { id: string }[]) if (!imagined.has(o.id)) imagined.set(o.id, o)
 const date = new Date().toISOString()
-writeFileSync(outPath, JSON.stringify({ license: LICENSE.attribution, inputs, date, ms: r.ms, selftest: { passed: selftest.passed }, leads: r.imagination.leads, verdicts: r.imagination.verdicts, verifyRequests: r.verifyRequests, imaginedLeads: r.imaginedLeads, rows: r.imagination.rows, imagined: r.imagination.imagined }) + '\n')
-writeFileSync(join(ROOT, 'docs', 'imagination.md'), r.page)
-console.log(`imagine: ${r.leads} leads in ${(r.ms / 1000).toFixed(1)} s — served ${r.served}, impossible ${r.impossible}, unknown ${r.unknown}, ${r.verifyRequests} verify requests, ${r.imaginedLeads} imagined leads`)
+const out = { license: LICENSE.attribution, inputs, date, ms: Date.now() - started, partial: remaining > 0, remaining, imaginedThisRun: done, selftest: { passed: selftest.passed }, leads: rows.length, verdicts, verifyRequests: rows.reduce((n, r) => n + r.verify, 0), imaginedLeads: imagined.size, rows, imagined: [...imagined.values()] }
+writeFileSync(outPath, JSON.stringify(out) + '\n')
+const page = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'imagine', arguments: { leads: [] } } }) as any
+writeFileSync(join(ROOT, 'docs', 'imagination.md'), ['---', 'title: Imagination', 'order: 54', '---', '', '# Imagination leads all leads', '', `Generated by \`npm run next\` on ${date} through the \`imagine\` tool, lead by lead in quanta: ${rows.length} of ${LEADS.length} leads imagined and kept by their own hash${remaining ? `, ${remaining} waiting for the next quantum` : ''}; ${done} imagined in this run (${(out.ms / 1000).toFixed(1)} s).`, '', '| Verdict | Leads |', '|---|---:|', ...Object.entries(verdicts).map(([v, n]) => `| ${v} | ${n} |`), `| verification requests emitted | ${out.verifyRequests} |`, `| leads imagined (new, open) | ${imagined.size} |`, '', '## Imagined leads', '', '| Lead | Statement | From |', '|---|---|---|', ...[...imagined.values()].map((l: any) => `| ${l.id} | ${String(l.statement).replace(/\|/g, '\\|').slice(0, 160)} | ${String(l.source).replace(/\|/g, '\\|')} |`), '', '## Every lead, imagined', '', '| Lead | Status | Verdict | Tool | Cluster | Verify | Factors | Angles | Mirrors | Opened |', '|---|---|---|---|---:|---:|---:|---:|---:|---:|', ...rows.map((r: any) => `| ${r.lead} | ${r.status} | ${r.verdict} | ${r.tool ?? '—'} | ${r.cluster} | ${r.verify} | ${r.factors} | ${r.angles} | ${r.queries} | ${r.opened} |`), ''].join('\n'))
+void page
+console.log(`imagine: ${rows.length} of ${LEADS.length} leads kept, ${done} imagined this run in ${((Date.now() - started) / 1000).toFixed(1)} s${remaining ? `, ${remaining} remain for the next quantum` : ''} — ${JSON.stringify(verdicts)}, ${out.verifyRequests} verify requests, ${imagined.size} imagined leads`)

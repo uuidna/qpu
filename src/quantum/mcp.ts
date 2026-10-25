@@ -10,7 +10,7 @@ import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay, reflectionOfRegister } from './clay-register.js'
 import { matchOf } from './match.js'
 import { LOCALES } from './i18n.js'
-import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
+import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, randomOf, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
 import { DEVICES, PROCESSORS, deviceOf, willowNoiseOf } from './processor.js'
 import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, matchWidget, clayWidget, verifyWidget } from './widgets.js'
@@ -106,7 +106,7 @@ const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
 import { toolOf, type Tool, type Toolbox, type Context } from './toolbox.js'
 import { FLOW } from './toolboxes/flow.js'
 import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS } from './theorems-index.js'
-import { matcherOf } from './match.js'
+import { matcherOf, PATTERNS, patternOf } from './match.js'
 import { sha256, utf8, hex } from './hmac.js'
 import { flowWidget } from './widgets.js'
 import { cssOf, varsOf, KEY } from './theme.js'
@@ -117,6 +117,7 @@ import { LEGAL } from './toolboxes/legal.js'
 import { REPOSITORY } from './toolboxes/repository.js'
 import { STANDARDS_BOX } from './toolboxes/standards.js'
 import { PAYLOAD, payloadDocOf } from './toolboxes/payload.js'
+import { EXTENSION } from './toolboxes/extension.js'
 import { blockJsonLdOf } from './standards.js'
 
 /** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
@@ -206,7 +207,7 @@ const OWN: Tool[] = [
         return { qubits: qubits.map(keyOfQubit), amplitudes: amplitudes.map(complex) }
       }
       const repetitions = typeof args.repetitions === 'number' ? args.repetitions : 100
-      const result = new Simulator().run(circuit, repetitions)
+      const result = new Simulator(randomOf(JSON.stringify(args))).run(circuit, repetitions)
       return { key: measurement.key, bitstrings: result.measurements(measurement.key), histogram: Object.fromEntries(result.histogram(measurement.key)) }
     },
     widget: circuitWidget,
@@ -289,7 +290,7 @@ const OWN: Tool[] = [
         const bits = Number(args.bits ?? 3)
         const repetitions = Number(args.repetitions ?? 2000)
         if (!Number.isInteger(bits) || bits < 1 || bits > 8) reject('bits is an integer from 1 to 8')
-        const run = new Simulator().run(phaseEstimationCircuit(theta, bits), repetitions)
+        const run = new Simulator(randomOf(JSON.stringify(args))).run(phaseEstimationCircuit(theta, bits), repetitions)
         const counts = new Map<number, number>()
         for (const b of run.measurements('m')) {
           const estimate = [...b].reduce((sum, bit, k) => sum + Number(bit) * 2 ** k, 0) / 2 ** bits
@@ -305,7 +306,7 @@ const OWN: Tool[] = [
       }
       if (name === 'grover') {
         const repetitions = Number(args.repetitions ?? 100)
-        const run = new Simulator().run(groverCircuit(), repetitions)
+        const run = new Simulator(randomOf(JSON.stringify(args))).run(groverCircuit(), repetitions)
         const counts = new Map<string, number>()
         for (const b of run.measurements('result')) counts.set(b, (counts.get(b) ?? 0) + 1)
         return {
@@ -358,13 +359,13 @@ const OWN: Tool[] = [
         const repetitions = Number(args.repetitions ?? 20)
         if (!Number.isInteger(N) || N < 3 || N > 21) reject('N is an integer from 3 to 21 (the state-vector size bound)')
         if (!Number.isInteger(a) || a < 2 || a >= N || gcdOf(a, N) !== 1) reject('a must be an integer from 2 to N−1 with no common factor with N')
-        const run = new Simulator().run(shorCircuit(N, a), repetitions)
+        const run = new Simulator(randomOf(JSON.stringify(args))).run(shorCircuit(N, a), repetitions)
         const found = shorFactors(N, a, run.measurements('m'))
         const counts = new Map<string, number>()
         for (const e of found.estimates) counts.set(e.toFixed(6), (counts.get(e.toFixed(6)) ?? 0) + 1)
         return {
           name,
-          summary: [['N', String(N)], ['a', String(a)], ['Order of a mod N', found.order === null ? 'not found' : String(found.order)], ['Factors', found.factors ? `${found.factors[0]} × ${found.factors[1]}` : 'not found']],
+          summary: [['N', String(N)], ['a', String(a)], ['Order of a mod N', found.order === null ? 'not found' : String(found.order)], ['Factors', found.factors ? `${found.factors[0]} × ${found.factors[1]}` : 'not found'], ['Prime dust', (() => { const d: number[] = []; let n = N; for (let p = 2; p * p <= n; p += 1) while (n % p === 0) { d.push(p); n /= p } if (n > 1) d.push(n); return `${d.join(' × ')} (verified: product = ${d.reduce((x, y) => x * y, 1)})` })()]],
           header: ['Measured phase', 'Count', 'Share'],
           rows: [...counts.entries()].sort((x, y) => y[1] - x[1]).map(([phase, c]) => [phase, String(c), `${((c / repetitions) * 100).toFixed(1)}%`]),
         }
@@ -618,13 +619,17 @@ const OBSERVED = new Map<string, { calls: number; misses: number; ms: number; by
 const NESTED: number[] = []
 
 /** The computable metrics of the tree, in real time: what the registries, the kernel's index and one audit say right now. */
-type RunArtefacts = { coins?: { calls: number; coins: number; byDoor: Record<string, number>; gated: number; unclean: number }; receipt?: { steps?: { name: string; status: string; ms: number }[] }; sizes?: Record<string, number>; discovery?: { hosts?: { kind: string; detected: string }[]; doors?: unknown[]; capabilities?: Record<string, string[]> }; verification?: { summary?: Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }> }; readiness?: { classes?: { served: number; refuted: number; trial: number }; readiness?: { ready: boolean }; border?: { doors?: unknown[]; sealedBy?: string[] } }; repository?: { branches?: { agree: string[]; local: number }; tags?: { agree: string[]; local: number; mismatch: string[] }; leads?: unknown[] }; legal?: { claims?: number; verdicts?: Record<string, number>; violations?: number; refusals?: number; securityPassed?: number; securityTotal?: number; id?: string }; docket?: { entries?: number; root?: string | null; mirrors?: number }; receipts?: { count?: number; last?: string | null } }
+type RunArtefacts = { e2e?: { combos?: number; copies?: number; involutions?: number; outcomes?: Record<string, number>; competition?: { saved?: number; msMajority?: number; winners?: Record<string, number> } }; coins?: { calls: number; coins: number; byDoor: Record<string, number>; gated: number; unclean: number }; receipt?: { steps?: { name: string; status: string; ms: number }[] }; sizes?: Record<string, number>; discovery?: { hosts?: { kind: string; detected: string }[]; doors?: unknown[]; capabilities?: Record<string, string[]> }; verification?: { summary?: Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }> }; readiness?: { classes?: { served: number; refuted: number; trial: number }; readiness?: { ready: boolean }; border?: { doors?: unknown[]; sealedBy?: string[] } }; repository?: { branches?: { agree: string[]; local: number }; tags?: { agree: string[]; local: number; mismatch: string[] }; leads?: unknown[] }; legal?: { claims?: number; verdicts?: Record<string, number>; violations?: number; refusals?: number; securityPassed?: number; securityTotal?: number; id?: string }; docket?: { entries?: number; root?: string | null; mirrors?: number }; receipts?: { count?: number; last?: string | null } }
 /** What the run's artefacts add to the metrics: textbook APIs autodiscovered and covered, verification on public datasets, the border, the repository watched, the legal audit, the RAID's signalling (docket entries chained to a root), the receipt chain. */
 const coverageOf = (a: RunArtefacts): Record<string, unknown> => {
+  // the load: a block is paid once when computed (a miss of the balancer, a coin at a gated door); every re-ask is a teleport, free — the cache by address here, the involution (304 by content hash) at the edge
+  const calls = [...OBSERVED.values()].reduce((n, o) => n + o.calls, 0), misses = [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0)
+  const load = { paid: misses, free: calls - misses + (a.e2e?.involutions ?? 0), involutions: a.e2e?.involutions ?? 0, coins: a.coins?.coins ?? 0, a432: { key: KEY, harmonics: Object.keys(varsOf(uuidOf('a432'))).length, stylesheetBytes: cssOf().length, served: 'the shell cache, immutable: the harmonic strings of every block (its custom properties from its UUID alone, the reflected harmonic and the drift\'s prime dust among them) cost the device nothing and the edge nothing' }, note: 'paid: computations (balancer misses); free: answers by address (balancer hits) and by involution (304 at the edge); the coins set the entanglement once, the teleports are free until the load is paid again' }
   const v = Object.values(a.verification?.summary ?? {})
   const sum = (k: 'requests' | 'ok' | 'contracted' | 'uncontracted') => v.reduce((n, s) => n + (s[k] ?? 0), 0)
   const hosts = a.discovery?.hosts ?? []
   return {
+    load,
     discoveredHosts: hosts.length, hostsWithContract: hosts.filter((h) => /^openapi|json index|oai-pmh|graphql|mcp tools/.test(h.detected)).length, discoveredDoors: a.discovery?.doors?.length ?? 0, capabilities: Object.fromEntries(Object.entries(a.discovery?.capabilities ?? {}).map(([k, v]) => [k, v.length])),
     verificationRequests: sum('requests'), verificationReachable: sum('ok'), verificationContracted: sum('contracted'), verificationOutsideContract: sum('uncontracted'), verificationReachableRatio: sum('requests') ? Number((sum('ok') / sum('requests')).toFixed(3)) : null,
     readinessClasses: a.readiness?.classes ?? null, ready: a.readiness?.readiness?.ready ?? null, borderDoors: a.readiness?.border?.doors?.length ?? 0, borderSealedBy: a.readiness?.border?.sealedBy?.length ?? 0,
@@ -651,7 +656,7 @@ const metricsOf = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
   const byStatus: Record<string, number> = {}; for (const l of LEADS) byStatus[l.status] = (byStatus[l.status] ?? 0) + 1
   const backed = EXAMPLES.filter((e) => e.theorem)
   return {
-    tools: TOOLS.length, toolboxes: TOOLBOXES.length, examples: EXAMPLES.length, examplesBackedByTheorems: backed.length, examplesBackedRatio: Number((backed.length / EXAMPLES.length).toFixed(3)),
+    tools: TOOLS.length, toolboxes: TOOLBOXES.length, patterns: PATTERNS.length, patternsRecognised: EXAMPLES.filter((e) => e.tool === 'match' && typeof e.arguments.statement === 'string' && patternOf(e.arguments.statement)).length, examples: EXAMPLES.length, examplesBackedByTheorems: backed.length, examplesBackedRatio: Number((backed.length / EXAMPLES.length).toFixed(3)),
     theoremsKernel: KERNEL_THEOREMS, theoremsHandWritten: THEOREMS.length, lemmasGenerated: GENERATED_LEMMAS, leads: LEADS.length, leadsByStatus: byStatus,
     auditChecks: audit?.total ?? null, auditPassed: audit?.passed ?? null, auditFailed: audit?.failed ?? null, auditNested: audit === null, selftests: TOOLBOXES.map((b) => b.name), balancer: BALANCER.size, license: LICENSE.spdx, at: new Date().toISOString(),
     // observability of this process: calls served from memory against computed, and where the computed milliseconds went
@@ -659,6 +664,7 @@ const metricsOf = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
     slowestTools: [...OBSERVED.entries()].sort((x, y) => y[1].ms - x[1].ms).slice(0, 6).map(([name, o]) => `${name} ${o.ms} ms / ${o.misses} computed / ${o.calls} asked / ${o.bytes} bytes`),
     msPerComputedCall: (() => { const m = [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0); return m ? Number(([...OBSERVED.values()].reduce((n, o) => n + o.ms, 0) / m).toFixed(1)) : null })(),
     ...coverageOf(artefacts),
+    gateCombos: artefacts.e2e?.combos ?? null, gateCopies: artefacts.e2e?.copies ?? null, gateInvolutions: artefacts.e2e?.involutions ?? null, gateOutcomes: artefacts.e2e?.outcomes ?? null, gateMsSaved: artefacts.e2e?.competition?.saved ?? null, gateWinners: artefacts.e2e?.competition?.winners ?? null,
   }
 }
 const metrics = toolOf('tree', { name: 'metrics', description: 'The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel\'s theorem counts from its own index, leads by status, the audit\'s checks, the balancer\'s memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.', inputSchema: { type: 'object', properties: { artefacts: { type: 'object', description: 'the run\'s artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree\'s own counts alone' } } }, run: (args) => metricsOf((args.artefacts ?? {}) as RunArtefacts), widget: flowWidget })
@@ -807,6 +813,7 @@ export const TOOLBOXES: Toolbox[] = [
   REPOSITORY,
   STANDARDS_BOX,
   PAYLOAD,
+  EXTENSION,
 ]
 const TOOLS: Tool[] = TOOLBOXES.flatMap((b) => b.tools)
 const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS } }

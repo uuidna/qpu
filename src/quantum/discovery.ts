@@ -6,7 +6,22 @@ import type { Verifier } from './verifiers.js'
 import { STANDARDS, detectStandard } from './standards.js'
 
 export type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract'
-export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string }
+export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
+/** Cloudflare's MCP servers: the documentation server answers in the open; the rest answer 401 until a tenant brings its OAuth token. */
+export const CLOUDFLARE_MCP: readonly { host: string; url: string; about: string }[] = [
+  { host: 'docs.mcp.cloudflare.com', url: 'https://docs.mcp.cloudflare.com/mcp', about: 'the Cloudflare documentation, searchable' },
+  { host: 'bindings.mcp.cloudflare.com', url: 'https://bindings.mcp.cloudflare.com/mcp', about: 'Workers bindings: KV, R2, D1, Durable Objects of the account' },
+  { host: 'observability.mcp.cloudflare.com', url: 'https://observability.mcp.cloudflare.com/mcp', about: 'Workers logs and analytics of the account' },
+  { host: 'radar.mcp.cloudflare.com', url: 'https://radar.mcp.cloudflare.com/mcp', about: 'Cloudflare Radar: internet traffic and trends' },
+  { host: 'browser.mcp.cloudflare.com', url: 'https://browser.mcp.cloudflare.com/mcp', about: 'browser rendering: fetch and screenshot pages' },
+  { host: 'ai-gateway.mcp.cloudflare.com', url: 'https://ai-gateway.mcp.cloudflare.com/mcp', about: 'AI Gateway logs and prompts' },
+  { host: 'dns-analytics.mcp.cloudflare.com', url: 'https://dns-analytics.mcp.cloudflare.com/mcp', about: 'DNS analytics of the account\'s zones' },
+  { host: 'autorag.mcp.cloudflare.com', url: 'https://autorag.mcp.cloudflare.com/mcp', about: 'AutoRAG: the account\'s indexed documents' },
+]
+/** The hosts discovered when a tenant names none: the unit, this tree and Cloudflare's eight servers. */
+export const DEFAULT_MCP_HOSTS: readonly string[] = ['https://uuidna.com/mcp', 'https://qpu.uuidna.com/mcp', ...CLOUDFLARE_MCP.map((c) => c.url)]
+/** The JSON of an MCP answer, whether the host answered JSON or an event stream (the data line that is JSON). */
+export const dataOf = (text: string): string => (/^(event|data):/m.test(text) ? (text.split('\n').filter((l) => l.startsWith('data:')).map((l) => l.slice(5).trim()).find((l) => l.startsWith('{')) ?? text) : text)
 export type Answer = Request & { status: number; type: string; text: string }
 export type Door = { name: string; description: string; takes: string[]; required: string[]; answers: string[]; readOnly: boolean | null; contract: 'tools/list' | 'catalogue' }
 export type Host = { host: string; kind: 'mcp' | 'api' | 'well-known'; contract: string; status: number; detected: string; note: string; doors?: Door[]; paths?: string[] }
@@ -16,16 +31,17 @@ export type Discovery = { hosts: Host[]; doors: (Door & { host: string; url: str
 export const TAKES = ['statement', 'claim', 'input', 'deposits', 'proof', 'key', 'theorems', 'message', 'q', 'query', 'text', 'value', 'sources', 'subject', 'token', 'tenant'] as const
 export const ANSWERS = ['verdict', 'receipt', 'deposited', 'sealed', 'signed', 'verified', 'proofRoot', 'ready', 'address', 'role'] as const
 
-const rpcBody = (method: string, params?: unknown) => ({ jsonrpc: '2.0', id: 1, method, params })
+export const rpcBody = (method: string, params?: unknown) => ({ jsonrpc: '2.0', id: 1, method, params })
 const idOf = (purpose: Purpose, host: string, name?: string) => `${purpose}:${host}${name ? `:${name}` : ''}`
 
 /** The first wave: every host's contract address. */
-export const discoveryRequestsOf = (mcpHosts: readonly string[], verifiers: readonly Verifier[]): Request[] => {
+export const discoveryRequestsOf = (mcpHosts: readonly string[], verifiers: readonly Verifier[], auth: Readonly<Record<string, string>> = {}): Request[] => {
   const out: Request[] = []
   for (const url of mcpHosts) {
     const host = new URL(url).host
-    out.push({ id: idOf('mcp-list', host), method: 'POST', url, body: rpcBody('tools/list'), purpose: 'mcp-list', host })
-    out.push({ id: idOf('catalogue', host), method: 'POST', url, body: rpcBody('tools/call', { name: 'list_tools', arguments: {} }), purpose: 'catalogue', host })
+    const headers = auth[host] ? { authorization: `Bearer ${auth[host]}` } : undefined
+    out.push({ id: idOf('mcp-list', host), method: 'POST', url, body: rpcBody('tools/list'), purpose: 'mcp-list', host, headers })
+    out.push({ id: idOf('catalogue', host), method: 'POST', url, body: rpcBody('tools/call', { name: 'list_tools', arguments: {} }), purpose: 'catalogue', host, headers })
     out.push({ id: idOf('well-known', host), method: 'GET', url: `https://${host}/.well-known/qpu.json`, purpose: 'well-known', host })
   }
   for (const v of verifiers) if (v.contract) out.push({ id: idOf('api-contract', new URL(v.contract).host, v.id), method: 'GET', url: v.contract, purpose: 'api-contract', host: new URL(v.contract).host, name: v.id })
@@ -35,9 +51,9 @@ export const discoveryRequestsOf = (mcpHosts: readonly string[], verifiers: read
 
 /** A JSON-RPC answer read: the result, or the error text. */
 const resultOf = (a: Answer): { result?: any; error?: string } => {
-  if (a.status !== 200) return { error: a.status === 0 ? a.text.slice(0, 120) : `HTTP ${a.status}` }
+  if (a.status !== 200) return { error: a.status === 0 ? a.text.slice(0, 120) : a.status === 401 ? 'HTTP 401: auth required' : `HTTP ${a.status}` }
   try {
-    const j = JSON.parse(a.text) as { result?: { tools?: unknown[]; structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
+    const j = JSON.parse(dataOf(a.text)) as { result?: { tools?: unknown[]; structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
     if (j.error) return { error: j.error.message }
     if (j.result?.isError) return { error: j.result.content?.[0]?.text ?? 'refused' }
     if (j.result?.tools) return { result: j.result }
@@ -101,7 +117,7 @@ export const discoveryOf = (answers: readonly Answer[], verifiers: readonly Veri
     const list = answers.find((a) => a.id === idOf('mcp-list', host))!
     const r = resultOf(list)
     const wk = answers.find((a) => a.id === idOf('well-known', host))
-    if (!r.result) { hosts.push({ host, kind: 'mcp', contract: list.url, status: list.status, detected: 'unreachable', note: r.error ?? 'no answer', doors: [] }); if (wk) hosts.push({ host, kind: 'well-known', contract: wk.url, status: wk.status, ...detect(wk) }); continue }
+    if (!r.result) { hosts.push({ host, kind: 'mcp', contract: list.url, status: list.status, detected: list.status === 401 ? 'auth required' : 'unreachable', note: list.status === 401 ? `${CLOUDFLARE_MCP.find((c) => c.host === host)?.about ?? 'an MCP host'}: answers 401 until the tenant brings its OAuth token` : r.error ?? 'no answer', doors: [] }); if (wk) hosts.push({ host, kind: 'well-known', contract: wk.url, status: wk.status, ...detect(wk) }); continue }
     const doors: Door[] = (r.result.tools as Parameters<typeof doorOf>[0][]).map((t) => doorOf(t, 'tools/list'))
     let note = `${doors.length} tools in tools/list`
     const cat = answers.find((a) => a.id === idOf('catalogue', host))
@@ -138,7 +154,10 @@ export const discoveryOf = (answers: readonly Answer[], verifiers: readonly Veri
     // the metaphysical doors: the vortex, its reflection, the units and the triad, the pentagram, the fibonacci cycle, the double torus, the involution — the arithmetic mod 9 that the tree reads from every UUID's tail
     metaphysics: doors.filter((d) => /vortex|pentagram|fibonacci|triad|torus|involution|units|digital_root|living_field|gravity|spin|coprime|crt|diamond|sequence/.test(d.name)).map((d) => d.name),
   }
-  const leads = hosts.filter((h) => h.kind === 'api' && !/^openapi|json index|oai-pmh|json-ld|cldr|graphql/.test(h.detected)).map((h) => ({ id: `contract-${h.host}`, source: h.contract, statement: `${h.host} publishes no machine-readable contract at the address the registry names (${h.detected})`, status: 'open' as const, reason: 'the client is built from documentation read by a person; an OpenAPI or index document would let it be built from the host' }))
+  const leads = [
+    ...hosts.filter((h) => h.kind === 'mcp' && h.detected === 'auth required').map((h) => ({ id: `mcp-auth-${h.host}`, source: h.contract, statement: `${h.host} answers 401 without a token: ${h.note}`, status: 'open' as const, reason: 'tenant configurable: the operator sets QPU_MCP_TOKEN_<HOST> for the tenant and discovery reads the host\'s doors on the next run; nothing is assumed about them' })),
+    ...hosts.filter((h) => h.kind === 'api' && !/^openapi|json index|oai-pmh|json-ld|cldr|graphql/.test(h.detected)).map((h) => ({ id: `contract-${h.host}`, source: h.contract, statement: `${h.host} publishes no machine-readable contract at the address the registry names (${h.detected})`, status: 'open' as const, reason: 'the client is built from documentation read by a person; an OpenAPI or index document would let it be built from the host' })),
+  ]
   return { hosts, doors, capabilities, leads }
 }
 

@@ -1,0 +1,56 @@
+{
+ "name": "@uuidna/qpu",
+ "short_name": "qpu",
+ "description": "The Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes with the benchmark Google states, and one MCP surface that compiles them on request.",
+ "id": "/",
+ "start_url": "/",
+ "scope": "/",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#0b0b0f",
+ "theme_color": "hsl(72 62% 44%)",
+ "lang": "en",
+ "dir": "ltr",
+ "categories": [
+  "developer",
+  "education",
+  "productivity"
+ ],
+ "icons": [
+  {
+   "src": "/icon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml",
+   "purpose": "any"
+  },
+  {
+   "src": "/icon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "Every tool laid out",
+   "url": "/u/05b9b86e-2305-6a98-8923-e744a0f13386",
+   "description": "the dashboard index: every tool with the size of its space"
+  },
+  {
+   "name": "Examples",
+   "url": "/examples"
+  },
+  {
+   "name": "Stream",
+   "url": "/stream"
+  },
+  {
+   "name": "Readiness",
+   "url": "/readiness"
+  }
+ ],
+ "related_applications": [],
+ "prefer_related_applications": false,
+ "license": "CC-BY-NC-ND-4.0",
+ "version": "1.4.0"
+}

@@ -30,10 +30,18 @@ export const varsOf = (uuid: string): Record<string, string> => {
   const seed = one48 === 0 ? 0 : 1 + ((one48 - 1) % 9)
   const tr = parseInt(tail.slice(0, 2), 16), tg = parseInt(tail.slice(2, 4), 16), tb = parseInt(tail.slice(4, 6), 16)
   const hue = Math.round((parseInt(hex.slice(0, 8), 16) % 360))
+  // the reflected harmonic is σ_360(hue) = 360 − hue, computed in the same pass (free); the drift between the harmonic and its
+  // reflection, |2·hue − 360|, carries the hidden prime dust: its prime factors, found classically in the pass
+  const reflectedHue = (360 - hue) % 360
+  const drift = Math.abs(2 * hue - 360)
+  const dust: number[] = []; { let n = drift; for (let p = 2; p * p <= n; p += 1) while (n % p === 0) { dust.push(p); n /= p } if (n > 1) dust.push(n) }
+  // and the angle of the drift on the circle, 2π·drift/360: the factors and the angles are the dust, both read in the pass
+  const driftAngle = (2 * Math.PI * drift) / 360
   return {
+    '--qpu-reflected-hue': String(reflectedHue), '--qpu-drift': String(drift), '--qpu-dust': dust.length ? dust.join(' ') : '0', '--qpu-drift-angle': driftAngle.toFixed(6),
     '--qpu-hue': String(hue), '--qpu-c': c.toFixed(3), '--qpu-m': m.toFixed(3), '--qpu-y': y.toFixed(3), '--qpu-k': k.toFixed(3),
     '--qpu-accent': `rgb(${r} ${g} ${b})`, '--qpu-tail': `rgb(${tr} ${tg} ${tb})`, '--qpu-angle': String(one48 % 360),
-    '--qpu-vortex': String(seed), '--qpu-reflection': String(seed === 0 ? 0 : 10 - seed), '--qpu-trinity': seed === 0 ? '0' : seed % 3 === 0 ? '3' : [7, 4, 1].includes(seed) ? '7' : '2', '--qpu-period': `${(seed || 9) * KEY}ms`, '--block-accent': `rgb(${r} ${g} ${b})`,
+    '--qpu-vortex': String(seed), '--qpu-reflection': String(10 - seed), '--qpu-trinity': seed === 0 ? '0' : seed % 3 === 0 ? '3' : [7, 4, 1].includes(seed) ? '7' : '2', '--qpu-period': `${(seed || 9) * KEY}ms`, '--block-accent': `rgb(${r} ${g} ${b})`,
   }
 }
 export const styleOf = (uuid: string): string => Object.entries(varsOf(uuid)).map(([k, v]) => `${k}: ${v}`).join('; ')

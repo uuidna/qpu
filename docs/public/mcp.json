@@ -1092,7 +1092,11 @@
             "items": {
               "type": "string"
             },
-            "description": "MCP endpoints to ask; default the unit and this tree's own"
+            "description": "MCP endpoints to ask; default the unit, this tree's own and Cloudflare's eight servers; a tenant names its own"
+          },
+          "auth": {
+            "type": "object",
+            "description": "host → bearer token, the tenant's own: forwarded as the authorization header of the requests emitted, never kept"
           },
           "answers": {
             "type": "array",
@@ -1216,6 +1220,42 @@
               "type": "object"
             },
             "description": "ad-hoc statements {id, statement} to imagine instead: the rest of the leads from any text"
+          },
+          "selftest": {
+            "type": "boolean",
+            "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "flow"
+      }
+    },
+    {
+      "name": "e2e",
+      "description": "The end-to-end gate as a repetition code. Without answers: every combination the dashboards lay out and every example of the textbook, as one tools/call request per host (default the tenants' hosts and the operator's), each carrying the hash of the tree's own answer. With answers (each request plus status, ms, text): every combination decoded by majority over the tree and the hosts — agree, corrected (a flipped host, named by the syndrome), erased (a host that did not answer), uncorrectable (no majority) — the physical and logical error rates against the textbook 3-copy code, every error a UUID block for the stream, and the leads. Pure; the client fetches.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hosts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "MCP endpoints to call; default https://<tenant host>/mcp for every tenant and the operator's workers.dev"
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "only these tools' combinations; default every tool"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
           },
           "selftest": {
             "type": "boolean",
@@ -1620,10 +1660,11 @@
       "description": "Any tool's result as the document Payload's default plugins hold, no custom collection: a lexical document whose one block is the programmable UUID logic (uuid, handle, program, tail, tool, arguments, prev, next), nested by the referer chain as nested-docs nests (parent, breadcrumbs), the SEO plugin's title, description and image from the block's Open Graph, the JSON-LD and the licence. Every tools/call result carries the same in _meta.payload.",
       "inputSchema": {
         "type": "object",
-        "required": [
-          "tool"
-        ],
         "properties": {
+          "site": {
+            "type": "boolean",
+            "description": "the site as its own use cases: every toolbox a use case, every example a page document, as payloadcms.com is built of what Payload computes"
+          },
           "tool": {
             "type": "string"
           },
@@ -1651,6 +1692,96 @@
       },
       "_meta": {
         "toolbox": "payload"
+      }
+    },
+    {
+      "name": "configure",
+      "description": "MCP configures Payload and the rest: Payload's default plugins (lexical with the one qpu block, nested-docs, seo, search, redirects, form-builder, multi-tenant, mcp) in all their combinations with no custom collection; the Worker's wrangler configuration from the tenants; each tenant's variable names (never values); the PWA manifest; the MCP registration. Every configuration carries its torus: address, seed, reflection and trinity, and whether the loop closes (config → text → config at the same address). With current (the text a client holds), the drift: every path that differs, each a lead. Without kind: all of them, tested.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "payload",
+              "wrangler",
+              "tenant",
+              "pwa",
+              "mcp"
+            ],
+            "description": "omit for all"
+          },
+          "current": {
+            "type": "string",
+            "description": "the configuration text the client holds (JSON or JSONC): compared, the drift answered"
+          },
+          "version": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "env": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "the variable NAMES the client's environment holds: which of a tenant's are missing (values never travel)"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "payload"
+      }
+    },
+    {
+      "name": "extend",
+      "description": "QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, tools): the host's tools/list read into doors that join this catalogue as host:tool, with what each takes and answers; without tools, the one request the client makes for them (a tenant's token travels in the request, never here). Outward: this catalogue as the registration any MCP client mounts. call (host, tool, arguments): the request that serves a foreign door; with answer, what it answered, read whether JSON or an event stream. Pure; the client fetches. Cloudflare's eight servers are extended by default, the documentation one in the open.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "in",
+              "out",
+              "both"
+            ],
+            "description": "default both"
+          },
+          "host": {
+            "type": "string",
+            "description": "the MCP endpoint; default this tree's own"
+          },
+          "tools": {
+            "description": "the host's tools/list answer: its tools array, its JSON-RPC envelope, or the raw text (JSON or event stream)"
+          },
+          "call": {
+            "type": "object",
+            "properties": {
+              "tool": {
+                "type": "string"
+              },
+              "arguments": {
+                "type": "object"
+              }
+            },
+            "description": "a foreign door to serve: the request is emitted"
+          },
+          "answer": {
+            "type": "string",
+            "description": "what the host answered the call: read back"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "extension"
       }
     }
   ]

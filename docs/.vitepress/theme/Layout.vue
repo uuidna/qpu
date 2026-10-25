@@ -7,6 +7,7 @@ import Channel from './components/Channel.vue'
 import Verify from './components/Verify.vue'
 import CatchAll from './components/CatchAll.vue'
 import HandleSearch from './components/HandleSearch.vue'
+import Mode from './components/Mode.vue'
 const { Layout } = DefaultTheme
 const route = useRoute()
 const { frontmatter } = useData()
@@ -16,7 +17,7 @@ const uuid = computed(() => (route.path.match(/[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9
 <template>
   <Layout>
     <template #layout-top><AuraBar :uuid="uuid" /></template>
-    <template #nav-bar-content-after><HandleSearch /></template>
+    <template #nav-bar-content-after><HandleSearch /><Mode /></template>
     <template #doc-footer-before><Channel v-if="uuid" :uuid="uuid" /></template>
     <template #aside-outline-after><Verify v-if="uuid" :uuid="uuid" compact /></template>
     <template #not-found><CatchAll /></template>

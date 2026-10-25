@@ -10,6 +10,8 @@ import { join } from 'node:path'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
 const ROOT = process.cwd()
+// text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
+const cell = (t: string): string => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\n/g, ' ').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')
 const offline = process.argv.includes('--offline')
 const strict = process.argv.includes('--strict')
 const fast = process.argv.includes('--fast') // the pre-commit form: the cheap steps only; the long and the networked wait for the full run
@@ -23,10 +25,11 @@ const steps: Step[] = [
   { name: 'test', cmd: 'node', args: ['--import', 'tsx', '--test', 'src/quantum/*.test.ts'], budgetMs: 300_000 },
   { name: 'lean', cmd: lake, args: ['build'] },
   { name: 'audit', cmd: 'node', args: ['--import', 'tsx', 'scripts/audit.ts'] },
-  { name: 'imagine', cmd: 'node', args: ['--import', 'tsx', 'scripts/imagine.ts'], budgetMs: 900_000, skip: fast ? 'fast' : undefined },
-  { name: 'discover', cmd: 'node', args: ['--import', 'tsx', 'scripts/discover.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 600_000 },
-  { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 1_800_000 },
+  { name: 'imagine', cmd: 'node', args: ['--import', 'tsx', 'scripts/imagine.ts'], budgetMs: 300_000, skip: fast ? 'fast' : undefined }, // a quantum: the leads not yet imagined, as many as fit; the rest next run
+  { name: 'discover', cmd: 'node', args: ['--import', 'tsx', 'scripts/discover.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 }, // a quantum: contracts kept a day, the rest fetched as far as the quantum goes
+  { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 }, // a quantum: today's results kept by url, the rest fetched as far as the quantum goes
   { name: 'readiness', cmd: 'node', args: ['--import', 'tsx', 'scripts/readiness.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 },
+  { name: 'e2e', cmd: 'node', args: ['--import', 'tsx', 'scripts/e2e.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000 }, // the gate as a repetition code: every combination on every host, decoded by majority; a quantum
   { name: 'repository', cmd: 'node', args: ['--import', 'tsx', 'scripts/repository.ts'], budgetMs: 300_000 }, // always: workspaces, branches, tags, releases; offline the local facts
   { name: 'legal', cmd: 'node', args: ['--import', 'tsx', 'scripts/legal.ts'], budgetMs: 600_000 },
   { name: 'textbook', cmd: 'node', args: ['--import', 'tsx', 'scripts/textbook.ts'], budgetMs: 300_000 }, // always: the examples verified online from the wave; offline the plan // always: cached by inputs, the pure half offline
@@ -89,7 +92,7 @@ const opened: NextLead[] = stillRed.map((s) => {
 if (concurrent) opened.push({ id: `next-concurrent-${receipt.head}-${receipt.date.slice(11, 19).replace(/:/g, '')}`, source: `npm run next ${receipt.date}`, statement: `two next runs wrote docs/public at once (this run beside pid ${concurrent.pid} started ${concurrent.date})`, status: 'open', reason: 'the flow has no queue: a run that starts while another writes the same files can read a half-written artefact; serialise the runs or give each its own output', evidence: `lock ${lockPath}`, head: receipt.head, date: receipt.date })
 const leadsNow = [...previous.filter((l) => !opened.some((o) => o.id === l.id)), ...opened]
 writeFileSync(docket, JSON.stringify(leadsNow, null, 1) + '\n')
-const docketPage = ['---', 'title: Next leads', 'order: 50', '---', '', '# Leads opened by `npm run next`', '', 'Every red step of every run, as an open lead with its evidence. The next run follows them; a lead closes when its step is green again.', '', '| Lead | Opened | Evidence |', '|---|---|---|', ...leadsNow.map((l) => `| ${l.id} | ${l.date} | ${l.evidence.replace(/\|/g, '\\|').replace(/\n/g, '<br>').slice(0, 600)} |`), ''].join('\n')
+const docketPage = ['---', 'title: Next leads', 'order: 50', '---', '', '# Leads opened by `npm run next`', '', 'Every red step of every run, as an open lead with its evidence. The next run follows them; a lead closes when its step is green again.', '', '| Lead | Opened | Evidence |', '|---|---|---|', ...leadsNow.map((l) => `| ${l.id} | ${l.date} | ${cell(l.evidence).slice(0, 600)} |`), ''].join('\n')
 writeFileSync(join(ROOT, 'docs', 'next-leads.md'), docketPage)
 
 const streamPath = join(ROOT, 'docs', 'public', 'receipts.ndjson')

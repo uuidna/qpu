@@ -6,8 +6,8 @@ import type { Lead } from './leads.js'
 
 export type FactKind = 'integer' | 'factors' | 'repository' | 'page' | 'preprint' | 'doi' | 'constant' | 'dataset' | 'sequence'
 export type Fact = { kind: FactKind; value: string; detail?: Record<string, string | number>; lead?: string }
-export type VerifyRequest = { verifier: string; url: string; method: 'GET'; accept: string; check: string; via: string }
-export type Verifier = { id: string; name: string; kind: 'api' | 'page'; free: true; docs: string; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string; verifies: readonly FactKind[]; /** narrows a kind to the facts this adaptor actually holds */ only?: (fact: Fact) => boolean; requestOf: (fact: Fact) => { url: string; accept: string; check: string ; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string} }
+export type VerifyRequest = { verifier: string; url: string; method: 'GET' | 'POST'; body?: unknown; accept: string; check: string; via: string }
+export type Verifier = { id: string; name: string; kind: 'api' | 'page' | 'mcp'; free: true; docs: string; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string; verifies: readonly FactKind[]; /** narrows a kind to the facts this adaptor actually holds */ only?: (fact: Fact) => boolean; requestOf: (fact: Fact) => { url: string; accept: string; check: string; method?: 'POST'; body?: unknown; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string} }
 
 export const VIA = "the client's own MCP fetches it; this handler does no I/O"
 
@@ -32,13 +32,15 @@ export const VERIFIERS: readonly Verifier[] = [
     requestOf: (f) => ({ url: f.kind === 'dataset' ? `https://opendata.cern.ch/api/records/${encodeURIComponent(f.value)}` : `https://opendata.cern.ch/api/records/?q=doi:%22${encodeURIComponent(f.value)}%22`, accept: 'application/json', check: 'the record exists and its title matches the reference' }) },
   { id: 'nist-codata', name: 'NIST CODATA fundamental physical constants', kind: 'api', free: true, docs: 'https://physics.nist.gov/cuu/Constants/', verifies: ['constant'],
     requestOf: (f) => ({ url: `https://physics.nist.gov/cgi-bin/cuu/Value?${encodeURIComponent(f.value)}`, accept: 'text/html', check: `the CODATA value of ${f.value} agrees with Qpu.Physics to the precision the Lean file states` }) },
+  { id: 'cloudflare-docs', name: 'Cloudflare documentation over MCP (docs.mcp.cloudflare.com)', kind: 'mcp', free: true, docs: 'https://developers.cloudflare.com/agents/model-context-protocol/mcp-servers-for-cloudflare/', contract: 'https://docs.mcp.cloudflare.com/mcp', verifies: ['page'], only: (f) => /developers\.cloudflare\.com/.test(f.value),
+    requestOf: (f) => ({ url: 'https://docs.mcp.cloudflare.com/mcp', method: 'POST', body: { jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'search_cloudflare_documentation', arguments: { query: new URL(f.value).pathname.split('/').filter(Boolean).join(' ').replace(/-/g, ' ').slice(0, 200) || 'cloudflare' } } }, accept: 'application/json, text/event-stream', check: `the documentation search answers results for ${new URL(f.value).pathname}` }) },
   { id: 'wikipedia', name: 'Wikipedia REST summary', kind: 'api', free: true, docs: 'https://en.wikipedia.org/api/rest_v1/', contract: 'https://en.wikipedia.org/api/rest_v1/?spec', verifies: ['integer', 'repository', 'preprint', 'sequence'],
     requestOf: (f) => ({ url: `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(String(f.detail?.title ?? f.value))}`, accept: 'application/json', check: 'the summary agrees with the lead\'s statement' }) },
 ]
 
 /** Every request every verifier can make for a fact: cross-verification across all adaptors that can see it. */
 export const verifyRequestsOf = (fact: Fact): VerifyRequest[] =>
-  VERIFIERS.filter((v) => v.verifies.includes(fact.kind) && (v.only?.(fact) ?? true)).map((v) => ({ verifier: v.id, method: 'GET' as const, via: VIA, ...v.requestOf(fact) }))
+  VERIFIERS.filter((v) => v.verifies.includes(fact.kind) && (v.only?.(fact) ?? true)).map((v) => ({ verifier: v.id, via: VIA, ...v.requestOf(fact), method: v.requestOf(fact).method ?? ('GET' as const) }))
 
 /** The facts a lead carries, read from its source and statement. */
 export const factsOf = (lead: Lead): Fact[] => {

@@ -20,7 +20,7 @@ export default defineConfig({
   // the head of a UUID page is computed from the id alone: Open Graph, the aura swatch, the seal
   transformHead({ pageData }) {
     const uuid = (pageData.params as { uuid?: string } | undefined)?.uuid
-    const route = '/' + pageData.relativePath.replace(/(^|/)index.md$/, '$1').replace(/.md$/, '')
+    const route = '/' + pageData.relativePath.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '')
     const ld = pageJsonLdOf({ url: 'https://qpu.uuidna.com' + route, title: pageData.title || '@uuidna/qpu', description: pageData.description || 'The Google Quantum AI layer as one MCP surface', uuid, locale: route.startsWith('/bg/') ? 'bg' : 'en' })
     const jsonLd: [string, Record<string, string>, string] = ['script', { type: 'application/ld+json' }, JSON.stringify(ld)]
     if (!uuid) return [jsonLd]
@@ -46,7 +46,7 @@ export default defineConfig({
   buildEnd(siteConfig) {
     writeFileSync('docs/public/site.json', JSON.stringify({ pages: siteConfig.pages.length, built: new Date().toISOString(), license: 'CC-BY-NC-ND-4.0 © Tsvetan Rouschev' }) + '\n')
   },
-  head: [['link', { rel: 'stylesheet', href: '/uuidna.css' }], ['link', { rel: 'stylesheet', href: '/a432.css' }], ['link', { rel: 'license', href: 'https://uuidna.com/license' }], ['meta', { name: 'license', content: 'CC-BY-NC-ND-4.0' }], ['meta', { name: 'copyright', content: '© 2025 Tsvetan Rouschev (ceccec@psg.bg)' }], ['meta', { property: 'uuidna:rights', content: '459a7ef3-7a8b-8d8e-893a-099292addcd5' }], ['meta', { property: 'uuidna:canonical', content: 'https://uuidna.com' }]],
+  head: [['link', { rel: 'manifest', href: '/manifest.webmanifest' }], ['meta', { name: 'theme-color', content: 'hsl(72 62% 44%)' }], ['link', { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' }], ['link', { rel: 'apple-touch-icon', href: '/icon.svg' }], ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }], ['meta', { name: 'mobile-web-app-capable', content: 'yes' }], ['link', { rel: 'stylesheet', href: '/uuidna.css' }], ['link', { rel: 'stylesheet', href: '/a432.css' }], ['link', { rel: 'license', href: 'https://uuidna.com/license' }], ['meta', { name: 'license', content: 'CC-BY-NC-ND-4.0' }], ['meta', { name: 'copyright', content: '© 2025 Tsvetan Rouschev (ceccec@psg.bg)' }], ['meta', { property: 'uuidna:rights', content: '459a7ef3-7a8b-8d8e-893a-099292addcd5' }], ['meta', { property: 'uuidna:canonical', content: 'https://uuidna.com' }]],
   themeConfig: {
     search: { provider: 'local' },
     outline: 'deep',
@@ -60,6 +60,14 @@ export default defineConfig({
       {
         "text": "Processor",
         "link": "/processor"
+      },
+      {
+        "text": "Chat",
+        "link": "/chat"
+      },
+      {
+        "text": "Use cases",
+        "link": "/use-cases"
       },
       {
         "text": "Roadmap",
@@ -158,6 +166,10 @@ export default defineConfig({
         "link": "/stream"
       },
       {
+        "text": "End to end",
+        "link": "/e2e"
+      },
+      {
         "text": "Legal",
         "link": "/legal"
       },
@@ -177,6 +189,14 @@ export default defineConfig({
           {
             "text": "Processor",
             "link": "/processor"
+          },
+          {
+            "text": "Chat",
+            "link": "/chat"
+          },
+          {
+            "text": "Use cases",
+            "link": "/use-cases"
           },
           {
             "text": "Roadmap",
@@ -273,6 +293,10 @@ export default defineConfig({
           {
             "text": "Stream",
             "link": "/stream"
+          },
+          {
+            "text": "End to end",
+            "link": "/e2e"
           },
           {
             "text": "Legal",
@@ -408,6 +432,10 @@ export default defineConfig({
           {
             "text": "imagine",
             "link": "/mcp#imagine"
+          },
+          {
+            "text": "e2e",
+            "link": "/mcp#e2e"
           }
         ]
       },
@@ -479,6 +507,19 @@ export default defineConfig({
           {
             "text": "payload",
             "link": "/mcp#payload"
+          },
+          {
+            "text": "configure",
+            "link": "/mcp#configure"
+          }
+        ]
+      },
+      {
+        "text": "Toolbox extension",
+        "items": [
+          {
+            "text": "extend",
+            "link": "/mcp#extend"
           }
         ]
       }

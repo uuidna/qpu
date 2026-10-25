@@ -6,7 +6,7 @@ import { LEADS, cleanupSubjectsOf } from './leads.js'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
-test('tools/list serves the thirty-six tools in ten toolboxes with input schemas, and initialize names the server', () => {
+test('tools/list serves the thirty-nine tools in eleven toolboxes with input schemas, and initialize names the server', () => {
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
   assert.ok('result' in init && (init.result as { serverInfo: { name: string } }).serverInfo.name === 'qpu')
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
@@ -17,15 +17,16 @@ test('tools/list serves the thirty-six tools in ten toolboxes with input schemas
   assert.deepEqual(byToolbox, {
     google: ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design'],
     tree: ['leads', 'audit', 'match', 'clay', 'verify', 'metrics', 'textbook', 'css', 'dashboard', 'clone'],
-    flow: ['discover', 'wave', 'readiness', 'imagine'],
+    flow: ['discover', 'wave', 'readiness', 'imagine', 'e2e'],
     language: ['translate', 'prose'],
     raid: ['mongo'],
     billing: ['stripe'],
     legal: ['legal'],
     repository: ['repository'],
     standards: ['jsonld', 'codes'],
-    payload: ['payload'],
-  }, 'every tool names its toolbox in _meta, and the ten toolboxes hold the thirty-six tools')
+    payload: ['payload', 'configure'],
+    extension: ['extend'],
+  }, 'every tool names its toolbox in _meta, and the eleven toolboxes hold the thirty-nine tools')
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 

@@ -1,6 +1,7 @@
 #!/bin/sh
-# Pre-commit is `next` itself, offline and fast: generation, typecheck, tests, Lean, audit, purify. Whatever honesty it finds is
-# already in the leads docket when the commit lands; it never blocks. The generated files it rewrote join the commit.
+# Pre-commit is `next` itself, offline and fast: generation, typecheck, tests, Lean, audit, purify (about twenty seconds).
+# Whatever honesty it finds is already in the leads docket when the commit lands; it never blocks. The generated files it
+# rewrote join the commit. The online gate (e2e, the repetition code over the hosts) runs before a push, not here.
 npm run next -- --offline --fast
-git add -u -- docs/public/mcp.json docs/mcp.md docs/.vitepress/config.mts src/quantum/clay-statements.ts README.md 2>/dev/null
+git add -u -- docs/public/mcp.json docs/mcp.md docs/.vitepress/config.mts src/quantum/clay-statements.ts README.md docs/public/manifest.webmanifest docs/public/configs.json 2>/dev/null
 exit 0

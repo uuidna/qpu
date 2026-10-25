@@ -38,6 +38,8 @@ export type Match = {
   tool?: string
   /** the kernel-accepted theorem that serves the statement, when the textbook answers first */
   theorem?: string
+  /** the pattern the statement carried (a UUID, a relation name, a dashboard, a clone…), when one was recognised */
+  pattern?: string
   call?: { name: string; arguments: Record<string, unknown> }
   result?: unknown
   candidates: Candidate[]
@@ -135,9 +137,10 @@ export const reflectionsOf = (statement: string): string[] => {
 const slug = (text: string): string => tokens(text).slice(0, 6).join('-') || 'statement'
 
 /** Tools the matcher lists but never calls: calling itself or the audit from inside a match would recurse without end. */
-/** Tools the matcher never calls to serve a statement: the judges of the tree and every toolbox that fetches, bills or audits; the textbook is google, clay, leads, language and raid. */
-const META = new Set(['match', 'audit', 'verify', 'metrics'])
-const META_TOOLBOXES = new Set(['flow', 'legal', 'repository', 'billing'])
+/** Tools the matcher never calls to serve a statement: the judges and layouts of the tree (audit, verify, metrics, textbook, dashboard, clone, css) and every toolbox that fetches, bills or audits; the textbook it serves from is google, clay, leads, language and raid. A pattern may still open any door by name. */
+// prose and payload run whatever tool they are handed; a guessed `tool: imagine` ran the whole imagination inside one match
+const META = new Set(['match', 'audit', 'verify', 'metrics', 'textbook', 'dashboard', 'clone', 'css', 'prose', 'payload'])
+const META_TOOLBOXES = new Set(['flow', 'legal', 'repository', 'billing', 'standards', 'payload', 'extension'])
 
 /** A matcher with its index built once: tools, examples and leads tokenised and weighted, so every lead can be imagined in one run. */
 /** Shor's factoring of a small N on the simulator is deterministic: once per process. */
@@ -148,12 +151,45 @@ const indexOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads
   const found = byExamples.get(allExamples); if (found) return found
   const built = innerMatcherOf(handle, allExamples, leads); byExamples.set(allExamples, built); return built
 }
+/** Pattern recognition before the token match: the shapes a statement can carry and the door each opens, as data. A pattern
+ * names what it recognised and the call it makes; a statement that carries none goes to the textbook and the tokens. */
+export type Pattern = { name: string; test: RegExp; tool: string; args: (m: RegExpMatchArray, statement: string) => Record<string, unknown>; shows: string }
+export const PATTERNS: readonly Pattern[] = [
+  { name: 'uuid', test: /\b([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b/i, tool: 'verify', args: (m) => ({ uuid: m[1]!.toLowerCase() }), shows: 'a UUID: its seal, channel, vortex and reflection' },
+  { name: 'oeis', test: /\b(A\d{6})\b/, tool: 'leads', args: () => ({}), shows: 'an OEIS sequence number: a sequence fact for the wave' },
+  { name: 'relation', test: /\b(relation_\d+)\b/, tool: 'clay', args: (m) => ({ name: m[1] }), shows: 'a Clay relation by name: recomputed' },
+  { name: 'clay-technique', test: /\b(clay|register)\b.*\b(reflect|reflection|vortex|trinit)/i, tool: 'clay', args: () => ({ technique: 'reflection' }), shows: 'the register read by the reflection technique' },
+  { name: 'dashboard', test: /\b(?:dashboard|lay out|layout|combinations?|all (?:the )?(?:options|values)) (?:of |for )?([a-z_-]+)/i, tool: 'dashboard', args: (m) => ({ tool: m[1]!.toLowerCase() }), shows: 'a tool laid out whole' },
+  { name: 'clone', test: /\bclone (?:the )?([a-z-]+)(?: toolbox)?(?: as ([a-z0-9-]+))?/i, tool: 'clone', args: (m) => ({ toolbox: m[1]!.toLowerCase(), ...(m[2] ? { as: m[2].toLowerCase() } : {}) }), shows: 'a toolbox cloned whole' },
+  { name: 'translate', test: /\btranslate\b\s*(?:"([^"]+)"|'([^']+)'|(.+?))\s+(?:to|into)\s+([a-z]{2})\b/i, tool: 'translate', args: (m) => ({ text: m[1] ?? m[2] ?? m[3] ?? '', from: 'en', to: m[4]!.toLowerCase() }), shows: 'a text translated by vocabulary' },
+  { name: 'css-of', test: /\b(?:css|stylesheet|colou?rs?|aura) (?:of |for )?([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b/i, tool: 'css', args: (m) => ({ uuid: m[1]!.toLowerCase() }), shows: 'the CSS variables of a UUID' },
+  { name: 'metrics', test: /\b(metrics|how many (?:tools|examples|theorems|leads)|coins paid)\b/i, tool: 'metrics', args: () => ({}), shows: 'the tree\'s metrics now' },
+  { name: 'textbook', test: /\b(?:reuse|replay) (?:example )?([a-z0-9-]+)/i, tool: 'textbook', args: (m) => ({ reuse: m[1]!.toLowerCase() }), shows: 'an example reused by id' },
+  { name: 'shor', test: /\bfactor(?:ise|ize)?\s+(\d+)\b/i, tool: 'algorithm', args: (m) => ({ name: 'shor', N: Number(m[1]) }), shows: 'an integer factored by Shor within the bound' },
+]
+/** The pattern a statement carries, if any, and the call it makes; the first pattern that matches wins, in the order above. */
+export const patternOf = (statement: string): { pattern: Pattern; call: { name: string; arguments: Record<string, unknown> } } | null => {
+  for (const p of PATTERNS) { const m = statement.match(p.test); if (m) return { pattern: p, call: { name: p.tool, arguments: p.args(m, statement) } } }
+  return null
+}
+
 export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string, locale?: string) => Match) => {
   const inner = indexOf(handle, allExamples, leads)
   return (given: string, locale?: string): Match => {
     const num = numeralsOf(given)
     const tr = locale && locale !== 'en' ? translateOf(num.text, locale, 'en') : null
-    const m = inner(tr ? tr.text : num.text)
+    const text = tr ? tr.text : num.text
+    const recognised = patternOf(text)
+    const m = (() => {
+      if (recognised && recognised.call.name !== 'leads') {
+        const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: recognised.call.name, arguments: recognised.call.arguments } })
+        const base = inner(text)
+        if ('result' in reply) return { ...base, verdict: 'served' as const, tool: recognised.call.name, call: recognised.call, result: reply.result.structuredContent, evidence: [`pattern ${recognised.pattern.name}: ${recognised.pattern.shows}; ${recognised.call.name} answered`, ...base.evidence], pattern: recognised.pattern.name, lead: { ...base.lead, status: 'served' as const, tool: recognised.call.name } }
+        return { ...base, evidence: [`pattern ${recognised.pattern.name}: ${recognised.call.name} refused: ${reply.error.message}`, ...base.evidence], pattern: recognised.pattern.name }
+      }
+      const base = inner(text)
+      return recognised ? { ...base, pattern: recognised.pattern.name } : base
+    })()
     if (!num.numerals.length && !tr) return m
     return { ...m, read: { given, numerals: num.numerals, locale, untranslated: tr?.untranslated ?? [], verdictIn: tr ? translateOf(m.verdict, 'en', locale!).text : undefined } }
   }
@@ -298,6 +334,8 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
   }
   if (top.kind === 'lead') {
     const lead = leads.find((l) => l.id === top.id)!
+    // a lead served by a tool the matcher never calls to serve (the flow, the judges, the layouts) is answered by the lead itself: calling imagine or audit from inside a match would replay every lead inside one statement
+    if (lead.status === 'served' && lead.tool && !callable.has(lead.tool)) return { statement, verdict: 'served', evidence: [`lead ${lead.id} is served by ${lead.tool}, a tool the matcher does not call to serve (it fetches, judges or lays out); the lead stands as the answer`], tool: lead.tool, candidates, cluster, verify, reflection, lead: { ...lead, statement } }
     if (lead.status === 'served' && lead.tool) {
       const example = examples.find((e) => e.tool === lead.tool)
       const call = { name: lead.tool, arguments: example?.arguments ?? {} }

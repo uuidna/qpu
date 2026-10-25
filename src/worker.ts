@@ -10,16 +10,18 @@ import { LICENSE } from './quantum/license.js'
 import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, type Step } from './quantum/blocks.js'
 import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.js'
 import { LOCALES as LANGS, translateOf } from './quantum/i18n.js'
+import { DEFAULT_MCP_HOSTS } from './quantum/discovery.js'
+import { hashOf as contentHashOf } from './quantum/e2e.js'
 
 /** The slice of the Workers runtime this file uses, typed here so the tree needs no runtime types package to typecheck. */
 export type Storage = { get<T>(key: string): Promise<T | undefined>; put(key: string, value: unknown): Promise<void>; delete(key: string): Promise<unknown>; list<T>(opts?: { prefix?: string }): Promise<Map<string, T>> }
 export type DocketStub = { fetch(request: Request): Promise<Response> }
-export type Env = { QPU_WRITE_TOKEN?: string; QPU_ADMIN_TOKEN?: string; QPU_DATA_KEY?: string; QPU_MIRRORS?: string; /** the MCP host that manages roles (a Payload MCP plugin): tools/call of QPU_RBAC_TOOL with { token, tenant, host } answers { role } */ QPU_RBAC_MCP?: string; QPU_RBAC_TOOL?: string; DOCKET?: { idFromName(name: string): unknown; get(id: unknown): DocketStub }; [tenantToken: string]: unknown }
+export type Env = { QPU_WRITE_TOKEN?: string; QPU_ADMIN_TOKEN?: string; QPU_DATA_KEY?: string; QPU_MIRRORS?: string; /** the MCP host that manages roles (a Payload MCP plugin): tools/call of QPU_RBAC_TOOL with { token, tenant, host } answers { role } */ QPU_RBAC_MCP?: string; QPU_RBAC_TOOL?: string; /** the built site, served as static assets by the same Worker: the web OS */ ASSETS?: { fetch(request: Request): Promise<Response> }; DOCKET?: { idFromName(name: string): unknown; get(id: unknown): DocketStub }; [tenantToken: string]: unknown }
 
 /** Tenants: one Worker, several hosts, each host its own docket and its own tokens. A security collision — one tenant's token
  * at another tenant's host — is not an incident but a procedure: the answer names the role, the header and who issues it. */
-export const TENANTS: Readonly<Record<string, string>> = { 'qpu.uuidna.com': 'uuidna', 'qpu.psg.bg': 'psg' }
-export const tenantOf = (hostname: string): string => TENANTS[hostname] ?? (hostname.endsWith('.workers.dev') ? 'ceci' : 'local')
+import { TENANTS, tenantOf } from './quantum/tenants.js'
+export { TENANTS, tenantOf }
 export type Role = 'reader' | 'writer' | 'admin'
 export const ROLES: Readonly<Record<Role, { may: string; header: string | null; issued: string }>> = {
   reader: { may: 'GET: read the docket, the discovery document, every tool over POST /mcp', header: null, issued: 'no token: every reader is a reader' },
@@ -52,15 +54,25 @@ export const roleOf = (env: Env, tenant: string, token: string | undefined): { r
 
 const LICENSE_HEADERS = { 'Link': `<${LICENSE.url}>; rel="license"`, 'X-License': LICENSE.spdx, 'X-Copyright': LICENSE.copyright, 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }
 const json = (body: unknown, status = 200, extra: Record<string, string> = {}): Response => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', ...LICENSE_HEADERS, ...extra } })
+/** The involution that costs Cloudflare nothing: a reply is addressed by its block (content), so a client that holds the address asks with If-None-Match and receives 304 — no body computed, no bytes sent; a reply the address names is immutable and cacheable for a year anywhere between. */
+const involuted = (request: Request, address: string | null, response: Response, content?: string): Response => {
+  if (!address) return response
+  const etag = `"${content ?? address}"`
+  // the teleport: 304 carries the hash and the address, so the destination verifies the analog it holds digitally, in full
+  if (request.headers.get('if-none-match') === etag) return new Response(null, { status: 304, headers: { etag, 'x-qpu-address': address, 'cache-control': 'public, max-age=31536000, immutable', ...LICENSE_HEADERS } })
+  const headers = new Headers(response.headers); headers.set('etag', etag); headers.set('cache-control', 'public, max-age=31536000, immutable'); headers.set('x-qpu-address', address)
+  return new Response(response.body, { status: response.status, headers })
+}
+const addressOfReply = (reply: unknown): string | null => { const r = reply as { result?: { _meta?: { block?: { meta?: { id?: string } } } } }; return r.result?._meta?.block?.meta?.id ?? null }
 
 /** What this tree is, stated from its own values: nothing here is typed that the handler does not compute. */
-export const discoveryOf = (origin: string) => {
+export const discoveryOf = (origin: string, env?: Env) => {
   const tenant = tenantOf(new URL(origin).hostname)
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }
   const names = list.result.tools.map((t) => t.name)
   return {
     name: '@uuidna/qpu', kind: 'qpu', mcp: `${origin}/mcp`, docket: `${origin}/docket`, methods: ['initialize', 'tools/list', 'tools/call'],
-    tenant, tenants: Object.entries(TENANTS).map(([host, t]) => ({ host, tenant: t, docket: `https://${host}/docket` })), roles: ROLES, rbac: 'one Worker, one docket per tenant (host); roles asked of the RBAC MCP host when one is configured (a Payload MCP plugin managing every MCP server\'s roles over MCP itself), otherwise one writer and one admin token per tenant; a token at another tenant\'s host holds no role there and the answer names the procedure',
+    tenant, tenants: Object.entries(TENANTS).map(([host, t]) => ({ host, tenant: t, docket: `https://${host}/docket` })), mcpHosts: (((env as unknown as Record<string, string | undefined>)?.[`QPU_MCP_HOSTS_${tenant.toUpperCase()}`]) ?? DEFAULT_MCP_HOSTS.join(',')).split(',').map((s) => s.trim()).filter(Boolean), mcpHostsNote: 'tenant configurable: QPU_MCP_HOSTS_<TENANT> names the MCP hosts this tenant discovers and extends; QPU_MCP_TOKEN_<HOST>_<TENANT> its token per host; Cloudflare\'s servers are discovered by default, the documentation one in the open, the others when the tenant brings its OAuth token', roles: ROLES, rbac: 'one Worker, one docket per tenant (host); roles asked of the RBAC MCP host when one is configured (a Payload MCP plugin managing every MCP server\'s roles over MCP itself), otherwise one writer and one admin token per tenant; a token at another tenant\'s host holds no role there and the answer names the procedure',
     tools: names, examples: EXAMPLES.length, leads: LEADS.length,
     bounds: { shorN: 21, qubits: 6, bits: 8, nodes: 12, note: 'the exact state-vector simulator; every bound is in each tool\'s input schema' },
     key: KEY, license: { spdx: LICENSE.spdx, url: LICENSE.url, address: LICENSE.address, imprint: LICENSE.imprint, author: LICENSE.author, orcid: LICENSE.orcid },
@@ -163,7 +175,7 @@ export class Docket {
     if (id && !ID.test(id)) return json({ error: 'an entry id is a content-addressed RFC 9562 v8 UUID' }, 400)
     try {
       if (request.method === 'GET' && id) {
-        if (url.searchParams.has('og') || /text\/html/.test(request.headers.get('accept') ?? '')) { const nx = nextOf(id, url.origin); return pageOf(id, url.origin, { prev: refererOf(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled }) }
+        if (url.searchParams.has('og') || /text\/html/.test(request.headers.get('accept') ?? '')) { const nx = nextOf(id, url.origin); return involuted(request, id, pageOf(id, url.origin, { prev: refererOf(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled })) }
         return await this.read(id, url.searchParams.has('cheap'), url.searchParams.has('heal'))
       }
       if (request.method === 'GET') return await this.list(url.searchParams.get('kind'), url.searchParams.get('since'))
@@ -460,13 +472,17 @@ export const worker = {
     const path = url.pathname.replace(/\/$/, '') || '/'
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: LICENSE_HEADERS })
     if (path === '/health') { const m = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'metrics', arguments: {} } }) as { result?: { structuredContent: unknown } }; return json({ status: 'healthy', tenant: tenantOf(url.hostname), license: LICENSE.spdx, metrics: m.result?.structuredContent ?? null }) }
-    if (path === '/.well-known/qpu.json' || (path === '/' && request.method === 'GET')) return json(discoveryOf(url.origin))
+    // the root: the web OS from the assets, unless the client asks for JSON (accept application/json): then the discovery document, which also stands at /.well-known/qpu.json
+    if (path === '/' && request.method === 'GET' && env.ASSETS && !/application\/json/.test(request.headers.get('accept') ?? '')) { const asset = await env.ASSETS.fetch(request); if (asset.status !== 404) return asset }
+    if (path === '/.well-known/qpu.json' || (path === '/' && request.method === 'GET')) return json(discoveryOf(url.origin, env))
     if ((path === '/mcp' || path === '/') && request.method === 'POST') {
       let message: Rpc
       try { message = await request.json() as Rpc } catch { return json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'parse error' } }, 400) }
       const reply = handle(message)
       // A checkout plan is executed here, with the tenant's key the handler never holds: the answer carries Stripe's session url.
       const params = (message as { params?: { name?: string; arguments?: { op?: string } } }).params
+      // a cached reply is an involution: the block address is its ETag; the same arguments at any host answer the same address (tools/call is pure), so If-None-Match answers 304
+      if ('result' in reply && params?.name !== 'stripe' && params?.name !== 'metrics') return involuted(request, addressOfReply(reply), json(reply), contentHashOf((reply as { result: { structuredContent?: unknown } }).result.structuredContent))
       if (params?.name === 'stripe' && params.arguments?.op === 'plan' && 'result' in reply) return json(await stripeCheckout(reply as { result: { structuredContent: { plan: { url: string; form: Record<string, string>; headers: Record<string, string>; secret: string } } } }, url, env))
       return json(reply)
     }
@@ -483,6 +499,8 @@ export const worker = {
       const headers = new Headers(request.headers); headers.set('x-qpu-tenant', tenant); headers.set('x-qpu-role', role); headers.set('x-qpu-roles-by', by)
       return env.DOCKET.get(env.DOCKET.idFromName(tenant)).fetch(new Request(request, { headers }))
     }
+    // the web OS: a page the site built is served as it is; what the site does not have, the catch-all computes
+    if (env.ASSETS && request.method === 'GET') { const asset = await env.ASSETS.fetch(request); if (asset.status !== 404) return asset }
     return catchAll(request, url, env)
   },
 }

@@ -1,3 +1,6 @@
 #!/bin/sh
-# The platform runs itself before anything leaves this machine. Offline: the verification wave runs in CI.
-npm run next -- --offline
+# The platform runs itself before anything leaves this machine: the fast offline flow (generation, typecheck, tests, Lean,
+# audit, purify), then the end-to-end gate online — every dashboard combination and every example called on every tenant
+# host over MCP and decoded by majority against the tree's own answer; an uncorrectable combination stops the push.
+npm run next -- --offline --fast --strict || exit 1
+node --import tsx scripts/e2e.ts --strict

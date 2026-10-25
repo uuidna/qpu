@@ -3,7 +3,7 @@
 // host-agnostic: it fetches what it is told, asks the doors discovery found, and writes what comes back. Any flow tool
 // called with selftest runs the toolbox's cross-test.
 import { toolOf, type Toolbox, type Context } from '../toolbox.js'
-import { discoveryRequestsOf, followUpsOf, discoveryOf, discoveryPageOf, type Answer, type Discovery } from '../discovery.js'
+import { discoveryRequestsOf, followUpsOf, discoveryOf, discoveryPageOf, DEFAULT_MCP_HOSTS, type Answer, type Discovery } from '../discovery.js'
 import { waveRequestsOf, waveOf, wavePageOf, type WaveResult } from '../wave.js'
 import { pagesOf, judgeOf, sourcesOf, borderPlanOf, borderOf, readinessPageOf, type BorderAnswer, type UnitAnswers } from '../readiness.js'
 import { imagineOf, imaginePageOf } from '../imagine.js'
@@ -11,26 +11,40 @@ import { flowSelftestOf } from '../selftest.js'
 import { matcherOf } from '../match.js'
 import { VERIFIERS } from '../verifiers.js'
 import { flowWidget } from '../widgets.js'
+import { e2eRequestsOf, e2eOf, e2ePageOf, type E2eAnswer } from '../e2e.js'
+import { TENANTS } from '../tenants.js'
 
 const BLOCK_IDS = new WeakMap<readonly unknown[], { example: string; id: string | undefined }[]>()
 /** The content address of every example's block, computed once per examples registry (a readiness call must not replay the examples). */
 const blockIdsOf = (ctx: Context) => { const found = BLOCK_IDS.get(ctx.examples); if (found) return found; const ids = ctx.examples.filter((e) => e.tool !== 'audit' && !['readiness', 'imagine', 'discover', 'wave'].includes(e.tool)).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); return { example: e.id, id: r.result?._meta?.block?.meta?.id as string | undefined } }).filter((x) => x.id); BLOCK_IDS.set(ctx.examples, ids); return ids }
-const DEFAULT_MCP_HOSTS = ['https://uuidna.com/mcp', 'https://qpu.uuidna.com/mcp']
 const selftestOr = <T>(args: Record<string, unknown>, ctx: Context, f: () => T): T | { selftest: true; passed: boolean; checks: unknown[] } => (args.selftest ? { selftest: true, ...flowSelftestOf(ctx.handle, ctx.examples, ctx.leads) } : f())
 const SELFTEST = { selftest: { type: 'boolean', description: 'run the flow toolbox\'s cross-test instead: every direction, every toolbox feeding the next' } }
 
 const discover = toolOf('flow', {
   name: 'discover',
   description: 'Discovery before use. Without answers: every request the client must make for the contracts of the hosts this tree talks to (MCP tools/list and catalogue doors, the verifiers\' OpenAPI, index or identify documents, /.well-known/qpu.json). With answers: the follow-ups still to fetch (catalogue doors whose contract is unread) and, once none remain, the discovery: hosts, doors with what they take and answer, capabilities by which clients choose doors, and the leads (hosts with no machine contract). Pure; the client fetches.',
-  inputSchema: { type: 'object', properties: { mcpHosts: { type: 'array', items: { type: 'string' }, description: 'MCP endpoints to ask; default the unit and this tree\'s own' }, answers: { type: 'array', items: { type: 'object' }, description: 'the requests answered: each request as emitted plus status, type and text' }, ...SELFTEST } },
+  inputSchema: { type: 'object', properties: { mcpHosts: { type: 'array', items: { type: 'string' }, description: 'MCP endpoints to ask; default the unit, this tree\'s own and Cloudflare\'s eight servers; a tenant names its own' }, auth: { type: 'object', description: 'host → bearer token, the tenant\'s own: forwarded as the authorization header of the requests emitted, never kept' }, answers: { type: 'array', items: { type: 'object' }, description: 'the requests answered: each request as emitted plus status, type and text' }, ...SELFTEST } },
   run: (args, ctx) => selftestOr(args, ctx, () => {
     const hosts = Array.isArray(args.mcpHosts) ? args.mcpHosts.map(String) : DEFAULT_MCP_HOSTS
-    if (!Array.isArray(args.answers)) { const requests = discoveryRequestsOf(hosts, VERIFIERS); return { phase: 'requests' as const, requests: requests.length, requestList: requests } }
+    if (!Array.isArray(args.answers)) { const requests = discoveryRequestsOf(hosts, VERIFIERS, (args.auth && typeof args.auth === 'object' ? args.auth : {}) as Record<string, string>); return { phase: 'requests' as const, requests: requests.length, requestList: requests } }
     const answers = args.answers as Answer[]
     const followUps = followUpsOf(answers)
     if (followUps.length) return { phase: 'follow-ups' as const, requests: followUps.length, requestList: followUps }
     const discovery = discoveryOf(answers, VERIFIERS)
     return { phase: 'discovery' as const, hosts: discovery.hosts.length, doors: discovery.doors.length, statementVerdict: discovery.capabilities.statementVerdict.length, leads: discovery.leads.length, discovery, page: discoveryPageOf(discovery, new Date().toISOString()) }
+  }),
+  widget: flowWidget,
+})
+
+const e2e = toolOf('flow', {
+  name: 'e2e',
+  description: 'The end-to-end gate as a repetition code. Without answers: every combination the dashboards lay out and every example of the textbook, as one tools/call request per host (default the tenants\' hosts and the operator\'s), each carrying the hash of the tree\'s own answer. With answers (each request plus status, ms, text): every combination decoded by majority over the tree and the hosts — agree, corrected (a flipped host, named by the syndrome), erased (a host that did not answer), uncorrectable (no majority) — the physical and logical error rates against the textbook 3-copy code, every error a UUID block for the stream, and the leads. Pure; the client fetches.',
+  inputSchema: { type: 'object', properties: { hosts: { type: 'array', items: { type: 'string' }, description: 'MCP endpoints to call; default https://<tenant host>/mcp for every tenant and the operator\'s workers.dev' }, tools: { type: 'array', items: { type: 'string' }, description: 'only these tools\' combinations; default every tool' }, answers: { type: 'array', items: { type: 'object' } }, ...SELFTEST } },
+  run: (args, ctx) => selftestOr(args, ctx, () => {
+    const hosts = Array.isArray(args.hosts) ? args.hosts.map(String) : [...Object.keys(TENANTS).map((h) => `https://${h}/mcp`), 'https://qpu.ceci.workers.dev/mcp']
+    if (!Array.isArray(args.answers)) { const requests = e2eRequestsOf(ctx, hosts, Array.isArray(args.tools) ? args.tools.map(String) : undefined); return { phase: 'requests' as const, hosts, combos: new Set(requests.map((r) => r.combo)).size, requests: requests.length, requestList: requests } }
+    const r = e2eOf(args.answers as E2eAnswer[])
+    return { phase: 'decoded' as const, hosts, ...r, page: e2ePageOf(r, new Date().toISOString(), hosts, { remaining: 0 }) }
   }),
   widget: flowWidget,
 })
@@ -93,11 +107,12 @@ const imagine = toolOf('flow', {
 export const FLOW: Toolbox = {
   name: 'flow',
   idea: 'the run of the tree as tools: discover the hosts, verify the leads, let the unit judge, imagine the next leads; the client only fetches and writes',
-  tools: [discover, wave, readiness, imagine],
+  tools: [discover, wave, readiness, imagine, e2e],
   examples: [
     { id: 'discover-requests', tool: 'discover', arguments: { mcpHosts: ['https://uuidna.com/mcp'] }, shows: 'Phase one of discovery: the requests a client makes for every contract — the unit\'s tools/list, its catalogue door, its well-known file, and the verifiers\' contract documents.', expect: (s) => (s.phase === 'requests' && s.requests >= 3 + VERIFIERS.filter((v) => v.contract).length ? null : `${s.phase}, ${s.requests} requests`) },
     { id: 'wave-requests', tool: 'wave', arguments: { leads: ['willow-spec', 'repo-cirq'] }, shows: 'Phase one of the wave: the requests two leads need, once per URL, each naming the leads it serves.', expect: (s) => (s.phase === 'requests' && s.leads === 2 && s.requests > 0 && s.requestList.every((r: { leads: string[] }) => r.leads.length > 0) ? null : `${s.phase}, ${s.requests} requests for ${s.leads} leads`) },
     { id: 'readiness-plan', tool: 'readiness', arguments: {}, shows: 'Phase one of readiness without measurements: every lead judged (served by its tool, refuted by declaration, or in trial), the sources for the unit, an empty border plan because nothing was discovered, and the unit plan.', expect: (s) => (s.phase === 'plan' && s.served + s.refuted + s.trial === s.leads && s.borderCalls === 0 && s.unitCalls >= 3 ? null : `${s.phase}: ${s.served}+${s.refuted}+${s.trial} of ${s.leads}, ${s.borderCalls} border calls`) },
+    { id: 'e2e-requests', tool: 'e2e', arguments: { hosts: ['https://qpu.uuidna.com/mcp'], tools: ['clay', 'processor', 'roadmap'] }, shows: 'Phase one of the end-to-end gate for three tools: every dashboard cell and every example of theirs as a tools/call request to one host, each carrying the hash of the tree\'s own answer; without tools, every tool\'s.', expect: (s) => (s.phase === 'requests' && s.combos >= 10 && s.requests === s.combos && s.requestList.every((r: { local: string; method: string }) => r.method === 'POST' && /^[0-9a-f-]{36}$/.test(r.local)) ? null : `${s.phase} ${s.combos} ${s.requests}`) },
     { id: 'imagine-two', tool: 'imagine', arguments: { leads: ['willow-spec', 'learn'] }, shows: 'Two leads imagined: one served by the processor tool, one blocked (a 404), plus the leads every schema and application family open.', expect: (s) => (s.leads === 2 && s.served + s.impossible + s.unknown === 2 && s.imaginedLeads > 0 ? null : `${s.leads} leads, ${s.served}/${s.impossible}/${s.unknown}, ${s.imaginedLeads} imagined`) },
   ],
   skill: {

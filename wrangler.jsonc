@@ -7,6 +7,8 @@
   "main": "src/worker.ts",
   "compatibility_date": "2026-10-01",
   "workers_dev": true,
+  // the built site served by the same Worker: the web OS installable at every tenant; the Worker runs first so /mcp, /docket and /.well-known stay its own
+  "assets": { "directory": "./docs/.vitepress/dist", "binding": "ASSETS", "run_worker_first": true, "not_found_handling": "none" },
   "routes": [
     { "pattern": "qpu.uuidna.com", "custom_domain": true },
     { "pattern": "qpu.psg.bg", "custom_domain": true }

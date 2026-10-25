@@ -11,6 +11,7 @@ import { waveRequestsOf, waveOf, wavePageOf, type WaveResult } from './wave.js'
 import { pagesOf, judgeOf, sourcesOf, borderPlanOf, borderOf, readinessPageOf } from './readiness.js'
 import { imagineOf, imaginePageOf } from './imagine.js'
 import { matcherOf } from './match.js'
+import { e2eOf, valueOf, type E2eAnswer } from './e2e.js'
 
 const UNIT = 'https://unit.test/mcp'
 const rpcOk = (result: unknown) => JSON.stringify({ jsonrpc: '2.0', id: 1, result })
@@ -109,5 +110,29 @@ export const flowSelftestOf = (handle: (m: Rpc) => any, examples: readonly Examp
   // imagine: the matcher feeds the imagination (toolbox → toolbox), on a subset
   safe('imagine:subset', () => { const im = imagineOf(handle, examples, leads, ['willow-spec', 'learn']); check('imagine:subset', im.leads === 2 && im.rows.length === 2 && Object.values(im.verdicts).reduce((a, b) => a + b, 0) === 2 && im.imagined.some((l) => l.id.startsWith('application-')) && imaginePageOf(im, '2026-01-01', 10).includes('| willow-spec |'), `${im.rows.map((r) => `${r.lead}:${r.verdict}`).join(' ')}; ${im.imaginedLeads} imagined`) })
 
+    // the gate as a repetition code, on fixtures: one host agrees, one flips, one is erased; then no majority
+  {
+    const base = { combo: 'c1', tool: 'clay', toolbox: 'tree', from: 'example' as const, arguments: {}, url: '', method: 'POST' as const, accept: '', headers: {}, body: null, local: 'L' }
+    const ok = JSON.stringify({ jsonrpc: '2.0', id: 1, result: { structuredContent: { v: 1 } } })
+    const L = valueOf({ status: 200, text: ok }).value
+    const answers: E2eAnswer[] = [
+      { ...base, local: L, id: 'c1@a', host: 'a', status: 200, ms: 10, text: ok },
+      { ...base, local: L, id: 'c1@b', host: 'b', status: 200, ms: 20, text: 'event: message\ndata: ' + JSON.stringify({ jsonrpc: '2.0', id: 1, result: { structuredContent: { v: 2 } } }) + '\n\n' },
+      { ...base, local: L, id: 'c1@c', host: 'c', status: 0, ms: 5, text: 'fetch failed' },
+      { ...base, combo: 'c2', local: 'X', id: 'c2@a', host: 'a', status: 200, ms: 1, text: ok },
+      { ...base, combo: 'c2', local: 'X', id: 'c2@b', host: 'b', status: 200, ms: 1, text: JSON.stringify({ jsonrpc: '2.0', id: 1, result: { structuredContent: { v: 3 } } }) },
+    ]
+    const r = e2eOf(answers)
+    const d1 = r.decoded.find((d) => d.combo === 'c1')!; const d2 = r.decoded.find((d) => d.combo === 'c2')!
+    check('e2e:corrected-by-majority', d1.outcome === 'corrected' && d1.logical === L && d1.syndrome.join() === 'b,c' && d1.errors.map((e) => e.kind).join() === 'flip,erasure', `c1: ${d1.outcome}, syndrome ${d1.syndrome.join(' ')}`)
+    check('e2e:uncorrectable-without-majority', d2.outcome === 'uncorrectable' && d2.logical === 'none' && r.logicalErrorRate === 0.5, `c2: ${d2.outcome}, logical error rate ${r.logicalErrorRate}`)
+    check('e2e:errors-are-uuid-blocks', r.errors.length === 4 && r.errors.every((e) => /^[0-9a-f-]{36}$/.test(e.uuid)) && e2eOf(answers).errors[0]!.uuid === r.errors[0]!.uuid && !JSON.stringify(r.errors).includes('"v":'), `${r.errors.length} error blocks (the two suspects of an uncorrectable combination count), deterministic uuids, no bodies`)
+    check('e2e:competition-fastest-correct-code-wins', d1.winner === 'tree-reference' && d1.codes.find((c) => c.code === 'tree-reference')!.ms === 10 && d1.codes.find((c) => c.code === 'majority')!.ms === 20 && d1.codes.find((c) => c.code === 'any')!.correct === true && d2.winner === null && d2.possibilities.length === 3 && r.competition.saved === 10, `c1 won by ${d1.winner} at ${d1.codes.find((c) => c.code === d1.winner)?.ms} ms against majority at 20; c2 has ${d2.possibilities.length} possibilities and no winner; ${r.competition.saved} ms saved`)
+    const inv = e2eOf([{ ...base, combo: 'c3', local: 'Z', id: 'c3@a', host: 'a', status: 304, ms: 3, text: '', etag: '"Z"', address: 'c3' }, { ...base, combo: 'c3', local: 'Z', id: 'c3@b', host: 'b', status: 304, ms: 9, text: '', etag: '"Z"', address: 'c3' }]).decoded[0]!
+    const unv = e2eOf([{ ...base, combo: 'c4', local: 'Z', id: 'c4@a', host: 'a', status: 304, ms: 3, text: '', etag: '"Q"', address: 'c4' }]).decoded[0]!
+    check('e2e:teleport-materialised-or-erased', inv.materialised === 2 && unv.outcome === 'erased' && unv.involutions === 0 && unv.errors[0]!.kind === 'erasure', `two 304s with the held hash materialise; a 304 echoing another hash is an erasure`)
+    check('e2e:involution-proves-at-the-edge', inv.outcome === 'agree' && inv.involutions === 2 && inv.winner === 'involution' && inv.codes.find((c) => c.code === 'involution')!.ms === 3 && inv.logical === 'Z', `two 304 copies: ${inv.outcome}, won by ${inv.winner} at 3 ms`)
+    check('e2e:rates-against-textbook', r.physicalErrorRate === 4 / 5 && r.textbookLogical !== null && Math.abs(r.textbookLogical - (3 * 0.64 - 2 * 0.512)) < 1e-12 && r.leads.some((l) => l.id.startsWith('e2e-uncorrectable-')) && r.byHost.c!.erasures === 1, `p=${r.physicalErrorRate}, textbook ${r.textbookLogical}, ${r.leads.length} leads`)
+  }
   return { passed: checks.every((c) => c.passed), checks }
 }

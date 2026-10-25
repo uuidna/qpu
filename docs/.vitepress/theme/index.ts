@@ -10,12 +10,16 @@ import AuraBar from './components/AuraBar.vue'
 import CatchAll from './components/CatchAll.vue'
 import HandleSearch from './components/HandleSearch.vue'
 import Speak from './components/Speak.vue'
+import Mode from './components/Mode.vue'
+import Chat from './components/Chat.vue'
 import type { Theme } from 'vitepress'
 
 export default {
   extends: DefaultTheme,
   Layout,
   enhanceApp({ app }) {
+    // the web OS installs itself: the service worker keeps the shell and every page by content, and the MCP is asked first
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => { /* a browser that refuses is a browser; the pages still render */ }) })
     app.component('Block', Block)
     app.component('Channel', Channel)
     app.component('Verify', Verify)
@@ -24,5 +28,7 @@ export default {
     app.component('CatchAll', CatchAll)
     app.component('HandleSearch', HandleSearch)
     app.component('Speak', Speak)
+    app.component('Mode', Mode)
+    app.component('Chat', Chat)
   },
 } satisfies Theme
