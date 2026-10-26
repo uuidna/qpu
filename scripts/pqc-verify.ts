@@ -17,7 +17,7 @@ export const verifySignaturesAt = async (hosts: readonly string[]): Promise<PqcP
   await Promise.all(hosts.map(async (host) => {
     const t0 = Date.now()
     try {
-      const res = await fetch(/\/mcp$/.test(host) ? host : `${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-e2e (ceccec@psg.bg)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'seal', arguments: { text: 'qpu', sign: 'ML-DSA-65' } } }), signal: AbortSignal.timeout(20000) })
+      const res = await fetch(/\/mcp$/.test(host) ? host : `${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-e2e (https://qpu.uuidna.com)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'seal', arguments: { text: 'qpu', sign: 'ML-DSA-65' } } }), signal: AbortSignal.timeout(20000) })
       const ms = Date.now() - t0
       const body = await res.json() as { result?: { structuredContent?: { sha256: string; signature?: SignaturePlan } } }
       const sc = body.result?.structuredContent

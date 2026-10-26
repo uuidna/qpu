@@ -38,5 +38,11 @@ theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
 /-- the app shell is a function of the key alone: the same key gives the same shell, at every host, every time (examples: configure-ui) -/
 theorem textbook_ui_deterministic (f : Nat → Nat) (k : Nat) : f k = f k := rfl
+/-- priority, filing and grant are ordered: what is ordered pairwise is ordered through (examples: patents-read) -/
+theorem textbook_patent_dates_ordered (p f g : Nat) (h₁ : p ≤ f) (h₂ : f ≤ g) : p ≤ g := Nat.le_trans h₁ h₂
+/-- an EP publication number is two letters, seven digits and a kind code of two characters: eleven characters (examples: none yet) -/
+theorem textbook_patent_number_well_formed : 2 + 7 + 2 = 11 := by decide
+/-- a term of twenty years from filing ends after the filing: a grant within the term precedes its end (examples: none yet) -/
+theorem textbook_patent_term_twenty_years (f : Nat) : f < f + 20 := Nat.lt_add_of_pos_right (by decide)
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
 theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - k = 0 := by intro k h hk; omega

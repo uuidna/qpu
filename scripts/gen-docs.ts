@@ -200,7 +200,7 @@ export default defineConfig({
   buildEnd(siteConfig) {
     writeFileSync('docs/public/site.json', JSON.stringify({ pages: siteConfig.pages.length, built: new Date().toISOString(), license: 'CC-BY-NC-ND-4.0 © Tsvetan Rouschev' }) + '\\n')
   },
-  head: [['link', { rel: 'manifest', href: '/manifest.webmanifest' }], ['meta', { name: 'theme-color', content: 'hsl(72 62% 44%)' }], ['link', { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' }], ['link', { rel: 'apple-touch-icon', href: '/icon.svg' }], ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }], ['meta', { name: 'mobile-web-app-capable', content: 'yes' }], ['link', { rel: 'stylesheet', href: '/uuidna.css' }], ['link', { rel: 'stylesheet', href: '/a432.css' }], ['link', { rel: 'license', href: 'https://uuidna.com/license' }], ['meta', { name: 'license', content: 'CC-BY-NC-ND-4.0' }], ['meta', { name: 'copyright', content: '© 2025 Tsvetan Rouschev (ceccec@psg.bg)' }], ['meta', { property: 'uuidna:rights', content: '459a7ef3-7a8b-8d8e-893a-099292addcd5' }], ['meta', { property: 'uuidna:canonical', content: 'https://uuidna.com' }]],
+  head: [['link', { rel: 'manifest', href: '/manifest.webmanifest' }], ['meta', { name: 'theme-color', content: 'hsl(72 62% 44%)' }], ['link', { rel: 'icon', href: '/icon.svg', type: 'image/svg+xml' }], ['link', { rel: 'apple-touch-icon', href: '/icon.svg' }], ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }], ['meta', { name: 'mobile-web-app-capable', content: 'yes' }], ['link', { rel: 'stylesheet', href: '/uuidna.css' }], ['link', { rel: 'stylesheet', href: '/a432.css' }], ['link', { rel: 'license', href: 'https://uuidna.com/license' }], ['meta', { name: 'license', content: 'CC-BY-NC-ND-4.0' }], ['meta', { name: 'copyright', content: '© 2025 Tsvetan Rouschev (https://qpu.uuidna.com)' }], ['meta', { property: 'uuidna:rights', content: '459a7ef3-7a8b-8d8e-893a-099292addcd5' }], ['meta', { property: 'uuidna:canonical', content: 'https://uuidna.com' }]],
   themeConfig: {
     search: { provider: 'local' },
     outline: 'deep',
@@ -209,7 +209,7 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/uuidna/qpu' }],
     lastUpdated: { text: 'last receipt' },
     externalLinkIcon: true,
-    footer: { message: 'CC-BY-NC-ND-4.0 — attribute the author, no derivatives, commercial use of the QPU framework, over UUID or by any other means, by licence (ceccec@psg.bg); the a432 harmonic default is free to all under attribution.', copyright: '© Tsvetan Rouschev · https://orcid.org/0009-0000-7312-9778' },
+    footer: { message: 'CC-BY-NC-ND-4.0 — attribute the author, no derivatives, commercial use of the QPU framework, over UUID or by any other means, by licence (https://qpu.uuidna.com); the a432 harmonic default is free to all under attribution.', copyright: '© Tsvetan Rouschev · https://orcid.org/0009-0000-7312-9778' },
     nav: ${JSON.stringify(nav, null, 2).replace(/\n/g, '\n    ')},
     sidebar: ${JSON.stringify(sidebar, null, 2).replace(/\n/g, '\n    ')},
   },

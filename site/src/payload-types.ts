@@ -4205,6 +4205,10 @@ export interface PayloadMcpApiKey {
      */
     compete?: boolean | null;
     /**
+     * Every patent API found, wired and measured: plan answers the requests to the open ones (Google Patents' query endpoint, the EPO publication server) and names the keyed ones (PatentsView, USPTO ODP, EPO OPS, Lens: the variable names, never values) and the registry's patent MCPs; read takes the bodies a client fetched, reads the patents (number, dates, assignee, inventor, title) and verifies the theorems over them — the dates ordered, the number well formed for its office, the twenty-year term — naming every violation. Pure: nothing fetched here.
+     */
+    patents?: boolean | null;
+    /**
      * Workspaces, branches, tags and releases watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.
      */
     repository?: boolean | null;
@@ -4382,6 +4386,10 @@ export interface PayloadMcpApiKey {
      * the MCP Apps view of compete: renders the widget the tool computes
      */
     uiCompete?: boolean | null;
+    /**
+     * the MCP Apps view of patents: renders the widget the tool computes
+     */
+    uiPatents?: boolean | null;
     /**
      * the MCP Apps view of repository: renders the widget the tool computes
      */
@@ -5588,6 +5596,7 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         currency?: T;
         legal?: T;
         compete?: T;
+        patents?: T;
         repository?: T;
         jsonld?: T;
         codes?: T;
@@ -5636,6 +5645,7 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         uiCurrency?: T;
         uiLegal?: T;
         uiCompete?: T;
+        uiPatents?: T;
         uiRepository?: T;
         uiJsonld?: T;
         uiCodes?: T;

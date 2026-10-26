@@ -19,7 +19,7 @@ const main = async () => {
   const plan = call({ op: 'plan' })
   const answers = await Promise.all((plan.requests as { source: string; url: string; accept: string }[]).map(async (r) => {
     const t0 = Date.now()
-    try { const res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': 'uuidna-qpu-verify (ceccec@psg.bg)' /* the wave's agent: the BNB's gateway answers an error page to an agent naming currency (measured 2026-10-26) */ }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); return { source: r.source, status: res.status, ms: Date.now() - t0, text: await res.text() } }
+    try { const res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': 'uuidna-qpu-verify (https://qpu.uuidna.com)' /* the wave's agent: the BNB's gateway answers an error page to an agent naming currency (measured 2026-10-26) */ }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); return { source: r.source, status: res.status, ms: Date.now() - t0, text: await res.text() } }
     catch (e) { return { source: r.source, status: 0, ms: Date.now() - t0, text: `fetch failed: ${(e as Error).message}` } }
   }))
   const amounts = Object.fromEntries(CATALOGUE.map((v) => [`${v.product}-${v.variant}`, v.amounts.eur ?? 0]))

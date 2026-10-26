@@ -1,0 +1,117 @@
+{
+ "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
+ "date": "2026-10-26T08:58:59.685Z",
+ "ms": 593,
+ "selftest": {
+  "passed": true
+ },
+ "fetched": [
+  {
+   "id": "patents:google:quantum error correction",
+   "status": 503,
+   "ms": 540,
+   "bytes": 1103
+  },
+  {
+   "id": "patents:epo-dates",
+   "status": 200,
+   "ms": 342,
+   "bytes": 222227
+  }
+ ],
+ "apis": [
+  {
+   "id": "google-patents",
+   "name": "Google Patents (the query endpoint its site uses)",
+   "url": "https://patents.google.com/xhr/query?url=q%3D<query>%26num%3D10",
+   "open": true,
+   "key": null,
+   "measured": "HTTP 200 JSON behind a )]}' prefix: total_num_results, clusters of results with publication_number, priority_date, filing_date, publication_date, grant_date, inventor, assignee, title, snippet (200 158 results for \"quantum error correction\"); a burst of queries is answered 503 (measured after five in a minute), so a client asks one question a run",
+   "format": "google-xhr"
+  },
+  {
+   "id": "epo-publication-server",
+   "name": "EPO publication server REST (publication dates)",
+   "url": "https://data.epo.org/publication-server/rest/v1.2/publication-dates",
+   "open": true,
+   "key": null,
+   "measured": "HTTP 200 HTML (222 KB) listing the publication dates; accept application/json answers 400 (code 9000)",
+   "format": "epo-dates-html"
+  },
+  {
+   "id": "patentsview",
+   "name": "PatentsView PatentSearch API (USPTO)",
+   "url": "https://search.patentsview.org/api/v1/patent/?q=<query>",
+   "open": false,
+   "key": "PATENTSVIEW_API_KEY (X-Api-Key; free)",
+   "measured": "no answer within 25 s on 2026-10-26 (the legacy api.patentsview.org answers 301 to it)",
+   "format": "json"
+  },
+  {
+   "id": "uspto-odp",
+   "name": "USPTO Open Data Portal API",
+   "url": "https://api.uspto.gov/api/v1/patent/applications/search?q=<query>",
+   "open": false,
+   "key": "USPTO_ODP_API_KEY (free, per account)",
+   "measured": "HTTP 401 without a key",
+   "format": "json"
+  },
+  {
+   "id": "epo-ops",
+   "name": "EPO Open Patent Services (OPS) 3.2",
+   "url": "https://ops.epo.org/3.2/rest-services/published-data/publication/epodoc/<number>/biblio",
+   "open": false,
+   "key": "EPO_OPS_KEY and EPO_OPS_SECRET (OAuth client credentials; free quota)",
+   "measured": "HTTP 403 XML without a token",
+   "format": "xml"
+  },
+  {
+   "id": "lens",
+   "name": "Lens.org patent API",
+   "url": "https://api.lens.org/patent/search",
+   "open": false,
+   "key": "LENS_API_TOKEN",
+   "measured": "HTTP 401 JSON without a token",
+   "format": "json"
+  },
+  {
+   "id": "wipo-patentscope",
+   "name": "WIPO PATENTSCOPE",
+   "url": "https://patentscope.wipo.int/search/en/detail.jsf?docId=<number>",
+   "open": false,
+   "key": "a browser session (its gateway answers 403 to an automated read)",
+   "measured": "HTTP 403 HTML",
+   "format": "json"
+  }
+ ],
+ "relatedMcps": [
+  "ai.findip/patent-search",
+  "ai.g62/patent-search",
+  "ai.patentdata/patent-data",
+  "com.goveda/patent-mcp",
+  "com.unfoldip/patent-search",
+  "dev.patent/patent",
+  "io.github.FoundryNet/patent-intel-mcp",
+  "io.github.guptaprakhariitr/uspto-patents-mcp",
+  "io.github.pipeworx-io/patents",
+  "io.github.pipeworx-io/uspto-ptab",
+  "com.thenextgennexus/patents-trademarks-ip-mcp-server"
+ ],
+ "op": "read",
+ "queries": [
+  {
+   "query": "quantum error correction",
+   "error": "Unexpected token '<', \"<html><hea\"... is not valid JSON"
+  }
+ ],
+ "patents": [],
+ "offices": {},
+ "epoPublicationDates": 0,
+ "theorems": {
+  "checked": 0,
+  "passed": 0,
+  "violations": [],
+  "byTheorem": {}
+ },
+ "says": "0 patent(s) read from 1 query; 0 theorem checks, 0 violation(s); 0 EPO publication dates listed"
+}

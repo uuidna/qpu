@@ -29,11 +29,11 @@ const main = async () => {
   if (!offline) {
     await Promise.all(COMPETITIONS.map(async (c) => {
       const t0 = Date.now()
-      try { const res = await fetch(c.rules, { headers: { accept: 'text/html', 'user-agent': 'Mozilla/5.0 (uuidna-qpu-verify ceccec@psg.bg)' }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); const text = await res.text(); fetched.push({ id: c.id, status: res.status, ms: Date.now() - t0, bytes: text.length }); if (res.ok) pages[c.id] = strip(text) }
+      try { const res = await fetch(c.rules, { headers: { accept: 'text/html', 'user-agent': 'Mozilla/5.0 (uuidna-qpu-verify +https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); const text = await res.text(); fetched.push({ id: c.id, status: res.status, ms: Date.now() - t0, bytes: text.length }); if (res.ok) pages[c.id] = strip(text) }
       catch (e) { fetched.push({ id: c.id, status: 0, ms: Date.now() - t0, bytes: 0 }) }
     }))
     // pushed: the remote's main is the local head, asked of GitHub (the repository toolbox's door, read here)
-    try { const res = await fetch('https://api.github.com/repos/uuidna/qpu/commits/main', { headers: { accept: 'application/vnd.github+json', 'user-agent': 'uuidna-qpu-verify (ceccec@psg.bg)' }, signal: AbortSignal.timeout(20000) }); if (res.ok) { const j = await res.json() as { sha?: string }; pushed = !!j.sha && j.sha === head } }
+    try { const res = await fetch('https://api.github.com/repos/uuidna/qpu/commits/main', { headers: { accept: 'application/vnd.github+json', 'user-agent': 'uuidna-qpu-verify (https://qpu.uuidna.com)' }, signal: AbortSignal.timeout(20000) }); if (res.ok) { const j = await res.json() as { sha?: string }; pushed = !!j.sha && j.sha === head } }
     catch { /* unreached: pushed unknown */ }
   }
   const r = call({ pages, now: Date.now(), pushed: pushed === true, published: false, hosts: 3 })

@@ -22,7 +22,7 @@ const main = async () => {
   const e2eNow = readJson('e2e.json') as { copies?: number; involutions?: number } | null
   if (process.env.QPU_OFFLINE !== '1' && e2eNow?.copies) {
     try {
-      const res = await fetch(process.env.UUIDNA_MCP ?? 'https://uuidna.com/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', 'user-agent': 'uuidna-qpu-metrics (ceccec@psg.bg)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'bill_call', arguments: { commercial: false, recomputeOps: e2eNow.copies, verifyOps: e2eNow.involutions ?? 0 } } }), signal: AbortSignal.timeout(20000) })
+      const res = await fetch(process.env.UUIDNA_MCP ?? 'https://uuidna.com/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', 'user-agent': 'uuidna-qpu-metrics (https://qpu.uuidna.com)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'bill_call', arguments: { commercial: false, recomputeOps: e2eNow.copies, verifyOps: e2eNow.involutions ?? 0 } } }), signal: AbortSignal.timeout(20000) })
       const text = await res.text(); const data = /^(event|data):/m.test(text) ? (text.split('\n').filter((l) => l.startsWith('data:')).map((l) => l.slice(5).trim()).find((l) => l.startsWith('{')) ?? text) : text
       const j = JSON.parse(data) as { result?: { structuredContent?: unknown; content?: { text: string }[] } }
       const body = j.result?.structuredContent ?? (j.result?.content?.[0] ? JSON.parse(j.result.content[0].text) : null)

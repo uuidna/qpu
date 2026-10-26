@@ -9,15 +9,15 @@ export const LICENSE = {
   address: '9ffcda04-5adc-872e-9358-6b831bbd0c0d',
   imprint: '459a7ef3-7a8b-8d8e-893a-099292addcd5',
   canonical: 'https://uuidna.com',
-  copyright: '© 2025 Tsvetan Rouschev (ceccec@psg.bg)',
+  copyright: '© 2025 Tsvetan Rouschev (https://orcid.org/0009-0000-7312-9778)',
   representation: 'uuidna is represented by https://uuidna.com only; no handle or profile elsewhere speaks for the work unless licensed in writing by the author.',
   disclaimer: 'Recomputable facts, not legal advice: the inputs a qualified attorney starts from, never the conclusion.',
   author: 'Tsvetan Rouschev',
   orcid: 'https://orcid.org/0009-0000-7312-9778',
-  contact: 'ceccec@psg.bg',
+  contact: 'https://qpu.uuidna.com (the author, through the site; no address is kept in the tree: the deployer\'s is read from the Cloudflare account at build and deploy)',
   work: '@uuidna/qpu',
   attribution: 'Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)',
-  terms: 'Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (ceccec@psg.bg). The a432 harmonic default is offered for free benefit under attribution.',
+  terms: 'Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (https://qpu.uuidna.com). The a432 harmonic default is offered for free benefit under attribution.',
 } as const
 
 /** The MCP `instructions` every client receives at initialize. */

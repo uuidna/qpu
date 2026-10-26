@@ -27,7 +27,7 @@ const sign = async () => {
   if (process.env.QPU_OFFLINE === "1") return "unsigned (offline)"
   const message = `${body}\n\n${trailers.slice(0, 2).join("\n")}\nBacked by theorem ${THEOREMS[0]} and theorem ${THEOREMS[1]}.`
   try {
-    const res = await fetch(process.env.UUIDNA_MCP ?? "https://uuidna.com/mcp", { method: "POST", headers: { "content-type": "application/json", accept: "application/json", "user-agent": "uuidna-qpu-hook (ceccec@psg.bg)" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "sign_commit", arguments: { message, theorems: THEOREMS } } }), signal: AbortSignal.timeout(20000) })
+    const res = await fetch(process.env.UUIDNA_MCP ?? "https://uuidna.com/mcp", { method: "POST", headers: { "content-type": "application/json", accept: "application/json", "user-agent": "uuidna-qpu-hook (https://qpu.uuidna.com)" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "sign_commit", arguments: { message, theorems: THEOREMS } } }), signal: AbortSignal.timeout(20000) })
     if (!res.ok) return `unsigned (the hosted door answered HTTP ${res.status}; lead gap-sign-door-hosted)`
     const j = await res.json(); const out = j.result?.structuredContent ?? (j.result?.content?.[0] ? JSON.parse(j.result.content[0].text) : null)
     if (!out) return `unsigned (${j.error?.message ?? "no answer"})`

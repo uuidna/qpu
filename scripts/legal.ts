@@ -16,7 +16,7 @@ const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrp
 const text = (f: string) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT, f), 'utf8') : undefined)
 const readJson = (f: string) => { const t = text(f); return t ? JSON.parse(t) : undefined }
 const rpc = async (url: string, name: string, args: unknown): Promise<unknown> => {
-  const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-legal (ceccec@psg.bg)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
+  const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-legal (https://qpu.uuidna.com)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
   if (res.status !== 200) throw new Error(`HTTP ${res.status}`)
   const body = await res.json() as { result?: { structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
   account(name, body)

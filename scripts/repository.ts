@@ -34,7 +34,7 @@ const main = async () => {
   const plan = call({ local, contracts, via })
   const answers: unknown[] = []
   if (!offline) for (const r of plan.requestList as { id: string; url: string; purpose: string; contracted: string }[]) {
-    try { const mcp = (r as { via?: string }).via === 'mcp'; const res = await fetch(r.url, { method: mcp ? 'POST' : 'GET', headers: { accept: mcp ? 'application/json, text/event-stream' : 'application/vnd.github+json, application/json', 'user-agent': 'uuidna-qpu-next (ceccec@psg.bg)', ...(mcp ? { 'content-type': 'application/json', authorization: `Bearer ${githubToken}` } : {}) }, body: mcp ? JSON.stringify((r as { body?: unknown }).body) : undefined, signal: AbortSignal.timeout(30000) }); answers.push({ ...r, status: res.status, text: await res.text() }) }
+    try { const mcp = (r as { via?: string }).via === 'mcp'; const res = await fetch(r.url, { method: mcp ? 'POST' : 'GET', headers: { accept: mcp ? 'application/json, text/event-stream' : 'application/vnd.github+json, application/json', 'user-agent': 'uuidna-qpu-next (https://qpu.uuidna.com)', ...(mcp ? { 'content-type': 'application/json', authorization: `Bearer ${githubToken}` } : {}) }, body: mcp ? JSON.stringify((r as { body?: unknown }).body) : undefined, signal: AbortSignal.timeout(30000) }); answers.push({ ...r, status: res.status, text: await res.text() }) }
     catch (e) { answers.push({ ...r, status: 0, text: `fetch failed: ${(e as Error).message}` }) }
   }
   const w = call({ local, contracts, answers })

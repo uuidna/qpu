@@ -1,3 +1,6 @@
+import { WatchTenantCollection as WatchTenantCollection_1d0591e3cf4f332c83a86da13a0de59a } from '@payloadcms/plugin-multi-tenant/client'
+import { TenantField as TenantField_1d0591e3cf4f332c83a86da13a0de59a } from '@payloadcms/plugin-multi-tenant/client'
+import { AssignTenantFieldTrigger as AssignTenantFieldTrigger_1d0591e3cf4f332c83a86da13a0de59a } from '@payloadcms/plugin-multi-tenant/client'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -36,12 +39,19 @@ import { codeTabsConverterClient as codeTabsConverterClient_6f1ac6e923df77f95b77
 import { SaveButtonClient as SaveButtonClient_259d8f559cb11a4167281a913f510f62 } from '@root/collections/Docs/SaveButton'
 import { BranchButton as BranchButton_a056620e50cdeec34262a2e060477165 } from '@root/collections/Docs/BranchButton'
 import { Label as Label_087cde4d1fde05040831b5843a5fb654 } from '@root/fields/addToDocs/Label'
+import { VariantOptionsSelector as VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb } from '@payloadcms/plugin-ecommerce/rsc'
+import { PriceCell as PriceCell_e27bf7b8cc50640dcdd584767b8eac3c } from '@payloadcms/plugin-ecommerce/client'
+import { PriceInput as PriceInput_b91672ccd6e8b071c11142ab941fedfb } from '@payloadcms/plugin-ecommerce/rsc'
+import { LinkToDoc as LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
+import { ReindexButton as ReindexButton_aead06e4cbf6b2620c5c51c9ab283634 } from '@payloadcms/plugin-search/client'
 import { default as default_7855b44454994335ecfbd19f80d2bb90 } from '@root/globals/CustomRowLabelNavItems'
 import { default as default_7b4b356d4f495796f5ea32368107862c } from '@root/globals/CustomRowLabelTabs'
 import { BlogMarkdownField as BlogMarkdownField_a0e4da4b38919785352cf36efa721675 } from '@root/blocks/BlogMarkdown/Field'
 import { default as default_26726ff2b18133c6c2dab451ecac5a3e } from '@root/components/TableCheckboxField'
 import { default as default_3ee709fabb34ea93648b8fdb9ee7323a } from '@root/components/AfterNavActions'
 import { default as default_b8668daa8bdf783ddeca7def5b7c2324 } from '@root/components/BeforeDashboard'
+import { TenantSelector as TenantSelector_d6d5f193a167989e2ee7d14202901e62 } from '@payloadcms/plugin-multi-tenant/rsc'
+import { TenantSelectionProvider as TenantSelectionProvider_d6d5f193a167989e2ee7d14202901e62 } from '@payloadcms/plugin-multi-tenant/rsc'
 import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
 import { default as default_e229387af5e21bff3f46f156f2efb24b } from '@zubricks/plugin-google-analytics/widgets/AnalyticsMetricsWrapper'
 import { default as default_83d03cf47a3921584b5f60548f0203e7 } from '@zubricks/plugin-google-analytics/widgets/AnalyticsTopPagesWrapper'
@@ -51,6 +61,9 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 
 /** @type import('payload').ImportMap */
 export const importMap = {
+  "@payloadcms/plugin-multi-tenant/client#WatchTenantCollection": WatchTenantCollection_1d0591e3cf4f332c83a86da13a0de59a,
+  "@payloadcms/plugin-multi-tenant/client#TenantField": TenantField_1d0591e3cf4f332c83a86da13a0de59a,
+  "@payloadcms/plugin-multi-tenant/client#AssignTenantFieldTrigger": AssignTenantFieldTrigger_1d0591e3cf4f332c83a86da13a0de59a,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -89,12 +102,19 @@ export const importMap = {
   "@root/collections/Docs/SaveButton#SaveButtonClient": SaveButtonClient_259d8f559cb11a4167281a913f510f62,
   "@root/collections/Docs/BranchButton#BranchButton": BranchButton_a056620e50cdeec34262a2e060477165,
   "@root/fields/addToDocs/Label#Label": Label_087cde4d1fde05040831b5843a5fb654,
+  "@payloadcms/plugin-ecommerce/rsc#VariantOptionsSelector": VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb,
+  "@payloadcms/plugin-ecommerce/client#PriceCell": PriceCell_e27bf7b8cc50640dcdd584767b8eac3c,
+  "@payloadcms/plugin-ecommerce/rsc#PriceInput": PriceInput_b91672ccd6e8b071c11142ab941fedfb,
+  "@payloadcms/plugin-search/client#LinkToDoc": LinkToDoc_aead06e4cbf6b2620c5c51c9ab283634,
+  "@payloadcms/plugin-search/client#ReindexButton": ReindexButton_aead06e4cbf6b2620c5c51c9ab283634,
   "@root/globals/CustomRowLabelNavItems#default": default_7855b44454994335ecfbd19f80d2bb90,
   "@root/globals/CustomRowLabelTabs#default": default_7b4b356d4f495796f5ea32368107862c,
   "@root/blocks/BlogMarkdown/Field#BlogMarkdownField": BlogMarkdownField_a0e4da4b38919785352cf36efa721675,
   "@root/components/TableCheckboxField#default": default_26726ff2b18133c6c2dab451ecac5a3e,
   "@root/components/AfterNavActions#default": default_3ee709fabb34ea93648b8fdb9ee7323a,
   "@root/components/BeforeDashboard#default": default_b8668daa8bdf783ddeca7def5b7c2324,
+  "@payloadcms/plugin-multi-tenant/rsc#TenantSelector": TenantSelector_d6d5f193a167989e2ee7d14202901e62,
+  "@payloadcms/plugin-multi-tenant/rsc#TenantSelectionProvider": TenantSelectionProvider_d6d5f193a167989e2ee7d14202901e62,
   "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e,
   "@zubricks/plugin-google-analytics/widgets/AnalyticsMetricsWrapper#default": default_e229387af5e21bff3f46f156f2efb24b,
   "@zubricks/plugin-google-analytics/widgets/AnalyticsTopPagesWrapper#default": default_83d03cf47a3921584b5f60548f0203e7,

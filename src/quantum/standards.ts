@@ -29,6 +29,8 @@ export const STANDARDS: readonly { id: string; name: string; contract: string; k
   { id: 'xprize-quantum-applications', name: 'XPRIZE Quantum Applications (Google Quantum AI)', contract: 'https://www.xprize.org/prizes/qc-apps', kind: 'reference' },
   { id: 'vercel-open-source-program', name: 'Vercel Open Source Program', contract: 'https://vercel.com/open-source-program', kind: 'reference' },
   { id: 'github-accelerator', name: 'GitHub Accelerator and maintainer programs', contract: 'https://github.com/accelerator', kind: 'reference' },
+  { id: 'google-patents', name: 'Google Patents, the query endpoint its site uses (JSON behind a prefix)', contract: 'https://patents.google.com/xhr/query?url=q%3Dquantum%2Berror%2Bcorrection%26num%3D1', kind: 'reference' },
+  { id: 'epo-publication-server', name: 'EPO publication server REST, the publication dates', contract: 'https://data.epo.org/publication-server/rest/v1.2/publication-dates', kind: 'reference' },
   { id: 'payload-skills', name: 'payloadcms/skills, Payload\'s skills for AI agents (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/skills/git/trees/main?recursive=1', kind: 'reference' },
   { id: 'schema-org', name: 'schema.org vocabulary (JSON-LD)', contract: 'https://schema.org/version/latest/schemaorg-current-https.jsonld', kind: 'vocabulary' },
   { id: 'cldr-languages', name: 'Unicode CLDR language names (ISO 639)', contract: 'https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/cldr-localenames-full/main/en/languages.json', kind: 'codes' },

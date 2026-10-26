@@ -19,7 +19,7 @@ const account = (door: string, body: unknown) => { const d = depositOf(door, bod
 const UNIT = process.env.UUIDNA_MCP ?? 'https://uuidna.com/mcp'
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'readiness', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
 const rpc = async (url: string, name: string, args: unknown): Promise<any> => {
-  const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-next (ceccec@psg.bg)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
+  const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-next (https://qpu.uuidna.com)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
   if (res.status !== 200) throw new Error(`HTTP ${res.status}`)
   const body = await res.json() as { result?: { structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
   account(name, body)

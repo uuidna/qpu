@@ -5,6 +5,7 @@ import type { Example } from './examples.js'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 import { THEOREMS, THEOREM_KEYS } from './theorems-index.js'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 
 export type Check = { id: string; passed: boolean; evidence: string; /** milliseconds since the previous check: where the audit's time goes */ ms?: number }
 export type Audit = { /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
@@ -79,7 +80,9 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     }
   }
   const backed = examples.filter((e) => e.theorem)
-  for (const e of backed) check(`theorem-exists:${e.id}`, THEOREM_KEYS.has(e.theorem!), THEOREM_KEYS.has(e.theorem!) ? `${e.theorem} is kernel-accepted (${THEOREMS.find((t) => t.key === e.theorem)?.statement.slice(0, 80)})` : `${e.theorem} is not among the ${THEOREMS.length} hand-written theorems the kernel accepted: a fabricated citation`)
+  // a theorem of the textbook table is kernel-checked by the lean step of the same run and enters the kernel index one run later (purify): the table counts as declared, measured as the cause of every first-attempt failure after a theorem was added
+  const declared = (key: string) => THEOREM_KEYS.has(key) || TEXTBOOK_THEOREMS.some((t) => t.key === key)
+  for (const e of backed) check(`theorem-exists:${e.id}`, declared(e.theorem!), THEOREM_KEYS.has(e.theorem!) ? `${e.theorem} is kernel-accepted (${THEOREMS.find((t) => t.key === e.theorem)?.statement.slice(0, 80)})` : TEXTBOOK_THEOREMS.some((t) => t.key === e.theorem) ? `${e.theorem} is declared in the textbook table (${TEXTBOOK_THEOREMS.find((t) => t.key === e.theorem)!.says}); the kernel index records it after this run's lean step` : `${e.theorem} is not among the ${THEOREMS.length} hand-written theorems the kernel accepted: a fabricated citation`)
   check('examples-backed-by-theorems', true, `${backed.length} of ${examples.length} examples name the theorem that makes them true (${backed.map((e) => `${e.id}→${e.theorem}`).join(', ') || 'none'}); the rest are the textbook, respected, each a lead for a theorem`)
   const ids = new Set<string>()
   const dup = examples.filter((e) => (ids.has(e.id) ? true : (ids.add(e.id), false))).map((e) => e.id)

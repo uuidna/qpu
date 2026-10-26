@@ -78,7 +78,7 @@ the legal and security audit of this MCP through MCP: the author's claims judged
 
 **Tests itself:** server only: claims from fixture metadata, security checks on fixture sources, the plan, the audit of fixture answers; client → server: the texts come from the tree, the answers from the doors; toolbox → toolbox: the doors come from discovery; the claims include every perspective lead; the licence module is the measure of drift.
 
-Tools: [legal](#legal), [compete](#compete).
+Tools: [legal](#legal), [compete](#compete), [patents](#patents).
 
 ## Toolbox `repository`
 
@@ -1778,6 +1778,60 @@ The competitions with prizes and funding, their rules read at the source and jud
     },
     "hosts": {
       "type": "integer"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## patents
+
+Every patent API found, wired and measured: plan answers the requests to the open ones (Google Patents' query endpoint, the EPO publication server) and names the keyed ones (PatentsView, USPTO ODP, EPO OPS, Lens: the variable names, never values) and the registry's patent MCPs; read takes the bodies a client fetched, reads the patents (number, dates, assignee, inventor, title) and verifies the theorems over them — the dates ordered, the number well formed for its office, the twenty-year term — naming every violation. Pure: nothing fetched here.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "op": {
+      "type": "string",
+      "enum": [
+        "plan",
+        "read"
+      ]
+    },
+    "query": {
+      "type": "string",
+      "description": "the search, e.g. quantum error correction"
+    },
+    "queries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
     },
     "selftest": {
       "type": "boolean"

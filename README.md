@@ -18,18 +18,18 @@ Every figure below was measured on this tree on 2026-10-26 with the commands in 
 
 | Measure | Value |
 |---|---:|
-| Tracked files | 1573 |
-| Source files under `src/quantum` (TypeScript) | 41 (8,667 lines) |
-| MCP tools | 44 |
+| Tracked files | 1577 |
+| Source files under `src/quantum` (TypeScript) | 41 (8,681 lines) |
+| MCP tools | 45 |
 | Tests (`node --test`) | 154 pass, 0 fail of 154 |
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 499 / 1002 (500 hand-written, 502 generated equation lemmas) |
+| Theorems declared / accepted by the kernel | 502 / 1005 (503 hand-written, 502 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
-| Self-audit checks | 838 of 838 pass |
-| Cross-verification requests (free public sources) | 2815 requests, 2770 reachable on 2026-10-26 |
+| Self-audit checks | 853 of 853 pass |
+| Cross-verification requests (free public sources) | 2821 requests, 2777 reachable on 2026-10-26 |
 | Servers, workers, network calls in the handler | 0 |
 
 ## 1. What the tree contains
@@ -157,7 +157,7 @@ Why this licence, in the author's words: the QPU is the framework of the UUID fr
 program unlocked by the harmonic default a432 (the key 432, from which the stylesheet and each block's accent derive),
 proven and verified across its dimensions by the client's own MCP verification calls on live public APIs and datasets.
 Anyone benefits freely from the a432 harmonics under attribution; the use of the QPU quantum framework, over UUID or by any
-other means, in commerce is licensed by the author on request (ceccec@psg.bg).
+other means, in commerce is licensed by the author on request (https://qpu.uuidna.com).
 
 Canonical licence: https://uuidna.com/license (content address 9ffcda04-5adc-872e-9358-6b831bbd0c0d, imprint
 459a7ef3-7a8b-8d8e-893a-099292addcd5, read from the uuidna MCP `get_rights` door on 2026-10-25). The unit's legal facts

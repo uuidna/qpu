@@ -2,9 +2,11 @@ import type { CollectionConfig } from 'payload'
 
 import { isAdmin, isAdminFieldLevel } from '../access/isAdmin'
 import { isAdminOrSelf, isAdminOrSelfFieldLevel } from '../access/isAdminOrSelf'
+import { firstUserBootstrap } from './users.qpu.hooks'
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  hooks: { beforeChange: [firstUserBootstrap] }, // the first user is the super admin and the first tenant is the request host (generated hook)
   access: {
     create: isAdmin,
     delete: isAdminOrSelf,

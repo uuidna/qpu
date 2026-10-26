@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T08:44:20.415Z",
- "ms": 67,
+ "date": "2026-10-26T09:09:08.034Z",
+ "ms": 70,
  "selftest": {
   "passed": true
  },
@@ -30,18 +30,18 @@
  "drift": 0,
  "experience": {
   "measured": {
-   "copies": 600,
-   "involutions": 552,
+   "copies": 615,
+   "involutions": 495,
    "msByHost": {
-    "qpu.uuidna.com": 55,
-    "qpu.psg.bg": 53,
-    "qpu.ceci.workers.dev": 59
+    "qpu.uuidna.com": 50,
+    "qpu.ceci.workers.dev": 57,
+    "qpu.psg.bg": 53
    }
   },
-  "freeShare": 92,
-  "slowestMedianMs": 59,
-  "shardSize": 16,
-  "says": "92% of the gate's copies answered free (304 by involution); the slowest host answers in 59 ms, so a batch is sharded to 16 calls a shard to stay within a second"
+  "freeShare": 80,
+  "slowestMedianMs": 57,
+  "shardSize": 17,
+  "says": "80% of the gate's copies answered free (304 by involution); the slowest host answers in 57 ms, so a batch is sharded to 17 calls a shard to stay within a second"
  },
  "configs": [
   {
@@ -107,13 +107,13 @@
   {
    "kind": "mcp",
    "torus": {
-    "address": "d60919c9-c4c9-536e-a77f-b88eea0bd9af",
-    "seed": 4,
-    "reflection": 6,
+    "address": "dff627d6-8952-4417-b65f-a7deca4afabf",
+    "seed": 2,
+    "reflection": 8,
     "trinity": [
-     7,
-     4,
-     1
+     2,
+     5,
+     8
     ],
     "closed": true,
     "bytes": 669
@@ -122,16 +122,16 @@
   {
    "kind": "versions",
    "torus": {
-    "address": "87d227f6-4cc4-7603-af07-49eecbea212c",
-    "seed": 8,
-    "reflection": 2,
+    "address": "c7b598ff-7223-8c1f-864a-0eac2e8752b1",
+    "seed": 6,
+    "reflection": 4,
     "trinity": [
-     2,
-     5,
-     8
+     3,
+     6,
+     9
     ],
     "closed": true,
-    "bytes": 138612
+    "bytes": 138600
    }
   },
   {
@@ -152,31 +152,31 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "12e5483b-9f91-39dc-8961-bec6866b9108",
-    "seed": 8,
-    "reflection": 2,
+    "address": "3a8c3f98-f11a-2484-b087-65ba671c1d07",
+    "seed": 7,
+    "reflection": 3,
     "trinity": [
-     2,
-     5,
-     8
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 38877
+    "bytes": 42372
    }
   },
   {
    "kind": "api",
    "torus": {
-    "address": "59c30e9e-4655-2e9b-b56b-f8c72df60b4b",
-    "seed": 3,
-    "reflection": 7,
+    "address": "e403c284-5246-4861-8f92-8a3253560d52",
+    "seed": 1,
+    "reflection": 9,
     "trinity": [
-     3,
-     6,
-     9
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 15905
+    "bytes": 16079
    }
   },
   {
@@ -212,16 +212,16 @@
   {
    "kind": "scopes",
    "torus": {
-    "address": "ff544f8a-6757-7270-9ee7-f4df488b4080",
-    "seed": 2,
-    "reflection": 8,
+    "address": "4257cba8-2b14-3040-af0f-34f8a6a6d847",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 1387
+    "bytes": 1918
    }
   },
   {
@@ -272,13 +272,13 @@
   {
    "kind": "actions",
    "torus": {
-    "address": "ed1dca9d-37af-2a25-ae47-48994ce02ddf",
-    "seed": 7,
-    "reflection": 3,
+    "address": "6832ab09-ce4d-1c6c-8e9d-2df77fa1b314",
+    "seed": 2,
+    "reflection": 8,
     "trinity": [
-     7,
-     4,
-     1
+     2,
+     5,
+     8
     ],
     "closed": true,
     "bytes": 1206

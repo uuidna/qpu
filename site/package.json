@@ -9,7 +9,7 @@
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:llms": "payload run src/scripts/generateLLMs.ts",
-    "build": "pnpm generate:preview-styles && pnpm generate:llms && pnpm payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build --webpack",
+    "build": "pnpm payload generate:importmap && pnpm generate:preview-styles && pnpm generate:llms && pnpm payload migrate && cross-env NODE_OPTIONS=--no-deprecation next build --webpack",
     "build:skipDocs": "pnpm generate:preview-styles && cross-env NODE_OPTIONS=--no-deprecation next build --webpack",
     "postbuild": "next-sitemap --config ./next-sitemap.config.cjs",
     "analyze": "ANALYZE=true next build --webpack",

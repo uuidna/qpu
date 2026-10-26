@@ -24,7 +24,7 @@ const main = async () => {
   const answers: E2eAnswer[] = []
   const one = async (r: E2eRequest) => {
     const t0 = Date.now()
-    try { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: r.accept, 'user-agent': 'uuidna-qpu-e2e (ceccec@psg.bg)', ...(r.headers ?? {}) }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(20000) }); answers.push({ ...r, status: res.status, ms: Date.now() - t0, text: await res.text(), etag: res.headers.get('etag'), address: res.headers.get('x-qpu-address'), version: res.headers.get('x-qpu-version') }) }
+    try { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: r.accept, 'user-agent': 'uuidna-qpu-e2e (https://qpu.uuidna.com)', ...(r.headers ?? {}) }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(20000) }); answers.push({ ...r, status: res.status, ms: Date.now() - t0, text: await res.text(), etag: res.headers.get('etag'), address: res.headers.get('x-qpu-address'), version: res.headers.get('x-qpu-version') }) }
     catch (e) { answers.push({ ...r, status: 0, ms: Date.now() - t0, text: `fetch failed: ${(e as Error).message}` }) }
   }
   const inFlight = new Set<Promise<void>>()

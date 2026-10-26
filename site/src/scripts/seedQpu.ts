@@ -2,6 +2,8 @@
 // Added to the MIT fork of payloadcms/website (Copyright (c) 2023 Payload); this file is QPU's: see NOTICE.qpu.md.
 // The site seeded from the one content source: every document payload { site: true } lays out, created as a page of the app through
 // Payload's local API; a page already there (by slug) is left as it is. Run with: pnpm payload run src/scripts/seedQpu.ts
+import { execSync } from 'node:child_process'
+import { randomUUID } from 'node:crypto'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { handle } from '@uuidna/qpu/mcp'
@@ -20,6 +22,14 @@ const main = async () => {
   }
   const tenant = (await payload.find({ collection: 'tenants' as never, where: { slug: { equals: Object.keys(tenants)[0] } }, limit: 1, overrideAccess: true })).docs[0] as { id: string } | undefined
   if (!tenant) throw new Error('no tenant to scope the documents to')
+  // the first user from the deployer's account: a deploy creates it (no create-first-user form), its password unknown to everyone — the admin sets one through
+  // the panel's reset (forgot password) with the mail the app sends; the email from FIRST_USER_EMAIL, else CLOUDFLARE_EMAIL, else wrangler whoami; none: the form stands
+  let firstUser = 'none'
+  if (!(await payload.count({ collection: 'users', overrideAccess: true })).totalDocs) {
+    const email = process.env.FIRST_USER_EMAIL ?? process.env.CLOUDFLARE_EMAIL ?? (() => { try { return /associated with the email ([^\s]+@[^\s]+?)[.,;]?(?:\s|$)/.exec(execSync('npx wrangler whoami', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).replace(/\u001b\[[0-9;]*m/g, ''))?.[1] ?? null } catch { return null } })()
+    if (email) { await payload.create({ collection: 'users', overrideAccess: true, context: { disableRevalidate: true }, data: { email, password: randomUUID() + randomUUID(), firstName: 'Super', lastName: 'Admin', roles: ['admin'], enableAPIKey: false, tenants: [{ tenant: tenant.id, roles: ['tenant-admin'] }] } as never }); firstUser = 'created from the account email (its password unknown: reset it through the admin panel)' }
+    else firstUser = 'no account email known (FIRST_USER_EMAIL, CLOUDFLARE_EMAIL, wrangler whoami): the create-first-user form of the admin panel stands'
+  } else firstUser = 'a user exists already'
   let created = 0, kept = 0, updated = 0
   for (const d of site) {
     const slug = d.slug.replace(/^\//, '')
@@ -38,7 +48,7 @@ const main = async () => {
     await payload.create({ collection: 'products' as never, overrideAccess: true, context: { disableRevalidate: true }, data: { title: item.title, licence: item.licence, tenant: tenant.id, ...Object.fromEntries(Object.entries(item.prices).flatMap(([k, v]) => [[k, v], [k + 'Enabled', true]])), _status: 'published' } as never })
     products += 1
   }
-  console.log(`seed: ${created} page(s) created, ${kept} kept (${updated} relaid), from ${site.length} documents; ${tenantsCreated} tenant(s) created of ${Object.keys(tenants).length}; ${products} product(s) created of ${catalogue.length}`)
+  console.log(`seed: ${created} page(s) created, ${kept} kept (${updated} relaid), from ${site.length} documents; ${tenantsCreated} tenant(s) created of ${Object.keys(tenants).length}; ${products} product(s) created of ${catalogue.length}; first user: ${firstUser}`)
 }
 // awaited at the top level: payload run returns when the module has loaded, so a pending promise would be left behind (measured: the seed printed nothing and wrote nothing)
 await main()

@@ -23,7 +23,7 @@ const main = async () => {
   if (isMerge) for (const r of gatherShards<{ url: string; status: number; ok: boolean; contracted?: string }[]>('textbook', [])) if (!have.has(r.url)) { fetched.push(r); have.add(r.url) }
   const missing = shareOf((plan.requestList as { url: string }[]).filter((r) => !have.has(r.url)))
   console.log(`textbook (${shardLabel()}): ${missing.length} to fetch`)
-  if (process.env.QPU_OFFLINE !== '1') for (const r of missing) { try { const res = await fetch(r.url, { headers: { accept: '*/*', 'user-agent': 'uuidna-qpu-textbook (ceccec@psg.bg)' }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); fetched.push({ url: r.url, status: res.status, ok: res.ok }) } catch { fetched.push({ url: r.url, status: 0, ok: false }) } await new Promise((t) => setTimeout(t, 250)) }
+  if (process.env.QPU_OFFLINE !== '1') for (const r of missing) { try { const res = await fetch(r.url, { headers: { accept: '*/*', 'user-agent': 'uuidna-qpu-textbook (https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); fetched.push({ url: r.url, status: res.status, ok: res.ok }) } catch { fetched.push({ url: r.url, status: 0, ok: false }) } await new Promise((t) => setTimeout(t, 250)) }
   if (isShard) { leaveShard('textbook', fetched.filter((r) => missing.some((m) => m.url === r.url))); console.log(`textbook: ${shardLabel()} fetched its share`); process.exit(0) }
   const v = call({ results: fetched })
   // the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client: when the tenant names its

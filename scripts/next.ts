@@ -33,6 +33,7 @@ const steps: Step[] = [
   { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 }, // a quantum: today's results kept by url, the rest fetched as far as the quantum goes
   { name: 'readiness', cmd: 'node', args: ['--import', 'tsx', 'scripts/readiness.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 },
   { name: 'e2e', cmd: 'node', args: ['--import', 'tsx', 'scripts/e2e.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3 }, // the gate as a repetition code: every combination on every host, decoded by majority; a quantum
+  { name: 'patents', cmd: 'node', args: ['--import', 'tsx', 'scripts/patents.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // the open patent APIs fetched once, the theorems verified over every patent read
   { name: 'compete', cmd: 'node', args: ['--import', 'tsx', 'scripts/compete.ts'], budgetMs: 120_000, wave: 3 }, // always: every competition's rules judged against the evidence; online, the windows read from the pages and pushed from the remote
   { name: 'currency', cmd: 'node', args: ['--import', 'tsx', 'scripts/currency.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // every free rate API fetched once, harmonised: one rate per currency, the catalogue in every currency
   { name: 'repository', cmd: 'node', args: ['--import', 'tsx', 'scripts/repository.ts'], budgetMs: 300_000, wave: 3 }, // always: workspaces, branches, tags, releases; offline the local facts
@@ -44,7 +45,7 @@ const steps: Step[] = [
   { name: 'trunk', cmd: 'node', args: ['--import', 'tsx', 'scripts/trunk.ts'], wave: 7 }, // always: main fast-forwarded locally when green; never pushed
   { name: 'publish', cmd: 'node', args: ['--import', 'tsx', 'scripts/publish.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 7 },
 ]
-const LICENSE_LINE = 'CC-BY-NC-ND-4.0 © Tsvetan Rouschev (https://orcid.org/0009-0000-7312-9778); commercial use by licence (ceccec@psg.bg)'
+const LICENSE_LINE = 'CC-BY-NC-ND-4.0 © Tsvetan Rouschev (https://orcid.org/0009-0000-7312-9778); commercial use by licence (https://qpu.uuidna.com)'
 const receipt: { license: string; date: string; head: string; steps: { name: string; status: 'green' | 'red' | 'skipped'; ms: number; tail: string; counts?: Record<string, number> }[] } = {
   license: LICENSE_LINE,
   date: new Date().toISOString(),

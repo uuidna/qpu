@@ -44,7 +44,7 @@ const main = async () => {
     byHost.set(host, Date.now() + wait)
     if (wait) await sleep(wait)
     const started = Date.now()
-    try { const res = await fetch(r.url, { method: r.method ?? 'GET', headers: { accept: r.accept ?? '*/*', 'user-agent': 'uuidna-qpu-verify (ceccec@psg.bg)', ...(r.body ? { 'content-type': 'application/json' } : {}) }, body: r.body ? JSON.stringify(r.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(20000) }); results.push({ ...r, status: res.status, ok: res.ok, ms: Date.now() - started, text: await res.text() }) }
+    try { const res = await fetch(r.url, { method: r.method ?? 'GET', headers: { accept: r.accept ?? '*/*', 'user-agent': 'uuidna-qpu-verify (https://qpu.uuidna.com)', ...(r.body ? { 'content-type': 'application/json' } : {}) }, body: r.body ? JSON.stringify(r.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(20000) }); results.push({ ...r, status: res.status, ok: res.ok, ms: Date.now() - started, text: await res.text() }) }
     catch (e) { results.push({ ...r, status: 0, ok: false, ms: Date.now() - started, text: `fetch failed: ${(e as Error).message}` }) }
     i += 1
     if (i % 50 === 0) { console.log(`verify ${i}/${queue.length + i}`); writeFileSync(join(ROOT, 'docs', 'public', 'verification.json'), JSON.stringify({ date: new Date().toISOString(), partial: true, leads: plan.leads, requests: all.length, done: results.length, results: call({ results, contracts }).results }, null, 1) + '\n') }

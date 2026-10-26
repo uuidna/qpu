@@ -13,7 +13,7 @@ import { bestDoorsOf } from '../src/quantum/discovery.ts'
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
-const UA = 'uuidna-qpu-discover (ceccec@psg.bg)'
+const UA = 'uuidna-qpu-discover (https://qpu.uuidna.com)'
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'discover', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const fetchOne = async (r: Request): Promise<Answer> => {
