@@ -1,10 +1,10 @@
 {
- "date": "2026-10-26T08:59:08.612Z",
+ "date": "2026-10-26T11:24:29.040Z",
  "partial": false,
  "remaining": 0,
- "fetched": 28,
- "leads": 48,
- "withServers": 47,
+ "fetched": 0,
+ "leads": 47,
+ "withServers": 46,
  "related": [
   {
    "lead": "perspective-database",
@@ -5677,120 +5677,6 @@
      "score": 1,
      "shared": [
       "grant"
-     ]
-    }
-   ]
-  },
-  {
-   "lead": "first-attempt-flake-in-wave-two",
-   "words": [
-    "audit",
-    "check",
-    "wave"
-   ],
-   "servers": 6,
-   "serverList": [
-    {
-     "name": "ai.beket/audit",
-     "description": "See how AI assistants answer about your brand",
-     "remotes": [
-      "https://mcp.beket.ai/registry/mcp"
-     ],
-     "word": "audit"
-    },
-    {
-     "name": "ai.inxy/seo-audit",
-     "description": "Score any site or Shopify store for AEO/GEO/LLMO readiness — how likely AI search is to cite it.",
-     "remotes": [
-      "https://inxy.ai/api/mcp"
-     ],
-     "word": "audit"
-    },
-    {
-     "name": "ai.prepublish/script-audit",
-     "description": "Audit a YouTube script before recording: hook, pacing, drop-off risk, copy-paste rewrites.",
-     "remotes": [
-      "https://prepublish.ai/mcp"
-     ],
-     "word": "audit"
-    },
-    {
-     "name": "ai.alphaquantlabs/propertycheck",
-     "description": "Gold Coast property intelligence and due diligence for AI agents, renters and buyers.",
-     "remotes": [
-      "https://agents.alphaquantlabs.ai/v1/mcp"
-     ],
-     "word": "check"
-    },
-    {
-     "name": "ai.lakewave/lakewave-mcp",
-     "description": "Verified B2B contacts at named accounts, email verdicts, contract signals and drafted campaigns.",
-     "remotes": [],
-     "word": "wave"
-    },
-    {
-     "name": "ai.wavespeed/mcp",
-     "description": "Run any model on the live WaveSpeed catalog: image, video, audio, 3D.",
-     "remotes": [],
-     "word": "wave"
-    }
-   ],
-   "extended": [
-    {
-     "server": "ai.beket/audit",
-     "url": "https://mcp.beket.ai/registry/mcp",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "ai.inxy/seo-audit",
-     "url": "https://inxy.ai/api/mcp",
-     "status": 405,
-     "doors": 0
-    },
-    {
-     "server": "ai.prepublish/script-audit",
-     "url": "https://prepublish.ai/mcp",
-     "status": 200,
-     "doors": 6
-    },
-    {
-     "server": "ai.alphaquantlabs/propertycheck",
-     "url": "https://agents.alphaquantlabs.ai/v1/mcp",
-     "status": 200,
-     "doors": 2
-    }
-   ],
-   "bestDoors": [
-    {
-     "server": "ai.prepublish/script-audit",
-     "url": "https://prepublish.ai/mcp",
-     "door": "audit_script",
-     "score": 3,
-     "shared": [
-      "audit",
-      "written",
-      "check"
-     ]
-    },
-    {
-     "server": "ai.prepublish/script-audit",
-     "url": "https://prepublish.ai/mcp",
-     "door": "audit_hook",
-     "score": 2,
-     "shared": [
-      "audit",
-      "check"
-     ]
-    },
-    {
-     "server": "ai.prepublish/script-audit",
-     "url": "https://prepublish.ai/mcp",
-     "door": "get_audit",
-     "score": 2,
-     "shared": [
-      "audit",
-      "check"
      ]
     }
    ]

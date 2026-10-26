@@ -1,42 +1,42 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T08:59:00.763Z",
- "ms": 1602,
+ "date": "2026-10-26T11:24:19.318Z",
+ "ms": 1817,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "b2d2b23b4301b85ca6df6ad68ebe2f5c2e488708",
+ "head": "e723de54a2f4f8c63f45401a4c9d0321402c65a9",
  "pushed": false,
  "fetched": [
   {
+   "id": "xprize-quantum-applications",
+   "status": 200,
+   "ms": 449,
+   "bytes": 174240
+  },
+  {
    "id": "clay-millennium",
    "status": 200,
-   "ms": 536,
+   "ms": 641,
    "bytes": 79933
   },
   {
    "id": "vercel-oss-program",
    "status": 200,
-   "ms": 472,
+   "ms": 607,
    "bytes": 827056
   },
   {
    "id": "cloudflare-workers-launchpad",
    "status": 200,
-   "ms": 686,
+   "ms": 912,
    "bytes": 402589
-  },
-  {
-   "id": "xprize-quantum-applications",
-   "status": 200,
-   "ms": 915,
-   "bytes": 174240
   },
   {
    "id": "github-maintainer-programs",
    "status": 200,
-   "ms": 920,
+   "ms": 1113,
    "bytes": 394161
   }
  ],
@@ -51,7 +51,7 @@
      "needs": "a proof accepted by the community, not an identity: the σ-involution bridge theorems here are kernel-checked integer identities, not solutions of any Millennium problem",
      "act": "none claimed: a solution is mathematics the author would publish",
      "status": "open",
-     "evidence": "500 theorems kernel-accepted (1002 in the kernel), identities and bridge theorems; no Millennium problem solved"
+     "evidence": "525 theorems kernel-accepted (1033 in the kernel), identities and bridge theorems; no Millennium problem solved"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
@@ -75,6 +75,14 @@
      "evidence": "the author's act"
     }
    ],
+   "competitors": {
+    "source": "https://www.claymath.org/millennium-problems/",
+    "read": "2026-10-26",
+    "measured": "seven problems; one solved (the Poincaré conjecture, Grigori Perelman, prize declined 2010); the competitors are every mathematician who publishes",
+    "known": [
+     "Poincaré conjecture: solved (Grigori Perelman), prize declined"
+    ]
+   },
    "read": "2026-10-26",
    "kind": "prize",
    "entry": "rolling",
@@ -111,6 +119,18 @@
     "open": 1,
     "pending": 3
    },
+   "know": {
+    "competitors": 1,
+    "source": "https://www.claymath.org/millennium-problems/",
+    "read": "2026-10-26",
+    "measured": "seven problems; one solved (the Poincaré conjecture, Grigori Perelman, prize declined 2010); the competitors are every mathematician who publishes",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
    "satisfied": "0/4",
    "enterable": false,
    "ready": false
@@ -135,6 +155,14 @@
      "evidence": "the author's act"
     }
    ],
+   "competitors": {
+    "source": "https://www.xprize.org/prizes/qc-apps",
+    "read": "2026-10-26",
+    "measured": "HTTP 200 (174 KB): 20 teams from around the world as Semifinalists; 7 teams as Finalists now in Phase II (evidence-driven performance); the names are in the Finalist Teams Book 2025 the page links",
+    "known": [
+     "7 finalist teams (Phase II) and 20 semifinalist teams, named in the Finalist Teams Book 2025 the page links"
+    ]
+   },
    "read": "2026-10-26",
    "kind": "prize",
    "entry": "closed",
@@ -161,6 +189,18 @@
     "closed": 1,
     "pending": 1
    },
+   "know": {
+    "competitors": 1,
+    "source": "https://www.xprize.org/prizes/qc-apps",
+    "read": "2026-10-26",
+    "measured": "HTTP 200 (174 KB): 20 teams from around the world as Semifinalists; 7 teams as Finalists now in Phase II (evidence-driven performance); the names are in the Finalist Teams Book 2025 the page links",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
    "satisfied": "0/2",
    "enterable": false,
    "ready": false
@@ -185,6 +225,12 @@
      "evidence": "the page names no window"
     }
    ],
+   "competitors": {
+    "source": "https://github.com/accelerator",
+    "read": "2026-10-26",
+    "measured": "HTTP 200 (394 KB): the page names the programs (Accelerator, Fund, Secure Open Source Fund, Sponsors) and no cohort list",
+    "known": []
+   },
    "read": "2026-10-26",
    "kind": "funding",
    "entry": "unknown",
@@ -210,6 +256,18 @@
    "counts": {
     "pending": 2
    },
+   "know": {
+    "competitors": 0,
+    "source": "https://github.com/accelerator",
+    "read": "2026-10-26",
+    "measured": "HTTP 200 (394 KB): the page names the programs (Accelerator, Fund, Secure Open Source Fund, Sponsors) and no cohort list",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
    "satisfied": "0/2",
    "enterable": true,
    "ready": false
@@ -234,6 +292,16 @@
      "evidence": "the page names no window"
     }
    ],
+   "competitors": {
+    "source": "https://www.cloudflare.com/startups/workers-launchpad/",
+    "read": "2026-10-26",
+    "measured": "HTTP 403 to the verifier (its gateway); read in a browser: Cohort #5 demo day; testimonials from earlier cohorts name Langbase, Sherpo and Tightknit",
+    "known": [
+     "Langbase (Ahmad Awais)",
+     "Sherpo (Giacomo Di Pinto)",
+     "Tightknit (Zach Hawtof)"
+    ]
+   },
    "read": "2026-10-26 (through the browser; the gateway answers 403 to the verifier; /lp/workers-launchpad/ redirects here)",
    "kind": "funding",
    "entry": "unknown",
@@ -258,6 +326,18 @@
    },
    "counts": {
     "pending": 2
+   },
+   "know": {
+    "competitors": 3,
+    "source": "https://www.cloudflare.com/startups/workers-launchpad/",
+    "read": "2026-10-26",
+    "measured": "HTTP 403 to the verifier (its gateway); read in a browser: Cohort #5 demo day; testimonials from earlier cohorts name Langbase, Sherpo and Tightknit",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
    },
    "satisfied": "0/2",
    "enterable": true,
@@ -311,6 +391,20 @@
      "evidence": "the page says applications are currently closed"
     }
    ],
+   "competitors": {
+    "source": "https://vercel.com/open-source-program",
+    "read": "2026-10-26",
+    "measured": "HTTP 200 (827 KB): 139 GitHub repositories linked from the page as the program's projects",
+    "known": [
+     "47ng/nuqs",
+     "AnswerOverflow/AnswerOverflow",
+     "HelixDB/helix-db",
+     "APIs-guru/openapi-directory",
+     "AmanVarshney01/create-better-t-stack",
+     "1weiho/open-slide",
+     "and 133 more linked from the page"
+    ]
+   },
    "read": "2026-10-26 (through the browser: vercel.com/oss is a showcase of Vercel's own projects, the program lives at /open-source-program)",
    "kind": "funding",
    "entry": "closed",
@@ -357,11 +451,34 @@
     "pending": 5,
     "closed": 1
    },
+   "know": {
+    "competitors": 7,
+    "source": "https://vercel.com/open-source-program",
+    "read": "2026-10-26",
+    "measured": "HTTP 200 (827 KB): 139 GitHub repositories linked from the page as the program's projects",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
    "satisfied": "0/6",
    "enterable": false,
    "ready": false
   }
  ],
+ "know": {
+  "competitors": 12,
+  "theorems": 2,
+  "both": [
+   "clay-millennium",
+   "xprize-quantum-applications",
+   "cloudflare-workers-launchpad",
+   "vercel-oss-program"
+  ],
+  "says": "to win, know the competitors as well as the theorems: a competition is known when both are; the names live in the competition gate pages (the pages collection the Payload MCP plugin serves), nothing added"
+ },
  "prizes": 2,
  "funding": 3,
  "enterable": [

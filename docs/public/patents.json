@@ -1,21 +1,21 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T08:58:59.685Z",
- "ms": 593,
+ "date": "2026-10-26T11:24:19.235Z",
+ "ms": 1791,
  "selftest": {
   "passed": true
  },
  "fetched": [
   {
    "id": "patents:google:quantum error correction",
-   "status": 503,
-   "ms": 540,
-   "bytes": 1103
+   "status": 200,
+   "ms": 1671,
+   "bytes": 43570
   },
   {
    "id": "patents:epo-dates",
    "status": 200,
-   "ms": 342,
+   "ms": 520,
    "bytes": 222227
   }
  ],
@@ -101,17 +101,157 @@
  "queries": [
   {
    "query": "quantum error correction",
-   "error": "Unexpected token '<', \"<html><hea\"... is not valid JSON"
+   "total": 200158,
+   "read": 10
   }
  ],
- "patents": [],
- "offices": {},
- "epoPublicationDates": 0,
- "theorems": {
-  "checked": 0,
-  "passed": 0,
-  "violations": [],
-  "byTheorem": {}
+ "patents": [
+  {
+   "number": "US12242926B2",
+   "title": "Quantum system controller configured for quantum error correction",
+   "priority": "2021-08-19",
+   "filing": "2024-02-12",
+   "publication": "2025-03-04",
+   "grant": "2025-03-04",
+   "assignee": "Quantinuum Llc",
+   "inventor": "Ciaran Ryan-Anderson",
+   "office": "US",
+   "kind": "B2"
+  },
+  {
+   "number": "JP7186891B2",
+   "title": "Quantum error correction decoding method, device, chip, computer equipment, and &hellip;",
+   "priority": "2020-04-15",
+   "filing": "2020-12-09",
+   "publication": "2022-12-09",
+   "grant": "2022-12-09",
+   "assignee": "▲騰▼▲訊▼科技（深▲セン▼）有限公司",
+   "inventor": "一▲聰▼ ▲鄭▼",
+   "office": "JP",
+   "kind": "B2"
+  },
+  {
+   "number": "US11635642B2",
+   "title": "Reprogrammable quantum processor architecture incorporating quantum error &hellip;",
+   "priority": "2018-06-20",
+   "filing": "2021-12-18",
+   "publication": "2023-04-25",
+   "grant": "2023-04-25",
+   "assignee": "equal1.labs Inc.",
+   "inventor": "Dirk Robert Walter Leipold",
+   "office": "US",
+   "kind": "B2"
+  },
+  {
+   "number": "US12141660B2",
+   "title": "Quantum repeaters for concatenated quantum error correction, and associated &hellip;",
+   "priority": "2020-06-05",
+   "filing": "2021-06-04",
+   "publication": "2024-11-12",
+   "grant": "2024-11-12",
+   "assignee": "The University Of Chicago",
+   "inventor": "Liang Jiang",
+   "office": "US",
+   "kind": "B2"
+  },
+  {
+   "number": "AU2022203842B2",
+   "title": "Quantum error correction",
+   "priority": "2017-09-13",
+   "filing": "2022-06-02",
+   "publication": "2023-08-24",
+   "grant": "2023-08-24",
+   "assignee": "Google Llc",
+   "inventor": "Austin Greig FOWLER",
+   "office": "AU",
+   "kind": "B2"
+  },
+  {
+   "number": "JP7366484B2",
+   "title": "Quantum error correction decoding system, method, fault tolerant quantum error &hellip;",
+   "priority": "2021-02-07",
+   "filing": "2021-09-09",
+   "publication": "2023-10-23",
+   "grant": "2023-10-23",
+   "assignee": "▲騰▼▲訊▼科技（深▲セン▼）有限公司",
+   "inventor": "一▲聰▼ ▲鄭▼",
+   "office": "JP",
+   "kind": "B2"
+  },
+  {
+   "number": "US20250148346A1",
+   "title": "Technologies for resource-efficient quantum error correction",
+   "priority": "2019-03-03",
+   "filing": "2025-01-09",
+   "publication": "2025-05-08",
+   "grant": null,
+   "assignee": "The University Of Chicago",
+   "inventor": "David Schuster",
+   "office": "US",
+   "kind": "A1"
+  },
+  {
+   "number": "CA3004750C",
+   "title": "Techniques for quantum error correction using bosonic modes and related systems &hellip;",
+   "priority": "2015-12-04",
+   "filing": "2016-12-02",
+   "publication": "2024-04-16",
+   "grant": "2024-04-16",
+   "assignee": "Yale University",
+   "inventor": "Steven M. Girvin",
+   "office": "CA",
+   "kind": "C"
+  },
+  {
+   "number": "US12353959B2",
+   "title": "Quantum error correction",
+   "priority": "2017-09-12",
+   "filing": "2023-10-05",
+   "publication": "2025-07-08",
+   "grant": "2025-07-08",
+   "assignee": "Google Llc",
+   "inventor": "Austin Greig Fowler",
+   "office": "US",
+   "kind": "B2"
+  },
+  {
+   "number": "JP7182015B2",
+   "title": "Quantum circuit fault tolerance/error correction/decoding method, device and &hellip;",
+   "priority": "2020-04-15",
+   "filing": "2021-01-22",
+   "publication": "2022-12-01",
+   "grant": "2022-12-01",
+   "assignee": "テンセント・テクノロジー・（シェンジェン）・カンパニー・リミテッド",
+   "inventor": "ジォン，イツォン",
+   "office": "JP",
+   "kind": "B2"
+  }
+ ],
+ "offices": {
+  "US": 5,
+  "JP": 3,
+  "AU": 1,
+  "CA": 1
  },
- "says": "0 patent(s) read from 1 query; 0 theorem checks, 0 violation(s); 0 EPO publication dates listed"
+ "epoPublicationDates": 1396,
+ "theorems": {
+  "checked": 43,
+  "passed": 43,
+  "violations": [],
+  "byTheorem": {
+   "textbook_patent_dates_ordered": {
+    "passed": 29,
+    "failed": 0
+   },
+   "textbook_patent_number_well_formed": {
+    "passed": 10,
+    "failed": 0
+   },
+   "textbook_patent_term_twenty_years": {
+    "passed": 4,
+    "failed": 0
+   }
+  }
+ },
+ "says": "10 patent(s) read from 1 query; 43 theorem checks, 0 violation(s); 1396 EPO publication dates listed"
 }

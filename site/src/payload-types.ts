@@ -4575,6 +4575,10 @@ export interface PayloadMcpApiKey {
      * the MCP Apps view of attest: renders the widget the tool computes
      */
     uiAttest?: boolean | null;
+    /**
+     * the SDK: the config sets as the base of combinatorial application builders — one TypeScript module that calls this server over MCP (token free) and the Payload MCP plugin with a user's API key (the collections among its tools); served here and by the plugin
+     */
+    sdkLib?: boolean | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -5900,6 +5904,7 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         uiFold?: T;
         uiSeal?: T;
         uiAttest?: T;
+        sdkLib?: T;
       };
   updatedAt?: T;
   createdAt?: T;
