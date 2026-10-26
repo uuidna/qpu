@@ -297,6 +297,10 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   check('examples-backed-by-theorems', true, `${backed.length} of ${examples.length} examples name the theorem that makes them true (${backed.map((e) => `${e.id}→${e.theorem}`).join(', ') || 'none'}); the rest are the textbook, respected, each a lead for a theorem`)
   const ids = new Set<string>()
   const dup = examples.filter((e) => (ids.has(e.id) ? true : (ids.add(e.id), false))).map((e) => e.id)
+  // no version hides anything Lean: the ledger the resource serves is the kernel's whole count
+  const lean = handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'lean://qpu/theorems' } }) as { result?: { contents?: { text: string }[] } }
+  const ledger = (() => { try { return JSON.parse(lean.result?.contents?.[0]?.text ?? 'null') as { kernel: number; handWritten: number; generated: number; theorems: unknown[]; textbook: unknown[] } | null } catch { return null } })()
+  check('lean:served-whole', Boolean(ledger) && ledger!.handWritten + ledger!.generated === ledger!.kernel && ledger!.theorems.length === ledger!.handWritten && ledger!.textbook.length > 0, ledger ? `${ledger.theorems.length} theorems and ${ledger.generated} lemmas served whole of ${ledger.kernel} the kernel accepts; ${ledger.textbook.length} textbook theorems with their Lean text` : 'the lean resource is not served')
   check('example-ids-unique', dup.length === 0, dup.length ? `duplicates: ${dup.join(', ')}` : `${examples.length} unique ids`)
 
   const servedWithoutTool = leads.filter((l) => l.status === 'served' && !(l.tool && names.has(l.tool)))

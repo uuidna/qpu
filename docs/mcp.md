@@ -1179,6 +1179,10 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
       "type": "string",
       "description": "an example id to replay"
     },
+    "theorems": {
+      "type": "boolean",
+      "description": "everything the kernel accepts, served whole: every theorem with its module and statement, the textbook theorems with their Lean text and examples, the generated lemmas counted, the kernel's total; rendered in the textbook view; no version hides anything Lean"
+    },
     "category": {
       "type": "string",
       "enum": [
