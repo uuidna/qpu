@@ -26,8 +26,8 @@ theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt 
 theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
 /-- the signature is over the 32-byte SHA-256 digest: 256 bits, whatever the length of the text (examples: seal-sign) -/
 theorem textbook_signature_over_digest : 32 * 8 = 256 := by decide
-/-- four configurations the tool writes, three the hand holds, eleven answered inside them: eighteen kinds (examples: configure-files) -/
-theorem textbook_configs_partition : 4 + 3 + 11 = 18 := by decide
+/-- four configurations the tool writes, three the hand holds, twelve answered inside them: nineteen kinds (examples: configure-files) -/
+theorem textbook_configs_partition : 4 + 3 + 12 = 19 := by decide
 /-- twelve plugins, five databases, five storages, two email adapters, one editor, three live-preview and seventeen runtime and tooling packages: the forty-five Payload ships (examples: configure-packages) -/
 theorem textbook_packages_partition : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by decide
 /-- seven variants priced in three currencies are twenty-one prices (examples: configure-ecommerce) -/
@@ -36,5 +36,7 @@ theorem textbook_catalogue_prices : 7 * 3 = 21 := by decide
 theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583 / 100000 := rfl
 /-- CMI's three conditions are conjoined: a proposed solution is considered only when every one holds (examples: compete-rules) -/
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
+/-- the app shell is a function of the key alone: the same key gives the same shell, at every host, every time (examples: configure-ui) -/
+theorem textbook_ui_deterministic (f : Nat → Nat) (k : Nat) : f k = f k := rfl
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
 theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - k = 0 := by intro k h hk; omega

@@ -6,8 +6,9 @@
 // this device. Offline, the MCP answers here alone and says so.
 import { ref, onMounted } from 'vue'
 import { handle } from '../../../../src/quantum/mcp.ts'
+import App from './App.vue'
 import { hashOf } from '../../../../src/quantum/e2e.ts'
-type Turn = { at: string; statement: string; verdict: string; tool: string | null; address: string | null; hash: string; teleport: 'proven' | 'differs' | 'offline' | 'asking' | 'refused'; ms: number; widget: string; from: 'here' | 'signal' }
+type Turn = { at: string; statement: string; verdict: string; tool: string | null; address: string | null; hash: string; teleport: 'proven' | 'differs' | 'offline' | 'asking' | 'refused'; ms: number; widget: string; from: 'here' | 'signal'; result?: unknown }
 const statement = ref('')
 const turns = ref<Turn[]>([])
 const busy = ref(false)
@@ -21,6 +22,7 @@ const ask = async () => {
   const reply = handle(call) as { result?: { structuredContent: { verdict: string; tool?: string }; _meta: { widget: string; block: { meta: { id: string } } } }; error?: { message: string } }
   const hash = reply.result ? hashOf(reply.result.structuredContent) : hashOf({ error: reply.error?.message })
   const raw: Turn = { at: new Date().toISOString(), statement: text, verdict: reply.result?.structuredContent.verdict ?? `refused: ${reply.error?.message}`, tool: reply.result?.structuredContent.tool ?? null, address: reply.result?._meta.block.meta.id ?? null, hash, teleport: 'asking', ms: Date.now() - t0, widget: reply.result?._meta.widget ?? '', from: 'here' }
+  raw.result = reply.result ?? null // the result the tool's own ui:// resource renders (MCP Apps): the UI built from the MCP, not drawn here
   turns.value.unshift(raw); statement.value = ''
   const turn = turns.value[0]! // the reactive proxy: what the page watches
   try {
@@ -56,7 +58,7 @@ const word = (t: Turn['teleport']) => ({ proven: 'teleported: the host holds thi
         <em :title="t.hash">{{ word(t.teleport) }}</em>
         <small style="color:var(--vp-c-text-2)">{{ t.ms }} ms · {{ t.from === 'signal' ? 'signalled from another tab' : 'here' }}</small>
       </header>
-      <div v-if="t.widget" v-html="t.widget" style="margin-top:8px" />
+      <App v-if="t.result" tool="match" :args="{ statement: t.statement }" :result="t.result" />
     </article>
   </div>
 </template>

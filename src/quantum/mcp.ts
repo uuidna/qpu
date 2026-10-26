@@ -116,7 +116,7 @@ import { BILLING } from './toolboxes/billing.js'
 import { LEGAL } from './toolboxes/legal.js'
 import { REPOSITORY } from './toolboxes/repository.js'
 import { STANDARDS_BOX } from './toolboxes/standards.js'
-import { PAYLOAD, payloadDocOf } from './toolboxes/payload.js'
+import { PAYLOAD, payloadDocOf, uiOf, MCP_APPS } from './toolboxes/payload.js'
 import { EXTENSION } from './toolboxes/extension.js'
 import { factsOf, verifyRequestsOf } from './verifiers.js'
 import { CRYPTO } from './toolboxes/crypto.js'
@@ -841,8 +841,20 @@ export const handle = (message: Rpc): Reply => {
   const fail = (code: number, text: string): Reply => ({ jsonrpc: '2.0', id, error: { code, message: text } })
   const params = (message.params ?? {}) as Record<string, unknown>
   try {
-    if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'qpu', version: '1.4.0' , license: LICENSE.spdx, author: LICENSE.author }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` } }
-    if (message.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools: TOOLS.map(({ name, description, inputSchema, toolbox }) => ({ name, description, inputSchema, _meta: { toolbox } })) } }
+    if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } } }, serverInfo: { name: 'qpu', version: '1.4.0' , license: LICENSE.spdx, author: LICENSE.author }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` } }
+    // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
+    if (message.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools: TOOLS.map(({ name, description, inputSchema, toolbox }) => ({ name, description, inputSchema, _meta: { toolbox, ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] } } })) } }
+    // the UI resources: one ui://qpu/<tool> per tool, the app shell served over the standard resource methods, nothing bypassed
+    if (message.method === 'resources/list') return { jsonrpc: '2.0', id, result: { resources: TOOLS.map((t) => { const u = uiOf(t.name); return { uri: u.uri, name: u.name, description: `the MCP Apps view of ${t.name}: renders the widget the tool computes`, mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }) } }
+    if (message.method === 'resources/templates/list') return { jsonrpc: '2.0', id, result: { resourceTemplates: [{ uriTemplate: 'ui://qpu/{tool}', name: 'qpu · a tool\'s view', mimeType: MCP_APPS.mimeType, description: 'the app shell of any tool of the catalogue' }] } }
+    if (message.method === 'resources/read') {
+      const uri = String(params.uri ?? '')
+      const name = /^ui:\/\/qpu\/([a-z0-9_-]+)$/.exec(uri)?.[1]
+      const found = name ? TOOLS.find((t) => t.name === name) : undefined
+      if (!found) return fail(INVALID_PARAMS, `no resource ${uri}; the resources are ui://qpu/<tool> for ${TOOLS.map((t) => t.name).join(', ')}`)
+      const u = uiOf(found.name)
+      return { jsonrpc: '2.0', id, result: { contents: [{ uri: u.uri, mimeType: u.mimeType, text: u.html, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } }] } }
+    }
     if (message.method === 'tools/call') {
       const found = TOOLS.find((t) => t.name === params.name)
       if (!found) return fail(METHOD_NOT_FOUND, `no tool ${String(params.name)}; the tools are ${TOOLS.map((t) => t.name).join(', ')}`)

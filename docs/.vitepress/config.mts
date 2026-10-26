@@ -40,7 +40,7 @@ export default defineConfig({
     if (existsSync('docs/public/receipts.ndjson')) for (const line of readFileSync('docs/public/receipts.ndjson', 'utf8').split('\n').filter(Boolean)) { try { const r = JSON.parse(line) as { id: string; prev?: string | null }; if (r.id === uuid && r.prev) prev = r.prev } catch { /* lead */ } }
     pageData.title = ch.handle + ' · ' + ch.program.join('')
     pageData.frontmatter.uuid = uuid
-    pageData.frontmatter.prev = prev ? { text: 'previous receipt ' + prev.slice(0, 8), link: '/' + prev } : { text: 'family ' + ch.handle, link: '/h/' + ch.handle }
+    pageData.frontmatter.prev = prev ? { text: 'previous receipt ' + prev.slice(0, 8), link: '/' + prev } : { text: 'family ' + ch.handle, link: '/' + ch.handle }
     pageData.frontmatter.next = { text: 'next: the program rotated ' + next.slice(0, 8), link: '/' + next }
   },
   buildEnd(siteConfig) {

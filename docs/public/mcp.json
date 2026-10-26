@@ -21,7 +21,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/processor",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -281,7 +288,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/circuit",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -461,7 +475,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/echo",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -472,7 +493,14 @@
         "properties": {}
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/echo_benchmark",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -489,7 +517,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/roadmap",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -579,7 +614,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/algorithm",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -590,7 +632,14 @@
         "properties": {}
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/software",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -648,7 +697,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/statements",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -664,7 +720,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/repositories",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -680,7 +743,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/quantumlib",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -732,7 +802,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/quantum-error-correction",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -760,7 +837,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/chemistry-simulation",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -811,7 +895,14 @@
         }
       },
       "_meta": {
-        "toolbox": "google"
+        "toolbox": "google",
+        "ui": {
+          "resourceUri": "ui://qpu/fault-tolerant-design",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -832,7 +923,14 @@
         }
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/leads",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -843,7 +941,14 @@
         "properties": {}
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/audit",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -879,7 +984,14 @@
         }
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/match",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -909,7 +1021,14 @@
         }
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/clay",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -962,7 +1081,14 @@
         }
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/verify",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -978,7 +1104,14 @@
         }
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/metrics",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1019,7 +1152,14 @@
         }
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/textbook",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1035,7 +1175,14 @@
         }
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/css",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1058,7 +1205,14 @@
         }
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/dashboard",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1078,7 +1232,14 @@
         }
       },
       "_meta": {
-        "toolbox": "tree"
+        "toolbox": "tree",
+        "ui": {
+          "resourceUri": "ui://qpu/clone",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1120,7 +1281,14 @@
         }
       },
       "_meta": {
-        "toolbox": "flow"
+        "toolbox": "flow",
+        "ui": {
+          "resourceUri": "ui://qpu/discover",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1153,7 +1321,14 @@
         }
       },
       "_meta": {
-        "toolbox": "flow"
+        "toolbox": "flow",
+        "ui": {
+          "resourceUri": "ui://qpu/wave",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1206,7 +1381,14 @@
         }
       },
       "_meta": {
-        "toolbox": "flow"
+        "toolbox": "flow",
+        "ui": {
+          "resourceUri": "ui://qpu/readiness",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1236,7 +1418,14 @@
         }
       },
       "_meta": {
-        "toolbox": "flow"
+        "toolbox": "flow",
+        "ui": {
+          "resourceUri": "ui://qpu/imagine",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1272,7 +1461,14 @@
         }
       },
       "_meta": {
-        "toolbox": "flow"
+        "toolbox": "flow",
+        "ui": {
+          "resourceUri": "ui://qpu/e2e",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1300,7 +1496,14 @@
         }
       },
       "_meta": {
-        "toolbox": "flow"
+        "toolbox": "flow",
+        "ui": {
+          "resourceUri": "ui://qpu/shard",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1350,7 +1553,14 @@
         }
       },
       "_meta": {
-        "toolbox": "language"
+        "toolbox": "language",
+        "ui": {
+          "resourceUri": "ui://qpu/translate",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1390,7 +1600,14 @@
         }
       },
       "_meta": {
-        "toolbox": "language"
+        "toolbox": "language",
+        "ui": {
+          "resourceUri": "ui://qpu/prose",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1439,7 +1656,14 @@
         }
       },
       "_meta": {
-        "toolbox": "raid"
+        "toolbox": "raid",
+        "ui": {
+          "resourceUri": "ui://qpu/mongo",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1523,7 +1747,14 @@
         }
       },
       "_meta": {
-        "toolbox": "billing"
+        "toolbox": "billing",
+        "ui": {
+          "resourceUri": "ui://qpu/stripe",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1576,7 +1807,14 @@
         }
       },
       "_meta": {
-        "toolbox": "billing"
+        "toolbox": "billing",
+        "ui": {
+          "resourceUri": "ui://qpu/currency",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1621,7 +1859,14 @@
         }
       },
       "_meta": {
-        "toolbox": "legal"
+        "toolbox": "legal",
+        "ui": {
+          "resourceUri": "ui://qpu/legal",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1655,7 +1900,14 @@
         }
       },
       "_meta": {
-        "toolbox": "legal"
+        "toolbox": "legal",
+        "ui": {
+          "resourceUri": "ui://qpu/compete",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1691,7 +1943,14 @@
         }
       },
       "_meta": {
-        "toolbox": "repository"
+        "toolbox": "repository",
+        "ui": {
+          "resourceUri": "ui://qpu/repository",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1758,7 +2017,14 @@
         }
       },
       "_meta": {
-        "toolbox": "standards"
+        "toolbox": "standards",
+        "ui": {
+          "resourceUri": "ui://qpu/jsonld",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1783,7 +2049,14 @@
         }
       },
       "_meta": {
-        "toolbox": "standards"
+        "toolbox": "standards",
+        "ui": {
+          "resourceUri": "ui://qpu/codes",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1845,7 +2118,14 @@
         }
       },
       "_meta": {
-        "toolbox": "payload"
+        "toolbox": "payload",
+        "ui": {
+          "resourceUri": "ui://qpu/payload",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1874,7 +2154,8 @@
               "access",
               "actions",
               "packages",
-              "ecommerce"
+              "ecommerce",
+              "ui"
             ],
             "description": "omit for all"
           },
@@ -1917,7 +2198,14 @@
         }
       },
       "_meta": {
-        "toolbox": "payload"
+        "toolbox": "payload",
+        "ui": {
+          "resourceUri": "ui://qpu/configure",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -1964,7 +2252,14 @@
         }
       },
       "_meta": {
-        "toolbox": "extension"
+        "toolbox": "extension",
+        "ui": {
+          "resourceUri": "ui://qpu/extend",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -2006,7 +2301,14 @@
         }
       },
       "_meta": {
-        "toolbox": "crypto"
+        "toolbox": "crypto",
+        "ui": {
+          "resourceUri": "ui://qpu/fold",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     },
     {
@@ -2038,7 +2340,14 @@
         }
       },
       "_meta": {
-        "toolbox": "crypto"
+        "toolbox": "crypto",
+        "ui": {
+          "resourceUri": "ui://qpu/seal",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
       }
     }
   ]

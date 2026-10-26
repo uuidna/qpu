@@ -78,7 +78,7 @@ test('invalid parameters are refused with a JSON-RPC invalid-params error, and a
   const badArity = call('circuit', { operations: [{ gate: 'CZ', qubits: [{ kind: 'line', x: 0 }] }] })
   assert.ok('error' in badArity && badArity.error.code === -32602)
   assert.ok('error' in call('nope', {}))
-  assert.ok('error' in handle({ jsonrpc: '2.0', id: 2, method: 'resources/list' }))
+  assert.ok('error' in handle({ jsonrpc: '2.0', id: 2, method: 'prompts/list' })) // resources are served now (MCP Apps); prompts are not
 })
 
 test('the handler runs in a browser: it imports nothing from Node', () => {
