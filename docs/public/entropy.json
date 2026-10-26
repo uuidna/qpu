@@ -1,10 +1,10 @@
 {
- "date": "2026-10-26T22:40:50.652Z",
+ "date": "2026-10-26T22:43:08.853Z",
  "files": 942,
- "lines": 84817,
- "findings": 1076,
+ "lines": 84827,
+ "findings": 1077,
  "fused": 332,
- "reactions": 744,
+ "reactions": 745,
  "gravity": "12cda658-60d5-882d-84a5-864755c06496",
  "vacuum": false,
  "byKind": {
@@ -17,7 +17,7 @@
    "leads": 0
   },
   "cap": {
-   "findings": 82,
+   "findings": 83,
    "leads": 20
   },
   "clock": {
@@ -96,11 +96,11 @@
   {
    "id": "entropy-cap-e1adfd32",
    "kind": "cap",
-   "source": "scripts/purify.ts:168, scripts/purify.ts:181, scripts/textbook.ts:47, src/quantum/audit.ts:362, src/quantum/audit.ts:380, src/quantum/audit.ts:382, src/quantum/audit.ts:384, src/quantum/discovery.ts:112, src/quantum/discovery.ts:157, src/quantum/examples.ts:108, src/quantum/examples.ts:162, src/quantum/match.ts:339, src/quantum/toolboxes/repository.ts:115, src/quantum/wave.ts:26, src/worker.ts:367",
+   "source": "scripts/purify.ts:168, scripts/purify.ts:181, scripts/textbook.ts:47, src/quantum/audit.ts:362, src/quantum/audit.ts:380, src/quantum/audit.ts:382, src/quantum/audit.ts:384, src/quantum/discovery.ts:112, src/quantum/discovery.ts:157, src/quantum/examples.ts:108, src/quantum/examples.ts:162, src/quantum/match.ts:339, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:115, src/quantum/wave.ts:26, src/worker.ts:367",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80)",
    "status": "open",
    "tool": "audit",
-   "occurrences": 15,
+   "occurrences": 16,
    "address": "e1adfd32-5ad7-38a4-84be-e9f0754bcf07",
    "explore": "match",
    "config": "actions"

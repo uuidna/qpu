@@ -5,13 +5,13 @@ order: 52
 
 # Entropy converted to leads
 
-The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-26T22:40:50.652Z through the `audit` tool over 942 source files (84817 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (1076 findings, 332 leads, 744 fusion reactions); the gravity of the tree is `12cda658-60d5-882d-84a5-864755c06496`. 3 new lead(s) signalled into the entropy stream this run; the differences since the last run: 3 appeared (to explore), 0 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
+The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-26T22:43:08.853Z through the `audit` tool over 942 source files (84827 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (1077 findings, 332 leads, 745 fusion reactions); the gravity of the tree is `12cda658-60d5-882d-84a5-864755c06496`. 3 new lead(s) signalled into the entropy stream this run; the differences since the last run: 3 appeared (to explore), 0 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
 
 | Kind | Findings | Leads |
 |---|---:|---:|
 | literal | 4 | 4 |
 | typed-path | 0 | 0 |
-| cap | 82 | 20 |
+| cap | 83 | 20 |
 | clock | 22 | 2 |
 | duplicate | 738 | 284 |
 | shape | 210 | 5 |
@@ -23,7 +23,7 @@ The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-26T22:40:50
 | entropy-cap-b5ede745 | cap | match | actions | 8 | scripts/audit.ts:26, src/quantum/expressions.ts:137, src/quantum/toolboxes/extension.ts:86, src/quantum/toolboxes/language.ts:77, src/quantum/toolboxes/payload.ts:1072, src/quantum/toolboxes/payload.ts:1984, src/quantum/toolboxes/payload.ts:1998, src/quantum/wave.ts:27 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 120) |
 | entropy-cap-4c776128 | cap | match | actions | 6 | scripts/claims.ts:19, site/src/app/_data/index.ts:457, site/src/app/_data/index.ts:462, site/src/app/_data/index.ts:467, site/src/app/_data/index.ts:472, src/quantum/toolboxes/repository.ts:80 | a cap on a read or a walk (slice, limit, substring): the user asked for none — limit: 100 |
 | entropy-cap-adb50b32 | cap | match | actions | 2 | scripts/hook.ts:50, src/quantum/toolboxes/extension.ts:27 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 60) |
-| entropy-cap-e1adfd32 | cap | match | actions | 15 | scripts/purify.ts:168, scripts/purify.ts:181, scripts/textbook.ts:47, src/quantum/audit.ts:362, src/quantum/audit.ts:380, src/quantum/audit.ts:382, src/quantum/audit.ts:384, src/quantum/discovery.ts:112, src/quantum/discovery.ts:157, src/quantum/examples.ts:108, src/quantum/examples.ts:162, src/quantum/match.ts:339, src/quantum/toolboxes/repository.ts:115, src/quantum/wave.ts:26, src/worker.ts:367 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80) |
+| entropy-cap-e1adfd32 | cap | match | actions | 16 | scripts/purify.ts:168, scripts/purify.ts:181, scripts/textbook.ts:47, src/quantum/audit.ts:362, src/quantum/audit.ts:380, src/quantum/audit.ts:382, src/quantum/audit.ts:384, src/quantum/discovery.ts:112, src/quantum/discovery.ts:157, src/quantum/examples.ts:108, src/quantum/examples.ts:162, src/quantum/match.ts:339, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:115, src/quantum/wave.ts:26, src/worker.ts:367 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80) |
 | entropy-todo-bec4fd43 | todo | imagine | — | 1 | site/src/adapters/AlgoliaSearchBox/index.tsx:24 | a note to self in the code: a lead written where no one reads it — // TODO: allow outside changes to update this field (search modal) |
 | entropy-todo-e25cf1bd | todo | imagine | — | 1 | site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/settings/environment-variables/ManageEnvs/index.tsx:115 | a note to self in the code: a lead written where no one reads it — // TODO: set in state |
 | entropy-todo-9a50b0fa | todo | imagine | — | 1 | site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/settings/environment-variables/ManageEnvs/index.tsx:150 | a note to self in the code: a lead written where no one reads it — // TODO: alert user based on status code &amp; message |

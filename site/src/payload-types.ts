@@ -150,6 +150,8 @@ export interface Config {
     redirects: Redirect;
     tenants: Tenant;
     entries: Entry;
+    exports: Export;
+    imports: Import;
     addresses: Address;
     variants: Variant;
     variantTypes: VariantType;
@@ -161,6 +163,7 @@ export interface Config {
     search: Search;
     'payload-mcp-api-keys': PayloadMcpApiKey;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -200,6 +203,8 @@ export interface Config {
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
     entries: EntriesSelect<false> | EntriesSelect<true>;
+    exports: ExportsSelect<false> | ExportsSelect<true>;
+    imports: ImportsSelect<false> | ImportsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
     variantTypes: VariantTypesSelect<false> | VariantTypesSelect<true>;
@@ -211,6 +216,7 @@ export interface Config {
     search: SearchSelect<false> | SearchSelect<true>;
     'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -218,7 +224,12 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  fallbackLocale: null;
+  fallbackLocale:
+    | ('false' | 'none' | 'null')
+    | false
+    | null
+    | ('en' | 'bg' | 'de' | 'fr' | 'es' | 'it' | 'ru' | 'zh' | 'ja' | 'pt' | 'nl')
+    | ('en' | 'bg' | 'de' | 'fr' | 'es' | 'it' | 'ru' | 'zh' | 'ja' | 'pt' | 'nl')[];
   globals: {
     footer: Footer;
     'main-menu': MainMenu;
@@ -235,7 +246,7 @@ export interface Config {
     topBar: TopBarSelect<false> | TopBarSelect<true>;
     qpu: QpuSelect<false> | QpuSelect<true>;
   };
-  locale: null;
+  locale: 'en' | 'bg' | 'de' | 'fr' | 'es' | 'it' | 'ru' | 'zh' | 'ja' | 'pt' | 'nl';
   widgets: {
     'analytics-overview': AnalyticsOverviewWidget;
     'top-pages': TopPagesWidget;
@@ -245,7 +256,14 @@ export interface Config {
   };
   user: User | PayloadMcpApiKey;
   jobs: {
-    tasks: unknown;
+    tasks: {
+      createCollectionExport: TaskCreateCollectionExport;
+      createCollectionImport: TaskCreateCollectionImport;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
   /**
@@ -3819,6 +3837,80 @@ export interface Entry {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exports".
+ */
+export interface Export {
+  id: string;
+  name?: string | null;
+  format: 'csv' | 'json';
+  limit?: number | null;
+  page?: number | null;
+  sort?: string | null;
+  sortOrder?: ('asc' | 'desc') | null;
+  drafts?: ('yes' | 'no') | null;
+  selectionToUse?: ('currentSelection' | 'currentFilters' | 'all') | null;
+  fields?: string[] | null;
+  collectionSlug: string;
+  where?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports".
+ */
+export interface Import {
+  id: string;
+  collectionSlug: string;
+  importMode?: ('create' | 'update' | 'upsert') | null;
+  matchField?: string | null;
+  status?: ('pending' | 'completed' | 'partial' | 'failed') | null;
+  summary?: {
+    imported?: number | null;
+    updated?: number | null;
+    total?: number | null;
+    issues?: number | null;
+    issueDetails?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addresses".
  */
 export interface Address {
@@ -4252,187 +4344,187 @@ export interface PayloadMcpApiKey {
   };
   'payload-mcp-tool'?: {
     /**
-     * A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.
-     */
-    processor?: boolean | null;
-    /**
-     * Compile a circuit from its operations, placed by an insert strategy, and simulate it. Without noise or observables: the final amplitudes, or sampled bitstrings and their histogram when there is a measurement. With noise channels (as Cirq names them) or Pauli observables: the density matrix, its basis probabilities, trace, purity and the expectation values. A device validates the circuit first.
-     */
-    circuit?: boolean | null;
-    /**
-     * Quantum Echoes: run the operations forward, perturb once, run them back, and return the probability that every qubit returns to 0.
-     */
-    echo?: boolean | null;
-    /**
-     * The Quantum Echoes result as Google states it: the processor, its qubits, the speedup, and the molecules.
-     */
-    echoBenchmark?: boolean | null;
-    /**
-     * The Google Quantum AI roadmap: its six milestones, their physical-qubit scale, and which are achieved or in progress. With a milestone number, only that milestone.
-     */
-    roadmap?: boolean | null;
-    /**
-     * The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits, from input x), phase_estimation (of θ with 1 to 8 bits), grover (two qubits, marked |00>), teleportation (the message state, sent and received), qaoa (depth 1 on the first 2 to 12 sorted qubits of the Sycamore device, the page's instance, with the expected cut), and shor (order finding for N from 3 to 21, the state-vector bound). Each returns its summary and a table.
-     */
-    algorithm?: boolean | null;
-    /**
-     * The open-source tools of the Google Quantum AI Software page, as the page describes them. Only Cirq is implemented in this repository.
-     */
-    software?: boolean | null;
-    /**
-     * The statements quantumai.google, its PDFs and the quantumlib repositories make, each as the page states it: Cirq, the definition of quantum computing, progress, responsibility, the vision, the hardware and the full stack, the Willow Early Access Program, neutral atoms, the Sycamore gates, the Weber datasheet, the Quantum Echoes preprint, the campus, qsim, Qualtran, OpenFermion, the Cirq guide pages followed, the Resources, Research, journey, lab and Qubit Game pages, the QEC milestone, the APS summit pages and the sitemap. With a topic, only that one.
-     */
-    statements?: boolean | null;
-    /**
-     * The repositories of the quantumlib GitHub organization, as its list states them: name, description and primary language.
-     */
-    repositories?: boolean | null;
-    /**
-     * The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it: the exports of cirq.ts that stand for Cirq's classes, and the parts of qsim, OpenFermion, Qualtran, Stim and ReCirq the other tools emulate, named from the code that runs here. A cross-reference computed at call time, not a catalogue.
-     */
-    quantumlib?: boolean | null;
-    /**
-     * The three-qubit repetition code, simulated on the density matrix: a logical qubit encoded, a channel (bit_flip, phase_flip or depolarize) of probability p acting once on each data qubit, syndromes extracted and corrected by majority, and the logical error read from the simulated state against the raw error of an unencoded qubit, at the p given and over a sweep. The break-even p is bisected from the simulation; the textbook 3p² − 2p³ is reported beside it where it applies. The encoding, syndrome and correction gates are noiseless (the code-capacity model). The quantumlib QEC packages are listed as cited data.
-     */
-    quantumErrorCorrection?: boolean | null;
-    /**
-     * Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. A bond length in ångström, or one θ to evaluate.
-     */
-    chemistrySimulation?: boolean | null;
-    /**
-     * Resource counts read from the circuits this repository builds: the QFT on n qubits, Grover, teleportation, Shor for N up to 21, the QAOA instance and the repetition-code cycle. For each: gates by name, two-qubit gates, depth in moments, and the T-count of the gates whose Clifford+T cost is stated (Toffoli 7, T 1, controlled-S 3; Cliffordness computed from each unitary). Rotations and undecomposed gates are listed and left uncounted, and the count says whether it is complete. Qualtran is the cited library for the general case.
-     */
-    faultTolerantDesign?: boolean | null;
-    /**
-     * Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it is not served. The whole list is returned; nothing is truncated.
-     */
-    leads?: boolean | null;
-    /**
-     * The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays as documented, every served lead names a served tool, and the error paths answer as JSON-RPC requires. Each check carries its evidence; a failed check is a lead, not a ruling.
-     */
-    audit?: boolean | null;
-    /**
-     * Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the surface proves it cannot, from a schema bound the statement exceeds, a lead whose reason says why, or the handler's own refusal; the cluster then names the served possibilities around it and verify names the live sources the client's MCP can check. unknown: nothing matches, and the statement comes back as a new lead to develop.
-     */
-    match?: boolean | null;
-    /**
-     * The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N statement parsed and evaluated, each side's value and the bit width it needs reported. What the Lean kernel accepted by rfl, redone with + − × ÷ on naturals only, so a small machine can redo the same sums and compare addresses. Nothing here is a proof of an open problem: the relations are identities between the unit's own constants.
+     * The Clay register recomputed in exact integer arithmetic
      */
     clay?: boolean | null;
     /**
-     * Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content needed), its content (one fold), and its neighbours in a chain (the predecessor it names and the successor that names it). Each check is independent; a check without its input is not decided rather than passed.
+     * Any statement, matched against everything the surface can do
+     */
+    match?: boolean | null;
+    /**
+     * Cheap verification of one UUID
      */
     verify?: boolean | null;
     /**
-     * The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel's theorem counts from its own index, leads by status, the audit's checks, the balancer's memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.
+     * A Google Quantum AI processor as its spec sheet states it
+     */
+    processor?: boolean | null;
+    /**
+     * Compile a circuit from its operations, placed by an insert strategy, and simulate it
+     */
+    circuit?: boolean | null;
+    /**
+     * Quantum Echoes
+     */
+    echo?: boolean | null;
+    /**
+     * The Quantum Echoes result as Google states it
+     */
+    echoBenchmark?: boolean | null;
+    /**
+     * The Google Quantum AI roadmap
+     */
+    roadmap?: boolean | null;
+    /**
+     * The textbook algorithms of the Cirq page
+     */
+    algorithm?: boolean | null;
+    /**
+     * The open-source tools of the Google Quantum AI Software page, as the page describes them
+     */
+    software?: boolean | null;
+    /**
+     * The statements quantumai
+     */
+    statements?: boolean | null;
+    /**
+     * The repositories of the quantumlib GitHub organization, as its list states them
+     */
+    repositories?: boolean | null;
+    /**
+     * The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it
+     */
+    quantumlib?: boolean | null;
+    /**
+     * The three-qubit repetition code, simulated on the density matrix
+     */
+    quantumErrorCorrection?: boolean | null;
+    /**
+     * Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator
+     */
+    chemistrySimulation?: boolean | null;
+    /**
+     * Resource counts read from the circuits this repository builds
+     */
+    faultTolerantDesign?: boolean | null;
+    /**
+     * Every lead on quantumai
+     */
+    leads?: boolean | null;
+    /**
+     * The surface audits itself through tools/call
+     */
+    audit?: boolean | null;
+    /**
+     * The computable metrics of this tree in real time
      */
     metrics?: boolean | null;
     /**
-     * The QPU textbook as an adapter: every example categorised for reuse — by toolbox, by tool, by the kernel-accepted theorem that backs it, by that theorem's module — and, with reuse: <example id>, that example replayed and its result returned. The categories are computed from the registries, never written by hand.
+     * The QPU textbook as an adapter
      */
     textbook?: boolean | null;
     /**
-     * The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmonics, and the rules that draw every block from its own custom properties with no script, motion only where the device allows it, off-screen blocks at no cost) and, for a uuid, the custom properties its block root carries (hue, CMYK, accent, tail colour and angle, the 9-vortex seed and period). Computed once; a device renders at the cost of CSS.
+     * The quantum UI as CSS alone
      */
     css?: boolean | null;
     /**
-     * A bounded tool laid out whole, so the user's decision in the UI is final: every value each property admits (an enum, a boolean, an integer range, the ends of a numeric bound, the textbook's values where a string is free), the whole space reachable by fixing one facet at a time (each cell narrows the dashboard until one combination remains, whose cell is its walk page /<uuid>), every cell drawn by its own UUID's CSS. Without a tool: every tool with the size of its space.
+     * A bounded tool laid out whole, so the user's decision in the UI is final
      */
     dashboard?: boolean | null;
     /**
-     * A toolbox cloned whole: its toolset (every tool's name, description and schema), its skillset (idea, instructions, directions, examples with what they show), and its selftest run now, as one document another host mounts or a client follows door by door. The quantum state of a computation is never cloned (all_noclone); its classical description is, and this is it. Without a toolbox: every toolbox's clone address.
+     * A toolbox cloned whole
      */
     clone?: boolean | null;
     /**
-     * Discovery before use. Without answers: every request the client must make for the contracts of the hosts this tree talks to (MCP tools/list and catalogue doors, the verifiers' OpenAPI, index or identify documents, /.well-known/qpu.json). With answers: the follow-ups still to fetch (catalogue doors whose contract is unread) and, once none remain, the discovery: hosts, doors with what they take and answer, capabilities by which clients choose doors, and the leads (hosts with no machine contract). Pure; the client fetches.
+     * Discovery before use
      */
     discover?: boolean | null;
     /**
-     * The verification wave. Without results: every request the surface's leads and tree facts need, once per URL with the leads it serves. With results (each request plus status, ok, ms and the body text): what came back read into one-line notes, a check of each request against the OpenAPI contract its host published (from discovery), and a summary by verifier. Pure; the client fetches.
+     * The verification wave
      */
     wave?: boolean | null;
     /**
-     * The unit judges the tree. Phase one (verification, discovery, present, ledger): every lead judged by measurement into served, refuted or trial; the sources as the unit's readiness door takes them; the border plan — every discovered door that takes a statement and answers a verdict, with a hand-written theorem filled in; and the unit plan, the calls the client makes. Phase two (plus border answers and unit answers): the border read, and the page. Pure; the client asks the unit.
+     * The unit judges the tree
      */
     readiness?: boolean | null;
     /**
-     * Imagination leads all leads: every lead (or the subset named) matched with the reflection on — hidden factors, angles, mirror queries, cluster, verification requests — every reflection that finds something a new open lead, every untried enum value of every schema a lead, every application family an adaptor to build. Pure.
+     * Imagination leads all leads
      */
     imagine?: boolean | null;
     /**
-     * The end-to-end gate as a repetition code. Without answers: every combination the dashboards lay out and every example of the textbook, as one tools/call request per host (default the tenants' hosts and the operator's), each carrying the hash of the tree's own answer. With answers (each request plus status, ms, text): every combination decoded by majority over the tree and the hosts — agree, corrected (a flipped host, named by the syndrome), erased (a host that did not answer), uncorrectable (no majority) — the physical and logical error rates against the textbook 3-copy code, every error a UUID block for the stream, and the leads. Pure; the client fetches.
+     * The end-to-end gate as a repetition code
      */
     e2e?: boolean | null;
     /**
-     * A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard's index — the shares cover the list exactly once, proven by the kernel (textbook_shards_cover, textbook_shards_disjoint). The clients of the flow take their share from this door and leave what they settled for the merge; nothing is decided by hand.
+     * A long single task split into short multitasks
      */
     shard?: boolean | null;
     /**
-     * Translation by vocabulary, offline, both ways: text, from, to. A word no table knows stays as it is and is reported, never guessed; Glagolitic numerals are read as integers. Without text: the vocabulary measured — for every locale, the surface terms with no entry (the leads of the tables).
+     * Translation by vocabulary, offline, both ways
      */
     translate?: boolean | null;
     /**
-     * Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox's idea, the tool's scalar answers, the toolbox's instructions — every word from the vocabulary, every number from the tool, every unknown word reported.
+     * Programmable prose
      */
     prose?: boolean | null;
     /**
-     * The ported MongoDB over the docket, pure. find: {collection, docs, filter, sort, skip, limit} → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: {collection, docs: [new]} → the entries to write, content-addressed. update: {collection, docs, filter, update} → for each match the new document and the entry that replaces it (linked to the old). delete: {collection, docs, filter} → the ids to delete, if unlinked. The client reads the docket rows and writes what comes back.
+     * The ported MongoDB over the docket, pure
      */
     mongo?: boolean | null;
     /**
-     * Stripe per tenant, pure, the QPU as a product with its variants. catalogue: every product and variant (domain, tenant, seat, metered, enterprise; month, year, metered; eur, usd, bgn) as the forms Stripe takes, per tenant. usage: metered calls from docket entries as a usage record. settle: the author's compensation from Stripe's own net figures, by product and tenant, as a settlement entry. plan: a checkout session request for a commercial licence (subject, domains, mode, price or amount) that the Worker sends with the tenant's secret key. webhook: the Stripe-Signature verified with the tenant's webhook secret (HMAC-SHA256, timestamp tolerance), the event read into one idempotent licence entry (granted, renewed, revoked, disputed, failed, noted) linked to what it changes. state: the licence state of a subject at a domain from its entries, at any tenant. The handler holds no key; the Worker executes plans and the docket keeps the entries.
+     * Stripe per tenant, pure, the QPU as a product with its variants
      */
     stripe?: boolean | null;
     /**
-     * Currency harmonised in real time across every computation, agnostic of the source: plan answers the requests to every free rate API found (ECB, Frankfurter, BNB, open.er-api, currency-api) and names the related MCPs the registry lists; harmonise reads the bodies a client fetched, decodes one rate per currency by the median of the sources (agree within 0.5 %, drift named, pegs fixed by law: BGN 1.95583 since Bulgaria adopted the euro), and converts amounts in the base currency's minor unit into every currency, for a tenant (its currency) and a domain (its top-level domain's). Pure: nothing fetched here.
+     * Currency harmonised in real time across every computation, agnostic of the source
      */
     currency?: boolean | null;
     /**
-     * The full legal and security audit with forensic analysis, through MCP. Phase one (texts, discovery, agents?, theoremKeys?): the author's claims gathered from the tree and its metadata, this tree's own security checks over its sources, and the plan of calls to the unit's forensic, verification, legal, licence, prior-art, due-process and security doors — free agents found by discovery by default, the operator's own list when given. Phase two (plus answers): verdicts per claim, drift against this tree's licence, the findings, the page. Recomputable facts, not legal advice.
+     * The full legal and security audit with forensic analysis, through MCP
      */
     legal?: boolean | null;
     /**
-     * The competitions with prizes and funding, their rules read at the source and judged against this tree's own evidence on every run: the Clay Millennium Prize rules (three conditions), XPRIZE Quantum Applications (closed: finalists chosen, winners spring 2027), GitHub's maintainer programs, Cloudflare's Workers Launchpad, Vercel's open source program, the Build with Gemini XPRIZE Hackathon (closed 2026-08-17) and Google for Startups Accelerator; the registry's grant and funding MCPs proposed. Each rule is satisfied, pending (the author's act), closed or open (a lead). Nothing is claimed won; the tree competes by following every rule. Pure.
+     * The competitions with prizes and funding, their rules read at the source and judged against this tree's own evidence on every run
      */
     compete?: boolean | null;
     /**
-     * Every patent API found, wired and measured: plan answers the requests to the open ones (Google Patents' query endpoint, the EPO publication server) and names the keyed ones (PatentsView, USPTO ODP, EPO OPS, Lens: the variable names, never values) and the registry's patent MCPs; read takes the bodies a client fetched, reads the patents (number, dates, assignee, inventor, title) and verifies the theorems over them — the dates ordered, the number well formed for its office, the twenty-year term — naming every violation. Pure: nothing fetched here.
+     * Every patent API found, wired and measured
      */
     patents?: boolean | null;
     /**
-     * Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases, the workflow runs, the workflows), the npm registry (the version it holds) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.
+     * Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure
      */
     repository?: boolean | null;
     /**
-     * schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of the catalogue (product, variant, currency). The author a Person with an ORCID, the licence a URL, dates ISO 8601, languages ISO 639-1, currencies ISO 4217. Every tools/call result already carries its block's JSON-LD in _meta.jsonLd; every documentation page carries its own in its head.
+     * schema
      */
     jsonld?: boolean | null;
     /**
-     * The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1): every locale of the language toolbox, every currency of the catalogue, the tenants' countries. Without the lists: what would be checked and where the lists are. A code the standard does not know is a lead, never a guess.
+     * The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1)
      */
     codes?: boolean | null;
     /**
-     * Any tool's result as the document Payload's default plugins hold, no custom collection: a lexical document whose one block is the programmable UUID logic (uuid, handle, program, tail, tool, arguments, prev, next), nested by the referer chain as nested-docs nests (parent, breadcrumbs), the SEO plugin's title, description and image from the block's Open Graph, the JSON-LD and the licence. Every tools/call result carries the same in _meta.payload.
+     * Any tool's result as the document Payload's default plugins hold, no custom collection
      */
     payload?: boolean | null;
     /**
-     * MCP configures Payload and the rest: Payload's default plugins (lexical with the one qpu block, nested-docs, seo, search, redirects, form-builder, multi-tenant, mcp, ecommerce) in all their combinations with no custom collection; the Worker's wrangler configuration from the tenants; each tenant's variable names (never values); the PWA manifest; the MCP registration. Every configuration carries its torus: address, seed, reflection and trinity, and whether the loop closes (config → text → config at the same address). With current (the text a client holds), the drift: every path that differs, each a lead; for a hand-held TypeScript file (payload, hooks, bindings), what MCP configures and the text lacks. With files: every configuration's file and its source, what next writes and what it measures on every run. Kinds hooks and bindings: the Payload hooks and the providers' bindings for full-scale use at minimum cost. Without kind: all of them, tested.
+     * MCP configures Payload and the rest
      */
     configure?: boolean | null;
     /**
-     * QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, tools): the host's tools/list read into doors that join this catalogue as host:tool, with what each takes and answers; without tools, the one request the client makes for them (a tenant's token travels in the request, never here). Outward: this catalogue as the registration any MCP client mounts. call (host, tool, arguments): the request that serves a foreign door; with answer, what it answered, read whether JSON or an event stream. Pure; the client fetches. Cloudflare's eight servers are extended by default, the documentation one in the open.
+     * QPU as the natural extension of every MCP and every MCP of QPU
      */
     extend?: boolean | null;
     /**
-     * The split folds: a payload larger than a place can hold is folded into pieces under the bound (bytes), each addressed by its content (fold address and SHA-256), the whole by its pieces (a root over their hashes); a key names the one piece it sits in (by address, or by the key range of its rows), so a door answers from that piece and never from the whole. The bound is a reflective boundary: piece i mirrors piece n−1−i, the excess is reflected into the count of pieces, decided by integer comparisons before anything is computed. With pieces (index, text, sha256?) and a root: the whole unfolded and the root checked, the wrong pieces named.
+     * The split folds
      */
     fold?: boolean | null;
     /**
-     * SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure and the same at every host; the fold address of the text beside them, so a block, a piece and a message are named by one scheme. With sign (ML-DSA-44, ML-DSA-65 or ML-DSA-87, FIPS 204): the post-quantum signature plan over the 32-byte digest, executed by the host with its signing key through Web Crypto; a tenant verifies with the public key the answer carries, never the secret.
+     * SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure and the same at every host; the fold ad
      */
     seal?: boolean | null;
     /**
-     * The crypto and certificate APIs, with NIST and CERN, verified by theorems in coordinated combinations: plan answers the requests to every open API (the NIST randomness beacon, a Certificate Transparency log's tree head, Let's Encrypt's ACME directory, NIST NVD's CVEs on ML-KEM, CERN Open Data's Higgs records, crt.sh, NIST CSRC) and names the hosts whose live certificates the client reads itself; read takes the bodies, verifies the theorems over each (the beacon's chain, period and SHA-512 precommitment; the tree head's widths; the five ACME resources; CVSS bounded and dates ordered; sizes, checksums and DOIs; certificates ordered, within 398 days and valid now; the three FIPS named) and answers the follow-ups the combination needs (the beacon's previous pulse), so a client reads again until nothing follows. Pure: nothing fetched here.
+     * The crypto and certificate APIs, with NIST and CERN, verified by theorems in coordinated combinations
      */
     attest?: boolean | null;
     /**
@@ -4662,6 +4754,98 @@ export interface PayloadKv {
     | number
     | boolean
     | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: string;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'createCollectionExport' | 'createCollectionImport';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'createCollectionExport' | 'createCollectionImport') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -5577,6 +5761,64 @@ export interface EntriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exports_select".
+ */
+export interface ExportsSelect<T extends boolean = true> {
+  name?: T;
+  format?: T;
+  limit?: T;
+  page?: T;
+  sort?: T;
+  sortOrder?: T;
+  drafts?: T;
+  selectionToUse?: T;
+  fields?: T;
+  collectionSlug?: T;
+  where?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "imports_select".
+ */
+export interface ImportsSelect<T extends boolean = true> {
+  collectionSlug?: T;
+  importMode?: T;
+  matchField?: T;
+  status?: T;
+  summary?:
+    | T
+    | {
+        imported?: T;
+        updated?: T;
+        total?: T;
+        issues?: T;
+        issueDetails?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addresses_select".
  */
 export interface AddressesSelect<T extends boolean = true> {
@@ -5888,6 +6130,9 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
   'payload-mcp-tool'?:
     | T
     | {
+        clay?: T;
+        match?: T;
+        verify?: T;
         processor?: T;
         circuit?: T;
         echo?: T;
@@ -5903,9 +6148,6 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         faultTolerantDesign?: T;
         leads?: T;
         audit?: T;
-        match?: T;
-        clay?: T;
-        verify?: T;
         metrics?: T;
         textbook?: T;
         css?: T;
@@ -6003,6 +6245,37 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -6877,6 +7150,78 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateCollectionExport".
+ */
+export interface TaskCreateCollectionExport {
+  input: {
+    id: string;
+    name: string;
+    batchSize?: number | null;
+    collectionSlug:
+      | 'case-studies'
+      | 'community-help'
+      | 'docs'
+      | 'docs-feedback'
+      | 'media'
+      | 'pages'
+      | 'posts'
+      | 'categories'
+      | 'reusable-content'
+      | 'users'
+      | 'partners'
+      | 'industries'
+      | 'specialties'
+      | 'regions'
+      | 'budgets'
+      | 'forms'
+      | 'form-submissions'
+      | 'redirects'
+      | 'tenants'
+      | 'entries'
+      | 'exports'
+      | 'imports';
+    drafts?: ('yes' | 'no') | null;
+    exportCollection: string;
+    fields?: string[] | null;
+    format: 'csv' | 'json';
+    limit?: number | null;
+    locale?: string | null;
+    maxLimit?: number | null;
+    page?: number | null;
+    sort?: string | null;
+    userCollection?: string | null;
+    userID?: string | null;
+    where?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskCreateCollectionImport".
+ */
+export interface TaskCreateCollectionImport {
+  input: {
+    importId: string;
+    importCollection: string;
+    userID?: string | null;
+    userCollection?: string | null;
+    batchSize?: number | null;
+    debug?: boolean | null;
+    defaultVersionStatus?: ('draft' | 'published') | null;
+    maxLimit?: number | null;
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
