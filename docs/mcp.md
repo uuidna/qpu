@@ -2100,7 +2100,7 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
     },
     "facts": {
       "type": "object",
-      "description": "with workflow: { receipt, approval, e2e, carried } as the client read them after the steps; the rules of the workflow decided by their theorems: allowed or refused, a violation a case for the court"
+      "description": "with workflow: { receipt, approval, e2e, carried } as the client read them after the steps; for pre-deploy also config (the deploy configuration's text) and docket (the documents the Payload MCP answered), folded here into the bindings, the account, its observability and usage — the client names no provider and no resource; the rules of the workflow decided by their theorems: allowed or refused, a violation a case for the court"
     },
     "selftest": {
       "type": "boolean"

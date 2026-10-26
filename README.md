@@ -28,7 +28,7 @@ Every figure below was measured on this tree on 2026-10-26 with the commands in 
 | Theorems declared / accepted by the kernel | 668 / 1196 (669 hand-written, 527 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
-| Self-audit checks | 1331 of 1331 pass |
+| Self-audit checks | 1337 of 1337 pass |
 | Cross-verification requests (free public sources) | 2827 requests, 2783 reachable on 2026-10-26 |
 | Servers, workers, network calls in the handler | 0 |
 
