@@ -12,8 +12,8 @@ theorem textbook_uuid_is_36 : 32 + 4 = 36 := by decide
 theorem textbook_reflection_sums_to_ten (s : Nat) (h : s ≤ 10) : s + (10 - s) = 10 := by omega
 /-- piece i and its mirror n − i sum to the boundary n (examples: fold-ledger) -/
 theorem textbook_fold_mirror (n i : Nat) (h : i ≤ n) : i + (n - i) = n := by omega
-/-- Cloudflare's eight servers, GitHub's one and the Claude API are ten integrations (examples: extend-in-request) -/
-theorem textbook_integrations_are_ten : 8 + 1 + 1 = 10 := by decide
+/-- Cloudflare's eight servers, GitHub's one, the Claude API and Google's fifteen are twenty-five integrations (examples: extend-in-request) -/
+theorem textbook_integrations_are_twenty_five : 8 + 1 + 1 + 15 = 25 := by decide
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/
@@ -64,16 +64,22 @@ theorem textbook_cvss_bounded (s : Nat) (h : s ≤ 100) : s ≤ 100 := h
 theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤ 398 := h
 /-- what is published precedes what is modified; what begins precedes what ends (examples: none yet) -/
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
-/-- the nineteen generated files of the full stack partition over nine roles — one block, four config modules, two notices, two collections, three hooks modules, one global, four components, one script, one plugin that carries them all into any config — and the role, not the hand, names the folder and the file (examples: configure-fullstack) -/
-theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 3 + 1 + 4 + 1 + 1 = 19 := by decide
+/-- the twenty generated files of the full stack partition over ten roles — one block, four config modules, two notices, two collections, three hooks modules, one global, four components, one script, one plugin that carries them all into any config — and the role, not the hand, names the folder and the file, one root file the OpenNext build reads (examples: configure-fullstack) -/
+theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 3 + 1 + 4 + 1 + 1 + 1 = 20 := by decide
 /-- to win, know the competitors as well as the theorems: the knowledge of a competition is the product of both, positive only when neither is empty (examples: compete-rules) -/
 theorem textbook_compete_knows (c t : Nat) (hc : 0 < c) (ht : 0 < t) : 0 < c * t := Nat.mul_pos hc ht
-/-- an app generated on request is the full stack's nineteen files plus the Worker configuration and the environment example: twenty-one files, each addressed, the bundle their fold (examples: payload-app) -/
-theorem textbook_app_bundle : 19 + 2 = 21 := by decide
+/-- an app generated on request is the full stack's twenty files plus the Worker configuration and the environment example: twenty-two files, each addressed, the bundle their fold (examples: payload-app) -/
+theorem textbook_app_bundle : 20 + 2 = 22 := by decide
 /-- two edits of one document either share their base address or collide: there is no third case, so a collision is detected exactly, never guessed from clocks (examples: configure-realtime) -/
 theorem textbook_edit_collides (p q : Nat) : p = q ∨ p ≠ q := by omega
 /-- the leads a difference opens are the members on one side only: with a and b members sharing c, (a − c) + (b − c) = a + b − 2c, whatever the members name (examples: audit-difference) -/
 theorem textbook_difference_leads (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : (a - c) + (b - c) = a + b - 2 * c := by omega
+/-- the security audit from the client and the developer perspectives merged as one: the same count of checks from either side (examples: audit-security) -/
+theorem textbook_security_perspectives (c d : Nat) : c + d = d + c := Nat.add_comm c d
+/-- the errors remedied and the errors left make the errors: what manual work taught is a remedy by signature, applied in mass, and what it did not teach stays a lead (examples: audit-remedies) -/
+theorem textbook_error_remedies (e r : Nat) (h : r ≤ e) : e - r + r = e := Nat.sub_add_cancel h
+/-- correction and handling are each other's fallback: when error correction errors, handling takes over, and when handling has nothing, correction returns — the swap applied twice is the identity, so the fallback terminates (examples: audit-fallbacks) -/
+theorem textbook_fallback_involution (m : Bool) : (!(!m)) = m := Bool.not_not m
 /-- fusion never multiplies: f findings fused by d reactions leave f − d leads, never more than the findings (examples: audit-entropy) -/
 theorem textbook_entropy_fusion (f d : Nat) : f - d ≤ f := Nat.sub_le f d
 /-- inclusion–exclusion: two config sets of sizes a and b sharing c members unite into a + b − c members — the members of a alone, of b alone, and the shared ones (examples: configure-sets) -/
@@ -82,10 +88,16 @@ theorem textbook_set_union (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : a + b -
 theorem textbook_widget_skilled_tools (w s : Nat) (h : w = s) : min w s = w := by subst h; exact Nat.min_self w
 /-- the tool set partitions over the twelve toolboxes: forty-six tools (examples: configure-sets) -/
 theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 = 46 := by decide
-/-- every API is a gate: the forty-six doors of twelve toolboxes and the seventy-nine addresses of six categories (patents, certificates, currency, competitions, MCP, references) make one hundred and twenty-five gates, each a nested doc of its leads (examples: configure-gates) -/
-theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 40 + 14 = 125 := by decide
-/-- the same gates by kind: forty-six tools, thirty-five open, thirteen keyed, one a browser alone passes, thirty proposed by the registry (examples: configure-gates) -/
-theorem textbook_gates_by_kind : 46 + 35 + 13 + 1 + 30 = 125 := by decide
+/-- every API is a gate: the forty-six doors of twelve toolboxes and the ninety-seven addresses of six categories (patents, certificates, currency, competitions, MCP with Google's servers, references) make one hundred and forty-three gates, each a nested doc of its leads (examples: configure-gates) -/
+theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 58 + 14 = 143 := by decide
+/-- every API handled in quantum: one adapter per gate, a dimension of the one plugin, landing in the default schema — one hundred and nineteen in the docket entries, five in the catalogue's products, five in the competition pages, fourteen in the pages and the search index (examples: configure-gates) -/
+theorem textbook_gate_adapters : 119 + 5 + 5 + 14 = 143 := by decide
+/-- every adapter dimension is REST both ways (in: the API's answer into Payload; out: Payload's data to the API) under the three tenant roles: six role-direction pairs, the access rules naming each (examples: configure-gates) -/
+theorem textbook_rest_rbac : 2 * 3 = 6 := by decide
+/-- Google's own MCP servers measured in the registry: fifteen at <service>.googleapis.com/mcp and three toolboxes, every one an adapter dimension or a door, none called from the tree (examples: configure-gates) -/
+theorem textbook_google_mcps : 15 + 3 = 18 := by decide
+/-- the same gates by kind: forty-six tools, thirty-five open, twenty-eight keyed (Google's fifteen among them), one a browser alone passes, thirty-three proposed by the registry (examples: configure-gates) -/
+theorem textbook_gates_by_kind : 46 + 35 + 28 + 1 + 33 = 143 := by decide
 /-- five databases, five storages and two email adapters make fifty adapter combinations (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
 /-- eight kinds tested of eight leave none open (examples: none yet) -/

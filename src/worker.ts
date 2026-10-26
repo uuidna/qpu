@@ -50,7 +50,7 @@ export const roleOf = (env: Env, tenant: string, token: string | undefined): { r
   return other ? { role: 'reader', collision: `a token of tenant ${other} presented at tenant ${tenant}: tokens are per tenant; ask the author for a ${tenant} token (${ROLES.writer.issued})` } : { role: 'reader' }
 }
 
-const LICENSE_HEADERS = { 'X-Qpu-Version': VERSION, 'Link': `<${LICENSE.url}>; rel="license"`, 'X-License': LICENSE.spdx, 'X-Copyright': LICENSE.copyright, 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }
+const LICENSE_HEADERS = { 'X-Qpu-Version': VERSION, 'Link': `<${LICENSE.url}>; rel="license"`, 'X-License': LICENSE.spdx, 'X-Copyright': LICENSE.copyright, 'Strict-Transport-Security': 'max-age=31536000; includeSubDomains', 'X-Content-Type-Options': 'nosniff', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS' }
 const json = (body: unknown, status = 200, extra: Record<string, string> = {}): Response => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', ...LICENSE_HEADERS, ...extra } })
 /** Streaming by default: a client that accepts text/event-stream receives the reply as the MCP streamable transport's event (event: message, data: the JSON-RPC reply), the same headers kept; a client that does not receives JSON. */
 const streams = (request: Request): boolean => /text\/event-stream/.test(request.headers.get('accept') ?? '')

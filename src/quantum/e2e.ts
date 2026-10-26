@@ -6,6 +6,7 @@
 import { uuidOf } from './blocks.js'
 import { dataOf, rpcBody } from './discovery.js'
 import { textbookLogicalError } from './qec.js'
+import { handleOrCorrect } from './audit.js'
 import type { Context } from './toolbox.js'
 
 export type E2eRequest = { id: string; combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; arguments: Record<string, unknown>; host: string; url: string; method: 'POST'; accept: string; headers: Record<string, string>; body: unknown; local: string; localError?: string }
@@ -117,10 +118,12 @@ export const e2eOf = (answers: readonly E2eAnswer[]): { combos: number; copies: 
     const syndrome = [...flipped, ...erased].map((c) => c.host)
     const errors: ErrorBlock[] = [...flipped.map((c) => ({ kind: 'flip' as const, host: c.host, got: c.value })), ...erased.map((c) => ({ kind: c.kind!, host: c.host, got: c.value }))].map((e) => ({ uuid: uuidOf(`e2e${e.kind}${e.host}${combo}${first.local}${e.got}`), ...e, tool: first.tool, combo, expected: logical, syndrome }))
     const outcome: Decoded['outcome'] = !majority ? 'uncorrectable' : flipped.length ? 'corrected' : erased.length ? 'erased' : 'agree'
+    // when the correction errors (no majority), handling takes over: the involution σ for this combination, terminating in at most two swaps
+    const fallback = majority ? null : handleOrCorrect(errors.map((e) => `${e.kind} at ${e.host}: ${e.got}`), false, 'correction')
     // the combinatorial possibilities of an answer: every value some copies hold, with the copies that hold it (the tree is a copy too)
     const possibilities = [...new Set([first.local, ...copies.filter((c) => !c.kind).map((c) => c.value)])].map((value) => ({ value, copies: [...(first.local === value ? ['tree'] : []), ...copies.filter((c) => !c.kind && c.value === value).map((c) => c.host)] })).sort((a, b) => b.copies.length - a.copies.length)
     const { codes, winner } = competitionOf(first.local, copies, majority ? logical : null)
-    decoded.push({ combo, tool: first.tool, toolbox: first.toolbox, from: first.from, local: first.local, copies: copies.map((c) => ({ host: c.host, value: c.value, ms: c.ms, ...(c.involution ? { involution: true as const } : {}) })), outcome, logical: majority ? logical : 'none', syndrome, errors, codes, winner, possibilities, involutions, materialised })
+    decoded.push({ combo, tool: first.tool, toolbox: first.toolbox, from: first.from, local: first.local, copies: copies.map((c) => ({ host: c.host, value: c.value, ms: c.ms, ...(c.involution ? { involution: true as const } : {}) })), outcome, logical: majority ? logical : 'none', syndrome, errors, ...(fallback ? { fallback } : {}), codes, winner, possibilities, involutions, materialised })
   }
   const outcomes: Record<Decoded['outcome'], number> = { agree: 0, corrected: 0, erased: 0, uncorrectable: 0 }
   for (const d of decoded) outcomes[d.outcome] += 1

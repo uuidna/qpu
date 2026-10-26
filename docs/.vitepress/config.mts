@@ -186,6 +186,10 @@ export default defineConfig({
         "link": "/readiness"
       },
       {
+        "text": "Security",
+        "link": "/security"
+      },
+      {
         "text": "Imagination",
         "link": "/imagination"
       },
@@ -349,6 +353,10 @@ export default defineConfig({
           {
             "text": "Readiness",
             "link": "/readiness"
+          },
+          {
+            "text": "Security",
+            "link": "/security"
           },
           {
             "text": "Imagination",

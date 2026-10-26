@@ -1,0 +1,205 @@
+{
+ "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
+ "date": "2026-10-26T11:54:20.575Z",
+ "hosts": [
+  "https://qpu.uuidna.com",
+  "https://qpu.psg.bg",
+  "https://qpu.ceci.workers.dev"
+ ],
+ "checks": [
+  {
+   "id": "cors:qpu.uuidna.com",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "allow-origin *, allow-headers content-type, authorization",
+   "remedy": "reads answer every origin; writes carry Authorization"
+  },
+  {
+   "id": "hsts:qpu.uuidna.com",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "HSTS max-age=31536000; includeSubDomains",
+   "remedy": "enable HSTS on the zone (Cloudflare SSL/TLS, Edge Certificates): the tenant's act"
+  },
+  {
+   "id": "no-sniff:qpu.uuidna.com",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "nosniff",
+   "remedy": "the Worker answers X-Content-Type-Options: nosniff on every reply"
+  },
+  {
+   "id": "write-needs-token:qpu.uuidna.com",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "POST /entries without a token answers 404",
+   "remedy": "a write without Authorization is refused with 401 or 403"
+  },
+  {
+   "id": "surface-audit:qpu.uuidna.com",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "952/952 checks pass over MCP",
+   "remedy": "every failed check is a lead with its evidence"
+  },
+  {
+   "id": "cors:qpu.psg.bg",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "allow-origin *, allow-headers content-type, authorization",
+   "remedy": "reads answer every origin; writes carry Authorization"
+  },
+  {
+   "id": "hsts:qpu.psg.bg",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "HSTS max-age=31536000; includeSubDomains",
+   "remedy": "enable HSTS on the zone (Cloudflare SSL/TLS, Edge Certificates): the tenant's act"
+  },
+  {
+   "id": "no-sniff:qpu.psg.bg",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "nosniff",
+   "remedy": "the Worker answers X-Content-Type-Options: nosniff on every reply"
+  },
+  {
+   "id": "write-needs-token:qpu.psg.bg",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "POST /entries without a token answers 404",
+   "remedy": "a write without Authorization is refused with 401 or 403"
+  },
+  {
+   "id": "surface-audit:qpu.psg.bg",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "952/952 checks pass over MCP",
+   "remedy": "every failed check is a lead with its evidence"
+  },
+  {
+   "id": "cors:qpu.ceci.workers.dev",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "allow-origin *, allow-headers content-type, authorization",
+   "remedy": "reads answer every origin; writes carry Authorization"
+  },
+  {
+   "id": "hsts:qpu.ceci.workers.dev",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "HSTS max-age=31536000; includeSubDomains",
+   "remedy": "enable HSTS on the zone (Cloudflare SSL/TLS, Edge Certificates): the tenant's act"
+  },
+  {
+   "id": "no-sniff:qpu.ceci.workers.dev",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "nosniff",
+   "remedy": "the Worker answers X-Content-Type-Options: nosniff on every reply"
+  },
+  {
+   "id": "write-needs-token:qpu.ceci.workers.dev",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "POST /entries without a token answers 404",
+   "remedy": "a write without Authorization is refused with 401 or 403"
+  },
+  {
+   "id": "surface-audit:qpu.ceci.workers.dev",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "952/952 checks pass over MCP",
+   "remedy": "every failed check is a lead with its evidence"
+  },
+  {
+   "id": "payload-mcp-key",
+   "perspective": "client",
+   "passed": true,
+   "evidence": "the app is not deployed: the plugin requires Authorization: <users> API-Key (measured locally), pending online",
+   "remedy": "the Payload MCP plugin refuses a request without a user's API key"
+  },
+  {
+   "id": "dependencies:root",
+   "perspective": "developer",
+   "passed": true,
+   "evidence": "info 0, low 0, moderate 0, high 0, critical 0, total 0",
+   "remedy": "npm audit fix or a pinned fixed version; a finding is a lead"
+  },
+  {
+   "id": "dependencies:site",
+   "perspective": "developer",
+   "passed": false,
+   "evidence": "info 0, low 11, moderate 44, high 45, critical 11",
+   "remedy": "npm audit fix or a pinned fixed version; a finding is a lead"
+  },
+  {
+   "id": "no-leaks",
+   "perspective": "developer",
+   "passed": true,
+   "evidence": "0 address(es) in the tree",
+   "remedy": "contacts are URLs; the account email is read at deploy"
+  },
+  {
+   "id": "env-named-not-valued",
+   "perspective": "developer",
+   "passed": true,
+   "evidence": "the environment example names every variable and holds no value",
+   "remedy": "values never travel: names only"
+  },
+  {
+   "id": "access-rules",
+   "perspective": "developer",
+   "passed": true,
+   "evidence": "entries.update: no one: an entry is its content address, so a change is a new entry; tenants.write: a super admin (the admin role)",
+   "remedy": "an entry is its content address (no update); tenants are a super admin's"
+  },
+  {
+   "id": "hooks-guarded",
+   "perspective": "developer",
+   "passed": true,
+   "evidence": "hooks: collisionGuard, firstUserBootstrap, appRequest",
+   "remedy": "the plugin adds the collision guard, the first-user bootstrap and the validated app request"
+  },
+  {
+   "id": "signing-at-edge",
+   "perspective": "developer",
+   "passed": true,
+   "evidence": "ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc)",
+   "remedy": "the Worker signs with ML-DSA under the Web Crypto flag"
+  },
+  {
+   "id": "rest-rbac-both-ways",
+   "perspective": "both",
+   "passed": true,
+   "evidence": "two directions under three tenant roles on every adapter dimension (textbook_rest_rbac)"
+  },
+  {
+   "id": "theorems-sealed",
+   "perspective": "both",
+   "passed": true,
+   "evidence": "1036 kernel-accepted theorems",
+   "remedy": "the textbook is the proof"
+  }
+ ],
+ "total": 25,
+ "passed": 24,
+ "failed": 1,
+ "perspectives": {
+  "client": 16,
+  "developer": 7,
+  "both": 2
+ },
+ "merged": "one list: each check from the client, the developer, or both; the same count from either side",
+ "leads": [
+  {
+   "id": "security-dependencies-site",
+   "statement": "dependencies:site (developer): info 0, low 11, moderate 44, high 45, critical 11",
+   "status": "open",
+   "remedy": "npm audit fix or a pinned fixed version; a finding is a lead",
+   "tool": "audit"
+  }
+ ],
+ "verdict": "1 finding(s), each a lead with its remedy",
+ "says": "the security audit performed by MCP from both perspectives merged as one; every finding a lead with the remedy manual work taught"
+}

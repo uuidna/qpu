@@ -19,6 +19,28 @@ export const CLOUDFLARE_MCP: readonly { host: string; url: string; about: string
   { host: 'dns-analytics.mcp.cloudflare.com', url: 'https://dns-analytics.mcp.cloudflare.com/mcp', about: 'DNS analytics of the account\'s zones' },
   { host: 'autorag.mcp.cloudflare.com', url: 'https://autorag.mcp.cloudflare.com/mcp', about: 'AutoRAG: the account\'s indexed documents' },
 ]
+/** Google's own MCP servers, measured in the registry on 2026-10-26 (search google: 296 servers, 175 with remotes, these at <service>.googleapis.com/mcp):
+ *  every one a token door (Google OAuth), each mapped to what it is for the Payload plugin — an adapter the environment names, a deploy target,
+ *  a measure, a door the tenant opens; proposed and never called from the tree. */
+export const GOOGLE_MCP: readonly { host: string; url: string; about: string; maps: string }[] = [
+  { host: 'sqladmin.googleapis.com', url: 'https://sqladmin.googleapis.com/mcp', about: 'Cloud SQL: create, manage, query instances', maps: 'the adapters profile google: db-postgres over a Cloud SQL instance (DATABASE_URI); the docket over it' },
+  { host: 'run.googleapis.com', url: 'https://run.googleapis.com/mcp', about: 'Cloud Run: deploy applications', maps: 'the deploy target of the app beside Workers and Vercel (the bindings provider google-cloud); the migration law keeps every host until the gate decodes it' },
+  { host: 'firestore.googleapis.com', url: 'https://firestore.googleapis.com/mcp', about: 'Firestore resources', maps: 'no Payload database adapter exists for Firestore: a lead (the docket mirrored as entries by address would fit)' },
+  { host: 'mapstools.googleapis.com', url: 'https://mapstools.googleapis.com/mcp', about: 'Google Maps: trusted geospatial data', maps: 'the ecommerce addresses collection: geocoding proposed as a hook the tenant enables with its token, never called from the tree' },
+  { host: 'monitoring.googleapis.com', url: 'https://monitoring.googleapis.com/mcp', about: 'Cloud Monitoring: performance, availability, health', maps: 'the metrics tool\'s load measures and the e2e gate\'s copies, read beside Cloud Monitoring when the app runs on Cloud Run' },
+  { host: 'developerknowledge.googleapis.com', url: 'https://developerknowledge.googleapis.com/mcp', about: 'Google\'s public developer documentation', maps: 'a verifier like cloudflare-docs: a fact on developers.google.com searched there' },
+  { host: 'design.googleapis.com', url: 'https://design.googleapis.com/mcp', about: 'UX capabilities for AI systems', maps: 'the UI: the shadcn items styled from the address, offered through this door when the tenant names it' },
+  { host: 'stitch.googleapis.com', url: 'https://stitch.googleapis.com/mcp', about: 'the Stitch API', maps: 'the UI designs the gate pages carry, when the tenant names it' },
+  { host: 'compute.googleapis.com', url: 'https://compute.googleapis.com/mcp', about: 'Compute Engine infrastructure', maps: 'infrastructure the tenant names: a door, no adapter' },
+  { host: 'container.googleapis.com', url: 'https://container.googleapis.com/mcp', about: 'GKE and Kubernetes resources (read)', maps: 'infrastructure the tenant names: a door, no adapter' },
+  { host: 'composer.googleapis.com', url: 'https://composer.googleapis.com/mcp', about: 'Cloud Composer resources', maps: 'the waves of next run as a Composer workflow when the tenant names it: a door' },
+  { host: 'datastream.googleapis.com', url: 'https://datastream.googleapis.com/mcp', about: 'Datastream resources', maps: 'the docket streamed out of Cloud SQL: a door' },
+  { host: 'bigtableadmin.googleapis.com', url: 'https://bigtableadmin.googleapis.com/mcp', about: 'Bigtable resources', maps: 'a store the docket could address: a door, no adapter' },
+  { host: 'memorystore.googleapis.com', url: 'https://memorystore.googleapis.com/mcp', about: 'Memorystore for Valkey', maps: 'the cache by address (as KV on Cloudflare): a door' },
+  { host: 'androidmanagement.googleapis.com', url: 'https://androidmanagement.googleapis.com/mcp', about: 'enterprise management of Android devices', maps: 'the PWA on managed devices: a door' },
+]
+/** Google's MCP toolboxes in the registry (local servers): proposed, never called. */
+export const GOOGLE_MCPS = ['io.github.googleapis/genai-toolbox', 'io.github.googleapis/mcp-toolbox', 'io.github.GoogleCloudPlatform/gemini-cloud-assist-mcp'] as const
 /** GitHub's hosted MCP server: answers 401 until a tenant brings its token (a fine-grained PAT or the OAuth flow); the read-only form beside it. */
 export const GITHUB_MCP: readonly { host: string; url: string; about: string }[] = [
   { host: 'api.githubcopilot.com', url: 'https://api.githubcopilot.com/mcp/', about: 'GitHub: repositories, branches, tags, releases, issues, pull requests, actions of the tenant\'s account' },
@@ -37,10 +59,11 @@ export const CLAUDE_API = {
 export const KNOWN_MCP: readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[] = [
   ...CLOUDFLARE_MCP.map((c) => ({ ...c, auth: (c.host === 'docs.mcp.cloudflare.com' ? 'none' : 'token') as 'none' | 'token', maps: c.host === 'docs.mcp.cloudflare.com' ? 'the verifier cloudflare-docs: a fact on developers.cloudflare.com is searched there (search_cloudflare_documentation)' : c.host === 'bindings.mcp.cloudflare.com' ? 'the docket\'s mirrors: KV, R2, D1 and Durable Objects of the tenant read as mirrors to heal by address' : c.host === 'observability.mcp.cloudflare.com' ? 'the metrics tool: the Worker\'s logs and analytics beside the balancer\'s own counts' : c.host === 'browser.mcp.cloudflare.com' ? 'the verification wave: a page rendered at the edge when a verifier needs the page as a browser sees it' : c.host === 'radar.mcp.cloudflare.com' ? 'the legal audit: internet-wide facts as public datasets' : c.host === 'ai-gateway.mcp.cloudflare.com' ? 'the prose tool: generation logged through the tenant\'s gateway, never a token of this tree' : c.host === 'dns-analytics.mcp.cloudflare.com' ? 'the tenants: the custom domains\' DNS read per tenant' : 'the textbook: the tenant\'s indexed documents as a textbook to categorise' })),
   { host: 'api.anthropic.com', url: CLAUDE_API.messages, about: 'the Claude API: messages, the MCP connector that mounts this catalogue into a request, the Models door', auth: 'token' as const, maps: 'the operator agent of the legal audit and the prose tool when the tenant\'s key opens it (never by default: free doors first); outward, extend answers the Messages API registration that mounts this catalogue (mcp_servers + mcp_toolset, beta mcp-client-2025-11-20)' },
+  ...GOOGLE_MCP.map((g) => ({ host: g.host, url: g.url, about: g.about, auth: 'token' as const, maps: g.maps })),
   ...GITHUB_MCP.map((g) => ({ ...g, auth: 'token' as const, maps: 'the repository toolbox: branches, tags and releases watched through the doors list_branches, list_tags and list_releases instead of the REST contract; the next-leads docket as issues when the tenant asks' })),
 ]
 /** The hosts discovered when a tenant names none: the unit, this tree, Cloudflare's eight servers and GitHub's. */
-export const DEFAULT_MCP_HOSTS: readonly string[] = ['https://uuidna.com/mcp', 'https://qpu.uuidna.com/mcp', ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url)]
+export const DEFAULT_MCP_HOSTS: readonly string[] = ['https://uuidna.com/mcp', 'https://qpu.uuidna.com/mcp', ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url), ...GOOGLE_MCP.map((g) => g.url)]
 /** The JSON of an MCP answer, whether the host answered JSON or an event stream (the data line that is JSON). */
 export const dataOf = (text: string): string => (/^(event|data):/m.test(text) ? (text.split('\n').filter((l) => l.startsWith('data:')).map((l) => l.slice(5).trim()).find((l) => l.startsWith('{')) ?? text) : text)
 export type Answer = Request & { status: number; type: string; text: string }

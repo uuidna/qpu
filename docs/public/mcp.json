@@ -1009,6 +1009,21 @@
           "difference": {
             "type": "object",
             "description": "two named sets { a: { name, members }, b: { name, members }, config? }: every member on one side only becomes a lead to explore and to config, agnostic of what the members name, counted by textbook_difference_leads"
+          },
+          "security": {
+            "type": "object",
+            "description": "the security audit from the client and the developer perspectives merged as one: { client: { hosts: [{ host, status, headers, optionsStatus?, writeWithoutToken?, audit? }], payloadMcp? }, developer: { vulnerabilities, leaks, envExampleValueless, access, hooks, signing, theorems } } — the measurements a client script took"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "error texts: each matched to the remedy manual work taught (ERROR_REMEDIES), unmatched ones leads that teach the next row"
+          },
+          "fallbacks": {
+            "type": "boolean",
+            "description": "the fallback combinations (correction ↔ handling, the involution) and the adapters each falls back to"
           }
         }
       },

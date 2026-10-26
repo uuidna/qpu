@@ -8,6 +8,7 @@ import { createHash } from 'node:crypto'
 import { appendFileSync, existsSync, readFileSync, writeFileSync, unlinkSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { uuidOf } from '../src/quantum/blocks.ts'
+import { remediesOf } from '../src/quantum/audit.ts'
 
 const ROOT = process.cwd()
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
@@ -33,7 +34,8 @@ const steps: Step[] = [
   { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 }, // a quantum: today's results kept by url, the rest fetched as far as the quantum goes
   { name: 'readiness', cmd: 'node', args: ['--import', 'tsx', 'scripts/readiness.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 },
   { name: 'e2e', cmd: 'node', args: ['--import', 'tsx', 'scripts/e2e.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3 }, // the gate as a repetition code: every combination on every host, decoded by majority; a quantum
-  { name: 'attest', cmd: 'node', args: ['--import', 'tsx', 'scripts/attest.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // crypto and certificate APIs, NIST and CERN, verified by theorems in coordinated combinations
+  { name: 'attest', cmd: 'node', args: ['--import', 'tsx', 'scripts/attest.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 },
+  { name: 'security', cmd: 'node', args: ['--import', 'tsx', 'scripts/security.ts'], skip: offline ? 'offline' : undefined, budgetMs: 300_000, wave: 3 }, // the security audit from the client and the developer perspectives merged as one, by the audit tool // crypto and certificate APIs, NIST and CERN, verified by theorems in coordinated combinations
   { name: 'patents', cmd: 'node', args: ['--import', 'tsx', 'scripts/patents.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // the open patent APIs fetched once, the theorems verified over every patent read
   { name: 'compete', cmd: 'node', args: ['--import', 'tsx', 'scripts/compete.ts'], budgetMs: 120_000, wave: 3 }, // always: every competition's rules judged against the evidence; online, the windows read from the pages and pushed from the remote
   { name: 'currency', cmd: 'node', args: ['--import', 'tsx', 'scripts/currency.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // every free rate API fetched once, harmonised: one rate per currency, the catalogue in every currency
@@ -123,7 +125,8 @@ const docket = join(ROOT, 'docs', 'public', 'next-leads.json')
 const previous: NextLead[] = existsSync(docket) ? JSON.parse(readFileSync(docket, 'utf8')) : []
 const opened: NextLead[] = stillRed.map((s) => {
   const step = receipt.steps.filter((x) => x.name === s.name).at(-1)!
-  return { id: `next-${s.name}-${receipt.head}`, source: `npm run next ${receipt.date}`, statement: `${s.name} is red at ${receipt.head}`, status: 'open', reason: 'a stop is a lead to follow next; stopping is the failure', evidence: step.tail, head: receipt.head, date: receipt.date }
+  const remedy = remediesOf([step.tail]).leads[0]
+  return { id: `next-${s.name}-${receipt.head}`, source: `npm run next ${receipt.date}`, statement: `${s.name} is red at ${receipt.head}${remedy?.remedy ? ` — remedy: ${remedy.remedy}` : ' — no remedy learned yet: a lead that teaches the next row'}`, status: 'open', reason: 'a stop is a lead to follow next; stopping is the failure', evidence: step.tail, head: receipt.head, date: receipt.date }
 })
 if (concurrent) opened.push({ id: `next-concurrent-${receipt.head}-${receipt.date.slice(11, 19).replace(/:/g, '')}`, source: `npm run next ${receipt.date}`, statement: `two next runs wrote docs/public at once (this run beside pid ${concurrent.pid} started ${concurrent.date})`, status: 'open', reason: 'the flow has no queue: a run that starts while another writes the same files can read a half-written artefact; serialise the runs or give each its own output', evidence: `lock ${lockPath}`, head: receipt.head, date: receipt.date })
 const leadsNow = [...previous.filter((l) => !opened.some((o) => o.id === l.id)), ...opened]

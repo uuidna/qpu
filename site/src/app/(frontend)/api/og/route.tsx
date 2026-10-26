@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { ImageResponse } from 'next/og'
 import { NextResponse } from 'next/server'
 
-export const runtime = 'edge'
+// no edge runtime export: on Cloudflare Workers the whole app is the Worker and OpenNext runs the Node runtime under nodejs_compat (configure { kind: 'adapters' })
 
 export async function GET(req: NextRequest): Promise<ImageResponse> {
   try {

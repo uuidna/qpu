@@ -165,6 +165,12 @@
       "email-resend",
       "plugin-ecommerce (Stripe over HTTP)"
     ],
+    "google": [
+      "db-postgres (Cloud SQL: DATABASE_URI)",
+      "storage-gcs (GCS_BUCKET, GCS_PROJECT_ID)",
+      "email-nodemailer (Gmail SMTP: GMAIL_USER, GMAIL_APP_PASSWORD)",
+      "plugin-ecommerce"
+    ],
     "vercel": [
       "db-mongodb",
       "storage-vercel-blob",
@@ -242,5 +248,13 @@
     "observability": {
       "enabled": true
     }
+  },
+  "openNext": {
+    "config": "site/open-next.config.ts",
+    "build": "npx opennextjs-cloudflare build (the fork's pnpm build inside, so the build environment names PAYLOAD_SECRET and DATABASE_URI)",
+    "requires": [
+      "no export const runtime = 'edge' in any route: the whole app is the Worker and OpenNext runs the Node runtime under nodejs_compat"
+    ],
+    "measured": "the Next build passes; the OpenNext bundle refused the og route while it declared the edge runtime (2026-10-26); the export removed"
   }
 }
