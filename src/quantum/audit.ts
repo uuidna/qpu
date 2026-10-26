@@ -242,6 +242,20 @@ export const accessibilityOf = (html: string): string[] => {
   return misses
 }
 
+/** The textbook's axioms, each with its theorem: every example (the textbook) names the kernel-accepted theorem it rests on — on itself
+ *  (theorem:) or in the examples of a textbook theorem — and every theorem names only examples that exist. An example with no theorem is an
+ *  axiom (a lead), a theorem the kernel does not accept is a broken link, a named example that is gone a dangling one (textbook_axioms_linked). */
+export const axiomsOf = (examples: readonly Example[], textbook: readonly { key: string; examples: readonly string[] }[], kernel: ReadonlySet<string>) => {
+  const byExample = new Map<string, string[]>(); for (const t of textbook) for (const e of t.examples) byExample.set(e, [...(byExample.get(e) ?? []), t.key])
+  const ids = new Set(examples.map((e) => e.id))
+  const rows = examples.map((e) => { const keys = [...new Set([...(e.theorem ? [e.theorem] : []), ...(byExample.get(e.id) ?? [])])]; return { example: e.id, tool: e.tool, theorems: keys, kernel: keys.filter((k) => kernel.has(k)) } })
+  const axioms = rows.filter((r) => r.theorems.length === 0).map((r) => r.example)
+  const broken = rows.filter((r) => r.theorems.length > 0 && r.kernel.length < r.theorems.length).map((r) => ({ example: r.example, notKernel: r.theorems.filter((k) => !kernel.has(k)) }))
+  const dangling = textbook.flatMap((t) => t.examples.filter((e) => !ids.has(e)).map((e) => ({ theorem: t.key, example: e })))
+  const linked = rows.length - axioms.length
+  return { examples: rows.length, linked, axioms, broken, dangling, complete: axioms.length === 0 && broken.length === 0 && dangling.length === 0, byTool: Object.fromEntries([...new Set(rows.map((r) => r.tool))].map((tool) => [tool, rows.filter((r) => r.tool === tool && r.theorems.length > 0).length + '/' + rows.filter((r) => r.tool === tool).length])), theorem: 'textbook_axioms_linked', says: axioms.length || broken.length || dangling.length ? `${axioms.length} example(s) with no theorem, ${broken.length} linked to a theorem the kernel does not accept, ${dangling.length} theorem link(s) to a missing example` : `all ${rows.length} examples rest on kernel-accepted theorems: no axiom left in the textbook` }
+}
+
 export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = []): Audit => {
   const checks: Check[] = []
   let clock = Date.now()
@@ -301,6 +315,8 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   const lean = handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'lean://qpu/theorems' } }) as { result?: { contents?: { text: string }[] } }
   const ledger = (() => { try { return JSON.parse(lean.result?.contents?.[0]?.text ?? 'null') as { kernel: number; handWritten: number; generated: number; theorems: unknown[]; textbook: unknown[] } | null } catch { return null } })()
   check('lean:served-whole', Boolean(ledger) && ledger!.handWritten + ledger!.generated === ledger!.kernel && ledger!.theorems.length === ledger!.handWritten && ledger!.textbook.length > 0, ledger ? `${ledger.theorems.length} theorems and ${ledger.generated} lemmas served whole of ${ledger.kernel} the kernel accepts; ${ledger.textbook.length} textbook theorems with their Lean text` : 'the lean resource is not served')
+  const ax = axiomsOf(examples, TEXTBOOK_THEOREMS, new Set(THEOREM_KEYS ?? THEOREMS.map((t) => t.key)))
+  check('textbook:axioms-linked', ax.complete, ax.says)
   check('example-ids-unique', dup.length === 0, dup.length ? `duplicates: ${dup.join(', ')}` : `${examples.length} unique ids`)
 
   const servedWithoutTool = leads.filter((l) => l.status === 'served' && !(l.tool && names.has(l.tool)))

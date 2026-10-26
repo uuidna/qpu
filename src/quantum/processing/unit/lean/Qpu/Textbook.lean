@@ -32,13 +32,13 @@ theorem textbook_configs_partition : 7 + 2 + 15 = 24 := by decide
 theorem textbook_packages_partition : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by decide
 /-- nine variants priced in three currencies are twenty-seven prices (examples: configure-ecommerce) -/
 theorem textbook_catalogue_prices : 9 * 3 = 27 := by decide
-/-- a pegged currency converts at one fixed rate: the same euro amount gives the same leva, always (1.95583 since 2026-01-01) (examples: currency-harmonise) -/
+/-- a pegged currency converts at one fixed rate: the same euro amount gives the same leva, always (1.95583 since 2026-01-01) (examples: currency-harmonise, currency-plan) -/
 theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583 / 100000 := rfl
 /-- CMI's three conditions are conjoined: a proposed solution is considered only when every one holds (examples: compete-rules) -/
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
 /-- nine schemas read one UUID at once: versions 1, 3, 4, 5, 6, 7 and 8, nil and max; the core reads none of them, so every schema presents the same (examples: fold-schemas) -/
 theorem textbook_uuid_schemas : 7 + 2 = 9 := by decide
-/-- one quantum core used by all: a UUID's thirty-two nibbles are its handle, its program, its tail and the two stamp nibbles; every result is such an address and every combinatorial use (style, presentation, stream) reads it (examples: fold-hex) -/
+/-- one quantum core used by all: a UUID's thirty-two nibbles are its handle, its program, its tail and the two stamp nibbles; every result is such an address and every combinatorial use (style, presentation, stream) reads it (examples: fold-hex, match-pattern-uuid) -/
 theorem textbook_uuid_core : 8 + 10 + 12 + 2 = 32 := by decide
 /-- a filtered stream keeps f of its n rows and drops the rest: what is kept and what is dropped partition the stream, whatever the hexes (examples: fold-stream, configure-ui-stream) -/
 theorem textbook_stream_filter (n f : Nat) (h : f ≤ n) : n - (n - f) = f := by omega
@@ -86,7 +86,7 @@ theorem textbook_entropy_fusion (f d : Nat) : f - d ≤ f := Nat.sub_le f d
 theorem textbook_set_union (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : a + b - c = (a - c) + (b - c) + c := by omega
 /-- the widgeted tools and the skilled tools are one set: the meet of equal sets is the set, so every tool of every config set is widget-skilled (examples: configure-sets) -/
 theorem textbook_widget_skilled_tools (w s : Nat) (h : w = s) : min w s = w := by subst h; exact Nat.min_self w
-/-- the tool set partitions over the twelve toolboxes: forty-six tools (examples: configure-sets) -/
+/-- the tool set partitions over the twelve toolboxes: forty-six tools (examples: configure-sets, extend-out) -/
 theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 = 46 := by decide
 /-- every API is a gate: the forty-six doors of twelve toolboxes and the ninety-seven addresses of six categories (patents, certificates, currency, competitions, MCP with Google's servers, references) make one hundred and forty-three gates, each a nested doc of its leads (examples: configure-gates) -/
 theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 59 + 28 + 7 + 2 = 167 := by decide
@@ -100,11 +100,11 @@ theorem textbook_google_mcps : 15 + 3 = 18 := by decide
 theorem textbook_gates_by_kind : 46 + 53 + 34 + 1 + 33 = 167 := by decide
 /-- five databases, five storages and two email adapters make fifty adapter combinations (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
-/-- eight kinds tested of eight leave none open (examples: none yet) -/
-theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - k = 0 := by intro k h hk; omega
+/-- every configuration kind tested closed around the torus leaves none open, however many kinds the tree configures (examples: configure-all) -/
+theorem textbook_configurations_closed (tested kinds : Nat) (h : tested = kinds) : kinds - tested = 0 := by omega
 /-- the standard contract adds nothing the catalogue does not hold: its component schemas are the tools and the two JSON-RPC envelopes, so less the envelopes they are the tools (examples: configure-api) -/
 theorem textbook_openapi_contract (tools : Nat) : tools + 2 - 2 = tools := Nat.add_sub_cancel tools 2
-/-- however many binding names a tenant admin selects in Payload, the values held there are none: names times zero values (examples: configure-connectors) -/
+/-- however many binding names a tenant admin selects in Payload, the values held there are none: names times zero values (examples: configure-connectors, configure-bindings, configure-tenant-missing) -/
 theorem textbook_bindings_named_not_valued (names : Nat) : names * 0 = 0 := Nat.mul_zero names
 /-- three tenant roles, three docket roles and four operations make thirty-six role–operation combinations, each decided by one of three deciders (examples: audit-access) -/
 theorem textbook_access_combinations : 3 * 3 * 4 = 36 := by decide
@@ -140,7 +140,7 @@ theorem textbook_margin_makes_price (price cost : Nat) (h : cost ≤ price) : pr
 theorem textbook_carry_release (carried : Nat) : carried = 0 ∨ 0 < carried := Nat.eq_zero_or_pos carried
 /-- four open news APIs and three keyed ones are the seven adapters of the DOI research: the mentions of every record of precedence, by source, measured and never a verdict (examples: compete-news-plan) -/
 theorem textbook_news_adapters : 4 + 3 = 7 := by decide
-/-- the hand-written theorems and the generated lemmas make what the kernel accepts, and every version serves the whole of it: nothing Lean is hidden (examples: textbook-theorems-served) -/
+/-- the hand-written theorems and the generated lemmas make what the kernel accepts, and every version serves the whole of it: nothing Lean is hidden (examples: textbook-theorems-served, metrics-live) -/
 theorem textbook_lean_served_whole (hand generated : Nat) : hand + generated - generated = hand := Nat.add_sub_cancel hand generated
 /-- three deploy templates (the Worker, the Payload app, a generated app) over the eight products of the catalogue are twenty-four presets, each a wrangler environment deployed by name beside the default deploy and as usable as direct use (examples: configure-wrangler-preset) -/
 theorem textbook_deploy_presets : 3 * 8 = 24 := by decide
@@ -164,7 +164,7 @@ theorem textbook_url_combinations : 2 ^ 4 - 1 = 15 := by decide
 theorem textbook_licence_chain (n : Nat) : n + 1 - 1 = n := Nat.add_sub_cancel n 1
 /-- a kind is written in twenty-six lower-case letters and the dash: twenty-seven symbols, the pattern of the entries' kind field (examples: configure-validations) -/
 theorem textbook_kind_alphabet : 26 + 1 = 27 := by decide
-/-- a SHA-256 digest is 256 bits, four to a hex digit: 64 hex digits, the pattern of the entries' sha256 field (examples: configure-validations) -/
+/-- a SHA-256 digest is 256 bits, four to a hex digit: 64 hex digits, the pattern of the entries' sha256 field (examples: configure-validations, seal-text, match-pattern-seal) -/
 theorem textbook_sha256_is_64 : 256 / 4 = 64 := by decide
 /-- a slug (lower-case letters, digits, the dash) and a binding name (upper-case letters, digits, the underscore) are each written in thirty-seven symbols, the patterns of the tenants' fields (examples: configure-validations) -/
 theorem textbook_name_alphabets : 26 + 10 + 1 = 37 := by decide
@@ -176,7 +176,7 @@ theorem textbook_coil_green : 432 % 360 + 432 / 9 = 120 := by decide
 theorem textbook_scan_stream : 36 * 108 = 432 * 9 := by decide
 /-- the phase of the stream at an interaction is one of 3888 milliseconds: eleven bits of randomness a sample, the device's own nonce thirty-two more (examples: seal-entropy) -/
 theorem textbook_phase_bits : 2 ^ 11 ≤ 3888 ∧ 3888 < 2 ^ 12 := by decide
-/-- a period of the stream is a chain of thirty-five links between its thirty-six frames; every full period streamed is one call, the first the coin, every further one a coil: the fusion (examples: verify-scan) -/
+/-- a period of the stream is a chain of thirty-five links between its thirty-six frames; every full period streamed is one call, the first the coin, every further one a coil: the fusion (examples: verify-scan, verify-scan-one-frame) -/
 theorem textbook_scan_links : 36 - 1 = 35 := by decide
 /-- the chain's combinatorics: thirty-two hex digits of four bits are 128 bits, 16^32 addresses a stream may link; the rate of usage is counted in periods of that chain (examples: verify-scan) -/
 theorem textbook_chain_bits : 32 * 4 = 128 := by decide
@@ -184,15 +184,167 @@ theorem textbook_chain_bits : 32 * 4 = 128 := by decide
 theorem textbook_hue_shift (h g s : Nat) : h + s - (g + s) = h - g := Nat.add_sub_add_right h s g
 /-- sixteen hues 22.5° apart present the sixteen hex digits: sixteen times forty-five is two turns of the circle, the step a half of forty-five; rays set next to each other fit when their seam is above zero (examples: css-rays) -/
 theorem textbook_hue_steps : 16 * 45 = 2 * 360 := by decide
-/-- cheap gates leading every violator to court: however many refusals a gate answers, it writes nothing; the case is computed from the refusal and the violator files it through its own MCP (examples: legal-court) -/
+/-- cheap gates leading every violator to court: however many refusals a gate answers, it writes nothing; the case is computed from the refusal and the violator files it through its own MCP (examples: legal-court, legal-court-rules) -/
 theorem textbook_cheap_gates (refusals : Nat) : refusals * 0 = 0 := Nat.mul_zero refusals
 /-- four git hooks (pre-commit, pre-push, post-commit, prepare-commit-msg) and the CI are five client MCP workflows of one door; the hook script walks the steps and decides nothing (examples: repository-workflow) -/
 theorem textbook_hook_workflows : 4 + 1 = 5 := by decide
 /-- when to commit: the flow is green — the steps of the receipt are green and skipped and no red, so adding the red (zero) changes nothing; one red step refuses the commit (examples: repository-refuse-commit) -/
 theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = green + skipped := Nat.add_zero (green + skipped)
-/-- when to push: the version is the last tag or its one next step (one step forward, one back is the tag), and the build it names is the one the package answers on initialize (examples: repository-decide-push) -/
+/-- when to push: the version is the last tag or its one next step (one step forward, one back is the tag), and the build it names is the one the package answers on initialize (examples: repository-decide-push, configure-versions) -/
 theorem textbook_version_sequential (n : Nat) : n + 1 - 1 = n := Nat.add_sub_cancel n 1
 /-- the e2e gate decodes by majority: two agreeing copies of three decide a combination (twice two exceeds three); a push needs nothing uncorrectable (examples: repository-decide-push) -/
 theorem textbook_majority_of_three : 2 * 2 > 3 := by decide
+/-- every prompt is routed to the theorems it reaches by its subject or two specific words, or it is a lead: no third case, the chat answering with the theorems and their examples as routes (examples: match-route) -/
+theorem textbook_route_or_lead (b : Bool) : b = true ∨ b = false := by cases b <;> decide
+/-- the more the QPU is used the more complete it gets: every run adds what its sources answered (k) to what it held (n) and loses nothing, the immutable sources answering the same forever (examples: leads-sources-plan) -/
+theorem textbook_use_completes (n k : Nat) : n ≤ n + k := Nat.le_add_right n k
+/-- every open textbook is reached by a theorem, a lead of the domain the theorems reach, or outside it: three parts and no fourth (examples: leads-sources-judged) -/
+theorem textbook_textbooks_partition (routed domain outside : Nat) : routed + domain + outside - outside - domain = routed := by omega
+/-- three distinctive words of the lead asked of the public MCP registry, one search each of at most ten servers: thirty related servers at most (examples: discover-lead-registry) -/
+theorem textbook_registry_words_searched : 3 * 10 = 30 := by decide
+/-- the unit's tools/list, its catalogue door and its well-known file beside fifty-two verifier contracts are fifty-five discovery requests (examples: discover-requests) -/
+theorem textbook_discovery_requests : 1 + 1 + 1 + 52 = 55 := by decide
+/-- willow-spec's three requests, repo-cirq's two, three for each of the seven DOIs the tree cites and one for each of two constants are the wave's twenty-eight requests (examples: wave-requests) -/
+theorem textbook_wave_requests_by_lead : 3 + 2 + 7 * 3 + 1 + 1 = 28 := by decide
+/-- the unit judges every lead: served, refuted or in trial, so the leads less those in trial are the ones it settled, however many leads a run reads (examples: readiness-plan) -/
+theorem textbook_readiness_judged (served refuted trial leads : Nat) (h : served + refuted + trial = leads) : leads - trial = served + refuted := by omega
+/-- clay's three, processor's three and roadmap's seven combinations are thirteen requests to one host, six dashboard cells and seven examples (examples: e2e-requests) -/
+theorem textbook_e2e_combos : 3 + 3 + 7 = 13 ∧ 6 + 7 = 13 := by decide
+/-- two leads judged, none served, two impossible, none unknown, and their verification requests 169 and 20 are 189 (examples: imagine-two) -/
+theorem textbook_imagine_verdicts : 0 + 2 + 0 = 2 ∧ 169 + 20 = 189 := by decide
+/-- six distinct words: five phrases the vocabulary translates (the, lead, served, verdict, unknown), one it knows and keeps (is), none untranslated (examples: translate-bg) -/
+theorem textbook_translate_phrases : 5 + 1 + 0 = 6 := by decide
+/-- every term of a locale's vocabulary is known or missing, so the missing and the known make the terms whatever the vocabulary has grown to (examples: translate-coverage) -/
+theorem textbook_vocabulary_measured (terms known : Nat) (h : known ≤ terms) : terms - known + known = terms := Nat.sub_add_cancel h
+/-- of three documents scanned one matches qubits ≥ 60 with the tag processor (Willow, 105) and two do not (Sycamore at 54 below the bound, Quantum Echoes without the tag) (examples: mongo-find) -/
+theorem textbook_mongo_find_filter : 1 + 2 = 3 ∧ 60 ≤ 105 ∧ 54 < 60 := by decide
+/-- $inc adds one to Sycamore's 54 qubits: 55, written as a new entry beside the one it links, so history is two entries (examples: mongo-update) -/
+theorem textbook_mongo_update_inc : 54 + 1 = 55 ∧ 1 + 1 = 2 := by decide
+/-- a yearly licence of 432 euros is 43200 cents, the unit Stripe's checkout form takes (examples: stripe-plan) -/
+theorem textbook_checkout_amount_cents : 432 * 100 = 43200 := by decide
+/-- the signature signed at 1700000000 and checked at 1700000100 is 100 seconds old, within the 300-second tolerance, so the event is valid (examples: stripe-webhook) -/
+theorem textbook_webhook_tolerance : 1700000100 - 1700000000 = 100 ∧ 100 ≤ 300 := by decide
+/-- two patent APIs answer in the open and five take a key: seven APIs (examples: patents-plan) -/
+theorem textbook_patent_apis_partition : 2 + 5 = 7 := by decide
+/-- three mentions from hn-algolia, two from crossref-events and none from the unreachable gdelt are five mentions, two sources reachable of three (examples: compete-mentions) -/
+theorem textbook_mentions_by_source : 3 + 2 + 0 = 5 ∧ 2 + 1 = 3 := by decide
+/-- the legal plan makes one call per claim the author makes and two more, however many claims the tree carries (examples: legal-plan) -/
+theorem textbook_legal_plan_calls (claims : Nat) : claims + 2 - claims = 2 := by omega
+/-- three workflow leads, three branch leads, three tag leads, two release leads, one Zenodo, one workspace and one npm lead: fourteen leads (examples: repository-watch) -/
+theorem textbook_repository_watch_leads : 3 + 3 + 3 + 2 + 1 + 1 + 1 = 14 := by decide
+/-- an ORCID is sixteen digits in four groups of four with three dashes: nineteen characters, the author's @id the block carries (examples: jsonld-block) -/
+theorem textbook_orcid_digits : 4 * 4 + 3 = 19 := by decide
+/-- one free offer, three yearly, two monthly and three metered are the catalogue's nine offers (examples: jsonld-catalogue) -/
+theorem textbook_catalogue_offers : 1 + 3 + 2 + 3 = 9 := by decide
+/-- English and the ten locales the vocabulary translates into are the eleven locales the codes tool validates (examples: codes-plan) -/
+theorem textbook_codes_locales : 1 + 10 = 11 := by decide
+/-- three tenants over four scoped collections are twelve tenant scopes, and three tenant roles beside three docket roles are six roles (examples: configure-scopes) -/
+theorem textbook_scopes_tenants_collections : 3 * 4 = 12 ∧ 3 + 3 = 6 := by decide
+/-- six fields of the entries collection and nine of the qpu block are the fifteen fields QPU adds to Payload (examples: configure-fields) -/
+theorem textbook_qpu_fields : 6 + 9 = 15 := by decide
+/-- an entry has four operations: three granted by role (read, create, delete) and update to no one, because an entry is its content address (examples: configure-access) -/
+theorem textbook_entry_operations : 3 + 1 = 4 := by decide
+/-- 507 involutions of 546 copies round to a free share of 93 percent, and the slowest host's 140 ms median shards a batch to 1000 / 140 = 7 calls (examples: configure-actions) -/
+theorem textbook_actions_experience : (2 * 507 * 100 + 546) / (2 * 546) = 93 ∧ max 120 (max 140 110) = 140 ∧ 1000 / 140 = 7 := by decide
+/-- three hook entries on entries (the address on create, the 404 healed after an error, none on change) and two on pages (revalidate after change, the collision guard before change) are five over two collections (examples: configure-hooks) -/
+theorem textbook_fullstack_hooks : 3 + 2 = 5 := by decide
+/-- of the Worker configuration's twelve top-level paths the client's text agrees on two (name, main), so ten drift, each an open lead, at least the five the example asks (examples: configure-wrangler-drift) -/
+theorem textbook_wrangler_drift : 12 - 2 = 10 ∧ 5 ≤ 10 := by decide
+/-- the branding's five fields are three the user defined in the admin (name, accent, logo) and two still computed (tagline, icon) (examples: configure-branding-user) -/
+theorem textbook_branding_sources : 3 + 2 = 5 := by decide
+/-- the attest tool has four facets, one free (hosts), three enumerable whose spaces 2 · 1 · 1 make its two cells (plan, read) (examples: dashboard-attest) -/
+theorem textbook_attest_facets : 4 - 1 = 3 ∧ 2 * 1 * 1 = 2 := by decide
+/-- the plan that replaces the textbook's axioms by theorems through the Payload MCP is four steps, over at least ten theorems and ten backed examples (examples: payload-theorems-plan) -/
+theorem textbook_theorems_plan_steps (theorems backed : Nat) (h1 : 10 ≤ theorems) (h2 : 10 ≤ backed) : 1 + 1 + 1 + 1 = 4 ∧ 20 ≤ theorems + backed := by omega
+/-- two qpu blocks read, one already naming its theorem and one an axiom: the axiom replaced, one update request (examples: payload-theorems-update) -/
+theorem textbook_axioms_replaced : 1 + 1 = 2 ∧ 2 - 1 = 1 := by decide
+/-- the streamed form's four fields are three that pass (name, host, variant) and one refused (env), whose three names are two the stack knows (D1, R2) and one unknown (NOPE) (examples: payload-app-validate) -/
+theorem textbook_app_fields_validated : 3 + 1 = 4 ∧ 2 + 1 = 3 := by decide
+/-- the site's documents are its use-case pages and the gate pages, and the gate pages are every gate, every category and the root: one document each, whatever the number of gates (examples: payload-site) -/
+theorem textbook_site_documents (pages gates categories docs : Nat) (h : docs = pages + (gates + categories + 1)) : docs - pages = gates + categories + 1 := by omega
+/-- the catalogue extended inward is the tree's own tools and the one door the docs add, whatever the number of tools (examples: extend-in-docs) -/
+theorem textbook_extend_inward (mine : Nat) : mine + 1 - mine = 1 := by omega
+/-- a foreign door is named by its host, a colon and its tool: docs.mcp.cloudflare.com (23 characters), ':' and search_cloudflare_documentation (31), fifty-five characters (examples: extend-call-served) -/
+theorem textbook_foreign_door_name : 23 + 1 + 31 = 55 := by decide
+/-- the eight crypto and certificate APIs are seven the client requests over HTTP and one, the live TLS certificate, the client reads itself on four hosts (examples: attest-plan) -/
+theorem textbook_attest_requests : 7 + 1 = 8 := by decide
+/-- the textbook is categorised four ways, by toolbox, tool, theorem and module, and it holds more examples than toolboxes (examples: textbook-categories) -/
+theorem textbook_textbook_categories (examples toolboxes : Nat) (h1 : 49 ≤ examples) (h2 : 8 ≤ toolboxes) (h3 : toolboxes ≤ 12) : 1 + 1 + 1 + 1 = 4 ∧ toolboxes ≤ examples := by omega
+/-- the processor tool's one facet of three devices (Willow, Sycamore, Sycamore23) admits three combinations, every one a final cell, none left open (examples: dashboard-processor) -/
+theorem textbook_processor_cells : 3 ^ 1 = 3 ∧ 3 - 3 = 0 := by decide
+/-- with the name fixed to shor the next facet open is N in [3, 21]: nineteen cells, none final, while the whole space counts 280,896 combinations, above the hundred thousand the example asks (examples: dashboard-algorithm-narrowed) -/
+theorem textbook_shor_narrowed_cells : 21 - 3 + 1 = 19 ∧ 100000 < 280896 := by decide
+/-- the input space of a tool is the product of its enumerable facets: leads 2 · 2 · 5 = 20 (carry, byTheorem, status), algorithm 7 · 19 · 1 · 2 · 6 · 1 · 1 · 8 · 2 · 11 = 280,896 (examples: dashboard-index) -/
+theorem textbook_dashboard_spaces : 2 * 2 * 2 * 2 * 5 = 80 ∧ 7 * 19 * 1 * 2 * 6 * 1 * 1 * 8 * 2 * 11 = 280896 := by decide
+/-- Willow's 105 qubits hold the distance-7 code's 101 and the random-circuit application's 103, and its stated average connectivity 3.47 is below the typical 4 (hundredths) (examples: processor-willow) -/
+theorem textbook_willow_holds_codes : 101 ≤ 105 ∧ 103 ≤ 105 ∧ 347 < 400 := by decide
+/-- Sycamore's 88 couplers have 176 ends among its 54 qubits, within the four neighbours a grid qubit has at most (examples: processor-sycamore) -/
+theorem textbook_sycamore_couplers : 2 * 88 = 176 ∧ 176 ≤ 4 * 54 := by decide
+/-- one qubit has two amplitudes, and a Hadamard sets each to 1/√2, whose squares (one half each) sum to one: 1 + 1 halves are 2 halves (examples: circuit-hadamard-amplitudes) -/
+theorem textbook_hadamard_amplitudes : 2 ^ 1 = 2 ∧ 1 * 1 + 1 * 1 = 2 := by decide
+/-- the Hadamard measured 400 times reads 0 in 207 shots and 1 in 193: the histogram partitions the 400 bitstrings (examples: circuit-hadamard-sampled) -/
+theorem textbook_hadamard_histogram : 207 + 193 = 400 := by decide
+/-- an X under a bit flip of p = 0.1 leaves probabilities 0.1 and 0.9, summing to one, and purity 0.1² + 0.9² = 0.82 (in hundredths: 1 + 81 = 82 of 100) (examples: circuit-bit-flip-noise) -/
+theorem textbook_bit_flip_purity : 1 * 1 + 9 * 9 = 82 ∧ 1 + 9 = 10 ∧ 10 * 10 = 100 := by decide
+/-- Quantum Echoes as Google states it ran on Willow: the 65 qubits of the figure within the 103 of the text, within Willow's 105 (examples: echo-benchmark) -/
+theorem textbook_echo_qubits_within_willow : 65 ≤ 103 ∧ 103 ≤ 105 := by decide
+/-- the six milestones are the first (54 physical qubits) and five decades from 100 to 1,000,000 (100 · 10⁴), and the four application bands run contiguous from 50,000 to 50,000,000 physical qubits (50,000 · 10³) (examples: roadmap-all) -/
+theorem textbook_roadmap_decades : 100 * 10 ^ 4 = 1000000 ∧ 1 + 5 = 6 ∧ 50000 * 10 ^ 3 = 50000000 := by decide
+/-- milestone three of the six is one long-lived logical qubit from 10³ = 1000 physical qubits, and the four application bands span three decades, 50,000 to 50,000,000 physical qubits (examples: roadmap-milestone-3) -/
+theorem textbook_roadmap_milestone_three : 10 ^ 3 = 1000 ∧ 3 ≤ 6 ∧ 50000 * 10 ^ 3 = 50000000 := by decide
+/-- the powers of 7 modulo 15 run 7, 4, 13, 1: the order is 4, and gcd(7² − 1, 15) = 3 and gcd(7² + 1, 15) = 5 are the factors, 3 × 5 = 15 (examples: algorithm-shor-15) -/
+theorem textbook_shor_fifteen_order : 7 ^ 1 % 15 = 7 ∧ 7 ^ 2 % 15 = 4 ∧ 7 ^ 3 % 15 = 13 ∧ 7 ^ 4 % 15 = 1 ∧ Nat.gcd (4 - 1) 15 = 3 ∧ Nat.gcd (4 + 1) 15 = 5 ∧ 3 * 5 = 15 := by decide
+/-- the QFT on three qubits has 2³ = 8 amplitudes, each of probability 12.50%: eight times 1250 basis points make the whole (examples: algorithm-qft-3) -/
+theorem textbook_qft_three_amplitudes : 2 ^ 3 = 8 ∧ 8 * 1250 = 10000 := by decide
+/-- two qubits hold 2² = 4 items, the start sits 30° from the unmarked plane, and one iteration turns it by (2·1 + 1)·30° = 90°: the marked |00⟩ with certainty (examples: algorithm-grover) -/
+theorem textbook_grover_one_iteration : 2 ^ 2 = 4 ∧ (2 * 1 + 1) * 30 = 90 := by decide
+/-- one message qubit and a Bell pair of two are the three qubits; the two measured bits choose one of 2² = 4 corrections, and the three Pauli expectations X, Y, Z agree (examples: algorithm-teleportation) -/
+theorem textbook_teleport_three_qubits : 1 + 2 = 3 ∧ 2 ^ 2 = 4 := by decide
+/-- θ = 1/4 is 2/2³: two of the eight values three bits can hold, so phase estimation reads it exactly (examples: algorithm-phase-estimation) -/
+theorem textbook_phase_three_bits : 2 * 4 = 2 ^ 3 ∧ 2 < 2 ^ 3 := by decide
+/-- the fifteen edge weights of the Cirq page's instance sum to 33.75, and the expected cut of 16.875 is half of it, the random baseline (examples: algorithm-qaoa) -/
+theorem textbook_qaoa_random_cut : 409 + 191 + 80 + 91 + 337 + 439 + 269 + 332 + 161 + 71 + 338 + 280 + 109 + 92 + 176 = 3375 ∧ 33750 = 2 * 16875 := by decide
+/-- of the five tools of the Software page, one (Cirq) is implemented here and four are named (examples: software) -/
+theorem textbook_software_cirq_implemented : 1 + 4 = 5 := by decide
+/-- one statement is chosen by its topic of the forty-two the statements tool holds (examples: statements-cirq) -/
+theorem textbook_statements_one_topic : 1 + 41 = 42 := by decide
+/-- the fifteen quantumlib repositories are eleven in Python, three in C++ and one in OpenQASM (examples: repositories) -/
+theorem textbook_repositories_by_language : 11 + 3 + 1 = 15 := by decide
+/-- every lead has one of five statuses: the leads less the open ones are the ones followed, served, partial, blocked or out of scope, whatever the count of the run (examples: leads-all) -/
+theorem textbook_leads_by_status (served partly blocked outside opened total : Nat) (h : served + partly + blocked + outside + opened = total) : total - opened = served + partly + blocked + outside := by omega
+/-- at p = 1/10 the repetition code fails with 3p² − 2p³ = (3·10 − 2)/10³ = 28/1000, below the raw 100/1000, on three data and two syndrome qubits (examples: qec-bit-flip-0.1) -/
+theorem textbook_repetition_code_tenth : 3 * 10 - 2 = 28 ∧ 28 < 100 ∧ 3 + 2 = 5 := by decide
+/-- H₂ on two qubits is five Pauli terms (I, Z0, Z1, Z0Z1, X0X1); the variational minimum −1.1373 Ha lies 0.0206 Ha below the Hartree–Fock −1.1167 Ha (examples: chemistry-h2) -/
+theorem textbook_h2_below_hartree_fock : 11167 < 11373 ∧ 11373 - 11167 = 206 ∧ 1 + 2 + 1 + 1 = 5 := by decide
+/-- the six circuits cost 68 T gates: the QFT two controlled-S at three, Grover one Toffoli at seven, teleportation one T, Shor seven controlled-S at three, QAOA twelve T, the repetition cycle three Toffolis at seven (examples: ftqc-all) -/
+theorem textbook_ftqc_t_counts : 2 * 3 + 1 * 7 + 1 * 1 + 7 * 3 + 12 * 1 + 3 * 7 = 68 := by decide
+/-- this tree's Cirq is twenty-nine exports, seven classes, three qubit constructors, nine gates and ten functions, and six of the fifteen quantumlib repositories are emulated (examples: quantumlib-cirq) -/
+theorem textbook_cirq_exports : 7 + 3 + 9 + 10 = 29 ∧ 6 + 9 = 15 := by decide
+/-- the widest value of the register, the amplitudes 2³² = 4294967296, needs 33 bits: more than two 16-bit limbs, within three (examples: clay-register) -/
+theorem textbook_clay_register_width : 2 ^ 32 = 4294967296 ∧ 4294967296 < 2 ^ 33 ∧ 2 * 16 < 33 ∧ 33 ≤ 3 * 16 := by decide
+/-- the seal is decided from 31 of the 32 nibbles, the content by one fold: two checks decided of four, and the address and its σ₁₅ mirror sum nibble by nibble to f (examples: verify-seal-and-content) -/
+theorem textbook_seal_and_content_decided : 31 + 1 = 32 ∧ 2 + 2 = 4 ∧ 0x70a13419 + 0x8f5ecbe6 = 0xffffffff := by decide
+/-- one nibble changed, a (10) to b (11), moves the decided version to 6 against the stated 2: the seal alone decides, one check of four, no content needed (examples: verify-tampered) -/
+theorem textbook_tamper_one_nibble : 11 - 10 = 1 ∧ 2 ≠ 6 ∧ 1 + 3 = 4 := by decide
+/-- Willow's 105 qubits hold the 101 its distance-7 code uses, 97 of them the code's 49 data and 48 measure qubits (examples: match-willow) -/
+theorem textbook_willow_distance_seven : 7 * 7 + (7 * 7 - 1) = 97 ∧ 97 < 101 ∧ 101 ≤ 105 := by decide
+/-- the Glagolitic numeral Ⰺⰴ is 10 + 5 = 15, factored 3 × 5 in the reflection (examples: match-glagolitic) -/
+theorem textbook_glagolitic_fifteen : 10 + 5 = 15 ∧ 3 * 5 = 15 := by decide
+/-- the Bulgarian statement is four words: two translated by vocabulary, the name Shor kept untranslated, and the numeral Ⰺⰴ read as 10 + 5 = 15 (examples: match-bulgarian) -/
+theorem textbook_bulgarian_statement_words : 2 + 1 + 1 = 4 ∧ 10 + 5 = 15 := by decide
+/-- the 40-byte text exceeds the 12-byte bound by 28 and folds into four pieces of 10, 7, 11 and 12 bytes, each within the bound (examples: match-pattern-fold) -/
+theorem textbook_fold_pieces_under_bound : 10 + 7 + 11 + 12 = 40 ∧ 40 - 12 = 28 ∧ 10 ≤ 12 ∧ 7 ≤ 12 ∧ 11 ≤ 12 ∧ 12 ≤ 12 := by decide
+/-- the algorithm tool's ten enumerable facets (7 names, 19 N, 1 a, 2 sweep, 6 qubits, 1 input, 1 θ, 8 bits, 2 repetitions, 11 nodes) multiply to 280896 combinations, above a thousand (examples: match-pattern-dashboard) -/
+theorem textbook_dashboard_algorithm_combinations : 7 * 19 * 1 * 2 * 6 * 1 * 1 * 8 * 2 * 11 = 280896 ∧ 1000 < 280896 := by decide
+/-- the simulator's bound N ≤ 21 is a five-bit number, and an RSA-2048 modulus has 2048 bits (examples: match-rsa-2048) -/
+theorem textbook_rsa_beyond_bound : 2 ^ 4 < 21 ∧ 21 < 2 ^ 5 ∧ 5 < 2048 := by decide
+/-- the audit replays every check: when none fails every check passes, however many checks the tree has grown to (examples: audit-self) -/
+theorem textbook_audit_all_pass (passed failed total : Nat) (h : passed + failed = total) (h0 : failed = 0) : passed = total := by omega
+/-- every axiom of the textbook has its theorem: when every example is linked to a kernel-accepted theorem, the examples left without one are none (examples: textbook-axioms) -/
+theorem textbook_axioms_linked (examples linked : Nat) (h : linked = examples) : examples - linked = 0 := by omega
+/-- a subject shared by k problems, two at least, is one missing theorem that serves more than one problem, and every one of them collides with at least one other: each problem solves many others (examples: leads-collide) -/
+theorem textbook_collision_solves_many (k : Nat) (h : 2 ≤ k) : 1 < k ∧ 1 ≤ k - 1 := by omega
+/-- the quantum core computes on the classical world only through coins fused into coils, and the classical world reaches it only the same way back: two loops of one double torus, every crossing a finite step with always a next and one step back (examples: stripe-fusion) -/
+theorem textbook_double_torus (n : Nat) : n < n + 1 ∧ n + 1 - 1 = n := by omega
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

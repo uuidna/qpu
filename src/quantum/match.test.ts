@@ -8,6 +8,15 @@ import { GLAGOLITIC, glagoliticOf, numeralsOf, translateOf } from './i18n.js'
 
 const match = (statement: string) => matchOf(statement, handle, EXAMPLES, LEADS)
 
+test('the chat routes a prompt to the theorems via the theorems: the subject decides, a common word routes nowhere, no route is a lead', () => {
+  const coil = match('what colour is the coil when coins fuse')
+  assert.equal(coil.route?.theorems[0]?.theorem, 'textbook_coil_green')
+  const shor = match('factor 15 with shor')
+  assert.equal(shor.route?.theorems[0]?.theorem, 'shor_factored')
+  const none = match('hello there')
+  assert.equal(none.route?.routed, false)
+})
+
 test('a statement the surface serves is matched, called, and returned with its lead', () => {
   const m = match('How many qubits does Willow have?')
   assert.equal(m.verdict, 'served')

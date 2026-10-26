@@ -41,6 +41,7 @@ const steps: Step[] = [
   { name: 'currency', cmd: 'node', args: ['--import', 'tsx', 'scripts/currency.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // every free rate API fetched once, harmonised: one rate per currency, the catalogue in every currency
   { name: 'repository', cmd: 'node', args: ['--import', 'tsx', 'scripts/repository.ts'], budgetMs: 300_000, wave: 3 }, // always: workspaces, branches, tags, releases; offline the local facts
   { name: 'legal', cmd: 'node', args: ['--import', 'tsx', 'scripts/legal.ts'], budgetMs: 600_000, wave: 3, shards: 4 },
+  { name: 'sources', cmd: 'node', args: ['--import', 'tsx', 'scripts/sources.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 1_800_000, wave: 3 }, // the immutable sources of leads, every page to its end
   { name: 'textbook', cmd: 'node', args: ['--import', 'tsx', 'scripts/textbook.ts'], budgetMs: 300_000, wave: 4, shards: 4 }, // always: the examples verified online from the wave; offline the plan // always: cached by inputs, the pure half offline
   { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'], wave: 5 },
   { name: 'metrics', cmd: 'node', args: ['--import', 'tsx', 'scripts/metrics.ts'], budgetMs: 120_000, wave: 5 }, // always: the run's artefacts read into one measure

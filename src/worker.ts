@@ -5,6 +5,7 @@
 // committed). Every response carries the licence.
 import { handle, type Rpc } from './quantum/mcp.js'
 import { composeOf } from './quantum/compose.js'
+import { fusionOf } from './quantum/toolboxes/billing.js'
 import { scanSvgOf } from './quantum/scan.js'
 import { EXAMPLES } from './quantum/examples.js'
 import { LEADS } from './quantum/leads.js'
@@ -452,6 +453,15 @@ const stripeState = async (subject: string, url: URL, env: Env): Promise<Respons
   const r = call('stripe', { op: 'state', tenant, subject: decodeURIComponent(subject), domain: url.hostname, entries: await licenceEntries(url.origin, tenant, env) })
   return r.error ? json({ error: r.error.message }, 400) : json(r.result!.structuredContent)
 }
+/** The licence at the boundary: the subject the request names (x-qpu-subject, else its origin) holds a licence at the tenant, or the request is refused with 402 and the case the court computes, the checkout named as the remedy. */
+const unlicensed = async (request: Request, url: URL, env: Env, gate: string): Promise<Response | null> => {
+  const tenant = tenantOf(url.hostname)
+  const subject = request.headers.get('x-qpu-subject') ?? (() => { try { return new URL(request.headers.get('origin') ?? '').hostname } catch { return 'anonymous' } })()
+  const s = call('stripe', { op: 'state', tenant, subject, domain: url.hostname, entries: await licenceEntries(url.origin, tenant, env) }).result?.structuredContent as { state?: string } | undefined
+  if (s?.state === 'licensed') return null
+  const court = call('legal', { court: { gate, status: 402, rule: 'licence', evidence: { subject, state: s?.state ?? 'unlicensed', use: 'commercial' }, tenant } }).result?.structuredContent
+  return json({ error: `${gate}: commercial use of a coil needs a licence at ${tenant}; ${subject} holds none`, fusion: { side: 'coil', theorem: 'textbook_free_or_coil' }, remedy: { tool: 'stripe', arguments: { op: 'plan' }, says: 'a licence of the catalogue through the checkout; non-commercial use stays free under its term' }, court }, 402)
+}
 /** A checkout plan executed with the tenant's secret key; without a key the plan is returned with its procedure. */
 const stripeCheckout = async (reply: { result: { structuredContent: { plan: { url: string; form: Record<string, string>; headers: Record<string, string>; secret: string } } } }, url: URL, env: Env, fetcher: (url: string, init: RequestInit) => Promise<Response> = fetch): Promise<unknown> => {
   const plan = reply.result.structuredContent.plan
@@ -528,6 +538,9 @@ export const worker = {
       try { message = await request.json() as Rpc } catch { return json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'parse error' } }, 400) }
       // a registration URL may carry the scope of its tools/list (?statement=, ?tools=, ?brief=1): forwarded into the parameters, so the handler balances the list over MCP
       if ((message as { method?: string }).method === 'tools/list' && (url.searchParams.has('statement') || url.searchParams.has('tools') || url.searchParams.has('brief'))) message = { ...message, params: { ...((message as { params?: Record<string, unknown> }).params ?? {}), ...(url.searchParams.has('statement') ? { statement: url.searchParams.get('statement') } : {}), ...(url.searchParams.has('tools') ? { tools: url.searchParams.get('tools') } : {}), ...(url.searchParams.has('brief') ? { brief: true } : {}) } } as Rpc
+      // licensing by architecture: a declared commercial use of a coil (anything but the pure algebra) needs a licence at the tenant, else the court's case
+      const called = (message as { method?: string; params?: { name?: string } }).method === 'tools/call' ? (message as { params?: { name?: string } }).params?.name : undefined
+      if (called && fusionOf(called).side === 'coil' && /^commercial$/i.test(request.headers.get('x-qpu-use') ?? '')) { const refused = await unlicensed(request, url, env, `tools/call ${called}`); if (refused) return refused }
       const reply = handle(message)
       // A checkout plan is executed here, with the tenant's key the handler never holds: the answer carries Stripe's session url.
       const params = (message as { params?: { name?: string; arguments?: { op?: string } } }).params
@@ -541,6 +554,8 @@ export const worker = {
     if (path === '/docket/stripe' && request.method === 'POST') return stripeWebhook(request, url, env)
     if (path.startsWith('/docket/stripe/') && request.method === 'GET') return stripeState(path.slice('/docket/stripe/'.length), url, env)
     if (path === '/docket' || path.startsWith('/docket/')) {
+      // and back: a commercial write of classical data into the core is a coil the same way
+      if (request.method === 'POST' && /^commercial$/i.test(request.headers.get('x-qpu-use') ?? '')) { const refused = await unlicensed(request, url, env, `POST ${path}`); if (refused) return refused }
       const tenant = tenantOf(url.hostname)
       const { role, collision, by } = await roleAt(env, tenant, url.hostname, request.headers.get('authorization')?.replace(/^Bearer\s+/i, ''))
       const need: Role | null = request.method === 'DELETE' ? 'admin' : request.method === 'POST' ? 'writer' : null

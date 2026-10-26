@@ -10,6 +10,38 @@ import type { Rpc } from './audit.js'
 import { factsOf, verifyRequestsOf, type VerifyRequest } from './verifiers.js'
 import { numeralsOf, translateOf } from './i18n.js'
 import { THEOREMS } from './theorems-index.js'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
+
+/** The route of a prompt to the theorems, decided by the theorems: every textbook theorem is indexed by the words of its key and of what it
+ *  says, each word weighted by how rare it is among the theorems (ln of theorems over theorems that use it), so a common word routes nowhere and
+ *  a specific one decides; a prompt reaches the theorems with the greatest weight of shared words (two at least), the kernel-accepted ones only,
+ *  and each theorem's examples are its routes: the calls it leads to. No theorem reached: the prompt is a lead (textbook_route_or_lead). */
+const ROUTE_STOP = new Set(['many', 'much', 'more', 'most', 'when', 'what', 'which', 'where', 'there', 'here', 'with', 'from', 'into', 'over', 'under', 'every', 'each', 'that', 'this', 'these', 'those', 'have', 'does', 'only', 'also', 'then', 'than', 'them', 'they', 'their', 'about', 'after', 'before', 'same', 'other', 'another', 'never', 'none', 'nothing', 'name', 'named', 'theorem', 'textbook', 'kernel', 'qpu'])
+export const routeStems = (text: string): Set<string> => new Set(text.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().replace(/[^a-z0-9\s_.-]/g, ' ').split(/[\s_.-]+/).filter((w) => w.length > 3 && !ROUTE_STOP.has(w)).map((w) => w.replace(/(ings?|ed|es|e|s)$/, '')).filter((w) => w.length > 2))
+let routeIndex: { key: string; says: string; lean: string; examples: readonly string[]; keyStems: Set<string>; stems: Set<string> }[] | null = null
+let routeIdf: Map<string, number> | null = null
+export const routeOf = (statement: string, examples: readonly Example[], top = 3) => {
+  if (!routeIndex || !routeIdf) {
+    const kernel = new Set(THEOREMS.map((t) => t.key)), textbook = new Set(TEXTBOOK_THEOREMS.map((t) => t.key))
+    // every kernel-accepted theorem routes: a textbook theorem by its key and what it says, any other by its key and its module; an example names the theorem it rests on, so its examples are its routes
+    const named = new Map<string, string[]>(); for (const e of examples) if (e.theorem) named.set(e.theorem, [...(named.get(e.theorem) ?? []), e.id])
+    const keyOf = (k: string) => routeStems(k.replace(/^textbook_/, '').replace(/^Qpu\./, ''))
+    routeIndex = [
+      ...TEXTBOOK_THEOREMS.filter((t) => kernel.has(t.key)).map((t) => { const keyStems = keyOf(t.key); return { key: t.key, says: t.says, lean: t.lean, examples: [...new Set([...t.examples, ...(named.get(t.key) ?? [])])], keyStems, stems: new Set([...keyStems, ...routeStems(t.says)]) } }),
+      ...THEOREMS.filter((t) => !textbook.has(t.key)).map((t) => { const keyStems = keyOf(t.key); return { key: t.key, says: `${t.module}: ${t.statement}`, lean: `theorem ${t.key} : ${t.statement}`, examples: named.get(t.key) ?? [], keyStems, stems: new Set([...keyStems, ...routeStems(t.module.replace(/^Qpu\./, ''))]) } }),
+    ]
+    const df = new Map<string, number>(); for (const t of routeIndex) for (const w of t.stems) df.set(w, (df.get(w) ?? 0) + 1)
+    routeIdf = new Map([...df].map(([w, n]) => [w, Math.log(routeIndex!.length / n)]))
+  }
+  // a word of the theorem's own key is its subject and weighs twice; a route needs two shared words or one subject word, and the weight above the threshold
+  const s = routeStems(statement)
+  const ranked = routeIndex.map((t) => { const shared = [...t.stems].filter((w) => s.has(w)); const subject = shared.filter((w) => t.keyStems.has(w)); return { t, shared, subject, weight: shared.reduce((n, w) => n + (routeIdf!.get(w) ?? 0) * (t.keyStems.has(w) ? 2 : 1), 0) } }).filter((r) => (r.shared.length >= 2 || r.subject.length >= 1) && r.weight >= ROUTE_THRESHOLD).sort((a, b) => b.weight - a.weight || a.t.key.localeCompare(b.t.key)).slice(0, top)
+  const byId = new Map(examples.map((e) => [e.id, e]))
+  const theorems = ranked.map((r) => ({ theorem: r.t.key, lean: r.t.lean, says: r.t.says, shared: r.shared, subject: r.subject, weight: Math.round(r.weight * 100) / 100, routes: r.t.examples.map((id) => byId.get(id)).filter((e): e is Example => !!e).map((e) => ({ example: e.id, call: { name: e.tool, arguments: e.arguments } })) }))
+  return { routed: theorems.length > 0, theorems, threshold: ROUTE_THRESHOLD, theorem: 'textbook_route_or_lead', says: theorems.length ? `routed to ${theorems.map((t) => t.theorem).join(', ')} by the weight of the words the prompt shares with them` : 'no theorem reached by its subject or two specific words: the prompt is a lead' }
+}
+/** a route needs the weight of a word only one or two theorems use plus another: ln(n / 2) for the rarest is about four and a half */
+export const ROUTE_THRESHOLD = 5
 import { uuidOf } from './blocks.js'
 
 export type Verdict = 'served' | 'impossible' | 'unknown'
@@ -39,6 +71,8 @@ export type Match = { /** the content address of the recognised call: a recognit
   tool?: string
   /** the kernel-accepted theorem that serves the statement, when the textbook answers first */
   theorem?: string
+  /** the theorems the prompt is routed to, decided by the theorems (the weight of the words it shares with them), each with its examples as routes */
+  route?: ReturnType<typeof routeOf>
   /** the pattern the statement carried (a UUID, a relation name, a dashboard, a clone…), when one was recognised */
   pattern?: string
   call?: { name: string; arguments: Record<string, unknown> }
@@ -364,4 +398,4 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
   }
 }
 
-export const matchOf = (statement: string, handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[], locale?: string): Match => matcherOf(handle, allExamples, leads)(statement, locale)
+export const matchOf = (statement: string, handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[], locale?: string): Match => { const m = matcherOf(handle, allExamples, leads)(statement, locale); const route = routeOf(statement, allExamples); return { ...m, route, ...(m.verdict === 'unknown' && route.routed ? { evidence: [...m.evidence, `routed by the theorems: ${route.theorems.map((t) => `${t.theorem} (${t.shared.join(', ')})`).join('; ')}`] } : {}) } }

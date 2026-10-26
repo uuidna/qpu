@@ -340,6 +340,21 @@ test('the fallback for anything: a path that names cached assets is answered by 
   assert.equal(none.status, 404, 'a path that names no asset keeps the decision alone')
 })
 
+test('licensing by architecture: a commercial coil without a licence is refused with the court; the pure algebra and non-commercial use pass; every result carries its side', async () => {
+  const e = env()
+  const body = (name: string, args: Record<string, unknown>) => JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
+  const coil = await worker.fetch(req('/mcp', { method: 'POST', headers: { 'content-type': 'application/json', 'x-qpu-use': 'commercial', 'x-qpu-subject': 'acme.example' }, body: body('roadmap', {}) }), e)
+  assert.equal(coil.status, 402)
+  const c = await coil.json() as { court: { rule: string; case: string }; fusion: { side: string } }
+  assert.ok(c.court.rule === 'licence' && /^[0-9a-f-]{36}$/.test(c.court.case) && c.fusion.side === 'coil')
+  const free = await worker.fetch(req('/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body: body('roadmap', {}) }), e)
+  assert.equal(free.status, 200, 'non-commercial use stays free under its term')
+  const side = (await free.json() as { result: { _meta: { fusion: { side: string } } } }).result._meta.fusion.side
+  assert.equal(side, 'coil')
+  const algebra = await worker.fetch(req('/mcp', { method: 'POST', headers: { 'content-type': 'application/json', 'x-qpu-use': 'commercial' }, body: body('css', {}) }), e)
+  assert.equal(algebra.status, 200, 'the pure algebra is a coin: free for any use under attribution')
+})
+
 test('cheap gates leading every violator to court via its own MCP: a refusal carries the case computed, the rule, the theorem and the call to file it', async () => {
   const e = env()
   const bad = await worker.fetch(req('/docket/not-an-id', { method: 'DELETE', headers: { authorization: 'Bearer ' + (e.QPU_WRITE_TOKEN_UUIDNA ?? e.QPU_WRITE_TOKEN ?? '') } }), e)

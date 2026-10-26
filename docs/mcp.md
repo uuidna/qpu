@@ -950,6 +950,14 @@ Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs
 {
   "type": "object",
   "properties": {
+    "collide": {
+      "type": "boolean",
+      "description": "the open problems seen as a toolset of involutions and collided with each other without a limit: every problem its address and σ-reflection, every problem routed to the theorems, the unreached ones collided in all pairs through the subjects they share; each shared subject a missing theorem that would serve all its problems, a lead to prove"
+    },
+    "sources": {
+      "type": "object",
+      "description": "the immutable sources of leads: { context: { repository, owner, package, hosts } } the first pages to fetch; with next: { request, answer } the next page of that source (null when it has ended: unlimited); with answers: the judgement — immutable versions and snapshots, licence candidates each with the case the court computes, precedence by date, every open textbook routed through the theorems, MCP doors"
+    },
     "carry": {
       "type": "boolean",
       "description": "the cost of carrying the leads and what converting them to Payload documents saves; when nothing is carried the release is published as the next sequential version"
@@ -1190,6 +1198,10 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
     "reuse": {
       "type": "string",
       "description": "an example id to replay"
+    },
+    "axioms": {
+      "type": "boolean",
+      "description": "the textbook's axioms each with its theorem: every example names the kernel-accepted theorem it rests on, every theorem names only examples that exist; what is left unlinked is listed"
     },
     "theorems": {
       "type": "boolean",
@@ -1657,8 +1669,16 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
         "catalogue",
         "usage",
         "settle",
-        "usecases"
+        "usecases",
+        "fusion"
       ]
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "op fusion: the tools whose side of the fusion to answer (coin: pure algebra, free; coil: crosses to classical, licensed)"
     },
     "currencies": {
       "type": "array",

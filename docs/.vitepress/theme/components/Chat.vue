@@ -8,7 +8,7 @@ import { ref, onMounted } from 'vue'
 import { handle } from '../../../../src/quantum/mcp.ts'
 import App from './App.vue'
 import { hashOf } from '../../../../src/quantum/e2e.ts'
-type Turn = { at: string; statement: string; verdict: string; tool: string | null; address: string | null; hash: string; teleport: 'proven' | 'differs' | 'offline' | 'asking' | 'refused'; ms: number; widget: string; from: 'here' | 'signal'; result?: unknown }
+type Turn = { at: string; statement: string; verdict: string; tool: string | null; address: string | null; hash: string; teleport: 'proven' | 'differs' | 'offline' | 'asking' | 'refused'; ms: number; widget: string; from: 'here' | 'signal'; result?: unknown; route?: { theorem: string; lean: string; shared: string[]; routes: { example: string; call: { name: string; arguments: Record<string, unknown> } }[] }[] }
 const statement = ref('')
 const turns = ref<Turn[]>([])
 const busy = ref(false)
@@ -19,10 +19,11 @@ const ask = async () => {
   busy.value = true
   const t0 = Date.now()
   const call = { jsonrpc: '2.0' as const, id: 1, method: 'tools/call' as const, params: { name: 'match', arguments: { statement: text } } }
-  const reply = handle(call) as { result?: { structuredContent: { verdict: string; tool?: string }; _meta: { widget: string; block: { meta: { id: string } } } }; error?: { message: string } }
+  const reply = handle(call) as { result?: { structuredContent: { verdict: string; tool?: string; route?: { theorems: NonNullable<Turn['route']> } }; _meta: { widget: string; block: { meta: { id: string } } } }; error?: { message: string } }
   const hash = reply.result ? hashOf(reply.result.structuredContent) : hashOf({ error: reply.error?.message })
   const raw: Turn = { at: new Date().toISOString(), statement: text, verdict: reply.result?.structuredContent.verdict ?? `refused: ${reply.error?.message}`, tool: reply.result?.structuredContent.tool ?? null, address: reply.result?._meta.block.meta.id ?? null, hash, teleport: 'asking', ms: Date.now() - t0, widget: reply.result?._meta.widget ?? '', from: 'here' }
   raw.result = reply.result ?? null // the result the tool's own ui:// resource renders (MCP Apps): the UI built from the MCP, not drawn here
+  raw.route = reply.result?.structuredContent.route?.theorems ?? [] // the theorems the prompt is routed to, decided by the theorems; each route a call of its examples
   turns.value.unshift(raw); statement.value = ''
   const turn = turns.value[0]! // the reactive proxy: what the page watches
   try {
@@ -58,6 +59,11 @@ const word = (t: Turn['teleport']) => ({ proven: 'teleported: the host holds thi
         <em :title="t.hash">{{ word(t.teleport) }}</em>
         <small style="color:var(--vp-c-text-2)">{{ t.ms }} ms · {{ t.from === 'signal' ? 'signalled from another tab' : 'here' }}</small>
       </header>
+      <ol v-if="t.route && t.route.length" style="margin:6px 0 0;padding-left:18px;font-size:13px" aria-label="the theorems this prompt is routed to">
+        <li v-for="r in t.route" :key="r.theorem"><code>{{ r.theorem }}</code> <small style="color:var(--vp-c-text-2)">({{ r.shared.join(', ') }})</small>
+          <button v-for="x in r.routes" :key="x.example" type="button" style="margin-left:6px;font-size:12px;border:1px solid var(--vp-c-divider);border-radius:6px;padding:0 6px;background:none" @click="statement = `replay example ${x.example}`; ask()">{{ x.example }}</button>
+        </li>
+      </ol>
       <App v-if="t.result" tool="match" :args="{ statement: t.statement }" :result="t.result" />
     </article>
   </div>
