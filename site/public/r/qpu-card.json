@@ -1,0 +1,17 @@
+{
+ "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+ "name": "qpu-card",
+ "type": "registry:component",
+ "title": "QPU card",
+ "description": "a card styled by the address it shows",
+ "registryDependencies": [
+  "https://qpu.uuidna.com/r/qpu-style.json"
+ ],
+ "files": [
+  {
+   "path": "components/qpu/card.tsx",
+   "type": "registry:component",
+   "content": "import React from 'react'\nimport { styleOf } from '@/lib/qpu-style'\nexport const QpuCard: React.FC<{ uuid: string; title: string; children?: React.ReactNode }> = ({ uuid, title, children }) => (\n  <section style={{ ...styleOf(uuid), background: 'var(--qpu-surface)', color: 'var(--qpu-ink)', borderLeft: '3px solid var(--qpu-accent)', borderRadius: 'var(--qpu-radius)', padding: 'var(--qpu-gap)' }} data-uuid={uuid}>\n    <h3 style={{ margin: 0, color: 'var(--qpu-accent)' }}>{title}</h3>\n    {children}\n  </section>\n)\n"
+  }
+ ]
+}

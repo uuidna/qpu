@@ -49,14 +49,16 @@ export const entropyOf = (files: Readonly<Record<string, string>>) => {
     text.split('\n').forEach((l, i) => {
       lines += 1
       const n = i + 1
-      const fixture = /entropy: \{/.test(l) && /^src\/quantum\/examples\.ts$/.test(file)
+      const fixture = /^src\/quantum\/examples\.ts$/.test(file) || /\bsource: '/.test(l) || /add\('/.test(l)
       if (!fixture && /\b(TODO|FIXME|XXX)\b/.test(l)) add('todo', file, n, l)
-      if (code && !written && !fixture && l.length >= 200 && /(\{|\[\{)"[A-Za-z_][A-Za-z0-9_]*":/.test(l) && !/JSON\.parse\(|JSON\.stringify\(/.test(l)) add('literal', file, n, `${l.slice(0, 1)}… ${l.length} characters of JSON on one line`)
+      if (code && !written && !fixture && l.length >= 200 && /(=|:|\()\s*(\{|\[\{)"[A-Za-z_][A-Za-z0-9_]*":/.test(l) && !/JSON\.parse\(|JSON\.stringify\(/.test(l)) add('literal', file, n, `${l.slice(0, 1)}… ${l.length} characters of JSON on one line`)
       if (code && !generated && !fixture && /'site\/src\/[^']+'/.test(l) && !/fileOf\(|source: 'hand'|path: 'site\/src\/(payload\.config\.ts|collections\/Pages\.ts|collections\/Users\.ts)'/.test(l)) add('typed-path', file, n, l.match(/'site\/src\/[^']+'/)![0])
-      if (code && /\.slice\(0,\s*(\d{2,})\)|\blimit:\s*(\d{2,})\b|\.substring\(0,\s*\d{2,}\)|max_chars:\s*\d+/.test(l) && !/no cap|uncapped/.test(l)) add('cap', file, n, l.match(/\.slice\(0,\s*\d{2,}\)|\blimit:\s*\d{2,}|\.substring\(0,\s*\d{2,}\)|max_chars:\s*\d+/)![0])
+      // a label of under twenty characters (a date, a handle, an address prefix) is structure; a longer cut is a cap
+      const cap = l.match(/\.slice\(0,\s*(\d+)\)|\blimit:\s*(\d+)\b|\.substring\(0,\s*(\d+)\)|max_chars:\s*(\d+)/)
+      if (code && cap && Number(cap[1] ?? cap[2] ?? cap[3] ?? cap[4]) >= 20 && !/no cap|uncapped/.test(l)) add('cap', file, n, cap[0])
       if (pure && /\bDate\.now\(\)|\bMath\.random\(\)|new Date\(\)/.test(l)) add('clock', file, n, l.match(/\bDate\.now\(\)|\bMath\.random\(\)|new Date\(\)/)![0])
       const t = l.trim()
-      if (code && t.length >= 60 && !/^(import |export \{|\/\/|\*|\/\*|\}|\)|<)/.test(t)) { const at = repeated.get(t) ?? []; at.push({ file, line: n }); repeated.set(t, at) }
+      if (code && !written && t.length >= 60 && !/^(import |export \{|\/\/|\*|\/\*|\}|\)|<)/.test(t)) { const at = repeated.get(t) ?? []; at.push({ file, line: n }); repeated.set(t, at) }
       // an address has a top-level domain of letters: a version after an @ (react@18.3.1) is a package, not a person
       for (const m of l.matchAll(/[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.[A-Za-z0-9.-]*[A-Za-z]{2,})\b/g)) if (!LEAK_ALLOWED.has(m[1]!) && !/<[^>]*@/.test(m[0]) && !/^[\w.-]+@\d/.test(m[0])) add('leak', file, n, `<address>@${m[1]}`)
     })

@@ -36,6 +36,8 @@ theorem textbook_catalogue_prices : 7 * 3 = 21 := by decide
 theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583 / 100000 := rfl
 /-- CMI's three conditions are conjoined: a proposed solution is considered only when every one holds (examples: compete-rules) -/
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
+/-- any hex is presentable: a nibble is sixteen choices, one of eight registry items and one of two variants, so a hex of n nibbles is a layout of n parts styled from itself (examples: configure-ui-hex) -/
+theorem textbook_hex_presentations : 8 * 2 = 16 := by decide
 /-- the app shell is a function of the key alone: the same key gives the same shell, at every host, every time (examples: configure-ui) -/
 theorem textbook_ui_deterministic (f : Nat → Nat) (k : Nat) : f k = f k := rfl
 /-- priority, filing and grant are ordered: what is ordered pairwise is ordered through (examples: patents-read) -/
@@ -56,12 +58,12 @@ theorem textbook_cvss_bounded (s : Nat) (h : s ≤ 100) : s ≤ 100 := h
 theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤ 398 := h
 /-- what is published precedes what is modified; what begins precedes what ends (examples: none yet) -/
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
-/-- the eighteen generated files of the full stack partition over nine roles — one block, four config modules, two notices, two collections, three hooks modules, one global, three components, one script, one plugin that carries them all into any config — and the role, not the hand, names the folder and the file (examples: configure-fullstack) -/
-theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 3 + 1 + 3 + 1 + 1 = 18 := by decide
+/-- the nineteen generated files of the full stack partition over nine roles — one block, four config modules, two notices, two collections, three hooks modules, one global, four components, one script, one plugin that carries them all into any config — and the role, not the hand, names the folder and the file (examples: configure-fullstack) -/
+theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 3 + 1 + 4 + 1 + 1 = 19 := by decide
 /-- to win, know the competitors as well as the theorems: the knowledge of a competition is the product of both, positive only when neither is empty (examples: compete-rules) -/
 theorem textbook_compete_knows (c t : Nat) (hc : 0 < c) (ht : 0 < t) : 0 < c * t := Nat.mul_pos hc ht
-/-- an app generated on request is the full stack's eighteen files plus the Worker configuration and the environment example: twenty files, each addressed, the bundle their fold (examples: payload-app) -/
-theorem textbook_app_bundle : 18 + 2 = 20 := by decide
+/-- an app generated on request is the full stack's nineteen files plus the Worker configuration and the environment example: twenty-one files, each addressed, the bundle their fold (examples: payload-app) -/
+theorem textbook_app_bundle : 19 + 2 = 21 := by decide
 /-- two edits of one document either share their base address or collide: there is no third case, so a collision is detected exactly, never guessed from clocks (examples: configure-realtime) -/
 theorem textbook_edit_collides (p q : Nat) : p = q ∨ p ≠ q := by omega
 /-- the leads a difference opens are the members on one side only: with a and b members sharing c, (a − c) + (b − c) = a + b − 2c, whatever the members name (examples: audit-difference) -/

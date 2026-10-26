@@ -5,6 +5,105 @@
  "items": [
   {
    "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-style",
+   "type": "registry:lib",
+   "title": "QPU style",
+   "description": "styleOf(uuid): the CSS variables of a block computed from its address; nothing loaded",
+   "registryDependencies": [],
+   "files": [
+    {
+     "path": "lib/qpu-style.ts",
+     "type": "registry:lib"
+    }
+   ]
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-card",
+   "type": "registry:component",
+   "title": "QPU card",
+   "description": "a card styled by the address it shows",
+   "registryDependencies": [
+    "https://qpu.uuidna.com/r/qpu-style.json"
+   ],
+   "files": [
+    {
+     "path": "components/qpu/card.tsx",
+     "type": "registry:component"
+    }
+   ]
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-badge",
+   "type": "registry:component",
+   "title": "QPU badge",
+   "description": "an address as a badge in its own hue",
+   "registryDependencies": [
+    "https://qpu.uuidna.com/r/qpu-style.json"
+   ],
+   "files": [
+    {
+     "path": "components/qpu/badge.tsx",
+     "type": "registry:component"
+    }
+   ]
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-table",
+   "type": "registry:component",
+   "title": "QPU table",
+   "description": "rows of blocks, each row in the hue of its address",
+   "registryDependencies": [
+    "https://qpu.uuidna.com/r/qpu-style.json"
+   ],
+   "files": [
+    {
+     "path": "components/qpu/table.tsx",
+     "type": "registry:component"
+    }
+   ]
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-stream",
+   "type": "registry:component",
+   "title": "QPU stream",
+   "description": "the UUID stream (e2e, coins, entropy, receipts): one card per block, styled by its own address, newest first",
+   "registryDependencies": [
+    "https://qpu.uuidna.com/r/qpu-style.json",
+    "https://qpu.uuidna.com/r/qpu-card.json",
+    "https://qpu.uuidna.com/r/qpu-badge.json"
+   ],
+   "files": [
+    {
+     "path": "components/qpu/stream.tsx",
+     "type": "registry:component"
+    }
+   ]
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-dashboard",
+   "type": "registry:block",
+   "title": "QPU dashboard",
+   "description": "a dashboard of the stream: cards of counts by kind, the table of the latest blocks, the stream itself; every bit styled from the addresses",
+   "registryDependencies": [
+    "https://qpu.uuidna.com/r/qpu-style.json",
+    "https://qpu.uuidna.com/r/qpu-card.json",
+    "https://qpu.uuidna.com/r/qpu-table.json",
+    "https://qpu.uuidna.com/r/qpu-stream.json"
+   ],
+   "files": [
+    {
+     "path": "blocks/qpu-dashboard/page.tsx",
+     "type": "registry:page"
+    }
+   ]
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
    "name": "qpu-app",
    "type": "registry:component",
    "title": "QPU App host",

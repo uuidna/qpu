@@ -148,7 +148,7 @@ export const canonicalTextOf = (value: unknown): string =>
 
 const describe = (structured: unknown): string => {
   const text = JSON.stringify(structured) ?? ''
-  return text.length <= 200 ? text : text.slice(0, 197) + '…'
+  return text
 }
 
 const escapeOf = (t: string): string => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')

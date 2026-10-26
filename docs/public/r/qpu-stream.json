@@ -1,0 +1,19 @@
+{
+ "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+ "name": "qpu-stream",
+ "type": "registry:component",
+ "title": "QPU stream",
+ "description": "the UUID stream (e2e, coins, entropy, receipts): one card per block, styled by its own address, newest first",
+ "registryDependencies": [
+  "https://qpu.uuidna.com/r/qpu-style.json",
+  "https://qpu.uuidna.com/r/qpu-card.json",
+  "https://qpu.uuidna.com/r/qpu-badge.json"
+ ],
+ "files": [
+  {
+   "path": "components/qpu/stream.tsx",
+   "type": "registry:component",
+   "content": "import React from 'react'\nimport { QpuCard } from '@/components/qpu/card'\nimport { QpuBadge } from '@/components/qpu/badge'\nexport const QpuStream: React.FC<{ blocks: { address: string; kind?: string; date?: string; [k: string]: unknown }[] }> = ({ blocks }) => (\n  <div style={{ display: 'grid', gap: 8 }}>\n    {[...blocks].reverse().map((b) => <QpuCard key={b.address} uuid={b.address} title={b.kind ?? 'block'}><QpuBadge uuid={b.address} /> <small>{b.date ?? ''}</small></QpuCard>)}\n  </div>\n)\n"
+  }
+ ]
+}

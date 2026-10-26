@@ -44,7 +44,7 @@ const main = async () => {
       if (step.phase === 'update') for (const u of step.requestList as { url: string; body: unknown }[]) { await post(u); sent += 1 }
       theorems = { ...step, sent }
       console.log(`textbook: through the Payload MCP at ${payloadUrl}: ${step.phase}${step.phase === 'update' ? `, ${step.axioms} axiom(s) in ${step.pages} page(s), ${sent} replaced by theorems` : ''}`)
-    } catch (e) { theorems = { phase: 'refused', error: (e as Error).message.slice(0, 120) }; console.log(`textbook: the Payload MCP did not answer: ${(e as Error).message.slice(0, 80)}`) }
+    } catch (e) { theorems = { phase: 'refused', error: (e as Error).message }; console.log(`textbook: the Payload MCP did not answer: ${(e as Error).message.slice(0, 80)}`) }
   } else console.log(`textbook: no Payload MCP named (QPU_PAYLOAD_URL, QPU_PAYLOAD_API_KEY): the plan is written, the lead stands`)
   const date = new Date().toISOString()
   writeFileSync(join(ROOT, 'docs', 'public', 'textbook.json'), JSON.stringify({ license: LICENSE.attribution, date, inputs, theoremsViaPayloadMcp: theorems, online: process.env.QPU_OFFLINE !== '1', fromWave: plan.requests - missing.length, fetchedHere: process.env.QPU_OFFLINE !== '1' ? missing.length : 0, compliance: plan.compliance, ...v }, null, 1) + '\n')

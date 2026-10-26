@@ -1,0 +1,15 @@
+{
+ "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+ "name": "qpu-style",
+ "type": "registry:lib",
+ "title": "QPU style",
+ "description": "styleOf(uuid): the CSS variables of a block computed from its address; nothing loaded",
+ "registryDependencies": [],
+ "files": [
+  {
+   "path": "lib/qpu-style.ts",
+   "type": "registry:lib",
+   "content": "export const styleOf = (uuid: string) => { const hex = uuid.replace(/-/g, ''); const handle = hex.slice(0, 8), program = [hex[12]!, ...hex.slice(13, 16), hex[16]!, ...hex.slice(17, 20), ...hex.slice(8, 10)].map((c) => parseInt(c, 16)), tail = hex.slice(20); const hue = parseInt(handle.slice(0, 3), 16) % 360; const sum = program.reduce((n, d) => n + d, 0); const sat = 40 + (sum % 40), light = 36 + (program[0]! % 20); const radius = 2 + (parseInt(tail.slice(0, 1), 16) % 14), gap = 4 + (parseInt(tail.slice(1, 2), 16) % 12); return { '--qpu-hue': String(hue), '--qpu-accent': `hsl(${hue} ${sat}% ${light}%)`, '--qpu-surface': `hsl(${hue} ${Math.round(sat / 4)}% 97%)`, '--qpu-ink': `hsl(${hue} ${Math.round(sat / 3)}% 14%)`, '--qpu-radius': `${radius}px`, '--qpu-gap': `${gap}px` } as React.CSSProperties }\n"
+  }
+ ]
+}

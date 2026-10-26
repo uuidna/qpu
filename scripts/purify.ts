@@ -172,7 +172,7 @@ for (const e of EXAMPLES) {
   if (e.tool !== 'audit') {
     const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }) as { result?: { _meta: { block: { meta: { id: string } } } } }
     const id = r.result?._meta.block.meta.id ?? uuidOf(`${e.tool}${JSON.stringify(e.arguments)}`)
-    nodes.push({ id: `block:${id}`, kind: 'block', label: `${e.tool} ${JSON.stringify(e.arguments).slice(0, 60)}` })
+    nodes.push({ id: `block:${id}`, kind: 'block', label: `${e.tool} ${JSON.stringify(e.arguments)}` })
     both(`block:${id}`, `example:${e.id}`, 'renders', 'rendered as')
   }
 }

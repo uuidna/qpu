@@ -38,6 +38,6 @@ export const mountThroughClaude = async (origin = 'https://qpu.uuidna.com'): Pro
     return { phase: reported === here ? 'mounted' : 'differs', model: response.model, servedBy: response.model, sha256Here: here, sha256ByClaude: reported, stopReason: response.stop_reason ?? undefined, usage, note: reported === here ? `Claude mounted ${reg.mcp_servers[0]!.name} through the connector${called ? ', called the seal door' : ''} and reported the hash computed here` : `the hash Claude reported (${reported ?? 'none'}) is not the one computed here: a lead` }
   } catch (e) {
     const err = e as Error & { status?: number }
-    return { phase: 'failed', sha256Here: here, note: `${err.constructor?.name ?? 'Error'}${err.status ? ` ${err.status}` : ''}: ${err.message.slice(0, 160)}` }
+    return { phase: 'failed', sha256Here: here, note: `${err.constructor?.name ?? 'Error'}${err.status ? ` ${err.status}` : ''}: ${err.message}` }
   }
 }

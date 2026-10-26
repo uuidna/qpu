@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T10:51:16.298Z",
- "ms": 261,
+ "date": "2026-10-26T11:08:53.182Z",
+ "ms": 272,
  "selftest": {
   "passed": true
  },
@@ -102,7 +102,7 @@
   {
    "kind": "mcp",
    "torus": {
-    "address": "435de209-f556-57dd-a6cb-faa31d146617",
+    "address": "977a7947-f34f-4ca5-af7e-464ce50ba17a",
     "seed": 5,
     "reflection": 5,
     "trinity": [
@@ -111,22 +111,22 @@
      8
     ],
     "closed": true,
-    "bytes": 5570
+    "bytes": 9563
    }
   },
   {
    "kind": "versions",
    "torus": {
-    "address": "110ae0cf-b8ab-8a73-81dc-dba821fbb432",
-    "seed": 5,
-    "reflection": 5,
+    "address": "c7b598ff-7223-8c1f-864a-0eac2e8752b1",
+    "seed": 6,
+    "reflection": 4,
     "trinity": [
-     2,
-     5,
-     8
+     3,
+     6,
+     9
     ],
     "closed": true,
-    "bytes": 138629
+    "bytes": 138600
    }
   },
   {
@@ -147,16 +147,16 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "f92ef192-8c53-8a47-b87f-5bdab7c734c9",
-    "seed": 3,
-    "reflection": 7,
+    "address": "03a020c6-939f-3d90-88f2-e481ad954ba3",
+    "seed": 1,
+    "reflection": 9,
     "trinity": [
-     3,
-     6,
-     9
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 60149
+    "bytes": 63577
    }
   },
   {
@@ -312,16 +312,16 @@
   {
    "kind": "ui",
    "torus": {
-    "address": "0d425600-083f-472d-bb27-6dd0a9c18505",
-    "seed": 5,
-    "reflection": 5,
+    "address": "61787cae-8152-8b38-af3b-a6d32c441eea",
+    "seed": 9,
+    "reflection": 1,
     "trinity": [
-     2,
-     5,
-     8
+     3,
+     6,
+     9
     ],
     "closed": true,
-    "bytes": 2070
+    "bytes": 2540
    }
   },
   {
@@ -357,7 +357,7 @@
   {
    "kind": "sets",
    "torus": {
-    "address": "16bf7d93-9b5b-2d27-85c1-121ae164ae3d",
+    "address": "e58d67b9-81c0-159b-8694-edc08cf07a8e",
     "seed": 7,
     "reflection": 3,
     "trinity": [
@@ -366,22 +366,22 @@
      1
     ],
     "closed": true,
-    "bytes": 48792
+    "bytes": 49257
    }
   },
   {
    "kind": "realtime",
    "torus": {
-    "address": "32591dcd-26bf-865c-988a-15552e9d47e3",
-    "seed": 2,
-    "reflection": 8,
+    "address": "58fa4a6e-4dc6-1f48-841a-18e0af1e1081",
+    "seed": 3,
+    "reflection": 7,
     "trinity": [
-     2,
-     5,
-     8
+     3,
+     6,
+     9
     ],
     "closed": true,
-    "bytes": 3080
+    "bytes": 3725
    }
   }
  ]

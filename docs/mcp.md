@@ -2021,7 +2021,7 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
     },
     "app": {
       "type": "object",
-      "description": "an app requested from the Payload UI: { name, host, plugins?, env?, variant? } — answered as the generated app (every file with its address, the bundle address, the adapters the environment chooses, the enterprise capabilities), priced by the catalogue in the host's currency and ordered through the ecommerce plugin: what the QPU is paid for"
+      "description": "an app requested from the Payload UI: { name, host, plugins?, env?, variant? } — answered as the generated app (every file with its address, the bundle address, the adapters the environment chooses, the enterprise capabilities), priced by the catalogue in the host's currency and ordered through the ecommerce plugin: what the QPU is paid for; { validate: { name, host, env, variant } } answers the streamed form's verdicts, token free; { form: true } the form itself"
     },
     "tool": {
       "type": "string"
@@ -2119,6 +2119,10 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "type": "string"
       },
       "description": "the variable NAMES the client's environment holds: which of a tenant's are missing (values never travel)"
+    },
+    "hex": {
+      "type": "string",
+      "description": "kind ui: any hex (a UUID, a hash, an address) presented as a shadcn combination: each nibble an item and a variant, the whole styled from itself"
     },
     "sets": {
       "type": "array",

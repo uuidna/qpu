@@ -28,7 +28,7 @@ const main = async () => {
       const body = j.result?.structuredContent ?? (j.result?.content?.[0] ? JSON.parse(j.result.content[0].text) : null)
       advantageByUnit = body ? { ...(body as object), asked: { recomputeOps: e2eNow.copies, verifyOps: e2eNow.involutions ?? 0 }, door: 'bill_call' } : { error: `HTTP ${res.status}` }
       const d = depositOf('bill_call', body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'metrics', ...d }) + '\n')
-    } catch (e) { advantageByUnit = { error: (e as Error).message.slice(0, 80) } }
+    } catch (e) { advantageByUnit = { error: (e as Error).message } }
   }
   const artefacts = { advantageByUnit, e2e: e2eNow, coins: accountOf(coinLines), receipt: readJson('receipt.json'), sizes, discovery: readJson('discovery.json'), verification: readJson('verification.json'), readiness: readJson('readiness.json'), repository: readJson('repository.json'), legal: readJson('legal.json'), docket, receipts: { count: receipts.length, last: receipts.length ? (JSON.parse(receipts.at(-1)!) as { id: string }).id : null } }
   const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'metrics', arguments: { artefacts } } }) as any

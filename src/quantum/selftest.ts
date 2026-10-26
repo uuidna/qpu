@@ -98,7 +98,7 @@ export const flowSelftestOf = (handle: (m: Rpc) => any, examples: readonly Examp
   const judged = fixture.map((l) => judgeOf(l, pages, new Set(['scripts/back.ts']), match, '2026-01-01T00:00:00Z'))
   const cls = Object.fromEntries(judged.map((j) => [j.lead, j.class]))
   check('readiness:judge', cls['served-one'] === 'served' && cls['cleanup-gone'] === 'refuted' && cls['cleanup-back'] === 'trial' && cls.learn === 'refuted' && cls['partial-one'] === 'trial' && cls['willow-title'] === 'served' && cls['page:cirq/build'] === 'refuted' && cls.declared === 'refuted' && cls.owed === 'trial', JSON.stringify(cls))
-  check('readiness:judge-evidence', judged.find((j) => j.lead === 'page:cirq/build')!.by.includes('covers') && judged.find((j) => j.lead === 'willow-title')!.by.includes('by processor') && judged.find((j) => j.lead === 'learn')!.by.startsWith('HTTP 404'), judged.filter((j) => ['page:cirq/build', 'willow-title', 'learn'].includes(j.lead)).map((j) => j.by.slice(0, 60)).join(' | '))
+  check('readiness:judge-evidence', judged.find((j) => j.lead === 'page:cirq/build')!.by.includes('covers') && judged.find((j) => j.lead === 'willow-title')!.by.includes('by processor') && judged.find((j) => j.lead === 'learn')!.by.startsWith('HTTP 404'), judged.filter((j) => ['page:cirq/build', 'willow-title', 'learn'].includes(j.lead)).map((j) => j.by).join(' | '))
   const sources = sourcesOf(judged, fixture)
   const q = sources.find((s) => s.source === 'quantumai.google')
   check('readiness:sources', q?.settled === 5 && q.open.length === 1 && sources.find((s) => s.source === 'scripts')?.open[0]?.owes === 'scripts/back.ts is present again' && sources.find((s) => s.source === 'uuidna.com')?.why === '1 open of 1', sources.map((s) => `${s.source} ${s.why}`).join('; '))

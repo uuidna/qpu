@@ -4154,6 +4154,56 @@ export interface PayloadMcpApiKey {
      */
     create?: boolean | null;
   };
+  posts?: {
+    /**
+     * Allow clients to find posts.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create posts.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update posts.
+     */
+    update?: boolean | null;
+  };
+  search?: {
+    /**
+     * Allow clients to find search.
+     */
+    find?: boolean | null;
+  };
+  redirects?: {
+    /**
+     * Allow clients to find redirects.
+     */
+    find?: boolean | null;
+  };
+  variants?: {
+    /**
+     * Allow clients to find variants.
+     */
+    find?: boolean | null;
+  };
+  transactions?: {
+    /**
+     * Allow clients to find transactions.
+     */
+    find?: boolean | null;
+  };
+  addresses?: {
+    /**
+     * Allow clients to find addresses.
+     */
+    find?: boolean | null;
+  };
+  users?: {
+    /**
+     * Allow clients to find users.
+     */
+    find?: boolean | null;
+  };
   'payload-mcp-tool'?: {
     /**
      * A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.
@@ -5713,6 +5763,43 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
     | {
         find?: T;
         create?: T;
+      };
+  posts?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  search?:
+    | T
+    | {
+        find?: T;
+      };
+  redirects?:
+    | T
+    | {
+        find?: T;
+      };
+  variants?:
+    | T
+    | {
+        find?: T;
+      };
+  transactions?:
+    | T
+    | {
+        find?: T;
+      };
+  addresses?:
+    | T
+    | {
+        find?: T;
+      };
+  users?:
+    | T
+    | {
+        find?: T;
       };
   'payload-mcp-tool'?:
     | T

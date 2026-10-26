@@ -12,6 +12,8 @@ export const appRequest: CollectionAfterChangeHook = async ({ doc, operation, re
   const form = (typeof doc.form === 'object' && doc.form ? doc.form : await req.payload.findByID({ collection: 'forms', id: doc.form, overrideAccess: true }).catch(() => null)) as { title?: string } | null
   if (!form || form.title !== APP_REQUEST_FORM_TITLE) return doc
   const data = Object.fromEntries(((doc.submissionData ?? []) as { field: string; value: string }[]).map((f) => [f.field, f.value]))
+  const verdict = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { app: { validate: data } } } }) as { result?: { structuredContent: { ok: boolean; fields: Record<string, { ok: boolean; says: string }> } } }).result?.structuredContent
+  if (!verdict?.ok) { req.payload.logger.warn('app request refused by validation: ' + JSON.stringify(verdict?.fields ?? {})); return doc }
   const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { app: { name: data.name, host: data.host, env: String(data.env ?? '').split(/[,\s]+/).filter(Boolean), variant: data.variant || 'yearly' } } } }) as { result?: { structuredContent: { bundle: string; price: { currency: string; amount: number }; order: { product: string } } }; error?: { message: string } }
   if (!r.result) { req.payload.logger.warn('app request refused: ' + (r.error?.message ?? 'no result')); return doc }
   const app = r.result.structuredContent

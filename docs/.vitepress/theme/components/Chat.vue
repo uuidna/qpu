@@ -13,7 +13,7 @@ const statement = ref('')
 const turns = ref<Turn[]>([])
 const busy = ref(false)
 const channel = typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel('qpu-chat') : null
-const keep = () => { try { localStorage.setItem('qpu-chat', JSON.stringify(turns.value.slice(0, 50))) } catch { /* the log lives this page */ } }
+const keep = () => { try { localStorage.setItem('qpu-chat', JSON.stringify(turns.value)) } catch { /* the log lives this page */ } }
 const ask = async () => {
   const text = statement.value.trim(); if (!text || busy.value) return
   busy.value = true

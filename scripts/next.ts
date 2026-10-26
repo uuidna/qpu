@@ -128,7 +128,7 @@ const opened: NextLead[] = stillRed.map((s) => {
 if (concurrent) opened.push({ id: `next-concurrent-${receipt.head}-${receipt.date.slice(11, 19).replace(/:/g, '')}`, source: `npm run next ${receipt.date}`, statement: `two next runs wrote docs/public at once (this run beside pid ${concurrent.pid} started ${concurrent.date})`, status: 'open', reason: 'the flow has no queue: a run that starts while another writes the same files can read a half-written artefact; serialise the runs or give each its own output', evidence: `lock ${lockPath}`, head: receipt.head, date: receipt.date })
 const leadsNow = [...previous.filter((l) => !opened.some((o) => o.id === l.id)), ...opened]
 writeFileSync(docket, JSON.stringify(leadsNow, null, 1) + '\n')
-const docketPage = ['---', 'title: Next leads', 'order: 50', '---', '', '# Leads opened by `npm run next`', '', 'Every red step of every run, as an open lead with its evidence. The next run follows them; a lead closes when its step is green again.', '', '| Lead | Opened | Evidence |', '|---|---|---|', ...leadsNow.map((l) => `| ${l.id} | ${l.date} | ${cell(l.evidence).slice(0, 600)} |`), ''].join('\n')
+const docketPage = ['---', 'title: Next leads', 'order: 50', '---', '', '# Leads opened by `npm run next`', '', 'Every red step of every run, as an open lead with its evidence. The next run follows them; a lead closes when its step is green again.', '', '| Lead | Opened | Evidence |', '|---|---|---|', ...leadsNow.map((l) => `| ${l.id} | ${l.date} | ${cell(l.evidence)} |`), ''].join('\n')
 writeFileSync(join(ROOT, 'docs', 'next-leads.md'), docketPage)
 
 const streamPath = join(ROOT, 'docs', 'public', 'receipts.ndjson')

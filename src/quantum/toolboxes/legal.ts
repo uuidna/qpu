@@ -36,7 +36,7 @@ export const claimsOf = (texts: Texts, leads: readonly Lead[], cite?: { theorem?
   if (texts.citation) out.push({ id: 'citation-cff', source: 'CITATION.cff', text: `CITATION.cff names ${citationGiven ?? '?'} ${citationAuthor ?? '?'} (${citationOrcid ?? 'no ORCID'}) as the author under ${citationLicence ?? 'no licence'}` })
   if (texts.zenodo) { try { const z = JSON.parse(texts.zenodo) as { creators?: { name: string; orcid?: string }[]; license?: string; title?: string }; out.push({ id: 'zenodo-json', source: '.zenodo.json', text: `.zenodo.json names ${z.creators?.map((c) => `${c.name} (${c.orcid ?? 'no ORCID'})`).join(', ') ?? 'nobody'} as creator of ${z.title ?? '?'} under ${z.license ?? 'no licence'}` }) } catch { out.push({ id: 'zenodo-json', source: '.zenodo.json', text: '.zenodo.json is not valid JSON' }) } }
   if (texts.package) { try { const p = JSON.parse(texts.package) as { name?: string; version?: string; license?: string; author?: { name?: string } | string }; out.push({ id: 'package-json', source: 'package.json', text: `package.json names ${p.name ?? '?'} ${p.version ?? ''} under ${p.license ?? 'no licence'} by ${typeof p.author === 'string' ? p.author : p.author?.name ?? 'nobody'}` }) } catch { out.push({ id: 'package-json', source: 'package.json', text: 'package.json is not valid JSON' }) } }
-  for (const m of (texts.readme ?? '').matchAll(/^\| ([^|]+) \| ([^|]+) \|$/gm)) if (!/^-+$|^Measure$/.test(m[1]!.trim())) out.push({ id: `readme-${m[1]!.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)}`, source: 'README.md measured table', text: `${m[1]!.trim()}: ${m[2]!.trim()}` })
+  for (const m of (texts.readme ?? '').matchAll(/^\| ([^|]+) \| ([^|]+) \|$/gm)) if (!/^-+$|^Measure$/.test(m[1]!.trim())) out.push({ id: `readme-${m[1]!.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-')}`, source: 'README.md measured table', text: `${m[1]!.trim()}: ${m[2]!.trim()}` })
   for (const l of leads.filter((x) => x.id.startsWith('perspective-'))) out.push({ id: l.id, source: l.source, text: l.statement })
   return out
 }
@@ -93,7 +93,7 @@ export const auditOf = (claims: readonly Claim[], answers: readonly Answer[], se
     if (a.refusal !== undefined) { findings.push({ claim, door: a.door, verdict: null, clean: null, violations: 0, violationKinds: [], note: '', receipt: null, refusal: a.refusal.slice(0, 200) }); continue }
     const r = (a.answer ?? {}) as { verdict?: string; clean?: boolean; violations?: { kind?: string; detail?: string }[]; note?: string; honest?: string; receipt?: string }
     const kinds = Array.isArray(r.violations) ? r.violations.map((v) => `${v.kind ?? 'violation'}: ${(v.detail ?? '').slice(0, 120)}`) : []
-    findings.push({ claim, door: a.door, verdict: r.verdict ?? null, clean: typeof r.clean === 'boolean' ? r.clean : null, violations: kinds.length, violationKinds: kinds, note: (kinds.length ? kinds.join('; ') : r.note ?? r.honest ?? '').slice(0, 240), receipt: r.receipt ?? null, refusal: null })
+    findings.push({ claim, door: a.door, verdict: r.verdict ?? null, clean: typeof r.clean === 'boolean' ? r.clean : null, violations: kinds.length, violationKinds: kinds, note: (kinds.length ? kinds.join('; ') : r.note ?? r.honest ?? ''), receipt: r.receipt ?? null, refusal: null })
   }
   const legal = answers.find((a) => a.door === 'get_legal_facts')?.answer as Record<string, unknown> | undefined
   const rights = answers.find((a) => a.door === 'get_rights')?.answer as Record<string, unknown> | undefined

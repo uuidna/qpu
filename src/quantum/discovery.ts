@@ -72,7 +72,7 @@ export const discoveryRequestsOf = (mcpHosts: readonly string[], verifiers: read
 
 /** A JSON-RPC answer read: the result, or the error text. */
 const resultOf = (a: Answer): { result?: any; error?: string } => {
-  if (a.status !== 200) return { error: a.status === 0 ? a.text.slice(0, 120) : a.status === 401 ? 'HTTP 401: auth required' : `HTTP ${a.status}` }
+  if (a.status !== 200) return { error: a.status === 0 ? a.text : a.status === 401 ? 'HTTP 401: auth required' : `HTTP ${a.status}` }
   try {
     const j = JSON.parse(dataOf(a.text)) as { result?: { tools?: unknown[]; structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
     if (j.error) return { error: j.error.message }
@@ -90,7 +90,7 @@ export const doorOf = (t: { name: string; description?: string; inputSchema?: { 
   const outKeys = Object.keys(t.outputSchema?.properties ?? {})
   const fromText = (/Returns \{([^}]*)\}/.exec(t.description ?? '')?.[1] ?? '').split(',').map((s) => s.trim()).filter(Boolean)
   const answers = [...new Set([...outKeys, ...fromText])].filter((k) => (ANSWERS as readonly string[]).includes(k))
-  return { name: t.name, description: (t.description ?? '').slice(0, 200), takes: props.filter((p) => (TAKES as readonly string[]).includes(p)), required: t.inputSchema?.required ?? [], answers, readOnly: t.annotations?.readOnlyHint ?? null, contract }
+  return { name: t.name, description: t.description ?? '', takes: props.filter((p) => (TAKES as readonly string[]).includes(p)), required: t.inputSchema?.required ?? [], answers, readOnly: t.annotations?.readOnlyHint ?? null, contract }
 }
 
 /** The second wave: the contract of every catalogue door that answers a verdict and is not in tools/list, not yet read. */
@@ -112,7 +112,7 @@ export const followUpsOf = (answers: readonly Answer[]): Request[] => {
 
 /** Which document a host answered with: an OpenAPI or Swagger file (and its paths), a JSON index, an OAI identify, a page, nothing. */
 export const detect = (r: { status: number; type: string; text: string }): { detected: string; note: string; paths?: string[] } => {
-  if (r.status === 0) return { detected: 'unreachable', note: r.text.slice(0, 120) }
+  if (r.status === 0) return { detected: 'unreachable', note: r.text }
   if (r.status >= 400) return { detected: `HTTP ${r.status}`, note: 'no contract at this address' }
   const t = r.text.trim()
   const standard = detectStandard(t); if (standard) return standard
@@ -151,7 +151,7 @@ export const discoveryOf = (answers: readonly Answer[], verifiers: readonly Veri
         const contract = answers.find((a) => a.id === idOf('contract', host, t.name))
         const c = contract ? resultOf(contract) : null
         if (c?.result && typeof c.result === 'object') { doors.push(doorOf({ ...(c.result as object), name: t.name, description: t.description }, 'catalogue')); read += 1 }
-        else doors.push({ ...doorOf({ name: t.name, description: t.description }, 'catalogue'), description: `${t.description.slice(0, 200)}${c?.error ? ` (contract unread: ${c.error.slice(0, 60)})` : ''}` })
+        else doors.push({ ...doorOf({ name: t.name, description: t.description }, 'catalogue'), description: `${t.description}${c?.error ? ` (contract unread: ${c.error})` : ''}` })
       }
       note += `; ${names.length} in the catalogue door, ${read} contracts read`
     } else note += `; catalogue door: ${cr.error}`
