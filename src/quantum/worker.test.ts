@@ -340,6 +340,17 @@ test('the fallback for anything: a path that names cached assets is answered by 
   assert.equal(none.status, 404, 'a path that names no asset keeps the decision alone')
 })
 
+test('cheap gates leading every violator to court via its own MCP: a refusal carries the case computed, the rule, the theorem and the call to file it', async () => {
+  const e = env()
+  const bad = await worker.fetch(req('/docket/not-an-id', { method: 'DELETE', headers: { authorization: 'Bearer ' + (e.QPU_WRITE_TOKEN_UUIDNA ?? e.QPU_WRITE_TOKEN ?? '') } }), e)
+  assert.ok(bad.status >= 400 && bad.status < 500)
+  const c = (await bad.json() as { court?: { rule: string; theorem: string; case: string; via: { file: { tool: string } } } }).court
+  assert.ok(c && /^[0-9a-f-]{36}$/.test(c.case) && c.theorem.startsWith('textbook_') && c.via.file.tool === 'legal', 'the refusal names its court')
+  const ok = await worker.fetch(req('/health'), e)
+  assert.equal(ok.status, 200)
+  assert.equal((await ok.json() as { court?: unknown }).court, undefined, 'a gate that answers leads nobody to court')
+})
+
 test('unknown routes answer with the route list, health answers, and OPTIONS allows the cross-origin client', async () => {
   const r = await worker.fetch(req('/nowhere'), env())
   assert.equal(r.status, 404)

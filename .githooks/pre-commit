@@ -1,7 +1,4 @@
 #!/bin/sh
-# Pre-commit is `next` itself, offline and fast: generation, typecheck, tests, Lean, audit, purify (about twenty seconds).
-# Whatever honesty it finds is already in the leads docket when the commit lands; it never blocks. The generated files it
-# rewrote join the commit. The online gate (e2e, the repetition code over the hosts) runs before a push, not here.
-npm run next -- --offline --fast
-git add -u -- docs/public/mcp.json docs/mcp.md docs/.vitepress/config.mts src/quantum/clay-statements.ts README.md docs/public/manifest.webmanifest docs/public/configs.json 2>/dev/null
+# pre-commit is a client MCP workflow: the repository tool answers its steps (repository { workflow: 'pre-commit' }); scripts/hook.ts walks them and decides nothing itself.
+node --import tsx scripts/hook.ts pre-commit "$@"
 exit 0

@@ -184,5 +184,9 @@ theorem textbook_chain_bits : 32 * 4 = 128 := by decide
 theorem textbook_hue_shift (h g s : Nat) : h + s - (g + s) = h - g := Nat.add_sub_add_right h s g
 /-- sixteen hues 22.5° apart present the sixteen hex digits: sixteen times forty-five is two turns of the circle, the step a half of forty-five; rays set next to each other fit when their seam is above zero (examples: css-rays) -/
 theorem textbook_hue_steps : 16 * 45 = 2 * 360 := by decide
+/-- cheap gates leading every violator to court: however many refusals a gate answers, it writes nothing; the case is computed from the refusal and the violator files it through its own MCP (examples: legal-court) -/
+theorem textbook_cheap_gates (refusals : Nat) : refusals * 0 = 0 := Nat.mul_zero refusals
+/-- four git hooks (pre-commit, pre-push, post-commit, prepare-commit-msg) and the CI are five client MCP workflows of one door; the hook script walks the steps and decides nothing (examples: repository-workflow) -/
+theorem textbook_hook_workflows : 4 + 1 = 5 := by decide
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

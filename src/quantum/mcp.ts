@@ -30,7 +30,7 @@ import { CLIFFORD_CHECK_ARITY, countResources } from './counting.js'
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 export type Reply =
   | { jsonrpc: '2.0'; id: number | string | null; result: unknown }
-  | { jsonrpc: '2.0'; id: number | string | null; error: { code: number; message: string } }
+  | { jsonrpc: '2.0'; id: number | string | null; error: { code: number; message: string; data?: unknown } }
 
 /** JSON-RPC's invalid-params code: the arguments of a tool do not describe a circuit or a processor. */
 const INVALID_PARAMS = -32602
@@ -117,7 +117,7 @@ import { cssOf, varsOf, KEY, createOf, coilColourOf, programHuesOf, raysOf } fro
 import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
 import { BILLING, usageOrderOf, ALGEBRA_TOOLS } from './toolboxes/billing.js'
-import { LEGAL } from './toolboxes/legal.js'
+import { LEGAL, courtOf } from './toolboxes/legal.js'
 import { REPOSITORY } from './toolboxes/repository.js'
 import { STANDARDS_BOX } from './toolboxes/standards.js'
 import { PAYLOAD, payloadDocOf, uiOf, MCP_APPS } from './toolboxes/payload.js'
@@ -860,7 +860,8 @@ export const handleBatch = (messages: readonly Rpc[]): Reply[] => messages.map((
 export const handle = (message: Rpc): Reply => {
   if (Array.isArray(message)) return handleBatch(message as unknown as Rpc[]) as unknown as Reply
   const id = message.id ?? null
-  const fail = (code: number, text: string): Reply => ({ jsonrpc: '2.0', id, error: { code, message: text } })
+  // cheap gates leading every violator to court via its own MCP: the error carries the case computed (the rule, the theorem, the remedy, the call to file it)
+  const fail = (code: number, text: string): Reply => ({ jsonrpc: '2.0', id, error: { code, message: text, data: { court: courtOf({ gate: `${message.method}${(message as { params?: { name?: string } }).params?.name ? ` ${(message as { params: { name: string } }).params.name}` : ''}`, code, evidence: text }) } } })
   const params = (message.params ?? {}) as Record<string, unknown>
   try {
     if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } } }, serverInfo: { name: 'qpu', version: '1.4.0' , build: buildOf(TOOLS.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` } }

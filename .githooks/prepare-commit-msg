@@ -1,39 +1,4 @@
 #!/bin/sh
-# The imprint: the receipt pre-commit just wrote, the purity and leads it found, the last readiness verdict, and the unit's
-# signature over the message, appended to every commit message as trailers. Programmatic, never typed. $1 is the message
-# file; $2 the source (merge, squash, commit…). The signature is a network step: offline, the trailer says unsigned.
-MSG="$1"; SRC="$2"
-case "$SRC" in merge|squash) exit 0;; esac
-node --import tsx -e '
-const fs = require("node:fs"); const path = process.argv[1]
-const read = (f) => { try { return JSON.parse(fs.readFileSync(f, "utf8")) } catch { return null } }
-const r = read("docs/public/receipt.json"), p = read("docs/public/purify-leads.json"), n = read("docs/public/next-leads.json"), rd = read("docs/public/readiness.json")
-const steps = r ? r.steps.filter((s) => s.status !== "skipped").map((s) => `${s.name}=${s.status}`).join(" ") : "none"
-const trailers = [
-  `Receipt: ${r?.id ?? "none"}`,
-  `Receipt-SHA256: ${r?.sha256 ?? "none"}`,
-  `Next: ${steps}`,
-  `Purity-leads: ${Array.isArray(p) ? p.length : "unmeasured"}`,
-  `Next-leads: ${Array.isArray(n) ? n.length : "unmeasured"}`,
-  `Readiness: ${rd ? `${rd.readiness.ready ? "ready" : "not ready"} (${rd.readiness.receipt}, ${rd.date.slice(0, 10)})` : "unmeasured here (network step)"}`,
-  `License: CC-BY-NC-ND-4.0 (c) Tsvetan Rouschev`,
-]
-let msg = fs.readFileSync(path, "utf8")
-if (msg.includes("\nReceipt: ")) process.exit(0)
-const body = msg.replace(/\s+$/, "")
-// The unit signs the message with its Receipt trailer inside, so the unit'"'"'s fold dates this receipt (gap-time-witness).
-const THEOREMS = ["sealed_theorem_not_forged", "honesty_gate_is_theorem_not_oracle"]
-const sign = async () => {
-  if (process.env.QPU_OFFLINE === "1") return "unsigned (offline)"
-  const message = `${body}\n\n${trailers.slice(0, 2).join("\n")}\nBacked by theorem ${THEOREMS[0]} and theorem ${THEOREMS[1]}.`
-  try {
-    const res = await fetch(process.env.UUIDNA_MCP ?? "https://uuidna.com/mcp", { method: "POST", headers: { "content-type": "application/json", accept: "application/json", "user-agent": "uuidna-qpu-hook (https://qpu.uuidna.com)" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "sign_commit", arguments: { message, theorems: THEOREMS } } }), signal: AbortSignal.timeout(20000) })
-    if (!res.ok) return `unsigned (the hosted door answered HTTP ${res.status}; lead gap-sign-door-hosted)`
-    const j = await res.json(); const out = j.result?.structuredContent ?? (j.result?.content?.[0] ? JSON.parse(j.result.content[0].text) : null)
-    if (!out) return `unsigned (${j.error?.message ?? "no answer"})`
-    return out.signed ? `${out.verdict} address ${out.address} fold ${out.fold} (uuidna.com sign_commit, cites ${out.cited.join(", ")})` : `refused: ${out.reason}`
-  } catch (e) { return `unsigned (${e.message.slice(0, 60)})` }
-}
-sign().then((signature) => { trailers.push(`Signed-by-unit: ${signature}`); fs.writeFileSync(path, `${body}\n\n${trailers.join("\n")}\n`) })
-' "$MSG"
+# prepare-commit-msg is a client MCP workflow: the repository tool answers its steps (repository { workflow: 'prepare-commit-msg' }); scripts/hook.ts walks them and decides nothing itself.
+node --import tsx scripts/hook.ts prepare-commit-msg "$@"
 exit 0

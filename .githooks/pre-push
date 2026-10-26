@@ -1,6 +1,3 @@
 #!/bin/sh
-# The platform runs itself before anything leaves this machine: the fast offline flow (generation, typecheck, tests, Lean,
-# audit, purify), then the end-to-end gate online — every dashboard combination and every example called on every tenant
-# host over MCP and decoded by majority against the tree's own answer; an uncorrectable combination stops the push.
-npm run next -- --offline --fast --strict || exit 1
-node --import tsx scripts/e2e.ts --strict
+# pre-push is a client MCP workflow: the repository tool answers its steps (repository { workflow: 'pre-push' }); scripts/hook.ts walks them and decides nothing itself.
+exec node --import tsx scripts/hook.ts pre-push "$@"

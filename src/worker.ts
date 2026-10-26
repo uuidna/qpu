@@ -501,7 +501,19 @@ export const signAtEdge = async (reply: { result: { structuredContent: { sha256:
 }
 
 export const worker = {
+  /** Cheap gates leading every violator to court via its own MCP: a refusal (400, 401, 403, 405, 409, 412, 429; 404 on a write) is answered with the case the legal tool computes from the refusal alone — the rule, the theorem, the remedy, the MCP call the client makes to file or appeal it — nothing written here. */
   async fetch(request: Request, env: Env = {}): Promise<Response> {
+    const res = await worker.route(request, env)
+    const summoned = res.status >= 400 && res.status < 500 && (res.status !== 404 || request.method !== 'GET') && /application\/json/.test(res.headers.get('content-type') ?? '')
+    if (!summoned) return res
+    let body: Record<string, unknown>; try { body = await res.clone().json() as Record<string, unknown> } catch { return res }
+    if (body.jsonrpc) return res // a JSON-RPC error already carries its court in error.data
+    const url = new URL(request.url)
+    const c = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'legal', arguments: { court: { gate: `${request.method} ${url.pathname}`, status: res.status, evidence: body.error ?? body.refused ?? body, tenant: tenantOf(url.hostname) } } } }) as { result?: { structuredContent?: unknown } }
+    const headers = new Headers(res.headers)
+    return new Response(JSON.stringify({ ...body, court: c.result?.structuredContent ?? null }), { status: res.status, headers })
+  },
+  async route(request: Request, env: Env = {}): Promise<Response> {
     const url = new URL(request.url)
     const path = url.pathname.replace(/\/$/, '') || '/'
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: LICENSE_HEADERS })

@@ -1820,6 +1820,9 @@ The full legal and security audit with forensic analysis, through MCP. Phase one
         "type": "object"
       }
     },
+    "court": {
+      "description": "true: the court's rules, each with its theorem and remedy; { gate, status | code, rule?, evidence?, tenant? }: the case a refusal computes — what was violated, the theorem, the remedy, the MCP call the violator makes to file it (kind case in the docket) or to appeal (match); every cheap gate answers its refusals with this"
+    },
     "selftest": {
       "type": "boolean"
     }
@@ -1954,6 +1957,21 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
       "items": {
         "type": "object"
       }
+    },
+    "workflow": {
+      "type": "string",
+      "enum": [
+        "pre-commit",
+        "pre-push",
+        "post-commit",
+        "prepare-commit-msg",
+        "ci"
+      ],
+      "description": "the git hook or the CI as a client MCP workflow: its steps, strictness and what each does; scripts/hook.ts walks them"
+    },
+    "offline": {
+      "type": "boolean",
+      "description": "with workflow: the network steps marked unsigned"
     },
     "selftest": {
       "type": "boolean"
