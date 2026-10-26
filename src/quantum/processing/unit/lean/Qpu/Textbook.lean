@@ -32,6 +32,8 @@ theorem textbook_typography_idempotent (n : Nat) : min (min n 1) 1 = min n 1 := 
 theorem textbook_references_acyclic (k n : Nat) (h : k ≤ n) : n - k + k = n := by omega
 /-- the gravitational constant 667430 × 10^-16 with its uncertainty 15 × 10^-16 has a relative uncertainty of 22474 parts per billion, rounded down, computed from the integers alone: a seal keeps it, never removes it (examples: seal-constants) -/
 theorem textbook_codata_g_ppb : 15 * 1000000000 / 667430 = 22474 := by decide
+/-- a version 7 UUID is 48 bits of time, 4 of version, 2 of variant and 74 of space: 128, so zeroing the time leaves the place it names (examples: fold-split) -/
+theorem textbook_uuid_time_space : 48 + 4 + 2 + 74 = 128 := by decide
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/

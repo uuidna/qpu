@@ -2573,6 +2573,10 @@ The split folds
 {
   "type": "object",
   "properties": {
+    "split": {
+      "type": "string",
+      "description": "a UUID split into time and space"
+    },
     "harmonic": {
       "type": "object",
       "description": "{ schema, referrer? }"
