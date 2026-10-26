@@ -10,7 +10,7 @@ import { handleOrCorrect } from './audit.js'
 import type { Context } from './toolbox.js'
 
 export type E2eRequest = { id: string; combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; arguments: Record<string, unknown>; host: string; url: string; method: 'POST'; accept: string; headers: Record<string, string>; body: unknown; local: string; localError?: string }
-export type E2eAnswer = E2eRequest & { status: number; ms: number; text: string; etag?: string | null; address?: string | null; version?: string | null }
+export type E2eAnswer = E2eRequest & { status: number; ms: number; text: string; etag?: string | null; address?: string | null; version?: string | null; /** the answer already decoded by the client the moment it arrived, its body released: a run of hundreds of copies holds values, never bodies (the heap ran out holding 870 bodies: measured) */ decoded?: ReturnType<typeof valueOf> }
 export type ErrorBlock = { uuid: string; kind: 'flip' | 'erasure' | 'refusal'; host: string; tool: string; combo: string; expected: string; got: string; syndrome: string[] }
 export type Decoded = { combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; local: string; copies: { host: string; value: string; ms: number; involution?: true }[]; involutions: number; materialised: number; outcome: 'agree' | 'corrected' | 'erased' | 'uncorrectable'; logical: string; syndrome: string[]; errors: ErrorBlock[]; codes: CodeRun[]; winner: string | null; possibilities: { value: string; copies: string[] }[] }
 /** A code: one way of deciding the logical value from the copies, with the time it needs (the ms at which it can decide). */
@@ -82,7 +82,8 @@ export const e2eRequestsOf = (ctx: Context, hosts: readonly string[], only?: rea
 }
 
 /** One host's answer read into the hash of what it computed, or the error it answered. */
-export const valueOf = (a: { status: number; text: string; local?: string; etag?: string | null; address?: string | null; combo?: string }): { value: string; kind?: 'erasure' | 'refusal'; involution?: true; materialised?: boolean } => {
+export const valueOf = (a: { status: number; text: string; local?: string; etag?: string | null; address?: string | null; combo?: string; decoded?: { value: string; kind?: 'erasure' | 'refusal'; involution?: true; materialised?: boolean } }): { value: string; kind?: 'erasure' | 'refusal'; involution?: true; materialised?: boolean } => {
+  if (a.decoded) return a.decoded
   // 304: the host holds the same content under the hash the request named — agreement proven at the edge, no body computed or sent.
   // The teleport is materialised at the destination: the hash the host echoes must equal the hash of the full content held here,
   // and the address it names must be the block's; a 304 without them is an erasure, never an agreement
