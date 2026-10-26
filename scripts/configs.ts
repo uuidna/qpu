@@ -36,7 +36,8 @@ for (const f of files.files as { kind: string; path: string; source: 'tool' | 'h
     else if (f.kind === 'hooks') { /* the plugin module: written by the full stack above, measured here as one of its files */ }
     else if (f.kind === 'ui') { const { registryOf, fileOf } = await import('../src/quantum/toolboxes/payload.ts'); const block = call({ kind: 'fullstack' }).config.files[fileOf('block', 'qpu')] as string; const reg = registryOf('https://qpu.uuidna.com', block); for (const [name, json] of Object.entries(reg)) for (const dir of ['site/public/r', 'docs/public/r']) if (write(`${dir}/${name}`, JSON.stringify(json, null, 1) + '\n')) improved.push(`${dir}/${name}`) }
     else if (f.kind === 'bindings') { const text = call({ kind: 'bindings', current: '' }).env as string; if (write(f.path, text + '\n')) improved.push(f.path) }
-    else if (f.format === 'jsonc') { if (write(f.path, `${header(f.kind)}\n${JSON.stringify(c.config, null, 2)}\n`)) improved.push(f.path) }
+    // the app's wrangler is the adapters kind's own wrangler configuration, not the whole answer (the matrix and the choice stay in configs.json)
+    else if (f.format === 'jsonc') { const body = f.kind === 'adapters' ? (c.config as { wrangler: unknown }).wrangler : c.config; if (write(f.path, `${header(f.kind)}\n${JSON.stringify(body, null, 2)}\n`)) improved.push(f.path) }
     else if (write(f.path, JSON.stringify(c.config, null, 1) + '\n')) improved.push(f.path)
   } else {
     const text = [f.path, ...(f.with ?? [])].map((p) => (existsSync(join(ROOT, p)) ? readFileSync(join(ROOT, p), 'utf8') : '')).join('\n')

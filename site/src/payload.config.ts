@@ -20,7 +20,6 @@ import { LabelFeature } from '@root/fields/richText/features/label/server'
 import { LargeBodyFeature } from '@root/fields/richText/features/largeBody/server'
 import { googleAnalytics } from '@zubricks/plugin-google-analytics'
 import { revalidateTag } from 'next/cache'
-import nodemailerSendgrid from 'nodemailer-sendgrid'
 import path from 'path'
 import { buildConfig, type TextField } from 'payload'
 import { fileURLToPath } from 'url'
@@ -99,10 +98,9 @@ const dirname = path.dirname(filename)
 
 const sendGridAPIKey = process.env.SENDGRID_API_KEY
 
+// SendGrid over SMTP: no package beyond nodemailer, no old request dependency in the config's import graph
 const sendgridConfig = {
-  transportOptions: nodemailerSendgrid({
-    apiKey: sendGridAPIKey,
-  }),
+  transportOptions: { host: 'smtp.sendgrid.net', port: 587, auth: { user: 'apikey', pass: sendGridAPIKey } },
 }
 
 export default buildConfig({

@@ -48,6 +48,8 @@ import { default as default_7855b44454994335ecfbd19f80d2bb90 } from '@root/globa
 import { default as default_7b4b356d4f495796f5ea32368107862c } from '@root/globals/CustomRowLabelTabs'
 import { BlogMarkdownField as BlogMarkdownField_a0e4da4b38919785352cf36efa721675 } from '@root/blocks/BlogMarkdown/Field'
 import { default as default_26726ff2b18133c6c2dab451ecac5a3e } from '@root/components/TableCheckboxField'
+import { QpuIcon as QpuIcon_fcd29a2b324b90f4bd5e5079146253ed } from '@root/components/blocks/Qpu/Branding'
+import { QpuLogo as QpuLogo_fcd29a2b324b90f4bd5e5079146253ed } from '@root/components/blocks/Qpu/Branding'
 import { default as default_3ee709fabb34ea93648b8fdb9ee7323a } from '@root/components/AfterNavActions'
 import { default as default_b8668daa8bdf783ddeca7def5b7c2324 } from '@root/components/BeforeDashboard'
 import { TenantSelector as TenantSelector_d6d5f193a167989e2ee7d14202901e62 } from '@payloadcms/plugin-multi-tenant/rsc'
@@ -111,6 +113,8 @@ export const importMap = {
   "@root/globals/CustomRowLabelTabs#default": default_7b4b356d4f495796f5ea32368107862c,
   "@root/blocks/BlogMarkdown/Field#BlogMarkdownField": BlogMarkdownField_a0e4da4b38919785352cf36efa721675,
   "@root/components/TableCheckboxField#default": default_26726ff2b18133c6c2dab451ecac5a3e,
+  "@root/components/blocks/Qpu/Branding#QpuIcon": QpuIcon_fcd29a2b324b90f4bd5e5079146253ed,
+  "@root/components/blocks/Qpu/Branding#QpuLogo": QpuLogo_fcd29a2b324b90f4bd5e5079146253ed,
   "@root/components/AfterNavActions#default": default_3ee709fabb34ea93648b8fdb9ee7323a,
   "@root/components/BeforeDashboard#default": default_b8668daa8bdf783ddeca7def5b7c2324,
   "@payloadcms/plugin-multi-tenant/rsc#TenantSelector": TenantSelector_d6d5f193a167989e2ee7d14202901e62,

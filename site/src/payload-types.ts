@@ -890,6 +890,38 @@ export interface Tenant {
     | number
     | boolean
     | null;
+  /**
+   * the bindings this tenant uses, by name: the adapters profile, the connectors it is listed as, the variables it names; values never here — the Worker and the app read them from their environment by these names (the configure tool computes the choice from the names: kinds adapters and bindings)
+   */
+  bindings?: {
+    /**
+     * the adapters profile: database, storage and email chosen by what the environment names
+     */
+    profile?: ('cloudflare' | 'google' | 'vercel' | 'local') | null;
+    /**
+     * what the one /mcp endpoint is listed as: a Claude connector, a Cloudflare remote MCP, an entry of the MCP registry
+     */
+    connectors?: ('claude' | 'cloudflare' | 'registry')[] | null;
+    /**
+     * the variable names this tenant binds (QPU_OAUTH_ISSUER_<TENANT>, MCP_PUBLISHER_TOKEN, ...): names the bindings kind knows; the tenant kind measures which the environment lacks
+     */
+    variables?:
+      | {
+          name: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * the branding: defined here, or computed in real time from the tenant address when left empty — the name, the tagline, the accent, the logo, the icon
+   */
+  branding?: {
+    name?: string | null;
+    tagline?: string | null;
+    accent?: string | null;
+    logo?: (string | null) | Media;
+    icon?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -4354,7 +4386,7 @@ export interface PayloadMcpApiKey {
      */
     patents?: boolean | null;
     /**
-     * Workspaces, branches, tags and releases watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.
+     * Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases, the workflow runs, the workflows), the npm registry (the version it holds) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.
      */
     repository?: boolean | null;
     /**
@@ -4579,6 +4611,14 @@ export interface PayloadMcpApiKey {
      * the SDK: the config sets as the base of combinatorial application builders — one TypeScript module that calls this server over MCP (token free) and the Payload MCP plugin with a user's API key (the collections among its tools); served here and by the plugin
      */
     sdkLib?: boolean | null;
+    /**
+     * the standard contract: an OpenAPI 3.1 document derived from tools/list and the endpoint table — every tool a component schema, every endpoint a path, the mcp operation a JSON-RPC envelope; the same document stands in the discovery document at /.well-known/qpu.json
+     */
+    'openapi://qpu'?: boolean | null;
+    /**
+     * everything the kernel accepts, served whole: every theorem with its module and statement, the textbook theorems with their Lean text, the generated lemmas counted, the kernel's total; no version hides anything Lean
+     */
+    leanTheorems?: boolean | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -5471,6 +5511,27 @@ export interface TenantsSelect<T extends boolean = true> {
       };
   currency?: T;
   settings?: T;
+  bindings?:
+    | T
+    | {
+        profile?: T;
+        connectors?: T;
+        variables?:
+          | T
+          | {
+              name?: T;
+              id?: T;
+            };
+      };
+  branding?:
+    | T
+    | {
+        name?: T;
+        tagline?: T;
+        accent?: T;
+        logo?: T;
+        icon?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -5905,6 +5966,8 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         uiSeal?: T;
         uiAttest?: T;
         sdkLib?: T;
+        'openapi://qpu'?: T;
+        leanTheorems?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -6451,6 +6514,18 @@ export interface Qpu {
     | number
     | boolean
     | null;
+  /**
+   * the branding of the tenant that asked: its tenants row where defined, computed in real time from its address where not
+   */
+  branding?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -6728,6 +6803,7 @@ export interface TopBarSelect<T extends boolean = true> {
 export interface QpuSelect<T extends boolean = true> {
   origin?: T;
   document?: T;
+  branding?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
