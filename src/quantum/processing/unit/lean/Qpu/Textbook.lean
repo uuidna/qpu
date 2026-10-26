@@ -18,7 +18,7 @@ theorem textbook_integrations_are_thirty_five : 8 + 1 + 1 + 15 + 1 + 9 = 35 := b
 theorem textbook_institution_bill (u c p : Nat) (h : u ≤ c) : u * p ≤ c * p := Nat.mul_le_mul h (Nat.le_refl p)
 /-- three institution families, seven Workspace doors off, read or write and two read only (Calendar, People): twenty-six thousand two hundred and forty-four presets, each a mixed-radix index with its address, its page and its least-privilege scopes (examples: textbook-presets, textbook-preset) -/
 theorem textbook_workspace_presets : 3 * (3 ^ 7 * 2 ^ 2) = 26244 := by decide
-/-- a namespace narrows a credential, never widens it: a tenant the request may act in is one the request named and the user already held (examples: payload-namespace-sandbox, payload-namespace-narrow) -/
+/-- a namespace narrows a credential, never widens it: a tenant the request may act in is one the request named and the user already held (examples: payload-namespace-sandbox, payload-namespace-narrow, leads-client) -/
 theorem textbook_namespace_narrows (named held : Bool) : (named && held) = true → held = true := by cases named <;> cases held <;> simp
 /-- a deterministic check of equal inputs has an equal verdict: an example whose answer folds to the integers its theorem's confirmed pass recorded is decided by that theorem, and the text checks run only to confirm a new integer (examples: audit-self) -/
 theorem textbook_integers_first (a b : Nat) (v : Nat → Bool) (h : a = b) : v a = v b := by rw [h]

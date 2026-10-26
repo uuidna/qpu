@@ -9,7 +9,7 @@ import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 import { uuidOf } from './blocks.js'
 
 export type Check = { id: string; passed: boolean; evidence: string; /** milliseconds since the previous check: where the audit's time goes */ ms?: number }
-export type Audit = { /** example key → the integers its confirmed pass folded to: the next run decides by them */ integers: Record<string, string>; /** how many examples the integers decided and how many the text confirmed */ decided: { byInteger: number; byText: number; theorem: string }; /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
+export type Audit = { /** example key → the integers its confirmed pass folded to: the next run decides by them */ integers: Record<string, string>; /** how many examples the integers decided and how many the text confirmed */ decided: { bySeal: number; byInteger: number; byText: number; sealed: boolean; theorem: string }; /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
 
 type Lead = { id: string; status: string; tool?: string; reason?: string }
 type ToolSpec = { name: string; description: string; inputSchema: { type?: string; required?: string[]; properties?: Record<string, unknown> } }
@@ -290,12 +290,16 @@ export const leaksOf = (texts: Readonly<Record<string, string>>, served: readonl
   return { texts: Object.keys(texts).length, findings, byKind, total: findings.reduce((n, f) => n + f.count, 0), served: findings.filter((f) => f.served).length, setAside, clean: findings.length === 0, leads, theorem: 'textbook_leaks_redacted', says: findings.length ? `${findings.reduce((n, f) => n + f.count, 0)} finding(s) in ${new Set(findings.map((f) => f.where)).size} text(s), ${findings.filter((f) => f.served).length} served publicly; values redacted, ${setAside} notation(s) set aside` : `${Object.keys(texts).length} text(s) clean; ${setAside} notation(s) set aside (block addresses, test domains)` }
 }
 
-export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}): Audit => {
+export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}, code: string | null = null): Audit => {
   // integers first: an example (keyed by its own definition) whose answer and widget fold to the integers recorded when every text check
   // passed is decided by those integers; the text checks (the licence strings, the CSS variables, the accessibility parse, the expectation)
   // run only for an integer not yet seen, to confirm it, and a confirmed pass records it (textbook_integers_first)
   const integers: Record<string, string> = {}
-  let byInteger = 0, byText = 0
+  // sealed under the code: when the core's source fingerprint equals the one the ledger was sealed under, an unchanged example backed by a
+  // kernel-accepted theorem is decided without its call being run at all; any change to the code invalidates every seal (textbook_integers_first)
+  const sealed = code !== null && known.__code === code
+  if (code !== null) integers.__code = code
+  let byInteger = 0, byText = 0, bySeal = 0
   const checks: Check[] = []
   let clock = Date.now()
   const check = (id: string, passed: boolean, evidence: string) => { const now = Date.now(); checks.push({ id, passed, evidence, ms: now - clock }); clock = now }
@@ -322,6 +326,8 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     check(`example-tool:${e.id}`, names.has(e.tool), names.has(e.tool) ? e.tool : `tool ${e.tool} is not served`)
     if (!names.has(e.tool)) continue
     if (e.tool === 'audit') continue // the self example is evaluated by the caller: it would recurse here
+    const sealKey = uuidOf(`${e.id}|${JSON.stringify(e.arguments)}|${e.expect.toString()}|${e.shows}`)
+    if (sealed && e.theorem && THEOREM_KEYS.has(e.theorem) && known[sealKey]) { for (const k of ['license', 'css-vars', 'accessibility', 'example']) check(`${k}:${e.id}`, true, `sealed under code ${code!.slice(0, 12)} by theorem ${e.theorem}: not recomputed`); integers[sealKey] = known[sealKey]!; bySeal++; continue }
     const reply = call(e.tool, e.arguments)
     if ('error' in reply) { check(`example:${e.id}`, false, `${reply.error.code} ${reply.error.message}`); continue }
     const r = reply.result
@@ -378,5 +384,5 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   check('error:invalid-params', 'error' in badArgs && badArgs.error.code === -32602, JSON.stringify(badArgs.error ?? badArgs.result).slice(0, 80))
 
   const passed = checks.filter((c) => c.passed).length
-  return { integers, decided: { byInteger, byText, theorem: 'textbook_integers_first' }, slowest: [...checks].sort((a, b) => (b.ms ?? 0) - (a.ms ?? 0)).slice(0, 8).map((c) => `${c.id} ${c.ms} ms`), total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
+  return { integers, decided: { bySeal, byInteger, byText, sealed, theorem: 'textbook_integers_first' }, slowest: [...checks].sort((a, b) => (b.ms ?? 0) - (a.ms ?? 0)).slice(0, 8).map((c) => `${c.id} ${c.ms} ms`), total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
 }

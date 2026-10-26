@@ -1122,6 +1122,10 @@ Every lead on quantumai
 {
   "type": "object",
   "properties": {
+    "client": {
+      "type": "object",
+      "description": "a client's own report, apart from the QPU's leads"
+    },
     "collide": {
       "type": "boolean",
       "description": "the open problems seen as a toolset of involutions and collided with each other without a limit"
