@@ -1176,6 +1176,10 @@ The surface audits itself through tools/call
 {
   "type": "object",
   "properties": {
+    "lexical": {
+      "type": "object",
+      "description": "a lexical document scanned, nothing in it run"
+    },
     "leaks": {
       "type": "object",
       "description": "{ texts"

@@ -1,7 +1,7 @@
 {
- "date": "2026-10-26T22:19:03.401Z",
+ "date": "2026-10-26T22:25:17.697Z",
  "files": 938,
- "lines": 84635,
+ "lines": 84666,
  "findings": 1074,
  "fused": 332,
  "reactions": 742,
@@ -96,7 +96,7 @@
   {
    "id": "entropy-cap-e1adfd32",
    "kind": "cap",
-   "source": "scripts/purify.ts:168, scripts/purify.ts:181, scripts/textbook.ts:47, src/quantum/audit.ts:362, src/quantum/audit.ts:380, src/quantum/audit.ts:382, src/quantum/audit.ts:384, src/quantum/discovery.ts:112, src/quantum/discovery.ts:157, src/quantum/examples.ts:103, src/quantum/examples.ts:157, src/quantum/match.ts:339, src/quantum/toolboxes/repository.ts:115, src/quantum/wave.ts:26, src/worker.ts:367",
+   "source": "scripts/purify.ts:168, scripts/purify.ts:181, scripts/textbook.ts:47, src/quantum/audit.ts:362, src/quantum/audit.ts:380, src/quantum/audit.ts:382, src/quantum/audit.ts:384, src/quantum/discovery.ts:112, src/quantum/discovery.ts:157, src/quantum/examples.ts:104, src/quantum/examples.ts:158, src/quantum/match.ts:339, src/quantum/toolboxes/repository.ts:115, src/quantum/wave.ts:26, src/worker.ts:367",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80)",
    "status": "open",
    "tool": "audit",
@@ -252,7 +252,7 @@
   {
    "id": "entropy-cap-c7ad5d45",
    "kind": "cap",
-   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:162, src/quantum/wave.ts:23, src/quantum/wave.ts:28, src/quantum/wave.ts:29, src/quantum/wave.ts:31",
+   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:163, src/quantum/wave.ts:23, src/quantum/wave.ts:28, src/quantum/wave.ts:29, src/quantum/wave.ts:31",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 100)",
    "status": "open",
    "tool": "audit",
@@ -372,7 +372,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/audit.ts:304, src/quantum/audit.ts:305, src/quantum/examples.ts:162, src/quantum/mcp.ts:994, src/quantum/mcp.ts:997, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:114, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:190, src/quantum/toolboxes/legal.ts:265, src/quantum/toolboxes/payload.ts:1248, src/quantum/toolboxes/payload.ts:1253",
+   "source": "src/quantum/audit.ts:304, src/quantum/audit.ts:305, src/quantum/examples.ts:163, src/quantum/mcp.ts:994, src/quantum/mcp.ts:997, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:114, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:190, src/quantum/toolboxes/legal.ts:265, src/quantum/toolboxes/payload.ts:1248, src/quantum/toolboxes/payload.ts:1253",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
@@ -396,7 +396,7 @@
   {
    "id": "entropy-cap-113d3f3c",
    "kind": "cap",
-   "source": "src/quantum/discovery.ts:243, src/quantum/examples.ts:83, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:36",
+   "source": "src/quantum/discovery.ts:243, src/quantum/examples.ts:84, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:36",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200)",
    "status": "open",
    "tool": "audit",
@@ -408,7 +408,7 @@
   {
    "id": "entropy-leak-0fc168b2",
    "kind": "leak",
-   "source": "src/quantum/examples.ts:165",
+   "source": "src/quantum/examples.ts:166",
    "statement": "an address in the tree: contacts are URLs, the account email is read at deploy — <address>@qpu.uuidna.com",
    "status": "open",
    "tool": "audit",
@@ -420,7 +420,7 @@
   {
    "id": "entropy-leak-fea3989b",
    "kind": "leak",
-   "source": "src/quantum/examples.ts:165",
+   "source": "src/quantum/examples.ts:166",
    "statement": "an address in the tree: contacts are URLs, the account email is read at deploy — <address>@project-id.iam.gserviceaccount.com",
    "status": "open",
    "tool": "audit",
