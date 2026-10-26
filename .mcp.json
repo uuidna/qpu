@@ -1,5 +1,10 @@
 {
   "mcpServers": {
+    "qpu-local": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["--import", "tsx", "scripts/stdio.ts"]
+    },
     "qpu": {
       "type": "http",
       "url": "${QPU_APP_MCP:-http://localhost:3000/api/mcp}",
