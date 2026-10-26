@@ -61,7 +61,7 @@ const main = async () => {
   const one = async (c: typeof calls[number]) => { try { answers.push({ ...c, answer: await rpc(hostUrl(c.host), c.door, c.arguments) }) } catch (e) { answers.push({ ...c, refusal: (e as Error).message }) } }
   while (queue.length || inFlight.size) { while (queue.length && inFlight.size < 4) { const p = one(queue.shift()!).finally(() => inFlight.delete(p)); inFlight.add(p) } if (inFlight.size) await Promise.race(inFlight) }
   if (isShard) { leaveShard('legal', answers.slice(before)); console.log(`legal: ${shardLabel()} answered ${answers.length - before}`); process.exit(0) }
-  const audit = call({ texts, discovery, agents, theoremKeys: ledger, answers })
+  const audit = call({ texts, discovery, agents, theoremKeys: ledger, answers, now: Date.now() })
   const date = new Date().toISOString()
   writeFileSync(outPath, JSON.stringify({ license: LICENSE.attribution, date, inputs, online: !offline, id: audit.id, sha256: audit.sha256, inputHashes: audit.inputs, selftest: { passed: selftest.passed }, by: audit.by, agents: plan.plan.agents, calls: calls.length, ...audit.audit, answers }, null, 1) + '\n')
   writeFileSync(join(ROOT, 'docs', 'legal.md'), audit.page)

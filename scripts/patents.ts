@@ -15,14 +15,18 @@ const main = async () => {
   const started = Date.now()
   const selftest = call({ selftest: true })
   console.log(`patents selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
-  // one question a run, by the day: the open endpoint throttles a burst (measured: HTTP 503 after a few queries), so the questions rotate and every answer stands for its day
-  const today = Math.floor(Date.now() / 86_400_000)
-  const plan = call({ op: 'plan', queries: [QUERIES[today % QUERIES.length]!], count: 10 })
-  const answers = await Promise.all((plan.requests as { id: string; query: string | null; url: string; accept: string }[]).map(async (r) => {
-    const t0 = Date.now()
-    try { const res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': 'uuidna-qpu-verify (+https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(25000) }); return { id: r.id, query: r.query, status: res.status, ms: Date.now() - t0, text: await res.text() } }
-    catch (e) { return { id: r.id, query: r.query, status: 0, ms: Date.now() - t0, text: '' } }
-  }))
+  // every question a run, paced for the host: the open endpoint throttles a burst (measured: HTTP 503 after five in a minute), so the questions go one by one,
+  // QPU_PATENTS_PACE_MS apart (twelve seconds by default), within the step's budget; no question is left for another day and no answer is capped
+  const plan = call({ op: 'plan', queries: QUERIES, count: 100 })
+  const answers: { id: string; query: string | null; status: number; ms: number; text: string }[] = []
+  const PACE_MS = Number(process.env.QPU_PATENTS_PACE_MS ?? 12_000)
+  let last = 0
+  for (const r of plan.requests as { id: string; query: string | null; url: string; accept: string }[]) {
+    if (last) await new Promise((resolve) => setTimeout(resolve, Math.max(0, PACE_MS - (Date.now() - last))))
+    last = Date.now(); const t0 = last
+    try { const res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': 'uuidna-qpu-verify (+https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(25000) }); answers.push({ id: r.id, query: r.query, status: res.status, ms: Date.now() - t0, text: await res.text() }) }
+    catch { answers.push({ id: r.id, query: r.query, status: 0, ms: Date.now() - t0, text: '' }) }
+  }
   const r = call({ op: 'read', answers: answers.map((a) => ({ id: a.id, query: a.query ?? undefined, text: a.text })) })
   const date = new Date().toISOString()
   mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })

@@ -2206,6 +2206,10 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "now": {
+            "type": "number",
+            "description": "the clock the client names (milliseconds since the epoch), so the audit is a function of its arguments"
+          },
           "texts": {
             "type": "object",
             "description": "{ readme, citation, zenodo, package, worker, billing, hmac, mcp }: the texts of the tree"

@@ -1758,6 +1758,10 @@ The full legal and security audit with forensic analysis, through MCP. Phase one
 {
   "type": "object",
   "properties": {
+    "now": {
+      "type": "number",
+      "description": "the clock the client names (milliseconds since the epoch), so the audit is a function of its arguments"
+    },
     "texts": {
       "type": "object",
       "description": "{ readme, citation, zenodo, package, worker, billing, hmac, mcp }: the texts of the tree"
