@@ -2272,6 +2272,10 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 {
   "type": "object",
   "properties": {
+    "lexical": {
+      "type": "object",
+      "description": "a Payload lexical document whose qpu blocks run through MCP"
+    },
     "namespace": {
       "type": "object",
       "description": "tenants as namespaces, each app its own sandbox without a domain"

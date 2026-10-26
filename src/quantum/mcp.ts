@@ -127,7 +127,7 @@ import { BILLING, usageOrderOf, ALGEBRA_TOOLS, fusionOf, CATALOGUE } from './too
 import { LEGAL, courtOf } from './toolboxes/legal.js'
 import { REPOSITORY } from './toolboxes/repository.js'
 import { STANDARDS_BOX } from './toolboxes/standards.js'
-import { PAYLOAD, payloadDocOf, uiOf, MCP_APPS, qpuFieldsOf } from './toolboxes/payload.js'
+import { PAYLOAD, payloadDocOf, uiOf, MCP_APPS, qpuFieldsOf, docOf } from './toolboxes/payload.js'
 import { EXTENSION } from './toolboxes/extension.js'
 import { factsOf, verifyRequestsOf } from './verifiers.js'
 import { CRYPTO } from './toolboxes/crypto.js'
@@ -895,7 +895,8 @@ let chatDepth = 0
 export const chatOf = (statement: string, c: { role?: string; call?: { tool: string; arguments?: Record<string, unknown> }; referrer?: string; run?: boolean } = {}) => {
   if (chatDepth > 0) return { statement, role: (c.role && c.role in ROLE_RANK ? c.role : 'reader') as Role, by: 'nested: a chat inside a chat is not entered again', routed: [] as string[], theorems: [] as string[], says: 'nested chat not entered' }
   chatDepth++
-  try { return chatInner(statement, c) } finally { chatDepth-- }
+  // every answer is also a Payload lexical document: the statement as its heading, the call that answered and each theorem to verify as qpu blocks (a block is its tool and arguments, so any MCP client runs it), the answer's sentence after them
+  try { const r = chatInner(statement, c) as { call?: { name: string; arguments: Record<string, unknown> }; verify?: { theorem: string; call: { name: string; arguments: Record<string, unknown> } }[]; routed?: string[]; says?: string }; const blocks = [...(r.call ? [{ uuid: uuidOf(JSON.stringify(r.call)), tool: r.call.name, arguments: r.call.arguments, theorem: r.routed?.[0] ?? null }] : []), ...(r.verify ?? []).map((v) => ({ uuid: uuidOf(JSON.stringify(v.call)), tool: v.call.name, arguments: v.call.arguments, theorem: v.theorem }))]; return { ...r, doc: docOf(statement, blocks, r.says ? [r.says] : []) } } finally { chatDepth-- }
 }
 const chatInner = (statement: string, c: { role?: string; call?: { tool: string; arguments?: Record<string, unknown> }; referrer?: string; run?: boolean }) => {
   const role: Role = c.role && c.role in ROLE_RANK ? (c.role as Role) : 'reader'
