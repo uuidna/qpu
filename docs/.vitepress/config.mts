@@ -174,6 +174,10 @@ export default defineConfig({
         "link": "/purify"
       },
       {
+        "text": "Entropy",
+        "link": "/entropy"
+      },
+      {
         "text": "Graph",
         "link": "/graph"
       },
@@ -333,6 +337,10 @@ export default defineConfig({
           {
             "text": "Purify",
             "link": "/purify"
+          },
+          {
+            "text": "Entropy",
+            "link": "/entropy"
           },
           {
             "text": "Graph",

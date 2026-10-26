@@ -135,6 +135,20 @@ export const softwareWidget = (d: { tools: readonly { name: string; description:
 export const statementsWidget = (d: { statements: readonly { topic: string; text: string }[] }): string =>
   stack([table(['Topic', 'Statement'], d.statements.map((s) => [s.topic, s.text]))])
 
+export const entropyWidget = (d: { files: number; lines: number; findings: number; fused: number; reactions: number; gravity: string; vacuum: boolean; byKind: Record<string, { findings: number; leads: number }>; leads: readonly { id: string; kind: string; occurrences: number; source: string; statement: string }[] }): string =>
+  stack([
+    cards([
+      ['Files', String(d.files)],
+      ['Lines', String(d.lines)],
+      ['Findings', String(d.findings)],
+      ['Leads (fused)', String(d.fused)],
+      ['Reactions', String(d.reactions)],
+      ['Vacuum', d.vacuum ? 'yes' : 'no'],
+    ]),
+    `<p>gravity <code>${d.gravity}</code></p>`,
+    table(['Kind', 'Findings', 'Leads'], Object.entries(d.byKind).map(([k, v]) => [k, String(v.findings), String(v.leads)])),
+    table(['Lead', 'Kind', 'Occurrences', 'Sources', 'Statement'], d.leads.map((l) => [l.id, l.kind, String(l.occurrences), l.source, l.statement])),
+  ])
 export const leadsWidget = (d: { leads: readonly { id: string; status: string; tool?: string; statement: string }[]; counts: Record<string, number>; total: number }): string =>
   stack([
     cards([

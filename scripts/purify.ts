@@ -4,7 +4,7 @@
 //   2. files under src/quantum that nothing imports and that are not tests → lead "orphan file"
 //   3. the README's measured table is regenerated from git, tsc, the test receipt, lake build, the theorem ledger and tools/list
 import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { appendFileSync, existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
@@ -129,6 +129,27 @@ else leads.push({ id: 'readme-table-missing', source: 'README.md', statement: 't
 md = md.replace(/Every figure below was measured on this tree on \d{4}-\d{2}-\d{2}/, `Every figure below was measured on this tree on ${new Date().toISOString().slice(0, 10)}`)
 writeFileSync(readme, md)
 
+// the vacuum-gravity entropy cleaner: every source text of the tree (the handler's, the scripts', the site's, the docs' components) read here and
+// handed to the audit tool, which converts entropy to leads; each lead signalled once into the entropy stream (a UUID block by address) and into
+// this docket, so the next steps and the next run fuse with what was already found
+const sources = tracked.filter((f) => (/^(src|scripts|docs\/\.vitepress)\/.*\.(ts|mts|vue)$/.test(f) || /^site\/src\/.*\.(ts|tsx)$/.test(f)) && !f.endsWith('.d.ts') && !/payload-types\.ts$|importMap\.js$/.test(f) && existsSync(join(ROOT, f)))
+const entropy = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: { entropy: Object.fromEntries(sources.map((f) => [f, readFileSync(join(ROOT, f), 'utf8')])) } } }) as { result: { structuredContent: { files: number; lines: number; findings: number; fused: number; reactions: number; gravity: string; vacuum: boolean; byKind: Record<string, { findings: number; leads: number }>; leads: { id: string; kind: string; source: string; statement: string; status: 'open'; tool: string; occurrences: number; address: string }[] } } }).result.structuredContent
+const streamPath = join(ROOT, 'docs', 'public', 'entropy.ndjson')
+const streamed = new Set(existsSync(streamPath) ? readFileSync(streamPath, 'utf8').split('\n').filter(Boolean).map((l) => { try { return (JSON.parse(l) as { address: string }).address } catch { return '' } }) : [])
+const date = new Date().toISOString()
+// the differences between this run and the stream are the leads: an address that appeared is explored, one that vanished is settled (signalled once)
+const settled = new Set(existsSync(streamPath) ? readFileSync(streamPath, 'utf8').split('\n').filter(Boolean).map((l) => { try { const b = JSON.parse(l) as { address: string; settled?: boolean }; return b.settled ? b.address : '' } catch { return '' } }) : [])
+// the run's difference answered agnostically by the audit tool: addresses only in the stream settled, addresses only in this run appeared (leads to explore)
+const diff = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: { difference: { a: { name: 'stream', members: [...streamed].filter((a) => a && !settled.has(a)) }, b: { name: 'now', members: entropy.leads.map((l) => l.address) }, config: null } } } }) as { result: { structuredContent: { sizes: { onlyA: number; onlyB: number }; leads: { member: string; side: string }[]; proven: boolean } } }).result.structuredContent
+const appeared = entropy.leads.filter((l) => diff.leads.some((d) => d.side === 'now' && d.member === l.address))
+const vanished = diff.leads.filter((d) => d.side === 'stream').map((d) => d.member)
+let signalled = 0
+for (const l of appeared) { appendFileSync(streamPath, JSON.stringify({ date, address: l.address, id: l.id, kind: l.kind, occurrences: l.occurrences, source: l.source, explore: l.explore, config: l.config }) + '\n'); signalled += 1 }
+for (const a of vanished) appendFileSync(streamPath, JSON.stringify({ date, address: a, settled: true }) + '\n')
+for (const l of entropy.leads) leads.push({ id: l.id, source: l.source, statement: l.statement, status: 'open', tool: l.tool })
+writeFileSync(join(ROOT, 'docs', 'public', 'entropy.json'), JSON.stringify({ date, files: entropy.files, lines: entropy.lines, findings: entropy.findings, fused: entropy.fused, reactions: entropy.reactions, gravity: entropy.gravity, vacuum: entropy.vacuum, byKind: entropy.byKind, difference: { appeared: appeared.length, settled: vanished.length }, toExplore: (entropy as { toExplore?: Record<string, number> }).toExplore ?? {}, toConfig: (entropy as { toConfig?: Record<string, number> }).toConfig ?? {}, leads: entropy.leads }, null, 1) + '\n')
+writeFileSync(join(ROOT, 'docs', 'entropy.md'), ['---', 'title: Entropy', 'order: 52', '---', '', '# Entropy converted to leads', '', `The vacuum-gravity entropy cleaner, run by \`npm run next\` on ${date} through the \`audit\` tool over ${entropy.files} source files (${entropy.lines} lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (${entropy.findings} findings, ${entropy.fused} leads, ${entropy.reactions} fusion reactions); the gravity of the tree is \`${entropy.gravity}\`${entropy.vacuum ? ' — the vacuum: nothing found' : ''}. ${signalled} new lead(s) signalled into the entropy stream this run; the differences since the last run: ${appeared.length} appeared (to explore), ${vanished.length} settled, counted by the audit tool's difference (proven ${diff.proven}). Every lead names the tool that explores it and the configuration that settles it.`, '', '| Kind | Findings | Leads |', '|---|---:|---:|', ...Object.entries(entropy.byKind).map(([k, v]) => `| ${k} | ${v.findings} | ${v.leads} |`), '', '| Lead | Kind | Explore | Config | Occurrences | Sources | Statement |', '|---|---|---|---|---:|---|---|', ...entropy.leads.map((l) => `| ${l.id} | ${l.kind} | ${(l as { explore?: string }).explore ?? ''} | ${(l as { config?: string | null }).config ?? '—'} | ${l.occurrences} | ${cell(l.source)} | ${cell(l.statement)} |`), ''].join('\n'))
+console.log(`purify: entropy ${entropy.findings} finding(s) → ${entropy.fused} lead(s) over ${entropy.files} files (${entropy.reactions} reactions, gravity ${entropy.gravity}); ${signalled} appeared, ${vanished.length} settled`)
 const docket = join(ROOT, 'docs', 'public', 'purify-leads.json')
 writeFileSync(docket, JSON.stringify(leads, null, 1) + '\n')
 const page = ['---', 'title: Purify', 'order: 51', '---', '', '# Purification leads', '', 'What the codebase found unproven when it collided itself with its tests, tools, examples, pages and proofs. Each is an open lead: harden it with a proof of use, or soften it by removal.', '', '| Lead | Statement | Reason |', '|---|---|---|', ...leads.map((l) => `| ${l.id} | ${l.statement} | ${l.reason} |`), ''].join('\n')

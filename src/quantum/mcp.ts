@@ -4,7 +4,7 @@
 
 import * as cirq from './cirq.js'
 import { EXAMPLES } from './examples.js'
-import { auditOf } from './audit.js'
+import { auditOf, entropyOf, differencesOf } from './audit.js'
 import { blockOf, verifyOf, uuidOf } from './blocks.js'
 import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay, reflectionOfRegister } from './clay-register.js'
@@ -13,7 +13,7 @@ import { LOCALES } from './i18n.js'
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, randomOf, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
 import { DEVICES, PROCESSORS, deviceOf, willowNoiseOf } from './processor.js'
-import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, matchWidget, clayWidget, verifyWidget } from './widgets.js'
+import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, entropyWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, matchWidget, clayWidget, verifyWidget } from './widgets.js'
 import { APPLICATIONS, ROADMAP } from './roadmap.js'
 import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.js'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.js'
@@ -577,9 +577,9 @@ const OWN: Tool[] = [
   tool({
     name: 'audit',
     description: 'The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays as documented, every served lead names a served tool, and the error paths answer as JSON-RPC requires. Each check carries its evidence; a failed check is a lead, not a ruling.',
-    inputSchema: { type: 'object', properties: {} },
-    run: () => { const was = auditing; auditing = true; try { return auditOf(handle, EXAMPLES, LEADS, TOOLBOXES) } finally { auditing = was } },
-    widget: auditWidget,
+    inputSchema: { type: 'object', properties: { entropy: { type: 'object', description: 'the vacuum-gravity entropy cleaner: file texts by path (the client reads them); every finding — baked data, a typed path, a cap, a clock in a pure module, a line repeated across files, a note to self, an address — becomes a lead; findings of one address fuse into one lead; the gravity is the fold of the addresses' }, difference: { type: 'object', description: 'two named sets { a: { name, members }, b: { name, members }, config? }: every member on one side only becomes a lead to explore and to config, agnostic of what the members name, counted by textbook_difference_leads' } } },
+    run: (args) => { if (args.entropy && typeof args.entropy === 'object') return entropyOf(args.entropy as Record<string, string>); if (args.difference && typeof args.difference === 'object') { const d = args.difference as { a: { name: string; members: string[] }; b: { name: string; members: string[] }; config?: string | null }; return differencesOf(d.a, d.b, { config: d.config ?? null }) } const was = auditing; auditing = true; try { return auditOf(handle, EXAMPLES, LEADS, TOOLBOXES) } finally { auditing = was } },
+    widget: (d: any) => ('gravity' in d ? entropyWidget(d) : 'sizes' in d ? leadsWidget({ leads: d.leads, counts: { open: d.leads.length }, total: d.leads.length }) : auditWidget(d)),
   }),
   tool({
     name: 'match',

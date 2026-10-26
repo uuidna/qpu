@@ -20,6 +20,7 @@ import { ROLES } from '../roles.js'
 import { CATALOGUE, amountsOf, RATE_SOURCES, CURRENCY_MCPS, TENANT_CURRENCY } from './billing.js'
 import { PATENT_APIS, PATENT_MCPS, COMPETITIONS, FUNDING_MCPS } from './legal.js'
 import type { Lead } from '../leads.js'
+import { differencesOf } from '../audit.js'
 
 export type LexicalDoc = { root: { type: 'root'; version: 1; direction: 'ltr'; format: ''; indent: 0; children: unknown[] } }
 export type PayloadDoc = { id: string; lexical: LexicalDoc; nestedDocs: { parent: string | null; breadcrumbs: { doc: string; url: string; label: string }[] }; seo: { title: string; description: string; image: string | null }; jsonLd: unknown; license: string }
@@ -224,7 +225,7 @@ export const setsOf = (ctx: Context, names: readonly string[] = ['legal', 'crypt
   const [a, b] = names.map((n) => byName.get(n) ?? set(n, 'named, empty: no such set', []))
   const A = new Set(a!.members), B = new Set(b!.members)
   const union = [...new Set([...A, ...B])], intersection = [...A].filter((m) => B.has(m)), difference = [...A].filter((m) => !B.has(m)), symmetric = [...difference, ...[...B].filter((m) => !A.has(m))]
-  const algebra = { a: a!.name, b: b!.name, union: set(`${a!.name} ∪ ${b!.name}`, 'union', union), intersection: set(`${a!.name} ∩ ${b!.name}`, 'intersection', intersection), difference: set(`${a!.name} ∖ ${b!.name}`, 'difference', difference), symmetric: set(`${a!.name} △ ${b!.name}`, 'symmetric difference', symmetric), inclusionExclusion: union.length === a!.size + b!.size - intersection.length }
+  const algebra = { a: a!.name, b: b!.name, union: set(`${a!.name} ∪ ${b!.name}`, 'union', union), intersection: set(`${a!.name} ∩ ${b!.name}`, 'intersection', intersection), difference: set(`${a!.name} ∖ ${b!.name}`, 'difference', difference), symmetric: set(`${a!.name} △ ${b!.name}`, 'symmetric difference', symmetric), inclusionExclusion: union.length === a!.size + b!.size - intersection.length, leads: differencesOf({ name: a!.name, members: a!.members }, { name: b!.name, members: b!.members }, { config: 'sets' }).leads }
   const mounts = sets.filter((x) => x.name.startsWith('mount:'))
   // the initialize answer derived from the set: tools because the tool set is non-empty, resources and the UI extension because the UI set is
   const derived = { tools: {}, ...(sets.find((x) => x.name === 'ui')!.size ? { resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [...new Set(resources.map((r) => r.mimeType))] } } } : {}) }
@@ -1147,8 +1148,8 @@ const configure = toolOf('payload', {
       const kind = args.kind as ConfigKind
       const config = configOf(kind, ctx, p)
       const out: Record<string, unknown> = { kind, config, torus: torusOf(config) }
-      if (typeof args.current === 'string' && (kind === 'payload' || kind === 'hooks' || kind === 'bindings' || kind === 'api')) { const drift = heldDriftOf(kind, args.current); out.drift = drift; out.driftCount = drift.length; out.leads = drift.map((d) => ({ id: `config-${kind}-${d}`, statement: `${kind}: ${d} is configured by MCP and not found in the file the hand holds`, status: 'open', reason: 'a hand-held file follows the configuration, or says why not' })); if (kind === 'bindings') out.env = envExampleOf() }
-      else if (typeof args.current === 'string') { let cur: unknown; try { cur = JSON.parse(stripJsonc(args.current)) } catch (e) { cur = { unparsable: (e as Error).message } }; const drift = driftOf(config, cur); out.drift = drift; out.driftCount = drift.length; out.leads = drift.map((d) => ({ id: `config-${kind}-${d}`, statement: `${kind}: ${d} differs between the configuration MCP computes and the text the client holds`, status: 'open', reason: 'the client rewrites its text from the configuration, or the configuration learns what the operator set by hand' })) }
+      if (typeof args.current === 'string' && (kind === 'payload' || kind === 'hooks' || kind === 'bindings' || kind === 'api')) { const drift = heldDriftOf(kind, args.current); out.drift = drift; out.driftCount = drift.length; out.leads = differencesOf({ name: 'mcp', members: drift }, { name: 'the file the hand holds', members: [] }, { config: kind }).leads; if (kind === 'bindings') out.env = envExampleOf() }
+      else if (typeof args.current === 'string') { let cur: unknown; try { cur = JSON.parse(stripJsonc(args.current)) } catch (e) { cur = { unparsable: (e as Error).message } }; const drift = driftOf(config, cur); out.drift = drift; out.driftCount = drift.length; out.leads = differencesOf({ name: 'mcp', members: drift }, { name: 'the text the client holds', members: [] }, { config: kind }).leads }
       if (kind === 'tenant' && Array.isArray(args.env)) { const have = new Set(args.env.map(String)); out.missing = (config as { tenants: { tenant: string; secrets: string[]; vars: string[] }[] }).tenants.map((t) => ({ tenant: t.tenant, secrets: t.secrets.filter((s) => !have.has(s)), vars: t.vars.filter((v) => !have.has(v)) })) }
       return out
     }

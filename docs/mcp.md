@@ -977,7 +977,16 @@ The surface audits itself through tools/call: every tool has a schema and an exa
 ```json
 {
   "type": "object",
-  "properties": {}
+  "properties": {
+    "entropy": {
+      "type": "object",
+      "description": "the vacuum-gravity entropy cleaner: file texts by path (the client reads them); every finding — baked data, a typed path, a cap, a clock in a pure module, a line repeated across files, a note to self, an address — becomes a lead; findings of one address fuse into one lead; the gravity is the fold of the addresses"
+    },
+    "difference": {
+      "type": "object",
+      "description": "two named sets { a: { name, members }, b: { name, members }, config? }: every member on one side only becomes a lead to explore and to config, agnostic of what the members name, counted by textbook_difference_leads"
+    }
+  }
 }
 ```
 

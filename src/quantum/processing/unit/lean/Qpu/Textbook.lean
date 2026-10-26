@@ -58,6 +58,10 @@ theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
 /-- the fifteen generated files of the full stack partition over eight roles — one block, four config modules, two notices, two collections, one hooks module, one global, three components, one script — and the role, not the hand, names the folder and the file (examples: configure-fullstack) -/
 theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 1 + 1 + 3 + 1 = 15 := by decide
+/-- the leads a difference opens are the members on one side only: with a and b members sharing c, (a − c) + (b − c) = a + b − 2c, whatever the members name (examples: audit-difference) -/
+theorem textbook_difference_leads (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : (a - c) + (b - c) = a + b - 2 * c := by omega
+/-- fusion never multiplies: f findings fused by d reactions leave f − d leads, never more than the findings (examples: audit-entropy) -/
+theorem textbook_entropy_fusion (f d : Nat) : f - d ≤ f := Nat.sub_le f d
 /-- inclusion–exclusion: two config sets of sizes a and b sharing c members unite into a + b − c members — the members of a alone, of b alone, and the shared ones (examples: configure-sets) -/
 theorem textbook_set_union (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : a + b - c = (a - c) + (b - c) + c := by omega
 /-- the widgeted tools and the skilled tools are one set: the meet of equal sets is the set, so every tool of every config set is widget-skilled (examples: configure-sets) -/
