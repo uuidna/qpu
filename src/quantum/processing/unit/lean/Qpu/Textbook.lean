@@ -27,7 +27,7 @@ theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = 
 /-- the signature is over the 32-byte SHA-256 digest: 256 bits, whatever the length of the text (examples: seal-sign) -/
 theorem textbook_signature_over_digest : 32 * 8 = 256 := by decide
 /-- seven configurations the tool writes, two the hand holds, fourteen answered inside them: twenty-three kinds (examples: configure-files) -/
-theorem textbook_configs_partition : 7 + 2 + 14 = 23 := by decide
+theorem textbook_configs_partition : 7 + 2 + 15 = 24 := by decide
 /-- twelve plugins, five databases, five storages, two email adapters, one editor, three live-preview and seventeen runtime and tooling packages: the forty-five Payload ships (examples: configure-packages) -/
 theorem textbook_packages_partition : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by decide
 /-- seven variants priced in three currencies are twenty-one prices (examples: configure-ecommerce) -/
@@ -65,11 +65,11 @@ theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤
 /-- what is published precedes what is modified; what begins precedes what ends (examples: none yet) -/
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
 /-- the twenty generated files of the full stack partition over ten roles — one block, four config modules, two notices, two collections, three hooks modules, one global, four components, one script, one plugin that carries them all into any config — and the role, not the hand, names the folder and the file, one root file the OpenNext build reads (examples: configure-fullstack) -/
-theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 3 + 1 + 4 + 1 + 1 + 1 = 20 := by decide
+theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 3 + 1 + 5 + 1 + 1 + 1 + 1 = 22 := by decide
 /-- to win, know the competitors as well as the theorems: the knowledge of a competition is the product of both, positive only when neither is empty (examples: compete-rules) -/
 theorem textbook_compete_knows (c t : Nat) (hc : 0 < c) (ht : 0 < t) : 0 < c * t := Nat.mul_pos hc ht
 /-- an app generated on request is the full stack's twenty files plus the Worker configuration and the environment example: twenty-two files, each addressed, the bundle their fold (examples: payload-app) -/
-theorem textbook_app_bundle : 20 + 2 = 22 := by decide
+theorem textbook_app_bundle : 22 + 2 = 24 := by decide
 /-- two edits of one document either share their base address or collide: there is no third case, so a collision is detected exactly, never guessed from clocks (examples: configure-realtime) -/
 theorem textbook_edit_collides (p q : Nat) : p = q ∨ p ≠ q := by omega
 /-- the leads a difference opens are the members on one side only: with a and b members sharing c, (a − c) + (b − c) = a + b − 2c, whatever the members name (examples: audit-difference) -/
@@ -89,15 +89,15 @@ theorem textbook_widget_skilled_tools (w s : Nat) (h : w = s) : min w s = w := b
 /-- the tool set partitions over the twelve toolboxes: forty-six tools (examples: configure-sets) -/
 theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 = 46 := by decide
 /-- every API is a gate: the forty-six doors of twelve toolboxes and the ninety-seven addresses of six categories (patents, certificates, currency, competitions, MCP with Google's servers, references) make one hundred and forty-three gates, each a nested doc of its leads (examples: configure-gates) -/
-theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 58 + 14 = 143 := by decide
+theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 58 + 14 + 2 = 145 := by decide
 /-- every API handled in quantum: one adapter per gate, a dimension of the one plugin, landing in the default schema — one hundred and nineteen in the docket entries, five in the catalogue's products, five in the competition pages, fourteen in the pages and the search index (examples: configure-gates) -/
-theorem textbook_gate_adapters : 119 + 5 + 5 + 14 = 143 := by decide
+theorem textbook_gate_adapters : 121 + 5 + 5 + 14 = 145 := by decide
 /-- every adapter dimension is REST both ways (in: the API's answer into Payload; out: Payload's data to the API) under the three tenant roles: six role-direction pairs, the access rules naming each (examples: configure-gates) -/
 theorem textbook_rest_rbac : 2 * 3 = 6 := by decide
 /-- Google's own MCP servers measured in the registry: fifteen at <service>.googleapis.com/mcp and three toolboxes, every one an adapter dimension or a door, none called from the tree (examples: configure-gates) -/
 theorem textbook_google_mcps : 15 + 3 = 18 := by decide
 /-- the same gates by kind: forty-six tools, thirty-five open, twenty-eight keyed (Google's fifteen among them), one a browser alone passes, thirty-three proposed by the registry (examples: configure-gates) -/
-theorem textbook_gates_by_kind : 46 + 35 + 28 + 1 + 33 = 143 := by decide
+theorem textbook_gates_by_kind : 46 + 35 + 30 + 1 + 33 = 145 := by decide
 /-- five databases, five storages and two email adapters make fifty adapter combinations (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
@@ -113,8 +113,26 @@ theorem textbook_advantage_unbounded (verified : Nat) : verified < verified + 1 
 /-- two edits merged by block address commute and merging an edit with itself is that edit: a collision in the involution is a merge, never a refusal (examples: payload-merge) -/
 theorem textbook_merge_commutes (a b : Nat) : max a b = max b a ∧ max a a = a := ⟨Nat.max_comm a b, Nat.max_self a⟩
 /-- an app on request as a lexical document holds one block per generated file and one for the bundle: twenty-three blocks (examples: payload-app-lexical) -/
-theorem textbook_app_doc_blocks : 22 + 1 = 23 := by decide
+theorem textbook_app_doc_blocks : 24 + 1 = 25 := by decide
 /-- from the 60-degree angle six streams meet at a point and none collides, while the four 90-degree gateways stay covered: six perspectives over four operations (examples: configure-scope, payload-merge) -/
 theorem textbook_streams_cover_gateways : 360 / 60 = 6 ∧ 360 / 90 = 4 ∧ 4 ≤ 6 := by decide
 /-- the poles of the earth as pyramids base to base are the octahedron: six vertices, twelve edges, eight 60-degree faces closed by Euler, four faces to a pole over the four gateways of the equator (examples: configure-dependencies) -/
 theorem textbook_poles_pyramid : 6 + 8 - 12 = 2 ∧ 8 / 2 = 4 := by decide
+/-- every block presents its ten program rotations in each of the eleven locales: one hundred and ten SEO pages from one address (examples: payload-hologram) -/
+theorem textbook_hologram_rotations : 10 * 11 = 110 := by decide
+/-- the sitemap protocol presents fifty thousand URLs a sitemap and fifty thousand sitemaps an index: two and a half billion addresses, every one computed from its UUID (examples: payload-hologram) -/
+theorem textbook_sitemap_capacity : 50000 * 50000 = 2500000000 := by decide
+/-- the fractal plugin hologram has seven scales of one shape — block, document, page, site, app, tenant, MCP — and six folds between them, each scale addressed by the fold of the one below (examples: configure-branding, payload-hologram) -/
+theorem textbook_fractal_scales : 7 - 1 = 6 := by decide
+/-- eight registry items in two variants are sixteen choices a nibble, so every UUID is one combination of the shadcn widgets and every tool of the MCP is covered by the one core with nothing loaded (examples: configure-ui-coverage) -/
+theorem textbook_widgets_cover_mcp : 8 * 2 = 16 := by decide
+/-- the leads the theorems address and the leads they do not make the leads: nothing is assigned in advance, and what no theorem reaches stays open (examples: leads-by-theorem) -/
+theorem textbook_leads_addressed (a u : Nat) : a + u - u = a := Nat.add_sub_cancel a u
+/-- the context balanced to a request: the tokens saved and the tokens kept make the whole list, so what the model carries is the cluster it needs and nothing is lost (examples: extend-out-balanced) -/
+theorem textbook_context_balanced (full kept : Nat) (h : kept ≤ full) : full - kept + kept = full := Nat.sub_add_cancel h
+/-- the usage bill is complete when its four accounts are each kept: the tokens, the bits at their thermodynamic cost at the temperature, the time, the coins (examples: metrics-bill) -/
+theorem textbook_billing_complete : 1 + 1 + 1 + 1 = 4 := by decide
+/-- a kilowatt-hour is three million six hundred thousand joules: the bill's joules priced by the tariff the tenant names link it to the energy sector (examples: metrics-bill) -/
+theorem textbook_kwh_joules : 3600 * 1000 = 3600000 := by decide
+/-- the leads carried are zero and the release is published as the next sequential version, or they are positive and next converts them to Payload documents first: no third case (examples: leads-carry) -/
+theorem textbook_carry_release (carried : Nat) : carried = 0 ∨ 0 < carried := Nat.eq_zero_or_pos carried

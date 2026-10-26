@@ -148,7 +148,7 @@ export const handleOrCorrect = (errors: readonly string[], majority: boolean, mo
  *  the token a write needs, the surface audit, the plugin\'s key) and what the developer measures (dependencies, leaks, access rules, hooks,
  *  signing, theorems), each check named by its perspective, the same count from either side (textbook_security_perspectives). */
 export type SecurityClient = { hosts: readonly { host: string; status: number; headers: Record<string, string>; optionsStatus?: number; writeWithoutToken?: number; audit?: { total: number; failed: number } }[]; payloadMcp?: { unauthenticated: number | null } }
-export type SecurityDeveloper = { vulnerabilities: Record<string, Record<string, number>>; leaks: number; envExampleValueless: boolean; access: { entries?: { update?: string }; tenants?: { write?: string } }; hooks: readonly string[]; signing: string; theorems: number }
+export type SecurityDeveloper = { vulnerabilities: Record<string, Record<string, number>>; leaks: number; envExampleValueless: boolean; access: { entries?: { update?: string }; tenants?: { write?: string } }; hooks: readonly string[]; signing: string; theorems: number; autoLogin?: boolean }
 export const securityOf = (client: SecurityClient, developer: SecurityDeveloper) => {
   const checks: { id: string; perspective: 'client' | 'developer' | 'both'; passed: boolean; evidence: string; remedy?: string }[] = []
   const c = (id: string, perspective: 'client' | 'developer' | 'both', passed: boolean, evidence: string, remedy?: string) => checks.push({ id, perspective, passed, evidence, ...(remedy ? { remedy } : {}) })
@@ -165,6 +165,7 @@ export const securityOf = (client: SecurityClient, developer: SecurityDeveloper)
   const severe = (v: Record<string, number>) => (v.critical ?? 0) + (v.high ?? 0)
   for (const [tree, v] of Object.entries(developer.vulnerabilities)) c(`dependencies:${tree}`, 'developer', severe(v) === 0, Object.keys(v).length ? Object.entries(v).map(([k, n]) => `${k} ${n}`).join(', ') : 'no vulnerabilities reported', 'npm audit fix or a pinned fixed version; a finding is a lead')
   c('no-leaks', 'developer', developer.leaks === 0, `${developer.leaks} address(es) in the tree`, 'contacts are URLs; the account email is read at deploy')
+  c('no-autologin', 'developer', developer.autoLogin !== true, developer.autoLogin ? 'admin.autoLogin in the hand-held Payload config: anyone opens the admin' : 'no auto-login in the Payload config', 'remove admin.autoLogin from site/src/payload.config.ts: the first user comes from the deployer\'s account, its password by reset')
   c('env-named-not-valued', 'developer', developer.envExampleValueless, developer.envExampleValueless ? 'the environment example names every variable and holds no value' : 'a value in the environment example', 'values never travel: names only')
   c('access-rules', 'developer', /no one/.test(String(developer.access.entries?.update ?? '')) && /super admin/.test(String(developer.access.tenants?.write ?? '')), `entries.update: ${developer.access.entries?.update ?? 'unset'}; tenants.write: ${developer.access.tenants?.write ?? 'unset'}`, 'an entry is its content address (no update); tenants are a super admin\'s')
   c('hooks-guarded', 'developer', ['collisionGuard', 'firstUserBootstrap', 'appRequest'].every((h) => developer.hooks.includes(h)), `hooks: ${developer.hooks.join(', ') || 'none'}`, 'the plugin adds the collision guard, the first-user bootstrap and the validated app request')
@@ -183,6 +184,44 @@ export const advantageOf = (copies: number, verified: number) => {
   if (!copies) return null
   const recomputed = copies - verified
   return { copies, verified, recomputed, ratio: recomputed ? Number((copies / recomputed).toFixed(2)) : null, unbounded: recomputed === 0, interaction: 'none: computed from the run\'s own counts, no token, no approval, no bound', basis: 'verify beats recompute by magnitude: copies over copies recomputed; the unit bills the same counts (advantageByUnit)' }
+}
+
+/** The leads addressed by the theorems, never assigned in advance: a lead's words are matched against every textbook theorem's statement and the
+ *  examples it backs; the theorem sharing the most stems (two at least) addresses the lead, and that theorem's example names the tool that explores
+ *  it; what no theorem reaches stays open and says so. Addressed and unaddressed make the leads (textbook_leads_addressed). Pure. */
+export const stemsOf = (text: string): Set<string> => new Set(text.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/[\s-]+/).filter((w) => w.length > 3).map((w) => w.replace(/(ing|ed|es|s)$/, '')))
+export const addressedByTheoremOf = (leads: readonly { id: string; statement: string; status: string }[], theorems: readonly { key: string; says: string; examples: readonly string[] }[], examples: readonly { id: string; tool: string }[]) => {
+  const toolOf = new Map(examples.map((e) => [e.id, e.tool]))
+  const index = theorems.map((t) => ({ key: t.key, stems: stemsOf(t.says + ' ' + t.examples.join(' ').replace(/-/g, ' ')), tools: [...new Set(t.examples.map((e) => toolOf.get(e)).filter((x): x is string => Boolean(x)))] }))
+  const rows = leads.map((l) => {
+    const s = stemsOf(l.statement)
+    let best: { key: string; shared: string[]; tools: string[] } | null = null
+    for (const t of index) { const shared = [...t.stems].filter((w) => s.has(w)); if (shared.length >= 2 && (!best || shared.length > best.shared.length)) best = { key: t.key, shared, tools: t.tools } }
+    return { id: l.id, status: l.status, theorem: best?.key ?? null, shared: best?.shared.length ?? 0, tool: best?.tools[0] ?? null, address: uuidOf(`lead\n${l.id}\n${best?.key ?? 'open'}`) }
+  })
+  const addressed = rows.filter((r) => r.theorem)
+  const byTheorem: Record<string, number> = {}; for (const r of addressed) byTheorem[r.theorem!] = (byTheorem[r.theorem!] ?? 0) + 1
+  return { leads: rows.map((r) => ({ id: r.id, status: r.status, ...(r.tool ? { tool: r.tool } : {}), statement: `${r.theorem ?? 'open: no theorem reaches it yet'} (${r.shared} shared stems) at ${r.address}` })), counts: byTheorem, total: leads.length, addressed: addressed.length, unaddressed: leads.length - addressed.length, byTheorem, rows, says: 'every lead addressed by the theorem sharing its words, that theorem\'s example naming the tool; nothing assigned in advance; the unaddressed stay open until a theorem reaches them' }
+}
+
+/** The usage bill, complete: the tokens a model carries, the bits a computation moved, their thermodynamic cost at a temperature by Landauer's
+ *  limit (k_B T ln 2 a bit), the time the computation took, the coins the unit conserves; the joules as kilowatt-hours priced by the tariff a tenant
+ *  names (the energy sector), every IoT reading a docket entry billed by this bill per device (textbook_billing_complete, textbook_kwh_joules). Pure. */
+export const BOLTZMANN_J_PER_K = 1.380649e-23
+export const JOULES_PER_KWH = 3600 * 1000
+export const billOf = (u: { tokens?: number; bits?: number; ms?: number; temperatureK?: number; coins?: number; saved?: { tokens?: number; bits?: number; ms?: number }; tariffEurPerKwh?: number | null; devices?: number }) => {
+  const temperatureK = u.temperatureK ?? 300
+  const landauerJoulesPerBit = BOLTZMANN_J_PER_K * temperatureK * Math.LN2
+  const tokens = u.tokens ?? 0, bits = u.bits ?? 0, ms = u.ms ?? 0, coins = u.coins ?? 0
+  const joules = bits * landauerJoulesPerBit, joulesSaved = (u.saved?.bits ?? 0) * landauerJoulesPerBit
+  const kWh = joules / JOULES_PER_KWH, kWhSaved = joulesSaved / JOULES_PER_KWH
+  return {
+    tokens, bits, ms, coins, temperatureK, landauerJoulesPerBit, joules, kWh, saved: { tokens: u.saved?.tokens ?? 0, bits: u.saved?.bits ?? 0, ms: u.saved?.ms ?? 0, joules: joulesSaved, kWh: kWhSaved },
+    energy: { kWh, tariffEurPerKwh: u.tariffEurPerKwh ?? null, costEur: u.tariffEurPerKwh != null ? kWh * u.tariffEurPerKwh : null, tariffVar: 'ENERGY_TARIFF_EUR_PER_KWH_<TENANT>', sector: 'the tariff the tenant names (never valued here); the energy gates (ENTSO-E, EIA) the tenant opens with its key answer the market price' },
+    iot: { devices: u.devices ?? 0, says: 'every reading a docket entry of kind reading, immutable at its content address, billed by this bill per device: bits moved, joules at the device\'s temperature, time, coins' },
+    accounts: ['tokens', 'bits', 'time', 'coins'], complete: true,
+    says: 'the bill complete: tokens, bits at their thermodynamic cost at the temperature, time, coins; what the involution saved accounted beside; linked with the energy sector by the kilowatt-hour and the tariff, with the IoT sector by the reading per device',
+  }
 }
 
 /** Audit a handler against the example registry and the leads it serves. Pure: no I/O. */

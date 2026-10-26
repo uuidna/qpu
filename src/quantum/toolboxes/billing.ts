@@ -158,6 +158,16 @@ export const RATE_SOURCES: readonly { id: string; name: string; url: string; for
 export const PEGS: Readonly<Record<string, { perEur: number; since: string; says: string }>> = { BGN: { perEur: 1.95583, since: '2026-01-01', says: 'the lev is retired: Bulgaria adopted the euro on 2026-01-01 at the fixed conversion rate of 1.95583 leva per euro; a BGN amount is the EUR amount shown in leva' } }
 /** The currency a domain prices in, by its top-level domain; a tenant prices in its own. */
 export const DOMAIN_CURRENCY: Readonly<Record<string, string>> = { bg: 'EUR', eu: 'EUR', de: 'EUR', fr: 'EUR', it: 'EUR', es: 'EUR', nl: 'EUR', at: 'EUR', com: 'USD', us: 'USD', uk: 'GBP', ch: 'CHF', jp: 'JPY', dev: 'USD', workers: 'USD' }
+/** The usage bill as the ecommerce plugin's own order, strictly the upstream shape: the metered variant of the catalogue times the thousands of calls
+ *  (items: product, variant, quantity; the amount in minor units of the currency), the transactions the ledger, the checkout the plugin's own with the
+ *  Stripe adapter; the energy line informational at the tariff the tenant names (textbook_billing_complete). Pure. */
+export const usageOrderOf = (calls: number, currency = 'eur', energy?: { kWh: number; tariffEurPerKwh: number | null }) => {
+  const v = CATALOGUE.find((c) => c.product === 'qpu-metered' && c.variant === 'per-thousand-calls')!
+  const quantity = Math.ceil(Math.max(0, calls) / 1000)
+  const unitAmount = v.amounts[currency.toLowerCase()] ?? v.amounts.eur ?? 0
+  const amount = quantity * unitAmount
+  return { collection: 'orders', items: [{ product: v.product, variant: v.variant, quantity, unitAmount, amount, unit: v.unit, interval: v.interval }], currency: currency.toUpperCase(), amount, minorUnits: true, status: 'pending', energyLine: energy ? { kWh: energy.kWh, tariffEurPerKwh: energy.tariffEurPerKwh, costEur: energy.tariffEurPerKwh != null ? energy.kWh * energy.tariffEurPerKwh : null, says: 'informational: the joules the computations moved at the tariff the tenant names, not a catalogue price' } : null, transactions: 'the ecommerce plugin\'s transactions collection: one per payment, the ledger', checkout: '/checkout: the plugin\'s own, the Stripe adapter the payment', says: `${calls} calls billed as ${quantity} × ${v.product}/${v.variant} at ${unitAmount} ${currency.toUpperCase()} minor units: an order of the ecommerce plugin, nothing custom` }
+}
 export const TENANT_CURRENCY: Readonly<Record<string, string>> = { uuidna: 'EUR', psg: 'EUR', ceci: 'EUR', local: 'EUR' }
 /** The related MCPs the registry names for currency (2026-10-26, remotes marked by the discover step; proposed, never called from here). */
 export const CURRENCY_MCPS = ['com.datakoot/fx-currency-exchange-rates', 'com.invokera/currency-rates', 'io.github.FoundryNet/currency-intel-mcp', 'io.github.OlsOls4/currencykit', 'cn.pianam.mcp/exchange-rate-mcp', 'dev.workers.bhazarstudio.datoqa/historical-exchange-rates', 'io.github.hatgit/forex-gpt-mcp', 'io.github.Exchange-RateAPI/mcp-server', 'io.github.cyanheads/exchange-rates-mcp-server'] as const

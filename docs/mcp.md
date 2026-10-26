@@ -950,6 +950,14 @@ Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs
 {
   "type": "object",
   "properties": {
+    "carry": {
+      "type": "boolean",
+      "description": "the cost of carrying the leads and what converting them to Payload documents saves; when nothing is carried the release is published as the next sequential version"
+    },
+    "byTheorem": {
+      "type": "boolean",
+      "description": "every lead addressed by the theorems, never assigned in advance: the textbook theorem sharing the most words with the lead addresses it and its example names the tool; the unaddressed stay open"
+    },
     "status": {
       "enum": [
         "served",
@@ -2038,6 +2046,10 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
       "type": "boolean",
       "description": "the site as its own use cases: every toolbox a use case, every example a page document, as payloadcms.com is built of what Payload computes"
     },
+    "hologram": {
+      "type": "boolean",
+      "description": "the QPU as a fractal plugin hologram: the seven scales of one shape with their addresses, and the SEO pages every block presents (ten rotations in every locale) counted with the sitemaps they need and the compliance each page carries"
+    },
     "merge": {
       "type": "object",
       "description": "two edits of one document merged by block address: { base, a, b } (lexical documents); a block either edit holds and neither removed is kept once, the merge addressed by the fold of its blocks, commuting and idempotent (textbook_merge_commutes); a collision in the involution is a merge"
@@ -2110,7 +2122,8 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "adapters",
         "gates",
         "sets",
-        "realtime"
+        "realtime",
+        "branding"
       ],
       "description": "omit for all"
     },
@@ -2173,6 +2186,10 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
       "type": "object",
       "description": "kind gates: the tree's dev dependencies (name: version), each a gate of the dependencies category — an MCP door the step of next passes, usable in the UI"
     },
+    "branding": {
+      "type": "object",
+      "description": "kind branding: the tenant ({ slug | host, name, branding: { name, tagline, accent, logo, icon } } as its tenants row holds it); what the tenant left empty is computed in real time from its address"
+    },
     "selftest": {
       "type": "boolean"
     }
@@ -2188,6 +2205,10 @@ QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, to
 {
   "type": "object",
   "properties": {
+    "statement": {
+      "type": "string",
+      "description": "with direction out: the registration balanced to this statement — the tools the match tool decides it needs, with brief descriptions, the Claude toolset enabling those alone, the context counted"
+    },
     "direction": {
       "type": "string",
       "enum": [

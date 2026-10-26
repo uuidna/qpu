@@ -21,5 +21,10 @@ export const Tenants: CollectionConfig = {
       { name: 'connectors', type: 'select', hasMany: true, defaultValue: ['claude', 'cloudflare'], options: ['claude', 'cloudflare', 'registry'], admin: { description: 'what the one /mcp endpoint is listed as: a Claude connector, a Cloudflare remote MCP, an entry of the MCP registry' } },
       { name: 'variables', type: 'array', fields: [{ name: 'name', type: 'text', required: true, validate: (v: unknown) => (/^[A-Z][A-Z0-9_]*$/.test(String(v)) ? true : 'a binding name: upper-case letters, digits and underscores, never a value') }], admin: { description: 'the variable names this tenant binds (QPU_OAUTH_ISSUER_<TENANT>, MCP_PUBLISHER_TOKEN, ...): names the bindings kind knows; the tenant kind measures which the environment lacks' } },
     ] },
+    // the tenant's branding: what the tenant defines here stands; what it leaves empty is computed in real time from its address (configure, kind branding)
+    { name: 'branding', type: 'group', admin: { description: 'the branding: defined here, or computed in real time from the tenant address when left empty — the name, the tagline, the accent, the logo, the icon' }, fields: [
+      { name: 'name', type: 'text' }, { name: 'tagline', type: 'text' }, { name: 'accent', type: 'text', validate: (v: unknown) => (!v || /^(#[0-9a-fA-F]{3,8}|hsl\(.*\)|rgb\(.*\)|[a-z]+)$/.test(String(v)) ? true : 'a CSS colour') },
+      { name: 'logo', type: 'upload', relationTo: 'media' }, { name: 'icon', type: 'upload', relationTo: 'media' },
+    ] },
   ],
 }

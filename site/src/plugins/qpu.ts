@@ -14,6 +14,7 @@ import { qpuPlugins } from '../payload.qpu.config'
 import { collisionGuard } from '../collections/pages.qpu.hooks'
 import { firstUserBootstrap } from '../collections/users.qpu.hooks'
 import { appRequest } from '../collections/form-submissions.qpu.hooks'
+import { qpuDb, qpuEmail, qpuStoragePlugins } from '../payload.qpu.adapters'
 
 // the block added wherever a layout takes blocks: by object, or by reference where the field references the config's blocks
 const withBlock = (fields: Field[], block: Block): Field[] => fields.map((f): Field => {
@@ -36,13 +37,20 @@ const pages = (c: CollectionConfig): CollectionConfig => ({
 })
 const users = (c: CollectionConfig): CollectionConfig => ({ ...c, auth: { ...(typeof c.auth === 'object' ? c.auth : {}), useAPIKey: true }, hooks: { ...c.hooks, beforeChange: has(c.hooks?.beforeChange, firstUserBootstrap) ? c.hooks?.beforeChange : [firstUserBootstrap, ...(c.hooks?.beforeChange ?? [])] } })
 const submissions = (c: CollectionConfig): CollectionConfig => ({ ...c, hooks: { ...c.hooks, afterChange: has(c.hooks?.afterChange, appRequest) ? c.hooks?.afterChange : [appRequest, ...(c.hooks?.afterChange ?? [])] } })
-export const qpuPlugin = (): Plugin => async (incoming: Config): Promise<Config> => {
+export type QpuPluginOptions = { adapters?: 'auto' | 'none'; branding?: boolean; plugins?: Plugin[] }
+/** The QPU as the one full-featured plugin: the plugins of the plugins applied inside it, the adapters chosen from the environment (db, email, storage), the
+ *  admin branded by the tenant's computed or user-defined branding; the fractal: applying the plugin to its own output is the identity, since every addition filters
+ *  its own slug, hook or graphic before adding. plugins: [qpuPlugin()] is the whole mount; qpuPlugin({ adapters: 'none' }) leaves the adapters to the hand. */
+export const qpuPlugin = (options: QpuPluginOptions = {}): Plugin => async (incoming: Config): Promise<Config> => {
   let config: Config = {
     ...incoming,
+    db: incoming.db ?? qpuDb(),
+    email: incoming.email ?? qpuEmail(),
+    admin: options.branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
     collections: [...(incoming.collections ?? []).filter((c) => c.slug !== Tenants.slug && c.slug !== Entries.slug), Tenants, Entries],
     globals: [...(incoming.globals ?? []).filter((g) => g.slug !== QpuGlobal.slug), QpuGlobal],
     blocks: [...(incoming.blocks ?? []).filter((b) => b.slug !== Qpu.slug), Qpu],
   }
-  for (const plugin of qpuPlugins) config = await plugin(config) // ecommerce first, then search, multi-tenant and MCP, as the configs order them
+  for (const plugin of [...(options.adapters === 'none' ? [] : qpuStoragePlugins()), ...qpuPlugins, ...(options.plugins ?? [])]) config = await plugin(config) // the storage adapter the environment names, then ecommerce, search, multi-tenant and MCP as the configs order them, then the tenant's own
   return { ...config, collections: (config.collections ?? []).map((c) => (c.slug === 'pages' ? pages(c) : c.slug === 'users' ? users(c) : c.slug === 'form-submissions' ? submissions(c) : c)) }
 }

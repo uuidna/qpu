@@ -1,6 +1,6 @@
 import { revalidateRedirects } from '@hooks/revalidateRedirects'
 import { qpuPlugin } from './plugins/qpu' // the QPU as one plugin: its collections, global, block, hooks and the plugins it composes (generated)
-import { qpuDb, qpuEmail, qpuStoragePlugins } from './payload.qpu.adapters'
+import { qpuDb, qpuEmail } from './payload.qpu.adapters'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
@@ -107,10 +107,6 @@ const sendgridConfig = {
 
 export default buildConfig({
   admin: {
-    autoLogin: {
-      email: 'dev2@payloadcms.com',
-      password: 'test',
-    },
     components: {
       afterNavLinks: ['@root/components/AfterNavActions'],
       beforeDashboard: ['@root/components/BeforeDashboard'],
@@ -599,8 +595,7 @@ export default buildConfig({
         },
       },
     }),
-    ...qpuStoragePlugins(), // R2 under a Cloudflare binding, Vercel Blob otherwise (generated)
-    qpuPlugin(), // last: the QPU as one plugin with multidimensional capabilities, hooking the collections the plugins above created (form-submissions among them); generated
+    qpuPlugin({ adapters: 'auto' }), // last: the QPU as one plugin with multidimensional capabilities, hooking the collections the plugins above created (form-submissions among them); generated
   ],
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

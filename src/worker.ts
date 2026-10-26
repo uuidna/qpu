@@ -503,6 +503,8 @@ export const worker = {
     if ((path === '/mcp' || path === '/') && request.method === 'POST') {
       let message: Rpc
       try { message = await request.json() as Rpc } catch { return json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'parse error' } }, 400) }
+      // a registration URL may carry the scope of its tools/list (?statement=, ?tools=, ?brief=1): forwarded into the parameters, so the handler balances the list over MCP
+      if ((message as { method?: string }).method === 'tools/list' && (url.searchParams.has('statement') || url.searchParams.has('tools') || url.searchParams.has('brief'))) message = { ...message, params: { ...((message as { params?: Record<string, unknown> }).params ?? {}), ...(url.searchParams.has('statement') ? { statement: url.searchParams.get('statement') } : {}), ...(url.searchParams.has('tools') ? { tools: url.searchParams.get('tools') } : {}), ...(url.searchParams.has('brief') ? { brief: true } : {}) } } as Rpc
       const reply = handle(message)
       // A checkout plan is executed here, with the tenant's key the handler never holds: the answer carries Stripe's session url.
       const params = (message as { params?: { name?: string; arguments?: { op?: string } } }).params

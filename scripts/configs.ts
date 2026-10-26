@@ -2,6 +2,7 @@
 // hooks, bindings, actions) is improved on every run — the files the tool sources are written from it (drift zero by
 // construction), the files the hand holds are measured against it (drift a lead), and the actions kind is told what the gate
 // measured so the shard size follows the experience. Selftest first. Pure except the files; no network.
+import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import './teleport.ts'
@@ -43,6 +44,12 @@ for (const f of files.files as { kind: string; path: string; source: 'tool' | 'h
     held.push({ kind: f.kind, path: f.path, drift: c.drift ?? [] })
   }
 }
+// the approval a push needs: the version is the last tag or its one next step, and the build it names is the catalogue's address the package answers on initialize; a violation is red (the pre-push run is strict)
+const lastTagVersion = (() => { try { return execFileSync('git', ['describe', '--tags', '--abbrev=0'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().replace(/^v/, '') } catch { return null } })()
+const toolsAtTag = (() => { try { const j = JSON.parse(execFileSync('git', ['show', `v${lastTagVersion}:docs/public/mcp.json`], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })) as { tools?: { name: string }[] } | { name: string }[]; return (Array.isArray(j) ? j : j.tools ?? []).map((t) => t.name) } catch { return null } })()
+const versions = lastTagVersion ? call({ kind: 'versions', version: pkg.version, lastTag: { version: lastTagVersion, tools: toolsAtTag ?? (call({ kind: 'versions' }).config.defines ? (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result.tools.map((t) => t.name) : []) } }).config as { state: { represents: string }; sequential: { violation: string | null; approved: boolean | null } } : null
+const init = (handle({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'configs', version: '0' } } }) as { result: { serverInfo: { version: string; build: string } } }).result.serverInfo
+if (versions) { const agrees = versions.state.represents === `${init.version}+${init.build}`; console.log(`versions: ${versions.state.represents} represents the package (initialize answers ${init.version}+${init.build}: ${agrees ? 'agrees' : 'DISAGREES'}); last tag ${lastTagVersion}: ${versions.sequential.violation ?? 'sequential, approved for a push'}`); if (versions.sequential.violation || !agrees) { console.error(`versions: ${versions.sequential.violation ?? 'the package does not answer the state the version represents'}`); process.exitCode = 1 } }
 const drift = held.reduce((n, h) => n + h.drift.length, 0)
 const actions = (all.configs as { kind: string; config: any }[]).find((c) => c.kind === 'actions')!.config
 const date = new Date().toISOString()

@@ -1,42 +1,42 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T12:46:55.389Z",
- "ms": 1770,
+ "date": "2026-10-26T13:10:06.731Z",
+ "ms": 1721,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "ecc2be8a1181954ae3dcb796681daf34d0a2815b",
+ "head": "faf0eac3447ea72ab1f6905c1cf3cd67a6d52155",
  "pushed": false,
  "fetched": [
   {
-   "id": "vercel-oss-program",
-   "status": 200,
-   "ms": 471,
-   "bytes": 827056
-  },
-  {
    "id": "clay-millennium",
    "status": 200,
-   "ms": 657,
+   "ms": 564,
    "bytes": 79933
   },
   {
    "id": "xprize-quantum-applications",
    "status": 200,
-   "ms": 583,
+   "ms": 428,
    "bytes": 174240
+  },
+  {
+   "id": "vercel-oss-program",
+   "status": 200,
+   "ms": 625,
+   "bytes": 827056
   },
   {
    "id": "cloudflare-workers-launchpad",
    "status": 200,
-   "ms": 781,
+   "ms": 660,
    "bytes": 402587
   },
   {
    "id": "github-maintainer-programs",
    "status": 200,
-   "ms": 1112,
+   "ms": 929,
    "bytes": 394161
   }
  ],
@@ -51,7 +51,7 @@
      "needs": "a proof accepted by the community, not an identity: the σ-involution bridge theorems here are kernel-checked integer identities, not solutions of any Millennium problem",
      "act": "none claimed: a solution is mathematics the author would publish",
      "status": "open",
-     "evidence": "535 theorems kernel-accepted (1043 in the kernel), identities and bridge theorems; no Millennium problem solved"
+     "evidence": "539 theorems kernel-accepted (1047 in the kernel), identities and bridge theorems; no Millennium problem solved"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
