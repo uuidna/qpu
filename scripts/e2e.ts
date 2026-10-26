@@ -9,6 +9,7 @@ import { LICENSE } from '../src/quantum/license.ts'
 import type { E2eRequest, E2eAnswer } from '../src/quantum/e2e.ts'
 import { mountThroughClaude } from './claude-mount.ts'
 import { verifySignaturesAt } from './pqc-verify.ts'
+import { compareStylesheets } from './css-compare.ts'
 
 const ROOT = process.cwd()
 const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'e2e', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
@@ -40,10 +41,13 @@ const main = async () => {
   // the post-quantum pass: every host signs the same digest with ML-DSA at the edge, verified here with the public key alone
   const pqc = process.env.QPU_OFFLINE === '1' ? { phase: 'offline' as const, note: 'offline: not asked' } : await verifySignaturesAt(plan.hosts as string[])
   console.log(`e2e: post-quantum signatures: ${pqc.note}`)
+  // the stylesheet against the CSS frameworks by size, measured on every online run
+  const css = process.env.QPU_OFFLINE === '1' ? { phase: 'offline' as const, says: 'offline: not measured' } : await compareStylesheets()
+  console.log(`e2e: stylesheet: ${css.says}`)
   const date = new Date().toISOString()
   mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
   const { page, decoded, ...rest } = r
-  writeFileSync(join(ROOT, 'docs', 'public', 'e2e.json'), JSON.stringify({ license: LICENSE.attribution, date, ms: Date.now() - started, partial: remaining > 0, remaining, selftest: { passed: selftest.passed }, claudeMount, pqc, ...rest, decoded: decoded.map((d: { copies: unknown; errors: unknown; [k: string]: unknown }) => ({ ...d, copies: undefined, errors: undefined })) }, null, 1) + '\n')
+  writeFileSync(join(ROOT, 'docs', 'public', 'e2e.json'), JSON.stringify({ license: LICENSE.attribution, date, ms: Date.now() - started, partial: remaining > 0, remaining, selftest: { passed: selftest.passed }, claudeMount, pqc, css, ...rest, decoded: decoded.map((d: { copies: unknown; errors: unknown; [k: string]: unknown }) => ({ ...d, copies: undefined, errors: undefined })) }, null, 1) + '\n')
   const pqcLine = 'hosts' in pqc ? `\n\n## Post-quantum signatures\n\nEvery host asked \`seal { text: 'qpu', sign: 'ML-DSA-65' }\`; the signature each answered is verified here with the public key it carries, no secret: ${pqc.note}.\n\n| Host | Phase | Key | Verified | Note |\n|---|---|---|---|---|\n${pqc.hosts.map((h) => `| ${h.host} | ${h.phase} | ${h.keyed ?? '—'} | ${h.verified === null ? '—' : h.verified ? 'yes' : 'no'} | ${h.note.replace(/\|/g, '\\|')} |`).join('\n')}\n` : ''
   writeFileSync(join(ROOT, 'docs', 'e2e.md'), page.replace(/\n\n$/, remaining ? `\n\n${remaining} request(s) wait for the next quantum.\n` : '\n').replace(/\n$/, pqcLine + '\n'))
   for (const e of r.errors) appendFileSync(join(ROOT, 'docs', 'public', 'e2e.ndjson'), JSON.stringify({ date, ...e }) + '\n')

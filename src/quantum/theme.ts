@@ -173,3 +173,19 @@ export const createOf = (key: number = KEY, origin = 'https://qpu.uuidna.com', r
     says: `shadcn create via the a432 settings and CSS: ten settings decided by the key ${key} (hue ${hue}, harmonics ${hues.join('/')}, radius ${radius}), one registry item that initialises the project with the QPU registry`,
   }
 }
+
+/** The stylesheets the QPU's is measured against, pinned so every run fetches the same bytes (jsDelivr, read 2026-10-26); Tailwind ships no
+ *  fixed stylesheet (each project generates its own), so it has no row. */
+export const CSS_FRAMEWORKS: readonly { id: string; name: string; url: string }[] = [
+  { id: 'pico', name: 'Pico 2.0.6', url: 'https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.min.css' },
+  { id: 'bootstrap', name: 'Bootstrap 5.3.3', url: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' },
+  { id: 'bulma', name: 'Bulma 1.0.2', url: 'https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css' },
+]
+/** The comparison by size, as the client measured it: each framework's bytes raw and gzipped over the QPU stylesheet's, a ratio above one
+ *  meaning the framework is that many times larger; a file not fetched is named, never estimated. Size only: render time is not measured here. */
+export const cssCompareOf = (qpu: { bytes: number; gzip: number }, answers: readonly { id: string; status: number; bytes: number; gzip: number }[]) => {
+  const ratio = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) / 100 : null)
+  const rows = CSS_FRAMEWORKS.map((f) => { const a = answers.find((x) => x.id === f.id); return a && a.status === 200 && a.bytes > 0 ? { id: f.id, name: f.name, url: f.url, bytes: a.bytes, gzip: a.gzip, ratio: ratio(a.bytes, qpu.bytes), ratioGzip: ratio(a.gzip, qpu.gzip) } : { id: f.id, name: f.name, url: f.url, missing: a ? `HTTP ${a.status}` : 'not fetched' } })
+  const measured = rows.filter((r): r is Extract<typeof r, { ratio: number | null }> => 'ratio' in r)
+  return { qpu, rows, measured: measured.length, says: measured.length ? `the QPU stylesheet is ${qpu.bytes} bytes (${qpu.gzip} gzipped); ${measured.map((r) => `${r.name} ${r.ratio}× raw, ${r.ratioGzip}× gzipped`).join('; ')}: size only, render time not measured` : 'no framework fetched' }
+}

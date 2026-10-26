@@ -1302,6 +1302,9 @@ The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmon
 {
   "type": "object",
   "properties": {
+    "compare": {
+      "description": "the stylesheet measured against the CSS frameworks by size: true names the framework files to fetch (pinned on jsDelivr) and this stylesheet to gzip; { qpu: { bytes, gzip }, answers: [{ id, status, bytes, gzip }] } turns the sizes the client measured into ratios; size only, render time not measured"
+    },
     "uuid": {
       "type": "string",
       "description": "a UUID whose block variables to compute"
