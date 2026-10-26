@@ -117,4 +117,4 @@ theorem textbook_app_doc_blocks : 22 + 1 = 23 := by decide
 /-- from the 60-degree angle six streams meet at a point and none collides, while the four 90-degree gateways stay covered: six perspectives over four operations (examples: configure-scope, payload-merge) -/
 theorem textbook_streams_cover_gateways : 360 / 60 = 6 ∧ 360 / 90 = 4 ∧ 4 ≤ 6 := by decide
 /-- the poles of the earth as pyramids base to base are the octahedron: six vertices, twelve edges, eight 60-degree faces closed by Euler, four faces to a pole over the four gateways of the equator (examples: configure-dependencies) -/
-theorem textbook_poles_pyramid : 6 - 12 + 8 = 2 ∧ 8 / 2 = 4 := by decide
+theorem textbook_poles_pyramid : 6 + 8 - 12 = 2 ∧ 8 / 2 = 4 := by decide
