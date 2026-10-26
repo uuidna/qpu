@@ -2668,6 +2668,9 @@ SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a t
     "text": {
       "type": "string"
     },
+    "constants": {
+      "description": "the physical constants as coins"
+    },
     "key": {
       "type": "string",
       "description": "HMAC key, when a keyed seal is wanted"

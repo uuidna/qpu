@@ -3242,6 +3242,9 @@
           "text": {
             "type": "string"
           },
+          "constants": {
+            "description": "the physical constants as coins"
+          },
           "key": {
             "type": "string",
             "description": "HMAC key, when a keyed seal is wanted"
