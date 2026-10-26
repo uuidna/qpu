@@ -4,9 +4,7 @@
 // read by its content address through the local API (free: nothing computed), created once when absent (the collection's hook computes the result).
 // The catch-all hands a single UUID segment to this component. Nothing is fetched from anywhere else; no custom endpoint.
 import React from 'react'
-import { headers } from 'next/headers'
 import { getPayload } from 'payload'
-import config from '@payload-config'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { handle } from '@uuidna/qpu/mcp'
 import { QpuApp } from './App'
@@ -14,13 +12,17 @@ import { QpuApp } from './App'
 type Call = { id: string; result?: { structuredContent?: Record<string, unknown>; _meta?: { widget?: string; theme?: Record<string, string> }; error?: { message: string } } }
 // the tenant of the request: the host that names it (the tenants' domains, as the Worker's TENANTS), else the first tenant (a local run)
 const tenantOf = async (payload: Awaited<ReturnType<typeof getPayload>>): Promise<{ id: string; slug: string }> => {
-  const host = (await headers()).get('host')?.split(':')[0] ?? ''
+  // next/headers is loaded when the module runs (never imported statically): the block renderer is reached by the Pages Router too, where that API does not exist (measured at build)
+  let host = ''
+  try { const { headers } = await import('next/headers'); host = (await headers()).get('host')?.split(':')[0] ?? '' } catch { /* no request: the first tenant */ }
   const byDomain = await payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, limit: 1, overrideAccess: true })
   const t = (byDomain.docs[0] ?? (await payload.find({ collection: 'tenants' as never, limit: 1, sort: 'slug', overrideAccess: true })).docs[0]) as { id: string; slug: string } | undefined
   if (!t) throw new Error('no tenant: seed the tenants first (src/scripts/seedQpu.ts)')
   return t
 }
 export const callOf = async (tool: string, args: Record<string, unknown>): Promise<Call> => {
+  // the config loaded when the module runs, never imported statically: the block renderer is reached by the Pages Router too, and the config's hooks name App Router caches (measured at build)
+  const { default: config } = await import('@payload-config')
   const payload = await getPayload({ config })
   const tenant = await tenantOf(payload)
   const from = 'page:' + tenant.slug // the same call at two tenants is two entries: the address folds the tenant through from

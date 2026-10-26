@@ -106,10 +106,10 @@ export const siteOf = (ctx: Context, origin: string) => {
     if (!r.result) return { id: e.id, tool: e.tool, toolbox: boxOf.get(e.tool) ?? 'none', error: r.error?.message ?? 'no result' }
     const uuid = r.result._meta.block.meta.id
     const d = payloadDocOf({ uuid, tool: e.tool, arguments: e.arguments, description: e.shows, openGraph: r.result._meta.openGraph, prev: null, chain: [], origin })
-    return { id: e.id, tool: e.tool, toolbox: boxOf.get(e.tool) ?? 'none', uuid, url: `${origin}/${uuid}`, title: d.seo.title, description: e.shows, theorem: e.theorem ?? null, breadcrumbs: d.nestedDocs.breadcrumbs.length, blocks: 1 }
+    return { id: e.id, tool: e.tool, toolbox: boxOf.get(e.tool) ?? 'none', uuid, url: `${origin}/${uuid}`, title: d.seo.title, description: e.shows, theorem: e.theorem ?? null, arguments: e.arguments, breadcrumbs: d.nestedDocs.breadcrumbs.length, blocks: 1 }
   })
   const useCases = [...new Set(docs.map((d) => d.toolbox))].map((toolbox) => ({ toolbox, pages: docs.filter((d) => d.toolbox === toolbox).length, tools: [...new Set(docs.filter((d) => d.toolbox === toolbox).map((d) => d.tool))] }))
-  return { reference: { site: 'https://payloadcms.com', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', shape: 'docs with layout blocks (blockType), meta (title, description), breadcrumbs: the site is what Payload computes; discovery reads it as the standard payload-site' }, origin, useCases: useCases.length, pages: docs.length, byUseCase: useCases, docs, collection: { slug: 'pages', totalDocs: docs.length, docs: docs.filter((d) => 'uuid' in d).map((d) => ({ id: d.uuid, title: d.title, slug: `/${d.uuid}`, layout: [(() => { const ch = channelOf(String(d.uuid)); return { blockType: 'qpu', tool: d.tool, uuid: d.uuid, handle: ch.handle, program: ch.program.join(''), tail: ch.tail } })()], meta: { title: d.title, description: d.description }, breadcrumbs: [{ doc: d.uuid, url: `/${d.uuid}`, label: d.title }] })) } }
+  return { reference: { site: 'https://payloadcms.com', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', shape: 'docs with layout blocks (blockType), meta (title, description), breadcrumbs: the site is what Payload computes; discovery reads it as the standard payload-site' }, origin, useCases: useCases.length, pages: docs.length, byUseCase: useCases, docs, collection: { slug: 'pages', totalDocs: docs.length, docs: docs.filter((d) => 'uuid' in d).map((d) => ({ id: d.uuid, title: d.title, slug: `/${d.uuid}`, layout: [(() => { const ch = channelOf(String(d.uuid)); return { blockType: 'qpu', tool: d.tool, uuid: d.uuid, handle: ch.handle, program: ch.program.join(''), tail: ch.tail, arguments: (d as { arguments?: Record<string, unknown> }).arguments ?? null, theorem: d.theorem ?? null } })()], meta: { title: d.title, description: d.description }, breadcrumbs: [{ doc: d.uuid, url: `/${d.uuid}`, label: d.title }] })) } }
 }
 /** Payload's skills for agents, read as data from the repository tree (github.com/payloadcms/skills): each skill and each of its references mapped to the tool of this tree that enacts it. No text of the skills is carried: the repository declares no licence; names, paths and sizes are facts. */
 export const SKILL_MAP: Readonly<Record<string, { enactedBy: string[]; how: string }>> = {
@@ -653,7 +653,8 @@ export const QpuGlobal: GlobalConfig = {
     { name: 'origin', type: 'text', defaultValue: 'https://qpu.uuidna.com', admin: { description: 'the origin the discovery document names' } },
     { name: 'document', type: 'json', admin: { readOnly: true, description: 'the discovery document: computed on every read, never stored' } },
   ],
-  hooks: { afterRead: [({ doc }) => ({ ...doc, document: discoveryOf(String(doc?.origin ?? 'https://qpu.uuidna.com'), process.env as Record<string, unknown>) })] },
+  // per tenant: the document names the origin of the host that asked (a tenant's domain), else the origin the global holds; a local host keeps the global's
+  hooks: { afterRead: [({ doc, req }) => { const host = req?.headers?.get?.('host') ?? ''; const origin = host && !/^(localhost|127\\.0\\.0\\.1)(:|$)/.test(host) ? 'https://' + host.split(':')[0] : String(doc?.origin ?? 'https://qpu.uuidna.com'); return { ...doc, origin, document: discoveryOf(origin, process.env as Record<string, unknown>) } }] },
 }
 `
       // the UUID page rendered by the app itself: the handler verifies the address and lays out its channel, vortex and theme; no Worker behind it
@@ -676,13 +677,34 @@ export const Tenants: CollectionConfig = {
 }
 `
       const reactHost = reactHostOf()
+      // the qpu block in a page's layout, rendered through the host: the block's call is an entry of the page's tenant (the local API), its view the tool's ui:// resource; nothing drawn by hand
+      const blockView = `${header}// The qpu block in a page's layout: the block names a tool and its arguments; the app computes the call from the handler (once per process,
+// by the balancer) and renders its result through the tool's own ui:// resource and the host (the UI from the MCP only). The call becomes an
+// entry of the tenant on the UUID page (page.tsx), not here: this renderer is reached by the Pages Router too, where the config's caches do
+// not exist (measured at build). Generated by configure { kind: 'fullstack' }.
+import React from 'react'
+import { handle } from '@uuidna/qpu/mcp'
+import { QpuApp } from './App'
+
+export type QpuBlockProps = { uuid: string; handle: string; program: string; tail: string; tool: string; arguments?: Record<string, unknown> | null; prev?: string | null; next?: string | null; theorem?: string | null }
+
+export const QpuBlock: React.FC<QpuBlockProps> = ({ uuid, tool, arguments: args, next, theorem }) => {
+  const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args ?? {} } }) as { result?: unknown; error?: { message: string } }
+  const view = (handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'ui://qpu/' + tool } }) as { result?: { contents: { text: string }[] } }).result?.contents[0]?.text ?? ''
+  return (
+    <section data-block={uuid} data-tool={tool} data-theorem={theorem ?? undefined}>
+      <QpuApp tool={tool} args={(args ?? {}) as Record<string, unknown>} result={reply.result ?? { error: reply.error }} html={view} />
+      {theorem ? <small>proven by {theorem}</small> : null}
+      {next ? <a href={'/' + next}>next</a> : null}
+    </section>
+  )
+}
+`
       const uuidPage = `${header}// A UUID page through Payload's own API: the page is the entry of the call { tool: verify, arguments: { uuid } } in the entries collection —
 // read by its content address through the local API (free: nothing computed), created once when absent (the collection's hook computes the result).
 // The catch-all hands a single UUID segment to this component. Nothing is fetched from anywhere else; no custom endpoint.
 import React from 'react'
-import { headers } from 'next/headers'
 import { getPayload } from 'payload'
-import config from '@payload-config'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { handle } from '@uuidna/qpu/mcp'
 import { QpuApp } from './App'
@@ -690,13 +712,17 @@ import { QpuApp } from './App'
 type Call = { id: string; result?: { structuredContent?: Record<string, unknown>; _meta?: { widget?: string; theme?: Record<string, string> }; error?: { message: string } } }
 // the tenant of the request: the host that names it (the tenants' domains, as the Worker's TENANTS), else the first tenant (a local run)
 const tenantOf = async (payload: Awaited<ReturnType<typeof getPayload>>): Promise<{ id: string; slug: string }> => {
-  const host = (await headers()).get('host')?.split(':')[0] ?? ''
+  // next/headers is loaded when the module runs (never imported statically): the block renderer is reached by the Pages Router too, where that API does not exist (measured at build)
+  let host = ''
+  try { const { headers } = await import('next/headers'); host = (await headers()).get('host')?.split(':')[0] ?? '' } catch { /* no request: the first tenant */ }
   const byDomain = await payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, limit: 1, overrideAccess: true })
   const t = (byDomain.docs[0] ?? (await payload.find({ collection: 'tenants' as never, limit: 1, sort: 'slug', overrideAccess: true })).docs[0]) as { id: string; slug: string } | undefined
   if (!t) throw new Error('no tenant: seed the tenants first (src/scripts/seedQpu.ts)')
   return t
 }
 export const callOf = async (tool: string, args: Record<string, unknown>): Promise<Call> => {
+  // the config loaded when the module runs, never imported statically: the block renderer is reached by the Pages Router too, and the config's hooks name App Router caches (measured at build)
+  const { default: config } = await import('@payload-config')
   const payload = await getPayload({ config })
   const tenant = await tenantOf(payload)
   const from = 'page:' + tenant.slug // the same call at two tenants is two entries: the address folds the tenant through from
@@ -786,12 +812,13 @@ const main = async () => {
   }
   const tenant = (await payload.find({ collection: 'tenants' as never, where: { slug: { equals: Object.keys(tenants)[0] } }, limit: 1, overrideAccess: true })).docs[0] as { id: string } | undefined
   if (!tenant) throw new Error('no tenant to scope the documents to')
-  let created = 0, kept = 0
+  let created = 0, kept = 0, updated = 0
   for (const d of site) {
     const slug = d.slug.replace(/^\\//, '')
-    const found = await payload.find({ collection: 'pages', where: { slug: { equals: slug } }, limit: 1, overrideAccess: true })
-    if (found.totalDocs) { kept += 1; continue }
-    await payload.create({ collection: 'pages', overrideAccess: true, context: { disableRevalidate: true }, data: { title: d.title, slug, hero: { type: 'default' }, layout: d.layout, meta: d.meta, tenant: tenant.id } as never })
+    const found = await payload.find({ collection: 'pages', where: { slug: { equals: slug } }, limit: 1, overrideAccess: true, draft: true })
+    if (found.totalDocs) { const page = found.docs[0] as { id: string; _status?: string; layout?: unknown[] }; const stale = JSON.stringify((page.layout ?? []).map((b) => { const { id: _id, ...rest } = b as { id?: string }; return rest })) !== JSON.stringify(d.layout); if (page._status !== 'published' || stale) await payload.update({ collection: 'pages', id: page.id, overrideAccess: true, context: { disableRevalidate: true }, data: { _status: 'published', ...(stale ? { layout: d.layout } : {}) } as never }); kept += 1; if (stale) updated += 1; continue }
+    // published: the site is what the QPU computes, public at once; a draft would answer no reader
+    await payload.create({ collection: 'pages', overrideAccess: true, context: { disableRevalidate: true }, data: { title: d.title, slug, hero: { type: 'default' }, layout: d.layout, meta: d.meta, tenant: tenant.id, _status: 'published' } as never })
     created += 1
   }
   // the licence catalogue as products of the ecommerce plugin: one per variant, by title, prices in the minor unit per currency
@@ -803,7 +830,7 @@ const main = async () => {
     await payload.create({ collection: 'products' as never, overrideAccess: true, context: { disableRevalidate: true }, data: { title: item.title, licence: item.licence, tenant: tenant.id, ...Object.fromEntries(Object.entries(item.prices).flatMap(([k, v]) => [[k, v], [k + 'Enabled', true]])), _status: 'published' } as never })
     products += 1
   }
-  console.log(\`seed: \${created} page(s) created, \${kept} kept, from \${site.length} documents; \${tenantsCreated} tenant(s) created of \${Object.keys(tenants).length}; \${products} product(s) created of \${catalogue.length}\`)
+  console.log(\`seed: \${created} page(s) created, \${kept} kept (\${updated} relaid), from \${site.length} documents; \${tenantsCreated} tenant(s) created of \${Object.keys(tenants).length}; \${products} product(s) created of \${catalogue.length}\`)
 }
 // awaited at the top level: payload run returns when the module has loaded, so a pending promise would be left behind (measured: the seed printed nothing and wrote nothing)
 await main()
@@ -819,7 +846,7 @@ The source of payloadcms.com (MIT) is the full stack, forked under site/: its ${
 - What QPU adds carries QPU's licence: ${LICENSE.attribution} (${LICENSE.deed}). Each added file names it in its first line. The added files: src/blocks/Qpu/config.ts, src/components/blocks/Qpu/index.tsx, src/payload.qpu.config.ts, src/payload.qpu.mcp.ts, src/globals/Qpu.ts, src/components/blocks/Qpu/page.tsx, src/components/blocks/Qpu/App.tsx, src/scripts/seedQpu.ts, src/collections/Tenants.ts, src/collections/Entries.ts, the rewrites in next.config.js, README.qpu.md and this notice.
 - The two licences meet at the file boundary: MIT permits the fork and the additions; the additions' own terms apply to them alone; the combined site, served, carries both notices.
 `
-      return { repository: PAYLOAD_WEBSITE.repository, licence: PAYLOAD_WEBSITE.licence, qpuLicence: LICENSE.spdx, keep: { collections: ws.collectionList, blocks: ws.blockList, globals: ws.globalList, fields: ws.fieldList, plugins: [...PAYLOAD_WEBSITE.plugins] }, add: { block: 'qpu', plugins: ['search', 'multi-tenant', 'mcp'], database: 'db-mongodb over the RAID docket (the mongo tool\'s language)', storage: 'Cloudflare R2 through the bindings MCP (the tenant\'s token)', deploy: 'Cloudflare Workers beside this Worker (run_worker_first keeps /mcp, /docket, /.well-known)', tenants: Object.values(TENANTS) }, files: { 'site/src/blocks/Qpu/config.ts': qpuBlock, 'site/src/payload.qpu.config.ts': config, 'site/README.qpu.md': readme, 'site/NOTICE.qpu.md': notice, 'site/src/payload.qpu.mcp.ts': mcpTools, 'site/src/collections/Entries.ts': entries, 'site/src/globals/Qpu.ts': qpuGlobal, 'site/src/payload.qpu.ecommerce.ts': ecommerce, 'site/src/collections/Tenants.ts': tenants, 'site/src/components/blocks/Qpu/App.tsx': `${header}${reactHost}`, 'site/src/components/blocks/Qpu/page.tsx': uuidPage, 'site/src/scripts/seedQpu.ts': seed }, steps: ['fork payloadcms/website (MIT) under site/ — done', 'register the qpu block (payload.config blocks, the pages layout, the RenderBlocks map under the @blocks alias), the tenants collection, spread qpuPlugins — done; the fork typechecks', 'rewrite any UUID path and /mcp, /docket, /.well-known to the Worker before the catch-all — done', 'point DATABASE_URI and PAYLOAD_SECRET at the tenant\'s (the build needs them beyond the tree)', 'deploy at Cloudflare beside this Worker; the gate decodes old and new as copies; the old site is removed only then'], note: 'generated text: a fork applies it; nothing here runs Payload' }
+      return { repository: PAYLOAD_WEBSITE.repository, licence: PAYLOAD_WEBSITE.licence, qpuLicence: LICENSE.spdx, keep: { collections: ws.collectionList, blocks: ws.blockList, globals: ws.globalList, fields: ws.fieldList, plugins: [...PAYLOAD_WEBSITE.plugins] }, add: { block: 'qpu', plugins: ['search', 'multi-tenant', 'mcp'], database: 'db-mongodb over the RAID docket (the mongo tool\'s language)', storage: 'Cloudflare R2 through the bindings MCP (the tenant\'s token)', deploy: 'Cloudflare Workers beside this Worker (run_worker_first keeps /mcp, /docket, /.well-known)', tenants: Object.values(TENANTS) }, files: { 'site/src/blocks/Qpu/config.ts': qpuBlock, 'site/src/payload.qpu.config.ts': config, 'site/README.qpu.md': readme, 'site/NOTICE.qpu.md': notice, 'site/src/payload.qpu.mcp.ts': mcpTools, 'site/src/collections/Entries.ts': entries, 'site/src/globals/Qpu.ts': qpuGlobal, 'site/src/payload.qpu.ecommerce.ts': ecommerce, 'site/src/collections/Tenants.ts': tenants, 'site/src/components/blocks/Qpu/App.tsx': `${header}${reactHost}`, 'site/src/components/blocks/Qpu/index.tsx': blockView, 'site/src/components/blocks/Qpu/page.tsx': uuidPage, 'site/src/scripts/seedQpu.ts': seed }, steps: ['fork payloadcms/website (MIT) under site/ — done', 'register the qpu block (payload.config blocks, the pages layout, the RenderBlocks map under the @blocks alias), the tenants collection, spread qpuPlugins — done; the fork typechecks', 'rewrite any UUID path and /mcp, /docket, /.well-known to the Worker before the catch-all — done', 'point DATABASE_URI and PAYLOAD_SECRET at the tenant\'s (the build needs them beyond the tree)', 'deploy at Cloudflare beside this Worker; the gate decodes old and new as copies; the old site is removed only then'], note: 'generated text: a fork applies it; nothing here runs Payload' }
     }
     case 'mcp': { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'extend', arguments: { direction: 'out' } } }) as { result: { structuredContent: { outward: { mcpServers: unknown; tools: unknown[] } } } }; return { mcpServers: r.result.structuredContent.outward.mcpServers, tools: r.result.structuredContent.outward.tools.length, hosts: DEFAULT_MCP_HOSTS } }
   }
@@ -882,7 +909,7 @@ export const PAYLOAD: Toolbox = {
     { id: 'configure-versions', tool: 'configure', arguments: { kind: 'versions', lastTag: { version: 'v1.4.0', tools: ['processor', 'circuit', 'clay'] } }, shows: 'Versions define development and development defines versions: the current version from its single source, the next number from what the catalogue changed since the last tag (tools added: the minor digit carries), kept to single digits with a build address, the open leads as the version\'s plan, Payload\'s versioning over the RAID (every version an entry, never overwritten, no cap).', expect: (s) => (s.config.current === '1.4.0' && s.config.next.bump === 'minor' && s.config.next.next.startsWith('1.5.0+e1.') && s.config.next.digits === 'single' && s.config.next.added.length >= 30 && s.config.defines.openLeads > 0 && s.config.payload.collections.pages.versions.maxPerDoc === 0 && s.torus.closed ? null : JSON.stringify(s.config.next).slice(0, 120)) },
     { id: 'configure-migration', tool: 'configure', theorem: 'textbook_providers_are_tenants_plus_operator', arguments: { kind: 'migration' }, shows: 'A provider added or moved at 100 % uptime: deploy beside, mirror the docket by address, decode old and new as copies through the gate, route, and the rollback is the earlier version still answering.', expect: (s) => (s.config.steps.length === 5 && s.config.providers.length === 3 && s.config.uptime.startsWith('100') ? null : `${s.config.steps?.length} steps`) },
     { id: 'configure-api', tool: 'configure', arguments: { kind: 'api' }, shows: 'The QPU\'s API overview as data, the way platform.claude.com\'s overview is one for the Claude API: one MCP endpoint and every surface around it, the headers, the authorization (none for every pure tool), the content addressing and its involution, the tools by toolbox, the MCP connector for Claude and for any client, quick tests, limits and errors; docs/api.md is written from it.', expect: (s) => (s.config.endpoints.length >= 10 && s.config.tools.length >= 41 && s.config.mcpConnector.claude.mcp_servers[0].name === 'qpu' && s.config.quickTests.length === 4 && s.config.authorization.pure.includes('without a credential') && s.torus.closed ? null : `${s.config.endpoints?.length} endpoints, ${s.config.tools?.length} tools`) },
-    { id: 'configure-fullstack', tool: 'configure', arguments: { kind: 'fullstack' }, shows: 'QPU\'s full stack from the source of payloadcms.com (MIT): its twelve collections, thirty blocks, globals and fields kept, the qpu block added, search, multi-tenant and mcp added to its four plugins, the database the RAID, storage and deploy at Cloudflare; two source files and a README generated for the fork.', expect: (s) => (s.config.keep.blocks.length === 30 && s.config.add.block === 'qpu' && Object.keys(s.config.files).length === 12 && s.config.files['site/src/payload.qpu.ecommerce.ts'].includes('ecommercePlugin(') && s.config.files['site/src/collections/Tenants.ts'].includes("slug: 'tenants'") && s.config.files['site/src/components/blocks/Qpu/App.tsx'].includes('ui/initialize') && s.config.files['site/src/payload.qpu.mcp.ts'].includes('qpuMcpTools') && s.config.files['site/NOTICE.qpu.md'].includes('MIT') && s.config.files['site/src/blocks/Qpu/config.ts'].startsWith('// Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0') && s.config.files['site/src/blocks/Qpu/config.ts'].includes("slug: 'qpu'") && s.config.steps.length === 5 && s.torus.closed ? null : `${s.config.keep?.blocks?.length} blocks`) },
+    { id: 'configure-fullstack', tool: 'configure', arguments: { kind: 'fullstack' }, shows: 'QPU\'s full stack from the source of payloadcms.com (MIT): its twelve collections, thirty blocks, globals and fields kept, the qpu block added, search, multi-tenant and mcp added to its four plugins, the database the RAID, storage and deploy at Cloudflare; two source files and a README generated for the fork.', expect: (s) => (s.config.keep.blocks.length === 30 && s.config.add.block === 'qpu' && Object.keys(s.config.files).length === 13 && s.config.files['site/src/components/blocks/Qpu/index.tsx'].includes('QpuApp') && s.config.files['site/src/payload.qpu.ecommerce.ts'].includes('ecommercePlugin(') && s.config.files['site/src/collections/Tenants.ts'].includes("slug: 'tenants'") && s.config.files['site/src/components/blocks/Qpu/App.tsx'].includes('ui/initialize') && s.config.files['site/src/payload.qpu.mcp.ts'].includes('qpuMcpTools') && s.config.files['site/NOTICE.qpu.md'].includes('MIT') && s.config.files['site/src/blocks/Qpu/config.ts'].startsWith('// Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0') && s.config.files['site/src/blocks/Qpu/config.ts'].includes("slug: 'qpu'") && s.config.steps.length === 5 && s.torus.closed ? null : `${s.config.keep?.blocks?.length} blocks`) },
     { id: 'configure-files', tool: 'configure', theorem: 'textbook_configs_partition', arguments: { files: true }, shows: 'Every configuration\'s file and its source: five kinds the tool writes on every run (wrangler, the PWA manifest, the full stack\'s files, the bindings\' env example, the shadcn registry), three the hand holds and MCP measures (the Payload config, the site\'s hooks, the app\'s rewrites), eleven answered inside them (scopes, fields, validations, access, hooks, bindings, actions and the rest) — next always improves them.', expect: (s) => (s.tool === 5 && s.hand === 3 && s.unfiled === 11 && s.kinds === 19 ? null : JSON.stringify(s)) },
     { id: 'configure-packages', tool: 'configure', theorem: 'textbook_packages_partition', arguments: { kind: 'packages' }, shows: 'The packages Payload ships, read from the packages directory of payloadcms/payload: twelve plugins, five databases, five storages, two email adapters, one editor, three live-preview packages and seventeen of runtime and tooling; which the full stack mounts, which stay available, and the minimum-cost path (Payload\'s own D1 and R2 adapters).', expect: (s) => (s.config.count === 45 && s.config.counts.plugins === 12 && s.config.unknown.length === 0 && s.config.minimumCost.cloudflare.length === 2 ? null : JSON.stringify(s.config.counts)) },
     { id: 'configure-ecommerce', tool: 'configure', theorem: 'textbook_catalogue_prices', arguments: { kind: 'ecommerce' }, shows: 'The licence catalogue as Payload\'s own ecommerce, configured as the ecommerce template configures it: six products in seven variants priced in three currencies (twenty-one prices), the Stripe adapter as the payment, access by the site\'s roles, the order\'s access token as the licence key; the fork\'s Stripe plugin replaced, the Worker\'s checkout kept until the gate decodes the app.', expect: (s) => (s.config.catalogue.products === 6 && s.config.catalogue.variants === 7 && s.config.catalogue.prices === 21 && s.config.plugin.collections.length === 8 ? null : JSON.stringify(s.config.catalogue)) },

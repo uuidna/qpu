@@ -20,12 +20,13 @@ const main = async () => {
   }
   const tenant = (await payload.find({ collection: 'tenants' as never, where: { slug: { equals: Object.keys(tenants)[0] } }, limit: 1, overrideAccess: true })).docs[0] as { id: string } | undefined
   if (!tenant) throw new Error('no tenant to scope the documents to')
-  let created = 0, kept = 0
+  let created = 0, kept = 0, updated = 0
   for (const d of site) {
     const slug = d.slug.replace(/^\//, '')
-    const found = await payload.find({ collection: 'pages', where: { slug: { equals: slug } }, limit: 1, overrideAccess: true })
-    if (found.totalDocs) { kept += 1; continue }
-    await payload.create({ collection: 'pages', overrideAccess: true, context: { disableRevalidate: true }, data: { title: d.title, slug, hero: { type: 'default' }, layout: d.layout, meta: d.meta, tenant: tenant.id } as never })
+    const found = await payload.find({ collection: 'pages', where: { slug: { equals: slug } }, limit: 1, overrideAccess: true, draft: true })
+    if (found.totalDocs) { const page = found.docs[0] as { id: string; _status?: string; layout?: unknown[] }; const stale = JSON.stringify((page.layout ?? []).map((b) => { const { id: _id, ...rest } = b as { id?: string }; return rest })) !== JSON.stringify(d.layout); if (page._status !== 'published' || stale) await payload.update({ collection: 'pages', id: page.id, overrideAccess: true, context: { disableRevalidate: true }, data: { _status: 'published', ...(stale ? { layout: d.layout } : {}) } as never }); kept += 1; if (stale) updated += 1; continue }
+    // published: the site is what the QPU computes, public at once; a draft would answer no reader
+    await payload.create({ collection: 'pages', overrideAccess: true, context: { disableRevalidate: true }, data: { title: d.title, slug, hero: { type: 'default' }, layout: d.layout, meta: d.meta, tenant: tenant.id, _status: 'published' } as never })
     created += 1
   }
   // the licence catalogue as products of the ecommerce plugin: one per variant, by title, prices in the minor unit per currency
@@ -37,7 +38,7 @@ const main = async () => {
     await payload.create({ collection: 'products' as never, overrideAccess: true, context: { disableRevalidate: true }, data: { title: item.title, licence: item.licence, tenant: tenant.id, ...Object.fromEntries(Object.entries(item.prices).flatMap(([k, v]) => [[k, v], [k + 'Enabled', true]])), _status: 'published' } as never })
     products += 1
   }
-  console.log(`seed: ${created} page(s) created, ${kept} kept, from ${site.length} documents; ${tenantsCreated} tenant(s) created of ${Object.keys(tenants).length}; ${products} product(s) created of ${catalogue.length}`)
+  console.log(`seed: ${created} page(s) created, ${kept} kept (${updated} relaid), from ${site.length} documents; ${tenantsCreated} tenant(s) created of ${Object.keys(tenants).length}; ${products} product(s) created of ${catalogue.length}`)
 }
 // awaited at the top level: payload run returns when the module has loaded, so a pending promise would be left behind (measured: the seed printed nothing and wrote nothing)
 await main()

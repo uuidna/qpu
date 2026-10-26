@@ -24,11 +24,13 @@ const Page = async ({
 }) => {
   const { isEnabled: draft } = await draftMode()
   const { slug } = await params
-  // a UUID as the whole path is a block: the app renders it from the handler, no Worker behind it (the catch-all makes prefixes useless)
-  if (Array.isArray(slug) && slug.length === 1 && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(slug[0])) return <QpuPage uuid={slug[0]} />
   const url = '/' + (Array.isArray(slug) ? slug.join('/') : slug)
 
   const page = await getPage(slug, draft)
+
+  // a UUID as the whole path is one address: the page document of that slug when one exists (its layout's qpu block rendered through the
+  // MCP App host), else the block computed by the app from the handler (the catch-all makes prefixes useless; no Worker behind it)
+  if (!page && Array.isArray(slug) && slug.length === 1 && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(slug[0])) return <QpuPage uuid={slug[0]} />
 
   if (!page) {
     return <PayloadRedirects url={url} />

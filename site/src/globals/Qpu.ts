@@ -11,5 +11,6 @@ export const QpuGlobal: GlobalConfig = {
     { name: 'origin', type: 'text', defaultValue: 'https://qpu.uuidna.com', admin: { description: 'the origin the discovery document names' } },
     { name: 'document', type: 'json', admin: { readOnly: true, description: 'the discovery document: computed on every read, never stored' } },
   ],
-  hooks: { afterRead: [({ doc }) => ({ ...doc, document: discoveryOf(String(doc?.origin ?? 'https://qpu.uuidna.com'), process.env as Record<string, unknown>) })] },
+  // per tenant: the document names the origin of the host that asked (a tenant's domain), else the origin the global holds; a local host keeps the global's
+  hooks: { afterRead: [({ doc, req }) => { const host = req?.headers?.get?.('host') ?? ''; const origin = host && !/^(localhost|127\.0\.0\.1)(:|$)/.test(host) ? 'https://' + host.split(':')[0] : String(doc?.origin ?? 'https://qpu.uuidna.com'); return { ...doc, origin, document: discoveryOf(origin, process.env as Record<string, unknown>) } }] },
 }
