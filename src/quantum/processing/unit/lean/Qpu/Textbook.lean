@@ -36,6 +36,8 @@ theorem textbook_catalogue_prices : 7 * 3 = 21 := by decide
 theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583 / 100000 := rfl
 /-- CMI's three conditions are conjoined: a proposed solution is considered only when every one holds (examples: compete-rules) -/
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
+/-- nine schemas read one UUID at once: versions 1, 3, 4, 5, 6, 7 and 8, nil and max; the core reads none of them, so every schema presents the same (examples: fold-schemas) -/
+theorem textbook_uuid_schemas : 7 + 2 = 9 := by decide
 /-- one quantum core used by all: a UUID's thirty-two nibbles are its handle, its program, its tail and the two stamp nibbles; every result is such an address and every combinatorial use (style, presentation, stream) reads it (examples: fold-hex) -/
 theorem textbook_uuid_core : 8 + 10 + 12 + 2 = 32 := by decide
 /-- a filtered stream keeps f of its n rows and drops the rest: what is kept and what is dropped partition the stream, whatever the hexes (examples: fold-stream, configure-ui-stream) -/

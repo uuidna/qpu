@@ -5,6 +5,19 @@
  "items": [
   {
    "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-sdk",
+   "type": "registry:lib",
+   "title": "QPU SDK",
+   "description": "the config sets as the base of combinatorial application builders: one module that calls the QPU over MCP and composes an app from the sets",
+   "files": [
+    {
+     "path": "lib/qpu-sdk.ts",
+     "type": "registry:lib"
+    }
+   ]
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
    "name": "qpu-style",
    "type": "registry:lib",
    "title": "QPU style",

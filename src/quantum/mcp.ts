@@ -5,6 +5,7 @@
 import * as cirq from './cirq.js'
 import { EXAMPLES } from './examples.js'
 import { auditOf, entropyOf, differencesOf } from './audit.js'
+import { sdkOf } from './toolboxes/payload.js'
 import { blockOf, verifyOf, uuidOf } from './blocks.js'
 import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay, reflectionOfRegister } from './clay-register.js'
@@ -847,10 +848,12 @@ export const handle = (message: Rpc): Reply => {
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools: TOOLS.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); return { name, description, inputSchema, _meta: { toolbox, skill: { instructions: box?.skill.instructions ?? '', directions: box?.skill.directions.length ?? 0 }, ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] } } } }) } }
     // the UI resources: one ui://qpu/<tool> per tool, the app shell served over the standard resource methods, nothing bypassed
-    if (message.method === 'resources/list') return { jsonrpc: '2.0', id, result: { resources: TOOLS.map((t) => { const u = uiOf(t.name); return { uri: u.uri, name: u.name, description: `the MCP Apps view of ${t.name}: renders the widget the tool computes`, mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }) } }
+    // the SDK is a resource too: served here and, through the plugin's resources, by the Payload MCP plugin — and the SDK calls both back (vice versa)
+    if (message.method === 'resources/list') return { jsonrpc: '2.0', id, result: { resources: [...TOOLS.map((t) => { const u = uiOf(t.name); return { uri: u.uri, name: u.name, description: `the MCP Apps view of ${t.name}: renders the widget the tool computes`, mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }), { uri: 'sdk://qpu/lib', name: 'qpu · sdk', description: 'the SDK: the config sets as the base of combinatorial application builders — one TypeScript module that calls this server over MCP (token free) and the Payload MCP plugin with a user\'s API key (the collections among its tools); served here and by the plugin', mimeType: 'text/typescript' }] } }
     if (message.method === 'resources/templates/list') return { jsonrpc: '2.0', id, result: { resourceTemplates: [{ uriTemplate: 'ui://qpu/{tool}', name: 'qpu · a tool\'s view', mimeType: MCP_APPS.mimeType, description: 'the app shell of any tool of the catalogue' }] } }
     if (message.method === 'resources/read') {
       const uri = String(params.uri ?? '')
+      if (uri === 'sdk://qpu/lib') { const sdk = sdkOf('https://qpu.uuidna.com', TOOLS.map((t) => t.name)); return { jsonrpc: '2.0', id, result: { contents: [{ uri, mimeType: 'text/typescript', text: sdk.module }] } } }
       const name = /^ui:\/\/qpu\/([a-z0-9_-]+)$/.exec(uri)?.[1]
       const found = name ? TOOLS.find((t) => t.name === name) : undefined
       if (!found) return fail(INVALID_PARAMS, `no resource ${uri}; the resources are ui://qpu/<tool> for ${TOOLS.map((t) => t.name).join(', ')}`)

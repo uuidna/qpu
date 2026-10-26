@@ -33,7 +33,7 @@ export const qpuMcpTools = list.map((t) => ({
 // the UI resources (MCP Apps): one ui://qpu/<tool> per tool, read from the handler's resources/read, served through the plugin's resources
 const resources = (handle({ jsonrpc: '2.0', id: 1, method: 'resources/list' }) as { result: { resources: { uri: string; name: string; description: string; mimeType: string }[] } }).result.resources
 export const qpuMcpResources = resources.map((r) => ({
-  name: r.uri.replace('ui://qpu/', 'ui-'),
+  name: r.uri.replace(/^([a-z]+):\/\/qpu\//, '$1-'),
   title: r.name,
   description: r.description,
   uri: r.uri,
