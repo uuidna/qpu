@@ -126,6 +126,10 @@ export default defineConfig({
         "link": "/clay"
       },
       {
+        "text": "Textbook",
+        "link": "/textbook"
+      },
+      {
         "text": "Examples",
         "link": "/examples"
       },
@@ -144,6 +148,14 @@ export default defineConfig({
       {
         "text": "Theorems",
         "link": "/theorems"
+      },
+      {
+        "text": "Receipts",
+        "link": "/receipts"
+      },
+      {
+        "text": "Next leads",
+        "link": "/next-leads"
       },
       {
         "text": "Playground",
@@ -178,8 +190,20 @@ export default defineConfig({
         "link": "/e2e"
       },
       {
+        "text": "Legal",
+        "link": "/legal"
+      },
+      {
+        "text": "Repository",
+        "link": "/repository"
+      },
+      {
         "text": "Sources",
         "link": "/sources"
+      },
+      {
+        "text": "Metrics",
+        "link": "/metrics"
       },
       {
         "text": "UUID",
@@ -259,6 +283,10 @@ export default defineConfig({
             "link": "/clay"
           },
           {
+            "text": "Textbook",
+            "link": "/textbook"
+          },
+          {
             "text": "Examples",
             "link": "/examples"
           },
@@ -277,6 +305,14 @@ export default defineConfig({
           {
             "text": "Theorems",
             "link": "/theorems"
+          },
+          {
+            "text": "Receipts",
+            "link": "/receipts"
+          },
+          {
+            "text": "Next leads",
+            "link": "/next-leads"
           },
           {
             "text": "Playground",
@@ -311,8 +347,20 @@ export default defineConfig({
             "link": "/e2e"
           },
           {
+            "text": "Legal",
+            "link": "/legal"
+          },
+          {
+            "text": "Repository",
+            "link": "/repository"
+          },
+          {
             "text": "Sources",
             "link": "/sources"
+          },
+          {
+            "text": "Metrics",
+            "link": "/metrics"
           },
           {
             "text": "UUID",

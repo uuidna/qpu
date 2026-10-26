@@ -30,6 +30,8 @@ theorem textbook_double_entry (debits credits : Nat) (h : debits = credits) : de
 theorem textbook_typography_idempotent (n : Nat) : min (min n 1) 1 = min n 1 := by omega
 /-- the hex digits above nine are spoken as Ⰺ (ten) and a unit, and read back by adding them: ten and one to five are eleven to fifteen, so every hex digit returns as itself (examples: fold-speak) -/
 theorem textbook_glagolitic_round_trip : 10 + 1 = 11 ∧ 10 + 2 = 12 ∧ 10 + 3 = 13 ∧ 10 + 4 = 14 ∧ 10 + 5 = 15 := by decide
+/-- a coverage never claims more than all: when the doors counted are among the servers counted, their share in whole percent is at most a hundred (examples: extend-coverage) -/
+theorem textbook_coverage_bounded (doors total : Nat) (h : doors ≤ total) : doors * 100 / total ≤ 100 := Nat.div_le_of_le_mul (Nat.mul_le_mul_right 100 h)
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/
