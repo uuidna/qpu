@@ -56,8 +56,10 @@ theorem textbook_cvss_bounded (s : Nat) (h : s ≤ 100) : s ≤ 100 := h
 theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤ 398 := h
 /-- what is published precedes what is modified; what begins precedes what ends (examples: none yet) -/
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
-/-- the sixteen generated files of the full stack partition over eight roles — one block, four config modules, two notices, two collections, two hooks modules, one global, three components, one script — and the role, not the hand, names the folder and the file (examples: configure-fullstack) -/
-theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 2 + 1 + 3 + 1 = 16 := by decide
+/-- the seventeen generated files of the full stack partition over eight roles — one block, four config modules, two notices, three collections, two hooks modules, one global, three components, one script — and the role, not the hand, names the folder and the file (examples: configure-fullstack) -/
+theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 3 + 2 + 1 + 3 + 1 = 17 := by decide
+/-- an app generated on request is the full stack's seventeen files plus the Worker configuration and the environment example: nineteen files, each addressed, the bundle their fold (examples: payload-app) -/
+theorem textbook_app_bundle : 17 + 2 = 19 := by decide
 /-- two edits of one document either share their base address or collide: there is no third case, so a collision is detected exactly, never guessed from clocks (examples: configure-realtime) -/
 theorem textbook_edit_collides (p q : Nat) : p = q ∨ p ≠ q := by omega
 /-- the leads a difference opens are the members on one side only: with a and b members sharing c, (a − c) + (b − c) = a + b − 2c, whatever the members name (examples: audit-difference) -/

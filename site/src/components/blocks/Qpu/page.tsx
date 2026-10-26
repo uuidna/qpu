@@ -25,8 +25,10 @@ export const callOf = async (tool: string, args: Record<string, unknown>): Promi
   const { default: config } = await import('@payload-config')
   const payload = await getPayload({ config })
   const tenant = await tenantOf(payload)
+  // the tenant's enabled app is its plugin instance: its settings.arguments configure every call under the tenant's hosts (the Apps collection, in this UI or through the Payload MCP plugin)
+  const app = (await payload.find({ collection: 'apps' as never, where: { and: [{ tenant: { equals: tenant.id } }, { enabled: { equals: true } }] }, sort: '-updatedAt', limit: 1, overrideAccess: true })).docs[0] as { settings?: { arguments?: Record<string, unknown> } } | undefined
   const from = 'page:' + tenant.slug // the same call at two tenants is two entries: the address folds the tenant through from
-  const body = { tool, arguments: args }
+  const body = { tool, arguments: { ...args, ...(app?.settings?.arguments ?? {}) } }
   const id = uuidOf(JSON.stringify({ kind: 'call', from, body }))
   // the collection is QPU's own (the generated types of the fork name the site's); the id is the content address of the call
   try { return await payload.findByID({ collection: 'entries' as never, id }) as unknown as Call } catch { /* not yet called: created once below */ }

@@ -132,6 +132,7 @@ export interface Config {
   collections: {
     tenants: Tenant;
     entries: Entry;
+    apps: App;
     'case-studies': CaseStudy;
     'community-help': CommunityHelp;
     docs: Doc;
@@ -182,6 +183,7 @@ export interface Config {
   collectionsSelect: {
     tenants: TenantsSelect<false> | TenantsSelect<true>;
     entries: EntriesSelect<false> | EntriesSelect<true>;
+    apps: AppsSelect<false> | AppsSelect<true>;
     'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
     'community-help': CommunityHelpSelect<false> | CommunityHelpSelect<true>;
     docs: DocsSelect<false> | DocsSelect<true>;
@@ -3673,6 +3675,76 @@ export interface Entry {
   createdAt: string;
 }
 /**
+ * request an app: the QPU generates it, the catalogue prices it, the checkout sells it
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "apps".
+ */
+export interface App {
+  id: string;
+  tenant?: (string | null) | Tenant;
+  name: string;
+  host: string;
+  plugins?:
+    | (
+        | 'lexical'
+        | 'nested-docs'
+        | 'seo'
+        | 'search'
+        | 'redirects'
+        | 'form-builder'
+        | 'multi-tenant'
+        | 'ecommerce'
+        | 'mcp'
+      )[]
+    | null;
+  /**
+   * the variable NAMES the deployment holds (D1, R2, RESEND_API_KEY, DATABASE_URI, ...): the adapters follow them; values never travel
+   */
+  env?: string[] | null;
+  variant: 'yearly' | 'monthly';
+  status?: ('requested' | 'generated' | 'paid' | 'deployed') | null;
+  /**
+   * usable in this UI: the app's pages and blocks render under the tenant's hosts with its settings
+   */
+  enabled?: boolean | null;
+  /**
+   * the plugin options this tenant configures: { arguments: {...} } is merged into every qpu block call under the tenant's hosts; read by the page and by MCP clients through the Payload MCP plugin
+   */
+  settings?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * every file of the app with its address, the address of the bundle, the order
+   */
+  bundle?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  price?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "community-help".
  */
@@ -4060,6 +4132,20 @@ export interface PayloadMcpApiKey {
    * The purpose of the API key.
    */
   description?: string | null;
+  apps?: {
+    /**
+     * Allow clients to find apps.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create apps.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update apps.
+     */
+    update?: boolean | null;
+  };
   'payload-mcp-tool'?: {
     /**
      * A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.
@@ -4473,6 +4559,10 @@ export interface PayloadLockedDocument {
         value: string | Entry;
       } | null)
     | ({
+        relationTo: 'apps';
+        value: string | App;
+      } | null)
+    | ({
         relationTo: 'case-studies';
         value: string | CaseStudy;
       } | null)
@@ -4671,6 +4761,25 @@ export interface EntriesSelect<T extends boolean = true> {
         entry?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "apps_select".
+ */
+export interface AppsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  host?: T;
+  plugins?: T;
+  env?: T;
+  variant?: T;
+  status?: T;
+  enabled?: T;
+  settings?: T;
+  bundle?: T;
+  price?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -5567,6 +5676,13 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
   user?: T;
   label?: T;
   description?: T;
+  apps?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
   'payload-mcp-tool'?:
     | T
     | {

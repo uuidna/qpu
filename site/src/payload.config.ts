@@ -2,6 +2,7 @@ import { revalidateRedirects } from '@hooks/revalidateRedirects'
 import { Qpu } from './blocks/Qpu/config'
 import { Tenants } from './collections/Tenants'
 import { Entries } from './collections/Entries'
+import { Apps } from './collections/Apps'
 import { QpuGlobal } from './globals/Qpu'
 import { qpuPlugins } from './payload.qpu.config'
 import { qpuDb, qpuEmail, qpuStoragePlugins } from './payload.qpu.adapters'
@@ -304,6 +305,7 @@ export default buildConfig({
   collections: [
     Tenants, // the multi-tenant plugin's own collection: the hosts that name the tenants
     Entries, // the docket: content-addressed entries over MongoDB, the Worker's Durable Object replaced
+    Apps, // the apps generated on request from this UI, priced by the catalogue and sold by the ecommerce plugin
     CaseStudies,
     CommunityHelp,
     Docs,
