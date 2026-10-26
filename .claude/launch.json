@@ -1,0 +1,13 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "payload",
+      "runtimeExecutable": "scripts/site-local.sh",
+      "runtimeArgs": [
+        "start"
+      ],
+      "port": 3000
+    }
+  ]
+}

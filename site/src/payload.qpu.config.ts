@@ -8,16 +8,17 @@ import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { qpuEcommerce } from './payload.qpu.ecommerce'
 import { Qpu } from './blocks/Qpu/config'
-import { qpuMcpTools, qpuServerInfo } from './payload.qpu.mcp'
+import { qpuMcpTools, qpuMcpResources, qpuServerInfo } from './payload.qpu.mcp'
 
 export const qpuBlocks = [Qpu] // beside the site's 30 blocks; referenced as 'qpu' in every layout
 export const qpuPlugins = [
+  // the ecommerce plugin first: it creates products, carts, orders, transactions and addresses, which the multi-tenant plugin scopes (measured: placed after, the plugin warns of missing collections)
+  qpuEcommerce, // the licence catalogue sold through Payload's own ecommerce plugin with its Stripe adapter: the API from the config
   searchPlugin({ collections: ['pages', 'posts'] }),
-  multiTenantPlugin({ collections: { pages: {}, entries: {} }, tenantsSlug: 'tenants', userHasAccessToAllTenants: () => true } as never), // scopes: uuidna, psg, ceci over pages, entries
+  // enterprise tenants from the configs: four scoped collections, a super admin by the admin role (never everyone), tenant roles on every user's tenants row, tenants readable by all
+  multiTenantPlugin({ collections: { pages: {}, entries: {}, products: {}, orders: {} }, tenantsSlug: 'tenants', userHasAccessToAllTenants: (user) => Array.isArray((user as { roles?: string[] }).roles) && (user as { roles: string[] }).roles.includes('admin'), tenantsArrayField: { includeDefaultField: true, rowFields: [{ name: 'roles', type: 'select', hasMany: true, defaultValue: ['viewer'], options: ['tenant-admin', 'editor', 'viewer'] }] } } as never), // scopes: uuidna, psg, ceci over pages, entries, products, orders; roles tenant-admin, editor, viewer
   // only Payload: the handler's tools served by the MCP plugin (the server named qpu), the Worker's /mcp replaced
-  mcpPlugin({ mcp: { tools: qpuMcpTools, serverOptions: { serverInfo: qpuServerInfo } } } as never),
-  // Stripe by its plugin: the webhook route and the Stripe REST, the keys the tenant's (STRIPE_SECRET_KEY, STRIPE_WEBHOOKS_ENDPOINT_SECRET); one key per app until the plugin takes one per tenant
-  qpuEcommerce, // the licence catalogue sold through Payload's own ecommerce plugin (products, carts, orders, transactions) with its Stripe adapter: the API from the config
+  mcpPlugin({ mcp: { tools: qpuMcpTools, resources: qpuMcpResources, serverOptions: { serverInfo: qpuServerInfo } } } as never), // the tools and the ui:// resources of every tool (MCP Apps) through the plugin; an API key per user authorises a client
 ]
 export const qpuEnv = {
   DATABASE_URI: "the RAID docket of the tenant (the mongo tool's language), as the site's MongoDB",

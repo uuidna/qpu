@@ -15,6 +15,7 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   auth: {
+    useAPIKey: true, // an API key per user: MCP clients authenticate as the user (Authorization: users API-Key <key>) and the plugin advertises what the user may use
     cookies: {
       domain: process.env.COOKIE_DOMAIN,
       sameSite:

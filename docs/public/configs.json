@@ -1,14 +1,14 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T07:55:58.667Z",
- "ms": 57,
+ "date": "2026-10-26T08:29:15.162Z",
+ "ms": 68,
  "selftest": {
   "passed": true
  },
  "tested": 19,
  "kinds": 19,
  "closed": true,
- "partition": "4 + 3 + 12 = 19",
+ "partition": "5 + 3 + 11 = 19",
  "improved": [],
  "held": [
   {
@@ -122,13 +122,13 @@
   {
    "kind": "versions",
    "torus": {
-    "address": "7a1f92c1-3740-14df-b1c6-e680e876fb4e",
-    "seed": 6,
-    "reflection": 4,
+    "address": "87d227f6-4cc4-7603-af07-49eecbea212c",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
     "bytes": 138612
@@ -152,46 +152,46 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "753d1cd6-5e30-48e4-a178-2a615b5fb2c2",
-    "seed": 5,
-    "reflection": 5,
+    "address": "88b108ab-34ef-2755-bd6c-1edd15108197",
+    "seed": 7,
+    "reflection": 3,
     "trinity": [
-     2,
-     5,
-     8
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 24733
+    "bytes": 35443
    }
   },
   {
    "kind": "api",
    "torus": {
-    "address": "aeccf40b-ea48-5c0d-95b2-f8c3b50ef85f",
-    "seed": 5,
-    "reflection": 5,
+    "address": "59c30e9e-4655-2e9b-b56b-f8c72df60b4b",
+    "seed": 3,
+    "reflection": 7,
     "trinity": [
-     2,
-     5,
-     8
+     3,
+     6,
+     9
     ],
     "closed": true,
-    "bytes": 15413
+    "bytes": 15905
    }
   },
   {
    "kind": "hooks",
    "torus": {
-    "address": "bae4686b-6cd7-4db3-bac1-7c07cc62842c",
-    "seed": 8,
-    "reflection": 2,
+    "address": "4f3066ad-44e4-37a2-af07-8e11c9c78cad",
+    "seed": 2,
+    "reflection": 8,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 1038
+    "bytes": 1169
    }
   },
   {
@@ -212,16 +212,16 @@
   {
    "kind": "scopes",
    "torus": {
-    "address": "6932bb15-a859-2711-b9ff-abe01bd5c6c5",
-    "seed": 8,
-    "reflection": 2,
+    "address": "ff544f8a-6757-7270-9ee7-f4df488b4080",
+    "seed": 2,
+    "reflection": 8,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 794
+    "bytes": 1387
    }
   },
   {
@@ -257,16 +257,16 @@
   {
    "kind": "access",
    "torus": {
-    "address": "9b974910-597b-2a6c-9fc1-21f5e1767846",
-    "seed": 7,
-    "reflection": 3,
+    "address": "08d88b4b-da75-6e99-8b2c-43652c97946b",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
-     7,
-     4,
-     1
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 427
+    "bytes": 729
    }
   },
   {
@@ -317,16 +317,16 @@
   {
    "kind": "ui",
    "torus": {
-    "address": "ad411523-f95f-8988-aa44-bdade5de15db",
-    "seed": 3,
-    "reflection": 7,
+    "address": "0d425600-083f-472d-bb27-6dd0a9c18505",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 1806
+    "bytes": 2070
    }
   }
  ]

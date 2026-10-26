@@ -4,32 +4,44 @@
 // read by its content address through the local API (free: nothing computed), created once when absent (the collection's hook computes the result).
 // The catch-all hands a single UUID segment to this component. Nothing is fetched from anywhere else; no custom endpoint.
 import React from 'react'
+import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { uuidOf } from '@uuidna/qpu/blocks'
+import { handle } from '@uuidna/qpu/mcp'
+import { QpuApp } from './App'
 
 type Call = { id: string; result?: { structuredContent?: Record<string, unknown>; _meta?: { widget?: string; theme?: Record<string, string> }; error?: { message: string } } }
-export const callOf = async (tool: string, args: Record<string, unknown>, from = 'page'): Promise<Call> => {
+// the tenant of the request: the host that names it (the tenants' domains, as the Worker's TENANTS), else the first tenant (a local run)
+const tenantOf = async (payload: Awaited<ReturnType<typeof getPayload>>): Promise<{ id: string; slug: string }> => {
+  const host = (await headers()).get('host')?.split(':')[0] ?? ''
+  const byDomain = await payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, limit: 1, overrideAccess: true })
+  const t = (byDomain.docs[0] ?? (await payload.find({ collection: 'tenants' as never, limit: 1, sort: 'slug', overrideAccess: true })).docs[0]) as { id: string; slug: string } | undefined
+  if (!t) throw new Error('no tenant: seed the tenants first (src/scripts/seedQpu.ts)')
+  return t
+}
+export const callOf = async (tool: string, args: Record<string, unknown>): Promise<Call> => {
   const payload = await getPayload({ config })
+  const tenant = await tenantOf(payload)
+  const from = 'page:' + tenant.slug // the same call at two tenants is two entries: the address folds the tenant through from
   const body = { tool, arguments: args }
   const id = uuidOf(JSON.stringify({ kind: 'call', from, body }))
   // the collection is QPU's own (the generated types of the fork name the site's); the id is the content address of the call
   try { return await payload.findByID({ collection: 'entries' as never, id }) as unknown as Call } catch { /* not yet called: created once below */ }
-  return await payload.create({ collection: 'entries' as never, data: { id, kind: 'call', from, body } as never }) as unknown as Call
+  return await payload.create({ collection: 'entries' as never, data: { id, kind: 'call', from, body, tenant: tenant.id } as never }) as unknown as Call
 }
 
 export const QpuPage = async ({ uuid }: { uuid: string }) => {
   const verify = await callOf('verify', { uuid })
-  const css = await callOf('css', { uuid })
+  // the view read by the server from the handler's own resources/read (the MCP plugin takes a key from every client; the app is its own server)
+  const view = (handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'ui://qpu/verify' } }) as { result?: { contents: { text: string }[] } }).result?.contents[0]?.text ?? ''
   const r = verify.result
   if (!r?.structuredContent) return <main><h1>{uuid}</h1><p>{r?.error?.message ?? 'not verified'}</p></main>
-  const vars = (css.result?.structuredContent as { vars?: Record<string, string> } | undefined)?.vars ?? {}
-  const style = Object.entries(vars).map(([k, v]) => k + ': ' + v).join('; ')
+  // the UI from the MCP only: the entry's result rendered by the tool's own ui:// resource, hosted through the Apps protocol; nothing drawn here
   return (
-    <main className="qpu-block" data-block={uuid} data-entry={verify.id} style={{ cssText: style } as React.CSSProperties}>
+    <main data-block={uuid} data-entry={verify.id}>
       <h1>{uuid}</h1>
-      <div dangerouslySetInnerHTML={{ __html: r._meta?.widget ?? '' }} />
-      <pre>{JSON.stringify(r.structuredContent, null, 1)}</pre>
+      <QpuApp tool="verify" args={{ uuid }} result={r} html={view} />
     </main>
   )
 }

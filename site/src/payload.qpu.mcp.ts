@@ -30,4 +30,14 @@ export const qpuMcpTools = list.map((t) => ({
     return { content: [{ type: 'text' as const, text: JSON.stringify(r.error ? { error: r.error.message } : r.result!.structuredContent) }] }
   },
 }))
+// the UI resources (MCP Apps): one ui://qpu/<tool> per tool, read from the handler's resources/read, served through the plugin's resources
+const resources = (handle({ jsonrpc: '2.0', id: 1, method: 'resources/list' }) as { result: { resources: { uri: string; name: string; description: string; mimeType: string }[] } }).result.resources
+export const qpuMcpResources = resources.map((r) => ({
+  name: r.uri.replace('ui://qpu/', 'ui-'),
+  title: r.name,
+  description: r.description,
+  uri: r.uri,
+  mimeType: r.mimeType,
+  handler: async () => { const x = handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: r.uri } }) as { result?: { contents: { uri: string; text: string }[] } }; return { contents: (x.result?.contents ?? []).map((c) => ({ uri: c.uri, text: c.text })) } },
+}))
 export const qpuServerInfo = { name: 'qpu', version: VERSION }

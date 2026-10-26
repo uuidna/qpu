@@ -1,0 +1,48 @@
+{
+ "$schema": "https://ui.shadcn.com/schema/registry.json",
+ "name": "qpu",
+ "homepage": "https://qpu.uuidna.com",
+ "items": [
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-app",
+   "type": "registry:component",
+   "title": "QPU App host",
+   "description": "The host of an MCP App: reads a tool's ui://qpu/<tool> resource over the MCP endpoint and hosts it through the MCP Apps protocol in a sandboxed frame.",
+   "dependencies": [],
+   "registryDependencies": [],
+   "files": [
+    {
+     "path": "components/qpu/app.tsx",
+     "type": "registry:component"
+    }
+   ],
+   "docs": "import { QpuApp } from '@/components/qpu/app' — <QpuApp tool=\"processor\" args={{ name: 'Willow' }} result={reply.result} mcp=\"https://qpu.uuidna.com/mcp\" /> (the Worker takes no key); against a Payload app's /api/mcp pass apiKey (a payload-mcp-api-keys key the admin made) or html read by your server",
+   "categories": [
+    "mcp",
+    "qpu"
+   ]
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-block",
+   "type": "registry:file",
+   "title": "QPU block",
+   "description": "The qpu block of UUID logic for Payload's lexical editor: the shape every tools/call result carries in _meta.payload.",
+   "dependencies": [
+    "payload"
+   ],
+   "files": [
+    {
+     "path": "blocks/qpu/config.ts",
+     "type": "registry:file",
+     "target": "src/blocks/Qpu/config.ts"
+    }
+   ],
+   "categories": [
+    "payload",
+    "qpu"
+   ]
+  }
+ ]
+}
