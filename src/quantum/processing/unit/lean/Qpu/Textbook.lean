@@ -40,7 +40,7 @@ theorem textbook_own_keys_only (own hit : Bool) (h : hit = true → own = true) 
 theorem textbook_penalty_balanced (d c : Nat) (h : d = c) : d - c = 0 := by omega
 /-- penalising then clearing leaves the open count as it was: a clearing undoes its penalty (examples: repository-penalty-clear) -/
 theorem textbook_penalty_clear_involution (opn n : Nat) : opn + n - n = opn := by omega
-/-- every penalty opened is either cleared or still open: the open count is the opened less the cleared (examples: repository-penalties-counted) -/
+/-- every penalty opened is either cleared or still open: the open count is the opened less the cleared (examples: repository-penalties-counted, repository-unpenalised) -/
 theorem textbook_penalty_conserved (opened cleared openNow : Nat) (h : cleared + openNow = opened) : opened - cleared = openNow := by omega
 /-- a penalty's tokens, its bytes over four rounded up, never exceed its bytes (examples: repository-penalty) -/
 theorem textbook_penalty_tokens_bound (b : Nat) (h : 0 < b) : (b + 3) / 4 ≤ b := by omega

@@ -8,7 +8,7 @@ import { spawnSync, execSync } from 'node:child_process'
 import { handle } from '../src/quantum/mcp.ts'
 import { GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
 import { createHash } from 'node:crypto'
-import { penalise } from './penalties.ts'
+import { penalise, clear, openPenaltiesOf } from './penalties.ts'
 import { mcpOf } from './mcp.ts'
 
 type Step = { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }
@@ -19,6 +19,10 @@ if (r.error || !r.result?.structuredContent?.workflow) { console.error(`hook ${n
 const w = r.result.structuredContent.workflow
 const read = (f: string): unknown => { try { return JSON.parse(readFileSync(f, 'utf8')) } catch { return null } }
 let red = false
+// the open penalties first, before any step: their count, the tokens and coins they book, and each one's rule and subject
+const standing = await openPenaltiesOf()
+if (!standing.open) console.error(`hook ${name}: penalties unread (${standing.read})`)
+else { console.error(`hook ${name}: ${standing.open.length} open penalt${standing.open.length === 1 ? 'y' : 'ies'}, ${standing.tokens} token(s), ${standing.coins} coin(s)`); for (const b of standing.open) console.error(`  ${b.rule}: ${b.snapshot?.key}`) }
 let automated: { drifted: string[]; bytes: number; files: { path: string; expected: string; actual: string }[] } | null = null
 // a raid step: the docket read through the Payload MCP tool the step names, every page (the URL overridden by QPU_APP_MCP, the user's MCP key
 // in QPU_APP_KEY, never written anywhere); without a key or an answer the docket is unread and the rules over it say unknown
@@ -74,11 +78,14 @@ const deployFacts = name === 'pre-deploy' ? (() => {
 })() : {}
 // pre-push: the newest full run of the commit being pushed, from the receipts' history (a fast offline run skips the build and the publish, so it never counts)
 const publishedFact = name === 'pre-push' ? (() => { const head = execSync('git rev-parse --short=8 HEAD', { encoding: 'utf8' }).trim(); const lines = existsSync('docs/public/receipts.ndjson') ? readFileSync('docs/public/receipts.ndjson', 'utf8').trim().split('\n') : []; for (const l of lines.reverse()) { let r: { head?: string; steps?: { name: string; status: string }[] }; try { r = JSON.parse(l) } catch { continue } if (r.head !== head) continue; const st = (n: string) => r.steps?.find((s) => s.name === n)?.status ?? 'missing'; if (st('docs:build') === 'skipped' || st('publish') === 'skipped') continue; return { head, branch: execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim(), build: st('docs:build'), publish: st('publish') } } return null })() : undefined
-const soleFact = name === 'pre-push' ? { branches: execSync('git branch --format=%(refname:short)', { encoding: 'utf8' }).trim().split('\n').filter(Boolean), worktrees: execSync('git worktree list --porcelain', { encoding: 'utf8' }).split('\n').filter((l) => l.startsWith('worktree ')).length } : undefined
-const facts = { ...(name === 'pre-commit' ? { automated: automated ? { drifted: automated.drifted } : null } : {}), ...(soleFact !== undefined ? { sole: soleFact } : {}), ...(publishedFact !== undefined ? { published: publishedFact } : {}), ...deployFacts, receipt: read('docs/public/receipt.json') as { steps?: { name: string; status: string }[] } | null, approval: (read('docs/public/configs.json') as { approval?: unknown } | null)?.approval ?? null, e2e: (read('docs/public/e2e.json') as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
+const soleFact = name === 'pre-push' ? { branches: (spawnSync('git', ['branch', '--format=%(refname:short)'], { encoding: 'utf8' }).stdout ?? '').trim().split('\n').filter(Boolean), worktrees: execSync('git worktree list --porcelain', { encoding: 'utf8' }).split('\n').filter((l) => l.startsWith('worktree ')).length } : undefined
+const facts = { // the penalties this workflow raised itself are re-decided by this very run (cleared if it passes), so they don't count against it: no deadlock
+...(name === 'pre-push' ? { penalties: standing.open ? (() => { const others = standing.open.filter((b) => (b.snapshot as { workflow?: string } | undefined)?.workflow !== name); return { open: others.length, openKeys: others.map((b) => b.snapshot?.key ?? '') } })() : null } : {}), ...(name === 'pre-commit' ? { automated: automated ? { drifted: automated.drifted } : null } : {}), ...(soleFact !== undefined ? { sole: soleFact } : {}), ...(publishedFact !== undefined ? { published: publishedFact } : {}), ...deployFacts, receipt: read('docs/public/receipt.json') as { steps?: { name: string; status: string }[] } | null, approval: (read('docs/public/configs.json') as { approval?: unknown } | null)?.approval ?? null, e2e: (read('docs/public/e2e.json') as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
 const d = (handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'repository', arguments: { workflow: name, facts } } }) as { result?: { structuredContent?: { decision?: { allowed: boolean; strict: boolean; says: string; court: { arguments: { court: unknown } } | null } } } }).result?.structuredContent?.decision
 if (d) {
   console.log(`hook ${name}: ${d.says}`)
+  const held = new Set(((d as { rules?: { rule: string; holds: boolean | null }[] }).rules ?? []).filter((r) => r.holds === true).map((r) => r.rule))
+  for (const b of standing.open ?? []) { const s = b.snapshot as { key?: string; workflow?: string; violated?: string[] } | undefined; if (!s?.key || s.workflow !== name || !(s.violated ?? []).length || !(s.violated ?? []).every((v) => held.has(v))) continue; const c = await clear(b.rule ?? name, `${(s.violated ?? []).join(', ')} hold again`, s as Record<string, unknown> & { key: string }); console.error(`hook ${name}: cleared ${s.key}: ${c.recorded}`) }
   if (!d.allowed && d.court) {
     const c = (handle({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'legal', arguments: { court: d.court.arguments.court } } }) as { result?: { structuredContent?: { case?: string; remedy?: string } } }).result?.structuredContent as { case?: string; remedy?: string } | undefined
     console.error(`hook ${name}: refused; the case ${c?.case ?? '?'}: ${c?.remedy ?? ''}`)
