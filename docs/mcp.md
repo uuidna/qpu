@@ -2124,6 +2124,17 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
       "type": "string",
       "description": "kind ui: any hex (a UUID, a hash, an address) presented as a shadcn combination: each nibble an item and a variant, the whole styled from itself"
     },
+    "stream": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "kind ui: a UUID-only stream, queried, sorted, filtered and executed by query (the crypto fold tool answers the same)"
+    },
+    "query": {
+      "type": "object",
+      "description": "kind ui, with stream: { where: { handle, nibble: { at, is }, item, variant, hueBetween }, sort: hex | hue | program | tail, descending, execute }"
+    },
     "sets": {
       "type": "array",
       "items": {
@@ -2193,6 +2204,21 @@ The split folds: a payload larger than a place can hold is folded into pieces un
 {
   "type": "object",
   "properties": {
+    "hex": {
+      "type": "string",
+      "description": "any hex (a UUID, a hash, an address): presented as a shadcn combination, each nibble an item and a variant, the whole styled from itself — the one quantum core"
+    },
+    "uuids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "a UUID-only stream: queried, sorted, filtered and executed by query"
+    },
+    "query": {
+      "type": "object",
+      "description": "with uuids: { where: { handle, nibble: { at, is }, item, variant, hueBetween }, sort: hex | hue | program | tail, descending, execute }"
+    },
     "text": {
       "type": "string",
       "description": "the payload: rows as lines (ndjson, csv) fold at rows"

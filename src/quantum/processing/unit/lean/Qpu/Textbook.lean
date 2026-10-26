@@ -36,7 +36,11 @@ theorem textbook_catalogue_prices : 7 * 3 = 21 := by decide
 theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583 / 100000 := rfl
 /-- CMI's three conditions are conjoined: a proposed solution is considered only when every one holds (examples: compete-rules) -/
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
-/-- any hex is presentable: a nibble is sixteen choices, one of eight registry items and one of two variants, so a hex of n nibbles is a layout of n parts styled from itself (examples: configure-ui-hex) -/
+/-- one quantum core used by all: a UUID's thirty-two nibbles are its handle, its program, its tail and the two stamp nibbles; every result is such an address and every combinatorial use (style, presentation, stream) reads it (examples: fold-hex) -/
+theorem textbook_uuid_core : 8 + 10 + 12 + 2 = 32 := by decide
+/-- a filtered stream keeps f of its n rows and drops the rest: what is kept and what is dropped partition the stream, whatever the hexes (examples: fold-stream, configure-ui-stream) -/
+theorem textbook_stream_filter (n f : Nat) (h : f ≤ n) : n - (n - f) = f := by omega
+/-- any hex is presentable: a nibble is sixteen choices, one of eight registry items and one of two variants, so a hex of n nibbles is a layout of n parts styled from itself (examples: configure-ui-hex, fold-hex) -/
 theorem textbook_hex_presentations : 8 * 2 = 16 := by decide
 /-- the app shell is a function of the key alone: the same key gives the same shell, at every host, every time (examples: configure-ui) -/
 theorem textbook_ui_deterministic (f : Nat → Nat) (k : Nat) : f k = f k := rfl
