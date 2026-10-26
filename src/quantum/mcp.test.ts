@@ -16,7 +16,7 @@ test('tools/list serves the forty-six tools in twelve toolboxes with input schem
   for (const t of tools as { name: string; _meta?: { toolbox?: string } }[]) (byToolbox[t._meta?.toolbox ?? 'none'] ??= []).push(t.name)
   assert.deepEqual(byToolbox, {
     google: ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design'],
-    tree: ['leads', 'audit', 'match', 'clay', 'verify', 'metrics', 'textbook', 'css', 'dashboard', 'clone'],
+    tree: ['clay', 'match', 'verify', 'leads', 'audit', 'metrics', 'textbook', 'css', 'dashboard', 'clone'], // the Clay set first
     flow: ['discover', 'wave', 'readiness', 'imagine', 'e2e', 'shard'],
     language: ['translate', 'prose'],
     raid: ['mongo'],

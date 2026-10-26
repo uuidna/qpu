@@ -130,6 +130,153 @@ the split folds: what a place cannot hold is folded into pieces it can, each add
 
 Tools: [fold](#fold), [seal](#seal), [attest](#attest).
 
+## clay
+
+The Clay register recomputed in exact integer arithmetic
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "one relation, e"
+    },
+    "technique": {
+      "type": "string",
+      "enum": [
+        "reflection"
+      ],
+      "description": "the register read by the σ-reflection technique",
+      "default": "reflection"
+    },
+    "unit": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the unit's run_sequence answers per value ({ value, answer | refusal })"
+    }
+  },
+  "x-harmonic": {
+    "combinations": "1",
+    "index": "0",
+    "from": "a432"
+  }
+}
+```
+
+## match
+
+Any statement, matched against everything the surface can do
+
+```json
+{
+  "type": "object",
+  "required": [
+    "statement"
+  ],
+  "properties": {
+    "statement": {
+      "type": "string",
+      "description": "any prompt or statement; Glagolitic numerals are read as integers"
+    },
+    "chat": {
+      "type": "object",
+      "description": "the one door a chat needs"
+    },
+    "url": {
+      "type": "string",
+      "description": "a URL path"
+    },
+    "tenant": {
+      "type": "string",
+      "description": "with url"
+    },
+    "locale": {
+      "type": "string",
+      "enum": [
+        "en",
+        "bg",
+        "de",
+        "fr",
+        "es",
+        "it",
+        "ru",
+        "zh",
+        "ja",
+        "pt",
+        "nl"
+      ],
+      "description": "the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it",
+      "default": "fr"
+    }
+  },
+  "x-harmonic": {
+    "combinations": "11",
+    "index": "3",
+    "from": "a432"
+  }
+}
+```
+
+## verify
+
+Cheap verification of one UUID
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "the UUID to verify"
+    },
+    "scan": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "a stream of frames a device sampled ({ t, hue }, hue null for a black frame)"
+    },
+    "content": {
+      "type": "string",
+      "description": "the text the UUID should be the address of"
+    },
+    "prev": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "description": "the predecessor in the chain"
+    },
+    "self": {
+      "type": "object",
+      "properties": {
+        "prev": {
+          "type": "string"
+        }
+      },
+      "description": "what this entry names as its predecessor"
+    },
+    "next": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "prev": {
+          "type": "string"
+        }
+      },
+      "description": "the successor in the chain"
+    }
+  }
+}
+```
+
 ## processor
 
 A Google Quantum AI processor as its spec sheet states it
@@ -1060,153 +1207,6 @@ The surface audits itself through tools/call
 }
 ```
 
-## match
-
-Any statement, matched against everything the surface can do
-
-```json
-{
-  "type": "object",
-  "required": [
-    "statement"
-  ],
-  "properties": {
-    "statement": {
-      "type": "string",
-      "description": "any prompt or statement; Glagolitic numerals are read as integers"
-    },
-    "chat": {
-      "type": "object",
-      "description": "the one door a chat needs"
-    },
-    "url": {
-      "type": "string",
-      "description": "a URL path"
-    },
-    "tenant": {
-      "type": "string",
-      "description": "with url"
-    },
-    "locale": {
-      "type": "string",
-      "enum": [
-        "en",
-        "bg",
-        "de",
-        "fr",
-        "es",
-        "it",
-        "ru",
-        "zh",
-        "ja",
-        "pt",
-        "nl"
-      ],
-      "description": "the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it",
-      "default": "fr"
-    }
-  },
-  "x-harmonic": {
-    "combinations": "11",
-    "index": "3",
-    "from": "a432"
-  }
-}
-```
-
-## clay
-
-The Clay register recomputed in exact integer arithmetic
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "name": {
-      "type": "string",
-      "description": "one relation, e"
-    },
-    "technique": {
-      "type": "string",
-      "enum": [
-        "reflection"
-      ],
-      "description": "the register read by the σ-reflection technique",
-      "default": "reflection"
-    },
-    "unit": {
-      "type": "array",
-      "items": {
-        "type": "object"
-      },
-      "description": "the unit's run_sequence answers per value ({ value, answer | refusal })"
-    }
-  },
-  "x-harmonic": {
-    "combinations": "1",
-    "index": "0",
-    "from": "a432"
-  }
-}
-```
-
-## verify
-
-Cheap verification of one UUID
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "uuid": {
-      "type": "string",
-      "description": "the UUID to verify"
-    },
-    "scan": {
-      "type": "array",
-      "items": {
-        "type": "object"
-      },
-      "description": "a stream of frames a device sampled ({ t, hue }, hue null for a black frame)"
-    },
-    "content": {
-      "type": "string",
-      "description": "the text the UUID should be the address of"
-    },
-    "prev": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        }
-      },
-      "description": "the predecessor in the chain"
-    },
-    "self": {
-      "type": "object",
-      "properties": {
-        "prev": {
-          "type": "string"
-        }
-      },
-      "description": "what this entry names as its predecessor"
-    },
-    "next": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "prev": {
-          "type": "string"
-        }
-      },
-      "description": "the successor in the chain"
-    }
-  }
-}
-```
-
 ## metrics
 
 The computable metrics of this tree in real time
@@ -1765,9 +1765,34 @@ Stripe per tenant, pure, the QPU as a product with its variants
         "usage",
         "settle",
         "usecases",
-        "fusion"
+        "fusion",
+        "ledger"
       ],
       "default": "plan"
+    },
+    "currency": {
+      "type": "string",
+      "enum": [
+        "eur",
+        "usd",
+        "bgn"
+      ],
+      "description": "op ledger",
+      "default": "eur"
+    },
+    "calls": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "op ledger"
+    },
+    "settled": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "op ledger"
     },
     "tools": {
       "type": "array",
@@ -1839,7 +1864,7 @@ Stripe per tenant, pure, the QPU as a product with its variants
     }
   },
   "x-harmonic": {
-    "combinations": "8",
+    "combinations": "27",
     "index": "0",
     "from": "a432"
   }

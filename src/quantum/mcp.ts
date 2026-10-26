@@ -877,6 +877,9 @@ export const TOOLBOXES: Toolbox[] = [
   CRYPTO,
 ]
 const TOOLS: Tool[] = TOOLBOXES.flatMap((b) => b.tools)
+/** The order the tools are served in: the Clay set first (the register, the decider, the verifier), every other tool after them in its order; initialize builds its version over the same order, so the version names what is served. */
+const CLAY_FIRST = ['clay', 'match', 'verify']
+const SERVED: Tool[] = [...TOOLS].sort((a, b) => { const i = CLAY_FIRST.indexOf(a.name), j = CLAY_FIRST.indexOf(b.name); return (i < 0 ? CLAY_FIRST.length : i) - (j < 0 ? CLAY_FIRST.length : j) })
 /** The chat as the one door an MCP client needs: a statement (or a call) answered under the caller's role, never an error thrown back.
  *  The call is the one the match serves, else the example of the first theorem the route names (a theorem-based answer); every enum value
  *  the role may not choose is corrected to the role's harmonic default (textbook_rbac_options); a handler refusal is answered with its
@@ -923,7 +926,7 @@ export const handle = (message: Rpc): Reply => {
   const fail = (code: number, text: string): Reply => ({ jsonrpc: '2.0', id, error: { code, message: text, data: { court: courtOf({ gate: `${message.method}${(message as { params?: { name?: string } }).params?.name ? ` ${(message as { params: { name: string } }).params.name}` : ''}`, code, evidence: text }) } } })
   const params = (message.params ?? {}) as Record<string, unknown>
   try {
-    if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } } }, serverInfo: { name: 'qpu', version: '1.4.0' , build: buildOf(TOOLS.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` } }
+    if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } } }, serverInfo: { name: 'qpu', version: '1.4.0' , build: buildOf(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` } }
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {
@@ -934,7 +937,7 @@ export const handle = (message: Rpc): Reply => {
       const wanted = typeof scope.tools === 'string' ? scope.tools.split(',').map((s) => s.trim()).filter(Boolean) : Array.isArray(scope.tools) ? scope.tools.map(String) : null
       const cluster = typeof scope.statement === 'string' && scope.statement.trim() ? (() => { const r = handle({ jsonrpc: '2.0', id: 0, method: 'tools/call', params: { name: 'match', arguments: { statement: scope.statement } } }) as { result?: { structuredContent?: { tool?: string | null; cluster?: { kind: string; id: string }[] } } }; const c = r.result?.structuredContent; return [...new Set([...(c?.tool ? [c.tool] : []), ...(c?.cluster ?? []).filter((x) => x.kind === 'tool').map((x) => x.id)])] })() : null
       const box = typeof scope.toolbox === 'string' ? scope.toolbox : null
-      const chosen = TOOLS.filter((t) => (!wanted || wanted.includes(t.name)) && (!cluster || cluster.includes(t.name)) && (!box || t.toolbox === box))
+      const chosen = SERVED.filter((t) => (!wanted || wanted.includes(t.name)) && (!cluster || cluster.includes(t.name)) && (!box || t.toolbox === box))
       const full = scope.full === true || Boolean(wanted) || Boolean(box)
       const brief = (d: string) => (full ? d : (d.match(/^[^.:]{1,160}/)?.[0] ?? d.slice(0, 160)).trim())
       const briefSchema = (s: object): object => { if (full) return s; const x = s as { properties?: Record<string, { description?: string }> }; return x.properties ? { ...x, properties: Object.fromEntries(Object.entries(x.properties).map(([k, p]) => [k, typeof p.description === 'string' ? { ...p, description: brief(p.description) } : p])) } : s }

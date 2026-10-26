@@ -31,7 +31,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 
 ## The standard contract
 
-The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the endpoint table and never written by hand: 9 paths, 48 component schemas (every tool and the two JSON-RPC envelopes). It stands inside the discovery document at `/.well-known/qpu.json` and as the MCP resource `openapi://qpu`; the tree's own discovery reads it as `openapi 3.1.0` (9 paths, 76,107 chars), the way it reads every other host's contract.
+The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the endpoint table and never written by hand: 9 paths, 48 component schemas (every tool and the two JSON-RPC envelopes). It stands inside the discovery document at `/.well-known/qpu.json` and as the MCP resource `openapi://qpu`; the tree's own discovery reads it as `openapi 3.1.0` (9 paths, 76,575 chars), the way it reads every other host's contract.
 
 ## Headers
 
@@ -62,6 +62,9 @@ The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the e
 
 | Tool | Toolbox | What it answers |
 |---|---|---|
+| `clay` | tree | The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported o |
+| `match` | tree | Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the |
+| `verify` | tree | Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content  |
 | `processor` | google | A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures. |
 | `circuit` | google | Compile a circuit from its operations, placed by an insert strategy, and simulate it. Without noise or observables: the  |
 | `echo` | google | Quantum Echoes: run the operations forward, perturb once, run them back, and return the probability that every qubit ret |
@@ -77,9 +80,6 @@ The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the e
 | `fault-tolerant-design` | google | Resource counts read from the circuits this repository builds: the QFT on n qubits, Grover, teleportation, Shor for N up |
 | `leads` | tree | Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with i |
 | `audit` | tree | The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays a |
-| `match` | tree | Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the |
-| `clay` | tree | The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported o |
-| `verify` | tree | Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content  |
 | `metrics` | tree | The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted th |
 | `textbook` | tree | The QPU textbook as an adapter: every example categorised for reuse — by toolbox, by tool, by the kernel-accepted theore |
 | `css` | tree | The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmonics, and the rules that draw every block |

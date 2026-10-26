@@ -24,6 +24,8 @@ theorem textbook_namespace_narrows (named held : Bool) : (named && held) = true 
 theorem textbook_integers_first (a b : Nat) (v : Nat → Bool) (h : a = b) : v a = v b := by rw [h]
 /-- a size ratio rounded down never overstates: the framework's bytes over the stylesheet's, times the stylesheet's, is at most the framework's bytes (examples: css-compare, extend-compare) -/
 theorem textbook_size_ratio_bound (framework qpu : Nat) : framework / qpu * qpu ≤ framework := Nat.div_mul_le_self framework qpu
+/-- every line books the same amount on both sides, so debits equal credits and the journal nets to zero both ways: a coin at zero, a coil at its price, a settlement as cash and fees against the receivable (examples: stripe-ledger) -/
+theorem textbook_double_entry (debits credits : Nat) (h : debits = credits) : debits - credits = 0 ∧ credits - debits = 0 := by subst h; exact ⟨Nat.sub_self _, Nat.sub_self _⟩
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/
