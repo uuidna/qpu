@@ -38,7 +38,7 @@ export const imagineOf = (handle: (m: Rpc) => any, examples: readonly Example[],
     for (const r of m.reflection.leads) if (!imagined.has(r.id)) imagined.set(r.id, { ...r, source: `reflection of lead ${l.id}` })
     rows.push({ lead: l.id, status: l.status, verdict: m.verdict, tool: m.tool, cluster: m.cluster.length, verify: m.verify.length, factors: m.reflection.factors.filter((f) => f.factors).length, angles: m.reflection.angles.length, queries: m.reflection.queries.length, opened: m.reflection.leads.length })
   }
-  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; inputSchema: { properties?: Record<string, { enum?: unknown[] }> } }[] } }
+  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; inputSchema: { properties?: Record<string, { enum?: unknown[] }> } }[] } }
   const exercised = new Set(examples.flatMap((e) => Object.entries(e.arguments).map(([k, v]) => `${e.tool}.${k}=${JSON.stringify(v)}`)))
   for (const t of list.result.tools) for (const [prop, spec] of Object.entries(t.inputSchema.properties ?? {})) for (const v of spec.enum ?? []) {
     const key = `${t.name}.${prop}=${JSON.stringify(v)}`

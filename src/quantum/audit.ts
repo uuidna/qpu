@@ -305,7 +305,7 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   check('initialize', 'result' in init && typeof init.result?.serverInfo?.version === 'string' && init.result.serverInfo.name === 'qpu', JSON.stringify(init.result?.serverInfo ?? init.error))
   check('license:initialize', 'result' in init && init.result?.serverInfo?.license === 'CC-BY-NC-ND-4.0' && typeof init.result?.instructions === 'string' && init.result.instructions.includes('CC-BY-NC-ND-4.0'), 'serverInfo.license and instructions carry the licence')
 
-  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
+  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } })
   const tools: ToolSpec[] = 'result' in list ? list.result.tools : []
   check('tools/list', tools.length > 0, `${tools.length} tools`)
   const names = new Set(tools.map((t) => t.name))

@@ -23,7 +23,7 @@ export const protectedResourceOf = (origin: string, env?: Record<string, unknown
 export const discoveryOf = (origin: string, env?: Record<string, unknown>) => {
   const tenant = tenantOf(new URL(origin).hostname)
   const version = VERSION
-  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string; inputSchema: object }[] } }
+  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; description: string; inputSchema: object }[] } }
   const names = list.result.tools.map((t) => t.name)
   return {
     // the standard contract first: the document is an OpenAPI 3.1 document (openapi, info, servers, paths, components) the discover step detects as such, and the qpu fields stand beside

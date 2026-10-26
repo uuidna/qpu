@@ -237,7 +237,7 @@ export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example
 }
 
 const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string) => Match) => {
-  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
+  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } })
   const allTools: ToolSpec[] = 'result' in list ? list.result.tools : []
   const tools = allTools.filter((t) => !META.has(t.name) && !META_TOOLBOXES.has((t as { _meta?: { toolbox?: string } })._meta?.toolbox ?? ''))
   const callable = new Set(tools.map((t) => t.name))

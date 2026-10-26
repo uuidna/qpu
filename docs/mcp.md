@@ -132,7 +132,7 @@ Tools: [fold](#fold), [seal](#seal), [attest](#attest).
 
 ## processor
 
-A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.
+A Google Quantum AI processor as its spec sheet states it
 
 ```json
 {
@@ -160,7 +160,7 @@ A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the
 
 ## circuit
 
-Compile a circuit from its operations, placed by an insert strategy, and simulate it. Without noise or observables: the final amplitudes, or sampled bitstrings and their histogram when there is a measurement. With noise channels (as Cirq names them) or Pauli observables: the density matrix, its basis probabilities, trace, purity and the expectation values. A device validates the circuit first.
+Compile a circuit from its operations, placed by an insert strategy, and simulate it
 
 ```json
 {
@@ -427,7 +427,7 @@ Compile a circuit from its operations, placed by an insert strategy, and simulat
 
 ## echo
 
-Quantum Echoes: run the operations forward, perturb once, run them back, and return the probability that every qubit returns to 0.
+Quantum Echoes
 
 ```json
 {
@@ -607,7 +607,7 @@ Quantum Echoes: run the operations forward, perturb once, run them back, and ret
 
 ## echo_benchmark
 
-The Quantum Echoes result as Google states it: the processor, its qubits, the speedup, and the molecules.
+The Quantum Echoes result as Google states it
 
 ```json
 {
@@ -618,7 +618,7 @@ The Quantum Echoes result as Google states it: the processor, its qubits, the sp
 
 ## roadmap
 
-The Google Quantum AI roadmap: its six milestones, their physical-qubit scale, and which are achieved or in progress. With a milestone number, only that milestone.
+The Google Quantum AI roadmap
 
 ```json
 {
@@ -635,7 +635,7 @@ The Google Quantum AI roadmap: its six milestones, their physical-qubit scale, a
 
 ## algorithm
 
-The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits, from input x), phase_estimation (of θ with 1 to 8 bits), grover (two qubits, marked \|00&gt;), teleportation (the message state, sent and received), qaoa (depth 1 on the first 2 to 12 sorted qubits of the Sycamore device, the page's instance, with the expected cut), and shor (order finding for N from 3 to 21, the state-vector bound). Each returns its summary and a table.
+The textbook algorithms of the Cirq page
 
 ```json
 {
@@ -670,7 +670,7 @@ The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits,
     "sweep": {
       "type": "boolean",
       "default": false,
-      "description": "qaoa: sweep alpha and beta on the grid of the page and return the best"
+      "description": "qaoa"
     },
     "qubits": {
       "type": "integer",
@@ -731,7 +731,7 @@ The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits,
 
 ## software
 
-The open-source tools of the Google Quantum AI Software page, as the page describes them. Only Cirq is implemented in this repository.
+The open-source tools of the Google Quantum AI Software page, as the page describes them
 
 ```json
 {
@@ -742,7 +742,7 @@ The open-source tools of the Google Quantum AI Software page, as the page descri
 
 ## statements
 
-The statements quantumai.google, its PDFs and the quantumlib repositories make, each as the page states it: Cirq, the definition of quantum computing, progress, responsibility, the vision, the hardware and the full stack, the Willow Early Access Program, neutral atoms, the Sycamore gates, the Weber datasheet, the Quantum Echoes preprint, the campus, qsim, Qualtran, OpenFermion, the Cirq guide pages followed, the Resources, Research, journey, lab and Qubit Game pages, the QEC milestone, the APS summit pages and the sitemap. With a topic, only that one.
+The statements quantumai
 
 ```json
 {
@@ -806,7 +806,7 @@ The statements quantumai.google, its PDFs and the quantumlib repositories make, 
 
 ## repositories
 
-The repositories of the quantumlib GitHub organization, as its list states them: name, description and primary language.
+The repositories of the quantumlib GitHub organization, as its list states them
 
 ```json
 {
@@ -822,7 +822,7 @@ The repositories of the quantumlib GitHub organization, as its list states them:
 
 ## quantumlib
 
-The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it: the exports of cirq.ts that stand for Cirq's classes, and the parts of qsim, OpenFermion, Qualtran, Stim and ReCirq the other tools emulate, named from the code that runs here. A cross-reference computed at call time, not a catalogue.
+The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it
 
 ```json
 {
@@ -838,7 +838,7 @@ The fifteen repositories of the quantumlib GitHub organization, each with what t
 
 ## quantum-error-correction
 
-The three-qubit repetition code, simulated on the density matrix: a logical qubit encoded, a channel (bit_flip, phase_flip or depolarize) of probability p acting once on each data qubit, syndromes extracted and corrected by majority, and the logical error read from the simulated state against the raw error of an unencoded qubit, at the p given and over a sweep. The break-even p is bisected from the simulation; the textbook 3p² − 2p³ is reported beside it where it applies. The encoding, syndrome and correction gates are noiseless (the code-capacity model). The quantumlib QEC packages are listed as cited data.
+The three-qubit repetition code, simulated on the density matrix
 
 ```json
 {
@@ -882,7 +882,7 @@ The three-qubit repetition code, simulated on the density matrix: a logical qubi
         "minimum": 0,
         "maximum": 1
       },
-      "description": "the probabilities to sweep; by default 0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6"
+      "description": "the probabilities to sweep; by default 0"
     }
   }
 }
@@ -890,7 +890,7 @@ The three-qubit repetition code, simulated on the density matrix: a logical qubi
 
 ## chemistry-simulation
 
-Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. A bond length in ångström, or one θ to evaluate.
+Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator
 
 ```json
 {
@@ -900,7 +900,7 @@ Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 0.7414,
-      "description": "the H–H distance in ångström; 0.7414 is the tutorial's"
+      "description": "the H–H distance in ångström; 0"
     },
     "theta": {
       "type": "number",
@@ -918,7 +918,7 @@ Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator
 
 ## fault-tolerant-design
 
-Resource counts read from the circuits this repository builds: the QFT on n qubits, Grover, teleportation, Shor for N up to 21, the QAOA instance and the repetition-code cycle. For each: gates by name, two-qubit gates, depth in moments, and the T-count of the gates whose Clifford+T cost is stated (Toffoli 7, T 1, controlled-S 3; Cliffordness computed from each unitary). Rotations and undecomposed gates are listed and left uncounted, and the count says whether it is complete. Qualtran is the cited library for the general case.
+Resource counts read from the circuits this repository builds
 
 ```json
 {
@@ -941,27 +941,27 @@ Resource counts read from the circuits this repository builds: the QFT on n qubi
       "minimum": 1,
       "maximum": 6,
       "default": 3,
-      "description": "qft: the register size"
+      "description": "qft"
     },
     "N": {
       "type": "integer",
       "minimum": 3,
       "maximum": 21,
       "default": 15,
-      "description": "shor: the modulus"
+      "description": "shor"
     },
     "a": {
       "type": "integer",
       "minimum": 2,
       "default": 7,
-      "description": "shor: the base"
+      "description": "shor"
     },
     "nodes": {
       "type": "integer",
       "minimum": 2,
       "maximum": 12,
       "default": 12,
-      "description": "qaoa: the nodes of the page's instance"
+      "description": "qaoa"
     }
   }
 }
@@ -969,7 +969,7 @@ Resource counts read from the circuits this repository builds: the QFT on n qubi
 
 ## leads
 
-Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it is not served. The whole list is returned; nothing is truncated.
+Every lead on quantumai
 
 ```json
 {
@@ -977,19 +977,19 @@ Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs
   "properties": {
     "collide": {
       "type": "boolean",
-      "description": "the open problems seen as a toolset of involutions and collided with each other without a limit: every problem its address and σ-reflection, every problem routed to the theorems, the unreached ones collided in all pairs through the subjects they share; each shared subject a missing theorem that would serve all its problems, a lead to prove"
+      "description": "the open problems seen as a toolset of involutions and collided with each other without a limit"
     },
     "sources": {
       "type": "object",
-      "description": "the immutable sources of leads: { context: { repository, owner, package, hosts } } the first pages to fetch; with next: { request, answer } the next page of that source (null when it has ended: unlimited); with answers: the judgement — immutable versions and snapshots, licence candidates each with the case the court computes, precedence by date, every open textbook routed through the theorems, MCP doors"
+      "description": "the immutable sources of leads"
     },
     "carry": {
       "type": "boolean",
-      "description": "the cost of carrying the leads and what converting them to Payload documents saves; when nothing is carried the release is published as the next sequential version"
+      "description": "the cost of carrying the leads and what converting them to Payload documents saves; when nothing is carried the release is published as the next sequential vers"
     },
     "byTheorem": {
       "type": "boolean",
-      "description": "every lead addressed by the theorems, never assigned in advance: the textbook theorem sharing the most words with the lead addresses it and its example names the tool; the unaddressed stay open"
+      "description": "every lead addressed by the theorems, never assigned in advance"
     },
     "status": {
       "enum": [
@@ -1006,7 +1006,7 @@ Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs
       "items": {
         "type": "string"
       },
-      "description": "the leads named, in this order: a gate answers the leads that pass through it"
+      "description": "the leads named, in this order"
     }
   },
   "x-harmonic": {
@@ -1019,7 +1019,7 @@ Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs
 
 ## audit
 
-The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays as documented, every served lead names a served tool, and the error paths answer as JSON-RPC requires. Each check carries its evidence; a failed check is a lead, not a ruling.
+The surface audits itself through tools/call
 
 ```json
 {
@@ -1027,26 +1027,26 @@ The surface audits itself through tools/call: every tool has a schema and an exa
   "properties": {
     "leaks": {
       "type": "object",
-      "description": "{ texts: { name: text }, served?: [names] }: leaks found before they are published — e-mail addresses, keys and tokens, private keys, local paths, private addresses — the tree's notations set aside; values redacted, each finding a lead with its remedy"
+      "description": "{ texts"
     },
     "entropy": {
       "type": "object",
-      "description": "the vacuum-gravity entropy cleaner: file texts by path (the client reads them); every finding — baked data, a typed path, a cap, a clock in a pure module, a line repeated across files, a note to self, an address — becomes a lead; findings of one address fuse into one lead; the gravity is the fold of the addresses"
+      "description": "the vacuum-gravity entropy cleaner"
     },
     "difference": {
       "type": "object",
-      "description": "two named sets { a: { name, members }, b: { name, members }, config? }: every member on one side only becomes a lead to explore and to config, agnostic of what the members name, counted by textbook_difference_leads"
+      "description": "two named sets { a"
     },
     "security": {
       "type": "object",
-      "description": "the security audit from the client and the developer perspectives merged as one: { client: { hosts: [{ host, status, headers, optionsStatus?, writeWithoutToken?, audit? }], payloadMcp? }, developer: { vulnerabilities, leaks, envExampleValueless, access, hooks, signing, theorems } } — the measurements a client script took"
+      "description": "the security audit from the client and the developer perspectives merged as one"
     },
     "errors": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "error texts: each matched to the remedy manual work taught (ERROR_REMEDIES), unmatched ones leads that teach the next row"
+      "description": "error texts"
     },
     "fallbacks": {
       "type": "boolean",
@@ -1054,7 +1054,7 @@ The surface audits itself through tools/call: every tool has a schema and an exa
     },
     "access": {
       "type": "boolean",
-      "description": "the access audit from every perspective — the public reader at the default domain, a licensed tenant's users at theirs, the operator, an MCP client with a key, the developer in the generated code, the licence and the law — over the generated collections, hooks and scopes: each check names who may, the hook that guards it, what it costs, the licence clause it enacts and the legal fact behind it; the quantum advantage measured unlimited and without interaction among them"
+      "description": "the access audit from every perspective — the public reader at the default domain, a licensed tenant's users at theirs, the operator, an MCP client with a key,"
     }
   }
 }
@@ -1062,7 +1062,7 @@ The surface audits itself through tools/call: every tool has a schema and an exa
 
 ## match
 
-Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the surface proves it cannot, from a schema bound the statement exceeds, a lead whose reason says why, or the handler's own refusal; the cluster then names the served possibilities around it and verify names the live sources the client's MCP can check. unknown: nothing matches, and the statement comes back as a new lead to develop.
+Any statement, matched against everything the surface can do
 
 ```json
 {
@@ -1077,15 +1077,15 @@ Any statement, matched against everything the surface can do. served: a call ans
     },
     "chat": {
       "type": "object",
-      "description": "the one door a chat needs: { role?, call?: { tool, arguments }, referrer?, run? } — the statement (or the call) answered under the role: the served call, else the example of the first routed theorem; values the role may not choose corrected to its harmonic default; a refusal answered with its remedy and the case of the court, never thrown. The chat hook of the app asks this for every chat entry"
+      "description": "the one door a chat needs"
     },
     "url": {
       "type": "string",
-      "description": "a URL path: the statement decided and, beside it, the composition the path names — the cached assets its words select (the generated code, the SDK, the registry items, the examples' blocks), computed in real time, verified at their addresses and billed (the fallback for anything)"
+      "description": "a URL path"
     },
     "tenant": {
       "type": "string",
-      "description": "with url: the tenant reselling the composition (the licence chain)"
+      "description": "with url"
     },
     "locale": {
       "type": "string",
@@ -1116,7 +1116,7 @@ Any statement, matched against everything the surface can do. served: a call ans
 
 ## clay
 
-The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N statement parsed and evaluated, each side's value and the bit width it needs reported. What the Lean kernel accepted by rfl, redone with + − × ÷ on naturals only, so a small machine can redo the same sums and compare addresses. Nothing here is a proof of an open problem: the relations are identities between the unit's own constants.
+The Clay register recomputed in exact integer arithmetic
 
 ```json
 {
@@ -1124,14 +1124,14 @@ The Clay register recomputed in exact integer arithmetic: the Lean definitions o
   "properties": {
     "name": {
       "type": "string",
-      "description": "one relation, e.g. relation_15; omit for all"
+      "description": "one relation, e"
     },
     "technique": {
       "type": "string",
       "enum": [
         "reflection"
       ],
-      "description": "the register read by the σ-reflection technique: every value's vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit's sequence answers compared",
+      "description": "the register read by the σ-reflection technique",
       "default": "reflection"
     },
     "unit": {
@@ -1152,7 +1152,7 @@ The Clay register recomputed in exact integer arithmetic: the Lean definitions o
 
 ## verify
 
-Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content needed), its content (one fold), and its neighbours in a chain (the predecessor it names and the successor that names it). Each check is independent; a check without its input is not decided rather than passed.
+Cheap verification of one UUID
 
 ```json
 {
@@ -1167,7 +1167,7 @@ Cheap verification of one UUID: its seal (the version nibble the other 31 nibble
       "items": {
         "type": "object"
       },
-      "description": "a stream of frames a device sampled ({ t, hue }, hue null for a black frame): read back to the address it links, by majority per frame; fewer than 36 frames link nothing; rated by the chain (free for the first period)"
+      "description": "a stream of frames a device sampled ({ t, hue }, hue null for a black frame)"
     },
     "content": {
       "type": "string",
@@ -1209,7 +1209,7 @@ Cheap verification of one UUID: its seal (the version nibble the other 31 nibble
 
 ## metrics
 
-The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel's theorem counts from its own index, leads by status, the audit's checks, the balancer's memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.
+The computable metrics of this tree in real time
 
 ```json
 {
@@ -1217,7 +1217,7 @@ The computable metrics of this tree in real time: tools and toolboxes, examples 
   "properties": {
     "artefacts": {
       "type": "object",
-      "description": "the run's artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree's own counts alone"
+      "description": "the run's artefacts the client read"
     }
   }
 }
@@ -1225,7 +1225,7 @@ The computable metrics of this tree in real time: tools and toolboxes, examples 
 
 ## textbook
 
-The QPU textbook as an adapter: every example categorised for reuse — by toolbox, by tool, by the kernel-accepted theorem that backs it, by that theorem's module — and, with reuse: &lt;example id&gt;, that example replayed and its result returned. The categories are computed from the registries, never written by hand.
+The QPU textbook as an adapter
 
 ```json
 {
@@ -1233,19 +1233,19 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
   "properties": {
     "theorem": {
       "type": "string",
-      "description": "one theorem as its client verifies it: accepted by the kernel or not, its module, statement and Lean text, and where its source is published to read and build with lake"
+      "description": "one theorem as its client verifies it"
     },
     "institution": {
       "type": "object",
-      "description": "the textbook as an education tool for an institution: { presets: true } the space of Google Workspace presets (every family by every door off, read or write) with the named singles as admin pages created through the Payload MCP; { preset: { index } | { family, doors: { Classroom: 'write', … } } } one preset with its least-privilege scopes, its role, its page and the tenant setting; { edition, users, theorems?, course?, answers? } — the edition as Google states it (education, nonprofit or Workspace; omit it for the list), the bill under its cap, Google Workspace's nine MCP doors with their scopes, every closed equation of the textbook as a Classroom question (the REST body and the docket entry through the Payload MCP), answers graded by recomputation, and the acts that are the institution's own"
+      "description": "the textbook as an education tool for an institution"
     },
     "verify": {
       "type": "boolean",
-      "description": "the wave over the textbook: every example's verification requests on public datasets and APIs, for any client device to fetch"
+      "description": "the wave over the textbook"
     },
     "example": {
       "type": "string",
-      "description": "with verify: one example only, so a device at the edge walks the textbook within the Worker's budget"
+      "description": "with verify"
     },
     "results": {
       "type": "array",
@@ -1260,19 +1260,19 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
     },
     "evaluate": {
       "type": "object",
-      "description": "the textbook's combinatorial expressions as tools: { theorem, values? } evaluates that theorem's statement exactly (its variables from values, each hypothesis and conjunct computed, what is missing named, its inputSchema answered); {} every theorem, the closed ones checked against the kernel"
+      "description": "the textbook's combinatorial expressions as tools"
     },
     "prose": {
       "type": "object",
-      "description": "{ texts: { name: text } }: the prose audited around the textbook — every number a text states resting on an expression a client can evaluate, or a lead; verdict words beside the Clay problems flagged"
+      "description": "{ texts"
     },
     "axioms": {
       "type": "boolean",
-      "description": "the textbook's axioms each with its theorem: every example names the kernel-accepted theorem it rests on, every theorem names only examples that exist; what is left unlinked is listed"
+      "description": "the textbook's axioms each with its theorem"
     },
     "theorems": {
       "type": "boolean",
-      "description": "everything the kernel accepts, served whole: every theorem with its module and statement, the textbook theorems with their Lean text and examples, the generated lemmas counted, the kernel's total; rendered in the textbook view; no version hides anything Lean"
+      "description": "everything the kernel accepts, served whole"
     },
     "category": {
       "type": "string",
@@ -1296,14 +1296,14 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
 
 ## css
 
-The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmonics, and the rules that draw every block from its own custom properties with no script, motion only where the device allows it, off-screen blocks at no cost) and, for a uuid, the custom properties its block root carries (hue, CMYK, accent, tail colour and angle, the 9-vortex seed and period). Computed once; a device renders at the cost of CSS.
+The quantum UI as CSS alone
 
 ```json
 {
   "type": "object",
   "properties": {
     "compare": {
-      "description": "the stylesheet measured against the CSS frameworks by size: true names the framework files to fetch (pinned on jsDelivr) and this stylesheet to gzip; { qpu: { bytes, gzip }, answers: [{ id, status, bytes, gzip }] } turns the sizes the client measured into ratios; size only, render time not measured"
+      "description": "the stylesheet measured against the CSS frameworks by size"
     },
     "uuid": {
       "type": "string",
@@ -1314,11 +1314,11 @@ The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmon
       "items": {
         "type": "string"
       },
-      "description": "a sequence of UUIDs set next to each other: each program presented by hue and moved by its own tail, the seams between neighbours measured; a collision (a seam of zero, two identical rings) is entropy exposed as a lead"
+      "description": "a sequence of UUIDs set next to each other"
     },
     "create": {
       "type": "boolean",
-      "description": "shadcn create (ui.shadcn.com/create) decided by the a432 settings and CSS: the ten settings, the registry item that initialises the project (globals.css light and dark, components.json, the QPU registry), the commands"
+      "description": "shadcn create (ui"
     }
   }
 }
@@ -1326,7 +1326,7 @@ The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmon
 
 ## dashboard
 
-A bounded tool laid out whole, so the user's decision in the UI is final: every value each property admits (an enum, a boolean, an integer range, the ends of a numeric bound, the textbook's values where a string is free), the whole space reachable by fixing one facet at a time (each cell narrows the dashboard until one combination remains, whose cell is its walk page /&lt;uuid&gt;), every cell drawn by its own UUID's CSS. Without a tool: every tool with the size of its space.
+A bounded tool laid out whole, so the user's decision in the UI is final
 
 ```json
 {
@@ -1349,7 +1349,7 @@ A bounded tool laid out whole, so the user's decision in the UI is final: every 
 
 ## clone
 
-A toolbox cloned whole: its toolset (every tool's name, description and schema), its skillset (idea, instructions, directions, examples with what they show), and its selftest run now, as one document another host mounts or a client follows door by door. The quantum state of a computation is never cloned (all_noclone); its classical description is, and this is it. Without a toolbox: every toolbox's clone address.
+A toolbox cloned whole
 
 ```json
 {
@@ -1369,7 +1369,7 @@ A toolbox cloned whole: its toolset (every tool's name, description and schema),
 
 ## discover
 
-Discovery before use. Without answers: every request the client must make for the contracts of the hosts this tree talks to (MCP tools/list and catalogue doors, the verifiers' OpenAPI, index or identify documents, /.well-known/qpu.json). With answers: the follow-ups still to fetch (catalogue doors whose contract is unread) and, once none remain, the discovery: hosts, doors with what they take and answer, capabilities by which clients choose doors, and the leads (hosts with no machine contract). Pure; the client fetches.
+Discovery before use
 
 ```json
 {
@@ -1377,11 +1377,11 @@ Discovery before use. Without answers: every request the client must make for th
   "properties": {
     "lead": {
       "type": "string",
-      "description": "a lead id: its words are asked of the public MCP registry first; with answers, the related servers and their extend requests"
+      "description": "a lead id"
     },
     "statement": {
       "type": "string",
-      "description": "with lead: the statement of a lead not in the registry"
+      "description": "with lead"
     },
     "mcpHosts": {
       "type": "array",
@@ -1392,18 +1392,18 @@ Discovery before use. Without answers: every request the client must make for th
     },
     "auth": {
       "type": "object",
-      "description": "host → bearer token, the tenant's own: forwarded as the authorization header of the requests emitted, never kept"
+      "description": "host → bearer token, the tenant's own"
     },
     "answers": {
       "type": "array",
       "items": {
         "type": "object"
       },
-      "description": "the requests answered: each request as emitted plus status, type and text"
+      "description": "the requests answered"
     },
     "selftest": {
       "type": "boolean",
-      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+      "description": "run the flow toolbox's cross-test instead"
     }
   }
 }
@@ -1411,7 +1411,7 @@ Discovery before use. Without answers: every request the client must make for th
 
 ## wave
 
-The verification wave. Without results: every request the surface's leads and tree facts need, once per URL with the leads it serves. With results (each request plus status, ok, ms and the body text): what came back read into one-line notes, a check of each request against the OpenAPI contract its host published (from discovery), and a summary by verifier. Pure; the client fetches.
+The verification wave
 
 ```json
 {
@@ -1436,7 +1436,7 @@ The verification wave. Without results: every request the surface's leads and tr
     },
     "selftest": {
       "type": "boolean",
-      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+      "description": "run the flow toolbox's cross-test instead"
     }
   }
 }
@@ -1444,7 +1444,7 @@ The verification wave. Without results: every request the surface's leads and tr
 
 ## readiness
 
-The unit judges the tree. Phase one (verification, discovery, present, ledger): every lead judged by measurement into served, refuted or trial; the sources as the unit's readiness door takes them; the border plan — every discovered door that takes a statement and answers a verdict, with a hand-written theorem filled in; and the unit plan, the calls the client makes. Phase two (plus border answers and unit answers): the border read, and the page. Pure; the client asks the unit.
+The unit judges the tree
 
 ```json
 {
@@ -1481,15 +1481,15 @@ The unit judges the tree. Phase one (verification, discovery, present, ledger): 
       "items": {
         "type": "object"
       },
-      "description": "phase two: the border calls answered ({door, host, arguments, answer | refusal})"
+      "description": "phase two"
     },
     "unit": {
       "type": "object",
-      "description": "phase two: the unit's answers (readiness, auras, rights, address)"
+      "description": "phase two"
     },
     "selftest": {
       "type": "boolean",
-      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+      "description": "run the flow toolbox's cross-test instead"
     }
   }
 }
@@ -1497,7 +1497,7 @@ The unit judges the tree. Phase one (verification, discovery, present, ledger): 
 
 ## imagine
 
-Imagination leads all leads: every lead (or the subset named) matched with the reflection on — hidden factors, angles, mirror queries, cluster, verification requests — every reflection that finds something a new open lead, every untried enum value of every schema a lead, every application family an adaptor to build. Pure.
+Imagination leads all leads
 
 ```json
 {
@@ -1515,11 +1515,11 @@ Imagination leads all leads: every lead (or the subset named) matched with the r
       "items": {
         "type": "object"
       },
-      "description": "ad-hoc statements {id, statement} to imagine instead: the rest of the leads from any text"
+      "description": "ad-hoc statements {id, statement} to imagine instead"
     },
     "selftest": {
       "type": "boolean",
-      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+      "description": "run the flow toolbox's cross-test instead"
     }
   }
 }
@@ -1527,7 +1527,7 @@ Imagination leads all leads: every lead (or the subset named) matched with the r
 
 ## e2e
 
-The end-to-end gate as a repetition code. Without answers: every combination the dashboards lay out and every example of the textbook, as one tools/call request per host (default the tenants' hosts and the operator's), each carrying the hash of the tree's own answer. With answers (each request plus status, ms, text): every combination decoded by majority over the tree and the hosts — agree, corrected (a flipped host, named by the syndrome), erased (a host that did not answer), uncorrectable (no majority) — the physical and logical error rates against the textbook 3-copy code, every error a UUID block for the stream, and the leads. Pure; the client fetches.
+The end-to-end gate as a repetition code
 
 ```json
 {
@@ -1538,7 +1538,7 @@ The end-to-end gate as a repetition code. Without answers: every combination the
       "items": {
         "type": "string"
       },
-      "description": "MCP endpoints to call; default https://<tenant host>/mcp for every tenant and the operator's workers.dev"
+      "description": "MCP endpoints to call; default https"
     },
     "tools": {
       "type": "array",
@@ -1555,7 +1555,7 @@ The end-to-end gate as a repetition code. Without answers: every combination the
     },
     "selftest": {
       "type": "boolean",
-      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+      "description": "run the flow toolbox's cross-test instead"
     }
   }
 }
@@ -1563,7 +1563,7 @@ The end-to-end gate as a repetition code. Without answers: every combination the
 
 ## shard
 
-A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard's index — the shares cover the list exactly once, proven by the kernel (textbook_shards_cover, textbook_shards_disjoint). The clients of the flow take their share from this door and leave what they settled for the merge; nothing is decided by hand.
+A long single task split into short multitasks
 
 ```json
 {
@@ -1583,7 +1583,7 @@ A long single task split into short multitasks: the share of a list among n shar
     },
     "selftest": {
       "type": "boolean",
-      "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
+      "description": "run the flow toolbox's cross-test instead"
     }
   }
 }
@@ -1591,7 +1591,7 @@ A long single task split into short multitasks: the share of a list among n shar
 
 ## translate
 
-Translation by vocabulary, offline, both ways: text, from, to. A word no table knows stays as it is and is reported, never guessed; Glagolitic numerals are read as integers. Without text: the vocabulary measured — for every locale, the surface terms with no entry (the leads of the tables).
+Translation by vocabulary, offline, both ways
 
 ```json
 {
@@ -1648,7 +1648,7 @@ Translation by vocabulary, offline, both ways: text, from, to. A word no table k
 
 ## prose
 
-Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox's idea, the tool's scalar answers, the toolbox's instructions — every word from the vocabulary, every number from the tool, every unknown word reported.
+Programmable prose
 
 ```json
 {
@@ -1694,7 +1694,7 @@ Programmable prose: call a tool with its arguments and render its result as sent
 
 ## mongo
 
-The ported MongoDB over the docket, pure. find: &#123;collection, docs, filter, sort, skip, limit&#125; → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: &#123;collection, docs: [new]&#125; → the entries to write, content-addressed. update: &#123;collection, docs, filter, update&#125; → for each match the new document and the entry that replaces it (linked to the old). delete: &#123;collection, docs, filter&#125; → the ids to delete, if unlinked. The client reads the docket rows and writes what comes back.
+The ported MongoDB over the docket, pure
 
 ```json
 {
@@ -1749,7 +1749,7 @@ The ported MongoDB over the docket, pure. find: &#123;collection, docs, filter, 
 
 ## stripe
 
-Stripe per tenant, pure, the QPU as a product with its variants. catalogue: every product and variant (domain, tenant, seat, metered, enterprise; month, year, metered; eur, usd, bgn) as the forms Stripe takes, per tenant. usage: metered calls from docket entries as a usage record. settle: the author's compensation from Stripe's own net figures, by product and tenant, as a settlement entry. plan: a checkout session request for a commercial licence (subject, domains, mode, price or amount) that the Worker sends with the tenant's secret key. webhook: the Stripe-Signature verified with the tenant's webhook secret (HMAC-SHA256, timestamp tolerance), the event read into one idempotent licence entry (granted, renewed, revoked, disputed, failed, noted) linked to what it changes. state: the licence state of a subject at a domain from its entries, at any tenant. The handler holds no key; the Worker executes plans and the docket keeps the entries.
+Stripe per tenant, pure, the QPU as a product with its variants
 
 ```json
 {
@@ -1774,7 +1774,7 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
       "items": {
         "type": "string"
       },
-      "description": "op fusion: the tools whose side of the fusion to answer (coin: pure algebra, free; coil: crosses to classical, licensed)"
+      "description": "op fusion"
     },
     "currencies": {
       "type": "array",
@@ -1793,7 +1793,7 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
       "items": {
         "type": "object"
       },
-      "description": "settle: Stripe balance transactions {id, amount, fee, net, currency, product?, variant?, tenant?}"
+      "description": "settle"
     },
     "tenant": {
       "type": "string"
@@ -1803,30 +1803,30 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
     },
     "checkout": {
       "type": "object",
-      "description": "plan: { subject, domains, mode, price | amount, currency, successUrl, cancelUrl, customerEmail? }"
+      "description": "plan"
     },
     "payload": {
       "type": "string",
-      "description": "webhook: the raw body"
+      "description": "webhook"
     },
     "signature": {
       "type": "string",
-      "description": "webhook: the Stripe-Signature header"
+      "description": "webhook"
     },
     "secret": {
       "type": "string",
-      "description": "webhook: the tenant's webhook secret (the Worker passes it; a client never has it)"
+      "description": "webhook"
     },
     "now": {
       "type": "integer",
-      "description": "webhook/state: unix seconds; default the current time"
+      "description": "webhook/state"
     },
     "entries": {
       "type": "array",
       "items": {
         "type": "object"
       },
-      "description": "webhook/state: the subject's licence entries as read from the docket"
+      "description": "webhook/state"
     },
     "subject": {
       "type": "string"
@@ -1848,7 +1848,7 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
 
 ## currency
 
-Currency harmonised in real time across every computation, agnostic of the source: plan answers the requests to every free rate API found (ECB, Frankfurter, BNB, open.er-api, currency-api) and names the related MCPs the registry lists; harmonise reads the bodies a client fetched, decodes one rate per currency by the median of the sources (agree within 0.5 %, drift named, pegs fixed by law: BGN 1.95583 since Bulgaria adopted the euro), and converts amounts in the base currency's minor unit into every currency, for a tenant (its currency) and a domain (its top-level domain's). Pure: nothing fetched here.
+Currency harmonised in real time across every computation, agnostic of the source
 
 ```json
 {
@@ -1907,7 +1907,7 @@ Currency harmonised in real time across every computation, agnostic of the sourc
 
 ## legal
 
-The full legal and security audit with forensic analysis, through MCP. Phase one (texts, discovery, agents?, theoremKeys?): the author's claims gathered from the tree and its metadata, this tree's own security checks over its sources, and the plan of calls to the unit's forensic, verification, legal, licence, prior-art, due-process and security doors — free agents found by discovery by default, the operator's own list when given. Phase two (plus answers): verdicts per claim, drift against this tree's licence, the findings, the page. Recomputable facts, not legal advice.
+The full legal and security audit with forensic analysis, through MCP
 
 ```json
 {
@@ -1919,7 +1919,7 @@ The full legal and security audit with forensic analysis, through MCP. Phase one
     },
     "texts": {
       "type": "object",
-      "description": "{ readme, citation, zenodo, package, worker, billing, hmac, mcp }: the texts of the tree"
+      "description": "{ readme, citation, zenodo, package, worker, billing, hmac, mcp }"
     },
     "discovery": {
       "type": "object"
@@ -1929,7 +1929,7 @@ The full legal and security audit with forensic analysis, through MCP. Phase one
       "items": {
         "type": "string"
       },
-      "description": "the operator's override: the doors to use; omit for the free doors discovery found"
+      "description": "the operator's override"
     },
     "theoremKeys": {
       "type": "array",
@@ -1948,7 +1948,7 @@ The full legal and security audit with forensic analysis, through MCP. Phase one
       }
     },
     "court": {
-      "description": "true: the court's rules, each with its theorem and remedy; { gate, status | code, rule?, evidence?, tenant? }: the case a refusal computes — what was violated, the theorem, the remedy, the MCP call the violator makes to file it (kind case in the docket) or to appeal (match); every cheap gate answers its refusals with this"
+      "description": "true"
     },
     "selftest": {
       "type": "boolean"
@@ -1959,7 +1959,7 @@ The full legal and security audit with forensic analysis, through MCP. Phase one
 
 ## compete
 
-The competitions with prizes and funding, their rules read at the source and judged against this tree's own evidence on every run: the Clay Millennium Prize rules (three conditions), XPRIZE Quantum Applications (closed: finalists chosen, winners spring 2027), GitHub's maintainer programs, Cloudflare's Workers Launchpad, Vercel's open source program, the Build with Gemini XPRIZE Hackathon (closed 2026-08-17) and Google for Startups Accelerator; the registry's grant and funding MCPs proposed. Each rule is satisfied, pending (the author's act), closed or open (a lead). Nothing is claimed won; the tree competes by following every rule. Pure.
+The competitions with prizes and funding, their rules read at the source and judged against this tree's own evidence on every run
 
 ```json
 {
@@ -1967,18 +1967,18 @@ The competitions with prizes and funding, their rules read at the source and jud
   "properties": {
     "news": {
       "type": "boolean",
-      "description": "the public news APIs as adapters of the DOI research: the requests the client makes to the open ones for every record of precedence, the keyed ones named"
+      "description": "the public news APIs as adapters of the DOI research"
     },
     "mentions": {
       "type": "array",
       "items": {
         "type": "object"
       },
-      "description": "the answers to the news requests ({ id, status, text }): the mentions by source and by record, read into the acceptance rule"
+      "description": "the answers to the news requests ({ id, status, text })"
     },
     "pages": {
       "type": "object",
-      "description": "competition id → the text of its rules page, read by the client: the entry window is measured from it"
+      "description": "competition id → the text of its rules page, read by the client"
     },
     "now": {
       "type": "number",
@@ -2004,7 +2004,7 @@ The competitions with prizes and funding, their rules read at the source and jud
 
 ## patents
 
-Every patent API found, wired and measured: plan answers the requests to the open ones (Google Patents' query endpoint, the EPO publication server) and names the keyed ones (PatentsView, USPTO ODP, EPO OPS, Lens: the variable names, never values) and the registry's patent MCPs; read takes the bodies a client fetched, reads the patents (number, dates, assignee, inventor, title) and verifies the theorems over them — the dates ordered, the number well formed for its office, the twenty-year term — naming every violation. Pure: nothing fetched here.
+Every patent API found, wired and measured
 
 ```json
 {
@@ -2020,7 +2020,7 @@ Every patent API found, wired and measured: plan answers the requests to the ope
     },
     "query": {
       "type": "string",
-      "description": "the search, e.g. quantum error correction"
+      "description": "the search, e"
     },
     "queries": {
       "type": "array",
@@ -2064,7 +2064,7 @@ Every patent API found, wired and measured: plan answers the requests to the ope
 
 ## repository
 
-Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases, the workflow runs, the workflows), the npm registry (the version it holds) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.
+Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure
 
 ```json
 {
@@ -2076,7 +2076,7 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
         "rest",
         "mcp"
       ],
-      "description": "mcp: the three facts through GitHub's MCP doors (list_branches, list_tags, list_releases) with the tenant's token in the client's request; default rest",
+      "description": "mcp",
       "default": "rest"
     },
     "local": {
@@ -2094,7 +2094,7 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
     },
     "machine": {
       "type": "object",
-      "description": "the developer machine through the MCP, securely: { actions: true } the allow-list; { plan: { action, message?, confirm?, facts? } } an action planned (its argument vector, or refused with the court's case: not on the list, not its parameters, or refused by the workflow rules); { record: { action, command, status, stdout, stderr, ms, root, home? } } a run judged (paths relative, leaks redacted by kind) as a docket entry at its address; the local server scripts/machine.ts runs only what a plan returns"
+      "description": "the developer machine through the MCP, securely"
     },
     "workflow": {
       "type": "string",
@@ -2106,16 +2106,16 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
         "ci",
         "pre-deploy"
       ],
-      "description": "the git hook or the CI as a client MCP workflow: its steps, strictness and what each does; scripts/hook.ts walks them",
+      "description": "the git hook or the CI as a client MCP workflow",
       "default": "pre-commit"
     },
     "offline": {
       "type": "boolean",
-      "description": "with workflow: the network steps marked unsigned"
+      "description": "with workflow"
     },
     "facts": {
       "type": "object",
-      "description": "with workflow: { receipt, approval, e2e, carried } as the client read them after the steps; for pre-deploy also config (the deploy configuration's text) and docket (the documents the Payload MCP answered), folded here into the bindings, the account, its observability and usage — the client names no provider and no resource; the rules of the workflow decided by their theorems: allowed or refused, a violation a case for the court"
+      "description": "with workflow"
     },
     "selftest": {
       "type": "boolean"
@@ -2131,7 +2131,7 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
 
 ## jsonld
 
-schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of the catalogue (product, variant, currency). The author a Person with an ORCID, the licence a URL, dates ISO 8601, languages ISO 639-1, currencies ISO 4217. Every tools/call result already carries its block's JSON-LD in _meta.jsonLd; every documentation page carries its own in its head.
+schema
 
 ```json
 {
@@ -2205,7 +2205,7 @@ schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, titl
 
 ## codes
 
-The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1): every locale of the language toolbox, every currency of the catalogue, the tenants' countries. Without the lists: what would be checked and where the lists are. A code the standard does not know is a lead, never a guess.
+The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1)
 
 ```json
 {
@@ -2213,7 +2213,7 @@ The tree's ISO codes validated against the CLDR lists a client fetched (language
   "properties": {
     "cldr": {
       "type": "object",
-      "description": "{ languages, currencies, territories }: the CLDR JSON documents as fetched"
+      "description": "{ languages, currencies, territories }"
     },
     "territories": {
       "type": "array",
@@ -2230,7 +2230,7 @@ The tree's ISO codes validated against the CLDR lists a client fetched (language
 
 ## payload
 
-Any tool's result as the document Payload's default plugins hold, no custom collection: a lexical document whose one block is the programmable UUID logic (uuid, handle, program, tail, tool, arguments, prev, next), nested by the referer chain as nested-docs nests (parent, breadcrumbs), the SEO plugin's title, description and image from the block's Open Graph, the JSON-LD and the licence. Every tools/call result carries the same in _meta.payload.
+Any tool's result as the document Payload's default plugins hold, no custom collection
 
 ```json
 {
@@ -2238,19 +2238,19 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
   "properties": {
     "namespace": {
       "type": "object",
-      "description": "tenants as namespaces, each app its own sandbox without a domain: { name | app } the sandbox planned (its tenant by namespace, the key its client holds, the header x-qpu-namespace, what is scoped); { narrow: { requested, tenants, user } } a credential narrowed to the namespace a request names — the intersection, never wider; the app's MCP auth asks this on every request"
+      "description": "tenants as namespaces, each app its own sandbox without a domain"
     },
     "theorems": {
       "type": "boolean",
-      "description": "the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client: the plan, then with answers { list, found } the update requests"
+      "description": "the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client"
     },
     "schemas": {
       "type": "boolean",
-      "description": "Payload's combinatorial surface handled programmatically: every dimension (field types, operations, schemas, queries, hooks, access, realtime coordination) named and meant by its textbook theorem, counted from the table and decided through the match tool; any collection's fields (collection: { slug, fields }) as JSON Schema 2020-12, GraphQL, the plugin's MCP tools and OpenAPI paths; the standards each part is described by; the sources to re-read (requestList), and with answers { url: text } the drift as leads"
+      "description": "Payload's combinatorial surface handled programmatically"
     },
     "collection": {
       "type": "object",
-      "description": "schemas: { slug, fields } in Payload's own field config shape"
+      "description": "schemas"
     },
     "payloadUrl": {
       "type": "string",
@@ -2260,7 +2260,7 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
       "type": "object"
     },
     "website": {
-      "description": "true: the requests for payloadcms.com's source tree and one live page; the tree as answered: its collections, blocks, globals, fields and plugins, and whether the live page's blocks have a block in the source"
+      "description": "true"
     },
     "liveBlockTypes": {
       "type": "array",
@@ -2269,27 +2269,27 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
       }
     },
     "skills": {
-      "description": "true: the request for Payload's skills tree (github.com/payloadcms/skills); the tree as answered: every skill and reference mapped to the tool of this tree that enacts it"
+      "description": "true"
     },
     "site": {
       "type": "boolean",
-      "description": "the site as its own use cases: every toolbox a use case, every example a page document, as payloadcms.com is built of what Payload computes"
+      "description": "the site as its own use cases"
     },
     "hologram": {
       "type": "boolean",
-      "description": "the QPU as a fractal plugin hologram: the seven scales of one shape with their addresses, and the SEO pages every block presents (ten rotations in every locale) counted with the sitemaps they need and the compliance each page carries"
+      "description": "the QPU as a fractal plugin hologram"
     },
     "merge": {
       "type": "object",
-      "description": "two edits of one document merged by block address: { base, a, b } (lexical documents); a block either edit holds and neither removed is kept once, the merge addressed by the fold of its blocks, commuting and idempotent (textbook_merge_commutes); a collision in the involution is a merge"
+      "description": "two edits of one document merged by block address"
     },
     "devDependencies": {
       "type": "object",
-      "description": "with site: the tree's dev dependencies (name: version, the client reads package.json), each a gate of the dependencies category usable in the UI"
+      "description": "with site"
     },
     "app": {
       "type": "object",
-      "description": "an app requested from the Payload UI: { name, host, plugins?, env?, variant? } — answered as the generated app (every file with its address, the bundle address, the adapters the environment chooses, the enterprise capabilities), priced by the catalogue in the host's currency and ordered through the ecommerce plugin: what the QPU is paid for; { validate: { name, host, env, variant } } answers the streamed form's verdicts, token free; { form: true } the form itself"
+      "description": "an app requested from the Payload UI"
     },
     "tool": {
       "type": "string"
@@ -2320,14 +2320,14 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 
 ## configure
 
-MCP configures Payload and the rest: Payload's default plugins (lexical with the one qpu block, nested-docs, seo, search, redirects, form-builder, multi-tenant, mcp, ecommerce) in all their combinations with no custom collection; the Worker's wrangler configuration from the tenants; each tenant's variable names (never values); the PWA manifest; the MCP registration. Every configuration carries its torus: address, seed, reflection and trinity, and whether the loop closes (config → text → config at the same address). With current (the text a client holds), the drift: every path that differs, each a lead; for a hand-held TypeScript file (payload, hooks, bindings), what MCP configures and the text lacks. With files: every configuration's file and its source, what next writes and what it measures on every run. Kinds hooks and bindings: the Payload hooks and the providers' bindings for full-scale use at minimum cost. Without kind: all of them, tested.
+MCP configures Payload and the rest
 
 ```json
 {
   "type": "object",
   "properties": {
     "port": {
-      "description": "kind adapters: the port onto Cloudflare — true every one of the 5 × 5 × 2 combinations (the complete ones, the missing links each a lead, the Cloudflare MCP tools they call); an index from 0 to 49 that combination's workflow (its bindings, every step with its MCP call, its plan, its missing links)"
+      "description": "kind adapters"
     },
     "kind": {
       "type": "string",
@@ -2362,23 +2362,23 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
     },
     "files": {
       "type": "boolean",
-      "description": "the file of every configuration and its source (tool or hand): what next writes and what it measures"
+      "description": "the file of every configuration and its source (tool or hand)"
     },
     "experience": {
       "type": "object",
-      "description": "kind actions: what the gate measured ({ copies, involutions, msByHost }): the shard size follows it"
+      "description": "kind actions"
     },
     "rates": {
       "type": "object",
-      "description": "kind ecommerce: the harmonised rates the currency tool answered (currency → { rate }): every price derived from the euro amount"
+      "description": "kind ecommerce"
     },
     "lastTag": {
       "type": "object",
-      "description": "{ version, tools }: the last tag and the tools it served, from the repository tool; with it, kind versions computes the next number"
+      "description": "{ version, tools }"
     },
     "current": {
       "type": "string",
-      "description": "the configuration text the client holds (JSON or JSONC): compared, the drift answered"
+      "description": "the configuration text the client holds (JSON or JSONC)"
     },
     "version": {
       "type": "string"
@@ -2391,7 +2391,7 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
       "items": {
         "type": "string"
       },
-      "description": "the variable NAMES the client's environment holds: which of a tenant's are missing (values never travel)"
+      "description": "the variable NAMES the client's environment holds"
     },
     "template": {
       "type": "string",
@@ -2400,46 +2400,46 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "site",
         "app"
       ],
-      "description": "kind wrangler: the deploy template (worker, site, app); with useCase, that one preset",
+      "description": "kind wrangler",
       "default": "worker"
     },
     "useCase": {
       "type": "string",
-      "description": "kind wrangler: a product of the catalogue (a432, domain, tenant, seat, metered, iot, delivered, enterprise): the wrangler environment of that use case"
+      "description": "kind wrangler"
     },
     "name": {
       "type": "string",
-      "description": "kind wrangler, template app: the app's name"
+      "description": "kind wrangler, template app"
     },
     "hex": {
       "type": "string",
-      "description": "kind ui: any hex (a UUID, a hash, an address) presented as a shadcn combination: each nibble an item and a variant, the whole styled from itself"
+      "description": "kind ui"
     },
     "stream": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "kind ui: a UUID-only stream, queried, sorted, filtered and executed by query (the crypto fold tool answers the same)"
+      "description": "kind ui"
     },
     "query": {
       "type": "object",
-      "description": "kind ui, with stream: { where: { handle, nibble: { at, is }, item, variant, hueBetween }, sort: hex | hue | program | tail, descending, execute }"
+      "description": "kind ui, with stream"
     },
     "sets": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "kind sets: two set names (a toolbox, mcp, tools, ui, backed, configs, mount:<tenant>) whose union, intersection and differences are answered; with env instead, the MCP scoped by that environment combination (one address per combination)"
+      "description": "kind sets"
     },
     "devDependencies": {
       "type": "object",
-      "description": "kind gates: the tree's dev dependencies (name: version), each a gate of the dependencies category — an MCP door the step of next passes, usable in the UI"
+      "description": "kind gates"
     },
     "branding": {
       "type": "object",
-      "description": "kind branding: the tenant ({ slug | host, name, branding: { name, tagline, accent, logo, icon } } as its tenants row holds it); what the tenant left empty is computed in real time from its address"
+      "description": "kind branding"
     },
     "selftest": {
       "type": "boolean"
@@ -2455,18 +2455,18 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
 
 ## extend
 
-QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, tools): the host's tools/list read into doors that join this catalogue as host:tool, with what each takes and answers; without tools, the one request the client makes for them (a tenant's token travels in the request, never here). Outward: this catalogue as the registration any MCP client mounts. call (host, tool, arguments): the request that serves a foreign door; with answer, what it answered, read whether JSON or an event stream. Pure; the client fetches. Cloudflare's eight servers are extended by default, the documentation one in the open.
+QPU as the natural extension of every MCP and every MCP of QPU
 
 ```json
 {
   "type": "object",
   "properties": {
     "compare": {
-      "description": "the QPU's tools/list measured against open MCP servers that answer without a key: true names the servers and the QPU's own size; { answers: [{ id, status, bytes, tools }] } turns what the client measured into totals, tokens at four bytes a token, bytes per tool and ratios"
+      "description": "the QPU's tools/list measured against open MCP servers that answer without a key"
     },
     "statement": {
       "type": "string",
-      "description": "with direction out: the registration balanced to this statement — the tools the match tool decides it needs, with brief descriptions, the Claude toolset enabling those alone, the context counted"
+      "description": "with direction out"
     },
     "direction": {
       "type": "string",
@@ -2483,7 +2483,7 @@ QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, to
       "description": "the MCP endpoint; default this tree's own"
     },
     "tools": {
-      "description": "the host's tools/list answer: its tools array, its JSON-RPC envelope, or the raw text (JSON or event stream)"
+      "description": "the host's tools/list answer"
     },
     "call": {
       "type": "object",
@@ -2495,11 +2495,11 @@ QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, to
           "type": "object"
         }
       },
-      "description": "a foreign door to serve: the request is emitted"
+      "description": "a foreign door to serve"
     },
     "answer": {
       "type": "string",
-      "description": "what the host answered the call: read back"
+      "description": "what the host answered the call"
     },
     "selftest": {
       "type": "boolean"
@@ -2515,7 +2515,7 @@ QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, to
 
 ## fold
 
-The split folds: a payload larger than a place can hold is folded into pieces under the bound (bytes), each addressed by its content (fold address and SHA-256), the whole by its pieces (a root over their hashes); a key names the one piece it sits in (by address, or by the key range of its rows), so a door answers from that piece and never from the whole. The bound is a reflective boundary: piece i mirrors piece n−1−i, the excess is reflected into the count of pieces, decided by integer comparisons before anything is computed. With pieces (index, text, sha256?) and a root: the whole unfolded and the root checked, the wrong pieces named.
+The split folds
 
 ```json
 {
@@ -2523,11 +2523,11 @@ The split folds: a payload larger than a place can hold is folded into pieces un
   "properties": {
     "harmonic": {
       "type": "object",
-      "description": "{ schema, referrer? }: the harmonic options by default of any schema — its enum properties a superposition of their combinations, the referrer's address (or the a432 key) choosing the default one by its remainder"
+      "description": "{ schema, referrer? }"
     },
     "decode": {
       "type": "object",
-      "description": "{ radices, address? | uuid? }: decoded algebraically, never by search — an address of the form index-digits (or either part alone) inverted in one step per position and checked against itself; a content address is one-way, so the request to find what it hides is refused with the court's case and no candidate is tried; free as pure algebra"
+      "description": "{ radices, address? | uuid? }"
     },
     "radices": {
       "type": "array",
@@ -2535,11 +2535,11 @@ The split folds: a payload larger than a place can hold is folded into pieces un
         "type": "integer",
         "minimum": 1
       },
-      "description": "Queneau's combinatorics: the number of choices at each position; with index the composition it addresses, with digits the index they make, alone the count (their product); every composition computed from its address and back, none stored"
+      "description": "Queneau's combinatorics"
     },
     "index": {
       "type": "string",
-      "description": "with radices: the composition's index, a decimal integer of any size"
+      "description": "with radices"
     },
     "digits": {
       "type": "array",
@@ -2547,53 +2547,53 @@ The split folds: a payload larger than a place can hold is folded into pieces un
         "type": "integer",
         "minimum": 0
       },
-      "description": "with radices: a composition, one choice per position"
+      "description": "with radices"
     },
     "spaces": {
       "type": "object",
-      "description": "{ name: radices }: many combination spaces counted by the one primitive"
+      "description": "{ name"
     },
     "hex": {
       "type": "string",
-      "description": "any hex (a UUID, a hash, an address): presented as a shadcn combination, each nibble an item and a variant, the whole styled from itself — the one quantum core"
+      "description": "any hex (a UUID, a hash, an address)"
     },
     "uuids": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "a UUID-only stream: queried, sorted, filtered and executed by query"
+      "description": "a UUID-only stream"
     },
     "query": {
       "type": "object",
-      "description": "with uuids: { where: { handle, nibble: { at, is }, item, variant, hueBetween }, sort: hex | hue | program | tail, descending, execute }"
+      "description": "with uuids"
     },
     "text": {
       "type": "string",
-      "description": "the payload: rows as lines (ndjson, csv) fold at rows"
+      "description": "the payload"
     },
     "bound": {
       "type": "integer",
       "minimum": 1,
-      "description": "bytes a piece may hold; e.g. what an isolate, a request or a quantum holds"
+      "description": "bytes a piece may hold; e"
     },
     "key": {
       "type": "string",
-      "description": "a key to locate: the piece it sits in"
+      "description": "a key to locate"
     },
     "pieces": {
       "type": "array",
       "items": {
         "type": "object"
       },
-      "description": "pieces to unfold: { index, text, sha256? }"
+      "description": "pieces to unfold"
     },
     "root": {
       "type": "string"
     },
     "withPieces": {
       "type": "boolean",
-      "description": "carry the pieces' texts in the answer (default: addresses and hashes only)"
+      "description": "carry the pieces' texts in the answer (default"
     },
     "selftest": {
       "type": "boolean"
@@ -2604,7 +2604,7 @@ The split folds: a payload larger than a place can hold is folded into pieces un
 
 ## seal
 
-SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure and the same at every host; the fold address of the text beside them, so a block, a piece and a message are named by one scheme. With sign (ML-DSA-44, ML-DSA-65 or ML-DSA-87, FIPS 204): the post-quantum signature plan over the 32-byte digest, executed by the host with its signing key through Web Crypto; a tenant verifies with the public key the answer carries, never the secret.
+SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure and the same at every host; the fold ad
 
 ```json
 {
@@ -2625,25 +2625,25 @@ SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a t
         "string",
         "boolean"
       ],
-      "description": "a post-quantum signature over the digest: ML-DSA-44, ML-DSA-65 (true) or ML-DSA-87"
+      "description": "a post-quantum signature over the digest"
     },
     "artifacts": {
       "type": "array",
       "items": {
         "type": "object"
       },
-      "description": "public artifacts verified against the digests their registries recorded: [{ source, name, url, algorithm, claimed, computed, bytes?, status }] as the client downloaded and hashed them (npm tarballs by their sha512 integrity, Zenodo files by their checksum); the metric of what verifies, a mismatch answered with the court's case"
+      "description": "public artifacts verified against the digests their registries recorded"
     },
     "tamper": {
       "type": "object",
-      "description": "{ text, address, sha256? }: a copy checked against the address and digest the original carried — authentic when both match, modified when the text no longer matches them (adapted material under the licence), forged when the address matches and the digest does not (a crafted collision of the fold); a tampered copy answered with the court's case"
+      "description": "{ text, address, sha256? }"
     },
     "entropy": {
       "type": "array",
       "items": {
         "type": "object"
       },
-      "description": "the device's randomness: samples of the animation's phase at each interaction ({ phase, t, nonce?, x?, y? }), eleven bits a phase and thirty-two a nonce, folded to a seed the text is salted with; rated by the chain (a coil beyond the first period: the fusion)"
+      "description": "the device's randomness"
     },
     "selftest": {
       "type": "boolean"
@@ -2654,7 +2654,7 @@ SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a t
 
 ## attest
 
-The crypto and certificate APIs, with NIST and CERN, verified by theorems in coordinated combinations: plan answers the requests to every open API (the NIST randomness beacon, a Certificate Transparency log's tree head, Let's Encrypt's ACME directory, NIST NVD's CVEs on ML-KEM, CERN Open Data's Higgs records, crt.sh, NIST CSRC) and names the hosts whose live certificates the client reads itself; read takes the bodies, verifies the theorems over each (the beacon's chain, period and SHA-512 precommitment; the tree head's widths; the five ACME resources; CVSS bounded and dates ordered; sizes, checksums and DOIs; certificates ordered, within 398 days and valid now; the three FIPS named) and answers the follow-ups the combination needs (the beacon's previous pulse), so a client reads again until nothing follows. Pure: nothing fetched here.
+The crypto and certificate APIs, with NIST and CERN, verified by theorems in coordinated combinations
 
 ```json
 {
@@ -2673,7 +2673,7 @@ The crypto and certificate APIs, with NIST and CERN, verified by theorems in coo
       "items": {
         "type": "string"
       },
-      "description": "hosts whose live certificates the client reads (tls:<host> answers)"
+      "description": "hosts whose live certificates the client reads (tls"
     },
     "answers": {
       "type": "array",

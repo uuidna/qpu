@@ -56,7 +56,7 @@ const prose = toolOf('language', {
     const tool = String(args.tool); const locale = typeof args.locale === 'string' ? args.locale : 'en'
     const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args.arguments ?? {} } })
     if ('error' in r) throw new Error(r.error.message)
-    const list = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; _meta?: { toolbox?: string } }[] } }
+    const list = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; _meta?: { toolbox?: string } }[] } }
     const boxName = list.result.tools.find((t) => t.name === tool)?._meta?.toolbox ?? null
     const init = ctx.handle({ jsonrpc: '2.0', id: 0, method: 'initialize' }) as { result: { instructions: string } }
     const line = boxName ? init.result.instructions.split('\n').find((l) => l.startsWith(`${boxName} (`)) : undefined

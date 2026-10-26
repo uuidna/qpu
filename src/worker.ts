@@ -326,7 +326,7 @@ export type Superposition = { prev?: string; next?: { href: string; label: strin
 /** The next step of an id: its program compiled against the tools, the first step executed, and the href that continues the walk. */
 export const nextOf = (id: string, origin: string): { href: string; label: string; compiled: Step[]; result: unknown } => {
   const ch = channelOf(id)
-  const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: Parameters<typeof compileOf>[1] } }).result.tools
+  const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: Parameters<typeof compileOf>[1] } }).result.tools
   const { steps, next } = compileOf(ch.program, tools, ch.message)
   const reply = next ? handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: next.tool, arguments: next.arguments } }) as { result?: { structuredContent: unknown; _meta: { widget: string } }; error?: unknown } : undefined
   const rotated = [...ch.program.slice(1), ch.program[0]!] // the walk continues: the program rotates one nibble per step
@@ -397,7 +397,7 @@ export const catchAll = (request: Request, url: URL, env: Env): Response | Promi
       return pageOf(id, url.origin, { prev: refererOf(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled, result: nx.result, notes, locale })
     }
     // the family: the handle alone; its entries on this mirror, and the sixteen doors a first nibble opens
-    const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result.tools.filter((t) => !['audit', 'match', 'verify'].includes(t.name))
+    const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string }[] } }).result.tools.filter((t) => !['audit', 'match', 'verify'].includes(t.name))
     const doors = [...Array(16).keys()].map((n) => ({ nibble: n.toString(16), tool: tools[n % tools.length]!.name, href: `${url.origin}/${a}/${n.toString(16).repeat(10)}/${tail}` }))
     const family = async () => { if (!env.DOCKET) return [] as unknown[]; const res = await env.DOCKET.get(env.DOCKET.idFromName(tenantOf(url.hostname))).fetch(new Request(`${url.origin}/docket`)); const j = await res.json() as { entries: { id: string }[] }; return j.entries.filter((e) => e.id.startsWith(a)) }
     return family().then((entries) => wantsPage

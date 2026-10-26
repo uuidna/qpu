@@ -66,7 +66,7 @@ export const hashOf = (v: unknown) => uuidOf((JSON.stringify(v) ?? 'undefined').
 
 /** The combinations: every example and every dashboard cell, once per host, with the tree's own answer hashed. */
 export const e2eRequestsOf = (ctx: Context, hosts: readonly string[], only?: readonly string[]): E2eRequest[] => {
-  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; _meta?: { toolbox?: string } }[] } }).result.tools
+  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; _meta?: { toolbox?: string } }[] } }).result.tools
   const boxOf = new Map(tools.map((t) => [t.name, t._meta?.toolbox ?? 'none']))
   const combos = new Map<string, { tool: string; from: 'example' | 'cell'; arguments: Record<string, unknown> }>()
   const add = (tool: string, args: Record<string, unknown>, from: 'example' | 'cell') => { if (E2E_SKIP.has(tool) || args.selftest || !boxOf.has(tool) || (only && !only.includes(tool)) || executedAtEdge(tool, args)) return; const combo = uuidOf(`${tool}${JSON.stringify(args)}`); if (!combos.has(combo)) combos.set(combo, { tool, from, arguments: args }) }

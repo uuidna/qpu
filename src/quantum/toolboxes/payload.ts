@@ -233,7 +233,7 @@ export const ENERGY_APIS: readonly { id: string; name: string; url: string; key:
   { id: 'eia', name: 'EIA open data: electricity retail prices by state', url: 'https://api.eia.gov/v2/electricity/retail-sales/data/', key: 'EIA_API_KEY' },
 ]
 export const gatesOf = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}) => {
-  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string; _meta?: { toolbox?: string } }[] } }).result.tools
+  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; description: string; _meta?: { toolbox?: string } }[] } }).result.tools
   const external: RawGate[] = [
     // every dev dependency a gate: a door the step of next passes, usable in the UI through its gate page's block
     ...Object.entries(devDependencies).map(([name, version]) => { const role = DEV_DEPENDENCY_ROLES[name]; return { id: `dependency-${name.replace(/[^a-z0-9]+/gi, '-').replace(/^-/, '')}`, category: 'dependencies', name: `${name} ${version}: ${role?.does ?? 'a tool of the tree'}`, url: `https://www.npmjs.com/package/${name}`, host: 'www.npmjs.com', kind: 'tool' as GateKind, by: role?.step ?? 'next', measured: `imagined as an MCP door: the step ${role?.step ?? 'next'} is its tools/call; its gate page carries the step's block, rendered by the MCP App (ui://qpu/configure); the registry names it at npm` } }),
@@ -338,7 +338,7 @@ export const gateDocsOf = (ctx: Context, origin: string, devDependencies: Record
  *  exclusion holds by theorem); the server's initialize answer is derived from the whole set, not declared beside it. */
 export type ConfigSet = { name: string; by: string; size: number; address: string; members: string[] }
 export const setsOf = (ctx: Context, names: readonly string[] = ['legal', 'crypto']) => {
-  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; inputSchema: object; _meta?: { toolbox?: string; skill?: { instructions: string; directions: number }; ui?: { resourceUri?: string } } }[] } }).result.tools
+  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; inputSchema: object; _meta?: { toolbox?: string; skill?: { instructions: string; directions: number }; ui?: { resourceUri?: string } } }[] } }).result.tools
   const resources = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'resources/list' }) as { result: { resources: { uri: string; mimeType: string }[] } }).result.resources
   const live = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'sets', version: '0' } } }) as { result: { capabilities: Record<string, unknown> } }).result.capabilities
   const elements = [
@@ -388,7 +388,7 @@ export const setsOf = (ctx: Context, names: readonly string[] = ['legal', 'crypt
   }
 }
 export const siteOf = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}) => {
-  const list = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string; _meta?: { toolbox?: string } }[] } }).result.tools
+  const list = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; description: string; _meta?: { toolbox?: string } }[] } }).result.tools
   const boxOf = new Map(list.map((t) => [t.name, t._meta?.toolbox ?? 'none']))
   const heavy = new Set(['audit', 'metrics', 'imagine', 'discover', 'wave', 'readiness', 'e2e', 'textbook', 'clone'])
   // the site never lays itself out inside itself: the example that is this very call is skipped (it would replay every example again, inside the first replay)
@@ -999,7 +999,7 @@ export const configOf = (kind: ConfigKind, ctx: Context, p: { version?: string; 
     case 'tenant': return { tenants: [...Object.values(TENANTS), 'ceci'].map(varsOf), records: Object.entries(TENANTS).reduce<Record<string, { name: string; slug: string; domains: { domain: string }[]; currency: string }>>((acc, [host, t]) => ({ ...acc, [t]: { name: t, slug: t, domains: [...(acc[t]?.domains ?? []), { domain: host }], currency: TENANT_CURRENCY[t] ?? 'EUR' } }), {}), mcpHostsDefault: DEFAULT_MCP_HOSTS }
     case 'pwa': { const accent = `hsl(${hueOf(KEY)} 62% 44%)`; return { name: '@uuidna/qpu', short_name: 'qpu', description: p.description ?? '', id: '/', start_url: '/', scope: '/', display: 'standalone', orientation: 'any', background_color: '#0b0b0f', theme_color: accent, lang: 'en', dir: 'ltr', categories: ['developer', 'education', 'productivity'], icons: [{ src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' }, { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' }], shortcuts: [{ name: 'Every tool laid out', url: '/' + uuidOf('dashboard{}'), description: 'the dashboard index: every tool with the size of its space' }, { name: 'Examples', url: '/examples' }, { name: 'Stream', url: '/stream' }, { name: 'Readiness', url: '/readiness' }], related_applications: [], prefer_related_applications: false, license: 'CC-BY-NC-ND-4.0', version: p.version ?? null } }
     case 'versions': {
-      const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result.tools.map((t) => t.name)
+      const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string }[] } }).result.tools.map((t) => t.name)
       const open = ctx.leads.filter((l) => l.status === 'open' || l.status === 'partial')
       return {
         current: VERSION, source: 'package.json, injected at generation into src/quantum/version.ts; the Worker names it on every reply (X-Qpu-Version) and in its discovery document',
@@ -1032,7 +1032,7 @@ export const configOf = (kind: ConfigKind, ctx: Context, p: { version?: string; 
     }
     case 'api': {
       // the API overview, as platform.claude.com/docs/en/api/overview is one for the Claude API: every surface of this tree, from the handler and the Worker, as data a page is written from
-      const list = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string; inputSchema: object; _meta?: { toolbox?: string } }[] } }).result.tools
+      const list = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; description: string; inputSchema: object; _meta?: { toolbox?: string } }[] } }).result.tools
       const origin = 'https://qpu.uuidna.com'
       const apiHosts = [...hosts.map((h) => `https://${h}`), 'https://qpu.ceci.workers.dev']
       // the standard contract, and the tree's own reading of it: the discover step's detector over the document, as over any host's
@@ -1807,7 +1807,7 @@ export const accessAuditOf = (ctx: Context) => {
   const entries = text(fileOf('collection', 'entries')); const tenants = text(fileOf('collection', 'tenants')); const plugin = text(fileOf('plugin', 'qpu'))
   const users = text(fileOf('hooks', 'users')); const pages = text(fileOf('hooks', 'pages')); const submissions = text(fileOf('hooks', 'form-submissions'))
   const mcpModule = text(fileOf('config', 'mcp'))
-  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; annotations?: { readOnlyHint?: boolean; idempotentHint?: boolean }; inputSchema: { properties?: Record<string, unknown> } }[] } }).result.tools
+  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; annotations?: { readOnlyHint?: boolean; idempotentHint?: boolean }; inputSchema: { properties?: Record<string, unknown> } }[] } }).result.tools
   const clay = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: {} } }) as { result?: { _meta?: { license?: unknown } } }
   const checks: { id: string; perspective: typeof PERSPECTIVES[number]; passed: boolean; evidence: string; hook: string; cost: string; licence: string; legal: string }[] = []
   const c = (id: string, perspective: typeof PERSPECTIVES[number], passed: boolean, evidence: string, hook: string, cost: string, licence: string, legal: string) => checks.push({ id, perspective, passed, evidence, hook, cost, licence, legal })
@@ -1858,7 +1858,7 @@ export const accessAuditOf = (ctx: Context) => {
  *  (content addresses, involutions, teleports: minimal cost, every read free after the first). */
 export const scopeOf = (ctx: Context, env: readonly string[]) => {
   const ad = adaptersOf(env)
-  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result.tools.map((t) => t.name)
+  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string }[] } }).result.tools.map((t) => t.name)
   const plugins = PAYLOAD_PLUGINS.map((p) => p.name)
   const collections = Object.fromEntries(Object.entries(PLUGIN_COLLECTIONS).map(([plugin, slugs]) => [plugin, { collections: slugs, mcp: slugs.filter((s) => MCP_COLLECTIONS[s]?.enabled.find), powers: ['content address on create (a duplicate write is one row)', 'every read a cache hit by address', '304 by involution at the edge', 'teleported between steps', 'REST both ways under the three tenant roles'] }]))
   const members = [...tools.map((t) => `tool:${t}`), ...plugins.map((p) => `plugin:${p}`), ...Object.values(PLUGIN_COLLECTIONS).flat().map((c) => `collection:${c}`), `adapter:${ad.chosen.database}`, `adapter:${ad.chosen.storage}`, `adapter:${ad.chosen.email}`, `profile:${ad.chosen.profile}`].sort()
@@ -1894,7 +1894,7 @@ export const hologramOf = (ctx: Context, origin = 'https://qpu.uuidna.com') => {
   const gatePages = site.gates.pages
   const block = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: {} } }) as { result: { _meta: { block: { meta: { id: string } } } } }).result._meta.block.meta.id
   const app = appOf(ctx, { name: 'hologram', host: 'hologram.example', env: [] })
-  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result.tools.map((t) => t.name)
+  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string }[] } }).result.tools.map((t) => t.name)
   const scales = [
     { scale: 'block', address: block, holds: 'the tool, its arguments, its licence, its next address' },
     { scale: 'document', address: payloadDocOf({ uuid: block, tool: 'clay', arguments: {}, description: 'the register', origin }).id, holds: 'one block, nested by its referer, described for SEO' },

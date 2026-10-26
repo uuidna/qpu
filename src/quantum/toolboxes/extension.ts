@@ -26,7 +26,7 @@ export const answerOf = (text: string): { ok: boolean; result?: unknown; error?:
     return { ok: true, result: j.result }
   } catch (e) { const data = dataOf(text); return { ok: false, error: `not JSON (${(e as Error).message.slice(0, 60)}; stream ${/^(event|data):/m.test(text)}; data ${JSON.stringify(data.slice(0, 40))}): ${text.slice(0, 80)}` } }
 }
-const mine = (ctx: Context) => ((ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: (ForeignTool & { _meta?: { toolbox?: string } })[] } }).result.tools)
+const mine = (ctx: Context) => ((ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: (ForeignTool & { _meta?: { toolbox?: string } })[] } }).result.tools)
 /** Inward: the host's tools as doors of this catalogue, each named host:tool. */
 const inwardOf = (host: string, tools: ForeignTool[]) => tools.map((t) => ({ ...doorOf(t, 'tools/list'), host: hostOf(host), url: host, as: `${hostOf(host)}:${t.name}` }))
 /** Outward: this catalogue as the registration any MCP client mounts. */
@@ -47,7 +47,7 @@ const extend = toolOf('extension', {
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...EXTENSION.skill.selftest(ctx) }
     // the QPU's tools/list against the open MCP servers by size: the servers named for the client to ask, then the sizes it measured turned into ratios
-    if (args.compare !== undefined) { const own = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result?: { tools?: unknown[] } }).result ?? { tools: [] }; const qpu = { bytes: new TextEncoder().encode(JSON.stringify(own)).length, tools: own.tools?.length ?? 0 }; if (args.compare === true) return { phase: 'requests' as const, qpu, servers: OPEN_MCP_BASELINES, says: 'initialize each server, ask its tools/list with the session it names, and hand back { id, status, bytes, tools }, bytes counted over the JSON of the result' } as never; const c = args.compare as { answers?: { id: string; status: number; bytes: number; tools: number }[] }; return { phase: 'compared' as const, ...toolsListCompareOf(qpu, c.answers ?? []) } as never }
+    if (args.compare !== undefined) { const own = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result?: { tools?: unknown[] } }).result ?? { tools: [] }; const qpu = { bytes: new TextEncoder().encode(JSON.stringify(own)).length, tools: own.tools?.length ?? 0 }; const fullList = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result?: unknown }).result ?? {}; const full = { bytes: new TextEncoder().encode(JSON.stringify(fullList)).length }; if (args.compare === true) return { phase: 'requests' as const, qpu, full, servers: OPEN_MCP_BASELINES, says: 'initialize each server, ask its tools/list with the session it names, and hand back { id, status, bytes, tools }, bytes counted over the JSON of the result' } as never; const c = args.compare as { answers?: { id: string; status: number; bytes: number; tools: number }[] }; return { phase: 'compared' as const, ...toolsListCompareOf(qpu, c.answers ?? [], full) } as never }
     const host = typeof args.host === 'string' ? args.host : 'https://qpu.uuidna.com/mcp'
     const direction = String(args.direction ?? 'both')
     if (args.call && typeof args.call === 'object') {
