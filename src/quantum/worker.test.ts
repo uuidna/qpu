@@ -270,7 +270,9 @@ test('a single UUID unfurls into its page from the id alone: head, Open Graph, s
   assert.equal(page.status, 200, 'a UUID with no entry here still unfurls')
   assert.ok((await page.text()).includes(unknown.slice(0, 8)))
   const json = await worker.fetch(req(`/docket/${unknown}`), e)
-  assert.equal(json.status, 404)
+  assert.equal(json.status, 200, 'no 404 from a block: the page computed from the id alone')
+  const computed = await json.json() as { computed: boolean; body: { valid: boolean; channel: { handle: string } } }
+  assert.ok(computed.computed && computed.body.valid && computed.body.channel.handle === unknown.slice(0, 8))
 })
 
 test('the walk: a handle opens its family, a program compiles and executes next, the referer is prev, a locale is a translation lead', async () => {

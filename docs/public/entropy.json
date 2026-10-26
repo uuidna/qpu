@@ -1,7 +1,7 @@
 {
- "date": "2026-10-26T14:16:31.985Z",
+ "date": "2026-10-26T14:17:36.479Z",
  "files": 915,
- "lines": 79602,
+ "lines": 79603,
  "findings": 821,
  "fused": 307,
  "reactions": 514,
@@ -499,7 +499,7 @@
   {
    "id": "entropy-duplicate-4d77ae2a",
    "kind": "duplicate",
-   "source": "scripts/attest.ts:32, scripts/compete.ts:44, scripts/configs.ts:57, scripts/currency.ts:30, scripts/discover.ts:64, scripts/e2e.ts:44, scripts/patents.ts:32, scripts/verify.ts:61",
+   "source": "scripts/attest.ts:32, scripts/compete.ts:44, scripts/configs.ts:58, scripts/currency.ts:30, scripts/discover.ts:64, scripts/e2e.ts:44, scripts/patents.ts:32, scripts/verify.ts:61",
    "statement": "one line of code repeated in more than one file: one place should hold it — mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })",
    "status": "open",
    "tool": "audit",

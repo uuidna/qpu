@@ -253,3 +253,8 @@ export const uuidSchemasOf = (uuid: string) => {
     schemasRead: UUID_SCHEMAS.length + 2,
   }
 }
+
+/** A UUID no docket holds, answered as a block anyway: the page computed from the id alone (seal, channel, reflection),
+ *  nothing written, so every read of a block answers and the missing component is filled in real time; a client that
+ *  seeds reads `computed` and never stores it (there is no content to address). */
+export const computedEntryOf = (id: string) => ({ id, kind: 'uuid', from: 'computed', computed: true, body: verifyOf(id), says: 'no entry at this address: the page of the UUID from the id alone, nothing written (no content to address)' })

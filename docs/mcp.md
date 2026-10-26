@@ -2180,6 +2180,23 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
       },
       "description": "the variable NAMES the client's environment holds: which of a tenant's are missing (values never travel)"
     },
+    "template": {
+      "type": "string",
+      "enum": [
+        "worker",
+        "site",
+        "app"
+      ],
+      "description": "kind wrangler: the deploy template (worker, site, app); with useCase, that one preset"
+    },
+    "useCase": {
+      "type": "string",
+      "description": "kind wrangler: a product of the catalogue (a432, domain, tenant, seat, metered, iot, delivered, enterprise): the wrangler environment of that use case"
+    },
+    "name": {
+      "type": "string",
+      "description": "kind wrangler, template app: the app's name"
+    },
     "hex": {
       "type": "string",
       "description": "kind ui: any hex (a UUID, a hash, an address) presented as a shadcn combination: each nibble an item and a variant, the whole styled from itself"

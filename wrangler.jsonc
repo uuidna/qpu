@@ -42,5 +42,162 @@
   ],
   "observability": {
     "enabled": true
+  },
+  "env": {
+    "a432": {
+      "name": "qpu-a432",
+      "workers_dev": true,
+      "routes": [],
+      "vars": {
+        "QPU_USE_CASE": "a432",
+        "QPU_PRODUCT": "qpu-a432",
+        "QPU_UNIT": "none",
+        "QPU_LICENCE": "a432: free under attribution"
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DOCKET",
+            "class_name": "DocketObject"
+          }
+        ]
+      }
+    },
+    "domain": {
+      "name": "qpu-domain",
+      "workers_dev": true,
+      "routes": [],
+      "vars": {
+        "QPU_USE_CASE": "domain",
+        "QPU_PRODUCT": "qpu-domain",
+        "QPU_UNIT": "domain",
+        "QPU_LICENCE": "covered by the licence (yearly, monthly)"
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DOCKET",
+            "class_name": "DocketObject"
+          }
+        ]
+      }
+    },
+    "tenant": {
+      "name": "qpu-tenant",
+      "workers_dev": true,
+      "routes": [],
+      "vars": {
+        "QPU_USE_CASE": "tenant",
+        "QPU_PRODUCT": "qpu-tenant",
+        "QPU_UNIT": "tenant",
+        "QPU_LICENCE": "covered by the licence (yearly)"
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DOCKET",
+            "class_name": "DocketObject"
+          }
+        ]
+      }
+    },
+    "seat": {
+      "name": "qpu-seat",
+      "workers_dev": true,
+      "routes": [],
+      "vars": {
+        "QPU_USE_CASE": "seat",
+        "QPU_PRODUCT": "qpu-seat",
+        "QPU_UNIT": "seat",
+        "QPU_LICENCE": "covered by the licence (monthly)"
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DOCKET",
+            "class_name": "DocketObject"
+          }
+        ]
+      }
+    },
+    "metered": {
+      "name": "qpu-metered",
+      "workers_dev": true,
+      "routes": [],
+      "vars": {
+        "QPU_USE_CASE": "metered",
+        "QPU_PRODUCT": "qpu-metered",
+        "QPU_UNIT": "thousand-calls",
+        "QPU_LICENCE": "covered by the licence (per-thousand-calls)",
+        "QPU_METER": "per-thousand-calls"
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DOCKET",
+            "class_name": "DocketObject"
+          }
+        ]
+      }
+    },
+    "iot": {
+      "name": "qpu-iot",
+      "workers_dev": true,
+      "routes": [],
+      "vars": {
+        "QPU_USE_CASE": "iot",
+        "QPU_PRODUCT": "qpu-iot",
+        "QPU_UNIT": "million-readings",
+        "QPU_LICENCE": "covered by the licence (per-million-readings)",
+        "QPU_METER": "per-million-readings"
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DOCKET",
+            "class_name": "DocketObject"
+          }
+        ]
+      }
+    },
+    "delivered": {
+      "name": "qpu-delivered",
+      "workers_dev": true,
+      "routes": [],
+      "vars": {
+        "QPU_USE_CASE": "delivered",
+        "QPU_PRODUCT": "qpu-delivered",
+        "QPU_UNIT": "thousand-copies",
+        "QPU_LICENCE": "covered by the licence (per-thousand-copies)",
+        "QPU_METER": "per-thousand-copies"
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DOCKET",
+            "class_name": "DocketObject"
+          }
+        ]
+      }
+    },
+    "enterprise": {
+      "name": "qpu-enterprise",
+      "workers_dev": true,
+      "routes": [],
+      "vars": {
+        "QPU_USE_CASE": "enterprise",
+        "QPU_PRODUCT": "qpu-enterprise",
+        "QPU_UNIT": "platform",
+        "QPU_LICENCE": "covered by the licence (platform)"
+      },
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DOCKET",
+            "class_name": "DocketObject"
+          }
+        ]
+      }
+    }
   }
 }

@@ -7,7 +7,7 @@ import { handle, type Rpc } from './quantum/mcp.js'
 import { EXAMPLES } from './quantum/examples.js'
 import { LEADS } from './quantum/leads.js'
 import { LICENSE } from './quantum/license.js'
-import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, type Step } from './quantum/blocks.js'
+import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, computedEntryOf, type Step } from './quantum/blocks.js'
 import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.js'
 import { LOCALES as LANGS, translateOf } from './quantum/i18n.js'
 import { DEFAULT_MCP_HOSTS } from './quantum/discovery.js'
@@ -250,7 +250,7 @@ export class Docket {
 
   private async read(id: string, cheap: boolean, heal: boolean): Promise<Response> {
     const m = await this.entry(id)
-    if (!m) return json({ error: `no entry ${id}` }, 404)
+    if (!m) return json(computedEntryOf(id), 200) // no 404 from a block: the page computed from the id, nothing written
     const refs = (await this.storage.get<number>(`ref:${id}`)) ?? 0
     if (m.fragments.length === 0) return json({ id, sha256: m.sha256, kind: m.kind, from: m.from, committedAt: m.committedAt, witness: m.witness, revealed: false, refs, note: 'committed, not yet revealed: fingerprints only' })
     if (cheap) {

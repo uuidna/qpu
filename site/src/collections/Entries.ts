@@ -31,6 +31,15 @@ export const Entries: CollectionConfig = {
     { name: 'links', type: 'array', fields: [{ name: 'entry', type: 'text' }] },
   ],
   hooks: {
+    // every 404 from a block answered, nothing written: a well-formed UUID the collection does not hold is healed from the Worker by address (QPU_ORIGIN, accept json),
+    // which answers the entry its docket holds or the UUID's own page computed from the id alone; unreachable, the same page is computed here by the handler
+    afterError: [async ({ error, req }) => {
+      const id = String((req as { routeParams?: { id?: unknown } } | undefined)?.routeParams?.id ?? (req?.url ?? '').split('?')[0]!.split('/').pop() ?? '')
+      if ((error as { status?: number }).status !== 404 || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)) return
+      try { const res = await fetch((process.env.QPU_ORIGIN ?? 'https://qpu.uuidna.com') + '/' + id, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(10000) }); if (res.ok) { const entry = await res.json() as { id?: string; kind?: string; from?: string; body?: unknown; links?: string[]; computed?: boolean }; if (entry && entry.kind && entry.from && !entry.computed) { try { await req.payload.create({ collection: 'entries' as never, data: { kind: entry.kind, from: entry.from, body: entry.body, links: entry.links ?? [] } as never, overrideAccess: true, context: { disableRevalidate: true } }) } catch { /* seeded already, or refused: the answer stands */ } } return { response: entry, status: 200 } } } catch { /* the Worker unreached: computed here */ }
+      const v = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'verify', arguments: { uuid: id } } }) as { result?: { structuredContent?: unknown } }).result?.structuredContent
+      return { response: { id, kind: 'uuid', from: 'computed', computed: true, body: v ?? null, says: 'no entry at this address: the page of the UUID from the id alone, nothing written (no content address to seed at)' }, status: 200 }
+    }],
     beforeValidate: [async ({ data, operation }) => {
       if (operation !== 'create' || !data) return data
       const text = JSON.stringify({ kind: data.kind, from: data.from, body: data.body ?? null })

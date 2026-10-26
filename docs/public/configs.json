@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T14:17:16.412Z",
- "ms": 522,
+ "date": "2026-10-26T14:43:20.835Z",
+ "ms": 526,
  "selftest": {
   "passed": true
  },
@@ -57,16 +57,16 @@
   {
    "kind": "wrangler",
    "torus": {
-    "address": "210b70e6-b706-3359-bc0d-0cf4bb4120d2",
-    "seed": 3,
-    "reflection": 7,
+    "address": "e6ad7810-2a87-55de-a46b-2d629ed32821",
+    "seed": 6,
+    "reflection": 4,
     "trinity": [
      3,
      6,
      9
     ],
     "closed": true,
-    "bytes": 601
+    "bytes": 2940
    }
   },
   {
@@ -147,46 +147,46 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "bc098efc-4b83-1fc1-87ca-70c871495352",
-    "seed": 1,
-    "reflection": 9,
+    "address": "59c4c4fc-eda2-6705-aa8b-5cec89440bdf",
+    "seed": 7,
+    "reflection": 3,
     "trinity": [
      7,
      4,
      1
     ],
     "closed": true,
-    "bytes": 73279
+    "bytes": 75182
    }
   },
   {
    "kind": "api",
    "torus": {
-    "address": "22aa122f-adc2-6183-bf60-6655d88e5870",
-    "seed": 4,
-    "reflection": 6,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 80007
-   }
-  },
-  {
-   "kind": "hooks",
-   "torus": {
-    "address": "3e42f020-010a-48ec-910f-1654840f68e3",
-    "seed": 2,
-    "reflection": 8,
+    "address": "c6b85cb0-f445-50fd-b9a7-d2bfd71ee817",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 1523
+    "bytes": 80449
+   }
+  },
+  {
+   "kind": "hooks",
+   "torus": {
+    "address": "597120b2-720f-3448-a57f-bda71f6667ea",
+    "seed": 9,
+    "reflection": 1,
+    "trinity": [
+     3,
+     6,
+     9
+    ],
+    "closed": true,
+    "bytes": 1984
    }
   },
   {
@@ -327,16 +327,16 @@
   {
    "kind": "adapters",
    "torus": {
-    "address": "d802217a-7a0a-54e3-bbb1-93ae7e6061a5",
-    "seed": 3,
-    "reflection": 7,
+    "address": "867961ef-ad9b-6ca1-9206-0a0f4c0e8f24",
+    "seed": 9,
+    "reflection": 1,
     "trinity": [
      3,
      6,
      9
     ],
     "closed": true,
-    "bytes": 5703
+    "bytes": 10476
    }
   },
   {
@@ -357,16 +357,16 @@
   {
    "kind": "sets",
    "torus": {
-    "address": "1a54cd35-4b41-73a9-b62c-f35f0ced00a9",
-    "seed": 7,
-    "reflection": 3,
+    "address": "36b04e91-6b11-89d7-9b9d-cdd5b6c23231",
+    "seed": 4,
+    "reflection": 6,
     "trinity": [
      7,
      4,
      1
     ],
     "closed": true,
-    "bytes": 61141
+    "bytes": 61493
    }
   },
   {
