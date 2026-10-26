@@ -2593,6 +2593,14 @@
             "type": "boolean",
             "description": "the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client: the plan, then with answers { list, found } the update requests"
           },
+          "schemas": {
+            "type": "boolean",
+            "description": "Payload's combinatorial surface handled programmatically: every dimension (field types, operations, schemas, queries, hooks, access, realtime coordination) named and meant by its textbook theorem, counted from the table and decided through the match tool; any collection's fields (collection: { slug, fields }) as JSON Schema 2020-12, GraphQL, the plugin's MCP tools and OpenAPI paths; the standards each part is described by; the sources to re-read (requestList), and with answers { url: text } the drift as leads"
+          },
+          "collection": {
+            "type": "object",
+            "description": "schemas: { slug, fields } in Payload's own field config shape"
+          },
           "payloadUrl": {
             "type": "string",
             "description": "the tenant's Payload origin; its MCP is at /api/mcp"

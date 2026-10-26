@@ -2,10 +2,13 @@
 // author a Person with an ORCID, the licence a URL, dates in ISO 8601, languages in ISO 639-1, currencies in ISO 4217,
 // countries in ISO 3166-1), and the free CLDR lists (Unicode's JSON of the ISO codes with their names) read as contracts so
 // the tree's locales and currencies are validated against the standard, never against prose. No I/O here.
+import { PAYLOAD_SURFACE } from './payload-surface.js'
 import { LICENSE } from './license.js'
 import { VERSION } from './version.js'
 
 export const STANDARDS: readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[] = [
+  // the standards Payload's programmatic surface is described by (JSON Schema, OpenAPI, GraphQL, JSON-LD, MCP, the RFCs), read with the surface on 2026-10-26: references the payload tool's schemas door cites per part
+  ...PAYLOAD_SURFACE.standards.map((s) => ({ id: s.id, name: `${s.standard}: ${s.describes.slice(0, s.describes.indexOf(':') > 0 ? s.describes.indexOf(':') : 80)}`, contract: s.canonical, kind: 'reference' as const })),
   // the reference site: payloadcms.com is built of what Payload computes (its REST answers Payload's own shape: docs with blocks, meta, breadcrumbs), as qpu.uuidna.com is built of what qpu computes
   { id: 'payload-site', name: 'payloadcms.com, built with Payload (REST pages)', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', kind: 'reference' },
   // NIST's first post-quantum standards, read at CSRC on 2026-10-25: FIPS 203, 204 and 205 published August 13, 2024; HQC selected March 11, 2025 (NIST IR 8545)

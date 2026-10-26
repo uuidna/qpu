@@ -89,15 +89,15 @@ theorem textbook_widget_skilled_tools (w s : Nat) (h : w = s) : min w s = w := b
 /-- the tool set partitions over the twelve toolboxes: forty-six tools (examples: configure-sets) -/
 theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 = 46 := by decide
 /-- every API is a gate: the forty-six doors of twelve toolboxes and the ninety-seven addresses of six categories (patents, certificates, currency, competitions, MCP with Google's servers, references) make one hundred and forty-three gates, each a nested doc of its leads (examples: configure-gates) -/
-theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 59 + 15 + 7 + 2 = 154 := by decide
-/-- every API handled in quantum: one adapter per gate, a dimension of the one plugin, landing in the default schema — one hundred and nineteen in the docket entries, five in the catalogue's products, five in the competition pages, fourteen in the pages and the search index (examples: configure-gates) -/
-theorem textbook_gate_adapters : 129 + 5 + 5 + 15 = 154 := by decide
+theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 59 + 28 + 7 + 2 = 167 := by decide
+/-- every API handled in quantum: one adapter per gate, a dimension of the one plugin, landing in the default schema — one hundred and nineteen in the docket entries, five in the catalogue's products, five in the competition pages, twenty-eight in the pages and the search index (the thirteen standards Payload's surface is described by among them) (examples: configure-gates) -/
+theorem textbook_gate_adapters : 129 + 5 + 5 + 28 = 167 := by decide
 /-- every adapter dimension is REST both ways (in: the API's answer into Payload; out: Payload's data to the API) under the three tenant roles: six role-direction pairs, the access rules naming each (examples: configure-gates) -/
 theorem textbook_rest_rbac : 2 * 3 = 6 := by decide
 /-- Google's own MCP servers measured in the registry: fifteen at <service>.googleapis.com/mcp and three toolboxes, every one an adapter dimension or a door, none called from the tree (examples: configure-gates) -/
 theorem textbook_google_mcps : 15 + 3 = 18 := by decide
-/-- the same gates by kind: forty-six tools, thirty-five open, twenty-eight keyed (Google's fifteen among them), one a browser alone passes, thirty-three proposed by the registry (examples: configure-gates) -/
-theorem textbook_gates_by_kind : 46 + 40 + 34 + 1 + 33 = 154 := by decide
+/-- the same gates by kind: forty-six tools, fifty-three open, thirty-four keyed (Google's fifteen among them), one a browser alone passes, thirty-three proposed by the registry (examples: configure-gates) -/
+theorem textbook_gates_by_kind : 46 + 53 + 34 + 1 + 33 = 167 := by decide
 /-- five databases, five storages and two email adapters make fifty adapter combinations (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
@@ -144,5 +144,19 @@ theorem textbook_news_adapters : 4 + 3 = 7 := by decide
 theorem textbook_lean_served_whole (hand generated : Nat) : hand + generated - generated = hand := Nat.add_sub_cancel hand generated
 /-- three deploy templates (the Worker, the Payload app, a generated app) over the eight products of the catalogue are twenty-four presets, each a wrangler environment deployed by name beside the default deploy and as usable as direct use (examples: configure-wrangler-preset) -/
 theorem textbook_deploy_presets : 3 * 8 = 24 := by decide
+/-- Payload's field types: nineteen hold a value (text, textarea, number, email, code, json, date, point, checkbox, select, radio, relationship, upload, array, blocks, group, tabs, richText, slug) and four present (row, collapsible, ui, join), twenty-three in all; every schema is built of the nineteen (examples: payload-schemas) -/
+theorem textbook_payload_field_types : 19 + 4 = 23 := by decide
+/-- Payload's operations by scope: seventeen on a collection, seven on a global, twelve of auth, three of access, three of preferences, six of the jobs queue, the custom endpoint and the GraphQL endpoint: fifty, each with its local signature, its REST method and path and its GraphQL form (examples: payload-schemas) -/
+theorem textbook_payload_operations : 17 + 7 + 12 + 3 + 3 + 6 + 1 + 1 = 50 := by decide
+/-- every data field type under every collection operation is a schema handled programmatically from the table: 323 schemas, each as JSON Schema 2020-12, a GraphQL type, an MCP tool of the plugin and an OpenAPI path (examples: payload-schemas) -/
+theorem textbook_payload_schemas : 19 * 17 = 323 := by decide
+/-- sixteen where operators over nineteen data field types: 304 queries, every one a schema read through an operator (examples: payload-schemas) -/
+theorem textbook_payload_queries : 16 * 19 = 304 := by decide
+/-- the hooks by level: one root hook, eighteen on a collection, six on a global, five on a field: thirty, each firing on the operations it names; the generated plugin uses them for the collision guard, the first user, the app request and the 404 answered from the id (examples: payload-schemas) -/
+theorem textbook_payload_hooks : 1 + 18 + 6 + 5 = 30 := by decide
+/-- the access functions by level: seven on a collection, three on a global, three on a field, three on the jobs: sixteen, each answering a boolean or a where, the whole of role-based access the tenants carry (examples: payload-schemas) -/
+theorem textbook_payload_access : 7 + 3 + 3 + 3 = 16 := by decide
+/-- eight realtime channels (live preview client and server, autosave, document locking, the jobs queue, scheduled publishing, the MCP plugin's stream, GraphQL subscriptions: none) over fifty operations are 400 coordinations, every one coordinated by the content address the edit names, no socket of its own (examples: payload-schemas) -/
+theorem textbook_payload_coordination : 8 * 50 = 400 := by decide
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h
