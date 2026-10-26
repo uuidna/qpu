@@ -1807,6 +1807,17 @@ The competitions with prizes and funding, their rules read at the source and jud
 {
   "type": "object",
   "properties": {
+    "news": {
+      "type": "boolean",
+      "description": "the public news APIs as adapters of the DOI research: the requests the client makes to the open ones for every record of precedence, the keyed ones named"
+    },
+    "mentions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the answers to the news requests ({ id, status, text }): the mentions by source and by record, read into the acceptance rule"
+    },
     "pages": {
       "type": "object",
       "description": "competition id → the text of its rules page, read by the client: the entry window is measured from it"

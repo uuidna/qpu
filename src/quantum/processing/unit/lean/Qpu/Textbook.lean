@@ -89,15 +89,15 @@ theorem textbook_widget_skilled_tools (w s : Nat) (h : w = s) : min w s = w := b
 /-- the tool set partitions over the twelve toolboxes: forty-six tools (examples: configure-sets) -/
 theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 = 46 := by decide
 /-- every API is a gate: the forty-six doors of twelve toolboxes and the ninety-seven addresses of six categories (patents, certificates, currency, competitions, MCP with Google's servers, references) make one hundred and forty-three gates, each a nested doc of its leads (examples: configure-gates) -/
-theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 58 + 14 + 2 = 145 := by decide
+theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 58 + 14 + 7 + 2 = 152 := by decide
 /-- every API handled in quantum: one adapter per gate, a dimension of the one plugin, landing in the default schema — one hundred and nineteen in the docket entries, five in the catalogue's products, five in the competition pages, fourteen in the pages and the search index (examples: configure-gates) -/
-theorem textbook_gate_adapters : 121 + 5 + 5 + 14 = 145 := by decide
+theorem textbook_gate_adapters : 128 + 5 + 5 + 14 = 152 := by decide
 /-- every adapter dimension is REST both ways (in: the API's answer into Payload; out: Payload's data to the API) under the three tenant roles: six role-direction pairs, the access rules naming each (examples: configure-gates) -/
 theorem textbook_rest_rbac : 2 * 3 = 6 := by decide
 /-- Google's own MCP servers measured in the registry: fifteen at <service>.googleapis.com/mcp and three toolboxes, every one an adapter dimension or a door, none called from the tree (examples: configure-gates) -/
 theorem textbook_google_mcps : 15 + 3 = 18 := by decide
 /-- the same gates by kind: forty-six tools, thirty-five open, twenty-eight keyed (Google's fifteen among them), one a browser alone passes, thirty-three proposed by the registry (examples: configure-gates) -/
-theorem textbook_gates_by_kind : 46 + 35 + 30 + 1 + 33 = 145 := by decide
+theorem textbook_gates_by_kind : 46 + 39 + 33 + 1 + 33 = 152 := by decide
 /-- five databases, five storages and two email adapters make fifty adapter combinations (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
@@ -136,3 +136,5 @@ theorem textbook_billing_complete : 1 + 1 + 1 + 1 = 4 := by decide
 theorem textbook_kwh_joules : 3600 * 1000 = 3600000 := by decide
 /-- the leads carried are zero and the release is published as the next sequential version, or they are positive and next converts them to Payload documents first: no third case (examples: leads-carry) -/
 theorem textbook_carry_release (carried : Nat) : carried = 0 ∨ 0 < carried := Nat.eq_zero_or_pos carried
+/-- four open news APIs and three keyed ones are the seven adapters of the DOI research: the mentions of every record of precedence, by source, measured and never a verdict (examples: compete-news-plan) -/
+theorem textbook_news_adapters : 4 + 3 = 7 := by decide

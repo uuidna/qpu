@@ -1,7 +1,7 @@
 {
- "date": "2026-10-26T13:30:31.229Z",
+ "date": "2026-10-26T13:31:54.977Z",
  "files": 915,
- "lines": 79477,
+ "lines": 79484,
  "findings": 821,
  "fused": 307,
  "reactions": 514,
@@ -343,7 +343,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/audit.ts:247, src/quantum/audit.ts:248, src/quantum/examples.ts:122, src/quantum/mcp.ts:892, src/quantum/mcp.ts:895, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:111, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:132, src/quantum/toolboxes/legal.ts:197",
+   "source": "src/quantum/audit.ts:247, src/quantum/audit.ts:248, src/quantum/examples.ts:122, src/quantum/mcp.ts:892, src/quantum/mcp.ts:895, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:111, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:139, src/quantum/toolboxes/legal.ts:204",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
@@ -439,7 +439,7 @@
   {
    "id": "entropy-literal-6d05a9be",
    "kind": "literal",
-   "source": "src/quantum/toolboxes/legal.ts:143",
+   "source": "src/quantum/toolboxes/legal.ts:150",
    "statement": "data baked into a file as a JSON literal: the handler should answer it at run time — c… 1065 characters of JSON on one line",
    "status": "open",
    "tool": "audit",
@@ -3691,7 +3691,7 @@
   {
    "id": "entropy-duplicate-16bf3d61",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/billing.ts:247, src/quantum/toolboxes/crypto.ts:224, src/quantum/toolboxes/extension.ts:91, src/quantum/toolboxes/language.ts:83, src/quantum/toolboxes/legal.ts:48, src/quantum/toolboxes/legal.ts:312, src/quantum/toolboxes/payload.ts:1796, src/quantum/toolboxes/raid.ts:113, src/quantum/toolboxes/repository.ts:110, src/quantum/toolboxes/standards.ts:55",
+   "source": "src/quantum/toolboxes/billing.ts:247, src/quantum/toolboxes/crypto.ts:224, src/quantum/toolboxes/extension.ts:91, src/quantum/toolboxes/language.ts:83, src/quantum/toolboxes/legal.ts:48, src/quantum/toolboxes/legal.ts:319, src/quantum/toolboxes/payload.ts:1796, src/quantum/toolboxes/raid.ts:113, src/quantum/toolboxes/repository.ts:110, src/quantum/toolboxes/standards.ts:55",
    "statement": "one line of code repeated in more than one file: one place should hold it — const checks: { id: string; passed: boolean; evidence: string }[] = []",
    "status": "open",
    "tool": "audit",
@@ -3703,7 +3703,7 @@
   {
    "id": "entropy-duplicate-1adf7165",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/billing.ts:248, src/quantum/toolboxes/crypto.ts:225, src/quantum/toolboxes/extension.ts:92, src/quantum/toolboxes/language.ts:84, src/quantum/toolboxes/legal.ts:49, src/quantum/toolboxes/legal.ts:313, src/quantum/toolboxes/payload.ts:1797, src/quantum/toolboxes/raid.ts:114, src/quantum/toolboxes/repository.ts:111, src/quantum/toolboxes/standards.ts:56",
+   "source": "src/quantum/toolboxes/billing.ts:248, src/quantum/toolboxes/crypto.ts:225, src/quantum/toolboxes/extension.ts:92, src/quantum/toolboxes/language.ts:84, src/quantum/toolboxes/legal.ts:49, src/quantum/toolboxes/legal.ts:320, src/quantum/toolboxes/payload.ts:1797, src/quantum/toolboxes/raid.ts:114, src/quantum/toolboxes/repository.ts:111, src/quantum/toolboxes/standards.ts:56",
    "statement": "one line of code repeated in more than one file: one place should hold it — const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })",
    "status": "open",
    "tool": "audit",
@@ -3715,7 +3715,7 @@
   {
    "id": "entropy-duplicate-d876a0ce",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/crypto.ts:179, src/quantum/toolboxes/legal.ts:259",
+   "source": "src/quantum/toolboxes/crypto.ts:179, src/quantum/toolboxes/legal.ts:266",
    "statement": "one line of code repeated in more than one file: one place should hold it — const byTheorem: Record<string, { passed: number; failed: number }> = {}",
    "status": "open",
    "tool": "audit",
@@ -3727,7 +3727,7 @@
   {
    "id": "entropy-duplicate-93e28159",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/crypto.ts:198, src/quantum/toolboxes/legal.ts:284",
+   "source": "src/quantum/toolboxes/crypto.ts:198, src/quantum/toolboxes/legal.ts:291",
    "statement": "one line of code repeated in more than one file: one place should hold it — if (op !== 'read') throw new Error(`op ${op} is not plan or read`)",
    "status": "open",
    "tool": "audit",

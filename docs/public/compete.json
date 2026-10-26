@@ -1,45 +1,177 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T13:10:06.731Z",
- "ms": 1721,
+ "date": "2026-10-26T13:36:04.501Z",
+ "ms": 12626,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "faf0eac3447ea72ab1f6905c1cf3cd67a6d52155",
+ "head": "37325be7050f08ba75216a346df68c3a256829fd",
  "pushed": false,
  "fetched": [
   {
    "id": "clay-millennium",
    "status": 200,
-   "ms": 564,
+   "ms": 336,
    "bytes": 79933
-  },
-  {
-   "id": "xprize-quantum-applications",
-   "status": 200,
-   "ms": 428,
-   "bytes": 174240
   },
   {
    "id": "vercel-oss-program",
    "status": 200,
-   "ms": 625,
+   "ms": 317,
    "bytes": 827056
   },
   {
    "id": "cloudflare-workers-launchpad",
    "status": 200,
-   "ms": 660,
+   "ms": 635,
    "bytes": 402587
   },
   {
    "id": "github-maintainer-programs",
    "status": 200,
-   "ms": 929,
+   "ms": 822,
    "bytes": 394161
+  },
+  {
+   "id": "xprize-quantum-applications",
+   "status": 200,
+   "ms": 1082,
+   "bytes": 174240
   }
  ],
+ "precedence": [
+  {
+   "doi": "10.5281/zenodo.21781602",
+   "title": "All Seven Clay Millennium Problems Sealed via Universal σ-Involution",
+   "year": 2026,
+   "states": "the author's record on the seven problems: the σ-involution and its bridge theorems",
+   "url": "https://doi.org/10.5281/zenodo.21781602"
+  },
+  {
+   "doi": "10.5281/zenodo.22700098",
+   "title": "@uuidna/qpu, all versions",
+   "year": 2026,
+   "states": "the concept record of this software: every version a child DOI",
+   "url": "https://doi.org/10.5281/zenodo.22700098"
+  },
+  {
+   "doi": "10.5281/zenodo.23156998",
+   "title": "@uuidna/qpu v1.4.0",
+   "year": 2026,
+   "states": "this version of the software: the exact, formally verified quantum processing unit served over MCP",
+   "url": "https://doi.org/10.5281/zenodo.23156998"
+  }
+ ],
+ "acceptance": {
+  "rows": [
+   {
+    "api": "hn-algolia",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "wikipedia-search",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "wikipedia-search",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "wikipedia-search",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "hn-algolia",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "hn-algolia",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "gdelt",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "gdelt",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "gdelt",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 429,
+    "mentions": null
+   }
+  ],
+  "byRecord": {
+   "10.5281/zenodo.21781602": 0,
+   "10.5281/zenodo.22700098": 0,
+   "10.5281/zenodo.23156998": 0
+  },
+  "bySource": {
+   "gdelt": 0,
+   "hn-algolia": 0,
+   "crossref-events": 0,
+   "wikipedia-search": 0
+  },
+  "total": 0,
+  "reachable": 6,
+  "of": 12,
+  "says": "mentions of the author's records by public source, measured, never a verdict: the acceptance rule reads them"
+ },
+ "news": {
+  "apis": 7,
+  "open": 4,
+  "keyed": [
+   {
+    "id": "newsapi",
+    "key": "NEWSAPI_KEY"
+   },
+   {
+    "id": "guardian",
+    "key": "GUARDIAN_API_KEY"
+   },
+   {
+    "id": "nyt",
+    "key": "NYT_API_KEY"
+   }
+  ]
+ },
  "competitions": [
   {
    "id": "clay-millennium",
@@ -48,15 +180,15 @@
    "rules": [
     {
      "rule": "a solution of one of the seven problems",
-     "needs": "a proof accepted by the community, not an identity: the σ-involution bridge theorems here are kernel-checked integer identities, not solutions of any Millennium problem",
-     "act": "none claimed: a solution is mathematics the author would publish",
+     "needs": "a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README",
+     "act": "the author's record stands at its DOI; the community's acceptance is measured by the rules below",
      "status": "open",
-     "evidence": "539 theorems kernel-accepted (1047 in the kernel), identities and bridge theorems; no Millennium problem solved"
+     "evidence": "548 theorems kernel-accepted (1056 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
-     "needs": "a refereed journal or outlet of §6",
-     "act": "the author publishes (the release and its DOI are the author's acts)",
+     "needs": "a refereed journal or outlet of §6; the record at doi:10.5281/zenodo.21781602 is the publication of precedence, the qualifying outlet the author's act",
+     "act": "the author publishes in a qualifying outlet (the release and its DOI are the author's acts)",
      "status": "pending",
      "evidence": "no publication in a qualifying outlet"
     },
@@ -70,9 +202,9 @@
     {
      "rule": "(iii) general acceptance",
      "needs": "the community",
-     "act": "none the tree can take",
+     "act": "measured by the mentions the public sources answer; the community's act",
      "status": "pending",
-     "evidence": "the author's act"
+     "evidence": "0 mentions of the records across 6 of 12 public source reads: gdelt 0, hn-algolia 0, crossref-events 0, wikipedia-search 0"
     }
    ],
    "competitors": {
@@ -90,13 +222,13 @@
    "requires": [
     {
      "rule": "a solution of one of the seven problems",
-     "needs": "a proof accepted by the community, not an identity: the σ-involution bridge theorems here are kernel-checked integer identities, not solutions of any Millennium problem",
-     "act": "none claimed: a solution is mathematics the author would publish"
+     "needs": "a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README",
+     "act": "the author's record stands at its DOI; the community's acceptance is measured by the rules below"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
-     "needs": "a refereed journal or outlet of §6",
-     "act": "the author publishes (the release and its DOI are the author's acts)"
+     "needs": "a refereed journal or outlet of §6; the record at doi:10.5281/zenodo.21781602 is the publication of precedence, the qualifying outlet the author's act",
+     "act": "the author publishes in a qualifying outlet (the release and its DOI are the author's acts)"
     },
     {
      "rule": "(ii) two years since publication",
