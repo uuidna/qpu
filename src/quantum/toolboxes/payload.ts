@@ -1145,9 +1145,25 @@ import { handle } from '@uuidna/qpu/mcp'
 import { qpuEcommerce } from './payload.qpu.ecommerce'
 import { Qpu } from './blocks/Qpu/config'
 import { qpuMcpTools, qpuMcpResources, qpuServerInfo } from './payload.qpu.mcp'
+import { importExportPlugin } from '@payloadcms/plugin-import-export'
+import type { Config, CollectionConfig } from 'payload'
+
+// governance by role, from the configs: who may move data in and out, who may read a document's history, which languages the content speaks
+type QpuUser = { roles?: string[]; tenants?: { roles?: string[] }[] } | null | undefined
+const qpuSuperAdmin = (u: unknown) => ((u as QpuUser)?.roles ?? []).includes('admin')
+const qpuEditor = ({ req }: { req: { user?: unknown } }) => qpuSuperAdmin(req.user) || ((req.user as QpuUser)?.tenants ?? []).some((r) => (r.roles ?? []).some((x) => x === 'tenant-admin' || x === 'editor'))
+const qpuSuperAdminOnly = ({ req }: { req: { user?: unknown } }) => qpuSuperAdmin(req.user)
+// a bulk import or export overrides many documents at once: the super admin's act alone, never a tenant's, and never updated
+const qpuTransferAccess = ({ collection }: { collection: CollectionConfig }): CollectionConfig => ({ ...collection, access: { ...collection.access, read: qpuSuperAdminOnly, create: qpuSuperAdminOnly, update: () => false, delete: qpuSuperAdminOnly } })
+/** the languages by ISO 639-1 code, from the QPU's own language list: English the default, a missing translation falling back to it */
+export const qpuLocalization = { locales: ${JSON.stringify(Object.keys(LOCALES))}, defaultLocale: 'en', fallback: true }
+/** a document's version history readable only by those who may edit it, on every versioned collection; the localization set when the config sets none */
+export const qpuGovernance = (config: Config): Config => ({ ...config, localization: config.localization ?? qpuLocalization, collections: (config.collections ?? []).map((c) => (c.versions ? { ...c, access: { ...c.access, readVersions: c.access?.readVersions ?? qpuEditor } } : c)) })
 
 export const qpuBlocks = [Qpu] // beside the site's ${ws.blocks} blocks; referenced as 'qpu' in every layout
 export const qpuPlugins = [
+  // data moved in and out by the super admin alone: a bulk import or export overrides many documents at once, so its records are read, created and deleted only by the super admin, never updated; orders leave, never enter
+  importExportPlugin({ collections: [{ slug: 'pages' }, { slug: 'posts' }, { slug: 'entries' }, { slug: 'products' }, { slug: 'orders', import: false }], overrideExportCollection: qpuTransferAccess, overrideImportCollection: qpuTransferAccess }),
   // the ecommerce plugin first: it creates products, carts, orders, transactions and addresses, which the multi-tenant plugin scopes (measured: placed after, the plugin warns of missing collections)
   qpuEcommerce, // the licence catalogue sold through Payload's own ecommerce plugin with its Stripe adapter: the API from the config
   searchPlugin({ collections: ['pages', 'posts'] }),
@@ -1163,6 +1179,7 @@ export const qpuPlugins = [
     if (!n?.allowed) throw new UnauthorizedError()
     user.roles = n.roles; user.tenants = n.rows; return settings
   } } as never), // the tools and the ui:// resources of every tool (MCP Apps) through the plugin; an API key per user authorises a client, narrowed to the namespace a request names
+  qpuGovernance, // last, over every collection the plugins above added: version history by role, the languages by ISO 639-1
 ]
 export const qpuEnv = {
   DATABASE_URI: "the RAID docket of the tenant (the mongo tool's language), as the site's MongoDB",
