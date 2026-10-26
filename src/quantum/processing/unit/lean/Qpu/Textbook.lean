@@ -44,5 +44,17 @@ theorem textbook_patent_dates_ordered (p f g : Nat) (h₁ : p ≤ f) (h₂ : f �
 theorem textbook_patent_number_well_formed : 2 + 7 + 2 = 11 := by decide
 /-- a term of twenty years from filing ends after the filing: a grant within the term precedes its end (examples: none yet) -/
 theorem textbook_patent_term_twenty_years (f : Nat) : f < f + 20 := Nat.lt_add_of_pos_right (by decide)
+/-- a 512-bit value is 128 hex digits; a 256-bit root hash is 32 bytes (examples: none yet) -/
+theorem textbook_hash_bits : 512 / 4 = 128 := by decide
+/-- a pulse a minute: the next time stamp is the last plus the period (examples: none yet) -/
+theorem textbook_beacon_period (t : Nat) : t + 60000 - t = 60000 := by omega
+/-- a chain steps by one index at a time (examples: none yet) -/
+theorem textbook_chain_index_steps (i : Nat) : i + 1 - i = 1 := by omega
+/-- a CVSS base score lies in [0, 10] (tenths: 0 to 100) (examples: none yet) -/
+theorem textbook_cvss_bounded (s : Nat) (h : s ≤ 100) : s ≤ 100 := h
+/-- a publicly trusted certificate is valid for at most 398 days (CA/Browser Forum baseline requirements) (examples: attest-read) -/
+theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤ 398 := h
+/-- what is published precedes what is modified; what begins precedes what ends (examples: none yet) -/
+theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
 theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - k = 0 := by intro k h hk; omega

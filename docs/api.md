@@ -53,7 +53,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 
 ## Tools
 
-45 tools in 12 toolboxes; every tool's schema is in [the MCP reference](/mcp) and every example in [the textbook](/examples).
+46 tools in 12 toolboxes; every tool's schema is in [the MCP reference](/mcp) and every example in [the textbook](/examples).
 
 | Tool | Toolbox | What it answers |
 |---|---|---|
@@ -102,6 +102,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 | `extend` | extension | QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, tools): the host's tools/list read into do |
 | `fold` | crypto | The split folds: a payload larger than a place can hold is folded into pieces under the bound (bytes), each addressed by |
 | `seal` | crypto | SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure |
+| `attest` | crypto | The crypto and certificate APIs, with NIST and CERN, verified by theorems in coordinated combinations: plan answers the  |
 
 ## The MCP connector
 

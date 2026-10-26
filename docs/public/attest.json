@@ -1,0 +1,549 @@
+{
+ "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
+ "date": "2026-10-26T09:16:26.819Z",
+ "ms": 19112,
+ "rounds": 2,
+ "selftest": {
+  "passed": true
+ },
+ "fetched": [
+  {
+   "id": "nist-beacon",
+   "status": 200,
+   "ms": 1065,
+   "bytes": 3633
+  },
+  {
+   "id": "ct-sth",
+   "status": 200,
+   "ms": 116,
+   "bytes": 241
+  },
+  {
+   "id": "acme-directory",
+   "status": 200,
+   "ms": 500,
+   "bytes": 961
+  },
+  {
+   "id": "nvd-cves",
+   "status": 200,
+   "ms": 593,
+   "bytes": 21839
+  },
+  {
+   "id": "cern-opendata",
+   "status": 200,
+   "ms": 385,
+   "bytes": 119560
+  },
+  {
+   "id": "csrc-pqc",
+   "status": 200,
+   "ms": 443,
+   "bytes": 61029
+  },
+  {
+   "id": "crt-sh",
+   "status": 200,
+   "ms": 17104,
+   "bytes": 2
+  },
+  {
+   "id": "tls:qpu.uuidna.com",
+   "status": 200,
+   "ms": 91,
+   "bytes": 115
+  },
+  {
+   "id": "tls:qpu.psg.bg",
+   "status": 200,
+   "ms": 187,
+   "bytes": 115
+  },
+  {
+   "id": "tls:opendata.cern.ch",
+   "status": 200,
+   "ms": 112,
+   "bytes": 107
+  },
+  {
+   "id": "tls:beacon.nist.gov",
+   "status": 200,
+   "ms": 290,
+   "bytes": 107
+  },
+  {
+   "id": "nist-beacon-previous",
+   "status": 200,
+   "ms": 1541,
+   "bytes": 3633
+  }
+ ],
+ "apis": [
+  {
+   "id": "nist-beacon",
+   "name": "NIST Randomness Beacon 2.0, the last pulse",
+   "url": "https://beacon.nist.gov/beacon/2.0/pulse/last",
+   "open": true,
+   "measured": "HTTP 200 JSON: pulse { chainIndex, pulseIndex, timeStamp, period 60000, localRandomValue, listValues[previous|hour|day|month|year], precommitmentValue, signatureValue (1024 hex), outputValue (128 hex) }"
+  },
+  {
+   "id": "ct-sth",
+   "name": "Certificate Transparency, Google Argon 2026h2 log, the signed tree head",
+   "url": "https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth",
+   "open": true,
+   "measured": "HTTP 200 JSON: tree_size 3 461 480 042, timestamp, sha256_root_hash (base64 of 32 bytes), tree_head_signature"
+  },
+  {
+   "id": "acme-directory",
+   "name": "Let's Encrypt ACME v2 directory (RFC 8555)",
+   "url": "https://acme-v02.api.letsencrypt.org/directory",
+   "open": true,
+   "measured": "HTTP 200 JSON: newNonce, newAccount, newOrder, revokeCert, keyChange, meta"
+  },
+  {
+   "id": "nvd-cves",
+   "name": "NIST NVD, CVEs on ML-KEM",
+   "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5",
+   "open": true,
+   "measured": "HTTP 200 JSON: totalResults 10; vulnerabilities[].cve { id, published, lastModified, metrics.cvssMetricV31[].cvssData.baseScore }; five requests a thirty seconds without a key"
+  },
+  {
+   "id": "cern-opendata",
+   "name": "CERN Open Data Portal, records on the Higgs",
+   "url": "https://opendata.cern.ch/api/records/?q=higgs&size=5",
+   "open": true,
+   "measured": "HTTP 200 JSON: hits.total 5566; hits.hits[].metadata { recid, title, files[] { size, checksum adler32:<8 hex> }, relations[].doi 10.7483/…, license CC0-1.0 }"
+  },
+  {
+   "id": "crt-sh",
+   "name": "crt.sh, the certificates logged for a host",
+   "url": "https://crt.sh/?q=<host>&output=json",
+   "open": true,
+   "measured": "HTTP 502 on 2026-10-26 (its gateway); when it answers, JSON entries with not_before, not_after, issuer_name"
+  },
+  {
+   "id": "tls-live",
+   "name": "a host's live TLS certificate, read by the client (openssl or node:tls), never fetched by the tree",
+   "url": "tls://<host>:443",
+   "open": true,
+   "measured": "qpu.uuidna.com: Google Trust Services WE1, 2026-09-09 to 2026-12-08 (90 days)"
+  },
+  {
+   "id": "csrc-pqc",
+   "name": "NIST CSRC, the post-quantum cryptography project page",
+   "url": "https://csrc.nist.gov/projects/post-quantum-cryptography",
+   "open": true,
+   "measured": "HTTP 200 HTML (60 KB) naming FIPS 203, 204, 205"
+  }
+ ],
+ "op": "read",
+ "sources": {
+  "nist-beacon": {
+   "status": "read",
+   "facts": {
+    "chainIndex": 2,
+    "pulseIndex": 2000112,
+    "timeStamp": "2026-10-26T09:15:00.000Z",
+    "previous": 2000111
+   },
+   "verdicts": [
+    {
+     "theorem": "textbook_hash_bits",
+     "passed": true,
+     "says": "outputValue 128 hex digits (512 bits)"
+    },
+    {
+     "theorem": "textbook_beacon_period",
+     "passed": true,
+     "says": "period 60000 ms"
+    },
+    {
+     "theorem": "textbook_chain_index_steps",
+     "passed": true,
+     "says": "pulse 2000112 follows 2000111"
+    },
+    {
+     "theorem": "textbook_beacon_period",
+     "passed": true,
+     "says": "60000 ms between the pulses"
+    },
+    {
+     "theorem": "textbook_chain_links_by_output",
+     "passed": true,
+     "says": "the last pulse's previous value is the previous pulse's output"
+    },
+    {
+     "theorem": "textbook_precommitment_is_sha512",
+     "passed": true,
+     "says": "SHA-512 of the last local random value is the previous precommitment"
+    }
+   ]
+  },
+  "ct-sth": {
+   "status": "read",
+   "facts": {
+    "treeSize": 3461487920,
+    "timestamp": 1793006104956
+   },
+   "verdicts": [
+    {
+     "theorem": "textbook_hash_bits",
+     "passed": true,
+     "says": "root hash 32 bytes"
+    },
+    {
+     "theorem": "textbook_tree_size_positive",
+     "passed": true,
+     "says": "tree size 3461487920"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "the tree head is not from the future"
+    }
+   ]
+  },
+  "acme-directory": {
+   "status": "read",
+   "facts": {
+    "resources": [
+     "newNonce",
+     "newAccount",
+     "newOrder",
+     "revokeCert",
+     "keyChange"
+    ]
+   },
+   "verdicts": [
+    {
+     "theorem": "textbook_acme_resources_five",
+     "passed": true,
+     "says": "5 of the five resources"
+    }
+   ]
+  },
+  "nvd-cves": {
+   "status": "read",
+   "facts": {
+    "cves": [
+     "CVE-2024-37880",
+     "CVE-2024-36405",
+     "CVE-2025-48946",
+     "CVE-2026-10097",
+     "CVE-2026-6330"
+    ]
+   },
+   "verdicts": [
+    {
+     "theorem": "textbook_cve_id_well_formed",
+     "passed": true,
+     "says": "CVE-2024-37880"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "CVE-2024-37880 published 2024-06-10T02:15:47.160 ≤ modified 2026-06-17T07:38:58.583"
+    },
+    {
+     "theorem": "textbook_cvss_bounded",
+     "passed": true,
+     "says": "CVE-2024-37880 score 7.5"
+    },
+    {
+     "theorem": "textbook_cvss_bounded",
+     "passed": true,
+     "says": "CVE-2024-37880 score 7.5"
+    },
+    {
+     "theorem": "textbook_cve_id_well_formed",
+     "passed": true,
+     "says": "CVE-2024-36405"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "CVE-2024-36405 published 2024-06-10T13:15:50.700 ≤ modified 2026-06-17T07:36:39.423"
+    },
+    {
+     "theorem": "textbook_cvss_bounded",
+     "passed": true,
+     "says": "CVE-2024-36405 score 5.9"
+    },
+    {
+     "theorem": "textbook_cvss_bounded",
+     "passed": true,
+     "says": "CVE-2024-36405 score 7.5"
+    },
+    {
+     "theorem": "textbook_cve_id_well_formed",
+     "passed": true,
+     "says": "CVE-2025-48946"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "CVE-2025-48946 published 2025-05-30T20:15:43.710 ≤ modified 2026-06-17T09:30:31.920"
+    },
+    {
+     "theorem": "textbook_cvss_bounded",
+     "passed": true,
+     "says": "CVE-2025-48946 score 3.7"
+    },
+    {
+     "theorem": "textbook_cve_id_well_formed",
+     "passed": true,
+     "says": "CVE-2026-10097"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "CVE-2026-10097 published 2026-06-25T20:17:09.160 ≤ modified 2026-06-26T17:16:31.693"
+    },
+    {
+     "theorem": "textbook_cvss_bounded",
+     "passed": true,
+     "says": "CVE-2026-10097 score 7.5"
+    },
+    {
+     "theorem": "textbook_cve_id_well_formed",
+     "passed": true,
+     "says": "CVE-2026-6330"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "CVE-2026-6330 published 2026-06-25T22:17:02.887 ≤ modified 2026-06-27T19:50:17.420"
+    },
+    {
+     "theorem": "textbook_cvss_bounded",
+     "passed": true,
+     "says": "CVE-2026-6330 score 6.5"
+    }
+   ]
+  },
+  "cern-opendata": {
+   "status": "read",
+   "facts": {
+    "total": 5566,
+    "records": [
+     "5209",
+     "5210",
+     "7791",
+     "7790",
+     "7793"
+    ]
+   },
+   "verdicts": [
+    {
+     "theorem": "textbook_total_at_least_page",
+     "passed": true,
+     "says": "total 5566 ≥ 5 read"
+    },
+    {
+     "theorem": "textbook_size_nonnegative",
+     "passed": true,
+     "says": "record 5209 file 869 bytes"
+    },
+    {
+     "theorem": "textbook_adler32_width",
+     "passed": true,
+     "says": "record 5209 adler32:dca4af81"
+    },
+    {
+     "theorem": "textbook_doi_well_formed",
+     "passed": true,
+     "says": "10.7483/OPENDATA.CMS.N9MJ.QEEC"
+    },
+    {
+     "theorem": "textbook_size_nonnegative",
+     "passed": true,
+     "says": "record 5210 file 1256 bytes"
+    },
+    {
+     "theorem": "textbook_adler32_width",
+     "passed": true,
+     "says": "record 5210 adler32:554607ac"
+    },
+    {
+     "theorem": "textbook_doi_well_formed",
+     "passed": true,
+     "says": "10.7483/OPENDATA.CMS.N9MJ.QEEC"
+    }
+   ]
+  },
+  "crt-sh": {
+   "status": "read",
+   "facts": {
+    "entries": 0
+   },
+   "verdicts": []
+  },
+  "tls-live": {
+   "status": "read",
+   "facts": {
+    "hosts": [
+     "qpu.uuidna.com (Google Trust Services WE1)",
+     "qpu.psg.bg (Google Trust Services WE1)",
+     "opendata.cern.ch (Let's Encrypt YR2)",
+     "beacon.nist.gov (Let's Encrypt YE2)"
+    ]
+   },
+   "verdicts": [
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "qpu.uuidna.com: 2026-09-09T03:31:22.000Z before 2026-12-08T04:31:19.000Z"
+    },
+    {
+     "theorem": "textbook_cert_validity_bound",
+     "passed": true,
+     "says": "qpu.uuidna.com: 90 days (≤ 398)"
+    },
+    {
+     "theorem": "textbook_now_within_validity",
+     "passed": true,
+     "says": "qpu.uuidna.com: now within the validity"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "qpu.psg.bg: 2026-10-25T13:41:24.000Z before 2027-01-23T14:41:21.000Z"
+    },
+    {
+     "theorem": "textbook_cert_validity_bound",
+     "passed": true,
+     "says": "qpu.psg.bg: 90 days (≤ 398)"
+    },
+    {
+     "theorem": "textbook_now_within_validity",
+     "passed": true,
+     "says": "qpu.psg.bg: now within the validity"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "opendata.cern.ch: 2026-09-27T22:50:10.000Z before 2026-12-26T22:50:09.000Z"
+    },
+    {
+     "theorem": "textbook_cert_validity_bound",
+     "passed": true,
+     "says": "opendata.cern.ch: 90 days (≤ 398)"
+    },
+    {
+     "theorem": "textbook_now_within_validity",
+     "passed": true,
+     "says": "opendata.cern.ch: now within the validity"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "beacon.nist.gov: 2026-09-03T11:54:40.000Z before 2026-12-02T11:54:39.000Z"
+    },
+    {
+     "theorem": "textbook_cert_validity_bound",
+     "passed": true,
+     "says": "beacon.nist.gov: 90 days (≤ 398)"
+    },
+    {
+     "theorem": "textbook_now_within_validity",
+     "passed": true,
+     "says": "beacon.nist.gov: now within the validity"
+    }
+   ]
+  },
+  "csrc-pqc": {
+   "status": "read",
+   "facts": {
+    "named": [
+     "FIPS 203",
+     "FIPS 204",
+     "FIPS 205"
+    ]
+   },
+   "verdicts": [
+    {
+     "theorem": "textbook_pqc_standards_three",
+     "passed": true,
+     "says": "FIPS 203, 204 and 205 named on the page"
+    }
+   ]
+  }
+ },
+ "followUps": [],
+ "checked": 47,
+ "passed": 47,
+ "violations": [],
+ "byTheorem": {
+  "textbook_hash_bits": {
+   "passed": 2,
+   "failed": 0
+  },
+  "textbook_beacon_period": {
+   "passed": 2,
+   "failed": 0
+  },
+  "textbook_chain_index_steps": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_chain_links_by_output": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_precommitment_is_sha512": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_tree_size_positive": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_dates_ordered": {
+   "passed": 10,
+   "failed": 0
+  },
+  "textbook_acme_resources_five": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_cve_id_well_formed": {
+   "passed": 5,
+   "failed": 0
+  },
+  "textbook_cvss_bounded": {
+   "passed": 7,
+   "failed": 0
+  },
+  "textbook_total_at_least_page": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_size_nonnegative": {
+   "passed": 2,
+   "failed": 0
+  },
+  "textbook_adler32_width": {
+   "passed": 2,
+   "failed": 0
+  },
+  "textbook_doi_well_formed": {
+   "passed": 2,
+   "failed": 0
+  },
+  "textbook_cert_validity_bound": {
+   "passed": 4,
+   "failed": 0
+  },
+  "textbook_now_within_validity": {
+   "passed": 4,
+   "failed": 0
+  },
+  "textbook_pqc_standards_three": {
+   "passed": 1,
+   "failed": 0
+  }
+ },
+ "says": "8 source(s) read of 8; 47 theorem checks, 0 violation(s)"
+}

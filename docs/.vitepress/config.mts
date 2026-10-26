@@ -94,6 +94,10 @@ export default defineConfig({
         "link": "/patents"
       },
       {
+        "text": "Attest",
+        "link": "/attest"
+      },
+      {
         "text": "Cirq",
         "link": "/cirq"
       },
@@ -249,6 +253,10 @@ export default defineConfig({
           {
             "text": "Patents",
             "link": "/patents"
+          },
+          {
+            "text": "Attest",
+            "link": "/attest"
           },
           {
             "text": "Cirq",
@@ -605,6 +613,10 @@ export default defineConfig({
           {
             "text": "seal",
             "link": "/mcp#seal"
+          },
+          {
+            "text": "attest",
+            "link": "/mcp#attest"
           }
         ]
       }

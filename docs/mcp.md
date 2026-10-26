@@ -128,7 +128,7 @@ the split folds: what a place cannot hold is folded into pieces it can, each add
 
 **Tests itself:** server only: a ledger folded under a bound, pieces under the bound, keys located, the root recomputed from the pieces, a wrong piece named; toolbox → toolbox: the fold address is the balancer's and the docket's (blocks.ts), the hash the billing toolbox's (hmac.ts), the seed and trinity the Clay register's; client → server: the unit's doors answer from one piece (rowsForKeys) or the baked root — this is the fold they need.
 
-Tools: [fold](#fold), [seal](#seal).
+Tools: [fold](#fold), [seal](#seal), [attest](#attest).
 
 ## processor
 
@@ -2216,6 +2216,56 @@ SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a t
         "boolean"
       ],
       "description": "a post-quantum signature over the digest: ML-DSA-44, ML-DSA-65 (true) or ML-DSA-87"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## attest
+
+The crypto and certificate APIs, with NIST and CERN, verified by theorems in coordinated combinations: plan answers the requests to every open API (the NIST randomness beacon, a Certificate Transparency log's tree head, Let's Encrypt's ACME directory, NIST NVD's CVEs on ML-KEM, CERN Open Data's Higgs records, crt.sh, NIST CSRC) and names the hosts whose live certificates the client reads itself; read takes the bodies, verifies the theorems over each (the beacon's chain, period and SHA-512 precommitment; the tree head's widths; the five ACME resources; CVSS bounded and dates ordered; sizes, checksums and DOIs; certificates ordered, within 398 days and valid now; the three FIPS named) and answers the follow-ups the combination needs (the beacon's previous pulse), so a client reads again until nothing follows. Pure: nothing fetched here.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "op": {
+      "type": "string",
+      "enum": [
+        "plan",
+        "read"
+      ]
+    },
+    "hosts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "hosts whose live certificates the client reads (tls:<host> answers)"
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "now": {
+      "type": "number",
+      "description": "the clock (ms) the validity is judged at; absent, not judged"
     },
     "selftest": {
       "type": "boolean"

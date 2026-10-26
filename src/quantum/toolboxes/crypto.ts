@@ -5,7 +5,7 @@
 // of pieces, decided by integer comparisons before anything is computed. Pure: SHA-256 and the fold address, nothing else.
 import { toolOf, type Toolbox } from '../toolbox.js'
 import { uuidOf } from '../blocks.js'
-import { sha256, hmacSha256, utf8, hex } from '../hmac.js'
+import { sha256, hmacSha256, sha512, utf8, hex } from '../hmac.js'
 import { seedOf, trinityOf } from '../clay-register.js'
 import { flowWidget } from '../widgets.js'
 
@@ -112,12 +112,103 @@ export const POST_QUANTUM = {
 } as const
 const LEDGER = Array.from({ length: 40 }, (_, i) => JSON.stringify({ key: `k${String(i).padStart(2, '0')}`, value: i * i, note: 'a row of the ledger' })).join('\n')
 
+/** Every crypto and certificate API found and measured (2026-10-26), with NIST and CERN: what answers in the open, what a client reads itself (its hosts' live certificates), what refused. */
+export const ATTEST_APIS: readonly { id: string; name: string; url: string; open: boolean; measured: string }[] = [
+  { id: 'nist-beacon', name: 'NIST Randomness Beacon 2.0, the last pulse', url: 'https://beacon.nist.gov/beacon/2.0/pulse/last', open: true, measured: 'HTTP 200 JSON: pulse { chainIndex, pulseIndex, timeStamp, period 60000, localRandomValue, listValues[previous|hour|day|month|year], precommitmentValue, signatureValue (1024 hex), outputValue (128 hex) }' },
+  { id: 'ct-sth', name: 'Certificate Transparency, Google Argon 2026h2 log, the signed tree head', url: 'https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth', open: true, measured: 'HTTP 200 JSON: tree_size 3 461 480 042, timestamp, sha256_root_hash (base64 of 32 bytes), tree_head_signature' },
+  { id: 'acme-directory', name: "Let's Encrypt ACME v2 directory (RFC 8555)", url: 'https://acme-v02.api.letsencrypt.org/directory', open: true, measured: 'HTTP 200 JSON: newNonce, newAccount, newOrder, revokeCert, keyChange, meta' },
+  { id: 'nvd-cves', name: 'NIST NVD, CVEs on ML-KEM', url: 'https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5', open: true, measured: 'HTTP 200 JSON: totalResults 10; vulnerabilities[].cve { id, published, lastModified, metrics.cvssMetricV31[].cvssData.baseScore }; five requests a thirty seconds without a key' },
+  { id: 'cern-opendata', name: 'CERN Open Data Portal, records on the Higgs', url: 'https://opendata.cern.ch/api/records/?q=higgs&size=5', open: true, measured: 'HTTP 200 JSON: hits.total 5566; hits.hits[].metadata { recid, title, files[] { size, checksum adler32:<8 hex> }, relations[].doi 10.7483/…, license CC0-1.0 }' },
+  { id: 'crt-sh', name: 'crt.sh, the certificates logged for a host', url: 'https://crt.sh/?q=<host>&output=json', open: true, measured: 'HTTP 502 on 2026-10-26 (its gateway); when it answers, JSON entries with not_before, not_after, issuer_name' },
+  { id: 'tls-live', name: "a host's live TLS certificate, read by the client (openssl or node:tls), never fetched by the tree", url: 'tls://<host>:443', open: true, measured: 'qpu.uuidna.com: Google Trust Services WE1, 2026-09-09 to 2026-12-08 (90 days)' },
+  { id: 'csrc-pqc', name: 'NIST CSRC, the post-quantum cryptography project page', url: 'https://csrc.nist.gov/projects/post-quantum-cryptography', open: true, measured: 'HTTP 200 HTML (60 KB) naming FIPS 203, 204, 205' },
+]
+export type AttestAnswer = { id: string; text: string; status?: number }
+type Verdict = { theorem: string; passed: boolean; says: string }
+const dayMs = 86_400_000
+const b64len = (b64: string): number => { const s = b64.replace(/=+$/, ''); return Math.floor((s.length * 3) / 4) }
+const ms = (d: string | undefined): number | null => (d ? Date.parse(d) : null)
+/** The theorems verified over what each API answered, source by source; a follow-up names the request the next read needs (the beacon's previous pulse): the coordination of the combination. */
+export const attestOf = (answers: readonly AttestAnswer[], now = 0): { sources: Record<string, { status: 'read' | 'unreadable' | 'absent'; facts: Record<string, unknown>; verdicts: Verdict[] }>; followUps: { id: string; url: string; accept: string }[]; checked: number; passed: number; violations: { source: string; theorem: string; says: string }[]; byTheorem: Record<string, { passed: number; failed: number }> } => {
+  const byId = new Map(answers.map((a) => [a.id, a]))
+  const sources: Record<string, { status: 'read' | 'unreadable' | 'absent'; facts: Record<string, unknown>; verdicts: Verdict[] }> = {}
+  const followUps: { id: string; url: string; accept: string }[] = []
+  const json = (id: string): unknown => { const a = byId.get(id); if (!a) return undefined; try { return JSON.parse(a.text) } catch { return null } }
+  const src = (id: string, facts: Record<string, unknown>, verdicts: Verdict[], status: 'read' | 'unreadable' | 'absent' = 'read') => { sources[id] = { status, facts, verdicts } }
+  const v = (theorem: string, passed: boolean, says: string): Verdict => ({ theorem, passed, says });
+  // NIST beacon: the chain, the period, the precommitment (SHA-512 of the next local random value equals the previous pulse's precommitment), the widths
+  { const last = json('nist-beacon') as { pulse?: Record<string, unknown> } | null | undefined
+    if (last === undefined) src('nist-beacon', {}, [], 'absent'); else if (!last?.pulse) src('nist-beacon', {}, [], 'unreadable'); else {
+      const p = last.pulse as { chainIndex: number; pulseIndex: number; timeStamp: string; period: number; localRandomValue: string; outputValue: string; signatureValue: string; precommitmentValue: string; listValues?: { type: string; value: string }[]; uri: string }
+      const verdicts = [v('textbook_hash_bits', p.outputValue.length === 128, `outputValue ${p.outputValue.length} hex digits (512 bits)`), v('textbook_beacon_period', p.period === 60_000, `period ${p.period} ms`)]
+      const prev = json('nist-beacon-previous') as { pulse?: Record<string, unknown> } | null | undefined
+      const prevUri = p.uri.replace(/\/pulse\/\d+$/, `/pulse/${p.pulseIndex - 1}`)
+      if (prev === undefined) followUps.push({ id: 'nist-beacon-previous', url: prevUri, accept: 'application/json' })
+      else if (prev?.pulse) { const q = prev.pulse as typeof p; const previous = (p.listValues ?? []).find((x) => x.type === 'previous')?.value
+        verdicts.push(v('textbook_chain_index_steps', p.pulseIndex === q.pulseIndex + 1, `pulse ${p.pulseIndex} follows ${q.pulseIndex}`), v('textbook_beacon_period', Date.parse(p.timeStamp) - Date.parse(q.timeStamp) === p.period, `${Date.parse(p.timeStamp) - Date.parse(q.timeStamp)} ms between the pulses`), v('textbook_chain_links_by_output', previous === q.outputValue, 'the last pulse\'s previous value is the previous pulse\'s output'), v('textbook_precommitment_is_sha512', hex(sha512(new Uint8Array((p.localRandomValue.match(/../g) ?? []).map((x) => parseInt(x, 16))))).toUpperCase() === q.precommitmentValue.toUpperCase(), 'SHA-512 of the last local random value is the previous precommitment')) }
+      src('nist-beacon', { chainIndex: p.chainIndex, pulseIndex: p.pulseIndex, timeStamp: p.timeStamp, previous: prev?.pulse ? (prev.pulse as { pulseIndex: number }).pulseIndex : null }, verdicts) } }
+  // CT: the signed tree head
+  { const j = json('ct-sth') as { tree_size?: number; timestamp?: number; sha256_root_hash?: string } | null | undefined
+    if (j === undefined) src('ct-sth', {}, [], 'absent'); else if (!j || typeof j.tree_size !== 'number') src('ct-sth', {}, [], 'unreadable'); else src('ct-sth', { treeSize: j.tree_size, timestamp: j.timestamp }, [v('textbook_hash_bits', b64len(j.sha256_root_hash ?? '') === 32, `root hash ${b64len(j.sha256_root_hash ?? '')} bytes`), v('textbook_tree_size_positive', j.tree_size > 0, `tree size ${j.tree_size}`), ...(now ? [v('textbook_dates_ordered', (j.timestamp ?? 0) <= now, 'the tree head is not from the future')] : [])]) }
+  // ACME: the five resources of RFC 8555
+  { const j = json('acme-directory') as Record<string, unknown> | null | undefined; const need = ['newNonce', 'newAccount', 'newOrder', 'revokeCert', 'keyChange']
+    if (j === undefined) src('acme-directory', {}, [], 'absent'); else if (!j) src('acme-directory', {}, [], 'unreadable'); else src('acme-directory', { resources: need.filter((k) => k in j) }, [v('textbook_acme_resources_five', need.every((k) => typeof j[k] === 'string'), `${need.filter((k) => k in j).length} of the five resources`)]) }
+  // NVD: every CVE's score bounded, its dates ordered, its id well formed
+  { const j = json('nvd-cves') as { vulnerabilities?: { cve: { id: string; published: string; lastModified: string; metrics?: { cvssMetricV31?: { cvssData: { baseScore: number } }[] } } }[] } | null | undefined
+    if (j === undefined) src('nvd-cves', {}, [], 'absent'); else if (!j?.vulnerabilities) src('nvd-cves', {}, [], 'unreadable'); else { const verdicts: Verdict[] = []
+      for (const { cve } of j.vulnerabilities) { verdicts.push(v('textbook_cve_id_well_formed', /^CVE-\d{4}-\d{4,}$/.test(cve.id), cve.id), v('textbook_dates_ordered', (ms(cve.published) ?? 0) <= (ms(cve.lastModified) ?? 0), `${cve.id} published ${cve.published} ≤ modified ${cve.lastModified}`)); for (const m of cve.metrics?.cvssMetricV31 ?? []) verdicts.push(v('textbook_cvss_bounded', m.cvssData.baseScore >= 0 && m.cvssData.baseScore <= 10, `${cve.id} score ${m.cvssData.baseScore}`)) }
+      src('nvd-cves', { cves: j.vulnerabilities.map((x) => x.cve.id) }, verdicts) } }
+  // CERN Open Data: every record's files sized, checksummed, the DOI well formed, the total above the page
+  { const j = json('cern-opendata') as { hits?: { total?: number; hits?: { id: string; metadata: { title?: string; files?: { size: number; checksum?: string }[]; relations?: { doi?: string }[] } }[] } } | null | undefined
+    if (j === undefined) src('cern-opendata', {}, [], 'absent'); else if (!j?.hits?.hits) src('cern-opendata', {}, [], 'unreadable'); else { const verdicts: Verdict[] = [v('textbook_total_at_least_page', (j.hits.total ?? 0) >= j.hits.hits.length, `total ${j.hits.total} ≥ ${j.hits.hits.length} read`)]
+      for (const h of j.hits.hits) { for (const f of h.metadata.files ?? []) { verdicts.push(v('textbook_size_nonnegative', f.size >= 0, `record ${h.id} file ${f.size} bytes`)); if (f.checksum) verdicts.push(v('textbook_adler32_width', /^adler32:[0-9a-f]{8}$/.test(f.checksum), `record ${h.id} ${f.checksum}`)) } for (const r of h.metadata.relations ?? []) if (r.doi) verdicts.push(v('textbook_doi_well_formed', /^10\.\d{4,}\/\S+$/.test(r.doi), r.doi)) }
+      src('cern-opendata', { total: j.hits.total, records: j.hits.hits.map((h) => h.id) }, verdicts) } }
+  // certificates: crt.sh entries and the live certificates the client read; validity ordered, bounded by 398 days (CA/B Forum), and now within it
+  { const entries: { host: string; notBefore: string; notAfter: string; issuer: string; from: string }[] = []
+    const crt = json('crt-sh') as { not_before: string; not_after: string; issuer_name: string; common_name?: string }[] | null | undefined
+    if (crt === undefined) src('crt-sh', {}, [], 'absent'); else if (!Array.isArray(crt)) src('crt-sh', {}, [], 'unreadable'); else { for (const e of crt.slice(0, 20)) entries.push({ host: e.common_name ?? '', notBefore: e.not_before, notAfter: e.not_after, issuer: e.issuer_name, from: 'crt-sh' }); src('crt-sh', { entries: crt.length }, []) }
+    for (const a of answers) if (a.id.startsWith('tls:')) { try { const c = JSON.parse(a.text) as { notBefore: string; notAfter: string; issuer: string }; entries.push({ host: a.id.slice(4), notBefore: c.notBefore, notAfter: c.notAfter, issuer: c.issuer, from: 'tls-live' }) } catch { sources[a.id] = { status: 'unreadable', facts: {}, verdicts: [] } } }
+    const verdicts: Verdict[] = []
+    for (const e of entries) { const nb = ms(e.notBefore) ?? 0, na = ms(e.notAfter) ?? 0; verdicts.push(v('textbook_dates_ordered', nb < na, `${e.host}: ${e.notBefore} before ${e.notAfter}`), v('textbook_cert_validity_bound', na - nb <= 398 * dayMs, `${e.host}: ${Math.round((na - nb) / dayMs)} days (≤ 398)`)); if (now && e.from === 'tls-live') verdicts.push(v('textbook_now_within_validity', nb <= now && now <= na, `${e.host}: now within the validity`)) }
+    if (entries.some((e) => e.from === 'tls-live')) src('tls-live', { hosts: entries.filter((e) => e.from === 'tls-live').map((e) => `${e.host} (${e.issuer})`) }, verdicts.filter((x) => entries.some((e) => x.says.startsWith(e.host) && e.from === 'tls-live'))); if (crt && Array.isArray(crt)) sources['crt-sh']!.verdicts = verdicts.filter((x) => !sources['tls-live']?.verdicts.includes(x)) }
+  // CSRC: the three standards named
+  { const a = byId.get('csrc-pqc'); if (!a) src('csrc-pqc', {}, [], 'absent'); else src('csrc-pqc', { named: ['FIPS 203', 'FIPS 204', 'FIPS 205'].filter((f) => a.text.includes(f)) }, [v('textbook_pqc_standards_three', ['FIPS 203', 'FIPS 204', 'FIPS 205'].every((f) => a.text.includes(f)), 'FIPS 203, 204 and 205 named on the page')]) }
+  const all = Object.entries(sources).flatMap(([id, x]) => x.verdicts.map((y) => ({ source: id, ...y })))
+  const byTheorem: Record<string, { passed: number; failed: number }> = {}
+  for (const x of all) { byTheorem[x.theorem] = byTheorem[x.theorem] ?? { passed: 0, failed: 0 }; if (x.passed) byTheorem[x.theorem]!.passed += 1; else byTheorem[x.theorem]!.failed += 1 }
+  return { sources, followUps, checked: all.length, passed: all.filter((x) => x.passed).length, violations: all.filter((x) => !x.passed).map((x) => ({ source: x.source, theorem: x.theorem, says: x.says })), byTheorem }
+}
+const BEACON_LAST = JSON.stringify({ pulse: { uri: 'https://beacon.nist.gov/beacon/2.0/chain/2/pulse/2000107', chainIndex: 2, pulseIndex: 2000107, timeStamp: '2026-10-26T09:10:00.000Z', period: 60000, localRandomValue: '00'.repeat(64), outputValue: 'A'.repeat(128), signatureValue: 'B'.repeat(1024), precommitmentValue: 'C'.repeat(128), listValues: [{ type: 'previous', value: 'D'.repeat(128) }] } })
+const BEACON_PREV = (precommit: string) => JSON.stringify({ pulse: { uri: 'https://beacon.nist.gov/beacon/2.0/chain/2/pulse/2000106', chainIndex: 2, pulseIndex: 2000106, timeStamp: '2026-10-26T09:09:00.000Z', period: 60000, localRandomValue: '11'.repeat(64), outputValue: 'D'.repeat(128), signatureValue: 'B'.repeat(1024), precommitmentValue: precommit, listValues: [] } })
+const STH = JSON.stringify({ tree_size: 3461480042, timestamp: 1793005826714, sha256_root_hash: 'BUW2/ROzVcSOkLmZvNPkf3njsT5E2kno4MriPzOPWaU=', tree_head_signature: 'x' })
+const NVD = JSON.stringify({ vulnerabilities: [{ cve: { id: 'CVE-2024-37880', published: '2024-06-10T02:15:47.160', lastModified: '2026-06-17T07:38:58.583', metrics: { cvssMetricV31: [{ cvssData: { baseScore: 7.5 } }] } } }] })
+const CERN = JSON.stringify({ hits: { total: 5566, hits: [{ id: '5209', metadata: { title: 'Higgs to two photons from 2011', files: [{ size: 869, checksum: 'adler32:dca4af81' }], relations: [{ doi: '10.7483/OPENDATA.CMS.N9MJ.QEEC' }] } }] } })
+
+const attest = toolOf('crypto', {
+  name: 'attest',
+  description: 'The crypto and certificate APIs, with NIST and CERN, verified by theorems in coordinated combinations: plan answers the requests to every open API (the NIST randomness beacon, a Certificate Transparency log\'s tree head, Let\'s Encrypt\'s ACME directory, NIST NVD\'s CVEs on ML-KEM, CERN Open Data\'s Higgs records, crt.sh, NIST CSRC) and names the hosts whose live certificates the client reads itself; read takes the bodies, verifies the theorems over each (the beacon\'s chain, period and SHA-512 precommitment; the tree head\'s widths; the five ACME resources; CVSS bounded and dates ordered; sizes, checksums and DOIs; certificates ordered, within 398 days and valid now; the three FIPS named) and answers the follow-ups the combination needs (the beacon\'s previous pulse), so a client reads again until nothing follows. Pure: nothing fetched here.',
+  inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['plan', 'read'] }, hosts: { type: 'array', items: { type: 'string' }, description: 'hosts whose live certificates the client reads (tls:<host> answers)' }, answers: { type: 'array', items: { type: 'object', properties: { id: { type: 'string' }, text: { type: 'string' }, status: { type: 'integer' } } } }, now: { type: 'number', description: 'the clock (ms) the validity is judged at; absent, not judged' }, selftest: { type: 'boolean' } } },
+  run: (args, ctx) => {
+    if (args.selftest) return { selftest: true, ...CRYPTO.skill.selftest(ctx) }
+    const op = String(args.op ?? 'plan')
+    const hosts = Array.isArray(args.hosts) ? args.hosts.map(String) : ['qpu.uuidna.com', 'qpu.psg.bg', 'opendata.cern.ch', 'beacon.nist.gov']
+    if (op === 'plan') return { op, apis: ATTEST_APIS, requests: ATTEST_APIS.filter((a) => a.open && !a.url.startsWith('tls://') && a.id !== 'crt-sh').map((a) => ({ id: a.id, url: a.url, accept: a.id === 'csrc-pqc' ? 'text/html' : 'application/json' })).concat(hosts.slice(0, 1).map((h) => ({ id: 'crt-sh', url: ATTEST_APIS.find((a) => a.id === 'crt-sh')!.url.replace('<host>', h), accept: 'application/json' }))), liveCertificates: hosts.map((h) => ({ id: `tls:${h}`, host: h, port: 443, answers: '{ notBefore, notAfter, issuer } as the client read them' })), theorems: ['textbook_hash_bits', 'textbook_beacon_period', 'textbook_chain_index_steps', 'textbook_chain_links_by_output', 'textbook_precommitment_is_sha512', 'textbook_tree_size_positive', 'textbook_acme_resources_five', 'textbook_cve_id_well_formed', 'textbook_cvss_bounded', 'textbook_dates_ordered', 'textbook_total_at_least_page', 'textbook_size_nonnegative', 'textbook_adler32_width', 'textbook_doi_well_formed', 'textbook_cert_validity_bound', 'textbook_now_within_validity', 'textbook_pqc_standards_three'], coordination: 'read answers followUps (the beacon\'s previous pulse by index); the client fetches them and reads again until none follow: one combination, several MCP-shaped sources, agnostic of which answered' }
+    if (op !== 'read') throw new Error(`op ${op} is not plan or read`)
+    const answers = (Array.isArray(args.answers) ? args.answers : []) as AttestAnswer[]
+    const r = attestOf(answers, typeof args.now === 'number' ? args.now : 0)
+    return { op, ...r, says: `${Object.values(r.sources).filter((x) => x.status === 'read').length} source(s) read of ${Object.keys(r.sources).length}; ${r.checked} theorem checks, ${r.violations.length} violation(s)${r.followUps.length ? `; ${r.followUps.length} follow-up(s) to read` : ''}` }
+  },
+  widget: flowWidget,
+})
+
 export const CRYPTO: Toolbox = {
   name: 'crypto',
   idea: 'the split folds: what a place cannot hold is folded into pieces it can, each addressed by content and the whole by its pieces; a key names its piece; the bound is a reflective boundary that decides by comparison before computing',
-  tools: [fold, seal],
+  tools: [fold, seal, attest],
   examples: [
     { id: 'fold-ledger', tool: 'fold', theorem: 'textbook_fold_mirror', arguments: { text: LEDGER, bound: 600, key: 'k27' }, shows: 'A forty-row ledger folded under a bound of 600 bytes: the pieces, each with its address, SHA-256 and key range, the root over them, the mirror piece of each across the fold, and the one piece the key k27 sits in — decided by comparisons, the whole never read for it.', expect: (s) => (s.phase === 'folded' && !s.fits && s.count >= 4 && s.pieces.every((p: { reflection: number; index: number }) => p.reflection === s.count - 1 - p.index) && s.located && s.located.why.includes('k27') === false && s.located.index >= 0 && s.decision.startsWith('ask piece') ? null : `${s.phase} ${s.count} ${JSON.stringify(s.located)}`) },
+    { id: 'attest-plan', tool: 'attest', arguments: { op: 'plan' }, shows: 'Every crypto and certificate API found with NIST and CERN: the requests to the open ones, the hosts whose live certificates the client reads, the seventeen theorems verified over the answers, and the coordination (follow-ups read until none follow).', expect: (s) => (s.apis.length === 8 && s.requests.length === 7 && s.liveCertificates.length === 4 && s.theorems.length === 17 ? null : JSON.stringify(s.requests.map((r: { id: string }) => r.id))) },
+    { id: 'attest-read', tool: 'attest', theorem: 'textbook_cert_validity_bound', arguments: { op: 'read', now: 1793005826714, answers: [{ id: 'nist-beacon', text: BEACON_LAST }, { id: 'ct-sth', text: STH }, { id: 'nvd-cves', text: NVD }, { id: 'cern-opendata', text: CERN }, { id: 'tls:qpu.uuidna.com', text: JSON.stringify({ notBefore: '2026-09-09T03:31:22Z', notAfter: '2026-12-08T04:31:19Z', issuer: 'Google Trust Services WE1' }) }] }, shows: 'Fixtures of the beacon, a tree head, a CVE, a CERN record and a live certificate read and verified: every theorem holds, and the beacon asks for its previous pulse as a follow-up.', expect: (s) => (s.violations.length === 0 && s.followUps.length === 1 && s.checked >= 10 ? null : JSON.stringify(s.violations)) },
     { id: 'seal-sign', tool: 'seal', theorem: 'textbook_signature_over_digest', arguments: { text: 'qpu', sign: 'ML-DSA-65' }, shows: 'The post-quantum signature plan over one text: ML-DSA-65 (FIPS 204) over the 32 bytes of its SHA-256, the Web Crypto call and flag the host uses, the key variable, the sizes of key and signature; served at a host, the plan carries the signature and the public key a tenant verifies without any secret.', expect: (s) => (s.signature?.algorithm === 'ML-DSA-65' && s.signature.message === s.sha256 && s.signature.sizes.signature === 3309 && s.signature.sizes.publicKey === 1952 && s.signature.webcrypto.flag === 'webcrypto_modern_algorithms' ? null : JSON.stringify(s.signature)) },
     { id: 'seal-text', tool: 'seal', arguments: { text: 'qpu', key: 'test' }, shows: 'SHA-256, the HMAC under a test key and the fold address of one text, the same at every host.', expect: (s) => (s.sha256.length === 64 && s.hmac.length === 64 && /^[0-9a-f-]{36}$/.test(s.address) && s.bytes === 3 ? null : JSON.stringify(s)) },
   ],
@@ -143,6 +234,10 @@ export const CRYPTO: Toolbox = {
       check('crypto:row-cut-at-characters', big.count === 3 && big.pieces.every((p) => p.bytes <= 1000), 'a single row above the bound is cut at characters')
       const plan = signaturePlanOf(sha('qpu'), true); let refused = ''; try { signaturePlanOf(sha('qpu'), 'RSA') } catch (e) { refused = (e as Error).message }
       check('crypto:signature-plan', plan.algorithm === 'ML-DSA-65' && plan.fips === 204 && plan.message === sha('qpu') && plan.sizes.signature === ML_DSA['ML-DSA-65'].signature && plan.executedBy === 'host' && /FIPS 204/.test(refused), `sign: true plans ML-DSA-65 over the digest, ${plan.sizes.signature}-byte signatures; a non-FIPS-204 name is refused`)
+      const precommit = hex(sha512(new Uint8Array(64))).toUpperCase()
+      const chained = attestOf([{ id: 'nist-beacon', text: BEACON_LAST }, { id: 'nist-beacon-previous', text: BEACON_PREV(precommit) }, { id: 'ct-sth', text: STH }, { id: 'acme-directory', text: JSON.stringify({ newNonce: 'u', newAccount: 'u', newOrder: 'u', revokeCert: 'u', keyChange: 'u' }) }, { id: 'nvd-cves', text: NVD }, { id: 'cern-opendata', text: CERN }, { id: 'csrc-pqc', text: 'FIPS 203 FIPS 204 FIPS 205' }, { id: 'tls:qpu.uuidna.com', text: JSON.stringify({ notBefore: '2026-09-09T03:31:22Z', notAfter: '2026-12-08T04:31:19Z', issuer: 'WE1' }) }], 1793005826714)
+      const broken = attestOf([{ id: 'nist-beacon', text: BEACON_LAST }, { id: 'nist-beacon-previous', text: BEACON_PREV('E'.repeat(128)) }, { id: 'tls:x', text: JSON.stringify({ notBefore: '2020-01-01T00:00:00Z', notAfter: '2022-01-01T00:00:00Z', issuer: 'y' }) }], 1793005826714)
+      check('crypto:attest-theorems-in-combination', chained.violations.length === 0 && chained.followUps.length === 0 && chained.checked >= 16 && chained.byTheorem.textbook_precommitment_is_sha512!.passed === 1 && broken.violations.some((x) => x.theorem === 'textbook_precommitment_is_sha512') && broken.violations.some((x) => x.theorem === 'textbook_cert_validity_bound') && broken.violations.some((x) => x.theorem === 'textbook_now_within_validity') && hex(sha512(utf8('abc'))).startsWith('ddaf35a193617aba'), `${chained.checked} checks over eight sources, none violated; a wrong precommitment and an expired two-year certificate are named; SHA-512 agrees with the published vector`)
       check('crypto:seal', sha('abc') === 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad' && hex(hmacSha256(utf8('key'), utf8('The quick brown fox jumps over the lazy dog'))) === 'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8', 'SHA-256 and HMAC-SHA256 agree with the published vectors')
       void row
       return { passed: checks.every((c) => c.passed), checks }
