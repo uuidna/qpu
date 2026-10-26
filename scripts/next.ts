@@ -80,7 +80,7 @@ const run = async (s: Step): Promise<boolean> => {
   for (const [k, re] of Object.entries({ teleportedIn: /teleport: (\d+) blocks from/, blocksLeft: /teleport: (\d+) block\(s\) left/, keptToday: /(\d+) kept from today/, improved: /configs: .*?(\d+) improved/, drift: /configs: .*?(\d+) drift/, reused: /(\d+) answers kept from today/, imaginedKept: /imagine: (\d+) of \d+ leads kept/, involutions: /\((\d+) teleported by involution/, tests: /ℹ tests (\d+)/, pass: /ℹ pass (\d+)/, fail: /ℹ fail (\d+)/, checks: /(\d+)\/(\d+) checks pass/, jobs: /Build completed successfully \((\d+) jobs\)/, requests: /verify: (\d+) requests, (\d+) reachable/, ready: /readiness: (ready)/, imagined: /(\d+) imagined leads/ })) {
     const m = re.exec(out); if (m) counts[k] = Number(m[1]); if (m && k === 'checks') counts.checksTotal = Number(m[2]); if (m && k === 'requests') counts.reachable = Number(m[2])
   }
-  const failingLines = [...new Set(out.split('\n').filter((l) => /^(✖|not ok) /.test(l)))]
+  const failingLines = [...new Set(out.split('\n').filter((l) => /^(✖|✗|not ok) /.test(l)))] // the failing check or test named in the receipt, so a first-attempt failure is measured, not lost in the tail
   const tail = (failingLines.length ? failingLines.join('\n') + '\n' : '') + out.trim().split('\n').slice(-8).join('\n')
   receipt.steps.push({ name: s.name, status: ok ? 'green' : 'red', ms: Date.now() - started, tail, counts })
   writeFileSync(join(ROOT, 'docs', 'public', 'receipt.json'), JSON.stringify({ ...receipt, provisional: true }, null, 1) + '\n')

@@ -1,14 +1,45 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T00:41:59.923Z",
- "ms": 36,
- "offline": true,
+ "date": "2026-10-26T07:12:43.011Z",
+ "ms": 1764,
+ "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "5a05831c13fac9006ae29e94db348fa0e1a4ec24",
- "pushed": null,
- "fetched": [],
+ "head": "755cc8911fcd724aec6e39ffb8ae53aa4622eed5",
+ "pushed": false,
+ "fetched": [
+  {
+   "id": "cloudflare-workers-launchpad",
+   "status": 403,
+   "ms": 400,
+   "bytes": 5588
+  },
+  {
+   "id": "clay-millennium",
+   "status": 200,
+   "ms": 635,
+   "bytes": 79933
+  },
+  {
+   "id": "xprize-quantum-applications",
+   "status": 200,
+   "ms": 562,
+   "bytes": 174241
+  },
+  {
+   "id": "vercel-oss-program",
+   "status": 200,
+   "ms": 585,
+   "bytes": 621188
+  },
+  {
+   "id": "github-maintainer-programs",
+   "status": 200,
+   "ms": 971,
+   "bytes": 394161
+  }
+ ],
  "competitions": [
   {
    "id": "clay-millennium",
@@ -70,7 +101,12 @@
      "act": "none the tree can take"
     }
    ],
-   "window": null,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
    "counts": {
     "open": 1,
     "pending": 3
@@ -89,7 +125,7 @@
      "needs": "Phase II Wild Card registration 2026-01-14 to 2026-03-04",
      "act": "closed: the next XPRIZE quantum competition is a lead to watch",
      "status": "closed",
-     "evidence": "Finalist teams chosen (news of 2026-05-10); Phase II Wild Card registration opened 2026-01-14 and closed 2026-03-04; winners announced in the spring of 2027: no entry is open"
+     "evidence": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-10-26"
     },
     {
      "rule": "a quantum algorithm with a plausible pathway to quantum advantage, technical novelty and algorithmic rigor",
@@ -115,7 +151,12 @@
      "act": "the author submits when a window opens"
     }
    ],
-   "window": null,
+   "window": {
+    "entry": "closed",
+    "opens": "2026-01-14",
+    "closes": "2026-03-04",
+    "says": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-10-26"
+   },
    "counts": {
     "closed": 1,
     "pending": 1
@@ -141,7 +182,7 @@
      "needs": "GitHub's announcement",
      "act": "the author applies",
      "status": "pending",
-     "evidence": "the page names the programs; a cohort's application window is announced by GitHub"
+     "evidence": "the page names no window"
     }
    ],
    "read": "2026-10-26",
@@ -160,7 +201,12 @@
      "act": "the author applies"
     }
    ],
-   "window": null,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
    "counts": {
     "pending": 2
    },
@@ -224,7 +270,12 @@
      "act": "the tenant deploys the app; the author applies"
     }
    ],
-   "window": null,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
    "counts": {
     "pending": 1
    },

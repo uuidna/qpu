@@ -1,10 +1,10 @@
 {
- "date": "2026-10-26T00:29:11.358Z",
+ "date": "2026-10-26T07:12:50.610Z",
  "partial": false,
  "remaining": 0,
- "fetched": 6,
- "leads": 45,
- "withServers": 44,
+ "fetched": 40,
+ "leads": 48,
+ "withServers": 47,
  "related": [
   {
    "lead": "perspective-database",
@@ -5227,6 +5227,604 @@
      "score": 1,
      "shared": [
       "exchange-rate"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "funding-mcps-related",
+   "words": [
+    "grant",
+    "sec-form-d-funding-rounds",
+    "funding-finder"
+   ],
+   "servers": 8,
+   "serverList": [
+    {
+     "name": "ca.netgrant/canadian-grants",
+     "description": "Search 1,600+ Canadian grants, accelerators, and pitch competitions without leaving your AI.",
+     "remotes": [
+      "https://mcp.netgrant.ca/mcp"
+     ],
+     "word": "grant"
+    },
+    {
+     "name": "com.a2awire/benchmark-grant-report-review-2026-09-17-9189341d",
+     "description": "12 synthetic grant report exception cases: duplicate disbursements, debarment hold list entries, mis",
+     "remotes": [
+      "https://a2awire.com/mcp/benchmarks/grant-report-review-2026-09-17-9189341d/http"
+     ],
+     "word": "grant"
+    },
+    {
+     "name": "com.cedargrant/federal-grants",
+     "description": "Open federal grants from Grants.gov, plus a kit to draft and review applications in your assistant.",
+     "remotes": [
+      "https://cedargrant.com/mcp"
+     ],
+     "word": "grant"
+    },
+    {
+     "name": "com.chaingrantor/grantor-mcp",
+     "description": "Bounded, revocable authority for sub-agents — grant, narrow, check, revoke. No auth server.",
+     "remotes": [],
+     "word": "grant"
+    },
+    {
+     "name": "com.checkmycontractorquote/firegrant-ai",
+     "description": "Fire department grant-readiness helper.",
+     "remotes": [
+      "https://checkmycontractorquote.com/contractorquote-mcp/mcp/firegrant_ai"
+     ],
+     "word": "grant"
+    },
+    {
+     "name": "com.checkmycontractorquote/grantops-ai",
+     "description": "Grant readiness and application checklist generator for schools/PTAs/nonprofits.",
+     "remotes": [
+      "https://checkmycontractorquote.com/contractorquote-mcp/mcp/grantops_ai"
+     ],
+     "word": "grant"
+    },
+    {
+     "name": "com.meridianlabssoftware/sec-form-d-funding-rounds",
+     "description": "US startups that just raised, from SEC Form D: amount raised, investor count, founders, location.",
+     "remotes": [
+      "https://mcp.apify.com/?tools=meridianlabs/sec-form-d-funding-rounds"
+     ],
+     "word": "sec-form-d-funding-rounds"
+    },
+    {
+     "name": "com.modernmustardseed/funding-finder",
+     "description": "Searches live federal grant listings on Grants.gov and reads full opportunity details.",
+     "remotes": [
+      "https://mcp.modernmustardseed.com/funding-finder"
+     ],
+     "word": "funding-finder"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ca.netgrant/canadian-grants",
+     "url": "https://mcp.netgrant.ca/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.a2awire/benchmark-grant-report-review-2026-09-17-9189341d",
+     "url": "https://a2awire.com/mcp/benchmarks/grant-report-review-2026-09-17-9189341d/http",
+     "status": 200,
+     "doors": 24
+    },
+    {
+     "server": "com.cedargrant/federal-grants",
+     "url": "https://cedargrant.com/mcp",
+     "status": 200,
+     "doors": 0
+    },
+    {
+     "server": "com.checkmycontractorquote/firegrant-ai",
+     "url": "https://checkmycontractorquote.com/contractorquote-mcp/mcp/firegrant_ai",
+     "status": 410,
+     "doors": 0
+    },
+    {
+     "server": "com.checkmycontractorquote/grantops-ai",
+     "url": "https://checkmycontractorquote.com/contractorquote-mcp/mcp/grantops_ai",
+     "status": 410,
+     "doors": 0
+    },
+    {
+     "server": "com.meridianlabssoftware/sec-form-d-funding-rounds",
+     "url": "https://mcp.apify.com/?tools=meridianlabs/sec-form-d-funding-rounds",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.modernmustardseed/funding-finder",
+     "url": "https://mcp.modernmustardseed.com/funding-finder",
+     "status": 200,
+     "doors": 4
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.a2awire/benchmark-grant-report-review-2026-09-17-9189341d",
+     "url": "https://a2awire.com/mcp/benchmarks/grant-report-review-2026-09-17-9189341d/http",
+     "door": "discover_agents",
+     "score": 1,
+     "shared": [
+      "discover"
+     ]
+    },
+    {
+     "server": "com.modernmustardseed/funding-finder",
+     "url": "https://mcp.modernmustardseed.com/funding-finder",
+     "door": "eligibility_explainer",
+     "score": 1,
+     "shared": [
+      "grant"
+     ]
+    },
+    {
+     "server": "com.modernmustardseed/funding-finder",
+     "url": "https://mcp.modernmustardseed.com/funding-finder",
+     "door": "get_grant",
+     "score": 1,
+     "shared": [
+      "grant"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "launchpad-and-oss-pages-unread",
+   "words": [
+    "browser",
+    "rules",
+    "read"
+   ],
+   "servers": 22,
+   "serverList": [
+    {
+     "name": "ai.agentutility/mcp-browser-workflow",
+     "description": "MCP server for the @agentutility browser-workflow cluster — pay-per-call x402 tools, no API keys…",
+     "remotes": [],
+     "word": "browser"
+    },
+    {
+     "name": "ai.smithery/ImRonAI-mcp-server-browserbase",
+     "description": "Automate cloud browsers to navigate websites, interact with elements, and extract structured data.…",
+     "remotes": [
+      "https://server.smithery.ai/@ImRonAI/mcp-server-browserbase/mcp"
+     ],
+     "word": "browser"
+    },
+    {
+     "name": "ai.smithery/browserbasehq-mcp-browserbase",
+     "description": "Provides cloud browser automation capabilities using Stagehand and Browserbase, enabling LLMs to i…",
+     "remotes": [
+      "https://server.smithery.ai/@browserbasehq/mcp-browserbase/mcp"
+     ],
+     "word": "browser"
+    },
+    {
+     "name": "app.1ts.browserhere/browserhere",
+     "description": "Control a real browser from AI agents: navigate, click, type, screenshot, read the page.",
+     "remotes": [
+      "https://browserhere.1ts.app/mcp"
+     ],
+     "word": "browser"
+    },
+    {
+     "name": "app.crawlio/crawlio-browser",
+     "description": "Bridge a live Chrome browser to your agent: 147 CDP tools for capture, extraction, and recording.",
+     "remotes": [],
+     "word": "browser"
+    },
+    {
+     "name": "co.civai.nova/browsergpt-agent",
+     "description": "I do everything related to Browser Automation & Management",
+     "remotes": [
+      "https://nova.civai.co/mcp/agents/browsergpt-agent"
+     ],
+     "word": "browser"
+    },
+    {
+     "name": "com.browser-use/browser-use",
+     "description": "Browser agents and stealth cloud browsers for AI: run web tasks, fill forms, extract data.",
+     "remotes": [
+      "https://api.browser-use.com/v3/mcp"
+     ],
+     "word": "browser"
+    },
+    {
+     "name": "ai.agentlookups/groundrules",
+     "description": "The original text of US federal and state law, with official sources; never a summary or advice.",
+     "remotes": [
+      "https://law.agentlookups.ai/mcp"
+     ],
+     "word": "rules"
+    },
+    {
+     "name": "app.courtrules/court-rules",
+     "description": "Judge-level filing rules, court holidays and enforcement data for US federal and state courts.",
+     "remotes": [
+      "https://mcp.courtrules.app/mcp"
+     ],
+     "word": "rules"
+    },
+    {
+     "name": "app.openkrill/rules",
+     "description": "Read the rule itself instead of a summary of it.",
+     "remotes": [
+      "https://rules.openkrill.app/mcp"
+     ],
+     "word": "rules"
+    },
+    {
+     "name": "app.vercel.pass-through-tax-rules/pass-through-tax-rules",
+     "description": "Cited, tax-year-dated rules for state PTET, the federal SALT cap, and bonus-depreciation conformity.",
+     "remotes": [
+      "https://pass-through-tax-rules.vercel.app/api/mcp"
+     ],
+     "word": "rules"
+    },
+    {
+     "name": "com.amazonaws.us-east-1.execute-api.4fucgqu5if/agent-platform-rules",
+     "description": "Cited, dated answers: may an AI agent post, sign up or automate on Reddit, HN, Bluesky, GitHub, X?",
+     "remotes": [
+      "https://4fucgqu5if.execute-api.us-east-1.amazonaws.com/mcp"
+     ],
+     "word": "rules"
+    },
+    {
+     "name": "com.datakoot/federal-register-rules",
+     "description": "US Federal Register for AI agents: rules, notices, executive orders, agency lookup. No keys.",
+     "remotes": [
+      "https://regulatory.datakoot.com/mcp"
+     ],
+     "word": "rules"
+    },
+    {
+     "name": "com.greenerahead/reporting-rules",
+     "description": "Check whether CSRD applies after the 2026 simplification; read official VSME and ESRS disclosures.",
+     "remotes": [
+      "https://app.greenerahead.com/mcp/public"
+     ],
+     "word": "rules"
+    },
+    {
+     "name": "com.gumballtools/sports-rules",
+     "description": "Work an offside call through IFAB Law 11 or NHL Rule 83, step by step.",
+     "remotes": [
+      "https://sports-rules.gumballtools.com/api/mcp"
+     ],
+     "word": "rules"
+    },
+    {
+     "name": "com.lettance/rules",
+     "description": "Landlord rules for England by postcode: council licensing, the landlord register and the law, cited.",
+     "remotes": [
+      "https://lettance.com/mcp"
+     ],
+     "word": "rules"
+    },
+    {
+     "name": "ai.advisorsai/store-readiness",
+     "description": "One read-only public-page readiness check with a signed, recheckable evidence receipt.",
+     "remotes": [
+      "https://advisorsai.ai/store-readiness-mcp"
+     ],
+     "word": "read"
+    },
+    {
+     "name": "ai.agenticplug/agent-ready-report",
+     "description": "Scan any public website and see how ready it is for AI agents and AI search, explained plainly.",
+     "remotes": [
+      "https://scan.agenticplug.ai/mcp"
+     ],
+     "word": "read"
+    },
+    {
+     "name": "ai.basethread/basethread",
+     "description": "One shared context your team's AI tools read & write over MCP. No re-explaining. Free.",
+     "remotes": [
+      "https://mcp.basethread.ai/mcp"
+     ],
+     "word": "read"
+    },
+    {
+     "name": "ai.readypermit/geo",
+     "description": "Zoning, ADU eligibility, flood zone, setbacks, and buildability intelligence for U.S. parcels.",
+     "remotes": [
+      "https://rnfonkwthefktfvfwypr.supabase.co/functions/v1/mcp-server"
+     ],
+     "word": "read"
+    },
+    {
+     "name": "ai.smithery/kwp-lab-rss-reader-mcp",
+     "description": "Track and browse RSS feeds with ease. Fetch the latest entries from any feed URL and extract full…",
+     "remotes": [
+      "https://server.smithery.ai/@kwp-lab/rss-reader-mcp/mcp"
+     ],
+     "word": "read"
+    },
+    {
+     "name": "ai.subpay/document-reader",
+     "description": "Reads construction pay apps (G702/G703) and change orders from PDF to JSON. Pay per read via x402.",
+     "remotes": [
+      "https://subpay.ai/mcp"
+     ],
+     "word": "read"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.smithery/ImRonAI-mcp-server-browserbase",
+     "url": "https://server.smithery.ai/@ImRonAI/mcp-server-browserbase/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "ai.smithery/browserbasehq-mcp-browserbase",
+     "url": "https://server.smithery.ai/@browserbasehq/mcp-browserbase/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "app.1ts.browserhere/browserhere",
+     "url": "https://browserhere.1ts.app/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "co.civai.nova/browsergpt-agent",
+     "url": "https://nova.civai.co/mcp/agents/browsergpt-agent",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.browser-use/browser-use",
+     "url": "https://api.browser-use.com/v3/mcp",
+     "status": 200,
+     "doors": 7
+    },
+    {
+     "server": "ai.agentlookups/groundrules",
+     "url": "https://law.agentlookups.ai/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "app.courtrules/court-rules",
+     "url": "https://mcp.courtrules.app/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "app.openkrill/rules",
+     "url": "https://rules.openkrill.app/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "app.vercel.pass-through-tax-rules/pass-through-tax-rules",
+     "url": "https://pass-through-tax-rules.vercel.app/api/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.amazonaws.us-east-1.execute-api.4fucgqu5if/agent-platform-rules",
+     "url": "https://4fucgqu5if.execute-api.us-east-1.amazonaws.com/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "com.datakoot/federal-register-rules",
+     "url": "https://regulatory.datakoot.com/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.greenerahead/reporting-rules",
+     "url": "https://app.greenerahead.com/mcp/public",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "com.gumballtools/sports-rules",
+     "url": "https://sports-rules.gumballtools.com/api/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "com.lettance/rules",
+     "url": "https://lettance.com/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "ai.advisorsai/store-readiness",
+     "url": "https://advisorsai.ai/store-readiness-mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "ai.agenticplug/agent-ready-report",
+     "url": "https://scan.agenticplug.ai/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "ai.basethread/basethread",
+     "url": "https://mcp.basethread.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.readypermit/geo",
+     "url": "https://rnfonkwthefktfvfwypr.supabase.co/functions/v1/mcp-server",
+     "status": 200,
+     "doors": 8
+    },
+    {
+     "server": "ai.smithery/kwp-lab-rss-reader-mcp",
+     "url": "https://server.smithery.ai/@kwp-lab/rss-reader-mcp/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.subpay/document-reader",
+     "url": "https://subpay.ai/mcp",
+     "status": 200,
+     "doors": 3
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.gumballtools/sports-rules",
+     "url": "https://sports-rules.gumballtools.com/api/mcp",
+     "door": "offside",
+     "score": 3,
+     "shared": [
+      "rul",
+      "answer",
+      "refus"
+     ]
+    },
+    {
+     "server": "app.openkrill/rules",
+     "url": "https://rules.openkrill.app/mcp",
+     "door": "get_feedback_reply",
+     "score": 2,
+     "shared": [
+      "read",
+      "answer"
+     ]
+    },
+    {
+     "server": "com.amazonaws.us-east-1.execute-api.4fucgqu5if/agent-platform-rules",
+     "url": "https://4fucgqu5if.execute-api.us-east-1.amazonaws.com/mcp",
+     "door": "get_platform_rules",
+     "score": 2,
+     "shared": [
+      "rul",
+      "automat"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "first-attempt-flake-in-wave-two",
+   "words": [
+    "audit",
+    "check",
+    "wave"
+   ],
+   "servers": 6,
+   "serverList": [
+    {
+     "name": "ai.beket/audit",
+     "description": "See how AI assistants answer about your brand",
+     "remotes": [
+      "https://mcp.beket.ai/registry/mcp"
+     ],
+     "word": "audit"
+    },
+    {
+     "name": "ai.inxy/seo-audit",
+     "description": "Score any site or Shopify store for AEO/GEO/LLMO readiness — how likely AI search is to cite it.",
+     "remotes": [
+      "https://inxy.ai/api/mcp"
+     ],
+     "word": "audit"
+    },
+    {
+     "name": "ai.prepublish/script-audit",
+     "description": "Audit a YouTube script before recording: hook, pacing, drop-off risk, copy-paste rewrites.",
+     "remotes": [
+      "https://prepublish.ai/mcp"
+     ],
+     "word": "audit"
+    },
+    {
+     "name": "ai.alphaquantlabs/propertycheck",
+     "description": "Gold Coast property intelligence and due diligence for AI agents, renters and buyers.",
+     "remotes": [
+      "https://agents.alphaquantlabs.ai/v1/mcp"
+     ],
+     "word": "check"
+    },
+    {
+     "name": "ai.lakewave/lakewave-mcp",
+     "description": "Verified B2B contacts at named accounts, email verdicts, contract signals and drafted campaigns.",
+     "remotes": [],
+     "word": "wave"
+    },
+    {
+     "name": "ai.wavespeed/mcp",
+     "description": "Run any model on the live WaveSpeed catalog: image, video, audio, 3D.",
+     "remotes": [],
+     "word": "wave"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.beket/audit",
+     "url": "https://mcp.beket.ai/registry/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.inxy/seo-audit",
+     "url": "https://inxy.ai/api/mcp",
+     "status": 405,
+     "doors": 0
+    },
+    {
+     "server": "ai.prepublish/script-audit",
+     "url": "https://prepublish.ai/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "ai.alphaquantlabs/propertycheck",
+     "url": "https://agents.alphaquantlabs.ai/v1/mcp",
+     "status": 200,
+     "doors": 2
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "ai.prepublish/script-audit",
+     "url": "https://prepublish.ai/mcp",
+     "door": "audit_script",
+     "score": 3,
+     "shared": [
+      "audit",
+      "written",
+      "check"
+     ]
+    },
+    {
+     "server": "ai.prepublish/script-audit",
+     "url": "https://prepublish.ai/mcp",
+     "door": "audit_hook",
+     "score": 2,
+     "shared": [
+      "audit",
+      "check"
+     ]
+    },
+    {
+     "server": "ai.prepublish/script-audit",
+     "url": "https://prepublish.ai/mcp",
+     "door": "get_audit",
+     "score": 2,
+     "shared": [
+      "audit",
+      "check"
      ]
     }
    ]
