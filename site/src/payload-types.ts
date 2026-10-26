@@ -3154,6 +3154,10 @@ export interface QpuBlock {
    * the kernel-accepted theorem that makes this block true; written by the QPU as a client of this MCP, read from the textbook
    */
   theorem?: string | null;
+  /**
+   * the licence the block is served under (SPDX), kept with the content as every result carries it
+   */
+  license?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'qpu';

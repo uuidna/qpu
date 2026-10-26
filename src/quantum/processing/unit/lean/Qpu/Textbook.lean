@@ -16,6 +16,8 @@ theorem textbook_fold_mirror (n i : Nat) (h : i ≤ n) : i + (n - i) = n := by o
 theorem textbook_integrations_are_thirty_five : 8 + 1 + 1 + 15 + 1 + 9 = 35 := by decide
 /-- an institution within its edition's cap of users never pays more than the cap's bill: the bill is users times the price, monotone in the users (examples: textbook-institution) -/
 theorem textbook_institution_bill (u c p : Nat) (h : u ≤ c) : u * p ≤ c * p := Nat.mul_le_mul h (Nat.le_refl p)
+/-- three institution families, seven Workspace doors off, read or write and two read only (Calendar, People): twenty-six thousand two hundred and forty-four presets, each a mixed-radix index with its address, its page and its least-privilege scopes (examples: textbook-presets, textbook-preset) -/
+theorem textbook_workspace_presets : 3 * (3 ^ 7 * 2 ^ 2) = 26244 := by decide
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/
