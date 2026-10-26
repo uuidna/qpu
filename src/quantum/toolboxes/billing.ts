@@ -143,11 +143,89 @@ const SECRET = 'whsec_test_secret_of_tenant_psg'
 const EVENT = (id: string, type: string, created: number, object: Record<string, unknown>) => JSON.stringify({ id, type, created, data: { object } })
 const COMPLETED = EVENT('evt_1', 'checkout.session.completed', 1_700_000_000, { customer: 'cus_1', amount_total: 43200, currency: 'eur', metadata: { tenant: 'psg', subject: 'acme', domains: 'qpu.psg.bg,qpu.uuidna.com' } })
 
+/** The rate sources, every free currency API found (2026-10-26): the ECB's daily reference rates (the euro's own), Frankfurter (ECB-based JSON, v1), the
+ * Bulgarian National Bank's reference rates (foreign currency per euro since Bulgaria adopted the euro on 2026-01-01), open.er-api (daily, free tier),
+ * and fawazahmed0's currency-api on jsDelivr (daily, 200+ currencies incl. crypto). All EUR-based, all daily: real time is the day for reference rates;
+ * an intraday rate is a paid provider's door, a lead. Fetched by the currency step and by the wave as references; parsed here, pure. */
+export const RATE_SOURCES: readonly { id: string; name: string; url: string; format: 'xml-ecb' | 'json-frankfurter' | 'xml-bnb' | 'json-er-api' | 'json-fawazahmed'; cadence: string; terms: string }[] = [
+  { id: 'ecb', name: 'European Central Bank, euro foreign exchange reference rates', url: 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml', format: 'xml-ecb', cadence: 'daily, around 16:00 CET', terms: 'free, reference only' },
+  { id: 'frankfurter', name: 'Frankfurter (ECB rates as JSON)', url: 'https://api.frankfurter.dev/v1/latest?base=EUR', format: 'json-frankfurter', cadence: 'daily (ECB)', terms: 'free, open source' },
+  { id: 'bnb', name: 'Bulgarian National Bank, reference rates (foreign currency per 1 euro)', url: 'https://www.bnb.bg/Statistics/StExternalSector/StExchangeRates/StERForeignCurrencies/index.htm?download=xml&search=&lang=EN', format: 'xml-bnb', cadence: 'daily', terms: 'free, reference only' },
+  { id: 'er-api', name: 'open.er-api.com (ExchangeRate-API open endpoint)', url: 'https://open.er-api.com/v6/latest/EUR', format: 'json-er-api', cadence: 'daily, 1 500 requests a month free', terms: 'free tier with attribution' },
+  { id: 'fawazahmed', name: 'fawazahmed0/currency-api on jsDelivr', url: 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json', format: 'json-fawazahmed', cadence: 'daily', terms: 'free, CC0' },
+]
+/** Legal conversion rates: a currency replaced by the euro converts at its fixed rate forever (Bulgaria: 1 EUR = 1.95583 BGN, euro adopted 2026-01-01). */
+export const PEGS: Readonly<Record<string, { perEur: number; since: string; says: string }>> = { BGN: { perEur: 1.95583, since: '2026-01-01', says: 'the lev is retired: Bulgaria adopted the euro on 2026-01-01 at the fixed conversion rate of 1.95583 leva per euro; a BGN amount is the EUR amount shown in leva' } }
+/** The currency a domain prices in, by its top-level domain; a tenant prices in its own. */
+export const DOMAIN_CURRENCY: Readonly<Record<string, string>> = { bg: 'EUR', eu: 'EUR', de: 'EUR', fr: 'EUR', it: 'EUR', es: 'EUR', nl: 'EUR', at: 'EUR', com: 'USD', us: 'USD', uk: 'GBP', ch: 'CHF', jp: 'JPY', dev: 'USD', workers: 'USD' }
+export const TENANT_CURRENCY: Readonly<Record<string, string>> = { uuidna: 'EUR', psg: 'EUR', ceci: 'EUR', local: 'EUR' }
+/** The related MCPs the registry names for currency (2026-10-26, remotes marked by the discover step; proposed, never called from here). */
+export const CURRENCY_MCPS = ['com.datakoot/fx-currency-exchange-rates', 'com.invokera/currency-rates', 'io.github.FoundryNet/currency-intel-mcp', 'io.github.OlsOls4/currencykit', 'cn.pianam.mcp/exchange-rate-mcp', 'dev.workers.bhazarstudio.datoqa/historical-exchange-rates', 'io.github.hatgit/forex-gpt-mcp', 'io.github.Exchange-RateAPI/mcp-server', 'io.github.cyanheads/exchange-rates-mcp-server'] as const
+export type RateTable = { source: string; date: string | null; base: 'EUR'; rates: Record<string, number> }
+/** A source's text read into a rate table: XML of the ECB or the BNB, JSON of the others; what cannot be read is said. */
+export const ratesOf = (source: string, text: string): RateTable | { source: string; error: string } => {
+  const src = RATE_SOURCES.find((r) => r.id === source)
+  if (!src) return { source, error: `no rate source ${source}; the sources are ${RATE_SOURCES.map((r) => r.id).join(', ')}` }
+  try {
+    if (src.format === 'xml-ecb') { const date = /time='(\d{4}-\d{2}-\d{2})'/.exec(text)?.[1] ?? null; const rates: Record<string, number> = {}; for (const m of text.matchAll(/currency='([A-Z]{3})'\s+rate='([\d.]+)'/g)) rates[m[1]!] = Number(m[2]); if (!Object.keys(rates).length) throw new Error('no rates in the ECB XML'); return { source, date, base: 'EUR', rates } }
+    if (src.format === 'xml-bnb') { const date = /<CURR_DATE>(\d{2})\.(\d{2})\.(\d{4})<\/CURR_DATE>/.exec(text); const rates: Record<string, number> = {}; for (const m of text.matchAll(/<CODE>([A-Z]{3})<\/CODE>[\s\S]*?<RATE>([\d.]+)<\/RATE>/g)) rates[m[1]!] = Number(m[2]); if (!Object.keys(rates).length) throw new Error('no rates in the BNB XML'); return { source, date: date ? `${date[3]}-${date[2]}-${date[1]}` : null, base: 'EUR', rates } }
+    const j = JSON.parse(text) as Record<string, unknown>
+    if (src.format === 'json-frankfurter' || src.format === 'json-er-api') return { source, date: String(j.date ?? (j.time_last_update_utc ? new Date(String(j.time_last_update_utc)).toISOString().slice(0, 10) : '')) || null, base: 'EUR', rates: Object.fromEntries(Object.entries((j.rates ?? {}) as Record<string, number>).map(([k, v]) => [k.toUpperCase(), Number(v)])) }
+    return { source, date: String(j.date ?? '') || null, base: 'EUR', rates: Object.fromEntries(Object.entries((j.eur ?? {}) as Record<string, number>).filter(([k]) => /^[a-z]{3}$/.test(k)).map(([k, v]) => [k.toUpperCase(), Number(v)])) }
+  } catch (e) { return { source, error: (e as Error).message } }
+}
+const median = (xs: number[]): number => { const s = [...xs].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2 }
+/** The harmonised rate per currency: the median of every source that names it (a repetition code: agree within 0.5 %, else the sources that differ are named), pegs fixed by law, each rate with its sources and spread. */
+export const harmoniseOf = (tables: readonly RateTable[], symbols: readonly string[]): Record<string, { rate: number; sources: string[]; spread: number; outcome: 'agree' | 'drift' | 'peg' | 'erased'; drifting: string[]; dates: string[] }> => {
+  const out: Record<string, { rate: number; sources: string[]; spread: number; outcome: 'agree' | 'drift' | 'peg' | 'erased'; drifting: string[]; dates: string[] }> = {}
+  for (const sym of symbols.map((x) => x.toUpperCase())) {
+    if (sym === 'EUR') { out[sym] = { rate: 1, sources: ['base'], spread: 0, outcome: 'agree', drifting: [], dates: [] }; continue }
+    if (PEGS[sym]) { out[sym] = { rate: PEGS[sym]!.perEur, sources: ['law'], spread: 0, outcome: 'peg', drifting: tables.filter((t) => t.rates[sym] !== undefined && Math.abs(t.rates[sym]! - PEGS[sym]!.perEur) / PEGS[sym]!.perEur > 0.0001).map((t) => t.source), dates: [PEGS[sym]!.since] }; continue }
+    const named = tables.filter((t) => typeof t.rates[sym] === 'number' && t.rates[sym]! > 0)
+    if (!named.length) { out[sym] = { rate: 0, sources: [], spread: 0, outcome: 'erased', drifting: [], dates: [] }; continue }
+    const rate = median(named.map((t) => t.rates[sym]!))
+    const spread = Math.max(...named.map((t) => Math.abs(t.rates[sym]! - rate) / rate))
+    out[sym] = { rate, sources: named.map((t) => t.source), spread, outcome: spread <= 0.005 ? 'agree' : 'drift', drifting: named.filter((t) => Math.abs(t.rates[sym]! - rate) / rate > 0.005).map((t) => t.source), dates: [...new Set(named.map((t) => t.date).filter(Boolean))] as string[] }
+  }
+  return out
+}
+/** Amounts in the base currency's minor unit harmonised into every currency, rounded to the minor unit; the currency of a tenant and of a domain named. */
+export const amountsOf = (amount: number, rates: Record<string, { rate: number }>, decimals = 2): Record<string, number> => Object.fromEntries(Object.entries(rates).filter(([, r]) => r.rate > 0).map(([sym, r]) => [sym.toLowerCase(), Math.round(amount * r.rate * 10 ** decimals) / 10 ** decimals]))
+
+const currency = toolOf('billing', {
+  name: 'currency',
+  description: 'Currency harmonised in real time across every computation, agnostic of the source: plan answers the requests to every free rate API found (ECB, Frankfurter, BNB, open.er-api, currency-api) and names the related MCPs the registry lists; harmonise reads the bodies a client fetched, decodes one rate per currency by the median of the sources (agree within 0.5 %, drift named, pegs fixed by law: BGN 1.95583 since Bulgaria adopted the euro), and converts amounts in the base currency\'s minor unit into every currency, for a tenant (its currency) and a domain (its top-level domain\'s). Pure: nothing fetched here.',
+  inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['plan', 'harmonise'] }, answers: { type: 'array', items: { type: 'object', properties: { source: { type: 'string' }, text: { type: 'string' } } }, description: 'the bodies of the sources, fetched by the client' }, symbols: { type: 'array', items: { type: 'string' } }, amounts: { type: 'object', description: 'name → amount in the base currency\'s minor unit (cents)' }, tenant: { type: 'string' }, domain: { type: 'string' }, selftest: { type: 'boolean' } } },
+  run: (args, ctx) => {
+    if (args.selftest) return { selftest: true, ...BILLING.skill.selftest(ctx) }
+    const op = String(args.op ?? 'plan')
+    if (op === 'plan') return { op, sources: RATE_SOURCES, requests: RATE_SOURCES.map((r) => ({ id: `currency:${r.id}`, source: r.id, method: 'GET' as const, url: r.url, accept: r.format.startsWith('xml') ? '*/*' : 'application/json' })) /* the BNB's gateway refuses an accept of text/xml (measured 2026-10-26): any accept, the XML comes */, pegs: PEGS, relatedMcps: CURRENCY_MCPS, realtime: 'reference rates are daily: the day is the real time of a reference rate; an intraday rate is a paid provider\'s door (a related MCP), the operator\'s act' }
+    if (op !== 'harmonise') throw new Error(`op ${op} is not plan or harmonise`)
+    const answers = (Array.isArray(args.answers) ? args.answers : []) as { source: string; text: string }[]
+    const read = answers.map((a) => ratesOf(String(a.source), String(a.text ?? '')))
+    const tables = read.filter((r): r is RateTable => 'rates' in r)
+    const errors = read.filter((r): r is { source: string; error: string } => 'error' in r)
+    const symbols = (Array.isArray(args.symbols) && args.symbols.length ? args.symbols.map(String) : ['EUR', 'USD', 'BGN', 'GBP', 'CHF'])
+    const rates = harmoniseOf(tables, symbols)
+    const tenant = String(args.tenant ?? 'local'); const domain = typeof args.domain === 'string' ? args.domain : null
+    const tld = domain ? domain.split('.').pop()!.toLowerCase() : null
+    const amounts = args.amounts && typeof args.amounts === 'object' ? Object.fromEntries(Object.entries(args.amounts as Record<string, number>).map(([k, v]) => [k, amountsOf(Number(v), rates)])) : {}
+    const outcomes = Object.values(rates).reduce<Record<string, number>>((acc, r) => ({ ...acc, [r.outcome]: (acc[r.outcome] ?? 0) + 1 }), {})
+    return { op, base: 'EUR', sources: tables.map((t) => ({ source: t.source, date: t.date, currencies: Object.keys(t.rates).length })), errors, rates, outcomes, tenant: { tenant, currency: TENANT_CURRENCY[tenant] ?? 'EUR' }, domain: domain ? { domain, tld, currency: (tld && DOMAIN_CURRENCY[tld]) ?? 'EUR' } : null, amounts, says: `${tables.length} source(s) read${errors.length ? `, ${errors.length} unreadable` : ''}; ${Object.entries(outcomes).map(([k, v]) => `${v} ${k}`).join(', ')} of ${symbols.length} currencies` }
+  },
+  widget: flowWidget,
+})
+const ECB_FIXTURE = `<?xml version="1.0" encoding="UTF-8"?><gesmes:Envelope><Cube><Cube time='2026-10-23'><Cube currency='USD' rate='1.1193'/><Cube currency='GBP' rate='0.83728'/><Cube currency='CHF' rate='0.9227'/></Cube></Cube></gesmes:Envelope>`
+const ERAPI_FIXTURE = JSON.stringify({ result: 'success', time_last_update_utc: 'Sun, 25 Oct 2026 00:02:31 +0000', base_code: 'EUR', rates: { USD: 1.120288, BGN: 1.95583, GBP: 0.8381, CHF: 0.9231 } })
+const FRANKFURTER_FIXTURE = JSON.stringify({ amount: 1, base: 'EUR', date: '2026-10-23', rates: { GBP: 0.83728, USD: 1.1193 } })
+
 export const BILLING: Toolbox = {
   name: 'billing',
   idea: 'Stripe per tenant: a licence bought at one tenant is an entry valid on the domains it names, every event idempotent and linked, every signature verified with the tenant\'s own secret, every refusal a lead',
-  tools: [stripe],
+  tools: [stripe, currency],
   examples: [
+    { id: 'currency-plan', tool: 'currency', arguments: { op: 'plan' }, shows: 'Every free currency rate API found, as the requests a client sends (ECB, Frankfurter, BNB, open.er-api, currency-api), the pegs fixed by law and the related MCPs the registry names.', expect: (s) => (s.requests.length === 5 && s.pegs.BGN.perEur === 1.95583 && s.relatedMcps.length === 9 ? null : JSON.stringify(s.requests)) },
+    { id: 'currency-harmonise', tool: 'currency', theorem: 'textbook_peg_is_fixed', arguments: { op: 'harmonise', answers: [{ source: 'ecb', text: ECB_FIXTURE }, { source: 'er-api', text: ERAPI_FIXTURE }, { source: 'frankfurter', text: FRANKFURTER_FIXTURE }], symbols: ['EUR', 'USD', 'BGN', 'GBP'], amounts: { 'qpu-domain-yearly': 43200 }, tenant: 'psg', domain: 'qpu.psg.bg' }, shows: 'Three sources read into one rate per currency by the median (USD agreeing within 0.5 %, BGN pegged by law), a yearly licence of 432.00 € harmonised into every currency, the tenant psg pricing in euro, the domain .bg in euro since 2026.', expect: (s) => (s.rates.USD.outcome === 'agree' && s.rates.USD.rate === 1.1193 && s.rates.BGN.outcome === 'peg' && s.amounts['qpu-domain-yearly'].bgn === 84491.86 && s.domain.currency === 'EUR' ? null : JSON.stringify(s.rates)) },
     { id: 'stripe-plan', tool: 'stripe', arguments: { op: 'plan', tenant: 'psg', host: 'qpu.psg.bg', checkout: { subject: 'acme', domains: ['qpu.psg.bg', 'qpu.uuidna.com'], mode: 'subscription', amount: 43200, currency: 'eur', successUrl: 'https://qpu.psg.bg/licence?ok', cancelUrl: 'https://qpu.psg.bg/licence?cancel' } }, shows: 'A checkout plan for a yearly commercial licence of acme on two domains, bought at tenant psg: the form Stripe takes, the metadata the webhook brings back, the tenant secret the Worker alone holds.', expect: (s) => (s.secret === 'STRIPE_SECRET_KEY_PSG' && s.plan.form['metadata[domains]'] === 'qpu.psg.bg,qpu.uuidna.com' && s.plan.form['line_items[0][price_data][recurring][interval]'] === 'year' ? null : JSON.stringify(s.plan?.form).slice(0, 160)) },
     { id: 'stripe-catalogue', tool: 'stripe', theorem: 'textbook_prices_are_variants_times_currencies', arguments: { op: 'catalogue', tenant: 'uuidna', currencies: ['eur', 'usd'] }, shows: 'The QPU as a product line for tenant uuidna: seven variants over five products, each a Stripe price form in two currencies, the a432 default at zero.', expect: (s) => (s.variants === 7 && s.products === 6 && s.prices === 14 && s.catalogue[0].amounts.eur === 0 ? null : `${s.products} products, ${s.prices} prices, ${s.variants} variants`) },
     { id: 'stripe-webhook', tool: 'stripe', arguments: { op: 'webhook', tenant: 'psg', payload: COMPLETED, signature: signatureOf(SECRET, 1_700_000_000, COMPLETED), secret: SECRET, now: 1_700_000_100 }, shows: 'A checkout completed at tenant psg, its signature verified with psg\'s webhook secret, read into one licence entry granting acme on both domains.', expect: (s) => (s.valid === true && s.state === 'granted' && s.duplicate === false && s.entry.body.domains.length === 2 ? null : `${s.valid} ${s.why} ${s.state}`) },
@@ -184,6 +262,14 @@ export const BILLING: Toolbox = {
       const settle = settlementOf([{ id: 'txn_1', amount: 43200, fee: 1278, net: 41922, currency: 'eur', product: 'qpu-domain', tenant: 'psg' }, { id: 'txn_2', amount: 2700, fee: 103, net: 2597, currency: 'eur', product: 'qpu-seat', tenant: 'uuidna' }, { id: 'txn_3', amount: 47500, fee: 1400, net: 46100, currency: 'usd', product: 'qpu-domain', tenant: 'psg' }])
       check('billing:settlement', settle.net.eur === 44519 && settle.net.usd === 46100 && settle.byProduct['qpu-domain:eur'] === 41922 && settle.byTenant['uuidna:eur'] === 2597 && settle.entry.id.length === 36 && settlementOf([]).transactions === 0, 'net by currency, product and tenant from Stripe\'s own figures; the ledger content-addressed')
       check('billing:plan', plan.secret === 'STRIPE_SECRET_KEY_UUIDNA' && plan.form['metadata[domains]'] === '*' && plan.headers['idempotency-key']!.length === 36 && plan.form['line_items[0][price_data][unit_amount]'] === '43200', 'the plan names the tenant secret, the domains and an idempotency key')
+      const ecb = ratesOf('ecb', ECB_FIXTURE) as RateTable; const er = ratesOf('er-api', ERAPI_FIXTURE) as RateTable; const fr = ratesOf('frankfurter', FRANKFURTER_FIXTURE) as RateTable
+      const h = harmoniseOf([ecb, er, fr], ['EUR', 'USD', 'BGN', 'GBP', 'JPY'])
+      check('billing:rates-read-from-every-format', ecb.rates.USD === 1.1193 && ecb.date === '2026-10-23' && er.rates.BGN === 1.95583 && fr.rates.GBP === 0.83728 && 'error' in ratesOf('ecb', 'not xml') && 'error' in ratesOf('nowhere', ''), 'the ECB XML, er-api JSON and Frankfurter JSON read; an unreadable body and an unknown source said so')
+      check('billing:rates-harmonised-by-median', h.USD!.rate === 1.1193 && h.USD!.outcome === 'agree' && h.USD!.sources.length === 3 && h.BGN!.outcome === 'peg' && h.BGN!.rate === 1.95583 && h.JPY!.outcome === 'erased' && h.EUR!.rate === 1, `USD ${h.USD!.rate} from three sources (spread ${(h.USD!.spread * 100).toFixed(2)} %), BGN pegged, JPY erased (no source)`)
+      const drift = harmoniseOf([ecb, { source: 'x', date: null, base: 'EUR', rates: { USD: 1.2 } }], ['USD'])
+      check('billing:drift-named', drift.USD!.outcome === 'drift' && drift.USD!.drifting.includes('x'), 'a source 7 % off the median is named as drifting')
+      check('billing:amounts-in-every-currency', amountsOf(43200, h).usd === 48353.76 && amountsOf(43200, h).bgn === 84491.86 && amountsOf(43200, h).eur === 43200, '432.00 € is 483.54 $ and 844.92 лв at these rates, to the cent')
+      check('billing:tenant-and-domain-currency', TENANT_CURRENCY.psg === 'EUR' && DOMAIN_CURRENCY.bg === 'EUR' && DOMAIN_CURRENCY.com === 'USD', 'psg prices in euro; .bg is euro since 2026; .com is dollar')
       return { passed: checks.every((c) => c.passed), checks }
     },
   },

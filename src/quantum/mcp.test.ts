@@ -6,7 +6,7 @@ import { LEADS, cleanupSubjectsOf } from './leads.js'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
-test('tools/list serves the forty-two tools in twelve toolboxes with input schemas, and initialize names the server', () => {
+test('tools/list serves the forty-three tools in twelve toolboxes with input schemas, and initialize names the server', () => {
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
   assert.ok('result' in init && (init.result as { serverInfo: { name: string } }).serverInfo.name === 'qpu')
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
@@ -20,14 +20,14 @@ test('tools/list serves the forty-two tools in twelve toolboxes with input schem
     flow: ['discover', 'wave', 'readiness', 'imagine', 'e2e', 'shard'],
     language: ['translate', 'prose'],
     raid: ['mongo'],
-    billing: ['stripe'],
+    billing: ['stripe', 'currency'],
     legal: ['legal'],
     repository: ['repository'],
     standards: ['jsonld', 'codes'],
     payload: ['payload', 'configure'],
     extension: ['extend'],
     crypto: ['fold', 'seal'],
-  }, 'every tool names its toolbox in _meta, and the twelve toolboxes hold the forty-two tools')
+  }, 'every tool names its toolbox in _meta, and the twelve toolboxes hold the forty-three tools')
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 

@@ -53,7 +53,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 
 ## Tools
 
-42 tools in 12 toolboxes; every tool's schema is in [the MCP reference](/mcp) and every example in [the textbook](/examples).
+43 tools in 12 toolboxes; every tool's schema is in [the MCP reference](/mcp) and every example in [the textbook](/examples).
 
 | Tool | Toolbox | What it answers |
 |---|---|---|
@@ -90,6 +90,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 | `prose` | language | Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox's idea,  |
 | `mongo` | raid | The ported MongoDB over the docket, pure. find: &#123;collection, docs, filter, sort, skip, limit&#125; → the matching documents ( |
 | `stripe` | billing | Stripe per tenant, pure, the QPU as a product with its variants. catalogue: every product and variant (domain, tenant, s |
+| `currency` | billing | Currency harmonised in real time across every computation, agnostic of the source: plan answers the requests to every fr |
 | `legal` | legal | The full legal and security audit with forensic analysis, through MCP. Phase one (texts, discovery, agents?, theoremKeys |
 | `repository` | repository | Workspaces, branches, tags and releases watched and verified online, pure. Phase one (local): the requests to GitHub (br |
 | `jsonld` | standards | schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of th |

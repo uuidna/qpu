@@ -6,7 +6,7 @@
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
-import { stripePlugin } from '@payloadcms/plugin-stripe'
+import { qpuEcommerce } from './payload.qpu.ecommerce'
 import { Qpu } from './blocks/Qpu/config'
 import { qpuMcpTools, qpuServerInfo } from './payload.qpu.mcp'
 
@@ -17,7 +17,7 @@ export const qpuPlugins = [
   // only Payload: the handler's tools served by the MCP plugin (the server named qpu), the Worker's /mcp replaced
   mcpPlugin({ mcp: { tools: qpuMcpTools, serverOptions: { serverInfo: qpuServerInfo } } } as never),
   // Stripe by its plugin: the webhook route and the Stripe REST, the keys the tenant's (STRIPE_SECRET_KEY, STRIPE_WEBHOOKS_ENDPOINT_SECRET); one key per app until the plugin takes one per tenant
-  stripePlugin({ stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? '', stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_ENDPOINT_SECRET }),
+  qpuEcommerce, // the licence catalogue sold through Payload's own ecommerce plugin (products, carts, orders, transactions) with its Stripe adapter: the API from the config
 ]
 export const qpuEnv = {
   DATABASE_URI: "the RAID docket of the tenant (the mongo tool's language), as the site's MongoDB",

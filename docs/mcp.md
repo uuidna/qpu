@@ -68,7 +68,7 @@ Stripe per tenant: a licence bought at one tenant is an entry valid on the domai
 
 **Tests itself:** server only: SHA-256 and HMAC vectors, the signature round trip, every event type to its state, every scenario between tenants; client → server: the Worker hands the raw body, the header and the secret; the handler never holds a key; toolbox → toolbox: entries are addressed with the tree's uuidOf, kept in the raid docket, verified by the tree toolbox's verify.
 
-Tools: [stripe](#stripe).
+Tools: [stripe](#stripe), [currency](#currency).
 
 ## Toolbox `legal`
 
@@ -1654,6 +1654,59 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
 }
 ```
 
+## currency
+
+Currency harmonised in real time across every computation, agnostic of the source: plan answers the requests to every free rate API found (ECB, Frankfurter, BNB, open.er-api, currency-api) and names the related MCPs the registry lists; harmonise reads the bodies a client fetched, decodes one rate per currency by the median of the sources (agree within 0.5 %, drift named, pegs fixed by law: BGN 1.95583 since Bulgaria adopted the euro), and converts amounts in the base currency's minor unit into every currency, for a tenant (its currency) and a domain (its top-level domain's). Pure: nothing fetched here.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "op": {
+      "type": "string",
+      "enum": [
+        "plan",
+        "harmonise"
+      ]
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "the bodies of the sources, fetched by the client"
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "amounts": {
+      "type": "object",
+      "description": "name → amount in the base currency's minor unit (cents)"
+    },
+    "tenant": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
 ## legal
 
 The full legal and security audit with forensic analysis, through MCP. Phase one (texts, discovery, agents?, theoremKeys?): the author's claims gathered from the tree and its metadata, this tree's own security checks over its sources, and the plan of calls to the unit's forensic, verification, legal, licence, prior-art, due-process and security doors — free agents found by discovery by default, the operator's own list when given. Phase two (plus answers): verdicts per claim, drift against this tree's licence, the findings, the page. Recomputable facts, not legal advice.
@@ -1891,7 +1944,7 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 
 ## configure
 
-MCP configures Payload and the rest: Payload's default plugins (lexical with the one qpu block, nested-docs, seo, search, redirects, form-builder, multi-tenant, mcp) in all their combinations with no custom collection; the Worker's wrangler configuration from the tenants; each tenant's variable names (never values); the PWA manifest; the MCP registration. Every configuration carries its torus: address, seed, reflection and trinity, and whether the loop closes (config → text → config at the same address). With current (the text a client holds), the drift: every path that differs, each a lead; for a hand-held TypeScript file (payload, hooks, bindings), what MCP configures and the text lacks. With files: every configuration's file and its source, what next writes and what it measures on every run. Kinds hooks and bindings: the Payload hooks and the providers' bindings for full-scale use at minimum cost. Without kind: all of them, tested.
+MCP configures Payload and the rest: Payload's default plugins (lexical with the one qpu block, nested-docs, seo, search, redirects, form-builder, multi-tenant, mcp, ecommerce) in all their combinations with no custom collection; the Worker's wrangler configuration from the tenants; each tenant's variable names (never values); the PWA manifest; the MCP registration. Every configuration carries its torus: address, seed, reflection and trinity, and whether the loop closes (config → text → config at the same address). With current (the text a client holds), the drift: every path that differs, each a lead; for a hand-held TypeScript file (payload, hooks, bindings), what MCP configures and the text lacks. With files: every configuration's file and its source, what next writes and what it measures on every run. Kinds hooks and bindings: the Payload hooks and the providers' bindings for full-scale use at minimum cost. Without kind: all of them, tested.
 
 ```json
 {
@@ -1916,7 +1969,8 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "validations",
         "access",
         "actions",
-        "packages"
+        "packages",
+        "ecommerce"
       ],
       "description": "omit for all"
     },
@@ -1927,6 +1981,10 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
     "experience": {
       "type": "object",
       "description": "kind actions: what the gate measured ({ copies, involutions, msByHost }): the shard size follows it"
+    },
+    "rates": {
+      "type": "object",
+      "description": "kind ecommerce: the harmonised rates the currency tool answered (currency → { rate }): every price derived from the euro amount"
     },
     "lastTag": {
       "type": "object",

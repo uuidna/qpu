@@ -78,6 +78,10 @@ export default defineConfig({
         "link": "/configs"
       },
       {
+        "text": "Currency",
+        "link": "/currency"
+      },
+      {
         "text": "Roadmap",
         "link": "/roadmap"
       },
@@ -221,6 +225,10 @@ export default defineConfig({
           {
             "text": "Configurations",
             "link": "/configs"
+          },
+          {
+            "text": "Currency",
+            "link": "/currency"
           },
           {
             "text": "Roadmap",
@@ -503,6 +511,10 @@ export default defineConfig({
           {
             "text": "stripe",
             "link": "/mcp#stripe"
+          },
+          {
+            "text": "currency",
+            "link": "/mcp#currency"
           }
         ]
       },
