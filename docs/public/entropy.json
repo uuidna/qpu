@@ -1,10 +1,10 @@
 {
- "date": "2026-10-26T22:43:08.853Z",
- "files": 942,
- "lines": 84827,
- "findings": 1077,
+ "date": "2026-10-26T22:46:18.555Z",
+ "files": 943,
+ "lines": 84856,
+ "findings": 1079,
  "fused": 332,
- "reactions": 745,
+ "reactions": 747,
  "gravity": "12cda658-60d5-882d-84a5-864755c06496",
  "vacuum": false,
  "byKind": {
@@ -17,7 +17,7 @@
    "leads": 0
   },
   "cap": {
-   "findings": 83,
+   "findings": 85,
    "leads": 20
   },
   "clock": {
@@ -72,11 +72,11 @@
   {
    "id": "entropy-cap-4c776128",
    "kind": "cap",
-   "source": "scripts/claims.ts:19, site/src/app/_data/index.ts:457, site/src/app/_data/index.ts:462, site/src/app/_data/index.ts:467, site/src/app/_data/index.ts:472, src/quantum/toolboxes/repository.ts:80",
+   "source": "scripts/claims.ts:19, scripts/theorems-raid.ts:13, scripts/theorems-raid.ts:17, site/src/app/_data/index.ts:457, site/src/app/_data/index.ts:462, site/src/app/_data/index.ts:467, site/src/app/_data/index.ts:472, src/quantum/toolboxes/repository.ts:80",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — limit: 100",
    "status": "open",
    "tool": "audit",
-   "occurrences": 6,
+   "occurrences": 8,
    "address": "4c776128-5803-7382-80d0-c56a0a56a0e6",
    "explore": "match",
    "config": "actions"
@@ -708,7 +708,7 @@
   {
    "id": "entropy-duplicate-21f135d6",
    "kind": "duplicate",
-   "source": "scripts/next.ts:127, scripts/repository.ts:46",
+   "source": "scripts/next.ts:128, scripts/repository.ts:46",
    "statement": "one line of code repeated in more than one file: one place should hold it — const docket = join(ROOT, 'docs', 'public', 'next-leads.json')",
    "status": "open",
    "tool": "audit",
@@ -3996,7 +3996,7 @@
   {
    "id": "entropy-shape-0d8252de",
    "kind": "shape",
-   "source": "scripts/compete.ts:23, scripts/configs.ts:20, scripts/configs.ts:22, scripts/configs.ts:25, scripts/currency.ts:34, scripts/discover.ts:31, scripts/gen-docs.ts:17, scripts/hook.ts:17, scripts/imagine.ts:20, scripts/imagine.ts:30, scripts/legal.ts:39, scripts/legal.ts:45, scripts/metrics.ts:10, scripts/next.ts:64, scripts/next.ts:69, scripts/next.ts:128, scripts/publish.ts:27, scripts/publish.ts:43, scripts/purify.ts:75, scripts/purify.ts:106, scripts/purify.ts:107, scripts/readiness.ts:32, scripts/readiness.ts:34, scripts/readiness.ts:82, scripts/repository.ts:16, scripts/repository.ts:19, scripts/repository.ts:20, scripts/repository.ts:28, scripts/repository.ts:47, scripts/security.ts:31, scripts/shard.ts:22, scripts/sources.ts:17, scripts/textbook.ts:17, scripts/textbook.ts:18, scripts/textbook.ts:21, scripts/trunk.ts:13, scripts/verify.ts:23, scripts/verify.ts:34, site/src/payload.qpu.mcp.ts:54, src/quantum/audit.test.ts:38, src/quantum/toolboxes/payload.ts:1247",
+   "source": "scripts/compete.ts:23, scripts/configs.ts:20, scripts/configs.ts:22, scripts/configs.ts:25, scripts/currency.ts:34, scripts/discover.ts:31, scripts/gen-docs.ts:17, scripts/hook.ts:17, scripts/imagine.ts:20, scripts/imagine.ts:30, scripts/legal.ts:39, scripts/legal.ts:45, scripts/metrics.ts:10, scripts/next.ts:65, scripts/next.ts:70, scripts/next.ts:129, scripts/publish.ts:27, scripts/publish.ts:43, scripts/purify.ts:75, scripts/purify.ts:106, scripts/purify.ts:107, scripts/readiness.ts:32, scripts/readiness.ts:34, scripts/readiness.ts:82, scripts/repository.ts:16, scripts/repository.ts:19, scripts/repository.ts:20, scripts/repository.ts:28, scripts/repository.ts:47, scripts/security.ts:31, scripts/shard.ts:22, scripts/sources.ts:17, scripts/textbook.ts:17, scripts/textbook.ts:18, scripts/textbook.ts:21, scripts/trunk.ts:13, scripts/verify.ts:23, scripts/verify.ts:34, site/src/payload.qpu.mcp.ts:54, src/quantum/audit.test.ts:38, src/quantum/toolboxes/payload.ts:1247",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a JSON file read and parsed: one reader of the published files, null when a file is missing",
    "status": "open",
    "tool": "audit",

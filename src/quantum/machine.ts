@@ -11,7 +11,9 @@ import { courtOf } from './toolboxes/legal.js'
 import type { WorkflowFacts } from './toolboxes/repository.js'
 type Decide = (name: 'pre-commit' | 'pre-push', facts: WorkflowFacts) => { allowed: boolean; says: string; violated: string[]; unknown: string[] }
 
-export type MachineAction = { id: string; kind: 'read' | 'write'; cmd: string; args: readonly string[]; says: string; needs?: 'message' | 'confirm'; workflow?: 'pre-commit' | 'pre-push' }
+export type MachineAction = { id: string; kind: 'read' | 'write'; cmd: string; args: readonly string[]; says: string; needs?: 'message' | 'confirm' | 'branch'; workflow?: 'pre-commit' | 'pre-push' }
+/** A branch a merge may name: letters, digits, dot, underscore, slash and dash, never starting with a dash (it would be read as an option). */
+export const BRANCH_RE = /^[A-Za-z0-9._/-]{1,200}$/
 export const MACHINE_ACTIONS: readonly MachineAction[] = [
   { id: 'status', kind: 'read', cmd: 'git', args: ['status', '--porcelain=v1', '--branch'], says: 'the working tree: what changed, the branch and how far it is from its remote' },
   { id: 'log', kind: 'read', cmd: 'git', args: ['log', '--oneline', '-n', '50'], says: 'the last fifty commits' },
@@ -24,19 +26,22 @@ export const MACHINE_ACTIONS: readonly MachineAction[] = [
   { id: 'stage', kind: 'write', cmd: 'git', args: ['add', '-A'], says: 'every change staged for the next commit' },
   { id: 'commit', kind: 'write', cmd: 'git', args: ['commit', '-F', '-'], says: 'the staged changes committed through the hooks, the message given', needs: 'message', workflow: 'pre-commit' },
   { id: 'push', kind: 'write', cmd: 'git', args: ['push', 'origin', 'main'], says: 'main pushed to its remote through the pre-push workflow', needs: 'confirm', workflow: 'pre-push' },
+  { id: 'merge', kind: 'write', cmd: 'git', args: ['merge', '--no-ff', '--no-edit'], says: 'a branch merged into the current one, never fast-forwarded, under the pre-commit rules decided by theorems; the branch is the one parameter', needs: 'branch', workflow: 'pre-commit' },
+  { id: 'regenerate', kind: 'write', cmd: 'node', args: ['--import', 'tsx', 'scripts/regenerate.ts'], says: 'the generators in their order: the docs and the Lean file, every configuration, the theorem index and purity' },
 ]
 
-export type MachineRequest = { action?: string; message?: string; confirm?: boolean; facts?: WorkflowFacts }
+export type MachineRequest = { action?: string; message?: string; confirm?: boolean; branch?: string; facts?: WorkflowFacts }
 /** The plan of one action: allowed with its argument vector (and the message as its input), or refused with the court's case. */
 export const machinePlanOf = (r: MachineRequest, decideOf: Decide) => {
   const a = MACHINE_ACTIONS.find((x) => x.id === r.action)
   const refuse = (rule: string, why: string, evidence: unknown) => ({ allowed: false as const, action: r.action ?? null, refused: why, court: courtOf({ gate: `machine ${r.action ?? '?'}`, rule, evidence }), theorems: ['textbook_machine_allow_list', 'textbook_cheap_gates'] })
   if (!a) return refuse('route', `the allow-list names no action ${String(r.action)}: ${MACHINE_ACTIONS.map((x) => x.id).join(', ')}`, { asked: r.action })
   if (a.needs === 'message' && (typeof r.message !== 'string' || !r.message.trim() || r.message.length > 20000 || r.message.includes('\u0000'))) return refuse('shape', `${a.id} takes a message: one line at least, no NUL`, { action: a.id })
+  if (a.needs === 'branch' && (typeof r.branch !== 'string' || !BRANCH_RE.test(r.branch) || r.branch.startsWith('-'))) return refuse('shape', `${a.id} takes a branch: letters, digits, . _ / -, up to 200, never starting with a dash`, { action: a.id, branch: r.branch ?? null })
   if (a.needs === 'confirm' && r.confirm !== true) return refuse('role', `${a.id} leaves the machine: it runs only on the user's explicit confirmation (confirm: true)`, { action: a.id })
   const decision = a.workflow ? decideOf(a.workflow, r.facts ?? {}) : null
   if (decision && !decision.allowed) return { ...refuse('collision', `the ${a.workflow} rules refuse it: ${decision.says}`, { action: a.id, violated: decision.violated, unknown: decision.unknown }), decision }
-  return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args: [...a.args] }, input: a.needs === 'message' ? r.message : null, decision, says: a.says, theorems: ['textbook_machine_allow_list'] }
+  return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args: a.needs === 'branch' ? [...a.args, r.branch!] : [...a.args] }, input: a.needs === 'message' ? r.message : null, decision, says: a.says, theorems: ['textbook_machine_allow_list'] }
 }
 
 export type MachineRun = { action: string; command: { cmd: string; args: readonly string[] }; status: number | null; stdout: string; stderr: string; ms: number; root: string; home?: string }

@@ -24,6 +24,7 @@ import { PATENT_APIS, PATENT_MCPS, COMPETITIONS, FUNDING_MCPS, NEWS_APIS, knowOf
 import type { Lead } from '../leads.js'
 import { differencesOf, advantageOf, lexicalSecurityOf } from '../audit.js'
 import { referenceGraphOf, referencesOf, type RefDoc } from '../references.js'
+import { MACHINE_ACTIONS } from '../machine.js'
 import { schemasOf, type PayloadCollectionInput } from './payload-schemas.js'
 import { portOf, portsOf } from '../port.js'
 
@@ -1236,7 +1237,7 @@ type MachineReq = { headers?: { get?: (k: string) => string | null }; user?: { r
 const machineTool = {
   name: 'machine',
   description: 'The developer machine managed through the Payload MCP, securely: one action of the allow-list (repository { machine: { actions: true } } names them) run on this local app for a super admin, with no shell; commit and push decided by the workflow rules, a push only with confirm; every run an entry of the Entries collection, its paths relative and its leaks redacted',
-  parameters: { action: z.string().describe('an action of the allow-list: status, log, ahead, tags, diff, versions, next, precheck, stage, commit, push'), message: z.string().optional().describe('commit: the message'), confirm: z.boolean().optional().describe('push: the user confirms it') },
+  parameters: { action: z.string().describe('an action of the allow-list: ${MACHINE_ACTIONS.map((x) => x.id).join(', ')}'), message: z.string().optional().describe('commit: the message'), confirm: z.boolean().optional().describe('push: the user confirms it'), branch: z.string().optional().describe('merge: the branch to merge') },
   handler: async (args: Record<string, unknown>, req: MachineReq) => {
     const answer = (x: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(x) }], _meta: { ui: { resourceUri: 'ui://qpu/repository' } } })
     const h = String(req.headers?.get?.('host') ?? '')
@@ -1246,7 +1247,7 @@ const machineTool = {
     const root = path.resolve(process.cwd(), '..')
     const read = (f: string): any => { try { return existsSync(path.join(root, f)) ? JSON.parse(readFileSync(path.join(root, f), 'utf8')) : null } catch { return null } }
     const facts = { receipt: read('docs/public/receipt.json'), approval: read('docs/public/configs.json')?.approval ?? null, e2e: read('docs/public/e2e.json')?.outcomes ?? null }
-    const plan = callTool('repository', { machine: { plan: { action: args.action, message: args.message, confirm: args.confirm, facts } } })
+    const plan = callTool('repository', { machine: { plan: { action: args.action, message: args.message, confirm: args.confirm, branch: args.branch, facts } } })
     if (!plan?.allowed) return answer(plan)
     const { execFile } = await import('node:child_process')
     const t0 = Date.now()
