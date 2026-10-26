@@ -1396,6 +1396,14 @@
             "type": "string",
             "description": "an example id to replay"
           },
+          "evaluate": {
+            "type": "object",
+            "description": "the textbook's combinatorial expressions as tools: { theorem, values? } evaluates that theorem's statement exactly (its variables from values, each hypothesis and conjunct computed, what is missing named, its inputSchema answered); {} every theorem, the closed ones checked against the kernel"
+          },
+          "prose": {
+            "type": "object",
+            "description": "{ texts: { name: text } }: the prose audited around the textbook — every number a text states resting on an expression a client can evaluate, or a lead; verdict words beside the Clay problems flagged"
+          },
           "axioms": {
             "type": "boolean",
             "description": "the textbook's axioms each with its theorem: every example names the kernel-accepted theorem it rests on, every theorem names only examples that exist; what is left unlinked is listed"

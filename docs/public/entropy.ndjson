@@ -558,3 +558,6 @@
 {"date":"2026-10-26T15:44:27.377Z","address":"5041fab8-20f7-8061-b5ae-77d7da42ca56","settled":true}
 {"date":"2026-10-26T16:46:47.879Z","address":"6af2edca-d447-3da4-904f-84ffaa4a0988","id":"entropy-leak-6af2edca","kind":"leak","occurrences":1,"source":"src/quantum/examples.ts:142","explore":"configure","config":"tenant"}
 {"date":"2026-10-26T16:46:47.879Z","address":"0fc168b2-08df-72ae-a34c-34e9832ed8dc","id":"entropy-leak-0fc168b2","kind":"leak","occurrences":1,"source":"src/quantum/examples.ts:142","explore":"configure","config":"tenant"}
+{"date":"2026-10-26T16:50:18.572Z","address":"fea3989b-07a9-2868-b679-3d37c15fe6c7","id":"entropy-leak-fea3989b","kind":"leak","occurrences":1,"source":"src/quantum/examples.ts:142","explore":"configure","config":"tenant"}
+{"date":"2026-10-26T16:50:18.572Z","address":"6af2edca-d447-3da4-904f-84ffaa4a0988","settled":true}
+{"date":"2026-10-26T16:52:34.513Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:138","explore":"match","config":"actions"}

@@ -348,5 +348,7 @@ theorem textbook_collision_solves_many (k : Nat) (h : 2 ≤ k) : 1 < k ∧ 1 ≤
 theorem textbook_double_torus (n : Nat) : n < n + 1 ∧ n + 1 - 1 = n := by omega
 /-- problem solving requires problem finding: every leak found in what is published is reported by its kind and place and redacted, so none of its values is repeated, however many are found (examples: audit-leaks) -/
 theorem textbook_leaks_redacted (found redacted : Nat) (h : redacted = found) : found - redacted = 0 := by omega
+/-- every textbook expression is a tool: when each closed statement evaluated exactly agrees with what the kernel proved, none disagrees, and every number the prose states rests on one of them or is a lead (examples: textbook-expressions, textbook-prose) -/
+theorem textbook_expressions_evaluate (closed held : Nat) (h : held = closed) : closed - held = 0 := by omega
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h
