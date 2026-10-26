@@ -40,9 +40,9 @@ theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 theorem textbook_website_plugins_partition : 4 + 3 + 1 = 8 := by decide
 /-- two skills and twelve references are fourteen documents (examples: payload-skills) -/
 theorem textbook_skills_documents : 2 + 12 = 14 := by decide
-/-- the shard of item k among n shards, k mod n, is one of the n shards: every item is shared (examples: shard-share) -/
+/-- the shard of item k among n shards, k mod n, is one of the n shards: every item is shared (examples: shard-share, audit-shard) -/
 theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt k h
-/-- an item belongs to one shard only: the shares never overlap (examples: shard-share) -/
+/-- an item belongs to one shard only: the shares never overlap (examples: shard-share, audit-shard) -/
 theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
 /-- the signature is over the 32-byte SHA-256 digest: 256 bits, whatever the length of the text (examples: seal-sign) -/
 theorem textbook_signature_over_digest : 32 * 8 = 256 := by decide

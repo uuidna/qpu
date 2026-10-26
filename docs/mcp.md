@@ -1176,6 +1176,10 @@ The surface audits itself through tools/call
 {
   "type": "object",
   "properties": {
+    "shard": {
+      "type": "object",
+      "description": "one share of the audit, split by the shard theorems"
+    },
     "lexical": {
       "type": "object",
       "description": "a lexical document scanned, nothing in it run"
