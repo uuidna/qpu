@@ -7,7 +7,8 @@
     "./discovery-document": "./src/quantum/discovery-document.ts",
     "./version": "./src/quantum/version.ts",
     "./blocks": "./src/quantum/blocks.ts",
-    "./roles": "./src/quantum/roles.ts"
+    "./roles": "./src/quantum/roles.ts",
+    "./machine": "./scripts/machine.ts"
   },
   "license": "CC-BY-NC-ND-4.0",
   "author": {

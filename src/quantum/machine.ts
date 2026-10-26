@@ -3,7 +3,8 @@
 // its own, or when the workflow rules decided by theorems refuse it (a commit needs the flow green, a push the rules of pre-push and the
 // user's confirmation) — and each run judged here: its output's paths made relative, its leaks redacted by kind, the whole a docket entry
 // at its content address with its SHA-256, the same shape the Worker's docket and the Payload entries address. No shell, no arbitrary
-// command: the local server (scripts/machine.ts) executes only the argument vector a plan returns.
+// command: the one runner (scripts/machine.ts), called by the stdio transport and by the Payload MCP plugin's machine tool, executes only
+// the argument vector a plan returns, streaming its lines as progress to a caller that sent a progress token.
 import { uuidOf } from './blocks.js'
 import { sha256, utf8, hex } from './hmac.js'
 import { leaksOf, LEAK_PATTERNS } from './audit.js'
