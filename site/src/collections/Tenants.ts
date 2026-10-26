@@ -15,5 +15,11 @@ export const Tenants: CollectionConfig = {
     { name: 'domains', type: 'array', required: true, fields: [{ name: 'domain', type: 'text', required: true }], admin: { description: 'the hosts that name the tenant; the Worker maps each to the docket' } },
     { name: 'currency', type: 'select', defaultValue: 'EUR', options: ["EUR","USD","BGN"], admin: { description: 'the currency the tenant prices in' } },
     { name: 'settings', type: 'json', admin: { description: 'the plugin options this tenant configures: { arguments: {...} } is merged into every qpu block call under its hosts; read by the page and by MCP clients through the Payload MCP plugin' } },
+    // the bindings a tenant uses, strictly by name: the adapters profile, the connectors the endpoint is listed as, the variables it binds; the values stay in the Worker's and the app's environment
+    { name: 'bindings', type: 'group', admin: { description: 'the bindings this tenant uses, by name: the adapters profile, the connectors it is listed as, the variables it names; values never here — the Worker and the app read them from their environment by these names (the configure tool computes the choice from the names: kinds adapters and bindings)' }, fields: [
+      { name: 'profile', type: 'select', defaultValue: 'cloudflare', options: ['cloudflare', 'google', 'vercel', 'local'], admin: { description: 'the adapters profile: database, storage and email chosen by what the environment names' } },
+      { name: 'connectors', type: 'select', hasMany: true, defaultValue: ['claude', 'cloudflare'], options: ['claude', 'cloudflare', 'registry'], admin: { description: 'what the one /mcp endpoint is listed as: a Claude connector, a Cloudflare remote MCP, an entry of the MCP registry' } },
+      { name: 'variables', type: 'array', fields: [{ name: 'name', type: 'text', required: true, validate: (v: unknown) => (/^[A-Z][A-Z0-9_]*$/.test(String(v)) ? true : 'a binding name: upper-case letters, digits and underscores, never a value') }], admin: { description: 'the variable names this tenant binds (QPU_OAUTH_ISSUER_<TENANT>, MCP_PUBLISHER_TOKEN, ...): names the bindings kind knows; the tenant kind measures which the environment lacks' } },
+    ] },
   ],
 }

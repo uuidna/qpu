@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T11:54:20.575Z",
+ "date": "2026-10-26T12:18:16.091Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -130,7 +130,7 @@
    "id": "dependencies:site",
    "perspective": "developer",
    "passed": false,
-   "evidence": "info 0, low 11, moderate 44, high 45, critical 11",
+   "evidence": "info 0, low 3, moderate 10, high 4, critical 0",
    "remedy": "npm audit fix or a pinned fixed version; a finding is a lead"
   },
   {
@@ -178,7 +178,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1036 kernel-accepted theorems",
+   "evidence": "1040 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -194,7 +194,7 @@
  "leads": [
   {
    "id": "security-dependencies-site",
-   "statement": "dependencies:site (developer): info 0, low 11, moderate 44, high 45, critical 11",
+   "statement": "dependencies:site (developer): info 0, low 3, moderate 10, high 4, critical 0",
    "status": "open",
    "remedy": "npm audit fix or a pinned fixed version; a finding is a lead",
    "tool": "audit"

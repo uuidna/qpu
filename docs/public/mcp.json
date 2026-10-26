@@ -20,6 +20,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "processor",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "google",
         "skill": {
@@ -291,6 +297,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "circuit",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "google",
         "skill": {
@@ -482,6 +494,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "echo",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "google",
         "skill": {
@@ -503,6 +521,12 @@
       "inputSchema": {
         "type": "object",
         "properties": {}
+      },
+      "annotations": {
+        "title": "echo_benchmark",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "google",
@@ -531,6 +555,12 @@
             "maximum": 6
           }
         }
+      },
+      "annotations": {
+        "title": "roadmap",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "google",
@@ -633,6 +663,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "algorithm",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "google",
         "skill": {
@@ -654,6 +690,12 @@
       "inputSchema": {
         "type": "object",
         "properties": {}
+      },
+      "annotations": {
+        "title": "software",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "google",
@@ -724,6 +766,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "statements",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "google",
         "skill": {
@@ -751,6 +799,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "repositories",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "google",
         "skill": {
@@ -777,6 +831,12 @@
             "description": "only the repository with this name"
           }
         }
+      },
+      "annotations": {
+        "title": "quantumlib",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "google",
@@ -841,6 +901,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "quantum-error-correction",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "google",
         "skill": {
@@ -879,6 +945,12 @@
             "description": "grid points of the sweep over [−π/2, π/2)"
           }
         }
+      },
+      "annotations": {
+        "title": "chemistry-simulation",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "google",
@@ -942,6 +1014,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "fault-tolerant-design",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "google",
         "skill": {
@@ -980,6 +1058,12 @@
             "description": "the leads named, in this order: a gate answers the leads that pass through it"
           }
         }
+      },
+      "annotations": {
+        "title": "leads",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "tree",
@@ -1026,6 +1110,12 @@
             "description": "the fallback combinations (correction ↔ handling, the involution) and the adapters each falls back to"
           }
         }
+      },
+      "annotations": {
+        "title": "audit",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "tree",
@@ -1074,6 +1164,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "match",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "tree",
         "skill": {
@@ -1114,6 +1210,12 @@
             "description": "the unit's run_sequence answers per value ({ value, answer | refusal })"
           }
         }
+      },
+      "annotations": {
+        "title": "clay",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "tree",
@@ -1179,6 +1281,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "verify",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "tree",
         "skill": {
@@ -1205,6 +1313,12 @@
             "description": "the run's artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree's own counts alone"
           }
         }
+      },
+      "annotations": {
+        "title": "metrics",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "tree",
@@ -1258,6 +1372,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "textbook",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "tree",
         "skill": {
@@ -1284,6 +1404,12 @@
             "description": "a UUID whose block variables to compute"
           }
         }
+      },
+      "annotations": {
+        "title": "css",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "tree",
@@ -1319,6 +1445,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "dashboard",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "tree",
         "skill": {
@@ -1349,6 +1481,12 @@
             "description": "the name the clone carries at its new host"
           }
         }
+      },
+      "annotations": {
+        "title": "clone",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "tree",
@@ -1403,6 +1541,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "discover",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "flow",
         "skill": {
@@ -1446,6 +1590,12 @@
             "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
           }
         }
+      },
+      "annotations": {
+        "title": "wave",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "flow",
@@ -1511,6 +1661,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "readiness",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "flow",
         "skill": {
@@ -1551,6 +1707,12 @@
             "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
           }
         }
+      },
+      "annotations": {
+        "title": "imagine",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "flow",
@@ -1599,6 +1761,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "e2e",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "flow",
         "skill": {
@@ -1637,6 +1805,12 @@
             "description": "run the flow toolbox's cross-test instead: every direction, every toolbox feeding the next"
           }
         }
+      },
+      "annotations": {
+        "title": "shard",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "flow",
@@ -1699,6 +1873,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "translate",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "language",
         "skill": {
@@ -1749,6 +1929,12 @@
             "type": "boolean"
           }
         }
+      },
+      "annotations": {
+        "title": "prose",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "language",
@@ -1809,6 +1995,12 @@
             "type": "boolean"
           }
         }
+      },
+      "annotations": {
+        "title": "mongo",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "raid",
@@ -1905,6 +2097,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "stripe",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "billing",
         "skill": {
@@ -1969,6 +2167,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "currency",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "billing",
         "skill": {
@@ -2025,6 +2229,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "legal",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "legal",
         "skill": {
@@ -2069,6 +2279,12 @@
             "type": "boolean"
           }
         }
+      },
+      "annotations": {
+        "title": "compete",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "legal",
@@ -2135,6 +2351,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "patents",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "legal",
         "skill": {
@@ -2181,6 +2403,12 @@
             "type": "boolean"
           }
         }
+      },
+      "annotations": {
+        "title": "repository",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "repository",
@@ -2260,6 +2488,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "jsonld",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "standards",
         "skill": {
@@ -2295,6 +2529,12 @@
             "type": "boolean"
           }
         }
+      },
+      "annotations": {
+        "title": "codes",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "standards",
@@ -2372,6 +2612,12 @@
             "type": "boolean"
           }
         }
+      },
+      "annotations": {
+        "title": "payload",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "payload",
@@ -2483,6 +2729,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "configure",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "payload",
         "skill": {
@@ -2540,6 +2792,12 @@
             "type": "boolean"
           }
         }
+      },
+      "annotations": {
+        "title": "extend",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "extension",
@@ -2609,6 +2867,12 @@
           }
         }
       },
+      "annotations": {
+        "title": "fold",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
       "_meta": {
         "toolbox": "crypto",
         "skill": {
@@ -2651,6 +2915,12 @@
             "type": "boolean"
           }
         }
+      },
+      "annotations": {
+        "title": "seal",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "crypto",
@@ -2712,6 +2982,12 @@
             "type": "boolean"
           }
         }
+      },
+      "annotations": {
+        "title": "attest",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
       },
       "_meta": {
         "toolbox": "crypto",

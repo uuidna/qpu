@@ -18,7 +18,8 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 | Method | Path | Takes | Answers | Authorization |
 |---|---|---|---|---|
 | POST | `/mcp` | JSON-RPC 2.0: initialize, tools/list, tools/call &#123; name, arguments &#125; | the result with structuredContent and _meta (widget, block, theme, jsonLd, payload, license); ETag the content hash, X-Qpu-Address the block address, X-Qpu-Version; streamed by default as the MCP streamable transport's event when the client accepts text/event-stream, JSON otherwise — errors: JSON-RPC -32601 (no such tool or method), -32602 (invalid params, with the bound the schema names), -32700 (parse error) | none for every pure tool; a tenant's tokens only for the docket |
-| GET | `/.well-known/qpu.json` | nothing | the discovery document: mcp, docket, methods, tools, bounds, version, tenants, mcpHosts, roles, licence, the reverse (the unit) | none |
+| GET | `/.well-known/qpu.json` | nothing | the discovery document: mcp, docket, methods, tools, bounds, version, tenants, mcpHosts, roles, licence, the reverse (the unit), and the OpenAPI 3.1 contract (openapi, info, servers, paths, components) | none |
+| GET | `/.well-known/oauth-protected-resource` | nothing | the protected-resource metadata of RFC 9728 for /mcp: the authorization servers the tenant names (QPU_OAUTH_ISSUER_&lt;TENANT&gt;; none named means the pure tools need no token and the docket takes the tenant's tokens by name), the docket roles as scopes, the bearer method | none |
 | GET | `/` | accept: application/json for the discovery document; otherwise the web OS | the discovery document or the site | none |
 | GET | `/&lt;uuid&gt;` | a content-addressed v8 UUID: one address for the block and for the entry; accept: application/json for the entry | the block's page (the widget, prev and next, the theme from the UUID), or the entry as JSON; immutable, ETag the address, 304 to If-None-Match; no prefix: the catch-all routes all | none |
 | GET | `/docket` | ?kind=&amp;since= | the tenant's entries (one docket per tenant host) | none to read |
@@ -27,6 +28,10 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 | DELETE | `/docket/&lt;id&gt;` | an entry id | the entry gone | Bearer: the tenant's admin token |
 | POST | `/docket/stripe` | a Stripe webhook, signed | the event as an entry, idempotent | STRIPE_WEBHOOK_SECRET_&lt;TENANT&gt; |
 | GET | `/health` | nothing | status, tenant, licence and the metrics computed now | none |
+
+## The standard contract
+
+The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the endpoint table and never written by hand: 9 paths, 48 component schemas (every tool and the two JSON-RPC envelopes). It stands inside the discovery document at `/.well-known/qpu.json` and as the MCP resource `openapi://qpu`; the tree's own discovery reads it as `openapi 3.1.0` (9 paths, 59,367 chars), the way it reads every other host's contract.
 
 ## Headers
 

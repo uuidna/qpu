@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T11:24:19.235Z",
- "ms": 1791,
+ "date": "2026-10-26T12:17:58.451Z",
+ "ms": 1691,
  "selftest": {
   "passed": true
  },
@@ -9,13 +9,13 @@
   {
    "id": "patents:google:quantum error correction",
    "status": 200,
-   "ms": 1671,
-   "bytes": 43570
+   "ms": 1556,
+   "bytes": 43633
   },
   {
    "id": "patents:epo-dates",
    "status": 200,
-   "ms": 520,
+   "ms": 516,
    "bytes": 222227
   }
  ],

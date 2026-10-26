@@ -11,7 +11,7 @@ import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, type
 import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.js'
 import { LOCALES as LANGS, translateOf } from './quantum/i18n.js'
 import { DEFAULT_MCP_HOSTS } from './quantum/discovery.js'
-import { discoveryOf } from './quantum/discovery-document.js'
+import { discoveryOf, protectedResourceOf } from './quantum/discovery-document.js'
 import { ROLES, type Role } from './quantum/roles.js'
 import { hashOf as contentHashOf } from './quantum/e2e.js'
 import { VERSION } from './quantum/version.js'
@@ -67,7 +67,7 @@ const involuted = (request: Request, address: string | null, response: Response,
 const addressOfReply = (reply: unknown): string | null => { const r = reply as { result?: { _meta?: { block?: { meta?: { id?: string } } } } }; return r.result?._meta?.block?.meta?.id ?? null }
 
 /** What this tree is, stated from its own values: nothing here is typed that the handler does not compute. */
-export { discoveryOf }
+export { discoveryOf, protectedResourceOf }
 
 /** The docket: one table of content-addressed entries and four verbs.
  *    GET  /docket?kind=&since=      the stream as a cursor
@@ -498,6 +498,8 @@ export const worker = {
     // the root: the web OS from the assets, unless the client asks for JSON (accept application/json): then the discovery document, which also stands at /.well-known/qpu.json
     if (path === '/' && request.method === 'GET' && env.ASSETS && !/application\/json/.test(request.headers.get('accept') ?? '')) { const asset = await env.ASSETS.fetch(request); if (asset.status !== 404) return asset }
     if (path === '/.well-known/qpu.json' || (path === '/' && request.method === 'GET')) return json(discoveryOf(url.origin, env))
+    // RFC 9728: the protected-resource metadata of /mcp, from the names the tenant binds; a connector reads it before it asks for a token
+    if (path === '/.well-known/oauth-protected-resource') return json(protectedResourceOf(url.origin, env))
     if ((path === '/mcp' || path === '/') && request.method === 'POST') {
       let message: Rpc
       try { message = await request.json() as Rpc } catch { return json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'parse error' } }, 400) }

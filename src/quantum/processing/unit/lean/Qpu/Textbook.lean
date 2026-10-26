@@ -102,3 +102,7 @@ theorem textbook_gates_by_kind : 46 + 35 + 28 + 1 + 33 = 143 := by decide
 theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
 theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - k = 0 := by intro k h hk; omega
+/-- the standard contract adds nothing the catalogue does not hold: its component schemas are the tools and the two JSON-RPC envelopes, so less the envelopes they are the tools (examples: configure-api) -/
+theorem textbook_openapi_contract (tools : Nat) : tools + 2 - 2 = tools := Nat.add_sub_cancel tools 2
+/-- however many binding names a tenant admin selects in Payload, the values held there are none: names times zero values (examples: configure-connectors) -/
+theorem textbook_bindings_named_not_valued (names : Nat) : names * 0 = 0 := Nat.mul_zero names

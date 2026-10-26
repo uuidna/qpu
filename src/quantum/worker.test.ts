@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { handle } from './mcp.js'
-import { worker, Docket, discoveryOf, roleAt, stripeCheckout, FRAGMENT_BYTES, STRIPE, sameToken, type Storage, type Env } from '../worker.js'
+import { worker, Docket, discoveryOf, protectedResourceOf, roleAt, stripeCheckout, FRAGMENT_BYTES, STRIPE, sameToken, type Storage, type Env } from '../worker.js'
 import { uuidOf, channelOf, uuidFromParts } from './blocks.js'
 import { signatureOf } from './toolboxes/billing.js'
 
@@ -33,6 +33,21 @@ test('the discovery document states only what the tree is', async () => {
   assert.equal(d.bounds.shorN, 21)
   assert.equal(d.key, 432)
   assert.equal(d.license.spdx, 'CC-BY-NC-ND-4.0')
+  // the discovery document is the standard contract too: OpenAPI 3.1, every tool a component schema beside the two JSON-RPC envelopes, every endpoint path a path (textbook_openapi_contract)
+  assert.equal(d.openapi, '3.1.0')
+  assert.equal(Object.keys(d.components.schemas).length - 2, TOOL_COUNT)
+  const paths = d.paths as Record<string, Record<string, { requestBody?: unknown }>>
+  assert.ok(paths['/mcp']!.post!.requestBody && paths['/docket/{id}']!.get && paths['/docket/{id}']!.delete)
+  // RFC 9728 from the names alone: no issuer named, no authorization server; the issuer named in the environment, one — the docket roles the scopes either way
+  const bare = protectedResourceOf('https://qpu.test')
+  assert.equal(bare.resource, 'https://qpu.test/mcp')
+  assert.deepEqual(bare.authorization_servers, [])
+  assert.ok(bare.scopes_supported.includes('docket:writer') && bare.scopes_supported.includes('docket:admin'))
+  const bound = protectedResourceOf('https://qpu.test', { [bare['x-qpu'].issuer]: 'https://issuer.test' })
+  assert.deepEqual(bound.authorization_servers, ['https://issuer.test'])
+  const pr = await worker.fetch(req('/.well-known/oauth-protected-resource'), env())
+  assert.equal(pr.status, 200)
+  assert.equal(((await pr.json()) as { resource: string }).resource.endsWith('/mcp'), true)
   const r = await worker.fetch(req('/.well-known/qpu.json'), env())
   assert.equal(r.status, 200)
   assert.equal(((await r.json()) as { name: string }).name, '@uuidna/qpu')

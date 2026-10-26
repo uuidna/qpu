@@ -3,6 +3,7 @@
 // countries in ISO 3166-1), and the free CLDR lists (Unicode's JSON of the ISO codes with their names) read as contracts so
 // the tree's locales and currencies are validated against the standard, never against prose. No I/O here.
 import { LICENSE } from './license.js'
+import { VERSION } from './version.js'
 
 export const STANDARDS: readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[] = [
   // the reference site: payloadcms.com is built of what Payload computes (its REST answers Payload's own shape: docs with blocks, meta, breadcrumbs), as qpu.uuidna.com is built of what qpu computes
@@ -86,4 +87,52 @@ export const detectStandard = (text: string): { detected: string; note: string }
     if (main) { const first = Object.values(main)[0] as Record<string, unknown> | undefined; const kind = first?.localeDisplayNames ? 'locale display names' : first?.numbers ? 'numbers' : 'unknown'; return { detected: 'cldr json', note: `${kind} (${text.length.toLocaleString('en-US')} chars)` } }
   } catch { /* not json */ }
   return null
+}
+
+/** The endpoints of the Worker, as the API overview states them (the source of docs/api.md) and as the OpenAPI document derives its paths. */
+export const API_ENDPOINTS: readonly { method: string; path: string; takes: string; answers: string; auth: string; errors?: string }[] = [
+  { method: 'POST', path: '/mcp', takes: 'JSON-RPC 2.0: initialize, tools/list, tools/call { name, arguments }', answers: 'the result with structuredContent and _meta (widget, block, theme, jsonLd, payload, license); ETag the content hash, X-Qpu-Address the block address, X-Qpu-Version; streamed by default as the MCP streamable transport\'s event when the client accepts text/event-stream, JSON otherwise', auth: 'none for every pure tool; a tenant\'s tokens only for the docket', errors: 'JSON-RPC -32601 (no such tool or method), -32602 (invalid params, with the bound the schema names), -32700 (parse error)' },
+  { method: 'GET', path: '/.well-known/qpu.json', takes: 'nothing', answers: 'the discovery document: mcp, docket, methods, tools, bounds, version, tenants, mcpHosts, roles, licence, the reverse (the unit), and the OpenAPI 3.1 contract (openapi, info, servers, paths, components)', auth: 'none' },
+  { method: 'GET', path: '/.well-known/oauth-protected-resource', takes: 'nothing', answers: 'the protected-resource metadata of RFC 9728 for /mcp: the authorization servers the tenant names (QPU_OAUTH_ISSUER_<TENANT>; none named means the pure tools need no token and the docket takes the tenant\'s tokens by name), the docket roles as scopes, the bearer method', auth: 'none' },
+  { method: 'GET', path: '/', takes: 'accept: application/json for the discovery document; otherwise the web OS', answers: 'the discovery document or the site', auth: 'none' },
+  { method: 'GET', path: '/<uuid>', takes: 'a content-addressed v8 UUID: one address for the block and for the entry; accept: application/json for the entry', answers: 'the block\'s page (the widget, prev and next, the theme from the UUID), or the entry as JSON; immutable, ETag the address, 304 to If-None-Match; no prefix: the catch-all routes all', auth: 'none' },
+  { method: 'GET', path: '/docket', takes: '?kind=&since=', answers: 'the tenant\'s entries (one docket per tenant host)', auth: 'none to read' },
+  { method: 'GET', path: '/docket/<id>', takes: 'an entry id; ?cheap, ?heal', answers: 'the entry, healed from a mirror by address when missing', auth: 'none to read' },
+  { method: 'POST', path: '/docket', takes: '{ kind, from, body, links? } or a commitment { kind, from, address, sha256 }', answers: '201 with the entry id (content address); 400 on shape, 413 above the entry bound', auth: 'Bearer: the tenant\'s writer token (QPU_WRITE_TOKEN_<TENANT>) or the RBAC MCP host\'s role' },
+  { method: 'DELETE', path: '/docket/<id>', takes: 'an entry id', answers: 'the entry gone', auth: 'Bearer: the tenant\'s admin token' },
+  { method: 'POST', path: '/docket/stripe', takes: 'a Stripe webhook, signed', answers: 'the event as an entry, idempotent', auth: 'STRIPE_WEBHOOK_SECRET_<TENANT>' },
+  { method: 'GET', path: '/health', takes: 'nothing', answers: 'status, tenant, licence and the metrics computed now', auth: 'none' },
+]
+export type ApiTool = { name: string; description: string; inputSchema: object }
+export const OPENAPI_RESOURCE = 'openapi://qpu'
+/** The QPU's own contract in the standard the discover step asks every host for: an OpenAPI 3.1 document derived from tools/list and the
+ *  endpoint table, never written by hand — every tool a component schema (its JSON Schema as tools/list serves it), every endpoint a path,
+ *  the one MCP operation a JSON-RPC envelope whose params name a tool and its arguments; the envelopes are the two schemas beyond the tools
+ *  (textbook_openapi_contract). The same document stands in the discovery document at /.well-known/qpu.json and as the resource
+ *  openapi://qpu, so the tree detects its own hosts as `openapi 3.1.0` the way it detects any other's. What an AI API and a quantum API
+ *  share — a named tool, its schema, a structured result at a content address — is this contract. Pure. */
+export const openapiOf = (origin: string, tools: readonly ApiTool[], hosts: readonly string[] = [origin]) => {
+  const paths: Record<string, Record<string, unknown>> = {}
+  for (const e of API_ENDPOINTS) {
+    const path = e.path.replace(/<([a-z]+)>/g, '{$1}'); const method = e.method.toLowerCase()
+    const parameters = [...path.matchAll(/\{([a-z]+)\}/g)].map((m) => ({ name: m[1], in: 'path', required: true, schema: { type: 'string' } }))
+    const op: Record<string, unknown> = { operationId: `${method}${path.replace(/[^a-z0-9]+/gi, '_').replace(/_+$/, '')}`, summary: e.takes, description: e.answers, ...(parameters.length ? { parameters } : {}), responses: { '200': { description: e.answers } }, 'x-qpu-auth': e.auth, ...(e.errors ? { 'x-qpu-errors': e.errors } : {}) }
+    if (e.path === '/mcp') {
+      op.operationId = 'mcp'
+      op.requestBody = { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/JsonRpcRequest' } } } }
+      op.responses = { '200': { description: 'the JSON-RPC result: content, structuredContent and _meta (widget, block, theme, jsonLd, license); ETag the content hash, X-Qpu-Address the block address', content: { 'application/json': { schema: { $ref: '#/components/schemas/JsonRpcResponse' } }, 'text/event-stream': { schema: { type: 'string', description: 'the MCP streamable transport: the same result as one event' } } } }, '304': { description: 'the block held is the block asked (If-None-Match named its content hash): nothing computed, nothing sent — the involution' } }
+    }
+    paths[path] = { ...(paths[path] ?? {}), [method]: op }
+  }
+  const schemas: Record<string, unknown> = {}
+  for (const t of tools) schemas[t.name] = { description: t.description, ...(t.inputSchema as object) }
+  schemas.JsonRpcRequest = { type: 'object', required: ['jsonrpc', 'id', 'method'], properties: { jsonrpc: { const: '2.0' }, id: { type: ['integer', 'string'] }, method: { enum: ['initialize', 'tools/list', 'tools/call', 'resources/list', 'resources/templates/list', 'resources/read'] }, params: { type: 'object', properties: { name: { enum: tools.map((t) => t.name) }, arguments: { oneOf: tools.map((t) => ({ $ref: `#/components/schemas/${t.name}` })) }, uri: { type: 'string' } } } } }
+  schemas.JsonRpcResponse = { type: 'object', required: ['jsonrpc', 'id'], properties: { jsonrpc: { const: '2.0' }, id: { type: ['integer', 'string', 'null'] }, result: { type: 'object', properties: { content: { type: 'array' }, structuredContent: { type: 'object' }, _meta: { type: 'object' } } }, error: { type: 'object', required: ['code', 'message'], properties: { code: { enum: [-32601, -32602, -32700] }, message: { type: 'string' } } } } }
+  return {
+    openapi: '3.1.0',
+    info: { title: '@uuidna/qpu', version: VERSION, summary: 'An exact, formally verified quantum processing unit served over MCP: one endpoint, every tool a schema, every result a content-addressed block', license: { name: LICENSE.spdx, url: LICENSE.url }, contact: { name: LICENSE.author, url: origin } },
+    servers: hosts.map((url) => ({ url })),
+    paths, components: { schemas },
+    'x-mcp': { endpoint: `${origin}/mcp`, protocol: '2025-06-18', methods: ['initialize', 'tools/list', 'tools/call', 'resources/list', 'resources/templates/list', 'resources/read'], tools: tools.map((t) => t.name), resource: OPENAPI_RESOURCE, says: 'the tools are the component schemas; a tools/call is the mcp operation with params.name one of them and params.arguments its schema; the two envelopes beyond the tools are JsonRpcRequest and JsonRpcResponse' },
+  }
 }
