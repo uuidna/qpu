@@ -1,0 +1,76 @@
+// Institutions as tenants of the textbook: an education, a nonprofit or a business opens Google Workspace's MCP servers with its own
+// OAuth client, and every record those doors answer lands in the RAID as a docket entry created through the Payload MCP (createEntries) —
+// no collection added, no provider named in the code that walks it. The editions and their prices are as Google's pages state them
+// (read 2026-10-26, sources beside each row); a price Google does not publish is null and says so. The textbook is the education tool:
+// every closed equation the kernel accepted becomes a Classroom question whose answer the kernel decided, and an answer is graded by
+// recomputing the equation, never by a key typed by hand. Pure: the client (the institution's MCP session) performs every call.
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
+import { uuidOf } from './blocks.js'
+
+/** Google Workspace's MCP servers (developers.google.com/workspace/guides/configure-mcp-servers, read 2026-10-26): Developer Preview,
+ *  OAuth 2.0 with a web client marked for an AI-powered agent; each lands in the docket, rendered by the collection named beside it. */
+export const WORKSPACE_MCP: readonly { product: string; host: string; url: string; enable: readonly string[]; scopes: readonly string[]; renders: string }[] = [
+  { product: 'Gmail', host: 'gmailmcp.googleapis.com', url: 'https://gmailmcp.googleapis.com/mcp/v1', enable: ['gmailmcp.googleapis.com', 'gmail.googleapis.com'], scopes: ['gmail.readonly', 'gmail.compose'], renders: 'messages as entries; mail out through the email adapter' },
+  { product: 'Drive', host: 'drivemcp.googleapis.com', url: 'https://drivemcp.googleapis.com/mcp/v1', enable: ['drivemcp.googleapis.com', 'drive.googleapis.com'], scopes: ['drive.readonly', 'drive.file'], renders: 'files as entries; uploads in media' },
+  { product: 'Docs', host: 'docsmcp.googleapis.com', url: 'https://docsmcp.googleapis.com/mcp/v1', enable: ['docsmcp.googleapis.com', 'docs.googleapis.com'], scopes: ['drive.readonly', 'drive.file', 'documents.readonly', 'documents'], renders: 'documents as entries; a page\'s rich text when the editor chooses' },
+  { product: 'Sheets', host: 'sheetsmcp.googleapis.com', url: 'https://sheetsmcp.googleapis.com/mcp/v1', enable: ['sheetsmcp.googleapis.com', 'sheets.googleapis.com'], scopes: ['drive.readonly', 'drive.file', 'spreadsheets.readonly', 'spreadsheets'], renders: 'rows as entries; form submissions when a sheet collects them' },
+  { product: 'Slides', host: 'slidesmcp.googleapis.com', url: 'https://slidesmcp.googleapis.com/mcp/v1', enable: ['slidesmcp.googleapis.com', 'slides.googleapis.com'], scopes: ['drive.readonly', 'drive.file', 'presentations.readonly', 'presentations'], renders: 'decks as entries; exports in media' },
+  { product: 'Calendar', host: 'calendarmcp.googleapis.com', url: 'https://calendarmcp.googleapis.com/mcp/v1', enable: ['calendarmcp.googleapis.com', 'calendar-json.googleapis.com'], scopes: ['calendar.calendarlist.readonly', 'calendar.events.freebusy', 'calendar.events.readonly'], renders: 'events as signal entries (read only)' },
+  { product: 'Chat', host: 'chatmcp.googleapis.com', url: 'https://chatmcp.googleapis.com/mcp/v1', enable: ['chatmcp.googleapis.com', 'chat.googleapis.com'], scopes: ['chat.spaces.readonly', 'chat.memberships.readonly', 'chat.messages.readonly', 'chat.messages.create', 'chat.users.readstate'], renders: 'messages as entries (the editors\' channel); needs a Chat app in the project' },
+  { product: 'People', host: 'people.googleapis.com', url: 'https://people.googleapis.com/mcp/v1', enable: ['people.googleapis.com'], scopes: ['directory.readonly', 'userinfo.profile', 'contacts.readonly'], renders: 'the directory as entries; users and tenant roles by the admin\'s act' },
+  { product: 'Classroom', host: 'classroommcp.googleapis.com', url: 'https://classroommcp.googleapis.com/mcp/v1', enable: ['classroommcp.googleapis.com', 'classroom.googleapis.com'], scopes: ['classroom.announcements', 'classroom.courses.readonly', 'classroom.coursework.students', 'classroom.courseworkmaterials', 'classroom.rosters.readonly', 'classroom.student-submissions.students.readonly', 'classroom.topics.readonly'], renders: 'courses, coursework, submissions and rosters as entries; the textbook\'s questions go out as coursework' },
+]
+export const WORKSPACE_SCOPE_PREFIX = 'https://www.googleapis.com/auth/'
+
+/** The editions an institution holds, as Google states them (prices in cents per user per month; null where Google publishes none). */
+export type Edition = { id: string; family: 'education' | 'nonprofit' | 'workspace'; name: string; cents: number | null; flexibleCents?: number | null; introCents?: number | null; currency: 'USD' | 'EUR'; cap: number | null; needs?: string; adds: string; source: string }
+export const EDITIONS: readonly Edition[] = [
+  { id: 'education-fundamentals', family: 'education', name: 'Google Workspace for Education Fundamentals', cents: 0, currency: 'USD', cap: null, needs: 'a qualifying institution', adds: 'Classroom, Gmail, Calendar, Meet (100), Docs, Sheets, Slides, Forms, Drive, Admin; 100 TB pooled; Gemini for Education', source: 'https://edu.google.com/workspace-for-education/editions/compare-editions/' },
+  { id: 'education-plus', family: 'education', name: 'Google Workspace for Education Plus', cents: null, currency: 'USD', cap: null, needs: 'Education Fundamentals; contact for pricing, annual, discounts for two years or more', adds: 'advanced security and analytics, Meet (1,000), unlimited originality reports, 20 GB more per licence, Gemini in Docs, Sheets, Slides, Vids and Forms', source: 'https://edu.google.com/workspace-for-education/editions/compare-editions/' },
+  { id: 'nonprofits', family: 'nonprofit', name: 'Google Workspace for Nonprofits', cents: 0, currency: 'USD', cap: 2000, needs: 'eligibility verified through Google for Nonprofits', adds: 'custom-domain email, Meet (150), 100 TB shared', source: 'https://www.google.com/nonprofits/offerings/workspace/' },
+  { id: 'nonprofits-business-standard', family: 'nonprofit', name: 'Business Standard for Nonprofits', cents: 350, flexibleCents: 420, currency: 'USD', cap: 2000, needs: 'eligibility verified through Google for Nonprofits', adds: 'Meet (150) with recording, 2 TB per user', source: 'https://www.google.com/nonprofits/offerings/workspace/' },
+  { id: 'nonprofits-business-plus', family: 'nonprofit', name: 'Business Plus for Nonprofits', cents: 616, flexibleCents: 740, currency: 'USD', cap: 2000, needs: 'eligibility verified through Google for Nonprofits', adds: 'eDiscovery, retention, Vault, Meet (500) with attendance, 5 TB per user', source: 'https://www.google.com/nonprofits/offerings/workspace/' },
+  { id: 'nonprofits-enterprise', family: 'nonprofit', name: 'Enterprise Standard and Plus for Nonprofits', cents: null, currency: 'USD', cap: null, needs: 'eligibility verified; 70% or more off the standard price, no published amount', adds: 'S/MIME, DLP, data regions, Meet (1,000), Enhanced Support', source: 'https://www.google.com/nonprofits/offerings/workspace/' },
+  { id: 'business-starter', family: 'workspace', name: 'Google Workspace Business Starter', cents: 680, introCents: 612, currency: 'EUR', cap: 300, adds: '30 GB per user, Meet (100), Gemini in Gmail', source: 'https://workspace.google.com/pricing' },
+  { id: 'business-standard', family: 'workspace', name: 'Google Workspace Business Standard', cents: 1360, introCents: 1224, currency: 'EUR', cap: 300, adds: '2 TB per user, Meet (150) with recording, eSignature, booking pages', source: 'https://workspace.google.com/pricing' },
+  { id: 'business-plus', family: 'workspace', name: 'Google Workspace Business Plus', cents: 2110, currency: 'EUR', cap: 300, adds: '5 TB per user, Vault, eDiscovery, Meet (500), Secure LDAP', source: 'https://workspace.google.com/pricing' },
+  { id: 'enterprise', family: 'workspace', name: 'Google Workspace Enterprise', cents: null, currency: 'EUR', cap: null, needs: 'contact sales', adds: 'S/MIME, DLP, context-aware access, data regions, Meet (1,000) live streaming', source: 'https://workspace.google.com/pricing' },
+]
+
+// Lean's natural-number arithmetic for a closed expression: + − (truncated) * / (floor) % ^ and parentheses; anything else is not closed
+const natOf = (src: string): number | null => {
+  const s = src.replace(/\s+/g, ''); let i = 0
+  const num = (): number | null => { if (s[i] === '(') { i++; const v = add(); if (s[i] !== ')') return null; i++; return v } const m = /^\d+/.exec(s.slice(i)); if (!m) return null; i += m[0].length; return Number(m[0]) }
+  const pow = (): number | null => { const b = num(); if (b === null) return null; if (s[i] === '^') { i++; const e = pow(); return e === null ? null : b ** e } return b }
+  const mul = (): number | null => { let v = pow(); while (v !== null && (s[i] === '*' || s[i] === '/' || s[i] === '%')) { const op = s[i++]; const r = pow(); if (r === null) return null; v = op === '*' ? v * r : r === 0 ? 0 : op === '/' ? Math.floor(v / r) : v % r } return v }
+  const add = (): number | null => { let v = mul(); while (v !== null && (s[i] === '+' || s[i] === '-')) { const op = s[i++]; const r = mul(); if (r === null) return null; v = op === '+' ? v + r : Math.max(0, v - r) } return v }
+  const v = add(); return v !== null && i === s.length && Number.isSafeInteger(v) ? v : null
+}
+/** The textbook's closed equations: a theorem `name : <closed expression> = <n> := by decide` is a question whose answer the kernel decided. */
+export const questionsOf = () => TEXTBOOK_THEOREMS.flatMap((t) => { const m = /^theorem\s+(\S+)\s*:\s*(.+?)\s*=\s*(\d+)\s*:=\s*by decide$/.exec(t.lean); if (!m) return []; const v = natOf(m[2]!); return v === null ? [] : [{ theorem: t.key, ask: `${m[2]} = ?`, answer: Number(m[3]), recomputed: v, says: t.says }] })
+
+export type InstitutionRequest = { edition?: string; users?: number; theorems?: string[]; course?: string; answers?: { theorem: string; answer: number | string }[] }
+/** An institution's whole plan: its edition and bill under the cap, the Workspace doors it opens and how each lands, the textbook's
+ *  questions as Classroom coursework, every record as a docket entry through the Payload MCP, answers graded by recomputation, and the
+ *  acts that are the institution's own. */
+export const institutionOf = (r: InstitutionRequest) => {
+  const e = EDITIONS.find((x) => x.id === r.edition)
+  if (!e) return { editions: EDITIONS.map((x) => ({ id: x.id, family: x.family, name: x.name, perUserMonth: x.cents === null ? null : x.cents / 100, currency: x.currency, cap: x.cap, source: x.source })), families: [...new Set(EDITIONS.map((x) => x.family))], doors: WORKSPACE_MCP.length, says: 'name an edition: every edition Google states for education, nonprofits and Workspace, priced per user per month where Google publishes a price', theorem: 'textbook_institution_bill' }
+  const users = Math.max(1, Math.floor(r.users ?? 1))
+  const within = e.cap === null || users <= e.cap
+  const bill = e.cents === null ? null : { perMonth: (users * e.cents) / 100, perYear: (users * e.cents * 12) / 100, atCap: e.cap === null ? null : (e.cap * e.cents) / 100, currency: e.currency, flexiblePerMonth: e.flexibleCents ? (users * e.flexibleCents) / 100 : null, introductoryPerMonth: e.introCents ? (Math.min(users, 20) * e.introCents + Math.max(0, users - 20) * e.cents) / 100 : null }
+  const all = questionsOf(); const chosen = r.theorems?.length ? all.filter((q) => r.theorems!.includes(q.theorem)) : all
+  const course = r.course ?? '{courseId}'
+  const coursework = chosen.map((q) => { const body = { title: q.theorem.replace(/^textbook_/, '').replace(/_/g, ' '), description: `${q.says}\n\n${q.ask}`, workType: 'SHORT_ANSWER_QUESTION', state: 'DRAFT', maxPoints: 1 }; return { theorem: q.theorem, ask: q.ask, rest: { method: 'POST', url: `https://classroom.googleapis.com/v1/courses/${course}/courseWork`, body }, entry: { tool: 'createEntries', arguments: { kind: 'document', from: 'classroom', body: { kind: 'coursework', theorem: q.theorem, ask: q.ask, course } } } } })
+  const graded = (r.answers ?? []).map((a) => { const q = all.find((x) => x.theorem === a.theorem); const given = Number(a.answer); return { theorem: a.theorem, given: a.answer, correct: q ? given === q.answer && q.answer === q.recomputed : null, by: q ? 'recomputed from the kernel-accepted equation' : 'no closed equation of that name' } })
+  const doors = WORKSPACE_MCP.map((d) => ({ product: d.product, url: d.url, enable: d.enable, scopes: d.scopes.map((s) => WORKSPACE_SCOPE_PREFIX + s), renders: d.renders, lands: { tool: 'createEntries', arguments: { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' } } }))
+  const acts = [
+    ...(e.needs ? [`${e.needs} (${e.source})`] : []),
+    'join the Google Workspace Developer Preview Program: every Workspace MCP server is in Developer Preview',
+    'create a Web application OAuth client marked for an AI-powered agent, with the MCP client\'s redirect URI; access_type=offline for a refresh token',
+    'enable each MCP service and its base API in the Google Cloud project, and allow them under Security > API Controls in the Admin console',
+    'publish the coursework drafts in Classroom: a teacher\'s act',
+  ]
+  const content = JSON.stringify({ edition: e.id, users, coursework: coursework.map((c) => c.theorem) })
+  return { id: uuidOf(content), edition: { id: e.id, family: e.family, name: e.name, needs: e.needs ?? null, adds: e.adds, source: e.source }, users, within, cap: e.cap, bill, doors, coursework, questions: all.length, graded, tenant: { settings: { institution: { edition: e.id, users } } }, acts, payloadMcp: 'every door\'s records and every coursework land through the Payload MCP plugin as createEntries calls (the docket, the RAID); the plugin serves this door as the textbook tool', says: `${e.name} for ${users} user(s): ${within ? 'within' : 'beyond'} the cap${e.cap === null ? ' (none)' : ` of ${e.cap}`}; ${bill ? `${bill.perMonth} ${bill.currency} a month` : 'no published price'}; ${doors.length} Workspace doors; ${coursework.length} textbook question(s) as Classroom coursework`, theorems: ['textbook_institution_bill', 'textbook_integrations_are_thirty_five'] }
+}

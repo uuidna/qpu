@@ -1227,6 +1227,10 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
 {
   "type": "object",
   "properties": {
+    "institution": {
+      "type": "object",
+      "description": "the textbook as an education tool for an institution: { edition, users, theorems?, course?, answers? } — the edition as Google states it (education, nonprofit or Workspace; omit it for the list), the bill under its cap, Google Workspace's nine MCP doors with their scopes, every closed equation of the textbook as a Classroom question (the REST body and the docket entry through the Payload MCP), answers graded by recomputation, and the acts that are the institution's own"
+    },
     "verify": {
       "type": "boolean",
       "description": "the wave over the textbook: every example's verification requests on public datasets and APIs, for any client device to fetch"

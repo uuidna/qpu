@@ -208,7 +208,7 @@ QPU the natural extension of every MCP and every MCP of QPU: a host's tools read
 |---|---|---|---|
 | [extend-out-balanced](https://qpu.uuidna.com/c6187a37-80b3-4d94-b0e2-77a482dfff63) | extend | textbook_context_balanced | The connector balanced to a request in real time, over MCP alone: tools/list asked with the statement answers the cluster the match tool decides (attest among them) with brief descriptions; the registration URL carries the same scope, the Claude toolset enables those tools alone, and the context is counted — a fraction of the whole list, so compacting is never needed; the saved and the kept make the whole. |
 | [extend-out](https://qpu.uuidna.com/ac90951a-c876-4f72-b0c5-c369d6dc5927) | extend | — | This catalogue as the registration any MCP client mounts: every tool as tools/list serves it, grouped by toolbox, at this tree's own endpoint; and as the Claude API mounts it, through the Messages API's MCP connector (mcp_servers with the mcp_toolset, beta mcp-client-2025-11-20), the tenant's key in the request. |
-| [extend-in-request](https://qpu.uuidna.com/60207721-dba7-8b46-8a0b-3bd8006d6aa1) | extend | textbook_integrations_are_twenty_six | Without the host's tools: the one tools/list request the client makes of Cloudflare's documentation server (no token needed there), and the integration matrix: every MCP this tree knows, its token name and what the tree does with it once open (GitHub → the repository watch through its doors; Cloudflare's eight → the verifier, the mirrors, the metrics, the wave, the audit, the prose, the tenants, the textbook; the Claude API → the operator agent, and outward the Messages API registration that mounts this catalogue). |
+| [extend-in-request](https://qpu.uuidna.com/60207721-dba7-8b46-8a0b-3bd8006d6aa1) | extend | textbook_integrations_are_thirty_five | Without the host's tools: the one tools/list request the client makes of Cloudflare's documentation server (no token needed there), and the integration matrix: every MCP this tree knows, its token name and what the tree does with it once open (GitHub → the repository watch through its doors; Cloudflare's eight → the verifier, the mirrors, the metrics, the wave, the audit, the prose, the tenants, the textbook; the Claude API → the operator agent, and outward the Messages API registration that mounts this catalogue). |
 | [extend-in-docs](https://qpu.uuidna.com/052bb3af-623f-6678-ac68-32ddb917a682) | extend | — | Cloudflare's documentation server read into this catalogue: one door, docs.mcp.cloudflare.com:search_cloudflare_documentation, taking a query. |
 | [extend-call-served](https://qpu.uuidna.com/52a25f3d-761f-1f58-b5c4-87ec72b54981) | extend | — | A foreign door served and its event-stream answer read back into the text the host returned. |
 
@@ -267,7 +267,7 @@ the Google Quantum AI layer: the Willow processor as its spec sheet states it, C
 
 ## Gates
 
-Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 172 gates (13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 59 + 28 + 7 + 2 + 5 = 172) in 21 categories, 194 nested pages, 314 of 2725 leads placed; by kind tool 51, open 53, keyed 34, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
+Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 181 gates (13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 68 + 28 + 7 + 2 + 5 = 181) in 21 categories, 203 nested pages, 314 of 2725 leads placed; by kind tool 51, open 53, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
 
 | Category | Gates | Leads | Says |
 |---|---:|---:|---|
@@ -287,7 +287,7 @@ Every API is a gate of some sort — a door of this catalogue, an open address, 
 | certificates | 8 | 3 | the beacon, the logs, the directory, the vulnerability index and the physics the attest tool passes |
 | currency | 5 | 1 | the rate sources the currency tool harmonises |
 | competitions | 5 | 2 | the rules pages the compete tool follows |
-| mcp | 59 | 7 | the servers discovery reads, and the servers the registry names beside them: proposed, never called from the tree |
+| mcp | 68 | 7 | the servers discovery reads, and the servers the registry names beside them: proposed, never called from the tree |
 | references | 28 | 17 | the vocabularies, codes and references the verifier reads |
 | news | 7 | 3 | the public news APIs wired as adapters of the DOI research: the mentions of every record of precedence, by source |
 | energy | 2 | 0 | the market-price gates the bill's kilowatt-hours are priced against, keyed by the tenant |
