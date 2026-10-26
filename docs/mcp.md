@@ -994,6 +994,10 @@ The surface audits itself through tools/call: every tool has a schema and an exa
 {
   "type": "object",
   "properties": {
+    "leaks": {
+      "type": "object",
+      "description": "{ texts: { name: text }, served?: [names] }: leaks found before they are published — e-mail addresses, keys and tokens, private keys, local paths, private addresses — the tree's notations set aside; values redacted, each finding a lead with its remedy"
+    },
     "entropy": {
       "type": "object",
       "description": "the vacuum-gravity entropy cleaner: file texts by path (the client reads them); every finding — baked data, a typed path, a cap, a clock in a pure module, a line repeated across files, a note to self, an address — becomes a lead; findings of one address fuse into one lead; the gravity is the fold of the addresses"

@@ -1,11 +1,11 @@
 {
- "date": "2026-10-26T16:43:11.727Z",
+ "date": "2026-10-26T16:46:47.879Z",
  "files": 924,
- "lines": 83167,
- "findings": 825,
- "fused": 308,
+ "lines": 83201,
+ "findings": 827,
+ "fused": 310,
  "reactions": 517,
- "gravity": "f68ab085-ebc4-58f6-9cd0-7b26cef58e2f",
+ "gravity": "f4a07ee9-3e28-653c-8c91-9e9f7c81bc75",
  "vacuum": false,
  "byKind": {
   "literal": {
@@ -33,23 +33,24 @@
    "leads": 15
   },
   "leak": {
-   "findings": 0,
-   "leads": 0
+   "findings": 2,
+   "leads": 2
   }
  },
  "difference": {
-  "appeared": 0,
+  "appeared": 2,
   "settled": 0
  },
  "toExplore": {
   "match": 287,
   "imagine": 17,
-  "configure": 4
+  "configure": 6
  },
  "toConfig": {
   "actions": 16,
   "none": 15,
-  "fullstack": 277
+  "fullstack": 277,
+  "tenant": 2
  },
  "leads": [
   {
@@ -67,7 +68,7 @@
   {
    "id": "entropy-cap-e1adfd32",
    "kind": "cap",
-   "source": "scripts/purify.ts:167, scripts/purify.ts:180, scripts/textbook.ts:47, src/quantum/audit.ts:310, src/quantum/audit.ts:328, src/quantum/audit.ts:330, src/quantum/audit.ts:332, src/quantum/discovery.ts:108, src/quantum/discovery.ts:153, src/quantum/examples.ts:80, src/quantum/examples.ts:134, src/quantum/match.ts:339, src/quantum/toolboxes/repository.ts:76, src/quantum/wave.ts:26, src/worker.ts:364",
+   "source": "scripts/purify.ts:167, scripts/purify.ts:180, scripts/textbook.ts:47, src/quantum/audit.ts:333, src/quantum/audit.ts:351, src/quantum/audit.ts:353, src/quantum/audit.ts:355, src/quantum/discovery.ts:108, src/quantum/discovery.ts:153, src/quantum/examples.ts:80, src/quantum/examples.ts:134, src/quantum/match.ts:339, src/quantum/toolboxes/repository.ts:76, src/quantum/wave.ts:26, src/worker.ts:364",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80)",
    "status": "open",
    "tool": "audit",
@@ -355,7 +356,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/audit.ts:261, src/quantum/audit.ts:262, src/quantum/examples.ts:139, src/quantum/mcp.ts:911, src/quantum/mcp.ts:914, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:114, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:188, src/quantum/toolboxes/legal.ts:253",
+   "source": "src/quantum/audit.ts:284, src/quantum/audit.ts:285, src/quantum/examples.ts:139, src/quantum/mcp.ts:911, src/quantum/mcp.ts:914, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:114, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:188, src/quantum/toolboxes/legal.ts:253",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
@@ -367,7 +368,7 @@
   {
    "id": "entropy-cap-9347bb45",
    "kind": "cap",
-   "source": "src/quantum/audit.ts:304, src/quantum/imagine.ts:56, src/quantum/mcp.ts:882, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:295, src/quantum/toolboxes/language.ts:94, src/quantum/toolboxes/payload.ts:1873, src/quantum/toolboxes/raid.ts:107, src/quantum/toolboxes/standards.ts:47",
+   "source": "src/quantum/audit.ts:327, src/quantum/imagine.ts:56, src/quantum/mcp.ts:882, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:295, src/quantum/toolboxes/language.ts:94, src/quantum/toolboxes/payload.ts:1873, src/quantum/toolboxes/raid.ts:107, src/quantum/toolboxes/standards.ts:47",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 160)",
    "status": "open",
    "tool": "audit",
@@ -387,6 +388,30 @@
    "address": "113d3f3c-fd2b-8990-b97f-44e38e3fd58f",
    "explore": "match",
    "config": "actions"
+  },
+  {
+   "id": "entropy-leak-6af2edca",
+   "kind": "leak",
+   "source": "src/quantum/examples.ts:142",
+   "statement": "an address in the tree: contacts are URLs, the account email is read at deploy — <address>@mail.example.org",
+   "status": "open",
+   "tool": "audit",
+   "occurrences": 1,
+   "address": "6af2edca-d447-3da4-904f-84ffaa4a0988",
+   "explore": "configure",
+   "config": "tenant"
+  },
+  {
+   "id": "entropy-leak-0fc168b2",
+   "kind": "leak",
+   "source": "src/quantum/examples.ts:142",
+   "statement": "an address in the tree: contacts are URLs, the account email is read at deploy — <address>@qpu.uuidna.com",
+   "status": "open",
+   "tool": "audit",
+   "occurrences": 1,
+   "address": "0fc168b2-08df-72ae-a34c-34e9832ed8dc",
+   "explore": "configure",
+   "config": "tenant"
   },
   {
    "id": "entropy-cap-b65e9832",
@@ -473,18 +498,6 @@
    "config": "fullstack"
   },
   {
-   "id": "entropy-duplicate-4d77ae2a",
-   "kind": "duplicate",
-   "source": "scripts/sources.ts:37, scripts/attest.ts:32, scripts/compete.ts:44, scripts/configs.ts:58, scripts/currency.ts:30, scripts/discover.ts:64, scripts/e2e.ts:44, scripts/patents.ts:32, scripts/verify.ts:61",
-   "statement": "one line of code repeated in more than one file: one place should hold it — mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })",
-   "status": "open",
-   "tool": "audit",
-   "occurrences": 9,
-   "address": "4d77ae2a-0f70-776a-bfdb-98b335b19a03",
-   "explore": "match",
-   "config": "fullstack"
-  },
-  {
    "id": "entropy-duplicate-feae5c2e",
    "kind": "duplicate",
    "source": "docs/.vitepress/theme/components/App.vue:21, site/src/components/blocks/Qpu/App.tsx:29",
@@ -505,6 +518,18 @@
    "tool": "audit",
    "occurrences": 5,
    "address": "523ca058-a2d1-7bde-a0d0-e75b0be009f4",
+   "explore": "match",
+   "config": "fullstack"
+  },
+  {
+   "id": "entropy-duplicate-4d77ae2a",
+   "kind": "duplicate",
+   "source": "scripts/attest.ts:32, scripts/compete.ts:44, scripts/configs.ts:58, scripts/currency.ts:30, scripts/discover.ts:64, scripts/e2e.ts:44, scripts/patents.ts:32, scripts/sources.ts:37, scripts/verify.ts:61",
+   "statement": "one line of code repeated in more than one file: one place should hold it — mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })",
+   "status": "open",
+   "tool": "audit",
+   "occurrences": 9,
+   "address": "4d77ae2a-0f70-776a-bfdb-98b335b19a03",
    "explore": "match",
    "config": "fullstack"
   },
@@ -3595,7 +3620,7 @@
   {
    "id": "entropy-duplicate-035ab7eb",
    "kind": "duplicate",
-   "source": "src/quantum/audit.test.ts:9, src/quantum/audit.ts:263, src/quantum/mcp.test.ts:7",
+   "source": "src/quantum/audit.test.ts:9, src/quantum/audit.ts:286, src/quantum/mcp.test.ts:7",
    "statement": "one line of code repeated in more than one file: one place should hold it — const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })",
    "status": "open",
    "tool": "audit",
@@ -3607,7 +3632,7 @@
   {
    "id": "entropy-duplicate-5dc4b0a7",
    "kind": "duplicate",
-   "source": "src/quantum/audit.test.ts:37, src/quantum/audit.ts:269, src/quantum/docs-calls.test.ts:27, src/quantum/match.ts:240, src/quantum/mcp.test.ts:12",
+   "source": "src/quantum/audit.test.ts:37, src/quantum/audit.ts:292, src/quantum/docs-calls.test.ts:27, src/quantum/match.ts:240, src/quantum/mcp.test.ts:12",
    "statement": "one line of code repeated in more than one file: one place should hold it — const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })",
    "status": "open",
    "tool": "audit",
@@ -3631,7 +3656,7 @@
   {
    "id": "entropy-duplicate-8ba12963",
    "kind": "duplicate",
-   "source": "src/quantum/audit.ts:262, src/quantum/selftest.ts:43",
+   "source": "src/quantum/audit.ts:285, src/quantum/selftest.ts:43",
    "statement": "one line of code repeated in more than one file: one place should hold it — const check = (id: string, passed: boolean, evidence: string) => { const now = Date.now(); checks.push({ id, passed, evidence, ms: now - clock }); clock = now }",
    "status": "open",
    "tool": "audit",
@@ -3643,7 +3668,7 @@
   {
    "id": "entropy-duplicate-298e93a1",
    "kind": "duplicate",
-   "source": "src/quantum/audit.ts:265, src/quantum/mcp.test.ts:10",
+   "source": "src/quantum/audit.ts:288, src/quantum/mcp.test.ts:10",
    "statement": "one line of code repeated in more than one file: one place should hold it — const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })",
    "status": "open",
    "tool": "audit",

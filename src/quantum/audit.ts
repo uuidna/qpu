@@ -256,6 +256,29 @@ export const axiomsOf = (examples: readonly Example[], textbook: readonly { key:
   return { examples: rows.length, linked, axioms, broken, dangling, complete: axioms.length === 0 && broken.length === 0 && dangling.length === 0, byTool: Object.fromEntries([...new Set(rows.map((r) => r.tool))].map((tool) => [tool, rows.filter((r) => r.tool === tool && r.theorems.length > 0).length + '/' + rows.filter((r) => r.tool === tool).length])), theorem: 'textbook_axioms_linked', says: axioms.length || broken.length || dangling.length ? `${axioms.length} example(s) with no theorem, ${broken.length} linked to a theorem the kernel does not accept, ${dangling.length} theorem link(s) to a missing example` : `all ${rows.length} examples rest on kernel-accepted theorems: no axiom left in the textbook` }
 }
 
+/** Leaks found before they are published: every text the client hands over (a served answer, a published file, a live copy) scanned for what
+ *  must not leave the machine — personal e-mail addresses, keys and tokens, private keys, local paths (the user and the layout), private network
+ *  addresses — the tree's own notations set aside (a block address <uuid>@<host>, the reserved test domains, the placeholders). A finding is
+ *  redacted in the answer (its kind and place, never its value), a lead with its remedy, and the case the court computes when it is served. */
+export const LEAK_PATTERNS: readonly { kind: string; re: RegExp; remedy: string }[] = [
+  { kind: 'email', re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g, remedy: 'a contact is a URL; an address never enters the tree (purify)' },
+  { kind: 'stripe-secret', re: /\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{8,}|\bwhsec_[A-Za-z0-9]{8,}/g, remedy: 'rotate the key at Stripe; the tenant\'s secret lives in the Worker\'s secrets only' },
+  { kind: 'token', re: /\b(?:ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{20,}|\bnpm_[A-Za-z0-9]{30,}|\bsk-ant-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b|\bAIza[0-9A-Za-z_-]{35}\b/g, remedy: 'revoke the token where it was issued and issue a new one into the secrets' },
+  { kind: 'jwt', re: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g, remedy: 'a session or key token: expire it and keep it out of logs' },
+  { kind: 'private-key', re: /-----BEGIN [A-Z ]*PRIVATE KEY-----/g, remedy: 'replace the key pair; a private key lives in the secrets alone' },
+  { kind: 'local-path', re: /\/Users\/[A-Za-z0-9._-]+|\/home\/[a-z][a-z0-9_-]+(?=\/)|[A-Z]:\\Users\\[A-Za-z0-9._-]+/g, remedy: 'paths relative to the repository root before a stack or an error is written into a lead or a receipt' },
+  { kind: 'private-ip', re: /\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})\b/g, remedy: 'a host by its public name; a private address says the network' },
+]
+const NOT_A_LEAK = (kind: string, m: string) => kind === 'email' && (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}@/i.test(m) || /@(?:[a-z0-9-]+\.)*(?:test|example|invalid|localhost)(?:\.[a-z]+)?$/i.test(m) || /@(?:example\.(?:com|org|net))$/i.test(m) || /@(?:project-id|test-project|your-project|my-project|PROJECT_ID)\.iam(?:\.gserviceaccount\.com)?$/i.test(m))
+export const leaksOf = (texts: Readonly<Record<string, string>>, served: readonly string[] = []) => {
+  const findings: { where: string; kind: string; count: number; served: boolean; remedy: string }[] = []
+  let setAside = 0
+  for (const [where, text] of Object.entries(texts)) for (const p of LEAK_PATTERNS) { let count = 0; for (const m of text.matchAll(p.re)) { if (NOT_A_LEAK(p.kind, m[0])) setAside++; else count++ } if (count) findings.push({ where, kind: p.kind, count, served: served.includes(where), remedy: p.remedy }) }
+  const byKind = Object.fromEntries(LEAK_PATTERNS.map((p) => [p.kind, findings.filter((f) => f.kind === p.kind).reduce((n, f) => n + f.count, 0)]))
+  const leads = findings.map((f) => ({ id: `leak-${f.kind}-${f.where.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`, source: f.where, statement: `${f.count} ${f.kind} finding(s) in ${f.where}${f.served ? ', served publicly' : ''}: ${f.remedy}`, status: 'open' as const, reason: f.served ? 'published: remove it at the source and from what is served' : 'not served yet: remove it at the source before it is' }))
+  return { texts: Object.keys(texts).length, findings, byKind, total: findings.reduce((n, f) => n + f.count, 0), served: findings.filter((f) => f.served).length, setAside, clean: findings.length === 0, leads, theorem: 'textbook_leaks_redacted', says: findings.length ? `${findings.reduce((n, f) => n + f.count, 0)} finding(s) in ${new Set(findings.map((f) => f.where)).size} text(s), ${findings.filter((f) => f.served).length} served publicly; values redacted, ${setAside} notation(s) set aside` : `${Object.keys(texts).length} text(s) clean; ${setAside} notation(s) set aside (block addresses, test domains)` }
+}
+
 export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = []): Audit => {
   const checks: Check[] = []
   let clock = Date.now()

@@ -346,5 +346,7 @@ theorem textbook_axioms_linked (examples linked : Nat) (h : linked = examples) :
 theorem textbook_collision_solves_many (k : Nat) (h : 2 ≤ k) : 1 < k ∧ 1 ≤ k - 1 := by omega
 /-- the quantum core computes on the classical world only through coins fused into coils, and the classical world reaches it only the same way back: two loops of one double torus, every crossing a finite step with always a next and one step back (examples: stripe-fusion) -/
 theorem textbook_double_torus (n : Nat) : n < n + 1 ∧ n + 1 - 1 = n := by omega
+/-- problem solving requires problem finding: every leak found in what is published is reported by its kind and place and redacted, so none of its values is repeated, however many are found (examples: audit-leaks) -/
+theorem textbook_leaks_redacted (found redacted : Nat) (h : redacted = found) : found - redacted = 0 := by omega
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

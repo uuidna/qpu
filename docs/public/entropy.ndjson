@@ -556,3 +556,5 @@
 {"date":"2026-10-26T15:41:02.983Z","address":"5041fab8-20f7-8061-b5ae-77d7da42ca56","id":"entropy-duplicate-5041fab8","kind":"duplicate","occurrences":2,"source":"site/src/blocks/Qpu/config.ts:17, src/quantum/toolboxes/payload.ts:1096","explore":"match","config":"fullstack"}
 {"date":"2026-10-26T15:44:27.377Z","address":"bfccb34e-d965-2af9-bca0-9567947aa611","id":"entropy-duplicate-bfccb34e","kind":"duplicate","occurrences":2,"source":"site/src/blocks/Qpu/config.ts:17, src/quantum/toolboxes/payload.ts:1096","explore":"match","config":"fullstack"}
 {"date":"2026-10-26T15:44:27.377Z","address":"5041fab8-20f7-8061-b5ae-77d7da42ca56","settled":true}
+{"date":"2026-10-26T16:46:47.879Z","address":"6af2edca-d447-3da4-904f-84ffaa4a0988","id":"entropy-leak-6af2edca","kind":"leak","occurrences":1,"source":"src/quantum/examples.ts:142","explore":"configure","config":"tenant"}
+{"date":"2026-10-26T16:46:47.879Z","address":"0fc168b2-08df-72ae-a34c-34e9832ed8dc","id":"entropy-leak-0fc168b2","kind":"leak","occurrences":1,"source":"src/quantum/examples.ts:142","explore":"configure","config":"tenant"}

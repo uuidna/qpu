@@ -5,7 +5,7 @@ order: 53
 
 # Security audit, both perspectives as one
 
-Performed by `npm run next` on 2026-10-26T15:46:03.092Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 25/26 pass; 1 finding(s), each a lead with its remedy. Every finding is a lead with the remedy manual work taught.
+Performed by `npm run next` on 2026-10-26T16:49:23.905Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 24/26 pass; 2 finding(s), each a lead with its remedy. Every finding is a lead with the remedy manual work taught.
 
 | Check | Perspective | Pass | Evidence | Remedy |
 |---|---|---|---|---|
@@ -27,14 +27,14 @@ Performed by `npm run next` on 2026-10-26T15:46:03.092Z through the `audit` tool
 | payload-mcp-key | client | ✓ | the app is not deployed: the plugin requires Authorization: &lt;users&gt; API-Key (measured locally), pending online | the Payload MCP plugin refuses a request without a user's API key |
 | dependencies:root | developer | ✓ | info 0, low 0, moderate 0, high 0, critical 0, total 0 | npm audit fix or a pinned fixed version; a finding is a lead |
 | dependencies:site | developer | ✗ | info 0, low 3, moderate 7, high 4, critical 0 | npm audit fix or a pinned fixed version; a finding is a lead |
-| no-leaks | developer | ✓ | 0 address(es) in the tree | contacts are URLs; the account email is read at deploy |
+| no-leaks | developer | ✗ | 2 address(es) in the tree | contacts are URLs; the account email is read at deploy |
 | no-autologin | developer | ✓ | no auto-login in the Payload config | remove admin.autoLogin from site/src/payload.config.ts: the first user comes from the deployer's account, its password by reset |
 | env-named-not-valued | developer | ✓ | the environment example names every variable and holds no value | values never travel: names only |
 | access-rules | developer | ✓ | entries.update: no one: an entry is its content address, so a change is a new entry; tenants.write: a super admin (the admin role) | an entry is its content address (no update); tenants are a super admin's |
 | hooks-guarded | developer | ✓ | hooks: collisionGuard, firstUserBootstrap, appRequest | the plugin adds the collision guard, the first-user bootstrap and the validated app request |
 | signing-at-edge | developer | ✓ | ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc) | the Worker signs with ML-DSA under the Web Crypto flag |
 | rest-rbac-both-ways | both | ✓ | two directions under three tenant roles on every adapter dimension (textbook_rest_rbac) |  |
-| theorems-sealed | both | ✓ | 1079 kernel-accepted theorems | the textbook is the proof |
+| theorems-sealed | both | ✓ | 1176 kernel-accepted theorems | the textbook is the proof |
 
 ## Access from every perspective
 
