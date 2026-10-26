@@ -94,16 +94,16 @@ theorem textbook_set_union (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : a + b -
 theorem textbook_widget_skilled_tools (w s : Nat) (h : w = s) : min w s = w := by subst h; exact Nat.min_self w
 /-- the tool set partitions over the twelve toolboxes: forty-six tools (examples: configure-sets, extend-out) -/
 theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 = 46 := by decide
-/-- every API is a gate: the forty-six doors of twelve toolboxes and the one hundred and thirty addresses of eight categories (patents, certificates, currency, competitions, energy, news, MCP with Google Cloud's and Google Workspace's servers, references) make one hundred and seventy-six gates, each a nested doc of its leads (examples: configure-gates) -/
-theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 68 + 28 + 7 + 2 = 176 := by decide
-/-- every API handled in quantum: one adapter per gate, a dimension of the one plugin, landing in the default schema — one hundred and thirty-eight in the docket entries, five in the catalogue's products, five in the competition pages, twenty-eight in the pages and the search index (the thirteen standards Payload's surface is described by among them) (examples: configure-gates) -/
-theorem textbook_gate_adapters : 138 + 5 + 5 + 28 = 176 := by decide
+/-- every API is a gate: the forty-six doors of twelve toolboxes and the one hundred and thirty-two addresses of eight categories (patents, certificates, currency, competitions, energy, news, MCP with Google Cloud's and Google Workspace's servers, references) make one hundred and seventy-eight gates, each a nested doc of its leads (examples: configure-gates) -/
+theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 = 178 := by decide
+/-- every API handled in quantum: one adapter per gate, a dimension of the one plugin, landing in the default schema — one hundred and thirty-eight in the docket entries, five in the catalogue's products, seven in the competition pages, twenty-eight in the pages and the search index (the thirteen standards Payload's surface is described by among them) (examples: configure-gates) -/
+theorem textbook_gate_adapters : 138 + 5 + 7 + 28 = 178 := by decide
 /-- every adapter dimension is REST both ways (in: the API's answer into Payload; out: Payload's data to the API) under the three tenant roles: six role-direction pairs, the access rules naming each (examples: configure-gates) -/
 theorem textbook_rest_rbac : 2 * 3 = 6 := by decide
 /-- Google's own MCP servers measured in the registry: fifteen at <service>.googleapis.com/mcp and three toolboxes, every one an adapter dimension or a door, none called from the tree (examples: configure-gates) -/
 theorem textbook_google_mcps : 15 + 3 = 18 := by decide
-/-- the same gates by kind: forty-six tools, fifty-three open, forty-three keyed (Google Workspace's nine, Google Cloud's fifteen among them), one a browser alone passes, thirty-three proposed by the registry (examples: configure-gates) -/
-theorem textbook_gates_by_kind : 46 + 53 + 43 + 1 + 33 = 176 := by decide
+/-- the same gates by kind: forty-six tools, fifty-five open, forty-three keyed (Google Workspace's nine, Google Cloud's fifteen among them), one a browser alone passes, thirty-three proposed by the registry (examples: configure-gates) -/
+theorem textbook_gates_by_kind : 46 + 55 + 43 + 1 + 33 = 178 := by decide
 /-- five databases, five storages and two email adapters make fifty adapter combinations (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
 /-- every configuration kind tested closed around the torus leaves none open, however many kinds the tree configures (examples: configure-all) -/
