@@ -513,6 +513,9 @@ export const reactHostOf = (): string => [
   "      if (m.method === 'ui/initialize') { post({ id: m.id, result: { protocolVersion: '2026-01-26', hostCapabilities: {}, hostContext: { displayMode: 'inline' } } }); return }",
   "      if (m.method === 'ui/notifications/initialized') { ready.current = true; tell(); return }",
   "      if (m.method === 'ui/notifications/size-changed' && typeof m.params?.height === 'number') setHeight(Math.max(40, Math.min(2400, m.params.height + 8)))",
+  "      // the view verifies a decision: its tools/call answered through the app's Payload MCP with the host's key (host to server, no model); a link opened only when https",
+  "      if (m.method === 'tools/call' && m.id !== undefined) { fetch(mcp, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', ...(apiKey ? { authorization: 'Bearer ' + apiKey } : {}) }, body: JSON.stringify({ jsonrpc: '2.0', id: m.id, method: 'tools/call', params: m.params }) }).then((r) => r.text()).then((t) => { const line = t.split('\\n').filter((l) => l.startsWith('data: ')).pop() ?? t; const j = JSON.parse(line.replace(/^data: /, '')); post({ id: m.id, ...(j.error ? { error: j.error } : { result: j.result }) }) }).catch((e) => post({ id: m.id, error: { code: -32603, message: String(e) } })); return }",
+  "      if (m.method === 'ui/open-link' && typeof m.params?.url === 'string' && /^https:\\/\\//.test(m.params.url)) { window.open(m.params.url, '_blank', 'noopener'); post({ id: m.id, result: {} }); return }",
   '    }',
   "    window.addEventListener('message', on)",
   "    return () => window.removeEventListener('message', on)",
@@ -619,6 +622,11 @@ export const uiOf = (tool: string, key: number = KEY): { uri: string; name: stri
 body { margin: 0; padding: var(--pad-sm); font-family: var(--font-sans, system-ui, sans-serif); color: var(--text-primary); background: transparent; }
 .qpu-block { border-left: 3px solid var(--qpu-accent, var(--a432-accent)); padding-left: var(--pad-sm); }
 .qpu-args { color: var(--text-muted); font-size: var(--font-size-footnote); margin-bottom: var(--gap-sm); white-space: pre-wrap; }
+.qpu-verify { display: flex; flex-direction: column; gap: var(--pad-sm); margin-top: var(--pad-sm); }
+.qpu-verify div { display: flex; flex-wrap: wrap; align-items: center; gap: var(--pad-sm); }
+.qpu-verify button { font: inherit; font-size: var(--font-size-footnote); padding: 2px 10px; border-radius: var(--radius); border: 1px solid var(--qpu-accent, currentColor); background: transparent; color: inherit; cursor: pointer; }
+.qpu-verify button:first-child { background: var(--qpu-accent, currentColor); color: var(--surface-1, Canvas); }
+.qpu-verify span { font-size: var(--font-size-footnote); }
 pre { background: var(--surface-1); border-radius: var(--radius); padding: var(--pad-sm); overflow: auto; font-size: var(--font-size-footnote); }
 </style></head>
 <body><div id="args" class="qpu-args"></div><div id="view" class="qpu-block" data-tool="${tool}">waiting for the tool's result</div>

@@ -29,6 +29,9 @@ export const QpuApp: React.FC<QpuAppProps> = ({ tool, args, result, html: given,
       if (m.method === 'ui/initialize') { post({ id: m.id, result: { protocolVersion: '2026-01-26', hostCapabilities: {}, hostContext: { displayMode: 'inline' } } }); return }
       if (m.method === 'ui/notifications/initialized') { ready.current = true; tell(); return }
       if (m.method === 'ui/notifications/size-changed' && typeof m.params?.height === 'number') setHeight(Math.max(40, Math.min(2400, m.params.height + 8)))
+      // the view verifies a decision: its tools/call answered through the app's Payload MCP with the host's key (host to server, no model); a link opened only when https
+      if (m.method === 'tools/call' && m.id !== undefined) { fetch(mcp, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', ...(apiKey ? { authorization: 'Bearer ' + apiKey } : {}) }, body: JSON.stringify({ jsonrpc: '2.0', id: m.id, method: 'tools/call', params: m.params }) }).then((r) => r.text()).then((t) => { const line = t.split('\n').filter((l) => l.startsWith('data: ')).pop() ?? t; const j = JSON.parse(line.replace(/^data: /, '')); post({ id: m.id, ...(j.error ? { error: j.error } : { result: j.result }) }) }).catch((e) => post({ id: m.id, error: { code: -32603, message: String(e) } })); return }
+      if (m.method === 'ui/open-link' && typeof m.params?.url === 'string' && /^https:\/\//.test(m.params.url)) { window.open(m.params.url, '_blank', 'noopener'); post({ id: m.id, result: {} }); return }
     }
     window.addEventListener('message', on)
     return () => window.removeEventListener('message', on)
