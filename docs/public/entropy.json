@@ -1,5 +1,5 @@
 {
- "date": "2026-10-26T18:53:39.073Z",
+ "date": "2026-10-26T18:55:43.480Z",
  "files": 931,
  "lines": 84250,
  "findings": 1083,
@@ -42,8 +42,8 @@
   }
  },
  "difference": {
-  "appeared": 13,
-  "settled": 3
+  "appeared": 3,
+  "settled": 0
  },
  "toExplore": {
   "match": 307,

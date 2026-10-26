@@ -662,3 +662,6 @@
 {"date":"2026-10-26T18:53:39.073Z","address":"97ef08f3-8bd1-695a-ab14-79f6be584aef","settled":true}
 {"date":"2026-10-26T18:53:39.073Z","address":"112eb821-5cc7-15f6-808b-98b939bc7da1","settled":true}
 {"date":"2026-10-26T18:53:39.073Z","address":"0be63d3d-a35f-5006-ace3-a365d0c58f79","settled":true}
+{"date":"2026-10-26T18:55:43.480Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:138","explore":"match","config":"actions"}
+{"date":"2026-10-26T18:55:43.480Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:55","explore":"match","config":"actions"}
+{"date":"2026-10-26T18:55:43.480Z","address":"f2122e8d-8d78-24f1-9cf5-f23091174a18","id":"entropy-cap-f2122e8d","kind":"cap","occurrences":1,"source":"src/quantum/toolboxes/billing.ts:179","explore":"match","config":"actions"}

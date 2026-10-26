@@ -12,7 +12,7 @@ import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay, reflectionOfRegister } from './clay-register.js'
 import { composeOf } from './compose.js'
 import { mayChoose, ROLE_RANK, type Role } from './roles.js'
-import { evaluateOf, expressionsOf, proseOf } from './expressions.js'
+import { evaluateOf, expressionsOf, proseOf, statementOf } from './expressions.js'
 import { institutionOf, presetsOf, presetOf, createCallOf, PRESET_FAMILIES } from './institutions.js'
 import { collisionsOf } from './collisions.js'
 import { SOURCES, sourcesPlanOf, nextOf, sourcesOf, type SourceContext, type SourceRequest, type SourceAnswer } from './sources.js'
@@ -881,7 +881,8 @@ export const chatOf = (statement: string, c: { role?: string; call?: { tool: str
   const routed = (m?.route?.theorems ?? []).map((x) => x.theorem)
   let call: { name: string; arguments: Record<string, unknown> } | null = c.call ? { name: c.call.tool, arguments: c.call.arguments ?? {} } : m?.call ?? null
   let by = c.call ? 'the call given' : call ? 'the call the match serves' : ''
-  if (!call) for (const th of routed) { const ex = EXAMPLES.find((e) => e.theorem === th); if (ex) { call = { name: ex.tool, arguments: ex.arguments }; by = `theorem ${th}: its example ${ex.id}`; break } }
+  // in route order, each theorem answers by its expression computed (the statement's numbers bound to its variables in order, evaluated on request) or else by its own example; the first that answers stands
+  if (!call) { const nums = statement.match(/\d+/g) ?? []; for (const th of routed) { const tt = TEXTBOOK_THEOREMS.find((x) => x.key === th); if (tt) { const vars = statementOf(tt.lean).variables; const values = Object.fromEntries(vars.map((v, i) => [v, nums[i]]).filter(([, n]) => n !== undefined)); const ev = evaluateOf(th, values) as { evaluable?: boolean; needs?: string[] }; if (ev.evaluable && !(ev.needs ?? []).length) { call = { name: 'textbook', arguments: { evaluate: { theorem: th, values } } }; by = `theorem ${th} computed`; break } } const ex = EXAMPLES.find((x) => x.theorem === th); if (ex) { call = { name: ex.tool, arguments: ex.arguments }; by = `theorem ${th}: its example ${ex.id}`; break } } }
   if (!call) return { statement, role, by: 'nothing yet', routed, handled: { says: 'no call serves it and no routed theorem has an example yet: the statement is a lead', lead: m?.lead ?? null }, theorems: ['textbook_fallback_involution'] }
   const tool = TOOLS.find((x) => x.name === call!.name) as (Tool & { inputSchema: { properties?: Record<string, { enum?: readonly unknown[]; default?: unknown }> } }) | undefined
   const h = harmonicDefaultsOf(tool?.inputSchema ?? {}, c.referrer, (p, v) => mayChoose(role, call!.name, p, v))
