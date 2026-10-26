@@ -2,7 +2,8 @@
 // (pre-commit, pre-push, post-commit, prepare-commit-msg) and walks its steps — a command run, an MCP call (local through the
 // handler, remote by URL with the user agent the step names), an imprint appended beside the receipt, the trailers written on
 // the commit message — exactly as the door answers them, nothing decided here. A strict step that fails ends the hook red.
-import { readFileSync, writeFileSync, appendFileSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, statSync, readdirSync } from 'node:fs'
+import { join } from 'node:path'
 import { spawnSync, execSync } from 'node:child_process'
 import { handle } from '../src/quantum/mcp.ts'
 
@@ -48,7 +49,18 @@ for (const s of w.steps) {
   if (s.kind === 'mcp' && s.id !== 'sign') { const rr = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: s.tool!, arguments: s.arguments ?? {} } }) as { error?: { message: string } }; if (rr.error) { console.error(`hook ${name}: ${s.id}: ${rr.error.message}`); if (s.strict) red = true } }
 }
 // the rules of the workflow decided by their theorems over the facts this client read after its steps: the receipt it wrote, the approval the configs step recorded, the gate's decoding; a violation is refused and its case named
-const facts = { receipt: read('docs/public/receipt.json') as { steps?: { name: string; status: string }[] } | null, approval: (read('docs/public/configs.json') as { approval?: unknown } | null)?.approval ?? null, e2e: (read('docs/public/e2e.json') as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
+// pre-deploy: the OpenNext bundle and the app's wrangler file measured here; the account, its observability and the usage as an MCP session recorded them (.qpu/cloudflare.json: names and ids, never a secret)
+const newest = (dir: string): number => { let t = 0; const walk = (d: string) => { for (const f of readdirSync(d, { withFileTypes: true })) { const p = join(d, f.name); if (f.isDirectory()) { if (f.name !== 'node_modules' && !f.name.startsWith('.')) walk(p) } else t = Math.max(t, statSync(p).mtimeMs) } }; if (existsSync(dir)) walk(dir); return t }
+const deployFacts = name === 'pre-deploy' ? (() => {
+  const worker = 'site/.open-next/worker.js', assets = 'site/.open-next/assets'
+  const openNext = { worker: existsSync(worker), assets: existsSync(assets), builtAt: existsSync(worker) ? statSync(worker).mtimeMs : 0, sourcesAt: newest('site/src') }
+  const text = existsSync('site/wrangler.jsonc') ? readFileSync('site/wrangler.jsonc', 'utf8') : ''
+  let w: any = null; try { w = JSON.parse(text.replace(/^\s*\/\/.*$/gm, '')) } catch { w = null }
+  const wrangler = w ? { bindings: [...(w.assets?.binding ? [w.assets.binding] : []), ...(w.d1_databases ?? []).map((d: any) => d.binding), ...(w.r2_buckets ?? []).map((d: any) => d.binding), ...(w.kv_namespaces ?? []).map((d: any) => d.binding), ...(w.services ?? []).map((d: any) => d.binding), ...(w.ai?.binding ? [w.ai.binding] : [])], placeholders: (text.match(/<the tenant's>/g) ?? []).length, flags: w.compatibility_flags ?? [], d1: (w.d1_databases ?? []).map((d: any) => d.database_name), r2: (w.r2_buckets ?? []).map((d: any) => d.bucket_name), kv: (w.kv_namespaces ?? []).map((d: any) => d.id) } : null
+  const cf = read('.qpu/cloudflare.json') as { account?: unknown; observability?: unknown; usage?: unknown } | null
+  return { openNext, wrangler, account: cf?.account ?? null, observability: cf?.observability ?? null, usage: cf?.usage ?? null }
+})() : {}
+const facts = { ...deployFacts, receipt: read('docs/public/receipt.json') as { steps?: { name: string; status: string }[] } | null, approval: (read('docs/public/configs.json') as { approval?: unknown } | null)?.approval ?? null, e2e: (read('docs/public/e2e.json') as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
 const d = (handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'repository', arguments: { workflow: name, facts } } }) as { result?: { structuredContent?: { decision?: { allowed: boolean; strict: boolean; says: string; court: { arguments: { court: unknown } } | null } } } }).result?.structuredContent?.decision
 if (d) {
   console.log(`hook ${name}: ${d.says}`)

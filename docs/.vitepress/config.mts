@@ -214,6 +214,10 @@ export default defineConfig({
         "link": "/repository"
       },
       {
+        "text": "Sources",
+        "link": "/sources"
+      },
+      {
         "text": "Metrics",
         "link": "/metrics"
       },
@@ -381,6 +385,10 @@ export default defineConfig({
           {
             "text": "Repository",
             "link": "/repository"
+          },
+          {
+            "text": "Sources",
+            "link": "/sources"
           },
           {
             "text": "Metrics",

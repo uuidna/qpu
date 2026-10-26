@@ -42,7 +42,7 @@ type MachineReq = { headers?: { get?: (k: string) => string | null }; user?: { r
 const machineTool = {
   name: 'machine',
   description: 'The developer machine managed through the Payload MCP, securely: one action of the allow-list (repository { machine: { actions: true } } names them) run on this local app for a super admin, with no shell; commit and push decided by the workflow rules, a push only with confirm; every run an entry of the Entries collection, its paths relative and its leaks redacted',
-  parameters: { action: z.string().describe('an action of the allow-list: status, log, ahead, tags, diff, versions, next, stage, commit, push'), message: z.string().optional().describe('commit: the message'), confirm: z.boolean().optional().describe('push: the user confirms it') },
+  parameters: { action: z.string().describe('an action of the allow-list: status, log, ahead, tags, diff, versions, next, precheck, stage, commit, push'), message: z.string().optional().describe('commit: the message'), confirm: z.boolean().optional().describe('push: the user confirms it') },
   handler: async (args: Record<string, unknown>, req: MachineReq) => {
     const answer = (x: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(x) }], _meta: { ui: { resourceUri: 'ui://qpu/repository' } } })
     const h = String(req.headers?.get?.('host') ?? '')

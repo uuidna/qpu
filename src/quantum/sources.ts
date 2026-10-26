@@ -110,7 +110,9 @@ export const sourcesOf = (c: SourceContext, answers: readonly SourceAnswer[], ex
     return { doi: p.doi, title: p.title, date: own, works: works.length, before: works.filter((w) => w.publication_date < own).length, after: works.filter((w) => w.publication_date >= own).length, earliest: works.map((w) => w.publication_date).sort()[0] ?? null, says: 'neighbours by title, dated: before is prior art to cite, after is a work that may build on the record; read, never a verdict' }
   })
   // licence: copies under another name, each a candidate with its case
-  const mentionsWork = (s: string) => new RegExp(`\\b(${[owner, 'qpu'].join('|')})\\b`, 'i').test(s)
+  // the work is named by its owner or its package, never by a word others use too (a processor unit of VideoCore is a QPU as well)
+  const pkgName = c.package.toLowerCase(), pkgBare = pkgName.replace(/^@/, '')
+  const mentionsWork = (s: string) => { const t = s.toLowerCase(); return new RegExp(`\\b${owner}\\b`).test(t) || t.includes(pkgName) || t.includes(pkgBare) || t.includes(pkgBare.replace('/', '-')) }
   const candidates = [
     ...by('npm-search').flatMap((a) => (ok(a)?.objects ?? []) as { package: { name: string; description?: string; publisher?: { username?: string }; links?: { npm?: string } } }[]).filter((o) => !author.has((o.package.publisher?.username ?? '').toLowerCase()) && !o.package.name.startsWith(`@${owner}/`) && mentionsWork(`${o.package.name} ${o.package.description ?? ''}`)).map((o) => ({ where: 'npm', name: o.package.name, url: o.package.links?.npm ?? `https://www.npmjs.com/package/${o.package.name}`, why: 'a package that names the work, published by another account' })),
     ...by('github-search').flatMap((a) => (ok(a)?.items ?? []) as { full_name: string; html_url: string; owner: { login: string }; fork: boolean; description: string | null }[]).filter((i) => !author.has(i.owner.login.toLowerCase()) && !i.fork && mentionsWork(`${i.full_name} ${i.description ?? ''}`)).map((i) => ({ where: 'github', name: i.full_name, url: i.html_url, why: 'a repository that names the work under another account' })),
@@ -126,9 +128,11 @@ export const sourcesOf = (c: SourceContext, answers: readonly SourceAnswer[], ex
     ...by('open-library-subject').flatMap((a) => (ok(a)?.works ?? []).map((w: { key: string; title: string; subject?: string[]; first_publish_year?: number }) => ({ source: 'open-library', id: w.key, title: w.title, subjects: [a.id.split(':')[1]!.replace(/_/g, ' '), ...(w.subject ?? []).slice(0, 12)], licence: null, year: w.first_publish_year ?? null })) as Book[]),
   ]
   const uniqueBooks = [...new Map(books.map((b) => [`${b.source}:${b.id}`, b])).values()]
+  // a book is reached when its best theorem shares two words or more with it: one word rare among the theorems can be common among books
   const routed = uniqueBooks.map((b) => ({ b, r: routeOf(`${b.title} ${b.subjects.join(' ')}`, examples, 1) }))
-  const domain = new Set(routed.filter((x) => x.r.routed).flatMap((x) => x.b.subjects))
-  const reached = routed.filter((x) => x.r.routed), inDomain = routed.filter((x) => !x.r.routed && x.b.subjects.some((s) => domain.has(s))), outside = routed.length - reached.length - inDomain.length
+  const strong = (x: { r: ReturnType<typeof routeOf> }) => x.r.routed && (x.r.theorems[0]?.shared.length ?? 0) >= 2
+  const domain = new Set(routed.filter(strong).flatMap((x) => x.b.subjects))
+  const reached = routed.filter(strong), inDomain = routed.filter((x) => !strong(x) && x.b.subjects.some((s) => domain.has(s))), outside = routed.length - reached.length - inDomain.length
   const byTheorem: Record<string, number> = {}; for (const x of reached) { const k = x.r.theorems[0]!.theorem; byTheorem[k] = (byTheorem[k] ?? 0) + 1 }
   const textbookLeads: Lead[] = inDomain.map((x) => ({ id: `textbook-${x.b.source}-${x.b.id.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()}`, source: `${x.b.source} ${x.b.id}`, statement: `${x.b.title} (${x.b.subjects.slice(0, 3).join(', ')}${x.b.licence ? `; ${x.b.licence}` : ''}) teaches a subject the theorems reach, and no theorem reaches this book yet`, status: 'open' as const, reason: 'a book of the domain no theorem reaches: develop the theorem its subject names' }))
   // MCP doors

@@ -186,8 +186,8 @@ theorem textbook_hue_shift (h g s : Nat) : h + s - (g + s) = h - g := Nat.add_su
 theorem textbook_hue_steps : 16 * 45 = 2 * 360 := by decide
 /-- cheap gates leading every violator to court: however many refusals a gate answers, it writes nothing; the case is computed from the refusal and the violator files it through its own MCP (examples: legal-court, legal-court-rules) -/
 theorem textbook_cheap_gates (refusals : Nat) : refusals * 0 = 0 := Nat.mul_zero refusals
-/-- four git hooks (pre-commit, pre-push, post-commit, prepare-commit-msg) and the CI are five client MCP workflows of one door; the hook script walks the steps and decides nothing (examples: repository-workflow) -/
-theorem textbook_hook_workflows : 4 + 1 = 5 := by decide
+/-- four git hooks (pre-commit, pre-push, post-commit, prepare-commit-msg), the CI and the strict pre-deploy check are six client MCP workflows of one door; the hook script walks the steps and decides nothing (examples: repository-workflow) -/
+theorem textbook_hook_workflows : 4 + 1 + 1 = 6 := by decide
 /-- when to commit: the flow is green — the steps of the receipt are green and skipped and no red, so adding the red (zero) changes nothing; one red step refuses the commit (examples: repository-refuse-commit) -/
 theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = green + skipped := Nat.add_zero (green + skipped)
 /-- when to push: the version is the last tag or its one next step (one step forward, one back is the tag), and the build it names is the one the package answers on initialize (examples: repository-decide-push, configure-versions) -/
@@ -362,5 +362,13 @@ theorem textbook_tamper_detected : 256 / 2 = 128 ∧ 10 ^ 38 < 2 ^ 128 := by dec
 theorem textbook_artifacts_verified (verified mismatched unreached total : Nat) (h : verified + mismatched + unreached = total) (hm : mismatched = 0) : total - unreached = verified := by omega
 /-- every action asked of the developer machine is run because the allow-list names it and the rules allow it, or refused with the court's case: the refused and the run make every request, no third (examples: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed) -/
 theorem textbook_machine_allow_list (asked allowed : Nat) (h : allowed ≤ asked) : asked - allowed + allowed = asked := Nat.sub_add_cancel h
+/-- a deploy carries a bundle no older than its sources: the build's time is at or after the last source change, or the bundle is rebuilt (examples: repository-predeploy) -/
+theorem textbook_build_fresh (built source : Nat) (h : source ≤ built) : built - source + source = built := Nat.sub_add_cancel h
+/-- every binding the adapters need is declared and every resource it names exists in the account: when none is missing, the declared are the needed, however many the adapters bind (examples: repository-predeploy) -/
+theorem textbook_bindings_bound (needed declared missing : Nat) (h : declared + missing = needed) (h0 : missing = 0) : declared = needed := by omega
+/-- the deployed Worker observed: at most one server error in a thousand requests, as the account's observability records it, so the errors never outnumber the requests (examples: repository-predeploy) -/
+theorem textbook_observed_errors (errors requests : Nat) (h : errors * 1000 ≤ requests) : errors ≤ requests := by omega
+/-- the minimum bill of existing and computing (zero within the free tiers, the paid base beyond them) is covered by the cheapest licence of the catalogue: the licence is the bill and the margin of the quantum framework (examples: repository-predeploy) -/
+theorem textbook_bill_covered (price cost : Nat) (h : cost ≤ price) : price - cost + cost = price := Nat.sub_add_cancel h
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

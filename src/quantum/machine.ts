@@ -20,6 +20,7 @@ export const MACHINE_ACTIONS: readonly MachineAction[] = [
   { id: 'diff', kind: 'read', cmd: 'git', args: ['diff', '--stat'], says: 'what the unstaged changes touch' },
   { id: 'versions', kind: 'read', cmd: 'node', args: ['--version'], says: 'the runtime this machine runs the tree with' },
   { id: 'next', kind: 'write', cmd: 'npm', args: ['run', 'next', '--', '--offline', '--fast'], says: 'the development loop, offline and fast: generation, typecheck, tests, Lean, audit, purify' },
+  { id: 'precheck', kind: 'write', cmd: 'node', args: ['--import', 'tsx', 'scripts/hook.ts', 'pre-deploy'], says: 'the strict pre-check before a deploy: the OpenNext build, the dry run and the rules decided by theorems; nothing deployed' },
   { id: 'stage', kind: 'write', cmd: 'git', args: ['add', '-A'], says: 'every change staged for the next commit' },
   { id: 'commit', kind: 'write', cmd: 'git', args: ['commit', '-F', '-'], says: 'the staged changes committed through the hooks, the message given', needs: 'message', workflow: 'pre-commit' },
   { id: 'push', kind: 'write', cmd: 'git', args: ['push', 'origin', 'main'], says: 'main pushed to its remote through the pre-push workflow', needs: 'confirm', workflow: 'pre-push' },

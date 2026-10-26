@@ -169,6 +169,30 @@ export const DOMAIN_CURRENCY: Readonly<Record<string, string>> = { bg: 'EUR', eu
 /** The pure algebraic formulas, free under attribution (the a432 harmonic default): the core's algebra over a UUID (fold, presentation, stream), the stylesheet
  *  from the key 432, the seal arithmetic a UUID verifies by, the register's integer identities. Every other call is covered by the licence. */
 export const ALGEBRA_TOOLS: readonly string[] = ['css', 'fold', 'verify', 'clay']
+/** Cloudflare's free tiers as its pricing pages state them (each with its page, to verify there): what the Payload app over OpenNext and the
+ *  Worker may use a day without a bill; beyond any of them the Workers Paid plan, whose base is the minimum bill. */
+export const CLOUDFLARE_FREE = {
+  workersRequestsPerDay: { limit: 100000, page: 'https://developers.cloudflare.com/workers/platform/pricing/' },
+  d1RowsReadPerDay: { limit: 5000000, page: 'https://developers.cloudflare.com/d1/platform/pricing/' },
+  d1RowsWrittenPerDay: { limit: 100000, page: 'https://developers.cloudflare.com/d1/platform/pricing/' },
+  kvReadsPerDay: { limit: 100000, page: 'https://developers.cloudflare.com/kv/platform/pricing/' },
+  kvWritesPerDay: { limit: 1000, page: 'https://developers.cloudflare.com/kv/platform/pricing/' },
+  r2StorageGbMonth: { limit: 10, page: 'https://developers.cloudflare.com/r2/pricing/' },
+  aiNeuronsPerDay: { limit: 10000, page: 'https://developers.cloudflare.com/workers-ai/platform/pricing/' },
+  durableObjectRequestsPerDay: { limit: 100000, page: 'https://developers.cloudflare.com/durable-objects/platform/pricing/' },
+} as const
+export const WORKERS_PAID_BASE_USD_CENTS = 500
+export type CloudflareUsage = Partial<Record<keyof typeof CLOUDFLARE_FREE, number>>
+/** The minimum bill of existing and computing: zero while every measured use stays within its free tier, else the paid plan's base a month;
+ *  against it the cheapest licence of the catalogue a month, so the margin of the quantum framework is the licence less the bill. */
+export const cloudflareBillOf = (usage: CloudflareUsage, currency = 'eur') => {
+  const over = (Object.keys(CLOUDFLARE_FREE) as (keyof typeof CLOUDFLARE_FREE)[]).filter((k) => typeof usage[k] === 'number' && usage[k]! > CLOUDFLARE_FREE[k].limit)
+  const measured = (Object.keys(CLOUDFLARE_FREE) as (keyof typeof CLOUDFLARE_FREE)[]).filter((k) => typeof usage[k] === 'number')
+  const monthlyCents = over.length ? WORKERS_PAID_BASE_USD_CENTS : 0
+  const paid = CATALOGUE.filter((v) => (v.amounts[currency] ?? 0) > 0 && (v.interval === 'month' || v.interval === 'year'))
+  const cheapest = paid.map((v) => ({ product: v.product, variant: v.variant, perMonth: Math.round((v.amounts[currency] ?? 0) / (v.interval === 'year' ? 12 : 1)) })).sort((a, b) => a.perMonth - b.perMonth)[0] ?? null
+  return { plan: over.length ? 'workers-paid' : 'free', over, measured: measured.length, of: Object.keys(CLOUDFLARE_FREE).length, monthlyCents, currency: over.length ? 'usd' : currency, cheapestLicence: cheapest, marginPerMonth: cheapest ? cheapest.perMonth - monthlyCents : null, covered: cheapest ? cheapest.perMonth >= monthlyCents : false, pages: [...new Set(Object.values(CLOUDFLARE_FREE).map((x) => x.page))], theorem: 'textbook_bill_covered', says: over.length ? `over the free tier on ${over.join(', ')}: the Workers Paid base, ${monthlyCents / 100} USD a month, against the cheapest licence` : `every measured use (${measured.length} of ${Object.keys(CLOUDFLARE_FREE).length}) within the free tier: a bill of zero, the licence all margin` }
+}
 /** Licensing by architecture: the quantum core computes on the classical world only through the fusion of coins into coils, and the classical
  *  world reaches the core only the same way back. A call is a coin when it stays pure algebra (free under attribution, the a432 default), a coil
  *  when it crosses to classical data or services (covered by the licence); every result carries which, and the Worker refuses a declared

@@ -1,4 +1,4 @@
 #!/bin/sh
-# pre-commit is a client MCP workflow: the repository tool answers its steps (repository { workflow: 'pre-commit' }); scripts/hook.ts walks them and decides nothing itself.
-node --import tsx scripts/hook.ts pre-commit "$@"
-exit 0
+# pre-commit is a client MCP workflow: the repository tool answers its steps (repository { workflow: 'pre-commit' }); scripts/hook.ts walks them and
+# obeys the decision the rules decided by theorems give: a red flow stops the commit (textbook_commit_green).
+exec node --import tsx scripts/hook.ts pre-commit "$@"

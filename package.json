@@ -26,6 +26,7 @@
     "audit": "node --import tsx scripts/audit.ts",
     "test:e2e": "node --import tsx scripts/e2e.ts",
     "next": "node --import tsx scripts/next.ts",
+    "precheck": "node --import tsx scripts/hook.ts pre-deploy",
     "verify": "node --import tsx scripts/verify.ts",
     "lean": "lake build",
     "next:watch": "node --watch-path=src --watch-path=scripts --watch-path=docs/index.md --import tsx scripts/next.ts --offline",

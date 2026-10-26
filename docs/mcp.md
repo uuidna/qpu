@@ -2001,7 +2001,8 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
         "pre-push",
         "post-commit",
         "prepare-commit-msg",
-        "ci"
+        "ci",
+        "pre-deploy"
       ],
       "description": "the git hook or the CI as a client MCP workflow: its steps, strictness and what each does; scripts/hook.ts walks them"
     },
