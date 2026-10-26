@@ -624,7 +624,7 @@ body { margin: 0; padding: var(--pad-sm); font-family: var(--font-sans, system-u
 .qpu-args { color: var(--text-muted); font-size: var(--font-size-footnote); margin-bottom: var(--gap-sm); white-space: pre-wrap; }
 .qpu-verify { display: flex; flex-direction: column; gap: var(--pad-sm); margin-top: var(--pad-sm); }
 .qpu-verify div { display: flex; flex-wrap: wrap; align-items: center; gap: var(--pad-sm); }
-.qpu-verify button { font: inherit; font-size: var(--font-size-footnote); padding: 2px 10px; border-radius: var(--radius); border: 1px solid var(--qpu-accent, currentColor); background: transparent; color: inherit; cursor: pointer; }
+.qpu-verify button { font: inherit; font-size: var(--font-size-footnote); padding: 0 var(--pad-sm); border-radius: var(--radius); border: thin solid var(--qpu-accent, currentColor); background: transparent; color: inherit; cursor: pointer; }
 .qpu-verify button:first-child { background: var(--qpu-accent, currentColor); color: var(--surface-1, Canvas); }
 .qpu-verify span { font-size: var(--font-size-footnote); }
 pre { background: var(--surface-1); border-radius: var(--radius); padding: var(--pad-sm); overflow: auto; font-size: var(--font-size-footnote); }
