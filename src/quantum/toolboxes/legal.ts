@@ -13,6 +13,7 @@ import { flowWidget } from '../widgets.js'
 import { sha256, utf8, hex } from '../hmac.js'
 import { uuidOf } from '../blocks.js'
 import { THEOREMS, KERNEL_THEOREMS } from '../theorems-index.js'
+import { ledgerOf } from './billing.js'
 
 export type Claim = { id: string; source: string; text: string }
 export type Call = { door: string; host: string; arguments: Record<string, unknown>; purpose: 'forensics' | 'verify' | 'legal' | 'security' | 'due-process' | 'prior-art' | 'licence' }
@@ -276,7 +277,12 @@ export const competeOf = (evidence: { theorems: number; kernel: number; hosts: n
       return { ...r, status: 'pending' as const, evidence: 'the author\'s act' }
     })
     const counts = rules.reduce<Record<string, number>>((acc, r) => ({ ...acc, [r.status]: (acc[r.status] ?? 0) + 1 }), {})
-    return { ...c, rules, counts, know: knowOf(c0), satisfied: `${counts.satisfied ?? 0}/${rules.length}`, enterable: c.entry !== 'closed' && rules.every((r) => r.status !== 'open' && r.status !== 'closed'), ready: rules.every((r) => r.status === 'satisfied') }
+    // the coin cost of the evidence: every theorem the tree carries for the competition served as a coin through textbook { theorem }, booked in
+    // the ledger beside the prize as its page states it; a cost, never a claim: no prize is won and no problem solved by booking it
+    const know = knowOf(c0)
+    const ledger = ledgerOf(know.theorems.map((theorem) => ({ tool: 'textbook', tenant: 'author', arguments: { theorem } })))
+    const economics = { prize: c.prize, evidence: know.theorems.length, calls: know.theorems.map((theorem) => ({ name: 'textbook', arguments: { theorem } })), coins: ledger.coins, coils: ledger.coils, costMillicents: ledger.debits, balanced: ledger.balanced, says: `${know.theorems.length} theorem(s) of evidence served as ${ledger.coins} coin(s) at a cost of ${ledger.debits} thousandths of a cent, beside the prize as stated (${c.prize}); no prize is won and no problem solved by this`, theorem: 'textbook_double_entry' }
+    return { ...c, rules, counts, know, economics, satisfied: `${counts.satisfied ?? 0}/${rules.length}`, enterable: c.entry !== 'closed' && rules.every((r) => r.status !== 'open' && r.status !== 'closed'), ready: rules.every((r) => r.status === 'satisfied') }
   })
   return { precedence: PRECEDENCE, acceptance: evidence.acceptance ?? null, news: { apis: NEWS_APIS.length, open: NEWS_APIS.filter((a) => a.open).length, keyed: NEWS_APIS.filter((a) => !a.open).map((a) => ({ id: a.id, key: a.key })) }, competitions: judged, know: { competitors: judged.reduce((n, c) => n + c.know.competitors, 0), theorems: new Set(judged.flatMap((c) => c.know.theorems)).size, both: judged.filter((c) => c.know.both).map((c) => c.id), says: 'to win, know the competitors as well as the theorems: a competition is known when both are; the names live in the competition gate pages (the pages collection the Payload MCP plugin serves), nothing added' }, prizes: judged.filter((c) => c.kind === 'prize').length, funding: judged.filter((c) => c.kind === 'funding').length, enterable: judged.filter((c) => c.enterable).map((c) => c.id), ready: judged.filter((c) => c.ready).map((c) => c.id), says: 'enterable: every rule is satisfied or the author\'s act; ready: every rule satisfied', closed: judged.filter((c) => c.entry === 'closed').map((c) => c.id), relatedMcps: FUNDING_MCPS, honest: 'nothing here is a prize won or a problem solved: every rule is judged against evidence, and what remains is the author\'s act (publish, push, apply) or a lead; the tree competes by following the rules, measured on every run', internalCompetition: 'the gate\'s competition of codes (five codes a combination, the fastest correct wins) is judged against its five written rules on every run: see the e2e tool' }
 }
