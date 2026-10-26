@@ -265,3 +265,18 @@ export const computedEntryOf = (id: string) => ({ id, kind: 'uuid', from: 'compu
 export const compositionsOf = (radices: readonly number[]): bigint => radices.reduce((n, r) => n * BigInt(r), 1n)
 export const compositionOf = (radices: readonly number[], index: bigint): number[] => { const digits: number[] = new Array(radices.length); let q = index; for (let i = radices.length - 1; i >= 0; i--) { const r = BigInt(radices[i]!); digits[i] = Number(q % r); q /= r } return digits }
 export const compositionIndexOf = (radices: readonly number[], digits: readonly number[]): bigint => digits.reduce((n, d, i) => n * BigInt(radices[i]!) + BigInt(d), 0n)
+
+/** Harmonic options by default: a schema's enum properties are a superposition — every combination of their values at once, mixed radices whose
+ *  product is the count — and the referrer measures it: the referrer's address read as a 128-bit integer (or the a432 key, 432, when no one
+ *  refers), reduced modulo the count, names one combination, decoded one value per enum; the remainder is always below the count, so the default is
+ *  always a combination of the schema (textbook_harmonic_default). The schema keeps every value; `default` marks the measured one. */
+export const harmonicDefaultsOf = (schema: { properties?: Record<string, { enum?: readonly unknown[]; default?: unknown }> }, referrer?: string) => {
+  const props = Object.entries(schema.properties ?? {}).filter(([, p]) => Array.isArray(p.enum) && p.enum.length > 0 && p.default === undefined)
+  const radices = props.map(([, p]) => p.enum!.length)
+  const count = compositionsOf(radices)
+  const hex = (referrer ?? '').replace(/-/g, '')
+  const seed = /^[0-9a-f]{32}$/i.test(hex) ? BigInt('0x' + hex) : 432n
+  const index = count > 0n ? seed % count : 0n
+  const digits = compositionOf(radices, index)
+  return { count, index, from: /^[0-9a-f]{32}$/i.test(hex) ? 'referrer' as const : 'a432' as const, defaults: Object.fromEntries(props.map(([k, p], i) => [k, p.enum![digits[i]!]])) }
+}

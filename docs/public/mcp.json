@@ -16,8 +16,14 @@
               "Willow",
               "Sycamore",
               "Sycamore23"
-            ]
+            ],
+            "default": "Willow"
           }
+        },
+        "x-harmonic": {
+          "combinations": "3",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -149,7 +155,8 @@
               "Sycamore",
               "Sycamore23"
             ],
-            "description": "validate the circuit against this device first"
+            "description": "validate the circuit against this device first",
+            "default": "Willow"
           },
           "measure": {
             "type": "object",
@@ -293,8 +300,14 @@
               "willow_error_correction",
               "willow_random_circuit_sampling"
             ],
-            "description": "the noise of a Willow chip, from its spec sheet medians, after every gate"
+            "description": "the noise of a Willow chip, from its spec sheet medians, after every gate",
+            "default": "willow_error_correction"
           }
+        },
+        "x-harmonic": {
+          "combinations": "6",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -595,7 +608,8 @@
               "teleportation",
               "qaoa",
               "shor"
-            ]
+            ],
+            "default": "qaoa"
           },
           "N": {
             "type": "integer",
@@ -661,6 +675,11 @@
             "type": "number",
             "default": 0
           }
+        },
+        "x-harmonic": {
+          "combinations": "7",
+          "index": "5",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -762,8 +781,14 @@
               "weber_datasheet",
               "full_stack",
               "aps_summit"
-            ]
+            ],
+            "default": "qsim"
           }
+        },
+        "x-harmonic": {
+          "combinations": "42",
+          "index": "12",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -1064,7 +1089,8 @@
               "blocked",
               "out_of_scope",
               "open"
-            ]
+            ],
+            "default": "blocked"
           },
           "ids": {
             "type": "array",
@@ -1073,6 +1099,11 @@
             },
             "description": "the leads named, in this order: a gate answers the leads that pass through it"
           }
+        },
+        "x-harmonic": {
+          "combinations": "5",
+          "index": "2",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -1192,8 +1223,14 @@
               "pt",
               "nl"
             ],
-            "description": "the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it"
+            "description": "the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it",
+            "default": "fr"
           }
+        },
+        "x-harmonic": {
+          "combinations": "11",
+          "index": "3",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -1232,7 +1269,8 @@
             "enum": [
               "reflection"
             ],
-            "description": "the register read by the σ-reflection technique: every value's vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit's sequence answers compared"
+            "description": "the register read by the σ-reflection technique: every value's vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit's sequence answers compared",
+            "default": "reflection"
           },
           "unit": {
             "type": "array",
@@ -1241,6 +1279,11 @@
             },
             "description": "the unit's run_sequence answers per value ({ value, answer | refusal })"
           }
+        },
+        "x-harmonic": {
+          "combinations": "1",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -1420,8 +1463,14 @@
               "theorem",
               "module"
             ],
-            "description": "one category to list; omit for all"
+            "description": "one category to list; omit for all",
+            "default": "toolbox"
           }
+        },
+        "x-harmonic": {
+          "combinations": "4",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -1913,7 +1962,8 @@
               "ja",
               "pt",
               "nl"
-            ]
+            ],
+            "default": "ru"
           },
           "to": {
             "type": "string",
@@ -1929,11 +1979,17 @@
               "ja",
               "pt",
               "nl"
-            ]
+            ],
+            "default": "fr"
           },
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "121",
+          "index": "69",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -1986,11 +2042,17 @@
               "ja",
               "pt",
               "nl"
-            ]
+            ],
+            "default": "fr"
           },
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "11",
+          "index": "3",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -2027,7 +2089,8 @@
               "insert",
               "update",
               "delete"
-            ]
+            ],
+            "default": "find"
           },
           "collection": {
             "type": "string"
@@ -2057,6 +2120,11 @@
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "4",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -2097,7 +2165,8 @@
               "settle",
               "usecases",
               "fusion"
-            ]
+            ],
+            "default": "plan"
           },
           "tools": {
             "type": "array",
@@ -2167,6 +2236,11 @@
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "8",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -2201,7 +2275,8 @@
             "enum": [
               "plan",
               "harmonise"
-            ]
+            ],
+            "default": "plan"
           },
           "answers": {
             "type": "array",
@@ -2237,6 +2312,11 @@
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "2",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -2402,7 +2482,8 @@
             "enum": [
               "plan",
               "read"
-            ]
+            ],
+            "default": "plan"
           },
           "query": {
             "type": "string",
@@ -2439,6 +2520,11 @@
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "2",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -2474,7 +2560,8 @@
               "rest",
               "mcp"
             ],
-            "description": "mcp: the three facts through GitHub's MCP doors (list_branches, list_tags, list_releases) with the tenant's token in the client's request; default rest"
+            "description": "mcp: the three facts through GitHub's MCP doors (list_branches, list_tags, list_releases) with the tenant's token in the client's request; default rest",
+            "default": "rest"
           },
           "local": {
             "type": "object",
@@ -2503,7 +2590,8 @@
               "ci",
               "pre-deploy"
             ],
-            "description": "the git hook or the CI as a client MCP workflow: its steps, strictness and what each does; scripts/hook.ts walks them"
+            "description": "the git hook or the CI as a client MCP workflow: its steps, strictness and what each does; scripts/hook.ts walks them",
+            "default": "pre-commit"
           },
           "offline": {
             "type": "boolean",
@@ -2516,6 +2604,11 @@
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "12",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -2552,7 +2645,8 @@
               "page",
               "offer",
               "catalogue"
-            ]
+            ],
+            "default": "catalogue"
           },
           "tool": {
             "type": "string"
@@ -2586,7 +2680,8 @@
               "ja",
               "pt",
               "nl"
-            ]
+            ],
+            "default": "fr"
           },
           "product": {
             "type": "string"
@@ -2600,6 +2695,11 @@
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "44",
+          "index": "36",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -2805,7 +2905,8 @@
               "realtime",
               "branding"
             ],
-            "description": "omit for all"
+            "description": "omit for all",
+            "default": "payload"
           },
           "files": {
             "type": "boolean",
@@ -2847,7 +2948,8 @@
               "site",
               "app"
             ],
-            "description": "kind wrangler: the deploy template (worker, site, app); with useCase, that one preset"
+            "description": "kind wrangler: the deploy template (worker, site, app); with useCase, that one preset",
+            "default": "worker"
           },
           "useCase": {
             "type": "string",
@@ -2890,6 +2992,11 @@
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "72",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -2930,7 +3037,8 @@
               "out",
               "both"
             ],
-            "description": "default both"
+            "description": "default both",
+            "default": "in"
           },
           "host": {
             "type": "string",
@@ -2958,6 +3066,11 @@
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "3",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {
@@ -2987,6 +3100,10 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "harmonic": {
+            "type": "object",
+            "description": "{ schema, referrer? }: the harmonic options by default of any schema — its enum properties a superposition of their combinations, the referrer's address (or the a432 key) choosing the default one by its remainder"
+          },
           "decode": {
             "type": "object",
             "description": "{ radices, address? | uuid? }: decoded algebraically, never by search — an address of the form index-digits (or either part alone) inverted in one step per position and checked against itself; a content address is one-way, so the request to find what it hides is refused with the court's case and no candidate is tried; free as pure algebra"
@@ -3161,7 +3278,8 @@
             "enum": [
               "plan",
               "read"
-            ]
+            ],
+            "default": "plan"
           },
           "hosts": {
             "type": "array",
@@ -3194,6 +3312,11 @@
           "selftest": {
             "type": "boolean"
           }
+        },
+        "x-harmonic": {
+          "combinations": "2",
+          "index": "0",
+          "from": "a432"
         }
       },
       "annotations": {

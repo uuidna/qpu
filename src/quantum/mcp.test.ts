@@ -298,3 +298,18 @@ test('the cheapest view: an LLM reads only the cheapest way to have the answer a
   assert.ok(cheap.result.content[0]!.text.length * 4 < full.result.content[0]!.text.length, 'the cheapest view is a fraction of the full answer')
   assert.deepEqual(cheap.result.structuredContent, full.result.structuredContent, 'the full answer stays for the interfaces that render it')
 })
+
+test('harmonic options by default: every enum of a schema a superposition of its combinations, the referrer or the a432 key choosing the default', () => {
+  const list = (params?: Record<string, unknown>) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', ...(params ? { params } : {}) }) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { enum?: unknown[]; default?: unknown }>; 'x-harmonic'?: { combinations: string; index: string; from: string } } }[] } }).result.tools
+  const plain = list(), referred = list({ prev: '941ef62e-d97b-2438-bfc8-22ae9e5da781' })
+  const withEnums = plain.filter((t) => t.inputSchema['x-harmonic'] !== undefined) // the tools whose enums carry no default of their own
+  assert.ok(withEnums.length > 5)
+  for (const t of withEnums) {
+    const h = t.inputSchema['x-harmonic']!
+    assert.equal(h.from, 'a432')
+    assert.ok(BigInt(h.index) < BigInt(h.combinations), 'the remainder names a combination')
+    for (const p of Object.values(t.inputSchema.properties)) if (Array.isArray(p.enum) && p.default !== undefined) assert.ok(p.enum.includes(p.default), 'the default is one of the values: the superposition is kept')
+  }
+  const r = referred.find((t) => t.name === withEnums[0]!.name)!
+  assert.equal(r.inputSchema['x-harmonic']!.from, 'referrer')
+})

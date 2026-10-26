@@ -146,8 +146,14 @@ A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the
         "Willow",
         "Sycamore",
         "Sycamore23"
-      ]
+      ],
+      "default": "Willow"
     }
+  },
+  "x-harmonic": {
+    "combinations": "3",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -262,7 +268,8 @@ Compile a circuit from its operations, placed by an insert strategy, and simulat
         "Sycamore",
         "Sycamore23"
       ],
-      "description": "validate the circuit against this device first"
+      "description": "validate the circuit against this device first",
+      "default": "Willow"
     },
     "measure": {
       "type": "object",
@@ -406,8 +413,14 @@ Compile a circuit from its operations, placed by an insert strategy, and simulat
         "willow_error_correction",
         "willow_random_circuit_sampling"
       ],
-      "description": "the noise of a Willow chip, from its spec sheet medians, after every gate"
+      "description": "the noise of a Willow chip, from its spec sheet medians, after every gate",
+      "default": "willow_error_correction"
     }
+  },
+  "x-harmonic": {
+    "combinations": "6",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -640,7 +653,8 @@ The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits,
         "teleportation",
         "qaoa",
         "shor"
-      ]
+      ],
+      "default": "qaoa"
     },
     "N": {
       "type": "integer",
@@ -706,6 +720,11 @@ The textbook algorithms of the Cirq page: qft and inverse_qft (on 1 to 6 qubits,
       "type": "number",
       "default": 0
     }
+  },
+  "x-harmonic": {
+    "combinations": "7",
+    "index": "5",
+    "from": "a432"
   }
 }
 ```
@@ -773,8 +792,14 @@ The statements quantumai.google, its PDFs and the quantumlib repositories make, 
         "weber_datasheet",
         "full_stack",
         "aps_summit"
-      ]
+      ],
+      "default": "qsim"
     }
+  },
+  "x-harmonic": {
+    "combinations": "42",
+    "index": "12",
+    "from": "a432"
   }
 }
 ```
@@ -973,7 +998,8 @@ Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs
         "blocked",
         "out_of_scope",
         "open"
-      ]
+      ],
+      "default": "blocked"
     },
     "ids": {
       "type": "array",
@@ -982,6 +1008,11 @@ Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs
       },
       "description": "the leads named, in this order: a gate answers the leads that pass through it"
     }
+  },
+  "x-harmonic": {
+    "combinations": "5",
+    "index": "2",
+    "from": "a432"
   }
 }
 ```
@@ -1067,8 +1098,14 @@ Any statement, matched against everything the surface can do. served: a call ans
         "pt",
         "nl"
       ],
-      "description": "the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it"
+      "description": "the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it",
+      "default": "fr"
     }
+  },
+  "x-harmonic": {
+    "combinations": "11",
+    "index": "3",
+    "from": "a432"
   }
 }
 ```
@@ -1090,7 +1127,8 @@ The Clay register recomputed in exact integer arithmetic: the Lean definitions o
       "enum": [
         "reflection"
       ],
-      "description": "the register read by the σ-reflection technique: every value's vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit's sequence answers compared"
+      "description": "the register read by the σ-reflection technique: every value's vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit's sequence answers compared",
+      "default": "reflection"
     },
     "unit": {
       "type": "array",
@@ -1099,6 +1137,11 @@ The Clay register recomputed in exact integer arithmetic: the Lean definitions o
       },
       "description": "the unit's run_sequence answers per value ({ value, answer | refusal })"
     }
+  },
+  "x-harmonic": {
+    "combinations": "1",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -1227,8 +1270,14 @@ The QPU textbook as an adapter: every example categorised for reuse — by toolb
         "theorem",
         "module"
       ],
-      "description": "one category to list; omit for all"
+      "description": "one category to list; omit for all",
+      "default": "toolbox"
     }
+  },
+  "x-harmonic": {
+    "combinations": "4",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -1550,7 +1599,8 @@ Translation by vocabulary, offline, both ways: text, from, to. A word no table k
         "ja",
         "pt",
         "nl"
-      ]
+      ],
+      "default": "ru"
     },
     "to": {
       "type": "string",
@@ -1566,11 +1616,17 @@ Translation by vocabulary, offline, both ways: text, from, to. A word no table k
         "ja",
         "pt",
         "nl"
-      ]
+      ],
+      "default": "fr"
     },
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "121",
+    "index": "69",
+    "from": "a432"
   }
 }
 ```
@@ -1606,11 +1662,17 @@ Programmable prose: call a tool with its arguments and render its result as sent
         "ja",
         "pt",
         "nl"
-      ]
+      ],
+      "default": "fr"
     },
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "11",
+    "index": "3",
+    "from": "a432"
   }
 }
 ```
@@ -1630,7 +1692,8 @@ The ported MongoDB over the docket, pure. find: &#123;collection, docs, filter, 
         "insert",
         "update",
         "delete"
-      ]
+      ],
+      "default": "find"
     },
     "collection": {
       "type": "string"
@@ -1660,6 +1723,11 @@ The ported MongoDB over the docket, pure. find: &#123;collection, docs, filter, 
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "4",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -1683,7 +1751,8 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
         "settle",
         "usecases",
         "fusion"
-      ]
+      ],
+      "default": "plan"
     },
     "tools": {
       "type": "array",
@@ -1753,6 +1822,11 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "8",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -1770,7 +1844,8 @@ Currency harmonised in real time across every computation, agnostic of the sourc
       "enum": [
         "plan",
         "harmonise"
-      ]
+      ],
+      "default": "plan"
     },
     "answers": {
       "type": "array",
@@ -1806,6 +1881,11 @@ Currency harmonised in real time across every computation, agnostic of the sourc
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "2",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -1920,7 +2000,8 @@ Every patent API found, wired and measured: plan answers the requests to the ope
       "enum": [
         "plan",
         "read"
-      ]
+      ],
+      "default": "plan"
     },
     "query": {
       "type": "string",
@@ -1957,6 +2038,11 @@ Every patent API found, wired and measured: plan answers the requests to the ope
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "2",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -1975,7 +2061,8 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
         "rest",
         "mcp"
       ],
-      "description": "mcp: the three facts through GitHub's MCP doors (list_branches, list_tags, list_releases) with the tenant's token in the client's request; default rest"
+      "description": "mcp: the three facts through GitHub's MCP doors (list_branches, list_tags, list_releases) with the tenant's token in the client's request; default rest",
+      "default": "rest"
     },
     "local": {
       "type": "object",
@@ -2004,7 +2091,8 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
         "ci",
         "pre-deploy"
       ],
-      "description": "the git hook or the CI as a client MCP workflow: its steps, strictness and what each does; scripts/hook.ts walks them"
+      "description": "the git hook or the CI as a client MCP workflow: its steps, strictness and what each does; scripts/hook.ts walks them",
+      "default": "pre-commit"
     },
     "offline": {
       "type": "boolean",
@@ -2017,6 +2105,11 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "12",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -2036,7 +2129,8 @@ schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, titl
         "page",
         "offer",
         "catalogue"
-      ]
+      ],
+      "default": "catalogue"
     },
     "tool": {
       "type": "string"
@@ -2070,7 +2164,8 @@ schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, titl
         "ja",
         "pt",
         "nl"
-      ]
+      ],
+      "default": "fr"
     },
     "product": {
       "type": "string"
@@ -2084,6 +2179,11 @@ schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, titl
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "44",
+    "index": "36",
+    "from": "a432"
   }
 }
 ```
@@ -2238,7 +2338,8 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "realtime",
         "branding"
       ],
-      "description": "omit for all"
+      "description": "omit for all",
+      "default": "payload"
     },
     "files": {
       "type": "boolean",
@@ -2280,7 +2381,8 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "site",
         "app"
       ],
-      "description": "kind wrangler: the deploy template (worker, site, app); with useCase, that one preset"
+      "description": "kind wrangler: the deploy template (worker, site, app); with useCase, that one preset",
+      "default": "worker"
     },
     "useCase": {
       "type": "string",
@@ -2323,6 +2425,11 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "72",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -2346,7 +2453,8 @@ QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, to
         "out",
         "both"
       ],
-      "description": "default both"
+      "description": "default both",
+      "default": "in"
     },
     "host": {
       "type": "string",
@@ -2374,6 +2482,11 @@ QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, to
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "3",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
@@ -2386,6 +2499,10 @@ The split folds: a payload larger than a place can hold is folded into pieces un
 {
   "type": "object",
   "properties": {
+    "harmonic": {
+      "type": "object",
+      "description": "{ schema, referrer? }: the harmonic options by default of any schema — its enum properties a superposition of their combinations, the referrer's address (or the a432 key) choosing the default one by its remainder"
+    },
     "decode": {
       "type": "object",
       "description": "{ radices, address? | uuid? }: decoded algebraically, never by search — an address of the form index-digits (or either part alone) inverted in one step per position and checked against itself; a content address is one-way, so the request to find what it hides is refused with the court's case and no candidate is tried; free as pure algebra"
@@ -2526,7 +2643,8 @@ The crypto and certificate APIs, with NIST and CERN, verified by theorems in coo
       "enum": [
         "plan",
         "read"
-      ]
+      ],
+      "default": "plan"
     },
     "hosts": {
       "type": "array",
@@ -2559,6 +2677,11 @@ The crypto and certificate APIs, with NIST and CERN, verified by theorems in coo
     "selftest": {
       "type": "boolean"
     }
+  },
+  "x-harmonic": {
+    "combinations": "2",
+    "index": "0",
+    "from": "a432"
   }
 }
 ```
