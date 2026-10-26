@@ -67,7 +67,7 @@ the legal and security audit of this MCP through MCP: the author's claims judged
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [compete-rules](https://qpu.uuidna.com/944d609b-d477-47c7-bb3b-510f9767e98b) | compete | textbook_clay_conditions | Every competition with a prize or funding judged by its own rules: the Clay conditions (three, all required), XPRIZE Quantum Applications closed until spring 2027, the funding programs pending the author's acts; nothing claimed, the gaps named. |
+| [compete-rules](https://qpu.uuidna.com/944d609b-d477-47c7-bb3b-510f9767e98b) | compete | textbook_clay_conditions | Every competition with a prize or funding judged by its own rules: the Clay conditions (three, all required), XPRIZE Quantum Applications closed until spring 2027, Vercel's program closed until its next cohort, the other funding programs pending the author's acts; nothing claimed, the gaps named. |
 | [legal-audit-offline](https://qpu.uuidna.com/5601fc0c-ac8f-4474-afec-de76277834c6) | legal | textbook_uuid_is_36 | Phase two with no answers (offline): the claims, the tree's security checks, and the audit's own content address over the SHA-256 of every input — change a source and the address changes. |
 | [legal-plan](https://qpu.uuidna.com/b3cda968-f2ac-73bc-8b91-55c2923c43cf) | legal | — | Phase one on fixture texts and a three-door discovery: the claims gathered (licence, author, metadata, measured table, perspectives), the tree's security checks, and the plan — one forensics call per claim, the rights and security doors once, free by default. |
 

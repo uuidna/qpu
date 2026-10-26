@@ -1,42 +1,42 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T07:18:07.497Z",
- "ms": 1497,
+ "date": "2026-10-26T07:20:52.991Z",
+ "ms": 1187,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "daac25c62b8d95d55a402bca786d4c93ddc5faa8",
+ "head": "81ffff0bc7679ad31b62c5d3c07d8b5a108f8f95",
  "pushed": false,
  "fetched": [
   {
-   "id": "cloudflare-workers-launchpad",
-   "status": 403,
-   "ms": 89,
-   "bytes": 5588
-  },
-  {
    "id": "xprize-quantum-applications",
    "status": 200,
-   "ms": 283,
+   "ms": 327,
    "bytes": 174241
-  },
-  {
-   "id": "clay-millennium",
-   "status": 200,
-   "ms": 333,
-   "bytes": 79933
   },
   {
    "id": "vercel-oss-program",
    "status": 200,
-   "ms": 388,
-   "bytes": 621188
+   "ms": 338,
+   "bytes": 827056
+  },
+  {
+   "id": "clay-millennium",
+   "status": 200,
+   "ms": 398,
+   "bytes": 79933
+  },
+  {
+   "id": "cloudflare-workers-launchpad",
+   "status": 200,
+   "ms": 395,
+   "bytes": 402589
   },
   {
    "id": "github-maintainer-programs",
    "status": 200,
-   "ms": 1029,
+   "ms": 734,
    "bytes": 394161
   }
  ],
@@ -217,7 +217,7 @@
   {
    "id": "cloudflare-workers-launchpad",
    "name": "Cloudflare Workers Launchpad (funding program for startups on Workers)",
-   "prize": "funding from the Launchpad's VC partners",
+   "prize": "funding from the Launchpad's venture capital partners: \"more than $2 billion towards Workers-based startups\" (the page, read in the browser 2026-10-26)",
    "rules": [
     {
      "rule": "a startup building on Cloudflare Workers",
@@ -225,49 +225,29 @@
      "act": "the author applies with the company",
      "status": "pending",
      "evidence": "the Worker qpu on 3 hosts; the company is the author's"
+    },
+    {
+     "rule": "an application in a cohort window",
+     "needs": "Cloudflare's announcement of the next cohort",
+     "act": "the author applies when a cohort opens",
+     "status": "pending",
+     "evidence": "the page names no window"
     }
    ],
-   "read": "2026-10-26 (the gateway answered 403 to the verifier: a lead)",
+   "read": "2026-10-26 (through the browser; the gateway answers 403 to the verifier; /lp/workers-launchpad/ redirects here)",
    "kind": "funding",
    "entry": "unknown",
-   "note": "the Worker qpu runs on three hosts at the edge; the page refused an automated read",
+   "note": "six cohorts so far (#1 to #6) with a Demo Day each; the page names no application window in its text",
    "requires": [
     {
      "rule": "a startup building on Cloudflare Workers",
      "needs": "the deployed Worker and a company",
      "act": "the author applies with the company"
-    }
-   ],
-   "window": null,
-   "counts": {
-    "pending": 1
-   },
-   "satisfied": "0/1",
-   "enterable": true,
-   "ready": false
-  },
-  {
-   "id": "vercel-oss-program",
-   "name": "Vercel Open Source Program (credits for open source projects)",
-   "prize": "platform credits",
-   "rules": [
+    },
     {
-     "rule": "an open source project deployed on Vercel",
-     "needs": "the fork deployed by the tenant",
-     "act": "the tenant deploys the app; the author applies",
-     "status": "pending",
-     "evidence": "the fork builds; its deploy is the tenant's act"
-    }
-   ],
-   "read": "2026-10-26 (a client-rendered page: the rules are not in its HTML; a lead)",
-   "kind": "funding",
-   "entry": "unknown",
-   "note": "the Payload fork deploys on Vercel; the program's criteria are read in the browser only",
-   "requires": [
-    {
-     "rule": "an open source project deployed on Vercel",
-     "needs": "the fork deployed by the tenant",
-     "act": "the tenant deploys the app; the author applies"
+     "rule": "an application in a cohort window",
+     "needs": "Cloudflare's announcement of the next cohort",
+     "act": "the author applies when a cohort opens"
     }
    ],
    "window": {
@@ -277,10 +257,108 @@
     "says": "the page names no window"
    },
    "counts": {
-    "pending": 1
+    "pending": 2
    },
-   "satisfied": "0/1",
+   "satisfied": "0/2",
    "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "vercel-oss-program",
+   "name": "Vercel Open Source Program (platform credits for open source projects)",
+   "prize": "USD 3 600 of Vercel platform credits over 3 years, the OSS Starter Pack, community support (the page, read in the browser 2026-10-26)",
+   "rules": [
+    {
+     "rule": "an open source project actively developed and maintained",
+     "needs": "the public repository, maintained",
+     "act": "the push is the author's act",
+     "status": "pending",
+     "evidence": "CC-BY-NC-ND-4.0; the repository is local until the author pushes"
+    },
+    {
+     "rule": "hosted on Vercel, or intended to be",
+     "needs": "the fork deployed on Vercel",
+     "act": "the tenant deploys the app",
+     "status": "pending",
+     "evidence": "the fork builds; its deploy is the tenant's act"
+    },
+    {
+     "rule": "measurable impact or growth potential",
+     "needs": "the measures the tree publishes (the gate, the metrics, the receipts)",
+     "act": "the author states them in the application",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "a Code of Conduct",
+     "needs": "a CODE_OF_CONDUCT in the repository",
+     "act": "the author adopts one (the Contributor Covenant the fork follows)",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "credits used exclusively for the open source work",
+     "needs": "the author's undertaking",
+     "act": "the author undertakes it",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "an application in a cohort window",
+     "needs": "the page saying applications are open",
+     "act": "the author applies when the page says open",
+     "status": "closed",
+     "evidence": "the page says applications are currently closed"
+    }
+   ],
+   "read": "2026-10-26 (through the browser: vercel.com/oss is a showcase of Vercel's own projects, the program lives at /open-source-program)",
+   "kind": "funding",
+   "entry": "closed",
+   "note": "the page says \"Applications are currently closed\"; cohorts Spring 2026, Winter 2026, Fall 2025, Summer 2025, Spring 2025: a window opens per cohort",
+   "requires": [
+    {
+     "rule": "an open source project actively developed and maintained",
+     "needs": "the public repository, maintained",
+     "act": "the push is the author's act"
+    },
+    {
+     "rule": "hosted on Vercel, or intended to be",
+     "needs": "the fork deployed on Vercel",
+     "act": "the tenant deploys the app"
+    },
+    {
+     "rule": "measurable impact or growth potential",
+     "needs": "the measures the tree publishes (the gate, the metrics, the receipts)",
+     "act": "the author states them in the application"
+    },
+    {
+     "rule": "a Code of Conduct",
+     "needs": "a CODE_OF_CONDUCT in the repository",
+     "act": "the author adopts one (the Contributor Covenant the fork follows)"
+    },
+    {
+     "rule": "credits used exclusively for the open source work",
+     "needs": "the author's undertaking",
+     "act": "the author undertakes it"
+    },
+    {
+     "rule": "an application in a cohort window",
+     "needs": "the page saying applications are open",
+     "act": "the author applies when the page says open"
+    }
+   ],
+   "window": {
+    "entry": "closed",
+    "opens": null,
+    "closes": null,
+    "says": "the page says applications are currently closed"
+   },
+   "counts": {
+    "pending": 5,
+    "closed": 1
+   },
+   "satisfied": "0/6",
+   "enterable": false,
    "ready": false
   }
  ],
@@ -288,13 +366,13 @@
  "funding": 3,
  "enterable": [
   "github-maintainer-programs",
-  "cloudflare-workers-launchpad",
-  "vercel-oss-program"
+  "cloudflare-workers-launchpad"
  ],
  "ready": [],
  "says": "enterable: every rule is satisfied or the author's act; ready: every rule satisfied",
  "closed": [
-  "xprize-quantum-applications"
+  "xprize-quantum-applications",
+  "vercel-oss-program"
  ],
  "relatedMcps": [
   "ca.netgrant/canadian-grants",

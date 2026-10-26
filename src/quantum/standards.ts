@@ -27,6 +27,7 @@ export const STANDARDS: readonly { id: string; name: string; contract: string; k
   { id: 'currency-api-rates', name: 'fawazahmed0/currency-api on jsDelivr (daily, CC0)', contract: 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json', kind: 'reference' },
   { id: 'clay-millennium-rules', name: 'Clay Mathematics Institute, rules for the Millennium Prize Problems', contract: 'https://www.claymath.org/millennium-problems/rules/', kind: 'reference' },
   { id: 'xprize-quantum-applications', name: 'XPRIZE Quantum Applications (Google Quantum AI)', contract: 'https://www.xprize.org/prizes/qc-apps', kind: 'reference' },
+  { id: 'vercel-open-source-program', name: 'Vercel Open Source Program', contract: 'https://vercel.com/open-source-program', kind: 'reference' },
   { id: 'github-accelerator', name: 'GitHub Accelerator and maintainer programs', contract: 'https://github.com/accelerator', kind: 'reference' },
   { id: 'payload-skills', name: 'payloadcms/skills, Payload\'s skills for AI agents (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/skills/git/trees/main?recursive=1', kind: 'reference' },
   { id: 'schema-org', name: 'schema.org vocabulary (JSON-LD)', contract: 'https://schema.org/version/latest/schemaorg-current-https.jsonld', kind: 'vocabulary' },
