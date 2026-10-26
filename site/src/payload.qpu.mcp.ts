@@ -30,7 +30,8 @@ const handlerTools = list.map((t) => ({
   parameters: Object.fromEntries(Object.entries(t.inputSchema.properties ?? {}).map(([k, p]) => [k, (t.inputSchema.required ?? []).includes(k) ? zodOf(p).describe(p.description ?? '') : zodOf(p).optional().describe(p.description ?? '')])) as z.ZodRawShape,
   handler: async (args: Record<string, unknown>) => {
     const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: t.name, arguments: args } }) as { result?: { structuredContent: unknown }; error?: { message: string } }
-    return { content: [{ type: 'text' as const, text: JSON.stringify(r.error ? { error: r.error.message } : r.result!.structuredContent) }] }
+    // the widget mounted by the host: the result names the tool's own ui:// resource (MCP Apps), since the plugin's tools/list carries no _meta
+    return { content: [{ type: 'text' as const, text: JSON.stringify(r.error ? { error: r.error.message } : r.result!.structuredContent) }], ...(r.error ? {} : { structuredContent: r.result!.structuredContent as Record<string, unknown> }), _meta: { ui: { resourceUri: 'ui://qpu/' + t.name } } }
   },
 }))
 // the developer machine through the Payload MCP: the handler's door plans every action from its allow-list; the action runs here, in this
