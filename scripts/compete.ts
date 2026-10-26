@@ -39,7 +39,7 @@ const main = async () => {
   // the public news APIs as adapters of the DOI research: every open request for every record of precedence, the mentions read by the tool
   const mentions: { id: string; status: number; ms: number; text: string }[] = []
   if (!offline) { const plan = call({ news: true }); await Promise.all((plan.requestList as { id: string; url: string; accept: string }[]).map(async (q) => { const t0 = Date.now(); try { const res = await fetch(q.url, { headers: { accept: q.accept, 'user-agent': 'uuidna-qpu-verify (+https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(25000) }); mentions.push({ id: q.id, status: res.status, ms: Date.now() - t0, text: await res.text() }) } catch { mentions.push({ id: q.id, status: 0, ms: Date.now() - t0, text: '' }) } })) }
-  const r = call({ pages, now: Date.now(), pushed: pushed === true, published: false, hosts: 3, ...(mentions.length ? { mentions: mentions.map((m) => ({ id: m.id, status: m.status, text: m.text })) } : {}) })
+  const r = call({ pages, now: Date.now(), pushed: pushed === true, published: false, conduct: existsSync(join(ROOT, 'CODE_OF_CONDUCT.md')), hosts: 3, ...(mentions.length ? { mentions: mentions.map((m) => ({ id: m.id, status: m.status, text: m.text })) } : {}) })
   const date = new Date().toISOString()
   mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
   writeFileSync(join(ROOT, 'docs', 'public', 'compete.json'), JSON.stringify({ license: LICENSE.attribution, date, ms: Date.now() - started, offline, selftest: { passed: selftest.passed }, head, pushed, fetched, ...r }, null, 1) + '\n')

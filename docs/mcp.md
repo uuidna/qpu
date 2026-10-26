@@ -1990,6 +1990,10 @@ The competitions with prizes and funding, their rules read at the source and jud
 {
   "type": "object",
   "properties": {
+    "conduct": {
+      "type": "boolean",
+      "description": "the client found a CODE_OF_CONDUCT in the repository"
+    },
     "news": {
       "type": "boolean",
       "description": "the public news APIs as adapters of the DOI research"

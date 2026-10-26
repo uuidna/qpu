@@ -2420,6 +2420,10 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "conduct": {
+            "type": "boolean",
+            "description": "the client found a CODE_OF_CONDUCT in the repository"
+          },
           "news": {
             "type": "boolean",
             "description": "the public news APIs as adapters of the DOI research"
