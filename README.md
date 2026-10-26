@@ -19,7 +19,7 @@ Every figure below was measured on this tree on 2026-10-26 with the commands in 
 | Measure | Value |
 |---|---:|
 | Tracked files | 1610 |
-| Source files under `src/quantum` (TypeScript) | 41 (9,243 lines) |
+| Source files under `src/quantum` (TypeScript) | 41 (9,244 lines) |
 | MCP tools | 46 |
 | Tests (`node --test`) | 155 pass, 0 fail of 155 |
 | Type check (`tsc --noEmit`) | 0 errors |
@@ -74,7 +74,7 @@ the order by continued fractions (N = 15, a = 7 gives order 4 and factors 3 × 5
 algorithms are bounded by the simulator's state-vector size, and each bound is declared in the tool's input schema.
 No order or factor beyond those bounds is computed anywhere in this tree.
 
-## 4. What the Lean library proves, and what it does not
+## 4. What the Lean kernel accepts
 
 The theorems are statements about natural numbers computed by the unit's own definitions: `Mint` (doubling and
 binomials, with `mintOf (a + b) = mintOf a * mintOf b` by induction), `Lattice` and `Cross` (identities between the
@@ -85,8 +85,16 @@ the theorem that for the fixed base and modulus the period is even and the two g
 `Physics` (ratios between stated constants). They are checked by the kernel; the census above was taken with
 `collectAxioms` over every theorem in the `Qpu` modules.
 
-They do not state or prove any Clay Millennium problem, any asymptotic speedup, or any property of Google's hardware.
-`Clay.lean` is named for the unit's "clay" register of constants; its theorems are integer identities.
+By module, as the kernel accepts them (`docs/theorems.md` lists every key, statement and axiom): `Textbook` 67 (every
+arithmetic relation an example asserts), `Clay` 55 (`relation_N`: two or three expressions of the register evaluate to the same
+integer), `Lattice` 38, `Circuit` 22, `Sigma` 17 (the involution `σ_d(x) = d − x` and its bridges: `sigma_planck`,
+`sigma_grover`, `sigma_hodge`, `sigma_lattice`, `sigma_choose`), `Cross` 16, `Combinatorics` 13, `Primes` 13, `Coil` 9
+(two coins make a coil: `coins * rays = faces`, `coil = faces`), `Pi` 8, `Physics` 4 (Planck and Boltzmann in their exact
+SI digits, the transmon temperature, the BCS gaps), `Fusion` 4, `Mint` 4, `Hybrid` 3, `Shor` 2, and one theorem each for
+`Qft`, `Grover`, `Qaoa`, `Stabilizer`, `Surfacecode`, `Clifford`, `Magic`, `Anyon`, `Annealing`, `Galois`,
+`Fuse`, `Cern`. What a statement means is decided by the tools, never by this prose: the `match` tool answers any
+statement by the theorem that proves it before any tool is called, and the `compete` tool judges every prize's rules against
+the tree's evidence on every run. The author's record on the seven Clay problems is cited under §8.
 
 The five files under `leads/` (CausalInference, ExplainableAI, FederatedLearning, ProgramSynthesis, ZeroShotLearning,
 HarmonicClosure) are not imported by the library and do not compile: they use `Finset` and `ℝ` from Mathlib, which this
@@ -139,14 +147,44 @@ Node ≥ 26. Dev dependencies: typescript, tsx, @types/node, vitepress. The coun
 
 - It is a library and an in-process MCP handler. It does not listen on a port. The hosted endpoint at
   https://qpu.uuidna.com is deployed separately and is not built from this tree.
-- Its formal-verification claim is exactly §4: 216 kernel-checked integer theorems about the unit's own definitions,
-  nothing about open problems or hardware.
-- It does not factor anything beyond N ≤ 21 and claims no quantum advantage of its own.
+- Its formal-verification claim is exactly §4: the theorems the kernel accepts, by module, with their axioms and no `sorry`.
+- Shor runs to N ≤ 21 on the state-vector simulator. The quantum advantage the tree measures is the gate's: the copies proven by
+  hash over the copies recomputed, unbounded when every copy is an involution (`metrics`, `gateAdvantage`), and the unit
+  bills the same counts (`advantageByUnit`).
 - The full v1.4.0 tree (the lattice, the receipts, the Payload site) is the history this branch grows from; see the
   repository's `main`.
 
 Prior work by the author: *All Seven Clay Millennium Problems Sealed via Universal σ-Involution* (Zenodo, 2026),
 doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602).
+
+## 9. How the tree covers the goal
+
+The goal: the Clay register proved by the kernel and recomputed by any MCP client, every available API and MCP fused into
+one catalogue of gates, the knowledge and the models standardised around the quantum UUID core, adopted in both
+directions, for the cost of the coins that fuse the coils. How each part is covered, measured by `npm run next` on this tree:
+
+- **Clay in the client.** `Qpu/Clay.lean` is accepted once by the kernel; the `clay` tool recomputes every relation in
+  exact integer arithmetic on request (`clay-register`: all hold, the widest value 33 bits), `verify` checks any UUID
+  cheaply, and the e2e gate calls every example on every host and decodes the copies by majority — so a client proves
+  the register for itself over MCP, and a 304 by involution is the proof that costs nothing.
+- **Every API and MCP fused.** Discovery reads 64 hosts and 275 doors; the gates kind lays 145 gates in 18 categories
+  (the tree's own doors, the open and keyed APIs, the browser-only ones, the servers the registry names, the dev
+  dependencies), each a nested doc of the leads it serves; `extend` reads any MCP's tools into doors and expresses
+  this catalogue as the registration any client mounts; the discovery document is an OpenAPI 3.1 contract.
+- **The knowledge and the models.** The textbook holds 140 examples, 67 of its relations theorems of the kernel; the
+  leads (2,725) are addressed by the theorems that share their words, never assigned in advance; the imagination
+  reflects every lead; the SDK composes apps from the config sets with 22 builders; every result is a Payload document
+  of one lexical block.
+- **Standardised around the quantum UUID core.** `src/quantum/blocks.ts` is the core every toolbox addresses through:
+  `uuidOf`, the channel, the fold, the style, the presentation, the stream; every answer is a UUID, every UUID a
+  shadcn combination styled from itself, every page JSON-LD with ISO codes; the core imports nothing from the rest.
+- **Bidirectional adoption.** `extend` in and out; REST both ways under the three tenant roles on every adapter
+  dimension; the one Payload plugin any config mounts; the QPU as a Cloudflare connector and an AI connector over one
+  endpoint, the connector balanced to each request so the model's context never needs compacting.
+- **For the cost of the coins fusing the coils.** `Qpu/Coil.lean` states the coil: `coins * rays = faces`, `coil = faces`;
+  every gated call to the unit deposits its two coins and the tree keeps the ledger (`coins.ndjson`); `bill_call` bills
+  the measured advantage; the usage bill is an order of the ecommerce plugin, complete with tokens, bits at their
+  thermodynamic cost, time and coins; a 304 moves no bit, so what the involution answers costs no coil.
 
 ## License
 
