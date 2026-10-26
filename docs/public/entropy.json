@@ -1,7 +1,7 @@
 {
- "date": "2026-10-26T13:45:22.424Z",
+ "date": "2026-10-26T13:46:51.560Z",
  "files": 915,
- "lines": 79539,
+ "lines": 79542,
  "findings": 821,
  "fused": 307,
  "reactions": 514,
@@ -355,7 +355,7 @@
   {
    "id": "entropy-cap-9347bb45",
    "kind": "cap",
-   "source": "src/quantum/audit.ts:290, src/quantum/imagine.ts:56, src/quantum/mcp.ts:874, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:243, src/quantum/toolboxes/language.ts:94, src/quantum/toolboxes/payload.ts:1785, src/quantum/toolboxes/raid.ts:107, src/quantum/toolboxes/standards.ts:47",
+   "source": "src/quantum/audit.ts:290, src/quantum/imagine.ts:56, src/quantum/mcp.ts:874, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:246, src/quantum/toolboxes/language.ts:94, src/quantum/toolboxes/payload.ts:1785, src/quantum/toolboxes/raid.ts:107, src/quantum/toolboxes/standards.ts:47",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 160)",
    "status": "open",
    "tool": "audit",
@@ -3691,7 +3691,7 @@
   {
    "id": "entropy-duplicate-16bf3d61",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/billing.ts:251, src/quantum/toolboxes/crypto.ts:224, src/quantum/toolboxes/extension.ts:91, src/quantum/toolboxes/language.ts:83, src/quantum/toolboxes/legal.ts:48, src/quantum/toolboxes/legal.ts:342, src/quantum/toolboxes/payload.ts:1799, src/quantum/toolboxes/raid.ts:113, src/quantum/toolboxes/repository.ts:110, src/quantum/toolboxes/standards.ts:55",
+   "source": "src/quantum/toolboxes/billing.ts:254, src/quantum/toolboxes/crypto.ts:224, src/quantum/toolboxes/extension.ts:91, src/quantum/toolboxes/language.ts:83, src/quantum/toolboxes/legal.ts:48, src/quantum/toolboxes/legal.ts:342, src/quantum/toolboxes/payload.ts:1799, src/quantum/toolboxes/raid.ts:113, src/quantum/toolboxes/repository.ts:110, src/quantum/toolboxes/standards.ts:55",
    "statement": "one line of code repeated in more than one file: one place should hold it — const checks: { id: string; passed: boolean; evidence: string }[] = []",
    "status": "open",
    "tool": "audit",
@@ -3703,7 +3703,7 @@
   {
    "id": "entropy-duplicate-1adf7165",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/billing.ts:252, src/quantum/toolboxes/crypto.ts:225, src/quantum/toolboxes/extension.ts:92, src/quantum/toolboxes/language.ts:84, src/quantum/toolboxes/legal.ts:49, src/quantum/toolboxes/legal.ts:343, src/quantum/toolboxes/payload.ts:1800, src/quantum/toolboxes/raid.ts:114, src/quantum/toolboxes/repository.ts:111, src/quantum/toolboxes/standards.ts:56",
+   "source": "src/quantum/toolboxes/billing.ts:255, src/quantum/toolboxes/crypto.ts:225, src/quantum/toolboxes/extension.ts:92, src/quantum/toolboxes/language.ts:84, src/quantum/toolboxes/legal.ts:49, src/quantum/toolboxes/legal.ts:343, src/quantum/toolboxes/payload.ts:1800, src/quantum/toolboxes/raid.ts:114, src/quantum/toolboxes/repository.ts:111, src/quantum/toolboxes/standards.ts:56",
    "statement": "one line of code repeated in more than one file: one place should hold it — const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })",
    "status": "open",
    "tool": "audit",
