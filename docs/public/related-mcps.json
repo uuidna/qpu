@@ -1,10 +1,10 @@
 {
- "date": "2026-10-26T15:12:19.266Z",
- "partial": true,
- "remaining": 1,
- "fetched": 26,
+ "date": "2026-10-26T15:45:54.831Z",
+ "partial": false,
+ "remaining": 0,
+ "fetched": 25,
  "leads": 50,
- "withServers": 48,
+ "withServers": 49,
  "related": [
   {
    "lead": "perspective-database",
@@ -6847,8 +6847,44 @@
     "patents",
     "patent"
    ],
-   "servers": 12,
+   "servers": 17,
    "serverList": [
+    {
+     "name": "com.a2awire/data-arstechnica-hardware-news-tech-it",
+     "description": "Ars Technica tech, IT & hardware news. $0.01/query. Register in-session — free testnet funds.",
+     "remotes": [
+      "https://a2awire.com/mcp/data/arstechnicawatch-ars-technica-tech-it-hardware-news-787e88/http"
+     ],
+     "word": "hardware"
+    },
+    {
+     "name": "com.aradia/sovereign-hardware",
+     "description": "On-prem Agentic AI on NVIDIA DGX. Query specs, model CapEx ROI, Purchase & join Partner Program.",
+     "remotes": [
+      "https://aradia.com/api/a2a/mcp-endpoint.php"
+     ],
+     "word": "hardware"
+    },
+    {
+     "name": "com.specjoin/hardware-compatibility",
+     "description": "Check computer, dock, monitor and charger compatibility with requirements and manufacturer sources.",
+     "remotes": [
+      "https://specjoin.peanut20.chatgpt.site/mcp"
+     ],
+     "word": "hardware"
+    },
+    {
+     "name": "io.github.hardware-mcp/arduino-mcp-server",
+     "description": "Arduino MCP server for CLI setup, board detection, compile/upload, serial monitoring, and pin refs.",
+     "remotes": [],
+     "word": "hardware"
+    },
+    {
+     "name": "io.github.iowarp/node-hardware-mcp",
+     "description": "Node Hardware MCP - Comprehensive Hardware Monitoring and System Analysis for LLMs with...",
+     "remotes": [],
+     "word": "hardware"
+    },
     {
      "name": "com.thenextgennexus/patents-trademarks-ip-mcp-server",
      "description": "Patent & trademark IP search — patents, assignees, and inventors via Google Patents.",
@@ -6946,6 +6982,24 @@
    ],
    "extended": [
     {
+     "server": "com.a2awire/data-arstechnica-hardware-news-tech-it",
+     "url": "https://a2awire.com/mcp/data/arstechnicawatch-ars-technica-tech-it-hardware-news-787e88/http",
+     "status": 200,
+     "doors": 16
+    },
+    {
+     "server": "com.aradia/sovereign-hardware",
+     "url": "https://aradia.com/api/a2a/mcp-endpoint.php",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "com.specjoin/hardware-compatibility",
+     "url": "https://specjoin.peanut20.chatgpt.site/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
      "server": "com.thenextgennexus/patents-trademarks-ip-mcp-server",
      "url": "https://nexgendata-mcp-proxy.steve-corbeil.workers.dev/patents-trademarks-ip-mcp-server/mcp",
      "status": 401,
@@ -7014,6 +7068,16 @@
    ],
    "bestDoors": [
     {
+     "server": "com.aradia/sovereign-hardware",
+     "url": "https://aradia.com/api/a2a/mcp-endpoint.php",
+     "door": "execute_procurement_order",
+     "score": 2,
+     "shared": [
+      "hardware",
+      "compliance"
+     ]
+    },
+    {
      "server": "io.github.pipeworx-io/patents",
      "url": "https://gateway.pipeworx.io/patents/mcp",
      "door": "ask_pipeworx",
@@ -7023,21 +7087,12 @@
      ]
     },
     {
-     "server": "com.dropwatchhq/patent-gap",
-     "url": "https://patentgap.dropwatchhq.com/mcp",
-     "door": "category_opportunity_report",
+     "server": "com.aradia/sovereign-hardware",
+     "url": "https://aradia.com/api/a2a/mcp-endpoint.php",
+     "door": "calculate_roi",
      "score": 1,
      "shared": [
-      "patent"
-     ]
-    },
-    {
-     "server": "io.github.pipeworx-io/patents",
-     "url": "https://gateway.pipeworx.io/patents/mcp",
-     "door": "deep_research",
-     "score": 1,
-     "shared": [
-      "patent"
+      "hardware"
      ]
     }
    ]
@@ -7049,8 +7104,90 @@
     "hardware",
     "compliance"
    ],
-   "servers": 7,
+   "servers": 18,
    "serverList": [
+    {
+     "name": "com.dillilabs.deva/dilli-email-validation-api-server",
+     "description": "An MCP server that provides tools to validate an email address using Dilli Email Validation API. ",
+     "remotes": [
+      "https://deva.dillilabs.com/mcp"
+     ],
+     "word": "validation"
+    },
+    {
+     "name": "com.emaillistvalidation/email-verification",
+     "description": "Verify emails (valid/invalid/risky/unknown): MX, SMTP, catch-all, disposable. Free agent key.",
+     "remotes": [
+      "https://app.emaillistvalidation.com/mcp"
+     ],
+     "word": "validation"
+    },
+    {
+     "name": "com.iwebdevelopment/ai-vat-number-validation",
+     "description": "AI VAT Number Validation: hosted MCP server for EU VAT number checks via VIES.",
+     "remotes": [
+      "https://mcp-vat.iwebdevelopment.com"
+     ],
+     "word": "validation"
+    },
+    {
+     "name": "eu.iban-test.www/iban-validation",
+     "description": "IBAN validation, test IBAN generation, batch checks, BIC and German bank account validation.",
+     "remotes": [
+      "https://www.iban-test.eu/mcp"
+     ],
+     "word": "validation"
+    },
+    {
+     "name": "io.github.AndreuSerraSastre/fivecoins-validation-plan",
+     "description": "No-signup validation planner MCP for tiny paid offers.",
+     "remotes": [],
+     "word": "validation"
+    },
+    {
+     "name": "io.github.Br0ski777/phone-validation",
+     "description": "Validate phone numbers worldwide: carrier, line type, country, E.164. x402.",
+     "remotes": [
+      "https://phone-validation-x402-production.up.railway.app/mcp"
+     ],
+     "word": "validation"
+    },
+    {
+     "name": "com.a2awire/data-arstechnica-hardware-news-tech-it",
+     "description": "Ars Technica tech, IT & hardware news. $0.01/query. Register in-session — free testnet funds.",
+     "remotes": [
+      "https://a2awire.com/mcp/data/arstechnicawatch-ars-technica-tech-it-hardware-news-787e88/http"
+     ],
+     "word": "hardware"
+    },
+    {
+     "name": "com.aradia/sovereign-hardware",
+     "description": "On-prem Agentic AI on NVIDIA DGX. Query specs, model CapEx ROI, Purchase & join Partner Program.",
+     "remotes": [
+      "https://aradia.com/api/a2a/mcp-endpoint.php"
+     ],
+     "word": "hardware"
+    },
+    {
+     "name": "com.specjoin/hardware-compatibility",
+     "description": "Check computer, dock, monitor and charger compatibility with requirements and manufacturer sources.",
+     "remotes": [
+      "https://specjoin.peanut20.chatgpt.site/mcp"
+     ],
+     "word": "hardware"
+    },
+    {
+     "name": "io.github.hardware-mcp/arduino-mcp-server",
+     "description": "Arduino MCP server for CLI setup, board detection, compile/upload, serial monitoring, and pin refs.",
+     "remotes": [],
+     "word": "hardware"
+    },
+    {
+     "name": "io.github.iowarp/node-hardware-mcp",
+     "description": "Node Hardware MCP - Comprehensive Hardware Monitoring and System Analysis for LLMs with...",
+     "remotes": [],
+     "word": "hardware"
+    },
     {
      "name": "ai.clarid/compliance",
      "description": "Check bank marketing for FDIC, NCUA, TILA, Reg DD, Reg Z, UDAAP, and Equal Housing compliance.",
@@ -7110,6 +7247,54 @@
    ],
    "extended": [
     {
+     "server": "com.dillilabs.deva/dilli-email-validation-api-server",
+     "url": "https://deva.dillilabs.com/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "com.emaillistvalidation/email-verification",
+     "url": "https://app.emaillistvalidation.com/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "com.iwebdevelopment/ai-vat-number-validation",
+     "url": "https://mcp-vat.iwebdevelopment.com",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "eu.iban-test.www/iban-validation",
+     "url": "https://www.iban-test.eu/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "io.github.Br0ski777/phone-validation",
+     "url": "https://phone-validation-x402-production.up.railway.app/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "com.a2awire/data-arstechnica-hardware-news-tech-it",
+     "url": "https://a2awire.com/mcp/data/arstechnicawatch-ars-technica-tech-it-hardware-news-787e88/http",
+     "status": 200,
+     "doors": 16
+    },
+    {
+     "server": "com.aradia/sovereign-hardware",
+     "url": "https://aradia.com/api/a2a/mcp-endpoint.php",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "com.specjoin/hardware-compatibility",
+     "url": "https://specjoin.peanut20.chatgpt.site/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
      "server": "ai.clarid/compliance",
      "url": "https://mcp.clarid.ai/mcp",
      "status": 0,
@@ -7165,6 +7350,17 @@
      ]
     },
     {
+     "server": "com.aradia/sovereign-hardware",
+     "url": "https://aradia.com/api/a2a/mcp-endpoint.php",
+     "door": "execute_procurement_order",
+     "score": 3,
+     "shared": [
+      "hardware",
+      "compliance",
+      "generat"
+     ]
+    },
+    {
      "server": "app.eurocomply/compliance",
      "url": "https://eurocomply.app/api/mcp",
      "door": "audit_repo_pull_request",
@@ -7172,16 +7368,6 @@
      "shared": [
       "generat",
       "compliance"
-     ]
-    },
-    {
-     "server": "co.cookie-compliance/cookie-consent",
-     "url": "https://mcp.cookie-compliance.co/mcp",
-     "door": "install.getSnippet",
-     "score": 2,
-     "shared": [
-      "compliance",
-      "pattern"
      ]
     }
    ]
@@ -7193,10 +7379,167 @@
     "published",
     "gateway"
    ],
-   "servers": 0,
-   "serverList": [],
-   "extended": [],
-   "bestDoors": []
+   "servers": 10,
+   "serverList": [
+    {
+     "name": "io.github.cyanheads/zenodo-mcp-server",
+     "description": "Search and resolve Zenodo datasets, software, and publications by DOI; trace versions and funding.",
+     "remotes": [],
+     "word": "zenodo"
+    },
+    {
+     "name": "io.github.mrfentmen/zenodo-mcp",
+     "description": "Search research records on Zenodo. No key required.",
+     "remotes": [],
+     "word": "zenodo"
+    },
+    {
+     "name": "io.github.pipeworx-io/zenodo",
+     "description": "Zenodo (CERN) open research data repository",
+     "remotes": [
+      "https://gateway.pipeworx.io/zenodo/mcp"
+     ],
+     "word": "zenodo"
+    },
+    {
+     "name": "ai.aislabs/gateway",
+     "description": "Daily CVE priorities (KEV+EPSS) + Agent Flight Recorder: dead-man alerts & resume for AI agents",
+     "remotes": [
+      "https://api.aislabs.ai/mcp"
+     ],
+     "word": "gateway"
+    },
+    {
+     "name": "ai.duvera/gateway",
+     "description": "Governed AI actions with signed, verifiable receipts: free keyless reads, human-approved writes.",
+     "remotes": [
+      "https://app.duvera.ai/mcp"
+     ],
+     "word": "gateway"
+    },
+    {
+     "name": "ai.gatana/gateway",
+     "description": "MCP gateway for every MCP server, OpenAPI spec and FaaS tool behind one URL: SSO, SCIM, audit logs.",
+     "remotes": [
+      "https://{tenant}.gatana.ai/mcp"
+     ],
+     "word": "gateway"
+    },
+    {
+     "name": "ai.gatewayarchitect/decisions",
+     "description": "Your coding agent reads your team's architectural decisions and what happened when they shipped.",
+     "remotes": [
+      "https://www.gatewayarchitect.ai/api/mcp"
+     ],
+     "word": "gateway"
+    },
+    {
+     "name": "ai.lateos/soar-record-gateway",
+     "description": "SOAR security playbooks for AI agents: fetch, full-text search, and count. Metered via Stripe.",
+     "remotes": [
+      "https://soar-api.nevada-f99.workers.dev/mcp"
+     ],
+     "word": "gateway"
+    },
+    {
+     "name": "ai.occludra/mcp-gateway",
+     "description": "Security & DLP proxy for MCP: tool-poisoning scans, PII redaction on tool args/results. Beta.",
+     "remotes": [
+      "https://api.aisecuritygateway.ai/mcp"
+     ],
+     "word": "gateway"
+    },
+    {
+     "name": "ai.roosteragents/gateway",
+     "description": "Discover, read and book verified real-world businesses through one endpoint.",
+     "remotes": [
+      "https://roosteragents.ai/mcp"
+     ],
+     "word": "gateway"
+    }
+   ],
+   "extended": [
+    {
+     "server": "io.github.pipeworx-io/zenodo",
+     "url": "https://gateway.pipeworx.io/zenodo/mcp",
+     "status": 200,
+     "doors": 47
+    },
+    {
+     "server": "ai.aislabs/gateway",
+     "url": "https://api.aislabs.ai/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "ai.duvera/gateway",
+     "url": "https://app.duvera.ai/mcp",
+     "status": 200,
+     "doors": 52
+    },
+    {
+     "server": "ai.gatana/gateway",
+     "url": "https://{tenant}.gatana.ai/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.gatewayarchitect/decisions",
+     "url": "https://www.gatewayarchitect.ai/api/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.lateos/soar-record-gateway",
+     "url": "https://soar-api.nevada-f99.workers.dev/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.occludra/mcp-gateway",
+     "url": "https://api.aisecuritygateway.ai/mcp",
+     "status": 503,
+     "doors": 0
+    },
+    {
+     "server": "ai.roosteragents/gateway",
+     "url": "https://roosteragents.ai/mcp",
+     "status": 200,
+     "doors": 3
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.github.pipeworx-io/zenodo",
+     "url": "https://gateway.pipeworx.io/zenodo/mcp",
+     "door": "communities",
+     "score": 2,
+     "shared": [
+      "zenodo",
+      "record"
+     ]
+    },
+    {
+     "server": "io.github.pipeworx-io/zenodo",
+     "url": "https://gateway.pipeworx.io/zenodo/mcp",
+     "door": "community_records",
+     "score": 2,
+     "shared": [
+      "record",
+      "zenodo"
+     ]
+    },
+    {
+     "server": "io.github.pipeworx-io/zenodo",
+     "url": "https://gateway.pipeworx.io/zenodo/mcp",
+     "door": "polymarket_kalshi_spread",
+     "score": 2,
+     "shared": [
+      "publish",
+      "before"
+     ]
+    }
+   ]
   },
   {
    "lead": "research",

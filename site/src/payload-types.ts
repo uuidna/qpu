@@ -3147,6 +3147,10 @@ export interface QpuBlock {
    */
   next?: string | null;
   /**
+   * the scannable stream of the address: the frames as a CSS gradient, stepped through by the qpu-scan item; computed by the lexical hook from uuid, never typed
+   */
+  stream?: string | null;
+  /**
    * the kernel-accepted theorem that makes this block true; written by the QPU as a client of this MCP, read from the textbook
    */
   theorem?: string | null;

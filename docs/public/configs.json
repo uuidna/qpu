@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T15:44:05.343Z",
+ "date": "2026-10-26T15:51:17.365Z",
  "ms": 563,
  "selftest": {
   "passed": true
@@ -10,9 +10,8 @@
  "closed": true,
  "partition": "7 + 2 + 15 = 24",
  "improved": [
-  "site/src/blocks/Qpu/config.ts",
-  "site/public/r/qpu-block.json",
-  "docs/public/r/qpu-block.json"
+  "site/public/r/qpu-create.json",
+  "docs/public/r/qpu-create.json"
  ],
  "held": [
   {
@@ -29,18 +28,18 @@
  "drift": 0,
  "experience": {
   "measured": {
-   "copies": 711,
-   "involutions": 450,
+   "copies": 726,
+   "involutions": 441,
    "msByHost": {
-    "qpu.psg.bg": 58,
-    "qpu.ceci.workers.dev": 53,
-    "qpu.uuidna.com": 51
+    "qpu.uuidna.com": 58,
+    "qpu.psg.bg": 56,
+    "qpu.ceci.workers.dev": 56
    }
   },
-  "freeShare": 63,
+  "freeShare": 61,
   "slowestMedianMs": 58,
   "shardSize": 17,
-  "says": "63% of the gate's copies answered free (304 by involution); the slowest host answers in 58 ms, so a batch is sharded to 17 calls a shard to stay within a second"
+  "says": "61% of the gate's copies answered free (304 by involution); the slowest host answers in 58 ms, so a batch is sharded to 17 calls a shard to stay within a second"
  },
  "configs": [
   {
@@ -166,16 +165,16 @@
   {
    "kind": "api",
    "torus": {
-    "address": "248c68d0-f5fe-62f2-a526-86675872ae83",
-    "seed": 5,
-    "reflection": 5,
+    "address": "2c7c6b9f-dbab-1a95-9423-3dc25467bcdf",
+    "seed": 7,
+    "reflection": 3,
     "trinity": [
-     2,
-     5,
-     8
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 82404
+    "bytes": 82690
    }
   },
   {
@@ -271,13 +270,13 @@
   {
    "kind": "actions",
    "torus": {
-    "address": "7b70cbdb-8403-890c-8f1f-11c13b1426c0",
-    "seed": 3,
-    "reflection": 7,
+    "address": "124edaa5-6a1d-1065-b150-60ac01e1ac16",
+    "seed": 4,
+    "reflection": 6,
     "trinity": [
-     3,
-     6,
-     9
+     7,
+     4,
+     1
     ],
     "closed": true,
     "bytes": 1206
@@ -301,9 +300,9 @@
   {
    "kind": "ecommerce",
    "torus": {
-    "address": "ba947c00-1748-79e1-8fd4-cb85bc92e118",
-    "seed": 6,
-    "reflection": 4,
+    "address": "71e2dc3e-5be5-4d04-a863-72687d09fe63",
+    "seed": 9,
+    "reflection": 1,
     "trinity": [
      3,
      6,
@@ -361,7 +360,7 @@
   {
    "kind": "sets",
    "torus": {
-    "address": "385fc852-cac2-2401-ac0d-7a86fef688ba",
+    "address": "2fb76600-612a-852f-a5a3-2efc46cbaf72",
     "seed": 6,
     "reflection": 4,
     "trinity": [
@@ -370,7 +369,7 @@
      9
     ],
     "closed": true,
-    "bytes": 65275
+    "bytes": 65789
    }
   },
   {

@@ -180,5 +180,9 @@ theorem textbook_phase_bits : 2 ^ 11 ≤ 3888 ∧ 3888 < 2 ^ 12 := by decide
 theorem textbook_scan_links : 36 - 1 = 35 := by decide
 /-- the chain's combinatorics: thirty-two hex digits of four bits are 128 bits, 16^32 addresses a stream may link; the rate of usage is counted in periods of that chain (examples: verify-scan) -/
 theorem textbook_chain_bits : 32 * 4 = 128 := by decide
+/-- a program presented by hue and moved by the params keeps every distance between its steps: the rotation by the params' hue is the same ring at another angle (examples: css-program-shift) -/
+theorem textbook_hue_shift (h g s : Nat) : h + s - (g + s) = h - g := Nat.add_sub_add_right h s g
+/-- sixteen hues 22.5° apart present the sixteen hex digits: sixteen times forty-five is two turns of the circle, the step a half of forty-five; rays set next to each other fit when their seam is above zero (examples: css-rays) -/
+theorem textbook_hue_steps : 16 * 45 = 2 * 360 := by decide
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

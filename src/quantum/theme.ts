@@ -40,7 +40,37 @@ export const accentOfUuid = (uuid: string): string => { const [r, g, b] = rgbOfC
 /** The whole visual state of a block as custom properties computed from its UUID alone: the accent from the middle part as
  * CMYK, the tail as a colour and an angle, the 9-vortex seed, its σ_10 reflection and its trinity as a period and a class. Computed once at the source; the stylesheet does the
  * rest with no script, so a device renders at the cost of CSS and nothing else. */
+/** The program of a UUID presented by hue, moved by the params: the ten program digits (the channel's reading of the middle) each a hue
+ *  (sixteen, 22.5° apart), rotated by the params' own address hue (the handle of uuidOf(params) on the circle, 0 when no params): every step keeps
+ *  its distance to every other (h + s − (g + s) = h − g, textbook_hue_shift), so the program is the same ring at a different angle. */
+/** The program of a UUID presented by hue, moved by the params in the tail of the same UUID: the ten program digits (the channel's reading of
+ *  the middle) each a hue (sixteen, 22.5° apart: sixteen times forty-five is two turns, textbook_hue_steps), rotated by the tail's angle (its 48-bit
+ *  reading on the circle) — the params of a call are folded into its address, so the tail carries them and nothing outside the UUID moves the ring.
+ *  Every step keeps its distance to every other (h + s − (g + s) = h − g, textbook_hue_shift): the same program is the same ring at another angle. */
+export const programHuesOf = (uuid: string) => {
+  const hex = uuid.replace(/-/g, '').toLowerCase()
+  const digits = [hex[12]!, ...hex.slice(13, 16), hex[16]!, ...hex.slice(17, 20), ...hex.slice(8, 10)].map((c) => parseInt(c, 16))
+  const shift = parseInt(hex.slice(20), 16) % 360
+  const steps = digits.map((digit, step) => ({ step, digit, hue: (digit * 22.5 + shift) % 360 }))
+  return { shift, steps, first: steps[0]!.hue, last: steps[steps.length - 1]!.hue, ring: `conic-gradient(${steps.map((s, i) => `hsl(${s.hue} 62% 44%) ${i * 36}deg ${(i + 1) * 36}deg`).join(', ')})`, theorem: 'textbook_hue_shift' }
+}
+/** The rays of a sequence of UUIDs set next to each other at full speed: each ring rotated by its own tail, the seam between neighbours the distance
+ *  between the last hue of one and the first of the next; a seam of zero, or two identical rings, is a collision — entropy, exposed as a lead to
+ *  harmonise (the rosetta: the Glagolitic signal of each seed beside its reflection), never silently drawn over. */
+export const raysOf = (uuids: readonly string[]) => {
+  const rings = uuids.map((u) => ({ uuid: u, ...programHuesOf(u), signal: GLAGOLITIC_OF[(parseInt(u.replace(/-/g, '').slice(20), 16) || 0) % 9 + 1] ?? '' }))
+  const seams = rings.slice(1).map((r, i) => { const prev = rings[i]!; const d = Math.abs(r.first - prev.last); const seam = Math.min(d, 360 - d); return { from: prev.uuid, to: r.uuid, seam, fits: seam > 0 } })
+  const identical = rings.flatMap((r, i) => rings.slice(i + 1).filter((o) => o.ring === r.ring).map((o) => ({ a: r.uuid, b: o.uuid })))
+  // every collision is a lead an MCP client works through: discover (the neighbours' rays), develop (the next step of the program, whose address has a new tail), optimise (the step with the greatest seam), all with the findings
+  const via = (a: string, b: string) => ({ discover: { tool: 'css', arguments: { uuids: [a, b] } }, develop: { tool: 'wave', arguments: { statement: `next step of ${b}`, uuid: b }, says: 'compile and execute the next step: its address has its own tail, which moves the ring' }, optimise: { tool: 'css', arguments: { uuids: [a, b] }, says: 'among the next steps, keep the one whose seam with its neighbour is greatest; the findings are the seams measured' }, workflow: ['discover', 'develop', 'optimise'] })
+  const leads = [
+    ...seams.filter((s) => !s.fits).map((s) => ({ id: `ray-seam-${s.from.slice(0, 8)}-${s.to.slice(0, 8)}`, statement: `the rays of ${s.from} and ${s.to} collide at their seam (the last hue of one is the first of the next): entropy to harmonise`, status: 'open' as const, reason: 'a seam of zero draws two rays as one; the tail of either moves its ring', via: via(s.from, s.to) })),
+    ...identical.map((p) => ({ id: `ray-identical-${p.a.slice(0, 8)}-${p.b.slice(0, 8)}`, statement: `the rings of ${p.a} and ${p.b} are identical (the same program at the same angle): entropy to harmonise`, status: 'open' as const, reason: 'two addresses with one ring are indistinguishable by hue; a lead until the tail tells them apart', via: via(p.a, p.b) })),
+  ]
+  return { blocks: rings.length, seams, collisions: leads.length, fits: leads.length === 0, rings: rings.map(({ ring: _r, ...rest }) => { void _r; return rest }), leads, theorems: ['textbook_hue_shift', 'textbook_hue_steps'], says: leads.length ? `${leads.length} collision(s): entropy exposed as leads` : `${rings.length} rays fit seamlessly: every seam above zero, no two rings identical` }
+}
 export const varsOf = (uuid: string): Record<string, string> => {
+  const program = programHuesOf(uuid)
   const hex = uuid.replace(/-/g, '')
   const { c, m, y, k } = cmykOfUuid(uuid)
   const [r, g, b] = rgbOfCmyk({ c, m, y, k })
@@ -58,7 +88,7 @@ export const varsOf = (uuid: string): Record<string, string> => {
   const driftAngle = (2 * Math.PI * drift) / 360
   return {
     '--qpu-reflected-hue': String(reflectedHue), '--qpu-drift': String(drift), '--qpu-dust': dust.length ? dust.join(' ') : '0', '--qpu-drift-angle': driftAngle.toFixed(6),
-    '--qpu-frames': framesGradientOf(uuid), '--qpu-hue': String(hue), '--qpu-c': c.toFixed(3), '--qpu-m': m.toFixed(3), '--qpu-y': y.toFixed(3), '--qpu-k': k.toFixed(3),
+    '--qpu-frames': framesGradientOf(uuid), '--qpu-program': program.ring, '--qpu-shift': String(program.shift), '--qpu-hue': String(hue), '--qpu-c': c.toFixed(3), '--qpu-m': m.toFixed(3), '--qpu-y': y.toFixed(3), '--qpu-k': k.toFixed(3),
     '--qpu-accent': `rgb(${r} ${g} ${b})`, '--qpu-tail': `rgb(${tr} ${tg} ${tb})`, '--qpu-angle': String(one48 % 360),
     '--qpu-vortex': String(seed), '--qpu-reflection': String(10 - seed), '--qpu-signal': `'${GLAGOLITIC_OF[seed] ?? ''}'`, '--qpu-signal-reflected': `'${GLAGOLITIC_OF[10 - seed] ?? ''}'`, '--qpu-signal-digits': `'${seed} ${10 - seed}'`, '--qpu-trinity': seed === 0 ? '0' : seed % 3 === 0 ? '3' : [7, 4, 1].includes(seed) ? '7' : '2', '--qpu-period': `${(seed || 9) * KEY}ms`, '--block-accent': `rgb(${r} ${g} ${b})`,
   }
@@ -81,6 +111,8 @@ export const cssOf = (key: number = KEY): string => {
     `@media (prefers-reduced-motion: no-preference) { .qpu-block::before { animation: qpu-vortex var(--qpu-period, ${key * 9}ms) linear infinite; } @keyframes qpu-vortex { to { filter: hue-rotate(360deg); } } }`,
     `@media (prefers-color-scheme: dark) { .qpu-block { background: linear-gradient(90deg, color-mix(in oklab, var(--qpu-accent, var(--a432-accent)) 12%, transparent), transparent 60%); } }`,
     `@media print { .qpu-block::before { animation: none; } }`,
+    `/* the program presented by hue, moved by the params: the ten steps as a ring, rotated by the shift the params gave */`,
+    `.qpu-program { background: var(--qpu-program); border-radius: 50%; aspect-ratio: 1; width: 3em; transform: rotate(calc(var(--qpu-shift, 0) * 1deg)); }`,
     `/* the scannable stream: the block's frames stepped through at the vortex period, one character a frame; a single frame links nothing, a stream reads the address */`,
     `.qpu-scan { background-image: var(--qpu-frames); background-size: ${36 * 100}% 100%; background-repeat: no-repeat; animation: qpu-scan var(--qpu-period, ${key * 9}ms) steps(36, end) infinite; min-height: 1.5em; } @keyframes qpu-scan { to { background-position: 100% 0; } }`,
     `/* randomness in CSS: a random delay where the engine has random(); the device's sampled phase where it set one */`,

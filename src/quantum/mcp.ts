@@ -113,7 +113,7 @@ import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS } from './theorems-index.js
 import { matcherOf, PATTERNS, patternOf } from './match.js'
 import { sha256, utf8, hex } from './hmac.js'
 import { flowWidget } from './widgets.js'
-import { cssOf, varsOf, KEY, createOf, coilColourOf } from './theme.js'
+import { cssOf, varsOf, KEY, createOf, coilColourOf, programHuesOf, raysOf } from './theme.js'
 import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
 import { BILLING, usageOrderOf, ALGEBRA_TOOLS } from './toolboxes/billing.js'
@@ -755,8 +755,8 @@ const textbook = toolOf('tree', {
 const css = toolOf('tree', {
   name: 'css',
   description: 'The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmonics, and the rules that draw every block from its own custom properties with no script, motion only where the device allows it, off-screen blocks at no cost) and, for a uuid, the custom properties its block root carries (hue, CMYK, accent, tail colour and angle, the 9-vortex seed and period). Computed once; a device renders at the cost of CSS.',
-  inputSchema: { type: 'object', properties: { uuid: { type: 'string', description: 'a UUID whose block variables to compute' }, create: { type: 'boolean', description: 'shadcn create (ui.shadcn.com/create) decided by the a432 settings and CSS: the ten settings, the registry item that initialises the project (globals.css light and dark, components.json, the QPU registry), the commands' } } },
-  run: (args) => { const stylesheet = cssOf(); const vars = typeof args.uuid === 'string' ? varsOf(args.uuid) : null; if (args.create) return { ...createOf(KEY, 'https://qpu.uuidna.com', ['qpu-style', 'qpu-block', 'qpu-app', 'qpu-card', 'qpu-badge', 'qpu-table', 'qpu-stream', 'qpu-dashboard']) }; return { key: KEY, coil: coilColourOf(KEY), bytes: stylesheet.length, rules: (stylesheet.match(/\{/g) ?? []).length, variables: vars ? Object.keys(vars).length : 0, script: false, uuid: typeof args.uuid === 'string' ? args.uuid : null, vars, stylesheet } },
+  inputSchema: { type: 'object', properties: { uuid: { type: 'string', description: 'a UUID whose block variables to compute' }, uuids: { type: 'array', items: { type: 'string' }, description: 'a sequence of UUIDs set next to each other: each program presented by hue and moved by its own tail, the seams between neighbours measured; a collision (a seam of zero, two identical rings) is entropy exposed as a lead' }, create: { type: 'boolean', description: 'shadcn create (ui.shadcn.com/create) decided by the a432 settings and CSS: the ten settings, the registry item that initialises the project (globals.css light and dark, components.json, the QPU registry), the commands' } } },
+  run: (args) => { const stylesheet = cssOf(); const vars = typeof args.uuid === 'string' ? varsOf(args.uuid) : null; const program = typeof args.uuid === 'string' ? programHuesOf(args.uuid) : null; const rays = Array.isArray(args.uuids) ? raysOf(args.uuids.map(String)) : null; if (args.create) return { ...createOf(KEY, 'https://qpu.uuidna.com', ['qpu-style', 'qpu-block', 'qpu-app', 'qpu-card', 'qpu-badge', 'qpu-table', 'qpu-stream', 'qpu-dashboard']) }; return { key: KEY, coil: coilColourOf(KEY), program, rays, bytes: stylesheet.length, rules: (stylesheet.match(/\{/g) ?? []).length, variables: vars ? Object.keys(vars).length : 0, script: false, uuid: typeof args.uuid === 'string' ? args.uuid : null, vars, stylesheet } },
   widget: flowWidget,
 })
 

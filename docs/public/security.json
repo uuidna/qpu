@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T15:12:12.723Z",
+ "date": "2026-10-26T15:46:03.092Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -185,7 +185,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1068 kernel-accepted theorems",
+   "evidence": "1079 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -247,7 +247,7 @@
   "access": {
    "entries": {
     "read": "everyone",
-    "create": "a call by anyone (its address folds the call); other kinds by a super admin, a tenant-admin or editor of the entry's tenant, or the tenant's writer token",
+    "create": "a call by any keyed user of the tenant, or through the Payload MCP (its address folds the call); an anonymous REST call is refused by the multi-tenant plugin's tenant assignment (measured 2026-10-26) and is computed at the Worker's /mcp instead, never stored; other kinds by a super admin, a tenant-admin or editor of the entry's tenant, or the tenant's writer token",
     "update": "no one: an entry is its content address, so a change is a new entry",
     "delete": "a super admin, a tenant-admin of the entry's tenant (a where on the tenant), or the tenant's admin token"
    },

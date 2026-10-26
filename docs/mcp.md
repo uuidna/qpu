@@ -1221,6 +1221,13 @@ The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmon
       "type": "string",
       "description": "a UUID whose block variables to compute"
     },
+    "uuids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "a sequence of UUIDs set next to each other: each program presented by hue and moved by its own tail, the seams between neighbours measured; a collision (a seam of zero, two identical rings) is entropy exposed as a lead"
+    },
     "create": {
       "type": "boolean",
       "description": "shadcn create (ui.shadcn.com/create) decided by the a432 settings and CSS: the ten settings, the registry item that initialises the project (globals.css light and dark, components.json, the QPU registry), the commands"
