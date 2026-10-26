@@ -2569,6 +2569,10 @@ The split folds
 {
   "type": "object",
   "properties": {
+    "speak": {
+      "type": "string",
+      "description": "a hex spoken in Glagolitic numerals"
+    },
     "harmonic": {
       "type": "object",
       "description": "{ schema, referrer? }"
