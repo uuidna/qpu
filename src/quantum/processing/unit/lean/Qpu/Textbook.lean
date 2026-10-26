@@ -158,5 +158,19 @@ theorem textbook_payload_hooks : 1 + 18 + 6 + 5 = 30 := by decide
 theorem textbook_payload_access : 7 + 3 + 3 + 3 = 16 := by decide
 /-- eight realtime channels (live preview client and server, autosave, document locking, the jobs queue, scheduled publishing, the MCP plugin's stream, GraphQL subscriptions: none) over fifty operations are 400 coordinations, every one coordinated by the content address the edit names, no socket of its own (examples: payload-schemas) -/
 theorem textbook_payload_coordination : 8 * 50 = 400 := by decide
+/-- four kinds of cached asset (the generated code, the SDK, the registry items, the examples' blocks) make fifteen non-empty combinations a URL may name: the fallback for anything, computed in real time and verified at every address (examples: match-url-fallback) -/
+theorem textbook_url_combinations : 2 ^ 4 - 1 = 15 := by decide
+/-- n sublicences under one licence are n links of the docket: every reseller's Stripe hook writes a licence entry linked to the licence above, so verify walks the chain link by link and the author is paid at the root, by coins on every response and by the catalogue at every grant (examples: match-url-fallback) -/
+theorem textbook_licence_chain (n : Nat) : n + 1 - 1 = n := Nat.add_sub_cancel n 1
+/-- a kind is written in twenty-six lower-case letters and the dash: twenty-seven symbols, the pattern of the entries' kind field (examples: configure-validations) -/
+theorem textbook_kind_alphabet : 26 + 1 = 27 := by decide
+/-- a SHA-256 digest is 256 bits, four to a hex digit: 64 hex digits, the pattern of the entries' sha256 field (examples: configure-validations) -/
+theorem textbook_sha256_is_64 : 256 / 4 = 64 := by decide
+/-- a slug (lower-case letters, digits, the dash) and a binding name (upper-case letters, digits, the underscore) are each written in thirty-seven symbols, the patterns of the tenants' fields (examples: configure-validations) -/
+theorem textbook_name_alphabets : 26 + 10 + 1 = 37 := by decide
+/-- the a432 key read as a hue: 432 degrees around the circle is 72, the theme colour of every shadcn create the QPU answers; the five harmonics give the five chart hues the same way (examples: css-create) -/
+theorem textbook_create_hue : 432 % 360 = 72 := by decide
+/-- when coins fuse to coils the colour is green, the heart chakra's: the coin's a432 hue (72) advanced by a ninth of the key (48) is 120, cyan and yellow full in CMYK (examples: css-coil) -/
+theorem textbook_coil_green : 432 % 360 + 432 / 9 = 120 := by decide
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

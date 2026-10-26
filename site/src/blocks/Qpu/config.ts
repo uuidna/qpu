@@ -6,14 +6,14 @@ export const Qpu: Block = {
   slug: 'qpu',
   interfaceName: 'QpuBlock',
   fields: [
-    { name: 'uuid', type: 'text', required: true, admin: { description: 'the block address: a content-addressed RFC 9562 v8 UUID' } },
+    { name: 'uuid', type: 'text', required: true, validate: (v: unknown) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(String(v)) || 'a UUID of 36 characters', custom: { theorem: 'textbook_uuid_is_36' }, admin: { description: 'the block address: a content-addressed RFC 9562 v8 UUID' } },
     { name: 'handle', type: 'text', required: true },
     { name: 'program', type: 'text', required: true, admin: { description: 'the hex program (the version and variant nibbles rotated)' } },
     { name: 'tail', type: 'text', required: true },
     { name: 'tool', type: 'text', required: true, admin: { description: 'the tool whose result this block is' } },
     { name: 'arguments', type: 'json', admin: { description: 'the arguments, so the block recomputes anywhere' } },
-    { name: 'prev', type: 'text', admin: { description: 'the referer block' } },
-    { name: 'next', type: 'text', admin: { description: 'the program rotated: the next step' } },
+    { name: 'prev', type: 'text', validate: (v: unknown) => (v == null || v === '') || /^$|^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(String(v)) || 'a UUID or empty', custom: { theorem: 'textbook_uuid_is_36' }, admin: { description: 'the referer block' } },
+    { name: 'next', type: 'text', validate: (v: unknown) => (v == null || v === '') || /^$|^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(String(v)) || 'a UUID or empty', custom: { theorem: 'textbook_uuid_is_36' }, admin: { description: 'the program rotated: the next step' } },
     { name: 'theorem', type: 'text', admin: { description: 'the kernel-accepted theorem that makes this block true; written by the QPU as a client of this MCP, read from the textbook' } },
   ],
 }

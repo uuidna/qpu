@@ -1032,6 +1032,14 @@ Any statement, matched against everything the surface can do. served: a call ans
       "type": "string",
       "description": "any prompt or statement; Glagolitic numerals are read as integers"
     },
+    "url": {
+      "type": "string",
+      "description": "a URL path: the statement decided and, beside it, the composition the path names — the cached assets its words select (the generated code, the SDK, the registry items, the examples' blocks), computed in real time, verified at their addresses and billed (the fallback for anything)"
+    },
+    "tenant": {
+      "type": "string",
+      "description": "with url: the tenant reselling the composition (the licence chain)"
+    },
     "locale": {
       "type": "string",
       "enum": [
@@ -1208,6 +1216,10 @@ The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmon
     "uuid": {
       "type": "string",
       "description": "a UUID whose block variables to compute"
+    },
+    "create": {
+      "type": "boolean",
+      "description": "shadcn create (ui.shadcn.com/create) decided by the a432 settings and CSS: the ten settings, the registry item that initialises the project (globals.css light and dark, components.json, the QPU registry), the commands"
     }
   }
 }

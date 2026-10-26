@@ -4,6 +4,7 @@
 // other's. Reads need no auth; docket writes carry `Authorization: Bearer QPU_WRITE_TOKEN` (a wrangler secret, never
 // committed). Every response carries the licence.
 import { handle, type Rpc } from './quantum/mcp.js'
+import { composeOf } from './quantum/compose.js'
 import { EXAMPLES } from './quantum/examples.js'
 import { LEADS } from './quantum/leads.js'
 import { LICENSE } from './quantum/license.js'
@@ -401,6 +402,14 @@ export const catchAll = (request: Request, url: URL, env: Env): Response | Promi
   const statement = segments.join(' ').replace(/[-_]+/g, ' ')
   const decision = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement } } }) as { result?: { structuredContent: { verdict: string; evidence: string[]; lead: unknown }; _meta: { widget: string } } }
   const m = decision.result?.structuredContent
+  // the fallback for anything: the cached assets the path's words select, computed in real time, verified, addressed (ETag by content) and billed
+  const composed = composeOf(url.pathname, { handle, examples: EXAMPLES, leads: LEADS }, url.origin, tenantOf(url.hostname))
+  if (composed.count > 0 && composed.address) {
+    const decided = m ? { verdict: m.verdict, evidence: m.evidence, lead: m.lead } : null
+    if (composed.ext && /^(tsx?|jsx?)$/.test(composed.ext) && composed.code) return involuted(request, composed.address, new Response(composed.code, { status: 200, headers: { 'content-type': 'text/typescript; charset=utf-8', 'x-qpu-assets': String(composed.count), 'x-qpu-verified': String(composed.verified), ...LICENSE_HEADERS } }))
+    if (!wantsPage) return involuted(request, composed.address, json({ ...composed, decided, notes }))
+    return involuted(request, composed.address, new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(statement)} · composed · @uuidna/qpu</title><meta property="og:title" content="${escapeHtml(statement)} · ${composed.count} cached assets"><meta property="og:url" content="${escapeHtml(url.href)}"><link rel="license" href="${LICENSE.url}"><style>${cssOf()}</style></head><body><main><h1>${escapeHtml(statement)}</h1><p>${escapeHtml(composed.says)}</p><table><thead><tr><th>kind</th><th>asset</th><th>address</th><th>verified</th></tr></thead><tbody>${composed.assets.map((a) => `<tr><td>${a.kind}</td><td><a href="${escapeHtml(a.url)}">${escapeHtml(a.id)}</a></td><td style="font-family:monospace">${a.address}</td><td>${a.verified ? 'yes' : 'no'}</td></tr>`).join('')}</tbody></table>${composed.code ? `<h2>code</h2><pre>${escapeHtml(composed.code)}</pre>` : ''}<p>bill: ${composed.bill.coils} coil, ${composed.bill.author.coins} coins to the author; ${escapeHtml(composed.bill.licence.says)}</p><p>Decided by the match tool: <strong>${escapeHtml(m?.verdict ?? 'undecided')}</strong></p></main></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } }))
+  }
   if (!wantsPage) return json({ error: `no route ${url.pathname}`, decided: m ? { verdict: m.verdict, evidence: m.evidence, lead: m.lead } : null, notes, routes: ['GET /', 'GET /.well-known/qpu.json', 'GET /health', 'POST /mcp', 'GET|POST|DELETE /docket', 'GET /<handle>[/<program>[/<tail>]]'] }, 404)
   return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(statement)} · decided · @uuidna/qpu</title><meta property="og:title" content="${escapeHtml(statement)} · ${escapeHtml(m?.verdict ?? 'undecided')}"><meta property="og:url" content="${escapeHtml(url.href)}"><link rel="license" href="${LICENSE.url}"><style>${cssOf()}body{font-family:system-ui;padding:16px}</style></head><body><h1>${escapeHtml(statement)}</h1><p>${t('Caught: this path is not a walk. Decided by the match tool')}: <strong>${escapeHtml(m?.verdict ?? 'undecided')}</strong>.${notes.length ? ' ' + notes.map(escapeHtml).join(' · ') : ''}</p>${decision.result?._meta.widget ?? ''}<p style="font-size:12px">© ${LICENSE.author} · ${LICENSE.spdx}</p></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
 }

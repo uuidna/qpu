@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T13:10:30.205Z",
+ "date": "2026-10-26T15:12:12.723Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -130,7 +130,7 @@
    "id": "dependencies:site",
    "perspective": "developer",
    "passed": false,
-   "evidence": "info 0, low 3, moderate 10, high 4, critical 0",
+   "evidence": "info 0, low 3, moderate 7, high 4, critical 0",
    "remedy": "npm audit fix or a pinned fixed version; a finding is a lead"
   },
   {
@@ -185,7 +185,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1047 kernel-accepted theorems",
+   "evidence": "1068 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -201,7 +201,7 @@
  "leads": [
   {
    "id": "security-dependencies-site",
-   "statement": "dependencies:site (developer): info 0, low 3, moderate 10, high 4, critical 0",
+   "statement": "dependencies:site (developer): info 0, low 3, moderate 7, high 4, critical 0",
    "status": "open",
    "remedy": "npm audit fix or a pinned fixed version; a finding is a lead",
    "tool": "audit"
@@ -432,6 +432,16 @@
     "legal": "consideration: non-commercial free and needing no licence; commercial billed"
    },
    {
+    "id": "legal:gdpr-kyc-at-stripe",
+    "perspective": "legal",
+    "passed": true,
+    "evidence": "the licence entry stores event, type, state, subject, tenant, domains, product, variant, quantity, customer, amount, currency, at, licence, terms: the customer a Stripe id, no name, address, card or identity document",
+    "hook": "the stripe tool: the webhook verified before anything is written, the entry the licence",
+    "cost": "free: the identity and the payment data never enter the tree",
+    "licence": "all non-harmonic use licensed over MCP by billable automation: the licence is the order, the order is Stripe's checkout",
+    "legal": "GDPR and KYC are Stripe's: the customer's identity and payment data live at Stripe under its DPA and its account verification; the tree keeps the order, the tenant and the domains"
+   },
+   {
     "id": "legal:facts-not-advice",
     "perspective": "legal",
     "passed": true,
@@ -442,8 +452,8 @@
     "legal": "the inputs a qualified attorney starts from, never the conclusion"
    }
   ],
-  "total": 18,
-  "passed": 18,
+  "total": 19,
+  "passed": 19,
   "failed": 0,
   "byPerspective": {
    "public": 3,
@@ -451,7 +461,7 @@
    "operator": 2,
    "client": 3,
    "developer": 3,
-   "legal": 3
+   "legal": 4
   },
   "advantage": {
    "copies": 3,

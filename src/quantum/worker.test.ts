@@ -323,6 +323,23 @@ test('catch all, decide later: a path that is not a walk is put to the match too
   assert.ok(['unknown', 'impossible', 'served'].includes(d.decided.verdict))
 })
 
+test('the fallback for anything: a path that names cached assets is answered by their verified combination, code as code, addressed by ETag', async () => {
+  const e = env()
+  const code = await worker.fetch(req('/collections/entries.ts'), e)
+  assert.equal(code.status, 200)
+  assert.ok((code.headers.get('content-type') ?? '').startsWith('text/typescript'))
+  assert.ok(code.headers.get('etag') && code.headers.get('x-qpu-address'))
+  assert.ok((await code.text()).includes('Entries'))
+  const again = await worker.fetch(req('/collections/entries.ts', { headers: { 'if-none-match': code.headers.get('etag')! } }), e)
+  assert.equal(again.status, 304, 'the same path answers the same address: an involution')
+  const j = await worker.fetch(req('/collections/entries'), e)
+  assert.equal(j.status, 200)
+  const c = await j.json() as { count: number; verified: boolean; kinds: string[]; bill: { coils: number; licence: { links: number } }; decided: unknown }
+  assert.ok(c.count >= 2 && c.verified && c.kinds.includes('code') && c.bill.coils === 1 && c.bill.licence.links === 2)
+  const none = await worker.fetch(req('/nowhere'), e)
+  assert.equal(none.status, 404, 'a path that names no asset keeps the decision alone')
+})
+
 test('unknown routes answer with the route list, health answers, and OPTIONS allows the cross-origin client', async () => {
   const r = await worker.fetch(req('/nowhere'), env())
   assert.equal(r.status, 404)

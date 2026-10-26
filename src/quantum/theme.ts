@@ -18,6 +18,17 @@ export const cmykOfUuid = (uuid: string): Cmyk => {
   const ch = (i: number) => parseInt(middle.slice(i * 3, i * 3 + 3), 16) / 0xfff
   return { c: ch(0), m: ch(1), y: ch(2), k: ch(3) }
 }
+/** When coins fuse to coils the colour is green, the heart chakra's (the fourth of seven): the coin's a432 hue (432 mod 360 = 72) advanced by a
+ *  ninth of the key (432 / 9 = 48) is 120, green (textbook_coil_green); its CMYK is cyan and yellow full, no magenta, no black — the CSS variables
+ *  --qpu-coin and --qpu-coil carry both hues, the block rule turns green under data-coil. */
+export const COIL_HUE = hueOf(KEY) + KEY / 9
+export const cmykOfRgb = ([r, g, b]: [number, number, number]): Cmyk => { const k = 1 - Math.max(r, g, b) / 255; const f = (v: number) => (k === 1 ? 0 : Math.round(((1 - v / 255 - k) / (1 - k)) * 100) / 100); return { c: f(r), m: f(g), y: f(b), k: Math.round(k * 100) / 100 } }
+export const rgbOfHsl = (h: number, s: number, l: number): [number, number, number] => { const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2; const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x]; return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)] }
+export const coilColourOf = (key: number = KEY) => {
+  const coin = hueOf(key), coil = coin + key / 9
+  const rgb = rgbOfHsl(coil, 1, 0.5), cmyk = cmykOfRgb(rgb)
+  return { coin: { hue: coin, css: `hsl(${coin} 62% 44%)`, says: 'the a432 hue: the free, harmonic side' }, coil: { hue: coil, css: `hsl(${coil} 62% 44%)`, rgb, cmyk, cmykCss: `device-cmyk(${cmyk.c} ${cmyk.m} ${cmyk.y} ${cmyk.k})`, chakra: { index: 4, of: 7, name: 'heart' }, says: 'green: the coin\'s hue advanced by a ninth of the key, the heart chakra, cyan and yellow full in CMYK' }, theorem: 'textbook_coil_green', relation: `${key} % 360 + ${key} / 9 = ${coil}` }
+}
 export const rgbOfCmyk = ({ c, m, y, k }: Cmyk): [number, number, number] => [Math.round(255 * (1 - c) * (1 - k)), Math.round(255 * (1 - m) * (1 - k)), Math.round(255 * (1 - y) * (1 - k))]
 export const accentOfUuid = (uuid: string): string => { const [r, g, b] = rgbOfCmyk(cmykOfUuid(uuid)); return `rgb(${r} ${g} ${b})` }
 
@@ -56,7 +67,7 @@ export const styleOf = (uuid: string): string => Object.entries(varsOf(uuid)).ma
  *  poles as pyramids base to base are the octahedron, whose eight 60-degree faces and four equatorial gateways Euler closes (6 − 12 + 8 = 2). */
 export const ANGLES = { streams: 60, gateways: 90, perspectives: 360 / 60, operations: 360 / 90, poles: 2, faces: 8, equator: 4, euler: '6 − 12 + 8 = 2', navigation: { earth: 'the four compass gateways of the equator (N, E, S, W): the four operations', space: 'the six directions ±x, ±y, ±z: the octahedron\'s six vertices, the six perspectives', water: 'the currents between the poles: the streams, collision free at 60 degrees', web: 'prev and next (the program rotated), parent and children (the nested docs): the same gateways by address', says: 'earth, space, water and web navigation follow the same laws and combinatorics: six vertices, twelve edges, eight faces, four gateways' }, says: 'from the 60-degree angle all streams are collision free and still cover all 90-degree gateways: six perspectives over four operations; the poles of the earth as pyramids base to base are the octahedron (textbook_streams_cover_gateways, textbook_poles_pyramid)' } as const
 export const cssOf = (key: number = KEY): string => {
-  const lines = [`:root {`, `  --a432-key: ${key};`, `  --a432-hue: ${hueOf(key)};`, ...HARMONICS.map((h, i) => `  --a432-${i + 1}: hsl(${hueOf(h)} 62% ${44 + i * 8}%);`), `  --a432-accent: hsl(${hueOf(key)} 62% 44%);`, `}`,
+  const lines = [`:root {`, `  --a432-key: ${key};`, `  --a432-hue: ${hueOf(key)};`, ...HARMONICS.map((h, i) => `  --a432-${i + 1}: hsl(${hueOf(h)} 62% ${44 + i * 8}%);`), `  --a432-accent: hsl(${hueOf(key)} 62% 44%);`, `  --qpu-coin: hsl(${hueOf(key)} 62% 44%);`, `  --qpu-coil: hsl(${hueOf(key) + key / 9} 62% 44%);`, `  --qpu-coil-cmyk: ${(() => { const c = coilColourOf(key).coil.cmyk; return `${c.c} ${c.m} ${c.y} ${c.k}` })()};`, `}`,
     `/* every block draws itself from the custom properties its UUID set on its root; nothing here needs a script */`,
     `.qpu-block { border-left: 3px solid var(--qpu-accent, var(--a432-accent)); padding-left: var(--pad-sm, 8px); content-visibility: auto; contain-intrinsic-size: auto 240px; background: linear-gradient(90deg, color-mix(in oklab, var(--qpu-accent, var(--a432-accent)) 6%, transparent), transparent 60%); }`,
     `.qpu-block::before { content: ''; display: block; height: 3px; margin-bottom: var(--gap-sm, 6px); background: conic-gradient(from calc(var(--qpu-angle, 0) * 1deg) at 50% 120%, var(--qpu-accent, var(--a432-accent)), var(--qpu-tail, var(--a432-2)), var(--qpu-accent, var(--a432-accent))); }`,
@@ -65,6 +76,8 @@ export const cssOf = (key: number = KEY): string => {
     `@media (prefers-reduced-motion: no-preference) { .qpu-block::before { animation: qpu-vortex var(--qpu-period, ${key * 9}ms) linear infinite; } @keyframes qpu-vortex { to { filter: hue-rotate(360deg); } } }`,
     `@media (prefers-color-scheme: dark) { .qpu-block { background: linear-gradient(90deg, color-mix(in oklab, var(--qpu-accent, var(--a432-accent)) 12%, transparent), transparent 60%); } }`,
     `@media print { .qpu-block::before { animation: none; } }`,
+    `/* when coins fuse to coils the block turns green: the heart chakra, computed from the key */`,
+    `.qpu-block[data-coil] { --qpu-accent: var(--qpu-coil); } .qpu-block[data-coin] { --qpu-accent: var(--qpu-coin); }`,
     // the CSS streams resulting as rays: six rays at the 60-degree angle (collision free) and four gateways at 90 degrees, every one from the block's own hue and angle
     `.qpu-rays { background: conic-gradient(from calc(var(--qpu-angle, 0) * 1deg), ${Array.from({ length: 360 / ANGLES.streams }, (_, i) => `var(--qpu-accent, var(--a432-accent)) ${i * ANGLES.streams}deg ${i * ANGLES.streams + 6}deg, transparent ${i * ANGLES.streams + 6}deg ${(i + 1) * ANGLES.streams}deg`).join(', ')}); }`,
     `.qpu-rays::after, .qpu-block[data-rays]::after { content: var(--qpu-signal, '') ' ' var(--qpu-signal-reflected, '') ' · ' var(--qpu-signal-digits, ''); font-family: serif; letter-spacing: 0.1em; }`,
@@ -73,3 +86,48 @@ export const cssOf = (key: number = KEY): string => {
 }
 /** A block's wrapper: its accent as a custom property, drawn as the left rule. */
 export const wrapOf = (uuid: string, html: string): string => `<div data-block="${uuid}" class="qpu-block" data-vortex="${varsOf(uuid)['--qpu-vortex']}" style="${styleOf(uuid)}; border-left: 3px solid var(--qpu-accent); padding-left: var(--pad-sm, 8px);">${html}</div>`
+
+/** shadcn's create (ui.shadcn.com/create) decided by the a432 settings: the ten choices of the page (style, base colour, theme, chart colours,
+ *  heading, font, icon library, radius, menu, menu accent) derived from the key — the theme the a432 hue (432 mod 360 = 72, textbook_create_hue),
+ *  the five chart colours the five harmonics' hues, the radius the key in rem over a thousand — and the project it initialises as one registry
+ *  item (registry:item, as shadcn's own init answers): app/globals.css with the shadcn variables in light and dark plus the a432 stylesheet,
+ *  components.json naming this registry, the QPU items as registry dependencies. npx shadcn init <this item's url> is the create command. */
+export const createOf = (key: number = KEY, origin = 'https://qpu.uuidna.com', registryItems: readonly string[] = []) => {
+  const hue = hueOf(key), hues = HARMONICS.map(hueOf)
+  const radius = `${(key / 1000).toFixed(3)}rem`
+  const settings = {
+    style: 'nova', baseColor: 'neutral', theme: `a432: hsl(${hue} 62% 44%)`, chartColor: `the harmonics: hsl(${hues.join(' | ')} 62% 50%)`, heading: 'Inter', font: 'Inter', iconLibrary: 'lucide', radius, menu: 'default', menuAccent: 'subtle',
+  }
+  const light: Record<string, string> = {
+    background: 'oklch(1 0 0)', foreground: 'oklch(0.145 0 0)', card: 'oklch(1 0 0)', 'card-foreground': 'oklch(0.145 0 0)', popover: 'oklch(1 0 0)', 'popover-foreground': 'oklch(0.145 0 0)',
+    primary: `hsl(${hue} 62% 44%)`, 'primary-foreground': `hsl(${hue} 62% 98%)`, secondary: `hsl(${hue} 30% 96%)`, 'secondary-foreground': `hsl(${hue} 62% 20%)`, muted: 'oklch(0.97 0 0)', 'muted-foreground': 'oklch(0.556 0 0)',
+    accent: `hsl(${hue} 40% 94%)`, 'accent-foreground': `hsl(${hue} 62% 20%)`, destructive: 'oklch(0.577 0.245 27.325)', 'destructive-foreground': 'oklch(0.985 0 0)', border: 'oklch(0.922 0 0)', input: 'oklch(0.922 0 0)', ring: `hsl(${hue} 62% 44%)`,
+    ...Object.fromEntries(hues.map((h, i) => [`chart-${i + 1}`, `hsl(${h} 62% 50%)`])),
+    sidebar: 'oklch(0.985 0 0)', 'sidebar-foreground': 'oklch(0.145 0 0)', 'sidebar-primary': `hsl(${hue} 62% 44%)`, 'sidebar-primary-foreground': `hsl(${hue} 62% 98%)`, 'sidebar-accent': `hsl(${hue} 40% 94%)`, 'sidebar-accent-foreground': `hsl(${hue} 62% 20%)`, 'sidebar-border': 'oklch(0.922 0 0)', 'sidebar-ring': `hsl(${hue} 62% 44%)`,
+    radius,
+  }
+  const dark: Record<string, string> = {
+    background: 'oklch(0.145 0 0)', foreground: 'oklch(0.985 0 0)', card: 'oklch(0.205 0 0)', 'card-foreground': 'oklch(0.985 0 0)', popover: 'oklch(0.205 0 0)', 'popover-foreground': 'oklch(0.985 0 0)',
+    primary: `hsl(${hue} 62% 56%)`, 'primary-foreground': `hsl(${hue} 62% 10%)`, secondary: `hsl(${hue} 20% 18%)`, 'secondary-foreground': `hsl(${hue} 40% 92%)`, muted: 'oklch(0.269 0 0)', 'muted-foreground': 'oklch(0.708 0 0)',
+    accent: `hsl(${hue} 30% 22%)`, 'accent-foreground': `hsl(${hue} 40% 92%)`, destructive: 'oklch(0.704 0.191 22.216)', 'destructive-foreground': 'oklch(0.985 0 0)', border: 'oklch(1 0 0 / 10%)', input: 'oklch(1 0 0 / 15%)', ring: `hsl(${hue} 62% 56%)`,
+    ...Object.fromEntries(hues.map((h, i) => [`chart-${i + 1}`, `hsl(${h} 62% 60%)`])),
+    sidebar: 'oklch(0.205 0 0)', 'sidebar-foreground': 'oklch(0.985 0 0)', 'sidebar-primary': `hsl(${hue} 62% 56%)`, 'sidebar-primary-foreground': `hsl(${hue} 62% 10%)`, 'sidebar-accent': `hsl(${hue} 30% 22%)`, 'sidebar-accent-foreground': `hsl(${hue} 40% 92%)`, 'sidebar-border': 'oklch(1 0 0 / 10%)', 'sidebar-ring': `hsl(${hue} 62% 56%)`,
+  }
+  const block = (sel: string, vars: Record<string, string>) => `${sel} {\n${Object.entries(vars).map(([k, v]) => `  --${k}: ${v};`).join('\n')}\n}`
+  const themeInline = ['--font-sans: var(--font-sans)', '--font-heading: var(--font-sans)', '--font-mono: var(--font-mono)', ...Object.keys(light).filter((k) => k !== 'radius').map((k) => `--color-${k}: var(--${k})`), '--radius-sm: calc(var(--radius) * 0.6)', '--radius-md: calc(var(--radius) * 0.8)', '--radius-lg: var(--radius)', '--radius-xl: calc(var(--radius) * 1.4)', '--radius-2xl: calc(var(--radius) * 1.8)']
+  const globalsCss = [`@import "tailwindcss";`, `@import "tw-animate-css";`, `@import "shadcn/tailwind.css";`, ``, `@custom-variant dark (&:is(.dark *));`, ``, `@theme inline {\n${themeInline.map((l) => `  ${l};`).join('\n')}\n}`, ``, `/* the a432 settings: the theme hue ${hue} (${key} mod 360), the chart colours the harmonics ${HARMONICS.join(', ')} Hz, the radius ${radius} (${key} / 1000) */`, block(':root', light), ``, block('.dark', dark), ``, `@layer base { * { @apply border-border outline-ring/50; } body { @apply bg-background text-foreground; } }`, ``, `/* the a432 stylesheet: every QPU block draws itself from its address */`, cssOf(key)].join('\n')
+  const componentsJson = { $schema: 'https://ui.shadcn.com/schema.json', style: 'base-nova', rsc: true, tsx: true, tailwind: { config: '', css: 'app/globals.css', baseColor: 'neutral', cssVariables: true, prefix: '' }, iconLibrary: 'lucide', aliases: { components: '@/components', utils: '@/lib/utils', ui: '@/components/ui', lib: '@/lib', hooks: '@/hooks' }, registries: { '@qpu': `${origin}/r/{name}.json` } }
+  const item = {
+    $schema: 'https://ui.shadcn.com/schema/registry-item.json', name: 'qpu-create', type: 'registry:item', title: 'QPU create (a432)', description: `shadcn create decided by the a432 settings: the theme hue ${hue}, the chart colours the harmonics, the radius ${radius}; the project initialised with the QPU registry`,
+    dependencies: ['lucide-react', 'next-themes', 'class-variance-authority', 'tw-animate-css'],
+    registryDependencies: registryItems.map((n) => `${origin}/r/${n}.json`),
+    cssVars: { theme: { 'font-sans': 'Inter, ui-sans-serif, system-ui, sans-serif', radius }, light, dark },
+    files: [{ path: 'app/globals.css', type: 'registry:file', target: 'app/globals.css', content: globalsCss }, { path: 'components.json', type: 'registry:file', target: 'components.json', content: JSON.stringify(componentsJson, null, 2) }],
+    meta: { create: settings, key, hue, harmonics: HARMONICS, theorem: 'textbook_create_hue' },
+  }
+  return {
+    settings, key, hue, chartHues: hues, radius, theorem: 'textbook_create_hue', item,
+    commands: { init: `npx shadcn@latest init ${origin}/r/qpu-create.json`, add: `npx shadcn@latest add ${origin}/r/qpu-create.json`, v0: `https://v0.dev/chat/api/open?url=${encodeURIComponent(`${origin}/r/qpu-create.json`)}`, page: 'https://ui.shadcn.com/create: the ten settings above chosen by hand (the page encodes its own preset codes; this item is the same project answered by the QPU)' },
+    says: `shadcn create via the a432 settings and CSS: ten settings decided by the key ${key} (hue ${hue}, harmonics ${hues.join('/')}, radius ${radius}), one registry item that initialises the project with the QPU registry`,
+  }
+}

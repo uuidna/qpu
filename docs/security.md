@@ -5,7 +5,7 @@ order: 53
 
 # Security audit, both perspectives as one
 
-Performed by `npm run next` on 2026-10-26T13:10:30.205Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 25/26 pass; 1 finding(s), each a lead with its remedy. Every finding is a lead with the remedy manual work taught.
+Performed by `npm run next` on 2026-10-26T15:12:12.723Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 25/26 pass; 1 finding(s), each a lead with its remedy. Every finding is a lead with the remedy manual work taught.
 
 | Check | Perspective | Pass | Evidence | Remedy |
 |---|---|---|---|---|
@@ -26,7 +26,7 @@ Performed by `npm run next` on 2026-10-26T13:10:30.205Z through the `audit` tool
 | surface-audit:qpu.ceci.workers.dev | client | ✓ | 952/952 checks pass over MCP | every failed check is a lead with its evidence |
 | payload-mcp-key | client | ✓ | the app is not deployed: the plugin requires Authorization: &lt;users&gt; API-Key (measured locally), pending online | the Payload MCP plugin refuses a request without a user's API key |
 | dependencies:root | developer | ✓ | info 0, low 0, moderate 0, high 0, critical 0, total 0 | npm audit fix or a pinned fixed version; a finding is a lead |
-| dependencies:site | developer | ✗ | info 0, low 3, moderate 10, high 4, critical 0 | npm audit fix or a pinned fixed version; a finding is a lead |
+| dependencies:site | developer | ✗ | info 0, low 3, moderate 7, high 4, critical 0 | npm audit fix or a pinned fixed version; a finding is a lead |
 | no-leaks | developer | ✓ | 0 address(es) in the tree | contacts are URLs; the account email is read at deploy |
 | no-autologin | developer | ✓ | no auto-login in the Payload config | remove admin.autoLogin from site/src/payload.config.ts: the first user comes from the deployer's account, its password by reset |
 | env-named-not-valued | developer | ✓ | the environment example names every variable and holds no value | values never travel: names only |
@@ -34,11 +34,11 @@ Performed by `npm run next` on 2026-10-26T13:10:30.205Z through the `audit` tool
 | hooks-guarded | developer | ✓ | hooks: collisionGuard, firstUserBootstrap, appRequest | the plugin adds the collision guard, the first-user bootstrap and the validated app request |
 | signing-at-edge | developer | ✓ | ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc) | the Worker signs with ML-DSA under the Web Crypto flag |
 | rest-rbac-both-ways | both | ✓ | two directions under three tenant roles on every adapter dimension (textbook_rest_rbac) |  |
-| theorems-sealed | both | ✓ | 1047 kernel-accepted theorems | the textbook is the proof |
+| theorems-sealed | both | ✓ | 1068 kernel-accepted theorems | the textbook is the proof |
 
 ## Access from every perspective
 
-The access audit through `audit { access: true }`: public, tenant, operator, client, developer, legal over pages, entries, products, orders, tenants, users; 3 tenant roles × 3 docket roles × 4 operations = 36 role–operation combinations, each decided by one of three deciders: the user's roles, the x-qpu-role header, the entry's kind (textbook_access_combinations); 18/18 pass; clean. Every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms.
+The access audit through `audit { access: true }`: public, tenant, operator, client, developer, legal over pages, entries, products, orders, tenants, users; 3 tenant roles × 3 docket roles × 4 operations = 36 role–operation combinations, each decided by one of three deciders: the user's roles, the x-qpu-role header, the entry's kind (textbook_access_combinations); 19/19 pass; clean. Every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms.
 
 | Check | Perspective | Pass | Evidence | Hook | Cost | Licence | Legal |
 |---|---|---|---|---|---|---|---|
@@ -59,4 +59,5 @@ The access audit through `audit { access: true }`: public, tenant, operator, cli
 | developer:app-request-validated | developer | ✓ | an app request is validated as it is typed and refused by the hook when the stream refused it | form-submissions.afterChange: appRequest | free: validated token free | commercial: the app is priced by the catalogue and ordered through the ecommerce plugin | a licence sold is an order with its terms |
 | legal:licence-on-every-answer | legal | ✓ | every tools/call result carries _meta.license; initialize states the terms | the handler: _meta.license on every result | free | CC-BY-NC-ND-4.0: Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (https://qpu.uuidna.com). The a432 harmonic default is offered for free benefit under attribution. | the licence is the contract every reader accepts by reading; its address is sealed (9ffcda04-5adc-872e-9358-6b831bbd0c0d) |
 | legal:catalogue-free-default | legal | ✓ | the a432 harmonic default at 0 on every domain; a named domain licensed by the year | the ecommerce plugin: products, variants, orders | free to read, paid to license | NC and commercial: the catalogue is the licence | consideration: non-commercial free and needing no licence; commercial billed |
+| legal:gdpr-kyc-at-stripe | legal | ✓ | the licence entry stores event, type, state, subject, tenant, domains, product, variant, quantity, customer, amount, currency, at, licence, terms: the customer a Stripe id, no name, address, card or identity document | the stripe tool: the webhook verified before anything is written, the entry the licence | free: the identity and the payment data never enter the tree | all non-harmonic use licensed over MCP by billable automation: the licence is the order, the order is Stripe's checkout | GDPR and KYC are Stripe's: the customer's identity and payment data live at Stripe under its DPA and its account verification; the tree keeps the order, the tenant and the domains |
 | legal:facts-not-advice | legal | ✓ | recomputable facts, not legal advice; the work represented by its canonical site only | none | free | the disclaimer travels with the licence | the inputs a qualified attorney starts from, never the conclusion |

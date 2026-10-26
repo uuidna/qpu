@@ -5,6 +5,140 @@
  "items": [
   {
    "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-create",
+   "type": "registry:item",
+   "title": "QPU create (a432)",
+   "description": "shadcn create decided by the a432 settings: the theme hue 72, the chart colours the harmonics, the radius 0.432rem; the project initialised with the QPU registry",
+   "dependencies": [
+    "lucide-react",
+    "next-themes",
+    "class-variance-authority",
+    "tw-animate-css"
+   ],
+   "registryDependencies": [
+    "https://qpu.uuidna.com/r/qpu-style.json",
+    "https://qpu.uuidna.com/r/qpu-block.json",
+    "https://qpu.uuidna.com/r/qpu-app.json",
+    "https://qpu.uuidna.com/r/qpu-card.json",
+    "https://qpu.uuidna.com/r/qpu-badge.json",
+    "https://qpu.uuidna.com/r/qpu-table.json",
+    "https://qpu.uuidna.com/r/qpu-stream.json",
+    "https://qpu.uuidna.com/r/qpu-dashboard.json"
+   ],
+   "cssVars": {
+    "theme": {
+     "font-sans": "Inter, ui-sans-serif, system-ui, sans-serif",
+     "radius": "0.432rem"
+    },
+    "light": {
+     "background": "oklch(1 0 0)",
+     "foreground": "oklch(0.145 0 0)",
+     "card": "oklch(1 0 0)",
+     "card-foreground": "oklch(0.145 0 0)",
+     "popover": "oklch(1 0 0)",
+     "popover-foreground": "oklch(0.145 0 0)",
+     "primary": "hsl(72 62% 44%)",
+     "primary-foreground": "hsl(72 62% 98%)",
+     "secondary": "hsl(72 30% 96%)",
+     "secondary-foreground": "hsl(72 62% 20%)",
+     "muted": "oklch(0.97 0 0)",
+     "muted-foreground": "oklch(0.556 0 0)",
+     "accent": "hsl(72 40% 94%)",
+     "accent-foreground": "hsl(72 62% 20%)",
+     "destructive": "oklch(0.577 0.245 27.325)",
+     "destructive-foreground": "oklch(0.985 0 0)",
+     "border": "oklch(0.922 0 0)",
+     "input": "oklch(0.922 0 0)",
+     "ring": "hsl(72 62% 44%)",
+     "chart-1": "hsl(72 62% 50%)",
+     "chart-2": "hsl(216 62% 50%)",
+     "chart-3": "hsl(108 62% 50%)",
+     "chart-4": "hsl(54 62% 50%)",
+     "chart-5": "hsl(27 62% 50%)",
+     "sidebar": "oklch(0.985 0 0)",
+     "sidebar-foreground": "oklch(0.145 0 0)",
+     "sidebar-primary": "hsl(72 62% 44%)",
+     "sidebar-primary-foreground": "hsl(72 62% 98%)",
+     "sidebar-accent": "hsl(72 40% 94%)",
+     "sidebar-accent-foreground": "hsl(72 62% 20%)",
+     "sidebar-border": "oklch(0.922 0 0)",
+     "sidebar-ring": "hsl(72 62% 44%)",
+     "radius": "0.432rem"
+    },
+    "dark": {
+     "background": "oklch(0.145 0 0)",
+     "foreground": "oklch(0.985 0 0)",
+     "card": "oklch(0.205 0 0)",
+     "card-foreground": "oklch(0.985 0 0)",
+     "popover": "oklch(0.205 0 0)",
+     "popover-foreground": "oklch(0.985 0 0)",
+     "primary": "hsl(72 62% 56%)",
+     "primary-foreground": "hsl(72 62% 10%)",
+     "secondary": "hsl(72 20% 18%)",
+     "secondary-foreground": "hsl(72 40% 92%)",
+     "muted": "oklch(0.269 0 0)",
+     "muted-foreground": "oklch(0.708 0 0)",
+     "accent": "hsl(72 30% 22%)",
+     "accent-foreground": "hsl(72 40% 92%)",
+     "destructive": "oklch(0.704 0.191 22.216)",
+     "destructive-foreground": "oklch(0.985 0 0)",
+     "border": "oklch(1 0 0 / 10%)",
+     "input": "oklch(1 0 0 / 15%)",
+     "ring": "hsl(72 62% 56%)",
+     "chart-1": "hsl(72 62% 60%)",
+     "chart-2": "hsl(216 62% 60%)",
+     "chart-3": "hsl(108 62% 60%)",
+     "chart-4": "hsl(54 62% 60%)",
+     "chart-5": "hsl(27 62% 60%)",
+     "sidebar": "oklch(0.205 0 0)",
+     "sidebar-foreground": "oklch(0.985 0 0)",
+     "sidebar-primary": "hsl(72 62% 56%)",
+     "sidebar-primary-foreground": "hsl(72 62% 10%)",
+     "sidebar-accent": "hsl(72 30% 22%)",
+     "sidebar-accent-foreground": "hsl(72 40% 92%)",
+     "sidebar-border": "oklch(1 0 0 / 10%)",
+     "sidebar-ring": "hsl(72 62% 56%)"
+    }
+   },
+   "files": [
+    {
+     "path": "app/globals.css",
+     "type": "registry:file",
+     "target": "app/globals.css"
+    },
+    {
+     "path": "components.json",
+     "type": "registry:file",
+     "target": "components.json"
+    }
+   ],
+   "meta": {
+    "create": {
+     "style": "nova",
+     "baseColor": "neutral",
+     "theme": "a432: hsl(72 62% 44%)",
+     "chartColor": "the harmonics: hsl(72 | 216 | 108 | 54 | 27 62% 50%)",
+     "heading": "Inter",
+     "font": "Inter",
+     "iconLibrary": "lucide",
+     "radius": "0.432rem",
+     "menu": "default",
+     "menuAccent": "subtle"
+    },
+    "key": 432,
+    "hue": 72,
+    "harmonics": [
+     432,
+     216,
+     108,
+     54,
+     27
+    ],
+    "theorem": "textbook_create_hue"
+   }
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
    "name": "qpu-sdk",
    "type": "registry:lib",
    "title": "QPU SDK",

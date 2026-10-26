@@ -10,6 +10,7 @@ import { sdkOf, accessAuditOf, buildOf } from './toolboxes/payload.js'
 import { blockOf, verifyOf, uuidOf } from './blocks.js'
 import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay, reflectionOfRegister } from './clay-register.js'
+import { composeOf } from './compose.js'
 import { matchOf } from './match.js'
 import { LOCALES } from './i18n.js'
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, randomOf, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
@@ -111,7 +112,7 @@ import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS } from './theorems-index.js
 import { matcherOf, PATTERNS, patternOf } from './match.js'
 import { sha256, utf8, hex } from './hmac.js'
 import { flowWidget } from './widgets.js'
-import { cssOf, varsOf, KEY } from './theme.js'
+import { cssOf, varsOf, KEY, createOf, coilColourOf } from './theme.js'
 import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
 import { BILLING, usageOrderOf, ALGEBRA_TOOLS } from './toolboxes/billing.js'
@@ -589,8 +590,8 @@ const OWN: Tool[] = [
   tool({
     name: 'match',
     description: 'Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the surface proves it cannot, from a schema bound the statement exceeds, a lead whose reason says why, or the handler\'s own refusal; the cluster then names the served possibilities around it and verify names the live sources the client\'s MCP can check. unknown: nothing matches, and the statement comes back as a new lead to develop.',
-    inputSchema: { type: 'object', required: ['statement'], properties: { statement: { type: 'string', description: 'any prompt or statement; Glagolitic numerals are read as integers' }, locale: { type: 'string', enum: Object.keys(LOCALES), description: 'the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it' } } },
-    run: (args) => matchOf(String(args.statement ?? ''), handle, EXAMPLES, LEADS, args.locale === undefined ? undefined : String(args.locale)),
+    inputSchema: { type: 'object', required: ['statement'], properties: { statement: { type: 'string', description: 'any prompt or statement; Glagolitic numerals are read as integers' }, url: { type: 'string', description: 'a URL path: the statement decided and, beside it, the composition the path names — the cached assets its words select (the generated code, the SDK, the registry items, the examples\' blocks), computed in real time, verified at their addresses and billed (the fallback for anything)' }, tenant: { type: 'string', description: 'with url: the tenant reselling the composition (the licence chain)' }, locale: { type: 'string', enum: Object.keys(LOCALES), description: 'the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it' } } },
+    run: (args) => { const m = matchOf(String(args.statement ?? ''), handle, EXAMPLES, LEADS, args.locale === undefined ? undefined : String(args.locale)); return typeof args.url === 'string' ? { ...m, composition: composeOf(args.url, CONTEXT, 'https://qpu.uuidna.com', typeof args.tenant === 'string' ? args.tenant : 'uuidna') } : m },
     widget: matchWidget,
   }),
   tool({
@@ -753,8 +754,8 @@ const textbook = toolOf('tree', {
 const css = toolOf('tree', {
   name: 'css',
   description: 'The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmonics, and the rules that draw every block from its own custom properties with no script, motion only where the device allows it, off-screen blocks at no cost) and, for a uuid, the custom properties its block root carries (hue, CMYK, accent, tail colour and angle, the 9-vortex seed and period). Computed once; a device renders at the cost of CSS.',
-  inputSchema: { type: 'object', properties: { uuid: { type: 'string', description: 'a UUID whose block variables to compute' } } },
-  run: (args) => { const stylesheet = cssOf(); const vars = typeof args.uuid === 'string' ? varsOf(args.uuid) : null; return { key: KEY, bytes: stylesheet.length, rules: (stylesheet.match(/\{/g) ?? []).length, variables: vars ? Object.keys(vars).length : 0, script: false, uuid: typeof args.uuid === 'string' ? args.uuid : null, vars, stylesheet } },
+  inputSchema: { type: 'object', properties: { uuid: { type: 'string', description: 'a UUID whose block variables to compute' }, create: { type: 'boolean', description: 'shadcn create (ui.shadcn.com/create) decided by the a432 settings and CSS: the ten settings, the registry item that initialises the project (globals.css light and dark, components.json, the QPU registry), the commands' } } },
+  run: (args) => { const stylesheet = cssOf(); const vars = typeof args.uuid === 'string' ? varsOf(args.uuid) : null; if (args.create) return { ...createOf(KEY, 'https://qpu.uuidna.com', ['qpu-style', 'qpu-block', 'qpu-app', 'qpu-card', 'qpu-badge', 'qpu-table', 'qpu-stream', 'qpu-dashboard']) }; return { key: KEY, coil: coilColourOf(KEY), bytes: stylesheet.length, rules: (stylesheet.match(/\{/g) ?? []).length, variables: vars ? Object.keys(vars).length : 0, script: false, uuid: typeof args.uuid === 'string' ? args.uuid : null, vars, stylesheet } },
   widget: flowWidget,
 })
 

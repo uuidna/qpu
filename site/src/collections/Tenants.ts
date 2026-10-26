@@ -11,7 +11,7 @@ export const Tenants: CollectionConfig = {
   access: { read: () => true, create: ({ req }) => roles(req).includes('admin'), update: ({ req }) => roles(req).includes('admin'), delete: ({ req }) => roles(req).includes('admin') },
   fields: [
     { name: 'name', type: 'text', required: true, unique: true },
-    { name: 'slug', type: 'text', required: true, unique: true, validate: (v: unknown) => /^[a-z][a-z0-9-]*$/.test(String(v)) || 'lower-case letters, digits and dashes' },
+    { name: 'slug', type: 'text', required: true, unique: true, validate: (v: unknown) => /^[a-z][a-z0-9-]*$/.test(String(v)) || 'lower-case letters, digits and dashes', custom: { theorem: 'textbook_name_alphabets' } },
     { name: 'domains', type: 'array', required: true, fields: [{ name: 'domain', type: 'text', required: true }], admin: { description: 'the hosts that name the tenant; the Worker maps each to the docket' } },
     { name: 'currency', type: 'select', defaultValue: 'EUR', options: ["EUR","USD","BGN"], admin: { description: 'the currency the tenant prices in' } },
     { name: 'settings', type: 'json', admin: { description: 'the plugin options this tenant configures: { arguments: {...} } is merged into every qpu block call under its hosts; read by the page and by MCP clients through the Payload MCP plugin' } },
@@ -19,11 +19,11 @@ export const Tenants: CollectionConfig = {
     { name: 'bindings', type: 'group', admin: { description: 'the bindings this tenant uses, by name: the adapters profile, the connectors it is listed as, the variables it names; values never here — the Worker and the app read them from their environment by these names (the configure tool computes the choice from the names: kinds adapters and bindings)' }, fields: [
       { name: 'profile', type: 'select', defaultValue: 'cloudflare', options: ['cloudflare', 'google', 'vercel', 'local'], admin: { description: 'the adapters profile: database, storage and email chosen by what the environment names' } },
       { name: 'connectors', type: 'select', hasMany: true, defaultValue: ['claude', 'cloudflare'], options: ['claude', 'cloudflare', 'registry'], admin: { description: 'what the one /mcp endpoint is listed as: a Claude connector, a Cloudflare remote MCP, an entry of the MCP registry' } },
-      { name: 'variables', type: 'array', fields: [{ name: 'name', type: 'text', required: true, validate: (v: unknown) => (/^[A-Z][A-Z0-9_]*$/.test(String(v)) ? true : 'a binding name: upper-case letters, digits and underscores, never a value') }], admin: { description: 'the variable names this tenant binds (QPU_OAUTH_ISSUER_<TENANT>, MCP_PUBLISHER_TOKEN, ...): names the bindings kind knows; the tenant kind measures which the environment lacks' } },
+      { name: 'variables', type: 'array', fields: [{ name: 'name', type: 'text', required: true, validate: (v: unknown) => /^[A-Z][A-Z0-9_]*$/.test(String(v)) || 'a binding name: upper-case letters, digits and underscores, never a value', custom: { theorem: 'textbook_name_alphabets' } }], admin: { description: 'the variable names this tenant binds (QPU_OAUTH_ISSUER_<TENANT>, MCP_PUBLISHER_TOKEN, ...): names the bindings kind knows; the tenant kind measures which the environment lacks' } },
     ] },
     // the tenant's branding: what the tenant defines here stands; what it leaves empty is computed in real time from its address (configure, kind branding)
     { name: 'branding', type: 'group', admin: { description: 'the branding: defined here, or computed in real time from the tenant address when left empty — the name, the tagline, the accent, the logo, the icon' }, fields: [
-      { name: 'name', type: 'text' }, { name: 'tagline', type: 'text' }, { name: 'accent', type: 'text', validate: (v: unknown) => (!v || /^(#[0-9a-fA-F]{3,8}|hsl\(.*\)|rgb\(.*\)|[a-z]+)$/.test(String(v)) ? true : 'a CSS colour') },
+      { name: 'name', type: 'text' }, { name: 'tagline', type: 'text' }, { name: 'accent', type: 'text', validate: (v: unknown) => (v == null || v === '') || /^(#[0-9a-fA-F]{3,8}|hsl\\(.*\\)|rgb\\(.*\\)|[a-z]+)$/.test(String(v)) || 'a CSS colour (hex, hsl(), rgb() or a name); empty: the a432 accent', custom: { theorem: null } },
       { name: 'logo', type: 'upload', relationTo: 'media' }, { name: 'icon', type: 'upload', relationTo: 'media' },
     ] },
   ],

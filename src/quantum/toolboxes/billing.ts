@@ -168,6 +168,20 @@ export const DOMAIN_CURRENCY: Readonly<Record<string, string>> = { bg: 'EUR', eu
 /** The pure algebraic formulas, free under attribution (the a432 harmonic default): the core's algebra over a UUID (fold, presentation, stream), the stylesheet
  *  from the key 432, the seal arithmetic a UUID verifies by, the register's integer identities. Every other call is covered by the licence. */
 export const ALGEBRA_TOOLS: readonly string[] = ['css', 'fold', 'verify', 'clay']
+/** Recursive licensing: a chain of parties, each holding its licence from the level above as a docket entry and selling sublicences to the
+ *  level below through its own Stripe (the ecommerce plugin's order afterChange at that level writes the licence entry linked to the one
+ *  above), so verify walks the chain link by link; n sublicences under one licence are n links (textbook_licence_chain). The author's
+ *  side is the coins every response deposits and the catalogue price of the licence; each reseller keeps its margin (marginsOf). */
+export const recursiveLicenceOf = (parties: readonly string[]) => {
+  const levels = parties.map((party, level) => ({
+    level, party,
+    holds: level === 0 ? 'the work itself (CC-BY-NC-ND-4.0; the a432 harmonic default free under attribution)' : `the licence entry granted by ${parties[level - 1]} (kind licence, links: [the entry above])`,
+    sells: level === parties.length - 1 ? null : `sublicences to ${parties[level + 1]}: an order at this level's Stripe, the licence the completed order itself`,
+    stripe: level === parties.length - 1 ? null : { keys: [`STRIPE_SECRET_KEY_${party.toUpperCase().replace(/[^A-Z0-9]+/g, '_')}`, `STRIPE_WEBHOOK_SECRET_${party.toUpperCase().replace(/[^A-Z0-9]+/g, '_')}`], hook: 'orders afterChange (the ecommerce plugin): status completed → a licence entry in the docket, links: [the licence this level holds], so the chain is one walk of links', gdprKyc: 'Stripe\'s responsibility at every level' },
+    keeps: level === 0 ? 'the coins of every response and the catalogue price of each licence' : level === parties.length - 1 ? 'the use' : 'the margin between the price it pays above and the price it sells below (marginsOf)',
+  }))
+  return { parties: parties.length, links: parties.length - 1, theorem: 'textbook_licence_chain', levels, verify: 'verify { uuid, prev, next } on each licence entry: prev is the licence above, next a sublicence below; a broken link ends the chain there', says: `${parties.length - 1} sublicence(s) under one licence are ${parties.length - 1} links, each a Stripe hook at the reseller's own keys, the author paid at the root` }
+}
 /** The Stripe resources the MCP's combinations already use, by the stripe tool's ops and the ecommerce plugin's collections: the side of the comparison the tree holds. */
 export const MCP_STRIPE_RESOURCES: Readonly<Record<string, readonly string[]>> = { checkout: ['plan', 'webhook'], products: ['catalogue', 'ecommerce: products'], prices: ['catalogue', 'ecommerce: variants'], events: ['webhook'], webhook_endpoints: ['webhook'], customers: ['state', 'ecommerce: customers'], subscriptions: ['state'], invoices: ['usage'], billing: ['usage', 'settle'], balance: ['settle'], payouts: ['settle'], payment_intents: ['ecommerce: transactions'], refunds: ['ecommerce: transactions'] }
 /** Every use case of the Stripe API, read from its own contract (the paths of its OpenAPI specification, discovered each run), grouped by resource and

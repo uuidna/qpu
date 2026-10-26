@@ -1,43 +1,43 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T13:36:04.501Z",
- "ms": 12626,
+ "date": "2026-10-26T15:12:05.115Z",
+ "ms": 12873,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "37325be7050f08ba75216a346df68c3a256829fd",
+ "head": "5c2360d59ffdca0d82cecb21d358a9fdb14ae736",
  "pushed": false,
  "fetched": [
   {
    "id": "clay-millennium",
    "status": 200,
-   "ms": 336,
+   "ms": 612,
    "bytes": 79933
   },
   {
    "id": "vercel-oss-program",
    "status": 200,
-   "ms": 317,
+   "ms": 432,
    "bytes": 827056
   },
   {
    "id": "cloudflare-workers-launchpad",
    "status": 200,
-   "ms": 635,
-   "bytes": 402587
-  },
-  {
-   "id": "github-maintainer-programs",
-   "status": 200,
-   "ms": 822,
-   "bytes": 394161
+   "ms": 649,
+   "bytes": 402586
   },
   {
    "id": "xprize-quantum-applications",
    "status": 200,
-   "ms": 1082,
+   "ms": 936,
    "bytes": 174240
+  },
+  {
+   "id": "github-maintainer-programs",
+   "status": 200,
+   "ms": 2036,
+   "bytes": 394278
   }
  ],
  "precedence": [
@@ -67,7 +67,7 @@
   "rows": [
    {
     "api": "hn-algolia",
-    "doi": "10.5281/zenodo.23156998",
+    "doi": "10.5281/zenodo.21781602",
     "status": 200,
     "mentions": 0
    },
@@ -79,6 +79,12 @@
    },
    {
     "api": "wikipedia-search",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "hn-algolia",
     "doi": "10.5281/zenodo.22700098",
     "status": 200,
     "mentions": 0
@@ -91,13 +97,7 @@
    },
    {
     "api": "hn-algolia",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "hn-algolia",
-    "doi": "10.5281/zenodo.22700098",
+    "doi": "10.5281/zenodo.23156998",
     "status": 200,
     "mentions": 0
    },
@@ -134,7 +134,7 @@
    {
     "api": "gdelt",
     "doi": "10.5281/zenodo.21781602",
-    "status": 429,
+    "status": 0,
     "mentions": null
    }
   ],
@@ -183,7 +183,7 @@
      "needs": "a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README",
      "act": "the author's record stands at its DOI; the community's acceptance is measured by the rules below",
      "status": "open",
-     "evidence": "548 theorems kernel-accepted (1056 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
+     "evidence": "560 theorems kernel-accepted (1068 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
