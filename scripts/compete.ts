@@ -5,13 +5,13 @@ import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { COMPETITIONS } from '../src/quantum/toolboxes/legal.ts'
 
 const ROOT = process.cwd()
 const offline = process.env.QPU_OFFLINE === '1'
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'compete', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const call = toolCallerOf('compete')
 const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/</g, '&lt;').replace(/\{/g, '&#123;')
 const strip = (html: string) => html.replace(/<script[\s\S]*?<\/script>/g, ' ').replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&#x27;|&#39;/g, "'").replace(/&amp;/g, '&').replace(/\s+/g, ' ')
 const main = async () => {

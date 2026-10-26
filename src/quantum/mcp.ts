@@ -865,6 +865,9 @@ const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q
 /** Answer one JSON-RPC message: initialize, tools/list, or tools/call. Anything else is method not found. */
 /** A batch: a JSON-RPC array is answered as one array, in order — the batch action of every tool, one request. */
 export const handleBatch = (messages: readonly Rpc[]): Reply[] => messages.map((m) => handle(m))
+/** One door for every client written once: a tool called by name, its structured answer returned or its error thrown — the tools/call
+ *  envelope the scripts wrote out each for itself (recognised as a shape by the entropy cleaner). */
+export const toolCallerOf = (name: string) => (args: Record<string, unknown> = {}): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent: unknown }; error?: { message: string } }; if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
 export const handle = (message: Rpc): Reply => {
   if (Array.isArray(message)) return handleBatch(message as unknown as Rpc[]) as unknown as Reply
   const id = message.id ?? null

@@ -5,7 +5,7 @@ import { existsSync, readFileSync, writeFileSync, appendFileSync, mkdirSync } fr
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
 import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
@@ -17,7 +17,7 @@ mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 // the coins paid at the wire, one line per call, kept by this payer (the unit's own register is per process and silent)
 const account = (door: string, body: unknown) => { const d = depositOf(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'readiness', ...d }) + '\n') }
 const UNIT = process.env.UUIDNA_MCP ?? 'https://uuidna.com/mcp'
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'readiness', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const call = toolCallerOf('readiness')
 const rpc = async (url: string, name: string, args: unknown): Promise<any> => {
   const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-next (https://qpu.uuidna.com)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
   if (res.status !== 200) throw new Error(`HTTP ${res.status}`)

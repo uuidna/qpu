@@ -370,5 +370,7 @@ theorem textbook_bindings_bound (needed declared missing : Nat) (h : declared + 
 theorem textbook_observed_errors (errors requests : Nat) (h : errors * 1000 ≤ requests) : errors ≤ requests := by omega
 /-- the minimum bill of existing and computing (zero within the free tiers, the paid base beyond them) is covered by the cheapest licence of the catalogue: the licence is the bill and the margin of the quantum framework (examples: repository-predeploy) -/
 theorem textbook_bill_covered (price cost : Nat) (h : cost ≤ price) : price - cost + cost = price := Nat.sub_add_cancel h
+/-- every combination of the adapters ported onto Cloudflare is complete or names the missing link that blocks it: the combinations less the blocked ones are the complete ones, however many adapters the app grows to (examples: configure-adapters-port) -/
+theorem textbook_ports_cover (complete blocked total : Nat) (h : complete + blocked = total) : total - blocked = complete := by omega
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

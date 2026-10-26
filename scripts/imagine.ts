@@ -3,7 +3,7 @@
 import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
 import { LEADS } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
@@ -12,7 +12,7 @@ import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from 
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'imagine', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const call = toolCallerOf('imagine')
 const toolsNow = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
 const inputs = uuidOf(JSON.stringify({ leads: LEADS, examples: EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, arguments: e.arguments, shows: e.shows })), tools: toolsNow }))
 const outPath = join(ROOT, 'docs', 'public', 'imagination.json')

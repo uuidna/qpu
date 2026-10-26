@@ -3,13 +3,13 @@
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import type { WaveRequest, WaveResult } from '../src/quantum/wave.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 
 const ROOT = process.cwd()
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'wave', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const call = toolCallerOf('wave')
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const main = async () => {
   const selftest = call({ selftest: true })

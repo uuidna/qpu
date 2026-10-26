@@ -6,12 +6,12 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
 const ROOT = process.cwd()
 const HOSTS = (process.env.QPU_E2E_HOSTS ?? 'https://qpu.uuidna.com,https://qpu.psg.bg,https://qpu.ceci.workers.dev').split(',').map((h) => h.trim()).filter(Boolean)
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const call = toolCallerOf('audit')
 const json = (cmd: string, args: string[], cwd: string): Record<string, number> => { try { const out = execFileSync(cmd, args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 120_000 }); const j = JSON.parse(out) as { metadata?: { vulnerabilities?: Record<string, number> } }; return j.metadata?.vulnerabilities ?? {} } catch (e) { const out = (e as { stdout?: string }).stdout; try { const j = JSON.parse(out ?? '') as { metadata?: { vulnerabilities?: Record<string, number> } }; return j.metadata?.vulnerabilities ?? {} } catch { return { unmeasured: 1 } } } }
 const main = async () => {
   const hosts = []

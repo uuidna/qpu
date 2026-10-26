@@ -4,7 +4,7 @@
 import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
 import { LICENSE } from '../src/quantum/license.ts'
@@ -12,7 +12,7 @@ import { LICENSE } from '../src/quantum/license.ts'
 const ROOT = process.cwd()
 // the coins paid at the wire, one line per call, kept by this payer (the unit's own register is per process and silent)
 const account = (door: string, body: unknown) => { const d = depositOf(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'legal', ...d }) + '\n') }
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'legal', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const call = toolCallerOf('legal')
 const text = (f: string) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT, f), 'utf8') : undefined)
 const readJson = (f: string) => { const t = text(f); return t ? JSON.parse(t) : undefined }
 const rpc = async (url: string, name: string, args: unknown): Promise<unknown> => {

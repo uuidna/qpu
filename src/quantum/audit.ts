@@ -20,7 +20,15 @@ type ToolSpec = { name: string; description: string; inputSchema: { type?: strin
  *  texts the client supplies and converted to leads, never rulings. Findings with one content address fuse into one lead naming every source
  *  (a fusion reaction: f findings become f − d leads, textbook_entropy_fusion); the gravity of the tree is the fold of the sorted addresses,
  *  and the vacuum is the tree whose gravity is the fold of nothing. Pure: the purify step reads the files and signals the leads it opened. */
-export type EntropyKind = 'literal' | 'typed-path' | 'cap' | 'clock' | 'duplicate' | 'todo' | 'leak'
+export type EntropyKind = 'literal' | 'typed-path' | 'cap' | 'clock' | 'duplicate' | 'shape' | 'todo' | 'leak'
+/** The shapes of code the cleaner recognises below the line: written out in many files, each one place should hold — the helper named beside it. */
+export const CODE_SHAPES: readonly { shape: string; re: RegExp; holder: string }[] = [
+  { shape: 'the tools/call envelope', re: /handle\(\{ jsonrpc: '2\.0', id: \d+, method: 'tools\/call', params: \{ name/, holder: 'toolCallerOf(name) in mcp.ts' },
+  { shape: 'a JSON file read and parsed', re: /JSON\.parse\(readFileSync\(/, holder: 'one reader of the published files, null when a file is missing' },
+  { shape: 'the published folder made', re: /mkdirSync\(join\(ROOT, 'docs', 'public'\), \{ recursive: true \}\)/, holder: 'one writer of the published files that makes its folder' },
+  { shape: 'a request with its timeout', re: /signal: AbortSignal\.timeout\(/, holder: 'one fetcher with the named user agent and the timeout' },
+  { shape: 'the tools/list envelope', re: /handle\(\{ jsonrpc: '2\.0', id: \d+, method: 'tools\/list' \}\)/, holder: 'one reader of the tool list' },
+]
 /** Every kind of entropy says how its leads are explored (the tool a client follows it with) and which configuration settles it (the configure kind
  *  that absorbs the difference), so a difference is never a ruling: it is a lead to explore and to config. */
 export const ENTROPY_KINDS: readonly { kind: EntropyKind; says: string; explore: string; config: string | null }[] = [
@@ -29,6 +37,7 @@ export const ENTROPY_KINDS: readonly { kind: EntropyKind; says: string; explore:
   { kind: 'cap', says: 'a cap on a read or a walk (slice, limit, substring): the user asked for none', explore: 'match', config: 'actions' },
   { kind: 'clock', says: 'a clock or a die in a pure module: the result is no longer a function of its arguments', explore: 'imagine', config: 'actions' },
   { kind: 'duplicate', says: 'one line of code repeated in more than one file: one place should hold it', explore: 'match', config: 'fullstack' },
+  { kind: 'shape', says: 'a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it', explore: 'match', config: null },
   { kind: 'todo', says: 'a note to self in the code: a lead written where no one reads it', explore: 'imagine', config: null },
   { kind: 'leak', says: 'an address in the tree: contacts are URLs, the account email is read at deploy', explore: 'configure', config: 'tenant' },
 ]
@@ -64,6 +73,8 @@ export const entropyOf = (files: Readonly<Record<string, string>>) => {
     })
   }
   for (const [t, at] of repeated) if (new Set(at.map((a) => a.file)).size >= 2) for (const a of at) add('duplicate', a.file, a.line, t)
+  // the shapes below the line: every place a shape is written out, fused by the shape, when more than one file writes it
+  for (const s of CODE_SHAPES) { const at: { file: string; line: number }[] = []; for (const [file, text] of Object.entries(files)) { if (!/\.(ts|mts|tsx|vue)$/.test(file)) continue; text.split('\n').forEach((l, i) => { if (s.re.test(l)) at.push({ file, line: i + 1 }) }) } if (new Set(at.map((a) => a.file)).size >= 2) for (const a of at) add('shape', a.file, a.line, `${s.shape}: ${s.holder}`) }
   // fusion: every finding with one address fuses into one lead that names every source
   const byAddress = new Map<string, EntropyFinding[]>()
   for (const f of findings) byAddress.set(f.address, [...(byAddress.get(f.address) ?? []), f])

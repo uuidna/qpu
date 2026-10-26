@@ -4,7 +4,7 @@
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { LEADS } from '../src/quantum/leads.ts'
 import type { Request, Answer } from '../src/quantum/discovery.ts'
@@ -14,7 +14,7 @@ import { bestDoorsOf } from '../src/quantum/discovery.ts'
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const UA = 'uuidna-qpu-discover (https://qpu.uuidna.com)'
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'discover', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const call = toolCallerOf('discover')
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const fetchOne = async (r: Request): Promise<Answer> => {
   try { const res = await fetch(r.url, { method: r.method, headers: { accept: 'application/json, text/event-stream, application/yaml, text/xml, */*', 'user-agent': UA, ...(r.body ? { 'content-type': 'application/json' } : {}), ...(r.headers ?? {}) }, body: r.body ? JSON.stringify(r.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(30000) }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }

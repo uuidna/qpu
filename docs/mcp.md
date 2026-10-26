@@ -2207,6 +2207,9 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
 {
   "type": "object",
   "properties": {
+    "port": {
+      "description": "kind adapters: the port onto Cloudflare — true every one of the 5 × 5 × 2 combinations (the complete ones, the missing links each a lead, the Cloudflare MCP tools they call); an index from 0 to 49 that combination's workflow (its bindings, every step with its MCP call, its plan, its missing links)"
+    },
     "kind": {
       "type": "string",
       "enum": [

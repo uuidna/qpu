@@ -4,11 +4,11 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 const ROOT = process.cwd()
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'textbook', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const call = toolCallerOf('textbook')
 const main = async () => {
   // fast when clean: the wave is a function of the examples, the leads, the tools and the wave's results; the same inputs give the same seal
   const { uuidOf } = await import('../src/quantum/blocks.ts'); const { EXAMPLES } = await import('../src/quantum/examples.ts'); const { LEADS } = await import('../src/quantum/leads.ts')
