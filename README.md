@@ -19,16 +19,16 @@ Every figure below was measured on this tree on 2026-10-26 with the commands in 
 | Measure | Value |
 |---|---:|
 | Tracked files | 1610 |
-| Source files under `src/quantum` (TypeScript) | 41 (9,269 lines) |
+| Source files under `src/quantum` (TypeScript) | 41 (9,270 lines) |
 | MCP tools | 46 |
 | Tests (`node --test`) | 155 pass, 0 fail of 155 |
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 550 / 1059 (551 hand-written, 508 generated equation lemmas) |
+| Theorems declared / accepted by the kernel | 551 / 1060 (552 hand-written, 508 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
-| Self-audit checks | 1075 of 1075 pass |
+| Self-audit checks | 1081 of 1081 pass |
 | Cross-verification requests (free public sources) | 2827 requests, 2783 reachable on 2026-10-26 |
 | Servers, workers, network calls in the handler | 0 |
 

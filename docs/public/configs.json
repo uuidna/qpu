@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T13:52:29.081Z",
+ "date": "2026-10-26T13:54:53.118Z",
  "ms": 522,
  "selftest": {
   "passed": true
@@ -297,16 +297,16 @@
   {
    "kind": "ecommerce",
    "torus": {
-    "address": "17ba3986-2666-66ae-9aba-6c8cfef4a8ed",
-    "seed": 3,
-    "reflection": 7,
+    "address": "3ab0cf7b-92f9-3f72-8990-b9e7dabe9eb9",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 3827
+    "bytes": 4306
    }
   },
   {
@@ -357,16 +357,16 @@
   {
    "kind": "sets",
    "torus": {
-    "address": "3e02c7c1-4199-7131-a08b-cb0584080bf3",
-    "seed": 9,
-    "reflection": 1,
+    "address": "1a54cd35-4b41-73a9-b62c-f35f0ced00a9",
+    "seed": 7,
+    "reflection": 3,
     "trinity": [
-     3,
-     6,
-     9
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 60839
+    "bytes": 61141
    }
   },
   {
