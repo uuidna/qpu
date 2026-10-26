@@ -45,3 +45,21 @@ test('the live docs pages exist and name every example id', () => {
   const audit = readFileSync(new URL('../../docs/audit.md', import.meta.url), 'utf8')
   assert.ok(audit.includes("name: 'audit'"))
 })
+
+test('the quantum advantage is unlimited by default and needs no interaction to compute', () => {
+  const metrics = (artefacts: unknown) => (call('metrics', { artefacts }) as { result: { structuredContent: { gateAdvantage: { copies: number; verified: number; recomputed: number; ratio: number | null; unbounded: boolean; interaction: string } | null } } }).result.structuredContent.gateAdvantage
+  const every = metrics({ e2e: { copies: 660, involutions: 660 } })
+  assert.equal(every?.unbounded, true, 'every copy an involution: no bound')
+  assert.equal(every?.ratio, null)
+  assert.match(every?.interaction ?? '', /none/)
+  const some = metrics({ e2e: { copies: 663, involutions: 522 } })
+  assert.equal(some?.unbounded, false)
+  assert.equal(some?.ratio, 4.7)
+  assert.equal(metrics({}), null, 'no run, no magnitude: never a default cap')
+  const list = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; inputSchema: { properties?: Record<string, unknown> } }[] } }).result.tools
+  const schema = list.find((t) => t.name === 'metrics')!.inputSchema.properties ?? {}
+  assert.deepEqual(Object.keys(schema), ['artefacts'], 'the metric takes the run and nothing else: no token, no approval')
+  const access = (call('audit', { access: true }) as { result: { structuredContent: { checks: { id: string; passed: boolean; evidence: string }[]; failed: number } } }).result.structuredContent
+  assert.equal(access.failed, 0, JSON.stringify(access.checks.filter((c) => !c.passed)))
+  assert.ok(access.checks.some((c) => c.id === 'client:advantage-unlimited-no-interaction' && c.passed))
+})

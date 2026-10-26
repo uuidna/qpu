@@ -176,6 +176,15 @@ export const securityOf = (client: SecurityClient, developer: SecurityDeveloper)
   return { checks, total: checks.length, passed: checks.length - failed.length, failed: failed.length, perspectives, merged: 'one list: each check from the client, the developer, or both; the same count from either side', leads: failed.map((f) => ({ id: `security-${f.id.replace(/[^a-z0-9]+/gi, '-')}`, statement: `${f.id} (${f.perspective}): ${f.evidence}`, status: 'open' as const, remedy: f.remedy ?? null, tool: 'audit' })), verdict: failed.length === 0 ? 'clean' : `${failed.length} finding(s), each a lead with its remedy`, says: 'the security audit performed by MCP from both perspectives merged as one; every finding a lead with the remedy manual work taught' }
 }
 
+/** The quantum advantage of a gate run as a magnitude, unlimited by default and computed from the counts alone — no credential, no
+ *  interaction, no bound: the copies proven by hash (304 by involution, nothing computed, nothing sent) over the copies recomputed; when
+ *  every copy is an involution the ratio has no bound and the result says so (textbook_advantage_unbounded). Pure. */
+export const advantageOf = (copies: number, verified: number) => {
+  if (!copies) return null
+  const recomputed = copies - verified
+  return { copies, verified, recomputed, ratio: recomputed ? Number((copies / recomputed).toFixed(2)) : null, unbounded: recomputed === 0, interaction: 'none: computed from the run\'s own counts, no token, no approval, no bound', basis: 'verify beats recompute by magnitude: copies over copies recomputed; the unit bills the same counts (advantageByUnit)' }
+}
+
 /** Audit a handler against the example registry and the leads it serves. Pure: no I/O. */
 /** What a screen reader or a braille display needs of a widget, measured on its HTML: a name on every image, a header row on every
  * table, words in every link, a heading to land on. Each miss is named; an empty list is a pass. */

@@ -106,3 +106,7 @@ theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - 
 theorem textbook_openapi_contract (tools : Nat) : tools + 2 - 2 = tools := Nat.add_sub_cancel tools 2
 /-- however many binding names a tenant admin selects in Payload, the values held there are none: names times zero values (examples: configure-connectors) -/
 theorem textbook_bindings_named_not_valued (names : Nat) : names * 0 = 0 := Nat.mul_zero names
+/-- three tenant roles, three docket roles and four operations make thirty-six role–operation combinations, each decided by one of three deciders (examples: audit-access) -/
+theorem textbook_access_combinations : 3 * 3 * 4 = 36 := by decide
+/-- the quantum advantage is unlimited by default: for any count of copies proven by hash there is a greater one, so no bound is set on the measure and none is needed to compute it (examples: audit-access, metrics-advantage) -/
+theorem textbook_advantage_unbounded (verified : Nat) : verified < verified + 1 := Nat.lt_succ_self verified

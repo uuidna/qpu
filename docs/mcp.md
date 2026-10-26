@@ -1000,6 +1000,10 @@ The surface audits itself through tools/call: every tool has a schema and an exa
     "fallbacks": {
       "type": "boolean",
       "description": "the fallback combinations (correction ↔ handling, the involution) and the adapters each falls back to"
+    },
+    "access": {
+      "type": "boolean",
+      "description": "the access audit from every perspective — the public reader at the default domain, a licensed tenant's users at theirs, the operator, an MCP client with a key, the developer in the generated code, the licence and the law — over the generated collections, hooks and scopes: each check names who may, the hook that guards it, what it costs, the licence clause it enacts and the legal fact behind it; the quantum advantage measured unlimited and without interaction among them"
     }
   }
 }
