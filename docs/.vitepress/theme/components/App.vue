@@ -10,7 +10,8 @@ const frame = ref<HTMLIFrameElement | null>(null)
 const html = ref('')
 const height = ref(120)
 const read = () => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: `ui://qpu/${props.tool}` } }) as { result?: { contents: { text: string }[] } }; html.value = r.result?.contents[0]?.text ?? '' }
-const post = (m: Record<string, unknown>) => frame.value?.contentWindow?.postMessage({ jsonrpc: '2.0', ...m }, '*')
+// plain data only: a reactive proxy cannot be cloned across the frame, so every message is the JSON of itself
+const post = (m: Record<string, unknown>) => frame.value?.contentWindow?.postMessage(JSON.parse(JSON.stringify({ jsonrpc: '2.0', ...m })), '*')
 const onMessage = (e: MessageEvent) => {
   if (!frame.value || e.source !== frame.value.contentWindow) return
   const m = e.data ?? {}
