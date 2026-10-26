@@ -2272,6 +2272,10 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 {
   "type": "object",
   "properties": {
+    "standardise": {
+      "type": "object",
+      "description": "a lexical document set in standard typography without a change of meaning"
+    },
     "lexical": {
       "type": "object",
       "description": "a Payload lexical document whose qpu blocks run through MCP"

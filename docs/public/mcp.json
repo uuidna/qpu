@@ -2782,6 +2782,10 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "standardise": {
+            "type": "object",
+            "description": "a lexical document set in standard typography without a change of meaning"
+          },
           "lexical": {
             "type": "object",
             "description": "a Payload lexical document whose qpu blocks run through MCP"
