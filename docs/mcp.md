@@ -2378,6 +2378,30 @@ The split folds: a payload larger than a place can hold is folded into pieces un
 {
   "type": "object",
   "properties": {
+    "radices": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "description": "Queneau's combinatorics: the number of choices at each position; with index the composition it addresses, with digits the index they make, alone the count (their product); every composition computed from its address and back, none stored"
+    },
+    "index": {
+      "type": "string",
+      "description": "with radices: the composition's index, a decimal integer of any size"
+    },
+    "digits": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "description": "with radices: a composition, one choice per position"
+    },
+    "spaces": {
+      "type": "object",
+      "description": "{ name: radices }: many combination spaces counted by the one primitive"
+    },
     "hex": {
       "type": "string",
       "description": "any hex (a UUID, a hash, an address): presented as a shadcn combination, each nibble an item and a variant, the whole styled from itself — the one quantum core"

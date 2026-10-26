@@ -7,7 +7,7 @@ import { EXAMPLES } from './examples.js'
 import { auditOf, entropyOf, differencesOf, securityOf, remediesOf, advantageOf, addressedByTheoremOf, billOf, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, axiomsOf, leaksOf } from './audit.js'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 import { sdkOf, accessAuditOf, buildOf } from './toolboxes/payload.js'
-import { blockOf, verifyOf, uuidOf } from './blocks.js'
+import { blockOf, verifyOf, uuidOf, compositionsOf } from './blocks.js'
 import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay, reflectionOfRegister } from './clay-register.js'
 import { composeOf } from './compose.js'
@@ -805,7 +805,7 @@ const dashboard = toolOf('tree', {
     const enumerable = facets.filter((f) => f.values.length)
     const open = enumerable.filter((f) => !(f.property in fixed))
     const freeRequired = facets.filter((f) => f.kind === 'free' && f.required && !(f.property in fixed)).map((f) => f.property)
-    const space = enumerable.reduce((n, f) => n * f.values.length, 1)
+    const space = Number(compositionsOf(enumerable.map((f) => f.values.length))) // Queneau's primitive: the product of the choices
     // the whole space is reachable by fixing one facet at a time: the cells of this dashboard are the values of the facets still open
     // (the required ones first, else the first open one); a cell fixes its value and leads to the narrower dashboard, until every
     // enumerable facet is fixed and the cell is the walk page of that one combination — the click is the decision, final

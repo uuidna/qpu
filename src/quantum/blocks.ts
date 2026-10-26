@@ -258,3 +258,10 @@ export const uuidSchemasOf = (uuid: string) => {
  *  nothing written, so every read of a block answers and the missing component is filled in real time; a client that
  *  seeds reads `computed` and never stores it (there is no content to address). */
 export const computedEntryOf = (id: string) => ({ id, kind: 'uuid', from: 'computed', computed: true, body: verifyOf(id), says: 'no entry at this address: the page of the UUID from the id alone, nothing written (no content to address)' })
+
+/** Queneau's combinatorics as the one primitive of every combination space: positions with their numbers of choices (the radices); the count is
+ *  their product, the n-th composition its mixed-radix digits, and a composition's index the number its digits make — every composition computed
+ *  from its address and back, none stored (textbook_mixed_radix, textbook_queneau_compositions). BigInt, so no space is too large to count. */
+export const compositionsOf = (radices: readonly number[]): bigint => radices.reduce((n, r) => n * BigInt(r), 1n)
+export const compositionOf = (radices: readonly number[], index: bigint): number[] => { const digits: number[] = new Array(radices.length); let q = index; for (let i = radices.length - 1; i >= 0; i--) { const r = BigInt(radices[i]!); digits[i] = Number(q % r); q /= r } return digits }
+export const compositionIndexOf = (radices: readonly number[], digits: readonly number[]): bigint => digits.reduce((n, d, i) => n * BigInt(radices[i]!) + BigInt(d), 0n)

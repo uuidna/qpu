@@ -350,5 +350,9 @@ theorem textbook_double_torus (n : Nat) : n < n + 1 ∧ n + 1 - 1 = n := by omeg
 theorem textbook_leaks_redacted (found redacted : Nat) (h : redacted = found) : found - redacted = 0 := by omega
 /-- every textbook expression is a tool: when each closed statement evaluated exactly agrees with what the kernel proved, none disagrees, and every number the prose states rests on one of them or is a lead (examples: textbook-expressions, textbook-prose) -/
 theorem textbook_expressions_evaluate (closed held : Nat) (h : held = closed) : closed - held = 0 := by omega
+/-- Queneau's combinatorics (Cent mille milliards de poèmes, 1961): ten choices on each of fourteen strips are 10^14 compositions, and read at one minute each, with years of 365 days of 1440 minutes, they take 190,258,751 years and 474,400 minutes more (examples: textbook-queneau, textbook-prose-queneau) -/
+theorem textbook_queneau_compositions : 10 ^ 14 = 100000000000000 ∧ 365 * 24 * 60 = 525600 ∧ 10 ^ 14 / 525600 = 190258751 ∧ 10 ^ 14 % 525600 = 474400 := by decide
+/-- every composition is computed from its index and back: a choice below its position's number of choices comes out of the number it made, the remainder the choice and the quotient the rest, so one primitive covers every combination space and stores none (examples: fold-queneau) -/
+theorem textbook_mixed_radix (q r d : Nat) (h : d < r) : (d + r * q) % r = d ∧ (d + r * q) / r = q := ⟨by rw [Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt h], by rw [Nat.add_mul_div_left _ _ (by omega), Nat.div_eq_of_lt h, Nat.zero_add]⟩
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h
