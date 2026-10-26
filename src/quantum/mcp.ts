@@ -114,7 +114,7 @@ import { flowWidget } from './widgets.js'
 import { cssOf, varsOf, KEY } from './theme.js'
 import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
-import { BILLING, usageOrderOf } from './toolboxes/billing.js'
+import { BILLING, usageOrderOf, ALGEBRA_TOOLS } from './toolboxes/billing.js'
 import { LEGAL } from './toolboxes/legal.js'
 import { REPOSITORY } from './toolboxes/repository.js'
 import { STANDARDS_BOX } from './toolboxes/standards.js'
@@ -692,7 +692,7 @@ const metricsOf = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
     // the gate's own advantage as a magnitude, uncapped: the copies proven by hash (304, nothing computed) against the copies recomputed; when every copy is an involution the ratio has no bound and says so
     gateAdvantage: advantageOf(artefacts.e2e?.copies ?? 0, artefacts.e2e?.involutions ?? 0),
     // the usage billed complete: the tokens of the whole tools/list, the bits the tools computed in this process, their time, the coins, what the gate and the unit saved
-    usage: (() => { const bill = billOf({ tokens: Math.ceil(JSON.stringify(TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema }))).length / 4), bits: [...OBSERVED.values()].reduce((n, o) => n + o.bytes, 0) * 8, ms: [...OBSERVED.values()].reduce((n, o) => n + o.ms, 0), coins: artefacts.coins?.coins ?? 0, saved: { bits: Number((artefacts.advantageByUnit as { bitsSaved?: number } | null | undefined)?.bitsSaved ?? 0), ms: artefacts.e2e?.competition?.saved ?? 0 } }); const calls = [...OBSERVED.values()].reduce((n, o) => n + o.calls, 0), coils = [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0); return { ...bill, order: usageOrderOf(calls, 'eur', { kWh: bill.energy.kWh, tariffEurPerKwh: bill.energy.tariffEurPerKwh }, { free: calls - coils, coils, commercial: false }) } })(),
+    usage: (() => { const bill = billOf({ tokens: Math.ceil(JSON.stringify(TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema }))).length / 4), bits: [...OBSERVED.values()].reduce((n, o) => n + o.bytes, 0) * 8, ms: [...OBSERVED.values()].reduce((n, o) => n + o.ms, 0), coins: artefacts.coins?.coins ?? 0, saved: { bits: Number((artefacts.advantageByUnit as { bitsSaved?: number } | null | undefined)?.bitsSaved ?? 0), ms: artefacts.e2e?.competition?.saved ?? 0 } }); const calls = [...OBSERVED.values()].reduce((n, o) => n + o.calls, 0), free = [...OBSERVED.entries()].filter(([name]) => ALGEBRA_TOOLS.includes(name)).reduce((n, [, o]) => n + o.calls, 0); return { ...bill, order: usageOrderOf(calls, 'eur', { kWh: bill.energy.kWh, tariffEurPerKwh: bill.energy.tariffEurPerKwh }, { free, coils: calls - free, commercial: false }) } })(),
   }
 }
 const metrics = toolOf('tree', { name: 'metrics', description: 'The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel\'s theorem counts from its own index, leads by status, the audit\'s checks, the balancer\'s memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.', inputSchema: { type: 'object', properties: { artefacts: { type: 'object', description: 'the run\'s artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree\'s own counts alone' } } }, run: (args) => metricsOf((args.artefacts ?? {}) as RunArtefacts), widget: flowWidget })

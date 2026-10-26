@@ -140,5 +140,5 @@ theorem textbook_carry_release (carried : Nat) : carried = 0 ∨ 0 < carried := 
 theorem textbook_news_adapters : 4 + 3 = 7 := by decide
 /-- the hand-written theorems and the generated lemmas make what the kernel accepts, and every version serves the whole of it: nothing Lean is hidden (examples: textbook-theorems-served) -/
 theorem textbook_lean_served_whole (hand generated : Nat) : hand + generated - generated = hand := Nat.add_sub_cancel hand generated
-/-- every call is free or a coil, decided by the licence: what the involution answered is free, what the provider computed is a coil billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
+/-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h
