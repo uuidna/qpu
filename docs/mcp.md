@@ -1231,6 +1231,9 @@ The QPU textbook as an adapter
 {
   "type": "object",
   "properties": {
+    "claims": {
+      "description": "the textbook claims measured against what is published"
+    },
     "theorem": {
       "type": "string",
       "description": "one theorem as its client verifies it"
