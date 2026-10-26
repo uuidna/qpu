@@ -1131,6 +1131,9 @@ export const qpuEnv = {
 import { z } from 'zod'
 import { handle } from '@uuidna/qpu/mcp'
 import { VERSION } from '@uuidna/qpu/version'
+import { existsSync, readFileSync } from 'node:fs'
+import { homedir } from 'node:os'
+import path from 'node:path'
 
 type Schema = { type?: string; properties?: Record<string, Schema & { description?: string; enum?: unknown[]; items?: Schema }>; required?: string[]; description?: string; enum?: unknown[]; items?: Schema }
 const zodOf = (s: Schema | undefined): z.ZodTypeAny => {
@@ -1147,7 +1150,7 @@ const zodOf = (s: Schema | undefined): z.ZodTypeAny => {
   }
 }
 const list = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string; inputSchema: Schema }[] } }).result.tools
-export const qpuMcpTools = list.map((t) => ({
+const handlerTools = list.map((t) => ({
   name: t.name,
   description: t.description,
   parameters: Object.fromEntries(Object.entries(t.inputSchema.properties ?? {}).map(([k, p]) => [k, (t.inputSchema.required ?? []).includes(k) ? zodOf(p).describe(p.description ?? '') : zodOf(p).optional().describe(p.description ?? '')])) as z.ZodRawShape,
@@ -1156,6 +1159,39 @@ export const qpuMcpTools = list.map((t) => ({
     return { content: [{ type: 'text' as const, text: JSON.stringify(r.error ? { error: r.error.message } : r.result!.structuredContent) }] }
   },
 }))
+// the developer machine through the Payload MCP: the handler's door plans every action from its allow-list; the action runs here, in this
+// process, only on a local app (a loopback host) and only for a super admin, with no shell; every run is an entry of the Entries collection
+// created as the user (the tenant's roles and the entries hooks apply); the result names the repository tool's MCP App view
+const callTool = (name: string, args: Record<string, unknown>): any => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent: unknown } }).result?.structuredContent
+const LOOPBACK = ['localhost', '127.0.0.1', '[::1]']
+type MachineReq = { headers?: { get?: (k: string) => string | null }; user?: { roles?: string[] } | null; payload: { create: (o: Record<string, unknown>) => Promise<{ id: string | number }> } }
+const machineTool = {
+  name: 'machine',
+  description: 'The developer machine managed through the Payload MCP, securely: one action of the allow-list (repository { machine: { actions: true } } names them) run on this local app for a super admin, with no shell; commit and push decided by the workflow rules, a push only with confirm; every run an entry of the Entries collection, its paths relative and its leaks redacted',
+  parameters: { action: z.string().describe('an action of the allow-list: status, log, ahead, tags, diff, versions, next, stage, commit, push'), message: z.string().optional().describe('commit: the message'), confirm: z.boolean().optional().describe('push: the user confirms it') },
+  handler: async (args: Record<string, unknown>, req: MachineReq) => {
+    const answer = (x: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(x) }], _meta: { ui: { resourceUri: 'ui://qpu/repository' } } })
+    const h = String(req.headers?.get?.('host') ?? '')
+    const host = h.startsWith('[') ? h.slice(0, h.indexOf(']') + 1) : h.split(':')[0]!
+    if (!LOOPBACK.includes(host)) return answer({ refused: 'the machine answers only on a local app', court: callTool('legal', { court: { gate: 'machine', status: 403, rule: 'role', evidence: { host } } }) })
+    if (!(req.user?.roles ?? []).includes('admin')) return answer({ refused: 'the machine needs the super admin', court: callTool('legal', { court: { gate: 'machine', status: 403, rule: 'role', evidence: { action: args.action } } }) })
+    const root = path.resolve(process.cwd(), '..')
+    const read = (f: string): any => { try { return existsSync(path.join(root, f)) ? JSON.parse(readFileSync(path.join(root, f), 'utf8')) : null } catch { return null } }
+    const facts = { receipt: read('docs/public/receipt.json'), approval: read('docs/public/configs.json')?.approval ?? null, e2e: read('docs/public/e2e.json')?.outcomes ?? null }
+    const plan = callTool('repository', { machine: { plan: { action: args.action, message: args.message, confirm: args.confirm, facts } } })
+    if (!plan?.allowed) return answer(plan)
+    const { execFile } = await import('node:child_process')
+    const t0 = Date.now()
+    const run = await new Promise<{ status: number | null; stdout: string; stderr: string }>((resolve) => {
+      const child = execFile(plan.command.cmd, plan.command.args, { cwd: root, maxBuffer: 1024 * 1024 * 1024, timeout: 3600000 }, (err, stdout, stderr) => resolve({ status: err ? (typeof (err as { code?: unknown }).code === 'number' ? (err as { code: number }).code : 1) : 0, stdout: String(stdout), stderr: String(stderr) }))
+      child.stdin?.end(plan.input ?? '')
+    })
+    const record = callTool('repository', { machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: Date.now() - t0, root, home: homedir() } } })
+    const doc = await req.payload.create({ collection: 'entries', data: { kind: 'machine', from: 'local', body: record.entry.body }, req, overrideAccess: false, user: req.user })
+    return answer({ plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry }, stored: { collection: 'entries', id: doc.id } })
+  },
+}
+export const qpuMcpTools = [...handlerTools, machineTool]
 // the UI resources (MCP Apps): one ui://qpu/<tool> per tool, read from the handler's resources/read, served through the plugin's resources
 const resources = (handle({ jsonrpc: '2.0', id: 1, method: 'resources/list' }) as { result: { resources: { uri: string; name: string; description: string; mimeType: string }[] } }).result.resources
 export const qpuMcpResources = resources.map((r) => ({
@@ -1726,6 +1762,7 @@ export const accessAuditOf = (ctx: Context) => {
   const text = (path: string) => files[path] ?? ''
   const entries = text(fileOf('collection', 'entries')); const tenants = text(fileOf('collection', 'tenants')); const plugin = text(fileOf('plugin', 'qpu'))
   const users = text(fileOf('hooks', 'users')); const pages = text(fileOf('hooks', 'pages')); const submissions = text(fileOf('hooks', 'form-submissions'))
+  const mcpModule = text(fileOf('config', 'mcp'))
   const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; annotations?: { readOnlyHint?: boolean; idempotentHint?: boolean }; inputSchema: { properties?: Record<string, unknown> } }[] } }).result.tools
   const clay = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: {} } }) as { result?: { _meta?: { license?: unknown } } }
   const checks: { id: string; perspective: typeof PERSPECTIVES[number]; passed: boolean; evidence: string; hook: string; cost: string; licence: string; legal: string }[] = []
@@ -1740,6 +1777,7 @@ export const accessAuditOf = (ctx: Context) => {
   c('tenant:write-super-admin', 'tenant', /create: \(\{ req \}\) => roles\(req\)\.includes\('admin'\)/.test(tenants) && /update: \(\{ req \}\) => roles\(req\)\.includes\('admin'\)/.test(tenants), 'tenants are created, updated and deleted by a super admin alone', 'access on the tenants collection', 'free', 'the licence is per domain: a tenant row is a licensed domain', 'the operator answers for the tenants it names')
   c('tenant:bindings-named-not-valued', 'tenant', /name: 'bindings', type: 'group'/.test(tenants) && /never a value/.test(tenants) && /\^\[A-Z\]\[A-Z0-9_\]\*\$/.test(tenants), 'the tenant admin selects binding names (profile, connectors, variables); a value is refused by the field', 'validate on tenants.bindings.variables.name', 'free', 'the licence names the domain, the bindings name the providers: nothing secret in Payload', 'privacy by data minimisation: no secret, no personal datum in the tree or the admin')
   // the operator
+  c('developer:machine-local-admin-no-shell', 'developer', /LOOPBACK\.includes\(host\)/.test(mcpModule) && /\.includes\('admin'\)/.test(mcpModule) && /execFile\(/.test(mcpModule) && !/\bexec\(|shell:\s*true|spawn\(/.test(mcpModule) && /overrideAccess: false/.test(mcpModule), 'the machine tool of the Payload MCP runs only on a loopback host for a super admin, an argument vector the allow-list planned and never a shell, every run created as the user', 'payload.qpu.mcp.ts: machineTool', 'free', 'the developer\'s own machine, under the licence', 'nothing leaves the machine but what the user confirms: a push needs confirm and the pre-push rules')
   c('operator:first-user-from-deploy', 'operator', /firstUserBootstrap/.test(plugin) && /firstUserBootstrap/.test(users) && !/[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}/.test(users + plugin + entries + tenants), 'the first user comes from the deployer\'s account at deploy; no address in the generated code', 'users.beforeChange: firstUserBootstrap', 'free', 'the author is attributed by ORCID and URL, never by an address', 'no personal datum kept in the tree: the deployer\'s address is read at deploy, never written')
   c('operator:super-admin-everywhere', 'operator', /isSuperAdmin\(req\.user\)/.test(entries) && /super admin/.test(ACCESS.tenants.write), 'the admin role has access to every tenant; everyone else acts in its tenants', 'userHasAccessToAllTenants of the multi-tenant plugin', 'free', 'the operator holds the licence catalogue: a domain licence is an order of its ecommerce', 'the operator is the author or the party the author licensed')
   // an MCP client

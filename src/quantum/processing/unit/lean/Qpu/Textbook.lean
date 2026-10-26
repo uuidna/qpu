@@ -360,5 +360,7 @@ theorem textbook_decode_not_search : 14 < 10 ^ 14 ∧ 14 * 1 = 14 := by decide
 theorem textbook_tamper_detected : 256 / 2 = 128 ∧ 10 ^ 38 < 2 ^ 128 := by decide
 /-- every public artifact downloaded is verified or a mismatch, and every one not reached is measured again: when none mismatches, every artifact reached verifies against the digest its registry recorded, however many are published (examples: seal-artifacts) -/
 theorem textbook_artifacts_verified (verified mismatched unreached total : Nat) (h : verified + mismatched + unreached = total) (hm : mismatched = 0) : total - unreached = verified := by omega
+/-- every action asked of the developer machine is run because the allow-list names it and the rules allow it, or refused with the court's case: the refused and the run make every request, no third (examples: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed) -/
+theorem textbook_machine_allow_list (asked allowed : Nat) (h : allowed ≤ asked) : asked - allowed + allowed = asked := Nat.sub_add_cancel h
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

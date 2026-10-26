@@ -1990,6 +1990,10 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
         "type": "object"
       }
     },
+    "machine": {
+      "type": "object",
+      "description": "the developer machine through the MCP, securely: { actions: true } the allow-list; { plan: { action, message?, confirm?, facts? } } an action planned (its argument vector, or refused with the court's case: not on the list, not its parameters, or refused by the workflow rules); { record: { action, command, status, stdout, stderr, ms, root, home? } } a run judged (paths relative, leaks redacted by kind) as a docket entry at its address; the local server scripts/machine.ts runs only what a plan returns"
+    },
     "workflow": {
       "type": "string",
       "enum": [
