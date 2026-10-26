@@ -9,6 +9,8 @@ export const STANDARDS: readonly { id: string; name: string; contract: string; k
   // the reference site: payloadcms.com is built of what Payload computes (its REST answers Payload's own shape: docs with blocks, meta, breadcrumbs), as qpu.uuidna.com is built of what qpu computes
   { id: 'payload-site', name: 'payloadcms.com, built with Payload (REST pages)', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', kind: 'reference' },
   // NIST's first post-quantum standards, read at CSRC on 2026-10-25: FIPS 203, 204 and 205 published August 13, 2024; HQC selected March 11, 2025 (NIST IR 8545)
+  // Stripe's own contract: every use case of its API a path of its OpenAPI specification, read by the discover step and compared to the MCP's combinations by the stripe tool (op usecases)
+  { id: 'stripe-openapi', name: 'Stripe API, the OpenAPI specification: every use case a path', contract: 'https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json', kind: 'reference' },
   { id: 'nist-fips-203', name: 'NIST FIPS 203, Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)', contract: 'https://csrc.nist.gov/pubs/fips/203/final', kind: 'reference' },
   { id: 'nist-fips-204', name: 'NIST FIPS 204, Module-Lattice-Based Digital Signature Standard (ML-DSA)', contract: 'https://csrc.nist.gov/pubs/fips/204/final', kind: 'reference' },
   { id: 'nist-fips-205', name: 'NIST FIPS 205, Stateless Hash-Based Digital Signature Standard (SLH-DSA)', contract: 'https://csrc.nist.gov/pubs/fips/205/final', kind: 'reference' },

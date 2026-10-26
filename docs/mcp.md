@@ -1633,7 +1633,8 @@ Stripe per tenant, pure, the QPU as a product with its variants. catalogue: ever
         "state",
         "catalogue",
         "usage",
-        "settle"
+        "settle",
+        "usecases"
       ]
     },
     "currencies": {
