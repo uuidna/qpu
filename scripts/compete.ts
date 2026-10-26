@@ -1,7 +1,7 @@
 // The client of the compete tool, a step of every next: online it reads every competition's rules page once and asks GitHub whether
 // the remote main is the local head (pushed), then hands the pages and the evidence to the tool, which judges every rule and
 // measures each window from its page. Offline, the judgement stands on the fixtures. Writes the Compete page and compete.json.
-import { writeFileSync, mkdirSync } from 'node:fs'
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
 import './teleport.ts'
@@ -18,6 +18,9 @@ const main = async () => {
   const started = Date.now()
   const selftest = call({ selftest: true })
   console.log(`compete selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
+  // offline, an online judgement of today stands: the pages and the remote were read then, and a judgement without them would only lose what was measured
+  const prevPath = join(ROOT, 'docs', 'public', 'compete.json')
+  if (offline && existsSync(prevPath)) { try { const prev = JSON.parse(readFileSync(prevPath, 'utf8')) as { date?: string; offline?: boolean; competitions?: unknown[] }; if (prev.date && !prev.offline && Date.now() - Date.parse(prev.date) < 86_400_000) { console.log(`compete: offline; the online judgement of ${prev.date} stands (${prev.competitions?.length ?? 0} competitions)`); return } } catch { /* judged afresh below */ } }
   const pages: Record<string, string> = {}
   const fetched: { id: string; status: number; ms: number; bytes: number }[] = []
   let pushed: boolean | null = null
