@@ -32,6 +32,10 @@ theorem textbook_typography_idempotent (n : Nat) : min (min n 1) 1 = min n 1 := 
 theorem textbook_references_acyclic (k n : Nat) (h : k ≤ n) : n - k + k = n := by omega
 /-- the gravitational constant 667430 × 10^-16 with its uncertainty 15 × 10^-16 has a relative uncertainty of 22474 parts per billion, rounded down, computed from the integers alone: a seal keeps it, never removes it (examples: seal-constants) -/
 theorem textbook_codata_g_ppb : 15 * 1000000000 / 667430 = 22474 := by decide
+/-- the vector equilibrium has fourteen faces, eight triangles and six squares: around every UUID, eight witnesses with one handle nibble reflected and six with the program rotated (examples: verify-witnesses) -/
+theorem textbook_cuboctahedron_faces : 8 + 6 = 14 := by decide
+/-- σ is an involution on a nibble: reflected twice, 15 − (15 − x), it is x again, so every triangular witness maps back exactly to the UUID it witnesses (examples: verify-witnesses, verify-witnesses-merge) -/
+theorem textbook_sigma_involution (x : Nat) (h : x ≤ 15) : 15 - (15 - x) = x := by omega
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/

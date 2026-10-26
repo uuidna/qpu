@@ -228,6 +228,9 @@ Cheap verification of one UUID
 {
   "type": "object",
   "properties": {
+    "witnesses": {
+      "description": "the fourteen witnesses around a UUID, the faces of a cuboctahedron"
+    },
     "uuid": {
       "type": "string",
       "description": "the UUID to verify"

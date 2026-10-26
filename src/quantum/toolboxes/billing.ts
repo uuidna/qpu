@@ -218,6 +218,13 @@ export const ledgerOf = (calls: readonly { tool: string; tenant: string; argumen
   const outstanding = Object.entries(balances).filter(([k, v]) => k.startsWith('receivable:') && v > 0).map(([k, v]) => ({ tenant: k.slice('receivable:'.length), millicents: v }))
   return { currency, unit: 'thousandths of a cent', price, coins, coils, lines, debits, credits, balanced: debits === credits, balances, outstanding, reconciled: outstanding.length === 0, says: `${coins} coin(s) free, ${coils} coil(s) at ${price} thousandths of a cent each; debits ${debits} = credits ${credits}; ${outstanding.length ? `outstanding: ${outstanding.map((o) => `${o.tenant} ${o.millicents}`).join(', ')}` : 'every coil settled by Stripe'}`, theorem: 'textbook_double_entry' }
 }
+/** Work deduplicated as coins: every witness two UUIDs share is work that exists once, booked at zero price as a coin credited to the author —
+ *  a count of free work, never money: money moves only when Stripe settles a coil. Each line books the same amount on both sides (textbook_double_entry). */
+export const witnessCoinsOf = (shared: readonly string[]) => {
+  const lines = shared.map((uuid) => ({ debit: 'work:deduplicated', credit: 'coins:author', amount: 0, count: 1, why: `witness ${uuid} shared: computed once, not twice` }))
+  const debits = lines.reduce((n, l) => n + l.amount, 0), credits = lines.reduce((n, l) => n + l.amount, 0)
+  return { lines, coins: lines.length, debits, credits, balanced: debits === credits, says: `${lines.length} coin(s) credited to the author for work that exists once; a coin here counts free work, not money: money moves only when Stripe settles a coil`, theorem: 'textbook_double_entry' }
+}
 /** Recursive licensing: a chain of parties, each holding its licence from the level above as a docket entry and selling sublicences to the
  *  level below through its own Stripe (the ecommerce plugin's order afterChange at that level writes the licence entry linked to the one
  *  above), so verify walks the chain link by link; n sublicences under one licence are n links (textbook_licence_chain). The author's
