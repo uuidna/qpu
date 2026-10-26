@@ -625,7 +625,7 @@ pre { background: var(--surface-1); border-radius: var(--radius); padding: var(-
 <script>
 (function () {
   // the view of the MCP Apps protocol: JSON-RPC over postMessage; every message the host sends is a notification this shell renders, nothing else runs
-  var seq = 0, view = document.getElementById('view'), args = document.getElementById('args')
+  var seq = 0, view = document.getElementById('view'), args = document.getElementById('args'), pending = {}
   var send = function (m) { parent.postMessage(Object.assign({ jsonrpc: '2.0' }, m), '*') }
   // the device's randomness: the phase of the stream's animation at every interaction (eleven bits), the device's own nonce (thirty-two bits), the pointer; the phase set on the root so the CSS continues from it; every 36 samples the seal tool takes them through the host (a coil beyond the first period: the fusion)
   var samples = [], period = ${key * 9}
@@ -635,11 +635,15 @@ pre { background: var(--surface-1); border-radius: var(--radius); padding: var(-
     var meta = r && r._meta ? r._meta : {}
     if (meta.theme) for (var k in meta.theme) view.style.setProperty(k, meta.theme[k])
     view.innerHTML = meta.widget ? meta.widget : '<pre>' + JSON.stringify(r && r.structuredContent !== undefined ? r.structuredContent : r, null, 1).replace(/</g, '&lt;') + '</pre>'
+    // a decision verified by its client: every theorem it rests on, asked of the server through the host (tools/call: host to server, no model, no tokens) and its Lean source opened online; text only, never markup
+    var sc = r && r.structuredContent, v = sc && (sc.verify || (sc.decision && sc.decision.verify))
+    if (v && v.length) { var box = document.createElement('div'); box.className = 'qpu-verify'; v.forEach(function (x) { var row = document.createElement('div'), b = document.createElement('button'), out = document.createElement('span'); b.textContent = 'Verify ' + x.theorem; b.onclick = function () { var id = ++seq; pending[id] = out; out.textContent = ' asking the server'; send({ id: id, method: 'tools/call', params: x.call }) }; row.appendChild(b); if (x.online) { var s = document.createElement('button'); s.textContent = 'Lean source'; s.onclick = function () { send({ id: ++seq, method: 'ui/open-link', params: { url: x.online } }) }; row.appendChild(s) } row.appendChild(out); box.appendChild(row) }); view.appendChild(box) }
     size()
   }
   window.addEventListener('message', function (e) {
     var m = e.data || {}
     if (m.id === 1 && m.result) { send({ method: 'ui/notifications/initialized' }); return }
+    if (m.id && pending[m.id]) { var a = m.result && m.result.structuredContent; pending[m.id].textContent = a ? (a.accepted ? ' accepted by the kernel: ' : ' not in the kernel: ') + (a.statement || a.theorem) : ' ' + JSON.stringify(m.error || m.result); delete pending[m.id]; size(); return }
     if (m.method === 'ui/notifications/tool-input') { args.textContent = JSON.stringify(m.params && m.params.arguments); size() }
     if (m.method === 'ui/notifications/tool-result') render(m.params)
     if (m.method === 'ui/notifications/tool-cancelled') { view.textContent = 'the call was cancelled'; size() }

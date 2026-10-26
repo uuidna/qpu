@@ -8,6 +8,7 @@ import { answerOf } from './extension.js'
 import { toolOf, type Toolbox } from '../toolbox.js'
 import { contractedOf } from '../wave.js'
 import { flowWidget } from '../widgets.js'
+import { verificationOf } from '../verification.js'
 import { MACHINE_ACTIONS, machinePlanOf, machineRecordOf, type MachineRequest, type MachineRun } from '../machine.js'
 import { cloudflareBillOf, type CloudflareUsage } from './billing.js'
 
@@ -66,7 +67,7 @@ export const decideOf = (name: WorkflowName, given: WorkflowFacts) => {
   const strict = name === 'pre-commit' || name === 'pre-push' || name === 'ci' || name === 'pre-deploy'
   const violated = rules.filter((r) => r.holds === false), unknown = rules.filter((r) => r.holds === null)
   const allowed = strict ? violated.length === 0 && unknown.length === 0 : true
-  return { workflow: name, strict, rules, allowed, violated: violated.map((r) => r.rule), unknown: unknown.map((r) => r.rule), court: violated.length || (strict && unknown.length) ? { tool: 'legal', arguments: { court: { gate: `git ${name}`, status: 412, rule: 'collision', evidence: { violated: violated.map((r) => `${r.rule}: ${r.evidence}`), unknown: unknown.map((r) => r.rule) } } }, says: 'the violation is a case the court computes; the committer files it or satisfies the rule' } : null, says: allowed ? `${name} allowed: ${rules.map((r) => `${r.rule} holds (${r.theorem})`).join(', ') || 'no strict rule'}` : `${name} refused: ${[...violated.map((r) => `${r.rule} violated (${r.evidence})`), ...unknown.map((r) => `${r.rule} unknown (${r.evidence})`)].join('; ')}` }
+  return { workflow: name, strict, rules, verify: verificationOf(rules.map((r) => r.theorem)), allowed, violated: violated.map((r) => r.rule), unknown: unknown.map((r) => r.rule), court: violated.length || (strict && unknown.length) ? { tool: 'legal', arguments: { court: { gate: `git ${name}`, status: 412, rule: 'collision', evidence: { violated: violated.map((r) => `${r.rule}: ${r.evidence}`), unknown: unknown.map((r) => r.rule) } } }, says: 'the violation is a case the court computes; the committer files it or satisfies the rule' } : null, says: allowed ? `${name} allowed: ${rules.map((r) => `${r.rule} holds (${r.theorem})`).join(', ') || 'no strict rule'}` : `${name} refused: ${[...violated.map((r) => `${r.rule} violated (${r.evidence})`), ...unknown.map((r) => `${r.rule} unknown (${r.evidence})`)].join('; ')}` }
 }
 export type WorkflowName = typeof WORKFLOWS[number]
 export const workflowOf = (name: WorkflowName, o: { offline?: boolean } = {}) => {
