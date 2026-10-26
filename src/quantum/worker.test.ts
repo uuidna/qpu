@@ -442,5 +442,5 @@ test('the cheapest view over the Worker: ?view=cheapest answers the address, the
   const res = await worker.fetch(req('/mcp?view=cheapest', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'roadmap', arguments: {} } }) }), e)
   assert.equal(res.status, 200)
   const v = JSON.parse(((await res.json()) as { result: { content: { text: string }[] } }).result.content[0]!.text) as { address: string; recompute: { tool: string }; tamper: { secondPreimage: string } }
-  assert.ok(/^[0-9a-f-]{36}$/.test(v.address) && v.recompute.tool === 'roadmap' && v.tamper.secondPreimage === '2^256 trials')
+  assert.ok(/^[0-9a-f-]{36}$/.test(v.address) && v.recompute.tool === 'roadmap' && v.tamper.secondPreimage === '2^256')
 })
