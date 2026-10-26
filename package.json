@@ -6,7 +6,8 @@
     "./mcp": "./src/quantum/mcp.ts",
     "./discovery-document": "./src/quantum/discovery-document.ts",
     "./version": "./src/quantum/version.ts",
-    "./blocks": "./src/quantum/blocks.ts"
+    "./blocks": "./src/quantum/blocks.ts",
+    "./roles": "./src/quantum/roles.ts"
   },
   "license": "CC-BY-NC-ND-4.0",
   "author": {

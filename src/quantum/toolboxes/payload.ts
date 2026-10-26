@@ -784,7 +784,7 @@ export const ACCESS = {
   tenants: { read: 'everyone', write: 'a super admin (the admin role)' },
   users: 'the site\'s own (admin or self), with an API key per user for MCP clients',
   pages: 'the site\'s own access, kept (published pages public, drafts to users)',
-  by: 'the x-qpu-role header the Worker sets from the Authorization token (roles.ts), or Payload\'s user',
+  by: 'Payload\'s user, or a role header signed under the deployment\'s secret (x-qpu-role-mac: HMAC-SHA-256 over role|tenant|METHOD, roles.ts); a bare x-qpu-role header is no claim (measured 2026-10-26: unsigned, it let an anonymous request delete an entry)',
 } as const
 /** The actions at quantum scale: a batch is one JSON-RPC array answered as one array; Payload\'s bulk REST by where; a batch above the quantum is sharded (the shard tool\'s theorems) and the shards run as one wave; the experience the gate measured decides the shard size. */
 export const actionsOf = (experience?: { copies?: number; involutions?: number; msByHost?: Record<string, number> }) => {
@@ -1225,21 +1225,24 @@ export const qpuServerInfo = { name: 'qpu', version: VERSION }
 import type { CollectionConfig } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { handle } from '@uuidna/qpu/mcp'
+import { signedRoleOf } from '@uuidna/qpu/roles'
 
 type TenantUser = { roles?: string[]; tenants?: { tenant?: { id?: string } | string; roles?: string[] }[] } | null | undefined
 const isSuperAdmin = (user: unknown): boolean => ((user as TenantUser)?.roles ?? []).includes('admin')
 const tenantIdOf = (t: unknown): string | null => (typeof t === 'string' ? t : (t as { id?: string } | undefined)?.id ?? null)
 const tenantsWithRole = (user: unknown, roles: readonly string[]): string[] => ((user as TenantUser)?.tenants ?? []).filter((row) => (row.roles ?? []).some((r) => roles.includes(r))).map((row) => tenantIdOf(row.tenant)).filter((id): id is string => !!id)
 const memberOf = (user: unknown, tenant: string | null, roles: readonly string[]): boolean => !!tenant && tenantsWithRole(user, roles).includes(tenant)
+// a role claimed in a header counts only when signed under the deployment's secret (x-qpu-role-mac over role|tenant|METHOD); a bare header is no claim
+const claimedRole = (req: { headers: Headers; method?: string }) => signedRoleOf({ role: req.headers.get('x-qpu-role'), tenant: req.headers.get('x-qpu-tenant'), mac: req.headers.get('x-qpu-role-mac'), method: req.method ?? '' }, process.env.QPU_ROLE_SECRET)
 export const Entries: CollectionConfig = {
   slug: 'entries',
   admin: { useAsTitle: 'id', defaultColumns: ['id', 'kind', 'from', 'createdAt'] },
-  // access by tenant roles and the Worker's roles: a reader reads; a call is created by anyone; an entry of other kinds by a super admin, a tenant-admin or editor of its tenant, or the writer token; no one updates (an entry is its content address); a super admin, a tenant-admin of its tenant or the admin token deletes
+  // access by tenant roles and the Worker's roles: a reader reads; a call is created by anyone; an entry of other kinds by a super admin, a tenant-admin or editor of its tenant, or a writer role signed under the deployment's secret; no one updates (an entry is its content address); a super admin, a tenant-admin of its tenant or a signed admin role deletes
   access: {
     read: () => true,
-    create: ({ req, data }) => data?.kind === 'call' || isSuperAdmin(req.user) || memberOf(req.user, tenantIdOf(data?.tenant), ['tenant-admin', 'editor']) || req.headers.get('x-qpu-role') === 'writer' || req.headers.get('x-qpu-role') === 'admin',
+    create: ({ req, data }) => data?.kind === 'call' || data?.kind === 'chat' || isSuperAdmin(req.user) || memberOf(req.user, tenantIdOf(data?.tenant), ['tenant-admin', 'editor']) || claimedRole(req) === 'writer' || claimedRole(req) === 'admin',
     update: () => false,
-    delete: ({ req }) => isSuperAdmin(req.user) || req.headers.get('x-qpu-role') === 'admin' || { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } },
+    delete: ({ req }) => isSuperAdmin(req.user) || claimedRole(req) === 'admin' || { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } },
   },
   fields: [
     { name: 'id', type: 'text', required: true, ${validateOf('entries', 'id')}, admin: { readOnly: true, description: 'the content address: computed from kind, from and body' } },
@@ -1264,6 +1267,17 @@ export const Entries: CollectionConfig = {
       if (operation !== 'create' || !data) return data
       // the tenant the multi-tenant plugin requires: the caller's, else the request host's row (as the users hook names it), else the first tenant, so a public call lands under the tenant that answers it
       if (!data.tenant) { const host = (req?.headers?.get?.('host') ?? '').split(':')[0] || 'localhost'; const byHost = await req.payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, limit: 1, overrideAccess: true }); const first = byHost.docs[0] ?? (await req.payload.find({ collection: 'tenants' as never, limit: 1, sort: 'createdAt', overrideAccess: true })).docs[0]; if (first) data.tenant = (first as { id: string }).id }
+      // the caller's role, from Payload's user and the tenant (a signed role claim counts too): the chat door corrects what the role may not choose
+      const tenantId = tenantIdOf(data.tenant)
+      const role = isSuperAdmin(req.user) || claimedRole(req) === 'admin' || memberOf(req.user, tenantId, ['tenant-admin']) ? 'admin' : claimedRole(req) === 'writer' || memberOf(req.user, tenantId, ['editor']) ? 'writer' : 'reader'
+      const chatDoor = (statement: string, chat: Record<string, unknown>) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement, chat } } }) as { result?: { structuredContent?: any } }).result?.structuredContent
+      // a call is folded as it will run: its arguments corrected for the role first, so the same address always holds the same reply
+      const asked = data.body as { tool?: string; arguments?: Record<string, unknown>; statement?: string } | undefined
+      let corrected: unknown[] = []
+      if (data.kind === 'call' && asked?.tool) { const c = chatDoor('call ' + asked.tool, { role, run: false, call: { tool: asked.tool, arguments: asked.arguments ?? {} } }); if (c?.call) { data.body = { tool: asked.tool, arguments: c.call.arguments }; corrected = c.corrected ?? [] } }
+      // a chat entry: the statement and the role are its body; the hook answers it through the chat door, nothing thrown back
+      if (data.kind === 'chat') data.body = { statement: String(asked?.statement ?? ''), role }
+      const chat = data.kind === 'chat' ? chatDoor(String(asked?.statement ?? ''), { role }) : undefined
       const text = JSON.stringify({ kind: data.kind, from: data.from, body: data.body ?? null })
       const bytes = new TextEncoder().encode(text)
       const digest = await crypto.subtle.digest('SHA-256', bytes)
@@ -1271,7 +1285,7 @@ export const Entries: CollectionConfig = {
       const body = data.body as { tool?: string; arguments?: Record<string, unknown> } | undefined
       // the reply's result stands as the entry's result (content, structuredContent, _meta with the widget); a refusal stands as { error }
       const reply = data.kind === 'call' && body?.tool ? (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: body.tool, arguments: body.arguments ?? {} } }) as { result?: unknown; error?: { message: string } }) : undefined
-      const result = reply ? (reply.result ?? { error: reply.error }) : undefined
+      const result = chat ? chat : reply ? { ...((reply.result ?? { error: reply.error }) as object), ...(corrected.length ? { corrected } : {}) } : undefined
       return { ...data, id: uuidOf(text), sha256: [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join(''), ...(result ? { result } : {}) }
     }],
     // no revalidation hook: an entry is its content address and never updates, so nothing cached under it ever changes (measured: a revalidateTag during the render that creates a call is refused by Next)
@@ -1786,11 +1800,11 @@ export const accessAuditOf = (ctx: Context) => {
   const c = (id: string, perspective: typeof PERSPECTIVES[number], passed: boolean, evidence: string, hook: string, cost: string, licence: string, legal: string) => checks.push({ id, perspective, passed, evidence, hook, cost, licence, legal })
   // the public: anyone at the default domain, no account, no token
   c('public:read-everyone', 'public', /read: \(\) => true/.test(entries) && ACCESS.entries.read === 'everyone' && ACCESS.tenants.read === 'everyone', 'entries and tenants read by everyone; every tool answers without a credential', 'none: a read is served from the cache by address', 'free: a cache hit by address, a 304 by involution', 'BY: every answer carries _meta.license and the attribution', 'the moral right of attribution (Berne art. 6bis), honoured on every read')
-  c('public:create-call-only', 'public', /data\?\.kind === 'call'/.test(entries) && /x-qpu-role'\) === 'writer'/.test(entries), 'an anonymous create is a call, whose address folds it; any other kind needs a tenant role or the writer token', 'beforeValidate: the content address on create, so a repeated call is the same row', 'paid once by the provider for the first computation, free after by address', 'NC: non-commercial use is free and needs no licence; the a432 default is priced 0', 'consideration: non-commercial free, commercial billed on the measured advantage')
+  c('public:create-call-only', 'public', /data\?\.kind === 'call'/.test(entries) && /claimedRole\(req\) === 'writer'/.test(entries) && !/headers\.get\('x-qpu-role'\) ===/.test(entries), 'an anonymous create is a call or a chat, whose address folds it as corrected for the role; any other kind needs a tenant role or a writer role signed under the deployment secret (a bare header is no claim)', 'beforeValidate: the content address on create, so a repeated call is the same row', 'paid once by the provider for the first computation, free after by address', 'NC: non-commercial use is free and needs no licence; the a432 default is priced 0', 'consideration: non-commercial free, commercial billed on the measured advantage')
   c('public:no-update-anywhere', 'public', /update: \(\) => false/.test(entries) && /no one/.test(ACCESS.entries.update), 'no one updates an entry: a change is a new entry linked to the one it replaces', 'none on change: nothing cached under an address changes', 'free: no revalidation, ever', 'ND: no derivative of a sealed entry; the chain of entries is the history', 'integrity (Berne art. 6bis); the sui generis database right over the sealed ledger (Directive 96/9/EC art. 7)')
   // a licensed tenant's users at their own domain
   c('tenant:roles-and-scopes', 'tenant', TENANT_ROLES.length === 3 && SCOPES.collections.length === 4 && Object.keys(ROLES).length === 3, `${TENANT_ROLES.join(', ')} over ${SCOPES.collections.join(', ')}; ${Object.keys(ROLES).join(', ')} over the docket`, 'the multi-tenant plugin scopes every read and write by the user\'s tenants', 'free: a where on the tenant', 'the licence names the domains it covers; a tenant acts on its own', 'tenant isolation: one docket per tenant host; a token at another tenant\'s host holds no role')
-  c('tenant:delete-scoped', 'tenant', /tenantsWithRole\(req\.user, \['tenant-admin'\]\)/.test(entries) && /x-qpu-role'\) === 'admin'/.test(entries), 'a tenant-admin deletes within its tenant (a where), the admin token within its docket, a super admin anywhere', 'access.delete: the where is the hook', 'free: the where is evaluated by the database', 'the licence\'s domains bound the act', 'accountability: a deletion is a role\'s, named by the token or the user')
+  c('tenant:delete-scoped', 'tenant', /tenantsWithRole\(req\.user, \['tenant-admin'\]\)/.test(entries) && /claimedRole\(req\) === 'admin'/.test(entries), 'a tenant-admin deletes within its tenant (a where), a signed admin role within its docket, a super admin anywhere', 'access.delete: the where is the hook', 'free: the where is evaluated by the database', 'the licence\'s domains bound the act', 'accountability: a deletion is a role\'s, named by the token or the user')
   c('tenant:write-super-admin', 'tenant', /create: \(\{ req \}\) => roles\(req\)\.includes\('admin'\)/.test(tenants) && /update: \(\{ req \}\) => roles\(req\)\.includes\('admin'\)/.test(tenants), 'tenants are created, updated and deleted by a super admin alone', 'access on the tenants collection', 'free', 'the licence is per domain: a tenant row is a licensed domain', 'the operator answers for the tenants it names')
   c('tenant:bindings-named-not-valued', 'tenant', /name: 'bindings', type: 'group'/.test(tenants) && /never a value/.test(tenants) && /\^\[A-Z\]\[A-Z0-9_\]\*\$/.test(tenants), 'the tenant admin selects binding names (profile, connectors, variables); a value is refused by the field', 'validate on tenants.bindings.variables.name', 'free', 'the licence names the domain, the bindings name the providers: nothing secret in Payload', 'privacy by data minimisation: no secret, no personal datum in the tree or the admin')
   // the operator

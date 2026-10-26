@@ -1075,6 +1075,10 @@ Any statement, matched against everything the surface can do. served: a call ans
       "type": "string",
       "description": "any prompt or statement; Glagolitic numerals are read as integers"
     },
+    "chat": {
+      "type": "object",
+      "description": "the one door a chat needs: { role?, call?: { tool, arguments }, referrer?, run? } — the statement (or the call) answered under the role: the served call, else the example of the first routed theorem; values the role may not choose corrected to its harmonic default; a refusal answered with its remedy and the case of the court, never thrown. The chat hook of the app asks this for every chat entry"
+    },
     "url": {
       "type": "string",
       "description": "a URL path: the statement decided and, beside it, the composition the path names — the cached assets its words select (the generated code, the SDK, the registry items, the examples' blocks), computed in real time, verified at their addresses and billed (the fallback for anything)"

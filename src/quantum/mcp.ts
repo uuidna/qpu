@@ -11,7 +11,7 @@ import { blockOf, verifyOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDef
 import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay, reflectionOfRegister } from './clay-register.js'
 import { composeOf } from './compose.js'
-import { mayChoose, type Role } from './roles.js'
+import { mayChoose, ROLE_RANK, type Role } from './roles.js'
 import { evaluateOf, expressionsOf, proseOf } from './expressions.js'
 import { institutionOf, presetsOf, presetOf, createCallOf, PRESET_FAMILIES } from './institutions.js'
 import { collisionsOf } from './collisions.js'
@@ -598,9 +598,9 @@ const OWN: Tool[] = [
   tool({
     name: 'match',
     description: 'Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the surface proves it cannot, from a schema bound the statement exceeds, a lead whose reason says why, or the handler\'s own refusal; the cluster then names the served possibilities around it and verify names the live sources the client\'s MCP can check. unknown: nothing matches, and the statement comes back as a new lead to develop.',
-    inputSchema: { type: 'object', required: ['statement'], properties: { statement: { type: 'string', description: 'any prompt or statement; Glagolitic numerals are read as integers' }, url: { type: 'string', description: 'a URL path: the statement decided and, beside it, the composition the path names — the cached assets its words select (the generated code, the SDK, the registry items, the examples\' blocks), computed in real time, verified at their addresses and billed (the fallback for anything)' }, tenant: { type: 'string', description: 'with url: the tenant reselling the composition (the licence chain)' }, locale: { type: 'string', enum: Object.keys(LOCALES), description: 'the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it' } } },
-    run: (args) => { const m = matchOf(String(args.statement ?? ''), handle, EXAMPLES, LEADS, args.locale === undefined ? undefined : String(args.locale)); return typeof args.url === 'string' ? { ...m, composition: composeOf(args.url, CONTEXT, 'https://qpu.uuidna.com', typeof args.tenant === 'string' ? args.tenant : 'uuidna') } : m },
-    widget: matchWidget,
+    inputSchema: { type: 'object', required: ['statement'], properties: { statement: { type: 'string', description: 'any prompt or statement; Glagolitic numerals are read as integers' }, chat: { type: 'object', description: 'the one door a chat needs: { role?, call?: { tool, arguments }, referrer?, run? } — the statement (or the call) answered under the role: the served call, else the example of the first routed theorem; values the role may not choose corrected to its harmonic default; a refusal answered with its remedy and the case of the court, never thrown. The chat hook of the app asks this for every chat entry' }, url: { type: 'string', description: 'a URL path: the statement decided and, beside it, the composition the path names — the cached assets its words select (the generated code, the SDK, the registry items, the examples\' blocks), computed in real time, verified at their addresses and billed (the fallback for anything)' }, tenant: { type: 'string', description: 'with url: the tenant reselling the composition (the licence chain)' }, locale: { type: 'string', enum: Object.keys(LOCALES), description: 'the language of the statement, translated to English by vocabulary offline before the match; the verdict is given back in it' } } },
+    run: (args) => { if (args.chat && typeof args.chat === 'object') return chatOf(String(args.statement ?? ''), args.chat as Parameters<typeof chatOf>[1]) as never; const m = matchOf(String(args.statement ?? ''), handle, EXAMPLES, LEADS, args.locale === undefined ? undefined : String(args.locale)); return typeof args.url === 'string' ? { ...m, composition: composeOf(args.url, CONTEXT, 'https://qpu.uuidna.com', typeof args.tenant === 'string' ? args.tenant : 'uuidna') } : m },
+    widget: ((d: any) => ('role' in d && 'theorems' in d && !('verdict' in d) ? flowWidget(d) : matchWidget(d))) as never,
   }),
   tool({
     name: 'clay',
@@ -871,6 +871,33 @@ export const TOOLBOXES: Toolbox[] = [
   CRYPTO,
 ]
 const TOOLS: Tool[] = TOOLBOXES.flatMap((b) => b.tools)
+/** The chat as the one door an MCP client needs: a statement (or a call) answered under the caller's role, never an error thrown back.
+ *  The call is the one the match serves, else the example of the first theorem the route names (a theorem-based answer); every enum value
+ *  the role may not choose is corrected to the role's harmonic default (textbook_rbac_options); a handler refusal is answered with its
+ *  learned remedy, the fallback's handling and the court's case (textbook_fallback_involution): correction and handling are one involution. */
+export const chatOf = (statement: string, c: { role?: string; call?: { tool: string; arguments?: Record<string, unknown> }; referrer?: string; run?: boolean } = {}) => {
+  const role: Role = c.role && c.role in ROLE_RANK ? (c.role as Role) : 'reader'
+  const m = c.call ? null : (matchOf(statement, handle, EXAMPLES, LEADS) as { verdict?: string; call?: { name: string; arguments: Record<string, unknown> } | null; route?: { theorems?: { theorem: string }[] }; lead?: unknown })
+  const routed = (m?.route?.theorems ?? []).map((x) => x.theorem)
+  let call: { name: string; arguments: Record<string, unknown> } | null = c.call ? { name: c.call.tool, arguments: c.call.arguments ?? {} } : m?.call ?? null
+  let by = c.call ? 'the call given' : call ? 'the call the match serves' : ''
+  if (!call) for (const th of routed) { const ex = EXAMPLES.find((e) => e.theorem === th); if (ex) { call = { name: ex.tool, arguments: ex.arguments }; by = `theorem ${th}: its example ${ex.id}`; break } }
+  if (!call) return { statement, role, by: 'nothing yet', routed, handled: { says: 'no call serves it and no routed theorem has an example yet: the statement is a lead', lead: m?.lead ?? null }, theorems: ['textbook_fallback_involution'] }
+  const tool = TOOLS.find((x) => x.name === call!.name) as (Tool & { inputSchema: { properties?: Record<string, { enum?: readonly unknown[]; default?: unknown }> } }) | undefined
+  const h = harmonicDefaultsOf(tool?.inputSchema ?? {}, c.referrer, (p, v) => mayChoose(role, call!.name, p, v))
+  const args: Record<string, unknown> = { ...call.arguments }
+  const corrected: { property: string; from: unknown; to: unknown; why: string }[] = []
+  for (const [p, v] of Object.entries(args)) {
+    const opts = h.options[p]; if (!opts || opts.includes(v)) continue
+    if (!opts.length) { delete args[p]; corrected.push({ property: p, from: v, to: null, why: `the ${role} role may choose no value of ${p}: withheld` }) }
+    else { const to = h.defaults[p] ?? opts[0]; args[p] = to; corrected.push({ property: p, from: v, to, why: `the ${role} role may not choose ${String(v)}: its harmonic default within the values it may choose` }) }
+  }
+  if (c.run === false) return { statement, role, by, call: { name: call.name, arguments: args }, corrected, routed, theorems: ['textbook_rbac_options'], says: `${call.name} corrected for the ${role} role, not run` }
+  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: call.name, arguments: args } }) as { result?: { structuredContent?: unknown }; error?: { message: string } }
+  const theorems = ['textbook_rbac_options', 'textbook_fallback_involution', ...routed]
+  if (r.error) return { statement, role, by, call: { name: call.name, arguments: args }, corrected, routed, handled: { error: r.error.message, remedy: remediesOf([r.error.message]), fallback: handleOrCorrect([r.error.message], false, 'handling'), court: courtOf({ gate: `chat ${call.name}`, rule: 'shape', evidence: { message: r.error.message } }) }, theorems, says: `${call.name} refused it; answered with its remedy and the court's case, nothing thrown` }
+  return { statement, role, by, call: { name: call.name, arguments: args }, corrected, routed, reply: r.result?.structuredContent ?? null, theorems, says: `${call.name} answered under the ${role} role (${by})${corrected.length ? `; ${corrected.length} value(s) corrected to what the role may choose` : ''}` }
+}
 const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS } }
 
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
