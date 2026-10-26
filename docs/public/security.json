@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T12:18:16.091Z",
+ "date": "2026-10-26T12:36:05.723Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -178,7 +178,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1040 kernel-accepted theorems",
+   "evidence": "1043 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -201,5 +201,262 @@
   }
  ],
  "verdict": "1 finding(s), each a lead with its remedy",
- "says": "the security audit performed by MCP from both perspectives merged as one; every finding a lead with the remedy manual work taught"
+ "says": "the security audit performed by MCP from both perspectives merged as one; every finding a lead with the remedy manual work taught",
+ "access": {
+  "perspectives": [
+   "public",
+   "tenant",
+   "operator",
+   "client",
+   "developer",
+   "legal"
+  ],
+  "operations": [
+   "read",
+   "create",
+   "update",
+   "delete"
+  ],
+  "collections": [
+   "pages",
+   "entries",
+   "products",
+   "orders",
+   "tenants",
+   "users"
+  ],
+  "tenantRoles": [
+   "tenant-admin",
+   "editor",
+   "viewer"
+  ],
+  "docketRoles": [
+   "reader",
+   "writer",
+   "admin"
+  ],
+  "combinations": 36,
+  "combinationsSay": "3 tenant roles × 3 docket roles × 4 operations = 36 role–operation combinations, each decided by one of three deciders: the user's roles, the x-qpu-role header, the entry's kind (textbook_access_combinations)",
+  "access": {
+   "entries": {
+    "read": "everyone",
+    "create": "a call by anyone (its address folds the call); other kinds by a super admin, a tenant-admin or editor of the entry's tenant, or the tenant's writer token",
+    "update": "no one: an entry is its content address, so a change is a new entry",
+    "delete": "a super admin, a tenant-admin of the entry's tenant (a where on the tenant), or the tenant's admin token"
+   },
+   "tenants": {
+    "read": "everyone",
+    "write": "a super admin (the admin role)"
+   },
+   "users": "the site's own (admin or self), with an API key per user for MCP clients",
+   "pages": "the site's own access, kept (published pages public, drafts to users)",
+   "by": "the x-qpu-role header the Worker sets from the Authorization token (roles.ts), or Payload's user"
+  },
+  "hooks": "every hook keeps a read free: the content address makes an entry immutable (a duplicate write is the same id), the tag invalidates only the page that changed, so the provider is paid for writes and first computations, never for reads",
+  "checks": [
+   {
+    "id": "public:read-everyone",
+    "perspective": "public",
+    "passed": true,
+    "evidence": "entries and tenants read by everyone; every tool answers without a credential",
+    "hook": "none: a read is served from the cache by address",
+    "cost": "free: a cache hit by address, a 304 by involution",
+    "licence": "BY: every answer carries _meta.license and the attribution",
+    "legal": "the moral right of attribution (Berne art. 6bis), honoured on every read"
+   },
+   {
+    "id": "public:create-call-only",
+    "perspective": "public",
+    "passed": true,
+    "evidence": "an anonymous create is a call, whose address folds it; any other kind needs a tenant role or the writer token",
+    "hook": "beforeValidate: the content address on create, so a repeated call is the same row",
+    "cost": "paid once by the provider for the first computation, free after by address",
+    "licence": "NC: non-commercial use is free and needs no licence; the a432 default is priced 0",
+    "legal": "consideration: non-commercial free, commercial billed on the measured advantage"
+   },
+   {
+    "id": "public:no-update-anywhere",
+    "perspective": "public",
+    "passed": true,
+    "evidence": "no one updates an entry: a change is a new entry linked to the one it replaces",
+    "hook": "none on change: nothing cached under an address changes",
+    "cost": "free: no revalidation, ever",
+    "licence": "ND: no derivative of a sealed entry; the chain of entries is the history",
+    "legal": "integrity (Berne art. 6bis); the sui generis database right over the sealed ledger (Directive 96/9/EC art. 7)"
+   },
+   {
+    "id": "tenant:roles-and-scopes",
+    "perspective": "tenant",
+    "passed": true,
+    "evidence": "tenant-admin, editor, viewer over pages, entries, products, orders; reader, writer, admin over the docket",
+    "hook": "the multi-tenant plugin scopes every read and write by the user's tenants",
+    "cost": "free: a where on the tenant",
+    "licence": "the licence names the domains it covers; a tenant acts on its own",
+    "legal": "tenant isolation: one docket per tenant host; a token at another tenant's host holds no role"
+   },
+   {
+    "id": "tenant:delete-scoped",
+    "perspective": "tenant",
+    "passed": true,
+    "evidence": "a tenant-admin deletes within its tenant (a where), the admin token within its docket, a super admin anywhere",
+    "hook": "access.delete: the where is the hook",
+    "cost": "free: the where is evaluated by the database",
+    "licence": "the licence's domains bound the act",
+    "legal": "accountability: a deletion is a role's, named by the token or the user"
+   },
+   {
+    "id": "tenant:write-super-admin",
+    "perspective": "tenant",
+    "passed": true,
+    "evidence": "tenants are created, updated and deleted by a super admin alone",
+    "hook": "access on the tenants collection",
+    "cost": "free",
+    "licence": "the licence is per domain: a tenant row is a licensed domain",
+    "legal": "the operator answers for the tenants it names"
+   },
+   {
+    "id": "tenant:bindings-named-not-valued",
+    "perspective": "tenant",
+    "passed": true,
+    "evidence": "the tenant admin selects binding names (profile, connectors, variables); a value is refused by the field",
+    "hook": "validate on tenants.bindings.variables.name",
+    "cost": "free",
+    "licence": "the licence names the domain, the bindings name the providers: nothing secret in Payload",
+    "legal": "privacy by data minimisation: no secret, no personal datum in the tree or the admin"
+   },
+   {
+    "id": "operator:first-user-from-deploy",
+    "perspective": "operator",
+    "passed": true,
+    "evidence": "the first user comes from the deployer's account at deploy; no address in the generated code",
+    "hook": "users.beforeChange: firstUserBootstrap",
+    "cost": "free",
+    "licence": "the author is attributed by ORCID and URL, never by an address",
+    "legal": "no personal datum kept in the tree: the deployer's address is read at deploy, never written"
+   },
+   {
+    "id": "operator:super-admin-everywhere",
+    "perspective": "operator",
+    "passed": true,
+    "evidence": "the admin role has access to every tenant; everyone else acts in its tenants",
+    "hook": "userHasAccessToAllTenants of the multi-tenant plugin",
+    "cost": "free",
+    "licence": "the operator holds the licence catalogue: a domain licence is an order of its ecommerce",
+    "legal": "the operator is the author or the party the author licensed"
+   },
+   {
+    "id": "client:api-key-per-user",
+    "perspective": "client",
+    "passed": true,
+    "evidence": "every user may hold an API key; the Payload MCP plugin refuses an anonymous request",
+    "hook": "the plugin: auth.useAPIKey on users",
+    "cost": "free",
+    "licence": "a key is a user's of a licensed tenant",
+    "legal": "accountability: every write over the app's MCP is a user's"
+   },
+   {
+    "id": "client:pure-tools-no-credential",
+    "perspective": "client",
+    "passed": true,
+    "evidence": "46 tools, every one read-only and idempotent; credential-named arguments: stripe.secret (the Worker passes it at the edge)",
+    "hook": "none: the tools are pure functions of their arguments",
+    "cost": "free: a 304 by involution needs no scope at all",
+    "licence": "BY: the a432 default free to all under attribution",
+    "legal": "no credential travels through a tool from a client; where the Worker passes one at the edge, a client never holds it"
+   },
+   {
+    "id": "client:advantage-unlimited-no-interaction",
+    "perspective": "client",
+    "passed": true,
+    "evidence": "the advantage is computed from the run's counts alone: when every copy is an involution it is unbounded; the metrics tool takes artefacts and nothing else",
+    "hook": "none: the gate decodes, the involution answers 304, the metric follows",
+    "cost": "free: no approval, no token, no bound (textbook_advantage_unbounded)",
+    "licence": "the advantage is what commercial use is billed on, and what non-commercial use gets free",
+    "legal": "consideration measured by the unit (bill_call), recheckable by anyone"
+   },
+   {
+    "id": "developer:content-address-on-create",
+    "perspective": "developer",
+    "passed": true,
+    "evidence": "the entry id is the content address of { kind, from, body }, the sha256 beside it, on create only",
+    "hook": "entries.beforeValidate",
+    "cost": "free: a duplicate write lands on the same id",
+    "licence": "ND: an entry is its content",
+    "legal": "integrity: the address is the proof"
+   },
+   {
+    "id": "developer:collision-guard",
+    "perspective": "developer",
+    "passed": true,
+    "evidence": "an edit names the address it read and is accepted only while the document still folds to it; a collision answers both addresses",
+    "hook": "pages.beforeChange: collisionGuard",
+    "cost": "free: folded from the document the hook already holds",
+    "licence": "ND: no silent overwrite of anyone's edit",
+    "legal": "integrity of concurrent authorship"
+   },
+   {
+    "id": "developer:app-request-validated",
+    "perspective": "developer",
+    "passed": true,
+    "evidence": "an app request is validated as it is typed and refused by the hook when the stream refused it",
+    "hook": "form-submissions.afterChange: appRequest",
+    "cost": "free: validated token free",
+    "licence": "commercial: the app is priced by the catalogue and ordered through the ecommerce plugin",
+    "legal": "a licence sold is an order with its terms"
+   },
+   {
+    "id": "legal:licence-on-every-answer",
+    "perspective": "legal",
+    "passed": true,
+    "evidence": "every tools/call result carries _meta.license; initialize states the terms",
+    "hook": "the handler: _meta.license on every result",
+    "cost": "free",
+    "licence": "CC-BY-NC-ND-4.0: Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (https://qpu.uuidna.com). The a432 harmonic default is offered for free benefit under attribution.",
+    "legal": "the licence is the contract every reader accepts by reading; its address is sealed (9ffcda04-5adc-872e-9358-6b831bbd0c0d)"
+   },
+   {
+    "id": "legal:catalogue-free-default",
+    "perspective": "legal",
+    "passed": true,
+    "evidence": "the a432 harmonic default at 0 on every domain; a named domain licensed by the year",
+    "hook": "the ecommerce plugin: products, variants, orders",
+    "cost": "free to read, paid to license",
+    "licence": "NC and commercial: the catalogue is the licence",
+    "legal": "consideration: non-commercial free and needing no licence; commercial billed"
+   },
+   {
+    "id": "legal:facts-not-advice",
+    "perspective": "legal",
+    "passed": true,
+    "evidence": "recomputable facts, not legal advice; the work represented by its canonical site only",
+    "hook": "none",
+    "cost": "free",
+    "licence": "the disclaimer travels with the licence",
+    "legal": "the inputs a qualified attorney starts from, never the conclusion"
+   }
+  ],
+  "total": 18,
+  "passed": 18,
+  "failed": 0,
+  "byPerspective": {
+   "public": 3,
+   "tenant": 4,
+   "operator": 2,
+   "client": 3,
+   "developer": 3,
+   "legal": 3
+  },
+  "advantage": {
+   "copies": 3,
+   "verified": 3,
+   "recomputed": 0,
+   "ratio": null,
+   "unbounded": true,
+   "interaction": "none: computed from the run's own counts, no token, no approval, no bound",
+   "basis": "verify beats recompute by magnitude: copies over copies recomputed; the unit bills the same counts (advantageByUnit)"
+  },
+  "leads": [],
+  "verdict": "clean",
+  "says": "the access audit from every perspective over the generated code and the answered configurations: every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms"
+ }
 }
