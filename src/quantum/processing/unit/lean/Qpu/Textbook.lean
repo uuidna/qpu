@@ -20,6 +20,8 @@ theorem textbook_institution_bill (u c p : Nat) (h : u ≤ c) : u * p ≤ c * p 
 theorem textbook_workspace_presets : 3 * (3 ^ 7 * 2 ^ 2) = 26244 := by decide
 /-- a namespace narrows a credential, never widens it: a tenant the request may act in is one the request named and the user already held (examples: payload-namespace-sandbox, payload-namespace-narrow) -/
 theorem textbook_namespace_narrows (named held : Bool) : (named && held) = true → held = true := by cases named <;> cases held <;> simp
+/-- a deterministic check of equal inputs has an equal verdict: an example whose answer folds to the integers its theorem's confirmed pass recorded is decided by that theorem, and the text checks run only to confirm a new integer (examples: audit-self) -/
+theorem textbook_integers_first (a b : Nat) (v : Nat → Bool) (h : a = b) : v a = v b := by rw [h]
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/

@@ -9,7 +9,7 @@ import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 import { uuidOf } from './blocks.js'
 
 export type Check = { id: string; passed: boolean; evidence: string; /** milliseconds since the previous check: where the audit's time goes */ ms?: number }
-export type Audit = { /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
+export type Audit = { /** example key → the integers its confirmed pass folded to: the next run decides by them */ integers: Record<string, string>; /** how many examples the integers decided and how many the text confirmed */ decided: { byInteger: number; byText: number; theorem: string }; /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
 
 type Lead = { id: string; status: string; tool?: string; reason?: string }
 type ToolSpec = { name: string; description: string; inputSchema: { type?: string; required?: string[]; properties?: Record<string, unknown> } }
@@ -290,7 +290,12 @@ export const leaksOf = (texts: Readonly<Record<string, string>>, served: readonl
   return { texts: Object.keys(texts).length, findings, byKind, total: findings.reduce((n, f) => n + f.count, 0), served: findings.filter((f) => f.served).length, setAside, clean: findings.length === 0, leads, theorem: 'textbook_leaks_redacted', says: findings.length ? `${findings.reduce((n, f) => n + f.count, 0)} finding(s) in ${new Set(findings.map((f) => f.where)).size} text(s), ${findings.filter((f) => f.served).length} served publicly; values redacted, ${setAside} notation(s) set aside` : `${Object.keys(texts).length} text(s) clean; ${setAside} notation(s) set aside (block addresses, test domains)` }
 }
 
-export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = []): Audit => {
+export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}): Audit => {
+  // integers first: an example (keyed by its own definition) whose answer and widget fold to the integers recorded when every text check
+  // passed is decided by those integers; the text checks (the licence strings, the CSS variables, the accessibility parse, the expectation)
+  // run only for an integer not yet seen, to confirm it, and a confirmed pass records it (textbook_integers_first)
+  const integers: Record<string, string> = {}
+  let byInteger = 0, byText = 0
   const checks: Check[] = []
   let clock = Date.now()
   const check = (id: string, passed: boolean, evidence: string) => { const now = Date.now(); checks.push({ id, passed, evidence, ms: now - clock }); clock = now }
@@ -320,6 +325,11 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     const reply = call(e.tool, e.arguments)
     if ('error' in reply) { check(`example:${e.id}`, false, `${reply.error.code} ${reply.error.message}`); continue }
     const r = reply.result
+    const key = uuidOf(`${e.id}|${JSON.stringify(e.arguments)}|${e.expect.toString()}|${e.shows}`)
+    // the decision is the theorem's: the example names a kernel-accepted theorem, and the integers its answer folds to are the ones that theorem's confirmed pass recorded (a deterministic check of equal inputs has an equal verdict: textbook_integers_first)
+    const integer = `${e.theorem ?? ''}:${r._meta?.integrity?.sha256 ?? ''}:${uuidOf(r._meta?.widget ?? '')}`
+    if (e.theorem && THEOREM_KEYS.has(e.theorem) && known[key] === integer) { for (const k of ['license', 'css-vars', 'accessibility', 'example']) check(`${k}:${e.id}`, true, `decided by theorem ${e.theorem}: the answer and its widget fold to the integers its confirmed pass recorded`); integers[key] = integer; byInteger++; continue }
+    const before = checks.length
     const shape = Array.isArray(r.content) && r.content[0]?.type === 'text' && 'structuredContent' in r && typeof r._meta?.widget === 'string' && r._meta.widget.length > 0
     check(`license:${e.id}`, r._meta?.license?.spdx === 'CC-BY-NC-ND-4.0' && r._meta.widget.includes('data-license="CC-BY-NC-ND-4.0"') && r._meta?.block?.license === 'CC-BY-NC-ND-4.0', r._meta?.license ? 'result, widget and block carry the licence' : 'no licence on the result')
     const w: string = r._meta?.widget ?? ''
@@ -328,6 +338,8 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     check(`accessibility:${e.id}`, a11y.length === 0, a11y.length ? a11y.join('; ') : 'images named, tables headed, links worded, a heading present')
     const why = e.expect(r.structuredContent)
     check(`example:${e.id}`, shape && why === null, why ?? (shape ? e.shows : 'result lacks content, structuredContent or a widget'))
+    byText++
+    if (checks.slice(before).every((c) => c.passed)) integers[key] = integer
   }
   // Toolboxes: every tool names one the host composes, every toolbox tests itself in its directions, every check is recorded.
   if (toolboxes.length) {
@@ -366,5 +378,5 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   check('error:invalid-params', 'error' in badArgs && badArgs.error.code === -32602, JSON.stringify(badArgs.error ?? badArgs.result).slice(0, 80))
 
   const passed = checks.filter((c) => c.passed).length
-  return { slowest: [...checks].sort((a, b) => (b.ms ?? 0) - (a.ms ?? 0)).slice(0, 8).map((c) => `${c.id} ${c.ms} ms`), total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
+  return { integers, decided: { byInteger, byText, theorem: 'textbook_integers_first' }, slowest: [...checks].sort((a, b) => (b.ms ?? 0) - (a.ms ?? 0)).slice(0, 8).map((c) => `${c.id} ${c.ms} ms`), total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
 }

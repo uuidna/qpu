@@ -6,6 +6,7 @@ import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, sta
 import { join } from 'node:path'
 import { spawnSync, execSync } from 'node:child_process'
 import { handle } from '../src/quantum/mcp.ts'
+import { payloadMcpOf } from './payload-mcp.ts'
 
 type Step = { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }
 const name = process.argv[2] ?? ''
@@ -18,23 +19,7 @@ let red = false
 // a raid step: the docket read through the Payload MCP tool the step names, every page (the URL overridden by QPU_APP_MCP, the user's MCP key
 // in QPU_APP_KEY, never written anywhere); without a key or an answer the docket is unread and the rules over it say unknown
 let docket: unknown[] | null = null
-const raidOf = async (s: Step): Promise<{ docs: unknown[] | null; says: string }> => {
-  const url = process.env.QPU_APP_MCP ?? s.url!, key = process.env.QPU_APP_KEY
-  if (!key) return { docs: null, says: `unread: no MCP key for ${url} (QPU_APP_KEY)` }
-  const docs: unknown[] = []
-  for (let page = 1, pages = 1; page <= pages; page++) {
-    const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', authorization: `Bearer ${key}` }, body: JSON.stringify({ jsonrpc: '2.0', id: page, method: 'tools/call', params: { name: s.tool, arguments: { ...s.arguments, page } } }) }).catch((e: Error) => e)
-    if (res instanceof Error) return { docs: null, says: `unread: ${res.message}` }
-    if (!res.ok) return { docs: null, says: `unread: HTTP ${res.status}` }
-    const raw = await res.text(), json = raw.trimStart().startsWith('{') ? raw : raw.split('\n').filter((l) => l.startsWith('data: ')).map((l) => l.slice(6)).pop() ?? '{}'
-    const j = JSON.parse(json) as { result?: { content?: { text: string }[] }; error?: { message: string } }
-    if (j.error) return { docs: null, says: `unread: ${j.error.message}` }
-    const text = (j.result?.content ?? []).map((c) => c.text).join('\n')
-    const total = /Page: \d+ of (\d+)/.exec(text); if (!total) return { docs: null, says: `unread: ${text}` }
-    pages = Number(total[1]); for (const m of text.matchAll(/```json\n([\s\S]*?)\n```/g)) docs.push(JSON.parse(m[1]!))
-  }
-  return { docs, says: `${docs.length} document(s) read through ${s.tool}` }
-}
+const raidOf = (s: Step) => payloadMcpOf(process.env.QPU_APP_MCP ?? s.url).findAll(s.tool!, s.arguments ?? {})
 for (const s of w.steps) {
   if (red && s.strict) break
   if (s.kind === 'run') { const p = spawnSync(s.cmd!, s.args ?? [], { stdio: 'inherit' }); if (p.status !== 0) { console.error(`hook ${name}: step ${s.id} red`); if (s.strict) red = true } continue }
