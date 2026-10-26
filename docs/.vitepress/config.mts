@@ -74,6 +74,10 @@ export default defineConfig({
         "link": "/use-cases"
       },
       {
+        "text": "Configurations",
+        "link": "/configs"
+      },
+      {
         "text": "Roadmap",
         "link": "/roadmap"
       },
@@ -213,6 +217,10 @@ export default defineConfig({
           {
             "text": "Use cases",
             "link": "/use-cases"
+          },
+          {
+            "text": "Configurations",
+            "link": "/configs"
           },
           {
             "text": "Roadmap",

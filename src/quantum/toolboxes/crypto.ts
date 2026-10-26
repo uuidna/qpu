@@ -81,6 +81,8 @@ const seal = toolOf('crypto', {
   widget: flowWidget,
 })
 
+/** The Workers compatibility flag that turns ML-DSA on in Web Crypto: the wrangler configuration MCP computes carries it because the seal tool needs it. */
+export const WEBCRYPTO_FLAG = 'webcrypto_modern_algorithms'
 /** The ML-DSA parameter sets of FIPS 204 (table 2 of the standard: public key and signature sizes in bytes) and the Web Crypto names Workers and Node give them. */
 export const ML_DSA = {
   'ML-DSA-44': { category: 2, publicKey: 1312, signature: 2420 },
@@ -92,7 +94,7 @@ export type SignaturePlan = { algorithm: MlDsa; fips: 204; over: 'sha256'; messa
 /** The signature plan, pure: what the host signs (the 32 bytes of the digest), with which algorithm, under which key variable, through which Web Crypto call; the host fills value, publicKey and keyed. */
 export const signaturePlanOf = (digest: string, sign: unknown): SignaturePlan => {
   const algorithm: MlDsa = sign === true || sign === 'ML-DSA-65' ? 'ML-DSA-65' : sign === 'ML-DSA-44' ? 'ML-DSA-44' : sign === 'ML-DSA-87' ? 'ML-DSA-87' : (() => { throw new Error(`sign is ML-DSA-44, ML-DSA-65 or ML-DSA-87 (FIPS 204), not ${JSON.stringify(sign)}`) })()
-  return { algorithm, fips: 204, over: 'sha256', message: digest, signed: 'the 32 bytes of the SHA-256 digest (256 bits, whatever the text\'s length)', executedBy: 'host', keyVar: 'QPU_SIGNING_KEY[_<TENANT>] (a private JWK of kty AKP; absent, the host signs with a key it generates for its own lifetime and says so)', webcrypto: { flag: 'webcrypto_modern_algorithms', generateKey: { name: algorithm }, sign: { name: algorithm }, keyFormat: 'jwk', kty: 'AKP', since: POST_QUANTUM.workers.changelog }, sizes: { publicKey: ML_DSA[algorithm].publicKey, signature: ML_DSA[algorithm].signature }, verify: `crypto.subtle.verify({ name: '${algorithm}' }, publicKey, signature, bytesOf(sha256)) with the public key the answer carries: no secret needed`, phase: 'planned' }
+  return { algorithm, fips: 204, over: 'sha256', message: digest, signed: 'the 32 bytes of the SHA-256 digest (256 bits, whatever the text\'s length)', executedBy: 'host', keyVar: 'QPU_SIGNING_KEY[_<TENANT>] (a private JWK of kty AKP; absent, the host signs with a key it generates for its own lifetime and says so)', webcrypto: { flag: WEBCRYPTO_FLAG, generateKey: { name: algorithm }, sign: { name: algorithm }, keyFormat: 'jwk', kty: 'AKP', since: POST_QUANTUM.workers.changelog }, sizes: { publicKey: ML_DSA[algorithm].publicKey, signature: ML_DSA[algorithm].signature }, verify: `crypto.subtle.verify({ name: '${algorithm}' }, publicKey, signature, bytesOf(sha256)) with the public key the answer carries: no secret needed`, phase: 'planned' }
 }
 
 /** What this seal is against a quantum adversary, and what NIST standardised: read at CSRC on 2026-10-25, carried as the standards nist-fips-203/204/205 discovery reads. */

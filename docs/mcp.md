@@ -1891,7 +1891,7 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 
 ## configure
 
-MCP configures Payload and the rest: Payload's default plugins (lexical with the one qpu block, nested-docs, seo, search, redirects, form-builder, multi-tenant, mcp) in all their combinations with no custom collection; the Worker's wrangler configuration from the tenants; each tenant's variable names (never values); the PWA manifest; the MCP registration. Every configuration carries its torus: address, seed, reflection and trinity, and whether the loop closes (config → text → config at the same address). With current (the text a client holds), the drift: every path that differs, each a lead. Without kind: all of them, tested.
+MCP configures Payload and the rest: Payload's default plugins (lexical with the one qpu block, nested-docs, seo, search, redirects, form-builder, multi-tenant, mcp) in all their combinations with no custom collection; the Worker's wrangler configuration from the tenants; each tenant's variable names (never values); the PWA manifest; the MCP registration. Every configuration carries its torus: address, seed, reflection and trinity, and whether the loop closes (config → text → config at the same address). With current (the text a client holds), the drift: every path that differs, each a lead; for a hand-held TypeScript file (payload, hooks, bindings), what MCP configures and the text lacks. With files: every configuration's file and its source, what next writes and what it measures on every run. Kinds hooks and bindings: the Payload hooks and the providers' bindings for full-scale use at minimum cost. Without kind: all of them, tested.
 
 ```json
 {
@@ -1908,9 +1908,25 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "versions",
         "migration",
         "fullstack",
-        "api"
+        "api",
+        "hooks",
+        "bindings",
+        "scopes",
+        "fields",
+        "validations",
+        "access",
+        "actions",
+        "packages"
       ],
       "description": "omit for all"
+    },
+    "files": {
+      "type": "boolean",
+      "description": "the file of every configuration and its source (tool or hand): what next writes and what it measures"
+    },
+    "experience": {
+      "type": "object",
+      "description": "kind actions: what the gate measured ({ copies, involutions, msByHost }): the shard size follows it"
     },
     "lastTag": {
       "type": "object",

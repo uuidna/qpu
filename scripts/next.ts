@@ -23,6 +23,7 @@ type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs
 const steps: Step[] = [
   { name: 'clay:gen', cmd: 'node', args: ['--import', 'tsx', 'scripts/gen-clay.ts'], wave: 1 },
   { name: 'docs:gen', cmd: 'npx', args: ['tsx', 'scripts/gen-docs.ts'], wave: 1 },
+  { name: 'configs', cmd: 'node', args: ['--import', 'tsx', 'scripts/configs.ts'], wave: 1 }, // always: every configuration (configs, scopes, fields, validations, access, hooks, bindings, actions) improved — the tool's files written, the hand's measured
   { name: 'typecheck', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'], wave: 2 },
   { name: 'test', cmd: 'node', args: ['--import', 'tsx', '--test', 'src/quantum/*.test.ts'], budgetMs: 300_000, wave: 2 },
   { name: 'lean', cmd: lake, args: ['build'], wave: 2 },
@@ -74,7 +75,7 @@ const run = async (s: Step): Promise<boolean> => {
   const out = r.out
   const ok = r.status === 0 && !r.timedOut
   const counts: Record<string, number> = {}
-  for (const [k, re] of Object.entries({ teleportedIn: /teleport: (\d+) blocks from/, blocksLeft: /teleport: (\d+) block\(s\) left/, keptToday: /(\d+) kept from today/, reused: /(\d+) answers kept from today/, imaginedKept: /imagine: (\d+) of \d+ leads kept/, involutions: /\((\d+) teleported by involution/, tests: /ℹ tests (\d+)/, pass: /ℹ pass (\d+)/, fail: /ℹ fail (\d+)/, checks: /(\d+)\/(\d+) checks pass/, jobs: /Build completed successfully \((\d+) jobs\)/, requests: /verify: (\d+) requests, (\d+) reachable/, ready: /readiness: (ready)/, imagined: /(\d+) imagined leads/ })) {
+  for (const [k, re] of Object.entries({ teleportedIn: /teleport: (\d+) blocks from/, blocksLeft: /teleport: (\d+) block\(s\) left/, keptToday: /(\d+) kept from today/, improved: /configs: .*?(\d+) improved/, drift: /configs: .*?(\d+) drift/, reused: /(\d+) answers kept from today/, imaginedKept: /imagine: (\d+) of \d+ leads kept/, involutions: /\((\d+) teleported by involution/, tests: /ℹ tests (\d+)/, pass: /ℹ pass (\d+)/, fail: /ℹ fail (\d+)/, checks: /(\d+)\/(\d+) checks pass/, jobs: /Build completed successfully \((\d+) jobs\)/, requests: /verify: (\d+) requests, (\d+) reachable/, ready: /readiness: (ready)/, imagined: /(\d+) imagined leads/ })) {
     const m = re.exec(out); if (m) counts[k] = Number(m[1]); if (m && k === 'checks') counts.checksTotal = Number(m[2]); if (m && k === 'requests') counts.reachable = Number(m[2])
   }
   const failingLines = [...new Set(out.split('\n').filter((l) => /^(✖|not ok) /.test(l)))]

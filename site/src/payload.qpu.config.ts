@@ -13,7 +13,7 @@ import { qpuMcpTools, qpuServerInfo } from './payload.qpu.mcp'
 export const qpuBlocks = [Qpu] // beside the site's 30 blocks; referenced as 'qpu' in every layout
 export const qpuPlugins = [
   searchPlugin({ collections: ['pages', 'posts'] }),
-  multiTenantPlugin({ collections: { pages: {}, entries: {} }, tenantsSlug: 'tenants', userHasAccessToAllTenants: () => true } as never), // tenants: uuidna, psg
+  multiTenantPlugin({ collections: { pages: {}, entries: {} }, tenantsSlug: 'tenants', userHasAccessToAllTenants: () => true } as never), // scopes: uuidna, psg, ceci over pages, entries
   // only Payload: the handler's tools served by the MCP plugin (the server named qpu), the Worker's /mcp replaced
   mcpPlugin({ mcp: { tools: qpuMcpTools, serverOptions: { serverInfo: qpuServerInfo } } } as never),
   // Stripe by its plugin: the webhook route and the Stripe REST, the keys the tenant's (STRIPE_SECRET_KEY, STRIPE_WEBHOOKS_ENDPOINT_SECRET); one key per app until the plugin takes one per tenant
@@ -23,5 +23,5 @@ export const qpuEnv = {
   DATABASE_URI: "the RAID docket of the tenant (the mongo tool's language), as the site's MongoDB",
   PAYLOAD_SECRET: "the tenant's",
   R2: "Cloudflare R2 through the bindings MCP once the tenant's token opens it (the site's vercel-blob until then)",
-  QPU_ORIGIN: "https://qpu.uuidna.com: the Worker that computes every qpu block and every /u/<uuid> page",
+  QPU_ORIGIN: "https://qpu.uuidna.com: the Worker that computes every qpu block and every /<uuid> page",
 }

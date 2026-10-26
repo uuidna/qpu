@@ -58,7 +58,7 @@ const nextConfig = withBundleAnalyzer({
   async rewrites() {
     // consolidated, no prefix: a UUID is one address — the entry's JSON when the client accepts application/json (the entries collection's own door), the block's page otherwise (the catch-all); the list is the collection's /api/entries; the MCP plugin at /api/mcp; the discovery at /api/qpu
     const UUID = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
-    return { beforeFiles: [{ source: `/:uuid(${UUID})`, has: [{ type: 'header', key: 'accept', value: '(.*application/json.*)' }], destination: '/api/entries/:uuid' }, { source: '/mcp', destination: '/api/mcp' }, { source: '/.well-known/qpu.json', destination: '/api/qpu' }] }
+    return { beforeFiles: [{ source: `/:uuid(${UUID})`, has: [{ type: 'header', key: 'accept', value: '(.*application/json.*)' }], destination: '/api/entries/:uuid' }, { source: '/mcp', destination: '/api/mcp' }, { source: '/.well-known/qpu.json', destination: '/api/globals/qpu' }] }
   },
   reactStrictMode: true,
   transpilePackages: ['@payloadcms/v3-preview-runtime', '@payloadcms/v4-preview-runtime', '@uuidna/qpu'], // the QPU's handler, linked as a package, compiled here

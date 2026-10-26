@@ -18,6 +18,7 @@ export const STANDARDS: readonly { id: string; name: string; contract: string; k
   { id: 'cloudflare-webcrypto-modern', name: 'Cloudflare changelog 2026-09-28: Web Crypto adds ML-KEM and ML-DSA (webcrypto_modern_algorithms)', contract: 'https://developers.cloudflare.com/changelog/post/2026-09-28-webcrypto-modern-algorithms/', kind: 'reference' },
   { id: 'claude-api', name: 'Claude API overview (platform.claude.com)', contract: 'https://platform.claude.com/docs/en/api/overview', kind: 'reference' },
   { id: 'payload-website', name: 'payloadcms/website, the source of payloadcms.com (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/website/git/trees/main?recursive=1', kind: 'reference' },
+  { id: 'payload-packages', name: 'payloadcms/payload, the packages Payload ships (the packages directory)', contract: 'https://api.github.com/repos/payloadcms/payload/contents/packages', kind: 'reference' },
   { id: 'payload-skills', name: 'payloadcms/skills, Payload\'s skills for AI agents (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/skills/git/trees/main?recursive=1', kind: 'reference' },
   { id: 'schema-org', name: 'schema.org vocabulary (JSON-LD)', contract: 'https://schema.org/version/latest/schemaorg-current-https.jsonld', kind: 'vocabulary' },
   { id: 'cldr-languages', name: 'Unicode CLDR language names (ISO 639)', contract: 'https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/cldr-localenames-full/main/en/languages.json', kind: 'codes' },

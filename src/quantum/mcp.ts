@@ -833,7 +833,10 @@ const CONTEXT: Context = { get handle() { return handle }, get examples() { retu
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
 
 /** Answer one JSON-RPC message: initialize, tools/list, or tools/call. Anything else is method not found. */
+/** A batch: a JSON-RPC array is answered as one array, in order — the batch action of every tool, one request. */
+export const handleBatch = (messages: readonly Rpc[]): Reply[] => messages.map((m) => handle(m))
 export const handle = (message: Rpc): Reply => {
+  if (Array.isArray(message)) return handleBatch(message as unknown as Rpc[]) as unknown as Reply
   const id = message.id ?? null
   const fail = (code: number, text: string): Reply => ({ jsonrpc: '2.0', id, error: { code, message: text } })
   const params = (message.params ?? {}) as Record<string, unknown>

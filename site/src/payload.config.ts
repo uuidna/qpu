@@ -2,7 +2,7 @@ import { revalidateRedirects } from '@hooks/revalidateRedirects'
 import { Qpu } from './blocks/Qpu/config'
 import { Tenants } from './collections/Tenants'
 import { Entries } from './collections/Entries'
-import { qpuEndpoints } from './payload.qpu.endpoints'
+import { QpuGlobal } from './globals/Qpu'
 import { qpuPlugins } from './payload.qpu.config'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
@@ -420,7 +420,7 @@ export default buildConfig({
       path: '/create-release-post-from-admin',
     },
   ],
-  globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar],
+  globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar, QpuGlobal], // the discovery document as a global: the API from the config
   graphQL: {
     disablePlaygroundInProduction: false,
   },
