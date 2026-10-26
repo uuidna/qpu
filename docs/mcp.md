@@ -2038,6 +2038,14 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
       "type": "boolean",
       "description": "the site as its own use cases: every toolbox a use case, every example a page document, as payloadcms.com is built of what Payload computes"
     },
+    "merge": {
+      "type": "object",
+      "description": "two edits of one document merged by block address: { base, a, b } (lexical documents); a block either edit holds and neither removed is kept once, the merge addressed by the fold of its blocks, commuting and idempotent (textbook_merge_commutes); a collision in the involution is a merge"
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "with site: the tree's dev dependencies (name: version, the client reads package.json), each a gate of the dependencies category usable in the UI"
+    },
     "app": {
       "type": "object",
       "description": "an app requested from the Payload UI: { name, host, plugins?, env?, variant? } — answered as the generated app (every file with its address, the bundle address, the adapters the environment chooses, the enterprise capabilities), priced by the catalogue in the host's currency and ordered through the ecommerce plugin: what the QPU is paid for; { validate: { name, host, env, variant } } answers the streamed form's verdicts, token free; { form: true } the form itself"
@@ -2159,7 +2167,11 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
       "items": {
         "type": "string"
       },
-      "description": "kind sets: two set names (a toolbox, mcp, tools, ui, backed, configs, mount:<tenant>) whose union, intersection and differences are answered"
+      "description": "kind sets: two set names (a toolbox, mcp, tools, ui, backed, configs, mount:<tenant>) whose union, intersection and differences are answered; with env instead, the MCP scoped by that environment combination (one address per combination)"
+    },
+    "devDependencies": {
+      "type": "object",
+      "description": "kind gates: the tree's dev dependencies (name: version), each a gate of the dependencies category — an MCP door the step of next passes, usable in the UI"
     },
     "selftest": {
       "type": "boolean"

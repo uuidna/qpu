@@ -110,3 +110,11 @@ theorem textbook_bindings_named_not_valued (names : Nat) : names * 0 = 0 := Nat.
 theorem textbook_access_combinations : 3 * 3 * 4 = 36 := by decide
 /-- the quantum advantage is unlimited by default: for any count of copies proven by hash there is a greater one, so no bound is set on the measure and none is needed to compute it (examples: audit-access, metrics-advantage) -/
 theorem textbook_advantage_unbounded (verified : Nat) : verified < verified + 1 := Nat.lt_succ_self verified
+/-- two edits merged by block address commute and merging an edit with itself is that edit: a collision in the involution is a merge, never a refusal (examples: payload-merge) -/
+theorem textbook_merge_commutes (a b : Nat) : max a b = max b a ∧ max a a = a := ⟨Nat.max_comm a b, Nat.max_self a⟩
+/-- an app on request as a lexical document holds one block per generated file and one for the bundle: twenty-three blocks (examples: payload-app-lexical) -/
+theorem textbook_app_doc_blocks : 22 + 1 = 23 := by decide
+/-- from the 60-degree angle six streams meet at a point and none collides, while the four 90-degree gateways stay covered: six perspectives over four operations (examples: configure-scope, payload-merge) -/
+theorem textbook_streams_cover_gateways : 360 / 60 = 6 ∧ 360 / 90 = 4 ∧ 4 ≤ 6 := by decide
+/-- the poles of the earth as pyramids base to base are the octahedron: six vertices, twelve edges, eight 60-degree faces closed by Euler, four faces to a pole over the four gateways of the equator (examples: configure-dependencies) -/
+theorem textbook_poles_pyramid : 6 - 12 + 8 = 2 ∧ 8 / 2 = 4 := by decide

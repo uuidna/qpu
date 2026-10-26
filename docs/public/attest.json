@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T12:31:37.226Z",
- "ms": 21565,
+ "date": "2026-10-26T12:47:03.728Z",
+ "ms": 10116,
  "rounds": 2,
  "selftest": {
   "passed": true
@@ -10,73 +10,73 @@
   {
    "id": "nist-beacon",
    "status": 200,
-   "ms": 812,
+   "ms": 775,
    "bytes": 3633
   },
   {
    "id": "ct-sth",
    "status": 200,
-   "ms": 1056,
-   "bytes": 245
+   "ms": 856,
+   "bytes": 241
   },
   {
    "id": "acme-directory",
    "status": 200,
-   "ms": 931,
+   "ms": 761,
    "bytes": 961
   },
   {
    "id": "nvd-cves",
    "status": 200,
-   "ms": 826,
+   "ms": 627,
    "bytes": 21839
   },
   {
    "id": "cern-opendata",
    "status": 200,
-   "ms": 679,
+   "ms": 441,
    "bytes": 119560
   },
   {
    "id": "csrc-pqc",
    "status": 200,
-   "ms": 1303,
+   "ms": 758,
    "bytes": 61261
   },
   {
    "id": "crt-sh",
    "status": 200,
-   "ms": 20577,
+   "ms": 8936,
    "bytes": 2
   },
   {
    "id": "tls:qpu.uuidna.com",
    "status": 200,
-   "ms": 71,
+   "ms": 643,
    "bytes": 115
   },
   {
    "id": "tls:qpu.psg.bg",
    "status": 200,
-   "ms": 80,
+   "ms": 183,
    "bytes": 115
   },
   {
    "id": "tls:opendata.cern.ch",
    "status": 200,
-   "ms": 574,
+   "ms": 183,
    "bytes": 107
   },
   {
    "id": "tls:beacon.nist.gov",
    "status": 200,
-   "ms": 550,
+   "ms": 284,
    "bytes": 107
   },
   {
    "id": "nist-beacon-previous",
    "status": 200,
-   "ms": 165,
+   "ms": 193,
    "bytes": 3633
   }
  ],
@@ -144,9 +144,9 @@
    "status": "read",
    "facts": {
     "chainIndex": 2,
-    "pulseIndex": 2000307,
-    "timeStamp": "2026-10-26T12:30:00.000Z",
-    "previous": 2000306
+    "pulseIndex": 2000323,
+    "timeStamp": "2026-10-26T12:46:00.000Z",
+    "previous": 2000322
    },
    "verdicts": [
     {
@@ -162,7 +162,7 @@
     {
      "theorem": "textbook_chain_index_steps",
      "passed": true,
-     "says": "pulse 2000307 follows 2000306"
+     "says": "pulse 2000323 follows 2000322"
     },
     {
      "theorem": "textbook_beacon_period",
@@ -184,8 +184,8 @@
   "ct-sth": {
    "status": "read",
    "facts": {
-    "treeSize": 3461872840,
-    "timestamp": 1793017816702
+    "treeSize": 3461901539,
+    "timestamp": 1793018754567
    },
    "verdicts": [
     {
@@ -196,7 +196,7 @@
     {
      "theorem": "textbook_tree_size_positive",
      "passed": true,
-     "says": "tree size 3461872840"
+     "says": "tree size 3461901539"
     },
     {
      "theorem": "textbook_dates_ordered",

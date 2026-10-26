@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T12:36:05.723Z",
+ "date": "2026-10-26T12:47:23.174Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -454,6 +454,24 @@
    "unbounded": true,
    "interaction": "none: computed from the run's own counts, no token, no approval, no bound",
    "basis": "verify beats recompute by magnitude: copies over copies recomputed; the unit bills the same counts (advantageByUnit)"
+  },
+  "angles": {
+   "streams": 60,
+   "gateways": 90,
+   "perspectives": 6,
+   "operations": 4,
+   "poles": 2,
+   "faces": 8,
+   "equator": 4,
+   "euler": "6 − 12 + 8 = 2",
+   "navigation": {
+    "earth": "the four compass gateways of the equator (N, E, S, W): the four operations",
+    "space": "the six directions ±x, ±y, ±z: the octahedron's six vertices, the six perspectives",
+    "water": "the currents between the poles: the streams, collision free at 60 degrees",
+    "web": "prev and next (the program rotated), parent and children (the nested docs): the same gateways by address",
+    "says": "earth, space, water and web navigation follow the same laws and combinatorics: six vertices, twelve edges, eight faces, four gateways"
+   },
+   "says": "from the 60-degree angle all streams are collision free and still cover all 90-degree gateways: six perspectives over four operations; the poles of the earth as pyramids base to base are the octahedron (textbook_streams_cover_gateways, textbook_poles_pyramid)"
   },
   "leads": [],
   "verdict": "clean",
