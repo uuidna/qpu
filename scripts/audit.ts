@@ -1,11 +1,11 @@
 // `npm run audit`: the MCP surface audits itself and exits non-zero on any failed check.
 import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
-import { payloadMcpOf } from './payload-mcp.ts'
+import { mcpOf } from './mcp.ts'
 
 // integers first: the ledger of the last confirmed integers is the newest docket entry from audit-integers, read through the Payload MCP;
 // unread (no key, no app), nothing is known and every example is confirmed by text; the run's ledger is written back as a docket entry
-const mcp = payloadMcpOf()
+const mcp = mcpOf()
 const read = await mcp.findAll('findEntries', { where: JSON.stringify({ from: { equals: 'audit-integers' } }), sort: '-createdAt', limit: 1 })
 const newest = (read.docs ?? [])[0] as { body?: { integers?: Record<string, string> } } | undefined
 const known: Record<string, string> = newest?.body?.integers ?? {}

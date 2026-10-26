@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, sta
 import { join } from 'node:path'
 import { spawnSync, execSync } from 'node:child_process'
 import { handle } from '../src/quantum/mcp.ts'
-import { payloadMcpOf } from './payload-mcp.ts'
+import { mcpOf } from './mcp.ts'
 
 type Step = { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }
 const name = process.argv[2] ?? ''
@@ -19,7 +19,7 @@ let red = false
 // a raid step: the docket read through the Payload MCP tool the step names, every page (the URL overridden by QPU_APP_MCP, the user's MCP key
 // in QPU_APP_KEY, never written anywhere); without a key or an answer the docket is unread and the rules over it say unknown
 let docket: unknown[] | null = null
-const raidOf = (s: Step) => payloadMcpOf(process.env.QPU_APP_MCP ?? s.url).findAll(s.tool!, s.arguments ?? {})
+const raidOf = (s: Step) => mcpOf(process.env.QPU_APP_MCP ?? s.url).findAll(s.tool!, s.arguments ?? {})
 for (const s of w.steps) {
   if (red && s.strict) break
   if (s.kind === 'run') { const p = spawnSync(s.cmd!, s.args ?? [], { stdio: 'inherit' }); if (p.status !== 0) { console.error(`hook ${name}: step ${s.id} red`); if (s.strict) red = true } continue }

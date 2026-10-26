@@ -1,9 +1,9 @@
-// The one Payload MCP client every script shares: a tools/call with the user's MCP key (QPU_APP_KEY, never written anywhere) to the app's
+// The one MCP client every script shares: a tools/call with the user's MCP key (QPU_APP_KEY, never written anywhere) to the app's
 // /api/mcp (QPU_APP_MCP, else the local app), the streamed `data:` line read, the plugin's json blocks parsed, a find walked page by page.
 // Without a key or an answer it says so and returns nothing: an unread docket is unknown to its caller, never a file fallback.
-export const PAYLOAD_MCP = 'http://localhost:3000/api/mcp'
+export const MCP_URL = 'http://localhost:3000/api/mcp'
 type Answer = { text: string; error?: undefined } | { text?: undefined; error: string }
-export const payloadMcpOf = (url: string = process.env.QPU_APP_MCP ?? PAYLOAD_MCP, key: string | undefined = process.env.QPU_APP_KEY) => {
+export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: string | undefined = process.env.QPU_APP_KEY) => {
   const call = async (tool: string, args: Record<string, unknown>): Promise<Answer> => {
     if (!key) return { error: `no MCP key for ${url} (QPU_APP_KEY)` }
     const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', authorization: `Bearer ${key}` }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args } }) }).catch((e: Error) => e)
