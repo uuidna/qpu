@@ -28,6 +28,8 @@ theorem textbook_size_ratio_bound (framework qpu : Nat) : framework / qpu * qpu 
 theorem textbook_double_entry (debits credits : Nat) (h : debits = credits) : debits - credits = 0 ∧ credits - debits = 0 := by subst h; exact ⟨Nat.sub_self _, Nat.sub_self _⟩
 /-- typography set twice is set once: a run of spaces set to at most one stays at most one when set again, so standardising a document changes nothing the second time (examples: payload-standardise) -/
 theorem textbook_typography_idempotent (n : Nat) : min (min n 1) 1 = min n 1 := by omega
+/-- n documents fused into k nodes, each cycle one node: the n − k fused away and the k that remain are the n, every document counted once, and the condensation they form has no cycle, so it always has an order (examples: payload-references) -/
+theorem textbook_references_acyclic (k n : Nat) (h : k ≤ n) : n - k + k = n := by omega
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/

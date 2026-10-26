@@ -405,6 +405,8 @@ export const lexicalSecurityOf = (doc: unknown, tools: readonly string[]) => {
     if (o.type === 'text' && typeof o.text === 'string') { texts[path] = o.text; if (/<\s*\/?\s*(script|iframe|object|embed|style|svg|img)\b|\bon[a-z]+\s*=/i.test(o.text)) findings.push({ at: path, kind: 'markup-in-text', blocks: false, detail: 'rendered as text, never as markup' }) }
     const url = o.fields?.url ?? o.url
     if ((o.type === 'link' || o.type === 'autolink') && typeof url === 'string' && !/^(https?:\/\/|\/|#|\?)/i.test(url.trim())) findings.push({ at: path, kind: 'unsafe-url', blocks: true, detail: url.split(':')[0]! + ':' })
+    // an internal path that names no slug or address cannot be resolved to a document: noted, never blocking
+    if ((o.type === 'link' || o.type === 'autolink') && typeof url === 'string' && /^\/(?!\/)/.test(url.trim()) && !/^\/([a-z0-9][a-z0-9-]*(\/[a-z0-9][a-z0-9-]*)*)?\/?([?#].*)?$/i.test(url.trim())) findings.push({ at: path, kind: 'unresolvable-reference', blocks: false, detail: url.trim() })
     if (o.type === 'block' && o.fields?.blockType === 'qpu') {
       if (typeof o.fields.tool !== 'string' || !tools.includes(o.fields.tool)) findings.push({ at: path, kind: 'unknown-tool', blocks: true, detail: String(o.fields.tool), uuid: o.fields.uuid })
       const keys = protoKeys(o.fields.arguments); if (keys.length) findings.push({ at: path, kind: 'prototype-key', blocks: true, detail: [...new Set(keys)].join(', '), uuid: o.fields.uuid })

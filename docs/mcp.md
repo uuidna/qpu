@@ -2276,6 +2276,10 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 {
   "type": "object",
   "properties": {
+    "references": {
+      "type": "object",
+      "description": "the references between documents as one graph"
+    },
     "standardise": {
       "type": "object",
       "description": "a lexical document set in standard typography without a change of meaning"
