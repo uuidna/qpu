@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { createHmac } from 'node:crypto'
 import { roleMacOf, signedRoleOf } from './roles.js'
 
+// kept a test: verifying a role claim takes the deployment's secret, and no door may take a secret over MCP (a client would send it to a public server)
 test('a signed role claim is the HMAC node computes, and only a signed claim counts', () => {
   const secret = 'test-secret-not-a-real-one'
   const mac = roleMacOf(secret, 'admin', 'qpu', 'delete')
