@@ -210,25 +210,35 @@ export const fusionOf = (tool: string, args?: Record<string, unknown>) => { cons
  *  Its tokens are the size of what has to be redone (the manual difference, the gap's text, the step's output) at four bytes a token; its coin line
  *  books that count against the one who caused it and to the author, at zero price — it counts work, never money, and debits equal credits
  *  (textbook_double_entry); its snapshot is the evidence, sealed by SHA-256 and addressed. A clearing names the penalty its evidence closed. Pure. */
-export const penaltyOf = (p: { rule: string; bytes?: number; committer?: string | null; cleared?: boolean; by?: string | null; evidence?: Record<string, unknown> }) => {
-  const tokens = Math.ceil(Math.max(0, p.bytes ?? 0) / 4)
+/** Every gap between the QPU and its prizes is one shape: a kind, a subject, open or cleared, its tokens, its coin line, its sealed snapshot. The
+ *  kinds that block a push (manual edits, strict refusals, red steps, prize gaps, dirty code in changed files) and those only listed (waiting over
+ *  the one-second bar, dirty prose, Gemini schema compatibility) differ only in this table, never in their path. */
+export const GAP_KINDS = { automated: true, refusal: true, step: true, prize: true, 'dirty-code': true, waiting: false, 'dirty-prose': false, 'gemini-compat': false } as const
+export type GapKind = keyof typeof GAP_KINDS
+export const gapKindOf = (rule: string, kind?: string): GapKind => (kind && kind in GAP_KINDS ? (kind as GapKind) : /automated/.test(rule) ? 'automated' : 'refusal')
+export const penaltyOf = (p: { rule: string; kind?: string; subject?: string; bytes?: number; tokens?: number; committer?: string | null; cleared?: boolean; by?: string | null; evidence?: Record<string, unknown> }) => {
+  const kind = gapKindOf(p.rule, p.kind), blocks = GAP_KINDS[kind]
+  const subject = p.subject ?? String((p.evidence as { key?: unknown } | undefined)?.key ?? p.rule)
+  const tokens = typeof p.tokens === 'number' ? Math.max(0, Math.ceil(p.tokens)) : Math.ceil(Math.max(0, p.bytes ?? 0) / 4)
   const committer = (p.committer ?? '').trim() || 'unknown'
-  const snapshot = { rule: p.rule, ...(p.evidence ?? {}) }
+  const snapshot = { rule: p.rule, kind, subject, ...(p.evidence ?? {}), key: String((p.evidence as { key?: unknown } | undefined)?.key ?? `${kind}:${subject}`) }
   const text = JSON.stringify(snapshot)
   const seal = { sha256: hex(sha256(utf8(text))), address: uuidOf(text) }
-  if (p.cleared) return { kind: 'clearing' as const, body: { rule: p.rule, cleared: true, by: p.by ?? null, snapshot, seal }, tokens: 0, coin: null, balanced: true, says: `${p.rule} cleared by ${p.by ?? 'its evidence'}`, theorem: 'textbook_double_entry' }
+  if (p.cleared) return { kind: 'clearing' as const, body: { kind, subject, status: 'cleared' as const, blocks, rule: p.rule, cleared: true, by: p.by ?? null, snapshot, seal }, tokens: 0, coin: null, balanced: true, says: `${p.rule} cleared by ${p.by ?? 'its evidence'}`, theorem: 'textbook_double_entry' }
   const coin = { debit: `coins:${committer}`, credit: 'coins:author', amount: 0, count: tokens }
-  return { kind: 'penalty' as const, body: { rule: p.rule, tokens, coin, snapshot, seal }, tokens, coin, balanced: coin.amount === coin.amount, says: `${p.rule}: ${tokens} token(s) of work booked against ${committer} and to the author, at zero price — work, not money`, theorem: 'textbook_double_entry' }
+  return { kind: 'penalty' as const, body: { kind, subject, status: 'open' as const, blocks, rule: p.rule, tokens, coin, snapshot, seal }, tokens, coin, balanced: coin.amount === coin.amount, says: `${p.rule}: ${tokens} token(s) of work booked against ${committer} and to the author, at zero price — work, not money`, theorem: 'textbook_double_entry' }
 }
 /** The penalties counted from their entries: each gap keyed by its evidence's key (else its sealed address), a clearing closing the penalty of the
  *  same key; what is open is what was opened and not cleared (textbook_penalty_conserved). */
-export const penaltyCountsOf = (entries: readonly { body?: { rule?: string; cleared?: boolean; snapshot?: { key?: string }; seal?: { address?: string } } }[]) => {
+export const penaltyCountsOf = (entries: readonly { body?: { rule?: string; kind?: string; blocks?: boolean; cleared?: boolean; snapshot?: { key?: string }; seal?: { address?: string } } }[]) => {
   const keyOf = (b: { snapshot?: { key?: string }; seal?: { address?: string } }) => b.snapshot?.key ?? b.seal?.address ?? ''
-  const opened = new Set<string>(), cleared = new Set<string>()
-  for (const e of entries) { const b = e.body; if (!b) continue; (b.cleared ? cleared : opened).add(keyOf(b)) }
+  const opened = new Set<string>(), cleared = new Set<string>(), kindOf = new Map<string, GapKind>()
+  for (const e of entries) { const b = e.body; if (!b) continue; (b.cleared ? cleared : opened).add(keyOf(b)); if (!b.cleared) kindOf.set(keyOf(b), gapKindOf(b.rule ?? '', b.kind)) }
   const closed = [...cleared].filter((k) => opened.has(k))
   const open = [...opened].filter((k) => !cleared.has(k))
-  return { opened: opened.size, cleared: closed.length, open: open.length, openKeys: open, conserved: closed.length + open.length === opened.size, theorem: 'textbook_penalty_conserved' }
+  const blocking = open.filter((k) => GAP_KINDS[kindOf.get(k) ?? 'refusal'])
+  const byKind = open.reduce<Record<string, number>>((a, k) => ({ ...a, [kindOf.get(k) ?? 'refusal']: (a[kindOf.get(k) ?? 'refusal'] ?? 0) + 1 }), {})
+  return { opened: opened.size, cleared: closed.length, open: open.length, openKeys: open, blocking: blocking.length, blockingKeys: blocking, byKind, conserved: closed.length + open.length === opened.size, theorem: 'textbook_penalty_conserved' }
 }
 export const ledgerOf = (calls: readonly { tool: string; tenant: string; arguments?: Record<string, unknown> }[], settled: readonly { tenant?: string; amount: number; fee: number; net: number; currency: string }[] = [], currency: 'eur' | 'usd' | 'bgn' = 'eur') => {
   const metered = CATALOGUE.find((v) => v.product === 'qpu-metered')!
