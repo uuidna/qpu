@@ -386,3 +386,33 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   const passed = checks.filter((c) => c.passed).length
   return { integers, decided: { bySeal, byInteger, byText, sealed, theorem: 'textbook_integers_first' }, slowest: [...checks].sort((a, b) => (b.ms ?? 0) - (a.ms ?? 0)).slice(0, 8).map((c) => `${c.id} ${c.ms} ms`), total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
 }
+
+/** A lexical document scanned before anything in it runs: every node walked (no cap; its count and depth reported), each finding named with
+ *  where it is and whether it blocks. Blocking: a link whose scheme is not http, https or a relative path (javascript:, data:, vbscript: and the
+ *  rest), a qpu block naming a tool the catalogue does not serve, a block whose arguments carry a prototype key (__proto__, constructor,
+ *  prototype). Noted: markup written inside text (rendered as text, never as markup), a node type the editor does not define, a leak by kind. */
+export const LEXICAL_NODE_TYPES = ['root', 'paragraph', 'heading', 'text', 'list', 'listitem', 'quote', 'link', 'autolink', 'block', 'inlineBlock', 'linebreak', 'horizontalrule', 'upload', 'relationship', 'tab', 'code', 'table', 'tablerow', 'tablecell'] as const
+export const lexicalSecurityOf = (doc: unknown, tools: readonly string[]) => {
+  const findings: { at: string; kind: string; blocks: boolean; detail: string; uuid?: string }[] = []
+  let nodes = 0, depth = 0
+  const texts: Record<string, string> = {}
+  const protoKeys = (x: unknown, seen = 0): string[] => { if (!x || typeof x !== 'object' || seen > 1e6) return []; const own = Object.getOwnPropertyNames(x); return [...own.filter((k) => k === '__proto__' || k === 'constructor' || k === 'prototype'), ...own.flatMap((k) => protoKeys((x as Record<string, unknown>)[k], seen + 1))] }
+  const walk = (n: unknown, path: string, d: number) => {
+    if (!n || typeof n !== 'object') return
+    nodes++; depth = Math.max(depth, d)
+    const o = n as { type?: string; text?: string; url?: string; fields?: { url?: string; blockType?: string; tool?: string; arguments?: unknown; linkType?: string; uuid?: string }; children?: unknown[] }
+    if (typeof o.type === 'string' && !(LEXICAL_NODE_TYPES as readonly string[]).includes(o.type)) findings.push({ at: path, kind: 'unknown-node', blocks: false, detail: o.type })
+    if (o.type === 'text' && typeof o.text === 'string') { texts[path] = o.text; if (/<\s*\/?\s*(script|iframe|object|embed|style|svg|img)\b|\bon[a-z]+\s*=/i.test(o.text)) findings.push({ at: path, kind: 'markup-in-text', blocks: false, detail: 'rendered as text, never as markup' }) }
+    const url = o.fields?.url ?? o.url
+    if ((o.type === 'link' || o.type === 'autolink') && typeof url === 'string' && !/^(https?:\/\/|\/|#|\?)/i.test(url.trim())) findings.push({ at: path, kind: 'unsafe-url', blocks: true, detail: url.split(':')[0]! + ':' })
+    if (o.type === 'block' && o.fields?.blockType === 'qpu') {
+      if (typeof o.fields.tool !== 'string' || !tools.includes(o.fields.tool)) findings.push({ at: path, kind: 'unknown-tool', blocks: true, detail: String(o.fields.tool), uuid: o.fields.uuid })
+      const keys = protoKeys(o.fields.arguments); if (keys.length) findings.push({ at: path, kind: 'prototype-key', blocks: true, detail: [...new Set(keys)].join(', '), uuid: o.fields.uuid })
+    }
+    ;(o.children ?? []).forEach((c, i) => walk(c, `${path}.${i}`, d + 1))
+  }
+  walk((doc as { root?: unknown })?.root, 'root', 1)
+  const leaks = leaksOf(texts)
+  for (const [kind, n] of Object.entries(leaks.byKind)) if (n) findings.push({ at: 'text', kind: `leak-${kind}`, blocks: false, detail: `${n} by kind` })
+  return { nodes, depth, findings, blocking: findings.filter((f) => f.blocks).length, clean: findings.length === 0, says: findings.length ? `${findings.length} finding(s) in ${nodes} node(s), ${findings.filter((f) => f.blocks).length} blocking: a blocking finding stops its block or link, the rest is noted` : `${nodes} node(s), depth ${depth}: nothing found`, theorem: 'textbook_namespace_narrows' }
+}
