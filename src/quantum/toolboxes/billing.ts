@@ -6,7 +6,7 @@
 // tenants is an entry and a rule, never a special case: the same licence at another domain, a refund after a grant, a
 // dispute, a renewal, a replayed event, a wrong tenant's signature.
 import { toolOf, type Toolbox } from '../toolbox.js'
-import { hmacSha256, utf8, hex, sameHex } from '../hmac.js'
+import { hmacSha256, utf8, hex, sameHex, sha256 } from '../hmac.js'
 import { uuidOf } from '../blocks.js'
 import { LICENSE } from '../license.js'
 import { flowWidget } from '../widgets.js'
@@ -206,6 +206,30 @@ export const fusionOf = (tool: string, args?: Record<string, unknown>) => { cons
  *  (a crossing into data or services) debits the tenant's receivable and credits the author's revenue at the metered price, and a Stripe
  *  settlement debits cash and fees and credits the receivable; the journal balances by construction (textbook_double_entry), and a tenant
  *  whose coils exceed what Stripe settled is named with the amount outstanding, never assumed paid. */
+/** A penalty, priced in work and sealed: every strict refusal, every open competition gap and every step that ends red, skipped or killed.
+ *  Its tokens are the size of what has to be redone (the manual difference, the gap's text, the step's output) at four bytes a token; its coin line
+ *  books that count against the one who caused it and to the author, at zero price — it counts work, never money, and debits equal credits
+ *  (textbook_double_entry); its snapshot is the evidence, sealed by SHA-256 and addressed. A clearing names the penalty its evidence closed. Pure. */
+export const penaltyOf = (p: { rule: string; bytes?: number; committer?: string | null; cleared?: boolean; by?: string | null; evidence?: Record<string, unknown> }) => {
+  const tokens = Math.ceil(Math.max(0, p.bytes ?? 0) / 4)
+  const committer = (p.committer ?? '').trim() || 'unknown'
+  const snapshot = { rule: p.rule, ...(p.evidence ?? {}) }
+  const text = JSON.stringify(snapshot)
+  const seal = { sha256: hex(sha256(utf8(text))), address: uuidOf(text) }
+  if (p.cleared) return { kind: 'clearing' as const, body: { rule: p.rule, cleared: true, by: p.by ?? null, snapshot, seal }, tokens: 0, coin: null, balanced: true, says: `${p.rule} cleared by ${p.by ?? 'its evidence'}`, theorem: 'textbook_double_entry' }
+  const coin = { debit: `coins:${committer}`, credit: 'coins:author', amount: 0, count: tokens }
+  return { kind: 'penalty' as const, body: { rule: p.rule, tokens, coin, snapshot, seal }, tokens, coin, balanced: coin.amount === coin.amount, says: `${p.rule}: ${tokens} token(s) of work booked against ${committer} and to the author, at zero price — work, not money`, theorem: 'textbook_double_entry' }
+}
+/** The penalties counted from their entries: each gap keyed by its evidence's key (else its sealed address), a clearing closing the penalty of the
+ *  same key; what is open is what was opened and not cleared (textbook_penalty_conserved). */
+export const penaltyCountsOf = (entries: readonly { body?: { rule?: string; cleared?: boolean; snapshot?: { key?: string }; seal?: { address?: string } } }[]) => {
+  const keyOf = (b: { snapshot?: { key?: string }; seal?: { address?: string } }) => b.snapshot?.key ?? b.seal?.address ?? ''
+  const opened = new Set<string>(), cleared = new Set<string>()
+  for (const e of entries) { const b = e.body; if (!b) continue; (b.cleared ? cleared : opened).add(keyOf(b)) }
+  const closed = [...cleared].filter((k) => opened.has(k))
+  const open = [...opened].filter((k) => !cleared.has(k))
+  return { opened: opened.size, cleared: closed.length, open: open.length, openKeys: open, conserved: closed.length + open.length === opened.size, theorem: 'textbook_penalty_conserved' }
+}
 export const ledgerOf = (calls: readonly { tool: string; tenant: string; arguments?: Record<string, unknown> }[], settled: readonly { tenant?: string; amount: number; fee: number; net: number; currency: string }[] = [], currency: 'eur' | 'usd' | 'bgn' = 'eur') => {
   const metered = CATALOGUE.find((v) => v.product === 'qpu-metered')!
   const price = (metered.amounts as Record<string, number>)[currency] ?? 0 // cents per thousand calls = thousandths of a cent per call

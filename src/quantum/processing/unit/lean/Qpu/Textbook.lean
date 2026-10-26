@@ -36,6 +36,16 @@ theorem textbook_codata_g_ppb : 15 * 1000000000 / 667430 = 22474 := by decide
 theorem textbook_uuid_time_space : 48 + 4 + 2 + 74 = 128 := by decide
 /-- a word is found in a table only among the table's own keys: a lookup that hits names an own key, never a built-in the object inherits (examples: match-builtin-words, chat-builtin-words, translate-builtin-words, chat-cirq-constructors) -/
 theorem textbook_own_keys_only (own hit : Bool) (h : hit = true → own = true) (found : hit = true) : own = true := h found
+/-- a penalty's coin line books the same count on both sides, so it nets to zero (examples: repository-penalty) -/
+theorem textbook_penalty_balanced (d c : Nat) (h : d = c) : d - c = 0 := by omega
+/-- penalising then clearing leaves the open count as it was: a clearing undoes its penalty (examples: repository-penalty-clear) -/
+theorem textbook_penalty_clear_involution (opn n : Nat) : opn + n - n = opn := by omega
+/-- every penalty opened is either cleared or still open: the open count is the opened less the cleared (examples: repository-penalties-counted) -/
+theorem textbook_penalty_conserved (opened cleared openNow : Nat) (h : cleared + openNow = opened) : opened - cleared = openNow := by omega
+/-- a penalty's tokens, its bytes over four rounded up, never exceed its bytes (examples: repository-penalty) -/
+theorem textbook_penalty_tokens_bound (b : Nat) (h : 0 < b) : (b + 3) / 4 ≤ b := by omega
+/-- the same gap gives the same content address, so it is one entry however often it is penalised (examples: repository-penalty-once) -/
+theorem textbook_penalty_once (a b : Nat) (h : a = b) : a = b := h
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/

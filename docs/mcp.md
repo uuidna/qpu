@@ -2110,6 +2110,17 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
 {
   "type": "object",
   "properties": {
+    "penalties": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "penalty and clearing entries as the docket holds them"
+    },
+    "penalty": {
+      "type": "object",
+      "description": "a penalty priced in work and sealed"
+    },
     "via": {
       "type": "string",
       "enum": [
