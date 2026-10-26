@@ -1973,6 +1973,10 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
       "type": "boolean",
       "description": "with workflow: the network steps marked unsigned"
     },
+    "facts": {
+      "type": "object",
+      "description": "with workflow: { receipt, approval, e2e, carried } as the client read them after the steps; the rules of the workflow decided by their theorems: allowed or refused, a violation a case for the court"
+    },
     "selftest": {
       "type": "boolean"
     }

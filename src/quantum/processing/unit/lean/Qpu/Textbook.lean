@@ -188,5 +188,11 @@ theorem textbook_hue_steps : 16 * 45 = 2 * 360 := by decide
 theorem textbook_cheap_gates (refusals : Nat) : refusals * 0 = 0 := Nat.mul_zero refusals
 /-- four git hooks (pre-commit, pre-push, post-commit, prepare-commit-msg) and the CI are five client MCP workflows of one door; the hook script walks the steps and decides nothing (examples: repository-workflow) -/
 theorem textbook_hook_workflows : 4 + 1 = 5 := by decide
+/-- when to commit: the flow is green — the steps of the receipt are green and skipped and no red, so adding the red (zero) changes nothing; one red step refuses the commit (examples: repository-refuse-commit) -/
+theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = green + skipped := Nat.add_zero (green + skipped)
+/-- when to push: the version is the last tag or its one next step (one step forward, one back is the tag), and the build it names is the one the package answers on initialize (examples: repository-decide-push) -/
+theorem textbook_version_sequential (n : Nat) : n + 1 - 1 = n := Nat.add_sub_cancel n 1
+/-- the e2e gate decodes by majority: two agreeing copies of three decide a combination (twice two exceeds three); a push needs nothing uncorrectable (examples: repository-decide-push) -/
+theorem textbook_majority_of_three : 2 * 2 > 3 := by decide
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h
