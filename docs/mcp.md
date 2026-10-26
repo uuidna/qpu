@@ -958,6 +958,13 @@ Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs
         "out_of_scope",
         "open"
       ]
+    },
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "the leads named, in this order: a gate answers the leads that pass through it"
     }
   }
 }
@@ -2060,7 +2067,9 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "packages",
         "ecommerce",
         "ui",
-        "adapters"
+        "adapters",
+        "gates",
+        "sets"
       ],
       "description": "omit for all"
     },
@@ -2096,6 +2105,13 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "type": "string"
       },
       "description": "the variable NAMES the client's environment holds: which of a tenant's are missing (values never travel)"
+    },
+    "sets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "kind sets: two set names (a toolbox, mcp, tools, ui, backed, configs, mount:<tenant>) whose union, intersection and differences are answered"
     },
     "selftest": {
       "type": "boolean"

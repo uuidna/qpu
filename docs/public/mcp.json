@@ -22,6 +22,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/processor",
           "visibility": [
@@ -289,6 +293,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/circuit",
           "visibility": [
@@ -476,6 +484,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/echo",
           "visibility": [
@@ -494,6 +506,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/echo_benchmark",
           "visibility": [
@@ -518,6 +534,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/roadmap",
           "visibility": [
@@ -615,6 +635,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/algorithm",
           "visibility": [
@@ -633,6 +657,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/software",
           "visibility": [
@@ -698,6 +726,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/statements",
           "visibility": [
@@ -721,6 +753,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/repositories",
           "visibility": [
@@ -744,6 +780,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/quantumlib",
           "visibility": [
@@ -803,6 +843,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/quantum-error-correction",
           "visibility": [
@@ -838,6 +882,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/chemistry-simulation",
           "visibility": [
@@ -896,6 +944,10 @@
       },
       "_meta": {
         "toolbox": "google",
+        "skill": {
+          "instructions": "Call any tool with the arguments its schema names; every result is a block (widget, Open Graph, shadcn item) under the licence; the examples page is the documentation and the tests.",
+          "directions": 1
+        },
         "ui": {
           "resourceUri": "ui://qpu/fault-tolerant-design",
           "visibility": [
@@ -919,11 +971,22 @@
               "out_of_scope",
               "open"
             ]
+          },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "the leads named, in this order: a gate answers the leads that pass through it"
           }
         }
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/leads",
           "visibility": [
@@ -942,6 +1005,10 @@
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/audit",
           "visibility": [
@@ -985,6 +1052,10 @@
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/match",
           "visibility": [
@@ -1022,6 +1093,10 @@
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/clay",
           "visibility": [
@@ -1082,6 +1157,10 @@
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/verify",
           "visibility": [
@@ -1105,6 +1184,10 @@
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/metrics",
           "visibility": [
@@ -1153,6 +1236,10 @@
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/textbook",
           "visibility": [
@@ -1176,6 +1263,10 @@
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/css",
           "visibility": [
@@ -1206,6 +1297,10 @@
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/dashboard",
           "visibility": [
@@ -1233,6 +1328,10 @@
       },
       "_meta": {
         "toolbox": "tree",
+        "skill": {
+          "instructions": "audit replays every example and every toolbox selftest; match decides any statement; verify checks a UUID against its seal, content and neighbours; clay recomputes the register; leads lists what is owed.",
+          "directions": 2
+        },
         "ui": {
           "resourceUri": "ui://qpu/clone",
           "visibility": [
@@ -1282,6 +1381,10 @@
       },
       "_meta": {
         "toolbox": "flow",
+        "skill": {
+          "instructions": "Use the flow toolbox in phases. discover: call once for the request list, fetch every request as given (POST bodies verbatim), call again with the answers until the phase is \"discovery\"; write discovery.json and the page. wave: call for the request list, fetch each URL once (pace per host), call again with status, ok, ms and the body text, plus the contracts from the discovery; write verification.json and the page. readiness: call with the verification, the discovery, the cleanup subjects you measured present and the theorem ledger; make the border calls and the unit calls it returns, against the MCP hosts; call again with their answers; write readiness.json and the page. imagine: call once; write imagination.json and the page. Before a live run, call any flow tool with selftest and record the result; a failed check is a lead, never a stop.",
+          "directions": 4
+        },
         "ui": {
           "resourceUri": "ui://qpu/discover",
           "visibility": [
@@ -1322,6 +1425,10 @@
       },
       "_meta": {
         "toolbox": "flow",
+        "skill": {
+          "instructions": "Use the flow toolbox in phases. discover: call once for the request list, fetch every request as given (POST bodies verbatim), call again with the answers until the phase is \"discovery\"; write discovery.json and the page. wave: call for the request list, fetch each URL once (pace per host), call again with status, ok, ms and the body text, plus the contracts from the discovery; write verification.json and the page. readiness: call with the verification, the discovery, the cleanup subjects you measured present and the theorem ledger; make the border calls and the unit calls it returns, against the MCP hosts; call again with their answers; write readiness.json and the page. imagine: call once; write imagination.json and the page. Before a live run, call any flow tool with selftest and record the result; a failed check is a lead, never a stop.",
+          "directions": 4
+        },
         "ui": {
           "resourceUri": "ui://qpu/wave",
           "visibility": [
@@ -1382,6 +1489,10 @@
       },
       "_meta": {
         "toolbox": "flow",
+        "skill": {
+          "instructions": "Use the flow toolbox in phases. discover: call once for the request list, fetch every request as given (POST bodies verbatim), call again with the answers until the phase is \"discovery\"; write discovery.json and the page. wave: call for the request list, fetch each URL once (pace per host), call again with status, ok, ms and the body text, plus the contracts from the discovery; write verification.json and the page. readiness: call with the verification, the discovery, the cleanup subjects you measured present and the theorem ledger; make the border calls and the unit calls it returns, against the MCP hosts; call again with their answers; write readiness.json and the page. imagine: call once; write imagination.json and the page. Before a live run, call any flow tool with selftest and record the result; a failed check is a lead, never a stop.",
+          "directions": 4
+        },
         "ui": {
           "resourceUri": "ui://qpu/readiness",
           "visibility": [
@@ -1419,6 +1530,10 @@
       },
       "_meta": {
         "toolbox": "flow",
+        "skill": {
+          "instructions": "Use the flow toolbox in phases. discover: call once for the request list, fetch every request as given (POST bodies verbatim), call again with the answers until the phase is \"discovery\"; write discovery.json and the page. wave: call for the request list, fetch each URL once (pace per host), call again with status, ok, ms and the body text, plus the contracts from the discovery; write verification.json and the page. readiness: call with the verification, the discovery, the cleanup subjects you measured present and the theorem ledger; make the border calls and the unit calls it returns, against the MCP hosts; call again with their answers; write readiness.json and the page. imagine: call once; write imagination.json and the page. Before a live run, call any flow tool with selftest and record the result; a failed check is a lead, never a stop.",
+          "directions": 4
+        },
         "ui": {
           "resourceUri": "ui://qpu/imagine",
           "visibility": [
@@ -1462,6 +1577,10 @@
       },
       "_meta": {
         "toolbox": "flow",
+        "skill": {
+          "instructions": "Use the flow toolbox in phases. discover: call once for the request list, fetch every request as given (POST bodies verbatim), call again with the answers until the phase is \"discovery\"; write discovery.json and the page. wave: call for the request list, fetch each URL once (pace per host), call again with status, ok, ms and the body text, plus the contracts from the discovery; write verification.json and the page. readiness: call with the verification, the discovery, the cleanup subjects you measured present and the theorem ledger; make the border calls and the unit calls it returns, against the MCP hosts; call again with their answers; write readiness.json and the page. imagine: call once; write imagination.json and the page. Before a live run, call any flow tool with selftest and record the result; a failed check is a lead, never a stop.",
+          "directions": 4
+        },
         "ui": {
           "resourceUri": "ui://qpu/e2e",
           "visibility": [
@@ -1497,6 +1616,10 @@
       },
       "_meta": {
         "toolbox": "flow",
+        "skill": {
+          "instructions": "Use the flow toolbox in phases. discover: call once for the request list, fetch every request as given (POST bodies verbatim), call again with the answers until the phase is \"discovery\"; write discovery.json and the page. wave: call for the request list, fetch each URL once (pace per host), call again with status, ok, ms and the body text, plus the contracts from the discovery; write verification.json and the page. readiness: call with the verification, the discovery, the cleanup subjects you measured present and the theorem ledger; make the border calls and the unit calls it returns, against the MCP hosts; call again with their answers; write readiness.json and the page. imagine: call once; write imagination.json and the page. Before a live run, call any flow tool with selftest and record the result; a failed check is a lead, never a stop.",
+          "directions": 4
+        },
         "ui": {
           "resourceUri": "ui://qpu/shard",
           "visibility": [
@@ -1554,6 +1677,10 @@
       },
       "_meta": {
         "toolbox": "language",
+        "skill": {
+          "instructions": "translate takes text, from and to and answers by vocabulary; call it without text to measure the tables and get the missing terms per locale, which are the leads to fill (from the unit's vocabulary door where discovery finds one, or by a person). prose takes a tool, its arguments and a locale and renders the answer as sentences; feed its untranslated words back as vocabulary leads.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/translate",
           "visibility": [
@@ -1601,6 +1728,10 @@
       },
       "_meta": {
         "toolbox": "language",
+        "skill": {
+          "instructions": "translate takes text, from and to and answers by vocabulary; call it without text to measure the tables and get the missing terms per locale, which are the leads to fill (from the unit's vocabulary door where discovery finds one, or by a person). prose takes a tool, its arguments and a locale and renders the answer as sentences; feed its untranslated words back as vocabulary leads.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/prose",
           "visibility": [
@@ -1657,6 +1788,10 @@
       },
       "_meta": {
         "toolbox": "raid",
+        "skill": {
+          "instructions": "A client that is a database adapter (Payload's mongodb adapter interface) reads a collection's rows from the docket (GET /docket?collection=…, the bodies), calls mongo with the op and the rows, and writes the entries the tool returns (POST /docket, writer role) or deletes the ids (DELETE, admin role; a linked entry is refused and kept). Every query is pure and recomputable; every write is content-addressed and linked to what it replaces.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/mongo",
           "visibility": [
@@ -1748,6 +1883,10 @@
       },
       "_meta": {
         "toolbox": "billing",
+        "skill": {
+          "instructions": "Per tenant the author sets two wrangler secrets, STRIPE_SECRET_KEY_<TENANT> and STRIPE_WEBHOOK_SECRET_<TENANT>, and registers https://<host>/docket/stripe as the webhook endpoint at Stripe. A client calls stripe plan and the Worker executes the plan with the tenant key, answering the session url. Stripe posts events to the tenant's endpoint; the Worker calls stripe webhook with the raw body, the Stripe-Signature header and the tenant secret, writes the entry it gets to the tenant docket (mirrors carry it to the others), and answers 200 on a duplicate. Any host answers stripe state for a subject at its domain from the entries it holds.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/stripe",
           "visibility": [
@@ -1808,6 +1947,10 @@
       },
       "_meta": {
         "toolbox": "billing",
+        "skill": {
+          "instructions": "Per tenant the author sets two wrangler secrets, STRIPE_SECRET_KEY_<TENANT> and STRIPE_WEBHOOK_SECRET_<TENANT>, and registers https://<host>/docket/stripe as the webhook endpoint at Stripe. A client calls stripe plan and the Worker executes the plan with the tenant key, answering the session url. Stripe posts events to the tenant's endpoint; the Worker calls stripe webhook with the raw body, the Stripe-Signature header and the tenant secret, writes the entry it gets to the tenant docket (mirrors carry it to the others), and answers 200 on a duplicate. Any host answers stripe state for a subject at its domain from the entries it holds.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/currency",
           "visibility": [
@@ -1860,6 +2003,10 @@
       },
       "_meta": {
         "toolbox": "legal",
+        "skill": {
+          "instructions": "The client reads the tree's texts (README, CITATION.cff, .zenodo.json, package.json, src/worker.ts, the billing and hmac modules, mcp.ts), the discovery and the theorem ledger, calls legal for the plan, makes every call against its host, and calls legal again with the answers; it writes legal.json and the page. Agents are the free doors discovery found; the operator overrides with agents: [...] and nothing else does. A refusal is recorded, never retried blindly.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/legal",
           "visibility": [
@@ -1901,6 +2048,10 @@
       },
       "_meta": {
         "toolbox": "legal",
+        "skill": {
+          "instructions": "The client reads the tree's texts (README, CITATION.cff, .zenodo.json, package.json, src/worker.ts, the billing and hmac modules, mcp.ts), the discovery and the theorem ledger, calls legal for the plan, makes every call against its host, and calls legal again with the answers; it writes legal.json and the page. Agents are the free doors discovery found; the operator overrides with agents: [...] and nothing else does. A refusal is recorded, never retried blindly.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/compete",
           "visibility": [
@@ -1962,6 +2113,10 @@
       },
       "_meta": {
         "toolbox": "legal",
+        "skill": {
+          "instructions": "The client reads the tree's texts (README, CITATION.cff, .zenodo.json, package.json, src/worker.ts, the billing and hmac modules, mcp.ts), the discovery and the theorem ledger, calls legal for the plan, makes every call against its host, and calls legal again with the answers; it writes legal.json and the page. Agents are the free doors discovery found; the operator overrides with agents: [...] and nothing else does. A refusal is recorded, never retried blindly.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/patents",
           "visibility": [
@@ -2005,6 +2160,10 @@
       },
       "_meta": {
         "toolbox": "repository",
+        "skill": {
+          "instructions": "The client gathers with git: the remote url, HEAD, the branch, package.json's version, worktree list, every branch with its upstream and head, every tag with its commit, and the concept DOI from .zenodo.json's related identifiers; calls repository for the requests; fetches them (GitHub needs no token for public reads); calls again with the answers; writes repository.json and the page; its leads join the next-leads docket. Offline, the local facts alone are written.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/repository",
           "visibility": [
@@ -2079,6 +2238,10 @@
       },
       "_meta": {
         "toolbox": "standards",
+        "skill": {
+          "instructions": "jsonld needs no fetch. codes: the client fetches the three CLDR documents the plan names (GET, free, no credential) and calls codes with them; a code the standard does not know is a lead. The discover step reads schema.org's vocabulary and the CLDR lists as contracts; every tools/call result carries _meta.jsonLd and every documentation page a JSON-LD script.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/jsonld",
           "visibility": [
@@ -2111,6 +2274,10 @@
       },
       "_meta": {
         "toolbox": "standards",
+        "skill": {
+          "instructions": "jsonld needs no fetch. codes: the client fetches the three CLDR documents the plan names (GET, free, no credential) and calls codes with them; a code the standard does not know is a lead. The discover step reads schema.org's vocabulary and the CLDR lists as contracts; every tools/call result carries _meta.jsonLd and every documentation page a JSON-LD script.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/codes",
           "visibility": [
@@ -2180,6 +2347,10 @@
       },
       "_meta": {
         "toolbox": "payload",
+        "skill": {
+          "instructions": "configure: a client calls it with no kind to test every configuration around the torus, with kind and current (its file text) to learn the drift as leads, with kind tenant and the names of its environment to learn what the operator still has to set; gen-docs writes the manifest from kind pwa. A Payload host with the default plugins (lexical, nested-docs, seo) stores _meta.payload of any result as it is: the lexical field is the document, nestedDocs.parent the parent relation, seo the plugin's fields; the block's uuid is the id. A device renders the block from its uuid alone (the walk) and never recomputes what the balancer computed.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/payload",
           "visibility": [
@@ -2217,7 +2388,9 @@
               "packages",
               "ecommerce",
               "ui",
-              "adapters"
+              "adapters",
+              "gates",
+              "sets"
             ],
             "description": "omit for all"
           },
@@ -2254,6 +2427,13 @@
             },
             "description": "the variable NAMES the client's environment holds: which of a tenant's are missing (values never travel)"
           },
+          "sets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "kind sets: two set names (a toolbox, mcp, tools, ui, backed, configs, mount:<tenant>) whose union, intersection and differences are answered"
+          },
           "selftest": {
             "type": "boolean"
           }
@@ -2261,6 +2441,10 @@
       },
       "_meta": {
         "toolbox": "payload",
+        "skill": {
+          "instructions": "configure: a client calls it with no kind to test every configuration around the torus, with kind and current (its file text) to learn the drift as leads, with kind tenant and the names of its environment to learn what the operator still has to set; gen-docs writes the manifest from kind pwa. A Payload host with the default plugins (lexical, nested-docs, seo) stores _meta.payload of any result as it is: the lexical field is the document, nestedDocs.parent the parent relation, seo the plugin's fields; the block's uuid is the id. A device renders the block from its uuid alone (the walk) and never recomputes what the balancer computed.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/configure",
           "visibility": [
@@ -2315,6 +2499,10 @@
       },
       "_meta": {
         "toolbox": "extension",
+        "skill": {
+          "instructions": "Inward: call extend with a host (direction in); fetch the one request it emits, adding the tenant's bearer token where the host asks for one (QPU_MCP_TOKEN_<HOST>); call again with tools and the host's doors join the catalogue as host:tool. Serve one: extend with call { tool, arguments }; fetch the request; call again with answer. Outward: extend with direction out gives the registration (mcpServers fragment) any MCP client mounts. The discover tool extends the default hosts (the unit, this tree, Cloudflare's eight servers) on every run; a tenant names its own hosts with QPU_MCP_HOSTS[_<TENANT>].",
+          "directions": 4
+        },
         "ui": {
           "resourceUri": "ui://qpu/extend",
           "visibility": [
@@ -2364,6 +2552,10 @@
       },
       "_meta": {
         "toolbox": "crypto",
+        "skill": {
+          "instructions": "fold { text, bound } before sending a payload to a place with a limit (an isolate, a request, a quantum): send the pieces, each under the bound; a reader asks fold { text, bound, key } to learn which piece a key sits in and reads that piece alone; fold { pieces, root } checks the whole came back. seal names any text the way blocks and pieces are named.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/fold",
           "visibility": [
@@ -2403,6 +2595,10 @@
       },
       "_meta": {
         "toolbox": "crypto",
+        "skill": {
+          "instructions": "fold { text, bound } before sending a payload to a place with a limit (an isolate, a request, a quantum): send the pieces, each under the bound; a reader asks fold { text, bound, key } to learn which piece a key sits in and reads that piece alone; fold { pieces, root } checks the whole came back. seal names any text the way blocks and pieces are named.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/seal",
           "visibility": [
@@ -2460,6 +2656,10 @@
       },
       "_meta": {
         "toolbox": "crypto",
+        "skill": {
+          "instructions": "fold { text, bound } before sending a payload to a place with a limit (an isolate, a request, a quantum): send the pieces, each under the bound; a reader asks fold { text, bound, key } to learn which piece a key sits in and reads that piece alone; fold { pieces, root } checks the whole came back. seal names any text the way blocks and pieces are named.",
+          "directions": 3
+        },
         "ui": {
           "resourceUri": "ui://qpu/attest",
           "visibility": [

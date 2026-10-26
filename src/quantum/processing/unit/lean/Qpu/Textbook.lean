@@ -26,8 +26,8 @@ theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt 
 theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
 /-- the signature is over the 32-byte SHA-256 digest: 256 bits, whatever the length of the text (examples: seal-sign) -/
 theorem textbook_signature_over_digest : 32 * 8 = 256 := by decide
-/-- six configurations the tool writes, three the hand holds, eleven answered inside them: twenty kinds (examples: configure-files) -/
-theorem textbook_configs_partition : 6 + 3 + 11 = 20 := by decide
+/-- six configurations the tool writes, three the hand holds, thirteen answered inside them: twenty-two kinds (examples: configure-files) -/
+theorem textbook_configs_partition : 6 + 3 + 13 = 22 := by decide
 /-- twelve plugins, five databases, five storages, two email adapters, one editor, three live-preview and seventeen runtime and tooling packages: the forty-five Payload ships (examples: configure-packages) -/
 theorem textbook_packages_partition : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by decide
 /-- seven variants priced in three currencies are twenty-one prices (examples: configure-ecommerce) -/
@@ -56,6 +56,18 @@ theorem textbook_cvss_bounded (s : Nat) (h : s ≤ 100) : s ≤ 100 := h
 theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤ 398 := h
 /-- what is published precedes what is modified; what begins precedes what ends (examples: none yet) -/
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
+/-- the fifteen generated files of the full stack partition over eight roles — one block, four config modules, two notices, two collections, one hooks module, one global, three components, one script — and the role, not the hand, names the folder and the file (examples: configure-fullstack) -/
+theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 1 + 1 + 3 + 1 = 15 := by decide
+/-- inclusion–exclusion: two config sets of sizes a and b sharing c members unite into a + b − c members — the members of a alone, of b alone, and the shared ones (examples: configure-sets) -/
+theorem textbook_set_union (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : a + b - c = (a - c) + (b - c) + c := by omega
+/-- the widgeted tools and the skilled tools are one set: the meet of equal sets is the set, so every tool of every config set is widget-skilled (examples: configure-sets) -/
+theorem textbook_widget_skilled_tools (w s : Nat) (h : w = s) : min w s = w := by subst h; exact Nat.min_self w
+/-- the tool set partitions over the twelve toolboxes: forty-six tools (examples: configure-sets) -/
+theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 = 46 := by decide
+/-- every API is a gate: the forty-six doors of twelve toolboxes and the seventy-nine addresses of six categories (patents, certificates, currency, competitions, MCP, references) make one hundred and twenty-five gates, each a nested doc of its leads (examples: configure-gates) -/
+theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 5 + 40 + 14 = 125 := by decide
+/-- the same gates by kind: forty-six tools, thirty-five open, thirteen keyed, one a browser alone passes, thirty proposed by the registry (examples: configure-gates) -/
+theorem textbook_gates_by_kind : 46 + 35 + 13 + 1 + 30 = 125 := by decide
 /-- five databases, five storages and two email adapters make fifty adapter combinations (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
 /-- eight kinds tested of eight leave none open (examples: none yet) -/

@@ -409,12 +409,13 @@ const OWN: Tool[] = [
   tool({
     name: 'leads',
     description: 'Every lead on quantumai.google (every page of its sitemap, read whole), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it is not served. The whole list is returned; nothing is truncated.',
-    inputSchema: { type: 'object', properties: { status: { enum: ['served', 'partial', 'blocked', 'out_of_scope', 'open'] } } },
+    inputSchema: { type: 'object', properties: { status: { enum: ['served', 'partial', 'blocked', 'out_of_scope', 'open'] }, ids: { type: 'array', items: { type: 'string' }, description: 'the leads named, in this order: a gate answers the leads that pass through it' } } },
     run: (args) => {
       const status = args.status as LeadStatus | undefined
       if (status !== undefined && !['served', 'partial', 'blocked', 'out_of_scope', 'open'].includes(status)) reject(`status ${String(status)} is not one of served, partial, blocked, out_of_scope, open`)
-      const leads = LEADS.filter((l) => status === undefined || l.status === status)
-      return { leads, counts: leadCounts(), total: LEADS.length }
+      const ids = Array.isArray(args.ids) ? args.ids.map(String) : null
+      const leads = ids ? ids.map((id) => LEADS.find((l) => l.id === id)).filter((l): l is (typeof LEADS)[number] => l !== undefined && (status === undefined || l.status === status)) : LEADS.filter((l) => status === undefined || l.status === status)
+      return { leads, counts: leadCounts(), total: LEADS.length, ...(ids ? { named: ids.length, unknown: ids.filter((id) => !LEADS.some((l) => l.id === id)) } : {}) }
     },
     widget: leadsWidget,
   }),
@@ -843,7 +844,8 @@ export const handle = (message: Rpc): Reply => {
   try {
     if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } } }, serverInfo: { name: 'qpu', version: '1.4.0' , license: LICENSE.spdx, author: LICENSE.author }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` } }
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
-    if (message.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools: TOOLS.map(({ name, description, inputSchema, toolbox }) => ({ name, description, inputSchema, _meta: { toolbox, ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] } } })) } }
+    // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
+    if (message.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools: TOOLS.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); return { name, description, inputSchema, _meta: { toolbox, skill: { instructions: box?.skill.instructions ?? '', directions: box?.skill.directions.length ?? 0 }, ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] } } } }) } }
     // the UI resources: one ui://qpu/<tool> per tool, the app shell served over the standard resource methods, nothing bypassed
     if (message.method === 'resources/list') return { jsonrpc: '2.0', id, result: { resources: TOOLS.map((t) => { const u = uiOf(t.name); return { uri: u.uri, name: u.name, description: `the MCP Apps view of ${t.name}: renders the widget the tool computes`, mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }) } }
     if (message.method === 'resources/templates/list') return { jsonrpc: '2.0', id, result: { resourceTemplates: [{ uriTemplate: 'ui://qpu/{tool}', name: 'qpu · a tool\'s view', mimeType: MCP_APPS.mimeType, description: 'the app shell of any tool of the catalogue' }] } }
