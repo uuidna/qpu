@@ -34,5 +34,7 @@ theorem textbook_packages_partition : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by dec
 theorem textbook_catalogue_prices : 7 * 3 = 21 := by decide
 /-- a pegged currency converts at one fixed rate: the same euro amount gives the same leva, always (1.95583 since 2026-01-01) (examples: currency-harmonise) -/
 theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583 / 100000 := rfl
+/-- CMI's three conditions are conjoined: a proposed solution is considered only when every one holds (examples: compete-rules) -/
+theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
 theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - k = 0 := by intro k h hk; omega

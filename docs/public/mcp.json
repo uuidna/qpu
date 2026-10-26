@@ -1625,6 +1625,32 @@
       }
     },
     {
+      "name": "compete",
+      "description": "The competitions with prizes and funding, their rules read at the source and judged against this tree's own evidence on every run: the Clay Millennium Prize rules (three conditions), XPRIZE Quantum Applications (closed: finalists chosen, winners spring 2027), GitHub's maintainer programs, Cloudflare's Workers Launchpad, Vercel's open source program; the registry's grant and funding MCPs proposed. Each rule is satisfied, pending (the author's act), closed or open (a lead). Nothing is claimed won; the tree competes by following every rule. Pure.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "published": {
+            "type": "boolean",
+            "description": "a publication in a qualifying outlet exists (the author says so)"
+          },
+          "pushed": {
+            "type": "boolean",
+            "description": "the repository is public (the author pushed)"
+          },
+          "hosts": {
+            "type": "integer"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "_meta": {
+        "toolbox": "legal"
+      }
+    },
+    {
       "name": "repository",
       "description": "Workspaces, branches, tags and releases watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.",
       "inputSchema": {

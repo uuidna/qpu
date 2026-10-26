@@ -1,10 +1,10 @@
 {
- "date": "2026-10-25T23:58:38.903Z",
+ "date": "2026-10-26T00:29:11.358Z",
  "partial": false,
  "remaining": 0,
- "fetched": 0,
- "leads": 44,
- "withServers": 43,
+ "fetched": 6,
+ "leads": 45,
+ "withServers": 44,
  "related": [
   {
    "lead": "perspective-database",
@@ -5143,6 +5143,90 @@
      "score": 1,
      "shared": [
       "call"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "currency-mcps-related",
+   "words": [
+    "fx-currency-exchange-rates",
+    "historical-exchange-rates",
+    "currency-rates"
+   ],
+   "servers": 3,
+   "serverList": [
+    {
+     "name": "com.datakoot/fx-currency-exchange-rates",
+     "description": "Live & historical FX rates and currency conversion for AI agents. No API keys.",
+     "remotes": [
+      "https://market.datakoot.com/mcp"
+     ],
+     "word": "fx-currency-exchange-rates"
+    },
+    {
+     "name": "dev.workers.bhazarstudio.datoqa/historical-exchange-rates",
+     "description": "Historical reference FX and dated conversions across 30 currencies, with source dates and evidence.",
+     "remotes": [
+      "https://datoqa.bhazarstudio.workers.dev/mcp/fx"
+     ],
+     "word": "historical-exchange-rates"
+    },
+    {
+     "name": "com.invokera/currency-rates",
+     "description": "Latest and historical ECB foreign-exchange reference rates for 30+ currencies, via Frankfurter.",
+     "remotes": [
+      "https://invokera.com/r/currency-rates"
+     ],
+     "word": "currency-rates"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.datakoot/fx-currency-exchange-rates",
+     "url": "https://market.datakoot.com/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "dev.workers.bhazarstudio.datoqa/historical-exchange-rates",
+     "url": "https://datoqa.bhazarstudio.workers.dev/mcp/fx",
+     "status": 200,
+     "doors": 7
+    },
+    {
+     "server": "com.invokera/currency-rates",
+     "url": "https://invokera.com/r/currency-rates",
+     "status": 200,
+     "doors": 3
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "dev.workers.bhazarstudio.datoqa/historical-exchange-rates",
+     "url": "https://datoqa.bhazarstudio.workers.dev/mcp/fx",
+     "door": "convert_currency_batch",
+     "score": 1,
+     "shared": [
+      "currency"
+     ]
+    },
+    {
+     "server": "com.datakoot/fx-currency-exchange-rates",
+     "url": "https://market.datakoot.com/mcp",
+     "door": "fx_convert",
+     "score": 1,
+     "shared": [
+      "currency"
+     ]
+    },
+    {
+     "server": "com.datakoot/fx-currency-exchange-rates",
+     "url": "https://market.datakoot.com/mcp",
+     "door": "fx_currencies",
+     "score": 1,
+     "shared": [
+      "exchange-rate"
      ]
     }
    ]

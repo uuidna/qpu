@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T00:19:57.339Z",
- "ms": 309,
+ "date": "2026-10-26T00:29:03.270Z",
+ "ms": 596,
  "selftest": {
   "passed": true
  },
@@ -9,32 +9,32 @@
   {
    "source": "ecb",
    "status": 200,
-   "ms": 161,
+   "ms": 491,
    "bytes": 1547
   },
   {
    "source": "frankfurter",
    "status": 200,
-   "ms": 120,
+   "ms": 215,
    "bytes": 440
   },
   {
    "source": "bnb",
    "status": 200,
-   "ms": 247,
-   "bytes": 6582
+   "ms": 358,
+   "bytes": 746
   },
   {
    "source": "er-api",
    "status": 200,
-   "ms": 117,
-   "bytes": 3047
+   "ms": 323,
+   "bytes": 3048
   },
   {
    "source": "fawazahmed",
    "status": 200,
-   "ms": 151,
-   "bytes": 7547
+   "ms": 288,
+   "bytes": 7530
   }
  ],
  "base": "EUR",
@@ -50,22 +50,22 @@
    "currencies": 29
   },
   {
-   "source": "bnb",
-   "date": "2026-10-23",
-   "currencies": 29
-  },
-  {
    "source": "er-api",
-   "date": "2026-10-25",
+   "date": "2026-10-26",
    "currencies": 166
   },
   {
    "source": "fawazahmed",
-   "date": "2026-10-25",
+   "date": "2026-10-24",
    "currencies": 288
   }
  ],
- "errors": [],
+ "errors": [
+  {
+   "source": "bnb",
+   "error": "no rates in the BNB XML"
+  }
+ ],
  "rates": {
   "EUR": {
    "rate": 1,
@@ -78,20 +78,20 @@
    "dates": []
   },
   "USD": {
-   "rate": 1.1193,
+   "rate": 1.119854015,
    "sources": [
     "ecb",
     "frankfurter",
-    "bnb",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.0008826945412311167,
+   "spread": 0.0009465385539560083,
    "outcome": "agree",
    "drifting": [],
    "dates": [
     "2026-10-23",
-    "2026-10-25"
+    "2026-10-26",
+    "2026-10-24"
    ]
   },
   "BGN": {
@@ -107,54 +107,54 @@
    ]
   },
   "GBP": {
-   "rate": 0.83728,
+   "rate": 0.83736611,
    "sources": [
     "ecb",
     "frankfurter",
-    "bnb",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.0005325697496655101,
+   "spread": 0.001017344731087775,
    "outcome": "agree",
    "drifting": [],
    "dates": [
     "2026-10-23",
-    "2026-10-25"
+    "2026-10-26",
+    "2026-10-24"
    ]
   },
   "CHF": {
-   "rate": 0.9227,
+   "rate": 0.923486,
    "sources": [
     "ecb",
     "frankfurter",
-    "bnb",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.001637173512517631,
+   "spread": 0.0008927801829155678,
    "outcome": "agree",
    "drifting": [],
    "dates": [
     "2026-10-23",
-    "2026-10-25"
+    "2026-10-26",
+    "2026-10-24"
    ]
   },
   "JPY": {
-   "rate": 175.51,
+   "rate": 175.61543427499998,
    "sources": [
     "ecb",
     "frankfurter",
-    "bnb",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.001127981311606298,
+   "spread": 0.001298221457249645,
    "outcome": "agree",
    "drifting": [],
    "dates": [
     "2026-10-23",
-    "2026-10-25"
+    "2026-10-26",
+    "2026-10-24"
    ]
   }
  },
@@ -173,51 +173,51 @@
   },
   "qpu-domain-yearly": {
    "eur": 43200,
-   "usd": 48353.76,
+   "usd": 48377.69,
    "bgn": 84491.86,
-   "gbp": 36170.5,
-   "chf": 39860.64,
-   "jpy": 7582032
+   "gbp": 36174.22,
+   "chf": 39894.6,
+   "jpy": 7586586.76
   },
   "qpu-domain-monthly": {
    "eur": 4320,
-   "usd": 4835.38,
+   "usd": 4837.77,
    "bgn": 8449.19,
-   "gbp": 3617.05,
-   "chf": 3986.06,
-   "jpy": 758203.2
+   "gbp": 3617.42,
+   "chf": 3989.46,
+   "jpy": 758658.68
   },
   "qpu-tenant-yearly": {
    "eur": 216000,
-   "usd": 241768.8,
+   "usd": 241888.47,
    "bgn": 422459.28,
-   "gbp": 180852.48,
-   "chf": 199303.2,
-   "jpy": 37910160
+   "gbp": 180871.08,
+   "chf": 199472.98,
+   "jpy": 37932933.8
   },
   "qpu-seat-monthly": {
    "eur": 2700,
-   "usd": 3022.11,
+   "usd": 3023.61,
    "bgn": 5280.74,
-   "gbp": 2260.66,
-   "chf": 2491.29,
-   "jpy": 473877
+   "gbp": 2260.89,
+   "chf": 2493.41,
+   "jpy": 474161.67
   },
   "qpu-metered-per-thousand-calls": {
    "eur": 108,
-   "usd": 120.88,
+   "usd": 120.94,
    "bgn": 211.23,
-   "gbp": 90.43,
-   "chf": 99.65,
-   "jpy": 18955.08
+   "gbp": 90.44,
+   "chf": 99.74,
+   "jpy": 18966.47
   },
   "qpu-enterprise-platform": {
    "eur": 1080000,
-   "usd": 1208844,
+   "usd": 1209442.34,
    "bgn": 2112296.4,
-   "gbp": 904262.4,
-   "chf": 996516,
-   "jpy": 189550800
+   "gbp": 904355.4,
+   "chf": 997364.88,
+   "jpy": 189664669.02
   }
  },
  "tenants": [
@@ -257,5 +257,5 @@
   "io.github.Exchange-RateAPI/mcp-server",
   "io.github.cyanheads/exchange-rates-mcp-server"
  ],
- "says": "5 source(s) read; 5 agree, 1 peg of 6 currencies"
+ "says": "4 source(s) read, 1 unreadable; 5 agree, 1 peg of 6 currencies"
 }

@@ -524,6 +524,10 @@ export default defineConfig({
           {
             "text": "legal",
             "link": "/mcp#legal"
+          },
+          {
+            "text": "compete",
+            "link": "/mcp#compete"
           }
         ]
       },

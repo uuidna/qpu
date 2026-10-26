@@ -11,6 +11,7 @@ import type { Lead } from '../leads.js'
 import { flowWidget } from '../widgets.js'
 import { sha256, utf8, hex } from '../hmac.js'
 import { uuidOf } from '../blocks.js'
+import { THEOREMS, KERNEL_THEOREMS } from '../theorems-index.js'
 
 export type Claim = { id: string; source: string; text: string }
 export type Call = { door: string; host: string; arguments: Record<string, unknown>; purpose: 'forensics' | 'verify' | 'legal' | 'security' | 'due-process' | 'prior-art' | 'licence' }
@@ -140,11 +141,69 @@ const legal = toolOf('legal', {
 
 const FIXTURE_TEXTS: Texts = { citation: 'cff-version: 1.2.0\ntitle: QPU\nauthors:\n  - family-names: Rouschev\n    given-names: Tsvetan\n    orcid: https://orcid.org/0009-0000-7312-9778\nlicense: CC-BY-NC-ND-4.0\n', zenodo: '{"creators":[{"name":"Rouschev, Tsvetan","orcid":"0009-0000-7312-9778"}],"license":"cc-by-nc-nd-4.0","title":"QPU"}', package: '{"name":"@uuidna/qpu","version":"1.4.0","license":"CC-BY-NC-ND-4.0","author":{"name":"Tsvetan Rouschev"}}', readme: '| Measure | Value |\n|---|---:|\n| Tests | 152 pass |\n', worker: "const sameToken = (a, b) => { let d = 0; for (...) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0 }\nif (need && role === 'reader') return json()\nif (need === 'admin' && role !== 'admin') return json()\nidFromName(tenant)\nif (!out.valid) return json({ refused })\nAccess-Control-Allow-Origin OPTIONS AbortSignal.timeout(5000)", billing: 'verifySignature(secret) sameHex(expected, v1)', hmac: 'export const sameHex = (a, b) => { let d = 0; d |= a.charCodeAt(i) ^ b.charCodeAt(i) }', mcp: 'const BALANCER = new Map()' }
 
+/** The competitions with prizes and funding, their rules read at the source (2026-10-26) and judged against this tree's own evidence on every run:
+ * a rule is satisfied, pending (the author's act), closed (the window has passed) or open (a lead). Nothing is claimed won; what the rules
+ * require and what the tree holds are stated, and the gap is the author's act or a lead. */
+export type Rule = { rule: string; needs: string; status: 'satisfied' | 'pending' | 'closed' | 'open'; evidence: string; act?: string }
+export const COMPETITIONS: readonly { id: string; name: string; prize: string; rules: string; read: string; kind: 'prize' | 'funding'; entry: 'open' | 'closed' | 'rolling' | 'unknown'; note: string; requires: readonly Omit<Rule, 'status' | 'evidence'>[] }[] = [
+  { id: 'clay-millennium', name: 'Clay Mathematics Institute, the Millennium Prize Problems', prize: 'USD 1 000 000 per problem (seven; one solved, Poincaré)', rules: 'https://www.claymath.org/millennium-problems/rules/', read: '2026-10-26', kind: 'prize', entry: 'rolling', note: 'CMI considers a proposed solution only when all three conditions hold: (i) published in a Qualifying Outlet (§6), (ii) two years passed since publication, (iii) general acceptance in the mathematics community; then the Scientific Advisory Board advises', requires: [
+    { rule: 'a solution of one of the seven problems', needs: 'a proof accepted by the community, not an identity: the σ-involution bridge theorems here are kernel-checked integer identities, not solutions of any Millennium problem', act: 'none claimed: a solution is mathematics the author would publish' },
+    { rule: '(i) published in a Qualifying Outlet', needs: 'a refereed journal or outlet of §6', act: 'the author publishes (the release and its DOI are the author\'s acts)' },
+    { rule: '(ii) two years since publication', needs: 'time', act: 'wait two years after (i)' },
+    { rule: '(iii) general acceptance', needs: 'the community', act: 'none the tree can take' },
+  ] },
+  { id: 'xprize-quantum-applications', name: 'XPRIZE Quantum Applications (Google Quantum AI, title sponsor)', prize: 'USD 5 000 000 purse', rules: 'https://www.xprize.org/prizes/qc-apps', read: '2026-10-26', kind: 'prize', entry: 'closed', note: 'Finalist teams chosen (news of 2026-05-10); Phase II Wild Card registration opened 2026-01-14 and closed 2026-03-04; winners announced in the spring of 2027: no entry is open', requires: [
+    { rule: 'registration within the window', needs: 'Phase II Wild Card registration 2026-01-14 to 2026-03-04', act: 'closed: the next XPRIZE quantum competition is a lead to watch' },
+    { rule: 'a quantum algorithm with a plausible pathway to quantum advantage, technical novelty and algorithmic rigor', needs: 'a submission judged by XPRIZE\'s panel', act: 'the author submits when a window opens' },
+  ] },
+  { id: 'github-maintainer-programs', name: 'GitHub maintainer programs (Accelerator, Fund, Sponsors)', prize: 'funding, security tools, mentorship (page: "Get funding, security tools, mentorship, and community")', rules: 'https://github.com/accelerator', read: '2026-10-26', kind: 'funding', entry: 'unknown', note: 'the page names the programs; a cohort\'s application window is announced by GitHub', requires: [
+    { rule: 'an open source project on GitHub maintained in public', needs: 'the repository public with a licence', act: 'the push and the release are the author\'s acts; the tree\'s licence is CC-BY-NC-ND-4.0, the fork\'s MIT' },
+    { rule: 'an application in a cohort window', needs: 'GitHub\'s announcement', act: 'the author applies' },
+  ] },
+  { id: 'cloudflare-workers-launchpad', name: 'Cloudflare Workers Launchpad (funding program for startups on Workers)', prize: 'funding from the Launchpad\'s VC partners', rules: 'https://www.cloudflare.com/lp/workers-launchpad/', read: '2026-10-26 (the gateway answered 403 to the verifier: a lead)', kind: 'funding', entry: 'unknown', note: 'the Worker qpu runs on three hosts at the edge; the page refused an automated read', requires: [
+    { rule: 'a startup building on Cloudflare Workers', needs: 'the deployed Worker and a company', act: 'the author applies with the company' },
+  ] },
+  { id: 'vercel-oss-program', name: 'Vercel Open Source Program (credits for open source projects)', prize: 'platform credits', rules: 'https://vercel.com/oss', read: '2026-10-26 (a client-rendered page: the rules are not in its HTML; a lead)', kind: 'funding', entry: 'unknown', note: 'the Payload fork deploys on Vercel; the program\'s criteria are read in the browser only', requires: [
+    { rule: 'an open source project deployed on Vercel', needs: 'the fork deployed by the tenant', act: 'the tenant deploys the app; the author applies' },
+  ] },
+]
+/** The registry's MCPs for grants and funding (2026-10-26: grant 20, funding 20, competition 2, prize 0, hackathon 0): proposed, extended by the discover step through the lead, never called here. */
+export const FUNDING_MCPS = ['ca.netgrant/canadian-grants', 'com.cedargrant/federal-grants', 'com.dropwatchhq/grant-finder', 'io.github.Ansvar-Systems/uk-farm-grants', 'io.github.Froydinger/grantsignal-us', 'ai.rallyprop/gov-funding', 'com.funding-radar/radar', 'com.modernmustardseed/funding-finder', 'eu.tech.funding/fundi', 'com.meridianlabssoftware/sec-form-d-funding-rounds'] as const
+/** Every competition judged: each rule's status from the tree's evidence (theorems kernel-accepted, hosts deployed, licence, no publication), nothing claimed. */
+export const competeOf = (evidence: { theorems: number; kernel: number; hosts: number; licence: string; published: boolean; pushed: boolean }) => {
+  const judged = COMPETITIONS.map((c) => {
+    const rules: Rule[] = c.requires.map((r) => {
+      if (c.entry === 'closed' && /registration/.test(r.rule)) return { ...r, status: 'closed' as const, evidence: c.note }
+      if (/deployed on Vercel/.test(r.rule)) return { ...r, status: 'pending' as const, evidence: 'the fork builds; its deploy is the tenant\'s act' }
+      if (/open source project/.test(r.rule)) return { ...r, status: evidence.pushed ? 'satisfied' as const : 'pending' as const, evidence: `${evidence.licence}; the repository is ${evidence.pushed ? 'public' : 'local until the author pushes'}` }
+      if (/solution of one of the seven/.test(r.rule)) return { ...r, status: 'open' as const, evidence: `${evidence.theorems} theorems kernel-accepted (${evidence.kernel} in the kernel), identities and bridge theorems; no Millennium problem solved` }
+      if (/published/.test(r.rule)) return { ...r, status: evidence.published ? 'satisfied' as const : 'pending' as const, evidence: evidence.published ? 'published' : 'no publication in a qualifying outlet' }
+      if (/startup building on Cloudflare Workers/.test(r.rule)) return { ...r, status: 'pending' as const, evidence: `the Worker qpu on ${evidence.hosts} hosts; the company is the author\'s` }
+      return { ...r, status: 'pending' as const, evidence: 'the author\'s act' }
+    })
+    const counts = rules.reduce<Record<string, number>>((acc, r) => ({ ...acc, [r.status]: (acc[r.status] ?? 0) + 1 }), {})
+    return { ...c, rules, counts, satisfied: `${counts.satisfied ?? 0}/${rules.length}`, enterable: c.entry !== 'closed' && rules.every((r) => r.status !== 'open' && r.status !== 'closed'), ready: rules.every((r) => r.status === 'satisfied') }
+  })
+  return { competitions: judged, prizes: judged.filter((c) => c.kind === 'prize').length, funding: judged.filter((c) => c.kind === 'funding').length, enterable: judged.filter((c) => c.enterable).map((c) => c.id), ready: judged.filter((c) => c.ready).map((c) => c.id), says: 'enterable: every rule is satisfied or the author\'s act; ready: every rule satisfied', closed: judged.filter((c) => c.entry === 'closed').map((c) => c.id), relatedMcps: FUNDING_MCPS, honest: 'nothing here is a prize won or a problem solved: every rule is judged against evidence, and what remains is the author\'s act (publish, push, apply) or a lead; the tree competes by following the rules, measured on every run', internalCompetition: 'the gate\'s competition of codes (five codes a combination, the fastest correct wins) is judged against its five written rules on every run: see the e2e tool' }
+}
+
+const compete = toolOf('legal', {
+  name: 'compete',
+  description: 'The competitions with prizes and funding, their rules read at the source and judged against this tree\'s own evidence on every run: the Clay Millennium Prize rules (three conditions), XPRIZE Quantum Applications (closed: finalists chosen, winners spring 2027), GitHub\'s maintainer programs, Cloudflare\'s Workers Launchpad, Vercel\'s open source program; the registry\'s grant and funding MCPs proposed. Each rule is satisfied, pending (the author\'s act), closed or open (a lead). Nothing is claimed won; the tree competes by following every rule. Pure.',
+  inputSchema: { type: 'object', properties: { published: { type: 'boolean', description: 'a publication in a qualifying outlet exists (the author says so)' }, pushed: { type: 'boolean', description: 'the repository is public (the author pushed)' }, hosts: { type: 'integer' }, selftest: { type: 'boolean' } } },
+  run: (args, ctx) => {
+    if (args.selftest) return { selftest: true, ...LEGAL.skill.selftest(ctx) }
+    return competeOf({ theorems: THEOREMS.length, kernel: KERNEL_THEOREMS, hosts: typeof args.hosts === 'number' ? args.hosts : 3, licence: LICENSE.spdx, published: args.published === true, pushed: args.pushed === true })
+  },
+  widget: flowWidget,
+})
+
 export const LEGAL: Toolbox = {
   name: 'legal',
   idea: 'the legal and security audit of this MCP through MCP: the author\'s claims judged by the unit\'s forensic, legal and security doors, free agents by default, the operator alone overriding, beside the tree\'s own checks of its sources',
-  tools: [legal],
+  tools: [legal, compete],
   examples: [
+    { id: 'compete-rules', tool: 'compete', theorem: 'textbook_clay_conditions', arguments: {}, shows: 'Every competition with a prize or funding judged by its own rules: the Clay conditions (three, all required), XPRIZE Quantum Applications closed until spring 2027, the funding programs pending the author\'s acts; nothing claimed, the gaps named.', expect: (s) => (s.competitions.length === 5 && s.closed.includes('xprize-quantum-applications') && s.competitions[0].rules.length === 4 && s.competitions[0].rules[0].status === 'open' && s.enterable.length === 3 && s.ready.length === 0 ? null : JSON.stringify(s.competitions.map((c: { id: string; satisfied: string; enterable: boolean }) => [c.id, c.satisfied, c.enterable]))) },
     { id: 'legal-audit-offline', tool: 'legal', theorem: 'textbook_uuid_is_36', arguments: { texts: FIXTURE_TEXTS, answers: [] }, shows: 'Phase two with no answers (offline): the claims, the tree\'s security checks, and the audit\'s own content address over the SHA-256 of every input — change a source and the address changes.', expect: (s) => (s.phase === 'audit' && typeof s.id === 'string' && s.id.length === 36 && s.sha256.length === 64 && s.inputs.texts.worker?.length === 64 && s.securityPassed === s.securityTotal ? null : `${s.phase} ${s.id} ${s.securityPassed}/${s.securityTotal}`) },
     { id: 'legal-plan', tool: 'legal', arguments: { texts: FIXTURE_TEXTS, discovery: { doors: [{ host: 'uuidna.com', url: 'https://uuidna.com/mcp', name: 'compute_forensics', description: '', takes: ['statement'], required: ['statement'], answers: ['verdict', 'receipt'], readOnly: true, contract: 'catalogue' }, { host: 'uuidna.com', url: 'https://uuidna.com/mcp', name: 'get_rights', description: '', takes: [], required: [], answers: ['receipt'], readOnly: true, contract: 'tools/list' }, { host: 'uuidna.com', url: 'https://uuidna.com/mcp', name: 'audit_security', description: '', takes: [], required: [], answers: ['receipt'], readOnly: true, contract: 'catalogue' }] } }, shows: 'Phase one on fixture texts and a three-door discovery: the claims gathered (licence, author, metadata, measured table, perspectives), the tree\'s security checks, and the plan — one forensics call per claim, the rights and security doors once, free by default.', expect: (s) => (s.phase === 'plan' && s.claims >= 10 && s.by === 'free-by-default' && s.agents === 3 && s.calls === s.claims + 2 && s.securityPassed === s.securityTotal ? null : `${s.phase} ${s.claims} claims ${s.calls} calls ${s.agents} agents ${s.by} security ${s.securityPassed}/${s.securityTotal}`) },
   ],
@@ -171,6 +230,9 @@ export const LEGAL: Toolbox = {
       const run = (t: Texts) => ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'legal', arguments: { texts: t, answers: [] } } }).result.structuredContent as { id: string; sha256: string }
       const a1 = run(FIXTURE_TEXTS); const a2 = run(FIXTURE_TEXTS); const a3 = run({ ...FIXTURE_TEXTS, readme: FIXTURE_TEXTS.readme + '| Tampered | yes |\n' })
       check('legal:tamper-evident', a1.id === a2.id && a1.sha256 === a2.sha256 && a1.id !== a3.id && a1.sha256 !== a3.sha256, 'the same inputs give the same address; one changed line changes it')
+      const comp = competeOf({ theorems: 12, kernel: 1000, hosts: 3, licence: 'CC-BY-NC-ND-4.0', published: false, pushed: false })
+      const pub = competeOf({ theorems: 12, kernel: 1000, hosts: 3, licence: 'CC-BY-NC-ND-4.0', published: true, pushed: true })
+      check('legal:compete-judges-never-claims', comp.ready.length === 0 && comp.enterable.length === 3 && comp.competitions.every((c) => c.rules.every((r) => r.status !== 'satisfied')) && pub.competitions.find((c) => c.id === 'github-maintainer-programs')!.rules[0]!.status === 'satisfied' && pub.ready.length === 0 && pub.competitions.find((c) => c.id === 'clay-millennium')!.rules[0]!.status === 'open' && /nothing here is a prize won/.test(comp.honest), 'unpushed and unpublished, nothing is ready and three funding programs are enterable by the author\'s acts; pushed, the public-repository rule is satisfied and the application stays the author\'s; a Millennium problem stays open whatever the author does here')
       return { passed: checks.every((c) => c.passed), checks }
     },
   },

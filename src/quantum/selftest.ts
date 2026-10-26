@@ -11,7 +11,7 @@ import { waveRequestsOf, waveOf, wavePageOf, type WaveResult } from './wave.js'
 import { pagesOf, judgeOf, sourcesOf, borderPlanOf, borderOf, readinessPageOf } from './readiness.js'
 import { imagineOf, imaginePageOf } from './imagine.js'
 import { matcherOf } from './match.js'
-import { e2eOf, valueOf, type E2eAnswer } from './e2e.js'
+import { e2eOf, rulesOf, valueOf, type E2eAnswer } from './e2e.js'
 import { registryRequestsOf, relatedOf, bestDoorsOf } from './discovery.js'
 
 const UNIT = 'https://unit.test/mcp'
@@ -150,6 +150,9 @@ export const flowSelftestOf = (handle: (m: Rpc) => any, examples: readonly Examp
     const unv = e2eOf([{ ...base, combo: 'c4', local: 'Z', id: 'c4@a', host: 'a', status: 304, ms: 3, text: '', etag: '"Q"', address: 'c4' }]).decoded[0]!
     check('e2e:teleport-materialised-or-erased', inv.materialised === 2 && unv.outcome === 'erased' && unv.involutions === 0 && unv.errors[0]!.kind === 'erasure', `two 304s with the held hash materialise; a 304 echoing another hash is an erasure`)
     check('e2e:involution-proves-at-the-edge', inv.outcome === 'agree' && inv.involutions === 2 && inv.winner === 'involution' && inv.codes.find((c) => c.code === 'involution')!.ms === 3 && inv.logical === 'Z', `two 304 copies: ${inv.outcome}, won by ${inv.winner} at 3 ms`)
+    const judged = r.competition.rules
+    const cheat = rulesOf([{ combo: 'x', logical: 'V', outcome: 'agree', winner: 'majority', copies: [{ ms: 5 }, { ms: 9 }], codes: [{ code: 'any', logical: 'V', ms: 5, correct: true, copiesUsed: 1 }, { code: 'majority', logical: 'V', ms: 9, correct: true, copiesUsed: 3 }, { code: 'tree-reference', logical: 'V', ms: 2, correct: true, copiesUsed: 2 }] }])
+    check('e2e:competition-rules-followed', judged.followed && judged.judged === r.decoded.length && judged.rules.length === 5 && !cheat.followed && cheat.violations.some((v) => v.rule === 1 && v.code === 'tree-reference') && cheat.violations.some((v) => v.rule === 2 && v.code === 'majority'), `every decoded combination followed the ${judged.rules.length} rules; a fixture where a slower code is named winner and a code decides before its copies arrived breaks rules 2 and 1`)
     check('e2e:rates-against-textbook', r.physicalErrorRate === 4 / 5 && r.textbookLogical !== null && Math.abs(r.textbookLogical - (3 * 0.64 - 2 * 0.512)) < 1e-12 && r.leads.some((l) => l.id.startsWith('e2e-uncorrectable-')) && r.byHost.c!.erasures === 1, `p=${r.physicalErrorRate}, textbook ${r.textbookLogical}, ${r.leads.length} leads`)
   }
   return { passed: checks.every((c) => c.passed), checks }

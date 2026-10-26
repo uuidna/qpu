@@ -78,7 +78,7 @@ the legal and security audit of this MCP through MCP: the author's claims judged
 
 **Tests itself:** server only: claims from fixture metadata, security checks on fixture sources, the plan, the audit of fixture answers; client → server: the texts come from the tree, the answers from the doors; toolbox → toolbox: the doors come from discovery; the claims include every perspective lead; the licence module is the measure of drift.
 
-Tools: [legal](#legal).
+Tools: [legal](#legal), [compete](#compete).
 
 ## Toolbox `repository`
 
@@ -1744,6 +1744,32 @@ The full legal and security audit with forensic analysis, through MCP. Phase one
       "items": {
         "type": "object"
       }
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
+## compete
+
+The competitions with prizes and funding, their rules read at the source and judged against this tree's own evidence on every run: the Clay Millennium Prize rules (three conditions), XPRIZE Quantum Applications (closed: finalists chosen, winners spring 2027), GitHub's maintainer programs, Cloudflare's Workers Launchpad, Vercel's open source program; the registry's grant and funding MCPs proposed. Each rule is satisfied, pending (the author's act), closed or open (a lead). Nothing is claimed won; the tree competes by following every rule. Pure.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "published": {
+      "type": "boolean",
+      "description": "a publication in a qualifying outlet exists (the author says so)"
+    },
+    "pushed": {
+      "type": "boolean",
+      "description": "the repository is public (the author pushed)"
+    },
+    "hosts": {
+      "type": "integer"
     },
     "selftest": {
       "type": "boolean"
