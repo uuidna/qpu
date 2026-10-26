@@ -5,6 +5,7 @@
 // committed). Every response carries the licence.
 import { handle, type Rpc } from './quantum/mcp.js'
 import { composeOf } from './quantum/compose.js'
+import { scanSvgOf } from './quantum/scan.js'
 import { EXAMPLES } from './quantum/examples.js'
 import { LEADS } from './quantum/leads.js'
 import { LICENSE } from './quantum/license.js'
@@ -333,7 +334,8 @@ export const pageOf = (id: string, origin: string, sp: Superposition = {}): Resp
   const ch = channelOf(id)
   const seal = sealOf(id)
   const accent = accentOfUuid(id)
-  const swatch = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="${accent}"/><text x="60" y="340" font-family="monospace" font-size="72" fill="#fff">${ch.handle}</text><text x="60" y="440" font-family="monospace" font-size="40" fill="#fff">${ch.middle} · ${ch.tail}</text></svg>`)}`
+  // the scannable stream: one frame per character of the address, a scraper shows one frame and links nothing, a device that streams reads the link
+  const swatch = `data:image/svg+xml,${encodeURIComponent(scanSvgOf(id))}`
   const title = `${ch.handle} · ${ch.program.join('')} · @uuidna/qpu`
   const description = `Docket entry ${id}: handle ${ch.handle}, hex program ${ch.program.join('')} (version ${ch.version}, variant ${ch.variant}), message ${ch.message.one48} as one 48-bit natural, ${ch.message.two24.join('/')} as two 24-bit, ${ch.message.three16.join('/')} as three 16-bit; seal ${seal.valid ? 'valid' : 'invalid'}. ${LICENSE.spdx} © ${LICENSE.author}.`
   const og: Record<string, string> = { 'og:type': 'website', 'og:site_name': '@uuidna/qpu', 'og:url': `${origin}/docket/${id}`, 'og:title': title, 'og:description': description, 'og:image': swatch, 'og:image:width': '1200', 'og:image:height': '630', 'article:author': LICENSE.author, license: `${LICENSE.spdx} ${LICENSE.url}`, 'twitter:card': 'summary_large_image' }

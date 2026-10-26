@@ -553,3 +553,4 @@
 {"date":"2026-10-26T15:20:02.657Z","address":"34e39ad2-6b0d-1608-9483-e525e9b3543c","settled":true}
 {"date":"2026-10-26T15:20:02.657Z","address":"d9c03894-2679-159a-860f-3037ff659062","settled":true}
 {"date":"2026-10-26T15:20:02.657Z","address":"175bde66-654d-45f5-9424-21a6eb23bd0c","settled":true}
+{"date":"2026-10-26T15:41:02.983Z","address":"5041fab8-20f7-8061-b5ae-77d7da42ca56","id":"entropy-duplicate-5041fab8","kind":"duplicate","occurrences":2,"source":"site/src/blocks/Qpu/config.ts:17, src/quantum/toolboxes/payload.ts:1096","explore":"match","config":"fullstack"}

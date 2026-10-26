@@ -1098,13 +1098,17 @@ Cheap verification of one UUID: its seal (the version nibble the other 31 nibble
 ```json
 {
   "type": "object",
-  "required": [
-    "uuid"
-  ],
   "properties": {
     "uuid": {
       "type": "string",
       "description": "the UUID to verify"
+    },
+    "scan": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "a stream of frames a device sampled ({ t, hue }, hue null for a black frame): read back to the address it links, by majority per frame; fewer than 36 frames link nothing; rated by the chain (free for the first period)"
     },
     "content": {
       "type": "string",
@@ -2386,6 +2390,13 @@ SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a t
         "boolean"
       ],
       "description": "a post-quantum signature over the digest: ML-DSA-44, ML-DSA-65 (true) or ML-DSA-87"
+    },
+    "entropy": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the device's randomness: samples of the animation's phase at each interaction ({ phase, t, nonce?, x?, y? }), eleven bits a phase and thirty-two a nonce, folded to a seed the text is salted with; rated by the chain (a coil beyond the first period: the fusion)"
     },
     "selftest": {
       "type": "boolean"

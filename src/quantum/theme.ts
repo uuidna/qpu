@@ -7,6 +7,11 @@ import { GLAGOLITIC } from './i18n.js'
 /** the Glagolitic numeral of a seed (1..9) and of its reflection (10 − seed, 10 among them): the rosetta of the rays, one signal in two scripts */
 export const GLAGOLITIC_OF: Readonly<Record<number, string>> = Object.fromEntries(Object.entries(GLAGOLITIC).filter(([, v]) => v <= 10).map(([k, v]) => [v, k]))
 export const KEY = 432
+/** The scannable stream: one frame per character of a UUID, 36 frames of 108 ms (the third harmonic's period): 36 × 108 = 3888 = 432 × 9, the vortex
+ *  period (textbook_scan_stream); a digit a hue (sixteen, 22.5° apart), a dash a black frame; a single frame links nothing, a stream reads the address. */
+export const SCAN = { frameMs: 108, frames: 36, periodMs: 36 * 108, hueStep: 360 / 16, theorem: 'textbook_scan_stream' } as const
+export const framesOf = (uuid: string) => [...uuid.toLowerCase()].map((char, i) => { const dash = char === '-'; const d = dash ? -1 : parseInt(char, 16); return { i, char, kind: (dash ? 'dash' : 'digit') as 'dash' | 'digit', hue: dash ? null : d * SCAN.hueStep, glyph: dash ? '·' : (GLAGOLITIC_OF[d] ?? char), angle: i * (360 / SCAN.frames), start: i * SCAN.frameMs } })
+export const framesGradientOf = (uuid: string): string => `linear-gradient(90deg, ${framesOf(uuid).map((f, i) => `${f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`} ${((i / SCAN.frames) * 100).toFixed(3)}% ${(((i + 1) / SCAN.frames) * 100).toFixed(3)}%`).join(', ')})`
 /** The harmonic series of the key downward by halving, each read as a hue in degrees. */
 export const HARMONICS = [432, 216, 108, 54, 27] as const
 export const hueOf = (hz: number): number => hz % 360
@@ -53,7 +58,7 @@ export const varsOf = (uuid: string): Record<string, string> => {
   const driftAngle = (2 * Math.PI * drift) / 360
   return {
     '--qpu-reflected-hue': String(reflectedHue), '--qpu-drift': String(drift), '--qpu-dust': dust.length ? dust.join(' ') : '0', '--qpu-drift-angle': driftAngle.toFixed(6),
-    '--qpu-hue': String(hue), '--qpu-c': c.toFixed(3), '--qpu-m': m.toFixed(3), '--qpu-y': y.toFixed(3), '--qpu-k': k.toFixed(3),
+    '--qpu-frames': framesGradientOf(uuid), '--qpu-hue': String(hue), '--qpu-c': c.toFixed(3), '--qpu-m': m.toFixed(3), '--qpu-y': y.toFixed(3), '--qpu-k': k.toFixed(3),
     '--qpu-accent': `rgb(${r} ${g} ${b})`, '--qpu-tail': `rgb(${tr} ${tg} ${tb})`, '--qpu-angle': String(one48 % 360),
     '--qpu-vortex': String(seed), '--qpu-reflection': String(10 - seed), '--qpu-signal': `'${GLAGOLITIC_OF[seed] ?? ''}'`, '--qpu-signal-reflected': `'${GLAGOLITIC_OF[10 - seed] ?? ''}'`, '--qpu-signal-digits': `'${seed} ${10 - seed}'`, '--qpu-trinity': seed === 0 ? '0' : seed % 3 === 0 ? '3' : [7, 4, 1].includes(seed) ? '7' : '2', '--qpu-period': `${(seed || 9) * KEY}ms`, '--block-accent': `rgb(${r} ${g} ${b})`,
   }
@@ -76,6 +81,11 @@ export const cssOf = (key: number = KEY): string => {
     `@media (prefers-reduced-motion: no-preference) { .qpu-block::before { animation: qpu-vortex var(--qpu-period, ${key * 9}ms) linear infinite; } @keyframes qpu-vortex { to { filter: hue-rotate(360deg); } } }`,
     `@media (prefers-color-scheme: dark) { .qpu-block { background: linear-gradient(90deg, color-mix(in oklab, var(--qpu-accent, var(--a432-accent)) 12%, transparent), transparent 60%); } }`,
     `@media print { .qpu-block::before { animation: none; } }`,
+    `/* the scannable stream: the block's frames stepped through at the vortex period, one character a frame; a single frame links nothing, a stream reads the address */`,
+    `.qpu-scan { background-image: var(--qpu-frames); background-size: ${36 * 100}% 100%; background-repeat: no-repeat; animation: qpu-scan var(--qpu-period, ${key * 9}ms) steps(36, end) infinite; min-height: 1.5em; } @keyframes qpu-scan { to { background-position: 100% 0; } }`,
+    `/* randomness in CSS: a random delay where the engine has random(); the device's sampled phase where it set one */`,
+    `@supports (animation-delay: random(0ms, 1ms)) { .qpu-block::before, .qpu-scan { animation-delay: random(0ms, ${key * 9}ms); } }`,
+    `.qpu-block[data-phase]::before, .qpu-scan[data-phase] { animation-delay: calc(var(--qpu-phase, 0) * -1ms); }`,
     `/* when coins fuse to coils the block turns green: the heart chakra, computed from the key */`,
     `.qpu-block[data-coil] { --qpu-accent: var(--qpu-coil); } .qpu-block[data-coin] { --qpu-accent: var(--qpu-coin); }`,
     // the CSS streams resulting as rays: six rays at the 60-degree angle (collision free) and four gateways at 90 degrees, every one from the block's own hue and angle

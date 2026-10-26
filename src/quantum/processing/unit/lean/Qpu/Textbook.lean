@@ -172,5 +172,13 @@ theorem textbook_name_alphabets : 26 + 10 + 1 = 37 := by decide
 theorem textbook_create_hue : 432 % 360 = 72 := by decide
 /-- when coins fuse to coils the colour is green, the heart chakra's: the coin's a432 hue (72) advanced by a ninth of the key (48) is 120, cyan and yellow full in CMYK (examples: css-coil) -/
 theorem textbook_coil_green : 432 % 360 + 432 / 9 = 120 := by decide
+/-- the scannable stream: thirty-six frames (one per character of a UUID) of 108 milliseconds (the third harmonic) are 3888 milliseconds, the vortex period (432 × 9); a single frame links nothing, a stream reads the address (examples: verify-scan) -/
+theorem textbook_scan_stream : 36 * 108 = 432 * 9 := by decide
+/-- the phase of the stream at an interaction is one of 3888 milliseconds: eleven bits of randomness a sample, the device's own nonce thirty-two more (examples: seal-entropy) -/
+theorem textbook_phase_bits : 2 ^ 11 ≤ 3888 ∧ 3888 < 2 ^ 12 := by decide
+/-- a period of the stream is a chain of thirty-five links between its thirty-six frames; every full period streamed is one call, the first the coin, every further one a coil: the fusion (examples: verify-scan) -/
+theorem textbook_scan_links : 36 - 1 = 35 := by decide
+/-- the chain's combinatorics: thirty-two hex digits of four bits are 128 bits, 16^32 addresses a stream may link; the rate of usage is counted in periods of that chain (examples: verify-scan) -/
+theorem textbook_chain_bits : 32 * 4 = 128 := by decide
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

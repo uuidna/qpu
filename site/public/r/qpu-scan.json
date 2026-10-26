@@ -1,0 +1,17 @@
+{
+ "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+ "name": "qpu-scan",
+ "type": "registry:component",
+ "title": "QPU scan",
+ "description": "the scannable stream of an address: one frame per character at the vortex period, multidimensional (hue, glyph, angle), impossible to link from one frame, read back by a device that streams it (verify { scan })",
+ "registryDependencies": [
+  "https://qpu.uuidna.com/r/qpu-style.json"
+ ],
+ "files": [
+  {
+   "path": "components/qpu/scan.tsx",
+   "type": "registry:component",
+   "content": "import React from 'react'\nimport { styleOf } from '@/lib/qpu-style'\n/** The stream of an address: the frames the block's own --qpu-frames gradient holds, stepped through at the vortex period (36 frames of 108 ms). A device reads it by streaming: verify { scan: samples }. */\nexport const QpuScan: React.FC<{ uuid: string; phase?: number; label?: string }> = ({ uuid, phase, label }) => (\n  <div className=\"qpu-scan\" role=\"img\" aria-label={label ?? 'a scannable stream: one character a frame'} data-phase={phase === undefined ? undefined : ''} style={{ ...styleOf(uuid), ...(phase === undefined ? {} : { ['--qpu-phase' as string]: String(Math.floor(phase)) }), borderRadius: 'var(--radius, 0.432rem)', minHeight: '3em' }} />\n)\n"
+  }
+ ]
+}
