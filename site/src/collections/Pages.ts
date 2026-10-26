@@ -8,6 +8,7 @@ import { fullTitle } from '../fields/fullTitle'
 import { hero } from '../fields/hero'
 import { slugField } from '../fields/slug'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
+import { collisionGuard } from './pages.qpu.hooks'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -95,8 +96,12 @@ export const Pages: CollectionConfig = {
       ],
     },
     slugField(),
+    // the address an edit was based on, carried by any channel (an MCP client puts it in the data): read and dropped by collisionGuard, never stored
+    { name: 'editBase', type: 'text', virtual: true, admin: { hidden: true } },
   ],
   hooks: {
+    // an edit that names the address it read is accepted only while the document still folds to it (configure { kind: 'realtime' })
+    beforeChange: [collisionGuard],
     afterChange: [
       ({ doc, previousDoc, req: { context } }) => {
         // outside a Next request (a seed, a migration) there is no cache to revalidate: the caller says so with context.disableRevalidate
@@ -121,7 +126,9 @@ export const Pages: CollectionConfig = {
       },
     ],
   },
+  // every editor sees who holds a document; the draft streams to the store as it is typed (configure { kind: 'realtime' })
+  lockDocuments: { duration: 300 },
   versions: {
-    drafts: true,
+    drafts: { autosave: { interval: 800 } },
   },
 }

@@ -152,7 +152,7 @@ writeFileSync(join(ROOT, 'docs', 'entropy.md'), ['---', 'title: Entropy', 'order
 console.log(`purify: entropy ${entropy.findings} finding(s) → ${entropy.fused} lead(s) over ${entropy.files} files (${entropy.reactions} reactions, gravity ${entropy.gravity}); ${signalled} appeared, ${vanished.length} settled`)
 const docket = join(ROOT, 'docs', 'public', 'purify-leads.json')
 writeFileSync(docket, JSON.stringify(leads, null, 1) + '\n')
-const page = ['---', 'title: Purify', 'order: 51', '---', '', '# Purification leads', '', 'What the codebase found unproven when it collided itself with its tests, tools, examples, pages and proofs. Each is an open lead: harden it with a proof of use, or soften it by removal.', '', '| Lead | Statement | Reason |', '|---|---|---|', ...leads.map((l) => `| ${l.id} | ${l.statement} | ${l.reason} |`), ''].join('\n')
+const page = ['---', 'title: Purify', 'order: 51', '---', '', '# Purification leads', '', 'What the codebase found unproven when it collided itself with its tests, tools, examples, pages and proofs. Each is an open lead: harden it with a proof of use, or soften it by removal.', '', '| Lead | Statement | Reason |', '|---|---|---|', ...leads.map((l) => `| ${l.id} | ${cell(l.statement)} | ${cell(l.reason ?? '')} |`), ''].join('\n')
 writeFileSync(join(ROOT, 'docs', 'purify.md'), page)
 console.log(`purify: ${leads.length} lead(s) opened; kernel theorems ${kernel}, sorry ${sorried}, tools ${tools}`)
 

@@ -2078,7 +2078,8 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "ui",
         "adapters",
         "gates",
-        "sets"
+        "sets",
+        "realtime"
       ],
       "description": "omit for all"
     },

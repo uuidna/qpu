@@ -884,6 +884,7 @@ export interface Page {
     | ExampleTabsBlock
   )[];
   slug?: string | null;
+  editBase?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -4912,6 +4913,7 @@ export interface PagesSelect<T extends boolean = true> {
       };
   layout?: T | {};
   slug?: T;
+  editBase?: T;
   meta?:
     | T
     | {
