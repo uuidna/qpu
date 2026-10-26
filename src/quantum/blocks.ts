@@ -270,13 +270,16 @@ export const compositionIndexOf = (radices: readonly number[], digits: readonly 
  *  product is the count — and the referrer measures it: the referrer's address read as a 128-bit integer (or the a432 key, 432, when no one
  *  refers), reduced modulo the count, names one combination, decoded one value per enum; the remainder is always below the count, so the default is
  *  always a combination of the schema (textbook_harmonic_default). The schema keeps every value; `default` marks the measured one. */
-export const harmonicDefaultsOf = (schema: { properties?: Record<string, { enum?: readonly unknown[]; default?: unknown }> }, referrer?: string) => {
-  const props = Object.entries(schema.properties ?? {}).filter(([, p]) => Array.isArray(p.enum) && p.enum.length > 0 && p.default === undefined)
+export const harmonicDefaultsOf = (schema: { properties?: Record<string, { enum?: readonly unknown[]; default?: unknown }> }, referrer?: string, allowed: (prop: string, value: unknown) => boolean = () => true) => {
+  // a role sees the values it may choose: the superposition narrowed to them, an enum with none left withheld
+  const options = Object.fromEntries(Object.entries(schema.properties ?? {}).filter(([, p]) => Array.isArray(p.enum) && p.enum.length > 0).map(([k, p]) => [k, p.enum!.filter((v) => allowed(k, v))]))
+  const withheld = Object.entries(options).filter(([, v]) => v.length === 0).map(([k]) => k)
+  const props = Object.entries(schema.properties ?? {}).filter(([k, p]) => Array.isArray(p.enum) && p.enum.length > 0 && p.default === undefined && options[k]!.length > 0).map(([k, p]) => [k, { ...p, enum: options[k]! }] as const)
   const radices = props.map(([, p]) => p.enum!.length)
   const count = compositionsOf(radices)
   const hex = (referrer ?? '').replace(/-/g, '')
   const seed = /^[0-9a-f]{32}$/i.test(hex) ? BigInt('0x' + hex) : 432n
   const index = count > 0n ? seed % count : 0n
   const digits = compositionOf(radices, index)
-  return { count, index, from: /^[0-9a-f]{32}$/i.test(hex) ? 'referrer' as const : 'a432' as const, defaults: Object.fromEntries(props.map(([k, p], i) => [k, p.enum![digits[i]!]])) }
+  return { count, index, from: /^[0-9a-f]{32}$/i.test(hex) ? 'referrer' as const : 'a432' as const, defaults: Object.fromEntries(props.map(([k, p], i) => [k, p.enum![digits[i]!]])), options, withheld }
 }

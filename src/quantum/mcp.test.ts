@@ -313,3 +313,13 @@ test('harmonic options by default: every enum of a schema a superposition of its
   const r = referred.find((t) => t.name === withEnums[0]!.name)!
   assert.equal(r.inputSchema['x-harmonic']!.from, 'referrer')
 })
+
+test('selecting options in combinatorial RBAC: a role lists only the enum values it may choose, an enum with none withheld, the default within its options', () => {
+  const tool = (role: string, name: string) => ((handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { role } }) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { enum?: string[]; default?: string }>; 'x-harmonic'?: { withheld?: string[] } } }[] } }).result.tools.find((t) => t.name === name)!)
+  assert.deepEqual(tool('reader', 'mongo').inputSchema.properties.op!.enum, ['find'])
+  assert.deepEqual(tool('writer', 'mongo').inputSchema.properties.op!.enum, ['find', 'insert', 'update'])
+  assert.deepEqual(tool('admin', 'mongo').inputSchema.properties.op!.enum, ['find', 'insert', 'update', 'delete'])
+  assert.ok(!('workflow' in tool('reader', 'repository').inputSchema.properties), 'a reader chooses no workflow: the enum is withheld')
+  assert.ok(tool('reader', 'repository').inputSchema['x-harmonic']!.withheld!.includes('workflow'))
+  assert.ok(!tool('writer', 'stripe').inputSchema.properties.op!.enum!.includes('settle'), 'settling is the admin\'s')
+})

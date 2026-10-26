@@ -374,5 +374,7 @@ theorem textbook_bill_covered (price cost : Nat) (h : cost ≤ price) : price - 
 theorem textbook_ports_cover (complete blocked total : Nat) (h : complete + blocked = total) : total - blocked = complete := by omega
 /-- harmonic options by default: the referrer's address, or the a432 key, reduced modulo the number of combinations a schema's enums hold is always below that number, so the default it names is always one of the combinations (examples: fold-harmonic) -/
 theorem textbook_harmonic_default (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt k h
+/-- a role sees a part of every enum's superposition: the combinations it may choose and the ones it may not make all of them, and its harmonic default is always one it may choose (examples: fold-harmonic-rbac) -/
+theorem textbook_rbac_options (allowed all : Nat) (h : allowed ≤ all) : all - allowed + allowed = all := Nat.sub_add_cancel h
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h
