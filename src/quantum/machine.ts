@@ -26,6 +26,7 @@ export const MACHINE_ACTIONS: readonly MachineAction[] = [
   { id: 'stage', kind: 'write', cmd: 'git', args: ['add', '-A'], says: 'every change staged for the next commit' },
   { id: 'commit', kind: 'write', cmd: 'git', args: ['commit', '-F', '-'], says: 'the staged changes committed through the hooks, the message given', needs: 'message', workflow: 'pre-commit' },
   { id: 'push', kind: 'write', cmd: 'git', args: ['push', 'origin', 'main'], says: 'main pushed to its remote through the pre-push workflow', needs: 'confirm', workflow: 'pre-push' },
+  { id: 'dispatch', kind: 'write', cmd: 'gh', args: ['workflow', 'run', 'deploy.yml', '--ref', 'main'], says: 'the deploy workflow started on GitHub for main: it runs in the protected production environment, whose reviewer approves it before any secret in GitHub Secrets is exposed, then next, the pre-deploy theorems, the deploy and the publish; started only through the super admin\'s machine tool and the pre-push rules', needs: 'confirm', workflow: 'pre-push' },
   { id: 'merge', kind: 'write', cmd: 'git', args: ['merge', '--no-ff', '--no-edit'], says: 'a branch merged into the current one, never fast-forwarded, under the pre-commit rules decided by theorems; the branch is the one parameter', needs: 'branch', workflow: 'pre-commit' },
   { id: 'regenerate', kind: 'write', cmd: 'node', args: ['--import', 'tsx', 'scripts/regenerate.ts'], says: 'the generators in their order: the docs and the Lean file, every configuration, the theorem index and purity' },
 ]

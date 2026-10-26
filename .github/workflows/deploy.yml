@@ -1,0 +1,70 @@
+# Deploy and publish from GitHub, with every key in GitHub Secrets and never in the tree.
+# It runs only on a published release (the act that also mints the Zenodo DOI) or by hand, inside the protected `production`
+# environment, whose required reviewer (the author) approves each run before any secret is exposed. Before anything is deployed,
+# the full `next` must be green and the strict pre-deploy rules, decided by theorems, must allow it.
+#
+# Secrets, by name only (set their values in the repository's Settings → Secrets and variables → Actions, scoped to `production`):
+#   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID  the Worker and the app deploy through wrangler
+#   QPU_APP_MCP, QPU_APP_KEY                     the pre-deploy rules read the account facts from the RAID through the app's Payload MCP
+#   QPU_ROLE_SECRET                              signs role claims between the Worker and the app
+#   NPM_TOKEN                                    publishes the package with provenance
+#   GEMINI_API_KEY, ANTHROPIC_API_KEY            optional: the operator agents a tenant names
+name: deploy
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - name: Lean toolchain (elan, pinned by lean-toolchain)
+        run: |
+          curl -sSfL https://github.com/leanprover/elan/releases/latest/download/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
+          ./elan-init -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: next, the whole loop, must be green
+        run: npm run next
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: site/package.json
+      - run: pnpm install --frozen-lockfile
+        working-directory: site
+      - name: pre-deploy, the strict rules decided by theorems
+        run: node --import tsx scripts/hook.ts pre-deploy
+        env:
+          QPU_APP_MCP: ${{ secrets.QPU_APP_MCP }}
+          QPU_APP_KEY: ${{ secrets.QPU_APP_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: deploy the Worker
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: deploy the app (OpenNext on Cloudflare)
+        run: pnpm exec opennextjs-cloudflare build && pnpm exec opennextjs-cloudflare deploy
+        working-directory: site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          QPU_ROLE_SECRET: ${{ secrets.QPU_ROLE_SECRET }}
+      - name: publish the package with provenance (on a release only)
+        if: github.event_name == 'release'
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
