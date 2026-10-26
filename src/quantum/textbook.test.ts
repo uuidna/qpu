@@ -34,3 +34,11 @@ test('the same answer is served over MCP: textbook { axioms }', () => {
   assert.equal(r.result?.structuredContent.complete, true)
   assert.equal(r.result?.structuredContent.linked, r.result?.structuredContent.examples)
 })
+
+test('every theorem sentence is a Lean doc comment that opens and closes once, whatever the prose holds', async () => {
+  const { TEXTBOOK_LEAN, leanDocOf } = await import('./textbook-theorems.js')
+  const docs = TEXTBOOK_LEAN().split('\n').filter((l) => l.startsWith('/-- '))
+  assert.ok(docs.length > 0)
+  for (const d of docs) { const body = d.slice(4, d.lastIndexOf(' -/')); assert.ok(!body.includes('-/') && !body.includes('/-'), d.slice(0, 80)) }
+  assert.equal(leanDocOf('a -/ b /- c'), 'a - / b / - c')
+})
