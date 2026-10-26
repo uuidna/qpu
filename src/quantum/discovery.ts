@@ -49,6 +49,10 @@ export const GITHUB_MCP: readonly { host: string; url: string; about: string }[]
   { host: 'api.githubcopilot.com', url: 'https://api.githubcopilot.com/mcp/', about: 'GitHub: repositories, branches, tags, releases, issues, pull requests, actions of the tenant\'s account' },
 ]
 /** The Claude API (platform.claude.com/docs/en/api/overview, read 2026-10-25): one endpoint for messages, the MCP connector that mounts any MCP server into a request, the Models door; every door needs the tenant's key (x-api-key, anthropic-version). */
+/** The Gemini API (ai.google.dev/api/generate-content and /gemini-api/docs/api-key, read 2026-10-27): POST generateContent with the key in the
+ *  x-goog-api-key header, never in the URL and never in the tree (Google: "Never check API keys into source control"); the tenant's key opens it,
+ *  the tree plans the request and never calls it unprompted. The model is the newest stable Flash on Google's models page. */
+export const GEMINI_API = { docs: 'https://ai.google.dev/api/generate-content', keys: 'https://ai.google.dev/gemini-api/docs/api-key', endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent', header: 'x-goog-api-key', key: 'GEMINI_API_KEY[_<TENANT>]', model: 'gemini-3.8-flash', read: '2026-10-27' } as const
 export const CLAUDE_API = {
   docs: 'https://platform.claude.com/docs/en/api/overview',
   messages: 'https://api.anthropic.com/v1/messages',

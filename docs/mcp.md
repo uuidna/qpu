@@ -2513,6 +2513,10 @@ QPU as the natural extension of every MCP and every MCP of QPU
 {
   "type": "object",
   "properties": {
+    "gemini": {
+      "type": "object",
+      "description": "the Gemini API as an operator agent the tenant names"
+    },
     "compare": {
       "description": "the QPU's tools/list measured against open MCP servers that answer without a key"
     },
