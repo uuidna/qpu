@@ -2,11 +2,9 @@ import type { CollectionConfig } from 'payload'
 
 import { isAdmin, isAdminFieldLevel } from '../access/isAdmin'
 import { isAdminOrSelf, isAdminOrSelfFieldLevel } from '../access/isAdminOrSelf'
-import { firstUserBootstrap } from './users.qpu.hooks'
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  hooks: { beforeChange: [firstUserBootstrap] }, // the first user is the super admin and the first tenant is the request host (generated hook)
   access: {
     create: isAdmin,
     delete: isAdminOrSelf,
@@ -17,7 +15,6 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   auth: {
-    useAPIKey: true, // an API key per user: MCP clients authenticate as the user (Authorization: users API-Key <key>) and the plugin advertises what the user may use
     cookies: {
       domain: process.env.COOKIE_DOMAIN,
       sameSite:

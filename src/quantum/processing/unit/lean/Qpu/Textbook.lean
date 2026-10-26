@@ -26,8 +26,8 @@ theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt 
 theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
 /-- the signature is over the 32-byte SHA-256 digest: 256 bits, whatever the length of the text (examples: seal-sign) -/
 theorem textbook_signature_over_digest : 32 * 8 = 256 := by decide
-/-- six configurations the tool writes, three the hand holds, fourteen answered inside them: twenty-three kinds (examples: configure-files) -/
-theorem textbook_configs_partition : 6 + 3 + 14 = 23 := by decide
+/-- seven configurations the tool writes, two the hand holds, fourteen answered inside them: twenty-three kinds (examples: configure-files) -/
+theorem textbook_configs_partition : 7 + 2 + 14 = 23 := by decide
 /-- twelve plugins, five databases, five storages, two email adapters, one editor, three live-preview and seventeen runtime and tooling packages: the forty-five Payload ships (examples: configure-packages) -/
 theorem textbook_packages_partition : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by decide
 /-- seven variants priced in three currencies are twenty-one prices (examples: configure-ecommerce) -/
@@ -56,10 +56,12 @@ theorem textbook_cvss_bounded (s : Nat) (h : s ≤ 100) : s ≤ 100 := h
 theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤ 398 := h
 /-- what is published precedes what is modified; what begins precedes what ends (examples: none yet) -/
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
-/-- the seventeen generated files of the full stack partition over eight roles — one block, four config modules, two notices, three collections, two hooks modules, one global, three components, one script — and the role, not the hand, names the folder and the file (examples: configure-fullstack) -/
-theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 3 + 2 + 1 + 3 + 1 = 17 := by decide
-/-- an app generated on request is the full stack's seventeen files plus the Worker configuration and the environment example: nineteen files, each addressed, the bundle their fold (examples: payload-app) -/
-theorem textbook_app_bundle : 17 + 2 = 19 := by decide
+/-- the eighteen generated files of the full stack partition over nine roles — one block, four config modules, two notices, two collections, three hooks modules, one global, three components, one script, one plugin that carries them all into any config — and the role, not the hand, names the folder and the file (examples: configure-fullstack) -/
+theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 3 + 1 + 3 + 1 + 1 = 18 := by decide
+/-- to win, know the competitors as well as the theorems: the knowledge of a competition is the product of both, positive only when neither is empty (examples: compete-rules) -/
+theorem textbook_compete_knows (c t : Nat) (hc : 0 < c) (ht : 0 < t) : 0 < c * t := Nat.mul_pos hc ht
+/-- an app generated on request is the full stack's eighteen files plus the Worker configuration and the environment example: twenty files, each addressed, the bundle their fold (examples: payload-app) -/
+theorem textbook_app_bundle : 18 + 2 = 20 := by decide
 /-- two edits of one document either share their base address or collide: there is no third case, so a collision is detected exactly, never guessed from clocks (examples: configure-realtime) -/
 theorem textbook_edit_collides (p q : Nat) : p = q ∨ p ≠ q := by omega
 /-- the leads a difference opens are the members on one side only: with a and b members sharing c, (a − c) + (b − c) = a + b − 2c, whatever the members name (examples: audit-difference) -/

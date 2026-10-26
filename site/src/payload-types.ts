@@ -72,7 +72,6 @@ export interface Config {
     'payload-mcp-api-keys': PayloadMcpApiKeyAuthOperations;
   };
   blocks: {
-    qpu: QpuBlock;
     blogContent: BlogContent;
     blogMarkdown: BlogMarkdown;
     CodeExampleBlock: CodeExampleBlock;
@@ -128,11 +127,9 @@ export interface Config {
     Code: CodeBlock;
     CodeTabs: CodeTabsBlock;
     code: Code;
+    qpu: QpuBlock;
   };
   collections: {
-    tenants: Tenant;
-    entries: Entry;
-    apps: App;
     'case-studies': CaseStudy;
     'community-help': CommunityHelp;
     docs: Doc;
@@ -148,6 +145,11 @@ export interface Config {
     specialties: Specialty;
     regions: Region;
     budgets: Budget;
+    forms: Form;
+    'form-submissions': FormSubmission;
+    redirects: Redirect;
+    tenants: Tenant;
+    entries: Entry;
     addresses: Address;
     variants: Variant;
     variantTypes: VariantType;
@@ -157,9 +159,6 @@ export interface Config {
     orders: Order;
     transactions: Transaction;
     search: Search;
-    forms: Form;
-    'form-submissions': FormSubmission;
-    redirects: Redirect;
     'payload-mcp-api-keys': PayloadMcpApiKey;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -181,9 +180,6 @@ export interface Config {
     };
   };
   collectionsSelect: {
-    tenants: TenantsSelect<false> | TenantsSelect<true>;
-    entries: EntriesSelect<false> | EntriesSelect<true>;
-    apps: AppsSelect<false> | AppsSelect<true>;
     'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
     'community-help': CommunityHelpSelect<false> | CommunityHelpSelect<true>;
     docs: DocsSelect<false> | DocsSelect<true>;
@@ -199,6 +195,11 @@ export interface Config {
     specialties: SpecialtiesSelect<false> | SpecialtiesSelect<true>;
     regions: RegionsSelect<false> | RegionsSelect<true>;
     budgets: BudgetsSelect<false> | BudgetsSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
+    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    tenants: TenantsSelect<false> | TenantsSelect<true>;
+    entries: EntriesSelect<false> | EntriesSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
     variantTypes: VariantTypesSelect<false> | VariantTypesSelect<true>;
@@ -208,9 +209,6 @@ export interface Config {
     orders: OrdersSelect<false> | OrdersSelect<true>;
     transactions: TransactionsSelect<false> | TransactionsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
-    forms: FormsSelect<false> | FormsSelect<true>;
-    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
-    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -302,53 +300,6 @@ export interface PayloadMcpApiKeyAuthOperations {
     email: string;
     password: string;
   };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "QpuBlock".
- */
-export interface QpuBlock {
-  /**
-   * the block address: a content-addressed RFC 9562 v8 UUID
-   */
-  uuid: string;
-  handle: string;
-  /**
-   * the hex program (the version and variant nibbles rotated)
-   */
-  program: string;
-  tail: string;
-  /**
-   * the tool whose result this block is
-   */
-  tool: string;
-  /**
-   * the arguments, so the block recomputes anywhere
-   */
-  arguments?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  /**
-   * the referer block
-   */
-  prev?: string | null;
-  /**
-   * the program rotated: the next step
-   */
-  next?: string | null;
-  /**
-   * the kernel-accepted theorem that makes this block true; written by the QPU as a client of this MCP, read from the textbook
-   */
-  theorem?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'qpu';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -886,7 +837,6 @@ export interface Page {
     | ExampleTabsBlock
   )[];
   slug?: string | null;
-  editBase?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -904,6 +854,7 @@ export interface Page {
         id?: string | null;
       }[]
     | null;
+  editBase?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -927,6 +878,18 @@ export interface Tenant {
    * the currency the tenant prices in
    */
   currency?: ('EUR' | 'USD' | 'BGN') | null;
+  /**
+   * the plugin options this tenant configures: { arguments: {...} } is merged into every qpu block call under its hosts; read by the page and by MCP clients through the Payload MCP plugin
+   */
+  settings?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3114,6 +3077,53 @@ export interface Command {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QpuBlock".
+ */
+export interface QpuBlock {
+  /**
+   * the block address: a content-addressed RFC 9562 v8 UUID
+   */
+  uuid: string;
+  handle: string;
+  /**
+   * the hex program (the version and variant nibbles rotated)
+   */
+  program: string;
+  tail: string;
+  /**
+   * the tool whose result this block is
+   */
+  tool: string;
+  /**
+   * the arguments, so the block recomputes anywhere
+   */
+  arguments?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * the referer block
+   */
+  prev?: string | null;
+  /**
+   * the program rotated: the next step
+   */
+  next?: string | null;
+  /**
+   * the kernel-accepted theorem that makes this block true; written by the QPU as a client of this MCP, read from the textbook
+   */
+  theorem?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'qpu';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "DownloadBlockType".
  */
 export interface DownloadBlockType {
@@ -3633,6 +3643,93 @@ export interface CodeTabsBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "community-help".
+ */
+export interface CommunityHelp {
+  id: string;
+  title?: string | null;
+  communityHelpType?: ('discord' | 'github') | null;
+  githubID?: string | null;
+  discordID?: string | null;
+  communityHelpJSON:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  introDescription?: string | null;
+  slug?: string | null;
+  helpful?: boolean | null;
+  relatedDocs?: (string | Doc)[] | null;
+  threadCreatedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "docs-feedback".
+ */
+export interface DocsFeedback {
+  id: string;
+  /**
+   * The docs page key, e.g. "getting-started/what-is-payload".
+   */
+  path: string;
+  helpful: number;
+  notHelpful: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions".
+ */
+export interface FormSubmission {
+  id: string;
+  form: string | Form;
+  submissionData?:
+    | {
+        field: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  recaptcha?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+  id: string;
+  from: string;
+  to?: {
+    type?: ('reference' | 'custom') | null;
+    reference?:
+      | ({
+          relationTo: 'case-studies';
+          value: string | CaseStudy;
+        } | null)
+      | ({
+          relationTo: 'pages';
+          value: string | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: string | Post;
+        } | null);
+    url?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "entries".
  */
 export interface Entry {
@@ -3671,118 +3768,6 @@ export interface Entry {
         id?: string | null;
       }[]
     | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * request an app: the QPU generates it, the catalogue prices it, the checkout sells it
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "apps".
- */
-export interface App {
-  id: string;
-  tenant?: (string | null) | Tenant;
-  name: string;
-  host: string;
-  plugins?:
-    | (
-        | 'lexical'
-        | 'nested-docs'
-        | 'seo'
-        | 'search'
-        | 'redirects'
-        | 'form-builder'
-        | 'multi-tenant'
-        | 'ecommerce'
-        | 'mcp'
-      )[]
-    | null;
-  /**
-   * the variable NAMES the deployment holds (D1, R2, RESEND_API_KEY, DATABASE_URI, ...): the adapters follow them; values never travel
-   */
-  env?: string[] | null;
-  variant: 'yearly' | 'monthly';
-  status?: ('requested' | 'generated' | 'paid' | 'deployed') | null;
-  /**
-   * usable in this UI: the app's pages and blocks render under the tenant's hosts with its settings
-   */
-  enabled?: boolean | null;
-  /**
-   * the plugin options this tenant configures: { arguments: {...} } is merged into every qpu block call under the tenant's hosts; read by the page and by MCP clients through the Payload MCP plugin
-   */
-  settings?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  /**
-   * every file of the app with its address, the address of the bundle, the order
-   */
-  bundle?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  price?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "community-help".
- */
-export interface CommunityHelp {
-  id: string;
-  title?: string | null;
-  communityHelpType?: ('discord' | 'github') | null;
-  githubID?: string | null;
-  discordID?: string | null;
-  communityHelpJSON:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  introDescription?: string | null;
-  slug?: string | null;
-  helpful?: boolean | null;
-  relatedDocs?: (string | Doc)[] | null;
-  threadCreatedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "docs-feedback".
- */
-export interface DocsFeedback {
-  id: string;
-  /**
-   * The docs page key, e.g. "getting-started/what-is-payload".
-   */
-  path: string;
-  helpful: number;
-  notHelpful: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -4068,51 +4053,6 @@ export interface Search {
   createdAt: string;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "form-submissions".
- */
-export interface FormSubmission {
-  id: string;
-  form: string | Form;
-  submissionData?:
-    | {
-        field: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  recaptcha?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects".
- */
-export interface Redirect {
-  id: string;
-  from: string;
-  to?: {
-    type?: ('reference' | 'custom') | null;
-    reference?:
-      | ({
-          relationTo: 'case-studies';
-          value: string | CaseStudy;
-        } | null)
-      | ({
-          relationTo: 'pages';
-          value: string | Page;
-        } | null)
-      | ({
-          relationTo: 'posts';
-          value: string | Post;
-        } | null);
-    url?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * API keys control which collections, resources, tools, and prompts MCP clients can access
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -4132,19 +4072,87 @@ export interface PayloadMcpApiKey {
    * The purpose of the API key.
    */
   description?: string | null;
-  apps?: {
+  pages?: {
     /**
-     * Allow clients to find apps.
+     * Allow clients to find pages.
      */
     find?: boolean | null;
     /**
-     * Allow clients to create apps.
+     * Allow clients to create pages.
      */
     create?: boolean | null;
     /**
-     * Allow clients to update apps.
+     * Allow clients to update pages.
      */
     update?: boolean | null;
+  };
+  forms?: {
+    /**
+     * Allow clients to find forms.
+     */
+    find?: boolean | null;
+  };
+  formSubmissions?: {
+    /**
+     * Allow clients to find form-submissions.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create form-submissions.
+     */
+    create?: boolean | null;
+  };
+  media?: {
+    /**
+     * Allow clients to find media.
+     */
+    find?: boolean | null;
+  };
+  products?: {
+    /**
+     * Allow clients to find products.
+     */
+    find?: boolean | null;
+  };
+  carts?: {
+    /**
+     * Allow clients to find carts.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create carts.
+     */
+    create?: boolean | null;
+    /**
+     * Allow clients to update carts.
+     */
+    update?: boolean | null;
+  };
+  orders?: {
+    /**
+     * Allow clients to find orders.
+     */
+    find?: boolean | null;
+  };
+  tenants?: {
+    /**
+     * Allow clients to find tenants.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to update tenants.
+     */
+    update?: boolean | null;
+  };
+  entries?: {
+    /**
+     * Allow clients to find entries.
+     */
+    find?: boolean | null;
+    /**
+     * Allow clients to create entries.
+     */
+    create?: boolean | null;
   };
   'payload-mcp-tool'?: {
     /**
@@ -4551,18 +4559,6 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
-        relationTo: 'tenants';
-        value: string | Tenant;
-      } | null)
-    | ({
-        relationTo: 'entries';
-        value: string | Entry;
-      } | null)
-    | ({
-        relationTo: 'apps';
-        value: string | App;
-      } | null)
-    | ({
         relationTo: 'case-studies';
         value: string | CaseStudy;
       } | null)
@@ -4623,6 +4619,26 @@ export interface PayloadLockedDocument {
         value: string | Budget;
       } | null)
     | ({
+        relationTo: 'forms';
+        value: string | Form;
+      } | null)
+    | ({
+        relationTo: 'form-submissions';
+        value: string | FormSubmission;
+      } | null)
+    | ({
+        relationTo: 'redirects';
+        value: string | Redirect;
+      } | null)
+    | ({
+        relationTo: 'tenants';
+        value: string | Tenant;
+      } | null)
+    | ({
+        relationTo: 'entries';
+        value: string | Entry;
+      } | null)
+    | ({
         relationTo: 'addresses';
         value: string | Address;
       } | null)
@@ -4657,18 +4673,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'search';
         value: string | Search;
-      } | null)
-    | ({
-        relationTo: 'forms';
-        value: string | Form;
-      } | null)
-    | ({
-        relationTo: 'form-submissions';
-        value: string | FormSubmission;
-      } | null)
-    | ({
-        relationTo: 'redirects';
-        value: string | Redirect;
       } | null)
     | ({
         relationTo: 'payload-mcp-api-keys';
@@ -4725,63 +4729,6 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants_select".
- */
-export interface TenantsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  domains?:
-    | T
-    | {
-        domain?: T;
-        id?: T;
-      };
-  currency?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "entries_select".
- */
-export interface EntriesSelect<T extends boolean = true> {
-  tenant?: T;
-  id?: T;
-  kind?: T;
-  from?: T;
-  body?: T;
-  sha256?: T;
-  result?: T;
-  links?:
-    | T
-    | {
-        entry?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "apps_select".
- */
-export interface AppsSelect<T extends boolean = true> {
-  tenant?: T;
-  name?: T;
-  host?: T;
-  plugins?: T;
-  env?: T;
-  variant?: T;
-  status?: T;
-  enabled?: T;
-  settings?: T;
-  bundle?: T;
-  price?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -5022,7 +4969,6 @@ export interface PagesSelect<T extends boolean = true> {
       };
   layout?: T | {};
   slug?: T;
-  editBase?: T;
   meta?:
     | T
     | {
@@ -5039,6 +4985,7 @@ export interface PagesSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  editBase?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -5288,6 +5235,214 @@ export interface BudgetsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  title?: T;
+  fields?:
+    | T
+    | {
+        checkbox?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              defaultValue?: T;
+              id?: T;
+              blockName?: T;
+            };
+        country?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        email?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        message?:
+          | T
+          | {
+              message?: T;
+              id?: T;
+              blockName?: T;
+            };
+        number?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        select?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              placeholder?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        state?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textarea?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  submitButtonLabel?: T;
+  confirmationType?: T;
+  confirmationMessage?: T;
+  redirect?:
+    | T
+    | {
+        url?: T;
+      };
+  emails?:
+    | T
+    | {
+        emailTo?: T;
+        cc?: T;
+        bcc?: T;
+        replyTo?: T;
+        emailFrom?: T;
+        subject?: T;
+        message?: T;
+        id?: T;
+      };
+  hubSpotFormID?: T;
+  customID?: T;
+  requireRecaptcha?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions_select".
+ */
+export interface FormSubmissionsSelect<T extends boolean = true> {
+  form?: T;
+  submissionData?:
+    | T
+    | {
+        field?: T;
+        value?: T;
+        id?: T;
+      };
+  recaptcha?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+  from?: T;
+  to?:
+    | T
+    | {
+        type?: T;
+        reference?: T;
+        url?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants_select".
+ */
+export interface TenantsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  domains?:
+    | T
+    | {
+        domain?: T;
+        id?: T;
+      };
+  currency?: T;
+  settings?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "entries_select".
+ */
+export interface EntriesSelect<T extends boolean = true> {
+  tenant?: T;
+  id?: T;
+  kind?: T;
+  from?: T;
+  body?: T;
+  sha256?: T;
+  result?: T;
+  links?:
+    | T
+    | {
+        entry?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addresses_select".
  */
 export interface AddressesSelect<T extends boolean = true> {
@@ -5501,187 +5656,63 @@ export interface SearchSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "forms_select".
- */
-export interface FormsSelect<T extends boolean = true> {
-  title?: T;
-  fields?:
-    | T
-    | {
-        checkbox?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              required?: T;
-              defaultValue?: T;
-              id?: T;
-              blockName?: T;
-            };
-        country?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        email?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        message?:
-          | T
-          | {
-              message?: T;
-              id?: T;
-              blockName?: T;
-            };
-        number?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              defaultValue?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        select?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              defaultValue?: T;
-              placeholder?: T;
-              options?:
-                | T
-                | {
-                    label?: T;
-                    value?: T;
-                    id?: T;
-                  };
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        state?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        text?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              defaultValue?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        textarea?:
-          | T
-          | {
-              name?: T;
-              label?: T;
-              width?: T;
-              defaultValue?: T;
-              required?: T;
-              id?: T;
-              blockName?: T;
-            };
-      };
-  submitButtonLabel?: T;
-  confirmationType?: T;
-  confirmationMessage?: T;
-  redirect?:
-    | T
-    | {
-        url?: T;
-      };
-  emails?:
-    | T
-    | {
-        emailTo?: T;
-        cc?: T;
-        bcc?: T;
-        replyTo?: T;
-        emailFrom?: T;
-        subject?: T;
-        message?: T;
-        id?: T;
-      };
-  hubSpotFormID?: T;
-  customID?: T;
-  requireRecaptcha?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "form-submissions_select".
- */
-export interface FormSubmissionsSelect<T extends boolean = true> {
-  form?: T;
-  submissionData?:
-    | T
-    | {
-        field?: T;
-        value?: T;
-        id?: T;
-      };
-  recaptcha?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects_select".
- */
-export interface RedirectsSelect<T extends boolean = true> {
-  from?: T;
-  to?:
-    | T
-    | {
-        type?: T;
-        reference?: T;
-        url?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-mcp-api-keys_select".
  */
 export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
   user?: T;
   label?: T;
   description?: T;
-  apps?:
+  pages?:
     | T
     | {
         find?: T;
         create?: T;
         update?: T;
+      };
+  forms?:
+    | T
+    | {
+        find?: T;
+      };
+  formSubmissions?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+      };
+  media?:
+    | T
+    | {
+        find?: T;
+      };
+  products?:
+    | T
+    | {
+        find?: T;
+      };
+  carts?:
+    | T
+    | {
+        find?: T;
+        create?: T;
+        update?: T;
+      };
+  orders?:
+    | T
+    | {
+        find?: T;
+      };
+  tenants?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  entries?:
+    | T
+    | {
+        find?: T;
+        create?: T;
       };
   'payload-mcp-tool'?:
     | T

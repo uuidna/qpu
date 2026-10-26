@@ -14,5 +14,6 @@ export const Tenants: CollectionConfig = {
     { name: 'slug', type: 'text', required: true, unique: true, validate: (v: unknown) => /^[a-z][a-z0-9-]*$/.test(String(v)) || 'lower-case letters, digits and dashes' },
     { name: 'domains', type: 'array', required: true, fields: [{ name: 'domain', type: 'text', required: true }], admin: { description: 'the hosts that name the tenant; the Worker maps each to the docket' } },
     { name: 'currency', type: 'select', defaultValue: 'EUR', options: ["EUR","USD","BGN"], admin: { description: 'the currency the tenant prices in' } },
+    { name: 'settings', type: 'json', admin: { description: 'the plugin options this tenant configures: { arguments: {...} } is merged into every qpu block call under its hosts; read by the page and by MCP clients through the Payload MCP plugin' } },
   ],
 }

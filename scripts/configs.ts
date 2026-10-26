@@ -32,6 +32,7 @@ for (const f of files.files as { kind: string; path: string; source: 'tool' | 'h
   if (f.source === 'tool') {
     const c = call({ kind: f.kind, version: pkg.version, description: pkg.description, experience, rates })
     if (f.kind === 'fullstack') { for (const [path, text] of Object.entries(c.config.files as Record<string, string>)) if (write(path, text)) improved.push(path) }
+    else if (f.kind === 'hooks') { /* the plugin module: written by the full stack above, measured here as one of its files */ }
     else if (f.kind === 'ui') { const { registryOf, fileOf } = await import('../src/quantum/toolboxes/payload.ts'); const block = call({ kind: 'fullstack' }).config.files[fileOf('block', 'qpu')] as string; const reg = registryOf('https://qpu.uuidna.com', block); for (const [name, json] of Object.entries(reg)) for (const dir of ['site/public/r', 'docs/public/r']) if (write(`${dir}/${name}`, JSON.stringify(json, null, 1) + '\n')) improved.push(`${dir}/${name}`) }
     else if (f.kind === 'bindings') { const text = call({ kind: 'bindings', current: '' }).env as string; if (write(f.path, text + '\n')) improved.push(f.path) }
     else if (f.format === 'jsonc') { if (write(f.path, `${header(f.kind)}\n${JSON.stringify(c.config, null, 2)}\n`)) improved.push(f.path) }

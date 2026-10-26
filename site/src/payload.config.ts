@@ -1,10 +1,5 @@
 import { revalidateRedirects } from '@hooks/revalidateRedirects'
-import { Qpu } from './blocks/Qpu/config'
-import { Tenants } from './collections/Tenants'
-import { Entries } from './collections/Entries'
-import { Apps } from './collections/Apps'
-import { QpuGlobal } from './globals/Qpu'
-import { qpuPlugins } from './payload.qpu.config'
+import { qpuPlugin } from './plugins/qpu' // the QPU as one plugin: its collections, global, block, hooks and the plugins it composes (generated)
 import { qpuDb, qpuEmail, qpuStoragePlugins } from './payload.qpu.adapters'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
@@ -125,7 +120,6 @@ export default buildConfig({
     },
   },
   blocks: [
-    Qpu, // the QPU's block of programmable UUID logic: every tools/call result in this shape
     BlogContent,
     BlogMarkdown,
     CodeExampleBlock,
@@ -303,9 +297,6 @@ export default buildConfig({
     Code,
   ],
   collections: [
-    Tenants, // the multi-tenant plugin's own collection: the hosts that name the tenants
-    Entries, // the docket: content-addressed entries over MongoDB, the Worker's Durable Object replaced
-    Apps, // the apps generated on request from this UI, priced by the catalogue and sold by the ecommerce plugin
     CaseStudies,
     CommunityHelp,
     Docs,
@@ -417,12 +408,11 @@ export default buildConfig({
       path: '/create-release-post-from-admin',
     },
   ],
-  globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar, QpuGlobal], // the discovery document as a global: the API from the config
+  globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar],
   graphQL: {
     disablePlaygroundInProduction: false,
   },
   plugins: [
-    ...qpuPlugins, // search and multi-tenant: the plugins MCP configures here that the site did not mount
     opsCounterPlugin({
       max: 200,
       warnAt: 25,
@@ -610,6 +600,7 @@ export default buildConfig({
       },
     }),
     ...qpuStoragePlugins(), // R2 under a Cloudflare binding, Vercel Blob otherwise (generated)
+    qpuPlugin(), // last: the QPU as one plugin with multidimensional capabilities, hooking the collections the plugins above created (form-submissions among them); generated
   ],
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

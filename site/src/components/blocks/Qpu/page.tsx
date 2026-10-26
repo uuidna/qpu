@@ -11,12 +11,12 @@ import { QpuApp } from './App'
 
 type Call = { id: string; result?: { structuredContent?: Record<string, unknown>; _meta?: { widget?: string; theme?: Record<string, string> }; error?: { message: string } } }
 // the tenant of the request: the host that names it (the tenants' domains, as the Worker's TENANTS), else the first tenant (a local run)
-const tenantOf = async (payload: Awaited<ReturnType<typeof getPayload>>): Promise<{ id: string; slug: string }> => {
+const tenantOf = async (payload: Awaited<ReturnType<typeof getPayload>>): Promise<{ id: string; slug: string; settings?: { arguments?: Record<string, unknown> } }> => {
   // next/headers is loaded when the module runs (never imported statically): the block renderer is reached by the Pages Router too, where that API does not exist (measured at build)
   let host = ''
   try { const { headers } = await import('next/headers'); host = (await headers()).get('host')?.split(':')[0] ?? '' } catch { /* no request: the first tenant */ }
   const byDomain = await payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, limit: 1, overrideAccess: true })
-  const t = (byDomain.docs[0] ?? (await payload.find({ collection: 'tenants' as never, limit: 1, sort: 'slug', overrideAccess: true })).docs[0]) as { id: string; slug: string } | undefined
+  const t = (byDomain.docs[0] ?? (await payload.find({ collection: 'tenants' as never, limit: 1, sort: 'slug', overrideAccess: true })).docs[0]) as { id: string; slug: string; settings?: { arguments?: Record<string, unknown> } } | undefined
   if (!t) throw new Error('no tenant: seed the tenants first (src/scripts/seedQpu.ts)')
   return t
 }
@@ -25,10 +25,9 @@ export const callOf = async (tool: string, args: Record<string, unknown>): Promi
   const { default: config } = await import('@payload-config')
   const payload = await getPayload({ config })
   const tenant = await tenantOf(payload)
-  // the tenant's enabled app is its plugin instance: its settings.arguments configure every call under the tenant's hosts (the Apps collection, in this UI or through the Payload MCP plugin)
-  const app = (await payload.find({ collection: 'apps' as never, where: { and: [{ tenant: { equals: tenant.id } }, { enabled: { equals: true } }] }, sort: '-updatedAt', limit: 1, overrideAccess: true })).docs[0] as { settings?: { arguments?: Record<string, unknown> } } | undefined
+  // the tenant's settings (its tenants document, in this UI or through the Payload MCP plugin) configure every call under its hosts
   const from = 'page:' + tenant.slug // the same call at two tenants is two entries: the address folds the tenant through from
-  const body = { tool, arguments: { ...args, ...(app?.settings?.arguments ?? {}) } }
+  const body = { tool, arguments: { ...args, ...(tenant.settings?.arguments ?? {}) } }
   const id = uuidOf(JSON.stringify({ kind: 'call', from, body }))
   // the collection is QPU's own (the generated types of the fork name the site's); the id is the content address of the call
   try { return await payload.findByID({ collection: 'entries' as never, id }) as unknown as Call } catch { /* not yet called: created once below */ }
