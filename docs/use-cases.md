@@ -83,7 +83,7 @@ the repository watched: every workspace, branch, tag and release here compared w
 
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
-| [repository-watch](https://qpu.uuidna.com/c285faf0-637d-1a98-b289-104fc8b5dedb) | repository | — | Fixture facts against fixture answers: two local branches unpushed, one remote branch not here, a local tag not pushed, a remote tag not fetched, a moved tag, a release whose tag is gone, a version with a tag and no release, a Zenodo version without a release, a second workspace: ten leads. |
+| [repository-watch](https://qpu.uuidna.com/90948f4c-0a1b-84f3-bd4f-f0682cbc3a36) | repository | — | Fixture facts against fixture answers: two local branches unpushed, one remote branch not here, a local tag not pushed, a remote tag not fetched, a moved tag, a release whose tag is gone, a version with a tag and no release, a Zenodo version without a release, a second workspace, the registry behind the tree, a red workflow at the remote, two workflows only at the remote: fourteen leads. |
 
 ## standards
 

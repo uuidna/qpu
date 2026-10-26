@@ -31,7 +31,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 
 ## The standard contract
 
-The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the endpoint table and never written by hand: 9 paths, 48 component schemas (every tool and the two JSON-RPC envelopes). It stands inside the discovery document at `/.well-known/qpu.json` and as the MCP resource `openapi://qpu`; the tree's own discovery reads it as `openapi 3.1.0` (9 paths, 62,785 chars), the way it reads every other host's contract.
+The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the endpoint table and never written by hand: 9 paths, 48 component schemas (every tool and the two JSON-RPC envelopes). It stands inside the discovery document at `/.well-known/qpu.json` and as the MCP resource `openapi://qpu`; the tree's own discovery reads it as `openapi 3.1.0` (9 paths, 62,889 chars), the way it reads every other host's contract.
 
 ## Headers
 
@@ -99,7 +99,7 @@ The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the e
 | `legal` | legal | The full legal and security audit with forensic analysis, through MCP. Phase one (texts, discovery, agents?, theoremKeys |
 | `compete` | legal | The competitions with prizes and funding, their rules read at the source and judged against this tree's own evidence on  |
 | `patents` | legal | Every patent API found, wired and measured: plan answers the requests to the open ones (Google Patents' query endpoint,  |
-| `repository` | repository | Workspaces, branches, tags and releases watched and verified online, pure. Phase one (local): the requests to GitHub (br |
+| `repository` | repository | Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure. Phase one (local |
 | `jsonld` | standards | schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of th |
 | `codes` | standards | The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territor |
 | `payload` | payload | Any tool's result as the document Payload's default plugins hold, no custom collection: a lexical document whose one blo |

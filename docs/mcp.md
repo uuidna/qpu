@@ -1905,7 +1905,7 @@ Every patent API found, wired and measured: plan answers the requests to the ope
 
 ## repository
 
-Workspaces, branches, tags and releases watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.
+Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure. Phase one (local): the requests to GitHub (branches, tags, releases, the workflow runs, the workflows), the npm registry (the version it holds) and Zenodo (every version of the concept DOI), each checked against the contract discovery found. Phase two (plus answers): agreement and leads — a branch or tag only here or only there, a moved tag, a release without its tag, a version without a tag or release, a Zenodo version without a release, a second workspace. The client runs git and fetches; nothing here does.
 
 ```json
 {

@@ -1,6 +1,6 @@
 // The client of the repository tool: git facts in, GitHub and Zenodo answers in, the watch and its leads out. Selftest first.
 // Offline (QPU_OFFLINE=1) the local facts alone are written. Its leads join the next-leads docket, deduplicated by id.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync, readdirSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import './teleport.ts'
@@ -16,6 +16,7 @@ const main = async () => {
   const zen = existsSync(join(ROOT, '.zenodo.json')) ? JSON.parse(readFileSync(join(ROOT, '.zenodo.json'), 'utf8')) as { related_identifiers?: { identifier: string; relation: string }[] } : {}
   const conceptDoi = zen.related_identifiers?.find((r) => r.relation === 'isVersionOf' || r.relation === 'isPartOf')?.identifier ?? (process.env.QPU_CONCEPT_DOI ?? '10.5281/zenodo.22700098')
   const local = {
+    pkg: (JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { name?: string }).name ?? null, workflows: (() => { try { return readdirSync(join(ROOT, '.github', 'workflows')).filter((f) => /\.ya?ml$/.test(f)) } catch { return [] } })(),
     remote: git('remote', 'get-url', 'origin') || null, head: git('rev-parse', 'HEAD'), branch: git('rev-parse', '--abbrev-ref', 'HEAD'), version: (JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { version: string }).version,
     worktrees: git('worktree', 'list', '--porcelain').split('\n\n').filter(Boolean).map((block) => { const f = Object.fromEntries(block.split('\n').map((l) => [l.split(' ')[0]!, l.slice(l.indexOf(' ') + 1)])); return { path: f.worktree ?? '', head: f.HEAD ?? '', branch: f.branch ? f.branch.replace('refs/heads/', '') : null } }),
     branches: git('for-each-ref', '--format=%(refname:short) %(upstream:short) %(objectname:short)', 'refs/heads').split('\n').filter(Boolean).map((l) => { const [name, a, b] = l.split(' '); return b ? { name: name!, upstream: a!, head: b } : { name: name!, upstream: null, head: a! } }),
