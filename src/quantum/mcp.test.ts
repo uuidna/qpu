@@ -281,3 +281,15 @@ test('a cleanup lead parses to the subjects whose absence settles it: paths or g
   assert.deepEqual(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-stale-branches')!), { kind: 'branches', names: ['snapshot/pre-purge', 'purge/google-only'] })
   assert.equal(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-fnv1a-consolidated')!), null, 'a cleanup served by a tool is settled by that tool, not by absence')
 })
+
+test('the cheapest view: an LLM reads only the cheapest way to have the answer and what tampering with it would cost, the full answer kept in structuredContent', () => {
+  const call = (meta?: Record<string, unknown>) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'configure', arguments: { kind: 'adapters', port: 32 }, ...(meta ? { _meta: meta } : {}) } }) as { result: { content: { text: string }[]; structuredContent: unknown; _meta: { block: { meta: { id: string } } } } }
+  const full = call(), cheap = call({ view: 'cheapest' })
+  const v = JSON.parse(cheap.result.content[0]!.text) as { address: string; sha256: string; recompute: { tool: string }; tamper: { collision: string }; tokens: { full: number } }
+  assert.equal(v.address, full.result._meta.block.meta.id, 'the same address: the answer is the same block')
+  assert.equal(v.recompute.tool, 'configure')
+  assert.equal(v.sha256.length, 64)
+  assert.equal(v.tamper.collision, '2^128 trials')
+  assert.ok(cheap.result.content[0]!.text.length * 4 < full.result.content[0]!.text.length, 'the cheapest view is a fraction of the full answer')
+  assert.deepEqual(cheap.result.structuredContent, full.result.structuredContent, 'the full answer stays for the interfaces that render it')
+})
