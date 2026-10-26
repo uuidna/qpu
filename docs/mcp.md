@@ -2461,6 +2461,9 @@ QPU as the natural extension of every MCP and every MCP of QPU. Inward (host, to
 {
   "type": "object",
   "properties": {
+    "compare": {
+      "description": "the QPU's tools/list measured against open MCP servers that answer without a key: true names the servers and the QPU's own size; { answers: [{ id, status, bytes, tools }] } turns what the client measured into totals, tokens at four bytes a token, bytes per tool and ratios"
+    },
     "statement": {
       "type": "string",
       "description": "with direction out: the registration balanced to this statement — the tools the match tool decides it needs, with brief descriptions, the Claude toolset enabling those alone, the context counted"

@@ -258,3 +258,23 @@ export const bestDoorsOf = (lead: { id: string; statement: string }, remotes: re
   }
   return out.sort((a, b) => b.score - a.score || a.door.localeCompare(b.door)).slice(0, at)
 }
+
+/** Open MCP servers the QPU's tools/list is measured against: each answered initialize and tools/list without a key (measured 2026-10-26);
+ *  baselines only, not integrations. Learning Commons answered 401 and is not one. */
+export const OPEN_MCP_BASELINES: readonly { id: string; url: string }[] = [
+  { id: 'cloudflare-docs', url: 'https://docs.mcp.cloudflare.com/mcp' },
+  { id: 'deepwiki', url: 'https://mcp.deepwiki.com/mcp' },
+  { id: 'microsoft-learn', url: 'https://learn.microsoft.com/api/mcp' },
+  { id: 'context7', url: 'https://mcp.context7.com/mcp' },
+]
+/** A tools/list as a client pays for it: its bytes, the tokens it costs at four bytes a token, and the bytes per tool. */
+export const toolsListCostOf = (bytes: number, tools: number) => ({ bytes, tokens: Math.ceil(bytes / 4), tools, perTool: tools ? Math.round(bytes / tools) : null })
+/** The QPU's tools/list against the open servers' as the client measured them: totals and per tool, a ratio above one meaning the server's
+ *  is that many times the QPU's; a server not answering is named, never estimated. */
+export const toolsListCompareOf = (qpu: { bytes: number; tools: number }, answers: readonly { id: string; status: number; bytes: number; tools: number }[]) => {
+  const q = toolsListCostOf(qpu.bytes, qpu.tools)
+  const ratio = (a: number | null, b: number | null) => (a !== null && b ? Math.round((a / b) * 100) / 100 : null)
+  const rows = OPEN_MCP_BASELINES.map((s) => { const a = answers.find((x) => x.id === s.id); if (!a || a.status !== 200 || !a.tools) return { id: s.id, url: s.url, missing: a ? `HTTP ${a.status}` : 'not asked' }; const c = toolsListCostOf(a.bytes, a.tools); return { id: s.id, url: s.url, ...c, ratio: ratio(c.bytes, q.bytes), ratioPerTool: ratio(c.perTool, q.perTool) } })
+  const measured = rows.filter((r): r is Extract<typeof r, { ratio: number | null }> => 'ratio' in r)
+  return { qpu: q, rows, measured: measured.length, says: `the QPU's tools/list is ${q.bytes} bytes (about ${q.tokens} tokens) for ${q.tools} tools, ${q.perTool} bytes a tool; ${measured.map((r) => `${r.id} ${r.bytes} bytes for ${r.tools} (${r.perTool} a tool, ${r.ratioPerTool}× the QPU's per tool)`).join('; ') || 'no open server measured'}` }
+}

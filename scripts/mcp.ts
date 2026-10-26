@@ -1,17 +1,40 @@
-// The one MCP client every script shares: a tools/call with the user's MCP key (QPU_APP_KEY, never written anywhere) to the app's
-// /api/mcp (QPU_APP_MCP, else the local app), the streamed `data:` line read, the plugin's json blocks parsed, a find walked page by page.
-// Without a key or an answer it says so and returns nothing: an unread docket is unknown to its caller, never a file fallback.
+// The one MCP client every script shares. Underneath, a session with any MCP server over streamable HTTP: initialize, the session id the
+// server names carried on every later message, the streamed `data:` line read, the answer's size in bytes kept. Above it, the app's Payload
+// MCP: a tools/call with the user's MCP key (QPU_APP_KEY, never written anywhere) to /api/mcp (QPU_APP_MCP, else the local app), the
+// plugin's json blocks parsed, a find walked page by page. Without a key or an answer it says so and returns nothing: an unread docket is
+// unknown to its caller, never a file fallback.
 export const MCP_URL = 'http://localhost:3000/api/mcp'
+const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
+type Reply = { status: number; bytes: number; result?: any; error?: string }
+/** A session with one MCP server: every request answered as its status, the bytes of its result, the result or the error. */
+export const sessionOf = (url: string, key?: string) => {
+  let session: string | null = null, id = 0
+  const post = async (message: Record<string, unknown>): Promise<Reply> => {
+    // a kept-alive connection the server closed while the caller was busy fails once with a network error: the request is sent again on a fresh one
+    const send = () => fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', 'user-agent': UA, ...(key ? { authorization: `Bearer ${key}` } : {}), ...(session ? { 'mcp-session-id': session } : {}) }, body: JSON.stringify({ jsonrpc: '2.0', ...message }), signal: AbortSignal.timeout(30000) }).catch((e: Error) => e)
+    let res = await send(); if (res instanceof Error) res = await send()
+    if (res instanceof Error) return { status: 0, bytes: 0, error: res.message }
+    session = res.headers.get('mcp-session-id') ?? session
+    const raw = await res.text()
+    if (!('id' in message)) return { status: res.status, bytes: 0 }
+    if (!res.ok) return { status: res.status, bytes: 0, error: `HTTP ${res.status}` }
+    const json = raw.trimStart().startsWith('{') ? raw : raw.split('\n').filter((l) => l.startsWith('data: ')).map((l) => l.slice(6)).pop() ?? '{}'
+    const j = JSON.parse(json) as { result?: unknown; error?: { message: string } }
+    return j.error ? { status: res.status, bytes: 0, error: j.error.message } : { status: res.status, bytes: Buffer.byteLength(JSON.stringify(j.result ?? null)), result: j.result }
+  }
+  const request = (method: string, params?: unknown) => post({ id: ++id, method, ...(params === undefined ? {} : { params }) })
+  const initialize = async () => { const r = await request('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'qpu', version: '1' } }); if (!r.error) await post({ method: 'notifications/initialized' }); return r }
+  return { url, request, initialize }
+}
+
 type Answer = { text: string; error?: undefined } | { text?: undefined; error: string }
 export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: string | undefined = process.env.QPU_APP_KEY) => {
+  const s = sessionOf(url, key)
   const call = async (tool: string, args: Record<string, unknown>): Promise<Answer> => {
     if (!key) return { error: `no MCP key for ${url} (QPU_APP_KEY)` }
-    const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', authorization: `Bearer ${key}` }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args } }) }).catch((e: Error) => e)
-    if (res instanceof Error) return { error: res.message }
-    if (!res.ok) return { error: `HTTP ${res.status}` }
-    const raw = await res.text(), json = raw.trimStart().startsWith('{') ? raw : raw.split('\n').filter((l) => l.startsWith('data: ')).map((l) => l.slice(6)).pop() ?? '{}'
-    const j = JSON.parse(json) as { result?: { content?: { text: string }[] }; error?: { message: string } }
-    return j.error ? { error: j.error.message } : { text: (j.result?.content ?? []).map((c) => c.text).join('\n') }
+    const r = await s.request('tools/call', { name: tool, arguments: args })
+    if (r.error !== undefined) return { error: r.error }
+    return { text: ((r.result?.content ?? []) as { text: string }[]).map((c) => c.text).join('\n') }
   }
   const docsOf = (text: string): unknown[] => [...text.matchAll(/```json\n([\s\S]*?)\n```/g)].map((m) => JSON.parse(m[1]!))
   /** every page of a find tool's answer: the documents, or null and why */
