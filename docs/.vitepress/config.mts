@@ -82,6 +82,10 @@ export default defineConfig({
         "link": "/currency"
       },
       {
+        "text": "Compete",
+        "link": "/compete"
+      },
+      {
         "text": "Roadmap",
         "link": "/roadmap"
       },
@@ -229,6 +233,10 @@ export default defineConfig({
           {
             "text": "Currency",
             "link": "/currency"
+          },
+          {
+            "text": "Compete",
+            "link": "/compete"
           },
           {
             "text": "Roadmap",

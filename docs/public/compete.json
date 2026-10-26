@@ -1,0 +1,262 @@
+{
+ "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
+ "date": "2026-10-26T00:41:59.923Z",
+ "ms": 36,
+ "offline": true,
+ "selftest": {
+  "passed": true
+ },
+ "head": "5a05831c13fac9006ae29e94db348fa0e1a4ec24",
+ "pushed": null,
+ "fetched": [],
+ "competitions": [
+  {
+   "id": "clay-millennium",
+   "name": "Clay Mathematics Institute, the Millennium Prize Problems",
+   "prize": "USD 1 000 000 per problem (seven; one solved, Poincaré)",
+   "rules": [
+    {
+     "rule": "a solution of one of the seven problems",
+     "needs": "a proof accepted by the community, not an identity: the σ-involution bridge theorems here are kernel-checked integer identities, not solutions of any Millennium problem",
+     "act": "none claimed: a solution is mathematics the author would publish",
+     "status": "open",
+     "evidence": "499 theorems kernel-accepted (1001 in the kernel), identities and bridge theorems; no Millennium problem solved"
+    },
+    {
+     "rule": "(i) published in a Qualifying Outlet",
+     "needs": "a refereed journal or outlet of §6",
+     "act": "the author publishes (the release and its DOI are the author's acts)",
+     "status": "pending",
+     "evidence": "no publication in a qualifying outlet"
+    },
+    {
+     "rule": "(ii) two years since publication",
+     "needs": "time",
+     "act": "wait two years after (i)",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "(iii) general acceptance",
+     "needs": "the community",
+     "act": "none the tree can take",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-26",
+   "kind": "prize",
+   "entry": "rolling",
+   "note": "CMI considers a proposed solution only when all three conditions hold: (i) published in a Qualifying Outlet (§6), (ii) two years passed since publication, (iii) general acceptance in the mathematics community; then the Scientific Advisory Board advises",
+   "requires": [
+    {
+     "rule": "a solution of one of the seven problems",
+     "needs": "a proof accepted by the community, not an identity: the σ-involution bridge theorems here are kernel-checked integer identities, not solutions of any Millennium problem",
+     "act": "none claimed: a solution is mathematics the author would publish"
+    },
+    {
+     "rule": "(i) published in a Qualifying Outlet",
+     "needs": "a refereed journal or outlet of §6",
+     "act": "the author publishes (the release and its DOI are the author's acts)"
+    },
+    {
+     "rule": "(ii) two years since publication",
+     "needs": "time",
+     "act": "wait two years after (i)"
+    },
+    {
+     "rule": "(iii) general acceptance",
+     "needs": "the community",
+     "act": "none the tree can take"
+    }
+   ],
+   "window": null,
+   "counts": {
+    "open": 1,
+    "pending": 3
+   },
+   "satisfied": "0/4",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "xprize-quantum-applications",
+   "name": "XPRIZE Quantum Applications (Google Quantum AI, title sponsor)",
+   "prize": "USD 5 000 000 purse",
+   "rules": [
+    {
+     "rule": "registration within the window",
+     "needs": "Phase II Wild Card registration 2026-01-14 to 2026-03-04",
+     "act": "closed: the next XPRIZE quantum competition is a lead to watch",
+     "status": "closed",
+     "evidence": "Finalist teams chosen (news of 2026-05-10); Phase II Wild Card registration opened 2026-01-14 and closed 2026-03-04; winners announced in the spring of 2027: no entry is open"
+    },
+    {
+     "rule": "a quantum algorithm with a plausible pathway to quantum advantage, technical novelty and algorithmic rigor",
+     "needs": "a submission judged by XPRIZE's panel",
+     "act": "the author submits when a window opens",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-26",
+   "kind": "prize",
+   "entry": "closed",
+   "note": "Finalist teams chosen (news of 2026-05-10); Phase II Wild Card registration opened 2026-01-14 and closed 2026-03-04; winners announced in the spring of 2027: no entry is open",
+   "requires": [
+    {
+     "rule": "registration within the window",
+     "needs": "Phase II Wild Card registration 2026-01-14 to 2026-03-04",
+     "act": "closed: the next XPRIZE quantum competition is a lead to watch"
+    },
+    {
+     "rule": "a quantum algorithm with a plausible pathway to quantum advantage, technical novelty and algorithmic rigor",
+     "needs": "a submission judged by XPRIZE's panel",
+     "act": "the author submits when a window opens"
+    }
+   ],
+   "window": null,
+   "counts": {
+    "closed": 1,
+    "pending": 1
+   },
+   "satisfied": "0/2",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "github-maintainer-programs",
+   "name": "GitHub maintainer programs (Accelerator, Fund, Sponsors)",
+   "prize": "funding, security tools, mentorship (page: \"Get funding, security tools, mentorship, and community\")",
+   "rules": [
+    {
+     "rule": "an open source project on GitHub maintained in public",
+     "needs": "the repository public with a licence",
+     "act": "the push and the release are the author's acts; the tree's licence is CC-BY-NC-ND-4.0, the fork's MIT",
+     "status": "pending",
+     "evidence": "CC-BY-NC-ND-4.0; the repository is local until the author pushes"
+    },
+    {
+     "rule": "an application in a cohort window",
+     "needs": "GitHub's announcement",
+     "act": "the author applies",
+     "status": "pending",
+     "evidence": "the page names the programs; a cohort's application window is announced by GitHub"
+    }
+   ],
+   "read": "2026-10-26",
+   "kind": "funding",
+   "entry": "unknown",
+   "note": "the page names the programs; a cohort's application window is announced by GitHub",
+   "requires": [
+    {
+     "rule": "an open source project on GitHub maintained in public",
+     "needs": "the repository public with a licence",
+     "act": "the push and the release are the author's acts; the tree's licence is CC-BY-NC-ND-4.0, the fork's MIT"
+    },
+    {
+     "rule": "an application in a cohort window",
+     "needs": "GitHub's announcement",
+     "act": "the author applies"
+    }
+   ],
+   "window": null,
+   "counts": {
+    "pending": 2
+   },
+   "satisfied": "0/2",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "cloudflare-workers-launchpad",
+   "name": "Cloudflare Workers Launchpad (funding program for startups on Workers)",
+   "prize": "funding from the Launchpad's VC partners",
+   "rules": [
+    {
+     "rule": "a startup building on Cloudflare Workers",
+     "needs": "the deployed Worker and a company",
+     "act": "the author applies with the company",
+     "status": "pending",
+     "evidence": "the Worker qpu on 3 hosts; the company is the author's"
+    }
+   ],
+   "read": "2026-10-26 (the gateway answered 403 to the verifier: a lead)",
+   "kind": "funding",
+   "entry": "unknown",
+   "note": "the Worker qpu runs on three hosts at the edge; the page refused an automated read",
+   "requires": [
+    {
+     "rule": "a startup building on Cloudflare Workers",
+     "needs": "the deployed Worker and a company",
+     "act": "the author applies with the company"
+    }
+   ],
+   "window": null,
+   "counts": {
+    "pending": 1
+   },
+   "satisfied": "0/1",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "vercel-oss-program",
+   "name": "Vercel Open Source Program (credits for open source projects)",
+   "prize": "platform credits",
+   "rules": [
+    {
+     "rule": "an open source project deployed on Vercel",
+     "needs": "the fork deployed by the tenant",
+     "act": "the tenant deploys the app; the author applies",
+     "status": "pending",
+     "evidence": "the fork builds; its deploy is the tenant's act"
+    }
+   ],
+   "read": "2026-10-26 (a client-rendered page: the rules are not in its HTML; a lead)",
+   "kind": "funding",
+   "entry": "unknown",
+   "note": "the Payload fork deploys on Vercel; the program's criteria are read in the browser only",
+   "requires": [
+    {
+     "rule": "an open source project deployed on Vercel",
+     "needs": "the fork deployed by the tenant",
+     "act": "the tenant deploys the app; the author applies"
+    }
+   ],
+   "window": null,
+   "counts": {
+    "pending": 1
+   },
+   "satisfied": "0/1",
+   "enterable": true,
+   "ready": false
+  }
+ ],
+ "prizes": 2,
+ "funding": 3,
+ "enterable": [
+  "github-maintainer-programs",
+  "cloudflare-workers-launchpad",
+  "vercel-oss-program"
+ ],
+ "ready": [],
+ "says": "enterable: every rule is satisfied or the author's act; ready: every rule satisfied",
+ "closed": [
+  "xprize-quantum-applications"
+ ],
+ "relatedMcps": [
+  "ca.netgrant/canadian-grants",
+  "com.cedargrant/federal-grants",
+  "com.dropwatchhq/grant-finder",
+  "io.github.Ansvar-Systems/uk-farm-grants",
+  "io.github.Froydinger/grantsignal-us",
+  "ai.rallyprop/gov-funding",
+  "com.funding-radar/radar",
+  "com.modernmustardseed/funding-finder",
+  "eu.tech.funding/fundi",
+  "com.meridianlabssoftware/sec-form-d-funding-rounds"
+ ],
+ "honest": "nothing here is a prize won or a problem solved: every rule is judged against evidence, and what remains is the author's act (publish, push, apply) or a lead; the tree competes by following the rules, measured on every run",
+ "internalCompetition": "the gate's competition of codes (five codes a combination, the fastest correct wins) is judged against its five written rules on every run: see the e2e tool"
+}

@@ -169,11 +169,22 @@ export const COMPETITIONS: readonly { id: string; name: string; prize: string; r
 ]
 /** The registry's MCPs for grants and funding (2026-10-26: grant 20, funding 20, competition 2, prize 0, hackathon 0): proposed, extended by the discover step through the lead, never called here. */
 export const FUNDING_MCPS = ['ca.netgrant/canadian-grants', 'com.cedargrant/federal-grants', 'com.dropwatchhq/grant-finder', 'io.github.Ansvar-Systems/uk-farm-grants', 'io.github.Froydinger/grantsignal-us', 'ai.rallyprop/gov-funding', 'com.funding-radar/radar', 'com.modernmustardseed/funding-finder', 'eu.tech.funding/fundi', 'com.meridianlabssoftware/sec-form-d-funding-rounds'] as const
+/** A competition's window read from its page: "Registration opens on <date>, and closes on <date>" → open, closed or upcoming at `now`; "applications are open" → open; nothing read → unknown. Autonomy: the entry state is measured from the page on every run, never hand-set. */
+export const windowOf = (text: string, now: number): { entry: 'open' | 'closed' | 'upcoming' | 'unknown'; opens: string | null; closes: string | null; says: string } => {
+  const m = /[Rr]egistration opens on ([A-Z][a-z]+ \d{1,2}, \d{4}),? and closes on ([A-Z][a-z]+ \d{1,2}, \d{4})/.exec(text)
+  if (m) { const opens = Date.parse(`${m[1]!} UTC`); const closes = Date.parse(`${m[2]!} UTC`) + 86_399_000; /* the day the window closes counts whole, in UTC */ const entry = now < opens ? 'upcoming' : now > closes ? 'closed' : 'open'; return { entry, opens: new Date(opens).toISOString().slice(0, 10), closes: new Date(closes).toISOString().slice(0, 10), says: `the page says registration opens ${m[1]} and closes ${m[2]}: ${entry} on ${new Date(now).toISOString().slice(0, 10)}` } }
+  if (/applications? (?:are|is) (?:now )?open/i.test(text)) return { entry: 'open', opens: null, closes: null, says: 'the page says applications are open' }
+  if (/applications? (?:are|is) (?:now )?closed/i.test(text)) return { entry: 'closed', opens: null, closes: null, says: 'the page says applications are closed' }
+  return { entry: 'unknown', opens: null, closes: null, says: text ? 'the page names no window' : 'no page read' }
+}
 /** Every competition judged: each rule's status from the tree's evidence (theorems kernel-accepted, hosts deployed, licence, no publication), nothing claimed. */
-export const competeOf = (evidence: { theorems: number; kernel: number; hosts: number; licence: string; published: boolean; pushed: boolean }) => {
-  const judged = COMPETITIONS.map((c) => {
+export const competeOf = (evidence: { theorems: number; kernel: number; hosts: number; licence: string; published: boolean; pushed: boolean }, pages: Record<string, string> = {}, now = 0) => {
+  const judged = COMPETITIONS.map((c0) => {
+    // the window measured from the page when a page was read: the fixture's entry stands only until then
+    const w = pages[c0.id] ? windowOf(pages[c0.id]!, now || Date.now()) : null
+    const c = w && w.entry !== 'unknown' ? { ...c0, entry: w.entry === 'upcoming' ? 'closed' as const : w.entry, window: w } : { ...c0, window: w }
     const rules: Rule[] = c.requires.map((r) => {
-      if (c.entry === 'closed' && /registration/.test(r.rule)) return { ...r, status: 'closed' as const, evidence: c.note }
+      if (/registration|application in a cohort/.test(r.rule)) return c.entry === 'closed' ? { ...r, status: 'closed' as const, evidence: c.window?.says ?? c.note } : c.entry === 'open' ? { ...r, status: 'pending' as const, evidence: c.window?.says ?? c.note, act: `open: ${r.act ?? 'the author registers'}` } : { ...r, status: 'pending' as const, evidence: c.window?.says ?? c.note }
       if (/deployed on Vercel/.test(r.rule)) return { ...r, status: 'pending' as const, evidence: 'the fork builds; its deploy is the tenant\'s act' }
       if (/open source project/.test(r.rule)) return { ...r, status: evidence.pushed ? 'satisfied' as const : 'pending' as const, evidence: `${evidence.licence}; the repository is ${evidence.pushed ? 'public' : 'local until the author pushes'}` }
       if (/solution of one of the seven/.test(r.rule)) return { ...r, status: 'open' as const, evidence: `${evidence.theorems} theorems kernel-accepted (${evidence.kernel} in the kernel), identities and bridge theorems; no Millennium problem solved` }
@@ -190,10 +201,10 @@ export const competeOf = (evidence: { theorems: number; kernel: number; hosts: n
 const compete = toolOf('legal', {
   name: 'compete',
   description: 'The competitions with prizes and funding, their rules read at the source and judged against this tree\'s own evidence on every run: the Clay Millennium Prize rules (three conditions), XPRIZE Quantum Applications (closed: finalists chosen, winners spring 2027), GitHub\'s maintainer programs, Cloudflare\'s Workers Launchpad, Vercel\'s open source program; the registry\'s grant and funding MCPs proposed. Each rule is satisfied, pending (the author\'s act), closed or open (a lead). Nothing is claimed won; the tree competes by following every rule. Pure.',
-  inputSchema: { type: 'object', properties: { published: { type: 'boolean', description: 'a publication in a qualifying outlet exists (the author says so)' }, pushed: { type: 'boolean', description: 'the repository is public (the author pushed)' }, hosts: { type: 'integer' }, selftest: { type: 'boolean' } } },
+  inputSchema: { type: 'object', properties: { pages: { type: 'object', description: 'competition id → the text of its rules page, read by the client: the entry window is measured from it' }, now: { type: 'number', description: 'the clock (ms) the window is judged at; the host\'s when absent' }, published: { type: 'boolean', description: 'a publication in a qualifying outlet exists (the author says so)' }, pushed: { type: 'boolean', description: 'the repository is public (the author pushed)' }, hosts: { type: 'integer' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...LEGAL.skill.selftest(ctx) }
-    return competeOf({ theorems: THEOREMS.length, kernel: KERNEL_THEOREMS, hosts: typeof args.hosts === 'number' ? args.hosts : 3, licence: LICENSE.spdx, published: args.published === true, pushed: args.pushed === true })
+    return competeOf({ theorems: THEOREMS.length, kernel: KERNEL_THEOREMS, hosts: typeof args.hosts === 'number' ? args.hosts : 3, licence: LICENSE.spdx, published: args.published === true, pushed: args.pushed === true }, args.pages && typeof args.pages === 'object' ? args.pages as Record<string, string> : {}, typeof args.now === 'number' ? args.now : 0)
   },
   widget: flowWidget,
 })
@@ -232,6 +243,10 @@ export const LEGAL: Toolbox = {
       check('legal:tamper-evident', a1.id === a2.id && a1.sha256 === a2.sha256 && a1.id !== a3.id && a1.sha256 !== a3.sha256, 'the same inputs give the same address; one changed line changes it')
       const comp = competeOf({ theorems: 12, kernel: 1000, hosts: 3, licence: 'CC-BY-NC-ND-4.0', published: false, pushed: false })
       const pub = competeOf({ theorems: 12, kernel: 1000, hosts: 3, licence: 'CC-BY-NC-ND-4.0', published: true, pushed: true })
+      const win = windowOf('Phase II Wild Card Registration opens on January 14, 2026, and closes on March 4, 2026.', Date.parse('2026-02-01'))
+      const after = windowOf('Phase II Wild Card Registration opens on January 14, 2026, and closes on March 4, 2026.', Date.parse('2026-10-26'))
+      const measured = competeOf({ theorems: 12, kernel: 1000, hosts: 3, licence: 'CC-BY-NC-ND-4.0', published: false, pushed: false }, { 'xprize-quantum-applications': 'Registration opens on January 14, 2027, and closes on March 4, 2027.' }, Date.parse('2027-02-01'))
+      check('legal:window-measured-from-the-page', win.entry === 'open' && win.opens === '2026-01-14' && after.entry === 'closed' && windowOf('', 1).entry === 'unknown' && measured.competitions.find((c) => c.id === 'xprize-quantum-applications')!.entry === 'open' && measured.enterable.includes('xprize-quantum-applications'), 'the XPRIZE window read from its sentence: open on 2026-02-01, closed on 2026-10-26; a page naming a 2027 window makes the competition enterable in 2027')
       check('legal:compete-judges-never-claims', comp.ready.length === 0 && comp.enterable.length === 3 && comp.competitions.every((c) => c.rules.every((r) => r.status !== 'satisfied')) && pub.competitions.find((c) => c.id === 'github-maintainer-programs')!.rules[0]!.status === 'satisfied' && pub.ready.length === 0 && pub.competitions.find((c) => c.id === 'clay-millennium')!.rules[0]!.status === 'open' && /nothing here is a prize won/.test(comp.honest), 'unpushed and unpublished, nothing is ready and three funding programs are enterable by the author\'s acts; pushed, the public-repository rule is satisfied and the application stays the author\'s; a Millennium problem stays open whatever the author does here')
       return { passed: checks.every((c) => c.passed), checks }
     },

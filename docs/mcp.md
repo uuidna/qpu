@@ -1760,6 +1760,14 @@ The competitions with prizes and funding, their rules read at the source and jud
 {
   "type": "object",
   "properties": {
+    "pages": {
+      "type": "object",
+      "description": "competition id → the text of its rules page, read by the client: the entry window is measured from it"
+    },
+    "now": {
+      "type": "number",
+      "description": "the clock (ms) the window is judged at; the host's when absent"
+    },
     "published": {
       "type": "boolean",
       "description": "a publication in a qualifying outlet exists (the author says so)"
