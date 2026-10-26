@@ -22,6 +22,7 @@ export const SOURCES: readonly { id: string; kind: SourceKind; name: string; imm
   { id: 'swh-visits', kind: 'immutable', name: 'Software Heritage: the archived visits of the repository', immutable: 'every visit is a snapshot named by its SWHID, kept forever', url: 'https://archive.softwareheritage.org/api/1/origin/<repository>/visits/' },
   { id: 'wayback', kind: 'immutable', name: 'Internet Archive: the closest capture of each host', immutable: 'a capture is a dated copy that does not change', url: 'https://archive.org/wayback/available?url=<host>' },
   { id: 'datacite', kind: 'immutable', name: 'DataCite: the record of each DOI with its versions and relations', immutable: 'a DOI resolves to one record; versions are new DOIs', url: 'https://api.datacite.org/dois/<doi>' },
+  { id: 'zenodo-record', kind: 'immutable', name: 'Zenodo: each record of precedence with its files and their recorded checksums', immutable: 'a published record\'s files never change; a new version is a new DOI', url: 'https://zenodo.org/api/records/<record>' },
   { id: 'openalex-work', kind: 'precedence', name: 'OpenAlex: each record of precedence as a work (date, citations)', immutable: 'the record\'s DOI and date are fixed', url: 'https://api.openalex.org/works/doi:<doi>' },
   { id: 'openalex-near', kind: 'precedence', name: 'OpenAlex: the works whose titles neighbour each record, with their dates', immutable: 'each work\'s DOI and date are fixed', url: 'https://api.openalex.org/works?search=<title>&per-page=200&page=<page>' },
   { id: 'npm-search', kind: 'licence', name: 'npm search: packages that name the work', immutable: 'each match is a published version', url: 'https://registry.npmjs.org/-/v1/search?text=<term>&size=250&from=<from>' },
@@ -49,6 +50,7 @@ export const sourcesPlanOf = (c: SourceContext): SourceRequest[] => {
     req('swh-visits', 'immutable', repo, `https://archive.softwareheritage.org/api/1/origin/${c.repository.replace(/\.git$/, '')}/visits/?per_page=1000`),
     ...c.hosts.map((h) => req('wayback', 'immutable', h, `https://archive.org/wayback/available?url=${encodeURIComponent(h)}`)),
     ...PRECEDENCE.map((p) => req('datacite', 'immutable', p.doi, `https://api.datacite.org/dois/${p.doi}`)),
+    ...PRECEDENCE.filter((p) => /zenodo\.\d+$/.test(p.doi)).map((p) => req('zenodo-record', 'immutable', p.doi, `https://zenodo.org/api/records/${p.doi.split('zenodo.')[1]}`)),
     ...PRECEDENCE.map((p) => req('openalex-work', 'precedence', p.doi, `https://api.openalex.org/works/doi:${p.doi}`)),
     ...PRECEDENCE.map((p) => req('openalex-near', 'precedence', p.doi, `https://api.openalex.org/works?search=${encodeURIComponent(p.title)}&per-page=200&page=1`, 1)),
     ...terms.map((t) => req('npm-search', 'licence', t, `https://registry.npmjs.org/-/v1/search?text=${encodeURIComponent(t)}&size=250&from=0`, 0)),
@@ -92,9 +94,12 @@ export const sourcesOf = (c: SourceContext, answers: readonly SourceAnswer[], ex
   const owner = repo.split('/')[0]!.toLowerCase()
   const author = new Set([owner, ...(c.maintainers ?? []).map((m) => m.toLowerCase())])
   // immutable
-  const pkg = by('npm-package').map(ok).find(Boolean) as { versions?: Record<string, { dist?: { integrity?: string } }>; time?: Record<string, string>; maintainers?: { name: string }[] } | undefined
+  const pkg = by('npm-package').map(ok).find(Boolean) as { versions?: Record<string, { dist?: { integrity?: string; tarball?: string } }>; time?: Record<string, string>; maintainers?: { name: string }[] } | undefined
   for (const m of pkg?.maintainers ?? []) author.add(m.name.toLowerCase())
-  const versions = Object.entries(pkg?.versions ?? {}).map(([v, d]) => ({ version: v, integrity: d.dist?.integrity ?? null, published: pkg?.time?.[v] ?? null }))
+  const versions = Object.entries(pkg?.versions ?? {}).map(([v, d]) => ({ version: v, integrity: d.dist?.integrity ?? null, tarball: d.dist?.tarball ?? null, published: pkg?.time?.[v] ?? null }))
+  // the public artifacts with the digests their registries recorded: the client downloads each and computes the digest, seal { artifacts } compares
+  const zenodo = by('zenodo-record').flatMap((a) => { const j = ok(a) as { doi?: string; files?: { key: string; size: number; checksum: string; links?: { self?: string } }[] } | null; return (j?.files ?? []).map((f) => ({ source: 'zenodo', name: `${j?.doi ?? a.id.split(':')[1]} ${f.key}`, url: f.links?.self ?? '', algorithm: f.checksum.split(':')[0]!, claimed: f.checksum.split(':')[1] ?? '', bytes: f.size })) })
+  const artifacts = [...versions.filter((v) => v.tarball && v.integrity).map((v) => ({ source: 'npm', name: `${c.package}@${v.version}`, url: v.tarball!, algorithm: v.integrity!.split('-')[0]!, claimed: v.integrity!.slice(v.integrity!.indexOf('-') + 1), bytes: null as number | null })), ...zenodo.filter((z) => z.url)]
   const visits = by('swh-visits').flatMap((a) => (ok(a) ?? []) as { date: string; snapshot: string | null; status: string }[]).map((v) => ({ date: v.date, snapshot: v.snapshot ? `swh:1:snp:${v.snapshot}` : null, status: v.status }))
   const captures = by('wayback').map((a) => { const s = ok(a)?.archived_snapshots?.closest; return { host: a.id.split(':')[1]!, url: s?.url ?? null, timestamp: s?.timestamp ?? null, status: a.status } })
   const records = PRECEDENCE.map((p) => { const d = by('datacite').filter((a) => a.id === `datacite:${p.doi}`).map(ok).find(Boolean)?.data?.attributes; const w = by('openalex-work').filter((a) => a.id === `openalex-work:${p.doi}`).map(ok).find(Boolean); return { doi: p.doi, title: p.title, registered: d?.registered ?? null, versions: d?.versionCount ?? null, related: (d?.relatedIdentifiers ?? []).length, published: w?.publication_date ?? null, citedBy: w?.cited_by_count ?? null, reached: { datacite: !!d, openalex: !!w } } })
@@ -138,7 +143,7 @@ export const sourcesOf = (c: SourceContext, answers: readonly SourceAnswer[], ex
   const summary = { requests: answers.length, reached: reachedCount, versions: versions.length, visits: visits.length, captures: captures.filter((x) => x.url).length, records: records.length, candidates: licence.length, books: uniqueBooks.length, routed: reached.length, domainLeads: inDomain.length, outside, doors: doors.length, leads: leads.length }
   return {
     phase: 'judged' as const, address: uuidOf(JSON.stringify(summary)), summary,
-    immutable: { package: c.package, versions, visits, captures, records },
+    immutable: { package: c.package, versions, visits, captures, records, artifacts },
     precedence, licence,
     textbooks: { books: uniqueBooks.length, routed: reached.length, domain: [...domain].sort(), inDomain: inDomain.length, outside, byTheorem, theorem: 'textbook_textbooks_partition' },
     mcp: { doors, says: 'servers that serve books, papers and libraries: proposed as doors of discovery, never called from the tree' },

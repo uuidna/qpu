@@ -2979,6 +2979,10 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "decode": {
+            "type": "object",
+            "description": "{ radices, address? | uuid? }: decoded algebraically, never by search — an address of the form index-digits (or either part alone) inverted in one step per position and checked against itself; a content address is one-way, so the request to find what it hides is refused with the court's case and no candidate is tried; free as pure algebra"
+          },
           "radices": {
             "type": "array",
             "items": {
@@ -3093,6 +3097,17 @@
               "boolean"
             ],
             "description": "a post-quantum signature over the digest: ML-DSA-44, ML-DSA-65 (true) or ML-DSA-87"
+          },
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "public artifacts verified against the digests their registries recorded: [{ source, name, url, algorithm, claimed, computed, bytes?, status }] as the client downloaded and hashed them (npm tarballs by their sha512 integrity, Zenodo files by their checksum); the metric of what verifies, a mismatch answered with the court's case"
+          },
+          "tamper": {
+            "type": "object",
+            "description": "{ text, address, sha256? }: a copy checked against the address and digest the original carried — authentic when both match, modified when the text no longer matches them (adapted material under the licence), forged when the address matches and the digest does not (a crafted collision of the fold); a tampered copy answered with the court's case"
           },
           "entropy": {
             "type": "array",

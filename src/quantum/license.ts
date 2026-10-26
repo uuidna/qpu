@@ -17,7 +17,7 @@ export const LICENSE = {
   contact: 'https://qpu.uuidna.com (the author, through the site; no address is kept in the tree: the deployer\'s is read from the Cloudflare account at build and deploy)',
   work: '@uuidna/qpu',
   attribution: 'Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)',
-  terms: 'Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (https://qpu.uuidna.com). The a432 harmonic default is offered for free benefit under attribution.',
+  terms: 'Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (https://qpu.uuidna.com). The a432 harmonic default is offered for free benefit under attribution. Every block carries its address and its SHA-256: a copy that no longer matches them is adapted material, which the NoDerivatives term does not let anyone share.',
 } as const
 
 /** The MCP `instructions` every client receives at initialize. */

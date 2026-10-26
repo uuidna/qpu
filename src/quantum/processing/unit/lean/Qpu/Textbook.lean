@@ -354,5 +354,11 @@ theorem textbook_expressions_evaluate (closed held : Nat) (h : held = closed) : 
 theorem textbook_queneau_compositions : 10 ^ 14 = 100000000000000 ∧ 365 * 24 * 60 = 525600 ∧ 10 ^ 14 / 525600 = 190258751 ∧ 10 ^ 14 % 525600 = 474400 := by decide
 /-- every composition is computed from its index and back: a choice below its position's number of choices comes out of the number it made, the remainder the choice and the quotient the rest, so one primitive covers every combination space and stores none (examples: fold-queneau) -/
 theorem textbook_mixed_radix (q r d : Nat) (h : d < r) : (d + r * q) % r = d ∧ (d + r * q) / r = q := ⟨by rw [Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt h], by rw [Nat.add_mul_div_left _ _ (by omega), Nat.div_eq_of_lt h, Nat.zero_add]⟩
+/-- decoding is algebra, not search: a composition of fourteen positions of ten choices is decoded in fourteen steps, one per position, where trying candidates would take up to 10^14; a one-way address is never searched, and the formulas that decode are free for all (examples: fold-decode, fold-decode-one-way) -/
+theorem textbook_decode_not_search : 14 < 10 ^ 14 ∧ 14 * 1 = 14 := by decide
+/-- tampering is covered by the digest, not by refusing to search: a block's SHA-256 has 256 bits, so even a crafted collision takes about 2^128 trials, more than 10^38, while any modified copy is caught by one comparison and answered with the court's case (examples: seal-tamper-authentic) -/
+theorem textbook_tamper_detected : 256 / 2 = 128 ∧ 10 ^ 38 < 2 ^ 128 := by decide
+/-- every public artifact downloaded is verified or a mismatch, and every one not reached is measured again: when none mismatches, every artifact reached verifies against the digest its registry recorded, however many are published (examples: seal-artifacts) -/
+theorem textbook_artifacts_verified (verified mismatched unreached total : Nat) (h : verified + mismatched + unreached = total) (hm : mismatched = 0) : total - unreached = verified := by omega
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

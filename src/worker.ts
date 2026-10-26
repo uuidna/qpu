@@ -65,8 +65,11 @@ const involuted = (request: Request, address: string | null, response: Response,
   // the teleport: 304 carries the hash and the address, so the destination verifies the analog it holds digitally, in full
   if (request.headers.get('if-none-match') === etag) return new Response(null, { status: 304, headers: { etag, 'x-qpu-address': address, 'cache-control': 'public, max-age=31536000, immutable', ...LICENSE_HEADERS } })
   const headers = new Headers(response.headers); headers.set('etag', etag); headers.set('cache-control', 'public, max-age=31536000, immutable'); headers.set('x-qpu-address', address)
+  // the digest a forger cannot match, beside the fold that catches change: set by the caller that holds the reply (x-qpu-sha256)
   return new Response(response.body, { status: response.status, headers })
 }
+/** every block reply carries the SHA-256 of its result beside its fold address: tampering with a served block is caught by any client */
+const withDigest = (reply: unknown, res: Response): Response => { const d = (reply as { result?: { _meta?: { integrity?: { sha256?: string } } } }).result?._meta?.integrity?.sha256; if (d) res.headers.set('x-qpu-sha256', d); return res }
 const addressOfReply = (reply: unknown): string | null => { const r = reply as { result?: { _meta?: { block?: { meta?: { id?: string } } } } }; return r.result?._meta?.block?.meta?.id ?? null }
 
 /** What this tree is, stated from its own values: nothing here is typed that the handler does not compute. */
@@ -545,7 +548,7 @@ export const worker = {
       // A checkout plan is executed here, with the tenant's key the handler never holds: the answer carries Stripe's session url.
       const params = (message as { params?: { name?: string; arguments?: { op?: string } } }).params
       // a cached reply is an involution: the block address is its ETag; the same arguments at any host answer the same address (tools/call is pure), so If-None-Match answers 304
-      if ('result' in reply && params?.name !== 'stripe' && params?.name !== 'metrics' && !(params?.name === 'seal' && (params.arguments as { sign?: unknown } | undefined)?.sign)) return involuted(request, addressOfReply(reply), replyOf(request, reply), contentHashOf((reply as { result: { structuredContent?: unknown } }).result.structuredContent))
+      if ('result' in reply && params?.name !== 'stripe' && params?.name !== 'metrics' && !(params?.name === 'seal' && (params.arguments as { sign?: unknown } | undefined)?.sign)) return withDigest(reply, involuted(request, addressOfReply(reply), replyOf(request, reply), contentHashOf((reply as { result: { structuredContent?: unknown } }).result.structuredContent)))
       if (params?.name === 'seal' && (params.arguments as { sign?: unknown } | undefined)?.sign && 'result' in reply) return replyOf(request, await signAtEdge(reply as { result: { structuredContent: { sha256: string; signature: SignaturePlan } } }, env, tenantOf(url.hostname)))
       if (params?.name === 'stripe' && params.arguments?.op === 'plan' && 'result' in reply) return json(await stripeCheckout(reply as { result: { structuredContent: { plan: { url: string; form: Record<string, string>; headers: Record<string, string>; secret: string } } } }, url, env))
       return replyOf(request, reply)

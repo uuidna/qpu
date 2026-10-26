@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T17:00:21.545Z",
- "ms": 574,
+ "date": "2026-10-26T17:07:44.907Z",
+ "ms": 647,
  "approval": {
   "represents": "1.4.0+dd16a788",
   "package": "1.4.0+dd16a788",
@@ -170,16 +170,16 @@
   {
    "kind": "api",
    "torus": {
-    "address": "1ebc54c2-4d08-1f9f-a74c-d0bde32d474e",
-    "seed": 6,
-    "reflection": 4,
+    "address": "a659e2d9-2877-7fba-852c-beba79f16995",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 86427
+    "bytes": 87600
    }
   },
   {
@@ -365,16 +365,16 @@
   {
    "kind": "sets",
    "torus": {
-    "address": "4da3f74c-4678-7e70-8864-c8920caae506",
-    "seed": 6,
-    "reflection": 4,
+    "address": "00dd098f-7958-76ea-bbe6-9f947a798861",
+    "seed": 7,
+    "reflection": 3,
     "trinity": [
-     3,
-     6,
-     9
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 83058
+    "bytes": 85572
    }
   },
   {

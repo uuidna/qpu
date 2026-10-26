@@ -7,7 +7,7 @@ import { EXAMPLES } from './examples.js'
 import { auditOf, entropyOf, differencesOf, securityOf, remediesOf, advantageOf, addressedByTheoremOf, billOf, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, axiomsOf, leaksOf } from './audit.js'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 import { sdkOf, accessAuditOf, buildOf } from './toolboxes/payload.js'
-import { blockOf, verifyOf, uuidOf, compositionsOf } from './blocks.js'
+import { blockOf, verifyOf, uuidOf, compositionsOf, canonicalTextOf } from './blocks.js'
 import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay, reflectionOfRegister } from './clay-register.js'
 import { composeOf } from './compose.js'
@@ -922,7 +922,7 @@ export const handle = (message: Rpc): Reply => {
       const block = blockOf(found.name, args, structured, widget, found.description)
       // the referer of a call: who sent it, carried as _meta.prev, echoed so a chain of calls knows its previous step across domains
       const prev = typeof (params._meta as { prev?: unknown } | undefined)?.prev === 'string' ? (params._meta as { prev: string }).prev : undefined
-      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLdOf({ tool: found.name, id: block.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${block.id}` }), payload: found.name === 'payload' ? undefined : payloadDocOf({ uuid: block.id, tool: found.name, arguments: args, description: found.description, openGraph: block.openGraph as unknown as Record<string, string>, prev: typeof (params._meta as { prev?: unknown } | undefined)?.prev === 'string' ? (params._meta as { prev: string }).prev : null }), widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, fusion: fusionOf(found.name), ...(prev ? { prev } : {}) } } }
+      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLdOf({ tool: found.name, id: block.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${block.id}` }), payload: found.name === 'payload' ? undefined : payloadDocOf({ uuid: block.id, tool: found.name, arguments: args, description: found.description, openGraph: block.openGraph as unknown as Record<string, string>, prev: typeof (params._meta as { prev?: unknown } | undefined)?.prev === 'string' ? (params._meta as { prev: string }).prev : null }), widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, fusion: fusionOf(found.name), integrity: { address: block.id, sha256: hex(sha256(utf8(canonicalTextOf(structured)))), of: 'the canonical text of structuredContent', check: 'seal { tamper: { text, address, sha256 } }', says: 'the address is a fast fold that catches change; the SHA-256 is what a forger cannot match (a second preimage, 2^256 work); the edge adds an ML-DSA signature with seal { sign }' }, ...(prev ? { prev } : {}) } } }
     }
     return fail(METHOD_NOT_FOUND, `method ${message.method} is not served`)
   } catch (error) {
