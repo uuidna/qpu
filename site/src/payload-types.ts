@@ -868,12 +868,18 @@ export interface Tenant {
   name: string;
   slug: string;
   /**
+   * the namespace that names the tenant without a domain: the sandbox of an app, chosen by the x-qpu-namespace header; a credential is narrowed to it, never widened
+   */
+  namespace?: string | null;
+  /**
    * the hosts that name the tenant; the Worker maps each to the docket
    */
-  domains: {
-    domain: string;
-    id?: string | null;
-  }[];
+  domains?:
+    | {
+        domain: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * the currency the tenant prices in
    */
@@ -5515,6 +5521,7 @@ export interface RedirectsSelect<T extends boolean = true> {
 export interface TenantsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  namespace?: T;
   domains?:
     | T
     | {

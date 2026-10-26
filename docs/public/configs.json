@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T18:23:46.789Z",
- "ms": 694,
+ "date": "2026-10-26T18:29:38.730Z",
+ "ms": 674,
  "approval": {
   "represents": "1.4.0+dd16a788",
   "package": "1.4.0+dd16a788",
@@ -155,22 +155,7 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "ce8db2db-9f93-1a2f-ba79-4d71e8417fb0",
-    "seed": 5,
-    "reflection": 5,
-    "trinity": [
-     2,
-     5,
-     8
-    ],
-    "closed": true,
-    "bytes": 82135
-   }
-  },
-  {
-   "kind": "api",
-   "torus": {
-    "address": "ab08c39a-d7f1-4548-93a9-936c98cd7081",
+    "address": "c24d46a1-6c3a-445e-9901-d0262567578a",
     "seed": 3,
     "reflection": 7,
     "trinity": [
@@ -179,7 +164,22 @@
      9
     ],
     "closed": true,
-    "bytes": 91429
+    "bytes": 83847
+   }
+  },
+  {
+   "kind": "api",
+   "torus": {
+    "address": "f85f0e1a-111c-32de-95fb-4d636e39d6a0",
+    "seed": 7,
+    "reflection": 3,
+    "trinity": [
+     7,
+     4,
+     1
+    ],
+    "closed": true,
+    "bytes": 91848
    }
   },
   {
@@ -365,16 +365,16 @@
   {
    "kind": "sets",
    "torus": {
-    "address": "e2f3c7d7-4dcb-849f-9032-fe27a8d10c44",
-    "seed": 5,
-    "reflection": 5,
+    "address": "4a37af2a-d378-4ff1-85ac-a09489c45991",
+    "seed": 1,
+    "reflection": 9,
     "trinity": [
-     2,
-     5,
-     8
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 90254
+    "bytes": 90828
    }
   },
   {

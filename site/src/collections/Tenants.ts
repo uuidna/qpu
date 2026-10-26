@@ -12,7 +12,8 @@ export const Tenants: CollectionConfig = {
   fields: [
     { name: 'name', type: 'text', required: true, unique: true },
     { name: 'slug', type: 'text', required: true, unique: true, validate: (v: unknown) => /^[a-z][a-z0-9-]*$/.test(String(v)) || 'lower-case letters, digits and dashes', custom: { theorem: 'textbook_name_alphabets' } },
-    { name: 'domains', type: 'array', required: true, fields: [{ name: 'domain', type: 'text', required: true }], admin: { description: 'the hosts that name the tenant; the Worker maps each to the docket' } },
+    { name: 'namespace', type: 'text', unique: true, index: true, validate: (v: unknown) => (v == null || v === '') || /^[a-z][a-z0-9-]{1,62}$/.test(String(v)) || 'a namespace: lower-case letters, digits and dashes, starting with a letter', custom: { theorem: 'textbook_namespace_narrows' }, admin: { description: 'the namespace that names the tenant without a domain: the sandbox of an app, chosen by the x-qpu-namespace header; a credential is narrowed to it, never widened' } },
+    { name: 'domains', type: 'array', fields: [{ name: 'domain', type: 'text', required: true }], admin: { description: 'the hosts that name the tenant; the Worker maps each to the docket' } },
     { name: 'currency', type: 'select', defaultValue: 'EUR', options: ["EUR","USD","BGN"], admin: { description: 'the currency the tenant prices in' } },
     { name: 'settings', type: 'json', admin: { description: 'the plugin options this tenant configures: { arguments: {...} } is merged into every qpu block call under its hosts; read by the page and by MCP clients through the Payload MCP plugin' } },
     // the bindings a tenant uses, strictly by name: the adapters profile, the connectors the endpoint is listed as, the variables it binds; the values stay in the Worker's and the app's environment
