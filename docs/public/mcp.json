@@ -2216,7 +2216,8 @@
               "actions",
               "packages",
               "ecommerce",
-              "ui"
+              "ui",
+              "adapters"
             ],
             "description": "omit for all"
           },

@@ -2059,7 +2059,8 @@ MCP configures Payload and the rest: Payload's default plugins (lexical with the
         "actions",
         "packages",
         "ecommerce",
-        "ui"
+        "ui",
+        "adapters"
       ],
       "description": "omit for all"
     },

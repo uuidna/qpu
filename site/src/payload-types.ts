@@ -4240,6 +4240,10 @@ export interface PayloadMcpApiKey {
      * SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a tenant's secret never travels here), pure and the same at every host; the fold address of the text beside them, so a block, a piece and a message are named by one scheme. With sign (ML-DSA-44, ML-DSA-65 or ML-DSA-87, FIPS 204): the post-quantum signature plan over the 32-byte digest, executed by the host with its signing key through Web Crypto; a tenant verifies with the public key the answer carries, never the secret.
      */
     seal?: boolean | null;
+    /**
+     * The crypto and certificate APIs, with NIST and CERN, verified by theorems in coordinated combinations: plan answers the requests to every open API (the NIST randomness beacon, a Certificate Transparency log's tree head, Let's Encrypt's ACME directory, NIST NVD's CVEs on ML-KEM, CERN Open Data's Higgs records, crt.sh, NIST CSRC) and names the hosts whose live certificates the client reads itself; read takes the bodies, verifies the theorems over each (the beacon's chain, period and SHA-512 precommitment; the tree head's widths; the five ACME resources; CVSS bounded and dates ordered; sizes, checksums and DOIs; certificates ordered, within 398 days and valid now; the three FIPS named) and answers the follow-ups the combination needs (the beacon's previous pulse), so a client reads again until nothing follows. Pure: nothing fetched here.
+     */
+    attest?: boolean | null;
   };
   'payload-mcp-resource'?: {
     /**
@@ -4422,6 +4426,10 @@ export interface PayloadMcpApiKey {
      * the MCP Apps view of seal: renders the widget the tool computes
      */
     uiSeal?: boolean | null;
+    /**
+     * the MCP Apps view of attest: renders the widget the tool computes
+     */
+    uiAttest?: boolean | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -5605,6 +5613,7 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         extend?: T;
         fold?: T;
         seal?: T;
+        attest?: T;
       };
   'payload-mcp-resource'?:
     | T
@@ -5654,6 +5663,7 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         uiExtend?: T;
         uiFold?: T;
         uiSeal?: T;
+        uiAttest?: T;
       };
   updatedAt?: T;
   createdAt?: T;

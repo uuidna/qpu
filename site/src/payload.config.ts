@@ -4,6 +4,7 @@ import { Tenants } from './collections/Tenants'
 import { Entries } from './collections/Entries'
 import { QpuGlobal } from './globals/Qpu'
 import { qpuPlugins } from './payload.qpu.config'
+import { qpuDb, qpuEmail, qpuStoragePlugins } from './payload.qpu.adapters'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
@@ -324,9 +325,7 @@ export default buildConfig({
     'https://payloadcms.com',
     'https://discord.com/api',
   ].filter(Boolean),
-  db: mongooseAdapter({
-    url: process.env.DATABASE_URI || '',
-  }),
+  db: qpuDb(), // the adapter the environment names: D1 under a Cloudflare binding, the site's MongoDB otherwise (generated: payload.qpu.adapters.ts)
   defaultDepth: 1,
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
@@ -388,11 +387,7 @@ export default buildConfig({
       }),
     ],
   }),
-  email: nodemailerAdapter({
-    defaultFromAddress: 'info@payloadcms.com',
-    defaultFromName: 'Payload',
-    ...sendgridConfig,
-  }),
+  email: qpuEmail(), // Resend over HTTP when its key is named (it runs in a Worker), nodemailer with SendGrid otherwise (generated)
   endpoints: [
     {
       handler: syncDocs,
@@ -612,16 +607,7 @@ export default buildConfig({
         },
       },
     }),
-    vercelBlobStorage({
-      cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
-      collections: {
-        media: {
-          generateFileURL: ({ filename }) => `https://${process.env.BLOB_STORE_ID}/${filename}`,
-        },
-      },
-      enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    }),
+    ...qpuStoragePlugins(), // R2 under a Cloudflare binding, Vercel Blob otherwise (generated)
   ],
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

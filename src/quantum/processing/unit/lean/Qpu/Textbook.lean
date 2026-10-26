@@ -26,8 +26,8 @@ theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt 
 theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
 /-- the signature is over the 32-byte SHA-256 digest: 256 bits, whatever the length of the text (examples: seal-sign) -/
 theorem textbook_signature_over_digest : 32 * 8 = 256 := by decide
-/-- five configurations the tool writes, three the hand holds, eleven answered inside them: nineteen kinds (examples: configure-files) -/
-theorem textbook_configs_partition : 5 + 3 + 11 = 19 := by decide
+/-- six configurations the tool writes, three the hand holds, eleven answered inside them: twenty kinds (examples: configure-files) -/
+theorem textbook_configs_partition : 6 + 3 + 11 = 20 := by decide
 /-- twelve plugins, five databases, five storages, two email adapters, one editor, three live-preview and seventeen runtime and tooling packages: the forty-five Payload ships (examples: configure-packages) -/
 theorem textbook_packages_partition : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by decide
 /-- seven variants priced in three currencies are twenty-one prices (examples: configure-ecommerce) -/
@@ -56,5 +56,7 @@ theorem textbook_cvss_bounded (s : Nat) (h : s ≤ 100) : s ≤ 100 := h
 theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤ 398 := h
 /-- what is published precedes what is modified; what begins precedes what ends (examples: none yet) -/
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
+/-- five databases, five storages and two email adapters make fifty adapter combinations (examples: configure-adapters) -/
+theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
 /-- eight kinds tested of eight leave none open (examples: none yet) -/
 theorem textbook_configurations_closed : ∀ k : Nat, k ≤ 8 → k = 8 → 8 - k = 0 := by intro k h hk; omega
