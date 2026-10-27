@@ -51,13 +51,30 @@ export const sessionOf = (url: string, key?: string) => {
 type Answer = { text: string; error?: undefined } | { text?: undefined; error: string }
 export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: string | undefined = process.env.QPU_APP_KEY) => {
   const s = sessionOf(url, key)
-  const call = async (tool: string, args: Record<string, unknown>): Promise<Answer> => {
+  const send = async (tool: string, args: Record<string, unknown>): Promise<Answer> => {
     if (!key) return { error: `no MCP key for ${url} (QPU_APP_KEY)` }
     const r = await s.request('tools/call', { name: tool, arguments: args })
     if (r.error !== undefined) return { error: r.error }
     return { text: ((r.result?.content ?? []) as { text: string }[]).map((c) => c.text).join('\n') }
   }
   const docsOf = (text: string): unknown[] => [...text.matchAll(/```json\n([\s\S]*?)\n```/g)].map((m) => JSON.parse(m[1]!))
+  /** one document by id, as the find tool answers it ("Resource from collection …" and the JSON), or null */
+  const docOf = async (find: string, id: string): Promise<Record<string, unknown> | null> => { const a = await send(find, { id, draft: true, depth: 0 }); if (a.error !== undefined) return null; const fenced = docsOf(a.text)[0]; if (fenced) return fenced as Record<string, unknown>; const at = a.text.indexOf('{'); try { return at < 0 ? null : JSON.parse(a.text.slice(at)) } catch { return null } }
+  // a value sent is within the value read back when every field it names reads back equal (a relation may read back as its document)
+  const within = (sent: unknown, got: unknown): boolean => Array.isArray(sent) ? Array.isArray(got) && got.length === sent.length && sent.every((v, i) => within(v, got[i])) : sent && typeof sent === 'object' ? !!got && typeof got === 'object' && Object.entries(sent).every(([k, v]) => v === undefined || within(v, (got as Record<string, unknown>)[k])) : sent === got || (sent === null && got === undefined) || (!!got && typeof got === 'object' && (got as { id?: unknown }).id === sent)
+  const settled = (d: Record<string, unknown> | null) => JSON.stringify(d, (k, v) => (k === 'updatedAt' ? undefined : v))
+  /** every tool called; an update is read back before and after: a field that does not read back as sent (a data wrapper, a field outside the collection) or an update that changed nothing is an error, never a silent success */
+  const call = async (tool: string, args: Record<string, unknown>): Promise<Answer> => {
+    if (!/^update[A-Z]/.test(tool) || typeof args.id !== 'string') return send(tool, args)
+    const find = `find${tool.replace(/^update/, () => '')}`, before = await docOf(find, args.id)
+    const a = await send(tool, args); if (a.error !== undefined) return a
+    const after = await docOf(find, args.id)
+    if (!after) return { error: `${tool} ${args.id}: not read back through ${find}` }
+    const unread = Object.keys(args).filter((k) => k !== 'id' && !within(args[k], after[k]))
+    if (unread.length) return { error: `${tool} ${args.id}: ${unread.join(', ')} not as sent when read back; nothing of it changed` }
+    if (before && settled(before) === settled(after)) return { error: `${tool} ${args.id}: nothing changed` }
+    return { text: a.text }
+  }
   /** every page of a find tool's answer: the documents, or null and why */
   const findAll = async (tool: string, args: Record<string, unknown>): Promise<{ docs: unknown[] | null; says: string }> => {
     const docs: unknown[] = []
@@ -69,5 +86,5 @@ export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: str
     }
     return { docs, says: `${docs.length} document(s) read through ${tool}` }
   }
-  return { url, call, docsOf, findAll }
+  return { url, call, docsOf, docOf, findAll }
 }

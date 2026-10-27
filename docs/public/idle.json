@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T12:03:53.349Z",
+ "date": "2026-10-27T12:25:10.039Z",
  "input": {
   "doors": [
    {
@@ -2241,6 +2241,16 @@
     "used": true
    },
    {
+    "key": "textbook_google_one_door",
+    "bytes": 90,
+    "used": true
+   },
+   {
+    "key": "textbook_google_call_schema",
+    "bytes": 158,
+    "used": true
+   },
+   {
     "key": "textbook_retry_supersedes",
     "bytes": 125,
     "used": true
@@ -3651,8 +3661,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 23368,
-   "used": 23368,
+   "capacity": 23616,
+   "used": 23616,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

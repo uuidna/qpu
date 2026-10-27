@@ -4,9 +4,10 @@ import { willowNoiseOf } from './processor.js'
 import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, TOFFOLI, X, Z, applied, expectationOf, measure, powerOf } from './cirq.js'
 
 const [q0, q1] = LineQubit.range(2)
+const BELL = [applied(H, q0!), applied(CNOT, q0!, q1!)]
 
 test('a Bell circuit simulates to equal weight on |00> and |11>', () => {
-  const bell = new Circuit([applied(H, q0!), applied(CNOT, q0!, q1!)])
+  const bell = new Circuit(BELL)
   const { amplitudes } = new Simulator().simulate(bell)
   const weight = amplitudes.map(([r, i]) => r * r + i * i)
   assert.ok(Math.abs(weight[0]! - 0.5) < 1e-12 && Math.abs(weight[3]! - 0.5) < 1e-12)
@@ -14,7 +15,7 @@ test('a Bell circuit simulates to equal weight on |00> and |11>', () => {
 })
 
 test('run samples only the correlated bitstrings of a Bell pair, by measurement key', () => {
-  const bell = new Circuit([applied(H, q0!), applied(CNOT, q0!, q1!), measure([q0!, q1!], 'result')])
+  const bell = new Circuit([...BELL, measure([q0!, q1!], 'result')])
   const result = new Simulator().run(bell, 1000)
   const values = result.measurements('result')
   assert.equal(values.length, 1000)
@@ -79,7 +80,7 @@ test('a device accepts operations on its qubits and two-qubit gates on its coupl
 })
 
 test('the density-matrix simulator agrees with the state vector on a noiseless Bell pair, and is pure', () => {
-  const bell = new Circuit([applied(H, q0!), applied(CNOT, q0!, q1!)])
+  const bell = new Circuit(BELL)
   const result = new DensityMatrixSimulator().simulate(bell)
   assert.ok(Math.abs(result.trace - 1) < 1e-12)
   assert.ok(Math.abs(result.purity - 1) < 1e-12)
@@ -119,7 +120,7 @@ test('Pauli-string expectation values: Z on |0> is 1, on |1> is -1, and a Bell p
   assert.ok(Math.abs(expectationOf(zero, { 'line:0': 'Z' }) - 1) < 1e-12)
   const one = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]))
   assert.ok(Math.abs(expectationOf(one, { 'line:0': 'Z' }) + 1) < 1e-12)
-  const bell = new DensityMatrixSimulator().simulate(new Circuit([applied(H, q0!), applied(CNOT, q0!, q1!)]))
+  const bell = new DensityMatrixSimulator().simulate(new Circuit(BELL))
   assert.ok(Math.abs(expectationOf(bell, { 'line:0': 'Z', 'line:1': 'Z' }) - 1) < 1e-12)
   assert.ok(Math.abs(expectationOf(bell, { 'line:0': 'X', 'line:1': 'X' }) - 1) < 1e-12)
 })
@@ -157,7 +158,7 @@ test('generalized amplitude damping with p = 1 is amplitude damping: |1> decays 
 })
 
 test('every named channel is trace-preserving on an entangled pair', () => {
-  const bell = new Circuit([applied(H, q0!), applied(CNOT, q0!, q1!)])
+  const bell = new Circuit(BELL)
   const channels: Parameters<DensityMatrixSimulator['simulate']>[1][] = [
     [{ name: 'bit_flip', p: 0.3 }], [{ name: 'phase_flip', p: 0.3 }], [{ name: 'depolarize', p: 0.3 }],
     [{ name: 'asymmetric_depolarize', p_x: 0.1, p_y: 0.2, p_z: 0.3 }], [{ name: 'amplitude_damp', gamma: 0.4 }],

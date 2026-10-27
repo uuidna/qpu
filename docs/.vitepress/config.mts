@@ -220,6 +220,10 @@ export default defineConfig({
       {
         "text": "Metrics",
         "link": "/metrics"
+      },
+      {
+        "text": "Session",
+        "link": "/session"
       }
     ],
     sidebar: [
@@ -389,6 +393,10 @@ export default defineConfig({
           {
             "text": "Metrics",
             "link": "/metrics"
+          },
+          {
+            "text": "Session",
+            "link": "/session"
           }
         ]
       },

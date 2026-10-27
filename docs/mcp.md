@@ -1125,6 +1125,10 @@ Every lead on quantumai
 {
   "type": "object",
   "properties": {
+    "sitemap": {
+      "type": "object",
+      "description": "a sitemap as sitemaps"
+    },
     "client": {
       "type": "object",
       "description": "a client's own report, apart from the QPU's leads"
@@ -1140,6 +1144,14 @@ Every lead on quantumai
     "carry": {
       "type": "boolean",
       "description": "the cost of carrying the leads and what converting them to Payload documents saves; when nothing is carried the release is published as the next sequential vers"
+    },
+    "session": {
+      "type": "object",
+      "description": "every session read to decide what is next and how"
+    },
+    "combinations": {
+      "type": "object",
+      "description": "a432 builds every lead combination"
     },
     "byTheorem": {
       "type": "boolean",

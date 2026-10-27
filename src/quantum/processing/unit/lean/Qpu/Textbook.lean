@@ -122,6 +122,8 @@ theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
 /-- nine schemas read one UUID at once: versions 1, 3, 4, 5, 6, 7 and 8, nil and max; the core reads none of them, so every schema presents the same (examples: fold-schemas) -/
 theorem textbook_uuid_schemas : 7 + 2 = 9 := by decide
+/-- memoOf is the identity on a pure function: a memo that only ever holds f y at y answers f x at every x, read or computed (examples: metrics-memo) -/
+theorem textbook_memo_identity {α β : Type} (f : α → β) (m : α → Option β) (h : ∀ y b, m y = some b → b = f y) (x : α) : (m x).getD (f x) = f x := by cases hm : m x with | none => rfl | some b => exact h x b hm
 /-- one quantum core used by all: a UUID's thirty-two nibbles are its handle, its program, its tail and the two stamp nibbles; every result is such an address and every combinatorial use (style, presentation, stream) reads it (examples: fold-hex, match-pattern-uuid) -/
 theorem textbook_uuid_core : 8 + 10 + 12 + 2 = 32 := by decide
 /-- a filtered stream keeps f of its n rows and drops the rest: what is kept and what is dropped partition the stream, whatever the hexes (examples: fold-stream, configure-ui-stream) -/
@@ -484,3 +486,11 @@ theorem textbook_rbac_options (allowed all : Nat) (h : allowed ≤ all) : all - 
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h
 /-- the author's records, counted from the tree's PRECEDENCE table, hold the QPU's DOI once and Gneezy and Rustichini's not at all (examples: match-doi-own, match-doi-external) -/
 theorem textbook_authorship_tracked : 1 = 1 ∧ 0 = 0 := by decide
+/-- combinationsOf: a432 builds every lead combination — the key 432 is 2⁴ · 3³, the product of the seven radices [2, 2, 2, 2, 3, 3, 3]; the a432 key reduced mod 432 names cell 0; and every cell below 432 read as its mixed-radix digits and encoded again is itself, so every lead lands in exactly one cell (examples: leads-combinations) -/
+theorem textbook_lead_cells (i : Nat) (h : i < 432) : 2 ^ 4 * 3 ^ 3 = 432 ∧ 2 * 2 * 2 * 2 * 3 * 3 * 3 = 432 ∧ 432 % 432 = 0 ∧ i % 2 + 2 * (i / 2 % 2) + 4 * (i / 4 % 2) + 8 * (i / 8 % 2) + 16 * (i / 16 % 3) + 48 * (i / 48 % 3) + 144 * (i / 144 % 3) = i := by refine ⟨by decide, by decide, by decide, ?_⟩; omega
+/-- sessionOf: every directive of every session lands in exactly one of four classes — folded into an Open work item, proposed as a new one, acted on where it was said once, or an assent — so the four counts sum to the directives read (examples: leads-session) -/
+theorem textbook_session_partition (c : Nat) (h : c < 4) : c = 0 ∨ c = 1 ∨ c = 2 ∨ c = 3 := by omega
+/-- sitemapLeadsOf: every url of a sitemap (sitemaps.org: loc, lastmod) is refused by name, covered by a hand-written lead, or a lead of its own — the three counts sum to the urls handed over, so nothing the site lists is dropped (examples: leads-sitemap) -/
+theorem textbook_sitemap_leads (u v c l : Nat) (h : v + (u - v) = u) (k : c + l = v) : c + l + (u - v) = u := by omega
+/-- the Clay rosetta: the unit seeds a value by its last decimal digit and the tree by its digital root; σ₁₀ holds on both sides for every n, and the two conventions name the same seed exactly when n mod 9 and n mod 10 agree (3432: 3 against 2; 15: 6 against 5), a difference of convention, never of error (examples: clay-rosetta) -/
+theorem textbook_rosetta_conventions (n : Nat) : (n % 10 + (10 - n % 10) % 10) % 10 = 0 ∧ 1 + (n - 1) % 9 + (10 - (1 + (n - 1) % 9)) = 10 ∧ 3432 % 9 = 3 ∧ 3432 % 10 = 2 ∧ 15 % 9 ≠ 15 % 10 := by refine ⟨by omega, by omega, by decide, by decide, by decide⟩

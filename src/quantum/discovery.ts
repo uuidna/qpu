@@ -6,7 +6,7 @@ import type { Verifier } from './verifiers.js'
 import { STANDARDS, detectStandard } from './standards.js'
 import { stem } from './match.js'
 
-export type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract'
+export type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract' | 'sitemap'
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
 export const CLOUDFLARE_DOCS_MCP = 'https://docs.mcp.cloudflare.com/mcp'
 /** Cloudflare's MCP servers: the documentation server answers in the open; the rest answer 401 until a tenant brings its OAuth token. */
@@ -83,7 +83,11 @@ export const dataOf = (text: string): string => (/^(event|data):/m.test(text) ? 
 export type Answer = Request & { status: number; type: string; text: string }
 export type Door = { name: string; description: string; takes: string[]; required: string[]; answers: string[]; readOnly: boolean | null; contract: 'tools/list' | 'catalogue' }
 export type Host = { host: string; kind: 'mcp' | 'api' | 'well-known'; contract: string; status: number; detected: string; note: string; doors?: Door[]; paths?: string[] }
-export type Discovery = { hosts: Host[]; doors: (Door & { host: string; url: string })[]; capabilities: { statementVerdict: string[]; signing: string[]; readiness: string[]; addressing: string[]; rbac: string[]; metaphysics: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[] }
+export type Discovery = { hosts: Host[]; doors: (Door & { host: string; url: string })[]; capabilities: { statementVerdict: string[]; signing: string[]; readiness: string[]; addressing: string[]; rbac: string[]; metaphysics: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; sitemap: { index: string; sitemaps: Loc[]; urls: Loc[] } }
+// a sitemap read as sitemaps.org defines it: each <sitemap> of an index and each <url> of a urlset, its loc and its lastmod
+type Loc = { loc: string; lastmod?: string }
+const locsOf = (xml: string, tag: 'sitemap' | 'url'): Loc[] => [...xml.matchAll(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'g'))].map((m) => { const lastmod = /<lastmod>\s*([^<]+?)\s*<\/lastmod>/.exec(m[1]!)?.[1]; return { loc: /<loc>\s*([^<]+?)\s*<\/loc>/.exec(m[1]!)?.[1] ?? '', ...(lastmod ? { lastmod } : {}) } })
+const SITEMAP = { host: 'quantumai.google', url: 'https://quantumai.google/sitemap.xml' }
 
 /** What a client can fill from a theorem, a statement or a value, and what an answer may carry. */
 export const TAKES = ['statement', 'claim', 'input', 'deposits', 'proof', 'key', 'theorems', 'message', 'q', 'query', 'text', 'value', 'sources', 'subject', 'token', 'tenant'] as const
@@ -104,6 +108,7 @@ export const discoveryRequestsOf = (mcpHosts: readonly string[], verifiers: read
   }
   for (const v of verifiers) if (v.contract) out.push({ id: idOf('api-contract', new URL(v.contract).host, v.id), method: 'GET', url: v.contract, purpose: 'api-contract', host: new URL(v.contract).host, name: v.id })
   for (const st of STANDARDS) out.push({ id: idOf('api-contract', new URL(st.contract).host, st.id), method: 'GET', url: st.contract, purpose: 'api-contract', host: new URL(st.contract).host, name: st.id })
+  out.push({ id: idOf('sitemap', SITEMAP.host), method: 'GET', url: SITEMAP.url, purpose: 'sitemap', host: SITEMAP.host })
   return out
 }
 
@@ -144,6 +149,8 @@ export const followUpsOf = (answers: readonly Answer[]): Request[] => {
       if (!done.has(id)) out.push({ id, method: 'POST', url: a.url, body: rpcBody('tools/call', { name: 'list_tools', arguments: { name: t.name } }), purpose: 'contract', host: a.host, name: t.name })
     }
   }
+  // every child an index names is asked once
+  for (const a of answers.filter((x) => x.purpose === 'sitemap' && x.status === 200)) for (const s of locsOf(a.text, 'sitemap')) if (!done.has(idOf('sitemap', a.host, s.loc))) out.push({ id: idOf('sitemap', a.host, s.loc), method: 'GET', url: s.loc, purpose: 'sitemap', host: a.host, name: s.loc })
   return out
 }
 
@@ -216,7 +223,8 @@ export const discoveryOf = (answers: readonly Answer[], verifiers: readonly Veri
     ...hosts.filter((h) => h.kind === 'mcp' && h.detected === 'auth required').map((h) => ({ id: `mcp-auth-${h.host}`, source: h.contract, statement: `${h.host} answers 401 without a token: ${h.note}`, status: 'open' as const, reason: 'tenant configurable: the operator sets QPU_MCP_TOKEN_<HOST> for the tenant and discovery reads the host\'s doors on the next run; nothing is assumed about them' })),
     ...hosts.filter((h) => h.kind === 'api' && !/^openapi|json index|oai-pmh|json-ld|cldr|graphql/.test(h.detected)).map((h) => ({ id: `contract-${h.host}`, source: h.contract, statement: `${h.host} publishes no machine-readable contract at the address the registry names (${h.detected})`, status: 'open' as const, reason: 'the client is built from documentation read by a person; an OpenAPI or index document would let it be built from the host' })),
   ]
-  return { hosts, doors, capabilities, leads }
+  const read = answers.filter((a) => a.purpose === 'sitemap' && a.status === 200)
+  return { hosts, doors, capabilities, leads, sitemap: { index: SITEMAP.url, sitemaps: read.flatMap((a) => locsOf(a.text, 'sitemap')), urls: read.flatMap((a) => locsOf(a.text, 'url')) } }
 }
 
 /** The discovery page, from the discovery alone. */
