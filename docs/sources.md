@@ -5,7 +5,7 @@ order: 57
 
 # The immutable sources of leads
 
-Read on 2026-10-27T08:15:37.741Z by `leads { sources }`: 283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2598 the theorems reach and 20866 of their domain are leads; 580 MCP doors proposed.
+Read on 2026-10-27T09:01:53.338Z by `leads { sources }`: 280 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23652 open books of which 2593 the theorems reach and 20844 of their domain are leads; 580 MCP doors proposed.
 
 ## Licence candidates
 
@@ -25,16 +25,16 @@ Each is a candidate the court computed a case for. None is a verdict.
 
 ## Textbooks
 
-23679 open books: 2598 reached by the theorems, 20866 of their domain are leads, 215 outside.
+23652 open books: 2593 reached by the theorems, 20844 of their domain are leads, 215 outside.
 
 | theorem | books |
 | --- | --- |
 | `textbook_code_folds` | 480 |
 | `textbook_payload_field_types` | 467 |
-| `textbook_double_torus` | 201 |
+| `textbook_double_torus` | 200 |
 | `textbook_uuid_time_space` | 152 |
 | `textbook_patent_number_well_formed` | 142 |
-| `textbook_echo_qubits_within_willow` | 82 |
+| `textbook_echo_qubits_within_willow` | 81 |
 | `textbook_collision_solves_many` | 76 |
 | `textbook_payload_operations` | 66 |
 | `textbook_repetition_code_tenth` | 60 |
@@ -42,8 +42,8 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_gate_adapters` | 51 |
 | `textbook_willow_holds_codes` | 51 |
 | `textbook_dashboard_spaces` | 42 |
-| `superconductivity` | 40 |
 | `textbook_software_cirq_implemented` | 39 |
+| `superconductivity` | 38 |
 | `textbook_dashboard_algorithm_combinations` | 32 |
 | `textbook_error_remedies` | 30 |
 | `textbook_harmonic_default` | 28 |
@@ -68,27 +68,26 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_free_or_coil` | 7 |
 | `textbook_leaks_redacted` | 6 |
 | `textbook_security_perspectives` | 6 |
-| `textbook_bill_covered` | 6 |
 | `textbook_shor_narrowed_cells` | 6 |
 | `Qpu.ProgramSynthesis.checkLower_sound` | 6 |
+| `textbook_bill_covered` | 6 |
 | `textbook_chain_bits` | 5 |
-| `textbook_textbook_categories` | 5 |
 | `textbook_textbooks_partition` | 5 |
 | `textbook_shor_fifteen_order` | 5 |
 | `ramsey_three_three` | 5 |
 | `textbook_payload_queries` | 5 |
 | `Qpu.Xai.integrated_gradients_linear` | 4 |
-| `textbook_entropy_fusion` | 4 |
-| `textbook_advantage_unbounded` | 4 |
 | `infinite` | 4 |
 | `textbook_codes_locales` | 4 |
 | `textbook_processor_cells` | 4 |
 | `textbook_url_combinations` | 4 |
 | `textbook_idle_scheduled_clears` | 4 |
+| `textbook_entropy_fusion` | 4 |
+| `textbook_advantage_unbounded` | 4 |
+| `textbook_textbook_categories` | 4 |
 | `textbook_decode_not_search` | 3 |
 | `textbook_penalty_time_heat_monotone` | 3 |
 | `textbook_news_adapters` | 3 |
-| `textbook_billing_complete` | 3 |
 | `textbook_fractal_scales` | 3 |
 | `textbook_rsa_beyond_bound` | 3 |
 | `textbook_site_documents` | 3 |
@@ -100,6 +99,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_integers_first` | 3 |
 | `textbook_roadmap_decades` | 3 |
 | `textbook_machine_allow_list` | 3 |
+| `textbook_billing_complete` | 3 |
 | `textbook_rest_rbac` | 2 |
 | `textbook_penalty_learned_prevents` | 2 |
 | `textbook_edit_collides` | 2 |
@@ -661,8 +661,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.graph-paper/graph-paper | https://graph-paper.io/mcp |
 | io.usefulapi/paperform | https://paperform.usefulapi.io/mcp |
 | io.usefulapi/papershift | https://papershift.usefulapi.io/mcp |
-| kr.co.paperee/paperee-mcp | https://api.paperee.co.kr/functions/v1/mcp |
-| net.nexlab/peer-research-papers | https://mcp.nexlab.net/mcp/peer-research-papers |
 | io.github.MicaelJarniac/repeaterbook |  |
 | io.github.NedimMujagic/bnod-booking | https://bnod.at/api/mcp |
 | io.github.NyxToolsDev/quickbooks-mcp-server |  |
@@ -688,6 +686,8 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.cbetz/ratebook |  |
 | io.github.chrischall/freshbooks-mcp |  |
 | io.github.chrischall/honeybook-mcp |  |
+| kr.co.paperee/paperee-mcp | https://api.paperee.co.kr/functions/v1/mcp |
+| net.nexlab/peer-research-papers | https://mcp.nexlab.net/mcp/peer-research-papers |
 | online.paperlink/mcp | https://mcp.paperlink.online/api/mcp/mcp |
 | org.agentpub/papers | https://mcp.agentpub.org/mcp/ |
 | org.lightpaper/lightpaper-mcp |  |

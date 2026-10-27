@@ -1,55 +1,55 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T08:12:14.100Z",
- "ms": 13753,
+ "date": "2026-10-27T08:58:15.086Z",
+ "ms": 11934,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "f76f35b74747d82371d18a572c3aabff17fc7765",
+ "head": "afd1d1dbce6fc7a9d88d761505875791a26bb590",
  "pushed": false,
  "fetched": [
   {
-   "id": "clay-millennium",
-   "status": 200,
-   "ms": 555,
-   "bytes": 79933
-  },
-  {
    "id": "gemini-xprize-hackathon",
    "status": 403,
-   "ms": 406,
+   "ms": 541,
    "bytes": 5483
   },
   {
    "id": "xprize-quantum-applications",
    "status": 200,
-   "ms": 442,
+   "ms": 555,
    "bytes": 179490
   },
   {
-   "id": "vercel-oss-program",
+   "id": "clay-millennium",
    "status": 200,
-   "ms": 452,
-   "bytes": 825337
+   "ms": 636,
+   "bytes": 79933
   },
   {
    "id": "google-for-startups-accelerator",
    "status": 200,
-   "ms": 594,
+   "ms": 678,
    "bytes": 195294
-  },
-  {
-   "id": "github-maintainer-programs",
-   "status": 200,
-   "ms": 880,
-   "bytes": 394373
   },
   {
    "id": "cloudflare-workers-launchpad",
    "status": 200,
-   "ms": 936,
-   "bytes": 402590
+   "ms": 762,
+   "bytes": 402585
+  },
+  {
+   "id": "vercel-oss-program",
+   "status": 200,
+   "ms": 974,
+   "bytes": 825337
+  },
+  {
+   "id": "github-maintainer-programs",
+   "status": 200,
+   "ms": 1170,
+   "bytes": 394373
   }
  ],
  "precedence": [
@@ -100,37 +100,19 @@
    },
    {
     "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.21781602",
+    "doi": "10.5281/zenodo.23156998",
     "status": 200,
     "mentions": 0
    },
    {
     "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.23156998",
+    "doi": "10.5281/zenodo.21781602",
     "status": 200,
     "mentions": 0
    },
    {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 0,
-    "mentions": null
-   },
-   {
     "api": "gdelt",
-    "doi": "10.5281/zenodo.23156998",
+    "doi": "10.5281/zenodo.21781602",
     "status": 429,
     "mentions": null
    },
@@ -141,8 +123,26 @@
     "mentions": null
    },
    {
-    "api": "gdelt",
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
     "doi": "10.5281/zenodo.21781602",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "gdelt",
+    "doi": "10.5281/zenodo.23156998",
     "status": 429,
     "mentions": null
    }

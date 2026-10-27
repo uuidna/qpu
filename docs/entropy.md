@@ -5,7 +5,7 @@ order: 52
 
 # Entropy converted to leads
 
-The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T08:45:25.893Z through the `audit` tool over 949 source files (85937 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (1076 findings, 334 leads, 742 fusion reactions); the gravity of the tree is `ab496c80-0908-3759-a208-94185076dc98`. 3 new lead(s) signalled into the entropy stream this run; the differences since the last run: 3 appeared (to explore), 1 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
+The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T08:57:16.461Z through the `audit` tool over 949 source files (85937 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (1076 findings, 334 leads, 742 fusion reactions); the gravity of the tree is `ab496c80-0908-3759-a208-94185076dc98`. 3 new lead(s) signalled into the entropy stream this run; the differences since the last run: 3 appeared (to explore), 0 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
 
 | Kind | Findings | Leads |
 |---|---:|---:|
