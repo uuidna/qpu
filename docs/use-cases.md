@@ -378,12 +378,12 @@ the Google Quantum AI layer: the Willow processor as its spec sheet states it, C
 
 ## Gates
 
-Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 183 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 + 5 = 183) in 21 categories, 205 nested pages, 169 of 192 leads placed; by kind tool 51, open 55, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
+Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 183 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 + 5 = 183) in 21 categories, 205 nested pages, 144 of 167 leads placed; by kind tool 51, open 55, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
 
 | Category | Gates | Leads | Says |
 |---|---:|---:|---|
 | tree | 10 | 69 | the doors of the tree toolbox, each a gate of the leads it serves |
-| google | 13 | 71 | the doors of the google toolbox, each a gate of the leads it serves |
+| google | 13 | 46 | the doors of the google toolbox, each a gate of the leads it serves |
 | flow | 6 | 5 | the doors of the flow toolbox, each a gate of the leads it serves |
 | language | 2 | 2 | the doors of the language toolbox, each a gate of the leads it serves |
 | raid | 1 | 3 | the doors of the raid toolbox, each a gate of the leads it serves |
