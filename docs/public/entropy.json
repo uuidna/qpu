@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T14:41:39.520Z",
+ "date": "2026-10-27T15:25:31.251Z",
  "literals": {
   "urls": 839,
   "distinctUrls": 450,
@@ -648,11 +648,11 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 932,
- "lines": 83611,
- "findings": 879,
- "fused": 315,
+ "lines": 83574,
+ "findings": 880,
+ "fused": 316,
  "reactions": 564,
- "gravity": "48befda8-ea21-2620-88e6-e78d11a0ec35",
+ "gravity": "954590bb-3431-15ef-aee7-6a7aae49c44e",
  "vacuum": false,
  "byKind": {
   "literal": {
@@ -664,8 +664,8 @@
    "leads": 1
   },
   "cap": {
-   "findings": 83,
-   "leads": 21
+   "findings": 84,
+   "leads": 22
   },
   "clock": {
    "findings": 21,
@@ -689,16 +689,16 @@
   }
  },
  "difference": {
-  "appeared": 3,
+  "appeared": 4,
   "settled": 0
  },
  "toExplore": {
-  "match": 294,
+  "match": 295,
   "imagine": 16,
   "configure": 5
  },
  "toConfig": {
-  "actions": 23,
+  "actions": 24,
   "none": 18,
   "fullstack": 274
  },
@@ -1060,6 +1060,18 @@
    "tool": "audit",
    "occurrences": 1,
    "address": "a3c13145-dcc0-2e22-8637-05bf548f8f9c",
+   "explore": "match",
+   "config": "actions"
+  },
+  {
+   "id": "entropy-cap-ada78332",
+   "kind": "cap",
+   "source": "src/quantum/hmac.ts:8",
+   "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 64)",
+   "status": "open",
+   "tool": "audit",
+   "occurrences": 1,
+   "address": "ada78332-3d5c-605a-81a7-938965ca9c2d",
    "explore": "match",
    "config": "actions"
   },

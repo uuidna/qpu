@@ -5,13 +5,13 @@ order: 52
 
 # Entropy converted to leads
 
-The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T14:41:39.520Z through the `audit` tool over 932 source files (83611 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (879 findings, 315 leads, 564 fusion reactions); the gravity of the tree is `48befda8-ea21-2620-88e6-e78d11a0ec35`. 3 new lead(s) signalled into the entropy stream this run; the differences since the last run: 3 appeared (to explore), 0 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
+The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T15:25:31.251Z through the `audit` tool over 932 source files (83574 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (880 findings, 316 leads, 564 fusion reactions); the gravity of the tree is `954590bb-3431-15ef-aee7-6a7aae49c44e`. 4 new lead(s) signalled into the entropy stream this run; the differences since the last run: 4 appeared (to explore), 0 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
 
 | Kind | Findings | Leads |
 |---|---:|---:|
 | literal | 4 | 4 |
 | typed-path | 1 | 1 |
-| cap | 83 | 21 |
+| cap | 84 | 22 |
 | clock | 21 | 2 |
 | duplicate | 667 | 269 |
 | shape | 87 | 4 |
@@ -50,6 +50,7 @@ The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T14:41:39
 | entropy-clock-9cc020bd | clock | imagine | actions | 13 | src/quantum/audit.ts:361, src/quantum/audit.ts:362, src/quantum/examples.ts:321, src/quantum/mcp.ts:1017, src/quantum/mcp.ts:1020, src/quantum/selftest.ts:43, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:113, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:182, src/quantum/toolboxes/legal.ts:257, src/quantum/toolboxes/payload.ts:1791 | a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now() |
 | entropy-cap-9347bb45 | cap | match | actions | 9 | src/quantum/audit.ts:415, src/quantum/imagine.ts:56, src/quantum/mcp.ts:984, src/quantum/selftest.ts:45, src/quantum/toolboxes/billing.ts:585, src/quantum/toolboxes/language.ts:92, src/quantum/toolboxes/payload.ts:2105, src/quantum/toolboxes/raid.ts:121, src/quantum/toolboxes/standards.ts:47 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 160) |
 | entropy-cap-a3c13145 | cap | match | actions | 1 | src/quantum/expressions.ts:138 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 140) |
+| entropy-cap-ada78332 | cap | match | actions | 1 | src/quantum/hmac.ts:8 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 64) |
 | entropy-cap-b65e9832 | cap | match | actions | 1 | src/quantum/mcp.ts:437 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 50) |
 | entropy-clock-874a626d | clock | imagine | actions | 8 | src/quantum/mcp.ts:710, src/quantum/standards.ts:57, src/quantum/standards.ts:61, src/quantum/toolboxes/flow.ts:42, src/quantum/toolboxes/flow.ts:55, src/quantum/toolboxes/flow.ts:85, src/quantum/toolboxes/flow.ts:114, src/quantum/toolboxes/repository.ts:284 | a clock or a die in a pure module: the result is no longer a function of its arguments — new Date() |
 | entropy-cap-adaaeb32 | cap | match | actions | 1 | src/quantum/namespaces.ts:11 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 63) |
