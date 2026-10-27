@@ -87,44 +87,19 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `qsim-hardware` | served | statements | the page's stated content, served as the qsim_hardware statement |  |
 | `openfermion-projects` | served | statements | the page's stated content, served as the openfermion_projects statement |  |
 | `cirq-basics` | served | statements | the page's stated content, served as the cirq_basics statement |  |
-| `qsimcirq-tutorial` | served | statements | the page's stated content, served as the qsimcirq statement |  |
-| `openfermion-basis-change` | served | statements | the page's stated content, served as the basis_change statement |  |
 | `sitemap` | served | leads | The site's sitemap as sitemaps.org defines it (loc, lastmod): planned by the discover door, sealed in the docket from sitemap, handed to leads &#123; sitemap &#125; by its client, every page a lead |  |
 | `learn` | blocked | — | Learn overview | the path is not in the sitemap and returned HTTP 404 on 2026-10-25; its children learn/map and learn/lab are in the sitemap and are served |
-| `lab` | served | statements | Discover the Quantum AI campus: the Santa Barbara campus, its quantum data center, labs and fabrication |  |
 | `sycamore` | served | processor | Sycamore: 54 qubits and 88 couplers, its printed layout, its two-qubit gates |  |
-| `quantum-computer` | served | statements | Superconducting hardware, cryogenic environment, Santa Barbara |  |
-| `what-is-qc` | served | statements | What quantum computing is: superposition, interference, the problems expected |  |
-| `progress-pdf` | served | statements | Progress since 2014, Milestones 1 and 2 |  |
-| `vision-pdf` | served | statements | Classical and quantum computers together |  |
-| `responsibility-pdf` | served | statements | Honest reporting, RSA risk, post-quantum cryptography, SPHINCS+, collaboration |  |
-| `coursera` | served | statements | The Resources page's description of the course: a free introduction to quantum error correction, hands-on with Stim and Crumble |  |
 | `videos` | partial | statements | Educational videos: how-to videos on programming quantum computers, scientific breakthroughs, and new tools | the Resources page's description of the videos is served as the resources statement; the videos themselves are not text and are not carried |
 | `careers` | out_of_scope | — | Careers | the site's Careers link targets Google's job search filtered to quantum in California, Munich, Seattle and Zurich; quantumai.google/careers returned HTTP 404 on 2026-10-25; a jobs listing, not technical content |
 | `qpu-quantumlib` | served | quantumlib | The quantumlib GitHub organization: fifteen active repositories for quantum computing, with what this repository implements of each |  |
-| `cirq-framework` | served | quantumlib | Cirq: a Python framework for quantum circuit design, optimization, and simulation |  |
 | `qsim-simulator` | served | quantumlib | qsim: a high-performance quantum circuit simulator with C++ backend and Cirq interface |  |
 | `qualtran-algorithms` | served | quantumlib | Qualtran: abstractions and libraries for writing fault-tolerant quantum algorithms |  |
 | `openfermion-simulation` | served | quantumlib | OpenFermion: a library for simulating fermionic systems with quantum computers |  |
 | `stim-stabilizer` | served | quantumlib | Stim: a high-performance stabilizer code simulator |  |
 | `chromobius-decoder` | served | quantumlib | chromobius: a Möbius decoder for color code quantum error correction |  |
-| `recirq-experiments` | served | quantumlib | ReCirq: research modules and experiment implementations using Cirq |  |
-| `tesseract-qec-decoder` | served | quantumlib | tesseract-decoder: a search-based quantum error correction decoder |  |
-| `openfermion-pyscf` | served | quantumlib | OpenFermion-PySCF: plugin for the PySCF computational chemistry package |  |
-| `openfermion-fqe` | served | quantumlib | OpenFermion-FQE: the fermionic quantum emulator for exact simulations |  |
-| `openfermion-cirq` | served | quantumlib | OpenFermion-Cirq: quantum circuits for chemistry and materials simulation |  |
-| `unitary-library` | served | quantumlib | unitary: an API library of common operations for adding quantum behaviours to games |  |
-| `typedunits-library` | served | quantumlib | TypedUnits: a Python library for type-safe unit and dimension calculations |  |
-| `quantumlib-ecosystem` | served | quantumlib | The quantumlib ecosystem: Cirq as foundation, qsim for simulation, Qualtran for algorithms, OpenFermion for chemistry, Stim for error correction |  |
 | `cirq-google-integration` | partial | circuit | Cirq-Google: integration with Google Quantum AI hardware and the Willow processor | the circuit tool validates circuits against the Willow, Sycamore and Sycamore23 devices and applies Willow's spec-sheet noise, as a virtual engine does; the engine client (programs, jobs, reservations) is described in the google_concepts statement and not implemented |
 | `quantumlib-documentation` | partial | leads | Quantumlib documentation: tutorials, API references, and examples for all packages | every documentation page of quantumai.google is a lead here, from the sitemap read whole; the repositories' own documentation on github.com is not fetched |
-| `error-correction-threshold` | served | processor | Error correction below threshold: the logical error falls as the code distance grows, Λ = 2.14 per distance step |  |
-| `magic-state-cultivation-lead` | served | processor | Magic state cultivation: 40-fold error reduction, 99.99% logical fidelity, color code to surface code transition |  |
-| `neutral-atom-expansion` | served | statements | Neutral atom quantum computers: expansion beyond superconducting to alternative qubit platforms |  |
-| `quantum-advantage-verification` | served | echo_benchmark | Quantum advantage verification: the OTOC protocol on the 105-qubit array, stated as the first verifiable quantum advantage |  |
-| `cryogenic-engineering` | served | statements | Cryogenic engineering: superconducting qubits need specialized cryogenic environments and custom control electronics; the cryostats reach about 10 millikelvin |  |
-| `qubit-scaling-architecture` | served | processor | Qubit scaling and chip architecture: qubit quality improved while the count grows; Willow has 105 qubits per its spec sheet (the v1.1.0 lead said 70+, the 2023 chip's count) |  |
-| `tunable-coupler-dynamics` | served | statements | Tunable qubits and couplers: dynamic performance adjustment and optimization for faster gates and operations |  |
 | `gate-development` | served | processor | Gate development and calibration: the single- and two-qubit gate errors the spec sheet states, applied as noise by the circuit tool |  |
 | `chip-fabrication-precision` | served | statements | Chip fabrication and calibration: Willow built in the Santa Barbara fabrication facility; error correction informs chip architecture, gate development, fabrication and calibration |  |
 | `full-stack-integration` | served | statements | Full-stack integration: hardware, control and decoding electronics, cryostats, the operating system and user-facing software |  |

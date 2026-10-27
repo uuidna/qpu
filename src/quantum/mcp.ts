@@ -653,10 +653,10 @@ const OWN: Tool[] = [
 /** Results by block address, once per process: the memory of the balancer. */
 const BALANCER = new Map<string, { structured: unknown; widget: string }>()
 /** The blocks teleported into this balancer by a client (computed by another process), so a snapshot can leave only the new ones. */
-const TELEPORTED = new Set<string>()
+const TELEPORTED = new Set<string>(), TELEPORT_USED = new Set<string>()
 let TELEPORT_HITS = 0
 /** The balancer's blocks as data, for a client to carry to another process: all of them, or only those this process computed. Pure. */
-export const balancerSnapshot = (p: { onlyNew?: boolean } = {}): { address: string; structured: unknown; widget: string }[] => [...BALANCER.entries()].filter(([a]) => !p.onlyNew || !TELEPORTED.has(a)).map(([address, v]) => ({ address, ...v }))
+export const balancerSnapshot = (p: { onlyNew?: boolean; used?: boolean } = {}): { address: string; structured: unknown; widget: string }[] => [...BALANCER.entries()].filter(([a]) => (!p.onlyNew || !TELEPORTED.has(a)) && (!p.used || TELEPORT_USED.has(a))).map(([address, v]) => ({ address, ...v }))
 /** Blocks computed elsewhere, teleported into this balancer: a block already here is kept (first computed wins); returns how many arrived. Pure. */
 export const balancerLoad = (blocks: readonly { address: string; structured: unknown; widget: string }[]): number => { let n = 0; for (const b of blocks) { if (typeof b.address !== 'string' || BALANCER.has(b.address)) continue; BALANCER.set(b.address, { structured: b.structured, widget: b.widget }); TELEPORTED.add(b.address); n += 1 } return n }
 /** Observability: per tool, how often it was asked, how often it computed (a miss), how long the misses took, how many bytes they produced. */
@@ -1025,7 +1025,7 @@ export const handle = (message: Rpc): Reply => {
       // exclusive time: a tool that calls tools (audit, metrics, match) is charged only for its own milliseconds; the nested ones are theirs
       const started = Date.now(); NESTED.push(0)
       const { structured, widget } = cached ?? found.call(args, recordsOf(args))
-      if (!cached) BALANCER.set(address, { structured, widget }); else if (TELEPORTED.has(address)) TELEPORT_HITS += 1
+      if (!cached) BALANCER.set(address, { structured, widget }); else if (TELEPORTED.has(address)) { TELEPORT_HITS += 1; TELEPORT_USED.add(address) }
       const children = NESTED.pop() ?? 0; const elapsed = Date.now() - started
       if (NESTED.length) NESTED[NESTED.length - 1]! += elapsed
       const o = OBSERVED.get(found.name) ?? { calls: 0, misses: 0, ms: 0, bytes: 0 }

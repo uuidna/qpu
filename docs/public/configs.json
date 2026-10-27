@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T18:25:46.491Z",
- "ms": 309,
+ "date": "2026-10-27T18:33:47.260Z",
+ "ms": 232,
  "approval": {
   "represents": "1.4.0+e3785063",
   "package": "1.4.0+e3785063",
@@ -350,16 +350,16 @@
   {
    "kind": "gates",
    "torus": {
-    "address": "117add57-3a19-4fad-8334-89983fb4e833",
-    "seed": 6,
-    "reflection": 4,
+    "address": "92c8c1b5-4b10-875a-8bdc-61d7eaa464ca",
+    "seed": 4,
+    "reflection": 6,
     "trinity": [
-     3,
-     6,
-     9
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 554536
+    "bytes": 554402
    }
   },
   {
