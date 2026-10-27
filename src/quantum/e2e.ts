@@ -71,7 +71,7 @@ export const e2eRequestsOf = (ctx: Context, hosts: readonly string[], only?: rea
   const combos = new Map<string, { tool: string; from: 'example' | 'cell'; arguments: Record<string, unknown> }>()
   const add = (tool: string, args: Record<string, unknown>, from: 'example' | 'cell') => { if (E2E_SKIP.has(tool) || args.selftest || !boxOf.has(tool) || (only && !only.includes(tool)) || executedAtEdge(tool, args)) return; const combo = uuidOf(`${tool}${JSON.stringify(args)}`); if (!combos.has(combo)) combos.set(combo, { tool, from, arguments: args }) }
   for (const e of ctx.examples) add(e.tool, e.arguments, 'example')
-  for (const t of tools) if (!E2E_SKIP.has(t.name) && (!only || only.includes(t.name))) { const d = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'dashboard', arguments: { tool: t.name } } }) as { result?: { structuredContent: { cellList: { arguments: Record<string, unknown> }[] } } }; for (const c of d.result?.structuredContent.cellList ?? []) add(t.name, c.arguments, 'cell') }
+  for (const t of tools) if (!E2E_SKIP.has(t.name) && (!only || only.includes(t.name))) { const d = ctx.call('dashboard', { tool: t.name }) as { cellList: { arguments: Record<string, unknown> }[] } | undefined; for (const c of d?.cellList ?? []) add(t.name, c.arguments, 'cell') }
   const out: E2eRequest[] = []
   for (const [combo, c] of combos) {
     const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: c.tool, arguments: c.arguments } }) as { result?: { structuredContent: unknown }; error?: { message: string } }

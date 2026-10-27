@@ -6,7 +6,7 @@ import type { Example } from './examples.js'
 import type { Lead } from './leads.js'
 import type { Rpc, Check } from './audit.js'
 
-export type Context = { handle: (m: Rpc) => any; examples: readonly Example[]; leads: readonly Lead[] }
+export type Context = { handle: (m: Rpc) => any; examples: readonly Example[]; leads: readonly Lead[]; /** a tool's structured content, undefined on an error */ call: (name: string, args?: Record<string, unknown>) => any }
 export type Tool = { name: string; toolbox: string; description: string; inputSchema: object; call: (args: Record<string, unknown>, ctx: Context) => { structured: unknown; widget: string } }
 export type Skill = {
   /** what a client must know to use the toolset: the order of calls, what it fetches between them, what it writes */

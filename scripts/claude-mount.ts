@@ -5,7 +5,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { handle } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/mcp.ts'
 
 export type ClaudeMount = { phase: 'needs-key' | 'mounted' | 'differs' | 'refused' | 'failed'; model?: string; sha256Here?: string; sha256ByClaude?: string | null; stopReason?: string; servedBy?: string; usage?: { input: number; output: number }; note: string }
 
@@ -13,8 +13,8 @@ export const mountThroughClaude = async (origin = 'https://qpu.uuidna.com'): Pro
   // the key from the environment or .dev.vars (the file the Worker's secrets live in, ignored by git); its value is never printed or carried
   if (existsSync('.dev.vars')) process.loadEnvFile('.dev.vars')
   const key = process.env.ANTHROPIC_API_KEY ?? process.env.ANTHROPIC_API_KEY_UUIDNA ?? process.env.ANTHROPIC_API_KEY_PSG
-  const reg = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'extend', arguments: { direction: 'out', host: `${origin}/mcp` } } }) as { result: { structuredContent: { outward: { claude: { model: string; betas: string[]; mcp_servers: { type: 'url'; url: string; name: string }[]; tools: { type: 'mcp_toolset'; mcp_server_name: string }[] } } } } }).result.structuredContent.outward.claude
-  const here = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'seal', arguments: { text: 'qpu' } } }) as { result: { structuredContent: { sha256: string } } }).result.structuredContent.sha256
+  const reg = toolCallerOf('extend')({ direction: 'out', host: `${origin}/mcp` }).outward.claude as { model: string; betas: string[]; mcp_servers: { type: 'url'; url: string; name: string }[]; tools: { type: 'mcp_toolset'; mcp_server_name: string }[] }
+  const here = toolCallerOf('seal')({ text: 'qpu' }).sha256 as string
   if (!key) return { phase: 'needs-key', sha256Here: here, note: `no ANTHROPIC_API_KEY in the environment or .dev.vars: the registration stands (${reg.mcp_servers[0]!.url} as ${reg.mcp_servers[0]!.name}); the mount is the tenant's act with its key` }
   const client = new Anthropic({ apiKey: key })
   try {

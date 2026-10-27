@@ -6,14 +6,14 @@ import { join } from 'node:path'
 import { execSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import './teleport.ts'
-import { handle, cellOf as cell } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { TENANTS } from '../src/quantum/tenants.ts'
 import type { SourceRequest, SourceAnswer } from '../src/quantum/sources.ts'
 
 const ROOT = process.cwd()
 const offline = process.env.QPU_OFFLINE === '1' || process.argv.includes('--offline')
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'leads', arguments: { sources: args } } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const leads = toolCallerOf('leads'), call = (args: Record<string, unknown>) => leads({ sources: args })
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { name: string }
 const repository = (() => { try { return execSync('git remote get-url origin', { encoding: 'utf8' }).trim() } catch { return 'https://github.com/uuidna/qpu.git' } })()
 const context = { repository, owner: repository.replace(/\.git$/, '').split('/').slice(-2)[0]!, package: pkg.name, hosts: Object.keys(TENANTS) }
@@ -38,7 +38,7 @@ const main = async () => {
   const listed = (j.immutable?.artifacts ?? []) as { source: string; name: string; url: string; algorithm: string; claimed: string; bytes: number | null }[]
   const hashed = []
   for (const a of listed) { try { const res = await fetch(a.url, { headers: { 'user-agent': 'uuidna-qpu-sources (+https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(120000) }); const buf = Buffer.from(await res.arrayBuffer()); const algo = a.algorithm === 'sha512' ? 'sha512' : a.algorithm === 'sha1' ? 'sha1' : a.algorithm === 'sha256' ? 'sha256' : 'md5'; const digest = createHash(algo).update(buf); hashed.push({ ...a, bytes: buf.length, status: res.status, computed: a.source === 'npm' ? digest.digest('base64') : digest.digest('hex') }) } catch { hashed.push({ ...a, status: 0, computed: null }) } }
-  const integrity = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'seal', arguments: { text: 'artifacts', artifacts: hashed } } }) as any).result?.structuredContent
+  const integrity = toolCallerOf('seal')({ text: 'artifacts', artifacts: hashed })
   console.log(`sources: integrity: ${integrity?.says}`)
   const date = new Date().toISOString()
   writeFileSync(join(ROOT, 'docs', 'public', 'sources.json'), JSON.stringify({ license: LICENSE.attribution, date, ...j, integrity }, null, 1) + '\n')

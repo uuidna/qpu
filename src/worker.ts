@@ -409,7 +409,7 @@ export const catchAll = (request: Request, url: URL, env: Env): Response | Promi
   const decision = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement } } }) as { result?: { structuredContent: { verdict: string; evidence: string[]; lead: unknown }; _meta: { widget: string } } }
   const m = decision.result?.structuredContent
   // the fallback for anything: the cached assets the path's words select, computed in real time, verified, addressed (ETag by content) and billed
-  const composed = composeOf(url.pathname, { handle, examples: EXAMPLES, leads: LEADS }, url.origin, tenantOf(url.hostname))
+  const composed = composeOf(url.pathname, { handle, examples: EXAMPLES, leads: LEADS, call: (name, args = {}) => call(name, args).result?.structuredContent }, url.origin, tenantOf(url.hostname))
   if (composed.count > 0 && composed.address) {
     const decided = m ? { verdict: m.verdict, evidence: m.evidence, lead: m.lead } : null
     if (composed.ext && /^(tsx?|jsx?)$/.test(composed.ext) && composed.code) return involuted(request, composed.address, new Response(composed.code, { status: 200, headers: { 'content-type': 'text/typescript; charset=utf-8', 'x-qpu-assets': String(composed.count), 'x-qpu-verified': String(composed.verified), ...LICENSE_HEADERS } }))

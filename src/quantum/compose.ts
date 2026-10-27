@@ -18,7 +18,7 @@ const intersect = (a: Set<string>, b: Set<string>) => [...a].filter((x) => b.has
 
 /** Every cached asset the handler can compute, each at its address: the code of the full stack, the SDK, the registry items, the examples' blocks. */
 export const assetsOf = (ctx: Context, origin: string): Omit<Asset, 'score'>[] => {
-  const files = ((ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'configure', arguments: { kind: 'fullstack' } } }) as { result?: { structuredContent?: { config?: { files?: Record<string, string> } } } }).result?.structuredContent?.config?.files) ?? {}
+  const files = (ctx.call('configure', { kind: 'fullstack' })?.config?.files as Record<string, string> | undefined) ?? {}
   const sdk = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'sdk://qpu/lib' } }) as { result?: { contents?: { text?: string }[] } }).result?.contents?.[0]?.text ?? ''
   const textAsset = (kind: AssetKind, id: string, text: string, url: string): Omit<Asset, 'score'> => { const address = uuidOf(text); return { kind, id, url, address, bytes: text.length, verified: verifyOf(address, text).valid, stems: [...stemsOf(id.replace(/\.[a-z]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2'))], text } }
   const idAsset = (kind: AssetKind, id: string, url: string, stems: string, extra: Partial<Asset> = {}): Omit<Asset, 'score'> => { const address = uuidOf(`${kind}:${id}`); return { kind, id, url, address, bytes: 0, verified: verifyOf(address).valid, stems: [...stemsOf(stems)], ...extra } }

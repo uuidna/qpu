@@ -2,6 +2,8 @@
 // does, so the audit sees exactly what a client sees. A failed check is a lead with its evidence, never a ruling.
 
 import type { Example } from './examples.js'
+import type { Context } from './toolbox.js'
+import type { Lead } from './leads.js'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 import { THEOREMS, THEOREM_KEYS } from './theorems-index.js'
@@ -11,7 +13,6 @@ import { uuidOf } from './blocks.js'
 export type Check = { id: string; passed: boolean; evidence: string; /** milliseconds since the previous check: where the audit's time goes */ ms?: number }
 export type Audit = { /** the share this run replayed: index mod n = i (n = 1 is the whole audit) */ shard: { i: number; n: number }; /** example key → the integers its confirmed pass folded to: the next run decides by them */ integers: Record<string, string>; /** how many examples the integers decided and how many the text confirmed */ decided: { bySeal: number; byInteger: number; byText: number; sealed: boolean; theorem: string }; /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
 
-type Lead = { id: string; status: string; tool?: string; reason?: string }
 type ToolSpec = { name: string; description: string; inputSchema: { type?: string; required?: string[]; properties?: Record<string, unknown> } }
 
 
@@ -342,7 +343,7 @@ export const leaksOf = (texts: Readonly<Record<string, string>>, served: readonl
   return { texts: Object.keys(texts).length, findings, byKind, total: findings.reduce((n, f) => n + f.count, 0), served: findings.filter((f) => f.served).length, setAside, clean: findings.length === 0, leads, theorem: 'textbook_leaks_redacted', says: findings.length ? `${findings.reduce((n, f) => n + f.count, 0)} finding(s) in ${new Set(findings.map((f) => f.where)).size} text(s), ${findings.filter((f) => f.served).length} served publicly; values redacted, ${setAside} notation(s) set aside` : `${Object.keys(texts).length} text(s) clean; ${setAside} notation(s) set aside (block addresses, test domains)` }
 }
 
-export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}, code: string | null = null, shard: { i: number; n: number } | null = null): Audit => {
+export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: Context) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}, code: string | null = null, shard: { i: number; n: number } | null = null): Audit => {
   // split by the shard theorems: an example is replayed by the shard its index falls in (index mod n, textbook_shards_cover and
   // textbook_shards_disjoint), and the checks made once for the whole surface run in shard 0 alone
   const n = shard && Number.isInteger(shard.n) && shard.n > 0 ? shard.n : 1, si = shard && Number.isInteger(shard.i) ? ((shard.i % n) + n) % n : 0
@@ -410,7 +411,7 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     const named = new Map(toolboxes.flatMap((b) => b.tools.map((t) => [t.name, b.name] as const)))
     for (const t of tools) { const meta = (t as { _meta?: { toolbox?: string } })._meta; check(`toolbox:${t.name}`, typeof meta?.toolbox === 'string' && named.get(t.name) === meta.toolbox, meta?.toolbox ? `in ${meta.toolbox}` : 'names no toolbox') }
     for (const b of toolboxes) {
-      try { const r = b.skill.selftest({ handle, examples, leads }); for (const c of r.checks) { check(`selftest:${b.name}:${c.id}`, c.passed, c.evidence); if (c.ms !== undefined) checks.at(-1)!.ms = c.ms } check(`selftest:${b.name}`, r.passed, `${r.checks.filter((c) => c.passed).length} of ${r.checks.length} checks pass`) }
+      try { const r = b.skill.selftest({ handle, examples, leads, call: (name, args = {}) => call(name, args).result?.structuredContent }); for (const c of r.checks) { check(`selftest:${b.name}:${c.id}`, c.passed, c.evidence); if (c.ms !== undefined) checks.at(-1)!.ms = c.ms } check(`selftest:${b.name}`, r.passed, `${r.checks.filter((c) => c.passed).length} of ${r.checks.length} checks pass`) }
       catch (e) { check(`selftest:${b.name}`, false, `threw: ${(e as Error).message.slice(0, 160)}`) }
     }
   }

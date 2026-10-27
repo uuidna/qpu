@@ -2,7 +2,7 @@
 // verified here with the public key it carries and nothing else (Node's Web Crypto, FIPS 204): a host whose signature does
 // not verify is an error block like any other. Runs only online; the plan's shape is the tool's, this is a thin client.
 import { webcrypto } from 'node:crypto'
-import { handle } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/mcp.ts'
 import type { SignaturePlan } from '../src/quantum/toolboxes/crypto.ts'
 
 export type PqcHost = { host: string; status: number; ms: number; phase: string; keyed?: string; algorithm?: string; verified: boolean | null; note: string }
@@ -12,7 +12,7 @@ const bytesOfHex = (h: string): Uint8Array => new Uint8Array((h.match(/../g) ?? 
 const unb64 = (s: string): Uint8Array => new Uint8Array(Buffer.from(s, 'base64'))
 
 export const verifySignaturesAt = async (hosts: readonly string[]): Promise<PqcPass> => {
-  const here = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'seal', arguments: { text: 'qpu', sign: 'ML-DSA-65' } } }) as { result: { structuredContent: { sha256: string; signature: SignaturePlan } } }).result.structuredContent
+  const here = toolCallerOf('seal')({ text: 'qpu', sign: 'ML-DSA-65' }) as { sha256: string; signature: SignaturePlan }
   const out: PqcHost[] = []
   await Promise.all(hosts.map(async (host) => {
     const t0 = Date.now()

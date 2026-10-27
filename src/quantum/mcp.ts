@@ -927,7 +927,7 @@ const chatInner = (statement: string, c: { role?: string; call?: { tool: string;
   if (r.error) return { statement, role, by, verify, call: { name: call.name, arguments: args }, corrected, routed, handled: { error: r.error.message, remedy: remediesOf([r.error.message]), fallback: handleOrCorrect([r.error.message], false, 'handling'), court: courtOf({ gate: `chat ${call.name}`, rule: 'shape', evidence: { message: r.error.message } }) }, theorems, says: `${call.name} refused it; answered with its remedy and the court's case, nothing thrown` }
   return { statement, role, by, verify, call: { name: call.name, arguments: args }, corrected, routed, reply: r.result?.structuredContent ?? null, theorems, says: `${call.name} answered under the ${role} role (${by})${corrected.length ? `; ${corrected.length} value(s) corrected to what the role may choose` : ''}` }
 }
-const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS } }
+const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS }, call: (name, args = {}) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent?: unknown } }).result?.structuredContent }
 
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
 

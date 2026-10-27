@@ -4,7 +4,7 @@
 import { writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import type { E2eRequest, E2eAnswer } from '../src/quantum/e2e.ts'
 import { valueOf } from '../src/quantum/e2e.ts'
@@ -13,7 +13,7 @@ import { verifySignaturesAt } from './pqc-verify.ts'
 import { compareStylesheets, compareToolLists, compareCoverage } from './compare.ts'
 
 const ROOT = process.cwd()
-const call = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'e2e', arguments: args } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+const call = toolCallerOf('e2e')
 const main = async () => {
   const selftest = call({ selftest: true })
   console.log(`e2e selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)

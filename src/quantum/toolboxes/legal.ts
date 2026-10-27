@@ -398,7 +398,7 @@ export const LEGAL: Toolbox = {
       const audit = auditOf(claims, answers, sec)
       check('legal:audit-read', audit.findings.length === claims.length * 2 && audit.verdicts.UNVERIFIED === claims.length * 2 && audit.violations === 0 && audit.drift.length === 1 && audit.drift[0]!.startsWith('imprint') && audit.refusals === 1 && audit.securityDoors.find((d) => d.door === 'audit_security')?.failed === 0, `${audit.findings.length} findings, drift ${audit.drift.join('; ')}, refusals ${audit.refusals}`)
       check('legal:page', legalPageOf(audit, plan, '2026-01-01').includes('Drift against this tree: imprint'), 'the page renders the drift')
-      const run = (t: Texts) => ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'legal', arguments: { texts: t, answers: [] } } }).result.structuredContent as { id: string; sha256: string }
+      const run = (t: Texts) => ctx.call('legal', { texts: t, answers: [] }) as { id: string; sha256: string }
       const a1 = run(FIXTURE_TEXTS); const a2 = run(FIXTURE_TEXTS); const a3 = run({ ...FIXTURE_TEXTS, readme: FIXTURE_TEXTS.readme + '| Tampered | yes |\n' })
       check('legal:tamper-evident', a1.id === a2.id && a1.sha256 === a2.sha256 && a1.id !== a3.id && a1.sha256 !== a3.sha256, 'the same inputs give the same address; one changed line changes it')
       const comp = competeOf({ theorems: 12, kernel: 1000, hosts: 3, licence: 'CC-BY-NC-ND-4.0', published: false, pushed: false })

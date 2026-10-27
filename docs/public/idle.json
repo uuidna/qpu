@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T10:48:55.393Z",
+ "date": "2026-10-27T10:57:17.175Z",
  "input": {
   "doors": [
    {
@@ -990,7 +990,7 @@
    },
    {
     "name": "repository.via",
-    "bytes": 224,
+    "bytes": 223,
     "reached": false
    },
    {
@@ -1015,7 +1015,7 @@
    },
    {
     "name": "repository.workflow",
-    "bytes": 260,
+    "bytes": 265,
     "reached": true
    },
    {
@@ -2203,6 +2203,11 @@
    {
     "key": "textbook_cheap_gates",
     "bytes": 89,
+    "used": true
+   },
+   {
+    "key": "textbook_cl_described",
+    "bytes": 189,
     "used": true
    },
    {
@@ -3498,9 +3503,9 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 45736,
-   "used": 36367,
-   "idle": 9369,
+   "capacity": 45740,
+   "used": 36372,
+   "idle": 9368,
    "percentIdle": 20,
    "idleNames": [
     "clay.unit",
@@ -3621,8 +3626,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 22794,
-   "used": 22794,
+   "capacity": 22983,
+   "used": 22983,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

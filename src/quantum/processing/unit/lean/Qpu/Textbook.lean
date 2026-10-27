@@ -274,6 +274,8 @@ theorem textbook_hue_steps : 16 * 45 = 2 * 360 := by decide
 theorem textbook_cheap_gates (refusals : Nat) : refusals * 0 = 0 := Nat.mul_zero refusals
 /-- a commit message is a Google CL description exactly when all four hold: the first line at most 72 characters, its first word an imperative verb, a blank second line, a body; the commit-msg workflow refuses a message missing any one, and names each missing one (examples: repository-cl-described, repository-cl-one-sentence) -/
 theorem textbook_cl_described (a b c d : Bool) : (a && b && c && d) = true ↔ (a = true ∧ b = true ∧ c = true ∧ d = true) := by cases a <;> cases b <;> cases c <;> cases d <;> decide
+/-- a commit or push is pinned exactly when the actions its workflows use by a movable ref (u) and the workflows without least-privilege permissions (p) are both none: the two Scorecard checks Pinned-Dependencies and Token-Permissions, counted over the workflow files the hook reads (examples: repository-actions-tag-pinned, repository-actions-sha-pinned) -/
+theorem textbook_actions_pinned (u p : Nat) (hu : u = 0) (hp : p = 0) : u + p = 0 := by omega
 /-- five git hooks (pre-commit, commit-msg, pre-push, post-commit, prepare-commit-msg), the CI and the strict pre-deploy check are seven client MCP workflows of one door; the hook script walks the steps and decides nothing (examples: repository-workflow) -/
 theorem textbook_hook_workflows : 5 + 1 + 1 = 7 := by decide
 /-- when to commit: the flow is green — the steps of the receipt are green and skipped and no red, so adding the red (zero) changes nothing; one red step refuses the commit (examples: repository-refuse-commit) -/
