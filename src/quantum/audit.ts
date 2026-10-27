@@ -21,9 +21,9 @@ type ToolSpec = { name: string; description: string; inputSchema: { type?: strin
  *  texts the client supplies and converted to leads, never rulings. Findings with one content address fuse into one lead naming every source
  *  (a fusion reaction: f findings become f − d leads, textbook_entropy_fusion); the gravity of the tree is the fold of the sorted addresses,
  *  and the vacuum is the tree whose gravity is the fold of nothing. Pure: the purify step reads the files and signals the leads it opened. */
-export type EntropyKind = 'literal' | 'typed-path' | 'cap' | 'clock' | 'duplicate' | 'shape' | 'todo' | 'leak'
+type EntropyKind = 'literal' | 'typed-path' | 'cap' | 'clock' | 'duplicate' | 'shape' | 'todo' | 'leak'
 /** The shapes of code the cleaner recognises below the line: written out in many files, each one place should hold — the helper named beside it. */
-export const CODE_SHAPES: readonly { shape: string; re: RegExp; holder: string }[] = [
+const CODE_SHAPES: readonly { shape: string; re: RegExp; holder: string }[] = [
   { shape: 'the tools/call envelope', re: /handle\(\{ jsonrpc: '2\.0', id: \d+, method: 'tools\/call', params: \{ name/, holder: 'toolCallerOf(name) in mcp.ts' },
   { shape: 'a JSON file read and parsed', re: /JSON\.parse\(readFileSync\(/, holder: 'one reader of the published files, null when a file is missing' },
   { shape: 'the published folder made', re: /mkdirSync\(join\(ROOT, 'docs', 'public'\), \{ recursive: true \}\)/, holder: 'one writer of the published files that makes its folder' },
@@ -42,8 +42,8 @@ export const ENTROPY_KINDS: readonly { kind: EntropyKind; says: string; explore:
   { kind: 'todo', says: 'a note to self in the code: a lead written where no one reads it', explore: 'imagine', config: null },
   { kind: 'leak', says: 'an address in the tree: contacts are URLs, the account email is read at deploy', explore: 'configure', config: 'tenant' },
 ]
-export type EntropyFinding = { kind: EntropyKind; file: string; line: number; excerpt: string; address: string }
-export type EntropyLead = { id: string; kind: EntropyKind; source: string; statement: string; status: 'open'; tool: 'audit'; occurrences: number; address: string; explore: string; config: string | null }
+type EntropyFinding = { kind: EntropyKind; file: string; line: number; excerpt: string; address: string }
+type EntropyLead = { id: string; kind: EntropyKind; source: string; statement: string; status: 'open'; tool: 'audit'; occurrences: number; address: string; explore: string; config: string | null }
 export const LEAK_ALLOWED = new Set(['payloadcms.com', 'example.com', 'test.com', 'thirdparty.com', 'github.com', 'anthropic.com', 'localhost.test', 'local.test'])
 /** Paths and URLs each live in their one registry: a repo path is named by its role (FILE_ROLES / fileOf, in the Payload toolbox, and the
  *  generated files' table in the repository toolbox), an external URL in the sources, discovery and leads tables. A literal anywhere else in
@@ -63,8 +63,8 @@ export const GENERATOR_REMEDIES: readonly [RegExp, { cmd: string; args: string[]
 /** The roots whose hand-written source the literal rule reads. */
 export const LITERAL_ROOTS = ['src', 'scripts', 'site/src'] as const
 export const LITERAL_REGISTRIES = { url: ['src/quantum/discovery.ts', 'src/quantum/discovery-document.ts', 'src/quantum/sources.ts', 'src/quantum/leads.ts', 'src/quantum/payload-surface.ts'], path: ['src/quantum/toolboxes/payload.ts', 'src/quantum/toolboxes/repository.ts', 'src/quantum/audit.ts', 'src/quantum/machine.ts', 'scripts/next.ts'] } as const
-export const LITERAL_EXEMPT = /uuidna\.com\/licen[cs]e|creativecommons\.org\/licenses|contributor-covenant\.org|\(\+https:\/\/qpu\.uuidna\.com\)/
-export type Literal = { kind: 'url' | 'path'; file: string; line: number; literal: string; clean: boolean; why: string; tokens: number; antimatter: { needs: 'confirm'; says: string } | null }
+const LITERAL_EXEMPT = /uuidna\.com\/licen[cs]e|creativecommons\.org\/licenses|contributor-covenant\.org|\(\+https:\/\/qpu\.uuidna\.com\)/
+type Literal = { kind: 'url' | 'path'; file: string; line: number; literal: string; clean: boolean; why: string; tokens: number; antimatter: { needs: 'confirm'; says: string } | null }
 export const literalsOf = (files: Readonly<Record<string, string>>) => {
   const all: Literal[] = []
   for (const [file, text] of Object.entries(files)) {
@@ -89,7 +89,7 @@ export const literalsOf = (files: Readonly<Record<string, string>>) => {
  *  bytes, whose antimatter is a generator for the page from the tool, theorems and examples it describes; a new manual page blocks its commit.
  *  The dated audit dockets are records, exempt and stated as such. A write target built at run time from a variable is not seen by this read, so
  *  a page it writes is listed as manual until its generator names it: a lead, never a ruling. */
-export const DOCS_EXEMPT = /^docs\/audit\/\d{4}-\d{2}-\d{2}-[^/]+\.md$/
+const DOCS_EXEMPT = /^docs\/audit\/\d{4}-\d{2}-\d{2}-[^/]+\.md$/
 export const manualDocsOf = (pages: readonly { path: string; bytes: number }[], scripts: Readonly<Record<string, string>>) => {
   const writes = Object.entries(scripts).flatMap(([file, text]) => text.split('\n').filter((l) => /writeFileSync|appendFileSync|writePage|write\(/.test(l)).map((l) => ({ file, l })))
   const writerOf = (path: string) => { const name = path.replace(/^docs\//, '').replace(/\.md$/, ''), base = name.split('/').pop()!; return writes.find((w) => w.l.includes(`'${name}.md'`) || w.l.includes(`'${base}.md'`) || w.l.includes(`"${base}.md"`) || w.l.includes(`/${base}.md`))?.file ?? null }
@@ -142,8 +142,8 @@ export const entropyOf = (files: Readonly<Record<string, string>>) => {
  *  whatever a caller names) and every member on one side only is a lead to explore (the tool a client follows it with: a tool by match, an
  *  example by imagine, a file or a path by configure, anything else by imagine) and to config (the configure kind the caller says absorbs
  *  it). textbook_difference_leads: with a and b members sharing c, the leads are (a − c) + (b − c) = a + b − 2c — never a ruling, never more. */
-export type DifferenceLead = { id: string; member: string; side: string; statement: string; status: 'open'; explore: string; config: string | null; theorem: string }
-export const exploreOf = (member: string): string => (member.startsWith('tool:') ? 'match' : member.startsWith('example:') ? 'imagine' : /(^|\/)[\w.-]+\.(ts|tsx|vue|md|mts|jsonc?)(:\d+)?$|^[\w.-]+(\.[\w-]+)+$/.test(member) ? 'configure' : 'imagine')
+type DifferenceLead = { id: string; member: string; side: string; statement: string; status: 'open'; explore: string; config: string | null; theorem: string }
+const exploreOf = (member: string): string => (member.startsWith('tool:') ? 'match' : member.startsWith('example:') ? 'imagine' : /(^|\/)[\w.-]+\.(ts|tsx|vue|md|mts|jsonc?)(:\d+)?$|^[\w.-]+(\.[\w-]+)+$/.test(member) ? 'configure' : 'imagine')
 export const differencesOf = (a: { name: string; members: readonly string[] }, b: { name: string; members: readonly string[] }, policy: { config?: string | null; explore?: (member: string) => string } = {}) => {
   const A = new Set(a.members), B = new Set(b.members)
   const shared = [...A].filter((m) => B.has(m)).length
@@ -195,7 +195,7 @@ export const FALLBACK_ADAPTERS: readonly { when: string; from: string; to: strin
   { when: 'a Google door has no token', from: 'the Google MCP server', to: 'the public reference the verifier reads (developers.google.com) and the lead', involution: 'the token names the door again' },
   { when: 'the Payload MCP plugin is unreachable', from: '/api/mcp (the app)', to: '/mcp (the Worker): every pure tool, token free; the collections wait', involution: 'the app returns, the collections return' },
 ]
-export const involutionOf = (mode: 'correction' | 'handling'): 'correction' | 'handling' => (mode === 'correction' ? 'handling' : 'correction')
+const involutionOf = (mode: 'correction' | 'handling'): 'correction' | 'handling' => (mode === 'correction' ? 'handling' : 'correction')
 /** Correction or handling, swapped when the one in hand errors: at most two swaps (σ∘σ = id), so it terminates with what it has. */
 export const handleOrCorrect = (errors: readonly string[], majority: boolean, mode: 'correction' | 'handling' = 'correction') => {
   const steps: { mode: 'correction' | 'handling'; result: string }[] = []
@@ -211,8 +211,8 @@ export const handleOrCorrect = (errors: readonly string[], majority: boolean, mo
 /** The security audit from the client and the developer perspectives merged as one list: what a client of the MCP measures (headers, CORS,
  *  the token a write needs, the surface audit, the plugin\'s key) and what the developer measures (dependencies, leaks, access rules, hooks,
  *  signing, theorems), each check named by its perspective, the same count from either side (textbook_security_perspectives). */
-export type SecurityClient = { hosts: readonly { host: string; status: number; headers: Record<string, string>; optionsStatus?: number; writeWithoutToken?: number; audit?: { total: number; failed: number } }[]; payloadMcp?: { unauthenticated: number | null } }
-export type SecurityDeveloper = { vulnerabilities: Record<string, Record<string, number>>; leaks: number; envExampleValueless: boolean; access: { entries?: { update?: string }; tenants?: { write?: string } }; hooks: readonly string[]; signing: string; theorems: number; autoLogin?: boolean }
+type SecurityClient = { hosts: readonly { host: string; status: number; headers: Record<string, string>; optionsStatus?: number; writeWithoutToken?: number; audit?: { total: number; failed: number } }[]; payloadMcp?: { unauthenticated: number | null } }
+type SecurityDeveloper = { vulnerabilities: Record<string, Record<string, number>>; leaks: number; envExampleValueless: boolean; access: { entries?: { update?: string }; tenants?: { write?: string } }; hooks: readonly string[]; signing: string; theorems: number; autoLogin?: boolean }
 export const securityOf = (client: SecurityClient, developer: SecurityDeveloper) => {
   const checks: { id: string; perspective: 'client' | 'developer' | 'both'; passed: boolean; evidence: string; remedy?: string }[] = []
   const c = (id: string, perspective: 'client' | 'developer' | 'both', passed: boolean, evidence: string, remedy?: string) => checks.push({ id, perspective, passed, evidence, ...(remedy ? { remedy } : {}) })
@@ -271,8 +271,8 @@ export const addressedByTheoremOf = (leads: readonly { id: string; statement: st
 /** The usage bill, complete: the tokens a model carries, the bits a computation moved, their thermodynamic cost at a temperature by Landauer's
  *  limit (k_B T ln 2 a bit), the time the computation took, the coins the unit conserves; the joules as kilowatt-hours priced by the tariff a tenant
  *  names (the energy sector), every IoT reading a docket entry billed by this bill per device (textbook_billing_complete, textbook_kwh_joules). Pure. */
-export const BOLTZMANN_J_PER_K = 1.380649e-23
-export const JOULES_PER_KWH = 3600 * 1000
+const BOLTZMANN_J_PER_K = 1.380649e-23
+const JOULES_PER_KWH = 3600 * 1000
 export const billOf = (u: { tokens?: number; bits?: number; ms?: number; temperatureK?: number; coins?: number; saved?: { tokens?: number; bits?: number; ms?: number }; tariffEurPerKwh?: number | null; devices?: number }) => {
   const temperatureK = u.temperatureK ?? 300
   const landauerJoulesPerBit = BOLTZMANN_J_PER_K * temperatureK * Math.LN2
@@ -450,7 +450,7 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
  *  where it is and whether it blocks. Blocking: a link whose scheme is not http, https or a relative path (javascript:, data:, vbscript: and the
  *  rest), a qpu block naming a tool the catalogue does not serve, a block whose arguments carry a prototype key (__proto__, constructor,
  *  prototype). Noted: markup written inside text (rendered as text, never as markup), a node type the editor does not define, a leak by kind. */
-export const LEXICAL_NODE_TYPES = ['root', 'paragraph', 'heading', 'text', 'list', 'listitem', 'quote', 'link', 'autolink', 'block', 'inlineBlock', 'linebreak', 'horizontalrule', 'upload', 'relationship', 'tab', 'code', 'table', 'tablerow', 'tablecell'] as const
+const LEXICAL_NODE_TYPES = ['root', 'paragraph', 'heading', 'text', 'list', 'listitem', 'quote', 'link', 'autolink', 'block', 'inlineBlock', 'linebreak', 'horizontalrule', 'upload', 'relationship', 'tab', 'code', 'table', 'tablerow', 'tablecell'] as const
 export const lexicalSecurityOf = (doc: unknown, tools: readonly string[]) => {
   const findings: { at: string; kind: string; blocks: boolean; detail: string; uuid?: string }[] = []
   let nodes = 0, depth = 0

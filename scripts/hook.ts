@@ -112,7 +112,7 @@ if (d) {
   console.log(`hook ${name}: ${d.says}`)
   const held = new Set(((d as { rules?: { rule: string; holds: boolean | null }[] }).rules ?? []).filter((r) => r.holds === true).map((r) => r.rule))
   for (const b of standing.open ?? []) { const s = b.snapshot as { key?: string; workflow?: string; violated?: string[] } | undefined; if (!s?.key || s.workflow !== name || !(s.violated ?? []).length || !(s.violated ?? []).every((v) => held.has(v))) continue; const c = await clear(b.rule ?? name, `${(s.violated ?? []).join(', ')} hold again`, s as Record<string, unknown> & { key: string }, b.kind, b.tokens, (b.coin as { debit?: string } | null | undefined)?.debit?.replace(/^coins:/, () => '') ?? null); console.error(`hook ${name}: cleared ${s.key}: ${c.recorded}`) }
-  if (!d.allowed && d.court) {
+  if (!d.allowed && d.court && !process.argv.includes('--pre-use')) { // pre-use: decided before the act, so a refusal costs nothing
     const c = toolCallerOf('legal')({ court: d.court.arguments.court }) as { case?: string; remedy?: string } | undefined
     console.error(`hook ${name}: refused; the case ${c?.case ?? '?'}: ${c?.remedy ?? ''}`)
     // the refusal is a penalty: priced in work (the manual difference for automated, else the refusal's own text), sealed, booked, recorded in the RAID

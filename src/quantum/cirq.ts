@@ -479,7 +479,7 @@ const channelOn = (rho: Matrix, index: number, channel: Channel, n: number): Mat
 }
 
 /** The result of a density-matrix run: the density matrix, its diagonal (the basis probabilities), its trace and purity. */
-export type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: number[]; trace: number; purity: number }
+type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: number[]; trace: number; purity: number }
 
 /** Cirq's DensityMatrixSimulator: the state as a density matrix, so a noisy channel acts exactly rather than by sampling.
  *  A gate acts as U ρ U†; with a depolarizing probability p, each gate is followed by the depolarizing channel on each of

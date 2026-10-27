@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T15:13:04.842Z",
+ "date": "2026-10-27T15:48:15.423Z",
  "input": {
   "doors": [
    {
@@ -685,12 +685,17 @@
    },
    {
     "name": "mongo.op",
-    "bytes": 96,
+    "bytes": 108,
     "reached": true
    },
    {
     "name": "mongo.files",
     "bytes": 83,
+    "reached": true
+   },
+   {
+    "name": "mongo.copies",
+    "bytes": 89,
     "reached": true
    },
    {
@@ -2786,6 +2791,11 @@
     "used": true
    },
    {
+    "key": "textbook_route_waves",
+    "bytes": 72,
+    "used": true
+   },
+   {
     "key": "textbook_build_fresh",
     "bytes": 130,
     "used": true
@@ -2852,7 +2862,12 @@
    },
    {
     "key": "textbook_binding_zero_hex_path",
-    "bytes": 117,
+    "bytes": 115,
+    "used": true
+   },
+   {
+    "key": "textbook_raid_bit_zero_verify",
+    "bytes": 129,
     "used": true
    }
   ],
@@ -3653,8 +3668,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 47992,
-   "used": 38456,
+   "capacity": 48093,
+   "used": 38557,
    "idle": 9536,
    "percentIdle": 19,
    "idleNames": [
@@ -3777,8 +3792,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 26074,
-   "used": 26074,
+   "capacity": 26273,
+   "used": 26273,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

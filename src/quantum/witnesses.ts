@@ -5,7 +5,7 @@
 // credited to the author at zero price — a count of free work, never money. Pure.
 import { channelOf, uuidFromParts } from './blocks.js'
 
-export type Witness = { face: 'square' | 'triangle'; index: number; uuid: string; how: string }
+type Witness = { face: 'square' | 'triangle'; index: number; uuid: string; how: string }
 const rotate = (p: readonly number[], k: number) => p.map((_, i) => p[(i + k) % p.length]!)
 const sigma = (x: number) => 15 - x
 const partsOf = (uuid: string) => { const c = channelOf(uuid); return { handle: c.handle, program: c.program, tail: c.tail } }

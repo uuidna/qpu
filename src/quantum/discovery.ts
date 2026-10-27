@@ -24,7 +24,7 @@ export const CLOUDFLARE_MCP: readonly { host: string; url: string; about: string
 /** Google's own MCP servers, measured in the registry on 2026-10-26 (search google: 296 servers, 175 with remotes, these at <service>.googleapis.com/mcp):
  *  every one a token door (Google OAuth), each mapped to what it is for the Payload plugin — an adapter the environment names, a deploy target,
  *  a measure, a door the tenant opens; proposed and never called from the tree. */
-export const GOOGLE_MCP: readonly { host: string; url: string; about: string; maps: string }[] = [
+const GOOGLE_MCP: readonly { host: string; url: string; about: string; maps: string }[] = [
   { host: 'sqladmin.googleapis.com', url: 'https://sqladmin.googleapis.com/mcp', about: 'Cloud SQL: create, manage, query instances', maps: 'the adapters profile google: db-postgres over a Cloud SQL instance (DATABASE_URI); the docket over it' },
   { host: 'run.googleapis.com', url: 'https://run.googleapis.com/mcp', about: 'Cloud Run: deploy applications', maps: 'the deploy target of the app beside Workers and Vercel (the bindings provider google-cloud); the migration law keeps every host until the gate decodes it' },
   { host: 'firestore.googleapis.com', url: 'https://firestore.googleapis.com/mcp', about: 'Firestore resources', maps: 'no Payload database adapter exists for Firestore: a lead (the docket mirrored as entries by address would fit)' },
@@ -61,7 +61,7 @@ export const GOOGLE_DOCUMENTS = { list: 'https://www.googleapis.com/discovery/v1
 export const DRIVE_FILE_URL = 'https://drive.google.com/file/d/'
 export const GOOGLE_MCPS = ['io.github.googleapis/genai-toolbox', 'io.github.googleapis/mcp-toolbox', 'io.github.GoogleCloudPlatform/gemini-cloud-assist-mcp'] as const
 /** GitHub's hosted MCP server: answers 401 until a tenant brings its token (a fine-grained PAT or the OAuth flow); the read-only form beside it. */
-export const GITHUB_MCP: readonly { host: string; url: string; about: string }[] = [
+const GITHUB_MCP: readonly { host: string; url: string; about: string }[] = [
   { host: 'api.githubcopilot.com', url: 'https://api.githubcopilot.com/mcp/', about: 'GitHub: repositories, branches, tags, releases, issues, pull requests, actions of the tenant\'s account' },
 ]
 /** The Claude API (platform.claude.com/docs/en/api/overview, read 2026-10-25): one endpoint for messages, the MCP connector that mounts any MCP server into a request, the Models door; every door needs the tenant's key (x-api-key, anthropic-version). */
@@ -250,14 +250,14 @@ export const discoveryPageOf = (d: Discovery, date: string): string => ['---', '
 export const MCP_REGISTRY = 'https://registry.modelcontextprotocol.io/v0/servers'
 const REGISTRY_STOP = new Set(['the', 'a', 'an', 'of', 'to', 'in', 'on', 'for', 'and', 'or', 'is', 'are', 'it', 'its', 'with', 'by', 'as', 'at', 'from', 'this', 'that', 'every', 'any', 'all', 'no', 'not', 'be', 'into', 'over', 'through', 'here', 'there', 'one', 'two', 'per', 'via', 'tool', 'tools', 'lead', 'leads', 'qpu', 'tree', 'unit', 'served', 'open'])
 /** The words of a lead worth asking: its own, without the stop words, the longest first; each a registry search. */
-export const registryWordsOf = (lead: { id: string; statement: string; source?: string }, at = 3): string[] => {
+const registryWordsOf = (lead: { id: string; statement: string; source?: string }, at = 3): string[] => {
   const words = lead.statement.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).filter((w) => w.length > 3 && !REGISTRY_STOP.has(w) && !/^\d+$/.test(w))
   const counts = new Map<string, number>(); for (const w of words) counts.set(w, (counts.get(w) ?? 0) + 1)
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || b[0].length - a[0].length).slice(0, at).map(([w]) => w)
 }
-export type RegistryRequest = { id: string; lead: string; word: string; method: 'GET'; url: string; accept: string }
+type RegistryRequest = { id: string; lead: string; word: string; method: 'GET'; url: string; accept: string }
 export const registryRequestsOf = (lead: { id: string; statement: string; source?: string }, at = 3): RegistryRequest[] => registryWordsOf(lead, at).map((word) => ({ id: `registry:${lead.id}:${word}`, lead: lead.id, word, method: 'GET' as const, url: `${MCP_REGISTRY}?search=${encodeURIComponent(word)}&limit=10`, accept: 'application/json' }))
-export type RelatedServer = { name: string; description: string; remotes: string[]; word: string }
+type RelatedServer = { name: string; description: string; remotes: string[]; word: string }
 /** The registry's answers read into the servers related to the lead, and the one tools/list request per remote that extends each through qpu. */
 export const relatedOf = (lead: string, answers: readonly { id: string; word?: string; status: number; text: string }[]): { lead: string; asked: number; answered: number; servers: RelatedServer[]; extend: { id: string; server: string; method: 'POST'; url: string; accept: string; body: unknown }[] } => {
   const servers = new Map<string, RelatedServer>()
@@ -295,10 +295,10 @@ export const OPEN_MCP_BASELINES: readonly { id: string; url: string }[] = [
   { id: 'context7', url: 'https://mcp.context7.com/mcp' },
 ]
 /** A tools/list as a client pays for it: its bytes, the tokens it costs at four bytes a token, and the bytes per tool. */
-export const toolsListCostOf = (bytes: number, tools: number) => ({ bytes, tokens: Math.ceil(bytes / 4), tools, perTool: tools ? Math.round(bytes / tools) : null })
+const toolsListCostOf = (bytes: number, tools: number) => ({ bytes, tokens: Math.ceil(bytes / 4), tools, perTool: tools ? Math.round(bytes / tools) : null })
 /** The official MCP registry, latest version of each server, a page at a time (measured 2026-10-26: no total in the answer, a nextCursor while
  *  more remain), so its count is the client's walk of every page. */
-export const MCP_REGISTRY_SERVERS = 'https://registry.modelcontextprotocol.io/v0/servers?limit=100&version=latest'
+const MCP_REGISTRY_SERVERS = 'https://registry.modelcontextprotocol.io/v0/servers?limit=100&version=latest'
 export const coverageRequestOf = (cursor?: string | null) => ({ url: cursor ? `${MCP_REGISTRY_SERVERS}&cursor=${encodeURIComponent(cursor)}` : MCP_REGISTRY_SERVERS, accept: 'application/json', next: 'metadata.nextCursor, until none', counts: 'servers.length on every page' })
 /** How much of the registered MCP world the QPU reaches: its gates' MCP doors over the servers the registry lists, as measured, and the
  *  sets that follow — each covered door with each QPU tool at its harmonic default. A ratio over a measured total, never a claim about the internet. */

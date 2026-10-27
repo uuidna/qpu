@@ -8,7 +8,7 @@ import { cellOf as cell } from './widgets.js'
 
 export type WaveRequest = { verifier: string; url: string; check: string; leads: string[]; method?: 'GET' | 'POST'; body?: unknown; accept?: string }
 export type WaveResult = WaveRequest & { status: number; ok: boolean; ms: number; text?: string; note?: string; contracted?: 'yes' | 'no' | 'unknown' }
-export type WaveSummary = Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }>
+type WaveSummary = Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }>
 
 /** Every request, once per URL, with every lead it serves. */
 export const waveRequestsOf = (leads: readonly Lead[], treeFacts: readonly Fact[] = TREE_FACTS): WaveRequest[] => {
@@ -20,7 +20,7 @@ export const waveRequestsOf = (leads: readonly Lead[], treeFacts: readonly Fact[
 }
 
 /** What came back, in one line, by verifier. */
-export const noteOf = (verifier: string, text: string): string => {
+const noteOf = (verifier: string, text: string): string => {
   const title = () => { const m = /<title>([^<]*)<\/title>/i.exec(text); return m ? `title="${m[1]!.trim().slice(0, 100)}"` : `${text.length} chars` }
   try {
     if (verifier === 'oeis') { const j = JSON.parse(text); return `${Array.isArray(j) ? j.length : j.results?.length ?? j.count ?? 0} sequence results` }

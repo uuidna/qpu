@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T15:47:35.487Z",
+ "date": "2026-10-27T15:54:43.306Z",
  "literals": {
   "urls": 836,
   "distinctUrls": 449,
@@ -648,7 +648,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 930,
- "lines": 82601,
+ "lines": 82605,
  "findings": 879,
  "fused": 315,
  "reactions": 564,
@@ -754,7 +754,7 @@
   {
    "id": "entropy-cap-113d3f3c",
    "kind": "cap",
-   "source": "scripts/machine.ts:72, src/quantum/discovery.ts:270, src/quantum/examples.ts:240, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
+   "source": "scripts/machine.ts:75, src/quantum/discovery.ts:270, src/quantum/examples.ts:240, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200)",
    "status": "open",
    "tool": "audit",

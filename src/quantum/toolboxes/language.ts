@@ -7,7 +7,7 @@ import { LOCALES, TABLES, translateOf, numeralsOf } from '../i18n.js'
 import { flowWidget } from '../widgets.js'
 
 /** Every term the surface emits as a label a reader sees: statuses, verdicts, classes, phases and the headings of its pages. */
-export const SURFACE_TERMS: readonly string[] = ['served', 'partial', 'blocked', 'open', 'out of scope', 'impossible', 'unknown', 'refuted', 'trial', 'requests', 'results', 'discovery', 'plan', 'judged', 'verdict', 'receipt', 'evidence', 'lead', 'leads', 'tool', 'tools', 'toolbox', 'example', 'examples', 'seal', 'valid', 'invalid', 'channel', 'program', 'handle', 'tail', 'previous', 'next', 'page', 'statement', 'door', 'doors', 'address', 'content', 'licence', 'author', 'ready', 'not ready', 'passed', 'failed', 'checks', 'hosts', 'contract', 'phase', 'selftest']
+const SURFACE_TERMS: readonly string[] = ['served', 'partial', 'blocked', 'open', 'out of scope', 'impossible', 'unknown', 'refuted', 'trial', 'requests', 'results', 'discovery', 'plan', 'judged', 'verdict', 'receipt', 'evidence', 'lead', 'leads', 'tool', 'tools', 'toolbox', 'example', 'examples', 'seal', 'valid', 'invalid', 'channel', 'program', 'handle', 'tail', 'previous', 'next', 'page', 'statement', 'door', 'doors', 'address', 'content', 'licence', 'author', 'ready', 'not ready', 'passed', 'failed', 'checks', 'hosts', 'contract', 'phase', 'selftest']
 
 const wordsOf = (key: string): string => key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').toLowerCase()
 
