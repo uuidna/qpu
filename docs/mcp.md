@@ -2331,6 +2331,10 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
       "type": "object",
       "description": "{ pages, tenants, entries, keys }"
     },
+    "workspace": {
+      "type": "object",
+      "description": "{ discovery | kinds | form | forms | response | lexical | document | doc | file | answers }"
+    },
     "standardise": {
       "type": "object",
       "description": "a lexical document set in standard typography without a change of meaning"

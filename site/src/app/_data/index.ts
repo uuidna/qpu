@@ -142,32 +142,6 @@ export const fetchPosts = async (): Promise<Partial<Post>[]> => {
   return data.docs
 }
 
-export const fetchBlogPosts = async (): Promise<Partial<Post>[]> => {
-  const currentDate = new Date()
-  const payload = await payloadOf()
-
-  const data = await payload.find({
-    collection: 'posts',
-    depth: 1,
-    pagination: false,
-    select: {
-      slug: true,
-      authors: true,
-      image: true,
-      publishedOn: true,
-      title: true,
-    },
-    sort: '-publishedOn',
-    where: {
-      and: [
-        { publishedOn: { less_than_equal: currentDate } },
-        { _status: { equals: 'published' } },
-      ],
-    },
-  })
-  return data.docs
-}
-
 export const fetchArchive = async (slug: string, draft?: boolean): Promise<Partial<Category>> => {
   const payload = await payloadOf()
   const currentDate = new Date()
@@ -481,16 +455,6 @@ export const fetchFilters = async (): Promise<{
     regions: regions.docs,
     specialties: specialties.docs,
   }
-}
-
-export const fetchGetStarted = async (): Promise<GetStarted> => {
-  const payload = await payloadOf()
-  const data = await payload.findGlobal({
-    slug: 'get-started',
-    depth: 1,
-  })
-
-  return data
 }
 
 export const fetchForm = async (name: string): Promise<Form> => {

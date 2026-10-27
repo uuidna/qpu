@@ -92,29 +92,6 @@ export const fetchTeam = async (teamSlug?: string): Promise<Team> => {
   }
 }
 
-export const fetchTeamClient = async (slug: string): Promise<Team> => {
-  const { data } = await fetch(
-    `${process.env.NEXT_PUBLIC_CLOUD_CMS_URL}/api/graphql?teams=${slug}`,
-    {
-      body: JSON.stringify({
-        query: TEAM_QUERY,
-        variables: {
-          slug: slug.toLowerCase(),
-        },
-      }),
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    },
-  ).then((res) => {
-    return res.json()
-  })
-
-  return data?.Teams?.docs[0]
-}
-
 export const fetchTeamWithCustomer = async (slug?: string): Promise<TeamWithCustomer> => {
   const { cookies } = await import('next/headers')
   const token = (await cookies()).get(payloadCloudToken)?.value ?? null

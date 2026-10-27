@@ -5,6 +5,7 @@
 import type { Verifier } from './verifiers.js'
 import { STANDARDS, detectStandard } from './standards.js'
 import { stem } from './match.js'
+import { measuredOf } from './theme.js'
 
 export type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract' | 'sitemap'
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
@@ -54,6 +55,10 @@ export const GOOGLE_ENDPOINTS: Readonly<Record<string, { url: string; httpMethod
   'analytics.collect': { url: 'https://www.google-analytics.com/mp/collect', httpMethod: 'POST', secret: { param: 'api_secret', named: 'API_SECRET' } },
 }
 export const GOOGLE_DISCOVERY = { rest: 'https://www.googleapis.com/discovery/v1/apis/{api}/{version}/rest', token: 'https://oauth2.googleapis.com/token' } as const
+/** Google's Discovery documents the workspace door reads, fetched by this door as contracts and kept in its cache: the preferred list (no Sites API in it), Forms v1, Docs v1, Drive v3 */
+export const GOOGLE_DOCUMENTS = { list: 'https://www.googleapis.com/discovery/v1/apis?preferred=true', forms: 'https://forms.googleapis.com/$discovery/rest?version=v1', docs: 'https://docs.googleapis.com/$discovery/rest?version=v1', drive: 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest' } as const
+/** A Drive file's address by id: /view to open it, /preview to embed it */
+export const DRIVE_FILE_URL = 'https://drive.google.com/file/d/'
 export const GOOGLE_MCPS = ['io.github.googleapis/genai-toolbox', 'io.github.googleapis/mcp-toolbox', 'io.github.GoogleCloudPlatform/gemini-cloud-assist-mcp'] as const
 /** GitHub's hosted MCP server: answers 401 until a tenant brings its token (a fine-grained PAT or the OAuth flow); the read-only form beside it. */
 export const GITHUB_MCP: readonly { host: string; url: string; about: string }[] = [
@@ -112,8 +117,7 @@ export const discoveryRequestsOf = (mcpHosts: readonly string[], verifiers: read
     out.push({ id: idOf('catalogue', host), method: 'POST', url, body: rpcBody('tools/call', { name: 'list_tools', arguments: {} }), purpose: 'catalogue', host, headers })
     out.push({ id: idOf('well-known', host), method: 'GET', url: `https://${host}/.well-known/qpu.json`, purpose: 'well-known', host })
   }
-  for (const v of verifiers) if (v.contract) out.push({ id: idOf('api-contract', new URL(v.contract).host, v.id), method: 'GET', url: v.contract, purpose: 'api-contract', host: new URL(v.contract).host, name: v.id })
-  for (const st of STANDARDS) out.push({ id: idOf('api-contract', new URL(st.contract).host, st.id), method: 'GET', url: st.contract, purpose: 'api-contract', host: new URL(st.contract).host, name: st.id })
+  for (const [name, url] of [...verifiers.flatMap((v) => (v.contract ? [[v.id, v.contract]] : [])), ...STANDARDS.map((s) => [s.id, s.contract]), ...Object.entries(GOOGLE_DOCUMENTS).map(([k, u]) => [`google-${k}`, u])]) { const host = new URL(url!).host; out.push({ id: idOf('api-contract', host, name), method: 'GET', url: url!, purpose: 'api-contract', host, name }) }
   out.push({ id: idOf('sitemap', SITEMAP.host), method: 'GET', url: SITEMAP.url, purpose: 'sitemap', host: SITEMAP.host })
   return out
 }
@@ -308,7 +312,7 @@ export const toolsListCompareOf = (qpu: { bytes: number; tools: number }, answer
   const q = toolsListCostOf(qpu.bytes, qpu.tools)
   const ratio = (a: number | null, b: number | null) => (a !== null && b ? Math.round((a / b) * 100) / 100 : null)
   const rows = OPEN_MCP_BASELINES.map((s) => { const a = answers.find((x) => x.id === s.id); if (!a || a.status !== 200 || !a.tools) return { id: s.id, url: s.url, missing: a ? `HTTP ${a.status}` : 'not asked' }; const c = toolsListCostOf(a.bytes, a.tools); return { id: s.id, url: s.url, ...c, ratio: ratio(c.bytes, q.bytes), ratioPerTool: ratio(c.perTool, q.perTool) } })
-  const measured = rows.filter((r): r is Extract<typeof r, { ratio: number | null }> => 'ratio' in r)
+  const measured = measuredOf(rows)
   // the drop from the full list to the short one the QPU serves by default: what a client no longer pays for
   const drop = full ? { full: toolsListCostOf(full.bytes, qpu.tools), short: q, savedBytes: full.bytes - qpu.bytes, savedTokens: Math.ceil(full.bytes / 4) - q.tokens, ratio: ratio(full.bytes, qpu.bytes) } : null
   return { qpu: q, drop, rows, measured: measured.length, says: `${drop ? `the full tools/list is ${drop.full.bytes} bytes and the short one served by default ${q.bytes} (${drop.ratio}× smaller, ${drop.savedTokens} tokens saved); ` : ''}the QPU's tools/list is ${q.bytes} bytes (about ${q.tokens} tokens) for ${q.tools} tools, ${q.perTool} bytes a tool; ${measured.map((r) => `${r.id} ${r.bytes} bytes for ${r.tools} (${r.perTool} a tool, ${r.ratioPerTool}× the QPU's per tool)`).join('; ') || 'no open server measured'}` }

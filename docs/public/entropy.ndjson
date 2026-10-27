@@ -1248,3 +1248,14 @@
 {"date":"2026-10-27T12:53:16.579Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:138","explore":"match","config":"actions"}
 {"date":"2026-10-27T12:53:16.579Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:55","explore":"match","config":"actions"}
 {"date":"2026-10-27T12:53:16.579Z","address":"f2122e8d-8d78-24f1-9cf5-f23091174a18","id":"entropy-cap-f2122e8d","kind":"cap","occurrences":1,"source":"src/quantum/toolboxes/billing.ts:179","explore":"match","config":"actions"}
+{"date":"2026-10-27T12:58:47.133Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:138","explore":"match","config":"actions"}
+{"date":"2026-10-27T12:58:47.133Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:55","explore":"match","config":"actions"}
+{"date":"2026-10-27T12:58:47.133Z","address":"f2122e8d-8d78-24f1-9cf5-f23091174a18","id":"entropy-cap-f2122e8d","kind":"cap","occurrences":1,"source":"src/quantum/toolboxes/billing.ts:179","explore":"match","config":"actions"}
+{"date":"2026-10-27T12:58:47.133Z","address":"ac7ce832-13bf-5138-a360-0c0ee68671b5","settled":true}
+{"date":"2026-10-27T12:58:47.133Z","address":"beab4cd6-bb00-44bf-9812-f16961a0cb6c","settled":true}
+{"date":"2026-10-27T12:58:47.133Z","address":"9716038f-34d1-21b5-8974-7e27634c1fe4","settled":true}
+{"date":"2026-10-27T12:58:47.133Z","address":"b13d599f-8f9a-6266-a628-50512980d7d5","settled":true}
+{"date":"2026-10-27T12:58:47.133Z","address":"84bf6127-aabc-3226-87ab-aec5955c700a","settled":true}
+{"date":"2026-10-27T12:58:47.133Z","address":"147553d4-af4c-42a7-b92a-842767b784f6","settled":true}
+{"date":"2026-10-27T12:58:47.133Z","address":"757c7871-183c-47ad-8c61-443dd6c1edfa","settled":true}
+{"date":"2026-10-27T12:58:47.133Z","address":"831a2cd9-0a82-8e52-9cf2-632d8f0f5bb4","settled":true}

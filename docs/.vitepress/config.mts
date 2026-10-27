@@ -98,6 +98,10 @@ export default defineConfig({
         "link": "/attest"
       },
       {
+        "text": "Google Workspace",
+        "link": "/workspace"
+      },
+      {
         "text": "Cirq",
         "link": "/cirq"
       },
@@ -269,6 +273,10 @@ export default defineConfig({
           {
             "text": "Attest",
             "link": "/attest"
+          },
+          {
+            "text": "Google Workspace",
+            "link": "/workspace"
           },
           {
             "text": "Cirq",

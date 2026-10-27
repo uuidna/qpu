@@ -181,11 +181,13 @@ export const CSS_FRAMEWORKS: readonly { id: string; name: string; url: string }[
   { id: 'bootstrap', name: 'Bootstrap 5.3.3', url: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' },
   { id: 'bulma', name: 'Bulma 1.0.2', url: 'https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css' },
 ]
+/** The rows a client measured, a ratio each: one reader for every comparison by size (the stylesheet, the tools/list). */
+export const measuredOf = <R extends object>(rows: readonly R[]) => rows.filter((r): r is Extract<R, { ratio: number | null }> => 'ratio' in r)
 /** The comparison by size, as the client measured it: each framework's bytes raw and gzipped over the QPU stylesheet's, a ratio above one
  *  meaning the framework is that many times larger; a file not fetched is named, never estimated. Size only: render time is not measured here. */
 export const cssCompareOf = (qpu: { bytes: number; gzip: number }, answers: readonly { id: string; status: number; bytes: number; gzip: number }[]) => {
   const ratio = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) / 100 : null)
   const rows = CSS_FRAMEWORKS.map((f) => { const a = answers.find((x) => x.id === f.id); return a && a.status === 200 && a.bytes > 0 ? { id: f.id, name: f.name, url: f.url, bytes: a.bytes, gzip: a.gzip, ratio: ratio(a.bytes, qpu.bytes), ratioGzip: ratio(a.gzip, qpu.gzip) } : { id: f.id, name: f.name, url: f.url, missing: a ? `HTTP ${a.status}` : 'not fetched' } })
-  const measured = rows.filter((r): r is Extract<typeof r, { ratio: number | null }> => 'ratio' in r)
+  const measured = measuredOf(rows)
   return { qpu, rows, measured: measured.length, says: measured.length ? `the QPU stylesheet is ${qpu.bytes} bytes (${qpu.gzip} gzipped); ${measured.map((r) => `${r.name} ${r.ratio}× raw, ${r.ratioGzip}× gzipped`).join('; ')}: size only, render time not measured` : 'no framework fetched' }
 }
