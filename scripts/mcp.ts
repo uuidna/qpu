@@ -17,8 +17,8 @@ export const askGoogle = async (url: string, httpMethod = 'GET', body: unknown =
   const a = (m.docsOf((await m.call('findEntries', { where: JSON.stringify({ from: { equals: 'qpu-google-call' }, 'body.request': { equals: uuidOf(JSON.stringify(asked)) } }), limit: 1 })).text ?? '')[0] as { body?: { status?: number; answer?: string } } | undefined)?.body
   return { status: a?.status ?? 0, text: a?.answer ?? `the qpu-google-call job did not answer (${made.error ?? 'no answer entry'})` }
 }
-/** A GET with the named user agent and a timeout: the one fetcher of the public sources, a Google host through askGoogle */
-export const getOf = (url: string, accept = '*/*', ms = 20000) => (GOOGLE_HOST.test(new URL(url).hostname) ? askGoogle(url).then((a) => new Response(a.text, { status: a.status || 503 })) : fetch(url, { headers: { accept, 'user-agent': UA }, signal: AbortSignal.timeout(ms) }))
+/** A request with the named user agent and a timeout: the one fetcher of the public sources, a Google host through askGoogle */
+export const getOf = (url: string, accept = '*/*', ms = 20000, init: { method?: string; body?: unknown; agent?: string; headers?: Record<string, string> } = {}) => (GOOGLE_HOST.test(new URL(url).hostname) ? askGoogle(url, init.method, init.body ?? null).then((a) => new Response(a.text, { status: a.status || 503 })) : fetch(url, { method: init.method, headers: { accept, 'user-agent': init.agent ?? UA, ...(init.body ? { 'content-type': 'application/json' } : {}), ...init.headers }, body: init.body ? JSON.stringify(init.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(ms) }))
 type Reply = { status: number; bytes: number; result?: any; error?: string }
 /** A session with one MCP server: every request answered as its status, the bytes of its result, the result or the error. */
 export const sessionOf = (url: string, key?: string) => {

@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T12:25:10.039Z",
+ "date": "2026-10-27T12:29:40.716Z",
  "input": {
   "doors": [
    {
@@ -16,7 +16,7 @@
    {
     "name": "clay.unit",
     "bytes": 130,
-    "reached": false
+    "reached": true
    },
    {
     "name": "match.statement",
@@ -284,6 +284,11 @@
     "reached": false
    },
    {
+    "name": "leads.sitemap",
+    "bytes": 241,
+    "reached": true
+   },
+   {
     "name": "leads.client",
     "bytes": 295,
     "reached": true
@@ -301,6 +306,16 @@
    {
     "name": "leads.carry",
     "bytes": 198,
+    "reached": true
+   },
+   {
+    "name": "leads.session",
+    "bytes": 522,
+    "reached": true
+   },
+   {
+    "name": "leads.combinations",
+    "bytes": 442,
     "reached": true
    },
    {
@@ -1836,6 +1851,11 @@
     "used": true
    },
    {
+    "key": "textbook_memo_identity",
+    "bytes": 225,
+    "used": true
+   },
+   {
     "key": "textbook_uuid_core",
     "bytes": 62,
     "used": true
@@ -2739,6 +2759,26 @@
     "key": "textbook_authorship_tracked",
     "bytes": 66,
     "used": true
+   },
+   {
+    "key": "textbook_lead_cells",
+    "bytes": 319,
+    "used": true
+   },
+   {
+    "key": "textbook_session_partition",
+    "bytes": 106,
+    "used": true
+   },
+   {
+    "key": "textbook_sitemap_leads",
+    "bytes": 118,
+    "used": true
+   },
+   {
+    "key": "textbook_rosetta_conventions",
+    "bytes": 268,
+    "used": true
    }
   ],
   "qubits": {
@@ -3538,12 +3578,11 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 45858,
-   "used": 36490,
-   "idle": 9368,
-   "percentIdle": 20,
+   "capacity": 47063,
+   "used": 37825,
+   "idle": 9238,
+   "percentIdle": 19,
    "idleNames": [
-    "clay.unit",
     "verify.prev",
     "verify.self",
     "verify.next",
@@ -3661,8 +3700,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 23616,
-   "used": 23616,
+   "capacity": 24652,
+   "used": 24652,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

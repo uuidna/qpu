@@ -16,11 +16,9 @@ mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const UA = 'uuidna-qpu-discover (https://qpu.uuidna.com)'
 const call = toolCallerOf('discover')
 import { setTimeout as sleep } from 'node:timers/promises'
-import { readJson, askGoogle, mcpOf } from './mcp.ts'
-import { GOOGLE_HOST } from '../src/quantum/discovery.ts'
+import { readJson, getOf, mcpOf } from './mcp.ts'
 const fetchOne = async (r: Request): Promise<Answer> => {
-  if (GOOGLE_HOST.test(r.host)) return { ...r, type: '', ...(await askGoogle(r.url, r.method, r.body ?? null)) }
-  try { const res = await fetch(r.url, { method: r.method, headers: { accept: 'application/json, text/event-stream, application/yaml, text/xml, */*', 'user-agent': UA, ...(r.body ? { 'content-type': 'application/json' } : {}), ...(r.headers ?? {}) }, body: r.body ? JSON.stringify(r.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(30000) }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
+  try { const res = await getOf(r.url, 'application/json, text/event-stream, application/yaml, text/xml, */*', 30000, { method: r.method, body: r.body, agent: UA, headers: r.headers }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
   catch (e) { return { ...r, status: 0, type: '', text: `fetch failed: ${(e as Error).message}` } }
 }
 const main = async () => {
