@@ -36,6 +36,9 @@ export const MACHINE_ACTIONS: readonly MachineAction[] = [
   { id: 'tag', kind: 'write', cmd: 'git', args: ['tag'], says: 'a local archive tag at a commit, never pushed by this action: only on the user\'s confirmation', needs: 'confirm' },
   { id: 'port', kind: 'write', cmd: 'cp', args: [], says: 'one file of a worktree copied onto the same path in main, to be committed through the hook: only on the user\'s confirmation', needs: 'confirm' },
   { id: 'now', kind: 'read', cmd: 'node', args: ['--import', 'tsx', 'scripts/machine.ts', 'now'], says: 'the status on request: what runs, for how long, its ETA, the last events, the open questions and what is held' },
+  { id: 'site-audit', kind: 'read', cmd: 'pnpm', args: ['--dir', 'site', 'audit'], says: 'the app\'s dependency advisories, by severity' },
+  { id: 'site-install', kind: 'write', cmd: 'pnpm', args: ['--dir', 'site', 'install'], says: 'the app\'s dependencies installed as its package.json and overrides name them: only on the user\'s confirmation', needs: 'confirm' },
+  { id: 'site-build', kind: 'write', cmd: 'pnpm', args: ['--dir', 'site', 'exec', 'next', 'build', '--webpack'], says: 'the app built and type-checked by next build, no database migrated: only on the user\'s confirmation', needs: 'confirm' },
 ]
 
 /** The parameters of the actions that discard or move work, checked before anything runs. */

@@ -8,6 +8,8 @@ import { join } from 'node:path'
 import { balancerLoad, balancerSnapshot } from '../src/quantum/mcp.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
+// the folder every step publishes into, made once: every step imports this module first
+mkdirSync(join(process.cwd(), 'docs', 'public'), { recursive: true })
 const DIR = join(process.cwd(), '.qpu', 'blocks')
 const started = Date.now()
 // a block is a function of its arguments AND of the code that computed it: every file of blocks carries the code's fingerprint (the

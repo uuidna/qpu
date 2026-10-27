@@ -1,6 +1,6 @@
 // The client of the wave tool: it asks for the requests, fetches each once (a pool in flight, paced per host, progressive
 // writes), hands the bodies back with the contracts discovery found, and writes what the tool returns. Selftest first.
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs'
+import { writeFileSync, existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
@@ -58,7 +58,6 @@ const main = async () => {
   if (isShard) { const mine = results.filter((r) => !have.has(keyOf(r))); leaveShard('verify', mine); console.log(`verify: ${shardLabel()} fetched ${mine.length}, ${remaining} remain`); return }
   const read = call({ results, contracts })
   const date = new Date().toISOString()
-  mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
   writeFileSync(join(ROOT, 'docs', 'public', 'verification.json'), JSON.stringify({ license: LICENSE.attribution, date, selftest: { passed: selftest.passed }, partial: remaining > 0, remaining, leads: plan.leads, requests: all.length, done: read.results.length, summary: read.summary, results: read.results }, null, 1) + '\n')
   writeFileSync(join(ROOT, 'docs', 'verification.md'), read.page)
   console.log(`verify: ${read.results.length} of ${all.length} fetched, ${read.reachable} reachable${remaining ? `; ${remaining} remain for the next quantum` : '; the wave is whole'}; ${JSON.stringify(read.summary)}`)

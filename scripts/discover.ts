@@ -61,7 +61,6 @@ const main = async () => {
     phase = call({ answers })
   }
   const date = new Date().toISOString()
-  mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
   writeFileSync(join(ROOT, 'docs', 'public', 'discovery.json'), JSON.stringify({ license: LICENSE.attribution, date, partial: remaining > 0, remaining, fetched, reused, selftest: { passed: selftest.passed, checks: selftest.checks }, ...phase.discovery }, null, 1) + '\n')
   writeFileSync(join(ROOT, 'docs', 'discovery.md'), phase.page)
   // leads first: every hand-written lead still open asks the registry for related MCPs (cached a day, within what is left of the quantum), then each remote's tools/list is read so the related doors are known through qpu

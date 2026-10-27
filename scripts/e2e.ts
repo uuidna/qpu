@@ -1,7 +1,7 @@
 // The client of the e2e tool: asks for the requests (every dashboard cell and example on every host), fetches them in a
 // pool within the quantum, hands the answers back and writes what the tool decodes: the page, the JSON, and the error
 // blocks appended to the UUID stream. Selftest first. Hosts from QPU_E2E_HOSTS (comma separated), else the tool's default.
-import { writeFileSync, mkdirSync, appendFileSync } from 'node:fs'
+import { writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle } from '../src/quantum/mcp.ts'
@@ -46,7 +46,6 @@ const main = async () => {
   const [claudeMount, pqc, css, toolsList, coverage] = await measured
   for (const [what, says] of Object.entries({ 'mount through Claude': `${claudeMount.phase} — ${claudeMount.note}`, 'post-quantum signatures': pqc.note, stylesheet: css.says, 'tools/list': toolsList.says, coverage: coverage.says })) console.log(`e2e: ${what}: ${says}`)
   const date = new Date().toISOString()
-  mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
   const { page, decoded, ...rest } = r
   writeFileSync(join(ROOT, 'docs', 'public', 'e2e.json'), JSON.stringify({ license: LICENSE.attribution, date, ms: Date.now() - started, partial: remaining > 0, remaining, selftest: { passed: selftest.passed }, claudeMount, pqc, css, toolsList, coverage, ...rest, decoded: decoded.map((d: { copies: unknown; errors: unknown; [k: string]: unknown }) => ({ ...d, copies: undefined, errors: undefined })) }, null, 1) + '\n')
   const pqcLine = 'hosts' in pqc ? `\n\n## Post-quantum signatures\n\nEvery host asked \`seal { text: 'qpu', sign: 'ML-DSA-65' }\`; the signature each answered is verified here with the public key it carries, no secret: ${pqc.note}.\n\n| Host | Phase | Key | Verified | Note |\n|---|---|---|---|---|\n${pqc.hosts.map((h) => `| ${h.host} | ${h.phase} | ${h.keyed ?? '—'} | ${h.verified === null ? '—' : h.verified ? 'yes' : 'no'} | ${h.note.replace(/\|/g, '\\|')} |`).join('\n')}\n` : ''
