@@ -1,11 +1,702 @@
 {
- "date": "2026-10-27T00:04:35.685Z",
- "files": 948,
- "lines": 85245,
- "findings": 1091,
- "fused": 336,
- "reactions": 755,
- "gravity": "06436633-baf9-2f44-9b4e-f0f934654e40",
+ "date": "2026-10-27T00:38:06.188Z",
+ "literals": {
+  "urls": 881,
+  "distinctUrls": 445,
+  "paths": 183,
+  "outside": 647,
+  "tokens": 6623,
+  "byFile": [
+   [
+    "src/quantum/toolboxes/payload.ts",
+    53
+   ],
+   [
+    "src/quantum/toolboxes/legal.ts",
+    44
+   ],
+   [
+    "src/quantum/standards.ts",
+    37
+   ],
+   [
+    "src/quantum/verifiers.ts",
+    33
+   ],
+   [
+    "scripts/next.ts",
+    28
+   ],
+   [
+    "src/quantum/toolboxes/repository.ts",
+    25
+   ],
+   [
+    "site/src/app/(frontend)/(pages)/privacy/page_client.tsx",
+    24
+   ],
+   [
+    "site/src/app/(frontend)/(pages)/cookie/client_page.tsx",
+    21
+   ],
+   [
+    "src/quantum/institutions.ts",
+    21
+   ],
+   [
+    "src/quantum/leads.ts",
+    18
+   ],
+   [
+    "src/quantum/toolboxes/billing.ts",
+    18
+   ],
+   [
+    "scripts/gen-docs.ts",
+    17
+   ],
+   [
+    "src/quantum/toolboxes/crypto.ts",
+    17
+   ],
+   [
+    "scripts/hook.ts",
+    15
+   ],
+   [
+    "src/quantum/port.ts",
+    13
+   ],
+   [
+    "src/quantum/toolboxes/extension.ts",
+    13
+   ],
+   [
+    "src/quantum/selftest.ts",
+    12
+   ],
+   [
+    "site/src/components/SocialIcon/index.tsx",
+    10
+   ],
+   [
+    "scripts/legal.ts",
+    9
+   ],
+   [
+    "src/quantum/mcp.ts",
+    9
+   ],
+   [
+    "src/quantum/theme.ts",
+    8
+   ],
+   [
+    "src/quantum/toolboxes/flow.ts",
+    6
+   ],
+   [
+    "site/src/app/(frontend)/layout.tsx",
+    5
+   ],
+   [
+    "src/quantum/toolboxes/standards.ts",
+    5
+   ],
+   [
+    "scripts/metrics.ts",
+    4
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/(overview)/InfraOnline/index.tsx",
+    4
+   ],
+   [
+    "site/src/components/Footer/index.tsx",
+    4
+   ],
+   [
+    "src/quantum/blocks.ts",
+    4
+   ],
+   [
+    "scripts/audit.ts",
+    3
+   ],
+   [
+    "scripts/compete.ts",
+    3
+   ],
+   [
+    "scripts/configs.ts",
+    3
+   ],
+   [
+    "scripts/stdio.ts",
+    3
+   ],
+   [
+    "scripts/textbook.ts",
+    3
+   ],
+   [
+    "site/src/app/(frontend)/(pages)/community-help/(posts)/discord/[slug]/client_page.tsx",
+    3
+   ],
+   [
+    "site/src/globals/Qpu.ts",
+    3
+   ],
+   [
+    "scripts/readiness.ts",
+    2
+   ],
+   [
+    "scripts/security.ts",
+    2
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/(overview)/InfraOffline/index.tsx",
+    2
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/settings/email/page_client.tsx",
+    2
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/_actions/revalidateCache.ts",
+    2
+   ],
+   [
+    "site/src/app/(frontend)/(pages)/styleguide/blocks/content-grid/client_page.tsx",
+    2
+   ],
+   [
+    "site/src/collections/Entries.ts",
+    2
+   ],
+   [
+    "site/src/components/Analytics/GoogleTagManager/index.tsx",
+    2
+   ],
+   [
+    "site/src/components/AuthorTag/index.tsx",
+    2
+   ],
+   [
+    "site/src/components/DiscordGitCTA/index.tsx",
+    2
+   ],
+   [
+    "site/src/components/DiscordGitComments/index.tsx",
+    2
+   ],
+   [
+    "site/src/components/blocks/ComparisonTable/Icons/index.tsx",
+    2
+   ],
+   [
+    "site/src/scripts/fetchGitHub.ts",
+    2
+   ],
+   [
+    "site/src/utilities/use-popup-window.ts",
+    2
+   ],
+   [
+    "scripts/claude-mount.ts",
+    1
+   ],
+   [
+    "scripts/currency.ts",
+    1
+   ],
+   [
+    "scripts/discover.ts",
+    1
+   ],
+   [
+    "scripts/e2e.ts",
+    1
+   ],
+   [
+    "scripts/mcp.ts",
+    1
+   ],
+   [
+    "scripts/pqc-verify.ts",
+    1
+   ],
+   [
+    "scripts/repository.ts",
+    1
+   ],
+   [
+    "scripts/sources.ts",
+    1
+   ],
+   [
+    "scripts/verify.ts",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud-terms/page.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/file-storage/page_client.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/settings/(build-settings)/page_client.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/settings/domains/ManageDomain/index.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/settings/domains/page_client.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/settings/email/ManageEmailDomain/index.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/_components/InstallationButton/index.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/cloud/_components/InstallationSelector/index.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/new/(checkout)/Checkout.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/new/authorize/page_client.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/(cloud)/verify/page.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/api/og/route.tsx",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/api/star-count/route.ts",
+    1
+   ],
+   [
+    "site/src/app/(frontend)/gh/page.tsx",
+    1
+   ],
+   [
+    "site/src/blocks/Qpu/config.ts",
+    1
+   ],
+   [
+    "site/src/collections/Docs/BranchButton/fetchAllBranches.ts",
+    1
+   ],
+   [
+    "site/src/components/Analytics/GoogleAnalytics/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/BackgroundGradient/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/BigThree/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/ContributionTable/api.ts",
+    1
+   ],
+   [
+    "site/src/components/DiscordUsersPill/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/Feedback/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/Header/DesktopNav/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/Header/MobileNav/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/Hero/Livestream/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/NewProject/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/Post/AuthorsList/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/RenderParams/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/RichText/Video/Vimeo/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/RichText/Video/YouTube/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/RichText/VideoDrawer/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/SplitAnimate/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/YouTube/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/blocks/CodeFeature/index.tsx",
+    1
+   ],
+   [
+    "site/src/components/blocks/Qpu/App.tsx",
+    1
+   ],
+   [
+    "site/src/components/blocks/Qpu/Branding.tsx",
+    1
+   ],
+   [
+    "site/src/components/blocks/Qpu/page.tsx",
+    1
+   ],
+   [
+    "site/src/fields/richText/features/label/client/icon/index.tsx",
+    1
+   ],
+   [
+    "site/src/fields/richText/features/largeBody/client/icon/index.tsx",
+    1
+   ],
+   [
+    "site/src/forms/validations.ts",
+    1
+   ],
+   [
+    "site/src/graphics/CalendarIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/ChevronIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/ClockIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/CommentsIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/CommitIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/DiscordIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/DownloadIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/FacebookIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/FilterIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/FullLogo/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/GitHub/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/GithubIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/InfoIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/InstagramIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/MenuIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/PayloadIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/SearchIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/SearchIconV2/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/ThemeAutoIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/ThemeDarkIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/ThemeLightIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/TwitterIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/TwitterIconAlt/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/TwitterIconV2/index.tsx",
+    1
+   ],
+   [
+    "site/src/graphics/YoutubeIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ArrowIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ArrowRightIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/BranchIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ChainLinkIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/CheckIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ChevronDownIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ChevronIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ChevronUpDownIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/CloseIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/CodeIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/Copy/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/CopyIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/CrosshairIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ErrorIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ExternalLinkIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/EyeIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/FolderIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/GradientBorderIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/InfoIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/LoaderIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/PlayIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/PlusIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/QuoteIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/QuoteIconAlt/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/SearchIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ThumbsDownIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/ThumbsUpIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/icons/TrashIcon/index.tsx",
+    1
+   ],
+   [
+    "site/src/payload.qpu.ecommerce.ts",
+    1
+   ],
+   [
+    "site/src/providers/ToastContainer/icons/Error.tsx",
+    1
+   ],
+   [
+    "site/src/providers/ToastContainer/icons/Info.tsx",
+    1
+   ],
+   [
+    "site/src/providers/ToastContainer/icons/Success.tsx",
+    1
+   ],
+   [
+    "site/src/providers/ToastContainer/icons/Warning.tsx",
+    1
+   ],
+   [
+    "site/src/scripts/createReleasePostFromAdmin.ts",
+    1
+   ],
+   [
+    "site/src/scripts/fetchDiscord.ts",
+    1
+   ],
+   [
+    "site/src/scripts/fetchDocs.ts",
+    1
+   ],
+   [
+    "site/src/scripts/generateLLMs.ts",
+    1
+   ],
+   [
+    "site/src/scripts/generateReleaseOgImage.tsx",
+    1
+   ],
+   [
+    "site/src/scripts/llms/normalizeMDX.ts",
+    1
+   ],
+   [
+    "site/src/scripts/seedQpu.ts",
+    1
+   ],
+   [
+    "site/src/utilities/docsAnalytics.ts",
+    1
+   ],
+   [
+    "site/src/utilities/use-resize.ts",
+    1
+   ],
+   [
+    "src/quantum/claims.ts",
+    1
+   ],
+   [
+    "src/quantum/constants.ts",
+    1
+   ],
+   [
+    "src/quantum/imagine.ts",
+    1
+   ],
+   [
+    "src/quantum/scan.ts",
+    1
+   ],
+   [
+    "src/quantum/verification.ts",
+    1
+   ]
+  ],
+  "priced": "the tree",
+  "theorem": "textbook_literal_in_registry"
+ },
+ "files": 949,
+ "lines": 85686,
+ "findings": 1097,
+ "fused": 337,
+ "reactions": 760,
+ "gravity": "133d4c99-0c82-8418-9c4c-ec6c133f0b86",
  "vacuum": false,
  "byKind": {
   "literal": {
@@ -25,11 +716,11 @@
    "leads": 2
   },
   "duplicate": {
-   "findings": 744,
-   "leads": 287
+   "findings": 747,
+   "leads": 288
   },
   "shape": {
-   "findings": 215,
+   "findings": 218,
    "leads": 5
   },
   "todo": {
@@ -46,14 +737,14 @@
   "settled": 0
  },
  "toExplore": {
-  "match": 312,
+  "match": 313,
   "imagine": 17,
   "configure": 7
  },
  "toConfig": {
   "actions": 22,
   "none": 20,
-  "fullstack": 292,
+  "fullstack": 293,
   "tenant": 2
  },
  "leads": [
@@ -72,7 +763,7 @@
   {
    "id": "entropy-cap-4c776128",
    "kind": "cap",
-   "source": "scripts/claims.ts:19, scripts/penalties.ts:13, scripts/penalties.ts:15, scripts/theorems-raid.ts:13, scripts/theorems-raid.ts:17, site/src/app/_data/index.ts:457, site/src/app/_data/index.ts:462, site/src/app/_data/index.ts:467, site/src/app/_data/index.ts:472, src/quantum/toolboxes/repository.ts:86",
+   "source": "scripts/claims.ts:19, scripts/penalties.ts:18, scripts/penalties.ts:20, scripts/theorems-raid.ts:13, scripts/theorems-raid.ts:17, site/src/app/_data/index.ts:457, site/src/app/_data/index.ts:462, site/src/app/_data/index.ts:467, site/src/app/_data/index.ts:472, src/quantum/toolboxes/repository.ts:109",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — limit: 100",
    "status": "open",
    "tool": "audit",
@@ -84,7 +775,7 @@
   {
    "id": "entropy-cap-adb50b32",
    "kind": "cap",
-   "source": "scripts/hook.ts:64, src/quantum/toolboxes/extension.ts:27",
+   "source": "scripts/hook.ts:68, src/quantum/toolboxes/extension.ts:27",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 60)",
    "status": "open",
    "tool": "audit",
@@ -96,7 +787,7 @@
   {
    "id": "entropy-cap-e1adfd32",
    "kind": "cap",
-   "source": "scripts/purify.ts:168, scripts/purify.ts:181, scripts/textbook.ts:47, src/quantum/audit.ts:368, src/quantum/audit.ts:386, src/quantum/audit.ts:388, src/quantum/audit.ts:390, src/quantum/discovery.ts:116, src/quantum/discovery.ts:161, src/quantum/examples.ts:124, src/quantum/examples.ts:178, src/quantum/match.ts:340, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:121, src/quantum/wave.ts:26, src/worker.ts:367",
+   "source": "scripts/purify.ts:169, scripts/purify.ts:182, scripts/textbook.ts:47, src/quantum/audit.ts:420, src/quantum/audit.ts:438, src/quantum/audit.ts:440, src/quantum/audit.ts:442, src/quantum/discovery.ts:116, src/quantum/discovery.ts:161, src/quantum/examples.ts:141, src/quantum/examples.ts:195, src/quantum/match.ts:340, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:144, src/quantum/wave.ts:26, src/worker.ts:367",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80)",
    "status": "open",
    "tool": "audit",
@@ -252,7 +943,7 @@
   {
    "id": "entropy-cap-c7ad5d45",
    "kind": "cap",
-   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:183, src/quantum/wave.ts:23, src/quantum/wave.ts:28, src/quantum/wave.ts:29, src/quantum/wave.ts:31",
+   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:200, src/quantum/wave.ts:23, src/quantum/wave.ts:28, src/quantum/wave.ts:29, src/quantum/wave.ts:31",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 100)",
    "status": "open",
    "tool": "audit",
@@ -372,7 +1063,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/audit.ts:308, src/quantum/audit.ts:309, src/quantum/examples.ts:183, src/quantum/mcp.ts:995, src/quantum/mcp.ts:998, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:114, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:190, src/quantum/toolboxes/legal.ts:265",
+   "source": "src/quantum/audit.ts:360, src/quantum/audit.ts:361, src/quantum/examples.ts:200, src/quantum/mcp.ts:995, src/quantum/mcp.ts:998, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:114, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:190, src/quantum/toolboxes/legal.ts:265",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
@@ -384,7 +1075,7 @@
   {
    "id": "entropy-cap-9347bb45",
    "kind": "cap",
-   "source": "src/quantum/audit.ts:362, src/quantum/imagine.ts:56, src/quantum/mcp.ts:961, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:379, src/quantum/toolboxes/language.ts:94, src/quantum/toolboxes/payload.ts:1995, src/quantum/toolboxes/raid.ts:107, src/quantum/toolboxes/standards.ts:47",
+   "source": "src/quantum/audit.ts:414, src/quantum/imagine.ts:56, src/quantum/mcp.ts:961, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:566, src/quantum/toolboxes/language.ts:94, src/quantum/toolboxes/payload.ts:1995, src/quantum/toolboxes/raid.ts:107, src/quantum/toolboxes/standards.ts:47",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 160)",
    "status": "open",
    "tool": "audit",
@@ -396,7 +1087,7 @@
   {
    "id": "entropy-cap-113d3f3c",
    "kind": "cap",
-   "source": "src/quantum/discovery.ts:247, src/quantum/examples.ts:104, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:36",
+   "source": "src/quantum/discovery.ts:247, src/quantum/examples.ts:121, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:36",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200)",
    "status": "open",
    "tool": "audit",
@@ -408,7 +1099,7 @@
   {
    "id": "entropy-leak-0fc168b2",
    "kind": "leak",
-   "source": "src/quantum/examples.ts:186",
+   "source": "src/quantum/examples.ts:203",
    "statement": "an address in the tree: contacts are URLs, the account email is read at deploy — <address>@qpu.uuidna.com",
    "status": "open",
    "tool": "audit",
@@ -420,7 +1111,7 @@
   {
    "id": "entropy-leak-fea3989b",
    "kind": "leak",
-   "source": "src/quantum/examples.ts:186",
+   "source": "src/quantum/examples.ts:203",
    "statement": "an address in the tree: contacts are URLs, the account email is read at deploy — <address>@project-id.iam.gserviceaccount.com",
    "status": "open",
    "tool": "audit",
@@ -456,7 +1147,7 @@
   {
    "id": "entropy-clock-874a626d",
    "kind": "clock",
-   "source": "src/quantum/mcp.ts:699, src/quantum/standards.ts:57, src/quantum/standards.ts:61, src/quantum/toolboxes/flow.ts:42, src/quantum/toolboxes/flow.ts:55, src/quantum/toolboxes/flow.ts:85, src/quantum/toolboxes/flow.ts:114, src/quantum/toolboxes/repository.ts:194",
+   "source": "src/quantum/mcp.ts:699, src/quantum/standards.ts:57, src/quantum/standards.ts:61, src/quantum/toolboxes/flow.ts:42, src/quantum/toolboxes/flow.ts:55, src/quantum/toolboxes/flow.ts:85, src/quantum/toolboxes/flow.ts:114, src/quantum/toolboxes/repository.ts:217",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — new Date()",
    "status": "open",
    "tool": "audit",
@@ -576,7 +1267,7 @@
   {
    "id": "entropy-typed-path-f9ef2525",
    "kind": "typed-path",
-   "source": "src/quantum/toolboxes/repository.ts:54",
+   "source": "src/quantum/toolboxes/repository.ts:76",
    "statement": "a generated path typed by hand where fileOf computes it from a role — 'site/src/payload.qpu.config.ts'",
    "status": "open",
    "tool": "audit",
@@ -612,11 +1303,11 @@
   {
    "id": "entropy-duplicate-4d77ae2a",
    "kind": "duplicate",
-   "source": "scripts/attest.ts:32, scripts/compete.ts:44, scripts/configs.ts:58, scripts/constants.ts:16, scripts/currency.ts:30, scripts/discover.ts:64, scripts/e2e.ts:55, scripts/patents.ts:32, scripts/sources.ts:44, scripts/verify.ts:61",
+   "source": "scripts/attest.ts:32, scripts/compete.ts:44, scripts/configs.ts:58, scripts/constants.ts:16, scripts/currency.ts:30, scripts/discover.ts:64, scripts/e2e.ts:55, scripts/idle.ts:32, scripts/patents.ts:32, scripts/sources.ts:44, scripts/verify.ts:61",
    "statement": "one line of code repeated in more than one file: one place should hold it — mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })",
    "status": "open",
    "tool": "audit",
-   "occurrences": 10,
+   "occurrences": 11,
    "address": "4d77ae2a-0f70-776a-bfdb-98b335b19a03",
    "explore": "match",
    "config": "fullstack"
@@ -666,6 +1357,18 @@
    "tool": "audit",
    "occurrences": 2,
    "address": "11c7b602-e63c-31d1-bba4-38fe83afaa9d",
+   "explore": "match",
+   "config": "fullstack"
+  },
+  {
+   "id": "entropy-duplicate-4d3d6455",
+   "kind": "duplicate",
+   "source": "scripts/idle.ts:36, scripts/next.ts:170",
+   "statement": "one line of code repeated in more than one file: one place should hold it — const { penalise, clear, openPenaltiesOf } = await import('./penalties.ts')",
+   "status": "open",
+   "tool": "audit",
+   "occurrences": 2,
+   "address": "4d3d6455-2eeb-44a4-84da-328021e8fa94",
    "explore": "match",
    "config": "fullstack"
   },
@@ -720,7 +1423,7 @@
   {
    "id": "entropy-duplicate-21f135d6",
    "kind": "duplicate",
-   "source": "scripts/next.ts:128, scripts/repository.ts:46",
+   "source": "scripts/next.ts:138, scripts/repository.ts:46",
    "statement": "one line of code repeated in more than one file: one place should hold it — const docket = join(ROOT, 'docs', 'public', 'next-leads.json')",
    "status": "open",
    "tool": "audit",
@@ -3840,7 +4543,7 @@
   {
    "id": "entropy-duplicate-035ab7eb",
    "kind": "duplicate",
-   "source": "src/quantum/audit.test.ts:9, src/quantum/audit.ts:311, src/quantum/mcp.test.ts:7",
+   "source": "src/quantum/audit.test.ts:9, src/quantum/audit.ts:363, src/quantum/mcp.test.ts:7",
    "statement": "one line of code repeated in more than one file: one place should hold it — const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })",
    "status": "open",
    "tool": "audit",
@@ -3876,7 +4579,7 @@
   {
    "id": "entropy-duplicate-8ba12963",
    "kind": "duplicate",
-   "source": "src/quantum/audit.ts:309, src/quantum/selftest.ts:43",
+   "source": "src/quantum/audit.ts:361, src/quantum/selftest.ts:43",
    "statement": "one line of code repeated in more than one file: one place should hold it — const check = (id: string, passed: boolean, evidence: string) => { const now = Date.now(); checks.push({ id, passed, evidence, ms: now - clock }); clock = now }",
    "status": "open",
    "tool": "audit",
@@ -3888,7 +4591,7 @@
   {
    "id": "entropy-duplicate-298e93a1",
    "kind": "duplicate",
-   "source": "src/quantum/audit.ts:313, src/quantum/mcp.test.ts:10",
+   "source": "src/quantum/audit.ts:365, src/quantum/mcp.test.ts:10",
    "statement": "one line of code repeated in more than one file: one place should hold it — const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })",
    "status": "open",
    "tool": "audit",
@@ -3900,7 +4603,7 @@
   {
    "id": "entropy-duplicate-33607a97",
    "kind": "duplicate",
-   "source": "src/quantum/audit.ts:317, src/quantum/match.ts:241",
+   "source": "src/quantum/audit.ts:369, src/quantum/match.ts:241",
    "statement": "one line of code repeated in more than one file: one place should hold it — const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } })",
    "status": "open",
    "tool": "audit",
@@ -3984,7 +4687,7 @@
   {
    "id": "entropy-duplicate-16bf3d61",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/billing.ts:389, src/quantum/toolboxes/crypto.ts:294, src/quantum/toolboxes/extension.ts:98, src/quantum/toolboxes/language.ts:83, src/quantum/toolboxes/legal.ts:78, src/quantum/toolboxes/legal.ts:394, src/quantum/toolboxes/payload.ts:2009, src/quantum/toolboxes/raid.ts:113, src/quantum/toolboxes/repository.ts:230, src/quantum/toolboxes/standards.ts:55",
+   "source": "src/quantum/toolboxes/billing.ts:576, src/quantum/toolboxes/crypto.ts:294, src/quantum/toolboxes/extension.ts:98, src/quantum/toolboxes/language.ts:83, src/quantum/toolboxes/legal.ts:78, src/quantum/toolboxes/legal.ts:394, src/quantum/toolboxes/payload.ts:2009, src/quantum/toolboxes/raid.ts:113, src/quantum/toolboxes/repository.ts:253, src/quantum/toolboxes/standards.ts:55",
    "statement": "one line of code repeated in more than one file: one place should hold it — const checks: { id: string; passed: boolean; evidence: string }[] = []",
    "status": "open",
    "tool": "audit",
@@ -3996,7 +4699,7 @@
   {
    "id": "entropy-duplicate-1adf7165",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/billing.ts:390, src/quantum/toolboxes/crypto.ts:295, src/quantum/toolboxes/extension.ts:99, src/quantum/toolboxes/language.ts:84, src/quantum/toolboxes/legal.ts:79, src/quantum/toolboxes/legal.ts:395, src/quantum/toolboxes/payload.ts:2010, src/quantum/toolboxes/raid.ts:114, src/quantum/toolboxes/repository.ts:231, src/quantum/toolboxes/standards.ts:56",
+   "source": "src/quantum/toolboxes/billing.ts:577, src/quantum/toolboxes/crypto.ts:295, src/quantum/toolboxes/extension.ts:99, src/quantum/toolboxes/language.ts:84, src/quantum/toolboxes/legal.ts:79, src/quantum/toolboxes/legal.ts:395, src/quantum/toolboxes/payload.ts:2010, src/quantum/toolboxes/raid.ts:114, src/quantum/toolboxes/repository.ts:254, src/quantum/toolboxes/standards.ts:56",
    "statement": "one line of code repeated in more than one file: one place should hold it — const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })",
    "status": "open",
    "tool": "audit",
@@ -4032,7 +4735,7 @@
   {
    "id": "entropy-shape-2bad27d6",
    "kind": "shape",
-   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/claude-mount.ts:16, scripts/claude-mount.ts:17, scripts/currency.ts:34, scripts/e2e.ts:16, scripts/gen-docs.ts:65, scripts/gen-docs.ts:68, scripts/hook.ts:17, scripts/hook.ts:69, scripts/hook.ts:84, scripts/hook.ts:90, scripts/imagine.ts:58, scripts/metrics.ts:34, scripts/pqc-verify.ts:15, scripts/purify.ts:137, scripts/purify.ts:144, scripts/purify.ts:174, scripts/readiness.ts:80, scripts/security.ts:35, scripts/shard.ts:14, scripts/sources.ts:16, scripts/sources.ts:41, scripts/stdio.ts:15, scripts/textbook.ts:34, scripts/textbook.ts:50, scripts/textbook.ts:57, site/src/collections/Entries.ts:43, site/src/collections/Entries.ts:53, site/src/collections/Entries.ts:67, site/src/collections/form-submissions.qpu.hooks.ts:15, site/src/collections/form-submissions.qpu.hooks.ts:17, site/src/components/blocks/Qpu/index.tsx:14, site/src/globals/Qpu.ts:17, site/src/payload.qpu.config.ts:44, site/src/payload.qpu.mcp.ts:33, site/src/payload.qpu.mcp.ts:41, site/src/scripts/seedQpu.ts:13, site/src/scripts/seedQpu.ts:16, site/src/scripts/seedQpu.ts:49, site/src/scripts/seedQpu.ts:58, src/quantum/audit.test.ts:9, src/quantum/audit.ts:311, src/quantum/clay.test.ts:30, src/quantum/clay.test.ts:33, src/quantum/compose.ts:21, src/quantum/docs-calls.test.ts:18, src/quantum/e2e.ts:74, src/quantum/e2e.ts:77, src/quantum/match.test.ts:49, src/quantum/match.test.ts:70, src/quantum/match.test.ts:73, src/quantum/match.test.ts:90, src/quantum/match.ts:227, src/quantum/match.ts:322, src/quantum/mcp.test.ts:7, src/quantum/mcp.test.ts:286, src/quantum/mcp.test.ts:296, src/quantum/mcp.ts:432, src/quantum/mcp.ts:752, src/quantum/mcp.ts:873, src/quantum/mcp.ts:925, src/quantum/mcp.ts:940, src/quantum/mcp.ts:957, src/quantum/port.test.ts:11, src/quantum/reflection.test.ts:63, src/quantum/reflection.test.ts:96, src/quantum/reflection.test.ts:115, src/quantum/selftest.ts:117, src/quantum/textbook.test.ts:33, src/quantum/toolboxes/extension.ts:51, src/quantum/toolboxes/extension.ts:100, src/quantum/toolboxes/extension.ts:117, src/quantum/toolboxes/flow.ts:19, src/quantum/toolboxes/flow.ts:108, src/quantum/toolboxes/language.ts:57, src/quantum/toolboxes/language.ts:95, src/quantum/toolboxes/legal.ts:410, src/quantum/toolboxes/payload-schemas.ts:49, src/quantum/toolboxes/payload.ts:124, src/quantum/toolboxes/payload.ts:154, src/quantum/toolboxes/payload.ts:419, src/quantum/toolboxes/payload.ts:1183, src/quantum/toolboxes/payload.ts:1227, src/quantum/toolboxes/payload.ts:1235, src/quantum/toolboxes/payload.ts:1314, src/quantum/toolboxes/payload.ts:1324, src/quantum/toolboxes/payload.ts:1338, src/quantum/toolboxes/payload.ts:1361, src/quantum/toolboxes/payload.ts:1450, src/quantum/toolboxes/payload.ts:1564, src/quantum/toolboxes/payload.ts:1567, src/quantum/toolboxes/payload.ts:1600, src/quantum/toolboxes/payload.ts:1609, src/quantum/toolboxes/payload.ts:1665, src/quantum/toolboxes/payload.ts:1667, src/quantum/toolboxes/payload.ts:1777, src/quantum/toolboxes/payload.ts:1849, src/quantum/toolboxes/payload.ts:1882, src/quantum/toolboxes/payload.ts:1933, src/quantum/worker.test.ts:434, src/worker.ts:331, src/worker.ts:409, src/worker.ts:434, src/worker.ts:525, src/worker.ts:533",
+   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/claude-mount.ts:16, scripts/claude-mount.ts:17, scripts/currency.ts:34, scripts/e2e.ts:16, scripts/gen-docs.ts:65, scripts/gen-docs.ts:68, scripts/hook.ts:19, scripts/hook.ts:73, scripts/hook.ts:118, scripts/hook.ts:124, scripts/imagine.ts:58, scripts/metrics.ts:34, scripts/pqc-verify.ts:15, scripts/purify.ts:137, scripts/purify.ts:144, scripts/purify.ts:175, scripts/readiness.ts:80, scripts/security.ts:35, scripts/shard.ts:14, scripts/sources.ts:16, scripts/sources.ts:41, scripts/stdio.ts:15, scripts/textbook.ts:34, scripts/textbook.ts:50, scripts/textbook.ts:57, site/src/collections/Entries.ts:43, site/src/collections/Entries.ts:53, site/src/collections/Entries.ts:67, site/src/collections/form-submissions.qpu.hooks.ts:15, site/src/collections/form-submissions.qpu.hooks.ts:17, site/src/components/blocks/Qpu/index.tsx:14, site/src/globals/Qpu.ts:17, site/src/payload.qpu.config.ts:44, site/src/payload.qpu.mcp.ts:33, site/src/payload.qpu.mcp.ts:41, site/src/scripts/seedQpu.ts:13, site/src/scripts/seedQpu.ts:16, site/src/scripts/seedQpu.ts:49, site/src/scripts/seedQpu.ts:58, src/quantum/audit.test.ts:9, src/quantum/audit.ts:363, src/quantum/clay.test.ts:30, src/quantum/clay.test.ts:33, src/quantum/compose.ts:21, src/quantum/docs-calls.test.ts:18, src/quantum/e2e.ts:74, src/quantum/e2e.ts:77, src/quantum/match.test.ts:49, src/quantum/match.test.ts:70, src/quantum/match.test.ts:73, src/quantum/match.test.ts:90, src/quantum/match.ts:227, src/quantum/match.ts:322, src/quantum/mcp.test.ts:7, src/quantum/mcp.test.ts:286, src/quantum/mcp.test.ts:296, src/quantum/mcp.ts:432, src/quantum/mcp.ts:752, src/quantum/mcp.ts:873, src/quantum/mcp.ts:925, src/quantum/mcp.ts:940, src/quantum/mcp.ts:957, src/quantum/port.test.ts:11, src/quantum/reflection.test.ts:63, src/quantum/reflection.test.ts:96, src/quantum/reflection.test.ts:115, src/quantum/selftest.ts:117, src/quantum/textbook.test.ts:33, src/quantum/toolboxes/extension.ts:51, src/quantum/toolboxes/extension.ts:100, src/quantum/toolboxes/extension.ts:117, src/quantum/toolboxes/flow.ts:19, src/quantum/toolboxes/flow.ts:108, src/quantum/toolboxes/language.ts:57, src/quantum/toolboxes/language.ts:95, src/quantum/toolboxes/legal.ts:410, src/quantum/toolboxes/payload-schemas.ts:49, src/quantum/toolboxes/payload.ts:124, src/quantum/toolboxes/payload.ts:154, src/quantum/toolboxes/payload.ts:419, src/quantum/toolboxes/payload.ts:1183, src/quantum/toolboxes/payload.ts:1227, src/quantum/toolboxes/payload.ts:1235, src/quantum/toolboxes/payload.ts:1314, src/quantum/toolboxes/payload.ts:1324, src/quantum/toolboxes/payload.ts:1338, src/quantum/toolboxes/payload.ts:1361, src/quantum/toolboxes/payload.ts:1450, src/quantum/toolboxes/payload.ts:1564, src/quantum/toolboxes/payload.ts:1567, src/quantum/toolboxes/payload.ts:1600, src/quantum/toolboxes/payload.ts:1609, src/quantum/toolboxes/payload.ts:1665, src/quantum/toolboxes/payload.ts:1667, src/quantum/toolboxes/payload.ts:1777, src/quantum/toolboxes/payload.ts:1849, src/quantum/toolboxes/payload.ts:1882, src/quantum/toolboxes/payload.ts:1933, src/quantum/worker.test.ts:434, src/worker.ts:331, src/worker.ts:409, src/worker.ts:434, src/worker.ts:525, src/worker.ts:533",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — the tools/call envelope: toolCallerOf(name) in mcp.ts",
    "status": "open",
    "tool": "audit",
@@ -4044,11 +4747,11 @@
   {
    "id": "entropy-shape-0d8252de",
    "kind": "shape",
-   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/compete.ts:23, scripts/configs.ts:20, scripts/configs.ts:22, scripts/configs.ts:25, scripts/currency.ts:34, scripts/discover.ts:31, scripts/gen-docs.ts:17, scripts/hook.ts:20, scripts/imagine.ts:20, scripts/imagine.ts:30, scripts/legal.ts:39, scripts/legal.ts:45, scripts/metrics.ts:10, scripts/next.ts:65, scripts/next.ts:70, scripts/next.ts:129, scripts/publish.ts:27, scripts/publish.ts:43, scripts/purify.ts:75, scripts/purify.ts:106, scripts/purify.ts:107, scripts/readiness.ts:32, scripts/readiness.ts:34, scripts/readiness.ts:82, scripts/repository.ts:16, scripts/repository.ts:19, scripts/repository.ts:20, scripts/repository.ts:28, scripts/repository.ts:47, scripts/security.ts:31, scripts/shard.ts:22, scripts/sources.ts:17, scripts/stdio.ts:16, scripts/textbook.ts:17, scripts/textbook.ts:18, scripts/textbook.ts:21, scripts/trunk.ts:13, scripts/verify.ts:23, scripts/verify.ts:34, site/src/payload.qpu.mcp.ts:55, src/quantum/audit.test.ts:38, src/quantum/toolboxes/payload.ts:1249",
+   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/compete.ts:23, scripts/configs.ts:20, scripts/configs.ts:22, scripts/configs.ts:25, scripts/currency.ts:34, scripts/discover.ts:31, scripts/gen-docs.ts:17, scripts/hook.ts:22, scripts/idle.ts:27, scripts/imagine.ts:20, scripts/imagine.ts:30, scripts/legal.ts:39, scripts/legal.ts:45, scripts/metrics.ts:10, scripts/next.ts:67, scripts/next.ts:72, scripts/next.ts:139, scripts/next.ts:162, scripts/publish.ts:27, scripts/publish.ts:43, scripts/purify.ts:75, scripts/purify.ts:106, scripts/purify.ts:107, scripts/readiness.ts:32, scripts/readiness.ts:34, scripts/readiness.ts:82, scripts/repository.ts:16, scripts/repository.ts:19, scripts/repository.ts:20, scripts/repository.ts:28, scripts/repository.ts:47, scripts/security.ts:31, scripts/shard.ts:22, scripts/sources.ts:17, scripts/stdio.ts:16, scripts/textbook.ts:17, scripts/textbook.ts:18, scripts/textbook.ts:21, scripts/trunk.ts:13, scripts/verify.ts:23, scripts/verify.ts:34, site/src/payload.qpu.mcp.ts:55, src/quantum/audit.test.ts:38, src/quantum/toolboxes/payload.ts:1249",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a JSON file read and parsed: one reader of the published files, null when a file is missing",
    "status": "open",
    "tool": "audit",
-   "occurrences": 44,
+   "occurrences": 46,
    "address": "0d8252de-feac-88b8-84b4-371eea5536ea",
    "explore": "match",
    "config": null
@@ -4056,11 +4759,11 @@
   {
    "id": "entropy-shape-484442bd",
    "kind": "shape",
-   "source": "scripts/attest.ts:32, scripts/claims.ts:23, scripts/compete.ts:44, scripts/configs.ts:58, scripts/constants.ts:16, scripts/currency.ts:30, scripts/discover.ts:64, scripts/e2e.ts:55, scripts/patents.ts:32, scripts/sources.ts:44, scripts/verify.ts:61",
+   "source": "scripts/attest.ts:32, scripts/claims.ts:23, scripts/compete.ts:44, scripts/configs.ts:58, scripts/constants.ts:16, scripts/currency.ts:30, scripts/discover.ts:64, scripts/e2e.ts:55, scripts/idle.ts:32, scripts/patents.ts:32, scripts/sources.ts:44, scripts/verify.ts:61",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — the published folder made: one writer of the published files that makes its folder",
    "status": "open",
    "tool": "audit",
-   "occurrences": 11,
+   "occurrences": 12,
    "address": "484442bd-c189-49f5-9f25-1dbdc1b464e9",
    "explore": "match",
    "config": null
@@ -4068,7 +4771,7 @@
   {
    "id": "entropy-shape-7458ed19",
    "kind": "shape",
-   "source": "scripts/attest.ts:15, scripts/compete.ts:32, scripts/compete.ts:36, scripts/compete.ts:41, scripts/currency.ts:22, scripts/discover.ts:20, scripts/e2e.ts:29, scripts/hook.ts:61, scripts/legal.ts:19, scripts/mcp.ts:14, scripts/metrics.ts:14, scripts/metrics.ts:25, scripts/patents.ts:27, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/readiness.ts:22, scripts/repository.ts:38, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/security.ts:45, scripts/sources.ts:30, scripts/sources.ts:40, scripts/textbook.ts:26, scripts/textbook.ts:35, scripts/textbook.ts:52, scripts/verify.ts:47, site/src/collections/Entries.ts:42, src/quantum/toolboxes/payload.ts:1313, src/worker.ts:37, src/worker.ts:474",
+   "source": "scripts/attest.ts:15, scripts/compete.ts:32, scripts/compete.ts:36, scripts/compete.ts:41, scripts/currency.ts:22, scripts/discover.ts:20, scripts/e2e.ts:29, scripts/hook.ts:65, scripts/legal.ts:19, scripts/mcp.ts:14, scripts/metrics.ts:14, scripts/metrics.ts:25, scripts/patents.ts:27, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/readiness.ts:22, scripts/repository.ts:38, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/security.ts:45, scripts/sources.ts:30, scripts/sources.ts:40, scripts/textbook.ts:26, scripts/textbook.ts:35, scripts/textbook.ts:52, scripts/verify.ts:47, site/src/collections/Entries.ts:42, src/quantum/toolboxes/payload.ts:1313, src/worker.ts:37, src/worker.ts:474",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a request with its timeout: one fetcher with the named user agent and the timeout",
    "status": "open",
    "tool": "audit",
@@ -4080,7 +4783,7 @@
   {
    "id": "entropy-shape-138066ce",
    "kind": "shape",
-   "source": "docs/.vitepress/theme/components/Compile.vue:7, scripts/configs.ts:52, scripts/gen-docs.ts:20, scripts/imagine.ts:16, scripts/purify.ts:79, scripts/purify.ts:167, scripts/textbook.ts:17, scripts/textbook.ts:55, site/src/payload.qpu.mcp.ts:27, src/quantum/audit.test.ts:37, src/quantum/audit.test.ts:59, src/quantum/docs-calls.test.ts:27, src/quantum/mcp.test.ts:12, src/quantum/mcp.test.ts:173, src/quantum/toolboxes/extension.ts:55, src/quantum/toolboxes/payload.ts:752, src/quantum/toolboxes/payload.ts:1221, src/quantum/worker.test.ts:13",
+   "source": "docs/.vitepress/theme/components/Compile.vue:7, scripts/configs.ts:52, scripts/gen-docs.ts:20, scripts/imagine.ts:16, scripts/purify.ts:79, scripts/purify.ts:168, scripts/textbook.ts:17, scripts/textbook.ts:55, site/src/payload.qpu.mcp.ts:27, src/quantum/audit.test.ts:37, src/quantum/audit.test.ts:59, src/quantum/docs-calls.test.ts:27, src/quantum/mcp.test.ts:12, src/quantum/mcp.test.ts:173, src/quantum/toolboxes/extension.ts:55, src/quantum/toolboxes/payload.ts:752, src/quantum/toolboxes/payload.ts:1221, src/quantum/worker.test.ts:13",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — the tools/list envelope: one reader of the tool list",
    "status": "open",
    "tool": "audit",

@@ -10,7 +10,7 @@ import { hmacSha256, utf8, hex, sameHex, sha256 } from '../hmac.js'
 import { uuidOf } from '../blocks.js'
 import { LICENSE } from '../license.js'
 import { flowWidget } from '../widgets.js'
-import { differencesOf } from '../audit.js'
+import { differencesOf, remediesOf, GENERATOR_REMEDIES } from '../audit.js'
 
 export type Checkout = { tenant: string; host: string; subject: string; domains: string[]; mode: 'payment' | 'subscription'; price?: string; amount?: number; currency: string; successUrl: string; cancelUrl: string; customerEmail?: string }
 export type Plan = { method: 'POST'; url: string; headers: Record<string, string>; form: Record<string, string>; secret: string }
@@ -213,32 +213,219 @@ export const fusionOf = (tool: string, args?: Record<string, unknown>) => { cons
 /** Every gap between the QPU and its prizes is one shape: a kind, a subject, open or cleared, its tokens, its coin line, its sealed snapshot. The
  *  kinds that block a push (manual edits, strict refusals, red steps, prize gaps, dirty code in changed files) and those only listed (waiting over
  *  the one-second bar, dirty prose, Gemini schema compatibility) differ only in this table, never in their path. */
-export const GAP_KINDS = { automated: true, refusal: true, step: true, prize: true, 'dirty-code': true, waiting: false, 'dirty-prose': false, 'gemini-compat': false } as const
+export const GAP_KINDS = { automated: true, refusal: true, step: true, prize: true, 'dirty-code': true, waiting: false, 'dirty-prose': false, 'gemini-compat': false, idle: false, invisible: false } as const
+/** A penalty is as visible as the action it prices (textbook_penalty_visibility_harmonic): every kind is printed first in a hook's output except
+ *  an invisible action's — a task past the one-second budget with no progress event, receipt or docket entry within that second — which is
+ *  recorded silently in the docket and counted on request, never printed. */
+export const GAP_PRINTED: Readonly<Record<keyof typeof GAP_KINDS, boolean>> = { automated: true, refusal: true, step: true, prize: true, 'dirty-code': true, waiting: true, 'dirty-prose': true, 'gemini-compat': true, idle: true, invisible: false }
 export type GapKind = keyof typeof GAP_KINDS
 export const gapKindOf = (rule: string, kind?: string): GapKind => (kind && kind in GAP_KINDS ? (kind as GapKind) : /automated/.test(rule) ? 'automated' : 'refusal')
-export const penaltyOf = (p: { rule: string; kind?: string; subject?: string; bytes?: number; tokens?: number; committer?: string | null; cleared?: boolean; by?: string | null; evidence?: Record<string, unknown> }) => {
+/** Time and heat, the only two measures of a task: wall nanoseconds (process.hrtime.bigint) and CPU microseconds, user and system, with the peak
+ *  RSS (process.resourceUsage of the task's own process, summed over a spawned step's Node processes). Heat is CPU work, what makes the machine
+ *  hot: a die's temperature needs privileged sensors, so it is never read and never claimed. Under the one-second budget a task is free
+ *  (textbook_penalty_free_under_budget); over it, its price is the milliseconds over the budget plus its CPU milliseconds, and more of either never
+ *  lowers it (textbook_penalty_time_heat_monotone). */
+export const WAIT_BUDGET_MS = 1000
+export type Measures = { wallNs: number | string; cpuUs: number; rssKb?: number }
+export const waitPriceOf = (m: Measures) => {
+  const wallMs = Math.floor(Number(m.wallNs) / 1e6), cpuMs = Math.floor(Math.max(0, Number(m.cpuUs)) / 1000), free = wallMs < WAIT_BUDGET_MS
+  const time = free ? 0 : wallMs - WAIT_BUDGET_MS, heat = free ? 0 : cpuMs
+  return { wallMs, cpuMs, rssKb: m.rssKb ?? null, budgetMs: WAIT_BUDGET_MS, free, time, heat, coins: time + heat }
+}
+type Move = { cmd: string; args: string[]; needs: 'auto' | 'confirm' }
+/** A gap's antimatter: the exact inverse action that removes the obstacle, generated from the gap's own evidence and put in the offender's way — a
+ *  machine plan (argument vectors, no shell) or a door call, ready to run. It runs by itself only when every move is reversible and touches
+ *  generated or derived files (regenerate, restage, purify, standardise, shard); a move that discards work or uses force (force-remove, branch -D,
+ *  dropping uncommitted changes) is planned with needs: 'confirm' and never run without the user. Null when nothing is learned yet: a lead. */
+export const antimatterOf = (kind: GapKind, rule: string, evidence: Record<string, unknown> = {}) => {
+  const of = (says: string, run: Move[], door: { tool: string; arguments: Record<string, unknown> } | null = null) => { const needs = run.some((m) => m.needs === 'confirm') ? 'confirm' as const : 'auto' as const; return { needs, run, door, says, way: wayOf(evidence), learn: false, address: uuidOf(JSON.stringify({ kind, run, door })) } }
+  const auto = (cmd: string, args: string[]): Move => ({ cmd, args, needs: 'auto' })
+  const violated = (evidence.violated as string[] | undefined) ?? []
+  const sole = evidence.sole as { worktrees?: { path: string; dirty: boolean }[]; branches?: { name: string; merged: boolean }[] } | undefined
+  if (kind === 'automated') {
+    const drifted = (evidence.drifted as string[] | undefined) ?? ((evidence.files as { path: string }[] | undefined) ?? []).map((f) => f.path)
+    const gens = [...new Map((drifted.length ? drifted.map((p) => GENERATOR_REMEDIES.find(([re]) => re.test(p))![1]) : [GENERATOR_REMEDIES.at(-1)![1]]).map((g) => [g.args.join(' '), g])).values()]
+    return of(`regenerate ${drifted.length ? drifted.join(', ') : 'the generated files'} by ${gens.map((g) => [g.cmd, ...g.args].join(' ')).join(', ')}, then restage them`, [...gens.map((g) => auto(g.cmd, g.args)), ...(drifted.length ? [auto('git', ['add', '--', ...drifted])] : [])])
+  }
+  if (kind === 'waiting') {
+    const price = waitPriceOf((evidence.measures as Measures | undefined) ?? { wallNs: 0, cpuUs: 0 }), n = Math.max(2, Math.ceil(price.wallMs / WAIT_BUDGET_MS))
+    if (typeof evidence.cacheKey === 'string') return of(`skip ${String(evidence.step ?? rule)} by its cache key ${evidence.cacheKey}: unchanged inputs, the kept answer`, [], { tool: 'verify', arguments: { uuid: evidence.cacheKey } })
+    return of(`split ${String(evidence.step ?? rule)} into ${n} shards of under a second each (QPU_SHARD=i/${n}, then merge): the shares cover the work exactly once (textbook_shards_cover, textbook_shards_disjoint)`, [], { tool: 'shard', arguments: { list: (evidence.items as unknown[] | undefined) ?? [String(evidence.step ?? rule)], index: 0, count: n } })
+  }
+  if (kind === 'dirty-code' || kind === 'dirty-prose') return of('purify, then standardise the typography of exactly the dirty spans', [auto('npm', ['run', '-s', 'purify'])], evidence.doc ? { tool: 'payload', arguments: { standardise: { doc: evidence.doc, spans: evidence.spans ?? [] } } } : null)
+  if (kind === 'prize' || kind === 'step') {
+    const command = evidence.command as { cmd: string; args: string[] } | undefined
+    return of(`run the red ${kind === 'prize' ? 'compete rule' : 'step'} ${String(evidence.step ?? evidence.subject ?? rule)} again`, command ? [auto(command.cmd, command.args)] : [], kind === 'prize' ? { tool: 'compete', arguments: { rule: String(evidence.subject ?? rule) } } : null)
+  }
+  if (violated.includes('sole') && sole) {
+    const moves: Move[] = [...(sole.worktrees ?? []).map((w) => (w.dirty ? { cmd: 'git', args: ['worktree', 'remove', '--force', w.path], needs: 'confirm' as const } : auto('git', ['worktree', 'remove', w.path]))), ...(sole.branches ?? []).map((b) => (b.merged ? auto('git', ['branch', '-d', b.name]) : { cmd: 'git', args: ['branch', '-D', b.name], needs: 'confirm' as const }))]
+    return of('the cleanup of every other branch and worktree: a clean worktree removed and a merged branch deleted by themselves; a dirty worktree or an unmerged branch only on the user\'s confirmation, since it discards work', moves)
+  }
+  if (kind === 'invisible') return of(`make ${String(evidence.step ?? evidence.subject ?? rule)} visible: a progress stream (notifications/progress or a line) and a receipt written at its start and at each sub-step, within the first second`, [])
+  if (kind === 'idle') {
+    const measure = String(evidence.measure ?? 'door'), name = String(evidence.name ?? evidence.subject ?? rule)
+    const wire: Record<string, [string, { tool: string; arguments: Record<string, unknown> } | null]> = {
+      door: [`add ${name} to the e2e cells and give it an example, so the gate reaches it`, { tool: 'e2e', arguments: {} }],
+      theorem: [`wire ${name}: an example naming it and a chat route answering its sentence`, { tool: 'textbook', arguments: { theorem: name } }],
+      gate: [`call ${name} once in the next online run, through discovery`, { tool: 'discover', arguments: {} }],
+      cores: [`run ${name}'s independent parts at once: split by the shard theorems or put the step in the wave of its peers`, { tool: 'shard', arguments: { list: [name], index: 0, count: Math.max(2, Number(evidence.cores ?? 2)) } }],
+      qubits: [`generate examples and e2e cells for ${name} at every qubit count up to the simulator's bound`, null],
+      shor: [`generate an example for Shor at each N not yet asked: ${name}`, null],
+    }
+    const [says, door] = wire[measure] ?? wire.door!
+    return { ...of(`${says}; folding it away instead needs the user's confirmation`, [], door), fold: { needs: 'confirm' as const, says: `fold ${name} into its nearest door or theorem, or remove it` } }
+  }
+  if (kind === 'gemini-compat') return of('narrow each schema to the Gemini subset the compatibility check names: the unsupported keywords dropped, their meaning kept in the description', [], { tool: 'extend', arguments: { gemini: { compat: true } } })
+  const row = remediesOf([String(evidence.says ?? rule)]).leads[0]
+  if (row?.remedy) return { ...of(row.remedy, []), needs: row.automated ? 'auto' as const : 'confirm' as const }
+  if (violated.includes('green')) return of('run next again, offline and fast: the red step regenerated and rechecked', [auto('npm', ['run', '-s', 'next', '--', '--offline', '--fast'])])
+  // a refusal no row has learned yet: its antimatter is the lead that teaches the next row, its text the evidence (counted as none until learned)
+  return { ...of(`no remedy learned yet for ${rule}: a lead that teaches the next ERROR_REMEDIES row from this refusal's text`, [], { tool: 'audit', arguments: { errors: [String(evidence.says ?? rule)] } }), learn: true }
+}
+/** The one passable way: every antimatter routes onto the a432 harmonic default, free under attribution. A value the role may not choose is
+ *  corrected to the harmonic default its schema gives (harmonicDefaultsOf, narrowed by mayChoose: the crypto door { harmonic }); a call that is a
+ *  coil (it crosses into data or services) is answered first by its free side — the kernel's own statement of the theorem it rests on, a coin —
+ *  and the coil stays the licence's, never forced (textbook_free_or_coil). The way never dead-ends: every gap kind has antimatter
+ *  (textbook_antimatter_total), so from any gap the next step is defined. */
+export const wayOf = (evidence: Record<string, unknown> = {}) => {
+  const tool = typeof evidence.tool === 'string' ? evidence.tool : null, args = (evidence.arguments as Record<string, unknown> | undefined) ?? undefined
+  const fusion = tool ? fusionOf(tool, args) : null
+  const free = fusion?.side === 'coil' ? { tool: 'textbook', arguments: { theorem: typeof evidence.theorem === 'string' ? evidence.theorem : 'textbook_free_or_coil' } } : tool ? { tool, arguments: args ?? {} } : null
+  const harmonic = evidence.schema ? { tool: 'crypto', arguments: { harmonic: { schema: evidence.schema, ...(typeof evidence.referrer === 'string' ? { referrer: evidence.referrer } : {}) } } } : null
+  return { harmonic: 'a432' as const, side: fusion?.side ?? 'coin', free, correct: harmonic, licence: fusion?.licence ?? 'free under attribution (the a432 harmonic default)', theorem: 'textbook_free_or_coil' }
+}
+/** A penalty is harmonic to its violation: priced in the violation's own unit, the work its antimatter must do to undo it — never a flat fine, never
+ *  a price from another dimension. A byte-measured gap (a hand-edited generated file: the drifted bytes; dirty code or prose: the dirty spans;
+ *  a refusal: its violated facts' evidence) is its bytes at four a token; a waiting gap is its milliseconds over the budget and its CPU
+ *  milliseconds; a red step or prize gap with measures is its own measured milliseconds. So the price is the antimatter's cost
+ *  (textbook_penalty_harmonic) and annihilation nets to exactly zero. A rule broken n times in one workflow costs n units, in proportion, never
+ *  escalated (textbook_penalty_proportional); how many gaps share a rule is reported as their correlation, never compounded. */
+export const harmonicUnitOf = (kind: GapKind, p: { bytes?: number; tokens?: number; measures?: Measures }) => {
+  if (kind === 'waiting' && p.measures) { const w = waitPriceOf(p.measures); return { per: w.coins, unit: 'ms over the budget + CPU ms' } }
+  if (kind === 'invisible' && p.measures) { const w = waitPriceOf(p.measures); return { per: w.coins, unit: 'ms unseen over the budget + CPU ms' } }
+  if ((kind === 'step' || kind === 'prize') && p.measures) { const w = waitPriceOf(p.measures); return { per: w.wallMs + w.cpuMs, unit: 'ms measured + CPU ms' } }
+  if (typeof p.tokens === 'number') return { per: Math.max(0, Math.ceil(p.tokens)), unit: 'tokens measured' }
+  return { per: Math.ceil(Math.max(0, p.bytes ?? 0) / 4), unit: 'tokens (bytes / 4)' }
+}
+/** A penalty, or its clearing. Raised, it carries its antimatter and is priced harmonically, in its violation's own unit. Cleared — by its
+ *  evidence, or annihilated when its antimatter has run and every rule it violated holds again (held) — the status is restored: open becomes
+ *  cleared, nothing blocks, no mark stays on the offender's standing (textbook_penalty_no_punishment, on status and standing, not on coins), and
+ *  the reversing line nets the obstacle's harmonic price to zero (textbook_penalty_antimatter_annihilates). The time the gap stood is charged
+ *  like a proof-of-stake burn: its milliseconds over the one-second budget plus its CPU milliseconds, debited to the offender and credited to the
+ *  burn account, monotone in the time stood, zero when cleared within the budget and never refunded (textbook_penalty_time_burned); the ledger
+ *  stays double entry, burn account included (textbook_coins_coils_balanced). A signature with a learned automatic correction is a correction to
+ *  apply, never a penalty (textbook_penalty_learned_prevents). */
+export const penaltyOf = (p: { rule: string; kind?: string; subject?: string; bytes?: number; tokens?: number; occurrences?: number; committer?: string | null; cleared?: boolean; by?: string | null; measures?: Measures; held?: string[]; stood?: Measures; learned?: readonly string[]; evidence?: Record<string, unknown> }) => {
   const kind = gapKindOf(p.rule, p.kind), blocks = GAP_KINDS[kind]
   const subject = p.subject ?? String((p.evidence as { key?: unknown } | undefined)?.key ?? p.rule)
-  const tokens = typeof p.tokens === 'number' ? Math.max(0, Math.ceil(p.tokens)) : Math.ceil(Math.max(0, p.bytes ?? 0) / 4)
+  const price = p.measures ? waitPriceOf(p.measures) : null
+  const occurrences = Math.max(1, Math.floor(p.occurrences ?? 1)), harmonic = harmonicUnitOf(kind, p), tokens = occurrences * harmonic.per
   const committer = (p.committer ?? '').trim() || 'unknown'
-  const snapshot = { rule: p.rule, kind, subject, ...(p.evidence ?? {}), key: String((p.evidence as { key?: unknown } | undefined)?.key ?? `${kind}:${subject}`) }
+  const snapshot = { rule: p.rule, kind, subject, ...(p.evidence ?? {}), ...(price ? { measures: { ...p.measures, wallNs: String(p.measures!.wallNs) }, price } : {}), ...(occurrences > 1 ? { occurrences } : {}), key: String((p.evidence as { key?: unknown } | undefined)?.key ?? `${kind}:${subject}`) }
   const text = JSON.stringify(snapshot)
   const seal = { sha256: hex(sha256(utf8(text))), address: uuidOf(text) }
-  if (p.cleared) return { kind: 'clearing' as const, body: { kind, subject, status: 'cleared' as const, blocks, rule: p.rule, cleared: true, by: p.by ?? null, snapshot, seal }, tokens: 0, coin: null, balanced: true, says: `${p.rule} cleared by ${p.by ?? 'its evidence'}`, theorem: 'textbook_double_entry' }
+  const matter = antimatterOf(kind, p.rule, { ...(p.evidence ?? {}), subject, ...(p.measures ? { measures: p.measures } : {}) })
+  const antimatter = { ...matter, cost: { amount: tokens, per: harmonic.per, occurrences, unit: harmonic.unit } }
+  const violated = ((p.evidence as { violated?: string[] } | undefined)?.violated ?? []).length ? (p.evidence as { violated: string[] }).violated : [kind]
+  // the involution of thinking: a signature whose correction was learned from an earlier clearing is corrected before it is decided, never raised
+  // — its antimatter applied, no penalty, no coin (textbook_penalty_learned_prevents)
+  // learned means a correction that ran by itself and cleared; it is a plan here — the client applies it, re-decides the rule, and records the
+  // prevention only when the rule holds again; a correction that needs confirmation, or no remedy learned yet, is never applied this way
+  if (!p.cleared && p.learned?.includes(p.rule) && antimatter.needs === 'auto' && !antimatter.learn) return { kind: 'corrected' as const, antimatter, body: { kind, subject, status: 'corrected' as const, blocks: false, rule: p.rule, prevented: true, correction: antimatter, snapshot, seal }, tokens: 0, coin: null, balanced: true, says: `${p.rule}: corrected by its learned antimatter (${antimatter.needs}) ${antimatter.says}; no penalty raised`, theorem: 'textbook_penalty_learned_prevents' }
+  const annihilated = !p.cleared && Array.isArray(p.held) && violated.every((v) => p.held!.includes(v))
+  if (p.cleared || annihilated) {
+    // clearing restores the status — open becomes cleared, nothing blocks, no mark stays on the offender's standing — and the reversing line nets
+    // the obstacle's harmonic price (its antimatter's own cost) to zero; the time the gap stood is charged like a proof-of-stake burn: its
+    // milliseconds over the budget plus its CPU milliseconds, debited to the offender and credited to the burn account, never refunded
+    // (textbook_penalty_no_punishment on status and standing, textbook_penalty_antimatter_annihilates, textbook_penalty_time_burned)
+    const stood = p.stood ? waitPriceOf(p.stood) : null, burned = stood?.coins ?? 0
+    const reversal = tokens > 0 ? { debit: 'coins:author', credit: `coins:${committer}`, amount: 0, count: tokens } : null
+    const burn = burned > 0 ? { debit: `coins:${committer}`, credit: 'burn', amount: 0, count: burned } : null
+    return { kind: 'clearing' as const, body: { kind, subject, status: 'cleared' as const, blocks, rule: p.rule, cleared: true, annihilated, by: p.by ?? (annihilated ? `antimatter ${antimatter.address}: ${violated.join(', ')} hold again` : null), antimatter, reversal, coin: burn, burned, history: stood ? { stood } : null, learned: { signature: p.rule, correction: antimatter.says, run: antimatter.run, door: antimatter.door, needs: antimatter.needs }, snapshot, seal }, tokens: burned, coin: burn, reversal, burned, net: reversal ? tokens - reversal.count : 0, standing: { before: 'clear', after: 'clear' }, balanced: (!reversal || lineBalanced(reversal)) && (!burn || lineBalanced(burn)), says: `${p.rule} ${annihilated ? 'annihilated by its antimatter' : `cleared by ${p.by ?? 'its evidence'}`}: the status restored and the offender's standing as before the violation, the penalty's ${tokens} reversed to zero${burned ? `, ${burned} coin(s) burned for the ${stood!.wallMs} ms it stood (never refunded)` : ''}, the correction learned`, theorem: annihilated ? 'textbook_penalty_antimatter_annihilates' : 'textbook_penalty_no_punishment' }
+  }
   const coin = { debit: `coins:${committer}`, credit: 'coins:author', amount: 0, count: tokens }
-  return { kind: 'penalty' as const, body: { kind, subject, status: 'open' as const, blocks, rule: p.rule, tokens, coin, snapshot, seal }, tokens, coin, balanced: coin.amount === coin.amount, says: `${p.rule}: ${tokens} token(s) of work booked against ${committer} and to the author, at zero price — work, not money`, theorem: 'textbook_double_entry' }
+  return { kind: 'penalty' as const, antimatter, printed: GAP_PRINTED[kind], body: { kind, subject, status: 'open' as const, blocks, printed: GAP_PRINTED[kind], rule: p.rule, tokens, coin, antimatter, snapshot, seal }, tokens, coin, price, balanced: lineBalanced(coin), says: `${p.rule}: ${tokens} token(s) of work booked against ${committer} and to the author, at zero price — work, not money; antimatter ${antimatter ? `(${antimatter.needs}) ${antimatter.says}` : 'not learned yet: a lead'}`, harmonic: { ...harmonic, occurrences, price: tokens, theorems: ['textbook_penalty_harmonic', 'textbook_penalty_proportional'] }, theorem: price && kind === 'waiting' ? 'textbook_penalty_time_heat_monotone' : 'textbook_penalty_harmonic' }
+}
+type Line = { debit: string; credit: string; amount: number; count?: number }
+type GapBody = { prevented?: boolean; rule?: string; kind?: string; subject?: string; tenant?: string; blocks?: boolean; cleared?: boolean; tokens?: number; coin?: Line | null; reversal?: Line | null; coil?: Line | null; antimatter?: ReturnType<typeof antimatterOf>; snapshot?: { key?: string; price?: ReturnType<typeof waitPriceOf> } & Record<string, unknown>; seal?: { address?: string } }
+/** Unused quantum capacity, each measure in its own unit, used + idle = capacity (textbook_capacity_conserved): doors no example, e2e cell, chat
+ *  route or next step reaches (their schema bytes), theorems nothing names (their statement's bytes), gates with no successful call in the last
+ *  online run (one call each), idle cores (wall ms × cores − CPU ms, per step), the qubits a quantum call leaves unused below the simulator's
+ *  stated bound (bound − used per call) and the Shor N never asked below its bound. The advantage of a served quantum door is the hosted door's
+ *  to measure (get_quantum_advantage): unmeasured here, said so. Indexable clusters named but in no shard are reported, never priced. Every idle
+ *  item is an idle gap — listed, never blocking — priced harmonically in its measure's unit, with antimatter that wires it (reversible) and a fold
+ *  that waits on confirm. The bounds are the simulator's stated constants, never more, never a hardware claim. */
+export type CapacityInput = { doors?: { name: string; bytes: number; reached: boolean }[]; theorems?: { key: string; bytes: number; used: boolean }[]; gates?: { name: string; called: boolean }[]; cores?: { step: string; wallMs: number; cpuMs: number; cores: number }[]; qubits?: { bound: number; calls: { door: string; used: number }[] }; shor?: { bound: number; asked: number[] }; clusters?: { named: number; sharded: number } }
+export const capacityOf = (c: CapacityInput) => {
+  const measure = (unit: string, rows: { name: string; capacity: number; used: number }[]) => { const capacity = rows.reduce((n, r) => n + r.capacity, 0), used = rows.reduce((n, r) => n + Math.min(r.used, r.capacity), 0), idle = capacity - used; return { unit, capacity, used, idle, percentIdle: capacity ? Math.floor((idle * 100) / capacity) : 0, idleNames: rows.filter((r) => r.used < r.capacity).map((r) => r.name), conserved: used + idle === capacity } }
+  const doors = c.doors ? measure('schema bytes', c.doors.map((d) => ({ name: d.name, capacity: d.bytes, used: d.reached ? d.bytes : 0 }))) : null
+  const theorems = c.theorems ? measure('statement bytes', c.theorems.map((t) => ({ name: t.key, capacity: t.bytes, used: t.used ? t.bytes : 0 }))) : null
+  const gates = c.gates ? measure('calls', c.gates.map((g) => ({ name: g.name, capacity: 1, used: g.called ? 1 : 0 }))) : null
+  const cores = c.cores ? measure('core ms', c.cores.map((x) => ({ name: x.step, capacity: x.wallMs * x.cores, used: x.cpuMs }))) : null
+  const qubits = c.qubits ? { ...measure('qubits per call', c.qubits.calls.map((q) => ({ name: q.door, capacity: c.qubits!.bound, used: q.used }))), bound: c.qubits.bound, neverPastTwo: [...new Set(c.qubits.calls.map((q) => q.door))].filter((d) => c.qubits!.calls.filter((q) => q.door === d).every((q) => q.used <= 2)) } : null
+  // Shor's N: the odd composites up to the bound (what the algorithm factors), each asked or not
+  const shorNs = c.shor ? Array.from({ length: c.shor.bound + 1 }, (_, n) => n).filter((n) => n > 3 && n % 2 === 1 && Array.from({ length: n }, (_, d) => d).some((d) => d > 1 && d < n && n % d === 0)) : []
+  const shor = c.shor ? { ...measure('N values', shorNs.map((n) => ({ name: `N=${n}`, capacity: 1, used: c.shor!.asked.includes(n) ? 1 : 0 }))), bound: c.shor.bound, never: shorNs.filter((n) => !c.shor!.asked.includes(n)) } : null
+  const measures = { doors, theorems, gates, cores, qubits, shor }
+  const gaps = Object.entries(measures).flatMap(([m, r]) => (r ? r.idleNames.map((name) => ({ measure: m, name })) : []))
+  const per = (m: string, name: string) => { if (m === 'doors') return Math.ceil((c.doors!.find((d) => d.name === name)?.bytes ?? 0) / 4); if (m === 'theorems') return Math.ceil((c.theorems!.find((t) => t.key === name)?.bytes ?? 0) / 4); if (m === 'cores') { const x = c.cores!.find((y) => y.step === name)!; return x.wallMs * x.cores - Math.min(x.cpuMs, x.wallMs * x.cores) } if (m === 'qubits') return c.qubits!.calls.filter((q) => q.door === name).reduce((n, q) => n + Math.max(0, c.qubits!.bound - q.used), 0); return 1 }
+  const priced = gaps.map((g) => ({ ...g, kind: 'idle' as const, blocks: false, tokens: per(g.measure, g.name), unit: measures[g.measure as keyof typeof measures]!.unit, antimatter: antimatterOf('idle', 'idle', { measure: g.measure === 'doors' ? 'door' : g.measure === 'theorems' ? 'theorem' : g.measure === 'gates' ? 'gate' : g.measure, name: g.name }) })).sort((a, b) => b.tokens - a.tokens)
+  return { ...measures, advantage: { measured: null, says: 'the measured advantage of each served quantum door is the hosted door\'s (get_quantum_advantage): unmeasured here' }, clusters: c.clusters ? { ...c.clusters, unsharded: Math.max(0, c.clusters.named - c.clusters.sharded), priced: false } : null, gaps: priced, top: priced.slice(0, 10), conserved: Object.values(measures).every((r) => !r || r.conserved), theorem: 'textbook_capacity_conserved', says: `${priced.length} idle item(s) across ${Object.values(measures).filter(Boolean).length} measure(s), each priced in its own unit, listed and never blocking; the bounds are the simulator's stated constants, never a hardware claim` }
+}
+/** A coin or coil line is balanced when it debits one account and credits another of the same value: never a line to itself, never one side. */
+export const lineBalanced = (l: { debit?: string; credit?: string; amount?: number; count?: number } | null | undefined) => !!l && !!l.debit && !!l.credit && l.debit !== l.credit && (l.amount ?? 0) >= 0 && (l.count ?? 0) >= 0
+/** Coins against coils, the balance named the fusion reactor — only a name for the ledger's balance, no physics claim. Coins are work booked at
+ *  zero price (a penalty's count, its reversal at annihilation); coils are paid use, at their price. Every line books one debit and one credit of
+ *  the same value, so per tenant and per run the debits equal the credits and the net is zero (textbook_coins_coils_balanced). */
+export const reactorOf = (bodies: readonly GapBody[]) => {
+  const tenants = new Map<string, { coins: number; coils: number; debits: number; credits: number }>()
+  // each side booked from its own account: a line with no debit account, no credit account or one account on both sides books one side only, and the run is unbalanced
+  const book = (tenant: string, l: Line, side: 'coins' | 'coils') => { const v = side === 'coins' ? (l.count ?? 0) : l.amount, t = tenants.get(tenant) ?? { coins: 0, coils: 0, debits: 0, credits: 0 }, ok = !!l.debit && !!l.credit && l.debit !== l.credit; tenants.set(tenant, { coins: t.coins + (side === 'coins' ? v : 0), coils: t.coils + (side === 'coils' ? v : 0), debits: t.debits + (l.debit ? v : 0), credits: t.credits + (ok ? v : 0) }) }
+  for (const b of bodies) { const tenant = b.tenant ?? 'qpu'; if (b.coin) book(tenant, b.coin, 'coins'); if (b.reversal) book(tenant, b.reversal, 'coins'); if (b.coil) book(tenant, b.coil, 'coils') }
+  const byTenant = [...tenants].map(([tenant, t]) => ({ tenant, ...t, net: t.debits - t.credits }))
+  const sum = (k: 'coins' | 'coils' | 'debits' | 'credits') => byTenant.reduce((n, t) => n + t[k], 0)
+  const net = sum('debits') - sum('credits')
+  const burned = bodies.reduce((n, b) => n + (b.coin?.credit === 'burn' ? (b.coin.count ?? 0) : 0), 0)
+  const burnedByTenant = Object.fromEntries([...new Set(bodies.map((b) => b.tenant ?? 'qpu'))].map((t) => [t, bodies.filter((b) => (b.tenant ?? 'qpu') === t && b.coin?.credit === 'burn').reduce((n, b) => n + (b.coin!.count ?? 0), 0)]))
+  return { burned, burnedByTenant, coins: sum('coins'), coils: sum('coils'), debits: sum('debits'), credits: sum('credits'), net, byTenant, balanced: net === 0 && byTenant.every((t) => t.net === 0), name: 'fusion reactor', says: `coins ${sum('coins')} and coils ${sum('coils')} booked in double entry, net ${net}: “fusion reactor” names this balance only, the tree makes no physics claim`, theorem: 'textbook_coins_coils_balanced' }
+}
+/** What the penalties taught, in the docket's order: every cleared gap's signature (its rule) is a learned correction; a gap raised again with a
+ *  signature already learned is a recurrence (the target is zero); a body marked prevented is a violation the learned correction annihilated
+ *  before it was decided, no penalty raised (textbook_penalty_learned_prevents). */
+export const learningOf = (bodies: readonly GapBody[]) => {
+  const learned = new Set<string>(); let recurrences = 0, prevented = 0
+  for (const b of bodies) { const sig = b.rule ?? ''; if (b.prevented) { prevented++; continue } if (b.cleared) { const l = (b as { learned?: { needs?: string }; antimatter?: { learn?: boolean } }); if (l.learned?.needs === 'auto' && !l.antimatter?.learn) learned.add(sig); continue } if (learned.has(sig)) recurrences++ }
+  return { learned: [...learned], remedies: learned.size, prevented, recurrences, target: 0, says: `${learned.size} correction(s) learned from cleared gaps, ${prevented} violation(s) corrected before they were decided, ${recurrences} recurrence(s) after learning (target 0)`, theorem: 'textbook_penalty_learned_prevents' }
 }
 /** The penalties counted from their entries: each gap keyed by its evidence's key (else its sealed address), a clearing closing the penalty of the
- *  same key; what is open is what was opened and not cleared (textbook_penalty_conserved). */
-export const penaltyCountsOf = (entries: readonly { body?: { rule?: string; kind?: string; blocks?: boolean; cleared?: boolean; snapshot?: { key?: string }; seal?: { address?: string } } }[]) => {
-  const keyOf = (b: { snapshot?: { key?: string }; seal?: { address?: string } }) => b.snapshot?.key ?? b.seal?.address ?? ''
-  const opened = new Set<string>(), cleared = new Set<string>(), kindOf = new Map<string, GapKind>()
-  for (const e of entries) { const b = e.body; if (!b) continue; (b.cleared ? cleared : opened).add(keyOf(b)); if (!b.cleared) kindOf.set(keyOf(b), gapKindOf(b.rule ?? '', b.kind)) }
+ *  same key; what is open is what was opened and not cleared (textbook_penalty_conserved). First, the antimatter of every open gap (its own, or
+ *  generated from its evidence), with how many gaps have one, annihilated by themselves, wait on a confirmation, or have none yet (each a lead);
+ *  then the time and heat coins per step, the slowest first. */
+export const penaltyCountsOf = (entries: readonly { body?: GapBody }[]) => {
+  const keyOf = (b: GapBody) => b.snapshot?.key ?? b.seal?.address ?? ''
+  const opened = new Set<string>(), cleared = new Set<string>(), bodyOf = new Map<string, GapBody>()
+  const steps = new Map<string, { step: string; runs: number; wallMs: number; cpuMs: number; coins: number }>()
+  for (const e of entries) {
+    const b = e.body; if (!b || b.prevented) continue // a prevented violation was corrected before it was decided: never a gap
+    ;(b.cleared ? cleared : opened).add(keyOf(b)); if (!b.cleared) bodyOf.set(keyOf(b), b)
+    const pr = b.snapshot?.price; if (!b.cleared && pr) { const s = String(b.subject ?? keyOf(b)), t = steps.get(s) ?? { step: s, runs: 0, wallMs: 0, cpuMs: 0, coins: 0 }; steps.set(s, { step: s, runs: t.runs + 1, wallMs: t.wallMs + pr.wallMs, cpuMs: t.cpuMs + pr.cpuMs, coins: t.coins + pr.coins }) }
+  }
+  const kindOf = (k: string) => gapKindOf(bodyOf.get(k)?.rule ?? '', bodyOf.get(k)?.kind)
+  const antimatterAt = (k: string) => { const b = bodyOf.get(k); return b?.antimatter !== undefined ? b.antimatter : antimatterOf(kindOf(k), b?.rule ?? '', { ...(b?.snapshot ?? {}) }) }
   const closed = [...cleared].filter((k) => opened.has(k))
   const open = [...opened].filter((k) => !cleared.has(k))
-  const blocking = open.filter((k) => GAP_KINDS[kindOf.get(k) ?? 'refusal'])
-  const byKind = open.reduce<Record<string, number>>((a, k) => ({ ...a, [kindOf.get(k) ?? 'refusal']: (a[kindOf.get(k) ?? 'refusal'] ?? 0) + 1 }), {})
-  return { opened: opened.size, cleared: closed.length, open: open.length, openKeys: open, blocking: blocking.length, blockingKeys: blocking, byKind, conserved: closed.length + open.length === opened.size, theorem: 'textbook_penalty_conserved' }
+  // lex mitior: a gap blocks only when it blocked when raised and its kind blocks now, so lightening a kind applies at once and making it heavier never reaches back
+  const blocking = open.filter((k) => GAP_KINDS[kindOf(k)] && bodyOf.get(k)?.blocks !== false)
+  const byKind = open.reduce<Record<string, number>>((a, k) => ({ ...a, [kindOf(k)]: (a[kindOf(k)] ?? 0) + 1 }), {})
+  const antimatter = open.map((k) => ({ key: k, kind: kindOf(k), antimatter: antimatterAt(k) }))
+  const none = antimatter.filter((a) => !a.antimatter || a.antimatter.learn).map((a) => a.key)
+  return {
+    antimatter, antimatterCounts: { generated: antimatter.length - none.length, autoAnnihilated: closed.filter((k) => antimatterAt(k)?.needs === 'auto').length, confirm: antimatter.filter((a) => a.antimatter?.needs === 'confirm').length, none: none.length, noneKeys: none },
+    opened: opened.size, cleared: closed.length, open: open.length, openKeys: open, blocking: blocking.length, blockingKeys: blocking, byKind,
+    learning: learningOf(entries.map((e) => e.body).filter((b): b is GapBody => !!b)),
+    correlation: open.reduce<Record<string, number>>((a, k) => { const r = bodyOf.get(k)?.rule ?? ''; return { ...a, [r]: (a[r] ?? 0) + 1 } }, {}),
+    timeHeat: [...steps.values()].sort((a, b) => b.coins - a.coins), reactor: reactorOf(entries.map((e) => e.body).filter((b): b is GapBody => !!b)), conserved: closed.length + open.length === opened.size, theorem: 'textbook_penalty_conserved',
+  }
 }
 export const ledgerOf = (calls: readonly { tool: string; tenant: string; arguments?: Record<string, unknown> }[], settled: readonly { tenant?: string; amount: number; fee: number; net: number; currency: string }[] = [], currency: 'eur' | 'usd' | 'bgn' = 'eur') => {
   const metered = CATALOGUE.find((v) => v.product === 'qpu-metered')!

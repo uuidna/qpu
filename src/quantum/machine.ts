@@ -29,6 +29,7 @@ export const MACHINE_ACTIONS: readonly MachineAction[] = [
   { id: 'push', kind: 'write', cmd: 'git', args: ['push', 'origin', 'main'], says: 'main pushed to its remote through the pre-push workflow', needs: 'confirm', workflow: 'pre-push' },
   { id: 'dispatch', kind: 'write', cmd: 'gh', args: ['workflow', 'run', 'deploy.yml', '--ref', 'main'], says: 'the deploy workflow started on GitHub for main: it runs in the protected production environment, whose reviewer approves it before any secret in GitHub Secrets is exposed, then next, the pre-deploy theorems, the deploy and the publish; started only through the super admin\'s machine tool and the pre-push rules', needs: 'confirm', workflow: 'pre-push' },
   { id: 'merge', kind: 'write', cmd: 'git', args: ['merge', '--no-ff', '--no-edit'], says: 'a branch merged into the current one, never fast-forwarded, under the pre-commit rules decided by theorems; the branch is the one parameter', needs: 'branch', workflow: 'pre-commit' },
+  { id: 'idle', kind: 'write', cmd: 'node', args: ['--import', 'tsx', 'scripts/idle.ts'], says: 'unused quantum capacity measured in the background, never inside a hook: the state the hooks read written, the largest idle items raised as idle gaps and the used ones annihilated, progress line by line' },
   { id: 'regenerate', kind: 'write', cmd: 'node', args: ['--import', 'tsx', 'scripts/regenerate.ts'], says: 'the generators in their order: the docs and the Lean file, every configuration, the theorem index and purity' },
 ]
 

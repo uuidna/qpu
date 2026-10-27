@@ -2124,9 +2124,21 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
       },
       "description": "penalty and clearing entries as the docket holds them"
     },
+    "docs": {
+      "type": "object",
+      "description": "with penalties"
+    },
+    "capacity": {
+      "type": "object",
+      "description": "with penalties"
+    },
+    "e2e": {
+      "type": "object",
+      "description": "with penalties"
+    },
     "penalty": {
       "type": "object",
-      "description": "a penalty priced in work and sealed"
+      "description": "a penalty harmonic to its violation and sealed"
     },
     "via": {
       "type": "string",

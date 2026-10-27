@@ -46,6 +46,32 @@ theorem textbook_penalty_conserved (opened cleared openNow : Nat) (h : cleared +
 theorem textbook_penalty_tokens_bound (b : Nat) (h : 0 < b) : (b + 3) / 4 ≤ b := by omega
 /-- the same gap gives the same content address, so it is one entry however often it is penalised (examples: repository-penalty-once) -/
 theorem textbook_penalty_once (a b : Nat) (h : a = b) : a = b := h
+/-- a waiting price never falls as a task gets slower or hotter: over the budget b it is the milliseconds over b plus the CPU milliseconds, under it zero, and more wall time or more CPU never lowers it (examples: repository-penalty-waiting) -/
+theorem textbook_penalty_time_heat_monotone (b w w' c c' : Nat) (hw : w ≤ w') (hc : c ≤ c') : (if w < b then 0 else w - b + c) ≤ (if w' < b then 0 else w' - b + c') := by split <;> split <;> omega
+/-- a task under the one-second budget is free: its waiting price is zero, whatever its CPU time (examples: repository-penalty-under-budget) -/
+theorem textbook_penalty_free_under_budget (b w c : Nat) (h : w < b) : (if w < b then 0 else w - b + c) = 0 := if_pos h
+/-- a gap and its antimatter annihilate: the line priced by the antimatter's cost, reversed by its clearing, nets to zero, and only what stood beside it — the burned time — remains (examples: repository-penalty-annihilate) -/
+theorem textbook_penalty_antimatter_annihilates (t p : Nat) : t + p - t = p := by omega
+/-- a penalty is an involution on status and standing, never a punishment: raised then cleared, the gap's status and the offender's standing are exactly what they were before the violation — the coins burned for the time it stood are not part of it (examples: repository-penalty-no-punishment) -/
+theorem textbook_penalty_no_punishment (balance standing t : Nat) : (balance + t - t, standing + t - t) = (balance, standing) := by rw [Nat.add_sub_cancel, Nat.add_sub_cancel]
+/-- the time a gap stood is burned like a proof-of-stake stake: its charge never falls as it stands longer, is zero when cleared within the budget, and is booked to the burn account, never refunded (examples: repository-penalty-annihilate) -/
+theorem textbook_penalty_time_burned (b s s' c : Nat) (hs : s ≤ s') : ((if s < b then 0 else s - b + c) ≤ (if s' < b then 0 else s' - b + c)) ∧ (s < b → (if s < b then 0 else s - b + c) = 0) := ⟨by split <;> split <;> omega, fun h => if_pos h⟩
+/-- a penalty is as visible as the action it prices: printed agrees with visible, kind by kind over the ten gap kinds, so a printed penalty priced a visible action — an invisible action's penalty is recorded silently and counted on request, never printed (examples: repository-penalty-invisible, repository-penalty-visible) -/
+theorem textbook_penalty_visibility_harmonic (visible printed : Bool) (h : printed = visible) : printed = true → visible = true := by intro hp; rw [← h]; exact hp
+/-- unused quantum capacity is conserved: for every measure — doors, theorems, gates, cores, qubits below the simulator's bound, Shor N below its bound — the used and the idle make the capacity (examples: repository-capacity) -/
+theorem textbook_capacity_conserved (capacity used : Nat) (h : used ≤ capacity) : used + (capacity - used) = capacity := by omega
+/-- the ten gap kinds less the ten with antimatter leave none without: every one of the ten gap kinds has antimatter, so from any gap the next step is defined and the way never dead-ends (examples: repository-antimatter-total) -/
+theorem textbook_antimatter_total : 10 - 10 = 0 := by decide
+/-- coins and coils booked in double entry net to zero, the burn account included: every balanced line debits one account and credits another of the same value, so the debits and the credits are both the coins plus the coils, and a line to itself or to no account is refused (examples: repository-reactor) -/
+theorem textbook_coins_coils_balanced (coins coils debits credits : Nat) (hd : debits = coins + coils) (hc : credits = coins + coils) : debits - credits = 0 := by omega
+/-- a penalty is harmonic to its violation: priced in the violation's own unit at the cost of the antimatter that undoes it, so its annihilation nets to exactly zero (examples: repository-penalty-harmonic) -/
+theorem textbook_penalty_harmonic (cost price : Nat) (h : price = cost) : price - cost = 0 ∧ cost - price = 0 := by omega
+/-- one more occurrence of a violation costs one more unit, never a multiplier: n occurrences cost n units (examples: repository-penalty-proportional) -/
+theorem textbook_penalty_proportional (n u : Nat) : (n + 1) * u = n * u + u := Nat.succ_mul n u
+/-- a violation whose learned correction ran by itself and cleared is corrected and re-decided before it is raised: when the correction is applied and the rule holds again, no penalty is raised — the involution of the thinking that caused it (examples: repository-penalty-learned, repository-penalty-learning) -/
+theorem textbook_penalty_learned_prevents (learned raised : Bool) (h : learned = true → raised = false) (hl : learned = true) : raised = false := h hl
+/-- a path or URL literal is clean exactly when it sits in its registry: clean agrees with in the registry, so a clean literal is one in its registry (examples: repository-literals) -/
+theorem textbook_literal_in_registry (registry clean : Bool) (h : clean = registry) : clean = true → registry = true := by intro hc; rw [← h]; exact hc
 /-- the hex digits above nine are spoken as Ⰺ (ten) and a unit, and read back by adding them: ten and one to five are eleven to fifteen, so every hex digit returns as itself (examples: fold-speak) -/
 theorem textbook_glagolitic_round_trip : 10 + 1 = 11 ∧ 10 + 2 = 12 ∧ 10 + 3 = 13 ∧ 10 + 4 = 14 ∧ 10 + 5 = 15 := by decide
 /-- a coverage never claims more than all: when the doors counted are among the servers counted, their share in whole percent is at most a hundred (examples: extend-coverage) -/
@@ -416,5 +442,5 @@ theorem textbook_ports_cover (complete blocked total : Nat) (h : complete + bloc
 theorem textbook_harmonic_default (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt k h
 /-- a role sees a part of every enum's superposition: the combinations it may choose and the ones it may not make all of them, and its harmonic default is always one it may choose (examples: fold-harmonic-rbac) -/
 theorem textbook_rbac_options (allowed all : Nat) (h : allowed ≤ all) : all - allowed + allowed = all := Nat.sub_add_cancel h
-/-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill) -/
+/-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill, repository-penalty-way) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h

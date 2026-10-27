@@ -2,16 +2,18 @@
 // (pre-commit, pre-push, post-commit, prepare-commit-msg) and walks its steps — a command run, an MCP call (local through the
 // handler, remote by URL with the user agent the step names), an imprint appended beside the receipt, the trailers written on
 // the commit message — exactly as the door answers them, nothing decided here. A strict step that fails ends the hook red.
-import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, statSync, readdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, statSync, readdirSync, openSync } from 'node:fs'
 import { join } from 'node:path'
-import { spawnSync, execSync } from 'node:child_process'
+import { spawnSync, execSync, spawn } from 'node:child_process'
 import { handle } from '../src/quantum/mcp.ts'
-import { GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
+import { GENERATED_FILES, RUN_FILES } from '../src/quantum/toolboxes/repository.ts'
+import { literalsOf, LITERAL_ROOTS, manualDocsOf } from '../src/quantum/audit.ts'
+import { GAP_KINDS, gapKindOf } from '../src/quantum/toolboxes/billing.ts'
 import { createHash } from 'node:crypto'
-import { penalise, clear, openPenaltiesOf } from './penalties.ts'
+import { penalise, clear, correctionOf, recordPrevented, openPenaltiesOf } from './penalties.ts'
 import { mcpOf } from './mcp.ts'
 
-type Step = { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }
+type Step = { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; detach?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }
 const name = process.argv[2] ?? ''
 const extra = process.argv.slice(3)
 const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'repository', arguments: { workflow: name, offline: process.env.QPU_OFFLINE === '1' } } }) as { result?: { structuredContent?: { workflow?: { name: string; steps: Step[]; strict: boolean } } }; error?: { message: string } }
@@ -22,7 +24,7 @@ let red = false
 // the open penalties first, before any step: their count, the tokens and coins they book, and each one's rule and subject
 const standing = await openPenaltiesOf()
 if (!standing.open) console.error(`hook ${name}: penalties unread (${standing.read})`)
-else { console.error(`hook ${name}: ${standing.open.length} open penalt${standing.open.length === 1 ? 'y' : 'ies'}, ${standing.tokens} token(s), ${standing.coins} coin(s)`); for (const b of standing.open) console.error(`  ${(b as { kind?: string }).kind ?? 'refusal'}${(b as { blocks?: boolean }).blocks === false ? ' (listed)' : ''} ${b.rule}: ${b.snapshot?.key}`) }
+else { const shown = standing.open.filter((b) => (b as { printed?: boolean }).printed !== false && b.kind !== 'invisible'); /* an invisible action's penalty is recorded silently, never printed (textbook_penalty_visibility_harmonic) */ console.error(`hook ${name}: ${shown.length} open penalt${shown.length === 1 ? 'y' : 'ies'}, ${standing.tokens} token(s), ${standing.coins} coin(s)`); for (const b of shown) console.error(`  ${(b as { kind?: string }).kind ?? 'refusal'}${(b as { blocks?: boolean }).blocks === false ? ' (listed)' : ''} ${b.rule}: ${b.snapshot?.key}`) }
 let automated: { drifted: string[]; bytes: number; files: { path: string; expected: string; actual: string }[] } | null = null
 // a raid step: the docket read through the Payload MCP tool the step names, every page (the URL overridden by QPU_APP_MCP, the user's MCP key
 // in QPU_APP_KEY, never written anywhere); without a key or an answer the docket is unread and the rules over it say unknown
@@ -30,6 +32,8 @@ let docket: unknown[] | null = null
 const raidOf = (s: Step) => mcpOf(process.env.QPU_APP_MCP ?? s.url).findAll(s.tool!, s.arguments ?? {})
 for (const s of w.steps) {
   if (red && s.strict) break
+  // a detached step runs in the background with its own output file, never holding the hook
+  if (s.kind === 'run' && s.detach) { const log = join('.qpu', `${s.id}.log`); mkdirSync('.qpu', { recursive: true }); const fd = openSync(log, 'w'); spawn(s.cmd!, s.args ?? [], { detached: true, stdio: ['ignore', fd, fd] }).unref(); console.log(`hook ${name}: ${s.id} started in the background (${log})`); continue }
   if (s.kind === 'run') { const p = spawnSync(s.cmd!, s.args ?? [], { stdio: 'inherit' }); if (p.status !== 0) { console.error(`hook ${name}: step ${s.id} red`); if (s.strict) red = true } continue }
   if (s.kind === 'raid') { const got = await raidOf(s); docket = got.docs; console.log(`hook ${name}: ${s.id}: ${got.says}`); continue }
   if (s.kind === 'stage') {
@@ -68,6 +72,36 @@ for (const s of w.steps) {
   }
   if (s.kind === 'mcp' && s.id !== 'sign') { const rr = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: s.tool!, arguments: s.arguments ?? {} } }) as { error?: { message: string } }; if (rr.error) { console.error(`hook ${name}: ${s.id}: ${rr.error.message}`); if (s.strict) red = true } }
 }
+// the involution of thinking: a hand edit of a generated file whose correction the docket already learned (a cleared pre-commit:automated) is
+// corrected before the decision — its antimatter (regenerate, restage: reversible, generated files only) applied and recorded as prevented — so
+// the same thought is corrected, never refused again
+if (name === 'pre-commit' && automated && automated.drifted.length && standing.learned?.includes('pre-commit:automated')) {
+  const git = (a: string[]) => spawnSync('git', a, { encoding: 'utf8' }).stdout?.trim() ?? ''
+  const c = correctionOf({ rule: 'pre-commit:automated', bytes: automated.bytes, committer: git(['config', 'user.name']) || null, evidence: { key: `pre-commit:automated::${automated.drifted.join(',')}`, workflow: name, violated: ['automated'], drifted: automated.drifted } }, standing.learned)
+  if (c && c.antimatter.needs === 'auto') {
+    for (const m of c.antimatter.run) spawnSync(m.cmd, m.args, { stdio: 'inherit' })
+    const left = GENERATED_FILES.filter((p) => existsSync(p) && spawnSync('git', ['diff', '--quiet', '--', p]).status === 1)
+    // the prevention is recorded only when the correction made the rule hold again; otherwise the rule decides and refuses as before
+    console.error(`hook ${name}: ${left.length ? `the learned correction left ${left.length} drifted: the rule decides` : `corrected by the learned antimatter, no penalty: ${c.says}; ${await recordPrevented(c.body)}`}`)
+    automated = { ...automated, drifted: left }
+  }
+}
+// pre-commit: the path and URL literals this commit adds outside their registries, read from the staged lines alone (a literal already in the
+// tree is listed and priced to the tree by purify, never charged to this commit); a file its generator wrote is not hand-written source
+const literalsFact = name === 'pre-commit' ? (() => {
+  const diff = spawnSync('git', ['diff', '--cached', '-U0', '--no-color', '--', ...LITERAL_ROOTS], { encoding: 'utf8', maxBuffer: 1 << 30 }).stdout ?? ''
+  const added: Record<string, string> = {}; let file = ''
+  for (const l of diff.split('\n')) { if (l.startsWith('+++ ')) { file = l.slice(4).replace(/^b\//, () => ''); continue } if (l.startsWith('+') && file && !(GENERATED_FILES as readonly string[]).includes(file)) added[file] = (added[file] ?? '') + l.slice(1) + '\n' }
+  for (const f of Object.keys(added)) { try { const head = readFileSync(f, 'utf8').split('\n').slice(0, 8).join('\n'); if (/GENERATED|Generated by/i.test(head)) delete added[f] } catch { delete added[f] } }
+  return { added: literalsOf(added).dirty.map((x) => ({ file: x.file, literal: x.literal, kind: x.kind })) }
+})() : undefined
+// pre-commit: a new docs page that no generator writes is manual work, refused by the rule automated (a page already in the tree is listed by purify)
+const manualFact = name === 'pre-commit' ? (() => {
+  const addedPages = (spawnSync('git', ['diff', '--cached', '--name-only', '--diff-filter=A', '--', 'docs'], { encoding: 'utf8' }).stdout ?? '').trim().split('\n').filter((f) => f.endsWith('.md'))
+  if (!addedPages.length) return []
+  const scripts = Object.fromEntries((spawnSync('git', ['ls-files', 'scripts'], { encoding: 'utf8' }).stdout ?? '').trim().split('\n').filter((f) => /\.(ts|mjs)$/.test(f)).map((f) => [f, readFileSync(f, 'utf8')]))
+  return manualDocsOf(addedPages.map((path) => ({ path, bytes: existsSync(path) ? statSync(path).size : 0 })), scripts).rows.filter((r) => r.manual).map((r) => r.path)
+})() : []
 // the rules of the workflow decided by their theorems over the facts this client read after its steps: the receipt it wrote, the approval the configs step recorded, the gate's decoding; a violation is refused and its case named
 // pre-deploy: the OpenNext bundle measured here, the deploy configuration handed over as its text, the docket as the Payload MCP answered it;
 // the core folds them into the facts (the bindings, the account, its observability, its usage): this client names no provider and no resource
@@ -80,12 +114,12 @@ const deployFacts = name === 'pre-deploy' ? (() => {
 const publishedFact = name === 'pre-push' ? (() => { const head = execSync('git rev-parse --short=8 HEAD', { encoding: 'utf8' }).trim(); const lines = existsSync('docs/public/receipts.ndjson') ? readFileSync('docs/public/receipts.ndjson', 'utf8').trim().split('\n') : []; for (const l of lines.reverse()) { let r: { head?: string; steps?: { name: string; status: string }[] }; try { r = JSON.parse(l) } catch { continue } if (r.head !== head) continue; const st = (n: string) => r.steps?.find((s) => s.name === n)?.status ?? 'missing'; if (st('docs:build') === 'skipped' || st('publish') === 'skipped') continue; return { head, branch: execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim(), build: st('docs:build'), publish: st('publish') } } return null })() : undefined
 const soleFact = name === 'pre-push' ? { branches: (spawnSync('git', ['branch', '--format=%(refname:short)'], { encoding: 'utf8' }).stdout ?? '').trim().split('\n').filter(Boolean), worktrees: execSync('git worktree list --porcelain', { encoding: 'utf8' }).split('\n').filter((l) => l.startsWith('worktree ')).length } : undefined
 const facts = { // the penalties this workflow raised itself are re-decided by this very run (cleared if it passes), so they don't count against it: no deadlock
-...(name === 'pre-push' ? { penalties: standing.open ? (() => { const others = standing.open.filter((b) => (b.snapshot as { workflow?: string } | undefined)?.workflow !== name && (b as { blocks?: boolean }).blocks !== false); return { open: others.length, openKeys: others.map((b) => b.snapshot?.key ?? '') } })() : null } : {}), ...(name === 'pre-commit' ? { automated: automated ? { drifted: automated.drifted } : null } : {}), ...(soleFact !== undefined ? { sole: soleFact } : {}), ...(publishedFact !== undefined ? { published: publishedFact } : {}), ...deployFacts, receipt: read('docs/public/receipt.json') as { steps?: { name: string; status: string }[] } | null, approval: (read('docs/public/configs.json') as { approval?: unknown } | null)?.approval ?? null, e2e: (read('docs/public/e2e.json') as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
+...(name === 'pre-push' ? { penalties: standing.open ? (() => { const others = standing.open.filter((b) => (b.snapshot as { workflow?: string } | undefined)?.workflow !== name && (b as { blocks?: boolean }).blocks !== false && GAP_KINDS[gapKindOf(b.rule ?? '', b.kind)]); /* lex mitior: blocks when it blocked when raised and its kind blocks now */ return { open: others.length, openKeys: others.map((b) => b.snapshot?.key ?? '') } })() : null } : {}), ...(name === 'pre-commit' ? { automated: automated ? { drifted: automated.drifted, manual: manualFact } : null, literals: literalsFact ?? null } : {}), ...(soleFact !== undefined ? { sole: soleFact } : {}), ...(publishedFact !== undefined ? { published: publishedFact } : {}), ...deployFacts, receipt: read(RUN_FILES.receipt) as { steps?: { name: string; status: string }[] } | null, approval: (read(RUN_FILES.configs) as { approval?: unknown } | null)?.approval ?? null, e2e: (read(RUN_FILES.e2e) as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
 const d = (handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'repository', arguments: { workflow: name, facts } } }) as { result?: { structuredContent?: { decision?: { allowed: boolean; strict: boolean; says: string; court: { arguments: { court: unknown } } | null } } } }).result?.structuredContent?.decision
 if (d) {
   console.log(`hook ${name}: ${d.says}`)
   const held = new Set(((d as { rules?: { rule: string; holds: boolean | null }[] }).rules ?? []).filter((r) => r.holds === true).map((r) => r.rule))
-  for (const b of standing.open ?? []) { const s = b.snapshot as { key?: string; workflow?: string; violated?: string[] } | undefined; if (!s?.key || s.workflow !== name || !(s.violated ?? []).length || !(s.violated ?? []).every((v) => held.has(v))) continue; const c = await clear(b.rule ?? name, `${(s.violated ?? []).join(', ')} hold again`, s as Record<string, unknown> & { key: string }); console.error(`hook ${name}: cleared ${s.key}: ${c.recorded}`) }
+  for (const b of standing.open ?? []) { const s = b.snapshot as { key?: string; workflow?: string; violated?: string[] } | undefined; if (!s?.key || s.workflow !== name || !(s.violated ?? []).length || !(s.violated ?? []).every((v) => held.has(v))) continue; const c = await clear(b.rule ?? name, `${(s.violated ?? []).join(', ')} hold again`, s as Record<string, unknown> & { key: string }, b.kind, b.tokens, (b.coin as { debit?: string } | null | undefined)?.debit?.replace(/^coins:/, () => '') ?? null); console.error(`hook ${name}: cleared ${s.key}: ${c.recorded}`) }
   if (!d.allowed && d.court) {
     const c = (handle({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'legal', arguments: { court: d.court.arguments.court } } }) as { result?: { structuredContent?: { case?: string; remedy?: string } } }).result?.structuredContent as { case?: string; remedy?: string } | undefined
     console.error(`hook ${name}: refused; the case ${c?.case ?? '?'}: ${c?.remedy ?? ''}`)
@@ -93,7 +127,7 @@ if (d) {
     const git = (a: string[]) => { try { return execSync(`git ${a.join(' ')}`, { encoding: 'utf8' }).trim() } catch { return '' } }
     const violated = (d as { violated?: string[] }).violated ?? [], unknown = (d as { unknown?: string[] }).unknown ?? []
     const isAutomated = violated.includes('automated') && automated !== null
-    const p = await penalise({ rule: `${name}:${[...violated, ...unknown.map((u) => u + '?')].join('+')}`, bytes: isAutomated ? automated!.bytes : Buffer.byteLength(d.says), committer: git(['config', 'user.name']) || null, evidence: { key: `${name}:${violated.join('+')}:${unknown.join('+')}:${isAutomated ? automated!.drifted.join(',') : git(['rev-parse', '--short=8', 'HEAD'])}`, workflow: name, violated, unknown, head: git(['rev-parse', '--short=8', 'HEAD']), branch: git(['rev-parse', '--abbrev-ref', 'HEAD']), stat: git(['diff', '--cached', '--stat']), files: isAutomated ? automated!.files : [], receipt: (read('docs/public/receipt.json') as { id?: string } | null)?.id ?? null, court: c?.case ?? null } })
+    const p = await penalise({ rule: `${name}:${[...violated, ...unknown.map((u) => u + '?')].join('+')}`, bytes: isAutomated ? automated!.bytes : Buffer.byteLength(JSON.stringify(((d as { rules?: { rule: string; evidence?: unknown }[] }).rules ?? []).filter((x) => violated.includes(x.rule) || unknown.includes(x.rule)).map((x) => x.evidence ?? x.rule))) /* harmonic: the refusal priced by its violated facts' own bytes */, committer: git(['config', 'user.name']) || null, evidence: { key: `${name}:${violated.join('+')}:${unknown.join('+')}:${isAutomated ? automated!.drifted.join(',') : git(['rev-parse', '--short=8', 'HEAD'])}`, workflow: name, violated, unknown, head: git(['rev-parse', '--short=8', 'HEAD']), branch: git(['rev-parse', '--abbrev-ref', 'HEAD']), stat: git(['diff', '--cached', '--stat']), files: isAutomated ? automated!.files : [], receipt: (read(RUN_FILES.receipt) as { id?: string } | null)?.id ?? null, court: c?.case ?? null } })
     console.error(`hook ${name}: penalty ${p.body.seal.address}: ${p.says}; ${p.recorded}`)
   }
 }
