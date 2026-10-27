@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T02:06:30.291Z",
+ "date": "2026-10-27T02:11:53.003Z",
  "literals": {
   "urls": 881,
   "distinctUrls": 445,
@@ -693,9 +693,9 @@
  },
  "files": 949,
  "lines": 85936,
- "findings": 1078,
+ "findings": 1079,
  "fused": 334,
- "reactions": 744,
+ "reactions": 745,
  "gravity": "5ce7bbb2-8316-47c5-a848-2ad06659320c",
  "vacuum": false,
  "byKind": {
@@ -720,7 +720,7 @@
    "leads": 285
   },
   "shape": {
-   "findings": 222,
+   "findings": 223,
    "leads": 5
   },
   "todo": {
@@ -787,7 +787,7 @@
   {
    "id": "entropy-cap-113d3f3c",
    "kind": "cap",
-   "source": "scripts/machine.ts:63, src/quantum/discovery.ts:247, src/quantum/examples.ts:130, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:36",
+   "source": "scripts/machine.ts:63, src/quantum/discovery.ts:247, src/quantum/examples.ts:131, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:36",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200)",
    "status": "open",
    "tool": "audit",
@@ -799,7 +799,7 @@
   {
    "id": "entropy-cap-e1adfd32",
    "kind": "cap",
-   "source": "scripts/purify.ts:170, scripts/purify.ts:183, scripts/textbook.ts:47, src/quantum/audit.ts:420, src/quantum/audit.ts:438, src/quantum/audit.ts:440, src/quantum/audit.ts:442, src/quantum/discovery.ts:116, src/quantum/discovery.ts:161, src/quantum/examples.ts:150, src/quantum/examples.ts:204, src/quantum/match.ts:340, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:183, src/quantum/wave.ts:27, src/worker.ts:367",
+   "source": "scripts/purify.ts:170, scripts/purify.ts:183, scripts/textbook.ts:47, src/quantum/audit.ts:420, src/quantum/audit.ts:438, src/quantum/audit.ts:440, src/quantum/audit.ts:442, src/quantum/discovery.ts:116, src/quantum/discovery.ts:161, src/quantum/examples.ts:151, src/quantum/examples.ts:205, src/quantum/match.ts:340, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:183, src/quantum/wave.ts:27, src/worker.ts:367",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80)",
    "status": "open",
    "tool": "audit",
@@ -955,7 +955,7 @@
   {
    "id": "entropy-cap-c7ad5d45",
    "kind": "cap",
-   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:209, src/quantum/wave.ts:24, src/quantum/wave.ts:29, src/quantum/wave.ts:30, src/quantum/wave.ts:32",
+   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:210, src/quantum/wave.ts:24, src/quantum/wave.ts:29, src/quantum/wave.ts:30, src/quantum/wave.ts:32",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 100)",
    "status": "open",
    "tool": "audit",
@@ -1075,7 +1075,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/audit.ts:360, src/quantum/audit.ts:361, src/quantum/examples.ts:209, src/quantum/mcp.ts:996, src/quantum/mcp.ts:999, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:114, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:189, src/quantum/toolboxes/legal.ts:264",
+   "source": "src/quantum/audit.ts:360, src/quantum/audit.ts:361, src/quantum/examples.ts:210, src/quantum/mcp.ts:996, src/quantum/mcp.ts:999, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:114, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:189, src/quantum/toolboxes/legal.ts:264",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
@@ -1099,7 +1099,7 @@
   {
    "id": "entropy-leak-0fc168b2",
    "kind": "leak",
-   "source": "src/quantum/examples.ts:212",
+   "source": "src/quantum/examples.ts:213",
    "statement": "an address in the tree: contacts are URLs, the account email is read at deploy — <address>@qpu.uuidna.com",
    "status": "open",
    "tool": "audit",
@@ -1111,7 +1111,7 @@
   {
    "id": "entropy-leak-fea3989b",
    "kind": "leak",
-   "source": "src/quantum/examples.ts:212",
+   "source": "src/quantum/examples.ts:213",
    "statement": "an address in the tree: contacts are URLs, the account email is read at deploy — <address>@project-id.iam.gserviceaccount.com",
    "status": "open",
    "tool": "audit",
@@ -1291,7 +1291,7 @@
   {
    "id": "entropy-duplicate-4d77ae2a",
    "kind": "duplicate",
-   "source": "scripts/attest.ts:31, scripts/compete.ts:43, scripts/configs.ts:57, scripts/constants.ts:16, scripts/currency.ts:29, scripts/discover.ts:64, scripts/e2e.ts:53, scripts/idle.ts:32, scripts/patents.ts:31, scripts/sources.ts:44, scripts/verify.ts:61",
+   "source": "scripts/attest.ts:31, scripts/compete.ts:43, scripts/configs.ts:57, scripts/constants.ts:16, scripts/currency.ts:29, scripts/discover.ts:64, scripts/e2e.ts:49, scripts/idle.ts:32, scripts/patents.ts:31, scripts/sources.ts:44, scripts/verify.ts:61",
    "statement": "one line of code repeated in more than one file: one place should hold it — mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })",
    "status": "open",
    "tool": "audit",
@@ -4711,11 +4711,11 @@
   {
    "id": "entropy-shape-0d8252de",
    "kind": "shape",
-   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/compete.ts:22, scripts/configs.ts:19, scripts/configs.ts:21, scripts/configs.ts:24, scripts/currency.ts:33, scripts/discover.ts:31, scripts/gen-docs.ts:16, scripts/hook.ts:22, scripts/idle.ts:27, scripts/imagine.ts:20, scripts/imagine.ts:30, scripts/legal.ts:39, scripts/legal.ts:45, scripts/metrics.ts:10, scripts/next.ts:71, scripts/next.ts:76, scripts/next.ts:108, scripts/next.ts:166, scripts/next.ts:190, scripts/next.ts:201, scripts/publish.ts:27, scripts/publish.ts:43, scripts/purify.ts:74, scripts/purify.ts:107, scripts/purify.ts:108, scripts/readiness.ts:32, scripts/readiness.ts:34, scripts/readiness.ts:82, scripts/repository.ts:16, scripts/repository.ts:19, scripts/repository.ts:20, scripts/repository.ts:28, scripts/repository.ts:47, scripts/security.ts:31, scripts/shard.ts:22, scripts/sources.ts:17, scripts/stdio.ts:16, scripts/textbook.ts:17, scripts/textbook.ts:18, scripts/textbook.ts:21, scripts/trunk.ts:13, scripts/verify.ts:23, scripts/verify.ts:34, site/src/payload.qpu.mcp.ts:55, src/quantum/audit.test.ts:38, src/quantum/toolboxes/payload.ts:1249",
+   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/compare.ts:30, scripts/compete.ts:22, scripts/configs.ts:19, scripts/configs.ts:21, scripts/configs.ts:24, scripts/currency.ts:33, scripts/discover.ts:31, scripts/gen-docs.ts:16, scripts/hook.ts:22, scripts/idle.ts:27, scripts/imagine.ts:20, scripts/imagine.ts:30, scripts/legal.ts:39, scripts/legal.ts:45, scripts/metrics.ts:10, scripts/next.ts:71, scripts/next.ts:76, scripts/next.ts:108, scripts/next.ts:166, scripts/next.ts:190, scripts/next.ts:201, scripts/publish.ts:27, scripts/publish.ts:43, scripts/purify.ts:74, scripts/purify.ts:107, scripts/purify.ts:108, scripts/readiness.ts:32, scripts/readiness.ts:34, scripts/readiness.ts:82, scripts/repository.ts:16, scripts/repository.ts:19, scripts/repository.ts:20, scripts/repository.ts:28, scripts/repository.ts:47, scripts/security.ts:31, scripts/shard.ts:22, scripts/sources.ts:17, scripts/stdio.ts:16, scripts/textbook.ts:17, scripts/textbook.ts:18, scripts/textbook.ts:21, scripts/trunk.ts:13, scripts/verify.ts:23, scripts/verify.ts:34, site/src/payload.qpu.mcp.ts:55, src/quantum/audit.test.ts:38, src/quantum/toolboxes/payload.ts:1249",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a JSON file read and parsed: one reader of the published files, null when a file is missing",
    "status": "open",
    "tool": "audit",
-   "occurrences": 48,
+   "occurrences": 49,
    "address": "0d8252de-feac-88b8-84b4-371eea5536ea",
    "explore": "match",
    "config": null
@@ -4723,7 +4723,7 @@
   {
    "id": "entropy-shape-484442bd",
    "kind": "shape",
-   "source": "scripts/attest.ts:31, scripts/claims.ts:49, scripts/compete.ts:43, scripts/configs.ts:57, scripts/constants.ts:16, scripts/currency.ts:29, scripts/discover.ts:64, scripts/e2e.ts:53, scripts/idle.ts:32, scripts/patents.ts:31, scripts/sources.ts:44, scripts/verify.ts:61",
+   "source": "scripts/attest.ts:31, scripts/claims.ts:49, scripts/compete.ts:43, scripts/configs.ts:57, scripts/constants.ts:16, scripts/currency.ts:29, scripts/discover.ts:64, scripts/e2e.ts:49, scripts/idle.ts:32, scripts/patents.ts:31, scripts/sources.ts:44, scripts/verify.ts:61",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — the published folder made: one writer of the published files that makes its folder",
    "status": "open",
    "tool": "audit",
@@ -4735,7 +4735,7 @@
   {
    "id": "entropy-shape-7458ed19",
    "kind": "shape",
-   "source": "scripts/attest.ts:14, scripts/compare.ts:13, scripts/compare.ts:33, scripts/compete.ts:31, scripts/compete.ts:35, scripts/compete.ts:40, scripts/currency.ts:21, scripts/discover.ts:20, scripts/e2e.ts:29, scripts/hook.ts:65, scripts/legal.ts:19, scripts/mcp.ts:14, scripts/metrics.ts:14, scripts/metrics.ts:25, scripts/patents.ts:26, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/readiness.ts:22, scripts/repository.ts:38, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/security.ts:45, scripts/sources.ts:30, scripts/sources.ts:40, scripts/textbook.ts:26, scripts/textbook.ts:35, scripts/textbook.ts:52, scripts/verify.ts:47, site/src/collections/Entries.ts:42, src/quantum/toolboxes/payload.ts:1313, src/worker.ts:37, src/worker.ts:474",
+   "source": "scripts/attest.ts:14, scripts/compare.ts:14, scripts/compare.ts:35, scripts/compete.ts:31, scripts/compete.ts:35, scripts/compete.ts:40, scripts/currency.ts:21, scripts/discover.ts:20, scripts/e2e.ts:29, scripts/hook.ts:65, scripts/legal.ts:19, scripts/mcp.ts:14, scripts/metrics.ts:14, scripts/metrics.ts:25, scripts/patents.ts:26, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/readiness.ts:22, scripts/repository.ts:38, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/security.ts:45, scripts/sources.ts:30, scripts/sources.ts:40, scripts/textbook.ts:26, scripts/textbook.ts:35, scripts/textbook.ts:52, scripts/verify.ts:47, site/src/collections/Entries.ts:42, src/quantum/toolboxes/payload.ts:1313, src/worker.ts:37, src/worker.ts:474",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a request with its timeout: one fetcher with the named user agent and the timeout",
    "status": "open",
    "tool": "audit",

@@ -26,7 +26,7 @@ const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/t
 // quantum multitasking is the natural speedup: steps that need nothing from each other run at once, in waves; a wave waits for
 // the one before it (the generators before the checks, the checks before the readers, the readers before the site)
 type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs?: number; wave: number; /** a long single task split into short multitasks: n shards at once (QPU_SHARD=i/n), then one merge (QPU_SHARD=merge) */ shards?: number }
-const TIMES = await timesOf(ROOT), budgetOf = (s: Step) => /* twice the step's recorded mean when that exceeds its stated budget, which stays the floor */ Math.max(s.budgetMs ?? 600_000, 2 * (etaOf(TIMES[s.name] ?? []) ?? 0))
+const TIMES = await timesOf(ROOT), budgetOf = (s: Step) => Math.max(s.budgetMs ?? 600_000, 2 * (etaOf(TIMES[s.name] ?? []) ?? 0))
 const steps: Step[] = [
   { name: 'clay:gen', cmd: 'node', args: ['--import', 'tsx', 'scripts/gen-clay.ts'], wave: 1 },
   { name: 'docs:gen', cmd: 'npx', args: ['tsx', 'scripts/gen-docs.ts'], wave: 1 },
@@ -116,7 +116,7 @@ const run = async (s: Step): Promise<boolean> => {
   const started = Date.now(), startedNs = process.hrtime.bigint()
   // short multitasks: the shards run at once, each with its share and its own budget, then the merge; the outputs are read as one
   const r = s.shards && !s.skip ? await (async () => { const parts = await Promise.all(Array.from({ length: s.shards! }, (_, i) => spawned(s, `${i}/${s.shards}`))); const merge = await spawned(s, 'merge'); return { status: parts.every((p) => p.status === 0) && merge.status === 0 ? 0 : (parts.find((p) => p.status !== 0)?.status ?? merge.status), out: [...parts.map((p) => p.out), merge.out].join('\n'), timedOut: parts.some((p) => p.timedOut) || merge.timedOut, cpuUs: [...parts, merge].reduce((n, p) => n + p.cpuUs, 0), rssKb: Math.max(...[...parts, merge].map((p) => p.rssKb)), firstMs: parts.map((p) => p.firstMs).filter((x): x is number => x !== null).sort((a, b) => a - b)[0] ?? null } })() : await spawned(s)
-  if (r.timedOut) console.log(`⏱ ${s.name}: exceeded its budget of ${budgetOf(s) / 1000} s (its stated budget, or twice its recorded mean when that is longer) and was killed; a hang is a lead, not a stop`)
+  if (r.timedOut) console.log(`⏱ ${s.name}: exceeded its budget of ${budgetOf(s) / 1000} s (the longer of its own and twice its recorded mean) and was killed; a hang is a lead, not a stop`)
   const out = r.out
   const ok = r.status === 0 && !r.timedOut
   const counts: Record<string, number> = {}

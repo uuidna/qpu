@@ -30,11 +30,11 @@ const main = async () => {
     catch (e) { answers.push({ ...r, status: 0, ms: Date.now() - t0, text: `fetch failed: ${(e as Error).message}` }) }
   }
   // the online measurements (the Claude mount, the signatures, the stylesheet, the tools/list, the coverage) wait on the network: overlapped with the requests
-  const off = process.env.QPU_OFFLINE === '1'
+  const off = process.env.QPU_OFFLINE === '1', asked = { phase: 'offline' as const, note: 'offline: not asked' }, measured_ = { phase: 'offline' as const, says: 'offline: not measured' }
   const measured = Promise.all([
-    off ? { phase: 'offline' as const, note: 'offline: not asked' } : mountThroughClaude(), off ? { phase: 'offline' as const, note: 'offline: not asked' } : verifySignaturesAt(plan.hosts as string[]),
-    off ? { phase: 'offline' as const, says: 'offline: not measured' } : compareStylesheets(), off ? { phase: 'offline' as const, says: 'offline: not measured' } : compareToolLists(),
-    off ? { phase: 'offline' as const, says: 'offline: not measured' } : compareCoverage(),
+    off ? asked : mountThroughClaude(), off ? asked : verifySignaturesAt(plan.hosts as string[]),
+    off ? measured_ : compareStylesheets(), off ? measured_ : compareToolLists(),
+    off ? measured_ : compareCoverage(),
   ])
   const inFlight = new Set<Promise<void>>()
   while ((queue.length && Date.now() - started < QUANTUM_MS) || inFlight.size) {
