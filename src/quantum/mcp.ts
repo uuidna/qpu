@@ -14,6 +14,7 @@ import { composeOf } from './compose.js'
 import { mayChoose, ROLE_RANK, type Role } from './roles.js'
 import { evaluateOf, expressionsOf, proseOf, statementOf } from './expressions.js'
 import { theoremOf, verificationOf } from './verification.js'
+import { witnessCheckOf, witnessMergeOf } from './witnesses.js'
 import { claimsPlanOf, claimsOf } from './claims.js'
 import { institutionOf, presetsOf, presetOf, createCallOf, PRESET_FAMILIES } from './institutions.js'
 import { collisionsOf } from './collisions.js'
@@ -123,7 +124,7 @@ import { flowWidget } from './widgets.js'
 import { cssOf, varsOf, KEY, createOf, coilColourOf, programHuesOf, raysOf, CSS_FRAMEWORKS, cssCompareOf } from './theme.js'
 import { LANGUAGE } from './toolboxes/language.js'
 import { RAID } from './toolboxes/raid.js'
-import { BILLING, usageOrderOf, ALGEBRA_TOOLS, fusionOf, CATALOGUE } from './toolboxes/billing.js'
+import { BILLING, usageOrderOf, ALGEBRA_TOOLS, fusionOf, CATALOGUE, witnessCoinsOf } from './toolboxes/billing.js'
 import { LEGAL, courtOf } from './toolboxes/legal.js'
 import { REPOSITORY } from './toolboxes/repository.js'
 import { STANDARDS_BOX } from './toolboxes/standards.js'
@@ -627,9 +628,9 @@ const OWN: Tool[] = [
   tool({
     name: 'verify',
     description: 'Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content needed), its content (one fold), and its neighbours in a chain (the predecessor it names and the successor that names it). Each check is independent; a check without its input is not decided rather than passed.',
-    inputSchema: { type: 'object', properties: { uuid: { type: 'string', description: 'the UUID to verify' }, scan: { type: 'array', items: { type: 'object' }, description: 'a stream of frames a device sampled ({ t, hue }, hue null for a black frame): read back to the address it links, by majority per frame; fewer than 36 frames link nothing; rated by the chain (free for the first period)' }, content: { type: 'string', description: 'the text the UUID should be the address of' }, prev: { type: 'object', properties: { id: { type: 'string' } }, description: 'the predecessor in the chain' }, self: { type: 'object', properties: { prev: { type: 'string' } }, description: 'what this entry names as its predecessor' }, next: { type: 'object', properties: { id: { type: 'string' }, prev: { type: 'string' } }, description: 'the successor in the chain' } } },
-    run: (args) => Array.isArray(args.scan) ? scanOf(args.scan as { t: number; hue: number | null }[]) : verifyOf(String(args.uuid ?? ''), typeof args.content === 'string' ? args.content : undefined, args.prev as { id: string } | undefined, args.next as { id: string; prev?: string } | undefined, args.self as { prev?: string } | undefined),
-    widget: verifyWidget,
+    inputSchema: { type: 'object', properties: { witnesses: { description: 'the fourteen witnesses around a UUID, the faces of a cuboctahedron: a UUID gives six square witnesses (its program rotated one to six places) and eight triangular ones (one handle nibble reflected by σ), each mapped back exactly; { referrer, destination } merges two sets, the shared witnesses (same address) counted once and booked as coins credited to the author at zero price — free work, never money' }, uuid: { type: 'string', description: 'the UUID to verify' }, scan: { type: 'array', items: { type: 'object' }, description: 'a stream of frames a device sampled ({ t, hue }, hue null for a black frame): read back to the address it links, by majority per frame; fewer than 36 frames link nothing; rated by the chain (free for the first period)' }, content: { type: 'string', description: 'the text the UUID should be the address of' }, prev: { type: 'object', properties: { id: { type: 'string' } }, description: 'the predecessor in the chain' }, self: { type: 'object', properties: { prev: { type: 'string' } }, description: 'what this entry names as its predecessor' }, next: { type: 'object', properties: { id: { type: 'string' }, prev: { type: 'string' } }, description: 'the successor in the chain' } } },
+    run: (args) => typeof args.witnesses === 'string' ? (witnessCheckOf(args.witnesses) as never) : args.witnesses && typeof args.witnesses === 'object' ? (() => { const w = args.witnesses as { referrer?: string; destination?: string }; const m = witnessMergeOf(String(w.referrer ?? ''), String(w.destination ?? '')); return { ...m, coins: witnessCoinsOf(m.shared) } as never })() : Array.isArray(args.scan) ? scanOf(args.scan as { t: number; hue: number | null }[]) : verifyOf(String(args.uuid ?? ''), typeof args.content === 'string' ? args.content : undefined, args.prev as { id: string } | undefined, args.next as { id: string; prev?: string } | undefined, args.self as { prev?: string } | undefined),
+    widget: ((d: any) => ('witnesses' in d || 'shared' in d ? flowWidget(d) : verifyWidget(d))) as never,
   }),
 ]
 

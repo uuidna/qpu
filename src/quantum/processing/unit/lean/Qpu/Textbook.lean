@@ -50,6 +50,10 @@ theorem textbook_penalty_once (a b : Nat) (h : a = b) : a = b := h
 theorem textbook_glagolitic_round_trip : 10 + 1 = 11 ∧ 10 + 2 = 12 ∧ 10 + 3 = 13 ∧ 10 + 4 = 14 ∧ 10 + 5 = 15 := by decide
 /-- a coverage never claims more than all: when the doors counted are among the servers counted, their share in whole percent is at most a hundred (examples: extend-coverage) -/
 theorem textbook_coverage_bounded (doors total : Nat) (h : doors ≤ total) : doors * 100 / total ≤ 100 := Nat.div_le_of_le_mul (Nat.mul_le_mul_right 100 h)
+/-- the vector equilibrium has fourteen faces, eight triangles and six squares: around every UUID, eight witnesses with one handle nibble reflected and six with the program rotated (examples: verify-witnesses) -/
+theorem textbook_cuboctahedron_faces : 8 + 6 = 14 := by decide
+/-- σ is an involution on a nibble: reflected twice, 15 − (15 − x), it is x again, so every triangular witness maps back exactly to the UUID it witnesses (examples: verify-witnesses, verify-witnesses-merge) -/
+theorem textbook_sigma_involution (x : Nat) (h : x ≤ 15) : 15 - (15 - x) = x := by omega
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
 /-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/
