@@ -298,6 +298,8 @@ theorem textbook_association_fields : 5 + 4 + 1 = 10 := by decide
 theorem textbook_validation_helpers : 5 + 9 = 14 := by decide
 /-- listRunnableLeads runs a lead exactly when it is unserved and names its door: the job qpu-lead-run is asked for no other (examples: leads-runnable) -/
 theorem textbook_runnable_leads (unserved door : Bool) : (unserved && door) = true → unserved = true ∧ door = true := by cases unserved <;> cases door <;> decide
+/-- a .glb begins with a twelve-byte header (the magic glTF, 0x46546C67, the version and the length) and each chunk with eight bytes (its length and its type, JSON 0x4E4F534A or BIN); seal { gltf } loads an asset unless it requires an extension the table does not list (examples: seal-gltf-glb, seal-gltf-json) -/
+theorem textbook_gltf_required_extensions : 12 + 8 = 20 ∧ 0x46546C67 = 1179937895 ∧ 0x4E4F534A = 1313821514 := by decide
 /-- the phase of the stream at an interaction is one of 3888 milliseconds: eleven bits of randomness a sample, the device's own nonce thirty-two more (examples: seal-entropy) -/
 theorem textbook_phase_bits : 2 ^ 11 ≤ 3888 ∧ 3888 < 2 ^ 12 := by decide
 /-- a period of the stream is a chain of thirty-five links between its thirty-six frames; every full period streamed is one call, the first the coin, every further one a coil: the fusion (examples: verify-scan, verify-scan-one-frame) -/

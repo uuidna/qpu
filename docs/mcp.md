@@ -2804,6 +2804,10 @@ SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a t
     "text"
   ],
   "properties": {
+    "gltf": {
+      "type": "object",
+      "description": "a glTF 2"
+    },
     "text": {
       "type": "string"
     },

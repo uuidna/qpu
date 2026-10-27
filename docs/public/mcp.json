@@ -3378,6 +3378,10 @@
           "text"
         ],
         "properties": {
+          "gltf": {
+            "type": "object",
+            "description": "a glTF 2"
+          },
           "text": {
             "type": "string"
           },

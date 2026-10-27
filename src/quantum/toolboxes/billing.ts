@@ -156,16 +156,7 @@ export const DOMAIN_CURRENCY: Readonly<Record<string, string>> = { bg: 'EUR', eu
 export const ALGEBRA_TOOLS: readonly string[] = ['css', 'fold', 'verify', 'clay']
 /** Cloudflare's free tiers as its pricing pages state them (each with its page, to verify there): what the Payload app over OpenNext and the
  *  Worker may use a day without a bill; beyond any of them the Workers Paid plan, whose base is the minimum bill. */
-const CLOUDFLARE_FREE = {
-  workersRequestsPerDay: { limit: 100000, page: 'https://developers.cloudflare.com/workers/platform/pricing/' },
-  d1RowsReadPerDay: { limit: 5000000, page: 'https://developers.cloudflare.com/d1/platform/pricing/' },
-  d1RowsWrittenPerDay: { limit: 100000, page: 'https://developers.cloudflare.com/d1/platform/pricing/' },
-  kvReadsPerDay: { limit: 100000, page: 'https://developers.cloudflare.com/kv/platform/pricing/' },
-  kvWritesPerDay: { limit: 1000, page: 'https://developers.cloudflare.com/kv/platform/pricing/' },
-  r2StorageGbMonth: { limit: 10, page: 'https://developers.cloudflare.com/r2/pricing/' },
-  aiNeuronsPerDay: { limit: 10000, page: 'https://developers.cloudflare.com/workers-ai/platform/pricing/' },
-  durableObjectRequestsPerDay: { limit: 100000, page: 'https://developers.cloudflare.com/durable-objects/platform/pricing/' },
-} as const
+const CLOUDFLARE_FREE = TABLES.CLOUDFLARE_FREE
 const WORKERS_PAID_BASE_USD_CENTS = 500
 export type CloudflareUsage = Partial<Record<keyof typeof CLOUDFLARE_FREE, number>>
 /** The minimum bill of existing and computing: zero while every measured use stays within its free tier, else the paid plan's base a month;

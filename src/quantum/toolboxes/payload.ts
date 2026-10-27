@@ -225,18 +225,7 @@ const PAYLOAD_PLUGINS: readonly { name: string; pkg: string; options: Record<str
  *  block answers them live (leads { ids }). The tree is what the nested-docs plugin computes from parent: breadcrumbs, URLs, nothing custom. */
 type GateKind = 'open' | 'keyed' | 'browser' | 'proposed' | 'tool'
 export type Gate = { id: string; category: string; name: string; url: string; host: string; kind: GateKind; by: string; measured: string | null; leads: string[] }
-const GATE_CATEGORIES: readonly { id: string; name: string; says: string }[] = [
-  { id: 'patents', name: 'Patent gates', says: 'the offices and indexes the patents tool passes' },
-  { id: 'certificates', name: 'Certificate and crypto gates', says: 'the beacon, the logs, the directory, the vulnerability index and the physics the attest tool passes' },
-  { id: 'currency', name: 'Currency gates', says: 'the rate sources the currency tool harmonises' },
-  { id: 'competitions', name: 'Competition gates', says: 'the rules pages the compete tool follows' },
-  { id: 'mcp', name: 'MCP gates', says: 'the servers discovery reads, and the servers the registry names beside them: proposed, never called from the tree' },
-  { id: 'references', name: 'Reference gates', says: 'the vocabularies, codes and references the verifier reads' },
-  { id: 'news', name: 'News gates', says: 'the public news APIs wired as adapters of the DOI research: the mentions of every record of precedence, by source' },
-  { id: 'energy', name: 'Energy gates', says: 'the market-price gates the bill\'s kilowatt-hours are priced against, keyed by the tenant' },
-  { id: 'google-apis', name: 'Google API gates', says: 'every API Google\'s directory lists, placed by its Discovery document: reads in the frontend under the tenant\'s API key, every method in the admin under its OAuth, the Admin SDK under domain-wide delegation; called through payload { googleCall }' },
-  { id: 'dependencies', name: 'Dependency gates', says: 'every dev dependency of the tree imagined as an MCP door: the step of next that runs it is its tools/call, its gate page carries that step\'s block rendered by the MCP App, usable in the UI' },
-]
+const GATE_CATEGORIES: readonly { id: string; name: string; says: string }[] = TABLES.GATE_CATEGORIES as readonly { id: string; name: string; says: string }[]
 const escapeRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const gateHostOf = (url: string): string => { try { return new URL(url).host.replace(/^www\./, '') } catch { return url.replace(/^[a-z]+:\/\//, '').split(/[/:]/)[0] ?? url } }
 const gatePathOf = (url: string): string => { try { const u = new URL(url); return `${u.host.replace(/^www\./, '')}${u.pathname.replace(/\/$/, '')}` } catch { return url } }
@@ -474,22 +463,7 @@ const siteOf = (ctx: Context, origin: string, devDependencies: Record<string, st
   return { reference: { site: 'https://payloadcms.com', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', shape: 'docs with layout blocks (blockType), meta (title, description), breadcrumbs: the site is what Payload computes; discovery reads it as the standard payload-site' }, origin, useCases: useCases.length, pages: docs.length, byUseCase: useCases, docs, gates: { root: gated.tree.root, categories: gated.counts.categories, gates: gated.counts.gates, pages: gated.docs.length, depth: gated.tree.depth, partition: gated.counts.partition, byKind: gated.counts.byKind, leads: gated.leads, byCategory: gated.categories }, collection: { slug: 'pages', totalDocs: docs.length + gated.docs.length, docs: [...docs.filter((d) => 'uuid' in d).map((d) => ({ id: d.uuid, title: d.title, slug: `/${d.uuid}`, layout: [(() => { const ch = channelOf(String(d.uuid)); return { blockType: 'qpu', tool: d.tool, uuid: d.uuid, handle: ch.handle, program: ch.program.join(''), tail: ch.tail, arguments: (d as { arguments?: Record<string, unknown> }).arguments ?? null, theorem: d.theorem ?? null } })()], meta: { title: d.title, description: d.description }, breadcrumbs: [{ doc: d.uuid, url: `/${d.uuid}`, label: d.title }], path: `/${d.uuid}`, parent: null, depth: 1 })), ...gated.docs] } }
 }
 /** Payload's skills for agents, read as data from the repository tree (github.com/payloadcms/skills): each skill and each of its references mapped to the tool of this tree that enacts it. No text of the skills is carried: the repository declares no licence; names, paths and sizes are facts. */
-const SKILL_MAP: Readonly<Record<string, { enactedBy: string[]; how: string }>> = {
-  'payload': { enactedBy: ['configure', 'payload', 'extend'], how: 'the project shape: configure { kind: payload } holds the default plugins over the one pages collection; payload { site } lays the site out as pages; extend mounts this catalogue in the Payload MCP plugin' },
-  'cms-migration': { enactedBy: ['configure', 'fold', 'mongo'], how: 'content moved at whole uptime: configure { kind: migration } is the plan, fold splits what a place cannot hold, mongo is the RAID\'s query language for the rows' },
-  'ACCESS-CONTROL': { enactedBy: ['legal', 'configure'], how: 'roles over MCP itself: the RBAC host the Worker asks first (QPU_RBAC_MCP), the tenants\' tokens by name in configure { kind: tenant }' },
-  'ACCESS-CONTROL-ADVANCED': { enactedBy: ['legal'], how: 'the security checks of the legal audit, sealed by the inputs\' SHA-256' },
-  'ADAPTERS': { enactedBy: ['mongo', 'extend'], how: 'the RAID is the adapter of all adapters: the docket over the Mongo query language; every MCP an adapter through extend' },
-  'ADVANCED': { enactedBy: ['dashboard', 'clone'], how: 'every facet of every tool laid out; a toolbox cloned whole for another host' },
-  'COLLECTIONS': { enactedBy: ['payload', 'configure'], how: 'no custom collection: the plugins\' pages, every result a document with one qpu block' },
-  'ENDPOINTS': { enactedBy: ['discover', 'extend'], how: 'the endpoints are doors: tools/list, the docket\'s four verbs, /.well-known/qpu.json; in the app, Payload\'s own: the entries collection (a call is an entry), the qpu global, the MCP plugin — no custom endpoint' },
-  'FIELD-TYPE-GUARDS': { enactedBy: ['payload'], how: 'the block\'s fields are typed by the lexical document shape payloadDocOf gives' },
-  'FIELDS': { enactedBy: ['payload', 'dashboard'], how: 'the qpu block\'s fields (uuid, handle, program, tail, tool, arguments, prev, next); every tool\'s inputSchema a form the dashboard enumerates' },
-  'HOOKS': { enactedBy: ['payload'], how: 'blocks double as hooks: the next uuid is the program rotated, the referer chain the breadcrumbs' },
-  'PLUGIN-DEVELOPMENT': { enactedBy: ['configure', 'clone'], how: 'MCP configures the default plugins in all combinations; a toolbox is a plugin cloned whole' },
-  'QUERIES': { enactedBy: ['mongo', 'match'], how: 'the Mongo query language over the docket; a statement matched to the tool that serves it' },
-  'PAYLOAD-FIELD-REFERENCE': { enactedBy: ['payload', 'fold'], how: 'the field reference of a migration: the document shape, and the fold that moves the rows under any bound' },
-}
+const SKILL_MAP: Readonly<Record<string, { enactedBy: readonly string[]; how: string }>> = TABLES.SKILL_MAP as Readonly<Record<string, { enactedBy: readonly string[]; how: string }>>
 /** payloadcms.com's own configuration, read at github.com/payloadcms/website (MIT) on 2026-10-25, src/payload.config.ts: the plugins it mounts and the database it runs on — facts, compared with the plugins MCP configures here. */
 const PAYLOAD_WEBSITE = { repository: 'https://github.com/payloadcms/website', licence: 'MIT', config: 'src/payload.config.ts', plugins: ['form-builder', 'nested-docs', 'redirects', 'seo'], own: ['opsCounter'], editor: 'lexical with BlocksFeature', database: '@payloadcms/db-mongodb', storage: '@payloadcms/storage-vercel-blob', email: '@payloadcms/email-nodemailer', readAt: '2026-10-25' } as const
 const camel = (dir: string) => dir.replace(/\.tsx?$/, '').replace(/^[A-Z]/, (c) => c.toLowerCase())
@@ -516,7 +490,7 @@ const skillsOf = (tree: { tree?: { path: string; type?: string; size?: number }[
   return { repository: 'https://github.com/payloadcms/skills', sha: tree.sha ?? null, entries: entries.length, truncated: !!tree.truncated, skills: skills.length, references: skills.reduce((n, s) => n + s.references.length, 0), unmapped, catalogue: skills, licence: 'the repository declares no licence: names, paths and sizes are read as facts; no text is carried' }
 }
 /** The packages Payload ships, read from the packages directory of github.com/payloadcms/payload (the standard payload-packages, read by discovery on every run; names only, 2026-10-26: 45 directories). Every plugin, adapter and editor this tree configures must be one of them. */
-const PAYLOAD_PACKAGES = { repository: 'https://github.com/payloadcms/payload/tree/main/packages', read: '2026-10-26', names: ['admin-bar', 'codemod', 'create-payload-app', 'db-d1-sqlite', 'db-mongodb', 'db-postgres', 'db-sqlite', 'db-vercel-postgres', 'drizzle', 'email-nodemailer', 'email-resend', 'graphql', 'kv-redis', 'live-preview-react', 'live-preview-vue', 'live-preview', 'next', 'oxlint-config', 'oxlint-plugin', 'payload-cloud', 'payload', 'plugin-cloud-storage', 'plugin-ecommerce', 'plugin-form-builder', 'plugin-import-export', 'plugin-mcp', 'plugin-multi-tenant', 'plugin-nested-docs', 'plugin-redirects', 'plugin-search', 'plugin-sentry', 'plugin-seo', 'plugin-stripe', 'richtext-lexical', 'sdk', 'storage-azure', 'storage-gcs', 'storage-r2', 'storage-s3', 'storage-vercel-blob', 'tanstack-start', 'transformer-sharp', 'translations', 'typescript-plugin', 'ui'] } as const
+const PAYLOAD_PACKAGES = TABLES.PAYLOAD_PACKAGES
 const PACKAGE_KIND = (name: string): string => name.startsWith('plugin-') ? 'plugins' : name.startsWith('db-') ? 'databases' : name.startsWith('storage-') ? 'storage' : name.startsWith('email-') ? 'email' : name.startsWith('richtext-') ? 'editors' : name.startsWith('live-preview') ? 'live-preview' : 'runtime-and-tooling'
 /** The catalogue classified, what the full stack mounts of it, and the minimum-cost path it offers: Payload's own adapters for Cloudflare D1 and R2. */
 const packagesOf = (names: readonly string[] = PAYLOAD_PACKAGES.names) => {
@@ -1784,7 +1758,7 @@ export const appRequest: CollectionAfterChangeHook = async ({ doc, operation, re
 `
       const pluginModule = `${header}// The QPU as Payload plugins, one per capability, each by Payload's plugin guide (definePlugin: a slug, typed options, enabled, arrays spread),
 // composed by the umbrella qpuPlugin: qpu-core, qpu-agents, qpu-machine, qpu-google, qpu-raid and qpu-hooks. Generated by configure { kind: 'fullstack' }.
-import { definePlugin } from 'payload'
+import { APIError, definePlugin } from 'payload'
 import type { Block, CollectionAfterChangeHook, CollectionConfig, Config, Field, Plugin, PayloadRequest, TaskConfig } from 'payload'
 import { existsSync, readFileSync, readdirSync, renameSync, mkdirSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
@@ -1828,6 +1802,16 @@ const submissions = (c: CollectionConfig): CollectionConfig => first(c, 'afterCh
 const hooked = (config: Config, by: Record<string, (c: CollectionConfig) => CollectionConfig>): Config => ({ ...config, collections: (config.collections ?? []).map((c) => by[c.slug]?.(c) ?? c) })
 export type QpuPluginOptions = { enabled?: boolean; adapters?: 'auto' | 'none'; branding?: boolean; plugins?: Plugin[] }
 /** qpu-core: the block, the global, the tenants, the docket, the pages' guard and lock, the app request, the branding, the adapters */
+// a glTF uploaded to media read as Unreal Engine reads it (seal { gltf }): what the scene holds kept on the document; an asset that requires an
+// extension the GLTF_EXTENSIONS table Payload holds does not list is refused, as Unreal cannot load it
+const readGltfUpload = (async ({ data, req }: { data: Record<string, unknown>; req: PayloadRequest }) => {
+  const file = req.file as { data?: Buffer; name?: string } | undefined, name = (file?.name ?? '').toLowerCase()
+  if (!file?.data || !(name.endsWith('.glb') || name.endsWith('.gltf'))) return data
+  const r = callOf('seal', { text: file.name, gltf: name.endsWith('.glb') ? { glb64: file.data.toString('base64') } : { json: JSON.parse(file.data.toString('utf8')) } }) as { result?: { structuredContent?: { loadable?: boolean; why?: string | null } }; error?: { message: string } }, answer = r.result?.structuredContent
+  if (!answer?.loadable) throw new APIError('this glTF cannot be loaded: ' + (answer?.why ?? r.error?.message ?? 'unread'), 400)
+  return { ...data, gltf: answer }
+}) as never
+const gltfMedia = (c: CollectionConfig): CollectionConfig => first({ ...c, fields: [...c.fields.filter((f) => !('name' in f) || f.name !== 'gltf'), { name: 'gltf', type: 'json', admin: { readOnly: true, description: 'a glTF 2.0 asset as Unreal Engine reads it: what the scene holds and its extensions by prefix (seal { gltf })' } }] }, 'beforeChange', readGltfUpload)
 export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu-core', plugin: ({ config: incoming, enabled, branding }) => (enabled === false ? incoming : hooked({
   ...incoming,
   db: incoming.db ?? qpuDb(),
@@ -1836,7 +1820,7 @@ export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu-core', plugin
   collections: [...(incoming.collections ?? []).filter((c) => c.slug !== Tenants.slug && c.slug !== Entries.slug), Tenants, Entries],
   globals: [...(incoming.globals ?? []).filter((g) => g.slug !== QpuGlobal.slug), QpuGlobal],
   blocks: [...(incoming.blocks ?? []).filter((b) => b.slug !== Qpu.slug), Qpu],
-}, { pages, 'form-submissions': submissions })) })
+}, { pages, 'form-submissions': submissions, media: gltfMedia })) })
 /** qpu-agents: an API key per user (an agent's key to the MCP), the first user from the deploy */
 export const qpuAgents = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-agents', plugin: ({ config, enabled }) => (enabled === false ? config : hooked(config, { users })) })
 const all = async (req: PayloadRequest, c: string) => (await req.payload.find({ collection: c as never, pagination: false, depth: 0, draft: true, overrideAccess: true })).docs
