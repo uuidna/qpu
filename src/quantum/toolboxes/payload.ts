@@ -289,7 +289,6 @@ export const qpuFieldsOf = (uuid: string, tool: string, args: Record<string, unk
   const ch = channelOf(uuid)
   return { blockType: 'qpu' as const, uuid, tool, arguments: args, theorem, handle: ch.handle, program: ch.program.join(''), tail: ch.tail, next: uuidFromParts(ch.handle, [...ch.program.slice(1), ch.program[0]!], ch.tail), license: LICENSE.spdx }
 }
-const qpuBlockOf = (uuid: string, tool: string, args: Record<string, unknown>, theorem: string | null) => qpuFieldsOf(uuid, tool, args, theorem)
 export type QpuNode = { type: 'block'; version: 2; format: ''; fields: ReturnType<typeof qpuFieldsOf> & { id: string; blockName: string } & Record<string, unknown> }
 export const qpuNodeOf = (uuid: string, tool: string, args: Record<string, unknown>, theorem: string | null = null, extra: Record<string, unknown> = {}): QpuNode => ({ type: 'block', version: 2, format: '', fields: { id: uuid, blockName: tool, ...qpuFieldsOf(uuid, tool, args, theorem), ...extra } })
 export const blocksOf = (doc: LexicalDoc): QpuNode[] => doc.root.children.filter((n): n is QpuNode => typeof n === 'object' && n !== null && (n as { type?: string }).type === 'block' && (n as { fields?: { blockType?: string } }).fields?.blockType === 'qpu')
@@ -346,9 +345,9 @@ export const gateDocsOf = (ctx: Context, origin: string, devDependencies: Record
   const gatePath = (x: Gate) => `${catPath(x.category)}/${gateSlugOf(x.id)}`
   const leadItems = (ids: string[]) => lx.list(ids.map((id) => { const l = leadOf.get(id)!; return [lx.text(`${l.id} · ${l.status}${l.tool ? ` · ${l.tool}` : ''}: ${l.statement}`)] }))
   const docs: GateDoc[] = [
-    { id: root.slug, title: root.title, slug: `/${root.slug}`, path: rootPath, parent: null, depth: 1, layout: [qpuBlockOf(root.slug, 'leads', {}, theorem)], meta: { title: 'Gates · @uuidna/qpu', description: g.says }, hero: { type: 'default', richText: lx.doc([lx.heading('Every API is a gate', 'h1'), lx.paragraph([lx.text(`${g.counts.gates} gates in ${g.counts.categories} categories (${g.counts.partition}): ${g.counts.own} doors of this catalogue and ${g.counts.external} addresses outside it; ${g.leads.placed} of ${g.leads.total} leads pass through a gate.`)]), lx.list(g.categories.map((c) => [lx.link(catPath(c.id), c.name), lx.text(`: ${c.gates} gates, ${c.leads} leads — ${c.says}`)]))]) }, breadcrumbs: [rootCrumb] },
-    ...g.categories.map((c): GateDoc => { const slug = catSlug(c.id); const mine = g.gates.filter((x) => x.category === c.id); const ids = [...new Set(mine.flatMap((x) => x.leads))]; return { id: slug, title: c.name, slug: `/${slug}`, path: catPath(c.id), parent: `/${root.slug}`, depth: 2, layout: [qpuBlockOf(slug, 'leads', { ids }, theorem)], meta: { title: `${c.name} · @uuidna/qpu`, description: c.says }, hero: { type: 'default', richText: lx.doc([lx.heading(c.name, 'h1'), lx.paragraph([lx.text(`${c.says}: ${mine.length} gates, ${ids.length} leads.`)]), lx.list(mine.map((x) => [lx.link(gatePath(x), x.name), lx.text(` (${x.kind}, ${x.leads.length} leads)`)]))]) }, breadcrumbs: [rootCrumb, crumb(catPath(c.id), slug, c.name)] } }),
-    ...g.gates.map((x): GateDoc => { const slug = gateSlugOf(x.id); const c = g.categories.find((y) => y.id === x.category)!; return { id: slug, title: x.name, slug: `/${slug}`, path: gatePath(x), parent: `/${catSlug(c.id)}`, depth: 3, layout: [qpuBlockOf(slug, 'leads', { ids: x.leads }, theorem)], meta: { title: `${x.name} · @uuidna/qpu`, description: `${x.kind} gate of ${x.leads.length} leads, passed by ${x.by}${x.measured ? `: ${x.measured}` : ''}` }, hero: { type: 'default', richText: lx.doc([lx.heading(x.name, 'h1'), lx.paragraph([lx.text(`A ${x.kind} gate at `), lx.link(x.url, x.url), lx.text(`, passed by ${x.by}.${x.measured ? ` Measured: ${x.measured}` : ''}`)]), lx.heading(`${x.leads.length} leads pass through it`, 'h2'), ...(x.leads.length ? [leadItems(x.leads)] : [lx.paragraph([lx.text('No lead names this gate yet: the gate itself is the lead.')])]), ...adapterOf(x), ...knowledgeOf(x)]) }, breadcrumbs: [rootCrumb, crumb(catPath(c.id), catSlug(c.id), c.name), crumb(gatePath(x), slug, x.name)] } }),
+    { id: root.slug, title: root.title, slug: `/${root.slug}`, path: rootPath, parent: null, depth: 1, layout: [qpuFieldsOf(root.slug, 'leads', {}, theorem)], meta: { title: 'Gates · @uuidna/qpu', description: g.says }, hero: { type: 'default', richText: lx.doc([lx.heading('Every API is a gate', 'h1'), lx.paragraph([lx.text(`${g.counts.gates} gates in ${g.counts.categories} categories (${g.counts.partition}): ${g.counts.own} doors of this catalogue and ${g.counts.external} addresses outside it; ${g.leads.placed} of ${g.leads.total} leads pass through a gate.`)]), lx.list(g.categories.map((c) => [lx.link(catPath(c.id), c.name), lx.text(`: ${c.gates} gates, ${c.leads} leads — ${c.says}`)]))]) }, breadcrumbs: [rootCrumb] },
+    ...g.categories.map((c): GateDoc => { const slug = catSlug(c.id); const mine = g.gates.filter((x) => x.category === c.id); const ids = [...new Set(mine.flatMap((x) => x.leads))]; return { id: slug, title: c.name, slug: `/${slug}`, path: catPath(c.id), parent: `/${root.slug}`, depth: 2, layout: [qpuFieldsOf(slug, 'leads', { ids }, theorem)], meta: { title: `${c.name} · @uuidna/qpu`, description: c.says }, hero: { type: 'default', richText: lx.doc([lx.heading(c.name, 'h1'), lx.paragraph([lx.text(`${c.says}: ${mine.length} gates, ${ids.length} leads.`)]), lx.list(mine.map((x) => [lx.link(gatePath(x), x.name), lx.text(` (${x.kind}, ${x.leads.length} leads)`)]))]) }, breadcrumbs: [rootCrumb, crumb(catPath(c.id), slug, c.name)] } }),
+    ...g.gates.map((x): GateDoc => { const slug = gateSlugOf(x.id); const c = g.categories.find((y) => y.id === x.category)!; return { id: slug, title: x.name, slug: `/${slug}`, path: gatePath(x), parent: `/${catSlug(c.id)}`, depth: 3, layout: [qpuFieldsOf(slug, 'leads', { ids: x.leads }, theorem)], meta: { title: `${x.name} · @uuidna/qpu`, description: `${x.kind} gate of ${x.leads.length} leads, passed by ${x.by}${x.measured ? `: ${x.measured}` : ''}` }, hero: { type: 'default', richText: lx.doc([lx.heading(x.name, 'h1'), lx.paragraph([lx.text(`A ${x.kind} gate at `), lx.link(x.url, x.url), lx.text(`, passed by ${x.by}.${x.measured ? ` Measured: ${x.measured}` : ''}`)]), lx.heading(`${x.leads.length} leads pass through it`, 'h2'), ...(x.leads.length ? [leadItems(x.leads)] : [lx.paragraph([lx.text('No lead names this gate yet: the gate itself is the lead.')])]), ...adapterOf(x), ...knowledgeOf(x)]) }, breadcrumbs: [rootCrumb, crumb(catPath(c.id), catSlug(c.id), c.name), crumb(gatePath(x), slug, x.name)] } }),
   ]
   return { ...g, docs }
 }
@@ -1122,14 +1121,17 @@ export const configOf = (kind: ConfigKind, ctx: Context, p: { version?: string; 
       const header = `// ${LICENSE.attribution}\n// Added to the MIT fork of payloadcms/website (Copyright (c) 2023 Payload); this file is QPU's: see NOTICE.qpu.md.\n`
       const qpuBlock = `${header}// The qpu block: one lexical/layout block of programmable UUID logic, the shape every tools/call result already carries in _meta.payload.
 import type { Block } from 'payload'
+import { uuidOf } from '@uuidna/qpu/blocks'
+import { qpuFieldsOf } from '@uuidna/qpu/payload'
 export const Qpu: Block = {
   slug: 'qpu',
   interfaceName: 'QpuBlock',
   fields: [
-    { name: 'uuid', type: 'text', required: true, ${validateOf('qpu', 'uuid')}, admin: { description: 'the block address: a content-addressed RFC 9562 v8 UUID' } },
-    { name: 'handle', type: 'text', required: true },
-    { name: 'program', type: 'text', required: true, admin: { description: 'the hex program (the version and variant nibbles rotated)' } },
-    { name: 'tail', type: 'text', required: true },
+    // the caller sends the tool and its arguments; the address and all read from it are computed here
+    { name: 'uuid', type: 'text', ${validateOf('qpu', 'uuid')}, hooks: { beforeValidate: [({ siblingData: s }) => (s?.tool ? Object.assign(s, qpuFieldsOf(uuidOf(JSON.stringify({ tool: s.tool, arguments: s.arguments ?? {} })), s.tool, s.arguments ?? {}, s.theorem ?? null)).uuid : s?.uuid)] }, admin: { readOnly: true, description: 'the block address: a content-addressed RFC 9562 v8 UUID' } },
+    { name: 'handle', type: 'text', admin: { readOnly: true } },
+    { name: 'program', type: 'text', admin: { readOnly: true, description: 'the hex program (the version and variant nibbles rotated)' } },
+    { name: 'tail', type: 'text', admin: { readOnly: true } },
     { name: 'tool', type: 'text', required: true, admin: { description: 'the tool whose result this block is' } },
     { name: 'arguments', type: 'json', admin: { description: 'the arguments, so the block recomputes anywhere' } },
     { name: 'prev', type: 'text', ${validateOf('qpu', 'prev')}, admin: { description: 'the referer block' } },
@@ -1246,17 +1248,12 @@ const machineTool = {
     const host = h.startsWith('[') ? h.slice(0, h.indexOf(']') + 1) : h.split(':')[0]!
     if (!LOOPBACK.includes(host)) return answer({ refused: 'the machine answers only on a local app', court: callTool('legal', { court: { gate: 'machine', status: 403, rule: 'role', evidence: { host } } }) })
     if (!(req.user?.roles ?? []).includes('admin')) return answer({ refused: 'the machine needs the super admin', court: callTool('legal', { court: { gate: 'machine', status: 403, rule: 'role', evidence: { action: args.action } } }) })
-    const root = path.resolve(process.cwd(), '..')
-    const read = (f: string): any => { try { return existsSync(path.join(root, f)) ? JSON.parse(readFileSync(path.join(root, f), 'utf8')) : null } catch { return null } }
-    const facts = { receipt: read('docs/public/receipt.json'), approval: read('docs/public/configs.json')?.approval ?? null, e2e: read('docs/public/e2e.json')?.outcomes ?? null }
-    const plan = callTool('repository', { machine: { plan: { action: args.action, message: args.message, confirm: args.confirm, branch: args.branch, path: args.path, tag: args.tag, commit: args.commit, from: args.from, file: args.file, archived: args.archived, facts } } })
-    if (!plan?.allowed) return answer(plan)
-    // the one runner (scripts/machine.ts): no shell, the output read line by line; a call carrying a progress token is streamed through the plugin's request context as notifications/progress, step by step for next
+    // the one runner (scripts/machine.ts) plans, runs with no shell and records; a call carrying a progress token is streamed through the plugin's request context, step by step for next
     const progressToken = extra?._meta?.progressToken
-    const run = await runMachine(plan, root, (p) => { if (progressToken !== undefined) void extra?.sendNotification?.({ method: 'notifications/progress', params: { progressToken, ...p } }) })
-    const record = callTool('repository', { machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: run.ms, root, home: homedir() } } })
-    const doc = await req.payload.create({ collection: 'entries', data: { kind: 'machine', from: 'local', body: record.entry.body }, req, overrideAccess: false, user: req.user })
-    return answer({ plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry }, stored: { collection: 'entries', id: doc.id } })
+    const r = await runMachine(args, path.resolve(process.cwd(), '..'), (p) => { if (progressToken !== undefined) void extra?.sendNotification?.({ method: 'notifications/progress', params: { progressToken, ...p } }) })
+    if (!r.record) return answer(r.plan)
+    const doc = await req.payload.create({ collection: 'entries', data: { kind: 'machine', from: 'local', body: r.record.entry.body }, req, overrideAccess: false, user: req.user })
+    return answer({ ...r.answer, stored: { collection: 'entries', id: doc.id } })
   },
 }
 export const qpuMcpTools = [...handlerTools, machineTool]
@@ -2062,7 +2059,7 @@ export const PAYLOAD: Toolbox = {
       const gg = adaptersOf(['GOOGLE_CLOUD_PROJECT', 'GCS_BUCKET', 'GCS_PROJECT_ID', 'DATABASE_URI', 'GMAIL_USER'])
       check('configure:adapters-google-profile', gg.chosen.profile === 'google' && gg.chosen.database === 'db-postgres' && gg.chosen.storage === 'storage-gcs' && gg.chosen.email === 'email-nodemailer', `google: ${gg.chosen.database}, ${gg.chosen.storage}, ${gg.chosen.email} (Cloud SQL, Cloud Storage, Gmail)`)
       // the one block in its two forms, and the merge that commutes and is idempotent
-      const u = '016da774-e74c-2e44-8742-f8bcf5e8e8f5'; const inline = qpuNodeOf(u, 'clay', { technique: 'reflection' }, 'triad_reflect').fields; const layout = qpuBlockOf(u, 'clay', { technique: 'reflection' }, 'triad_reflect')
+      const u = '016da774-e74c-2e44-8742-f8bcf5e8e8f5'; const inline = qpuNodeOf(u, 'clay', { technique: 'reflection' }, 'triad_reflect').fields; const layout = qpuFieldsOf(u, 'clay', { technique: 'reflection' }, 'triad_reflect')
       check('payload:one-block-two-forms', (Object.keys(layout) as (keyof typeof layout)[]).every((k) => JSON.stringify(inline[k]) === JSON.stringify(layout[k])) && inline.id === u && inline.blockName === 'clay', 'the inline node and the layout block carry the same fields from one function')
       const base = docOf('base', [{ uuid: u, tool: 'clay', arguments: {} }]); const ea = docOf('a', [{ uuid: u, tool: 'clay', arguments: {} }, { uuid: '941ef62e-d97b-2438-bfc8-22ae9e5da781', tool: 'roadmap', arguments: {} }]); const eb = docOf('b', [{ uuid: u, tool: 'clay', arguments: {} }, { uuid: '00000000-0000-1000-8000-000000000000', tool: 'software', arguments: {} }])
       const ab = mergeOf(base, ea, eb), ba = mergeOf(base, eb, ea), aa = mergeOf(base, ea, ea)

@@ -51,17 +51,12 @@ const machineTool = {
     const host = h.startsWith('[') ? h.slice(0, h.indexOf(']') + 1) : h.split(':')[0]!
     if (!LOOPBACK.includes(host)) return answer({ refused: 'the machine answers only on a local app', court: callTool('legal', { court: { gate: 'machine', status: 403, rule: 'role', evidence: { host } } }) })
     if (!(req.user?.roles ?? []).includes('admin')) return answer({ refused: 'the machine needs the super admin', court: callTool('legal', { court: { gate: 'machine', status: 403, rule: 'role', evidence: { action: args.action } } }) })
-    const root = path.resolve(process.cwd(), '..')
-    const read = (f: string): any => { try { return existsSync(path.join(root, f)) ? JSON.parse(readFileSync(path.join(root, f), 'utf8')) : null } catch { return null } }
-    const facts = { receipt: read('docs/public/receipt.json'), approval: read('docs/public/configs.json')?.approval ?? null, e2e: read('docs/public/e2e.json')?.outcomes ?? null }
-    const plan = callTool('repository', { machine: { plan: { action: args.action, message: args.message, confirm: args.confirm, branch: args.branch, path: args.path, tag: args.tag, commit: args.commit, from: args.from, file: args.file, archived: args.archived, facts } } })
-    if (!plan?.allowed) return answer(plan)
-    // the one runner (scripts/machine.ts): no shell, the output read line by line; a call carrying a progress token is streamed through the plugin's request context as notifications/progress, step by step for next
+    // the one runner (scripts/machine.ts) plans, runs with no shell and records; a call carrying a progress token is streamed through the plugin's request context, step by step for next
     const progressToken = extra?._meta?.progressToken
-    const run = await runMachine(plan, root, (p) => { if (progressToken !== undefined) void extra?.sendNotification?.({ method: 'notifications/progress', params: { progressToken, ...p } }) })
-    const record = callTool('repository', { machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: run.ms, root, home: homedir() } } })
-    const doc = await req.payload.create({ collection: 'entries', data: { kind: 'machine', from: 'local', body: record.entry.body }, req, overrideAccess: false, user: req.user })
-    return answer({ plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry }, stored: { collection: 'entries', id: doc.id } })
+    const r = await runMachine(args, path.resolve(process.cwd(), '..'), (p) => { if (progressToken !== undefined) void extra?.sendNotification?.({ method: 'notifications/progress', params: { progressToken, ...p } }) })
+    if (!r.record) return answer(r.plan)
+    const doc = await req.payload.create({ collection: 'entries', data: { kind: 'machine', from: 'local', body: r.record.entry.body }, req, overrideAccess: false, user: req.user })
+    return answer({ ...r.answer, stored: { collection: 'entries', id: doc.id } })
   },
 }
 export const qpuMcpTools = [...handlerTools, machineTool]

@@ -2,14 +2,17 @@
 // Added to the MIT fork of payloadcms/website (Copyright (c) 2023 Payload); this file is QPU's: see NOTICE.qpu.md.
 // The qpu block: one lexical/layout block of programmable UUID logic, the shape every tools/call result already carries in _meta.payload.
 import type { Block } from 'payload'
+import { uuidOf } from '@uuidna/qpu/blocks'
+import { qpuFieldsOf } from '@uuidna/qpu/payload'
 export const Qpu: Block = {
   slug: 'qpu',
   interfaceName: 'QpuBlock',
   fields: [
-    { name: 'uuid', type: 'text', required: true, validate: (v: unknown) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(String(v)) || 'a UUID of 36 characters', custom: { theorem: 'textbook_uuid_is_36' }, admin: { description: 'the block address: a content-addressed RFC 9562 v8 UUID' } },
-    { name: 'handle', type: 'text', required: true },
-    { name: 'program', type: 'text', required: true, admin: { description: 'the hex program (the version and variant nibbles rotated)' } },
-    { name: 'tail', type: 'text', required: true },
+    // the caller sends the tool and its arguments; the address and all read from it are computed here
+    { name: 'uuid', type: 'text', validate: (v: unknown) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(String(v)) || 'a UUID of 36 characters', custom: { theorem: 'textbook_uuid_is_36' }, hooks: { beforeValidate: [({ siblingData: s }) => (s?.tool ? Object.assign(s, qpuFieldsOf(uuidOf(JSON.stringify({ tool: s.tool, arguments: s.arguments ?? {} })), s.tool, s.arguments ?? {}, s.theorem ?? null)).uuid : s?.uuid)] }, admin: { readOnly: true, description: 'the block address: a content-addressed RFC 9562 v8 UUID' } },
+    { name: 'handle', type: 'text', admin: { readOnly: true } },
+    { name: 'program', type: 'text', admin: { readOnly: true, description: 'the hex program (the version and variant nibbles rotated)' } },
+    { name: 'tail', type: 'text', admin: { readOnly: true } },
     { name: 'tool', type: 'text', required: true, admin: { description: 'the tool whose result this block is' } },
     { name: 'arguments', type: 'json', admin: { description: 'the arguments, so the block recomputes anywhere' } },
     { name: 'prev', type: 'text', validate: (v: unknown) => (v == null || v === '') || /^$|^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(String(v)) || 'a UUID or empty', custom: { theorem: 'textbook_uuid_is_36' }, admin: { description: 'the referer block' } },

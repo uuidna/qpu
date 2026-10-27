@@ -8,7 +8,8 @@
     "./version": "./src/quantum/version.ts",
     "./blocks": "./src/quantum/blocks.ts",
     "./roles": "./src/quantum/roles.ts",
-    "./machine": "./scripts/machine.ts"
+    "./machine": "./scripts/machine.ts",
+    "./payload": "./src/quantum/toolboxes/payload.ts"
   },
   "license": "CC-BY-NC-ND-4.0",
   "author": {

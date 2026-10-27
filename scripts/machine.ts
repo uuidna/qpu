@@ -31,6 +31,7 @@ const spawnRun = (plan: { action: string; command: { cmd: string; args: readonly
 // machine's own file, beside the run's record in Entries; it is never a docket entry of its own.
 import { appendFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
+import { homedir } from 'node:os'
 import { etaOf, type StreamEvent } from '../src/quantum/machine.js'
 
 const runFiles = async () => (await import('../src/quantum/toolboxes/repository.js')).RUN_FILES
@@ -56,13 +57,18 @@ export const timesOf = async (root: string) => {
   return times
 }
 
-/** Runs the plan's command and streams it: its start with the ETA, a heartbeat every second, each finished step of next as an event, its end. */
-export const runMachine = async (plan: { action: string; command: { cmd: string; args: readonly string[] }; input?: string | null }, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) => {
+/** Runs an asked action: planned by the workflow rules against the facts at the root, run with no shell and streamed (its start with the ETA, a
+ *  heartbeat every second, each finished step of next), then recorded; an action the rules refuse answers its plan and runs nothing. */
+export const runMachine = async (args: Record<string, unknown>, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) => {
+  const repository = (await import('../src/quantum/mcp.js')).toolCallerOf('repository'), read = (f: string) => { try { return JSON.parse(readFileSync(join(cwd, f), 'utf8')) } catch { return null } }
+  const files = await runFiles(), plan = repository({ machine: { plan: { ...args, facts: { receipt: read(files.receipt), approval: read(files.configs)?.approval ?? null, e2e: read(files.e2e)?.outcomes ?? null } } } })
+  if (!plan?.allowed) return { plan, answer: plan }
   const s = await streamOf(cwd), subject = plan.action
   s.start(subject, etaOf((await timesOf(cwd))[subject] ?? []))
   const run = await spawnRun(plan, cwd, (p) => { if (plan.action === 'next') s.emit({ kind: 'progress', subject, says: p.message.slice(0, 200) }); onProgress(p) })
   s.end(run.status === 0, run.status === 0 ? '' : `status ${run.status}`)
-  return run
+  const record = repository({ machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: run.ms, root: cwd, home: homedir() } } })
+  return { plan, record, answer: { plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry } } }
 }
 
 /** The status on request: what runs, for how long and its ETA, the last events and what the stream says of its own silence. */
