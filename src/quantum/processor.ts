@@ -2,7 +2,7 @@
 // Dec 9, 2024; quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf). A figure the sheet does not state is
 // not here. Errors are probabilities: 0.035% is 0.00035.
 
-import { CZ, Device, GridQubit, keyOf, type Channel, type Qubit } from './cirq.js'
+import { CZ, Device, GridQubit, keyOf, type Channel, type Qubit } from './cirq.ts'
 
 /** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: a Cirq grid qubit at its row and column. */
 export type Site = Qubit

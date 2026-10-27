@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { CNOT, H, LineQubit, X, applied, powerOf } from './cirq.js'
-import { QUANTUM_ECHOES, echoCircuit, echoProbability } from './echo.js'
+import { CNOT, H, LineQubit, X, applied, powerOf } from './cirq.ts'
+import { QUANTUM_ECHOES, echoCircuit, echoProbability } from './echo.ts'
 
 const [q0, q1] = LineQubit.range(2)
 const forward = [applied(H, q0!), applied(CNOT, q0!, q1!)]

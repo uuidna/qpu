@@ -5,9 +5,9 @@
 // The same stream is the device's randomness: the phase at which an interaction lands is one of 3888 milliseconds (eleven bits a sample,
 // textbook_phase_bits), folded with the device's own crypto nonce into a seed the seal tool takes (entropyOf). Used in the Open Graph
 // image of every block (an animated SVG: a scraper shows one frame, a stream reads the link) and in the shadcn items (the CSS of the stream).
-import { uuidOf, sealOf } from './blocks.js'
-import { SCAN, framesOf, KEY, coilColourOf } from './theme.js'
-import { usageOrderOf } from './toolboxes/billing.js'
+import { uuidOf, sealOf } from './blocks.ts'
+import { SCAN, framesOf, KEY, coilColourOf } from './theme.ts'
+import { usageOrderOf } from './toolboxes/billing.ts'
 
 /** Usage rated by the chain's combinatorics: a stream of n samples is a chain of n − 1 links; every full period (36 frames, 35 links) is one call;
  *  the first period is the coin (verification is algebra, free), every further period a coil (the fusion: the device keeps streaming under the

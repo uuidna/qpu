@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T15:54:43.306Z",
+ "date": "2026-10-27T16:20:04.156Z",
  "literals": {
   "urls": 836,
   "distinctUrls": 449,
@@ -648,7 +648,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 930,
- "lines": 82605,
+ "lines": 82617,
  "findings": 879,
  "fused": 315,
  "reactions": 564,
@@ -766,7 +766,7 @@
   {
    "id": "entropy-cap-e1adfd32",
    "kind": "cap",
-   "source": "scripts/purify.ts:170, scripts/purify.ts:183, scripts/textbook.ts:45, src/quantum/audit.ts:421, src/quantum/audit.ts:439, src/quantum/audit.ts:441, src/quantum/audit.ts:443, src/quantum/discovery.ts:136, src/quantum/discovery.ts:183, src/quantum/examples.ts:266, src/quantum/examples.ts:322, src/quantum/match.ts:341, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:202, src/quantum/wave.ts:27, src/worker.ts:368",
+   "source": "scripts/purify.ts:170, scripts/purify.ts:183, scripts/textbook.ts:45, src/quantum/audit.ts:421, src/quantum/audit.ts:439, src/quantum/audit.ts:441, src/quantum/audit.ts:443, src/quantum/discovery.ts:136, src/quantum/discovery.ts:183, src/quantum/examples.ts:266, src/quantum/examples.ts:322, src/quantum/match.ts:341, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:202, src/quantum/wave.ts:27, src/worker.ts:373",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80)",
    "status": "open",
    "tool": "audit",
@@ -4306,7 +4306,7 @@
   {
    "id": "entropy-duplicate-5dc4b0a7",
    "kind": "duplicate",
-   "source": "src/quantum/audit.test.ts:37, src/quantum/docs-calls.test.ts:27, src/quantum/mcp.test.ts:12",
+   "source": "src/quantum/audit.test.ts:36, src/quantum/docs-calls.test.ts:27, src/quantum/mcp.test.ts:12",
    "statement": "one line of code repeated in more than one file: one place should hold it — const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })",
    "status": "open",
    "tool": "audit",
@@ -4378,7 +4378,7 @@
   {
    "id": "entropy-duplicate-fb408fa5",
    "kind": "duplicate",
-   "source": "src/quantum/cirq.ts:534, src/quantum/counting.ts:17",
+   "source": "src/quantum/cirq.ts:538, src/quantum/counting.ts:17",
    "statement": "one line of code repeated in more than one file: one place should hold it — for (let r = 0; r < dim; r++) for (let k = 0; k < dim; k++) {",
    "status": "open",
    "tool": "audit",
@@ -4438,7 +4438,7 @@
   {
    "id": "entropy-shape-2bad27d6",
    "kind": "shape",
-   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/currency.ts:31, scripts/purify.ts:139, scripts/purify.ts:146, scripts/purify.ts:176, scripts/shard.ts:14, src/quantum/audit.test.ts:9, src/quantum/audit.ts:364, src/quantum/clay.test.ts:30, src/quantum/clay.test.ts:33, src/quantum/docs-calls.test.ts:18, src/quantum/e2e.ts:77, src/quantum/match.test.ts:49, src/quantum/match.test.ts:70, src/quantum/match.test.ts:73, src/quantum/match.test.ts:90, src/quantum/mcp.test.ts:7, src/quantum/mcp.test.ts:286, src/quantum/mcp.test.ts:296, src/quantum/mcp.ts:882, src/quantum/mcp.ts:950, src/quantum/port.test.ts:11, src/quantum/reflection.test.ts:63, src/quantum/reflection.test.ts:96, src/quantum/reflection.test.ts:115, src/quantum/selftest.ts:119, src/quantum/textbook.test.ts:33, src/quantum/toolboxes/flow.ts:19, src/quantum/toolboxes/flow.ts:108, src/quantum/toolboxes/language.ts:57, src/quantum/toolboxes/language.ts:93, src/quantum/toolboxes/payload-schemas.ts:49, src/quantum/toolboxes/payload.ts:133, src/quantum/worker.test.ts:434, src/worker.ts:435",
+   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/currency.ts:31, scripts/purify.ts:139, scripts/purify.ts:146, scripts/purify.ts:176, scripts/shard.ts:14, src/quantum/audit.test.ts:9, src/quantum/audit.ts:364, src/quantum/clay.test.ts:30, src/quantum/clay.test.ts:33, src/quantum/docs-calls.test.ts:18, src/quantum/e2e.ts:77, src/quantum/match.test.ts:49, src/quantum/match.test.ts:70, src/quantum/match.test.ts:73, src/quantum/match.test.ts:90, src/quantum/mcp.test.ts:7, src/quantum/mcp.test.ts:286, src/quantum/mcp.test.ts:296, src/quantum/mcp.ts:882, src/quantum/mcp.ts:950, src/quantum/port.test.ts:11, src/quantum/reflection.test.ts:63, src/quantum/reflection.test.ts:96, src/quantum/reflection.test.ts:115, src/quantum/selftest.ts:119, src/quantum/textbook.test.ts:33, src/quantum/toolboxes/flow.ts:19, src/quantum/toolboxes/flow.ts:108, src/quantum/toolboxes/language.ts:57, src/quantum/toolboxes/language.ts:93, src/quantum/toolboxes/payload-schemas.ts:49, src/quantum/toolboxes/payload.ts:133, src/quantum/worker.test.ts:434, src/worker.ts:440",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — the tools/call envelope: toolCallerOf(name) in mcp.ts",
    "status": "open",
    "tool": "audit",
@@ -4450,7 +4450,7 @@
   {
    "id": "entropy-shape-0d8252de",
    "kind": "shape",
-   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/legal.ts:30, scripts/mcp.ts:20, scripts/publish.ts:27, scripts/publish.ts:43, scripts/shard.ts:22, src/quantum/audit.test.ts:38, src/quantum/examples.ts:139",
+   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/legal.ts:30, scripts/mcp.ts:20, scripts/publish.ts:27, scripts/publish.ts:43, scripts/shard.ts:22, src/quantum/audit.test.ts:37, src/quantum/examples.ts:139",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a JSON file read and parsed: one reader of the published files, null when a file is missing",
    "status": "open",
    "tool": "audit",
@@ -4462,7 +4462,7 @@
   {
    "id": "entropy-shape-7458ed19",
    "kind": "shape",
-   "source": "scripts/e2e.ts:29, scripts/hook.ts:65, scripts/mcp.ts:30, scripts/mcp.ts:37, scripts/metrics.ts:25, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/repository.ts:35, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/textbook.ts:33, site/src/collections/Entries.ts:42, site/src/plugins/qpu.ts:94, site/src/plugins/qpu.ts:97, src/quantum/examples.ts:139, src/quantum/toolboxes/payload.ts:1346, src/quantum/toolboxes/payload.ts:1803, src/quantum/toolboxes/payload.ts:1806, src/worker.ts:38, src/worker.ts:475",
+   "source": "scripts/e2e.ts:29, scripts/hook.ts:65, scripts/mcp.ts:30, scripts/mcp.ts:37, scripts/metrics.ts:25, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/repository.ts:35, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/textbook.ts:33, site/src/collections/Entries.ts:42, site/src/plugins/qpu.ts:94, site/src/plugins/qpu.ts:97, src/quantum/examples.ts:139, src/quantum/toolboxes/payload.ts:1346, src/quantum/toolboxes/payload.ts:1803, src/quantum/toolboxes/payload.ts:1806, src/worker.ts:38, src/worker.ts:480",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a request with its timeout: one fetcher with the named user agent and the timeout",
    "status": "open",
    "tool": "audit",
@@ -4474,7 +4474,7 @@
   {
    "id": "entropy-shape-138066ce",
    "kind": "shape",
-   "source": "docs/.vitepress/theme/components/Compile.vue:7, scripts/gen-docs.ts:20, scripts/imagine.ts:17, scripts/purify.ts:79, scripts/textbook.ts:17, scripts/textbook.ts:53, site/src/payload.qpu.mcp.ts:27, src/quantum/audit.test.ts:37, src/quantum/audit.test.ts:59, src/quantum/docs-calls.test.ts:27, src/quantum/mcp.test.ts:12, src/quantum/mcp.test.ts:173, src/quantum/toolboxes/extension.ts:55, src/quantum/toolboxes/payload.ts:794, src/quantum/toolboxes/payload.ts:1257, src/quantum/worker.test.ts:13",
+   "source": "docs/.vitepress/theme/components/Compile.vue:7, scripts/gen-docs.ts:20, scripts/imagine.ts:17, scripts/purify.ts:79, scripts/textbook.ts:17, scripts/textbook.ts:53, site/src/payload.qpu.mcp.ts:27, src/quantum/audit.test.ts:36, src/quantum/audit.test.ts:58, src/quantum/docs-calls.test.ts:27, src/quantum/mcp.test.ts:12, src/quantum/mcp.test.ts:173, src/quantum/toolboxes/extension.ts:55, src/quantum/toolboxes/payload.ts:794, src/quantum/toolboxes/payload.ts:1257, src/quantum/worker.test.ts:13",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — the tools/list envelope: one reader of the tool list",
    "status": "open",
    "tool": "audit",

@@ -32,10 +32,10 @@ const spawnRun = (plan: { action: string; command: { cmd: string; args: readonly
 import { appendFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
-import { forecastOf, MACHINE_ACTIONS, type StreamEvent } from '../src/quantum/machine.js'
-import { readJson } from './mcp.js'
+import { forecastOf, MACHINE_ACTIONS, type StreamEvent } from '../src/quantum/machine.ts'
+import { readJson } from './mcp.ts'
 
-const runFiles = async () => (await import('../src/quantum/toolboxes/repository.js')).RUN_FILES
+const runFiles = async () => (await import('../src/quantum/toolboxes/repository.ts')).RUN_FILES
 export const streamOf = async (root: string) => {
   const file = join(root, (await runFiles()).stream)
   mkdirSync(dirname(file), { recursive: true })
@@ -63,11 +63,11 @@ export const timesOf = async (root: string) => {
 /** Runs an asked action: planned by the workflow rules against the facts at the root, run with no shell and streamed (its start with the ETA, a
  *  heartbeat every second, each finished step of next), then recorded; an action the rules refuse answers its plan and runs nothing. */
 export const runMachine = async (args: Record<string, unknown>, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) => {
-  const repository = (await import('../src/quantum/mcp.js')).toolCallerOf('repository'), read = (f: string) => readJson(join(cwd, f))
+  const repository = (await import('../src/quantum/mcp.ts')).toolCallerOf('repository'), read = (f: string) => readJson(join(cwd, f))
   const files = await runFiles(), plan = repository({ machine: { plan: { ...args, facts: { receipt: read(files.receipt), approval: read(files.configs)?.approval ?? null, e2e: read(files.e2e)?.outcomes ?? null } } } })
   if (!plan?.allowed) return { plan, answer: plan }
   // the action's own hooks run first, before use: a refusal is answered here, before anything is changed or booked
-  const workflow = MACHINE_ACTIONS.find((a) => a.id === plan.action)?.workflow, pre = workflow ? await spawnRun({ action: 'pre-use', command: { cmd: 'node', args: [...MACHINE_ACTIONS.find((a) => a.id === 'precheck')!.args.slice(0, 3), workflow, '--pre-use'] } }, cwd) : null
+  const workflow = MACHINE_ACTIONS.find((a) => a.id === plan.action)?.workflow, pre = workflow ? await spawnRun({ action: 'pre-use', command: { cmd: 'node', args: [...MACHINE_ACTIONS.find((a) => a.id === 'precheck')!.args.slice(0, 1), workflow, '--pre-use'] } }, cwd) : null
   if (pre && / refused/.test(pre.stdout + pre.stderr)) return { plan, answer: { plan, preUse: (pre.stdout + pre.stderr).trim() } }
   const s = await streamOf(cwd), subject = plan.action
   const f = forecastOf((await timesOf(cwd))[subject] ?? [])
@@ -82,7 +82,7 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
 export const now = async (root: string, last = 20) => {
   const file = join(root, (await runFiles()).stream)
   const events = existsSync(file) ? readFileSync(file, 'utf8').trim().split('\n').flatMap((l) => { try { return [JSON.parse(l)] } catch { return [] } }) : []
-  const { toolCallerOf } = await import('../src/quantum/mcp.js')
+  const { toolCallerOf } = await import('../src/quantum/mcp.ts')
   return toolCallerOf('repository')({ status: { events, times: await timesOf(root), last } })
 }
 

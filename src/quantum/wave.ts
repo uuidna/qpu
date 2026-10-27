@@ -1,10 +1,10 @@
 // The verification wave as a pure toolbox: the handler emits every request the surface's leads and tree facts need (one per
 // URL, with the leads it serves), the client fetches them, and the handler reads what came back into notes, a contract check
 // against the host's discovered OpenAPI paths, and a summary. No I/O here.
-import { factsOf, verifyRequestsOf, TREE_FACTS, type Fact } from './verifiers.js'
-import type { Lead } from './leads.js'
-import { dataOf } from './discovery.js'
-import { cellOf as cell } from './widgets.js'
+import { factsOf, verifyRequestsOf, TREE_FACTS, type Fact } from './verifiers.ts'
+import type { Lead } from './leads.ts'
+import { dataOf } from './discovery.ts'
+import { cellOf as cell } from './widgets.ts'
 
 export type WaveRequest = { verifier: string; url: string; check: string; leads: string[]; method?: 'GET' | 'POST'; body?: unknown; accept?: string }
 export type WaveResult = WaveRequest & { status: number; ok: boolean; ms: number; text?: string; note?: string; contracted?: 'yes' | 'no' | 'unknown' }

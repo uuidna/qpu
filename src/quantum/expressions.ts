@@ -3,10 +3,10 @@
 // (subtraction truncated at zero, division and remainder floored, a power a power), so a client calls any theorem as a computation:
 // with no values a closed statement is checked side by side, with values a statement over variables is computed for them, and what it needs
 // is named. The prose audit reads the numbers a text states and finds the expression each one rests on, or leaves a lead.
-import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
-import { routeOf } from './match.js'
-import type { Example } from './examples.js'
-import type { Lead } from './leads.js'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { routeOf } from './match.ts'
+import type { Example } from './examples.ts'
+import type { Lead } from './leads.ts'
 
 type Tok = { t: 'num' | 'id' | 'op' | 'lp' | 'rp'; v: string }
 const OPS = ['≤', '≥', '≠', '<', '>', '=', '∧', '∨', '¬', '+', '-', '*', '/', '%', '^', '→']

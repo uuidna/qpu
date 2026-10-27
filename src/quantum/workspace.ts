@@ -1,8 +1,8 @@
 // Google Workspace in Payload, in the shapes the Discovery documents define: a form ↔ a Forms Form, Lexical ↔ a Docs Document, a document
 // ↔ a Drive File (calls in the Drive MCP's shapes), each checked against its schema, the coverage as exact pairs. No Sites API is listed,
 // so a Sites page is covered as what it is made of. Pure: discover fetches the documents; the Drive MCP answers behind a QPU door.
-import { GOOGLE_DOCUMENTS, DRIVE_FILE_URL } from './discovery.js'
-import { WORKSPACE_MCP } from './institutions.js'
+import { GOOGLE_DOCUMENTS, DRIVE_FILE_URL } from './discovery.ts'
+import { WORKSPACE_MCP } from './institutions.ts'
 
 type J = Record<string, any>
 const keep = (o: J, drop: string[] = []) => Object.fromEntries(Object.entries(o).filter(([k, v]) => v !== undefined && !drop.includes(k)))

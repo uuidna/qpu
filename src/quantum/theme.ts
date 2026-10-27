@@ -3,7 +3,7 @@
 // The a432 harmonic default is the program side of the unit, offered for anyone's free benefit under attribution; the QPU
 // framework, over UUID or by any other means, is the other side, licensed for commercial use by the author on request (see README, License).
 
-import { GLAGOLITIC } from './i18n.js'
+import { GLAGOLITIC } from './i18n.ts'
 /** the Glagolitic numeral of a seed (1..9) and of its reflection (10 − seed, 10 among them): the rosetta of the rays, one signal in two scripts */
 const GLAGOLITIC_OF: Readonly<Record<number, string>> = Object.fromEntries(Object.entries(GLAGOLITIC).filter(([, v]) => v <= 10).map(([k, v]) => [v, k]))
 export const KEY = 432

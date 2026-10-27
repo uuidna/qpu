@@ -4,13 +4,13 @@
 // own refusal), and `unknown` when nothing matches, in which case the statement is returned as a new lead to develop.
 // Deterministic: token overlap, no randomness, no network.
 
-import type { Example } from './examples.js'
-import type { Lead } from './leads.js'
-import type { Rpc } from './audit.js'
-import { factsOf, verifyRequestsOf, type VerifyRequest } from './verifiers.js'
-import { numeralsOf, translateOf } from './i18n.js'
-import { THEOREMS } from './theorems-index.js'
-import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
+import type { Example } from './examples.ts'
+import type { Lead } from './leads.ts'
+import type { Rpc } from './audit.ts'
+import { factsOf, verifyRequestsOf, type VerifyRequest } from './verifiers.ts'
+import { numeralsOf, translateOf } from './i18n.ts'
+import { THEOREMS } from './theorems-index.ts'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 
 /** The route of a prompt to the theorems, decided by the theorems: every textbook theorem is indexed by the words of its key and of what it
  *  says, each word weighted by how rare it is among the theorems (ln of theorems over theorems that use it), so a common word routes nowhere and
@@ -42,7 +42,7 @@ export const routeOf = (statement: string, examples: readonly Example[], top = 3
 }
 /** a route needs the weight of a word only one or two theorems use plus another: ln(n / 2) for the rarest is about four and a half */
 const ROUTE_THRESHOLD = 5
-import { uuidOf } from './blocks.js'
+import { uuidOf } from './blocks.ts'
 
 export type Verdict = 'served' | 'impossible' | 'unknown'
 /** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.

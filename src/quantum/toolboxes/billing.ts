@@ -5,12 +5,12 @@
 // entries at any tenant, since a licence names the domains it is valid on and the entries mirror. Every scenario between
 // tenants is an entry and a rule, never a special case: the same licence at another domain, a refund after a grant, a
 // dispute, a renewal, a replayed event, a wrong tenant's signature.
-import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.js'
-import { hmacSha256, utf8, hex, sameHex, sha256 } from '../hmac.js'
-import { uuidOf } from '../blocks.js'
-import { LICENSE } from '../license.js'
-import { flowWidget } from '../widgets.js'
-import { differencesOf, remediesOf, GENERATOR_REMEDIES } from '../audit.js'
+import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.ts'
+import { hmacSha256, utf8, hex, sameHex, sha256 } from '../hmac.ts'
+import { uuidOf } from '../blocks.ts'
+import { LICENSE } from '../license.ts'
+import { flowWidget } from '../widgets.ts'
+import { differencesOf, remediesOf, GENERATOR_REMEDIES } from '../audit.ts'
 
 export type Checkout = { tenant: string; host: string; subject: string; domains: string[]; mode: 'payment' | 'subscription'; price?: string; amount?: number; currency: string; successUrl: string; cancelUrl: string; customerEmail?: string }
 export type Plan = { method: 'POST'; url: string; headers: Record<string, string>; form: Record<string, string>; secret: string }

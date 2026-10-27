@@ -2,17 +2,17 @@
 // (every request a tool emits is one the client can answer), client → server (answers read back into data), and toolbox →
 // toolbox (discovery feeds wave and readiness, wave feeds readiness, match feeds imagine and the judge). Any flow tool called
 // with selftest runs the whole suite; the audit replays it; a client runs it before a live run. Pure.
-import type { Example } from './examples.js'
-import type { Lead } from './leads.js'
-import type { Rpc, Check } from './audit.js'
-import { VERIFIERS } from './verifiers.js'
-import { discoveryRequestsOf, followUpsOf, discoveryOf, discoveryPageOf, type Answer, type Request } from './discovery.js'
-import { waveRequestsOf, waveOf, wavePageOf, type WaveResult } from './wave.js'
-import { pagesOf, judgeOf, sourcesOf, borderPlanOf, borderOf, readinessPageOf } from './readiness.js'
-import { imagineOf, imaginePageOf } from './imagine.js'
-import { matcherOf } from './match.js'
-import { e2eOf, rulesOf, valueOf, type E2eAnswer } from './e2e.js'
-import { registryRequestsOf, relatedOf, bestDoorsOf } from './discovery.js'
+import type { Example } from './examples.ts'
+import type { Lead } from './leads.ts'
+import type { Rpc, Check } from './audit.ts'
+import { VERIFIERS } from './verifiers.ts'
+import { discoveryRequestsOf, followUpsOf, discoveryOf, discoveryPageOf, type Answer, type Request } from './discovery.ts'
+import { waveRequestsOf, waveOf, wavePageOf, type WaveResult } from './wave.ts'
+import { pagesOf, judgeOf, sourcesOf, borderPlanOf, borderOf, readinessPageOf } from './readiness.ts'
+import { imagineOf, imaginePageOf } from './imagine.ts'
+import { matcherOf } from './match.ts'
+import { e2eOf, rulesOf, valueOf, type E2eAnswer } from './e2e.ts'
+import { registryRequestsOf, relatedOf, bestDoorsOf } from './discovery.ts'
 
 const UNIT = 'https://unit.test/mcp'
 const rpcOk = (result: unknown) => JSON.stringify({ jsonrpc: '2.0', id: 1, result })

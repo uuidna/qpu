@@ -1,15 +1,15 @@
 // The discovery document: what this tree serves, from the handler alone — the same at the Worker and at the Payload app; pure.
-import { handle } from './mcp.js'
-import { toolsOf } from './toolbox.js'
-import { EXAMPLES } from './examples.js'
-import { LEADS } from './leads.js'
-import { LICENSE } from './license.js'
-import { KEY } from './theme.js'
-import { VERSION } from './version.js'
-import { TENANTS, tenantOf } from './tenants.js'
-import { DEFAULT_MCP_HOSTS } from './discovery.js'
-import { ROLES } from './roles.js'
-import { openapiOf } from './standards.js'
+import { handle } from './mcp.ts'
+import { toolsOf } from './toolbox.ts'
+import { EXAMPLES } from './examples.ts'
+import { LEADS } from './leads.ts'
+import { LICENSE } from './license.ts'
+import { KEY } from './theme.ts'
+import { VERSION } from './version.ts'
+import { TENANTS, tenantOf } from './tenants.ts'
+import { DEFAULT_MCP_HOSTS } from './discovery.ts'
+import { ROLES } from './roles.ts'
+import { openapiOf } from './standards.ts'
 
 /** RFC 9728: the protected-resource metadata of /mcp, from the names alone — the issuer the tenant binds (QPU_OAUTH_ISSUER_<TENANT>, selected
  *  in the Payload admin, valued in the Worker's environment), the docket roles as scopes; no issuer named means the pure tools need no token

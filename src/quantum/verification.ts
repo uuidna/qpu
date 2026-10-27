@@ -1,9 +1,9 @@
 // A decision verifiable by its client: every theorem a decision rests on is named with the QPU call that serves it (textbook { theorem })
 // and the place its Lean source is published, so the client checks it online — reads the source, builds it with lake — or in the UI,
 // where the view asks its host to make the call. Pure: the kernel's index decides "accepted"; nothing here claims more than it holds.
-import { THEOREMS, THEOREM_KEYS } from './theorems-index.js'
-import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
-import { CLAIMS } from './claims-index.js'
+import { THEOREMS, THEOREM_KEYS } from './theorems-index.ts'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { CLAIMS } from './claims-index.ts'
 
 const LEAN_ROOT = 'https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/lean'
 /** One theorem as the client verifies it: accepted by the kernel or not, its module and statement, its Lean text, where to read and build it. */

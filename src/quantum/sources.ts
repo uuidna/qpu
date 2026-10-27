@@ -6,12 +6,12 @@
 // rest counted outside; and the MCP servers that serve books, proposed as doors. Public metadata only (titles, subjects, dates, licences), no
 // text of any book, no credential, nothing written anywhere. Every page followed to its end (nextOf): unlimited, and the more the QPU is used
 // the more it holds (textbook_use_completes). Pure: the client fetches what the plan names and hands the answers back.
-import { uuidOf } from './blocks.js'
-import { courtOf } from './toolboxes/legal.js'
-import { PRECEDENCE } from './license.js'
-import { routeOf } from './match.js'
-import type { Example } from './examples.js'
-import type { Lead } from './leads.js'
+import { uuidOf } from './blocks.ts'
+import { courtOf } from './toolboxes/legal.ts'
+import { PRECEDENCE } from './license.ts'
+import { routeOf } from './match.ts'
+import type { Example } from './examples.ts'
+import type { Lead } from './leads.ts'
 
 type SourceKind = 'immutable' | 'licence' | 'precedence' | 'textbook' | 'mcp'
 export type SourceRequest = { id: string; source: string; kind: SourceKind; method: 'GET'; url: string; accept: string; page?: number }

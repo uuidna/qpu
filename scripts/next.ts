@@ -29,37 +29,37 @@ const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/t
 type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs?: number; wave: number; /** a long single task split into short multitasks: n shards at once (QPU_SHARD=i/n), then one merge (QPU_SHARD=merge) */ shards?: number }
 const TIMES = await timesOf(ROOT), budgetOf = (s: Step) => Math.min(2 * (s.budgetMs ?? 600_000), Math.max(s.budgetMs ?? 600_000, 2 * (forecastOf(TIMES[s.name] ?? [])?.point ?? 0)))
 const steps: Step[] = [
-  { name: 'clay:gen', cmd: 'node', args: ['--import', 'tsx', 'scripts/gen-clay.ts'], wave: 1 },
-  { name: 'docs:gen', cmd: 'npx', args: ['tsx', 'scripts/gen-docs.ts'], wave: 1 },
-  { name: 'session', cmd: 'node', args: ['--import', 'tsx', 'scripts/session.ts'], skip: fast ? 'fast' : undefined, budgetMs: 600_000, wave: 1 }, // every session read to decide what is next and how; offline only the Payload writes and the unit's calls wait
-  { name: 'configs', cmd: 'node', args: ['--import', 'tsx', 'scripts/configs.ts'], wave: 1 }, // always: every configuration (configs, scopes, fields, validations, access, hooks, bindings, actions) improved — the tool's files written, the hand's measured
+  { name: 'clay:gen', cmd: 'node', args: ['scripts/gen-clay.ts'], wave: 1 },
+  { name: 'docs:gen', cmd: 'node', args: ['scripts/gen-docs.ts'], wave: 1 },
+  { name: 'session', cmd: 'node', args: ['scripts/session.ts'], skip: fast ? 'fast' : undefined, budgetMs: 600_000, wave: 1 }, // every session read to decide what is next and how; offline only the Payload writes and the unit's calls wait
+  { name: 'configs', cmd: 'node', args: ['scripts/configs.ts'], wave: 1 }, // always: every configuration (configs, scopes, fields, validations, access, hooks, bindings, actions) improved — the tool's files written, the hand's measured
   { name: 'typecheck', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'], wave: 2 },
-  { name: 'test', cmd: 'node', args: ['--import', 'tsx', '--test', 'src/quantum/*.test.ts'], budgetMs: 300_000, wave: 2 },
+  { name: 'test', cmd: 'node', args: ['--test', 'src/quantum/*.test.ts'], budgetMs: 300_000, wave: 2 },
   { name: 'lean', cmd: lake, args: ['build'], wave: 1.5 }, // before purify, which reads the kernel's environment
-  { name: 'audit', cmd: 'node', args: ['--import', 'tsx', 'scripts/audit.ts'], wave: 2 },
-  { name: 'imagine', cmd: 'node', args: ['--import', 'tsx', 'scripts/imagine.ts'], budgetMs: 300_000, skip: fast ? 'fast' : undefined, wave: 3, shards: 4 }, // a quantum: the leads not yet imagined, as many as fit; the rest next run
-  { name: 'discover', cmd: 'node', args: ['--import', 'tsx', 'scripts/discover.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 }, // a quantum: contracts kept a day, the rest fetched as far as the quantum goes
-  { name: 'verify', cmd: 'node', args: ['--import', 'tsx', 'scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 }, // a quantum: today's results kept by url, the rest fetched as far as the quantum goes
-  { name: 'readiness', cmd: 'node', args: ['--import', 'tsx', 'scripts/readiness.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 },
-  { name: 'e2e', cmd: 'node', args: ['--import', 'tsx', 'scripts/e2e.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3 }, // the gate as a repetition code: every combination on every host, decoded by majority; a quantum
-  { name: 'constants', cmd: 'node', args: ['--import', 'tsx', 'scripts/constants.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // CODATA's constants as exact integers, sealed with their uncertainty
-  { name: 'theorems-raid', cmd: 'node', args: ['--import', 'tsx', 'scripts/theorems-raid.ts'], skip: offline ? 'offline' : undefined, budgetMs: 300_000, wave: 3 }, // every textbook theorem a docket entry under the QPU's own tenant, through the Payload MCP
-  { name: 'claims', cmd: 'node', args: ['--import', 'tsx', 'scripts/claims.ts'], skip: offline ? 'offline' : undefined, budgetMs: 600_000, wave: 3 }, // every general textbook theorem measured against OpenAlex, the claims index generated
-  { name: 'attest', cmd: 'node', args: ['--import', 'tsx', 'scripts/attest.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 },
-  { name: 'security', cmd: 'node', args: ['--import', 'tsx', 'scripts/security.ts'], skip: offline ? 'offline' : undefined, budgetMs: 300_000, wave: 3 }, // the security audit from the client and the developer perspectives merged as one, by the audit tool // crypto and certificate APIs, NIST and CERN, verified by theorems in coordinated combinations
-  { name: 'patents', cmd: 'node', args: ['--import', 'tsx', 'scripts/patents.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // the open patent APIs fetched once, the theorems verified over every patent read
-  { name: 'compete', cmd: 'node', args: ['--import', 'tsx', 'scripts/compete.ts'], budgetMs: 120_000, wave: 3 }, // always: every competition's rules judged against the evidence; online, the windows read from the pages and pushed from the remote
-  { name: 'currency', cmd: 'node', args: ['--import', 'tsx', 'scripts/currency.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // every free rate API fetched once, harmonised: one rate per currency, the catalogue in every currency
-  { name: 'repository', cmd: 'node', args: ['--import', 'tsx', 'scripts/repository.ts'], budgetMs: 300_000, wave: 3 }, // always: workspaces, branches, tags, releases; offline the local facts
-  { name: 'legal', cmd: 'node', args: ['--import', 'tsx', 'scripts/legal.ts'], budgetMs: 600_000, wave: 3, shards: 4 },
-  { name: 'sources', cmd: 'node', args: ['--import', 'tsx', 'scripts/sources.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 1_800_000, wave: 3 }, // the immutable sources of leads, every page to its end
-  { name: 'workspace', cmd: 'node', args: ['--import', 'tsx', 'scripts/workspace.ts'], budgetMs: 120_000, wave: 4 }, // Google Forms, Docs and Drive in Payload from the Discovery documents discover cached
-  { name: 'textbook', cmd: 'node', args: ['--import', 'tsx', 'scripts/textbook.ts'], budgetMs: 300_000, wave: 4, shards: 4 }, // always: the examples verified online from the wave; offline the plan // always: cached by inputs, the pure half offline
-  { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'], wave: 2 }, // beside the tests and the audit: independent pure work fills the idle cores (its index written atomically)
-  { name: 'metrics', cmd: 'node', args: ['--import', 'tsx', 'scripts/metrics.ts'], budgetMs: 120_000, skip: fast ? 'fast' : undefined, wave: 5 }, // always: the run's artefacts read into one measure
+  { name: 'audit', cmd: 'node', args: ['scripts/audit.ts'], wave: 2 },
+  { name: 'imagine', cmd: 'node', args: ['scripts/imagine.ts'], budgetMs: 300_000, skip: fast ? 'fast' : undefined, wave: 3, shards: 4 }, // a quantum: the leads not yet imagined, as many as fit; the rest next run
+  { name: 'discover', cmd: 'node', args: ['scripts/discover.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 }, // a quantum: contracts kept a day, the rest fetched as far as the quantum goes
+  { name: 'verify', cmd: 'node', args: ['scripts/verify.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 }, // a quantum: today's results kept by url, the rest fetched as far as the quantum goes
+  { name: 'readiness', cmd: 'node', args: ['scripts/readiness.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 },
+  { name: 'e2e', cmd: 'node', args: ['scripts/e2e.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3 }, // the gate as a repetition code: every combination on every host, decoded by majority; a quantum
+  { name: 'constants', cmd: 'node', args: ['scripts/constants.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // CODATA's constants as exact integers, sealed with their uncertainty
+  { name: 'theorems-raid', cmd: 'node', args: ['scripts/theorems-raid.ts'], skip: offline ? 'offline' : undefined, budgetMs: 300_000, wave: 3 }, // every textbook theorem a docket entry under the QPU's own tenant, through the Payload MCP
+  { name: 'claims', cmd: 'node', args: ['scripts/claims.ts'], skip: offline ? 'offline' : undefined, budgetMs: 600_000, wave: 3 }, // every general textbook theorem measured against OpenAlex, the claims index generated
+  { name: 'attest', cmd: 'node', args: ['scripts/attest.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 },
+  { name: 'security', cmd: 'node', args: ['scripts/security.ts'], skip: offline ? 'offline' : undefined, budgetMs: 300_000, wave: 3 }, // the security audit from the client and the developer perspectives merged as one, by the audit tool // crypto and certificate APIs, NIST and CERN, verified by theorems in coordinated combinations
+  { name: 'patents', cmd: 'node', args: ['scripts/patents.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // the open patent APIs fetched once, the theorems verified over every patent read
+  { name: 'compete', cmd: 'node', args: ['scripts/compete.ts'], budgetMs: 120_000, wave: 3 }, // always: every competition's rules judged against the evidence; online, the windows read from the pages and pushed from the remote
+  { name: 'currency', cmd: 'node', args: ['scripts/currency.ts'], skip: offline ? 'offline' : undefined, budgetMs: 120_000, wave: 3 }, // every free rate API fetched once, harmonised: one rate per currency, the catalogue in every currency
+  { name: 'repository', cmd: 'node', args: ['scripts/repository.ts'], budgetMs: 300_000, wave: 3 }, // always: workspaces, branches, tags, releases; offline the local facts
+  { name: 'legal', cmd: 'node', args: ['scripts/legal.ts'], budgetMs: 600_000, wave: 3, shards: 4 },
+  { name: 'sources', cmd: 'node', args: ['scripts/sources.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 1_800_000, wave: 3 }, // the immutable sources of leads, every page to its end
+  { name: 'workspace', cmd: 'node', args: ['scripts/workspace.ts'], budgetMs: 120_000, wave: 4 }, // Google Forms, Docs and Drive in Payload from the Discovery documents discover cached
+  { name: 'textbook', cmd: 'node', args: ['scripts/textbook.ts'], budgetMs: 300_000, wave: 4, shards: 4 }, // always: the examples verified online from the wave; offline the plan // always: cached by inputs, the pure half offline
+  { name: 'purify', cmd: 'node', args: ['scripts/purify.ts'], wave: 2 }, // beside the tests and the audit: independent pure work fills the idle cores (its index written atomically)
+  { name: 'metrics', cmd: 'node', args: ['scripts/metrics.ts'], budgetMs: 120_000, skip: fast ? 'fast' : undefined, wave: 5 }, // always: the run's artefacts read into one measure
   { name: 'docs:build', cmd: 'npx', args: ['vitepress', 'build', 'docs'], skip: fast ? 'fast' : undefined, wave: 6 },
-  { name: 'trunk', cmd: 'node', args: ['--import', 'tsx', 'scripts/trunk.ts'], wave: 7 }, // always: main fast-forwarded locally when green; never pushed
-  { name: 'publish', cmd: 'node', args: ['--import', 'tsx', 'scripts/publish.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 7 },
+  { name: 'trunk', cmd: 'node', args: ['scripts/trunk.ts'], wave: 7 }, // always: main fast-forwarded locally when green; never pushed
+  { name: 'publish', cmd: 'node', args: ['scripts/publish.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 7 },
 ]
 const LICENSE_LINE = 'CC-BY-NC-ND-4.0 © Tsvetan Rouschev (https://orcid.org/0009-0000-7312-9778); commercial use by licence (https://qpu.uuidna.com)'
 const receipt: { license: string; date: string; head: string; steps: { name: string; status: 'green' | 'red' | 'skipped'; ms: number; tail: string; counts?: Record<string, number>; measures?: { wallNs: string; cpuUs: number; rssKb: number; firstOutputMs: number | null } }[] } = {

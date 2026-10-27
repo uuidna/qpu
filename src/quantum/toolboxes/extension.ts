@@ -2,9 +2,9 @@
 // read into doors that join this catalogue (the same door reading discovery uses), and a foreign door is served by one
 // request the client fetches, the answer read back whether JSON or an event stream. Outward, this catalogue is expressed as
 // the registration any MCP client mounts (tools/list as every client receives it, the mcpServers fragment). Pure: no fetch.
-import { toolOf, isObj, checksOf, toolsOf, type Toolbox, type Context } from '../toolbox.js'
-import { doorOf, dataOf, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, CLOUDFLARE_DOCS_MCP, QPU_MCP, KNOWN_MCP, CLAUDE_API, GEMINI_API, OPEN_MCP_BASELINES, toolsListCompareOf, coverageRequestOf, coverageOf, type Door } from '../discovery.js'
-import { flowWidget } from '../widgets.js'
+import { toolOf, isObj, checksOf, toolsOf, type Toolbox, type Context } from '../toolbox.ts'
+import { doorOf, dataOf, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, CLOUDFLARE_DOCS_MCP, QPU_MCP, KNOWN_MCP, CLAUDE_API, GEMINI_API, OPEN_MCP_BASELINES, toolsListCompareOf, coverageRequestOf, coverageOf, type Door } from '../discovery.ts'
+import { flowWidget } from '../widgets.ts'
 
 type ForeignTool = { name: string; description?: string; inputSchema?: { properties?: Record<string, unknown>; required?: string[] }; outputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean } }
 const hostOf = (url: string) => { try { return new URL(url).host } catch { return url } }

@@ -5,7 +5,7 @@
 // is a logical error of 3p² − 2p³ (Nielsen & Chuang, Quantum Computation and Quantum Information, §10.1.1). The simulation is
 // compared with that figure; it does not assume it.
 
-import { CNOT, Circuit, DensityMatrixSimulator, H, LineQubit, TOFFOLI, X, applied, noisy, type Channel, type Operation, type Qubit } from './cirq.js'
+import { CNOT, Circuit, DensityMatrixSimulator, H, LineQubit, TOFFOLI, X, applied, noisy, type Channel, type Operation, type Qubit } from './cirq.ts'
 
 /** The two repetition codes: the bit-flip code (|000⟩, |111⟩) and the phase-flip code (|+++⟩, |−−−⟩), its Hadamard conjugate. */
 export type RepetitionCode = 'bit_flip' | 'phase_flip'

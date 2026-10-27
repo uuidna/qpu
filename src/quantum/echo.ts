@@ -4,8 +4,8 @@
 // backward run applies the adjoint of each forward operation, in reverse order: the true inverse for any unitary, gate powers
 // included, so the echo returns with certainty when nothing perturbs it.
 
-import { Circuit, Simulator, adjointOf, type Operation } from './cirq.js'
-import { PROCESSORS } from './processor.js'
+import { Circuit, Simulator, adjointOf, type Operation } from './cirq.ts'
+import { PROCESSORS } from './processor.ts'
 
 /** Google's Quantum Echoes result as its blog states it: the OTOC protocol run on the 105-qubit array of Willow, 13,000x
  *  faster than the fastest supercomputers, on molecules of 15 and 28 atoms. Figures as stated, none estimated here. */

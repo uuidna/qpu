@@ -1,10 +1,10 @@
 // The standards toolbox: schema.org JSON-LD for any block, page or offer, and the tree's ISO codes validated against the
 // CLDR lists a client fetched. Pure; the discover tool reads the standards' documents as contracts.
-import { toolOf, checksOf, type Toolbox } from '../toolbox.js'
-import { blockJsonLdOf, pageJsonLdOf, offerJsonLdOf, codesOf, validateOf, STANDARDS, detectStandard } from '../standards.js'
-import { LOCALES } from '../i18n.js'
-import { CATALOGUE } from './billing.js'
-import { flowWidget } from '../widgets.js'
+import { toolOf, checksOf, type Toolbox } from '../toolbox.ts'
+import { blockJsonLdOf, pageJsonLdOf, offerJsonLdOf, codesOf, validateOf, STANDARDS, detectStandard } from '../standards.ts'
+import { LOCALES } from '../i18n.ts'
+import { CATALOGUE } from './billing.ts'
+import { flowWidget } from '../widgets.ts'
 
 const jsonld = toolOf('standards', {
   name: 'jsonld',

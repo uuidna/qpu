@@ -7,7 +7,7 @@
 // non-Clifford gate, an arbitrary-angle rotation or a gate this repository has not decomposed, is listed and left uncounted,
 // and the count says so: no synthesis cost is invented.
 
-import { pauliProduct, type Circuit, type Gate } from './cirq.js'
+import { pauliProduct, type Circuit, type Gate } from './cirq.ts'
 
 type Complex = [number, number]
 type Matrix = Complex[]

@@ -1,14 +1,14 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.js'
-import { EXAMPLES } from './examples.js'
-import { LEADS } from './leads.js'
-import { matchOf, reflectionsOf } from './match.js'
-import { factsOf, verifyRequestsOf, VERIFIERS } from './verifiers.js'
-import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf, tailReadingsOf, reflectionOf } from './blocks.js'
-import { TREE_FACTS } from './verifiers.js'
-import { KEY, cssOf, cmykOfUuid, accentOfUuid, hueOf, HARMONICS } from './theme.js'
-import { translateOf, LOCALES } from './i18n.js'
+import { handle } from './mcp.ts'
+import { EXAMPLES } from './examples.ts'
+import { LEADS } from './leads.ts'
+import { matchOf, reflectionsOf } from './match.ts'
+import { factsOf, verifyRequestsOf, VERIFIERS } from './verifiers.ts'
+import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf, tailReadingsOf, reflectionOf } from './blocks.ts'
+import { TREE_FACTS } from './verifiers.ts'
+import { KEY, cssOf, cmykOfUuid, accentOfUuid, hueOf, HARMONICS } from './theme.ts'
+import { translateOf, LOCALES } from './i18n.ts'
 
 const match = (statement: string) => matchOf(statement, handle, EXAMPLES, LEADS)
 

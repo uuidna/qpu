@@ -5,9 +5,9 @@
 // and no tool follows yet. The hand-written leads are here; every page of the sitemap (the discover door's, sealed in the docket) that no
 // hand-written lead already names is a lead of its own through leads { sitemap }, so nothing the site lists is dropped.
 
-import * as cirq from './cirq.js'
-import { recomputeClay } from './clay-register.js'
-import { uuidOf } from './blocks.js'
+import * as cirq from './cirq.ts'
+import { recomputeClay } from './clay-register.ts'
+import { uuidOf } from './blocks.ts'
 
 export type LeadStatus = 'served' | 'partial' | 'blocked' | 'out_of_scope' | 'open'
 

@@ -4,8 +4,8 @@
 // (read 2026-10-26, sources beside each row); a price Google does not publish is null and says so. The textbook is the education tool:
 // every closed equation the kernel accepted becomes a Classroom question whose answer the kernel decided, and an answer is graded by
 // recomputing the equation, never by a key typed by hand. Pure: the client (the institution's MCP session) performs every call.
-import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
-import { uuidOf, compositionsOf, compositionOf, compositionIndexOf, presentationOf } from './blocks.js'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { uuidOf, compositionsOf, compositionOf, compositionIndexOf, presentationOf } from './blocks.ts'
 
 /** Google Workspace's MCP servers (developers.google.com/workspace/guides/configure-mcp-servers, read 2026-10-26): Developer Preview,
  *  OAuth 2.0 with a web client marked for an AI-powered agent; each lands in the docket, rendered by the collection named beside it. */

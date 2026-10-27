@@ -1,11 +1,11 @@
 // Imagination as a pure toolbox: every lead's statement matched with the reflection on, so each lead gets its hidden factors,
 // its angles, its mirror queries, its cluster and its verification requests; every reflection that finds something is a new
 // open lead; every enum value no example exercises is an untried door; every application family is an adaptor to build.
-import type { Example } from './examples.js'
-import type { Lead } from './leads.js'
-import type { Rpc } from './audit.js'
-import { matcherOf } from './match.js'
-import { VERIFIERS } from './verifiers.js'
+import type { Example } from './examples.ts'
+import type { Lead } from './leads.ts'
+import type { Rpc } from './audit.ts'
+import { matcherOf } from './match.ts'
+import { VERIFIERS } from './verifiers.ts'
 
 type ImagineRow = { lead: string; status: string; verdict: string; tool?: string; cluster: number; verify: number; factors: number; angles: number; queries: number; opened: number }
 export type Imagination = { leads: number; verdicts: Record<string, number>; verifyRequests: number; imaginedLeads: number; rows: ImagineRow[]; imagined: Lead[] }

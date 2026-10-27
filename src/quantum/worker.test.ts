@@ -1,9 +1,9 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.js'
-import { worker, Docket, discoveryOf, protectedResourceOf, roleAt, stripeCheckout, FRAGMENT_BYTES, STRIPE, sameToken, type Storage, type Env } from '../worker.js'
-import { uuidOf, channelOf, uuidFromParts } from './blocks.js'
-import { signatureOf } from './toolboxes/billing.js'
+import { handle } from './mcp.ts'
+import { worker, Docket, discoveryOf, protectedResourceOf, roleAt, stripeCheckout, FRAGMENT_BYTES, STRIPE, sameToken, type Storage, type Env } from '../worker.ts'
+import { uuidOf, channelOf, uuidFromParts } from './blocks.ts'
+import { signatureOf } from './toolboxes/billing.ts'
 
 const KEY = Buffer.from(new Uint8Array(32).map((_, i) => i * 7 + 1)).toString('base64')
 const memory = (): Storage & { map: Map<string, unknown> } => { const m = new Map<string, unknown>(); return { map: m, async get<T>(k: string) { return m.get(k) as T | undefined }, async put(k, v) { m.set(k, v) }, async delete(k) { return m.delete(k) }, async list<T>(o?: { prefix?: string }) { return new Map([...m].filter(([k]) => !o?.prefix || k.startsWith(o.prefix))) as Map<string, T> } } }

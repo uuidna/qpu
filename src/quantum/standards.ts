@@ -2,9 +2,9 @@
 // author a Person with an ORCID, the licence a URL, dates in ISO 8601, languages in ISO 639-1, currencies in ISO 4217,
 // countries in ISO 3166-1), and the free CLDR lists (Unicode's JSON of the ISO codes with their names) read as contracts so
 // the tree's locales and currencies are validated against the standard, never against prose. No I/O here.
-import { PAYLOAD_SURFACE } from './payload-surface.js'
-import { LICENSE } from './license.js'
-import { VERSION } from './version.js'
+import { PAYLOAD_SURFACE } from './payload-surface.ts'
+import { LICENSE } from './license.ts'
+import { VERSION } from './version.ts'
 
 export const STANDARDS: readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[] = [
   // the standards Payload's programmatic surface is described by (JSON Schema, OpenAPI, GraphQL, JSON-LD, MCP, the RFCs), read with the surface on 2026-10-26: references the payload tool's schemas door cites per part

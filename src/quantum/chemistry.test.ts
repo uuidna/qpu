@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { BOHR_ANGSTROM, TUTORIAL_ENERGIES, ansatzCircuit, boys0, energyAt, erf, hydrogen, hydrogenHamiltonian, tutorialChecks, vqeSweep } from './chemistry.js'
-import { DensityMatrixSimulator } from './cirq.js'
+import { BOHR_ANGSTROM, TUTORIAL_ENERGIES, ansatzCircuit, boys0, energyAt, erf, hydrogen, hydrogenHamiltonian, tutorialChecks, vqeSweep } from './chemistry.ts'
+import { DensityMatrixSimulator } from './cirq.ts'
 
 const close = (a: number, b: number, tolerance: number) => assert.ok(Math.abs(a - b) < tolerance, `${a} is not within ${tolerance} of ${b}`)
 

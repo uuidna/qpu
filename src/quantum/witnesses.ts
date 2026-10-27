@@ -3,7 +3,7 @@
 // Each witness maps back exactly — σ is an involution, a rotation is undone by its inverse — so the witnesses verify the UUID, and each
 // other through it. Two UUIDs' sets merged share the witnesses with the same address: work that exists once, not twice, booked as a coin
 // credited to the author at zero price — a count of free work, never money. Pure.
-import { channelOf, uuidFromParts } from './blocks.js'
+import { channelOf, uuidFromParts } from './blocks.ts'
 
 type Witness = { face: 'square' | 'triangle'; index: number; uuid: string; how: string }
 const rotate = (p: readonly number[], k: number) => p.map((_, i) => p[(i + k) % p.length]!)

@@ -1,5 +1,5 @@
 // The roles of the docket per tenant: what each may do, the header that carries it, how it is issued; pure.
-import { hmacSha256, sameHex, utf8, hex } from './hmac.js'
+import { hmacSha256, sameHex, utf8, hex } from './hmac.ts'
 export type Role = 'reader' | 'writer' | 'admin'
 export const ROLES: Readonly<Record<Role, { may: string; header: string | null; issued: string }>> = {
   reader: { may: 'GET: read the docket, the discovery document, every tool over POST /mcp', header: null, issued: 'no token: every reader is a reader' },

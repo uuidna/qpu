@@ -2,11 +2,11 @@
 // textbook theorem names only examples that exist, and the same answer is served over MCP (textbook { axioms }) and checked by the audit.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.js'
-import { EXAMPLES } from './examples.js'
-import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
-import { THEOREMS } from './theorems-index.js'
-import { axiomsOf } from './audit.js'
+import { handle } from './mcp.ts'
+import { EXAMPLES } from './examples.ts'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { THEOREMS } from './theorems-index.ts'
+import { axiomsOf } from './audit.ts'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -36,7 +36,7 @@ test('the same answer is served over MCP: textbook { axioms }', () => {
 })
 
 test('every theorem sentence is a Lean doc comment that opens and closes once, whatever the prose holds', async () => {
-  const { TEXTBOOK_LEAN, leanDocOf } = await import('./textbook-theorems.js')
+  const { TEXTBOOK_LEAN, leanDocOf } = await import('./textbook-theorems.ts')
   const docs = TEXTBOOK_LEAN().split('\n').filter((l) => l.startsWith('/-- '))
   assert.ok(docs.length > 0)
   for (const d of docs) { const body = d.slice(4, d.lastIndexOf(' -/')); assert.ok(!body.includes('-/') && !body.includes('/-'), d.slice(0, 80)) }

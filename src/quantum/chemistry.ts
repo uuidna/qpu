@@ -6,7 +6,7 @@
 // energies at bond lengths 0.7 and 0.8 Å from OpenFermion's data, and the integrals here are checked against those printed
 // figures in the tests and in the tool's output. Every energy a VQE sweep returns is an expectation value of a simulated state.
 
-import { Circuit, DensityMatrixSimulator, LineQubit, applied, exponentialOf, expectationOf, pauliProduct } from './cirq.js'
+import { Circuit, DensityMatrixSimulator, LineQubit, applied, exponentialOf, expectationOf, pauliProduct } from './cirq.ts'
 
 /** The STO-3G hydrogen 1s function: three primitive Gaussians, exponents and contraction coefficients as Hehre, Stewart and
  *  Pople fit them (J. Chem. Phys. 51, 2657 (1969)), with the exponents scaled for hydrogen (ζ = 1.24), as the basis set is

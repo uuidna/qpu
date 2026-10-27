@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { breakEvenOf, codePoint, repetitionCycle, textbookLogicalError, unencodedCycle } from './qec.js'
-import { countResources } from './counting.js'
+import { breakEvenOf, codePoint, repetitionCycle, textbookLogicalError, unencodedCycle } from './qec.ts'
+import { countResources } from './counting.ts'
 
 const close = (a: number, b: number, tolerance = 1e-12) => assert.ok(Math.abs(a - b) < tolerance, `${a} is not within ${tolerance} of ${b}`)
 

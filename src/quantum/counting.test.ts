@@ -1,8 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { CLIFFORD_CHECK_ARITY, classify, countResources, isClifford } from './counting.js'
-import { Circuit, CNOT, CZ, H, LineQubit, SWAP, TOFFOLI, X, Z, ZZ, applied, pauliProduct, powerOf, exponentialOf, type Gate } from './cirq.js'
-import { groverCircuit, qftOperations, teleportationCircuit } from './algorithms.js'
+import { CLIFFORD_CHECK_ARITY, classify, countResources, isClifford } from './counting.ts'
+import { Circuit, CNOT, CZ, H, LineQubit, SWAP, TOFFOLI, X, Z, ZZ, applied, pauliProduct, powerOf, exponentialOf, type Gate } from './cirq.ts'
+import { groverCircuit, qftOperations, teleportationCircuit } from './algorithms.ts'
 
 test('Cliffordness is computed from the unitary: H, CZ, CNOT, SWAP, S and √X are Clifford; T, √X·T-like gates, controlled-S and Toffoli are not', () => {
   for (const g of [H, CZ, CNOT, SWAP, X, Z, powerOf(Z, 0.5), powerOf(X, 0.5), powerOf(ZZ, 0.5)]) assert.ok(isClifford(g), g.name)

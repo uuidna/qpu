@@ -2,10 +2,10 @@
 // client fetches it, and the handler reads what came back into doors and capabilities. No I/O here; the client's own MCP
 // fetches. An MCP host is asked for tools/list and, where it serves one, its catalogue door; an API host for the OpenAPI,
 // index or identify document the verifiers registry names; both domains for /.well-known/qpu.json.
-import type { Verifier } from './verifiers.js'
-import { STANDARDS, detectStandard } from './standards.js'
-import { stem } from './match.js'
-import { measuredOf } from './theme.js'
+import type { Verifier } from './verifiers.ts'
+import { STANDARDS, detectStandard } from './standards.ts'
+import { stem } from './match.ts'
+import { measuredOf } from './theme.ts'
 
 export type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract' | 'sitemap'
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
@@ -42,7 +42,7 @@ const GOOGLE_MCP: readonly { host: string; url: string; about: string; maps: str
   { host: 'androidmanagement.googleapis.com', url: 'https://androidmanagement.googleapis.com/mcp', about: 'enterprise management of Android devices', maps: 'the PWA on managed devices: a door' },
 ]
 /** Google Workspace's nine MCP servers (Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, People, Classroom): the institution's doors, each landing in the docket. */
-import { WORKSPACE_MCP } from './institutions.js'
+import { WORKSPACE_MCP } from './institutions.ts'
 export { WORKSPACE_MCP }
 /** Google's MCP toolboxes in the registry (local servers): proposed, never called. */
 /** Google reached by one door, the qpu-google-call job of the Payload app: a GOOGLE_HOST is called by that job alone, which reads the API's

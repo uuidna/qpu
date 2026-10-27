@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { PROCESSORS, SYCAMORE, SYCAMORE23, WILLOW, averageConnectivityOf, belowThresholdOf, couplersOf, deviceOf, fitsProcessor } from './processor.js'
-import { Circuit, applied, CZ, GridQubit, H, keyOf } from './cirq.js'
+import { PROCESSORS, SYCAMORE, SYCAMORE23, WILLOW, averageConnectivityOf, belowThresholdOf, couplersOf, deviceOf, fitsProcessor } from './processor.ts'
+import { Circuit, applied, CZ, GridQubit, H, keyOf } from './cirq.ts'
 
 test('Willow has 105 sites on the spec sheet grid, all distinct', () => {
   assert.equal(WILLOW.qubits, 105)

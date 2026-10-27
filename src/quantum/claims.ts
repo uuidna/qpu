@@ -2,8 +2,8 @@
 // before the tree's own record of precedence (2026) that resemble it are its candidates; a closed count of this tree is its own, which no
 // prior publication can state. A search finds resemblance, never the same claim: "recognised" is set only by a confirmation recorded in the
 // docket (a reader who read the work), "unrecognised" when no candidate is found. Pure: the client asks OpenAlex and hands the answers back.
-import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
-import { statementOf } from './expressions.js'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { statementOf } from './expressions.ts'
 
 const PRECEDENCE_YEAR = 2026
 const words = (s: string) => new Set(s.toLowerCase().match(/[a-z]{4,}/g) ?? [])

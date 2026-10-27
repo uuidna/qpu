@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { handle } from './mcp.js'
+import { handle } from './mcp.ts'
 
 const DOCS = new URL('../../docs/', import.meta.url).pathname
 const pages = readdirSync(DOCS).filter((f) => f.endsWith('.md')).map((f) => [f, readFileSync(join(DOCS, f), 'utf8')] as const)

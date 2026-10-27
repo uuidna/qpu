@@ -2,8 +2,8 @@
 // carries its Google test size, so the standards measure can count the sizes.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { combinationsOf, sessionOf, LEADS } from './leads.js'
-import { toolCallerOf } from './mcp.js'
+import { combinationsOf, sessionOf, LEADS } from './leads.ts'
+import { toolCallerOf } from './mcp.ts'
 
 // recorded with real MCP client calls to the hosted unit's run_sequence on 2026-10-27
 const RECORDED = [{ value: 3432, answer: { seed: 2, reflection: 8 } }, { value: 15, answer: { seed: 5, reflection: 5 } }, { value: 471435600, answer: { seed: 0, reflection: 0 } }, { value: 0, answer: { seed: 0, reflection: 0 } }]

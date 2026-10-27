@@ -1,10 +1,10 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { handle } from './mcp.js'
-import { EXAMPLES } from './examples.js'
-import { LEADS } from './leads.js'
-import { auditOf } from './audit.js'
+import { handle } from './mcp.ts'
+import { EXAMPLES } from './examples.ts'
+import { LEADS } from './leads.ts'
+import { auditOf } from './audit.ts'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 

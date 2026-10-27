@@ -2,10 +2,10 @@
 // characters); asserted, they are axioms of the textbook. Where the constants stand in an arithmetic relation of the model,
 // the relation is stated here as a Lean theorem the kernel checks (gen-docs writes Qpu/Textbook.lean from this table before
 // Lean builds), and the example names its theorem: quality is proven by theorems, the examples are the textbook, respected.
-import { PRECEDENCE } from './license.js'
+import { PRECEDENCE } from './license.ts'
 type TextbookTheorem = { key: string; lean: string; says: string; examples: readonly string[] }
-import { LITERAL_REGISTRIES, LITERAL_ROOTS } from './audit.js'
-import { SET_FAMILIES, SET_RADICES, SET_SPACE } from './institutions.js'
+import { LITERAL_REGISTRIES, LITERAL_ROOTS } from './audit.ts'
+import { SET_FAMILIES, SET_RADICES, SET_SPACE } from './institutions.ts'
 export const TEXTBOOK_THEOREMS: readonly TextbookTheorem[] = [
   { key: 'textbook_plugin_combinations', lean: 'theorem textbook_plugin_combinations : 2 ^ 9 = 512 := by decide', says: 'nine default plugins, each in or out: 512 configurations', examples: ['configure-payload'] },
   { key: 'textbook_prices_are_variants_times_currencies', lean: 'theorem textbook_prices_are_variants_times_currencies : 9 * 2 = 18 := by decide', says: 'nine variants priced in two currencies are fourteen prices', examples: ['stripe-catalogue'] },

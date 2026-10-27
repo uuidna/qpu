@@ -5,10 +5,10 @@
 // caller, its one fallback binding 0 (the RAID's own copy in hex folders, every file verified by its address).
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { LICENSE } from '../src/quantum/license.js'
+import { LICENSE } from '../src/quantum/license.ts'
 import { execFileSync } from 'node:child_process'
-import { GOOGLE_HOST } from '../src/quantum/discovery.js'
-import { uuidOf } from '../src/quantum/blocks.js'
+import { GOOGLE_HOST } from '../src/quantum/discovery.ts'
+import { uuidOf } from '../src/quantum/blocks.ts'
 export const MCP_URL = 'http://localhost:3000/api/mcp'
 // else the keychain item qpu-app-key, read once into this process and its children, never printed (the probe probe-app-key names how to store it)
 if (!process.env.QPU_APP_KEY) try { const k = execFileSync('security', ['find-generic-password', '-s', 'qpu-app-key', '-w'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 }).trim(); if (k) process.env.QPU_APP_KEY = k } catch { /* no keychain item */ }
@@ -101,8 +101,8 @@ export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: str
  *  else .qpu at the root), every version verified by its address; the source named, nothing when neither holds it (textbook_binding_zero_hex_path) */
 export const raidRead = async (collection: string, read: () => Promise<Record<string, unknown>[] | null>) => {
   const docs = await read().catch(() => null); if (docs) return { docs, from: 'payload' }
-  const dir = process.env.QPU_BINDING0 ?? join(process.cwd(), '.qpu'), { binding0Of } = await import('../src/quantum/toolboxes/raid.js')
-  const back = <{ docs: Record<string, unknown>[]; refused: string[] }>binding0Of(collection, null, existsSync(dir) ? Object.fromEntries(readdirSync(dir, { recursive: true }).map(String).filter((p) => /[\da-f-]{36}(\.latest)?$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) : {})
+  const dir = process.env.QPU_BINDING0 ?? join(process.cwd(), '.qpu'), { binding0Of } = await import('../src/quantum/toolboxes/raid.ts')
+  const back = binding0Of(collection, null, existsSync(dir) ? Object.fromEntries(readdirSync(dir, { recursive: true }).map(String).filter((p) => /[\da-f-]{36}(\.latest)?$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) : {}) as { docs: Record<string, unknown>[]; refused: string[] }
   return { docs: back.docs.length ? back.docs : null, from: back.docs.length ? `binding 0 (${back.refused.length} refused)` : 'unread' }
 }
 /** The leads beyond the core: every Research leads page's record (its leads block's lead), read in the RAID's order and handed to the tools as records */
@@ -110,6 +110,6 @@ export const leadsOf = async () => {
   const m = mcpOf(), find = async (where: object) => (await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify(where) })).docs as Record<string, unknown>[] | null
   const r = await raidRead('pages', async () => { const top = await find({ title: { equals: 'Research leads' } }); return top?.length ? find({ parent: { in: top.map((p) => p.id) } }) : null }), top = new Set((r.docs ?? []).filter((p) => p.title === 'Research leads').map((p) => p.id))
   const pages = (r.from === 'payload' ? r.docs : r.docs?.filter((p) => top.has(String((p.parent as { id?: string } | null)?.id ?? p.parent)))) as { layout?: { tool?: string; arguments?: { lead?: Record<string, unknown> } }[] }[] | null
-  const { LEADS } = await import('../src/quantum/leads.js'), records = (pages ?? []).flatMap((p) => (p.layout ?? []).flatMap((b) => (b.tool === 'leads' && b.arguments?.lead ? [b.arguments.lead] : []))) as unknown as typeof LEADS[number][], core = new Set(LEADS.map((l) => l.id))
+  const { LEADS } = await import('../src/quantum/leads.ts'), records = (pages ?? []).flatMap((p) => (p.layout ?? []).flatMap((b) => (b.tool === 'leads' && b.arguments?.lead ? [b.arguments.lead] : []))) as unknown as typeof LEADS[number][], core = new Set(LEADS.map((l) => l.id))
   return { records, all: [...LEADS, ...records.filter((l) => !core.has(l.id))], from: r.from }
 }

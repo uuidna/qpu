@@ -4,17 +4,17 @@
 // for the concept DOI, each checked against the contract discovery found. Phase two reads the answers into agreement and
 // leads: a local branch with no remote, a remote branch not here, a tag here and not there or there and not here, a release
 // without its tag, a package version with no tag, a Zenodo version with no release. Nothing here runs git or fetches.
-import { answerOf } from './extension.js'
-import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.js'
-import { contractedOf } from '../wave.js'
-import { flowWidget } from '../widgets.js'
-import { verificationOf } from '../verification.js'
-import { MACHINE_ACTIONS, machinePlanOf, machineRecordOf, statusOf, forecastOf, type MachineRequest, type MachineRun } from '../machine.js'
-import { cloudflareBillOf, penaltyOf, penaltyCountsOf, capacityOf, type CapacityInput, type CloudflareUsage } from './billing.js'
-import { CLAIMS } from '../claims-index.js'
-import { literalsOf, manualDocsOf, ERROR_REMEDIES, FALLBACKS, ENTROPY_KINDS } from '../audit.js'
-import { uuidOf } from '../blocks.js'
-import { GOOGLE_HOST } from '../discovery.js'
+import { answerOf } from './extension.ts'
+import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.ts'
+import { contractedOf } from '../wave.ts'
+import { flowWidget } from '../widgets.ts'
+import { verificationOf } from '../verification.ts'
+import { MACHINE_ACTIONS, machinePlanOf, machineRecordOf, statusOf, forecastOf, type MachineRequest, type MachineRun } from '../machine.ts'
+import { cloudflareBillOf, penaltyOf, penaltyCountsOf, capacityOf, type CapacityInput, type CloudflareUsage } from './billing.ts'
+import { CLAIMS } from '../claims-index.ts'
+import { literalsOf, manualDocsOf, ERROR_REMEDIES, FALLBACKS, ENTROPY_KINDS } from '../audit.ts'
+import { uuidOf } from '../blocks.ts'
+import { GOOGLE_HOST } from '../discovery.ts'
 
 /** The theorems the one passable way rests on, and what the literature and the hosts say of them: each one's claim as the sealed OpenAlex search
  *  and the readers' confirmations left it (nothing recognised without a recorded confirmation; a theorem never searched is unasked), and the e2e
@@ -160,8 +160,8 @@ const workflowOf = (name: WorkflowName, o: { offline?: boolean } = {}) => {
   const by: Record<WorkflowName, { says: string; steps: { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; detach?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }[] }> = {
     'pre-commit': { says: 'pre-commit is next itself, offline, fast and strict: any violation, a red step among them, refuses the commit; the generated files it rewrote join the commit', steps: [next(['--offline', '--fast', '--strict']), { id: 'stage', kind: 'stage', files: ['docs/public/mcp.json', 'docs/mcp.md', 'docs/.vitepress/config.mts', 'src/quantum/clay-statements.ts', 'README.md', 'docs/public/manifest.webmanifest', 'docs/public/configs.json'], says: 'the generated files join the commit' }] },
     'commit-msg': { says: 'the message is a Google CL description, decided by its rule over the message git hands over; no step', steps: [] },
-    'pre-push': { says: 'the platform runs itself before anything leaves the machine: the fast offline flow, then the e2e gate online (every combination on every host, decoded by majority); an uncorrectable combination stops the push', steps: [next(['--offline', '--fast', '--strict']), { id: 'e2e', kind: 'run', strict: true, cmd: 'node', args: ['--import', 'tsx', 'scripts/e2e.ts', '--strict'], says: 'the e2e gate, strict' }] },
-    'post-commit': { says: 'the commit names its receipt and the trunk follows a green flow', steps: [{ id: 'imprint', kind: 'imprint', says: 'one line beside the receipt: commit ↔ receipt' }, { id: 'trunk', kind: 'run', cmd: 'node', args: ['--import', 'tsx', 'scripts/trunk.ts'], says: 'main fast-forwarded to the new HEAD when the flow was green' }, { id: 'idle', kind: 'run', detach: true, cmd: 'node', args: ['--import', 'tsx', 'scripts/idle.ts'], says: 'unused quantum capacity measured detached, in the background (the machine action idle): it never adds to a hook\'s wall time' }] },
+    'pre-push': { says: 'the platform runs itself before anything leaves the machine: the fast offline flow, then the e2e gate online (every combination on every host, decoded by majority); an uncorrectable combination stops the push', steps: [next(['--offline', '--fast', '--strict']), { id: 'e2e', kind: 'run', strict: true, cmd: 'node', args: ['scripts/e2e.ts', '--strict'], says: 'the e2e gate, strict' }] },
+    'post-commit': { says: 'the commit names its receipt and the trunk follows a green flow', steps: [{ id: 'imprint', kind: 'imprint', says: 'one line beside the receipt: commit ↔ receipt' }, { id: 'trunk', kind: 'run', cmd: 'node', args: ['scripts/trunk.ts'], says: 'main fast-forwarded to the new HEAD when the flow was green' }, { id: 'idle', kind: 'run', detach: true, cmd: 'node', args: ['scripts/idle.ts'], says: 'unused quantum capacity measured detached, in the background (the machine action idle): it never adds to a hook\'s wall time' }] },
     'prepare-commit-msg': { says: 'the imprint as trailers on every commit message, programmatic, never typed; the unit signs the message through the hosted door (offline: unsigned)', steps: [{ id: 'sign', kind: 'mcp', tool: 'sign_commit', url: 'https://uuidna.com/mcp', arguments: { theorems: ['sealed_theorem_not_forged', 'honesty_gate_is_theorem_not_oracle'] }, says: 'the unit\'s signature over the message with its Receipt trailer inside' }, { id: 'trailers', kind: 'trailers', says: 'Receipt, Receipt-SHA256, Next, Purity-leads, Next-leads, Readiness, License, Signed-by-unit' }] },
     'pre-deploy': { says: 'the strict pre-check before a deploy of the Payload app over OpenNext on Cloudflare: the build and the dry run, then the rules over the facts — built, bound, present in the account, observed, billed — and nothing deployed: the deploy is the user\'s act', steps: [{ id: 'build', kind: 'run', strict: true, cmd: 'scripts/site-local.sh', args: ['exec', 'opennextjs-cloudflare', 'build'], says: 'the OpenNext bundle' }, { id: 'dry-run', kind: 'run', strict: true, cmd: 'scripts/site-local.sh', args: ['exec', 'wrangler', 'deploy', '--dry-run'], says: 'wrangler reads the configuration and the bundle without deploying' }, { id: 'docket', kind: 'raid', tool: 'findEntries', url: 'http://localhost:3000/api/mcp', arguments: { where: JSON.stringify({ kind: { equals: 'document' } }), limit: 100 }, says: 'the facts the deploy rests on, read from the RAID through the Payload MCP (findEntries over the docket\'s documents, every page, with the user\'s MCP key): the account, its resources and their ids, its observability, its usage; the code names none of them' }] },
     ci: { says: 'the same flow on a runner: checkout, node 26, npm ci, elan, npm run next, the receipt uploaded', steps: [{ id: 'checkout', kind: 'run', cmd: 'actions/checkout@v5', says: 'the tree' }, { id: 'node', kind: 'run', cmd: 'actions/setup-node@v5', args: ['node-version=26', 'cache=npm'], says: 'node 26' }, { id: 'install', kind: 'run', cmd: 'npm', args: ['ci'], says: 'the dependencies' }, { id: 'elan', kind: 'run', cmd: 'elan-init', args: ['-y', '--default-toolchain', 'none'], says: 'the Lean toolchain, pinned by lean-toolchain' }, { ...next([]), strict: true }, { id: 'receipt', kind: 'run', cmd: 'actions/upload-artifact@v4', args: ['docs/public/receipt.json', 'docs/public/verification.json', 'docs/.vitepress/dist'], says: 'the receipt uploaded' }] },

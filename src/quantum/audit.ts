@@ -1,14 +1,14 @@
 // The MCP surface audited through the MCP surface: every check below is made by calling `handle` the way a client
 // does, so the audit sees exactly what a client sees. A failed check is a lead with its evidence, never a ruling.
 
-import type { Example } from './examples.js'
-import type { Context } from './toolbox.js'
-import type { Lead } from './leads.js'
+import type { Example } from './examples.ts'
+import type { Context } from './toolbox.ts'
+import type { Lead } from './leads.ts'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
-import { THEOREMS, THEOREM_KEYS } from './theorems-index.js'
-import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
-import { uuidOf } from './blocks.js'
+import { THEOREMS, THEOREM_KEYS } from './theorems-index.ts'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { uuidOf } from './blocks.ts'
 
 export type Check = { id: string; passed: boolean; evidence: string; /** milliseconds since the previous check: where the audit's time goes */ ms?: number }
 export type Audit = { /** the share this run replayed: index mod n = i (n = 1 is the whole audit) */ shard: { i: number; n: number }; /** example key → the integers its confirmed pass folded to: the next run decides by them */ integers: Record<string, string>; /** how many examples the integers decided and how many the text confirmed */ decided: { bySeal: number; byInteger: number; byText: number; sealed: boolean; theorem: string }; /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
@@ -56,8 +56,8 @@ export const LEAK_ALLOWED = new Set(['payloadcms.com', 'example.com', 'test.com'
  *  table of paths, so it lives in a path registry. */
 export const GENERATOR_REMEDIES: readonly [RegExp, { cmd: string; args: string[] }][] = [
   [/theorems-index\.ts$/, { cmd: 'npm', args: ['run', '-s', 'purify'] }],
-  [/clay-statements\.ts$/, { cmd: 'node', args: ['--import', 'tsx', 'scripts/gen-clay.ts'] }],
-  [/^site\//, { cmd: 'node', args: ['--import', 'tsx', 'scripts/configs.ts'] }],
+  [/clay-statements\.ts$/, { cmd: 'node', args: ['scripts/gen-clay.ts'] }],
+  [/^site\//, { cmd: 'node', args: ['scripts/configs.ts'] }],
   [/./, { cmd: 'npm', args: ['run', '-s', 'docs:gen'] }],
 ]
 /** The roots whose hand-written source the literal rule reads. */

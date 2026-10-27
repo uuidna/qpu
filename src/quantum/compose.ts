@@ -4,11 +4,11 @@
 // address of its parts (ETag by content, 304 by involution). The fallback for anything, and a billed answer: one coil of the
 // metered variant for the author's coins, and a sublicence at the tenant's own Stripe when the tenant resells it (the licence
 // chain, link by link: textbook_licence_chain). Four kinds of asset, fifteen non-empty combinations (textbook_url_combinations).
-import type { Context } from './toolbox.js'
-import { uuidOf, verifyOf, PRESENTABLE_ITEMS } from './blocks.js'
-import { stemsOf } from './audit.js'
-import { usageOrderOf, recursiveLicenceOf } from './toolboxes/billing.js'
-import { coilColourOf } from './theme.js'
+import type { Context } from './toolbox.ts'
+import { uuidOf, verifyOf, PRESENTABLE_ITEMS } from './blocks.ts'
+import { stemsOf } from './audit.ts'
+import { usageOrderOf, recursiveLicenceOf } from './toolboxes/billing.ts'
+import { coilColourOf } from './theme.ts'
 
 const ASSET_KINDS = ['code', 'sdk', 'registry', 'block'] as const
 type AssetKind = typeof ASSET_KINDS[number]

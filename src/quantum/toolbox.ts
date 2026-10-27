@@ -2,9 +2,9 @@
 // skillset (what a client must know to use it, the directions it tests itself in, the examples that are its documentation
 // and its tests, and the selftest that crosses it with the others). It is agnostic of the host: it never imports the
 // handler; the host hands it a context (the handler, the examples, the leads) at call time, so any MCP server can mount it.
-import type { Example } from './examples.js'
-import type { Lead } from './leads.js'
-import type { Rpc, Check } from './audit.js'
+import type { Example } from './examples.ts'
+import type { Lead } from './leads.ts'
+import type { Rpc, Check } from './audit.ts'
 
 export type Context = { handle: (m: Rpc) => any; examples: readonly Example[]; leads: readonly Lead[]; /** a tool's structured content, undefined on an error */ call: (name: string, args?: Record<string, unknown>) => any }
 export type Tool = { name: string; toolbox: string; description: string; inputSchema: object; call: (args: Record<string, unknown>, ctx: Context) => { structured: unknown; widget: string } }

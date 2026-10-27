@@ -3,8 +3,8 @@
 // that create or check its resources, the plan it needs, and its missing links — a step no MCP API or migration tool covers. Every one of
 // the 5 × 5 × 2 combinations is composed from its mixed-radix index (compositionOf, textbook_mixed_radix) into one workflow; the whole space
 // is counted: the combinations that port completely and the missing links that block the rest, each a lead (textbook_ports_cover). Pure.
-import { compositionOf, compositionsOf } from './blocks.js'
-import type { Lead } from './leads.js'
+import { compositionOf, compositionsOf } from './blocks.ts'
+import type { Lead } from './leads.ts'
 
 type McpCall = { tool: string; write: boolean; says: string }
 export type Port = { pkg: string; port: 'native' | 'd1' | 'hyperdrive' | 'durable-object' | 'r2' | 'http' | 'send_email'; bindings: Record<string, unknown>; steps: string[]; mcp: McpCall[]; plan: 'free' | 'paid'; missing: string[]; docs: string[] }

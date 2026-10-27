@@ -8,10 +8,13 @@ import { join } from 'node:path'
 import { readFileSync, readdirSync, mkdtempSync, mkdirSync, renameSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { pathToFileURL } from 'node:url'
-import { WORKSPACE_FIXTURES as W } from './examples.js'
-import { workspaceOf } from './workspace.js'
-import { qpuHooksOf } from './blocks.js'
-import { binding0Of } from './toolboxes/raid.js'
+import { WORKSPACE_FIXTURES as W } from './examples.ts'
+import { workspaceOf } from './workspace.ts'
+import { qpuHooksOf } from './blocks.ts'
+import { binding0Of } from './toolboxes/raid.ts'
+import { register } from 'tsx/esm/api'
+
+register() // the site's extensionless imports load through tsx; the tree runs on Node's own type stripping
 
 const site = createRequire(join(process.cwd(), 'site', 'package.json')), load = (m: string) => import(pathToFileURL(site.resolve(m)).href)
 test('a Lexical form block validates, its submission lands, every rich text field and Lexical block is witnessed, every plugin\'s records kept at binding 0 and verified against bit 0', async () => {

@@ -2,8 +2,8 @@
 // so it follows the harness in light and dark mode. Each builder is a pure string function: no I/O, no Node, no colours
 // written out, so the same HTML renders in the harness, in the docs playground, and in any browser OS.
 
-import type { WILLOW } from './processor.js'
-import { QUANTUM_ECHOES } from './echo.js'
+import type { WILLOW } from './processor.ts'
+import { QUANTUM_ECHOES } from './echo.ts'
 /** A markdown table cell is text, never markup or a link: the characters a table, Vue or a link would read are escaped, and a URL to a
  *  local host is never linkable, so no generated page carries a dead link. The one escaper every page writer folds onto. */
 export const cellOf = (t: unknown): string => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\n/g, ' ').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;').replace(/\]\(/g, () => '&#93;(').replace(/:\/\/(localhost|127\.0\.0\.1)/g, (_m, h: string) => `:&#47;&#47;${h}`)

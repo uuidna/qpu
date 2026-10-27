@@ -3,8 +3,8 @@
 // Where the page's circuit uses a mid-circuit measurement, the deferred-measurement form is built instead: the same state,
 // with the corrections controlled by the qubits that would have been measured.
 
-import { Circuit, CNOT, CZ, H, LineQubit, Operation, Qubit, SWAP, Simulator, TOFFOLI, X, ZZ, adjointOf, applied, keyOf, powerOf, type Gate } from './cirq.js'
-import { numpyWeights } from './random.js'
+import { Circuit, CNOT, CZ, H, LineQubit, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, ZZ, adjointOf, applied, keyOf, powerOf, type Gate } from './cirq.ts'
+import { numpyWeights } from './random.ts'
 
 /** The quantum Fourier transform, as the Cirq page builds it: a Hadamard on each qubit, then a controlled phase CZ**(1/2^k)
  *  from each later qubit onto it. The page notes the output comes in reversed bit order unless swaps are added, so the swaps

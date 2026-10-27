@@ -3,10 +3,10 @@
 // reads it in both directions. Every problem is routed to the theorems; the ones no theorem reaches collide, all pairs at once, through the
 // subjects they share: a subject several unreached problems share is one missing theorem that would serve them all (each problem solves many
 // others, textbook_collision_solves_many). A collision is a lead to prove, never a statement the tree asserts.
-import { uuidOf, channelOf, reflectionOf } from './blocks.js'
-import { routeOf, routeStems } from './match.js'
-import type { Example } from './examples.js'
-import type { Lead } from './leads.js'
+import { uuidOf, channelOf, reflectionOf } from './blocks.ts'
+import { routeOf, routeStems } from './match.ts'
+import type { Example } from './examples.ts'
+import type { Lead } from './leads.ts'
 
 export const collisionsOf = (leads: readonly Lead[], examples: readonly Example[]) => {
   const problems = leads.filter((l) => l.status === 'open' || l.status === 'partial')

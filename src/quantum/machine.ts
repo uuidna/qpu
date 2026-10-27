@@ -5,11 +5,11 @@
 // at its content address with its SHA-256, the same shape the Worker's docket and the Payload entries address. No shell, no arbitrary
 // command: the one runner (scripts/machine.ts), called by the stdio transport and by the Payload MCP plugin's machine tool, executes only
 // the argument vector a plan returns, streaming its lines as progress to a caller that sent a progress token.
-import { uuidOf } from './blocks.js'
-import { sha256, utf8, hex } from './hmac.js'
-import { leaksOf, LEAK_PATTERNS } from './audit.js'
-import { courtOf } from './toolboxes/legal.js'
-import type { WorkflowFacts } from './toolboxes/repository.js'
+import { uuidOf } from './blocks.ts'
+import { sha256, utf8, hex } from './hmac.ts'
+import { leaksOf, LEAK_PATTERNS } from './audit.ts'
+import { courtOf } from './toolboxes/legal.ts'
+import type { WorkflowFacts } from './toolboxes/repository.ts'
 type Decide = (name: 'pre-commit' | 'pre-push', facts: WorkflowFacts) => { allowed: boolean; says: string; violated: string[]; unknown: string[] }
 
 type MachineAction = { id: string; kind: 'read' | 'write'; cmd?: string; args: readonly string[]; says: string; needs?: 'message' | 'confirm' | 'branch'; workflow?: 'pre-commit' | 'pre-push' }
@@ -23,20 +23,20 @@ const ROWS: readonly MachineAction[] = [
   { id: 'diff', kind: 'read', args: ['diff', '--stat'], says: 'what the unstaged changes touch' },
   { id: 'versions', kind: 'read', cmd: 'node', args: ['--version'], says: 'the runtime this machine runs the tree with' },
   { id: 'next', kind: 'write', cmd: 'npm', args: ['run', 'next', '--', '--offline', '--fast'], says: 'the development loop, offline and fast: generation, typecheck, tests, Lean, audit, purify' },
-  { id: 'precheck', kind: 'write', cmd: 'node', args: ['--import', 'tsx', 'scripts/hook.ts', 'pre-deploy'], says: 'the strict pre-check before a deploy: the OpenNext build, the dry run and the rules decided by theorems; nothing deployed' },
+  { id: 'precheck', kind: 'write', cmd: 'node', args: ['scripts/hook.ts', 'pre-deploy'], says: 'the strict pre-check before a deploy: the OpenNext build, the dry run and the rules decided by theorems; nothing deployed' },
   { id: 'stage', kind: 'write', args: ['add', '-A'], says: 'every change staged for the next commit' },
   { id: 'commit', kind: 'write', args: ['commit', '-F', '-'], says: 'the staged changes committed through the hooks, the message given', needs: 'message', workflow: 'pre-commit' },
   { id: 'push', kind: 'write', args: ['push', 'origin', 'main'], says: 'main pushed to its remote through the pre-push workflow', needs: 'confirm', workflow: 'pre-push' },
   { id: 'dispatch', kind: 'write', cmd: 'gh', args: ['workflow', 'run', 'deploy.yml', '--ref', 'main'], says: 'the deploy workflow started on GitHub for main: it runs in the protected production environment, whose reviewer approves it before any secret in GitHub Secrets is exposed, then next, the pre-deploy theorems, the deploy and the publish; started only through the super admin\'s machine tool and the pre-push rules', needs: 'confirm', workflow: 'pre-push' },
   { id: 'merge', kind: 'write', args: ['merge', '--no-ff', '--no-edit'], says: 'a branch merged into the current one, never fast-forwarded, under the pre-commit rules decided by theorems; the branch is the one parameter', needs: 'branch', workflow: 'pre-commit' },
   { id: 'sync', kind: 'write', args: ['pull', '--no-rebase', '--no-ff', '--no-edit', '-X', 'subtree=site', 'website', 'main'], says: 'payloadcms/website pulled into site/ as a subtree', workflow: 'pre-commit' },
-  { id: 'idle', kind: 'write', cmd: 'node', args: ['--import', 'tsx', 'scripts/idle.ts'], says: 'unused quantum capacity measured in the background, never inside a hook: the state the hooks read written, the largest idle items raised as idle gaps and the used ones annihilated, progress line by line' },
-  { id: 'regenerate', kind: 'write', cmd: 'node', args: ['--import', 'tsx', 'scripts/regenerate.ts'], says: 'the generators in their order: the docs and the Lean file, every configuration, the theorem index and purity' },
+  { id: 'idle', kind: 'write', cmd: 'node', args: ['scripts/idle.ts'], says: 'unused quantum capacity measured in the background, never inside a hook: the state the hooks read written, the largest idle items raised as idle gaps and the used ones annihilated, progress line by line' },
+  { id: 'regenerate', kind: 'write', cmd: 'node', args: ['scripts/regenerate.ts'], says: 'the generators in their order: the docs and the Lean file, every configuration, the theorem index and purity' },
   { id: 'worktree-remove', kind: 'write', args: ['worktree', 'remove', '--force'], says: 'a worktree removed', needs: 'confirm' },
   { id: 'branch-delete', kind: 'write', args: ['branch', '-d'], says: 'a branch deleted when merged (-D only when an archive tag already points at its commit)', needs: 'confirm' },
   { id: 'tag', kind: 'write', args: ['tag'], says: 'a local archive tag at a commit, never pushed by this action', needs: 'confirm' },
   { id: 'port', kind: 'write', cmd: 'cp', args: [], says: 'one file of a worktree copied onto the same path in main, to be committed through the hook', needs: 'confirm' },
-  { id: 'now', kind: 'read', cmd: 'node', args: ['--import', 'tsx', 'scripts/machine.ts', 'now'], says: 'the status on request: what runs, for how long, its ETA, the last events, the open questions and what is held' },
+  { id: 'now', kind: 'read', cmd: 'node', args: ['scripts/machine.ts', 'now'], says: 'the status on request: what runs, for how long, its ETA, the last events, the open questions and what is held' },
   { id: 'site-audit', kind: 'read', cmd: 'pnpm', args: ['--dir', 'site', 'audit'], says: 'the app\'s dependency advisories, by severity' },
   { id: 'site-install', kind: 'write', cmd: 'pnpm', args: ['--dir', 'site', 'install'], says: 'the app\'s dependencies installed as its package.json and overrides name them', needs: 'confirm' },
   { id: 'site-build', kind: 'write', cmd: 'pnpm', args: ['--dir', 'site', 'exec', 'next', 'build', '--webpack'], says: 'the app built and type-checked by next build, no database migrated', needs: 'confirm' },

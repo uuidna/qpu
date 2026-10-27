@@ -3,11 +3,11 @@
 // Decoding is majority: a copy that differs is a flip, a host that does not answer an erasure, no majority is uncorrectable
 // — the syndrome names the hosts. Every error is a block with a UUID (host, tool, the arguments' address, the hashes), so
 // errors travel in UUID streams between hosts without their bodies. Pure: the client fetches; the tree computes and decodes.
-import { uuidOf } from './blocks.js'
-import { dataOf, rpcBody } from './discovery.js'
-import { textbookLogicalError } from './qec.js'
-import { handleOrCorrect } from './audit.js'
-import { toolsOf, type Context } from './toolbox.js'
+import { uuidOf } from './blocks.ts'
+import { dataOf, rpcBody } from './discovery.ts'
+import { textbookLogicalError } from './qec.ts'
+import { handleOrCorrect } from './audit.ts'
+import { toolsOf, type Context } from './toolbox.ts'
 
 export type E2eRequest = { id: string; combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; arguments: Record<string, unknown>; host: string; url: string; method: 'POST'; accept: string; headers: Record<string, string>; body: unknown; local: string; localError?: string }
 export type E2eAnswer = E2eRequest & { status: number; ms: number; text: string; etag?: string | null; address?: string | null; version?: string | null; /** the answer already decoded by the client the moment it arrived, its body released: a run of hundreds of copies holds values, never bodies (the heap ran out holding 870 bodies: measured) */ decoded?: ReturnType<typeof valueOf> }

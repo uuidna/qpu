@@ -4,9 +4,9 @@
 // here and lands as a new entry linked to the old, since entries are immutable and addressed by content. Nothing here does
 // I/O: the client reads the docket's rows and writes the entries this toolbox returns. Payload's mongodb adapter interface is
 // the shape this ports to, not Cloudflare's D1.
-import { toolOf, isObj, checksOf, type Toolbox, type Context } from '../toolbox.js'
-import { uuidOf } from '../blocks.js'
-import { flowWidget } from '../widgets.js'
+import { toolOf, isObj, checksOf, type Toolbox, type Context } from '../toolbox.ts'
+import { uuidOf } from '../blocks.ts'
+import { flowWidget } from '../widgets.ts'
 
 export type Doc = Record<string, unknown>
 export type Filter = Record<string, unknown>

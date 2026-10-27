@@ -2,8 +2,8 @@
 // nothing is rounded — each constant sealed by its content address and SHA-256 with its stated uncertainty kept beside it. A defined constant
 // (the Planck constant since 2019) is exact and carries none; a measured one (the Newtonian constant of gravitation) carries the uncertainty
 // its experiments give, which no seal and no factoring removes: the seal proves the value is the one published, never that it is truer. Pure.
-import { uuidOf } from './blocks.js'
-import { sha256, utf8, hex } from './hmac.js'
+import { uuidOf } from './blocks.ts'
+import { sha256, utf8, hex } from './hmac.ts'
 
 export const CODATA_URL = 'https://physics.nist.gov/cuu/Constants/Table/allascii.txt'
 /** A decimal as written in the table ("6.674 30 e-11") as exact integers: mantissa × 10^exponent. */

@@ -3,18 +3,18 @@
 // one piece it sits in, so a door answers from that piece and never from the whole. The bound is a reflective boundary:
 // σ_n(i) = n − i mirrors every piece onto the one across the fold, and the excess over the bound is reflected into the count
 // of pieces, decided by integer comparisons before anything is computed. Pure: SHA-256 and the fold address, nothing else.
-import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.js'
-import { memoOf, uuidOf, presentationOf, streamOf, neighboursOf, uuidSchemasOf, UUID_SCHEMAS, compositionsOf, compositionOf, compositionIndexOf, harmonicDefaultsOf, type StreamQuery } from '../blocks.js'
-import { entropyOf } from '../scan.js'
-import { courtOf } from './legal.js'
-import { mayChoose, type Role } from '../roles.js'
-import { sha256, hmacSha256, sha512, utf8, hex } from '../hmac.js'
-import { seedOf, trinityOf } from '../clay-register.js'
-import { flowWidget } from '../widgets.js'
-import { CODATA_URL, constantsOf } from '../constants.js'
-import { splitOf } from '../split.js'
-import { raysOf } from '../theme.js'
-import { speakHexOf } from '../i18n.js'
+import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.ts'
+import { memoOf, uuidOf, presentationOf, streamOf, neighboursOf, uuidSchemasOf, UUID_SCHEMAS, compositionsOf, compositionOf, compositionIndexOf, harmonicDefaultsOf, type StreamQuery } from '../blocks.ts'
+import { entropyOf } from '../scan.ts'
+import { courtOf } from './legal.ts'
+import { mayChoose, type Role } from '../roles.ts'
+import { sha256, hmacSha256, sha512, utf8, hex } from '../hmac.ts'
+import { seedOf, trinityOf } from '../clay-register.ts'
+import { flowWidget } from '../widgets.ts'
+import { CODATA_URL, constantsOf } from '../constants.ts'
+import { splitOf } from '../split.ts'
+import { raysOf } from '../theme.ts'
+import { speakHexOf } from '../i18n.ts'
 
 type Piece = { index: number; reflection: number; address: string; sha256: string; bytes: number; rows: number; firstKey: string | null; lastKey: string | null; seed: number; trinity: number[] }
 type Fold = { bytes: number; bound: number; fits: boolean; excess: number; pieces: Piece[]; count: number; root: string; fold: string; boundary: { d: number; sigma: string; says: string }; decided: { by: string; comparisons: number } }

@@ -1,11 +1,11 @@
 // Readiness as a pure toolbox: every lead judged by measurement into served, refuted or trial; the border plan (which
 // discovered doors to offer a theorem to, with what arguments) and the border read (what they answered); the unit plan (the
 // calls the client makes to the unit) and the page. The client fetches and asks; nothing here does I/O.
-import { cleanupSubjectsOf, type Lead } from './leads.js'
-import type { Discovery, Door } from './discovery.js'
-import type { WaveResult } from './wave.js'
-import { TAKES } from './discovery.js'
-import { cellOf as cell } from './widgets.js'
+import { cleanupSubjectsOf, type Lead } from './leads.ts'
+import type { Discovery, Door } from './discovery.ts'
+import type { WaveResult } from './wave.ts'
+import { TAKES } from './discovery.ts'
+import { cellOf as cell } from './widgets.ts'
 
 type Judged = { lead: string; source: string; status: string; class: 'served' | 'refuted' | 'trial'; by: string }
 export type Source = { source: string; reached: true; settled: number; why: string; open: { source: string; what: string; owes: string }[] }

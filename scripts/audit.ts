@@ -51,7 +51,7 @@ else {
   const input = join(dir, 'input.json'); writeFileSync(input, JSON.stringify({ known, code }))
   const run = (i: number) => new Promise<Result>((resolve, reject) => {
     const output = join(dir, `share-${i}.json`)
-    const p = spawn(process.execPath, ['--import', 'tsx', 'scripts/audit.ts', '--shard', `${i}/${n}`, '--input', input, '--output', output], { stdio: ['ignore', 'ignore', 'inherit'] })
+    const p = spawn(process.execPath, ['scripts/audit.ts', '--shard', `${i}/${n}`, '--input', input, '--output', output], { stdio: ['ignore', 'ignore', 'inherit'] })
     p.on('exit', (status) => { try { status === 0 ? resolve(JSON.parse(readFileSync(output, 'utf8')) as Result) : reject(new Error(`share ${i}/${n} ended with status ${status}`)) } catch (e) { reject(e) } })
   })
   try { shares = await Promise.all(Array.from({ length: n }, (_, i) => run(i))) } finally { rmSync(dir, { recursive: true, force: true }) }

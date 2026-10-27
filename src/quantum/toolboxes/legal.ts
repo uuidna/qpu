@@ -4,16 +4,16 @@
 // theorems, due process over the claims, and every security door the unit serves — chosen from discovery, free agents by
 // default, overridden only by the operator's own list. Phase two reads the answers into verdicts, drift and findings, beside
 // the tree's own security checks over its source texts. Pure; the client fetches. Recomputable facts, not legal advice.
-import { TEXTBOOK_THEOREMS } from '../textbook-theorems.js'
-import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.js'
-import { LICENSE, PRECEDENCE } from '../license.js'
-import { UNIT_MCP, CLAUDE_API, type Discovery } from '../discovery.js'
-import type { Lead } from '../leads.js'
-import { flowWidget } from '../widgets.js'
-import { sha256, utf8, hex } from '../hmac.js'
-import { uuidOf } from '../blocks.js'
-import { THEOREMS, KERNEL_THEOREMS } from '../theorems-index.js'
-import { ledgerOf } from './billing.js'
+import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
+import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.ts'
+import { LICENSE, PRECEDENCE } from '../license.ts'
+import { UNIT_MCP, CLAUDE_API, type Discovery } from '../discovery.ts'
+import type { Lead } from '../leads.ts'
+import { flowWidget } from '../widgets.ts'
+import { sha256, utf8, hex } from '../hmac.ts'
+import { uuidOf } from '../blocks.ts'
+import { THEOREMS, KERNEL_THEOREMS } from '../theorems-index.ts'
+import { ledgerOf } from './billing.ts'
 
 export type Claim = { id: string; source: string; text: string }
 export type Call = { door: string; host: string; arguments: Record<string, unknown>; purpose: 'forensics' | 'verify' | 'legal' | 'security' | 'due-process' | 'prior-art' | 'licence' }

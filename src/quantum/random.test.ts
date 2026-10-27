@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { MersenneTwister, numpyWeights, randintOf } from './random.js'
+import { MersenneTwister, numpyWeights, randintOf } from './random.ts'
 
 test('the Mersenne Twister with numpy\'s seed 11 gives numpy\'s randint(0, 500) draws, first twelve', () => {
   const rng = new MersenneTwister(11)

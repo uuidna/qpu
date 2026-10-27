@@ -3,10 +3,10 @@
 // link, the missing links found and each a lead, the adapters' order the configure kind's own.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.js'
-import { compositionsOf, compositionIndexOf } from './blocks.js'
-import { PORT_ORDER, PORT_RADICES, CLOUDFLARE_PORT } from './port.js'
-import { ADAPTERS } from './toolboxes/payload.js'
+import { handle } from './mcp.ts'
+import { compositionsOf, compositionIndexOf } from './blocks.ts'
+import { PORT_ORDER, PORT_RADICES, CLOUDFLARE_PORT } from './port.ts'
+import { ADAPTERS } from './toolboxes/payload.ts'
 
 const port = (p: number | boolean) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'configure', arguments: { kind: 'adapters', port: p } } }) as { result: { structuredContent: { config: any } } }).result.structuredContent.config
 

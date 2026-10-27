@@ -3,8 +3,8 @@
 // needs recorded, so a small machine (the Pravets 8M of the author's register) can redo the same sums in software
 // multi-byte arithmetic and compare content addresses. The kernel check happened once, in Lean; this recomputes what it
 // accepted and says how many bits each identity needs. No floats: `/` is floor division on naturals, `-` truncates at 0.
-import { CLAY_RELATIONS } from './clay-statements.js'
-import { memoOf as memo } from './blocks.js'
+import { CLAY_RELATIONS } from './clay-statements.ts'
+import { memoOf as memo } from './blocks.ts'
 
 const MAX_SAFE = Number.MAX_SAFE_INTEGER
 const nat = (x: number, what: string): number => { if (!Number.isInteger(x) || x < 0 || x > MAX_SAFE) throw new Error(`${what} left the exact naturals: ${x}`); return x }

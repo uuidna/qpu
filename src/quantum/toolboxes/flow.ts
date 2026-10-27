@@ -2,17 +2,17 @@
 // it says what to fetch; called with answers it reads them into data and a page. The client between the phases is thin and
 // host-agnostic: it fetches what it is told, asks the doors discovery found, and writes what comes back. Any flow tool
 // called with selftest runs the toolbox's cross-test.
-import { toolOf, type Toolbox, type Context } from '../toolbox.js'
-import { discoveryRequestsOf, followUpsOf, discoveryOf, discoveryPageOf, DEFAULT_MCP_HOSTS, UNIT_MCP, QPU_MCP, registryRequestsOf, relatedOf, type Answer, type Discovery } from '../discovery.js'
-import { waveRequestsOf, waveOf, wavePageOf, type WaveResult } from '../wave.js'
-import { pagesOf, judgeOf, sourcesOf, borderPlanOf, borderOf, readinessPageOf, type BorderAnswer, type UnitAnswers } from '../readiness.js'
-import { imagineOf, imaginePageOf } from '../imagine.js'
-import { flowSelftestOf } from '../selftest.js'
-import { matcherOf } from '../match.js'
-import { VERIFIERS } from '../verifiers.js'
-import { flowWidget } from '../widgets.js'
-import { e2eRequestsOf, e2eOf, e2ePageOf, type E2eAnswer } from '../e2e.js'
-import { TENANTS } from '../tenants.js'
+import { toolOf, type Toolbox, type Context } from '../toolbox.ts'
+import { discoveryRequestsOf, followUpsOf, discoveryOf, discoveryPageOf, DEFAULT_MCP_HOSTS, UNIT_MCP, QPU_MCP, registryRequestsOf, relatedOf, type Answer, type Discovery } from '../discovery.ts'
+import { waveRequestsOf, waveOf, wavePageOf, type WaveResult } from '../wave.ts'
+import { pagesOf, judgeOf, sourcesOf, borderPlanOf, borderOf, readinessPageOf, type BorderAnswer, type UnitAnswers } from '../readiness.ts'
+import { imagineOf, imaginePageOf } from '../imagine.ts'
+import { flowSelftestOf } from '../selftest.ts'
+import { matcherOf } from '../match.ts'
+import { VERIFIERS } from '../verifiers.ts'
+import { flowWidget } from '../widgets.ts'
+import { e2eRequestsOf, e2eOf, e2ePageOf, type E2eAnswer } from '../e2e.ts'
+import { TENANTS } from '../tenants.ts'
 
 const BLOCK_IDS = new WeakMap<readonly unknown[], { example: string; id: string | undefined }[]>()
 /** The content address of every example's block, computed once per examples registry (a readiness call must not replay the examples). */

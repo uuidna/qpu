@@ -17,21 +17,21 @@ export type Example = {
 const pair = (rows: unknown[][], label: string): string | undefined => rows.find((r) => r[0] === label)?.[1] as string | undefined
 const between = (x: unknown, lo: number, hi: number) => typeof x === 'number' && x >= lo && x <= hi
 
-import { FLOW } from './toolboxes/flow.js'
-import { LANGUAGE } from './toolboxes/language.js'
-import { RAID, binding0Of } from './toolboxes/raid.js'
-import { BILLING } from './toolboxes/billing.js'
-import { LEGAL } from './toolboxes/legal.js'
-import { REPOSITORY, WORKFLOW_RULES } from './toolboxes/repository.js'
-import { STANDARDS_BOX } from './toolboxes/standards.js'
-import { EXTENSION } from './toolboxes/extension.js'
-import { CRYPTO } from './toolboxes/crypto.js'
-import { PAYLOAD } from './toolboxes/payload.js'
-import { framesOf } from './theme.js'
-import { uuidOf } from './blocks.js'
-import { cellOf } from './widgets.js'
-import { LEAK_ALLOWED } from './audit.js'
-import { CLOUDFLARE_DOCS_MCP, UNIT_MCP } from './discovery.js'
+import { FLOW } from './toolboxes/flow.ts'
+import { LANGUAGE } from './toolboxes/language.ts'
+import { RAID, binding0Of } from './toolboxes/raid.ts'
+import { BILLING } from './toolboxes/billing.ts'
+import { LEGAL } from './toolboxes/legal.ts'
+import { REPOSITORY, WORKFLOW_RULES } from './toolboxes/repository.ts'
+import { STANDARDS_BOX } from './toolboxes/standards.ts'
+import { EXTENSION } from './toolboxes/extension.ts'
+import { CRYPTO } from './toolboxes/crypto.ts'
+import { PAYLOAD } from './toolboxes/payload.ts'
+import { framesOf } from './theme.ts'
+import { uuidOf } from './blocks.ts'
+import { cellOf } from './widgets.ts'
+import { LEAK_ALLOWED } from './audit.ts'
+import { CLOUDFLARE_DOCS_MCP, UNIT_MCP } from './discovery.ts'
 /** The tree read at github.com/payloadcms/skills on 2026-10-25 (main): the paths and sizes, as facts. */
 const SKILLS = { sha: 'main', truncated: false, tree: [
   { path: 'README.md', type: 'blob', size: 2285 }, { path: 'AGENTS.md', type: 'blob', size: 3390 },

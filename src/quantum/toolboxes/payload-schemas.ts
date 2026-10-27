@@ -4,10 +4,10 @@
 // textbook (the textbook_payload_* theorems: the key names the dimension, its statement says the meaning) and every count computed
 // here from PAYLOAD_SURFACE and decided through the MCP's own theorems (the match tool serves the theorem the kernel accepted; a
 // count the theorem does not state is a lead, never a rewrite). The sources are re-read by the textbook step; drift is a lead.
-import type { Context } from '../toolbox.js'
-import { PAYLOAD_SURFACE } from '../payload-surface.js'
-import { TEXTBOOK_THEOREMS } from '../textbook-theorems.js'
-import type { Lead } from '../leads.js'
+import type { Context } from '../toolbox.ts'
+import { PAYLOAD_SURFACE } from '../payload-surface.ts'
+import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
+import type { Lead } from '../leads.ts'
 
 type PayloadFieldConfig = { name?: string; type: string; required?: boolean; hasMany?: boolean; fields?: PayloadFieldConfig[]; blocks?: { slug: string; fields: PayloadFieldConfig[] }[]; tabs?: { name?: string; fields: PayloadFieldConfig[] }[]; options?: (string | { value: string })[]; relationTo?: string | string[]; label?: string }
 export type PayloadCollectionInput = { slug: string; fields: PayloadFieldConfig[] }

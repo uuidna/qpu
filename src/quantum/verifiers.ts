@@ -2,8 +2,8 @@
 // This handler does no I/O: it emits the URL, the method, and what to compare, so a fact is verified across every
 // adaptor that can see it, never by this tree's own say-so.
 
-import type { Lead } from './leads.js'
-import { LICENSE, PRECEDENCE } from './license.js'
+import type { Lead } from './leads.ts'
+import { LICENSE, PRECEDENCE } from './license.ts'
 
 type FactKind = 'integer' | 'factors' | 'repository' | 'page' | 'preprint' | 'doi' | 'constant' | 'dataset' | 'sequence'
 export type Fact = { kind: FactKind; value: string; detail?: Record<string, string | number>; lead?: string }

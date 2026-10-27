@@ -3,23 +3,23 @@
 // and a Durable Object docket where this tree and the unit append receipts and leads by content address and read each
 // other's. Reads need no auth; docket writes carry `Authorization: Bearer QPU_WRITE_TOKEN` (a wrangler secret, never
 // committed). Every response carries the licence.
-import { handle, type Rpc } from './quantum/mcp.js'
-import { composeOf } from './quantum/compose.js'
-import { toolsOf } from './quantum/toolbox.js'
-import { fusionOf } from './quantum/toolboxes/billing.js'
-import { scanSvgOf } from './quantum/scan.js'
-import { EXAMPLES } from './quantum/examples.js'
-import { LEADS } from './quantum/leads.js'
-import { LICENSE } from './quantum/license.js'
-import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, computedEntryOf, type Step } from './quantum/blocks.js'
-import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.js'
-import { LOCALES as LANGS, translateOf } from './quantum/i18n.js'
-import { DEFAULT_MCP_HOSTS } from './quantum/discovery.js'
-import { discoveryOf, protectedResourceOf } from './quantum/discovery-document.js'
-import { ROLES, type Role } from './quantum/roles.js'
-import { hashOf as contentHashOf } from './quantum/e2e.js'
-import { VERSION } from './quantum/version.js'
-import type { SignaturePlan } from './quantum/toolboxes/crypto.js'
+import { handle, type Rpc } from './quantum/mcp.ts'
+import { composeOf } from './quantum/compose.ts'
+import { toolsOf } from './quantum/toolbox.ts'
+import { fusionOf } from './quantum/toolboxes/billing.ts'
+import { scanSvgOf } from './quantum/scan.ts'
+import { EXAMPLES } from './quantum/examples.ts'
+import { LEADS } from './quantum/leads.ts'
+import { LICENSE } from './quantum/license.ts'
+import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, computedEntryOf, type Step } from './quantum/blocks.ts'
+import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.ts'
+import { LOCALES as LANGS, translateOf } from './quantum/i18n.ts'
+import { DEFAULT_MCP_HOSTS } from './quantum/discovery.ts'
+import { discoveryOf, protectedResourceOf } from './quantum/discovery-document.ts'
+import { ROLES, type Role } from './quantum/roles.ts'
+import { hashOf as contentHashOf } from './quantum/e2e.ts'
+import { VERSION } from './quantum/version.ts'
+import type { SignaturePlan } from './quantum/toolboxes/crypto.ts'
 
 /** The slice of the Workers runtime this file uses, typed here so the tree needs no runtime types package to typecheck. */
 export type Storage = { get<T>(key: string): Promise<T | undefined>; put(key: string, value: unknown): Promise<void>; delete(key: string): Promise<unknown>; list<T>(opts?: { prefix?: string }): Promise<Map<string, T>> }
@@ -28,7 +28,7 @@ export type Env = { QPU_WRITE_TOKEN?: string; /** the tenant's ML-DSA signing ke
 
 /** Tenants: one Worker, several hosts, each host its own docket and its own tokens. A security collision — one tenant's token
  * at another tenant's host — is not an incident but a procedure: the answer names the role, the header and who issues it. */
-import { TENANTS, tenantOf } from './quantum/tenants.js'
+import { TENANTS, tenantOf } from './quantum/tenants.ts'
 export { TENANTS, tenantOf }
 /** The role a request holds at a tenant. Asked first of the RBAC MCP host when one is configured (every MCP server's roles
  * managed in one place, over MCP itself); the tenant secrets answer when none is, or when the host does not. */
@@ -130,7 +130,12 @@ type Sealed = { iv: string; ct: string }
 
 export class Docket {
   private key: Promise<CryptoKey> | null = null
-  constructor(private readonly storage: Storage, private readonly dataKey?: string, private readonly mirrors: string[] = [], private readonly fetcher: (url: string, init?: RequestInit) => Promise<Response> = (u, i) => fetch(u, i), private readonly writeToken?: string) {}
+  private readonly storage: Storage
+  private readonly dataKey?: string
+  private readonly mirrors: string[]
+  private readonly fetcher: (url: string, init?: RequestInit) => Promise<Response>
+  private readonly writeToken?: string
+  constructor(storage: Storage, dataKey?: string, mirrors: string[] = [], fetcher: (url: string, init?: RequestInit) => Promise<Response> = (u, i) => fetch(u, i), writeToken?: string) { this.storage = storage; this.dataKey = dataKey; this.mirrors = mirrors; this.fetcher = fetcher; this.writeToken = writeToken }
   private keyOf(): Promise<CryptoKey> {
     if (!this.key) {
       if (!this.dataKey) throw new Error('no data key')

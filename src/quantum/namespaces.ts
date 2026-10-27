@@ -3,7 +3,7 @@
 // ?namespace= of a page), the credential's user is narrowed to that one tenant for the request — the intersection of the tenants the
 // user holds with the one named, never more (a super admin is narrowed too, its all-tenants role dropped for the request) — so the
 // plugin's own read filter and write check keep every other tenant's records out of reach. Pure: the decision here, the app applies it.
-import { uuidOf } from './blocks.js'
+import { uuidOf } from './blocks.ts'
 
 const NAMESPACE_HEADER = 'x-qpu-namespace'
 const NAMESPACE_RE = /^[a-z][a-z0-9-]{1,62}$/

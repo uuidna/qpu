@@ -144,7 +144,9 @@ const touches = (op: Operation, qubits: Set<string>): boolean => op.qubits.some(
 
 /** Cirq's Moment: operations in the same time slice, on disjoint qubits. */
 export class Moment {
-  constructor(public readonly operations: Operation[] = []) {
+  readonly operations: Operation[]
+  constructor(operations: Operation[] = []) {
+    this.operations = operations
     const seen = new Set<string>()
     for (const op of operations) for (const q of op.qubits) {
       if (seen.has(keyOf(q))) throw new Error(`a moment acts on one qubit twice: ${keyOf(q)}`)
@@ -247,7 +249,8 @@ const pairKey = (a: Qubit, b: Qubit): string => [keyOf(a), keyOf(b)].sort().join
 
 /** The result of run(): the sampled bitstrings per measurement key. */
 export class Result {
-  constructor(private readonly records: Map<string, string[]>) {}
+  private readonly records: Map<string, string[]>
+  constructor(records: Map<string, string[]>) { this.records = records }
   /** The bitstrings of one key, one per repetition. */
   measurements(key: string): string[] {
     return this.records.get(key) ?? []
@@ -314,7 +317,8 @@ export const randomOf = (seed: string): (() => number) => {
 }
 /** Cirq's Simulator: simulate() returns the final state, run() samples measurement results. */
 export class Simulator {
-  constructor(private readonly random: () => number = Math.random) {}
+  private readonly random: () => number
+  constructor(random: () => number = Math.random) { this.random = random }
 
   private initial(circuit: Circuit): { state: State; order: Qubit[]; indexOf: (q: Qubit) => number } {
     const order = circuit.qubits
@@ -542,7 +546,9 @@ export const expectationOf = (result: DensityResult, observable: Record<string, 
 export class QuantumVirtualMachine {
   private readonly simulator = new DensityMatrixSimulator()
 
-  constructor(private readonly device: Device, private readonly channels: readonly Channel[] | ((arity: number) => readonly Channel[])) {}
+  private readonly device: Device
+  private readonly channels: readonly Channel[] | ((arity: number) => readonly Channel[])
+  constructor(device: Device, channels: readonly Channel[] | ((arity: number) => readonly Channel[])) { this.device = device; this.channels = channels }
 
   simulate(circuit: Circuit): DensityResult {
     this.device.validateCircuit(circuit)
