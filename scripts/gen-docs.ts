@@ -4,7 +4,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle, TOOLBOXES as toolboxes } from '../src/quantum/mcp.js'
+import { handle, TOOLBOXES as toolboxes, cellOf as cell } from '../src/quantum/mcp.js'
 import { cssOf, hueOf, KEY } from '../src/quantum/theme.js'
 import { uuidOf } from '../src/quantum/blocks.js'
 import { LEADS } from '../src/quantum/leads.js'
@@ -12,7 +12,6 @@ import { TEXTBOOK_LEAN, TEXTBOOK_THEOREMS } from '../src/quantum/textbook-theore
 
 const ROOT = process.cwd()
 // Text that reaches a page is escaped once here: an angle bracket in a lead or a description is text, never a tag.
-const cell = (t: string): string => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')
 const DOCS = join(ROOT, 'docs')
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { name: string; version: string; description: string; homepage?: string; repository?: string }
 

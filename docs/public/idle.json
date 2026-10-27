@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T01:40:34.831Z",
+ "date": "2026-10-27T01:52:26.658Z",
  "input": {
   "doors": [
    {
@@ -1723,6 +1723,16 @@
    {
     "key": "textbook_penalty_learned_prevents",
     "bytes": 152,
+    "used": true
+   },
+   {
+    "key": "textbook_code_folds",
+    "bytes": 100,
+    "used": true
+   },
+   {
+    "key": "textbook_new_doors_proven",
+    "bytes": 129,
     "used": true
    },
    {
@@ -3591,8 +3601,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 21766,
-   "used": 21766,
+   "capacity": 21995,
+   "used": 21995,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

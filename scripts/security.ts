@@ -6,7 +6,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
 const ROOT = process.cwd()
@@ -49,7 +49,6 @@ const main = async () => {
   const accessAudit = call({ access: true })
   const date = new Date().toISOString()
   writeFileSync(join(ROOT, 'docs', 'public', 'security.json'), JSON.stringify({ license: LICENSE.attribution, date, hosts: HOSTS, ...result, access: accessAudit, leaks: { ...leaks, findings: leaks.findings } }, null, 1) + '\n')
-  const cell = (t: string) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\n/g, ' ')
   writeFileSync(join(ROOT, 'docs', 'security.md'), ['---', 'title: Security', 'order: 53', '---', '', '# Security audit, both perspectives as one', '', `Performed by \`npm run next\` on ${date} through the \`audit\` tool: what a client of the MCP measures on ${HOSTS.length} host(s) and what the developer measures in the tree, merged as one list (${result.perspectives.client} client, ${result.perspectives.developer} developer, ${result.perspectives.both} both): ${result.passed}/${result.total} pass; ${result.verdict}. Every finding is a lead with the remedy manual work taught.`, '', '| Check | Perspective | Pass | Evidence | Remedy |', '|---|---|---|---|---|', ...result.checks.map((c: { id: string; perspective: string; passed: boolean; evidence: string; remedy?: string }) => `| ${c.id} | ${c.perspective} | ${c.passed ? '✓' : '✗'} | ${cell(c.evidence)} | ${cell(c.remedy ?? '')} |`), '', '## Access from every perspective', '', `The access audit through \`audit { access: true }\`: ${accessAudit.perspectives.join(', ')} over ${accessAudit.collections.join(', ')}; ${accessAudit.combinationsSay}; ${accessAudit.passed}/${accessAudit.total} pass; ${accessAudit.verdict}. Every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms.`, '', '| Check | Perspective | Pass | Evidence | Hook | Cost | Licence | Legal |', '|---|---|---|---|---|---|---|---|', ...accessAudit.checks.map((c: { id: string; perspective: string; passed: boolean; evidence: string; hook: string; cost: string; licence: string; legal: string }) => `| ${c.id} | ${c.perspective} | ${c.passed ? '✓' : '✗'} | ${cell(c.evidence)} | ${cell(c.hook)} | ${cell(c.cost)} | ${cell(c.licence)} | ${cell(c.legal)} |`), ''].join('\n'))
   console.log(`access: ${accessAudit.passed}/${accessAudit.total} checks pass from ${accessAudit.perspectives.length} perspectives (${accessAudit.combinations} role–operation combinations); ${accessAudit.verdict}`)
   console.log(`security: ${result.passed}/${result.total} checks pass (${result.perspectives.client} client, ${result.perspectives.developer} developer, ${result.perspectives.both} both) over ${hosts.length} host(s); ${result.verdict}`)

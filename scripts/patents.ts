@@ -3,12 +3,11 @@
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
+import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('patents')
-const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/</g, '&lt;').replace(/\{/g, '&#123;')
 // the questions: what the tree is about, so a patent that touches it is read first
 const QUERIES = ['quantum error correction', 'content addressed storage universally unique identifier', 'model context protocol tools', 'post-quantum signature lattice']
 const main = async () => {

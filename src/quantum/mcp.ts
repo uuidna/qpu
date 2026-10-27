@@ -133,6 +133,7 @@ import { EXTENSION } from './toolboxes/extension.js'
 import { factsOf, verifyRequestsOf } from './verifiers.js'
 import { CRYPTO } from './toolboxes/crypto.js'
 import { blockJsonLdOf, openapiOf, OPENAPI_RESOURCE } from './standards.js'
+export { cellOf } from './widgets.js'
 
 /** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
 // The tools of this host's own two toolboxes, named below; `tool` is the host-side helper until each is a file of its own.

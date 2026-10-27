@@ -4,6 +4,9 @@
 
 import type { WILLOW } from './processor.js'
 import { QUANTUM_ECHOES } from './echo.js'
+/** A markdown table cell is text, never markup or a link: the characters a table, Vue or a link would read are escaped, and a URL to a
+ *  local host is never linkable, so no generated page carries a dead link. The one escaper every page writer folds onto. */
+export const cellOf = (t: unknown): string => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\n/g, ' ').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;').replace(/\]\(/g, () => '&#93;(').replace(/:\/\/(localhost|127\.0\.0\.1)/g, (_m, h: string) => `:&#47;&#47;${h}`)
 
 const escape = (text: string): string => text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
 

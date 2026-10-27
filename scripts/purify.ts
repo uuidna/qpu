@@ -8,7 +8,7 @@ import { execFileSync, spawnSync } from 'node:child_process'
 import { appendFileSync, existsSync, readFileSync, readdirSync, writeFileSync, renameSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle, cellOf as cell } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
 import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { VERIFIERS, factsOf, verifyRequestsOf } from '../src/quantum/verifiers.ts'
@@ -16,7 +16,6 @@ import { uuidOf } from '../src/quantum/blocks.ts'
 
 const ROOT = process.cwd()
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
-const cell = (t: string): string => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\n/g, ' ').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')
 const Q = join(ROOT, 'src', 'quantum')
 const files = readdirSync(Q).filter((f) => f.endsWith('.ts'))
 const text = Object.fromEntries(files.map((f) => [f, readFileSync(join(Q, f), 'utf8')]))

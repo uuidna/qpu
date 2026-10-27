@@ -6,12 +6,11 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import './teleport.ts'
-import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('configure')
-const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/</g, '&lt;').replace(/\{/g, '&#123;')
 const started = Date.now()
 const selftest = call({ selftest: true })
 console.log(`configure selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)

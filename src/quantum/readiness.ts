@@ -5,6 +5,7 @@ import { cleanupSubjectsOf, type Lead } from './leads.js'
 import type { Discovery, Door } from './discovery.js'
 import type { WaveResult } from './wave.js'
 import { TAKES } from './discovery.js'
+import { cellOf as cell } from './widgets.js'
 
 export type Judged = { lead: string; source: string; status: string; class: 'served' | 'refuted' | 'trial'; by: string }
 export type Source = { source: string; reached: true; settled: number; why: string; open: { source: string; what: string; owes: string }[] }
@@ -101,7 +102,6 @@ export type UnitAnswers = { vortex?: { reflection?: unknown; triad?: number[] | 
 
 /** The readiness page, from the judgement, the border and the unit's answers. */
 // text that reaches a page is escaped once: an angle bracket, a brace or a bar in a verdict or a note is text, never a tag
-const cell = (t: unknown): string => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;').replace(/\n/g, ' ')
 export const readinessPageOf = (p: { unit: string; date: string; measured: string | null; discovered: string | null; probe: { key: string; statement: string | null }; judged: Judged[]; classes: { served: number; refuted: number; trial: number }; sources: Source[]; border: Border[]; sealedBy: string[]; answers: UnitAnswers }): string => {
   const { answers: a } = p
   return ['---', 'title: Readiness', 'order: 53', '---', '', '# The unit judges the tree', '',

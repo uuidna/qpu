@@ -10,13 +10,13 @@ import { join } from 'node:path'
 import { tmpdir, availableParallelism } from 'node:os'
 import { pathToFileURL } from 'node:url'
 import { uuidOf } from '../src/quantum/blocks.ts'
+import { cellOf as cell } from '../src/quantum/widgets.ts'
 import { remediesOf, manualDocsOf } from '../src/quantum/audit.ts'
 import { STEP_CACHE, GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
 import { mkdirSync } from 'node:fs'
 
 const ROOT = process.cwd()
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
-const cell = (t: string): string => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\n/g, ' ').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')
 const offline = process.argv.includes('--offline')
 const strict = process.argv.includes('--strict')
 const fast = process.argv.includes('--fast') // the pre-commit form: the cheap steps only; the long and the networked wait for the full run

@@ -4,14 +4,13 @@
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { CATALOGUE } from '../src/quantum/toolboxes/billing.ts'
 import { TENANTS } from '../src/quantum/tenants.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('currency')
-const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/</g, '&lt;').replace(/\{/g, '&#123;')
 const main = async () => {
   const started = Date.now()
   const selftest = call({ selftest: true })
