@@ -1,6 +1,7 @@
 import { revalidateRedirects } from '@hooks/revalidateRedirects'
 import { qpuPlugin } from './plugins/qpu' // the QPU as one plugin: its collections, global, block, hooks and the plugins it composes (generated)
 import { qpuDb, qpuEmail } from './payload.qpu.adapters'
+import { qpuFormFields, qpuLexicalBlocks } from './payload.qpu.lexical' // forms, qpu and Drive blocks in Lexical; the form builder's fields from Google Forms (generated)
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
@@ -370,6 +371,7 @@ export default buildConfig({
           'Code',
           'downloadBlock',
           'commandLine',
+          ...qpuLexicalBlocks,
         ],
       }),
     ],
@@ -416,6 +418,7 @@ export default buildConfig({
       enabledWidgets: ['analytics-overview', 'top-pages', 'active-users', 'channel-groups'],
     }),
     formBuilderPlugin({
+      fields: qpuFormFields,
       formOverrides: {
         fields: ({ defaultFields }) => [
           ...defaultFields,

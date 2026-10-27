@@ -54,6 +54,7 @@ const steps: Step[] = [
   { name: 'repository', cmd: 'node', args: ['--import', 'tsx', 'scripts/repository.ts'], budgetMs: 300_000, wave: 3 }, // always: workspaces, branches, tags, releases; offline the local facts
   { name: 'legal', cmd: 'node', args: ['--import', 'tsx', 'scripts/legal.ts'], budgetMs: 600_000, wave: 3, shards: 4 },
   { name: 'sources', cmd: 'node', args: ['--import', 'tsx', 'scripts/sources.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 1_800_000, wave: 3 }, // the immutable sources of leads, every page to its end
+  { name: 'workspace', cmd: 'node', args: ['--import', 'tsx', 'scripts/workspace.ts'], budgetMs: 120_000, wave: 4 }, // Google Forms, Docs and Drive in Payload from the Discovery documents discover cached
   { name: 'textbook', cmd: 'node', args: ['--import', 'tsx', 'scripts/textbook.ts'], budgetMs: 300_000, wave: 4, shards: 4 }, // always: the examples verified online from the wave; offline the plan // always: cached by inputs, the pure half offline
   { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'], wave: 2 }, // beside the tests and the audit: independent pure work fills the idle cores (its index written atomically)
   { name: 'metrics', cmd: 'node', args: ['--import', 'tsx', 'scripts/metrics.ts'], budgetMs: 120_000, skip: fast ? 'fast' : undefined, wave: 5 }, // always: the run's artefacts read into one measure

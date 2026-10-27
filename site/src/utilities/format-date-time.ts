@@ -13,21 +13,6 @@ export const monthNames = [
   'December',
 ]
 
-export const monthNamesAbbr = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sept',
-  'Oct',
-  'Nov',
-  'Dec',
-]
-
 const formatOptions: { [key: string]: Intl.DateTimeFormatOptions } = {
   dateAndTime: {
     day: 'numeric',

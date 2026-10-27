@@ -1,0 +1,39 @@
+{
+ "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
+ "date": "2026-10-27T12:26:17.980Z",
+ "unread": [
+  "list",
+  "forms",
+  "docs",
+  "drive"
+ ],
+ "coverage": {
+  "forms": {
+   "live": 0,
+   "of": 0,
+   "held": [],
+   "missing": []
+  },
+  "docs": {
+   "live": 0,
+   "of": 0,
+   "held": [],
+   "missing": []
+  },
+  "drive": {
+   "live": 0,
+   "of": 0,
+   "held": [],
+   "missing": []
+  },
+  "sites": {
+   "listed": null
+  },
+  "leads": []
+ },
+ "kinds": {
+  "forms": [],
+  "docs": [],
+  "drive": []
+ }
+}
