@@ -19,7 +19,7 @@ const git = (a: string[]) => spawnSync('git', a, { encoding: 'utf8', maxBuffer: 
 const extra = process.argv.slice(3)
 let w: { name: string; steps: Step[]; strict: boolean } | undefined, why = 'no such workflow'
 try { w = toolCallerOf('repository')({ workflow: name, offline: process.env.QPU_OFFLINE === '1' }).workflow } catch (e) { why = (e as Error).message }
-if (!w) { console.error(`hook ${name}: ${why}`); process.exit(name === 'pre-push' ? 1 : 0) }
+if (!w) { console.error(`hook ${name}: ${why}`); process.exit(1) }
 let red = false
 // the open penalties first, before any step: their count, the tokens and coins they book, and each one's rule and subject
 const standing = await openPenaltiesOf()
