@@ -29,6 +29,8 @@ const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/t
 type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs?: number; wave: number; /** a long single task split into short multitasks: n shards at once (QPU_SHARD=i/n), then one merge (QPU_SHARD=merge) */ shards?: number }
 const TIMES = await timesOf(ROOT), budgetFor = (s: Step) => Math.min(2 * (s.budgetMs ?? 600_000), Math.max(s.budgetMs ?? 600_000, 2 * (forecastTimes(TIMES[s.name] ?? [])?.point ?? 0)))
 const steps: Step[] = [
+  { name: 'leads', cmd: 'node', args: ['scripts/mcp.ts', 'leads-sync'], skip: offline ? 'offline' : undefined, wave: -1 }, // first: the leads both ways, Payload the source of the index
+  { name: 'names', cmd: 'node', args: ['scripts/names.ts'], skip: offline ? 'offline' : undefined, wave: 0 }, // alone, before every reader: the free names wave, standard verbs recorded in Payload
   { name: 'clay:gen', cmd: 'node', args: ['scripts/gen-clay.ts'], wave: 1 },
   { name: 'docs:gen', cmd: 'node', args: ['scripts/gen-docs.ts'], wave: 1 },
   { name: 'session', cmd: 'node', args: ['scripts/session.ts'], skip: fast ? 'fast' : undefined, budgetMs: 600_000, wave: 1 }, // every session read to decide what is next and how; offline only the Payload writes and the unit's calls wait

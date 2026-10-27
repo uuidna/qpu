@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T18:47:37.070Z",
+ "date": "2026-10-27T19:55:30.401Z",
  "input": {
   "doors": [
    {
@@ -21,6 +21,11 @@
    {
     "name": "match.statement",
     "bytes": 99,
+    "reached": true
+   },
+   {
+    "name": "match.verdict",
+    "bytes": 275,
     "reached": true
    },
    {
@@ -1374,6 +1379,11 @@
     "reached": true
    },
    {
+    "name": "configure.google",
+    "bytes": 281,
+    "reached": true
+   },
+   {
     "name": "configure.branding",
     "bytes": 230,
     "reached": true
@@ -1546,6 +1556,11 @@
    {
     "name": "seal.sign",
     "bytes": 128,
+    "reached": true
+   },
+   {
+    "name": "seal.referer",
+    "bytes": 276,
     "reached": true
    },
    {
@@ -2007,7 +2022,7 @@
    },
    {
     "key": "textbook_fullstack_files_by_role",
-    "bytes": 102,
+    "bytes": 106,
     "used": true
    },
    {
@@ -2277,6 +2292,31 @@
    },
    {
     "key": "textbook_scan_stream",
+    "bytes": 62,
+    "used": true
+   },
+   {
+    "key": "textbook_referer_binds_not_entropy",
+    "bytes": 74,
+    "used": true
+   },
+   {
+    "key": "textbook_mcp_directories",
+    "bytes": 65,
+    "used": true
+   },
+   {
+    "key": "textbook_google_api_surfaces",
+    "bytes": 79,
+    "used": true
+   },
+   {
+    "key": "textbook_willow_connectivity",
+    "bytes": 84,
+    "used": true
+   },
+   {
+    "key": "textbook_foreign_verdicts",
     "bytes": 62,
     "used": true
    },
@@ -3683,8 +3723,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 48424,
-   "used": 38888,
+   "capacity": 49256,
+   "used": 39720,
    "idle": 9536,
    "percentIdle": 19,
    "idleNames": [
@@ -3807,8 +3847,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 26392,
-   "used": 26392,
+   "capacity": 26760,
+   "used": 26760,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

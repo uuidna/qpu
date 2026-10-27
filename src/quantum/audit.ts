@@ -334,6 +334,24 @@ export const LEAK_PATTERNS: readonly { kind: string; re: RegExp; remedy: string 
   { kind: 'private-ip', re: /\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})\b/g, remedy: 'a host by its public name; a private address says the network' },
 ]
 const NOT_A_LEAK = (kind: string, m: string) => kind === 'email' && (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}@/i.test(m) || /@(?:[a-z0-9-]+\.)*(?:test|example|invalid|localhost)(?:\.[a-z]+)?$/i.test(m) || /@(?:example\.(?:com|org|net))$/i.test(m) || /@(?:project-id|test-project|your-project|my-project|PROJECT_ID)\.iam(?:\.gserviceaccount\.com)?$/i.test(m))
+/** The standard verbs MCP tools share (Google's AIP standard methods: get, list, create, update, delete), and how a reader or a builder maps
+ *  onto them: one item get, a plural noun list. */
+const STANDARD_VERBS = ['get', 'list', 'create', 'update', 'delete'] as const
+const VERB_MAP: Readonly<Record<string, 'one' | 'create'>> = { read: 'one', parse: 'one', find: 'one', fetch: 'one', load: 'one', search: 'one', pick: 'one', render: 'one', compute: 'one', measure: 'one', build: 'create', make: 'create' }
+/** Every function declaration of the given sources read for its leading word: the standard verbs kept, the readers and builders mapped onto
+ *  them (a name the file already holds kept and listed), every other leading word listed as a custom verb, to convert or to tie to the rosetta. */
+export const listDeclarations = (files: Readonly<Record<string, string>>) => {
+  const renames: [string, string, string][] = [], custom: Record<string, string[]> = {}, kept: string[] = []; let declarations = 0, standard = 0
+  for (const [file, text] of Object.entries(files)) { const names = new Set([...text.matchAll(/[A-Za-z_$][\w$]*/g)].map((m) => m[0]))
+    for (const m of text.matchAll(/^(?:export )?(?:async )?(?:const|function) ([a-z]+)([A-Z]\w*)?\s*(?::[^=\n]*)?=?\s*(?:async\s*)?(?:\(|<|function)/gm)) {
+      declarations++; const [verb, noun = ''] = [m[1]!, m[2]], name = verb + noun, to = VERB_MAP[verb]
+      if ((STANDARD_VERBS as readonly string[]).includes(verb)) { standard++; continue }
+      if (!to || !noun) { (custom[verb] ??= []).push(`${file}:${name}`); continue }
+      const next = (to === 'create' ? 'create' : /(?<!s)s$|ies$/.test(noun) ? 'list' : 'get') + noun
+      if (names.has(next)) { kept.push(`${file}:${name}→${next}`); continue } names.add(next); renames.push([file, name, next]) } }
+  const customs = Object.values(custom).reduce((n, l) => n + l.length, 0)
+  return { declarations, standard, renames, custom, kept, theorem: 'textbook_shared_verbs', says: `${declarations} function declarations: ${standard} named by a standard verb, ${renames.length} readers and builders mapped onto one, ${kept.length} kept (the name is taken), ${customs} under ${Object.keys(custom).length} other leading words, each to convert or to tie to the rosetta` }
+}
 export const findLeaks = (texts: Readonly<Record<string, string>>, served: readonly string[] = []) => {
   const findings: { where: string; kind: string; count: number; served: boolean; remedy: string }[] = []
   let setAside = 0
