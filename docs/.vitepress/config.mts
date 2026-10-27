@@ -150,20 +150,12 @@ export default defineConfig({
         "link": "/audit"
       },
       {
-        "text": "Discovery",
-        "link": "/discovery"
-      },
-      {
         "text": "Match",
         "link": "/match"
       },
       {
         "text": "Theorems",
         "link": "/theorems"
-      },
-      {
-        "text": "Verification",
-        "link": "/verification"
       },
       {
         "text": "Receipts",
@@ -190,16 +182,8 @@ export default defineConfig({
         "link": "/graph"
       },
       {
-        "text": "Readiness",
-        "link": "/readiness"
-      },
-      {
         "text": "Security",
         "link": "/security"
-      },
-      {
-        "text": "Imagination",
-        "link": "/imagination"
       },
       {
         "text": "Related MCPs",
@@ -224,10 +208,6 @@ export default defineConfig({
       {
         "text": "Sources",
         "link": "/sources"
-      },
-      {
-        "text": "Metrics",
-        "link": "/metrics"
       },
       {
         "text": "Session",
@@ -331,20 +311,12 @@ export default defineConfig({
             "link": "/audit"
           },
           {
-            "text": "Discovery",
-            "link": "/discovery"
-          },
-          {
             "text": "Match",
             "link": "/match"
           },
           {
             "text": "Theorems",
             "link": "/theorems"
-          },
-          {
-            "text": "Verification",
-            "link": "/verification"
           },
           {
             "text": "Receipts",
@@ -371,16 +343,8 @@ export default defineConfig({
             "link": "/graph"
           },
           {
-            "text": "Readiness",
-            "link": "/readiness"
-          },
-          {
             "text": "Security",
             "link": "/security"
-          },
-          {
-            "text": "Imagination",
-            "link": "/imagination"
           },
           {
             "text": "Related MCPs",
@@ -405,10 +369,6 @@ export default defineConfig({
           {
             "text": "Sources",
             "link": "/sources"
-          },
-          {
-            "text": "Metrics",
-            "link": "/metrics"
           },
           {
             "text": "Session",

@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T17:14:43.653Z",
+ "date": "2026-10-27T17:23:50.812Z",
  "literals": {
   "urls": 835,
   "distinctUrls": 449,
@@ -648,10 +648,10 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 930,
- "lines": 82610,
- "findings": 885,
+ "lines": 82561,
+ "findings": 886,
  "fused": 318,
- "reactions": 567,
+ "reactions": 568,
  "gravity": "5a8feb33-a8e0-60fe-9813-db5e76a865ed",
  "vacuum": false,
  "byKind": {
@@ -664,7 +664,7 @@
    "leads": 1
   },
   "cap": {
-   "findings": 83,
+   "findings": 84,
    "leads": 21
   },
   "clock": {
@@ -689,7 +689,7 @@
   }
  },
  "difference": {
-  "appeared": 4,
+  "appeared": 3,
   "settled": 0
  },
  "toExplore": {
@@ -760,6 +760,18 @@
    "tool": "audit",
    "occurrences": 7,
    "address": "113d3f3c-fd2b-8990-b97f-44e38e3fd58f",
+   "explore": "match",
+   "config": "actions"
+  },
+  {
+   "id": "entropy-cap-5c134534",
+   "kind": "cap",
+   "source": "scripts/mcp.ts:126, src/quantum/readiness.ts:84",
+   "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 300)",
+   "status": "open",
+   "tool": "audit",
+   "occurrences": 2,
+   "address": "5c134534-09f6-125a-a480-331c37f6fc62",
    "explore": "match",
    "config": "actions"
   },
@@ -1108,18 +1120,6 @@
    "tool": "audit",
    "occurrences": 1,
    "address": "bf74c132-4793-6d99-bf4e-4fa92ce53e73",
-   "explore": "match",
-   "config": "actions"
-  },
-  {
-   "id": "entropy-cap-5c134534",
-   "kind": "cap",
-   "source": "src/quantum/readiness.ts:84",
-   "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 300)",
-   "status": "open",
-   "tool": "audit",
-   "occurrences": 1,
-   "address": "5c134534-09f6-125a-a480-331c37f6fc62",
    "explore": "match",
    "config": "actions"
   },
