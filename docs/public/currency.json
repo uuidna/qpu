@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T08:58:03.803Z",
- "ms": 905,
+ "date": "2026-10-27T14:12:09.588Z",
+ "ms": 1065,
  "selftest": {
   "passed": true
  },
@@ -9,32 +9,32 @@
   {
    "source": "ecb",
    "status": 200,
-   "ms": 627,
+   "ms": 876,
    "bytes": 1547
   },
   {
    "source": "frankfurter",
    "status": 200,
-   "ms": 277,
+   "ms": 426,
    "bytes": 442
   },
   {
    "source": "bnb",
    "status": 200,
-   "ms": 507,
+   "ms": 707,
    "bytes": 746
   },
   {
    "source": "er-api",
    "status": 200,
-   "ms": 474,
+   "ms": 629,
    "bytes": 3051
   },
   {
    "source": "fawazahmed",
    "status": 200,
-   "ms": 601,
-   "bytes": 7492
+   "ms": 628,
+   "bytes": 7533
   }
  ],
  "base": "EUR",
@@ -56,7 +56,7 @@
   },
   {
    "source": "fawazahmed",
-   "date": "2026-10-26",
+   "date": "2026-10-27",
    "currencies": 288
   }
  ],
@@ -78,14 +78,14 @@
    "dates": []
   },
   "USD": {
-   "rate": 1.1188,
+   "rate": 1.118726,
    "sources": [
     "ecb",
     "frankfurter",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.003025804433321313,
+   "spread": 0.0013682975098461428,
    "outcome": "agree",
    "drifting": [],
    "dates": [
@@ -106,14 +106,14 @@
    ]
   },
   "GBP": {
-   "rate": 0.8382,
+   "rate": 0.8380715,
    "sources": [
     "ecb",
     "frankfurter",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.0004812693867812619,
+   "spread": 0.0008272563856425231,
    "outcome": "agree",
    "drifting": [],
    "dates": [
@@ -122,14 +122,14 @@
    ]
   },
   "CHF": {
-   "rate": 0.92442892,
+   "rate": 0.92438456,
    "sources": [
     "ecb",
     "frankfurter",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.0005052632927148841,
+   "spread": 0.0005532762252108902,
    "outcome": "agree",
    "drifting": [],
    "dates": [
@@ -145,7 +145,7 @@
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.0005294752419150448,
+   "spread": 0.00025131656592315764,
    "outcome": "agree",
    "drifting": [],
    "dates": [
@@ -169,66 +169,66 @@
   },
   "qpu-domain-yearly": {
    "eur": 43200,
-   "usd": 48332.16,
+   "usd": 48328.96,
    "bgn": 84491.86,
-   "gbp": 36210.24,
-   "chf": 39935.33,
+   "gbp": 36204.69,
+   "chf": 39933.41,
    "jpy": 7608331.81
   },
   "qpu-domain-monthly": {
    "eur": 4320,
-   "usd": 4833.22,
+   "usd": 4832.9,
    "bgn": 8449.19,
-   "gbp": 3621.02,
-   "chf": 3993.53,
+   "gbp": 3620.47,
+   "chf": 3993.34,
    "jpy": 760833.18
   },
   "qpu-tenant-yearly": {
    "eur": 216000,
-   "usd": 241660.8,
+   "usd": 241644.82,
    "bgn": 422459.28,
-   "gbp": 181051.2,
-   "chf": 199676.65,
+   "gbp": 181023.44,
+   "chf": 199667.06,
    "jpy": 38041659.07
   },
   "qpu-seat-monthly": {
    "eur": 2700,
-   "usd": 3020.76,
+   "usd": 3020.56,
    "bgn": 5280.74,
-   "gbp": 2263.14,
-   "chf": 2495.96,
+   "gbp": 2262.79,
+   "chf": 2495.84,
    "jpy": 475520.74
   },
   "qpu-metered-per-thousand-calls": {
    "eur": 108,
-   "usd": 120.83,
+   "usd": 120.82,
    "bgn": 211.23,
-   "gbp": 90.53,
-   "chf": 99.84,
+   "gbp": 90.51,
+   "chf": 99.83,
    "jpy": 19020.83
   },
   "qpu-iot-per-million-readings": {
    "eur": 1080,
-   "usd": 1208.3,
+   "usd": 1208.22,
    "bgn": 2112.3,
-   "gbp": 905.26,
-   "chf": 998.38,
+   "gbp": 905.12,
+   "chf": 998.34,
    "jpy": 190208.3
   },
   "qpu-delivered-per-thousand-copies": {
    "eur": 540,
-   "usd": 604.15,
+   "usd": 604.11,
    "bgn": 1056.15,
-   "gbp": 452.63,
-   "chf": 499.19,
+   "gbp": 452.56,
+   "chf": 499.17,
    "jpy": 95104.15
   },
   "qpu-enterprise-platform": {
    "eur": 1080000,
-   "usd": 1208304,
+   "usd": 1208224.08,
    "bgn": 2112296.4,
-   "gbp": 905256,
-   "chf": 998383.23,
+   "gbp": 905117.22,
+   "chf": 998335.32,
    "jpy": 190208295.36
   }
  },

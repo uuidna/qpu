@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T13:58:27.685Z",
+ "date": "2026-10-27T14:20:22.533Z",
  "literals": {
   "urls": 839,
   "distinctUrls": 450,
@@ -648,7 +648,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 932,
- "lines": 83592,
+ "lines": 83591,
  "findings": 879,
  "fused": 315,
  "reactions": 564,

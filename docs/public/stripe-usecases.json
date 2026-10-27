@@ -1,0 +1,1562 @@
+{
+ "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
+ "date": "2026-10-27T14:12:09.588Z",
+ "op": "usecases",
+ "paths": 431,
+ "resources": 78,
+ "byResource": {
+  "account": 1,
+  "account_links": 1,
+  "account_sessions": 1,
+  "accounts": 15,
+  "apple_pay": 2,
+  "application_fees": 5,
+  "apps": 6,
+  "balance": 3,
+  "balance_settings": 1,
+  "balance_transactions": 2,
+  "billing": 22,
+  "billing_portal": 3,
+  "charges": 9,
+  "checkout": 4,
+  "climate": 7,
+  "confirmation_tokens": 1,
+  "country_specs": 2,
+  "coupons": 2,
+  "credit_notes": 6,
+  "customer_sessions": 1,
+  "customers": 25,
+  "disputes": 3,
+  "entitlements": 4,
+  "ephemeral_keys": 2,
+  "events": 2,
+  "exchange_rates": 2,
+  "external_accounts": 1,
+  "file_links": 2,
+  "files": 2,
+  "financial_connections": 11,
+  "forwarding": 2,
+  "identity": 6,
+  "invoice_payments": 2,
+  "invoice_rendering_templates": 4,
+  "invoiceitems": 2,
+  "invoices": 15,
+  "issuing": 20,
+  "link_account_sessions": 2,
+  "linked_accounts": 5,
+  "mandates": 1,
+  "payment_attempt_records": 2,
+  "payment_intents": 10,
+  "payment_links": 3,
+  "payment_method_configurations": 2,
+  "payment_method_domains": 3,
+  "payment_methods": 4,
+  "payment_records": 9,
+  "payouts": 4,
+  "plans": 2,
+  "prices": 3,
+  "product_catalog": 2,
+  "products": 5,
+  "promotion_codes": 2,
+  "quotes": 8,
+  "radar": 7,
+  "refunds": 3,
+  "reporting": 4,
+  "reviews": 3,
+  "setup_attempts": 1,
+  "setup_intents": 5,
+  "shipping_rates": 2,
+  "sigma": 3,
+  "sources": 6,
+  "subscription_items": 2,
+  "subscription_schedules": 4,
+  "subscriptions": 7,
+  "tax": 13,
+  "tax_codes": 2,
+  "tax_ids": 2,
+  "tax_rates": 2,
+  "terminal": 17,
+  "test_helpers": 42,
+  "three_d_secure": 4,
+  "tokens": 2,
+  "topups": 3,
+  "transfers": 4,
+  "treasury": 25,
+  "webhook_endpoints": 2
+ },
+ "covered": [
+  {
+   "resource": "balance",
+   "by": [
+    "settle"
+   ]
+  },
+  {
+   "resource": "billing",
+   "by": [
+    "usage",
+    "settle"
+   ]
+  },
+  {
+   "resource": "checkout",
+   "by": [
+    "plan",
+    "webhook"
+   ]
+  },
+  {
+   "resource": "customers",
+   "by": [
+    "state",
+    "ecommerce: customers"
+   ]
+  },
+  {
+   "resource": "events",
+   "by": [
+    "webhook"
+   ]
+  },
+  {
+   "resource": "invoices",
+   "by": [
+    "usage"
+   ]
+  },
+  {
+   "resource": "payment_intents",
+   "by": [
+    "ecommerce: transactions"
+   ]
+  },
+  {
+   "resource": "payouts",
+   "by": [
+    "settle"
+   ]
+  },
+  {
+   "resource": "prices",
+   "by": [
+    "catalogue",
+    "ecommerce: variants"
+   ]
+  },
+  {
+   "resource": "products",
+   "by": [
+    "catalogue",
+    "ecommerce: products"
+   ]
+  },
+  {
+   "resource": "refunds",
+   "by": [
+    "ecommerce: transactions"
+   ]
+  },
+  {
+   "resource": "subscriptions",
+   "by": [
+    "state"
+   ]
+  },
+  {
+   "resource": "webhook_endpoints",
+   "by": [
+    "webhook"
+   ]
+  }
+ ],
+ "uncovered": [
+  "account",
+  "account_links",
+  "account_sessions",
+  "accounts",
+  "apple_pay",
+  "application_fees",
+  "apps",
+  "balance_settings",
+  "balance_transactions",
+  "billing_portal",
+  "charges",
+  "climate",
+  "confirmation_tokens",
+  "country_specs",
+  "coupons",
+  "credit_notes",
+  "customer_sessions",
+  "disputes",
+  "entitlements",
+  "ephemeral_keys",
+  "exchange_rates",
+  "external_accounts",
+  "file_links",
+  "files",
+  "financial_connections",
+  "forwarding",
+  "identity",
+  "invoice_payments",
+  "invoice_rendering_templates",
+  "invoiceitems",
+  "issuing",
+  "link_account_sessions",
+  "linked_accounts",
+  "mandates",
+  "payment_attempt_records",
+  "payment_links",
+  "payment_method_configurations",
+  "payment_method_domains",
+  "payment_methods",
+  "payment_records",
+  "plans",
+  "product_catalog",
+  "promotion_codes",
+  "quotes",
+  "radar",
+  "reporting",
+  "reviews",
+  "setup_attempts",
+  "setup_intents",
+  "shipping_rates",
+  "sigma",
+  "sources",
+  "subscription_items",
+  "subscription_schedules",
+  "tax",
+  "tax_codes",
+  "tax_ids",
+  "tax_rates",
+  "terminal",
+  "test_helpers",
+  "three_d_secure",
+  "tokens",
+  "topups",
+  "transfers",
+  "treasury"
+ ],
+ "beyond": [],
+ "difference": {
+  "a": "stripe-api-use-cases",
+  "b": "mcp-stripe-combinations",
+  "sizes": {
+   "a": 78,
+   "b": 13,
+   "shared": 13,
+   "onlyA": 65,
+   "onlyB": 0
+  },
+  "leads": [
+   {
+    "id": "difference-36b2022d",
+    "member": "account",
+    "side": "stripe-api-use-cases",
+    "statement": "account is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-f7c02da9",
+    "member": "account_links",
+    "side": "stripe-api-use-cases",
+    "statement": "account_links is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-4542d3b0",
+    "member": "account_sessions",
+    "side": "stripe-api-use-cases",
+    "statement": "account_sessions is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-ab902e05",
+    "member": "accounts",
+    "side": "stripe-api-use-cases",
+    "statement": "accounts is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-98f6ecce",
+    "member": "apple_pay",
+    "side": "stripe-api-use-cases",
+    "statement": "apple_pay is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-1c1ace6e",
+    "member": "application_fees",
+    "side": "stripe-api-use-cases",
+    "statement": "application_fees is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-67ea9d3d",
+    "member": "apps",
+    "side": "stripe-api-use-cases",
+    "statement": "apps is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-1e287ce7",
+    "member": "balance_settings",
+    "side": "stripe-api-use-cases",
+    "statement": "balance_settings is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-38bf8e6f",
+    "member": "balance_transactions",
+    "side": "stripe-api-use-cases",
+    "statement": "balance_transactions is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-8bb3e2fe",
+    "member": "billing_portal",
+    "side": "stripe-api-use-cases",
+    "statement": "billing_portal is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-78ab1740",
+    "member": "charges",
+    "side": "stripe-api-use-cases",
+    "statement": "charges is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-6d034745",
+    "member": "climate",
+    "side": "stripe-api-use-cases",
+    "statement": "climate is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-6f59ded1",
+    "member": "confirmation_tokens",
+    "side": "stripe-api-use-cases",
+    "statement": "confirmation_tokens is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-7d0df80e",
+    "member": "country_specs",
+    "side": "stripe-api-use-cases",
+    "statement": "country_specs is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-ac4a7a8f",
+    "member": "coupons",
+    "side": "stripe-api-use-cases",
+    "statement": "coupons is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-2b21d308",
+    "member": "credit_notes",
+    "side": "stripe-api-use-cases",
+    "statement": "credit_notes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-66b37f02",
+    "member": "customer_sessions",
+    "side": "stripe-api-use-cases",
+    "statement": "customer_sessions is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-4198cb6f",
+    "member": "disputes",
+    "side": "stripe-api-use-cases",
+    "statement": "disputes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-9a45686f",
+    "member": "entitlements",
+    "side": "stripe-api-use-cases",
+    "statement": "entitlements is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-6d695e86",
+    "member": "ephemeral_keys",
+    "side": "stripe-api-use-cases",
+    "statement": "ephemeral_keys is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-f25bf931",
+    "member": "exchange_rates",
+    "side": "stripe-api-use-cases",
+    "statement": "exchange_rates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-d5818fed",
+    "member": "external_accounts",
+    "side": "stripe-api-use-cases",
+    "statement": "external_accounts is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-eb5ce38d",
+    "member": "file_links",
+    "side": "stripe-api-use-cases",
+    "statement": "file_links is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-347f990e",
+    "member": "files",
+    "side": "stripe-api-use-cases",
+    "statement": "files is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-a055f1d6",
+    "member": "financial_connections",
+    "side": "stripe-api-use-cases",
+    "statement": "financial_connections is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-19bca6e7",
+    "member": "forwarding",
+    "side": "stripe-api-use-cases",
+    "statement": "forwarding is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-a7b67581",
+    "member": "identity",
+    "side": "stripe-api-use-cases",
+    "statement": "identity is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-8babd820",
+    "member": "invoice_payments",
+    "side": "stripe-api-use-cases",
+    "statement": "invoice_payments is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-3ba84bc9",
+    "member": "invoice_rendering_templates",
+    "side": "stripe-api-use-cases",
+    "statement": "invoice_rendering_templates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-bc44d5b6",
+    "member": "invoiceitems",
+    "side": "stripe-api-use-cases",
+    "statement": "invoiceitems is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-7369479b",
+    "member": "issuing",
+    "side": "stripe-api-use-cases",
+    "statement": "issuing is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-2adcbd73",
+    "member": "link_account_sessions",
+    "side": "stripe-api-use-cases",
+    "statement": "link_account_sessions is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-b0369e8c",
+    "member": "linked_accounts",
+    "side": "stripe-api-use-cases",
+    "statement": "linked_accounts is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-dff93f72",
+    "member": "mandates",
+    "side": "stripe-api-use-cases",
+    "statement": "mandates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-0a20327e",
+    "member": "payment_attempt_records",
+    "side": "stripe-api-use-cases",
+    "statement": "payment_attempt_records is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-f6bd3961",
+    "member": "payment_links",
+    "side": "stripe-api-use-cases",
+    "statement": "payment_links is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-18e08b4f",
+    "member": "payment_method_configurations",
+    "side": "stripe-api-use-cases",
+    "statement": "payment_method_configurations is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-c18c3627",
+    "member": "payment_method_domains",
+    "side": "stripe-api-use-cases",
+    "statement": "payment_method_domains is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-7a7ebe5b",
+    "member": "payment_methods",
+    "side": "stripe-api-use-cases",
+    "statement": "payment_methods is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-ae2e7495",
+    "member": "payment_records",
+    "side": "stripe-api-use-cases",
+    "statement": "payment_records is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-ed3166d4",
+    "member": "plans",
+    "side": "stripe-api-use-cases",
+    "statement": "plans is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-4e317d63",
+    "member": "product_catalog",
+    "side": "stripe-api-use-cases",
+    "statement": "product_catalog is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-689b153b",
+    "member": "promotion_codes",
+    "side": "stripe-api-use-cases",
+    "statement": "promotion_codes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-276c373d",
+    "member": "quotes",
+    "side": "stripe-api-use-cases",
+    "statement": "quotes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-ed47f300",
+    "member": "radar",
+    "side": "stripe-api-use-cases",
+    "statement": "radar is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-bfe9fd56",
+    "member": "reporting",
+    "side": "stripe-api-use-cases",
+    "statement": "reporting is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-2895e1de",
+    "member": "reviews",
+    "side": "stripe-api-use-cases",
+    "statement": "reviews is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-cea61f3a",
+    "member": "setup_attempts",
+    "side": "stripe-api-use-cases",
+    "statement": "setup_attempts is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-a8aceb95",
+    "member": "setup_intents",
+    "side": "stripe-api-use-cases",
+    "statement": "setup_intents is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-968267b8",
+    "member": "shipping_rates",
+    "side": "stripe-api-use-cases",
+    "statement": "shipping_rates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-b567b7cd",
+    "member": "sigma",
+    "side": "stripe-api-use-cases",
+    "statement": "sigma is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-f50629d5",
+    "member": "sources",
+    "side": "stripe-api-use-cases",
+    "statement": "sources is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-dae8aa3c",
+    "member": "subscription_items",
+    "side": "stripe-api-use-cases",
+    "statement": "subscription_items is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-747f5e8a",
+    "member": "subscription_schedules",
+    "side": "stripe-api-use-cases",
+    "statement": "subscription_schedules is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-0715c54a",
+    "member": "tax",
+    "side": "stripe-api-use-cases",
+    "statement": "tax is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-f5af321f",
+    "member": "tax_codes",
+    "side": "stripe-api-use-cases",
+    "statement": "tax_codes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-21d7e203",
+    "member": "tax_ids",
+    "side": "stripe-api-use-cases",
+    "statement": "tax_ids is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-812ef783",
+    "member": "tax_rates",
+    "side": "stripe-api-use-cases",
+    "statement": "tax_rates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-accfd6d6",
+    "member": "terminal",
+    "side": "stripe-api-use-cases",
+    "statement": "terminal is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-335fc069",
+    "member": "test_helpers",
+    "side": "stripe-api-use-cases",
+    "statement": "test_helpers is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-0e35133c",
+    "member": "three_d_secure",
+    "side": "stripe-api-use-cases",
+    "statement": "three_d_secure is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-b8e2bb32",
+    "member": "tokens",
+    "side": "stripe-api-use-cases",
+    "statement": "tokens is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-c93d1be4",
+    "member": "topups",
+    "side": "stripe-api-use-cases",
+    "statement": "topups is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-1bc6d14a",
+    "member": "transfers",
+    "side": "stripe-api-use-cases",
+    "statement": "transfers is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   },
+   {
+    "id": "difference-37ae78a6",
+    "member": "treasury",
+    "side": "stripe-api-use-cases",
+    "statement": "treasury is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+    "status": "open",
+    "explore": "imagine",
+    "config": "ecommerce",
+    "theorem": "textbook_difference_leads"
+   }
+  ],
+  "proven": true,
+  "theorem": "textbook_difference_leads",
+  "toExplore": {
+   "imagine": 65
+  },
+  "agnostic": "members compared as the strings they are, whatever they name; the sides are named by the caller, the config kind by its policy"
+ },
+ "leads": [
+  {
+   "id": "difference-36b2022d",
+   "member": "account",
+   "side": "stripe-api-use-cases",
+   "statement": "account is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-f7c02da9",
+   "member": "account_links",
+   "side": "stripe-api-use-cases",
+   "statement": "account_links is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-4542d3b0",
+   "member": "account_sessions",
+   "side": "stripe-api-use-cases",
+   "statement": "account_sessions is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-ab902e05",
+   "member": "accounts",
+   "side": "stripe-api-use-cases",
+   "statement": "accounts is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-98f6ecce",
+   "member": "apple_pay",
+   "side": "stripe-api-use-cases",
+   "statement": "apple_pay is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-1c1ace6e",
+   "member": "application_fees",
+   "side": "stripe-api-use-cases",
+   "statement": "application_fees is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-67ea9d3d",
+   "member": "apps",
+   "side": "stripe-api-use-cases",
+   "statement": "apps is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-1e287ce7",
+   "member": "balance_settings",
+   "side": "stripe-api-use-cases",
+   "statement": "balance_settings is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-38bf8e6f",
+   "member": "balance_transactions",
+   "side": "stripe-api-use-cases",
+   "statement": "balance_transactions is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-8bb3e2fe",
+   "member": "billing_portal",
+   "side": "stripe-api-use-cases",
+   "statement": "billing_portal is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-78ab1740",
+   "member": "charges",
+   "side": "stripe-api-use-cases",
+   "statement": "charges is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-6d034745",
+   "member": "climate",
+   "side": "stripe-api-use-cases",
+   "statement": "climate is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-6f59ded1",
+   "member": "confirmation_tokens",
+   "side": "stripe-api-use-cases",
+   "statement": "confirmation_tokens is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-7d0df80e",
+   "member": "country_specs",
+   "side": "stripe-api-use-cases",
+   "statement": "country_specs is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-ac4a7a8f",
+   "member": "coupons",
+   "side": "stripe-api-use-cases",
+   "statement": "coupons is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-2b21d308",
+   "member": "credit_notes",
+   "side": "stripe-api-use-cases",
+   "statement": "credit_notes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-66b37f02",
+   "member": "customer_sessions",
+   "side": "stripe-api-use-cases",
+   "statement": "customer_sessions is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-4198cb6f",
+   "member": "disputes",
+   "side": "stripe-api-use-cases",
+   "statement": "disputes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-9a45686f",
+   "member": "entitlements",
+   "side": "stripe-api-use-cases",
+   "statement": "entitlements is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-6d695e86",
+   "member": "ephemeral_keys",
+   "side": "stripe-api-use-cases",
+   "statement": "ephemeral_keys is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-f25bf931",
+   "member": "exchange_rates",
+   "side": "stripe-api-use-cases",
+   "statement": "exchange_rates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-d5818fed",
+   "member": "external_accounts",
+   "side": "stripe-api-use-cases",
+   "statement": "external_accounts is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-eb5ce38d",
+   "member": "file_links",
+   "side": "stripe-api-use-cases",
+   "statement": "file_links is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-347f990e",
+   "member": "files",
+   "side": "stripe-api-use-cases",
+   "statement": "files is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-a055f1d6",
+   "member": "financial_connections",
+   "side": "stripe-api-use-cases",
+   "statement": "financial_connections is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-19bca6e7",
+   "member": "forwarding",
+   "side": "stripe-api-use-cases",
+   "statement": "forwarding is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-a7b67581",
+   "member": "identity",
+   "side": "stripe-api-use-cases",
+   "statement": "identity is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-8babd820",
+   "member": "invoice_payments",
+   "side": "stripe-api-use-cases",
+   "statement": "invoice_payments is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-3ba84bc9",
+   "member": "invoice_rendering_templates",
+   "side": "stripe-api-use-cases",
+   "statement": "invoice_rendering_templates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-bc44d5b6",
+   "member": "invoiceitems",
+   "side": "stripe-api-use-cases",
+   "statement": "invoiceitems is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-7369479b",
+   "member": "issuing",
+   "side": "stripe-api-use-cases",
+   "statement": "issuing is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-2adcbd73",
+   "member": "link_account_sessions",
+   "side": "stripe-api-use-cases",
+   "statement": "link_account_sessions is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-b0369e8c",
+   "member": "linked_accounts",
+   "side": "stripe-api-use-cases",
+   "statement": "linked_accounts is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-dff93f72",
+   "member": "mandates",
+   "side": "stripe-api-use-cases",
+   "statement": "mandates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-0a20327e",
+   "member": "payment_attempt_records",
+   "side": "stripe-api-use-cases",
+   "statement": "payment_attempt_records is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-f6bd3961",
+   "member": "payment_links",
+   "side": "stripe-api-use-cases",
+   "statement": "payment_links is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-18e08b4f",
+   "member": "payment_method_configurations",
+   "side": "stripe-api-use-cases",
+   "statement": "payment_method_configurations is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-c18c3627",
+   "member": "payment_method_domains",
+   "side": "stripe-api-use-cases",
+   "statement": "payment_method_domains is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-7a7ebe5b",
+   "member": "payment_methods",
+   "side": "stripe-api-use-cases",
+   "statement": "payment_methods is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-ae2e7495",
+   "member": "payment_records",
+   "side": "stripe-api-use-cases",
+   "statement": "payment_records is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-ed3166d4",
+   "member": "plans",
+   "side": "stripe-api-use-cases",
+   "statement": "plans is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-4e317d63",
+   "member": "product_catalog",
+   "side": "stripe-api-use-cases",
+   "statement": "product_catalog is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-689b153b",
+   "member": "promotion_codes",
+   "side": "stripe-api-use-cases",
+   "statement": "promotion_codes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-276c373d",
+   "member": "quotes",
+   "side": "stripe-api-use-cases",
+   "statement": "quotes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-ed47f300",
+   "member": "radar",
+   "side": "stripe-api-use-cases",
+   "statement": "radar is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-bfe9fd56",
+   "member": "reporting",
+   "side": "stripe-api-use-cases",
+   "statement": "reporting is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-2895e1de",
+   "member": "reviews",
+   "side": "stripe-api-use-cases",
+   "statement": "reviews is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-cea61f3a",
+   "member": "setup_attempts",
+   "side": "stripe-api-use-cases",
+   "statement": "setup_attempts is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-a8aceb95",
+   "member": "setup_intents",
+   "side": "stripe-api-use-cases",
+   "statement": "setup_intents is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-968267b8",
+   "member": "shipping_rates",
+   "side": "stripe-api-use-cases",
+   "statement": "shipping_rates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-b567b7cd",
+   "member": "sigma",
+   "side": "stripe-api-use-cases",
+   "statement": "sigma is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-f50629d5",
+   "member": "sources",
+   "side": "stripe-api-use-cases",
+   "statement": "sources is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-dae8aa3c",
+   "member": "subscription_items",
+   "side": "stripe-api-use-cases",
+   "statement": "subscription_items is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-747f5e8a",
+   "member": "subscription_schedules",
+   "side": "stripe-api-use-cases",
+   "statement": "subscription_schedules is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-0715c54a",
+   "member": "tax",
+   "side": "stripe-api-use-cases",
+   "statement": "tax is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-f5af321f",
+   "member": "tax_codes",
+   "side": "stripe-api-use-cases",
+   "statement": "tax_codes is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-21d7e203",
+   "member": "tax_ids",
+   "side": "stripe-api-use-cases",
+   "statement": "tax_ids is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-812ef783",
+   "member": "tax_rates",
+   "side": "stripe-api-use-cases",
+   "statement": "tax_rates is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-accfd6d6",
+   "member": "terminal",
+   "side": "stripe-api-use-cases",
+   "statement": "terminal is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-335fc069",
+   "member": "test_helpers",
+   "side": "stripe-api-use-cases",
+   "statement": "test_helpers is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-0e35133c",
+   "member": "three_d_secure",
+   "side": "stripe-api-use-cases",
+   "statement": "three_d_secure is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-b8e2bb32",
+   "member": "tokens",
+   "side": "stripe-api-use-cases",
+   "statement": "tokens is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-c93d1be4",
+   "member": "topups",
+   "side": "stripe-api-use-cases",
+   "statement": "topups is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-1bc6d14a",
+   "member": "transfers",
+   "side": "stripe-api-use-cases",
+   "statement": "transfers is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  },
+  {
+   "id": "difference-37ae78a6",
+   "member": "treasury",
+   "side": "stripe-api-use-cases",
+   "statement": "treasury is in stripe-api-use-cases and not in mcp-stripe-combinations: a difference to explore with imagine and to config as ecommerce",
+   "status": "open",
+   "explore": "imagine",
+   "config": "ecommerce",
+   "theorem": "textbook_difference_leads"
+  }
+ ],
+ "says": "78 Stripe resources read from its contract, 13 combined by the MCP, 65 not yet: each a lead to explore and to config, automatically; identity and tax among them are Stripe's doors a tenant opens, never the tree's"
+}

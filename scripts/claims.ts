@@ -1,6 +1,6 @@
 // The client of textbook { claims }, a step of every online next: one OpenAlex search per general theorem (open, no key), each search sealed
-// in the docket through the one MCP client with how long it stays valid, so a run searches only the theorems without a valid seal; four
-// searches at a time, a throttled or failed one asked again after a growing pause. The confirmations readers recorded in the docket are read
+// in the docket through the one MCP client with how long it stays valid, so a run searches only the theorems without a valid seal. The
+// confirmations readers recorded in the docket are read
 // the same way, the answers handed to the tool, and the claims index generated beside the theorems' so textbook { theorem } serves each claim
 // with its theorem. Nothing is called recognised without a recorded confirmation; with no key or no app, everything is searched, never a file.
 import { writeFileSync } from 'node:fs'
@@ -26,12 +26,12 @@ for (const [id, b] of valid) answers.push({ id, status: b.status, text: JSON.str
 const todo = plan.filter((r) => !valid.has(r.id))
 // how long a search stays valid: the source's own Cache-Control max-age or Expires when it states one, else one day, stated as such
 const validityOf = (res: Response, at: number): { validUntil: string; validity: string } => { const age = /max-age=(\d+)/.exec(res.headers.get('cache-control') ?? '')?.[1]; if (age) return { validUntil: new Date(at + Number(age) * 1000).toISOString(), validity: `max-age ${age} s, as OpenAlex states` }; const exp = Date.parse(res.headers.get('expires') ?? ''); if (Number.isFinite(exp) && exp > at) return { validUntil: new Date(exp).toISOString(), validity: 'Expires, as OpenAlex states' }; return { validUntil: new Date(at + 86_400_000).toISOString(), validity: 'one day: OpenAlex states no lifetime' } }
-// four at a time, and a throttled or failed request asked again after a growing pause, so a burst is not read as an absence
+// four at a time; a throttled or failed request asked again after a growing pause, a body cut by the timeout read as empty
 const pause = (ms: number) => new Promise((ok) => setTimeout(ok, ms))
 const searchOf = async (r: { id: string; url: string; accept: string }) => {
   let res: Response | null = null
   for (let wait = 500; wait <= 16000; wait *= 2) { res = await getOf(r.url, r.accept).catch(() => null); if (res && res.status !== 429 && res.status < 500) break; await pause(wait) }
-  const at = Date.now(), text = res ? await res.text() : ''
+  const at = Date.now(), text = res ? await res.text().catch(() => '') : ''
   answers.push({ id: r.id, status: res?.status ?? 0, text })
   if (!res || res.status !== 200) return 0
   let results: Sealed['results'] = []; try { results = ((JSON.parse(text) as { results?: Sealed['results'] }).results ?? []).map((w) => ({ doi: w.doi, title: w.title, publication_year: w.publication_year })) } catch { return 0 }

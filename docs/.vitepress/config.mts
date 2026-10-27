@@ -90,6 +90,10 @@ export default defineConfig({
         "link": "/roadmap"
       },
       {
+        "text": "Stripe",
+        "link": "/stripe"
+      },
+      {
         "text": "Patents",
         "link": "/patents"
       },
@@ -265,6 +269,10 @@ export default defineConfig({
           {
             "text": "Roadmap",
             "link": "/roadmap"
+          },
+          {
+            "text": "Stripe",
+            "link": "/stripe"
           },
           {
             "text": "Patents",
