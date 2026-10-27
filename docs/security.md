@@ -5,7 +5,7 @@ order: 53
 
 # Security audit, both perspectives as one
 
-Performed by `npm run next` on 2026-10-27T01:08:29.931Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 24/26 pass; 2 finding(s), each a lead with its remedy. Every finding is a lead with the remedy manual work taught.
+Performed by `npm run next` on 2026-10-27T02:36:49.852Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 24/26 pass; 2 finding(s), each a lead with its remedy. Every finding is a lead with the remedy manual work taught.
 
 | Check | Perspective | Pass | Evidence | Remedy |
 |---|---|---|---|---|
@@ -34,7 +34,7 @@ Performed by `npm run next` on 2026-10-27T01:08:29.931Z through the `audit` tool
 | hooks-guarded | developer | ✓ | hooks: collisionGuard, firstUserBootstrap, appRequest | the plugin adds the collision guard, the first-user bootstrap and the validated app request |
 | signing-at-edge | developer | ✓ | ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc) | the Worker signs with ML-DSA under the Web Crypto flag |
 | rest-rbac-both-ways | both | ✓ | two directions under three tenant roles on every adapter dimension (textbook_rest_rbac) |  |
-| theorems-sealed | both | ✓ | 1253 kernel-accepted theorems | the textbook is the proof |
+| theorems-sealed | both | ✓ | 1263 kernel-accepted theorems | the textbook is the proof |
 
 ## Access from every perspective
 
@@ -55,7 +55,7 @@ The access audit through `audit { access: true }`: public, tenant, operator, cli
 | client:api-key-per-user | client | ✓ | every user may hold an API key; the Payload MCP plugin refuses an anonymous request | the plugin: auth.useAPIKey on users | free | a key is a user's of a licensed tenant | accountability: every write over the app's MCP is a user's |
 | client:pure-tools-no-credential | client | ✓ | 46 tools, every one read-only and idempotent; credential-named arguments: stripe.secret (the Worker passes it at the edge) | none: the tools are pure functions of their arguments | free: a 304 by involution needs no scope at all | BY: the a432 default free to all under attribution | no credential travels through a tool from a client; where the Worker passes one at the edge, a client never holds it |
 | client:advantage-unlimited-no-interaction | client | ✓ | the advantage is computed from the run's counts alone: when every copy is an involution it is unbounded; the metrics tool takes artefacts and nothing else | none: the gate decodes, the involution answers 304, the metric follows | free: no approval, no token, no bound (textbook_advantage_unbounded) | the advantage is what commercial use is billed on, and what non-commercial use gets free | consideration measured by the unit (bill_call), recheckable by anyone |
-| developer:content-address-on-create | developer | ✓ | the entry id is the content address of { kind, from, body }, the sha256 beside it, on create only | entries.beforeValidate | free: a duplicate write lands on the same id | ND: an entry is its content | integrity: the address is the proof |
+| developer:content-address-on-create | developer | ✓ | the entry id is the content address of &#123; kind, from, body &#125;, the sha256 beside it, on create only | entries.beforeValidate | free: a duplicate write lands on the same id | ND: an entry is its content | integrity: the address is the proof |
 | developer:collision-guard | developer | ✓ | an edit names the address it read and is accepted only while the document still folds to it; a collision answers both addresses | pages.beforeChange: collisionGuard | free: folded from the document the hook already holds | ND: no silent overwrite of anyone's edit | integrity of concurrent authorship |
 | developer:app-request-validated | developer | ✓ | an app request is validated as it is typed and refused by the hook when the stream refused it | form-submissions.afterChange: appRequest | free: validated token free | commercial: the app is priced by the catalogue and ordered through the ecommerce plugin | a licence sold is an order with its terms |
 | legal:licence-on-every-answer | legal | ✓ | every tools/call result carries _meta.license; initialize states the terms | the handler: _meta.license on every result | free | CC-BY-NC-ND-4.0: Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (https://qpu.uuidna.com). The a432 harmonic default is offered for free benefit under attribution. Every block carries its address and its SHA-256: a copy that no longer matches them is adapted material, which the NoDerivatives term does not let anyone share. | the licence is the contract every reader accepts by reading; its address is sealed (9ffcda04-5adc-872e-9358-6b831bbd0c0d) |

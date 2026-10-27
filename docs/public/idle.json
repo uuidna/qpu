@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T02:26:49.103Z",
+ "date": "2026-10-27T02:35:29.808Z",
  "input": {
   "doors": [
    {
@@ -1747,7 +1747,7 @@
    },
    {
     "key": "textbook_literal_in_registry",
-    "bytes": 155,
+    "bytes": 566,
     "used": true
    },
    {
@@ -3616,8 +3616,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 22280,
-   "used": 22280,
+   "capacity": 22691,
+   "used": 22691,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

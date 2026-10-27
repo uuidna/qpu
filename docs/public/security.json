@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T01:08:29.931Z",
+ "date": "2026-10-27T02:36:49.852Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -185,7 +185,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1253 kernel-accepted theorems",
+   "evidence": "1263 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -550,13 +550,6 @@
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
-    "where": "docs/public/repository.json",
-    "kind": "local-path",
-    "count": 3,
-    "served": false,
-    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
-   },
-   {
     "where": "qpu.uuidna.com/next-leads.json",
     "kind": "local-path",
     "count": 78,
@@ -626,10 +619,10 @@
    "token": 0,
    "jwt": 0,
    "private-key": 0,
-   "local-path": 1291,
+   "local-path": 1288,
    "private-ip": 1
   },
-  "total": 1800,
+  "total": 1797,
   "served": 9,
   "setAside": 26,
   "clean": false,
@@ -666,13 +659,6 @@
     "id": "leak-local-path-docs-public-receipts-ndjson",
     "source": "docs/public/receipts.ndjson",
     "statement": "270 local-path finding(s) in docs/public/receipts.ndjson: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
-    "status": "open",
-    "reason": "not served yet: remove it at the source before it is"
-   },
-   {
-    "id": "leak-local-path-docs-public-repository-json",
-    "source": "docs/public/repository.json",
-    "statement": "3 local-path finding(s) in docs/public/repository.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "not served yet: remove it at the source before it is"
    },
@@ -741,6 +727,6 @@
    }
   ],
   "theorem": "textbook_leaks_redacted",
-  "says": "1800 finding(s) in 10 text(s), 9 served publicly; values redacted, 26 notation(s) set aside"
+  "says": "1797 finding(s) in 9 text(s), 9 served publicly; values redacted, 26 notation(s) set aside"
  }
 }
