@@ -203,18 +203,7 @@ const planSignature = (digest: string, sign: unknown): SignaturePlan => {
 }
 
 /** What this seal is against a quantum adversary, and what NIST standardised: read at CSRC on 2026-10-25, carried as the standards nist-fips-203/204/205 discovery reads. */
-const POST_QUANTUM = {
-  thisSeal: 'SHA-256 and HMAC-SHA256 are symmetric: Grover\'s search halves their bits, so 256 bits keep 128 against a quantum adversary; no public-key step is taken here, so nothing of this seal falls to Shor',
-  standards: [
-    { fips: 203, name: 'ML-KEM (Module-Lattice-Based Key-Encapsulation Mechanism)', published: '2024-08-13', at: 'https://csrc.nist.gov/pubs/fips/203/final' },
-    { fips: 204, name: 'ML-DSA (Module-Lattice-Based Digital Signature)', published: '2024-08-13', at: 'https://csrc.nist.gov/pubs/fips/204/final' },
-    { fips: 205, name: 'SLH-DSA (Stateless Hash-Based Digital Signature)', published: '2024-08-13', at: 'https://csrc.nist.gov/pubs/fips/205/final' },
-  ],
-  selected: [{ name: 'HQC (key encapsulation)', on: '2025-03-11', report: 'NIST IR 8545', at: 'https://csrc.nist.gov/projects/post-quantum-cryptography' }],
-  workers: { changelog: 'https://developers.cloudflare.com/changelog/post/2026-09-28-webcrypto-modern-algorithms/', read: '2026-10-26', says: 'the Workers Web Crypto API supports ML-KEM-768, ML-KEM-1024, ML-DSA-44, ML-DSA-65 and ML-DSA-87 under the webcrypto_modern_algorithms compatibility flag, with getPublicKey(), SubtleCrypto.supports() and JWKs of kty AKP' },
-  node: { version: 'v26.0.0', measured: '2026-10-26', says: 'crypto.sign/verify with ml-dsa-44/65/87 and slh-dsa-sha2-128s; Web Crypto ML-DSA-65 marked experimental' },
-  here: 'seal { text, sign } plans an ML-DSA signature over the digest (pure); the Worker executes it at the edge with the tenant\'s signing key or an ephemeral one, and the gate verifies the answer at every host with the public key alone; SLH-DSA (FIPS 205) is not in Workers Web Crypto and stays a lead',
-} as const
+const POST_QUANTUM = TABLES.POST_QUANTUM
 const LEDGER = Array.from({ length: 40 }, (_, i) => JSON.stringify({ key: `k${String(i).padStart(2, '0')}`, value: i * i, note: 'a row of the ledger' })).join('\n')
 
 /** Every crypto and certificate API found and measured (2026-10-26), with NIST and CERN: what answers in the open, what a client reads itself (its hosts' live certificates), what refused. */

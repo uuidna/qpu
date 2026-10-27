@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T22:04:12.553Z",
+ "date": "2026-10-27T22:12:28.633Z",
  "literals": {
   "urls": 646,
   "distinctUrls": 318,
@@ -640,7 +640,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 935,
- "lines": 82632,
+ "lines": 82636,
  "findings": 903,
  "fused": 320,
  "reactions": 583,
@@ -4466,7 +4466,7 @@
   {
    "id": "entropy-duplicate-d876a0ce",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/crypto.ts:273, src/quantum/toolboxes/legal.ts:266",
+   "source": "src/quantum/toolboxes/crypto.ts:273, src/quantum/toolboxes/legal.ts:270",
    "statement": "one line of code repeated in more than one file: one place should hold it — const byTheorem: Record<string, { passed: number; failed: number }> = {}",
    "status": "open",
    "tool": "audit",
@@ -4478,7 +4478,7 @@
   {
    "id": "entropy-duplicate-93e28159",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/crypto.ts:292, src/quantum/toolboxes/legal.ts:291",
+   "source": "src/quantum/toolboxes/crypto.ts:292, src/quantum/toolboxes/legal.ts:295",
    "statement": "one line of code repeated in more than one file: one place should hold it — if (op !== 'read') throw new Error(`op ${op} is not plan or read`)",
    "status": "open",
    "tool": "audit",

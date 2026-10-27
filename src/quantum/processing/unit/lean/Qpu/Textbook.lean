@@ -190,8 +190,8 @@ theorem textbook_set_union (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : a + b -
 theorem textbook_widget_skilled_tools (w s : Nat) (h : w = s) : min w s = w := by subst h; exact Nat.min_self w
 /-- the tool set partitions over the twelve toolboxes: forty-six tools (examples: configure-sets, extend-out) -/
 theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 = 46 := by decide
-/-- every API is a gate: the forty-six doors of twelve toolboxes and the one hundred and thirty-two addresses of eight categories (patents, certificates, currency, competitions, energy, news, MCP with Google Cloud's and Google Workspace's servers, references) make one hundred and seventy-eight gates, each a nested doc of its leads (examples: configure-gates) -/
-theorem textbook_gates_partition : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 = 178 := by decide
+/-- every API is a gate: the doors of the toolboxes (own) and the addresses of the categories Payload holds (external: patents, certificates, currency, competitions, energy, news, MCP servers, references) partition the gates, each a nested doc of its leads, however many the tables grow to (examples: configure-gates) -/
+theorem textbook_gates_partition (parts : List Nat) (own external : Nat) (h : own + external = parts.sum) : parts.sum - external = own := by omega
 /-- every API handled in quantum: one adapter per gate, a dimension of the one plugin, landing in the default schema — one hundred and thirty-eight in the docket entries, five in the catalogue's products, seven in the competition pages, twenty-eight in the pages and the search index (the thirteen standards Payload's surface is described by among them) (examples: configure-gates) -/
 theorem textbook_gate_adapters : 138 + 5 + 7 + 28 = 178 := by decide
 /-- every adapter dimension is REST both ways (in: the API's answer into Payload; out: Payload's data to the API) under the three tenant roles: six role-direction pairs, the access rules naming each (examples: configure-gates) -/

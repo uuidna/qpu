@@ -405,7 +405,7 @@ the Google Quantum AI layer: the Willow processor as its spec sheet states it, C
 
 ## Gates
 
-Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 183 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 + 5 = 183) in 21 categories, 205 nested pages, 268 of 298 leads placed; by kind tool 51, open 55, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
+Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 212 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 36 + 68 + 28 + 7 + 2 + 5 = 212) in 21 categories, 234 nested pages, 272 of 309 leads placed; by kind tool 51, open 84, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
 
 | Category | Gates | Leads | Says |
 |---|---:|---:|---|
@@ -424,9 +424,9 @@ Every API is a gate of some sort — a door of this catalogue, an open address, 
 | patents | 7 | 1 | the offices and indexes the patents tool passes |
 | certificates | 8 | 3 | the beacon, the logs, the directory, the vulnerability index and the physics the attest tool passes |
 | currency | 5 | 1 | the rate sources the currency tool harmonises |
-| competitions | 7 | 2 | the rules pages the compete tool follows |
+| competitions | 36 | 4 | the rules pages the compete tool follows |
 | mcp | 68 | 7 | the servers discovery reads, and the servers the registry names beside them: proposed, never called from the tree |
-| references | 28 | 17 | the vocabularies, codes and references the verifier reads |
+| references | 28 | 21 | the vocabularies, codes and references the verifier reads |
 | news | 7 | 3 | the public news APIs wired as adapters of the DOI research: the mentions of every record of precedence, by source |
 | energy | 2 | 0 | the market-price gates the bill's kilowatt-hours are priced against, keyed by the tenant |
 | dependencies | 5 | 0 | every dev dependency of the tree imagined as an MCP door: the step of next that runs it is its tools/call, its gate page carries that step's block rendered by the MCP App, usable in the UI |
