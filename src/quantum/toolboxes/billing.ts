@@ -212,11 +212,11 @@ export const fusionOf = (tool: string, args?: Record<string, unknown>) => { cons
 /** Every gap between the QPU and its prizes is one shape: a kind, a subject, open or cleared, its tokens, its coin line, its sealed snapshot. The
  *  kinds that block a push (manual edits, strict refusals, red steps, prize gaps, dirty code in changed files) and those only listed (waiting over
  *  the one-second bar, dirty prose, Gemini schema compatibility) differ only in this table, never in their path. */
-export const GAP_KINDS = { automated: true, refusal: true, step: true, prize: true, 'dirty-code': true, waiting: false, 'dirty-prose': false, 'gemini-compat': false, idle: false, invisible: false } as const
+export const GAP_KINDS = { automated: true, refusal: true, step: true, prize: true, 'dirty-code': true, leak: true, waiting: false, 'dirty-prose': false, 'gemini-compat': false, idle: false, invisible: false } as const
 /** A penalty is as visible as the action it prices (textbook_penalty_visibility_harmonic): every kind is printed first in a hook's output except
  *  an invisible action's — a task past the one-second budget with no progress event, receipt or docket entry within that second — which is
  *  recorded silently in the docket and counted on request, never printed. */
-const GAP_PRINTED: Readonly<Record<keyof typeof GAP_KINDS, boolean>> = { automated: true, refusal: true, step: true, prize: true, 'dirty-code': true, waiting: true, 'dirty-prose': true, 'gemini-compat': true, idle: true, invisible: false }
+const GAP_PRINTED: Readonly<Record<keyof typeof GAP_KINDS, boolean>> = { automated: true, leak: true, refusal: true, step: true, prize: true, 'dirty-code': true, waiting: true, 'dirty-prose': true, 'gemini-compat': true, idle: true, invisible: false }
 type GapKind = keyof typeof GAP_KINDS
 export const gapKindOf = (rule: string, kind?: string): GapKind => (kind && kind in GAP_KINDS ? (kind as GapKind) : /automated/.test(rule) ? 'automated' : 'refusal')
 /** Time and heat, the only two measures of a task: wall nanoseconds (process.hrtime.bigint) and CPU microseconds, user and system, with the peak

@@ -78,12 +78,15 @@ export const machinePlanOf = (r: MachineRequest, decideOf: Decide) => {
 }
 
 export type MachineRun = { action: string; command: { cmd: string; args: readonly string[] }; status: number | null; stdout: string; stderr: string; ms: number; root: string; home?: string }
-/** A run judged: paths made relative to the tree (the root as ., the home as ~), every leak redacted by its kind, the record a docket entry at its address. */
+/** Paths made relative to the tree (the root as ., the home as ~) and, unless asked not to, every leak redacted by its kind: what any record may hold. */
+export const redact = (text: string, root?: string, home?: string, leaks = true) => {
+  let t = text; if (root) t = t.split(root).join('.'); if (home) t = t.split(home).join('~')
+  if (leaks) for (const p of LEAK_PATTERNS) t = t.replace(p.re, (m) => (p.kind === 'email' && /^[0-9a-f-]{36}@/i.test(m) ? m : `[${p.kind}]`))
+  return t
+}
+/** A run judged: redacted, the record a docket entry at its address. */
 export const machineRecordOf = (run: MachineRun) => {
-  const relative = (s: string) => { let t = s; if (run.root) t = t.split(run.root).join('.'); if (run.home) t = t.split(run.home).join('~'); return t }
-  let output = relative(`${run.stdout}${run.stderr ? `\n${run.stderr}` : ''}`)
-  const found = leaksOf({ output })
-  for (const p of LEAK_PATTERNS) output = output.replace(p.re, (m) => (p.kind === 'email' && /^[0-9a-f-]{36}@/i.test(m) ? m : `[${p.kind}]`))
+  const relative = redact(`${run.stdout}${run.stderr ? `\n${run.stderr}` : ''}`, run.root, run.home, false), found = leaksOf({ output: relative }), output = redact(relative)
   const body = { action: run.action, command: [run.command.cmd, ...run.command.args].join(' '), status: run.status, ms: run.ms, output, leaks: found.byKind }
   const text = JSON.stringify({ kind: 'machine', from: 'local', body })
   const id = uuidOf(text)

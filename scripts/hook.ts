@@ -3,7 +3,7 @@
 // handler, remote by URL with the user agent the step names), an imprint appended beside the receipt, the trailers written on
 // the commit message — exactly as the door answers them, nothing decided here. A strict step that fails ends the hook red.
 import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, statSync, readdirSync, openSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, dirname } from 'node:path'
 import { spawnSync, execSync, spawn } from 'node:child_process'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { GENERATED_FILES, RUN_FILES } from '../src/quantum/toolboxes/repository.ts'
@@ -12,6 +12,8 @@ import { GAP_KINDS, gapKindOf } from '../src/quantum/toolboxes/billing.ts'
 import { createHash } from 'node:crypto'
 import { penalise, clear, correctionOf, recordPrevented, openPenaltiesOf } from './penalties.ts'
 import { mcpOf, readJson, raidRead } from './mcp.ts'
+import { redact } from '../src/quantum/machine.ts'
+import { homedir } from 'node:os'
 
 type Step = { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; detach?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }
 const name = process.argv[2] ?? ''
@@ -75,6 +77,8 @@ for (const s of w.steps) {
 // the involution of thinking: a hand edit of a generated file whose correction the docket already learned (a cleared pre-commit:automated) is
 // corrected before the decision — its antimatter (regenerate, restage: reversible, generated files only) applied and recorded as prevented — so
 // the same thought is corrected, never refused again
+// the hook edits before it decides: every published file redacted (paths relative, each leak by its kind) and staged again
+if (name === 'pre-commit') for (const f of [...new Set([...git(['ls-files', '--', 'docs', 'README.md']).split('\n'), ...readdirSync(dirname(RUN_FILES.receipt)).map((p) => join(dirname(RUN_FILES.receipt), p))])].filter((p) => /\.(md|json|ndjson|txt|xml|html)$/.test(p) && existsSync(p))) { const t = readFileSync(f, 'utf8'), r = redact(t, process.cwd(), homedir()); if (r !== t) { writeFileSync(f, r); if (git(['ls-files', '--', f])) git(['add', '--', f]) } }
 if (name === 'pre-commit' && automated && automated.drifted.length && standing.learned?.includes('pre-commit:automated')) {
   const c = correctionOf({ rule: 'pre-commit:automated', bytes: automated.bytes, committer: git(['config', 'user.name']) || null, evidence: { key: `pre-commit:automated::${automated.drifted.join(',')}`, workflow: name, violated: ['automated'], drifted: automated.drifted } }, standing.learned)
   if (c && c.antimatter.needs === 'auto') {

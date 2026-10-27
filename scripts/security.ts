@@ -7,7 +7,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { readJson, getOf, publishOf } from './mcp.ts'
+import { readJson, getOf, publishOf, mcpOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const HOSTS = (process.env.QPU_E2E_HOSTS ?? 'https://qpu.uuidna.com,https://qpu.psg.bg,https://qpu.ceci.workers.dev').split(',').map((h) => h.trim()).filter(Boolean)
@@ -43,7 +43,10 @@ const main = async () => {
   const published = Object.fromEntries(readdirSync(pub).filter((f) => /\.(json|ndjson|md|txt|xml|webmanifest|html)$/.test(f)).map((f) => [`docs/public/${f}`, readFileSync(join(pub, f), 'utf8')]))
   const live: Record<string, string> = {}
   for (const origin of HOSTS) for (const f of ['next-leads.json', 'receipts.ndjson', 'receipt.json', 'security.json']) { try { const r = await getOf(`${origin}/${f}`); if (r.ok) live[`${new URL(origin).host}/${f}`] = await r.text() } catch { /* unreached: measured next run */ } }
-  const leaks = call({ leaks: { texts: { ...published, ...live }, served: Object.keys(live) } })
+  // and every document Payload holds, read through its MCP as a client reads it: a page or an entry is served
+  const app = mcpOf(), held: Record<string, string> = {}
+  for (const find of ['findPages', 'findEntries']) for (const d of ((await app.findAll(find, { draft: true, depth: 0 })).docs ?? []) as { id: string }[]) held[`payload/${find.slice(4).toLowerCase()}/${d.id}`] = JSON.stringify(d)
+  const leaks = call({ leaks: { texts: { ...published, ...live, ...held }, served: [...Object.keys(live), ...Object.keys(held)] } })
   console.log(`leaks: ${leaks.says}`)
   // the access audit from every perspective: the generated collections, hooks and scopes, every cell naming its licence clause and its legal fact
   const accessAudit = call({ access: true })

@@ -8,7 +8,6 @@ import { join } from 'node:path'
 import { LICENSE } from '../src/quantum/license.ts'
 import { execFileSync } from 'node:child_process'
 import { GOOGLE_HOST } from '../src/quantum/discovery.ts'
-import { uuidOf } from '../src/quantum/blocks.ts'
 export const MCP_URL = 'http://localhost:3000/api/mcp'
 // else the keychain item qpu-app-key, read once into this process and its children, never printed (the probe probe-app-key names how to store it)
 if (!process.env.QPU_APP_KEY) try { const k = execFileSync('security', ['find-generic-password', '-s', 'qpu-app-key', '-w'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 }).trim(); if (k) process.env.QPU_APP_KEY = k } catch { /* no keychain item */ }
@@ -22,8 +21,8 @@ const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
 /** A Google host asked of the qpu-google-call job through the Payload MCP, never fetched here: the call is an entry addressed by its content (one
  *  a day), the job's answer the entry naming it, read back; without the app or its key the answer says so (textbook_google_one_door) */
 export const askGoogle = async (url: string, httpMethod = 'GET', body: unknown = null) => {
-  const m = mcpOf(), asked = { kind: 'call', from: 'qpu-google-call', body: { url, httpMethod, body, at: new Date().toISOString().slice(0, 10) } }, made = await m.call('createEntries', asked)
-  const a = (m.docsOf((await m.call('findEntries', { where: JSON.stringify({ from: { equals: 'qpu-google-call' }, 'body.request': { equals: uuidOf(JSON.stringify(asked)) } }), limit: 1 })).text ?? '')[0] as { body?: { status?: number; answer?: string } } | undefined)?.body
+  const m = mcpOf(), asked = { kind: 'call', from: 'qpu-google-call', body: { url, httpMethod, body, at: new Date().toISOString().slice(0, 10) } }, made = await m.call('createEntries', asked), id = (m.docsOf(made.text ?? '')[0] as { id?: string } | undefined)?.id
+  const a = (m.docsOf((await m.call('findEntries', { where: JSON.stringify({ from: { equals: 'qpu-google-call' }, 'body.request': { equals: id } }), limit: 1 })).text ?? '')[0] as { body?: { status?: number; answer?: string } } | undefined)?.body
   return { status: a?.status ?? 0, text: a?.answer ?? `the qpu-google-call job did not answer (${made.error ?? 'no answer entry'})` }
 }
 /** A request with the named user agent and a timeout: the one fetcher of the public sources, a Google host through askGoogle */
