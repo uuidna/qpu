@@ -35,7 +35,7 @@ for (const f of files) {
     if (uses <= 1) leads.push({ id: `unproven-${f.replace(/\.ts$/, '')}-${name}`, source: `src/quantum/${f}`, statement: `export ${name} in ${f} is referenced by nothing: no test, tool, example, page or module`, status: 'open', reason: 'not proven by use; harden with a test or soften by removal' })
   }
   const stem = f.replace(/\.ts$/, '')
-  const imported = files.some((g) => g !== f && new RegExp(`from '\\./${stem}\\.(js|ts)'`).test(text[g]!)) || new RegExp(`from '(?:\\.\\./)+(?:src/quantum/)?${stem}\\.(js|ts)'`).test(all)
+  const imported = files.some((g) => g !== f && new RegExp(`from '\\./${stem}\\.(js|ts)'`).test(text[g]!)) || new RegExp(`from '(?:(?:\\.\\.?/)+(?:src/)?(?:quantum/)?|@uuidna/qpu/)${stem}(?:\\.(js|ts))?'`).test(all)
   if (!imported && !f.endsWith('.test.ts') && f !== 'mcp.ts') leads.push({ id: `orphan-${stem}`, source: `src/quantum/${f}`, statement: `${f} is imported by nothing`, status: 'open', reason: 'an orphan is unproven; fold it in or remove it' })
 }
 
@@ -74,7 +74,7 @@ const receipt = existsSync(join(ROOT, 'docs', 'public', 'receipt.json')) ? JSON.
 const step = (name: string) => receipt.steps.filter((s: { name: string }) => s.name === name).at(-1)
 const tests = step('test')?.counts ?? {}
 const lean = step('lean')?.counts ?? {}
-const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: unknown[] } }).result.tools.length
+const toolNames = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string }[] } }).result.tools, tools = toolNames.length
 const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/toolchains/leanprover--lean4---v4.33.0/bin/lake`, 'lake'].find((p) => p === 'lake' || existsSync(p))!
 // The theorem ledger: every kernel-accepted theorem of the Qpu modules with its statement and axioms, one JSON line each
 // (scripts/theorems.lean), written as build output and as a page; the counts below are taken from it, never from prose.
@@ -165,7 +165,6 @@ type Edge = { from: string; to: string; rel: string }
 const nodes: Node[] = []
 const edges: Edge[] = []
 const both = (a: string, b: string, rel: string, back: string) => { edges.push({ from: a, to: b, rel }); edges.push({ from: b, to: a, rel: back }) }
-const toolNames = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string }[] } }).result.tools
 for (const t of toolNames) nodes.push({ id: `tool:${t.name}`, kind: 'tool', label: t.description.slice(0, 80) })
 for (const v of VERIFIERS) nodes.push({ id: `verifier:${v.id}`, kind: 'verifier', label: v.name })
 for (const e of EXAMPLES) {
