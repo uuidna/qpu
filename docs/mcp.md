@@ -228,6 +228,14 @@ Cheap verification of one UUID
 {
   "type": "object",
   "properties": {
+    "theorem": {
+      "type": "string",
+      "description": "a theorem key"
+    },
+    "call": {
+      "type": "object",
+      "description": "a call { tool, arguments }"
+    },
     "witnesses": {
       "description": "the fourteen witnesses around a UUID, the faces of a cuboctahedron"
     },
