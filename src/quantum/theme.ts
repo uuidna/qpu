@@ -5,36 +5,35 @@
 
 import { GLAGOLITIC } from './i18n.js'
 /** the Glagolitic numeral of a seed (1..9) and of its reflection (10 − seed, 10 among them): the rosetta of the rays, one signal in two scripts */
-export const GLAGOLITIC_OF: Readonly<Record<number, string>> = Object.fromEntries(Object.entries(GLAGOLITIC).filter(([, v]) => v <= 10).map(([k, v]) => [v, k]))
+const GLAGOLITIC_OF: Readonly<Record<number, string>> = Object.fromEntries(Object.entries(GLAGOLITIC).filter(([, v]) => v <= 10).map(([k, v]) => [v, k]))
 export const KEY = 432
 /** The scannable stream: one frame per character of a UUID, 36 frames of 108 ms (the third harmonic's period): 36 × 108 = 3888 = 432 × 9, the vortex
  *  period (textbook_scan_stream); a digit a hue (sixteen, 22.5° apart), a dash a black frame; a single frame links nothing, a stream reads the address. */
 export const SCAN = { frameMs: 108, frames: 36, periodMs: 36 * 108, hueStep: 360 / 16, theorem: 'textbook_scan_stream' } as const
 export const framesOf = (uuid: string) => [...uuid.toLowerCase()].map((char, i) => { const dash = char === '-'; const d = dash ? -1 : parseInt(char, 16); return { i, char, kind: (dash ? 'dash' : 'digit') as 'dash' | 'digit', hue: dash ? null : d * SCAN.hueStep, glyph: dash ? '·' : (GLAGOLITIC_OF[d] ?? char), angle: i * (360 / SCAN.frames), start: i * SCAN.frameMs } })
-export const framesGradientOf = (uuid: string): string => `linear-gradient(90deg, ${framesOf(uuid).map((f, i) => `${f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`} ${((i / SCAN.frames) * 100).toFixed(3)}% ${(((i + 1) / SCAN.frames) * 100).toFixed(3)}%`).join(', ')})`
+const framesGradientOf = (uuid: string): string => `linear-gradient(90deg, ${framesOf(uuid).map((f, i) => `${f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`} ${((i / SCAN.frames) * 100).toFixed(3)}% ${(((i + 1) / SCAN.frames) * 100).toFixed(3)}%`).join(', ')})`
 /** The harmonic series of the key downward by halving, each read as a hue in degrees. */
 export const HARMONICS = [432, 216, 108, 54, 27] as const
 export const hueOf = (hz: number): number => hz % 360
 
-export type Cmyk = { c: number; m: number; y: number; k: number }
+type Cmyk = { c: number; m: number; y: number; k: number }
 /** The UUID's middle part (time_mid, time_hi_and_version, clock_seq) as four CMYK channels from three hex digits each. */
 export const cmykOfUuid = (uuid: string): Cmyk => {
   const middle = uuid.replace(/-/g, '').slice(8, 20)
   const ch = (i: number) => parseInt(middle.slice(i * 3, i * 3 + 3), 16) / 0xfff
   return { c: ch(0), m: ch(1), y: ch(2), k: ch(3) }
 }
+const cmykOfRgb = ([r, g, b]: [number, number, number]): Cmyk => { const k = 1 - Math.max(r, g, b) / 255; const f = (v: number) => (k === 1 ? 0 : Math.round(((1 - v / 255 - k) / (1 - k)) * 100) / 100); return { c: f(r), m: f(g), y: f(b), k: Math.round(k * 100) / 100 } }
+const rgbOfHsl = (h: number, s: number, l: number): [number, number, number] => { const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2; const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x]; return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)] }
 /** When coins fuse to coils the colour is green, the heart chakra's (the fourth of seven): the coin's a432 hue (432 mod 360 = 72) advanced by a
  *  ninth of the key (432 / 9 = 48) is 120, green (textbook_coil_green); its CMYK is cyan and yellow full, no magenta, no black — the CSS variables
  *  --qpu-coin and --qpu-coil carry both hues, the block rule turns green under data-coil. */
-export const COIL_HUE = hueOf(KEY) + KEY / 9
-export const cmykOfRgb = ([r, g, b]: [number, number, number]): Cmyk => { const k = 1 - Math.max(r, g, b) / 255; const f = (v: number) => (k === 1 ? 0 : Math.round(((1 - v / 255 - k) / (1 - k)) * 100) / 100); return { c: f(r), m: f(g), y: f(b), k: Math.round(k * 100) / 100 } }
-export const rgbOfHsl = (h: number, s: number, l: number): [number, number, number] => { const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2; const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x]; return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)] }
 export const coilColourOf = (key: number = KEY) => {
   const coin = hueOf(key), coil = coin + key / 9
   const rgb = rgbOfHsl(coil, 1, 0.5), cmyk = cmykOfRgb(rgb)
   return { coin: { hue: coin, css: `hsl(${coin} 62% 44%)`, says: 'the a432 hue: the free, harmonic side' }, coil: { hue: coil, css: `hsl(${coil} 62% 44%)`, rgb, cmyk, cmykCss: `device-cmyk(${cmyk.c} ${cmyk.m} ${cmyk.y} ${cmyk.k})`, chakra: { index: 4, of: 7, name: 'heart' }, says: 'green: the coin\'s hue advanced by a ninth of the key, the heart chakra, cyan and yellow full in CMYK' }, theorem: 'textbook_coil_green', relation: `${key} % 360 + ${key} / 9 = ${coil}` }
 }
-export const rgbOfCmyk = ({ c, m, y, k }: Cmyk): [number, number, number] => [Math.round(255 * (1 - c) * (1 - k)), Math.round(255 * (1 - m) * (1 - k)), Math.round(255 * (1 - y) * (1 - k))]
+const rgbOfCmyk = ({ c, m, y, k }: Cmyk): [number, number, number] => [Math.round(255 * (1 - c) * (1 - k)), Math.round(255 * (1 - m) * (1 - k)), Math.round(255 * (1 - y) * (1 - k))]
 export const accentOfUuid = (uuid: string): string => { const [r, g, b] = rgbOfCmyk(cmykOfUuid(uuid)); return `rgb(${r} ${g} ${b})` }
 
 /** The whole visual state of a block as custom properties computed from its UUID alone: the accent from the middle part as

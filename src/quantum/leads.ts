@@ -24,7 +24,7 @@ export const cleanupSubjectsOf = (l: Lead): { kind: 'branches' | 'paths'; names:
 const FETCHED = '2026-10-25'
 
 /** The leads followed by hand: each read from its page, PDF or repository, with the tool that serves it. */
-export const HAND_LEADS: readonly Lead[] = [
+const HAND_LEADS: readonly Lead[] = [
   { id: 'willow-spec', source: 'quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf', statement: 'Willow: 105 qubits, the grid, two chips with their figures', status: 'served', tool: 'processor' },
   { id: 'roadmap', source: 'services.google.com PDF, roadmap figure; quantumai.google/roadmap', statement: 'Six milestones, physical-qubit scale, Milestone 3 in progress', status: 'served', tool: 'roadmap' },
   { id: 'software', source: 'quantumai.google/software', statement: 'Cirq, qsim, Qualtran, OpenFermion, TensorFlow Quantum', status: 'served', tool: 'software' },
@@ -192,7 +192,7 @@ export const sitemapLeadsOf = (urls: readonly { loc: string; lastmod?: string }[
 
 /** Every relation of the Clay register as a lead: served by the clay tool, its integers facts for the wave (OEIS, Wikipedia),
  * its statement reflected by the imagination, its value read by the unit's sequence door at readiness. */
-export const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: `src/quantum/processing/unit/lean/Qpu/Clay.lean ${r.name}`, statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
+const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: `src/quantum/processing/unit/lean/Qpu/Clay.lean ${r.name}`, statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
 
 export const LEADS: readonly Lead[] = [
   // Every perspective on the QPU, as an implemented lead: served by the tool that is that perspective, or honest about what it owes.

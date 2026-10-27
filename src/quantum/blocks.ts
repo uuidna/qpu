@@ -3,8 +3,8 @@
 // shadcn-based app, or any adaptor shows the same thing. Pure functions; the id is a deterministic FNV-1a hash of the
 // call, so equal calls give equal blocks.
 
-export type OpenGraph = { 'og:title': string; 'og:description': string; 'og:type': 'website'; 'og:url': string; 'og:site_name': string; 'article:author': string; license: string }
-export type RegistryItem = { $schema: 'https://ui.shadcn.com/schema/registry-item.json'; name: string; type: 'registry:block'; title: string; description: string; registryDependencies: string[]; author: string; license: string; files: { path: string; type: 'registry:block'; content: string }[]; meta: { tool: string; arguments: Record<string, unknown>; id: string } }
+type OpenGraph = { 'og:title': string; 'og:description': string; 'og:type': 'website'; 'og:url': string; 'og:site_name': string; 'article:author': string; license: string }
+type RegistryItem = { $schema: 'https://ui.shadcn.com/schema/registry-item.json'; name: string; type: 'registry:block'; title: string; description: string; registryDependencies: string[]; author: string; license: string; files: { path: string; type: 'registry:block'; content: string }[]; meta: { tool: string; arguments: Record<string, unknown>; id: string } }
 import { KEY, accentOfUuid, cmykOfUuid, hueOf, wrapOf } from './theme.js'
 import { LICENSE, attributionHtml } from './license.js'
 
@@ -28,7 +28,7 @@ export const foldOf = (text: string): string => hexOf(foldFrom(OFFSET, text))
 const versionOf = (digits: string): string => { const r = [...digits].reduce((m, d, i) => (i === 12 ? m : (m * 16 + parseInt(d, 16)) % 91), 0); return (1 + ((r ** 7) % 91) % 8).toString(16) }
 const dashedOf = (h: string): string => `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`
 /** 32 hex digits stamped and grouped 8-4-4-4-12: the version nibble (position 12) is DECIDED by the other 31. O(1). */
-export const stampOf = (digits: string): string => dashedOf(`${digits.slice(0, 12)}${versionOf(digits)}${digits.slice(13)}`)
+const stampOf = (digits: string): string => dashedOf(`${digits.slice(0, 12)}${versionOf(digits)}${digits.slice(13)}`)
 /** The unit's content UUID, ported one for one from uuidna's shapeUuidOf: two folds, of the text and of the text marked,
  *  laid out 12+1+3 | variant | 3+12 as 8-4-4-4-12, the variant nibble from the low fold (8..b), and the version nibble
  *  DECIDED by the content: 1 + (rest^rays mod C(faces, coins)) mod mintOf(n) = 1 + (rest^7 mod 91) mod 8, so a tampered

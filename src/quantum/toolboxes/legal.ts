@@ -132,7 +132,7 @@ export const planOf = (claims: readonly Claim[], discovery: Pick<Discovery, 'doo
   return { calls, agents: chosen, by: agents?.length ? 'operator' : 'free-by-default', absent, operatorAgents: [{ id: 'claude-api', endpoint: CLAUDE_API.messages, model: 'claude-opus-5-5', key: 'ANTHROPIC_API_KEY[_<TENANT>]', version: '2023-06-01', chosen: !!agents?.includes('claude-api'), note: 'an operator agent: it joins the audit only when the operator names it (agents: ["claude-api"]) and the tenant\'s key is in the client\'s request; the free doors are the default and are never overridden' }] }
 }
 
-export type Finding = { claim: string; door: string; verdict: string | null; clean: boolean | null; violations: number; violationKinds: string[]; note: string; receipt: string | null; refusal: string | null }
+type Finding = { claim: string; door: string; verdict: string | null; clean: boolean | null; violations: number; violationKinds: string[]; note: string; receipt: string | null; refusal: string | null }
 /** The answers read: verdicts per claim, drift between the unit's facts and the tree's licence, security findings, due process gaps. */
 export const auditOf = (claims: readonly Claim[], answers: readonly Answer[], security: readonly { id: string; passed: boolean; evidence: string }[]) => {
   const findings: Finding[] = []

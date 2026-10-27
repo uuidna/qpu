@@ -3,7 +3,7 @@
 // the relation is stated here as a Lean theorem the kernel checks (gen-docs writes Qpu/Textbook.lean from this table before
 // Lean builds), and the example names its theorem: quality is proven by theorems, the examples are the textbook, respected.
 import { PRECEDENCE } from './license.js'
-export type TextbookTheorem = { key: string; lean: string; says: string; examples: readonly string[] }
+type TextbookTheorem = { key: string; lean: string; says: string; examples: readonly string[] }
 import { LITERAL_REGISTRIES, LITERAL_ROOTS } from './audit.js'
 import { SET_FAMILIES, SET_RADICES, SET_SPACE } from './institutions.js'
 export const TEXTBOOK_THEOREMS: readonly TextbookTheorem[] = [

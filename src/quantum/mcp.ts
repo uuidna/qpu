@@ -695,8 +695,8 @@ const auditNow = () => { if (auditing) return null; auditing = true; try { retur
  *  textbook theorem with its Lean text and the examples it backs, the generated lemmas counted, the kernel's total; the axioms per theorem stand in
  *  /theorems.ndjson, written by the lean step. No version hides anything Lean: the audit fails when this serves less than the kernel accepts
  *  (textbook_lean_served_whole). */
-export const LEAN_RESOURCE = 'lean://qpu/theorems'
-export const leanLedgerOf = () => {
+const LEAN_RESOURCE = 'lean://qpu/theorems'
+const leanLedgerOf = () => {
   const modules: Record<string, number> = {}; for (const t of THEOREMS) modules[t.module] = (modules[t.module] ?? 0) + 1
   return { kernel: KERNEL_THEOREMS, handWritten: THEOREMS.length, generated: GENERATED_LEMMAS, whole: THEOREMS.length + GENERATED_LEMMAS === KERNEL_THEOREMS, modules, theorems: THEOREMS, textbook: TEXTBOOK_THEOREMS.map((t) => ({ key: t.key, lean: t.lean, says: t.says, examples: t.examples })), axioms: 'per theorem in /theorems.ndjson (the lean step\'s collectAxioms sweep); the census in the README', sources: 'src/quantum/processing/unit/lean/Qpu/*.lean, in every release', says: 'everything the kernel accepts, served whole by this version over MCP and in the textbook view: nothing Lean is hidden' }
 }
@@ -957,7 +957,7 @@ const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q
 
 /** Answer one JSON-RPC message: initialize, tools/list, or tools/call. Anything else is method not found. */
 /** A batch: a JSON-RPC array is answered as one array, in order — the batch action of every tool, one request. */
-export const handleBatch = (messages: readonly Rpc[]): Reply[] => messages.map((m) => handle(m))
+const handleBatch = (messages: readonly Rpc[]): Reply[] => messages.map((m) => handle(m))
 /** One door for every client written once: a tool called by name, its structured answer returned or its error thrown — the tools/call
  *  envelope the scripts wrote out each for itself (recognised as a shape by the entropy cleaner). */
 export const toolCallerOf = (name: string) => (args: Record<string, unknown> = {}): any => { const r = callOf(name, args); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }

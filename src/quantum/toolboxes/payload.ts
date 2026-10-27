@@ -29,8 +29,8 @@ import { schemasOf, type PayloadCollectionInput } from './payload-schemas.js'
 import { portOf, portsOf } from '../port.js'
 import { workspaceOf } from '../workspace.js'
 
-export type LexicalDoc = { root: { type: 'root'; version: 1; direction: 'ltr'; format: ''; indent: 0; children: unknown[] } }
-export type PayloadDoc = { id: string; lexical: LexicalDoc; nestedDocs: { parent: string | null; breadcrumbs: { doc: string; url: string; label: string }[] }; seo: { title: string; description: string; image: string | null }; jsonLd: unknown; license: string }
+type LexicalDoc = { root: { type: 'root'; version: 1; direction: 'ltr'; format: ''; indent: 0; children: unknown[] } }
+type PayloadDoc = { id: string; lexical: LexicalDoc; nestedDocs: { parent: string | null; breadcrumbs: { doc: string; url: string; label: string }[] }; seo: { title: string; description: string; image: string | null }; jsonLd: unknown; license: string }
 
 /** A result as the document Payload's plugins would hold: one lexical block of UUID logic, nested by prev, described for SEO. */
 export const payloadDocOf = (p: { uuid: string; tool: string; arguments: Record<string, unknown>; description: string; openGraph?: Record<string, string>; html?: string; prev?: string | null; chain?: string[]; origin?: string }): PayloadDoc => {
@@ -60,7 +60,7 @@ export const payloadDocOf = (p: { uuid: string; tool: string; arguments: Record<
  *  the environment names by the bindings and adapters the stack knows, the variant by the catalogue; the host verified by a request the client
  *  sends itself (the host answers or not) and this answer from the Worker's /mcp, which needs no key. The Form block streams the values on
  *  every change and renders each verdict before the submit; the submission hook validates once more and refuses what the stream refused. */
-export const appValidationOf = (v: Record<string, unknown>) => {
+const appValidationOf = (v: Record<string, unknown>) => {
   const name = String(v.name ?? '').trim(); const host = String(v.host ?? '').trim().toLowerCase(); const env = String(Array.isArray(v.env) ? v.env.join(',') : v.env ?? '').split(/[,\s]+/).filter(Boolean); const variant = String(v.variant ?? 'yearly')
   const known = new Set([...BINDINGS.flatMap((b) => b.names.map((n) => n.replace(/_<TENANT>$/, ''))), ...(Object.values(ADAPTERS).flat() as unknown[]).filter((a): a is { needs: string[] } => typeof a === 'object' && a !== null && 'needs' in a).flatMap((a) => a.needs.map((n) => n.split(' ')[0]!))])
   const tld = host.split('.').pop() ?? ''
@@ -74,8 +74,8 @@ export const appValidationOf = (v: Record<string, unknown>) => {
   return { fields, ok, online: { tokenFree: true, requests: fields.host.ok ? [{ id: `host:${host}`, method: 'HEAD', url: `https://${host}/`, verifier: 'the host answers (any status, even opaque): it exists to become the first tenant at deploy; sent by the client, no token' }] : [], mcp: 'POST /mcp tools/call payload { app: { validate } }: this answer, from the Worker, free of any key' }, streamed: 'the Form block sends the values on every change (validate.ts, debounced) and renders each field\'s verdict before the submit; the submission hook validates once more and refuses what the stream refused' }
 }
 /** The form a user submits to request an app: the form-builder plugin's own document, nothing added to the schema. */
-export const appRequestFormOf = () => ({ title: 'Request an app', submitButtonLabel: 'Request the app', confirmationType: 'message', confirmationMessage: lx.doc([lx.paragraph([lx.text('Your app is being generated: its bundle appears in Media (every file with its address), the licence is a product at the checkout.')])]), fields: [{ blockType: 'text', name: 'name', label: 'App name', required: true, width: 100 }, { blockType: 'text', name: 'host', label: 'Host (the first tenant at deploy)', required: true, width: 100 }, { blockType: 'text', name: 'env', label: 'Environment variable names (D1, R2, RESEND_API_KEY, DATABASE_URI, ...; values never travel)', required: false, width: 100 }, { blockType: 'select', name: 'variant', label: 'Licence', required: true, defaultValue: 'yearly', options: CATALOGUE.filter((v) => v.product === 'qpu-domain').map((v) => ({ label: `${v.variant}: ${v.description}`, value: v.variant })) }] })
-export const appOf = (ctx: Context, r: { name: string; host: string; plugins?: readonly string[]; env?: readonly string[]; variant?: string }) => {
+const appRequestFormOf = () => ({ title: 'Request an app', submitButtonLabel: 'Request the app', confirmationType: 'message', confirmationMessage: lx.doc([lx.paragraph([lx.text('Your app is being generated: its bundle appears in Media (every file with its address), the licence is a product at the checkout.')])]), fields: [{ blockType: 'text', name: 'name', label: 'App name', required: true, width: 100 }, { blockType: 'text', name: 'host', label: 'Host (the first tenant at deploy)', required: true, width: 100 }, { blockType: 'text', name: 'env', label: 'Environment variable names (D1, R2, RESEND_API_KEY, DATABASE_URI, ...; values never travel)', required: false, width: 100 }, { blockType: 'select', name: 'variant', label: 'Licence', required: true, defaultValue: 'yearly', options: CATALOGUE.filter((v) => v.product === 'qpu-domain').map((v) => ({ label: `${v.variant}: ${v.description}`, value: v.variant })) }] })
+const appOf = (ctx: Context, r: { name: string; host: string; plugins?: readonly string[]; env?: readonly string[]; variant?: string }) => {
   if ((r as { form?: boolean }).form) return { form: appRequestFormOf(), says: 'the form-builder plugin\'s form a user submits to request an app; the seed creates it, the submission\'s afterChange hook (appRequest) generates the app' }
   if (typeof r.name !== 'string' || !r.name || typeof r.host !== 'string' || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(r.host)) throw new Error('an app request names the app and its host (the first tenant at deploy)')
   const tenant = r.host.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -193,7 +193,7 @@ const payload = toolOf('payload', {
 })
 
 /** Payload's default plugins, the ones MCP configures; no custom collection: the one collection is the plugins' own pages. */
-export const PAYLOAD_PLUGINS: readonly { name: string; pkg: string; options: Record<string, unknown> }[] = [
+const PAYLOAD_PLUGINS: readonly { name: string; pkg: string; options: Record<string, unknown> }[] = [
   { name: 'lexical', pkg: '@payloadcms/richtext-lexical', options: { features: ['BlocksFeature'], blocks: ['qpu'], blockFields: ['uuid', 'handle', 'program', 'tail', 'tool', 'arguments', 'prev', 'next'] } },
   { name: 'nested-docs', pkg: '@payloadcms/plugin-nested-docs', options: { collections: ['pages'], generateLabel: 'the block\'s tool', generateURL: '/<uuid>' } },
   { name: 'seo', pkg: '@payloadcms/plugin-seo', options: { collections: ['pages'], uploadsCollection: null, generateTitle: 'og:title of the block', generateDescription: 'og:description of the block', generateImage: 'og:image of the block' } },
@@ -209,9 +209,9 @@ export const PAYLOAD_PLUGINS: readonly { name: string; pkg: string; options: Rec
  *  (browser), the registry names and no tool calls (proposed), or a door of this catalogue (tool). Organised as nested docs — Gates ›
  *  category › gate, three deep — each doc is a gate of lexical leads: its body lists the leads whose source passes through it, and its one
  *  block answers them live (leads { ids }). The tree is what the nested-docs plugin computes from parent: breadcrumbs, URLs, nothing custom. */
-export type GateKind = 'open' | 'keyed' | 'browser' | 'proposed' | 'tool'
+type GateKind = 'open' | 'keyed' | 'browser' | 'proposed' | 'tool'
 export type Gate = { id: string; category: string; name: string; url: string; host: string; kind: GateKind; by: string; measured: string | null; leads: string[] }
-export const GATE_CATEGORIES: readonly { id: string; name: string; says: string }[] = [
+const GATE_CATEGORIES: readonly { id: string; name: string; says: string }[] = [
   { id: 'patents', name: 'Patent gates', says: 'the offices and indexes the patents tool passes' },
   { id: 'certificates', name: 'Certificate and crypto gates', says: 'the beacon, the logs, the directory, the vulnerability index and the physics the attest tool passes' },
   { id: 'currency', name: 'Currency gates', says: 'the rate sources the currency tool harmonises' },
@@ -225,7 +225,7 @@ export const GATE_CATEGORIES: readonly { id: string; name: string; says: string 
 const escapeRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const gateHostOf = (url: string): string => { try { return new URL(url).host.replace(/^www\./, '') } catch { return url.replace(/^[a-z]+:\/\//, '').split(/[/:]/)[0] ?? url } }
 const gatePathOf = (url: string): string => { try { const u = new URL(url); return `${u.host.replace(/^www\./, '')}${u.pathname.replace(/\/$/, '')}` } catch { return url } }
-export const gateSlugOf = (id: string) => uuidOf(`gate:${id}`)
+const gateSlugOf = (id: string) => uuidOf(`gate:${id}`)
 type RawGate = Omit<Gate, 'leads'> & { match?: string }
 /** Hosts many unrelated addresses share: a gate on one of them is matched by its path, never by the host alone. */
 const SHARED_HOSTS: readonly string[] = ['github.com', 'api.github.com', 'raw.githubusercontent.com', 'cdn.jsdelivr.net', 'cloudflare.com', 'vercel.com']
@@ -239,7 +239,7 @@ const passesOf = (leads: readonly Lead[], g: RawGate): string[] => {
 /** Every API handled in quantum: each gate's adapter is a dimension of the one Payload plugin over the default schema — where its answers land
  *  (the docket entries by kind, the gate pages, the catalogue's prices, the MCP doors), the step of next that keeps them fresh, the fields the
  *  entry carries, and the shadcn combination its address picks (styled from itself). No plugin per API: one plugin, every API a dimension. */
-export const gateAdapterOf = (g: { id: string; category: string; kind: GateKind; by: string }) => {
+const gateAdapterOf = (g: { id: string; category: string; kind: GateKind; by: string }) => {
   const slug = gateSlugOf(g.id)
   const p = presentationOf(slug)
   // the configs each dimension streams, as UUIDs (the same addresses the sets kind gives config elements): queryable, sortable, executable through the core
@@ -260,7 +260,7 @@ export const gateAdapterOf = (g: { id: string; category: string; kind: GateKind;
   return { plugin: 'qpuPlugin', dimension: g.id, kind: g.kind, lands: l.lands, hook: l.hook, fields: l.fields, rest, stream, ui: { item: p.parts[0]!.item, variant: p.parts[0]!.variant, style: p.style }, says: 'a dimension of the one plugin over the default schema: nothing added, the API\'s answers land where Payload already holds them, presented by the item its address picks' }
 }
 /** Every dev dependency of the tree as an MCP door usable in the UI: the step of next that runs it is its tool, its gate page carries that step's block rendered by the MCP App. */
-export const DEV_DEPENDENCY_ROLES: Readonly<Record<string, { step: string; does: string }>> = {
+const DEV_DEPENDENCY_ROLES: Readonly<Record<string, { step: string; does: string }>> = {
   typescript: { step: 'typecheck', does: 'the type check of every module (tsc --noEmit): the step typecheck of next' },
   tsx: { step: 'next', does: 'the TypeScript loader every client script of next runs under' },
   vitepress: { step: 'docs:build', does: 'the site built from the pages: the step docs:build of next' },
@@ -268,11 +268,11 @@ export const DEV_DEPENDENCY_ROLES: Readonly<Record<string, { step: string; does:
   '@types/node': { step: 'typecheck', does: 'the Node types the scripts compile against' },
 }
 /** The energy sector's gates: the market prices the bill's kilowatt-hours are priced against, keyed by the tenant; proposed, never called from the tree. */
-export const ENERGY_APIS: readonly { id: string; name: string; url: string; key: string }[] = [
+const ENERGY_APIS: readonly { id: string; name: string; url: string; key: string }[] = [
   { id: 'entsoe', name: 'ENTSO-E transparency platform: day-ahead prices by bidding zone', url: 'https://web-api.tp.entsoe.eu/api', key: 'ENTSOE_API_TOKEN' },
   { id: 'eia', name: 'EIA open data: electricity retail prices by state', url: 'https://api.eia.gov/v2/electricity/retail-sales/data/', key: 'EIA_API_KEY' },
 ]
-export const gatesOf = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}) => {
+const gatesOf = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}) => {
   const tools = toolsOf(ctx)
   const external: RawGate[] = [
     // every dev dependency a gate: a door the step of next passes, usable in the UI through its gate page's block
@@ -321,15 +321,15 @@ export const qpuFieldsOf = (uuid: string, tool: string, args: Record<string, unk
   const ch = channelOf(uuid)
   return { blockType: 'qpu' as const, uuid, tool, arguments: args, theorem, handle: ch.handle, program: ch.program.join(''), tail: ch.tail, next: uuidFromParts(ch.handle, [...ch.program.slice(1), ch.program[0]!], ch.tail), license: LICENSE.spdx }
 }
-export type QpuNode = { type: 'block'; version: 2; format: ''; fields: ReturnType<typeof qpuFieldsOf> & { id: string; blockName: string } & Record<string, unknown> }
-export const qpuNodeOf = (uuid: string, tool: string, args: Record<string, unknown>, theorem: string | null = null, extra: Record<string, unknown> = {}): QpuNode => ({ type: 'block', version: 2, format: '', fields: { id: uuid, blockName: tool, ...qpuFieldsOf(uuid, tool, args, theorem), ...extra } })
+type QpuNode = { type: 'block'; version: 2; format: ''; fields: ReturnType<typeof qpuFieldsOf> & { id: string; blockName: string } & Record<string, unknown> }
+const qpuNodeOf = (uuid: string, tool: string, args: Record<string, unknown>, theorem: string | null = null, extra: Record<string, unknown> = {}): QpuNode => ({ type: 'block', version: 2, format: '', fields: { id: uuid, blockName: tool, ...qpuFieldsOf(uuid, tool, args, theorem), ...extra } })
 export const blocksOf = (doc: LexicalDoc): QpuNode[] => doc.root.children.filter((n): n is QpuNode => typeof n === 'object' && n !== null && (n as { type?: string }).type === 'block' && (n as { fields?: { blockType?: string } }).fields?.blockType === 'qpu')
 /** Typography standardised without changing meaning: only the text nodes change (straight quotes to typographic ones, -- to a dash, ... to an
  *  ellipsis, runs of spaces to one); the words, read in order without case or punctuation, must be the same before and after, and every qpu block
  *  stays as it was — otherwise the original stands. A change of meaning is never made here: an improvement is another qpu block, verified by its theorem. */
 const typeset = (s: string) => s.replace(/\.\.\./g, '…').replace(/ ?-- ?/g, ' — ').replace(/(^|[\s(\[{])"/g, '$1“').replace(/"/g, '”').replace(/(\w)'(\w)/g, '$1’$2').replace(/(^|[\s(\[{])'/g, '$1‘').replace(/'/g, '’').replace(/ {2,}/g, ' ')
 const wordsOf = (n: unknown): string[] => { const out: string[] = []; const walk = (x: unknown) => { if (!x || typeof x !== 'object') return; const o = x as { type?: string; text?: string; children?: unknown[] }; if (o.type === 'text' && typeof o.text === 'string') out.push(...(o.text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [])); for (const c of o.children ?? []) walk(c) }; walk(n); return out }
-export const standardiseOf = (doc: LexicalDoc) => {
+const standardiseOf = (doc: LexicalDoc) => {
   let changes = 0
   const walk = (x: unknown): unknown => { if (!x || typeof x !== 'object') return x; const o = x as Record<string, unknown>; if (o.type === 'block') return o; if (o.type === 'text' && typeof o.text === 'string') { const t = typeset(o.text); if (t !== o.text) changes++; return { ...o, text: t } } return Array.isArray(o.children) ? { ...o, children: o.children.map(walk) } : o }
   const out = { ...doc, root: walk(doc.root) } as LexicalDoc
@@ -344,7 +344,7 @@ export const docOf = (title: string, blocks: readonly { uuid: string; tool: stri
 /** Two edits of one document merged by block address: a block is kept when either edit holds it and neither removed it from the base; no block
  *  collides with another because its address is its content; the merged document is addressed by the fold of its sorted block addresses, so
  *  merge(a, b) = merge(b, a) and merge(a, a) = a (textbook_merge_commutes). A collision in the involution is thus a merge, never a refusal. */
-export const mergeOf = (base: LexicalDoc, a: LexicalDoc, b: LexicalDoc) => {
+const mergeOf = (base: LexicalDoc, a: LexicalDoc, b: LexicalDoc) => {
   const ids = (d: LexicalDoc) => new Set(blocksOf(d).map((n) => n.fields.uuid))
   const B = ids(base), A = ids(a), Bb = ids(b)
   const removed = new Set([...B].filter((id) => !A.has(id) || !Bb.has(id)))
@@ -358,12 +358,12 @@ export const mergeOf = (base: LexicalDoc, a: LexicalDoc, b: LexicalDoc) => {
   return { doc, address, blocks: blocks.length, fromA: only(A, Bb).length, fromB: only(Bb, A).length, both: [...A].filter((id) => Bb.has(id) && !removed.has(id)).length, removed: removed.size, collisions: 0, angles: ANGLES, says: 'merged by block address: every block either edit holds and neither removed is kept once; the address is the fold of the sorted blocks, so the merge commutes and is idempotent; nothing collides because an address is its content' }
 }
 export const foldOf = (doc: LexicalDoc): string => { const blocks = blocksOf(doc).map((n) => n.fields.uuid).sort(); const texts = [...new Set(doc.root.children.filter((n) => !(typeof n === 'object' && n !== null && (n as { type?: string }).type === 'block')).map((n) => JSON.stringify(n)))].sort(); return uuidOf([...blocks, ...texts].join('\n')) }
-export type GateDoc = { id: string; title: string; slug: string; path: string; parent: string | null; depth: number; layout: Record<string, unknown>[]; meta: { title: string; description: string }; hero: { type: 'default'; richText: LexicalDoc }; breadcrumbs: { doc: string; url: string; label: string }[] }
+type GateDoc = { id: string; title: string; slug: string; path: string; parent: string | null; depth: number; layout: Record<string, unknown>[]; meta: { title: string; description: string }; hero: { type: 'default'; richText: LexicalDoc }; breadcrumbs: { doc: string; url: string; label: string }[] }
 /** The gates as the nested page documents the seed creates, parents first: the root, a page per category, a page per gate. */
 /** A competition gate knows its competitors as well as the theorems: both in its lexical body (the pages collection the Payload MCP plugin serves). */
 const adapterOf = (x: Gate): unknown[] => { const a = gateAdapterOf(x); return [lx.heading('Adapter: a dimension of the one plugin', 'h2'), lx.paragraph([lx.text(`Lands in ${a.lands}. ${a.hook}. Fields: ${a.fields.join(', ')}. Presented as ${a.ui.item} (${a.ui.variant}), styled from the address.`)]), lx.paragraph([lx.text(`REST both ways under RBAC — in: ${a.rest.in}; out: ${a.rest.out}; read ${a.rest.rbac.read}, create ${a.rest.rbac.create}, update ${a.rest.rbac.update}, delete ${a.rest.rbac.delete}; tenant roles ${a.rest.rbac.tenantRoles.join(', ')}.`)]), lx.paragraph([lx.text(`UUID stream of its configs: ${a.stream.configs.map((c) => `${c.kind} ${c.uuid}`).join('; ')}.`)])] }
 const knowledgeOf = (x: Gate): unknown[] => { const c = x.category === 'competitions' ? COMPETITIONS.find((k) => k.id === x.id) : undefined; if (!c) return []; const k = knowOf(c); return [lx.heading('Competitors, as the page measures them', 'h2'), lx.paragraph([lx.link(c.competitors.source, c.competitors.source), lx.text(` (read ${c.competitors.read}): ${c.competitors.measured}`)]), ...(c.competitors.known.length ? [lx.list(c.competitors.known.map((n) => [lx.text(n)]))] : []), lx.heading(`${k.theorems.length} theorems the tree carries`, 'h2'), lx.list(k.theorems.map((t) => [lx.text(t)]))] }
-export const gateDocsOf = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}) => {
+const gateDocsOf = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}) => {
   const g = gatesOf(ctx, origin, devDependencies)
   const theorem = 'textbook_gates_partition'
   const leadOf = new Map(ctx.leads.map((l) => [l.id, l]))
@@ -390,8 +390,8 @@ export const gateDocsOf = (ctx: Context, origin: string, devDependencies: Record
  *  config set with a content address: the fold of its sorted members, so two hosts serving the same set share one address (the involution)
  *  and a tenant's mount of the whole server is the same set at every host. Sets compose by union, intersection and difference (inclusion–
  *  exclusion holds by theorem); the server's initialize answer is derived from the whole set, not declared beside it. */
-export type ConfigSet = { name: string; by: string; size: number; address: string; members: string[] }
-export const setsOf = (ctx: Context, names: readonly string[] = ['legal', 'crypto']) => {
+type ConfigSet = { name: string; by: string; size: number; address: string; members: string[] }
+const setsOf = (ctx: Context, names: readonly string[] = ['legal', 'crypto']) => {
   const tools = toolsOf(ctx)
   const resources = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'resources/list' }) as { result: { resources: { uri: string; mimeType: string }[] } }).result.resources
   const live = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'sets', version: '0' } } }) as { result: { capabilities: Record<string, unknown> } }).result.capabilities
@@ -441,7 +441,7 @@ export const setsOf = (ctx: Context, names: readonly string[] = ['legal', 'crypt
     says: 'the MCP is its config sets of widget-skilled tools: the server is the set of every element, a toolbox a subset, a mount the whole set at a host; sets are addressed by the fold of their sorted members and composed by union, intersection and difference; the initialize answer follows from the set',
   }
 }
-export const siteOf = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}) => {
+const siteOf = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}) => {
   const list = toolsOf(ctx)
   const boxOf = new Map(list.map((t) => [t.name, t._meta?.toolbox ?? 'none']))
   const heavy = new Set(['audit', 'metrics', 'imagine', 'discover', 'wave', 'readiness', 'e2e', 'textbook', 'clone'])
@@ -458,7 +458,7 @@ export const siteOf = (ctx: Context, origin: string, devDependencies: Record<str
   return { reference: { site: 'https://payloadcms.com', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', shape: 'docs with layout blocks (blockType), meta (title, description), breadcrumbs: the site is what Payload computes; discovery reads it as the standard payload-site' }, origin, useCases: useCases.length, pages: docs.length, byUseCase: useCases, docs, gates: { root: gated.tree.root, categories: gated.counts.categories, gates: gated.counts.gates, pages: gated.docs.length, depth: gated.tree.depth, partition: gated.counts.partition, byKind: gated.counts.byKind, leads: gated.leads, byCategory: gated.categories }, collection: { slug: 'pages', totalDocs: docs.length + gated.docs.length, docs: [...docs.filter((d) => 'uuid' in d).map((d) => ({ id: d.uuid, title: d.title, slug: `/${d.uuid}`, layout: [(() => { const ch = channelOf(String(d.uuid)); return { blockType: 'qpu', tool: d.tool, uuid: d.uuid, handle: ch.handle, program: ch.program.join(''), tail: ch.tail, arguments: (d as { arguments?: Record<string, unknown> }).arguments ?? null, theorem: d.theorem ?? null } })()], meta: { title: d.title, description: d.description }, breadcrumbs: [{ doc: d.uuid, url: `/${d.uuid}`, label: d.title }], path: `/${d.uuid}`, parent: null, depth: 1 })), ...gated.docs] } }
 }
 /** Payload's skills for agents, read as data from the repository tree (github.com/payloadcms/skills): each skill and each of its references mapped to the tool of this tree that enacts it. No text of the skills is carried: the repository declares no licence; names, paths and sizes are facts. */
-export const SKILL_MAP: Readonly<Record<string, { enactedBy: string[]; how: string }>> = {
+const SKILL_MAP: Readonly<Record<string, { enactedBy: string[]; how: string }>> = {
   'payload': { enactedBy: ['configure', 'payload', 'extend'], how: 'the project shape: configure { kind: payload } holds the default plugins over the one pages collection; payload { site } lays the site out as pages; extend mounts this catalogue in the Payload MCP plugin' },
   'cms-migration': { enactedBy: ['configure', 'fold', 'mongo'], how: 'content moved at whole uptime: configure { kind: migration } is the plan, fold splits what a place cannot hold, mongo is the RAID\'s query language for the rows' },
   'ACCESS-CONTROL': { enactedBy: ['legal', 'configure'], how: 'roles over MCP itself: the RBAC host the Worker asks first (QPU_RBAC_MCP), the tenants\' tokens by name in configure { kind: tenant }' },
@@ -475,11 +475,11 @@ export const SKILL_MAP: Readonly<Record<string, { enactedBy: string[]; how: stri
   'PAYLOAD-FIELD-REFERENCE': { enactedBy: ['payload', 'fold'], how: 'the field reference of a migration: the document shape, and the fold that moves the rows under any bound' },
 }
 /** payloadcms.com's own configuration, read at github.com/payloadcms/website (MIT) on 2026-10-25, src/payload.config.ts: the plugins it mounts and the database it runs on — facts, compared with the plugins MCP configures here. */
-export const PAYLOAD_WEBSITE = { repository: 'https://github.com/payloadcms/website', licence: 'MIT', config: 'src/payload.config.ts', plugins: ['form-builder', 'nested-docs', 'redirects', 'seo'], own: ['opsCounter'], editor: 'lexical with BlocksFeature', database: '@payloadcms/db-mongodb', storage: '@payloadcms/storage-vercel-blob', email: '@payloadcms/email-nodemailer', readAt: '2026-10-25' } as const
+const PAYLOAD_WEBSITE = { repository: 'https://github.com/payloadcms/website', licence: 'MIT', config: 'src/payload.config.ts', plugins: ['form-builder', 'nested-docs', 'redirects', 'seo'], own: ['opsCounter'], editor: 'lexical with BlocksFeature', database: '@payloadcms/db-mongodb', storage: '@payloadcms/storage-vercel-blob', email: '@payloadcms/email-nodemailer', readAt: '2026-10-25' } as const
 const camel = (dir: string) => dir.replace(/\.tsx?$/, '').replace(/^[A-Z]/, (c) => c.toLowerCase())
 const BLOCK_ALIASES: Readonly<Record<string, string>> = { callToAction: 'cta', mediaContent: 'mediaContent' }
 /** The website's source read as a tree: its collections, blocks, globals, fields and plugins by path; with the live page's block types, whether the site agrees with its source. */
-export const websiteOf = (tree: { tree?: { path: string; type?: string; size?: number }[]; sha?: string; truncated?: boolean }, liveBlockTypes: readonly string[] = []) => {
+const websiteOf = (tree: { tree?: { path: string; type?: string; size?: number }[]; sha?: string; truncated?: boolean }, liveBlockTypes: readonly string[] = []) => {
   const entries = Array.isArray(tree.tree) ? tree.tree : []
   const under = (dir: string) => [...new Set(entries.filter((e) => e.path.startsWith(`${dir}/`)).map((e) => e.path.split('/')[2]!).filter(Boolean))]
   const collections = under('src/collections').map((d) => d.replace(/\.tsx?$/, ''))
@@ -493,17 +493,17 @@ export const websiteOf = (tree: { tree?: { path: string; type?: string; size?: n
   const shared = PAYLOAD_WEBSITE.plugins.filter((p) => ours.includes(p)), onlyHere = ours.filter((p) => !(PAYLOAD_WEBSITE.plugins as readonly string[]).includes(p) && p !== 'lexical')
   return { repository: PAYLOAD_WEBSITE.repository, licence: PAYLOAD_WEBSITE.licence, sha: tree.sha ?? null, entries: entries.length, truncated: !!tree.truncated, collections: collections.length, collectionList: collections, blocks: blocks.length, blockList: blocks, blockTypes, globals: globals.length, globalList: globals, fields: fields.length, fieldList: fields, ownPlugins: plugins, mounted: PAYLOAD_WEBSITE, live, agrees: live.length ? live.every((l) => l.inSource) : null, pluginsShared: shared, pluginsOnlyHere: onlyHere, says: `payloadcms.com is what Payload computes: ${collections.length} collections, ${blocks.length} blocks, ${globals.length} globals and ${fields.length} fields in its source, ${PAYLOAD_WEBSITE.plugins.length} default plugins mounted (${PAYLOAD_WEBSITE.plugins.join(', ')}) on ${PAYLOAD_WEBSITE.database}; of the plugins MCP configures here, ${shared.length} are the site's own and ${onlyHere.length} go beyond it (${onlyHere.join(', ')})${live.length ? `; the live page's block types ${live.every((l) => l.inSource) ? 'all have' : 'do not all have'} a block in the source` : ''}` }
 }
-export const skillsOf = (tree: { tree?: { path: string; type?: string; size?: number }[]; sha?: string; truncated?: boolean }) => {
+const skillsOf = (tree: { tree?: { path: string; type?: string; size?: number }[]; sha?: string; truncated?: boolean }) => {
   const entries = Array.isArray(tree.tree) ? tree.tree : []
   const skills = entries.filter((e) => /\/SKILL\.md$/.test(e.path)).map((e) => { const name = e.path.split('/').slice(-2, -1)[0]!; const dir = e.path.replace(/\/SKILL\.md$/, ''); const references = entries.filter((r) => r.path.startsWith(`${dir}/reference/`) && /\.md$/.test(r.path)).map((r) => { const ref = r.path.split('/').pop()!.replace(/\.md$/, ''); return { reference: ref, path: r.path, bytes: r.size ?? null, ...(SKILL_MAP[ref] ?? { enactedBy: [], how: 'no tool of this tree enacts this reference yet: a lead' }) } }); return { skill: name, path: e.path, bytes: e.size ?? null, ...(SKILL_MAP[name] ?? { enactedBy: [], how: 'no tool of this tree enacts this skill yet: a lead' }), references } })
   const unmapped = skills.flatMap((s) => [...(s.enactedBy.length ? [] : [s.skill]), ...s.references.filter((r) => !r.enactedBy.length).map((r) => r.reference)])
   return { repository: 'https://github.com/payloadcms/skills', sha: tree.sha ?? null, entries: entries.length, truncated: !!tree.truncated, skills: skills.length, references: skills.reduce((n, s) => n + s.references.length, 0), unmapped, catalogue: skills, licence: 'the repository declares no licence: names, paths and sizes are read as facts; no text is carried' }
 }
 /** The packages Payload ships, read from the packages directory of github.com/payloadcms/payload (the standard payload-packages, read by discovery on every run; names only, 2026-10-26: 45 directories). Every plugin, adapter and editor this tree configures must be one of them. */
-export const PAYLOAD_PACKAGES = { repository: 'https://github.com/payloadcms/payload/tree/main/packages', read: '2026-10-26', names: ['admin-bar', 'codemod', 'create-payload-app', 'db-d1-sqlite', 'db-mongodb', 'db-postgres', 'db-sqlite', 'db-vercel-postgres', 'drizzle', 'email-nodemailer', 'email-resend', 'graphql', 'kv-redis', 'live-preview-react', 'live-preview-vue', 'live-preview', 'next', 'oxlint-config', 'oxlint-plugin', 'payload-cloud', 'payload', 'plugin-cloud-storage', 'plugin-ecommerce', 'plugin-form-builder', 'plugin-import-export', 'plugin-mcp', 'plugin-multi-tenant', 'plugin-nested-docs', 'plugin-redirects', 'plugin-search', 'plugin-sentry', 'plugin-seo', 'plugin-stripe', 'richtext-lexical', 'sdk', 'storage-azure', 'storage-gcs', 'storage-r2', 'storage-s3', 'storage-vercel-blob', 'tanstack-start', 'transformer-sharp', 'translations', 'typescript-plugin', 'ui'] } as const
+const PAYLOAD_PACKAGES = { repository: 'https://github.com/payloadcms/payload/tree/main/packages', read: '2026-10-26', names: ['admin-bar', 'codemod', 'create-payload-app', 'db-d1-sqlite', 'db-mongodb', 'db-postgres', 'db-sqlite', 'db-vercel-postgres', 'drizzle', 'email-nodemailer', 'email-resend', 'graphql', 'kv-redis', 'live-preview-react', 'live-preview-vue', 'live-preview', 'next', 'oxlint-config', 'oxlint-plugin', 'payload-cloud', 'payload', 'plugin-cloud-storage', 'plugin-ecommerce', 'plugin-form-builder', 'plugin-import-export', 'plugin-mcp', 'plugin-multi-tenant', 'plugin-nested-docs', 'plugin-redirects', 'plugin-search', 'plugin-sentry', 'plugin-seo', 'plugin-stripe', 'richtext-lexical', 'sdk', 'storage-azure', 'storage-gcs', 'storage-r2', 'storage-s3', 'storage-vercel-blob', 'tanstack-start', 'transformer-sharp', 'translations', 'typescript-plugin', 'ui'] } as const
 const PACKAGE_KIND = (name: string): string => name.startsWith('plugin-') ? 'plugins' : name.startsWith('db-') ? 'databases' : name.startsWith('storage-') ? 'storage' : name.startsWith('email-') ? 'email' : name.startsWith('richtext-') ? 'editors' : name.startsWith('live-preview') ? 'live-preview' : 'runtime-and-tooling'
 /** The catalogue classified, what the full stack mounts of it, and the minimum-cost path it offers: Payload's own adapters for Cloudflare D1 and R2. */
-export const packagesOf = (names: readonly string[] = PAYLOAD_PACKAGES.names) => {
+const packagesOf = (names: readonly string[] = PAYLOAD_PACKAGES.names) => {
   const byKind: Record<string, string[]> = {}
   for (const n of names) (byKind[PACKAGE_KIND(n)] ??= []).push(n)
   const mounted = [...PAYLOAD_PLUGINS.map((p) => p.pkg.replace('@payloadcms/', '')), 'db-mongodb', 'storage-vercel-blob', 'email-nodemailer', 'plugin-stripe', 'next', 'ui', 'payload', 'graphql']
@@ -511,10 +511,10 @@ export const packagesOf = (names: readonly string[] = PAYLOAD_PACKAGES.names) =>
   return { repository: PAYLOAD_PACKAGES.repository, read: PAYLOAD_PACKAGES.read, count: names.length, byKind, counts: Object.fromEntries(Object.entries(byKind).map(([k, v]) => [k, v.length])), mounted: mounted.filter((m) => names.includes(m)), unknown, available: names.filter((n) => !mounted.includes(n)), minimumCost: { cloudflare: names.filter((n) => n === 'db-d1-sqlite' || n === 'storage-r2'), says: 'Payload ships its own adapters for Cloudflare D1 and R2, so the app can bind to one provider at its free tiers (D1 5 GB, R2 10 GB) beside the Worker; choosing them is the tenant\'s act — a lead until then' }, says: `${names.length} packages: ${Object.entries(byKind).map(([k, v]) => `${v.length} ${k}`).join(', ')}; ${mounted.filter((m) => names.includes(m)).length} mounted by the full stack${unknown.length ? `; UNKNOWN to Payload: ${unknown.join(', ')}` : ''}` }
 }
 /** Payload's ecommerce template, read at the source (github.com/payloadcms/payload, templates/ecommerce, 2026-10-26; names and shapes only): the standard payload-ecommerce-template discovery reads on every run. */
-export const PAYLOAD_ECOMMERCE = { repository: 'https://github.com/payloadcms/payload/tree/main/templates/ecommerce', read: '2026-10-26', src: ['access', 'app', 'blocks', 'collections', 'components', 'endpoints', 'fields', 'globals', 'heros', 'hooks', 'lib', 'plugins', 'providers', 'utilities'], collections: ['Categories', 'Media', 'Pages', 'Products', 'Users'], plugin: { package: 'plugin-ecommerce', access: ['adminOnlyFieldAccess', 'adminOrPublishedStatus', 'customerOnlyFieldAccess', 'isAdmin', 'isDocumentOwner'], customers: 'users', orders: 'ordersCollectionOverride adding accessToken (crypto.randomUUID on create)', payments: 'stripeAdapter({ secretKey, publishableKey, webhookSecret }) from @payloadcms/plugin-ecommerce/payments/stripe', products: 'productsCollectionOverride (title, description, gallery, layout, relatedProducts, meta, categories, slug)' }, pluginCollections: ['products', 'variants', 'variantTypes', 'variantOptions', 'carts', 'orders', 'transactions', 'addresses'], deps: ['stripe@18.5.0', '@stripe/stripe-js@^4', '@stripe/react-stripe-js@^3'] } as const
+const PAYLOAD_ECOMMERCE = { repository: 'https://github.com/payloadcms/payload/tree/main/templates/ecommerce', read: '2026-10-26', src: ['access', 'app', 'blocks', 'collections', 'components', 'endpoints', 'fields', 'globals', 'heros', 'hooks', 'lib', 'plugins', 'providers', 'utilities'], collections: ['Categories', 'Media', 'Pages', 'Products', 'Users'], plugin: { package: 'plugin-ecommerce', access: ['adminOnlyFieldAccess', 'adminOrPublishedStatus', 'customerOnlyFieldAccess', 'isAdmin', 'isDocumentOwner'], customers: 'users', orders: 'ordersCollectionOverride adding accessToken (crypto.randomUUID on create)', payments: 'stripeAdapter({ secretKey, publishableKey, webhookSecret }) from @payloadcms/plugin-ecommerce/payments/stripe', products: 'productsCollectionOverride (title, description, gallery, layout, relatedProducts, meta, categories, slug)' }, pluginCollections: ['products', 'variants', 'variantTypes', 'variantOptions', 'carts', 'orders', 'transactions', 'addresses'], deps: ['stripe@18.5.0', '@stripe/stripe-js@^4', '@stripe/react-stripe-js@^3'] } as const
 export const QPU_CURRENCIES = [{ code: 'EUR', decimals: 2, label: 'Euro', symbol: '€' }, { code: 'USD', decimals: 2, label: 'US Dollar', symbol: '$' }, { code: 'BGN', decimals: 2, label: 'Bulgarian lev', symbol: 'лв' }] as const
 /** The licence catalogue as the ecommerce plugin's products: the API of selling is Payload's config (products, variants, carts, orders, transactions), the Stripe adapter its payment, nothing customised. */
-export const ecommerceOf = (rates?: Record<string, { rate: number }>) => {
+const ecommerceOf = (rates?: Record<string, { rate: number }>) => {
   const products = [...new Set(CATALOGUE.map((v) => v.product))]
   const harmonised = rates && Object.keys(rates).length ? rates : null
   return {
@@ -530,14 +530,14 @@ export const ecommerceOf = (rates?: Record<string, { rate: number }>) => {
  * host that negotiates the extension; the site's playground hosts the same resource. The widget the tool computes is what the shell renders. */
 export const MCP_APPS = { extension: 'io.modelcontextprotocol/ui', mimeType: 'text/html;profile=mcp-app', specification: 'https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/2026-01-26/apps.mdx', scheme: 'ui://qpu/<tool>', read: '2026-10-26', methods: { view: ['ui/initialize', 'ui/notifications/initialized', 'ui/notifications/size-changed'], host: ['ui/notifications/tool-input', 'ui/notifications/tool-result', 'ui/notifications/tool-cancelled'] } } as const
 /** The host's standardised theme variables mapped onto the tokens every widget of this tree uses: the widget never changes, the host's theme shows through. A token never maps onto its own name (a self-reference is a cycle the browser drops: measured as serif text in the playground); --font-sans is the host's own and read where it is used. */
-export const UI_TOKENS: readonly [string, string, string][] = [
+const UI_TOKENS: readonly [string, string, string][] = [
   ['--surface-1', '--color-background-secondary', '#f4f4f5'], ['--surface-2', '--color-background-tertiary', '#fafafa'], ['--border', '--color-border-primary', '#e4e4e7'],
   ['--text-primary', '--color-text-primary', '#18181b'], ['--text-secondary', '--color-text-secondary', '#52525b'], ['--text-muted', '--color-text-tertiary', '#71717a'],
   ['--fill-accent', '--color-background-info', 'var(--a432-accent)'], ['--font-size-title', '--font-text-md-size', '15px'], ['--font-size-footnote', '--font-text-xs-size', '12px'],
   ['--radius', '--border-radius-md', '8px'], ['--gap-xs', '--spacing-xs', '4px'], ['--gap-sm', '--spacing-sm', '8px'], ['--gap-md', '--spacing-md', '12px'], ['--pad-sm', '--spacing-sm', '8px'], ['--pad-md', '--spacing-md', '12px'],
 ]
 /** The host of an MCP App in React (a client component): reads the tool's ui:// resource over the app's own MCP endpoint, hosts it in a sandboxed frame and speaks the Apps protocol; the same host the site's playground runs in Vue. Served to any shadcn frontend as the registry item qpu-app. */
-export const reactHostOf = (): string => [
+const reactHostOf = (): string => [
   "'use client'",
   "// The host of an MCP App: the tool's ui:// resource read over the MCP endpoint (resources/read), hosted in a sandboxed frame and spoken to",
   "// through the MCP Apps protocol (ui/initialize → initialized, tool-input, tool-result, size-changed). The UI is built from the MCP; nothing is drawn here.",
@@ -770,9 +770,9 @@ export const adaptersOf = (env: readonly string[] = []) => {
  *  default deploy (the migration's deploy-beside step; the tenants' custom domains bind to one deploy, the default environment's), with the
  *  bindings the use case needs redeclared (wrangler inherits no binding into an environment) and as usable as direct use: the same tools/list
  *  the handler answers in-process, the same addresses, decoded by the gate's copies. Templates × use cases = sets (textbook_deploy_sets). */
-export const DEPLOY_TEMPLATES = ['worker', 'site', 'app'] as const
-export type DeployTemplate = typeof DEPLOY_TEMPLATES[number]
-export const DEPLOY_USE_CASES: readonly string[] = [...new Set(CATALOGUE.map((v) => v.product.replace(/^qpu-/, '')))]
+const DEPLOY_TEMPLATES = ['worker', 'site', 'app'] as const
+type DeployTemplate = typeof DEPLOY_TEMPLATES[number]
+const DEPLOY_USE_CASES: readonly string[] = [...new Set(CATALOGUE.map((v) => v.product.replace(/^qpu-/, '')))]
 const siteBindingsOf = (suffix: string) => ({ d1_databases: [{ binding: 'D1', database_name: `qpu-site${suffix}`, database_id: '<the tenant\'s>' }], r2_buckets: [{ binding: 'R2', bucket_name: `qpu-media${suffix}` }], kv_namespaces: [{ binding: 'KV', id: '<the tenant\'s>' }], services: [{ binding: 'QPU', service: 'qpu' }], ai: { binding: 'AI' } })
 export const deploySetOf = (template: DeployTemplate, useCase: string, hosts: readonly string[], name = 'qpu-app') => {
   if (!DEPLOY_TEMPLATES.includes(template)) throw new Error(`no template ${template}; the templates are ${DEPLOY_TEMPLATES.join(', ')}`)
@@ -798,8 +798,8 @@ export const deploySetsOf = (hosts: readonly string[]) => ({ templates: DEPLOY_T
 const envsOf = (template: DeployTemplate, hosts: readonly string[]) => Object.fromEntries(DEPLOY_USE_CASES.map((u) => [u, deploySetOf(template, u, hosts).wrangler]))
 export const siteWranglerOf = () => ({ $schema: 'node_modules/wrangler/config-schema.json', name: 'qpu-site', main: '.open-next/worker.js', compatibility_date: '2026-10-01', compatibility_flags: ['nodejs_compat', WEBCRYPTO_FLAG], assets: { directory: '.open-next/assets', binding: 'ASSETS' }, vars: { QPU_ADAPTERS: 'cloudflare', QPU_ORIGIN: 'https://qpu.uuidna.com' }, ...siteBindingsOf(''), observability: { enabled: true }, env: envsOf('site', Object.keys(TENANTS)) })
 /** The scopes of the full stack: every tenant over every scoped collection (the multi-tenant plugin), every role over the docket (the Worker's roles), every toolbox as a scope of the MCP server. More tenants is the whole of scaling: no more code. */
-export const TENANT_ROLES = ['tenant-admin', 'editor', 'viewer'] as const
-export const SCOPES = {
+const TENANT_ROLES = ['tenant-admin', 'editor', 'viewer'] as const
+const SCOPES = {
   tenants: [...Object.values(TENANTS), 'ceci'],
   collections: ['pages', 'entries', 'products', 'orders'],
   tenantRoles: TENANT_ROLES,
@@ -837,7 +837,7 @@ export const FIELDS = {
  *  is a count the kernel checks, never a convention); a validation no theorem states is a lead the validations kind reports. The same table
  *  renders the validate function of every generated field (validateOf), with the theorem carried in the field's custom, so the Payload MCP's
  *  getCollectionSchema answers it. */
-export const VALIDATIONS: readonly { field: string; of: 'entries' | 'qpu' | 'tenants'; pattern: string; says: string; nullable?: boolean; theorem: string | null }[] = [
+const VALIDATIONS: readonly { field: string; of: 'entries' | 'qpu' | 'tenants'; pattern: string; says: string; nullable?: boolean; theorem: string | null }[] = [
   { field: 'id', of: 'entries', pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', says: 'a UUID of 36 characters', theorem: 'textbook_uuid_is_36' },
   { field: 'kind', of: 'entries', pattern: '^[a-z][a-z-]*$', says: 'lower-case letters and dashes', theorem: 'textbook_kind_alphabet' },
   { field: 'sha256', of: 'entries', pattern: '^[0-9a-f]{64}$', says: '64 hex digits', nullable: true, theorem: 'textbook_sha256_is_64' },
@@ -864,7 +864,7 @@ export const ACCESS = {
   by: 'Payload\'s user, or a role header signed under the deployment\'s secret (x-qpu-role-mac: HMAC-SHA-256 over role|tenant|METHOD, roles.ts); a bare x-qpu-role header is no claim (measured 2026-10-26: unsigned, it let an anonymous request delete an entry)',
 } as const
 /** The actions at quantum scale: a batch is one JSON-RPC array answered as one array; Payload\'s bulk REST by where; a batch above the quantum is sharded (the shard tool\'s theorems) and the shards run as one wave; the experience the gate measured decides the shard size. */
-export const actionsOf = (experience?: { copies?: number; involutions?: number; msByHost?: Record<string, number> }) => {
+const actionsOf = (experience?: { copies?: number; involutions?: number; msByHost?: Record<string, number> }) => {
   const free = experience?.copies ? Math.round(((experience.involutions ?? 0) / experience.copies) * 100) : null
   const slowest = experience?.msByHost ? Math.max(...Object.values(experience.msByHost)) : null
   // the shard size from the measured experience: a wave should answer within one second of the slowest host's median, so a batch is sharded until each shard's share does
@@ -894,7 +894,7 @@ export const FILE_ROLES = {
   plugin: { folder: 'src/plugins', shape: '<camel>.ts', loads: 'the Payload config, as plugins: [qpuPlugin()]: one plugin with multidimensional capabilities that fits any config without hacking it — its collections, its global, its block, its hooks on the installed plugins\' default collections, the plugins it composes' },
   graphic: { folder: 'src/graphics', shape: '<Pascal>/index.tsx', loads: 'the site\'s header and footer and the admin graphics: the wordmark the fork rendered replaced by the computed branding, the tenant\'s own when set in the admin' },
 } as const
-export type FileRole = keyof typeof FILE_ROLES
+type FileRole = keyof typeof FILE_ROLES
 const pascalOf = (t: string) => t.replace(/(^|[-_ ])([a-z])/g, (_m, _s, c: string) => c.toUpperCase())
 const camelOf = (t: string) => { const p = pascalOf(t); return p.slice(0, 1).toLowerCase() + p.slice(1) }
 /** The path of a generated file from its role and key alone. */
@@ -920,7 +920,7 @@ const hooksOf = (h: { pages?: { title: string }[]; config?: Record<string, any>;
   return { pairs, witnesses: declared.length, pages: h.pages ? { declared: declared.length, paged: declared.filter((d) => titles.includes(d)).length, missing: declared.filter((d) => !titles.includes(d)), extra: titles.filter((x) => /^(collection|global|field|node) /.test(x) && !declared.includes(x)) } : null, found: h.config ? qpuHooksOf(h.config).found : null, pair: c.qpuWitness['collection::change'] }
 }
 /** Every provider the full stack binds to, its bindings and variable NAMES (values never travel), and where its cost sits. */
-export const BINDINGS: readonly { provider: string; role: string; bindings: string[]; names: string[]; freeTier: string; paidFor: string; keptFree: string }[] = [
+const BINDINGS: readonly { provider: string; role: string; bindings: string[]; names: string[]; freeTier: string; paidFor: string; keptFree: string }[] = [
   { provider: 'cloudflare', role: 'the Worker and the docket (until the gate decodes the Payload app beside them)', bindings: ['ASSETS (static site)', 'DOCKET (Durable Object, SQLite)', `compatibility_flags [${WEBCRYPTO_FLAG}]`], names: ['QPU_WRITE_TOKEN_<TENANT>', 'QPU_ADMIN_TOKEN_<TENANT>', 'QPU_DATA_KEY', 'QPU_SIGNING_KEY_<TENANT>', 'QPU_MCP_HOSTS_<TENANT>'], freeTier: '100k requests a day, static assets free', paidFor: 'requests beyond the tier, Durable Object requests and storage', keptFree: 'ETag involutions answer 304 without a body; a block computed once is teleported, never recomputed' },
   { provider: 'google-cloud', role: 'the app on Cloud Run with Cloud SQL, Cloud Storage and Gmail (the adapters profile google), reached through Google\'s own MCP servers (run, sqladmin, monitoring)', bindings: ['Cloud Run service', 'Cloud SQL instance (postgres)', 'Cloud Storage bucket', 'Gmail SMTP'], names: ['GOOGLE_CLOUD_PROJECT', 'GOOGLE_APPLICATION_CREDENTIALS', 'GCS_BUCKET', 'GCS_PROJECT_ID', 'DATABASE_URI', 'GMAIL_USER', 'GMAIL_APP_PASSWORD'], freeTier: 'Cloud Run 2 million requests a month, Cloud Storage 5 GB, Gmail 500 mails a day; Cloud SQL has no free tier', paidFor: 'the Cloud SQL instance, egress, requests beyond the free tier', keptFree: 'reads by address through the docket; the involutions answer 304 before Cloud Run runs' },
   { provider: 'news', role: 'the public news APIs as adapters of the DOI research: the open ones need no name; the keyed ones the tenant names, never values', bindings: ['the news gates (open and keyed)'], names: ['NEWSAPI_KEY', 'GUARDIAN_API_KEY', 'NYT_API_KEY'], freeTier: 'GDELT, Hacker News, Crossref Event Data and Wikipedia free without a key; NewsAPI, The Guardian and The New York Times free developer keys', paidFor: 'nothing in the open tier', keptFree: 'the open four answer every run; a keyed one answers when named' },
@@ -935,7 +935,7 @@ export const BINDINGS: readonly { provider: string; role: string; bindings: stri
 /** The repository's home and code owner, for the policies and the MCP registry entry */
 const REPOSITORY = { home: 'https://github.com/uuidna/qpu', owner: '@ceccec' } as const
 /** Every configuration's file in the tree and who is its source: the tool (written on every run, drift zero by construction) or the hand (measured on every run, drift a lead). */
-export const CONFIG_FILES: readonly { kind: ConfigKind; path: string; source: 'tool' | 'hand'; format: 'jsonc' | 'json' | 'text' | 'ts'; /** files the hand-held one spreads into itself: measured as one text */ with?: readonly string[] }[] = [
+const CONFIG_FILES: readonly { kind: ConfigKind; path: string; source: 'tool' | 'hand'; format: 'jsonc' | 'json' | 'text' | 'ts'; /** files the hand-held one spreads into itself: measured as one text */ with?: readonly string[] }[] = [
   { kind: 'wrangler', path: 'wrangler.jsonc', source: 'tool', format: 'jsonc' },
   { kind: 'pwa', path: 'docs/public/manifest.webmanifest', source: 'tool', format: 'json' },
   { kind: 'policies', path: 'SECURITY.md', source: 'tool', format: 'text' },
@@ -948,7 +948,7 @@ export const CONFIG_FILES: readonly { kind: ConfigKind; path: string; source: 't
   { kind: 'api', path: 'site/next.config.js', source: 'hand', format: 'ts' },
 ]
 /** The drift of a hand-held TypeScript file against the configuration MCP computes: what the file should mount or call and does not. */
-export const heldDriftOf = (kind: ConfigKind, text: string): string[] => {
+const heldDriftOf = (kind: ConfigKind, text: string): string[] => {
   // the plugin must be mounted last: it hooks the collections the other plugins create (form-submissions), so a plugin called after it is drift
   if (kind === 'payload') return [...(/autoLogin\s*:/.test(text) ? ['admin.autoLogin'] : []), ...(/\.\.\.qpuStoragePlugins\(\)/.test(text) && /qpuPlugin\(\{[^}]*adapters:\s*'auto'/.test(text) ? ['adapters.qpuStoragePlugins.twice'] : []), ...(/\bqpuPlugin\(/.test(text) ? [] : ['plugins.qpuPlugin']), ...((() => { const at = text.indexOf('qpuPlugin('); if (at < 0) return []; const tail = text.slice(at + 10); const end = tail.indexOf(']'); return /\b[a-zA-Z]+Plugin\(/.test(end < 0 ? tail : tail.slice(0, end)) ? ['plugins.qpuPlugin.last'] : [] })()), ...['qpuDb', 'qpuEmail', 'qpuStoragePlugins'].filter((fn) => !(fn === 'qpuStoragePlugins' && /qpuPlugin\(\{[^}]*adapters:\s*'auto'/.test(text)) && !new RegExp(`\\b${fn}\\(`).test(text)).map((fn) => `adapters.${fn}`), ...(/process\.env\.PAYLOAD_SECRET/.test(text) ? [] : ['env.PAYLOAD_SECRET'])]
   if (kind === 'hooks') return [] // the hooks are the plugin's (tool-sourced): nothing held by hand, nothing to drift
@@ -957,10 +957,10 @@ export const heldDriftOf = (kind: ConfigKind, text: string): string[] => {
   return []
 }
 /** The environment example for the app: every name the bindings need, its provider and role, never a value. */
-export const envExampleOf = (): string => ['# @uuidna/qpu: the names the full stack binds to, by provider (values never travel; set them in the provider\'s dashboard or .env)', '# GENERATED by npm run next through configure { kind: \'bindings\' }; edit src/quantum/toolboxes/payload.ts (BINDINGS), never this file.', '', ...BINDINGS.flatMap((b) => [`# ${b.provider}: ${b.role}`, `#   free: ${b.freeTier}; paid for: ${b.paidFor}; kept free: ${b.keptFree}`, ...b.names.map((n) => (n.includes('<TENANT>') ? [...Object.values(TENANTS), 'ceci'].map((t) => `${n.replace('<TENANT>', t.toUpperCase())}=`) : [`${n}=`])).flat(), ''])].join('\n')
+const envExampleOf = (): string => ['# @uuidna/qpu: the names the full stack binds to, by provider (values never travel; set them in the provider\'s dashboard or .env)', '# GENERATED by npm run next through configure { kind: \'bindings\' }; edit src/quantum/toolboxes/payload.ts (BINDINGS), never this file.', '', ...BINDINGS.flatMap((b) => [`# ${b.provider}: ${b.role}`, `#   free: ${b.freeTier}; paid for: ${b.paidFor}; kept free: ${b.keptFree}`, ...b.names.map((n) => (n.includes('<TENANT>') ? [...Object.values(TENANTS), 'ceci'].map((t) => `${n.replace('<TENANT>', t.toUpperCase())}=`) : [`${n}=`])).flat(), ''])].join('\n')
 /** Realtime editing through the channels Payload streams, collisions by content address (textbook_edit_collides: two edits share their base or
  *  collide); what each channel carries and signals is the Hooks › Realtime page in Payload */
-export const REALTIME = {
+const REALTIME = {
   streams: ['document lock', 'live preview', 'autosave', 'versions', 'form validation', 'MCP stream'].map((channel) => ({ channel })),
   collisions: { precondition: 'If-Match (REST), context.prev (local), editBase (MCP)', hook: fileOf('hooks', 'pages'), theorem: 'textbook_edit_collides' },
   held: { file: fileOf('plugin', 'qpu'), must: ['lockDocuments', 'versions.drafts.autosave', 'hooks.beforeChange: collisionGuard', 'editBase (virtual, hidden)'] },
@@ -969,11 +969,11 @@ export const REALTIME = {
  *  scoped by the multi-tenant plugin and authorised by a user's API key, each with the capabilities a client may use. The intelligence of
  *  combinatorics is to fit any environment without hacking it: a request is a form submission, a bundle a media file, a licence a product,
  *  a tenant's configuration its tenants document; what the stack holds beyond the defaults is a refactoring lead. */
-export const PLUGIN_DEFAULT_COLLECTIONS: readonly string[] = ['pages', 'posts', 'media', 'users', 'forms', 'form-submissions', 'search', 'redirects', 'tenants', 'products', 'variants', 'carts', 'orders', 'transactions', 'addresses', 'payload-mcp-api-keys']
-export type McpCollection = { description: string; enabled: { find: boolean; create: boolean; update: boolean; delete: boolean }; /** scoped to the tenant by the multi-tenant plugin */ scoped: boolean; /** what the collection's own access filters for a client */ filter: string; /** relationship fields → the collections they point at */ relations: Record<string, string>; /** select fields → their options */ enums: Record<string, readonly string[]>; /** the hooks the QPU plugin puts on it */ hooks: readonly string[] }
+const PLUGIN_DEFAULT_COLLECTIONS: readonly string[] = ['pages', 'posts', 'media', 'users', 'forms', 'form-submissions', 'search', 'redirects', 'tenants', 'products', 'variants', 'carts', 'orders', 'transactions', 'addresses', 'payload-mcp-api-keys']
+type McpCollection = { description: string; enabled: { find: boolean; create: boolean; update: boolean; delete: boolean }; /** scoped to the tenant by the multi-tenant plugin */ scoped: boolean; /** what the collection's own access filters for a client */ filter: string; /** relationship fields → the collections they point at */ relations: Record<string, string>; /** select fields → their options */ enums: Record<string, readonly string[]>; /** the hooks the QPU plugin puts on it */ hooks: readonly string[] }
 /** Every scope can find and none can delete: only create and update differ from one collection to the next. */
 const findAnd = (create: boolean, update: boolean) => ({ find: true, create, update, delete: false })
-export const MCP_COLLECTIONS: Readonly<Record<string, McpCollection>> = {
+const MCP_COLLECTIONS: Readonly<Record<string, McpCollection>> = {
   pages: { description: 'the site\'s pages: the use cases and the gates (the competition gates carry the competitors and the theorems), each a qpu block; edits carry editBase (the collision precondition)', enabled: findAnd(true, true) , scoped: true, filter: 'published pages to everyone, drafts to users of the tenant', relations: { parent: 'pages (nested docs)', tenant: 'tenants', 'layout.qpu': 'a block: tool + arguments, the entries it writes' }, enums: { _status: ['draft', 'published'], 'hero.type': ['default', 'contentMedia', 'centeredContent', 'form', 'home', 'livestream', 'gradient', 'three'] }, hooks: ['collisionGuard (beforeChange)', 'lockDocuments', 'autosave', 'editBase'] },
   forms: { description: 'the forms: "Request an app" among them', enabled: findAnd(false, false) , scoped: false, filter: 'every form to everyone', relations: {}, enums: { confirmationType: ['message', 'redirect'], 'fields.blockType': ['text', 'textarea', 'select', 'email', 'number', 'checkbox', 'country', 'state', 'message', 'payment'] }, hooks: [] },
   'form-submissions': { description: 'a submission of "Request an app" generates the app (the bundle into media, the licence at the checkout)', enabled: findAnd(true, false) , scoped: false, filter: 'a client creates; users read', relations: { form: 'forms' }, enums: {}, hooks: ['appRequest (afterChange): a submission of Request an app generates the app into media'] },
@@ -992,9 +992,9 @@ export const MCP_COLLECTIONS: Readonly<Record<string, McpCollection>> = {
   users: { description: 'the users: who edits; keys never travel', enabled: findAnd(false, false) , scoped: false, filter: 'self, or an admin', relations: { 'tenants.tenant': 'tenants' }, enums: { roles: Object.keys(ROLES), 'tenants.roles': [...TENANT_ROLES] }, hooks: ['firstUserBootstrap (beforeChange)', 'useAPIKey'] }
 }
 /** Which installed plugin owns which served collection: the SDK's plugin builders follow it (the QPU plugin owns the docket). */
-export const PLUGIN_COLLECTIONS: Readonly<Record<string, readonly string[]>> = { payload: ['pages', 'posts', 'media', 'users'], 'form-builder': ['forms', 'form-submissions'], ecommerce: ['products', 'variants', 'carts', 'orders', 'transactions', 'addresses'], 'multi-tenant': ['tenants'], search: ['search'], redirects: ['redirects'], qpu: ['entries'] }
+const PLUGIN_COLLECTIONS: Readonly<Record<string, readonly string[]>> = { payload: ['pages', 'posts', 'media', 'users'], 'form-builder': ['forms', 'form-submissions'], ecommerce: ['products', 'variants', 'carts', 'orders', 'transactions', 'addresses'], 'multi-tenant': ['tenants'], search: ['search'], redirects: ['redirects'], qpu: ['entries'] }
 /** The MCP plugin\'s own secrets collection: never served, by design. */
-export const MCP_UNSERVED: readonly { collection: string; why: string }[] = [{ collection: 'payload-mcp-api-keys', why: 'the MCP plugin\'s own API keys: secrets never travel' }]
+const MCP_UNSERVED: readonly { collection: string; why: string }[] = [{ collection: 'payload-mcp-api-keys', why: 'the MCP plugin\'s own API keys: secrets never travel' }]
 const configKinds = ['payload', 'wrangler', 'tenant', 'pwa', 'mcp', 'versions', 'migration', 'fullstack', 'api', 'hooks', 'bindings', 'scopes', 'fields', 'validations', 'access', 'actions', 'packages', 'ecommerce', 'ui', 'adapters', 'gates', 'sets', 'realtime', 'branding', 'policies'] as const
 type ConfigKind = typeof configKinds[number]
 /** The torus of a configuration: its address, seed and reflection, and whether the loop closes (config → text → config at the same address). */
@@ -1024,7 +1024,7 @@ const varsOf = (tenant: string) => {
  *  the build metadata — so the lifespan of every single-digit combination is infinite: within a version, every state is an
  *  address, and the number changes only when the catalogue changes shape. */
 export const buildOf = (toolsNow: readonly string[]): string => uuidOf(`catalogue${toolsNow.join(',')}`).slice(0, 8)
-export const nextVersionOf = (current: string, toolsNow: readonly string[], lastTag: { version: string; tools: readonly string[]; epoch?: number }): { next: string; bump: 'major' | 'minor' | 'none'; epoch: number; build: string; added: string[]; removed: string[]; digits: 'single' } => {
+const nextVersionOf = (current: string, toolsNow: readonly string[], lastTag: { version: string; tools: readonly string[]; epoch?: number }): { next: string; bump: 'major' | 'minor' | 'none'; epoch: number; build: string; added: string[]; removed: string[]; digits: 'single' } => {
   const added = toolsNow.filter((t) => !lastTag.tools.includes(t)), removed = lastTag.tools.filter((t) => !toolsNow.includes(t))
   const bump = removed.length ? 'major' : added.length ? 'minor' : 'none'
   const [ma, mi] = lastTag.version.replace(/^v/, '').split('.').map((n) => Number(n) || 0) as [number, number]
@@ -1038,7 +1038,7 @@ export const nextVersionOf = (current: string, toolsNow: readonly string[], last
   void current
   return { next: `${next}+e${epoch}.${build}`, bump, epoch, build, added, removed, digits: 'single' }
 }
-export const configOf = (kind: ConfigKind, ctx: Context, p: { version?: string; description?: string; lastTag?: { version: string; tools: readonly string[] }; experience?: { copies?: number; involutions?: number; msByHost?: Record<string, number> }; rates?: Record<string, { rate: number }>; env?: readonly string[]; sets?: readonly string[]; hex?: string; stream?: readonly string[]; query?: StreamQuery; devDependencies?: Record<string, string>; branding?: BrandingInput; port?: number | boolean } = {}) => {
+const configOf = (kind: ConfigKind, ctx: Context, p: { version?: string; description?: string; lastTag?: { version: string; tools: readonly string[] }; experience?: { copies?: number; involutions?: number; msByHost?: Record<string, number> }; rates?: Record<string, { rate: number }>; env?: readonly string[]; sets?: readonly string[]; hex?: string; stream?: readonly string[]; query?: StreamQuery; devDependencies?: Record<string, string>; branding?: BrandingInput; port?: number | boolean } = {}) => {
   const hosts = Object.keys(TENANTS)
   switch (kind) {
     case 'payload': return { collections: [{ slug: 'pages', fields: ['lexical', 'tenant'], note: 'the plugins\' own collection; the fields are the plugins\'' }], plugins: PAYLOAD_PLUGINS.map((p) => ({ [p.name]: { package: p.pkg, ...p.options } })), combinations: 2 ** PAYLOAD_PLUGINS.length, combinationNote: 'every subset of the plugins is a configuration; the dashboard of this tool enumerates them by address' }
@@ -1914,7 +1914,7 @@ export { QpuLogo as FullLogo, QpuLogo as default } from '../../components/blocks
   }
 }
 /** The drift between a configuration as MCP computes it and the text a client holds (a file): every path whose value differs. */
-export const driftOf = (computed: unknown, current: unknown, path = ''): string[] => {
+const driftOf = (computed: unknown, current: unknown, path = ''): string[] => {
   if (JSON.stringify(computed) === JSON.stringify(current)) return []
   if (computed && current && typeof computed === 'object' && typeof current === 'object' && !Array.isArray(computed) && !Array.isArray(current)) {
     const keys = new Set([...Object.keys(computed), ...Object.keys(current)])
@@ -1963,8 +1963,8 @@ const WEBSITE_FIXTURE = { sha: 'main', truncated: false, tree: [
  *  once by the provider), the licence clause it enacts (BY, NC, ND; commercial use by licence) and the legal fact behind it. Measured on the
  *  generated code and the answered configurations, never asserted by hand; the role–operation combinations counted by the kernel
  *  (textbook_access_combinations); the quantum advantage among the checks, unlimited and without interaction (textbook_advantage_unbounded). Pure. */
-export const PERSPECTIVES = ['public', 'tenant', 'operator', 'client', 'developer', 'legal'] as const
-export const OPERATIONS = ['read', 'create', 'update', 'delete'] as const
+const PERSPECTIVES = ['public', 'tenant', 'operator', 'client', 'developer', 'legal'] as const
+const OPERATIONS = ['read', 'create', 'update', 'delete'] as const
 export const accessAuditOf = (ctx: Context) => {
   const files = (configOf('fullstack', ctx, {}) as { files: Record<string, string> }).files
   const text = (path: string) => files[path] ?? ''
@@ -2020,7 +2020,7 @@ export const accessAuditOf = (ctx: Context) => {
  *  plugins and the collections the app mounts; one address per combination (the fold of the sorted members), so two hosts in one environment
  *  mount the same set. The simplification: the MCP is organised around Payload's plugins and collections, each empowered by the one plugin
  *  (content addresses, involutions, teleports: minimal cost, every read free after the first). */
-export const scopeOf = (ctx: Context, env: readonly string[]) => {
+const scopeOf = (ctx: Context, env: readonly string[]) => {
   const ad = adaptersOf(env)
   const tools = toolsOf(ctx).map((t) => t.name)
   const plugins = PAYLOAD_PLUGINS.map((p) => p.name)
@@ -2032,8 +2032,8 @@ export const scopeOf = (ctx: Context, env: readonly string[]) => {
 /** The branding, computed in real time from the tenant's address (the one quantum core) unless the tenant defines it in the admin (tenants.branding):
  *  the name, the tagline, the accent, the logo, the icon; each field says whether it is the user's or computed. Pure; the global and the Branding
  *  component render from it. */
-export type BrandingInput = { slug?: string; host?: string; name?: string; branding?: { name?: string | null; tagline?: string | null; accent?: string | null; logo?: { url?: string } | string | null; icon?: { url?: string } | string | null } | null }
-export const brandingOf = (t: BrandingInput = {}) => {
+type BrandingInput = { slug?: string; host?: string; name?: string; branding?: { name?: string | null; tagline?: string | null; accent?: string | null; logo?: { url?: string } | string | null; icon?: { url?: string } | string | null } | null }
+const brandingOf = (t: BrandingInput = {}) => {
   const slug = t.slug ?? (t.host ? tenantOf(t.host) : 'uuidna')
   const address = uuidOf(`tenant:${slug}`); const s = styleOf(address)
   const user = t.branding ?? {}
@@ -2052,7 +2052,7 @@ export const brandingOf = (t: BrandingInput = {}) => {
  *  shares). As an example of what the hologram presents: every block offers its ten program rotations in every locale as SEO pages from the
  *  address alone, so the count of URLs the sitemaps may present, the sitemaps that count needs within the protocol's limits, and the compliance
  *  every page carries are computed here (textbook_hologram_rotations, textbook_sitemap_capacity, textbook_fractal_scales). */
-export const hologramOf = (ctx: Context, origin = 'https://qpu.uuidna.com') => {
+const hologramOf = (ctx: Context, origin = 'https://qpu.uuidna.com') => {
   const site = siteOf(ctx, origin)
   const docs = site.pages
   const gatePages = site.gates.pages
