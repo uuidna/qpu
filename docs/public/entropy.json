@@ -1,8 +1,8 @@
 {
- "date": "2026-10-27T17:23:50.812Z",
+ "date": "2026-10-27T17:30:56.840Z",
  "literals": {
-  "urls": 835,
-  "distinctUrls": 449,
+  "urls": 832,
+  "distinctUrls": 448,
   "paths": 188,
   "outside": 568,
   "tokens": 6048,
@@ -648,7 +648,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 930,
- "lines": 82561,
+ "lines": 82569,
  "findings": 886,
  "fused": 318,
  "reactions": 568,

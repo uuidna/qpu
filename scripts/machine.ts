@@ -78,6 +78,15 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
   return { plan, record, answer: { plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry } } }
 }
 
+/** A merge as one linear flow of machine actions: the working tree set aside when it holds changes, the branch merged without a commit (no
+ *  pre-use: nothing is regenerated before it), the merge completed by the commit action, whose pre-use decides the merged tree. */
+const mergeFlow = async (branch: string, message: string | undefined, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) => {
+  const dirty = (await spawnRun({ action: 'status', command: { cmd: 'git', args: ['status', '--porcelain', '--untracked-files=no'] } }, cwd)).stdout.trim()
+  const aside = dirty ? await runMachine({ action: 'set-aside' }, cwd, onProgress) : null, merged = await runMachine({ action: 'merge', branch }, cwd, onProgress)
+  const commit = merged.record?.ok ? await runMachine({ action: 'commit', confirm: true, message: message ?? `Merge ${branch}\n\nBrought in by the machine's merge flow: the working tree set aside, the branch merged without a\ncommit, the merge completed through the commit action.` }, cwd, onProgress) : null
+  return { aside, merged, commit }
+}
+
 /** The status on request: what runs, for how long and its ETA, the last events and what the stream says of its own silence. */
 export const now = async (root: string, last = 20) => {
   const file = join(root, (await runFiles()).stream)
@@ -89,7 +98,9 @@ export const now = async (root: string, last = 20) => {
 // the machine from the command line: now, the last receipt's red steps, or any allowed action, its message read from a file
 if (process.argv[1]?.endsWith('machine.ts')) {
   const [, , action, ...rest] = process.argv, flag = (n: string) => (rest.includes(n) ? rest[rest.indexOf(n) + 1] : undefined)
+  const say = (x: Awaited<ReturnType<typeof runMachine>>) => (x.answer as { preUse?: string }).preUse ?? (x.answer as { record?: { says?: string } }).record?.says ?? (x.answer as { says?: string }).says ?? JSON.stringify(x.answer)
   if (action === 'now') console.log(JSON.stringify(await now(process.cwd()), null, 1))
   else if (action === 'receipt') { const r = readJson(join(process.cwd(), (await runFiles()).receipt)) as { head?: string; steps?: { name: string; status: string; tail: string }[] } | null, red = (r?.steps ?? []).filter((s) => s.status === 'red'); for (const s of red) console.log(`${s.name}: ${s.tail.split('\n').filter((l) => /✗|✖|rror/.test(l)).slice(0, 3).join(' | ')}`); console.log(`${r?.head}: ${red.length} red`) }
-  else if (action) { const file = flag('--message-file'), r = await runMachine({ action, confirm: rest.includes('--confirm'), message: file ? readFileSync(file, 'utf8') : flag('-m'), branch: flag('--branch') }, process.cwd()); console.log(r.answer.preUse ?? r.answer.record?.says ?? (r.answer.plan as { says?: string } | undefined)?.says ?? JSON.stringify(r.answer)) }
+  else if (action === 'merge') { const file = flag('--message-file'), f = await mergeFlow(flag('--branch') ?? '', file ? readFileSync(file, 'utf8') : flag('-m'), process.cwd()); for (const x of [f.aside, f.merged, f.commit]) if (x) console.log(say(x)) }
+  else if (action) { const file = flag('--message-file'), r = await runMachine({ action, confirm: rest.includes('--confirm'), message: file ? readFileSync(file, 'utf8') : flag('-m'), branch: flag('--branch') }, process.cwd()); console.log(say(r)) }
 }
