@@ -7,10 +7,9 @@ import { execSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { LICENSE } from '../src/quantum/license.ts'
 import { TENANTS } from '../src/quantum/tenants.ts'
 import type { SourceRequest, SourceAnswer } from '../src/quantum/sources.ts'
-import { readJson, getOf } from './mcp.ts'
+import { readJson, getOf, publishOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const offline = process.env.QPU_OFFLINE === '1' || process.argv.includes('--offline')
@@ -42,7 +41,7 @@ const main = async () => {
   const integrity = toolCallerOf('seal')({ text: 'artifacts', artifacts: hashed })
   console.log(`sources: integrity: ${integrity?.says}`)
   const date = new Date().toISOString()
-  writeFileSync(join(ROOT, 'docs', 'public', 'sources.json'), JSON.stringify({ license: LICENSE.attribution, date, ...j, integrity }, null, 1) + '\n')
+  publishOf('sources', { date, ...j, integrity })
   const lines = ['---', 'title: Sources', 'order: 57', '---', '', '# The immutable sources of leads', '', `Read on ${date} by \`leads { sources }\`: ${cell(j.says)}.`, '', '## Licence candidates', '', 'Each is a candidate the court computed a case for. None is a verdict.', '', '| where | name | why | case |', '| --- | --- | --- | --- |', ...j.licence.map((x: { where: string; name: string; url: string; why: string; case: { case: string } }) => `| ${x.where} | [${cell(x.name)}](${x.url}) | ${cell(x.why)} | \`${x.case.case}\` |`), '', '## Precedence', '', '| record | date | neighbours | before | after |', '| --- | --- | --- | --- | --- |', ...j.precedence.map((p: { doi: string; date: string; works: number; before: number; after: number }) => `| ${p.doi} | ${p.date} | ${p.works} | ${p.before} | ${p.after} |`), '', '## Textbooks', '', `${j.textbooks.books} open books: ${j.textbooks.routed} reached by the theorems, ${j.textbooks.inDomain} of their domain are leads, ${j.textbooks.outside} outside.`, '', '| theorem | books |', '| --- | --- |', ...Object.entries(j.textbooks.byTheorem as Record<string, number>).sort((a, b) => b[1] - a[1]).map(([k, n]) => `| \`${k}\` | ${n} |`), '', '## Integrity of the public artifacts', '', `${cell(integrity?.says)}.`, '', '| artifact | algorithm | verdict |', '| --- | --- | --- |', ...((integrity?.rows ?? []) as { name: string; url: string; algorithm: string; verdict: string }[]).map((r) => `| [${cell(r.name)}](${r.url}) | ${r.algorithm} | ${r.verdict} |`), '', '## MCP doors', '', '| server | remote |', '| --- | --- |', ...j.mcp.doors.map((d: { name: string; remote: string | null }) => `| ${cell(d.name)} | ${cell(d.remote ?? '')} |`), '']
   writeFileSync(join(ROOT, 'docs', 'sources.md'), lines.join('\n'))
   console.log(`sources: ${j.says}`)

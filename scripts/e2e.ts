@@ -5,6 +5,7 @@ import { writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
+import { selftestOf } from './mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import type { E2eRequest, E2eAnswer } from '../src/quantum/e2e.ts'
 import { valueOf } from '../src/quantum/e2e.ts'
@@ -15,8 +16,7 @@ import { compareStylesheets, compareToolLists, compareCoverage } from './compare
 const ROOT = process.cwd()
 const call = toolCallerOf('e2e')
 const main = async () => {
-  const selftest = call({ selftest: true })
-  console.log(`e2e selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
+  const selftest = selftestOf('e2e', call)
   const hosts = (process.env.QPU_E2E_HOSTS ?? '').split(',').map((s) => s.trim()).filter(Boolean)
   const started = Date.now()
   const plan = call(hosts.length ? { hosts } : {})

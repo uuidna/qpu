@@ -9,7 +9,7 @@ import { LEADS } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { readJson } from './mcp.ts'
+import { readJson, selftestOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
@@ -18,8 +18,7 @@ const toolsNow = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
 const inputs = uuidOf(JSON.stringify({ leads: LEADS, examples: EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, arguments: e.arguments, shows: e.shows })), tools: toolsNow, writer: readFileSync(import.meta.filename, 'utf8') }))
 const outPath = join(ROOT, 'docs', 'public', 'imagination.json')
 { const prev = readJson(outPath, {}) as { inputs?: string; imaginedLeads?: number; leads?: number; partial?: boolean }; if (prev.inputs === inputs && !prev.partial) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } }
-const selftest = call({ selftest: true })
-console.log(`imagine selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
+const selftest = selftestOf('imagine', call)
 // the quantum: every lead imagined once per (statement, tools), kept by its own hash; a run imagines only the new hashes, in
 // chunks, for no longer than the quantum; the rest wait for the next run, said so in the file
 const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)

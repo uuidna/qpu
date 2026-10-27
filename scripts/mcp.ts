@@ -3,10 +3,19 @@
 // MCP: a tools/call with the user's MCP key (QPU_APP_KEY, never written anywhere) to /api/mcp (QPU_APP_MCP, else the local app), the
 // plugin's json blocks parsed, a find walked page by page. Without a key or an answer it says so and returns nothing: an unread docket is
 // unknown to its caller, never a file fallback.
-import { readFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { LICENSE } from '../src/quantum/license.js'
+import { execFileSync } from 'node:child_process'
 import { GOOGLE_HOST } from '../src/quantum/discovery.js'
 import { uuidOf } from '../src/quantum/blocks.js'
 export const MCP_URL = 'http://localhost:3000/api/mcp'
+// else the keychain item qpu-app-key, read once into this process and its children, never printed (the probe probe-app-key names how to store it)
+if (!process.env.QPU_APP_KEY) try { const k = execFileSync('security', ['find-generic-password', '-s', 'qpu-app-key', '-w'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 }).trim(); if (k) process.env.QPU_APP_KEY = k } catch { /* no keychain item */ }
+/** A step's published record, docs/public/<name>.json under the licence: the one writer every step shares */
+export const publishOf = (name: string, record: object) => writeFileSync(join(process.cwd(), 'docs', 'public', `${name}.json`), JSON.stringify({ license: LICENSE.attribution, ...record }, null, 1) + '\n')
+/** A toolbox's selftest run through its caller and its tally printed as every step's first line */
+export const selftestOf = (name: string, call: (a: { selftest: true }) => any) => { const s = call({ selftest: true }); console.log(`${name} selftest: ${s.passed ? 'pass' : 'FAIL'} (${s.checks.filter((c: { passed: boolean }) => c.passed).length}/${s.checks.length})`); return s }
 /** A published file's JSON, or the fallback when it is missing or unreadable: the one reader every script shares, never a throw */
 export const readJson = (path: string, fallback: any = null): any => { try { return JSON.parse(readFileSync(path, 'utf8')) } catch { return fallback } }
 const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
@@ -52,7 +61,7 @@ type Answer = { text: string; error?: undefined } | { text?: undefined; error: s
 export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: string | undefined = process.env.QPU_APP_KEY) => {
   const s = sessionOf(url, key)
   const send = async (tool: string, args: Record<string, unknown>): Promise<Answer> => {
-    if (!key) return { error: `no MCP key for ${url} (QPU_APP_KEY)` }
+    if (!key) return { error: `no MCP key for ${url}: QPU_APP_KEY, or the keychain item qpu-app-key (security add-generic-password -s qpu-app-key -a "$USER" -w, the user's act)` }
     const r = await s.request('tools/call', { name: tool, arguments: args })
     if (r.error !== undefined) return { error: r.error }
     return { text: ((r.result?.content ?? []) as { text: string }[]).map((c) => c.text).join('\n') }

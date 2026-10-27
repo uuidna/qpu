@@ -1,12 +1,23 @@
 // The penalties recorded where every detail lives, the RAID: the pure door (repository { penalty }) prices and seals each one, this client writes
 // it to the docket through the one MCP client (createEntries, from 'penalties'). The same gap has the same address, so it is one entry however
-// often it is penalised; a clearing names the gap its evidence closed. Without a key or an app it says so and writes nothing — never a file.
+// often it is penalised; a clearing names the gap its evidence closed. Without a key or an app it says so and queues the penalty in .qpu.
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { mcpOf } from './mcp.ts'
+import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { RUN_FILES } from '../src/quantum/toolboxes/repository.ts'
 
 const repository = toolCallerOf('repository')
 type Penalty = { rule: string; kind?: string; subject?: string; bytes?: number; tokens?: number; committer?: string | null; evidence: Record<string, unknown> & { key: string } }
-const write = async (body: unknown) => { const r = await mcpOf().call('createEntries', { kind: 'document', from: 'penalties', body }); return r.error === undefined ? 'recorded in the docket' : /duplicate|unique|already/i.test(r.error) ? 'already recorded (the same gap, one entry)' : `not recorded: ${r.error}` }
+// a penalty the docket did not take (no key, no app) is queued in .qpu, never lost; whenever the docket takes one, the queue is written first
+const QUEUE = join(process.cwd(), RUN_FILES.penalties), taken = (e?: string) => e === undefined || /duplicate|unique|already/i.test(e)
+const post = async (body: unknown) => (await mcpOf().call('createEntries', { kind: 'document', from: 'penalties', body })).error
+const write = async (body: unknown) => {
+  const e = await post(body)
+  if (!taken(e)) { mkdirSync(dirname(QUEUE), { recursive: true }); appendFileSync(QUEUE, JSON.stringify(body) + '\n'); return `queued in ${RUN_FILES.penalties} until the docket takes it: ${e}` }
+  if (existsSync(QUEUE)) { const left: string[] = []; for (const l of readFileSync(QUEUE, 'utf8').split('\n').filter(Boolean)) if (!taken(await post(JSON.parse(l)))) left.push(l); if (left.length) writeFileSync(QUEUE, left.join('\n') + '\n'); else rmSync(QUEUE) }
+  return e === undefined ? 'recorded in the docket' : 'already recorded (the same gap, one entry)'
+}
 export const penalise = async (p: Penalty) => { const r = repository({ penalty: p }); return { ...r, recorded: await write(r.body) } }
 // a clearing books the penalty's own count back (its tokens and committer), so the offender's standing is what it was before: no punishment
 export const clear = async (rule: string, by: string, evidence: Penalty['evidence'], kind?: string, tokens?: number, committer?: string | null) => { const r = repository({ penalty: { rule, kind, cleared: true, by, evidence, ...(typeof tokens === 'number' ? { tokens } : {}), ...(committer ? { committer } : {}) } }); return { ...r, recorded: await write(r.body) } }

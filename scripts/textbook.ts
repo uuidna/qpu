@@ -6,8 +6,7 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { LICENSE } from '../src/quantum/license.ts'
-import { getOf, readJson } from './mcp.ts'
+import { getOf, readJson, publishOf } from './mcp.ts'
 const ROOT = process.cwd()
 const call = toolCallerOf('textbook')
 const main = async () => {
@@ -56,7 +55,7 @@ const main = async () => {
   const prose = call({ prose: { texts: proseTexts } }) as { says: string; numbers: number; backed: number; unbacked: number; verdicts: number; leads: unknown[] }
   console.log(`textbook: prose: ${prose.says}`)
   const date = new Date().toISOString()
-  writeFileSync(join(ROOT, 'docs', 'public', 'textbook.json'), JSON.stringify({ license: LICENSE.attribution, date, inputs, theoremsViaPayloadMcp: theorems, prose: { numbers: prose.numbers, backed: prose.backed, unbacked: prose.unbacked, verdicts: prose.verdicts, leads: prose.leads }, payloadSurface: { readOn: schemas.readOn, dimensions: schemas.dimensions, agreeing: schemas.agreeing, served: schemas.served, standards: schemas.standards.length, coordination: schemas.coordination.length, reread: schemas.reread, leads: schemas.leads }, online: process.env.QPU_OFFLINE !== '1', fromWave: plan.requests - missing.length, fetchedHere: process.env.QPU_OFFLINE !== '1' ? missing.length : 0, compliance: plan.compliance, ...v }, null, 1) + '\n')
+  publishOf('textbook', { date, inputs, theoremsViaPayloadMcp: theorems, prose: { numbers: prose.numbers, backed: prose.backed, unbacked: prose.unbacked, verdicts: prose.verdicts, leads: prose.leads }, payloadSurface: { readOn: schemas.readOn, dimensions: schemas.dimensions, agreeing: schemas.agreeing, served: schemas.served, standards: schemas.standards.length, coordination: schemas.coordination.length, reread: schemas.reread, leads: schemas.leads }, online: process.env.QPU_OFFLINE !== '1', fromWave: plan.requests - missing.length, fetchedHere: process.env.QPU_OFFLINE !== '1' ? missing.length : 0, compliance: plan.compliance, ...v })
   writeFileSync(join(ROOT, 'docs', 'textbook.md'), ['---', 'title: Textbook', 'order: 44', '---', '', '# The textbook, verified online', '', `Every example of the surface, categorised for reuse by the \`textbook\` tool, and its public sources fetched by this device on ${date}: ${v.requests} requests (${plan.requests - missing.length} already in the wave), the outcome sealed as \`${v.id}\`. ${plan.compliance}.`, '', `States: ${Object.entries(v.states).map(([k, n]) => `${k} ${n}`).join(', ')}.`, '', '| Example | Tool | Theorem | Requests | Reachable | Contract | State |', '|---|---|---|---:|---:|---:|---|', ...(v.verified as { id: string; tool: string; theorem: string | null; requests: number; reachable: number; contracted: number; state: string }[]).map((x) => `| ${x.id} | ${x.tool} | ${x.theorem ?? '—'} | ${x.requests} | ${x.reachable} | ${x.contracted} | ${x.state} |`), ''].join('\n'))
   console.log(`textbook: ${v.examples} examples, ${v.requests} requests (${plan.requests - missing.length} from the wave, ${missing.length} ${process.env.QPU_OFFLINE === '1' ? 'unfetched offline' : 'fetched here'}); ${Object.entries(v.states).map(([k, n]) => `${k} ${n}`).join(', ')}; sealed ${v.id}`)
 }

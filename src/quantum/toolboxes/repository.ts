@@ -110,7 +110,7 @@ const stepPlanOf = (steps: readonly { name: string; key: string | null; outputs?
 }
 /** The files the run writes and the hooks read back as facts: the receipt, the configs' approval, the gate's decoding. A table of paths, in the
  *  path registry. */
-export const RUN_FILES = { receipt: 'docs/public/receipt.json', configs: 'docs/public/configs.json', e2e: 'docs/public/e2e.json', receipts: 'docs/public/receipts.ndjson', stream: '.qpu/stream.ndjson', workflows: '.github/workflows' } as const
+export const RUN_FILES = { receipt: 'docs/public/receipt.json', configs: 'docs/public/configs.json', e2e: 'docs/public/e2e.json', receipts: 'docs/public/receipts.ndjson', stream: '.qpu/stream.ndjson', penalties: '.qpu/penalties.ndjson', workflows: '.github/workflows' } as const
 /** What Payload writes itself (its types, the admin import map), generated whatever its header says; the sitemaps lie outside LITERAL_ROOTS. */
 const PAYLOAD_WRITES = /^site\/src\/(payload-types\.ts|app\/\(payload\)\/admin\/importMap\.js)$/
 export const GENERATED_FILES = ['src/quantum/theorems-index.ts', 'src/quantum/processing/unit/lean/Qpu/Textbook.lean', 'src/quantum/clay-statements.ts', 'docs/public/mcp.json', 'docs/mcp.md', 'docs/.vitepress/config.mts', 'docs/public/manifest.webmanifest', 'site/src/payload.qpu.config.ts', 'site/src/payload.qpu.mcp.ts', 'site/src/payload.qpu.adapters.ts', 'site/src/payload.qpu.ecommerce.ts', 'site/src/collections/Entries.ts', 'site/src/collections/Tenants.ts', 'site/src/blocks/Qpu/config.ts'] as const
@@ -160,7 +160,7 @@ const workflowOf = (name: WorkflowName, o: { offline?: boolean } = {}) => {
   return { name, strict: w.strict, says: w.says, steps, rules: WORKFLOW_RULES.filter((r) => r.appliesTo.includes(name)).map((r) => ({ rule: r.rule, theorem: r.theorem, says: r.says })), client: 'scripts/hook.ts <name>: walks these steps, hands the facts back (facts) and obeys the decision', theorem: 'textbook_hook_workflows' }
 }
 
-export type Local = { probes?: { adc: boolean; payload: { installed: string | null; declared: string | null } }; remote: string | null; head: string; branch: string; version: string; worktrees: { path: string; head: string; branch: string | null }[]; branches: { name: string; upstream: string | null; head: string }[]; tags: { name: string; commit: string }[]; conceptDoi?: string | null; /** the package name on the registry */ pkg?: string | null; /** the workflow files held here (.github/workflows) */ workflows?: string[] }
+export type Local = { probes?: { appKey?: boolean; adc: boolean; payload: { installed: string | null; declared: string | null } }; remote: string | null; head: string; branch: string; version: string; worktrees: { path: string; head: string; branch: string | null }[]; branches: { name: string; upstream: string | null; head: string }[]; tags: { name: string; commit: string }[]; conceptDoi?: string | null; /** the package name on the registry */ pkg?: string | null; /** the workflow files held here (.github/workflows) */ workflows?: string[] }
 export type Request = { id: string; url: string; purpose: 'branches' | 'tags' | 'releases' | 'zenodo' | 'npm' | 'runs' | 'workflows' | 'protection'; contracted: 'yes' | 'no' | 'unknown'; method?: 'POST'; body?: unknown; via?: 'rest' | 'mcp' }
 /** GitHub's MCP: the doors that watch a repository, with the arguments the server's own contract names. */
 const GITHUB_MCP_URL = 'https://api.githubcopilot.com/mcp/'
@@ -223,6 +223,7 @@ const watchOf = (local: Local, answers: readonly Answer[]): Watch => {
   if (zenVersions && releaseTags) for (const v of zenVersions.filter((v) => !releaseTags.includes(v) && !releaseTags.includes(`v${v}`))) lead(`zenodo-without-release-${v}`, `Zenodo holds version ${v} and GitHub has no release for it`, 'a Zenodo version without its release: the orphan lineage, or a manual upload')
   // the user's acts: leads their probes close, never a wait
   const p = local.probes, guarded = parse<{ protected?: boolean }>(answers.find((a) => a.purpose === 'protection'))
+  if (p?.appKey === false) lead('probe-app-key', 'the hooks hold no Payload MCP key', 'security add-generic-password -s qpu-app-key -a "$USER" -w stores it in the keychain once, the user\'s act; until then penalties queue in .qpu and nothing waits')
   if (p && !p.adc) lead('probe-google-adc', 'no Google application default credentials', 'gcloud auth application-default login is the user\'s; the adapters answer keyless meanwhile')
   if (p && p.payload.installed !== p.payload.declared) lead('probe-payload-installed', `Payload ${p.payload.installed} is installed, ${p.payload.declared} declared`, 'the install is the user\'s; the tree builds on the installed one meanwhile')
   if (guarded && !guarded.protected) lead('probe-branch-protection', 'main is not protected at the remote', 'the setting is the user\'s; the hooks enforce the rules meanwhile')

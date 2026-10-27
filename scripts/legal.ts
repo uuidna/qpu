@@ -7,7 +7,7 @@ import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
-import { sessionOf, readJson } from './mcp.ts'
+import { sessionOf, readJson, selftestOf } from './mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
 const ROOT = process.cwd()
@@ -17,8 +17,7 @@ const call = toolCallerOf('legal')
 const text = (f: string) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT, f), 'utf8') : undefined)
 const rpc = (url: string, name: string, args: unknown) => sessionOf(url).tool(name, args, (r) => account(name, r))
 const main = async () => {
-  const selftest = call({ selftest: true })
-  console.log(`legal selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
+  const selftest = selftestOf('legal', call)
   const texts = { readme: text('README.md'), citation: text('CITATION.cff'), zenodo: text('.zenodo.json'), package: text('package.json'), worker: text('src/worker.ts'), billing: text('src/quantum/toolboxes/billing.ts'), hmac: text('src/quantum/hmac.ts'), mcp: text('src/quantum/mcp.ts') }
   const discovery = readJson('docs/public/discovery.json')
   const ledger = text('docs/public/theorems.ndjson')?.split('\n').filter(Boolean).map((l) => (JSON.parse(l) as { key: string }).key).filter((k) => !k.startsWith('_private.') && !/\.(eq_\d+|match_\d+|_proof(?:_\d+)+|_simp(?:_\d+)+)$/.test(k)) ?? []

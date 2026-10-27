@@ -7,8 +7,7 @@ import { spawnSync } from 'node:child_process'
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { capacityOf } from '../src/quantum/toolboxes/billing.ts'
-import { LICENSE } from '../src/quantum/license.ts'
-import { readJson } from './mcp.ts'
+import { readJson, publishOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const started = performance.now()
@@ -31,7 +30,7 @@ if (disc?.hosts) capacityIn.gates = disc.hosts.map((h) => ({ name: h.host, calle
 const capacity = capacityOf(capacityIn)
 console.log(`idle: ${capacity.gaps.length} idle item(s); ${['doors', 'theorems', 'gates', 'qubits', 'shor'].map((k) => { const m = (capacity as Record<string, unknown>)[k] as { percentIdle: number; idle: number; unit: string } | null; return m ? `${k} ${m.percentIdle}% idle (${m.idle} ${m.unit})` : `${k} unmeasured` }).join(', ')}`)
 mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
-writeFileSync(join(ROOT, 'docs', 'public', 'idle.json'), JSON.stringify({ license: LICENSE.attribution, date: new Date().toISOString(), input: capacityIn, top: capacity.top, counts: Object.fromEntries(['doors', 'theorems', 'gates', 'qubits', 'shor'].map((k) => { const m = (capacity as Record<string, unknown>)[k] as { capacity: number; used: number; idle: number; percentIdle: number; unit: string; idleNames: string[] } | null; return [k, m ? { unit: m.unit, capacity: m.capacity, used: m.used, idle: m.idle, percentIdle: m.percentIdle, idleNames: m.idleNames } : null] })), never: { shor: capacity.shor?.never ?? [], qubitsNeverPastTwo: capacity.qubits?.neverPastTwo ?? [] }, advantage: capacity.advantage }, null, 1) + '\n')
+publishOf('idle', { date: new Date().toISOString(), input: capacityIn, top: capacity.top, counts: Object.fromEntries(['doors', 'theorems', 'gates', 'qubits', 'shor'].map((k) => { const m = (capacity as Record<string, unknown>)[k] as { capacity: number; used: number; idle: number; percentIdle: number; unit: string; idleNames: string[] } | null; return [k, m ? { unit: m.unit, capacity: m.capacity, used: m.used, idle: m.idle, percentIdle: m.percentIdle, idleNames: m.idleNames } : null] })), never: { shor: capacity.shor?.never ?? [], qubitsNeverPastTwo: capacity.qubits?.neverPastTwo ?? [] }, advantage: capacity.advantage })
 console.log('idle: state written for the hooks and next to read')
 if (process.env.QPU_APP_KEY) {
   const { penalise, clear, openPenaltiesOf } = await import('./penalties.ts')

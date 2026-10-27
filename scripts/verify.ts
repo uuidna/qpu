@@ -4,17 +4,15 @@ import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { LICENSE } from '../src/quantum/license.ts'
 import type { WaveRequest, WaveResult } from '../src/quantum/wave.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { readJson, getOf } from './mcp.ts'
+import { readJson, getOf, selftestOf, publishOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('wave')
 import { setTimeout as sleep } from 'node:timers/promises'
 const main = async () => {
-  const selftest = call({ selftest: true })
-  console.log(`wave selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
+  const selftest = selftestOf('wave', call)
   const plan = call({})
   // the quantum: what an earlier run fetched today stands (by url); only the rest is fetched, and no more than the quantum allows
   const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
@@ -56,7 +54,7 @@ const main = async () => {
   if (isShard) { const mine = results.filter((r) => !have.has(keyOf(r))); leaveShard('verify', mine); console.log(`verify: ${shardLabel()} fetched ${mine.length}, ${remaining} remain`); return }
   const read = call({ results, contracts })
   const date = new Date().toISOString()
-  writeFileSync(join(ROOT, 'docs', 'public', 'verification.json'), JSON.stringify({ license: LICENSE.attribution, date, selftest: { passed: selftest.passed }, partial: remaining > 0, remaining, leads: plan.leads, requests: all.length, done: read.results.length, summary: read.summary, results: read.results }, null, 1) + '\n')
+  publishOf('verification', { date, selftest: { passed: selftest.passed }, partial: remaining > 0, remaining, leads: plan.leads, requests: all.length, done: read.results.length, summary: read.summary, results: read.results })
   writeFileSync(join(ROOT, 'docs', 'verification.md'), read.page)
   console.log(`verify: ${read.results.length} of ${all.length} fetched, ${read.reachable} reachable${remaining ? `; ${remaining} remain for the next quantum` : '; the wave is whole'}; ${JSON.stringify(read.summary)}`)
 }

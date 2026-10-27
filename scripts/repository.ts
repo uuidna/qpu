@@ -6,15 +6,13 @@ import { join } from 'node:path'
 import { homedir } from 'node:os'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { LICENSE } from '../src/quantum/license.ts'
-import { readJson } from './mcp.ts'
+import { readJson, selftestOf, publishOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('repository')
 const git = (...args: string[]) => { try { return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).trim() } catch { return '' } }
 const main = async () => {
-  const selftest = call({ selftest: true })
-  console.log(`repository selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
+  const selftest = selftestOf('repository', call)
   const zen = readJson('.zenodo.json', {}) as { related_identifiers?: { identifier: string; relation: string }[] }
   const conceptDoi = zen.related_identifiers?.find((r) => r.relation === 'isVersionOf' || r.relation === 'isPartOf')?.identifier ?? (process.env.QPU_CONCEPT_DOI ?? '10.5281/zenodo.22700098')
   const local = {
@@ -23,7 +21,7 @@ const main = async () => {
     worktrees: git('worktree', 'list', '--porcelain').split('\n\n').filter(Boolean).map((block) => { const f = Object.fromEntries(block.split('\n').map((l) => [l.split(' ')[0]!, l.slice(l.indexOf(' ') + 1)])); return { path: f.worktree ?? '', head: f.HEAD ?? '', branch: f.branch ? f.branch.replace('refs/heads/', '') : null } }),
     branches: git('for-each-ref', '--format=%(refname:short) %(upstream:short) %(objectname:short)', 'refs/heads').split('\n').filter(Boolean).map((l) => { const [name, a, b] = l.split(' '); return b ? { name: name!, upstream: a!, head: b } : { name: name!, upstream: null, head: a! } }),
     tags: git('for-each-ref', '--format=%(refname:short) %(objectname:short)', 'refs/tags').split('\n').filter(Boolean).map((l) => { const [name, commit] = l.split(' '); return { name: name!, commit: commit! } }),
-    conceptDoi, probes: { adc: existsSync(process.env.GOOGLE_APPLICATION_CREDENTIALS ?? join(homedir(), '.config', 'gcloud', 'application_default_credentials.json')), payload: { installed: readJson(join('site', 'node_modules', 'payload', 'package.json'))?.version ?? null, declared: readJson(join('site', 'package.json'))?.dependencies?.payload ?? null } },
+    conceptDoi, probes: { appKey: Boolean(process.env.QPU_APP_KEY), adc: existsSync(process.env.GOOGLE_APPLICATION_CREDENTIALS ?? join(homedir(), '.config', 'gcloud', 'application_default_credentials.json')), payload: { installed: readJson(join('site', 'node_modules', 'payload', 'package.json'))?.version ?? null, declared: readJson(join('site', 'package.json'))?.dependencies?.payload ?? null } },
   }
   const contracts: Record<string, string[]> = Object.fromEntries(((readJson(join(ROOT, 'docs', 'public', 'discovery.json'), {}) as { hosts?: { host: string; paths?: string[] }[] }).hosts ?? []).filter((h) => h.paths?.length).map((h) => [h.host, h.paths!]))
   const offline = process.env.QPU_OFFLINE === '1'
@@ -39,7 +37,7 @@ const main = async () => {
   }
   const w = call({ local, contracts, answers })
   const date = new Date().toISOString()
-  writeFileSync(join(ROOT, 'docs', 'public', 'repository.json'), JSON.stringify({ license: LICENSE.attribution, date, online: !offline, selftest: { passed: selftest.passed }, ...w.watch }, null, 1) + '\n')
+  publishOf('repository', { date, online: !offline, selftest: { passed: selftest.passed }, ...w.watch })
   writeFileSync(join(ROOT, 'docs', 'repository.md'), w.page)
   // the watch's leads in the docket next keeps, replaced each run
   const docket = join(ROOT, 'docs', 'public', 'next-leads.json')

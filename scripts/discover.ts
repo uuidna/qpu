@@ -5,7 +5,6 @@ import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { LICENSE } from '../src/quantum/license.ts'
 import { LEADS } from '../src/quantum/leads.ts'
 import type { Request, Answer } from '../src/quantum/discovery.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
@@ -16,14 +15,13 @@ mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const UA = 'uuidna-qpu-discover (https://qpu.uuidna.com)'
 const call = toolCallerOf('discover')
 import { setTimeout as sleep } from 'node:timers/promises'
-import { readJson, getOf, mcpOf } from './mcp.ts'
+import { readJson, getOf, mcpOf, selftestOf, publishOf } from './mcp.ts'
 const fetchOne = async (r: Request): Promise<Answer> => {
   try { const res = await getOf(r.url, 'application/json, text/event-stream, application/yaml, text/xml, */*', 30000, { method: r.method, body: r.body, agent: UA, headers: r.headers }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
   catch (e) { return { ...r, status: 0, type: '', text: `fetch failed: ${(e as Error).message}` } }
 }
 const main = async () => {
-  const selftest = call({ selftest: true })
-  console.log(`discover selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
+  const selftest = selftestOf('discover', call)
   // the quantum: answers kept by request id for a day; only the rest is fetched, no more than the quantum allows; a discovery
   // from what is answered so far is written either way, marked partial while requests remain
   const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
@@ -66,7 +64,7 @@ const main = async () => {
   if (read.urls.length) await mcp.call('createEntries', { kind: 'document', from: 'sitemap', body: read })
   const sealed = mcp.docsOf((await mcp.call('findEntries', { where: JSON.stringify({ from: { equals: 'sitemap' } }), sort: '-createdAt', limit: 1, page: 1 })).text ?? '')[0] as { id: string; body: { urls: unknown[] } } | undefined
   const s = sealed ? toolCallerOf('leads')({ sitemap: sealed.body }) : null, sitemap = s ? { entry: sealed!.id, urls: s.urls, covered: s.covered, refused: s.refused, counts: s.counts } : { entry: null, says: 'no sealed sitemap read from the docket' }
-  writeFileSync(join(ROOT, 'docs', 'public', 'discovery.json'), JSON.stringify({ license: LICENSE.attribution, date, partial: remaining > 0, remaining, fetched, reused, selftest: { passed: selftest.passed, checks: selftest.checks }, ...discovery, sitemap }, null, 1) + '\n')
+  publishOf('discovery', { date, partial: remaining > 0, remaining, fetched, reused, selftest: { passed: selftest.passed, checks: selftest.checks }, ...discovery, sitemap })
   writeFileSync(join(ROOT, 'docs', 'discovery.md'), phase.page)
   // leads first: every hand-written lead still open asks the registry for related MCPs (cached a day, within what is left of the quantum), then each remote's tools/list is read so the related doors are known through qpu
   const related: { lead: string; words: string[]; servers: number; serverList: unknown[]; extended: { server: string; url: string; status: number; doors: number }[]; bestDoors: { server: string; url: string; door: string; score: number; shared: string[] }[] }[] = []

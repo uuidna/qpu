@@ -4,9 +4,8 @@ import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs
 import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { LICENSE } from '../src/quantum/license.ts'
 import { accountOf, depositOf } from '../src/quantum/coins.ts'
-import { readJson, getOf } from './mcp.ts'
+import { readJson, getOf, publishOf } from './mcp.ts'
 const ROOT = process.cwd()
 const pub = (f: string) => readJson(join(ROOT, 'docs', 'public', f), undefined)
 const main = async () => {
@@ -33,7 +32,7 @@ const main = async () => {
   }
   const artefacts = { advantageByUnit, e2e: e2eNow, coins: accountOf(coinLines), receipt: pub('receipt.json'), sizes, discovery: pub('discovery.json'), verification: pub('verification.json'), readiness: pub('readiness.json'), repository: pub('repository.json'), legal: pub('legal.json'), docket, receipts: { count: receipts.length, last: receipts.length ? (JSON.parse(receipts.at(-1)!) as { id: string }).id : null } }
   const m = toolCallerOf('metrics')({ artefacts }) as Record<string, unknown>
-  writeFileSync(join(ROOT, 'docs', 'public', 'metrics.json'), JSON.stringify({ license: LICENSE.attribution, ...m }, null, 1) + '\n')
+  publishOf('metrics', { ...m })
   // every cell escaped once: an angle bracket or a brace in a value is text, never a tag (the remedy the tree learned: Element is missing end tag)
   const rows = Object.entries(m).filter(([k]) => !['selftests', 'license'].includes(k)).map(([k, v]) => `| ${k} | ${cell(typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v))} |`)
   writeFileSync(join(ROOT, 'docs', 'metrics.md'), ['---', 'title: Metrics', 'order: 58', '---', '', '# Computable metrics, in real time', '', `The \`metrics\` tool asked by \`npm run next\` with the run's artefacts: the tree's own counts (tools, toolboxes, examples and how many a kernel-accepted theorem backs, the kernel's theorems, leads, the audit, the balancer), and what the run measured (hosts and doors autodiscovered, verification on public datasets and APIs, the border, the repository, the legal audit, the docket's signalling, the receipt chain). Quality is proven by theorems, not textbook examples: the ratio is the measure.`, '', '| Metric | Value |', '|---|---|', ...rows, ''].join('\n'))
