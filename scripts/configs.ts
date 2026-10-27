@@ -8,6 +8,7 @@ import { dirname, join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
+import { toolsOf } from '../src/quantum/toolbox.ts'
 import { readJson } from './mcp.ts'
 
 const ROOT = process.cwd()
@@ -32,7 +33,7 @@ const held: { kind: string; path: string; drift: string[] }[] = []
 for (const f of files.files as { kind: string; path: string; source: 'tool' | 'hand'; format: string; with?: string[] }[]) {
   if (f.source === 'tool') {
     const c = call({ kind: f.kind, version: pkg.version, description: pkg.description, experience, rates })
-    if (f.kind === 'fullstack') { for (const [path, text] of Object.entries(c.config.files as Record<string, string>)) if (write(path, text)) improved.push(path) }
+    if (f.kind === 'fullstack' || f.kind === 'policies') { for (const [path, text] of Object.entries(c.config.files as Record<string, string>)) if (write(path, text)) improved.push(path) }
     else if (f.kind === 'hooks') { /* the plugin module: written by the full stack above, measured here as one of its files */ }
     else if (f.kind === 'ui') { const { registryOf, fileOf } = await import('../src/quantum/toolboxes/payload.ts'); const block = call({ kind: 'fullstack' }).config.files[fileOf('block', 'qpu')] as string; const reg = registryOf('https://qpu.uuidna.com', block); for (const [name, json] of Object.entries(reg)) for (const dir of ['site/public/r', 'docs/public/r']) if (write(`${dir}/${name}`, JSON.stringify(json, null, 1) + '\n')) improved.push(`${dir}/${name}`) }
     else if (f.kind === 'bindings') { const text = call({ kind: 'bindings', current: '' }).env as string; if (write(f.path, text + '\n')) improved.push(f.path) }
@@ -49,7 +50,7 @@ for (const f of files.files as { kind: string; path: string; source: 'tool' | 'h
 // the approval a push needs: the version is the last tag or its one next step, and the build it names is the catalogue's address the package answers on initialize; a violation is red (the pre-push run is strict)
 const lastTagVersion = (() => { try { return execFileSync('git', ['describe', '--tags', '--abbrev=0'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim().replace(/^v/, '') } catch { return null } })()
 const toolsAtTag = (() => { try { const j = JSON.parse(execFileSync('git', ['show', `v${lastTagVersion}:docs/public/mcp.json`], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })) as { tools?: { name: string }[] } | { name: string }[]; return (Array.isArray(j) ? j : j.tools ?? []).map((t) => t.name) } catch { return null } })()
-const versions = lastTagVersion ? call({ kind: 'versions', version: pkg.version, lastTag: { version: lastTagVersion, tools: toolsAtTag ?? (call({ kind: 'versions' }).config.defines ? (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result.tools.map((t) => t.name) : []) } }).config as { state: { represents: string }; sequential: { violation: string | null; approved: boolean | null } } : null
+const versions = lastTagVersion ? call({ kind: 'versions', version: pkg.version, lastTag: { version: lastTagVersion, tools: toolsAtTag ?? (call({ kind: 'versions' }).config.defines ? toolsOf({ handle }).map((t) => t.name) : []) } }).config as { state: { represents: string }; sequential: { violation: string | null; approved: boolean | null } } : null
 const init = (handle({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'configs', version: '0' } } }) as { result: { serverInfo: { version: string; build: string } } }).result.serverInfo
 if (versions) { const agrees = versions.state.represents === `${init.version}+${init.build}`; console.log(`versions: ${versions.state.represents} represents the package (initialize answers ${init.version}+${init.build}: ${agrees ? 'agrees' : 'DISAGREES'}); last tag ${lastTagVersion}: ${versions.sequential.violation ?? 'sequential, approved for a push'}`); if (versions.sequential.violation || !agrees) { console.error(`versions: ${versions.sequential.violation ?? 'the package does not answer the state the version represents'}`); process.exitCode = 1 } }
 const drift = held.reduce((n, h) => n + h.drift.length, 0)

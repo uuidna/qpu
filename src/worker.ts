@@ -5,6 +5,7 @@
 // committed). Every response carries the licence.
 import { handle, type Rpc } from './quantum/mcp.js'
 import { composeOf } from './quantum/compose.js'
+import { toolsOf } from './quantum/toolbox.js'
 import { fusionOf } from './quantum/toolboxes/billing.js'
 import { scanSvgOf } from './quantum/scan.js'
 import { EXAMPLES } from './quantum/examples.js'
@@ -326,9 +327,9 @@ export type Superposition = { prev?: string; next?: { href: string; label: strin
 /** The next step of an id: its program compiled against the tools, the first step executed, and the href that continues the walk. */
 export const nextOf = (id: string, origin: string): { href: string; label: string; compiled: Step[]; result: unknown } => {
   const ch = channelOf(id)
-  const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: Parameters<typeof compileOf>[1] } }).result.tools
+  const tools = toolsOf({ handle }) as Parameters<typeof compileOf>[1]
   const { steps, next } = compileOf(ch.program, tools, ch.message)
-  const reply = next ? handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: next.tool, arguments: next.arguments } }) as { result?: { structuredContent: unknown; _meta: { widget: string } }; error?: unknown } : undefined
+  const reply = next ? call(next.tool, next.arguments) as { result?: { structuredContent: unknown; _meta: { widget: string } }; error?: unknown } : undefined
   const rotated = [...ch.program.slice(1), ch.program[0]!] // the walk continues: the program rotates one nibble per step
   return { href: `${origin}/${ch.handle}/${rotated.map((n) => n.toString(16)).join('')}/${ch.tail}`, label: next ? `${next.tool} ${JSON.stringify(next.arguments)}` : 'no step', compiled: steps, result: reply?.result ? { structured: reply.result.structuredContent, widget: reply.result._meta.widget } : reply?.error }
 }
@@ -397,7 +398,7 @@ export const catchAll = (request: Request, url: URL, env: Env): Response | Promi
       return pageOf(id, url.origin, { prev: refererOf(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled, result: nx.result, notes, locale })
     }
     // the family: the handle alone; its entries on this mirror, and the sixteen doors a first nibble opens
-    const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string }[] } }).result.tools.filter((t) => !['audit', 'match', 'verify'].includes(t.name))
+    const tools = toolsOf({ handle }).filter((t) => !['audit', 'match', 'verify'].includes(t.name))
     const doors = [...Array(16).keys()].map((n) => ({ nibble: n.toString(16), tool: tools[n % tools.length]!.name, href: `${url.origin}/${a}/${n.toString(16).repeat(10)}/${tail}` }))
     const family = async () => { if (!env.DOCKET) return [] as unknown[]; const res = await env.DOCKET.get(env.DOCKET.idFromName(tenantOf(url.hostname))).fetch(new Request(`${url.origin}/docket`)); const j = await res.json() as { entries: { id: string }[] }; return j.entries.filter((e) => e.id.startsWith(a)) }
     return family().then((entries) => wantsPage
@@ -406,7 +407,7 @@ export const catchAll = (request: Request, url: URL, env: Env): Response | Promi
   }
   // not a walk: decide by matching the path as a statement
   const statement = segments.join(' ').replace(/[-_]+/g, ' ')
-  const decision = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement } } }) as { result?: { structuredContent: { verdict: string; evidence: string[]; lead: unknown }; _meta: { widget: string } } }
+  const decision = call('match', { statement }) as { result?: { structuredContent: { verdict: string; evidence: string[]; lead: unknown }; _meta: { widget: string } } }
   const m = decision.result?.structuredContent
   // the fallback for anything: the cached assets the path's words select, computed in real time, verified, addressed (ETag by content) and billed
   const composed = composeOf(url.pathname, { handle, examples: EXAMPLES, leads: LEADS, call: (name, args = {}) => call(name, args).result?.structuredContent }, url.origin, tenantOf(url.hostname))
@@ -522,7 +523,7 @@ export const worker = {
     let body: Record<string, unknown>; try { body = await res.clone().json() as Record<string, unknown> } catch { return res }
     if (body.jsonrpc) return res // a JSON-RPC error already carries its court in error.data
     const url = new URL(request.url)
-    const c = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'legal', arguments: { court: { gate: `${request.method} ${url.pathname}`, status: res.status, evidence: body.error ?? body.refused ?? body, tenant: tenantOf(url.hostname) } } } }) as { result?: { structuredContent?: unknown } }
+    const c = call('legal', { court: { gate: `${request.method} ${url.pathname}`, status: res.status, evidence: body.error ?? body.refused ?? body, tenant: tenantOf(url.hostname) } })
     const headers = new Headers(res.headers)
     return new Response(JSON.stringify({ ...body, court: c.result?.structuredContent ?? null }), { status: res.status, headers })
   },
@@ -530,7 +531,7 @@ export const worker = {
     const url = new URL(request.url)
     const path = url.pathname.replace(/\/$/, '') || '/'
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: LICENSE_HEADERS })
-    if (path === '/health') { const m = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'metrics', arguments: {} } }) as { result?: { structuredContent: unknown } }; return json({ status: 'healthy', tenant: tenantOf(url.hostname), license: LICENSE.spdx, metrics: m.result?.structuredContent ?? null }) }
+    if (path === '/health') { const m = call('metrics', {}); return json({ status: 'healthy', tenant: tenantOf(url.hostname), license: LICENSE.spdx, metrics: m.result?.structuredContent ?? null }) }
     // the root: the web OS from the assets, unless the client asks for JSON (accept application/json): then the discovery document, which also stands at /.well-known/qpu.json
     if (path === '/' && request.method === 'GET' && env.ASSETS && !/application\/json/.test(request.headers.get('accept') ?? '')) { const asset = await env.ASSETS.fetch(request); if (asset.status !== 404) return asset }
     if (path === '/.well-known/qpu.json' || (path === '/' && request.method === 'GET')) return json(discoveryOf(url.origin, env))

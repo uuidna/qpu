@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T11:20:49.281Z",
- "ms": 718,
+ "date": "2026-10-27T11:30:56.918Z",
+ "ms": 723,
  "approval": {
   "represents": "1.4.0+e3785063",
   "package": "1.4.0+e3785063",
@@ -13,10 +13,10 @@
  "selftest": {
   "passed": true
  },
- "tested": 24,
- "kinds": 24,
+ "tested": 25,
+ "kinds": 25,
  "closed": true,
- "partition": "7 + 2 + 15 = 24",
+ "partition": "8 + 2 + 15 = 25",
  "improved": [],
  "held": [
   {
@@ -170,16 +170,16 @@
   {
    "kind": "api",
    "torus": {
-    "address": "fd6e0c91-8329-797c-8f8a-80e2a5abd042",
-    "seed": 3,
-    "reflection": 7,
+    "address": "cea46e58-8002-35ea-a7d1-a799aeaa6d2d",
+    "seed": 9,
+    "reflection": 1,
     "trinity": [
      3,
      6,
      9
     ],
     "closed": true,
-    "bytes": 100817
+    "bytes": 100830
    }
   },
   {
@@ -350,31 +350,31 @@
   {
    "kind": "gates",
    "torus": {
-    "address": "8e3d164a-5df0-7aae-a17a-9ae484dedbe8",
-    "seed": 7,
-    "reflection": 3,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 694418
-   }
-  },
-  {
-   "kind": "sets",
-   "torus": {
-    "address": "1c4f7777-28ca-6bfd-aa85-a7ef2353aa05",
-    "seed": 5,
-    "reflection": 5,
+    "address": "dacd508d-bd39-79d0-86d4-06335aa80f35",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 114874
+    "bytes": 694484
+   }
+  },
+  {
+   "kind": "sets",
+   "torus": {
+    "address": "200e79b7-ee95-1a30-82e8-a7f52ac96535",
+    "seed": 8,
+    "reflection": 2,
+    "trinity": [
+     2,
+     5,
+     8
+    ],
+    "closed": true,
+    "bytes": 115138
    }
   },
   {
@@ -405,6 +405,21 @@
     ],
     "closed": true,
     "bytes": 1750
+   }
+  },
+  {
+   "kind": "policies",
+   "torus": {
+    "address": "6894d9bf-40c5-26a1-aab4-acbd2e18c12e",
+    "seed": 1,
+    "reflection": 9,
+    "trinity": [
+     7,
+     4,
+     1
+    ],
+    "closed": true,
+    "bytes": 1277
    }
   }
  ]

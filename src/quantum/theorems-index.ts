@@ -519,7 +519,7 @@ export const THEOREMS: readonly { key: string; module: string; statement: string
   {"key":"textbook_collision_solves_many","module":"Qpu.Textbook","statement":"∀ (k : Nat), 2 ≤ k → 1 < k ∧ 1 ≤ k - 1"},
   {"key":"textbook_commit_green","module":"Qpu.Textbook","statement":"∀ (green skipped : Nat), green + skipped + 0 = green + skipped"},
   {"key":"textbook_compete_knows","module":"Qpu.Textbook","statement":"∀ (c t : Nat), 0 < c → 0 < t → 0 < c * t"},
-  {"key":"textbook_configs_partition","module":"Qpu.Textbook","statement":"7 + 2 + 15 = 24"},
+  {"key":"textbook_configs_partition","module":"Qpu.Textbook","statement":"8 + 2 + 15 = 25"},
   {"key":"textbook_configurations_closed","module":"Qpu.Textbook","statement":"∀ (tested kinds : Nat), tested = kinds → kinds - tested = 0"},
   {"key":"textbook_context_balanced","module":"Qpu.Textbook","statement":"∀ (full kept : Nat), kept ≤ full → full - kept + kept = full"},
   {"key":"textbook_coverage_bounded","module":"Qpu.Textbook","statement":"∀ (doors total : Nat), doors ≤ total → doors * 100 / total ≤ 100"},

@@ -110,8 +110,8 @@ theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt 
 theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
 /-- the signature is over the 32-byte SHA-256 digest: 256 bits, whatever the length of the text (examples: seal-sign) -/
 theorem textbook_signature_over_digest : 32 * 8 = 256 := by decide
-/-- seven configurations the tool writes, two the hand holds, fourteen answered inside them: twenty-three kinds (examples: configure-files) -/
-theorem textbook_configs_partition : 7 + 2 + 15 = 24 := by decide
+/-- eight configurations the tool writes (the repository policies among them), two the hand holds, fifteen answered inside them: twenty-five kinds (examples: configure-files, configure-policies) -/
+theorem textbook_configs_partition : 8 + 2 + 15 = 25 := by decide
 /-- twelve plugins, five databases, five storages, two email adapters, one editor, three live-preview and seventeen runtime and tooling packages: the forty-five Payload ships (examples: configure-packages) -/
 theorem textbook_packages_partition : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by decide
 /-- nine variants priced in three currencies are twenty-seven prices (examples: configure-ecommerce) -/

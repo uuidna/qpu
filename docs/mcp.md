@@ -2446,10 +2446,11 @@ MCP configures Payload and the rest
         "gates",
         "sets",
         "realtime",
-        "branding"
+        "branding",
+        "policies"
       ],
       "description": "omit for all",
-      "default": "payload"
+      "default": "adapters"
     },
     "files": {
       "type": "boolean",
@@ -2537,8 +2538,8 @@ MCP configures Payload and the rest
     }
   },
   "x-harmonic": {
-    "combinations": "72",
-    "index": "0",
+    "combinations": "75",
+    "index": "57",
     "from": "a432"
   }
 }

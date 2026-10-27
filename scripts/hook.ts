@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, statSync, readdirSync, openSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawnSync, execSync, spawn } from 'node:child_process'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { GENERATED_FILES, RUN_FILES } from '../src/quantum/toolboxes/repository.ts'
 import { LITERAL_ROOTS, manualDocsOf } from '../src/quantum/audit.ts'
 import { GAP_KINDS, gapKindOf } from '../src/quantum/toolboxes/billing.ts'
@@ -107,13 +107,13 @@ const publishedFact = name === 'pre-push' ? (() => { const head = git(['rev-pars
 const soleFact = name === 'pre-push' ? { branches: git(['branch', '--format=%(refname:short)']).split('\n').filter(Boolean), worktrees: git(['worktree', 'list', '--porcelain']).split('\n').filter((l) => l.startsWith('worktree ')).length } : undefined
 const facts = { // the penalties this workflow raised itself are re-decided by this very run (cleared if it passes), so they don't count against it: no deadlock
 ...(name === 'pre-push' ? { penalties: standing.open ? (() => { const others = standing.open.filter((b) => (b.snapshot as { workflow?: string } | undefined)?.workflow !== name && (b as { blocks?: boolean }).blocks !== false && GAP_KINDS[gapKindOf(b.rule ?? '', b.kind)]); /* lex mitior: blocks when it blocked when raised and its kind blocks now */ return { open: others.length, openKeys: others.map((b) => b.snapshot?.key ?? '') } })() : null } : {}), ...(name === 'pre-commit' ? { automated: automated ? { drifted: automated.drifted, manual: manualFact } : null, staged: stagedFact ?? null } : {}), ...(soleFact !== undefined ? { sole: soleFact } : {}), ...(name === 'commit-msg' ? { message: readFileSync(extra[0]!, 'utf8') } : {}), ...(name === 'pre-commit' || name === 'pre-push' ? { workflows: Object.fromEntries(readdirSync(RUN_FILES.workflows).map((f) => [f, readFileSync(join(RUN_FILES.workflows, f), 'utf8')])) } : {}), ...(publishedFact !== undefined ? { published: publishedFact } : {}), ...deployFacts, receipt: readJson(RUN_FILES.receipt) as { steps?: { name: string; status: string }[] } | null, approval: (readJson(RUN_FILES.configs) as { approval?: unknown } | null)?.approval ?? null, e2e: (readJson(RUN_FILES.e2e) as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
-const d = (handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'repository', arguments: { workflow: name, facts } } }) as { result?: { structuredContent?: { decision?: { allowed: boolean; strict: boolean; says: string; court: { arguments: { court: unknown } } | null } } } }).result?.structuredContent?.decision
+const d = toolCallerOf('repository')({ workflow: name, facts }).decision as { allowed: boolean; strict: boolean; says: string; court: { arguments: { court: unknown } } | null } | undefined
 if (d) {
   console.log(`hook ${name}: ${d.says}`)
   const held = new Set(((d as { rules?: { rule: string; holds: boolean | null }[] }).rules ?? []).filter((r) => r.holds === true).map((r) => r.rule))
   for (const b of standing.open ?? []) { const s = b.snapshot as { key?: string; workflow?: string; violated?: string[] } | undefined; if (!s?.key || s.workflow !== name || !(s.violated ?? []).length || !(s.violated ?? []).every((v) => held.has(v))) continue; const c = await clear(b.rule ?? name, `${(s.violated ?? []).join(', ')} hold again`, s as Record<string, unknown> & { key: string }, b.kind, b.tokens, (b.coin as { debit?: string } | null | undefined)?.debit?.replace(/^coins:/, () => '') ?? null); console.error(`hook ${name}: cleared ${s.key}: ${c.recorded}`) }
   if (!d.allowed && d.court) {
-    const c = (handle({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'legal', arguments: { court: d.court.arguments.court } } }) as { result?: { structuredContent?: { case?: string; remedy?: string } } }).result?.structuredContent as { case?: string; remedy?: string } | undefined
+    const c = toolCallerOf('legal')({ court: d.court.arguments.court }) as { case?: string; remedy?: string } | undefined
     console.error(`hook ${name}: refused; the case ${c?.case ?? '?'}: ${c?.remedy ?? ''}`)
     // the refusal is a penalty: priced in work (the manual difference for automated, else the refusal's own text), sealed, booked, recorded in the RAID
     const violated = (d as { violated?: string[] }).violated ?? [], unknown = (d as { unknown?: string[] }).unknown ?? []
