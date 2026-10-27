@@ -7,7 +7,8 @@
 // text of any book, no credential, nothing written anywhere. Every page followed to its end (nextOf): unlimited, and the more the QPU is used
 // the more it holds (textbook_use_completes). Pure: the client fetches what the plan names and hands the answers back.
 import { uuidOf } from './blocks.js'
-import { PRECEDENCE, courtOf } from './toolboxes/legal.js'
+import { courtOf } from './toolboxes/legal.js'
+import { PRECEDENCE } from './license.js'
 import { routeOf } from './match.js'
 import type { Example } from './examples.js'
 import type { Lead } from './leads.js'

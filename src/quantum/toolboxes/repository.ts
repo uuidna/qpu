@@ -73,11 +73,11 @@ export const stagedOf = (diff: string, generated: readonly string[] = []) => {
   const code = (t: Record<string, string>) => Object.entries(t).filter(([f]) => !PROOF_FILES.includes(f)), count = (t: Record<string, string>, bytes = true) => code(t).reduce((n, [, x]) => n + (bytes ? new TextEncoder().encode(x.replace(/\n/g, () => '')).length : x.split('\n').length - 1), 0)
   const exportsOf = (t: Record<string, string>) => new Set(code(t).flatMap(([, x]) => [...x.matchAll(/^export (?:async )?(?:const|function) ([A-Za-z_$][\w$]*)/gm)].map((m) => m[1]!)))
   const was = exportsOf(side['-']), news = [...exportsOf(side['+'])].filter((n) => !was.has(n))
-  return { added: side['+'], folded: { added: count(side['+']), removed: count(side['-']), lines: { added: count(side['+'], false), removed: count(side['-'], false) } }, proven: { news, unproven: news.filter((n) => !PROOF_FILES.every((p) => (side['+'][p] ?? '').includes(n))) } }
+  return { added: side['+'], removed: side['-'], folded: { added: count(side['+']), removed: count(side['-']), lines: { added: count(side['+'], false), removed: count(side['-'], false) } }, proven: { news, unproven: news.filter((n) => !PROOF_FILES.every((p) => (side['+'][p] ?? '').includes(n))) } }
 }
 export const factsOf = (given: WorkflowFacts): WorkflowFacts => {
   const s = given.staged ? stagedOf(given.staged.diff, given.staged.generated) : null
-  const f = s ? { ...given, literals: given.literals ?? { added: literalsOf(s.added).dirty.map((x) => ({ file: x.file, literal: x.literal, kind: x.kind })) }, folded: given.folded ?? s.folded, proven: given.proven ?? s.proven } : given
+  const f = s ? { ...given, literals: given.literals ?? { added: literalsOf(s.added).dirty.filter((x) => !(s.removed[x.file] ?? '').includes(x.literal)).map((x) => ({ file: x.file, literal: x.literal, kind: x.kind })) }, folded: given.folded ?? s.folded, proven: given.proven ?? s.proven } : given
   if (f.config == null && f.docket == null) return f
   const d = f.docket ? docketFactsOf(f.docket) : null
   return { ...f, wrangler: f.wrangler ?? (typeof f.config === 'string' ? deployConfigOf(f.config, d?.resources ?? []) : null), account: f.account ?? d?.account ?? null, observability: f.observability ?? d?.observability ?? null, usage: f.usage ?? d?.usage ?? null }

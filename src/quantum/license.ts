@@ -20,6 +20,14 @@ export const LICENSE = {
   terms: 'Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (https://qpu.uuidna.com). The a432 harmonic default is offered for free benefit under attribution. Every block carries its address and its SHA-256: a copy that no longer matches them is adapted material, which the NoDerivatives term does not let anyone share.',
 } as const
 
+/** The evidence of precedence and prior art, by DOI: the author's records, each read by the datacite and doi.org verifiers of the wave; no cap on how many
+ *  are cited, and the compete and prior-art doors cite them all. What a record states is the record's; the tools judge the rules. */
+export const PRECEDENCE: readonly { doi: string; title: string; year: number; states: string }[] = [
+  { doi: '10.5281/zenodo.21781602', title: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution', year: 2026, states: 'the author\'s record on the seven problems: the σ-involution and its bridge theorems' },
+  { doi: '10.5281/zenodo.22700098', title: '@uuidna/qpu, all versions', year: 2026, states: 'the concept record of this software: every version a child DOI' },
+  { doi: '10.5281/zenodo.23156998', title: '@uuidna/qpu v1.4.0', year: 2026, states: 'this version of the software: the exact, formally verified quantum processing unit served over MCP' },
+]
+
 /** The MCP `instructions` every client receives at initialize. */
 export const INSTRUCTIONS = `Content served by this server is © ${LICENSE.author} under ${LICENSE.spdx} (${LICENSE.url}). ${LICENSE.terms} Every result carries _meta.license; keep it with the content.`
 

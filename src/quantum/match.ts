@@ -215,6 +215,8 @@ export const patternOf = (statement: string): { pattern: Pattern; call: { name: 
   return null
 }
 
+/** One tools/call through the handler the matcher was given. */
+const toolsCall = (handle: (m: Rpc) => any, params: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params })
 export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string, locale?: string) => Match) => {
   const inner = indexOf(handle, allExamples, leads)
   return (given: string, locale?: string): Match => {
@@ -224,7 +226,7 @@ export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example
     const recognised = patternOf(text)
     const m = (() => {
       if (recognised && recognised.call.name !== 'leads') {
-        const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: recognised.call.name, arguments: recognised.call.arguments } })
+        const reply = toolsCall(handle, recognised.call)
         const base = inner(text)
         if ('result' in reply) return { ...base, verdict: 'served' as const, tool: recognised.call.name, call: recognised.call, result: reply.result.structuredContent, sealed: recognised.sealed, evidence: [`pattern ${recognised.pattern.name}: ${recognised.pattern.shows}; ${recognised.call.name} answered`, ...base.evidence], pattern: recognised.pattern.name, lead: { ...base.lead, status: 'served' as const, tool: recognised.call.name } }
         return { ...base, sealed: recognised.sealed, evidence: [`pattern ${recognised.pattern.name}: ${recognised.call.name} refused: ${reply.error.message}`, ...base.evidence], pattern: recognised.pattern.name }
@@ -312,14 +314,13 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
   const top = candidates[0]
   const cluster = candidates.filter((c) => c.kind === 'example' || c.kind === 'tool' || servedLeads.has(c.id))
   const matchedLeads = candidates.filter((c) => c.kind === 'lead').map((c) => leads.find((l) => l.id === c.id)!).filter((l) => l.source && l.source !== 'statement')
-  const verify: VerifyRequest[] = matchedLeads.flatMap((l) => factsOf(l).flatMap(verifyRequestsOf))
 
   // When in doubt: the hidden factors and angles in the reflection of the analog, each a lead to develop.
   const integers = [...new Set((statement.match(/\b\d+\b/g) ?? []).map(Number).filter((n) => n >= 2))]
   const factors: Reflection['factors'] = integers.map((n) => {
     const shor = tools.find((t) => t.name === 'algorithm')?.inputSchema.properties?.N
     if (shor && typeof shor.maximum === 'number' && n <= shor.maximum && n >= (shor.minimum ?? 3)) {
-      const reply = SHOR.get(n) ?? (() => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'algorithm', arguments: { name: 'shor', N: n } } }); SHOR.set(n, r); return r })()
+      const reply = SHOR.get(n) ?? (() => { const r = toolsCall(handle, { name: 'algorithm', arguments: { name: 'shor', N: n } }); SHOR.set(n, r); return r })()
       if ('result' in reply) {
         const rows: unknown[][] = reply.result.structuredContent?.summary ?? []
         const f = rows.find((r) => r[0] === 'Factors')?.[1] as string | undefined
@@ -345,57 +346,47 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
     }
   }
   found.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
+  const mirror = { source: `reflection of: ${statement}`, status: 'open' as const }
   const reflectionLeads: Lead[] = [
-    ...factors.filter((f) => f.factors).map((f) => ({ id: `factors-${f.n}`, source: `reflection of: ${statement}`, statement: `${f.n} = ${f.factors} (order ${f.order}) by ${f.by}`, status: 'open' as const, tool: 'algorithm', reason: 'a hidden factor found in the reflection; verify it across the integer adaptors' })),
-    ...angles.map((a) => ({ id: `angle-${a.property}-${a.x}`, source: `reflection of: ${statement}`, statement: `σ_${a.d}(${a.x}) = ${a.sigma} on ${a.property}; QFT angle ${a.angle.toFixed(6)} rad`, status: 'open' as const, reason: 'an angle in the reflection; Qpu.Sigma proves σ_d(σ_d(x)) = x' })),
-    ...found.map((c) => ({ id: `mirror-${c.id}`, source: `reflection of: ${statement}`, statement: c.text, status: 'open' as const, tool: c.kind === 'tool' ? c.id : examples.find((e) => e.id === c.id)?.tool, reason: 'found only in the mirror form of the statement' })),
+    ...factors.filter((f) => f.factors).map((f) => ({ id: `factors-${f.n}`, ...mirror, statement: `${f.n} = ${f.factors} (order ${f.order}) by ${f.by}`, tool: 'algorithm', reason: 'a hidden factor found in the reflection; verify it across the integer adaptors' })),
+    ...angles.map((a) => ({ id: `angle-${a.property}-${a.x}`, ...mirror, statement: `σ_${a.d}(${a.x}) = ${a.sigma} on ${a.property}; QFT angle ${a.angle.toFixed(6)} rad`, reason: 'an angle in the reflection; Qpu.Sigma proves σ_d(σ_d(x)) = x' })),
+    ...found.map((c) => ({ id: `mirror-${c.id}`, ...mirror, statement: c.text, tool: c.kind === 'tool' ? c.id : examples.find((e) => e.id === c.id)?.tool, reason: 'found only in the mirror form of the statement' })),
   ]
-  for (const l of reflectionLeads) verify.push(...factsOf(l).flatMap(verifyRequestsOf))
-  const reflection: Reflection = { factors, angles, queries, found, leads: reflectionLeads }
+  const verify: VerifyRequest[] = [...new Map([...matchedLeads, ...reflectionLeads].flatMap((l) => factsOf(l).flatMap(verifyRequestsOf)).map((r) => [r.url + JSON.stringify(r.body), r])).values()]
+  const reflection: Reflection = { factors, angles, queries, found, leads: reflectionLeads }, around = { candidates, cluster, verify, reflection }, asLead = { id: slug(statement), source: 'statement', statement }
+  const callOf = (c: Candidate) => { const example = c.kind === 'example' ? examples.find((e) => e.id === c.id)! : examples.find((e) => e.tool === c.id), tool = c.kind === 'example' ? example!.tool : c.id, call = { name: tool, arguments: example?.arguments ?? {} }; return { example, tool, call, reply: toolsCall(handle, call) } }
 
   if (evidence.length > 0) {
-    return { statement, verdict: 'impossible', evidence, candidates, cluster, verify, reflection, lead: { id: slug(statement), source: 'statement', statement, status: 'blocked', reason: evidence.join('; ') } }
+    return { statement, verdict: 'impossible', evidence, ...around, lead: { ...asLead, status: 'blocked', reason: evidence.join('; ') } }
   }
   if ((!top || top.hits < 2) && found.length > 0) {
-    const f = found[0]!
-    const example = f.kind === 'example' ? examples.find((e) => e.id === f.id)! : examples.find((e) => e.tool === f.id)
-    const tool = f.kind === 'example' ? example!.tool : f.id
-    const call = { name: tool, arguments: example?.arguments ?? {} }
-    const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: call })
-    if ('result' in reply) return { statement, verdict: 'served', evidence: [`found in the reflection: ${f.text}`], tool, call, result: reply.result.structuredContent, candidates, cluster: [f, ...cluster], verify, reflection, lead: { id: slug(statement), source: 'statement', statement, status: 'served', tool } }
+    const f = found[0]!, { tool, call, reply } = callOf(f)
+    if ('result' in reply) return { statement, verdict: 'served', evidence: [`found in the reflection: ${f.text}`], tool, call, result: reply.result.structuredContent, ...around, cluster: [f, ...cluster], lead: { ...asLead, status: 'served', tool } }
   }
   const substantive = q.filter((t) => !BRAND.has(t))
   const coverage = top ? top.hits / Math.max(1, substantive.length) : 0
-  if (top && top.hits >= 2 && coverage < 0.5 && found.length === 0) {
-    const reason = `the best match covers ${Math.round(coverage * 100)}% of the statement's words (${top.kind} ${top.id}); too little to serve it honestly; proposed as a new lead to develop`
-    return { statement, verdict: 'unknown', evidence: [reason], candidates, cluster, verify, reflection, lead: { id: slug(statement), source: 'statement', statement, status: 'blocked', reason } }
-  }
-  if (!top || top.hits < 2) {
-    const reason = 'no tool, example or lead matches the statement, nor its reflections; proposed as a new lead to develop'
-    return { statement, verdict: 'unknown', evidence: [reason], candidates, cluster, verify, reflection, lead: { id: slug(statement), source: 'statement', statement, status: 'blocked', reason } }
-  }
+  const reason = top && top.hits >= 2 && coverage < 0.5 && found.length === 0 ? `the best match covers ${Math.round(coverage * 100)}% of the statement's words (${top.kind} ${top.id}); too little to serve it honestly; proposed as a new lead to develop`
+    : !top || top.hits < 2 ? 'no tool, example or lead matches the statement, nor its reflections; proposed as a new lead to develop' : null
+  if (reason || !top) return { statement, verdict: 'unknown', evidence: [reason!], ...around, lead: { ...asLead, status: 'blocked', reason: reason! } }
   if (top.kind === 'lead') {
     const lead = leads.find((l) => l.id === top.id)!
     // a lead served by a tool the matcher never calls to serve (the flow, the judges, the layouts) is answered by the lead itself: calling imagine or audit from inside a match would replay every lead inside one statement
-    if (lead.status === 'served' && lead.tool && !callable.has(lead.tool)) return { statement, verdict: 'served', evidence: [`lead ${lead.id} is served by ${lead.tool}, a tool the matcher does not call to serve (it fetches, judges or lays out); the lead stands as the answer`], tool: lead.tool, candidates, cluster, verify, reflection, lead: { ...lead, statement } }
+    if (lead.status === 'served' && lead.tool && !callable.has(lead.tool)) return { statement, verdict: 'served', evidence: [`lead ${lead.id} is served by ${lead.tool}, a tool the matcher does not call to serve (it fetches, judges or lays out); the lead stands as the answer`], tool: lead.tool, ...around, lead: { ...lead, statement } }
     if (lead.status === 'served' && lead.tool) {
       const example = examples.find((e) => e.tool === lead.tool)
       const call = { name: lead.tool, arguments: example?.arguments ?? {} }
-      const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: call })
-      if ('result' in reply) return { statement, verdict: 'served', evidence: [`lead ${lead.id} is served by ${lead.tool}; called it`], tool: lead.tool, call, result: reply.result.structuredContent, candidates, cluster, verify, reflection, lead: { ...lead, statement } }
-      return { statement, verdict: 'impossible', evidence: [`lead ${lead.id} names ${lead.tool}, which refused: ${reply.error.message}`], tool: lead.tool, call, candidates, cluster, verify, reflection, lead: { ...lead, status: 'blocked', reason: reply.error.message } }
+      const reply = toolsCall(handle, call)
+      if ('result' in reply) return { statement, verdict: 'served', evidence: [`lead ${lead.id} is served by ${lead.tool}; called it`], tool: lead.tool, call, result: reply.result.structuredContent, ...around, lead: { ...lead, statement } }
+      return { statement, verdict: 'impossible', evidence: [`lead ${lead.id} names ${lead.tool}, which refused: ${reply.error.message}`], tool: lead.tool, call, ...around, lead: { ...lead, status: 'blocked', reason: reply.error.message } }
     }
-    return { statement, verdict: 'impossible', evidence: [`lead ${lead.id} is ${lead.status}: ${lead.reason ?? 'no reason recorded'}`], candidates, cluster, verify, reflection, lead: { ...lead, statement } }
+    return { statement, verdict: 'impossible', evidence: [`lead ${lead.id} is ${lead.status}: ${lead.reason ?? 'no reason recorded'}`], ...around, lead: { ...lead, statement } }
   }
-  const example = top.kind === 'example' ? examples.find((e) => e.id === top.id)! : examples.find((e) => e.tool === top.id)
-  const tool = top.kind === 'example' ? example!.tool : top.id
-  const call = { name: tool, arguments: example?.arguments ?? {} }
-  const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: call })
+  const { example, tool, call, reply } = callOf(top)
   if ('result' in reply) {
     const why = example ? example.expect(reply.result.structuredContent) : null
-    return { statement, verdict: 'served', evidence: [example ? `example ${example.id}: ${why ?? 'as documented'}` : `tool ${tool} answered the call`], tool, call, result: reply.result.structuredContent, candidates, cluster, verify, reflection, lead: { id: slug(statement), source: 'statement', statement, status: 'served', tool } }
+    return { statement, verdict: 'served', evidence: [example ? `example ${example.id}: ${why ?? 'as documented'}` : `tool ${tool} answered the call`], tool, call, result: reply.result.structuredContent, ...around, lead: { ...asLead, status: 'served', tool } }
   }
-  return { statement, verdict: 'impossible', evidence: [`tool ${tool} refused: ${reply.error.message}`], tool, call, candidates, cluster, verify, reflection, lead: { id: slug(statement), source: 'statement', statement, status: 'blocked', reason: reply.error.message } }
+  return { statement, verdict: 'impossible', evidence: [`tool ${tool} refused: ${reply.error.message}`], tool, call, ...around, lead: { ...asLead, status: 'blocked', reason: reply.error.message } }
   }
 }
 

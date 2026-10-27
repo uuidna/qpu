@@ -6,7 +6,7 @@
 // the tree's own security checks over its source texts. Pure; the client fetches. Recomputable facts, not legal advice.
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.js'
 import { toolOf, checksOf, type Toolbox } from '../toolbox.js'
-import { LICENSE } from '../license.js'
+import { LICENSE, PRECEDENCE } from '../license.js'
 import type { Discovery } from '../discovery.js'
 import type { Lead } from '../leads.js'
 import { flowWidget } from '../widgets.js'
@@ -90,13 +90,6 @@ export const securityOf = (texts: Texts): { id: string; passed: boolean; evidenc
   return done().checks
 }
 
-/** The evidence of precedence and prior art, by DOI: the author's records, each read by the datacite and doi.org verifiers of the wave; no cap on how many
- *  are cited, and the compete and prior-art doors cite them all. What a record states is the record's; the tools judge the rules. */
-export const PRECEDENCE: readonly { doi: string; title: string; year: number; states: string; url: string }[] = [
-  { doi: '10.5281/zenodo.21781602', title: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution', year: 2026, states: 'the author\'s record on the seven problems: the σ-involution and its bridge theorems', url: 'https://doi.org/10.5281/zenodo.21781602' },
-  { doi: '10.5281/zenodo.22700098', title: '@uuidna/qpu, all versions', year: 2026, states: 'the concept record of this software: every version a child DOI', url: 'https://doi.org/10.5281/zenodo.22700098' },
-  { doi: '10.5281/zenodo.23156998', title: '@uuidna/qpu v1.4.0', year: 2026, states: 'this version of the software: the exact, formally verified quantum processing unit served over MCP', url: 'https://doi.org/10.5281/zenodo.23156998' },
-]
 /** The public news APIs wired as adapters of the DOI research: the open ones answer mentions of each record of precedence without a key, the keyed ones
  *  wait for a tenant's name (never a value); the mentions by source are the measure the acceptance rule reads, never a verdict (textbook_news_adapters). */
 export const NEWS_APIS: readonly { id: string; name: string; url: string; open: boolean; key: string | null; reads: string }[] = [

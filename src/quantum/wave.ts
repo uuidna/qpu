@@ -25,7 +25,7 @@ export const noteOf = (verifier: string, text: string): string => {
   try {
     if (verifier === 'oeis') { const j = JSON.parse(text); return `${Array.isArray(j) ? j.length : j.results?.length ?? j.count ?? 0} sequence results` }
     if (verifier === 'github') { const j = JSON.parse(text); return `description="${(j.description ?? '').slice(0, 80)}" language=${j.language}` }
-    if (verifier === 'zenodo' || verifier === 'datacite') { const j = JSON.parse(text); return JSON.stringify(j.metadata?.creators?.[0] ?? j.data?.attributes?.creators?.[0] ?? {}).slice(0, 120) }
+    if (/^(zenodo|datacite|crossref)$/.test(verifier)) { const j = JSON.parse(text); return JSON.stringify(j.metadata?.creators ?? j.data?.attributes?.creators ?? j.message?.author ?? []) }
     if (verifier === 'wikipedia') { const j = JSON.parse(text); return `extract="${(j.extract ?? '').slice(0, 100)}"` }
     if (verifier === 'cloudflare-docs') { const j = JSON.parse(dataOf(text)); const body: string = j.result?.content?.[0]?.text ?? JSON.stringify(j.error ?? j.result ?? '').slice(0, 100); return `${(body.match(/<url>|"url"|https:\/\/developers\.cloudflare\.com/g) ?? []).length} result(s): ${body.replace(/\s+/g, ' ').slice(0, 100)}` }
   } catch { /* fall through to the title */ }

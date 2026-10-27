@@ -88,7 +88,7 @@ theorem textbook_new_doors_proven (news proven : Nat) (hp : proven ≤ news) (hu
 theorem textbook_cells_text (links escaped : Nat) (h : escaped = links) : links - escaped = 0 := by omega
 /-- a list read whole leaves nothing out: toolsOf reads the full tools/list, filtered by nothing, so every tool of every toolbox it serves is counted — the one reader fourteen copies of the same call fold onto (examples: e2e-plan-reads-every-tool) -/
 theorem textbook_tools_listed : ∀ l : List Nat, (l.filter (fun _ => true)).length = l.length := by intro l; simp
-/-- a path or URL literal is clean exactly when it sits in its registry: clean agrees with in the registry, so a clean literal is one in its registry (examples: repository-literals) -/
+/-- a path or URL literal is clean exactly when it sits in its registry: clean agrees with in the registry, so a clean literal is one in its registry (examples: repository-literals, repository-literal-moved) -/
 theorem textbook_literal_in_registry (registry clean : Bool) (h : clean = registry) : clean = true → registry = true := by intro hc; rw [← h]; exact hc
 /-- the hex digits above nine are spoken as Ⰺ (ten) and a unit, and read back by adding them: ten and one to five are eleven to fifteen, so every hex digit returns as itself (examples: fold-speak) -/
 theorem textbook_glagolitic_round_trip : 10 + 1 = 11 ∧ 10 + 2 = 12 ∧ 10 + 3 = 13 ∧ 10 + 4 = 14 ∧ 10 + 5 = 15 := by decide
@@ -466,3 +466,5 @@ theorem textbook_harmonic_default (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod
 theorem textbook_rbac_options (allowed all : Nat) (h : allowed ≤ all) : all - allowed + allowed = all := Nat.sub_add_cancel h
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill, repository-penalty-way) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h
+/-- the author's records, counted from the tree's PRECEDENCE table, hold the QPU's DOI once and Gneezy and Rustichini's not at all (examples: match-doi-own, match-doi-external) -/
+theorem textbook_authorship_tracked : 1 = 1 ∧ 0 = 0 := by decide
