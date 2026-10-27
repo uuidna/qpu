@@ -1,6 +1,7 @@
 node_modules
 dist
 docs/.vitepress/cache
+docs/.vitepress/.temp
 docs/.vitepress/dist
 
 # Lean build output

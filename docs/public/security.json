@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T03:04:54.954Z",
+ "date": "2026-10-27T07:38:54.397Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -512,7 +512,7 @@
   "says": "the access audit from every perspective over the generated code and the answered configurations: every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms"
  },
  "leaks": {
-  "texts": 47,
+  "texts": 48,
   "findings": [
    {
     "where": "docs/public/graph.json",
@@ -531,7 +531,7 @@
    {
     "where": "docs/public/next-leads.json",
     "kind": "local-path",
-    "count": 110,
+    "count": 118,
     "served": false,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
@@ -545,7 +545,7 @@
    {
     "where": "docs/public/receipts.ndjson",
     "kind": "local-path",
-    "count": 286,
+    "count": 302,
     "served": false,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
@@ -619,10 +619,10 @@
    "token": 0,
    "jwt": 0,
    "private-key": 0,
-   "local-path": 1312,
+   "local-path": 1336,
    "private-ip": 1
   },
-  "total": 1821,
+  "total": 1845,
   "served": 9,
   "setAside": 26,
   "clean": false,
@@ -644,7 +644,7 @@
    {
     "id": "leak-local-path-docs-public-next-leads-json",
     "source": "docs/public/next-leads.json",
-    "statement": "110 local-path finding(s) in docs/public/next-leads.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "statement": "118 local-path finding(s) in docs/public/next-leads.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "not served yet: remove it at the source before it is"
    },
@@ -658,7 +658,7 @@
    {
     "id": "leak-local-path-docs-public-receipts-ndjson",
     "source": "docs/public/receipts.ndjson",
-    "statement": "286 local-path finding(s) in docs/public/receipts.ndjson: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "statement": "302 local-path finding(s) in docs/public/receipts.ndjson: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "not served yet: remove it at the source before it is"
    },
@@ -727,6 +727,6 @@
    }
   ],
   "theorem": "textbook_leaks_redacted",
-  "says": "1821 finding(s) in 9 text(s), 9 served publicly; values redacted, 26 notation(s) set aside"
+  "says": "1845 finding(s) in 9 text(s), 9 served publicly; values redacted, 26 notation(s) set aside"
  }
 }
