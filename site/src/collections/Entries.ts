@@ -2,7 +2,7 @@
 // Added to the MIT fork of payloadcms/website (Copyright (c) 2023 Payload); this file is QPU's: see NOTICE.qpu.md.
 // The docket as a Payload collection over MongoDB (the mongo tool's language): every entry addressed by its content — the id is the
 // fold address of what it holds, the sha256 beside it — never overwritten; the four verbs are Payload's REST (/api/entries).
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Where } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
 import { signedRoleOf } from '@uuidna/qpu/roles'
@@ -12,14 +12,17 @@ const isSuperAdmin = (user: unknown): boolean => ((user as TenantUser)?.roles ??
 const tenantIdOf = (t: unknown): string | null => (typeof t === 'string' ? t : (t as { id?: string } | undefined)?.id ?? null)
 const tenantsWithRole = (user: unknown, roles: readonly string[]): string[] => ((user as TenantUser)?.tenants ?? []).filter((row) => (row.roles ?? []).some((r) => roles.includes(r))).map((row) => tenantIdOf(row.tenant)).filter((id): id is string => !!id)
 const memberOf = (user: unknown, tenant: string | null, roles: readonly string[]): boolean => !!tenant && tenantsWithRole(user, roles).includes(tenant)
+const tenantsOf = (user: unknown): string[] => ((user as TenantUser)?.tenants ?? []).map((row) => tenantIdOf(row.tenant)).filter((x): x is string => !!x)
 // a role claimed in a header counts only when signed under the deployment's secret (x-qpu-role-mac over role|tenant|METHOD); a bare header is no claim
 const claimedRole = (req: { headers: Headers; method?: string }) => signedRoleOf({ role: req.headers.get('x-qpu-role'), tenant: req.headers.get('x-qpu-tenant'), mac: req.headers.get('x-qpu-role-mac'), method: req.method ?? '' }, process.env.QPU_ROLE_SECRET)
 export const Entries: CollectionConfig = {
   slug: 'entries',
   admin: { useAsTitle: 'id', defaultColumns: ['id', 'kind', 'from', 'createdAt'] },
+  enableQueryPresets: true, // each tenant's saved lists: its devices, readings, commands
   // access by tenant roles and the Worker's roles: a reader reads; a call is created by anyone; an entry of other kinds by a super admin, a tenant-admin or editor of its tenant, or a writer role signed under the deployment's secret; no one updates (an entry is its content address); a super admin, a tenant-admin of its tenant or a signed admin role deletes
   access: {
-    read: () => true,
+    // the operational kinds (a machine's runs, chats, penalties, sessions) to their tenant and admins alone; the rest is the public docket
+    read: ({ req }) => isSuperAdmin(req.user) || claimedRole(req) === 'admin' || ({ or: [{ kind: { not_in: ['machine', 'chat', 'penalty', 'session', 'call', 'message', 'google-user-data'] } }, { and: [{ kind: { in: ['machine', 'chat', 'penalty', 'session', 'call', 'message'] } }, { tenant: { in: tenantsOf(req.user) } }] }, { and: [{ kind: { in: ['google-user-data'] } }, { or: [{ from: { equals: String((req.user as { id?: unknown } | null)?.id ?? '') } }, { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } }] }] }] } as Where),
     create: ({ req, data }) => data?.kind === 'call' || data?.kind === 'chat' || isSuperAdmin(req.user) || memberOf(req.user, tenantIdOf(data?.tenant), ['tenant-admin', 'editor']) || claimedRole(req) === 'writer' || claimedRole(req) === 'admin',
     update: () => false,
     delete: ({ req }) => isSuperAdmin(req.user) || claimedRole(req) === 'admin' || { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } },

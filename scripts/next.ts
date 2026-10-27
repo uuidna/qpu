@@ -7,15 +7,15 @@ import { spawnSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { appendFileSync, existsSync, readFileSync, writeFileSync, unlinkSync, rmSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { tmpdir, availableParallelism } from 'node:os'
+import { tmpdir, availableParallelism, homedir } from 'node:os'
 import { pathToFileURL } from 'node:url'
 import { uuidOf } from '../src/quantum/blocks.ts'
 import { cellOf as cell } from '../src/quantum/widgets.ts'
 import { remediesOf, manualDocsOf } from '../src/quantum/audit.ts'
 import { STEP_CACHE, GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
 import { timesOf } from './machine.ts'
-import { forecastOf } from '../src/quantum/machine.ts'
-import { readJson, getOf } from './mcp.ts'
+import { forecastOf, redact } from '../src/quantum/machine.ts'
+import { readJson, getOf, mcpOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const pub = (f: string) => join(ROOT, 'docs', 'public', f)
@@ -130,7 +130,7 @@ const run = async (s: Step): Promise<boolean> => {
   const failingLines = [...new Set(out.split('\n').filter((l) => /^(✖|✗|not ok) /.test(l)))] // the failing check or test named in the receipt, so a first-attempt failure is measured, not lost in the tail
   const tail = (failingLines.length ? failingLines.join('\n') + '\n' : '') + out.trim().split('\n').slice(-8).join('\n')
   const wallNs = process.hrtime.bigint() - startedNs
-  receipt.steps.push({ name: s.name, status: ok ? 'green' : 'red', ms: Date.now() - started, tail, counts, measures: { wallNs: String(wallNs), cpuUs: r.cpuUs, rssKb: r.rssKb, firstOutputMs: r.firstMs } })
+  receipt.steps.push({ name: s.name, status: ok ? 'green' : 'red', ms: Date.now() - started, tail: redact(tail, ROOT, homedir()), counts, measures: { wallNs: String(wallNs), cpuUs: r.cpuUs, rssKb: r.rssKb, firstOutputMs: r.firstMs } })
   writeFileSync(pub('receipt.json'), JSON.stringify({ ...receipt, provisional: true }, null, 1) + '\n')
   if (ok && key) { const rec = { name: s.name, key, status: 'green', counts, date: new Date().toISOString(), ...(STEP_CACHE[s.name]?.generator ? { outputs: outputsOf() } : {}) }; mkdirSync(join(ROOT, '.qpu', 'steps'), { recursive: true }); writeFileSync(recordPath(s.name), JSON.stringify({ ...rec, sha256: createHash('sha256').update(JSON.stringify(rec)).digest('hex') }) + '\n') }
   console.log(`${ok ? '✓' : '✗'} ${s.name} (${((Date.now() - started) / 1000).toFixed(1)} s)${Object.keys(counts).length ? ' ' + JSON.stringify(counts) : ''}`)
@@ -236,6 +236,15 @@ if (process.env.QPU_APP_KEY) {
     if (unseenMs <= 1000 && iheld) await clear('next:invisible', `${w.step} visible within its first second`, { key: ikey, step: w.step, head: receipt.head }, 'invisible', iheld.tokens, null)
     if (w.price.free && held) await clear('next:waiting', `${w.step} back under the budget (${w.price.wallMs} ms)`, { key, step: w.step, head: receipt.head }, 'waiting', held.tokens, (held.coin as { debit?: string } | null | undefined)?.debit?.replace(/^coins:/, () => '') ?? null)
   }
+  // every red step and every leak the scanner found: a gap penalised once against the acting key (its address, never the key), announced on
+  // that key's UUID stream, and cleared by the run that shows it gone
+  const actor = uuidOf(process.env.QPU_APP_KEY), held = new Map((standing.open ?? []).map((b) => [b.snapshot?.key ?? '', b]))
+  const scanned = receipt.steps.some((s) => s.name === 'security' && s.status !== 'skipped'), found = (readJson(pub('security.json')) as { leaks?: { findings?: { where: string; kind: string }[] } } | null)?.leaks?.findings ?? []
+  const gaps = [...receipt.steps.filter((s) => s.status === 'red').map((s) => ({ key: `step:next:${s.name}`, kind: 'step', subject: s.name })), ...found.map((x) => ({ key: `leak:${x.kind}:${x.where}`, kind: 'leak', subject: x.where }))]
+  const tell = (says: string) => mcpOf().call('createEntries', { kind: 'message', from: 'penalties', body: { to: actor, says, head: receipt.head } })
+  for (const g of gaps) if (!held.has(g.key)) { await penalise({ rule: `next:${g.kind}`, kind: g.kind, subject: g.subject, committer: actor, evidence: { key: g.key, head: receipt.head } } as Parameters<typeof penalise>[0]); await tell(`penalised: ${g.key}`) }
+  const now = new Set(gaps.map((g) => g.key))
+  for (const [key, b] of held) if ((key.startsWith('step:next:') || (scanned && key.startsWith('leak:'))) && !now.has(key)) { await clear(`next:${key.split(':')[0]}`, 'gone in this run', { key, head: receipt.head }, key.split(':')[0], b.tokens, actor); await tell(`cleared: ${key}`) }
 }
 const leadsNow = [...previous.filter((l) => !/^next-(waiting|idle)-/.test(l.id) && !opened.some((o) => o.id === l.id) && !receipt.steps.some((x) => x.status === 'green' && l.id.startsWith(`next-${x.name}-`))), ...opened]
 writeFileSync(docket, JSON.stringify(leadsNow, null, 1) + '\n')

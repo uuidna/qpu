@@ -857,12 +857,21 @@ export const validateOf = (of: 'entries' | 'qpu' | 'tenants', field: string): st
 }
 /** The access of the entries collection by role, the Worker's roles carried into Payload: a reader reads, a writer creates, nothing updates (content-addressed: immutable), an admin deletes. */
 export const ACCESS = {
-  entries: { read: 'everyone', create: 'a call by any keyed user of the tenant, or through the Payload MCP (its address folds the call); an anonymous REST call is refused by the multi-tenant plugin\'s tenant assignment (measured 2026-10-26) and is computed at the Worker\'s /mcp instead, never stored; other kinds by a super admin, a tenant-admin or editor of the entry\'s tenant, or the tenant\'s writer token', update: 'no one: an entry is its content address, so a change is a new entry', delete: 'a super admin, a tenant-admin of the entry\'s tenant (a where on the tenant), or the tenant\'s admin token' },
+  /** the groups the reads are computed from, after Google's data classes: what everyone reads stays outside them (the public docket, Discovery
+   *  documents, keyless answers); an operational kind (a machine's run, a chat, a penalty, a session, a task's call and answer) is read by its
+   *  tenant and admins; an answer from a sensitive or restricted Google scope by the user who granted it and their tenant's admins (Limited Use) */
+  groups: { operational: { kinds: ['machine', 'chat', 'penalty', 'session', 'call', 'message'], readers: 'tenant' }, 'google-user-data': { kinds: ['google-user-data'], readers: 'grantor' } },
+  entries: { read: 'everyone, but each group\'s kinds: their readers alone', create: 'a call by any keyed user of the tenant, or through the Payload MCP (its address folds the call); an anonymous REST call is refused by the multi-tenant plugin\'s tenant assignment (measured 2026-10-26) and is computed at the Worker\'s /mcp instead, never stored; other kinds by a super admin, a tenant-admin or editor of the entry\'s tenant, or the tenant\'s writer token', update: 'no one: an entry is its content address, so a change is a new entry', delete: 'a super admin, a tenant-admin of the entry\'s tenant (a where on the tenant), or the tenant\'s admin token' },
   tenants: { read: 'everyone', write: 'a super admin (the admin role)' },
   users: 'the site\'s own (admin or self), with an API key per user for MCP clients',
   pages: 'the site\'s own access, kept (published pages public, drafts to users)',
   by: 'Payload\'s user, or a role header signed under the deployment\'s secret (x-qpu-role-mac: HMAC-SHA-256 over role|tenant|METHOD, roles.ts); a bare x-qpu-role header is no claim (measured 2026-10-26: unsigned, it let an anonymous request delete an entry)',
 } as const
+/** The Entries read, computed from the groups: a kind outside them read by everyone, each group's kinds by its readers. */
+const readClause = () => {
+  const q = (xs: readonly string[]) => JSON.stringify(xs).replace(/"/g, "'").replace(/,/g, ', '), gs = Object.values(ACCESS.groups), by = (r: string) => gs.filter((g) => g.readers === r).flatMap((g) => g.kinds)
+  return `({ or: [{ kind: { not_in: ${q(gs.flatMap((g) => g.kinds))} } }, { and: [{ kind: { in: ${q(by('tenant'))} } }, { tenant: { in: tenantsOf(req.user) } }] }, { and: [{ kind: { in: ${q(by('grantor'))} } }, { or: [{ from: { equals: String((req.user as { id?: unknown } | null)?.id ?? '') } }, { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } }] }] }] } as Where)`
+}
 /** The actions at quantum scale: a batch is one JSON-RPC array answered as one array; Payload\'s bulk REST by where; a batch above the quantum is sharded (the shard tool\'s theorems) and the shards run as one wave; the experience the gate measured decides the shard size. */
 const actionsOf = (experience?: { copies?: number; involutions?: number; msByHost?: Record<string, number> }) => {
   const free = experience?.copies ? Math.round(((experience.involutions ?? 0) / experience.copies) * 100) : null
@@ -1306,7 +1315,7 @@ export const qpuServerInfo = { name: 'qpu', version: VERSION }
 `
       const entries = `${header}// The docket as a Payload collection over MongoDB (the mongo tool's language): every entry addressed by its content — the id is the
 // fold address of what it holds, the sha256 beside it — never overwritten; the four verbs are Payload's REST (/api/entries).
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Where } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
 import { signedRoleOf } from '@uuidna/qpu/roles'
@@ -1316,14 +1325,17 @@ const isSuperAdmin = (user: unknown): boolean => ((user as TenantUser)?.roles ??
 const tenantIdOf = (t: unknown): string | null => (typeof t === 'string' ? t : (t as { id?: string } | undefined)?.id ?? null)
 const tenantsWithRole = (user: unknown, roles: readonly string[]): string[] => ((user as TenantUser)?.tenants ?? []).filter((row) => (row.roles ?? []).some((r) => roles.includes(r))).map((row) => tenantIdOf(row.tenant)).filter((id): id is string => !!id)
 const memberOf = (user: unknown, tenant: string | null, roles: readonly string[]): boolean => !!tenant && tenantsWithRole(user, roles).includes(tenant)
+const tenantsOf = (user: unknown): string[] => ((user as TenantUser)?.tenants ?? []).map((row) => tenantIdOf(row.tenant)).filter((x): x is string => !!x)
 // a role claimed in a header counts only when signed under the deployment's secret (x-qpu-role-mac over role|tenant|METHOD); a bare header is no claim
 const claimedRole = (req: { headers: Headers; method?: string }) => signedRoleOf({ role: req.headers.get('x-qpu-role'), tenant: req.headers.get('x-qpu-tenant'), mac: req.headers.get('x-qpu-role-mac'), method: req.method ?? '' }, process.env.QPU_ROLE_SECRET)
 export const Entries: CollectionConfig = {
   slug: 'entries',
   admin: { useAsTitle: 'id', defaultColumns: ['id', 'kind', 'from', 'createdAt'] },
+  enableQueryPresets: true, // each tenant's saved lists: its devices, readings, commands
   // access by tenant roles and the Worker's roles: a reader reads; a call is created by anyone; an entry of other kinds by a super admin, a tenant-admin or editor of its tenant, or a writer role signed under the deployment's secret; no one updates (an entry is its content address); a super admin, a tenant-admin of its tenant or a signed admin role deletes
   access: {
-    read: () => true,
+    // the operational kinds (a machine's runs, chats, penalties, sessions) to their tenant and admins alone; the rest is the public docket
+    read: ({ req }) => isSuperAdmin(req.user) || claimedRole(req) === 'admin' || ${readClause()},
     create: ({ req, data }) => data?.kind === 'call' || data?.kind === 'chat' || isSuperAdmin(req.user) || memberOf(req.user, tenantIdOf(data?.tenant), ['tenant-admin', 'editor']) || claimedRole(req) === 'writer' || claimedRole(req) === 'admin',
     update: () => false,
     delete: ({ req }) => isSuperAdmin(req.user) || claimedRole(req) === 'admin' || { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } },
@@ -1976,7 +1988,7 @@ export const accessAuditOf = (ctx: Context) => {
   const checks: { id: string; perspective: typeof PERSPECTIVES[number]; passed: boolean; evidence: string; hook: string; cost: string; licence: string; legal: string }[] = []
   const c = (id: string, perspective: typeof PERSPECTIVES[number], passed: boolean, evidence: string, hook: string, cost: string, licence: string, legal: string) => checks.push({ id, perspective, passed, evidence, hook, cost, licence, legal })
   // the public: anyone at the default domain, no account, no token
-  c('public:read-everyone', 'public', /read: \(\) => true/.test(entries) && ACCESS.entries.read === 'everyone' && ACCESS.tenants.read === 'everyone', 'entries and tenants read by everyone; every tool answers without a credential', 'none: a read is served from the cache by address', 'free: a cache hit by address, a 304 by involution', 'BY: every answer carries _meta.license and the attribution', 'the moral right of attribution (Berne art. 6bis), honoured on every read')
+  c('public:read-everyone', 'public', entries.includes(readClause()) && ACCESS.entries.read.startsWith('everyone') && ACCESS.tenants.read === 'everyone', 'entries (but the operational kinds, read by their tenant) and tenants read by everyone; every tool answers without a credential', 'none: a read is served from the cache by address', 'free: a cache hit by address, a 304 by involution', 'BY: every answer carries _meta.license and the attribution', 'the moral right of attribution (Berne art. 6bis), honoured on every read')
   c('public:create-call-only', 'public', /data\?\.kind === 'call'/.test(entries) && /claimedRole\(req\) === 'writer'/.test(entries) && !/headers\.get\('x-qpu-role'\) ===/.test(entries), 'an anonymous create is a call or a chat, whose address folds it as corrected for the role; any other kind needs a tenant role or a writer role signed under the deployment secret (a bare header is no claim)', 'beforeValidate: the content address on create, so a repeated call is the same row', 'paid once by the provider for the first computation, free after by address', 'NC: non-commercial use is free and needs no licence; the a432 default is priced 0', 'consideration: non-commercial free, commercial billed on the measured advantage')
   c('public:no-update-anywhere', 'public', /update: \(\) => false/.test(entries) && /no one/.test(ACCESS.entries.update), 'no one updates an entry: a change is a new entry linked to the one it replaces', 'none on change: nothing cached under an address changes', 'free: no revalidation, ever', 'ND: no derivative of a sealed entry; the chain of entries is the history', 'integrity (Berne art. 6bis); the sui generis database right over the sealed ledger (Directive 96/9/EC art. 7)')
   // a licensed tenant's users at their own domain
