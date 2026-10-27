@@ -5,11 +5,11 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
-import { LEADS } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { readJson, selftestOf } from './mcp.ts'
+import { readJson, selftestOf, leadsOf } from './mcp.ts'
+const { all: LEADS } = await leadsOf()
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
@@ -36,7 +36,7 @@ let done = 0
 // chunks of ten: the hand-written leads at the head are heavy (every integer reflected, every mirror query matched), so the quantum is checked often
 for (let i = 0; i < todo.length && Date.now() - started < QUANTUM_MS; i += 10) {
   const chunk = todo.slice(i, i + 10)
-  const r = call({ leads: chunk.map((l) => l.id) })
+  const r = call({ leads: chunk.map((l) => l.id), records: chunk })
   for (const row of r.imagination.rows as { lead: string; verdict: string; verify: number }[]) { const l = chunk.find((x) => x.id === row.lead)!; kept[l.id] = { hash: hashOf(l), row, opened: (r.imagination.imagined as { source: string }[]).filter((x) => x.source === `reflection of lead ${l.id}`), verify: row.verify, verdict: row.verdict } }
   done += chunk.length
   if (!isShard) writeFileSync(rowsPath, JSON.stringify(kept) + '\n')

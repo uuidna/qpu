@@ -11,7 +11,7 @@ import { LITERAL_ROOTS, manualDocsOf } from '../src/quantum/audit.ts'
 import { GAP_KINDS, gapKindOf } from '../src/quantum/toolboxes/billing.ts'
 import { createHash } from 'node:crypto'
 import { penalise, clear, correctionOf, recordPrevented, openPenaltiesOf } from './penalties.ts'
-import { mcpOf, readJson } from './mcp.ts'
+import { mcpOf, readJson, raidRead } from './mcp.ts'
 
 type Step = { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; detach?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }
 const name = process.argv[2] ?? ''
@@ -27,15 +27,15 @@ if (!standing.open) console.error(`hook ${name}: penalties unread (${standing.re
 else { const shown = standing.open.filter((b) => (b as { printed?: boolean }).printed !== false && b.kind !== 'invisible'); /* an invisible action's penalty is recorded silently, never printed (textbook_penalty_visibility_harmonic) */ console.error(`hook ${name}: ${shown.length} open penalt${shown.length === 1 ? 'y' : 'ies'}, ${standing.tokens} token(s), ${standing.coins} coin(s)`); for (const b of shown) console.error(`  ${(b as { kind?: string }).kind ?? 'refusal'}${(b as { blocks?: boolean }).blocks === false ? ' (listed)' : ''} ${b.rule}: ${b.snapshot?.key}`) }
 let automated: { drifted: string[]; bytes: number; files: { path: string; expected: string; actual: string }[] } | null = null
 // a raid step: the docket read through the Payload MCP tool the step names, every page (the URL overridden by QPU_APP_MCP, the user's MCP key
-// in QPU_APP_KEY, never written anywhere); without a key or an answer the docket is unread and the rules over it say unknown
+// in QPU_APP_KEY, never written anywhere), in the RAID's order: else binding 0's copy; with neither the docket is unread and the rules say unknown
 let docket: unknown[] | null = null
-const raidOf = (s: Step) => mcpOf(process.env.QPU_APP_MCP ?? s.url).findAll(s.tool!, s.arguments ?? {})
+const raidOf = (s: Step) => raidRead(s.tool!, async () => (await mcpOf(process.env.QPU_APP_MCP ?? s.url).findAll(s.tool!, s.arguments ?? {})).docs as Record<string, unknown>[] | null)
 for (const s of w.steps) {
   if (red && s.strict) break
   // a detached step runs in the background with its own output file, never holding the hook
   if (s.kind === 'run' && s.detach) { const log = join('.qpu', `${s.id}.log`); mkdirSync('.qpu', { recursive: true }); const fd = openSync(log, 'w'); spawn(s.cmd!, s.args ?? [], { detached: true, stdio: ['ignore', fd, fd] }).unref(); console.log(`hook ${name}: ${s.id} started in the background (${log})`); continue }
   if (s.kind === 'run') { const p = spawnSync(s.cmd!, s.args ?? [], { stdio: 'inherit' }); if (p.status !== 0) { console.error(`hook ${name}: step ${s.id} red`); if (s.strict) red = true } continue }
-  if (s.kind === 'raid') { const got = await raidOf(s); docket = got.docs; console.log(`hook ${name}: ${s.id}: ${got.says}`); continue }
+  if (s.kind === 'raid') { const got = await raidOf(s); docket = got.docs ?? null; console.log(`hook ${name}: ${s.id}: ${got.docs?.length ?? 'no'} document(s) from ${got.from}`); continue }
   if (s.kind === 'stage') {
     // before anything is staged: every generated file whose staged content differs from what its generator just wrote (the step above regenerated them)
     const drifted = GENERATED_FILES.filter((p) => existsSync(p) && spawnSync('git', ['diff', '--quiet', '--', p]).status === 1)

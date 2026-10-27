@@ -1,9 +1,9 @@
 // The one MCP client every script shares. Underneath, a session with any MCP server over streamable HTTP: initialize, the session id the
 // server names carried on every later message, the streamed `data:` line read, the answer's size in bytes kept. Above it, the app's Payload
 // MCP: a tools/call with the user's MCP key (QPU_APP_KEY, never written anywhere) to /api/mcp (QPU_APP_MCP, else the local app), the
-// plugin's json blocks parsed, a find walked page by page. Without a key or an answer it says so and returns nothing: an unread docket is
-// unknown to its caller, never a file fallback.
-import { readFileSync, writeFileSync } from 'node:fs'
+// plugin's json blocks parsed, a find walked page by page. Without a key or an answer it says so: an unread docket is unknown to its
+// caller, its one fallback binding 0 (the RAID's own copy in hex folders, every file verified by its address).
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { LICENSE } from '../src/quantum/license.js'
 import { execFileSync } from 'node:child_process'
@@ -96,4 +96,20 @@ export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: str
     return { docs, says: `${docs.length} document(s) read through ${tool}` }
   }
   return { url, call, docsOf, docOf, findAll }
+}
+/** A collection read in the RAID's order: Payload's answer, else binding 0 — the copy Payload's qpu-raid hooks keep in hex folders (QPU_BINDING0,
+ *  else .qpu at the root), every version verified by its address; the source named, nothing when neither holds it (textbook_binding_zero_hex_path) */
+export const raidRead = async (collection: string, read: () => Promise<Record<string, unknown>[] | null>) => {
+  const docs = await read().catch(() => null); if (docs) return { docs, from: 'payload' }
+  const dir = process.env.QPU_BINDING0 ?? join(process.cwd(), '.qpu'), { binding0Of } = await import('../src/quantum/toolboxes/raid.js')
+  const back = <{ docs: Record<string, unknown>[]; refused: string[] }>binding0Of(collection, null, existsSync(dir) ? Object.fromEntries(readdirSync(dir, { recursive: true }).map(String).filter((p) => /^[0-9a-f]{2}\/[0-9a-f]{2}\/[^/]+$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) : {})
+  return { docs: back.docs.length ? back.docs : null, from: back.docs.length ? `binding 0 (${back.refused.length} refused)` : 'unread' }
+}
+/** The leads beyond the core: every Research leads page's record (its leads block's lead), read in the RAID's order and handed to the tools as records */
+export const leadsOf = async () => {
+  const m = mcpOf(), find = async (where: object) => (await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify(where) })).docs as Record<string, unknown>[] | null
+  const r = await raidRead('pages', async () => { const top = await find({ title: { equals: 'Research leads' } }); return top?.length ? find({ parent: { in: top.map((p) => p.id) } }) : null }), top = new Set((r.docs ?? []).filter((p) => p.title === 'Research leads').map((p) => p.id))
+  const pages = (r.from === 'payload' ? r.docs : r.docs?.filter((p) => top.has(String((p.parent as { id?: string } | null)?.id ?? p.parent)))) as { layout?: { tool?: string; arguments?: { lead?: Record<string, unknown> } }[] }[] | null
+  const { LEADS } = await import('../src/quantum/leads.js'), records = (pages ?? []).flatMap((p) => (p.layout ?? []).flatMap((b) => (b.tool === 'leads' && b.arguments?.lead ? [b.arguments.lead] : []))) as unknown as typeof LEADS[number][], core = new Set(LEADS.map((l) => l.id))
+  return { records, all: [...LEADS, ...records.filter((l) => !core.has(l.id))], from: r.from }
 }

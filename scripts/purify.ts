@@ -10,10 +10,11 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { handle, cellOf as cell } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
-import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
+import { cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { VERIFIERS, factsOf, verifyRequestsOf } from '../src/quantum/verifiers.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
-import { readJson } from './mcp.ts'
+import { readJson, leadsOf } from './mcp.ts'
+const { all: LEADS } = await leadsOf()
 
 const ROOT = process.cwd()
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag

@@ -1125,6 +1125,17 @@ Every lead on quantumai
 {
   "type": "object",
   "properties": {
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the leads beyond the core as the client read them (the Research leads pages in Payload, else binding 0)"
+    },
+    "lead": {
+      "type": "object",
+      "description": "one such lead, as its Research leads page hands it"
+    },
     "sitemap": {
       "type": "object",
       "description": "a sitemap as sitemaps"
@@ -1736,9 +1747,15 @@ The ported MongoDB over the docket, pure
         "find",
         "insert",
         "update",
-        "delete"
+        "delete",
+        "mirror",
+        "restore"
       ],
       "default": "find"
+    },
+    "files": {
+      "type": "object",
+      "description": "restore"
     },
     "collection": {
       "type": "string"
@@ -1770,7 +1787,7 @@ The ported MongoDB over the docket, pure
     }
   },
   "x-harmonic": {
-    "combinations": "4",
+    "combinations": "6",
     "index": "0",
     "from": "a432"
   }

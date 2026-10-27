@@ -5,7 +5,6 @@ import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { LEADS } from '../src/quantum/leads.ts'
 import type { Request, Answer } from '../src/quantum/discovery.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { bestDoorsOf } from '../src/quantum/discovery.ts'
@@ -15,7 +14,8 @@ mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const UA = 'uuidna-qpu-discover (https://qpu.uuidna.com)'
 const call = toolCallerOf('discover')
 import { setTimeout as sleep } from 'node:timers/promises'
-import { readJson, getOf, mcpOf, selftestOf, publishOf } from './mcp.ts'
+import { readJson, getOf, mcpOf, selftestOf, publishOf, leadsOf } from './mcp.ts'
+const { all: LEADS } = await leadsOf()
 const fetchOne = async (r: Request): Promise<Answer> => {
   try { const res = await getOf(r.url, 'application/json, text/event-stream, application/yaml, text/xml, */*', 30000, { method: r.method, body: r.body, agent: UA, headers: r.headers }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
   catch (e) { return { ...r, status: 0, type: '', text: `fetch failed: ${(e as Error).message}` } }
@@ -70,7 +70,7 @@ const main = async () => {
   const related: { lead: string; words: string[]; servers: number; serverList: unknown[]; extended: { server: string; url: string; status: number; doors: number }[]; bestDoors: { server: string; url: string; door: string; score: number; shared: string[] }[] }[] = []
   let relatedFetched = 0, relatedRemaining = 0
   for (const l of shareOf(LEADS.filter((x) => (x.status === 'open' || x.status === 'partial') && x.source !== 'statement' && !/^(sitemap|page:|clay-|lead:)/.test(x.id)))) {
-    const plan = call({ lead: l.id })
+    const plan = call({ lead: l.id, records: [l] })
     const got: unknown[] = []
     for (const r of plan.requestList as Request[]) {
       const c = cache[r.id]
@@ -80,7 +80,7 @@ const main = async () => {
       await sleep(200)
     }
     if (!got.length) continue
-    const rel = call({ lead: l.id, answers: got })
+    const rel = call({ lead: l.id, answers: got, records: [l] })
     const extended: { server: string; url: string; status: number; doors: number }[] = []
     const remotes: { server: string; url: string; tools: { name: string; description?: string }[] }[] = []
     for (const e of (rel.extendList as { id: string; server: string; url: string; body: unknown }[])) {

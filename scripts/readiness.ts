@@ -8,8 +8,9 @@ import './teleport.ts'
 import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
-import { sessionOf, readJson } from './mcp.ts'
-import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
+import { sessionOf, readJson, leadsOf } from './mcp.ts'
+const { all: LEADS, records } = await leadsOf()
+import { cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
@@ -35,7 +36,7 @@ const main = async () => {
   const ledger = existsSync(ledgerPath) ? readFileSync(ledgerPath, 'utf8').split('\n').filter(Boolean).map((l) => { const r = JSON.parse(l) as { key: string; statement: string }; return { key: r.key, statement: r.statement } }) : []
   const verification = pub('verification.json')
   const discovery = pub('discovery.json')
-  const plan = call({ verification, discovery, present, ledger })
+  const plan = call({ verification, discovery, present, ledger, records })
   // the border: every discovered door, asked
   const hostUrl = (host: string) => (discovery?.hosts as { host: string; kind: string; contract: string }[] | undefined)?.find((h) => h.host === host && h.kind === 'mcp')?.contract ?? UNIT
   const border: { door: string; host: string; arguments: Record<string, unknown>; answer?: unknown; refusal?: string }[] = []
@@ -73,7 +74,7 @@ const main = async () => {
   const clay = toolCallerOf('clay')({ technique: 'reflection', unit: clayAnswers }) as { unitAsked: number; unitAgree: number; unitDisagree: number; unitRefused: number; pairsCount: number; fixedCount: number; tunedCount: number; leads: { id: string; statement: string; status: string; reason: string }[] }
   if (clay?.leads.length) { const docket = join(ROOT, 'docs', 'public', 'next-leads.json'); const previous = readJson(docket, []) as { id: string; source?: string }[]; const fresh = clay.leads.map((l) => ({ ...l, source: 'uuidna.com/mcp run_sequence', evidence: 'clay technique: reflection', head: '', date: new Date().toISOString() })); writeFileSync(docket, JSON.stringify([...previous.filter((p) => p.source !== 'uuidna.com/mcp run_sequence'), ...fresh], null, 1) + '\n') }
   const unit = { vortex, readiness, auras, rights: { receipt: rights.receipt, imprint: rights.imprint, licenseAddress: rights.licenseAddress, drift }, address }
-  const judged = call({ verification, discovery, present, ledger, border, unit, unitUrl: UNIT })
+  const judged = call({ verification, discovery, present, ledger, border, unit, unitUrl: UNIT, records })
   const date = new Date().toISOString()
   writeFileSync(join(ROOT, 'docs', 'public', 'readiness.json'), JSON.stringify({ license: LICENSE.attribution, date, unit: UNIT, selftest: { passed: selftest.passed }, measured: verification?.date ?? null, discovered: discovery?.date ?? null, classes: judged.classes, judged: judged.judged, readiness, vortex, clay: clay ? { asked: clay.unitAsked, agree: clay.unitAgree, disagree: clay.unitDisagree, refused: clay.unitRefused, pairs: clay.pairsCount, fixed: clay.fixedCount, tuned: clay.tunedCount, leads: clay.leads } : null, border: { key: judged.probe.key, statement: judged.probe.statement, doors: judged.border, sealedBy: judged.sealedByDoors }, auras, address, rights: unit.rights }, null, 1) + '\n')
   writeFileSync(join(ROOT, 'docs', 'readiness.md'), judged.page)

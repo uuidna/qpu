@@ -5,14 +5,17 @@ import { test, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync, mkdtempSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { pathToFileURL } from 'node:url'
 import { WORKSPACE_FIXTURES as W } from './examples.js'
 import { workspaceOf } from './workspace.js'
 import { qpuHooksOf } from './blocks.js'
+import { binding0Of } from './toolboxes/raid.js'
 
 const site = createRequire(join(process.cwd(), 'site', 'package.json')), load = (m: string) => import(pathToFileURL(site.resolve(m)).href)
-test('a Lexical form block validates, its submission lands, every rich text field and Lexical block is witnessed', async () => {
+test('a Lexical form block validates, its submission lands, every rich text field and Lexical block is witnessed, every page kept at binding 0', async () => {
+  const b0 = process.env.QPU_BINDING0 = mkdtempSync(join(tmpdir(), 'qpu-b0-')), { qpuRaid } = await import(pathToFileURL(join(process.cwd(), 'site', 'src', 'plugins', 'qpu.ts')).href)
   const [{ buildConfig, definePlugin, getPayload }, { formBuilderPlugin }, { seoPlugin }, { BlocksFeature, lexicalEditor }, { qpuFormFields, qpuLexicalBlocks }] = await Promise.all([...['payload', '@payloadcms/plugin-form-builder', '@payloadcms/plugin-seo', '@payloadcms/richtext-lexical'].map(load), import(pathToFileURL(join(process.cwd(), 'site', 'src', 'payload.qpu.lexical.ts')).href)])
   const rows: Record<string, any[]> = {}, eq = (d: any, w: any): boolean => !w || Object.entries(w).every(([k, v]: [string, any]) => (k === 'and' ? v.every((x: any) => eq(d, x)) : v?.equals === undefined || String(d[k]) === String(v.equals)))
   const find = async ({ collection, where }: any) => { const docs = (rows[collection] ?? []).filter((d) => eq(d, where)); return { docs, totalDocs: docs.length, page: 1, totalPages: 1, hasNextPage: false, hasPrevPage: false } }
@@ -22,7 +25,7 @@ test('a Lexical form block validates, its submission lands, every rich text fiel
   for (const w of ['collection', 'global', 'field']) assert.deepEqual(declared(w), types('payload', w + 's', 'config', 'types.d.ts'), w)
   assert.deepEqual(declared('node'), types('@payloadcms/richtext-lexical', 'features', 'typesServer.d.ts'))
   const editor = lexicalEditor({ features: ({ defaultFeatures }: any) => [...defaultFeatures, BlocksFeature({ blocks: qpuLexicalBlocks })] })
-  const config = await buildConfig({ secret: 'test', db, editor: lexicalEditor(), blocks: ['form', 'qpu'].map((slug) => ({ slug, fields: [{ name: slug, type: 'text' }] })), collections: [{ slug: 'pages', fields: [{ name: 'body', type: 'richText', editor }, { name: 'items', type: 'array', fields: [{ name: 'layout', type: 'blocks', blocks: [{ slug: 'note', fields: [{ name: 'body', type: 'richText', editor }] }] }] }] }], plugins: [definePlugin({ slug: 'qpu-hooks', order: Number.MAX_SAFE_INTEGER, plugin: ({ config }: any) => qpuHooksOf(config).config })({}), formBuilderPlugin({ fields: qpuFormFields }), seoPlugin({ collections: ['pages'] })] })
+  const config = await buildConfig({ secret: 'test', db, editor: lexicalEditor(), blocks: ['form', 'qpu'].map((slug) => ({ slug, fields: [{ name: slug, type: 'text' }] })), collections: [{ slug: 'pages', fields: [{ name: 'body', type: 'richText', editor }, { name: 'items', type: 'array', fields: [{ name: 'layout', type: 'blocks', blocks: [{ slug: 'note', fields: [{ name: 'body', type: 'richText', editor }] }] }] }] }], plugins: [definePlugin({ slug: 'qpu-hooks', order: Number.MAX_SAFE_INTEGER, plugin: ({ config }: any) => qpuHooksOf(config).config })({}), formBuilderPlugin({ fields: qpuFormFields }), seoPlugin({ collections: ['pages'] }), qpuRaid({})] })
   const rich: any[] = [], walk = (fs: any[] = []) => { for (const f of fs) { if (f.type === 'richText') rich.push(f); for (const x of [...(f.tabs ?? []), ...(f.blocks ?? [])]) walk(x.fields); walk(f.fields) } }
   for (const c of [...config.collections, ...config.globals]) walk(c.fields)
   const w = rich[0].hooks, node = (f: any) => f.editor.editorConfig.features.nodeHooks.beforeChange.get('block')?.[0], blocks = rich.flatMap((f) => (f.editor.editorConfig.resolvedFeatureMap.get('blocks')?.sanitizedServerFeatureProps.blocks ?? []).map(() => f))
@@ -40,5 +43,7 @@ test('a Lexical form block validates, its submission lands, every rich text fiel
   assert.equal(rows['form-submissions']?.length, 1)
   assert.deepEqual(rows['forms']![0].fields.map((f: { blockType: string }) => f.blockType), W.form.fields.map((f) => f.blockType))
   await assert.rejects(payload.create({ collection: 'pages', data: { body: block({ blockType: 'nope' }) } }))
+  const files = Object.fromEntries(readdirSync(b0, { recursive: true }).map(String).filter((f) => /^\w\w\/\w\w\/[^/]+$/.test(f)).map((f) => [f, readFileSync(join(b0, f), 'utf8')])), back = binding0Of('pages', null, files)
+  assert.deepEqual([back.docs?.map((d) => d.id).sort(), back.refused], [rows['pages']!.map((d) => d.id).sort(), []])
 })
 after(() => setImmediate(() => process.exit(process.exitCode ?? 0))) // Payload keeps its schedulers alive past the test

@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T14:09:00.734Z",
+ "date": "2026-10-27T14:20:49.432Z",
  "input": {
   "doors": [
    {
@@ -2964,7 +2964,7 @@
    },
    {
     "name": "sqladmin.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "sqladmin.googleapis.com",
@@ -2972,7 +2972,7 @@
    },
    {
     "name": "run.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "run.googleapis.com",
@@ -2980,7 +2980,7 @@
    },
    {
     "name": "firestore.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "firestore.googleapis.com",
@@ -2988,7 +2988,7 @@
    },
    {
     "name": "mapstools.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "mapstools.googleapis.com",
@@ -2996,7 +2996,7 @@
    },
    {
     "name": "monitoring.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "monitoring.googleapis.com",
@@ -3004,7 +3004,7 @@
    },
    {
     "name": "developerknowledge.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "developerknowledge.googleapis.com",
@@ -3012,7 +3012,7 @@
    },
    {
     "name": "design.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "design.googleapis.com",
@@ -3020,7 +3020,7 @@
    },
    {
     "name": "stitch.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "stitch.googleapis.com",
@@ -3028,7 +3028,7 @@
    },
    {
     "name": "compute.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "compute.googleapis.com",
@@ -3036,7 +3036,7 @@
    },
    {
     "name": "container.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "container.googleapis.com",
@@ -3052,7 +3052,7 @@
    },
    {
     "name": "datastream.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "datastream.googleapis.com",
@@ -3060,7 +3060,7 @@
    },
    {
     "name": "bigtableadmin.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "bigtableadmin.googleapis.com",
@@ -3068,7 +3068,7 @@
    },
    {
     "name": "memorystore.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "memorystore.googleapis.com",
@@ -3076,7 +3076,7 @@
    },
    {
     "name": "androidmanagement.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "androidmanagement.googleapis.com",
@@ -3220,7 +3220,7 @@
    },
    {
     "name": "data.epo.org",
-    "called": true
+    "called": false
    },
    {
     "name": "beacon.nist.gov",
@@ -3228,7 +3228,7 @@
    },
    {
     "name": "ct.googleapis.com",
-    "called": true
+    "called": false
    },
    {
     "name": "acme-v02.api.letsencrypt.org",
@@ -3754,9 +3754,9 @@
   "gates": {
    "unit": "calls",
    "capacity": 108,
-   "used": 67,
-   "idle": 41,
-   "percentIdle": 37,
+   "used": 51,
+   "idle": 57,
+   "percentIdle": 52,
    "idleNames": [
     "uuidna.com",
     "docs.mcp.cloudflare.com",
@@ -3777,22 +3777,38 @@
     "api.githubcopilot.com",
     "api.githubcopilot.com",
     "sqladmin.googleapis.com",
+    "sqladmin.googleapis.com",
+    "run.googleapis.com",
     "run.googleapis.com",
     "firestore.googleapis.com",
+    "firestore.googleapis.com",
+    "mapstools.googleapis.com",
     "mapstools.googleapis.com",
     "monitoring.googleapis.com",
+    "monitoring.googleapis.com",
+    "developerknowledge.googleapis.com",
     "developerknowledge.googleapis.com",
     "design.googleapis.com",
+    "design.googleapis.com",
+    "stitch.googleapis.com",
     "stitch.googleapis.com",
     "compute.googleapis.com",
+    "compute.googleapis.com",
+    "container.googleapis.com",
     "container.googleapis.com",
     "composer.googleapis.com",
     "composer.googleapis.com",
     "datastream.googleapis.com",
+    "datastream.googleapis.com",
+    "bigtableadmin.googleapis.com",
     "bigtableadmin.googleapis.com",
     "memorystore.googleapis.com",
+    "memorystore.googleapis.com",
+    "androidmanagement.googleapis.com",
     "androidmanagement.googleapis.com",
     "patents.google.com",
+    "data.epo.org",
+    "ct.googleapis.com",
     "oeis.org",
     "quantumai.google",
     "zenodo.org",

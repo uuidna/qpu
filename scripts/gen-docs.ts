@@ -7,9 +7,9 @@ import './teleport.ts'
 import { handle, toolCallerOf, TOOLBOXES as toolboxes, cellOf as cell } from '../src/quantum/mcp.js'
 import { cssOf, hueOf, KEY } from '../src/quantum/theme.js'
 import { uuidOf } from '../src/quantum/blocks.js'
-import { LEADS } from '../src/quantum/leads.js'
 import { TEXTBOOK_LEAN, TEXTBOOK_THEOREMS } from '../src/quantum/textbook-theorems.js'
-import { readJson } from './mcp.ts'
+import { readJson, leadsOf } from './mcp.ts'
+const { all: LEADS } = await leadsOf()
 
 const ROOT = process.cwd()
 // Text that reaches a page is escaped once here: an angle bracket in a lead or a description is text, never a tag.

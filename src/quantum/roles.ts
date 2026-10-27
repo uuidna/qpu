@@ -12,7 +12,7 @@ export const ROLE_RANK: Readonly<Record<Role, number>> = { reader: 0, writer: 1,
 /** The enum values that write, per tool and property, with the role each needs; every other value is a read any role may choose. A table, not a
  *  guess from the word: "plan" starts a checkout in the stripe tool and only plans requests in the currency, patents and attest tools. */
 export const ENUM_POLICY: Readonly<Record<string, Readonly<Record<string, Role>>>> = {
-  'mongo.op': { insert: 'writer', update: 'writer', delete: 'admin' },
+  'mongo.op': { insert: 'writer', update: 'writer', mirror: 'writer', delete: 'admin' },
   'stripe.op': { plan: 'writer', webhook: 'writer', settle: 'admin' },
   'repository.workflow': { 'pre-commit': 'writer', 'commit-msg': 'writer', 'prepare-commit-msg': 'writer', 'post-commit': 'writer', ci: 'writer', 'pre-push': 'admin', 'pre-deploy': 'admin' },
 }
