@@ -7,7 +7,7 @@ import { uuidOf } from './blocks.js'
 import { dataOf, rpcBody } from './discovery.js'
 import { textbookLogicalError } from './qec.js'
 import { handleOrCorrect } from './audit.js'
-import type { Context } from './toolbox.js'
+import { toolsOf, type Context } from './toolbox.js'
 
 export type E2eRequest = { id: string; combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; arguments: Record<string, unknown>; host: string; url: string; method: 'POST'; accept: string; headers: Record<string, string>; body: unknown; local: string; localError?: string }
 export type E2eAnswer = E2eRequest & { status: number; ms: number; text: string; etag?: string | null; address?: string | null; version?: string | null; /** the answer already decoded by the client the moment it arrived, its body released: a run of hundreds of copies holds values, never bodies (the heap ran out holding 870 bodies: measured) */ decoded?: ReturnType<typeof valueOf> }
@@ -66,7 +66,7 @@ export const hashOf = (v: unknown) => uuidOf((JSON.stringify(v) ?? 'undefined').
 
 /** The combinations: every example and every dashboard cell, once per host, with the tree's own answer hashed. */
 export const e2eRequestsOf = (ctx: Context, hosts: readonly string[], only?: readonly string[]): E2eRequest[] => {
-  const tools = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; _meta?: { toolbox?: string } }[] } }).result.tools
+  const tools = toolsOf(ctx)
   const boxOf = new Map(tools.map((t) => [t.name, t._meta?.toolbox ?? 'none']))
   const combos = new Map<string, { tool: string; from: 'example' | 'cell'; arguments: Record<string, unknown> }>()
   const add = (tool: string, args: Record<string, unknown>, from: 'example' | 'cell') => { if (E2E_SKIP.has(tool) || args.selftest || !boxOf.has(tool) || (only && !only.includes(tool)) || executedAtEdge(tool, args)) return; const combo = uuidOf(`${tool}${JSON.stringify(args)}`); if (!combos.has(combo)) combos.set(combo, { tool, from, arguments: args }) }

@@ -2,7 +2,7 @@
 // lead; the vocabulary measured against every term the surface emits, so the tables are updated from measurement; and
 // programmable prose: a tool's result and its toolbox's skill rendered as sentences in any locale, backed by the toolset
 // (the numbers are the tool's) and the skillset (the words are the vocabulary's). Pure.
-import { toolOf, checksOf, type Toolbox, type Context } from '../toolbox.js'
+import { toolOf, checksOf, toolsOf, type Toolbox, type Context } from '../toolbox.js'
 import { LOCALES, TABLES, translateOf, numeralsOf } from '../i18n.js'
 import { flowWidget } from '../widgets.js'
 
@@ -56,8 +56,7 @@ const prose = toolOf('language', {
     const tool = String(args.tool); const locale = typeof args.locale === 'string' ? args.locale : 'en'
     const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args.arguments ?? {} } })
     if ('error' in r) throw new Error(r.error.message)
-    const list = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; _meta?: { toolbox?: string } }[] } }
-    const boxName = list.result.tools.find((t) => t.name === tool)?._meta?.toolbox ?? null
+    const boxName = toolsOf(ctx).find((t) => t.name === tool)?._meta?.toolbox ?? null
     const init = ctx.handle({ jsonrpc: '2.0', id: 0, method: 'initialize' }) as { result: { instructions: string } }
     const line = boxName ? init.result.instructions.split('\n').find((l) => l.startsWith(`${boxName} (`)) : undefined
     const box = boxName && line ? { name: boxName, idea: line.slice(line.indexOf('): ') + 3, line.indexOf('. ') + 1).replace(/\.$/, ''), instructions: line.slice(line.indexOf('. ') + 2) } : null

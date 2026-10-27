@@ -2,7 +2,7 @@
 // read into doors that join this catalogue (the same door reading discovery uses), and a foreign door is served by one
 // request the client fetches, the answer read back whether JSON or an event stream. Outward, this catalogue is expressed as
 // the registration any MCP client mounts (tools/list as every client receives it, the mcpServers fragment). Pure: no fetch.
-import { toolOf, checksOf, type Toolbox, type Context } from '../toolbox.js'
+import { toolOf, checksOf, toolsOf, type Toolbox, type Context } from '../toolbox.js'
 import { doorOf, dataOf, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, KNOWN_MCP, CLAUDE_API, GEMINI_API, OPEN_MCP_BASELINES, toolsListCompareOf, coverageRequestOf, coverageOf, type Door } from '../discovery.js'
 import { flowWidget } from '../widgets.js'
 
@@ -26,7 +26,7 @@ export const answerOf = (text: string): { ok: boolean; result?: unknown; error?:
     return { ok: true, result: j.result }
   } catch (e) { const data = dataOf(text); return { ok: false, error: `not JSON (${(e as Error).message.slice(0, 60)}; stream ${/^(event|data):/m.test(text)}; data ${JSON.stringify(data.slice(0, 40))}): ${text.slice(0, 80)}` } }
 }
-const mine = (ctx: Context) => ((ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: (ForeignTool & { _meta?: { toolbox?: string } })[] } }).result.tools)
+const mine = (ctx: Context) => (toolsOf(ctx))
 /** Inward: the host's tools as doors of this catalogue, each named host:tool. */
 const inwardOf = (host: string, tools: ForeignTool[]) => tools.map((t) => ({ ...doorOf(t, 'tools/list'), host: hostOf(host), url: host, as: `${hostOf(host)}:${t.name}` }))
 /** Outward: this catalogue as the registration any MCP client mounts. */

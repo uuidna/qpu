@@ -86,6 +86,8 @@ theorem textbook_code_folds (s a r : Nat) (h : a ≤ r) (hr : r ≤ s) : s + a -
 theorem textbook_new_doors_proven (news proven : Nat) (hp : proven ≤ news) (hu : news - proven = 0) : proven = news := by omega
 /-- a table cell carries no link: when cellOf escapes every link opener and local address a cell holds, none is left to be a link, so a generated page never carries a dead one (examples: widgets-cell-text) -/
 theorem textbook_cells_text (links escaped : Nat) (h : escaped = links) : links - escaped = 0 := by omega
+/-- a list read whole leaves nothing out: toolsOf reads the full tools/list, filtered by nothing, so every tool of every toolbox it serves is counted — the one reader fourteen copies of the same call fold onto (examples: e2e-plan-reads-every-tool) -/
+theorem textbook_tools_listed : ∀ l : List Nat, (l.filter (fun _ => true)).length = l.length := by intro l; simp
 /-- a path or URL literal is clean exactly when it sits in its registry: clean agrees with in the registry, so a clean literal is one in its registry (examples: repository-literals) -/
 theorem textbook_literal_in_registry (registry clean : Bool) (h : clean = registry) : clean = true → registry = true := by intro hc; rw [← h]; exact hc
 /-- the hex digits above nine are spoken as Ⰺ (ten) and a unit, and read back by adding them: ten and one to five are eleven to fifteen, so every hex digit returns as itself (examples: fold-speak) -/
