@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T02:59:42.615Z",
+ "date": "2026-10-27T03:01:08.926Z",
  "literals": {
   "urls": 859,
   "distinctUrls": 442,
@@ -693,9 +693,9 @@
  },
  "files": 949,
  "lines": 85947,
- "findings": 1076,
+ "findings": 1077,
  "fused": 334,
- "reactions": 742,
+ "reactions": 743,
  "gravity": "5ce7bbb2-8316-47c5-a848-2ad06659320c",
  "vacuum": false,
  "byKind": {
@@ -720,7 +720,7 @@
    "leads": 285
   },
   "shape": {
-   "findings": 221,
+   "findings": 222,
    "leads": 5
   },
   "todo": {
@@ -4735,11 +4735,11 @@
   {
    "id": "entropy-shape-7458ed19",
    "kind": "shape",
-   "source": "scripts/attest.ts:14, scripts/compare.ts:14, scripts/compare.ts:35, scripts/compete.ts:31, scripts/compete.ts:35, scripts/compete.ts:40, scripts/currency.ts:21, scripts/discover.ts:20, scripts/e2e.ts:29, scripts/hook.ts:65, scripts/legal.ts:19, scripts/mcp.ts:14, scripts/metrics.ts:14, scripts/metrics.ts:25, scripts/patents.ts:26, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/readiness.ts:22, scripts/repository.ts:38, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/security.ts:45, scripts/sources.ts:30, scripts/sources.ts:40, scripts/textbook.ts:26, scripts/textbook.ts:35, scripts/textbook.ts:52, scripts/verify.ts:47, site/src/collections/Entries.ts:42, src/quantum/toolboxes/payload.ts:1315, src/worker.ts:37, src/worker.ts:474",
+   "source": "scripts/attest.ts:14, scripts/claims.ts:34, scripts/compare.ts:14, scripts/compare.ts:35, scripts/compete.ts:31, scripts/compete.ts:35, scripts/compete.ts:40, scripts/currency.ts:21, scripts/discover.ts:20, scripts/e2e.ts:29, scripts/hook.ts:65, scripts/legal.ts:19, scripts/mcp.ts:14, scripts/metrics.ts:14, scripts/metrics.ts:25, scripts/patents.ts:26, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/readiness.ts:22, scripts/repository.ts:38, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/security.ts:45, scripts/sources.ts:30, scripts/sources.ts:40, scripts/textbook.ts:26, scripts/textbook.ts:35, scripts/textbook.ts:52, scripts/verify.ts:47, site/src/collections/Entries.ts:42, src/quantum/toolboxes/payload.ts:1315, src/worker.ts:37, src/worker.ts:474",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a request with its timeout: one fetcher with the named user agent and the timeout",
    "status": "open",
    "tool": "audit",
-   "occurrences": 35,
+   "occurrences": 36,
    "address": "7458ed19-f23c-6b83-b8e5-9620be766204",
    "explore": "match",
    "config": null
