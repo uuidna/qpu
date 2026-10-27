@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T21:49:47.999Z",
+ "date": "2026-10-27T22:05:16.779Z",
  "input": {
   "doors": [
    {
@@ -21,6 +21,11 @@
    {
     "name": "match.statement",
     "bytes": 99,
+    "reached": true
+   },
+   {
+    "name": "match.questions",
+    "bytes": 237,
     "reached": true
    },
    {
@@ -2936,6 +2941,11 @@
     "used": true
    },
    {
+    "key": "textbook_questions_matched",
+    "bytes": 130,
+    "used": true
+   },
+   {
     "key": "textbook_ports_cover",
     "bytes": 133,
     "used": true
@@ -3788,8 +3798,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 51214,
-   "used": 41678,
+   "capacity": 51451,
+   "used": 41915,
    "idle": 9536,
    "percentIdle": 18,
    "idleNames": [
@@ -3912,8 +3922,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 27488,
-   "used": 27488,
+   "capacity": 27618,
+   "used": 27618,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

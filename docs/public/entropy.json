@@ -1,11 +1,11 @@
 {
- "date": "2026-10-27T22:01:04.977Z",
+ "date": "2026-10-27T22:04:12.553Z",
  "literals": {
-  "urls": 656,
-  "distinctUrls": 328,
+  "urls": 646,
+  "distinctUrls": 318,
   "paths": 166,
-  "outside": 443,
-  "tokens": 4378,
+  "outside": 433,
+  "tokens": 4247,
   "byFile": [
    [
     "src/quantum/toolboxes/payload.ts",
@@ -24,10 +24,6 @@
     21
    ],
    [
-    "src/quantum/toolboxes/repository.ts",
-    21
-   ],
-   [
     "scripts/gen-docs.ts",
     17
    ],
@@ -38,6 +34,10 @@
    [
     "src/quantum/selftest.ts",
     12
+   ],
+   [
+    "src/quantum/toolboxes/repository.ts",
+    11
    ],
    [
     "site/src/components/SocialIcon/index.tsx",
@@ -640,7 +640,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 935,
- "lines": 82662,
+ "lines": 82632,
  "findings": 903,
  "fused": 320,
  "reactions": 583,
