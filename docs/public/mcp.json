@@ -2613,7 +2613,7 @@
               "mcp"
             ],
             "description": "mcp",
-            "default": "rest"
+            "default": "mcp"
           },
           "local": {
             "type": "object",
@@ -2636,6 +2636,7 @@
             "type": "string",
             "enum": [
               "pre-commit",
+              "commit-msg",
               "pre-push",
               "post-commit",
               "prepare-commit-msg",
@@ -2643,7 +2644,7 @@
               "pre-deploy"
             ],
             "description": "the git hook or the CI as a client MCP workflow",
-            "default": "pre-commit"
+            "default": "ci"
           },
           "offline": {
             "type": "boolean",
@@ -2658,8 +2659,8 @@
           }
         },
         "x-harmonic": {
-          "combinations": "12",
-          "index": "0",
+          "combinations": "14",
+          "index": "12",
           "from": "a432"
         }
       },

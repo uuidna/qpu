@@ -2151,7 +2151,7 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
         "mcp"
       ],
       "description": "mcp",
-      "default": "rest"
+      "default": "mcp"
     },
     "local": {
       "type": "object",
@@ -2174,6 +2174,7 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
       "type": "string",
       "enum": [
         "pre-commit",
+        "commit-msg",
         "pre-push",
         "post-commit",
         "prepare-commit-msg",
@@ -2181,7 +2182,7 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
         "pre-deploy"
       ],
       "description": "the git hook or the CI as a client MCP workflow",
-      "default": "pre-commit"
+      "default": "ci"
     },
     "offline": {
       "type": "boolean",
@@ -2196,8 +2197,8 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
     }
   },
   "x-harmonic": {
-    "combinations": "12",
-    "index": "0",
+    "combinations": "14",
+    "index": "12",
     "from": "a432"
   }
 }

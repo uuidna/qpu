@@ -1,0 +1,4 @@
+#!/bin/sh
+# commit-msg is a client MCP workflow: the repository tool decides the rule described over the message (repository { workflow: 'commit-msg' }),
+# a Google CL description (textbook_cl_described); scripts/hook.ts hands the message over and obeys the decision.
+exec node --import tsx scripts/hook.ts commit-msg "$@"

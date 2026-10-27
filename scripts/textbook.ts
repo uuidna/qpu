@@ -30,7 +30,7 @@ const main = async () => {
   // instance (QPU_PAYLOAD_URL) and its key (QPU_PAYLOAD_API_KEY, sent as Authorization and never held by a tool), the pages whose
   // qpu blocks lack a theorem are found and updated with the kernel-accepted key; otherwise the plan is written and the lead stands
   const payloadUrl = process.env.QPU_PAYLOAD_URL, payloadKey = process.env.QPU_PAYLOAD_API_KEY, payloadAuth = process.env.QPU_PAYLOAD_AUTH_COLLECTION ?? 'users'
-  const payloadCall = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { theorems: true, payloadUrl: payloadUrl ?? undefined, ...args } } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+  const payload = toolCallerOf('payload'), payloadCall = (args: Record<string, unknown>) => payload({ theorems: true, payloadUrl, ...args })
   const post = async (r: { url: string; body: unknown }) => { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', authorization: `${payloadAuth} API-Key ${payloadKey}` }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(30000) }); return await res.text() }
   let theorems: unknown = payloadCall({})
   if (payloadUrl && payloadKey && process.env.QPU_OFFLINE !== '1') {
@@ -46,14 +46,14 @@ const main = async () => {
     } catch (e) { theorems = { phase: 'refused', error: (e as Error).message }; console.log(`textbook: the Payload MCP did not answer: ${(e as Error).message.slice(0, 80)}`) }
   } else console.log(`textbook: no Payload MCP named (QPU_PAYLOAD_URL, QPU_PAYLOAD_API_KEY): the plan is written, the lead stands`)
   // Payload's combinatorial surface: the dimensions decided by theorem, the sources re-read here (GET, public, a named user agent) and compared to the table; drift a lead
-  const schemasCall = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { schemas: true, ...args } } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
+  const schemasCall = (args: Record<string, unknown>) => payload({ schemas: true, ...args })
   let schemas = schemasCall({})
   if (process.env.QPU_OFFLINE !== '1') { const answers: Record<string, string> = {}; for (const r of schemas.requestList as { url: string }[]) { try { const res = await fetch(r.url, { headers: { accept: 'text/plain', 'user-agent': 'uuidna-qpu-textbook (https://qpu.uuidna.com)' }, signal: AbortSignal.timeout(20000) }); if (res.ok) answers[r.url] = await res.text() } catch { /* unread: reported */ } } schemas = schemasCall({ answers }) }
   console.log(`textbook: Payload's surface: ${schemas.dimensions.length} dimensions, ${schemas.agreeing} agree with their theorems, ${schemas.served} served by the match tool${schemas.reread ? `; sources re-read: ${schemas.reread.answered}, ${schemas.reread.agree ? 'no drift' : `${schemas.reread.leads.length} drift lead(s)`}${schemas.reread.unread.length ? `, unread: ${schemas.reread.unread.join(', ')}` : ''}` : ''}`)
   // the prose audited around the textbook: the README, the home page and every tool's own description, each number resting on an expression or a lead
   const listed = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string }[] } }).result.tools
   const proseTexts: Record<string, string> = { 'README.md': readFileSync(join(ROOT, 'README.md'), 'utf8'), 'docs/index.md': readFileSync(join(ROOT, 'docs', 'index.md'), 'utf8'), ...Object.fromEntries(listed.map((t) => [`tools/list ${t.name}`, t.description])) }
-  const prose = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'textbook', arguments: { prose: { texts: proseTexts } } } }) as { result: { structuredContent: { says: string; numbers: number; backed: number; unbacked: number; verdicts: number; leads: unknown[] } } }).result.structuredContent
+  const prose = call({ prose: { texts: proseTexts } }) as { says: string; numbers: number; backed: number; unbacked: number; verdicts: number; leads: unknown[] }
   console.log(`textbook: prose: ${prose.says}`)
   const date = new Date().toISOString()
   writeFileSync(join(ROOT, 'docs', 'public', 'textbook.json'), JSON.stringify({ license: LICENSE.attribution, date, inputs, theoremsViaPayloadMcp: theorems, prose: { numbers: prose.numbers, backed: prose.backed, unbacked: prose.unbacked, verdicts: prose.verdicts, leads: prose.leads }, payloadSurface: { readOn: schemas.readOn, dimensions: schemas.dimensions, agreeing: schemas.agreeing, served: schemas.served, standards: schemas.standards.length, coordination: schemas.coordination.length, reread: schemas.reread, leads: schemas.leads }, online: process.env.QPU_OFFLINE !== '1', fromWave: plan.requests - missing.length, fetchedHere: process.env.QPU_OFFLINE !== '1' ? missing.length : 0, compliance: plan.compliance, ...v }, null, 1) + '\n')

@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T10:48:16.376Z",
+ "date": "2026-10-27T10:55:56.783Z",
  "literals": {
   "urls": 857,
   "distinctUrls": 442,
@@ -688,11 +688,11 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 949,
- "lines": 85934,
- "findings": 1027,
- "fused": 324,
- "reactions": 703,
- "gravity": "b62f21a7-a409-75d2-b205-e348339017ad",
+ "lines": 85944,
+ "findings": 1016,
+ "fused": 325,
+ "reactions": 691,
+ "gravity": "63ace0e2-cd6d-241a-b0c8-929e11d1efa7",
  "vacuum": false,
  "byKind": {
   "literal": {
@@ -712,11 +712,11 @@
    "leads": 2
   },
   "duplicate": {
-   "findings": 696,
-   "leads": 277
+   "findings": 698,
+   "leads": 278
   },
   "shape": {
-   "findings": 204,
+   "findings": 191,
    "leads": 4
   },
   "todo": {
@@ -733,20 +733,20 @@
   "settled": 0
  },
  "toExplore": {
-  "match": 302,
+  "match": 303,
   "imagine": 17,
   "configure": 5
  },
  "toConfig": {
   "actions": 23,
   "none": 19,
-  "fullstack": 282
+  "fullstack": 283
  },
  "leads": [
   {
    "id": "entropy-cap-b5ede745",
    "kind": "cap",
-   "source": "scripts/audit.ts:75, src/quantum/expressions.ts:137, src/quantum/toolboxes/extension.ts:91, src/quantum/toolboxes/language.ts:76, src/quantum/toolboxes/payload.ts:1073, src/quantum/toolboxes/payload.ts:1990, src/quantum/toolboxes/payload.ts:2004",
+   "source": "scripts/audit.ts:75, src/quantum/expressions.ts:137, src/quantum/toolboxes/extension.ts:91, src/quantum/toolboxes/language.ts:76, src/quantum/toolboxes/payload.ts:1073, src/quantum/toolboxes/payload.ts:1992, src/quantum/toolboxes/payload.ts:2006",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 120)",
    "status": "open",
    "tool": "audit",
@@ -758,7 +758,7 @@
   {
    "id": "entropy-cap-4c776128",
    "kind": "cap",
-   "source": "scripts/claims.ts:22, scripts/claims.ts:45, scripts/penalties.ts:18, scripts/penalties.ts:20, scripts/theorems-raid.ts:13, scripts/theorems-raid.ts:17, site/src/app/_data/index.ts:460, site/src/app/_data/index.ts:465, site/src/app/_data/index.ts:470, site/src/app/_data/index.ts:475, src/quantum/toolboxes/repository.ts:150",
+   "source": "scripts/claims.ts:22, scripts/claims.ts:45, scripts/penalties.ts:18, scripts/penalties.ts:20, scripts/theorems-raid.ts:13, scripts/theorems-raid.ts:17, site/src/app/_data/index.ts:460, site/src/app/_data/index.ts:465, site/src/app/_data/index.ts:470, site/src/app/_data/index.ts:475, src/quantum/toolboxes/repository.ts:152",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — limit: 100",
    "status": "open",
    "tool": "audit",
@@ -794,7 +794,7 @@
   {
    "id": "entropy-cap-113d3f3c",
    "kind": "cap",
-   "source": "scripts/machine.ts:68, src/quantum/discovery.ts:248, src/quantum/examples.ts:140, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
+   "source": "scripts/machine.ts:68, src/quantum/discovery.ts:248, src/quantum/examples.ts:142, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200)",
    "status": "open",
    "tool": "audit",
@@ -806,7 +806,7 @@
   {
    "id": "entropy-cap-e1adfd32",
    "kind": "cap",
-   "source": "scripts/purify.ts:168, scripts/purify.ts:181, scripts/textbook.ts:46, src/quantum/audit.ts:420, src/quantum/audit.ts:438, src/quantum/audit.ts:440, src/quantum/audit.ts:442, src/quantum/discovery.ts:117, src/quantum/discovery.ts:162, src/quantum/examples.ts:160, src/quantum/examples.ts:216, src/quantum/match.ts:341, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:185, src/quantum/wave.ts:27, src/worker.ts:367",
+   "source": "scripts/purify.ts:168, scripts/purify.ts:181, scripts/textbook.ts:46, src/quantum/audit.ts:420, src/quantum/audit.ts:438, src/quantum/audit.ts:440, src/quantum/audit.ts:442, src/quantum/discovery.ts:117, src/quantum/discovery.ts:162, src/quantum/examples.ts:162, src/quantum/examples.ts:218, src/quantum/match.ts:341, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:187, src/quantum/wave.ts:27, src/worker.ts:367",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80)",
    "status": "open",
    "tool": "audit",
@@ -962,7 +962,7 @@
   {
    "id": "entropy-cap-c7ad5d45",
    "kind": "cap",
-   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:221, src/quantum/wave.ts:24, src/quantum/wave.ts:29, src/quantum/wave.ts:30, src/quantum/wave.ts:32",
+   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:223, src/quantum/wave.ts:24, src/quantum/wave.ts:29, src/quantum/wave.ts:30, src/quantum/wave.ts:32",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 100)",
    "status": "open",
    "tool": "audit",
@@ -1082,7 +1082,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/audit.ts:360, src/quantum/audit.ts:361, src/quantum/examples.ts:221, src/quantum/mcp.ts:994, src/quantum/mcp.ts:997, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:113, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:182, src/quantum/toolboxes/legal.ts:257",
+   "source": "src/quantum/audit.ts:360, src/quantum/audit.ts:361, src/quantum/examples.ts:223, src/quantum/mcp.ts:994, src/quantum/mcp.ts:997, src/quantum/selftest.ts:42, src/quantum/selftest.ts:43, src/quantum/toolboxes/billing.ts:113, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:182, src/quantum/toolboxes/legal.ts:257",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
@@ -1094,7 +1094,7 @@
   {
    "id": "entropy-cap-9347bb45",
    "kind": "cap",
-   "source": "src/quantum/audit.ts:414, src/quantum/imagine.ts:56, src/quantum/mcp.ts:960, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:585, src/quantum/toolboxes/language.ts:92, src/quantum/toolboxes/payload.ts:2002, src/quantum/toolboxes/raid.ts:107, src/quantum/toolboxes/standards.ts:47",
+   "source": "src/quantum/audit.ts:414, src/quantum/imagine.ts:56, src/quantum/mcp.ts:960, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:585, src/quantum/toolboxes/language.ts:92, src/quantum/toolboxes/payload.ts:2004, src/quantum/toolboxes/raid.ts:107, src/quantum/toolboxes/standards.ts:47",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 160)",
    "status": "open",
    "tool": "audit",
@@ -1130,7 +1130,7 @@
   {
    "id": "entropy-clock-874a626d",
    "kind": "clock",
-   "source": "src/quantum/mcp.ts:700, src/quantum/standards.ts:57, src/quantum/standards.ts:61, src/quantum/toolboxes/flow.ts:42, src/quantum/toolboxes/flow.ts:55, src/quantum/toolboxes/flow.ts:85, src/quantum/toolboxes/flow.ts:114, src/quantum/toolboxes/repository.ts:260",
+   "source": "src/quantum/mcp.ts:700, src/quantum/standards.ts:57, src/quantum/standards.ts:61, src/quantum/toolboxes/flow.ts:42, src/quantum/toolboxes/flow.ts:55, src/quantum/toolboxes/flow.ts:85, src/quantum/toolboxes/flow.ts:114, src/quantum/toolboxes/repository.ts:262",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — new Date()",
    "status": "open",
    "tool": "audit",
@@ -3590,7 +3590,7 @@
   {
    "id": "entropy-duplicate-b542b948",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:8, src/quantum/toolboxes/payload.ts:1766",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:8, src/quantum/toolboxes/payload.ts:1768",
    "statement": "one line of code repeated in more than one file: one place should hold it — export type Branding = { name: string; tagline?: string; accent: string; logo?: string; icon?: string; source?: Record<string, string> }",
    "status": "open",
    "tool": "audit",
@@ -3602,7 +3602,7 @@
   {
    "id": "entropy-duplicate-609aa2fe",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:11, src/quantum/toolboxes/payload.ts:1769",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:11, src/quantum/toolboxes/payload.ts:1771",
    "statement": "one line of code repeated in more than one file: one place should hold it — const [b, set] = React.useState<Branding>(() => computed(typeof window === 'undefined' ? '' : window.location.hostname))",
    "status": "open",
    "tool": "audit",
@@ -3614,7 +3614,7 @@
   {
    "id": "entropy-duplicate-85905e56",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:12, src/quantum/toolboxes/payload.ts:1770",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:12, src/quantum/toolboxes/payload.ts:1772",
    "statement": "one line of code repeated in more than one file: one place should hold it — React.useEffect(() => { let on = true; fetch('/api/globals/qpu?depth=1', { headers: { accept: 'application/json' } }).then((r) => r.json()).then((j: { branding?: Branding | null }) => { if (on && j.branding) set(j.branding) }).catch(() => { /* the computed branding stands */ }); return () => { on = false } }, [])",
    "status": "open",
    "tool": "audit",
@@ -3626,7 +3626,7 @@
   {
    "id": "entropy-duplicate-8971ca16",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:15, src/quantum/toolboxes/payload.ts:1773",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:15, src/quantum/toolboxes/payload.ts:1775",
    "statement": "one line of code repeated in more than one file: one place should hold it — export const QpuIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => { const b = useBranding(); return b.icon ? <img src={b.icon} alt={b.name} height={24} width={24} /> : <svg viewBox=\"0 0 24 24\" width={24} height={24} role=\"img\" aria-label={b.name} {...props}><rect width=\"24\" height=\"24\" rx=\"6\" fill={b.accent} /></svg> }",
    "status": "open",
    "tool": "audit",
@@ -3638,7 +3638,7 @@
   {
    "id": "entropy-duplicate-cefe79aa",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:16, src/quantum/toolboxes/payload.ts:1774",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:16, src/quantum/toolboxes/payload.ts:1776",
    "statement": "one line of code repeated in more than one file: one place should hold it — export const QpuLogo = ({ className, ...rest }: React.ComponentPropsWithoutRef<'svg'>) => { const b = useBranding(); if (b.logo) return <img className={className} src={b.logo} alt={b.name} height={30} />; return <svg className={className} viewBox=\"0 0 194 44\" height={44} width={194} role=\"img\" aria-label={b.name} {...rest}><rect x=\"0\" y=\"4\" width=\"36\" height=\"36\" rx=\"8\" fill={b.accent} /><text x=\"46\" y=\"31\" fontFamily=\"system-ui, sans-serif\" fontSize=\"22\" fill=\"currentColor\">{b.name}</text></svg> }",
    "status": "open",
    "tool": "audit",
@@ -4152,33 +4152,45 @@
    "config": "fullstack"
   },
   {
-   "id": "entropy-duplicate-2a72da68",
+   "id": "entropy-duplicate-3c3bb498",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:13, src/quantum/toolboxes/payload.ts:1562",
-   "statement": "one line of code repeated in more than one file: one place should hold it — const site = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { site: true } } }) as { result: { structuredContent: { collection: { docs: { id: string; title: string; slug: string; layout: Record<string, unknown>[]; meta: { title: string; description: string }; parent?: string | null; hero?: Record<string, unknown> }[] } } } }).result.structuredContent.collection.docs",
+   "source": "site/src/scripts/seedQpu.ts:11, src/quantum/toolboxes/payload.ts:1560",
+   "statement": "one line of code repeated in more than one file: one place should hold it — const payloadTool = toolCallerOf('payload'), configureTool = toolCallerOf('configure')",
    "status": "open",
    "tool": "audit",
    "occurrences": 2,
-   "address": "2a72da68-25e9-1036-9c64-ce12acfe0cd5",
+   "address": "3c3bb498-19a0-2f7e-b823-852860dff3f4",
    "explore": "match",
    "config": "fullstack"
   },
   {
-   "id": "entropy-duplicate-f46fd0a7",
+   "id": "entropy-duplicate-debf4aea",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:16, src/quantum/toolboxes/payload.ts:1565",
-   "statement": "one line of code repeated in more than one file: one place should hold it — const tenants = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'configure', arguments: { kind: 'tenant' } } }) as { result: { structuredContent: { config: { records: Record<string, { name: string; slug: string; domains: { domain: string }[]; currency: string }> } } } }).result.structuredContent.config.records",
+   "source": "site/src/scripts/seedQpu.ts:15, src/quantum/toolboxes/payload.ts:1564",
+   "statement": "one line of code repeated in more than one file: one place should hold it — const site = payloadTool({ site: true }).collection.docs as { id: string; title: string; slug: string; layout: Record<string, unknown>[]; meta: { title: string; description: string }; parent?: string | null; hero?: Record<string, unknown> }[]",
    "status": "open",
    "tool": "audit",
    "occurrences": 2,
-   "address": "f46fd0a7-659a-65d2-a677-d46aebe5f04a",
+   "address": "debf4aea-9097-4c14-81c3-8ed509b0867c",
+   "explore": "match",
+   "config": "fullstack"
+  },
+  {
+   "id": "entropy-duplicate-6629273d",
+   "kind": "duplicate",
+   "source": "site/src/scripts/seedQpu.ts:18, src/quantum/toolboxes/payload.ts:1567",
+   "statement": "one line of code repeated in more than one file: one place should hold it — const tenants = configureTool({ kind: 'tenant' }).config.records as Record<string, { name: string; slug: string; domains: { domain: string }[]; currency: string }>",
+   "status": "open",
+   "tool": "audit",
+   "occurrences": 2,
+   "address": "6629273d-1d1a-6698-b2f2-20381c90553c",
    "explore": "match",
    "config": "fullstack"
   },
   {
    "id": "entropy-duplicate-5593d5ee",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:19, src/quantum/toolboxes/payload.ts:1568",
+   "source": "site/src/scripts/seedQpu.ts:21, src/quantum/toolboxes/payload.ts:1570",
    "statement": "one line of code repeated in more than one file: one place should hold it — const found = await payload.find({ collection: 'tenants' as never, where: { slug: { equals: t.slug } }, limit: 1, overrideAccess: true })",
    "status": "open",
    "tool": "audit",
@@ -4190,7 +4202,7 @@
   {
    "id": "entropy-duplicate-06d9d562",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:21, src/quantum/toolboxes/payload.ts:1570",
+   "source": "site/src/scripts/seedQpu.ts:23, src/quantum/toolboxes/payload.ts:1572",
    "statement": "one line of code repeated in more than one file: one place should hold it — await payload.create({ collection: 'tenants' as never, overrideAccess: true, data: t as never })",
    "status": "open",
    "tool": "audit",
@@ -4202,7 +4214,7 @@
   {
    "id": "entropy-duplicate-e3532443",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:24, src/quantum/toolboxes/payload.ts:1573",
+   "source": "site/src/scripts/seedQpu.ts:26, src/quantum/toolboxes/payload.ts:1575",
    "statement": "one line of code repeated in more than one file: one place should hold it — const tenant = (await payload.find({ collection: 'tenants' as never, where: { slug: { equals: Object.keys(tenants)[0] } }, limit: 1, overrideAccess: true })).docs[0] as { id: string } | undefined",
    "status": "open",
    "tool": "audit",
@@ -4214,7 +4226,7 @@
   {
    "id": "entropy-duplicate-cb389689",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:25, src/quantum/toolboxes/payload.ts:1574",
+   "source": "site/src/scripts/seedQpu.ts:27, src/quantum/toolboxes/payload.ts:1576",
    "statement": "one line of code repeated in more than one file: one place should hold it — if (!tenant) throw new Error('no tenant to scope the documents to')",
    "status": "open",
    "tool": "audit",
@@ -4226,7 +4238,7 @@
   {
    "id": "entropy-duplicate-19f640e5",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:29, src/quantum/toolboxes/payload.ts:1578",
+   "source": "site/src/scripts/seedQpu.ts:31, src/quantum/toolboxes/payload.ts:1580",
    "statement": "one line of code repeated in more than one file: one place should hold it — if (!(await payload.count({ collection: 'users', overrideAccess: true })).totalDocs) {",
    "status": "open",
    "tool": "audit",
@@ -4238,7 +4250,7 @@
   {
    "id": "entropy-duplicate-caa25261",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:31, src/quantum/toolboxes/payload.ts:1580",
+   "source": "site/src/scripts/seedQpu.ts:33, src/quantum/toolboxes/payload.ts:1582",
    "statement": "one line of code repeated in more than one file: one place should hold it — if (email) { await payload.create({ collection: 'users', overrideAccess: true, context: { disableRevalidate: true }, data: { email, password: randomUUID() + randomUUID(), firstName: 'Super', lastName: 'Admin', roles: ['admin'], enableAPIKey: false, tenants: [{ tenant: tenant.id, roles: ['tenant-admin'] }] } as never }); firstUser = 'created from the account email (its password unknown: reset it through the admin panel)' }",
    "status": "open",
    "tool": "audit",
@@ -4250,7 +4262,7 @@
   {
    "id": "entropy-duplicate-f6e01d6a",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:32, src/quantum/toolboxes/payload.ts:1581",
+   "source": "site/src/scripts/seedQpu.ts:34, src/quantum/toolboxes/payload.ts:1583",
    "statement": "one line of code repeated in more than one file: one place should hold it — else firstUser = 'no account email known (FIRST_USER_EMAIL, CLOUDFLARE_EMAIL, wrangler whoami): the create-first-user form of the admin panel stands'",
    "status": "open",
    "tool": "audit",
@@ -4262,7 +4274,7 @@
   {
    "id": "entropy-duplicate-afe84970",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:37, src/quantum/toolboxes/payload.ts:1586",
+   "source": "site/src/scripts/seedQpu.ts:39, src/quantum/toolboxes/payload.ts:1588",
    "statement": "one line of code repeated in more than one file: one place should hold it — const found = await payload.find({ collection: 'pages', where: { slug: { equals: slug } }, limit: 1, overrideAccess: true, draft: true })",
    "status": "open",
    "tool": "audit",
@@ -4274,7 +4286,7 @@
   {
    "id": "entropy-duplicate-27463e07",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:41, src/quantum/toolboxes/payload.ts:1590",
+   "source": "site/src/scripts/seedQpu.ts:43, src/quantum/toolboxes/payload.ts:1592",
    "statement": "one line of code repeated in more than one file: one place should hold it — const canon = (layout: unknown) => JSON.stringify(layout, (k, v) => (k === 'id' || v === null || (v && typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 0) ? undefined : v && typeof v === 'object' && !Array.isArray(v) ? Object.fromEntries(Object.keys(v as object).sort().map((key) => [key, (v as Record<string, unknown>)[key]])) : v))",
    "status": "open",
    "tool": "audit",
@@ -4286,7 +4298,7 @@
   {
    "id": "entropy-duplicate-dadfccb4",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:42, src/quantum/toolboxes/payload.ts:1591",
+   "source": "site/src/scripts/seedQpu.ts:44, src/quantum/toolboxes/payload.ts:1593",
    "statement": "one line of code repeated in more than one file: one place should hold it — if (found.totalDocs) { const page = found.docs[0] as { id: string; _status?: string; layout?: unknown[]; parent?: string | { id: string } | null }; const stale = canon(page.layout ?? []) !== canon(d.layout) || ((typeof page.parent === 'object' && page.parent ? page.parent.id : page.parent) ?? null) !== parent || (d.hero ? canon((page as { hero?: { richText?: unknown } }).hero?.richText ?? null) !== canon(d.hero.richText ?? null) : false); if (page._status !== 'published' || stale) await payload.update({ collection: 'pages', id: page.id, overrideAccess: true, context: { disableRevalidate: true }, data: { _status: 'published', ...(stale ? { layout: d.layout, parent, ...(d.hero ? { hero: d.hero } : {}) } : {}) } as never }); kept += 1; if (stale) updated += 1; continue }",
    "status": "open",
    "tool": "audit",
@@ -4298,7 +4310,7 @@
   {
    "id": "entropy-duplicate-780e2c99",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:44, src/quantum/toolboxes/payload.ts:1593",
+   "source": "site/src/scripts/seedQpu.ts:46, src/quantum/toolboxes/payload.ts:1595",
    "statement": "one line of code repeated in more than one file: one place should hold it — await payload.create({ collection: 'pages', overrideAccess: true, context: { disableRevalidate: true }, data: { title: d.title, slug, hero: d.hero ?? { type: 'default' }, layout: d.layout, meta: d.meta, tenant: tenant.id, parent, _status: 'published' } as never })",
    "status": "open",
    "tool": "audit",
@@ -4308,21 +4320,21 @@
    "config": "fullstack"
   },
   {
-   "id": "entropy-duplicate-f71751c0",
+   "id": "entropy-duplicate-29740563",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:49, src/quantum/toolboxes/payload.ts:1598",
-   "statement": "one line of code repeated in more than one file: one place should hold it — const catalogue = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'configure', arguments: { kind: 'ecommerce', ...(process.env.QPU_RATES ? { rates: JSON.parse(process.env.QPU_RATES) } : {}) } } }) as { result: { structuredContent: { config: { catalogue: { items: { title: string; licence: Record<string, string>; prices: Record<string, number> }[] } } } } }).result.structuredContent.config.catalogue.items",
+   "source": "site/src/scripts/seedQpu.ts:51, src/quantum/toolboxes/payload.ts:1600",
+   "statement": "one line of code repeated in more than one file: one place should hold it — const catalogue = configureTool({ kind: 'ecommerce', ...(process.env.QPU_RATES ? { rates: JSON.parse(process.env.QPU_RATES) } : {}) }).config.catalogue.items as { title: string; licence: Record<string, string>; prices: Record<string, number> }[]",
    "status": "open",
    "tool": "audit",
    "occurrences": 2,
-   "address": "f71751c0-6f30-5ca1-a221-29dcf041212e",
+   "address": "29740563-f45d-2dc4-98a9-39a3768020f5",
    "explore": "match",
    "config": "fullstack"
   },
   {
    "id": "entropy-duplicate-fcf4690c",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:52, src/quantum/toolboxes/payload.ts:1601",
+   "source": "site/src/scripts/seedQpu.ts:54, src/quantum/toolboxes/payload.ts:1603",
    "statement": "one line of code repeated in more than one file: one place should hold it — const found = await payload.find({ collection: 'products' as never, where: { title: { equals: item.title } }, limit: 1, overrideAccess: true })",
    "status": "open",
    "tool": "audit",
@@ -4334,7 +4346,7 @@
   {
    "id": "entropy-duplicate-d9704311",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:54, src/quantum/toolboxes/payload.ts:1603",
+   "source": "site/src/scripts/seedQpu.ts:56, src/quantum/toolboxes/payload.ts:1605",
    "statement": "one line of code repeated in more than one file: one place should hold it — await payload.create({ collection: 'products' as never, overrideAccess: true, context: { disableRevalidate: true }, data: { title: item.title, licence: item.licence, tenant: tenant.id, ...Object.fromEntries(Object.entries(item.prices).flatMap(([k, v]) => [[k, v], [k + 'Enabled', true]])), _status: 'published' } as never })",
    "status": "open",
    "tool": "audit",
@@ -4344,21 +4356,21 @@
    "config": "fullstack"
   },
   {
-   "id": "entropy-duplicate-daca966d",
+   "id": "entropy-duplicate-c81547d0",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:58, src/quantum/toolboxes/payload.ts:1607",
-   "statement": "one line of code repeated in more than one file: one place should hold it — const form = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { app: { form: true } } } }) as { result: { structuredContent: { form: Record<string, unknown> & { title: string } } } }).result.structuredContent.form",
+   "source": "site/src/scripts/seedQpu.ts:60, src/quantum/toolboxes/payload.ts:1609",
+   "statement": "one line of code repeated in more than one file: one place should hold it — const form = payloadTool({ app: { form: true } }).form as Record<string, unknown> & { title: string }",
    "status": "open",
    "tool": "audit",
    "occurrences": 2,
-   "address": "daca966d-3741-492d-9bbb-2b2085d8348c",
+   "address": "c81547d0-36f2-26c3-8cfe-d08d08237604",
    "explore": "match",
    "config": "fullstack"
   },
   {
    "id": "entropy-duplicate-0a7e0334",
    "kind": "duplicate",
-   "source": "site/src/scripts/seedQpu.ts:60, src/quantum/toolboxes/payload.ts:1609",
+   "source": "site/src/scripts/seedQpu.ts:62, src/quantum/toolboxes/payload.ts:1611",
    "statement": "one line of code repeated in more than one file: one place should hold it — if (!(await payload.find({ collection: 'forms', where: { title: { equals: form.title } }, limit: 1, overrideAccess: true })).totalDocs) { await payload.create({ collection: 'forms', overrideAccess: true, context: { disableRevalidate: true }, data: form as never }); formState = 'created' }",
    "status": "open",
    "tool": "audit",
@@ -4586,11 +4598,11 @@
   {
    "id": "entropy-shape-2bad27d6",
    "kind": "shape",
-   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/claude-mount.ts:16, scripts/claude-mount.ts:17, scripts/currency.ts:32, scripts/e2e.ts:16, scripts/gen-docs.ts:64, scripts/gen-docs.ts:67, scripts/hook.ts:20, scripts/hook.ts:74, scripts/hook.ts:111, scripts/hook.ts:117, scripts/imagine.ts:56, scripts/metrics.ts:34, scripts/pqc-verify.ts:15, scripts/purify.ts:137, scripts/purify.ts:144, scripts/purify.ts:174, scripts/readiness.ts:73, scripts/security.ts:35, scripts/shard.ts:14, scripts/sources.ts:16, scripts/sources.ts:41, scripts/textbook.ts:33, scripts/textbook.ts:49, scripts/textbook.ts:56, site/src/collections/Entries.ts:43, site/src/collections/Entries.ts:53, site/src/collections/Entries.ts:67, site/src/collections/form-submissions.qpu.hooks.ts:15, site/src/collections/form-submissions.qpu.hooks.ts:17, site/src/components/blocks/Qpu/index.tsx:14, site/src/globals/Qpu.ts:17, site/src/payload.qpu.config.ts:44, site/src/payload.qpu.mcp.ts:33, site/src/payload.qpu.mcp.ts:41, site/src/scripts/seedQpu.ts:13, site/src/scripts/seedQpu.ts:16, site/src/scripts/seedQpu.ts:49, site/src/scripts/seedQpu.ts:58, src/quantum/audit.test.ts:9, src/quantum/audit.ts:363, src/quantum/clay.test.ts:30, src/quantum/clay.test.ts:33, src/quantum/compose.ts:21, src/quantum/docs-calls.test.ts:18, src/quantum/e2e.ts:74, src/quantum/e2e.ts:77, src/quantum/match.test.ts:49, src/quantum/match.test.ts:70, src/quantum/match.test.ts:73, src/quantum/match.test.ts:90, src/quantum/mcp.test.ts:7, src/quantum/mcp.test.ts:286, src/quantum/mcp.test.ts:296, src/quantum/mcp.ts:433, src/quantum/mcp.ts:753, src/quantum/mcp.ts:872, src/quantum/mcp.ts:924, src/quantum/mcp.ts:939, src/quantum/mcp.ts:956, src/quantum/port.test.ts:11, src/quantum/reflection.test.ts:63, src/quantum/reflection.test.ts:96, src/quantum/reflection.test.ts:115, src/quantum/selftest.ts:117, src/quantum/textbook.test.ts:33, src/quantum/toolboxes/extension.ts:51, src/quantum/toolboxes/extension.ts:99, src/quantum/toolboxes/extension.ts:116, src/quantum/toolboxes/flow.ts:19, src/quantum/toolboxes/flow.ts:108, src/quantum/toolboxes/language.ts:57, src/quantum/toolboxes/language.ts:93, src/quantum/toolboxes/legal.ts:401, src/quantum/toolboxes/payload-schemas.ts:49, src/quantum/toolboxes/payload.ts:124, src/quantum/toolboxes/payload.ts:154, src/quantum/toolboxes/payload.ts:418, src/quantum/toolboxes/payload.ts:1186, src/quantum/toolboxes/payload.ts:1230, src/quantum/toolboxes/payload.ts:1238, src/quantum/toolboxes/payload.ts:1312, src/quantum/toolboxes/payload.ts:1322, src/quantum/toolboxes/payload.ts:1336, src/quantum/toolboxes/payload.ts:1359, src/quantum/toolboxes/payload.ts:1448, src/quantum/toolboxes/payload.ts:1562, src/quantum/toolboxes/payload.ts:1565, src/quantum/toolboxes/payload.ts:1598, src/quantum/toolboxes/payload.ts:1607, src/quantum/toolboxes/payload.ts:1663, src/quantum/toolboxes/payload.ts:1665, src/quantum/toolboxes/payload.ts:1784, src/quantum/toolboxes/payload.ts:1856, src/quantum/toolboxes/payload.ts:1889, src/quantum/toolboxes/payload.ts:1940, src/quantum/worker.test.ts:434, src/worker.ts:331, src/worker.ts:409, src/worker.ts:434, src/worker.ts:525, src/worker.ts:533",
+   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/claude-mount.ts:16, scripts/claude-mount.ts:17, scripts/currency.ts:32, scripts/e2e.ts:16, scripts/gen-docs.ts:64, scripts/gen-docs.ts:67, scripts/hook.ts:20, scripts/hook.ts:74, scripts/hook.ts:111, scripts/hook.ts:117, scripts/imagine.ts:56, scripts/metrics.ts:34, scripts/pqc-verify.ts:15, scripts/purify.ts:137, scripts/purify.ts:144, scripts/purify.ts:174, scripts/readiness.ts:73, scripts/security.ts:35, scripts/shard.ts:14, scripts/sources.ts:16, scripts/sources.ts:41, site/src/collections/Entries.ts:43, site/src/collections/Entries.ts:53, site/src/collections/Entries.ts:67, site/src/collections/form-submissions.qpu.hooks.ts:15, site/src/collections/form-submissions.qpu.hooks.ts:17, site/src/components/blocks/Qpu/index.tsx:14, site/src/globals/Qpu.ts:17, site/src/payload.qpu.config.ts:44, site/src/payload.qpu.mcp.ts:33, src/quantum/audit.test.ts:9, src/quantum/audit.ts:363, src/quantum/clay.test.ts:30, src/quantum/clay.test.ts:33, src/quantum/compose.ts:21, src/quantum/docs-calls.test.ts:18, src/quantum/e2e.ts:74, src/quantum/e2e.ts:77, src/quantum/match.test.ts:49, src/quantum/match.test.ts:70, src/quantum/match.test.ts:73, src/quantum/match.test.ts:90, src/quantum/mcp.test.ts:7, src/quantum/mcp.test.ts:286, src/quantum/mcp.test.ts:296, src/quantum/mcp.ts:433, src/quantum/mcp.ts:753, src/quantum/mcp.ts:872, src/quantum/mcp.ts:924, src/quantum/mcp.ts:939, src/quantum/mcp.ts:956, src/quantum/port.test.ts:11, src/quantum/reflection.test.ts:63, src/quantum/reflection.test.ts:96, src/quantum/reflection.test.ts:115, src/quantum/selftest.ts:117, src/quantum/textbook.test.ts:33, src/quantum/toolboxes/extension.ts:51, src/quantum/toolboxes/extension.ts:99, src/quantum/toolboxes/extension.ts:116, src/quantum/toolboxes/flow.ts:19, src/quantum/toolboxes/flow.ts:108, src/quantum/toolboxes/language.ts:57, src/quantum/toolboxes/language.ts:93, src/quantum/toolboxes/legal.ts:401, src/quantum/toolboxes/payload-schemas.ts:49, src/quantum/toolboxes/payload.ts:124, src/quantum/toolboxes/payload.ts:154, src/quantum/toolboxes/payload.ts:418, src/quantum/toolboxes/payload.ts:1186, src/quantum/toolboxes/payload.ts:1230, src/quantum/toolboxes/payload.ts:1312, src/quantum/toolboxes/payload.ts:1322, src/quantum/toolboxes/payload.ts:1336, src/quantum/toolboxes/payload.ts:1359, src/quantum/toolboxes/payload.ts:1448, src/quantum/toolboxes/payload.ts:1665, src/quantum/toolboxes/payload.ts:1667, src/quantum/toolboxes/payload.ts:1786, src/quantum/toolboxes/payload.ts:1858, src/quantum/toolboxes/payload.ts:1891, src/quantum/toolboxes/payload.ts:1942, src/quantum/worker.test.ts:434, src/worker.ts:331, src/worker.ts:409, src/worker.ts:434, src/worker.ts:525, src/worker.ts:533",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — the tools/call envelope: toolCallerOf(name) in mcp.ts",
    "status": "open",
    "tool": "audit",
-   "occurrences": 106,
+   "occurrences": 93,
    "address": "2bad27d6-3ea6-4a2c-b598-b5b416e9bbfc",
    "explore": "match",
    "config": null

@@ -14,7 +14,7 @@ export const ROLE_RANK: Readonly<Record<Role, number>> = { reader: 0, writer: 1,
 export const ENUM_POLICY: Readonly<Record<string, Readonly<Record<string, Role>>>> = {
   'mongo.op': { insert: 'writer', update: 'writer', delete: 'admin' },
   'stripe.op': { plan: 'writer', webhook: 'writer', settle: 'admin' },
-  'repository.workflow': { 'pre-commit': 'writer', 'prepare-commit-msg': 'writer', 'post-commit': 'writer', ci: 'writer', 'pre-push': 'admin', 'pre-deploy': 'admin' },
+  'repository.workflow': { 'pre-commit': 'writer', 'commit-msg': 'writer', 'prepare-commit-msg': 'writer', 'post-commit': 'writer', ci: 'writer', 'pre-push': 'admin', 'pre-deploy': 'admin' },
 }
 /** Whether a role may choose a value of a tool's enum: the value's role at or below the caller's. */
 export const mayChoose = (role: Role, tool: string, prop: string, value: unknown): boolean => ROLE_RANK[role] >= ROLE_RANK[ENUM_POLICY[`${tool}.${prop}`]?.[String(value)] ?? 'reader']

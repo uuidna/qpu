@@ -272,8 +272,10 @@ theorem textbook_hue_shift (h g s : Nat) : h + s - (g + s) = h - g := Nat.add_su
 theorem textbook_hue_steps : 16 * 45 = 2 * 360 := by decide
 /-- cheap gates leading every violator to court: however many refusals a gate answers, it writes nothing; the case is computed from the refusal and the violator files it through its own MCP (examples: legal-court, legal-court-rules) -/
 theorem textbook_cheap_gates (refusals : Nat) : refusals * 0 = 0 := Nat.mul_zero refusals
-/-- four git hooks (pre-commit, pre-push, post-commit, prepare-commit-msg), the CI and the strict pre-deploy check are six client MCP workflows of one door; the hook script walks the steps and decides nothing (examples: repository-workflow) -/
-theorem textbook_hook_workflows : 4 + 1 + 1 = 6 := by decide
+/-- a commit message is a Google CL description exactly when all four hold: the first line at most 72 characters, its first word an imperative verb, a blank second line, a body; the commit-msg workflow refuses a message missing any one, and names each missing one (examples: repository-cl-described, repository-cl-one-sentence) -/
+theorem textbook_cl_described (a b c d : Bool) : (a && b && c && d) = true ↔ (a = true ∧ b = true ∧ c = true ∧ d = true) := by cases a <;> cases b <;> cases c <;> cases d <;> decide
+/-- five git hooks (pre-commit, commit-msg, pre-push, post-commit, prepare-commit-msg), the CI and the strict pre-deploy check are seven client MCP workflows of one door; the hook script walks the steps and decides nothing (examples: repository-workflow) -/
+theorem textbook_hook_workflows : 5 + 1 + 1 = 7 := by decide
 /-- when to commit: the flow is green — the steps of the receipt are green and skipped and no red, so adding the red (zero) changes nothing; one red step refuses the commit (examples: repository-refuse-commit) -/
 theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = green + skipped := Nat.add_zero (green + skipped)
 /-- when to push: the version is the last tag or its one next step (one step forward, one back is the tag), and the build it names is the one the package answers on initialize (examples: repository-decide-push, configure-versions) -/
