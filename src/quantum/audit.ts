@@ -121,8 +121,7 @@ export const entropyOf = (files: Readonly<Record<string, string>>) => {
       if (pure && /\bDate\.now\(\)|\bMath\.random\(\)|new Date\(\)/.test(l)) add('clock', file, n, l.match(/\bDate\.now\(\)|\bMath\.random\(\)|new Date\(\)/)![0])
       const t = l.trim()
       if (code && !written && t.length >= 60 && !/^(import |export \{|\/\/|\*|\/\*|\}|\)|<)/.test(t)) { const at = repeated.get(t) ?? []; at.push({ file, line: n }); repeated.set(t, at) }
-      // an address has a top-level domain of letters: a version after an @ (react@18.3.1) is a package, not a person
-      for (const m of l.matchAll(/[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.[A-Za-z0-9.-]*[A-Za-z]{2,})\b/g)) if (!LEAK_ALLOWED.has(m[1]!) && !NOT_A_LEAK('email', m[0]) && !/<[^>]*@/.test(m[0]) && !/^[\w.-]+@\d/.test(m[0])) add('leak', file, n, `<address>@${m[1]}`)
+      for (const h of leakHitsOf(l)) if (!h.aside && (!fixture || h.kind === 'email')) add('leak', file, n, `<${h.kind}>`)
     })
   }
   for (const [t, at] of repeated) if (new Set(at.map((a) => a.file)).size >= 2) for (const a of at) add('duplicate', a.file, a.line, t)
@@ -333,7 +332,10 @@ export const LEAK_PATTERNS: readonly { kind: string; re: RegExp; remedy: string 
   { kind: 'local-path', re: /\/Users\/[A-Za-z0-9._-]+|\/home\/[a-z][a-z0-9_-]+(?=\/)|[A-Z]:\\Users\\[A-Za-z0-9._-]+/g, remedy: 'paths relative to the repository root before a stack or an error is written into a lead or a receipt' },
   { kind: 'private-ip', re: /\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})\b/g, remedy: 'a host by its public name; a private address says the network' },
 ]
-const NOT_A_LEAK = (kind: string, m: string) => kind === 'email' && (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}@/i.test(m) || /@(?:[a-z0-9-]+\.)*(?:test|example|invalid|localhost)(?:\.[a-z]+)?$/i.test(m) || /@(?:example\.(?:com|org|net))$/i.test(m) || /@(?:project-id|test-project|your-project|my-project|PROJECT_ID)\.iam(?:\.gserviceaccount\.com)?$/i.test(m))
+// set aside: an allowed domain, a block address, a package version (react@18.3.1), the reserved test domains, the placeholders
+const NOT_A_LEAK = (kind: string, m: string) => kind === 'email' && (LEAK_ALLOWED.has(m.split('@')[1]!.toLowerCase()) || /^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}@|@\d|@(?:[a-z0-9-]+\.)*(?:test|example|invalid|localhost)(?:\.[a-z]+)?$|@(?:project-id|test-project|your-project|my-project|PROJECT_ID)\.iam(?:\.gserviceaccount\.com)?$/i.test(m))
+/** The one table's hits in a text, the notations set aside marked: every scanner reads the table through this */
+const leakHitsOf = (text: string) => LEAK_PATTERNS.flatMap((p) => [...text.matchAll(p.re)].map((m) => ({ kind: p.kind, aside: NOT_A_LEAK(p.kind, m[0]) })))
 export const leaksOf = (texts: Readonly<Record<string, string>>, served: readonly string[] = []) => {
   const findings: { where: string; kind: string; count: number; served: boolean; remedy: string }[] = []
   let setAside = 0

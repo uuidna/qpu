@@ -3,7 +3,7 @@
 //   1. exports under src/quantum that no test, tool, example or other module references → lead "unproven export"
 //   2. files under src/quantum that nothing imports and that are not tests → lead "orphan file"
 //   3. the README's measured table is regenerated from git, tsc, the test receipt, lake build, the theorem ledger and tools/list
-import { leaksOf, LEAK_ALLOWED } from '../src/quantum/audit.ts'
+import { leaksOf } from '../src/quantum/audit.ts'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { appendFileSync, existsSync, readFileSync, readdirSync, writeFileSync, renameSync } from 'node:fs'
 import { join } from 'node:path'
@@ -60,13 +60,12 @@ for (const l of LEADS) (addressed.get(uuidOf(l.statement)) ?? addressed.set(uuid
 let collisions = 0
 for (const [address, texts] of addressed) if (texts.size > 1) { collisions += 1; leads.push({ id: `collision-${address.slice(0, 8)}`, source: 'purify fold scan', statement: `fold collision at ${address}: ${texts.size} different texts share one address`, status: 'open', reason: 'the fold is not collision-resistant against a search; develop the colliding pair' }) }
 console.log(`purify: ${addressed.size} addresses scanned, ${collisions} collision(s)`)
-// no email in the tree: the deployer's address is read from the Cloudflare account at build and deploy and never written; every address found in a
-// tracked file that is not an upstream placeholder (the MIT fork's own, example domains) is a leak — a lead and a red step, so a commit stops
-const scanned = tracked.filter((f) => !/pnpm-lock|package-lock|\.(png|jpg|jpeg|gif|mp4|ico|woff2?|pdf|svg)$/.test(f))
-const leaks: { file: string; domain: string }[] = []
-for (const f of scanned) { let text = ''; try { text = readFileSync(join(ROOT, f), 'utf8') } catch { continue }; for (const m of text.matchAll(/[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})/g)) { const domain = m[1]!.toLowerCase(); if (!LEAK_ALLOWED.has(domain) && !leaksOf({ m: m[0] }).setAside) leaks.push({ file: f, domain }) } } // the notations audit { leaks } sets aside (a block address <uuid>@<host>, the reserved test domains, documentation placeholders) are not addresses
-if (leaks.length) leads.push({ id: 'email-leak', source: [...new Set(leaks.map((l) => l.file))].join(', '), statement: `${leaks.length} email address(es) in tracked files (${[...new Set(leaks.map((l) => l.domain))].join(', ')}): the tree keeps none; the deployer's is read from the Cloudflare account at build and deploy`, status: 'open', reason: 'remove the address; a contact is a URL' })
-console.log(`purify: ${scanned.length} tracked files scanned for email addresses, ${leaks.length} leak(s)${leaks.length ? ` in ${[...new Set(leaks.map((l) => l.file))].join(', ')}` : ''}`)
+// no email in the tree: the deployer's address is read from the Cloudflare account at build and deploy and never written; every address the
+// one leak table finds in a tracked file and does not set aside (LEAK_ALLOWED, a block address, the test domains) is a lead and a red step
+const scanned = tracked.filter((f) => !/pnpm-lock|package-lock|\.(png|jpg|jpeg|gif|mp4|ico|woff2?|pdf|svg)$/.test(f) && existsSync(join(ROOT, f)))
+const leaks = leaksOf(Object.fromEntries(scanned.map((f) => [f, readFileSync(join(ROOT, f), 'utf8')]))).findings.filter((f) => f.kind === 'email'), leaked = [...new Set(leaks.map((l) => l.where))].join(', ')
+if (leaks.length) leads.push({ id: 'email-leak', source: leaked, statement: `${leaks.reduce((n, l) => n + l.count, 0)} email address(es) in tracked files: the tree keeps none; the deployer's is read from the Cloudflare account at build and deploy`, status: 'open', reason: 'remove the address; a contact is a URL' })
+console.log(`purify: ${scanned.length} tracked files scanned for email addresses, ${leaks.length} leak(s)${leaks.length ? ` in ${leaked}` : ''}`)
 
 // Measurements for the README table.
 const sh = (cmd: string, args: string[]): string => { const r = spawnSync(cmd, args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 }); return `${r.stdout ?? ''}${r.stderr ?? ''}` }
