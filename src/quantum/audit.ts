@@ -61,7 +61,7 @@ export const GENERATOR_REMEDIES: readonly [RegExp, { cmd: string; args: string[]
 ]
 /** The roots whose hand-written source the literal rule reads. */
 export const LITERAL_ROOTS = ['src', 'scripts', 'site/src'] as const
-export const LITERAL_REGISTRIES = { url: ['src/quantum/discovery.ts', 'src/quantum/discovery-document.ts', 'src/quantum/sources.ts', 'src/quantum/leads.ts', 'src/quantum/payload-surface.ts'], path: ['src/quantum/toolboxes/payload.ts', 'src/quantum/toolboxes/repository.ts', 'src/quantum/audit.ts', 'src/quantum/machine.ts'] } as const
+export const LITERAL_REGISTRIES = { url: ['src/quantum/discovery.ts', 'src/quantum/discovery-document.ts', 'src/quantum/sources.ts', 'src/quantum/leads.ts', 'src/quantum/payload-surface.ts'], path: ['src/quantum/toolboxes/payload.ts', 'src/quantum/toolboxes/repository.ts', 'src/quantum/audit.ts', 'src/quantum/machine.ts', 'scripts/next.ts'] } as const
 export const LITERAL_EXEMPT = /uuidna\.com\/licen[cs]e|creativecommons\.org\/licenses|contributor-covenant\.org|\(\+https:\/\/qpu\.uuidna\.com\)/
 export type Literal = { kind: 'url' | 'path'; file: string; line: number; literal: string; clean: boolean; why: string; tokens: number; antimatter: { needs: 'confirm'; says: string } | null }
 export const literalsOf = (files: Readonly<Record<string, string>>) => {

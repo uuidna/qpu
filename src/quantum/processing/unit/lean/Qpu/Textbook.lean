@@ -46,22 +46,28 @@ theorem textbook_penalty_conserved (opened cleared openNow : Nat) (h : cleared +
 theorem textbook_penalty_tokens_bound (b : Nat) (h : 0 < b) : (b + 3) / 4 ≤ b := by omega
 /-- the same gap gives the same content address, so it is one entry however often it is penalised (examples: repository-penalty-once) -/
 theorem textbook_penalty_once (a b : Nat) (h : a = b) : a = b := h
-/-- a waiting price never falls as a task gets slower or hotter: over the budget b it is the milliseconds over b plus the CPU milliseconds, under it zero, and more wall time or more CPU never lowers it (examples: repository-penalty-waiting) -/
-theorem textbook_penalty_time_heat_monotone (b w w' c c' : Nat) (hw : w ≤ w') (hc : c ≤ c') : (if w < b then 0 else w - b + c) ≤ (if w' < b then 0 else w' - b + c') := by split <;> split <;> omega
-/-- a task under the one-second budget is free: its waiting price is zero, whatever its CPU time (examples: repository-penalty-under-budget) -/
-theorem textbook_penalty_free_under_budget (b w c : Nat) (h : w < b) : (if w < b then 0 else w - b + c) = 0 := if_pos h
+/-- a waiting price never falls as a task gets slower or hotter: the wall milliseconds beyond the budget b plus the CPU milliseconds beyond it, and more of either never lowers it (examples: repository-penalty-waiting) -/
+theorem textbook_penalty_time_heat_monotone (b w w' c c' : Nat) (hw : w ≤ w') (hc : c ≤ c') : (w - b) + (c - b) ≤ (w' - b) + (c' - b) := by omega
+/-- the waiting price has no cliff: one more millisecond on the wall raises it by at most one, at the budget as everywhere, so nothing rewards stopping just under a threshold (examples: repository-penalty-no-cliff) -/
+theorem textbook_penalty_no_cliff (b w c : Nat) : (w + 1 - b) + (c - b) ≤ (w - b) + (c - b) + 1 := by omega
+/-- a task within the one-second budget, on the wall and on the CPU, is free: its waiting price is zero (examples: repository-penalty-under-budget) -/
+theorem textbook_penalty_free_under_budget (b w c : Nat) (hw : w ≤ b) (hc : c ≤ b) : (w - b) + (c - b) = 0 := by omega
 /-- a gap and its antimatter annihilate: the line priced by the antimatter's cost, reversed by its clearing, nets to zero, and only what stood beside it — the burned time — remains (examples: repository-penalty-annihilate) -/
 theorem textbook_penalty_antimatter_annihilates (t p : Nat) : t + p - t = p := by omega
 /-- a penalty is an involution on status and standing, never a punishment: raised then cleared, the gap's status and the offender's standing are exactly what they were before the violation — the coins burned for the time it stood are not part of it (examples: repository-penalty-no-punishment) -/
 theorem textbook_penalty_no_punishment (balance standing t : Nat) : (balance + t - t, standing + t - t) = (balance, standing) := by rw [Nat.add_sub_cancel, Nat.add_sub_cancel]
 /-- the time a gap stood is burned like a proof-of-stake stake: its charge never falls as it stands longer, is zero when cleared within the budget, and is booked to the burn account, never refunded (examples: repository-penalty-annihilate) -/
-theorem textbook_penalty_time_burned (b s s' c : Nat) (hs : s ≤ s') : ((if s < b then 0 else s - b + c) ≤ (if s' < b then 0 else s' - b + c)) ∧ (s < b → (if s < b then 0 else s - b + c) = 0) := ⟨by split <;> split <;> omega, fun h => if_pos h⟩
+theorem textbook_penalty_time_burned (b s s' c : Nat) (hs : s ≤ s') : (s - b) + (c - b) ≤ (s' - b) + (c - b) ∧ (s ≤ b → c ≤ b → (s - b) + (c - b) = 0) := ⟨by omega, fun h1 h2 => by omega⟩
 /-- a penalty is as visible as the action it prices: printed agrees with visible, kind by kind over the ten gap kinds, so a printed penalty priced a visible action — an invisible action's penalty is recorded silently and counted on request, never printed (examples: repository-penalty-invisible, repository-penalty-visible) -/
 theorem textbook_penalty_visibility_harmonic (visible printed : Bool) (h : printed = visible) : printed = true → visible = true := by intro hp; rw [← h]; exact hp
 /-- a deterministic step of equal input addresses gives an equal receipt: a step whose inputs are unchanged since it last ran green is reused from its sealed record, never rerun; a step that reads the network, the clock or its own artefacts is never cached (examples: repository-steps-reused) -/
 theorem textbook_step_cache_sound (f : Nat → Nat) (k₁ k₂ : Nat) (h : k₁ = k₂) : f k₁ = f k₂ := by rw [h]
 /-- a hook never does more work than its inputs force: the cacheable steps it runs are among those whose inputs or outputs changed (examples: repository-steps-reused, repository-steps-changed) -/
 theorem textbook_hook_steps_monotone (run changed uncacheable : Nat) (h : run ≤ changed + uncacheable) : run - uncacheable ≤ changed := by omega
+/-- idle is priced by the cost of the remaining work: the lesser of the idle capacity and the work queued, both in ms — never more than either, and nothing when nothing is left to do (examples: repository-idle-priced) -/
+theorem textbook_idle_priced_by_remaining (i r : Nat) : min i r ≤ i ∧ min i r ≤ r ∧ (r = 0 → min i r = 0) := ⟨Nat.min_le_left _ _, Nat.min_le_right _ _, fun h => by subst h; omega⟩
+/-- scheduling the remaining work into the idle capacity leaves only the work beyond it: r − min(i, r) = r − i, truncated at zero (examples: repository-idle-scheduled) -/
+theorem textbook_idle_scheduled_clears (i r : Nat) : r - min i r = r - i := by omega
 /-- unused quantum capacity is conserved: for every measure — doors, theorems, gates, cores, qubits below the simulator's bound, Shor N below its bound — the used and the idle make the capacity (examples: repository-capacity) -/
 theorem textbook_capacity_conserved (capacity used : Nat) (h : used ≤ capacity) : used + (capacity - used) = capacity := by omega
 /-- the ten gap kinds less the ten with antimatter leave none without: every one of the ten gap kinds has antimatter, so from any gap the next step is defined and the way never dead-ends (examples: repository-antimatter-total) -/

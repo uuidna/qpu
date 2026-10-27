@@ -5,7 +5,7 @@ order: 57
 
 # The immutable sources of leads
 
-Read on 2026-10-26T17:18:31.653Z by `leads { sources }`: 286 of 287 answers read: 14 immutable versions, 0 archived snapshots, 113 licence candidate(s) with their cases, 23679 open books of which 20266 the theorems reach and 3393 of their domain are leads; 571 MCP doors proposed.
+Read on 2026-10-27T01:11:47.427Z by `leads { sources }`: 286 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2268 the theorems reach and 21196 of their domain are leads; 577 MCP doors proposed.
 
 ## Licence candidates
 
@@ -13,119 +13,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 
 | where | name | why | case |
 | --- | --- | --- | --- |
-| software-heritage | [https://www.npmjs.com/package/qpu-helper](https://www.npmjs.com/package/qpu-helper) | an archived origin that names the work outside the author's accounts | `5bf059fb-43b6-7e6a-83da-6d45da27f562` |
-| github | [hermanhermitage/videocoreiv-qpu](https://github.com/hermanhermitage/videocoreiv-qpu) | a repository that names the work under another account | `686d5156-0f29-1fa8-aef8-0f0506fde0b5` |
-| software-heritage | [https://github.com/jetpacapp/qpu-asm](https://github.com/jetpacapp/qpu-asm) | an archived origin that names the work outside the author's accounts | `c09042f2-362d-329f-a3e5-217745da8eb0` |
-| github | [oqtopus-team/qdash](https://github.com/oqtopus-team/qdash) | a repository that names the work under another account | `ffb7dcb7-e7fd-32e2-a2da-6a320c803f6f` |
-| github | [Idein/qmkl](https://github.com/Idein/qmkl) | a repository that names the work under another account | `e2312da3-a0c1-280a-8dd7-0ba2974df6a7` |
-| github | [ORNL-QCI/tnqvm](https://github.com/ORNL-QCI/tnqvm) | a repository that names the work under another account | `5382effd-7a5f-213a-bf10-7800a7614dbb` |
-| github | [Idein/qmkl6](https://github.com/Idein/qmkl6) | a repository that names the work under another account | `4bed3799-3f1c-30d2-abce-941da6a23f27` |
-| github | [dwavesystems/dwave-experimental](https://github.com/dwavesystems/dwave-experimental) | a repository that names the work under another account | `2ac1c246-031f-41fb-9a0d-bc0b92bcd2f1` |
-| github | [shacharr/videocoreiv-qpu-driver](https://github.com/shacharr/videocoreiv-qpu-driver) | a repository that names the work under another account | `c48bbe3d-0bce-7771-87eb-abc3279c1191` |
-| github | [mareksubocz/QRBM](https://github.com/mareksubocz/QRBM) | a repository that names the work under another account | `2cefc848-8af8-73bf-be33-e65b32b2c713` |
-| github | [xaviervasques/hephaistos](https://github.com/xaviervasques/hephaistos) | a repository that names the work under another account | `70fead58-17fe-3071-a3ba-1edd28fc3d1f` |
-| github | [Terminus-IMRC/qmkl](https://github.com/Terminus-IMRC/qmkl) | a repository that names the work under another account | `ef416724-4213-54ad-a728-065e36ac0b17` |
-| software-heritage | [https://github.com/Terminus-IMRC/qpu-assembler2](https://github.com/Terminus-IMRC/qpu-assembler2) | an archived origin that names the work outside the author's accounts | `cb8ca015-9d70-7df4-8507-627ae34a2688` |
-| github | [alejomonbar/LR-QAOA-QPU-Benchmarking](https://github.com/alejomonbar/LR-QAOA-QPU-Benchmarking) | a repository that names the work under another account | `29142fc5-0c10-8b6e-aecb-1e63b893dd7b` |
-| software-heritage | [https://github.com/entropy-lab/entropy-qpu](https://github.com/entropy-lab/entropy-qpu) | an archived origin that names the work outside the author's accounts | `d3b885a2-0914-2676-b65c-a6cbbd579fbe` |
-| github | [dwave-training/QUBO-lifecycle](https://github.com/dwave-training/QUBO-lifecycle) | a repository that names the work under another account | `1dc348f5-509d-7950-95ca-c9ece96e2147` |
-| github | [Buffoni/dwave_notebooks](https://github.com/Buffoni/dwave_notebooks) | a repository that names the work under another account | `435ea579-a3bb-4b2f-a678-59cb8fa96f49` |
-| github | [Seneral/VC4CV](https://github.com/Seneral/VC4CV) | a repository that names the work under another account | `d9610634-3418-4f97-a4e7-bfbee7029177` |
-| github | [ptrchv/VNFQuantumOptimization](https://github.com/ptrchv/VNFQuantumOptimization) | a repository that names the work under another account | `621730ae-fe75-6b0d-ae74-34f095a9c6dd` |
-| github | [wpol18/CDL-2019-Hackathon](https://github.com/wpol18/CDL-2019-Hackathon) | a repository that names the work under another account | `60bab605-d4fb-8306-b235-c8d4d1ec06a1` |
-| github | [osbama/KBM608](https://github.com/osbama/KBM608) | a repository that names the work under another account | `90992416-3e97-33ca-9f14-ec79a2041839` |
-| software-heritage | [https://github.com/SuferQin/Fast-QPU](https://github.com/SuferQin/Fast-QPU) | an archived origin that names the work outside the author's accounts | `7363fc68-2053-5558-8574-ec3532a32b54` |
-| github | [dwave-examples/NAE3SAT](https://github.com/dwave-examples/NAE3SAT) | a repository that names the work under another account | `941d667a-e310-8b1e-811d-7d93bc183caf` |
-| github | [aengelke/mandel-qpu](https://github.com/aengelke/mandel-qpu) | a repository that names the work under another account | `862916c7-b12d-3bde-a58e-6b8c63d7e8af` |
-| github | [Terminus-IMRC/vc6qpudisas](https://github.com/Terminus-IMRC/vc6qpudisas) | a repository that names the work under another account | `7e1efd82-5631-1e51-9e20-93bb1e3cab1f` |
-| github | [lccf-qhpc/lccfq-hwman](https://github.com/lccf-qhpc/lccfq-hwman) | a repository that names the work under another account | `56213f72-a11b-3964-a3ed-35713b866a4f` |
-| github | [sea212/qpu](https://github.com/sea212/qpu) | a repository that names the work under another account | `c0e8df1d-eebc-280c-a308-1b353c39a0cf` |
-| software-heritage | [https://github.com/gltronred/qpu](https://github.com/gltronred/qpu) | an archived origin that names the work outside the author's accounts | `835f0d1d-0ef9-11b1-af59-b7cd39f77756` |
-| software-heritage | [https://github.com/simonjhall/qpu](https://github.com/simonjhall/qpu) | an archived origin that names the work outside the author's accounts | `a290d387-0d35-3903-b739-3b838eee7a04` |
-| github | [argearriojas/2dlattice-protfold](https://github.com/argearriojas/2dlattice-protfold) | a repository that names the work under another account | `8cd814fd-6e5f-897e-af57-00f090d41221` |
-| github | [kannaka-labs/QuantumOS](https://github.com/kannaka-labs/QuantumOS) | a repository that names the work under another account | `1ae6faae-f0aa-422d-af37-88df6fba962b` |
-| github | [TheMindVirus/KMDFQPU](https://github.com/TheMindVirus/KMDFQPU) | a repository that names the work under another account | `9158f07c-db29-3707-8f49-6849b08e71bf` |
-| software-heritage | [https://github.com/cwabbott0/videocore-qpu-compiler](https://github.com/cwabbott0/videocore-qpu-compiler) | an archived origin that names the work outside the author's accounts | `8b49f3c8-9bcf-1c71-b00a-97ed3be1554c` |
-| github | [Shack870/qwen-air-qpu-mcp-lab](https://github.com/Shack870/qwen-air-qpu-mcp-lab) | a repository that names the work under another account | `b560f363-962b-1b46-ae87-d587e1bd75d5` |
-| github | [asurati/x03](https://github.com/asurati/x03) | a repository that names the work under another account | `16999cf5-0a42-5e1a-80d0-5a1c125a36ef` |
-| github | [haoyudoingthings/QBM](https://github.com/haoyudoingthings/QBM) | a repository that names the work under another account | `855f497a-3622-81eb-9c07-f76abfb78c37` |
-| github | [TeamGraphix/graphix-perceval](https://github.com/TeamGraphix/graphix-perceval) | a repository that names the work under another account | `7113ae6b-7551-3141-9a27-061149c644f3` |
-| software-heritage | [https://github.com/fraka3000/Mandelbrot-qpu](https://github.com/fraka3000/Mandelbrot-qpu) | an archived origin that names the work outside the author's accounts | `3edaf22f-493e-80d9-9f62-c802027607cc` |
-| github | [hpc-gridware/qpu-resource](https://github.com/hpc-gridware/qpu-resource) | a repository that names the work under another account | `581e41d2-448a-5e8e-b2cf-9065bdd87baf` |
-| software-heritage | [https://github.com/Terminus-IMRC/qpu-sfu-accuracy-correction](https://github.com/Terminus-IMRC/qpu-sfu-accuracy-correction) | an archived origin that names the work outside the author's accounts | `49383a7e-3d35-3137-820a-088b0b613a5a` |
-| github | [294458581-png/qpu-](https://github.com/294458581-png/qpu-) | a repository that names the work under another account | `d92653a9-3537-7193-abe7-6eefc0569ecb` |
-| github | [E3V3A/QPU](https://github.com/E3V3A/QPU) | a repository that names the work under another account | `e9d71f35-7a68-7324-81fd-b16fba3d264f` |
-| github | [AmalBiju0104/QPU](https://github.com/AmalBiju0104/QPU) | a repository that names the work under another account | `813fd1e2-a24d-6f19-af2c-670406a6739f` |
-| github | [henrydiana588629/qpu](https://github.com/henrydiana588629/qpu) | a repository that names the work under another account | `5523efb6-fa79-420b-8f32-786582f07f53` |
-| github | [nstrndrbi/QPU-analysis-chatbot](https://github.com/nstrndrbi/QPU-analysis-chatbot) | a repository that names the work under another account | `3ba09ea9-8a21-8dd7-951b-be58672cb6bf` |
-| github | [Brionengine/Quantum-Self-Recursive-Improvement](https://github.com/Brionengine/Quantum-Self-Recursive-Improvement) | a repository that names the work under another account | `319aff2f-4f6e-74f9-a303-197c198f619f` |
 | software-heritage | [https://www.npmjs.com/package/@uuidna/qpu](https://www.npmjs.com/package/@uuidna/qpu) | an archived origin that names the work outside the author's accounts | `2c0fe050-50d8-3fc3-8998-ce78afd98604` |
-| software-heritage | [https://github.com/MaveriQ/qpu-asm](https://github.com/MaveriQ/qpu-asm) | an archived origin that names the work outside the author's accounts | `ae10834c-21ed-217e-a246-f8729aa4198a` |
-| software-heritage | [https://github.com/Terminus-IMRC/qpu-bin-to-hex](https://github.com/Terminus-IMRC/qpu-bin-to-hex) | an archived origin that names the work outside the author's accounts | `9c5c1aec-1454-6b2d-9585-97cc9ac7b158` |
-| software-heritage | [https://gitlab.com/elerenitoc/qpu.git](https://gitlab.com/elerenitoc/qpu.git) | an archived origin that names the work outside the author's accounts | `e61c6cdf-62b5-86a7-a9d7-90b2ca93eb30` |
-| software-heritage | [https://github.com/chrisabbott/qpu-asm](https://github.com/chrisabbott/qpu-asm) | an archived origin that names the work outside the author's accounts | `029d475e-4c6f-5382-be19-a50993bb1ae2` |
-| software-heritage | [https://github.com/AngxiaoYue/QPU-mindspore](https://github.com/AngxiaoYue/QPU-mindspore) | an archived origin that names the work outside the author's accounts | `b87532fd-9bea-56e6-95a2-b84a14893320` |
-| software-heritage | [https://github.com/odunboye/qpu-asm](https://github.com/odunboye/qpu-asm) | an archived origin that names the work outside the author's accounts | `c527802a-9e9d-1600-8db6-eec3cbe037bc` |
-| software-heritage | [https://github.com/Patrick-Sinnott/Analysis-of-Ion-Trap-QPU-essay](https://github.com/Patrick-Sinnott/Analysis-of-Ion-Trap-QPU-essay) | an archived origin that names the work outside the author's accounts | `2228737c-a90b-83bf-a4d9-78c94139ee44` |
-| software-heritage | [https://github.com/dgvorster/qpu](https://github.com/dgvorster/qpu) | an archived origin that names the work outside the author's accounts | `6524afba-f3c3-7caf-8154-329441ebc544` |
-| software-heritage | [https://github.com/Chilledheart/videocoreiv-qpu](https://github.com/Chilledheart/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `6d9ceeaf-8439-8a92-8a78-40bb5f5dde9c` |
-| software-heritage | [https://github.com/E3ZM/QPU-](https://github.com/E3ZM/QPU-) | an archived origin that names the work outside the author's accounts | `45106162-c307-35ae-bf8a-133d4d64dba0` |
-| software-heritage | [https://github.com/develone/videocoreiv-qpu](https://github.com/develone/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `8eb66dad-86b8-2922-ac86-1e51e3cf1660` |
-| software-heritage | [https://github.com/Terminus-IMRC/qpu-convert-Celsius-temperature-to-Ferenheit](https://github.com/Terminus-IMRC/qpu-convert-Celsius-temperature-to-Ferenheit) | an archived origin that names the work outside the author's accounts | `28d24f61-4bdb-12b9-8872-fcd95aa5b5cc` |
-| software-heritage | [https://github.com/oracleagent/qpu-driver](https://github.com/oracleagent/qpu-driver) | an archived origin that names the work outside the author's accounts | `df7be124-9e33-26c3-9a4a-9a4b1cc20c70` |
-| software-heritage | [https://github.com/DRA-chaos/TIFR-VSRP-QPU-Qubit-analysis](https://github.com/DRA-chaos/TIFR-VSRP-QPU-Qubit-analysis) | an archived origin that names the work outside the author's accounts | `520c3aa9-d179-81df-90db-76da4c7be2b0` |
-| software-heritage | [https://github.com/hibive/videocoreiv-qpu](https://github.com/hibive/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `a94db578-431c-695a-a638-321c09f16328` |
-| software-heritage | [https://github.com/adolfogonzalez3/QPU-Experiment](https://github.com/adolfogonzalez3/QPU-Experiment) | an archived origin that names the work outside the author's accounts | `303f36c8-39a1-6865-be9b-5dbc31ba1350` |
-| software-heritage | [https://github.com/B-Rich/qpu-test-8bit-float](https://github.com/B-Rich/qpu-test-8bit-float) | an archived origin that names the work outside the author's accounts | `e5f1215c-efd4-3bda-9196-8a8b13406f1c` |
-| software-heritage | [https://github.com/AneeshKamat4/BTech-Thesis-Controlling-a-Superconducting-QPU](https://github.com/AneeshKamat4/BTech-Thesis-Controlling-a-Superconducting-QPU) | an archived origin that names the work outside the author's accounts | `9d56ef76-24e3-6853-bfbd-8d8ad64d9d70` |
-| software-heritage | [https://github.com/nighthawk85/QPU-Learning](https://github.com/nighthawk85/QPU-Learning) | an archived origin that names the work outside the author's accounts | `78094dac-a72e-8874-bbcb-cec314669c7c` |
-| software-heritage | [https://github.com/Terminus-IMRC/qpu-test-8bit-float](https://github.com/Terminus-IMRC/qpu-test-8bit-float) | an archived origin that names the work outside the author's accounts | `4e3549e7-c3b7-595a-82b8-4c5b2a9a84ca` |
-| software-heritage | [https://github.com/B-Rich/qpu-sgemm](https://github.com/B-Rich/qpu-sgemm) | an archived origin that names the work outside the author's accounts | `e6900125-b0dc-1685-9243-9c6c0aa26550` |
-| software-heritage | [https://github.com/AlexBird1/QPU](https://github.com/AlexBird1/QPU) | an archived origin that names the work outside the author's accounts | `829ce8e0-73fc-4688-98ac-d614d1bdf848` |
-| software-heritage | [https://github.com/B-Rich/videocoreiv-qpu](https://github.com/B-Rich/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `987288d4-c497-2a23-ad11-322000ffd32c` |
-| software-heritage | [https://github.com/KALVIN2002/qpu-git-test](https://github.com/KALVIN2002/qpu-git-test) | an archived origin that names the work outside the author's accounts | `4b038f95-1ac0-39e6-b7cd-7ccbba440c0a` |
-| software-heritage | [https://github.com/odunboye/videocoreiv-qpu](https://github.com/odunboye/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `c37fd995-27b1-427c-9976-0b7c521f58fc` |
-| software-heritage | [https://github.com/B-Rich/qpu-assembler2](https://github.com/B-Rich/qpu-assembler2) | an archived origin that names the work outside the author's accounts | `cd045ea5-1c65-7b64-9260-5e341b0a137c` |
-| software-heritage | [https://github.com/savagecm/qpu-asm](https://github.com/savagecm/qpu-asm) | an archived origin that names the work outside the author's accounts | `c2039336-6213-1185-b273-e3b9adab74e4` |
-| software-heritage | [https://github.com/lunuslovesgreat/dwave-qpu-notebook](https://github.com/lunuslovesgreat/dwave-qpu-notebook) | an archived origin that names the work outside the author's accounts | `639c7d6e-d6e9-2a56-ae81-6d4f62e67220` |
-| software-heritage | [https://github.com/Jrbiltmore/QPU-AI](https://github.com/Jrbiltmore/QPU-AI) | an archived origin that names the work outside the author's accounts | `851e2fe2-1434-3712-b6bd-5717cbac644a` |
-| software-heritage | [https://github.com/Th3-Watcher/QPU](https://github.com/Th3-Watcher/QPU) | an archived origin that names the work outside the author's accounts | `f7acf6b8-fd27-6ba2-9743-ee3a6e85a79c` |
-| software-heritage | [https://github.com/Yoitsumi/QPU](https://github.com/Yoitsumi/QPU) | an archived origin that names the work outside the author's accounts | `25c91ea1-2799-6ebb-814f-c1d282b16ff0` |
-| software-heritage | [https://github.com/phunghx/videocoreiv-qpu](https://github.com/phunghx/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `c5adc888-8992-7957-af50-8a6ffc147e30` |
-| software-heritage | [https://github.com/kmltml/QPU](https://github.com/kmltml/QPU) | an archived origin that names the work outside the author's accounts | `eb6c1416-340a-6867-9f4f-bbc84a3084c4` |
-| software-heritage | [https://github.com/waqarrashid33/videocoreiv-qpu](https://github.com/waqarrashid33/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `080541bb-564f-627c-8d4c-c31d33543146` |
-| software-heritage | [https://github.com/ProExecutor/QPU](https://github.com/ProExecutor/QPU) | an archived origin that names the work outside the author's accounts | `9e0ca48b-612c-8e67-94a8-611699168730` |
-| software-heritage | [https://github.com/Terminus-IMRC/videocoreiv-qpu](https://github.com/Terminus-IMRC/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `a4f2362c-4c4c-679d-9443-44cde854f892` |
-| software-heritage | [https://github.com/magurosan/videocoreiv-qpu-driver](https://github.com/magurosan/videocoreiv-qpu-driver) | an archived origin that names the work outside the author's accounts | `698d529e-1b4a-34f2-a814-8783ab18b0a8` |
-| software-heritage | [https://github.com/00mjk/qpu.git](https://github.com/00mjk/qpu.git) | an archived origin that names the work outside the author's accounts | `a1e98cfa-f497-263f-95f4-4e626e5d78b0` |
-| software-heritage | [https://github.com/andrewhalle/qpu](https://github.com/andrewhalle/qpu) | an archived origin that names the work outside the author's accounts | `9a747d41-ccf9-1136-bb58-10632449ebbe` |
-| software-heritage | [https://github.com/mullzhang/qpu-access-accum](https://github.com/mullzhang/qpu-access-accum) | an archived origin that names the work outside the author's accounts | `b7fa7117-65ef-8746-93c3-29218df2b968` |
-| software-heritage | [https://crates.io/crates/wai-quantum-qpu](https://crates.io/crates/wai-quantum-qpu) | an archived origin that names the work outside the author's accounts | `b80cd326-fc56-27eb-a033-05c61d602af0` |
-| software-heritage | [https://github.com/wmar/videocoreiv-qpu](https://github.com/wmar/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `ff5592b4-2b69-6c49-af58-6e1874bbc6cc` |
-| software-heritage | [https://github.com/oracleagent/qpu-docs](https://github.com/oracleagent/qpu-docs) | an archived origin that names the work outside the author's accounts | `41f280de-6477-3de6-926c-884a90a72320` |
-| software-heritage | [https://github.com/Terminus-IMRC/qpu-set-pcs](https://github.com/Terminus-IMRC/qpu-set-pcs) | an archived origin that names the work outside the author's accounts | `0af42411-dd4c-2775-9f10-ccbe54e56a12` |
-| software-heritage | [https://github.com/maruzhang/qpu-calculator](https://github.com/maruzhang/qpu-calculator) | an archived origin that names the work outside the author's accounts | `88dc95d9-f1bd-3a1f-bae6-943abdd546b0` |
-| software-heritage | [https://github.com/fpalini/qpu](https://github.com/fpalini/qpu) | an archived origin that names the work outside the author's accounts | `337ea4f3-1098-1eff-85c0-d01f5c7f0d4e` |
-| software-heritage | [https://github.com/testunde/dwave-qpu-projects](https://github.com/testunde/dwave-qpu-projects) | an archived origin that names the work outside the author's accounts | `9c31a664-d088-27c0-b3a2-0c5699b83702` |
-| software-heritage | [https://github.com/Terminus-IMRC/mmal-fails-to-initialize-tunneled-connection-with-qpu](https://github.com/Terminus-IMRC/mmal-fails-to-initialize-tunneled-connection-with-qpu) | an archived origin that names the work outside the author's accounts | `12b4b15a-f7b9-5793-be48-eaddf6a8f170` |
-| software-heritage | [https://github.com/NewChromantics/qpu-asm](https://github.com/NewChromantics/qpu-asm) | an archived origin that names the work outside the author's accounts | `010fb5df-a464-4e3d-972b-6c1ac8c6c464` |
-| software-heritage | [https://github.com/mindpixel20/qpu](https://github.com/mindpixel20/qpu) | an archived origin that names the work outside the author's accounts | `7a392270-e5e1-4504-985c-5f4c5cb94f88` |
-| software-heritage | [https://github.com/yantrabuddhi/qpu-asm](https://github.com/yantrabuddhi/qpu-asm) | an archived origin that names the work outside the author's accounts | `2c9f6439-a6e2-6bb6-855d-5c2e0e605820` |
-| software-heritage | [https://github.com/kevleyski/qpu-asm](https://github.com/kevleyski/qpu-asm) | an archived origin that names the work outside the author's accounts | `41aed46f-8956-8e6f-accd-f0e436667d76` |
-| software-heritage | [https://github.com/noures263/qpu](https://github.com/noures263/qpu) | an archived origin that names the work outside the author's accounts | `9d57b10f-0753-5c26-8226-ca2c09c683a2` |
-| software-heritage | [https://github.com/kwccoin/qpu-asm](https://github.com/kwccoin/qpu-asm) | an archived origin that names the work outside the author's accounts | `42c5c52d-f9eb-8d61-b62b-fa87283a5918` |
-| software-heritage | [https://github.com/oqapps/QPU-Z](https://github.com/oqapps/QPU-Z) | an archived origin that names the work outside the author's accounts | `05498764-9ac0-236b-b16e-4e785f63e3ac` |
-| software-heritage | [https://github.com/mfzhang/videocoreiv-qpu](https://github.com/mfzhang/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `3d2f0891-d0c2-2c74-9c03-fe279f0463c2` |
-| software-heritage | [https://github.com/BOBRAPHTONE/videocoreiv-qpu](https://github.com/BOBRAPHTONE/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `b283cbd0-6857-71ea-b8b3-e600104e081c` |
-| software-heritage | [https://github.com/Terminus-IMRC/qpu-sgemm](https://github.com/Terminus-IMRC/qpu-sgemm) | an archived origin that names the work outside the author's accounts | `ae01d907-1978-3d11-8e65-ccc0ad2afd56` |
-| software-heritage | [https://github.com/philipz/qpu-asm](https://github.com/philipz/qpu-asm) | an archived origin that names the work outside the author's accounts | `dca1b03c-abb7-2d58-be4a-609b4b25613c` |
-| software-heritage | [https://github.com/snehasis419/qpu-asm](https://github.com/snehasis419/qpu-asm) | an archived origin that names the work outside the author's accounts | `54fc3c3b-953e-4e9c-a126-9a48cec97d08` |
-| software-heritage | [https://github.com/bilaleluneis/qpu](https://github.com/bilaleluneis/qpu) | an archived origin that names the work outside the author's accounts | `b01ebdaf-a670-459a-b4d1-8a07678781e0` |
-| software-heritage | [https://github.com/Terminus-IMRC/qpu-transpose](https://github.com/Terminus-IMRC/qpu-transpose) | an archived origin that names the work outside the author's accounts | `b974d818-d079-3fd8-9a10-9235d93f98ea` |
-| software-heritage | [https://github.com/shacharr/videocoreiv-qpu](https://github.com/shacharr/videocoreiv-qpu) | an archived origin that names the work outside the author's accounts | `e1a83888-f7b7-4c95-a14a-79a7cf80fe50` |
-| software-heritage | [https://github.com/Abhinay1997/qpu-asm](https://github.com/Abhinay1997/qpu-asm) | an archived origin that names the work outside the author's accounts | `eeff4d83-b603-2764-b728-40d65452c694` |
-| software-heritage | [https://github.com/lonnieraymccollister/Hello-World-QPU-dwave](https://github.com/lonnieraymccollister/Hello-World-QPU-dwave) | an archived origin that names the work outside the author's accounts | `ace7d3e0-0838-3307-bd69-455d6a4dabec` |
-| software-heritage | [https://github.com/yongyuwh/qpu-asm](https://github.com/yongyuwh/qpu-asm) | an archived origin that names the work outside the author's accounts | `2bd12450-b060-154d-8c25-90c31c6d0dd0` |
 
 ## Precedence
 
@@ -137,312 +25,164 @@ Each is a candidate the court computed a case for. None is a verdict.
 
 ## Textbooks
 
-23679 open books: 20266 reached by the theorems, 3393 of their domain are leads, 20 outside.
+23679 open books: 2268 reached by the theorems, 21196 of their domain are leads, 215 outside.
 
 | theorem | books |
 | --- | --- |
-| `quantum` | 3638 |
-| `computer` | 3617 |
-| `textbook_patent_number_well_formed` | 2185 |
-| `sciences` | 1686 |
-| `textbook_dashboard_algorithm_combinations` | 1357 |
-| `textbook_payload_field_types` | 485 |
-| `Qpu.Federated.communication_lower_bound` | 473 |
-| `Qpu.Xai.integrated_gradients_linear` | 368 |
-| `electronics` | 303 |
-| `textbook_repositories_by_language` | 297 |
-| `Qpu.ZeroShot.code_inj` | 254 |
-| `textbook_double_torus` | 218 |
-| `textbook_dashboard_spaces` | 216 |
-| `design` | 208 |
-| `measurement` | 204 |
-| `Qpu.CausalInference.treated_control_partition` | 193 |
-| `physical` | 180 |
-| `textbook_wave_requests_by_lead` | 168 |
-| `textbook_repetition_code_tenth` | 151 |
-| `Qpu.Federated.quantization_error` | 133 |
-| `textbook_statements_one_topic` | 119 |
-| `textbook_collision_solves_many` | 113 |
-| `light` | 92 |
-| `textbook_providers_are_tenants_plus_operator` | 92 |
-| `textbook_echo_qubits_within_willow` | 88 |
-| `infinite` | 88 |
-| `textbook_textbooks_partition` | 81 |
-| `Qpu.ProgramSynthesis.checkLower_sound` | 75 |
-| `energy` | 71 |
+| `textbook_payload_field_types` | 476 |
+| `textbook_double_torus` | 202 |
+| `textbook_repetition_code_tenth` | 155 |
+| `textbook_patent_number_well_formed` | 154 |
+| `textbook_uuid_time_space` | 152 |
+| `textbook_echo_qubits_within_willow` | 86 |
+| `textbook_collision_solves_many` | 76 |
 | `textbook_willow_holds_codes` | 71 |
-| `textbook_security_perspectives` | 69 |
-| `Qpu.Xai.interaction_zero` | 68 |
-| `Qpu.CausalInference.do_ordered` | 65 |
-| `textbook_payload_operations` | 62 |
-| `health` | 57 |
-| `galois_all` | 57 |
-| `textbook_software_cirq_implemented` | 55 |
-| `superconductivity` | 49 |
-| `textbook_rsa_beyond_bound` | 46 |
-| `textbook_gate_adapters` | 46 |
-| `textbook_fractal_scales` | 44 |
-| `Qpu.ProgramSynthesis.testing_incomplete` | 43 |
-| `textbook_actions_experience` | 42 |
-| `Qpu.Xai.sensitivity_noise_invariant` | 42 |
-| `textbook_branding_sources` | 41 |
-| `Qpu.CausalInference.children_gt` | 39 |
-| `textbook_phase_bits` | 39 |
-| `Qpu.CausalInference.common_support` | 37 |
-| `textbook_entry_operations` | 37 |
-| `Qpu.ZeroShot.semantic_transitivity` | 36 |
-| `Qpu.CausalInference.path_lt` | 35 |
-| `textbook_context_balanced` | 33 |
-| `textbook_error_remedies` | 33 |
-| `textbook_entropy_fusion` | 33 |
-| `textbook_decode_not_search` | 29 |
-| `Qpu.CausalInference.do_parents_self` | 29 |
-| `textbook_qaoa_random_cut` | 29 |
-| `textbook_patent_term_twenty_years` | 28 |
-| `cluster` | 28 |
-| `temperature` | 28 |
-| `textbook_clay_conditions` | 28 |
-| `textbook_payload_access` | 27 |
-| `Qpu.ZeroShot.allClasses_distinct` | 26 |
-| `textbook_free_or_coil` | 26 |
-| `bits_both_forms` | 26 |
-| `textbook_difference_leads` | 26 |
+| `textbook_payload_operations` | 63 |
+| `computer` | 54 |
+| `textbook_gate_adapters` | 50 |
+| `textbook_dashboard_spaces` | 42 |
+| `superconductivity` | 40 |
+| `textbook_software_cirq_implemented` | 39 |
+| `textbook_dashboard_algorithm_combinations` | 32 |
+| `textbook_error_remedies` | 31 |
+| `textbook_harmonic_default` | 28 |
 | `textbook_orcid_digits` | 26 |
-| `choose_symm_small` | 25 |
-| `textbook_codes_locales` | 25 |
-| `harmonic` | 25 |
-| `textbook_integrations_are_twenty_six` | 24 |
-| `Qpu.Federated.byzantine_lattice` | 24 |
-| `fusion` | 24 |
-| `magic_all` | 24 |
-| `relation_10` | 23 |
-| `textbook_textbook_categories` | 22 |
-| `textbook_legal_plan_calls` | 21 |
-| `textbook_processor_cells` | 21 |
-| `faces_additive` | 21 |
-| `textbook_foreign_door_name` | 21 |
-| `distribute` | 21 |
-| `textbook_willow_distance_seven` | 20 |
-| `Qpu.Federated.byzantine_trimmedMean` | 20 |
-| `textbook_openapi_contract` | 19 |
-| `planes` | 19 |
-| `textbook_uuid_core` | 18 |
-| `textbook_theorems_plan_steps` | 18 |
-| `textbook_reflection_sums_to_ten` | 18 |
-| `Qpu.CausalInference.mediation_decomposition` | 17 |
-| `bits_exponential` | 17 |
-| `choose_pascal` | 17 |
-| `Qpu.Xai.output_change_le_total_importance` | 16 |
-| `Qpu.Xai.influence_loo` | 16 |
-| `clifford_all` | 16 |
-| `Qpu.ProgramSynthesis.size_of_mem_layer` | 16 |
-| `textbook_mixed_radix` | 16 |
-| `textbook_vocabulary_measured` | 15 |
-| `Qpu.Xai.influence_stability` | 15 |
-| `textbook_leads_addressed` | 15 |
-| `noise` | 15 |
-| `textbook_margin_makes_price` | 14 |
-| `Qpu.Xai.lrp_conservation` | 14 |
-| `Qpu.ProgramSynthesis.complete_hole` | 14 |
-| `textbook_expressions_evaluate` | 14 |
-| `textbook_bulgarian_statement_words` | 13 |
-| `Qpu.CausalInference.do_pre_treatment` | 13 |
-| `textbook_mongo_find_filter` | 13 |
-| `textbook_set_union` | 13 |
-| `textbook_skills_documents` | 12 |
-| `textbook_discovery_requests` | 12 |
-| `textbook_chain_index_steps` | 12 |
-| `textbook_extend_inward` | 12 |
-| `textbook_payload_schemas` | 12 |
-| `Qpu.CausalInference.no_cycle` | 12 |
-| `shor_factored` | 12 |
-| `hybrid_speed` | 12 |
-| `textbook_coil_green` | 12 |
-| `textbook_hologram_rotations` | 12 |
-| `textbook_queneau_compositions` | 11 |
-| `sigma_planck` | 11 |
-| `Qpu.ProgramSynthesis.synth_minimal` | 11 |
-| `textbook_axioms_linked` | 11 |
-| `coil_efficiency` | 11 |
-| `all_product` | 10 |
-| `Qpu.CausalInference.ate_bounded` | 10 |
-| `cube` | 10 |
-| `pi_turn_degrees` | 10 |
-| `textbook_tamper_detected` | 10 |
-| `coins_bridges_forms` | 9 |
-| `Qpu.ZeroShot.agree_le_length_right` | 9 |
-| `textbook_prices_are_variants_times_currencies` | 9 |
-| `textbook_fullstack_files_by_role` | 9 |
-| `Qpu.Federated.shares_tail_independent` | 9 |
-| `Qpu.ProgramSynthesis.repair_root` | 9 |
-| `textbook_shor_narrowed_cells` | 9 |
-| `Qpu.ProgramSynthesis.eval_affine` | 9 |
-| `Qpu.CausalInference.valueF_stable` | 9 |
-| `textbook_version_sequential` | 8 |
-| `Qpu.Federated.shares_traffic` | 8 |
-| `Qpu.ProgramSynthesis.equiv_satisfies_traceOf` | 8 |
-| `ramsey_three_three` | 8 |
-| `Qpu.Xai.Attention.sums` | 8 |
-| `annealing_all` | 8 |
-| `textbook_leaks_redacted` | 7 |
-| `textbook_news_adapters` | 7 |
-| `Qpu.CausalInference.triangle_shape` | 7 |
-| `fused_both_directions` | 7 |
-| `Qpu.ProgramSynthesis.synth_typed` | 7 |
-| `Qpu.Xai.attention_weight_le_total` | 7 |
-| `Qpu.Harmonic.L1_range` | 7 |
-| `textbook_beacon_period` | 7 |
-| `Qpu.Xai.shap_marginal_constant` | 7 |
-| `textbook_route_or_lead` | 7 |
-| `textbook_lean_served_whole` | 6 |
-| `textbook_compete_knows` | 6 |
-| `cooling_stays_positive` | 6 |
-| `textbook_create_hue` | 6 |
-| `textbook_scopes_tenants_collections` | 6 |
-| `textbook_configurations_closed` | 6 |
-| `textbook_site_documents` | 6 |
-| `textbook_h2_below_hartree_fock` | 6 |
-| `textbook_ui_deterministic` | 6 |
-| `Qpu.Federated.quantize_clipped_bounded` | 6 |
-| `textbook_chain_bits` | 6 |
-| `bits_multiplicative` | 6 |
-| `Qpu.ProgramSynthesis.propagate_append_subset` | 6 |
-| `textbook_app_fields_validated` | 6 |
-| `textbook_url_combinations` | 6 |
-| `textbook_app_bundle` | 6 |
-| `around` | 5 |
-| `circuit` | 5 |
-| `textbook_rest_rbac` | 5 |
-| `textbook_access_combinations` | 5 |
-| `textbook_billing_complete` | 5 |
-| `textbook_advantage_unbounded` | 5 |
+| `textbook_payload_access` | 24 |
+| `design` | 24 |
+| `textbook_repositories_by_language` | 23 |
+| `quantum` | 18 |
+| `textbook_uuid_core` | 16 |
+| `textbook_step_cache_sound` | 16 |
+| `temperature` | 14 |
+| `textbook_context_balanced` | 13 |
+| `Qpu.Federated.communication_lower_bound` | 11 |
+| `textbook_payload_schemas` | 10 |
+| `textbook_mixed_radix` | 10 |
+| `textbook_set_union` | 10 |
+| `textbook_mongo_find_filter` | 10 |
+| `textbook_observed_errors` | 9 |
+| `textbook_expressions_evaluate` | 8 |
+| `textbook_penalty_time_burned` | 7 |
+| `textbook_penalty_learned_prevents` | 7 |
+| `textbook_workspace_presets` | 7 |
+| `textbook_free_or_coil` | 7 |
+| `textbook_leaks_redacted` | 6 |
+| `textbook_security_perspectives` | 6 |
+| `textbook_bill_covered` | 6 |
+| `textbook_shor_narrowed_cells` | 6 |
+| `Qpu.ProgramSynthesis.checkLower_sound` | 6 |
+| `textbook_chain_bits` | 5 |
+| `textbook_textbook_categories` | 5 |
+| `textbook_textbooks_partition` | 5 |
 | `textbook_shor_fifteen_order` | 5 |
-| `textbook_kind_alphabet` | 5 |
-| `textbook_fallback_involution` | 5 |
-| `Qpu.Federated.sorted_lower` | 5 |
-| `textbook_poles_pyramid` | 5 |
+| `ramsey_three_three` | 5 |
+| `textbook_codes_locales` | 5 |
 | `textbook_payload_queries` | 5 |
-| `Qpu.Federated.countP_gt_le_outside` | 4 |
-| `Qpu.CausalInference.do_consistent` | 4 |
-| `sigma_pauli` | 4 |
-| `textbook_peg_is_fixed` | 4 |
-| `Qpu.ZeroShot.allClasses_uniform` | 4 |
-| `textbook_sitemap_capacity` | 4 |
-| `triangular_four` | 4 |
-| `textbook_seal_and_content_decided` | 4 |
-| `Qpu.CausalInference.length_filter_partition` | 4 |
-| `textbook_translate_phrases` | 4 |
-| `textbook_hue_shift` | 4 |
-| `one_plus_six` | 4 |
-| `Qpu.Federated.noised_utility` | 4 |
-| `textbook_grover_one_iteration` | 4 |
-| `Qpu.ProgramSynthesis.sketch_completion_size` | 4 |
-| `Qpu.ZeroShot.exact_match_best` | 4 |
-| `textbook_mcp_tools_by_toolbox` | 3 |
-| `hybrid_cost` | 3 |
-| `Qpu.CausalInference.do_value_self` | 3 |
-| `anyon_all` | 3 |
-| `textbook_leads_by_status` | 3 |
-| `all_entangle` | 3 |
-| `amplitudes_as_sum` | 3 |
-| `next_cover` | 3 |
-| `textbook_hex_presentations` | 3 |
-| `textbook_fold_mirror` | 3 |
-| `twin_gap` | 3 |
-| `Qpu.Federated.shares_consistent` | 3 |
-| `Qpu.Federated.pairwise_mask_cancels` | 3 |
-| `Qpu.Federated.secureAggregate_eq` | 3 |
+| `Qpu.Xai.integrated_gradients_linear` | 4 |
+| `textbook_entropy_fusion` | 4 |
+| `textbook_advantage_unbounded` | 4 |
+| `infinite` | 4 |
+| `textbook_processor_cells` | 4 |
+| `textbook_url_combinations` | 4 |
+| `textbook_idle_scheduled_clears` | 4 |
+| `textbook_decode_not_search` | 3 |
+| `textbook_penalty_time_heat_monotone` | 3 |
+| `textbook_news_adapters` | 3 |
+| `textbook_billing_complete` | 3 |
+| `textbook_fractal_scales` | 3 |
+| `textbook_rsa_beyond_bound` | 3 |
+| `textbook_site_documents` | 3 |
+| `textbook_branding_sources` | 3 |
+| `Qpu.ZeroShot.semantic_transitivity` | 3 |
+| `Qpu.CausalInference.length_filter_partition` | 3 |
+| `textbook_clay_conditions` | 3 |
+| `noise` | 3 |
+| `textbook_h2_below_hartree_fock` | 3 |
+| `textbook_integers_first` | 3 |
 | `textbook_roadmap_decades` | 3 |
-| `double_is_sum` | 3 |
-| `Qpu.ProgramSynthesis.checkLower_complete` | 3 |
-| `Qpu.Harmonic.closing_count` | 3 |
-| `key_trinity` | 3 |
-| `dense` | 3 |
-| `deutsch` | 2 |
-| `Qpu.ProgramSynthesis.size_compose` | 2 |
-| `Qpu.CausalInference.do_parents_ne` | 2 |
+| `textbook_machine_allow_list` | 3 |
+| `textbook_rest_rbac` | 2 |
 | `textbook_edit_collides` | 2 |
-| `textbook_streams_cover_gateways` | 2 |
-| `textbook_bindings_named_not_valued` | 2 |
-| `Qpu.CausalInference.positivity` | 2 |
+| `textbook_queneau_compositions` | 2 |
+| `cooling_stays_positive` | 2 |
 | `mersenne_127` | 2 |
-| `textbook_payload_coordination` | 2 |
-| `singularity` | 2 |
-| `Qpu.Xai.sensitivity_ratio` | 2 |
 | `textbook_registry_words_searched` | 2 |
-| `Qpu.ZeroShot.separable` | 2 |
-| `shor_modulus_binomial` | 2 |
-| `Qpu.CausalInference.triangle_confounded` | 2 |
-| `textbook_hadamard_amplitudes` | 2 |
-| `Qpu.Federated.shares_length` | 2 |
-| `textbook_app_doc_blocks` | 2 |
-| `Qpu.ZeroShot.dot_indicator_le_agree` | 2 |
-| `propulsion` | 2 |
-| `Qpu.Federated.sorted_upper` | 2 |
-| `textbook_scan_stream` | 2 |
-| `choose_five_two` | 2 |
-| `Qpu.ProgramSynthesis.repair_preserves` | 2 |
-| `cern` | 2 |
-| `textbook_audit_all_pass` | 2 |
-| `crypto` | 2 |
-| `factorial_three` | 2 |
-| `textbook_artifacts_verified` | 2 |
-| `Qpu.ZeroShot.vertices_bound` | 2 |
+| `textbook_references_acyclic` | 2 |
+| `textbook_hook_steps_monotone` | 2 |
+| `textbook_codata_g_ppb` | 2 |
+| `Qpu.CausalInference.common_support` | 2 |
+| `textbook_fullstack_files_by_role` | 2 |
+| `Qpu.ProgramSynthesis.synth_typed` | 2 |
+| `textbook_wave_requests_by_lead` | 2 |
+| `Qpu.ProgramSynthesis.testing_incomplete` | 2 |
+| `Qpu.ZeroShot.allClasses_length` | 2 |
+| `textbook_extend_inward` | 2 |
+| `textbook_kind_alphabet` | 2 |
+| `Qpu.CausalInference.treated_control_partition` | 2 |
+| `shor_factored` | 2 |
+| `Qpu.ProgramSynthesis.repair_root` | 2 |
+| `Qpu.ProgramSynthesis.size_of_mem_layer` | 2 |
 | `textbook_phase_three_bits` | 2 |
-| `sigma_hodge` | 2 |
-| `multiply` | 2 |
-| `gates` | 2 |
-| `textbook_clay_register_width` | 2 |
-| `Qpu.ZeroShot.mem_unseen` | 2 |
-| `textbook_fold_pieces_under_bound` | 2 |
-| `textbook_patent_apis_partition` | 1 |
-| `Qpu.ZeroShot.best_attained` | 1 |
+| `textbook_app_fields_validated` | 2 |
+| `sciences` | 2 |
+| `Qpu.ProgramSynthesis.size_compose` | 1 |
+| `textbook_bulgarian_statement_words` | 1 |
 | `textbook_wrangler_drift` | 1 |
-| `Qpu.ProgramSynthesis.programs_unbounded` | 1 |
 | `Qpu.Federated.lt_mintOf_self` | 1 |
-| `Qpu.ZeroShot.agree_le_length_left` | 1 |
-| `textbook_imagine_verdicts` | 1 |
-| `Qpu.ProgramSynthesis.eval_replace` | 1 |
-| `Qpu.CausalInference.filter_filter_ne` | 1 |
-| `textbook_signature_over_digest` | 1 |
+| `textbook_actions_experience` | 1 |
+| `amplitudes_as_sum` | 1 |
 | `factorial_succ` | 1 |
+| `next_cover` | 1 |
 | `fused_additive_form` | 1 |
 | `textbook_gates_partition` | 1 |
+| `Qpu.ZeroShot.allClasses_uniform` | 1 |
 | `textbook_cirq_exports` | 1 |
-| `textbook_packages_partition` | 1 |
-| `raid` | 1 |
-| `Qpu.Federated.clipped_avg_bounded` | 1 |
+| `triangular_four` | 1 |
+| `choose_symm_small` | 1 |
 | `textbook_readiness_judged` | 1 |
+| `textbook_openapi_contract` | 1 |
 | `textbook_tamper_one_nibble` | 1 |
-| `textbook_gates_by_kind` | 1 |
-| `handle` | 1 |
+| `textbook_margin_makes_price` | 1 |
+| `textbook_integrations_are_thirty_five` | 1 |
 | `textbook_stream_filter` | 1 |
+| `Qpu.CausalInference.valueF_stable` | 1 |
 | `textbook_adapter_combinations` | 1 |
 | `textbook_website_plugins_partition` | 1 |
+| `Qpu.ProgramSynthesis.equiv_satisfies_traceOf` | 1 |
 | `textbook_commit_green` | 1 |
 | `Qpu.Federated.lattice_instance` | 1 |
-| `interfere` | 1 |
-| `textbook_hash_bits` | 1 |
-| `Qpu.Xai.hamming_le_length` | 1 |
-| `fusion_tolerance` | 1 |
+| `textbook_qaoa_random_cut` | 1 |
+| `textbook_willow_distance_seven` | 1 |
+| `textbook_scan_stream` | 1 |
+| `textbook_streams_cover_gateways` | 1 |
+| `coins_bridges_forms` | 1 |
+| `textbook_theorems_plan_steps` | 1 |
 | `textbook_deploy_presets` | 1 |
-| `textbook_catalogue_prices` | 1 |
-| `Qpu.ZeroShot.best_ge_score` | 1 |
-| `sigma_midpoint` | 1 |
+| `textbook_access_combinations` | 1 |
+| `textbook_mongo_update_inc` | 1 |
+| `textbook_route_or_lead` | 1 |
+| `textbook_double_entry` | 1 |
+| `textbook_artifacts_verified` | 1 |
+| `textbook_foreign_door_name` | 1 |
+| `Qpu.Federated.shares_length` | 1 |
 | `Qpu.ProgramSynthesis.double_equiv` | 1 |
 | `textbook_qft_three_amplitudes` | 1 |
-| `textbook_dates_ordered` | 1 |
+| `textbook_tamper_detected` | 1 |
+| `Qpu.CausalInference.do_value_self` | 1 |
 | `faces_both_forms` | 1 |
-| `Qpu.ZeroShot.allClasses_length` | 1 |
-| `Qpu.ProgramSynthesis.satisfiable_monotone` | 1 |
-| `textbook_repository_watch_leads` | 1 |
-| `relation_1001` | 1 |
-| `Qpu.CausalInference.hte_bounded_average` | 1 |
-| `hybrid` | 1 |
+| `textbook_penalty_visibility_harmonic` | 1 |
+| `textbook_skills_documents` | 1 |
+| `all_product` | 1 |
+| `textbook_configurations_closed` | 1 |
+| `textbook_chain_index_steps` | 1 |
+| `textbook_patent_term_twenty_years` | 1 |
+| `textbook_version_sequential` | 1 |
+| `Qpu.Xai.attention_weight_le_total` | 1 |
+| `Qpu.ZeroShot.exact_match_best` | 1 |
+| `Qpu.Federated.quantization_error` | 1 |
+| `energy` | 1 |
 | `textbook_payload_hooks` | 1 |
 | `textbook_roadmap_milestone_three` | 1 |
-| `Qpu.ProgramSynthesis.double_propagate` | 1 |
-| `Qpu.CausalInference.ordered_edge` | 1 |
 
 ## Integrity of the public artifacts
 
@@ -476,6 +216,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | ai.agentplaybooks/agentplaybooks | https://agentplaybooks.ai/api/mcp/manage |
 | ai.aquex/reasonbook |  |
 | ai.citybook/citybook | https://mcp.citybook.ai/mcp |
+| ai.commercebook/commercebook | https://commercebook.ai/mcp |
 | ai.mainbook/bank-statement-converter | https://mcp.mainbook.ai/mcp |
 | ai.modulos/demo-booking | https://www.modulos.ai/api/mcp/ |
 | ai.multivoice/video-dubbing-subtitles-transcription-audiobooks | https://db.multivoice.ai/mcp |
@@ -530,7 +271,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | com.coloringbookify/mcp | https://coloringbookify.com/mcp |
 | com.commontape/booking | https://commontape.com/api/mcp |
 | com.corpuscarfix/booking | https://corpuscarfix.com/mcp |
-| com.ctlsurf/notebook | https://app.ctlsurf.com/api/mcp |
 | ai.childadhd/library | https://childadhd.ai/api/mcp/v1 |
 | ai.childanxiety/library | https://childanxiety.ai/api/mcp/v1 |
 | ai.childpsychiatry/library | https://childpsychiatry.ai/api/mcp/v1 |
@@ -542,6 +282,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | ai.teentherapy/library | https://teentherapy.ai/api/mcp/v1 |
 | app.peptidelibrary/peptide-library | https://peptidelibrary.app/mcp |
 | app.savedthat/library | https://savedthat.app/api/mcp/me |
+| co.theoldways/library | https://mcp.theoldways.co/mcp |
 | com.adpeekly/linkedin-ads-library | https://spkftjsjduykrvzeuzld.supabase.co/functions/v1/mcp-server |
 | com.agentpaywire/library | https://mcp.agentpaywire.com/mcp |
 | com.aicreatorlibrary/library | https://mcp.aicreatorlibrary.com/mcp |
@@ -706,6 +447,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.rocnubie/mla-citation-generator-mcp |  |
 | io.github.theluckystrike/citation-generator | https://citation-generator.zovo.one/mcp |
 | legal.loupe/citation-lookup | https://loupe.legal/mcp-public |
+| com.ctlsurf/notebook | https://app.ctlsurf.com/api/mcp |
 | com.daedalmap/world_factbook | https://app.daedalmap.com/mcp/world_factbook |
 | com.devart/mcp-quickbooks |  |
 | com.digitaldataonline.mcp/e-yearbook | https://mcp.digitaldataonline.com/mcp |
@@ -777,10 +519,8 @@ Each is a candidate the court computed a case for. None is a verdict.
 | com.tampawindshield/booking | https://tampawindshield.com/mcp |
 | com.tempepoolguy/booking | https://tempepoolguy.com/mcp |
 | com.thejohnsonbros/plumbing-booking | https://thejohnsonbros.com/mcp |
-| com.timecardbook/site | https://timecardbook.com/mcp |
-| com.tolk2go/booking | https://api.tolk2go.com/api/v1/mcp |
-| com.triplebooks/mcp | https://app.triplebooks.com/api/mcp |
 | io.github.adriancisnerosspeed-hub/civic-library-mcp |  |
+| io.github.benthepythondev00/ad-library-intelligence | https://ad-library-intelligence.mcpize.run/mcp |
 | io.github.cyanheads/openlibrary-mcp-server | https://openlibrary.caseyjhand.com/mcp |
 | io.github.eater2/ai-agents-api-library | https://ai-agents-api-library.vercel.app/mcp |
 | io.github.forever-healthy/ai4l-library |  |
@@ -791,6 +531,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.jayjex/solana-research-library |  |
 | io.github.jgaethle10/systemia-field-library | https://base44.app/api/apps/6a54381e147576b18ac94d8f/functions/fieldLibraryAgentMcp |
 | io.github.library-x/tuney | https://api.tuney.io/cue-engine2/connector/mcp |
+| io.github.ltvspot/library-of-alexandria | https://mcp.libraryofalexandria.com/mcp |
 | io.github.malamutemayhem/openlibrary |  |
 | io.github.malkreide/eth-library-mcp |  |
 | io.github.mrfentmen/open-library-mcp |  |
@@ -806,7 +547,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.proxy-intell/linkedin-ads-library |  |
 | io.github.proxy-intell/tiktok-ads-library |  |
 | io.github.smeet666/mcp-libraryofcongress |  |
-| io.github.theluckystrike/contract-clause-library-proposal-template-docx | https://mcp.zovo.one/mcp/clauses |
 | io.github.Eclipse-Cj/paper-distill-mcp |  |
 | io.github.LAHutchins91/papers | https://papers-mcp.vercel.app/mcp |
 | io.github.MCPServings/paper-mcp | https://latex-tools.online/mcp |
@@ -837,6 +577,9 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.pcp183/paper-lookup | https://paper-lookup-production-56b0.up.railway.app/mcp |
 | io.github.pipeworx-io/paperswithcode | https://gateway.pipeworx.io/paperswithcode/mcp |
 | io.github.proompteng/bilig-workpaper | https://bilig.proompteng.ai/mcp |
+| com.timecardbook/site | https://timecardbook.com/mcp |
+| com.tolk2go/booking | https://api.tolk2go.com/api/v1/mcp |
+| com.triplebooks/mcp | https://app.triplebooks.com/api/mcp |
 | com.trustboundarysystems/bookings | https://mcp.trustboundarysystems.com/mcp |
 | com.tulsafoampros/booking | https://tulsafoampros.com/mcp |
 | com.tulsaweldguy/booking | https://tulsaweldguy.com/mcp |
@@ -889,7 +632,9 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.Influship/sponsorbook-mcp | https://app.sponsorbook.io/mcp |
 | io.github.IvanBBaev/facebook-mcp |  |
 | io.github.LayUp-Sport/sports-booking | https://mcp.layupsport.com |
+| io.github.MaestroW4rd0/orderbook-heatmap-live | https://mcp.apify.com/?tools=gleaming_carp/orderbook-heatmap-live |
 | io.github.MicaelJarniac/repeaterbook |  |
+| io.github.theluckystrike/contract-clause-library-proposal-template-docx | https://mcp.zovo.one/mcp/clauses |
 | io.github.theluckystrike/glossary-terms-definitions-library |  |
 | io.github.wywy-llc/gas-library-hub | https://appscripthub.com/api/mcp |
 | io.github.zhaoxinghua09-cell/medxpert-library-connector |  |
@@ -914,7 +659,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.usefulapi/papershift | https://papershift.usefulapi.io/mcp |
 | kr.co.paperee/paperee-mcp | https://api.paperee.co.kr/functions/v1/mcp |
 | net.nexlab/peer-research-papers | https://mcp.nexlab.net/mcp/peer-research-papers |
-| online.paperlink/mcp | https://mcp.paperlink.online/api/mcp/mcp |
 | io.github.NedimMujagic/bnod-booking | https://bnod.at/api/mcp |
 | io.github.NyxToolsDev/quickbooks-mcp-server |  |
 | io.github.OsamaHassouna/email-playbook-mcp | https://docs.osamahassouna.com/api/mcp |
@@ -939,6 +683,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.cbetz/ratebook |  |
 | io.github.chrischall/freshbooks-mcp |  |
 | io.github.chrischall/honeybook-mcp |  |
+| online.paperlink/mcp | https://mcp.paperlink.online/api/mcp/mcp |
 | org.agentpub/papers | https://mcp.agentpub.org/mcp/ |
 | org.lightpaper/lightpaper-mcp |  |
 | io.github.ciceropaul/cicero-booking | https://admin.cicerolearning.com/api/public/booking/mcp |
@@ -1032,6 +777,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | net.bookmax/bookmax | https://my.bookmax.net/mcp |
 | net.useapi/gemini-notebook | https://api.useapi.net/v1/gemini-notebook/mcp |
 | nz.wanakahaus/booking | https://wanakahaus.nz/api/mcp |
+| org.bibooks/bibooks | https://bibooks.org/mcp |
 | org.jainebooks/catalogue | https://jainebooks.org/mcp |
 | org.maxeds/salesbook | https://mcp.maxeds.org/mcp |
 | pl.szuruszuru/booking | https://agent.szuruszuru.pl/mcp |

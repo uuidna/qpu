@@ -31,7 +31,7 @@ const steps: Step[] = [
   { name: 'configs', cmd: 'node', args: ['--import', 'tsx', 'scripts/configs.ts'], wave: 1 }, // always: every configuration (configs, scopes, fields, validations, access, hooks, bindings, actions) improved — the tool's files written, the hand's measured
   { name: 'typecheck', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'], wave: 2 },
   { name: 'test', cmd: 'node', args: ['--import', 'tsx', '--test', 'src/quantum/*.test.ts'], budgetMs: 300_000, wave: 2 },
-  { name: 'lean', cmd: lake, args: ['build'], wave: 2 },
+  { name: 'lean', cmd: lake, args: ['build'], wave: 1.5 }, // before purify, which reads the kernel's environment
   { name: 'audit', cmd: 'node', args: ['--import', 'tsx', 'scripts/audit.ts'], wave: 2 },
   { name: 'imagine', cmd: 'node', args: ['--import', 'tsx', 'scripts/imagine.ts'], budgetMs: 300_000, skip: fast ? 'fast' : undefined, wave: 3, shards: 4 }, // a quantum: the leads not yet imagined, as many as fit; the rest next run
   { name: 'discover', cmd: 'node', args: ['--import', 'tsx', 'scripts/discover.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 3, shards: 4 }, // a quantum: contracts kept a day, the rest fetched as far as the quantum goes
@@ -50,7 +50,7 @@ const steps: Step[] = [
   { name: 'legal', cmd: 'node', args: ['--import', 'tsx', 'scripts/legal.ts'], budgetMs: 600_000, wave: 3, shards: 4 },
   { name: 'sources', cmd: 'node', args: ['--import', 'tsx', 'scripts/sources.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 1_800_000, wave: 3 }, // the immutable sources of leads, every page to its end
   { name: 'textbook', cmd: 'node', args: ['--import', 'tsx', 'scripts/textbook.ts'], budgetMs: 300_000, wave: 4, shards: 4 }, // always: the examples verified online from the wave; offline the plan // always: cached by inputs, the pure half offline
-  { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'], wave: 5 },
+  { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'], wave: 2 }, // beside the tests and the audit: independent pure work fills the idle cores (its index written atomically)
   { name: 'metrics', cmd: 'node', args: ['--import', 'tsx', 'scripts/metrics.ts'], budgetMs: 120_000, skip: fast ? 'fast' : undefined, wave: 5 }, // always: the run's artefacts read into one measure
   { name: 'docs:build', cmd: 'npx', args: ['vitepress', 'build', 'docs'], skip: fast ? 'fast' : undefined, wave: 6 },
   { name: 'trunk', cmd: 'node', args: ['--import', 'tsx', 'scripts/trunk.ts'], wave: 7 }, // always: main fast-forwarded locally when green; never pushed
@@ -181,20 +181,47 @@ console.log(`time and heat: ${over.length} of ${waiting.length} step(s) over the
 // qubits the quantum examples leave below the simulator's bound and the Shor N never asked; the ten largest idle items are leads, each with the
 // antimatter that wires it
 const cores = availableParallelism()
-const capacityIn: Parameters<typeof capacityOf>[0] = { cores: waiting.filter((w) => w.price.wallMs > 0).map((w) => ({ step: w.step, wallMs: w.price.wallMs, cpuMs: w.price.cpuMs, cores })) }
+// idle cores over the whole run, not per step (steps of one wave share the cores): the run's wall ms times the cores, less the CPU ms of every step
+const capacityIn: Parameters<typeof capacityOf>[0] = { cores: [{ step: 'next run', wallMs, cpuMs: waiting.reduce((n, w) => n + w.price.cpuMs, 0), cores }] }
 // the full measures run in the background, detached by post-commit (scripts/idle.ts, the machine action idle), never inside a hook: their latest
 // recorded state is read here, never computed
 const idleRead = existsSync(join(ROOT, 'docs', 'public', 'idle.json')) ? JSON.parse(readFileSync(join(ROOT, 'docs', 'public', 'idle.json'), 'utf8')) as { input?: Parameters<typeof capacityOf>[0] } : null
 Object.assign(capacityIn, { ...(idleRead?.input ?? {}), cores: capacityIn.cores })
+// the remaining work, from the tree's own records, in ms: the steps this run did not run, each at its last measured run in the receipts; the idle
+// items at the audit's measured ms per example; the open leads counted, their cost unmeasured (said so, never guessed)
+{
+  const history = existsSync(join(ROOT, 'docs', 'public', 'receipts.ndjson')) ? readFileSync(join(ROOT, 'docs', 'public', 'receipts.ndjson'), 'utf8').trim().split('\n').flatMap((l) => { try { return [JSON.parse(l) as { steps?: { name: string; status: string; ms: number; counts?: Record<string, number> }[] }] } catch { return [] } }) : []
+  const lastMs = (name: string) => { for (const r of [...history].reverse()) { const st = r.steps?.find((x) => x.name === name && x.status !== 'skipped' && x.ms > 0); if (st) return st.ms } return null }
+  const pending = receipt.steps.filter((x) => x.status === 'skipped').map((x) => ({ name: x.name, ms: lastMs(x.name) }))
+  const audit = [...history].reverse().flatMap((r) => r.steps ?? []).find((x) => x.name === 'audit' && x.ms > 0 && x.counts?.checks)
+  const perExample = audit ? Math.round(audit.ms / Math.max(1, audit.counts!.checks!)) : null
+  const idleItems = (idleRead as { top?: unknown[]; counts?: Record<string, { idleNames?: string[] } | null> } | null)?.counts ? Object.values((idleRead as { counts: Record<string, { idleNames?: string[] } | null> }).counts).reduce((n, m) => n + (m?.idleNames?.length ?? 0), 0) : 0
+  const leadsOpen = ['next-leads.json', 'purify-leads.json'].reduce((n, f) => { try { return n + (JSON.parse(readFileSync(join(ROOT, 'docs', 'public', f), 'utf8')) as { status?: string }[]).filter((l) => l.status === 'open').length } catch { return n } }, 0)
+  capacityIn.remaining = [
+    { category: 'pending steps', count: pending.length, ms: pending.every((p) => p.ms === null) ? null : pending.reduce((n, p) => n + (p.ms ?? 0), 0), how: `each at its last measured run in the receipts${pending.some((p) => p.ms === null) ? `; never measured: ${pending.filter((p) => p.ms === null).map((p) => p.name).join(', ')}` : ''}` },
+    { category: 'idle items', count: idleItems, ms: perExample === null ? null : idleItems * perExample, how: `the audit's measured ms per check (${perExample ?? '?'} ms) per generated example` },
+    { category: 'open leads', count: leadsOpen, ms: null, how: 'counted; no per-lead cost is measured yet' },
+  ]
+}
 const capacity = capacityOf(capacityIn)
 for (const g of capacity.top) opened.push({ id: `next-idle-${g.measure}-${g.name}`, source: `npm run next ${receipt.date}`, statement: `${g.name} leaves ${g.tokens} ${g.unit} of quantum capacity idle (${g.measure}) — antimatter: ${g.antimatter.says}`, status: 'open', reason: 'unused quantum capacity is an idle gap: listed, never blocking, priced in its own unit', evidence: JSON.stringify({ measure: g.measure, tokens: g.tokens, unit: g.unit }), head: receipt.head, date: receipt.date })
+if (capacity.idlePrice) console.log(`idle priced by the remaining work: ${capacity.idlePrice.says}`)
 console.log(`capacity: ${Object.entries(capacity).filter(([k, v]) => ['doors', 'theorems', 'gates', 'cores', 'qubits', 'shor'].includes(k) && v).map(([k, v]) => `${k} ${(v as { percentIdle: number }).percentIdle}% idle`).join(', ')}; ${capacity.gaps.length} idle item(s), the ten largest as leads (${cores} cores)`)
-Object.assign(receipt, { capacity: { cores, measures: Object.fromEntries(Object.entries(capacity).filter(([k, v]) => ['doors', 'theorems', 'gates', 'cores', 'qubits', 'shor'].includes(k) && v).map(([k, v]) => { const m = v as { unit: string; capacity: number; used: number; idle: number; percentIdle: number }; return [k, { unit: m.unit, capacity: m.capacity, used: m.used, idle: m.idle, percentIdle: m.percentIdle }] })) } })
+Object.assign(receipt, { capacity: { cores, idlePrice: capacity.idlePrice ? { idleMs: capacity.idlePrice.idleMs, remainingMs: capacity.idlePrice.remainingMs, price: capacity.idlePrice.price, byCategory: capacity.idlePrice.byCategory, scheduledMs: capacity.idlePrice.scheduledMs } : null, measures: Object.fromEntries(Object.entries(capacity).filter(([k, v]) => ['doors', 'theorems', 'gates', 'cores', 'qubits', 'shor'].includes(k) && v).map(([k, v]) => { const m = v as { unit: string; capacity: number; used: number; idle: number; percentIdle: number }; return [k, { unit: m.unit, capacity: m.capacity, used: m.used, idle: m.idle, percentIdle: m.percentIdle }] })) } })
 // booked in the RAID when a key is named: a step newly over the budget raises its waiting gap, one back under it annihilates the open one
 if (process.env.QPU_APP_KEY) {
   const { penalise, clear, openPenaltiesOf } = await import('./penalties.ts')
   const standing = await openPenaltiesOf()
   const openWaiting = new Map((standing.open ?? []).filter((b) => (b.snapshot?.key ?? '').startsWith('waiting:next:')).map((b) => [b.snapshot!.key!, b]))
+  // the idle cores priced by the remaining work: a listed gap of the waiting family raised by every run that leaves cores idle while work is
+  // queued, annihilated by the run that leaves none (the time it stood burned)
+  // the budget once per run, over every step summed: pieces under the budget never dodge the price (defragmented into one measure)
+  const { runWaitPriceOf } = await import('../src/quantum/toolboxes/billing.ts')
+  const runPrice = runWaitPriceOf(waiting.map((w) => w.measures)), rkey = 'waiting:next:run', ropen = openWaiting.get(rkey)
+  if (!runPrice.free && !ropen) await penalise({ rule: 'next:waiting', kind: 'waiting', subject: 'the run', measures: { wallNs: String(runPrice.wallMs * 1e6), cpuUs: runPrice.cpuMs * 1000 }, committer: null, evidence: { key: rkey, head: receipt.head } } as Parameters<typeof penalise>[0])
+  const ip = capacity.idlePrice, ikey = 'waiting:next:idle-cores', iopen = openWaiting.get(ikey)
+  if (ip && ip.price > 0 && !iopen) await penalise({ rule: 'next:idle', kind: 'waiting', subject: 'idle cores', tokens: ip.price, committer: null, evidence: { key: ikey, idleMs: ip.idleMs, remainingMs: ip.remainingMs, byCategory: ip.byCategory, head: receipt.head } } as Parameters<typeof penalise>[0])
+  if (ip && ip.price === 0 && iopen) await clear('next:idle', 'no core idle while work was queued', { key: ikey, head: receipt.head }, 'waiting', iopen.tokens, null)
   for (const w of waiting) {
     const key = `waiting:next:${w.step}`, held = openWaiting.get(key)
     if (!w.price.free && !held) await penalise({ rule: 'next:waiting', kind: 'waiting', subject: w.step, measures: w.measures, committer: spawnSync('git', ['config', 'user.name'], { encoding: 'utf8' }).stdout.trim() || null, evidence: { key, step: w.step, head: receipt.head } } as Parameters<typeof penalise>[0])

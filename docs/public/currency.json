@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T15:45:34.276Z",
- "ms": 522,
+ "date": "2026-10-27T01:08:08.126Z",
+ "ms": 759,
  "selftest": {
   "passed": true
  },
@@ -9,31 +9,31 @@
   {
    "source": "ecb",
    "status": 200,
-   "ms": 402,
+   "ms": 451,
    "bytes": 1547
   },
   {
    "source": "frankfurter",
    "status": 200,
-   "ms": 284,
+   "ms": 289,
    "bytes": 442
   },
   {
    "source": "bnb",
    "status": 200,
-   "ms": 375,
+   "ms": 544,
    "bytes": 746
   },
   {
    "source": "er-api",
    "status": 200,
-   "ms": 342,
-   "bytes": 3048
+   "ms": 366,
+   "bytes": 3051
   },
   {
    "source": "fawazahmed",
    "status": 200,
-   "ms": 386,
+   "ms": 414,
    "bytes": 7492
   }
  ],
@@ -51,7 +51,7 @@
   },
   {
    "source": "er-api",
-   "date": "2026-10-26",
+   "date": "2026-10-27",
    "currencies": 166
   },
   {
@@ -78,18 +78,19 @@
    "dates": []
   },
   "USD": {
-   "rate": 1.119857,
+   "rate": 1.1188,
    "sources": [
     "ecb",
     "frankfurter",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.002079077953702838,
+   "spread": 0.003025804433321313,
    "outcome": "agree",
    "drifting": [],
    "dates": [
-    "2026-10-26"
+    "2026-10-26",
+    "2026-10-27"
    ]
   },
   "BGN": {
@@ -105,48 +106,51 @@
    ]
   },
   "GBP": {
-   "rate": 0.838209,
+   "rate": 0.8382,
    "sources": [
     "ecb",
     "frankfurter",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.0004705270403920943,
+   "spread": 0.0004812693867812619,
    "outcome": "agree",
    "drifting": [],
    "dates": [
-    "2026-10-26"
+    "2026-10-26",
+    "2026-10-27"
    ]
   },
   "CHF": {
-   "rate": 0.9243,
+   "rate": 0.92442892,
    "sources": [
     "ecb",
     "frankfurter",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.00027895704857725163,
+   "spread": 0.0005052632927148841,
    "outcome": "agree",
    "drifting": [],
    "dates": [
-    "2026-10-26"
+    "2026-10-26",
+    "2026-10-27"
    ]
   },
   "JPY": {
-   "rate": 176.08777073,
+   "rate": 176.11879199999998,
    "sources": [
     "ecb",
     "frankfurter",
     "er-api",
     "fawazahmed"
    ],
-   "spread": 0.0013876530379537304,
+   "spread": 0.0005294752419150448,
    "outcome": "agree",
    "drifting": [],
    "dates": [
-    "2026-10-26"
+    "2026-10-26",
+    "2026-10-27"
    ]
   }
  },
@@ -165,67 +169,67 @@
   },
   "qpu-domain-yearly": {
    "eur": 43200,
-   "usd": 48377.82,
+   "usd": 48332.16,
    "bgn": 84491.86,
-   "gbp": 36210.63,
-   "chf": 39929.76,
-   "jpy": 7606991.7
+   "gbp": 36210.24,
+   "chf": 39935.33,
+   "jpy": 7608331.81
   },
   "qpu-domain-monthly": {
    "eur": 4320,
-   "usd": 4837.78,
+   "usd": 4833.22,
    "bgn": 8449.19,
-   "gbp": 3621.06,
-   "chf": 3992.98,
-   "jpy": 760699.17
+   "gbp": 3621.02,
+   "chf": 3993.53,
+   "jpy": 760833.18
   },
   "qpu-tenant-yearly": {
    "eur": 216000,
-   "usd": 241889.11,
+   "usd": 241660.8,
    "bgn": 422459.28,
-   "gbp": 181053.14,
-   "chf": 199648.8,
-   "jpy": 38034958.48
+   "gbp": 181051.2,
+   "chf": 199676.65,
+   "jpy": 38041659.07
   },
   "qpu-seat-monthly": {
    "eur": 2700,
-   "usd": 3023.61,
+   "usd": 3020.76,
    "bgn": 5280.74,
-   "gbp": 2263.16,
-   "chf": 2495.61,
-   "jpy": 475436.98
+   "gbp": 2263.14,
+   "chf": 2495.96,
+   "jpy": 475520.74
   },
   "qpu-metered-per-thousand-calls": {
    "eur": 108,
-   "usd": 120.94,
+   "usd": 120.83,
    "bgn": 211.23,
    "gbp": 90.53,
-   "chf": 99.82,
-   "jpy": 19017.48
+   "chf": 99.84,
+   "jpy": 19020.83
   },
   "qpu-iot-per-million-readings": {
    "eur": 1080,
-   "usd": 1209.45,
+   "usd": 1208.3,
    "bgn": 2112.3,
-   "gbp": 905.27,
-   "chf": 998.24,
-   "jpy": 190174.79
+   "gbp": 905.26,
+   "chf": 998.38,
+   "jpy": 190208.3
   },
   "qpu-delivered-per-thousand-copies": {
    "eur": 540,
-   "usd": 604.72,
+   "usd": 604.15,
    "bgn": 1056.15,
    "gbp": 452.63,
-   "chf": 499.12,
-   "jpy": 95087.4
+   "chf": 499.19,
+   "jpy": 95104.15
   },
   "qpu-enterprise-platform": {
    "eur": 1080000,
-   "usd": 1209445.56,
+   "usd": 1208304,
    "bgn": 2112296.4,
-   "gbp": 905265.72,
-   "chf": 998244,
-   "jpy": 190174792.39
+   "gbp": 905256,
+   "chf": 998383.23,
+   "jpy": 190208295.36
   }
  },
  "tenants": [

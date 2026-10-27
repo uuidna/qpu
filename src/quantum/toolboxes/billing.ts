@@ -226,10 +226,15 @@ export const gapKindOf = (rule: string, kind?: string): GapKind => (kind && kind
  *  (textbook_penalty_free_under_budget); over it, its price is the milliseconds over the budget plus its CPU milliseconds, and more of either never
  *  lowers it (textbook_penalty_time_heat_monotone). */
 export const WAIT_BUDGET_MS = 1000
+/** The budget applies once per workflow run, over the sum of all of an actor's tasks in it, so splitting one slow task into pieces under the budget
+ *  never dodges the price: the pieces are defragmented into one measure. */
+export const runWaitPriceOf = (tasks: readonly Measures[]) => waitPriceOf({ wallNs: String(tasks.reduce((n, t) => n + Math.floor(Number(t.wallNs) / 1e6), 0) * 1e6), cpuUs: tasks.reduce((n, t) => n + Math.max(0, Number(t.cpuUs)), 0) })
 export type Measures = { wallNs: number | string; cpuUs: number; rssKb?: number }
 export const waitPriceOf = (m: Measures) => {
-  const wallMs = Math.floor(Number(m.wallNs) / 1e6), cpuMs = Math.floor(Math.max(0, Number(m.cpuUs)) / 1000), free = wallMs < WAIT_BUDGET_MS
-  const time = free ? 0 : wallMs - WAIT_BUDGET_MS, heat = free ? 0 : cpuMs
+  // only the overage is priced, so the price has no cliff at the budget: the wall ms beyond it plus the CPU ms beyond it, each rising by at most
+  // one per millisecond (textbook_penalty_no_cliff)
+  const wallMs = Math.floor(Number(m.wallNs) / 1e6), cpuMs = Math.floor(Math.max(0, Number(m.cpuUs)) / 1000)
+  const time = Math.max(0, wallMs - WAIT_BUDGET_MS), heat = Math.max(0, cpuMs - WAIT_BUDGET_MS), free = time === 0 && heat === 0
   return { wallMs, cpuMs, rssKb: m.rssKb ?? null, budgetMs: WAIT_BUDGET_MS, free, time, heat, coins: time + heat }
 }
 type Move = { cmd: string; args: string[]; needs: 'auto' | 'confirm' }
@@ -355,7 +360,21 @@ type GapBody = { prevented?: boolean; rule?: string; kind?: string; subject?: st
  *  to measure (get_quantum_advantage): unmeasured here, said so. Indexable clusters named but in no shard are reported, never priced. Every idle
  *  item is an idle gap — listed, never blocking — priced harmonically in its measure's unit, with antimatter that wires it (reversible) and a fold
  *  that waits on confirm. The bounds are the simulator's stated constants, never more, never a hardware claim. */
-export type CapacityInput = { doors?: { name: string; bytes: number; reached: boolean }[]; theorems?: { key: string; bytes: number; used: boolean }[]; gates?: { name: string; called: boolean }[]; cores?: { step: string; wallMs: number; cpuMs: number; cores: number }[]; qubits?: { bound: number; calls: { door: string; used: number }[] }; shor?: { bound: number; asked: number[] }; clusters?: { named: number; sharded: number } }
+export type RemainingWork = { category: string; count: number; ms: number | null; how: string }[]
+export type CapacityInput = { remaining?: RemainingWork; doors?: { name: string; bytes: number; reached: boolean }[]; theorems?: { key: string; bytes: number; used: boolean }[]; gates?: { name: string; called: boolean }[]; cores?: { step: string; wallMs: number; cpuMs: number; cores: number }[]; qubits?: { bound: number; calls: { door: string; used: number }[] }; shor?: { bound: number; asked: number[] }; clusters?: { named: number; sharded: number } }
+/** Idle priced by the cost of the remaining work, both in ms: min(idle capacity, remaining work) — nothing left to do costs nothing, idle while work
+ *  is queued costs the work it could have run (textbook_idle_priced_by_remaining). The remaining work is read from the tree's own records, each
+ *  category in ms from the receipts' measured times, a category with no measured cost counted and said so, never guessed. Its antimatter
+ *  schedules the remaining work into the idle capacity, cheapest first, until the capacity is used or the queue is empty, which lowers the price to
+ *  what is left beyond the capacity (textbook_idle_scheduled_clears). Pure. */
+export const idlePriceOf = (idleMs: number, remaining: RemainingWork) => {
+  const measured = remaining.filter((r) => r.ms !== null), remainingMs = measured.reduce((n, r) => n + r.ms!, 0)
+  const price = Math.min(Math.max(0, idleMs), remainingMs)
+  let left = Math.max(0, idleMs); const scheduled: { category: string; ms: number }[] = []
+  for (const r of [...measured].sort((a, b) => a.ms! - b.ms!)) { if (left <= 0) break; const take = Math.min(left, r.ms!); scheduled.push({ category: r.category, ms: take }); left -= take }
+  const after = Math.max(0, remainingMs - Math.max(0, idleMs))
+  return { idleMs, remainingMs, byCategory: remaining, unmeasured: remaining.filter((r) => r.ms === null).map((r) => r.category), price, scheduled, scheduledMs: scheduled.reduce((n, x) => n + x.ms, 0), priceAfterScheduling: Math.min(Math.max(0, idleMs - (remainingMs - after)), after), remainingAfter: after, theorems: ['textbook_idle_priced_by_remaining', 'textbook_idle_scheduled_clears'], says: `${idleMs} ms of idle capacity against ${remainingMs} ms of measured remaining work: idle priced at ${price} ms; scheduled cheapest first, ${after} ms would remain` }
+}
 export const capacityOf = (c: CapacityInput) => {
   const measure = (unit: string, rows: { name: string; capacity: number; used: number }[]) => { const capacity = rows.reduce((n, r) => n + r.capacity, 0), used = rows.reduce((n, r) => n + Math.min(r.used, r.capacity), 0), idle = capacity - used; return { unit, capacity, used, idle, percentIdle: capacity ? Math.floor((idle * 100) / capacity) : 0, idleNames: rows.filter((r) => r.used < r.capacity).map((r) => r.name), conserved: used + idle === capacity } }
   const doors = c.doors ? measure('schema bytes', c.doors.map((d) => ({ name: d.name, capacity: d.bytes, used: d.reached ? d.bytes : 0 }))) : null
@@ -370,7 +389,8 @@ export const capacityOf = (c: CapacityInput) => {
   const gaps = Object.entries(measures).flatMap(([m, r]) => (r ? r.idleNames.map((name) => ({ measure: m, name })) : []))
   const per = (m: string, name: string) => { if (m === 'doors') return Math.ceil((c.doors!.find((d) => d.name === name)?.bytes ?? 0) / 4); if (m === 'theorems') return Math.ceil((c.theorems!.find((t) => t.key === name)?.bytes ?? 0) / 4); if (m === 'cores') { const x = c.cores!.find((y) => y.step === name)!; return x.wallMs * x.cores - Math.min(x.cpuMs, x.wallMs * x.cores) } if (m === 'qubits') return c.qubits!.calls.filter((q) => q.door === name).reduce((n, q) => n + Math.max(0, c.qubits!.bound - q.used), 0); return 1 }
   const priced = gaps.map((g) => ({ ...g, kind: 'idle' as const, blocks: false, tokens: per(g.measure, g.name), unit: measures[g.measure as keyof typeof measures]!.unit, antimatter: antimatterOf('idle', 'idle', { measure: g.measure === 'doors' ? 'door' : g.measure === 'theorems' ? 'theorem' : g.measure === 'gates' ? 'gate' : g.measure, name: g.name }) })).sort((a, b) => b.tokens - a.tokens)
-  return { ...measures, advantage: { measured: null, says: 'the measured advantage of each served quantum door is the hosted door\'s (get_quantum_advantage): unmeasured here' }, clusters: c.clusters ? { ...c.clusters, unsharded: Math.max(0, c.clusters.named - c.clusters.sharded), priced: false } : null, gaps: priced, top: priced.slice(0, 10), conserved: Object.values(measures).every((r) => !r || r.conserved), theorem: 'textbook_capacity_conserved', says: `${priced.length} idle item(s) across ${Object.values(measures).filter(Boolean).length} measure(s), each priced in its own unit, listed and never blocking; the bounds are the simulator's stated constants, never a hardware claim` }
+  const idleMs = cores ? cores.idle : 0
+  return { ...measures, idlePrice: c.remaining ? idlePriceOf(idleMs, c.remaining) : null, advantage: { measured: null, says: 'the measured advantage of each served quantum door is the hosted door\'s (get_quantum_advantage): unmeasured here' }, clusters: c.clusters ? { ...c.clusters, unsharded: Math.max(0, c.clusters.named - c.clusters.sharded), priced: false } : null, gaps: priced, top: priced.slice(0, 10), conserved: Object.values(measures).every((r) => !r || r.conserved), theorem: 'textbook_capacity_conserved', says: `${priced.length} idle item(s) across ${Object.values(measures).filter(Boolean).length} measure(s), each priced in its own unit, listed and never blocking; the bounds are the simulator's stated constants, never a hardware claim` }
 }
 /** A coin or coil line is balanced when it debits one account and credits another of the same value: never a line to itself, never one side. */
 export const lineBalanced = (l: { debit?: string; credit?: string; amount?: number; count?: number } | null | undefined) => !!l && !!l.debit && !!l.credit && l.debit !== l.credit && (l.amount ?? 0) >= 0 && (l.count ?? 0) >= 0

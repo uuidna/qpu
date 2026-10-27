@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-26T16:49:23.905Z",
+ "date": "2026-10-27T01:08:29.931Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -130,7 +130,7 @@
    "id": "dependencies:site",
    "perspective": "developer",
    "passed": false,
-   "evidence": "info 0, low 3, moderate 7, high 4, critical 0",
+   "evidence": "info 0, low 3, moderate 8, high 4, critical 0",
    "remedy": "npm audit fix or a pinned fixed version; a finding is a lead"
   },
   {
@@ -185,7 +185,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1176 kernel-accepted theorems",
+   "evidence": "1253 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -201,7 +201,7 @@
  "leads": [
   {
    "id": "security-dependencies-site",
-   "statement": "dependencies:site (developer): info 0, low 3, moderate 7, high 4, critical 0",
+   "statement": "dependencies:site (developer): info 0, low 3, moderate 8, high 4, critical 0",
    "status": "open",
    "remedy": "npm audit fix or a pinned fixed version; a finding is a lead",
    "tool": "audit"
@@ -264,7 +264,7 @@
    },
    "users": "the site's own (admin or self), with an API key per user for MCP clients",
    "pages": "the site's own access, kept (published pages public, drafts to users)",
-   "by": "the x-qpu-role header the Worker sets from the Authorization token (roles.ts), or Payload's user"
+   "by": "Payload's user, or a role header signed under the deployment's secret (x-qpu-role-mac: HMAC-SHA-256 over role|tenant|METHOD, roles.ts); a bare x-qpu-role header is no claim (measured 2026-10-26: unsigned, it let an anonymous request delete an entry)"
   },
   "hooks": "every hook keeps a read free: the content address makes an entry immutable (a duplicate write is the same id), the tag invalidates only the page that changed, so the provider is paid for writes and first computations, never for reads",
   "checks": [
@@ -282,7 +282,7 @@
     "id": "public:create-call-only",
     "perspective": "public",
     "passed": true,
-    "evidence": "an anonymous create is a call, whose address folds it; any other kind needs a tenant role or the writer token",
+    "evidence": "an anonymous create is a call or a chat, whose address folds it as corrected for the role; any other kind needs a tenant role or a writer role signed under the deployment secret (a bare header is no claim)",
     "hook": "beforeValidate: the content address on create, so a repeated call is the same row",
     "cost": "paid once by the provider for the first computation, free after by address",
     "licence": "NC: non-commercial use is free and needs no licence; the a432 default is priced 0",
@@ -312,7 +312,7 @@
     "id": "tenant:delete-scoped",
     "perspective": "tenant",
     "passed": true,
-    "evidence": "a tenant-admin deletes within its tenant (a where), the admin token within its docket, a super admin anywhere",
+    "evidence": "a tenant-admin deletes within its tenant (a where), a signed admin role within its docket, a super admin anywhere",
     "hook": "access.delete: the where is the hook",
     "cost": "free: the where is evaluated by the database",
     "licence": "the licence's domains bound the act",
@@ -337,6 +337,16 @@
     "cost": "free",
     "licence": "the licence names the domain, the bindings name the providers: nothing secret in Payload",
     "legal": "privacy by data minimisation: no secret, no personal datum in the tree or the admin"
+   },
+   {
+    "id": "developer:machine-local-admin-no-shell",
+    "perspective": "developer",
+    "passed": true,
+    "evidence": "the machine tool of the Payload MCP runs only on a loopback host for a super admin, an argument vector the allow-list planned handed to the one runner (scripts/machine.ts, spawn with no shell) and never a process of its own, every run created as the user",
+    "hook": "payload.qpu.mcp.ts: machineTool",
+    "cost": "free",
+    "licence": "the developer's own machine, under the licence",
+    "legal": "nothing leaves the machine but what the user confirms: a push needs confirm and the pre-push rules"
    },
    {
     "id": "operator:first-user-from-deploy",
@@ -425,7 +435,7 @@
     "evidence": "every tools/call result carries _meta.license; initialize states the terms",
     "hook": "the handler: _meta.license on every result",
     "cost": "free",
-    "licence": "CC-BY-NC-ND-4.0: Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (https://qpu.uuidna.com). The a432 harmonic default is offered for free benefit under attribution.",
+    "licence": "CC-BY-NC-ND-4.0: Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (https://qpu.uuidna.com). The a432 harmonic default is offered for free benefit under attribution. Every block carries its address and its SHA-256: a copy that no longer matches them is adapted material, which the NoDerivatives term does not let anyone share.",
     "legal": "the licence is the contract every reader accepts by reading; its address is sealed (9ffcda04-5adc-872e-9358-6b831bbd0c0d)"
    },
    {
@@ -459,15 +469,15 @@
     "legal": "the inputs a qualified attorney starts from, never the conclusion"
    }
   ],
-  "total": 19,
-  "passed": 19,
+  "total": 20,
+  "passed": 20,
   "failed": 0,
   "byPerspective": {
    "public": 3,
    "tenant": 4,
    "operator": 2,
    "client": 3,
-   "developer": 3,
+   "developer": 4,
    "legal": 4
   },
   "advantage": {
@@ -502,12 +512,26 @@
   "says": "the access audit from every perspective over the generated code and the answered configurations: every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms"
  },
  "leaks": {
-  "texts": 44,
+  "texts": 47,
   "findings": [
+   {
+    "where": "docs/public/graph.json",
+    "kind": "local-path",
+    "count": 4,
+    "served": false,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "docs/public/graph.json",
+    "kind": "private-ip",
+    "count": 1,
+    "served": false,
+    "remedy": "a host by its public name; a private address says the network"
+   },
    {
     "where": "docs/public/next-leads.json",
     "kind": "local-path",
-    "count": 94,
+    "count": 102,
     "served": false,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
@@ -522,6 +546,13 @@
     "where": "docs/public/receipts.ndjson",
     "kind": "local-path",
     "count": 270,
+    "served": false,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "docs/public/repository.json",
+    "kind": "local-path",
+    "count": 3,
     "served": false,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
@@ -595,18 +626,32 @@
    "token": 0,
    "jwt": 0,
    "private-key": 0,
-   "local-path": 1276,
-   "private-ip": 0
+   "local-path": 1291,
+   "private-ip": 1
   },
-  "total": 1784,
+  "total": 1800,
   "served": 9,
   "setAside": 26,
   "clean": false,
   "leads": [
    {
+    "id": "leak-local-path-docs-public-graph-json",
+    "source": "docs/public/graph.json",
+    "statement": "4 local-path finding(s) in docs/public/graph.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "not served yet: remove it at the source before it is"
+   },
+   {
+    "id": "leak-private-ip-docs-public-graph-json",
+    "source": "docs/public/graph.json",
+    "statement": "1 private-ip finding(s) in docs/public/graph.json: a host by its public name; a private address says the network",
+    "status": "open",
+    "reason": "not served yet: remove it at the source before it is"
+   },
+   {
     "id": "leak-local-path-docs-public-next-leads-json",
     "source": "docs/public/next-leads.json",
-    "statement": "94 local-path finding(s) in docs/public/next-leads.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "statement": "102 local-path finding(s) in docs/public/next-leads.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "not served yet: remove it at the source before it is"
    },
@@ -621,6 +666,13 @@
     "id": "leak-local-path-docs-public-receipts-ndjson",
     "source": "docs/public/receipts.ndjson",
     "statement": "270 local-path finding(s) in docs/public/receipts.ndjson: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "not served yet: remove it at the source before it is"
+   },
+   {
+    "id": "leak-local-path-docs-public-repository-json",
+    "source": "docs/public/repository.json",
+    "statement": "3 local-path finding(s) in docs/public/repository.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "not served yet: remove it at the source before it is"
    },
@@ -689,6 +741,6 @@
    }
   ],
   "theorem": "textbook_leaks_redacted",
-  "says": "1784 finding(s) in 8 text(s), 9 served publicly; values redacted, 26 notation(s) set aside"
+  "says": "1800 finding(s) in 10 text(s), 9 served publicly; values redacted, 26 notation(s) set aside"
  }
 }
