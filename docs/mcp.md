@@ -2327,6 +2327,10 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
       "type": "object",
       "description": "the references between documents as one graph"
     },
+    "hooks": {
+      "type": "object",
+      "description": "the witness hooks"
+    },
     "google": {
       "type": "object",
       "description": "{ pages, tenants, entries, keys }"

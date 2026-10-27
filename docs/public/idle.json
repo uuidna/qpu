@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T12:52:23.933Z",
+ "date": "2026-10-27T13:03:08.876Z",
  "input": {
   "doors": [
    {
@@ -1134,6 +1134,11 @@
     "reached": true
    },
    {
+    "name": "payload.workspace",
+    "bytes": 263,
+    "reached": true
+   },
+   {
     "name": "payload.standardise",
     "bytes": 323,
     "reached": true
@@ -1926,6 +1931,26 @@
     "used": true
    },
    {
+    "key": "textbook_workspace_round_trip",
+    "bytes": 156,
+    "used": true
+   },
+   {
+    "key": "textbook_workspace_docs_round_trip",
+    "bytes": 167,
+    "used": true
+   },
+   {
+    "key": "textbook_workspace_coverage",
+    "bytes": 128,
+    "used": true
+   },
+   {
+    "key": "textbook_workspace_drive",
+    "bytes": 132,
+    "used": true
+   },
+   {
     "key": "textbook_google_measured",
     "bytes": 86,
     "used": true
@@ -2288,6 +2313,11 @@
    {
     "key": "textbook_majority_of_three",
     "bytes": 59,
+    "used": true
+   },
+   {
+    "key": "textbook_chat_call_or_question",
+    "bytes": 216,
     "used": true
    },
    {
@@ -3583,8 +3613,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 47063,
-   "used": 37825,
+   "capacity": 47326,
+   "used": 38088,
    "idle": 9238,
    "percentIdle": 19,
    "idleNames": [
@@ -3705,8 +3735,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 24755,
-   "used": 24755,
+   "capacity": 25554,
+   "used": 25554,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

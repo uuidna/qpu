@@ -287,3 +287,28 @@ export const harmonicDefaultsOf = (schema: { properties?: Record<string, { enum?
   const digits = compositionOf(radices, index)
   return { count, index, from: /^[0-9a-f]{32}$/i.test(hex) ? 'referrer' as const : 'a432' as const, defaults: Object.fromEntries(props.map(([k, p], i) => [k, p.enum![digits[i]!]])), options, withheld }
 }
+
+/** The hooks Payload 3.90.1 declares (its types, read again by the test), paired by phase; one witness each puts the address it sees and the referrer's collapse on the context */
+const NODE = 'beforeValidate beforeChange afterChange afterRead', GLOBAL = 'beforeOperation beforeRead ' + NODE
+const DECLARED = { collection: GLOBAL + ' beforeDelete afterDelete afterOperation afterError beforeLogin afterLogin afterLogout me afterMe refresh afterRefresh afterForgotPassword', global: GLOBAL, field: NODE + ' beforeDuplicate', node: NODE }
+type Where = keyof typeof DECLARED
+const sideOf = (h: string) => { const m = /^(before|after)(\w)(\w*)$/.exec(h); return { side: (m?.[1] ?? 'before') as 'before' | 'after', phase: m ? m[2]!.toLowerCase() + m[3] : h } }
+const pairsOf = (w: Where) => { const by: Record<string, { before?: string; after?: string }> = {}; for (const h of DECLARED[w].split(' ')) { const s = sideOf(h); (by[s.phase] ??= {})[s.side] = h } return Object.entries(by).map(([phase, s]) => ({ phase, ...s, paired: !!(s.before && s.after) })) }
+const collapseOf = memoOf((w: Where, ref: string) => Number(harmonicDefaultsOf({ properties: { phase: { enum: pairsOf(w).filter((p) => p.paired).map((p) => p.phase) }, side: { enum: ['before', 'after'] } } }, ref).index))
+const made = new Map<string, (a: any) => unknown>()
+const witnessOf = (w: Where, h: string) => made.get(w + h) ?? made.set(w + h, (a: any) => {
+  const c = a.context ?? a.req?.context ?? a.args?.req?.context, { side, phase } = sideOf(h), ref = a.req?.headers?.get?.('referer') ?? c?.referrer, k = w === 'field' ? 'value' : ['node', 'doc', 'data', 'result', 'response', 'user', 'token', 'id'].find((x) => a[x] !== undefined)
+  if (c) try { const at = ((c.qpuWitness ??= {})[[w, a.path?.join('.') ?? a.node?.fields?.id ?? a.node?.type ?? a.collection?.slug ?? a.global?.slug, phase].join(':')] ??= {}); at[side] = uuidOf(canonicalTextOf(k ? a[k] : a.args ? [a.args.data, a.args.id, a.args.where] : null)); if (at.before && at.after) at.changed = at.before !== at.after; at.collapse = collapseOf(w, ref ? uuidOf(String(ref)) : ''); c.qpuWitnessed = (c.qpuWitnessed ?? 0) + 1 } catch (e) { (c.qpuWitnessErrors ??= []).push(String(e)) }
+  return w === 'node' ? a.node : undefined
+}).get(w + h)!
+const into = (have: unknown[] = [], w: Where, h: string) => { const f = witnessOf(w, h); return have.includes(f) ? have : sideOf(h).side === 'before' ? [f, ...have] : [...have, f] }
+const boundOf = (hooks: Record<string, unknown[]> = {}, w: Where) => ({ ...hooks, ...Object.fromEntries(DECLARED[w].split(' ').map((h) => [h, into(hooks[h], w, h)])) })
+const nodesOf = (adapter: any) => { const f = adapter?.editorConfig?.features; for (const [h, m] of Object.entries((f?.nodeHooks ?? {}) as Record<string, Map<string, unknown[]>>)) for (const t of f.getSubFields?.keys() ?? []) m.set(t, into(m.get(t), 'node', h)); return adapter }
+const editorOf = (e: any) => (typeof e !== 'function' ? nodesOf(e) : e.qpuWitness ? e : Object.assign(async (a: unknown) => nodesOf(await e(a)), { qpuWitness: true }))
+/** qpuHooksOf: the witnesses bound to any config walked whole, every rich text field and Lexical block node (textbook_witness_pair) */
+export const qpuHooksOf = (config: Record<string, any>) => {
+  const n = { richText: 0, blocks: 0 }, box = (b: any): any => (typeof b === 'string' ? b : (n.blocks++, { ...b, fields: fields(b.fields) }))
+  const fields = (fs: any[] = []): any[] => fs.map((f) => (f.type === 'richText' ? (n.richText++, { ...f, hooks: boundOf(f.hooks, 'field'), ...(f.editor ? { editor: editorOf(f.editor) } : {}) }) : f.tabs ? { ...f, tabs: f.tabs.map((t: any) => ({ ...t, fields: fields(t.fields) })) } : f.blocks ? { ...f, blocks: f.blocks.map(box) } : f.fields ? { ...f, fields: fields(f.fields) } : f))
+  const at = (xs: any[] | undefined, w: Where) => xs?.map((x) => ({ ...x, hooks: boundOf(x.hooks, w), fields: fields(x.fields) }))
+  return { config: { ...config, collections: at(config.collections, 'collection'), globals: at(config.globals, 'global'), blocks: config.blocks?.map(box), ...(config.editor ? { editor: editorOf(config.editor) } : {}) } as any, found: n, pairs: Object.fromEntries((Object.keys(DECLARED) as Where[]).map((w) => [w, pairsOf(w)])) }
+}
