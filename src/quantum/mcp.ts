@@ -2,11 +2,12 @@
 // call. The handler does no I/O and imports nothing from Node, so the same code runs in a browser OS, where a caller
 // compiles whatever it needs by calling a tool. Tool names and figures follow Google Quantum AI (quantumai.google).
 
+import { GOOGLE_MCPS } from './discovery.ts'
 import * as cirq from './cirq.ts'
 import { EXAMPLES } from './examples.ts'
 import { TABLES } from './tables-index.ts'
 import { listDeclarations, scanLexical, runAudit, measureEntropy, diffMembers, auditSecurity, findRemedies, computeAdvantage, findAddressedByTheorem, computeBill, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, linkAxioms, findLeaks } from './audit.ts'
-import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { TEXTBOOK_THEOREMS, updateTheoremSources } from './textbook-theorems.ts'
 import { sdkOf, accessAuditOf, buildOf } from './toolboxes/payload.ts'
 import { blockOf, verifyOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf, memoOf } from './blocks.ts'
 import { INSTRUCTIONS, LICENSE } from './license.ts'
@@ -959,6 +960,8 @@ const chatInner = (statement: string, c: Ask) => {
 }
 // the tools/call envelope, written once
 export const callOf = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent?: any }; error?: { message: string } }
+// the theorems that count what the tools compute read it from here
+updateTheoremSources({ toolboxes: TOOLBOXES, call: callOf, googleMcps: GOOGLE_MCPS })
 // questions asked elsewhere, read through the APIs Payload holds (QUESTION_SOURCES: Stack Exchange's unanswered, MathOverflow's among them), each
 // title matched; a site that disallows crawling is read by its API only, the answer's backoff honoured; a question keeps its link and tags
 // (CC BY-SA 4.0), never its text. A question is decided only when its route calls an example over two shared stems at least: one stem in common is

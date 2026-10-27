@@ -29,6 +29,7 @@ import { buildSchemas, type PayloadCollectionInput } from './payload-schemas.ts'
 import { portAt, listPorts, PORT_RADICES } from '../port.ts'
 import { readWorkspace } from '../workspace.ts'
 import { TABLES } from '../tables-index.ts'
+import { configKinds, TENANT_ROLES, OPERATIONS } from '../payload-vocabulary.ts'
 
 type LexicalDoc = { root: { type: 'root'; version: 1; direction: 'ltr'; format: ''; indent: 0; children: unknown[] } }
 type PayloadDoc = { id: string; lexical: LexicalDoc; nestedDocs: { parent: string | null; breadcrumbs: { doc: string; url: string; label: string }[] }; seo: { title: string; description: string; image: string | null }; jsonLd: unknown; license: string }
@@ -763,7 +764,6 @@ export const deploySetsOf = (hosts: readonly string[]) => ({ templates: DEPLOY_T
 const envsOf = (template: DeployTemplate, hosts: readonly string[]) => Object.fromEntries(DEPLOY_USE_CASES.map((u) => [u, deploySetOf(template, u, hosts).wrangler]))
 export const siteWranglerOf = () => ({ $schema: 'node_modules/wrangler/config-schema.json', name: 'qpu-site', main: '.open-next/worker.js', compatibility_date: '2026-10-01', compatibility_flags: ['nodejs_compat', WEBCRYPTO_FLAG], assets: { directory: '.open-next/assets', binding: 'ASSETS' }, vars: { QPU_ADAPTERS: 'cloudflare', QPU_ORIGIN: 'https://qpu.uuidna.com' }, ...siteBindingsOf(''), observability: { enabled: true }, env: envsOf('site', Object.keys(TENANTS)) })
 /** The scopes of the full stack: every tenant over every scoped collection (the multi-tenant plugin), every role over the docket (the Worker's roles), every toolbox as a scope of the MCP server. More tenants is the whole of scaling: no more code. */
-const TENANT_ROLES = ['tenant-admin', 'editor', 'viewer'] as const
 const SCOPES = {
   tenants: [...Object.values(TENANTS), 'ceci'],
   collections: ['pages', 'entries', 'products', 'orders'],
@@ -1014,7 +1014,6 @@ const PLUGIN_COLLECTIONS: Readonly<Record<string, readonly string[]>> = { payloa
 /** The MCP plugin\'s own secrets collection: never served, by design. */
 const MCP_UNSERVED: readonly { collection: string; why: string }[] = [{ collection: 'payload-mcp-api-keys', why: 'the MCP plugin\'s own API keys: secrets never travel' }]
 const hookNames = () => Object.values(qpuHooksOf({}).pairs as Record<string, { before?: string; after?: string }[]>).flat().flatMap((p) => [p.before, p.after].filter(Boolean)).length
-const configKinds = ['payload', 'wrangler', 'tenant', 'pwa', 'mcp', 'versions', 'migration', 'fullstack', 'api', 'hooks', 'bindings', 'scopes', 'fields', 'validations', 'access', 'actions', 'packages', 'ecommerce', 'ui', 'adapters', 'gates', 'sets', 'realtime', 'branding', 'policies'] as const
 type ConfigKind = typeof configKinds[number]
 /** The torus of a configuration: its address, seed and reflection, and whether the loop closes (config → text → config at the same address). */
 const torusOf = (config: unknown) => {
@@ -2065,7 +2064,6 @@ const WEBSITE_FIXTURE = { sha: 'main', truncated: false, tree: [
  *  generated code and the answered configurations, never asserted by hand; the role–operation combinations counted by the kernel
  *  (textbook_access_combinations); the quantum advantage among the checks, unlimited and without interaction (textbook_advantage_unbounded). Pure. */
 const PERSPECTIVES = ['public', 'tenant', 'operator', 'client', 'developer', 'legal'] as const
-const OPERATIONS = ['read', 'create', 'update', 'delete'] as const
 export const accessAuditOf = (ctx: Context) => {
   const files = (configOf('fullstack', ctx, {}) as { files: Record<string, string> }).files
   const text = (path: string) => files[path] ?? ''
