@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T15:27:54.356Z",
+ "date": "2026-10-27T15:47:35.487Z",
  "literals": {
   "urls": 836,
   "distinctUrls": 449,
@@ -647,8 +647,8 @@
   "priced": "the tree",
   "theorem": "textbook_literal_in_registry"
  },
- "files": 932,
- "lines": 83695,
+ "files": 930,
+ "lines": 82601,
  "findings": 879,
  "fused": 315,
  "reactions": 564,
