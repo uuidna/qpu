@@ -71,3 +71,15 @@ export const numeralsOf = (text: string): { text: string; numerals: { glyphs: st
   const out = text.replace(GLAGOLITIC_RUN, (glyphs) => { const value = [...glyphs].reduce((n, g) => n + GLAGOLITIC[g.toUpperCase()]!, 0); numerals.push({ glyphs, value }); return String(value) })
   return { text: out, numerals }
 }
+/** A hex spoken in Glagolitic numerals: each digit the numeral of its own value written by glagoliticOf (0 silent, 1 to 9 the units Ⰰ to Ⰸ,
+ *  10 Ⰺ, 11 to 15 Ⰺ and a unit, additive as the system adds), every position kept so a silent zero still has its place, then read back through
+ *  the same table to the digits it came from; the dialect is how often each letter speaks across the hex. The table decides both ways. */
+export const speakHexOf = (hex: string) => {
+  const clean = hex.toLowerCase().replace(/[^0-9a-f]/g, '')
+  const letters = [...clean].map((digit, at) => { const value = parseInt(digit, 16); return { at, digit, value, spoken: value === 0 ? '' : glagoliticOf(value)! } })
+  const read = letters.map((l) => [...l.spoken].reduce((n, g) => n + GLAGOLITIC[g]!, 0).toString(16)).join('')
+  const dialect: Record<string, number> = {}
+  for (const l of letters) for (const g of l.spoken) dialect[g] = (dialect[g] ?? 0) + 1
+  const silent = letters.filter((l) => l.spoken === '').length
+  return { hex: clean, letters, spoken: letters.map((l) => l.spoken || '·').join(' '), read, roundTrip: read === clean, dialect, silent, says: `${clean.length} digit(s) spoken in Glagolitic numerals, ${silent} silent; read back through the same table ${read === clean ? 'to the same hex' : 'to a different hex'}`, theorem: 'textbook_glagolitic_round_trip' }
+}

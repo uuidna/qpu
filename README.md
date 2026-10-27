@@ -14,21 +14,21 @@ and no axiom beyond `propext` and `Quot.sound`. The MCP handler is a pure functi
 performs no I/O, and returns each result with a widget. There is no server, no network access and no hardware access
 in this tree.
 
-Every figure below was measured on this tree on 2026-10-26 with the commands in §6.
+Every figure below was measured on this tree on 2026-10-27 with the commands in §6.
 
 | Measure | Value |
 |---|---:|
-| Tracked files | 1651 |
-| Source files under `src/quantum` (TypeScript) | 57 (13,225 lines) |
+| Tracked files | 1653 |
+| Source files under `src/quantum` (TypeScript) | 57 (13,254 lines) |
 | MCP tools | 46 |
-| Tests (`node --test`) | 171 pass, 0 fail of 171 |
+| Tests (`node --test`) | 174 pass, 0 fail of 174 |
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 684 / 1218 (685 hand-written, 533 generated equation lemmas) |
+| Theorems declared / accepted by the kernel | 686 / 1220 (687 hand-written, 533 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
-| Self-audit checks | 1531 of 1531 pass |
+| Self-audit checks | 1543 of 1543 pass |
 | Cross-verification requests (free public sources) | 2829 requests, 2785 reachable on 2026-10-26 |
 | Servers, workers, network calls in the handler | 0 |
 

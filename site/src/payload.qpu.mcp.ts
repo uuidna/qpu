@@ -5,6 +5,7 @@
 import { z } from 'zod'
 import { handle } from '@uuidna/qpu/mcp'
 import { VERSION } from '@uuidna/qpu/version'
+import { runMachine } from '@uuidna/qpu/machine'
 import { existsSync, readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import path from 'node:path'
@@ -44,7 +45,7 @@ const machineTool = {
   name: 'machine',
   description: 'The developer machine managed through the Payload MCP, securely: one action of the allow-list (repository { machine: { actions: true } } names them) run on this local app for a super admin, with no shell; commit and push decided by the workflow rules, a push only with confirm; every run an entry of the Entries collection, its paths relative and its leaks redacted',
   parameters: { action: z.string().describe('an action of the allow-list: status, log, ahead, tags, diff, versions, next, precheck, stage, commit, push, dispatch, merge, regenerate'), message: z.string().optional().describe('commit: the message'), confirm: z.boolean().optional().describe('push: the user confirms it'), branch: z.string().optional().describe('merge: the branch to merge') },
-  handler: async (args: Record<string, unknown>, req: MachineReq) => {
+  handler: async (args: Record<string, unknown>, req: MachineReq, extra?: { _meta?: { progressToken?: string | number }; sendNotification?: (n: { method: string; params: Record<string, unknown> }) => Promise<void> }) => {
     const answer = (x: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(x) }], _meta: { ui: { resourceUri: 'ui://qpu/repository' } } })
     const h = String(req.headers?.get?.('host') ?? '')
     const host = h.startsWith('[') ? h.slice(0, h.indexOf(']') + 1) : h.split(':')[0]!
@@ -55,13 +56,10 @@ const machineTool = {
     const facts = { receipt: read('docs/public/receipt.json'), approval: read('docs/public/configs.json')?.approval ?? null, e2e: read('docs/public/e2e.json')?.outcomes ?? null }
     const plan = callTool('repository', { machine: { plan: { action: args.action, message: args.message, confirm: args.confirm, branch: args.branch, facts } } })
     if (!plan?.allowed) return answer(plan)
-    const { execFile } = await import('node:child_process')
-    const t0 = Date.now()
-    const run = await new Promise<{ status: number | null; stdout: string; stderr: string }>((resolve) => {
-      const child = execFile(plan.command.cmd, plan.command.args, { cwd: root, maxBuffer: 1024 * 1024 * 1024, timeout: 3600000 }, (err, stdout, stderr) => resolve({ status: err ? (typeof (err as { code?: unknown }).code === 'number' ? (err as { code: number }).code : 1) : 0, stdout: String(stdout), stderr: String(stderr) }))
-      child.stdin?.end(plan.input ?? '')
-    })
-    const record = callTool('repository', { machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: Date.now() - t0, root, home: homedir() } } })
+    // the one runner (scripts/machine.ts): no shell, the output read line by line; a call carrying a progress token is streamed through the plugin's request context as notifications/progress, step by step for next
+    const progressToken = extra?._meta?.progressToken
+    const run = await runMachine(plan, root, (p) => { if (progressToken !== undefined) void extra?.sendNotification?.({ method: 'notifications/progress', params: { progressToken, ...p } }) })
+    const record = callTool('repository', { machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: run.ms, root, home: homedir() } } })
     const doc = await req.payload.create({ collection: 'entries', data: { kind: 'machine', from: 'local', body: record.entry.body }, req, overrideAccess: false, user: req.user })
     return answer({ plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry }, stored: { collection: 'entries', id: doc.id } })
   },

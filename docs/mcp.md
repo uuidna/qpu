@@ -2524,6 +2524,9 @@ QPU as the natural extension of every MCP and every MCP of QPU
 {
   "type": "object",
   "properties": {
+    "coverage": {
+      "description": "how much of the registered MCP world the QPU reaches"
+    },
     "gemini": {
       "type": "object",
       "description": "the Gemini API as an operator agent the tenant names"
@@ -2588,6 +2591,10 @@ The split folds
 {
   "type": "object",
   "properties": {
+    "speak": {
+      "type": "string",
+      "description": "a hex spoken in Glagolitic numerals"
+    },
     "split": {
       "type": "string",
       "description": "a UUID split into time and space"
