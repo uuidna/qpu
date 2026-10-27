@@ -99,13 +99,17 @@ if (name === 'pre-commit' && process.env.QPU_APP_KEY) {
   if (owed > 0) {
     const { leadsOf } = await import('./mcp.ts'), { LEADS } = await import('../src/quantum/leads.ts'), held = new Map((await leadsOf()).records.map((l) => [l.id, l]))
     const counted = [...new Set(git(['grep', '-h', '-o', "startsWith('[a-z]*-')", '--', 'src', 'scripts']).match(/'[a-z]+-'/g) ?? [])].map((p) => p.slice(1, -1)), file = 'src/quantum/leads.ts', moved: string[] = []
+    // paid in chunks of five, each kept only if a fresh-process audit stays as green as before it, else put back and the next chunk tried
+    const failedNow = () => Number(spawnSync('node', ['--input-type=module', '-e', "const { handle } = await import('./src/quantum/mcp.ts'); const r = await handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: {} } }); console.log(r.result.structuredContent.failed)"], { encoding: 'utf8', maxBuffer: 1 << 26 }).stdout.trim().split('\n').pop() ?? NaN), base = failedNow(), candidates: { id: string; row: string }[] = []
     let text = readFileSync(file, 'utf8')
-    for (const l of LEADS) {
-      const p = held.get(l.id); if (owed <= 0 || l.status !== 'served' || p?.statement !== l.statement || p?.status !== l.status || counted.some((c) => l.id.startsWith(c)) || git(['grep', '-l', '-F', `'${l.id}'`, '--', 'src', 'scripts', 'site/src']).split('\n').some((f) => f && f !== file)) continue
-      const row = text.split('\n').find((x) => x.includes(`id: '${l.id}'`)); if (!row) continue
-      text = text.split(row + '\n').join(''); owed -= row.length + 1; moved.push(l.id)
+    for (const l of LEADS) { const p = held.get(l.id); if (l.status !== 'served' || p?.statement !== l.statement || p?.status !== l.status || counted.some((c) => l.id.startsWith(c)) || git(['grep', '-l', '-F', `'${l.id}'`, '--', 'src', 'scripts', 'site/src']).split('\n').some((f) => f && f !== file)) continue; const row = text.split('\n').find((x) => x.includes(`id: '${l.id}'`)); if (row) candidates.push({ id: l.id, row }) }
+    for (let i = 0; i < candidates.length && owed > 0; i += 5) {
+      const chunk = candidates.slice(i, i + 5), next = chunk.reduce((t, c) => t.split(c.row + '\n').join(''), text); writeFileSync(file, next)
+      if (failedNow() > base) { writeFileSync(file, text); continue }
+      text = next; owed -= chunk.reduce((n, c) => n + c.row.length + 1, 0); moved.push(...chunk.map((c) => c.id))
     }
-    if (moved.length) { writeFileSync(file, text); git(['add', '--', file]); console.error(`hook ${name}: paid by ${moved.length} lead(s) whose records live in Payload: ${moved.join(', ')}`) }
+    if (moved.length) { git(['add', '--', file]); console.error(`hook ${name}: paid by ${moved.length} lead(s) whose records live in Payload, every check as green as before: ${moved.join(', ')}`) }
+    if (owed > 0) console.error(`hook ${name}: ${owed} byte(s) still owed; folded decides`)
   }
 }
 const stagedFact = name === 'pre-commit' ? stagedOf() : undefined

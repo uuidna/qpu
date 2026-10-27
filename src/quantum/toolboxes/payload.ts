@@ -1163,6 +1163,7 @@ import type { Block } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { qpuFieldsOf } from '@uuidna/qpu/payload'
 import { callOf } from '@uuidna/qpu/mcp'
+import { createHmac, createPrivateKey, hkdfSync, sign } from 'node:crypto'
 export const Qpu: Block = {
   slug: 'qpu',
   interfaceName: 'QpuBlock',
@@ -1178,6 +1179,7 @@ export const Qpu: Block = {
     { name: 'next', type: 'text', ${validateOf('qpu', 'next')}, admin: { description: 'the program rotated: the next step' } },
     { name: 'stream', type: 'text', admin: { readOnly: true, description: 'the scannable stream of the address: the frames as a CSS gradient, stepped through by the qpu-scan item; computed by the lexical hook from uuid, never typed' }, custom: { theorem: 'textbook_scan_stream' }, hooks: { afterRead: [({ siblingData }) => { const u = String(siblingData?.uuid ?? ''); if (!/^[0-9a-f-]{36}$/.test(u)) return null; const hue = (ch: string) => (ch === '-' ? null : parseInt(ch, 16) * 22.5); return 'linear-gradient(90deg, ' + [...u].map((ch, i) => (hue(ch) === null ? 'hsl(0 0% 0%)' : 'hsl(' + hue(ch) + ' 62% 44%)') + ' ' + ((i / 36) * 100).toFixed(3) + '% ' + (((i + 1) / 36) * 100).toFixed(3) + '%').join(', ') + ')' }] } },
     { name: 'theorem', type: 'text', hooks: { beforeValidate: [({ value, siblingData: s }) => { const r = (callOf('verify', value ? { theorem: value } : { call: { tool: s?.tool, arguments: s?.arguments ?? {} } }) as { result?: { structuredContent?: { theorem?: string | null; accepted?: boolean } } }).result?.structuredContent; if (value && !r?.accepted) throw new Error('the kernel accepts no theorem ' + value); return value || (r?.accepted ? r.theorem : value) }] }, admin: { description: 'the kernel-accepted theorem that makes this block true; written by the QPU as a client of this MCP, read from the textbook' } },
+    { name: 'proof', type: 'json', admin: { readOnly: true, description: 'the proof of the block, signed twice: an HMAC under the deployment secret, checked by the server, and an ML-DSA-65 signature, checked offline with the published public key' }, hooks: { beforeValidate: [({ siblingData: s }) => { const r = (callOf('verify', { call: { tool: s?.tool, arguments: s?.arguments ?? {} }, ...(s?.theorem ? { theorem: s.theorem } : {}) }) as { result?: { structuredContent?: { signed?: string | null; accepted?: boolean } } }).result?.structuredContent; if (!r?.signed || !r.accepted) return null; const mac = process.env.QPU_DATA_KEY, sk = process.env.QPU_PROOF_SIGNING_KEY; return { signed: r.signed, alg: 'ML-DSA-65', mac: mac ? createHmac('sha256', Buffer.from(hkdfSync('sha256', mac, '', 'qpu proof mac', 32))).update(r.signed).digest('hex') : null, signature: sk ? sign(null, Buffer.from(r.signed), createPrivateKey({ key: Buffer.from(sk, 'base64'), format: 'der', type: 'pkcs8' })).toString('base64') : null } }] } },
     { name: 'license', type: 'text', admin: { readOnly: true, description: 'the licence the block is served under (SPDX), kept with the content as every result carries it' } },
   ],
 }
@@ -1316,7 +1318,7 @@ export const qpuServerInfo = { name: 'qpu', version: VERSION }
 `
       const entries = `${header}// The docket as a Payload collection over MongoDB (the mongo tool's language): every entry addressed by its content — the id is the
 // fold address of what it holds, the sha256 beside it — never overwritten; the four verbs are Payload's REST (/api/entries).
-import { createHmac } from 'node:crypto'
+import { createHmac, hkdfSync } from 'node:crypto'
 import type { CollectionConfig, Where } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
@@ -1366,7 +1368,7 @@ export const Entries: CollectionConfig = {
       // the tenant the multi-tenant plugin requires: the caller's, else the request host's row (as the users hook names it), else the first tenant, so a public call lands under the tenant that answers it
       if (!data.tenant) { const host = (req?.headers?.get?.('host') ?? '').split(':')[0] || 'localhost'; const byHost = await req.payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, limit: 1, overrideAccess: true }); const first = byHost.docs[0] ?? (await req.payload.find({ collection: 'tenants' as never, limit: 1, sort: 'createdAt', overrideAccess: true })).docs[0]; if (first) data.tenant = (first as { id: string }).id }
       // a call salted under the server's data key: the same request keeps its address, but no one who knows the request can compute it, nor its answer's
-      if (data.kind === 'call' && process.env.QPU_DATA_KEY && data.body && typeof data.body === 'object' && !('salt' in data.body)) data.body = { ...data.body, salt: createHmac('sha256', process.env.QPU_DATA_KEY).update(JSON.stringify(data.body)).digest('hex') }
+      if (data.kind === 'call' && process.env.QPU_DATA_KEY && data.body && typeof data.body === 'object' && !('salt' in data.body)) data.body = { ...data.body, salt: createHmac('sha256', Buffer.from(hkdfSync('sha256', process.env.QPU_DATA_KEY, '', 'qpu call salt', 32))).update(JSON.stringify(data.body)).digest('hex') }
       // the caller's role, from Payload's user and the tenant (a signed role claim counts too): the chat door corrects what the role may not choose
       const tenantId = tenantIdOf(data.tenant)
       const role = isSuperAdmin(req.user) || claimedRole(req) === 'admin' || memberOf(req.user, tenantId, ['tenant-admin']) ? 'admin' : claimedRole(req) === 'writer' || memberOf(req.user, tenantId, ['editor']) ? 'writer' : 'reader'

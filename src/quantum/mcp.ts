@@ -145,7 +145,7 @@ const proofCheck = (args: Record<string, unknown>) => {
   const callAt = (tool: unknown, a: unknown) => uuidOf(JSON.stringify([tool, a ?? {}])), known = (k: string) => THEOREMS.find((x) => x.key === k || x.key.endsWith('.' + k))
   const c = args.call as { tool?: string; arguments?: unknown } | undefined, at = c ? callAt(c.tool, c.arguments) : null, e = at ? EXAMPLES.find((x) => x.theorem && callAt(x.tool, x.arguments) === at) : undefined
   const key = typeof args.theorem === 'string' ? args.theorem : e?.theorem ?? null, t = key ? known(key) : undefined, proves = key ? EXAMPLES.filter((x) => x.theorem === key) : []
-  return { theorem: key, accepted: !!t, statement: t?.statement ?? null, examples: proves.map((x) => x.id), call: at, example: e?.id ?? null, roundTrip: at === null ? null : proves.some((x) => callAt(x.tool, x.arguments) === at), cost: 'one lookup by address; the call is not recomputed' }
+  return { theorem: key, accepted: !!t, statement: t?.statement ?? null, examples: proves.map((x) => x.id), call: at, signed: at && key ? JSON.stringify({ call: at, digest: hex(sha256(utf8(JSON.stringify([c?.tool, c?.arguments ?? {}])))), theorem: key }) : null, example: e?.id ?? null, roundTrip: at === null ? null : proves.some((x) => callAt(x.tool, x.arguments) === at), cost: 'one lookup by address; the call is not recomputed' }
 }
 const tool = <T>(spec: { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>, ctx: Context) => T; widget: (data: T) => string }): Tool => toolOf(TREE.has(spec.name) ? 'tree' : 'google', spec)
 
