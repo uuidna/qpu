@@ -5,7 +5,7 @@
 import { CZ, Device, GridQubit, keyOf, type Channel, type Qubit } from './cirq.ts'
 
 /** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: a Cirq grid qubit at its row and column. */
-export type Site = Qubit
+type Site = Qubit
 
 /** The qubit grid of Willow: for each row, the column range the spec sheet's figure shows. */
 const ROWS: readonly [row: number, from: number, to: number][] = [

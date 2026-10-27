@@ -68,8 +68,8 @@ const deployConfigOf = (text: string, resources: readonly Body[] = []): Workflow
 /** The facts as the rules read them: raw configuration and docket folded in, a fact handed over directly kept as given. */
 /** The staged diff read once: each hand-written file's added text, the code lines added and removed outside the proof tables (the rule folded), and
  *  the exports it adds that no added theorem and example names (the rule proven). A generated file is not hand-written; a proof table never counts as growth. */
-export const PROOF_FILES: readonly string[] = ['src/quantum/examples.ts', 'src/quantum/textbook-theorems.ts']
-export const stagedOf = (diff: string, generated: readonly string[] = []) => {
+const PROOF_FILES: readonly string[] = ['src/quantum/examples.ts', 'src/quantum/textbook-theorems.ts']
+const stagedOf = (diff: string, generated: readonly string[] = []) => {
   const side: Record<'+' | '-', Record<string, string>> = { '+': {}, '-': {} }; let file = ''
   for (const l of diff.split('\n')) { if (l.startsWith('+++ ') || l.startsWith('--- ')) { file = l.startsWith('+++ ') ? l.slice(4).replace(/^b\//, () => '') : file; continue } if ((l[0] === '+' || l[0] === '-') && file && ![...GENERATED_FILES, ...generated].includes(file) && !PAYLOAD_WRITES.test(file)) side[l[0]][file] = (side[l[0]][file] ?? '') + l.slice(1) + '\n' }
   const code = (t: Record<string, string>) => Object.entries(t).filter(([f]) => !PROOF_FILES.includes(f)), count = (t: Record<string, string>, bytes = true) => code(t).reduce((n, [, x]) => n + (bytes ? new TextEncoder().encode(x.replace(/\n/g, () => '')).length : x.split('\n').length - 1), 0)
@@ -77,7 +77,7 @@ export const stagedOf = (diff: string, generated: readonly string[] = []) => {
   const was = exportsOf(side['-']), news = [...exportsOf(side['+'])].filter((n) => !was.has(n))
   return { added: side['+'], removed: side['-'], folded: { added: count(side['+']), removed: count(side['-']), lines: { added: count(side['+'], false), removed: count(side['-'], false) } }, proven: { news, unproven: news.filter((n) => !PROOF_FILES.every((p) => (side['+'][p] ?? '').includes(n))) } }
 }
-export const factsOf = (given: WorkflowFacts): WorkflowFacts => {
+const factsOf = (given: WorkflowFacts): WorkflowFacts => {
   const s = given.staged ? stagedOf(given.staged.diff, given.staged.generated) : null
   const f = s ? { ...given, literals: given.literals ?? { added: literalsOf(s.added).dirty.filter((x) => !(s.removed[x.file] ?? '').includes(x.literal)).map((x) => ({ file: x.file, literal: x.literal, kind: x.kind })) }, folded: given.folded ?? s.folded, proven: given.proven ?? s.proven } : given
   if (f.config == null && f.docket == null) return f
@@ -139,14 +139,14 @@ export const WORKFLOW_RULES: readonly { rule: string; theorem: string; appliesTo
 /** A violation, the one computable type every rule, check, red step and refusal answers: a kind of the closed set (the workflow rules, the
  *  entropy kinds, security, a red step, a refused validation, an error, unmeasured), the rule and theorem it breaks, the evidence, the remedy
  *  ERROR_REMEDIES learned, the fallback FALLBACKS declares, and the content address of { kind, rule, evidence }: one violation, one record */
-export const VIOLATION_KINDS: readonly string[] = [...WORKFLOW_RULES.map((r) => r.rule), ...ENTROPY_KINDS.map((k) => k.kind), 'security', 'red-step', 'refused', 'error', 'unmeasured']
-export type Violation = { kind: string; rule: string; theorem: string | null; evidence: string; address: string; remedy: string | null; fallback: string; severity: 'refuse' }
-export const violationOf = (kind: string, rule: string, evidence: string, theorem: string | null = null): Violation => {
+const VIOLATION_KINDS: readonly string[] = [...WORKFLOW_RULES.map((r) => r.rule), ...ENTROPY_KINDS.map((k) => k.kind), 'security', 'red-step', 'refused', 'error', 'unmeasured']
+type Violation = { kind: string; rule: string; theorem: string | null; evidence: string; address: string; remedy: string | null; fallback: string; severity: 'refuse' }
+const violationOf = (kind: string, rule: string, evidence: string, theorem: string | null = null): Violation => {
   if (!VIOLATION_KINDS.includes(kind)) throw new Error(`no violation kind ${kind}; the kinds are ${VIOLATION_KINDS.join(', ')}`)
   const remedy = ERROR_REMEDIES.find((r) => new RegExp(r.signature).test(evidence))?.remedy ?? null
   return { kind, rule, theorem, evidence, address: uuidOf(JSON.stringify({ kind, rule, evidence })), remedy, fallback: FALLBACKS.find((f) => f.failure === (remedy ? 'a remedy that errors' : 'a handling without a remedy'))!.handling, severity: 'refuse' }
 }
-export const decideOf = (name: WorkflowName, given: WorkflowFacts) => {
+const decideOf = (name: WorkflowName, given: WorkflowFacts) => {
   const facts = factsOf(given)
   const rules = WORKFLOW_RULES.filter((r) => r.appliesTo.includes(name)).map((r) => ({ rule: r.rule, theorem: r.theorem, says: r.says, ...r.decide(facts) }))
   // every workflow hard-fails: a rule violated or unmeasured is a violation, and any violation refuses
@@ -172,13 +172,13 @@ const workflowOf = (name: WorkflowName, o: { offline?: boolean } = {}) => {
   return { name, strict: true, says: w.says, steps, rules: WORKFLOW_RULES.filter((r) => r.appliesTo.includes(name)).map((r) => ({ rule: r.rule, theorem: r.theorem, says: r.says })), client: 'scripts/hook.ts <name>: walks these steps, hands the facts back (facts) and obeys the decision', theorem: 'textbook_hook_workflows' }
 }
 
-export type Local = { probes?: { appKey?: boolean; adc: boolean; payload: { installed: string | null; declared: string | null } }; remote: string | null; head: string; branch: string; version: string; worktrees: { path: string; head: string; branch: string | null }[]; branches: { name: string; upstream: string | null; head: string }[]; tags: { name: string; commit: string }[]; conceptDoi?: string | null; /** the package name on the registry */ pkg?: string | null; /** the workflow files held here (.github/workflows) */ workflows?: string[] }
-export type Request = { id: string; url: string; purpose: 'branches' | 'tags' | 'releases' | 'zenodo' | 'npm' | 'runs' | 'workflows' | 'protection'; contracted: 'yes' | 'no' | 'unknown'; method?: 'POST'; body?: unknown; via?: 'rest' | 'mcp' }
+type Local = { probes?: { appKey?: boolean; adc: boolean; payload: { installed: string | null; declared: string | null } }; remote: string | null; head: string; branch: string; version: string; worktrees: { path: string; head: string; branch: string | null }[]; branches: { name: string; upstream: string | null; head: string }[]; tags: { name: string; commit: string }[]; conceptDoi?: string | null; /** the package name on the registry */ pkg?: string | null; /** the workflow files held here (.github/workflows) */ workflows?: string[] }
+type Request = { id: string; url: string; purpose: 'branches' | 'tags' | 'releases' | 'zenodo' | 'npm' | 'runs' | 'workflows' | 'protection'; contracted: 'yes' | 'no' | 'unknown'; method?: 'POST'; body?: unknown; via?: 'rest' | 'mcp' }
 /** GitHub's MCP: the doors that watch a repository, with the arguments the server's own contract names. */
 const GITHUB_MCP_URL = 'https://api.githubcopilot.com/mcp/'
 const GITHUB_DOORS: Record<'branches' | 'tags' | 'releases', string> = { branches: 'list_branches', tags: 'list_tags', releases: 'list_releases' }
-export type Answer = Request & { status: number; text: string }
-export type Watch = { remote: string | null; owner: string | null; repo: string | null; head: string; branch: string; version: string; worktrees: number; branches: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[] }; tags: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[]; mismatch: string[] }; releases: { count: number | null; latest: string | null; withoutTag: string[]; versionHasTag: boolean; versionHasRelease: boolean | null }; zenodo: { versions: number | null; latest: string | null; withoutRelease: string[] }; npm: { latest: string | null; behind: boolean | null; published: string | null }; runs: { latest: { name: string; conclusion: string | null; url: string }[]; red: string[] }; workflows: { remote: string[] | null; onlyRemote: string[]; onlyLocal: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; refusals: string[] }
+type Answer = Request & { status: number; text: string }
+type Watch = { remote: string | null; owner: string | null; repo: string | null; head: string; branch: string; version: string; worktrees: number; branches: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[] }; tags: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[]; mismatch: string[] }; releases: { count: number | null; latest: string | null; withoutTag: string[]; versionHasTag: boolean; versionHasRelease: boolean | null }; zenodo: { versions: number | null; latest: string | null; withoutRelease: string[] }; npm: { latest: string | null; behind: boolean | null; published: string | null }; runs: { latest: { name: string; conclusion: string | null; url: string }[]; red: string[] }; workflows: { remote: string[] | null; onlyRemote: string[]; onlyLocal: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; refusals: string[] }
 
 const ownerRepoOf = (remote: string | null): { owner: string; repo: string } | null => { const m = remote ? /github\.com[:/]([^/]+)\/([^/.]+)(?:\.git)?$/.exec(remote) : null; return m ? { owner: m[1]!, repo: m[2]! } : null }
 

@@ -14,48 +14,48 @@ export const mintOf = memo((k: number): number => (k === 0 ? 1 : nat(mintOf(k - 
 export const chooseOf = memo((n: number, k: number): number => (k === 0 ? 1 : n === 0 ? 0 : nat(chooseOf(n - 1, k) + chooseOf(n - 1, k - 1), 'chooseOf')))
 // Lattice
 export const n = 3
-export const seed = mintOf(n - n)
-export const coins = seed + seed
-export const rays = n + coins + coins
+const seed = mintOf(n - n)
+const coins = seed + seed
+const rays = n + coins + coins
 export const vertices = mintOf(n)
-export const hexbit = mintOf(coins)
+const hexbit = mintOf(coins)
 export const bits = mintOf(n + coins)
 export const faces = vertices + hexbit + coins
 export const amplitudes = mintOf(bits)
-export const fused = faces * mintOf(bits + seed)
+const fused = faces * mintOf(bits + seed)
 export const plane = coins * coins * rays
 // Combinatorics
-export const factorial = memo((k: number): number => (k === 0 ? 1 : nat(k * factorial(k - 1), 'factorial')))
+const factorial = memo((k: number): number => (k === 0 ? 1 : nat(k * factorial(k - 1), 'factorial')))
 export const choose = memo((a: number, k: number): number => (k === 0 ? 1 : a === 0 ? 0 : nat(choose(a - 1, k) + choose(a - 1, k - 1), 'choose')))
-export const triangular = memo((k: number): number => (k === 0 ? 0 : nat(k + triangular(k - 1), 'triangular')))
+const triangular = memo((k: number): number => (k === 0 ? 0 : nat(k + triangular(k - 1), 'triangular')))
 // Shor (fuelled recursions, as the Lean states them)
 const powModAux = (k: number, a: number, m: number, acc: number): number => (k === 0 ? acc : powModAux(k - 1, a, m, nat((acc * a) % m, 'powMod')))
 export const powMod = (a: number, e: number, m: number): number => powModAux(e, a, m, 1 % m)
 const periodAux = (fuel: number, a: number, m: number, r: number): number => (fuel === 0 ? 0 : powMod(a, r, m) === 1 ? r : periodAux(fuel - 1, a, m, r + 1))
 export const periodOf = (a: number, m: number): number => periodAux(m, a, m, 1)
-export const half = (a: number, m: number): number => powMod(a, Math.floor(periodOf(a, m) / 2), m)
+const half = (a: number, m: number): number => powMod(a, Math.floor(periodOf(a, m) / 2), m)
 // Galois, Anyon, Annealing, Clifford, Coil, Grover, Hybrid, Magic, Qaoa, Qft, Stabilizer
-export const glProd = memo((nn: number, i: number): number => (i === 0 ? 1 : nat(Math.max(0, mintOf(nn) - mintOf(i - 1)) * glProd(nn, i - 1), 'glProd')))
+const glProd = memo((nn: number, i: number): number => (i === 0 ? 1 : nat(Math.max(0, mintOf(nn) - mintOf(i - 1)) * glProd(nn, i - 1), 'glProd')))
 const fibAux = (k: number, a: number, b: number): number => (k === 0 ? a : fibAux(k - 1, b, nat(a + b, 'fibFusion')))
-export const fibFusion = (nn: number): number => fibAux(nn, seed - seed, seed)
-export const isingFusion = (m: number): number => mintOf(Math.max(0, m - seed))
-export const chimera = (m: number): number => nat(vertices * m ** 2, 'chimera')
+const fibFusion = (nn: number): number => fibAux(nn, seed - seed, seed)
+const isingFusion = (m: number): number => mintOf(Math.max(0, m - seed))
+const chimera = (m: number): number => nat(vertices * m ** 2, 'chimera')
 const sympProd = memo((j: number): number => (j === 0 ? 1 : nat((mintOf(2 * j) - 1) * sympProd(j - 1), 'sympProd')))
-export const symplectic = (nn: number): number => nat(mintOf(nn * nn) * sympProd(nn), 'symplectic')
-export const cliffordOrder = (nn: number): number => nat(mintOf(2 * nn) * symplectic(nn), 'cliffordOrder')
-export const coil = coins * rays
-export const groverIters = (k: number): number => Math.floor(nat((plane * (faces - seed) - n * n) * mintOf(k), 'groverIters') / (coins * coins * (plane * hexbit + seed)))
-export const groverSize = (k: number): number => mintOf(2 * k)
-export const hybridSpeed = rays + seed
-export const magicBlock = faces + seed
-export const magicCubic = plane + rays
-export const qaoaParams = (p: number): number => coins * p
-export const qaoaZz = (p: number, e: number): number => nat(p * e, 'qaoaZz')
-export const qaoaX = (p: number, q: number): number => nat(p * q, 'qaoaX')
-export const qftGates = (q: number): number => Math.floor((q * (q + 1)) / 2)
-export const qftDepth = (q: number): number => Math.max(0, 2 * q - 1)
-export const qftStates = (q: number): number => nat(2 ** q, 'qftStates')
-export const paulis = (nn: number): number => mintOf(2 * nn + 2)
+const symplectic = (nn: number): number => nat(mintOf(nn * nn) * sympProd(nn), 'symplectic')
+const cliffordOrder = (nn: number): number => nat(mintOf(2 * nn) * symplectic(nn), 'cliffordOrder')
+const coil = coins * rays
+const groverIters = (k: number): number => Math.floor(nat((plane * (faces - seed) - n * n) * mintOf(k), 'groverIters') / (coins * coins * (plane * hexbit + seed)))
+const groverSize = (k: number): number => mintOf(2 * k)
+const hybridSpeed = rays + seed
+const magicBlock = faces + seed
+const magicCubic = plane + rays
+const qaoaParams = (p: number): number => coins * p
+const qaoaZz = (p: number, e: number): number => nat(p * e, 'qaoaZz')
+const qaoaX = (p: number, q: number): number => nat(p * q, 'qaoaX')
+const qftGates = (q: number): number => Math.floor((q * (q + 1)) / 2)
+const qftDepth = (q: number): number => Math.max(0, 2 * q - 1)
+const qftStates = (q: number): number => nat(2 ** q, 'qftStates')
+const paulis = (nn: number): number => mintOf(2 * nn + 2)
 
 const CONSTANTS: Record<string, number> = { n, seed, coins, rays, vertices, hexbit, bits, faces, amplitudes, fused, plane, coil, hybridSpeed, magicBlock, magicCubic }
 const FUNCTIONS: Record<string, { arity: number; f: (...a: number[]) => number }> = {
@@ -88,7 +88,7 @@ export const evaluate = (src: string): number => {
   return v
 }
 
-export type Relation = { name: string; statement: string; sides: { expression: string; value: number }[]; holds: boolean; bits: number }
+type Relation = { name: string; statement: string; sides: { expression: string; value: number }[]; holds: boolean; bits: number }
 /** Every relation recomputed: each `=` compared, each `∧` all holding, and the bit width of the largest value. */
 /** 16-bit limbs a value needs: what an 8-bit machine with 16-bit software arithmetic (the Pravets 8M) holds it in. */
 const limbs16Of = (bits: number): number => Math.max(1, Math.ceil(bits / 16))

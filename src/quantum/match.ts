@@ -44,14 +44,14 @@ export const routeOf = (statement: string, examples: readonly Example[], top = 3
 const ROUTE_THRESHOLD = 5
 import { uuidOf } from './blocks.ts'
 
-export type Verdict = 'served' | 'impossible' | 'unknown'
+type Verdict = 'served' | 'impossible' | 'unknown'
 /** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.
  *  verify_claim: VERIFIED / UNVERIFIED / REFUTED; due process: PROVEN / NOT-PROVEN / REFUTED. */
-export const VERDICTS: Record<string, Verdict> = { VERIFIED: 'served', PROVEN: 'served', REFUTED: 'impossible', UNVERIFIED: 'unknown', 'NOT-PROVEN': 'unknown', NOT_PROVEN: 'unknown' }
+const VERDICTS: Record<string, Verdict> = { VERIFIED: 'served', PROVEN: 'served', REFUTED: 'impossible', UNVERIFIED: 'unknown', 'NOT-PROVEN': 'unknown', NOT_PROVEN: 'unknown' }
 export const verdictOf = (foreign: string): Verdict | undefined => VERDICTS[foreign.toUpperCase().replace(/\s+/g, '-')]
 export const foreignVerdictsOf = (v: Verdict): string[] => Object.entries(VERDICTS).filter(([, ours]) => ours === v).map(([theirs]) => theirs)
-export type Candidate = { kind: 'tool' | 'example' | 'lead' | 'theorem'; id: string; score: number; hits: number; text: string }
-export type Reflection = {
+type Candidate = { kind: 'tool' | 'example' | 'lead' | 'theorem'; id: string; score: number; hits: number; text: string }
+type Reflection = {
   /** integers in the statement factored by the surface's own Shor tool when inside its bound; beyond it, the bound is the answer */
   factors: { n: number; factors?: string; order?: string; by: string }[]
   /** each number against the nearest schema bound d: its σ-reflection d − x (Qpu.Sigma) and the QFT angle 2πx/d */
@@ -64,7 +64,7 @@ export type Reflection = {
   leads: Lead[]
 }
 
-export type Match = { /** the content address of the recognised call: a recognition is a block like any other */ sealed?: string;
+type Match = { /** the content address of the recognised call: a recognition is a block like any other */ sealed?: string;
   statement: string
   verdict: Verdict
   evidence: string[]
@@ -190,7 +190,7 @@ const indexOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads
 }
 /** Pattern recognition before the token match: the shapes a statement can carry and the door each opens, as data. A pattern
  * names what it recognised and the call it makes; a statement that carries none goes to the textbook and the tokens. */
-export type Pattern = { name: string; test: RegExp; tool: string; args: (m: RegExpMatchArray, statement: string) => Record<string, unknown>; shows: string }
+type Pattern = { name: string; test: RegExp; tool: string; args: (m: RegExpMatchArray, statement: string) => Record<string, unknown>; shows: string }
 export const PATTERNS: readonly Pattern[] = [
   { name: 'uuid', test: /\b([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b/i, tool: 'verify', args: (m) => ({ uuid: m[1]!.toLowerCase() }), shows: 'a UUID: its seal, channel, vortex and reflection' },
   { name: 'oeis', test: /\b(A\d{6})\b/, tool: 'leads', args: () => ({}), shows: 'an OEIS sequence number: a sequence fact for the wave' },

@@ -58,7 +58,7 @@ const e2e = toolOf('flow', {
 })
 
 /** The share of a list among n shards: every item whose index mod n is the shard's index; proven to cover the list exactly once by textbook_shards_cover and textbook_shards_disjoint. */
-export const shareOf = <T>(list: readonly T[], index: number, count: number): T[] => list.filter((_, k) => k % count === index)
+const shareOf = <T>(list: readonly T[], index: number, count: number): T[] => list.filter((_, k) => k % count === index)
 const shard = toolOf('flow', {
   name: 'shard',
   description: 'A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard\'s index — the shares cover the list exactly once, proven by the kernel (textbook_shards_cover, textbook_shards_disjoint). The clients of the flow take their share from this door and leave what they settled for the merge; nothing is decided by hand.',

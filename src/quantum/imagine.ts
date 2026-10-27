@@ -8,7 +8,7 @@ import { matcherOf } from './match.ts'
 import { VERIFIERS } from './verifiers.ts'
 
 type ImagineRow = { lead: string; status: string; verdict: string; tool?: string; cluster: number; verify: number; factors: number; angles: number; queries: number; opened: number }
-export type Imagination = { leads: number; verdicts: Record<string, number>; verifyRequests: number; imaginedLeads: number; rows: ImagineRow[]; imagined: Lead[] }
+type Imagination = { leads: number; verdicts: Record<string, number>; verifyRequests: number; imaginedLeads: number; rows: ImagineRow[]; imagined: Lead[] }
 
 const APPLICATIONS: { family: string; entry: string; verifier: string }[] = [
   { family: 'IoT sensing', entry: '{ kind: "reading", from: device, body: { quantity, unit, value, at } }', verifier: 'source-page or nist-codata for the reference value' },

@@ -7,7 +7,7 @@ import { compositionOf, compositionsOf } from './blocks.ts'
 import type { Lead } from './leads.ts'
 
 type McpCall = { tool: string; write: boolean; says: string }
-export type Port = { pkg: string; port: 'native' | 'd1' | 'hyperdrive' | 'durable-object' | 'r2' | 'http' | 'send_email'; bindings: Record<string, unknown>; steps: string[]; mcp: McpCall[]; plan: 'free' | 'paid'; missing: string[]; docs: string[] }
+type Port = { pkg: string; port: 'native' | 'd1' | 'hyperdrive' | 'durable-object' | 'r2' | 'http' | 'send_email'; bindings: Record<string, unknown>; steps: string[]; mcp: McpCall[]; plan: 'free' | 'paid'; missing: string[]; docs: string[] }
 const D1_LIST: McpCall = { tool: 'd1_databases_list', write: false, says: 'whether the database exists' }
 const D1_CREATE: McpCall = { tool: 'd1_database_create', write: true, says: 'the database created (the user approves)' }
 const R2_LIST: McpCall = { tool: 'r2_buckets_list', write: false, says: 'whether the bucket exists' }

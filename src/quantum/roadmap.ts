@@ -2,7 +2,7 @@
 // figure's physical-qubit scale is read from its axis). A milestone the figure marks achieved has its check; the figure's
 // caption names the one Google is working towards.
 
-export type Milestone = {
+type Milestone = {
   number: number
   title: string
   year: string | null

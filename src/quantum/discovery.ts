@@ -7,7 +7,7 @@ import { STANDARDS, detectStandard } from './standards.ts'
 import { stem } from './match.ts'
 import { measuredOf } from './theme.ts'
 
-export type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract' | 'sitemap'
+type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract' | 'sitemap'
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
 export const CLOUDFLARE_DOCS_MCP = 'https://docs.mcp.cloudflare.com/mcp'
 /** Cloudflare's MCP servers: the documentation server answers in the open; the rest answer 401 until a tenant brings its OAuth token. */
@@ -93,7 +93,7 @@ export const UNIT_MCP = 'https://uuidna.com/mcp', QPU_MCP = 'https://qpu.uuidna.
 export const dataOf = (text: string): string => (/^(event|data):/m.test(text) ? (text.split('\n').filter((l) => l.startsWith('data:')).map((l) => l.slice(5).trim()).find((l) => l.startsWith('{')) ?? text) : text)
 export type Answer = Request & { status: number; type: string; text: string }
 export type Door = { name: string; description: string; takes: string[]; required: string[]; answers: string[]; readOnly: boolean | null; contract: 'tools/list' | 'catalogue' }
-export type Host = { host: string; kind: 'mcp' | 'api' | 'well-known'; contract: string; status: number; detected: string; note: string; doors?: Door[]; paths?: string[] }
+type Host = { host: string; kind: 'mcp' | 'api' | 'well-known'; contract: string; status: number; detected: string; note: string; doors?: Door[]; paths?: string[] }
 export type Discovery = { hosts: Host[]; doors: (Door & { host: string; url: string })[]; capabilities: { statementVerdict: string[]; signing: string[]; readiness: string[]; addressing: string[]; rbac: string[]; metaphysics: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; sitemap: { index: string; sitemaps: Loc[]; urls: Loc[] } }
 // a sitemap read as sitemaps.org defines it: each <sitemap> of an index and each <url> of a urlset, its loc and its lastmod
 type Loc = { loc: string; lastmod?: string }
@@ -102,7 +102,7 @@ const SITEMAP = { host: 'quantumai.google', url: 'https://quantumai.google/sitem
 
 /** What a client can fill from a theorem, a statement or a value, and what an answer may carry. */
 export const TAKES = ['statement', 'claim', 'input', 'deposits', 'proof', 'key', 'theorems', 'message', 'q', 'query', 'text', 'value', 'sources', 'subject', 'token', 'tenant'] as const
-export const ANSWERS = ['verdict', 'receipt', 'deposited', 'sealed', 'signed', 'verified', 'proofRoot', 'ready', 'address', 'role'] as const
+const ANSWERS = ['verdict', 'receipt', 'deposited', 'sealed', 'signed', 'verified', 'proofRoot', 'ready', 'address', 'role'] as const
 
 export const rpcBody = (method: string, params?: unknown) => ({ jsonrpc: '2.0', id: 1, method, params })
 const idOf = (purpose: Purpose, host: string, name?: string) => `${purpose}:${host}${name ? `:${name}` : ''}`

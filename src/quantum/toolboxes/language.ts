@@ -12,14 +12,14 @@ const SURFACE_TERMS: readonly string[] = ['served', 'partial', 'blocked', 'open'
 const wordsOf = (key: string): string => key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').toLowerCase()
 
 /** The vocabulary measured: for every filled locale, which surface terms have no entry. */
-export const coverageOf = (): { locale: string; filled: boolean; terms: number; missing: string[] }[] => Object.entries(LOCALES).filter(([code]) => code !== 'en').map(([code, l]) => {
+const coverageOf = (): { locale: string; filled: boolean; terms: number; missing: string[] }[] => Object.entries(LOCALES).filter(([code]) => code !== 'en').map(([code, l]) => {
   const table = TABLES[code]
   const missing = table ? SURFACE_TERMS.filter((t) => !(t in table)) : [...SURFACE_TERMS]
   return { locale: code, filled: l.filled && !!table, terms: table ? Object.keys(table).length : 0, missing }
 })
 
 /** Sentences from a tool's result: its scalar fields as "label value", in the locale's words; the numbers are the tool's. */
-export const proseOf = (toolbox: { name: string; idea: string; instructions: string } | null, tool: string, structured: unknown, locale: string): { text: string; sentences: string[]; untranslated: string[] } => {
+const proseOf = (toolbox: { name: string; idea: string; instructions: string } | null, tool: string, structured: unknown, locale: string): { text: string; sentences: string[]; untranslated: string[] } => {
   const t = (s: string) => translateOf(s, 'en', locale)
   const sentences: string[] = []
   const untranslated = new Set<string>()

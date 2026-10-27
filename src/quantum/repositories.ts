@@ -2,7 +2,7 @@
 // repository's own one-line description; the language is the primary language the list shows. Cirq, qsim, Qualtran and the
 // OpenFermion family are the ones this repository implements or names elsewhere.
 
-export type Repository = { name: string; description: string; language: string }
+type Repository = { name: string; description: string; language: string }
 
 export const REPOSITORIES: readonly Repository[] = [
   { name: 'Cirq', description: 'Python framework for creating, editing, and running Noisy Intermediate-Scale Quantum (NISQ) circuits.', language: 'Python' },

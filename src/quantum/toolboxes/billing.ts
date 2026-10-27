@@ -12,13 +12,13 @@ import { LICENSE } from '../license.ts'
 import { flowWidget } from '../widgets.ts'
 import { differencesOf, remediesOf, GENERATOR_REMEDIES } from '../audit.ts'
 
-export type Checkout = { tenant: string; host: string; subject: string; domains: string[]; mode: 'payment' | 'subscription'; price?: string; amount?: number; currency: string; successUrl: string; cancelUrl: string; customerEmail?: string }
-export type Plan = { method: 'POST'; url: string; headers: Record<string, string>; form: Record<string, string>; secret: string }
+type Checkout = { tenant: string; host: string; subject: string; domains: string[]; mode: 'payment' | 'subscription'; price?: string; amount?: number; currency: string; successUrl: string; cancelUrl: string; customerEmail?: string }
+type Plan = { method: 'POST'; url: string; headers: Record<string, string>; form: Record<string, string>; secret: string }
 type LicenceEntry = { id: string; kind: 'licence'; from: string; body: { event: string; type: string; state: 'granted' | 'renewed' | 'changed' | 'revoked' | 'disputed' | 'failed' | 'noted'; subject: string; tenant: string; domains: string[]; product: string | null; variant: string | null; quantity: number | null; customer: string | null; amount: number | null; currency: string | null; at: number; licence: string; terms: string }; links: string[] }
 
 /** The QPU as a product with its variants: what is sold, by what unit, on what interval; a tenant may price each variant in its own
  * currency. The a432 harmonic default stays free under attribution; the author's licence terms ride on every product. */
-export type Variant = { product: string; variant: string; unit: 'domain' | 'tenant' | 'seat' | 'thousand-calls' | 'million-readings' | 'thousand-copies' | 'platform' | 'none'; interval: 'month' | 'year' | 'once' | 'metered'; amounts: Record<string, number>; domains: '*' | 'named'; description: string }
+type Variant = { product: string; variant: string; unit: 'domain' | 'tenant' | 'seat' | 'thousand-calls' | 'million-readings' | 'thousand-copies' | 'platform' | 'none'; interval: 'month' | 'year' | 'once' | 'metered'; amounts: Record<string, number>; domains: '*' | 'named'; description: string }
 export const CATALOGUE: readonly Variant[] = [
   { product: 'qpu-a432', variant: 'harmonic-default', unit: 'none', interval: 'once', amounts: { eur: 0, usd: 0, bgn: 0 }, domains: '*', description: 'the a432 harmonic default: free under attribution, every result carrying the licence' },
   { product: 'qpu-domain', variant: 'yearly', unit: 'domain', interval: 'year', amounts: { eur: 43200, usd: 47500, bgn: 84500 }, domains: 'named', description: 'commercial use of the QPU framework on one named domain, for a year' },
@@ -52,7 +52,7 @@ const settlementOf = (transactions: readonly { id: string; net: number; fee: num
 const SECRET_OF = (tenant: string) => `STRIPE_SECRET_KEY_${tenant.toUpperCase()}`
 
 /** The checkout session request, as Stripe's API takes it (form-encoded), with the licence in the metadata so the webhook carries it back. */
-export const planOf = (c: Checkout): Plan => {
+const planOf = (c: Checkout): Plan => {
   const form: Record<string, string> = {
     mode: c.mode, success_url: c.successUrl, cancel_url: c.cancelUrl,
     'metadata[tenant]': c.tenant, 'metadata[host]': c.host, 'metadata[subject]': c.subject, 'metadata[domains]': c.domains.join(','), 'metadata[licence]': LICENSE.address,
@@ -65,7 +65,7 @@ export const planOf = (c: Checkout): Plan => {
 
 /** Stripe's signature scheme: `t=<timestamp>,v1=<hmac>`; the signed payload is `<timestamp>.<body>`; the tenant's secret signs. */
 export const signatureOf = (secret: string, timestamp: number, payload: string): string => `t=${timestamp},v1=${hex(hmacSha256(utf8(secret), utf8(`${timestamp}.${payload}`)))}`
-export const verifySignature = (secret: string, header: string, payload: string, now: number, toleranceSeconds = 300): { valid: boolean; why: string; timestamp: number | null } => {
+const verifySignature = (secret: string, header: string, payload: string, now: number, toleranceSeconds = 300): { valid: boolean; why: string; timestamp: number | null } => {
   const parts = Object.fromEntries(header.split(',').map((p) => p.trim().split('=') as [string, string]))
   const t = Number(parts.t); const v1 = parts.v1
   if (!Number.isFinite(t) || !v1) return { valid: false, why: 'the header carries no t and v1', timestamp: null }
@@ -77,7 +77,7 @@ export const verifySignature = (secret: string, header: string, payload: string,
 /** Every Stripe event this surface understands, read into the state it means for the licence. */
 const STATE_OF: Record<string, LicenceEntry['body']['state']> = { 'checkout.session.completed': 'granted', 'customer.subscription.created': 'granted', 'invoice.paid': 'renewed', 'customer.subscription.updated': 'changed', 'charge.refunded': 'revoked', 'customer.subscription.deleted': 'revoked', 'charge.dispute.created': 'disputed', 'charge.dispute.closed': 'renewed', 'invoice.payment_failed': 'failed', 'checkout.session.expired': 'noted', 'payment_intent.succeeded': 'noted' }
 /** One idempotent entry per event: the same event again gives the same address, and the docket says duplicate. */
-export const entryOf = (tenant: string, event: { id: string; type: string; created?: number; data?: { object?: Record<string, unknown> } }, earlier: readonly LicenceEntry[] = []): LicenceEntry => {
+const entryOf = (tenant: string, event: { id: string; type: string; created?: number; data?: { object?: Record<string, unknown> } }, earlier: readonly LicenceEntry[] = []): LicenceEntry => {
   const previous = earlier.filter((p) => p && p.body) // a row without its body cannot be read; it is skipped, never guessed
   const o = (event.data?.object ?? {}) as Record<string, unknown>
   const meta = (o.metadata ?? {}) as Record<string, string>

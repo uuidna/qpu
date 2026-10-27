@@ -8,8 +8,8 @@ import { toolOf, isObj, checksOf, type Toolbox, type Context } from '../toolbox.
 import { uuidOf } from '../blocks.ts'
 import { flowWidget } from '../widgets.ts'
 
-export type Doc = Record<string, unknown>
-export type Filter = Record<string, unknown>
+type Doc = Record<string, unknown>
+type Filter = Record<string, unknown>
 
 const pathOf = (doc: unknown, path: string): unknown => path.split('.').reduce<unknown>((v, k) => (isObj(v) ? (v as Record<string, unknown>)[k] : undefined), doc)
 const cmp = (a: unknown, b: unknown): number => (typeof a === 'number' && typeof b === 'number' ? a - b : String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0)
@@ -70,7 +70,7 @@ const updateOf = (doc: Doc, update: Record<string, unknown>): Doc => {
   return out
 }
 /** A document as a docket entry: content-addressed by its body, in a collection family, linked to the version it replaces. */
-export const entryOf = (collection: string, doc: Doc, replaces?: string): { id: string; kind: string; collection: string; body: Doc; links: string[] } => {
+const entryOf = (collection: string, doc: Doc, replaces?: string): { id: string; kind: string; collection: string; body: Doc; links: string[] } => {
   const body = { ...doc }
   const id = uuidOf(`${collection}${JSON.stringify(body)}`)
   return { id, kind: 'document', collection, body: { ...body, _id: body._id ?? id }, links: replaces ? [replaces] : [] }
@@ -78,9 +78,9 @@ export const entryOf = (collection: string, doc: Doc, replaces?: string): { id: 
 
 /** Binding 0 of the storage dimension, the filesystem: a document once at its content address in hex folders named by the UUID's middle, g1/g2/g3/<uuid>
  *  (one program's versions in one folder), its R2 key and its GCS object, and beside the address of its collection and id a pointer to its latest version. */
-export const hexPathOf = (uuid: string) => { const [, a, b, c] = uuid.split('-'); return `${a}/${b}/${c}/${uuid}` }
+const hexPathOf = (uuid: string) => { const [, a, b, c] = uuid.split('-'); return `${a}/${b}/${c}/${uuid}` }
 /** The RAID's order by profile: Payload, then the profile's database and object store, then binding 0, which always answers. */
-export const RAID_ORDER = { cloudflare: ['payload', 'd1', 'r2', 'filesystem'], google: ['payload', 'cloudsql', 'gcs', 'filesystem'], vercel: ['payload', 'filesystem'], local: ['payload', 'filesystem'] } as const
+const RAID_ORDER = { cloudflare: ['payload', 'd1', 'r2', 'filesystem'], google: ['payload', 'cloudsql', 'gcs', 'filesystem'], vercel: ['payload', 'filesystem'], local: ['payload', 'filesystem'] } as const
 // every file by the address its name ends with (a version, or its pointer with .latest), wherever it lies, the first-four-digit folders included
 const named = (files: Readonly<Record<string, string>>) => Object.entries(files).flatMap(([path, text]) => { const m = /([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})(\.latest)?$/.exec(path); return m ? [{ path, text, id: m[1]!, latest: m[2], to: hexPathOf(m[1]!) + (m[2] ?? '') }] : [] })
 // bit 0: a version's bytes recompute its address, else it is not read
@@ -94,7 +94,7 @@ export const binding0Of = (collection: string, docs: readonly Doc[] | null, file
 }
 /** Every copy of every version checked against bit 0, the address its own bytes recompute: per binding the copies verified, missing or differing,
  *  a rebuild from a verified copy for each of the others, and every file not at its middle-part path moved there (textbook_raid_bit_zero_verify). */
-export const verifyOf = (copies: Readonly<Record<string, Readonly<Record<string, string>>>>) => {
+const verifyOf = (copies: Readonly<Record<string, Readonly<Record<string, string>>>>) => {
   const by = Object.entries(copies).map(([binding, files]) => { const all = named(files); return { binding, all, at: Object.fromEntries(all.filter((f) => !f.latest).map((f) => [f.id, f.text])) } })
   const ids = [...new Set(by.flatMap((b) => Object.keys(b.at)))], good = (b: (typeof by)[number], id: string) => !!addressed(id, b.at[id]), from = (id: string) => by.find((b) => good(b, id))?.at[id], of = (k: (id: string) => boolean) => ids.filter(k).length
   return {

@@ -73,7 +73,7 @@ export const messageCircuit = (): Circuit => new Circuit().append(applied(powerO
 
 
 /** A weighted graph for QAOA: its nodes (qubits) and its edges, each a pair of nodes with a weight. */
-export type Graph = { nodes: Qubit[]; edges: { a: Qubit; b: Qubit; weight: number }[] }
+type Graph = { nodes: Qubit[]; edges: { a: Qubit; b: Qubit; weight: number }[] }
 
 /** The QAOA circuit the Cirq page builds at depth p = 1: a Hadamard on every node, the cost layer ZZ**(alpha·w) on every edge,
  *  then the mixer X**beta on every node, then a measurement of every node. */

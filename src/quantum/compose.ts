@@ -12,7 +12,7 @@ import { coilColourOf } from './theme.ts'
 
 const ASSET_KINDS = ['code', 'sdk', 'registry', 'block'] as const
 type AssetKind = typeof ASSET_KINDS[number]
-export type Asset = { kind: AssetKind; id: string; url: string; address: string; bytes: number; verified: boolean; stems: string[]; score: number; text?: string; tool?: string; replay?: { tool: string; arguments: Record<string, unknown> } }
+type Asset = { kind: AssetKind; id: string; url: string; address: string; bytes: number; verified: boolean; stems: string[]; score: number; text?: string; tool?: string; replay?: { tool: string; arguments: Record<string, unknown> } }
 
 const intersect = (a: Set<string>, b: Set<string>) => [...a].filter((x) => b.has(x))
 

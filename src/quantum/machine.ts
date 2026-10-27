@@ -7,7 +7,7 @@
 // the argument vector a plan returns, streaming its lines as progress to a caller that sent a progress token.
 import { uuidOf } from './blocks.ts'
 import { sha256, utf8, hex } from './hmac.ts'
-import { leaksOf, LEAK_PATTERNS } from './audit.ts'
+import { findLeaks, LEAK_PATTERNS } from './audit.ts'
 import { courtOf } from './toolboxes/legal.ts'
 import type { WorkflowFacts } from './toolboxes/repository.ts'
 type Decide = (name: 'pre-commit' | 'pre-push', facts: WorkflowFacts) => { allowed: boolean; says: string; violated: string[]; unknown: string[] }
@@ -87,7 +87,7 @@ export const redact = (text: string, root?: string, home?: string, leaks = true)
 }
 /** A run judged: redacted, the record a docket entry at its address. */
 export const machineRecordOf = (run: MachineRun) => {
-  const relative = redact(`${run.stdout}${run.stderr ? `\n${run.stderr}` : ''}`, run.root, run.home, false), found = leaksOf({ output: relative }), output = redact(relative)
+  const relative = redact(`${run.stdout}${run.stderr ? `\n${run.stderr}` : ''}`, run.root, run.home, false), found = findLeaks({ output: relative }), output = redact(relative)
   const body = { action: run.action, command: [run.command.cmd, ...run.command.args].join(' '), status: run.status, ms: run.ms, output, leaks: found.byKind }
   const text = JSON.stringify({ kind: 'machine', from: 'local', body })
   const id = uuidOf(text)

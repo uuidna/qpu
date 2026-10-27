@@ -10,7 +10,7 @@ export type Fact = { kind: FactKind; value: string; detail?: Record<string, stri
 export type VerifyRequest = { verifier: string; url: string; method: 'GET' | 'POST'; body?: unknown; accept: string; check: string; via: string }
 export type Verifier = { id: string; name: string; kind: 'api' | 'page' | 'mcp'; free: true; docs: string; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string; verifies: readonly FactKind[]; /** narrows a kind to the facts this adaptor actually holds */ only?: (fact: Fact) => boolean; requestOf: (fact: Fact) => { url: string; accept: string; check: string; method?: 'POST'; body?: unknown } }
 
-export const VIA = "the client's own MCP fetches it; this handler does no I/O"
+const VIA = "the client's own MCP fetches it; this handler does no I/O"
 /** A DOI's creators: the author's records include the author, any other DOI its metadata's own (textbook_authorship_tracked). */
 const creatorsOf = (doi: string) => PRECEDENCE.some((p) => p.doi === doi) ? `include ${LICENSE.author} (${LICENSE.orcid})` : 'are its metadata\'s own'
 

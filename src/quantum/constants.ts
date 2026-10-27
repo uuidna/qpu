@@ -13,7 +13,7 @@ const decimalOf = (s: string): { mantissa: string; exponent: number } | null => 
   const frac = m[3] ?? ''
   return { mantissa: `${m[1]}${(m[2]! + frac).replace(/^0+(?=\d)/, '')}`, exponent: Number(m[4] ?? 0) - frac.length }
 }
-export type Constant = { quantity: string; value: { mantissa: string; exponent: number }; written: string; exact: boolean; uncertainty: { mantissa: string; exponent: number } | null; unit: string; relativePpb: number | null; address: string; sha256: string }
+type Constant = { quantity: string; value: { mantissa: string; exponent: number }; written: string; exact: boolean; uncertainty: { mantissa: string; exponent: number } | null; unit: string; relativePpb: number | null; address: string; sha256: string }
 /** The table read: the rows found below its header, every row a constant with its value and uncertainty as integers, sealed. */
 export const constantsOf = (text: string) => {
   const lines = text.split('\n')
