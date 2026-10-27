@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T16:00:31.160Z",
- "ms": 258,
+ "date": "2026-10-27T16:10:15.624Z",
+ "ms": 245,
  "approval": {
   "represents": "1.4.0+e3785063",
   "package": "1.4.0+e3785063",
@@ -17,7 +17,10 @@
  "kinds": 25,
  "closed": true,
  "partition": "8 + 2 + 15 = 25",
- "improved": [],
+ "improved": [
+  "site/public/r/qpu-create.json",
+  "docs/public/r/qpu-create.json"
+ ],
  "held": [
   {
    "kind": "payload",

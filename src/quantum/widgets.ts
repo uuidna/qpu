@@ -18,11 +18,15 @@ const cards = (items: [label: string, value: string][]): string =>
 const bar = (percent: number): string =>
   `<div style="height: 6px; background: var(--surface-1); border-radius: var(--radius); overflow: hidden;"><div style="width: ${Math.min(100, Math.max(0, percent)).toFixed(2)}%; height: 100%; background: var(--fill-accent);"></div></div>`
 
+const CELL = 'padding: var(--gap-xs) var(--gap-sm); border-bottom: 0.5px solid var(--border);'
+// status cells, coloured and moved by the stylesheet
+const STATUS: Record<string, string> = { '✓': 'pass', '✗': 'fail', 'not decided': 'pending', served: 'pass', partial: 'pending', open: 'pending', blocked: 'fail', out_of_scope: 'fail' }
+const mark = (passed: boolean | null): string => (passed === null ? 'not decided' : passed ? '✓' : '✗')
 const table = (head: string[], rows: string[][]): string =>
   `<div style="background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: var(--pad-sm) var(--pad-md); overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-footnote);"><thead><tr>${head
-    .map((h) => `<th style="text-align: left; color: var(--text-secondary); font-weight: 500; padding: var(--gap-xs) var(--gap-sm); border-bottom: 0.5px solid var(--border);">${escape(h)}</th>`)
+    .map((h) => `<th style="text-align: left; color: var(--text-secondary); font-weight: 500; ${CELL}">${escape(h)}</th>`)
     .join('')}</tr></thead><tbody>${rows
-    .map((r) => `<tr>${r.map((cell) => `<td style="color: var(--text-primary); padding: var(--gap-xs) var(--gap-sm); border-bottom: 0.5px solid var(--border);">${escape(cell)}</td>`).join('')}</tr>`)
+    .map((r) => `<tr>${r.map((cell) => `<td${STATUS[cell] ? ` data-status="${STATUS[cell]}"` : ''} style="color: var(--text-primary); ${CELL}">${escape(cell)}</td>`).join('')}</tr>`)
     .join('')}</tbody></table></div>`
 
 const stack = (parts: string[]): string => `<div style="font-family: var(--font-sans); color: var(--text-primary); display: grid; gap: var(--gap-md);">${parts.join('')}</div>`
@@ -218,7 +222,7 @@ export const auditWidget = (d: { total: number; passed: number; failed: number; 
       ['Examples', String(d.examples)],
       ['Leads', String(d.leads)],
     ]),
-    table(['Check', 'Result', 'Evidence'], d.checks.map((c) => [c.id, c.passed ? '✓' : '✗', c.evidence])),
+    table(['Check', 'Result', 'Evidence'], d.checks.map((c) => [c.id, mark(c.passed), c.evidence])),
   ])
 
 /** The match as its verdict, its evidence, and the ranked candidates. */
@@ -244,14 +248,14 @@ export const matchWidget = (d: { statement: string; verdict: string; evidence: s
 export const clayWidget = (d: { total: number; holding: number; maxBits: number; relations: readonly { name: string; statement: string; sides: readonly { expression: string; value: number }[]; holds: boolean; bits: number }[] }): string =>
   stack([
     cards([['Relations', String(d.total)], ['Holding', String(d.holding)], ['Widest value', `${d.maxBits} bits`]]),
-    table(['Relation', 'Holds', 'Bits', 'Sides'], d.relations.map((r) => [r.name, r.holds ? '✓' : '✗', String(r.bits), r.sides.map((s) => `${s.expression} = ${s.value}`).join(' · ')])),
+    table(['Relation', 'Holds', 'Bits', 'Sides'], d.relations.map((r) => [r.name, mark(r.holds), String(r.bits), r.sides.map((s) => `${s.expression} = ${s.value}`).join(' · ')])),
   ])
 
 /** One UUID's cheap checks, each with its evidence. */
 export const verifyWidget = (d: { uuid: string; valid: boolean; decided: number; cost: string; checks: readonly { check: string; passed: boolean | null; evidence: string }[] }): string =>
   stack([
-    cards([['UUID', d.uuid], ['Valid', d.valid ? '✓' : '✗'], ['Checks decided', String(d.decided)]]),
-    table(['Check', 'Result', 'Evidence'], d.checks.map((c) => [c.check, c.passed === null ? 'not decided' : c.passed ? '✓' : '✗', c.evidence])),
+    cards([['UUID', d.uuid], ['Valid', mark(d.valid)], ['Checks decided', String(d.decided)]]),
+    table(['Check', 'Result', 'Evidence'], d.checks.map((c) => [c.check, mark(c.passed), c.evidence])),
     table(['Cost'], [[d.cost]]),
   ])
 
@@ -259,5 +263,5 @@ export const verifyWidget = (d: { uuid: string; valid: boolean; decided: number;
 export const flowWidget = (d: Record<string, unknown>): string => {
   const scalars = Object.entries(d).filter(([, v]) => typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean').map(([k, v]) => [k, String(v)] as [string, string])
   const checks = Array.isArray(d.checks) ? (d.checks as { id: string; passed: boolean; evidence: string }[]) : null
-  return stack([cards(scalars), ...(checks ? [table(['Check', 'Passed', 'Evidence'], checks.map((c) => [c.id, c.passed ? '✓' : '✗', c.evidence]))] : [])])
+  return stack([cards(scalars), ...(checks ? [table(['Check', 'Passed', 'Evidence'], checks.map((c) => [c.id, mark(c.passed), c.evidence]))] : [])])
 }
