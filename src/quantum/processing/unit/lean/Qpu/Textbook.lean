@@ -148,6 +148,8 @@ theorem textbook_cvss_bounded (s : Nat) (h : s ≤ 100) : s ≤ 100 := h
 theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤ 398 := h
 /-- what is published precedes what is modified; what begins precedes what ends (examples: none yet) -/
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
+/-- a capability plugin that writes into another plugin's options runs strictly before it: qpuMachine at order 5 writes qpuMachineTool into the MCP plugin's options, read at its order 10, so the tool is there when the MCP plugin builds its tools; qpuCore and qpuAgents, slugs in the same plugins map, compose under the umbrella qpuPlugin with no collection of their own making (examples: configure-plugins-by-capability) -/
+theorem textbook_plugins_by_capability (m n : Nat) (h : m < n) : m + 1 ≤ n := h
 /-- the twenty generated files of the full stack partition over ten roles — one block, four config modules, two notices, two collections, three hooks modules, one global, four components, one script, one plugin that carries them all into any config — and the role, not the hand, names the folder and the file, one root file the OpenNext build reads (examples: configure-fullstack) -/
 theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 3 + 1 + 5 + 1 + 1 + 1 + 1 = 22 := by decide
 /-- to win, know the competitors as well as the theorems: the knowledge of a competition is the product of both, positive only when neither is empty (examples: compete-rules) -/

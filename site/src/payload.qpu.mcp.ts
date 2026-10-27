@@ -41,7 +41,7 @@ const handlerTools = list.map((t) => ({
 const callTool = (name: string, args: Record<string, unknown>): any => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent: unknown } }).result?.structuredContent
 const LOOPBACK = ['localhost', '127.0.0.1', '[::1]']
 type MachineReq = { headers?: { get?: (k: string) => string | null }; user?: { roles?: string[] } | null; payload: { create: (o: Record<string, unknown>) => Promise<{ id: string | number }> } }
-const machineTool = {
+export const qpuMachineTool = {
   name: 'machine',
   description: 'The developer machine managed through the Payload MCP, securely: one action of the allow-list (repository { machine: { actions: true } } names them) run on this local app for a super admin, with no shell; commit and push decided by the workflow rules, a push only with confirm; every run an entry of the Entries collection, its paths relative and its leaks redacted',
   parameters: { action: z.string().describe('an action of the allow-list: status, log, ahead, tags, diff, versions, next, precheck, stage, commit, push, dispatch, merge, idle, regenerate, worktree-remove, branch-delete, tag, port, now, site-audit, site-install, site-build'), message: z.string().optional().describe('commit: the message'), confirm: z.boolean().optional().describe('push: the user confirms it'), branch: z.string().optional().describe('merge, branch-delete: the branch'), path: z.string().optional().describe('worktree-remove: the worktree'), tag: z.string().optional().describe('tag: an archive/ name'), commit: z.string().optional().describe('tag: the full commit'), from: z.string().optional().describe('port: the file in a worktree'), file: z.string().optional().describe('port: the path in main'), archived: z.boolean().optional().describe('branch-delete: -D behind an archive tag') },
@@ -59,7 +59,7 @@ const machineTool = {
     return answer({ ...r.answer, stored: { collection: 'entries', id: doc.id } })
   },
 }
-export const qpuMcpTools = [...handlerTools, machineTool]
+export const qpuMcpTools = handlerTools // the machine joins them through the qpu-machine plugin
 // the UI resources (MCP Apps): one ui://qpu/<tool> per tool, read from the handler's resources/read, served through the plugin's resources
 const resources = (handle({ jsonrpc: '2.0', id: 1, method: 'resources/list' }) as { result: { resources: { uri: string; name: string; description: string; mimeType: string }[] } }).result.resources
 export const qpuMcpResources = resources.map((r) => ({

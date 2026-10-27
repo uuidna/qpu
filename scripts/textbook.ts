@@ -29,8 +29,7 @@ const main = async () => {
   // the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client: when the tenant names its
   // instance (QPU_PAYLOAD_URL) and its key (QPU_PAYLOAD_API_KEY, sent as Authorization and never held by a tool), the pages whose
   // qpu blocks lack a theorem are found and updated with the kernel-accepted key; otherwise the plan is written and the lead stands
-  const vars: Record<string, string> = existsSync(join(ROOT, '.dev.vars')) ? Object.fromEntries(readFileSync(join(ROOT, '.dev.vars'), 'utf8').split('\n').filter((l) => /^[A-Z_0-9]+=/.test(l)).map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).replace(/^"|"$/g, '')])) : {}
-  const payloadUrl = process.env.QPU_PAYLOAD_URL ?? vars.QPU_PAYLOAD_URL, payloadKey = process.env.QPU_PAYLOAD_API_KEY ?? vars.QPU_PAYLOAD_API_KEY, payloadAuth = process.env.QPU_PAYLOAD_AUTH_COLLECTION ?? vars.QPU_PAYLOAD_AUTH_COLLECTION ?? 'users'
+  const payloadUrl = process.env.QPU_PAYLOAD_URL, payloadKey = process.env.QPU_PAYLOAD_API_KEY, payloadAuth = process.env.QPU_PAYLOAD_AUTH_COLLECTION ?? 'users'
   const payloadCall = (args: Record<string, unknown>): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { theorems: true, payloadUrl: payloadUrl ?? undefined, ...args } } }) as any; if (r.error) throw new Error(r.error.message); return r.result.structuredContent }
   const post = async (r: { url: string; body: unknown }) => { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', authorization: `${payloadAuth} API-Key ${payloadKey}` }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(30000) }); return await res.text() }
   let theorems: unknown = payloadCall({})

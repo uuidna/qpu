@@ -37,8 +37,7 @@ const main = async () => {
   let remaining = 0, fetched = 0, reused = 0
   // tenant configurable: QPU_MCP_HOSTS names the hosts (default: the unit, this tree, Cloudflare's servers); QPU_MCP_TOKEN_<HOST>
   // (dots and dashes as underscores, upper case) carries the tenant's token for a host; both from the environment or .dev.vars
-  const vars: Record<string, string> = existsSync(join(ROOT, '.dev.vars')) ? Object.fromEntries(readFileSync(join(ROOT, '.dev.vars'), 'utf8').split('\n').filter((l) => /^[A-Z_0-9]+=/.test(l)).map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).replace(/^"|"$/g, '')])) : {}
-  const all = { ...vars, ...process.env } as Record<string, string | undefined>
+  const all = process.env
   const mcpHosts = (all.QPU_MCP_HOSTS ?? '').split(',').map((s) => s.trim()).filter(Boolean)
   const auth: Record<string, string> = {}
   for (const [k, v] of Object.entries(all)) if (k.startsWith('QPU_MCP_TOKEN_') && v) auth[k.slice('QPU_MCP_TOKEN_'.length).toLowerCase().replace(/_/g, '.')] = v

@@ -10,6 +10,8 @@ import { uuidOf } from '../src/quantum/blocks.ts'
 
 // the folder every step publishes into, made once: every step imports this module first
 mkdirSync(join(process.cwd(), 'docs', 'public'), { recursive: true })
+// the tenant's secrets from .dev.vars (wrangler keeps it out of git) beneath the environment, which wins: every step reads process.env alone
+if (existsSync('.dev.vars')) process.loadEnvFile('.dev.vars')
 const DIR = join(process.cwd(), '.qpu', 'blocks')
 const started = Date.now()
 // a block is a function of its arguments AND of the code that computed it: every file of blocks carries the code's fingerprint (the

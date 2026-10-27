@@ -28,8 +28,7 @@ const main = async () => {
   if (existsSync(discoveryPath)) { try { for (const h of (JSON.parse(readFileSync(discoveryPath, 'utf8')) as { hosts: { host: string; paths?: string[] }[] }).hosts) if (h.paths?.length) contracts[h.host] = h.paths } catch { /* unknown contracts */ } }
   const offline = process.env.QPU_OFFLINE === '1'
   // the tenant's token for GitHub's MCP (QPU_MCP_TOKEN_API_GITHUBCOPILOT_COM, from the environment or .dev.vars): with it the watch goes through the doors; without it, the REST contract, said so
-  const vars: Record<string, string> = existsSync(join(ROOT, '.dev.vars')) ? Object.fromEntries(readFileSync(join(ROOT, '.dev.vars'), 'utf8').split('\n').filter((l) => /^[A-Z_0-9]+=/.test(l)).map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).replace(/^"|"$/g, '')])) : {}
-  const githubToken = process.env.QPU_MCP_TOKEN_API_GITHUBCOPILOT_COM ?? vars.QPU_MCP_TOKEN_API_GITHUBCOPILOT_COM
+  const githubToken = process.env.QPU_MCP_TOKEN_API_GITHUBCOPILOT_COM
   const via = githubToken ? 'mcp' : 'rest'
   console.log(`repository: watching through ${via === 'mcp' ? 'GitHub\'s MCP doors (the tenant\'s token)' : 'the REST contract (no QPU_MCP_TOKEN_API_GITHUBCOPILOT_COM: GitHub\'s MCP stays a lead)'}`)
   const plan = call({ local, contracts, via })

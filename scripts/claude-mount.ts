@@ -11,8 +11,8 @@ export type ClaudeMount = { phase: 'needs-key' | 'mounted' | 'differs' | 'refuse
 
 export const mountThroughClaude = async (origin = 'https://qpu.uuidna.com'): Promise<ClaudeMount> => {
   // the key from the environment or .dev.vars (the file the Worker's secrets live in, ignored by git); its value is never printed or carried
-  const vars: Record<string, string> = existsSync(join(process.cwd(), '.dev.vars')) ? Object.fromEntries(readFileSync(join(process.cwd(), '.dev.vars'), 'utf8').split('\n').filter((l) => /^[A-Z_0-9]+=/.test(l)).map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).replace(/^"|"$/g, '')])) : {}
-  const key = process.env.ANTHROPIC_API_KEY ?? process.env.ANTHROPIC_API_KEY_UUIDNA ?? process.env.ANTHROPIC_API_KEY_PSG ?? vars.ANTHROPIC_API_KEY ?? vars.ANTHROPIC_API_KEY_UUIDNA ?? vars.ANTHROPIC_API_KEY_PSG
+  if (existsSync('.dev.vars')) process.loadEnvFile('.dev.vars')
+  const key = process.env.ANTHROPIC_API_KEY ?? process.env.ANTHROPIC_API_KEY_UUIDNA ?? process.env.ANTHROPIC_API_KEY_PSG
   const reg = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'extend', arguments: { direction: 'out', host: `${origin}/mcp` } } }) as { result: { structuredContent: { outward: { claude: { model: string; betas: string[]; mcp_servers: { type: 'url'; url: string; name: string }[]; tools: { type: 'mcp_toolset'; mcp_server_name: string }[] } } } } }).result.structuredContent.outward.claude
   const here = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'seal', arguments: { text: 'qpu' } } }) as { result: { structuredContent: { sha256: string } } }).result.structuredContent.sha256
   if (!key) return { phase: 'needs-key', sha256Here: here, note: `no ANTHROPIC_API_KEY in the environment or .dev.vars: the registration stands (${reg.mcp_servers[0]!.url} as ${reg.mcp_servers[0]!.name}); the mount is the tenant's act with its key` }

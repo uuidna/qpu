@@ -10,11 +10,11 @@ import { channelOf, uuidFromParts, uuidOf } from '../src/quantum/blocks.ts'
 const ROOT = process.cwd()
 // The tenant's docket and its writer token: from the environment, or from .dev.vars (the file wrangler keeps out of git) —
 // the client holds the secret; the tree never does. Default: this tree's own tenant on the deployed Worker.
-const vars: Record<string, string> = existsSync(join(ROOT, '.dev.vars')) ? Object.fromEntries(readFileSync(join(ROOT, '.dev.vars'), 'utf8').split('\n').filter((l) => /^[A-Z_]+=/.test(l)).map((l) => [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1)])) : {}
+if (existsSync('.dev.vars')) process.loadEnvFile('.dev.vars')
 const from = process.env.QPU_HOST ?? 'qpu.uuidna.com'
 const tenant = ({ 'qpu.uuidna.com': 'UUIDNA', 'qpu.psg.bg': 'PSG' } as Record<string, string>)[from]
-const dockets = (process.env.QPU_DOCKETS ?? vars.QPU_DOCKETS ?? `https://${from}/docket`).split(',').map((s) => s.trim()).filter(Boolean)
-const token = process.env.QPU_WRITE_TOKEN ?? (tenant ? vars[`QPU_WRITE_TOKEN_${tenant}`] : undefined) ?? vars.QPU_WRITE_TOKEN
+const dockets = (process.env.QPU_DOCKETS ?? `https://${from}/docket`).split(',').map((s) => s.trim()).filter(Boolean)
+const token = process.env.QPU_WRITE_TOKEN ?? process.env[`QPU_WRITE_TOKEN_${tenant}`]
 const artefacts: [kind: string, file: string][] = [
   ['receipt', 'docs/public/receipt.json'], ['verification', 'docs/public/verification.json'], ['imagination', 'docs/public/imagination.json'],
   ['graph', 'docs/public/graph.json'], ['purify-leads', 'docs/public/purify-leads.json'], ['next-leads', 'docs/public/next-leads.json'], ['readiness', 'docs/public/readiness.json'],
