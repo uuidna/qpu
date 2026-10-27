@@ -5,48 +5,9 @@
 import { PAYLOAD_SURFACE } from './payload-surface.ts'
 import { LICENSE } from './license.ts'
 import { VERSION } from './version.ts'
+import { TABLES } from './tables-index.ts'
 
-export const STANDARDS: readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[] = [
-  // the standards Payload's programmatic surface is described by (JSON Schema, OpenAPI, GraphQL, JSON-LD, MCP, the RFCs), read with the surface on 2026-10-26: references the payload tool's schemas door cites per part
-  ...PAYLOAD_SURFACE.standards.map((s) => ({ id: s.id, name: `${s.standard}: ${s.describes.slice(0, s.describes.indexOf(':') > 0 ? s.describes.indexOf(':') : 80)}`, contract: s.canonical, kind: 'reference' as const })),
-  // the reference site: payloadcms.com is built of what Payload computes (its REST answers Payload's own shape: docs with blocks, meta, breadcrumbs), as qpu.uuidna.com is built of what qpu computes
-  { id: 'payload-site', name: 'payloadcms.com, built with Payload (REST pages)', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', kind: 'reference' },
-  // NIST's first post-quantum standards, read at CSRC on 2026-10-25: FIPS 203, 204 and 205 published August 13, 2024; HQC selected March 11, 2025 (NIST IR 8545)
-  // Stripe's own contract: every use case of its API a path of its OpenAPI specification, read by the discover step and compared to the MCP's combinations by the stripe tool (op usecases)
-  { id: 'stripe-openapi', name: 'Stripe API, the OpenAPI specification: every use case a path', contract: 'https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json', kind: 'reference' },
-  { id: 'nist-fips-203', name: 'NIST FIPS 203, Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)', contract: 'https://csrc.nist.gov/pubs/fips/203/final', kind: 'reference' },
-  { id: 'nist-fips-204', name: 'NIST FIPS 204, Module-Lattice-Based Digital Signature Standard (ML-DSA)', contract: 'https://csrc.nist.gov/pubs/fips/204/final', kind: 'reference' },
-  { id: 'nist-fips-205', name: 'NIST FIPS 205, Stateless Hash-Based Digital Signature Standard (SLH-DSA)', contract: 'https://csrc.nist.gov/pubs/fips/205/final', kind: 'reference' },
-  { id: 'nist-pqc', name: 'NIST Post-Quantum Cryptography project (the selections, HQC among them)', contract: 'https://csrc.nist.gov/projects/post-quantum-cryptography', kind: 'reference' },
-  // Payload's own skills for agents (github.com/payloadcms/skills): read as a tree, every SKILL.md a skill, every reference a door the payload toolbox maps; no licence is declared there, so only names, paths and sizes are read, never the text
-  // the source of payloadcms.com (github.com/payloadcms/website, MIT): the tree read for its collections, blocks, globals, fields and plugins, the proof that the site is what Payload computes
-  // the Claude API's overview, read as a page; its Models door answers 401 until a tenant's key opens it (discovery names it, never guesses)
-  { id: 'cloudflare-webcrypto-modern', name: 'Cloudflare changelog 2026-09-28: Web Crypto adds ML-KEM and ML-DSA (webcrypto_modern_algorithms)', contract: 'https://developers.cloudflare.com/changelog/post/2026-09-28-webcrypto-modern-algorithms/', kind: 'reference' },
-  { id: 'claude-api', name: 'Claude API overview (platform.claude.com)', contract: 'https://platform.claude.com/docs/en/api/overview', kind: 'reference' },
-  { id: 'payload-website', name: 'payloadcms/website, the source of payloadcms.com (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/website/git/trees/main?recursive=1', kind: 'reference' },
-  { id: 'payload-packages', name: 'payloadcms/payload, the packages Payload ships (the packages directory)', contract: 'https://api.github.com/repos/payloadcms/payload/contents/packages', kind: 'reference' },
-  { id: 'payload-ecommerce-template', name: 'payloadcms/payload, the ecommerce template (templates/ecommerce/src)', contract: 'https://api.github.com/repos/payloadcms/payload/contents/templates/ecommerce/src', kind: 'reference' },
-  { id: 'ecb-rates', name: 'European Central Bank, euro foreign exchange reference rates (daily XML)', contract: 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml', kind: 'reference' },
-  { id: 'frankfurter-rates', name: 'Frankfurter, the ECB rates as JSON (v1)', contract: 'https://api.frankfurter.dev/v1/latest?base=EUR', kind: 'reference' },
-  { id: 'bnb-rates', name: 'Bulgarian National Bank, reference rates (foreign currency per euro)', contract: 'https://www.bnb.bg/Statistics/StExternalSector/StExchangeRates/StERForeignCurrencies/index.htm?download=xml&search=&lang=EN', kind: 'reference' },
-  { id: 'er-api-rates', name: 'open.er-api.com, daily rates (free tier)', contract: 'https://open.er-api.com/v6/latest/EUR', kind: 'reference' },
-  { id: 'currency-api-rates', name: 'fawazahmed0/currency-api on jsDelivr (daily, CC0)', contract: 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json', kind: 'reference' },
-  { id: 'clay-millennium-rules', name: 'Clay Mathematics Institute, rules for the Millennium Prize Problems', contract: 'https://www.claymath.org/millennium-problems/rules/', kind: 'reference' },
-  { id: 'xprize-quantum-applications', name: 'XPRIZE Quantum Applications (Google Quantum AI)', contract: 'https://www.xprize.org/prizes/qc-apps', kind: 'reference' },
-  { id: 'vercel-open-source-program', name: 'Vercel Open Source Program', contract: 'https://vercel.com/open-source-program', kind: 'reference' },
-  { id: 'github-accelerator', name: 'GitHub Accelerator and maintainer programs', contract: 'https://github.com/accelerator', kind: 'reference' },
-  { id: 'google-patents', name: 'Google Patents, the query endpoint its site uses (JSON behind a prefix)', contract: 'https://patents.google.com/xhr/query?url=q%3Dquantum%2Berror%2Bcorrection%26num%3D1', kind: 'reference' },
-  { id: 'epo-publication-server', name: 'EPO publication server REST, the publication dates', contract: 'https://data.epo.org/publication-server/rest/v1.2/publication-dates', kind: 'reference' },
-  { id: 'nist-beacon', name: 'NIST Randomness Beacon 2.0, the last pulse', contract: 'https://beacon.nist.gov/beacon/2.0/pulse/last', kind: 'reference' },
-  { id: 'ct-argon-sth', name: 'Certificate Transparency, Google Argon 2026h2, the signed tree head', contract: 'https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth', kind: 'reference' },
-  { id: 'acme-directory', name: "Let's Encrypt ACME v2 directory", contract: 'https://acme-v02.api.letsencrypt.org/directory', kind: 'reference' },
-  { id: 'cern-opendata', name: 'CERN Open Data Portal records API', contract: 'https://opendata.cern.ch/api/records/?q=higgs&size=1', kind: 'reference' },
-  { id: 'payload-skills', name: 'payloadcms/skills, Payload\'s skills for AI agents (the repository tree)', contract: 'https://api.github.com/repos/payloadcms/skills/git/trees/main?recursive=1', kind: 'reference' },
-  { id: 'schema-org', name: 'schema.org vocabulary (JSON-LD)', contract: 'https://schema.org/version/latest/schemaorg-current-https.jsonld', kind: 'vocabulary' },
-  { id: 'cldr-languages', name: 'Unicode CLDR language names (ISO 639)', contract: 'https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/cldr-localenames-full/main/en/languages.json', kind: 'codes' },
-  { id: 'cldr-currencies', name: 'Unicode CLDR currency names (ISO 4217)', contract: 'https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/cldr-numbers-full/main/en/currencies.json', kind: 'codes' },
-  { id: 'cldr-territories', name: 'Unicode CLDR territory names (ISO 3166-1)', contract: 'https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/cldr-localenames-full/main/en/territories.json', kind: 'codes' },
-]
+export const STANDARDS: readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[] = TABLES.STANDARDS as readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[]
 
 type JsonLd = Record<string, unknown> & { '@context': 'https://schema.org'; '@type': string }
 const AUTHOR = { '@type': 'Person', name: LICENSE.author, '@id': LICENSE.orcid, identifier: LICENSE.orcid }

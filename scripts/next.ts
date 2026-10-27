@@ -30,6 +30,7 @@ type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs
 const TIMES = await timesOf(ROOT), budgetFor = (s: Step) => Math.min(2 * (s.budgetMs ?? 600_000), Math.max(s.budgetMs ?? 600_000, 2 * (forecastTimes(TIMES[s.name] ?? [])?.point ?? 0)))
 const steps: Step[] = [
   { name: 'leads', cmd: 'node', args: ['scripts/mcp.ts', 'leads-sync'], skip: offline ? 'offline' : undefined, wave: -1 }, // first: the leads both ways, Payload the source of the index
+  { name: 'tables', cmd: 'node', args: ['scripts/mcp.ts', 'tables-sync'], skip: offline ? 'offline' : undefined, wave: -1 }, // beside the leads: every table Payload holds, the source of the index
   { name: 'names', cmd: 'node', args: ['scripts/names.ts'], skip: offline ? 'offline' : undefined, wave: 0 }, // alone, before every reader: the free names wave, standard verbs recorded in Payload
   { name: 'clay:gen', cmd: 'node', args: ['scripts/gen-clay.ts'], wave: 1 },
   { name: 'docs:gen', cmd: 'node', args: ['scripts/gen-docs.ts'], wave: 1 },

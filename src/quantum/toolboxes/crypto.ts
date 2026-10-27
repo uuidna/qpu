@@ -15,6 +15,7 @@ import { CODATA_URL, parseConstants } from '../constants.ts'
 import { splitUuid } from '../split.ts'
 import { castRays } from '../theme.ts'
 import { speakHex } from '../i18n.ts'
+import { TABLES } from '../tables-index.ts'
 
 type Piece = { index: number; reflection: number; address: string; sha256: string; bytes: number; rows: number; firstKey: string | null; lastKey: string | null; seed: number; trinity: number[] }
 type Fold = { bytes: number; bound: number; fits: boolean; excess: number; pieces: Piece[]; count: number; root: string; fold: string; boundary: { d: number; sigma: string; says: string }; decided: { by: string; comparisons: number } }
@@ -195,16 +196,7 @@ const POST_QUANTUM = {
 const LEDGER = Array.from({ length: 40 }, (_, i) => JSON.stringify({ key: `k${String(i).padStart(2, '0')}`, value: i * i, note: 'a row of the ledger' })).join('\n')
 
 /** Every crypto and certificate API found and measured (2026-10-26), with NIST and CERN: what answers in the open, what a client reads itself (its hosts' live certificates), what refused. */
-export const ATTEST_APIS: readonly { id: string; name: string; url: string; open: boolean; measured: string }[] = [
-  { id: 'nist-beacon', name: 'NIST Randomness Beacon 2.0, the last pulse', url: 'https://beacon.nist.gov/beacon/2.0/pulse/last', open: true, measured: 'HTTP 200 JSON: pulse { chainIndex, pulseIndex, timeStamp, period 60000, localRandomValue, listValues[previous|hour|day|month|year], precommitmentValue, signatureValue (1024 hex), outputValue (128 hex) }' },
-  { id: 'ct-sth', name: 'Certificate Transparency, Google Argon 2026h2 log, the signed tree head', url: 'https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth', open: true, measured: 'HTTP 200 JSON: tree_size 3 461 480 042, timestamp, sha256_root_hash (base64 of 32 bytes), tree_head_signature' },
-  { id: 'acme-directory', name: "Let's Encrypt ACME v2 directory (RFC 8555)", url: 'https://acme-v02.api.letsencrypt.org/directory', open: true, measured: 'HTTP 200 JSON: newNonce, newAccount, newOrder, revokeCert, keyChange, meta' },
-  { id: 'nvd-cves', name: 'NIST NVD, CVEs on ML-KEM', url: 'https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5', open: true, measured: 'HTTP 200 JSON: totalResults 10; vulnerabilities[].cve { id, published, lastModified, metrics.cvssMetricV31[].cvssData.baseScore }; five requests a thirty seconds without a key' },
-  { id: 'cern-opendata', name: 'CERN Open Data Portal, records on the Higgs', url: 'https://opendata.cern.ch/api/records/?q=higgs&size=5', open: true, measured: 'HTTP 200 JSON: hits.total 5566; hits.hits[].metadata { recid, title, files[] { size, checksum adler32:<8 hex> }, relations[].doi 10.7483/…, license CC0-1.0 }' },
-  { id: 'crt-sh', name: 'crt.sh, the certificates logged for a host', url: 'https://crt.sh/?q=<host>&output=json', open: true, measured: 'HTTP 502 on 2026-10-26 (its gateway); when it answers, JSON entries with not_before, not_after, issuer_name' },
-  { id: 'tls-live', name: "a host's live TLS certificate, read by the client (openssl or node:tls), never fetched by the tree", url: 'tls://<host>:443', open: true, measured: 'qpu.uuidna.com: Google Trust Services WE1, 2026-09-09 to 2026-12-08 (90 days)' },
-  { id: 'csrc-pqc', name: 'NIST CSRC, the post-quantum cryptography project page', url: 'https://csrc.nist.gov/projects/post-quantum-cryptography', open: true, measured: 'HTTP 200 HTML (60 KB) naming FIPS 203, 204, 205' },
-]
+export const ATTEST_APIS: readonly { id: string; name: string; url: string; open: boolean; measured: string }[] = TABLES.ATTEST_APIS as readonly { id: string; name: string; url: string; open: boolean; measured: string }[]
 type AttestAnswer = { id: string; text: string; status?: number }
 type Verdict = { theorem: string; passed: boolean; says: string }
 const dayMs = 86_400_000

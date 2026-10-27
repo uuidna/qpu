@@ -43,6 +43,7 @@ const GOOGLE_MCP: readonly { host: string; url: string; about: string; maps: str
 ]
 /** Google Workspace's nine MCP servers (Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, People, Classroom): the institution's doors, each landing in the docket. */
 import { WORKSPACE_MCP } from './institutions.ts'
+import { TABLES } from './tables-index.ts'
 export { WORKSPACE_MCP }
 /** Google's MCP toolboxes in the registry (local servers): proposed, never called. */
 /** Google reached by one door, the qpu-google-call job of the Payload app: a GOOGLE_HOST is called by that job alone, which reads the API's
@@ -79,14 +80,7 @@ export const CLAUDE_API = {
   mcpConnector: { beta: 'mcp-client-2025-11-20', note: 'mcp_servers: [{ type: url, url, name }] with tools: [{ type: mcp_toolset, mcp_server_name }] — both halves, or the request is refused' },
 } as const
 /** Every MCP this tree knows how to integrate, with what it does with each once the tenant's token opens it. */
-export const KNOWN_MCP: readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[] = [
-  ...CLOUDFLARE_MCP.map((c) => ({ ...c, auth: (c.host === 'docs.mcp.cloudflare.com' ? 'none' : 'token') as 'none' | 'token', maps: c.host === 'docs.mcp.cloudflare.com' ? 'the verifier cloudflare-docs: a fact on developers.cloudflare.com is searched there (search_cloudflare_documentation)' : c.host === 'bindings.mcp.cloudflare.com' ? 'the docket\'s mirrors: KV, R2, D1 and Durable Objects of the tenant read as mirrors to heal by address' : c.host === 'observability.mcp.cloudflare.com' ? 'the metrics tool: the Worker\'s logs and analytics beside the balancer\'s own counts' : c.host === 'browser.mcp.cloudflare.com' ? 'the verification wave: a page rendered at the edge when a verifier needs the page as a browser sees it' : c.host === 'radar.mcp.cloudflare.com' ? 'the legal audit: internet-wide facts as public datasets' : c.host === 'ai-gateway.mcp.cloudflare.com' ? 'the prose tool: generation logged through the tenant\'s gateway, never a token of this tree' : c.host === 'dns-analytics.mcp.cloudflare.com' ? 'the tenants: the custom domains\' DNS read per tenant' : 'the textbook: the tenant\'s indexed documents as a textbook to categorise' })),
-  { host: 'api.anthropic.com', url: CLAUDE_API.messages, about: 'the Claude API: messages, the MCP connector that mounts this catalogue into a request, the Models door', auth: 'token' as const, maps: 'the operator agent of the legal audit and the prose tool when the tenant\'s key opens it (never by default: free doors first); outward, extend answers the Messages API registration that mounts this catalogue (mcp_servers + mcp_toolset, beta mcp-client-2025-11-20)' },
-  ...GOOGLE_MCP.map((g) => ({ host: g.host, url: g.url, about: g.about, auth: 'token' as const, maps: g.maps })),
-  ...WORKSPACE_MCP.map((w) => ({ host: w.host, url: w.url, about: `Google Workspace ${w.product} (Developer Preview): the institution's door`, auth: 'token' as const, maps: `textbook { institution }: ${w.renders}; every record a docket entry through the Payload MCP (createEntries)` })),
-  { host: 'mcp.stripe.com', url: 'https://mcp.stripe.com', about: 'Stripe\'s MCP server: its tools over the Stripe API, a tenant\'s secret key the bearer', auth: 'token' as const, maps: 'the billing toolbox: its tools read into doors beside the stripe tool\'s ops (extend, direction in); the use cases of the Stripe API compared to the MCP\'s combinations by stripe { op: usecases }' },
-  ...GITHUB_MCP.map((g) => ({ ...g, auth: 'token' as const, maps: 'the repository toolbox: branches, tags and releases watched through the doors list_branches, list_tags and list_releases instead of the REST contract; the next-leads docket as issues when the tenant asks' })),
-]
+export const KNOWN_MCP: readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[] = TABLES.KNOWN_MCP as readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[]
 /** The hosts discovered when a tenant names none: the unit, this tree, Cloudflare's eight servers and GitHub's. */
 export const UNIT_MCP = 'https://uuidna.com/mcp', QPU_MCP = 'https://qpu.uuidna.com/mcp', DEFAULT_MCP_HOSTS: readonly string[] = [UNIT_MCP, QPU_MCP, ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url), ...GOOGLE_MCP.map((g) => g.url)]
 /** The JSON of an MCP answer, whether the host answered JSON or an event stream (the data line that is JSON). */
@@ -313,12 +307,7 @@ export const rankBestDoors = (lead: { id: string; statement: string }, remotes: 
 
 /** Open MCP servers the QPU's tools/list is measured against: each answered initialize and tools/list without a key (measured 2026-10-26);
  *  baselines only, not integrations. Learning Commons answered 401 and is not one. */
-export const OPEN_MCP_BASELINES: readonly { id: string; url: string }[] = [
-  { id: 'cloudflare-docs', url: CLOUDFLARE_DOCS_MCP },
-  { id: 'deepwiki', url: 'https://mcp.deepwiki.com/mcp' },
-  { id: 'microsoft-learn', url: 'https://learn.microsoft.com/api/mcp' },
-  { id: 'context7', url: 'https://mcp.context7.com/mcp' },
-]
+export const OPEN_MCP_BASELINES: readonly { id: string; url: string }[] = TABLES.OPEN_MCP_BASELINES as readonly { id: string; url: string }[]
 /** A tools/list as a client pays for it: its bytes, the tokens it costs at four bytes a token, and the bytes per tool. */
 const measureToolsListCost = (bytes: number, tools: number) => ({ bytes, tokens: Math.ceil(bytes / 4), tools, perTool: tools ? Math.round(bytes / tools) : null })
 /** The official MCP registry, latest version of each server, a page at a time (measured 2026-10-26: no total in the answer, a nextCursor while

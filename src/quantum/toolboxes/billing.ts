@@ -11,6 +11,7 @@ import { uuidOf } from '../blocks.ts'
 import { LICENSE } from '../license.ts'
 import { flowWidget } from '../widgets.ts'
 import { diffMembers, findRemedies, GENERATOR_REMEDIES } from '../audit.ts'
+import { TABLES } from '../tables-index.ts'
 
 type Checkout = { tenant: string; host: string; subject: string; domains: string[]; mode: 'payment' | 'subscription'; price?: string; amount?: number; currency: string; successUrl: string; cancelUrl: string; customerEmail?: string }
 type Plan = { method: 'POST'; url: string; headers: Record<string, string>; form: Record<string, string>; secret: string }
@@ -152,13 +153,7 @@ const COMPLETED = EVENT('evt_1', 'checkout.session.completed', 1_700_000_000, { 
  * Bulgarian National Bank's reference rates (foreign currency per euro since Bulgaria adopted the euro on 2026-01-01), open.er-api (daily, free tier),
  * and fawazahmed0's currency-api on jsDelivr (daily, 200+ currencies incl. crypto). All EUR-based, all daily: real time is the day for reference rates;
  * an intraday rate is a paid provider's door, a lead. Fetched by the currency step and by the wave as references; parsed here, pure. */
-export const RATE_SOURCES: readonly { id: string; name: string; url: string; format: 'xml-ecb' | 'json-frankfurter' | 'xml-bnb' | 'json-er-api' | 'json-fawazahmed'; cadence: string; terms: string }[] = [
-  { id: 'ecb', name: 'European Central Bank, euro foreign exchange reference rates', url: 'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml', format: 'xml-ecb', cadence: 'daily, around 16:00 CET', terms: 'free, reference only' },
-  { id: 'frankfurter', name: 'Frankfurter (ECB rates as JSON)', url: 'https://api.frankfurter.dev/v1/latest?base=EUR', format: 'json-frankfurter', cadence: 'daily (ECB)', terms: 'free, open source' },
-  { id: 'bnb', name: 'Bulgarian National Bank, reference rates (foreign currency per 1 euro)', url: 'https://www.bnb.bg/Statistics/StExternalSector/StExchangeRates/StERForeignCurrencies/index.htm?download=xml&search=&lang=EN', format: 'xml-bnb', cadence: 'daily', terms: 'free, reference only' },
-  { id: 'er-api', name: 'open.er-api.com (ExchangeRate-API open endpoint)', url: 'https://open.er-api.com/v6/latest/EUR', format: 'json-er-api', cadence: 'daily, 1 500 requests a month free', terms: 'free tier with attribution' },
-  { id: 'fawazahmed', name: 'fawazahmed0/currency-api on jsDelivr', url: 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json', format: 'json-fawazahmed', cadence: 'daily', terms: 'free, CC0' },
-]
+export const RATE_SOURCES: readonly { id: string; name: string; url: string; format: 'xml-ecb' | 'json-frankfurter' | 'xml-bnb' | 'json-er-api' | 'json-fawazahmed'; cadence: string; terms: string }[] = TABLES.RATE_SOURCES as readonly { id: string; name: string; url: string; format: 'xml-ecb' | 'json-frankfurter' | 'xml-bnb' | 'json-er-api' | 'json-fawazahmed'; cadence: string; terms: string }[]
 /** Legal conversion rates: a currency replaced by the euro converts at its fixed rate forever (Bulgaria: 1 EUR = 1.95583 BGN, euro adopted 2026-01-01). */
 const PEGS: Readonly<Record<string, { perEur: number; since: string; says: string }>> = { BGN: { perEur: 1.95583, since: '2026-01-01', says: 'the lev is retired: Bulgaria adopted the euro on 2026-01-01 at the fixed conversion rate of 1.95583 leva per euro; a BGN amount is the EUR amount shown in leva' } }
 /** The currency a domain prices in, by its top-level domain; a tenant prices in its own. */
