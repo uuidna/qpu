@@ -2,7 +2,7 @@
 // read into doors that join this catalogue (the same door reading discovery uses), and a foreign door is served by one
 // request the client fetches, the answer read back whether JSON or an event stream. Outward, this catalogue is expressed as
 // the registration any MCP client mounts (tools/list as every client receives it, the mcpServers fragment). Pure: no fetch.
-import { toolOf, type Toolbox, type Context } from '../toolbox.js'
+import { toolOf, checksOf, type Toolbox, type Context } from '../toolbox.js'
 import { doorOf, dataOf, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, KNOWN_MCP, CLAUDE_API, GEMINI_API, OPEN_MCP_BASELINES, toolsListCompareOf, coverageRequestOf, coverageOf, type Door } from '../discovery.js'
 import { flowWidget } from '../widgets.js'
 
@@ -95,8 +95,7 @@ export const EXTENSION: Toolbox = {
     instructions: 'Inward: call extend with a host (direction in); fetch the one request it emits, adding the tenant\'s bearer token where the host asks for one (QPU_MCP_TOKEN_<HOST>); call again with tools and the host\'s doors join the catalogue as host:tool. Serve one: extend with call { tool, arguments }; fetch the request; call again with answer. Outward: extend with direction out gives the registration (mcpServers fragment) any MCP client mounts. The discover tool extends the default hosts (the unit, this tree, Cloudflare\'s eight servers) on every run; a tenant names its own hosts with QPU_MCP_HOSTS[_<TENANT>].',
     directions: ['server only: a fixture tools/list read into doors; an event-stream answer read back; the registration from this catalogue', 'client → server: the client fetches tools/list and tools/call of the foreign host, token in the request, never in the tool', 'server → client: every answer the host gives is read the same way discovery reads it (JSON or event stream, error, refusal)', 'toolbox → toolbox: the door reading is discovery\'s own (doorOf); the matcher never calls a foreign door to serve a statement; QPU extended by itself is the identity'],
     selftest: (ctx) => {
-      const checks: { id: string; passed: boolean; evidence: string }[] = []
-      const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
+      const { check, done } = checksOf()
       const run = (args: Record<string, unknown>) => (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'extend', arguments: args } }) as { result: { structuredContent: any } }).result.structuredContent
       const inward = run({ direction: 'in', host: 'https://docs.mcp.cloudflare.com/mcp', tools: DOCS_FIXTURE })
       check('extension:inward', inward.phase === 'extended' && inward.inward === 1 && inward.doors[0].takes.join() === 'query' && inward.doors[0].required.join() === 'query', `${inward.inward} door, takes ${inward.doors?.[0]?.takes}`)
@@ -116,7 +115,7 @@ export const EXTENSION: Toolbox = {
       check('extension:request-without-token', request.phase === 'requests' && !JSON.stringify(request).includes('authorization'), 'the tool emits the request; the token is the client\'s')
       const discover = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'discover', arguments: {} } }) as { result: { structuredContent: { requestList: { host: string }[] } } }).result.structuredContent
       check('extension:discover-defaults', CLOUDFLARE_MCP.every((c) => discover.requestList.some((r) => r.host === c.host)), 'discovery asks every Cloudflare server by default')
-      return { passed: checks.every((c) => c.passed), checks }
+      return done()
     },
   },
 }

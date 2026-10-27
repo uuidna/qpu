@@ -80,6 +80,10 @@ theorem textbook_penalty_harmonic (cost price : Nat) (h : price = cost) : price 
 theorem textbook_penalty_proportional (n u : Nat) : (n + 1) * u = n * u + u := Nat.succ_mul n u
 /-- a violation whose learned correction ran by itself and cleared is corrected and re-decided before it is raised: when the correction is applied and the rule holds again, no penalty is raised — the involution of the thinking that caused it (examples: repository-penalty-learned, repository-penalty-learning) -/
 theorem textbook_penalty_learned_prevents (learned raised : Bool) (h : learned = true → raised = false) (hl : learned = true) : raised = false := h hl
+/-- code that folds never grows the tree: a commit adding no more lines than it removes leaves the tree no larger, so every commit the rule folded allows (stagedOf counting outside PROOF_FILES) keeps the code at or under its size — as checksOf folds the nine toolbox selftests into one (examples: repository-commit-folds, repository-commit-grows) -/
+theorem textbook_code_folds (s a r : Nat) (h : a ≤ r) (hr : r ≤ s) : s + a - r ≤ s := by omega
+/-- when no new export is left unproven, every new export is proven: the rule proven (stagedOf reading the theorems and examples PROOF_FILES add) allows a commit only when the proven ones are all the new ones (examples: repository-commit-folds, repository-commit-grows) -/
+theorem textbook_new_doors_proven (news proven : Nat) (hp : proven ≤ news) (hu : news - proven = 0) : proven = news := by omega
 /-- a path or URL literal is clean exactly when it sits in its registry: clean agrees with in the registry, so a clean literal is one in its registry (examples: repository-literals) -/
 theorem textbook_literal_in_registry (registry clean : Bool) (h : clean = registry) : clean = true → registry = true := by intro hc; rw [← h]; exact hc
 /-- the hex digits above nine are spoken as Ⰺ (ten) and a unit, and read back by adding them: ten and one to five are eleven to fifteen, so every hex digit returns as itself (examples: fold-speak) -/

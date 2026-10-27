@@ -5,7 +5,7 @@
 // default, overridden only by the operator's own list. Phase two reads the answers into verdicts, drift and findings, beside
 // the tree's own security checks over its source texts. Pure; the client fetches. Recomputable facts, not legal advice.
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.js'
-import { toolOf, type Toolbox } from '../toolbox.js'
+import { toolOf, checksOf, type Toolbox } from '../toolbox.js'
 import { LICENSE } from '../license.js'
 import type { Discovery } from '../discovery.js'
 import type { Lead } from '../leads.js'
@@ -75,9 +75,8 @@ export const claimsOf = (texts: Texts, leads: readonly Lead[], cite?: { theorem?
 export const securityOf = (texts: Texts): { id: string; passed: boolean; evidence: string }[] => {
   const w = texts.worker ?? ''; const b = texts.billing ?? ''; const h = texts.hmac ?? ''; const m = texts.mcp ?? ''
   const all = `${w}\n${b}\n${h}\n${m}\n${texts.readme ?? ''}`
-  const checks: { id: string; passed: boolean; evidence: string }[] = []
-  const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
-  if (!w) { check('security:worker-text', false, 'no worker source given: nothing measured'); return checks }
+  const { check, done } = checksOf()
+  if (!w) { check('security:worker-text', false, 'no worker source given: nothing measured'); return done().checks }
   check('security:no-live-secret-literal', !/\b(sk_live_|whsec_[0-9A-Za-z]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN (RSA |EC )?PRIVATE KEY)/.test(all), 'no live Stripe key, webhook secret, AWS key or private key literal in the sources')
   check('security:tokens-compared-in-constant-time', /const sameToken[\s\S]*?\^/.test(w) || /sameToken = [\s\S]{0,400}\^/.test(w), 'sameToken xors the bytes; no early exit on a mismatch')
   check('security:signature-compared-in-constant-time', /sameHex[\s\S]*?\^/.test(h) && /sameHex\(/.test(b), 'the Stripe signature is compared by sameHex, xor over every character')
@@ -88,7 +87,7 @@ export const securityOf = (texts: Texts): { id: string; passed: boolean; evidenc
   check('security:cors-headers', /Access-Control-Allow-Origin/.test(w) && /OPTIONS/.test(w), 'cross-origin reads allowed, preflight answered')
   check('security:timeouts-on-outbound', /AbortSignal\.timeout\(/.test(w), 'every outbound fetch of the Worker carries a timeout')
   check('security:no-eval', !/\beval\(|new Function\(/.test(all), 'no eval, no Function constructor')
-  return checks
+  return done().checks
 }
 
 /** The evidence of precedence and prior art, by DOI: the author's records, each read by the datacite and doi.org verifiers of the wave; no cap on how many
@@ -391,8 +390,7 @@ export const LEGAL: Toolbox = {
     instructions: 'The client reads the tree\'s texts (README, CITATION.cff, .zenodo.json, package.json, src/worker.ts, the billing and hmac modules, mcp.ts), the discovery and the theorem ledger, calls legal for the plan, makes every call against its host, and calls legal again with the answers; it writes legal.json and the page. Agents are the free doors discovery found; the operator overrides with agents: [...] and nothing else does. A refusal is recorded, never retried blindly.',
     directions: ['server only: claims from fixture metadata, security checks on fixture sources, the plan, the audit of fixture answers', 'client → server: the texts come from the tree, the answers from the doors', 'toolbox → toolbox: the doors come from discovery; the claims include every perspective lead; the licence module is the measure of drift'],
     selftest: (ctx) => {
-      const checks: { id: string; passed: boolean; evidence: string }[] = []
-      const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
+      const { check, done } = checksOf()
       const claims = claimsOf(FIXTURE_TEXTS, ctx.leads)
       check('legal:claims', claims.some((c) => c.id === 'citation-cff' && c.text.includes('Tsvetan Rouschev')) && claims.some((c) => c.id === 'zenodo-json') && claims.some((c) => c.id === 'package-json') && claims.some((c) => c.id.startsWith('readme-tests')) && claims.filter((c) => c.id.startsWith('perspective-')).length >= 10, `${claims.length} claims: ${claims.slice(0, 8).map((c) => c.id).join(', ')}…`)
       const sec = securityOf(FIXTURE_TEXTS)
@@ -420,7 +418,7 @@ export const LEGAL: Toolbox = {
       const read = patentsOf(GOOGLE_FIXTURE)
       const th = 'patents' in read ? patentTheoremsOf(read.patents) : { checked: 0, passed: 0, violations: [], byTheorem: {} }
       check('legal:patents-read-and-theorems-verified', 'patents' in read && read.total === 2 && read.patents[0]!.number === 'US12242926B2' && read.patents[0]!.title === 'Quantum system controller' && th.violations.length === 2 && th.violations.every((v) => v.number === 'EP1234567B1') && patentNumberOf('WO2020123456A1').wellFormed && !patentNumberOf('EP12A').wellFormed && 'error' in patentsOf('not json'), `${th.checked} checks over 2 patents, ${th.violations.length} violations on the second (dates, term); numbers read for US, EP, WO; an unreadable body said so`)
-      return { passed: checks.every((c) => c.passed), checks }
+      return done()
     },
   },
 }

@@ -2,7 +2,7 @@
 // lead; the vocabulary measured against every term the surface emits, so the tables are updated from measurement; and
 // programmable prose: a tool's result and its toolbox's skill rendered as sentences in any locale, backed by the toolset
 // (the numbers are the tool's) and the skillset (the words are the vocabulary's). Pure.
-import { toolOf, type Toolbox, type Context } from '../toolbox.js'
+import { toolOf, checksOf, type Toolbox, type Context } from '../toolbox.js'
 import { LOCALES, TABLES, translateOf, numeralsOf } from '../i18n.js'
 import { flowWidget } from '../widgets.js'
 
@@ -80,8 +80,7 @@ export const LANGUAGE: Toolbox = {
     instructions: 'translate takes text, from and to and answers by vocabulary; call it without text to measure the tables and get the missing terms per locale, which are the leads to fill (from the unit\'s vocabulary door where discovery finds one, or by a person). prose takes a tool, its arguments and a locale and renders the answer as sentences; feed its untranslated words back as vocabulary leads.',
     directions: ['server only: every table reads both ways (en→locale→en returns the term)', 'toolbox → toolbox: prose renders the tree and flow toolboxes\' answers; numerals read by the match toolbox\'s reader', 'client → server: the coverage phase hands the client the missing terms to fill'],
     selftest: (ctx: Context) => {
-      const checks: { id: string; passed: boolean; evidence: string }[] = []
-      const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
+      const { check, done } = checksOf()
       for (const [code, table] of Object.entries(TABLES)) {
         // a term returns if the inverse gives it or a synonym that shares its translation; an empty translation (no article in the locale) has no inverse
         const synonyms = (term: string) => Object.keys(table).filter((k) => table[k] === table[term]).map((k) => k.toLowerCase())
@@ -94,7 +93,7 @@ export const LANGUAGE: Toolbox = {
       check('language:prose-bg', p.sentences.length === 3 && p.text.includes('54') && /инструмент/.test(p.text), p.text.slice(0, 160))
       const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement: 'Разложи Ⰺⰴ с Shor', locale: 'bg' } } })
       check('language:match-in-bg', 'result' in r && r.result.structuredContent.read?.verdictIn === 'обслужена', 'result' in r ? `${r.result.structuredContent.verdict} → ${r.result.structuredContent.read?.verdictIn}` : r.error.message)
-      return { passed: checks.every((c) => c.passed), checks }
+      return done()
     },
   },
 }

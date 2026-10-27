@@ -3,7 +3,7 @@
 // one piece it sits in, so a door answers from that piece and never from the whole. The bound is a reflective boundary:
 // σ_n(i) = n − i mirrors every piece onto the one across the fold, and the excess over the bound is reflected into the count
 // of pieces, decided by integer comparisons before anything is computed. Pure: SHA-256 and the fold address, nothing else.
-import { toolOf, type Toolbox } from '../toolbox.js'
+import { toolOf, checksOf, type Toolbox } from '../toolbox.js'
 import { uuidOf, presentationOf, streamOf, uuidSchemasOf, UUID_SCHEMAS, compositionsOf, compositionOf, compositionIndexOf, harmonicDefaultsOf, type StreamQuery } from '../blocks.js'
 import { entropyOf } from '../scan.js'
 import { courtOf } from './legal.js'
@@ -291,8 +291,7 @@ export const CRYPTO: Toolbox = {
     instructions: 'fold { text, bound } before sending a payload to a place with a limit (an isolate, a request, a quantum): send the pieces, each under the bound; a reader asks fold { text, bound, key } to learn which piece a key sits in and reads that piece alone; fold { pieces, root } checks the whole came back. seal names any text the way blocks and pieces are named.',
     directions: ['server only: a ledger folded under a bound, pieces under the bound, keys located, the root recomputed from the pieces, a wrong piece named', 'toolbox → toolbox: the fold address is the balancer\'s and the docket\'s (blocks.ts), the hash the billing toolbox\'s (hmac.ts), the seed and trinity the Clay register\'s', 'client → server: the unit\'s doors answer from one piece (rowsForKeys) or the baked root — this is the fold they need'],
     selftest: () => {
-      const checks: { id: string; passed: boolean; evidence: string }[] = []
-      const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
+      const { check, done } = checksOf()
       const f = foldOf(LEDGER, 600)
       check('crypto:pieces-under-the-bound', f.pieces.every((p) => p.bytes <= 600) && f.count > 1 && !f.fits && f.excess === f.bytes - 600, `${f.count} pieces, the largest ${Math.max(...f.pieces.map((p) => p.bytes))} bytes under 600`)
       check('crypto:reflective-boundary', f.pieces.every((p) => p.reflection === f.count - 1 - p.index) && f.boundary.d === f.count - 1, f.boundary.sigma)
@@ -315,7 +314,7 @@ export const CRYPTO: Toolbox = {
       check('crypto:attest-theorems-in-combination', chained.violations.length === 0 && chained.followUps.length === 0 && chained.checked >= 16 && chained.byTheorem.textbook_precommitment_is_sha512!.passed === 1 && broken.violations.some((x) => x.theorem === 'textbook_precommitment_is_sha512') && broken.violations.some((x) => x.theorem === 'textbook_cert_validity_bound') && broken.violations.some((x) => x.theorem === 'textbook_now_within_validity') && hex(sha512(utf8('abc'))).startsWith('ddaf35a193617aba'), `${chained.checked} checks over eight sources, none violated; a wrong precommitment and an expired two-year certificate are named; SHA-512 agrees with the published vector`)
       check('crypto:seal', sha('abc') === 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad' && hex(hmacSha256(utf8('key'), utf8('The quick brown fox jumps over the lazy dog'))) === 'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8', 'SHA-256 and HMAC-SHA256 agree with the published vectors')
       void row
-      return { passed: checks.every((c) => c.passed), checks }
+      return done()
     },
   },
 }

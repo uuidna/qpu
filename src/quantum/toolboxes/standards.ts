@@ -1,6 +1,6 @@
 // The standards toolbox: schema.org JSON-LD for any block, page or offer, and the tree's ISO codes validated against the
 // CLDR lists a client fetched. Pure; the discover tool reads the standards' documents as contracts.
-import { toolOf, type Toolbox } from '../toolbox.js'
+import { toolOf, checksOf, type Toolbox } from '../toolbox.js'
 import { blockJsonLdOf, pageJsonLdOf, offerJsonLdOf, codesOf, validateOf, STANDARDS, detectStandard } from '../standards.js'
 import { LOCALES } from '../i18n.js'
 import { CATALOGUE } from './billing.js'
@@ -52,8 +52,7 @@ export const STANDARDS_BOX: Toolbox = {
     instructions: 'jsonld needs no fetch. codes: the client fetches the three CLDR documents the plan names (GET, free, no credential) and calls codes with them; a code the standard does not know is a lead. The discover step reads schema.org\'s vocabulary and the CLDR lists as contracts; every tools/call result carries _meta.jsonLd and every documentation page a JSON-LD script.',
     directions: ['server only: JSON-LD shapes on fixtures; CLDR fixtures read into code sets; the tree\'s codes validated', 'client → server: the CLDR lists come from Unicode\'s repository', 'toolbox → toolbox: offers come from the billing catalogue, locales from the language toolbox, the contracts from discovery'],
     selftest: () => {
-      const checks: { id: string; passed: boolean; evidence: string }[] = []
-      const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
+      const { check, done } = checksOf()
       const b = blockJsonLdOf({ tool: 'clay', id: 'x', description: 'd', date: '2026-01-01T00:00:00.000Z' })
       check('standards:block', b['@type'] === 'CreativeWork' && (b.author as { '@id': string })['@id'] === 'https://orcid.org/0009-0000-7312-9778' && b.dateModified === '2026-01-01T00:00:00.000Z' && b.inLanguage === 'en', 'CreativeWork with ORCID author, ISO 8601 date, ISO 639-1 language')
       const p = pageJsonLdOf({ url: 'https://qpu.uuidna.com/abc', title: 't', description: 'd', uuid: 'abc', locale: 'bg' })
@@ -65,7 +64,7 @@ export const STANDARDS_BOX: Toolbox = {
       const none = validateOf(codesOf({}), { locales: ['en'], currencies: ['eur'] })
       check('standards:unmeasured', !none.measured && none.languagesUnknown.length === 0, 'without the lists nothing is called unknown')
       check('standards:detect', detectStandard(JSON.stringify({ '@context': 'x', '@graph': [1, 2] }))?.detected === 'json-ld vocabulary' && detectStandard(JSON.stringify(CLDR_FIXTURE.languages))?.detected === 'cldr json' && detectStandard('<html>') === null, 'the vocabulary and a CLDR list are told apart')
-      return { passed: checks.every((c) => c.passed), checks }
+      return done()
     },
   },
 }

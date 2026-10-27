@@ -5,7 +5,7 @@
 // entries at any tenant, since a licence names the domains it is valid on and the entries mirror. Every scenario between
 // tenants is an entry and a rule, never a special case: the same licence at another domain, a refund after a grant, a
 // dispute, a renewal, a replayed event, a wrong tenant's signature.
-import { toolOf, type Toolbox } from '../toolbox.js'
+import { toolOf, checksOf, type Toolbox } from '../toolbox.js'
 import { hmacSha256, utf8, hex, sameHex, sha256 } from '../hmac.js'
 import { uuidOf } from '../blocks.js'
 import { LICENSE } from '../license.js'
@@ -593,8 +593,7 @@ export const BILLING: Toolbox = {
     instructions: 'Per tenant the author sets two wrangler secrets, STRIPE_SECRET_KEY_<TENANT> and STRIPE_WEBHOOK_SECRET_<TENANT>, and registers https://<host>/docket/stripe as the webhook endpoint at Stripe. A client calls stripe plan and the Worker executes the plan with the tenant key, answering the session url. Stripe posts events to the tenant\'s endpoint; the Worker calls stripe webhook with the raw body, the Stripe-Signature header and the tenant secret, writes the entry it gets to the tenant docket (mirrors carry it to the others), and answers 200 on a duplicate. Any host answers stripe state for a subject at its domain from the entries it holds.',
     directions: ['server only: SHA-256 and HMAC vectors, the signature round trip, every event type to its state, every scenario between tenants', 'client → server: the Worker hands the raw body, the header and the secret; the handler never holds a key', 'toolbox → toolbox: entries are addressed with the tree\'s uuidOf, kept in the raid docket, verified by the tree toolbox\'s verify'],
     selftest: () => {
-      const checks: { id: string; passed: boolean; evidence: string }[] = []
-      const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
+      const { check, done } = checksOf()
       check('billing:sha256-vector', hex(hmacSha256(utf8('key'), utf8('The quick brown fox jumps over the lazy dog'))) === 'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8', 'RFC 2104 / Wikipedia HMAC-SHA256 vector')
       const sig = signatureOf(SECRET, 1_700_000_000, COMPLETED)
       check('billing:signature-valid', verifySignature(SECRET, sig, COMPLETED, 1_700_000_010).valid, 'the tenant\'s own secret verifies')
@@ -629,7 +628,7 @@ export const BILLING: Toolbox = {
       check('billing:drift-named', drift.USD!.outcome === 'drift' && drift.USD!.drifting.includes('x'), 'a source 7 % off the median is named as drifting')
       check('billing:amounts-in-every-currency', amountsOf(43200, h).usd === 48353.76 && amountsOf(43200, h).bgn === 84491.86 && amountsOf(43200, h).eur === 43200, '432.00 € is 483.54 $ and 844.92 лв at these rates, to the cent')
       check('billing:tenant-and-domain-currency', TENANT_CURRENCY.psg === 'EUR' && DOMAIN_CURRENCY.bg === 'EUR' && DOMAIN_CURRENCY.com === 'USD', 'psg prices in euro; .bg is euro since 2026; .com is dollar')
-      return { passed: checks.every((c) => c.passed), checks }
+      return done()
     },
   },
 }

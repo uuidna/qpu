@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T01:34:10.812Z",
+ "date": "2026-10-27T01:40:34.831Z",
  "input": {
   "doors": [
    {
@@ -1642,12 +1642,17 @@
    },
    {
     "key": "textbook_penalty_time_heat_monotone",
-    "bytes": 202,
+    "bytes": 151,
+    "used": true
+   },
+   {
+    "key": "textbook_penalty_no_cliff",
+    "bytes": 109,
     "used": true
    },
    {
     "key": "textbook_penalty_free_under_budget",
-    "bytes": 119,
+    "bytes": 122,
     "used": true
    },
    {
@@ -1662,7 +1667,7 @@
    },
    {
     "key": "textbook_penalty_time_burned",
-    "bytes": 255,
+    "bytes": 205,
     "used": true
    },
    {
@@ -1678,6 +1683,16 @@
    {
     "key": "textbook_hook_steps_monotone",
     "bytes": 148,
+    "used": true
+   },
+   {
+    "key": "textbook_idle_priced_by_remaining",
+    "bytes": 194,
+    "used": true
+   },
+   {
+    "key": "textbook_idle_scheduled_clears",
+    "bytes": 84,
     "used": true
    },
    {
@@ -3576,8 +3591,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 21477,
-   "used": 21477,
+   "capacity": 21766,
+   "used": 21766,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

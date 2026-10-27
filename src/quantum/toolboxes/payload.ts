@@ -4,7 +4,7 @@
 // SEO plugin's fields from the block's Open Graph, carrying its JSON-LD and its licence. Pure and small: computed once per
 // block by the balancer, so the cost is a few kilobytes and no computation on the device — the battery is the result.
 import { narrowOf, sandboxOf, type NarrowRequest } from '../namespaces.js'
-import { toolOf, type Toolbox, type Context } from '../toolbox.js'
+import { toolOf, checksOf, type Toolbox, type Context } from '../toolbox.js'
 import { channelOf, uuidFromParts, uuidOf, styleOf, presentationOf, streamOf, PRESENTABLE_ITEMS, type StreamQuery } from '../blocks.js'
 import { seedOf, trinityOf } from '../clay-register.js'
 import { TENANTS, tenantOf } from '../tenants.js'
@@ -2006,8 +2006,7 @@ export const PAYLOAD: Toolbox = {
     instructions: 'configure: a client calls it with no kind to test every configuration around the torus, with kind and current (its file text) to learn the drift as leads, with kind tenant and the names of its environment to learn what the operator still has to set; gen-docs writes the manifest from kind pwa. A Payload host with the default plugins (lexical, nested-docs, seo) stores _meta.payload of any result as it is: the lexical field is the document, nestedDocs.parent the parent relation, seo the plugin\'s fields; the block\'s uuid is the id. A device renders the block from its uuid alone (the walk) and never recomputes what the balancer computed.',
     directions: ['server only: the document shape on a fixture block; the next uuid is the program rotated; the breadcrumbs follow the chain', 'toolbox → toolbox: the block\'s Open Graph and JSON-LD come from the tree and standards toolboxes', 'client → server: a Payload host reads the document; the device reads the uuid'],
     selftest: (ctx) => {
-      const checks: { id: string; passed: boolean; evidence: string }[] = []
-      const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
+      const { check, done } = checksOf()
       const d = payloadDocOf({ uuid: '941ef62e-d97b-2438-bfc8-22ae9e5da781', tool: 'software', arguments: {}, description: 'd', openGraph: { 'og:title': 'software · @uuidna/qpu', 'og:description': 'five tools' }, prev: '016da774-e74c-2e44-8742-f8bcf5e8e8f5', chain: ['00000000-0000-1000-8000-000000000000'] })
       const block = d.lexical.root.children[1] as { type: string; fields: { blockType: string; uuid: string; next: string; program: string; handle: string } }
       const ch = channelOf(d.id); const nx = channelOf(block.fields.next)
@@ -2069,7 +2068,7 @@ export const PAYLOAD: Toolbox = {
       check('payload:merge-commutes-idempotent', ab.address === ba.address && ab.blocks === 3 && aa.address === foldOf(ea) && aa.blocks === 2 && ab.collisions === 0, `merge(a, b) = merge(b, a) at ${ab.address.slice(0, 8)}; merge(a, a) folds to a; no collision`)
       check('configure:adapters-chosen-by-environment', ad.combinations === 50 && ad.chosen.profile === 'vercel' && ad.chosen.database === 'db-mongodb' && cf.chosen.profile === 'cloudflare' && cf.chosen.database === 'db-d1-sqlite' && cf.chosen.storage === 'storage-r2' && cf.chosen.email === 'email-nodemailer' && adaptersOf([]).chosen.profile === 'local', 'fifty combinations; Vercel names Mongo, Blob and nodemailer, Cloudflare names D1 and R2 with the mail adapter the keys name, nothing named is local')
       check('configure:held-drift-measured', heldDriftOf('payload', 'seoPlugin( nestedDocsPlugin( mongooseAdapter( process.env.PAYLOAD_SECRET').join() === 'plugins.qpuPlugin,adapters.qpuDb,adapters.qpuEmail,adapters.qpuStoragePlugins' && heldDriftOf('payload', 'formBuilderPlugin( qpuPlugin() qpuDb() qpuEmail() qpuStoragePlugins() process.env.PAYLOAD_SECRET').length === 0 && heldDriftOf('payload', 'qpuPlugin() formBuilderPlugin( qpuDb() qpuEmail() qpuStoragePlugins() process.env.PAYLOAD_SECRET').join() === 'plugins.qpuPlugin.last' && heldDriftOf('hooks', 'nothing').length === 0 && heldDriftOf('api', "destination: '/api/qpu'").join() === 'rewrite./api/globals/qpu,rewrite./api/mcp,rewrite./api/entries/:uuid,custom-endpoint./api/qpu', 'a hand-held file measured by what MCP configures and the text lacks')
-      return { passed: checks.every((c) => c.passed), checks }
+      return done()
     },
   },
 }

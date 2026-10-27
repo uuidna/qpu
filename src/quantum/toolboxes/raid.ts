@@ -4,7 +4,7 @@
 // here and lands as a new entry linked to the old, since entries are immutable and addressed by content. Nothing here does
 // I/O: the client reads the docket's rows and writes the entries this toolbox returns. Payload's mongodb adapter interface is
 // the shape this ports to, not Cloudflare's D1.
-import { toolOf, type Toolbox, type Context } from '../toolbox.js'
+import { toolOf, checksOf, type Toolbox, type Context } from '../toolbox.js'
 import { uuidOf } from '../blocks.js'
 import { flowWidget } from '../widgets.js'
 
@@ -110,8 +110,7 @@ export const RAID: Toolbox = {
     instructions: 'A client that is a database adapter (Payload\'s mongodb adapter interface) reads a collection\'s rows from the docket (GET /docket?collection=…, the bodies), calls mongo with the op and the rows, and writes the entries the tool returns (POST /docket, writer role) or deletes the ids (DELETE, admin role; a linked entry is refused and kept). Every query is pure and recomputable; every write is content-addressed and linked to what it replaces.',
     directions: ['server only: the query language on a sample collection', 'toolbox → toolbox: entries are addressed with the tree\'s uuidOf and verified by the tree toolbox\'s verify', 'client → server: the rows come from the docket; the entries go back to it'],
     selftest: () => {
-      const checks: { id: string; passed: boolean; evidence: string }[] = []
-      const check = (id: string, passed: boolean, evidence: string) => checks.push({ id, passed, evidence })
+      const { check, done } = checksOf()
       check('raid:find-ops', findOf(SAMPLE, { $or: [{ qubits: { $lt: 60 } }, { 'meta.year': 2025 }] }, { title: 1 }).map((d) => d._id).join() === 'c,b' && findOf(SAMPLE, { title: { $regex: '^Q', $options: 'i' } }).length === 1 && findOf(SAMPLE, { tags: { $in: ['google'] } })[0]?._id === 'a' && findOf(SAMPLE, { meta: { $exists: true }, qubits: { $nin: [54] } }).length === 2, 'or sorted by title (Quantum Echoes before Sycamore), dotted path, regex, in, nin, exists')
       check('raid:find-skip-limit', findOf(SAMPLE, {}, { qubits: 1 }, 1, 1)[0]?._id === 'c' && findOf(SAMPLE, {}, {}, 0).length === 3, 'skip and limit only when asked; no cap otherwise')
       const u = updateOf(SAMPLE[1]!, { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'x' }, $unset: { title: '' } })
@@ -120,7 +119,7 @@ export const RAID: Toolbox = {
       check('raid:entries-addressed', e1.id === e2.id && e1.id !== e3.id && e3.links[0] === e1.id && e1.body._id === e1.id, 'same content, same address; a replacement links what it replaces')
       let threw = false; try { findOf(SAMPLE, { qubits: { $mod: [2, 0] } }) } catch { threw = true }
       check('raid:unported-refused', threw, 'an operator not ported throws, never guesses')
-      return { passed: checks.every((c) => c.passed), checks }
+      return done()
     },
   },
 }
