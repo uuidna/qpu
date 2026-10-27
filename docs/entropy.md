@@ -5,13 +5,13 @@ order: 52
 
 # Entropy converted to leads
 
-The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T17:14:43.653Z through the `audit` tool over 930 source files (82610 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (885 findings, 318 leads, 567 fusion reactions); the gravity of the tree is `5a8feb33-a8e0-60fe-9813-db5e76a865ed`. 4 new lead(s) signalled into the entropy stream this run; the differences since the last run: 4 appeared (to explore), 0 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
+The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T17:23:50.812Z through the `audit` tool over 930 source files (82561 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (886 findings, 318 leads, 568 fusion reactions); the gravity of the tree is `5a8feb33-a8e0-60fe-9813-db5e76a865ed`. 3 new lead(s) signalled into the entropy stream this run; the differences since the last run: 3 appeared (to explore), 0 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
 
 | Kind | Findings | Leads |
 |---|---:|---:|
 | literal | 4 | 4 |
 | typed-path | 1 | 1 |
-| cap | 83 | 21 |
+| cap | 84 | 21 |
 | clock | 21 | 2 |
 | duplicate | 673 | 272 |
 | shape | 87 | 4 |
@@ -25,6 +25,7 @@ The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T17:14:43
 | entropy-cap-adb50b32 | cap | match | actions | 2 | scripts/hook.ts:70, src/quantum/toolboxes/extension.ts:27 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 60) |
 | entropy-cap-51e13790 | cap | match | actions | 1 | scripts/hook.ts:93 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 800) |
 | entropy-cap-113d3f3c | cap | match | actions | 7 | scripts/machine.ts:75, src/quantum/discovery.ts:270, src/quantum/examples.ts:241, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200) |
+| entropy-cap-5c134534 | cap | match | actions | 2 | scripts/mcp.ts:126, src/quantum/readiness.ts:84 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 300) |
 | entropy-cap-e1adfd32 | cap | match | actions | 16 | scripts/purify.ts:170, scripts/purify.ts:183, scripts/textbook.ts:45, src/quantum/audit.ts:421, src/quantum/audit.ts:439, src/quantum/audit.ts:441, src/quantum/audit.ts:443, src/quantum/discovery.ts:136, src/quantum/discovery.ts:183, src/quantum/examples.ts:267, src/quantum/examples.ts:323, src/quantum/match.ts:341, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:202, src/quantum/wave.ts:27, src/worker.ts:373 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80) |
 | entropy-todo-bec4fd43 | todo | imagine | — | 1 | site/src/adapters/AlgoliaSearchBox/index.tsx:24 | a note to self in the code: a lead written where no one reads it — // TODO: allow outside changes to update this field (search modal) |
 | entropy-todo-e25cf1bd | todo | imagine | — | 1 | site/src/app/(frontend)/(cloud)/cloud/[team-slug]/[project-slug]/(tabs)/settings/environment-variables/ManageEnvs/index.tsx:115 | a note to self in the code: a lead written where no one reads it — // TODO: set in state |
@@ -54,7 +55,6 @@ The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T17:14:43
 | entropy-clock-874a626d | clock | imagine | actions | 8 | src/quantum/mcp.ts:710, src/quantum/standards.ts:57, src/quantum/standards.ts:61, src/quantum/toolboxes/flow.ts:42, src/quantum/toolboxes/flow.ts:55, src/quantum/toolboxes/flow.ts:85, src/quantum/toolboxes/flow.ts:114, src/quantum/toolboxes/repository.ts:284 | a clock or a die in a pure module: the result is no longer a function of its arguments — new Date() |
 | entropy-cap-adaaeb32 | cap | match | actions | 1 | src/quantum/namespaces.ts:11 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 63) |
 | entropy-cap-bf74c132 | cap | match | actions | 1 | src/quantum/port.ts:55 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 40) |
-| entropy-cap-5c134534 | cap | match | actions | 1 | src/quantum/readiness.ts:84 | a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 300) |
 | entropy-cap-1e43e20d | cap | match | actions | 4 | src/quantum/toolboxes/billing.ts:175, src/quantum/toolboxes/billing.ts:177, src/quantum/toolboxes/billing.ts:178, src/quantum/toolboxes/billing.ts:182 | a cap on a read or a walk (slice, limit, substring): the user asked for none — limit: 100000 |
 | entropy-cap-be5fd0e2 | cap | match | actions | 1 | src/quantum/toolboxes/billing.ts:176 | a cap on a read or a walk (slice, limit, substring): the user asked for none — limit: 5000000 |
 | entropy-cap-f2122e8d | cap | match | actions | 1 | src/quantum/toolboxes/billing.ts:179 | a cap on a read or a walk (slice, limit, substring): the user asked for none — limit: 1000 |

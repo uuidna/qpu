@@ -86,4 +86,10 @@ export const now = async (root: string, last = 20) => {
   return toolCallerOf('repository')({ status: { events, times: await timesOf(root), last } })
 }
 
-if (process.argv[1]?.endsWith('machine.ts') && process.argv[2] === 'now') console.log(JSON.stringify(await now(process.cwd()), null, 1))
+// the machine from the command line: now, the last receipt's red steps, or any allowed action, its message read from a file
+if (process.argv[1]?.endsWith('machine.ts')) {
+  const [, , action, ...rest] = process.argv, flag = (n: string) => (rest.includes(n) ? rest[rest.indexOf(n) + 1] : undefined)
+  if (action === 'now') console.log(JSON.stringify(await now(process.cwd()), null, 1))
+  else if (action === 'receipt') { const r = readJson(join(process.cwd(), (await runFiles()).receipt)) as { head?: string; steps?: { name: string; status: string; tail: string }[] } | null, red = (r?.steps ?? []).filter((s) => s.status === 'red'); for (const s of red) console.log(`${s.name}: ${s.tail.split('\n').filter((l) => /✗|✖|rror/.test(l)).slice(0, 3).join(' | ')}`); console.log(`${r?.head}: ${red.length} red`) }
+  else if (action) { const file = flag('--message-file'), r = await runMachine({ action, confirm: rest.includes('--confirm'), message: file ? readFileSync(file, 'utf8') : flag('-m'), branch: flag('--branch') }, process.cwd()); console.log(r.answer.preUse ?? r.answer.record?.says ?? (r.answer.plan as { says?: string } | undefined)?.says ?? JSON.stringify(r.answer)) }
+}

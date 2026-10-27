@@ -112,3 +112,16 @@ export const leadsOf = async () => {
   const { LEADS } = await import('../src/quantum/leads.ts'), records = (pages ?? []).flatMap((p) => (p.layout ?? []).flatMap((b) => (b.tool === 'leads' && b.arguments?.lead ? [b.arguments.lead] : []))) as unknown as typeof LEADS[number][], core = new Set(LEADS.map((l) => l.id))
   return { records, all: [...LEADS, ...records.filter((l) => !core.has(l.id))], from: r.from }
 }
+
+// a lead from the command line: node scripts/mcp.ts lead --title <title> --file <statements, one per paragraph> [--parent <page id>]; the page
+// of that title gets the statements it does not hold yet, or is created under the parent (default: the page titled Open work) and its tenant
+if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'lead') {
+  const a = process.argv.slice(3), flag = (n: string) => (a.includes(n) ? a[a.indexOf(n) + 1] : undefined), m = mcpOf(), title = flag('--title') ?? ''
+  const find = async (where: object) => ((await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify(where) })).docs ?? []) as { id: string; tenant?: unknown; layout?: { blockType: string; tool: string; arguments: unknown }[] }[]
+  const statements = readFileSync(flag('--file') ?? '', 'utf8').split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean), block = (statement: string) => ({ blockType: 'qpu', tool: 'match', arguments: { statement } })
+  const page = (await find({ title: { equals: title } }))[0], held = JSON.stringify(page?.layout ?? []), fresh = statements.filter((s) => !held.includes(JSON.stringify(s).slice(1, 120)))
+  const parent = flag('--parent') ? { id: flag('--parent'), tenant: undefined } : (await find({ title: { equals: 'Open work' } }))[0]
+  const r = page ? await m.call('updatePages', { id: page.id, layout: [...(page.layout ?? []).map((b) => ({ blockType: b.blockType, tool: b.tool, arguments: b.arguments })), ...fresh.map(block)] })
+    : await m.call('createPages', { tenant: (parent?.tenant as { id?: string } | undefined)?.id ?? parent?.tenant, title, parent: parent?.id, hero: { type: 'default' }, layout: statements.map(block) })
+  console.log(r.error ? `refused: ${String(r.error).slice(0, 300)}` : `${page ? 'appended' : 'created'}: ${title} (${page ? fresh.length : statements.length} statement(s))`)
+}
