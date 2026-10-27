@@ -909,7 +909,6 @@ export const CONFIG_FILES: readonly { kind: ConfigKind; path: string; source: 't
   { kind: 'hooks', path: fileOf('plugin', 'qpu'), source: 'tool', format: 'ts' },
   { kind: 'api', path: 'site/next.config.js', source: 'hand', format: 'ts' },
 ]
-const PLUGIN_FN: Record<string, string> = { ecommerce: 'ecommercePlugin', lexical: 'lexicalEditor', 'nested-docs': 'nestedDocsPlugin', seo: 'seoPlugin', search: 'searchPlugin', redirects: 'redirectsPlugin', 'form-builder': 'formBuilderPlugin', 'multi-tenant': 'multiTenantPlugin', mcp: 'mcpPlugin' }
 /** The drift of a hand-held TypeScript file against the configuration MCP computes: what the file should mount or call and does not. */
 export const heldDriftOf = (kind: ConfigKind, text: string): string[] => {
   // the plugin must be mounted last: it hooks the collections the other plugins create (form-submissions), so a plugin called after it is drift

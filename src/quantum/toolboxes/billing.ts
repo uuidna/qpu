@@ -50,7 +50,6 @@ export const settlementOf = (transactions: readonly { id: string; net: number; f
   return { ...body, transactions: transactions.length, entry: { id: uuidOf(`settlement${JSON.stringify(body)}`), kind: 'settlement', body } }
 }
 const SECRET_OF = (tenant: string) => `STRIPE_SECRET_KEY_${tenant.toUpperCase()}`
-const WEBHOOK_OF = (tenant: string) => `STRIPE_WEBHOOK_SECRET_${tenant.toUpperCase()}`
 
 /** The checkout session request, as Stripe's API takes it (form-encoded), with the licence in the metadata so the webhook carries it back. */
 export const planOf = (c: Checkout): Plan => {

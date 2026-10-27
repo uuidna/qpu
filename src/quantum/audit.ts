@@ -121,7 +121,7 @@ export const entropyOf = (files: Readonly<Record<string, string>>) => {
       const t = l.trim()
       if (code && !written && t.length >= 60 && !/^(import |export \{|\/\/|\*|\/\*|\}|\)|<)/.test(t)) { const at = repeated.get(t) ?? []; at.push({ file, line: n }); repeated.set(t, at) }
       // an address has a top-level domain of letters: a version after an @ (react@18.3.1) is a package, not a person
-      for (const m of l.matchAll(/[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.[A-Za-z0-9.-]*[A-Za-z]{2,})\b/g)) if (!LEAK_ALLOWED.has(m[1]!) && !/<[^>]*@/.test(m[0]) && !/^[\w.-]+@\d/.test(m[0])) add('leak', file, n, `<address>@${m[1]}`)
+      for (const m of l.matchAll(/[A-Za-z0-9._%+-]+@([A-Za-z0-9-]+\.[A-Za-z0-9.-]*[A-Za-z]{2,})\b/g)) if (!LEAK_ALLOWED.has(m[1]!) && !NOT_A_LEAK('email', m[0]) && !/<[^>]*@/.test(m[0]) && !/^[\w.-]+@\d/.test(m[0])) add('leak', file, n, `<address>@${m[1]}`)
     })
   }
   for (const [t, at] of repeated) if (new Set(at.map((a) => a.file)).size >= 2) for (const a of at) add('duplicate', a.file, a.line, t)

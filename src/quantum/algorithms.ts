@@ -26,7 +26,6 @@ export const inverseOperations = (ops: readonly Operation[]): Operation[] =>
   [...ops].reverse().map((op): Operation => (op.kind === 'gate' ? { ...op, gate: adjointOf(op.gate) } : op))
 
 /** The circuit that prepares the basis state |x> on n qubits, bit i of x on qubit i. */
-const basisOf = (qubits: readonly Qubit[], x: number): Operation[] => qubits.filter((_, i) => (x >> i) & 1).map((q) => applied(X, q))
 
 /** Phase estimation of U = Z**(2θ) on its eigenstate |1>, with n estimation qubits: Hadamards, controlled U^(2^k), the
  *  inverse QFT, then a measurement of the estimation qubits under the key 'm'. The eigenphase is e^(2πiθ). */

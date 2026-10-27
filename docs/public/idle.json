@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T09:25:56.030Z",
+ "date": "2026-10-27T09:36:19.675Z",
  "input": {
   "doors": [
    {
@@ -380,7 +380,7 @@
    },
    {
     "name": "textbook.institution",
-    "bytes": 842,
+    "bytes": 830,
     "reached": true
    },
    {
@@ -1275,7 +1275,7 @@
    },
    {
     "name": "configure.template",
-    "bytes": 169,
+    "bytes": 166,
     "reached": true
    },
    {
@@ -1325,7 +1325,7 @@
    },
    {
     "name": "extend.coverage",
-    "bytes": 357,
+    "bytes": 354,
     "reached": true
    },
    {
@@ -1566,8 +1566,8 @@
     "used": true
    },
    {
-    "key": "textbook_workspace_presets",
-    "bytes": 77,
+    "key": "textbook_workspace_sets",
+    "bytes": 102,
     "used": true
    },
    {
@@ -2091,8 +2091,8 @@
     "used": true
    },
    {
-    "key": "textbook_deploy_presets",
-    "bytes": 57,
+    "key": "textbook_deploy_sets",
+    "bytes": 54,
     "used": true
    },
    {
@@ -3493,8 +3493,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 45754,
-   "used": 36385,
+   "capacity": 45736,
+   "used": 36367,
    "idle": 9369,
    "percentIdle": 20,
    "idleNames": [
@@ -3616,8 +3616,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 22691,
-   "used": 22691,
+   "capacity": 22713,
+   "used": 22713,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []
