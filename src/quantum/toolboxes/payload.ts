@@ -9,7 +9,7 @@ import { channelOf, uuidFromParts, uuidOf, styleOf, presentationOf, streamOf, PR
 import { seedOf, trinityOf } from '../clay-register.js'
 import { TENANTS, tenantOf } from '../tenants.js'
 import { LOCALES } from '../i18n.js'
-import { CLOUDFLARE_MCP, DEFAULT_MCP_HOSTS, CLAUDE_API, KNOWN_MCP, MCP_REGISTRY, GOOGLE_MCPS, detect } from '../discovery.js'
+import { CLOUDFLARE_MCP, DEFAULT_MCP_HOSTS, CLAUDE_API, KNOWN_MCP, MCP_REGISTRY, GOOGLE_MCPS, GOOGLE_HOST, GOOGLE_DISCOVERY, detect } from '../discovery.js'
 import { KEY, hueOf, ANGLES, createOf, coilColourOf } from '../theme.js'
 import { VERSION } from '../version.js'
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.js'
@@ -107,8 +107,24 @@ export const appOf = (ctx: Context, r: { name: string; host: string; plugins?: r
 // Google integration as exact pairs: pages naming Google or holding a google-toolbox block, calls of google-toolbox tools, tenants and keys naming either
 const googleOf = (g: { pages?: any[]; tenants?: object[]; entries?: any[]; keys?: object[] }, tools: string[]) => {
   const names = (x: unknown) => { const t = JSON.stringify(x); return /google/i.test(t) || tools.some((n) => t.includes(`"${n}":true`)) }, pair = (xs: unknown[] = [], p: (x: any) => unknown) => ({ live: xs.filter(p).length, of: xs.length })
-  const pages = (g.pages ?? []).filter((p) => /google/i.test(p.fullTitle ?? p.title) || p.layout?.some((b: { tool: string }) => tools.includes(b.tool))), answered = pair((g.entries ?? []).filter((e) => e.kind === 'call' && tools.includes(e.body?.tool)), (e) => e.result?.error === undefined)
-  return { pages: { published: pair(pages, (p) => p._status === 'published'), parented: pair(pages, (p) => p.parent), blocks: pages.flatMap((p) => p.layout ?? []).reduce((a: Record<string, number>, b: { tool: string }) => ({ ...a, [b.tool]: (a[b.tool] ?? 0) + 1 }), {}) }, tenants: pair(g.tenants, names), calls: { answered, refused: answered.of - answered.live }, keys: pair(g.keys, names), theorem: 'textbook_google_measured' }
+  const jobs = (g.entries ?? []).filter((e) => e.from === 'qpu-google-call' && e.body), pages = (g.pages ?? []).filter((p) => /google/i.test(p.fullTitle ?? p.title) || p.layout?.some((b: { tool: string }) => tools.includes(b.tool))), answered = pair((g.entries ?? []).filter((e) => e.kind === 'call' && tools.includes(e.body?.tool)), (e) => e.result?.error === undefined)
+  return { pages: { published: pair(pages, (p) => p._status === 'published'), parented: pair(pages, (p) => p.parent), blocks: pages.flatMap((p) => p.layout ?? []).reduce((a: Record<string, number>, b: { tool: string }) => ({ ...a, [b.tool]: (a[b.tool] ?? 0) + 1 }), {}) }, tenants: pair(g.tenants, names), calls: { answered, refused: answered.of - answered.live, job: pair(jobs.filter((e) => 'allowed' in e.body), (e) => e.body.allowed && e.body.status < 400), queued: jobs.filter((e) => !('allowed' in e.body)).length, elsewhere: (g.entries ?? []).filter((e) => e.from !== 'qpu-google-call' && URL.canParse(e.body?.url) && GOOGLE_HOST.test(new URL(e.body.url).hostname)).length }, keys: pair(g.keys, names), theorem: 'textbook_google_measured' }
+}
+// One Google call as the qpu-google-call job runs it: a Google page or MCP endpoint by its host, or an API method validated against its Discovery
+// document (the method by id, every parameter known, the required present, enums and patterns held, no credential from the caller); without the
+// document the plan names where the job reads it, keyless
+const googleCallOf = (c: { api?: string; version?: string; method?: string; params?: Record<string, unknown>; body?: unknown; url?: string; httpMethod?: string; discovery?: any }) => {
+  const no = (why: string) => ({ phase: 'google-call' as const, allowed: false, why }), ok = (method: string, url: string, httpMethod: string, scopes: string[]) => ({ phase: 'google-call' as const, allowed: true, method, request: { url, httpMethod, body: c.body ?? null, scopes }, ...(scopes.length ? { token: GOOGLE_DISCOVERY.token } : {}) })
+  if (c.url) { const u = URL.canParse(c.url) ? new URL(c.url) : null; return u?.protocol === 'https:' && GOOGLE_HOST.test(u.hostname) ? ok(u.hostname, u.href, c.httpMethod ?? 'GET', []) : no(`${c.url} is not a Google host over https`) }
+  const d = c.discovery
+  if (!d) return { phase: 'google-call' as const, allowed: null, discovery: GOOGLE_DISCOVERY.rest.replace('{api}', () => encodeURIComponent(c.api ?? '')).replace('{version}', () => encodeURIComponent(c.version ?? '')) }
+  const methods = (r: any): any[] => [...Object.values(r?.methods ?? {}), ...Object.values(r?.resources ?? {}).flatMap(methods)], m = methods(d).find((x) => x.id === c.method || x.id === `${d.name}.${c.method}`)
+  if (!m) return no(`${c.method} is not a method of ${d.name} ${d.version}`)
+  const known: Record<string, { required?: boolean; enum?: string[]; pattern?: string; location?: string }> = { ...d.parameters, ...m.parameters }, p = c.params ?? {}, list = (v: unknown) => [v].flat().map(String)
+  const bad = [...Object.keys(p).filter((k) => !known[k] || /^(key|access_token|oauth_token)$/.test(k)).map((k) => (known[k] ? `${k} is the server's credential` : `${k} unknown`)), ...Object.entries(known).filter(([k, s]) => s.required && p[k] == null).map(([k]) => `${k} required`), ...Object.entries(p).filter(([k, v]) => known[k]?.enum && !list(v).every((x) => known[k]!.enum!.includes(x))).map(([k]) => `${k} not in its enum`), ...Object.entries(p).filter(([k, v]) => known[k]?.pattern && !list(v).every((x) => new RegExp(known[k]!.pattern!).test(x))).map(([k]) => `${k} does not match ${known[k]!.pattern}`), ...(c.body != null && !m.request ? ['the method takes no body'] : [])]
+  if (bad.length) return no(`${m.id}: ${bad.join(', ')}`)
+  const q = new URLSearchParams(Object.entries(p).filter(([k]) => known[k]!.location === 'query').flatMap(([k, v]) => list(v).map((x) => [k, x])))
+  return ok(m.id, `${d.rootUrl}${d.servicePath ?? ''}${String(m.path).replace(/\{(\+?)(\w+)\}/g, (_, plus: string, k: string) => (plus ? String(p[k]) : encodeURIComponent(String(p[k]))))}${q.size ? `?${q}` : ''}`, m.httpMethod, m.scopes ?? [])
 }
 const payload = toolOf('payload', {
   name: 'payload',
@@ -124,6 +140,7 @@ const payload = toolOf('payload', {
     if (args.app && typeof args.app === 'object') return appOf(ctx, args.app as Parameters<typeof appOf>[1])
     // the references between documents as one graph: its cycles, its dangling references, an order when it has none
     if (args.references && typeof args.references === 'object') { const r = args.references as { docs?: RefDoc[] }; if (!Array.isArray(r.docs)) throw new Error('references takes documents: { docs: [{ id, slug?, doc | markdown }] }'); return { phase: 'references' as const, ...referenceGraphOf(r.docs) } }
+    if (args.googleCall && typeof args.googleCall === 'object') return googleCallOf(args.googleCall)
     if (args.google && typeof args.google === 'object') return { phase: 'google' as const, ...googleOf(args.google, toolsOf(ctx).filter((t) => t._meta?.toolbox === 'google').map((t) => t.name)) }
     if (args.standardise && typeof args.standardise === 'object') { const s = args.standardise as { doc?: LexicalDoc }; if (!s.doc?.root) throw new Error('standardise takes a document: { doc: { root } }'); return { phase: 'standardise' as const, ...standardiseOf(s.doc) } }
     // a lexical document's qpu blocks run through MCP: each block is a tool and its arguments, answered through the chat door under the caller's role (corrected where the role requires, a refusal handled, never thrown)
@@ -1693,7 +1710,11 @@ export const appRequest: CollectionAfterChangeHook = async ({ doc, operation, re
       const pluginModule = `${header}// The QPU as Payload plugins, one per capability, each by Payload's plugin guide (definePlugin: a slug, typed options, enabled, arrays spread),
 // composed by the umbrella qpuPlugin: qpu-core, qpu-agents, qpu-machine and qpu-google. Generated by configure { kind: 'fullstack' }.
 import { definePlugin } from 'payload'
-import type { Block, CollectionAfterChangeHook, CollectionConfig, Config, Field, Plugin } from 'payload'
+import type { Block, CollectionAfterChangeHook, CollectionConfig, Config, Field, Plugin, PayloadRequest, TaskConfig } from 'payload'
+import { existsSync, readFileSync } from 'node:fs'
+import { homedir } from 'node:os'
+import path from 'node:path'
+import { createSign } from 'node:crypto'
 import { toolCallerOf } from '@uuidna/qpu/mcp'
 import { Qpu } from '../blocks/Qpu/config'
 import { Entries } from '../collections/Entries'
@@ -1753,9 +1774,45 @@ const measureGoogle: CollectionAfterChangeHook = ({ doc, req, context }) => {
   })().catch((e: Error) => req.payload.logger.warn('google: ' + e.message)), 2000)
   return doc
 }
-/** qpu-google: the Google integration measured on the qpu global; order 20, after the MCP plugin made its keys */
+// every Google call one job on the server, qpu-google-call, asked by an entry of kind call from qpu-google-call (createEntries through the MCP):
+// the job reads the API's Discovery document keyless, the door validates the call against it, the credential is the server's (an API key the
+// tenant's bindings name, else a service account or ADC exchanged at the endpoint the plan names, else keyless) and the answer is an entry of kind call
+const googleAuthOf = async (req: PayloadRequest, tenant: unknown, token?: string, scopes: string[] = []): Promise<{ by: string; key?: string; bearer?: string }> => {
+  const t = tenant ? await req.payload.findByID({ collection: 'tenants' as never, id: String(tenant), depth: 0, overrideAccess: true }).catch(() => null) : null
+  const named = ((t as { bindings?: { variables?: { name: string }[] } } | null)?.bindings?.variables ?? []).map((v) => v.name).filter((n) => process.env[n]), key = named.find((n) => /^GOOGLE_[A-Z_]*KEY$/.test(n)), held = named.find((n) => /CREDENTIALS$/.test(n))
+  if (key) return { by: key, key: process.env[key] }
+  const file = process.env.GOOGLE_APPLICATION_CREDENTIALS ?? path.join(homedir(), '.config', 'gcloud', 'application_default_credentials.json')
+  const raw = !token ? null : held ? process.env[held]!.trim() : existsSync(file) ? readFileSync(file, 'utf8') : null, c = raw ? JSON.parse(raw.startsWith('{') ? raw : Buffer.from(raw, 'base64').toString('utf8')) : null
+  const enc = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url'), now = Math.floor(Date.now() / 1000), claims = enc({ alg: 'RS256', typ: 'JWT' }) + '.' + enc({ iss: c?.client_email, scope: scopes.join(' '), aud: token, iat: now, exp: now + 3600 })
+  const grant: Record<string, string> | null = c?.type === 'service_account' ? { grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: claims + '.' + createSign('RSA-SHA256').update(claims).sign(c.private_key, 'base64url') } : c?.type === 'authorized_user' ? { grant_type: 'refresh_token', client_id: c.client_id, client_secret: c.client_secret, refresh_token: c.refresh_token } : null
+  const bearer = grant ? ((await (await fetch(token!, { method: 'POST', body: new URLSearchParams(grant) })).json()) as { access_token?: string }).access_token : undefined
+  return bearer ? { by: held ?? 'adc', bearer } : { by: 'keyless' }
+}
+const googleCallTask: TaskConfig<{ input: Record<string, any>; output: { entry: string } }> = {
+  slug: 'qpu-google-call', retries: 0,
+  inputSchema: [...['api', 'version', 'method', 'url', 'httpMethod', 'request', 'tenant'].map((name) => ({ name, type: 'text' }) as Field), { name: 'params', type: 'json' }, { name: 'body', type: 'json' }],
+  outputSchema: [{ name: 'entry', type: 'text' }],
+  handler: async ({ input, req }) => {
+    const ask = (x: object) => toolCallerOf('payload')({ googleCall: x }), asked = ask(input)
+    const plan = asked.discovery ? ask({ ...input, discovery: await fetch(asked.discovery, { signal: AbortSignal.timeout(20000) }).then((r) => r.json(), () => null) }) : asked
+    const auth = plan.allowed ? await googleAuthOf(req, input.tenant, plan.token, plan.request.scopes) : null, url = plan.allowed ? new URL(plan.request.url) : null, body = plan.request?.body
+    if (url && auth?.key) url.searchParams.set('key', auth.key)
+    const res = url ? await fetch(url, { method: plan.request.httpMethod, headers: { ...(auth?.bearer ? { authorization: 'Bearer ' + auth.bearer } : {}), ...(body != null ? { 'content-type': 'application/json' } : {}) }, body: body != null ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000) }).then(async (r) => ({ status: r.status, text: await r.text() }), (e: Error) => ({ status: 0, text: e.message })) : null
+    const entry = await req.payload.create({ collection: 'entries' as never, data: { kind: 'call', from: 'qpu-google-call', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, method: plan.method ?? null, allowed: plan.allowed === true, why: plan.why ?? (plan.allowed ? null : 'the Discovery document was not read'), by: auth?.by ?? null, status: res?.status ?? null, answer: res?.text ?? null } } as never, overrideAccess: true, context: { qpuGoogle: true } })
+    return { output: { entry: String((entry as { id: string }).id) } }
+  },
+}
+// a call asked of the job is queued and run at once, so its answer entry stands when createEntries answers
+const queueGoogleCall: CollectionAfterChangeHook = async ({ doc, req, operation, context }) => {
+  if (operation !== 'create' || context.qpuGoogle || doc.kind !== 'call' || doc.from !== 'qpu-google-call' || !doc.body || 'allowed' in doc.body) return doc
+  const job = (await req.payload.jobs.queue({ task: 'qpu-google-call' as never, input: { ...doc.body, request: doc.id, tenant: typeof doc.tenant === 'object' ? doc.tenant?.id : doc.tenant } as never, req })) as { id: string }
+  await req.payload.jobs.runByID({ id: job.id, req })
+  return doc
+}
+/** qpu-google: the Google integration measured on the qpu global and every Google call the qpu-google-call job; order 20, after the MCP plugin made its keys */
 export const qpuGoogle = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-google', order: 20, plugin: ({ config, enabled }) => (enabled === false ? config : {
-  ...hooked(config, Object.fromEntries(['pages', 'tenants', 'entries', 'payload-mcp-api-keys'].map((s) => [s, (c: CollectionConfig) => first(c, 'afterChange', measureGoogle as never)]))),
+  ...hooked(config, Object.fromEntries(['pages', 'tenants', 'entries', 'payload-mcp-api-keys'].map((s) => [s, (c: CollectionConfig) => first(s === 'entries' ? first(c, 'afterChange', queueGoogleCall as never) : c, 'afterChange', measureGoogle as never)]))),
+  jobs: { ...config.jobs, tasks: [...(config.jobs?.tasks ?? []).filter((x) => x.slug !== googleCallTask.slug), googleCallTask as never] },
   globals: (config.globals ?? []).map((g) => (g.slug !== 'qpu' || g.fields.some((f) => 'name' in f && f.name === 'google') ? g : { ...g, fields: [...g.fields, { name: 'google', type: 'json', admin: { readOnly: true } } as Field] })),
 }) })
 /** qpu-machine: the machine tool written into the MCP plugin's options through the plugins map before it runs (its order 10) */

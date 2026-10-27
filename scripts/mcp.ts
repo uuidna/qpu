@@ -4,12 +4,21 @@
 // plugin's json blocks parsed, a find walked page by page. Without a key or an answer it says so and returns nothing: an unread docket is
 // unknown to its caller, never a file fallback.
 import { readFileSync } from 'node:fs'
+import { GOOGLE_HOST } from '../src/quantum/discovery.js'
+import { uuidOf } from '../src/quantum/blocks.js'
 export const MCP_URL = 'http://localhost:3000/api/mcp'
 /** A published file's JSON, or the fallback when it is missing or unreadable: the one reader every script shares, never a throw */
 export const readJson = (path: string, fallback: any = null): any => { try { return JSON.parse(readFileSync(path, 'utf8')) } catch { return fallback } }
 const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
-/** A GET with the named user agent and a timeout: the one fetcher of the public sources */
-export const getOf = (url: string, accept = '*/*', ms = 20000) => fetch(url, { headers: { accept, 'user-agent': UA }, signal: AbortSignal.timeout(ms) })
+/** A Google host asked of the qpu-google-call job through the Payload MCP, never fetched here: the call is an entry addressed by its content (one
+ *  a day), the job's answer the entry naming it, read back; without the app or its key the answer says so (textbook_google_one_door) */
+export const askGoogle = async (url: string, httpMethod = 'GET', body: unknown = null) => {
+  const m = mcpOf(), asked = { kind: 'call', from: 'qpu-google-call', body: { url, httpMethod, body, at: new Date().toISOString().slice(0, 10) } }, made = await m.call('createEntries', asked)
+  const a = (m.docsOf((await m.call('findEntries', { where: JSON.stringify({ from: { equals: 'qpu-google-call' }, 'body.request': { equals: uuidOf(JSON.stringify(asked)) } }), limit: 1 })).text ?? '')[0] as { body?: { status?: number; answer?: string } } | undefined)?.body
+  return { status: a?.status ?? 0, text: a?.answer ?? `the qpu-google-call job did not answer (${made.error ?? 'no answer entry'})` }
+}
+/** A GET with the named user agent and a timeout: the one fetcher of the public sources, a Google host through askGoogle */
+export const getOf = (url: string, accept = '*/*', ms = 20000) => (GOOGLE_HOST.test(new URL(url).hostname) ? askGoogle(url).then((a) => new Response(a.text, { status: a.status || 503 })) : fetch(url, { headers: { accept, 'user-agent': UA }, signal: AbortSignal.timeout(ms) }))
 type Reply = { status: number; bytes: number; result?: any; error?: string }
 /** A session with one MCP server: every request answered as its status, the bytes of its result, the result or the error. */
 export const sessionOf = (url: string, key?: string) => {

@@ -44,6 +44,10 @@ export const GOOGLE_MCP: readonly { host: string; url: string; about: string; ma
 import { WORKSPACE_MCP } from './institutions.js'
 export { WORKSPACE_MCP }
 /** Google's MCP toolboxes in the registry (local servers): proposed, never called. */
+/** Google reached by one door, the qpu-google-call job of the Payload app: a GOOGLE_HOST is called by that job alone, which reads the API's
+ *  Discovery document keyless from the Discovery Service and exchanges the server's ADC refresh token at Google's token endpoint. */
+export const GOOGLE_HOST = /(^|\.)(googleapis\.com|google\.com|google)$/
+export const GOOGLE_DISCOVERY = { rest: 'https://www.googleapis.com/discovery/v1/apis/{api}/{version}/rest', token: 'https://oauth2.googleapis.com/token' } as const
 export const GOOGLE_MCPS = ['io.github.googleapis/genai-toolbox', 'io.github.googleapis/mcp-toolbox', 'io.github.GoogleCloudPlatform/gemini-cloud-assist-mcp'] as const
 /** GitHub's hosted MCP server: answers 401 until a tenant brings its token (a fine-grained PAT or the OAuth flow); the read-only form beside it. */
 export const GITHUB_MCP: readonly { host: string; url: string; about: string }[] = [
