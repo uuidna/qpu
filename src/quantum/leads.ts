@@ -5,6 +5,7 @@
 // and no tool follows yet. The hand-written leads are here; every page of the sitemap (the discover door's, sealed in the docket) that no
 // hand-written lead already names is a lead of its own through leads { sitemap }, so nothing the site lists is dropped.
 
+import { TABLES } from './tables-index.ts'
 import * as cirq from './cirq.ts'
 import { recomputeClay } from './clay-register.ts'
 import { uuidOf } from './blocks.ts'
@@ -28,30 +29,7 @@ export const findCleanupSubjects = (l: Lead): { kind: 'branches' | 'paths'; name
 
 /** The Cirq API symbols the sitemap documents that this repository implements, each with the export here that stands for it.
  *  Only entries whose export exists in cirq.ts are used, so the list cannot name an implementation that is not there. */
-const CIRQ_SYMBOLS: readonly [symbol: string, exported: string, note: string][] = [
-  ['Circuit', 'Circuit', 'moments, append with an insert strategy, qubits in key order'],
-  ['Moment', 'Moment', 'operations on disjoint qubits'],
-  ['Simulator', 'Simulator', 'simulate (the state vector) and run (sampled bitstrings), up to 20 qubits'],
-  ['DensityMatrixSimulator', 'DensityMatrixSimulator', 'exact channels, up to 8 qubits'],
-  ['Device', 'Device', 'validate_operation, validate_moment, validate_circuit'],
-  ['LineQubit', 'LineQubit', 'of and range'],
-  ['GridQubit', 'GridQubit', 'of and square'],
-  ['NamedQubit', 'NamedQubit', 'of'],
-  ['Qid', 'keyOf', 'the qubit key that orders and compares qubits'],
-  ['X', 'X', ''], ['Y', 'Y', ''], ['Z', 'Z', ''], ['H', 'H', ''], ['CZ', 'CZ', ''], ['CNOT', 'CNOT', ''], ['CX', 'CNOT', ''], ['SWAP', 'SWAP', ''], ['TOFFOLI', 'TOFFOLI', ''], ['CCX', 'TOFFOLI', ''], ['CCNOT', 'TOFFOLI', ''], ['ZZ', 'ZZ', ''],
-  ['S', 'powerOf', 'Z**0.5'], ['T', 'powerOf', 'Z**0.25'],
-  ['XPowGate', 'powerOf', 'X**t'], ['YPowGate', 'powerOf', 'Y**t'], ['ZPowGate', 'powerOf', 'Z**t'], ['HPowGate', 'powerOf', 'H**t'], ['CZPowGate', 'powerOf', 'CZ**t'], ['CXPowGate', 'powerOf', 'CNOT**t'], ['CNotPowGate', 'powerOf', 'CNOT**t'], ['SwapPowGate', 'powerOf', 'SWAP**t'], ['ZZPowGate', 'powerOf', 'ZZ**t'], ['CCXPowGate', 'powerOf', 'TOFFOLI**t'], ['CCZPowGate', 'powerOf', 'CCZ**t is not built; TOFFOLI**t is'],
-  ['Gate', 'applied', 'a gate is its name, arity and unitary'], ['GateOperation', 'applied', 'gate.on(*qubits)'], ['Operation', 'applied', ''],
-  ['MeasurementGate', 'measure', ''], ['measure', 'measure', ''],
-  ['InsertStrategy', 'Circuit', 'EARLIEST, NEW, INLINE, NEW_THEN_INLINE'],
-  ['Result', 'Result', 'measurements and histogram'],
-  ['inverse', 'adjointOf', 'the adjoint of a gate'], ['unitary', 'applied', 'every gate carries its unitary'],
-  ['bit_flip', 'noisy', ''], ['phase_flip', 'noisy', ''], ['depolarize', 'noisy', ''], ['asymmetric_depolarize', 'noisy', ''], ['amplitude_damp', 'noisy', ''], ['phase_damp', 'noisy', ''], ['generalized_amplitude_damp', 'noisy', ''], ['reset', 'noisy', ''],
-  ['BitFlipChannel', 'noisy', ''], ['PhaseFlipChannel', 'noisy', ''], ['DepolarizingChannel', 'noisy', ''], ['AsymmetricDepolarizingChannel', 'noisy', ''], ['AmplitudeDampingChannel', 'noisy', ''], ['PhaseDampingChannel', 'noisy', ''], ['GeneralizedAmplitudeDampingChannel', 'noisy', ''], ['ResetChannel', 'noisy', ''],
-  ['kraus', 'noisy', 'each channel is its Kraus operators'],
-  ['PauliString', 'expectationOf', 'a Pauli observable by qubit'], ['DensePauliString', 'pauliProduct', 'a Pauli string as one gate'],
-  ['qft', 'Circuit', 'qftOperations in algorithms.ts'], ['QuantumFourierTransformGate', 'Circuit', 'qftOperations in algorithms.ts'],
-]
+const CIRQ_SYMBOLS = TABLES.CIRQ_SYMBOLS as unknown as readonly [symbol: string, exported: string, note: string][]
 
 const CIRQ_IMPLEMENTED = new Map(CIRQ_SYMBOLS.filter(([, exported]) => exported in cirq).map(([symbol, exported, note]) => [symbol, { exported, note }]))
 

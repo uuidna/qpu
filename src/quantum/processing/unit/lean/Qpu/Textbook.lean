@@ -520,6 +520,8 @@ theorem textbook_bindings_bound (needed declared missing : Nat) (h : declared + 
 theorem textbook_observed_errors (errors requests : Nat) (h : errors * 1000 ≤ requests) : errors ≤ requests := by omega
 /-- the minimum bill of existing and computing (zero within the free tiers, the paid base beyond them) is covered by the cheapest licence of the catalogue: the licence is the bill and the margin of the quantum framework (examples: repository-predeploy) -/
 theorem textbook_bill_covered (price cost : Nat) (h : cost ≤ price) : price - cost + cost = price := Nat.sub_add_cancel h
+/-- every question read from a source Payload holds is decided or a lead: the questions less the leads are the decided ones, a lexical neighbour counted a lead (examples: match-questions) -/
+theorem textbook_questions_matched (decided leads total : Nat) (h : decided + leads = total) : total - leads = decided := by omega
 /-- every combination of the adapters ported onto Cloudflare is complete or names the missing link that blocks it: the combinations less the blocked ones are the complete ones, however many adapters the app grows to (examples: configure-adapters-port) -/
 theorem textbook_ports_cover (complete blocked total : Nat) (h : complete + blocked = total) : total - blocked = complete := by omega
 /-- harmonic options by default: the referrer's address, or the a432 key, reduced modulo the number of combinations a schema's enums hold is always below that number, so the default it names is always one of the combinations (examples: fold-harmonic, payload-hooks-collapse) -/

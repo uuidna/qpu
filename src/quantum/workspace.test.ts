@@ -44,7 +44,7 @@ test('a Lexical form block validates, its submission lands, every rich text fiel
   assert.deepEqual([keys.filter((k) => at[k]?.before && at[k].after && at[k].collapse < 14).length, at[keys[0]!].changed, at[keys[3]!].changed, context.qpuWitnessErrors], [4, true, false, undefined])
   await payload.create({ collection: 'form-submissions', data: { ...readWorkspace({ response: W.response }).submission, form: form.id } })
   assert.equal(rows['form-submissions']?.length, 1)
-  assert.deepEqual(rows['forms']![0].fields.map((f: { blockType: string }) => f.blockType), W.form.fields.map((f) => f.blockType))
+  assert.deepEqual(rows['forms']![0].fields.map((f: { blockType: string }) => f.blockType), W.form.fields.map((f: { blockType: string }) => f.blockType))
   await assert.rejects(payload.create({ collection: 'pages', data: { body: block({ blockType: 'nope' }) } }))
   // every plugin's collection (the form builder's two among them) read back from binding 0; then one version moved back to its first-four-digit
   // folder, and the qpu-raid-verify batch moves it to the UUID's middle and finds every version Payload holds on two verified copies or rebuilt at binding 0

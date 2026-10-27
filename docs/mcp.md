@@ -181,6 +181,9 @@ Any statement, matched against everything the surface can do
       "type": "string",
       "description": "any prompt or statement; Glagolitic numerals are read as integers"
     },
+    "questions": {
+      "description": "true"
+    },
     "verdict": {
       "type": "string",
       "description": "a verdict from another vocabulary (verify_claim"
