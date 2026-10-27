@@ -1238,7 +1238,7 @@ type MachineReq = { headers?: { get?: (k: string) => string | null }; user?: { r
 const machineTool = {
   name: 'machine',
   description: 'The developer machine managed through the Payload MCP, securely: one action of the allow-list (repository { machine: { actions: true } } names them) run on this local app for a super admin, with no shell; commit and push decided by the workflow rules, a push only with confirm; every run an entry of the Entries collection, its paths relative and its leaks redacted',
-  parameters: { action: z.string().describe('an action of the allow-list: ${MACHINE_ACTIONS.map((x) => x.id).join(', ')}'), message: z.string().optional().describe('commit: the message'), confirm: z.boolean().optional().describe('push: the user confirms it'), branch: z.string().optional().describe('merge: the branch to merge') },
+  parameters: { action: z.string().describe('an action of the allow-list: ${MACHINE_ACTIONS.map((x) => x.id).join(', ')}'), message: z.string().optional().describe('commit: the message'), confirm: z.boolean().optional().describe('push: the user confirms it'), branch: z.string().optional().describe('merge, branch-delete: the branch'), path: z.string().optional().describe('worktree-remove: the worktree'), tag: z.string().optional().describe('tag: an archive/ name'), commit: z.string().optional().describe('tag: the full commit'), from: z.string().optional().describe('port: the file in a worktree'), file: z.string().optional().describe('port: the path in main'), archived: z.boolean().optional().describe('branch-delete: -D behind an archive tag') },
   handler: async (args: Record<string, unknown>, req: MachineReq, extra?: { _meta?: { progressToken?: string | number }; sendNotification?: (n: { method: string; params: Record<string, unknown> }) => Promise<void> }) => {
     const answer = (x: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(x) }], _meta: { ui: { resourceUri: 'ui://qpu/repository' } } })
     const h = String(req.headers?.get?.('host') ?? '')
@@ -1248,7 +1248,7 @@ const machineTool = {
     const root = path.resolve(process.cwd(), '..')
     const read = (f: string): any => { try { return existsSync(path.join(root, f)) ? JSON.parse(readFileSync(path.join(root, f), 'utf8')) : null } catch { return null } }
     const facts = { receipt: read('docs/public/receipt.json'), approval: read('docs/public/configs.json')?.approval ?? null, e2e: read('docs/public/e2e.json')?.outcomes ?? null }
-    const plan = callTool('repository', { machine: { plan: { action: args.action, message: args.message, confirm: args.confirm, branch: args.branch, facts } } })
+    const plan = callTool('repository', { machine: { plan: { action: args.action, message: args.message, confirm: args.confirm, branch: args.branch, path: args.path, tag: args.tag, commit: args.commit, from: args.from, file: args.file, archived: args.archived, facts } } })
     if (!plan?.allowed) return answer(plan)
     // the one runner (scripts/machine.ts): no shell, the output read line by line; a call carrying a progress token is streamed through the plugin's request context as notifications/progress, step by step for next
     const progressToken = extra?._meta?.progressToken

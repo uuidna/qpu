@@ -430,8 +430,12 @@ theorem textbook_decode_not_search : 14 < 10 ^ 14 ∧ 14 * 1 = 14 := by decide
 theorem textbook_tamper_detected : 256 / 2 = 128 ∧ 10 ^ 38 < 2 ^ 128 := by decide
 /-- every public artifact downloaded is verified or a mismatch, and every one not reached is measured again: when none mismatches, every artifact reached verifies against the digest its registry recorded, however many are published (examples: seal-artifacts) -/
 theorem textbook_artifacts_verified (verified mismatched unreached total : Nat) (h : verified + mismatched + unreached = total) (hm : mismatched = 0) : total - unreached = verified := by omega
-/-- every action asked of the developer machine is run because the allow-list names it and the rules allow it, or refused with the court's case: the refused and the run make every request, no third (examples: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed) -/
+/-- every action asked of the developer machine is run because the allow-list names it and the rules allow it, or refused with the court's case: the refused and the run make every request, no third (examples: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed, repository-machine-worktree-unconfirmed, repository-machine-tag-confirmed) -/
 theorem textbook_machine_allow_list (asked allowed : Nat) (h : allowed ≤ asked) : asked - allowed + allowed = asked := Nat.sub_add_cancel h
+/-- while work runs the stream is never silent for more than a second: a heartbeat follows any second without an event, so every gap between two events is within the heartbeat, and the heartbeat is one second (examples: repository-status-no-silence) -/
+theorem textbook_stream_no_silence (gap beat : Nat) (h : gap ≤ beat) (hb : beat ≤ 1000) : gap ≤ 1000 := Nat.le_trans h hb
+/-- an ETA is the mean of the recorded times of the step, or absent when none is recorded: the mean times the count never exceeds the recorded sum, so an ETA is never a constant and never more than the record allows (examples: repository-status-eta) -/
+theorem textbook_eta_from_receipts (sum n : Nat) : sum / n * n ≤ sum := Nat.div_mul_le_self sum n
 /-- a deploy carries a bundle no older than its sources: the build's time is at or after the last source change, or the bundle is rebuilt (examples: repository-predeploy) -/
 theorem textbook_build_fresh (built source : Nat) (h : source ≤ built) : built - source + source = built := Nat.sub_add_cancel h
 /-- every binding the adapters need is declared and every resource it names exists in the account: when none is missing, the declared are the needed, however many the adapters bind (examples: repository-predeploy) -/

@@ -8,7 +8,7 @@ export type MachineProgress = { progress: number; total?: number; message: strin
 const STEP = /^\s*[✓✗·]\s/
 
 /** Runs the plan's command, calling onProgress for every finished step of next or every output line of anything else, and resolves to the whole run. */
-export const runMachine = (plan: { action: string; command: { cmd: string; args: readonly string[] }; input?: string | null }, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) =>
+const spawnRun = (plan: { action: string; command: { cmd: string; args: readonly string[] }; input?: string | null }, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) =>
   new Promise<{ status: number | null; stdout: string; stderr: string; ms: number }>((resolve) => {
     const t0 = Date.now()
     const child = spawn(plan.command.cmd, [...plan.command.args], { cwd, shell: false })
@@ -24,3 +24,53 @@ export const runMachine = (plan: { action: string; command: { cmd: string; args:
     child.on('close', (code) => resolve({ status: code, stdout, stderr, ms: Date.now() - t0 }))
     child.stdin.end(plan.input ?? '')
   })
+
+// The stream every run writes. Each start, end and heartbeat is one NDJSON line in the stream file (the harness tails it, the Payload admin
+// reads it): while a run lasts, a heartbeat follows any second without an event, so the stream is never silent (textbook_stream_no_silence), and
+// every event carries the ETA the receipts and the stream's own finished runs give, or none (textbook_eta_from_receipts). The stream is the
+// machine's own file, beside the run's record in Entries; it is never a docket entry of its own.
+import { appendFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs'
+import { join, dirname } from 'node:path'
+import { etaOf, type StreamEvent } from '../src/quantum/machine.ts'
+
+const runFiles = async () => (await import('../src/quantum/toolboxes/repository.ts')).RUN_FILES
+export const streamOf = async (root: string) => {
+  const file = join(root, (await runFiles()).stream)
+  mkdirSync(dirname(file), { recursive: true })
+  let last = Date.now(), beat: ReturnType<typeof setInterval> | null = null, current: { subject: string; t0: number; eta: number | null } | null = null
+  const emit = (e: Omit<StreamEvent, 'at'>) => { const ev = { at: new Date().toISOString(), ...e } as StreamEvent; last = Date.now(); appendFileSync(file, JSON.stringify(ev) + '\n'); return ev }
+  const start = (subject: string, eta: number | null) => { current = { subject, t0: Date.now(), eta }; emit({ kind: 'step-start', subject, eta, says: `${subject} started${eta === null ? ', no ETA: no recorded time yet' : `, ETA ${(eta / 1000).toFixed(1)} s`}` })
+    beat = setInterval(() => { if (current && Date.now() - last >= 900) { const elapsed = Date.now() - current.t0; emit({ kind: 'working', subject: current.subject, elapsed, eta: current.eta, says: `${current.subject} working ${(elapsed / 1000).toFixed(0)} s${current.eta === null ? '' : ` of ~${(current.eta / 1000).toFixed(0)} s`}` }) } }, 100) }
+  const end = (ok: boolean, says: string) => { if (beat) clearInterval(beat); beat = null; if (!current) return; const { subject, t0, eta } = current, ms = Date.now() - t0; current = null
+    emit({ kind: 'step-end', subject, ms, eta, says: `${subject} ${ok ? 'done' : 'failed'} in ${(ms / 1000).toFixed(1)} s${says ? `: ${says}` : ''}` })
+    if (eta !== null && ms > 2 * eta) emit({ kind: 'over-eta', subject, ms, eta, says: `${subject} took ${(ms / 1000).toFixed(1)} s, over twice its ETA of ${(eta / 1000).toFixed(1)} s` }) }
+  return { emit, start, end }
+}
+
+/** The recorded times of each step and action, from the receipts and the stream's own finished runs: the ETA's only source. */
+export const timesOf = async (root: string) => {
+  const files = await runFiles(), times: Record<string, number[]> = {}
+  const lines = (f: string) => (existsSync(join(root, f)) ? readFileSync(join(root, f), 'utf8').trim().split('\n') : [])
+  for (const l of lines(files.receipts)) { try { for (const st of (JSON.parse(l) as { steps?: { name: string; ms?: number; status?: string }[] }).steps ?? []) if (typeof st.ms === 'number' && st.status !== 'skipped') (times[st.name] ??= []).push(st.ms) } catch {} }
+  for (const l of lines(files.stream)) { try { const e = JSON.parse(l) as StreamEvent; if (e.kind === 'step-end' && typeof e.ms === 'number') (times[e.subject] ??= []).push(e.ms) } catch {} }
+  return times
+}
+
+/** Runs the plan's command and streams it: its start with the ETA, a heartbeat every second, each finished step of next as an event, its end. */
+export const runMachine = async (plan: { action: string; command: { cmd: string; args: readonly string[] }; input?: string | null }, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) => {
+  const s = await streamOf(cwd), subject = plan.action
+  s.start(subject, etaOf((await timesOf(cwd))[subject] ?? []))
+  const run = await spawnRun(plan, cwd, (p) => { if (plan.action === 'next') s.emit({ kind: 'progress', subject, says: p.message.slice(0, 200) }); onProgress(p) })
+  s.end(run.status === 0, run.status === 0 ? '' : `status ${run.status}`)
+  return run
+}
+
+/** The status on request: what runs, for how long and its ETA, the last events and what the stream says of its own silence. */
+export const now = async (root: string, last = 20) => {
+  const file = join(root, (await runFiles()).stream)
+  const events = existsSync(file) ? readFileSync(file, 'utf8').trim().split('\n').flatMap((l) => { try { return [JSON.parse(l)] } catch { return [] } }) : []
+  const { toolCallerOf } = await import('../src/quantum/mcp.ts')
+  return toolCallerOf('repository')({ status: { events, times: await timesOf(root), last } })
+}
+
+if (process.argv[1]?.endsWith('machine.ts') && process.argv[2] === 'now') console.log(JSON.stringify(await now(process.cwd()), null, 1))
