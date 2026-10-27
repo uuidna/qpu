@@ -12,29 +12,14 @@ import { PRECEDENCE } from './license.ts'
 import { routeStatement } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
+import { TABLES } from './tables-index.ts'
 
 type SourceKind = 'immutable' | 'licence' | 'precedence' | 'textbook' | 'mcp'
 export type SourceRequest = { id: string; source: string; kind: SourceKind; method: 'GET'; url: string; accept: string; page?: number }
 export type SourceAnswer = { id: string; url: string; status: number; text: string }
 export type SourceContext = { repository: string; owner: string; package: string; hosts: readonly string[]; subjects?: readonly string[]; maintainers?: readonly string[] }
 
-export const SOURCES: readonly { id: string; kind: SourceKind; name: string; immutable: string; url: string }[] = [
-  { id: 'npm-package', kind: 'immutable', name: 'npm registry: every version of the package with its tarball integrity', immutable: 'a published version is never republished: its sha512 integrity is fixed', url: 'https://registry.npmjs.org/<package>' },
-  { id: 'swh-visits', kind: 'immutable', name: 'Software Heritage: the archived visits of the repository', immutable: 'every visit is a snapshot named by its SWHID, kept forever', url: 'https://archive.softwareheritage.org/api/1/origin/<repository>/visits/' },
-  { id: 'wayback', kind: 'immutable', name: 'Internet Archive: the closest capture of each host', immutable: 'a capture is a dated copy that does not change', url: 'https://archive.org/wayback/available?url=<host>' },
-  { id: 'datacite', kind: 'immutable', name: 'DataCite: the record of each DOI with its versions and relations', immutable: 'a DOI resolves to one record; versions are new DOIs', url: 'https://api.datacite.org/dois/<doi>' },
-  { id: 'zenodo-record', kind: 'immutable', name: 'Zenodo: each record of precedence with its files and their recorded checksums', immutable: 'a published record\'s files never change; a new version is a new DOI', url: 'https://zenodo.org/api/records/<record>' },
-  { id: 'openalex-work', kind: 'precedence', name: 'OpenAlex: each record of precedence as a work (date, citations)', immutable: 'the record\'s DOI and date are fixed', url: 'https://api.openalex.org/works/doi:<doi>' },
-  { id: 'openalex-near', kind: 'precedence', name: 'OpenAlex: the works whose titles neighbour each record, with their dates', immutable: 'each work\'s DOI and date are fixed', url: 'https://api.openalex.org/works?search=<title>&per-page=200&page=<page>' },
-  { id: 'npm-search', kind: 'licence', name: 'npm search: packages that name the work', immutable: 'each match is a published version', url: 'https://registry.npmjs.org/-/v1/search?text=<term>&size=250&from=<from>' },
-  { id: 'github-search', kind: 'licence', name: 'GitHub search: repositories that name the work', immutable: 'each candidate is a repository at a commit', url: 'https://api.github.com/search/repositories?q=<term>&per_page=100&page=<page>' },
-  { id: 'github-forks', kind: 'licence', name: 'GitHub: the forks of the repository, with the date of their last push', immutable: 'a fork names the commit it copied', url: 'https://api.github.com/repos/<repo>/forks?per_page=100&page=<page>' },
-  { id: 'swh-search', kind: 'licence', name: 'Software Heritage: archived origins that name the work', immutable: 'each origin is archived forever', url: 'https://archive.softwareheritage.org/api/1/origin/search/<term>/?limit=1000' },
-  { id: 'openstax', kind: 'textbook', name: 'OpenStax: every book with its subjects (CC BY)', immutable: 'each book a page of the catalogue, its edition dated', url: 'https://openstax.org/apps/cms/api/v2/pages/?type=books.Book&fields=title,book_state,book_subjects&limit=500&offset=<offset>' },
-  { id: 'open-textbook-library', kind: 'textbook', name: 'Open Textbook Library: every open textbook with its subjects and licence', immutable: 'each book has its ISBN and copyright year', url: 'https://open.umn.edu/opentextbooks/textbooks.json?page=<page>' },
-  { id: 'open-library-subject', kind: 'textbook', name: 'Open Library: the works of each subject the QPU names (title, authors, first year)', immutable: 'each work has its Open Library key', url: 'https://openlibrary.org/subjects/<subject>.json?limit=1000&offset=<offset>' },
-  { id: 'mcp-registry', kind: 'mcp', name: 'The MCP registry: the servers that serve books, papers and libraries', immutable: 'each server is named at a version', url: 'https://registry.modelcontextprotocol.io/v0/servers?search=<term>&limit=100' },
-]
+export const SOURCES: readonly { id: string; kind: SourceKind; name: string; immutable: string; url: string }[] = TABLES.SOURCES as readonly { id: string; kind: SourceKind; name: string; immutable: string; url: string }[]
 /** the subjects Open Library is asked for: the fields the QPU's theorems compute in */
 const SUBJECTS = ['quantum_computing', 'quantum_theory', 'quantum_mechanics', 'linear_algebra', 'number_theory', 'group_theory', 'combinatorics', 'cryptography', 'information_theory', 'mathematical_logic', 'algorithms', 'error-correcting_codes_(information_theory)', 'harmonics', 'acoustics'] as const
 const MCP_TERMS = ['book', 'textbook', 'library', 'scholar', 'paper', 'doi', 'arxiv', 'patent', 'citation'] as const

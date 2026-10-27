@@ -56,19 +56,7 @@ export const detectStandard = (text: string): { detected: string; note: string }
 }
 
 /** The endpoints of the Worker, as the API overview states them (the source of docs/api.md) and as the OpenAPI document derives its paths. */
-export const API_ENDPOINTS: readonly { method: string; path: string; takes: string; answers: string; auth: string; errors?: string }[] = [
-  { method: 'POST', path: '/mcp', takes: 'JSON-RPC 2.0: initialize, tools/list, tools/call { name, arguments }', answers: 'the result with structuredContent and _meta (widget, block, theme, jsonLd, payload, license); ETag the content hash, X-Qpu-Address the block address, X-Qpu-Version; streamed by default as the MCP streamable transport\'s event when the client accepts text/event-stream, JSON otherwise', auth: 'none for every pure tool; a tenant\'s tokens only for the docket', errors: 'JSON-RPC -32601 (no such tool or method), -32602 (invalid params, with the bound the schema names), -32700 (parse error)' },
-  { method: 'GET', path: '/.well-known/qpu.json', takes: 'nothing', answers: 'the discovery document: mcp, docket, methods, tools, bounds, version, tenants, mcpHosts, roles, licence, the reverse (the unit), and the OpenAPI 3.1 contract (openapi, info, servers, paths, components)', auth: 'none' },
-  { method: 'GET', path: '/.well-known/oauth-protected-resource', takes: 'nothing', answers: 'the protected-resource metadata of RFC 9728 for /mcp: the authorization servers the tenant names (QPU_OAUTH_ISSUER_<TENANT>; none named means the pure tools need no token and the docket takes the tenant\'s tokens by name), the docket roles as scopes, the bearer method', auth: 'none' },
-  { method: 'GET', path: '/', takes: 'accept: application/json for the discovery document; otherwise the web OS', answers: 'the discovery document or the site', auth: 'none' },
-  { method: 'GET', path: '/<uuid>', takes: 'a content-addressed v8 UUID: one address for the block and for the entry; accept: application/json for the entry', answers: 'the block\'s page (the widget, prev and next, the theme from the UUID), or the entry as JSON; immutable, ETag the address, 304 to If-None-Match; no prefix: the catch-all routes all', auth: 'none' },
-  { method: 'GET', path: '/docket', takes: '?kind=&since=', answers: 'the tenant\'s entries (one docket per tenant host)', auth: 'none to read' },
-  { method: 'GET', path: '/docket/<id>', takes: 'an entry id; ?cheap, ?heal', answers: 'the entry, healed from a mirror by address when missing', auth: 'none to read' },
-  { method: 'POST', path: '/docket', takes: '{ kind, from, body, links? } or a commitment { kind, from, address, sha256 }', answers: '201 with the entry id (content address); 400 on shape, 413 above the entry bound', auth: 'Bearer: the tenant\'s writer token (QPU_WRITE_TOKEN_<TENANT>) or the RBAC MCP host\'s role' },
-  { method: 'DELETE', path: '/docket/<id>', takes: 'an entry id', answers: 'the entry gone', auth: 'Bearer: the tenant\'s admin token' },
-  { method: 'POST', path: '/docket/stripe', takes: 'a Stripe webhook, signed', answers: 'the event as an entry, idempotent', auth: 'STRIPE_WEBHOOK_SECRET_<TENANT>' },
-  { method: 'GET', path: '/health', takes: 'nothing', answers: 'status, tenant, licence and the metrics computed now', auth: 'none' },
-]
+export const API_ENDPOINTS: readonly { method: string; path: string; takes: string; answers: string; auth: string; errors?: string }[] = TABLES.API_ENDPOINTS as readonly { method: string; path: string; takes: string; answers: string; auth: string; errors?: string }[]
 type ApiTool = { name: string; description: string; inputSchema: object }
 export const OPENAPI_RESOURCE = 'openapi://qpu'
 /** The QPU's own contract in the standard the discover step asks every host for: an OpenAPI 3.1 document derived from tools/list and the
