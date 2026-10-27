@@ -196,7 +196,6 @@ const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: 
 
 export const LEADS: readonly Lead[] = [
   // Every perspective on the QPU, as an implemented lead: served by the tool that is that perspective, or honest about what it owes.
-  { id: 'perspective-factorer', source: 'src/quantum/algorithms.ts', statement: 'The QPU as the factorer: Shor on the exact simulator for every N within its bound, and the bound itself the honest answer beyond it.', status: 'served', tool: 'algorithm' },
   { id: 'perspective-reflection', source: 'src/quantum/match.ts', statement: 'The QPU as the mirror: any statement reflected into its hidden factors, its angles against the bounds and its mirror queries, each a lead.', status: 'served', tool: 'match' },
   { id: 'perspective-address', source: 'src/quantum/blocks.ts', statement: 'The QPU as the address: one UUID that proves its seal, its content and its neighbours cheaply, tampering always slower than the original.', status: 'served', tool: 'verify' },
   { id: 'perspective-clay', source: 'src/quantum/processing/unit/lean/Qpu/Clay.lean', statement: 'The QPU as the register: the Clay relations recomputed in exact integers, the σ-involution the universal core, in 33 bits.', status: 'served', tool: 'clay' },

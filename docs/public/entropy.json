@@ -1,11 +1,11 @@
 {
- "date": "2026-10-27T16:20:04.156Z",
+ "date": "2026-10-27T16:31:58.107Z",
  "literals": {
   "urls": 836,
   "distinctUrls": 449,
-  "paths": 191,
-  "outside": 571,
-  "tokens": 6065,
+  "paths": 190,
+  "outside": 570,
+  "tokens": 6058,
   "byFile": [
    [
     "src/quantum/toolboxes/payload.ts",
@@ -48,12 +48,12 @@
     17
    ],
    [
-    "src/quantum/leads.ts",
+    "src/quantum/toolboxes/crypto.ts",
     17
    ],
    [
-    "src/quantum/toolboxes/crypto.ts",
-    17
+    "src/quantum/leads.ts",
+    16
    ],
    [
     "scripts/hook.ts",
@@ -648,7 +648,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 930,
- "lines": 82617,
+ "lines": 82616,
  "findings": 879,
  "fused": 315,
  "reactions": 564,

@@ -9,7 +9,6 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 
 | Lead | Status | Tool | Statement | Reason |
 | --- | --- | --- | --- | --- |
-| `perspective-factorer` | served | algorithm | The QPU as the factorer: Shor on the exact simulator for every N within its bound, and the bound itself the honest answer beyond it. |  |
 | `perspective-reflection` | served | match | The QPU as the mirror: any statement reflected into its hidden factors, its angles against the bounds and its mirror queries, each a lead. |  |
 | `perspective-address` | served | verify | The QPU as the address: one UUID that proves its seal, its content and its neighbours cheaply, tampering always slower than the original. |  |
 | `perspective-clay` | served | clay | The QPU as the register: the Clay relations recomputed in exact integers, the σ-involution the universal core, in 33 bits. |  |
@@ -239,6 +238,7 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `cirq-custom-transformers` | served | statements | the page's stated content, served as the custom_transformers statement |  |
 | `cirq-kpz` | served | statements | the page's stated content, served as the kpz_experiment statement |  |
 | `cirq-transformers` | served | statements | the page's stated content, served as the transformers statement |  |
+| `perspective-factorer` | served | algorithm | The QPU as the factorer: Shor on the exact simulator for every N within its bound, and the bound itself the honest answer beyond it. |  |
 | `cirq-noise-representation` | served | statements | the page's stated content, served as the noise_representation statement |  |
 | `cirq-histograms` | served | statements | the page's stated content, served as the histograms statement |  |
 | `cirq-pauli` | served | statements | the page's stated content, served as the pauli_observables statement |  |
