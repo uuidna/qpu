@@ -5,15 +5,15 @@
 // names the probe in one entry and every call is an error naming it.
 import { createInterface } from 'node:readline'
 import { execFileSync } from 'node:child_process'
-import { MCP_URL, sessionOf } from './mcp.ts'
+import { MCP_URL, openSession } from './mcp.ts'
 
 const send = (m: unknown) => process.stdout.write(JSON.stringify(m) + '\n')
 const PROBE = 'no Payload app answers: start the app (scripts/site-local.sh start) with its MCP key in the keychain item qpu-app-key, or set QPU_APP_MCP to the deployed app'
-const keyOf = () => { try { return execFileSync('security', ['find-generic-password', '-s', 'qpu-app-key', '-w'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 }).trim() || undefined } catch { return undefined } }
-let app: { source: string; session: ReturnType<typeof sessionOf>; init: { result?: any } } | null | undefined
+const readAppKey = () => { try { return execFileSync('security', ['find-generic-password', '-s', 'qpu-app-key', '-w'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 }).trim() || undefined } catch { return undefined } }
+let app: { source: string; session: ReturnType<typeof openSession>; init: { result?: any } } | null | undefined
 const discover = async () => {
   app = null
-  for (const [source, url] of [['local', process.env.QPU_LOCAL_MCP ?? MCP_URL], ['remote', process.env.QPU_APP_MCP]] as const) { if (!url) continue; const session = sessionOf(url, keyOf()), init = await session.initialize(); if (!init.error) return void (app = { source, session, init }) }
+  for (const [source, url] of [['local', process.env.QPU_LOCAL_MCP ?? MCP_URL], ['remote', process.env.QPU_APP_MCP]] as const) { if (!url) continue; const session = openSession(url, readAppKey()), init = await session.initialize(); if (!init.error) return void (app = { source, session, init }) }
 }
 for await (const line of createInterface({ input: process.stdin, crlfDelay: Infinity })) {
   if (!line.trim()) continue

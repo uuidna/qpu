@@ -12,24 +12,24 @@ export const MCP_URL = 'http://localhost:3000/api/mcp'
 // else the keychain item qpu-app-key, read once into this process and its children, never printed (the probe probe-app-key names how to store it)
 if (!process.env.QPU_APP_KEY) try { const k = execFileSync('security', ['find-generic-password', '-s', 'qpu-app-key', '-w'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 }).trim(); if (k) process.env.QPU_APP_KEY = k } catch { /* no keychain item */ }
 /** A step's published record, docs/public/<name>.json under the licence: the one writer every step shares */
-export const publishOf = (name: string, record: object) => writeFileSync(join(process.cwd(), 'docs', 'public', `${name}.json`), JSON.stringify({ license: LICENSE.attribution, ...record }, null, 1) + '\n')
+export const publishRecord = (name: string, record: object) => writeFileSync(join(process.cwd(), 'docs', 'public', `${name}.json`), JSON.stringify({ license: LICENSE.attribution, ...record }, null, 1) + '\n')
 /** A toolbox's selftest run through its caller and its tally printed as every step's first line */
-export const selftestOf = (name: string, call: (a: { selftest: true }) => any) => { const s = call({ selftest: true }); console.log(`${name} selftest: ${s.passed ? 'pass' : 'FAIL'} (${s.checks.filter((c: { passed: boolean }) => c.passed).length}/${s.checks.length})`); return s }
+export const runSelftest = (name: string, call: (a: { selftest: true }) => any) => { const s = call({ selftest: true }); console.log(`${name} selftest: ${s.passed ? 'pass' : 'FAIL'} (${s.checks.filter((c: { passed: boolean }) => c.passed).length}/${s.checks.length})`); return s }
 /** A published file's JSON, or the fallback when it is missing or unreadable: the one reader every script shares, never a throw */
 export const readJson = (path: string, fallback: any = null): any => { try { return JSON.parse(readFileSync(path, 'utf8')) } catch { return fallback } }
 const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
 /** A Google host asked of the qpu-google-call job through the Payload MCP, never fetched here: the call is an entry addressed by its content (one
  *  a day), the job's answer the entry naming it, read back; without the app or its key the answer says so (textbook_google_one_door) */
 export const askGoogle = async (url: string, httpMethod = 'GET', body: unknown = null) => {
-  const m = mcpOf(), asked = { kind: 'call', from: 'qpu-google-call', body: { url, httpMethod, body, at: new Date().toISOString().slice(0, 10) } }, made = await m.call('createEntries', asked), id = (m.docsOf(made.text ?? '')[0] as { id?: string } | undefined)?.id
+  const m = mcpClient(), asked = { kind: 'call', from: 'qpu-google-call', body: { url, httpMethod, body, at: new Date().toISOString().slice(0, 10) } }, made = await m.call('createEntries', asked), id = (m.docsOf(made.text ?? '')[0] as { id?: string } | undefined)?.id
   const a = (m.docsOf((await m.call('findEntries', { where: JSON.stringify({ from: { equals: 'qpu-google-call' }, 'body.request': { equals: id } }), limit: 1 })).text ?? '')[0] as { body?: { status?: number; answer?: string } } | undefined)?.body
   return { status: a?.status ?? 0, text: a?.answer ?? `the qpu-google-call job did not answer (${made.error ?? 'no answer entry'})` }
 }
 /** A request with the named user agent and a timeout: the one fetcher of the public sources, a Google host through askGoogle */
-export const getOf = (url: string, accept = '*/*', ms = 20000, init: { method?: string; body?: unknown; agent?: string; headers?: Record<string, string> } = {}) => (GOOGLE_HOST.test(new URL(url).hostname) ? askGoogle(url, init.method, init.body ?? null).then((a) => new Response(a.text, { status: a.status || 503 })) : fetch(url, { method: init.method, headers: { accept, 'user-agent': init.agent ?? UA, ...(init.body ? { 'content-type': 'application/json' } : {}), ...init.headers }, body: init.body ? JSON.stringify(init.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(ms) }))
+export const fetchWithTimeout = (url: string, accept = '*/*', ms = 20000, init: { method?: string; body?: unknown; agent?: string; headers?: Record<string, string> } = {}) => (GOOGLE_HOST.test(new URL(url).hostname) ? askGoogle(url, init.method, init.body ?? null).then((a) => new Response(a.text, { status: a.status || 503 })) : fetch(url, { method: init.method, headers: { accept, 'user-agent': init.agent ?? UA, ...(init.body ? { 'content-type': 'application/json' } : {}), ...init.headers }, body: init.body ? JSON.stringify(init.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(ms) }))
 type Reply = { status: number; bytes: number; result?: any; error?: string }
 /** A session with one MCP server: every request answered as its status, the bytes of its result, the result or the error. */
-export const sessionOf = (url: string, key?: string) => {
+export const openSession = (url: string, key?: string) => {
   let session: string | null = null, id = 0
   const post = async (message: Record<string, unknown>): Promise<Reply> => {
     // a kept-alive connection the server closed while the caller was busy fails once with a network error: the request is sent again on a fresh one
@@ -57,8 +57,8 @@ export const sessionOf = (url: string, key?: string) => {
 }
 
 type Answer = { text: string; error?: undefined } | { text?: undefined; error: string }
-export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: string | undefined = process.env.QPU_APP_KEY) => {
-  const s = sessionOf(url, key)
+export const mcpClient = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: string | undefined = process.env.QPU_APP_KEY) => {
+  const s = openSession(url, key)
   const send = async (tool: string, args: Record<string, unknown>): Promise<Answer> => {
     if (!key) return { error: `no MCP key for ${url}: QPU_APP_KEY, or the keychain item qpu-app-key (security add-generic-password -s qpu-app-key -a "$USER" -w, the user's act)` }
     const r = await s.request('tools/call', { name: tool, arguments: args })
@@ -100,13 +100,13 @@ export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: str
  *  else .qpu at the root), every version verified by its address; the source named, nothing when neither holds it (textbook_binding_zero_hex_path) */
 export const raidRead = async (collection: string, read: () => Promise<Record<string, unknown>[] | null>) => {
   const docs = await read().catch(() => null); if (docs) return { docs, from: 'payload' }
-  const dir = process.env.QPU_BINDING0 ?? join(process.cwd(), '.qpu'), { binding0Of } = await import('../src/quantum/toolboxes/raid.ts')
-  const back = binding0Of(collection, null, existsSync(dir) ? Object.fromEntries(readdirSync(dir, { recursive: true }).map(String).filter((p) => /[\da-f-]{36}(\.latest)?$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) : {}) as { docs: Record<string, unknown>[]; refused: string[] }
+  const dir = process.env.QPU_BINDING0 ?? join(process.cwd(), '.qpu'), { readBinding0 } = await import('../src/quantum/toolboxes/raid.ts')
+  const back = readBinding0(collection, null, existsSync(dir) ? Object.fromEntries(readdirSync(dir, { recursive: true }).map(String).filter((p) => /[\da-f-]{36}(\.latest)?$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) : {}) as { docs: Record<string, unknown>[]; refused: string[] }
   return { docs: back.docs.length ? back.docs : null, from: back.docs.length ? `binding 0 (${back.refused.length} refused)` : 'unread' }
 }
 /** The leads beyond the core: every Research leads page's record (its leads block's lead), read in the RAID's order and handed to the tools as records */
-export const leadsOf = async () => {
-  const m = mcpOf(), find = async (where: object) => (await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify(where) })).docs as Record<string, unknown>[] | null
+export const readLeads = async () => {
+  const m = mcpClient(), find = async (where: object) => (await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify(where) })).docs as Record<string, unknown>[] | null
   const r = await raidRead('pages', async () => { const top = await find({ title: { equals: 'Research leads' } }); return top?.length ? find({ parent: { in: top.map((p) => p.id) } }) : null }), top = new Set((r.docs ?? []).filter((p) => p.title === 'Research leads').map((p) => p.id))
   const pages = (r.from === 'payload' ? r.docs : r.docs?.filter((p) => top.has(String((p.parent as { id?: string } | null)?.id ?? p.parent)))) as { layout?: { tool?: string; arguments?: { lead?: Record<string, unknown> } }[] }[] | null
   const { LEADS } = await import('../src/quantum/leads.ts'), records = (pages ?? []).flatMap((p) => (p.layout ?? []).flatMap((b) => (b.tool === 'leads' && b.arguments?.lead ? [b.arguments.lead] : []))) as unknown as typeof LEADS[number][], core = new Set(LEADS.map((l) => l.id))
@@ -116,7 +116,7 @@ export const leadsOf = async () => {
 // a lead from the command line: node scripts/mcp.ts lead --title <title> --file <statements, one per paragraph> [--parent <page id>]; the page
 // of that title gets the statements it does not hold yet, or is created under the parent (default: the page titled Open work) and its tenant
 if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'lead') {
-  const a = process.argv.slice(3), flag = (n: string) => (a.includes(n) ? a[a.indexOf(n) + 1] : undefined), m = mcpOf(), title = flag('--title') ?? ''
+  const a = process.argv.slice(3), flag = (n: string) => (a.includes(n) ? a[a.indexOf(n) + 1] : undefined), m = mcpClient(), title = flag('--title') ?? ''
   const find = async (where: object) => ((await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify(where) })).docs ?? []) as { id: string; tenant?: unknown; layout?: { blockType: string; tool: string; arguments: unknown }[] }[]
   const statements = readFileSync(flag('--file') ?? '', 'utf8').split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean), block = (statement: string) => ({ blockType: 'qpu', tool: 'match', arguments: { statement } })
   const page = (await find({ title: { equals: title } }))[0], held = JSON.stringify(page?.layout ?? []), fresh = statements.filter((s) => !held.includes(JSON.stringify(s).slice(1, 120)))
@@ -126,9 +126,19 @@ if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'lead') {
   console.log(r.error ? `refused: ${String(r.error).slice(0, 300)}` : `${page ? 'appended' : 'created'}: ${title} (${page ? fresh.length : statements.length} statement(s))`)
 }
 
+// every lead of the code written into Payload as a record (a leads block each on the Code leads page under Research leads), so the
+// pre-commit hook can move them out of code once their records are equal: node scripts/mcp.ts leads-sync
+if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'leads-sync') {
+  const m = mcpClient(), { records } = await readLeads(), held = new Set(records.map((l) => l.id)), { LEADS } = await import('../src/quantum/leads.ts'), fresh = LEADS.filter((l) => !held.has(l.id))
+  const find = async (title: string) => ((await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify({ title: { equals: title } }) })).docs ?? [])[0] as { id: string; tenant?: unknown; layout?: { blockType: string; tool: string; arguments: unknown }[] } | undefined
+  const top = await find('Research leads'), page = await find('Code leads'), blocks = fresh.map((lead) => ({ blockType: 'qpu', tool: 'leads', arguments: { lead } }))
+  const r = !fresh.length ? { error: null } : page ? await m.call('updatePages', { id: page.id, layout: [...(page.layout ?? []).map((b) => ({ blockType: b.blockType, tool: b.tool, arguments: b.arguments })), ...blocks] }) : await m.call('createPages', { tenant: (top?.tenant as { id?: string } | undefined)?.id ?? top?.tenant, title: 'Code leads', parent: top?.id, hero: { type: 'default' }, layout: blocks })
+  console.log(r.error ? `refused: ${String(r.error).slice(0, 300)}` : `${fresh.length} lead(s) written into Payload`)
+}
+
 // a read from the command line: node scripts/mcp.ts find <collection> [--where <json>] [--select <json>] prints the documents as JSON lines
 if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'find') {
   const a = process.argv.slice(4), flag = (n: string) => (a.includes(n) ? a[a.indexOf(n) + 1] : undefined), c = process.argv[3] ?? 'pages'
-  const r = await mcpOf().findAll(`find${c[0]!.toUpperCase()}${c.slice(1)}`, { draft: true, depth: 0, ...(flag('--where') ? { where: flag('--where') } : {}), ...(flag('--select') ? { select: flag('--select') } : {}) })
+  const r = await mcpClient().findAll(`find${c[0]!.toUpperCase()}${c.slice(1)}`, { draft: true, depth: 0, ...(flag('--where') ? { where: flag('--where') } : {}), ...(flag('--select') ? { select: flag('--select') } : {}) })
   for (const d of (r.docs ?? []) as unknown[]) console.log(JSON.stringify(d)); if (!r.docs) console.error(`unread: ${r.says}`)
 }

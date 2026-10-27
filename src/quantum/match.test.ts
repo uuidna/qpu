@@ -3,10 +3,10 @@ import assert from 'node:assert/strict'
 import { handle } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { LEADS } from './leads.ts'
-import { matchOf, tokens, verdictOf, foreignVerdictsOf } from './match.ts'
-import { GLAGOLITIC, glagoliticOf, numeralsOf, translateOf } from './i18n.ts'
+import { matchStatement, tokens, translateVerdict, listForeignVerdicts } from './match.ts'
+import { GLAGOLITIC, toGlagolitic, readNumerals, translateOf } from './i18n.ts'
 
-const match = (statement: string) => matchOf(statement, handle, EXAMPLES, LEADS)
+const match = (statement: string) => matchStatement(statement, handle, EXAMPLES, LEADS)
 
 test('the chat routes a prompt to the theorems via the theorems: the subject decides, a common word routes nowhere, no route is a lead', () => {
   const coil = match('what colour is the coil when coins fuse')
@@ -65,8 +65,8 @@ test('the surface\'s own names never count as coverage: a question about uuidna 
 })
 
 test('a verdict crossing the border is translated by table, and a call carries its referer in _meta', () => {
-  assert.equal(verdictOf('VERIFIED'), 'served'); assert.equal(verdictOf('UNVERIFIED'), 'unknown'); assert.equal(verdictOf('REFUTED'), 'impossible'); assert.equal(verdictOf('NOT-PROVEN'), 'unknown'); assert.equal(verdictOf('nonsense'), undefined)
-  assert.deepEqual(foreignVerdictsOf('impossible'), ['REFUTED'])
+  assert.equal(translateVerdict('VERIFIED'), 'served'); assert.equal(translateVerdict('UNVERIFIED'), 'unknown'); assert.equal(translateVerdict('REFUTED'), 'impossible'); assert.equal(translateVerdict('NOT-PROVEN'), 'unknown'); assert.equal(translateVerdict('nonsense'), undefined)
+  assert.deepEqual(listForeignVerdicts('impossible'), ['REFUTED'])
   const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'processor', arguments: { name: 'Willow' }, _meta: { prev: 'https://uuidna.com/docket/abc' } } }) as { result: { _meta: { prev?: string; openGraph: Record<string, string> } } }
   assert.equal(r.result._meta.prev, 'https://uuidna.com/docket/abc')
   assert.equal(r.result._meta.openGraph['og:see_also'], 'https://uuidna.com/docket/abc')
@@ -76,26 +76,26 @@ test('a verdict crossing the border is translated by table, and a call carries i
 
 test('Glagolitic numerals round-trip through the table and are read as integers before a match', () => {
   assert.equal(Object.keys(GLAGOLITIC).length, 28)
-  for (const n of [1, 9, 10, 15, 99, 105, 432, 999, 1000, 1999]) assert.equal(numeralsOf(glagoliticOf(n)!).numerals[0]!.value, n, `${n}`)
-  assert.equal(glagoliticOf(2000), null, 'above the table is a lead, never guessed')
-  assert.deepEqual(numeralsOf('Factor Ⰺⰴ with Shor'), { text: 'Factor 15 with Shor', numerals: [{ glyphs: 'Ⰺⰴ', value: 15 }] })
-  const m = matchOf('Factor Ⰺⰴ with Shor', handle, EXAMPLES, LEADS)
+  for (const n of [1, 9, 10, 15, 99, 105, 432, 999, 1000, 1999]) assert.equal(readNumerals(toGlagolitic(n)!).numerals[0]!.value, n, `${n}`)
+  assert.equal(toGlagolitic(2000), null, 'above the table is a lead, never guessed')
+  assert.deepEqual(readNumerals('Factor Ⰺⰴ with Shor'), { text: 'Factor 15 with Shor', numerals: [{ glyphs: 'Ⰺⰴ', value: 15 }] })
+  const m = matchStatement('Factor Ⰺⰴ with Shor', handle, EXAMPLES, LEADS)
   assert.equal(m.verdict, 'served'); assert.equal(m.tool, 'algorithm'); assert.equal(m.reflection.factors[0]?.factors, '3 × 5'); assert.equal(m.read?.numerals[0]?.value, 15)
 })
 
 test('a statement in Bulgarian is translated by vocabulary offline before the match and the verdict comes back in Bulgarian', () => {
   assert.equal(translateOf('Разложи 15 с Shor', 'bg', 'en').text, 'Factor 15 with Shor')
-  const m = matchOf('Разложи Ⰺⰴ с Shor', handle, EXAMPLES, LEADS, 'bg')
+  const m = matchStatement('Разложи Ⰺⰴ с Shor', handle, EXAMPLES, LEADS, 'bg')
   assert.equal(m.verdict, 'served'); assert.equal(m.read?.verdictIn, 'обслужена'); assert.deepEqual(m.read?.untranslated, ['shor'], 'a name stays as it is and is reported, never guessed')
   const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement: 'Разложи Ⰺⰴ с Shor', locale: 'bg' } } })
   assert.equal((r as { result: { structuredContent: { read: { locale: string } } } }).result.structuredContent.read.locale, 'bg')
 })
 
 test('a statement is solved first by the QPU textbook: a kernel-accepted theorem serves it before any tool, and the flow toolboxes are never called to serve', () => {
-  const m = matchOf('relation 15', handle, EXAMPLES, LEADS)
+  const m = matchStatement('relation 15', handle, EXAMPLES, LEADS)
   assert.equal(m.verdict, 'served'); assert.equal(m.theorem, 'relation_15'); assert.equal(m.tool, undefined); assert.ok(m.evidence[0]!.startsWith('proven by the kernel'))
-  const w = matchOf('How many qubits does Willow have?', handle, EXAMPLES, LEADS)
+  const w = matchStatement('How many qubits does Willow have?', handle, EXAMPLES, LEADS)
   assert.equal(w.verdict, 'served'); assert.equal(w.tool, 'processor'); assert.equal(w.theorem, undefined, 'a statement no theorem states is served by its tool')
-  const flow = matchOf('discover every host and verify the wave and judge readiness and imagine the leads', handle, EXAMPLES, LEADS)
+  const flow = matchStatement('discover every host and verify the wave and judge readiness and imagine the leads', handle, EXAMPLES, LEADS)
   assert.ok(!['discover', 'wave', 'readiness', 'imagine', 'legal', 'repository', 'stripe', 'metrics'].includes(flow.tool ?? ''), `the matcher never calls a flow tool to serve: ${flow.verdict} via ${flow.tool}`)
 })

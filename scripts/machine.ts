@@ -32,7 +32,7 @@ const spawnRun = (plan: { action: string; command: { cmd: string; args: readonly
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
-import { forecastOf, MACHINE_ACTIONS, type StreamEvent } from '../src/quantum/machine.ts'
+import { forecastTimes, MACHINE_ACTIONS, type StreamEvent } from '../src/quantum/machine.ts'
 import { readJson } from './mcp.ts'
 import { LITERAL_ROOTS } from '../src/quantum/audit.ts'
 
@@ -71,7 +71,7 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
   const workflow = MACHINE_ACTIONS.find((a) => a.id === plan.action)?.workflow, pre = workflow ? await spawnRun({ action: 'pre-use', command: { cmd: 'node', args: [...MACHINE_ACTIONS.find((a) => a.id === 'precheck')!.args.slice(0, 1), workflow, '--pre-use'] } }, cwd) : null
   if (pre && / refused/.test(pre.stdout + pre.stderr)) return { plan, answer: { plan, preUse: (pre.stdout + pre.stderr).trim() } }
   const s = await streamOf(cwd), subject = plan.action
-  const f = forecastOf((await timesOf(cwd))[subject] ?? [])
+  const f = forecastTimes((await timesOf(cwd))[subject] ?? [])
   s.start(subject, f?.point ?? null, f?.interval?.[1])
   const run = await spawnRun(plan, cwd, (p) => { if (plan.action === 'next') s.emit({ kind: 'progress', subject, says: p.message.slice(0, 200) }); onProgress(p) })
   s.end(run.status === 0, run.status === 0 ? '' : `status ${run.status}`)
@@ -102,13 +102,19 @@ if (process.argv[1]?.endsWith('machine.ts')) {
   const say = (x: Awaited<ReturnType<typeof runMachine>>) => (x.answer as { preUse?: string }).preUse ?? (x.answer as { record?: { says?: string } }).record?.says ?? (x.answer as { says?: string }).says ?? JSON.stringify(x.answer)
   if (action === 'now') console.log(JSON.stringify(await now(process.cwd()), null, 1))
   else if (action === 'proof-keys' || action === 'proof-verify') {
-    const c = await import('node:crypto'), { mcpOf } = await import('./mcp.ts'), { toolCallerOf } = await import('../src/quantum/mcp.ts'), keyFile = join(dirname(join(process.cwd(), (await runFiles()).receipt)), 'proof-key.json')
+    const c = await import('node:crypto'), { mcpClient } = await import('./mcp.ts'), { toolCallerOf } = await import('../src/quantum/mcp.ts'), keyFile = join(dirname(join(process.cwd(), (await runFiles()).receipt)), 'proof-key.json')
+    const referer = flag('--referer'), sk = process.env.QPU_PROOF_SIGNING_KEY
+    // keys bound to a referer: each chunk's seed is HKDF over the signing seed, the referer the salt (the plan seal { referer } answers); the public ids printed, never a private key
+    if (action === 'proof-keys' && referer) { const plan = (toolCallerOf('seal')({ text: referer, referer: { address: referer, chunks: Number(flag('--chunks') ?? 1) } }) as { derivation: { infos: string[] } }).derivation, seed = Buffer.from(sk ?? '', 'base64').subarray(-32)
+      if (Buffer.from(sk ?? '', 'base64').length !== 54) { console.log('no seed-form QPU_PROOF_SIGNING_KEY named: make one with proof-keys first'); process.exit(1) }
+      const idOf = (info: string) => { const k = c.createPrivateKey({ key: Buffer.concat([Buffer.from('3034020100300b0609608648016503040312042280' + '20', 'hex'), Buffer.from(c.hkdfSync('sha256', seed, Buffer.from(referer.split('-').join(''), 'hex'), info, 32))]), format: 'der', type: 'pkcs8' }); return c.createHash('sha256').update(c.createPublicKey(k).export({ type: 'spki', format: 'der' })).digest('hex') }
+      const ids = plan.infos.map(idOf), again = plan.infos.map(idOf); console.log(JSON.stringify({ referer, keys: ids, recomputedEqual: ids.join() === again.join(), distinct: new Set(ids).size === ids.length, entropy: 'the signing seed\'s 256 bits; the referer adds 0' })); process.exit(0) }
     if (action === 'proof-keys') { if (process.env.QPU_PROOF_SIGNING_KEY) { console.log('a proof signing key is already named; not replaced'); process.exit(0) }
       const { publicKey, privateKey } = (c.generateKeyPairSync as unknown as (alg: string) => { publicKey: import('node:crypto').KeyObject; privateKey: import('node:crypto').KeyObject })('ml-dsa-65'), spki = publicKey.export({ type: 'spki', format: 'der' }).toString('base64')
       writeFileSync(keyFile, JSON.stringify({ alg: 'ML-DSA-65', spki, id: c.createHash('sha256').update(spki).digest('hex') }, null, 1) + '\n'); appendFileSync('.dev.vars', `\nQPU_PROOF_SIGNING_KEY=${privateKey.export({ type: 'pkcs8', format: 'der' }).toString('base64')}\n`)
       console.log(`ML-DSA-65 key pair made: the private key named QPU_PROOF_SIGNING_KEY in the environment file (never printed), the public key published at ${keyFile}`) }
     else { const pk = c.createPublicKey({ key: Buffer.from((JSON.parse(readFileSync(keyFile, 'utf8')) as { spki: string }).spki, 'base64'), format: 'der', type: 'spki' }), file = flag('--file'), page = flag('--page')
-      const blocks = (file ? JSON.parse(readFileSync(file, 'utf8')) : ((await mcpOf().docOf('findPages', page ?? '')) as { layout?: unknown[] } | null)?.layout ?? []) as { blockType?: string; tool?: string; arguments?: unknown; theorem?: string; proof?: { signed: string; mac: string | null; signature: string | null } | null }[]
+      const blocks = (file ? JSON.parse(readFileSync(file, 'utf8')) : ((await mcpClient().docOf('findPages', page ?? '')) as { layout?: unknown[] } | null)?.layout ?? []) as { blockType?: string; tool?: string; arguments?: unknown; theorem?: string; proof?: { signed: string; mac: string | null; signature: string | null } | null }[]
       const proved = blocks.filter((b) => b.proof), rows = proved.map((b) => { const again = (toolCallerOf('verify')({ call: { tool: b.tool, arguments: b.arguments ?? {} }, ...(b.theorem ? { theorem: b.theorem } : {}) }) as { signed?: string | null }).signed
         return { same: again === b.proof!.signed, signature: b.proof!.signature ? c.verify(null, Buffer.from(b.proof!.signed), pk, Buffer.from(b.proof!.signature, 'base64')) : null, mac: b.proof!.mac && process.env.QPU_DATA_KEY ? c.createHmac('sha256', Buffer.from(c.hkdfSync('sha256', process.env.QPU_DATA_KEY, '', 'qpu proof mac', 32))).update(b.proof!.signed).digest('hex') === b.proof!.mac : null } })
       console.log(`${blocks.length} block(s), ${proved.length} with a proof: ${rows.filter((r) => r.same).length} recomputed equal, ${rows.filter((r) => r.signature === true).length} signatures verified with the public key alone, ${rows.filter((r) => r.mac === true).length} MACs verified with the secret, ${rows.filter((r) => r.signature === false || r.mac === false || !r.same).length} failed`) }
@@ -120,8 +126,18 @@ if (process.argv[1]?.endsWith('machine.ts')) {
     const conf = ts.parseJsonConfigFileContent(ts.readConfigFile(join(root, 'tsconfig.json'), ts.sys.readFile).config, ts.sys, root), versions = new Map<string, number>()
     const ls = ts.createLanguageService({ getScriptFileNames: () => conf.fileNames, getScriptVersion: (f: string) => String(versions.get(f) ?? 0), getScriptSnapshot: (f: string) => (ts.sys.fileExists(f) ? ts.ScriptSnapshot.fromString(ts.sys.readFile(f)) : undefined), getCurrentDirectory: () => root, getCompilationSettings: () => conf.options, getDefaultLibFileName: ts.getDefaultLibFilePath, fileExists: ts.sys.fileExists, readFile: ts.sys.readFile })
     const apply = (edits: { file: string; start: number; end: number; text: string }[]) => { const by = new Map<string, typeof edits>(); for (const e of edits) by.set(e.file, [...(by.get(e.file) ?? []), e]); for (const [f, es] of by) { let t = readFileSync(f, 'utf8'); for (const e of es.sort((a, b) => b.start - a.start)) t = t.slice(0, e.start) + e.text + t.slice(e.end); writeFileSync(f, t); versions.set(f, (versions.get(f) ?? 0) + 1) } return edits.length }
-    if (action === 'rename') { const [file, from, to] = rest, f = join(root, file ?? ''), sf = ls.getProgram().getSourceFile(f); let at = -1; const walk = (n: any) => { if (at < 0 && n.name?.text === from) at = n.name.getStart(); ts.forEachChild(n, walk) }; if (sf) walk(sf)
+    // one rename, or a wave: --map <file> holding [file, from, to] rows, every one in this one language service; --record records renames already made
+    if (action === 'rename') { const rows = (rest.includes('--map') ? JSON.parse(readFileSync(rest[rest.indexOf('--map') + 1] ?? '', 'utf8')) : [rest]) as string[][]
+      for (const [file, from, to] of rest.includes('--record') ? [] : rows) { const f = join(root, file ?? ''), sf = ls.getProgram().getSourceFile(f); let at = -1; const walk = (n: any) => { if (at < 0 && n.name?.text === from) at = n.name.getStart(); ts.forEachChild(n, walk) }; if (sf) walk(sf)
       console.log(at < 0 ? `no declaration named ${from} in ${file}` : `renamed ${from} → ${to} at ${apply((ls.findRenameLocations(f, at, false, false) ?? []).map((l: any) => ({ file: l.fileName, start: l.textSpan.start, end: l.textSpan.start + l.textSpan.length, text: to })))} place(s)`) }
+      // each rename recorded in Payload with its witness (the content address of its declaration's first line at the base commit, after the name)
+      // and one wave that has many of them (links): the pre-commit rule pairs only what Payload holds and the diff agrees with
+      if (!process.env.QPU_APP_KEY) { console.log('renames not recorded: no QPU_APP_KEY, so the pre-commit rule counts them as growth'); process.exit(0) }
+      const { mcpClient } = await import('./mcp.ts'), { uuidOf } = await import('../src/quantum/blocks.ts'), m = mcpClient(), base = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), ids: string[] = []
+      for (const [file, from, to] of rows) { const line = execFileSync('git', ['show', `${base}:${file}`], { encoding: 'utf8', maxBuffer: 1 << 28 }).split('\n').find((l) => new RegExp(`^(export )?(async )?(const|function) ${from}\\b`).test(l)); if (!line) continue
+        const made = await m.call('createEntries', { kind: 'rename', from: 'machine', body: { file, from, to, base, rest: uuidOf(line.slice(line.indexOf(from) + from!.length)) } }), id = (m.docsOf(made.text ?? '')[0] as { id?: string } | undefined)?.id; if (id) ids.push(id) }
+      const wave = await m.call('createEntries', { kind: 'rename-wave', from: 'machine', body: { base, renames: ids.length }, links: ids })
+      console.log(wave.error ? `the wave was refused: ${String(wave.error).slice(0, 200)}` : `${ids.length} of ${rows.length} rename(s) recorded in Payload at ${base.slice(0, 9)}, one wave having many`) }
     else { const PUBLIC = /\/(blocks|mcp|roles)\.ts$|toolboxes\/payload\.ts$/, edits: { file: string; start: number; end: number; text: string }[] = []
       // a name a consumer outside the tsconfig imports (the docs site, the Payload app) stays exported: its import is its reference
       const kept = new Set(execFileSync('git', ['grep', '-h', '-o', '-E', "import \\{[^}]+\\} from '[./]+(src/quantum/)?[a-z/-]+\\.ts'", '--', join(dirname(dirname((await runFiles()).receipt)), '.vitepress'), ...LITERAL_ROOTS.filter((r) => r.startsWith('site'))], { encoding: 'utf8' }).split('\n').flatMap((l) => (l.match(/\{([^}]+)\}/)?.[1] ?? '').split(',').map((s) => s.trim().split(' as ')[0]!.replace(/^type /, ''))).filter(Boolean))

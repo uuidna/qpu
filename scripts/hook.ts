@@ -6,12 +6,12 @@ import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, sta
 import { join, dirname } from 'node:path'
 import { spawnSync, execSync, spawn } from 'node:child_process'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { GENERATED_FILES, RUN_FILES } from '../src/quantum/toolboxes/repository.ts'
-import { LITERAL_ROOTS, manualDocsOf } from '../src/quantum/audit.ts'
-import { GAP_KINDS, gapKindOf } from '../src/quantum/toolboxes/billing.ts'
+import { GENERATED_FILES, RUN_FILES, type Rename } from '../src/quantum/toolboxes/repository.ts'
+import { LITERAL_ROOTS, findManualDocs } from '../src/quantum/audit.ts'
+import { GAP_KINDS, classifyGap } from '../src/quantum/toolboxes/billing.ts'
 import { createHash } from 'node:crypto'
-import { penalise, clear, correctionOf, recordPrevented, openPenaltiesOf } from './penalties.ts'
-import { mcpOf, readJson, raidRead } from './mcp.ts'
+import { penalise, clear, correctPenalty, recordPrevented, readOpenPenalties } from './penalties.ts'
+import { mcpClient, readJson, raidRead } from './mcp.ts'
 import { redact } from '../src/quantum/machine.ts'
 import { homedir } from 'node:os'
 
@@ -24,20 +24,20 @@ try { w = toolCallerOf('repository')({ workflow: name, offline: process.env.QPU_
 if (!w) { console.error(`hook ${name}: ${why}`); process.exit(1) }
 let red = false
 // the open penalties first, before any step: their count, the tokens and coins they book, and each one's rule and subject
-const standing = await openPenaltiesOf()
+const standing = await readOpenPenalties()
 if (!standing.open) console.error(`hook ${name}: penalties unread (${standing.read})`)
 else { const shown = standing.open.filter((b) => (b as { printed?: boolean }).printed !== false && b.kind !== 'invisible'); /* an invisible action's penalty is recorded silently, never printed (textbook_penalty_visibility_harmonic) */ console.error(`hook ${name}: ${shown.length} open penalt${shown.length === 1 ? 'y' : 'ies'}, ${standing.tokens} token(s), ${standing.coins} coin(s)`); for (const b of shown) console.error(`  ${(b as { kind?: string }).kind ?? 'refusal'}${(b as { blocks?: boolean }).blocks === false ? ' (listed)' : ''} ${b.rule}: ${b.snapshot?.key}`) }
 let automated: { drifted: string[]; bytes: number; files: { path: string; expected: string; actual: string }[] } | null = null
 // a raid step: the docket read through the Payload MCP tool the step names, every page (the URL overridden by QPU_APP_MCP, the user's MCP key
 // in QPU_APP_KEY, never written anywhere), in the RAID's order: else binding 0's copy; with neither the docket is unread and the rules say unknown
 let docket: unknown[] | null = null
-const raidOf = (s: Step) => raidRead(s.tool!, async () => (await mcpOf(process.env.QPU_APP_MCP ?? s.url).findAll(s.tool!, s.arguments ?? {})).docs as Record<string, unknown>[] | null)
+const readRaid = (s: Step) => raidRead(s.tool!, async () => (await mcpClient(process.env.QPU_APP_MCP ?? s.url).findAll(s.tool!, s.arguments ?? {})).docs as Record<string, unknown>[] | null)
 for (const s of w.steps) {
   if (red && s.strict) break
   // a detached step runs in the background with its own output file, never holding the hook
   if (s.kind === 'run' && s.detach) { const log = join('.qpu', `${s.id}.log`); mkdirSync('.qpu', { recursive: true }); const fd = openSync(log, 'w'); spawn(s.cmd!, s.args ?? [], { detached: true, stdio: ['ignore', fd, fd] }).unref(); console.log(`hook ${name}: ${s.id} started in the background (${log})`); continue }
   if (s.kind === 'run') { const p = spawnSync(s.cmd!, s.args ?? [], { stdio: 'inherit' }); if (p.status !== 0) { console.error(`hook ${name}: step ${s.id} red`); if (s.strict) red = true } continue }
-  if (s.kind === 'raid') { const got = await raidOf(s); docket = got.docs ?? null; console.log(`hook ${name}: ${s.id}: ${got.docs?.length ?? 'no'} document(s) from ${got.from}`); continue }
+  if (s.kind === 'raid') { const got = await readRaid(s); docket = got.docs ?? null; console.log(`hook ${name}: ${s.id}: ${got.docs?.length ?? 'no'} document(s) from ${got.from}`); continue }
   if (s.kind === 'stage') {
     // before anything is staged: every generated file whose staged content differs from what its generator just wrote (the step above regenerated them)
     const drifted = GENERATED_FILES.filter((p) => existsSync(p) && spawnSync('git', ['diff', '--quiet', '--', p]).status === 1)
@@ -80,7 +80,7 @@ for (const s of w.steps) {
 // the hook edits before it decides: every published file redacted (paths relative, each leak by its kind) and staged again
 if (name === 'pre-commit') for (const f of [...new Set([...git(['ls-files', '--', 'docs', 'README.md']).split('\n'), ...readdirSync(dirname(RUN_FILES.receipt)).map((p) => join(dirname(RUN_FILES.receipt), p))])].filter((p) => /\.(md|json|ndjson|txt|xml|html)$/.test(p) && existsSync(p))) { const t = readFileSync(f, 'utf8'), r = redact(t, process.cwd(), homedir()); if (r !== t) { writeFileSync(f, r); if (git(['ls-files', '--', f])) git(['add', '--', f]) } }
 if (name === 'pre-commit' && automated && automated.drifted.length && standing.learned?.includes('pre-commit:automated')) {
-  const c = correctionOf({ rule: 'pre-commit:automated', bytes: automated.bytes, committer: git(['config', 'user.name']) || null, evidence: { key: `pre-commit:automated::${automated.drifted.join(',')}`, workflow: name, violated: ['automated'], drifted: automated.drifted } }, standing.learned)
+  const c = correctPenalty({ rule: 'pre-commit:automated', bytes: automated.bytes, committer: git(['config', 'user.name']) || null, evidence: { key: `pre-commit:automated::${automated.drifted.join(',')}`, workflow: name, violated: ['automated'], drifted: automated.drifted } }, standing.learned)
   if (c && c.antimatter.needs === 'auto') {
     for (const m of c.antimatter.run) spawnSync(m.cmd, m.args, { stdio: 'inherit' })
     const left = GENERATED_FILES.filter((p) => existsSync(p) && spawnSync('git', ['diff', '--quiet', '--', p]).status === 1)
@@ -90,19 +90,21 @@ if (name === 'pre-commit' && automated && automated.drifted.length && standing.l
   }
 }
 // pre-commit: the staged diff of the hand-written roots, read once: the core reads literals, folded and proven from it (a file declaring its generator excluded)
-const stagedOf = () => { const diff = git(['diff', '--cached', '-U0', '--no-color', '--', ...LITERAL_ROOTS]); return { diff, generated: [...diff.matchAll(/^\+\+\+ b\/(.+)$/gm)].map((m) => m[1]!).filter((f) => { try { return /^\/\/ generated by |(automatically|generated) by payload|generated by configure \{/im.test(readFileSync(f, 'utf8').slice(0, 800)) } catch { return true } }) } }
-// the hook pays for what a commit adds, before it decides: while the staged code grows, a lead whose record already lives, equal, in Payload,
+// the renames this commit carries, read from Payload: the wave the rename door recorded at HEAD, its renames populated through links (has many)
+const renamesAtHead = name === 'pre-commit' && process.env.QPU_APP_KEY ? await (async () => { const m = mcpClient(), head = git(['rev-parse', 'HEAD']), waves = (((await m.findAll('findEntries', { where: JSON.stringify({ kind: { equals: 'rename-wave' } }), depth: 1 })).docs ?? []) as { body?: { base?: string }; links?: { body?: Rename }[] }[]).filter((w) => w.body?.base === head); return waves.flatMap((w) => (w.links ?? []).flatMap((l) => (l.body ? [l.body] : []))) })() : []
+const readStagedDiff = () => { const diff = git(['diff', '--cached', '-U0', '--no-color', '--', ...LITERAL_ROOTS]); return { diff, renames: renamesAtHead, generated: [...diff.matchAll(/^\+\+\+ b\/(.+)$/gm)].map((m) => m[1]!).filter((f) => { try { return /^\/\/ generated by |(automatically|generated) by payload|generated by configure \{/im.test(readFileSync(f, 'utf8').slice(0, 800)) } catch { return true } }) } }
+// the hook pays for what a commit adds, before it decides: while the staged code grows, a lead of any status whose record already lives, equal, in Payload,
 // whose id no code names and whose prefix no check counts, leaves leads.ts and is staged
 if (name === 'pre-commit' && process.env.QPU_APP_KEY) {
-  const folded = (toolCallerOf('repository')({ workflow: name, facts: { staged: stagedOf() } }).decision as { rules?: { rule: string; evidence?: string }[] } | undefined)?.rules?.find((r) => r.rule === 'folded')?.evidence ?? ''
+  const folded = (toolCallerOf('repository')({ workflow: name, facts: { staged: readStagedDiff() } }).decision as { rules?: { rule: string; evidence?: string }[] } | undefined)?.rules?.find((r) => r.rule === 'folded')?.evidence ?? ''
   let owed = Number(/net (-?\d+)/.exec(folded)?.[1] ?? 0)
   if (owed > 0) {
-    const { leadsOf } = await import('./mcp.ts'), { LEADS } = await import('../src/quantum/leads.ts'), held = new Map((await leadsOf()).records.map((l) => [l.id, l]))
+    const { readLeads } = await import('./mcp.ts'), { LEADS } = await import('../src/quantum/leads.ts'), held = new Map((await readLeads()).records.map((l) => [l.id, l]))
     const counted = [...new Set(git(['grep', '-h', '-o', "startsWith('[a-z]*-')", '--', 'src', 'scripts']).match(/'[a-z]+-'/g) ?? [])].map((p) => p.slice(1, -1)), file = 'src/quantum/leads.ts', moved: string[] = []
     // paid in chunks of five, each kept only if a fresh-process audit stays as green as before it, else put back and the next chunk tried
     const failedNow = () => Number(spawnSync('node', ['--input-type=module', '-e', "const { handle } = await import('./src/quantum/mcp.ts'); const r = await handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: {} } }); console.log(r.result.structuredContent.failed)"], { encoding: 'utf8', maxBuffer: 1 << 26 }).stdout.trim().split('\n').pop() ?? NaN), base = failedNow(), candidates: { id: string; row: string }[] = []
     let text = readFileSync(file, 'utf8')
-    for (const l of LEADS) { const p = held.get(l.id); if (l.status !== 'served' || p?.statement !== l.statement || p?.status !== l.status || counted.some((c) => l.id.startsWith(c)) || git(['grep', '-l', '-F', `'${l.id}'`, '--', 'src', 'scripts', 'site/src']).split('\n').some((f) => f && f !== file)) continue; const row = text.split('\n').find((x) => x.includes(`id: '${l.id}'`)); if (row) candidates.push({ id: l.id, row }) }
+    for (const l of LEADS) { const p = held.get(l.id); if (p?.statement !== l.statement || p?.status !== l.status || counted.some((c) => l.id.startsWith(c)) || git(['grep', '-l', '-F', `'${l.id}'`, '--', 'src', 'scripts', 'site/src']).split('\n').some((f) => f && f !== file)) continue; const row = text.split('\n').find((x) => x.includes(`id: '${l.id}'`)); if (row) candidates.push({ id: l.id, row }) }
     for (let i = 0; i < candidates.length && owed > 0; i += 5) {
       const chunk = candidates.slice(i, i + 5), next = chunk.reduce((t, c) => t.split(c.row + '\n').join(''), text); writeFileSync(file, next)
       if (failedNow() > base) { writeFileSync(file, text); continue }
@@ -112,13 +114,13 @@ if (name === 'pre-commit' && process.env.QPU_APP_KEY) {
     if (owed > 0) console.error(`hook ${name}: ${owed} byte(s) still owed; folded decides`)
   }
 }
-const stagedFact = name === 'pre-commit' ? stagedOf() : undefined
+const stagedFact = name === 'pre-commit' ? readStagedDiff() : undefined
 // pre-commit: a new docs page that no generator writes is manual work, refused by the rule automated (a page already in the tree is listed by purify)
 const manualFact = name === 'pre-commit' ? (() => {
   const addedPages = git(['diff', '--cached', '--name-only', '--diff-filter=A', '--', 'docs']).split('\n').filter((f) => f.endsWith('.md'))
   if (!addedPages.length) return []
   const scripts = Object.fromEntries(git(['ls-files', 'scripts']).split('\n').filter((f) => /\.(ts|mjs)$/.test(f)).map((f) => [f, readFileSync(f, 'utf8')]))
-  return manualDocsOf(addedPages.map((path) => ({ path, bytes: existsSync(path) ? statSync(path).size : 0 })), scripts).rows.filter((r) => r.manual).map((r) => r.path)
+  return findManualDocs(addedPages.map((path) => ({ path, bytes: existsSync(path) ? statSync(path).size : 0 })), scripts).rows.filter((r) => r.manual).map((r) => r.path)
 })() : []
 // the rules of the workflow decided by their theorems over the facts this client read after its steps: the receipt it wrote, the approval the configs step recorded, the gate's decoding; a violation is refused and its case named
 // pre-deploy: the OpenNext bundle measured here, the deploy configuration handed over as its text, the docket as the Payload MCP answered it;
@@ -132,7 +134,7 @@ const deployFacts = name === 'pre-deploy' ? (() => {
 const publishedFact = name === 'pre-push' ? (() => { const head = git(['rev-parse', '--short=8', 'HEAD']); const lines = existsSync('docs/public/receipts.ndjson') ? readFileSync('docs/public/receipts.ndjson', 'utf8').trim().split('\n') : []; for (const l of lines.reverse()) { let r: { head?: string; steps?: { name: string; status: string }[] }; try { r = JSON.parse(l) } catch { continue } if (r.head !== head) continue; const st = (n: string) => r.steps?.find((s) => s.name === n)?.status ?? 'missing'; if (st('docs:build') === 'skipped' || st('publish') === 'skipped') continue; return { head, branch: execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim(), build: st('docs:build'), publish: st('publish') } } return null })() : undefined
 const soleFact = name === 'pre-push' ? { branches: git(['branch', '--format=%(refname:short)']).split('\n').filter(Boolean), worktrees: git(['worktree', 'list', '--porcelain']).split('\n').filter((l) => l.startsWith('worktree ')).length } : undefined
 const facts = { // the penalties this workflow raised itself are re-decided by this very run (cleared if it passes), so they don't count against it: no deadlock
-...(name === 'pre-push' ? { penalties: standing.open ? (() => { const others = standing.open.filter((b) => (b.snapshot as { workflow?: string } | undefined)?.workflow !== name && (b as { blocks?: boolean }).blocks !== false && GAP_KINDS[gapKindOf(b.rule ?? '', b.kind)]); /* lex mitior: blocks when it blocked when raised and its kind blocks now */ return { open: others.length, openKeys: others.map((b) => b.snapshot?.key ?? '') } })() : null } : {}), ...(name === 'pre-commit' ? { automated: automated ? { drifted: automated.drifted, manual: manualFact } : null, staged: stagedFact ?? null } : {}), ...(soleFact !== undefined ? { sole: soleFact } : {}), ...(name === 'commit-msg' ? { message: readFileSync(extra[0]!, 'utf8') } : {}), ...(name === 'pre-commit' || name === 'pre-push' ? { workflows: Object.fromEntries(readdirSync(RUN_FILES.workflows).map((f) => [f, readFileSync(join(RUN_FILES.workflows, f), 'utf8')])) } : {}), ...(publishedFact !== undefined ? { published: publishedFact } : {}), ...deployFacts, receipt: readJson(RUN_FILES.receipt) as { steps?: { name: string; status: string }[] } | null, approval: (readJson(RUN_FILES.configs) as { approval?: unknown } | null)?.approval ?? null, e2e: (readJson(RUN_FILES.e2e) as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
+...(name === 'pre-push' ? { penalties: standing.open ? (() => { const others = standing.open.filter((b) => (b.snapshot as { workflow?: string } | undefined)?.workflow !== name && (b as { blocks?: boolean }).blocks !== false && GAP_KINDS[classifyGap(b.rule ?? '', b.kind)]); /* lex mitior: blocks when it blocked when raised and its kind blocks now */ return { open: others.length, openKeys: others.map((b) => b.snapshot?.key ?? '') } })() : null } : {}), ...(name === 'pre-commit' ? { automated: automated ? { drifted: automated.drifted, manual: manualFact } : null, staged: stagedFact ?? null } : {}), ...(soleFact !== undefined ? { sole: soleFact } : {}), ...(name === 'commit-msg' ? { message: readFileSync(extra[0]!, 'utf8') } : {}), ...(name === 'pre-commit' || name === 'pre-push' ? { workflows: Object.fromEntries(readdirSync(RUN_FILES.workflows).map((f) => [f, readFileSync(join(RUN_FILES.workflows, f), 'utf8')])) } : {}), ...(publishedFact !== undefined ? { published: publishedFact } : {}), ...deployFacts, receipt: readJson(RUN_FILES.receipt) as { steps?: { name: string; status: string }[] } | null, approval: (readJson(RUN_FILES.configs) as { approval?: unknown } | null)?.approval ?? null, e2e: (readJson(RUN_FILES.e2e) as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
 const d = toolCallerOf('repository')({ workflow: name, facts }).decision as { allowed: boolean; strict: boolean; says: string; court: { arguments: { court: unknown } } | null } | undefined
 if (d) {
   console.log(`hook ${name}: ${d.says}`)

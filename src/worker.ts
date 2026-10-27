@@ -4,15 +4,15 @@
 // other's. Reads need no auth; docket writes carry `Authorization: Bearer QPU_WRITE_TOKEN` (a wrangler secret, never
 // committed). Every response carries the licence.
 import { handle, type Rpc } from './quantum/mcp.ts'
-import { composeOf } from './quantum/compose.ts'
-import { toolsOf } from './quantum/toolbox.ts'
-import { fusionOf } from './quantum/toolboxes/billing.ts'
-import { scanSvgOf } from './quantum/scan.ts'
+import { composePage } from './quantum/compose.ts'
+import { listTools } from './quantum/toolbox.ts'
+import { fuseCall } from './quantum/toolboxes/billing.ts'
+import { renderScanSvg } from './quantum/scan.ts'
 import { EXAMPLES } from './quantum/examples.ts'
 import { LEADS } from './quantum/leads.ts'
 import { LICENSE } from './quantum/license.ts'
 import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, computedEntryOf, type Step } from './quantum/blocks.ts'
-import { cssOf, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.ts'
+import { renderCss, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.ts'
 import { LOCALES as LANGS, translateOf } from './quantum/i18n.ts'
 import { DEFAULT_MCP_HOSTS } from './quantum/discovery.ts'
 import { discoveryOf, protectedResourceOf } from './quantum/discovery-document.ts'
@@ -41,10 +41,10 @@ export const roleAt = async (env: Env, tenant: string, host: string, token: stri
       if (role === 'reader' || role === 'writer' || role === 'admin') return { role, by: 'rbac-mcp' }
     } catch { /* the RBAC host did not answer: the tenant secrets decide, and the answer says so */ }
   }
-  return { ...roleOf(env, tenant, token), by: 'tenant-secrets' }
+  return { ...resolveRole(env, tenant, token), by: 'tenant-secrets' }
 }
 /** The role a request holds at a tenant, from its token alone; a token of another tenant holds no role here and says so. */
-const roleOf = (env: Env, tenant: string, token: string | undefined): { role: Role; collision?: string } => {
+const resolveRole = (env: Env, tenant: string, token: string | undefined): { role: Role; collision?: string } => {
   const T = tenant.toUpperCase()
   const tokenOf = (kind: 'WRITE' | 'ADMIN', t: string) => (env[`QPU_${kind}_TOKEN_${t.toUpperCase()}`] as string | undefined) ?? (env[`QPU_${kind}_TOKEN`] as string | undefined)
   if (!token) return { role: 'reader' }
@@ -58,7 +58,7 @@ const LICENSE_HEADERS = { 'X-Qpu-Version': VERSION, 'Link': `<${LICENSE.url}>; r
 const json = (body: unknown, status = 200, extra: Record<string, string> = {}): Response => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', ...LICENSE_HEADERS, ...extra } })
 /** Streaming by default: a client that accepts text/event-stream receives the reply as the MCP streamable transport's event (event: message, data: the JSON-RPC reply), the same headers kept; a client that does not receives JSON. */
 const streams = (request: Request): boolean => /text\/event-stream/.test(request.headers.get('accept') ?? '')
-const replyOf = (request: Request, body: unknown, status = 200, extra: Record<string, string> = {}): Response => (streams(request) && status === 200 ? new Response(`event: message\ndata: ${JSON.stringify(body)}\n\n`, { status, headers: { 'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-cache', ...LICENSE_HEADERS, ...extra } }) : json(body, status, extra))
+const jsonReply = (request: Request, body: unknown, status = 200, extra: Record<string, string> = {}): Response => (streams(request) && status === 200 ? new Response(`event: message\ndata: ${JSON.stringify(body)}\n\n`, { status, headers: { 'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-cache', ...LICENSE_HEADERS, ...extra } }) : json(body, status, extra))
 /** The involution that costs Cloudflare nothing: a reply is addressed by its block (content), so a client that holds the address asks with If-None-Match and receives 304 — no body computed, no bytes sent; a reply the address names is immutable and cacheable for a year anywhere between. */
 const involuted = (request: Request, address: string | null, response: Response, content?: string): Response => {
   if (!address) return response
@@ -112,7 +112,7 @@ const b64 = (b: Uint8Array): string => btoa(latin1(b))
 const unb64 = (t: string): Uint8Array => Uint8Array.from(atob(t), (c) => c.charCodeAt(0))
 const buf = (u: Uint8Array): ArrayBuffer => u.buffer.slice(u.byteOffset, u.byteOffset + u.byteLength) as ArrayBuffer
 export const hashOf = (bytes: Uint8Array): string => uuidOf(latin1(bytes))
-const sha256Of = async (bytes: Uint8Array): Promise<string> => [...new Uint8Array(await crypto.subtle.digest('SHA-256', buf(bytes)))].map((b) => b.toString(16).padStart(2, '0')).join('')
+const sha256Hex = async (bytes: Uint8Array): Promise<string> => [...new Uint8Array(await crypto.subtle.digest('SHA-256', buf(bytes)))].map((b) => b.toString(16).padStart(2, '0')).join('')
 /** Constant-time string equality, so a token comparison leaks no prefix. */
 export const sameToken = (a: string | undefined, b: string | undefined): boolean => {
   if (!a || !b) return false
@@ -121,7 +121,7 @@ export const sameToken = (a: string | undefined, b: string | undefined): boolean
   for (let i = 0; i < Math.max(x.length, y.length); i++) diff |= (x[i % x.length] ?? 0) ^ (y[i % y.length] ?? 0)
   return diff === 0
 }
-const xorOf = (parts: Uint8Array[], length: number): Uint8Array => { const out = new Uint8Array(length); for (const p of parts) for (let i = 0; i < p.length; i++) out[i]! ^= p[i]!; return out }
+const xorParts = (parts: Uint8Array[], length: number): Uint8Array => { const out = new Uint8Array(length); for (const p of parts) for (let i = 0; i < p.length; i++) out[i]! ^= p[i]!; return out }
 const split = (bytes: Uint8Array): Uint8Array[] => { const parts: Uint8Array[] = []; for (let i = 0; i < bytes.length || parts.length === 0; i += FRAGMENT_BYTES) parts.push(bytes.subarray(i, Math.min(i + FRAGMENT_BYTES, bytes.length))); return parts }
 
 /** One entry. `fragments` empty means committed and not yet revealed. */
@@ -163,7 +163,7 @@ export class Docket {
     const fragments: string[] = []
     for (const p of parts) fragments.push(await put(p))
     const parities: string[] = []
-    for (const stripe of Docket.stripesOf(parts)) parities.push(await put(xorOf(stripe, Math.max(...stripe.map((p) => p.length)))))
+    for (const stripe of Docket.stripesOf(parts)) parities.push(await put(xorParts(stripe, Math.max(...stripe.map((p) => p.length)))))
     return { fragments, lengths: parts.map((p) => p.length), parities }
   }
   private async release(hashes: string[]): Promise<void> { for (const h of hashes) if ((await this.bump('fref', h, -1)) === 0) await this.storage.delete(`frag:${h}`) }
@@ -175,7 +175,7 @@ export class Docket {
     if (id && !ID.test(id)) return json({ error: 'an entry id is a content-addressed RFC 9562 v8 UUID' }, 400)
     try {
       if (request.method === 'GET' && id) {
-        if (url.searchParams.has('og') || /text\/html/.test(request.headers.get('accept') ?? '')) { const nx = nextOf(id, url.origin); return involuted(request, id, pageOf(id, url.origin, { prev: refererOf(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled })) }
+        if (url.searchParams.has('og') || /text\/html/.test(request.headers.get('accept') ?? '')) { const nx = stepNext(id, url.origin); return involuted(request, id, renderPage(id, url.origin, { prev: readReferer(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled })) }
         return await this.read(id, url.searchParams.has('cheap'), url.searchParams.has('heal'))
       }
       if (request.method === 'GET') return await this.list(url.searchParams.get('kind'), url.searchParams.get('since'))
@@ -217,7 +217,7 @@ export class Docket {
     const bytes = enc.encode(text)
     if (bytes.length > MAX_ENTRY_BYTES) return json({ error: `entry exceeds ${MAX_ENTRY_BYTES} bytes` }, 413)
     const id = uuidOf(text)
-    const sha256 = await sha256Of(bytes)
+    const sha256 = await sha256Hex(bytes)
     const existing = await this.entry(id)
     if (existing && existing.fragments.length === 0) {
       // the reveal of a commitment
@@ -237,7 +237,7 @@ export class Docket {
       const lead = { kind: 'collision', from: 'docket', statement: `fold collision at ${id}: SHA-256 ${existing.sha256} (${existing.kind} from ${existing.from}) and ${sha256} (${e.kind} from ${e.from}) share one address`, status: 'open', reason: 'the fold separates content but is not collision-resistant against a search; both contents are kept and fingerprinted; develop the lead' }
       const leadBytes = enc.encode(JSON.stringify(lead))
       const leadId = uuidOf(JSON.stringify(lead))
-      if (!(await this.entry(leadId))) { const st = await this.store([leadBytes]); await this.storage.put(`row:${leadId}`, { id: leadId, kind: 'collision', from: 'docket', date, bytes: leadBytes.length, sha256: await sha256Of(leadBytes), ...st, links: [id] }); await this.bump('ref', id, 1) }
+      if (!(await this.entry(leadId))) { const st = await this.store([leadBytes]); await this.storage.put(`row:${leadId}`, { id: leadId, kind: 'collision', from: 'docket', date, bytes: leadBytes.length, sha256: await sha256Hex(leadBytes), ...st, links: [id] }); await this.bump('ref', id, 1) }
       return json({ id, sha256, stored: true, collision: true, with: existing.sha256, lead: leadId, landed: await this.replicate(request, e) }, 201)
     }
     const stored = await this.store(split(bytes))
@@ -282,14 +282,14 @@ export class Docket {
         const parity = await this.fragment(m.parities[st]!)
         if (!parity) continue
         const i = missing[0]!
-        const rebuilt = xorOf([parity, ...idx.filter((j) => j !== i).map((j) => parts[j] as Uint8Array)], parity.length).subarray(0, m.lengths[i])
+        const rebuilt = xorParts([parity, ...idx.filter((j) => j !== i).map((j) => parts[j] as Uint8Array)], parity.length).subarray(0, m.lengths[i])
         if (hashOf(rebuilt) === m.fragments[i]) { parts[i] = rebuilt; repaired.push(m.fragments[i]!) }
       }
       if (parts.some((p) => !p)) return { lost: parts.map((p, i) => (p ? null : m.fragments[i]!)).filter((x): x is string => !!x) }
       const whole = new Uint8Array(m.bytes); let o = 0
       for (const p of parts as Uint8Array[]) { whole.set(p, o); o += p.length }
       const text = dec.decode(whole)
-      if (uuidOf(text) !== id || (await sha256Of(whole)) !== m.sha256) return { lost: ['the reassembled body does not match its fingerprints'] }
+      if (uuidOf(text) !== id || (await sha256Hex(whole)) !== m.sha256) return { lost: ['the reassembled body does not match its fingerprints'] }
       return { text, repaired }
     }
     let got = await assemble()
@@ -301,10 +301,10 @@ export class Docket {
           if (!res.ok) continue
           const copy = await res.json() as { body?: unknown }
           const text = JSON.stringify(copy.body); const bytes = enc.encode(text)
-          if (uuidOf(text) !== id || (await sha256Of(bytes)) !== m.sha256) continue // a collision or a different entry never heals
+          if (uuidOf(text) !== id || (await sha256Hex(bytes)) !== m.sha256) continue // a collision or a different entry never heals
           const parts = split(bytes)
           for (const p of parts) await this.storage.put(`frag:${hashOf(p)}`, await this.seal(p))
-          for (const stripe of Docket.stripesOf(parts)) { const parity = xorOf(stripe, Math.max(...stripe.map((p) => p.length))); await this.storage.put(`frag:${hashOf(parity)}`, await this.seal(parity)) }
+          for (const stripe of Docket.stripesOf(parts)) { const parity = xorParts(stripe, Math.max(...stripe.map((p) => p.length))); await this.storage.put(`frag:${hashOf(parity)}`, await this.seal(parity)) }
           healedFrom = mirror; got = await assemble(); break
         } catch { /* the next mirror */ }
       }
@@ -330,22 +330,22 @@ export class Docket {
 const escapeHtml = (t: string): string => t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
 type Superposition = { prev?: string; next?: { href: string; label: string }; compiled?: Step[]; result?: unknown; notes?: string[]; locale?: string }
 /** The next step of an id: its program compiled against the tools, the first step executed, and the href that continues the walk. */
-export const nextOf = (id: string, origin: string): { href: string; label: string; compiled: Step[]; result: unknown } => {
+const stepNext = (id: string, origin: string): { href: string; label: string; compiled: Step[]; result: unknown } => {
   const ch = channelOf(id)
-  const tools = toolsOf({ handle }) as Parameters<typeof compileOf>[1]
+  const tools = listTools({ handle }) as Parameters<typeof compileOf>[1]
   const { steps, next } = compileOf(ch.program, tools, ch.message)
   const reply = next ? call(next.tool, next.arguments) as { result?: { structuredContent: unknown; _meta: { widget: string } }; error?: unknown } : undefined
   const rotated = [...ch.program.slice(1), ch.program[0]!] // the walk continues: the program rotates one nibble per step
   return { href: `${origin}/${ch.handle}/${rotated.map((n) => n.toString(16)).join('')}/${ch.tail}`, label: next ? `${next.tool} ${JSON.stringify(next.arguments)}` : 'no step', compiled: steps, result: reply?.result ? { structured: reply.result.structuredContent, widget: reply.result._meta.widget } : reply?.error }
 }
-export const pageOf = (id: string, origin: string, sp: Superposition = {}): Response => {
+const renderPage = (id: string, origin: string, sp: Superposition = {}): Response => {
   const locale = sp.locale ?? 'en'
   const t = (text: string) => translateOf(text, 'en', locale).text
   const ch = channelOf(id)
   const seal = sealOf(id)
   const accent = accentOfUuid(id)
   // the scannable stream: one frame per character of the address, a scraper shows one frame and links nothing, a device that streams reads the link
-  const swatch = `data:image/svg+xml,${encodeURIComponent(scanSvgOf(id))}`
+  const swatch = `data:image/svg+xml,${encodeURIComponent(renderScanSvg(id))}`
   const title = `${ch.handle} · ${ch.program.join('')} · @uuidna/qpu`
   const description = `Docket entry ${id}: handle ${ch.handle}, hex program ${ch.program.join('')} (version ${ch.version}, variant ${ch.variant}), message ${ch.message.one48} as one 48-bit natural, ${ch.message.two24.join('/')} as two 24-bit, ${ch.message.three16.join('/')} as three 16-bit; seal ${seal.valid ? 'valid' : 'invalid'}. ${LICENSE.spdx} © ${LICENSE.author}.`
   const og: Record<string, string> = { 'og:type': 'website', 'og:site_name': '@uuidna/qpu', 'og:url': `${origin}/docket/${id}`, 'og:title': title, 'og:description': description, 'og:image': swatch, 'og:image:width': '1200', 'og:image:height': '630', 'article:author': LICENSE.author, license: `${LICENSE.spdx} ${LICENSE.url}`, 'twitter:card': 'summary_large_image' }
@@ -356,7 +356,7 @@ ${meta}
 <meta name="license" content="${LICENSE.spdx}"><meta name="copyright" content="${escapeHtml(LICENSE.copyright)}"><link rel="license" href="${LICENSE.url}"><link rel="canonical" href="${origin}/docket/${id}">
 ${sp.prev ? `<link rel="prev" href="${escapeHtml(sp.prev)}">` : ''}${sp.next ? `<link rel="next" href="${escapeHtml(sp.next.href)}">` : ''}
 <meta name="uuidna:handle" content="${ch.handle}"><meta name="uuidna:program" content="${ch.program.join('')}"><meta name="uuidna:tail" content="${ch.tail}"><meta name="uuidna:seal" content="${seal.valid}"><meta name="uuidna:aura" content="${escapeHtml(accent)}"><meta name="uuidna:key" content="${KEY}">
-<style>${cssOf()}:root{--font-sans:system-ui,sans-serif;--text-primary:#111;--text-secondary:#555;--surface-1:#f4f4f5;--surface-2:#fff;--border:#ddd;--radius:8px;--pad-md:12px;--pad-sm:8px;--gap-md:12px;--gap-sm:8px;--gap-xs:4px;--font-size-footnote:12px}body{margin:0;padding:16px;background:#fafafa;font-family:var(--font-sans);color:var(--text-primary)}@media (prefers-color-scheme: dark){:root{--text-primary:#eee;--text-secondary:#aaa;--surface-1:#1c1c1e;--surface-2:#111;--border:#333}body{background:#000}}pre{white-space:pre-wrap;background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);padding:var(--pad-md)}</style></head>
+<style>${renderCss()}:root{--font-sans:system-ui,sans-serif;--text-primary:#111;--text-secondary:#555;--surface-1:#f4f4f5;--surface-2:#fff;--border:#ddd;--radius:8px;--pad-md:12px;--pad-sm:8px;--gap-md:12px;--gap-sm:8px;--gap-xs:4px;--font-size-footnote:12px}body{margin:0;padding:16px;background:#fafafa;font-family:var(--font-sans);color:var(--text-primary)}@media (prefers-color-scheme: dark){:root{--text-primary:#eee;--text-secondary:#aaa;--surface-1:#1c1c1e;--surface-2:#111;--border:#333}body{background:#000}}pre{white-space:pre-wrap;background:var(--surface-2);border:0.5px solid var(--border);border-radius:var(--radius);padding:var(--pad-md)}</style></head>
 <body data-block="${id}" style="--block-accent: ${escapeHtml(accent)}; border-left: 3px solid var(--block-accent); padding-left: 8px;">
 <h1 style="font-family:monospace">${ch.handle}</h1>
 <p>${t('hex program')} <code>${ch.program.join('')}</code> · ${t('message tail')} <code>${ch.tail}</code> · ${t('seal')} ${seal.valid ? '✓' : '✗'}</p>
@@ -380,7 +380,7 @@ ${sp.result && typeof sp.result === 'object' && 'widget' in (sp.result as object
 }
 
 /** The referer, when it names a page of this unit or any http origin: the previous step of the walk. */
-const refererOf = (request: Request): string | undefined => { const r = request.headers.get('referer'); return r && /^https?:\/\//.test(r) ? r : undefined }
+const readReferer = (request: Request): string | undefined => { const r = request.headers.get('referer'); return r && /^https?:\/\//.test(r) ? r : undefined }
 
 /** Catch all, decide and translate later. A path is read as handle / program / tail where it is hex (the walk), a locale prefix
  *  is stripped and recorded as a translation lead, and anything else is put to the match tool as a statement: served, proved
@@ -398,32 +398,32 @@ const catchAll = (request: Request, url: URL, env: Env): Response | Promise<Resp
     const tail = c && /^[0-9a-f]{12}$/.test(c) ? c : '000000000000'
     if (program) {
       const id = uuidFromParts(a, program, tail)
-      const nx = nextOf(id, url.origin)
-      if (!wantsPage) return json({ id, handle: a, program, tail, next: { href: nx.href, label: nx.label }, compiled: nx.compiled, result: nx.result && typeof nx.result === 'object' && 'structured' in (nx.result as object) ? (nx.result as { structured: unknown }).structured : nx.result, prev: refererOf(request) ?? null, notes })
-      return pageOf(id, url.origin, { prev: refererOf(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled, result: nx.result, notes, locale })
+      const nx = stepNext(id, url.origin)
+      if (!wantsPage) return json({ id, handle: a, program, tail, next: { href: nx.href, label: nx.label }, compiled: nx.compiled, result: nx.result && typeof nx.result === 'object' && 'structured' in (nx.result as object) ? (nx.result as { structured: unknown }).structured : nx.result, prev: readReferer(request) ?? null, notes })
+      return renderPage(id, url.origin, { prev: readReferer(request), next: { href: nx.href, label: nx.label }, compiled: nx.compiled, result: nx.result, notes, locale })
     }
     // the family: the handle alone; its entries on this mirror, and the sixteen doors a first nibble opens
-    const tools = toolsOf({ handle }).filter((t) => !['audit', 'match', 'verify'].includes(t.name))
+    const tools = listTools({ handle }).filter((t) => !['audit', 'match', 'verify'].includes(t.name))
     const doors = [...Array(16).keys()].map((n) => ({ nibble: n.toString(16), tool: tools[n % tools.length]!.name, href: `${url.origin}/${a}/${n.toString(16).repeat(10)}/${tail}` }))
     const family = async () => { if (!env.DOCKET) return [] as unknown[]; const res = await env.DOCKET.get(env.DOCKET.idFromName(tenantOf(url.hostname))).fetch(new Request(`${url.origin}/docket`)); const j = await res.json() as { entries: { id: string }[] }; return j.entries.filter((e) => e.id.startsWith(a)) }
     return family().then((entries) => wantsPage
-      ? new Response(`<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><title>${a} · @uuidna/qpu</title><meta property="og:title" content="${a} · family · @uuidna/qpu"><meta property="og:url" content="${url.origin}/${a}"><link rel="license" href="${LICENSE.url}">${refererOf(request) ? `<link rel="prev" href="${escapeHtml(refererOf(request)!)}">` : ''}<style>${cssOf()}body{font-family:system-ui;padding:16px}</style></head><body><h1 style="font-family:monospace">${a}</h1>${notes.length ? `<p>${notes.map(escapeHtml).join(' · ')}</p>` : ''}<h2>${t('Entries of this family here')}</h2><ul>${(entries as { id: string }[]).map((e) => `<li><a href="${url.origin}/docket/${e.id}">${e.id}</a></li>`).join('') || `<li>${t('none on this mirror')}</li>`}</ul><h2>${t('Doors: the first nibble chooses next')}</h2><table><tbody>${doors.map((d) => `<tr><td>${d.nibble}</td><td>${d.tool}</td><td><a href="${d.href}">${d.href.replace(url.origin, '')}</a></td></tr>`).join('')}</tbody></table><p style="font-size:12px">© ${LICENSE.author} · ${LICENSE.spdx}</p></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
-      : json({ handle: a, entries, doors, prev: refererOf(request) ?? null, notes }))
+      ? new Response(`<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><title>${a} · @uuidna/qpu</title><meta property="og:title" content="${a} · family · @uuidna/qpu"><meta property="og:url" content="${url.origin}/${a}"><link rel="license" href="${LICENSE.url}">${readReferer(request) ? `<link rel="prev" href="${escapeHtml(readReferer(request)!)}">` : ''}<style>${renderCss()}body{font-family:system-ui;padding:16px}</style></head><body><h1 style="font-family:monospace">${a}</h1>${notes.length ? `<p>${notes.map(escapeHtml).join(' · ')}</p>` : ''}<h2>${t('Entries of this family here')}</h2><ul>${(entries as { id: string }[]).map((e) => `<li><a href="${url.origin}/docket/${e.id}">${e.id}</a></li>`).join('') || `<li>${t('none on this mirror')}</li>`}</ul><h2>${t('Doors: the first nibble chooses next')}</h2><table><tbody>${doors.map((d) => `<tr><td>${d.nibble}</td><td>${d.tool}</td><td><a href="${d.href}">${d.href.replace(url.origin, '')}</a></td></tr>`).join('')}</tbody></table><p style="font-size:12px">© ${LICENSE.author} · ${LICENSE.spdx}</p></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
+      : json({ handle: a, entries, doors, prev: readReferer(request) ?? null, notes }))
   }
   // not a walk: decide by matching the path as a statement
   const statement = segments.join(' ').replace(/[-_]+/g, ' ')
   const decision = call('match', { statement }) as { result?: { structuredContent: { verdict: string; evidence: string[]; lead: unknown }; _meta: { widget: string } } }
   const m = decision.result?.structuredContent
   // the fallback for anything: the cached assets the path's words select, computed in real time, verified, addressed (ETag by content) and billed
-  const composed = composeOf(url.pathname, { handle, examples: EXAMPLES, leads: LEADS, call: (name, args = {}) => call(name, args).result?.structuredContent }, url.origin, tenantOf(url.hostname))
+  const composed = composePage(url.pathname, { handle, examples: EXAMPLES, leads: LEADS, call: (name, args = {}) => call(name, args).result?.structuredContent }, url.origin, tenantOf(url.hostname))
   if (composed.count > 0 && composed.address) {
     const decided = m ? { verdict: m.verdict, evidence: m.evidence, lead: m.lead } : null
     if (composed.ext && /^(tsx?|jsx?)$/.test(composed.ext) && composed.code) return involuted(request, composed.address, new Response(composed.code, { status: 200, headers: { 'content-type': 'text/typescript; charset=utf-8', 'x-qpu-assets': String(composed.count), 'x-qpu-verified': String(composed.verified), ...LICENSE_HEADERS } }))
     if (!wantsPage) return involuted(request, composed.address, json({ ...composed, decided, notes }))
-    return involuted(request, composed.address, new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(statement)} · composed · @uuidna/qpu</title><meta property="og:title" content="${escapeHtml(statement)} · ${composed.count} cached assets"><meta property="og:url" content="${escapeHtml(url.href)}"><link rel="license" href="${LICENSE.url}"><style>${cssOf()}</style></head><body><main><h1>${escapeHtml(statement)}</h1><p>${escapeHtml(composed.says)}</p><table><thead><tr><th>kind</th><th>asset</th><th>address</th><th>verified</th></tr></thead><tbody>${composed.assets.map((a) => `<tr><td>${a.kind}</td><td><a href="${escapeHtml(a.url)}">${escapeHtml(a.id)}</a></td><td style="font-family:monospace">${a.address}</td><td>${a.verified ? 'yes' : 'no'}</td></tr>`).join('')}</tbody></table>${composed.code ? `<h2>code</h2><pre>${escapeHtml(composed.code)}</pre>` : ''}<p>bill: ${composed.bill.coils} coil, ${composed.bill.author.coins} coins to the author; ${escapeHtml(composed.bill.licence.says)}</p><p>Decided by the match tool: <strong>${escapeHtml(m?.verdict ?? 'undecided')}</strong></p></main></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } }))
+    return involuted(request, composed.address, new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(statement)} · composed · @uuidna/qpu</title><meta property="og:title" content="${escapeHtml(statement)} · ${composed.count} cached assets"><meta property="og:url" content="${escapeHtml(url.href)}"><link rel="license" href="${LICENSE.url}"><style>${renderCss()}</style></head><body><main><h1>${escapeHtml(statement)}</h1><p>${escapeHtml(composed.says)}</p><table><thead><tr><th>kind</th><th>asset</th><th>address</th><th>verified</th></tr></thead><tbody>${composed.assets.map((a) => `<tr><td>${a.kind}</td><td><a href="${escapeHtml(a.url)}">${escapeHtml(a.id)}</a></td><td style="font-family:monospace">${a.address}</td><td>${a.verified ? 'yes' : 'no'}</td></tr>`).join('')}</tbody></table>${composed.code ? `<h2>code</h2><pre>${escapeHtml(composed.code)}</pre>` : ''}<p>bill: ${composed.bill.coils} coil, ${composed.bill.author.coins} coins to the author; ${escapeHtml(composed.bill.licence.says)}</p><p>Decided by the match tool: <strong>${escapeHtml(m?.verdict ?? 'undecided')}</strong></p></main></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } }))
   }
   if (!wantsPage) return json({ error: `no route ${url.pathname}`, decided: m ? { verdict: m.verdict, evidence: m.evidence, lead: m.lead } : null, notes, routes: ['GET /', 'GET /.well-known/qpu.json', 'GET /health', 'POST /mcp', 'GET|POST|DELETE /docket', 'GET /<handle>[/<program>[/<tail>]]'] }, 404)
-  return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(statement)} · decided · @uuidna/qpu</title><meta property="og:title" content="${escapeHtml(statement)} · ${escapeHtml(m?.verdict ?? 'undecided')}"><meta property="og:url" content="${escapeHtml(url.href)}"><link rel="license" href="${LICENSE.url}"><style>${cssOf()}body{font-family:system-ui;padding:16px}</style></head><body><h1>${escapeHtml(statement)}</h1><p>${t('Caught: this path is not a walk. Decided by the match tool')}: <strong>${escapeHtml(m?.verdict ?? 'undecided')}</strong>.${notes.length ? ' ' + notes.map(escapeHtml).join(' · ') : ''}</p>${decision.result?._meta.widget ?? ''}<p style="font-size:12px">© ${LICENSE.author} · ${LICENSE.spdx}</p></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
+  return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(statement)} · decided · @uuidna/qpu</title><meta property="og:title" content="${escapeHtml(statement)} · ${escapeHtml(m?.verdict ?? 'undecided')}"><meta property="og:url" content="${escapeHtml(url.href)}"><link rel="license" href="${LICENSE.url}"><style>${renderCss()}body{font-family:system-ui;padding:16px}</style></head><body><h1>${escapeHtml(statement)}</h1><p>${t('Caught: this path is not a walk. Decided by the match tool')}: <strong>${escapeHtml(m?.verdict ?? 'undecided')}</strong>.${notes.length ? ' ' + notes.map(escapeHtml).join(' · ') : ''}</p>${decision.result?._meta.widget ?? ''}<p style="font-size:12px">© ${LICENSE.author} · ${LICENSE.spdx}</p></body></html>`, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', ...LICENSE_HEADERS } })
 }
 
 /** The docket's licence entries at a tenant, as the billing toolbox reads them. */
@@ -494,7 +494,7 @@ type Jwk = Record<string, unknown>
 type KeyPair = { privateKey: CryptoKey; publicKey: CryptoKey }
 type SigningKey = { pair: KeyPair; publicKey: Jwk; keyed: 'secret' | 'ephemeral' }
 const signingKeys = new Map<string, Promise<SigningKey>>()
-const signingKeyOf = (algorithm: string, env: Env, tenant: string): Promise<SigningKey> => {
+const loadSigningKey = (algorithm: string, env: Env, tenant: string): Promise<SigningKey> => {
   const jwk = env[`QPU_SIGNING_KEY_${tenant.toUpperCase()}`] ?? env.QPU_SIGNING_KEY, secret = typeof jwk === 'string' ? jwk.trim() : '', at = algorithm + '\n' + secret
   if (!signingKeys.has(at)) signingKeys.set(at, (async (): Promise<SigningKey> => {
     const name = { name: algorithm } as unknown as Alg, priv = secret ? (JSON.parse(secret) as Jwk) : null
@@ -509,7 +509,7 @@ const signAtEdge = async (reply: { result: { structuredContent: { sha256: string
   const sc = reply.result.structuredContent
   const plan = sc.signature
   try {
-    const { pair, publicKey, keyed } = await signingKeyOf(plan.algorithm, env, tenant)
+    const { pair, publicKey, keyed } = await loadSigningKey(plan.algorithm, env, tenant)
     const value = new Uint8Array(await crypto.subtle.sign({ name: plan.algorithm } as unknown as Alg, pair.privateKey, buf(bytesOfHex(sc.sha256))))
     const signature: SignaturePlan = { ...plan, phase: 'signed', value: b64(value), publicKey, keyed, note: keyed === 'secret' ? `signed under ${plan.keyVar.split(' ')[0]} at tenant ${tenant}` : `signed under a key of this isolate's lifetime at tenant ${tenant}: set QPU_SIGNING_KEY_${tenant.toUpperCase()} for a stable one` }
     return { ...reply, result: { ...reply.result, structuredContent: { ...sc, signature } } }
@@ -547,19 +547,19 @@ export const worker = {
       try { message = await request.json() as Rpc } catch { return json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'parse error' } }, 400) }
       // a registration URL may carry the scope of its tools/list (?statement=, ?tools=, ?brief=1): forwarded into the parameters, so the handler balances the list over MCP
       if ((message as { method?: string }).method === 'tools/call' && url.searchParams.get('view') === 'cheapest') { const p = ((message as { params?: Record<string, unknown> }).params ?? {}); message = { ...message, params: { ...p, _meta: { ...((p._meta as Record<string, unknown> | undefined) ?? {}), view: 'cheapest' } } } as Rpc }
-      if ((message as { method?: string }).method === 'tools/list') { const p = ((message as { params?: Record<string, unknown> }).params ?? {}); const ref = url.searchParams.get('prev') ?? (refererOf(request) ? uuidOf(refererOf(request)!) : null); if (ref && p.prev === undefined) message = { ...message, params: { ...p, prev: ref } } as Rpc; const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, ''); if (token && (message as { params?: Record<string, unknown> }).params?.role === undefined) { const { role } = await roleAt(env, tenantOf(url.hostname), url.hostname, token); message = { ...message, params: { ...((message as { params?: Record<string, unknown> }).params ?? {}), role } } as Rpc } }
+      if ((message as { method?: string }).method === 'tools/list') { const p = ((message as { params?: Record<string, unknown> }).params ?? {}); const ref = url.searchParams.get('prev') ?? (readReferer(request) ? uuidOf(readReferer(request)!) : null); if (ref && p.prev === undefined) message = { ...message, params: { ...p, prev: ref } } as Rpc; const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, ''); if (token && (message as { params?: Record<string, unknown> }).params?.role === undefined) { const { role } = await roleAt(env, tenantOf(url.hostname), url.hostname, token); message = { ...message, params: { ...((message as { params?: Record<string, unknown> }).params ?? {}), role } } as Rpc } }
       if ((message as { method?: string }).method === 'tools/list' && (url.searchParams.has('statement') || url.searchParams.has('tools') || url.searchParams.has('brief'))) message = { ...message, params: { ...((message as { params?: Record<string, unknown> }).params ?? {}), ...(url.searchParams.has('statement') ? { statement: url.searchParams.get('statement') } : {}), ...(url.searchParams.has('tools') ? { tools: url.searchParams.get('tools') } : {}), ...(url.searchParams.has('brief') ? { brief: true } : {}) } } as Rpc
       // licensing by architecture: a declared commercial use of a coil (anything but the pure algebra) needs a licence at the tenant, else the court's case
       const called = (message as { method?: string; params?: { name?: string } }).method === 'tools/call' ? (message as { params?: { name?: string } }).params?.name : undefined
-      if (called && fusionOf(called).side === 'coil' && /^commercial$/i.test(request.headers.get('x-qpu-use') ?? '')) { const refused = await unlicensed(request, url, env, `tools/call ${called}`); if (refused) return refused }
+      if (called && fuseCall(called).side === 'coil' && /^commercial$/i.test(request.headers.get('x-qpu-use') ?? '')) { const refused = await unlicensed(request, url, env, `tools/call ${called}`); if (refused) return refused }
       const reply = handle(message)
       // A checkout plan is executed here, with the tenant's key the handler never holds: the answer carries Stripe's session url.
       const params = (message as { params?: { name?: string; arguments?: { op?: string } } }).params
       // a cached reply is an involution: the block address is its ETag; the same arguments at any host answer the same address (tools/call is pure), so If-None-Match answers 304
-      if ('result' in reply && params?.name !== 'stripe' && params?.name !== 'metrics' && !(params?.name === 'seal' && (params.arguments as { sign?: unknown } | undefined)?.sign)) return withDigest(reply, involuted(request, addressOfReply(reply), replyOf(request, reply), contentHashOf((reply as { result: { structuredContent?: unknown } }).result.structuredContent)))
-      if (params?.name === 'seal' && (params.arguments as { sign?: unknown } | undefined)?.sign && 'result' in reply) return replyOf(request, await signAtEdge(reply as { result: { structuredContent: { sha256: string; signature: SignaturePlan } } }, env, tenantOf(url.hostname)))
+      if ('result' in reply && params?.name !== 'stripe' && params?.name !== 'metrics' && !(params?.name === 'seal' && (params.arguments as { sign?: unknown } | undefined)?.sign)) return withDigest(reply, involuted(request, addressOfReply(reply), jsonReply(request, reply), contentHashOf((reply as { result: { structuredContent?: unknown } }).result.structuredContent)))
+      if (params?.name === 'seal' && (params.arguments as { sign?: unknown } | undefined)?.sign && 'result' in reply) return jsonReply(request, await signAtEdge(reply as { result: { structuredContent: { sha256: string; signature: SignaturePlan } } }, env, tenantOf(url.hostname)))
       if (params?.name === 'stripe' && params.arguments?.op === 'plan' && 'result' in reply) return json(await stripeCheckout(reply as { result: { structuredContent: { plan: { url: string; form: Record<string, string>; headers: Record<string, string>; secret: string } } } }, url, env))
-      return replyOf(request, reply)
+      return jsonReply(request, reply)
     }
     // Stripe per tenant: the webhook endpoint, the licence state, both under the docket since every event is an entry.
     if (path === '/docket/stripe' && request.method === 'POST') return stripeWebhook(request, url, env)

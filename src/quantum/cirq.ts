@@ -8,7 +8,7 @@ export type Qubit =
   | { kind: 'named'; name: string }
 
 /** The qubit's key: a stable text form, used for ordering and equality. */
-export const keyOf = (q: Qubit): string => (q.kind === 'line' ? `line:${q.x}` : q.kind === 'grid' ? `grid:${q.row},${q.col}` : `named:${q.name}`)
+export const qubitKey = (q: Qubit): string => (q.kind === 'line' ? `line:${q.x}` : q.kind === 'grid' ? `grid:${q.row},${q.col}` : `named:${q.name}`)
 
 export const LineQubit = {
   of: (x: number): Qubit => ({ kind: 'line', x }),
@@ -28,7 +28,7 @@ export type Gate = { name: string; arity: number; matrix: [number, number][] }
 const s2 = Math.SQRT1_2
 const c = (re: number, im = 0): [number, number] => [re, im]
 /** A matrix row-major, entry by entry. O(dim²). */
-const matrixOf = (dim: number, entry: (r: number, s: number) => [number, number]): [number, number][] => Array.from({ length: dim * dim }, (_, k) => entry(Math.floor(k / dim), k % dim))
+const buildMatrix = (dim: number, entry: (r: number, s: number) => [number, number]): [number, number][] => Array.from({ length: dim * dim }, (_, k) => entry(Math.floor(k / dim), k % dim))
 
 export const X: Gate = { name: 'X', arity: 1, matrix: [c(0), c(1), c(1), c(0)] }
 export const Y: Gate = { name: 'Y', arity: 1, matrix: [c(0), c(0, -1), c(0, 1), c(0)] }
@@ -45,14 +45,14 @@ export const ZZ: Gate = { name: 'ZZ', arity: 2, matrix: [c(1), c(0), c(0), c(0),
 export const TOFFOLI: Gate = {
   name: 'TOFFOLI',
   arity: 3,
-  matrix: matrixOf(8, (r, col) => c((r === col && r < 6) || (r === 6 && col === 7) || (r === 7 && col === 6) ? 1 : 0)),
+  matrix: buildMatrix(8, (r, col) => c((r === col && r < 6) || (r === 6 && col === 7) || (r === 7 && col === 6) ? 1 : 0)),
 }
 
 /** Refuses a gate that is not an involution (G·G ≠ I): the powers and exponentials here are exact for involutions only. */
 const assertInvolution = (gate: Gate, what: string): void => {
   const dim = 1 << gate.arity
   const at = (m: [number, number][], r: number, s: number) => m[r * dim + s]!
-  const square = matrixOf(dim, (r, s) => {
+  const square = buildMatrix(dim, (r, s) => {
     let sr = 0, si = 0
     for (let k = 0; k < dim; k++) {
       const [ar, ai] = at(gate.matrix, r, k), [br, bi] = at(gate.matrix, k, s)
@@ -66,12 +66,12 @@ const assertInvolution = (gate: Gate, what: string): void => {
 
 /** Cirq's gate power, G**t: the +1 eigenspace keeps its phase and the −1 eigenspace takes e^{iπt}, so X**0.5 is the square
  *  root of NOT, as Cirq documents. Exact for the involutions here (G·G = I); any other gate is refused, not approximated. */
-export const powerOf = (gate: Gate, t: number): Gate => {
+export const raiseGate = (gate: Gate, t: number): Gate => {
   assertInvolution(gate, 'power')
   const dim = 1 << gate.arity
   const at = (m: [number, number][], r: number, s: number) => m[r * dim + s]!
   const [cr, ci] = [Math.cos(Math.PI * t), Math.sin(Math.PI * t)]
-  const matrix = matrixOf(dim, (r, s) => {
+  const matrix = buildMatrix(dim, (r, s) => {
     const [gr, gi] = at(gate.matrix, r, s)
     const id = r === s ? 1 : 0
     // P+ = (I+G)/2 and P- = (I-G)/2 are the projectors; the result is P+ + e^{iπt}·P-
@@ -85,11 +85,11 @@ export const powerOf = (gate: Gate, t: number): Gate => {
 /** The exponential exp(−iθG) of an involution G, without a global phase: cos θ·I − i sin θ·G. This is the rotation a
  *  variational ansatz applies, exp(−iθ Y⊗X) for H₂; Cirq writes it as G**(2θ/π) up to the phase e^{iθ}, which an expectation
  *  value cannot see. Any gate that is not an involution is refused. */
-export const exponentialOf = (gate: Gate, theta: number): Gate => {
+export const exponentiateGate = (gate: Gate, theta: number): Gate => {
   assertInvolution(gate, 'exponential')
   const dim = 1 << gate.arity
   const [cs, sn] = [Math.cos(theta), Math.sin(theta)]
-  const matrix = matrixOf(dim, (r, s) => {
+  const matrix = buildMatrix(dim, (r, s) => {
     const [gr, gi] = gate.matrix[r * dim + s]!
     // −i·sinθ·(gr + i·gi) = sinθ·gi − i·sinθ·gr
     return [cs * (r === s ? 1 : 0) + sn * gi, -sn * gr]
@@ -105,7 +105,7 @@ export const pauliProduct = (paulis: readonly ('X' | 'Y' | 'Z' | 'I')[]): Gate =
   let matrix: [number, number][] = [c(1)]
   let dim = 1
   for (const f of factors) {
-    matrix = matrixOf(dim * 2, (r, s) => {
+    matrix = buildMatrix(dim * 2, (r, s) => {
       const [ar, ai] = matrix[Math.floor(r / 2) * dim + Math.floor(s / 2)]!
       const [br, bi] = f.matrix[(r % 2) * 2 + (s % 2)]!
       return [ar * br - ai * bi, ar * bi + ai * br]
@@ -117,9 +117,9 @@ export const pauliProduct = (paulis: readonly ('X' | 'Y' | 'Z' | 'I')[]): Gate =
 
 /** The adjoint of a gate, G†: the conjugate transpose of its unitary. It is the inverse of any gate, so an echo can run
  *  its backward half with the true inverse of each operation rather than the operation itself. */
-export const adjointOf = (gate: Gate): Gate => {
+export const adjointGate = (gate: Gate): Gate => {
   const dim = 1 << gate.arity
-  return { name: `${gate.name}†`, arity: gate.arity, matrix: matrixOf(dim, (r, s) => { const [re, im] = gate.matrix[s * dim + r]!; return [re, -im] }) }
+  return { name: `${gate.name}†`, arity: gate.arity, matrix: buildMatrix(dim, (r, s) => { const [re, im] = gate.matrix[s * dim + r]!; return [re, -im] }) }
 }
 
 export type Operation =
@@ -140,7 +140,7 @@ export const measure = (qubits: Qubit[], key: string): Operation => ({ kind: 'me
  *  operation sits, and nowhere else. The density-matrix simulator applies it exactly; the state-vector simulator refuses it. */
 export const noisy = (channel: Channel, ...qubits: Qubit[]): Operation => ({ kind: 'channel', channel, qubits })
 
-const touches = (op: Operation, qubits: Set<string>): boolean => op.qubits.some((q) => qubits.has(keyOf(q)))
+const touches = (op: Operation, qubits: Set<string>): boolean => op.qubits.some((q) => qubits.has(qubitKey(q)))
 
 /** Cirq's Moment: operations in the same time slice, on disjoint qubits. */
 export class Moment {
@@ -149,8 +149,8 @@ export class Moment {
     this.operations = operations
     const seen = new Set<string>()
     for (const op of operations) for (const q of op.qubits) {
-      if (seen.has(keyOf(q))) throw new Error(`a moment acts on one qubit twice: ${keyOf(q)}`)
-      seen.add(keyOf(q))
+      if (seen.has(qubitKey(q))) throw new Error(`a moment acts on one qubit twice: ${qubitKey(q)}`)
+      seen.add(qubitKey(q))
     }
   }
 }
@@ -182,7 +182,7 @@ export class Circuit {
   /** Places one operation: NEW at the end, INLINE in the last moment when it does not clash there, EARLIEST after the last moment
    *  it clashes with, found walking back from the end. O(moments · ops a moment). */
   private place(single: Operation, strategy: Exclude<InsertStrategy, 'NEW_THEN_INLINE'>): void {
-    const mine = new Set(single.qubits.map(keyOf))
+    const mine = new Set(single.qubits.map(qubitKey))
     const free = (i: number) => !this.moments[i]!.operations.some((o) => touches(o, mine))
     let at = this.moments.length
     if (strategy === 'EARLIEST') while (at > 0 && free(at - 1)) at -= 1
@@ -193,7 +193,7 @@ export class Circuit {
   /** The qubits the circuit acts on, in key order: the basis order of the simulator. */
   get qubits(): Qubit[] {
     const byKey = new Map<string, Qubit>()
-    for (const m of this.moments) for (const op of m.operations) for (const q of op.qubits) byKey.set(keyOf(q), q)
+    for (const m of this.moments) for (const op of m.operations) for (const q of op.qubits) byKey.set(qubitKey(q), q)
     return [...byKey.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([, q]) => q)
   }
 
@@ -213,7 +213,7 @@ export class Device {
   constructor(qubits: readonly Qubit[], couplers: readonly (readonly [Qubit, Qubit])[]) {
     this.qubitList = [...qubits]
     this.edgeList = couplers.map(([a, b]): [Qubit, Qubit] => [a, b])
-    this.keys = new Set(qubits.map(keyOf))
+    this.keys = new Set(qubits.map(qubitKey))
     this.couplerKeys = new Set(couplers.map(([a, b]) => pairKey(a, b)))
   }
 
@@ -228,9 +228,9 @@ export class Device {
   }
 
   validateOperation(op: Operation): void {
-    for (const q of op.qubits) if (!this.keys.has(keyOf(q))) throw new Error(`${keyOf(q)} is not a qubit of this device`)
+    for (const q of op.qubits) if (!this.keys.has(qubitKey(q))) throw new Error(`${qubitKey(q)} is not a qubit of this device`)
     if (op.kind === 'gate' && op.qubits.length === 2 && !this.couplerKeys.has(pairKey(op.qubits[0]!, op.qubits[1]!))) {
-      throw new Error(`${op.gate.name} acts on ${keyOf(op.qubits[0]!)} and ${keyOf(op.qubits[1]!)}, which the device does not couple`)
+      throw new Error(`${op.gate.name} acts on ${qubitKey(op.qubits[0]!)} and ${qubitKey(op.qubits[1]!)}, which the device does not couple`)
     }
   }
 
@@ -245,7 +245,7 @@ export class Device {
   }
 }
 
-const pairKey = (a: Qubit, b: Qubit): string => [keyOf(a), keyOf(b)].sort().join('|')
+const pairKey = (a: Qubit, b: Qubit): string => [qubitKey(a), qubitKey(b)].sort().join('|')
 
 /** The result of run(): the sampled bitstrings per measurement key. */
 class Result {
@@ -268,10 +268,10 @@ class Result {
 
 type State = { re: Float64Array; im: Float64Array }
 /** Zeros of a size, or a copy. O(size). */
-const complexOf = (from: number | State): State => (typeof from === 'number' ? { re: new Float64Array(from), im: new Float64Array(from) } : { re: new Float64Array(from.re), im: new Float64Array(from.im) })
+const toComplexState = (from: number | State): State => (typeof from === 'number' ? { re: new Float64Array(from), im: new Float64Array(from) } : { re: new Float64Array(from.re), im: new Float64Array(from.im) })
 
 const MAX_QUBITS = 20
-const indexerOf = (order: Qubit[]) => { const pos = new Map(order.map((q, i) => [keyOf(q), i])); return (q: Qubit) => pos.get(keyOf(q))! }
+const makeIndexer = (order: Qubit[]) => { const pos = new Map(order.map((q, i) => [qubitKey(q), i])); return (q: Qubit) => pos.get(qubitKey(q))! }
 
 /** Applies a gate in place (index bit k is the k-th qubit). O(2^n · nonzero entries): a permutation gate costs one term a row. */
 const applyGate = (state: State, gate: Gate, indices: number[]): void => {
@@ -310,7 +310,7 @@ const measureQubit = (state: State, index: number, random: () => number): number
 
 /** A random source seeded by text (mulberry32 over a 32-bit fold of the text): the same seed draws the same samples on
  *  every host, so a sampled result is a function of its arguments and the gate's copies agree. */
-export const randomOf = (seed: string): (() => number) => {
+export const seededRandom = (seed: string): (() => number) => {
   let a = 0x9e3779b9
   for (let i = 0; i < seed.length; i += 1) a = Math.imul(a ^ seed.charCodeAt(i), 0x85ebca6b) >>> 0
   return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296 }
@@ -323,9 +323,9 @@ export class Simulator {
   private initial(circuit: Circuit): { state: State; order: Qubit[]; indexOf: (q: Qubit) => number } {
     const order = circuit.qubits
     if (order.length > MAX_QUBITS) throw new Error(`the simulator handles up to ${MAX_QUBITS} qubits, the circuit has ${order.length}`)
-    const state = complexOf(1 << order.length)
+    const state = toComplexState(1 << order.length)
     state.re[0] = 1
-    return { state, order, indexOf: indexerOf(order) }
+    return { state, order, indexOf: makeIndexer(order) }
   }
 
   /** Gates in place, measurements into bits. O(ops · 2^n). */
@@ -354,7 +354,7 @@ export class Simulator {
     const rest = circuit.operations.slice(first)
     const records = new Map<string, string[]>()
     for (let rep = 0; rep < repetitions; rep++) {
-      for (const [key, values] of this.apply(complexOf(prefix), rest, indexOf)) { const list = records.get(key) ?? []; list.push(values.join('')); records.set(key, list) }
+      for (const [key, values] of this.apply(toComplexState(prefix), rest, indexOf)) { const list = records.get(key) ?? []; list.push(values.join('')); records.set(key, list) }
     }
     return new Result(records)
   }
@@ -366,11 +366,11 @@ type Matrix = State
 const MAX_DENSITY_QUBITS = 8
 
 /** The unitary a gate acts as on n qubits: column c is the state the gate makes of basis state |c>. */
-const unitaryOf = (gate: Gate, indices: number[], n: number): Matrix => {
+const expandUnitary = (gate: Gate, indices: number[], n: number): Matrix => {
   const dim = 1 << n
-  const u = complexOf(dim * dim)
+  const u = toComplexState(dim * dim)
   for (let c = 0; c < dim; c++) {
-    const column = complexOf(dim)
+    const column = toComplexState(dim)
     column.re[c] = 1
     applyGate(column, gate, indices)
     for (let r = 0; r < dim; r++) {
@@ -382,7 +382,7 @@ const unitaryOf = (gate: Gate, indices: number[], n: number): Matrix => {
 }
 
 const multiply = (a: Matrix, b: Matrix, dim: number): Matrix => {
-  const out = complexOf(dim * dim)
+  const out = toComplexState(dim * dim)
   for (let r = 0; r < dim; r++)
     for (let k = 0; k < dim; k++) {
       const ar = a.re[r * dim + k]!, ai = a.im[r * dim + k]!
@@ -397,7 +397,7 @@ const multiply = (a: Matrix, b: Matrix, dim: number): Matrix => {
 
 /** The adjoint of a matrix: the conjugate transpose. */
 const dagger = (m: Matrix, dim: number): Matrix => {
-  const out = complexOf(dim * dim)
+  const out = toComplexState(dim * dim)
   for (let r = 0; r < dim; r++) for (let c = 0; c < dim; c++) {
     out.re[r * dim + c] = m.re[c * dim + r]!
     out.im[r * dim + c] = -m.im[c * dim + r]!
@@ -430,7 +430,7 @@ const probability = (p: number, name: string): void => {
 }
 
 /** Cirq's channels as Kraus operators: E(ρ) = Σ K ρ K†. The definitions are Cirq's own. */
-const krausOf = (channel: Channel): Gate[] => {
+const krausOperators = (channel: Channel): Gate[] => {
   switch (channel.name) {
     case 'bit_flip':
       probability(channel.p, 'bit-flip')
@@ -471,9 +471,9 @@ const krausOf = (channel: Channel): Gate[] => {
 /** A channel acting on one qubit of the density matrix: the sum of its Kraus operators conjugating ρ. */
 const channelOn = (rho: Matrix, index: number, channel: Channel, n: number): Matrix => {
   const dim = 1 << n
-  const out = complexOf(dim * dim)
-  for (const kraus of krausOf(channel)) {
-    const term = conjugate(unitaryOf(kraus, [index], n), rho, dim)
+  const out = toComplexState(dim * dim)
+  for (const kraus of krausOperators(channel)) {
+    const term = conjugate(expandUnitary(kraus, [index], n), rho, dim)
     for (let k = 0; k < dim * dim; k++) {
       out.re[k]! += term.re[k]!
       out.im[k]! += term.im[k]!
@@ -491,24 +491,24 @@ type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: number[]
  *  A pure state has purity 1; noise lowers it. Exact for up to 8 qubits. */
 export class DensityMatrixSimulator {
   simulate(circuit: Circuit, channels: readonly Channel[] | ((arity: number) => readonly Channel[]) = []): DensityResult {
-    if (typeof channels === 'function') [1, 2].forEach((arity) => channels(arity).forEach(krausOf))
-    else channels.forEach(krausOf)
+    if (typeof channels === 'function') [1, 2].forEach((arity) => channels(arity).forEach(krausOperators))
+    else channels.forEach(krausOperators)
     const order = circuit.qubits
     if (order.length > MAX_DENSITY_QUBITS) throw new Error(`the density-matrix simulator handles up to ${MAX_DENSITY_QUBITS} qubits, the circuit has ${order.length}`)
     const n = order.length
     const dim = 1 << n
-    const indexOf = indexerOf(order)
-    let rho = complexOf(dim * dim)
+    const indexOf = makeIndexer(order)
+    let rho = toComplexState(dim * dim)
     rho.re[0] = 1
     for (const op of circuit.operations) {
       if (op.kind === 'channel') {
-        krausOf(op.channel)
+        krausOperators(op.channel)
         for (const q of op.qubits) rho = channelOn(rho, indexOf(q), op.channel, n)
         continue
       }
       if (op.kind !== 'gate') continue
       const indices = op.qubits.map(indexOf)
-      rho = conjugate(unitaryOf(op.gate, indices, n), rho, dim)
+      rho = conjugate(expandUnitary(op.gate, indices, n), rho, dim)
       const noise = typeof channels === 'function' ? channels(op.gate.arity) : channels
       for (const i of indices) for (const channel of noise) rho = channelOn(rho, i, channel, n)
     }
@@ -522,17 +522,17 @@ export class DensityMatrixSimulator {
 
 /** Cirq's simulate_expectation_values for a Pauli string: Tr(ρ O), where O is the tensor product of the Paulis named by
  *  qubit, and the identity on every other qubit. For a Hermitian observable the trace is real. */
-export const expectationOf = (result: DensityResult, observable: Record<string, 'X' | 'Y' | 'Z'>): number => {
+export const computeExpectation = (result: DensityResult, observable: Record<string, 'X' | 'Y' | 'Z'>): number => {
   const n = result.qubits.length
   const dim = 1 << n
-  const index = new Map(result.qubits.map((q, i) => [keyOf(q), i]))
+  const index = new Map(result.qubits.map((q, i) => [qubitKey(q), i]))
   const paulis: Record<'X' | 'Y' | 'Z', Gate> = { X, Y, Z }
-  let op: Matrix = complexOf(dim * dim)
+  let op: Matrix = toComplexState(dim * dim)
   for (let k = 0; k < dim; k++) op.re[k * dim + k] = 1
   for (const [key, pauli] of Object.entries(observable)) {
     const i = index.get(key)
     if (i === undefined) throw new Error(`${key} is not a qubit of this result`)
-    op = multiply(op, unitaryOf(paulis[pauli], [i], n), dim)
+    op = multiply(op, expandUnitary(paulis[pauli], [i], n), dim)
   }
   let trace = 0
   for (let r = 0; r < dim; r++) for (let k = 0; k < dim; k++) {

@@ -4,14 +4,14 @@
 // here and lands as a new entry linked to the old, since entries are immutable and addressed by content. Nothing here does
 // I/O: the client reads the docket's rows and writes the entries this toolbox returns. Payload's mongodb adapter interface is
 // the shape this ports to, not Cloudflare's D1.
-import { toolOf, isObj, checksOf, type Toolbox, type Context } from '../toolbox.ts'
+import { defineTool, isObj, makeChecks, type Toolbox, type Context } from '../toolbox.ts'
 import { uuidOf } from '../blocks.ts'
 import { flowWidget } from '../widgets.ts'
 
 type Doc = Record<string, unknown>
 type Filter = Record<string, unknown>
 
-const pathOf = (doc: unknown, path: string): unknown => path.split('.').reduce<unknown>((v, k) => (isObj(v) ? (v as Record<string, unknown>)[k] : undefined), doc)
+const readPath = (doc: unknown, path: string): unknown => path.split('.').reduce<unknown>((v, k) => (isObj(v) ? (v as Record<string, unknown>)[k] : undefined), doc)
 const cmp = (a: unknown, b: unknown): number => (typeof a === 'number' && typeof b === 'number' ? a - b : String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0)
 const same = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b)
 
@@ -40,21 +40,21 @@ const satisfies = (value: unknown, cond: unknown): boolean => {
   return same(value, cond) || (Array.isArray(value) && value.some((v) => same(v, cond)))
 }
 /** Does a document match a filter? */
-const matchesOf = (doc: Doc, filter: Filter): boolean => Object.entries(filter).every(([k, cond]) => {
-  if (k === '$and') return (cond as Filter[]).every((f) => matchesOf(doc, f))
-  if (k === '$or') return (cond as Filter[]).some((f) => matchesOf(doc, f))
-  if (k === '$nor') return !(cond as Filter[]).some((f) => matchesOf(doc, f))
-  return satisfies(pathOf(doc, k), cond)
+const matchesFilter = (doc: Doc, filter: Filter): boolean => Object.entries(filter).every(([k, cond]) => {
+  if (k === '$and') return (cond as Filter[]).every((f) => matchesFilter(doc, f))
+  if (k === '$or') return (cond as Filter[]).some((f) => matchesFilter(doc, f))
+  if (k === '$nor') return !(cond as Filter[]).some((f) => matchesFilter(doc, f))
+  return satisfies(readPath(doc, k), cond)
 })
 /** find: filter, sort ({field: 1 | -1}), skip; no limit unless asked (no caps). */
-const findOf = (docs: readonly Doc[], filter: Filter = {}, sort: Record<string, 1 | -1> = {}, skip = 0, limit?: number): Doc[] => {
-  const out = docs.filter((d) => matchesOf(d, filter))
-  for (const [k, dir] of Object.entries(sort).reverse()) out.sort((a, b) => dir * cmp(pathOf(a, k), pathOf(b, k)))
+const findDocs = (docs: readonly Doc[], filter: Filter = {}, sort: Record<string, 1 | -1> = {}, skip = 0, limit?: number): Doc[] => {
+  const out = docs.filter((d) => matchesFilter(d, filter))
+  for (const [k, dir] of Object.entries(sort).reverse()) out.sort((a, b) => dir * cmp(readPath(a, k), readPath(b, k)))
   const sliced = out.slice(skip)
   return limit === undefined ? sliced : sliced.slice(0, limit)
 }
 /** An update applied: $set, $unset, $inc, $push, $pull, or a whole replacement; the result is a new document, never a mutation. */
-const updateOf = (doc: Doc, update: Record<string, unknown>): Doc => {
+const applyUpdate = (doc: Doc, update: Record<string, unknown>): Doc => {
   const ops = Object.keys(update).filter((k) => k.startsWith('$'))
   if (!ops.length) return { ...update, _id: doc._id }
   const out: Doc = JSON.parse(JSON.stringify(doc))
@@ -70,7 +70,7 @@ const updateOf = (doc: Doc, update: Record<string, unknown>): Doc => {
   return out
 }
 /** A document as a docket entry: content-addressed by its body, in a collection family, linked to the version it replaces. */
-const entryOf = (collection: string, doc: Doc, replaces?: string): { id: string; kind: string; collection: string; body: Doc; links: string[] } => {
+const toEntry = (collection: string, doc: Doc, replaces?: string): { id: string; kind: string; collection: string; body: Doc; links: string[] } => {
   const body = { ...doc }
   const id = uuidOf(`${collection}${JSON.stringify(body)}`)
   return { id, kind: 'document', collection, body: { ...body, _id: body._id ?? id }, links: replaces ? [replaces] : [] }
@@ -78,45 +78,45 @@ const entryOf = (collection: string, doc: Doc, replaces?: string): { id: string;
 
 /** Binding 0 of the storage dimension, the filesystem: a document once at its content address in hex folders named by the UUID's middle, g1/g2/g3/<uuid>
  *  (one program's versions in one folder), its R2 key and its GCS object, and beside the address of its collection and id a pointer to its latest version. */
-const hexPathOf = (uuid: string) => { const [, a, b, c] = uuid.split('-'); return `${a}/${b}/${c}/${uuid}` }
+const hexPath = (uuid: string) => { const [, a, b, c] = uuid.split('-'); return `${a}/${b}/${c}/${uuid}` }
 /** The RAID's order by profile: Payload, then the profile's database and object store, then binding 0, which always answers. */
 const RAID_ORDER = { cloudflare: ['payload', 'd1', 'r2', 'filesystem'], google: ['payload', 'cloudsql', 'gcs', 'filesystem'], vercel: ['payload', 'filesystem'], local: ['payload', 'filesystem'] } as const
 // every file by the address its name ends with (a version, or its pointer with .latest), wherever it lies, the first-four-digit folders included
-const named = (files: Readonly<Record<string, string>>) => Object.entries(files).flatMap(([path, text]) => { const m = /([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})(\.latest)?$/.exec(path); return m ? [{ path, text, id: m[1]!, latest: m[2], to: hexPathOf(m[1]!) + (m[2] ?? '') }] : [] })
+const named = (files: Readonly<Record<string, string>>) => Object.entries(files).flatMap(([path, text]) => { const m = /([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})(\.latest)?$/.exec(path); return m ? [{ path, text, id: m[1]!, latest: m[2], to: hexPath(m[1]!) + (m[2] ?? '') }] : [] })
 // bit 0: a version's bytes recompute its address, else it is not read
-const addressed = (id: string, text = '') => { try { const e = JSON.parse(text) as { collection: string; body: Doc }, { _id, ...rest } = e.body, doc = _id === id ? rest : e.body; return entryOf(e.collection, doc).id === id ? { collection: e.collection, doc } : null } catch { return null } }
+const addressed = (id: string, text = '') => { try { const e = JSON.parse(text) as { collection: string; body: Doc }, { _id, ...rest } = e.body, doc = _id === id ? rest : e.body; return toEntry(e.collection, doc).id === id ? { collection: e.collection, doc } : null } catch { return null } }
 /** Documents mirrored to binding 0 (each file to write: the version at its address, the pointer naming it), or a collection read back from the
  *  files: every pointer's version verified by its address, a file not at its address refused by path, never read. Pure: Payload's hook writes. */
-export const binding0Of = (collection: string, docs: readonly Doc[] | null, files: Readonly<Record<string, string>> = {}) => {
-  if (docs) return { files: docs.flatMap((d) => { const e = entryOf(collection, d); return [{ path: hexPathOf(e.id), text: JSON.stringify(e) }, { path: `${hexPathOf(uuidOf(`${collection}/${String(d.id ?? e.id)}`))}.latest`, text: e.id }] }), order: RAID_ORDER }
-  const all = named(files), at = Object.fromEntries(all.map((f) => [f.to, f.text])), ids = all.filter((f) => f.latest).map((f) => f.text.trim()), back = ids.map((id) => addressed(id, at[hexPathOf(id)]))
-  return { docs: back.flatMap((e) => (e?.collection === collection ? [e.doc] : [])), refused: ids.filter((id, i) => !back[i] && at[hexPathOf(id)]?.includes(`"collection":${JSON.stringify(collection)}`)).map(hexPathOf), pointers: ids.length, order: RAID_ORDER }
+export const readBinding0 = (collection: string, docs: readonly Doc[] | null, files: Readonly<Record<string, string>> = {}) => {
+  if (docs) return { files: docs.flatMap((d) => { const e = toEntry(collection, d); return [{ path: hexPath(e.id), text: JSON.stringify(e) }, { path: `${hexPath(uuidOf(`${collection}/${String(d.id ?? e.id)}`))}.latest`, text: e.id }] }), order: RAID_ORDER }
+  const all = named(files), at = Object.fromEntries(all.map((f) => [f.to, f.text])), ids = all.filter((f) => f.latest).map((f) => f.text.trim()), back = ids.map((id) => addressed(id, at[hexPath(id)]))
+  return { docs: back.flatMap((e) => (e?.collection === collection ? [e.doc] : [])), refused: ids.filter((id, i) => !back[i] && at[hexPath(id)]?.includes(`"collection":${JSON.stringify(collection)}`)).map(hexPath), pointers: ids.length, order: RAID_ORDER }
 }
 /** Every copy of every version checked against bit 0, the address its own bytes recompute: per binding the copies verified, missing or differing,
  *  a rebuild from a verified copy for each of the others, and every file not at its middle-part path moved there (textbook_raid_bit_zero_verify). */
-const verifyOf = (copies: Readonly<Record<string, Readonly<Record<string, string>>>>) => {
+const verifyCopies = (copies: Readonly<Record<string, Readonly<Record<string, string>>>>) => {
   const by = Object.entries(copies).map(([binding, files]) => { const all = named(files); return { binding, all, at: Object.fromEntries(all.filter((f) => !f.latest).map((f) => [f.id, f.text])) } })
   const ids = [...new Set(by.flatMap((b) => Object.keys(b.at)))], good = (b: (typeof by)[number], id: string) => !!addressed(id, b.at[id]), from = (id: string) => by.find((b) => good(b, id))?.at[id], of = (k: (id: string) => boolean) => ids.filter(k).length
   return {
-    entries: ids.length, twoCopies: ids.filter((id) => by.filter((b) => good(b, id)).length > 1).length, refused: ids.filter((id) => !from(id)).map(hexPathOf),
+    entries: ids.length, twoCopies: ids.filter((id) => by.filter((b) => good(b, id)).length > 1).length, refused: ids.filter((id) => !from(id)).map(hexPath),
     bindings: Object.fromEntries(by.map((b) => [b.binding, { verified: of((id) => good(b, id)), missing: of((id) => !(id in b.at)), differ: of((id) => id in b.at && !good(b, id)) }])),
-    rebuild: by.flatMap((b) => ids.filter((id) => from(id) && !good(b, id)).map((id) => ({ binding: b.binding, path: hexPathOf(id), text: from(id)! }))),
+    rebuild: by.flatMap((b) => ids.filter((id) => from(id) && !good(b, id)).map((id) => ({ binding: b.binding, path: hexPath(id), text: from(id)! }))),
     moves: by.flatMap((b) => b.all.filter((f) => f.path !== f.to && (f.latest || addressed(f.id, f.text))).map((f) => ({ binding: b.binding, from: f.path, to: f.to }))),
   }
 }
-const mongo = toolOf('raid', {
+const mongo = defineTool('raid', {
   name: 'mongo',
   description: 'The ported MongoDB over the docket, pure. find: {collection, docs, filter, sort, skip, limit} → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: {collection, docs: [new]} → the entries to write, content-addressed. update: {collection, docs, filter, update} → for each match the new document and the entry that replaces it (linked to the old). delete: {collection, docs, filter} → the ids to delete, if unlinked. mirror: {collection, docs} → binding 0\'s files (hex folders g1/g2/g3/<uuid> by the UUID\'s middle, the R2 and GCS key, and the collection\'s pointer); restore: {collection, files} → the documents read back, each verified by its address; verify: {copies: {binding: files}} → every copy against bit 0, the rebuilds and the moves to the middle-part folders. The client reads the docket rows and writes what comes back.',
   inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['find', 'insert', 'update', 'delete', 'mirror', 'restore', 'verify'] }, files: { type: 'object', description: 'restore: binding 0\'s files as read, path → text' }, copies: { type: 'object', description: 'verify: each binding\'s files, binding → path → text' }, collection: { type: 'string' }, docs: { type: 'array', items: { type: 'object' }, description: 'the collection\'s documents as read from the docket (their bodies)' }, filter: { type: 'object' }, update: { type: 'object' }, sort: { type: 'object' }, skip: { type: 'integer' }, limit: { type: 'integer' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...RAID.skill.selftest(ctx) }
     const op = String(args.op ?? 'find'); const collection = String(args.collection ?? 'documents'); const docs = (Array.isArray(args.docs) ? args.docs : []) as Doc[]; const filter = (args.filter ?? {}) as Filter
-    if (op === 'find') { const found = findOf(docs, filter, (args.sort ?? {}) as Record<string, 1 | -1>, Number(args.skip ?? 0), typeof args.limit === 'number' ? args.limit : undefined); return { op, collection, scanned: docs.length, matched: found.length, docs: found } }
-    if (op === 'insert') { const entries = docs.map((d) => entryOf(collection, d)); return { op, collection, written: entries.length, entries } }
-    if (op === 'update') { const changes = findOf(docs, filter).map((d) => { const next = updateOf(d, (args.update ?? {}) as Record<string, unknown>); return { from: String(d._id ?? ''), to: entryOf(collection, next, typeof d._id === 'string' ? d._id : undefined) } }); return { op, collection, scanned: docs.length, matched: changes.length, changes } }
-    if (op === 'mirror' || op === 'restore') return { op, collection, ...binding0Of(collection, op === 'mirror' ? docs : null, (args.files ?? {}) as Record<string, string>) }
-    if (op === 'verify') return { op, ...verifyOf((args.copies ?? {}) as Record<string, Record<string, string>>) }
-    if (op === 'delete') { const ids = findOf(docs, filter).map((d) => String(d._id ?? '')); return { op, collection, scanned: docs.length, matched: ids.length, ids, note: 'the docket refuses a delete while anything links the entry; a linked document is kept as history' } }
+    if (op === 'find') { const found = findDocs(docs, filter, (args.sort ?? {}) as Record<string, 1 | -1>, Number(args.skip ?? 0), typeof args.limit === 'number' ? args.limit : undefined); return { op, collection, scanned: docs.length, matched: found.length, docs: found } }
+    if (op === 'insert') { const entries = docs.map((d) => toEntry(collection, d)); return { op, collection, written: entries.length, entries } }
+    if (op === 'update') { const changes = findDocs(docs, filter).map((d) => { const next = applyUpdate(d, (args.update ?? {}) as Record<string, unknown>); return { from: String(d._id ?? ''), to: toEntry(collection, next, typeof d._id === 'string' ? d._id : undefined) } }); return { op, collection, scanned: docs.length, matched: changes.length, changes } }
+    if (op === 'mirror' || op === 'restore') return { op, collection, ...readBinding0(collection, op === 'mirror' ? docs : null, (args.files ?? {}) as Record<string, string>) }
+    if (op === 'verify') return { op, ...verifyCopies((args.copies ?? {}) as Record<string, Record<string, string>>) }
+    if (op === 'delete') { const ids = findDocs(docs, filter).map((d) => String(d._id ?? '')); return { op, collection, scanned: docs.length, matched: ids.length, ids, note: 'the docket refuses a delete while anything links the entry; a linked document is kept as history' } }
     throw new Error(`op ${op} is not one of find, insert, update, delete, mirror, restore, verify`)
   },
   widget: flowWidget,
@@ -140,14 +140,14 @@ export const RAID: Toolbox = {
     instructions: 'A client that is a database adapter (Payload\'s mongodb adapter interface) reads a collection\'s rows from the docket (GET /docket?collection=…, the bodies), calls mongo with the op and the rows, and writes the entries the tool returns (POST /docket, writer role) or deletes the ids (DELETE, admin role; a linked entry is refused and kept). Every query is pure and recomputable; every write is content-addressed and linked to what it replaces.',
     directions: ['server only: the query language on a sample collection', 'toolbox → toolbox: entries are addressed with the tree\'s uuidOf and verified by the tree toolbox\'s verify', 'client → server: the rows come from the docket; the entries go back to it'],
     selftest: () => {
-      const { check, done } = checksOf()
-      check('raid:find-ops', findOf(SAMPLE, { $or: [{ qubits: { $lt: 60 } }, { 'meta.year': 2025 }] }, { title: 1 }).map((d) => d._id).join() === 'c,b' && findOf(SAMPLE, { title: { $regex: '^Q', $options: 'i' } }).length === 1 && findOf(SAMPLE, { tags: { $in: ['google'] } })[0]?._id === 'a' && findOf(SAMPLE, { meta: { $exists: true }, qubits: { $nin: [54] } }).length === 2, 'or sorted by title (Quantum Echoes before Sycamore), dotted path, regex, in, nin, exists')
-      check('raid:find-skip-limit', findOf(SAMPLE, {}, { qubits: 1 }, 1, 1)[0]?._id === 'c' && findOf(SAMPLE, {}, {}, 0).length === 3, 'skip and limit only when asked; no cap otherwise')
-      const u = updateOf(SAMPLE[1]!, { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'x' }, $unset: { title: '' } })
+      const { check, done } = makeChecks()
+      check('raid:find-ops', findDocs(SAMPLE, { $or: [{ qubits: { $lt: 60 } }, { 'meta.year': 2025 }] }, { title: 1 }).map((d) => d._id).join() === 'c,b' && findDocs(SAMPLE, { title: { $regex: '^Q', $options: 'i' } }).length === 1 && findDocs(SAMPLE, { tags: { $in: ['google'] } })[0]?._id === 'a' && findDocs(SAMPLE, { meta: { $exists: true }, qubits: { $nin: [54] } }).length === 2, 'or sorted by title (Quantum Echoes before Sycamore), dotted path, regex, in, nin, exists')
+      check('raid:find-skip-limit', findDocs(SAMPLE, {}, { qubits: 1 }, 1, 1)[0]?._id === 'c' && findDocs(SAMPLE, {}, {}, 0).length === 3, 'skip and limit only when asked; no cap otherwise')
+      const u = applyUpdate(SAMPLE[1]!, { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'x' }, $unset: { title: '' } })
       check('raid:update-ops', u.qubits === 55 && (u.meta as Doc).year === 2020 && (u.tags as string[]).includes('x') && !('title' in u) && SAMPLE[1]!.qubits === 54, 'set, inc, push, unset; the source document untouched')
-      const e1 = entryOf('c', { x: 1 }); const e2 = entryOf('c', { x: 1 }); const e3 = entryOf('c', { x: 2 }, e1.id)
+      const e1 = toEntry('c', { x: 1 }); const e2 = toEntry('c', { x: 1 }); const e3 = toEntry('c', { x: 2 }, e1.id)
       check('raid:entries-addressed', e1.id === e2.id && e1.id !== e3.id && e3.links[0] === e1.id && e1.body._id === e1.id, 'same content, same address; a replacement links what it replaces')
-      let threw = false; try { findOf(SAMPLE, { qubits: { $mod: [2, 0] } }) } catch { threw = true }
+      let threw = false; try { findDocs(SAMPLE, { qubits: { $mod: [2, 0] } }) } catch { threw = true }
       check('raid:unported-refused', threw, 'an operator not ported throws, never guesses')
       return done()
     },

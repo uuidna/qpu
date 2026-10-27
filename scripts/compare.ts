@@ -4,13 +4,13 @@
 import { gzipSync } from 'node:zlib'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { sessionOf, readJson, getOf } from './mcp.ts'
-import { coverageRequestOf } from '../src/quantum/discovery.ts'
+import { openSession, readJson, fetchWithTimeout } from './mcp.ts'
+import { buildCoverageRequest } from '../src/quantum/discovery.ts'
 
 export const compareStylesheets = async () => {
   const css = toolCallerOf('css')
   const plan = css({ compare: true }) as { stylesheet: string; frameworks: { id: string; url: string }[] }
-  const answers = await Promise.all(plan.frameworks.map(async (f) => { const res = await getOf(f.url).catch(() => null); const body = res?.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0); return { id: f.id, status: res?.status ?? 0, bytes: body.length, gzip: body.length ? gzipSync(body).length : 0 } }))
+  const answers = await Promise.all(plan.frameworks.map(async (f) => { const res = await fetchWithTimeout(f.url).catch(() => null); const body = res?.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0); return { id: f.id, status: res?.status ?? 0, bytes: body.length, gzip: body.length ? gzipSync(body).length : 0 } }))
   const qpu = Buffer.from(plan.stylesheet)
   return css({ compare: { qpu: { bytes: qpu.length, gzip: gzipSync(qpu).length }, answers } }) as { says: string; rows: unknown[]; measured: number }
 }
@@ -19,7 +19,7 @@ export const compareStylesheets = async () => {
 export const compareToolLists = async () => {
   const extend = toolCallerOf('extend')
   const plan = extend({ compare: true }) as { servers: { id: string; url: string }[] }
-  const answers = await Promise.all(plan.servers.map(async (s) => { const session = sessionOf(s.url); const i = await session.initialize(); if (i.error) return { id: s.id, status: i.status, bytes: 0, tools: 0 }; const r = await session.request('tools/list'); return { id: s.id, status: r.status, bytes: r.bytes, tools: (r.result?.tools ?? []).length } }))
+  const answers = await Promise.all(plan.servers.map(async (s) => { const session = openSession(s.url); const i = await session.initialize(); if (i.error) return { id: s.id, status: i.status, bytes: 0, tools: 0 }; const r = await session.request('tools/list'); return { id: s.id, status: r.status, bytes: r.bytes, tools: (r.result?.tools ?? []).length } }))
   return extend({ compare: { answers } }) as { says: string; rows: unknown[]; measured: number }
 }
 
@@ -31,12 +31,12 @@ export const compareCoverage = async (kept = '.qpu/cache/coverage.json') => { //
   let request = (extend({ coverage: true }) as { request: { url: string; accept: string } }).request
   let total = 0, pages = 0, stopped: string | null = null
   for (;;) {
-    const res = await getOf(request.url, request.accept).catch((e: Error) => e)
+    const res = await fetchWithTimeout(request.url, request.accept).catch((e: Error) => e)
     if (res instanceof Error || !res.ok) { stopped = res instanceof Error ? res.message : `HTTP ${res.status}`; break }
     const j = (await res.json()) as { servers?: unknown[]; metadata?: { nextCursor?: string } }
     total += (j.servers ?? []).length; pages++
     if (!j.metadata?.nextCursor) break
-    request = coverageRequestOf(j.metadata.nextCursor)
+    request = buildCoverageRequest(j.metadata.nextCursor)
   }
   const out = extend({ coverage: { registryTotal: stopped ? 0 : total } }) as { says: string; doors: number; registryTotal: number; percent: number | null }
   const result = { ...out, pages, stopped, says: stopped ? `the registry walk stopped after ${pages} page(s) (${stopped}): no total, no ratio` : `${out.says}; ${pages} pages walked` }

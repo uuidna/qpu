@@ -167,6 +167,7 @@ export interface Config {
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
+    'payload-query-presets': PayloadQueryPreset;
   };
   collectionsJoins: {
     docs: {
@@ -174,6 +175,9 @@ export interface Config {
     };
     categories: {
       posts: 'posts';
+    };
+    entries: {
+      linkedBy: 'entries';
     };
     variantTypes: {
       options: 'variantOptions';
@@ -220,6 +224,7 @@ export interface Config {
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    'payload-query-presets': PayloadQueryPresetsSelect<false> | PayloadQueryPresetsSelect<true>;
   };
   db: {
     defaultIDType: string;
@@ -259,6 +264,8 @@ export interface Config {
     tasks: {
       createCollectionExport: TaskCreateCollectionExport;
       createCollectionImport: TaskCreateCollectionImport;
+      'qpu-google-call': TaskQpuGoogleCall;
+      'qpu-raid-verify': TaskQpuRaidVerify;
       inline: {
         input: unknown;
         output: unknown;
@@ -1987,6 +1994,108 @@ export interface Form {
             blockName?: string | null;
             blockType: 'textarea';
           }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            options?:
+              | {
+                  label: string;
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'radio';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            required?: boolean | null;
+            options?:
+              | {
+                  label?: string | null;
+                  value?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'checkboxes';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            defaultValue?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'date';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'time';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'scale';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'rating';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'fileUpload';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'grid';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'image';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'video';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pageBreak';
+          }
       )[]
     | null;
   submitButtonLabel?: string | null;
@@ -3139,13 +3248,13 @@ export interface QpuBlock {
   /**
    * the block address: a content-addressed RFC 9562 v8 UUID
    */
-  uuid: string;
-  handle: string;
+  uuid?: string | null;
+  handle?: string | null;
   /**
    * the hex program (the version and variant nibbles rotated)
    */
-  program: string;
-  tail: string;
+  program?: string | null;
+  tail?: string | null;
   /**
    * the tool whose result this block is
    */
@@ -3178,6 +3287,18 @@ export interface QpuBlock {
    * the kernel-accepted theorem that makes this block true; written by the QPU as a client of this MCP, read from the textbook
    */
   theorem?: string | null;
+  /**
+   * the proof of the block, signed twice: an HMAC under the deployment secret, checked by the server, and an ML-DSA-65 signature, checked offline with the published public key
+   */
+  proof?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   /**
    * the licence the block is served under (SPDX), kept with the content as every result carries it
    */
@@ -3826,12 +3947,18 @@ export interface Entry {
     | number
     | boolean
     | null;
-  links?:
-    | {
-        entry?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  /**
+   * the entries this one links: a relation of the docket (has many)
+   */
+  links?: (string | Entry)[] | null;
+  /**
+   * the entries that link this one: the inverse, joined by Payload
+   */
+  linkedBy?: {
+    docs?: (string | Entry)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -4229,6 +4356,10 @@ export interface PayloadMcpApiKey {
      * Allow clients to find forms.
      */
     find?: boolean | null;
+    /**
+     * Allow clients to create forms.
+     */
+    create?: boolean | null;
   };
   formSubmissions?: {
     /**
@@ -4718,6 +4849,10 @@ export interface PayloadMcpApiKey {
      */
     uiAttest?: boolean | null;
     /**
+     * the chat: a problem routed to its door, or one programmable question
+     */
+    uiChat?: boolean | null;
+    /**
      * the SDK: the config sets as the base of combinatorial application builders — one TypeScript module that calls this server over MCP (token free) and the Payload MCP plugin with a user's API key (the collections among its tools); served here and by the plugin
      */
     sdkLib?: boolean | null;
@@ -4807,7 +4942,12 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'createCollectionExport' | 'createCollectionImport';
+        taskSlug:
+          | 'inline'
+          | 'createCollectionExport'
+          | 'createCollectionImport'
+          | 'qpu-google-call'
+          | 'qpu-raid-verify';
         taskID: string;
         input?:
           | {
@@ -4840,7 +4980,9 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'createCollectionExport' | 'createCollectionImport') | null;
+  taskSlug?:
+    | ('inline' | 'createCollectionExport' | 'createCollectionImport' | 'qpu-google-call' | 'qpu-raid-verify')
+    | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -5023,6 +5165,55 @@ export interface PayloadMigration {
   id: string;
   name?: string | null;
   batch?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-query-presets".
+ */
+export interface PayloadQueryPreset {
+  id: string;
+  title: string;
+  isShared?: boolean | null;
+  access?: {
+    read?: {
+      constraint?: ('everyone' | 'onlyMe' | 'specificUsers') | null;
+      users?: (string | User)[] | null;
+    };
+    update?: {
+      constraint?: ('everyone' | 'onlyMe' | 'specificUsers') | null;
+      users?: (string | User)[] | null;
+    };
+    delete?: {
+      constraint?: ('everyone' | 'onlyMe' | 'specificUsers') | null;
+      users?: (string | User)[] | null;
+    };
+  };
+  where?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  columns?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  groupBy?: string | null;
+  relatedCollection: 'entries';
+  /**
+   * This is a temporary field used to determine if updating the preset would remove the user's access to it. When `true`, this record will be deleted after running the preset's `validate` function.
+   */
+  isTemp?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -5638,6 +5829,119 @@ export interface FormsSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        radio?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        checkboxes?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              required?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        date?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              defaultValue?: T;
+              id?: T;
+              blockName?: T;
+            };
+        time?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        scale?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        rating?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        fileUpload?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        grid?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              id?: T;
+              blockName?: T;
+            };
+        image?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              id?: T;
+              blockName?: T;
+            };
+        video?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              id?: T;
+              blockName?: T;
+            };
+        pageBreak?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              id?: T;
+              blockName?: T;
+            };
       };
   submitButtonLabel?: T;
   confirmationType?: T;
@@ -5750,12 +6054,8 @@ export interface EntriesSelect<T extends boolean = true> {
   body?: T;
   sha256?: T;
   result?: T;
-  links?:
-    | T
-    | {
-        entry?: T;
-        id?: T;
-      };
+  links?: T;
+  linkedBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6049,6 +6349,7 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
     | T
     | {
         find?: T;
+        create?: T;
       };
   formSubmissions?:
     | T
@@ -6227,6 +6528,7 @@ export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
         uiFold?: T;
         uiSeal?: T;
         uiAttest?: T;
+        uiChat?: T;
         sdkLib?: T;
         'openapi://qpu'?: T;
         leanTheorems?: T;
@@ -6306,6 +6608,43 @@ export interface PayloadPreferencesSelect<T extends boolean = true> {
 export interface PayloadMigrationsSelect<T extends boolean = true> {
   name?: T;
   batch?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-query-presets_select".
+ */
+export interface PayloadQueryPresetsSelect<T extends boolean = true> {
+  title?: T;
+  isShared?: T;
+  access?:
+    | T
+    | {
+        read?:
+          | T
+          | {
+              constraint?: T;
+              users?: T;
+            };
+        update?:
+          | T
+          | {
+              constraint?: T;
+              users?: T;
+            };
+        delete?:
+          | T
+          | {
+              constraint?: T;
+              users?: T;
+            };
+      };
+  where?: T;
+  columns?: T;
+  groupBy?: T;
+  relatedCollection?: T;
+  isTemp?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -6819,6 +7158,15 @@ export interface Qpu {
     | number
     | boolean
     | null;
+  google?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -7097,6 +7445,7 @@ export interface QpuSelect<T extends boolean = true> {
   origin?: T;
   document?: T;
   branding?: T;
+  google?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -7222,6 +7571,88 @@ export interface TaskCreateCollectionImport {
     maxLimit?: number | null;
   };
   output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskQpu-google-call".
+ */
+export interface TaskQpuGoogleCall {
+  input: {
+    api?: string | null;
+    version?: string | null;
+    method?: string | null;
+    url?: string | null;
+    httpMethod?: string | null;
+    endpoint?: string | null;
+    request?: string | null;
+    tenant?: string | null;
+    params?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+    body?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  output: {
+    entry?: string | null;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskQpu-raid-verify".
+ */
+export interface TaskQpuRaidVerify {
+  input: {
+    collection?: string | null;
+  };
+  output: {
+    entry?: string | null;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DriveFileBlock".
+ */
+export interface DriveFileBlock {
+  /**
+   * File.id
+   */
+  fileId: string;
+  /**
+   * File.name
+   */
+  name?: string | null;
+  /**
+   * File.mimeType
+   */
+  mimeType?: string | null;
+  /**
+   * File.webViewLink
+   */
+  webViewLink?: string | null;
+  /**
+   * File.modifiedTime
+   */
+  modifiedTime?: string | null;
+  /**
+   * File.md5Checksum
+   */
+  md5Checksum?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'driveFile';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { willowNoiseOf } from './processor.ts'
-import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, TOFFOLI, X, Z, applied, expectationOf, measure, powerOf } from './cirq.ts'
+import { willowNoise } from './processor.ts'
+import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, TOFFOLI, X, Z, applied, computeExpectation, measure, raiseGate } from './cirq.ts'
 
 const [q0, q1] = LineQubit.range(2)
 const BELL = [applied(H, q0!), applied(CNOT, q0!, q1!)]
@@ -44,7 +44,7 @@ test('the qubit constructors match Cirq: LineQubit.range, GridQubit.square', () 
 })
 
 test('X**0.5 is the square root of NOT, as Cirq documents: its square is X, and it takes |0> to (1+i)/2 |0> + (1-i)/2 |1>', () => {
-  const sqrtNot = powerOf(X, 0.5)
+  const sqrtNot = raiseGate(X, 0.5)
   const [a, b, c, d] = sqrtNot.matrix
   assert.ok(Math.abs(a![0] - 0.5) < 1e-12 && Math.abs(a![1] - 0.5) < 1e-12)
   assert.ok(Math.abs(b![0] - 0.5) < 1e-12 && Math.abs(b![1] + 0.5) < 1e-12)
@@ -57,10 +57,10 @@ test('X**0.5 is the square root of NOT, as Cirq documents: its square is X, and 
 })
 
 test('X**1 is X, and a gate that is not an involution has no power here', () => {
-  powerOf(X, 1).matrix.forEach(([r, i], k) => {
+  raiseGate(X, 1).matrix.forEach(([r, i], k) => {
     assert.ok(Math.abs(r - X.matrix[k]![0]) < 1e-12 && Math.abs(i - X.matrix[k]![1]) < 1e-12)
   })
-  assert.throws(() => powerOf({ name: 'T', arity: 1, matrix: [[1, 0], [0, 0], [0, 0], [Math.SQRT1_2, Math.SQRT1_2]] }, 0.5))
+  assert.throws(() => raiseGate({ name: 'T', arity: 1, matrix: [[1, 0], [0, 0], [0, 0], [Math.SQRT1_2, Math.SQRT1_2]] }, 0.5))
 })
 
 test('the NEW insert strategy gives each operation a moment of its own, where EARLIEST would have shared one', () => {
@@ -117,12 +117,12 @@ test('amplitude damping takes |1> to |0> with probability gamma, as Cirq\'s ampl
 
 test('Pauli-string expectation values: Z on |0> is 1, on |1> is -1, and a Bell pair has ZZ and XX equal to 1', () => {
   const zero = new DensityMatrixSimulator().simulate(new Circuit([applied(H, q0!), applied(H, q0!)]))
-  assert.ok(Math.abs(expectationOf(zero, { 'line:0': 'Z' }) - 1) < 1e-12)
+  assert.ok(Math.abs(computeExpectation(zero, { 'line:0': 'Z' }) - 1) < 1e-12)
   const one = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]))
-  assert.ok(Math.abs(expectationOf(one, { 'line:0': 'Z' }) + 1) < 1e-12)
+  assert.ok(Math.abs(computeExpectation(one, { 'line:0': 'Z' }) + 1) < 1e-12)
   const bell = new DensityMatrixSimulator().simulate(new Circuit(BELL))
-  assert.ok(Math.abs(expectationOf(bell, { 'line:0': 'Z', 'line:1': 'Z' }) - 1) < 1e-12)
-  assert.ok(Math.abs(expectationOf(bell, { 'line:0': 'X', 'line:1': 'X' }) - 1) < 1e-12)
+  assert.ok(Math.abs(computeExpectation(bell, { 'line:0': 'Z', 'line:1': 'Z' }) - 1) < 1e-12)
+  assert.ok(Math.abs(computeExpectation(bell, { 'line:0': 'X', 'line:1': 'X' }) - 1) < 1e-12)
 })
 
 test('the device exposes its qubit set and its couplers, and validates a moment as a whole', () => {
@@ -190,7 +190,7 @@ test('NEW_THEN_INLINE gives the first operation a new moment and inserts the res
 })
 
 test('the Willow noise after an X on |0> leaves |0> with the spec sheet\'s single-qubit gate error, the average error of that gate', () => {
-  const r = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), willowNoiseOf('errorCorrection'))
+  const r = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), willowNoise('errorCorrection'))
   assert.ok(Math.abs(r.probabilities[0]! - 0.00035) < 1e-12, `P(|0>) should be 0.035%, got ${r.probabilities[0]}`)
   assert.ok(Math.abs(r.trace - 1) < 1e-12)
 })

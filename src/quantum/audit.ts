@@ -65,7 +65,7 @@ export const LITERAL_ROOTS = ['src', 'scripts', 'site/src'] as const
 export const LITERAL_REGISTRIES = { url: ['src/quantum/discovery.ts', 'src/quantum/discovery-document.ts', 'src/quantum/sources.ts', 'src/quantum/leads.ts', 'src/quantum/payload-surface.ts'], path: ['src/quantum/toolboxes/payload.ts', 'src/quantum/toolboxes/repository.ts', 'src/quantum/audit.ts', 'src/quantum/machine.ts', 'scripts/next.ts'] } as const
 const LITERAL_EXEMPT = /uuidna\.com\/licen[cs]e|creativecommons\.org\/licenses|contributor-covenant\.org|\(\+https:\/\/qpu\.uuidna\.com\)/
 type Literal = { kind: 'url' | 'path'; file: string; line: number; literal: string; clean: boolean; why: string; tokens: number; antimatter: { needs: 'confirm'; says: string } | null }
-export const literalsOf = (files: Readonly<Record<string, string>>) => {
+export const findLiterals = (files: Readonly<Record<string, string>>) => {
   const all: Literal[] = []
   for (const [file, text] of Object.entries(files)) {
     if (!/^(src|scripts|site\/src)\//.test(file) || /\.test\.ts$/.test(file) || /^src\/quantum\/examples\.ts$/.test(file) || /\.(md|mdx|txt|json)$/.test(file)) continue
@@ -90,14 +90,14 @@ export const literalsOf = (files: Readonly<Record<string, string>>) => {
  *  The dated audit dockets are records, exempt and stated as such. A write target built at run time from a variable is not seen by this read, so
  *  a page it writes is listed as manual until its generator names it: a lead, never a ruling. */
 const DOCS_EXEMPT = /^docs\/audit\/\d{4}-\d{2}-\d{2}-[^/]+\.md$/
-export const manualDocsOf = (pages: readonly { path: string; bytes: number }[], scripts: Readonly<Record<string, string>>) => {
+export const findManualDocs = (pages: readonly { path: string; bytes: number }[], scripts: Readonly<Record<string, string>>) => {
   const writes = Object.entries(scripts).flatMap(([file, text]) => text.split('\n').filter((l) => /writeFileSync|appendFileSync|writePage|write\(/.test(l)).map((l) => ({ file, l })))
   const writerOf = (path: string) => { const name = path.replace(/^docs\//, '').replace(/\.md$/, ''), base = name.split('/').pop()!; return writes.find((w) => w.l.includes(`'${name}.md'`) || w.l.includes(`'${base}.md'`) || w.l.includes(`"${base}.md"`) || w.l.includes(`/${base}.md`))?.file ?? null }
   const rows = pages.map((p) => { const exempt = DOCS_EXEMPT.test(p.path), writer = exempt ? null : writerOf(p.path); return { ...p, exempt, generator: writer, manual: !exempt && !writer, tokens: !exempt && !writer ? Math.ceil(p.bytes / 4) : 0 } })
   const manual = rows.filter((r) => r.manual).sort((a, b) => b.bytes - a.bytes)
   return { pages: rows.length, generated: rows.filter((r) => r.generator).length, exempt: rows.filter((r) => r.exempt).length, manual: manual.length, bytes: manual.reduce((n, r) => n + r.bytes, 0), tokens: manual.reduce((n, r) => n + r.tokens, 0), largest: manual.slice(0, 10).map((r) => ({ path: r.path, bytes: r.bytes, antimatter: { needs: 'auto' as const, says: `write a generator for ${r.path} from the tool, theorems and examples it describes, so the page is generated and its gap annihilates` } })), rows, says: `${manual.length} of ${rows.length} docs page(s) written by hand (${manual.reduce((n, r) => n + r.bytes, 0)} bytes), ${rows.filter((r) => r.exempt).length} dated record(s) exempt; generated means a generator writes the path` }
 }
-export const entropyOf = (files: Readonly<Record<string, string>>) => {
+export const measureEntropy = (files: Readonly<Record<string, string>>) => {
   const findings: EntropyFinding[] = []
   const add = (kind: EntropyKind, file: string, line: number, excerpt: string) => { const t = excerpt.trim(); findings.push({ kind, file, line, excerpt: t, address: uuidOf(`${kind}\n${t}`) }) }
   const repeated = new Map<string, { file: string; line: number }[]>()
@@ -135,7 +135,7 @@ export const entropyOf = (files: Readonly<Record<string, string>>) => {
   const leads: EntropyLead[] = [...byAddress.entries()].map(([address, fs]) => { const k = kindOf[fs[0]!.kind]; return { id: `entropy-${k.kind}-${address.slice(0, 8)}`, kind: k.kind, source: fs.map((f) => `${f.file}:${f.line}`).join(', '), statement: `${k.says} — ${fs[0]!.excerpt}`, status: 'open', tool: 'audit', occurrences: fs.length, address, explore: k.explore, config: k.config } })
   const addresses = [...byAddress.keys()].sort()
   const byKind = Object.fromEntries(ENTROPY_KINDS.map((k) => [k.kind, { findings: findings.filter((f) => f.kind === k.kind).length, leads: leads.filter((l) => l.kind === k.kind).length }]))
-  return { literals: literalsOf(files), files: Object.keys(files).length, lines, findings: findings.length, fused: leads.length, reactions: findings.length - leads.length, byKind, gravity: uuidOf(addresses.join('\n')), vacuum: findings.length === 0, kinds: ENTROPY_KINDS, leads, found: findings, toExplore: Object.fromEntries([...new Set(leads.map((l) => l.explore))].map((t) => [t, leads.filter((l) => l.explore === t).length])), toConfig: Object.fromEntries([...new Set(leads.map((l) => l.config ?? 'none'))].map((c) => [c, leads.filter((l) => (l.config ?? 'none') === c).length])), says: 'entropy measured over the texts supplied, every finding a lead and none a ruling; findings of one address fuse into one lead (f findings, f − d leads); the gravity is the fold of the sorted addresses and the vacuum is a tree whose gravity folds nothing' }
+  return { literals: findLiterals(files), files: Object.keys(files).length, lines, findings: findings.length, fused: leads.length, reactions: findings.length - leads.length, byKind, gravity: uuidOf(addresses.join('\n')), vacuum: findings.length === 0, kinds: ENTROPY_KINDS, leads, found: findings, toExplore: Object.fromEntries([...new Set(leads.map((l) => l.explore))].map((t) => [t, leads.filter((l) => l.explore === t).length])), toConfig: Object.fromEntries([...new Set(leads.map((l) => l.config ?? 'none'))].map((c) => [c, leads.filter((l) => (l.config ?? 'none') === c).length])), says: 'entropy measured over the texts supplied, every finding a lead and none a ruling; findings of one address fuse into one lead (f findings, f − d leads); the gravity is the fold of the sorted addresses and the vacuum is a tree whose gravity folds nothing' }
 }
 
 /** Differences become leads, agnostic of what differs and proven by theorem: two named sets of members (addresses, paths, ids, lines,
@@ -143,11 +143,11 @@ export const entropyOf = (files: Readonly<Record<string, string>>) => {
  *  example by imagine, a file or a path by configure, anything else by imagine) and to config (the configure kind the caller says absorbs
  *  it). textbook_difference_leads: with a and b members sharing c, the leads are (a − c) + (b − c) = a + b − 2c — never a ruling, never more. */
 type DifferenceLead = { id: string; member: string; side: string; statement: string; status: 'open'; explore: string; config: string | null; theorem: string }
-const exploreOf = (member: string): string => (member.startsWith('tool:') ? 'match' : member.startsWith('example:') ? 'imagine' : /(^|\/)[\w.-]+\.(ts|tsx|vue|md|mts|jsonc?)(:\d+)?$|^[\w.-]+(\.[\w-]+)+$/.test(member) ? 'configure' : 'imagine')
-export const differencesOf = (a: { name: string; members: readonly string[] }, b: { name: string; members: readonly string[] }, policy: { config?: string | null; explore?: (member: string) => string } = {}) => {
+const exploreTool = (member: string): string => (member.startsWith('tool:') ? 'match' : member.startsWith('example:') ? 'imagine' : /(^|\/)[\w.-]+\.(ts|tsx|vue|md|mts|jsonc?)(:\d+)?$|^[\w.-]+(\.[\w-]+)+$/.test(member) ? 'configure' : 'imagine')
+export const diffMembers = (a: { name: string; members: readonly string[] }, b: { name: string; members: readonly string[] }, policy: { config?: string | null; explore?: (member: string) => string } = {}) => {
   const A = new Set(a.members), B = new Set(b.members)
   const shared = [...A].filter((m) => B.has(m)).length
-  const explore = policy.explore ?? exploreOf
+  const explore = policy.explore ?? exploreTool
   const lead = (m: string, side: string, other: string): DifferenceLead => ({ id: `difference-${uuidOf(`${a.name}△${b.name}\n${m}`).slice(0, 8)}`, member: m, side, statement: `${m} is in ${side} and not in ${other}: a difference to explore with ${explore(m)}${policy.config ? ` and to config as ${policy.config}` : ''}`, status: 'open', explore: explore(m), config: policy.config ?? null, theorem: 'textbook_difference_leads' })
   const onlyA = [...A].filter((m) => !B.has(m)).map((m) => lead(m, a.name, b.name))
   const onlyB = [...B].filter((m) => !A.has(m)).map((m) => lead(m, b.name, a.name))
@@ -172,7 +172,7 @@ export const ERROR_REMEDIES: readonly { signature: string; learned: string; reme
   { signature: 'Property .* does not exist on type', learned: '2026-10-26', remedy: 'a union holds non-objects: narrow with a type guard over unknown[] before reading the property', automated: false },
   { signature: 'has no reason', learned: '2026-10-26', remedy: 'an open lead carries a reason: add it to the lead', automated: true },
 ]
-export const remediesOf = (errors: readonly string[]) => {
+export const findRemedies = (errors: readonly string[]) => {
   const leads = errors.map((text) => { const row = ERROR_REMEDIES.find((r) => new RegExp(r.signature).test(text)); const address = uuidOf(`error\n${text.trim()}`); return { id: `error-${address.slice(0, 8)}`, address, signature: row?.signature ?? null, remedy: row?.remedy ?? null, automated: row?.automated ?? false, learned: row?.learned ?? null, statement: row ? `${text.trim().split('\n')[0]} — remedy: ${row.remedy}` : `${text.trim().split('\n')[0]} — no remedy learned yet: a lead that teaches the next row`, status: 'open' as const } })
   const remedied = leads.filter((l) => l.remedy).length
   return { errors: errors.length, remedied, unremedied: errors.length - remedied, leads, table: ERROR_REMEDIES.length, gravity: uuidOf(leads.map((l) => l.address).sort().join('\n')), vacuum: errors.length === 0, says: 'every error matched against what manual work taught; the remedied and the unremedied make the errors; in an error-free environment the table is dormant and the gravity is the vacuum' }
@@ -195,16 +195,16 @@ export const FALLBACK_ADAPTERS: readonly { when: string; from: string; to: strin
   { when: 'a Google door has no token', from: 'the Google MCP server', to: 'the public reference the verifier reads (developers.google.com) and the lead', involution: 'the token names the door again' },
   { when: 'the Payload MCP plugin is unreachable', from: '/api/mcp (the app)', to: '/mcp (the Worker): every pure tool, token free; the collections wait', involution: 'the app returns, the collections return' },
 ]
-const involutionOf = (mode: 'correction' | 'handling'): 'correction' | 'handling' => (mode === 'correction' ? 'handling' : 'correction')
+const flipMode = (mode: 'correction' | 'handling'): 'correction' | 'handling' => (mode === 'correction' ? 'handling' : 'correction')
 /** Correction or handling, swapped when the one in hand errors: at most two swaps (σ∘σ = id), so it terminates with what it has. */
 export const handleOrCorrect = (errors: readonly string[], majority: boolean, mode: 'correction' | 'handling' = 'correction') => {
   const steps: { mode: 'correction' | 'handling'; result: string }[] = []
   let m = mode
   for (let swap = 0; swap < 3; swap += 1) {
-    if (m === 'correction') { if (majority) { steps.push({ mode: m, result: 'corrected by majority' }); return { mode: m, steps, swaps: swap, terminated: true } } steps.push({ mode: m, result: 'no majority: the correction errors' }); m = involutionOf(m); continue }
-    const r = remediesOf(errors)
+    if (m === 'correction') { if (majority) { steps.push({ mode: m, result: 'corrected by majority' }); return { mode: m, steps, swaps: swap, terminated: true } } steps.push({ mode: m, result: 'no majority: the correction errors' }); m = flipMode(m); continue }
+    const r = findRemedies(errors)
     if (r.remedied > 0 || errors.length === 0) { steps.push({ mode: m, result: errors.length ? `${r.remedied} of ${r.errors} remedied` : 'nothing to handle' }); return { mode: m, steps, swaps: swap, terminated: true, remedies: r } }
-    steps.push({ mode: m, result: 'no remedy learned: the lead teaches the next row' }); m = involutionOf(m)
+    steps.push({ mode: m, result: 'no remedy learned: the lead teaches the next row' }); m = flipMode(m)
   }
   return { mode: m, steps, swaps: 2, terminated: true, says: 'σ applied twice is the identity: the fallback returned to where it started and stops with the lead' }
 }
@@ -213,7 +213,7 @@ export const handleOrCorrect = (errors: readonly string[], majority: boolean, mo
  *  signing, theorems), each check named by its perspective, the same count from either side (textbook_security_perspectives). */
 type SecurityClient = { hosts: readonly { host: string; status: number; headers: Record<string, string>; optionsStatus?: number; writeWithoutToken?: number; audit?: { total: number; failed: number } }[]; payloadMcp?: { unauthenticated: number | null } }
 type SecurityDeveloper = { vulnerabilities: Record<string, Record<string, number>>; leaks: number; envExampleValueless: boolean; access: { entries?: { update?: string }; tenants?: { write?: string } }; hooks: readonly string[]; signing: string; theorems: number; autoLogin?: boolean }
-export const securityOf = (client: SecurityClient, developer: SecurityDeveloper) => {
+export const auditSecurity = (client: SecurityClient, developer: SecurityDeveloper) => {
   const checks: { id: string; perspective: 'client' | 'developer' | 'both'; passed: boolean; evidence: string; remedy?: string }[] = []
   const c = (id: string, perspective: 'client' | 'developer' | 'both', passed: boolean, evidence: string, remedy?: string) => checks.push({ id, perspective, passed, evidence, ...(remedy ? { remedy } : {}) })
   for (const h of client.hosts) {
@@ -244,7 +244,7 @@ export const securityOf = (client: SecurityClient, developer: SecurityDeveloper)
 /** The quantum advantage of a gate run as a magnitude, unlimited by default and computed from the counts alone — no credential, no
  *  interaction, no bound: the copies proven by hash (304 by involution, nothing computed, nothing sent) over the copies recomputed; when
  *  every copy is an involution the ratio has no bound and the result says so (textbook_advantage_unbounded). Pure. */
-export const advantageOf = (copies: number, verified: number) => {
+export const computeAdvantage = (copies: number, verified: number) => {
   if (!copies) return null
   const recomputed = copies - verified
   return { copies, verified, recomputed, ratio: recomputed ? Number((copies / recomputed).toFixed(2)) : null, unbounded: recomputed === 0, interaction: 'none: computed from the run\'s own counts, no token, no approval, no bound', basis: 'verify beats recompute by magnitude: copies over copies recomputed; the unit bills the same counts (advantageByUnit)' }
@@ -253,12 +253,12 @@ export const advantageOf = (copies: number, verified: number) => {
 /** The leads addressed by the theorems, never assigned in advance: a lead's words are matched against every textbook theorem's statement and the
  *  examples it backs; the theorem sharing the most stems (two at least) addresses the lead, and that theorem's example names the tool that explores
  *  it; what no theorem reaches stays open and says so. Addressed and unaddressed make the leads (textbook_leads_addressed). Pure. */
-export const stemsOf = (text: string): Set<string> => new Set(text.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/[\s-]+/).filter((w) => w.length > 3).map((w) => w.replace(/(ing|ed|es|s)$/, '')))
-export const addressedByTheoremOf = (leads: readonly { id: string; statement: string; status: string }[], theorems: readonly { key: string; says: string; examples: readonly string[] }[], examples: readonly { id: string; tool: string }[]) => {
+export const wordStems = (text: string): Set<string> => new Set(text.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/[\s-]+/).filter((w) => w.length > 3).map((w) => w.replace(/(ing|ed|es|s)$/, '')))
+export const findAddressedByTheorem = (leads: readonly { id: string; statement: string; status: string }[], theorems: readonly { key: string; says: string; examples: readonly string[] }[], examples: readonly { id: string; tool: string }[]) => {
   const toolOf = new Map(examples.map((e) => [e.id, e.tool]))
-  const index = theorems.map((t) => ({ key: t.key, stems: stemsOf(t.says + ' ' + t.examples.join(' ').replace(/-/g, ' ')), tools: [...new Set(t.examples.map((e) => toolOf.get(e)).filter((x): x is string => Boolean(x)))] }))
+  const index = theorems.map((t) => ({ key: t.key, stems: wordStems(t.says + ' ' + t.examples.join(' ').replace(/-/g, ' ')), tools: [...new Set(t.examples.map((e) => toolOf.get(e)).filter((x): x is string => Boolean(x)))] }))
   const rows = leads.map((l) => {
-    const s = stemsOf(l.statement)
+    const s = wordStems(l.statement)
     let best: { key: string; shared: string[]; tools: string[] } | null = null
     for (const t of index) { const shared = [...t.stems].filter((w) => s.has(w)); if (shared.length >= 2 && (!best || shared.length > best.shared.length)) best = { key: t.key, shared, tools: t.tools } }
     return { id: l.id, status: l.status, theorem: best?.key ?? null, shared: best?.shared.length ?? 0, tool: best?.tools[0] ?? null, address: uuidOf(`lead\n${l.id}\n${best?.key ?? 'open'}`) }
@@ -273,7 +273,7 @@ export const addressedByTheoremOf = (leads: readonly { id: string; statement: st
  *  names (the energy sector), every IoT reading a docket entry billed by this bill per device (textbook_billing_complete, textbook_kwh_joules). Pure. */
 const BOLTZMANN_J_PER_K = 1.380649e-23
 const JOULES_PER_KWH = 3600 * 1000
-export const billOf = (u: { tokens?: number; bits?: number; ms?: number; temperatureK?: number; coins?: number; saved?: { tokens?: number; bits?: number; ms?: number }; tariffEurPerKwh?: number | null; devices?: number }) => {
+export const computeBill = (u: { tokens?: number; bits?: number; ms?: number; temperatureK?: number; coins?: number; saved?: { tokens?: number; bits?: number; ms?: number }; tariffEurPerKwh?: number | null; devices?: number }) => {
   const temperatureK = u.temperatureK ?? 300
   const landauerJoulesPerBit = BOLTZMANN_J_PER_K * temperatureK * Math.LN2
   const tokens = u.tokens ?? 0, bits = u.bits ?? 0, ms = u.ms ?? 0, coins = u.coins ?? 0
@@ -291,7 +291,7 @@ export const billOf = (u: { tokens?: number; bits?: number; ms?: number; tempera
 /** Audit a handler against the example registry and the leads it serves. Pure: no I/O. */
 /** What a screen reader or a braille display needs of a widget, measured on its HTML: a name on every image, a header row on every
  * table, words in every link, a heading to land on. Each miss is named; an empty list is a pass. */
-const accessibilityOf = (html: string): string[] => {
+const checkAccessibility = (html: string): string[] => {
   const misses: string[] = []
   const imgs = html.match(/<img\b[^>]*>/gi) ?? []
   const unnamed = imgs.filter((t) => !/\balt="[^"]+"/i.test(t)).length
@@ -309,7 +309,7 @@ const accessibilityOf = (html: string): string[] => {
 /** The textbook's axioms, each with its theorem: every example (the textbook) names the kernel-accepted theorem it rests on — on itself
  *  (theorem:) or in the examples of a textbook theorem — and every theorem names only examples that exist. An example with no theorem is an
  *  axiom (a lead), a theorem the kernel does not accept is a broken link, a named example that is gone a dangling one (textbook_axioms_linked). */
-export const axiomsOf = (examples: readonly Example[], textbook: readonly { key: string; examples: readonly string[] }[], kernel: ReadonlySet<string>) => {
+export const linkAxioms = (examples: readonly Example[], textbook: readonly { key: string; examples: readonly string[] }[], kernel: ReadonlySet<string>) => {
   const byExample = new Map<string, string[]>(); for (const t of textbook) for (const e of t.examples) byExample.set(e, [...(byExample.get(e) ?? []), t.key])
   const ids = new Set(examples.map((e) => e.id))
   const rows = examples.map((e) => { const keys = [...new Set([...(e.theorem ? [e.theorem] : []), ...(byExample.get(e.id) ?? [])])]; return { example: e.id, tool: e.tool, theorems: keys, kernel: keys.filter((k) => kernel.has(k)) } })
@@ -343,7 +343,7 @@ export const findLeaks = (texts: Readonly<Record<string, string>>, served: reado
   return { texts: Object.keys(texts).length, findings, byKind, total: findings.reduce((n, f) => n + f.count, 0), served: findings.filter((f) => f.served).length, setAside, clean: findings.length === 0, leads, theorem: 'textbook_leaks_redacted', says: findings.length ? `${findings.reduce((n, f) => n + f.count, 0)} finding(s) in ${new Set(findings.map((f) => f.where)).size} text(s), ${findings.filter((f) => f.served).length} served publicly; values redacted, ${setAside} notation(s) set aside` : `${Object.keys(texts).length} text(s) clean; ${setAside} notation(s) set aside (block addresses, test domains)` }
 }
 
-export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: Context) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}, code: string | null = null, shard: { i: number; n: number } | null = null): Audit => {
+export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: Context) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}, code: string | null = null, shard: { i: number; n: number } | null = null): Audit => {
   // split by the shard theorems: an example is replayed by the shard its index falls in (index mod n, textbook_shards_cover and
   // textbook_shards_disjoint), and the checks made once for the whole surface run in shard 0 alone
   const n = shard && Number.isInteger(shard.n) && shard.n > 0 ? shard.n : 1, si = shard && Number.isInteger(shard.i) ? ((shard.i % n) + n) % n : 0
@@ -399,7 +399,7 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     check(`license:${e.id}`, r._meta?.license?.spdx === 'CC-BY-NC-ND-4.0' && r._meta.widget.includes('data-license="CC-BY-NC-ND-4.0"') && r._meta?.block?.license === 'CC-BY-NC-ND-4.0', r._meta?.license ? 'result, widget and block carry the licence' : 'no licence on the result')
     const w: string = r._meta?.widget ?? ''
     check(`css-vars:${e.id}`, w.includes('class="qpu-block"') && w.includes('--qpu-accent:') && w.includes('--qpu-angle:') && w.includes('--qpu-period:') && !/style="[^"]*#[0-9a-f]{3,6}\b/i.test(w), 'the block root carries its UUID\'s custom properties and no hex colour; the stylesheet draws it')
-    const a11y = accessibilityOf(w)
+    const a11y = checkAccessibility(w)
     check(`accessibility:${e.id}`, a11y.length === 0, a11y.length ? a11y.join('; ') : 'images named, tables headed, links worded, a heading present')
     const why = e.expect(r.structuredContent)
     check(`example:${e.id}`, shape && why === null, why ?? (shape ? e.shows : 'result lacks content, structuredContent or a widget'))
@@ -426,7 +426,7 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   const lean = handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'lean://qpu/theorems' } }) as { result?: { contents?: { text: string }[] } }
   const ledger = (() => { try { return JSON.parse(lean.result?.contents?.[0]?.text ?? 'null') as { kernel: number; handWritten: number; generated: number; theorems: unknown[]; textbook: unknown[] } | null } catch { return null } })()
   checkOnce('lean:served-whole', Boolean(ledger) && ledger!.handWritten + ledger!.generated === ledger!.kernel && ledger!.theorems.length === ledger!.handWritten && ledger!.textbook.length > 0, ledger ? `${ledger.theorems.length} theorems and ${ledger.generated} lemmas served whole of ${ledger.kernel} the kernel accepts; ${ledger.textbook.length} textbook theorems with their Lean text` : 'the lean resource is not served')
-  const ax = axiomsOf(examples, TEXTBOOK_THEOREMS, new Set(THEOREM_KEYS ?? THEOREMS.map((t) => t.key)))
+  const ax = linkAxioms(examples, TEXTBOOK_THEOREMS, new Set(THEOREM_KEYS ?? THEOREMS.map((t) => t.key)))
   checkOnce('textbook:axioms-linked', ax.complete, ax.says)
   checkOnce('example-ids-unique', dup.length === 0, dup.length ? `duplicates: ${dup.join(', ')}` : `${examples.length} unique ids`)
 
@@ -451,7 +451,7 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
  *  rest), a qpu block naming a tool the catalogue does not serve, a block whose arguments carry a prototype key (__proto__, constructor,
  *  prototype). Noted: markup written inside text (rendered as text, never as markup), a node type the editor does not define, a leak by kind. */
 const LEXICAL_NODE_TYPES = ['root', 'paragraph', 'heading', 'text', 'list', 'listitem', 'quote', 'link', 'autolink', 'block', 'inlineBlock', 'linebreak', 'horizontalrule', 'upload', 'relationship', 'tab', 'code', 'table', 'tablerow', 'tablecell'] as const
-export const lexicalSecurityOf = (doc: unknown, tools: readonly string[]) => {
+export const scanLexical = (doc: unknown, tools: readonly string[]) => {
   const findings: { at: string; kind: string; blocks: boolean; detail: string; uuid?: string }[] = []
   let nodes = 0, depth = 0
   const texts: Record<string, string> = {}

@@ -10,11 +10,11 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { handle, cellOf as cell } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
-import { cleanupSubjectsOf } from '../src/quantum/leads.ts'
-import { VERIFIERS, factsOf, verifyRequestsOf } from '../src/quantum/verifiers.ts'
+import { findCleanupSubjects } from '../src/quantum/leads.ts'
+import { VERIFIERS, extractFacts, buildVerifyRequests } from '../src/quantum/verifiers.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
-import { readJson, leadsOf } from './mcp.ts'
-const { all: LEADS } = await leadsOf()
+import { readJson, readLeads } from './mcp.ts'
+const { all: LEADS } = await readLeads()
 
 const ROOT = process.cwd()
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
@@ -42,11 +42,11 @@ for (const f of files) {
 }
 
 // A cleanup lead is settled only while its subject stays absent: the status is a measurement, re-taken each run, never a memory.
-const presentOf = (subjects: ReturnType<typeof cleanupSubjectsOf>): string[] => !subjects ? [] : subjects.kind === 'branches'
+const presentSubjects = (subjects: ReturnType<typeof findCleanupSubjects>): string[] => !subjects ? [] : subjects.kind === 'branches'
   ? subjects.names.filter((b) => execFileSync('git', ['branch', '--list', b], { cwd: ROOT, encoding: 'utf8' }).trim() !== '')
   : subjects.names.filter((path) => existsSync(join(ROOT, path)))
 for (const l of LEADS) {
-  const present = presentOf(cleanupSubjectsOf(l))
+  const present = presentSubjects(findCleanupSubjects(l))
   if (present.length) leads.push({ id: `${l.id}-returned`, source: l.source, statement: `${l.id} records a removal, yet ${present.join(', ')} is present again`, status: 'open', reason: 'a cleanup is settled only while its subject stays absent; remove it or reopen the lead' })
 }
 
@@ -182,7 +182,7 @@ for (const e of EXAMPLES) {
 for (const l of LEADS) {
   nodes.push({ id: `lead:${l.id}`, kind: 'lead', label: `${l.status}: ${l.statement.slice(0, 80)}` })
   if (l.tool && toolNames.some((t) => t.name === l.tool)) both(`lead:${l.id}`, `tool:${l.tool}`, 'served by', 'serves')
-  for (const f of factsOf(l)) for (const r of verifyRequestsOf(f)) both(`lead:${l.id}`, `verifier:${r.verifier}`, 'verified via', 'verifies')
+  for (const f of extractFacts(l)) for (const r of buildVerifyRequests(f)) both(`lead:${l.id}`, `verifier:${r.verifier}`, 'verified via', 'verifies')
 }
 const graph = { date: new Date().toISOString(), nodes, edges, counts: { nodes: nodes.length, edges: edges.length } }
 writeFileSync(join(ROOT, 'docs', 'public', 'graph.json'), JSON.stringify(graph) + '\n')

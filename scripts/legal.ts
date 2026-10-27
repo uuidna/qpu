@@ -5,19 +5,19 @@ import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs
 import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { depositOf } from '../src/quantum/coins.ts'
-import { sessionOf, readJson, selftestOf } from './mcp.ts'
+import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
+import { recordDeposit } from '../src/quantum/coins.ts'
+import { openSession, readJson, runSelftest } from './mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
 const ROOT = process.cwd()
 // the coins paid at the wire, one line per call, kept by this payer (the unit's own register is per process and silent)
-const account = (door: string, body: unknown) => { const d = depositOf(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'legal', ...d }) + '\n') }
+const account = (door: string, body: unknown) => { const d = recordDeposit(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'legal', ...d }) + '\n') }
 const call = toolCallerOf('legal')
 const text = (f: string) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT, f), 'utf8') : undefined)
-const rpc = (url: string, name: string, args: unknown) => sessionOf(url).tool(name, args, (r) => account(name, r))
+const rpc = (url: string, name: string, args: unknown) => openSession(url).tool(name, args, (r) => account(name, r))
 const main = async () => {
-  const selftest = selftestOf('legal', call)
+  const selftest = runSelftest('legal', call)
   const texts = { readme: text('README.md'), citation: text('CITATION.cff'), zenodo: text('.zenodo.json'), package: text('package.json'), worker: text('src/worker.ts'), billing: text('src/quantum/toolboxes/billing.ts'), hmac: text('src/quantum/hmac.ts'), mcp: text('src/quantum/mcp.ts') }
   const discovery = readJson('docs/public/discovery.json')
   const ledger = text('docs/public/theorems.ndjson')?.split('\n').filter(Boolean).map((l) => (JSON.parse(l) as { key: string }).key).filter((k) => !k.startsWith('_private.') && !/\.(eq_\d+|match_\d+|_proof(?:_\d+)+|_simp(?:_\d+)+)$/.test(k)) ?? []
@@ -46,7 +46,7 @@ const main = async () => {
   // minimum time: four calls in flight; cheapest price: free doors only, each asked once, nothing retried blindly
   if (isMerge) answers.push(...gatherShards<typeof answers>('legal', []))
   const answered = new Set(answers.map((a) => `${a.host}:${a.door}:${JSON.stringify(a.arguments)}`))
-  const queue = shareOf(calls.filter((c) => !answered.has(`${c.host}:${c.door}:${JSON.stringify(c.arguments)}`))); const inFlight = new Set<Promise<void>>()
+  const queue = takeShare(calls.filter((c) => !answered.has(`${c.host}:${c.door}:${JSON.stringify(c.arguments)}`))); const inFlight = new Set<Promise<void>>()
   console.log(`legal (${shardLabel()}): ${queue.length} call(s)`)
   const before = answers.length
   const one = async (c: typeof calls[number]) => { try { answers.push({ ...c, answer: await rpc(hostUrl(c.host), c.door, c.arguments) }) } catch (e) { answers.push({ ...c, refusal: (e as Error).message }) } }

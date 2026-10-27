@@ -1,10 +1,10 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { MersenneTwister, numpyWeights, randintOf } from './random.ts'
+import { MersenneTwister, numpyWeights, randomInt } from './random.ts'
 
 test('the Mersenne Twister with numpy\'s seed 11 gives numpy\'s randint(0, 500) draws, first twelve', () => {
   const rng = new MersenneTwister(11)
-  const draws = Array.from({ length: 12 }, () => randintOf(rng, 0, 500))
+  const draws = Array.from({ length: 12 }, () => randomInt(rng, 0, 500))
   assert.deepEqual(draws, [409, 191, 80, 91, 337, 439, 269, 332, 161, 71, 338, 280])
 })
 

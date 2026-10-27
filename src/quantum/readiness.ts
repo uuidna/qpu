@@ -1,7 +1,7 @@
 // Readiness as a pure toolbox: every lead judged by measurement into served, refuted or trial; the border plan (which
 // discovered doors to offer a theorem to, with what arguments) and the border read (what they answered); the unit plan (the
 // calls the client makes to the unit) and the page. The client fetches and asks; nothing here does I/O.
-import { cleanupSubjectsOf, type Lead } from './leads.ts'
+import { findCleanupSubjects, type Lead } from './leads.ts'
 import type { Discovery, Door } from './discovery.ts'
 import type { WaveResult } from './wave.ts'
 import { TAKES } from './discovery.ts'
@@ -18,17 +18,17 @@ const SITE_SUFFIX = /\s*\|\s*(Cirq|Google Quantum AI|OpenFermion|TensorFlow Quan
 const decodeTitle = (t: string): string => t.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(SITE_SUFFIX, ' ').replace(/\s+/g, ' ').trim()
 
 /** The page each lead's source answered with, from the wave's source-page results. */
-export const pagesOf = (results: readonly WaveResult[]): Map<string, Page> => {
+export const indexPages = (results: readonly WaveResult[]): Map<string, Page> => {
   const pages = new Map<string, Page>()
   for (const r of results) if (r.verifier === 'source-page') for (const id of r.leads) if (!pages.has(id)) { const t = /title="([^"]*)"/.exec(r.note ?? '')?.[1]; pages.set(id, { status: r.status, title: t ? decodeTitle(t) : null, url: r.url }) }
   return pages
 }
 
 /** One lead judged. `present` names the cleanup subjects the client measured as still present; `match` is the surface's matcher. */
-export const judgeOf = (l: Lead, pages: ReadonlyMap<string, Page>, present: ReadonlySet<string>, match: (statement: string) => { verdict: string; tool?: string; evidence: string[] }, measured: string | null): Judged => {
+export const judgeLead = (l: Lead, pages: ReadonlyMap<string, Page>, present: ReadonlySet<string>, match: (statement: string) => { verdict: string; tool?: string; evidence: string[] }, measured: string | null): Judged => {
   const j = (cls: Judged['class'], by: string): Judged => ({ lead: l.id, source: l.source, status: l.status, class: cls, by })
   if (l.status === 'served') return j('served', `tool ${l.tool}`)
-  const subjects = cleanupSubjectsOf(l)
+  const subjects = findCleanupSubjects(l)
   if (subjects) { const here = subjects.names.filter((n) => present.has(n)); return here.length ? j('trial', `${here.join(', ')} is present again`) : j('refuted', `measured absent: ${subjects.names.join(', ')}`) }
   const page = pages.get(l.id)
   if (page && (page.status === 404 || page.status === 410)) return j('refuted', `HTTP ${page.status} at ${page.url}${measured ? ` on ${measured.slice(0, 10)}` : ''}`)
@@ -43,13 +43,13 @@ export const judgeOf = (l: Lead, pages: ReadonlyMap<string, Page>, present: Read
   return j('trial', l.reason ?? l.status)
 }
 
-const hostOf = (source: string): string => (/^(?:https?:\/\/)?([a-z0-9.-]+\.[a-z]{2,})/i.exec(source) ?? [])[1] ?? (/^[\w./-]+\.(ts|md|lean|json|ndjson)\b/.test(source) ? source.split('/')[0]! : 'qpu')
+const parseHost = (source: string): string => (/^(?:https?:\/\/)?([a-z0-9.-]+\.[a-z]{2,})/i.exec(source) ?? [])[1] ?? (/^[\w./-]+\.(ts|md|lean|json|ndjson)\b/.test(source) ? source.split('/')[0]! : 'qpu')
 
 /** The sources as the unit's readiness door takes them: settled counts and open groups, nothing dropped. */
-export const sourcesOf = (judged: readonly Judged[], leads: readonly Lead[]): Source[] => {
+export const listSources = (judged: readonly Judged[], leads: readonly Lead[]): Source[] => {
   const byHost = new Map<string, { source: string; settled: number; open: { what: string; owes: string }[] }>()
   for (const x of judged) {
-    const host = hostOf(x.source)
+    const host = parseHost(x.source)
     const s = byHost.get(host) ?? { source: host, settled: 0, open: [] }
     if (x.class === 'trial') s.open.push({ what: `${x.lead}: ${leads.find((l) => l.id === x.lead)?.statement ?? ''}`, owes: x.by }); else s.settled += 1
     byHost.set(host, s)
@@ -62,7 +62,7 @@ export const sourcesOf = (judged: readonly Judged[], leads: readonly Lead[]): So
 }
 
 /** The border plan: every discovered door that takes a statement and answers a verdict, with arguments filled from the theorem. */
-export const borderPlanOf = (discovery: Pick<Discovery, 'doors' | 'capabilities'> | null, probe: { key: string; statement: string | null }): { calls: BorderCall[]; unfillable: Border[] } => {
+export const planBorder = (discovery: Pick<Discovery, 'doors' | 'capabilities'> | null, probe: { key: string; statement: string | null }): { calls: BorderCall[]; unfillable: Border[] } => {
   const calls: BorderCall[] = []; const unfillable: Border[] = []
   const statement = probe.statement ?? probe.key
   for (const d of (discovery?.doors ?? []).filter((x) => discovery!.capabilities.statementVerdict.includes(x.name) && x.readOnly !== false)) {
@@ -80,7 +80,7 @@ export const borderPlanOf = (discovery: Pick<Discovery, 'doors' | 'capabilities'
 }
 
 /** The border read: every answer or refusal, and whether any door sealed or verified the theorem. */
-export const borderOf = (answers: readonly BorderAnswer[]): Border[] => answers.map((x) => {
+export const readBorder = (answers: readonly BorderAnswer[]): Border[] => answers.map((x) => {
   if (x.refusal !== undefined) return { door: x.door, host: x.host, args: Object.keys(x.arguments ?? {}), verdict: null, receipt: null, sealed: false, note: null, refusal: x.refusal.slice(0, 300) }
   const a = (x.answer ?? {}) as Record<string, unknown>
   const verdict = typeof a.verdict === 'string' ? a.verdict : typeof (a.verdict as { verdict?: string } | undefined)?.verdict === 'string' ? (a.verdict as { verdict: string }).verdict : null
@@ -91,7 +91,7 @@ export const borderOf = (answers: readonly BorderAnswer[]): Border[] => answers.
 /** The tree's own vortex: the doubling cycle and the trinities, each with its σ_10 reflection, as every tail is read. */
 const TREE_VORTEX = { forward: [1, 2, 4, 8, 7, 5, 3, 6, 9], reflected: [9, 8, 6, 2, 3, 5, 7, 4, 1], trinities: [[3, 6, 9], [7, 4, 1], [2, 5, 8]], fixed: [5] }
 /** The unit's vortex doors read against the tree's: agreement is measured, a one-sided triad is named. */
-const vortexOf = (unit: { reflection?: { forward?: number[]; reflected?: number[]; involution?: boolean; pairsSumTen?: boolean; fixedPoints?: number[] } | null; triad?: number[] | null; doubleTorus?: { dims?: string[]; root?: string } | null }): { agree: boolean; why: string; triadOneSided: boolean; forward: number[] | null; reflected: number[] | null; doubleTorusRoot: string | null; dims: number } => {
+const readVortex = (unit: { reflection?: { forward?: number[]; reflected?: number[]; involution?: boolean; pairsSumTen?: boolean; fixedPoints?: number[] } | null; triad?: number[] | null; doubleTorus?: { dims?: string[]; root?: string } | null }): { agree: boolean; why: string; triadOneSided: boolean; forward: number[] | null; reflected: number[] | null; doubleTorusRoot: string | null; dims: number } => {
   const r = unit.reflection
   const sameSet = (a: number[] | undefined, b: number[]) => !!a && a.length === b.length && [...a].sort().join() === [...b].sort().join()
   const agree = !!r && sameSet(r.forward, TREE_VORTEX.forward) && sameSet(r.reflected, TREE_VORTEX.reflected) && r.involution === true && r.pairsSumTen === true && (r.reflected ?? []).every((x, i) => x + (r.forward ?? [])[i]! === 10)
@@ -102,7 +102,7 @@ export type UnitAnswers = { vortex?: { reflection?: unknown; triad?: number[] | 
 
 /** The readiness page, from the judgement, the border and the unit's answers. */
 // text that reaches a page is escaped once: an angle bracket, a brace or a bar in a verdict or a note is text, never a tag
-export const readinessPageOf = (p: { unit: string; date: string; measured: string | null; discovered: string | null; probe: { key: string; statement: string | null }; judged: Judged[]; classes: { served: number; refuted: number; trial: number }; sources: Source[]; border: Border[]; sealedBy: string[]; answers: UnitAnswers }): string => {
+export const renderReadinessPage = (p: { unit: string; date: string; measured: string | null; discovered: string | null; probe: { key: string; statement: string | null }; judged: Judged[]; classes: { served: number; refuted: number; trial: number }; sources: Source[]; border: Border[]; sealedBy: string[]; answers: UnitAnswers }): string => {
   const { answers: a } = p
   return ['---', 'title: Readiness', 'order: 53', '---', '', '# The unit judges the tree', '',
     `Asked of the uuidna MCP at ${p.unit} by \`npm run next\` on ${p.date} through the \`readiness\` tool. The verdicts are the unit's; this tree only carries them.`, '',
@@ -117,7 +117,7 @@ export const readinessPageOf = (p: { unit: string; date: string; measured: strin
     '## Address agreement', '', `Probe \`${a.address.probe}\`: here ${a.address.here}, unit ${a.address.unit ?? 'no answer'} — ${a.address.agree ? 'agree' : 'disagree'}. ${a.address.note}`, '',
     '## The border', '', `\`${p.probe.key}\` (${p.probe.statement ?? 'statement not in the ledger yet'}) offered to every door discovery found that takes a statement and answers a verdict (${p.border.length} door(s), discovered ${p.discovered?.slice(0, 10) ?? 'never'}). ${p.sealedBy.length ? `Sealed or verified by: ${p.sealedBy.join(', ')}.` : "No door sealed or verified it: qpu's proofs are not citable at the border; lead gap-theorems-unsealed stays blocked on the unit's doors."}`, '',
     '| Door | Asked with | Verdict | Receipt | Note or refusal |', '|---|---|---|---|---|', ...p.border.map((b) => `| ${cell(b.door)} | ${cell(b.args.join(', ') || '—')} | ${cell(b.verdict ?? '—')} | ${cell(b.receipt ?? '—')} | ${cell((b.note ?? b.refusal ?? '').replace(/\|/g, '\\|').slice(0, 200))} |`), '',
-    '## The vortex, cross-checked with the unit', '', (() => { const v = vortexOf((a.vortex ?? {}) as Parameters<typeof vortexOf>[0]); return `${v.why}. ${v.triadOneSided ? 'The unit\'s triad door answers 3, 6, 9 alone; this tree carries 7, 4, 1 beside it (triad_reflect).' : ''} ${v.doubleTorusRoot ? `The tree\'s ${v.dims} block addresses folded on the unit\'s double torus: root \`${v.doubleTorusRoot}\`.` : 'The double torus was not reached.'}` })(), '',
+    '## The vortex, cross-checked with the unit', '', (() => { const v = readVortex((a.vortex ?? {}) as Parameters<typeof readVortex>[0]); return `${v.why}. ${v.triadOneSided ? 'The unit\'s triad door answers 3, 6, 9 alone; this tree carries 7, 4, 1 beside it (triad_reflect).' : ''} ${v.doubleTorusRoot ? `The tree\'s ${v.dims} block addresses folded on the unit\'s double torus: root \`${v.doubleTorusRoot}\`.` : 'The double torus was not reached.'}` })(), '',
     '## Rights', '', a.rights.drift.length ? `Drift between the unit's rights and this tree's licence module: ${a.rights.drift.join('; ')}` : `This tree's licence module matches the unit's rights (address ${a.rights.licenseAddress}, imprint ${a.rights.imprint}, receipt ${a.rights.receipt}).`, ''].join('\n')
 }
 export { TAKES }

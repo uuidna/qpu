@@ -6,13 +6,13 @@ import { join } from 'node:path'
 import { homedir } from 'node:os'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { readJson, selftestOf, publishOf } from './mcp.ts'
+import { readJson, runSelftest, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('repository')
 const git = (...args: string[]) => { try { return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).trim() } catch { return '' } }
 const main = async () => {
-  const selftest = selftestOf('repository', call)
+  const selftest = runSelftest('repository', call)
   const zen = readJson('.zenodo.json', {}) as { related_identifiers?: { identifier: string; relation: string }[] }
   const conceptDoi = zen.related_identifiers?.find((r) => r.relation === 'isVersionOf' || r.relation === 'isPartOf')?.identifier ?? (process.env.QPU_CONCEPT_DOI ?? '10.5281/zenodo.22700098')
   const local = {
@@ -37,7 +37,7 @@ const main = async () => {
   }
   const w = call({ local, contracts, answers })
   const date = new Date().toISOString()
-  publishOf('repository', { date, online: !offline, selftest: { passed: selftest.passed }, ...w.watch })
+  publishRecord('repository', { date, online: !offline, selftest: { passed: selftest.passed }, ...w.watch })
   writeFileSync(join(ROOT, 'docs', 'repository.md'), w.page)
   // the watch's leads in the docket next keeps, replaced each run
   const docket = join(ROOT, 'docs', 'public', 'next-leads.json')

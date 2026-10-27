@@ -5,8 +5,8 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
-import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { getOf, readJson, publishOf } from './mcp.ts'
+import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
+import { fetchWithTimeout, readJson, publishRecord } from './mcp.ts'
 const ROOT = process.cwd()
 const call = toolCallerOf('textbook')
 const main = async () => {
@@ -20,9 +20,9 @@ const main = async () => {
   const fetched: { url: string; status: number; ok: boolean; contracted?: string }[] = (readJson(vpath, {}) as { results?: { url: string; status: number; ok: boolean; contracted?: string }[] }).results ?? []
   const have = new Set(fetched.map((r) => r.url))
   if (isMerge) for (const r of gatherShards<{ url: string; status: number; ok: boolean; contracted?: string }[]>('textbook', [])) if (!have.has(r.url)) { fetched.push(r); have.add(r.url) }
-  const missing = shareOf((plan.requestList as { url: string }[]).filter((r) => !have.has(r.url)))
+  const missing = takeShare((plan.requestList as { url: string }[]).filter((r) => !have.has(r.url)))
   console.log(`textbook (${shardLabel()}): ${missing.length} to fetch`)
-  if (process.env.QPU_OFFLINE !== '1') for (const r of missing) { try { const res = await getOf(r.url); fetched.push({ url: r.url, status: res.status, ok: res.ok }) } catch { fetched.push({ url: r.url, status: 0, ok: false }) } await new Promise((t) => setTimeout(t, 250)) }
+  if (process.env.QPU_OFFLINE !== '1') for (const r of missing) { try { const res = await fetchWithTimeout(r.url); fetched.push({ url: r.url, status: res.status, ok: res.ok }) } catch { fetched.push({ url: r.url, status: 0, ok: false }) } await new Promise((t) => setTimeout(t, 250)) }
   if (isShard) { leaveShard('textbook', fetched.filter((r) => missing.some((m) => m.url === r.url))); console.log(`textbook: ${shardLabel()} fetched its share`); process.exit(0) }
   const v = call({ results: fetched })
   // the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client: when the tenant names its
@@ -47,7 +47,7 @@ const main = async () => {
   // Payload's combinatorial surface: the dimensions decided by theorem, the sources re-read here (GET, public, a named user agent) and compared to the table; drift a lead
   const schemasCall = (args: Record<string, unknown>) => payload({ schemas: true, ...args })
   let schemas = schemasCall({})
-  if (process.env.QPU_OFFLINE !== '1') { const answers: Record<string, string> = {}; for (const r of schemas.requestList as { url: string }[]) { try { const res = await getOf(r.url, 'text/plain'); if (res.ok) answers[r.url] = await res.text() } catch { /* unread: reported */ } } schemas = schemasCall({ answers }) }
+  if (process.env.QPU_OFFLINE !== '1') { const answers: Record<string, string> = {}; for (const r of schemas.requestList as { url: string }[]) { try { const res = await fetchWithTimeout(r.url, 'text/plain'); if (res.ok) answers[r.url] = await res.text() } catch { /* unread: reported */ } } schemas = schemasCall({ answers }) }
   console.log(`textbook: Payload's surface: ${schemas.dimensions.length} dimensions, ${schemas.agreeing} agree with their theorems, ${schemas.served} served by the match tool${schemas.reread ? `; sources re-read: ${schemas.reread.answered}, ${schemas.reread.agree ? 'no drift' : `${schemas.reread.leads.length} drift lead(s)`}${schemas.reread.unread.length ? `, unread: ${schemas.reread.unread.join(', ')}` : ''}` : ''}`)
   // the prose audited around the textbook: the README, the home page and every tool's own description, each number resting on an expression or a lead
   const listed = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string }[] } }).result.tools
@@ -55,7 +55,7 @@ const main = async () => {
   const prose = call({ prose: { texts: proseTexts } }) as { says: string; numbers: number; backed: number; unbacked: number; verdicts: number; leads: unknown[] }
   console.log(`textbook: prose: ${prose.says}`)
   const date = new Date().toISOString()
-  publishOf('textbook', { date, inputs, theoremsViaPayloadMcp: theorems, prose: { numbers: prose.numbers, backed: prose.backed, unbacked: prose.unbacked, verdicts: prose.verdicts, leads: prose.leads }, payloadSurface: { readOn: schemas.readOn, dimensions: schemas.dimensions, agreeing: schemas.agreeing, served: schemas.served, standards: schemas.standards.length, coordination: schemas.coordination.length, reread: schemas.reread, leads: schemas.leads }, online: process.env.QPU_OFFLINE !== '1', fromWave: plan.requests - missing.length, fetchedHere: process.env.QPU_OFFLINE !== '1' ? missing.length : 0, compliance: plan.compliance, ...v })
+  publishRecord('textbook', { date, inputs, theoremsViaPayloadMcp: theorems, prose: { numbers: prose.numbers, backed: prose.backed, unbacked: prose.unbacked, verdicts: prose.verdicts, leads: prose.leads }, payloadSurface: { readOn: schemas.readOn, dimensions: schemas.dimensions, agreeing: schemas.agreeing, served: schemas.served, standards: schemas.standards.length, coordination: schemas.coordination.length, reread: schemas.reread, leads: schemas.leads }, online: process.env.QPU_OFFLINE !== '1', fromWave: plan.requests - missing.length, fetchedHere: process.env.QPU_OFFLINE !== '1' ? missing.length : 0, compliance: plan.compliance, ...v })
   writeFileSync(join(ROOT, 'docs', 'textbook.md'), ['---', 'title: Textbook', 'order: 44', '---', '', '# The textbook, verified online', '', `Every example of the surface, categorised for reuse by the \`textbook\` tool, and its public sources fetched by this device on ${date}: ${v.requests} requests (${plan.requests - missing.length} already in the wave), the outcome sealed as \`${v.id}\`. ${plan.compliance}.`, '', `States: ${Object.entries(v.states).map(([k, n]) => `${k} ${n}`).join(', ')}.`, '', '| Example | Tool | Theorem | Requests | Reachable | Contract | State |', '|---|---|---|---:|---:|---:|---|', ...(v.verified as { id: string; tool: string; theorem: string | null; requests: number; reachable: number; contracted: number; state: string }[]).map((x) => `| ${x.id} | ${x.tool} | ${x.theorem ?? '—'} | ${x.requests} | ${x.reachable} | ${x.contracted} | ${x.state} |`), ''].join('\n'))
   console.log(`textbook: ${v.examples} examples, ${v.requests} requests (${plan.requests - missing.length} from the wave, ${missing.length} ${process.env.QPU_OFFLINE === '1' ? 'unfetched offline' : 'fetched here'}); ${Object.entries(v.states).map(([k, n]) => `${k} ${n}`).join(', ')}; sealed ${v.id}`)
 }

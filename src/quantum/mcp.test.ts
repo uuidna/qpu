@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { handle } from './mcp.ts'
-import { LEADS, cleanupSubjectsOf } from './leads.ts'
+import { LEADS, findCleanupSubjects } from './leads.ts'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
@@ -87,7 +87,7 @@ test('the handler runs in a browser: it imports nothing from Node', () => {
   }
 })
 
-const widgetOf = (reply: ReturnType<typeof handle>): string => {
+const readWidget = (reply: ReturnType<typeof handle>): string => {
   assert.ok('result' in reply)
   const widget = (reply.result as { _meta?: { widget?: unknown } })._meta?.widget
   assert.equal(typeof widget, 'string')
@@ -96,12 +96,12 @@ const widgetOf = (reply: ReturnType<typeof handle>): string => {
 
 test('every tool returns a widget that uses the host tokens and no literal colours', () => {
   const widgets = [
-    widgetOf(call('processor', { name: 'Willow' })),
-    widgetOf(call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }] })),
-    widgetOf(call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }], measure: { key: 'm', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 50 })),
-    widgetOf(call('echo', { forward: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }] })),
-    widgetOf(call('echo_benchmark', {})),
-    widgetOf(call('roadmap', {})),
+    readWidget(call('processor', { name: 'Willow' })),
+    readWidget(call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }] })),
+    readWidget(call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }], measure: { key: 'm', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 50 })),
+    readWidget(call('echo', { forward: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }] })),
+    readWidget(call('echo_benchmark', {})),
+    readWidget(call('roadmap', {})),
   ]
   for (const widget of widgets) {
     assert.ok(widget.length > 0 && widget.includes('var(--'))
@@ -111,12 +111,12 @@ test('every tool returns a widget that uses the host tokens and no literal colou
 })
 
 test('the widget shows the result it was built from: the processor qubit count and the benchmark speedup', () => {
-  assert.match(widgetOf(call('processor', { name: 'Willow' })), />105</)
-  assert.match(widgetOf(call('echo_benchmark', {})), />13,000×</)
+  assert.match(readWidget(call('processor', { name: 'Willow' })), />105</)
+  assert.match(readWidget(call('echo_benchmark', {})), />13,000×</)
 })
 
 test('a widget escapes text from the caller, so a name cannot inject markup', () => {
-  const widget = widgetOf(call('circuit', { operations: [], measure: { key: '<img src=x onerror=1>', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 1 }))
+  const widget = readWidget(call('circuit', { operations: [], measure: { key: '<img src=x onerror=1>', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 1 }))
   assert.doesNotMatch(widget, /<img/)
   assert.match(widget, /&lt;img/)
 })
@@ -211,15 +211,15 @@ test('the software and statements and leads tools serve the stated lists, and an
 
 test('every new tool returns a widget that uses only the host tokens', () => {
   const widgets = [
-    widgetOf(call('algorithm', { name: 'qft' })),
-    widgetOf(call('algorithm', { name: 'phase_estimation' })),
-    widgetOf(call('algorithm', { name: 'grover', repetitions: 5 })),
-    widgetOf(call('algorithm', { name: 'teleportation' })),
-    widgetOf(call('algorithm', { name: 'qaoa', nodes: 4 })),
-    widgetOf(call('software', {})),
-    widgetOf(call('statements', {})),
-    widgetOf(call('leads', {})),
-    widgetOf(call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], noise: [{ name: 'depolarize', p: 0.1 }] })),
+    readWidget(call('algorithm', { name: 'qft' })),
+    readWidget(call('algorithm', { name: 'phase_estimation' })),
+    readWidget(call('algorithm', { name: 'grover', repetitions: 5 })),
+    readWidget(call('algorithm', { name: 'teleportation' })),
+    readWidget(call('algorithm', { name: 'qaoa', nodes: 4 })),
+    readWidget(call('software', {})),
+    readWidget(call('statements', {})),
+    readWidget(call('leads', {})),
+    readWidget(call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], noise: [{ name: 'depolarize', p: 0.1 }] })),
   ]
   for (const widget of widgets) {
     assert.ok(widget.includes('var(--'))
@@ -273,13 +273,13 @@ test('the repositories tool serves the seventeen quantumlib repositories, and fi
 })
 
 test('a cleanup lead parses to the subjects whose absence settles it: paths or git branches, and nothing else parses', () => {
-  const cleanups = LEADS.filter((l) => cleanupSubjectsOf(l))
+  const cleanups = LEADS.filter((l) => findCleanupSubjects(l))
   assert.equal(cleanups.length, 4)
-  assert.deepEqual(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-census-consolidated')!), { kind: 'paths', names: ['scripts/census.lean'] })
-  assert.deepEqual(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-auto-release-script')!), { kind: 'paths', names: ['scripts/auto-release.ts'] })
-  assert.deepEqual(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-next-build-dir')!), { kind: 'paths', names: ['.next'] })
-  assert.deepEqual(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-stale-branches')!), { kind: 'branches', names: ['snapshot/pre-purge', 'purge/google-only'] })
-  assert.equal(cleanupSubjectsOf(LEADS.find((l) => l.id === 'cleanup-fnv1a-consolidated')!), null, 'a cleanup served by a tool is settled by that tool, not by absence')
+  assert.deepEqual(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-census-consolidated')!), { kind: 'paths', names: ['scripts/census.lean'] })
+  assert.deepEqual(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-auto-release-script')!), { kind: 'paths', names: ['scripts/auto-release.ts'] })
+  assert.deepEqual(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-next-build-dir')!), { kind: 'paths', names: ['.next'] })
+  assert.deepEqual(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-stale-branches')!), { kind: 'branches', names: ['snapshot/pre-purge', 'purge/google-only'] })
+  assert.equal(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-fnv1a-consolidated')!), null, 'a cleanup served by a tool is settled by that tool, not by absence')
 })
 
 test('the cheapest view: an LLM reads only the cheapest way to have the answer and what tampering with it would cost, the full answer kept in structuredContent', () => {

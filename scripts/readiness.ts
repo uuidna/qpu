@@ -6,21 +6,21 @@ import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
-import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { depositOf } from '../src/quantum/coins.ts'
-import { sessionOf, readJson, leadsOf } from './mcp.ts'
-const { all: LEADS, records } = await leadsOf()
-import { cleanupSubjectsOf } from '../src/quantum/leads.ts'
+import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
+import { recordDeposit } from '../src/quantum/coins.ts'
+import { openSession, readJson, readLeads } from './mcp.ts'
+const { all: LEADS, records } = await readLeads()
+import { findCleanupSubjects } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 // the coins paid at the wire, one line per call, kept by this payer (the unit's own register is per process and silent)
-const account = (door: string, body: unknown) => { const d = depositOf(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'readiness', ...d }) + '\n') }
+const account = (door: string, body: unknown) => { const d = recordDeposit(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'readiness', ...d }) + '\n') }
 const UNIT = process.env.UUIDNA_MCP ?? 'https://uuidna.com/mcp'
 const call = toolCallerOf('readiness')
-const rpc = (url: string, name: string, args: unknown) => sessionOf(url).tool(name, args, (r) => account(name, r))
+const rpc = (url: string, name: string, args: unknown) => openSession(url).tool(name, args, (r) => account(name, r))
 // the unit's answers kept a day by call address (an aura by its block id, a sequence by its value): a run asks only what is new
 const cachePath = join(ROOT, '.qpu', 'cache', 'unit-cache.json')
 const unitCache: Record<string, { at: string; answer: unknown }> = readJson(cachePath, {})
@@ -31,7 +31,7 @@ const main = async () => {
   const selftest = call({ selftest: true })
   console.log(`readiness selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
   // what only the client can measure
-  const present = LEADS.flatMap((l) => { const s = cleanupSubjectsOf(l); if (!s) return []; return s.kind === 'branches' ? s.names.filter((b) => execFileSync('git', ['branch', '--list', b], { cwd: ROOT, encoding: 'utf8' }).trim() !== '') : s.names.filter((path) => existsSync(join(ROOT, path))) })
+  const present = LEADS.flatMap((l) => { const s = findCleanupSubjects(l); if (!s) return []; return s.kind === 'branches' ? s.names.filter((b) => execFileSync('git', ['branch', '--list', b], { cwd: ROOT, encoding: 'utf8' }).trim() !== '') : s.names.filter((path) => existsSync(join(ROOT, path))) })
   const ledgerPath = join(ROOT, 'docs', 'public', 'theorems.ndjson')
   const ledger = existsSync(ledgerPath) ? readFileSync(ledgerPath, 'utf8').split('\n').filter(Boolean).map((l) => { const r = JSON.parse(l) as { key: string; statement: string }; return { key: r.key, statement: r.statement } }) : []
   const verification = pub('verification.json')
@@ -42,7 +42,7 @@ const main = async () => {
   const border: { door: string; host: string; arguments: Record<string, unknown>; answer?: unknown; refusal?: string }[] = []
   if (isMerge) border.push(...gatherShards<typeof border>('readiness', []))
   const asked = new Set(border.map((b) => `${b.host}:${b.door}:${JSON.stringify(b.arguments)}`))
-  const borderShare = shareOf((plan.borderPlan as { door: string; host: string; arguments: Record<string, unknown> }[]).filter((c) => !asked.has(`${c.host}:${c.door}:${JSON.stringify(c.arguments)}`)))
+  const borderShare = takeShare((plan.borderPlan as { door: string; host: string; arguments: Record<string, unknown> }[]).filter((c) => !asked.has(`${c.host}:${c.door}:${JSON.stringify(c.arguments)}`)))
   console.log(`readiness (${shardLabel()}): ${borderShare.length} border call(s)`)
   const mine: typeof border = []
   for (const c of borderShare) {

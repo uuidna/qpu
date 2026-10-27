@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { breakEvenOf, codePoint, repetitionCycle, textbookLogicalError, unencodedCycle } from './qec.ts'
+import { findBreakEven, codePoint, repetitionCycle, textbookLogicalError, unencodedCycle } from './qec.ts'
 import { countResources } from './counting.ts'
 
 const close = (a: number, b: number, tolerance = 1e-12) => assert.ok(Math.abs(a - b) < tolerance, `${a} is not within ${tolerance} of ${b}`)
@@ -37,10 +37,10 @@ test('under depolarizing noise the bit-flip code on |0⟩ sees each qubit flippe
 
 test('the break-even probability bisected from the simulation is 1/2 for the bit-flip code, where 3p² − 2p³ = p', () => {
   const sweep = [0.1, 0.3, 0.45, 0.55, 0.7].map((p) => codePoint('bit_flip', 'bit_flip', p, '0'))
-  const breakEven = breakEvenOf('bit_flip', 'bit_flip', '0', sweep)
+  const breakEven = findBreakEven('bit_flip', 'bit_flip', '0', sweep)
   assert.ok(breakEven !== null)
   close(breakEven, 0.5, 1e-9)
-  assert.equal(breakEvenOf('bit_flip', 'bit_flip', '0', [0.1, 0.2].map((p) => codePoint('bit_flip', 'bit_flip', p, '0'))), null, 'no crossing in a sweep that stays below break-even')
+  assert.equal(findBreakEven('bit_flip', 'bit_flip', '0', [0.1, 0.2].map((p) => codePoint('bit_flip', 'bit_flip', p, '0'))), null, 'no crossing in a sweep that stays below break-even')
 })
 
 test('the cycle is five qubits with three channel operations and three Toffolis, and the unencoded qubit has one channel', () => {

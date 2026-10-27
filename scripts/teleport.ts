@@ -16,8 +16,8 @@ const DIR = join(process.cwd(), '.qpu', 'blocks')
 const started = Date.now()
 // a block is a function of its arguments AND of the code that computed it: every file of blocks carries the code's fingerprint (the
 // sizes and times of every source under src/quantum), and a file from other code is not teleported — it would be a block of earlier code
-const fingerprintOf = (): string => { const parts: string[] = []; const walk = (d: string) => { for (const f of readdirSync(d)) { const p = join(d, f); const st = statSync(p); if (st.isDirectory()) walk(p); else if (/\.ts$/.test(f)) parts.push(`${p}:${st.size}:${st.mtimeMs}`) } }; try { walk(join(process.cwd(), 'src', 'quantum')) } catch { /* no sources: no fingerprint */ } return uuidOf(parts.join('\n')) }
-const FINGERPRINT = fingerprintOf()
+const fingerprintTree = (): string => { const parts: string[] = []; const walk = (d: string) => { for (const f of readdirSync(d)) { const p = join(d, f); const st = statSync(p); if (st.isDirectory()) walk(p); else if (/\.ts$/.test(f)) parts.push(`${p}:${st.size}:${st.mtimeMs}`) } }; try { walk(join(process.cwd(), 'src', 'quantum')) } catch { /* no sources: no fingerprint */ } return uuidOf(parts.join('\n')) }
+const FINGERPRINT = fingerprintTree()
 let loaded = 0, files = 0, bytes = 0, onTheWay = 0
 // teleportation both ways and on the way: a step loads what earlier and concurrent steps computed (forward), publishes the addresses of those it
 // used (backward: producers learn what is wanted, unused blocks can be pruned), and flushes its own fresh blocks every second while it runs,

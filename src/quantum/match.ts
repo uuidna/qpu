@@ -7,8 +7,8 @@
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import type { Rpc } from './audit.ts'
-import { factsOf, verifyRequestsOf, type VerifyRequest } from './verifiers.ts'
-import { numeralsOf, translateOf } from './i18n.ts'
+import { extractFacts, buildVerifyRequests, type VerifyRequest } from './verifiers.ts'
+import { readNumerals, translateOf } from './i18n.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 
@@ -20,7 +20,7 @@ const ROUTE_STOP = new Set(['many', 'much', 'more', 'most', 'when', 'what', 'whi
 export const routeStems = (text: string): Set<string> => new Set(text.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().replace(/[^a-z0-9\s_.-]/g, ' ').split(/[\s_.-]+/).filter((w) => w.length > 3 && !ROUTE_STOP.has(w)).map((w) => w.replace(/(ings?|ed|es|e|s)$/, '')).filter((w) => w.length > 2))
 let routeIndex: { key: string; says: string; lean: string; examples: readonly string[]; keyStems: Set<string>; stems: Set<string> }[] | null = null
 let routeIdf: Map<string, number> | null = null
-export const routeOf = (statement: string, examples: readonly Example[], top = 3) => {
+export const routeStatement = (statement: string, examples: readonly Example[], top = 3) => {
   if (!routeIndex || !routeIdf) {
     const kernel = new Set(THEOREMS.map((t) => t.key)), textbook = new Set(TEXTBOOK_THEOREMS.map((t) => t.key))
     // every kernel-accepted theorem routes: a textbook theorem by its key and what it says, any other by its key and its module; an example names the theorem it rests on, so its examples are its routes
@@ -48,8 +48,8 @@ type Verdict = 'served' | 'impossible' | 'unknown'
 /** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.
  *  verify_claim: VERIFIED / UNVERIFIED / REFUTED; due process: PROVEN / NOT-PROVEN / REFUTED. */
 const VERDICTS: Record<string, Verdict> = { VERIFIED: 'served', PROVEN: 'served', REFUTED: 'impossible', UNVERIFIED: 'unknown', 'NOT-PROVEN': 'unknown', NOT_PROVEN: 'unknown' }
-export const verdictOf = (foreign: string): Verdict | undefined => VERDICTS[foreign.toUpperCase().replace(/\s+/g, '-')]
-export const foreignVerdictsOf = (v: Verdict): string[] => Object.entries(VERDICTS).filter(([, ours]) => ours === v).map(([theirs]) => theirs)
+export const translateVerdict = (foreign: string): Verdict | undefined => VERDICTS[foreign.toUpperCase().replace(/\s+/g, '-')]
+export const listForeignVerdicts = (v: Verdict): string[] => Object.entries(VERDICTS).filter(([, ours]) => ours === v).map(([theirs]) => theirs)
 type Candidate = { kind: 'tool' | 'example' | 'lead' | 'theorem'; id: string; score: number; hits: number; text: string }
 type Reflection = {
   /** integers in the statement factored by the surface's own Shor tool when inside its bound; beyond it, the bound is the answer */
@@ -72,7 +72,7 @@ type Match = { /** the content address of the recognised call: a recognition is 
   /** the kernel-accepted theorem that serves the statement, when the textbook answers first */
   theorem?: string
   /** the theorems the prompt is routed to, decided by the theorems (the weight of the words it shares with them), each with its examples as routes */
-  route?: ReturnType<typeof routeOf>
+  route?: ReturnType<typeof routeStatement>
   /** the pattern the statement carried (a UUID, a relation name, a dashboard, a clone…), when one was recognised */
   pattern?: string
   call?: { name: string; arguments: Record<string, unknown> }
@@ -103,7 +103,7 @@ const overlap = (a: string[], b: string[]): number => {
 }
 
 /** Rare words rank higher than common ones: a term's weight is 1 / (1 + ln df) over every text the surface can match. */
-const weightsOf = (texts: string[]): ((t: string) => number) => {
+const weighTerms = (texts: string[]): ((t: string) => number) => {
   const df = new Map<string, number>()
   for (const text of texts) for (const t of new Set(tokens(text))) df.set(t, (df.get(t) ?? 0) + 1)
   return (t) => 1 / (1 + Math.log(df.get(t) ?? 1))
@@ -159,7 +159,7 @@ const MIRROR: Record<string, string[]> = {
 export const stem = (t: string): string => t.replace(/(ing|ed|es|s)$/, '')
 
 /** The statement in its mirror forms: stems, the sources' synonyms and complements, and the number-free analog. */
-export const reflectionsOf = (statement: string): string[] => {
+export const reflectStatement = (statement: string): string[] => {
   const q = tokens(statement)
   const out = new Set<string>()
   const stems = q.map(stem).filter((t) => t.length > 1)
@@ -186,7 +186,7 @@ const INDEXES = new WeakMap<readonly Lead[], WeakMap<readonly Example[], (statem
 const indexOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string) => Match) => {
   const byExamples = INDEXES.get(leads) ?? new WeakMap(); INDEXES.set(leads, byExamples)
   const found = byExamples.get(allExamples); if (found) return found
-  const built = innerMatcherOf(handle, allExamples, leads); byExamples.set(allExamples, built); return built
+  const built = makeInnerMatcher(handle, allExamples, leads); byExamples.set(allExamples, built); return built
 }
 /** Pattern recognition before the token match: the shapes a statement can carry and the door each opens, as data. A pattern
  * names what it recognised and the call it makes; a statement that carries none goes to the textbook and the tokens. */
@@ -210,20 +210,20 @@ export const PATTERNS: readonly Pattern[] = [
   { name: 'seal', test: /\b(?:seal|sha-?256|hmac|hash)\b\s*(?:of\s+|:\s*)?(?:"([^"]+)"|'([^']+)')?(?:.*?\bwith (?:the )?key\s+(?:"([^"]+)"|'([^']+)'|(\S+)))?/i, tool: 'seal', args: (m, statement) => ({ text: m[1] ?? m[2] ?? statement, ...(m[3] ?? m[4] ?? m[5] ? { key: m[3] ?? m[4] ?? m[5] } : {}) }), shows: 'a text sealed: SHA-256, the fold address, and the HMAC under the key named' },
 ]
 /** The pattern a statement carries, if any, and the call it makes; the first pattern that matches wins, in the order above. */
-export const patternOf = (statement: string): { pattern: Pattern; call: { name: string; arguments: Record<string, unknown> }; sealed: string } | null => {
+export const readPattern = (statement: string): { pattern: Pattern; call: { name: string; arguments: Record<string, unknown> }; sealed: string } | null => {
   for (const p of PATTERNS) { const m = statement.match(p.test); if (m) { const call = { name: p.tool, arguments: p.args(m, statement) }; return { pattern: p, call, sealed: uuidOf(`${call.name}${JSON.stringify(call.arguments)}`) } } }
   return null
 }
 
 /** One tools/call through the handler the matcher was given. */
 const toolsCall = (handle: (m: Rpc) => any, params: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params })
-export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string, locale?: string) => Match) => {
+export const makeMatcher = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string, locale?: string) => Match) => {
   const inner = indexOf(handle, allExamples, leads)
   return (given: string, locale?: string): Match => {
-    const num = numeralsOf(given)
+    const num = readNumerals(given)
     const tr = locale && locale !== 'en' ? translateOf(num.text, locale, 'en') : null
     const text = tr ? tr.text : num.text
-    const recognised = patternOf(text)
+    const recognised = readPattern(text)
     const m = (() => {
       if (recognised && recognised.call.name !== 'leads') {
         const reply = toolsCall(handle, recognised.call)
@@ -239,7 +239,7 @@ export const matcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example
   }
 }
 
-const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string) => Match) => {
+const makeInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): ((statement: string) => Match) => {
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } })
   const allTools: ToolSpec[] = 'result' in list ? list.result.tools : []
   const tools = allTools.filter((t) => !META.has(t.name) && !META_TOOLBOXES.has((t as { _meta?: { toolbox?: string } })._meta?.toolbox ?? ''))
@@ -250,7 +250,7 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
   const leaves = (v: unknown): string[] => (typeof v === 'string' ? [v] : typeof v === 'number' ? [String(v)] : Array.isArray(v) ? v.flatMap(leaves) : v && typeof v === 'object' ? Object.values(v as Record<string, unknown>).flatMap(leaves) : [])
   const exampleText = (e: Example) => `${e.tool} ${e.id} ${e.shows} ${leaves(e.arguments).join(' ')}`
   const leadText = (l: Lead) => `${l.id} ${l.statement} ${l.source} ${l.tool ?? ''} ${l.reason ?? ''}`
-  const w = weightsOf([...tools.map(toolText), ...examples.map(exampleText), ...leads.map(leadText)])
+  const w = weighTerms([...tools.map(toolText), ...examples.map(exampleText), ...leads.map(leadText)])
   const toolTok = tools.map((t) => tokens(toolText(t)))
   const exTok = examples.map((e) => tokens(exampleText(e)))
   const theoremTok = THEOREMS.map((t) => tokens(`${t.key} ${t.key.replace(/_/g, ' ')} ${t.statement}`))
@@ -332,7 +332,7 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
     return { n, by: `beyond the simulator's bound N ≤ ${shor?.maximum ?? '?'}: not factored here` }
   })
   const angles: Reflection['angles'] = integers.flatMap((x) => bounds.filter((b) => x <= b.d).map((b) => ({ x, property: b.property, d: b.d, sigma: b.d - x, angle: (2 * Math.PI * x) / b.d })))
-  const queries = reflectionsOf(statement)
+  const queries = reflectStatement(statement)
   const found: Candidate[] = []
   for (const r of queries) {
     const rq = tokens(r)
@@ -352,7 +352,7 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
     ...angles.map((a) => ({ id: `angle-${a.property}-${a.x}`, ...mirror, statement: `σ_${a.d}(${a.x}) = ${a.sigma} on ${a.property}; QFT angle ${a.angle.toFixed(6)} rad`, reason: 'an angle in the reflection; Qpu.Sigma proves σ_d(σ_d(x)) = x' })),
     ...found.map((c) => ({ id: `mirror-${c.id}`, ...mirror, statement: c.text, tool: c.kind === 'tool' ? c.id : examples.find((e) => e.id === c.id)?.tool, reason: 'found only in the mirror form of the statement' })),
   ]
-  const verify: VerifyRequest[] = [...new Map([...matchedLeads, ...reflectionLeads].flatMap((l) => factsOf(l).flatMap(verifyRequestsOf)).map((r) => [r.url + JSON.stringify(r.body), r])).values()]
+  const verify: VerifyRequest[] = [...new Map([...matchedLeads, ...reflectionLeads].flatMap((l) => extractFacts(l).flatMap(buildVerifyRequests)).map((r) => [r.url + JSON.stringify(r.body), r])).values()]
   const reflection: Reflection = { factors, angles, queries, found, leads: reflectionLeads }, around = { candidates, cluster, verify, reflection }, asLead = { id: slug(statement), source: 'statement', statement }
   const callOf = (c: Candidate) => { const example = c.kind === 'example' ? examples.find((e) => e.id === c.id)! : examples.find((e) => e.tool === c.id), tool = c.kind === 'example' ? example!.tool : c.id, call = { name: tool, arguments: example?.arguments ?? {} }; return { example, tool, call, reply: toolsCall(handle, call) } }
 
@@ -390,4 +390,4 @@ const innerMatcherOf = (handle: (m: Rpc) => any, allExamples: readonly Example[]
   }
 }
 
-export const matchOf = (statement: string, handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[], locale?: string): Match => { const m = matcherOf(handle, allExamples, leads)(statement, locale); const route = routeOf(statement, allExamples); return { ...m, route, ...(m.verdict === 'unknown' && route.routed ? { evidence: [...m.evidence, `routed by the theorems: ${route.theorems.map((t) => `${t.theorem} (${t.shared.join(', ')})`).join('; ')}`] } : {}) } }
+export const matchStatement = (statement: string, handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[], locale?: string): Match => { const m = makeMatcher(handle, allExamples, leads)(statement, locale); const route = routeStatement(statement, allExamples); return { ...m, route, ...(m.verdict === 'unknown' && route.routed ? { evidence: [...m.evidence, `routed by the theorems: ${route.theorems.map((t) => `${t.theorem} (${t.shared.join(', ')})`).join('; ')}`] } : {}) } }

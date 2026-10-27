@@ -36,7 +36,7 @@ export const PORT_ORDER = { database: ['db-mongodb', 'db-d1-sqlite', 'db-postgre
 export const PORT_RADICES = [PORT_ORDER.database.length, PORT_ORDER.storage.length, PORT_ORDER.email.length] as const
 
 /** One combination, from its index: the database, the storage and the mail adapter it chooses, their bindings joined, one workflow of every step with its MCP call, the plan, the missing links. */
-export const portOf = (index: number) => {
+export const portAt = (index: number) => {
   const count = Number(compositionsOf([...PORT_RADICES]))
   if (!Number.isInteger(index) || index < 0 || index >= count) throw new Error(`a combination is an index from 0 to ${count - 1}`)
   const [d, s, e] = compositionOf([...PORT_RADICES], BigInt(index))
@@ -48,9 +48,9 @@ export const portOf = (index: number) => {
 }
 
 /** The whole space: every combination ported, the ones that port completely counted, the missing links each a lead naming the combinations it blocks. */
-export const portsOf = () => {
+export const listPorts = () => {
   const count = Number(compositionsOf([...PORT_RADICES]))
-  const all = Array.from({ length: count }, (_, i) => portOf(i))
+  const all = Array.from({ length: count }, (_, i) => portAt(i))
   const links = new Map<string, number[]>(); for (const p of all) for (const m of p.missing) links.set(m, [...(links.get(m) ?? []), p.index])
   const leads: Lead[] = [...links.entries()].map(([m, at]) => ({ id: `port-${m.slice(0, 40).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')}`, source: 'the Cloudflare port of the Payload adapters', statement: `${m} (blocks ${at.length} of ${count} combinations)`, status: 'open' as const, reason: 'a step of the port no Cloudflare MCP API or migration tool covers yet' }))
   const complete = all.filter((p) => p.complete)

@@ -35,7 +35,10 @@ export const Entries: CollectionConfig = {
     { name: 'body', type: 'json' },
     { name: 'sha256', type: 'text', validate: (v: unknown) => (v == null || v === '') || /^[0-9a-f]{64}$/.test(String(v)) || '64 hex digits', custom: { theorem: 'textbook_sha256_is_64' }, admin: { readOnly: true } },
     { name: 'result', type: 'json', admin: { readOnly: true, description: 'kind call: the reply of the tool, computed by the hook from body { tool, arguments }; the API of every tool is this collection' } },
-    { name: 'links', type: 'array', fields: [{ name: 'entry', type: 'text' }] },
+    // the docket's relations, Payload's own: an entry has many entries it links (a belongs-to-many of the same collection), and the entries
+    // linking it are joined back by Payload, never stored twice
+    { name: 'links', type: 'relationship', relationTo: 'entries', hasMany: true, admin: { description: 'the entries this one links: a relation of the docket (has many)' } },
+    { name: 'linkedBy', type: 'join', collection: 'entries', on: 'links', admin: { description: 'the entries that link this one: the inverse, joined by Payload' } },
   ],
   hooks: {
     // every 404 from a block answered, nothing written: a well-formed UUID the collection does not hold is healed from the Worker by address (QPU_ORIGIN, accept json),

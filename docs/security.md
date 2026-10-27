@@ -5,7 +5,7 @@ order: 53
 
 # Security audit, both perspectives as one
 
-Performed by `npm run next` on 2026-10-27T14:12:44.827Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 26/26 pass; clean. Every finding is a lead with the remedy manual work taught.
+Performed by `npm run next` on 2026-10-27T18:56:48.998Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 26/26 pass; clean. Every finding is a lead with the remedy manual work taught.
 
 | Check | Perspective | Pass | Evidence | Remedy |
 |---|---|---|---|---|
@@ -34,7 +34,7 @@ Performed by `npm run next` on 2026-10-27T14:12:44.827Z through the `audit` tool
 | hooks-guarded | developer | ✓ | hooks: collisionGuard, firstUserBootstrap, appRequest | the plugin adds the collision guard, the first-user bootstrap and the validated app request |
 | signing-at-edge | developer | ✓ | ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc) | the Worker signs with ML-DSA under the Web Crypto flag |
 | rest-rbac-both-ways | both | ✓ | two directions under three tenant roles on every adapter dimension (textbook_rest_rbac) |  |
-| theorems-sealed | both | ✓ | 1295 kernel-accepted theorems | the textbook is the proof |
+| theorems-sealed | both | ✓ | 1305 kernel-accepted theorems | the textbook is the proof |
 
 ## Access from every perspective
 
@@ -42,7 +42,7 @@ The access audit through `audit { access: true }`: public, tenant, operator, cli
 
 | Check | Perspective | Pass | Evidence | Hook | Cost | Licence | Legal |
 |---|---|---|---|---|---|---|---|
-| public:read-everyone | public | ✓ | entries and tenants read by everyone; every tool answers without a credential | none: a read is served from the cache by address | free: a cache hit by address, a 304 by involution | BY: every answer carries _meta.license and the attribution | the moral right of attribution (Berne art. 6bis), honoured on every read |
+| public:read-everyone | public | ✓ | entries (but the operational kinds, read by their tenant) and tenants read by everyone; every tool answers without a credential | none: a read is served from the cache by address | free: a cache hit by address, a 304 by involution | BY: every answer carries _meta.license and the attribution | the moral right of attribution (Berne art. 6bis), honoured on every read |
 | public:create-call-only | public | ✓ | an anonymous create is a call or a chat, whose address folds it as corrected for the role; any other kind needs a tenant role or a writer role signed under the deployment secret (a bare header is no claim) | beforeValidate: the content address on create, so a repeated call is the same row | paid once by the provider for the first computation, free after by address | NC: non-commercial use is free and needs no licence; the a432 default is priced 0 | consideration: non-commercial free, commercial billed on the measured advantage |
 | public:no-update-anywhere | public | ✓ | no one updates an entry: a change is a new entry linked to the one it replaces | none on change: nothing cached under an address changes | free: no revalidation, ever | ND: no derivative of a sealed entry; the chain of entries is the history | integrity (Berne art. 6bis); the sui generis database right over the sealed ledger (Directive 96/9/EC art. 7) |
 | tenant:roles-and-scopes | tenant | ✓ | tenant-admin, editor, viewer over pages, entries, products, orders; reader, writer, admin over the docket | the multi-tenant plugin scopes every read and write by the user's tenants | free: a where on the tenant | the licence names the domains it covers; a tenant acts on its own | tenant isolation: one docket per tenant host; a token at another tenant's host holds no role |

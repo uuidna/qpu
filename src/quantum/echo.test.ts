@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { CNOT, H, LineQubit, X, applied, powerOf } from './cirq.ts'
+import { CNOT, H, LineQubit, X, applied, raiseGate } from './cirq.ts'
 import { QUANTUM_ECHOES, echoCircuit, echoProbability } from './echo.ts'
 
 const [q0, q1] = LineQubit.range(2)
@@ -21,7 +21,7 @@ test('the echo circuit runs forward, perturbs once, then runs backward', () => {
 })
 
 test('a forward run with a gate power still echoes back with certainty: the backward half applies the adjoint', () => {
-  const withPower = [applied(powerOf(X, 0.5), q0!), applied(CNOT, q0!, q1!)]
+  const withPower = [applied(raiseGate(X, 0.5), q0!), applied(CNOT, q0!, q1!)]
   assert.ok(Math.abs(echoProbability(withPower) - 1) < 1e-12)
 })
 

@@ -6,27 +6,27 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import type { Request, Answer } from '../src/quantum/discovery.ts'
-import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { bestDoorsOf } from '../src/quantum/discovery.ts'
+import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
+import { rankBestDoors } from '../src/quantum/discovery.ts'
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const UA = 'uuidna-qpu-discover (https://qpu.uuidna.com)'
 const call = toolCallerOf('discover')
 import { setTimeout as sleep } from 'node:timers/promises'
-import { readJson, getOf, mcpOf, selftestOf, publishOf, leadsOf } from './mcp.ts'
-const { all: LEADS } = await leadsOf()
+import { readJson, fetchWithTimeout, mcpClient, runSelftest, publishRecord, readLeads } from './mcp.ts'
+const { all: LEADS } = await readLeads()
 const fetchOne = async (r: Request): Promise<Answer> => {
-  try { const res = await getOf(r.url, 'application/json, text/event-stream, application/yaml, text/xml, */*', 30000, { method: r.method, body: r.body, agent: UA, headers: r.headers }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
+  try { const res = await fetchWithTimeout(r.url, 'application/json, text/event-stream, application/yaml, text/xml, */*', 30000, { method: r.method, body: r.body, agent: UA, headers: r.headers }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
   catch (e) { return { ...r, status: 0, type: '', text: `fetch failed: ${(e as Error).message}` } }
 }
 const main = async () => {
-  const selftest = selftestOf('discover', call)
+  const selftest = runSelftest('discover', call)
   // the quantum: answers kept by request id for a day; only the rest is fetched, no more than the quantum allows; a discovery
   // from what is answered so far is written either way, marked partial while requests remain
   const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
   const started0 = Date.now()
-  const cachePath = join(ROOT, '.qpu', 'cache', 'discovery-answers.json')
+  const cachePath = join(ROOT, (await import('../src/quantum/toolboxes/repository.ts')).RUN_FILES.discoveryAnswers)
   const cache: Record<string, Answer & { at: string }> = readJson(cachePath, {})
   if (isMerge) Object.assign(cache, gatherShards<Record<string, Answer & { at: string }>>('discover', {}))
   const shardCache: Record<string, Answer & { at: string }> = {}
@@ -43,7 +43,7 @@ const main = async () => {
   let phase = call({ ...(mcpHosts.length ? { mcpHosts } : {}), auth })
   console.log(`discover: ${mcpHosts.length || 'the default'} MCP hosts, ${Object.keys(auth).length} with a tenant token`)
   while (phase.phase !== 'discovery') {
-    const list = isShard ? shareOf(phase.requestList as Request[]) : (phase.requestList as Request[])
+    const list = isShard ? takeShare(phase.requestList as Request[]) : (phase.requestList as Request[])
     remaining = 0
     for (const r of list) {
       const c = cache[r.id]
@@ -60,16 +60,16 @@ const main = async () => {
   }
   const date = new Date().toISOString()
   // the sitemap the door read, sealed in the docket at its content address; the newest sealed copy, read back, is what the leads tool is handed
-  const { sitemap: read, ...discovery } = phase.discovery, mcp = mcpOf()
+  const { sitemap: read, ...discovery } = phase.discovery, mcp = mcpClient()
   if (read.urls.length) await mcp.call('createEntries', { kind: 'document', from: 'sitemap', body: read })
   const sealed = mcp.docsOf((await mcp.call('findEntries', { where: JSON.stringify({ from: { equals: 'sitemap' } }), sort: '-createdAt', limit: 1, page: 1 })).text ?? '')[0] as { id: string; body: { urls: unknown[] } } | undefined
   const s = sealed ? toolCallerOf('leads')({ sitemap: sealed.body }) : null, sitemap = s ? { entry: sealed!.id, urls: s.urls, covered: s.covered, refused: s.refused, counts: s.counts } : { entry: null, says: 'no sealed sitemap read from the docket' }
-  publishOf('discovery', { date, partial: remaining > 0, remaining, fetched, reused, selftest: { passed: selftest.passed, checks: selftest.checks }, ...discovery, sitemap })
+  publishRecord('discovery', { date, partial: remaining > 0, remaining, fetched, reused, selftest: { passed: selftest.passed, checks: selftest.checks }, ...discovery, sitemap })
   writeFileSync(join(ROOT, 'docs', 'discovery.md'), phase.page)
   // leads first: every hand-written lead still open asks the registry for related MCPs (cached a day, within what is left of the quantum), then each remote's tools/list is read so the related doors are known through qpu
   const related: { lead: string; words: string[]; servers: number; serverList: unknown[]; extended: { server: string; url: string; status: number; doors: number }[]; bestDoors: { server: string; url: string; door: string; score: number; shared: string[] }[] }[] = []
   let relatedFetched = 0, relatedRemaining = 0
-  for (const l of shareOf(LEADS.filter((x) => (x.status === 'open' || x.status === 'partial') && x.source !== 'statement' && !/^(sitemap|page:|clay-|lead:)/.test(x.id)))) {
+  for (const l of takeShare(LEADS.filter((x) => (x.status === 'open' || x.status === 'partial') && x.source !== 'statement' && !/^(sitemap|page:|clay-|lead:)/.test(x.id)))) {
     const plan = call({ lead: l.id, records: [l] })
     const got: unknown[] = []
     for (const r of plan.requestList as Request[]) {
@@ -93,7 +93,7 @@ const main = async () => {
       extended.push({ server: e.server, url: e.url, status: a.status, doors })
     }
     // use them via qpu: the foreign doors whose words match the lead best, proposed, never called
-    related.push({ lead: l.id, words: plan.words, servers: rel.servers, serverList: rel.serverList, extended, bestDoors: bestDoorsOf(l, remotes) })
+    related.push({ lead: l.id, words: plan.words, servers: rel.servers, serverList: rel.serverList, extended, bestDoors: rankBestDoors(l, remotes) })
   }
   writeFileSync(cachePath, JSON.stringify(cache) + '\n')
   writeFileSync(join(ROOT, 'docs', 'public', 'related-mcps.json'), JSON.stringify({ date, partial: relatedRemaining > 0, remaining: relatedRemaining, fetched: relatedFetched, leads: related.length, withServers: related.filter((r) => r.servers > 0).length, related }, null, 1) + '\n')

@@ -7,9 +7,9 @@
 // text of any book, no credential, nothing written anywhere. Every page followed to its end (nextOf): unlimited, and the more the QPU is used
 // the more it holds (textbook_use_completes). Pure: the client fetches what the plan names and hands the answers back.
 import { uuidOf } from './blocks.ts'
-import { courtOf } from './toolboxes/legal.ts'
+import { summonCourt } from './toolboxes/legal.ts'
 import { PRECEDENCE } from './license.ts'
-import { routeOf } from './match.ts'
+import { routeStatement } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 
@@ -43,7 +43,7 @@ const accept = 'application/json'
 const req = (source: string, kind: SourceKind, id: string, url: string, page?: number): SourceRequest => ({ id: `${source}:${id}${page === undefined ? '' : `:${page}`}`, source, kind, method: 'GET', url, accept, ...(page === undefined ? {} : { page }) })
 
 /** the first page of every source; the rest are followed by nextOf until each source ends */
-export const sourcesPlanOf = (c: SourceContext): SourceRequest[] => {
+export const planSources = (c: SourceContext): SourceRequest[] => {
   const repo = c.repository.replace(/\.git$/, '').replace(/^https:\/\/github\.com\//, '')
   const terms = [...new Set([c.owner, c.package.replace(/^@/, '').replace('/', ' '), repo.split('/')[1] ?? ''].filter(Boolean))]
   return [
@@ -88,7 +88,7 @@ export const nextOf = (r: SourceRequest, a: SourceAnswer): SourceRequest | null 
 type Book = { source: string; id: string; title: string; subjects: string[]; licence: string | null; year: number | null }
 
 /** the answers judged: immutable facts, licence candidates with their cases, precedence by date, textbooks routed by the theorems, MCP doors */
-export const sourcesOf = (c: SourceContext, answers: readonly SourceAnswer[], examples: readonly Example[]) => {
+export const readSources = (c: SourceContext, answers: readonly SourceAnswer[], examples: readonly Example[]) => {
   const by = (source: string) => answers.filter((a) => a.id.startsWith(`${source}:`))
   const ok = (a: SourceAnswer) => a.status === 200 ? json(a.text) : null
   const repo = c.repository.replace(/\.git$/, '').replace(/^https:\/\/github\.com\//, '')
@@ -121,7 +121,7 @@ export const sourcesOf = (c: SourceContext, answers: readonly SourceAnswer[], ex
     ...by('swh-search').flatMap((a) => (ok(a) ?? []) as { url: string }[]).filter((o) => !new RegExp(`/${owner}(/|$)`, 'i').test(o.url) && mentionsWork(o.url)).map((o) => ({ where: 'software-heritage', name: o.url, url: o.url, why: 'an archived origin that names the work outside the author\'s accounts' })),
   ]
   const unique = [...new Map(candidates.map((x) => [x.url, x])).values()]
-  const licence = unique.map((x) => ({ ...x, case: courtOf({ gate: `licence scan ${x.where}`, rule: 'licence', evidence: { name: x.name, url: x.url, why: x.why }, tenant: owner }) }))
+  const licence = unique.map((x) => ({ ...x, case: summonCourt({ gate: `licence scan ${x.where}`, rule: 'licence', evidence: { name: x.name, url: x.url, why: x.why }, tenant: owner }) }))
   // textbooks: every book routed by the theorems
   const books: Book[] = [
     ...by('openstax').flatMap((a) => (ok(a)?.items ?? []) as { id: number; title: string; book_state?: string; book_subjects?: { subject_name?: string }[] }[]).map((b) => ({ source: 'openstax', id: String(b.id), title: b.title, subjects: (b.book_subjects ?? []).map((s) => s.subject_name ?? '').filter(Boolean), licence: 'CC BY', year: null })),
@@ -130,8 +130,8 @@ export const sourcesOf = (c: SourceContext, answers: readonly SourceAnswer[], ex
   ]
   const uniqueBooks = [...new Map(books.map((b) => [`${b.source}:${b.id}`, b])).values()]
   // a book is reached when its best theorem shares two words or more with it: one word rare among the theorems can be common among books
-  const routed = uniqueBooks.map((b) => ({ b, r: routeOf(`${b.title} ${b.subjects.join(' ')}`, examples, 1) }))
-  const strong = (x: { r: ReturnType<typeof routeOf> }) => x.r.routed && (x.r.theorems[0]?.shared.length ?? 0) >= 2
+  const routed = uniqueBooks.map((b) => ({ b, r: routeStatement(`${b.title} ${b.subjects.join(' ')}`, examples, 1) }))
+  const strong = (x: { r: ReturnType<typeof routeStatement> }) => x.r.routed && (x.r.theorems[0]?.shared.length ?? 0) >= 2
   const domain = new Set(routed.filter(strong).flatMap((x) => x.b.subjects))
   const reached = routed.filter(strong), inDomain = routed.filter((x) => !strong(x) && x.b.subjects.some((s) => domain.has(s))), outside = routed.length - reached.length - inDomain.length
   const byTheorem: Record<string, number> = {}; for (const x of reached) { const k = x.r.theorems[0]!.theorem; byTheorem[k] = (byTheorem[k] ?? 0) + 1 }

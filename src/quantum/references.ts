@@ -7,25 +7,25 @@ import { uuidOf } from './blocks.ts'
 export type RefDoc = { id: string; slug?: string; doc?: unknown; markdown?: string }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 /** The internal targets a path names: /slug or /<uuid>, its query and fragment dropped; an absolute URL is not internal. */
-const internalTargetOf = (url: string): string | null => { const u = url.trim(); if (!u.startsWith('/') || u.startsWith('//')) return null; const p = u.split(/[?#]/)[0]!.replace(/\/+$/, '').split('/').filter(Boolean).pop(); return p ? decodeURIComponent(p) : null }
+const internalTarget = (url: string): string | null => { const u = url.trim(); if (!u.startsWith('/') || u.startsWith('//')) return null; const p = u.split(/[?#]/)[0]!.replace(/\/+$/, '').split('/').filter(Boolean).pop(); return p ? decodeURIComponent(p) : null }
 /** Every reference one document makes, as the names it gives (slugs, ids, uuids). */
-export const referencesOf = (d: RefDoc): string[] => {
+export const listReferences = (d: RefDoc): string[] => {
   const out: string[] = []
   const walk = (n: unknown) => { const stack = [n]; while (stack.length) { const x = stack.pop(); if (!x || typeof x !== 'object') continue; const o = x as { type?: string; url?: string; fields?: { url?: string; blockType?: string; arguments?: Record<string, unknown>; doc?: unknown }; value?: unknown; relationTo?: string; children?: unknown[] }
     const url = o.fields?.url ?? o.url
-    if ((o.type === 'link' || o.type === 'autolink') && typeof url === 'string') { const t = internalTargetOf(url); if (t) out.push(t) }
+    if ((o.type === 'link' || o.type === 'autolink') && typeof url === 'string') { const t = internalTarget(url); if (t) out.push(t) }
     if (o.type === 'relationship') { const v = o.value as { id?: unknown } | string | undefined; const id = typeof v === 'string' ? v : v?.id; if (typeof id === 'string') out.push(id) }
     if (o.type === 'block' && o.fields?.blockType === 'qpu' && o.fields.arguments) for (const k of ['id', 'uuid', 'slug'] as const) { const v = o.fields.arguments[k]; if (typeof v === 'string' && v) out.push(v) }
     for (const c of o.children ?? []) stack.push(c) } }
   if (d.doc) walk((d.doc as { root?: unknown }).root ?? d.doc)
-  if (typeof d.markdown === 'string') for (const m of d.markdown.matchAll(/\]\((\/[^)\s]*)\)/g)) { const t = internalTargetOf(m[1]!); if (t) out.push(t) }
+  if (typeof d.markdown === 'string') for (const m of d.markdown.matchAll(/\]\((\/[^)\s]*)\)/g)) { const t = internalTarget(m[1]!); if (t) out.push(t) }
   return out
 }
 /** The graph, its cycles and its order. */
-export const referenceGraphOf = (docs: readonly RefDoc[]) => {
+export const buildReferenceGraph = (docs: readonly RefDoc[]) => {
   const byName = new Map<string, string>(); for (const d of docs) { byName.set(d.id, d.id); if (d.slug) byName.set(d.slug, d.id) }
   const edges: { from: string; to: string }[] = [], dangling: { from: string; name: string }[] = []
-  for (const d of docs) for (const name of referencesOf(d)) { const to = byName.get(name) ?? (UUID.test(name) ? byName.get(name.toLowerCase()) : undefined); if (to) edges.push({ from: d.id, to }); else dangling.push({ from: d.id, name }) }
+  for (const d of docs) for (const name of listReferences(d)) { const to = byName.get(name) ?? (UUID.test(name) ? byName.get(name.toLowerCase()) : undefined); if (to) edges.push({ from: d.id, to }); else dangling.push({ from: d.id, name }) }
   const ids = docs.map((d) => d.id), next = new Map<string, string[]>(ids.map((i) => [i, []])); for (const e of edges) next.get(e.from)!.push(e.to)
   // Tarjan, iterative: index, lowlink, a stack, and an explicit call stack of (node, next child position)
   let index = 0; const idx = new Map<string, number>(), low = new Map<string, number>(), on = new Set<string>(), st: string[] = [], sccs: string[][] = []

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { handle } from './mcp.ts'
 import { worker, Docket, discoveryOf, protectedResourceOf, roleAt, stripeCheckout, FRAGMENT_BYTES, STRIPE, sameToken, type Storage, type Env } from '../worker.ts'
 import { uuidOf, channelOf, uuidFromParts } from './blocks.ts'
-import { signatureOf } from './toolboxes/billing.ts'
+import { signStripe } from './toolboxes/billing.ts'
 
 const KEY = Buffer.from(new Uint8Array(32).map((_, i) => i * 7 + 1)).toString('base64')
 const memory = (): Storage & { map: Map<string, unknown> } => { const m = new Map<string, unknown>(); return { map: m, async get<T>(k: string) { return m.get(k) as T | undefined }, async put(k, v) { m.set(k, v) }, async delete(k) { return m.delete(k) }, async list<T>(o?: { prefix?: string }) { return new Map([...m].filter(([k]) => !o?.prefix || k.startsWith(o.prefix))) as Map<string, T> } } }
@@ -415,7 +415,7 @@ test('Stripe per tenant on the Worker: the webhook verified with the tenant secr
   const secret = 'whsec_psg'
   const e = { ...env(), STRIPE_WEBHOOK_SECRET_PSG: secret, STRIPE_SECRET_KEY_PSG: 'sk_test_psg' }
   const payload = JSON.stringify({ id: 'evt_w1', type: 'checkout.session.completed', created: 1_700_000_000, data: { object: { customer: 'cus_9', amount_total: 100, currency: 'eur', metadata: { subject: 'acme', domains: 'qpu.psg.bg,qpu.uuidna.com' } } } })
-  const sig = signatureOf(secret, Math.floor(Date.now() / 1000), payload)
+  const sig = signStripe(secret, Math.floor(Date.now() / 1000), payload)
   const hook = (body: string, signature: string) => worker.fetch(new Request('https://qpu.psg.bg/docket/stripe', { method: 'POST', headers: { 'stripe-signature': signature, 'content-type': 'application/json' }, body }), e)
   const first = await hook(payload, sig); assert.equal(first.status, 200)
   const f = (await first.json()) as { state: string; duplicate: boolean; stored: boolean }

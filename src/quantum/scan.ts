@@ -6,24 +6,24 @@
 // textbook_phase_bits), folded with the device's own crypto nonce into a seed the seal tool takes (entropyOf). Used in the Open Graph
 // image of every block (an animated SVG: a scraper shows one frame, a stream reads the link) and in the shadcn items (the CSS of the stream).
 import { uuidOf, sealOf } from './blocks.ts'
-import { SCAN, framesOf, KEY, coilColourOf } from './theme.ts'
-import { usageOrderOf } from './toolboxes/billing.ts'
+import { SCAN, toFrames, KEY, coilColour } from './theme.ts'
+import { orderUsage } from './toolboxes/billing.ts'
 
 /** Usage rated by the chain's combinatorics: a stream of n samples is a chain of n − 1 links; every full period (36 frames, 35 links) is one call;
  *  the first period is the coin (verification is algebra, free), every further period a coil (the fusion: the device keeps streaming under the
  *  licence), the address space 16^32 = 2^128 (textbook_chain_bits); the colour of the rate is the coin's or the coil's. */
-const rateOf = (samples: number, currency = 'eur') => {
+const priceScan = (samples: number, currency = 'eur') => {
   const calls = Math.ceil(samples / SCAN.frames), free = Math.min(1, calls), coils = calls - free
-  const colour = coilColourOf()
-  return { samples, links: Math.max(samples - 1, 0), linksPerPeriod: SCAN.frames - 1, calls, free, coils, bits: 32 * 4, chains: '16^32 = 2^128', fused: coils > 0, colour: coils > 0 ? colour.coil : colour.coin, order: usageOrderOf(calls, currency, undefined, { free, coils }), theorems: ['textbook_scan_links', 'textbook_chain_bits', 'textbook_free_or_coil'], says: `${samples} sample(s): ${Math.max(samples - 1, 0)} link(s), ${calls} call(s): ${free} coin, ${coils} coil(s)${coils > 0 ? ' (fused: green)' : ''}` }
+  const colour = coilColour()
+  return { samples, links: Math.max(samples - 1, 0), linksPerPeriod: SCAN.frames - 1, calls, free, coils, bits: 32 * 4, chains: '16^32 = 2^128', fused: coils > 0, colour: coils > 0 ? colour.coil : colour.coin, order: orderUsage(calls, currency, undefined, { free, coils }), theorems: ['textbook_scan_links', 'textbook_chain_bits', 'textbook_free_or_coil'], says: `${samples} sample(s): ${Math.max(samples - 1, 0)} link(s), ${calls} call(s): ${free} coin, ${coils} coil(s)${coils > 0 ? ' (fused: green)' : ''}` }
 }
 
 type EntropySample = { phase: number; t: number; nonce?: number; x?: number; y?: number }
 type ScanSample = { t: number; hue: number | null }
 
 /** The animated SVG of the stream: a frame per character, discrete, repeating; 1200 × 630 for Open Graph. One frame shows one character and nothing else. */
-export const scanSvgOf = (uuid: string, width = 1200, height = 630): string => {
-  const frames = framesOf(uuid)
+export const renderScanSvg = (uuid: string, width = 1200, height = 630): string => {
+  const frames = toFrames(uuid)
   const dur = `${(SCAN.periodMs / 1000).toFixed(3)}s`
   const fills = frames.map((f) => (f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`)).join(';')
   const keyTimes = frames.map((_, i) => (i / frames.length).toFixed(4)).join(';')
@@ -34,7 +34,7 @@ export const scanSvgOf = (uuid: string, width = 1200, height = 630): string => {
 
 /** The stream read back: samples (time, hue) from a device, placed by their time within the period, the nearest hue a digit, a black sample a dash.
  *  Fewer than 36 distinct frames link nothing (impossibleFromOne); 36 frames read the address, whose seal decides the link. */
-export const scanOf = (samples: readonly ScanSample[]) => {
+export const readScan = (samples: readonly ScanSample[]) => {
   const slots = new Map<number, (string | null)[]>()
   for (const s of samples) { const i = Math.floor(((s.t % SCAN.periodMs) + SCAN.periodMs) % SCAN.periodMs / SCAN.frameMs); const d = s.hue === null ? '-' : (Math.round(((s.hue % 360) + 360) % 360 / SCAN.hueStep) % 16).toString(16); slots.set(i, [...(slots.get(i) ?? []), d]) }
   const chars = [...Array(SCAN.frames).keys()].map((i) => { const votes = slots.get(i) ?? []; if (!votes.length) return null; const by = new Map<string | null, number>(); for (const v of votes) by.set(v, (by.get(v) ?? 0) + 1); return [...by.entries()].sort((a, b) => b[1] - a[1])[0]![0] })
@@ -50,15 +50,15 @@ export const scanOf = (samples: readonly ScanSample[]) => {
     { check: 'dashes', passed: complete ? dashesInPlace : null, evidence: complete ? (dashesInPlace ? 'the four dashes in place' : 'the dashes out of place: not a UUID') : 'undecided until every frame is read' },
     { check: 'seal', passed: uuid ? (seal?.valid ?? false) : null, evidence: uuid ? (seal?.valid ? 'the seal holds' : 'the seal fails') : 'no address read' },
   ]
-  return { samples: samples.length, framesRead: read, of: SCAN.frames, text, uuid: uuid ?? text, read: uuid, rate: rateOf(samples.length), linked, valid: linked, decided: checks.filter((c) => c.passed !== null).length, checks, cost: 'one pass over the samples (a vote per frame), one modular power for the seal', seal, impossibleFromOne: read < SCAN.frames, says: uuid ? (seal?.valid ? 'the stream read the address and its seal holds: linked' : 'the stream read 36 characters but the seal fails: not an address') : `${read} of ${SCAN.frames} frames read: a stream links only when every frame was sampled` }
+  return { samples: samples.length, framesRead: read, of: SCAN.frames, text, uuid: uuid ?? text, read: uuid, rate: priceScan(samples.length), linked, valid: linked, decided: checks.filter((c) => c.passed !== null).length, checks, cost: 'one pass over the samples (a vote per frame), one modular power for the seal', seal, impossibleFromOne: read < SCAN.frames, says: uuid ? (seal?.valid ? 'the stream read the address and its seal holds: linked' : 'the stream read 36 characters but the seal fails: not an address') : `${read} of ${SCAN.frames} frames read: a stream links only when every frame was sampled` }
 }
 
 /** The device's randomness: the phase of the animation at each interaction (eleven bits a sample within the 3888 ms period) and the device's own
  *  nonce (crypto.getRandomValues, 32 bits) folded by the content hash into a seed; nothing here is random by itself, the device's stream is. */
-export const entropyOf = (samples: readonly EntropySample[]) => {
+export const foldEntropy = (samples: readonly EntropySample[]) => {
   const phaseBits = Math.floor(Math.log2(SCAN.periodMs))
   const bits = samples.reduce((n, s) => n + phaseBits + (typeof s.nonce === 'number' ? 32 : 0), 0)
   const seed = uuidOf(JSON.stringify(samples.map((s) => [Math.floor(((s.phase % SCAN.periodMs) + SCAN.periodMs) % SCAN.periodMs), Math.floor(s.t), s.nonce ?? 0, s.x ?? 0, s.y ?? 0])))
   const phase = samples.length ? Math.floor(((samples[samples.length - 1]!.phase % SCAN.periodMs) + SCAN.periodMs) % SCAN.periodMs) : 0
-  return { samples: samples.length, periodMs: SCAN.periodMs, phaseBits, bits, seed, phase, rate: rateOf(samples.length), angle: Math.round((phase / SCAN.periodMs) * 360), frame: Math.floor(phase / SCAN.frameMs), key: KEY, theorem: 'textbook_phase_bits', says: `${samples.length} interaction(s) with the stream: ${bits} bits (${phaseBits} a phase, 32 a nonce), folded to the seed ${seed}; the last phase ${phase} ms is the frame ${Math.floor(phase / SCAN.frameMs)} and the angle ${Math.round((phase / SCAN.periodMs) * 360)}°` }
+  return { samples: samples.length, periodMs: SCAN.periodMs, phaseBits, bits, seed, phase, rate: priceScan(samples.length), angle: Math.round((phase / SCAN.periodMs) * 360), frame: Math.floor(phase / SCAN.frameMs), key: KEY, theorem: 'textbook_phase_bits', says: `${samples.length} interaction(s) with the stream: ${bits} bits (${phaseBits} a phase, 32 a nonce), folded to the seed ${seed}; the last phase ${phase} ms is the frame ${Math.floor(phase / SCAN.frameMs)} and the angle ${Math.round((phase / SCAN.periodMs) * 360)}°` }
 }

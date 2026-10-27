@@ -181,6 +181,10 @@ Any statement, matched against everything the surface can do
       "type": "string",
       "description": "any prompt or statement; Glagolitic numerals are read as integers"
     },
+    "verdict": {
+      "type": "string",
+      "description": "a verdict from another vocabulary (verify_claim"
+    },
     "chat": {
       "type": "object",
       "description": "the one door a chat needs"
@@ -2579,6 +2583,10 @@ MCP configures Payload and the rest
       "type": "object",
       "description": "kind gates"
     },
+    "google": {
+      "type": "object",
+      "description": "kind gates"
+    },
     "branding": {
       "type": "object",
       "description": "kind branding"
@@ -2790,6 +2798,9 @@ SHA-256 of a text, and HMAC-SHA256 under a key the caller gives (a test key; a t
         "boolean"
       ],
       "description": "a post-quantum signature over the digest"
+    },
+    "referer": {
+      "description": "seeds bound to a referer block"
     },
     "artifacts": {
       "type": "array",

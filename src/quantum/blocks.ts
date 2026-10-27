@@ -5,7 +5,7 @@
 
 export type OpenGraph = { 'og:title': string; 'og:description': string; 'og:type': 'website'; 'og:url': string; 'og:site_name': string; 'article:author': string; license: string }
 export type RegistryItem = { $schema: 'https://ui.shadcn.com/schema/registry-item.json'; name: string; type: 'registry:block'; title: string; description: string; registryDependencies: string[]; author: string; license: string; files: { path: string; type: 'registry:block'; content: string }[]; meta: { tool: string; arguments: Record<string, unknown>; id: string } }
-import { KEY, accentOfUuid, cmykOfUuid, hueOf, wrapOf } from './theme.ts'
+import { KEY, accentOfUuid, cmykOfUuid, hueOf, wrapBlock } from './theme.ts'
 import { LICENSE, attributionHtml } from './license.ts'
 
 export type Block = { id: string; html: string; theme: { key: number; hue: number; cmyk: { c: number; m: number; y: number; k: number }; accent: string }; openGraph: OpenGraph; shadcn: RegistryItem }
@@ -175,7 +175,7 @@ export const blockOf = (tool: string, args: Record<string, unknown>, structured:
   const id = uuidOf(`${tool}${JSON.stringify(args)}`)
   // A heading to land on: what a screen reader announces first, and what the audit's accessibility check measures.
   const heading = `<div role="heading" aria-level="2" style="font-size: var(--font-size-footnote); color: var(--text-muted); margin-bottom: var(--gap-sm, 6px);">${tool} · ${escapeOf(description)}</div>`
-  const wrapped = wrapOf(id, heading + html + attributionHtml())
+  const wrapped = wrapBlock(id, heading + html + attributionHtml())
   return {
     id,
     html: wrapped,

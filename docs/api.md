@@ -31,7 +31,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 
 ## The standard contract
 
-The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the endpoint table and never written by hand: 9 paths, 48 component schemas (every tool and the two JSON-RPC envelopes). It stands inside the discovery document at `/.well-known/qpu.json` and as the MCP resource `openapi://qpu`; the tree's own discovery reads it as `openapi 3.1.0` (9 paths, 86,758 chars), the way it reads every other host's contract.
+The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the endpoint table and never written by hand: 9 paths, 48 component schemas (every tool and the two JSON-RPC envelopes). It stands inside the discovery document at `/.well-known/qpu.json` and as the MCP resource `openapi://qpu`; the tree's own discovery reads it as `openapi 3.1.0` (9 paths, 87,779 chars), the way it reads every other host's contract.
 
 ## Headers
 
@@ -65,7 +65,7 @@ The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the e
 | `clay` | tree | The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported o |
 | `match` | tree | Any statement, matched against everything the surface can do. served: a call answers it and is returned. impossible: the |
 | `verify` | tree | Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content  |
-| `processor` | google | A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures. |
+| `processor` | google | A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures; |
 | `circuit` | google | Compile a circuit from its operations, placed by an insert strategy, and simulate it. Without noise or observables: the  |
 | `echo` | google | Quantum Echoes: run the operations forward, perturb once, run them back, and return the probability that every qubit ret |
 | `echo_benchmark` | google | The Quantum Echoes result as Google states it: the processor, its qubits, the speedup, and the molecules. |

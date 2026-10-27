@@ -2,7 +2,7 @@
 // Dec 9, 2024; quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf). A figure the sheet does not state is
 // not here. Errors are probabilities: 0.035% is 0.00035.
 
-import { CZ, Device, GridQubit, keyOf, type Channel, type Qubit } from './cirq.ts'
+import { CZ, Device, GridQubit, qubitKey, type Channel, type Qubit } from './cirq.ts'
 
 /** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: a Cirq grid qubit at its row and column. */
 type Site = Qubit
@@ -18,18 +18,18 @@ const WILLOW_SITES: readonly Site[] = ROWS.flatMap(([row, from, to]) =>
   Array.from({ length: to - from + 1 }, (_, i) => GridQubit.of(row, from + i)))
 
 /** The couplers: each pair of sites next to each other along a row or along a column of the grid. */
-export const couplersOf = (sites: readonly Site[]): [Site, Site][] => {
-  const present = new Set(sites.map(keyOf))
+export const deriveCouplers = (sites: readonly Site[]): [Site, Site][] => {
+  const present = new Set(sites.map(qubitKey))
   return sites.flatMap((site): [Site, Site][] => {
     if (site.kind !== 'grid') return []
     return [GridQubit.of(site.row, site.col + 1), GridQubit.of(site.row + 1, site.col)]
-      .filter((n) => present.has(keyOf(n)))
+      .filter((n) => present.has(qubitKey(n)))
       .map((n): [Site, Site] => [site, n])
   })
 }
 
 /** Average connectivity: each coupler joins two sites, so the average over N sites is 2E/N. */
-export const averageConnectivityOf = (sites: readonly Site[], couplers: readonly [Site, Site][]): number =>
+export const computeAverageConnectivity = (sites: readonly Site[], couplers: readonly [Site, Site][]): number =>
   (2 * couplers.length) / sites.length
 
 /** The errors and coherence common to both chips' reset options, as the spec sheet lists them. */
@@ -66,7 +66,7 @@ export const WILLOW = {
   technology: 'superconducting',
   qubits: WILLOW_SITES.length,
   sites: WILLOW_SITES,
-  couplers: couplersOf(WILLOW_SITES),
+  couplers: deriveCouplers(WILLOW_SITES),
   /** the sheet's stated average connectivity, 4-way typical; the grid's couplers give 2E/N, checked in the tests */
   statedAverageConnectivity: 3.47,
   typicalConnectivity: 4,
@@ -91,10 +91,10 @@ export const WILLOW = {
 } as const
 
 /** Error correction is below threshold when Λ is above 1: each step up in code distance then halves the error, as the sheet's Λ shows. */
-export const belowThresholdOf = (processor: typeof WILLOW): boolean => processor.chips.errorCorrection.errorSuppression.mean > 1
+export const isBelowThreshold = (processor: typeof WILLOW): boolean => processor.chips.errorCorrection.errorSuppression.mean > 1
 
 /** The device a processor is: its sites and its couplers, so a circuit is checked against the hardware it runs on. */
-export const deviceOf = (processor: { readonly sites: readonly Site[]; readonly couplers: readonly (readonly [Site, Site])[] } = WILLOW): Device => new Device(processor.sites, processor.couplers)
+export const toDevice = (processor: { readonly sites: readonly Site[]; readonly couplers: readonly (readonly [Site, Site])[] } = WILLOW): Device => new Device(processor.sites, processor.couplers)
 
 /** The processors this repository describes, by their Google name. */
 export const PROCESSORS = { Willow: WILLOW } as const
@@ -116,7 +116,7 @@ export const SYCAMORE = {
   name: 'Sycamore',
   qubits: SYCAMORE_SITES.length,
   sites: SYCAMORE_SITES,
-  couplers: couplersOf(SYCAMORE_SITES),
+  couplers: deriveCouplers(SYCAMORE_SITES),
   statedQubits: 54,
   statedCouplers: 88,
   layout: 'the printed device diagram on the Google devices page, and the grid in Cirq\'s known_devices source',
@@ -131,7 +131,7 @@ export const SYCAMORE23 = {
   name: 'Sycamore23',
   qubits: SYCAMORE23_SITES.length,
   sites: SYCAMORE23_SITES,
-  couplers: couplersOf(SYCAMORE23_SITES),
+  couplers: deriveCouplers(SYCAMORE23_SITES),
   layout: 'the Sycamore23 grid in Cirq\'s known_devices source',
 } as const
 
@@ -139,7 +139,7 @@ export const SYCAMORE23 = {
  *  gate error, which makes the average gate error of an operation on one qubit equal to that figure; and, after each two-qubit
  *  gate, a depolarizing channel with p = 0.75 × the two-qubit gate error on each of its qubits, which matches that error to first
  *  order. The spec sheet's T1 and readout are not applied: gate durations and per-qubit readout are not on the sheet. */
-export const willowNoiseOf = (chip: 'errorCorrection' | 'randomCircuitSampling'): ((arity: number) => Channel[]) => {
+export const willowNoise = (chip: 'errorCorrection' | 'randomCircuitSampling'): ((arity: number) => Channel[]) => {
   const figures = WILLOW.chips[chip]
   const single = figures.singleQubitGateError.mean
   const two = figures.twoQubitGateError.mean

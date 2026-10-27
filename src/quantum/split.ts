@@ -3,7 +3,7 @@
 // version and variant counted apart, and the timeless UUID — the same UUID with its time zeroed, version and variant kept — so the place a
 // UUID names is read apart from the moment it was made. Pure.
 const GREGORIAN_TO_UNIX_100NS = 0x01b21dd213814000n
-export const splitOf = (uuid: string) => {
+export const splitUuid = (uuid: string) => {
   const hex = uuid.toLowerCase().replace(/-/g, '')
   if (!/^[0-9a-f]{32}$/.test(hex)) throw new Error('split takes a UUID of 32 hex digits')
   const version = parseInt(hex[12]!, 16)

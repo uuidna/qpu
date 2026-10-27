@@ -7,7 +7,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { readJson, getOf, publishOf, mcpOf } from './mcp.ts'
+import { readJson, fetchWithTimeout, publishRecord, mcpClient } from './mcp.ts'
 
 const ROOT = process.cwd()
 const HOSTS = (process.env.QPU_E2E_HOSTS ?? 'https://qpu.uuidna.com,https://qpu.psg.bg,https://qpu.ceci.workers.dev').split(',').map((h) => h.trim()).filter(Boolean)
@@ -42,16 +42,16 @@ const main = async () => {
   const { readdirSync } = await import('node:fs')
   const published = Object.fromEntries(readdirSync(pub).filter((f) => /\.(json|ndjson|md|txt|xml|webmanifest|html)$/.test(f)).map((f) => [`docs/public/${f}`, readFileSync(join(pub, f), 'utf8')]))
   const live: Record<string, string> = {}
-  for (const origin of HOSTS) for (const f of ['next-leads.json', 'receipts.ndjson', 'receipt.json', 'security.json']) { try { const r = await getOf(`${origin}/${f}`); if (r.ok) live[`${new URL(origin).host}/${f}`] = await r.text() } catch { /* unreached: measured next run */ } }
+  for (const origin of HOSTS) for (const f of ['next-leads.json', 'receipts.ndjson', 'receipt.json', 'security.json']) { try { const r = await fetchWithTimeout(`${origin}/${f}`); if (r.ok) live[`${new URL(origin).host}/${f}`] = await r.text() } catch { /* unreached: measured next run */ } }
   // and every document Payload holds, read through its MCP as a client reads it: a page or an entry is served
-  const app = mcpOf(), held: Record<string, string> = {}
+  const app = mcpClient(), held: Record<string, string> = {}
   for (const find of ['findPages', 'findEntries']) for (const d of ((await app.findAll(find, { draft: true, depth: 0 })).docs ?? []) as { id: string }[]) held[`payload/${find.slice(4).toLowerCase()}/${d.id}`] = JSON.stringify(d)
   const leaks = call({ leaks: { texts: { ...published, ...live, ...held }, served: [...Object.keys(live), ...Object.keys(held)] } })
   console.log(`leaks: ${leaks.says}`)
   // the access audit from every perspective: the generated collections, hooks and scopes, every cell naming its licence clause and its legal fact
   const accessAudit = call({ access: true })
   const date = new Date().toISOString()
-  publishOf('security', { date, hosts: HOSTS, ...result, access: accessAudit, leaks: { ...leaks, findings: leaks.findings } })
+  publishRecord('security', { date, hosts: HOSTS, ...result, access: accessAudit, leaks: { ...leaks, findings: leaks.findings } })
   writeFileSync(join(ROOT, 'docs', 'security.md'), ['---', 'title: Security', 'order: 53', '---', '', '# Security audit, both perspectives as one', '', `Performed by \`npm run next\` on ${date} through the \`audit\` tool: what a client of the MCP measures on ${HOSTS.length} host(s) and what the developer measures in the tree, merged as one list (${result.perspectives.client} client, ${result.perspectives.developer} developer, ${result.perspectives.both} both): ${result.passed}/${result.total} pass; ${result.verdict}. Every finding is a lead with the remedy manual work taught.`, '', '| Check | Perspective | Pass | Evidence | Remedy |', '|---|---|---|---|---|', ...result.checks.map((c: { id: string; perspective: string; passed: boolean; evidence: string; remedy?: string }) => `| ${c.id} | ${c.perspective} | ${c.passed ? '✓' : '✗'} | ${cell(c.evidence)} | ${cell(c.remedy ?? '')} |`), '', '## Access from every perspective', '', `The access audit through \`audit { access: true }\`: ${accessAudit.perspectives.join(', ')} over ${accessAudit.collections.join(', ')}; ${accessAudit.combinationsSay}; ${accessAudit.passed}/${accessAudit.total} pass; ${accessAudit.verdict}. Every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms.`, '', '| Check | Perspective | Pass | Evidence | Hook | Cost | Licence | Legal |', '|---|---|---|---|---|---|---|---|', ...accessAudit.checks.map((c: { id: string; perspective: string; passed: boolean; evidence: string; hook: string; cost: string; licence: string; legal: string }) => `| ${c.id} | ${c.perspective} | ${c.passed ? '✓' : '✗'} | ${cell(c.evidence)} | ${cell(c.hook)} | ${cell(c.cost)} | ${cell(c.licence)} | ${cell(c.legal)} |`), ''].join('\n'))
   console.log(`access: ${accessAudit.passed}/${accessAudit.total} checks pass from ${accessAudit.perspectives.length} perspectives (${accessAudit.combinations} role–operation combinations); ${accessAudit.verdict}`)
   console.log(`security: ${result.passed}/${result.total} checks pass (${result.perspectives.client} client, ${result.perspectives.developer} developer, ${result.perspectives.both} both) over ${hosts.length} host(s); ${result.verdict}`)

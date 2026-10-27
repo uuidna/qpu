@@ -5,7 +5,7 @@
 import type { Verifier } from './verifiers.ts'
 import { STANDARDS, detectStandard } from './standards.ts'
 import { stem } from './match.ts'
-import { measuredOf } from './theme.ts'
+import { keepMeasured } from './theme.ts'
 
 type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract' | 'sitemap'
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
@@ -90,14 +90,14 @@ export const KNOWN_MCP: readonly { host: string; url: string; about: string; aut
 /** The hosts discovered when a tenant names none: the unit, this tree, Cloudflare's eight servers and GitHub's. */
 export const UNIT_MCP = 'https://uuidna.com/mcp', QPU_MCP = 'https://qpu.uuidna.com/mcp', DEFAULT_MCP_HOSTS: readonly string[] = [UNIT_MCP, QPU_MCP, ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url), ...GOOGLE_MCP.map((g) => g.url)]
 /** The JSON of an MCP answer, whether the host answered JSON or an event stream (the data line that is JSON). */
-export const dataOf = (text: string): string => (/^(event|data):/m.test(text) ? (text.split('\n').filter((l) => l.startsWith('data:')).map((l) => l.slice(5).trim()).find((l) => l.startsWith('{')) ?? text) : text)
+export const parseEventData = (text: string): string => (/^(event|data):/m.test(text) ? (text.split('\n').filter((l) => l.startsWith('data:')).map((l) => l.slice(5).trim()).find((l) => l.startsWith('{')) ?? text) : text)
 export type Answer = Request & { status: number; type: string; text: string }
 export type Door = { name: string; description: string; takes: string[]; required: string[]; answers: string[]; readOnly: boolean | null; contract: 'tools/list' | 'catalogue' }
 type Host = { host: string; kind: 'mcp' | 'api' | 'well-known'; contract: string; status: number; detected: string; note: string; doors?: Door[]; paths?: string[] }
 export type Discovery = { hosts: Host[]; doors: (Door & { host: string; url: string })[]; capabilities: { statementVerdict: string[]; signing: string[]; readiness: string[]; addressing: string[]; rbac: string[]; metaphysics: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; sitemap: { index: string; sitemaps: Loc[]; urls: Loc[] } }
 // a sitemap read as sitemaps.org defines it: each <sitemap> of an index and each <url> of a urlset, its loc and its lastmod
 type Loc = { loc: string; lastmod?: string }
-const locsOf = (xml: string, tag: 'sitemap' | 'url'): Loc[] => [...xml.matchAll(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'g'))].map((m) => { const lastmod = /<lastmod>\s*([^<]+?)\s*<\/lastmod>/.exec(m[1]!)?.[1]; return { loc: /<loc>\s*([^<]+?)\s*<\/loc>/.exec(m[1]!)?.[1] ?? '', ...(lastmod ? { lastmod } : {}) } })
+const parseLocs = (xml: string, tag: 'sitemap' | 'url'): Loc[] => [...xml.matchAll(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'g'))].map((m) => { const lastmod = /<lastmod>\s*([^<]+?)\s*<\/lastmod>/.exec(m[1]!)?.[1]; return { loc: /<loc>\s*([^<]+?)\s*<\/loc>/.exec(m[1]!)?.[1] ?? '', ...(lastmod ? { lastmod } : {}) } })
 const SITEMAP = { host: 'quantumai.google', url: 'https://quantumai.google/sitemap.xml' }
 
 /** What a client can fill from a theorem, a statement or a value, and what an answer may carry. */
@@ -105,28 +105,28 @@ export const TAKES = ['statement', 'claim', 'input', 'deposits', 'proof', 'key',
 const ANSWERS = ['verdict', 'receipt', 'deposited', 'sealed', 'signed', 'verified', 'proofRoot', 'ready', 'address', 'role'] as const
 
 export const rpcBody = (method: string, params?: unknown) => ({ jsonrpc: '2.0', id: 1, method, params })
-const idOf = (purpose: Purpose, host: string, name?: string) => `${purpose}:${host}${name ? `:${name}` : ''}`
+const requestId = (purpose: Purpose, host: string, name?: string) => `${purpose}:${host}${name ? `:${name}` : ''}`
 
 /** The first wave: every host's contract address. */
-export const discoveryRequestsOf = (mcpHosts: readonly string[], verifiers: readonly Verifier[], auth: Readonly<Record<string, string>> = {}): Request[] => {
+export const buildDiscoveryRequests = (mcpHosts: readonly string[], verifiers: readonly Verifier[], auth: Readonly<Record<string, string>> = {}): Request[] => {
   const out: Request[] = []
   for (const url of mcpHosts) {
     const host = new URL(url).host
     const headers = auth[host] ? { authorization: `Bearer ${auth[host]}` } : undefined
-    out.push({ id: idOf('mcp-list', host), method: 'POST', url, body: rpcBody('tools/list'), purpose: 'mcp-list', host, headers })
-    out.push({ id: idOf('catalogue', host), method: 'POST', url, body: rpcBody('tools/call', { name: 'list_tools', arguments: {} }), purpose: 'catalogue', host, headers })
-    out.push({ id: idOf('well-known', host), method: 'GET', url: `https://${host}/.well-known/qpu.json`, purpose: 'well-known', host })
+    out.push({ id: requestId('mcp-list', host), method: 'POST', url, body: rpcBody('tools/list'), purpose: 'mcp-list', host, headers })
+    out.push({ id: requestId('catalogue', host), method: 'POST', url, body: rpcBody('tools/call', { name: 'list_tools', arguments: {} }), purpose: 'catalogue', host, headers })
+    out.push({ id: requestId('well-known', host), method: 'GET', url: `https://${host}/.well-known/qpu.json`, purpose: 'well-known', host })
   }
-  for (const [name, url] of [...verifiers.flatMap((v) => (v.contract ? [[v.id, v.contract]] : [])), ...STANDARDS.map((s) => [s.id, s.contract]), ...Object.entries(GOOGLE_DOCUMENTS).map(([k, u]) => [`google-${k}`, u])]) { const host = new URL(url!).host; out.push({ id: idOf('api-contract', host, name), method: 'GET', url: url!, purpose: 'api-contract', host, name }) }
-  out.push({ id: idOf('sitemap', SITEMAP.host), method: 'GET', url: SITEMAP.url, purpose: 'sitemap', host: SITEMAP.host })
+  for (const [name, url] of [...verifiers.flatMap((v) => (v.contract ? [[v.id, v.contract]] : [])), ...STANDARDS.map((s) => [s.id, s.contract]), ...Object.entries(GOOGLE_DOCUMENTS).map(([k, u]) => [`google-${k}`, u])]) { const host = new URL(url!).host; out.push({ id: requestId('api-contract', host, name), method: 'GET', url: url!, purpose: 'api-contract', host, name }) }
+  out.push({ id: requestId('sitemap', SITEMAP.host), method: 'GET', url: SITEMAP.url, purpose: 'sitemap', host: SITEMAP.host })
   return out
 }
 
 /** A JSON-RPC answer read: the result, or the error text. */
-const resultOf = (a: Answer): { result?: any; error?: string } => {
+const parseResult = (a: Answer): { result?: any; error?: string } => {
   if (a.status !== 200) return { error: a.status === 0 ? a.text : a.status === 401 ? 'HTTP 401: auth required' : `HTTP ${a.status}` }
   try {
-    const j = JSON.parse(dataOf(a.text)) as { result?: { tools?: unknown[]; structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
+    const j = JSON.parse(parseEventData(a.text)) as { result?: { tools?: unknown[]; structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
     if (j.error) return { error: j.error.message }
     if (j.result?.isError) return { error: j.result.content?.[0]?.text ?? 'refused' }
     if (j.result?.tools) return { result: j.result }
@@ -137,7 +137,7 @@ const resultOf = (a: Answer): { result?: any; error?: string } => {
 }
 
 /** A door's capability from its contract: the properties it takes (of the ones a client can fill) and the keys it answers. */
-export const doorOf = (t: { name: string; description?: string; inputSchema?: { properties?: Record<string, unknown>; required?: string[] }; outputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean } }, contract: Door['contract']): Door => {
+export const toDoor = (t: { name: string; description?: string; inputSchema?: { properties?: Record<string, unknown>; required?: string[] }; outputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean } }, contract: Door['contract']): Door => {
   const props = Object.keys(t.inputSchema?.properties ?? {})
   const outKeys = Object.keys(t.outputSchema?.properties ?? {})
   const fromText = (/Returns \{([^}]*)\}/.exec(t.description ?? '')?.[1] ?? '').split(',').map((s) => s.trim()).filter(Boolean)
@@ -146,21 +146,26 @@ export const doorOf = (t: { name: string; description?: string; inputSchema?: { 
 }
 
 /** The second wave: the contract of every catalogue door that answers a verdict and is not in tools/list, not yet read. */
-export const followUpsOf = (answers: readonly Answer[]): Request[] => {
+export const findFollowUps = (answers: readonly Answer[]): Request[] => {
   const done = new Set(answers.map((a) => a.id))
   const out: Request[] = []
   for (const a of answers.filter((x) => x.purpose === 'catalogue')) {
-    const r = resultOf(a); if (!r.result) continue
+    const r = parseResult(a); if (!r.result) continue
     const names = (Array.isArray(r.result) ? r.result : r.result.tools ?? []) as { name: string; description: string }[]
-    const listed = new Set<string>((resultOf(answers.find((x) => x.id === idOf('mcp-list', a.host)) ?? a).result?.tools ?? []).map((t: { name: string }) => t.name))
+    const listed = new Set<string>((parseResult(answers.find((x) => x.id === requestId('mcp-list', a.host)) ?? a).result?.tools ?? []).map((t: { name: string }) => t.name))
     for (const t of names) {
-      if (listed.has(t.name) || !doorOf({ name: t.name, description: t.description }, 'catalogue').answers.length) continue
-      const id = idOf('contract', a.host, t.name)
+      if (listed.has(t.name) || !toDoor({ name: t.name, description: t.description }, 'catalogue').answers.length) continue
+      const id = requestId('contract', a.host, t.name)
       if (!done.has(id)) out.push({ id, method: 'POST', url: a.url, body: rpcBody('tools/call', { name: 'list_tools', arguments: { name: t.name } }), purpose: 'contract', host: a.host, name: t.name })
     }
   }
+  // every API Google's directory lists asked once for its own Discovery document, through the one Google door
+  for (const a of answers.filter((x) => x.purpose === 'api-contract' && x.name === 'google-list' && x.status === 200)) {
+    let items: { name?: string; version?: string; discoveryRestUrl?: string }[] = []; try { items = JSON.parse(a.text).items ?? [] } catch { /* not the directory's shape: nothing to follow */ }
+    for (const it of items) { if (!it.name || !it.discoveryRestUrl || !URL.canParse(it.discoveryRestUrl)) continue; const host = new URL(it.discoveryRestUrl).host, name = `google-${it.name}-${it.version}`, id = requestId('api-contract', host, name); if (!done.has(id)) { done.add(id); out.push({ id, method: 'GET', url: it.discoveryRestUrl, purpose: 'api-contract', host, name }) } }
+  }
   // every child an index names is asked once
-  for (const a of answers.filter((x) => x.purpose === 'sitemap' && x.status === 200)) for (const s of locsOf(a.text, 'sitemap')) if (!done.has(idOf('sitemap', a.host, s.loc))) out.push({ id: idOf('sitemap', a.host, s.loc), method: 'GET', url: s.loc, purpose: 'sitemap', host: a.host, name: s.loc })
+  for (const a of answers.filter((x) => x.purpose === 'sitemap' && x.status === 200)) for (const s of parseLocs(a.text, 'sitemap')) if (!done.has(requestId('sitemap', a.host, s.loc))) out.push({ id: requestId('sitemap', a.host, s.loc), method: 'GET', url: s.loc, purpose: 'sitemap', host: a.host, name: s.loc })
   return out
 }
 
@@ -185,27 +190,27 @@ export const detect = (r: { status: number; type: string; text: string }): { det
 }
 
 /** Everything that came back, read into hosts, doors, capabilities and leads. */
-export const discoveryOf = (answers: readonly Answer[], verifiers: readonly Verifier[]): Discovery => {
+export const readDiscovery = (answers: readonly Answer[], verifiers: readonly Verifier[]): Discovery => {
   const hosts: Host[] = []
   const mcpHosts = [...new Set(answers.filter((a) => a.purpose === 'mcp-list').map((a) => a.host))]
   for (const host of mcpHosts) {
-    const list = answers.find((a) => a.id === idOf('mcp-list', host))!
-    const r = resultOf(list)
-    const wk = answers.find((a) => a.id === idOf('well-known', host))
+    const list = answers.find((a) => a.id === requestId('mcp-list', host))!
+    const r = parseResult(list)
+    const wk = answers.find((a) => a.id === requestId('well-known', host))
     if (!r.result) { hosts.push({ host, kind: 'mcp', contract: list.url, status: list.status, detected: list.status === 401 ? 'auth required' : 'unreachable', note: list.status === 401 ? `${KNOWN_MCP.find((c) => c.host === host)?.about ?? 'an MCP host'}: answers 401 until the tenant brings its token; once open: ${KNOWN_MCP.find((c) => c.host === host)?.maps ?? 'its doors join the catalogue'}` : r.error ?? 'no answer', doors: [] }); if (wk) hosts.push({ host, kind: 'well-known', contract: wk.url, status: wk.status, ...detect(wk) }); continue }
-    const doors: Door[] = (r.result.tools as Parameters<typeof doorOf>[0][]).map((t) => doorOf(t, 'tools/list'))
+    const doors: Door[] = (r.result.tools as Parameters<typeof toDoor>[0][]).map((t) => toDoor(t, 'tools/list'))
     let note = `${doors.length} tools in tools/list`
-    const cat = answers.find((a) => a.id === idOf('catalogue', host))
-    const cr = cat ? resultOf(cat) : { error: 'not asked' }
+    const cat = answers.find((a) => a.id === requestId('catalogue', host))
+    const cr = cat ? parseResult(cat) : { error: 'not asked' }
     if (cr.result) {
       const names = (Array.isArray(cr.result) ? cr.result : cr.result.tools ?? []) as { name: string; description: string }[]
       const listed = new Set(doors.map((d) => d.name)); let read = 0
       for (const t of names) {
         if (listed.has(t.name)) continue
-        const contract = answers.find((a) => a.id === idOf('contract', host, t.name))
-        const c = contract ? resultOf(contract) : null
-        if (c?.result && typeof c.result === 'object') { doors.push(doorOf({ ...(c.result as object), name: t.name, description: t.description }, 'catalogue')); read += 1 }
-        else doors.push({ ...doorOf({ name: t.name, description: t.description }, 'catalogue'), description: `${t.description}${c?.error ? ` (contract unread: ${c.error})` : ''}` })
+        const contract = answers.find((a) => a.id === requestId('contract', host, t.name))
+        const c = contract ? parseResult(contract) : null
+        if (c?.result && typeof c.result === 'object') { doors.push(toDoor({ ...(c.result as object), name: t.name, description: t.description }, 'catalogue')); read += 1 }
+        else doors.push({ ...toDoor({ name: t.name, description: t.description }, 'catalogue'), description: `${t.description}${c?.error ? ` (contract unread: ${c.error})` : ''}` })
       }
       note += `; ${names.length} in the catalogue door, ${read} contracts read`
     } else note += `; catalogue door: ${cr.error}`
@@ -234,11 +239,11 @@ export const discoveryOf = (answers: readonly Answer[], verifiers: readonly Veri
     ...hosts.filter((h) => h.kind === 'api' && !/^openapi|json index|oai-pmh|json-ld|cldr|graphql/.test(h.detected)).map((h) => ({ id: `contract-${h.host}`, source: h.contract, statement: `${h.host} publishes no machine-readable contract at the address the registry names (${h.detected})`, status: 'open' as const, reason: 'the client is built from documentation read by a person; an OpenAPI or index document would let it be built from the host' })),
   ]
   const read = answers.filter((a) => a.purpose === 'sitemap' && a.status === 200)
-  return { hosts, doors, capabilities, leads, sitemap: { index: SITEMAP.url, sitemaps: read.flatMap((a) => locsOf(a.text, 'sitemap')), urls: read.flatMap((a) => locsOf(a.text, 'url')) } }
+  return { hosts, doors, capabilities, leads, sitemap: { index: SITEMAP.url, sitemaps: read.flatMap((a) => parseLocs(a.text, 'sitemap')), urls: read.flatMap((a) => parseLocs(a.text, 'url')) } }
 }
 
 /** The discovery page, from the discovery alone. */
-export const discoveryPageOf = (d: Discovery, date: string): string => ['---', 'title: Discovery', 'order: 46', '---', '', '# Discovery before use', '',
+export const renderDiscoveryPage = (d: Discovery, date: string): string => ['---', 'title: Discovery', 'order: 46', '---', '', '# Discovery before use', '',
   `Every host this tree talks to, asked for its contract on ${date} by \`npm run next\` through the \`discover\` tool: MCP hosts for tools/list and their catalogue door, API hosts for the OpenAPI, index or identify document the verifiers registry names, both domains for \`/.well-known/qpu.json\`. The client tools choose their doors from this table by capability, never from a name in code.`, '',
   '| Host | Kind | Contract | Status | Detected | Note |', '|---|---|---|---:|---|---|', ...d.hosts.map((h) => `| ${h.host} | ${h.kind} | ${h.contract} | ${h.status || '—'} | ${h.detected} | ${h.note.replace(/\|/g, '\\|')} |`), '',
   '## Capabilities found', '', `Statement → verdict: ${d.capabilities.statementVerdict.join(', ') || 'none'}. Signing: ${d.capabilities.signing.join(', ') || 'none'}. Readiness: ${d.capabilities.readiness.join(', ') || 'none'}. Addressing: ${d.capabilities.addressing.join(', ') || 'none'}. RBAC (a token in, a role out): ${d.capabilities.rbac.join(', ') || 'none: roles come from the tenant secrets until a Payload MCP host is named'}. Metaphysics (the arithmetic mod 9 every tail carries): ${d.capabilities.metaphysics.join(', ') || 'none'}.`, '',
@@ -248,26 +253,46 @@ export const discoveryPageOf = (d: Discovery, date: string): string => ['---', '
 
 /** The public MCP registry: a lead's distinctive words asked there first, before any guess about which MCP serves it. */
 export const MCP_REGISTRY = 'https://registry.modelcontextprotocol.io/v0/servers'
-const REGISTRY_STOP = new Set(['the', 'a', 'an', 'of', 'to', 'in', 'on', 'for', 'and', 'or', 'is', 'are', 'it', 'its', 'with', 'by', 'as', 'at', 'from', 'this', 'that', 'every', 'any', 'all', 'no', 'not', 'be', 'into', 'over', 'through', 'here', 'there', 'one', 'two', 'per', 'via', 'tool', 'tools', 'lead', 'leads', 'qpu', 'tree', 'unit', 'served', 'open'])
+const REGISTRY_STOP = new Set(['the', 'a', 'an', 'of', 'to', 'in', 'on', 'for', 'and', 'or', 'is', 'are', 'it', 'its', 'with', 'by', 'as', 'at', 'from', 'this', 'that', 'every', 'any', 'all', 'no', 'not', 'be', 'into', 'over', 'through', 'here', 'there', 'one', 'two', 'per', 'via', 'tool', 'tools', 'lead', 'leads', 'qpu', 'tree', 'unit', 'served', 'open', 'mcp', 'server', 'servers'])
 /** The words of a lead worth asking: its own, without the stop words, the longest first; each a registry search. */
-const registryWordsOf = (lead: { id: string; statement: string; source?: string }, at = 3): string[] => {
+const pickRegistryWords = (lead: { id: string; statement: string; source?: string }, at = 3): string[] => {
   const words = lead.statement.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).filter((w) => w.length > 3 && !REGISTRY_STOP.has(w) && !/^\d+$/.test(w))
   const counts = new Map<string, number>(); for (const w of words) counts.set(w, (counts.get(w) ?? 0) + 1)
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || b[0].length - a[0].length).slice(0, at).map(([w]) => w)
 }
-type RegistryRequest = { id: string; lead: string; word: string; method: 'GET'; url: string; accept: string }
-export const registryRequestsOf = (lead: { id: string; statement: string; source?: string }, at = 3): RegistryRequest[] => registryWordsOf(lead, at).map((word) => ({ id: `registry:${lead.id}:${word}`, lead: lead.id, word, method: 'GET' as const, url: `${MCP_REGISTRY}?search=${encodeURIComponent(word)}&limit=10`, accept: 'application/json' }))
-type RelatedServer = { name: string; description: string; remotes: string[]; word: string }
+/** The MCP directories beside the official registry, as each is read by a machine (measured 2026-10-27): a search asked with a lead's words, an
+ *  open sitemap matched by its slugs, a keyed API named with its key (the key the operator's act), a site with no machine contract a lead.
+ *  A path robots.txt disallows is never asked, and a page behind a bot challenge is never fetched past it. */
+const MCP_DIRECTORIES: readonly { id: string; read: 'search' | 'sitemap' | 'keyed' | 'none'; url: string; keyVar?: string; note: string }[] = [
+  { id: 'official', read: 'search', url: `${MCP_REGISTRY}?limit=10&search=`, note: 'registry.modelcontextprotocol.io, open' },
+  { id: 'smithery', read: 'search', url: 'https://registry.smithery.ai/servers?pageSize=10&q=', note: 'open search; remote servers flagged, their URLs not in the answer' },
+  { id: 'mcpservers.org', read: 'sitemap', url: 'https://mcpservers.org/sitemaps/remote-mcp-servers.xml https://mcpservers.org/sitemaps/priority-servers.xml', note: 'llms.txt and the sitemap index open (17,715 servers in /sitemaps/servers/N.xml); /api/ disallowed by robots.txt; HTML behind a bot challenge' },
+  { id: 'glama', read: 'keyed', url: 'https://glama.ai/api/mcp/v1/servers?query=', keyVar: 'GLAMA_API_KEY', note: '401 without a key' },
+  { id: 'pulsemcp', read: 'keyed', url: 'https://api.pulsemcp.com/v0.1/servers?search=', keyVar: 'PULSEMCP_API_KEY', note: 'v0.1 takes X-API-Key; v0beta answers 410 API_SUNSET' },
+  { id: 'mcp.so', read: 'none', url: 'https://mcp.so', note: 'its API answers: Only HTML requests are supported here' },
+]
+type RegistryRequest = { id: string; lead: string; word: string; directory: string; method: 'GET'; url: string; accept: string }
+export const buildRegistryRequests = (lead: { id: string; statement: string; source?: string }, at = 3): RegistryRequest[] => {
+  const words = pickRegistryWords(lead, at)
+  return [...words.flatMap((word) => MCP_DIRECTORIES.filter((d) => d.read === 'search').map((d) => ({ id: d.id === 'official' ? `registry:${lead.id}:${word}` : `registry:${lead.id}:${word}:${d.id}`, lead: lead.id, word, directory: d.id, method: 'GET' as const, url: d.url + encodeURIComponent(word), accept: 'application/json' }))),
+    ...MCP_DIRECTORIES.filter((d) => d.read === 'sitemap').flatMap((d) => d.url.split(' ').map((url, i) => ({ id: `registry:${lead.id}:${d.id}:${i}`, lead: lead.id, word: words.join(' '), directory: d.id, method: 'GET' as const, url, accept: 'application/xml' })))]
+}
+type RelatedServer = { name: string; description: string; remotes: string[]; word: string; directory?: string; page?: string }
 /** The registry's answers read into the servers related to the lead, and the one tools/list request per remote that extends each through qpu. */
-export const relatedOf = (lead: string, answers: readonly { id: string; word?: string; status: number; text: string }[]): { lead: string; asked: number; answered: number; servers: RelatedServer[]; extend: { id: string; server: string; method: 'POST'; url: string; accept: string; body: unknown }[] } => {
+export const findRelatedServers = (lead: string, answers: readonly { id: string; word?: string; status: number; text: string }[]): { lead: string; asked: number; answered: number; servers: RelatedServer[]; extend: { id: string; server: string; method: 'POST'; url: string; accept: string; body: unknown }[] } => {
   const servers = new Map<string, RelatedServer>()
   let answered = 0
   for (const a of answers) {
     if (a.status !== 200) continue
+    // a directory's sitemap: its server pages (the locale copies dropped) whose slug holds one of the lead's words
+    if (a.text.trimStart().startsWith('<')) { const words = (a.word ?? '').split(' ').filter(Boolean).map(stem); answered += 1
+      for (const [, page] of a.text.matchAll(/<loc>(https:\/\/[^/<]+\/(?:servers|remote-mcp-servers)\/[^<]+)<\/loc>/g)) { const slug = new URL(page!).pathname.split('/').slice(2).join('/'), shared = words.filter((w) => slug.split(/[/-]/).map(stem).includes(w))
+        if (shared.length && !servers.has(slug)) servers.set(slug, { name: slug, description: '', remotes: [], word: shared.join(' '), directory: new URL(page!).host, page: page! }) }
+      continue }
     try {
-      const j = JSON.parse(a.text) as { servers?: { server?: { name?: string; description?: string; remotes?: { url?: string }[] }; name?: string; description?: string; remotes?: { url?: string }[] }[] }
+      const j = JSON.parse(a.text) as { servers?: { server?: { name?: string; description?: string; remotes?: { url?: string }[] }; name?: string; qualifiedName?: string; description?: string; remotes?: { url?: string }[] }[] }
       answered += 1
-      for (const x of j.servers ?? []) { const srv = x.server ?? x; const name = srv.name ?? ''; if (!name || servers.has(name)) continue; servers.set(name, { name, description: (srv.description ?? '').slice(0, 200), remotes: (srv.remotes ?? []).map((r) => r.url).filter((u): u is string => typeof u === 'string' && /^https?:\/\//.test(u)), word: a.word ?? '' }) }
+      for (const x of j.servers ?? []) { const srv = x.server ?? x; const name = srv.name ?? (x as { qualifiedName?: string }).qualifiedName ?? ''; if (!name || servers.has(name)) continue; servers.set(name, { name, description: (srv.description ?? '').slice(0, 200), remotes: (srv.remotes ?? []).map((r) => r.url).filter((u): u is string => typeof u === 'string' && /^https?:\/\//.test(u)), word: a.word ?? '' }) }
     } catch { /* not the registry's shape: nothing related read from it */ }
   }
   const extend = [...servers.values()].flatMap((s) => s.remotes.map((url) => ({ id: `extend:${lead}:${s.name}:${new URL(url).host}`, server: s.name, method: 'POST' as const, url, accept: 'application/json, text/event-stream', body: rpcBody('tools/list') })))
@@ -275,8 +300,8 @@ export const relatedOf = (lead: string, answers: readonly { id: string; word?: s
 }
 
 /** The foreign doors that answer a lead best: a remote's tools/list read into doors, each scored by the stems it shares with the lead (its name and description against the lead's statement, token meeting tokens, server meeting servers), the top ones proposed — never called: calling another's server is the operator's act. */
-export const bestDoorsOf = (lead: { id: string; statement: string }, remotes: readonly { server: string; url: string; tools: readonly { name: string; description?: string }[] }[], at = 3): { server: string; url: string; door: string; score: number; shared: string[] }[] => {
-  const words = new Set(registryWordsOf(lead, 12).map(stem))
+export const rankBestDoors = (lead: { id: string; statement: string }, remotes: readonly { server: string; url: string; tools: readonly { name: string; description?: string }[] }[], at = 3): { server: string; url: string; door: string; score: number; shared: string[] }[] => {
+  const words = new Set(pickRegistryWords(lead, 12).map(stem))
   const out: { server: string; url: string; door: string; score: number; shared: string[] }[] = []
   for (const r of remotes) for (const t of r.tools) {
     const text = `${t.name.replace(/[_-]+/g, ' ')} ${t.description ?? ''}`.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).map(stem)
@@ -295,25 +320,25 @@ export const OPEN_MCP_BASELINES: readonly { id: string; url: string }[] = [
   { id: 'context7', url: 'https://mcp.context7.com/mcp' },
 ]
 /** A tools/list as a client pays for it: its bytes, the tokens it costs at four bytes a token, and the bytes per tool. */
-const toolsListCostOf = (bytes: number, tools: number) => ({ bytes, tokens: Math.ceil(bytes / 4), tools, perTool: tools ? Math.round(bytes / tools) : null })
+const measureToolsListCost = (bytes: number, tools: number) => ({ bytes, tokens: Math.ceil(bytes / 4), tools, perTool: tools ? Math.round(bytes / tools) : null })
 /** The official MCP registry, latest version of each server, a page at a time (measured 2026-10-26: no total in the answer, a nextCursor while
  *  more remain), so its count is the client's walk of every page. */
 const MCP_REGISTRY_SERVERS = 'https://registry.modelcontextprotocol.io/v0/servers?limit=100&version=latest'
-export const coverageRequestOf = (cursor?: string | null) => ({ url: cursor ? `${MCP_REGISTRY_SERVERS}&cursor=${encodeURIComponent(cursor)}` : MCP_REGISTRY_SERVERS, accept: 'application/json', next: 'metadata.nextCursor, until none', counts: 'servers.length on every page' })
+export const buildCoverageRequest = (cursor?: string | null) => ({ url: cursor ? `${MCP_REGISTRY_SERVERS}&cursor=${encodeURIComponent(cursor)}` : MCP_REGISTRY_SERVERS, accept: 'application/json', next: 'metadata.nextCursor, until none', counts: 'servers.length on every page' })
 /** How much of the registered MCP world the QPU reaches: its gates' MCP doors over the servers the registry lists, as measured, and the
  *  sets that follow — each covered door with each QPU tool at its harmonic default. A ratio over a measured total, never a claim about the internet. */
-export const coverageOf = (doors: number, registryTotal: number, tools: number) => {
+export const measureCoverage = (doors: number, registryTotal: number, tools: number) => {
   const ratio = registryTotal > 0 ? Math.round((doors / registryTotal) * 1e6) / 1e6 : null
   return { doors, registryTotal, ratio, percent: ratio === null ? null : Math.floor((doors * 100) / registryTotal), sets: doors * tools, tools, says: registryTotal > 0 ? `${doors} MCP doors in the gates over ${registryTotal} servers the official registry lists: ${(ratio! * 100).toFixed(2)}% covered; ${doors * tools} sets follow (each door with each of the ${tools} QPU tools at its harmonic default)` : 'the registry was not walked: no total, no ratio', theorem: 'textbook_coverage_bounded' }
 }
 /** The QPU's tools/list against the open servers' as the client measured them: totals and per tool, a ratio above one meaning the server's
  *  is that many times the QPU's; a server not answering is named, never estimated. */
-export const toolsListCompareOf = (qpu: { bytes: number; tools: number }, answers: readonly { id: string; status: number; bytes: number; tools: number }[], full?: { bytes: number }) => {
-  const q = toolsListCostOf(qpu.bytes, qpu.tools)
+export const compareToolsLists = (qpu: { bytes: number; tools: number }, answers: readonly { id: string; status: number; bytes: number; tools: number }[], full?: { bytes: number }) => {
+  const q = measureToolsListCost(qpu.bytes, qpu.tools)
   const ratio = (a: number | null, b: number | null) => (a !== null && b ? Math.round((a / b) * 100) / 100 : null)
-  const rows = OPEN_MCP_BASELINES.map((s) => { const a = answers.find((x) => x.id === s.id); if (!a || a.status !== 200 || !a.tools) return { id: s.id, url: s.url, missing: a ? `HTTP ${a.status}` : 'not asked' }; const c = toolsListCostOf(a.bytes, a.tools); return { id: s.id, url: s.url, ...c, ratio: ratio(c.bytes, q.bytes), ratioPerTool: ratio(c.perTool, q.perTool) } })
-  const measured = measuredOf(rows)
+  const rows = OPEN_MCP_BASELINES.map((s) => { const a = answers.find((x) => x.id === s.id); if (!a || a.status !== 200 || !a.tools) return { id: s.id, url: s.url, missing: a ? `HTTP ${a.status}` : 'not asked' }; const c = measureToolsListCost(a.bytes, a.tools); return { id: s.id, url: s.url, ...c, ratio: ratio(c.bytes, q.bytes), ratioPerTool: ratio(c.perTool, q.perTool) } })
+  const measured = keepMeasured(rows)
   // the drop from the full list to the short one the QPU serves by default: what a client no longer pays for
-  const drop = full ? { full: toolsListCostOf(full.bytes, qpu.tools), short: q, savedBytes: full.bytes - qpu.bytes, savedTokens: Math.ceil(full.bytes / 4) - q.tokens, ratio: ratio(full.bytes, qpu.bytes) } : null
+  const drop = full ? { full: measureToolsListCost(full.bytes, qpu.tools), short: q, savedBytes: full.bytes - qpu.bytes, savedTokens: Math.ceil(full.bytes / 4) - q.tokens, ratio: ratio(full.bytes, qpu.bytes) } : null
   return { qpu: q, drop, rows, measured: measured.length, says: `${drop ? `the full tools/list is ${drop.full.bytes} bytes and the short one served by default ${q.bytes} (${drop.ratio}× smaller, ${drop.savedTokens} tokens saved); ` : ''}the QPU's tools/list is ${q.bytes} bytes (about ${q.tokens} tokens) for ${q.tools} tools, ${q.perTool} bytes a tool; ${measured.map((r) => `${r.id} ${r.bytes} bytes for ${r.tools} (${r.perTool} a tool, ${r.ratioPerTool}× the QPU's per tool)`).join('; ') || 'no open server measured'}` }
 }

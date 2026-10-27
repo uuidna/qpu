@@ -56,7 +56,7 @@ export const unencodedCycle = (channel: Channel, logical: LogicalState = '0'): C
 
 /** The probability that the first qubit (line 0) of a simulated circuit is |1⟩: the sum of the basis probabilities whose
  *  lowest bit is set, since the basis order puts line 0 at bit 0. */
-const errorOf = (circuit: Circuit): number => {
+const countErrors = (circuit: Circuit): number => {
   const { probabilities, qubits } = new DensityMatrixSimulator().simulate(circuit)
   const index = qubits.findIndex((q) => q.kind === 'line' && q.x === 0)
   return probabilities.reduce((sum, p, k) => ((k >> index) & 1 ? sum + p : sum), 0)
@@ -73,8 +73,8 @@ type CodePoint = { p: number; physicalError: number; logicalError: number }
 
 export const codePoint = (code: RepetitionCode, channel: ErrorChannel, p: number, logical: LogicalState = '0'): CodePoint => ({
   p,
-  physicalError: errorOf(unencodedCycle(channelOf(channel, p), logical)),
-  logicalError: errorOf(repetitionCycle(code, channelOf(channel, p), logical)),
+  physicalError: countErrors(unencodedCycle(channelOf(channel, p), logical)),
+  logicalError: countErrors(repetitionCycle(code, channelOf(channel, p), logical)),
 })
 
 /** The textbook figure for the code matched to its channel on a logical |0⟩ or |1⟩: 3p² − 2p³, the probability of two or more
@@ -88,7 +88,7 @@ export const textbookLogicalError = (code: RepetitionCode, channel: ErrorChannel
 /** The break-even probability found from the simulation itself: the p at which the logical error stops being lower than the
  *  physical error, located by bisection between the last sweep point where the code helps and the first where it does not.
  *  Null when the sweep shows no crossing. */
-export const breakEvenOf = (code: RepetitionCode, channel: ErrorChannel, logical: LogicalState, sweep: readonly CodePoint[]): number | null => {
+export const findBreakEven = (code: RepetitionCode, channel: ErrorChannel, logical: LogicalState, sweep: readonly CodePoint[]): number | null => {
   const helps = (pt: CodePoint) => pt.logicalError < pt.physicalError
   let lo: number | null = null
   let hi: number | null = null

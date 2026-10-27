@@ -7,9 +7,9 @@ import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
-import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { readJson, selftestOf, leadsOf } from './mcp.ts'
-const { all: LEADS } = await leadsOf()
+import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
+import { readJson, runSelftest, readLeads } from './mcp.ts'
+const { all: LEADS } = await readLeads()
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
@@ -18,7 +18,7 @@ const toolsNow = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
 const inputs = uuidOf(JSON.stringify({ leads: LEADS, examples: EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, arguments: e.arguments, shows: e.shows })), tools: toolsNow, writer: readFileSync(import.meta.filename, 'utf8') }))
 const outPath = join(ROOT, 'docs', 'public', 'imagination.json')
 { const prev = readJson(outPath, {}) as { inputs?: string; imaginedLeads?: number; leads?: number; partial?: boolean }; if (prev.inputs === inputs && !prev.partial) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } }
-const selftest = selftestOf('imagine', call)
+const selftest = runSelftest('imagine', call)
 // the quantum: every lead imagined once per (statement, tools), kept by its own hash; a run imagines only the new hashes, in
 // chunks, for no longer than the quantum; the rest wait for the next run, said so in the file
 const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
@@ -29,7 +29,7 @@ const kept: Record<string, Kept> = readJson(rowsPath, {})
 const toolsHash = uuidOf(JSON.stringify(toolsNow))
 const hashOf = (l: { id: string; statement: string; status: string }) => uuidOf(`${l.id}${l.statement}${l.status}${toolsHash}`)
 if (isMerge) Object.assign(kept, gatherShards<Record<string, Kept>>('imagine', {}))
-const todo = shareOf(LEADS.filter((l) => kept[l.id]?.hash !== hashOf(l)))
+const todo = takeShare(LEADS.filter((l) => kept[l.id]?.hash !== hashOf(l)))
 console.log(`imagine (${shardLabel()})`)
 console.log(`imagine: ${todo.length} of ${LEADS.length} leads to imagine, quantum ${QUANTUM_MS / 1000} s`)
 let done = 0

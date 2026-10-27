@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { Circuit, DensityMatrixSimulator, LineQubit, Simulator, X, applied, expectationOf } from './cirq.ts'
+import { Circuit, DensityMatrixSimulator, LineQubit, Simulator, X, applied, computeExpectation } from './cirq.ts'
 import { pageInstance, groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaEstimate, qaoaExpectedCut, qaoaSweep, qftOperations, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.ts'
 import { numpyWeights } from './random.ts'
 import { DEVICES } from './processor.ts'
@@ -51,8 +51,8 @@ test('teleportation carries the message state to Bob: his Pauli expectations equ
   const sent = new DensityMatrixSimulator().simulate(messageCircuit())
   const bob = new DensityMatrixSimulator().simulate(teleportationCircuit())
   for (const pauli of ['X', 'Y', 'Z'] as const) {
-    const want = expectationOf(sent, { 'line:0': pauli })
-    const got = expectationOf(bob, { 'line:2': pauli })
+    const want = computeExpectation(sent, { 'line:0': pauli })
+    const got = computeExpectation(bob, { 'line:2': pauli })
     assert.ok(Math.abs(got - want) < 1e-9, `${pauli}: sent ${want}, received ${got}`)
   }
 })

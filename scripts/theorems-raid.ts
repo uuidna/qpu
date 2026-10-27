@@ -6,9 +6,9 @@ import './teleport.ts'
 import { TEXTBOOK_THEOREMS } from '../src/quantum/textbook-theorems.ts'
 import { THEOREM_KEYS } from '../src/quantum/theorems-index.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
-import { mcpOf } from './mcp.ts'
+import { mcpClient } from './mcp.ts'
 
-const mcp = mcpOf()
+const mcp = mcpClient()
 // the QPU's own tenant: the one whose namespace is qpu, else the oldest — never whichever the plugin happens to list first (measured: a sandbox came first)
 const tenants = await mcp.findAll('findTenants', { where: JSON.stringify({}), sort: 'createdAt', limit: 100 })
 if (!tenants.docs) { console.log(`theorems-raid: ${tenants.says}; nothing written`); process.exit(0) }

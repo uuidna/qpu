@@ -15,8 +15,8 @@ import { UNIT_MCP } from '../src/quantum/discovery.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
 import { THEOREM_KEYS } from '../src/quantum/theorems-index.ts'
 import { LICENSE } from '../src/quantum/license.ts'
-import { forecastOf } from '../src/quantum/machine.ts'
-import { mcpOf, readJson, sessionOf as mcpSessionOf } from './mcp.ts'
+import { forecastTimes } from '../src/quantum/machine.ts'
+import { mcpClient, readJson, openSession as mcpSessionOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const OPEN_WORK = '6ae070c8219dd782501ada3a', PAGE = 100, UNIT = process.env.UUIDNA_MCP ?? UNIT_MCP
@@ -67,7 +67,7 @@ for (const f of [...mains, ...subs]) {
 console.log(`session: read ${mains.length} session(s) and ${subs.length} subagent transcript(s): ${directives.length} directive(s), ${answers.length} answer(s), ${breaks.length} tool input(s), ${errors.length} error(s)`)
 
 // Open work and the dockets, through the one MCP client; a docket unread is unknown, never a file fallback
-const mcp = mcpOf(), key = !!process.env.QPU_APP_KEY
+const mcp = mcpClient(), key = !!process.env.QPU_APP_KEY
 type Page = { id: string; title: string; _status?: string; createdAt?: string; layout?: { blockType: string; tool?: string; arguments?: { statement?: string } }[] }
 let pages: Page[] = []
 const readOpen = async () => { const r = key ? await mcp.findAll('findPages', { draft: true, depth: 0, limit: PAGE, where: JSON.stringify({ parent: { equals: OPEN_WORK } }), select: JSON.stringify({ title: true, _status: true, createdAt: true, layout: true }) }) : { docs: null, says: 'no QPU_APP_KEY' }; return r }
@@ -75,8 +75,8 @@ const openRead = await timed('medium', readOpen)
 pages = (openRead.docs ?? []) as Page[]
 await test('medium', 'Open work read through the local Payload MCP', () => openRead.docs !== null)
 const branches = execFileSync('git', ['worktree', 'list', '--porcelain'], { cwd: ROOT, encoding: 'utf8' }).split('\n').filter((l) => l.startsWith('branch refs/heads/dev/')).map((l) => l.replace(/^branch refs\/heads\/dev\//, () => '').toLowerCase())
-const statementOf = (p: Page) => (p.layout ?? []).map((b) => b.arguments?.statement ?? '').filter((s) => !/^session: |^combinations: /.test(s)).join(' ')
-const open = pages.filter((p) => p.title !== COMBINATIONS_TITLE()).map((p) => ({ id: p.id, title: p.title, statement: statementOf(p), status: p._status ?? 'draft', createdAt: p.createdAt, started: branches.some((b) => p.title.toLowerCase().split(/[^a-z]+/).some((w) => w === b || w.startsWith(b))) }))
+const readStatement = (p: Page) => (p.layout ?? []).map((b) => b.arguments?.statement ?? '').filter((s) => !/^session: |^combinations: /.test(s)).join(' ')
+const open = pages.filter((p) => p.title !== COMBINATIONS_TITLE()).map((p) => ({ id: p.id, title: p.title, statement: readStatement(p), status: p._status ?? 'draft', createdAt: p.createdAt, started: branches.some((b) => p.title.toLowerCase().split(/[^a-z]+/).some((w) => w === b || w.startsWith(b))) }))
 function COMBINATIONS_TITLE() { return 'Lead combinations (a432)' }
 const files = execFileSync('git', ['ls-files', ...LITERAL_ROOTS], { cwd: ROOT, encoding: 'utf8' }).split('\n').filter((f) => /\.(ts|tsx|mts|lean)$/.test(f))
 // quality before any lead: the bytes a quality wave frees, measured from the entropy docket (every repeated line kept once), and the net bytes one
@@ -89,7 +89,7 @@ const bytesPerLine = code.reduce((n, t) => n + Buffer.byteLength(t), 0) / Math.m
 const cost = Math.max(0, Math.round((touches.reduce((n, c) => n + Number(c[0]) - Number(c[1]), 0) / Math.max(1, touches.length)) * bytesPerLine))
 // the forecast of one CL: the gaps between main's commits, oldest first, smoothed by forecastOf; the route through the waves is priced by it
 const gaps = execFileSync('git', ['log', '--first-parent', '--format=%ct', 'main'], { cwd: ROOT, encoding: 'utf8' }).trim().split('\n').map(Number).reverse().flatMap((t, i, a) => (i ? [1000 * (t - a[i - 1]!)] : []))
-const cl = forecastOf(gaps)
+const cl = forecastTimes(gaps)
 const decided = leads({ session: { directives, answers, breaks, errors, open, files, now: date, quality: { freed, cost }, ...(cl ? { forecast: { ms: cl.point, interval: cl.interval } } : {}) } })
 const d = decided.directives as { total: number; sessions: number; folded: number; proposed: number; once: number; assents: number }
 type Item = { id: string; title: string; kind: 'quality' | 'lead'; netBytes: number | null; paid: boolean; proposed: boolean; act: boolean; started: boolean; priority: string; directives: number; sessions: number; how: { name: string; arguments: Record<string, unknown> } | null; files: string[]; cell: number; labels: string; blocker: unknown }
@@ -97,7 +97,7 @@ const items = decided.items as Item[], waves = decided.waves as { wave: number; 
 const waveOf = new Map(waves.flatMap((w) => w.items.map((id) => [id, w.wave] as const)))
 
 // a432: every lead of the tree, the dockets next, purify and the entropy stream keep, and Open work, each in its cell
-const extra = [...docket('next-leads.json'), ...docket('purify-leads.json'), ...docket('entropy.json'), ...pages.map((p) => ({ id: p.id, statement: `${p.title} ${statementOf(p)}`, status: p._status === 'published' ? 'published' : 'open', source: 'payload open work', payload: true }))]
+const extra = [...docket('next-leads.json'), ...docket('purify-leads.json'), ...docket('entropy.json'), ...pages.map((p) => ({ id: p.id, statement: `${p.title} ${readStatement(p)}`, status: p._status === 'published' ? 'published' : 'open', source: 'payload open work', payload: true }))]
 const k = leads({ combinations: { leads: extra } })
 
 // the Clay rosetta: the tree's reading in-process, the unit's by real MCP client calls, one session per host, paced; sealed answers reused
@@ -153,11 +153,11 @@ if (!offline) await test('enormous', `the grid quantum: ${cellsCovered} of 432 c
 let foldedWrites = 0, created = 0, refused = 0
 const block = (statement: string) => ({ blockType: 'qpu', tool: 'match', arguments: { statement } })
 const keep = (p: Page, prefix: RegExp) => (p.layout ?? []).filter((b) => !prefix.test(b.arguments?.statement ?? '')).map((b) => ({ blockType: b.blockType, tool: b.tool, arguments: b.arguments }))
-const lineOf = (i: Item) => `session: ${i.directives} directive(s) from ${i.sessions} session(s); ${i.kind}; priority ${i.priority}; cell ${i.cell} (${i.labels}); wave ${waveOf.get(i.id) ?? 'none yet: unpaid until a quality wave frees its bytes'}; how ${i.how ? i.how.name : 'routed to no call yet'}`
+const renderLine = (i: Item) => `session: ${i.directives} directive(s) from ${i.sessions} session(s); ${i.kind}; priority ${i.priority}; cell ${i.cell} (${i.labels}); wave ${waveOf.get(i.id) ?? 'none yet: unpaid until a quality wave frees its bytes'}; how ${i.how ? i.how.name : 'routed to no call yet'}`
 const combinationsLine = `combinations: ${k.total} cells, ${k.placed} leads placed, ${k.empty} empty; default cell ${k.default.cell} (${k.default.labels}); rosetta ${rosetta.unitVerified} of ${rosetta.unitAsked} filled values verified`
 if (key && !offline) await timed('medium', async () => {
   for (const i of items.filter((x) => !x.proposed && x.directives > 0)) {
-    const p = pages.find((x) => x.id === i.id)!, line = lineOf(i)
+    const p = pages.find((x) => x.id === i.id)!, line = renderLine(i)
     if ((p.layout ?? []).some((b) => b.arguments?.statement === line)) continue
     const r = await mcp.call('updatePages', { id: i.id, layout: [...keep(p, /^session: /), block(line)] })
     if (r.error === undefined) foldedWrites += 1; else refused += 1
@@ -165,7 +165,7 @@ if (key && !offline) await timed('medium', async () => {
   // a proposal that states an act and was said in three sessions or more is written as a draft; the rest are decided and counted, a page waiting for a third saying
   for (const i of items.filter((x) => x.proposed && x.act && x.sessions >= 3)) {
     if (pages.some((p) => p.title === i.title)) continue
-    const r = await mcp.call('createPages', { tenant: pageTenant, title: i.title, parent: OPEN_WORK, hero: { type: 'default' }, layout: [block(lineOf(i))] })
+    const r = await mcp.call('createPages', { tenant: pageTenant, title: i.title, parent: OPEN_WORK, hero: { type: 'default' }, layout: [block(renderLine(i))] })
     if (/"id"/.test(r.text ?? '')) created += 1; else refused += 1
   }
   const kp = pages.find((p) => p.title === COMBINATIONS_TITLE())

@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T18:46:24.711Z",
- "ms": 268,
+ "date": "2026-10-27T19:53:01.725Z",
+ "ms": 245,
  "approval": {
   "represents": "1.4.0+e3785063",
   "package": "1.4.0+e3785063",
@@ -33,18 +33,18 @@
  "drift": 0,
  "experience": {
   "measured": {
-   "copies": 1128,
-   "involutions": 411,
+   "copies": 1167,
+   "involutions": 399,
    "msByHost": {
-    "qpu.uuidna.com": 80,
-    "qpu.ceci.workers.dev": 80,
-    "qpu.psg.bg": 87
+    "qpu.uuidna.com": 85,
+    "qpu.psg.bg": 89,
+    "qpu.ceci.workers.dev": 101
    }
   },
-  "freeShare": 36,
-  "slowestMedianMs": 87,
-  "shardSize": 11,
-  "says": "36% of the gate's copies answered free (304 by involution); the slowest host answers in 87 ms, so a batch is sharded to 11 calls a shard to stay within a second"
+  "freeShare": 34,
+  "slowestMedianMs": 101,
+  "shardSize": 9,
+  "says": "34% of the gate's copies answered free (304 by involution); the slowest host answers in 101 ms, so a batch is sharded to 9 calls a shard to stay within a second"
  },
  "configs": [
   {
@@ -110,7 +110,7 @@
   {
    "kind": "mcp",
    "torus": {
-    "address": "2ebff6c5-123b-6916-8b5a-a0b8d333aad5",
+    "address": "5ba7cae7-ad12-1c2d-b916-c50a8bc97033",
     "seed": 6,
     "reflection": 4,
     "trinity": [
@@ -119,22 +119,22 @@
      9
     ],
     "closed": true,
-    "bytes": 10800
+    "bytes": 10830
    }
   },
   {
    "kind": "versions",
    "torus": {
-    "address": "14aed6b1-3857-263e-aa09-d9ea1b1e627b",
-    "seed": 6,
-    "reflection": 4,
+    "address": "3c186b16-33df-71ea-948f-a03b9a51cbef",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 3239
+    "bytes": 2455
    }
   },
   {
@@ -155,31 +155,31 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "d6c25c9c-a4d8-345d-b131-df2fcd159b33",
-    "seed": 6,
-    "reflection": 4,
+    "address": "a9254287-f242-1a9a-91fb-990f3bc617a7",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 104202
+    "bytes": 106690
    }
   },
   {
    "kind": "api",
    "torus": {
-    "address": "bf670459-4f0b-659f-a1ab-9ffb526d41e5",
-    "seed": 4,
-    "reflection": 6,
+    "address": "e1bfbacf-5e0d-84da-9140-3ec06231d5e0",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
-     7,
-     4,
-     1
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 103876
+    "bytes": 104897
    }
   },
   {
@@ -275,7 +275,7 @@
   {
    "kind": "actions",
    "torus": {
-    "address": "ba831293-0dcc-44f1-9387-22330e233190",
+    "address": "2eadd3a9-2416-162c-9d90-75a2303d0387",
     "seed": 9,
     "reflection": 1,
     "trinity": [
@@ -284,7 +284,7 @@
      9
     ],
     "closed": true,
-    "bytes": 1207
+    "bytes": 1208
    }
   },
   {
@@ -305,13 +305,13 @@
   {
    "kind": "ecommerce",
    "torus": {
-    "address": "86fc84e4-29ae-231f-95da-a461d9a25672",
-    "seed": 6,
-    "reflection": 4,
+    "address": "b61a558e-95ae-8e71-a661-a9c357436929",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
     "bytes": 4306
@@ -350,31 +350,31 @@
   {
    "kind": "gates",
    "torus": {
-    "address": "01016dcf-e1f5-5935-9d0d-d85f2c75b8e9",
-    "seed": 8,
-    "reflection": 2,
-    "trinity": [
-     2,
-     5,
-     8
-    ],
-    "closed": true,
-    "bytes": 554278
-   }
-  },
-  {
-   "kind": "sets",
-   "torus": {
-    "address": "04a58eb6-a855-6737-87e1-45663f2d49c4",
-    "seed": 7,
-    "reflection": 3,
+    "address": "0b371da7-6970-8ff1-ab90-0658af65751f",
+    "seed": 4,
+    "reflection": 6,
     "trinity": [
      7,
      4,
      1
     ],
     "closed": true,
-    "bytes": 125786
+    "bytes": 552597
+   }
+  },
+  {
+   "kind": "sets",
+   "torus": {
+    "address": "759636f0-3af5-6a9f-a219-41e79d806c44",
+    "seed": 5,
+    "reflection": 5,
+    "trinity": [
+     2,
+     5,
+     8
+    ],
+    "closed": true,
+    "bytes": 127704
    }
   },
   {

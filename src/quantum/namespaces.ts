@@ -8,12 +8,12 @@ import { uuidOf } from './blocks.ts'
 const NAMESPACE_HEADER = 'x-qpu-namespace'
 const NAMESPACE_RE = /^[a-z][a-z0-9-]{1,62}$/
 /** A namespace from a name or an app's address: lower-case letters, digits and dashes, starting with a letter. */
-const namespaceOf = (name: string) => { const s = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); const ns = /^[a-z]/.test(s) ? s : `ns-${s}`; return ns.slice(0, 63).replace(/-+$/, '') }
+const toNamespace = (name: string) => { const s = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); const ns = /^[a-z]/.test(s) ? s : `ns-${s}`; return ns.slice(0, 63).replace(/-+$/, '') }
 
 export type NarrowRequest = { requested?: string | null; tenants?: readonly { id: string; namespace?: string | null }[]; user?: { roles?: readonly string[]; tenants?: readonly { tenant: string; roles?: readonly string[] }[] } }
 /** The credential narrowed to the namespace a request names: allowed with the one tenant row (and the roles without the all-tenants
  *  role), unchanged when no namespace is named, refused when the namespace is unknown or the user holds no row of it. */
-export const narrowOf = (r: NarrowRequest) => {
+export const narrowScope = (r: NarrowRequest) => {
   const ns = r.requested ?? null
   const roles = [...(r.user?.roles ?? [])], rows = [...(r.user?.tenants ?? [])]
   if (ns === null || ns === '') return { allowed: true as const, narrowed: false, namespace: null, tenant: null, roles, rows, says: 'no namespace named: the credential acts in every tenant it holds', theorem: 'textbook_namespace_narrows' }
@@ -27,10 +27,10 @@ export const narrowOf = (r: NarrowRequest) => {
 
 /** An app's sandbox planned: its tenant by namespace (no domain), the key its client holds, the header every request carries, and what is
  *  sandboxed (the scoped collections) and what stays shared (everything else, read as before). */
-export const sandboxOf = (r: { name?: string; app?: string; scoped?: readonly string[] }) => {
+export const buildSandbox = (r: { name?: string; app?: string; scoped?: readonly string[] }) => {
   const name = r.name ?? (r.app ? `app ${r.app.slice(0, 8)}` : null)
   if (!name) throw new Error('a sandbox needs a name or an app address')
-  const namespace = namespaceOf(r.app ? `app-${r.app.slice(0, 8)}` : name)
+  const namespace = toNamespace(r.app ? `app-${r.app.slice(0, 8)}` : name)
   const scoped = r.scoped ?? []
   return {
     namespace, id: uuidOf(JSON.stringify({ namespace })),

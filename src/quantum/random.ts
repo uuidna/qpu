@@ -36,7 +36,7 @@ export class MersenneTwister {
 }
 
 /** numpy's randint(low, high) for the range it covers: the masked rejection on the next 32-bit output. */
-export const randintOf = (rng: MersenneTwister, low: number, high: number): number => {
+export const randomInt = (rng: MersenneTwister, low: number, high: number): number => {
   const range = high - low - 1
   let mask = range
   for (const shift of [1, 2, 4, 8, 16]) mask |= mask >>> shift
@@ -49,5 +49,5 @@ export const randintOf = (rng: MersenneTwister, low: number, high: number): numb
 /** The weights of the QAOA page: np.random.seed(seed), then one np.random.randint(0, 500) / 100 per edge, in edge order. */
 export const numpyWeights = (count: number, seed = 11): number[] => {
   const rng = new MersenneTwister(seed)
-  return Array.from({ length: count }, () => randintOf(rng, 0, 500) / 100)
+  return Array.from({ length: count }, () => randomInt(rng, 0, 500) / 100)
 }

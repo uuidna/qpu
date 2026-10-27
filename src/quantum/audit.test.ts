@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import { handle } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { LEADS } from './leads.ts'
-import { auditOf } from './audit.ts'
+import { runAudit } from './audit.ts'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
@@ -18,7 +18,7 @@ test('the MCP surface audits itself through tools/call and every check passes', 
 })
 
 test('the audit run directly agrees with the audit run through the tool, and the self example passes', () => {
-  const direct = auditOf(handle, EXAMPLES, LEADS)
+  const direct = runAudit(handle, EXAMPLES, LEADS)
   assert.equal(EXAMPLES.find((e) => e.id === 'audit-self')!.expect(direct), null)
   assert.equal(direct.failed, 0)
 })

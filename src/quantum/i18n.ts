@@ -58,7 +58,7 @@ export const GLAGOLITIC: Readonly<Record<string, number>> = {
 // Glagolitic has a lower case (U+2C30..) with the same values; the table is written in capitals and read in both.
 const GLAGOLITIC_RUN = new RegExp(`[${Object.keys(GLAGOLITIC).map((g) => g + g.toLowerCase()).join('')}]+`, 'gu')
 /** An integer 1..1999 written in Glagolitic numerals, largest letter first; null beyond the table. */
-export const glagoliticOf = (n: number): string | null => {
+export const toGlagolitic = (n: number): string | null => {
   if (!Number.isInteger(n) || n < 1 || n > 1999) return null
   const letters = Object.entries(GLAGOLITIC).sort((a, b) => b[1] - a[1])
   let rest = n, out = ''
@@ -66,7 +66,7 @@ export const glagoliticOf = (n: number): string | null => {
   return rest === 0 ? out : null
 }
 /** Every run of Glagolitic letters in a text read as one additive numeral and written as digits; the runs are reported. */
-export const numeralsOf = (text: string): { text: string; numerals: { glyphs: string; value: number }[] } => {
+export const readNumerals = (text: string): { text: string; numerals: { glyphs: string; value: number }[] } => {
   const numerals: { glyphs: string; value: number }[] = []
   const out = text.replace(GLAGOLITIC_RUN, (glyphs) => { const value = [...glyphs].reduce((n, g) => n + GLAGOLITIC[g.toUpperCase()]!, 0); numerals.push({ glyphs, value }); return String(value) })
   return { text: out, numerals }
@@ -74,9 +74,9 @@ export const numeralsOf = (text: string): { text: string; numerals: { glyphs: st
 /** A hex spoken in Glagolitic numerals: each digit the numeral of its own value written by glagoliticOf (0 silent, 1 to 9 the units Ⰰ to Ⰸ,
  *  10 Ⰺ, 11 to 15 Ⰺ and a unit, additive as the system adds), every position kept so a silent zero still has its place, then read back through
  *  the same table to the digits it came from; the dialect is how often each letter speaks across the hex. The table decides both ways. */
-export const speakHexOf = (hex: string) => {
+export const speakHex = (hex: string) => {
   const clean = hex.toLowerCase().replace(/[^0-9a-f]/g, '')
-  const letters = [...clean].map((digit, at) => { const value = parseInt(digit, 16); return { at, digit, value, spoken: value === 0 ? '' : glagoliticOf(value)! } })
+  const letters = [...clean].map((digit, at) => { const value = parseInt(digit, 16); return { at, digit, value, spoken: value === 0 ? '' : toGlagolitic(value)! } })
   const read = letters.map((l) => [...l.spoken].reduce((n, g) => n + GLAGOLITIC[g]!, 0).toString(16)).join('')
   const dialect: Record<string, number> = {}
   for (const l of letters) for (const g of l.spoken) dialect[g] = (dialect[g] ?? 0) + 1

@@ -1,25 +1,25 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { CLIFFORD_CHECK_ARITY, classify, countResources, isClifford } from './counting.ts'
-import { Circuit, CNOT, CZ, H, LineQubit, SWAP, TOFFOLI, X, Z, ZZ, applied, pauliProduct, powerOf, exponentialOf, type Gate } from './cirq.ts'
+import { Circuit, CNOT, CZ, H, LineQubit, SWAP, TOFFOLI, X, Z, ZZ, applied, pauliProduct, raiseGate, exponentiateGate, type Gate } from './cirq.ts'
 import { groverCircuit, qftOperations, teleportationCircuit } from './algorithms.ts'
 
 test('Cliffordness is computed from the unitary: H, CZ, CNOT, SWAP, S and √X are Clifford; T, √X·T-like gates, controlled-S and Toffoli are not', () => {
-  for (const g of [H, CZ, CNOT, SWAP, X, Z, powerOf(Z, 0.5), powerOf(X, 0.5), powerOf(ZZ, 0.5)]) assert.ok(isClifford(g), g.name)
-  for (const g of [powerOf(Z, 0.25), powerOf(X, 0.25), powerOf(CZ, 0.5), TOFFOLI, powerOf(ZZ, 0.25), exponentialOf(pauliProduct(['Y', 'X']), 0.3)]) assert.ok(!isClifford(g), g.name)
+  for (const g of [H, CZ, CNOT, SWAP, X, Z, raiseGate(Z, 0.5), raiseGate(X, 0.5), raiseGate(ZZ, 0.5)]) assert.ok(isClifford(g), g.name)
+  for (const g of [raiseGate(Z, 0.25), raiseGate(X, 0.25), raiseGate(CZ, 0.5), TOFFOLI, raiseGate(ZZ, 0.25), exponentiateGate(pauliProduct(['Y', 'X']), 0.3)]) assert.ok(!isClifford(g), g.name)
   assert.throws(() => isClifford(pauliProduct(['X', 'X', 'X', 'X'])), new RegExp(`up to ${CLIFFORD_CHECK_ARITY} qubits`))
 })
 
 test('the counted costs: a Toffoli is 7 T, T and X**0.25 are 1, a controlled-S is 3; other angles are rotations, and a wide gate is undecomposed', () => {
   assert.deepEqual(classify(TOFFOLI), { kind: 'toffoli', tCount: 7 })
-  assert.deepEqual(classify(powerOf(Z, 0.25)), { kind: 't', tCount: 1 })
-  assert.deepEqual(classify(powerOf(X, 0.25)), { kind: 't', tCount: 1 })
-  assert.deepEqual(classify(powerOf(Z, -0.25)), { kind: 't', tCount: 1 })
-  assert.deepEqual(classify(powerOf(CZ, 0.5)), { kind: 'controlled_s', tCount: 3 })
-  assert.deepEqual(classify(powerOf(CZ, -0.5)), { kind: 'controlled_s', tCount: 3 })
-  assert.equal(classify(powerOf(CZ, 0.25)).kind, 'rotation')
+  assert.deepEqual(classify(raiseGate(Z, 0.25)), { kind: 't', tCount: 1 })
+  assert.deepEqual(classify(raiseGate(X, 0.25)), { kind: 't', tCount: 1 })
+  assert.deepEqual(classify(raiseGate(Z, -0.25)), { kind: 't', tCount: 1 })
+  assert.deepEqual(classify(raiseGate(CZ, 0.5)), { kind: 'controlled_s', tCount: 3 })
+  assert.deepEqual(classify(raiseGate(CZ, -0.5)), { kind: 'controlled_s', tCount: 3 })
+  assert.equal(classify(raiseGate(CZ, 0.25)).kind, 'rotation')
   assert.equal(classify(H).kind, 'clifford')
-  assert.equal(classify(exponentialOf(pauliProduct(['Y', 'X']), 0.3)).kind, 'rotation')
+  assert.equal(classify(exponentiateGate(pauliProduct(['Y', 'X']), 0.3)).kind, 'rotation')
   assert.equal(classify(pauliProduct(['X', 'X', 'X', 'X'])).kind, 'undecomposed')
 })
 
@@ -40,12 +40,12 @@ const product = (gates: Gate[]): [number, number][] => {
 }
 
 test('the controlled-S decomposition CS = (T⊗T)·CNOT·(I⊗T†)·CNOT holds as a matrix product, up to a global phase, so its T-count of 3 is verified', () => {
-  const T = powerOf(Z, 0.25)
-  const Tdag = powerOf(Z, -0.25)
+  const T = raiseGate(Z, 0.25)
+  const Tdag = raiseGate(Z, -0.25)
   const two = (a: Gate, b: Gate): Gate => ({ name: `${a.name}⊗${b.name}`, arity: 2, matrix: Array.from({ length: 16 }, (_, k) => { const r = k >> 2, c = k & 3; const [xr, xi] = a.matrix[(r >> 1) * 2 + (c >> 1)]!; const [yr, yi] = b.matrix[(r & 1) * 2 + (c & 1)]!; return [xr * yr - xi * yi, xr * yi + xi * yr] }) })
   const I: Gate = { name: 'I', arity: 1, matrix: [[1, 0], [0, 0], [0, 0], [1, 0]] }
   const cs = product([CNOT, two(I, Tdag), CNOT, two(T, T)])
-  const target = powerOf(CZ, 0.5).matrix
+  const target = raiseGate(CZ, 0.5).matrix
   // the phase is read from the first nonzero entry
   const [pr, pi] = cs[0]!
   const [tr, ti] = target[0]!

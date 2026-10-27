@@ -3,7 +3,7 @@
 // Where the page's circuit uses a mid-circuit measurement, the deferred-measurement form is built instead: the same state,
 // with the corrections controlled by the qubits that would have been measured.
 
-import { Circuit, CNOT, CZ, H, LineQubit, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, ZZ, adjointOf, applied, keyOf, powerOf, type Gate } from './cirq.ts'
+import { Circuit, CNOT, CZ, H, LineQubit, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, ZZ, adjointGate, applied, qubitKey, raiseGate, type Gate } from './cirq.ts'
 import { numpyWeights } from './random.ts'
 
 /** The quantum Fourier transform, as the Cirq page builds it: a Hadamard on each qubit, then a controlled phase CZ**(1/2^k)
@@ -15,7 +15,7 @@ export const qftOperations = (qubits: readonly Qubit[]): Operation[] => {
   // the most significant qubit (the last index) first: a Hadamard, then controlled phases from each less significant qubit
   for (let i = n - 1; i >= 0; i--) {
     ops.push(applied(H, qubits[i]!))
-    for (let j = i - 1; j >= 0; j--) ops.push(applied(powerOf(CZ, 1 / 2 ** (i - j)), qubits[j]!, qubits[i]!))
+    for (let j = i - 1; j >= 0; j--) ops.push(applied(raiseGate(CZ, 1 / 2 ** (i - j)), qubits[j]!, qubits[i]!))
   }
   for (let i = 0; i < Math.floor(n / 2); i++) ops.push(applied(SWAP, qubits[i]!, qubits[n - 1 - i]!))
   return ops
@@ -23,7 +23,7 @@ export const qftOperations = (qubits: readonly Qubit[]): Operation[] => {
 
 /** The inverse of a list of operations: the same operations in reverse order, each replaced by its adjoint. */
 export const inverseOperations = (ops: readonly Operation[]): Operation[] =>
-  [...ops].reverse().map((op): Operation => (op.kind === 'gate' ? { ...op, gate: adjointOf(op.gate) } : op))
+  [...ops].reverse().map((op): Operation => (op.kind === 'gate' ? { ...op, gate: adjointGate(op.gate) } : op))
 
 /** The circuit that prepares the basis state |x> on n qubits, bit i of x on qubit i. */
 
@@ -35,7 +35,7 @@ export const phaseEstimationCircuit = (theta: number, bits: number): Circuit => 
   const ops: Operation[] = [applied(X, target), ...est.map((q) => applied(H, q))]
   for (let k = 0; k < bits; k++) {
     // estimation qubit k controls U^(2^k); a controlled Z**t is CZ**t, so the power is CZ**(2θ · 2^k)
-    ops.push(applied(powerOf(CZ, 2 * theta * 2 ** k), est[k]!, target))
+    ops.push(applied(raiseGate(CZ, 2 * theta * 2 ** k), est[k]!, target))
   }
   ops.push(...inverseOperations(qftOperations(est)))
   return new Circuit().append(ops).append({ kind: 'measure', key: 'm', qubits: est })
@@ -61,7 +61,7 @@ export const groverCircuit = (): Circuit => {
 export const teleportationCircuit = (): Circuit => {
   const [msg, alice, bob] = LineQubit.range(3)
   return new Circuit().append([
-    applied(powerOf(X, 0.25), msg!),
+    applied(raiseGate(X, 0.25), msg!),
     applied(H, alice!), applied(CNOT, alice!, bob!),
     applied(CNOT, msg!, alice!), applied(H, msg!),
     applied(CNOT, alice!, bob!), applied(CZ, msg!, bob!),
@@ -69,7 +69,7 @@ export const teleportationCircuit = (): Circuit => {
 }
 
 /** The message state teleportation sends, prepared on its own: X**0.25 on |0>. */
-export const messageCircuit = (): Circuit => new Circuit().append(applied(powerOf(X, 0.25), LineQubit.of(0)))
+export const messageCircuit = (): Circuit => new Circuit().append(applied(raiseGate(X, 0.25), LineQubit.of(0)))
 
 
 /** A weighted graph for QAOA: its nodes (qubits) and its edges, each a pair of nodes with a weight. */
@@ -79,8 +79,8 @@ type Graph = { nodes: Qubit[]; edges: { a: Qubit; b: Qubit; weight: number }[] }
  *  then the mixer X**beta on every node, then a measurement of every node. */
 export const qaoaCircuit = (graph: Graph, alpha: number, beta: number): Circuit => {
   const ops: Operation[] = graph.nodes.map((q) => applied(H, q))
-  for (const e of graph.edges) ops.push(applied(powerOf(ZZ, alpha * e.weight), e.a, e.b))
-  for (const q of graph.nodes) ops.push(applied(powerOf(X, beta), q))
+  for (const e of graph.edges) ops.push(applied(raiseGate(ZZ, alpha * e.weight), e.a, e.b))
+  for (const q of graph.nodes) ops.push(applied(raiseGate(X, beta), q))
   return new Circuit().append(ops).append({ kind: 'measure', key: 'cut', qubits: graph.nodes })
 }
 
@@ -89,7 +89,7 @@ export const qaoaCircuit = (graph: Graph, alpha: number, beta: number): Circuit 
 export const qaoaExpectedCut = (graph: Graph, alpha: number, beta: number): number => {
   const circuit = qaoaCircuit(graph, alpha, beta)
   const { amplitudes, qubits } = new Simulator().simulate(circuit)
-  const position = (q: Qubit) => qubits.findIndex((r) => keyOf(r) === keyOf(q))
+  const position = (q: Qubit) => qubits.findIndex((r) => qubitKey(r) === qubitKey(q))
   let expected = 0
   amplitudes.forEach(([re, im], k) => {
     const probability = re * re + im * im
@@ -108,12 +108,12 @@ export const pageInstance = (device: { readonly sites: readonly Qubit[]; readonl
   const col = (q: Qubit) => (q.kind === 'grid' ? q.col : 0)
   const sorted = [...device.sites].sort((a, b) => row(a) - row(b) || col(a) - col(b))
   const nodes = sorted.slice(0, count)
-  const index = new Map(sorted.map((q, i) => [keyOf(q), i]))
-  const inside = new Set(nodes.map(keyOf))
+  const index = new Map(sorted.map((q, i) => [qubitKey(q), i]))
+  const inside = new Set(nodes.map(qubitKey))
   const pairs = device.couplers
-    .filter(([a, b]) => inside.has(keyOf(a)) && inside.has(keyOf(b)))
-    .map(([a, b]): [Qubit, Qubit] => (index.get(keyOf(a))! < index.get(keyOf(b))! ? [a, b] : [b, a]))
-    .sort((x, y) => index.get(keyOf(x[0]))! - index.get(keyOf(y[0]))! || index.get(keyOf(x[1]))! - index.get(keyOf(y[1]))!)
+    .filter(([a, b]) => inside.has(qubitKey(a)) && inside.has(qubitKey(b)))
+    .map(([a, b]): [Qubit, Qubit] => (index.get(qubitKey(a))! < index.get(qubitKey(b))! ? [a, b] : [b, a]))
+    .sort((x, y) => index.get(qubitKey(x[0]))! - index.get(qubitKey(y[0]))! || index.get(qubitKey(x[1]))! - index.get(qubitKey(y[1]))!)
   const weights = numpyWeights(pairs.length, seed)
   return { nodes, edges: pairs.map(([a, b], i) => ({ a, b, weight: weights[i]! })) }
 }
@@ -123,7 +123,7 @@ export const pageInstance = (device: { readonly sites: readonly Qubit[]; readonl
  *  −Σ w⟨Z_u Z_v⟩ = 2·cut − W, the value the page maximizes. */
 export const qaoaEstimate = (graph: Graph, alpha: number, beta: number, shots = 20000, seed = 11): number => {
   const { amplitudes, qubits } = new Simulator().simulate(qaoaCircuit(graph, alpha, beta))
-  const position = (q: Qubit) => qubits.findIndex((r) => keyOf(r) === keyOf(q))
+  const position = (q: Qubit) => qubits.findIndex((r) => qubitKey(r) === qubitKey(q))
   const cumulative: number[] = []
   let total = 0
   for (const [re, im] of amplitudes) {
@@ -214,7 +214,7 @@ export const shorCircuit = (N: number, a: number): Circuit => {
 }
 
 /** The continued-fraction denominators of x, up to maxDenominator: the candidates for the order's fraction s/r. */
-const denominatorsOf = (x: number, maxDenominator: number): number[] => {
+const continuedFractionDenominators = (x: number, maxDenominator: number): number[] => {
   const out: number[] = []
   let [prev, last] = [0, 1]
   let v = x - Math.floor(x)
@@ -237,7 +237,7 @@ export const shorFactors = (N: number, a: number, bitstrings: readonly string[])
   const t = 2 * Math.ceil(Math.log2(N + 1))
   const estimates = bitstrings.map((b) => [...b].reduce((sum, bit, k) => sum + Number(bit) * 2 ** k, 0) / 2 ** t)
   for (const phi of estimates) {
-    for (const r of denominatorsOf(phi, N - 1)) {
+    for (const r of continuedFractionDenominators(phi, N - 1)) {
       if (r < 2 || modPow(a, r, N) !== 1) continue
       if (r % 2 === 1) return { order: r, factors: null, estimates }
       const half = modPow(a, r / 2, N)

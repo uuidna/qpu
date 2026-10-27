@@ -1,9 +1,9 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T08:25:55.583Z",
+ "date": "2026-10-27T19:11:55.566Z",
  "counts": {
-  "own": 130,
-  "unasked": 103
+  "own": 135,
+  "unasked": 124
  },
  "confirmations": 0,
  "claims": [
@@ -57,7 +57,7 @@
    "recognisedBy": null
   },
   {
-   "theorem": "textbook_workspace_presets",
+   "theorem": "textbook_workspace_sets",
    "kind": "own",
    "status": "own",
    "candidates": [],
@@ -428,6 +428,13 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_memo_identity",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_uuid_core",
    "kind": "own",
    "status": "own",
@@ -513,6 +520,62 @@
   },
   {
    "theorem": "textbook_dates_ordered",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_plugins_by_capability",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_workspace_round_trip",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_workspace_docs_round_trip",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_workspace_coverage",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_witness_pair",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_workspace_drive",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_google_measured",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_one_holder",
    "kind": "general",
    "status": "unasked",
    "candidates": [],
@@ -792,7 +855,7 @@
    "recognisedBy": null
   },
   {
-   "theorem": "textbook_deploy_presets",
+   "theorem": "textbook_deploy_sets",
    "kind": "own",
    "status": "own",
    "candidates": [],
@@ -904,6 +967,13 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_referer_binds_not_entropy",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_phase_bits",
    "kind": "own",
    "status": "own",
@@ -946,6 +1016,20 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_cl_described",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_actions_pinned",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_hook_workflows",
    "kind": "own",
    "status": "own",
@@ -954,6 +1038,34 @@
   },
   {
    "theorem": "textbook_commit_green",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_google_one_door",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_google_call_schema",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_violation_one_kind",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_retry_supersedes",
    "kind": "general",
    "status": "unasked",
    "candidates": [],
@@ -970,6 +1082,13 @@
    "theorem": "textbook_majority_of_three",
    "kind": "own",
    "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_chat_call_or_question",
+   "kind": "general",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -1506,6 +1625,13 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_redact_before_publish",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_leaks_redacted",
    "kind": "general",
    "status": "unasked",
@@ -1576,6 +1702,20 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_neighbour_step",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_route_waves",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_build_fresh",
    "kind": "general",
    "status": "unasked",
@@ -1635,6 +1775,48 @@
    "theorem": "textbook_authorship_tracked",
    "kind": "own",
    "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_lead_cells",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_session_partition",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_sitemap_leads",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_rosetta_conventions",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_binding_zero_hex_path",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_raid_bit_zero_verify",
+   "kind": "general",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   }

@@ -9,7 +9,7 @@ import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { TENANTS } from '../src/quantum/tenants.ts'
 import type { SourceRequest, SourceAnswer } from '../src/quantum/sources.ts'
-import { readJson, getOf, publishOf } from './mcp.ts'
+import { readJson, fetchWithTimeout, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()
 const offline = process.env.QPU_OFFLINE === '1' || process.argv.includes('--offline')
@@ -27,7 +27,7 @@ const main = async () => {
     while (queue.length) {
       const r = queue.shift()!
       let status = 0, text = ''
-      try { const res = await getOf(r.url, r.accept, 30000); status = res.status; text = await res.text() } catch { status = 0 }
+      try { const res = await fetchWithTimeout(r.url, r.accept, 30000); status = res.status; text = await res.text() } catch { status = 0 }
       const a = { id: r.id, url: r.url, status, text }; answers.push(a)
       const next = call({ context, next: { request: r, answer: a } }).next as SourceRequest | null
       if (next) queue.push(next)
@@ -37,11 +37,11 @@ const main = async () => {
   // the public artifacts verified against the digests their registries recorded: every one downloaded and hashed here, compared by the seal
   const listed = (j.immutable?.artifacts ?? []) as { source: string; name: string; url: string; algorithm: string; claimed: string; bytes: number | null }[]
   const hashed = []
-  for (const a of listed) { try { const res = await getOf(a.url, '*/*', 120000); const buf = Buffer.from(await res.arrayBuffer()); const algo = a.algorithm === 'sha512' ? 'sha512' : a.algorithm === 'sha1' ? 'sha1' : a.algorithm === 'sha256' ? 'sha256' : 'md5'; const digest = createHash(algo).update(buf); hashed.push({ ...a, bytes: buf.length, status: res.status, computed: a.source === 'npm' ? digest.digest('base64') : digest.digest('hex') }) } catch { hashed.push({ ...a, status: 0, computed: null }) } }
+  for (const a of listed) { try { const res = await fetchWithTimeout(a.url, '*/*', 120000); const buf = Buffer.from(await res.arrayBuffer()); const algo = a.algorithm === 'sha512' ? 'sha512' : a.algorithm === 'sha1' ? 'sha1' : a.algorithm === 'sha256' ? 'sha256' : 'md5'; const digest = createHash(algo).update(buf); hashed.push({ ...a, bytes: buf.length, status: res.status, computed: a.source === 'npm' ? digest.digest('base64') : digest.digest('hex') }) } catch { hashed.push({ ...a, status: 0, computed: null }) } }
   const integrity = toolCallerOf('seal')({ text: 'artifacts', artifacts: hashed })
   console.log(`sources: integrity: ${integrity?.says}`)
   const date = new Date().toISOString()
-  publishOf('sources', { date, ...j, integrity })
+  publishRecord('sources', { date, ...j, integrity })
   const lines = ['---', 'title: Sources', 'order: 57', '---', '', '# The immutable sources of leads', '', `Read on ${date} by \`leads { sources }\`: ${cell(j.says)}.`, '', '## Licence candidates', '', 'Each is a candidate the court computed a case for. None is a verdict.', '', '| where | name | why | case |', '| --- | --- | --- | --- |', ...j.licence.map((x: { where: string; name: string; url: string; why: string; case: { case: string } }) => `| ${x.where} | [${cell(x.name)}](${x.url}) | ${cell(x.why)} | \`${x.case.case}\` |`), '', '## Precedence', '', '| record | date | neighbours | before | after |', '| --- | --- | --- | --- | --- |', ...j.precedence.map((p: { doi: string; date: string; works: number; before: number; after: number }) => `| ${p.doi} | ${p.date} | ${p.works} | ${p.before} | ${p.after} |`), '', '## Textbooks', '', `${j.textbooks.books} open books: ${j.textbooks.routed} reached by the theorems, ${j.textbooks.inDomain} of their domain are leads, ${j.textbooks.outside} outside.`, '', '| theorem | books |', '| --- | --- |', ...Object.entries(j.textbooks.byTheorem as Record<string, number>).sort((a, b) => b[1] - a[1]).map(([k, n]) => `| \`${k}\` | ${n} |`), '', '## Integrity of the public artifacts', '', `${cell(integrity?.says)}.`, '', '| artifact | algorithm | verdict |', '| --- | --- | --- |', ...((integrity?.rows ?? []) as { name: string; url: string; algorithm: string; verdict: string }[]).map((r) => `| [${cell(r.name)}](${r.url}) | ${r.algorithm} | ${r.verdict} |`), '', '## MCP doors', '', '| server | remote |', '| --- | --- |', ...j.mcp.doors.map((d: { name: string; remote: string | null }) => `| ${cell(d.name)} | ${cell(d.remote ?? '')} |`), '']
   writeFileSync(join(ROOT, 'docs', 'sources.md'), lines.join('\n'))
   console.log(`sources: ${j.says}`)

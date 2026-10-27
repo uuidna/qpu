@@ -6,12 +6,12 @@ import { handle } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { THEOREMS } from './theorems-index.ts'
-import { axiomsOf } from './audit.ts'
+import { linkAxioms } from './audit.ts'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
 test('every textbook axiom has a kernel-accepted QPU theorem linked to it', () => {
-  const a = axiomsOf(EXAMPLES, TEXTBOOK_THEOREMS, new Set(THEOREMS.map((t) => t.key)))
+  const a = linkAxioms(EXAMPLES, TEXTBOOK_THEOREMS, new Set(THEOREMS.map((t) => t.key)))
   assert.deepEqual(a.axioms, [], `examples with no theorem: ${a.axioms.join(', ')}`)
   assert.deepEqual(a.broken, [], 'every linked theorem is accepted by the kernel')
   assert.deepEqual(a.dangling, [], 'every example a theorem names exists')
@@ -36,9 +36,9 @@ test('the same answer is served over MCP: textbook { axioms }', () => {
 })
 
 test('every theorem sentence is a Lean doc comment that opens and closes once, whatever the prose holds', async () => {
-  const { TEXTBOOK_LEAN, leanDocOf } = await import('./textbook-theorems.ts')
+  const { TEXTBOOK_LEAN, escapeLeanDoc } = await import('./textbook-theorems.ts')
   const docs = TEXTBOOK_LEAN().split('\n').filter((l) => l.startsWith('/-- '))
   assert.ok(docs.length > 0)
   for (const d of docs) { const body = d.slice(4, d.lastIndexOf(' -/')); assert.ok(!body.includes('-/') && !body.includes('/-'), d.slice(0, 80)) }
-  assert.equal(leanDocOf('a -/ b /- c'), 'a - / b / - c')
+  assert.equal(escapeLeanDoc('a -/ b /- c'), 'a - / b / - c')
 })

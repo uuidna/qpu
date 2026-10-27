@@ -1,10 +1,10 @@
 {
- "date": "2026-10-27T14:12:20.446Z",
+ "date": "2026-10-27T18:56:16.488Z",
  "partial": false,
  "remaining": 0,
- "fetched": 28,
- "leads": 55,
- "withServers": 54,
+ "fetched": 46,
+ "leads": 54,
+ "withServers": 53,
  "related": [
   {
    "lead": "perspective-database",
@@ -153,108 +153,6 @@
      "shared": [
       "link",
       "framework"
-     ]
-    }
-   ]
-  },
-  {
-   "lead": "perspective-harmonic",
-   "words": [
-    "harmonic",
-    "colour",
-    "accent"
-   ],
-   "servers": 5,
-   "serverList": [
-    {
-     "name": "io.github.DigbyO/colour-memory",
-     "description": "Cultural color intelligence. Every colour anchored to a person, a year, and a consequence.",
-     "remotes": [
-      "https://colour-memory-api-production.up.railway.app/mcp"
-     ],
-     "word": "colour"
-    },
-    {
-     "name": "io.github.thecolourfoundation/rune",
-     "description": "Evidence-traced codebase understanding and security scanning for AI agents over MCP.",
-     "remotes": [],
-     "word": "colour"
-    },
-    {
-     "name": "uk.co.allpaintcolours/mcp",
-     "description": "Every UK paint colour, matched across brands by ΔE and priced; palettes, planner projects, trends.",
-     "remotes": [
-      "https://mcp.allpaintcolours.co.uk/mcp"
-     ],
-     "word": "colour"
-    },
-    {
-     "name": "com.accentvoice/site",
-     "description": "Search and read Accent's public website: cloud phone, contact center, pricing, support guides.",
-     "remotes": [
-      "https://www.accentvoice.com/agent/mcp"
-     ],
-     "word": "accent"
-    },
-    {
-     "name": "io.github.accentist/buyking-mcp",
-     "description": "세일프라자 AI 사자왕 Bㅏ이킹의 핫딜 시맨틱 검색 서버. 쿠팡, 알리익스프레스, 11번가, G마켓 등 국내외 방대한 초특가/핫딜 정보를 시맨틱 검색으로 제공합니다.",
-     "remotes": [],
-     "word": "accent"
-    }
-   ],
-   "extended": [
-    {
-     "server": "io.github.DigbyO/colour-memory",
-     "url": "https://colour-memory-api-production.up.railway.app/mcp",
-     "status": 200,
-     "doors": 92
-    },
-    {
-     "server": "uk.co.allpaintcolours/mcp",
-     "url": "https://mcp.allpaintcolours.co.uk/mcp",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "com.accentvoice/site",
-     "url": "https://www.accentvoice.com/agent/mcp",
-     "status": 200,
-     "doors": 4
-    }
-   ],
-   "bestDoors": [
-    {
-     "server": "io.github.DigbyO/colour-memory",
-     "url": "https://colour-memory-api-production.up.railway.app/mcp",
-     "door": "colour_relationships",
-     "score": 3,
-     "shared": [
-      "colour",
-      "block",
-      "result"
-     ]
-    },
-    {
-     "server": "io.github.DigbyO/colour-memory",
-     "url": "https://colour-memory-api-production.up.railway.app/mcp",
-     "door": "house_specify",
-     "score": 3,
-     "shared": [
-      "colour",
-      "accent",
-      "result"
-     ]
-    },
-    {
-     "server": "io.github.DigbyO/colour-memory",
-     "url": "https://colour-memory-api-production.up.railway.app/mcp",
-     "door": "palette_light_dark",
-     "score": 3,
-     "shared": [
-      "accent",
-      "result",
-      "colour"
      ]
     }
    ]
@@ -1718,283 +1616,6 @@
    ]
   },
   {
-   "lead": "language-speech",
-   "words": [
-    "speechsynthesis",
-    "network-free",
-    "token-free"
-   ],
-   "servers": 0,
-   "serverList": [],
-   "extended": [],
-   "bestDoors": []
-  },
-  {
-   "lead": "language-video",
-   "words": [
-    "video",
-    "entries",
-    "translatable"
-   ],
-   "servers": 4,
-   "serverList": [
-    {
-     "name": "ai.demomagic/interactive-video-guide",
-     "description": "Guides for making interactive videos & AI product demos that answer viewers' questions.",
-     "remotes": [],
-     "word": "video"
-    },
-    {
-     "name": "ai.makeaivideo/video-generator",
-     "description": "Generate finished AI videos from a brief or a script, with voiceover, scenes and captions.",
-     "remotes": [
-      "https://app.makeaivideo.ai/api/mcp"
-     ],
-     "word": "video"
-    },
-    {
-     "name": "ai.multivoice/video-dubbing-subtitles-transcription-audiobooks",
-     "description": "AI video dubbing, subtitles, transcription and audiobook creation. Exact price before any paid job.",
-     "remotes": [
-      "https://db.multivoice.ai/mcp"
-     ],
-     "word": "video"
-    },
-    {
-     "name": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
-     "description": "Plain-English transactions to balanced journal entries, adjusting and closing entries.",
-     "remotes": [
-      "https://openapi-1779155638284.mcpize.run/mcp"
-     ],
-     "word": "entries"
-    }
-   ],
-   "extended": [
-    {
-     "server": "ai.makeaivideo/video-generator",
-     "url": "https://app.makeaivideo.ai/api/mcp",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "ai.multivoice/video-dubbing-subtitles-transcription-audiobooks",
-     "url": "https://db.multivoice.ai/mcp",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
-     "url": "https://openapi-1779155638284.mcpize.run/mcp",
-     "status": 401,
-     "doors": 0
-    }
-   ],
-   "bestDoors": []
-  },
-  {
-   "lead": "language-traditions",
-   "words": [
-    "relations",
-    "tradition",
-    "world"
-   ],
-   "servers": 12,
-   "serverList": [
-    {
-     "name": "ai.govrelations/govrelations",
-     "description": "U.S. lobbying records: who lobbies for whom, fees, bills, agencies and states, from lda.gov.",
-     "remotes": [
-      "https://govrelations.ai/mcp"
-     ],
-     "word": "relations"
-    },
-    {
-     "name": "ai.machinerelations/mri",
-     "description": "Which source domains AI answer engines cite, by buyer category and question shape.",
-     "remotes": [
-      "https://machinerelations.ai/mcp"
-     ],
-     "word": "relations"
-    },
-    {
-     "name": "info.astroway/relationships",
-     "description": "Synastry, composite, compatibility scores, family dynamics and pet charts.",
-     "remotes": [
-      "https://mcp.astroway.info/mcp/relationships"
-     ],
-     "word": "relations"
-    },
-    {
-     "name": "io.github.adelaidasofia/investor-relations-mcp",
-     "description": "FastMCP seed raise pipeline tracker — syncs from Obsidian CRM, generates meeting prep, tracks…",
-     "remotes": [],
-     "word": "relations"
-    },
-    {
-     "name": "io.github.agentindexworld/relationship-memory",
-     "description": "Free MCP: relationship_memory validate, store (local), retrieve — portable interlocutor cards v1.",
-     "remotes": [
-      "https://x402.agentindex.world/mcp/relationship-memory/"
-     ],
-     "word": "relations"
-    },
-    {
-     "name": "io.github.visionastro48-dev/aether-machine-relationship-mesh",
-     "description": "Machine-native relationship mesh for discovery, help, evidence, and earned trust.",
-     "remotes": [
-      "https://yztkpjvkpqdfhltjqbzx.supabase.co/functions/v1/angels-peer-probe"
-     ],
-     "word": "relations"
-    },
-    {
-     "name": "ai.augworlds/travel-world",
-     "description": "Agent-native travel platform: read-only flight and brand tools over MCP (bearer key required).",
-     "remotes": [
-      "https://travel.augworlds.ai/mcp"
-     ],
-     "word": "world"
-    },
-    {
-     "name": "ai.cloudworldmodel/cloud-world-model",
-     "description": "Simulate cloud architectures before provisioning. 9 free demo tools; an API key unlocks all 62.",
-     "remotes": [
-      "https://www.cloudworldmodel.ai/mcp"
-     ],
-     "word": "world"
-    },
-    {
-     "name": "ai.daishi/world",
-     "description": "A persistent multi-agent world any AI agent can join over MCP, with a public record of every match.",
-     "remotes": [
-      "https://daishi.ai/mcp"
-     ],
-     "word": "world"
-    },
-    {
-     "name": "ai.loci-labs/real-world-observations",
-     "description": "Fresh human-observable information about physical places and conditions that may be stale online.",
-     "remotes": [
-      "https://mcp.loci-labs.ai/mcp"
-     ],
-     "word": "world"
-    },
-    {
-     "name": "ai.migurei.pw/parallel-world",
-     "description": "Check which AI bots a site's robots.txt allows; read-only facts about Parallel World",
-     "remotes": [
-      "https://pw.migurei.ai/mcp"
-     ],
-     "word": "world"
-    },
-    {
-     "name": "app.worldmonitor/mcp",
-     "description": "Live global intelligence: real-time markets, conflicts, country risk, chokepoints, energy. 39 tools.",
-     "remotes": [
-      "https://worldmonitor.app/mcp"
-     ],
-     "word": "world"
-    }
-   ],
-   "extended": [
-    {
-     "server": "ai.govrelations/govrelations",
-     "url": "https://govrelations.ai/mcp",
-     "status": 200,
-     "doors": 13
-    },
-    {
-     "server": "ai.machinerelations/mri",
-     "url": "https://machinerelations.ai/mcp",
-     "status": 200,
-     "doors": 6
-    },
-    {
-     "server": "info.astroway/relationships",
-     "url": "https://mcp.astroway.info/mcp/relationships",
-     "status": 200,
-     "doors": 45
-    },
-    {
-     "server": "io.github.agentindexworld/relationship-memory",
-     "url": "https://x402.agentindex.world/mcp/relationship-memory/",
-     "status": 404,
-     "doors": 0
-    },
-    {
-     "server": "io.github.visionastro48-dev/aether-machine-relationship-mesh",
-     "url": "https://yztkpjvkpqdfhltjqbzx.supabase.co/functions/v1/angels-peer-probe",
-     "status": 429,
-     "doors": 0
-    },
-    {
-     "server": "ai.augworlds/travel-world",
-     "url": "https://travel.augworlds.ai/mcp",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "ai.cloudworldmodel/cloud-world-model",
-     "url": "https://www.cloudworldmodel.ai/mcp",
-     "status": 400,
-     "doors": 0
-    },
-    {
-     "server": "ai.daishi/world",
-     "url": "https://daishi.ai/mcp",
-     "status": 200,
-     "doors": 35
-    },
-    {
-     "server": "ai.loci-labs/real-world-observations",
-     "url": "https://mcp.loci-labs.ai/mcp",
-     "status": 200,
-     "doors": 1
-    },
-    {
-     "server": "ai.migurei.pw/parallel-world",
-     "url": "https://pw.migurei.ai/mcp",
-     "status": 400,
-     "doors": 0
-    },
-    {
-     "server": "app.worldmonitor/mcp",
-     "url": "https://worldmonitor.app/mcp",
-     "status": 200,
-     "doors": 95
-    }
-   ],
-   "bestDoors": [
-    {
-     "server": "ai.machinerelations/mri",
-     "url": "https://machinerelations.ai/mcp",
-     "door": "mri_list_categories",
-     "score": 2,
-     "shared": [
-      "relation",
-      "vocabulary"
-     ]
-    },
-    {
-     "server": "app.worldmonitor/mcp",
-     "url": "https://worldmonitor.app/mcp",
-     "door": "extract_entities",
-     "score": 1,
-     "shared": [
-      "world"
-     ]
-    },
-    {
-     "server": "app.worldmonitor/mcp",
-     "url": "https://worldmonitor.app/mcp",
-     "door": "get_alert_digest",
-     "score": 1,
-     "shared": [
-      "vocabulary"
-     ]
-    }
-   ]
-  },
-  {
    "lead": "aspects-by-theorems",
    "words": [
     "textbook",
@@ -2544,59 +2165,6 @@
      "score": 1,
      "shared": [
       "device"
-     ]
-    }
-   ]
-  },
-  {
-   "lead": "double-torus-trinities",
-   "words": [
-    "double-torus",
-    "combinations",
-    "-reflection"
-   ],
-   "servers": 2,
-   "serverList": [
-    {
-     "name": "com.hemelion/decision-reflection",
-     "description": "Read-only Clarity and MindScan routing, decision readiness, method, and private scan handoff tools.",
-     "remotes": [
-      "https://www.hemelion.com/mcp"
-     ],
-     "word": "-reflection"
-    },
-    {
-     "name": "io.github.CSOAI-ORG/meok-ai-reflection-mcp",
-     "description": "MEOK AI Labs - ai-reflection MCP server extracted from SOV3",
-     "remotes": [],
-     "word": "-reflection"
-    }
-   ],
-   "extended": [
-    {
-     "server": "com.hemelion/decision-reflection",
-     "url": "https://www.hemelion.com/mcp",
-     "status": 200,
-     "doors": 6
-    }
-   ],
-   "bestDoors": [
-    {
-     "server": "com.hemelion/decision-reflection",
-     "url": "https://www.hemelion.com/mcp",
-     "door": "hemelion_choose_reflection_mode",
-     "score": 1,
-     "shared": [
-      "reflection"
-     ]
-    },
-    {
-     "server": "com.hemelion/decision-reflection",
-     "url": "https://www.hemelion.com/mcp",
-     "door": "hemelion_map_mindscan_episode",
-     "score": 1,
-     "shared": [
-      "reflection"
      ]
     }
    ]
@@ -4794,83 +4362,6 @@
    ]
   },
   {
-   "lead": "glagolitic-above-thousand",
-   "words": [
-    "glagolitic",
-    "multiplies",
-    "thousand"
-   ],
-   "servers": 2,
-   "serverList": [
-    {
-     "name": "com.thousand-api/thousand-api",
-     "description": "Deterministic, MCP-compatible utility tools for AI agents: calculations, conversions, validations.",
-     "remotes": [
-      "https://mcp.thousand-api.com/mcp"
-     ],
-     "word": "thousand"
-    },
-    {
-     "name": "com.thousandeyes/mcp",
-     "description": "ThousandEyes MCP Server for network intelligence: outages, anomalies, alerts, events, and tests.",
-     "remotes": [
-      "https://api.thousandeyes.com/mcp",
-      "https://api.thousandeyes.com/mcp-public"
-     ],
-     "word": "thousand"
-    }
-   ],
-   "extended": [
-    {
-     "server": "com.thousand-api/thousand-api",
-     "url": "https://mcp.thousand-api.com/mcp",
-     "status": 200,
-     "doors": 84
-    },
-    {
-     "server": "com.thousandeyes/mcp",
-     "url": "https://api.thousandeyes.com/mcp",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "com.thousandeyes/mcp",
-     "url": "https://api.thousandeyes.com/mcp-public",
-     "status": 401,
-     "doors": 0
-    }
-   ],
-   "bestDoors": [
-    {
-     "server": "com.thousand-api/thousand-api",
-     "url": "https://mcp.thousand-api.com/mcp",
-     "door": "convert.unit",
-     "score": 1,
-     "shared": [
-      "valu"
-     ]
-    },
-    {
-     "server": "com.thousand-api/thousand-api",
-     "url": "https://mcp.thousand-api.com/mcp",
-     "door": "data.query_json",
-     "score": 1,
-     "shared": [
-      "valu"
-     ]
-    },
-    {
-     "server": "com.thousand-api/thousand-api",
-     "url": "https://mcp.thousand-api.com/mcp",
-     "door": "datetime.add_business_days",
-     "score": 1,
-     "shared": [
-      "after"
-     ]
-    }
-   ]
-  },
-  {
    "lead": "gap-shared-docket",
    "words": [
     "commitments",
@@ -5147,201 +4638,6 @@
      "shared": [
       "date",
       "receipt"
-     ]
-    }
-   ]
-  },
-  {
-   "lead": "gap-circuit-crossing",
-   "words": [
-    "circuits",
-    "cross-domain",
-    "simulator"
-   ],
-   "servers": 6,
-   "serverList": [
-    {
-     "name": "app.nomac/simulator",
-     "description": "Cloud iPhone Simulators for AI agents: build the Xcode project, read the screen, tap by label, test.",
-     "remotes": [
-      "https://mcp.nomac.app/simulator-use"
-     ],
-     "word": "simulator"
-    },
-    {
-     "name": "app.nomac/simulator-use",
-     "description": "The iOS Simulator for coding agents: build Xcode projects, read the screen as text, tap by label.",
-     "remotes": [],
-     "word": "simulator"
-    },
-    {
-     "name": "io.github.Evozim/acoustic-reverb-simulator-mcp",
-     "description": "Premium agentic endpoint for acoustic-reverb-simulator-mcp.",
-     "remotes": [
-      "https://api.m2mcent.com/acoustic-reverb-simulator-mcp/sse"
-     ],
-     "word": "simulator"
-    },
-    {
-     "name": "io.github.Manuciao88/portfolio-simulator",
-     "description": "Portfolio scenarios with instrument checks, Monte Carlo analysis and interactive reports.",
-     "remotes": [
-      "https://mcp.quantifiedinvestor.com/mcp"
-     ],
-     "word": "simulator"
-    },
-    {
-     "name": "io.github.doc2mcp/tabletopsimulator",
-     "description": "MCP server for tabletopsimulator documentation, generated by doc2mcp.",
-     "remotes": [
-      "https://doc2mcp.site/api/mcp/1b5ee653-f763-415b-8d1b-46c60f17b363/mcp"
-     ],
-     "word": "simulator"
-    },
-    {
-     "name": "io.github.emircbngl/blender-optics-simulator",
-     "description": "Build, align & render a real optical bench in Blender; drivable by an AI agent over MCP.",
-     "remotes": [],
-     "word": "simulator"
-    }
-   ],
-   "extended": [
-    {
-     "server": "app.nomac/simulator",
-     "url": "https://mcp.nomac.app/simulator-use",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "io.github.Evozim/acoustic-reverb-simulator-mcp",
-     "url": "https://api.m2mcent.com/acoustic-reverb-simulator-mcp/sse",
-     "status": 402,
-     "doors": 0
-    },
-    {
-     "server": "io.github.Manuciao88/portfolio-simulator",
-     "url": "https://mcp.quantifiedinvestor.com/mcp",
-     "status": 401,
-     "doors": 0
-    },
-    {
-     "server": "io.github.doc2mcp/tabletopsimulator",
-     "url": "https://doc2mcp.site/api/mcp/1b5ee653-f763-415b-8d1b-46c60f17b363/mcp",
-     "status": 401,
-     "doors": 0
-    }
-   ],
-   "bestDoors": []
-  },
-  {
-   "lead": "address-agreement",
-   "words": [
-    "names",
-    "content-decided",
-    "shapeuuidof"
-   ],
-   "servers": 5,
-   "serverList": [
-    {
-     "name": "app.openkrill/names",
-     "description": "Check whether the domain for a startup, product or business name is already registered.",
-     "remotes": [
-      "https://names.openkrill.app/mcp"
-     ],
-     "word": "names"
-    },
-    {
-     "name": "baby.namesake/discovery",
-     "description": "Read-only access to Namesake's baby name catalog (meaning, origin, pronunciation, SSA-derived...",
-     "remotes": [
-      "https://www.namesake.baby/api/mcp"
-     ],
-     "word": "names"
-    },
-    {
-     "name": "com.agtnames/agt",
-     "description": "Resolve, verify and discover .agt agent names: owner, records, signed manifest, endpoints.",
-     "remotes": [
-      "https://agtnames.com/api/mcp"
-     ],
-     "word": "names"
-    },
-    {
-     "name": "com.airaptr/raptr-names",
-     "description": "Name a business or project; check which domains and GitHub names are free, with prices.",
-     "remotes": [
-      "https://api.airaptr.com/names/mcp"
-     ],
-     "word": "names"
-    },
-    {
-     "name": "com.am-lich/vietnamese-calendar",
-     "description": "Date conversion between solar date (Gregorian calendar) to lunar date (Vietnamese calendar)",
-     "remotes": [
-      "https://am-lich.com/mcp"
-     ],
-     "word": "names"
-    }
-   ],
-   "extended": [
-    {
-     "server": "app.openkrill/names",
-     "url": "https://names.openkrill.app/mcp",
-     "status": 200,
-     "doors": 3
-    },
-    {
-     "server": "baby.namesake/discovery",
-     "url": "https://www.namesake.baby/api/mcp",
-     "status": 200,
-     "doors": 7
-    },
-    {
-     "server": "com.agtnames/agt",
-     "url": "https://agtnames.com/api/mcp",
-     "status": 200,
-     "doors": 5
-    },
-    {
-     "server": "com.airaptr/raptr-names",
-     "url": "https://api.airaptr.com/names/mcp",
-     "status": 200,
-     "doors": 4
-    },
-    {
-     "server": "com.am-lich/vietnamese-calendar",
-     "url": "https://am-lich.com/mcp",
-     "status": 200,
-     "doors": 0
-    }
-   ],
-   "bestDoors": [
-    {
-     "server": "app.openkrill/names",
-     "url": "https://names.openkrill.app/mcp",
-     "door": "check_domain_availability",
-     "score": 2,
-     "shared": [
-      "nam",
-      "publish"
-     ]
-    },
-    {
-     "server": "com.agtnames/agt",
-     "url": "https://agtnames.com/api/mcp",
-     "door": "agt_namehash",
-     "score": 1,
-     "shared": [
-      "compute"
-     ]
-    },
-    {
-     "server": "com.agtnames/agt",
-     "url": "https://agtnames.com/api/mcp",
-     "door": "agt_resolve",
-     "score": 1,
-     "shared": [
-      "content"
      ]
     }
    ]
@@ -7935,7 +7231,7 @@
      "server": "io.github.pipeworx-io/patents",
      "url": "https://gateway.pipeworx.io/patents/mcp",
      "status": 200,
-     "doors": 49
+     "doors": 51
     },
     {
      "server": "ai.findip/patent-search",
@@ -8383,7 +7679,7 @@
      "server": "io.github.pipeworx-io/zenodo",
      "url": "https://gateway.pipeworx.io/zenodo/mcp",
      "status": 200,
-     "doors": 47
+     "doors": 49
     },
     {
      "server": "ai.aislabs/gateway",
@@ -9238,6 +8534,608 @@
      ]
     }
    ]
+  },
+  {
+   "lead": "address-agreement",
+   "words": [
+    "names",
+    "content-decided",
+    "shapeuuidof"
+   ],
+   "servers": 5,
+   "serverList": [
+    {
+     "name": "app.openkrill/names",
+     "description": "Check whether the domain for a startup, product or business name is already registered.",
+     "remotes": [
+      "https://names.openkrill.app/mcp"
+     ],
+     "word": "names"
+    },
+    {
+     "name": "baby.namesake/discovery",
+     "description": "Read-only access to Namesake's baby name catalog (meaning, origin, pronunciation, SSA-derived...",
+     "remotes": [
+      "https://www.namesake.baby/api/mcp"
+     ],
+     "word": "names"
+    },
+    {
+     "name": "com.agtnames/agt",
+     "description": "Resolve, verify and discover .agt agent names: owner, records, signed manifest, endpoints.",
+     "remotes": [
+      "https://agtnames.com/api/mcp"
+     ],
+     "word": "names"
+    },
+    {
+     "name": "com.airaptr/raptr-names",
+     "description": "Name a business or project; check which domains and GitHub names are free, with prices.",
+     "remotes": [
+      "https://api.airaptr.com/names/mcp"
+     ],
+     "word": "names"
+    },
+    {
+     "name": "com.am-lich/vietnamese-calendar",
+     "description": "Date conversion between solar date (Gregorian calendar) to lunar date (Vietnamese calendar)",
+     "remotes": [
+      "https://am-lich.com/mcp"
+     ],
+     "word": "names"
+    }
+   ],
+   "extended": [
+    {
+     "server": "app.openkrill/names",
+     "url": "https://names.openkrill.app/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "baby.namesake/discovery",
+     "url": "https://www.namesake.baby/api/mcp",
+     "status": 200,
+     "doors": 7
+    },
+    {
+     "server": "com.agtnames/agt",
+     "url": "https://agtnames.com/api/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.airaptr/raptr-names",
+     "url": "https://api.airaptr.com/names/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.am-lich/vietnamese-calendar",
+     "url": "https://am-lich.com/mcp",
+     "status": 200,
+     "doors": 0
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "app.openkrill/names",
+     "url": "https://names.openkrill.app/mcp",
+     "door": "check_domain_availability",
+     "score": 2,
+     "shared": [
+      "nam",
+      "publish"
+     ]
+    },
+    {
+     "server": "com.agtnames/agt",
+     "url": "https://agtnames.com/api/mcp",
+     "door": "agt_namehash",
+     "score": 1,
+     "shared": [
+      "compute"
+     ]
+    },
+    {
+     "server": "com.agtnames/agt",
+     "url": "https://agtnames.com/api/mcp",
+     "door": "agt_resolve",
+     "score": 1,
+     "shared": [
+      "content"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "gap-circuit-crossing",
+   "words": [
+    "circuits",
+    "cross-domain",
+    "simulator"
+   ],
+   "servers": 6,
+   "serverList": [
+    {
+     "name": "app.nomac/simulator",
+     "description": "Cloud iPhone Simulators for AI agents: build the Xcode project, read the screen, tap by label, test.",
+     "remotes": [
+      "https://mcp.nomac.app/simulator-use"
+     ],
+     "word": "simulator"
+    },
+    {
+     "name": "app.nomac/simulator-use",
+     "description": "The iOS Simulator for coding agents: build Xcode projects, read the screen as text, tap by label.",
+     "remotes": [],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.Evozim/acoustic-reverb-simulator-mcp",
+     "description": "Premium agentic endpoint for acoustic-reverb-simulator-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/acoustic-reverb-simulator-mcp/sse"
+     ],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.Manuciao88/portfolio-simulator",
+     "description": "Portfolio scenarios with instrument checks, Monte Carlo analysis and interactive reports.",
+     "remotes": [
+      "https://mcp.quantifiedinvestor.com/mcp"
+     ],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.doc2mcp/tabletopsimulator",
+     "description": "MCP server for tabletopsimulator documentation, generated by doc2mcp.",
+     "remotes": [
+      "https://doc2mcp.site/api/mcp/1b5ee653-f763-415b-8d1b-46c60f17b363/mcp"
+     ],
+     "word": "simulator"
+    },
+    {
+     "name": "io.github.emircbngl/blender-optics-simulator",
+     "description": "Build, align & render a real optical bench in Blender; drivable by an AI agent over MCP.",
+     "remotes": [],
+     "word": "simulator"
+    }
+   ],
+   "extended": [
+    {
+     "server": "app.nomac/simulator",
+     "url": "https://mcp.nomac.app/simulator-use",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.github.Evozim/acoustic-reverb-simulator-mcp",
+     "url": "https://api.m2mcent.com/acoustic-reverb-simulator-mcp/sse",
+     "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.Manuciao88/portfolio-simulator",
+     "url": "https://mcp.quantifiedinvestor.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.github.doc2mcp/tabletopsimulator",
+     "url": "https://doc2mcp.site/api/mcp/1b5ee653-f763-415b-8d1b-46c60f17b363/mcp",
+     "status": 401,
+     "doors": 0
+    }
+   ],
+   "bestDoors": []
+  },
+  {
+   "lead": "glagolitic-above-thousand",
+   "words": [
+    "glagolitic",
+    "multiplies",
+    "thousand"
+   ],
+   "servers": 2,
+   "serverList": [
+    {
+     "name": "com.thousand-api/thousand-api",
+     "description": "Deterministic, MCP-compatible utility tools for AI agents: calculations, conversions, validations.",
+     "remotes": [
+      "https://mcp.thousand-api.com/mcp"
+     ],
+     "word": "thousand"
+    },
+    {
+     "name": "com.thousandeyes/mcp",
+     "description": "ThousandEyes MCP Server for network intelligence: outages, anomalies, alerts, events, and tests.",
+     "remotes": [
+      "https://api.thousandeyes.com/mcp",
+      "https://api.thousandeyes.com/mcp-public"
+     ],
+     "word": "thousand"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.thousand-api/thousand-api",
+     "url": "https://mcp.thousand-api.com/mcp",
+     "status": 200,
+     "doors": 84
+    },
+    {
+     "server": "com.thousandeyes/mcp",
+     "url": "https://api.thousandeyes.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.thousandeyes/mcp",
+     "url": "https://api.thousandeyes.com/mcp-public",
+     "status": 401,
+     "doors": 0
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.thousand-api/thousand-api",
+     "url": "https://mcp.thousand-api.com/mcp",
+     "door": "convert.unit",
+     "score": 1,
+     "shared": [
+      "valu"
+     ]
+    },
+    {
+     "server": "com.thousand-api/thousand-api",
+     "url": "https://mcp.thousand-api.com/mcp",
+     "door": "data.query_json",
+     "score": 1,
+     "shared": [
+      "valu"
+     ]
+    },
+    {
+     "server": "com.thousand-api/thousand-api",
+     "url": "https://mcp.thousand-api.com/mcp",
+     "door": "datetime.add_business_days",
+     "score": 1,
+     "shared": [
+      "after"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "double-torus-trinities",
+   "words": [
+    "double-torus",
+    "combinations",
+    "-reflection"
+   ],
+   "servers": 2,
+   "serverList": [
+    {
+     "name": "com.hemelion/decision-reflection",
+     "description": "Read-only Clarity and MindScan routing, decision readiness, method, and private scan handoff tools.",
+     "remotes": [
+      "https://www.hemelion.com/mcp"
+     ],
+     "word": "-reflection"
+    },
+    {
+     "name": "io.github.CSOAI-ORG/meok-ai-reflection-mcp",
+     "description": "MEOK AI Labs - ai-reflection MCP server extracted from SOV3",
+     "remotes": [],
+     "word": "-reflection"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.hemelion/decision-reflection",
+     "url": "https://www.hemelion.com/mcp",
+     "status": 200,
+     "doors": 6
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.hemelion/decision-reflection",
+     "url": "https://www.hemelion.com/mcp",
+     "door": "hemelion_choose_reflection_mode",
+     "score": 1,
+     "shared": [
+      "reflection"
+     ]
+    },
+    {
+     "server": "com.hemelion/decision-reflection",
+     "url": "https://www.hemelion.com/mcp",
+     "door": "hemelion_map_mindscan_episode",
+     "score": 1,
+     "shared": [
+      "reflection"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "language-traditions",
+   "words": [
+    "relations",
+    "tradition",
+    "world"
+   ],
+   "servers": 12,
+   "serverList": [
+    {
+     "name": "ai.govrelations/govrelations",
+     "description": "U.S. lobbying records: who lobbies for whom, fees, bills, agencies and states, from lda.gov.",
+     "remotes": [
+      "https://govrelations.ai/mcp"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "ai.machinerelations/mri",
+     "description": "Which source domains AI answer engines cite, by buyer category and question shape.",
+     "remotes": [
+      "https://machinerelations.ai/mcp"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "info.astroway/relationships",
+     "description": "Synastry, composite, compatibility scores, family dynamics and pet charts.",
+     "remotes": [
+      "https://mcp.astroway.info/mcp/relationships"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "io.github.adelaidasofia/investor-relations-mcp",
+     "description": "FastMCP seed raise pipeline tracker — syncs from Obsidian CRM, generates meeting prep, tracks…",
+     "remotes": [],
+     "word": "relations"
+    },
+    {
+     "name": "io.github.agentindexworld/relationship-memory",
+     "description": "Free MCP: relationship_memory validate, store (local), retrieve — portable interlocutor cards v1.",
+     "remotes": [
+      "https://x402.agentindex.world/mcp/relationship-memory/"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "io.github.visionastro48-dev/aether-machine-relationship-mesh",
+     "description": "Machine-native relationship mesh for discovery, help, evidence, and earned trust.",
+     "remotes": [
+      "https://yztkpjvkpqdfhltjqbzx.supabase.co/functions/v1/angels-peer-probe"
+     ],
+     "word": "relations"
+    },
+    {
+     "name": "ai.augworlds/travel-world",
+     "description": "Agent-native travel platform: read-only flight and brand tools over MCP (bearer key required).",
+     "remotes": [
+      "https://travel.augworlds.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.cloudworldmodel/cloud-world-model",
+     "description": "Simulate cloud architectures before provisioning. 9 free demo tools; an API key unlocks all 62.",
+     "remotes": [
+      "https://www.cloudworldmodel.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.daishi/world",
+     "description": "A persistent multi-agent world any AI agent can join over MCP, with a public record of every match.",
+     "remotes": [
+      "https://daishi.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.loci-labs/real-world-observations",
+     "description": "Fresh human-observable information about physical places and conditions that may be stale online.",
+     "remotes": [
+      "https://mcp.loci-labs.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "ai.migurei.pw/parallel-world",
+     "description": "Check which AI bots a site's robots.txt allows; read-only facts about Parallel World",
+     "remotes": [
+      "https://pw.migurei.ai/mcp"
+     ],
+     "word": "world"
+    },
+    {
+     "name": "app.worldmonitor/mcp",
+     "description": "Live global intelligence: real-time markets, conflicts, country risk, chokepoints, energy. 39 tools.",
+     "remotes": [
+      "https://worldmonitor.app/mcp"
+     ],
+     "word": "world"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.govrelations/govrelations",
+     "url": "https://govrelations.ai/mcp",
+     "status": 200,
+     "doors": 13
+    },
+    {
+     "server": "ai.machinerelations/mri",
+     "url": "https://machinerelations.ai/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "info.astroway/relationships",
+     "url": "https://mcp.astroway.info/mcp/relationships",
+     "status": 200,
+     "doors": 45
+    },
+    {
+     "server": "io.github.agentindexworld/relationship-memory",
+     "url": "https://x402.agentindex.world/mcp/relationship-memory/",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "io.github.visionastro48-dev/aether-machine-relationship-mesh",
+     "url": "https://yztkpjvkpqdfhltjqbzx.supabase.co/functions/v1/angels-peer-probe",
+     "status": 429,
+     "doors": 0
+    },
+    {
+     "server": "ai.augworlds/travel-world",
+     "url": "https://travel.augworlds.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.cloudworldmodel/cloud-world-model",
+     "url": "https://www.cloudworldmodel.ai/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.daishi/world",
+     "url": "https://daishi.ai/mcp",
+     "status": 200,
+     "doors": 35
+    },
+    {
+     "server": "ai.loci-labs/real-world-observations",
+     "url": "https://mcp.loci-labs.ai/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "ai.migurei.pw/parallel-world",
+     "url": "https://pw.migurei.ai/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "app.worldmonitor/mcp",
+     "url": "https://worldmonitor.app/mcp",
+     "status": 200,
+     "doors": 95
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "ai.machinerelations/mri",
+     "url": "https://machinerelations.ai/mcp",
+     "door": "mri_list_categories",
+     "score": 2,
+     "shared": [
+      "relation",
+      "vocabulary"
+     ]
+    },
+    {
+     "server": "app.worldmonitor/mcp",
+     "url": "https://worldmonitor.app/mcp",
+     "door": "extract_entities",
+     "score": 1,
+     "shared": [
+      "world"
+     ]
+    },
+    {
+     "server": "app.worldmonitor/mcp",
+     "url": "https://worldmonitor.app/mcp",
+     "door": "get_alert_digest",
+     "score": 1,
+     "shared": [
+      "vocabulary"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "language-video",
+   "words": [
+    "video",
+    "entries",
+    "translatable"
+   ],
+   "servers": 4,
+   "serverList": [
+    {
+     "name": "ai.demomagic/interactive-video-guide",
+     "description": "Guides for making interactive videos & AI product demos that answer viewers' questions.",
+     "remotes": [],
+     "word": "video"
+    },
+    {
+     "name": "ai.makeaivideo/video-generator",
+     "description": "Generate finished AI videos from a brief or a script, with voiceover, scenes and captions.",
+     "remotes": [
+      "https://app.makeaivideo.ai/api/mcp"
+     ],
+     "word": "video"
+    },
+    {
+     "name": "ai.multivoice/video-dubbing-subtitles-transcription-audiobooks",
+     "description": "AI video dubbing, subtitles, transcription and audiobook creation. Exact price before any paid job.",
+     "remotes": [
+      "https://db.multivoice.ai/mcp"
+     ],
+     "word": "video"
+    },
+    {
+     "name": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
+     "description": "Plain-English transactions to balanced journal entries, adjusting and closing entries.",
+     "remotes": [
+      "https://openapi-1779155638284.mcpize.run/mcp"
+     ],
+     "word": "entries"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.makeaivideo/video-generator",
+     "url": "https://app.makeaivideo.ai/api/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.multivoice/video-dubbing-subtitles-transcription-audiobooks",
+     "url": "https://db.multivoice.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.github.tylerscomic-lab/ledgeriq-journal-entries",
+     "url": "https://openapi-1779155638284.mcpize.run/mcp",
+     "status": 401,
+     "doors": 0
+    }
+   ],
+   "bestDoors": []
+  },
+  {
+   "lead": "language-speech",
+   "words": [
+    "speechsynthesis",
+    "network-free",
+    "token-free"
+   ],
+   "servers": 0,
+   "serverList": [],
+   "extended": [],
+   "bestDoors": []
   }
  ]
 }

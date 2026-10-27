@@ -8,7 +8,7 @@
 import { uuidOf } from './blocks.ts'
 import { sha256, utf8, hex } from './hmac.ts'
 import { findLeaks, LEAK_PATTERNS } from './audit.ts'
-import { courtOf } from './toolboxes/legal.ts'
+import { summonCourt } from './toolboxes/legal.ts'
 import type { WorkflowFacts } from './toolboxes/repository.ts'
 type Decide = (name: 'pre-commit' | 'pre-push', facts: WorkflowFacts) => { allowed: boolean; says: string; violated: string[]; unknown: string[] }
 
@@ -52,9 +52,9 @@ const SHA_RE = /^[0-9a-f]{40}$/
 
 export type MachineRequest = { action?: string; message?: string; confirm?: boolean; branch?: string; path?: string; tag?: string; commit?: string; from?: string; file?: string; archived?: boolean; facts?: WorkflowFacts }
 /** The plan of one action: allowed with its argument vector (and the message as its input), or refused with the court's case. */
-export const machinePlanOf = (r: MachineRequest, decideOf: Decide) => {
+export const planMachine = (r: MachineRequest, decideOf: Decide) => {
   const a = MACHINE_ACTIONS.find((x) => x.id === r.action)
-  const refuse = (rule: string, why: string, evidence: unknown) => ({ allowed: false as const, action: r.action ?? null, refused: why, court: courtOf({ gate: `machine ${r.action ?? '?'}`, rule, evidence }), theorems: ['textbook_machine_allow_list', 'textbook_cheap_gates'] })
+  const refuse = (rule: string, why: string, evidence: unknown) => ({ allowed: false as const, action: r.action ?? null, refused: why, court: summonCourt({ gate: `machine ${r.action ?? '?'}`, rule, evidence }), theorems: ['textbook_machine_allow_list', 'textbook_cheap_gates'] })
   if (!a) return refuse('route', `the allow-list names no action ${String(r.action)}: ${MACHINE_ACTIONS.map((x) => x.id).join(', ')}`, { asked: r.action })
   if (a.needs === 'message' && (typeof r.message !== 'string' || !r.message.trim() || r.message.length > 20000 || r.message.includes('\u0000'))) return refuse('shape', `${a.id} takes a message: one line at least, no NUL`, { action: a.id })
   if (a.needs === 'branch' && (typeof r.branch !== 'string' || !BRANCH_RE.test(r.branch) || r.branch.startsWith('-'))) return refuse('shape', `${a.id} takes a branch: letters, digits, . _ / -, up to 200, never starting with a dash`, { action: a.id, branch: r.branch ?? null })
@@ -86,7 +86,7 @@ export const redact = (text: string, root?: string, home?: string, leaks = true)
   return t
 }
 /** A run judged: redacted, the record a docket entry at its address. */
-export const machineRecordOf = (run: MachineRun) => {
+export const recordMachine = (run: MachineRun) => {
   const relative = redact(`${run.stdout}${run.stderr ? `\n${run.stderr}` : ''}`, run.root, run.home, false), found = findLeaks({ output: relative }), output = redact(relative)
   const body = { action: run.action, command: [run.command.cmd, ...run.command.args].join(' '), status: run.status, ms: run.ms, output, leaks: found.byKind }
   const text = JSON.stringify({ kind: 'machine', from: 'local', body })
@@ -100,7 +100,7 @@ export type StreamEvent = { at: string; kind: string; subject: string; ms?: numb
  *  the additive decomposition BigQuery ML's ARIMA_PLUS documents (a one-period moving-average trend, one index per phase summing to zero) when two
  *  periods are recorded, then simple exponential smoothing in exact rationals (each time weighed a/q, the level (q - a)/q; numerator and q^n kept
  *  as integers), and the interval the one-step errors give at 95 % (z = 1.96). TimesFM is the reference model, cited, never run here. */
-export const forecastOf = (times: readonly number[], o: { a?: number; q?: number; period?: number } = {}) => {
+export const forecastTimes = (times: readonly number[], o: { a?: number; q?: number; period?: number } = {}) => {
   if (!times.length) return null
   const a = BigInt(o.a ?? 3), q = BigInt(o.q ?? 10), m = o.period ?? 0, x = times.map(Math.round), n = x.length
   const trend = (i: number) => { const s = Math.max(0, Math.min(n - m, i - Math.floor(m / 2))); return x.slice(s, s + m).reduce((u, v) => u + v, 0) / m }
@@ -112,18 +112,18 @@ export const forecastOf = (times: readonly number[], o: { a?: number; q?: number
   return { estimated: true as const, point, interval: half === null ? null : [Math.max(0, point - half), point + half] as [number, number], confidence: 0.95, n, alpha: `${a}/${q}`, level: `${num}/${den}`, seasonal: index ? { period: m, index } : null, method: 'additive decomposition by a moving average (ARIMA_PLUS documents STL), then simple exponential smoothing in exact rationals (ARIMA_PLUS: an ARIMA trend, ETS seasonality, spikes, steps and holidays cleaned)', reference: 'TimesFM (google-research/timesfm), not run' }
 }
 /** The largest gap between consecutive events while work runs, against the heartbeat bound (textbook_stream_no_silence). */
-const silenceOf = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) => {
+const measureSilence = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) => {
   const ts = events.map((e) => Date.parse(e.at)).filter(Number.isFinite)
   let maxGapMs = 0, at: string | null = null
   for (let i = 1; i < ts.length; i++) if (ts[i]! - ts[i - 1]! > maxGapMs) { maxGapMs = ts[i]! - ts[i - 1]!; at = events[i]!.at }
   return { holds: maxGapMs <= boundMs, maxGapMs, boundMs, at, theorem: 'textbook_stream_no_silence' }
 }
 /** The status on request: what runs and its ETA from the receipts, the last events, the open questions (asked and not yet decided) and what is held. */
-export const statusOf = (s: { events: readonly StreamEvent[]; times?: Record<string, readonly number[]>; held?: unknown; last?: number; period?: number }) => {
+export const machineStatus = (s: { events: readonly StreamEvent[]; times?: Record<string, readonly number[]>; held?: unknown; last?: number; period?: number }) => {
   const ev = s.events, last = ev[ev.length - 1] ?? null
   const started = [...ev].reverse().find((e) => e.kind === 'step-start' && !ev.some((x) => x.kind === 'step-end' && x.subject === e.subject && x.at >= e.at)) ?? null
   const elapsed = started && last ? Date.parse(last.at) - Date.parse(started.at) : null
-  const forecasts = Object.fromEntries(Object.entries(s.times ?? {}).map(([k, v]) => [k, forecastOf(v, { period: s.period })])), f = started ? forecasts[started.subject] ?? null : null, eta = f?.point ?? null
+  const forecasts = Object.fromEntries(Object.entries(s.times ?? {}).map(([k, v]) => [k, forecastTimes(v, { period: s.period })])), f = started ? forecasts[started.subject] ?? null : null, eta = f?.point ?? null
   const questions = ev.filter((e) => e.kind === 'question' && !ev.some((x) => x.kind === 'decision' && x.subject === e.subject && x.at >= e.at))
-  return { running: started ? { subject: started.subject, since: started.at, elapsed, eta, interval: f?.interval ?? null, remaining: eta !== null && elapsed !== null ? Math.max(0, eta - elapsed) : null } : null, last: ev.slice(-(s.last ?? 10)), questions, forecasts, held: s.held ?? null, silence: silenceOf(ev), theorems: ['textbook_eta_from_receipts', 'textbook_stream_no_silence'] }
+  return { running: started ? { subject: started.subject, since: started.at, elapsed, eta, interval: f?.interval ?? null, remaining: eta !== null && elapsed !== null ? Math.max(0, eta - elapsed) : null } : null, last: ev.slice(-(s.last ?? 10)), questions, forecasts, held: s.held ?? null, silence: measureSilence(ev), theorems: ['textbook_eta_from_receipts', 'textbook_stream_no_silence'] }
 }

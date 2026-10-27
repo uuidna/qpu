@@ -29,8 +29,8 @@ if (at > 0) {
 
 // the parent: the ledger read once (the newest docket entry from audit-integers, through the Payload MCP; unread, nothing is known and every
 // example is confirmed by text), the code fingerprinted once, the shares run in parallel, merged, held to the theorems, the ledger written back
-const { mcpOf } = await import('./mcp.ts')
-const mcp = mcpOf()
+const { mcpClient } = await import('./mcp.ts')
+const mcp = mcpClient()
 const page = await mcp.call('findEntries', { where: JSON.stringify({ from: { equals: 'audit-integers' } }), sort: '-createdAt', limit: 1, page: 1 })
 const read = page.error !== undefined ? { docs: null, says: `unread: ${page.error}` } : { docs: mcp.docsOf(page.text), says: 'read' }
 const newest = (read.docs ?? [])[0] as { body?: { integers?: Record<string, string> } } | undefined

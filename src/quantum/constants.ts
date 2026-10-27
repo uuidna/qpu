@@ -7,7 +7,7 @@ import { sha256, utf8, hex } from './hmac.ts'
 
 export const CODATA_URL = 'https://physics.nist.gov/cuu/Constants/Table/allascii.txt'
 /** A decimal as written in the table ("6.674 30 e-11") as exact integers: mantissa × 10^exponent. */
-const decimalOf = (s: string): { mantissa: string; exponent: number } | null => {
+const parseDecimal = (s: string): { mantissa: string; exponent: number } | null => {
   const m = /^(-?)(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/.exec(s.replace(/\s+/g, '').replace(/\.\.\.$/, ''))
   if (!m) return null
   const frac = m[3] ?? ''
@@ -15,7 +15,7 @@ const decimalOf = (s: string): { mantissa: string; exponent: number } | null => 
 }
 type Constant = { quantity: string; value: { mantissa: string; exponent: number }; written: string; exact: boolean; uncertainty: { mantissa: string; exponent: number } | null; unit: string; relativePpb: number | null; address: string; sha256: string }
 /** The table read: the rows found below its header, every row a constant with its value and uncertainty as integers, sealed. */
-export const constantsOf = (text: string) => {
+export const parseConstants = (text: string) => {
   const lines = text.split('\n')
   const header = lines.find((l) => /Quantity\s+Value\s+Uncertainty\s+Unit/.test(l))
   if (!header) return { adjustment: null, constants: [] as Constant[], says: 'no table header: the page changed or was not read' }
@@ -25,9 +25,9 @@ export const constantsOf = (text: string) => {
     // the header's labels do not sit over their columns (measured: Value at 65, the values at 60), so a row is split where two spaces or more part its fields; single spaces stay inside a value
     if (l.trim().length === 0) continue
     const [quantity = '', written = '', unc = '', unit = ''] = l.trim().split(/\s{2,}/)
-    const value = decimalOf(written); if (!quantity || !value) continue
+    const value = parseDecimal(written); if (!quantity || !value) continue
     const exact = unc === '(exact)'
-    const uncertainty = exact ? null : decimalOf(unc)
+    const uncertainty = exact ? null : parseDecimal(unc)
     // the relative uncertainty in parts per billion, from the integers alone: |u| / |v| × 10^9, rounded down
     const abs = (s: string) => BigInt(s.replace('-', '') || '0'), d = uncertainty ? uncertainty.exponent - value.exponent + 9 : 0
     const relativePpb = uncertainty && abs(value.mantissa) > 0n ? Number(d >= 0 ? (abs(uncertainty.mantissa) * 10n ** BigInt(d)) / abs(value.mantissa) : abs(uncertainty.mantissa) / (abs(value.mantissa) * 10n ** BigInt(-d))) : null

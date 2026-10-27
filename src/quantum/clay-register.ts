@@ -32,8 +32,8 @@ const triangular = memo((k: number): number => (k === 0 ? 0 : nat(k + triangular
 const powModAux = (k: number, a: number, m: number, acc: number): number => (k === 0 ? acc : powModAux(k - 1, a, m, nat((acc * a) % m, 'powMod')))
 export const powMod = (a: number, e: number, m: number): number => powModAux(e, a, m, 1 % m)
 const periodAux = (fuel: number, a: number, m: number, r: number): number => (fuel === 0 ? 0 : powMod(a, r, m) === 1 ? r : periodAux(fuel - 1, a, m, r + 1))
-export const periodOf = (a: number, m: number): number => periodAux(m, a, m, 1)
-const half = (a: number, m: number): number => powMod(a, Math.floor(periodOf(a, m) / 2), m)
+export const multiplicativePeriod = (a: number, m: number): number => periodAux(m, a, m, 1)
+const half = (a: number, m: number): number => powMod(a, Math.floor(multiplicativePeriod(a, m) / 2), m)
 // Galois, Anyon, Annealing, Clifford, Coil, Grover, Hybrid, Magic, Qaoa, Qft, Stabilizer
 const glProd = memo((nn: number, i: number): number => (i === 0 ? 1 : nat(Math.max(0, mintOf(nn) - mintOf(i - 1)) * glProd(nn, i - 1), 'glProd')))
 const fibAux = (k: number, a: number, b: number): number => (k === 0 ? a : fibAux(k - 1, b, nat(a + b, 'fibFusion')))
@@ -60,7 +60,7 @@ const paulis = (nn: number): number => mintOf(2 * nn + 2)
 const CONSTANTS: Record<string, number> = { n, seed, coins, rays, vertices, hexbit, bits, faces, amplitudes, fused, plane, coil, hybridSpeed, magicBlock, magicCubic }
 const FUNCTIONS: Record<string, { arity: number; f: (...a: number[]) => number }> = {
   mintOf: { arity: 1, f: (k) => mintOf(k!) }, chooseOf: { arity: 2, f: (a, k) => chooseOf(a!, k!) }, choose: { arity: 2, f: (a, k) => choose(a!, k!) }, factorial: { arity: 1, f: (k) => factorial(k!) }, triangular: { arity: 1, f: (k) => triangular(k!) },
-  powMod: { arity: 3, f: (a, e, m) => powMod(a!, e!, m!) }, periodOf: { arity: 2, f: (a, m) => periodOf(a!, m!) }, half: { arity: 2, f: (a, m) => half(a!, m!) },
+  powMod: { arity: 3, f: (a, e, m) => powMod(a!, e!, m!) }, periodOf: { arity: 2, f: (a, m) => multiplicativePeriod(a!, m!) }, half: { arity: 2, f: (a, m) => half(a!, m!) },
   glProd: { arity: 2, f: (a, b) => glProd(a!, b!) }, fibFusion: { arity: 1, f: (k) => fibFusion(k!) }, isingFusion: { arity: 1, f: (k) => isingFusion(k!) }, chimera: { arity: 1, f: (k) => chimera(k!) },
   cliffordOrder: { arity: 1, f: (k) => cliffordOrder(k!) }, groverIters: { arity: 1, f: (k) => groverIters(k!) }, groverSize: { arity: 1, f: (k) => groverSize(k!) },
   qaoaParams: { arity: 1, f: (k) => qaoaParams(k!) }, qaoaZz: { arity: 2, f: (a, b) => qaoaZz(a!, b!) }, qaoaX: { arity: 2, f: (a, b) => qaoaX(a!, b!) },
@@ -91,7 +91,7 @@ export const evaluate = (src: string): number => {
 type Relation = { name: string; statement: string; sides: { expression: string; value: number }[]; holds: boolean; bits: number }
 /** Every relation recomputed: each `=` compared, each `∧` all holding, and the bit width of the largest value. */
 /** 16-bit limbs a value needs: what an 8-bit machine with 16-bit software arithmetic (the Pravets 8M) holds it in. */
-const limbs16Of = (bits: number): number => Math.max(1, Math.ceil(bits / 16))
+const countLimbs16 = (bits: number): number => Math.max(1, Math.ceil(bits / 16))
 export const recomputeClay = (): { relations: Relation[]; total: number; holding: number; maxBits: number; maxLimbs16: number; ledger: string } => {
   const relations: Relation[] = CLAY_RELATIONS.map(({ name, statement }) => {
     const sides = [...new Set(statement.split('∧').flatMap((eq) => eq.split('=')).map((s) => s.trim()))].map((expression) => ({ expression, value: evaluate(expression) }))
@@ -102,16 +102,16 @@ export const recomputeClay = (): { relations: Relation[]; total: number; holding
   const holding = relations.filter((r) => r.holds).length
   const ledger = relations.map((r) => `${r.name}=${r.sides[0]!.value}`).join('\n')
   const maxBits = Math.max(...relations.map((r) => r.bits))
-  return { relations, total: relations.length, holding, maxBits, maxLimbs16: limbs16Of(maxBits), ledger }
+  return { relations, total: relations.length, holding, maxBits, maxLimbs16: countLimbs16(maxBits), ledger }
 }
 
 /** The technique applied to the register: every relation's value read as a vortex seed with its σ_10 reflection and both
  * trinities; relations whose seeds reflect each other paired; the fixed ones (seed 5) named; the key's trinity (3, 6, 9) marked. */
 type ClayReading = { name: string; value: number; seed: number; reflection: number; trinity: number[]; reflected: number[]; tuned: boolean; fixed: boolean }
-export const seedOf = (n: number): number => (n === 0 ? 0 : 1 + ((n - 1) % 9))
-export const trinityOf = (seed: number): number[] => (seed === 0 ? [] : seed % 3 === 0 ? [3, 6, 9] : [7, 4, 1].includes(seed) ? [7, 4, 1] : [2, 5, 8])
+export const digitalRoot = (n: number): number => (n === 0 ? 0 : 1 + ((n - 1) % 9))
+export const trinityFor = (seed: number): number[] => (seed === 0 ? [] : seed % 3 === 0 ? [3, 6, 9] : [7, 4, 1].includes(seed) ? [7, 4, 1] : [2, 5, 8])
 export const reflectionOfRegister = (relations: readonly Relation[]): { readings: ClayReading[]; bySeed: Record<string, string[]>; byTrinity: Record<string, string[]>; pairs: { a: string; b: string; seeds: [number, number] }[]; fixed: string[]; tuned: string[] } => {
-  const readings = relations.map((r) => { const value = r.sides[0]!.value; const seed = seedOf(value); const trinity = trinityOf(seed); return { name: r.name, value, seed, reflection: seed === 0 ? 0 : 10 - seed, trinity, reflected: trinity.map((x) => 10 - x), tuned: trinity[0] === 3, fixed: seed === 5 } })
+  const readings = relations.map((r) => { const value = r.sides[0]!.value; const seed = digitalRoot(value); const trinity = trinityFor(seed); return { name: r.name, value, seed, reflection: seed === 0 ? 0 : 10 - seed, trinity, reflected: trinity.map((x) => 10 - x), tuned: trinity[0] === 3, fixed: seed === 5 } })
   const bySeed: Record<string, string[]> = {}; const byTrinity: Record<string, string[]> = {}
   for (const x of readings) { (bySeed[String(x.seed)] ??= []).push(x.name); (byTrinity[x.trinity.join(',') || 'zero'] ??= []).push(x.name) }
   const pairs: { a: string; b: string; seeds: [number, number] }[] = []

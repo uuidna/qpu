@@ -4,18 +4,18 @@
 // subjects they share: a subject several unreached problems share is one missing theorem that would serve them all (each problem solves many
 // others, textbook_collision_solves_many). A collision is a lead to prove, never a statement the tree asserts.
 import { uuidOf, channelOf, reflectionOf } from './blocks.ts'
-import { routeOf, routeStems } from './match.ts'
+import { routeStatement, routeStems } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 
-export const collisionsOf = (leads: readonly Lead[], examples: readonly Example[]) => {
+export const findCollisions = (leads: readonly Lead[], examples: readonly Example[]) => {
   const problems = leads.filter((l) => l.status === 'open' || l.status === 'partial')
   // every problem as an involution: its address, its mirror, and σ applied twice returning its parts
   const involutions = problems.map((l) => { const address = uuidOf(`lead\n${l.id}`); const once = reflectionOf(address); const twice = reflectionOf(once.mirror); const c = channelOf(address); return { id: l.id, address, mirror: once.mirror, returns: twice.handle === c.handle && twice.program.join('') === c.program.join('') && twice.tail === c.tail } })
   // routed: a theorem already reaches it; the rest collide
-  const routed = problems.map((l) => ({ l, r: routeOf(l.statement, examples, 1) }))
+  const routed = problems.map((l) => ({ l, r: routeStatement(l.statement, examples, 1) }))
   // reached only when the best theorem shares two words or more: one word rare among the theorems can be common among the problems
-  const strong = (x: { r: ReturnType<typeof routeOf> }) => x.r.routed && (x.r.theorems[0]?.shared.length ?? 0) >= 2
+  const strong = (x: { r: ReturnType<typeof routeStatement> }) => x.r.routed && (x.r.theorems[0]?.shared.length ?? 0) >= 2
   const reached = routed.filter(strong), open = routed.filter((x) => !strong(x)).map((x) => x.l)
   // all pairs collided at once through an inverted index: a subject shared by k problems is k(k − 1)/2 colliding pairs
   const stems = new Map(open.map((l) => [l.id, routeStems(l.statement)]))
