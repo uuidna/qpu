@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T14:20:49.432Z",
+ "date": "2026-10-27T15:03:56.157Z",
  "input": {
   "doors": [
    {
@@ -281,6 +281,16 @@
    {
     "name": "fault-tolerant-design.nodes",
     "bytes": 111,
+    "reached": false
+   },
+   {
+    "name": "leads.records",
+    "bytes": 214,
+    "reached": false
+   },
+   {
+    "name": "leads.lead",
+    "bytes": 84,
     "reached": false
    },
    {
@@ -675,7 +685,12 @@
    },
    {
     "name": "mongo.op",
-    "bytes": 77,
+    "bytes": 96,
+    "reached": true
+   },
+   {
+    "name": "mongo.files",
+    "bytes": 83,
     "reached": true
    },
    {
@@ -1451,6 +1466,11 @@
    {
     "name": "fold.uuids",
     "bytes": 126,
+    "reached": true
+   },
+   {
+    "name": "fold.neighbours",
+    "bytes": 111,
     "reached": true
    },
    {
@@ -2757,7 +2777,12 @@
    },
    {
     "key": "textbook_eta_from_receipts",
-    "bytes": 99,
+    "bytes": 140,
+    "used": true
+   },
+   {
+    "key": "textbook_neighbour_step",
+    "bytes": 167,
     "used": true
    },
    {
@@ -2823,6 +2848,11 @@
    {
     "key": "textbook_rosetta_conventions",
     "bytes": 268,
+    "used": true
+   },
+   {
+    "key": "textbook_binding_zero_hex_path",
+    "bytes": 117,
     "used": true
    }
   ],
@@ -3373,6 +3403,37 @@
   },
   {
    "measure": "doors",
+   "name": "leads.records",
+   "kind": "idle",
+   "blocks": false,
+   "tokens": 54,
+   "unit": "schema bytes",
+   "antimatter": {
+    "needs": "auto",
+    "run": [],
+    "door": {
+     "tool": "e2e",
+     "arguments": {}
+    },
+    "says": "add leads.records to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "way": {
+     "harmonic": "a432",
+     "side": "coin",
+     "free": null,
+     "correct": null,
+     "licence": "free under attribution (the a432 harmonic default)",
+     "theorem": "textbook_free_or_coil"
+    },
+    "learn": false,
+    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "fold": {
+     "needs": "confirm",
+     "says": "fold leads.records into its nearest door or theorem, or remove it"
+    }
+   }
+  },
+  {
+   "measure": "doors",
    "name": "circuit.device_noise",
    "kind": "idle",
    "blocks": false,
@@ -3587,45 +3648,14 @@
      "says": "fold textbook.verify into its nearest door or theorem, or remove it"
     }
    }
-  },
-  {
-   "measure": "doors",
-   "name": "stripe.transactions",
-   "kind": "idle",
-   "blocks": false,
-   "tokens": 39,
-   "unit": "schema bytes",
-   "antimatter": {
-    "needs": "auto",
-    "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add stripe.transactions to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
-    "way": {
-     "harmonic": "a432",
-     "side": "coin",
-     "free": null,
-     "correct": null,
-     "licence": "free under attribution (the a432 harmonic default)",
-     "theorem": "textbook_free_or_coil"
-    },
-    "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
-    "fold": {
-     "needs": "confirm",
-     "says": "fold stripe.transactions into its nearest door or theorem, or remove it"
-    }
-   }
   }
  ],
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 47481,
-   "used": 38243,
-   "idle": 9238,
+   "capacity": 47992,
+   "used": 38456,
+   "idle": 9536,
    "percentIdle": 19,
    "idleNames": [
     "verify.prev",
@@ -3654,6 +3684,8 @@
     "fault-tolerant-design.N",
     "fault-tolerant-design.a",
     "fault-tolerant-design.nodes",
+    "leads.records",
+    "leads.lead",
     "leads.status",
     "leads.ids",
     "textbook.verify",
@@ -3745,8 +3777,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 25749,
-   "used": 25749,
+   "capacity": 26074,
+   "used": 26074,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

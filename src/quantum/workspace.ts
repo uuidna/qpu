@@ -61,7 +61,7 @@ const docsOf = (doc: J) => {
 /** A Docs Document as Lexical: docsOf's inverse; what Lexical has no node for is named as lost */
 const lexicalOf = (d: J) => {
   const lost: string[] = [], textOf = (e: J): J[] => { const s = e.textRun?.textStyle ?? {}, t = text(String(e.textRun?.content ?? '').replace(/\n$/, ''), FORMAT.reduce((f, [b, k]) => f | (s[k] ? b : 0), 0)); return !e.textRun || !t.text ? [] : [s.link?.url ? { type: 'link', version: 3, fields: { url: s.link.url, linkType: 'custom' }, children: [t] } : t] }
-  const walk = (content: J[]): J[] => content.reduce((out: J[], s: J, i: number) => {
+  const walk = (content: J[]): J[] => content.reduce<J[]>((out, s: J, i: number) => {
     const p = s.paragraph, e = p?.elements ?? [], last = out[out.length - 1], style = /^HEADING_(\d)$/.exec(p?.paragraphStyle?.namedStyleType ?? '')
     if (s.table) out.push({ type: 'table', version: 1, children: s.table.tableRows.map((r: J) => ({ type: 'tablerow', version: 1, children: r.tableCells.map((c: J) => ({ type: 'tablecell', version: 1, headerState: 0, children: walk(c.content ?? []) })) })) })
     else if (p?.bullet) { const item = { type: 'listitem', version: 1, value: 1, children: e.flatMap(textOf) }; if (last?.type === 'list' && last.listId === p.bullet.listId) { item.value = last.children.length + 1; last.children.push(item) } else { const listType = /DECIMAL|ALPHA|ROMAN/.test(d.lists?.[p.bullet.listId]?.listProperties?.nestingLevels?.[0]?.glyphType ?? '') ? 'number' : 'bullet'; out.push({ type: 'list', version: 1, listType, tag: listType === 'number' ? 'ol' : 'ul', start: 1, listId: p.bullet.listId, children: [item] }) } }
