@@ -22,34 +22,7 @@ export const findCleanupSubjects = (l: Lead): { kind: 'branches' | 'paths'; name
   return branches ? { kind: 'branches', names: branches[1]!.split(/,\s*/) } : { kind: 'paths', names: [l.source.split(/\s/)[0]!.replace(/\/$/, '')] }
 }
 
-const FETCHED = '2026-10-25'
 
-/** The leads followed by hand: each read from its page, PDF or repository, with the tool that serves it. */
-const HAND_LEADS: readonly Lead[] = [
-  { id: 'willow-spec', source: 'quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf', statement: 'Willow: 105 qubits, the grid, two chips with their figures', status: 'served', tool: 'processor' },
-  { id: 'roadmap', source: 'services.google.com PDF, roadmap figure; quantumai.google/roadmap', statement: 'Six milestones, physical-qubit scale, Milestone 3 in progress', status: 'served', tool: 'roadmap' },
-  { id: 'software', source: 'quantumai.google/software', statement: 'Cirq, qsim, Qualtran, OpenFermion, TensorFlow Quantum', status: 'served', tool: 'software' },
-  { id: 'cirq-overview', source: 'quantumai.google/cirq', statement: 'Cirq is a Python library for writing, manipulating and optimizing circuits', status: 'served', tool: 'statements' },
-  { id: 'qaoa', source: 'quantumai.google/cirq/experiments/qaoa/qaoa_maxcut; github.com/quantumlib/Cirq', statement: 'QAOA max-cut at p = 1 on Sycamore: the first twelve sorted qubits, their couplers in networkx order, numpy\'s seed-11 weights (reproduced exactly), the 5 by 5 sweep, and the estimate_cost objective sampled at 20,000 shots', status: 'served', tool: 'algorithm' },
-  { id: 'shor', source: 'quantumai.google/cirq/experiments/textbook_algorithms; quantumai.google/cirq/experiments/shor', statement: 'Shor\'s order finding, the later use of phase estimation the page names', status: 'served', tool: 'algorithm' },
-  { id: 'qsim', source: 'github.com/quantumlib/qsim; quantumai.google/qsim', statement: 'qsim: a fast state-vector simulator with a Cirq interface, Apache-2.0', status: 'served', tool: 'statements' },
-  { id: 'research', source: 'quantumai.google/research (quantumai.google/research/publications returns 404)', statement: 'Research publications: the page\'s title and description', status: 'partial', tool: 'statements', reason: `on ${FETCHED} quantumai.google/research returned HTTP 200 with the title "Research Publications" and the site description, which the research statement serves; its publication list is rendered by script and is not in the fetched HTML; research/publications returned HTTP 404` },
-  { id: 'learn-map', source: 'quantumai.google/learn/map', statement: 'Our quantum computing journey: the page\'s title and description', status: 'partial', tool: 'statements', reason: `on ${FETCHED} the page returned HTTP 200 (it was 404 to the earlier fetch) with its title and description, which the learn_map statement serves; the journey itself is an interactive map in a frame from dreamcoat-guggenheim.uc.r.appspot.com, whose text is not in the fetched HTML` },
-  { id: 'qualtran', source: 'github.com/quantumlib/Qualtran; quantumai.google/qualtran', statement: 'Qualtran: abstractions for quantum programs and a library of algorithms, experimental', status: 'served', tool: 'statements' },
-  { id: 'openfermion', source: 'github.com/quantumlib/OpenFermion; quantumai.google/openfermion', statement: 'OpenFermion: compiling and analyzing quantum algorithms to simulate fermionic systems', status: 'served', tool: 'statements' },
-  { id: 'repo-cirq', source: 'github.com/quantumlib/Cirq', statement: 'Cirq: the NISQ circuit framework', status: 'served', tool: 'repositories' },
-  { id: 'repo-github', source: 'github.com/quantumlib/.github', statement: 'organization configuration: the profile README, a markdownlint configuration and a code of conduct', status: 'out_of_scope', reason: `fetched on ${FETCHED}: the repository has no description and holds the organization profile, .markdownlintrc and CODE_OF_CONDUCT.md; configuration for the quantumlib repositories, not a library or a result` },
-  { id: 'repo-allstar', source: 'github.com/quantumlib/.allstar', statement: 'organization configuration: the default Allstar policy files', status: 'out_of_scope', reason: `fetched on ${FETCHED}: a public archive holding allstar.yaml, binary_artifacts.yaml and branch_protection.yaml, described as the default Allstar configuration that points to google/allstar-config; security policy for the repositories, not a library or a result` },
-  { id: 'cirq-google-concepts', source: 'quantumai.google/cirq/google/concepts', statement: 'the page\'s stated content, served as the google_concepts statement', status: 'served', tool: 'statements' },
-  { id: 'qsim-hardware', source: 'quantumai.google/qsim/choose_hw', statement: 'the page\'s stated content, served as the qsim_hardware statement', status: 'served', tool: 'statements' },
-  { id: 'sitemap', source: 'quantumai.google/sitemap.xml and its child sitemaps', statement: 'The site\'s sitemap as sitemaps.org defines it (loc, lastmod): planned by the discover door, sealed in the docket from sitemap, handed to leads { sitemap } by its client, every page a lead', status: 'served', tool: 'leads' },
-  { id: 'learn', source: 'quantumai.google/learn', statement: 'Learn overview', status: 'blocked', reason: `the path is not in the sitemap and returned HTTP 404 on ${FETCHED}; its children learn/map and learn/lab are in the sitemap and are served` },
-  { id: 'sycamore', source: 'quantumai.google/cirq/google/devices, printed diagram; github.com/quantumlib/Cirq known_devices.py', statement: 'Sycamore: 54 qubits and 88 couplers, its printed layout, its two-qubit gates', status: 'served', tool: 'processor' },
-  // the leads of v1.1.0 restored, each judged against the tools on this branch
-  { id: 'qpu-quantumlib', source: 'github.com/quantumlib', statement: 'The quantumlib GitHub organization: fifteen active repositories for quantum computing, with what this repository implements of each', status: 'served', tool: 'quantumlib' },
-  // leads the whole sitemap added
-  { id: 'home', source: 'quantumai.google', statement: 'The home page: Willow, Quantum Echoes, the Nature papers and the Early Access Program it links', status: 'served', tool: 'statements' },
-]
 
 /** The Cirq API symbols the sitemap documents that this repository implements, each with the export here that stands for it.
  *  Only entries whose export exists in cirq.ts are used, so the list cannot name an implementation that is not there. */
@@ -83,7 +56,9 @@ const CIRQ_IMPLEMENTED = new Map(CIRQ_SYMBOLS.filter(([, exported]) => exported 
 /** The paths a hand-written lead names on quantumai.google, so the sitemap's leads do not repeat them. */
 const coveredPaths = (): Set<string> => {
   const covered = new Set<string>()
-  for (const lead of HAND_LEADS) {
+  // every lead Payload holds names the pages it covers, the sitemap's own leads aside (their id is the one sitemapLead builds)
+  const own = sitemapLead('', '').id.split(':')[0] + ':'
+  for (const lead of LEAD_ROWS.filter((l) => !l.id.startsWith(own))) {
     for (const match of lead.source.matchAll(/quantumai\.google\/([^\s;,()]+)/g)) covered.add(match[1]!.replace(/^static\//, ''))
     if (lead.source === 'quantumai.google') covered.add('')
   }
@@ -139,8 +114,8 @@ export const sitemapLeads = (urls: readonly { loc: string; lastmod?: string }[])
 const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: `src/quantum/processing/unit/lean/Qpu/Clay.lean ${r.name}`, statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
 
 // every lead Payload holds, the ones this module computes taking their place: Payload is the source, the generated index its copy
-const COMPUTED = new Set([...HAND_LEADS, ...CLAY_LEADS].map((l) => l.id))
-export const LEADS: readonly Lead[] = [...LEAD_ROWS.filter((l) => !COMPUTED.has(l.id)), ...HAND_LEADS, ...CLAY_LEADS]
+const COMPUTED = new Set(CLAY_LEADS.map((l) => l.id))
+export const LEADS: readonly Lead[] = [...LEAD_ROWS.filter((l) => !COMPUTED.has(l.id)), ...CLAY_LEADS]
 
 /** The leads by status: the counts the leads tool reports. */
 export const leadCounts = (leads: readonly Lead[] = LEADS): Record<LeadStatus, number> => {

@@ -101,17 +101,7 @@ const gatherFacts = (given: WorkflowFacts): WorkflowFacts => {
  *  so a hand edit of its output always reruns it and the rule automated is always decided. A step that reads the network, the clock or the
  *  repository's own state (compete, repository, trunk, publish, every online step) and purify and metrics, which read the run's own artefacts,
  *  are never cached, and say so; metrics runs in the full flow, never in the fast pre-commit form. A table of paths, in the path registry. */
-export const STEP_CACHE: Readonly<Record<string, { roots: readonly string[]; generator?: true; /** the docs pages a generator writes are outputs of the run, never inputs */ generatedDocsExcluded?: true }>> = {
-  'clay:gen': { roots: ['src/quantum', 'scripts/gen-clay.ts'], generator: true },
-  'docs:gen': { roots: ['src', 'scripts', 'package.json'], generator: true },
-  configs: { roots: ['src', 'scripts', 'site/src', 'site/package.json'], generator: true },
-  typecheck: { roots: ['src/quantum', 'src/worker.ts', 'scripts', 'tsconfig.json', 'package.json'] },
-  test: { roots: ['src/quantum', 'package.json'] },
-  lean: { roots: ['src/quantum/processing/unit/lean'] },
-  audit: { roots: ['src', 'scripts/audit.ts', 'package.json'] },
-  // purify reads every tracked text for leaks and addresses: its inputs are the sources and the hand-written pages, never the run's own artefacts
-  purify: { roots: ['src', 'scripts', 'site/src', 'package.json', 'docs', ':(exclude)docs/public', ':(exclude)docs/.vitepress/cache', ':(exclude)docs/.vitepress/dist'], generator: true, generatedDocsExcluded: true },
-}
+export const STEP_CACHE: Readonly<Record<string, { roots: readonly string[]; generator?: true; /** the docs pages a generator writes are outputs of the run, never inputs */ generatedDocsExcluded?: true }>> = TABLES.STEP_CACHE as Readonly<Record<string, { roots: readonly string[]; generator?: true; /** the docs pages a generator writes are outputs of the run, never inputs */ generatedDocsExcluded?: true }>>
 /** Which steps a hook runs and which it reuses: a step runs when it is not cacheable, has no sealed green record, its input address changed, or
  *  (a generator) its outputs changed since; every other step reuses its sealed record. The steps run are never more than those whose inputs
  *  changed or that cannot be cached (textbook_hook_steps_monotone). Pure. */

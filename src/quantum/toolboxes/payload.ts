@@ -866,23 +866,66 @@ const matchesWhere = (doc: unknown, root: Record<string, unknown>): boolean => {
   return decided.get(root)!
 }
 export const checkAccess = (abilities: readonly Ability[], roles: readonly ScopedRole[], subject: string, action: string, doc: unknown, user: { id?: string | null; tenants?: readonly string[] } = {}): boolean => { const a = getAccess(abilities, roles, subject, action, user); return typeof a === 'boolean' ? a : matchesWhere(doc, a) }
+/** The Rails guide Active Record Associations, implemented by Payload's own fields: the fields each side of an association carries. belongs_to is a
+ *  relationship; has_many a join on the target's relationship back; has_one that join limited to one, the target's relationship unique; :through
+ *  a join over the join model's two belongs_to; has_and_belongs_to_many a hasMany relationship with a join as its inverse; polymorphic a
+ *  relationship to many collections; a self join a relationship to its own collection; single table inheritance a type select whose subtypes'
+ *  fields show by condition; delegated types a polymorphic relationship from the base. Options: dependent, counter_cache and touch as hooks. */
+type Field = Record<string, unknown>
+export type Association = { type: 'belongs_to' | 'has_one' | 'has_many' | 'has_many_through' | 'has_one_through' | 'has_and_belongs_to_many' | 'polymorphic' | 'self_join' | 'sti' | 'delegated_type'; owner: string; name: string; target?: string; targets?: readonly string[]; through?: string; on?: string; inverse?: string; optional?: boolean; subtypes?: Readonly<Record<string, readonly Field[]>>; dependent?: 'destroy'; counterCache?: string; touch?: boolean }
+export const createAssociation = (a: Association) => {
+  // the key a has_many or has_one is joined on: Rails' convention, the owner's singular name on the target (authors has_many books: books.author)
+  const t = a.target ?? '', on = a.on ?? a.owner.replace(/ies$/, 'y').replace(/s$/, ''), rel = (name: string, to: string | readonly string[], extra: Field = {}): Field => ({ name, type: 'relationship', relationTo: to, ...extra }), join = (name: string, collection: string, by: string, extra: Field = {}): Field => ({ name, type: 'join', collection, on: by, ...extra })
+  const sides: { owner: Field[]; target?: Field[]; through?: Field[] } =
+    a.type === 'belongs_to' ? { owner: [rel(a.name, t, { required: !a.optional, index: true })] }
+    : a.type === 'has_one' ? { owner: [join(a.name, t, on, { defaultLimit: 1 })], target: [rel(on, a.owner, { unique: true, index: true })] }
+    : a.type === 'has_many' ? { owner: [join(a.name, t, on)], target: [rel(on, a.owner, { index: true })] }
+    : a.type === 'has_many_through' || a.type === 'has_one_through' ? { owner: [join(a.name, a.through ?? '', on, a.type === 'has_one_through' ? { defaultLimit: 1 } : {})], through: [rel(on, a.owner, { required: true, index: true }), rel(a.inverse ?? t, t, { required: true, index: true })] }
+    : a.type === 'has_and_belongs_to_many' ? { owner: [rel(a.name, t, { hasMany: true })], target: [join(a.inverse ?? a.owner, a.owner, a.name)] }
+    : a.type === 'polymorphic' ? { owner: [rel(a.name, a.targets ?? [])] }
+    : a.type === 'self_join' ? { owner: [rel(a.name, a.owner, { hasMany: true }), join(a.inverse ?? `${a.name}By`, a.owner, a.name)] }
+    : a.type === 'sti' ? { owner: [{ name: a.name, type: 'select', required: true, options: Object.keys(a.subtypes ?? {}) }, ...Object.entries(a.subtypes ?? {}).flatMap(([sub, fs]) => fs.map((f) => ({ ...f, admin: { condition: `(data) => data?.${a.name} === '${sub}'` } })))] }
+    : { owner: [rel(a.name, a.targets ?? [], { required: true })], target: (a.targets ?? []).map((x) => join(a.inverse ?? a.owner, a.owner, a.name)) }
+  // the association options as Payload hooks, their source for the generator to write
+  const hooks = [...(a.dependent === 'destroy' ? [{ on: a.owner, hook: 'afterDelete', source: `async ({ doc, req }) => { await req.payload.delete({ collection: '${t}', where: { ${on}: { equals: doc.id } }, req }) }` }] : []), ...(a.counterCache ? [{ on: t || a.owner, hook: 'afterChange', source: `async ({ doc, req }) => { const parent = doc.${on}; if (parent) await req.payload.update({ collection: '${a.owner}', id: typeof parent === 'object' ? parent.id : parent, data: { ${a.counterCache}: (await req.payload.count({ collection: '${t}', where: { ${on}: { equals: typeof parent === 'object' ? parent.id : parent } }, req })).totalDocs }, req }) }` }] : []), ...(a.touch ? [{ on: t || a.owner, hook: 'afterChange', source: `async ({ doc, req }) => { const parent = doc.${on}; if (parent) await req.payload.update({ collection: '${a.owner}', id: typeof parent === 'object' ? parent.id : parent, data: {}, req }) }` }] : [])]
+  return { phase: 'association' as const, rails: a.type, ...sides, hooks, theorem: 'textbook_association_fields' }
+}
+/** The Rails guide Active Record Validations, implemented by Payload's own field options where Payload has one (required, unique, minLength,
+ *  maxLength, min, max, options), else by a validate function whose source the generator writes: a string is the error message, true passes.
+ *  :allow_nil and :allow_blank pass an empty value, :on names the operation, :if and :unless read the sibling data, :message replaces the text. */
+export type Validation = { name: string; helper: 'absence' | 'acceptance' | 'confirmation' | 'comparison' | 'format' | 'inclusion' | 'exclusion' | 'length' | 'numericality' | 'presence' | 'uniqueness' | 'validates_associated' | 'validates_each' | 'validates_with'; options?: { with?: string; in?: readonly (string | number)[]; minimum?: number; maximum?: number; is?: number; onlyInteger?: boolean; greaterThan?: number | string; lessThan?: number | string; allowNil?: boolean; allowBlank?: boolean; message?: string; on?: 'create' | 'update'; if?: string; unless?: string; validator?: string } }
+export const createValidation = (v: Validation) => {
+  const o = v.options ?? {}, say = (m: string) => JSON.stringify(o.message ?? `${v.name} ${m}`), field: Field = {}
+  const test: string | null =
+    v.helper === 'presence' ? (field.required = true, null)
+    : v.helper === 'uniqueness' ? (field.unique = true, field.index = true, null)
+    : v.helper === 'validates_associated' ? null // Payload refuses a relationship to a document that is not there
+    : v.helper === 'length' && o.is === undefined ? (o.minimum !== undefined && (field.minLength = o.minimum), o.maximum !== undefined && (field.maxLength = o.maximum), null)
+    : v.helper === 'inclusion' && !o.message ? (field.options = o.in ?? [], null)
+    : v.helper === 'absence' ? `(value == null || value === '') || ${say('must be blank')}`
+    : v.helper === 'acceptance' ? `value === true || ${say('must be accepted')}`
+    : v.helper === 'confirmation' ? `value === siblingData?.${v.name}Confirmation || ${say('doesn\'t match confirmation')}`
+    : v.helper === 'comparison' ? `(${o.greaterThan !== undefined ? `value > ${typeof o.greaterThan === 'string' ? `siblingData?.${o.greaterThan}` : o.greaterThan}` : 'true'} && ${o.lessThan !== undefined ? `value < ${typeof o.lessThan === 'string' ? `siblingData?.${o.lessThan}` : o.lessThan}` : 'true'}) || ${say('is out of comparison')}`
+    : v.helper === 'format' ? `new RegExp(${JSON.stringify(o.with ?? '.*')}).test(String(value ?? '')) || ${say('is invalid')}`
+    : v.helper === 'inclusion' ? `${JSON.stringify(o.in ?? [])}.includes(value) || ${say('is not included in the list')}`
+    : v.helper === 'exclusion' ? `!${JSON.stringify(o.in ?? [])}.includes(value) || ${say('is reserved')}`
+    : v.helper === 'length' ? `String(value ?? '').length === ${o.is} || ${say(`is the wrong length (should be ${o.is} characters)`)}`
+    : v.helper === 'numericality' ? (field.type = 'number', o.minimum !== undefined && (field.min = o.minimum), o.maximum !== undefined && (field.max = o.maximum), o.onlyInteger ? `Number.isInteger(value) || ${say('must be an integer')}` : null)
+    : `(${o.validator ?? '() => true'})(value, siblingData)` // validates_each and validates_with: the tenant's own validator
+  // the options wrap the test: empty values pass when allowed, the operation and the condition decide whether it runs
+  const guards = [...(o.allowNil || o.allowBlank ? [`value == null${o.allowBlank ? ` || value === ''` : ''}`] : []), ...(o.on ? [`operation !== '${o.on}'`] : []), ...(o.if ? [`!(${o.if})`] : []), ...(o.unless ? [`(${o.unless})`] : [])]
+  const validate = test ? `(value, { siblingData, operation }) => ${guards.length ? `(${guards.join(' || ')}) || ` : ''}(${test})` : null
+  return { phase: 'validation' as const, rails: v.helper, field: { name: v.name, ...field }, validate, theorem: 'textbook_validation_helpers' }
+}
 /** Roles from Google Workspace: the groups the Admin SDK's Directory API lists for a user (groups.list by userKey, through the one Google door),
  *  each mapped by the tenant's table onto a scoped role; a group the table does not name grants nothing. Without the groups, the call to ask. */
 export const listRolesFromGroups = (mapping: readonly (ScopedRole & { group: string })[], groups?: readonly { email?: string }[], userKey?: string) =>
   groups ? { phase: 'roles' as const, roles: groups.flatMap((g) => mapping.filter((r) => r.group === g.email).map(({ group: _g, ...role }) => role)) }
     : { phase: 'plan' as const, googleCall: { api: 'admin', version: 'directory_v1', method: 'groups.list', params: { userKey: userKey ?? '' } }, scope: 'admin.directory.group.readonly', says: 'ask the Directory API through payload { googleCall }, under a Workspace admin\'s domain-wide delegation, and hand the groups back' }
 
-export const ACCESS = {
-  /** the groups the reads are computed from, after Google's data classes: what everyone reads stays outside them (the public docket, Discovery
-   *  documents, keyless answers); an operational kind (a machine's run, a chat, a penalty, a session, a task's call and answer) is read by its
-   *  tenant and admins; an answer from a sensitive or restricted Google scope by the user who granted it and their tenant's admins (Limited Use) */
-  groups: { operational: { kinds: ['machine', 'chat', 'penalty', 'session', 'call', 'message'], readers: 'tenant' }, 'google-user-data': { kinds: ['google-user-data'], readers: 'grantor' } },
-  entries: { read: 'everyone, but each group\'s kinds: their readers alone', create: 'a call by any keyed user of the tenant, or through the Payload MCP (its address folds the call); an anonymous REST call is refused by the multi-tenant plugin\'s tenant assignment (measured 2026-10-26) and is computed at the Worker\'s /mcp instead, never stored; other kinds by a super admin, a tenant-admin or editor of the entry\'s tenant, or the tenant\'s writer token', update: 'no one: an entry is its content address, so a change is a new entry', delete: 'a super admin, a tenant-admin of the entry\'s tenant (a where on the tenant), or the tenant\'s admin token' },
-  tenants: { read: 'everyone', write: 'a super admin (the admin role)' },
-  users: 'the site\'s own (admin or self), with an API key per user for MCP clients',
-  pages: 'the site\'s own access, kept (published pages public, drafts to users)',
-  by: 'Payload\'s user, or a role header signed under the deployment\'s secret (x-qpu-role-mac: HMAC-SHA-256 over role|tenant|METHOD, roles.ts); a bare x-qpu-role header is no claim (measured 2026-10-26: unsigned, it let an anonymous request delete an entry)',
-} as const
+/** The read groups and the per-collection access, read from Payload: groups after Google's data classes — what everyone reads stays outside them;
+ *  an operational kind (machine, chat, penalty, session, call, message) is read by its tenant and admins; google-user-data by its grantor (Limited Use). */
+export const ACCESS = TABLES.ACCESS
 /** The Entries read, computed from the groups: a kind outside them read by everyone, each group's kinds by its readers. */
 const readClause = () => {
   const q = (xs: readonly string[]) => JSON.stringify(xs).replace(/"/g, "'").replace(/,/g, ', '), gs = Object.values(ACCESS.groups), by = (r: string) => gs.filter((g) => g.readers === r).flatMap((g) => g.kinds)

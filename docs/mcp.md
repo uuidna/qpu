@@ -1762,9 +1762,19 @@ The ported MongoDB over the docket, pure
         "delete",
         "mirror",
         "restore",
-        "verify"
+        "verify",
+        "associate",
+        "validate"
       ],
-      "default": "restore"
+      "default": "find"
+    },
+    "association": {
+      "type": "object",
+      "description": "the Rails guide Active Record Associations as Payload fields"
+    },
+    "validation": {
+      "type": "object",
+      "description": "the Rails guide Active Record Validations as Payload field options or a validate function"
     },
     "files": {
       "type": "object",
@@ -1804,8 +1814,8 @@ The ported MongoDB over the docket, pure
     }
   },
   "x-harmonic": {
-    "combinations": "7",
-    "index": "5",
+    "combinations": "9",
+    "index": "0",
     "from": "a432"
   }
 }

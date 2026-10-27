@@ -292,6 +292,10 @@ theorem textbook_shared_verbs : 2 + 2 + 1 + 1 = 6 := by decide
 theorem textbook_abilities_merge (can cannot : Bool) : (can && !cannot) = true → can = true ∧ cannot = false := by cases can <;> cases cannot <;> decide
 /-- a cannot binds whatever can allows: checkAccess refuses a waiver of folded on main even to an admin who manages every rule (examples: payload-access-waive) -/
 theorem textbook_cannot_binds (can : Bool) : (can && !true) = false := by cases can <;> rfl
+/-- createAssociation answers the Rails association types with Payload fields: five by a relationship (belongs_to, has_and_belongs_to_many, polymorphic, self join, delegated type), four by a join (has_one, has_many and both through), one by a type select (single table inheritance) (examples: rails-associations-overview, rails-associations-types, rails-associations-choosing, rails-associations-advanced, rails-associations-sti, rails-associations-delegated, rails-associations-tips, rails-associations-references) -/
+theorem textbook_association_fields : 5 + 4 + 1 = 10 := by decide
+/-- createValidation answers the fourteen Rails validation helpers: five by a Payload field option (presence, uniqueness, validates_associated, a length range, an inclusion list), nine by a validate function (examples: rails-validations-overview, rails-validations-helpers, rails-validations-options, rails-validations-conditional, rails-validations-strict, rails-validations-listing, rails-validations-custom, rails-validations-errors) -/
+theorem textbook_validation_helpers : 5 + 9 = 14 := by decide
 /-- the phase of the stream at an interaction is one of 3888 milliseconds: eleven bits of randomness a sample, the device's own nonce thirty-two more (examples: seal-entropy) -/
 theorem textbook_phase_bits : 2 ^ 11 ≤ 3888 ∧ 3888 < 2 ^ 12 := by decide
 /-- a period of the stream is a chain of thirty-five links between its thirty-six frames; every full period streamed is one call, the first the coin, every further one a coil: the fusion (examples: verify-scan, verify-scan-one-frame) -/

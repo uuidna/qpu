@@ -1,3 +1,4 @@
+import { TABLES as PAYLOAD_TABLES } from './tables-index.ts'
 // Translation without a network and without a model: the surface speaks a small vocabulary — labels, statuses, verdicts,
 // headings — and a table per language translates it both ways. A word with no entry stays as it is and is reported as a
 // lead, never guessed. Free text inside entries is not translated. Any language or dialect is one more table.
@@ -11,18 +12,7 @@ export const LOCALES: Record<string, { name: string; native: string; filled: boo
 }
 
 /** English → Bulgarian for every term the surface emits. The inverse is derived, so the table reads both ways. */
-const BG: Record<string, string> = {
-  factor: 'разложи', with: 'с', qubits: 'кубита', 'how many': 'колко', have: 'има', numeral: 'числител', numerals: 'числители',
-  tool: 'инструмент', tools: 'инструменти', example: 'пример', examples: 'примери', lead: 'следа', leads: 'следи', verifier: 'проверител', verifiers: 'проверители',
-  block: 'блок', receipt: 'разписка', receipts: 'разписки', previous: 'предишен', next: 'следващ', program: 'програма', handle: 'дръжка', tail: 'опашка',
-  seal: 'печат', valid: 'валиден', invalid: 'невалиден', served: 'обслужена', partial: 'частична', blocked: 'блокирана', open: 'отворена', 'out of scope': 'извън обхват',
-  impossible: 'невъзможно', unknown: 'неизвестно', verdict: 'присъда', evidence: 'доказателство', docket: 'досие', entry: 'запис', entries: 'записи', mirror: 'огледало',
-  mirrors: 'огледала', fragment: 'фрагмент', fragments: 'фрагменти', parity: 'паритет', licence: 'лиценз', license: 'лиценз', author: 'автор', family: 'семейство',
-  door: 'врата', doors: 'врати', address: 'адрес', content: 'съдържание', chain: 'верига', step: 'стъпка', steps: 'стъпки', statement: 'твърдение', reason: 'причина',
-  'translate later': 'превод по-късно', decided: 'решено', walk: 'обход', page: 'страница', arguments: 'аргументи', nibble: 'полубайт', message: 'съобщение',
-  executed: 'изпълнено', loading: 'зареждане', none: 'няма', version: 'версия', variant: 'вариант', hue: 'нюанс', here: 'тук', chooses: 'избира', the: '', of: 'на',
-  'commercial use by licence': 'търговска употреба по лиценз', 'caught': 'уловено', 'this path is not a walk': 'този път не е обход', 'by the match tool': 'от инструмента за съвпадение',
-}
+const BG: Record<string, string> = PAYLOAD_TABLES.I18N_BG as Record<string, string>
 export const TABLES: Record<string, Record<string, string>> = { bg: BG }
 const inverted = (t: Record<string, string>): Record<string, string> => Object.fromEntries(Object.entries(t).filter(([, v]) => v).map(([k, v]) => [v, k]))
 
