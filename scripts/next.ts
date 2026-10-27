@@ -235,7 +235,7 @@ if (process.env.QPU_APP_KEY) {
     if (w.price.free && held) await clear('next:waiting', `${w.step} back under the budget (${w.price.wallMs} ms)`, { key, step: w.step, head: receipt.head }, 'waiting', held.tokens, (held.coin as { debit?: string } | null | undefined)?.debit?.replace(/^coins:/, () => '') ?? null)
   }
 }
-const leadsNow = [...previous.filter((l) => !l.id.startsWith('next-waiting-') && !l.id.startsWith('next-idle-') && !opened.some((o) => o.id === l.id)), ...opened]
+const leadsNow = [...previous.filter((l) => !/^next-(waiting|idle)-/.test(l.id) && !opened.some((o) => o.id === l.id) && !receipt.steps.some((x) => x.status === 'green' && l.id.startsWith(`next-${x.name}-`))), ...opened]
 writeFileSync(docket, JSON.stringify(leadsNow, null, 1) + '\n')
 const docketPage = ['---', 'title: Next leads', 'order: 50', '---', '', '# Leads opened by `npm run next`', '', 'Every red step of every run, as an open lead with its evidence. The next run follows them; a lead closes when its step is green again.', '', '| Lead | Opened | Evidence |', '|---|---|---|', ...leadsNow.map((l) => `| ${l.id} | ${l.date} | ${cell(l.evidence)} |`), ''].join('\n')
 writeFileSync(join(ROOT, 'docs', 'next-leads.md'), docketPage)

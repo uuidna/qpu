@@ -15,7 +15,7 @@ const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const UA = 'uuidna-qpu-discover (https://qpu.uuidna.com)'
 const call = toolCallerOf('discover')
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+import { setTimeout as sleep } from 'node:timers/promises'
 const fetchOne = async (r: Request): Promise<Answer> => {
   try { const res = await fetch(r.url, { method: r.method, headers: { accept: 'application/json, text/event-stream, application/yaml, text/xml, */*', 'user-agent': UA, ...(r.body ? { 'content-type': 'application/json' } : {}), ...(r.headers ?? {}) }, body: r.body ? JSON.stringify(r.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(30000) }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
   catch (e) { return { ...r, status: 0, type: '', text: `fetch failed: ${(e as Error).message}` } }

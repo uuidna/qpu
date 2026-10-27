@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T09:54:03.742Z",
+ "date": "2026-10-27T09:58:36.939Z",
  "literals": {
   "urls": 859,
   "distinctUrls": 442,
@@ -689,10 +689,10 @@
  },
  "files": 949,
  "lines": 85916,
- "findings": 1043,
- "fused": 328,
- "reactions": 715,
- "gravity": "88f8021c-f3a5-7cf9-a944-2c1e676dd145",
+ "findings": 1041,
+ "fused": 327,
+ "reactions": 714,
+ "gravity": "cbed5e3c-f7b7-5533-a8ee-d8922d0b3cb7",
  "vacuum": false,
  "byKind": {
   "literal": {
@@ -712,8 +712,8 @@
    "leads": 2
   },
   "duplicate": {
-   "findings": 705,
-   "leads": 281
+   "findings": 703,
+   "leads": 280
   },
   "shape": {
    "findings": 206,
@@ -730,17 +730,17 @@
  },
  "difference": {
   "appeared": 3,
-  "settled": 0
+  "settled": 1
  },
  "toExplore": {
-  "match": 306,
+  "match": 305,
   "imagine": 17,
   "configure": 5
  },
  "toConfig": {
   "actions": 23,
   "none": 19,
-  "fullstack": 286
+  "fullstack": 285
  },
  "leads": [
   {
@@ -1268,18 +1268,6 @@
    "tool": "audit",
    "occurrences": 2,
    "address": "feae5c2e-acc1-571f-b758-74242e43cd13",
-   "explore": "match",
-   "config": "fullstack"
-  },
-  {
-   "id": "entropy-duplicate-bf0c4756",
-   "kind": "duplicate",
-   "source": "scripts/discover.ts:18, scripts/verify.ts:13",
-   "statement": "one line of code repeated in more than one file: one place should hold it — const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))",
-   "status": "open",
-   "tool": "audit",
-   "occurrences": 2,
-   "address": "bf0c4756-97b4-10f7-ab1a-084a9165d8bf",
    "explore": "match",
    "config": "fullstack"
   },

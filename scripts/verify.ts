@@ -10,7 +10,7 @@ import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from 
 
 const ROOT = process.cwd()
 const call = toolCallerOf('wave')
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+import { setTimeout as sleep } from 'node:timers/promises'
 const main = async () => {
   const selftest = call({ selftest: true })
   console.log(`wave selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)

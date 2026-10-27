@@ -5,7 +5,7 @@ order: 52
 
 # Entropy converted to leads
 
-The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T09:54:03.742Z through the `audit` tool over 949 source files (85916 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (1043 findings, 328 leads, 715 fusion reactions); the gravity of the tree is `88f8021c-f3a5-7cf9-a944-2c1e676dd145`. 3 new lead(s) signalled into the entropy stream this run; the differences since the last run: 3 appeared (to explore), 0 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
+The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T09:58:36.939Z through the `audit` tool over 949 source files (85916 lines): every finding is a lead, never a ruling; findings of one content address fuse into one lead naming every source (1041 findings, 327 leads, 714 fusion reactions); the gravity of the tree is `cbed5e3c-f7b7-5533-a8ee-d8922d0b3cb7`. 3 new lead(s) signalled into the entropy stream this run; the differences since the last run: 3 appeared (to explore), 1 settled, counted by the audit tool's difference (proven true). Every lead names the tool that explores it and the configuration that settles it.
 
 | Kind | Findings | Leads |
 |---|---:|---:|
@@ -13,7 +13,7 @@ The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T09:54:03
 | typed-path | 1 | 1 |
 | cap | 89 | 21 |
 | clock | 20 | 2 |
-| duplicate | 705 | 281 |
+| duplicate | 703 | 280 |
 | shape | 206 | 4 |
 | todo | 18 | 15 |
 | leak | 0 | 0 |
@@ -64,7 +64,6 @@ The vacuum-gravity entropy cleaner, run by `npm run next` on 2026-10-27T09:54:03
 | entropy-literal-3b4918a0 | literal | configure | fullstack | 1 | src/quantum/toolboxes/payload.ts:1079 | data baked into a file as a JSON literal: the handler should answer it at run time — … 312 characters of JSON on one line |
 | entropy-typed-path-f9ef2525 | typed-path | configure | fullstack | 1 | src/quantum/toolboxes/repository.ts:113 | a generated path typed by hand where fileOf computes it from a role — 'site/src/payload.qpu.config.ts' |
 | entropy-duplicate-feae5c2e | duplicate | match | fullstack | 2 | docs/.vitepress/theme/components/App.vue:21, site/src/components/blocks/Qpu/App.tsx:29 | one line of code repeated in more than one file: one place should hold it — if (m.method === 'ui/initialize') &#123; post(&#123; id: m.id, result: &#123; protocolVersion: '2026-01-26', hostCapabilities: &#123;&#125;, hostContext: &#123; displayMode: 'inline' &#125; &#125; &#125;); return &#125; |
-| entropy-duplicate-bf0c4756 | duplicate | match | fullstack | 2 | scripts/discover.ts:18, scripts/verify.ts:13 | one line of code repeated in more than one file: one place should hold it — const sleep = (ms: number) =&gt; new Promise((r) =&gt; setTimeout(r, ms)) |
 | entropy-duplicate-db114119 | duplicate | match | fullstack | 3 | scripts/discover.ts:28, scripts/imagine.ts:24, scripts/verify.ts:19 | one line of code repeated in more than one file: one place should hold it — const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000) |
 | entropy-duplicate-40376fb4 | duplicate | match | fullstack | 3 | scripts/discover.ts:40, scripts/repository.ts:31, scripts/textbook.ts:32 | one line of code repeated in more than one file: one place should hold it — const vars: Record&lt;string, string&gt; = existsSync(join(ROOT, '.dev.vars')) ? Object.fromEntries(readFileSync(join(ROOT, '.dev.vars'), 'utf8').split('\n').filter((l) =&gt; /^[A-Z_0-9]+=/.test(l)).map((l) =&gt; [l.slice(0, l.indexOf('=')), l.slice(l.indexOf('=') + 1).replace(/^"\|"$/g, '')])) : &#123;&#125; |
 | entropy-duplicate-11c7b602 | duplicate | match | fullstack | 2 | scripts/gen-docs.ts:191, src/quantum/toolboxes/payload.ts:37 | one line of code repeated in more than one file: one place should hold it — const next = uuidFromParts(ch.handle, [...ch.program.slice(1), ch.program[0]!], ch.tail) |

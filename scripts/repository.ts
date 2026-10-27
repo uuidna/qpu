@@ -42,11 +42,11 @@ const main = async () => {
   const date = new Date().toISOString()
   writeFileSync(join(ROOT, 'docs', 'public', 'repository.json'), JSON.stringify({ license: LICENSE.attribution, date, online: !offline, selftest: { passed: selftest.passed }, ...w.watch }, null, 1) + '\n')
   writeFileSync(join(ROOT, 'docs', 'repository.md'), w.page)
-  // the watch's leads join the docket next keeps, by id
+  // the watch's leads in the docket next keeps, replaced each run
   const docket = join(ROOT, 'docs', 'public', 'next-leads.json')
-  const previous = existsSync(docket) ? JSON.parse(readFileSync(docket, 'utf8')) as { id: string }[] : []
-  const fresh = (w.watch.leads as { id: string }[]).filter((l) => !previous.some((p) => p.id === l.id)).map((l) => ({ ...l, source: 'repository watch', evidence: w.watch.remote ?? 'git', head: local.head.slice(0, 8), date }))
-  if (fresh.length) writeFileSync(docket, JSON.stringify([...previous, ...fresh], null, 1) + '\n')
-  console.log(`repository: ${w.branches} branches, ${w.tags} tags, releases ${w.releases < 0 ? 'not reached' : w.releases}, ${w.leads} lead(s)${fresh.length ? ` (${fresh.length} new in the docket)` : ''}, ${w.refusals} refusal(s)${offline ? ' (offline: local facts only)' : ''}`)
+  const previous = existsSync(docket) ? JSON.parse(readFileSync(docket, 'utf8')) as { id: string; source?: string }[] : []
+  const fresh = (w.watch.leads as { id: string }[]).map((l) => ({ ...l, source: 'repository watch', evidence: w.watch.remote ?? 'git', head: local.head.slice(0, 8), date }))
+  writeFileSync(docket, JSON.stringify([...previous.filter((p) => p.source !== 'repository watch'), ...fresh], null, 1) + '\n')
+  console.log(`repository: ${w.branches} branches, ${w.tags} tags, releases ${w.releases < 0 ? 'not reached' : w.releases}, ${w.leads} lead(s), ${w.refusals} refusal(s)${offline ? ' (offline: local facts only)' : ''}`)
 }
 main().catch((e) => { console.error(e); process.exit(1) })
