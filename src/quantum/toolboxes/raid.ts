@@ -76,23 +76,38 @@ export const entryOf = (collection: string, doc: Doc, replaces?: string): { id: 
   return { id, kind: 'document', collection, body: { ...body, _id: body._id ?? id }, links: replaces ? [replaces] : [] }
 }
 
-/** Binding 0 of the storage dimension, the filesystem: a document once at its content address in hex folders ab/cd/<uuid> — its R2 key and its GCS
- *  object — and beside the address of its collection and id a pointer to its latest version (textbook_binding_zero_hex_path). */
-export const hexPathOf = (uuid: string) => `${uuid.slice(0, 2)}/${uuid.slice(2, 4)}/${uuid}`
+/** Binding 0 of the storage dimension, the filesystem: a document once at its content address in hex folders named by the UUID's middle, g1/g2/g3/<uuid>
+ *  (one program's versions in one folder), its R2 key and its GCS object, and beside the address of its collection and id a pointer to its latest version. */
+export const hexPathOf = (uuid: string) => { const [, a, b, c] = uuid.split('-'); return `${a}/${b}/${c}/${uuid}` }
 /** The RAID's order by profile: Payload, then the profile's database and object store, then binding 0, which always answers. */
 export const RAID_ORDER = { cloudflare: ['payload', 'd1', 'r2', 'filesystem'], google: ['payload', 'cloudsql', 'gcs', 'filesystem'], vercel: ['payload', 'filesystem'], local: ['payload', 'filesystem'] } as const
+// every file by the address its name ends with (a version, or its pointer with .latest), wherever it lies, the first-four-digit folders included
+const named = (files: Readonly<Record<string, string>>) => Object.entries(files).flatMap(([path, text]) => { const m = /([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})(\.latest)?$/.exec(path); return m ? [{ path, text, id: m[1]!, latest: m[2], to: hexPathOf(m[1]!) + (m[2] ?? '') }] : [] })
+// bit 0: a version's bytes recompute its address, else it is not read
+const addressed = (id: string, text = '') => { try { const e = JSON.parse(text) as { collection: string; body: Doc }, { _id, ...rest } = e.body, doc = _id === id ? rest : e.body; return entryOf(e.collection, doc).id === id ? { collection: e.collection, doc } : null } catch { return null } }
 /** Documents mirrored to binding 0 (each file to write: the version at its address, the pointer naming it), or a collection read back from the
  *  files: every pointer's version verified by its address, a file not at its address refused by path, never read. Pure: Payload's hook writes. */
 export const binding0Of = (collection: string, docs: readonly Doc[] | null, files: Readonly<Record<string, string>> = {}) => {
   if (docs) return { files: docs.flatMap((d) => { const e = entryOf(collection, d); return [{ path: hexPathOf(e.id), text: JSON.stringify(e) }, { path: `${hexPathOf(uuidOf(`${collection}/${String(d.id ?? e.id)}`))}.latest`, text: e.id }] }), order: RAID_ORDER }
-  const read = (id: string): Doc | null => { try { const e = JSON.parse(files[hexPathOf(id)] ?? '') as { collection: string; body: Doc }; const { _id, ...rest } = e.body; return e.collection !== collection ? null : _id === id && entryOf(collection, rest).id === id ? rest : entryOf(collection, e.body).id === id ? e.body : null } catch { return null } }
-  const ids = Object.entries(files).filter(([p]) => p.endsWith('.latest')).map(([, id]) => id.trim()), back = ids.map(read), mine = ids.filter((id, i) => back[i] || JSON.parse(files[hexPathOf(id)] ?? '{}').collection === collection)
-  return { docs: back.filter((d): d is Doc => d !== null), refused: mine.filter((id) => !read(id)).map(hexPathOf), pointers: ids.length, order: RAID_ORDER }
+  const all = named(files), at = Object.fromEntries(all.map((f) => [f.to, f.text])), ids = all.filter((f) => f.latest).map((f) => f.text.trim()), back = ids.map((id) => addressed(id, at[hexPathOf(id)]))
+  return { docs: back.flatMap((e) => (e?.collection === collection ? [e.doc] : [])), refused: ids.filter((id, i) => !back[i] && at[hexPathOf(id)]?.includes(`"collection":${JSON.stringify(collection)}`)).map(hexPathOf), pointers: ids.length, order: RAID_ORDER }
+}
+/** Every copy of every version checked against bit 0, the address its own bytes recompute: per binding the copies verified, missing or differing,
+ *  a rebuild from a verified copy for each of the others, and every file not at its middle-part path moved there (textbook_raid_bit_zero_verify). */
+export const verifyOf = (copies: Readonly<Record<string, Readonly<Record<string, string>>>>) => {
+  const by = Object.entries(copies).map(([binding, files]) => { const all = named(files); return { binding, all, at: Object.fromEntries(all.filter((f) => !f.latest).map((f) => [f.id, f.text])) } })
+  const ids = [...new Set(by.flatMap((b) => Object.keys(b.at)))], good = (b: (typeof by)[number], id: string) => !!addressed(id, b.at[id]), from = (id: string) => by.find((b) => good(b, id))?.at[id], of = (k: (id: string) => boolean) => ids.filter(k).length
+  return {
+    entries: ids.length, twoCopies: ids.filter((id) => by.filter((b) => good(b, id)).length > 1).length, refused: ids.filter((id) => !from(id)).map(hexPathOf),
+    bindings: Object.fromEntries(by.map((b) => [b.binding, { verified: of((id) => good(b, id)), missing: of((id) => !(id in b.at)), differ: of((id) => id in b.at && !good(b, id)) }])),
+    rebuild: by.flatMap((b) => ids.filter((id) => from(id) && !good(b, id)).map((id) => ({ binding: b.binding, path: hexPathOf(id), text: from(id)! }))),
+    moves: by.flatMap((b) => b.all.filter((f) => f.path !== f.to && (f.latest || addressed(f.id, f.text))).map((f) => ({ binding: b.binding, from: f.path, to: f.to }))),
+  }
 }
 const mongo = toolOf('raid', {
   name: 'mongo',
-  description: 'The ported MongoDB over the docket, pure. find: {collection, docs, filter, sort, skip, limit} → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: {collection, docs: [new]} → the entries to write, content-addressed. update: {collection, docs, filter, update} → for each match the new document and the entry that replaces it (linked to the old). delete: {collection, docs, filter} → the ids to delete, if unlinked. mirror: {collection, docs} → binding 0\'s files (hex folders ab/cd/<uuid>, the R2 and GCS key, and the collection\'s pointer); restore: {collection, files} → the documents read back, each verified by its address. The client reads the docket rows and writes what comes back.',
-  inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['find', 'insert', 'update', 'delete', 'mirror', 'restore'] }, files: { type: 'object', description: 'restore: binding 0\'s files as read, path → text' }, collection: { type: 'string' }, docs: { type: 'array', items: { type: 'object' }, description: 'the collection\'s documents as read from the docket (their bodies)' }, filter: { type: 'object' }, update: { type: 'object' }, sort: { type: 'object' }, skip: { type: 'integer' }, limit: { type: 'integer' }, selftest: { type: 'boolean' } } },
+  description: 'The ported MongoDB over the docket, pure. find: {collection, docs, filter, sort, skip, limit} → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: {collection, docs: [new]} → the entries to write, content-addressed. update: {collection, docs, filter, update} → for each match the new document and the entry that replaces it (linked to the old). delete: {collection, docs, filter} → the ids to delete, if unlinked. mirror: {collection, docs} → binding 0\'s files (hex folders g1/g2/g3/<uuid> by the UUID\'s middle, the R2 and GCS key, and the collection\'s pointer); restore: {collection, files} → the documents read back, each verified by its address; verify: {copies: {binding: files}} → every copy against bit 0, the rebuilds and the moves to the middle-part folders. The client reads the docket rows and writes what comes back.',
+  inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['find', 'insert', 'update', 'delete', 'mirror', 'restore', 'verify'] }, files: { type: 'object', description: 'restore: binding 0\'s files as read, path → text' }, copies: { type: 'object', description: 'verify: each binding\'s files, binding → path → text' }, collection: { type: 'string' }, docs: { type: 'array', items: { type: 'object' }, description: 'the collection\'s documents as read from the docket (their bodies)' }, filter: { type: 'object' }, update: { type: 'object' }, sort: { type: 'object' }, skip: { type: 'integer' }, limit: { type: 'integer' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...RAID.skill.selftest(ctx) }
     const op = String(args.op ?? 'find'); const collection = String(args.collection ?? 'documents'); const docs = (Array.isArray(args.docs) ? args.docs : []) as Doc[]; const filter = (args.filter ?? {}) as Filter
@@ -100,8 +115,9 @@ const mongo = toolOf('raid', {
     if (op === 'insert') { const entries = docs.map((d) => entryOf(collection, d)); return { op, collection, written: entries.length, entries } }
     if (op === 'update') { const changes = findOf(docs, filter).map((d) => { const next = updateOf(d, (args.update ?? {}) as Record<string, unknown>); return { from: String(d._id ?? ''), to: entryOf(collection, next, typeof d._id === 'string' ? d._id : undefined) } }); return { op, collection, scanned: docs.length, matched: changes.length, changes } }
     if (op === 'mirror' || op === 'restore') return { op, collection, ...binding0Of(collection, op === 'mirror' ? docs : null, (args.files ?? {}) as Record<string, string>) }
+    if (op === 'verify') return { op, ...verifyOf((args.copies ?? {}) as Record<string, Record<string, string>>) }
     if (op === 'delete') { const ids = findOf(docs, filter).map((d) => String(d._id ?? '')); return { op, collection, scanned: docs.length, matched: ids.length, ids, note: 'the docket refuses a delete while anything links the entry; a linked document is kept as history' } }
-    throw new Error(`op ${op} is not one of find, insert, update, delete, mirror, restore`)
+    throw new Error(`op ${op} is not one of find, insert, update, delete, mirror, restore, verify`)
   },
   widget: flowWidget,
 })

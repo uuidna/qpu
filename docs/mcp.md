@@ -1749,13 +1749,18 @@ The ported MongoDB over the docket, pure
         "update",
         "delete",
         "mirror",
-        "restore"
+        "restore",
+        "verify"
       ],
-      "default": "find"
+      "default": "restore"
     },
     "files": {
       "type": "object",
       "description": "restore"
+    },
+    "copies": {
+      "type": "object",
+      "description": "verify"
     },
     "collection": {
       "type": "string"
@@ -1787,8 +1792,8 @@ The ported MongoDB over the docket, pure
     }
   },
   "x-harmonic": {
-    "combinations": "6",
-    "index": "0",
+    "combinations": "7",
+    "index": "5",
     "from": "a432"
   }
 }

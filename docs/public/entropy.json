@@ -1,8 +1,8 @@
 {
- "date": "2026-10-27T15:21:23.844Z",
+ "date": "2026-10-27T15:27:54.356Z",
  "literals": {
-  "urls": 839,
-  "distinctUrls": 450,
+  "urls": 836,
+  "distinctUrls": 449,
   "paths": 191,
   "outside": 571,
   "tokens": 6065,
@@ -648,7 +648,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 932,
- "lines": 83640,
+ "lines": 83695,
  "findings": 879,
  "fused": 315,
  "reactions": 564,
@@ -706,7 +706,7 @@
   {
    "id": "entropy-cap-b5ede745",
    "kind": "cap",
-   "source": "scripts/audit.ts:75, src/quantum/expressions.ts:137, src/quantum/toolboxes/extension.ts:91, src/quantum/toolboxes/language.ts:76, src/quantum/toolboxes/payload.ts:1104, src/quantum/toolboxes/payload.ts:2093, src/quantum/toolboxes/payload.ts:2107",
+   "source": "scripts/audit.ts:75, src/quantum/expressions.ts:137, src/quantum/toolboxes/extension.ts:91, src/quantum/toolboxes/language.ts:76, src/quantum/toolboxes/payload.ts:1104, src/quantum/toolboxes/payload.ts:2109, src/quantum/toolboxes/payload.ts:2123",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 120)",
    "status": "open",
    "tool": "audit",
@@ -754,7 +754,7 @@
   {
    "id": "entropy-cap-113d3f3c",
    "kind": "cap",
-   "source": "scripts/machine.ts:72, src/quantum/discovery.ts:270, src/quantum/examples.ts:237, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
+   "source": "scripts/machine.ts:72, src/quantum/discovery.ts:270, src/quantum/examples.ts:240, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200)",
    "status": "open",
    "tool": "audit",
@@ -766,7 +766,7 @@
   {
    "id": "entropy-cap-e1adfd32",
    "kind": "cap",
-   "source": "scripts/purify.ts:170, scripts/purify.ts:183, scripts/textbook.ts:45, src/quantum/audit.ts:421, src/quantum/audit.ts:439, src/quantum/audit.ts:441, src/quantum/audit.ts:443, src/quantum/discovery.ts:136, src/quantum/discovery.ts:183, src/quantum/examples.ts:263, src/quantum/examples.ts:319, src/quantum/match.ts:341, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:202, src/quantum/wave.ts:27, src/worker.ts:368",
+   "source": "scripts/purify.ts:170, scripts/purify.ts:183, scripts/textbook.ts:45, src/quantum/audit.ts:421, src/quantum/audit.ts:439, src/quantum/audit.ts:441, src/quantum/audit.ts:443, src/quantum/discovery.ts:136, src/quantum/discovery.ts:183, src/quantum/examples.ts:266, src/quantum/examples.ts:322, src/quantum/match.ts:341, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:202, src/quantum/wave.ts:27, src/worker.ts:368",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80)",
    "status": "open",
    "tool": "audit",
@@ -922,7 +922,7 @@
   {
    "id": "entropy-cap-c7ad5d45",
    "kind": "cap",
-   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:324, src/quantum/wave.ts:24, src/quantum/wave.ts:29, src/quantum/wave.ts:30, src/quantum/wave.ts:32",
+   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:327, src/quantum/wave.ts:24, src/quantum/wave.ts:29, src/quantum/wave.ts:30, src/quantum/wave.ts:32",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 100)",
    "status": "open",
    "tool": "audit",
@@ -1030,7 +1030,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/audit.ts:361, src/quantum/audit.ts:362, src/quantum/examples.ts:324, src/quantum/mcp.ts:1017, src/quantum/mcp.ts:1020, src/quantum/selftest.ts:43, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:113, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:182, src/quantum/toolboxes/legal.ts:257, src/quantum/toolboxes/payload.ts:1791",
+   "source": "src/quantum/audit.ts:361, src/quantum/audit.ts:362, src/quantum/examples.ts:327, src/quantum/mcp.ts:1017, src/quantum/mcp.ts:1020, src/quantum/selftest.ts:43, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:113, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:182, src/quantum/toolboxes/legal.ts:257, src/quantum/toolboxes/payload.ts:1792",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
@@ -1042,7 +1042,7 @@
   {
    "id": "entropy-cap-9347bb45",
    "kind": "cap",
-   "source": "src/quantum/audit.ts:415, src/quantum/imagine.ts:56, src/quantum/mcp.ts:984, src/quantum/selftest.ts:45, src/quantum/toolboxes/billing.ts:585, src/quantum/toolboxes/language.ts:92, src/quantum/toolboxes/payload.ts:2105, src/quantum/toolboxes/raid.ts:121, src/quantum/toolboxes/standards.ts:47",
+   "source": "src/quantum/audit.ts:415, src/quantum/imagine.ts:56, src/quantum/mcp.ts:984, src/quantum/selftest.ts:45, src/quantum/toolboxes/billing.ts:585, src/quantum/toolboxes/language.ts:92, src/quantum/toolboxes/payload.ts:2121, src/quantum/toolboxes/raid.ts:137, src/quantum/toolboxes/standards.ts:47",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 160)",
    "status": "open",
    "tool": "audit",
@@ -3442,7 +3442,7 @@
   {
    "id": "entropy-duplicate-b542b948",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:8, src/quantum/toolboxes/payload.ts:1876",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:8, src/quantum/toolboxes/payload.ts:1892",
    "statement": "one line of code repeated in more than one file: one place should hold it — export type Branding = { name: string; tagline?: string; accent: string; logo?: string; icon?: string; source?: Record<string, string> }",
    "status": "open",
    "tool": "audit",
@@ -3454,7 +3454,7 @@
   {
    "id": "entropy-duplicate-609aa2fe",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:11, src/quantum/toolboxes/payload.ts:1879",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:11, src/quantum/toolboxes/payload.ts:1895",
    "statement": "one line of code repeated in more than one file: one place should hold it — const [b, set] = React.useState<Branding>(() => computed(typeof window === 'undefined' ? '' : window.location.hostname))",
    "status": "open",
    "tool": "audit",
@@ -3466,7 +3466,7 @@
   {
    "id": "entropy-duplicate-85905e56",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:12, src/quantum/toolboxes/payload.ts:1880",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:12, src/quantum/toolboxes/payload.ts:1896",
    "statement": "one line of code repeated in more than one file: one place should hold it — React.useEffect(() => { let on = true; fetch('/api/globals/qpu?depth=1', { headers: { accept: 'application/json' } }).then((r) => r.json()).then((j: { branding?: Branding | null }) => { if (on && j.branding) set(j.branding) }).catch(() => { /* the computed branding stands */ }); return () => { on = false } }, [])",
    "status": "open",
    "tool": "audit",
@@ -3478,7 +3478,7 @@
   {
    "id": "entropy-duplicate-8971ca16",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:15, src/quantum/toolboxes/payload.ts:1883",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:15, src/quantum/toolboxes/payload.ts:1899",
    "statement": "one line of code repeated in more than one file: one place should hold it — export const QpuIcon = (props: React.ComponentPropsWithoutRef<'svg'>) => { const b = useBranding(); return b.icon ? <img src={b.icon} alt={b.name} height={24} width={24} /> : <svg viewBox=\"0 0 24 24\" width={24} height={24} role=\"img\" aria-label={b.name} {...props}><rect width=\"24\" height=\"24\" rx=\"6\" fill={b.accent} /></svg> }",
    "status": "open",
    "tool": "audit",
@@ -3490,7 +3490,7 @@
   {
    "id": "entropy-duplicate-cefe79aa",
    "kind": "duplicate",
-   "source": "site/src/components/blocks/Qpu/Branding.tsx:16, src/quantum/toolboxes/payload.ts:1884",
+   "source": "site/src/components/blocks/Qpu/Branding.tsx:16, src/quantum/toolboxes/payload.ts:1900",
    "statement": "one line of code repeated in more than one file: one place should hold it — export const QpuLogo = ({ className, ...rest }: React.ComponentPropsWithoutRef<'svg'>) => { const b = useBranding(); if (b.logo) return <img className={className} src={b.logo} alt={b.name} height={30} />; return <svg className={className} viewBox=\"0 0 194 44\" height={44} width={194} role=\"img\" aria-label={b.name} {...rest}><rect x=\"0\" y=\"4\" width=\"36\" height=\"36\" rx=\"8\" fill={b.accent} /><text x=\"46\" y=\"31\" fontFamily=\"system-ui, sans-serif\" fontSize=\"22\" fill=\"currentColor\">{b.name}</text></svg> }",
    "status": "open",
    "tool": "audit",
@@ -4450,7 +4450,7 @@
   {
    "id": "entropy-shape-0d8252de",
    "kind": "shape",
-   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/legal.ts:30, scripts/mcp.ts:20, scripts/publish.ts:27, scripts/publish.ts:43, scripts/shard.ts:22, src/quantum/audit.test.ts:38, src/quantum/examples.ts:136",
+   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/legal.ts:30, scripts/mcp.ts:20, scripts/publish.ts:27, scripts/publish.ts:43, scripts/shard.ts:22, src/quantum/audit.test.ts:38, src/quantum/examples.ts:139",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a JSON file read and parsed: one reader of the published files, null when a file is missing",
    "status": "open",
    "tool": "audit",
@@ -4462,7 +4462,7 @@
   {
    "id": "entropy-shape-7458ed19",
    "kind": "shape",
-   "source": "scripts/e2e.ts:29, scripts/hook.ts:65, scripts/mcp.ts:30, scripts/mcp.ts:37, scripts/metrics.ts:25, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/repository.ts:35, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/textbook.ts:33, site/src/collections/Entries.ts:42, site/src/plugins/qpu.ts:93, site/src/plugins/qpu.ts:96, src/quantum/examples.ts:136, src/quantum/toolboxes/payload.ts:1346, src/quantum/toolboxes/payload.ts:1802, src/quantum/toolboxes/payload.ts:1805, src/worker.ts:38, src/worker.ts:475",
+   "source": "scripts/e2e.ts:29, scripts/hook.ts:65, scripts/mcp.ts:30, scripts/mcp.ts:37, scripts/metrics.ts:25, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/repository.ts:35, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/textbook.ts:33, site/src/collections/Entries.ts:42, site/src/plugins/qpu.ts:94, site/src/plugins/qpu.ts:97, src/quantum/examples.ts:139, src/quantum/toolboxes/payload.ts:1346, src/quantum/toolboxes/payload.ts:1803, src/quantum/toolboxes/payload.ts:1806, src/worker.ts:38, src/worker.ts:475",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a request with its timeout: one fetcher with the named user agent and the timeout",
    "status": "open",
    "tool": "audit",
