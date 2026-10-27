@@ -19,14 +19,13 @@ test('the MCP surface audits itself through tools/call and every check passes', 
 
 test('the audit run directly agrees with the audit run through the tool, and the self example passes', () => {
   const direct = auditOf(handle, EXAMPLES, LEADS)
-  const self = EXAMPLES.find((e) => e.id === 'audit-self')!
-  assert.equal(self.expect(direct), null)
+  assert.equal(EXAMPLES.find((e) => e.id === 'audit-self')!.expect(direct), null)
   assert.equal(direct.failed, 0)
 })
 
 test('every example replays as documented: the registry is the documentation', () => {
   for (const e of EXAMPLES) {
-    if (e.tool === 'audit') continue
+    if (e.id === 'audit-self') continue
     const r = call(e.tool, e.arguments)
     assert.ok('result' in r, `${e.id}: ${'error' in r ? r.error.message : ''}`)
     assert.equal(e.expect((r.result as { structuredContent: unknown }).structuredContent), null, e.id)
