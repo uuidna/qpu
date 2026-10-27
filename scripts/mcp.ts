@@ -24,7 +24,14 @@ export const sessionOf = (url: string, key?: string) => {
   }
   const request = (method: string, params?: unknown) => post({ id: ++id, method, ...(params === undefined ? {} : { params }) })
   const initialize = async () => { const r = await request('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'qpu', version: '1' } }); if (!r.error) await post({ method: 'notifications/initialized' }); return r }
-  return { url, request, initialize }
+  /** a tools/call answered as its structured content, else thrown with the door's error or refusal; paid sees every answer */
+  const tool = async (name: string, args: unknown, paid?: (r: Reply) => void): Promise<any> => {
+    const r = await request('tools/call', { name, arguments: args }); paid?.(r)
+    if (r.error !== undefined) throw new Error(r.error)
+    if (r.result?.isError) throw new Error(r.result.content?.[0]?.text ?? 'the door refused without a text')
+    return r.result?.structuredContent ?? (r.result?.content?.[0] ? JSON.parse(r.result.content[0].text) : r.result)
+  }
+  return { url, request, initialize, tool }
 }
 
 type Answer = { text: string; error?: undefined } | { text?: undefined; error: string }

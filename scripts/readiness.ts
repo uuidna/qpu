@@ -8,6 +8,7 @@ import './teleport.ts'
 import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
+import { sessionOf } from './mcp.ts'
 import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
@@ -18,15 +19,7 @@ mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const account = (door: string, body: unknown) => { const d = depositOf(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'readiness', ...d }) + '\n') }
 const UNIT = process.env.UUIDNA_MCP ?? 'https://uuidna.com/mcp'
 const call = toolCallerOf('readiness')
-const rpc = async (url: string, name: string, args: unknown): Promise<any> => {
-  const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-next (https://qpu.uuidna.com)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
-  if (res.status !== 200) throw new Error(`HTTP ${res.status}`)
-  const body = await res.json() as { result?: { structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
-  account(name, body)
-  if (body.error) throw new Error(body.error.message)
-  if (body.result?.isError) throw new Error(body.result.content?.[0]?.text ?? 'the door refused without a text')
-  return body.result?.structuredContent ?? (body.result?.content?.[0] ? JSON.parse(body.result.content[0].text) : body.result)
-}
+const rpc = (url: string, name: string, args: unknown) => sessionOf(url).tool(name, args, (r) => account(name, r))
 // the unit's answers kept a day by call address (an aura by its block id, a sequence by its value): a run asks only what is new
 const cachePath = join(ROOT, '.qpu', 'cache', 'unit-cache.json')
 const unitCache: Record<string, { at: string; answer: unknown }> = existsSync(cachePath) ? (() => { try { return JSON.parse(readFileSync(cachePath, 'utf8')) } catch { return {} } })() : {}

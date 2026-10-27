@@ -7,6 +7,7 @@ import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
+import { sessionOf } from './mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
 const ROOT = process.cwd()
@@ -15,15 +16,7 @@ const account = (door: string, body: unknown) => { const d = depositOf(door, bod
 const call = toolCallerOf('legal')
 const text = (f: string) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT, f), 'utf8') : undefined)
 const readJson = (f: string) => { const t = text(f); return t ? JSON.parse(t) : undefined }
-const rpc = async (url: string, name: string, args: unknown): Promise<unknown> => {
-  const res = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', 'user-agent': 'uuidna-qpu-legal (https://qpu.uuidna.com)' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(60000) })
-  if (res.status !== 200) throw new Error(`HTTP ${res.status}`)
-  const body = await res.json() as { result?: { structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
-  account(name, body)
-  if (body.error) throw new Error(body.error.message)
-  if (body.result?.isError) throw new Error(body.result.content?.[0]?.text ?? 'the door refused without a text')
-  return body.result?.structuredContent ?? (body.result?.content?.[0] ? JSON.parse(body.result.content[0].text) : body.result)
-}
+const rpc = (url: string, name: string, args: unknown) => sessionOf(url).tool(name, args, (r) => account(name, r))
 const main = async () => {
   const selftest = call({ selftest: true })
   console.log(`legal selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
