@@ -9,7 +9,7 @@ import type { Lead } from './leads.js'
 import type { Rpc } from './audit.js'
 import { factsOf, verifyRequestsOf, type VerifyRequest } from './verifiers.js'
 import { numeralsOf, translateOf } from './i18n.js'
-import { THEOREMS } from './theorems-index.js'
+import { THEOREMS, THEOREM_KEYS } from './theorems-index.js'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 
 /** The route of a prompt to the theorems, decided by the theorems: every textbook theorem is indexed by the words of its key and of what it
@@ -22,7 +22,7 @@ let routeIndex: { key: string; says: string; lean: string; examples: readonly st
 let routeIdf: Map<string, number> | null = null
 export const routeOf = (statement: string, examples: readonly Example[], top = 3) => {
   if (!routeIndex || !routeIdf) {
-    const kernel = new Set(THEOREMS.map((t) => t.key)), textbook = new Set(TEXTBOOK_THEOREMS.map((t) => t.key))
+    const kernel = THEOREM_KEYS, textbook = new Set(TEXTBOOK_THEOREMS.map((t) => t.key))
     // every kernel-accepted theorem routes: a textbook theorem by its key and what it says, any other by its key and its module; an example names the theorem it rests on, so its examples are its routes
     const named = new Map<string, string[]>(); for (const e of examples) if (e.theorem) named.set(e.theorem, [...(named.get(e.theorem) ?? []), e.id])
     const keyOf = (k: string) => routeStems(k.replace(/^textbook_/, '').replace(/^Qpu\./, ''))

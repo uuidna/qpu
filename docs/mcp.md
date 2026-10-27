@@ -1269,6 +1269,9 @@ The QPU textbook as an adapter
 {
   "type": "object",
   "properties": {
+    "reflect": {
+      "description": "true or { books }"
+    },
     "claims": {
       "description": "the textbook claims measured against what is published"
     },

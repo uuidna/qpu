@@ -28,7 +28,7 @@ type Env = Record<string, bigint>
 type Value = bigint | boolean
 const FUNCS: Record<string, (a: bigint[]) => bigint> = { 'Nat.gcd': ([a, b]) => { let x = a!, y = b!; while (y) [x, y] = [y, x % y]; return x }, max: ([a, b]) => (a! > b! ? a! : b!), min: ([a, b]) => (a! < b! ? a! : b!), 'Nat.succ': ([a]) => a! + 1n, 'Nat.pred': ([a]) => (a! > 0n ? a! - 1n : 0n) }
 /** A recursive-descent evaluator: ∨ < ∧ < ¬ < comparison < + − < × / % < ^ (right) < application < atom; booleans and naturals kept apart. */
-const evaluate = (src: string, env: Env): { value: Value; parts: { text: string; left: string; op: string; right: string; holds: boolean }[] } => {
+export const evaluate = (src: string, env: Env): { value: Value; parts: { text: string; left: string; op: string; right: string; holds: boolean }[] } => {
   const ts = tokens(src); let p = 0; const parts: { text: string; left: string; op: string; right: string; holds: boolean }[] = []
   const peek = () => ts[p], take = () => ts[p++]!
   const num = (v: Value): bigint => { if (typeof v !== 'bigint') throw new Error('a truth where a number is due'); return v }
@@ -46,7 +46,7 @@ const evaluate = (src: string, env: Env): { value: Value; parts: { text: string;
     throw new Error(`unexpected ${k.v}`)
   }
   const power = (): Value => { const b = atom(); if (peek()?.v === '^') { take(); const e = power(); return num(b) ** num(e) } return b }
-  const product = (): Value => { let v = power(); while (peek() && ['*', '/', '%'].includes(peek()!.v)) { const o = take().v; const r = num(power()); v = o === '*' ? num(v) * r : r === 0n ? 0n : o === '/' ? num(v) / r : num(v) % r } return v }
+  const product = (): Value => { let v = power(); while (peek() && ['*', '/', '%'].includes(peek()!.v)) { const o = take().v; const r = num(power()); v = o === '*' ? num(v) * r : r === 0n ? (o === '/' ? 0n : num(v)) : o === '/' ? num(v) / r : num(v) % r } return v }
   const sum = (): Value => { let v = product(); while (peek() && ['+', '-'].includes(peek()!.v)) { const o = take().v; const r = num(product()); v = o === '+' ? num(v) + r : num(v) - r < 0n ? 0n : num(v) - r } return v }
   const comparison = (): Value => {
     const start = p; const l = sum()
@@ -89,15 +89,15 @@ export const evaluateOf = (key: string, values: Readonly<Record<string, number |
   const s = statementOf(t.lean)
   const env: Env = Object.fromEntries(Object.entries(values).filter(([k]) => s.variables.includes(k)).map(([k, v]) => [k, BigInt(String(v))]))
   const needs = s.variables.filter((v) => !(v in env))
-  const inputSchema = { type: 'object', properties: Object.fromEntries(s.variables.map((v) => [v, { type: 'integer', minimum: 0 }])), required: s.variables }
-  if (s.quantified) return { theorem: key, says: t.says, lean: t.lean, ...s, inputSchema, evaluable: false, reason: 'a quantified or implication statement: the kernel proves it for all values; evaluate it by its instances', needs }
-  if (needs.length) return { theorem: key, says: t.says, lean: t.lean, ...s, inputSchema, evaluable: true, needs, computed: null }
+  const inputSchema = { type: 'object', properties: Object.fromEntries(s.variables.map((v) => [v, { type: 'integer', minimum: 0 }])), required: s.variables }, head = { theorem: key, says: t.says, lean: t.lean, ...s, inputSchema }
+  if (s.quantified) return { ...head, evaluable: false, reason: 'a quantified or implication statement: the kernel proves it for all values; evaluate it by its instances', needs }
+  if (needs.length) return { ...head, evaluable: true, needs, computed: null }
   try {
     const hyps = s.hypotheses.map((h) => ({ ...h, ...evaluate(h.text, env) }))
     const premises = hyps.every((h) => h.value === true)
     const c = evaluate(s.conclusion, env)
-    return { theorem: key, says: t.says, lean: t.lean, ...s, inputSchema, evaluable: true, needs: [], values: Object.fromEntries(Object.entries(env).map(([k, v]) => [k, v.toString()])), hypotheses: hyps.map((h) => ({ name: h.name, text: h.text, holds: h.value === true, parts: h.parts })), premises, conclusion: { text: s.conclusion, holds: c.value === true, parts: c.parts }, holds: !premises || c.value === true, says_now: premises ? (c.value === true ? 'the premises hold and so does the conclusion, as the kernel proved' : 'the premises hold and the conclusion fails: the statement does not match the kernel') : 'a premise fails for these values: the theorem says nothing about them' }
-  } catch (e) { return { theorem: key, says: t.says, lean: t.lean, ...s, inputSchema, evaluable: false, reason: (e as Error).message, needs: [] } }
+    return { ...head, evaluable: true, needs: [], values: Object.fromEntries(Object.entries(env).map(([k, v]) => [k, v.toString()])), hypotheses: hyps.map((h) => ({ name: h.name, text: h.text, holds: h.value === true, parts: h.parts })), premises, conclusion: { text: s.conclusion, holds: c.value === true, parts: c.parts }, holds: !premises || c.value === true, says_now: premises ? (c.value === true ? 'the premises hold and so does the conclusion, as the kernel proved' : 'the premises hold and the conclusion fails: the statement does not match the kernel') : 'a premise fails for these values: the theorem says nothing about them' }
+  } catch (e) { return { ...head, evaluable: false, reason: (e as Error).message, needs: [] } }
 }
 
 /** Every textbook theorem as a tool: closed ones checked side by side, the rest with their inputs named. */
@@ -133,9 +133,10 @@ export const proseOf = (texts: Readonly<Record<string, string>>, examples: reado
     }
   }
   const unbacked = rows.filter((r) => !r.expression)
+  const idOf = (kind: string, text: string, sentence: string) => `prose-${kind}-${text.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${Math.abs([...sentence].reduce((h, c) => (h * 31 + c.charCodeAt(0)) | 0, 7)).toString(36)}`
   const leads: Lead[] = [
-    ...unbacked.map((r) => ({ id: `prose-number-${r.text.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${r.number}-${Math.abs([...r.sentence].reduce((h, c) => (h * 31 + c.charCodeAt(0)) | 0, 7)).toString(36)}`, source: r.text, statement: `${r.text} states ${r.number} in "${r.sentence.slice(0, 120)}" and no textbook expression it reaches states it`, status: 'open' as const, reason: 'a number in prose rests on an expression the kernel accepts, or it is a convention to state as one' })),
-    ...verdicts.map((v) => ({ id: `prose-verdict-${v.text.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${Math.abs([...v.sentence].reduce((h, c) => (h * 31 + c.charCodeAt(0)) | 0, 7)).toString(36)}`, source: v.text, statement: `${v.text} carries a verdict word beside the Clay problems: "${v.sentence.slice(0, 140)}"`, status: 'open' as const, reason: 'the tree states only what the kernel accepts; match and compete decide, never prose' })),
+    ...unbacked.map((r) => ({ id: idOf('number', `${r.text}-${r.number}`, r.sentence), source: r.text, statement: `${r.text} states ${r.number} in "${r.sentence.slice(0, 120)}" and no textbook expression it reaches states it`, status: 'open' as const, reason: 'a number in prose rests on an expression the kernel accepts, or it is a convention to state as one' })),
+    ...verdicts.map((v) => ({ id: idOf('verdict', v.text, v.sentence), source: v.text, statement: `${v.text} carries a verdict word beside the Clay problems: "${v.sentence.slice(0, 140)}"`, status: 'open' as const, reason: 'the tree states only what the kernel accepts; match and compete decide, never prose' })),
   ]
   const byText = Object.fromEntries(Object.keys(texts).map((k) => [k, { numbers: rows.filter((r) => r.text === k).length, backed: rows.filter((r) => r.text === k && r.expression).length }]))
   return { texts: Object.keys(texts).length, sentences, numbers: rows.length, backed: rows.length - unbacked.length, unbacked: unbacked.length, verdicts: verdicts.length, byText, consolidation: rows.filter((r) => r.expression).map((r) => ({ text: r.text, number: r.number, expression: r.expression, call: { tool: 'textbook', arguments: { evaluate: { theorem: r.expression } } } })), leads, theorem: 'textbook_expressions_evaluate', says: `${rows.length} number(s) in ${sentences} sentence(s) of ${Object.keys(texts).length} text(s): ${rows.length - unbacked.length} rest on a textbook expression a client can evaluate, ${unbacked.length} are leads; ${verdicts.length} verdict word(s) beside the Clay problems` }

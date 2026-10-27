@@ -5,13 +5,13 @@ import assert from 'node:assert/strict'
 import { handle } from './mcp.js'
 import { EXAMPLES } from './examples.js'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
-import { THEOREMS } from './theorems-index.js'
+import { THEOREM_KEYS } from './theorems-index.js'
 import { axiomsOf } from './audit.js'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
 test('every textbook axiom has a kernel-accepted QPU theorem linked to it', () => {
-  const a = axiomsOf(EXAMPLES, TEXTBOOK_THEOREMS, new Set(THEOREMS.map((t) => t.key)))
+  const a = axiomsOf(EXAMPLES, TEXTBOOK_THEOREMS, THEOREM_KEYS)
   assert.deepEqual(a.axioms, [], `examples with no theorem: ${a.axioms.join(', ')}`)
   assert.deepEqual(a.broken, [], 'every linked theorem is accepted by the kernel')
   assert.deepEqual(a.dangling, [], 'every example a theorem names exists')
@@ -19,7 +19,7 @@ test('every textbook axiom has a kernel-accepted QPU theorem linked to it', () =
 })
 
 test('every textbook theorem is in the kernel, and names an example or is cited by the tool that applies it', () => {
-  const kernel = new Set(THEOREMS.map((t) => t.key))
+  const kernel = THEOREM_KEYS
   const missing = TEXTBOOK_THEOREMS.filter((t) => !kernel.has(t.key)).map((t) => t.key)
   assert.deepEqual(missing, [], `textbook theorems the kernel has not accepted: ${missing.join(', ')}`)
   // a theorem a tool applies to every item it reads (a patent, a certificate) is cited by that tool's source rather than by one example
