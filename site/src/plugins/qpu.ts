@@ -18,7 +18,7 @@ import { qpuPlugins } from '../payload.qpu.config'
 import { collisionGuard } from '../collections/pages.qpu.hooks'
 import { firstUserBootstrap } from '../collections/users.qpu.hooks'
 import { appRequest } from '../collections/form-submissions.qpu.hooks'
-import { qpuDb, qpuEmail, qpuStoragePlugins } from '../payload.qpu.adapters'
+import { qpuDb, qpuEmail, qpuAdapterPlugins } from '../payload.qpu.adapters'
 import { qpuMachineTool } from '../payload.qpu.mcp'
 
 // the block added wherever a layout takes blocks: by object, or by reference where the field references the config's blocks
@@ -170,7 +170,7 @@ export const qpuRaid = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-raid', p
 export const qpuHooks = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-hooks', order: Number.MAX_SAFE_INTEGER, plugin: ({ config, enabled }) => (enabled === false ? config : qpuHooksOf(config).config) })
 /** The umbrella: the capabilities, the storage, the plugins the configs order and the tenant's own, each seeing the others in the plugins map */
 export const qpuPlugin = (options: QpuPluginOptions = {}): Plugin => async (incoming: Config): Promise<Config> => {
-  const inner = [qpuCore(options), qpuAgents({}), qpuMachine({}), ...(options.adapters === 'none' ? [] : qpuStoragePlugins()), ...qpuPlugins, qpuGoogle({}), ...(options.plugins ?? []), qpuRaid({}), qpuHooks({})]
+  const inner = [qpuCore(options), qpuAgents({}), qpuMachine({}), ...(options.adapters === 'none' ? [] : qpuAdapterPlugins()), ...qpuPlugins, qpuGoogle({}), ...(options.plugins ?? []), qpuRaid({}), qpuHooks({})]
   let config: Config = { ...incoming, plugins: [...(incoming.plugins ?? []), ...inner] }
   for (const plugin of inner) config = await plugin(config)
   return { ...config, plugins: incoming.plugins }

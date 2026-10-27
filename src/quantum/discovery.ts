@@ -232,18 +232,13 @@ const pickRegistryWords = (lead: { id: string; statement: string; source?: strin
 /** The MCP directories beside the official registry, as each is read by a machine (measured 2026-10-27): a search asked with a lead's words, an
  *  open sitemap matched by its slugs, a keyed API named with its key (the key the operator's act), a site with no machine contract a lead.
  *  A path robots.txt disallows is never asked, and a page behind a bot challenge is never fetched past it. */
-const MCP_DIRECTORIES: readonly { id: string; read: 'search' | 'sitemap' | 'keyed' | 'none'; url: string; keyVar?: string; note: string }[] = [
-  { id: 'official', read: 'search', url: `${MCP_REGISTRY}?limit=10&search=`, note: 'registry.modelcontextprotocol.io, open' },
-  { id: 'smithery', read: 'search', url: 'https://registry.smithery.ai/servers?pageSize=10&q=', note: 'open search; remote servers flagged, their URLs not in the answer' },
-  { id: 'mcpservers.org', read: 'sitemap', url: 'https://mcpservers.org/sitemaps/remote-mcp-servers.xml https://mcpservers.org/sitemaps/priority-servers.xml', note: 'llms.txt and the sitemap index open (17,715 servers in /sitemaps/servers/N.xml); /api/ disallowed by robots.txt; HTML behind a bot challenge' },
-  { id: 'glama', read: 'keyed', url: 'https://glama.ai/api/mcp/v1/servers?query=', keyVar: 'GLAMA_API_KEY', note: '401 without a key' },
-  { id: 'pulsemcp', read: 'keyed', url: 'https://api.pulsemcp.com/v0.1/servers?search=', keyVar: 'PULSEMCP_API_KEY', note: 'v0.1 takes X-API-Key; v0beta answers 410 API_SUNSET' },
-  { id: 'mcp.so', read: 'none', url: 'https://mcp.so', note: 'its API answers: Only HTML requests are supported here' },
-]
-type RegistryRequest = { id: string; lead: string; word: string; directory: string; method: 'GET'; url: string; accept: string }
+const MCP_DIRECTORIES: readonly { id: string; read: 'search' | 'mcp' | 'sitemap' | 'keyed' | 'none'; url: string; tool?: string; keyVar?: string; note: string }[] = TABLES.MCP_DIRECTORIES as readonly { id: string; read: 'search' | 'mcp' | 'sitemap' | 'keyed' | 'none'; url: string; tool?: string; keyVar?: string; note: string }[]
+type RegistryRequest = { id: string; lead: string; word: string; directory: string; method: 'GET' | 'POST'; url: string; accept: string; body?: unknown }
 export const buildRegistryRequests = (lead: { id: string; statement: string; source?: string }, at = 3): RegistryRequest[] => {
   const words = pickRegistryWords(lead, at)
   return [...words.flatMap((word) => MCP_DIRECTORIES.filter((d) => d.read === 'search').map((d) => ({ id: d.id === 'official' ? `registry:${lead.id}:${word}` : `registry:${lead.id}:${word}:${d.id}`, lead: lead.id, word, directory: d.id, method: 'GET' as const, url: d.url + encodeURIComponent(word), accept: 'application/json' }))),
+    // a directory that is an MCP server is asked by POST: its search tool called with the word (JSON-RPC tools/call)
+    ...words.flatMap((word) => MCP_DIRECTORIES.filter((d) => d.read === 'mcp' && d.tool).map((d) => ({ id: `registry:${lead.id}:${word}:${d.id}`, lead: lead.id, word, directory: d.id, method: 'POST' as const, url: d.url, accept: 'application/json, text/event-stream', body: rpcBody('tools/call', { name: d.tool, arguments: { q: word, return: 'apis', limit: 10 } }) }))),
     ...MCP_DIRECTORIES.filter((d) => d.read === 'sitemap').flatMap((d) => d.url.split(' ').map((url, i) => ({ id: `registry:${lead.id}:${d.id}:${i}`, lead: lead.id, word: words.join(' '), directory: d.id, method: 'GET' as const, url, accept: 'application/xml' })))]
 }
 type RelatedServer = { name: string; description: string; remotes: string[]; word: string; directory?: string; page?: string }
@@ -259,7 +254,11 @@ export const findRelatedServers = (lead: string, answers: readonly { id: string;
         if (shared.length && !servers.has(slug)) servers.set(slug, { name: slug, description: '', remotes: [], word: shared.join(' '), directory: new URL(page!).host, page: page! }) }
       continue }
     try {
-      const j = JSON.parse(a.text) as { servers?: { server?: { name?: string; description?: string; remotes?: { url?: string }[] }; name?: string; qualifiedName?: string; description?: string; remotes?: { url?: string }[] }[] }
+      // an MCP server's answer: the JSON-RPC result (or its event stream), its text content the search answer
+      const raw = a.text.trimStart().startsWith('{') ? a.text : (a.text.split('data: ').pop() ?? ''), rpc = JSON.parse(raw) as { jsonrpc?: string; result?: { content?: { text?: string }[] } }
+      const j = (rpc.jsonrpc ? JSON.parse(rpc.result?.content?.[0]?.text ?? '{}') : rpc) as { servers?: { server?: { name?: string; description?: string; remotes?: { url?: string }[] }; name?: string; qualifiedName?: string; description?: string; remotes?: { url?: string }[] }[]; data?: { aid?: string; description?: string; humanURL?: string }[]; apis?: { top?: { aid?: string; description?: string; humanURL?: string }[] } }
+      // apis.io answers APIs, not servers: each by its id, its provider's page beside it
+      for (const x of j.data ?? j.apis?.top ?? []) if (x.aid && !servers.has(x.aid)) servers.set(x.aid, { name: x.aid, description: (x.description ?? '').slice(0, 200), remotes: [], word: a.word ?? '', directory: 'apis.io', ...(x.humanURL ? { page: x.humanURL } : {}) })
       answered += 1
       for (const x of j.servers ?? []) { const srv = x.server ?? x; const name = srv.name ?? (x as { qualifiedName?: string }).qualifiedName ?? ''; if (!name || servers.has(name)) continue; servers.set(name, { name, description: (srv.description ?? '').slice(0, 200), remotes: (srv.remotes ?? []).map((r) => r.url).filter((u): u is string => typeof u === 'string' && /^https?:\/\//.test(u)), word: a.word ?? '' }) }
     } catch { /* not the registry's shape: nothing related read from it */ }

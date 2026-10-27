@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T21:06:51.394Z",
+ "date": "2026-10-27T21:43:37.781Z",
  "input": {
   "doors": [
    {
@@ -1315,7 +1315,7 @@
    },
    {
     "name": "configure.port",
-    "bytes": 320,
+    "bytes": 308,
     "reached": true
    },
    {
@@ -2332,7 +2332,7 @@
    },
    {
     "key": "textbook_mcp_directories",
-    "bytes": 65,
+    "bytes": 69,
     "used": true
    },
    {
@@ -3788,8 +3788,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 51226,
-   "used": 41690,
+   "capacity": 51214,
+   "used": 41678,
    "idle": 9536,
    "percentIdle": 18,
    "idleNames": [
@@ -3912,8 +3912,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 27484,
-   "used": 27484,
+   "capacity": 27488,
+   "used": 27488,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

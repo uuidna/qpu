@@ -17,9 +17,9 @@ test('the port reads the adapters in the order of the configure kind, and every 
   for (const pkg of [...PORT_ORDER.database, ...PORT_ORDER.storage, ...PORT_ORDER.email]) assert.ok(CLOUDFLARE_PORT[pkg], `${pkg} has a port`)
 })
 
-test('every one of the fifty combinations, through the MCP, is a workflow with its bindings, its steps and their MCP calls or its missing links', () => {
+test('every combination, through the MCP, is a workflow with its bindings, its steps and their MCP calls or its missing links', () => {
   const count = Number(compositionsOf([...PORT_RADICES]))
-  assert.equal(count, 50)
+  assert.equal(count, PORT_RADICES.reduce((a, r) => a * r, 1))
   for (let i = 0; i < count; i++) {
     const p = port(i)
     assert.equal(Number(compositionIndexOf([...PORT_RADICES], p.digits)), i, 'the digits make the index back')
@@ -34,7 +34,7 @@ test('the missing links are found over the whole space, each a lead naming the c
   const s = port(true)
   assert.equal(s.complete + s.blocked, s.combinations)
   assert.equal(s.leads.length, s.missingLinks)
-  for (const l of s.leads) assert.match(l.statement, /blocks \d+ of 50 combinations/)
+  for (const l of s.leads) assert.match(l.statement, new RegExp(`blocks \\d+ of ${s.combinations} combinations`))
   assert.ok(s.mcpTools.includes('r2_bucket_create') && s.mcpTools.includes('hyperdrive_configs_list'))
   assert.deepEqual(s.completeOnes, ['db-d1-sqlite + storage-r2 + email-resend'], 'the one combination every step of which an MCP API covers today')
 })

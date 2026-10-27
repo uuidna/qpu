@@ -200,7 +200,7 @@ theorem textbook_rest_rbac : 2 * 3 = 6 := by decide
 theorem textbook_google_mcps : 15 + 3 = 18 := by decide
 /-- the same gates by kind: forty-six tools, fifty-five open, forty-three keyed (Google Workspace's nine, Google Cloud's fifteen among them), one a browser alone passes, thirty-three proposed by the registry (examples: configure-gates) -/
 theorem textbook_gates_by_kind : 46 + 55 + 43 + 1 + 33 = 178 := by decide
-/-- the database, storage and email adapters Payload holds multiply into the adapter combinations (examples: configure-adapters) -/
+/-- the database, storage and email adapters Payload holds multiply into the adapter combinations; each adapter is a Payload plugin (qpuAdapterPlugins), so the plugins add up to the radices (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 3 = 75 := by decide
 /-- every configuration kind tested closed around the torus leaves none open, however many kinds the tree configures (examples: configure-all) -/
 theorem textbook_configurations_closed (tested kinds : Nat) (h : tested = kinds) : kinds - tested = 0 := by omega
