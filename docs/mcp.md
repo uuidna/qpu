@@ -2124,6 +2124,10 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
       },
       "description": "penalty and clearing entries as the docket holds them"
     },
+    "steps": {
+      "type": "object",
+      "description": "the step cache"
+    },
     "docs": {
       "type": "object",
       "description": "with penalties"

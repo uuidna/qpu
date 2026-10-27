@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T00:33:49.872Z",
+ "date": "2026-10-27T00:39:08.011Z",
  "input": {
   "doors": [
    {
@@ -1662,7 +1662,7 @@
    },
    {
     "key": "textbook_penalty_visibility_harmonic",
-    "bytes": 237,
+    "bytes": 166,
     "used": true
    },
    {
@@ -1672,7 +1672,7 @@
    },
    {
     "key": "textbook_antimatter_total",
-    "bytes": 97,
+    "bytes": 60,
     "used": true
    },
    {
@@ -1697,7 +1697,7 @@
    },
    {
     "key": "textbook_literal_in_registry",
-    "bytes": 131,
+    "bytes": 155,
     "used": true
    },
    {
@@ -3551,8 +3551,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 21069,
-   "used": 21069,
+   "capacity": 20985,
+   "used": 20985,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

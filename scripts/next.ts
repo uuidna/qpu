@@ -10,7 +10,9 @@ import { join } from 'node:path'
 import { tmpdir, availableParallelism } from 'node:os'
 import { pathToFileURL } from 'node:url'
 import { uuidOf } from '../src/quantum/blocks.ts'
-import { remediesOf } from '../src/quantum/audit.ts'
+import { remediesOf, manualDocsOf } from '../src/quantum/audit.ts'
+import { STEP_CACHE, GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
+import { mkdirSync } from 'node:fs'
 
 const ROOT = process.cwd()
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
@@ -49,7 +51,7 @@ const steps: Step[] = [
   { name: 'sources', cmd: 'node', args: ['--import', 'tsx', 'scripts/sources.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 1_800_000, wave: 3 }, // the immutable sources of leads, every page to its end
   { name: 'textbook', cmd: 'node', args: ['--import', 'tsx', 'scripts/textbook.ts'], budgetMs: 300_000, wave: 4, shards: 4 }, // always: the examples verified online from the wave; offline the plan // always: cached by inputs, the pure half offline
   { name: 'purify', cmd: 'node', args: ['--import', 'tsx', 'scripts/purify.ts'], wave: 5 },
-  { name: 'metrics', cmd: 'node', args: ['--import', 'tsx', 'scripts/metrics.ts'], budgetMs: 120_000, wave: 5 }, // always: the run's artefacts read into one measure
+  { name: 'metrics', cmd: 'node', args: ['--import', 'tsx', 'scripts/metrics.ts'], budgetMs: 120_000, skip: fast ? 'fast' : undefined, wave: 5 }, // always: the run's artefacts read into one measure
   { name: 'docs:build', cmd: 'npx', args: ['vitepress', 'build', 'docs'], skip: fast ? 'fast' : undefined, wave: 6 },
   { name: 'trunk', cmd: 'node', args: ['--import', 'tsx', 'scripts/trunk.ts'], wave: 7 }, // always: main fast-forwarded locally when green; never pushed
   { name: 'publish', cmd: 'node', args: ['--import', 'tsx', 'scripts/publish.ts'], skip: offline ? 'offline' : fast ? 'fast' : undefined, budgetMs: 300_000, wave: 7 },
@@ -85,7 +87,29 @@ const spawned = (s: Step, shard?: string): Promise<{ status: number | null; out:
   child.on('error', (e) => { clearTimeout(timer); resolve({ status: null, out: out + `\n${e.message}`, timedOut, firstMs, ...heatOf(heat) }) })
   child.on('close', (status) => { clearTimeout(timer); resolve({ status, out, timedOut, firstMs, ...heatOf(heat) }) })
 })
+// the step cache: a deterministic step whose inputs (their staged blobs, and the content of any file changed beside them) have the address they had
+// when it last ran green is reused from its sealed record, never rerun; a generator also needs its generated files to be exactly what it wrote
+// (a hand edit of its output reruns it); a step outside STEP_CACHE always runs. Records live in .qpu/steps, sealed by SHA-256.
+const recordPath = (name: string) => join(ROOT, '.qpu', 'steps', `${name.replace(/[^a-z0-9-]/gi, '_')}.json`)
+const inputKeyOf = (s: Step): string | null => {
+  const c = STEP_CACHE[s.name]; if (!c || process.env.QPU_NO_CACHE === '1') return null
+  const git = (a: string[]) => spawnSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 }).stdout ?? ''
+  const roots = [...c.roots, ...(c.generatedDocsExcluded ? generatedDocsExcludes() : [])]
+  const h = createHash('sha256').update(`${s.cmd} ${s.args.join(' ')}\n`).update(git(['ls-files', '-s', '--', ...roots]))
+  for (const f of git(['status', '--porcelain', '--untracked-files=all', '--', ...roots]).split('\n').filter(Boolean).map((l) => l.slice(3)).sort()) { h.update(f); try { h.update(readFileSync(join(ROOT, f))) } catch { h.update('gone') } }
+  return h.digest('hex')
+}
+// the docs pages a script writes, read from the scripts' own write targets, excluded from a step's inputs: they are the run's outputs
+let excludes: string[] | null = null
+const generatedDocsExcludes = () => excludes ??= (() => { const git = (a: string[]) => spawnSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 }).stdout ?? ''; const scripts = Object.fromEntries(git(['ls-files', 'scripts']).trim().split('\n').filter((f) => /\.(ts|mjs)$/.test(f)).map((f) => [f, readFileSync(join(ROOT, f), 'utf8')])); return manualDocsOf(git(['ls-files', 'docs']).trim().split('\n').filter((f) => f.endsWith('.md')).map((path) => ({ path, bytes: 0 })), scripts).rows.filter((r) => r.generator).map((r) => `:(exclude)${r.path}`) })()
+const outputsOf = () => { const h = createHash('sha256'); for (const f of GENERATED_FILES) { h.update(f); try { h.update(readFileSync(join(ROOT, f))) } catch { h.update('gone') } } return h.digest('hex') }
+const sealedOf = (name: string) => { try { return JSON.parse(readFileSync(recordPath(name), 'utf8')) as { name: string; key: string; status: string; outputs?: string; counts?: Record<string, number>; date: string; sha256: string } } catch { return null } }
 const run = async (s: Step): Promise<boolean> => {
+  const key = s.skip ? null : inputKeyOf(s), sealed = key ? sealedOf(s.name) : null
+  if (key && sealed && sealed.status === 'green' && sealed.key === key && (!STEP_CACHE[s.name]?.generator || sealed.outputs === outputsOf())) {
+    receipt.steps.push({ name: s.name, status: 'green', ms: 0, tail: `reused: its inputs ${key.slice(0, 12)} unchanged since ${sealed.date} (sealed ${sealed.sha256.slice(0, 12)})`, counts: { ...(sealed.counts ?? {}), reused: 1 }, measures: { wallNs: '0', cpuUs: 0, rssKb: 0, firstOutputMs: 0 } })
+    console.log(`↺ ${s.name}: reused (inputs unchanged since ${sealed.date})`); return true
+  }
   if (s.skip) { receipt.steps.push({ name: s.name, status: 'skipped', ms: 0, tail: s.skip }); console.log(`· ${s.name}: skipped (${s.skip})`); return true }
   const started = Date.now(), startedNs = process.hrtime.bigint()
   // short multitasks: the shards run at once, each with its share and its own budget, then the merge; the outputs are read as one
@@ -102,6 +126,7 @@ const run = async (s: Step): Promise<boolean> => {
   const wallNs = process.hrtime.bigint() - startedNs
   receipt.steps.push({ name: s.name, status: ok ? 'green' : 'red', ms: Date.now() - started, tail, counts, measures: { wallNs: String(wallNs), cpuUs: r.cpuUs, rssKb: r.rssKb, firstOutputMs: r.firstMs } })
   writeFileSync(join(ROOT, 'docs', 'public', 'receipt.json'), JSON.stringify({ ...receipt, provisional: true }, null, 1) + '\n')
+  if (ok && key) { const rec = { name: s.name, key, status: 'green', counts, date: new Date().toISOString(), ...(STEP_CACHE[s.name]?.generator ? { outputs: outputsOf() } : {}) }; mkdirSync(join(ROOT, '.qpu', 'steps'), { recursive: true }); writeFileSync(recordPath(s.name), JSON.stringify({ ...rec, sha256: createHash('sha256').update(JSON.stringify(rec)).digest('hex') }) + '\n') }
   console.log(`${ok ? '✓' : '✗'} ${s.name} (${((Date.now() - started) / 1000).toFixed(1)} s)${Object.keys(counts).length ? ' ' + JSON.stringify(counts) : ''}`)
   if (!ok) {
     const failing = out.split('\n').filter((l) => /^(✖|not ok) |^\s*AssertionError|^\s*Error: |error TS\d+|^error:/.test(l))

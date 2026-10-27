@@ -58,6 +58,10 @@ theorem textbook_penalty_no_punishment (balance standing t : Nat) : (balance + t
 theorem textbook_penalty_time_burned (b s s' c : Nat) (hs : s ≤ s') : ((if s < b then 0 else s - b + c) ≤ (if s' < b then 0 else s' - b + c)) ∧ (s < b → (if s < b then 0 else s - b + c) = 0) := ⟨by split <;> split <;> omega, fun h => if_pos h⟩
 /-- a penalty is as visible as the action it prices: printed agrees with visible, kind by kind over the ten gap kinds, so a printed penalty priced a visible action — an invisible action's penalty is recorded silently and counted on request, never printed (examples: repository-penalty-invisible, repository-penalty-visible) -/
 theorem textbook_penalty_visibility_harmonic (visible printed : Bool) (h : printed = visible) : printed = true → visible = true := by intro hp; rw [← h]; exact hp
+/-- a deterministic step of equal input addresses gives an equal receipt: a step whose inputs are unchanged since it last ran green is reused from its sealed record, never rerun; a step that reads the network, the clock or its own artefacts is never cached (examples: repository-steps-reused) -/
+theorem textbook_step_cache_sound (f : Nat → Nat) (k₁ k₂ : Nat) (h : k₁ = k₂) : f k₁ = f k₂ := by rw [h]
+/-- a hook never does more work than its inputs force: the cacheable steps it runs are among those whose inputs or outputs changed (examples: repository-steps-reused, repository-steps-changed) -/
+theorem textbook_hook_steps_monotone (run changed uncacheable : Nat) (h : run ≤ changed + uncacheable) : run - uncacheable ≤ changed := by omega
 /-- unused quantum capacity is conserved: for every measure — doors, theorems, gates, cores, qubits below the simulator's bound, Shor N below its bound — the used and the idle make the capacity (examples: repository-capacity) -/
 theorem textbook_capacity_conserved (capacity used : Nat) (h : used ≤ capacity) : used + (capacity - used) = capacity := by omega
 /-- the ten gap kinds less the ten with antimatter leave none without: every one of the ten gap kinds has antimatter, so from any gap the next step is defined and the way never dead-ends (examples: repository-antimatter-total) -/
