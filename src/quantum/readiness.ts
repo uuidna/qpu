@@ -8,11 +8,11 @@ import { TAKES } from './discovery.ts'
 import { cellOf as cell } from './widgets.ts'
 
 type Judged = { lead: string; source: string; status: string; class: 'served' | 'refuted' | 'trial'; by: string }
-export type Source = { source: string; reached: true; settled: number; why: string; open: { source: string; what: string; owes: string }[] }
+type Source = { source: string; reached: true; settled: number; why: string; open: { source: string; what: string; owes: string }[] }
 type BorderCall = { door: string; host: string; arguments: Record<string, unknown> }
 export type BorderAnswer = { door: string; host: string; arguments?: Record<string, unknown>; answer?: unknown; refusal?: string }
 type Border = { door: string; host: string; args: string[]; verdict: string | null; receipt: string | null; sealed: boolean; note: string | null; refusal: string | null }
-export type Page = { status: number; title: string | null; url: string }
+type Page = { status: number; title: string | null; url: string }
 
 const SITE_SUFFIX = /\s*\|\s*(Cirq|Google Quantum AI|OpenFermion|TensorFlow Quantum|Qualtran|Stim)\s*/gi
 const decodeTitle = (t: string): string => t.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(SITE_SUFFIX, ' ').replace(/\s+/g, ' ').trim()
@@ -43,7 +43,7 @@ export const judgeOf = (l: Lead, pages: ReadonlyMap<string, Page>, present: Read
   return j('trial', l.reason ?? l.status)
 }
 
-export const hostOf = (source: string): string => (/^(?:https?:\/\/)?([a-z0-9.-]+\.[a-z]{2,})/i.exec(source) ?? [])[1] ?? (/^[\w./-]+\.(ts|md|lean|json|ndjson)\b/.test(source) ? source.split('/')[0]! : 'qpu')
+const hostOf = (source: string): string => (/^(?:https?:\/\/)?([a-z0-9.-]+\.[a-z]{2,})/i.exec(source) ?? [])[1] ?? (/^[\w./-]+\.(ts|md|lean|json|ndjson)\b/.test(source) ? source.split('/')[0]! : 'qpu')
 
 /** The sources as the unit's readiness door takes them: settled counts and open groups, nothing dropped. */
 export const sourcesOf = (judged: readonly Judged[], leads: readonly Lead[]): Source[] => {

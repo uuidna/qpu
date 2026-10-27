@@ -464,7 +464,7 @@ theorem textbook_collision_solves_many (k : Nat) (h : 2 ≤ k) : 1 < k ∧ 1 ≤
 theorem textbook_double_torus (n : Nat) : n < n + 1 ∧ n + 1 - 1 = n := by omega
 /-- redact before publish: every path a record holds made relative to the tree and every leak replaced by its kind before a receipt, a lead or a machine record is written, so nothing published holds one (examples: machine-redact) -/
 theorem textbook_redact_before_publish (leaks redacted : Nat) (h : redacted = leaks) : leaks - redacted = 0 := by omega
-/-- problem solving requires problem finding (the one allowance shared with purify, LEAK_ALLOWED): every leak found in what is published is reported by its kind and place and redacted, so none of its values is repeated, however many are found (examples: audit-leaks, audit-leak-allowed) -/
+/-- findLeaks: problem solving requires problem finding (the one allowance shared with purify, LEAK_ALLOWED): every leak found in what is published is reported by its kind and place and redacted, so none of its values is repeated, however many are found (examples: audit-leaks, audit-leak-allowed) -/
 theorem textbook_leaks_redacted (found redacted : Nat) (h : redacted = found) : found - redacted = 0 := by omega
 /-- every textbook expression is a tool: when each closed statement evaluated exactly agrees with what the kernel proved, none disagrees, and every number the prose states rests on one of them or is a lead (examples: textbook-expressions, textbook-prose) -/
 theorem textbook_expressions_evaluate (closed held : Nat) (h : held = closed) : closed - held = 0 := by omega

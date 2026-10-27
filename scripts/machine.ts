@@ -2,7 +2,7 @@
 // the plan returns, spawned with no shell, its output read line by line as it arrives — each line handed to the caller at once, so a client
 // that sent a progress token sees the run as it happens — and the whole kept for the record the repository tool judges. For next, a finished
 // step (a line opening with ✓, ✗ or ·) is the unit of progress; for any other action, a line is.
-import { spawn } from 'node:child_process'
+import { spawn, execFileSync } from 'node:child_process'
 
 export type MachineProgress = { progress: number; total?: number; message: string }
 const STEP = /^\s*[✓✗·]\s/
@@ -29,11 +29,12 @@ const spawnRun = (plan: { action: string; command: { cmd: string; args: readonly
 // reads it): while a run lasts, a heartbeat follows any second without an event, so the stream is never silent (textbook_stream_no_silence), and
 // every event carries the ETA the receipts and the stream's own finished runs give, or none (textbook_eta_from_receipts). The stream is the
 // machine's own file, beside the run's record in Entries; it is never a docket entry of its own.
-import { appendFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs'
+import { appendFileSync, mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
 import { forecastOf, MACHINE_ACTIONS, type StreamEvent } from '../src/quantum/machine.ts'
 import { readJson } from './mcp.ts'
+import { LITERAL_ROOTS } from '../src/quantum/audit.ts'
 
 const runFiles = async () => (await import('../src/quantum/toolboxes/repository.ts')).RUN_FILES
 export const streamOf = async (root: string) => {
@@ -101,6 +102,23 @@ if (process.argv[1]?.endsWith('machine.ts')) {
   const say = (x: Awaited<ReturnType<typeof runMachine>>) => (x.answer as { preUse?: string }).preUse ?? (x.answer as { record?: { says?: string } }).record?.says ?? (x.answer as { says?: string }).says ?? JSON.stringify(x.answer)
   if (action === 'now') console.log(JSON.stringify(await now(process.cwd()), null, 1))
   else if (action === 'leaks') { const dir = dirname(join(process.cwd(), (await runFiles()).receipt)), { readdirSync } = await import('node:fs'), { toolCallerOf } = await import('../src/quantum/mcp.ts'); const r = toolCallerOf('audit')({ leaks: { texts: Object.fromEntries(readdirSync(dir).filter((p) => /\.(md|json|ndjson|txt|xml|html)$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) } }) as { byKind: Record<string, number>; says: string }; console.log(r.says); console.log(JSON.stringify(r.byKind)) }
+  else if (action === 'unexport' || action === 'rename') {
+    // the type checker's own language service (the site's TypeScript, which exposes it) over the tree's tsconfig: never a text replace
+    const { createRequire } = await import('node:module'), ts = createRequire(join(process.cwd(), 'site', 'package.json'))('typescript') as any, root = process.cwd()
+    const conf = ts.parseJsonConfigFileContent(ts.readConfigFile(join(root, 'tsconfig.json'), ts.sys.readFile).config, ts.sys, root), versions = new Map<string, number>()
+    const ls = ts.createLanguageService({ getScriptFileNames: () => conf.fileNames, getScriptVersion: (f: string) => String(versions.get(f) ?? 0), getScriptSnapshot: (f: string) => (ts.sys.fileExists(f) ? ts.ScriptSnapshot.fromString(ts.sys.readFile(f)) : undefined), getCurrentDirectory: () => root, getCompilationSettings: () => conf.options, getDefaultLibFileName: ts.getDefaultLibFilePath, fileExists: ts.sys.fileExists, readFile: ts.sys.readFile })
+    const apply = (edits: { file: string; start: number; end: number; text: string }[]) => { const by = new Map<string, typeof edits>(); for (const e of edits) by.set(e.file, [...(by.get(e.file) ?? []), e]); for (const [f, es] of by) { let t = readFileSync(f, 'utf8'); for (const e of es.sort((a, b) => b.start - a.start)) t = t.slice(0, e.start) + e.text + t.slice(e.end); writeFileSync(f, t); versions.set(f, (versions.get(f) ?? 0) + 1) } return edits.length }
+    if (action === 'rename') { const [file, from, to] = rest, f = join(root, file ?? ''), sf = ls.getProgram().getSourceFile(f); let at = -1; const walk = (n: any) => { if (at < 0 && n.name?.text === from) at = n.name.getStart(); ts.forEachChild(n, walk) }; if (sf) walk(sf)
+      console.log(at < 0 ? `no declaration named ${from} in ${file}` : `renamed ${from} → ${to} at ${apply((ls.findRenameLocations(f, at, false, false) ?? []).map((l: any) => ({ file: l.fileName, start: l.textSpan.start, end: l.textSpan.start + l.textSpan.length, text: to })))} place(s)`) }
+    else { const PUBLIC = /\/(blocks|mcp|roles)\.ts$|toolboxes\/payload\.ts$/, edits: { file: string; start: number; end: number; text: string }[] = []
+      // a name a consumer outside the tsconfig imports (the docs site, the Payload app) stays exported: its import is its reference
+      const kept = new Set(execFileSync('git', ['grep', '-h', '-o', '-E', "import \\{[^}]+\\} from '[./]+(src/quantum/)?[a-z/-]+\\.ts'", '--', join(dirname(dirname((await runFiles()).receipt)), '.vitepress'), ...LITERAL_ROOTS.filter((r) => r.startsWith('site'))], { encoding: 'utf8' }).split('\n').flatMap((l) => (l.match(/\{([^}]+)\}/)?.[1] ?? '').split(',').map((s) => s.trim().split(' as ')[0]!.replace(/^type /, ''))).filter(Boolean))
+      for (const sf of ls.getProgram().getSourceFiles().filter((s: any) => s.fileName.startsWith(join(root, 'src', 'quantum')) && !/\.test\.ts$/.test(s.fileName) && !PUBLIC.test(s.fileName))) for (const st of sf.statements) {
+        const mod = st.modifiers?.find((x: any) => x.kind === ts.SyntaxKind.ExportKeyword); if (!mod || st.modifiers.some((x: any) => x.kind === ts.SyntaxKind.DefaultKeyword)) continue
+        const names = st.declarationList ? st.declarationList.declarations.map((d: any) => d.name) : st.name ? [st.name] : []
+        if (names.length && names.every((n: any) => n.kind === ts.SyntaxKind.Identifier && !kept.has(n.text) && (ls.findReferences(sf.fileName, n.getStart()) ?? []).every((r: any) => r.references.every((x: any) => x.fileName === sf.fileName)))) edits.push({ file: sf.fileName, start: mod.getStart(), end: mod.getEnd() + 1, text: '' }) }
+      console.log(`unexported ${apply(edits)} name(s) only their own file uses`) }
+  }
   else if (action === 'receipt') { const r = readJson(join(process.cwd(), (await runFiles()).receipt)) as { head?: string; steps?: { name: string; status: string; tail: string }[] } | null, red = (r?.steps ?? []).filter((s) => s.status === 'red'); for (const s of red) console.log(`${s.name}: ${s.tail.split('\n').filter((l) => /✗|✖|rror/.test(l)).slice(0, 3).join(' | ')}`); console.log(`${r?.head}: ${red.length} red`) }
   else if (action === 'merge') { const file = flag('--message-file'), f = await mergeFlow(flag('--branch') ?? '', file ? readFileSync(file, 'utf8') : flag('-m'), process.cwd()); for (const x of [f.aside, f.merged, f.commit]) if (x) console.log(say(x)) }
   else if (action) { const file = flag('--message-file'), r = await runMachine({ action, confirm: rest.includes('--confirm'), message: file ? readFileSync(file, 'utf8') : flag('-m'), branch: flag('--branch') }, process.cwd()); console.log(say(r)) }

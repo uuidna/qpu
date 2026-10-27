@@ -248,7 +248,7 @@ export class Device {
 const pairKey = (a: Qubit, b: Qubit): string => [keyOf(a), keyOf(b)].sort().join('|')
 
 /** The result of run(): the sampled bitstrings per measurement key. */
-export class Result {
+class Result {
   private readonly records: Map<string, string[]>
   constructor(records: Map<string, string[]>) { this.records = records }
   /** The bitstrings of one key, one per repetition. */

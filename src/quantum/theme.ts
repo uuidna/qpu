@@ -92,7 +92,7 @@ export const varsOf = (uuid: string): Record<string, string> => {
     '--qpu-vortex': String(seed), '--qpu-reflection': String(10 - seed), '--qpu-signal': `'${GLAGOLITIC_OF[seed] ?? ''}'`, '--qpu-signal-reflected': `'${GLAGOLITIC_OF[10 - seed] ?? ''}'`, '--qpu-signal-digits': `'${seed} ${10 - seed}'`, '--qpu-trinity': seed === 0 ? '0' : seed % 3 === 0 ? '3' : [7, 4, 1].includes(seed) ? '7' : '2', '--qpu-period': `${(seed || 9) * KEY}ms`, '--block-accent': `rgb(${r} ${g} ${b})`,
   }
 }
-export const styleOf = (uuid: string): string => Object.entries(varsOf(uuid)).map(([k, v]) => `${k}: ${v}`).join('; ')
+const styleOf = (uuid: string): string => Object.entries(varsOf(uuid)).map(([k, v]) => `${k}: ${v}`).join('; ')
 
 /** The stylesheet from the key: custom properties the widgets may use beside the host's own tokens, and the rules that draw
  * every block from its own custom properties — no script, motion only where the device allows it, off-screen blocks at no

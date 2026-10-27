@@ -15,9 +15,9 @@ import { uuidOf } from '../blocks.ts'
 import { THEOREMS, KERNEL_THEOREMS } from '../theorems-index.ts'
 import { ledgerOf } from './billing.ts'
 
-export type Claim = { id: string; source: string; text: string }
-export type Call = { door: string; host: string; arguments: Record<string, unknown>; purpose: 'forensics' | 'verify' | 'legal' | 'security' | 'due-process' | 'prior-art' | 'licence' }
-export type Answer = Call & { answer?: unknown; refusal?: string }
+type Claim = { id: string; source: string; text: string }
+type Call = { door: string; host: string; arguments: Record<string, unknown>; purpose: 'forensics' | 'verify' | 'legal' | 'security' | 'due-process' | 'prior-art' | 'licence' }
+type Answer = Call & { answer?: unknown; refusal?: string }
 /** The court every cheap gate leads a violator to: the rules a gate refuses by, each named by the theorem that states it and the remedy that
  *  satisfies it; a refusal computes the case (its content address) and the MCP call the violator makes to file it — the gate writes nothing
  *  (textbook_cheap_gates), the violator's own client carries the case to the docket (kind case) or appeals through the match tool. */
@@ -50,7 +50,7 @@ export const courtOf = (v: Summons) => {
 type Texts = { readme?: string; citation?: string; zenodo?: string; package?: string; worker?: string; billing?: string; hmac?: string; mcp?: string }
 
 /** The claims the author makes, read from the tree and its metadata; each a sentence a door can judge. */
-export const claimsOf = (texts: Texts, leads: readonly Lead[], cite?: { theorem?: string | null }): Claim[] => {
+const claimsOf = (texts: Texts, leads: readonly Lead[], cite?: { theorem?: string | null }): Claim[] => {
   // a claim with legal words is backed by a sealed guarantee of the unit's own court (a theorem key its due-process door names),
   // never by a receipt: the forensic door admits a cited theorem and treats any other UUID as an address it must find sealed
   const backed = ` backed by theorem ${cite?.theorem ?? 'legal_only_the_proven_is_admitted'}`
@@ -72,7 +72,7 @@ export const claimsOf = (texts: Texts, leads: readonly Lead[], cite?: { theorem?
 }
 
 /** The tree's own security checks over its source texts: what a reader would ask of a Worker that holds tokens and keys. */
-export const securityOf = (texts: Texts): { id: string; passed: boolean; evidence: string }[] => {
+const securityOf = (texts: Texts): { id: string; passed: boolean; evidence: string }[] => {
   const w = texts.worker ?? ''; const b = texts.billing ?? ''; const h = texts.hmac ?? ''; const m = texts.mcp ?? ''
   const all = `${w}\n${b}\n${h}\n${m}\n${texts.readme ?? ''}`
   const { check, done } = checksOf()
@@ -112,7 +112,7 @@ const mentionsOf = (answers: readonly { id: string; status: number; text: string
 const DOOR_PURPOSE: Record<string, Call['purpose']> = { get_legal_facts: 'legal', get_rights: 'legal', get_laws: 'legal', compute_license: 'licence', compute_prior_art: 'prior-art', get_due_process: 'due-process', audit_security: 'security', audit_cloudflare: 'security', detect_traitors: 'security', get_conformance: 'security', get_fingerprint: 'security', audit_full_anti_fraud: 'security', get_guard_lessons: 'security' }
 
 /** The calls: every claim to the forensic and verification doors; the legal, licence, prior-art, due-process and security doors once. */
-export const planOf = (claims: readonly Claim[], discovery: Pick<Discovery, 'doors'> | null, agents: readonly string[] | null, theoremKeys: readonly string[]): { calls: Call[]; agents: string[]; by: 'operator' | 'free-by-default'; absent: string[]; operatorAgents: { id: string; endpoint: string; model: string; key: string; version: string; chosen: boolean; note: string }[] } => {
+const planOf = (claims: readonly Claim[], discovery: Pick<Discovery, 'doors'> | null, agents: readonly string[] | null, theoremKeys: readonly string[]): { calls: Call[]; agents: string[]; by: 'operator' | 'free-by-default'; absent: string[]; operatorAgents: { id: string; endpoint: string; model: string; key: string; version: string; chosen: boolean; note: string }[] } => {
   const doors = discovery?.doors ?? []
   const has = (name: string) => doors.find((d) => d.name === name)
   const chosen: string[] = agents?.length ? [...agents] : [...Object.keys(DOOR_PURPOSE), 'compute_forensics', 'verify_claim'].filter((n) => has(n))
@@ -134,7 +134,7 @@ export const planOf = (claims: readonly Claim[], discovery: Pick<Discovery, 'doo
 
 type Finding = { claim: string; door: string; verdict: string | null; clean: boolean | null; violations: number; violationKinds: string[]; note: string; receipt: string | null; refusal: string | null }
 /** The answers read: verdicts per claim, drift between the unit's facts and the tree's licence, security findings, due process gaps. */
-export const auditOf = (claims: readonly Claim[], answers: readonly Answer[], security: readonly { id: string; passed: boolean; evidence: string }[]) => {
+const auditOf = (claims: readonly Claim[], answers: readonly Answer[], security: readonly { id: string; passed: boolean; evidence: string }[]) => {
   const findings: Finding[] = []
   for (const a of answers.filter((x) => x.purpose === 'forensics' || x.purpose === 'verify')) {
     const claim = claims.find((c) => c.text === (a.arguments.statement as string))?.id ?? '?'
@@ -195,7 +195,7 @@ const FIXTURE_TEXTS: Texts = { citation: 'cff-version: 1.2.0\ntitle: QPU\nauthor
 /** The competitions with prizes and funding, their rules read at the source (2026-10-26) and judged against this tree's own evidence on every run:
  * a rule is satisfied, pending (the author's act), closed (the window has passed) or open (a lead). Nothing is claimed won; what the rules
  * require and what the tree holds are stated, and the gap is the author's act or a lead. */
-export type Rule = { rule: string; needs: string; status: 'satisfied' | 'pending' | 'closed' | 'open'; evidence: string; act?: string }
+type Rule = { rule: string; needs: string; status: 'satisfied' | 'pending' | 'closed' | 'open'; evidence: string; act?: string }
 export const COMPETITIONS: readonly { id: string; name: string; prize: string; rules: string; read: string; kind: 'prize' | 'funding'; entry: 'open' | 'closed' | 'rolling' | 'unknown'; note: string; /** the competitors: who else is in, as the public page measures it (never claimed) */ competitors: { source: string; read: string; measured: string; known: readonly string[] }; requires: readonly Omit<Rule, 'status' | 'evidence'>[] }[] = [
   { id: 'clay-millennium', name: 'Clay Mathematics Institute, the Millennium Prize Problems', prize: 'USD 1 000 000 per problem (seven; one solved, Poincaré)', rules: 'https://www.claymath.org/millennium-problems/rules/', competitors: { source: 'https://www.claymath.org/millennium-problems/', read: '2026-10-26', measured: 'seven problems; one solved (the Poincaré conjecture, Grigori Perelman, prize declined 2010); the competitors are every mathematician who publishes', known: ['Poincaré conjecture: solved (Grigori Perelman), prize declined'] }, read: '2026-10-26', kind: 'prize', entry: 'rolling', note: 'CMI considers a proposed solution only when all three conditions hold: (i) published in a Qualifying Outlet (§6), (ii) two years passed since publication, (iii) general acceptance in the mathematics community; then the Scientific Advisory Board advises', requires: [
     { rule: 'a solution of one of the seven problems', needs: 'a proof accepted by the community: the rule\'s own words; the evidence of precedence is the author\'s record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record\'s, and the kernel\'s theorems are listed by module in the README', act: 'the author\'s record stands at its DOI; the community\'s acceptance is measured by the rules below' },
@@ -304,7 +304,7 @@ export const PATENT_APIS: readonly { id: string; name: string; url: string; open
 ]
 /** The registry\'s patent MCPs (2026-10-26: patent 20, patents 13, uspto 7; remotes marked by the discover step): proposed, never called here. */
 export const PATENT_MCPS = ['ai.findip/patent-search', 'ai.g62/patent-search', 'ai.patentdata/patent-data', 'com.goveda/patent-mcp', 'com.unfoldip/patent-search', 'dev.patent/patent', 'io.github.FoundryNet/patent-intel-mcp', 'io.github.guptaprakhariitr/uspto-patents-mcp', 'io.github.pipeworx-io/patents', 'io.github.pipeworx-io/uspto-ptab', 'com.thenextgennexus/patents-trademarks-ip-mcp-server'] as const
-export type Patent = { number: string; title: string; priority: string | null; filing: string | null; publication: string | null; grant: string | null; assignee: string | null; inventor: string | null; office: string; kind: string | null }
+type Patent = { number: string; title: string; priority: string | null; filing: string | null; publication: string | null; grant: string | null; assignee: string | null; inventor: string | null; office: string; kind: string | null }
 /** A patent number read: the office (the two letters), the kind code; US, EP, WO, CN and the rest. */
 const patentNumberOf = (n: string): { office: string; kind: string | null; wellFormed: boolean } => {
   const m = /^([A-Z]{2})(\d+)([A-Z]\d?)?$/.exec(n)

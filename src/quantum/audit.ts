@@ -11,7 +11,7 @@ import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { uuidOf } from './blocks.ts'
 
 export type Check = { id: string; passed: boolean; evidence: string; /** milliseconds since the previous check: where the audit's time goes */ ms?: number }
-export type Audit = { /** the share this run replayed: index mod n = i (n = 1 is the whole audit) */ shard: { i: number; n: number }; /** example key → the integers its confirmed pass folded to: the next run decides by them */ integers: Record<string, string>; /** how many examples the integers decided and how many the text confirmed */ decided: { bySeal: number; byInteger: number; byText: number; sealed: boolean; theorem: string }; /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
+type Audit = { /** the share this run replayed: index mod n = i (n = 1 is the whole audit) */ shard: { i: number; n: number }; /** example key → the integers its confirmed pass folded to: the next run decides by them */ integers: Record<string, string>; /** how many examples the integers decided and how many the text confirmed */ decided: { bySeal: number; byInteger: number; byText: number; sealed: boolean; theorem: string }; /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
 
 type ToolSpec = { name: string; description: string; inputSchema: { type?: string; required?: string[]; properties?: Record<string, unknown> } }
 
@@ -291,7 +291,7 @@ export const billOf = (u: { tokens?: number; bits?: number; ms?: number; tempera
 /** Audit a handler against the example registry and the leads it serves. Pure: no I/O. */
 /** What a screen reader or a braille display needs of a widget, measured on its HTML: a name on every image, a header row on every
  * table, words in every link, a heading to land on. Each miss is named; an empty list is a pass. */
-export const accessibilityOf = (html: string): string[] => {
+const accessibilityOf = (html: string): string[] => {
   const misses: string[] = []
   const imgs = html.match(/<img\b[^>]*>/gi) ?? []
   const unnamed = imgs.filter((t) => !/\balt="[^"]+"/i.test(t)).length
@@ -334,7 +334,7 @@ export const LEAK_PATTERNS: readonly { kind: string; re: RegExp; remedy: string 
   { kind: 'private-ip', re: /\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})\b/g, remedy: 'a host by its public name; a private address says the network' },
 ]
 const NOT_A_LEAK = (kind: string, m: string) => kind === 'email' && (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}@/i.test(m) || /@(?:[a-z0-9-]+\.)*(?:test|example|invalid|localhost)(?:\.[a-z]+)?$/i.test(m) || /@(?:example\.(?:com|org|net))$/i.test(m) || /@(?:project-id|test-project|your-project|my-project|PROJECT_ID)\.iam(?:\.gserviceaccount\.com)?$/i.test(m))
-export const leaksOf = (texts: Readonly<Record<string, string>>, served: readonly string[] = []) => {
+export const findLeaks = (texts: Readonly<Record<string, string>>, served: readonly string[] = []) => {
   const findings: { where: string; kind: string; count: number; served: boolean; remedy: string }[] = []
   let setAside = 0
   for (const [where, text] of Object.entries(texts)) for (const p of LEAK_PATTERNS) { let count = 0; for (const m of text.matchAll(p.re)) { if (NOT_A_LEAK(p.kind, m[0])) setAside++; else count++ } if (count) findings.push({ where, kind: p.kind, count, served: served.includes(where), remedy: p.remedy }) }
@@ -473,7 +473,7 @@ export const lexicalSecurityOf = (doc: unknown, tools: readonly string[]) => {
     ;(o.children ?? []).forEach((c, i) => walk(c, `${path}.${i}`, d + 1))
   }
   walk((doc as { root?: unknown })?.root, 'root', 1)
-  const leaks = leaksOf(texts)
+  const leaks = findLeaks(texts)
   for (const [kind, n] of Object.entries(leaks.byKind)) if (n) findings.push({ at: 'text', kind: `leak-${kind}`, blocks: false, detail: `${n} by kind` })
   return { nodes, depth, findings, blocking: findings.filter((f) => f.blocks).length, clean: findings.length === 0, says: findings.length ? `${findings.length} finding(s) in ${nodes} node(s), ${findings.filter((f) => f.blocks).length} blocking: a blocking finding stops its block or link, the rest is noted` : `${nodes} node(s), depth ${depth}: nothing found`, theorem: 'textbook_namespace_narrows' }
 }

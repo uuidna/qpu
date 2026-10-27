@@ -36,7 +36,7 @@ const surfaceCountsOf = () => {
 }
 
 /** The numbers a theorem's statement carries, in order: `theorem k : 19 + 4 = 23 := by decide` → [19, 4, 23]. */
-export const numbersOfTheorem = (lean: string) => { const stmt = lean.slice(lean.indexOf(':') + 1, lean.includes(':=') ? lean.indexOf(':=') : undefined); return [...stmt.matchAll(/\d+/g)].map((m) => Number(m[0])) }
+const numbersOfTheorem = (lean: string) => { const stmt = lean.slice(lean.indexOf(':') + 1, lean.includes(':=') ? lean.indexOf(':=') : undefined); return [...stmt.matchAll(/\d+/g)].map((m) => Number(m[0])) }
 
 /** Every dimension of the surface named and meant by its textbook theorem, its count computed here and decided through the MCP. */
 const dimensionsOf = (ctx: Context) => {

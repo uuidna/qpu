@@ -23,7 +23,7 @@ const sha = (s: string) => hex(sha256(utf8(s)))
 const keyOf = (row: string): string | null => { const m = /^\s*\{\s*"(?:key|id|address|uuid)"\s*:\s*"([^"]+)"/.exec(row) ?? /^([^\s,|]+)/.exec(row); return m ? m[1]! : null }
 
 /** The payload folded into pieces of at most `bound` bytes (UTF-8), split at row boundaries (lines) when rows exist, else at characters. */
-export const foldOf = (text: string, bound: number): Fold => {
+const foldOf = (text: string, bound: number): Fold => {
   const bytes = utf8(text).length
   const rows = text.includes('\n') ? text.split('\n') : [text]
   const pieces: string[] = []
