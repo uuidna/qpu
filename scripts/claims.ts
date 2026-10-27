@@ -16,7 +16,7 @@ const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
 const plan = call({ claims: true }).requests as { id: string; url: string; accept: string }[]
 const mcp = mcpOf()
 const t0 = performance.now()
-// the seals still valid: one search per theorem, the newest kept, the fields the claims door reads (doi, title, year) enough to rebuild its answer
+// the seals still valid: one per theorem, the newest kept, with the fields (Sealed) the claims door answers from
 type Sealed = { theorem: string; url: string; status: number; results: { doi?: string; title?: string; publication_year?: number }[]; at: string; validUntil: string; validity: string }
 const now = new Date().toISOString()
 const sealedRead = await mcp.findAll('findEntries', { where: JSON.stringify({ from: { equals: 'claims-searches' } }), sort: '-createdAt', limit: 100 })
@@ -31,7 +31,7 @@ const validityOf = (res: Response, at: number): { validUntil: string; validity: 
 const pause = (ms: number) => new Promise((ok) => setTimeout(ok, ms))
 const searchOf = async (r: { id: string; url: string; accept: string }) => {
   let res: Response | null = null
-  for (let wait = 500; wait <= 16000; wait *= 2) { res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': UA } }).catch(() => null); if (res && res.status !== 429 && res.status < 500) break; await pause(wait) }
+  for (let wait = 500; wait <= 16000; wait *= 2) { res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': UA }, signal: AbortSignal.timeout(20000) }).catch(() => null); if (res && res.status !== 429 && res.status < 500) break; await pause(wait) }
   const at = Date.now(), text = res ? await res.text() : ''
   answers.push({ id: r.id, status: res?.status ?? 0, text })
   if (!res || res.status !== 200) return 0
