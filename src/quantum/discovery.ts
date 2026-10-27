@@ -11,16 +11,7 @@ type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contr
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
 export const CLOUDFLARE_DOCS_MCP = 'https://docs.mcp.cloudflare.com/mcp'
 /** Cloudflare's MCP servers: the documentation server answers in the open; the rest answer 401 until a tenant brings its OAuth token. */
-export const CLOUDFLARE_MCP: readonly { host: string; url: string; about: string }[] = [
-  { host: 'docs.mcp.cloudflare.com', url: CLOUDFLARE_DOCS_MCP, about: 'the Cloudflare documentation, searchable' },
-  { host: 'bindings.mcp.cloudflare.com', url: 'https://bindings.mcp.cloudflare.com/mcp', about: 'Workers bindings: KV, R2, D1, Durable Objects of the account' },
-  { host: 'observability.mcp.cloudflare.com', url: 'https://observability.mcp.cloudflare.com/mcp', about: 'Workers logs and analytics of the account' },
-  { host: 'radar.mcp.cloudflare.com', url: 'https://radar.mcp.cloudflare.com/mcp', about: 'Cloudflare Radar: internet traffic and trends' },
-  { host: 'browser.mcp.cloudflare.com', url: 'https://browser.mcp.cloudflare.com/mcp', about: 'browser rendering: fetch and screenshot pages' },
-  { host: 'ai-gateway.mcp.cloudflare.com', url: 'https://ai-gateway.mcp.cloudflare.com/mcp', about: 'AI Gateway logs and prompts' },
-  { host: 'dns-analytics.mcp.cloudflare.com', url: 'https://dns-analytics.mcp.cloudflare.com/mcp', about: 'DNS analytics of the account\'s zones' },
-  { host: 'autorag.mcp.cloudflare.com', url: 'https://autorag.mcp.cloudflare.com/mcp', about: 'AutoRAG: the account\'s indexed documents' },
-]
+export const CLOUDFLARE_MCP: readonly { host: string; url: string; about: string }[] = TABLES.CLOUDFLARE_MCP as readonly { host: string; url: string; about: string }[]
 /** Google's own MCP servers, measured in the registry on 2026-10-26 (search google: 296 servers, 175 with remotes, these at <service>.googleapis.com/mcp):
  *  every one a token door (Google OAuth), each mapped to what it is for the Payload plugin — an adapter the environment names, a deploy target,
  *  a measure, a door the tenant opens; proposed and never called from the tree. */

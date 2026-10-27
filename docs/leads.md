@@ -49,7 +49,12 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `recirq-experiments` | served | quantumlib | ReCirq: research modules and experiment implementations using Cirq |  |
 | `chromobius-decoder` | served | quantumlib | chromobius: a Möbius decoder for color code quantum error correction |  |
 | `stim-stabilizer` | served | quantumlib | Stim: a high-performance stabilizer code simulator |  |
+| `openfermion-simulation` | served | quantumlib | OpenFermion: a library for simulating fermionic systems with quantum computers |  |
+| `qualtran-algorithms` | served | quantumlib | Qualtran: abstractions and libraries for writing fault-tolerant quantum algorithms |  |
+| `qsim-simulator` | served | quantumlib | qsim: a high-performance quantum circuit simulator with C++ backend and Cirq interface |  |
 | `cirq-framework` | served | quantumlib | Cirq: a Python framework for quantum circuit design, optimization, and simulation |  |
+| `careers` | out_of_scope | — | Careers | the site's Careers link targets Google's job search filtered to quantum in California, Munich, Seattle and Zurich; quantumai.google/careers returned HTTP 404 on 2026-10-25; a jobs listing, not technical content |
+| `videos` | partial | statements | Educational videos: how-to videos on programming quantum computers, scientific breakthroughs, and new tools | the Resources page's description of the videos is served as the resources statement; the videos themselves are not text and are not carried |
 | `coursera` | served | statements | The Resources page's description of the course: a free introduction to quantum error correction, hands-on with Stim and Crumble |  |
 | `responsibility-pdf` | served | statements | Honest reporting, RSA risk, post-quantum cryptography, SPHINCS+, collaboration |  |
 | `vision-pdf` | served | statements | Classical and quantum computers together |  |
@@ -59,6 +64,8 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `lab` | served | statements | Discover the Quantum AI campus: the Santa Barbara campus, its quantum data center, labs and fabrication |  |
 | `openfermion-basis-change` | served | statements | the page's stated content, served as the basis_change statement |  |
 | `qsimcirq-tutorial` | served | statements | the page's stated content, served as the qsimcirq statement |  |
+| `cirq-basics` | served | statements | the page's stated content, served as the cirq_basics statement |  |
+| `openfermion-projects` | served | statements | the page's stated content, served as the openfermion_projects statement |  |
 | `cirq-hardware-changes` | served | statements | the page's stated content, served as the hardware_changes statement |  |
 | `cirq-hfvqe` | served | statements | the page's stated content, served as the hfvqe statement |  |
 | `cirq-qcqmc` | served | statements | the page's stated content, served as the qcqmc statement |  |
@@ -232,17 +239,10 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `repo-allstar` | out_of_scope | — | organization configuration: the default Allstar policy files | fetched on 2026-10-25: a public archive holding allstar.yaml, binary_artifacts.yaml and branch_protection.yaml, described as the default Allstar configuration that points to google/allstar-config; security policy for the repositories, not a library or a result |
 | `cirq-google-concepts` | served | statements | the page's stated content, served as the google_concepts statement |  |
 | `qsim-hardware` | served | statements | the page's stated content, served as the qsim_hardware statement |  |
-| `openfermion-projects` | served | statements | the page's stated content, served as the openfermion_projects statement |  |
-| `cirq-basics` | served | statements | the page's stated content, served as the cirq_basics statement |  |
 | `sitemap` | served | leads | The site's sitemap as sitemaps.org defines it (loc, lastmod): planned by the discover door, sealed in the docket from sitemap, handed to leads &#123; sitemap &#125; by its client, every page a lead |  |
 | `learn` | blocked | — | Learn overview | the path is not in the sitemap and returned HTTP 404 on 2026-10-25; its children learn/map and learn/lab are in the sitemap and are served |
 | `sycamore` | served | processor | Sycamore: 54 qubits and 88 couplers, its printed layout, its two-qubit gates |  |
-| `videos` | partial | statements | Educational videos: how-to videos on programming quantum computers, scientific breakthroughs, and new tools | the Resources page's description of the videos is served as the resources statement; the videos themselves are not text and are not carried |
-| `careers` | out_of_scope | — | Careers | the site's Careers link targets Google's job search filtered to quantum in California, Munich, Seattle and Zurich; quantumai.google/careers returned HTTP 404 on 2026-10-25; a jobs listing, not technical content |
 | `qpu-quantumlib` | served | quantumlib | The quantumlib GitHub organization: fifteen active repositories for quantum computing, with what this repository implements of each |  |
-| `qsim-simulator` | served | quantumlib | qsim: a high-performance quantum circuit simulator with C++ backend and Cirq interface |  |
-| `qualtran-algorithms` | served | quantumlib | Qualtran: abstractions and libraries for writing fault-tolerant quantum algorithms |  |
-| `openfermion-simulation` | served | quantumlib | OpenFermion: a library for simulating fermionic systems with quantum computers |  |
 | `home` | served | statements | The home page: Willow, Quantum Echoes, the Nature papers and the Early Access Program it links |  |
 | `clay-relation_8` | served | clay | relation_8: vertices = hybridSpeed ∧ vertices = mintOf n = 8 (4 bits, seed 8) |  |
 | `clay-relation_15` | served | clay | relation_15: magicBlock = glProd hexbit seed ∧ magicBlock = qftDepth vertices = 15 (4 bits, seed 6) |  |
@@ -298,3 +298,11 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `clay-relation_10518300` | served | clay | relation_10518300: chooseOf bits vertices = choose bits vertices = 10518300 (24 bits, seed 9) |  |
 | `clay-relation_40116600` | served | clay | relation_40116600: chooseOf plane faces = choose plane faces = 40116600 (26 bits, seed 9) |  |
 | `clay-relation_471435600` | served | clay | relation_471435600: chooseOf bits faces = choose bits faces = 471435600 (29 bits, seed 3) |  |
+| `rbac-standards-as-subjects` | open | payload | Every Google standard the pre-commit rules enforce (CL descriptions, gts style, AIP resource names and standard methods, test sizes, SLOs, Scorecard, SLSA) is a CanCanCan subject: abilities say which role may approve, waive or clear each rule, and the hook asks getAccess before it clears a penalty |  |
+| `rbac-readability-role` | open | payload | Google readability as a rolify role scoped to a language: a reviewer holding readability for TypeScript approves the gts style rule of a change, and the role comes from a Google Workspace group through the Directory API |  |
+| `rbac-owners-scoped` | open | payload | OWNERS as rolify instance roles: an owner of a path or a collection approves changes under it, the scope a Payload relationship to the document, the approval an entry linked to the change |  |
+| `rbac-aip-reviewer` | open | payload | An API design reviewer role scoped to each AIP: a change that adds a door is approved against AIP-121 resource orientation and AIP-131 to AIP-135 standard methods by a holder of that role, accessible_by listing the open reviews |  |
+| `rbac-waiver-cannot` | open | payload | A waiver is a cannot rule with conditions: no one may waive the folded or proven rule on main, a tenant admin may waive a style rule on a draft, and Payload's Where answers which waivers stand |  |
+| `rbac-penalties-accessible-by` | open | payload | Penalties and their clearings read through accessible_by: a user sees the penalties of the rules their roles govern, a Workspace admin sees every tenant's, and the coin ledger prices only what a role may clear |  |
+| `rbac-slsa-attestor` | open | payload | An SLSA attestor role and a Scorecard maintainer role scoped to the repository: provenance and branch protection checks are signed by holders of those roles, verified with the ML-DSA public key |  |
+| `rbac-slo-owner` | open | payload | An SLO owner role scoped to a service: the error budget burn of the e2e gate is acknowledged by its owner, and a release is blocked by a cannot rule while the budget is spent |  |

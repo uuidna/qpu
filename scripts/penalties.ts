@@ -6,6 +6,8 @@ import { mcpClient } from './mcp.ts'
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { RUN_FILES } from '../src/quantum/toolboxes/repository.ts'
+import { checkAccess, type Ability } from '../src/quantum/toolboxes/payload.ts'
+import { TABLES } from '../src/quantum/tables-index.ts'
 
 const repository = toolCallerOf('repository')
 type Penalty = { rule: string; kind?: string; subject?: string; bytes?: number; tokens?: number; committer?: string | null; evidence: Record<string, unknown> & { key: string } }
@@ -20,7 +22,8 @@ const write = async (body: unknown) => {
 }
 export const penalise = async (p: Penalty) => { const r = repository({ penalty: p }); return { ...r, recorded: await write(r.body) } }
 // a clearing books the penalty's own count back (its tokens and committer), so the offender's standing is what it was before: no punishment
-export const clear = async (rule: string, by: string, evidence: Penalty['evidence'], kind?: string, tokens?: number, committer?: string | null) => { const r = repository({ penalty: { rule, kind, cleared: true, by, evidence, ...(typeof tokens === 'number' ? { tokens } : {}), ...(committer ? { committer } : {}) } }); return { ...r, recorded: await write(r.body) } }
+// a penalty is cleared only by a role the rule abilities let clear it: the machine that measured its evidence gone (RULE_ABILITIES, read from Payload)
+export const clear = async (rule: string, by: string, evidence: Penalty['evidence'], kind?: string, tokens?: number, committer?: string | null) => { if (!checkAccess(((TABLES as Record<string, unknown>).RULE_ABILITIES ?? []) as readonly Ability[], [{ name: 'machine' }], 'rules', 'clear', { rule, kind })) return { refused: `the machine may not clear ${rule} by the rule abilities`, recorded: null }; const r = repository({ penalty: { rule, kind, cleared: true, by, evidence, ...(typeof tokens === 'number' ? { tokens } : {}), ...(committer ? { committer } : {}) } }); return { ...r, recorded: await write(r.body) } }
 /** a learned correction applied before the decision: recorded as prevented, no penalty raised (textbook_penalty_learned_prevents) */
 export const correctPenalty = (p: Penalty, learned: readonly string[]) => { const r = repository({ penalty: { ...p, learned } }); return r.kind === 'corrected' ? r : null }
 /** recorded only after the correction was applied and the rule holds again */

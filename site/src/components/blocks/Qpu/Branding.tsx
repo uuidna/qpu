@@ -5,6 +5,7 @@
 // (tenants.branding: name, tagline, accent, logo, icon); the admin's Logo and Icon and the site's wordmark render from here. Nothing loaded but the core.
 import * as React from 'react'
 import { uuidOf, styleOf } from '@uuidna/qpu/blocks'
+import { TABLES } from '../tables-index.ts'
 export type Branding = { name: string; tagline?: string; accent: string; logo?: string; icon?: string; source?: Record<string, string> }
 const computed = (host: string): Branding => { const s = styleOf(uuidOf('tenant:' + (host || 'uuidna'))); return { name: host || '@uuidna/qpu', accent: `hsl(${s.hue} ${s.sat}% 45%)`, source: { name: 'computed', accent: 'computed' } } }
 export const useBranding = (): Branding => {

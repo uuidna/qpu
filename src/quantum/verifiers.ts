@@ -4,6 +4,7 @@
 
 import type { Lead } from './leads.ts'
 import { LICENSE, PRECEDENCE } from './license.ts'
+import { TABLES } from './tables-index.ts'
 
 type FactKind = 'integer' | 'factors' | 'repository' | 'page' | 'preprint' | 'doi' | 'constant' | 'dataset' | 'sequence'
 export type Fact = { kind: FactKind; value: string; detail?: Record<string, string | number>; lead?: string }
@@ -60,9 +61,4 @@ export const extractFacts = (lead: Lead): Fact[] => {
 }
 
 /** Facts the tree itself carries beyond its leads: the physics constants Qpu.Physics names, and the DOIs its metadata cites. */
-export const TREE_FACTS: readonly Fact[] = [
-  { kind: 'constant', value: 'h', detail: { lean: 'Qpu.Physics.planck' } },
-  { kind: 'constant', value: 'k', detail: { lean: 'Qpu.Physics.boltzmann' } },
-  ...PRECEDENCE.map((p) => ({ kind: 'doi' as const, value: p.doi, detail: { what: p.title } })),
-  ...['53FG.V2S9', 'RG9B.XJMD', 'I8HN.DF32', '0LRL.BXG5'].map((id) => ({ kind: 'doi' as const, value: `10.7483/OPENDATA.CMS.${id}`, detail: { what: 'CERN open data cited by .zenodo.json' } })),
-]
+export const TREE_FACTS: readonly Fact[] = TABLES.TREE_FACTS as readonly Fact[]

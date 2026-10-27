@@ -33,16 +33,7 @@ const CODE_SHAPES: readonly { shape: string; re: RegExp; holder: string }[] = [
 ]
 /** Every kind of entropy says how its leads are explored (the tool a client follows it with) and which configuration settles it (the configure kind
  *  that absorbs the difference), so a difference is never a ruling: it is a lead to explore and to config. */
-export const ENTROPY_KINDS: readonly { kind: EntropyKind; says: string; explore: string; config: string | null }[] = [
-  { kind: 'literal', says: 'data baked into a file as a JSON literal: the handler should answer it at run time', explore: 'configure', config: 'fullstack' },
-  { kind: 'typed-path', says: 'a generated path typed by hand where fileOf computes it from a role', explore: 'configure', config: 'fullstack' },
-  { kind: 'cap', says: 'a cap on a read or a walk (slice, limit, substring): the user asked for none', explore: 'match', config: 'actions' },
-  { kind: 'clock', says: 'a clock or a die in a pure module: the result is no longer a function of its arguments', explore: 'imagine', config: 'actions' },
-  { kind: 'duplicate', says: 'one line of code repeated in more than one file: one place should hold it', explore: 'match', config: 'fullstack' },
-  { kind: 'shape', says: 'a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it', explore: 'match', config: null },
-  { kind: 'todo', says: 'a note to self in the code: a lead written where no one reads it', explore: 'imagine', config: null },
-  { kind: 'leak', says: 'an address in the tree: contacts are URLs, the account email is read at deploy', explore: 'configure', config: 'tenant' },
-]
+export const ENTROPY_KINDS: readonly { kind: EntropyKind; says: string; explore: string; config: string | null }[] = TABLES.ENTROPY_KINDS as readonly { kind: EntropyKind; says: string; explore: string; config: string | null }[]
 type EntropyFinding = { kind: EntropyKind; file: string; line: number; excerpt: string; address: string }
 type EntropyLead = { id: string; kind: EntropyKind; source: string; statement: string; status: 'open'; tool: 'audit'; occurrences: number; address: string; explore: string; config: string | null }
 export const LEAK_ALLOWED = new Set(['payloadcms.com', 'example.com', 'test.com', 'thirdparty.com', 'github.com', 'anthropic.com', 'localhost.test', 'local.test'])
@@ -168,13 +159,7 @@ export const findRemedies = (errors: readonly string[]) => {
 /** The fallback combinations: correction and handling are each other's fallback (the involution σ: correction ↔ handling, σ∘σ = id), and
  *  every adapter names the adapter it falls back to when its environment fails; all declared, so the theorems compute and the gate cross-checks
  *  them online on every host. */
-export const FALLBACKS: readonly { failure: string; correction: string; handling: string; involution: string }[] = [
-  { failure: 'a copy differs (a flip)', correction: 'majority over the copies; the differing host a syndrome', handling: 'the host a lead to deploy; the tree\'s answer the reference', involution: 'correction first; handling when no majority' },
-  { failure: 'no answer (an erasure)', correction: 'the remaining copies decide', handling: 'the host a lead; the client retries after the involution interval', involution: 'correction first; handling when every copy is erased' },
-  { failure: 'no majority (uncorrectable)', correction: 'none: the correction errors', handling: 'the possibilities listed, the error matched to a remedy by signature, the combination a lead', involution: 'σ: correction → handling' },
-  { failure: 'a handling without a remedy', correction: 'the next run\'s copies decide (the stream keeps the lead)', handling: 'none: the lead teaches the next row of the table', involution: 'σ: handling → correction; σ∘σ = id, the fallback terminates' },
-  { failure: 'a remedy that errors', correction: 'the copies that agree with the tree stand', handling: 'the remedy\'s own error matched again, once', involution: 'σ applied twice returns to correction: no loop' },
-]
+export const FALLBACKS: readonly { failure: string; correction: string; handling: string; involution: string }[] = TABLES.FALLBACKS as readonly { failure: string; correction: string; handling: string; involution: string }[]
 export const FALLBACK_ADAPTERS: readonly { when: string; from: string; to: string; involution: string }[] = TABLES.FALLBACK_ADAPTERS as readonly { when: string; from: string; to: string; involution: string }[]
 const flipMode = (mode: 'correction' | 'handling'): 'correction' | 'handling' => (mode === 'correction' ? 'handling' : 'correction')
 /** Correction or handling, swapped when the one in hand errors: at most two swaps (σ∘σ = id), so it terminates with what it has. */

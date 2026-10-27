@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T20:19:29.616Z",
+ "date": "2026-10-27T20:26:47.419Z",
  "input": {
   "doors": [
    {
@@ -1157,6 +1157,16 @@
     "name": "codes.selftest",
     "bytes": 18,
     "reached": false
+   },
+   {
+    "name": "payload.access",
+    "bytes": 377,
+    "reached": true
+   },
+   {
+    "name": "payload.rolesFromGroups",
+    "bytes": 277,
+    "reached": true
    },
    {
     "name": "payload.references",
@@ -2323,6 +2333,11 @@
    {
     "key": "textbook_shared_verbs",
     "bytes": 62,
+    "used": true
+   },
+   {
+    "key": "textbook_abilities_merge",
+    "bytes": 156,
     "used": true
    },
    {
@@ -3728,8 +3743,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 49256,
-   "used": 39720,
+   "capacity": 49910,
+   "used": 40374,
    "idle": 9536,
    "percentIdle": 19,
    "idleNames": [
@@ -3852,8 +3867,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 26822,
-   "used": 26822,
+   "capacity": 26978,
+   "used": 26978,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

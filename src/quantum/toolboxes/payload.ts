@@ -159,7 +159,7 @@ const payload = defineTool('payload', {
     // the references between documents as one graph: its cycles, its dangling references, an order when it has none
     if (isObj(args.references)) { const r = args.references as { docs?: RefDoc[] }; if (!Array.isArray(r.docs)) throw new Error('references takes documents: { docs: [{ id, slug?, doc | markdown }] }'); return { phase: 'references' as const, ...buildReferenceGraph(r.docs) } }
     if (isObj(args.googleCall)) return googleCallOf(args.googleCall)
-    if (isObj(args.access)) { const a = args.access as { abilities?: Ability[]; roles?: ScopedRole[]; subject?: string; action?: string; user?: { id?: string; tenants?: string[] } }; if (!Array.isArray(a.abilities) || typeof a.subject !== 'string' || typeof a.action !== 'string') throw new Error('access takes { abilities, roles, subject, action, user? }'); return { phase: 'access' as const, subject: a.subject, action: a.action, access: getAccess(a.abilities, a.roles ?? [], a.subject, a.action, a.user ?? {}), theorem: 'textbook_abilities_merge' } as never }
+    if (isObj(args.access)) { const a = args.access as { abilities?: Ability[]; roles?: ScopedRole[]; subject?: string; action?: string; user?: { id?: string; tenants?: string[] } }; if (!Array.isArray(a.abilities) || typeof a.subject !== 'string' || typeof a.action !== 'string') throw new Error('access takes { abilities, roles, subject, action, user? }'); return { phase: 'access' as const, subject: a.subject, action: a.action, access: getAccess(a.abilities, a.roles ?? [], a.subject, a.action, a.user ?? {}), ...('doc' in a ? { may: checkAccess(a.abilities, a.roles ?? [], a.subject, a.action, (a as { doc?: unknown }).doc, a.user ?? {}) } : {}), theorem: 'textbook_abilities_merge' } as never }
     if (isObj(args.rolesFromGroups)) { const g = args.rolesFromGroups as { mapping?: (ScopedRole & { group: string })[]; groups?: { email?: string }[]; userKey?: string }; return listRolesFromGroups(g.mapping ?? [], g.groups, g.userKey) as never }
     if (isObj(args.hooks)) return { phase: 'hooks' as const, ...hooksOf(args.hooks) }
     if (isObj(args.workspace)) return { phase: 'workspace' as const, ...readWorkspace(args.workspace) }
@@ -833,16 +833,19 @@ export const validateOf = (of: 'entries' | 'qpu' | 'tenants', field: string): st
 /** Abilities after CanCanCan: rules `can action, subject, conditions` over Payload's collections, none by default; manage covers every action,
  *  all every collection, a cannot rule subtracts. Roles after rolify: a name, global, or scoped to a collection (a resource class) or to one
  *  document of it (a resource instance); a global role holds everywhere. The answer is Payload's own access result: true, false, or the Where
- *  that fetches only what the user may (CanCanCan's accessible_by). $user and $tenants in a condition stand for the user's id and tenants. */
+ *  that fetches only what the user may (CanCanCan's accessible_by). $user and $tenants in a condition stand for the user's id and tenants; the
+ *  role all is held by every user, so its cannot binds every role. */
 export type Ability = { role: string; can: readonly string[]; subject: string; where?: Record<string, unknown>; cannot?: boolean }
 export type ScopedRole = { name: string; resourceType?: string; resource?: string }
 // Payload's Where has no general negation: a cannot with conditions negates field operators only (equals, in, exists)
 const NEGATED: Readonly<Record<string, string>> = { equals: 'not_equals', not_equals: 'equals', in: 'not_in', not_in: 'in' }
-const negateWhere = (w: Record<string, unknown>): Record<string, unknown> => Object.fromEntries(Object.entries(w).map(([field, ops]) => { if (field === 'and' || field === 'or' || !isObj(ops)) throw new Error(`a cannot condition negates field operators only, not ${field}`); return [field, Object.fromEntries(Object.entries(ops).map(([op, v]) => (op === 'exists' ? [op, !v] : NEGATED[op] ? [NEGATED[op], v] : (() => { throw new Error(`a cannot condition cannot negate ${op}`) })())))] }))
+// not (a and b) is (not a) or (not b): a condition over several fields negates into a disjunction of each negated
+const negateWhere = (w: Record<string, unknown>): Record<string, unknown> => { const each = Object.entries(w).map(([field, ops]) => negateField({ [field]: ops })); return each.length === 1 ? each[0]! : { or: each } }
+const negateField = (w: Record<string, unknown>): Record<string, unknown> => Object.fromEntries(Object.entries(w).map(([field, ops]) => { if (field === 'and' || field === 'or' || !isObj(ops)) throw new Error(`a cannot condition negates field operators only, not ${field}`); return [field, Object.fromEntries(Object.entries(ops).map(([op, v]) => (op === 'exists' ? [op, !v] : NEGATED[op] ? [NEGATED[op], v] : (() => { throw new Error(`a cannot condition cannot negate ${op}`) })())))] }))
 export const getAccess = (abilities: readonly Ability[], roles: readonly ScopedRole[], subject: string, action: string, user: { id?: string | null; tenants?: readonly string[] } = {}): boolean | Record<string, unknown> => {
   const fill = (w?: Record<string, unknown>) => (w ? (JSON.parse(JSON.stringify(w).replace(/"\$(user|tenants)"/g, (_m, k: string) => JSON.stringify(k === 'user' ? (user.id ?? null) : (user.tenants ?? [])))) as Record<string, unknown>) : null)
   // a role held for this subject: everywhere (global), over the collection (its class), or on one document (its instance, an id condition)
-  const scopes = (role: string) => roles.filter((r) => r.name === role && (!r.resourceType || r.resourceType === subject)).map((r) => (r.resourceType && r.resource ? { id: { equals: r.resource } } : null))
+  const scopes = (role: string) => (role === 'all' ? [null] : roles.filter((r) => r.name === role && (!r.resourceType || r.resourceType === subject)).map((r) => (r.resourceType && r.resource ? { id: { equals: r.resource } } : null)))
   const rules = (cannot: boolean) => abilities.filter((a) => !!a.cannot === cannot && (a.subject === subject || a.subject === 'all') && (a.can.includes(action) || a.can.includes('manage'))).flatMap((a) => scopes(a.role).map((scope) => [fill(a.where), scope].filter((w): w is Record<string, unknown> => !!w && Object.keys(w).length > 0)))
   const can = rules(false), cannot = rules(true)
   if (!can.length || cannot.some((ws) => ws.length === 0)) return false
@@ -850,6 +853,19 @@ export const getAccess = (abilities: readonly Ability[], roles: readonly ScopedR
   const all = [...(allowed ? [allowed] : []), ...denied]
   return all.length === 0 ? true : all.length === 1 ? all[0]! : { and: all }
 }
+/** CanCanCan's can? on one document: the access answer evaluated against it, the Where read as Payload reads it (and, or, dot paths, field
+ *  operators), without recursion: a node is decided once its children are. */
+const valueAt = (doc: unknown, path: string): unknown => path.split('.').reduce<unknown>((v, k) => (isObj(v) ? (v as Record<string, unknown>)[k] : undefined), doc)
+const fieldHolds = (doc: unknown, field: string, ops: Record<string, unknown>) => Object.entries(ops).every(([op, x]) => { const d = valueAt(doc, field)
+  switch (op) { case 'equals': return d === x; case 'not_equals': return d !== x; case 'in': return Array.isArray(x) && x.includes(d); case 'not_in': return Array.isArray(x) && !x.includes(d); case 'exists': return (d !== undefined && d !== null) === Boolean(x); default: throw new Error(`no evaluation of the operator ${op}`) } })
+const matchesWhere = (doc: unknown, root: Record<string, unknown>): boolean => {
+  const decided = new Map<object, boolean>(), stack: Record<string, unknown>[] = [root]
+  while (stack.length) { const n = stack[stack.length - 1]!, kids = Object.entries(n).flatMap(([k, v]) => (k === 'and' || k === 'or' ? (v as Record<string, unknown>[]) : [])), open = kids.filter((c) => !decided.has(c))
+    if (open.length) { stack.push(...open); continue } stack.pop()
+    decided.set(n, Object.entries(n).every(([k, v]) => (k === 'and' ? (v as object[]).every((c) => decided.get(c)) : k === 'or' ? (v as object[]).some((c) => decided.get(c)) : fieldHolds(doc, k, v as Record<string, unknown>)))) }
+  return decided.get(root)!
+}
+export const checkAccess = (abilities: readonly Ability[], roles: readonly ScopedRole[], subject: string, action: string, doc: unknown, user: { id?: string | null; tenants?: readonly string[] } = {}): boolean => { const a = getAccess(abilities, roles, subject, action, user); return typeof a === 'boolean' ? a : matchesWhere(doc, a) }
 /** Roles from Google Workspace: the groups the Admin SDK's Directory API lists for a user (groups.list by userKey, through the one Google door),
  *  each mapped by the tenant's table onto a scoped role; a group the table does not name grants nothing. Without the groups, the call to ask. */
 export const listRolesFromGroups = (mapping: readonly (ScopedRole & { group: string })[], groups?: readonly { email?: string }[], userKey?: string) =>
@@ -890,20 +906,7 @@ const actionsOf = (experience?: { copies?: number; involutions?: number; msByHos
  *  config, a collection and a global load with the Payload config (server only); a config module is imported by payload.config.ts, one per
  *  concern; a component is reachable by the Pages Router too, so it imports no next/headers and no @payload-config; a script runs under
  *  payload run; a notice is never compiled. textbook_fullstack_files_by_role partitions the fifteen files over the eight roles. */
-export const FILE_ROLES = {
-  block: { folder: 'src/blocks', shape: '<Pascal>/config.ts', loads: 'the Payload config (the blocks of the pages layout), server only' },
-  config: { folder: 'src', shape: 'payload.qpu.<lower>.ts', loads: 'imported by payload.config.ts: one module per concern (plugins, mcp, ecommerce, adapters)' },
-  notice: { folder: '', shape: '<UPPER>.qpu.md', loads: 'read by people and licence scanners; never compiled' },
-  collection: { folder: 'src/collections', shape: '<Pascal>.ts', loads: 'the Payload config, server only' },
-  hooks: { folder: 'src/collections', shape: '<lower>.qpu.hooks.ts', loads: 'imported by the hand-held collection of that slug' },
-  global: { folder: 'src/globals', shape: '<Pascal>.ts', loads: 'the Payload config, server only' },
-  component: { folder: 'src/components/blocks/Qpu', shape: '<member>.tsx', loads: 'the App Router and the Pages Router (RenderBlocks): no next/headers, no @payload-config' },
-  script: { folder: 'src/scripts', shape: '<camel>.ts', loads: 'payload run, with the config' },
-  root: { folder: '', shape: '<kebab>.config.ts', loads: 'a build tool at the app root: open-next.config.ts is what the OpenNext Cloudflare build reads to make the Worker (site/wrangler.jsonc, main .open-next/worker.js)' },
-  plugin: { folder: 'src/plugins', shape: '<camel>.ts', loads: 'the Payload config, as plugins: [qpuPlugin()]: one plugin with multidimensional capabilities that fits any config without hacking it — its collections, its global, its block, its hooks on the installed plugins\' default collections, the plugins it composes' },
-  graphic: { folder: 'src/graphics', shape: '<Pascal>/index.tsx', loads: 'the site\'s header and footer and the admin graphics: the wordmark the fork rendered replaced by the computed branding, the tenant\'s own when set in the admin' },
-  migration: { folder: 'src/migrations/qpu', shape: '<YYYYMMDD_HHMMSS>_<snake>.ts beside its index.ts', loads: 'payload migrate, through the Mongo adapter\'s migrationDir: QPU\'s migrations beside upstream\'s, whose index stays as it is' },
-} as const
+export const FILE_ROLES = TABLES.FILE_ROLES
 type FileRole = keyof typeof FILE_ROLES
 const pascalOf = (t: string) => t.replace(/(^|[-_ ])([a-z])/g, (_m, _s, c: string) => c.toUpperCase())
 const camelOf = (t: string) => { const p = pascalOf(t); return p.slice(0, 1).toLowerCase() + p.slice(1) }
