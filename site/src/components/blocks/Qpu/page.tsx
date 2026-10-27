@@ -11,12 +11,13 @@ import { QpuApp } from './App'
 
 type Call = { id: string; result?: { structuredContent?: Record<string, unknown>; _meta?: { widget?: string; theme?: Record<string, string> }; error?: { message: string } } }
 // the tenant of the request: the host that names it (the tenants' domains, as the Worker's TENANTS), else the first tenant (a local run)
-const tenantOf = async (payload: Awaited<ReturnType<typeof getPayload>>): Promise<{ id: string; slug: string; settings?: { arguments?: Record<string, unknown> } }> => {
+type Tenant = { id: string; slug: string; settings?: { arguments?: Record<string, unknown> } }
+const tenantOf = async (payload: Awaited<ReturnType<typeof getPayload>>): Promise<Tenant> => {
   // next/headers is loaded when the module runs (never imported statically): the block renderer is reached by the Pages Router too, where that API does not exist (measured at build)
   let host = ''
   try { const { headers } = await import('next/headers'); host = (await headers()).get('host')?.split(':')[0] ?? '' } catch { /* no request: the first tenant */ }
   const byDomain = await payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, limit: 1, overrideAccess: true })
-  const t = (byDomain.docs[0] ?? (await payload.find({ collection: 'tenants' as never, limit: 1, sort: 'slug', overrideAccess: true })).docs[0]) as { id: string; slug: string; settings?: { arguments?: Record<string, unknown> } } | undefined
+  const t = (byDomain.docs[0] ?? (await payload.find({ collection: 'tenants' as never, limit: 1, sort: 'slug', overrideAccess: true })).docs[0]) as Tenant | undefined
   if (!t) throw new Error('no tenant: seed the tenants first (src/scripts/seedQpu.ts)')
   return t
 }

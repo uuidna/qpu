@@ -44,7 +44,7 @@ export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu-core', plugin
   ...incoming,
   db: incoming.db ?? qpuDb(),
   email: incoming.email ?? qpuEmail(),
-  admin: branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
+  admin: branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, beforeDashboard: [...(incoming.admin?.components?.beforeDashboard ?? []), '@root/components/blocks/Qpu/App#QpuApp'], graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
   collections: [...(incoming.collections ?? []).filter((c) => c.slug !== Tenants.slug && c.slug !== Entries.slug), Tenants, Entries],
   globals: [...(incoming.globals ?? []).filter((g) => g.slug !== QpuGlobal.slug), QpuGlobal],
   blocks: [...(incoming.blocks ?? []).filter((b) => b.slug !== Qpu.slug), Qpu],
