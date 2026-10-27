@@ -8,7 +8,7 @@ import './teleport.ts'
 import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
-import { sessionOf } from './mcp.ts'
+import { sessionOf, readJson } from './mcp.ts'
 import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
@@ -22,9 +22,9 @@ const call = toolCallerOf('readiness')
 const rpc = (url: string, name: string, args: unknown) => sessionOf(url).tool(name, args, (r) => account(name, r))
 // the unit's answers kept a day by call address (an aura by its block id, a sequence by its value): a run asks only what is new
 const cachePath = join(ROOT, '.qpu', 'cache', 'unit-cache.json')
-const unitCache: Record<string, { at: string; answer: unknown }> = existsSync(cachePath) ? (() => { try { return JSON.parse(readFileSync(cachePath, 'utf8')) } catch { return {} } })() : {}
+const unitCache: Record<string, { at: string; answer: unknown }> = readJson(cachePath, {})
 const cached = async (name: string, args: unknown): Promise<unknown> => { const key = `${name}${JSON.stringify(args)}`; const c = unitCache[key]; if (c && Date.now() - Date.parse(c.at) < 86_400_000) return c.answer; const answer = await rpc(UNIT, name, args); unitCache[key] = { at: new Date().toISOString(), answer }; writeFileSync(cachePath, JSON.stringify(unitCache) + '\n'); return answer }
-const readJson = (name: string) => { const p = join(ROOT, 'docs', 'public', name); return existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')) : undefined }
+const pub = (name: string) => readJson(join(ROOT, 'docs', 'public', name), undefined)
 
 const main = async () => {
   const selftest = call({ selftest: true })
@@ -33,8 +33,8 @@ const main = async () => {
   const present = LEADS.flatMap((l) => { const s = cleanupSubjectsOf(l); if (!s) return []; return s.kind === 'branches' ? s.names.filter((b) => execFileSync('git', ['branch', '--list', b], { cwd: ROOT, encoding: 'utf8' }).trim() !== '') : s.names.filter((path) => existsSync(join(ROOT, path))) })
   const ledgerPath = join(ROOT, 'docs', 'public', 'theorems.ndjson')
   const ledger = existsSync(ledgerPath) ? readFileSync(ledgerPath, 'utf8').split('\n').filter(Boolean).map((l) => { const r = JSON.parse(l) as { key: string; statement: string }; return { key: r.key, statement: r.statement } }) : []
-  const verification = readJson('verification.json')
-  const discovery = readJson('discovery.json')
+  const verification = pub('verification.json')
+  const discovery = pub('discovery.json')
   const plan = call({ verification, discovery, present, ledger })
   // the border: every discovered door, asked
   const hostUrl = (host: string) => (discovery?.hosts as { host: string; kind: string; contract: string }[] | undefined)?.find((h) => h.host === host && h.kind === 'mcp')?.contract ?? UNIT
@@ -72,7 +72,7 @@ const main = async () => {
   for (const c of unitCalls.filter((x) => x.name === 'run_sequence')) { try { clayAnswers.push({ value: Number(c.arguments.input), answer: await cached('run_sequence', c.arguments) }) } catch (e) { clayAnswers.push({ value: Number(c.arguments.input), refusal: (e as Error).message }) } }
   const clayRead = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: { technique: 'reflection', unit: clayAnswers } } }) as { result?: { structuredContent: { unitAsked: number; unitAgree: number; unitDisagree: number; unitRefused: number; pairsCount: number; fixedCount: number; tunedCount: number; leads: { id: string; statement: string; status: string; reason: string }[] } } }
   const clay = clayRead.result?.structuredContent ?? null
-  if (clay?.leads.length) { const docket = join(ROOT, 'docs', 'public', 'next-leads.json'); const previous = existsSync(docket) ? JSON.parse(readFileSync(docket, 'utf8')) as { id: string; source?: string }[] : []; const fresh = clay.leads.map((l) => ({ ...l, source: 'uuidna.com/mcp run_sequence', evidence: 'clay technique: reflection', head: '', date: new Date().toISOString() })); writeFileSync(docket, JSON.stringify([...previous.filter((p) => p.source !== 'uuidna.com/mcp run_sequence'), ...fresh], null, 1) + '\n') }
+  if (clay?.leads.length) { const docket = join(ROOT, 'docs', 'public', 'next-leads.json'); const previous = readJson(docket, []) as { id: string; source?: string }[]; const fresh = clay.leads.map((l) => ({ ...l, source: 'uuidna.com/mcp run_sequence', evidence: 'clay technique: reflection', head: '', date: new Date().toISOString() })); writeFileSync(docket, JSON.stringify([...previous.filter((p) => p.source !== 'uuidna.com/mcp run_sequence'), ...fresh], null, 1) + '\n') }
   const unit = { vortex, readiness, auras, rights: { receipt: rights.receipt, imprint: rights.imprint, licenseAddress: rights.licenseAddress, drift }, address }
   const judged = call({ verification, discovery, present, ledger, border, unit, unitUrl: UNIT })
   const date = new Date().toISOString()

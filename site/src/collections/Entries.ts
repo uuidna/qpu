@@ -4,7 +4,7 @@
 // fold address of what it holds, the sha256 beside it — never overwritten; the four verbs are Payload's REST (/api/entries).
 import type { CollectionConfig } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
-import { handle } from '@uuidna/qpu/mcp'
+import { handle, toolCallerOf } from '@uuidna/qpu/mcp'
 import { signedRoleOf } from '@uuidna/qpu/roles'
 
 type TenantUser = { roles?: string[]; tenants?: { tenant?: { id?: string } | string; roles?: string[] }[] } | null | undefined
@@ -40,7 +40,7 @@ export const Entries: CollectionConfig = {
       const id = String((req as { routeParams?: { id?: unknown } } | undefined)?.routeParams?.id ?? (req?.url ?? '').split('?')[0]!.split('/').pop() ?? '')
       if ((error as { status?: number }).status !== 404 || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)) return
       try { const res = await fetch((process.env.QPU_ORIGIN ?? 'https://qpu.uuidna.com') + '/' + id, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(10000) }); if (res.ok) { const entry = await res.json() as { id?: string; kind?: string; from?: string; body?: unknown; links?: string[]; computed?: boolean }; if (entry && entry.kind && entry.from && !entry.computed) { try { await req.payload.create({ collection: 'entries' as never, data: { kind: entry.kind, from: entry.from, body: entry.body, links: entry.links ?? [] } as never, overrideAccess: true, context: { disableRevalidate: true } }) } catch { /* seeded already, or refused: the answer stands */ } } return { response: entry, status: 200 } } } catch { /* the Worker unreached: computed here */ }
-      const v = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'verify', arguments: { uuid: id } } }) as { result?: { structuredContent?: unknown } }).result?.structuredContent
+      const v = toolCallerOf('verify')({ uuid: id })
       return { response: { id, kind: 'uuid', from: 'computed', computed: true, body: v ?? null, says: 'no entry at this address: the page of the UUID from the id alone, nothing written (no content address to seed at)' }, status: 200 }
     }],
     beforeValidate: [async ({ data, operation, req }) => {
@@ -50,7 +50,7 @@ export const Entries: CollectionConfig = {
       // the caller's role, from Payload's user and the tenant (a signed role claim counts too): the chat door corrects what the role may not choose
       const tenantId = tenantIdOf(data.tenant)
       const role = isSuperAdmin(req.user) || claimedRole(req) === 'admin' || memberOf(req.user, tenantId, ['tenant-admin']) ? 'admin' : claimedRole(req) === 'writer' || memberOf(req.user, tenantId, ['editor']) ? 'writer' : 'reader'
-      const chatDoor = (statement: string, chat: Record<string, unknown>) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement, chat } } }) as { result?: { structuredContent?: any } }).result?.structuredContent
+      const chatDoor = (statement: string, chat: Record<string, unknown>) => toolCallerOf('match')({ statement, chat })
       // a call is folded as it will run: its arguments corrected for the role first, so the same address always holds the same reply
       const asked = data.body as { tool?: string; arguments?: Record<string, unknown>; statement?: string } | undefined
       let corrected: unknown[] = []

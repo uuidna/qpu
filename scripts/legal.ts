@@ -7,7 +7,7 @@ import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { depositOf } from '../src/quantum/coins.ts'
-import { sessionOf } from './mcp.ts'
+import { sessionOf, readJson } from './mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 
 const ROOT = process.cwd()
@@ -15,7 +15,6 @@ const ROOT = process.cwd()
 const account = (door: string, body: unknown) => { const d = depositOf(door, body); appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date: new Date().toISOString(), client: 'legal', ...d }) + '\n') }
 const call = toolCallerOf('legal')
 const text = (f: string) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT, f), 'utf8') : undefined)
-const readJson = (f: string) => { const t = text(f); return t ? JSON.parse(t) : undefined }
 const rpc = (url: string, name: string, args: unknown) => sessionOf(url).tool(name, args, (r) => account(name, r))
 const main = async () => {
   const selftest = call({ selftest: true })
@@ -35,7 +34,7 @@ const main = async () => {
         const again = call({ texts, discovery, agents: prev.agents?.length && agents ? agents : undefined, theoremKeys: ledger, answers: prev.answers ?? [] })
         if (again.id === prev.id) { console.log(`legal: inputs unchanged (${inputs}); sealed audit ${prev.id} recomputes to itself`); return }
         console.log(`legal: sealed audit ${prev.id} recomputes to ${again.id}: the stored answers or the tool changed; re-auditing and recording the break`)
-        const leadsPath = join(ROOT, 'docs', 'public', 'next-leads.json'); const leads = existsSync(leadsPath) ? JSON.parse(readFileSync(leadsPath, 'utf8')) as unknown[] : []
+        const leadsPath = join(ROOT, 'docs', 'public', 'next-leads.json'); const leads = (readJson(leadsPath, []) as unknown[])
         leads.push({ id: `legal-seal-broken-${prev.id?.slice(0, 8)}`, source: 'docs/public/legal.json', statement: `the sealed legal audit ${prev.id} recomputed to ${again.id} from its own stored answers`, status: 'open', reason: 'a sealed result that does not recompute to itself was altered after sealing, or the tool that seals it changed; both are measured here', evidence: `${prev.id} ≠ ${again.id}`, head: '', date: new Date().toISOString() })
         writeFileSync(leadsPath, JSON.stringify(leads, null, 1) + '\n')
       }

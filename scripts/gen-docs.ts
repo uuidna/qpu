@@ -9,11 +9,12 @@ import { cssOf, hueOf, KEY } from '../src/quantum/theme.js'
 import { uuidOf } from '../src/quantum/blocks.js'
 import { LEADS } from '../src/quantum/leads.js'
 import { TEXTBOOK_LEAN, TEXTBOOK_THEOREMS } from '../src/quantum/textbook-theorems.js'
+import { readJson } from './mcp.ts'
 
 const ROOT = process.cwd()
 // Text that reaches a page is escaped once here: an angle bracket in a lead or a description is text, never a tag.
 const DOCS = join(ROOT, 'docs')
-const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { name: string; version: string; description: string; homepage?: string; repository?: string }
+const pkg = readJson('package.json') as { name: string; version: string; description: string; homepage?: string; repository?: string; devDependencies?: Record<string, string> }
 
 const tools = (() => {
   const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })

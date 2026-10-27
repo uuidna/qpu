@@ -8,6 +8,7 @@ import './teleport.ts'
 import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { COMPETITIONS } from '../src/quantum/toolboxes/legal.ts'
+import { getOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const offline = process.env.QPU_OFFLINE === '1'
@@ -32,12 +33,12 @@ const main = async () => {
       catch (e) { fetched.push({ id: c.id, status: 0, ms: Date.now() - t0, bytes: 0 }) }
     }))
     // pushed: the remote's main is the local head, asked of GitHub (the repository toolbox's door, read here)
-    try { const res = await fetch('https://api.github.com/repos/uuidna/qpu/commits/main', { headers: { accept: 'application/vnd.github+json', 'user-agent': 'uuidna-qpu-verify (https://qpu.uuidna.com)' }, signal: AbortSignal.timeout(20000) }); if (res.ok) { const j = await res.json() as { sha?: string }; pushed = !!j.sha && j.sha === head } }
+    try { const res = await getOf('https://api.github.com/repos/uuidna/qpu/commits/main', 'application/vnd.github+json'); if (res.ok) { const j = await res.json() as { sha?: string }; pushed = !!j.sha && j.sha === head } }
     catch { /* unreached: pushed unknown */ }
   }
   // the public news APIs as adapters of the DOI research: every open request for every record of precedence, the mentions read by the tool
   const mentions: { id: string; status: number; ms: number; text: string }[] = []
-  if (!offline) { const plan = call({ news: true }); await Promise.all((plan.requestList as { id: string; url: string; accept: string }[]).map(async (q) => { const t0 = Date.now(); try { const res = await fetch(q.url, { headers: { accept: q.accept, 'user-agent': 'uuidna-qpu-verify (+https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(25000) }); mentions.push({ id: q.id, status: res.status, ms: Date.now() - t0, text: await res.text() }) } catch { mentions.push({ id: q.id, status: 0, ms: Date.now() - t0, text: '' }) } })) }
+  if (!offline) { const plan = call({ news: true }); await Promise.all((plan.requestList as { id: string; url: string; accept: string }[]).map(async (q) => { const t0 = Date.now(); try { const res = await getOf(q.url, q.accept, 25000); mentions.push({ id: q.id, status: res.status, ms: Date.now() - t0, text: await res.text() }) } catch { mentions.push({ id: q.id, status: 0, ms: Date.now() - t0, text: '' }) } })) }
   const r = call({ pages, now: Date.now(), pushed: pushed === true, published: false, conduct: existsSync(join(ROOT, 'CODE_OF_CONDUCT.md')), hosts: 3, ...(mentions.length ? { mentions: mentions.map((m) => ({ id: m.id, status: m.status, text: m.text })) } : {}) })
   const date = new Date().toISOString()
   writeFileSync(join(ROOT, 'docs', 'public', 'compete.json'), JSON.stringify({ license: LICENSE.attribution, date, ms: Date.now() - started, offline, selftest: { passed: selftest.passed }, head, pushed, fetched, ...r }, null, 1) + '\n')

@@ -3,8 +3,13 @@
 // MCP: a tools/call with the user's MCP key (QPU_APP_KEY, never written anywhere) to /api/mcp (QPU_APP_MCP, else the local app), the
 // plugin's json blocks parsed, a find walked page by page. Without a key or an answer it says so and returns nothing: an unread docket is
 // unknown to its caller, never a file fallback.
+import { readFileSync } from 'node:fs'
 export const MCP_URL = 'http://localhost:3000/api/mcp'
+/** A published file's JSON, or the fallback when it is missing or unreadable: the one reader every script shares, never a throw */
+export const readJson = (path: string, fallback: any = null): any => { try { return JSON.parse(readFileSync(path, 'utf8')) } catch { return fallback } }
 const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
+/** A GET with the named user agent and a timeout: the one fetcher of the public sources */
+export const getOf = (url: string, accept = '*/*', ms = 20000) => fetch(url, { headers: { accept, 'user-agent': UA }, signal: AbortSignal.timeout(ms) })
 type Reply = { status: number; bytes: number; result?: any; error?: string }
 /** A session with one MCP server: every request answered as its status, the bytes of its result, the result or the error. */
 export const sessionOf = (url: string, key?: string) => {

@@ -7,7 +7,7 @@ import { searchPlugin } from '@payloadcms/plugin-search'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { UnauthorizedError } from 'payload'
-import { handle } from '@uuidna/qpu/mcp'
+import { handle, toolCallerOf } from '@uuidna/qpu/mcp'
 import { qpuEcommerce } from './payload.qpu.ecommerce'
 import { Qpu } from './blocks/Qpu/config'
 import { qpuMcpTools, qpuMcpResources, qpuServerInfo } from './payload.qpu.mcp'
@@ -41,7 +41,7 @@ export const qpuPlugins = [
     const settings = await getDefault(); const ns = req.headers.get('x-qpu-namespace'); if (!ns) return settings
     const tenants = (await req.payload.find({ collection: 'tenants', where: { namespace: { equals: ns } }, limit: 1, depth: 0, overrideAccess: true })).docs.map((x: any) => ({ id: String(x.id), namespace: x.namespace }))
     const user = settings.user; const rows = (user.tenants ?? []).map((r: any) => ({ tenant: String(typeof r.tenant === 'object' ? r.tenant?.id : r.tenant), roles: r.roles ?? [] }))
-    const n = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { namespace: { narrow: { requested: ns, tenants, user: { roles: user.roles ?? [], tenants: rows } } } } } }) as any).result?.structuredContent
+    const n = toolCallerOf('payload')({ namespace: { narrow: { requested: ns, tenants, user: { roles: user.roles ?? [], tenants: rows } } } })
     if (!n?.allowed) throw new UnauthorizedError()
     user.roles = n.roles; user.tenants = n.rows; return settings
   } } as never), // the tools and the ui:// resources of every tool (MCP Apps) through the plugin; an API key per user authorises a client, narrowed to the namespace a request names

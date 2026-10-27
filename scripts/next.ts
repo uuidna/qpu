@@ -15,6 +15,7 @@ import { remediesOf, manualDocsOf } from '../src/quantum/audit.ts'
 import { STEP_CACHE, GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
 import { timesOf } from './machine.ts'
 import { etaOf } from '../src/quantum/machine.ts'
+import { readJson, getOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const pub = (f: string) => join(ROOT, 'docs', 'public', f)
@@ -165,7 +166,7 @@ console.log(`waves: ${[...new Set(steps.map((s) => s.wave))].length}; steps ${(s
 // The docket: every red step as an open lead with its evidence, accumulated across runs and deduplicated by id.
 type NextLead = { id: string; source: string; statement: string; status: 'open'; reason: string; evidence: string; head: string; date: string }
 const docket = pub('next-leads.json')
-const previous: NextLead[] = existsSync(docket) ? JSON.parse(readFileSync(docket, 'utf8')) : []
+const previous: NextLead[] = readJson(docket, [])
 const opened: NextLead[] = stillRed.map((s) => {
   const step = receipt.steps.filter((x) => x.name === s.name).at(-1)!
   const remedy = remediesOf([step.tail]).leads[0]
@@ -189,7 +190,7 @@ const cores = availableParallelism()
 const capacityIn: Parameters<typeof capacityOf>[0] = { cores: [{ step: 'next run', wallMs, cpuMs: waiting.reduce((n, w) => n + w.price.cpuMs, 0), cores }] }
 // the full measures run in the background, detached by post-commit (scripts/idle.ts, the machine action idle), never inside a hook: their latest
 // recorded state is read here, never computed
-const idleRead = existsSync(pub('idle.json')) ? JSON.parse(readFileSync(pub('idle.json'), 'utf8')) as { input?: Parameters<typeof capacityOf>[0] } : null
+const idleRead = (readJson(pub('idle.json')) as { input?: Parameters<typeof capacityOf>[0] } | null)
 Object.assign(capacityIn, { ...(idleRead?.input ?? {}), cores: capacityIn.cores })
 // the remaining work, from the tree's own records, in ms: the steps this run did not run, each at its last measured run in the receipts; the idle
 // items at the audit's measured ms per example; the open leads counted, their cost unmeasured (said so, never guessed)

@@ -8,6 +8,7 @@ import { dirname, join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
+import { readJson } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('configure')
@@ -16,12 +17,12 @@ const selftest = call({ selftest: true })
 console.log(`configure selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
 // what the gate measured last: the actions kind shards by it
 const e2ePath = join(ROOT, 'docs', 'public', 'e2e.json')
-const e2e = existsSync(e2ePath) ? (() => { try { return JSON.parse(readFileSync(e2ePath, 'utf8')) } catch { return null } })() : null
+const e2e = readJson(e2ePath)
 const experience = e2e ? { copies: e2e.copies, involutions: e2e.involutions, msByHost: Object.fromEntries(Object.entries(e2e.byHost ?? {}).map(([h, v]) => [h, (v as { msMedian: number }).msMedian])) } : undefined
-const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { version: string; description: string }
+const pkg = readJson('package.json') as { version: string; description: string }
 // the rates the currency step harmonised last: the ecommerce kind prices the catalogue in every currency from them
 const currencyPath = join(ROOT, 'docs', 'public', 'currency.json')
-const rates = existsSync(currencyPath) ? (() => { try { return (JSON.parse(readFileSync(currencyPath, 'utf8')) as { rates?: Record<string, { rate: number }> }).rates } catch { return undefined } })() : undefined
+const rates = (readJson(currencyPath) as { rates?: Record<string, { rate: number }> } | null)?.rates
 const files = call({ files: true })
 const all = call({ version: pkg.version, description: pkg.description, experience, rates })
 const write = (path: string, text: string): boolean => { const abs = join(ROOT, path); const before = existsSync(abs) ? readFileSync(abs, 'utf8') : null; if (before === text) return false; mkdirSync(dirname(abs), { recursive: true }); writeFileSync(abs, text); return true }

@@ -4,10 +4,11 @@
 // prices each idle item in its own unit through repository { penalties, capacity }, writes the state the hooks and next read, and, with a key,
 // raises the ten largest as idle gaps in the docket and annihilates the ones now used. Progress line by line.
 import { spawnSync } from 'node:child_process'
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { capacityOf } from '../src/quantum/toolboxes/billing.ts'
 import { LICENSE } from '../src/quantum/license.ts'
+import { readJson } from './mcp.ts'
 
 const ROOT = process.cwd()
 const started = performance.now()
@@ -24,7 +25,7 @@ const quantum = EXAMPLES.filter((e) => ['circuit', 'echo', 'algorithm'].includes
 const qubitsOf = (a: unknown): number => { const xs = new Set<string>(); const walk = (v: unknown) => { if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === 'object') { const o = v as Record<string, unknown>; if (o.kind === 'line' && typeof o.x === 'number') xs.add(String(o.x)); if (typeof o.qubits === 'number') xs.add(`n${o.qubits}`); Object.values(o).forEach(walk) } }; walk(a); return [...xs].reduce((n, x) => (x.startsWith('n') ? Math.max(n, Number(x.slice(1))) : n), xs.size && [...xs].every((x) => !x.startsWith('n')) ? xs.size : 0) || (xs.size ? xs.size : 1) }
 capacityIn.qubits = { bound: QUANTUM_BOUNDS.qubits, calls: quantum.filter((e) => (e.arguments as { name?: string }).name !== 'shor').map((e) => ({ door: e.tool, used: Math.min(QUANTUM_BOUNDS.qubits, qubitsOf(e.arguments)) })) }
 capacityIn.shor = { bound: QUANTUM_BOUNDS.shorN, asked: quantum.map((e) => e.arguments as { name?: string; N?: number }).filter((a) => a.name === 'shor' && typeof a.N === 'number').map((a) => a.N!) }
-const disc = existsSync(join(ROOT, 'docs', 'public', 'discovery.json')) ? JSON.parse(readFileSync(join(ROOT, 'docs', 'public', 'discovery.json'), 'utf8')) as { hosts?: { host: string; status: number }[] } : null
+const disc = readJson(join(ROOT, 'docs', 'public', 'discovery.json')) as { hosts?: { host: string; status: number }[] } | null
 if (disc?.hosts) capacityIn.gates = disc.hosts.map((h) => ({ name: h.host, called: h.status === 200 }))
 
 const capacity = capacityOf(capacityIn)

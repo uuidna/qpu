@@ -6,6 +6,7 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
+import { readJson } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('repository')
@@ -13,11 +14,11 @@ const git = (...args: string[]) => { try { return execFileSync('git', args, { cw
 const main = async () => {
   const selftest = call({ selftest: true })
   console.log(`repository selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
-  const zen = existsSync(join(ROOT, '.zenodo.json')) ? JSON.parse(readFileSync(join(ROOT, '.zenodo.json'), 'utf8')) as { related_identifiers?: { identifier: string; relation: string }[] } : {}
+  const zen = readJson('.zenodo.json', {}) as { related_identifiers?: { identifier: string; relation: string }[] }
   const conceptDoi = zen.related_identifiers?.find((r) => r.relation === 'isVersionOf' || r.relation === 'isPartOf')?.identifier ?? (process.env.QPU_CONCEPT_DOI ?? '10.5281/zenodo.22700098')
   const local = {
-    pkg: (JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { name?: string }).name ?? null, workflows: (() => { try { return readdirSync(join(ROOT, '.github', 'workflows')).filter((f) => /\.ya?ml$/.test(f)) } catch { return [] } })(),
-    remote: git('remote', 'get-url', 'origin') || null, head: git('rev-parse', 'HEAD'), branch: git('rev-parse', '--abbrev-ref', 'HEAD'), version: (JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { version: string }).version,
+    pkg: readJson('package.json').name ?? null, workflows: (() => { try { return readdirSync(join(ROOT, '.github', 'workflows')).filter((f) => /\.ya?ml$/.test(f)) } catch { return [] } })(),
+    remote: git('remote', 'get-url', 'origin') || null, head: git('rev-parse', 'HEAD'), branch: git('rev-parse', '--abbrev-ref', 'HEAD'), version: (readJson('package.json') as { version: string }).version,
     worktrees: git('worktree', 'list', '--porcelain').split('\n\n').filter(Boolean).map((block) => { const f = Object.fromEntries(block.split('\n').map((l) => [l.split(' ')[0]!, l.slice(l.indexOf(' ') + 1)])); return { path: f.worktree ?? '', head: f.HEAD ?? '', branch: f.branch ? f.branch.replace('refs/heads/', '') : null } }),
     branches: git('for-each-ref', '--format=%(refname:short) %(upstream:short) %(objectname:short)', 'refs/heads').split('\n').filter(Boolean).map((l) => { const [name, a, b] = l.split(' '); return b ? { name: name!, upstream: a!, head: b } : { name: name!, upstream: null, head: a! } }),
     tags: git('for-each-ref', '--format=%(refname:short) %(objectname:short)', 'refs/tags').split('\n').filter(Boolean).map((l) => { const [name, commit] = l.split(' '); return { name: name!, commit: commit! } }),
@@ -43,7 +44,7 @@ const main = async () => {
   writeFileSync(join(ROOT, 'docs', 'repository.md'), w.page)
   // the watch's leads in the docket next keeps, replaced each run
   const docket = join(ROOT, 'docs', 'public', 'next-leads.json')
-  const previous = existsSync(docket) ? JSON.parse(readFileSync(docket, 'utf8')) as { id: string; source?: string }[] : []
+  const previous = readJson(docket, []) as { id: string; source?: string }[]
   const fresh = (w.watch.leads as { id: string }[]).map((l) => ({ ...l, source: 'repository watch', evidence: w.watch.remote ?? 'git', head: local.head.slice(0, 8), date }))
   writeFileSync(docket, JSON.stringify([...previous.filter((p) => p.source !== 'repository watch'), ...fresh], null, 1) + '\n')
   console.log(`repository: ${w.branches} branches, ${w.tags} tags, releases ${w.releases < 0 ? 'not reached' : w.releases}, ${w.leads} lead(s), ${w.refusals} refusal(s)${offline ? ' (offline: local facts only)' : ''}`)

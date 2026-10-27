@@ -8,11 +8,10 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
-import { mcpOf } from './mcp.ts'
+import { mcpOf, getOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('textbook')
-const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
 const plan = call({ claims: true }).requests as { id: string; url: string; accept: string }[]
 const mcp = mcpOf()
 const t0 = performance.now()
@@ -31,7 +30,7 @@ const validityOf = (res: Response, at: number): { validUntil: string; validity: 
 const pause = (ms: number) => new Promise((ok) => setTimeout(ok, ms))
 const searchOf = async (r: { id: string; url: string; accept: string }) => {
   let res: Response | null = null
-  for (let wait = 500; wait <= 16000; wait *= 2) { res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': UA }, signal: AbortSignal.timeout(20000) }).catch(() => null); if (res && res.status !== 429 && res.status < 500) break; await pause(wait) }
+  for (let wait = 500; wait <= 16000; wait *= 2) { res = await getOf(r.url, r.accept).catch(() => null); if (res && res.status !== 429 && res.status < 500) break; await pause(wait) }
   const at = Date.now(), text = res ? await res.text() : ''
   answers.push({ id: r.id, status: res?.status ?? 0, text })
   if (!res || res.status !== 200) return 0

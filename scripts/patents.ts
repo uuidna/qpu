@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
+import { getOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('patents')
@@ -23,7 +24,7 @@ const main = async () => {
   for (const r of plan.requests as { id: string; query: string | null; url: string; accept: string }[]) {
     if (last) await new Promise((resolve) => setTimeout(resolve, Math.max(0, PACE_MS - (Date.now() - last))))
     last = Date.now(); const t0 = last
-    try { const res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': 'uuidna-qpu-verify (+https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(25000) }); answers.push({ id: r.id, query: r.query, status: res.status, ms: Date.now() - t0, text: await res.text() }) }
+    try { const res = await getOf(r.url, r.accept, 25000); answers.push({ id: r.id, query: r.query, status: res.status, ms: Date.now() - t0, text: await res.text() }) }
     catch { answers.push({ id: r.id, query: r.query, status: 0, ms: Date.now() - t0, text: '' }) }
   }
   const r = call({ op: 'read', answers: answers.map((a) => ({ id: a.id, query: a.query ?? undefined, text: a.text })) })

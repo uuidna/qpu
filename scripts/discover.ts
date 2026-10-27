@@ -1,7 +1,7 @@
 // The client of the discover tool: thin and host-agnostic. It asks the tool what to fetch, fetches it, hands the answers
 // back until the tool says "discovery", and writes what the tool returns. It runs the toolbox's selftest first; a failed
 // check is recorded, never a stop. Network; skipped by `next --offline`.
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'node:fs'
+import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
@@ -16,6 +16,7 @@ mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const UA = 'uuidna-qpu-discover (https://qpu.uuidna.com)'
 const call = toolCallerOf('discover')
 import { setTimeout as sleep } from 'node:timers/promises'
+import { readJson } from './mcp.ts'
 const fetchOne = async (r: Request): Promise<Answer> => {
   try { const res = await fetch(r.url, { method: r.method, headers: { accept: 'application/json, text/event-stream, application/yaml, text/xml, */*', 'user-agent': UA, ...(r.body ? { 'content-type': 'application/json' } : {}), ...(r.headers ?? {}) }, body: r.body ? JSON.stringify(r.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(30000) }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
   catch (e) { return { ...r, status: 0, type: '', text: `fetch failed: ${(e as Error).message}` } }
@@ -28,7 +29,7 @@ const main = async () => {
   const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
   const started0 = Date.now()
   const cachePath = join(ROOT, '.qpu', 'cache', 'discovery-answers.json')
-  const cache: Record<string, Answer & { at: string }> = existsSync(cachePath) ? (() => { try { return JSON.parse(readFileSync(cachePath, 'utf8')) } catch { return {} } })() : {}
+  const cache: Record<string, Answer & { at: string }> = readJson(cachePath, {})
   if (isMerge) Object.assign(cache, gatherShards<Record<string, Answer & { at: string }>>('discover', {}))
   const shardCache: Record<string, Answer & { at: string }> = {}
   console.log(`discover (${shardLabel()})`)

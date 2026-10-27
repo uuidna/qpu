@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T10:57:17.175Z",
+ "date": "2026-10-27T11:07:50.808Z",
  "input": {
   "doors": [
    {
@@ -2211,6 +2211,11 @@
     "used": true
    },
    {
+    "key": "textbook_actions_pinned",
+    "bytes": 93,
+    "used": true
+   },
+   {
     "key": "textbook_hook_workflows",
     "bytes": 60,
     "used": true
@@ -3626,8 +3631,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 22983,
-   "used": 22983,
+   "capacity": 23076,
+   "used": 23076,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

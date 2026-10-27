@@ -13,6 +13,7 @@ import { EXAMPLES } from '../src/quantum/examples.ts'
 import { LEADS, cleanupSubjectsOf } from '../src/quantum/leads.ts'
 import { VERIFIERS, factsOf, verifyRequestsOf } from '../src/quantum/verifiers.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
+import { readJson } from './mcp.ts'
 
 const ROOT = process.cwd()
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
@@ -70,7 +71,7 @@ console.log(`purify: ${scanned.length} tracked files scanned for email addresses
 const sh = (cmd: string, args: string[]): string => { const r = spawnSync(cmd, args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 }); return `${r.stdout ?? ''}${r.stderr ?? ''}` }
 const tsSources = tracked.filter((f) => /^src\/quantum\/[^/]+\.ts$/.test(f) && !f.endsWith('.test.ts'))
 const tsLines = tsSources.reduce((n, f) => n + readFileSync(join(ROOT, f), 'utf8').split('\n').length, 0)
-const receipt = existsSync(join(ROOT, 'docs', 'public', 'receipt.json')) ? JSON.parse(readFileSync(join(ROOT, 'docs', 'public', 'receipt.json'), 'utf8')) : { steps: [] }
+const receipt = readJson(join(ROOT, 'docs', 'public', 'receipt.json'), { steps: [] })
 const step = (name: string) => receipt.steps.filter((s: { name: string }) => s.name === name).at(-1)
 const tests = step('test')?.counts ?? {}
 const lean = step('lean')?.counts ?? {}
@@ -103,8 +104,8 @@ writeFileSync(join(ROOT, 'docs', 'theorems.md'), ['---', 'title: Theorems', 'ord
   '| Key | Statement | Axioms |', '|---|---|---|', ...handWritten.map((r) => `| \`${r.key}\` | \`${r.statement.replace(/\|/g, '\\|').replace(/`/g, "'")}\` | ${r.axioms.join(', ') || '—'} |`), ''].join('\n'))
 const declared = tracked.filter((f) => f.endsWith('.lean') && !f.startsWith('scripts/')).reduce((n, f) => n + (readFileSync(join(ROOT, f), 'utf8').match(/^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+)?theorem /gm) ?? []).length, 0)
 const modules = tracked.filter((f) => /src\/quantum\/processing\/unit\/lean\/Qpu(\/|\.lean$)/.test(f)).length
-const deps = Object.keys(JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).dependencies ?? {}).length
-const verification = existsSync(join(ROOT, 'docs', 'public', 'verification.json')) ? JSON.parse(readFileSync(join(ROOT, 'docs', 'public', 'verification.json'), 'utf8')) : null
+const deps = Object.keys(readJson('package.json').dependencies ?? {}).length
+const verification = readJson(join(ROOT, 'docs', 'public', 'verification.json'))
 const rows: [string, string][] = [
   ['Tracked files', String(tracked.length)],
   ['Source files under `src/quantum` (TypeScript)', `${tsSources.length} (${tsLines.toLocaleString('en-US')} lines)`],

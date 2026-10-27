@@ -1,6 +1,6 @@
 // The client of the imagine tool: fast when clean (the imagination is a function of the leads, the examples and the tools),
 // otherwise one call, and the files written. Selftest first. Pure computation; no network.
-import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'node:fs'
+import { writeFileSync, readFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
@@ -9,6 +9,7 @@ import { LEADS } from '../src/quantum/leads.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
+import { readJson } from './mcp.ts'
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
@@ -25,7 +26,7 @@ const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
 const started = Date.now()
 const rowsPath = join(ROOT, '.qpu', 'cache', 'imagination-rows.json')
 type Kept = { hash: string; row: unknown; opened: unknown[]; verify: number; verdict: string }
-const kept: Record<string, Kept> = existsSync(rowsPath) ? (() => { try { return JSON.parse(readFileSync(rowsPath, 'utf8')) } catch { return {} } })() : {}
+const kept: Record<string, Kept> = readJson(rowsPath, {})
 const toolsHash = uuidOf(JSON.stringify(toolsNow))
 const hashOf = (l: { id: string; statement: string; status: string }) => uuidOf(`${l.id}${l.statement}${l.status}${toolsHash}`)
 if (isMerge) Object.assign(kept, gatherShards<Record<string, Kept>>('imagine', {}))

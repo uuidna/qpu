@@ -7,6 +7,7 @@ import './teleport.ts'
 import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { LICENSE } from '../src/quantum/license.ts'
+import { getOf } from './mcp.ts'
 const ROOT = process.cwd()
 const call = toolCallerOf('textbook')
 const main = async () => {
@@ -23,7 +24,7 @@ const main = async () => {
   if (isMerge) for (const r of gatherShards<{ url: string; status: number; ok: boolean; contracted?: string }[]>('textbook', [])) if (!have.has(r.url)) { fetched.push(r); have.add(r.url) }
   const missing = shareOf((plan.requestList as { url: string }[]).filter((r) => !have.has(r.url)))
   console.log(`textbook (${shardLabel()}): ${missing.length} to fetch`)
-  if (process.env.QPU_OFFLINE !== '1') for (const r of missing) { try { const res = await fetch(r.url, { headers: { accept: '*/*', 'user-agent': 'uuidna-qpu-textbook (https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(20000) }); fetched.push({ url: r.url, status: res.status, ok: res.ok }) } catch { fetched.push({ url: r.url, status: 0, ok: false }) } await new Promise((t) => setTimeout(t, 250)) }
+  if (process.env.QPU_OFFLINE !== '1') for (const r of missing) { try { const res = await getOf(r.url); fetched.push({ url: r.url, status: res.status, ok: res.ok }) } catch { fetched.push({ url: r.url, status: 0, ok: false }) } await new Promise((t) => setTimeout(t, 250)) }
   if (isShard) { leaveShard('textbook', fetched.filter((r) => missing.some((m) => m.url === r.url))); console.log(`textbook: ${shardLabel()} fetched its share`); process.exit(0) }
   const v = call({ results: fetched })
   // the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client: when the tenant names its
@@ -48,7 +49,7 @@ const main = async () => {
   // Payload's combinatorial surface: the dimensions decided by theorem, the sources re-read here (GET, public, a named user agent) and compared to the table; drift a lead
   const schemasCall = (args: Record<string, unknown>) => payload({ schemas: true, ...args })
   let schemas = schemasCall({})
-  if (process.env.QPU_OFFLINE !== '1') { const answers: Record<string, string> = {}; for (const r of schemas.requestList as { url: string }[]) { try { const res = await fetch(r.url, { headers: { accept: 'text/plain', 'user-agent': 'uuidna-qpu-textbook (https://qpu.uuidna.com)' }, signal: AbortSignal.timeout(20000) }); if (res.ok) answers[r.url] = await res.text() } catch { /* unread: reported */ } } schemas = schemasCall({ answers }) }
+  if (process.env.QPU_OFFLINE !== '1') { const answers: Record<string, string> = {}; for (const r of schemas.requestList as { url: string }[]) { try { const res = await getOf(r.url, 'text/plain'); if (res.ok) answers[r.url] = await res.text() } catch { /* unread: reported */ } } schemas = schemasCall({ answers }) }
   console.log(`textbook: Payload's surface: ${schemas.dimensions.length} dimensions, ${schemas.agreeing} agree with their theorems, ${schemas.served} served by the match tool${schemas.reread ? `; sources re-read: ${schemas.reread.answered}, ${schemas.reread.agree ? 'no drift' : `${schemas.reread.leads.length} drift lead(s)`}${schemas.reread.unread.length ? `, unread: ${schemas.reread.unread.join(', ')}` : ''}` : ''}`)
   // the prose audited around the textbook: the README, the home page and every tool's own description, each number resting on an expression or a lead
   const listed = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string }[] } }).result.tools

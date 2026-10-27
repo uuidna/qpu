@@ -104,10 +104,16 @@ export const appOf = (ctx: Context, r: { name: string; host: string; plugins?: r
     bundleFiles: files,
   }
 }
+// Google integration as exact pairs: pages naming Google or holding a google-toolbox block, calls of google-toolbox tools, tenants and keys naming either
+const googleOf = (g: { pages?: any[]; tenants?: object[]; entries?: any[]; keys?: object[] }, tools: string[]) => {
+  const names = (x: unknown) => { const t = JSON.stringify(x); return /google/i.test(t) || tools.some((n) => t.includes(`"${n}":true`)) }, pair = (xs: unknown[] = [], p: (x: any) => unknown) => ({ live: xs.filter(p).length, of: xs.length })
+  const pages = (g.pages ?? []).filter((p) => /google/i.test(p.fullTitle ?? p.title) || p.layout?.some((b: { tool: string }) => tools.includes(b.tool))), answered = pair((g.entries ?? []).filter((e) => e.kind === 'call' && tools.includes(e.body?.tool)), (e) => e.result?.error === undefined)
+  return { pages: { published: pair(pages, (p) => p._status === 'published'), parented: pair(pages, (p) => p.parent), blocks: pages.flatMap((p) => p.layout ?? []).reduce((a: Record<string, number>, b: { tool: string }) => ({ ...a, [b.tool]: (a[b.tool] ?? 0) + 1 }), {}) }, tenants: pair(g.tenants, names), calls: { answered, refused: answered.of - answered.live }, keys: pair(g.keys, names), theorem: 'textbook_google_measured' }
+}
 const payload = toolOf('payload', {
   name: 'payload',
   description: 'Any tool\'s result as the document Payload\'s default plugins hold, no custom collection: a lexical document whose one block is the programmable UUID logic (uuid, handle, program, tail, tool, arguments, prev, next), nested by the referer chain as nested-docs nests (parent, breadcrumbs), the SEO plugin\'s title, description and image from the block\'s Open Graph, the JSON-LD and the licence. Every tools/call result carries the same in _meta.payload.',
-  inputSchema: { type: 'object', properties: { references: { type: 'object', description: 'the references between documents as one graph: { docs: [{ id, slug?, doc | markdown }] } — every lexical link to an internal path, relationship, qpu block naming a document (id, uuid, slug) and Markdown link read; the cycles (Tarjan, iterative), the dangling references, and an order when there is no cycle; the strongly connected components fused into one node each, members in address order, the condensation always acyclic and ordered; payload { lexical } with { id, slug } runs the blocks that reference their own document back once each, in address order, never re-entering' }, standardise: { type: 'object', description: 'a lexical document set in standard typography without a change of meaning: { doc } — only text nodes change (quotes, dashes, ellipses, spaces); the words in order and every qpu block must stay the same, else the original stands; improvements come as other qpu blocks verified by theorems' }, lexical: { type: 'object', description: 'a Payload lexical document whose qpu blocks run through MCP: { doc, role? } — every block (a tool and its arguments) answered through the chat door under the role, corrected where the role requires, a refusal handled, never thrown; a chat answer\'s doc is such a document' }, namespace: { type: 'object', description: 'tenants as namespaces, each app its own sandbox without a domain: { name | app } the sandbox planned (its tenant by namespace, the key its client holds, the header x-qpu-namespace, what is scoped); { narrow: { requested, tenants, user } } a credential narrowed to the namespace a request names — the intersection, never wider; the app\'s MCP auth asks this on every request' }, theorems: { type: 'boolean', description: 'the textbook\'s axioms replaced by theorems through the tenant\'s Payload MCP plugin, as a client: the plan, then with answers { list, found } the update requests' }, schemas: { type: 'boolean', description: 'Payload\'s combinatorial surface handled programmatically: every dimension (field types, operations, schemas, queries, hooks, access, realtime coordination) named and meant by its textbook theorem, counted from the table and decided through the match tool; any collection\'s fields (collection: { slug, fields }) as JSON Schema 2020-12, GraphQL, the plugin\'s MCP tools and OpenAPI paths; the standards each part is described by; the sources to re-read (requestList), and with answers { url: text } the drift as leads' }, collection: { type: 'object', description: 'schemas: { slug, fields } in Payload\'s own field config shape' }, payloadUrl: { type: 'string', description: 'the tenant\'s Payload origin; its MCP is at /api/mcp' }, answers: { type: 'object' }, website: { description: 'true: the requests for payloadcms.com\'s source tree and one live page; the tree as answered: its collections, blocks, globals, fields and plugins, and whether the live page\'s blocks have a block in the source' }, liveBlockTypes: { type: 'array', items: { type: 'string' } }, skills: { description: 'true: the request for Payload\'s skills tree (github.com/payloadcms/skills); the tree as answered: every skill and reference mapped to the tool of this tree that enacts it' }, site: { type: 'boolean', description: 'the site as its own use cases: every toolbox a use case, every example a page document, as payloadcms.com is built of what Payload computes' }, hologram: { type: 'boolean', description: 'the QPU as a fractal plugin hologram: the seven scales of one shape with their addresses, and the SEO pages every block presents (ten rotations in every locale) counted with the sitemaps they need and the compliance each page carries' }, merge: { type: 'object', description: 'two edits of one document merged by block address: { base, a, b } (lexical documents); a block either edit holds and neither removed is kept once, the merge addressed by the fold of its blocks, commuting and idempotent (textbook_merge_commutes); a collision in the involution is a merge' }, devDependencies: { type: 'object', description: 'with site: the tree\'s dev dependencies (name: version, the client reads package.json), each a gate of the dependencies category usable in the UI' }, app: { type: 'object', description: 'an app requested from the Payload UI: { name, host, plugins?, env?, variant? } — answered as the generated app (every file with its address, the bundle address, the adapters the environment chooses, the enterprise capabilities), priced by the catalogue in the host\'s currency and ordered through the ecommerce plugin: what the QPU is paid for; { validate: { name, host, env, variant } } answers the streamed form\'s verdicts, token free; { form: true } the form itself' }, tool: { type: 'string' }, arguments: { type: 'object' }, prev: { type: 'string', description: 'the referer block\'s uuid' }, chain: { type: 'array', items: { type: 'string' }, description: 'the referers before prev, oldest first' }, origin: { type: 'string' }, selftest: { type: 'boolean' } } },
+  inputSchema: { type: 'object', properties: { references: { type: 'object', description: 'the references between documents as one graph: { docs: [{ id, slug?, doc | markdown }] } — every lexical link to an internal path, relationship, qpu block naming a document (id, uuid, slug) and Markdown link read; the cycles (Tarjan, iterative), the dangling references, and an order when there is no cycle; the strongly connected components fused into one node each, members in address order, the condensation always acyclic and ordered; payload { lexical } with { id, slug } runs the blocks that reference their own document back once each, in address order, never re-entering' }, google: { type: 'object', description: '{ pages, tenants, entries, keys }: the Google integration as exact pairs' }, standardise: { type: 'object', description: 'a lexical document set in standard typography without a change of meaning: { doc } — only text nodes change (quotes, dashes, ellipses, spaces); the words in order and every qpu block must stay the same, else the original stands; improvements come as other qpu blocks verified by theorems' }, lexical: { type: 'object', description: 'a Payload lexical document whose qpu blocks run through MCP: { doc, role? } — every block (a tool and its arguments) answered through the chat door under the role, corrected where the role requires, a refusal handled, never thrown; a chat answer\'s doc is such a document' }, namespace: { type: 'object', description: 'tenants as namespaces, each app its own sandbox without a domain: { name | app } the sandbox planned (its tenant by namespace, the key its client holds, the header x-qpu-namespace, what is scoped); { narrow: { requested, tenants, user } } a credential narrowed to the namespace a request names — the intersection, never wider; the app\'s MCP auth asks this on every request' }, theorems: { type: 'boolean', description: 'the textbook\'s axioms replaced by theorems through the tenant\'s Payload MCP plugin, as a client: the plan, then with answers { list, found } the update requests' }, schemas: { type: 'boolean', description: 'Payload\'s combinatorial surface handled programmatically: every dimension (field types, operations, schemas, queries, hooks, access, realtime coordination) named and meant by its textbook theorem, counted from the table and decided through the match tool; any collection\'s fields (collection: { slug, fields }) as JSON Schema 2020-12, GraphQL, the plugin\'s MCP tools and OpenAPI paths; the standards each part is described by; the sources to re-read (requestList), and with answers { url: text } the drift as leads' }, collection: { type: 'object', description: 'schemas: { slug, fields } in Payload\'s own field config shape' }, payloadUrl: { type: 'string', description: 'the tenant\'s Payload origin; its MCP is at /api/mcp' }, answers: { type: 'object' }, website: { description: 'true: the requests for payloadcms.com\'s source tree and one live page; the tree as answered: its collections, blocks, globals, fields and plugins, and whether the live page\'s blocks have a block in the source' }, liveBlockTypes: { type: 'array', items: { type: 'string' } }, skills: { description: 'true: the request for Payload\'s skills tree (github.com/payloadcms/skills); the tree as answered: every skill and reference mapped to the tool of this tree that enacts it' }, site: { type: 'boolean', description: 'the site as its own use cases: every toolbox a use case, every example a page document, as payloadcms.com is built of what Payload computes' }, hologram: { type: 'boolean', description: 'the QPU as a fractal plugin hologram: the seven scales of one shape with their addresses, and the SEO pages every block presents (ten rotations in every locale) counted with the sitemaps they need and the compliance each page carries' }, merge: { type: 'object', description: 'two edits of one document merged by block address: { base, a, b } (lexical documents); a block either edit holds and neither removed is kept once, the merge addressed by the fold of its blocks, commuting and idempotent (textbook_merge_commutes); a collision in the involution is a merge' }, devDependencies: { type: 'object', description: 'with site: the tree\'s dev dependencies (name: version, the client reads package.json), each a gate of the dependencies category usable in the UI' }, app: { type: 'object', description: 'an app requested from the Payload UI: { name, host, plugins?, env?, variant? } — answered as the generated app (every file with its address, the bundle address, the adapters the environment chooses, the enterprise capabilities), priced by the catalogue in the host\'s currency and ordered through the ecommerce plugin: what the QPU is paid for; { validate: { name, host, env, variant } } answers the streamed form\'s verdicts, token free; { form: true } the form itself' }, tool: { type: 'string' }, arguments: { type: 'object' }, prev: { type: 'string', description: 'the referer block\'s uuid' }, chain: { type: 'array', items: { type: 'string' }, description: 'the referers before prev, oldest first' }, origin: { type: 'string' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...PAYLOAD.skill.selftest(ctx) }
     if (args.site) return siteOf(ctx, typeof args.origin === 'string' ? args.origin : 'https://qpu.uuidna.com', args.devDependencies && typeof args.devDependencies === 'object' ? args.devDependencies as Record<string, string> : {})
@@ -118,6 +124,7 @@ const payload = toolOf('payload', {
     if (args.app && typeof args.app === 'object') return appOf(ctx, args.app as Parameters<typeof appOf>[1])
     // the references between documents as one graph: its cycles, its dangling references, an order when it has none
     if (args.references && typeof args.references === 'object') { const r = args.references as { docs?: RefDoc[] }; if (!Array.isArray(r.docs)) throw new Error('references takes documents: { docs: [{ id, slug?, doc | markdown }] }'); return { phase: 'references' as const, ...referenceGraphOf(r.docs) } }
+    if (args.google && typeof args.google === 'object') return { phase: 'google' as const, ...googleOf(args.google, toolsOf(ctx).filter((t) => t._meta?.toolbox === 'google').map((t) => t.name)) }
     if (args.standardise && typeof args.standardise === 'object') { const s = args.standardise as { doc?: LexicalDoc }; if (!s.doc?.root) throw new Error('standardise takes a document: { doc: { root } }'); return { phase: 'standardise' as const, ...standardiseOf(s.doc) } }
     // a lexical document's qpu blocks run through MCP: each block is a tool and its arguments, answered through the chat door under the caller's role (corrected where the role requires, a refusal handled, never thrown)
     if (args.lexical && typeof args.lexical === 'object') { const l = args.lexical as { doc?: LexicalDoc; role?: string; id?: string; slug?: string }; if (!l.doc?.root) throw new Error('lexical takes a document: { doc: { root }, role? }'); const served = (toolsOf(ctx)).map((x) => x.name); const security = lexicalSecurityOf(l.doc, served); const stopped = new Set(security.findings.filter((f) => f.blocks && f.uuid).map((f) => f.uuid!)); const self = [l.id, l.slug].filter((x): x is string => typeof x === 'string' && x.length > 0); const selfRefs = new Set(blocksOf(l.doc).filter((n) => referencesOf({ id: '_', doc: { root: { children: [n] } } }).some((x) => self.includes(x))).map((n) => n.fields.uuid));  // whatever references its own document back is fused, not refused: those blocks run once each, in address order, after the rest, never re-entering the document
@@ -1149,7 +1156,7 @@ import { searchPlugin } from '@payloadcms/plugin-search'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { UnauthorizedError } from 'payload'
-import { handle } from '@uuidna/qpu/mcp'
+import { handle, toolCallerOf } from '@uuidna/qpu/mcp'
 import { qpuEcommerce } from './payload.qpu.ecommerce'
 import { Qpu } from './blocks/Qpu/config'
 import { qpuMcpTools, qpuMcpResources, qpuServerInfo } from './payload.qpu.mcp'
@@ -1183,7 +1190,7 @@ export const qpuPlugins = [
     const settings = await getDefault(); const ns = req.headers.get('x-qpu-namespace'); if (!ns) return settings
     const tenants = (await req.payload.find({ collection: 'tenants', where: { namespace: { equals: ns } }, limit: 1, depth: 0, overrideAccess: true })).docs.map((x: any) => ({ id: String(x.id), namespace: x.namespace }))
     const user = settings.user; const rows = (user.tenants ?? []).map((r: any) => ({ tenant: String(typeof r.tenant === 'object' ? r.tenant?.id : r.tenant), roles: r.roles ?? [] }))
-    const n = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { namespace: { narrow: { requested: ns, tenants, user: { roles: user.roles ?? [], tenants: rows } } } } } }) as any).result?.structuredContent
+    const n = toolCallerOf('payload')({ namespace: { narrow: { requested: ns, tenants, user: { roles: user.roles ?? [], tenants: rows } } } })
     if (!n?.allowed) throw new UnauthorizedError()
     user.roles = n.roles; user.tenants = n.rows; return settings
   } } as never), // the tools and the ui:// resources of every tool (MCP Apps) through the plugin; an API key per user authorises a client, narrowed to the namespace a request names
@@ -1273,7 +1280,7 @@ export const qpuServerInfo = { name: 'qpu', version: VERSION }
 // fold address of what it holds, the sha256 beside it — never overwritten; the four verbs are Payload's REST (/api/entries).
 import type { CollectionConfig } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
-import { handle } from '@uuidna/qpu/mcp'
+import { handle, toolCallerOf } from '@uuidna/qpu/mcp'
 import { signedRoleOf } from '@uuidna/qpu/roles'
 
 type TenantUser = { roles?: string[]; tenants?: { tenant?: { id?: string } | string; roles?: string[] }[] } | null | undefined
@@ -1309,7 +1316,7 @@ export const Entries: CollectionConfig = {
       const id = String((req as { routeParams?: { id?: unknown } } | undefined)?.routeParams?.id ?? (req?.url ?? '').split('?')[0]!.split('/').pop() ?? '')
       if ((error as { status?: number }).status !== 404 || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)) return
       try { const res = await fetch((process.env.QPU_ORIGIN ?? 'https://qpu.uuidna.com') + '/' + id, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(10000) }); if (res.ok) { const entry = await res.json() as { id?: string; kind?: string; from?: string; body?: unknown; links?: string[]; computed?: boolean }; if (entry && entry.kind && entry.from && !entry.computed) { try { await req.payload.create({ collection: 'entries' as never, data: { kind: entry.kind, from: entry.from, body: entry.body, links: entry.links ?? [] } as never, overrideAccess: true, context: { disableRevalidate: true } }) } catch { /* seeded already, or refused: the answer stands */ } } return { response: entry, status: 200 } } } catch { /* the Worker unreached: computed here */ }
-      const v = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'verify', arguments: { uuid: id } } }) as { result?: { structuredContent?: unknown } }).result?.structuredContent
+      const v = toolCallerOf('verify')({ uuid: id })
       return { response: { id, kind: 'uuid', from: 'computed', computed: true, body: v ?? null, says: 'no entry at this address: the page of the UUID from the id alone, nothing written (no content address to seed at)' }, status: 200 }
     }],
     beforeValidate: [async ({ data, operation, req }) => {
@@ -1319,7 +1326,7 @@ export const Entries: CollectionConfig = {
       // the caller's role, from Payload's user and the tenant (a signed role claim counts too): the chat door corrects what the role may not choose
       const tenantId = tenantIdOf(data.tenant)
       const role = isSuperAdmin(req.user) || claimedRole(req) === 'admin' || memberOf(req.user, tenantId, ['tenant-admin']) ? 'admin' : claimedRole(req) === 'writer' || memberOf(req.user, tenantId, ['editor']) ? 'writer' : 'reader'
-      const chatDoor = (statement: string, chat: Record<string, unknown>) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement, chat } } }) as { result?: { structuredContent?: any } }).result?.structuredContent
+      const chatDoor = (statement: string, chat: Record<string, unknown>) => toolCallerOf('match')({ statement, chat })
       // a call is folded as it will run: its arguments corrected for the role first, so the same address always holds the same reply
       const asked = data.body as { tool?: string; arguments?: Record<string, unknown>; statement?: string } | undefined
       let corrected: unknown[] = []
@@ -1345,7 +1352,7 @@ export const Entries: CollectionConfig = {
       const qpuGlobal = `${header}// The discovery document as a Payload global: GET /api/globals/qpu answers it from the handler alone, computed on read by the global's own hook; no custom endpoint.
 import type { GlobalConfig } from 'payload'
 import { discoveryOf } from '@uuidna/qpu/discovery-document'
-import { handle } from '@uuidna/qpu/mcp'
+import { handle, toolCallerOf } from '@uuidna/qpu/mcp'
 
 export const QpuGlobal: GlobalConfig = {
   slug: 'qpu',
@@ -1356,7 +1363,7 @@ export const QpuGlobal: GlobalConfig = {
     { name: 'branding', type: 'json', admin: { readOnly: true, description: 'the branding of the tenant that asked: its tenants row where defined, computed in real time from its address where not' } },
   ],
   // per tenant: the document names the origin of the host that asked (a tenant's domain), else the origin the global holds; a local host keeps the global's
-  hooks: { afterRead: [async ({ doc, req }) => { const host = req?.headers?.get?.('host') ?? ''; const origin = host && !/^(localhost|127\\.0\\.0\\.1)(:|$)/.test(host) ? 'https://' + host.split(':')[0] : String(doc?.origin ?? 'https://qpu.uuidna.com'); const hostname = host.split(':')[0] ?? ''; const row = hostname ? ((await req.payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: hostname } }, limit: 1, overrideAccess: true })).docs[0] as { slug?: string; name?: string; branding?: unknown } | undefined) : undefined; const b = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'configure', arguments: { kind: 'branding', branding: { host: hostname, slug: row?.slug, name: row?.name, branding: row?.branding ?? null } } } }) as { result?: { structuredContent?: { config?: unknown } } }; return { ...doc, origin, document: discoveryOf(origin, process.env as Record<string, unknown>), branding: b.result?.structuredContent?.config ?? null } }] },
+  hooks: { afterRead: [async ({ doc, req }) => { const host = req?.headers?.get?.('host') ?? ''; const origin = host && !/^(localhost|127\\.0\\.0\\.1)(:|$)/.test(host) ? 'https://' + host.split(':')[0] : String(doc?.origin ?? 'https://qpu.uuidna.com'); const hostname = host.split(':')[0] ?? ''; const row = hostname ? ((await req.payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: hostname } }, limit: 1, overrideAccess: true })).docs[0] as { slug?: string; name?: string; branding?: unknown } | undefined) : undefined; const b = toolCallerOf('configure')({ kind: 'branding', branding: { host: hostname, slug: row?.slug, name: row?.name, branding: row?.branding ?? null } }); return { ...doc, origin, document: discoveryOf(origin, process.env as Record<string, unknown>), branding: b?.config ?? null } }] },
 }
 `
       // the UUID page rendered by the app itself: the handler verifies the address and lays out its channel, vortex and theme; no Worker behind it
@@ -1654,7 +1661,7 @@ export const collisionGuard: CollectionBeforeChangeHook = async ({ collection, d
 // written as a JSON file into the media collection (the plugin's default upload), the licence product named for the checkout the ecommerce
 // plugin serves; nothing added to the schema — the intelligence of combinatorics is to fit the environment without hacking it. Generated by configure { kind: 'fullstack' }.
 import type { CollectionAfterChangeHook } from 'payload'
-import { handle } from '@uuidna/qpu/mcp'
+import { handle, toolCallerOf } from '@uuidna/qpu/mcp'
 
 export const APP_REQUEST_FORM_TITLE = 'Request an app'
 export const appRequest: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
@@ -1662,7 +1669,7 @@ export const appRequest: CollectionAfterChangeHook = async ({ doc, operation, re
   const form = (typeof doc.form === 'object' && doc.form ? doc.form : await req.payload.findByID({ collection: 'forms', id: doc.form, overrideAccess: true }).catch(() => null)) as { title?: string } | null
   if (!form || form.title !== APP_REQUEST_FORM_TITLE) return doc
   const data = Object.fromEntries(((doc.submissionData ?? []) as { field: string; value: string }[]).map((f) => [f.field, f.value]))
-  const verdict = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { app: { validate: data } } } }) as { result?: { structuredContent: { ok: boolean; fields: Record<string, { ok: boolean; says: string }> } } }).result?.structuredContent
+  const verdict = toolCallerOf('payload')({ app: { validate: data } }) as { ok: boolean; fields: Record<string, { ok: boolean; says: string }> }
   if (!verdict?.ok) { req.payload.logger.warn('app request refused by validation: ' + JSON.stringify(verdict?.fields ?? {})); return doc }
   const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { app: { name: data.name, host: data.host, env: String(data.env ?? '').split(/[,\\s]+/).filter(Boolean), variant: data.variant || 'yearly' } } } }) as { result?: { structuredContent: { bundle: string; price: { currency: string; amount: number }; order: { product: string } } }; error?: { message: string } }
   if (!r.result) { req.payload.logger.warn('app request refused: ' + (r.error?.message ?? 'no result')); return doc }
@@ -1674,9 +1681,10 @@ export const appRequest: CollectionAfterChangeHook = async ({ doc, operation, re
 }
 `
       const pluginModule = `${header}// The QPU as Payload plugins, one per capability, each by Payload's plugin guide (definePlugin: a slug, typed options, enabled, arrays spread),
-// composed by the umbrella qpuPlugin: qpu-core, qpu-agents and qpu-machine. Generated by configure { kind: 'fullstack' }.
+// composed by the umbrella qpuPlugin: qpu-core, qpu-agents, qpu-machine and qpu-google. Generated by configure { kind: 'fullstack' }.
 import { definePlugin } from 'payload'
-import type { Block, CollectionConfig, Config, Field, Plugin } from 'payload'
+import type { Block, CollectionAfterChangeHook, CollectionConfig, Config, Field, Plugin } from 'payload'
+import { toolCallerOf } from '@uuidna/qpu/mcp'
 import { Qpu } from '../blocks/Qpu/config'
 import { Entries } from '../collections/Entries'
 import { Tenants } from '../collections/Tenants'
@@ -1723,6 +1731,23 @@ export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu-core', plugin
 }, { pages, 'form-submissions': submissions })) })
 /** qpu-agents: an API key per user (an agent's key to the MCP), the first user from the deploy */
 export const qpuAgents = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-agents', plugin: ({ config, enabled }) => (enabled === false ? config : hooked(config, { users })) })
+// the Google integration measured once a burst of changes settles, never holding a change, and kept on the qpu global
+let googleTimer: ReturnType<typeof setTimeout> | undefined
+const measureGoogle: CollectionAfterChangeHook = ({ doc, req, context }) => {
+  if (context.qpuGoogle) return doc
+  clearTimeout(googleTimer)
+  googleTimer = setTimeout(() => void (async () => {
+    const all = async (c: string) => (await req.payload.find({ collection: c as never, pagination: false, depth: 0, draft: true, overrideAccess: true })).docs
+    const google = toolCallerOf('payload')({ google: { pages: await all('pages'), tenants: await all('tenants'), entries: await all('entries'), keys: await all('payload-mcp-api-keys') } })
+    await req.payload.updateGlobal({ slug: 'qpu', data: { google } as never, context: { qpuGoogle: true }, overrideAccess: true })
+  })().catch((e: Error) => req.payload.logger.warn('google: ' + e.message)), 2000)
+  return doc
+}
+/** qpu-google: the Google integration measured on the qpu global; order 20, after the MCP plugin made its keys */
+export const qpuGoogle = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-google', order: 20, plugin: ({ config, enabled }) => (enabled === false ? config : {
+  ...hooked(config, Object.fromEntries(['pages', 'tenants', 'entries', 'payload-mcp-api-keys'].map((s) => [s, (c: CollectionConfig) => first(c, 'afterChange', measureGoogle as never)]))),
+  globals: (config.globals ?? []).map((g) => (g.slug !== 'qpu' || g.fields.some((f) => 'name' in f && f.name === 'google') ? g : { ...g, fields: [...g.fields, { name: 'google', type: 'json', admin: { readOnly: true } } as Field] })),
+}) })
 /** qpu-machine: the machine tool written into the MCP plugin's options through the plugins map before it runs (its order 10) */
 export const qpuMachine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-machine', order: 5, plugin: ({ config, plugins, enabled }) => {
   const o = plugins['@payloadcms/plugin-mcp']?.options
@@ -1731,7 +1756,7 @@ export const qpuMachine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-machi
 } })
 /** The umbrella: the capabilities, the storage, the plugins the configs order and the tenant's own, each seeing the others in the plugins map */
 export const qpuPlugin = (options: QpuPluginOptions = {}): Plugin => async (incoming: Config): Promise<Config> => {
-  const inner = [qpuCore(options), qpuAgents({}), qpuMachine({}), ...(options.adapters === 'none' ? [] : qpuStoragePlugins()), ...qpuPlugins, ...(options.plugins ?? [])]
+  const inner = [qpuCore(options), qpuAgents({}), qpuMachine({}), ...(options.adapters === 'none' ? [] : qpuStoragePlugins()), ...qpuPlugins, qpuGoogle({}), ...(options.plugins ?? [])]
   let config: Config = { ...incoming, plugins: [...(incoming.plugins ?? []), ...inner] }
   for (const plugin of inner) config = await plugin(config)
   return { ...config, plugins: incoming.plugins }

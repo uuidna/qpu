@@ -33,6 +33,7 @@ import { appendFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
 import { etaOf, type StreamEvent } from '../src/quantum/machine.js'
+import { readJson } from './mcp.js'
 
 const runFiles = async () => (await import('../src/quantum/toolboxes/repository.js')).RUN_FILES
 export const streamOf = async (root: string) => {
@@ -60,7 +61,7 @@ export const timesOf = async (root: string) => {
 /** Runs an asked action: planned by the workflow rules against the facts at the root, run with no shell and streamed (its start with the ETA, a
  *  heartbeat every second, each finished step of next), then recorded; an action the rules refuse answers its plan and runs nothing. */
 export const runMachine = async (args: Record<string, unknown>, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) => {
-  const repository = (await import('../src/quantum/mcp.js')).toolCallerOf('repository'), read = (f: string) => { try { return JSON.parse(readFileSync(join(cwd, f), 'utf8')) } catch { return null } }
+  const repository = (await import('../src/quantum/mcp.js')).toolCallerOf('repository'), read = (f: string) => readJson(join(cwd, f))
   const files = await runFiles(), plan = repository({ machine: { plan: { ...args, facts: { receipt: read(files.receipt), approval: read(files.configs)?.approval ?? null, e2e: read(files.e2e)?.outcomes ?? null } } } })
   if (!plan?.allowed) return { plan, answer: plan }
   const s = await streamOf(cwd), subject = plan.action

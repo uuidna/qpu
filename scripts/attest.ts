@@ -7,11 +7,11 @@ import { connect } from 'node:tls'
 import './teleport.ts'
 import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
+import { getOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('attest')
-const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
-const get = async (r: { id: string; url: string; accept: string }) => { const t0 = Date.now(); try { const res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(25000) }); return { id: r.id, status: res.status, ms: Date.now() - t0, text: await res.text() } } catch (e) { return { id: r.id, status: 0, ms: Date.now() - t0, text: '' } } }
+const get = async (r: { id: string; url: string; accept: string }) => { const t0 = Date.now(); try { const res = await getOf(r.url, r.accept, 25000); return { id: r.id, status: res.status, ms: Date.now() - t0, text: await res.text() } } catch (e) { return { id: r.id, status: 0, ms: Date.now() - t0, text: '' } } }
 // the live certificate of a host, read here: its dates and issuer, nothing else carried
 const certOf = (host: string): Promise<{ id: string; status: number; ms: number; text: string }> => new Promise((resolve) => {
   const t0 = Date.now()

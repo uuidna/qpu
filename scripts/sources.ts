@@ -1,7 +1,7 @@
 // The client of leads { sources }, a step of every online next: the plan's first pages fetched, every next page the tool names followed until
 // each source ends (unlimited), paced one request at a time per host, GET only, public metadata, a named user agent, no credential; the answers
 // handed back and judged by the tool. Writes docs/public/sources.json and docs/sources.md. Offline: the plan alone.
-import { writeFileSync, readFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -10,11 +10,12 @@ import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { TENANTS } from '../src/quantum/tenants.ts'
 import type { SourceRequest, SourceAnswer } from '../src/quantum/sources.ts'
+import { readJson, getOf } from './mcp.ts'
 
 const ROOT = process.cwd()
 const offline = process.env.QPU_OFFLINE === '1' || process.argv.includes('--offline')
 const leads = toolCallerOf('leads'), call = (args: Record<string, unknown>) => leads({ sources: args })
-const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { name: string }
+const pkg = readJson('package.json') as { name: string }
 const repository = (() => { try { return execSync('git remote get-url origin', { encoding: 'utf8' }).trim() } catch { return 'https://github.com/uuidna/qpu.git' } })()
 const context = { repository, owner: repository.replace(/\.git$/, '').split('/').slice(-2)[0]!, package: pkg.name, hosts: Object.keys(TENANTS) }
 const main = async () => {
@@ -27,7 +28,7 @@ const main = async () => {
     while (queue.length) {
       const r = queue.shift()!
       let status = 0, text = ''
-      try { const res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': 'uuidna-qpu-sources (+https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(30000) }); status = res.status; text = await res.text() } catch { status = 0 }
+      try { const res = await getOf(r.url, r.accept, 30000); status = res.status; text = await res.text() } catch { status = 0 }
       const a = { id: r.id, url: r.url, status, text }; answers.push(a)
       const next = call({ context, next: { request: r, answer: a } }).next as SourceRequest | null
       if (next) queue.push(next)
@@ -37,7 +38,7 @@ const main = async () => {
   // the public artifacts verified against the digests their registries recorded: every one downloaded and hashed here, compared by the seal
   const listed = (j.immutable?.artifacts ?? []) as { source: string; name: string; url: string; algorithm: string; claimed: string; bytes: number | null }[]
   const hashed = []
-  for (const a of listed) { try { const res = await fetch(a.url, { headers: { 'user-agent': 'uuidna-qpu-sources (+https://qpu.uuidna.com)' }, redirect: 'follow', signal: AbortSignal.timeout(120000) }); const buf = Buffer.from(await res.arrayBuffer()); const algo = a.algorithm === 'sha512' ? 'sha512' : a.algorithm === 'sha1' ? 'sha1' : a.algorithm === 'sha256' ? 'sha256' : 'md5'; const digest = createHash(algo).update(buf); hashed.push({ ...a, bytes: buf.length, status: res.status, computed: a.source === 'npm' ? digest.digest('base64') : digest.digest('hex') }) } catch { hashed.push({ ...a, status: 0, computed: null }) } }
+  for (const a of listed) { try { const res = await getOf(a.url, '*/*', 120000); const buf = Buffer.from(await res.arrayBuffer()); const algo = a.algorithm === 'sha512' ? 'sha512' : a.algorithm === 'sha1' ? 'sha1' : a.algorithm === 'sha256' ? 'sha256' : 'md5'; const digest = createHash(algo).update(buf); hashed.push({ ...a, bytes: buf.length, status: res.status, computed: a.source === 'npm' ? digest.digest('base64') : digest.digest('hex') }) } catch { hashed.push({ ...a, status: 0, computed: null }) } }
   const integrity = toolCallerOf('seal')({ text: 'artifacts', artifacts: hashed })
   console.log(`sources: integrity: ${integrity?.says}`)
   const date = new Date().toISOString()
