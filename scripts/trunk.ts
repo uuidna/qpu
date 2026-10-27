@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { readJson } from './mcp.ts'
 const ROOT = process.cwd()
-const done = (says: string) => { console.log(`trunk: ${says}`); process.exit(0) }
+function done(says: string): never { console.log(`trunk: ${says}`); process.exit(0) }
 const git = (...args: string[]) => { try { return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() } catch { return null } }
 const branch = git('rev-parse', '--abbrev-ref', 'HEAD'); const head = git('rev-parse', 'HEAD'); const main = git('rev-parse', 'main')
 if (!branch || !head || !main) done('no git, no main: nothing to do')

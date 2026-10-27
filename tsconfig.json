@@ -6,9 +6,8 @@
     "lib": [
       "ES2022"
     ],
-    "declaration": true,
-    "outDir": "dist",
-    "rootDir": "src",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "strict": true,
     "types": [
       "node"
@@ -17,5 +16,5 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src/quantum"]
+  "include": ["src/quantum", "src/worker.ts", "scripts"]
 }

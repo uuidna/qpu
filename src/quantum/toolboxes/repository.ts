@@ -92,7 +92,7 @@ export const STEP_CACHE: Readonly<Record<string, { roots: readonly string[]; gen
   'clay:gen': { roots: ['src/quantum', 'scripts/gen-clay.ts'], generator: true },
   'docs:gen': { roots: ['src', 'scripts', 'package.json'], generator: true },
   configs: { roots: ['src', 'scripts', 'site/src', 'site/package.json'], generator: true },
-  typecheck: { roots: ['src/quantum', 'tsconfig.json', 'package.json'] },
+  typecheck: { roots: ['src/quantum', 'src/worker.ts', 'scripts', 'tsconfig.json', 'package.json'] },
   test: { roots: ['src/quantum', 'package.json'] },
   lean: { roots: ['src/quantum/processing/unit/lean'] },
   audit: { roots: ['src', 'scripts/audit.ts', 'package.json'] },

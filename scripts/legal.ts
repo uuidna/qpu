@@ -42,7 +42,7 @@ const main = async () => {
   }
   const plan = call({ texts, discovery, agents, theoremKeys: ledger })
   const hostUrl = (host: string) => (discovery?.hosts as { host: string; kind: string; contract: string }[] | undefined)?.find((h) => h.host === host && h.kind === 'mcp')?.contract ?? 'https://uuidna.com/mcp'
-  const answers: unknown[] = []
+  const answers: Record<string, unknown>[] = []
   const calls = offline ? [] : (plan.plan.calls as { door: string; host: string; arguments: Record<string, unknown> }[])
   // minimum time: four calls in flight; cheapest price: free doors only, each asked once, nothing retried blindly
   if (isMerge) answers.push(...gatherShards<typeof answers>('legal', []))

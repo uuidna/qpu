@@ -26,7 +26,7 @@ const tracked = [...new Set(execFileSync('git', ['ls-files', '--cached', '--othe
 const served = Object.values(text).join('\n') + readdirSync(join(ROOT, 'docs')).filter((f) => f.endsWith('.md')).map((f) => readFileSync(join(ROOT, 'docs', f), 'utf8')).join('\n')
 const all = served + '\n' + tracked.filter((f) => /\.(ts|mts|vue|md|lean)$/.test(f) && !f.startsWith('docs/audit/') && existsSync(join(ROOT, f))).map((f) => readFileSync(join(ROOT, f), 'utf8')).join('\n')
 
-type Lead = { id: string; source: string; statement: string; status: 'open'; reason: string }
+type Lead = { id: string; source: string; statement: string; status: 'open'; reason?: string; tool?: string }
 const leads: Lead[] = []
 for (const f of files) {
   if (f.endsWith('.test.ts')) continue
@@ -135,7 +135,7 @@ writeFileSync(readme, md)
 // handed to the audit tool, which converts entropy to leads; each lead signalled once into the entropy stream (a UUID block by address) and into
 // this docket, so the next steps and the next run fuse with what was already found
 const sources = tracked.filter((f) => (/^(src|scripts|docs\/\.vitepress)\/.*\.(ts|mts|vue)$/.test(f) || /^site\/src\/.*\.(ts|tsx)$/.test(f)) && !f.endsWith('.d.ts') && !/payload-types\.ts$|importMap\.js$/.test(f) && existsSync(join(ROOT, f)))
-const entropy = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: { entropy: Object.fromEntries(sources.map((f) => [f, readFileSync(join(ROOT, f), 'utf8')])) } } }) as { result: { structuredContent: { files: number; lines: number; findings: number; fused: number; reactions: number; gravity: string; vacuum: boolean; byKind: Record<string, { findings: number; leads: number }>; leads: { id: string; kind: string; source: string; statement: string; status: 'open'; tool: string; occurrences: number; address: string }[] } } }).result.structuredContent
+const entropy = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: { entropy: Object.fromEntries(sources.map((f) => [f, readFileSync(join(ROOT, f), 'utf8')])) } } }) as { result: { structuredContent: { files: number; lines: number; findings: number; fused: number; reactions: number; gravity: string; vacuum: boolean; byKind: Record<string, { findings: number; leads: number }>; leads: { id: string; kind: string; source: string; statement: string; status: 'open'; tool: string; occurrences: number; address: string; explore?: unknown; config?: unknown }[] } } }).result.structuredContent
 const streamPath = join(ROOT, 'docs', 'public', 'entropy.ndjson')
 const streamed = new Set(existsSync(streamPath) ? readFileSync(streamPath, 'utf8').split('\n').filter(Boolean).map((l) => { try { return (JSON.parse(l) as { address: string }).address } catch { return '' } }) : [])
 const date = new Date().toISOString()

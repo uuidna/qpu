@@ -8,8 +8,8 @@ import type { SignaturePlan } from '../src/quantum/toolboxes/crypto.ts'
 type PqcHost = { host: string; status: number; ms: number; phase: string; keyed?: string; algorithm?: string; verified: boolean | null; note: string }
 type PqcPass = { algorithm: 'ML-DSA-65'; text: 'qpu'; sha256Here: string; hosts: PqcHost[]; verified: number; note: string }
 
-const bytesOfHex = (h: string): Uint8Array => new Uint8Array((h.match(/../g) ?? []).map((x) => parseInt(x, 16)))
-const unb64 = (s: string): Uint8Array => new Uint8Array(Buffer.from(s, 'base64'))
+const bytesOfHex = (h: string) => new Uint8Array(Buffer.from(h, 'hex'))
+const unb64 = (s: string) => new Uint8Array(Buffer.from(s, 'base64'))
 
 export const verifySignaturesAt = async (hosts: readonly string[]): Promise<PqcPass> => {
   const here = toolCallerOf('seal')({ text: 'qpu', sign: 'ML-DSA-65' }) as { sha256: string; signature: SignaturePlan }
@@ -25,8 +25,8 @@ export const verifySignaturesAt = async (hosts: readonly string[]): Promise<PqcP
       if (!sc || !sig) { out.push({ host, status: res.status, ms, phase: 'no-plan', verified: null, note: `HTTP ${res.status}: no signature plan in the answer` }); return }
       if (sig.phase !== 'signed' || !sig.value || !sig.publicKey) { out.push({ host, status: res.status, ms, phase: sig.phase ?? 'planned', verified: null, note: sig.note ?? 'the plan came back unsigned' }); return }
       if (sc.sha256 !== here.sha256) { out.push({ host, status: res.status, ms, phase: sig.phase, keyed: sig.keyed, algorithm: sig.algorithm, verified: false, note: `the digest differs: ${sc.sha256} at the host, ${here.sha256} here` }); return }
-      const key = await webcrypto.subtle.importKey('jwk', sig.publicKey as JsonWebKey, { name: sig.algorithm } as unknown as AlgorithmIdentifier, true, ['verify'])
-      const ok = await webcrypto.subtle.verify({ name: sig.algorithm } as unknown as AlgorithmIdentifier, key, unb64(sig.value), bytesOfHex(sc.sha256))
+      const key = await webcrypto.subtle.importKey('jwk', sig.publicKey as webcrypto.JsonWebKey, { name: sig.algorithm }, true, ['verify'])
+      const ok = await webcrypto.subtle.verify({ name: sig.algorithm }, key, unb64(sig.value), bytesOfHex(sc.sha256))
       out.push({ host, status: res.status, ms, phase: sig.phase, keyed: sig.keyed, algorithm: sig.algorithm, verified: ok, note: ok ? `${sig.algorithm} signature of ${unb64(sig.value).length} bytes verified with the public key alone (${sig.keyed} key)` : 'the signature does not verify with the public key it came with' })
     } catch (e) { out.push({ host, status: 0, ms: Date.now() - t0, phase: 'failed', verified: null, note: `${(e as Error).message}` }) }
   }))
