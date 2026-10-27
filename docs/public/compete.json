@@ -1,55 +1,55 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T02:36:43.835Z",
- "ms": 11844,
+ "date": "2026-10-27T03:04:54.071Z",
+ "ms": 13668,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "daf43c859a053fc532139acfb4299111cc4948f7",
+ "head": "c3c05aef465aae1965678da49dd4573f2c14f0ee",
  "pushed": false,
  "fetched": [
   {
-   "id": "gemini-xprize-hackathon",
-   "status": 403,
-   "ms": 140,
-   "bytes": 5483
+   "id": "clay-millennium",
+   "status": 200,
+   "ms": 481,
+   "bytes": 79933
   },
   {
-   "id": "google-for-startups-accelerator",
-   "status": 200,
-   "ms": 217,
-   "bytes": 195294
+   "id": "gemini-xprize-hackathon",
+   "status": 403,
+   "ms": 378,
+   "bytes": 5483
   },
   {
    "id": "vercel-oss-program",
    "status": 200,
-   "ms": 266,
+   "ms": 438,
    "bytes": 825337
-  },
-  {
-   "id": "xprize-quantum-applications",
-   "status": 200,
-   "ms": 291,
-   "bytes": 179490
-  },
-  {
-   "id": "clay-millennium",
-   "status": 200,
-   "ms": 533,
-   "bytes": 79933
   },
   {
    "id": "cloudflare-workers-launchpad",
    "status": 200,
-   "ms": 381,
+   "ms": 528,
    "bytes": 402586
+  },
+  {
+   "id": "xprize-quantum-applications",
+   "status": 200,
+   "ms": 530,
+   "bytes": 179490
+  },
+  {
+   "id": "google-for-startups-accelerator",
+   "status": 200,
+   "ms": 523,
+   "bytes": 195294
   },
   {
    "id": "github-maintainer-programs",
    "status": 200,
-   "ms": 806,
-   "bytes": 394373
+   "ms": 911,
+   "bytes": 394371
   }
  ],
  "precedence": [
@@ -75,8 +75,8 @@
  "acceptance": {
   "rows": [
    {
-    "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.23156998",
+    "api": "hn-algolia",
+    "doi": "10.5281/zenodo.21781602",
     "status": 200,
     "mentions": 0
    },
@@ -93,8 +93,14 @@
     "mentions": 0
    },
    {
+    "api": "wikipedia-search",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 200,
+    "mentions": 0
+   },
+   {
     "api": "hn-algolia",
-    "doi": "10.5281/zenodo.21781602",
+    "doi": "10.5281/zenodo.22700098",
     "status": 200,
     "mentions": 0
    },
@@ -105,10 +111,22 @@
     "mentions": 0
    },
    {
-    "api": "hn-algolia",
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
     "doi": "10.5281/zenodo.22700098",
-    "status": 200,
-    "mentions": 0
+    "status": 0,
+    "mentions": null
    },
    {
     "api": "gdelt",
@@ -126,24 +144,6 @@
     "api": "gdelt",
     "doi": "10.5281/zenodo.22700098",
     "status": 429,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 0,
     "mentions": null
    }
   ],

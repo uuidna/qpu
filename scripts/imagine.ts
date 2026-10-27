@@ -14,15 +14,13 @@ const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const call = toolCallerOf('imagine')
 const toolsNow = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
-const inputs = uuidOf(JSON.stringify({ leads: LEADS, examples: EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, arguments: e.arguments, shows: e.shows })), tools: toolsNow }))
+const inputs = uuidOf(JSON.stringify({ leads: LEADS, examples: EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, arguments: e.arguments, shows: e.shows })), tools: toolsNow, writer: readFileSync(import.meta.filename, 'utf8') }))
 const outPath = join(ROOT, 'docs', 'public', 'imagination.json')
-if (existsSync(outPath)) {
-  try { const prev = JSON.parse(readFileSync(outPath, 'utf8')) as { inputs?: string; imaginedLeads?: number; leads?: number }; if (prev.inputs === inputs && !(prev as { partial?: boolean }).partial) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } } catch { /* re-imagine */ }
-}
+try { const prev = JSON.parse(readFileSync(outPath, 'utf8')) as { inputs?: string; imaginedLeads?: number; leads?: number; partial?: boolean }; if (prev.inputs === inputs && !prev.partial) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } } catch { /* re-imagine */ }
 const selftest = call({ selftest: true })
 console.log(`imagine selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
-// the quantum: every lead imagined once per (statement, tools) and kept by its own hash; a run imagines only the leads whose
-// hash is new, in chunks, for no longer than the quantum; the rest wait for the next run, said so in the file
+// the quantum: every lead imagined once per (statement, tools), kept by its own hash; a run imagines only the new hashes, in
+// chunks, for no longer than the quantum; the rest wait for the next run, said so in the file
 const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
 const started = Date.now()
 const rowsPath = join(ROOT, '.qpu', 'cache', 'imagination-rows.json')

@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T03:03:16.280Z",
- "ms": 727,
+ "date": "2026-10-27T07:26:08.488Z",
+ "ms": 717,
  "approval": {
   "represents": "1.4.0+e3785063",
   "package": "1.4.0+e3785063",
@@ -36,15 +36,15 @@
    "copies": 1020,
    "involutions": 417,
    "msByHost": {
-    "qpu.uuidna.com": 41,
-    "qpu.psg.bg": 41,
-    "qpu.ceci.workers.dev": 41
+    "qpu.uuidna.com": 36,
+    "qpu.ceci.workers.dev": 34,
+    "qpu.psg.bg": 35
    }
   },
   "freeShare": 41,
-  "slowestMedianMs": 41,
-  "shardSize": 24,
-  "says": "41% of the gate's copies answered free (304 by involution); the slowest host answers in 41 ms, so a batch is sharded to 24 calls a shard to stay within a second"
+  "slowestMedianMs": 36,
+  "shardSize": 27,
+  "says": "41% of the gate's copies answered free (304 by involution); the slowest host answers in 36 ms, so a batch is sharded to 27 calls a shard to stay within a second"
  },
  "configs": [
   {
@@ -275,13 +275,13 @@
   {
    "kind": "actions",
    "torus": {
-    "address": "cc7e57bd-aaf2-2413-8a5f-5998ee4f617d",
-    "seed": 8,
-    "reflection": 2,
+    "address": "4f0479a3-4035-1c04-a838-349866184d7c",
+    "seed": 7,
+    "reflection": 3,
     "trinity": [
-     2,
-     5,
-     8
+     7,
+     4,
+     1
     ],
     "closed": true,
     "bytes": 1207
