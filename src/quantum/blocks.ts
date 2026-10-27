@@ -152,6 +152,8 @@ export const canonicalTextOf = (value: unknown): string =>
     : value !== null && typeof value === 'object' ? `{${Object.keys(value as object).sort().map((k) => `${JSON.stringify(k)}:${canonicalTextOf((value as Record<string, unknown>)[k])}`).join(',')}}`
     : typeof value === 'number' && !Number.isFinite(value) ? `"${value}"` : JSON.stringify(value) ?? 'null'
 
+/** f memoised by the content address of its arguments, unbounded; for a pure f only, memoOf(f)(x) = f(x) (textbook_memo_identity). */
+export const memoOf = <A extends unknown[], R>(f: (...a: A) => R): ((...a: A) => R) => { const m = new Map<string, R>(); return (...a) => { const k = uuidOf(canonicalTextOf(a)); if (!m.has(k)) m.set(k, f(...a)); return m.get(k)! } }
 
 const escapeOf = (t: string): string => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 

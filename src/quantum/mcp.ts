@@ -7,7 +7,7 @@ import { EXAMPLES } from './examples.js'
 import { lexicalSecurityOf, auditOf, entropyOf, differencesOf, securityOf, remediesOf, advantageOf, addressedByTheoremOf, billOf, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, axiomsOf, leaksOf } from './audit.js'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 import { sdkOf, accessAuditOf, buildOf } from './toolboxes/payload.js'
-import { blockOf, verifyOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf } from './blocks.js'
+import { blockOf, verifyOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf, memoOf } from './blocks.js'
 import { INSTRUCTIONS, LICENSE } from './license.js'
 import { recomputeClay, reflectionOfRegister } from './clay-register.js'
 import { composeOf } from './compose.js'
@@ -647,17 +647,19 @@ export const balancerLoad = (blocks: readonly { address: string; structured: unk
 /** Observability: per tool, how often it was asked, how often it computed (a miss), how long the misses took, how many bytes they produced. */
 const OBSERVED = new Map<string, { calls: number; misses: number; ms: number; bytes: number }>()
 const NESTED: number[] = []
+const observedOf = (k: 'calls' | 'misses' | 'ms' | 'bytes') => [...OBSERVED.values()].reduce((n, o) => n + o[k], 0)
 
 /** The computable metrics of the tree, in real time: what the registries, the kernel's index and one audit say right now. */
 type RunArtefacts = { advantageByUnit?: unknown; e2e?: { combos?: number; copies?: number; involutions?: number; outcomes?: Record<string, number>; competition?: { saved?: number; msMajority?: number; winners?: Record<string, number> } }; coins?: { calls: number; coins: number; byDoor: Record<string, number>; gated: number; unclean: number }; receipt?: { steps?: { name: string; status: string; ms: number }[] }; sizes?: Record<string, number>; discovery?: { hosts?: { kind: string; detected: string }[]; doors?: unknown[]; capabilities?: Record<string, string[]> }; verification?: { summary?: Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }> }; readiness?: { classes?: { served: number; refuted: number; trial: number }; readiness?: { ready: boolean }; border?: { doors?: unknown[]; sealedBy?: string[] } }; repository?: { branches?: { agree: string[]; local: number }; tags?: { agree: string[]; local: number; mismatch: string[] }; leads?: unknown[] }; legal?: { claims?: number; verdicts?: Record<string, number>; violations?: number; refusals?: number; securityPassed?: number; securityTotal?: number; id?: string }; docket?: { entries?: number; root?: string | null; mirrors?: number }; receipts?: { count?: number; last?: string | null } }
 /** What the run's artefacts add to the metrics: textbook APIs autodiscovered and covered, verification on public datasets, the border, the repository watched, the legal audit, the RAID's signalling (docket entries chained to a root), the receipt chain. */
 const coverageOf = (a: RunArtefacts): Record<string, unknown> => {
   // the load: a block is paid once when computed (a miss of the balancer, a coin at a gated door); every re-ask is a teleport, free — the cache by address here, the involution (304 by content hash) at the edge
-  const calls = [...OBSERVED.values()].reduce((n, o) => n + o.calls, 0), misses = [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0)
+  const calls = observedOf('calls'), misses = observedOf('misses')
   const load = { paid: misses, free: calls - misses + (a.e2e?.involutions ?? 0), involutions: a.e2e?.involutions ?? 0, coins: a.coins?.coins ?? 0, a432: { key: KEY, harmonics: Object.keys(varsOf(uuidOf('a432'))).length, stylesheetBytes: cssOf().length, served: 'the shell cache, immutable: the harmonic strings of every block (its custom properties from its UUID alone, the reflected harmonic and the drift\'s prime dust among them) cost the device nothing and the edge nothing' }, note: 'paid: computations (balancer misses); free: answers by address (balancer hits) and by involution (304 at the edge); the coins set the entanglement once, the teleports are free until the load is paid again' }
   const v = Object.values(a.verification?.summary ?? {})
   const sum = (k: 'requests' | 'ok' | 'contracted' | 'uncontracted') => v.reduce((n, s) => n + (s[k] ?? 0), 0)
   const hosts = a.discovery?.hosts ?? []
+  const settled = a.readiness?.classes ? Math.max(1, a.readiness.classes.served + a.readiness.classes.refuted) : 0, flowMs = a.receipt?.steps?.reduce((n, s) => n + s.ms, 0) ?? null
   return {
     load,
     discoveredHosts: hosts.length, hostsWithContract: hosts.filter((h) => /^openapi|json index|oai-pmh|graphql|mcp tools/.test(h.detected)).length, discoveredDoors: a.discovery?.doors?.length ?? 0, capabilities: Object.fromEntries(Object.entries(a.discovery?.capabilities ?? {}).map(([k, v]) => [k, v.length])),
@@ -666,21 +668,23 @@ const coverageOf = (a: RunArtefacts): Record<string, unknown> => {
     repositoryBranchesAgree: a.repository?.branches ? `${a.repository.branches.agree.length}/${a.repository.branches.local}` : null, repositoryTagsAgree: a.repository?.tags ? `${a.repository.tags.agree.length}/${a.repository.tags.local}` : null, repositoryTagsMoved: a.repository?.tags?.mismatch.length ?? 0, repositoryLeads: a.repository?.leads?.length ?? 0,
     legalClaims: a.legal?.claims ?? 0, legalVerdicts: a.legal?.verdicts ?? null, legalViolations: a.legal?.violations ?? 0, legalRefusals: a.legal?.refusals ?? 0, legalSecurity: a.legal ? `${a.legal.securityPassed}/${a.legal.securityTotal}` : null, legalAudit: a.legal?.id ?? null,
     // the coins paid to the unit at the wire, accounted by this payer from every answer; the fibonacci source the unit names is recorded as it answers
-    coinsPaid: a.coins?.coins ?? 0, coinCalls: a.coins?.calls ?? 0, coinsByDoor: a.coins?.byDoor ?? null, coinsUnclean: a.coins?.unclean ?? 0, coinsPerSettledLead: a.coins && a.readiness?.classes ? Number((a.coins.coins / Math.max(1, a.readiness.classes.served + a.readiness.classes.refuted)).toFixed(3)) : null,
+    coinsPaid: a.coins?.coins ?? 0, coinCalls: a.coins?.calls ?? 0, coinsByDoor: a.coins?.byDoor ?? null, coinsUnclean: a.coins?.unclean ?? 0, coinsPerSettledLead: a.coins && settled ? Number((a.coins.coins / settled).toFixed(3)) : null,
     docketEntries: a.docket?.entries ?? 0, docketRoot: a.docket?.root ?? null, docketMirrors: a.docket?.mirrors ?? 0, receipts: a.receipts?.count ?? 0, lastReceipt: a.receipts?.last ?? null,
     // verbosity: how many bytes each artefact carries; the pages are read by people, the json by tools — both are counted, neither capped
     verbosityBytes: a.sizes ?? null, verbosityTotalBytes: a.sizes ? Object.values(a.sizes).reduce((n, b) => n + b, 0) : null,
     // performance per cost unit: the cost units are milliseconds of the flow and requests to other hosts; the yield is settled leads
     stepMs: a.receipt?.steps ? Object.fromEntries(a.receipt.steps.filter((s) => s.status !== 'skipped').map((s) => [s.name, s.ms])) : null,
-    flowMs: a.receipt?.steps?.reduce((n, s) => n + s.ms, 0) ?? null,
+    flowMs,
     msPerVerificationRequest: sum('requests') && a.receipt?.steps ? Number(((a.receipt.steps.find((s) => s.name === 'verify')?.ms ?? 0) / sum('requests')).toFixed(1)) : null,
-    requestsPerSettledLead: a.readiness?.classes && sum('requests') ? Number((sum('requests') / Math.max(1, a.readiness.classes.served + a.readiness.classes.refuted)).toFixed(2)) : null,
-    msPerSettledLead: a.readiness?.classes && a.receipt?.steps ? Number((a.receipt.steps.reduce((n, s) => n + s.ms, 0) / Math.max(1, a.readiness.classes.served + a.readiness.classes.refuted)).toFixed(1)) : null,
+    requestsPerSettledLead: settled && sum('requests') ? Number((sum('requests') / settled).toFixed(2)) : null,
+    msPerSettledLead: settled && flowMs !== null ? Number((flowMs / settled).toFixed(1)) : null,
   }
 }
 // The audit replays every example, the metrics example among them; metrics inside an audit must not start another audit.
 let auditing = false
-const auditNow = (): { total: number; passed: number; failed: number } | null => { if (auditing) return null; auditing = true; try { const a = auditOf(handle, EXAMPLES, LEADS, TOOLBOXES); return { total: a.total, passed: a.passed, failed: a.failed } } finally { auditing = false } }
+// the counts are a function of the examples and leads while the code is fixed
+const auditCountsOf = memoOf((examples: typeof EXAMPLES, leads: typeof LEADS) => { const a = auditOf(handle, examples, leads, TOOLBOXES); return { total: a.total, passed: a.passed, failed: a.failed } })
+const auditNow = () => { if (auditing) return null; auditing = true; try { return auditCountsOf(EXAMPLES, LEADS) } finally { auditing = false } }
 /** Everything the kernel accepts, served whole by this version from its own index: every hand-written theorem with its module and statement, every
  *  textbook theorem with its Lean text and the examples it backs, the generated lemmas counted, the kernel's total; the axioms per theorem stand in
  *  /theorems.ndjson, written by the lean step. No version hides anything Lean: the audit fails when this serves less than the kernel accepts
@@ -699,15 +703,15 @@ const metricsOf = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
     theoremsKernel: KERNEL_THEOREMS, theoremsHandWritten: THEOREMS.length, lemmasGenerated: GENERATED_LEMMAS, leads: LEADS.length, leadsByStatus: byStatus,
     auditChecks: audit?.total ?? null, auditPassed: audit?.passed ?? null, auditFailed: audit?.failed ?? null, auditNested: audit === null, selftests: TOOLBOXES.map((b) => b.name), balancer: BALANCER.size, license: LICENSE.spdx, at: new Date().toISOString(),
     // observability of this process: calls served from memory against computed, and where the computed milliseconds went
-    balancerTeleported: TELEPORTED.size, balancerTeleportHits: TELEPORT_HITS, toolCalls: [...OBSERVED.values()].reduce((n, o) => n + o.calls, 0), toolMisses: [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0), toolMs: [...OBSERVED.values()].reduce((n, o) => n + o.ms, 0),
+    balancerTeleported: TELEPORTED.size, balancerTeleportHits: TELEPORT_HITS, toolCalls: observedOf('calls'), toolMisses: observedOf('misses'), toolMs: observedOf('ms'),
     slowestTools: [...OBSERVED.entries()].sort((x, y) => y[1].ms - x[1].ms).slice(0, 6).map(([name, o]) => `${name} ${o.ms} ms / ${o.misses} computed / ${o.calls} asked / ${o.bytes} bytes`),
-    msPerComputedCall: (() => { const m = [...OBSERVED.values()].reduce((n, o) => n + o.misses, 0); return m ? Number(([...OBSERVED.values()].reduce((n, o) => n + o.ms, 0) / m).toFixed(1)) : null })(),
+    msPerComputedCall: (() => { const m = observedOf('misses'); return m ? Number((observedOf('ms') / m).toFixed(1)) : null })(),
     ...coverageOf(artefacts),
     advantageByUnit: artefacts.advantageByUnit ?? null, gateCombos: artefacts.e2e?.combos ?? null, gateCopies: artefacts.e2e?.copies ?? null, gateInvolutions: artefacts.e2e?.involutions ?? null, gateOutcomes: artefacts.e2e?.outcomes ?? null, gateMsSaved: artefacts.e2e?.competition?.saved ?? null, gateWinners: artefacts.e2e?.competition?.winners ?? null,
     // the gate's own advantage as a magnitude, uncapped: the copies proven by hash (304, nothing computed) against the copies recomputed; when every copy is an involution the ratio has no bound and says so
     gateAdvantage: advantageOf(artefacts.e2e?.copies ?? 0, artefacts.e2e?.involutions ?? 0),
     // the usage billed complete: the tokens of the whole tools/list, the bits the tools computed in this process, their time, the coins, what the gate and the unit saved
-    usage: (() => { const bill = billOf({ tokens: Math.ceil(JSON.stringify(TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema }))).length / 4), bits: [...OBSERVED.values()].reduce((n, o) => n + o.bytes, 0) * 8, ms: [...OBSERVED.values()].reduce((n, o) => n + o.ms, 0), coins: artefacts.coins?.coins ?? 0, saved: { bits: Number((artefacts.advantageByUnit as { bitsSaved?: number } | null | undefined)?.bitsSaved ?? 0), ms: artefacts.e2e?.competition?.saved ?? 0 } }); const calls = [...OBSERVED.values()].reduce((n, o) => n + o.calls, 0), free = [...OBSERVED.entries()].filter(([name]) => ALGEBRA_TOOLS.includes(name)).reduce((n, [, o]) => n + o.calls, 0); return { ...bill, order: usageOrderOf(calls, 'eur', { kWh: bill.energy.kWh, tariffEurPerKwh: bill.energy.tariffEurPerKwh }, { free, coils: calls - free, commercial: false, delivered: artefacts.e2e?.copies ?? 0 }) } })(),
+    usage: (() => { const bill = billOf({ tokens: Math.ceil(JSON.stringify(TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema }))).length / 4), bits: observedOf('bytes') * 8, ms: observedOf('ms'), coins: artefacts.coins?.coins ?? 0, saved: { bits: Number((artefacts.advantageByUnit as { bitsSaved?: number } | null | undefined)?.bitsSaved ?? 0), ms: artefacts.e2e?.competition?.saved ?? 0 } }); const calls = observedOf('calls'), free = [...OBSERVED.entries()].filter(([name]) => ALGEBRA_TOOLS.includes(name)).reduce((n, [, o]) => n + o.calls, 0); return { ...bill, order: usageOrderOf(calls, 'eur', { kWh: bill.energy.kWh, tariffEurPerKwh: bill.energy.tariffEurPerKwh }, { free, coils: calls - free, commercial: false, delivered: artefacts.e2e?.copies ?? 0 }) } })(),
   }
 }
 const metrics = toolOf('tree', { name: 'metrics', description: 'The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel\'s theorem counts from its own index, leads by status, the audit\'s checks, the balancer\'s memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.', inputSchema: { type: 'object', properties: { artefacts: { type: 'object', description: 'the run\'s artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree\'s own counts alone' } } }, run: (args) => metricsOf((args.artefacts ?? {}) as RunArtefacts), widget: flowWidget })

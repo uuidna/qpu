@@ -122,6 +122,8 @@ theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
 /-- nine schemas read one UUID at once: versions 1, 3, 4, 5, 6, 7 and 8, nil and max; the core reads none of them, so every schema presents the same (examples: fold-schemas) -/
 theorem textbook_uuid_schemas : 7 + 2 = 9 := by decide
+/-- memoOf is the identity on a pure function: a memo that only ever holds f y at y answers f x at every x, read or computed (examples: metrics-memo) -/
+theorem textbook_memo_identity {α β : Type} (f : α → β) (m : α → Option β) (h : ∀ y b, m y = some b → b = f y) (x : α) : (m x).getD (f x) = f x := by cases hm : m x with | none => rfl | some b => exact h x b hm
 /-- one quantum core used by all: a UUID's thirty-two nibbles are its handle, its program, its tail and the two stamp nibbles; every result is such an address and every combinatorial use (style, presentation, stream) reads it (examples: fold-hex, match-pattern-uuid) -/
 theorem textbook_uuid_core : 8 + 10 + 12 + 2 = 32 := by decide
 /-- a filtered stream keeps f of its n rows and drops the rest: what is kept and what is dropped partition the stream, whatever the hexes (examples: fold-stream, configure-ui-stream) -/

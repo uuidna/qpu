@@ -4,10 +4,10 @@
 // multi-byte arithmetic and compare content addresses. The kernel check happened once, in Lean; this recomputes what it
 // accepted and says how many bits each identity needs. No floats: `/` is floor division on naturals, `-` truncates at 0.
 import { CLAY_RELATIONS } from './clay-statements.js'
+import { memoOf as memo } from './blocks.js'
 
 const MAX_SAFE = Number.MAX_SAFE_INTEGER
 const nat = (x: number, what: string): number => { if (!Number.isInteger(x) || x < 0 || x > MAX_SAFE) throw new Error(`${what} left the exact naturals: ${x}`); return x }
-const memo = <A extends unknown[], R>(f: (...a: A) => R): ((...a: A) => R) => { const m = new Map<string, R>(); return (...a) => { const k = a.join(','); if (!m.has(k)) m.set(k, f(...a)); return m.get(k)! } }
 
 // Mint
 export const mintOf = memo((k: number): number => (k === 0 ? 1 : nat(mintOf(k - 1) + mintOf(k - 1), 'mintOf')))
