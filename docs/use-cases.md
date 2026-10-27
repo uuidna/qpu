@@ -352,52 +352,52 @@ the Google Quantum AI layer: the Willow processor as its spec sheet states it, C
 | Page | Tool | Theorem | Shows |
 |---|---|---|---|
 | [processor-willow](https://qpu.uuidna.com/193550e8-665b-6a96-a507-30b5b6e1fee7) | processor | — | How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47. |
-| [processor-sycamore](https://qpu.uuidna.com/9aff481b-3d9c-7ad9-90fd-2bb260c75498) | processor | — | Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated. |
+| [processor-sycamore](https://qpu.uuidna.com/9aff481b-3d9c-7ad9-90fd-2bb260c75498) | processor | textbook_sycamore_couplers | Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated. |
 | [circuit-hadamard-amplitudes](https://qpu.uuidna.com/8b5cf7ba-6215-7914-b48e-ec77199aaec6) | circuit | — | A Hadamard gives two amplitudes of 1/√2. |
 | [circuit-hadamard-sampled](https://qpu.uuidna.com/306a00f0-cfb3-7a39-aad3-f97d9716fca4) | circuit | — | The same circuit measured: 400 bitstrings, each 0 or 1, in a histogram. |
 | [circuit-bit-flip-noise](https://qpu.uuidna.com/348a636f-4e19-8c71-8e08-bec16ba9fd1f) | circuit | — | An X gate under a bit-flip channel of p = 0.1 on the density matrix: probability 0.1 of reading 0, purity 0.1² + 0.9² = 0.82. Noise does not sample; it returns the mixed state. |
 | [echo-returns](https://qpu.uuidna.com/baabb9d4-2479-5c36-a086-3518ac22a5fb) | echo | interfere | H forward, Z, H back is X: the echo is destroyed, so the return probability is 0. |
-| [echo-benchmark](https://qpu.uuidna.com/280b026a-c46d-81c1-b912-e511c19b3629) | echo_benchmark | — | Quantum Echoes as Google states it: Willow, 105 qubits, the 13,000× figure (Google's, not this tree's). |
+| [echo-benchmark](https://qpu.uuidna.com/280b026a-c46d-81c1-b912-e511c19b3629) | echo_benchmark | textbook_echo_qubits_within_willow | Quantum Echoes as Google states it: Willow, 105 qubits, the 13,000× figure (Google's, not this tree's). |
 | [roadmap-all](https://qpu.uuidna.com/22b7bc87-0cf8-11bf-aa7b-50c319494a76) | roadmap | — | The six roadmap milestones and the four application bands. |
 | [roadmap-milestone-3](https://qpu.uuidna.com/0f5f0f93-b0ab-56fa-9efa-7c6ecd1e3d95) | roadmap | — | One milestone by number. |
-| [algorithm-shor-15](https://qpu.uuidna.com/6b74c2ba-f20a-54e9-b4e9-6bf43fa50fa4) | algorithm | — | Shor's circuit on the state-vector simulator: order 4 and factors 3 × 5 for N = 15, a = 7. |
-| [algorithm-qft-3](https://qpu.uuidna.com/5fd59e04-d761-8e01-becf-a6ae57a47291) | algorithm | — | The QFT of \|5⟩ on three qubits: eight amplitudes of equal magnitude. |
-| [algorithm-grover](https://qpu.uuidna.com/1ba7b772-0dd5-8e1b-8920-5a1f99a11dfd) | algorithm | — | Grover on two qubits finds the marked \|00⟩ with certainty. |
-| [algorithm-teleportation](https://qpu.uuidna.com/d7b77038-1a7d-193e-a79b-360d6eb7b58a) | algorithm | — | Teleportation: the received state matches the message on X, Y and Z. |
+| [algorithm-shor-15](https://qpu.uuidna.com/6b74c2ba-f20a-54e9-b4e9-6bf43fa50fa4) | algorithm | textbook_shor_fifteen_order | Shor's circuit on the state-vector simulator: order 4 and factors 3 × 5 for N = 15, a = 7. |
+| [algorithm-qft-3](https://qpu.uuidna.com/5fd59e04-d761-8e01-becf-a6ae57a47291) | algorithm | qft_all | The QFT of \|5⟩ on three qubits: eight amplitudes of equal magnitude. |
+| [algorithm-grover](https://qpu.uuidna.com/1ba7b772-0dd5-8e1b-8920-5a1f99a11dfd) | algorithm | grover_all | Grover on two qubits finds the marked \|00⟩ with certainty. |
+| [algorithm-teleportation](https://qpu.uuidna.com/d7b77038-1a7d-193e-a79b-360d6eb7b58a) | algorithm | textbook_teleport_three_qubits | Teleportation: the received state matches the message on X, Y and Z. |
 | [algorithm-phase-estimation](https://qpu.uuidna.com/2c1b84e8-4e11-7943-a99b-5d3ff553c371) | algorithm | — | Phase estimation reads θ = 0.25 exactly in three bits. |
-| [algorithm-qaoa](https://qpu.uuidna.com/b2d82153-9d7a-63d9-904e-37bd98d44c10) | algorithm | — | QAOA on the Cirq page's instance, sampled from the state's probabilities. |
+| [algorithm-qaoa](https://qpu.uuidna.com/b2d82153-9d7a-63d9-904e-37bd98d44c10) | algorithm | qaoa_all | QAOA on the Cirq page's instance, sampled from the state's probabilities. |
 | [software](https://qpu.uuidna.com/941ef62e-d97b-2438-bfc8-22ae9e5da781) | software | — | The Software page tools; only Cirq is implemented here. |
 | [statements-cirq](https://qpu.uuidna.com/cf045c24-4162-80c8-af47-3aef3773ea54) | statements | — | One statement by topic. |
 | [repositories](https://qpu.uuidna.com/c8ff34b6-4a58-49f5-8fb8-ae6ede24fd0c) | repositories | — | The fifteen quantumlib repositories. |
-| [qec-bit-flip-0.1](https://qpu.uuidna.com/34ef4c03-bee3-3cea-b2f7-2970fe3a447e) | quantum-error-correction | — | The three-qubit repetition code on the density matrix at p = 0.1: logical error 3p² − 2p³ = 0.028, below the raw 0.1. |
-| [chemistry-h2](https://qpu.uuidna.com/a67a70bc-0295-108e-a2e0-fdbc56563622) | chemistry-simulation | — | H₂ in STO-3G at 0.7414 Å: the Hartree–Fock energy from the simulator is −1.1167 Ha and the variational minimum lies below it near −1.137 Ha. |
-| [ftqc-all](https://qpu.uuidna.com/f41cbc11-4002-37a1-94a3-fa5c4a912429) | fault-tolerant-design | — | Resource counts read from six circuits this tree builds; one Toffoli costs 7 T gates by the cited decomposition. |
+| [qec-bit-flip-0.1](https://qpu.uuidna.com/34ef4c03-bee3-3cea-b2f7-2970fe3a447e) | quantum-error-correction | textbook_bit_flip_purity | The three-qubit repetition code on the density matrix at p = 0.1: logical error 3p² − 2p³ = 0.028, below the raw 0.1. |
+| [chemistry-h2](https://qpu.uuidna.com/a67a70bc-0295-108e-a2e0-fdbc56563622) | chemistry-simulation | textbook_h2_below_hartree_fock | H₂ in STO-3G at 0.7414 Å: the Hartree–Fock energy from the simulator is −1.1167 Ha and the variational minimum lies below it near −1.137 Ha. |
+| [ftqc-all](https://qpu.uuidna.com/f41cbc11-4002-37a1-94a3-fa5c4a912429) | fault-tolerant-design | surfacecode_all | Resource counts read from six circuits this tree builds; one Toffoli costs 7 T gates by the cited decomposition. |
 | [quantumlib-cirq](https://qpu.uuidna.com/36105ef6-31bc-5d51-8b73-105065cc1b1f) | quantumlib | — | What this tree implements of Cirq, as a cross-reference of its exports. |
 
 ## Gates
 
-Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 183 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 + 5 = 183) in 21 categories, 205 nested pages, 179 of 202 leads placed; by kind tool 51, open 55, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
+Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 183 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 + 5 = 183) in 21 categories, 205 nested pages, 173 of 196 leads placed; by kind tool 51, open 55, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
 
 | Category | Gates | Leads | Says |
 |---|---:|---:|---|
-| tree | 10 | 72 | the doors of the tree toolbox, each a gate of the leads it serves |
+| tree | 10 | 71 | the doors of the tree toolbox, each a gate of the leads it serves |
 | google | 13 | 71 | the doors of the google toolbox, each a gate of the leads it serves |
-| flow | 6 | 7 | the doors of the flow toolbox, each a gate of the leads it serves |
+| flow | 6 | 6 | the doors of the flow toolbox, each a gate of the leads it serves |
 | language | 2 | 2 | the doors of the language toolbox, each a gate of the leads it serves |
 | raid | 1 | 3 | the doors of the raid toolbox, each a gate of the leads it serves |
 | billing | 2 | 1 | the doors of the billing toolbox, each a gate of the leads it serves |
-| legal | 3 | 2 | the doors of the legal toolbox, each a gate of the leads it serves |
+| legal | 3 | 1 | the doors of the legal toolbox, each a gate of the leads it serves |
 | repository | 1 | 1 | the doors of the repository toolbox, each a gate of the leads it serves |
 | standards | 2 | 0 | the doors of the standards toolbox, each a gate of the leads it serves |
-| payload | 2 | 10 | the doors of the payload toolbox, each a gate of the leads it serves |
+| payload | 2 | 8 | the doors of the payload toolbox, each a gate of the leads it serves |
 | extension | 1 | 3 | the doors of the extension toolbox, each a gate of the leads it serves |
-| crypto | 3 | 1 | the doors of the crypto toolbox, each a gate of the leads it serves |
+| crypto | 3 | 0 | the doors of the crypto toolbox, each a gate of the leads it serves |
 | patents | 7 | 0 | the offices and indexes the patents tool passes |
-| certificates | 8 | 1 | the beacon, the logs, the directory, the vulnerability index and the physics the attest tool passes |
+| certificates | 8 | 0 | the beacon, the logs, the directory, the vulnerability index and the physics the attest tool passes |
 | currency | 5 | 0 | the rate sources the currency tool harmonises |
-| competitions | 7 | 1 | the rules pages the compete tool follows |
-| mcp | 68 | 7 | the servers discovery reads, and the servers the registry names beside them: proposed, never called from the tree |
-| references | 28 | 13 | the vocabularies, codes and references the verifier reads |
+| competitions | 7 | 0 | the rules pages the compete tool follows |
+| mcp | 68 | 6 | the servers discovery reads, and the servers the registry names beside them: proposed, never called from the tree |
+| references | 28 | 10 | the vocabularies, codes and references the verifier reads |
 | news | 7 | 0 | the public news APIs wired as adapters of the DOI research: the mentions of every record of precedence, by source |
 | energy | 2 | 0 | the market-price gates the bill's kilowatt-hours are priced against, keyed by the tenant |
 | dependencies | 5 | 0 | every dev dependency of the tree imagined as an MCP door: the step of next that runs it is its tools/call, its gate page carries that step's block rendered by the MCP App, usable in the UI |

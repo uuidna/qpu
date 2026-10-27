@@ -1,11 +1,11 @@
 {
- "date": "2026-10-27T17:45:50.982Z",
+ "date": "2026-10-27T17:54:30.877Z",
  "literals": {
-  "urls": 832,
-  "distinctUrls": 448,
-  "paths": 192,
-  "outside": 572,
-  "tokens": 6061,
+  "urls": 828,
+  "distinctUrls": 446,
+  "paths": 190,
+  "outside": 570,
+  "tokens": 6055,
   "byFile": [
    [
     "src/quantum/toolboxes/payload.ts",
@@ -133,10 +133,6 @@
    ],
    [
     "scripts/compete.ts",
-    2
-   ],
-   [
-    "scripts/machine.ts",
     2
    ],
    [
@@ -652,7 +648,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 930,
- "lines": 82674,
+ "lines": 82605,
  "findings": 886,
  "fused": 318,
  "reactions": 568,
@@ -758,7 +754,7 @@
   {
    "id": "entropy-cap-113d3f3c",
    "kind": "cap",
-   "source": "scripts/machine.ts:75, src/quantum/discovery.ts:270, src/quantum/examples.ts:241, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
+   "source": "scripts/machine.ts:76, src/quantum/discovery.ts:270, src/quantum/examples.ts:241, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200)",
    "status": "open",
    "tool": "audit",
