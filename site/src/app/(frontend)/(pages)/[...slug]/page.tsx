@@ -1,3 +1,4 @@
+import { uuidOf } from '@uuidna/qpu/blocks'
 import type { Media } from '@root/payload-types'
 import type { Metadata } from 'next'
 
@@ -52,9 +53,7 @@ export async function generateStaticParams() {
   const getPages = unstable_cache(fetchPages, ['pages'])
   const pages = await getPages()
 
-  return pages.map(({ breadcrumbs }) => ({
-    slug: breadcrumbs?.[breadcrumbs.length - 1]?.url?.replace(/^\/|\/$/g, '').split('/'),
-  }))
+  return pages.map(({ breadcrumbs, id, slug }) => ({ slug: (breadcrumbs?.at(-1)?.url ?? `/${slug || uuidOf(String(id))}`).replace(/^\/|\/$/g, '').split('/') }))
 }
 
 export async function generateMetadata({
