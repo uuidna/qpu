@@ -1,5 +1,7 @@
 import type { Block } from 'payload'
 
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+
 import { blockFields } from '../../fields/blockFields'
 import richText from '../../fields/richText'
 
@@ -9,7 +11,7 @@ export const Form: Block = {
     blockFields({
       name: 'formFields',
       fields: [
-        richText(),
+        richText({ editor: lexicalEditor({ features: ({ defaultFeatures }) => defaultFeatures.filter((f) => f.key !== 'blocks') }) }),
         {
           name: 'form',
           type: 'relationship',
