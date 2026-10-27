@@ -484,6 +484,8 @@ theorem textbook_stream_no_silence (gap beat : Nat) (h : gap ≤ beat) (hb : bea
 theorem textbook_eta_from_receipts (a q x : Nat) (h : a ≤ q) : a * x + (q - a) * x = q * x := by rw [← Nat.add_mul, Nat.add_sub_of_le h]
 /-- neighboursOf: one step in program space moves g1 by one modulo 2^16 or g2, g3 by one modulo 2^12 (their stamp nibble decided, never walked), and the step back returns the program, at every edge of the torus (examples: fold-neighbours) -/
 theorem textbook_neighbour_step (x y : Nat) (hx : x < 65536) (hy : y < 4096) : ((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y := by omega
+/-- routeOf: a leg whose items run at once lasts as long as its longest item, never longer than the same items one after another, so a route through waves of disjoint files is never longer than its staticDuration, the Routes API's duration without traffic (examples: leads-session-route) -/
+theorem textbook_route_waves (a b : Nat) : max a b ≤ a + b := by omega
 /-- a deploy carries a bundle no older than its sources: the build's time is at or after the last source change, or the bundle is rebuilt (examples: repository-predeploy) -/
 theorem textbook_build_fresh (built source : Nat) (h : source ≤ built) : built - source + source = built := Nat.sub_add_cancel h
 /-- every binding the adapters need is declared and every resource it names exists in the account: when none is missing, the declared are the needed, however many the adapters bind (examples: repository-predeploy) -/

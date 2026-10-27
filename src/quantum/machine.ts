@@ -103,7 +103,7 @@ export const forecastOf = (times: readonly number[], o: { a?: number; q?: number
   let num = BigInt(y[0]!), den = 1n, sq = 0
   for (const v of y.slice(1)) { sq += (v - Number((num * 1000n) / den) / 1000) ** 2; num = a * BigInt(v) * den + (q - a) * num; den *= q }
   const level = Number((2n * num + den) / (2n * den)), point = Math.max(0, level + (index?.[n % m] ?? 0)), half = n > 2 ? Math.round(1.96 * Math.sqrt(sq / (n - 1))) : null
-  return { estimated: true as const, point, interval: half === null ? null : [Math.max(0, point - half), point + half] as [number, number], confidence: 0.95, n, alpha: `${a}/${q}`, level: `${num}/${den}`, seasonal: index ? { period: m, index } : null, method: 'ARIMA_PLUS-style additive decomposition, then exponential smoothing in exact rationals', reference: 'TimesFM (google-research/timesfm), not run' }
+  return { estimated: true as const, point, interval: half === null ? null : [Math.max(0, point - half), point + half] as [number, number], confidence: 0.95, n, alpha: `${a}/${q}`, level: `${num}/${den}`, seasonal: index ? { period: m, index } : null, method: 'additive decomposition by a moving average (ARIMA_PLUS documents STL), then simple exponential smoothing in exact rationals (ARIMA_PLUS: an ARIMA trend, ETS seasonality, spikes, steps and holidays cleaned)', reference: 'TimesFM (google-research/timesfm), not run' }
 }
 /** The largest gap between consecutive events while work runs, against the heartbeat bound (textbook_stream_no_silence). */
 const silenceOf = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) => {
