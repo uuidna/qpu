@@ -2,6 +2,7 @@
 // Added to the MIT fork of payloadcms/website (Copyright (c) 2023 Payload); this file is QPU's: see NOTICE.qpu.md.
 // The docket as a Payload collection over MongoDB (the mongo tool's language): every entry addressed by its content — the id is the
 // fold address of what it holds, the sha256 beside it — never overwritten; the four verbs are Payload's REST (/api/entries).
+import { createHmac } from 'node:crypto'
 import type { CollectionConfig, Where } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
@@ -50,6 +51,8 @@ export const Entries: CollectionConfig = {
       if (operation !== 'create' || !data) return data
       // the tenant the multi-tenant plugin requires: the caller's, else the request host's row (as the users hook names it), else the first tenant, so a public call lands under the tenant that answers it
       if (!data.tenant) { const host = (req?.headers?.get?.('host') ?? '').split(':')[0] || 'localhost'; const byHost = await req.payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, limit: 1, overrideAccess: true }); const first = byHost.docs[0] ?? (await req.payload.find({ collection: 'tenants' as never, limit: 1, sort: 'createdAt', overrideAccess: true })).docs[0]; if (first) data.tenant = (first as { id: string }).id }
+      // a call salted under the server's data key: the same request keeps its address, but no one who knows the request can compute it, nor its answer's
+      if (data.kind === 'call' && process.env.QPU_DATA_KEY && data.body && typeof data.body === 'object' && !('salt' in data.body)) data.body = { ...data.body, salt: createHmac('sha256', process.env.QPU_DATA_KEY).update(JSON.stringify(data.body)).digest('hex') }
       // the caller's role, from Payload's user and the tenant (a signed role claim counts too): the chat door corrects what the role may not choose
       const tenantId = tenantIdOf(data.tenant)
       const role = isSuperAdmin(req.user) || claimedRole(req) === 'admin' || memberOf(req.user, tenantId, ['tenant-admin']) ? 'admin' : claimedRole(req) === 'writer' || memberOf(req.user, tenantId, ['editor']) ? 'writer' : 'reader'
