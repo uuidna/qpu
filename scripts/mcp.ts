@@ -102,7 +102,7 @@ export const mcpOf = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key: str
 export const raidRead = async (collection: string, read: () => Promise<Record<string, unknown>[] | null>) => {
   const docs = await read().catch(() => null); if (docs) return { docs, from: 'payload' }
   const dir = process.env.QPU_BINDING0 ?? join(process.cwd(), '.qpu'), { binding0Of } = await import('../src/quantum/toolboxes/raid.js')
-  const back = <{ docs: Record<string, unknown>[]; refused: string[] }>binding0Of(collection, null, existsSync(dir) ? Object.fromEntries(readdirSync(dir, { recursive: true }).map(String).filter((p) => /^[0-9a-f]{2}\/[0-9a-f]{2}\/[^/]+$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) : {})
+  const back = <{ docs: Record<string, unknown>[]; refused: string[] }>binding0Of(collection, null, existsSync(dir) ? Object.fromEntries(readdirSync(dir, { recursive: true }).map(String).filter((p) => /[\da-f-]{36}(\.latest)?$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) : {})
   return { docs: back.docs.length ? back.docs : null, from: back.docs.length ? `binding 0 (${back.refused.length} refused)` : 'unread' }
 }
 /** The leads beyond the core: every Research leads page's record (its leads block's lead), read in the RAID's order and handed to the tools as records */
