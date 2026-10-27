@@ -200,8 +200,8 @@ theorem textbook_rest_rbac : 2 * 3 = 6 := by decide
 theorem textbook_google_mcps : 15 + 3 = 18 := by decide
 /-- the same gates by kind: forty-six tools, fifty-five open, forty-three keyed (Google Workspace's nine, Google Cloud's fifteen among them), one a browser alone passes, thirty-three proposed by the registry (examples: configure-gates) -/
 theorem textbook_gates_by_kind : 46 + 55 + 43 + 1 + 33 = 178 := by decide
-/-- five databases, five storages and two email adapters make fifty adapter combinations (examples: configure-adapters) -/
-theorem textbook_adapter_combinations : 5 * 5 * 2 = 50 := by decide
+/-- the database, storage and email adapters Payload holds multiply into the adapter combinations (examples: configure-adapters) -/
+theorem textbook_adapter_combinations : 5 * 5 * 3 = 75 := by decide
 /-- every configuration kind tested closed around the torus leaves none open, however many kinds the tree configures (examples: configure-all) -/
 theorem textbook_configurations_closed (tested kinds : Nat) (h : tested = kinds) : kinds - tested = 0 := by omega
 /-- the standard contract adds nothing the catalogue does not hold: its component schemas are the tools and the two JSON-RPC envelopes, so less the envelopes they are the tools (examples: configure-api) -/
@@ -278,8 +278,8 @@ theorem textbook_coil_green : 432 % 360 + 432 / 9 = 120 := by decide
 theorem textbook_scan_stream : 36 * 108 = 432 * 9 := by decide
 /-- a referer-bound seed carries the secret's 256 bits and no more: the referer is public and recomputable, so it adds 0 bits; it binds the seed to its chain (examples: seal-referer) -/
 theorem textbook_referer_binds_not_entropy : 32 * 8 + 0 = 256 := by decide
-/-- six MCP directories read by how a machine may read each: two open searches (the official registry, Smithery), one open sitemap (mcpservers.org), two keyed APIs named with their keys (Glama, PulseMCP), one with no machine contract (mcp.so); buildRegistryRequests asks the three and no other (examples: discover-lead-registry, discover-directories-keyed) -/
-theorem textbook_mcp_directories : 2 + 1 + 2 + 1 = 6 := by decide
+/-- seven directories read by how a machine may read each, as Payload holds them: two open searches (the official registry, Smithery), one MCP server asked by POST (apis.io), one open sitemap (mcpservers.org), two keyed APIs named with their keys (Glama, PulseMCP), one with no machine contract (mcp.so); buildRegistryRequests asks the three and no other (examples: discover-lead-registry, discover-directories-keyed) -/
+theorem textbook_mcp_directories : 2 + 1 + 1 + 2 + 1 = 7 := by decide
 /-- three Google APIs, three gates: Blogger placed in the frontend and the admin, the Admin SDK under delegation, Books waiting for its document; Blogger's two methods one read the frontend may call and one write the admin calls (examples: configure-google-apis) -/
 theorem textbook_google_api_surfaces : 1 + 1 + 1 = 3 ∧ 1 + 1 = 2 := by decide
 /-- each of Willow's 182 couplers joins two of its 105 qubits, so the average connectivity 2E/N is 3.47 to two places: the sheet's figure computed from the grid (examples: processor-willow) -/
