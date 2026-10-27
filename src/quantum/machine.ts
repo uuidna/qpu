@@ -90,8 +90,21 @@ export const machineRecordOf = (run: MachineRun) => {
 
 /** One event of the stream: every step start and end, commit, penalty, question, decision and receipt, and a heartbeat every second while work runs. */
 export type StreamEvent = { at: string; kind: string; subject: string; ms?: number; says: string; address?: string; eta?: number | null; elapsed?: number; options?: readonly string[] }
-/** An ETA is the mean of the recorded times, or absent: never a constant (textbook_eta_from_receipts). */
-export const etaOf = (times: readonly number[]): number | null => (times.length ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : null)
+/** The forecast of a step's next time from its recorded times, estimated and labelled so, or absent when none is recorded (textbook_eta_from_receipts):
+ *  the additive decomposition BigQuery ML's ARIMA_PLUS documents (a one-period moving-average trend, one index per phase summing to zero) when two
+ *  periods are recorded, then simple exponential smoothing in exact rationals (each time weighed a/q, the level (q - a)/q; numerator and q^n kept
+ *  as integers), and the interval the one-step errors give at 95 % (z = 1.96). TimesFM is the reference model, cited, never run here. */
+export const forecastOf = (times: readonly number[], o: { a?: number; q?: number; period?: number } = {}) => {
+  if (!times.length) return null
+  const a = BigInt(o.a ?? 3), q = BigInt(o.q ?? 10), m = o.period ?? 0, x = times.map(Math.round), n = x.length
+  const trend = (i: number) => { const s = Math.max(0, Math.min(n - m, i - Math.floor(m / 2))); return x.slice(s, s + m).reduce((u, v) => u + v, 0) / m }
+  const raw = m >= 2 && n >= 2 * m ? Array.from({ length: m }, (_, p) => { const d = x.flatMap((v, i) => (i % m === p ? [v - trend(i)] : [])); return d.reduce((u, v) => u + v, 0) / d.length }) : null
+  const index = raw ? raw.map((v) => Math.round(v - raw.reduce((u, w) => u + w, 0) / m)) : null, y = x.map((v, i) => v - (index?.[i % m] ?? 0))
+  let num = BigInt(y[0]!), den = 1n, sq = 0
+  for (const v of y.slice(1)) { sq += (v - Number((num * 1000n) / den) / 1000) ** 2; num = a * BigInt(v) * den + (q - a) * num; den *= q }
+  const level = Number((2n * num + den) / (2n * den)), point = Math.max(0, level + (index?.[n % m] ?? 0)), half = n > 2 ? Math.round(1.96 * Math.sqrt(sq / (n - 1))) : null
+  return { estimated: true as const, point, interval: half === null ? null : [Math.max(0, point - half), point + half] as [number, number], confidence: 0.95, n, alpha: `${a}/${q}`, level: `${num}/${den}`, seasonal: index ? { period: m, index } : null, method: 'ARIMA_PLUS-style additive decomposition, then exponential smoothing in exact rationals', reference: 'TimesFM (google-research/timesfm), not run' }
+}
 /** The largest gap between consecutive events while work runs, against the heartbeat bound (textbook_stream_no_silence). */
 const silenceOf = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) => {
   const ts = events.map((e) => Date.parse(e.at)).filter(Number.isFinite)
@@ -100,11 +113,11 @@ const silenceOf = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) =
   return { holds: maxGapMs <= boundMs, maxGapMs, boundMs, at, theorem: 'textbook_stream_no_silence' }
 }
 /** The status on request: what runs and its ETA from the receipts, the last events, the open questions (asked and not yet decided) and what is held. */
-export const statusOf = (s: { events: readonly StreamEvent[]; times?: Record<string, readonly number[]>; held?: unknown; last?: number }) => {
+export const statusOf = (s: { events: readonly StreamEvent[]; times?: Record<string, readonly number[]>; held?: unknown; last?: number; period?: number }) => {
   const ev = s.events, last = ev[ev.length - 1] ?? null
   const started = [...ev].reverse().find((e) => e.kind === 'step-start' && !ev.some((x) => x.kind === 'step-end' && x.subject === e.subject && x.at >= e.at)) ?? null
   const elapsed = started && last ? Date.parse(last.at) - Date.parse(started.at) : null
-  const eta = started ? etaOf(s.times?.[started.subject] ?? []) : null
+  const forecasts = Object.fromEntries(Object.entries(s.times ?? {}).map(([k, v]) => [k, forecastOf(v, { period: s.period })])), f = started ? forecasts[started.subject] ?? null : null, eta = f?.point ?? null
   const questions = ev.filter((e) => e.kind === 'question' && !ev.some((x) => x.kind === 'decision' && x.subject === e.subject && x.at >= e.at))
-  return { running: started ? { subject: started.subject, since: started.at, elapsed, eta, remaining: eta !== null && elapsed !== null ? Math.max(0, eta - elapsed) : null } : null, last: ev.slice(-(s.last ?? 10)), questions, held: s.held ?? null, silence: silenceOf(ev), theorems: ['textbook_eta_from_receipts', 'textbook_stream_no_silence'] }
+  return { running: started ? { subject: started.subject, since: started.at, elapsed, eta, interval: f?.interval ?? null, remaining: eta !== null && elapsed !== null ? Math.max(0, eta - elapsed) : null } : null, last: ev.slice(-(s.last ?? 10)), questions, forecasts, held: s.held ?? null, silence: silenceOf(ev), theorems: ['textbook_eta_from_receipts', 'textbook_stream_no_silence'] }
 }

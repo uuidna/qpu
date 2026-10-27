@@ -14,7 +14,7 @@ import { cellOf as cell } from '../src/quantum/widgets.ts'
 import { remediesOf, manualDocsOf } from '../src/quantum/audit.ts'
 import { STEP_CACHE, GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
 import { timesOf } from './machine.ts'
-import { etaOf } from '../src/quantum/machine.ts'
+import { forecastOf } from '../src/quantum/machine.ts'
 import { readJson, getOf } from './mcp.ts'
 
 const ROOT = process.cwd()
@@ -27,7 +27,7 @@ const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/t
 // quantum multitasking is the natural speedup: steps that need nothing from each other run at once, in waves; a wave waits for
 // the one before it (the generators before the checks, the checks before the readers, the readers before the site)
 type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs?: number; wave: number; /** a long single task split into short multitasks: n shards at once (QPU_SHARD=i/n), then one merge (QPU_SHARD=merge) */ shards?: number }
-const TIMES = await timesOf(ROOT), budgetOf = (s: Step) => Math.min(2 * (s.budgetMs ?? 600_000), Math.max(s.budgetMs ?? 600_000, 2 * (etaOf(TIMES[s.name] ?? []) ?? 0)))
+const TIMES = await timesOf(ROOT), budgetOf = (s: Step) => Math.min(2 * (s.budgetMs ?? 600_000), Math.max(s.budgetMs ?? 600_000, 2 * (forecastOf(TIMES[s.name] ?? [])?.point ?? 0)))
 const steps: Step[] = [
   { name: 'clay:gen', cmd: 'node', args: ['--import', 'tsx', 'scripts/gen-clay.ts'], wave: 1 },
   { name: 'docs:gen', cmd: 'npx', args: ['tsx', 'scripts/gen-docs.ts'], wave: 1 },

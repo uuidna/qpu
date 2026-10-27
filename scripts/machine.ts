@@ -32,7 +32,7 @@ const spawnRun = (plan: { action: string; command: { cmd: string; args: readonly
 import { appendFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
-import { etaOf, type StreamEvent } from '../src/quantum/machine.js'
+import { forecastOf, type StreamEvent } from '../src/quantum/machine.js'
 import { readJson } from './mcp.js'
 
 const runFiles = async () => (await import('../src/quantum/toolboxes/repository.js')).RUN_FILES
@@ -41,11 +41,13 @@ export const streamOf = async (root: string) => {
   mkdirSync(dirname(file), { recursive: true })
   let last = Date.now(), beat: ReturnType<typeof setInterval> | null = null, current: { subject: string; t0: number; eta: number | null } | null = null
   const emit = (e: Omit<StreamEvent, 'at'>) => { const ev = { at: new Date().toISOString(), ...e } as StreamEvent; last = Date.now(); appendFileSync(file, JSON.stringify(ev) + '\n'); return ev }
-  const start = (subject: string, eta: number | null) => { current = { subject, t0: Date.now(), eta }; emit({ kind: 'step-start', subject, eta, says: `${subject} started${eta === null ? ', no ETA: no recorded time yet' : `, ETA ${(eta / 1000).toFixed(1)} s`}` })
+  let high: number | undefined
+  const start = (subject: string, eta: number | null, hi?: number) => { current = { subject, t0: Date.now(), eta }; high = hi; emit({ kind: 'step-start', subject, eta, says: `${subject} started${eta === null ? ', no ETA: no recorded time yet' : `, ETA ${(eta / 1000).toFixed(1)} s`}` })
     beat = setInterval(() => { if (current && Date.now() - last >= 900) { const elapsed = Date.now() - current.t0; emit({ kind: 'working', subject: current.subject, elapsed, eta: current.eta, says: `${current.subject} working ${(elapsed / 1000).toFixed(0)} s${current.eta === null ? '' : ` of ~${(current.eta / 1000).toFixed(0)} s`}` }) } }, 100) }
   const end = (ok: boolean, says: string) => { if (beat) clearInterval(beat); beat = null; if (!current) return; const { subject, t0, eta } = current, ms = Date.now() - t0; current = null
     emit({ kind: 'step-end', subject, ms, eta, says: `${subject} ${ok ? 'done' : 'failed'} in ${(ms / 1000).toFixed(1)} s${says ? `: ${says}` : ''}` })
-    if (eta !== null && ms > 2 * eta) emit({ kind: 'over-eta', subject, ms, eta, says: `${subject} took ${(ms / 1000).toFixed(1)} s, over twice its ETA of ${(eta / 1000).toFixed(1)} s` }) }
+    const bound = high ?? (eta === null ? null : 2 * eta) // the forecast is the budget: past its interval is a violation, its profile the event
+    if (bound !== null && ms > bound) emit({ kind: 'over-forecast', subject, ms, eta, says: `${subject} took ${(ms / 1000).toFixed(1)} s, past its forecast's bound of ${(bound / 1000).toFixed(1)} s (estimated ${((eta ?? 0) / 1000).toFixed(1)} s)` }) }
   return { emit, start, end }
 }
 
@@ -65,7 +67,8 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
   const files = await runFiles(), plan = repository({ machine: { plan: { ...args, facts: { receipt: read(files.receipt), approval: read(files.configs)?.approval ?? null, e2e: read(files.e2e)?.outcomes ?? null } } } })
   if (!plan?.allowed) return { plan, answer: plan }
   const s = await streamOf(cwd), subject = plan.action
-  s.start(subject, etaOf((await timesOf(cwd))[subject] ?? []))
+  const f = forecastOf((await timesOf(cwd))[subject] ?? [])
+  s.start(subject, f?.point ?? null, f?.interval?.[1])
   const run = await spawnRun(plan, cwd, (p) => { if (plan.action === 'next') s.emit({ kind: 'progress', subject, says: p.message.slice(0, 200) }); onProgress(p) })
   s.end(run.status === 0, run.status === 0 ? '' : `status ${run.status}`)
   const record = repository({ machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: run.ms, root: cwd, home: homedir() } } })

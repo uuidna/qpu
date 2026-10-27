@@ -9,7 +9,7 @@ import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.js'
 import { contractedOf } from '../wave.js'
 import { flowWidget } from '../widgets.js'
 import { verificationOf } from '../verification.js'
-import { MACHINE_ACTIONS, machinePlanOf, machineRecordOf, statusOf, type MachineRequest, type MachineRun, type StreamEvent } from '../machine.js'
+import { MACHINE_ACTIONS, machinePlanOf, machineRecordOf, statusOf, forecastOf, type MachineRequest, type MachineRun } from '../machine.js'
 import { cloudflareBillOf, penaltyOf, penaltyCountsOf, capacityOf, type CapacityInput, type CloudflareUsage } from './billing.js'
 import { CLAIMS } from '../claims-index.js'
 import { literalsOf, manualDocsOf, ERROR_REMEDIES, FALLBACKS, ENTROPY_KINDS } from '../audit.js'
@@ -271,7 +271,7 @@ const repository = toolOf('repository', {
       if (m.record) return { phase: 'machine-record' as const, ...machineRecordOf(m.record) }
       return { phase: 'machine-actions' as const, actions: MACHINE_ACTIONS.map((a) => ({ id: a.id, kind: a.kind, says: a.says, command: [a.cmd, ...a.args].join(' '), needs: a.needs ?? null, workflow: a.workflow ?? null })), reads: MACHINE_ACTIONS.filter((a) => a.kind === 'read').length, writes: MACHINE_ACTIONS.filter((a) => a.kind === 'write').length, server: 'the one runner scripts/machine.ts, no shell: over the stdio transport (the harness on this machine) or the Payload MCP plugin\'s machine tool (a loopback host and the super admin alone); a call with _meta.progressToken streams notifications/progress, line by line, step by step for next', theorem: 'textbook_machine_allow_list' }
     }
-    if (isObj(args.status)) { const st = args.status as { events?: StreamEvent[]; times?: Record<string, number[]>; held?: unknown; last?: number }; return { phase: 'status' as const, ...statusOf({ events: st.events ?? [], times: st.times, held: st.held, last: st.last }) } }
+    if (isObj(args.status)) { const st = args.status as Parameters<typeof statusOf>[0]; return { phase: 'status' as const, ...statusOf({ ...st, events: st.events ?? [] }) } }
     if (isObj(args.steps)) { const st = args.steps as { plan?: Parameters<typeof stepPlanOf>[0]; sealed?: Parameters<typeof stepPlanOf>[1] }; return { phase: 'steps' as const, ...stepPlanOf(st.plan ?? [], st.sealed ?? []) } }
     if (Array.isArray(args.penalties)) return { phase: 'penalties' as const, ...penaltyCountsOf(args.penalties as Parameters<typeof penaltyCountsOf>[0]), ...wayEvidenceOf(args.e2e as E2eOutcomes | undefined), ...(isObj(args.literals) ? { literals: literalPenaltiesOf(args.literals as Record<string, string>) } : {}), ...(isObj(args.capacity) ? { capacity: capacityOf(args.capacity as CapacityInput) } : {}), ...(isObj(args.docs) ? { docs: manualDocsOf((args.docs as { pages: { path: string; bytes: number }[] }).pages ?? [], (args.docs as { scripts?: Record<string, string> }).scripts ?? {}) } : {}) }
     if (isObj(args.violation)) { const v = args.violation as { kind: string; rule: string; evidence: string; theorem?: string }; return { phase: 'violation' as const, ...violationOf(v.kind, v.rule, String(v.evidence), v.theorem ?? null) } }
@@ -313,6 +313,8 @@ export const REPOSITORY: Toolbox = {
       check('repository:violation-addressed', va.address === vb.address && violationOf('folded', 'folded', 'net 401').address !== va.address && unknownKind && va.fallback.length > 0, 'one violation, one address: the same content the same record, other content another, a kind outside the closed set refused')
       const reqs = watchRequestsOf(LOCAL, { 'api.github.com': ['/repos/{owner}/{repo}/branches', '/repos/{owner}/{repo}/tags', '/repos/{owner}/{repo}/releases'] })
       check('repository:requests', reqs.length === 8 && reqs.filter((r) => r.contracted === 'yes').length === 3 && reqs.some((r) => r.purpose === 'zenodo') && reqs.some((r) => r.purpose === 'npm') && reqs.some((r) => r.purpose === 'runs') && reqs.some((r) => r.purpose === 'workflows'), `${reqs.length} requests, ${reqs.filter((r) => r.contracted === 'yes').length} inside GitHub's contract`)
+      const fc = forecastOf([1200, 1200, 1200, 1200]), fs = forecastOf([100, 300, 100, 300, 100, 300], { period: 2 })
+      check('repository:forecast-exact', fc?.point === 1200 && fc.level === '1200000/1000' && fc.interval?.join() === '1200,1200' && fs?.point === 100 && fs.seasonal?.index.join() === '-100,100' && forecastOf([]) === null, 'equal times forecast exactly that time, a seasonal series its phase, none recorded none (textbook_eta_from_receipts)')
       check('repository:no-remote', watchRequestsOf({ ...LOCAL, remote: null, conceptDoi: null, pkg: null }).length === 0 && ownerRepoOf('git@github.com:uuidna/qpu.git')?.repo === 'qpu', 'no remote, no requests; an ssh remote parses')
       const w = watchOf(LOCAL, ANSWERS)
       const ids = w.leads.map((l) => l.id)

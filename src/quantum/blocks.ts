@@ -48,6 +48,19 @@ export const uuidFromParts = (handle: string, program: readonly number[], tail: 
   const middle = `${p.slice(0, 4).join('')}0${p.slice(4, 7).join('')}8${p.slice(7, 10).join('')}` // version slot filled by the stamp
   return stampOf(`${handle}${middle}${tail}`)
 }
+/** The program-space neighbours of an address (textbook_neighbour_step): g1's 16 program bits and g2's and g3's 12 each (their first nibble is
+ *  the stamp's, decided, never walked) stepped by one either way modulo their width and stamped again: six sealed addresses with the same handle
+ *  and tail, each with its colour; the step back returns the program. O(1). */
+export const neighboursOf = (uuid: string) => {
+  const ch = channelOf(uuid)
+  const hexOfProgram = (p: readonly number[]) => p.map((n) => n.toString(16)).join('')
+  return { uuid, program: hexOfProgram(ch.program), neighbours: [[0, 4], [4, 7], [7, 10]].flatMap(([s, e], g) => [1, -1].map((step) => {
+    const w = 16 ** (e! - s!), v = (ch.program.slice(s, e).reduce((n, d) => n * 16 + d, 0) + step + w) % w, p = [...ch.program]
+    for (let i = e! - 1, r = v; i >= s!; i--, r = Math.floor(r / 16)) p[i] = r % 16
+    const id = uuidFromParts(ch.handle, p, ch.tail)
+    return { axis: `g${g + 1}`, step, uuid: id, program: hexOfProgram(p), colour: styleOf(id).vars['--qpu-accent'], sealed: sealOf(id).valid }
+  })), says: 'one step on g1, g2 or g3 either way, modulo the group\'s program bits; the handle and the tail kept, the stamp decided again' }
+}
 /** A program compiled against the tools: each nibble picks a tool, enum parameters are chosen by the nibble, integer parameters
  *  come from the tail's three 16-bit readings clamped into the schema's bounds. The first step is `next`. */
 export type Step = { nibble: number; tool: string; arguments: Record<string, unknown> }

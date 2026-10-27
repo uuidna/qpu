@@ -2708,6 +2708,10 @@ The split folds
       },
       "description": "a UUID-only stream"
     },
+    "neighbours": {
+      "type": "string",
+      "description": "a UUID"
+    },
     "query": {
       "type": "object",
       "description": "with uuids"

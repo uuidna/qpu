@@ -480,8 +480,10 @@ theorem textbook_artifacts_verified (verified mismatched unreached total : Nat) 
 theorem textbook_machine_allow_list (asked allowed : Nat) (h : allowed ≤ asked) : asked - allowed + allowed = asked := Nat.sub_add_cancel h
 /-- while work runs the stream is never silent for more than a second: a heartbeat follows any second without an event, so every gap between two events is within the heartbeat, and the heartbeat is one second (examples: repository-status-no-silence) -/
 theorem textbook_stream_no_silence (gap beat : Nat) (h : gap ≤ beat) (hb : beat ≤ 1000) : gap ≤ 1000 := Nat.le_trans h hb
-/-- an ETA is the mean of the recorded times of the step, or absent when none is recorded: the mean times the count never exceeds the recorded sum, so an ETA is never a constant and never more than the record allows (examples: repository-status-eta) -/
-theorem textbook_eta_from_receipts (sum n : Nat) : sum / n * n ≤ sum := Nat.div_mul_le_self sum n
+/-- forecastOf: an ETA is the forecast of the recorded times, estimated and labelled so, or absent when none is recorded: exponential smoothing in exact rationals weighs each time a/q and the level (q - a)/q, the weights sum to q, so equal recorded times forecast exactly that time; the interval is the one-step errors at 95 %, and the forecast is the step's budget (examples: repository-status-eta, repository-status-forecast) -/
+theorem textbook_eta_from_receipts (a q x : Nat) (h : a ≤ q) : a * x + (q - a) * x = q * x := by rw [← Nat.add_mul, Nat.add_sub_of_le h]
+/-- neighboursOf: one step in program space moves g1 by one modulo 2^16 or g2, g3 by one modulo 2^12 (their stamp nibble decided, never walked), and the step back returns the program, at every edge of the torus (examples: fold-neighbours) -/
+theorem textbook_neighbour_step (x y : Nat) (hx : x < 65536) (hy : y < 4096) : ((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y := by omega
 /-- a deploy carries a bundle no older than its sources: the build's time is at or after the last source change, or the bundle is rebuilt (examples: repository-predeploy) -/
 theorem textbook_build_fresh (built source : Nat) (h : source ≤ built) : built - source + source = built := Nat.sub_add_cancel h
 /-- every binding the adapters need is declared and every resource it names exists in the account: when none is missing, the declared are the needed, however many the adapters bind (examples: repository-predeploy) -/

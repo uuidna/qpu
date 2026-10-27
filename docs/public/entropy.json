@@ -1,11 +1,11 @@
 {
- "date": "2026-10-27T14:41:39.520Z",
+ "date": "2026-10-27T15:02:52.069Z",
  "literals": {
   "urls": 839,
   "distinctUrls": 450,
-  "paths": 192,
-  "outside": 572,
-  "tokens": 6076,
+  "paths": 191,
+  "outside": 571,
+  "tokens": 6065,
   "byFile": [
    [
     "src/quantum/toolboxes/payload.ts",
@@ -40,15 +40,15 @@
     21
    ],
    [
-    "src/quantum/leads.ts",
-    18
-   ],
-   [
     "src/quantum/toolboxes/billing.ts",
     18
    ],
    [
     "scripts/gen-docs.ts",
+    17
+   ],
+   [
+    "src/quantum/leads.ts",
     17
    ],
    [
@@ -648,7 +648,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 932,
- "lines": 83611,
+ "lines": 83638,
  "findings": 879,
  "fused": 315,
  "reactions": 564,
@@ -754,7 +754,7 @@
   {
    "id": "entropy-cap-113d3f3c",
    "kind": "cap",
-   "source": "scripts/machine.ts:69, src/quantum/discovery.ts:270, src/quantum/examples.ts:235, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
+   "source": "scripts/machine.ts:72, src/quantum/discovery.ts:270, src/quantum/examples.ts:237, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:39",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200)",
    "status": "open",
    "tool": "audit",
@@ -766,7 +766,7 @@
   {
    "id": "entropy-cap-e1adfd32",
    "kind": "cap",
-   "source": "scripts/purify.ts:170, scripts/purify.ts:183, scripts/textbook.ts:45, src/quantum/audit.ts:421, src/quantum/audit.ts:439, src/quantum/audit.ts:441, src/quantum/audit.ts:443, src/quantum/discovery.ts:136, src/quantum/discovery.ts:183, src/quantum/examples.ts:260, src/quantum/examples.ts:316, src/quantum/match.ts:341, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:202, src/quantum/wave.ts:27, src/worker.ts:368",
+   "source": "scripts/purify.ts:170, scripts/purify.ts:183, scripts/textbook.ts:45, src/quantum/audit.ts:421, src/quantum/audit.ts:439, src/quantum/audit.ts:441, src/quantum/audit.ts:443, src/quantum/discovery.ts:136, src/quantum/discovery.ts:183, src/quantum/examples.ts:262, src/quantum/examples.ts:318, src/quantum/match.ts:341, src/quantum/textbook.test.ts:42, src/quantum/toolboxes/repository.ts:202, src/quantum/wave.ts:27, src/worker.ts:368",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 80)",
    "status": "open",
    "tool": "audit",
@@ -922,7 +922,7 @@
   {
    "id": "entropy-cap-c7ad5d45",
    "kind": "cap",
-   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:321, src/quantum/wave.ts:24, src/quantum/wave.ts:29, src/quantum/wave.ts:30, src/quantum/wave.ts:32",
+   "source": "site/src/app/(frontend)/api/og/route.tsx:44, site/src/app/(frontend)/api/og/route.tsx:47, src/quantum/examples.ts:323, src/quantum/wave.ts:24, src/quantum/wave.ts:29, src/quantum/wave.ts:30, src/quantum/wave.ts:32",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 100)",
    "status": "open",
    "tool": "audit",
@@ -958,7 +958,7 @@
   {
    "id": "entropy-cap-8b0edf32",
    "kind": "cap",
-   "source": "site/src/collections/CommunityHelp/extract-description.ts:12, src/quantum/selftest.ts:110, src/quantum/toolboxes/crypto.ts:233",
+   "source": "site/src/collections/CommunityHelp/extract-description.ts:12, src/quantum/selftest.ts:110, src/quantum/toolboxes/crypto.ts:234",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 20)",
    "status": "open",
    "tool": "audit",
@@ -1030,7 +1030,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/audit.ts:361, src/quantum/audit.ts:362, src/quantum/examples.ts:321, src/quantum/mcp.ts:1017, src/quantum/mcp.ts:1020, src/quantum/selftest.ts:43, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:113, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:182, src/quantum/toolboxes/legal.ts:257, src/quantum/toolboxes/payload.ts:1791",
+   "source": "src/quantum/audit.ts:361, src/quantum/audit.ts:362, src/quantum/examples.ts:323, src/quantum/mcp.ts:1017, src/quantum/mcp.ts:1020, src/quantum/selftest.ts:43, src/quantum/selftest.ts:44, src/quantum/toolboxes/billing.ts:113, src/quantum/toolboxes/flow.ts:125, src/quantum/toolboxes/flow.ts:127, src/quantum/toolboxes/legal.ts:182, src/quantum/toolboxes/legal.ts:257, src/quantum/toolboxes/payload.ts:1791",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
@@ -4414,7 +4414,7 @@
   {
    "id": "entropy-duplicate-d876a0ce",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/crypto.ts:241, src/quantum/toolboxes/legal.ts:329",
+   "source": "src/quantum/toolboxes/crypto.ts:242, src/quantum/toolboxes/legal.ts:329",
    "statement": "one line of code repeated in more than one file: one place should hold it — const byTheorem: Record<string, { passed: number; failed: number }> = {}",
    "status": "open",
    "tool": "audit",
@@ -4426,7 +4426,7 @@
   {
    "id": "entropy-duplicate-93e28159",
    "kind": "duplicate",
-   "source": "src/quantum/toolboxes/crypto.ts:260, src/quantum/toolboxes/legal.ts:354",
+   "source": "src/quantum/toolboxes/crypto.ts:261, src/quantum/toolboxes/legal.ts:354",
    "statement": "one line of code repeated in more than one file: one place should hold it — if (op !== 'read') throw new Error(`op ${op} is not plan or read`)",
    "status": "open",
    "tool": "audit",
@@ -4450,7 +4450,7 @@
   {
    "id": "entropy-shape-0d8252de",
    "kind": "shape",
-   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/legal.ts:30, scripts/mcp.ts:20, scripts/publish.ts:27, scripts/publish.ts:43, scripts/shard.ts:22, src/quantum/audit.test.ts:38, src/quantum/examples.ts:134",
+   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/legal.ts:30, scripts/mcp.ts:20, scripts/publish.ts:27, scripts/publish.ts:43, scripts/shard.ts:22, src/quantum/audit.test.ts:38, src/quantum/examples.ts:136",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a JSON file read and parsed: one reader of the published files, null when a file is missing",
    "status": "open",
    "tool": "audit",
@@ -4462,7 +4462,7 @@
   {
    "id": "entropy-shape-7458ed19",
    "kind": "shape",
-   "source": "scripts/e2e.ts:29, scripts/hook.ts:65, scripts/mcp.ts:30, scripts/mcp.ts:37, scripts/metrics.ts:25, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/repository.ts:35, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/textbook.ts:33, site/src/collections/Entries.ts:42, site/src/plugins/qpu.ts:93, site/src/plugins/qpu.ts:96, src/quantum/examples.ts:134, src/quantum/toolboxes/payload.ts:1346, src/quantum/toolboxes/payload.ts:1802, src/quantum/toolboxes/payload.ts:1805, src/worker.ts:38, src/worker.ts:475",
+   "source": "scripts/e2e.ts:29, scripts/hook.ts:65, scripts/mcp.ts:30, scripts/mcp.ts:37, scripts/metrics.ts:25, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/repository.ts:35, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/textbook.ts:33, site/src/collections/Entries.ts:42, site/src/plugins/qpu.ts:93, site/src/plugins/qpu.ts:96, src/quantum/examples.ts:136, src/quantum/toolboxes/payload.ts:1346, src/quantum/toolboxes/payload.ts:1802, src/quantum/toolboxes/payload.ts:1805, src/worker.ts:38, src/worker.ts:475",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a request with its timeout: one fetcher with the named user agent and the timeout",
    "status": "open",
    "tool": "audit",
