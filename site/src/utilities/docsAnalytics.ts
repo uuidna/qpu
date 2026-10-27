@@ -123,9 +123,8 @@ function getRequestedFormat(accept: null | string): 'html' | 'markdown' | 'other
 
 export async function trackDocumentationRequest(request: Request): Promise<void> {
   const measurementID = process.env.GA4_AI_MEASUREMENT_ID
-  const apiSecret = process.env.GA4_AI_API_SECRET
 
-  if (process.env.LLMS_ANALYTICS_ENABLED !== 'true' || !measurementID || !apiSecret) {
+  if (process.env.LLMS_ANALYTICS_ENABLED !== 'true' || !measurementID) {
     return
   }
 
@@ -139,12 +138,11 @@ export async function trackDocumentationRequest(request: Request): Promise<void>
   const client = classifyClient(request.headers.get('user-agent') || '')
   const sessionID = Math.floor(Date.now() / 1000)
   const clientID = `${Math.floor(Math.random() * 1_000_000_000) + 1}.${sessionID}`
-  const endpoint = new URL('https://www.google-analytics.com/mp/collect')
-  endpoint.searchParams.set('measurement_id', measurementID)
-  endpoint.searchParams.set('api_secret', apiSecret)
 
-  const response = await fetch(endpoint, {
-    body: JSON.stringify({
+  // the Measurement Protocol through the qpu-google-call job, asked by an entry of kind call at this app's own docket; the job adds the
+  // api_secret the tenant's bindings name (a variable holding API_SECRET), never this proxy
+  const response = await fetch(new URL('/api/entries', request.url), {
+    body: JSON.stringify({ kind: 'call', from: 'qpu-google-call', body: { endpoint: 'analytics.collect', params: { measurement_id: measurementID }, body: {
       client_id: clientID,
       events: [
         {
@@ -163,7 +161,7 @@ export async function trackDocumentationRequest(request: Request): Promise<void>
           },
         },
       ],
-    }),
+    } } }),
     headers: {
       'content-type': 'application/json',
     },
@@ -171,6 +169,6 @@ export async function trackDocumentationRequest(request: Request): Promise<void>
   })
 
   if (!response.ok) {
-    throw new Error(`GA4 documentation request failed with status ${response.status}`)
+    throw new Error(`the qpu-google-call job refused the documentation request with status ${response.status}`)
   }
 }

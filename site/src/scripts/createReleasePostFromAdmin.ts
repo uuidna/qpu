@@ -1,15 +1,13 @@
 import type { PayloadHandler } from 'payload'
 
 import { buildReleasePostData } from './buildReleasePostData'
-// req.user is a user or an MCP API key (the MCP plugin's auth collection): only a user carries roles
-const rolesOf = (user: unknown): string[] => (user && typeof user === 'object' && 'roles' in user && Array.isArray((user as { roles?: unknown }).roles) ? ((user as { roles: string[] }).roles) : [])
-
+import { adminOf } from '../access/isAdmin'
 
 const GITHUB_RELEASES_URL = 'https://api.github.com/repos/payloadcms/payload/releases'
 
 const createReleasePostFromAdmin: PayloadHandler = async (req) => {
   try {
-    if (!rolesOf(req.user).includes('admin')) {
+    if (!adminOf(req.user)) {
       return new Response('Unauthorized', { status: 401 })
     }
 

@@ -1,13 +1,11 @@
 import type { Access, FieldAccess } from 'payload'
-
-// req.user is a user or an MCP API key (the MCP plugin's auth collection): only a user carries roles
-const rolesOf = (user: unknown): string[] => (user && typeof user === 'object' && 'roles' in user && Array.isArray((user as { roles?: unknown }).roles) ? ((user as { roles: string[] }).roles) : [])
+import { adminOf } from './isAdmin'
 
 export const isAdminOrSelf: Access = ({ req: { user } }) => {
   // Need to be logged in
   if (user) {
     // If user has role of 'admin'
-    if (rolesOf(user).includes('admin')) {
+    if (adminOf(user)) {
       return true
     }
 
@@ -25,7 +23,7 @@ export const isAdminOrSelf: Access = ({ req: { user } }) => {
 
 export const isAdminOrSelfFieldLevel: FieldAccess = ({ id, req: { user } }) => {
   // Return true or false based on if the user has an admin role
-  if (rolesOf(user).includes('admin')) {
+  if (adminOf(user)) {
     return true
   }
   if (user?.id === id) {

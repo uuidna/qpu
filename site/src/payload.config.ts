@@ -92,6 +92,7 @@ import createReleasePost from './scripts/createReleasePost'
 import createReleasePostFromAdmin from './scripts/createReleasePostFromAdmin'
 import redeployWebsite from './scripts/redeployWebsite'
 import { refreshMdxToLexical, syncDocs } from './scripts/syncDocs'
+import { askJob } from './utilities/qpuGoogle'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -473,14 +474,9 @@ export default buildConfig({
                 return 'Please complete the reCAPTCHA'
               }
 
-              const res = await fetch(
-                `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.NEXT_PRIVATE_RECAPTCHA_SECRET_KEY}&response=${value}`,
-                {
-                  method: 'POST',
-                },
-              )
-              const data = await res.json()
-              if (!data.success) {
+              // siteverify through the qpu-google-call job, run within this request; the secret is the one the tenant's bindings name
+              const answer = await askJob(req.payload, { endpoint: 'recaptcha.siteverify', params: { response: String(value) } }, req)
+              if (!JSON.parse(answer?.answer || '{}').success) {
                 return 'Invalid captcha'
               } else {
                 return true

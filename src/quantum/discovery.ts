@@ -46,7 +46,13 @@ export { WORKSPACE_MCP }
 /** Google's MCP toolboxes in the registry (local servers): proposed, never called. */
 /** Google reached by one door, the qpu-google-call job of the Payload app: a GOOGLE_HOST is called by that job alone, which reads the API's
  *  Discovery document keyless from the Discovery Service and exchanges the server's ADC refresh token at Google's token endpoint. */
-export const GOOGLE_HOST = /(^|\.)(googleapis\.com|google\.com|google)$/
+export const GOOGLE_HOST = /(^|\.)(googleapis\.com|google\.com|google|google-analytics\.com|recaptcha\.net)$/
+/** Google's endpoints outside Discovery the app calls, by name: each with the secret it takes as a query parameter, which the job adds from
+ *  the variable the tenant's bindings name (one whose name holds `named`), never from the caller */
+export const GOOGLE_ENDPOINTS: Readonly<Record<string, { url: string; httpMethod: string; secret: { param: string; named: string } }>> = {
+  'recaptcha.siteverify': { url: 'https://www.google.com/recaptcha/api/siteverify', httpMethod: 'POST', secret: { param: 'secret', named: 'RECAPTCHA_SECRET' } },
+  'analytics.collect': { url: 'https://www.google-analytics.com/mp/collect', httpMethod: 'POST', secret: { param: 'api_secret', named: 'API_SECRET' } },
+}
 export const GOOGLE_DISCOVERY = { rest: 'https://www.googleapis.com/discovery/v1/apis/{api}/{version}/rest', token: 'https://oauth2.googleapis.com/token' } as const
 export const GOOGLE_MCPS = ['io.github.googleapis/genai-toolbox', 'io.github.googleapis/mcp-toolbox', 'io.github.GoogleCloudPlatform/gemini-cloud-assist-mcp'] as const
 /** GitHub's hosted MCP server: answers 401 until a tenant brings its token (a fine-grained PAT or the OAuth flow); the read-only form beside it. */

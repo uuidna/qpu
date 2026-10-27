@@ -9,7 +9,7 @@ import { channelOf, uuidFromParts, uuidOf, styleOf, presentationOf, streamOf, PR
 import { seedOf, trinityOf } from '../clay-register.js'
 import { TENANTS, tenantOf } from '../tenants.js'
 import { LOCALES } from '../i18n.js'
-import { CLOUDFLARE_MCP, DEFAULT_MCP_HOSTS, CLAUDE_API, KNOWN_MCP, MCP_REGISTRY, GOOGLE_MCPS, GOOGLE_HOST, GOOGLE_DISCOVERY, detect } from '../discovery.js'
+import { CLOUDFLARE_MCP, DEFAULT_MCP_HOSTS, CLAUDE_API, KNOWN_MCP, MCP_REGISTRY, GOOGLE_MCPS, GOOGLE_HOST, GOOGLE_DISCOVERY, GOOGLE_ENDPOINTS, detect } from '../discovery.js'
 import { KEY, hueOf, ANGLES, createOf, coilColourOf } from '../theme.js'
 import { VERSION } from '../version.js'
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.js'
@@ -113,9 +113,11 @@ const googleOf = (g: { pages?: any[]; tenants?: object[]; entries?: any[]; keys?
 // One Google call as the qpu-google-call job runs it: a Google page or MCP endpoint by its host, or an API method validated against its Discovery
 // document (the method by id, every parameter known, the required present, enums and patterns held, no credential from the caller); without the
 // document the plan names where the job reads it, keyless
-const googleCallOf = (c: { api?: string; version?: string; method?: string; params?: Record<string, unknown>; body?: unknown; url?: string; httpMethod?: string; discovery?: any }) => {
+const googleCallOf = (c: { api?: string; version?: string; method?: string; params?: Record<string, unknown>; body?: unknown; url?: string; httpMethod?: string; endpoint?: string; discovery?: any }) => {
   const no = (why: string) => ({ phase: 'google-call' as const, allowed: false, why }), ok = (method: string, url: string, httpMethod: string, scopes: string[]) => ({ phase: 'google-call' as const, allowed: true, method, request: { url, httpMethod, body: c.body ?? null, scopes }, ...(scopes.length ? { token: GOOGLE_DISCOVERY.token } : {}) })
-  if (c.url) { const u = URL.canParse(c.url) ? new URL(c.url) : null; return u?.protocol === 'https:' && GOOGLE_HOST.test(u.hostname) ? ok(u.hostname, u.href, c.httpMethod ?? 'GET', []) : no(`${c.url} is not a Google host over https`) }
+  if (c.url) { const u = URL.canParse(c.url) ? new URL(c.url) : null; return u?.protocol === 'https:' && GOOGLE_HOST.test(u.hostname) ? (/[?&](key|access_token|secret|api_secret)=/.test(u.search) ? no(`${u.hostname}: a credential is the server's to add`) : ok(u.hostname, u.href, c.httpMethod ?? 'GET', [])) : no(`${c.url} is not a Google host over https`) }
+  // a named endpoint outside Discovery: its URL and method from the registry, its secret the server's
+  if (c.endpoint) { const e = Object.hasOwn(GOOGLE_ENDPOINTS, c.endpoint) ? GOOGLE_ENDPOINTS[c.endpoint] : null; if (!e) return no(`${c.endpoint} is not a named Google endpoint`); const p = c.params ?? {}; return e.secret.param in p ? no(`${c.endpoint}: ${e.secret.param} is the server's credential`) : { ...ok(c.endpoint, `${e.url}?${new URLSearchParams(Object.entries(p).map(([k, v]) => [k, String(v)]))}`, e.httpMethod, []), secret: e.secret } }
   const d = c.discovery
   if (!d) return { phase: 'google-call' as const, allowed: null, discovery: GOOGLE_DISCOVERY.rest.replace('{api}', () => encodeURIComponent(c.api ?? '')).replace('{version}', () => encodeURIComponent(c.version ?? '')) }
   const methods = (r: any): any[] => [...Object.values(r?.methods ?? {}), ...Object.values(r?.resources ?? {}).flatMap(methods)], m = methods(d).find((x) => x.id === c.method || x.id === `${d.name}.${c.method}`)
@@ -1776,11 +1778,13 @@ const measureGoogle: CollectionAfterChangeHook = ({ doc, req, context }) => {
 }
 // every Google call one job on the server, qpu-google-call, asked by an entry of kind call from qpu-google-call (createEntries through the MCP):
 // the job reads the API's Discovery document keyless, the door validates the call against it, the credential is the server's (an API key the
-// tenant's bindings name, else a service account or ADC exchanged at the endpoint the plan names, else keyless) and the answer is an entry of kind call
-const googleAuthOf = async (req: PayloadRequest, tenant: unknown, token?: string, scopes: string[] = []): Promise<{ by: string; key?: string; bearer?: string }> => {
+// tenant's bindings name or the secret a named endpoint takes, else a service account or ADC exchanged at the token endpoint, else keyless) and the
+// answer is an entry of kind call, the secret never in it
+const googleAuthOf = async (req: PayloadRequest, tenant: unknown, token?: string, scopes: string[] = [], secret?: { param: string; named: string }): Promise<{ by: string; query?: Record<string, string>; bearer?: string }> => {
   const t = tenant ? await req.payload.findByID({ collection: 'tenants' as never, id: String(tenant), depth: 0, overrideAccess: true }).catch(() => null) : null
   const named = ((t as { bindings?: { variables?: { name: string }[] } } | null)?.bindings?.variables ?? []).map((v) => v.name).filter((n) => process.env[n]), key = named.find((n) => /^GOOGLE_[A-Z_]*KEY$/.test(n)), held = named.find((n) => /CREDENTIALS$/.test(n))
-  if (key) return { by: key, key: process.env[key] }
+  const given = secret ? named.find((n) => n.includes(secret.named)) : key
+  if (secret || key) return given ? { by: given, query: { [secret?.param ?? 'key']: process.env[given]! } } : { by: 'keyless' }
   const file = process.env.GOOGLE_APPLICATION_CREDENTIALS ?? path.join(homedir(), '.config', 'gcloud', 'application_default_credentials.json')
   const raw = !token ? null : held ? process.env[held]!.trim() : existsSync(file) ? readFileSync(file, 'utf8') : null, c = raw ? JSON.parse(raw.startsWith('{') ? raw : Buffer.from(raw, 'base64').toString('utf8')) : null
   const enc = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url'), now = Math.floor(Date.now() / 1000), claims = enc({ alg: 'RS256', typ: 'JWT' }) + '.' + enc({ iss: c?.client_email, scope: scopes.join(' '), aud: token, iat: now, exp: now + 3600 })
@@ -1790,13 +1794,13 @@ const googleAuthOf = async (req: PayloadRequest, tenant: unknown, token?: string
 }
 const googleCallTask: TaskConfig<{ input: Record<string, any>; output: { entry: string } }> = {
   slug: 'qpu-google-call', retries: 0,
-  inputSchema: [...['api', 'version', 'method', 'url', 'httpMethod', 'request', 'tenant'].map((name) => ({ name, type: 'text' }) as Field), { name: 'params', type: 'json' }, { name: 'body', type: 'json' }],
+  inputSchema: [...['api', 'version', 'method', 'url', 'httpMethod', 'endpoint', 'request', 'tenant'].map((name) => ({ name, type: 'text' }) as Field), { name: 'params', type: 'json' }, { name: 'body', type: 'json' }],
   outputSchema: [{ name: 'entry', type: 'text' }],
   handler: async ({ input, req }) => {
     const ask = (x: object) => toolCallerOf('payload')({ googleCall: x }), asked = ask(input)
     const plan = asked.discovery ? ask({ ...input, discovery: await fetch(asked.discovery, { signal: AbortSignal.timeout(20000) }).then((r) => r.json(), () => null) }) : asked
-    const auth = plan.allowed ? await googleAuthOf(req, input.tenant, plan.token, plan.request.scopes) : null, url = plan.allowed ? new URL(plan.request.url) : null, body = plan.request?.body
-    if (url && auth?.key) url.searchParams.set('key', auth.key)
+    const auth = plan.allowed ? await googleAuthOf(req, input.tenant, plan.token, plan.request.scopes, plan.secret) : null, url = plan.allowed ? new URL(plan.request.url) : null, body = plan.request?.body
+    for (const [k, v] of Object.entries(auth?.query ?? {})) url?.searchParams.set(k, v)
     const res = url ? await fetch(url, { method: plan.request.httpMethod, headers: { ...(auth?.bearer ? { authorization: 'Bearer ' + auth.bearer } : {}), ...(body != null ? { 'content-type': 'application/json' } : {}) }, body: body != null ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000) }).then(async (r) => ({ status: r.status, text: await r.text() }), (e: Error) => ({ status: 0, text: e.message })) : null
     const entry = await req.payload.create({ collection: 'entries' as never, data: { kind: 'call', from: 'qpu-google-call', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, method: plan.method ?? null, allowed: plan.allowed === true, why: plan.why ?? (plan.allowed ? null : 'the Discovery document was not read'), by: auth?.by ?? null, status: res?.status ?? null, answer: res?.text ?? null } } as never, overrideAccess: true, context: { qpuGoogle: true } })
     return { output: { entry: String((entry as { id: string }).id) } }

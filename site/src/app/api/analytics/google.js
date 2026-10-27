@@ -4,11 +4,10 @@
 import { NextResponse } from 'next/server';
 import { getPayload } from 'payload';
 import config from '@payload-config';
+import { askJob } from '../../../utilities/qpuGoogle';
 export async function reportOf(method, body) {
     if (!process.env.GA_PROPERTY_ID) throw new Error('Google Analytics not configured: set GA_PROPERTY_ID and name the credential in the tenant bindings');
-    const payload = await getPayload({ config });
-    const asked = await payload.create({ collection: 'entries', overrideAccess: true, data: { kind: 'call', from: 'qpu-google-call', body: { api: 'analyticsdata', version: 'v1beta', method, params: { property: 'properties/' + process.env.GA_PROPERTY_ID }, body, at: new Date().toISOString() } } });
-    const answer = (await payload.find({ collection: 'entries', where: { from: { equals: 'qpu-google-call' }, 'body.request': { equals: asked.id } }, limit: 1, depth: 0, overrideAccess: true })).docs[0]?.body;
+    const answer = await askJob(await getPayload({ config }), { api: 'analyticsdata', version: 'v1beta', method, params: { property: 'properties/' + process.env.GA_PROPERTY_ID }, body, at: new Date().toISOString() });
     if (!answer?.allowed || answer.status !== 200) throw new Error(answer ? answer.why ?? `HTTP ${answer.status}: ${answer.answer}` : 'the qpu-google-call job did not answer');
     return JSON.parse(answer.answer);
 }
