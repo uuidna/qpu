@@ -2357,6 +2357,14 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
 {
   "type": "object",
   "properties": {
+    "access": {
+      "type": "object",
+      "description": "CanCanCan over Payload"
+    },
+    "rolesFromGroups": {
+      "type": "object",
+      "description": "roles from Google Workspace"
+    },
     "references": {
       "type": "object",
       "description": "the references between documents as one graph"

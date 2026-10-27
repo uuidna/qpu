@@ -288,6 +288,8 @@ theorem textbook_willow_connectivity : (2 * 182 * 100 + 52) / 105 = 347 := by de
 theorem textbook_foreign_verdicts : 2 + 1 + 3 = 6 := by decide
 /-- listDeclarations partitions six declarations: two named by one of the five verbs MCP tools share, two readers and builders mapped onto them, one kept because its name is taken, one custom verb (examples: audit-declarations) -/
 theorem textbook_shared_verbs : 2 + 2 + 1 + 1 = 6 := by decide
+/-- getAccess grants what some can rule allows and no cannot rule denies: a merge of the abilities (CanCanCan), each held through a role in scope (rolify); listRolesFromGroups maps Google Workspace groups onto those roles (examples: payload-access-abilities, payload-roles-from-groups) -/
+theorem textbook_abilities_merge (can cannot : Bool) : (can && !cannot) = true → can = true ∧ cannot = false := by cases can <;> cases cannot <;> decide
 /-- the phase of the stream at an interaction is one of 3888 milliseconds: eleven bits of randomness a sample, the device's own nonce thirty-two more (examples: seal-entropy) -/
 theorem textbook_phase_bits : 2 ^ 11 ≤ 3888 ∧ 3888 < 2 ^ 12 := by decide
 /-- a period of the stream is a chain of thirty-five links between its thirty-six frames; every full period streamed is one call, the first the coin, every further one a coil: the fusion (examples: verify-scan, verify-scan-one-frame) -/
