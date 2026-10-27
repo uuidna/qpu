@@ -1,8 +1,8 @@
 // The next step is the whole platform running itself: regenerate the docs from the surface, typecheck, test, audit the
 // surface through the surface, cross-verify the leads on live public sources, build the site (every live page throws
-// at build time if a result drifted), and write the receipt. A red step is not a stop: it is written to the leads
-// docket as an open lead with its evidence, the red steps are retried once after the generators have run, and the run
-// exits green so nothing downstream stops. `--strict` exits red instead; `--offline` skips the network.
+// at build time if a result drifted), and write the receipt. A red step is a violation: it is written to the leads
+// docket as an open lead with its evidence, the red steps are retried once after the generators have run, and a step
+// still red fails the run, after every violation is written (no flag lifts it); `--offline` skips the network.
 import { spawnSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { appendFileSync, existsSync, readFileSync, writeFileSync, unlinkSync, rmSync, mkdirSync } from 'node:fs'
@@ -21,7 +21,6 @@ const ROOT = process.cwd()
 const pub = (f: string) => join(ROOT, 'docs', 'public', f)
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
 const offline = process.argv.includes('--offline')
-const strict = process.argv.includes('--strict')
 const fast = process.argv.includes('--fast') // the pre-commit form: the cheap steps only; the long and the networked wait for the full run
 const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/toolchains/leanprover--lean4---v4.33.0/bin/lake`, 'lake'].find((p) => p === 'lake' || existsSync(p))!
 
@@ -253,7 +252,7 @@ const line = `| ${receipt.date} | ${receipt.head} · ${stamped.id} | ${receipt.s
 const receipts = join(ROOT, 'docs', 'receipts.md')
 if (!existsSync(receipts)) writeFileSync(receipts, '---\ntitle: Receipts\norder: 49\n---\n\n# Receipts of `npm run next`\n\nOne row per run of the platform on itself: the steps, their status, and the counts read from their output.\n\n| Date | Head | Steps |\n|---|---|---|\n')
 appendFileSync(receipts, line)
-console.log(red ? `\nnext: ${stillRed.length} step(s) red → ${opened.length} lead(s) opened in docs/next-leads.md; the run continues` : '\nnext: green')
-process.exit(red && strict ? 1 : 0)
+console.log(red ? `\nnext: ${stillRed.length} step(s) red → ${opened.length} lead(s) opened in docs/next-leads.md; the run fails` : '\nnext: green')
+process.exit(red ? 1 : 0)
 }
 main().catch((e) => { console.error(e); process.exit(1) })

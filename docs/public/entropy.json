@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T12:51:26.669Z",
+ "date": "2026-10-27T12:53:16.579Z",
  "literals": {
   "urls": 845,
   "distinctUrls": 445,
@@ -676,7 +676,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 951,
- "lines": 84087,
+ "lines": 84086,
  "findings": 914,
  "fused": 322,
  "reactions": 592,
@@ -1298,7 +1298,7 @@
   {
    "id": "entropy-duplicate-4d3d6455",
    "kind": "duplicate",
-   "source": "scripts/idle.ts:36, scripts/next.ts:219",
+   "source": "scripts/idle.ts:36, scripts/next.ts:218",
    "statement": "one line of code repeated in more than one file: one place should hold it — const { penalise, clear, openPenaltiesOf } = await import('./penalties.ts')",
    "status": "open",
    "tool": "audit",

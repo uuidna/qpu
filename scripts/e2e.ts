@@ -54,6 +54,6 @@ const main = async () => {
   // the referer collects the coins: one ledger line per run credits the teleports to the blocks that asked; a teleport deposits nothing (the entanglement was paid when the block was computed)
   if (r.involutions) appendFileSync(join(ROOT, 'docs', 'public', 'coins.ndjson'), JSON.stringify({ date, client: 'e2e', door: 'teleport', deposit: 0, gate: null, receipt: null, clean: !r.errors.some((e: { got: string }) => String(e.got).startsWith('HTTP 304 unverified')), surface: null, teleports: r.involutions, materialised: r.materialised, referers: r.referers }) + '\n')
   console.log(`e2e: versions ${r.versions.join(', ') || 'unnamed'}; ${r.combos} combinations, ${r.copies} copies (${r.involutions} teleported by involution, ${r.materialised} materialised here, ${r.referers} referers collected) in ${((Date.now() - started) / 1000).toFixed(1)} s — ${JSON.stringify(r.outcomes)}; p=${r.physicalErrorRate.toFixed(4)}, logical ${r.logicalErrorRate.toFixed(4)}; ${r.errors.length} error block(s) streamed, ${r.leads.length} lead(s)${remaining ? `; ${remaining} remain for the next quantum` : ''}`)
-  if (process.argv.includes('--strict') && r.outcomes.uncorrectable) process.exit(1)
+  if (r.outcomes.uncorrectable) process.exit(1)
 }
 main().catch((e) => { console.error(e); process.exit(1) })
