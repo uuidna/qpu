@@ -29,6 +29,13 @@ const main = async () => {
     try { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: r.accept, 'user-agent': 'uuidna-qpu-e2e (https://qpu.uuidna.com)', ...(r.headers ?? {}) }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(20000) }); const body = await res.text(); const base = { ...r, status: res.status, ms: Date.now() - t0, etag: res.headers.get('etag'), address: res.headers.get('x-qpu-address'), version: res.headers.get('x-qpu-version') }; answers.push(res.status === 200 ? { ...base, text: '', decoded: valueOf({ status: 200, text: body }) } : { ...base, text: body }) /* a 200 is decoded on arrival and its body released; a 304 has no body and is checked against the tree's own copy */ }
     catch (e) { answers.push({ ...r, status: 0, ms: Date.now() - t0, text: `fetch failed: ${(e as Error).message}` }) }
   }
+  // the online measurements (the Claude mount, the signatures, the stylesheet, the tools/list, the coverage) wait on the network: overlapped with the requests
+  const off = process.env.QPU_OFFLINE === '1'
+  const measured = Promise.all([
+    off ? { phase: 'offline' as const, note: 'offline: not asked' } : mountThroughClaude(), off ? { phase: 'offline' as const, note: 'offline: not asked' } : verifySignaturesAt(plan.hosts as string[]),
+    off ? { phase: 'offline' as const, says: 'offline: not measured' } : compareStylesheets(), off ? { phase: 'offline' as const, says: 'offline: not measured' } : compareToolLists(),
+    off ? { phase: 'offline' as const, says: 'offline: not measured' } : compareCoverage(),
+  ])
   const inFlight = new Set<Promise<void>>()
   while ((queue.length && Date.now() - started < QUANTUM_MS) || inFlight.size) {
     while (queue.length && inFlight.size < 8 && Date.now() - started < QUANTUM_MS) { const p = one(queue.shift()!).finally(() => inFlight.delete(p)); inFlight.add(p) }
@@ -36,21 +43,8 @@ const main = async () => {
   }
   const remaining = queue.length
   const r = call({ answers, hosts: plan.hosts })
-  // the mount through Claude's connector: one request with the registration, only when the tenant's key is present
-  const claudeMount = process.env.QPU_OFFLINE === '1' ? { phase: 'offline' as const, note: 'offline: not asked' } : await mountThroughClaude()
-  console.log(`e2e: mount through Claude: ${claudeMount.phase} — ${claudeMount.note}`)
-  // the post-quantum pass: every host signs the same digest with ML-DSA at the edge, verified here with the public key alone
-  const pqc = process.env.QPU_OFFLINE === '1' ? { phase: 'offline' as const, note: 'offline: not asked' } : await verifySignaturesAt(plan.hosts as string[])
-  console.log(`e2e: post-quantum signatures: ${pqc.note}`)
-  // the stylesheet against the CSS frameworks by size, measured on every online run
-  const css = process.env.QPU_OFFLINE === '1' ? { phase: 'offline' as const, says: 'offline: not measured' } : await compareStylesheets()
-  console.log(`e2e: stylesheet: ${css.says}`)
-  // the tools/list against the open MCP servers by size and tokens, measured on every online run
-  const toolsList = process.env.QPU_OFFLINE === '1' ? { phase: 'offline' as const, says: 'offline: not measured' } : await compareToolLists()
-  console.log(`e2e: tools/list: ${toolsList.says}`)
-  // the coverage of the registered MCP world: every page of the official registry walked, the gates' MCP doors over its count, measured on every online run
-  const coverage = process.env.QPU_OFFLINE === '1' ? { phase: 'offline' as const, says: 'offline: not measured' } : await compareCoverage()
-  console.log(`e2e: coverage: ${coverage.says}`)
+  const [claudeMount, pqc, css, toolsList, coverage] = await measured
+  for (const [what, says] of Object.entries({ 'mount through Claude': `${claudeMount.phase} — ${claudeMount.note}`, 'post-quantum signatures': pqc.note, stylesheet: css.says, 'tools/list': toolsList.says, coverage: coverage.says })) console.log(`e2e: ${what}: ${says}`)
   const date = new Date().toISOString()
   mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
   const { page, decoded, ...rest } = r

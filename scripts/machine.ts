@@ -51,8 +51,8 @@ export const streamOf = async (root: string) => {
 export const timesOf = async (root: string) => {
   const files = await runFiles(), times: Record<string, number[]> = {}
   const lines = (f: string) => (existsSync(join(root, f)) ? readFileSync(join(root, f), 'utf8').trim().split('\n') : [])
-  for (const l of lines(files.receipts)) { try { for (const st of (JSON.parse(l) as { steps?: { name: string; ms?: number; status?: string }[] }).steps ?? []) if (typeof st.ms === 'number' && st.status !== 'skipped') (times[st.name] ??= []).push(st.ms) } catch {} }
-  for (const l of lines(files.stream)) { try { const e = JSON.parse(l) as StreamEvent; if (e.kind === 'step-end' && typeof e.ms === 'number') (times[e.subject] ??= []).push(e.ms) } catch {} }
+  for (const l of lines(files.receipts)) { try { for (const st of (JSON.parse(l) as { steps?: { name: string; ms?: number; status?: string }[] }).steps ?? []) if (typeof st.ms === 'number' && st.ms > 0 && st.status !== 'skipped') (times[st.name] ??= []).push(st.ms) } catch {} }
+  for (const l of lines(files.stream)) { try { const e = JSON.parse(l) as StreamEvent; if (e.kind === 'step-end' && typeof e.ms === 'number' && e.ms > 0) (times[e.subject] ??= []).push(e.ms) } catch {} }
   return times
 }
 

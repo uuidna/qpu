@@ -2,6 +2,7 @@
 // frameworks (each file fetched once, raw and gzipped, the QPU stylesheet gzipped the same way) and the tools/list against the open MCP
 // servers (each initialized through the one MCP client, its tools/list measured); the tools answer the ratios.
 import { gzipSync } from 'node:zlib'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { sessionOf } from './mcp.ts'
 import { coverageRequestOf } from '../src/quantum/discovery.ts'
@@ -10,7 +11,7 @@ const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
 export const compareStylesheets = async () => {
   const css = toolCallerOf('css')
   const plan = css({ compare: true }) as { stylesheet: string; frameworks: { id: string; url: string }[] }
-  const answers = await Promise.all(plan.frameworks.map(async (f) => { const res = await fetch(f.url, { headers: { 'user-agent': UA } }).catch(() => null); const body = res?.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0); return { id: f.id, status: res?.status ?? 0, bytes: body.length, gzip: body.length ? gzipSync(body).length : 0 } }))
+  const answers = await Promise.all(plan.frameworks.map(async (f) => { const res = await fetch(f.url, { headers: { 'user-agent': UA }, signal: AbortSignal.timeout(20000) }).catch(() => null); const body = res?.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0); return { id: f.id, status: res?.status ?? 0, bytes: body.length, gzip: body.length ? gzipSync(body).length : 0 } }))
   const qpu = Buffer.from(plan.stylesheet)
   return css({ compare: { qpu: { bytes: qpu.length, gzip: gzipSync(qpu).length }, answers } }) as { says: string; rows: unknown[]; measured: number }
 }
@@ -25,12 +26,13 @@ export const compareToolLists = async () => {
 
 /** The coverage of the registered MCP world: every page of the official registry walked by its cursor, its servers counted, the count handed
  *  back; a page that does not answer ends the walk and is named, never estimated past. */
-export const compareCoverage = async () => {
+export const compareCoverage = async (kept = '.qpu/cache/coverage.json') => { // the walk the registry answered today is kept a day: it changes slowly and takes 500 pages
+  const was = existsSync(kept) ? JSON.parse(readFileSync(kept, 'utf8')) as { at: string; out: { says: string } } : null; if (was && Date.now() - Date.parse(was.at) < 86_400_000) return { ...was.out, says: `${was.out.says} (walked ${was.at}, kept a day)` }
   const extend = toolCallerOf('extend')
   let request = (extend({ coverage: true }) as { request: { url: string; accept: string } }).request
   let total = 0, pages = 0, stopped: string | null = null
   for (;;) {
-    const res = await fetch(request.url, { headers: { accept: request.accept, 'user-agent': UA } }).catch((e: Error) => e)
+    const res = await fetch(request.url, { headers: { accept: request.accept, 'user-agent': UA }, signal: AbortSignal.timeout(20000) }).catch((e: Error) => e)
     if (res instanceof Error || !res.ok) { stopped = res instanceof Error ? res.message : `HTTP ${res.status}`; break }
     const j = (await res.json()) as { servers?: unknown[]; metadata?: { nextCursor?: string } }
     total += (j.servers ?? []).length; pages++
@@ -38,5 +40,6 @@ export const compareCoverage = async () => {
     request = coverageRequestOf(j.metadata.nextCursor)
   }
   const out = extend({ coverage: { registryTotal: stopped ? 0 : total } }) as { says: string; doors: number; registryTotal: number; percent: number | null }
-  return { ...out, pages, stopped, says: stopped ? `the registry walk stopped after ${pages} page(s) (${stopped}): no total, no ratio` : `${out.says}; ${pages} pages walked` }
+  const result = { ...out, pages, stopped, says: stopped ? `the registry walk stopped after ${pages} page(s) (${stopped}): no total, no ratio` : `${out.says}; ${pages} pages walked` }
+  if (!stopped) { mkdirSync('.qpu/cache', { recursive: true }); writeFileSync(kept, JSON.stringify({ at: new Date().toISOString(), out: result })) } return result
 }

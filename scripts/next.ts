@@ -5,7 +5,7 @@
 // exits green so nothing downstream stops. `--strict` exits red instead; `--offline` skips the network.
 import { spawnSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { appendFileSync, existsSync, readFileSync, writeFileSync, unlinkSync, rmSync } from 'node:fs'
+import { appendFileSync, existsSync, readFileSync, writeFileSync, unlinkSync, rmSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir, availableParallelism } from 'node:os'
 import { pathToFileURL } from 'node:url'
@@ -13,7 +13,8 @@ import { uuidOf } from '../src/quantum/blocks.ts'
 import { cellOf as cell } from '../src/quantum/widgets.ts'
 import { remediesOf, manualDocsOf } from '../src/quantum/audit.ts'
 import { STEP_CACHE, GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
-import { mkdirSync } from 'node:fs'
+import { timesOf } from './machine.ts'
+import { etaOf } from '../src/quantum/machine.ts'
 
 const ROOT = process.cwd()
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
@@ -25,6 +26,7 @@ const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/t
 // quantum multitasking is the natural speedup: steps that need nothing from each other run at once, in waves; a wave waits for
 // the one before it (the generators before the checks, the checks before the readers, the readers before the site)
 type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs?: number; wave: number; /** a long single task split into short multitasks: n shards at once (QPU_SHARD=i/n), then one merge (QPU_SHARD=merge) */ shards?: number }
+const TIMES = await timesOf(ROOT), budgetOf = (s: Step) => /* twice the step's recorded mean when that exceeds its stated budget, which stays the floor */ Math.max(s.budgetMs ?? 600_000, 2 * (etaOf(TIMES[s.name] ?? []) ?? 0))
 const steps: Step[] = [
   { name: 'clay:gen', cmd: 'node', args: ['--import', 'tsx', 'scripts/gen-clay.ts'], wave: 1 },
   { name: 'docs:gen', cmd: 'npx', args: ['tsx', 'scripts/gen-docs.ts'], wave: 1 },
@@ -83,7 +85,7 @@ const spawned = (s: Step, shard?: string): Promise<{ status: number | null; out:
   let out = ''; let timedOut = false
   // the first line the user could see: an action silent past the budget is invisible, priced so and recorded silently
   child.stdout.on('data', (d) => { out += d; firstMs ??= Date.now() - t0 }); child.stderr.on('data', (d) => { out += d; firstMs ??= Date.now() - t0 })
-  const timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL') }, s.budgetMs ?? 600_000)
+  const timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL') }, budgetOf(s))
   child.on('error', (e) => { clearTimeout(timer); resolve({ status: null, out: out + `\n${e.message}`, timedOut, firstMs, ...heatOf(heat) }) })
   child.on('close', (status) => { clearTimeout(timer); resolve({ status, out, timedOut, firstMs, ...heatOf(heat) }) })
 })
@@ -114,7 +116,7 @@ const run = async (s: Step): Promise<boolean> => {
   const started = Date.now(), startedNs = process.hrtime.bigint()
   // short multitasks: the shards run at once, each with its share and its own budget, then the merge; the outputs are read as one
   const r = s.shards && !s.skip ? await (async () => { const parts = await Promise.all(Array.from({ length: s.shards! }, (_, i) => spawned(s, `${i}/${s.shards}`))); const merge = await spawned(s, 'merge'); return { status: parts.every((p) => p.status === 0) && merge.status === 0 ? 0 : (parts.find((p) => p.status !== 0)?.status ?? merge.status), out: [...parts.map((p) => p.out), merge.out].join('\n'), timedOut: parts.some((p) => p.timedOut) || merge.timedOut, cpuUs: [...parts, merge].reduce((n, p) => n + p.cpuUs, 0), rssKb: Math.max(...[...parts, merge].map((p) => p.rssKb)), firstMs: parts.map((p) => p.firstMs).filter((x): x is number => x !== null).sort((a, b) => a - b)[0] ?? null } })() : await spawned(s)
-  if (r.timedOut) console.log(`⏱ ${s.name}: exceeded its budget of ${(s.budgetMs ?? 600_000) / 1000} s and was killed; a hang is a lead, not a stop`)
+  if (r.timedOut) console.log(`⏱ ${s.name}: exceeded its budget of ${budgetOf(s) / 1000} s (its stated budget, or twice its recorded mean when that is longer) and was killed; a hang is a lead, not a stop`)
   const out = r.out
   const ok = r.status === 0 && !r.timedOut
   const counts: Record<string, number> = {}
