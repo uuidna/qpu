@@ -1,27 +1,26 @@
-// The MCP stdio transport over the pure handler: one JSON-RPC message per line in, one reply per line out, a notification (no id)
-// answered with nothing. The harness that declares this server (.mcp.json, qpu-local) reaches the tree's current tools — the chat door
-// among them — with no network and no key; every answer is the handler's own. Beside them, the developer machine: an action of the
-// repository tool's allow-list, planned by its rules, run here with no shell by the one runner (scripts/machine.ts), and, when the call
-// carries params._meta.progressToken, streamed as notifications/progress line by line (step by step for next) before the full record answers.
+// The one QPU MCP over stdio, a thin proxy of Payload itself (the core runs inside it, as the plugin's handler): one JSON-RPC message per line
+// in, one reply per line out, a notification answered with nothing. On initialize, on notifications/tools/list_changed, or at the first call
+// it discovers Payload: the local app's /api/mcp with the key this process reads from the keychain item qpu-app-key (never from the environment
+// or a file), then QPU_APP_MCP (the deployed app); every message goes to the app that answered and _meta.source names it. With none, tools/list
+// names the probe in one entry and every call is an error naming it.
 import { createInterface } from 'node:readline'
-import { handle } from '../src/quantum/mcp.ts'
-import { runMachine } from './machine.ts'
+import { execFileSync } from 'node:child_process'
+import { MCP_URL, sessionOf } from './mcp.ts'
 
-const ROOT = process.cwd()
 const send = (m: unknown) => process.stdout.write(JSON.stringify(m) + '\n')
-const MACHINE_TOOL = { name: 'machine', description: 'The developer machine over stdio: one action of the allow-list (repository { machine: { actions: true } } names them) planned by the workflow rules and run here with no shell; a call carrying _meta.progressToken is streamed as notifications/progress, line by line, step by step for next; the answer is the full record.', inputSchema: { type: 'object', required: ['action'], properties: { action: { type: 'string', description: 'an action of the allow-list' }, message: { type: 'string', description: 'commit: the message' }, confirm: { type: 'boolean', description: 'push: the explicit confirmation' }, branch: { type: 'string', description: 'merge, branch-delete: the branch' }, path: { type: 'string', description: 'worktree-remove: the worktree under .claude/worktrees' }, tag: { type: 'string', description: 'tag: an archive/ name' }, commit: { type: 'string', description: 'tag: the full commit' }, from: { type: 'string', description: 'port: the file in a worktree' }, file: { type: 'string', description: 'port: the relative path in main' }, archived: { type: 'boolean', description: 'branch-delete: -D, when an archive tag points at its commit' } } } }
-const answer = (id: unknown, x: unknown) => send({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(x) }], structuredContent: x, _meta: { ui: { resourceUri: 'ui://qpu/repository' } } } })
-
-const machine = async (id: unknown, args: Record<string, unknown>, progressToken: unknown) => answer(id, (await runMachine(args, ROOT, (p) => { if (progressToken !== undefined) send({ jsonrpc: '2.0', method: 'notifications/progress', params: { progressToken, ...p } }) })).answer)
-
-const lines = createInterface({ input: process.stdin, crlfDelay: Infinity })
-for await (const line of lines) {
+const PROBE = 'no Payload app answers: start the app (scripts/site-local.sh start) with its MCP key in the keychain item qpu-app-key, or set QPU_APP_MCP to the deployed app'
+const keyOf = () => { try { return execFileSync('security', ['find-generic-password', '-s', 'qpu-app-key', '-w'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 }).trim() || undefined } catch { return undefined } }
+let app: { source: string; session: ReturnType<typeof sessionOf>; init: { result?: any } } | null | undefined
+const discover = async () => {
+  app = null
+  for (const [source, url] of [['local', process.env.QPU_LOCAL_MCP ?? MCP_URL], ['remote', process.env.QPU_APP_MCP]] as const) { if (!url) continue; const session = sessionOf(url, keyOf()), init = await session.initialize(); if (!init.error) return void (app = { source, session, init }) }
+}
+for await (const line of createInterface({ input: process.stdin, crlfDelay: Infinity })) {
   if (!line.trim()) continue
-  let message: { id?: unknown; method?: string; params?: { name?: string; arguments?: Record<string, unknown>; _meta?: { progressToken?: unknown } } }
-  try { message = JSON.parse(line) } catch { send({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'parse error' } }); continue }
-  if (message.id === undefined || message.id === null) continue
-  if (message.method === 'tools/call' && message.params?.name === 'machine') { await machine(message.id, message.params.arguments ?? {}, message.params._meta?.progressToken); continue }
-  const reply = handle(message as Parameters<typeof handle>[0]) as { result?: { tools?: unknown[] } }
-  if (message.method === 'tools/list' && reply.result?.tools) reply.result.tools = [...reply.result.tools, MACHINE_TOOL]
-  send(reply)
+  let m: { id?: unknown; method?: string; params?: unknown }
+  try { m = JSON.parse(line) } catch { send({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'parse error' } }); continue }
+  if (m.method === 'initialize' || m.method === 'notifications/tools/list_changed' || app === undefined) await discover()
+  if (m.id === undefined || m.id === null) continue
+  const r: { result?: any; error?: string } = !app ? (m.method === 'tools/list' ? { result: { tools: [{ name: 'qpu', description: PROBE, inputSchema: { type: 'object' } }] } } : { error: PROBE }) : m.method === 'initialize' ? app.init : await app.session.request(m.method ?? '', m.params)
+  send({ jsonrpc: '2.0', id: m.id, ...(r.error ? { error: { code: -32603, message: r.error } } : { result: { ...r.result, _meta: { ...r.result?._meta, source: app?.source } } }) })
 }

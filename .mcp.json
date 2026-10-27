@@ -1,16 +1,13 @@
 {
   "mcpServers": {
-    "qpu-local": {
+    "qpu": {
       "type": "stdio",
       "command": "node",
-      "args": ["--import", "tsx", "scripts/stdio.ts"]
-    },
-    "qpu": {
-      "type": "http",
-      "url": "${QPU_APP_MCP:-http://localhost:3000/api/mcp}",
-      "headers": {
-        "Authorization": "Bearer ${QPU_APP_KEY}"
-      }
+      "args": [
+        "--import",
+        "tsx",
+        "scripts/stdio.ts"
+      ]
     }
   }
 }

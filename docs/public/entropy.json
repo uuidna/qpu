@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T13:55:07.347Z",
+ "date": "2026-10-27T13:58:27.685Z",
  "literals": {
   "urls": 839,
   "distinctUrls": 450,
@@ -689,8 +689,8 @@
   }
  },
  "difference": {
-  "appeared": 4,
-  "settled": 1
+  "appeared": 3,
+  "settled": 0
  },
  "toExplore": {
   "match": 294,

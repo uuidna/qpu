@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T13:03:08.876Z",
+ "date": "2026-10-27T13:58:38.636Z",
  "input": {
   "doors": [
    {
@@ -1129,6 +1129,11 @@
     "reached": true
    },
    {
+    "name": "payload.hooks",
+    "bytes": 155,
+    "reached": true
+   },
+   {
     "name": "payload.google",
     "bytes": 106,
     "reached": true
@@ -1943,6 +1948,11 @@
    {
     "key": "textbook_workspace_coverage",
     "bytes": 128,
+    "used": true
+   },
+   {
+    "key": "textbook_witness_pair",
+    "bytes": 195,
     "used": true
    },
    {
@@ -3613,8 +3623,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 47326,
-   "used": 38088,
+   "capacity": 47481,
+   "used": 38243,
    "idle": 9238,
    "percentIdle": 19,
    "idleNames": [
@@ -3735,8 +3745,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 25554,
-   "used": 25554,
+   "capacity": 25749,
+   "used": 25749,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []
