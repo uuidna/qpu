@@ -170,7 +170,7 @@ the repository watched: every workspace, branch, tag and release here compared w
 |---|---|---|---|
 | [repository-watch](https://qpu.uuidna.com/90948f4c-0a1b-84f3-bd4f-f0682cbc3a36) | repository | — | Fixture facts against fixture answers: two local branches unpushed, one remote branch not here, a local tag not pushed, a remote tag not fetched, a moved tag, a release whose tag is gone, a version with a tag and no release, a Zenodo version without a release, a second workspace, the registry behind the tree, a red workflow at the remote, two workflows only at the remote: fourteen leads. |
 | [machine-redact](https://qpu.uuidna.com/9d5216d7-50ca-4661-805e-b7258a174b24) | repository | textbook_redact_before_publish | redact before publish: the record of a run holds its paths relative to the tree (the root as ., the home as ~) and a temporary path redacted by its kind, so no receipt, lead or record names the machine it ran on. |
-| [repository-machine-actions](https://qpu.uuidna.com/b6712593-a5c7-2d8a-a8b0-a928313e9334) | repository | textbook_machine_allow_list | The developer machine managed through the MCP, securely: an allow-list of local actions, reads of the tree's state and the writes the workflows already name (commit through the hooks, push through pre-push, a merge and the upstream subtree sync under the pre-commit rules), with no shell. |
+| [repository-machine-actions](https://qpu.uuidna.com/b6712593-a5c7-2d8a-a8b0-a928313e9334) | repository | textbook_machine_allow_list | The developer machine managed through the MCP, securely: an allow-list of local actions, reads of the tree's state and the writes the workflows already name (commit through the hooks, push through pre-push, a merge set aside, merged and completed through the commit, and the upstream subtree sync), with no shell. |
 | [repository-machine-worktree-unconfirmed](https://qpu.uuidna.com/792cd9fc-70c6-13b1-973b-be9236917ed7) | repository | textbook_machine_allow_list | An action that discards work waits for the user: removing a worktree without the user's confirmation is refused with the court's case before anything runs. |
 | [repository-machine-tag-confirmed](https://qpu.uuidna.com/9e023a03-d9dc-25b9-b8ec-770463eef211) | repository | textbook_machine_allow_list | With the user's confirmation an archive tag is planned as exactly its argument vector, local, at the full commit, no shell; a tag outside archive/ or a short commit is refused for its shape. |
 | [repository-machine-commit-deferred](https://qpu.uuidna.com/7a6e7e9a-f772-8e55-8d08-7e1d7cf47197) | repository | textbook_machine_allow_list | A commit through the machine defers to its own hook what only the staged tree knows: the generated files compared and the staged literals are unknown to the caller, so the plan names them as deferred to the pre-commit hook, which decides the same rules strictly; a rule the caller already sees violated refuses at once. |
@@ -376,28 +376,28 @@ the Google Quantum AI layer: the Willow processor as its spec sheet states it, C
 
 ## Gates
 
-Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 183 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 + 5 = 183) in 21 categories, 205 nested pages, 185 of 208 leads placed; by kind tool 51, open 55, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
+Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 183 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 + 5 = 183) in 21 categories, 205 nested pages, 181 of 204 leads placed; by kind tool 51, open 55, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
 
 | Category | Gates | Leads | Says |
 |---|---:|---:|---|
-| tree | 10 | 73 | the doors of the tree toolbox, each a gate of the leads it serves |
+| tree | 10 | 72 | the doors of the tree toolbox, each a gate of the leads it serves |
 | google | 13 | 71 | the doors of the google toolbox, each a gate of the leads it serves |
 | flow | 6 | 7 | the doors of the flow toolbox, each a gate of the leads it serves |
 | language | 2 | 2 | the doors of the language toolbox, each a gate of the leads it serves |
 | raid | 1 | 3 | the doors of the raid toolbox, each a gate of the leads it serves |
-| billing | 2 | 2 | the doors of the billing toolbox, each a gate of the leads it serves |
+| billing | 2 | 1 | the doors of the billing toolbox, each a gate of the leads it serves |
 | legal | 3 | 4 | the doors of the legal toolbox, each a gate of the leads it serves |
 | repository | 1 | 1 | the doors of the repository toolbox, each a gate of the leads it serves |
 | standards | 2 | 0 | the doors of the standards toolbox, each a gate of the leads it serves |
 | payload | 2 | 10 | the doors of the payload toolbox, each a gate of the leads it serves |
 | extension | 1 | 3 | the doors of the extension toolbox, each a gate of the leads it serves |
-| crypto | 3 | 3 | the doors of the crypto toolbox, each a gate of the leads it serves |
+| crypto | 3 | 1 | the doors of the crypto toolbox, each a gate of the leads it serves |
 | patents | 7 | 1 | the offices and indexes the patents tool passes |
-| certificates | 8 | 3 | the beacon, the logs, the directory, the vulnerability index and the physics the attest tool passes |
-| currency | 5 | 1 | the rate sources the currency tool harmonises |
+| certificates | 8 | 1 | the beacon, the logs, the directory, the vulnerability index and the physics the attest tool passes |
+| currency | 5 | 0 | the rate sources the currency tool harmonises |
 | competitions | 7 | 2 | the rules pages the compete tool follows |
 | mcp | 68 | 7 | the servers discovery reads, and the servers the registry names beside them: proposed, never called from the tree |
-| references | 28 | 15 | the vocabularies, codes and references the verifier reads |
+| references | 28 | 13 | the vocabularies, codes and references the verifier reads |
 | news | 7 | 0 | the public news APIs wired as adapters of the DOI research: the mentions of every record of precedence, by source |
 | energy | 2 | 0 | the market-price gates the bill's kilowatt-hours are priced against, keyed by the tenant |
 | dependencies | 5 | 0 | every dev dependency of the tree imagined as an MCP door: the step of next that runs it is its tools/call, its gate page carries that step's block rendered by the MCP App, usable in the UI |
