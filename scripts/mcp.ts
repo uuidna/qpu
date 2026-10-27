@@ -149,6 +149,15 @@ if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'tables-sync') {
   console.log(`${Object.keys(tables).length} table(s), ${Object.values(tables).reduce((n, x) => n + (Array.isArray(x) ? x.length : Object.keys(x).length), 0)} row(s) read from ${r.from} into the index`)
 }
 
+// the leads that run themselves, started from Payload: every lead Payload holds that names its door, asked of the job qpu-lead-run by an entry
+// of kind call; the job calls the door in the app, links its answer, and marks the lead served: node scripts/mcp.ts leads-run
+if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'leads-run') {
+  const m = mcpClient(), { records } = await readLeads(), { toolCallerOf } = await import('../src/quantum/mcp.ts'), { runs } = toolCallerOf('leads')({ runnable: { leads: records } }) as { runs: { lead: string; tool: string }[] }
+  let served = 0
+  for (const r of runs) { const made = await m.call('createEntries', { kind: 'call', from: 'qpu-lead-run', body: { lead: r.lead } }); const answered = ((await m.findAll('findEntries', { where: JSON.stringify({ kind: { equals: 'lead-run' } }), depth: 0 })).docs ?? []).some((e) => (e as { body?: { lead?: string; ok?: boolean } }).body?.lead === r.lead && (e as { body?: { ok?: boolean } }).body?.ok); if (answered) served++; else console.log(`${r.lead}: ${String(made.error ?? 'not served').slice(0, 160)}`) }
+  console.log(`${runs.length} runnable lead(s) asked of qpu-lead-run, ${served} served`)
+}
+
 // a computation through the Payload app: node scripts/mcp.ts call <tool> [--arguments-file <json>] creates an entry of kind call, whose result
 // the app computes from { tool, arguments }, and prints that result
 if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'call') {

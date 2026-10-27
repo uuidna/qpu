@@ -8,7 +8,7 @@ import { existsSync, readFileSync, readdirSync, renameSync, mkdirSync, writeFile
 import { homedir } from 'node:os'
 import path from 'node:path'
 import { createSign } from 'node:crypto'
-import { toolCallerOf } from '@uuidna/qpu/mcp'
+import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
 import { qpuHooksOf } from '@uuidna/qpu/blocks'
 import { Qpu } from '../blocks/Qpu/config'
 import { Entries } from '../collections/Entries'
@@ -101,7 +101,7 @@ const googleCallTask: TaskConfig<{ input: Record<string, any>; output: { entry: 
 }
 // a call asked of a job (qpu-google-call, qpu-raid-verify) is queued and run at once, so its answer entry stands when createEntries answers
 const queueGoogleCall: CollectionAfterChangeHook = async ({ doc, req, operation, context }) => {
-  if (operation !== 'create' || context.qpuGoogle || doc.kind !== 'call' || !['qpu-google-call', 'qpu-raid-verify'].includes(doc.from) || !doc.body || 'allowed' in doc.body) return doc
+  if (operation !== 'create' || context.qpuGoogle || doc.kind !== 'call' || !['qpu-google-call', 'qpu-raid-verify', 'qpu-lead-run'].includes(doc.from) || !doc.body || 'allowed' in doc.body) return doc
   const job = (await req.payload.jobs.queue({ task: doc.from as never, input: { ...doc.body, request: doc.id, tenant: typeof doc.tenant === 'object' ? doc.tenant?.id : doc.tenant } as never, req })) as { id: string }
   await req.payload.jobs.runByID({ id: job.id, req })
   return doc
@@ -113,10 +113,24 @@ export const qpuGoogle = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-google
   globals: (config.globals ?? []).map((g) => (g.slug !== 'qpu' || g.fields.some((f) => 'name' in f && f.name === 'google') ? g : { ...g, fields: [...g.fields, { name: 'google', type: 'json', admin: { readOnly: true } } as Field] })),
 }) })
 /** qpu-machine: the machine tool written into the MCP plugin's options through the plugins map before it runs (its order 10) */
+// a lead that names its door runs as a job (payloadcms.com/docs/jobs-queue/tasks), asked by an entry of kind call from qpu-lead-run: the door
+// called here (a QPU tool, or the machine tool for an action of its allow-list), its answer an entry linked to the request, the lead served once it answered
+type LeadBlock = { tool?: string; arguments?: { lead?: { id?: string; status?: string; reason?: string; run?: { tool: string; arguments?: Record<string, unknown> } } } }
+const leadRunTask: TaskConfig<{ input: { lead?: string; request?: string }; output: { entry: string } }> = {
+  slug: 'qpu-lead-run', retries: 0, inputSchema: [{ name: 'lead', type: 'text' }, { name: 'request', type: 'text' }], outputSchema: [{ name: 'entry', type: 'text' }],
+  handler: async ({ input, req }) => {
+    const pages = (await req.payload.find({ collection: 'pages', where: { 'layout.tool': { equals: 'leads' } }, depth: 0, limit: 0, draft: true, overrideAccess: true })).docs as unknown as { id: string; layout?: LeadBlock[] }[]
+    const page = pages.find((p) => (p.layout ?? []).some((b) => b.arguments?.lead?.id === input.lead)), block = page?.layout?.find((b) => b.arguments?.lead?.id === input.lead), run = block?.arguments?.lead?.run
+    const answer: { result?: unknown; error?: string } = !run ? { error: 'the lead names no door' } : run.tool === 'machine' ? await qpuMachineTool.handler(run.arguments ?? {}, req as never).then((r) => ({ result: r }), (e: Error) => ({ error: e.message })) : ((r) => (r.error ? { error: r.error.message } : { result: r.result?.structuredContent ?? null }))(callOf(run.tool, run.arguments ?? {}) as { result?: { structuredContent?: unknown }; error?: { message: string } })
+    const entry = await req.payload.create({ collection: 'entries' as never, data: { kind: 'lead-run', from: 'qpu-lead-run', body: { lead: input.lead ?? null, tool: run?.tool ?? null, ok: !answer.error, answer }, links: input.request ? [input.request] : [] } as never, overrideAccess: true })
+    if (page && block && !answer.error) await req.payload.update({ collection: 'pages', id: page.id, data: { layout: page.layout!.map((b) => (b === block ? { ...b, arguments: { ...b.arguments, lead: { ...b.arguments!.lead, status: 'served', reason: 'served by ' + run!.tool + ' (entry ' + String((entry as { id: string }).id) + ')' } } } : b)) } as never, overrideAccess: true, context: { disableRevalidate: true } })
+    return { output: { entry: String((entry as { id: string }).id) } }
+  },
+}
 export const qpuMachine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-machine', order: 5, plugin: ({ config, plugins, enabled }) => {
   const o = plugins['@payloadcms/plugin-mcp']?.options
   if (o && enabled !== false) o.mcp = { ...o.mcp, tools: [...(o.mcp?.tools ?? []).filter((t) => t.name !== qpuMachineTool.name), qpuMachineTool as never] }
-  return config
+  return enabled === false ? config : { ...config, jobs: withTask(config, leadRunTask) }
 } })
 // binding 0 (payloadcms.com/docs/hooks/collections): every document a collection changes or reads, at its content address in hex folders by the UUID's
 // middle beside the repository (its R2 key, its GCS object) with a pointer to its latest version, the copy the RAID reads back verified when no other binding answers

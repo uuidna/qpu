@@ -12,7 +12,9 @@ import { LEAD_ROWS } from './leads-index.ts'
 
 export type LeadStatus = 'served' | 'partial' | 'blocked' | 'out_of_scope' | 'open'
 
-export type Lead = { id: string; source: string; statement: string; status: LeadStatus; tool?: string; reason?: string; lastmod?: string }
+export type Lead = { id: string; source: string; statement: string; status: LeadStatus; tool?: string; reason?: string; lastmod?: string; /** the door that serves it, run as the Payload job qpu-lead-run */ run?: { tool: string; arguments?: Record<string, unknown> } }
+/** The leads that run themselves: open, partial or blocked, and naming the door that serves them; each run by next as a Payload job. */
+export const listRunnableLeads = (leads: readonly Lead[]) => leads.filter((l) => l.run?.tool && l.status !== 'served' && l.status !== 'out_of_scope').map((l) => ({ lead: l.id, tool: l.run!.tool, arguments: l.run!.arguments ?? {} }))
 
 // A cleanup lead names what was removed: file paths, or git branches. Its settlement is a measurement (is the subject still absent?)
 // taken by the scripts that can see the tree; this parse is the pure half, shared so purify and readiness measure the same thing.

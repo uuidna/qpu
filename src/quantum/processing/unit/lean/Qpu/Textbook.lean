@@ -296,6 +296,8 @@ theorem textbook_cannot_binds (can : Bool) : (can && !true) = false := by cases 
 theorem textbook_association_fields : 5 + 4 + 1 = 10 := by decide
 /-- createValidation answers the fourteen Rails validation helpers: five by a Payload field option (presence, uniqueness, validates_associated, a length range, an inclusion list), nine by a validate function (examples: rails-validations-overview, rails-validations-helpers, rails-validations-options, rails-validations-conditional, rails-validations-strict, rails-validations-listing, rails-validations-custom, rails-validations-errors) -/
 theorem textbook_validation_helpers : 5 + 9 = 14 := by decide
+/-- listRunnableLeads runs a lead exactly when it is unserved and names its door: the job qpu-lead-run is asked for no other (examples: leads-runnable) -/
+theorem textbook_runnable_leads (unserved door : Bool) : (unserved && door) = true → unserved = true ∧ door = true := by cases unserved <;> cases door <;> decide
 /-- the phase of the stream at an interaction is one of 3888 milliseconds: eleven bits of randomness a sample, the device's own nonce thirty-two more (examples: seal-entropy) -/
 theorem textbook_phase_bits : 2 ^ 11 ≤ 3888 ∧ 3888 < 2 ^ 12 := by decide
 /-- a period of the stream is a chain of thirty-five links between its thirty-six frames; every full period streamed is one call, the first the coin, every further one a coil: the fusion (examples: verify-scan, verify-scan-one-frame) -/

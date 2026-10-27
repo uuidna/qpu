@@ -262,6 +262,7 @@ export interface Config {
   user: User | PayloadMcpApiKey;
   jobs: {
     tasks: {
+      'qpu-lead-run': TaskQpuLeadRun;
       createCollectionExport: TaskCreateCollectionExport;
       createCollectionImport: TaskCreateCollectionImport;
       'qpu-google-call': TaskQpuGoogleCall;
@@ -4944,6 +4945,7 @@ export interface PayloadJob {
         completedAt: string;
         taskSlug:
           | 'inline'
+          | 'qpu-lead-run'
           | 'createCollectionExport'
           | 'createCollectionImport'
           | 'qpu-google-call'
@@ -4981,7 +4983,14 @@ export interface PayloadJob {
       }[]
     | null;
   taskSlug?:
-    | ('inline' | 'createCollectionExport' | 'createCollectionImport' | 'qpu-google-call' | 'qpu-raid-verify')
+    | (
+        | 'inline'
+        | 'qpu-lead-run'
+        | 'createCollectionExport'
+        | 'createCollectionImport'
+        | 'qpu-google-call'
+        | 'qpu-raid-verify'
+      )
     | null;
   queue?: string | null;
   waitUntil?: string | null;
@@ -7499,6 +7508,19 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskQpu-lead-run".
+ */
+export interface TaskQpuLeadRun {
+  input: {
+    lead?: string | null;
+    request?: string | null;
+  };
+  output: {
+    entry?: string | null;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

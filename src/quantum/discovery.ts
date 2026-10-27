@@ -15,23 +15,7 @@ export const CLOUDFLARE_MCP: readonly { host: string; url: string; about: string
 /** Google's own MCP servers, measured in the registry on 2026-10-26 (search google: 296 servers, 175 with remotes, these at <service>.googleapis.com/mcp):
  *  every one a token door (Google OAuth), each mapped to what it is for the Payload plugin — an adapter the environment names, a deploy target,
  *  a measure, a door the tenant opens; proposed and never called from the tree. */
-const GOOGLE_MCP: readonly { host: string; url: string; about: string; maps: string }[] = [
-  { host: 'sqladmin.googleapis.com', url: 'https://sqladmin.googleapis.com/mcp', about: 'Cloud SQL: create, manage, query instances', maps: 'the adapters profile google: db-postgres over a Cloud SQL instance (DATABASE_URI); the docket over it' },
-  { host: 'run.googleapis.com', url: 'https://run.googleapis.com/mcp', about: 'Cloud Run: deploy applications', maps: 'the deploy target of the app beside Workers and Vercel (the bindings provider google-cloud); the migration law keeps every host until the gate decodes it' },
-  { host: 'firestore.googleapis.com', url: 'https://firestore.googleapis.com/mcp', about: 'Firestore resources', maps: 'no Payload database adapter exists for Firestore: a lead (the docket mirrored as entries by address would fit)' },
-  { host: 'mapstools.googleapis.com', url: 'https://mapstools.googleapis.com/mcp', about: 'Google Maps: trusted geospatial data', maps: 'the ecommerce addresses collection: geocoding proposed as a hook the tenant enables with its token, never called from the tree' },
-  { host: 'monitoring.googleapis.com', url: 'https://monitoring.googleapis.com/mcp', about: 'Cloud Monitoring: performance, availability, health', maps: 'the metrics tool\'s load measures and the e2e gate\'s copies, read beside Cloud Monitoring when the app runs on Cloud Run' },
-  { host: 'developerknowledge.googleapis.com', url: 'https://developerknowledge.googleapis.com/mcp', about: 'Google\'s public developer documentation', maps: 'a verifier like cloudflare-docs: a fact on developers.google.com searched there' },
-  { host: 'design.googleapis.com', url: 'https://design.googleapis.com/mcp', about: 'UX capabilities for AI systems', maps: 'the UI: the shadcn items styled from the address, offered through this door when the tenant names it' },
-  { host: 'stitch.googleapis.com', url: 'https://stitch.googleapis.com/mcp', about: 'the Stitch API', maps: 'the UI designs the gate pages carry, when the tenant names it' },
-  { host: 'compute.googleapis.com', url: 'https://compute.googleapis.com/mcp', about: 'Compute Engine infrastructure', maps: 'infrastructure the tenant names: a door, no adapter' },
-  { host: 'container.googleapis.com', url: 'https://container.googleapis.com/mcp', about: 'GKE and Kubernetes resources (read)', maps: 'infrastructure the tenant names: a door, no adapter' },
-  { host: 'composer.googleapis.com', url: 'https://composer.googleapis.com/mcp', about: 'Cloud Composer resources', maps: 'the waves of next run as a Composer workflow when the tenant names it: a door' },
-  { host: 'datastream.googleapis.com', url: 'https://datastream.googleapis.com/mcp', about: 'Datastream resources', maps: 'the docket streamed out of Cloud SQL: a door' },
-  { host: 'bigtableadmin.googleapis.com', url: 'https://bigtableadmin.googleapis.com/mcp', about: 'Bigtable resources', maps: 'a store the docket could address: a door, no adapter' },
-  { host: 'memorystore.googleapis.com', url: 'https://memorystore.googleapis.com/mcp', about: 'Memorystore for Valkey', maps: 'the cache by address (as KV on Cloudflare): a door' },
-  { host: 'androidmanagement.googleapis.com', url: 'https://androidmanagement.googleapis.com/mcp', about: 'enterprise management of Android devices', maps: 'the PWA on managed devices: a door' },
-]
+const GOOGLE_MCP: readonly { host: string; url: string; about: string; maps: string }[] = TABLES.GOOGLE_MCP as readonly { host: string; url: string; about: string; maps: string }[]
 /** Google Workspace's nine MCP servers (Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, People, Classroom): the institution's doors, each landing in the docket. */
 import { WORKSPACE_MCP } from './institutions.ts'
 import { TABLES } from './tables-index.ts'

@@ -11,6 +11,7 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | --- | --- | --- | --- | --- |
 | `learn-lab` | served | statements | Discover the Quantum AI campus: the virtual walk through the headquarters |  |
 | `qubit-game-page` | served | statements | The Qubit Game: "Build a quantum computer, one qubit at a time." |  |
+| `home` | served | statements | The home page: Willow, Quantum Echoes, the Nature papers and the Early Access Program it links |  |
 | `student-opportunities` | out_of_scope | — | Student opportunities: the student researcher program, internships of 12 to 14 weeks, the PhD fellowship | the PDF (1,807,623 bytes, fetched on 2026-10-25) describes recruiting programs and points to careers.google.com; a programs listing, not technical content |
 | `aps-summit` | served | statements | The APS Global Physics Summit event pages: sessions, booth, the Willow Early Access Program announcement |  |
 | `weber-datasheet` | served | statements | The Weber processor datasheet (May 14, 2021): 53 qubits, gate durations, typical errors and T1 |  |
@@ -53,6 +54,7 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `qualtran-algorithms` | served | quantumlib | Qualtran: abstractions and libraries for writing fault-tolerant quantum algorithms |  |
 | `qsim-simulator` | served | quantumlib | qsim: a high-performance quantum circuit simulator with C++ backend and Cirq interface |  |
 | `cirq-framework` | served | quantumlib | Cirq: a Python framework for quantum circuit design, optimization, and simulation |  |
+| `qpu-quantumlib` | served | quantumlib | The quantumlib GitHub organization: fifteen active repositories for quantum computing, with what this repository implements of each |  |
 | `careers` | out_of_scope | — | Careers | the site's Careers link targets Google's job search filtered to quantum in California, Munich, Seattle and Zurich; quantumai.google/careers returned HTTP 404 on 2026-10-25; a jobs listing, not technical content |
 | `videos` | partial | statements | Educational videos: how-to videos on programming quantum computers, scientific breakthroughs, and new tools | the Resources page's description of the videos is served as the resources statement; the videos themselves are not text and are not carried |
 | `coursera` | served | statements | The Resources page's description of the course: a free introduction to quantum error correction, hands-on with Stim and Crumble |  |
@@ -61,11 +63,16 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `progress-pdf` | served | statements | Progress since 2014, Milestones 1 and 2 |  |
 | `what-is-qc` | served | statements | What quantum computing is: superposition, interference, the problems expected |  |
 | `quantum-computer` | served | statements | Superconducting hardware, cryogenic environment, Santa Barbara |  |
+| `sycamore` | served | processor | Sycamore: 54 qubits and 88 couplers, its printed layout, its two-qubit gates |  |
 | `lab` | served | statements | Discover the Quantum AI campus: the Santa Barbara campus, its quantum data center, labs and fabrication |  |
+| `learn` | blocked | — | Learn overview | the path is not in the sitemap and returned HTTP 404 on 2026-10-25; its children learn/map and learn/lab are in the sitemap and are served |
+| `sitemap` | served | leads | The site's sitemap as sitemaps.org defines it (loc, lastmod): planned by the discover door, sealed in the docket from sitemap, handed to leads &#123; sitemap &#125; by its client, every page a lead |  |
 | `openfermion-basis-change` | served | statements | the page's stated content, served as the basis_change statement |  |
 | `qsimcirq-tutorial` | served | statements | the page's stated content, served as the qsimcirq statement |  |
 | `cirq-basics` | served | statements | the page's stated content, served as the cirq_basics statement |  |
 | `openfermion-projects` | served | statements | the page's stated content, served as the openfermion_projects statement |  |
+| `qsim-hardware` | served | statements | the page's stated content, served as the qsim_hardware statement |  |
+| `cirq-google-concepts` | served | statements | the page's stated content, served as the google_concepts statement |  |
 | `cirq-hardware-changes` | served | statements | the page's stated content, served as the hardware_changes statement |  |
 | `cirq-hfvqe` | served | statements | the page's stated content, served as the hfvqe statement |  |
 | `cirq-qcqmc` | served | statements | the page's stated content, served as the qcqmc statement |  |
@@ -76,6 +83,8 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `cirq-histograms` | served | statements | the page's stated content, served as the histograms statement |  |
 | `cirq-noise-representation` | served | statements | the page's stated content, served as the noise_representation statement |  |
 | `cirq-pauli` | served | statements | the page's stated content, served as the pauli_observables statement |  |
+| `repo-allstar` | out_of_scope | — | organization configuration: the default Allstar policy files | fetched on 2026-10-25: a public archive holding allstar.yaml, binary_artifacts.yaml and branch_protection.yaml, described as the default Allstar configuration that points to google/allstar-config; security policy for the repositories, not a library or a result |
+| `repo-github` | out_of_scope | — | organization configuration: the profile README, a markdownlint configuration and a code of conduct | fetched on 2026-10-25: the repository has no description and holds the organization profile, .markdownlintrc and CODE_OF_CONDUCT.md; configuration for the quantumlib repositories, not a library or a result |
 | `repo-openfermion-cirq` | served | repositories | OpenFermion-Cirq: quantum circuits for chemistry and materials simulation |  |
 | `repo-qchack-2021-challenge` | served | repositories | qchack-2021-challenge: the Quantum Coalition Hackathon 2021 challenge |  |
 | `repo-openfermion-psi4` | served | repositories | OpenFermion-Psi4: the Psi4 plugin |  |
@@ -90,27 +99,39 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `repo-qualtran` | served | repositories | Qualtran: fault-tolerant quantum algorithm abstractions |  |
 | `repo-chromobius` | served | repositories | chromobius: a Möbius decoder for color codes |  |
 | `repo-stim` | served | repositories | Stim: a fast stabilizer circuit library |  |
+| `repo-cirq` | served | repositories | Cirq: the NISQ circuit framework |  |
 | `cirq-insert-source` | served | circuit | The four insert strategies, checked against Cirq's source |  |
 | `cirq-noise-source` | served | circuit | The noise channel definitions, checked against Cirq's source: bit_flip, phase_flip, depolarize, asymmetric_depolarize, phase_damp, amplitude_damp, generalized_amplitude_damp, reset |  |
+| `openfermion` | served | statements | OpenFermion: compiling and analyzing quantum algorithms to simulate fermionic systems |  |
+| `qualtran` | served | statements | Qualtran: abstractions for quantum programs and a library of algorithms, experimental |  |
 | `sycamore23` | served | processor | Sycamore23: the 23-qubit subset of Sycamore |  |
 | `sycamore-gates` | served | statements | Sycamore's two-qubit gates and their durations |  |
 | `campus-announcement` | served | statements | The campus announcement: the data center, labs, fabrication and the 1,000,000-qubit target |  |
+| `learn-map` | partial | statements | Our quantum computing journey: the page's title and description | on 2026-10-25 the page returned HTTP 200 (it was 404 to the earlier fetch) with its title and description, which the learn_map statement serves; the journey itself is an interactive map in a frame from dreamcoat-guggenheim.uc.r.appspot.com, whose text is not in the fetched HTML |
 | `willow-nature` | served | processor | distance-5 and distance-7 memories; Λ = 2.14 ± 0.02; a 101-qubit distance-7 code; 0.143% logical error per cycle; 63 μs decoder latency |  |
 | `echoes-nature` | served | statements | 103-qubit superconducting processor; second-order OTOC; the Nature paper's claims, with the preprint's stated figures |  |
+| `research` | partial | statements | Research publications: the page's title and description | on 2026-10-25 quantumai.google/research returned HTTP 200 with the title "Research Publications" and the site description, which the research statement serves; its publication list is rendered by script and is not in the fetched HTML; research/publications returned HTTP 404 |
+| `qsim` | served | statements | qsim: a fast state-vector simulator with a Cirq interface, Apache-2.0 |  |
+| `shor` | served | algorithm | Shor's order finding, the later use of phase estimation the page names |  |
+| `qaoa` | served | algorithm | QAOA max-cut at p = 1 on Sycamore: the first twelve sorted qubits, their couplers in networkx order, numpy's seed-11 weights (reproduced exactly), the 5 by 5 sweep, and the estimate_cost objective sampled at 20,000 shots |  |
 | `textbook-algorithms` | served | algorithm | Teleportation, QFT and its inverse, phase estimation, Grover on two qubits |  |
 | `qvm` | served | circuit | Virtual processor: a device with noise. The Willow noise is completed from the spec sheet's published medians (single-qubit depolarizing at 1.5 × the gate error, two-qubit at 0.75 × per qubit), which reproduces the sheet's single-qubit error exactly; Google's per-qubit calibration, T1 and readout are not on any public page, so they are not applied |  |
 | `cirq-noise` | served | circuit | The named noise channels: bit_flip, phase_flip, phase_damp, amplitude_damp, depolarize, reset, asymmetric_depolarize, generalized_amplitude_damp |  |
 | `cirq-simulation` | served | circuit | State-vector and density-matrix simulators; expectation values |  |
 | `cirq-devices` | served | circuit | Device constraints: validate_operation, validate_moment, validate_circuit, qubit set, couplers |  |
 | `cirq-circuits` | served | circuit | Circuits, moments, append and insert, the four insert strategies |  |
+| `cirq-overview` | served | statements | Cirq is a Python library for writing, manipulating and optimizing circuits |  |
+| `software` | served | software | Cirq, qsim, Qualtran, OpenFermion, TensorFlow Quantum |  |
 | `early-access` | served | statements | Willow Early Access Program, deadline May 15, 2026 |  |
 | `neutral-atoms` | served | statements | Expansion to neutral atoms; no Google device figures stated |  |
 | `applications` | served | roadmap | Predicted applications by physical-qubit band, 50k to 50M |  |
+| `roadmap` | served | roadmap | Six milestones, physical-qubit scale, Milestone 3 in progress |  |
 | `echoes-protocol` | served | echo | forward, perturb, backward, measure, repeated k times |  |
 | `echoes-preprint` | served | statements | The Quantum Echoes preprint and its abstract |  |
 | `echoes-blog` | served | echo_benchmark | OTOC protocol on the 105-qubit array; 13,000x; molecules of 15 and 28 atoms |  |
 | `magic-state` | served | processor | 40-fold error reduction, 99.99% logical fidelity, color code to surface code |  |
 | `willow-blog` | served | processor | Willow error correction below threshold; random circuit sampling |  |
+| `willow-spec` | served | processor | Willow: 105 qubits, the grid, two chips with their figures |  |
 | `zenodo-record-as-gateway` | open | — | A release is final and mints a DOI: before it is published the .zenodo.json the tree generates is validated completely — the authorship (the author, the ORCID), the citations with their prior-art links, the licence, the version as the state the package represents — against the Zenodo and CERN APIs and the DataCite and doi.org answers of every other API the wave reads, so the Zenodo record is a gateway of some sort to every link the Lean discoveries involve, with plain metadata and no long lists; the SDKs combined the same way, the record an independent QPU gateway, nothing published before every check passes | the wave reads zenodo, datacite and doi-org for the leads that cite them and gen-docs writes .zenodo.json; the record as a validated gateway before publishing is a lead until a release step carries it: the push approval (configure, kind versions) is its first half |
 | `hardware-compliance-by-validation` | open | — | Hardware compliance reached by Payload validation: every hardware figure the processor tool serves (qubits, couplers, error medians, T1, cycle times) emitted as a validation pattern of the generated collection with its unit and range, enforced as the UUID patterns are, and bounded by the widths the Clay register proves for a small machine that recomputes them | the validations kind holds the UUID, kind and digest patterns; the hardware figures are a lead until the processor tool emits them as patterns the validations kind carries |
 | `hardware-compliance-by-patents` | open | — | Hardware compliance reached by patent verification: each run the patents step asks one hardware question (superconducting qubit processors, surface-code error correction, magic-state cultivation) and verifies every patent read by the three theorems (the dates ordered, the number well formed for its office, the twenty-year term); the processor figures the tree serves are measured against the claims those patents make, never asserted | the patents step asks one question a run (Google answers 503 to bursts); the hardware questions rotate into it as a lead until the step carries them |
@@ -223,27 +244,6 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `perspective-address` | served | verify | The QPU as the address: one UUID that proves its seal, its content and its neighbours cheaply, tampering always slower than the original. |  |
 | `perspective-reflection` | served | match | The QPU as the mirror: any statement reflected into its hidden factors, its angles against the bounds and its mirror queries, each a lead. |  |
 | `perspective-factorer` | served | algorithm | The QPU as the factorer: Shor on the exact simulator for every N within its bound, and the bound itself the honest answer beyond it. |  |
-| `willow-spec` | served | processor | Willow: 105 qubits, the grid, two chips with their figures |  |
-| `roadmap` | served | roadmap | Six milestones, physical-qubit scale, Milestone 3 in progress |  |
-| `software` | served | software | Cirq, qsim, Qualtran, OpenFermion, TensorFlow Quantum |  |
-| `cirq-overview` | served | statements | Cirq is a Python library for writing, manipulating and optimizing circuits |  |
-| `qaoa` | served | algorithm | QAOA max-cut at p = 1 on Sycamore: the first twelve sorted qubits, their couplers in networkx order, numpy's seed-11 weights (reproduced exactly), the 5 by 5 sweep, and the estimate_cost objective sampled at 20,000 shots |  |
-| `shor` | served | algorithm | Shor's order finding, the later use of phase estimation the page names |  |
-| `qsim` | served | statements | qsim: a fast state-vector simulator with a Cirq interface, Apache-2.0 |  |
-| `research` | partial | statements | Research publications: the page's title and description | on 2026-10-25 quantumai.google/research returned HTTP 200 with the title "Research Publications" and the site description, which the research statement serves; its publication list is rendered by script and is not in the fetched HTML; research/publications returned HTTP 404 |
-| `learn-map` | partial | statements | Our quantum computing journey: the page's title and description | on 2026-10-25 the page returned HTTP 200 (it was 404 to the earlier fetch) with its title and description, which the learn_map statement serves; the journey itself is an interactive map in a frame from dreamcoat-guggenheim.uc.r.appspot.com, whose text is not in the fetched HTML |
-| `qualtran` | served | statements | Qualtran: abstractions for quantum programs and a library of algorithms, experimental |  |
-| `openfermion` | served | statements | OpenFermion: compiling and analyzing quantum algorithms to simulate fermionic systems |  |
-| `repo-cirq` | served | repositories | Cirq: the NISQ circuit framework |  |
-| `repo-github` | out_of_scope | — | organization configuration: the profile README, a markdownlint configuration and a code of conduct | fetched on 2026-10-25: the repository has no description and holds the organization profile, .markdownlintrc and CODE_OF_CONDUCT.md; configuration for the quantumlib repositories, not a library or a result |
-| `repo-allstar` | out_of_scope | — | organization configuration: the default Allstar policy files | fetched on 2026-10-25: a public archive holding allstar.yaml, binary_artifacts.yaml and branch_protection.yaml, described as the default Allstar configuration that points to google/allstar-config; security policy for the repositories, not a library or a result |
-| `cirq-google-concepts` | served | statements | the page's stated content, served as the google_concepts statement |  |
-| `qsim-hardware` | served | statements | the page's stated content, served as the qsim_hardware statement |  |
-| `sitemap` | served | leads | The site's sitemap as sitemaps.org defines it (loc, lastmod): planned by the discover door, sealed in the docket from sitemap, handed to leads &#123; sitemap &#125; by its client, every page a lead |  |
-| `learn` | blocked | — | Learn overview | the path is not in the sitemap and returned HTTP 404 on 2026-10-25; its children learn/map and learn/lab are in the sitemap and are served |
-| `sycamore` | served | processor | Sycamore: 54 qubits and 88 couplers, its printed layout, its two-qubit gates |  |
-| `qpu-quantumlib` | served | quantumlib | The quantumlib GitHub organization: fifteen active repositories for quantum computing, with what this repository implements of each |  |
-| `home` | served | statements | The home page: Willow, Quantum Echoes, the Nature papers and the Early Access Program it links |  |
 | `clay-relation_8` | served | clay | relation_8: vertices = hybridSpeed ∧ vertices = mintOf n = 8 (4 bits, seed 8) |  |
 | `clay-relation_15` | served | clay | relation_15: magicBlock = glProd hexbit seed ∧ magicBlock = qftDepth vertices = 15 (4 bits, seed 6) |  |
 | `clay-relation_16` | served | clay | relation_16: mintOf hexbit = powMod coins rays plane ∧ mintOf hexbit = powMod coins hexbit bits = 16 (5 bits, seed 7) |  |

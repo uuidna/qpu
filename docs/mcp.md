@@ -1137,6 +1137,10 @@ Every lead on quantumai
 {
   "type": "object",
   "properties": {
+    "runnable": {
+      "type": "object",
+      "description": "the leads that run themselves"
+    },
     "records": {
       "type": "array",
       "items": {
