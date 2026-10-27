@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T08:09:21.708Z",
+ "date": "2026-10-27T08:45:25.893Z",
  "literals": {
   "urls": 859,
   "distinctUrls": 442,
@@ -692,11 +692,11 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 949,
- "lines": 85944,
- "findings": 1078,
- "fused": 335,
- "reactions": 743,
- "gravity": "ae0ab733-b750-8553-a4ee-10b8e361f0a5",
+ "lines": 85937,
+ "findings": 1076,
+ "fused": 334,
+ "reactions": 742,
+ "gravity": "ab496c80-0908-3759-a208-94185076dc98",
  "vacuum": false,
  "byKind": {
   "literal": {
@@ -716,8 +716,8 @@
    "leads": 2
   },
   "duplicate": {
-   "findings": 722,
-   "leads": 285
+   "findings": 720,
+   "leads": 284
   },
   "shape": {
    "findings": 222,
@@ -734,17 +734,17 @@
  },
  "difference": {
   "appeared": 3,
-  "settled": 0
+  "settled": 1
  },
  "toExplore": {
-  "match": 311,
+  "match": 310,
   "imagine": 17,
   "configure": 7
  },
  "toConfig": {
   "actions": 23,
   "none": 20,
-  "fullstack": 290,
+  "fullstack": 289,
   "tenant": 2
  },
  "leads": [
@@ -1363,7 +1363,7 @@
   {
    "id": "entropy-duplicate-4d3d6455",
    "kind": "duplicate",
-   "source": "scripts/idle.ts:36, scripts/next.ts:215",
+   "source": "scripts/idle.ts:36, scripts/next.ts:217",
    "statement": "one line of code repeated in more than one file: one place should hold it — const { penalise, clear, openPenaltiesOf } = await import('./penalties.ts')",
    "status": "open",
    "tool": "audit",
@@ -1417,18 +1417,6 @@
    "tool": "audit",
    "occurrences": 2,
    "address": "bd19dc90-8190-21ed-baca-4544c5a044dd",
-   "explore": "match",
-   "config": "fullstack"
-  },
-  {
-   "id": "entropy-duplicate-21f135d6",
-   "kind": "duplicate",
-   "source": "scripts/next.ts:165, scripts/repository.ts:46",
-   "statement": "one line of code repeated in more than one file: one place should hold it — const docket = join(ROOT, 'docs', 'public', 'next-leads.json')",
-   "status": "open",
-   "tool": "audit",
-   "occurrences": 2,
-   "address": "21f135d6-e516-79c1-983e-2ac56c3659c5",
    "explore": "match",
    "config": "fullstack"
   },
@@ -4723,7 +4711,7 @@
   {
    "id": "entropy-shape-0d8252de",
    "kind": "shape",
-   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/compare.ts:30, scripts/compete.ts:22, scripts/configs.ts:19, scripts/configs.ts:21, scripts/configs.ts:24, scripts/currency.ts:33, scripts/discover.ts:31, scripts/gen-docs.ts:16, scripts/hook.ts:23, scripts/idle.ts:27, scripts/imagine.ts:19, scripts/imagine.ts:28, scripts/legal.ts:39, scripts/legal.ts:45, scripts/metrics.ts:10, scripts/next.ts:71, scripts/next.ts:76, scripts/next.ts:108, scripts/next.ts:166, scripts/next.ts:190, scripts/next.ts:201, scripts/publish.ts:27, scripts/publish.ts:43, scripts/purify.ts:73, scripts/purify.ts:106, scripts/purify.ts:107, scripts/readiness.ts:32, scripts/readiness.ts:34, scripts/readiness.ts:82, scripts/repository.ts:16, scripts/repository.ts:19, scripts/repository.ts:20, scripts/repository.ts:28, scripts/repository.ts:47, scripts/security.ts:31, scripts/shard.ts:22, scripts/sources.ts:17, scripts/stdio.ts:16, scripts/textbook.ts:17, scripts/textbook.ts:18, scripts/textbook.ts:21, scripts/trunk.ts:13, scripts/verify.ts:23, scripts/verify.ts:34, site/src/payload.qpu.mcp.ts:55, src/quantum/audit.test.ts:38, src/quantum/toolboxes/payload.ts:1251",
+   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/compare.ts:30, scripts/compete.ts:22, scripts/configs.ts:19, scripts/configs.ts:21, scripts/configs.ts:24, scripts/currency.ts:33, scripts/discover.ts:31, scripts/gen-docs.ts:16, scripts/hook.ts:23, scripts/idle.ts:27, scripts/imagine.ts:19, scripts/imagine.ts:28, scripts/legal.ts:39, scripts/legal.ts:45, scripts/metrics.ts:10, scripts/next.ts:72, scripts/next.ts:77, scripts/next.ts:110, scripts/next.ts:168, scripts/next.ts:192, scripts/next.ts:203, scripts/publish.ts:27, scripts/publish.ts:43, scripts/purify.ts:73, scripts/purify.ts:106, scripts/purify.ts:107, scripts/readiness.ts:32, scripts/readiness.ts:34, scripts/readiness.ts:82, scripts/repository.ts:16, scripts/repository.ts:19, scripts/repository.ts:20, scripts/repository.ts:28, scripts/repository.ts:47, scripts/security.ts:31, scripts/shard.ts:22, scripts/sources.ts:17, scripts/stdio.ts:16, scripts/textbook.ts:17, scripts/textbook.ts:18, scripts/textbook.ts:21, scripts/trunk.ts:13, scripts/verify.ts:23, scripts/verify.ts:34, site/src/payload.qpu.mcp.ts:55, src/quantum/audit.test.ts:38, src/quantum/toolboxes/payload.ts:1251",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a JSON file read and parsed: one reader of the published files, null when a file is missing",
    "status": "open",
    "tool": "audit",

@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T07:38:26.116Z",
- "ms": 1969,
+ "date": "2026-10-27T08:12:13.406Z",
+ "ms": 13007,
  "rounds": 2,
  "selftest": {
   "passed": true
@@ -10,73 +10,73 @@
   {
    "id": "nist-beacon",
    "status": 200,
-   "ms": 888,
+   "ms": 966,
    "bytes": 3633
   },
   {
    "id": "ct-sth",
    "status": 200,
-   "ms": 982,
+   "ms": 442,
    "bytes": 241
   },
   {
    "id": "acme-directory",
    "status": 200,
-   "ms": 759,
+   "ms": 968,
    "bytes": 961
   },
   {
    "id": "nvd-cves",
    "status": 200,
-   "ms": 690,
+   "ms": 851,
    "bytes": 21839
   },
   {
    "id": "cern-opendata",
    "status": 200,
-   "ms": 555,
+   "ms": 674,
    "bytes": 119560
   },
   {
    "id": "csrc-pqc",
    "status": 200,
-   "ms": 757,
+   "ms": 984,
    "bytes": 61029
   },
   {
    "id": "crt-sh",
    "status": 200,
-   "ms": 756,
+   "ms": 12230,
    "bytes": 2
   },
   {
    "id": "tls:qpu.uuidna.com",
    "status": 200,
-   "ms": 101,
+   "ms": 54,
    "bytes": 115
   },
   {
    "id": "tls:qpu.psg.bg",
    "status": 200,
-   "ms": 95,
+   "ms": 74,
    "bytes": 115
   },
   {
    "id": "tls:opendata.cern.ch",
    "status": 200,
-   "ms": 139,
+   "ms": 103,
    "bytes": 107
   },
   {
    "id": "tls:beacon.nist.gov",
    "status": 200,
-   "ms": 305,
+   "ms": 248,
    "bytes": 107
   },
   {
    "id": "nist-beacon-previous",
    "status": 200,
-   "ms": 175,
+   "ms": 211,
    "bytes": 3633
   }
  ],
@@ -144,9 +144,9 @@
    "status": "read",
    "facts": {
     "chainIndex": 2,
-    "pulseIndex": 2001454,
-    "timeStamp": "2026-10-27T07:37:00.000Z",
-    "previous": 2001453
+    "pulseIndex": 2001488,
+    "timeStamp": "2026-10-27T08:11:00.000Z",
+    "previous": 2001487
    },
    "verdicts": [
     {
@@ -162,7 +162,7 @@
     {
      "theorem": "textbook_chain_index_steps",
      "passed": true,
-     "says": "pulse 2001454 follows 2001453"
+     "says": "pulse 2001488 follows 2001487"
     },
     {
      "theorem": "textbook_beacon_period",
@@ -184,8 +184,8 @@
   "ct-sth": {
    "status": "read",
    "facts": {
-    "treeSize": 3463892692,
-    "timestamp": 1793086645394
+    "treeSize": 3463947282,
+    "timestamp": 1793088660730
    },
    "verdicts": [
     {
@@ -196,7 +196,7 @@
     {
      "theorem": "textbook_tree_size_positive",
      "passed": true,
-     "says": "tree size 3463892692"
+     "says": "tree size 3463947282"
     },
     {
      "theorem": "textbook_dates_ordered",

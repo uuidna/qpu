@@ -17,6 +17,7 @@ import { timesOf } from './machine.ts'
 import { etaOf } from '../src/quantum/machine.ts'
 
 const ROOT = process.cwd()
+const pub = (f: string) => join(ROOT, 'docs', 'public', f)
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
 const offline = process.argv.includes('--offline')
 const strict = process.argv.includes('--strict')
@@ -26,7 +27,7 @@ const lake = [`${process.env.HOME}/.elan/bin/lake`, `${process.env.HOME}/.elan/t
 // quantum multitasking is the natural speedup: steps that need nothing from each other run at once, in waves; a wave waits for
 // the one before it (the generators before the checks, the checks before the readers, the readers before the site)
 type Step = { name: string; cmd: string; args: string[]; skip?: string; budgetMs?: number; wave: number; /** a long single task split into short multitasks: n shards at once (QPU_SHARD=i/n), then one merge (QPU_SHARD=merge) */ shards?: number }
-const TIMES = await timesOf(ROOT), budgetOf = (s: Step) => Math.max(s.budgetMs ?? 600_000, 2 * (etaOf(TIMES[s.name] ?? []) ?? 0))
+const TIMES = await timesOf(ROOT), budgetOf = (s: Step) => Math.min(2 * (s.budgetMs ?? 600_000), Math.max(s.budgetMs ?? 600_000, 2 * (etaOf(TIMES[s.name] ?? []) ?? 0)))
 const steps: Step[] = [
   { name: 'clay:gen', cmd: 'node', args: ['--import', 'tsx', 'scripts/gen-clay.ts'], wave: 1 },
   { name: 'docs:gen', cmd: 'npx', args: ['tsx', 'scripts/gen-docs.ts'], wave: 1 },
@@ -66,7 +67,7 @@ const receipt: { license: string; date: string; head: string; steps: { name: str
   steps: [],
 }
 // Two runs in one tree write the same files under docs/public; the second is not stopped, it is recorded as a lead of this run.
-const lockPath = join(ROOT, 'docs', 'public', 'next.lock')
+const lockPath = pub('next.lock')
 const alive = (pid: number): boolean => { try { process.kill(pid, 0); return true } catch { return false } }
 const concurrent: { pid: number; date: string } | null = (() => { try { const l = JSON.parse(readFileSync(lockPath, 'utf8')) as { pid: number; date: string }; return alive(l.pid) ? l : null } catch { return null } })()
 if (concurrent) console.log(`⚠ another next run (pid ${concurrent.pid}, since ${concurrent.date}) is writing the same files; recorded as a lead, this run continues`)
@@ -81,11 +82,12 @@ const heatOf = (file: string) => { let cpuUs = 0, rssKb = 0; try { for (const l 
 const spawned = (s: Step, shard?: string): Promise<{ status: number | null; out: string; timedOut: boolean; cpuUs: number; rssKb: number; firstMs: number | null }> => new Promise((resolve) => {
   const t0 = Date.now(); let firstMs: number | null = null
   const heat = join(tmpdir(), `qpu-heat-${process.pid}-${s.name.replace(/[^a-z0-9-]/gi, '_')}-${(shard ?? 'all').replace('/', 'of')}.ndjson`)
-  const child = spawn(s.cmd, s.args, { cwd: ROOT, shell: process.platform === 'win32', env: { ...process.env, FORCE_COLOR: '0', QPU_OFFLINE: offline ? '1' : '', QPU_HEAT_FILE: heat, NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --import=${HEAT}`.trim(), ...(shard ? { QPU_SHARD: shard } : {}) } })
+  const child = spawn(s.cmd, s.args, { cwd: ROOT, shell: process.platform === 'win32', detached: process.platform !== 'win32', env: { ...process.env, FORCE_COLOR: '0', QPU_OFFLINE: offline ? '1' : '', QPU_HEAT_FILE: heat, NODE_OPTIONS: `${process.env.NODE_OPTIONS ?? ''} --import=${HEAT}`.trim(), ...(shard ? { QPU_SHARD: shard } : {}) } })
   let out = ''; let timedOut = false
   // the first line the user could see: an action silent past the budget is invisible, priced so and recorded silently
   child.stdout.on('data', (d) => { out += d; firstMs ??= Date.now() - t0 }); child.stderr.on('data', (d) => { out += d; firstMs ??= Date.now() - t0 })
-  const timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL') }, budgetOf(s))
+  // the budget kills the step's whole process group: a grandchild outlived its npx parent
+  const timer = setTimeout(() => { timedOut = true; try { process.kill(-child.pid!, 'SIGKILL') } catch { child.kill('SIGKILL') } }, budgetOf(s))
   child.on('error', (e) => { clearTimeout(timer); resolve({ status: null, out: out + `\n${e.message}`, timedOut, firstMs, ...heatOf(heat) }) })
   child.on('close', (status) => { clearTimeout(timer); resolve({ status, out, timedOut, firstMs, ...heatOf(heat) }) })
 })
@@ -127,7 +129,7 @@ const run = async (s: Step): Promise<boolean> => {
   const tail = (failingLines.length ? failingLines.join('\n') + '\n' : '') + out.trim().split('\n').slice(-8).join('\n')
   const wallNs = process.hrtime.bigint() - startedNs
   receipt.steps.push({ name: s.name, status: ok ? 'green' : 'red', ms: Date.now() - started, tail, counts, measures: { wallNs: String(wallNs), cpuUs: r.cpuUs, rssKb: r.rssKb, firstOutputMs: r.firstMs } })
-  writeFileSync(join(ROOT, 'docs', 'public', 'receipt.json'), JSON.stringify({ ...receipt, provisional: true }, null, 1) + '\n')
+  writeFileSync(pub('receipt.json'), JSON.stringify({ ...receipt, provisional: true }, null, 1) + '\n')
   if (ok && key) { const rec = { name: s.name, key, status: 'green', counts, date: new Date().toISOString(), ...(STEP_CACHE[s.name]?.generator ? { outputs: outputsOf() } : {}) }; mkdirSync(join(ROOT, '.qpu', 'steps'), { recursive: true }); writeFileSync(recordPath(s.name), JSON.stringify({ ...rec, sha256: createHash('sha256').update(JSON.stringify(rec)).digest('hex') }) + '\n') }
   console.log(`${ok ? '✓' : '✗'} ${s.name} (${((Date.now() - started) / 1000).toFixed(1)} s)${Object.keys(counts).length ? ' ' + JSON.stringify(counts) : ''}`)
   if (!ok) {
@@ -162,7 +164,7 @@ console.log(`waves: ${[...new Set(steps.map((s) => s.wave))].length}; steps ${(s
 
 // The docket: every red step as an open lead with its evidence, accumulated across runs and deduplicated by id.
 type NextLead = { id: string; source: string; statement: string; status: 'open'; reason: string; evidence: string; head: string; date: string }
-const docket = join(ROOT, 'docs', 'public', 'next-leads.json')
+const docket = pub('next-leads.json')
 const previous: NextLead[] = existsSync(docket) ? JSON.parse(readFileSync(docket, 'utf8')) : []
 const opened: NextLead[] = stillRed.map((s) => {
   const step = receipt.steps.filter((x) => x.name === s.name).at(-1)!
@@ -173,7 +175,7 @@ if (concurrent) opened.push({ id: `next-concurrent-${receipt.head}-${receipt.dat
 // time and heat priced: every step over the one-second budget is a waiting gap — listed, never blocking — priced in its own milliseconds over the
 // budget plus its CPU milliseconds (textbook_penalty_time_heat_monotone); the slowest and hottest first, each a lead naming the antimatter that
 // removes it (a shard split by the shard theorems, or a cache key), replaced every run, so a step back under the budget closes its own lead
-const { waitPriceOf, antimatterOf, capacityOf } = await import('../src/quantum/toolboxes/billing.ts')
+const { waitPriceOf, antimatterOf, capacityOf, runWaitPriceOf } = await import('../src/quantum/toolboxes/billing.ts')
 const waiting = receipt.steps.filter((x) => x.measures && x.status !== 'skipped').map((x) => ({ step: x.name, measures: x.measures!, price: waitPriceOf(x.measures!) }))
 const over = waiting.filter((w) => !w.price.free).sort((a, b) => b.price.coins - a.price.coins)
 for (const w of over) opened.push({ id: `next-waiting-${w.step}`, source: `npm run next ${receipt.date}`, statement: `${w.step} took ${w.price.wallMs} ms on the wall and ${w.price.cpuMs} CPU ms (peak ${w.price.rssKb ?? '?'} kB): ${w.price.coins} coin(s) of waiting — antimatter: ${antimatterOf('waiting', 'next:waiting', { step: w.step, measures: w.measures }).says}`, status: 'open', reason: 'a task over one second is slow: waiting is a penalty, priced in time and heat (heat is CPU work, never a die temperature)', evidence: JSON.stringify(w.price), head: receipt.head, date: receipt.date })
@@ -187,18 +189,18 @@ const cores = availableParallelism()
 const capacityIn: Parameters<typeof capacityOf>[0] = { cores: [{ step: 'next run', wallMs, cpuMs: waiting.reduce((n, w) => n + w.price.cpuMs, 0), cores }] }
 // the full measures run in the background, detached by post-commit (scripts/idle.ts, the machine action idle), never inside a hook: their latest
 // recorded state is read here, never computed
-const idleRead = existsSync(join(ROOT, 'docs', 'public', 'idle.json')) ? JSON.parse(readFileSync(join(ROOT, 'docs', 'public', 'idle.json'), 'utf8')) as { input?: Parameters<typeof capacityOf>[0] } : null
+const idleRead = existsSync(pub('idle.json')) ? JSON.parse(readFileSync(pub('idle.json'), 'utf8')) as { input?: Parameters<typeof capacityOf>[0] } : null
 Object.assign(capacityIn, { ...(idleRead?.input ?? {}), cores: capacityIn.cores })
 // the remaining work, from the tree's own records, in ms: the steps this run did not run, each at its last measured run in the receipts; the idle
 // items at the audit's measured ms per example; the open leads counted, their cost unmeasured (said so, never guessed)
 {
-  const history = existsSync(join(ROOT, 'docs', 'public', 'receipts.ndjson')) ? readFileSync(join(ROOT, 'docs', 'public', 'receipts.ndjson'), 'utf8').trim().split('\n').flatMap((l) => { try { return [JSON.parse(l) as { steps?: { name: string; status: string; ms: number; counts?: Record<string, number> }[] }] } catch { return [] } }) : []
+  const history = existsSync(pub('receipts.ndjson')) ? readFileSync(pub('receipts.ndjson'), 'utf8').trim().split('\n').flatMap((l) => { try { return [JSON.parse(l) as { steps?: { name: string; status: string; ms: number; counts?: Record<string, number> }[] }] } catch { return [] } }) : []
   const lastMs = (name: string) => { for (const r of [...history].reverse()) { const st = r.steps?.find((x) => x.name === name && x.status !== 'skipped' && x.ms > 0); if (st) return st.ms } return null }
   const pending = receipt.steps.filter((x) => x.status === 'skipped').map((x) => ({ name: x.name, ms: lastMs(x.name) }))
   const audit = [...history].reverse().flatMap((r) => r.steps ?? []).find((x) => x.name === 'audit' && x.ms > 0 && x.counts?.checks)
   const perExample = audit ? Math.round(audit.ms / Math.max(1, audit.counts!.checks!)) : null
   const idleItems = (idleRead as { top?: unknown[]; counts?: Record<string, { idleNames?: string[] } | null> } | null)?.counts ? Object.values((idleRead as { counts: Record<string, { idleNames?: string[] } | null> }).counts).reduce((n, m) => n + (m?.idleNames?.length ?? 0), 0) : 0
-  const leadsOpen = ['next-leads.json', 'purify-leads.json'].reduce((n, f) => { try { return n + (JSON.parse(readFileSync(join(ROOT, 'docs', 'public', f), 'utf8')) as { status?: string }[]).filter((l) => l.status === 'open').length } catch { return n } }, 0)
+  const leadsOpen = ['next-leads.json', 'purify-leads.json'].reduce((n, f) => { try { return n + (JSON.parse(readFileSync(pub(f), 'utf8')) as { status?: string }[]).filter((l) => l.status === 'open').length } catch { return n } }, 0)
   capacityIn.remaining = [
     { category: 'pending steps', count: pending.length, ms: pending.every((p) => p.ms === null) ? null : pending.reduce((n, p) => n + (p.ms ?? 0), 0), how: `each at its last measured run in the receipts${pending.some((p) => p.ms === null) ? `; never measured: ${pending.filter((p) => p.ms === null).map((p) => p.name).join(', ')}` : ''}` },
     { category: 'idle items', count: idleItems, ms: perExample === null ? null : idleItems * perExample, how: `the audit's measured ms per check (${perExample ?? '?'} ms) per generated example` },
@@ -218,7 +220,6 @@ if (process.env.QPU_APP_KEY) {
   // the idle cores priced by the remaining work: a listed gap of the waiting family raised by every run that leaves cores idle while work is
   // queued, annihilated by the run that leaves none (the time it stood burned)
   // the budget once per run, over every step summed: pieces under the budget never dodge the price (defragmented into one measure)
-  const { runWaitPriceOf } = await import('../src/quantum/toolboxes/billing.ts')
   const runPrice = runWaitPriceOf(waiting.map((w) => w.measures)), rkey = 'waiting:next:run', ropen = openWaiting.get(rkey)
   if (!runPrice.free && !ropen) await penalise({ rule: 'next:waiting', kind: 'waiting', subject: 'the run', measures: { wallNs: String(runPrice.wallMs * 1e6), cpuUs: runPrice.cpuMs * 1000 }, committer: null, evidence: { key: rkey, head: receipt.head } } as Parameters<typeof penalise>[0])
   const ip = capacity.idlePrice, ikey = 'waiting:next:idle-cores', iopen = openWaiting.get(ikey)
@@ -239,13 +240,13 @@ writeFileSync(docket, JSON.stringify(leadsNow, null, 1) + '\n')
 const docketPage = ['---', 'title: Next leads', 'order: 50', '---', '', '# Leads opened by `npm run next`', '', 'Every red step of every run, as an open lead with its evidence. The next run follows them; a lead closes when its step is green again.', '', '| Lead | Opened | Evidence |', '|---|---|---|', ...leadsNow.map((l) => `| ${l.id} | ${l.date} | ${cell(l.evidence)} |`), ''].join('\n')
 writeFileSync(join(ROOT, 'docs', 'next-leads.md'), docketPage)
 
-const streamPath = join(ROOT, 'docs', 'public', 'receipts.ndjson')
+const streamPath = pub('receipts.ndjson')
 const prevLine = existsSync(streamPath) ? readFileSync(streamPath, 'utf8').trim().split('\n').filter(Boolean).at(-1) : undefined
 const prev: string | null = prevLine ? (JSON.parse(prevLine) as { id?: string }).id ?? null : null
 const chained = { ...receipt, prev }
 const stamped = { id: uuidOf(JSON.stringify(chained)), sha256: createHash('sha256').update(JSON.stringify(chained)).digest('hex'), ...chained }
-writeFileSync(join(ROOT, 'docs', 'public', 'receipt.json'), JSON.stringify(stamped, null, 1) + '\n')
-appendFileSync(join(ROOT, 'docs', 'public', 'receipts.ndjson'), JSON.stringify(stamped) + '\n')
+writeFileSync(pub('receipt.json'), JSON.stringify(stamped, null, 1) + '\n')
+appendFileSync(pub('receipts.ndjson'), JSON.stringify(stamped) + '\n')
 const line = `| ${receipt.date} | ${receipt.head} · ${stamped.id} | ${receipt.steps.map((s) => `${s.name}: ${s.status}${s.counts && Object.keys(s.counts).length ? ` ${Object.entries(s.counts).map(([k, v]) => `${k}=${v}`).join(' ')}` : ''}`).join('; ')} |\n`
 const receipts = join(ROOT, 'docs', 'receipts.md')
 if (!existsSync(receipts)) writeFileSync(receipts, '---\ntitle: Receipts\norder: 49\n---\n\n# Receipts of `npm run next`\n\nOne row per run of the platform on itself: the steps, their status, and the counts read from their output.\n\n| Date | Head | Steps |\n|---|---|---|\n')

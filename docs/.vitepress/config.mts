@@ -220,10 +220,6 @@ export default defineConfig({
       {
         "text": "Metrics",
         "link": "/metrics"
-      },
-      {
-        "text": "UUID",
-        "link": "/[uuid]"
       }
     ],
     sidebar: [
@@ -393,10 +389,6 @@ export default defineConfig({
           {
             "text": "Metrics",
             "link": "/metrics"
-          },
-          {
-            "text": "UUID",
-            "link": "/[uuid]"
           }
         ]
       },

@@ -5,7 +5,7 @@ order: 57
 
 # The immutable sources of leads
 
-Read on 2026-10-27T07:41:00.138Z by `leads { sources }`: 79 of 84 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 21772 open books of which 2553 the theorems reach and 19118 of their domain are leads; 580 MCP doors proposed.
+Read on 2026-10-27T08:15:37.741Z by `leads { sources }`: 283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2598 the theorems reach and 20866 of their domain are leads; 580 MCP doors proposed.
 
 ## Licence candidates
 
@@ -25,65 +25,69 @@ Each is a candidate the court computed a case for. None is a verdict.
 
 ## Textbooks
 
-21772 open books: 2553 reached by the theorems, 19118 of their domain are leads, 101 outside.
+23679 open books: 2598 reached by the theorems, 20866 of their domain are leads, 215 outside.
 
 | theorem | books |
 | --- | --- |
-| `textbook_code_folds` | 479 |
+| `textbook_code_folds` | 480 |
 | `textbook_payload_field_types` | 467 |
-| `textbook_double_torus` | 200 |
+| `textbook_double_torus` | 201 |
 | `textbook_uuid_time_space` | 152 |
 | `textbook_patent_number_well_formed` | 142 |
 | `textbook_echo_qubits_within_willow` | 82 |
-| `textbook_collision_solves_many` | 71 |
+| `textbook_collision_solves_many` | 76 |
 | `textbook_payload_operations` | 66 |
 | `textbook_repetition_code_tenth` | 60 |
-| `computer` | 51 |
+| `computer` | 52 |
 | `textbook_gate_adapters` | 51 |
 | `textbook_willow_holds_codes` | 51 |
 | `textbook_dashboard_spaces` | 42 |
 | `superconductivity` | 40 |
-| `textbook_software_cirq_implemented` | 38 |
+| `textbook_software_cirq_implemented` | 39 |
 | `textbook_dashboard_algorithm_combinations` | 32 |
-| `textbook_error_remedies` | 28 |
+| `textbook_error_remedies` | 30 |
 | `textbook_harmonic_default` | 28 |
 | `textbook_orcid_digits` | 26 |
 | `textbook_payload_access` | 24 |
+| `textbook_repositories_by_language` | 23 |
 | `quantum` | 18 |
 | `design` | 16 |
 | `textbook_uuid_core` | 16 |
 | `textbook_step_cache_sound` | 16 |
 | `temperature` | 14 |
-| `textbook_repositories_by_language` | 14 |
 | `textbook_context_balanced` | 13 |
+| `Qpu.Federated.communication_lower_bound` | 11 |
+| `textbook_payload_schemas` | 10 |
 | `textbook_mixed_radix` | 10 |
 | `textbook_set_union` | 10 |
 | `textbook_mongo_find_filter` | 10 |
-| `Qpu.Federated.communication_lower_bound` | 9 |
 | `textbook_expressions_evaluate` | 8 |
-| `textbook_payload_schemas` | 8 |
 | `textbook_willow_distance_seven` | 8 |
+| `textbook_penalty_time_burned` | 7 |
+| `textbook_workspace_presets` | 7 |
 | `textbook_free_or_coil` | 7 |
+| `textbook_leaks_redacted` | 6 |
+| `textbook_security_perspectives` | 6 |
 | `textbook_bill_covered` | 6 |
-| `textbook_penalty_time_burned` | 6 |
 | `textbook_shor_narrowed_cells` | 6 |
 | `Qpu.ProgramSynthesis.checkLower_sound` | 6 |
+| `textbook_chain_bits` | 5 |
 | `textbook_textbook_categories` | 5 |
 | `textbook_textbooks_partition` | 5 |
-| `textbook_leaks_redacted` | 5 |
 | `textbook_shor_fifteen_order` | 5 |
 | `ramsey_three_three` | 5 |
-| `textbook_security_perspectives` | 5 |
-| `textbook_workspace_presets` | 5 |
 | `textbook_payload_queries` | 5 |
+| `Qpu.Xai.integrated_gradients_linear` | 4 |
 | `textbook_entropy_fusion` | 4 |
 | `textbook_advantage_unbounded` | 4 |
-| `textbook_chain_bits` | 4 |
 | `infinite` | 4 |
 | `textbook_codes_locales` | 4 |
 | `textbook_processor_cells` | 4 |
 | `textbook_url_combinations` | 4 |
 | `textbook_idle_scheduled_clears` | 4 |
+| `textbook_decode_not_search` | 3 |
+| `textbook_penalty_time_heat_monotone` | 3 |
+| `textbook_news_adapters` | 3 |
 | `textbook_billing_complete` | 3 |
 | `textbook_fractal_scales` | 3 |
 | `textbook_rsa_beyond_bound` | 3 |
@@ -91,12 +95,15 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_branding_sources` | 3 |
 | `Qpu.ZeroShot.semantic_transitivity` | 3 |
 | `textbook_clay_conditions` | 3 |
-| `Qpu.Xai.integrated_gradients_linear` | 3 |
 | `noise` | 3 |
 | `textbook_h2_below_hartree_fock` | 3 |
 | `textbook_integers_first` | 3 |
 | `textbook_roadmap_decades` | 3 |
 | `textbook_machine_allow_list` | 3 |
+| `textbook_rest_rbac` | 2 |
+| `textbook_penalty_learned_prevents` | 2 |
+| `textbook_edit_collides` | 2 |
+| `textbook_queneau_compositions` | 2 |
 | `cooling_stays_positive` | 2 |
 | `mersenne_127` | 2 |
 | `textbook_registry_words_searched` | 2 |
@@ -106,7 +113,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_codata_g_ppb` | 2 |
 | `Qpu.CausalInference.length_filter_partition` | 2 |
 | `Qpu.CausalInference.common_support` | 2 |
-| `textbook_penalty_time_heat_monotone` | 2 |
 | `textbook_fullstack_files_by_role` | 2 |
 | `Qpu.ProgramSynthesis.synth_typed` | 2 |
 | `textbook_wave_requests_by_lead` | 2 |
@@ -114,7 +120,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_new_doors_proven` | 2 |
 | `Qpu.ZeroShot.allClasses_length` | 2 |
 | `textbook_extend_inward` | 2 |
-| `textbook_decode_not_search` | 2 |
 | `textbook_kind_alphabet` | 2 |
 | `Qpu.CausalInference.treated_control_partition` | 2 |
 | `shor_factored` | 2 |
@@ -125,6 +130,10 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_stream_no_silence` | 2 |
 | `textbook_app_fields_validated` | 2 |
 | `sciences` | 2 |
+| `Qpu.ProgramSynthesis.size_compose` | 1 |
+| `textbook_bulgarian_statement_words` | 1 |
+| `Qpu.Federated.lt_mintOf_self` | 1 |
+| `textbook_actions_experience` | 1 |
 | `amplitudes_as_sum` | 1 |
 | `factorial_succ` | 1 |
 | `next_cover` | 1 |
@@ -158,12 +167,9 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_route_or_lead` | 1 |
 | `textbook_double_entry` | 1 |
 | `textbook_artifacts_verified` | 1 |
-| `textbook_edit_collides` | 1 |
 | `textbook_foreign_door_name` | 1 |
 | `Qpu.Federated.shares_length` | 1 |
-| `textbook_rest_rbac` | 1 |
 | `Qpu.ProgramSynthesis.double_equiv` | 1 |
-| `textbook_queneau_compositions` | 1 |
 | `textbook_qft_three_amplitudes` | 1 |
 | `textbook_tamper_detected` | 1 |
 | `Qpu.CausalInference.do_value_self` | 1 |
