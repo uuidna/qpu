@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, statSync, readdirSync, openSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawnSync, execSync, spawn } from 'node:child_process'
-import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { GENERATED_FILES, RUN_FILES } from '../src/quantum/toolboxes/repository.ts'
 import { LITERAL_ROOTS, manualDocsOf } from '../src/quantum/audit.ts'
 import { GAP_KINDS, gapKindOf } from '../src/quantum/toolboxes/billing.ts'
@@ -17,9 +17,9 @@ type Step = { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' 
 const name = process.argv[2] ?? ''
 const git = (a: string[]) => spawnSync('git', a, { encoding: 'utf8', maxBuffer: 1 << 30 }).stdout?.trim() ?? ''
 const extra = process.argv.slice(3)
-const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'repository', arguments: { workflow: name, offline: process.env.QPU_OFFLINE === '1' } } }) as { result?: { structuredContent?: { workflow?: { name: string; steps: Step[]; strict: boolean } } }; error?: { message: string } }
-if (r.error || !r.result?.structuredContent?.workflow) { console.error(`hook ${name}: ${r.error?.message ?? 'no such workflow'}`); process.exit(name === 'pre-push' ? 1 : 0) }
-const w = r.result.structuredContent.workflow
+let w: { name: string; steps: Step[]; strict: boolean } | undefined, why = 'no such workflow'
+try { w = toolCallerOf('repository')({ workflow: name, offline: process.env.QPU_OFFLINE === '1' }).workflow } catch (e) { why = (e as Error).message }
+if (!w) { console.error(`hook ${name}: ${why}`); process.exit(name === 'pre-push' ? 1 : 0) }
 let red = false
 // the open penalties first, before any step: their count, the tokens and coins they book, and each one's rule and subject
 const standing = await openPenaltiesOf()
@@ -70,7 +70,7 @@ for (const s of w.steps) {
     }
     trailers.push(`Signed-by-unit: ${signature}`); writeFileSync(path, `${body}\n\n${trailers.join('\n')}\n`); continue
   }
-  if (s.kind === 'mcp' && s.id !== 'sign') { const rr = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: s.tool!, arguments: s.arguments ?? {} } }) as { error?: { message: string } }; if (rr.error) { console.error(`hook ${name}: ${s.id}: ${rr.error.message}`); if (s.strict) red = true } }
+  if (s.kind === 'mcp' && s.id !== 'sign') { try { toolCallerOf(s.tool!)(s.arguments ?? {}) } catch (e) { console.error(`hook ${name}: ${s.id}: ${(e as Error).message}`); if (s.strict) red = true } }
 }
 // the involution of thinking: a hand edit of a generated file whose correction the docket already learned (a cleared pre-commit:automated) is
 // corrected before the decision — its antimatter (regenerate, restage: reversible, generated files only) applied and recorded as prevented — so

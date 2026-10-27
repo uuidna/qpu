@@ -12,7 +12,7 @@ if (!branch || !head || !main) done('no git, no main: nothing to do')
 if (branch === 'main') done('on main already')
 if (git('worktree', 'list', '--porcelain')?.split('\n').includes('branch refs/heads/main')) done('main is checked out in a worktree: its ref stays')
 const receipt = readJson(join(ROOT, 'docs', 'public', 'receipt.json')) as { steps?: { name: string; status: string }[] } | null
-const red = receipt?.steps?.filter((s) => s.status === 'red').map((s) => s.name) ?? []
+const red = Object.values(Object.fromEntries((receipt?.steps ?? []).map((s) => [s.name, s]))).filter((s) => s.status === 'red').map((s) => s.name)
 if (red.length) done(`the flow is red (${red.join(', ')}): main stays at ${main.slice(0, 8)}`)
 if (head === main) done(`main is HEAD already (${head.slice(0, 8)})`)
 if (git('merge-base', '--is-ancestor', 'main', 'HEAD') === null) done(`${branch} does not descend from main (${main.slice(0, 8)}): a merge that is not a fast-forward is the author's act; recorded, nothing done`)

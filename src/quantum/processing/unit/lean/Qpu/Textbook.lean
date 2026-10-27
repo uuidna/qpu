@@ -284,6 +284,8 @@ theorem textbook_actions_pinned (u p : Nat) (hu : u = 0) (hp : p = 0) : u + p = 
 theorem textbook_hook_workflows : 5 + 1 + 1 = 7 := by decide
 /-- when to commit: the flow is green — the steps of the receipt are green and skipped and no red, so adding the red (zero) changes nothing; one red step refuses the commit (examples: repository-refuse-commit) -/
 theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = green + skipped := Nat.add_zero (green + skipped)
+/-- a retried step is its last attempt: whatever the earlier attempts were, the status the green rule reads is the last one, so a step next retried to green no longer refuses the commit; every attempt stays in the receipt as history (examples: repository-retry-supersedes) -/
+theorem textbook_retry_supersedes (attempts : List Bool) (last : Bool) : (attempts ++ [last]).getLast? = some last := by simp
 /-- when to push: the version is the last tag or its one next step (one step forward, one back is the tag), and the build it names is the one the package answers on initialize (examples: repository-decide-push, configure-versions) -/
 theorem textbook_version_sequential (n : Nat) : n + 1 - 1 = n := Nat.add_sub_cancel n 1
 /-- the e2e gate decodes by majority: two agreeing copies of three decide a combination (twice two exceeds three); a push needs nothing uncorrectable (examples: repository-decide-push) -/
