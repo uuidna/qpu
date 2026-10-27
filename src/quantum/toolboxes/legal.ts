@@ -22,18 +22,7 @@ type Answer = Call & { answer?: unknown; refusal?: string }
 /** The court every cheap gate leads a violator to: the rules a gate refuses by, each named by the theorem that states it and the remedy that
  *  satisfies it; a refusal computes the case (its content address) and the MCP call the violator makes to file it — the gate writes nothing
  *  (textbook_cheap_gates), the violator's own client carries the case to the docket (kind case) or appeals through the match tool. */
-const COURT_RULES: readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[] = [
-  { rule: 'shape', violated: 'the request is not the shape the gate takes (an id, a kind, a digest, a body, the arguments a tool\'s schema names)', theorem: 'textbook_uuid_is_36', remedy: 'the shape the error names: an RFC 9562 UUID of 36 characters, a kind of lower-case letters, a digest of 64 hex digits', statuses: [400, -32602, -32700] },
-  { rule: 'role', violated: 'the role the token carries does not allow the act at this tenant', theorem: 'textbook_rest_rbac', remedy: 'the role the act needs (reader, writer, admin), the tenant\'s own token, or a licence of the catalogue', statuses: [401, 403] },
-  { rule: 'links', violated: 'a link names no entry, or an entry linked by others cannot be deleted', theorem: 'textbook_licence_chain', remedy: 'the links first: the chain walked link by link, the linking entries released before the linked one', statuses: [404, 409] },
-  { rule: 'collision', violated: 'an edit names an address the document no longer folds to', theorem: 'textbook_edit_collides', remedy: 'read the current address and edit from it; both addresses are answered, never a silent overwrite', statuses: [412] },
-  { rule: 'method', violated: 'the method is not one the gate answers', theorem: 'textbook_payload_operations', remedy: 'the methods the error lists', statuses: [405] },
-  { rule: 'route', violated: 'no such tool or method', theorem: 'textbook_url_combinations', remedy: 'tools/list for the tools; a path is composed from the cached assets its words name', statuses: [-32601] },
-  { rule: 'licence', violated: 'commercial use beyond the a432 harmonic default without a licence', theorem: 'textbook_free_or_coil', remedy: 'a licence of the catalogue through the ecommerce checkout; GDPR and KYC at Stripe', statuses: [402] },
-  { rule: 'rate', violated: 'more periods streamed than the coins cover', theorem: 'textbook_scan_links', remedy: 'the coils priced per thousand calls: the fusion', statuses: [429] },
-  { rule: 'search', violated: 'a request to find what an address hides by trying candidates: a brute-force search', theorem: 'textbook_decode_not_search', remedy: 'decode algebraically where the scheme is invertible (one step per position); a content address is one-way: what it hides stays a lead, no candidate is tried', statuses: [422] },
-  { rule: 'integrity', violated: 'fragments lost or altered beyond what one parity repairs, or a seal that fails', theorem: 'textbook_fold_mirror', remedy: 'heal from a mirror by address; a seal that fails is not an address', statuses: [500, -32603] },
-]
+const COURT_RULES: readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[] = TABLES.COURT_RULES as readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[]
 type Summons = { gate: string; status?: number; code?: number; rule?: string; evidence?: unknown; tenant?: string }
 export const summonCourt = (v: Summons) => {
   const rule = COURT_RULES.find((r) => r.rule === v.rule) ?? COURT_RULES.find((r) => r.statuses.includes(v.status ?? v.code ?? 0)) ?? COURT_RULES[0]!

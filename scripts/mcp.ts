@@ -5,6 +5,7 @@
 // caller, its one fallback binding 0 (the RAID's own copy in hex folders, every file verified by its address).
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
+import { createHash } from 'node:crypto'
 import { LICENSE } from '../src/quantum/license.ts'
 import { execFileSync } from 'node:child_process'
 import { GOOGLE_HOST } from '../src/quantum/discovery.ts'
@@ -156,6 +157,29 @@ if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'leads-run') {
   let served = 0
   for (const r of runs) { const made = await m.call('createEntries', { kind: 'call', from: 'qpu-lead-run', body: { lead: r.lead } }); const answered = ((await m.findAll('findEntries', { where: JSON.stringify({ kind: { equals: 'lead-run' } }), depth: 0 })).docs ?? []).some((e) => (e as { body?: { lead?: string; ok?: boolean } }).body?.lead === r.lead && (e as { body?: { ok?: boolean } }).body?.ok); if (answered) served++; else console.log(`${r.lead}: ${String(made.error ?? 'not served').slice(0, 160)}`) }
   console.log(`${runs.length} runnable lead(s) asked of qpu-lead-run, ${served} served`)
+}
+
+// an API contract held as Payload relations: node scripts/mcp.ts openapi-import --url <OpenAPI JSON> --ops <operationId,...>; each operation an
+// entry of kind openapi-operation and each schema it reaches one of kind openapi-schema, every $ref a links relation to the component it names,
+// created leaves first so each names ids that exist; a $ref back into its own path (a cycle) kept as the component's name, not linked
+if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'openapi-import') {
+  const a = process.argv.slice(3), flag = (n: string) => (a.includes(n) ? a[a.indexOf(n) + 1] : undefined), url = flag('--url') ?? '', ops = (flag('--ops') ?? '').split(',').filter(Boolean), m = mcpClient()
+  const text = await (await fetchWithTimeout(url, 'application/json', 180000)).text(), spec = JSON.parse(text) as { paths: Record<string, Record<string, { operationId?: string; summary?: string; requestBody?: { content?: Record<string, { schema?: unknown }> } }>>; components?: { schemas?: Record<string, unknown> } }
+  const sha256 = createHash('sha256').update(text).digest('hex'), held = new Map<string, string>(), refsOf = (x: unknown): string[] => (JSON.stringify(x ?? null).match(/"#\/components\/schemas\/[^"]+"/g) ?? []).map((r) => r.slice(22, -1))
+  // a component's id once its referenced components hold theirs: a walk with an explicit stack, a $ref on the open path left as its name
+  const idOf = async (name: string): Promise<string | null> => { const open: string[] = [], stack: { name: string; done: boolean }[] = [{ name, done: false }]
+    while (stack.length) { const top = stack[stack.length - 1]!; if (held.has(top.name)) { stack.pop(); continue }
+      const schema = spec.components?.schemas?.[top.name]; if (schema === undefined) { stack.pop(); continue }
+      const next = refsOf(schema).filter((r) => !held.has(r) && !open.includes(r) && r !== top.name)
+      if (!top.done) { top.done = true; open.push(top.name); if (next.length) { stack.push(...next.map((r) => ({ name: r, done: false }))); continue } }
+      const links = refsOf(schema).flatMap((r) => (held.has(r) ? [held.get(r)!] : [])), made = await m.call('createEntries', { kind: 'openapi-schema', from: 'openapi-import', body: { name: top.name, schema, source: url, sha256, cycles: refsOf(schema).filter((r) => !held.has(r)) }, links })
+      const id = (m.docsOf(made.text ?? '')[0] as { id?: string } | undefined)?.id; if (id) held.set(top.name, id); open.splice(open.indexOf(top.name), 1); stack.pop() }
+    return held.get(name) ?? null }
+  for (const [path, byMethod] of Object.entries(spec.paths)) for (const [method, op] of Object.entries(byMethod)) { if (!op?.operationId || !ops.includes(op.operationId)) continue
+    const schema = op.requestBody?.content?.['application/json']?.schema ?? null, links = (await Promise.all(refsOf(schema).map(idOf))).filter((x): x is string => !!x)
+    const made = await m.call('createEntries', { kind: 'openapi-operation', from: 'openapi-import', body: { operationId: op.operationId, method: method.toUpperCase(), path, summary: op.summary ?? null, requestBody: schema, source: url, sha256 }, links })
+    console.log(`${op.operationId}: ${made.error ? 'refused ' + String(made.error).slice(0, 120) : 'held, linking ' + links.length + ' schema(s)'}`) }
+  console.log(`${held.size} schema component(s) held as entries, each $ref a links relation`)
 }
 
 // a computation through the Payload app: node scripts/mcp.ts call <tool> [--arguments-file <json>] creates an entry of kind call, whose result

@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T20:48:31.079Z",
+ "date": "2026-10-27T21:06:51.394Z",
  "input": {
   "doors": [
    {
@@ -297,6 +297,11 @@
     "name": "fault-tolerant-design.nodes",
     "bytes": 111,
     "reached": false
+   },
+   {
+    "name": "leads.runnable",
+    "bytes": 235,
+    "reached": true
    },
    {
     "name": "leads.records",
@@ -1559,6 +1564,11 @@
     "reached": false
    },
    {
+    "name": "seal.gltf",
+    "bytes": 295,
+    "reached": true
+   },
+   {
     "name": "seal.text",
     "bytes": 17,
     "reached": true
@@ -2363,6 +2373,16 @@
    {
     "key": "textbook_validation_helpers",
     "bytes": 61,
+    "used": true
+   },
+   {
+    "key": "textbook_runnable_leads",
+    "bytes": 165,
+    "used": true
+   },
+   {
+    "key": "textbook_gltf_required_extensions",
+    "bytes": 124,
     "used": true
    },
    {
@@ -3768,8 +3788,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 50696,
-   "used": 41160,
+   "capacity": 51226,
+   "used": 41690,
    "idle": 9536,
    "percentIdle": 18,
    "idleNames": [
@@ -3892,8 +3912,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 27195,
-   "used": 27195,
+   "capacity": 27484,
+   "used": 27484,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

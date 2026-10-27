@@ -11,6 +11,7 @@ import { extractFacts, buildVerifyRequests, type VerifyRequest } from './verifie
 import { readNumerals, translateOf } from './i18n.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { TABLES } from './tables-index.ts'
 
 /** The route of a prompt to the theorems, decided by the theorems: every textbook theorem is indexed by the words of its key and of what it
  *  says, each word weighted by how rare it is among the theorems (ln of theorems over theorems that use it), so a common word routes nowhere and
@@ -145,16 +146,7 @@ const numbersNear = (statement: string): { property: string; value: number; phra
   return out
 }
 
-const MIRROR: Record<string, string[]> = {
-  factor: ['shor', 'order', 'period', 'semiprime'], factors: ['shor', 'order', 'period'], factorize: ['shor'], factorise: ['shor'],
-  qubit: ['qubits', 'processor', 'grid'], qubits: ['qubit', 'processor'], chip: ['processor', 'willow', 'sycamore'], chips: ['processor'],
-  error: ['noise', 'channel', 'correction', 'repetition'], errors: ['noise', 'channel'], noise: ['channel', 'error'],
-  speed: ['speedup', 'benchmark', 'echo'], fast: ['speedup', 'benchmark'], speedup: ['benchmark', 'echo'],
-  google: ['quantumai', 'willow', 'sycamore'], impossible: ['blocked', 'out_of_scope', 'bound'], possible: ['served'],
-  mirror: ['sigma', 'reflection', 'involution'], reflection: ['sigma', 'involution'], angle: ['phase', 'qft'], angles: ['phase', 'qft'], phase: ['angle', 'qft'],
-  molecule: ['chemistry', 'hydrogen', 'h2'], chemistry: ['hydrogen', 'molecule'], energy: ['chemistry', 'hydrogen'],
-  code: ['repetition', 'correction', 'stim'], decoder: ['chromobius', 'tesseract', 'stim'], paper: ['preprint', 'arxiv', 'statements'],
-}
+const MIRROR: Readonly<Record<string, readonly string[]>> = TABLES.MIRROR as Readonly<Record<string, readonly string[]>>
 /** The stem of a word: one form for token/tokens, server/servers, list/listing, so a door and a lead meet on the word, not its ending. */
 export const stem = (t: string): string => t.replace(/(ing|ed|es|s)$/, '')
 

@@ -73,17 +73,7 @@ const WHO: Readonly<Record<SetFamily, { people: string; group: string; outside: 
 const isRead = (s: string) => /readonly|freebusy|readstate|userinfo/.test(s)
 const listModes = (d: (typeof WORKSPACE_MCP)[number]) => (d.scopes.some((s) => !isRead(s)) ? (['off', 'read', 'write'] as const) : (['off', 'read'] as const))
 export const SET_RADICES: readonly number[] = [SET_FAMILIES.length, ...WORKSPACE_MCP.map((d) => listModes(d).length)]
-const ACTION: Readonly<Record<string, { read: string; write: string }>> = {
-  Gmail: { read: 'search and read the {people}\'s mail into the docket', write: 'draft mail to {outside} from the docket for a person to send' },
-  Drive: { read: 'list and read the files of the {group}', write: 'file the docket\'s answers into Drive as the app\'s own files' },
-  Docs: { read: 'read the {group}\' documents as entries', write: 'write reports for {leader} into Docs' },
-  Sheets: { read: 'read the registers of the {group} as rows', write: 'keep the {group}\' registers in Sheets from the docket' },
-  Slides: { read: 'read the decks of the {group}', write: 'build decks for {leader} from the docket' },
-  Calendar: { read: 'read the {group}\' calendars and free time', write: '' },
-  Chat: { read: 'read the {group}\' spaces', write: 'post the docket\'s signals into the {group}\' spaces' },
-  People: { read: 'read the directory of {people}', write: '' },
-  Classroom: { read: 'read courses, rosters and submissions', write: 'send the textbook\'s questions as coursework and announcements to the {group}' },
-}
+const ACTION: Readonly<Record<string, { read: string; write: string }>> = TABLES.ACTION as Readonly<Record<string, { read: string; write: string }>>
 const fill = (s: string, f: SetFamily) => s.replace(/\{(\w+)\}/g, (_m, k: string) => WHO[f][k as keyof (typeof WHO)[SetFamily]])
 export const SET_SPACE = compositionsOf(SET_RADICES)
 /** One set: by its index in the space, or by its family and the mode of each door it names. */

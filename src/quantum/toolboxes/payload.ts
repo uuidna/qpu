@@ -1408,7 +1408,10 @@ export const Entries: CollectionConfig = {
       // a chat entry: the statement, the role and any choice are its body; the hook answers it through the chat door, nothing thrown back
       if (data.kind === 'chat') data.body = { statement: String(asked?.statement ?? ''), role, ...(asked?.choice && { choice: String(asked.choice) }) }
       const chat = data.kind === 'chat' ? chatDoor(String(asked?.statement ?? ''), { role, choice: asked?.choice }) : undefined
-      const text = JSON.stringify({ kind: data.kind, from: data.from, body: data.body ?? null })
+      // the address folds the entry's relations too when it has any (the ids it links, in order of their address): the same body linking other
+      // entries is another entry; an entry without links keeps the address it always had
+      const links = Array.isArray(data.links) ? [...data.links].map((l) => String(typeof l === 'object' && l ? (l as { id?: unknown }).id : l)).sort() : []
+      const text = JSON.stringify({ kind: data.kind, from: data.from, body: data.body ?? null, ...(links.length ? { links } : {}) })
       const bytes = new TextEncoder().encode(text)
       const digest = await crypto.subtle.digest('SHA-256', bytes)
       // the API built from the config: an entry of kind call carries a tool and its arguments, and the hook answers it from the handler; the address folds the call, not the reply, so the same call is the same entry (read free, computed once)

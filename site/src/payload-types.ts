@@ -410,6 +410,18 @@ export interface Media {
    * Choose an upload to render if the visitor is using dark mode.
    */
   darkModeFallback?: (string | null) | Media;
+  /**
+   * a glTF 2.0 asset as Unreal Engine reads it: what the scene holds and its extensions by prefix (seal { gltf })
+   */
+  gltf?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -5309,6 +5321,7 @@ export interface DocsFeedbackSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   darkModeFallback?: T;
+  gltf?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
