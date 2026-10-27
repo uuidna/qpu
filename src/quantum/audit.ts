@@ -9,7 +9,7 @@ import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 import { uuidOf } from './blocks.js'
 
 export type Check = { id: string; passed: boolean; evidence: string; /** milliseconds since the previous check: where the audit's time goes */ ms?: number }
-export type Audit = { /** example key → the integers its confirmed pass folded to: the next run decides by them */ integers: Record<string, string>; /** how many examples the integers decided and how many the text confirmed */ decided: { bySeal: number; byInteger: number; byText: number; sealed: boolean; theorem: string }; /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
+export type Audit = { /** the share this run replayed: index mod n = i (n = 1 is the whole audit) */ shard: { i: number; n: number }; /** example key → the integers its confirmed pass folded to: the next run decides by them */ integers: Record<string, string>; /** how many examples the integers decided and how many the text confirmed */ decided: { bySeal: number; byInteger: number; byText: number; sealed: boolean; theorem: string }; /** the eight slowest checks, with their milliseconds: where the audit's time goes */ slowest: string[]; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[] }
 
 type Lead = { id: string; status: string; tool?: string; reason?: string }
 type ToolSpec = { name: string; description: string; inputSchema: { type?: string; required?: string[]; properties?: Record<string, unknown> } }
@@ -290,7 +290,11 @@ export const leaksOf = (texts: Readonly<Record<string, string>>, served: readonl
   return { texts: Object.keys(texts).length, findings, byKind, total: findings.reduce((n, f) => n + f.count, 0), served: findings.filter((f) => f.served).length, setAside, clean: findings.length === 0, leads, theorem: 'textbook_leaks_redacted', says: findings.length ? `${findings.reduce((n, f) => n + f.count, 0)} finding(s) in ${new Set(findings.map((f) => f.where)).size} text(s), ${findings.filter((f) => f.served).length} served publicly; values redacted, ${setAside} notation(s) set aside` : `${Object.keys(texts).length} text(s) clean; ${setAside} notation(s) set aside (block addresses, test domains)` }
 }
 
-export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}, code: string | null = null): Audit => {
+export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: { handle: (m: Rpc) => any; examples: any; leads: any }) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}, code: string | null = null, shard: { i: number; n: number } | null = null): Audit => {
+  // split by the shard theorems: an example is replayed by the shard its index falls in (index mod n, textbook_shards_cover and
+  // textbook_shards_disjoint), and the checks made once for the whole surface run in shard 0 alone
+  const n = shard && Number.isInteger(shard.n) && shard.n > 0 ? shard.n : 1, si = shard && Number.isInteger(shard.i) ? ((shard.i % n) + n) % n : 0
+  const mine = (index: number) => index % n === si, once = si === 0
   // integers first: an example (keyed by its own definition) whose answer and widget fold to the integers recorded when every text check
   // passed is decided by those integers; the text checks (the licence strings, the CSS variables, the accessibility parse, the expectation)
   // run only for an integer not yet seen, to confirm it, and a confirmed pass records it (textbook_integers_first)
@@ -303,26 +307,28 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   const checks: Check[] = []
   let clock = Date.now()
   const check = (id: string, passed: boolean, evidence: string) => { const now = Date.now(); checks.push({ id, passed, evidence, ms: now - clock }); clock = now }
+  const checkOnce = (id: string, passed: boolean, evidence: string) => { if (once) check(id, passed, evidence) }
   const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
-  check('initialize', 'result' in init && typeof init.result?.serverInfo?.version === 'string' && init.result.serverInfo.name === 'qpu', JSON.stringify(init.result?.serverInfo ?? init.error))
-  check('license:initialize', 'result' in init && init.result?.serverInfo?.license === 'CC-BY-NC-ND-4.0' && typeof init.result?.instructions === 'string' && init.result.instructions.includes('CC-BY-NC-ND-4.0'), 'serverInfo.license and instructions carry the licence')
+  checkOnce('initialize', 'result' in init && typeof init.result?.serverInfo?.version === 'string' && init.result.serverInfo.name === 'qpu', JSON.stringify(init.result?.serverInfo ?? init.error))
+  checkOnce('license:initialize', 'result' in init && init.result?.serverInfo?.license === 'CC-BY-NC-ND-4.0' && typeof init.result?.instructions === 'string' && init.result.instructions.includes('CC-BY-NC-ND-4.0'), 'serverInfo.license and instructions carry the licence')
 
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } })
   const tools: ToolSpec[] = 'result' in list ? list.result.tools : []
-  check('tools/list', tools.length > 0, `${tools.length} tools`)
+  checkOnce('tools/list', tools.length > 0, `${tools.length} tools`)
   const names = new Set(tools.map((t) => t.name))
   for (const t of tools) {
     const schema = t.inputSchema ?? {}
     const props = Object.keys(schema.properties ?? {})
     const required = schema.required ?? []
     const missing = required.filter((r) => !props.includes(r))
-    check(`schema:${t.name}`, t.description.length > 0 && schema.type === 'object' && missing.length === 0, missing.length ? `required ${missing.join(', ')} not in properties` : `${props.length} properties, ${required.length} required`)
+    checkOnce(`schema:${t.name}`, t.description.length > 0 && schema.type === 'object' && missing.length === 0, missing.length ? `required ${missing.join(', ')} not in properties` : `${props.length} properties, ${required.length} required`)
     const covered = examples.filter((e) => e.tool === t.name)
-    check(`covered:${t.name}`, covered.length > 0, covered.length ? `${covered.length} example(s)` : 'no example calls this tool')
+    checkOnce(`covered:${t.name}`, covered.length > 0, covered.length ? `${covered.length} example(s)` : 'no example calls this tool')
   }
-  for (const e of examples) {
+  for (const [index, e] of examples.entries()) {
+    if (!mine(index)) continue
     check(`example-tool:${e.id}`, names.has(e.tool), names.has(e.tool) ? e.tool : `tool ${e.tool} is not served`)
     if (!names.has(e.tool)) continue
     if (e.tool === 'audit') continue // the self example is evaluated by the caller: it would recurse here
@@ -348,7 +354,7 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
     if (checks.slice(before).every((c) => c.passed)) integers[key] = integer
   }
   // Toolboxes: every tool names one the host composes, every toolbox tests itself in its directions, every check is recorded.
-  if (toolboxes.length) {
+  if (toolboxes.length && once) {
     const named = new Map(toolboxes.flatMap((b) => b.tools.map((t) => [t.name, b.name] as const)))
     for (const t of tools) { const meta = (t as { _meta?: { toolbox?: string } })._meta; check(`toolbox:${t.name}`, typeof meta?.toolbox === 'string' && named.get(t.name) === meta.toolbox, meta?.toolbox ? `in ${meta.toolbox}` : 'names no toolbox') }
     for (const b of toolboxes) {
@@ -359,32 +365,32 @@ export const auditOf = (handle: (m: Rpc) => any, examples: readonly Example[], l
   const backed = examples.filter((e) => e.theorem)
   // a theorem of the textbook table is kernel-checked by the lean step of the same run and enters the kernel index one run later (purify): the table counts as declared, measured as the cause of every first-attempt failure after a theorem was added
   const declared = (key: string) => THEOREM_KEYS.has(key) || TEXTBOOK_THEOREMS.some((t) => t.key === key)
-  for (const e of backed) check(`theorem-exists:${e.id}`, declared(e.theorem!), THEOREM_KEYS.has(e.theorem!) ? `${e.theorem} is kernel-accepted (${THEOREMS.find((t) => t.key === e.theorem)?.statement.slice(0, 80)})` : TEXTBOOK_THEOREMS.some((t) => t.key === e.theorem) ? `${e.theorem} is declared in the textbook table (${TEXTBOOK_THEOREMS.find((t) => t.key === e.theorem)!.says}); the kernel index records it after this run's lean step` : `${e.theorem} is not among the ${THEOREMS.length} hand-written theorems the kernel accepted: a fabricated citation`)
-  check('examples-backed-by-theorems', true, `${backed.length} of ${examples.length} examples name the theorem that makes them true (${backed.map((e) => `${e.id}→${e.theorem}`).join(', ') || 'none'}); the rest are the textbook, respected, each a lead for a theorem`)
+  for (const e of backed) if (mine(examples.indexOf(e))) check(`theorem-exists:${e.id}`, declared(e.theorem!), THEOREM_KEYS.has(e.theorem!) ? `${e.theorem} is kernel-accepted (${THEOREMS.find((t) => t.key === e.theorem)?.statement.slice(0, 80)})` : TEXTBOOK_THEOREMS.some((t) => t.key === e.theorem) ? `${e.theorem} is declared in the textbook table (${TEXTBOOK_THEOREMS.find((t) => t.key === e.theorem)!.says}); the kernel index records it after this run's lean step` : `${e.theorem} is not among the ${THEOREMS.length} hand-written theorems the kernel accepted: a fabricated citation`)
+  checkOnce('examples-backed-by-theorems', true, `${backed.length} of ${examples.length} examples name the theorem that makes them true (${backed.map((e) => `${e.id}→${e.theorem}`).join(', ') || 'none'}); the rest are the textbook, respected, each a lead for a theorem`)
   const ids = new Set<string>()
   const dup = examples.filter((e) => (ids.has(e.id) ? true : (ids.add(e.id), false))).map((e) => e.id)
   // no version hides anything Lean: the ledger the resource serves is the kernel's whole count
   const lean = handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'lean://qpu/theorems' } }) as { result?: { contents?: { text: string }[] } }
   const ledger = (() => { try { return JSON.parse(lean.result?.contents?.[0]?.text ?? 'null') as { kernel: number; handWritten: number; generated: number; theorems: unknown[]; textbook: unknown[] } | null } catch { return null } })()
-  check('lean:served-whole', Boolean(ledger) && ledger!.handWritten + ledger!.generated === ledger!.kernel && ledger!.theorems.length === ledger!.handWritten && ledger!.textbook.length > 0, ledger ? `${ledger.theorems.length} theorems and ${ledger.generated} lemmas served whole of ${ledger.kernel} the kernel accepts; ${ledger.textbook.length} textbook theorems with their Lean text` : 'the lean resource is not served')
+  checkOnce('lean:served-whole', Boolean(ledger) && ledger!.handWritten + ledger!.generated === ledger!.kernel && ledger!.theorems.length === ledger!.handWritten && ledger!.textbook.length > 0, ledger ? `${ledger.theorems.length} theorems and ${ledger.generated} lemmas served whole of ${ledger.kernel} the kernel accepts; ${ledger.textbook.length} textbook theorems with their Lean text` : 'the lean resource is not served')
   const ax = axiomsOf(examples, TEXTBOOK_THEOREMS, new Set(THEOREM_KEYS ?? THEOREMS.map((t) => t.key)))
-  check('textbook:axioms-linked', ax.complete, ax.says)
-  check('example-ids-unique', dup.length === 0, dup.length ? `duplicates: ${dup.join(', ')}` : `${examples.length} unique ids`)
+  checkOnce('textbook:axioms-linked', ax.complete, ax.says)
+  checkOnce('example-ids-unique', dup.length === 0, dup.length ? `duplicates: ${dup.join(', ')}` : `${examples.length} unique ids`)
 
   const servedWithoutTool = leads.filter((l) => l.status === 'served' && !(l.tool && names.has(l.tool)))
-  check('leads:served-have-tools', servedWithoutTool.length === 0, servedWithoutTool.length ? servedWithoutTool.map((l) => `${l.id}→${l.tool ?? 'none'}`).join(', ') : `${leads.filter((l) => l.status === 'served').length} served leads name a served tool`)
+  checkOnce('leads:served-have-tools', servedWithoutTool.length === 0, servedWithoutTool.length ? servedWithoutTool.map((l) => `${l.id}→${l.tool ?? 'none'}`).join(', ') : `${leads.filter((l) => l.status === 'served').length} served leads name a served tool`)
   const unexplained = leads.filter((l) => l.status !== 'served' && !(l.reason && l.reason.length > 0))
-  check('leads:others-have-reasons', unexplained.length === 0, unexplained.length ? unexplained.map((l) => l.id).join(', ') : `${leads.length - leads.filter((l) => l.status === 'served').length} non-served leads carry a reason`)
+  checkOnce('leads:others-have-reasons', unexplained.length === 0, unexplained.length ? unexplained.map((l) => l.id).join(', ') : `${leads.length - leads.filter((l) => l.status === 'served').length} non-served leads carry a reason`)
 
   const unknownTool = call('no-such-tool', {})
-  check('error:unknown-tool', 'error' in unknownTool && unknownTool.error.code === -32601, JSON.stringify(unknownTool.error ?? unknownTool.result).slice(0, 80))
+  checkOnce('error:unknown-tool', 'error' in unknownTool && unknownTool.error.code === -32601, JSON.stringify(unknownTool.error ?? unknownTool.result).slice(0, 80))
   const unknownMethod = handle({ jsonrpc: '2.0', id: 2, method: 'no/such' })
-  check('error:unknown-method', 'error' in unknownMethod && unknownMethod.error.code === -32601, JSON.stringify(unknownMethod.error ?? unknownMethod.result).slice(0, 80))
+  checkOnce('error:unknown-method', 'error' in unknownMethod && unknownMethod.error.code === -32601, JSON.stringify(unknownMethod.error ?? unknownMethod.result).slice(0, 80))
   const badArgs = call('processor', { name: 'Mars' })
-  check('error:invalid-params', 'error' in badArgs && badArgs.error.code === -32602, JSON.stringify(badArgs.error ?? badArgs.result).slice(0, 80))
+  checkOnce('error:invalid-params', 'error' in badArgs && badArgs.error.code === -32602, JSON.stringify(badArgs.error ?? badArgs.result).slice(0, 80))
 
   const passed = checks.filter((c) => c.passed).length
-  return { integers, decided: { bySeal, byInteger, byText, sealed, theorem: 'textbook_integers_first' }, slowest: [...checks].sort((a, b) => (b.ms ?? 0) - (a.ms ?? 0)).slice(0, 8).map((c) => `${c.id} ${c.ms} ms`), total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
+  return { shard: { i: si, n }, integers, decided: { bySeal, byInteger, byText, sealed, theorem: 'textbook_integers_first' }, slowest: [...checks].sort((a, b) => (b.ms ?? 0) - (a.ms ?? 0)).slice(0, 8).map((c) => `${c.id} ${c.ms} ms`), total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
 }
 
 /** A lexical document scanned before anything in it runs: every node walked (no cap; its count and depth reported), each finding named with
