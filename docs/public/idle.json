@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T00:39:08.011Z",
+ "date": "2026-10-27T01:34:10.812Z",
  "input": {
   "doors": [
    {
@@ -964,6 +964,11 @@
     "reached": true
    },
    {
+    "name": "repository.steps",
+    "bytes": 233,
+    "reached": true
+   },
+   {
     "name": "repository.docs",
     "bytes": 269,
     "reached": true
@@ -1663,6 +1668,16 @@
    {
     "key": "textbook_penalty_visibility_harmonic",
     "bytes": 166,
+    "used": true
+   },
+   {
+    "key": "textbook_step_cache_sound",
+    "bytes": 118,
+    "used": true
+   },
+   {
+    "key": "textbook_hook_steps_monotone",
+    "bytes": 148,
     "used": true
    },
    {
@@ -2591,6 +2606,16 @@
     "used": true
    },
    {
+    "key": "textbook_stream_no_silence",
+    "bytes": 127,
+    "used": true
+   },
+   {
+    "key": "textbook_eta_from_receipts",
+    "bytes": 99,
+    "used": true
+   },
+   {
     "key": "textbook_build_fresh",
     "bytes": 130,
     "used": true
@@ -2685,7 +2710,7 @@
    },
    {
     "name": "uuidna.com",
-    "called": true
+    "called": false
    },
    {
     "name": "qpu.uuidna.com",
@@ -3428,8 +3453,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 45521,
-   "used": 36152,
+   "capacity": 45754,
+   "used": 36385,
    "idle": 9369,
    "percentIdle": 20,
    "idleNames": [
@@ -3551,8 +3576,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 20985,
-   "used": 20985,
+   "capacity": 21477,
+   "used": 21477,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []
@@ -3560,10 +3585,11 @@
   "gates": {
    "unit": "calls",
    "capacity": 108,
-   "used": 68,
-   "idle": 40,
+   "used": 67,
+   "idle": 41,
    "percentIdle": 37,
    "idleNames": [
+    "uuidna.com",
     "docs.mcp.cloudflare.com",
     "bindings.mcp.cloudflare.com",
     "bindings.mcp.cloudflare.com",

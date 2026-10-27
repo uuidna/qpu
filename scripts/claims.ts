@@ -1,6 +1,8 @@
-// The client of textbook { claims }, a step of every online next: one OpenAlex search per general theorem (open, no key), the confirmations
-// readers recorded in the docket read through the one MCP client, the answers handed to the tool, and the claims index generated beside the
-// theorems' so textbook { theorem } serves each claim with its theorem. Nothing is called recognised without a recorded confirmation.
+// The client of textbook { claims }, a step of every online next: one OpenAlex search per general theorem (open, no key), each search sealed
+// in the docket through the one MCP client with how long it stays valid, so a run searches only the theorems without a valid seal; four
+// searches at a time, a throttled or failed one asked again after a growing pause. The confirmations readers recorded in the docket are read
+// the same way, the answers handed to the tool, and the claims index generated beside the theorems' so textbook { theorem } serves each claim
+// with its theorem. Nothing is called recognised without a recorded confirmation; with no key or no app, everything is searched, never a file.
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
@@ -12,14 +14,38 @@ const ROOT = process.cwd()
 const call = toolCallerOf('textbook')
 const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
 const plan = call({ claims: true }).requests as { id: string; url: string; accept: string }[]
+const mcp = mcpOf()
+const t0 = performance.now()
+// the seals still valid: one search per theorem, the newest kept, the fields the claims door reads (doi, title, year) enough to rebuild its answer
+type Sealed = { theorem: string; url: string; status: number; results: { doi?: string; title?: string; publication_year?: number }[]; at: string; validUntil: string; validity: string }
+const now = new Date().toISOString()
+const sealedRead = await mcp.findAll('findEntries', { where: JSON.stringify({ from: { equals: 'claims-searches' } }), sort: '-createdAt', limit: 100 })
+const valid = new Map<string, Sealed>()
+for (const d of sealedRead.docs ?? []) { const b = (d as { body?: Sealed }).body; if (b && typeof b.theorem === 'string' && b.validUntil > now && b.url === plan.find((r) => r.id === b.theorem)?.url && !valid.has(b.theorem)) valid.set(b.theorem, b) }
 const answers: { id: string; status: number; text: string }[] = []
-// paced, and a throttled or failed request asked again after a growing pause, so a burst is not read as an absence
+for (const [id, b] of valid) answers.push({ id, status: b.status, text: JSON.stringify({ results: b.results }) })
+const todo = plan.filter((r) => !valid.has(r.id))
+// how long a search stays valid: the source's own Cache-Control max-age or Expires when it states one, else one day, stated as such
+const validityOf = (res: Response, at: number): { validUntil: string; validity: string } => { const age = /max-age=(\d+)/.exec(res.headers.get('cache-control') ?? '')?.[1]; if (age) return { validUntil: new Date(at + Number(age) * 1000).toISOString(), validity: `max-age ${age} s, as OpenAlex states` }; const exp = Date.parse(res.headers.get('expires') ?? ''); if (Number.isFinite(exp) && exp > at) return { validUntil: new Date(exp).toISOString(), validity: 'Expires, as OpenAlex states' }; return { validUntil: new Date(at + 86_400_000).toISOString(), validity: 'one day: OpenAlex states no lifetime' } }
+// four at a time, and a throttled or failed request asked again after a growing pause, so a burst is not read as an absence
 const pause = (ms: number) => new Promise((ok) => setTimeout(ok, ms))
-for (const r of plan) { let res: Response | null = null; for (let wait = 500; wait <= 16000; wait *= 2) { res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': UA } }).catch(() => null); if (res && res.status !== 429 && res.status < 500) break; await pause(wait) } answers.push({ id: r.id, status: res?.status ?? 0, text: res ? await res.text() : '' }); await pause(200) }
-const read = await mcpOf().findAll('findEntries', { where: JSON.stringify({ from: { equals: 'claims' } }), limit: 100 })
+const searchOf = async (r: { id: string; url: string; accept: string }) => {
+  let res: Response | null = null
+  for (let wait = 500; wait <= 16000; wait *= 2) { res = await fetch(r.url, { headers: { accept: r.accept, 'user-agent': UA } }).catch(() => null); if (res && res.status !== 429 && res.status < 500) break; await pause(wait) }
+  const at = Date.now(), text = res ? await res.text() : ''
+  answers.push({ id: r.id, status: res?.status ?? 0, text })
+  if (!res || res.status !== 200) return 0
+  let results: Sealed['results'] = []; try { results = ((JSON.parse(text) as { results?: Sealed['results'] }).results ?? []).map((w) => ({ doi: w.doi, title: w.title, publication_year: w.publication_year })) } catch { return 0 }
+  const seal = await mcp.call('createEntries', { kind: 'document', from: 'claims-searches', body: { theorem: r.id, url: r.url, status: res.status, results, at: new Date(at).toISOString(), ...validityOf(res, at) } })
+  return seal.error === undefined ? 1 : 0
+}
+let sealed = 0
+for (let i = 0; i < todo.length; i += 4) sealed += (await Promise.all(todo.slice(i, i + 4).map(searchOf))).reduce((a: number, b: number) => a + b, 0)
+const ms = Math.round(performance.now() - t0)
+const read = await mcp.findAll('findEntries', { where: JSON.stringify({ from: { equals: 'claims' } }), limit: 100 })
 const confirmations = (read.docs ?? []).map((d) => (d as { body?: { theorem?: string; doi?: string; by?: string } }).body ?? {}).filter((b): b is { theorem: string; doi: string; by: string } => typeof b.theorem === 'string' && typeof b.doi === 'string' && typeof b.by === 'string')
 const out = call({ claims: { answers, confirmations } })
 writeFileSync(join(ROOT, 'src', 'quantum', 'claims-index.ts'), `// GENERATED by scripts/claims.ts from OpenAlex and the docket's confirmations. Do not edit: the search and the readers decide.\nimport type { Claim } from './claims.js'\nexport const CLAIMS: readonly Claim[] = ${JSON.stringify(out.claims)}\n`)
 mkdirSync(join(ROOT, 'docs', 'public'), { recursive: true })
 writeFileSync(join(ROOT, 'docs', 'public', 'claims.json'), JSON.stringify({ license: LICENSE.attribution, date: new Date().toISOString(), counts: out.counts, confirmations: read.docs ? confirmations.length : read.says, claims: out.claims }, null, 1))
-console.log(`claims: ${out.says}; confirmations ${read.docs ? confirmations.length : read.says}`)
+console.log(`claims: ${out.says}; searched ${todo.length}, reused ${valid.size} sealed, ${sealed} newly sealed${sealedRead.docs ? '' : ` (seals unread: ${sealedRead.says})`}; ${ms} ms; confirmations ${read.docs ? confirmations.length : read.says}`)

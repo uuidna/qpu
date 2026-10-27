@@ -65,8 +65,11 @@ export const machinePlanOf = (r: MachineRequest, decideOf: Decide) => {
     return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args }, input: null, decision: null, says: a.says, theorems: ['textbook_machine_allow_list'] }
   }
   const decision = a.workflow ? decideOf(a.workflow, r.facts ?? {}) : null
-  if (decision && !decision.allowed) return { ...refuse('collision', `the ${a.workflow} rules refuse it: ${decision.says}`, { action: a.id, violated: decision.violated, unknown: decision.unknown }), decision }
-  return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args: a.needs === 'branch' ? [...a.args, r.branch!] : [...a.args] }, input: a.needs === 'message' ? r.message : null, decision, says: a.says, theorems: ['textbook_machine_allow_list'] }
+  // a commit runs the pre-commit hook itself, which reads the facts only the staged tree holds (the generated files compared, the staged literals)
+  // and decides the same rules strictly: a rule unknown here is deferred to it, a rule violated here refuses at once; a push decides here, all of it
+  const deferred = a.workflow === 'pre-commit' && decision && !decision.allowed && decision.violated.length === 0
+  if (decision && !decision.allowed && !deferred) return { ...refuse('collision', `the ${a.workflow} rules refuse it: ${decision.says}`, { action: a.id, violated: decision.violated, unknown: decision.unknown }), decision }
+  return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args: a.needs === 'branch' ? [...a.args, r.branch!] : [...a.args] }, input: a.needs === 'message' ? r.message : null, decision, deferred: deferred ? decision!.unknown : [], says: a.says, theorems: ['textbook_machine_allow_list'] }
 }
 
 export type MachineRun = { action: string; command: { cmd: string; args: readonly string[] }; status: number | null; stdout: string; stderr: string; ms: number; root: string; home?: string }
