@@ -397,7 +397,7 @@ the Google Quantum AI layer: the Willow processor as its spec sheet states it, C
 | [algorithm-qaoa](https://qpu.uuidna.com/b2d82153-9d7a-63d9-904e-37bd98d44c10) | algorithm | qaoa_all | QAOA on the Cirq page's instance, sampled from the state's probabilities. |
 | [software](https://qpu.uuidna.com/941ef62e-d97b-2438-bfc8-22ae9e5da781) | software | — | The Software page tools; only Cirq is implemented here. |
 | [statements-cirq](https://qpu.uuidna.com/cf045c24-4162-80c8-af47-3aef3773ea54) | statements | — | One statement by topic. |
-| [repositories](https://qpu.uuidna.com/c8ff34b6-4a58-49f5-8fb8-ae6ede24fd0c) | repositories | — | The fifteen quantumlib repositories. |
+| [repositories](https://qpu.uuidna.com/c8ff34b6-4a58-49f5-8fb8-ae6ede24fd0c) | repositories | — | The quantumlib repositories Payload holds, every one listed. |
 | [qec-bit-flip-0.1](https://qpu.uuidna.com/34ef4c03-bee3-3cea-b2f7-2970fe3a447e) | quantum-error-correction | textbook_bit_flip_purity | The three-qubit repetition code on the density matrix at p = 0.1: logical error 3p² − 2p³ = 0.028, below the raw 0.1. |
 | [chemistry-h2](https://qpu.uuidna.com/a67a70bc-0295-108e-a2e0-fdbc56563622) | chemistry-simulation | textbook_h2_below_hartree_fock | H₂ in STO-3G at 0.7414 Å: the Hartree–Fock energy from the simulator is −1.1167 Ha and the variational minimum lies below it near −1.137 Ha. |
 | [ftqc-all](https://qpu.uuidna.com/f41cbc11-4002-37a1-94a3-fa5c4a912429) | fault-tolerant-design | surfacecode_all | Resource counts read from six circuits this tree builds; one Toffoli costs 7 T gates by the cited decomposition. |
