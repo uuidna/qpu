@@ -51,7 +51,7 @@ const natOf = (src: string): number | null => {
 /** The textbook's closed equations: a theorem `name : <closed expression> = <n> := by decide` is a question whose answer the kernel decided. */
 export const questionsOf = () => TEXTBOOK_THEOREMS.flatMap((t) => { const m = /^theorem\s+(\S+)\s*:\s*(.+?)\s*=\s*(\d+)\s*:=\s*by decide$/.exec(t.lean); if (!m) return []; const v = natOf(m[2]!); return v === null ? [] : [{ theorem: t.key, ask: `${m[2]} = ?`, answer: Number(m[3]), recomputed: v, says: t.says }] })
 
-export type InstitutionRequest = { /** the tenant (its id) every page and entry is assigned to: tenant-scoped collections refuse a record without one */ tenant?: string; presets?: boolean; preset?: { index?: number | string; family?: string; doors?: Record<string, string> }; edition?: string; users?: number; theorems?: string[]; course?: string; answers?: { theorem: string; answer: number | string }[] }
+export type InstitutionRequest = { /** the tenant (its id) every page and entry is assigned to: tenant-scoped collections refuse a record without one */ tenant?: string; sets?: boolean; set?: { index?: number | string; family?: string; doors?: Record<string, string> }; edition?: string; users?: number; theorems?: string[]; course?: string; answers?: { theorem: string; answer: number | string }[] }
 /** An institution's whole plan: its edition and bill under the cap, the Workspace doors it opens and how each lands, the textbook's
  *  questions as Classroom coursework, every record as a docket entry through the Payload MCP, answers graded by recomputation, and the
  *  acts that are the institution's own. */
@@ -77,22 +77,22 @@ export const institutionOf = (r: InstitutionRequest) => {
   return { id: uuidOf(content), edition: { id: e.id, family: e.family, name: e.name, needs: e.needs ?? null, adds: e.adds, source: e.source }, users, within, cap: e.cap, bill, doors, coursework, questions: all.length, graded, tenant: { settings: { institution: { edition: e.id, users } } }, acts, payloadMcp: 'every door\'s records and every coursework land through the Payload MCP plugin as createEntries calls (the docket, the RAID); the plugin serves this door as the textbook tool', says: `${e.name} for ${users} user(s): ${within ? 'within' : 'beyond'} the cap${e.cap === null ? ' (none)' : ` of ${e.cap}`}; ${bill ? `${bill.perMonth} ${bill.currency} a month` : 'no published price'}; ${doors.length} Workspace doors; ${coursework.length} textbook question(s) as Classroom coursework`, theorems: ['textbook_institution_bill', 'textbook_integrations_are_thirty_five'] }
 }
 
-// ── Presets of use cases: every institution family by every door off, read or write ─────────────────────────────────────────────────
-// A preset is a composition in mixed radix: one digit per Workspace door (off, read, or write where the door has a write scope), the family
+// ── Sets of use cases: every institution family by every door off, read or write ─────────────────────────────────────────────────
+// A set is a composition in mixed radix: one digit per Workspace door (off, read, or write where the door has a write scope), the family
 // before them. Its scopes are least privilege (read scopes for a read, read and write scopes for a write), its role the tenant role it
 // needs (a write needs a writer), its records land in the docket through the Payload MCP, and its page is a qpu block the admin edits,
 // rendered by the shadcn items its own address picks. Any of the space is addressable by its index; the singles are named.
 
-export const PRESET_FAMILIES = ['education', 'nonprofit', 'workspace'] as const
-export type PresetFamily = (typeof PRESET_FAMILIES)[number]
-const WHO: Readonly<Record<PresetFamily, { people: string; group: string; outside: string; leader: string }>> = {
+export const SET_FAMILIES = ['education', 'nonprofit', 'workspace'] as const
+export type SetFamily = (typeof SET_FAMILIES)[number]
+const WHO: Readonly<Record<SetFamily, { people: string; group: string; outside: string; leader: string }>> = {
   education: { people: 'teachers and students', group: 'classes', outside: 'guardians', leader: 'the school\'s administrators' },
   nonprofit: { people: 'staff and volunteers', group: 'programmes', outside: 'donors and partners', leader: 'the board' },
   workspace: { people: 'employees', group: 'teams', outside: 'customers', leader: 'management' },
 }
 const isRead = (s: string) => /readonly|freebusy|readstate|userinfo/.test(s)
 export const modesOf = (d: (typeof WORKSPACE_MCP)[number]) => (d.scopes.some((s) => !isRead(s)) ? (['off', 'read', 'write'] as const) : (['off', 'read'] as const))
-export const PRESET_RADICES: readonly number[] = [PRESET_FAMILIES.length, ...WORKSPACE_MCP.map((d) => modesOf(d).length)]
+export const SET_RADICES: readonly number[] = [SET_FAMILIES.length, ...WORKSPACE_MCP.map((d) => modesOf(d).length)]
 const ACTION: Readonly<Record<string, { read: string; write: string }>> = {
   Gmail: { read: 'search and read the {people}\'s mail into the docket', write: 'draft mail to {outside} from the docket for a person to send' },
   Drive: { read: 'list and read the files of the {group}', write: 'file the docket\'s answers into Drive as the app\'s own files' },
@@ -104,28 +104,28 @@ const ACTION: Readonly<Record<string, { read: string; write: string }>> = {
   People: { read: 'read the directory of {people}', write: '' },
   Classroom: { read: 'read courses, rosters and submissions', write: 'send the textbook\'s questions as coursework and announcements to the {group}' },
 }
-const fill = (s: string, f: PresetFamily) => s.replace(/\{(\w+)\}/g, (_m, k: string) => WHO[f][k as keyof (typeof WHO)[PresetFamily]])
-export const PRESET_SPACE = compositionsOf(PRESET_RADICES)
-/** One preset: by its index in the space, or by its family and the mode of each door it names. */
-export const presetOf = (p: { index?: number | string; family?: string; doors?: Record<string, string> }) => {
+const fill = (s: string, f: SetFamily) => s.replace(/\{(\w+)\}/g, (_m, k: string) => WHO[f][k as keyof (typeof WHO)[SetFamily]])
+export const SET_SPACE = compositionsOf(SET_RADICES)
+/** One set: by its index in the space, or by its family and the mode of each door it names. */
+export const setOf = (p: { index?: number | string; family?: string; doors?: Record<string, string> }) => {
   let digits: number[]
-  if (p.index !== undefined) { const i = BigInt(p.index); if (i < 0n || i >= PRESET_SPACE) throw new Error(`a preset index is below ${PRESET_SPACE}`); digits = compositionOf(PRESET_RADICES, i) }
+  if (p.index !== undefined) { const i = BigInt(p.index); if (i < 0n || i >= SET_SPACE) throw new Error(`a set index is below ${SET_SPACE}`); digits = compositionOf(SET_RADICES, i) }
   else {
-    const f = PRESET_FAMILIES.indexOf(p.family as PresetFamily); if (f < 0) throw new Error(`a family is one of ${PRESET_FAMILIES.join(', ')}`)
+    const f = SET_FAMILIES.indexOf(p.family as SetFamily); if (f < 0) throw new Error(`a family is one of ${SET_FAMILIES.join(', ')}`)
     digits = [f, ...WORKSPACE_MCP.map((d) => { const m = p.doors?.[d.product] ?? 'off'; const k = (modesOf(d) as readonly string[]).indexOf(m); if (k < 0) throw new Error(`${d.product} is ${modesOf(d).join(' or ')}`); return k })]
   }
-  const family = PRESET_FAMILIES[digits[0]!]!
+  const family = SET_FAMILIES[digits[0]!]!
   const doors = WORKSPACE_MCP.map((d, i) => ({ d, mode: modesOf(d)[digits[i + 1]!]! })).filter((x) => x.mode !== 'off')
   const scopes = [...new Set(doors.flatMap(({ d, mode }) => d.scopes.filter((s) => mode === 'write' || isRead(s))))].map((s) => WORKSPACE_SCOPE_PREFIX + s)
   const role = doors.some((x) => x.mode === 'write') ? 'writer' : 'reader'
-  const index = compositionIndexOf(PRESET_RADICES, digits)
-  const id = uuidOf(JSON.stringify({ preset: 'workspace', digits }))
+  const index = compositionIndexOf(SET_RADICES, digits)
+  const id = uuidOf(JSON.stringify({ set: 'workspace', digits }))
   const uses = doors.map(({ d, mode }) => `${d.product}: ${fill(ACTION[d.product]![mode as 'read' | 'write'], family)}`)
   const title = doors.length ? `${family[0]!.toUpperCase()}${family.slice(1)}: ${doors.map(({ d, mode }) => `${d.product} ${mode}`).join(', ')}` : `${family[0]!.toUpperCase()}${family.slice(1)}: no door`
-  return { id, index: index.toString(), family, doors: doors.map(({ d, mode }) => ({ product: d.product, mode, url: d.url })), scopes, role, uses, title, editions: EDITIONS.filter((e) => e.family === family).map((e) => e.id), lands: doors.map(({ d }) => createCallOf('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' })), ui: presentationOf(id.replace(/-/g, '')).layout, theorem: 'textbook_workspace_presets' }
+  return { id, index: index.toString(), family, doors: doors.map(({ d, mode }) => ({ product: d.product, mode, url: d.url })), scopes, role, uses, title, editions: EDITIONS.filter((e) => e.family === family).map((e) => e.id), lands: doors.map(({ d }) => createCallOf('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' })), ui: presentationOf(id.replace(/-/g, '')).layout, theorem: 'textbook_workspace_sets' }
 }
 /** The space and its named singles: every family with one door in one mode. */
-export const presetsOf = () => {
-  const singles = PRESET_FAMILIES.flatMap((family) => WORKSPACE_MCP.flatMap((d) => modesOf(d).filter((m) => m !== 'off').map((m) => presetOf({ family, doors: { [d.product]: m } }))))
-  return { space: PRESET_SPACE.toString(), radices: PRESET_RADICES, perFamily: (PRESET_SPACE / BigInt(PRESET_FAMILIES.length)).toString(), families: PRESET_FAMILIES, singles, says: `every family by every door off, read or write: ${PRESET_SPACE} presets, each addressable by its index; ${singles.length} named singles`, theorem: 'textbook_workspace_presets' }
+export const familySetsOf = () => {
+  const singles = SET_FAMILIES.flatMap((family) => WORKSPACE_MCP.flatMap((d) => modesOf(d).filter((m) => m !== 'off').map((m) => setOf({ family, doors: { [d.product]: m } }))))
+  return { space: SET_SPACE.toString(), radices: SET_RADICES, perFamily: (SET_SPACE / BigInt(SET_FAMILIES.length)).toString(), families: SET_FAMILIES, singles, says: `every family by every door off, read or write: ${SET_SPACE} sets, each addressable by its index; ${singles.length} named singles`, theorem: 'textbook_workspace_sets' }
 }

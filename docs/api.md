@@ -31,7 +31,7 @@ Everything goes through one MCP endpoint: POST /mcp takes JSON-RPC 2.0 (initiali
 
 ## The standard contract
 
-The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the endpoint table and never written by hand: 9 paths, 48 component schemas (every tool and the two JSON-RPC envelopes). It stands inside the discovery document at `/.well-known/qpu.json` and as the MCP resource `openapi://qpu`; the tree's own discovery reads it as `openapi 3.1.0` (9 paths, 83,596 chars), the way it reads every other host's contract.
+The same surface as an OpenAPI 3.1.0 document, derived from tools/list and the endpoint table and never written by hand: 9 paths, 48 component schemas (every tool and the two JSON-RPC envelopes). It stands inside the discovery document at `/.well-known/qpu.json` and as the MCP resource `openapi://qpu`; the tree's own discovery reads it as `openapi 3.1.0` (9 paths, 83,578 chars), the way it reads every other host's contract.
 
 ## Headers
 

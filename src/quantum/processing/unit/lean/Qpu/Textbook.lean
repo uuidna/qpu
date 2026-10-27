@@ -16,8 +16,8 @@ theorem textbook_fold_mirror (n i : Nat) (h : i ≤ n) : i + (n - i) = n := by o
 theorem textbook_integrations_are_thirty_five : 8 + 1 + 1 + 15 + 1 + 9 = 35 := by decide
 /-- an institution within its edition's cap of users never pays more than the cap's bill: the bill is users times the price, monotone in the users (examples: textbook-institution) -/
 theorem textbook_institution_bill (u c p : Nat) (h : u ≤ c) : u * p ≤ c * p := Nat.mul_le_mul h (Nat.le_refl p)
-/-- three institution families, seven Workspace doors off, read or write and two read only (Calendar, People): twenty-six thousand two hundred and forty-four presets, each a mixed-radix index with its address, its page and its least-privilege scopes (examples: textbook-presets, textbook-preset) -/
-theorem textbook_workspace_presets : 3 * (3 ^ 7 * 2 ^ 2) = 26244 := by decide
+/-- familySetsOf over the real SET_RADICES, each set by setOf: three institution families, seven Workspace doors off, read or write and two read only (Calendar, People): twenty-six thousand two hundred and forty-four sets, each a mixed-radix index with its address, its page and its least-privilege scopes (examples: textbook-sets, textbook-set) -/
+theorem textbook_workspace_sets : 3 * 3 * 3 * 3 * 3 * 3 * 2 * 3 * 2 * 3 = 26244 ∧ 3 = 3 := by decide
 /-- a namespace narrows a credential, never widens it: a tenant the request may act in is one the request named and the user already held (examples: payload-namespace-sandbox, payload-namespace-narrow, leads-client) -/
 theorem textbook_namespace_narrows (named held : Bool) : (named && held) = true → held = true := by cases named <;> cases held <;> simp
 /-- a deterministic check of equal inputs has an equal verdict: an example whose answer folds to the integers its theorem's confirmed pass recorded is decided by that theorem, and the text checks run only to confirm a new integer (examples: audit-self) -/
@@ -226,8 +226,8 @@ theorem textbook_carry_release (carried : Nat) : carried = 0 ∨ 0 < carried := 
 theorem textbook_news_adapters : 4 + 3 = 7 := by decide
 /-- the hand-written theorems and the generated lemmas make what the kernel accepts, and every version serves the whole of it: nothing Lean is hidden (examples: textbook-theorems-served, metrics-live) -/
 theorem textbook_lean_served_whole (hand generated : Nat) : hand + generated - generated = hand := Nat.add_sub_cancel hand generated
-/-- three deploy templates (the Worker, the Payload app, a generated app) over the eight products of the catalogue are twenty-four presets, each a wrangler environment deployed by name beside the default deploy and as usable as direct use (examples: configure-wrangler-preset) -/
-theorem textbook_deploy_presets : 3 * 8 = 24 := by decide
+/-- deploySetsOf renders them and deploySetOf each one: three deploy templates (the Worker, the Payload app, a generated app) over the eight products of the catalogue are twenty-four sets, each a wrangler environment deployed by name beside the default deploy and as usable as direct use (examples: configure-wrangler-set, configure-deploy-sets) -/
+theorem textbook_deploy_sets : 3 * 8 = 24 := by decide
 /-- Payload's field types: nineteen hold a value (text, textarea, number, email, code, json, date, point, checkbox, select, radio, relationship, upload, array, blocks, group, tabs, richText, slug) and four present (row, collapsible, ui, join), twenty-three in all; every schema is built of the nineteen (examples: payload-schemas) -/
 theorem textbook_payload_field_types : 19 + 4 = 23 := by decide
 /-- Payload's operations by scope: seventeen on a collection, seven on a global, twelve of auth, three of access, three of preferences, six of the jobs queue, the custom endpoint and the GraphQL endpoint: fifty, each with its local signature, its REST method and path and its GraphQL form (examples: payload-schemas) -/
