@@ -31,9 +31,9 @@ const spawnRun = (plan: { action: string; command: { cmd: string; args: readonly
 // machine's own file, beside the run's record in Entries; it is never a docket entry of its own.
 import { appendFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
-import { etaOf, type StreamEvent } from '../src/quantum/machine.ts'
+import { etaOf, type StreamEvent } from '../src/quantum/machine.js'
 
-const runFiles = async () => (await import('../src/quantum/toolboxes/repository.ts')).RUN_FILES
+const runFiles = async () => (await import('../src/quantum/toolboxes/repository.js')).RUN_FILES
 export const streamOf = async (root: string) => {
   const file = join(root, (await runFiles()).stream)
   mkdirSync(dirname(file), { recursive: true })
@@ -69,7 +69,7 @@ export const runMachine = async (plan: { action: string; command: { cmd: string;
 export const now = async (root: string, last = 20) => {
   const file = join(root, (await runFiles()).stream)
   const events = existsSync(file) ? readFileSync(file, 'utf8').trim().split('\n').flatMap((l) => { try { return [JSON.parse(l)] } catch { return [] } }) : []
-  const { toolCallerOf } = await import('../src/quantum/mcp.ts')
+  const { toolCallerOf } = await import('../src/quantum/mcp.js')
   return toolCallerOf('repository')({ status: { events, times: await timesOf(root), last } })
 }
 
