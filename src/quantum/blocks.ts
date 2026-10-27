@@ -10,26 +10,33 @@ import { LICENSE, attributionHtml } from './license.js'
 
 export type Block = { id: string; html: string; theme: { key: number; hue: number; cmyk: { c: number; m: number; y: number; k: number }; accent: string }; openGraph: OpenGraph; shadcn: RegistryItem }
 
-/** FNV-1a 64 fold of a string to 16 lowercase hex digits, the fold the unit builds every receipt and address on. */
-export const foldOf = (text: string): string => {
-  let h = 0xcbf29ce484222325n
-  for (let i = 0; i < text.length; i++) { h ^= BigInt(text.charCodeAt(i)); h = (h * 0x100000001b3n) & 0xffffffffffffffffn }
-  return h.toString(16).padStart(16, '0')
+/** FNV-1a 64 in 16-bit limbs, low first, continued over text: foldOf(a + b) is foldFrom(foldFrom(OFFSET, a), b). O(n), no BigInt. */
+type Limbs = [number, number, number, number]
+const OFFSET: Limbs = [0x2325, 0x8422, 0x9ce4, 0xcbf2]
+const foldFrom = ([h0, h1, h2, h3]: Limbs, text: string): Limbs => {
+  for (let i = 0; i < text.length; i++) {
+    h0 ^= text.charCodeAt(i)
+    const t0 = h0 * 0x1b3, t1 = h1 * 0x1b3 + (t0 >>> 16), t2 = h2 * 0x1b3 + (h0 << 8) + (t1 >>> 16)
+    h3 = (h3 * 0x1b3 + (h1 << 8) + (t2 >>> 16)) & 0xffff; h0 = t0 & 0xffff; h1 = t1 & 0xffff; h2 = t2 & 0xffff
+  }
+  return [h0, h1, h2, h3]
 }
-const bigPowMod = (base: bigint, exp: bigint, modulus: bigint): bigint => { if (modulus <= 1n) return 0n; let x = 1n % modulus, b = ((base % modulus) + modulus) % modulus, e = exp; while (e > 0n) { if (e % 2n === 1n) x = (x * b) % modulus; b = (b * b) % modulus; e /= 2n } return x }
+const hexOf = (limbs: Limbs): string => limbs.map((l) => l.toString(16).padStart(4, '0')).reverse().join('')
+/** FNV-1a 64 fold of a string to 16 lowercase hex digits, the fold the unit builds every receipt and address on. O(n). */
+export const foldOf = (text: string): string => hexOf(foldFrom(OFFSET, text))
+/** The version nibble the other 31 digits decide: 1 + (rest^7 mod 91) mod 8, exact in numbers (r^7 < 2^53). O(1). */
+const versionOf = (digits: string): string => { const r = [...digits].reduce((m, d, i) => (i === 12 ? m : (m * 16 + parseInt(d, 16)) % 91), 0); return (1 + ((r ** 7) % 91) % 8).toString(16) }
+const dashedOf = (h: string): string => `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`
+/** 32 hex digits stamped and grouped 8-4-4-4-12: the version nibble (position 12) is DECIDED by the other 31. O(1). */
+export const stampOf = (digits: string): string => dashedOf(`${digits.slice(0, 12)}${versionOf(digits)}${digits.slice(13)}`)
 /** The unit's content UUID, ported one for one from uuidna's shapeUuidOf: two folds, of the text and of the text marked,
  *  laid out 12+1+3 | variant | 3+12 as 8-4-4-4-12, the variant nibble from the low fold (8..b), and the version nibble
  *  DECIDED by the content: 1 + (rest^rays mod C(faces, coins)) mod mintOf(n) = 1 + (rest^7 mod 91) mod 8, so a tampered
- *  middle wears a version its content does not. The same text gives the same UUID here and at uuidna.com. */
-/** 32 hex digits stamped and grouped 8-4-4-4-12: the version nibble (position 12) is DECIDED by the other 31. */
-export const stampOf = (digits: string): string => {
-  const rest = `${digits.slice(0, 12)}${digits.slice(13)}`
-  const version = (1 + Number(bigPowMod(BigInt(`0x${rest}`), 7n, 91n) % 8n)).toString(16)
-  return `${digits.slice(0, 8)}-${digits.slice(8, 12)}-${version}${digits.slice(13, 16)}-${digits.slice(16, 20)}-${digits.slice(20, 32)}`
-}
+ *  middle wears a version its content does not. The same text gives the same UUID here and at uuidna.com. O(n), one fold. */
 export const uuidOf = (text: string): string => {
-  const high = foldOf(text)
-  const low = foldOf(`${text}\u0000shape`)
+  const state = foldFrom(OFFSET, text)
+  const high = hexOf(state)
+  const low = hexOf(foldFrom(state, '\u0000shape'))
   const variant = ((parseInt(low.slice(0, 1), 16) % 4) + 8).toString(16)
   return stampOf(`${high.slice(0, 12)}${high.slice(15, 16)}${high.slice(12, 15)}${variant}${low.slice(1, 4)}${low.slice(4, 16)}`)
 }
@@ -71,8 +78,7 @@ export const sealOf = (uuid: string): { valid: boolean; shape: boolean; variant:
   if (!shape) return { valid: false, shape, variant: false, version: { found: '', expected: '', agree: false } }
   const digits = uuid.replace(/-/g, '')
   const found = digits[12]!
-  const rest = `${digits.slice(0, 12)}${digits.slice(13)}`
-  const expected = (1 + Number(bigPowMod(BigInt(`0x${rest}`), 7n, 91n) % 8n)).toString(16)
+  const expected = versionOf(digits)
   const variant = /^[89ab]$/.test(digits[16]!)
   return { valid: variant && found === expected, shape, variant, version: { found, expected, agree: found === expected } }
 }
@@ -103,7 +109,6 @@ export const tailReadingsOf = (tail: string) => {
     referrer: { handle: tail.slice(0, 8), flags: parseInt(tail.slice(8), 16) },
     colour: { rgb: `#${tail.slice(0, 6)}`, key: parseInt(tail.slice(6), 16) / 0xffffff },
     coordinate: { lat: Math.round((two24[0]! / 0xffffff * 180 - 90) * 1e6) / 1e6, lon: Math.round((two24[1]! / 0xffffff * 360 - 180) * 1e6) / 1e6 },
-    // the unit's ℤ/9 convention (run_sequence): the digital root is the seed, its dz-mirror 10 − d the reflection, 5 the fixed point
     // the 9-vortex: the seed, its reflection under σ_10 (the involution the kernel holds: 10 - (10 - x) = x), the trinity the
     // seed belongs to and the trinity it reflects into at the same time — 3, 6, 9 reflect to 7, 4, 1 and back; 2, 5, 8 reflect
     // into themselves with 5 fixed — and whether the seed sits in the key's trinity (432 → 4 + 3 + 2 = 9 → 3, 6, 9)
@@ -119,7 +124,7 @@ export const channelOf = (uuid: string) => {
   const handle = hex.slice(0, 8)
   const middle = hex.slice(8, 20)
   const tail = hex.slice(20, 32)
-  const program = [...middle].map((c, i) => ({ nibble: c, kept: i === 4 || i === 8, value: parseInt(c, 16) })).filter((n) => !n.kept).map((n) => n.value)
+  const program = [...middle].filter((_c, i) => i !== 4 && i !== 8).map((c) => parseInt(c, 16))
   return {
     uuid, handle, middle, tail, program, version: middle[4]!, variant: middle[8]!,
     message: tailReadingsOf(tail),
@@ -133,9 +138,10 @@ export const channelOf = (uuid: string) => {
  *  parts (Qpu.Sigma: σ_d(σ_d(x)) = x); the version nibble is decided afresh each time, so only the parts round-trip, by design. */
 export const reflectionOf = (uuid: string) => {
   const ch = channelOf(uuid)
-  const handle = [...ch.handle].map((c) => (15 - parseInt(c, 16)).toString(16)).join('')
+  const complementOf = (hex: string) => [...hex].map((c) => (15 - parseInt(c, 16)).toString(16)).join('')
+  const handle = complementOf(ch.handle)
   const program = ch.program.map((n) => 15 - n)
-  const tail = [...ch.tail].map((c) => (15 - parseInt(c, 16)).toString(16)).join('')
+  const tail = complementOf(ch.tail)
   const mirror = uuidFromParts(handle, program, tail)
   return { of: uuid, mirror, handle, program, tail, readings: tailReadingsOf(tail), fixed: ch.program.filter((n) => n === 15 - n).length, note: 'σ_15 on nibbles has no fixed point; the pair is two states held at once' }
 }
@@ -146,10 +152,6 @@ export const canonicalTextOf = (value: unknown): string =>
     : value !== null && typeof value === 'object' ? `{${Object.keys(value as object).sort().map((k) => `${JSON.stringify(k)}:${canonicalTextOf((value as Record<string, unknown>)[k])}`).join(',')}}`
     : typeof value === 'number' && !Number.isFinite(value) ? `"${value}"` : JSON.stringify(value) ?? 'null'
 
-const describe = (structured: unknown): string => {
-  const text = JSON.stringify(structured) ?? ''
-  return text
-}
 
 const escapeOf = (t: string): string => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
@@ -163,7 +165,7 @@ export const blockOf = (tool: string, args: Record<string, unknown>, structured:
     id,
     html: wrapped,
     theme: { key: KEY, hue: hueOf(KEY), cmyk: cmykOfUuid(id), accent: accentOfUuid(id) },
-    openGraph: { 'og:title': `${tool} · @uuidna/qpu`, 'og:description': describe(structured), 'og:type': 'website', 'og:url': `qpu://tools/${tool}${query}`, 'og:site_name': '@uuidna/qpu', 'article:author': LICENSE.author, license: `${LICENSE.spdx} ${LICENSE.url}` },
+    openGraph: { 'og:title': `${tool} · @uuidna/qpu`, 'og:description': JSON.stringify(structured) ?? '', 'og:type': 'website', 'og:url': `qpu://tools/${tool}${query}`, 'og:site_name': '@uuidna/qpu', 'article:author': LICENSE.author, license: `${LICENSE.spdx} ${LICENSE.url}` },
     shadcn: {
       $schema: 'https://ui.shadcn.com/schema/registry-item.json',
       name: `qpu-${tool}-${id.slice(0, 8)}`,
@@ -203,7 +205,7 @@ export const presentationOf = (hex: string) => {
   const clean = hex.toLowerCase().replace(/[^0-9a-f]/g, '')
   if (!clean) throw new Error('a hex string presents itself: give one')
   const nibbles = [...clean].map((c) => parseInt(c, 16))
-  const uuid = /^[0-9a-f]{32}$/.test(clean) ? `${clean.slice(0, 8)}-${clean.slice(8, 12)}-${clean.slice(12, 16)}-${clean.slice(16, 20)}-${clean.slice(20)}` : uuidOf(clean)
+  const uuid = /^[0-9a-f]{32}$/.test(clean) ? dashedOf(clean) : uuidOf(clean)
   const style = styleOf(uuid)
   const parts = nibbles.map((n, i) => ({ at: i, nibble: n.toString(16), item: PRESENTABLE_ITEMS[n % 8]!, variant: n < 8 ? 'solid' : 'outline' }))
   const layout = parts.map((p) => `<${p.item.replace(/^qpu-/, 'Qpu').replace(/^Qpu(.)/, (_m, c: string) => `Qpu${c.toUpperCase()}`)} variant="${p.variant}" uuid="${uuid}" />`).join('\n')
@@ -249,7 +251,7 @@ export const uuidSchemasOf = (uuid: string) => {
       v7: { unix_ts_ms: Number(BigInt('0x' + hex.slice(0, 12))), time: safeDate(() => new Date(Number(BigInt('0x' + hex.slice(0, 12)))).toISOString()), rand_a: hex.slice(13, 16), rand_b: hex.slice(16) },
       v8: { custom_a: hex.slice(0, 12), custom_b: hex.slice(13, 16), custom_c: hex.slice(16), says: 'custom bits: here the handle, the program and the tail' },
     },
-    core: { channel: channelOf(`${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`), says: 'the channel reads the handle, the program and the tail: the same under every schema' },
+    core: { channel: channelOf(dashedOf(hex)), says: 'the channel reads the handle, the program and the tail: the same under every schema' },
     schemasRead: UUID_SCHEMAS.length + 2,
   }
 }

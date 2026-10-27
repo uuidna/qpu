@@ -69,12 +69,12 @@ test('every tool result carries an Open Graph block and a shadcn registry item w
     assert.equal(meta.block.type, 'registry:block')
     assert.equal(meta.block.files[0]!.content, meta.widget)
   }
-  assert.equal(foldOf('qpu'), foldOf('qpu'))
-  assert.match(foldOf('qpu'), /^[0-9a-f]{16}$/)
   assert.notEqual(blockOf('a', {}, 1, '', '').id, blockOf('b', {}, 1, '', '').id)
 })
 
-test('blocks and receipts are named by content-addressed RFC 9562 v8 UUIDs, and DOIs are verified by a trinity', () => {
+test('small: blocks and receipts are named by content-addressed RFC 9562 v8 UUIDs over FNV-1a 64, and DOIs are verified by a trinity', () => {
+  const fnv = (t: string) => [...Array(t.length).keys()].reduce((h, i) => ((h ^ BigInt(t.charCodeAt(i))) * 0x100000001b3n) % 2n ** 64n, 0xcbf29ce484222325n).toString(16).padStart(16, '0')
+  for (const t of ['', 'qpu', 'Ⰰ漢字', 'x'.repeat(4096)]) assert.equal(foldOf(t), fnv(t))
   const u = uuidOf('qpu')
   assert.match(u, /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
   assert.equal(u, uuidOf('qpu'))
