@@ -486,31 +486,31 @@ export { stripeCheckout }
 
 /** The post-quantum signature executed at the edge: the plan seal { sign } answered is filled with the ML-DSA signature over the
  * 32 bytes of the digest, through Web Crypto (webcrypto_modern_algorithms), under the tenant's signing key QPU_SIGNING_KEY_<TENANT>
- * (a private JWK of kty AKP) or QPU_SIGNING_KEY — absent, a key generated for this isolate's lifetime, said so (keyed: ephemeral).
+ * (a private JWK of kty AKP) or QPU_SIGNING_KEY — absent, a key generated for this isolate's lifetime, said so (keyed: ephemeral). Either
+ * pair is made once per isolate from its witness (the secret, else nothing) and reused, as a factor checked once is only multiplied after.
  * The public key travels with the signature: a tenant verifies without any secret. The handler never holds the key. */
 type Alg = Parameters<typeof crypto.subtle.sign>[0]
 type Jwk = Record<string, unknown>
 type KeyPair = { privateKey: CryptoKey; publicKey: CryptoKey }
-const ephemeralKeys = new Map<string, Promise<KeyPair>>()
-const signingKeyOf = async (algorithm: string, env: Env, tenant: string): Promise<{ pair: KeyPair; keyed: 'secret' | 'ephemeral' }> => {
-  const jwk = env[`QPU_SIGNING_KEY_${tenant.toUpperCase()}`] ?? env.QPU_SIGNING_KEY
-  if (typeof jwk === 'string' && jwk.trim()) {
-    const priv = JSON.parse(jwk) as Jwk
-    const privateKey = await crypto.subtle.importKey('jwk', priv as never, { name: algorithm } as unknown as Alg, true, ['sign'])
-    const publicKey = await crypto.subtle.importKey('jwk', { ...priv, priv: undefined } as never, { name: algorithm } as unknown as Alg, true, ['verify'])
-    return { pair: { privateKey, publicKey }, keyed: 'secret' }
-  }
-  if (!ephemeralKeys.has(algorithm)) ephemeralKeys.set(algorithm, crypto.subtle.generateKey({ name: algorithm } as unknown as Alg, true, ['sign', 'verify']) as unknown as Promise<KeyPair>)
-  return { pair: await ephemeralKeys.get(algorithm)!, keyed: 'ephemeral' }
+type SigningKey = { pair: KeyPair; publicKey: Jwk; keyed: 'secret' | 'ephemeral' }
+const signingKeys = new Map<string, Promise<SigningKey>>()
+const signingKeyOf = (algorithm: string, env: Env, tenant: string): Promise<SigningKey> => {
+  const jwk = env[`QPU_SIGNING_KEY_${tenant.toUpperCase()}`] ?? env.QPU_SIGNING_KEY, secret = typeof jwk === 'string' ? jwk.trim() : '', at = algorithm + '\n' + secret
+  if (!signingKeys.has(at)) signingKeys.set(at, (async (): Promise<SigningKey> => {
+    const name = { name: algorithm } as unknown as Alg, priv = secret ? (JSON.parse(secret) as Jwk) : null
+    // the public half drops priv and the private key's key_ops, or an exported JWK (key_ops: ['sign']) is refused as a verify key
+    const pair = priv ? { privateKey: await crypto.subtle.importKey('jwk', priv as never, name, true, ['sign']), publicKey: await crypto.subtle.importKey('jwk', { ...priv, priv: undefined, key_ops: undefined } as never, name, true, ['verify']) } : ((await crypto.subtle.generateKey(name, true, ['sign', 'verify'])) as unknown as KeyPair)
+    return { pair, publicKey: (await crypto.subtle.exportKey('jwk', pair.publicKey)) as Jwk, keyed: priv ? 'secret' : 'ephemeral' }
+  })().catch((e: unknown) => { signingKeys.delete(at); throw e }))
+  return signingKeys.get(at)!
 }
 const bytesOfHex = (h: string): Uint8Array => new Uint8Array((h.match(/../g) ?? []).map((x) => parseInt(x, 16)))
 const signAtEdge = async (reply: { result: { structuredContent: { sha256: string; signature: SignaturePlan } } }, env: Env, tenant: string): Promise<unknown> => {
   const sc = reply.result.structuredContent
   const plan = sc.signature
   try {
-    const { pair, keyed } = await signingKeyOf(plan.algorithm, env, tenant)
+    const { pair, publicKey, keyed } = await signingKeyOf(plan.algorithm, env, tenant)
     const value = new Uint8Array(await crypto.subtle.sign({ name: plan.algorithm } as unknown as Alg, pair.privateKey, buf(bytesOfHex(sc.sha256))))
-    const publicKey = await crypto.subtle.exportKey('jwk', pair.publicKey) as Record<string, unknown>
     const signature: SignaturePlan = { ...plan, phase: 'signed', value: b64(value), publicKey, keyed, note: keyed === 'secret' ? `signed under ${plan.keyVar.split(' ')[0]} at tenant ${tenant}` : `signed under a key of this isolate's lifetime at tenant ${tenant}: set QPU_SIGNING_KEY_${tenant.toUpperCase()} for a stable one` }
     return { ...reply, result: { ...reply.result, structuredContent: { ...sc, signature } } }
   } catch (e) {
