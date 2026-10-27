@@ -125,3 +125,10 @@ if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'lead') {
     : await m.call('createPages', { tenant: (parent?.tenant as { id?: string } | undefined)?.id ?? parent?.tenant, title, parent: parent?.id, hero: { type: 'default' }, layout: statements.map(block) })
   console.log(r.error ? `refused: ${String(r.error).slice(0, 300)}` : `${page ? 'appended' : 'created'}: ${title} (${page ? fresh.length : statements.length} statement(s))`)
 }
+
+// a read from the command line: node scripts/mcp.ts find <collection> [--where <json>] [--select <json>] prints the documents as JSON lines
+if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'find') {
+  const a = process.argv.slice(4), flag = (n: string) => (a.includes(n) ? a[a.indexOf(n) + 1] : undefined), c = process.argv[3] ?? 'pages'
+  const r = await mcpOf().findAll(`find${c[0]!.toUpperCase()}${c.slice(1)}`, { draft: true, depth: 0, ...(flag('--where') ? { where: flag('--where') } : {}), ...(flag('--select') ? { select: flag('--select') } : {}) })
+  for (const d of (r.docs ?? []) as unknown[]) console.log(JSON.stringify(d)); if (!r.docs) console.error(`unread: ${r.says}`)
+}

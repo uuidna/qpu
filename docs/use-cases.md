@@ -376,7 +376,7 @@ the Google Quantum AI layer: the Willow processor as its spec sheet states it, C
 
 ## Gates
 
-Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 183 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 + 5 = 183) in 21 categories, 205 nested pages, 181 of 204 leads placed; by kind tool 51, open 55, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
+Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 183 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 7 + 68 + 28 + 7 + 2 + 5 = 183) in 21 categories, 205 nested pages, 179 of 202 leads placed; by kind tool 51, open 55, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
 
 | Category | Gates | Leads | Says |
 |---|---:|---:|---|
@@ -386,16 +386,16 @@ Every API is a gate of some sort — a door of this catalogue, an open address, 
 | language | 2 | 2 | the doors of the language toolbox, each a gate of the leads it serves |
 | raid | 1 | 3 | the doors of the raid toolbox, each a gate of the leads it serves |
 | billing | 2 | 1 | the doors of the billing toolbox, each a gate of the leads it serves |
-| legal | 3 | 4 | the doors of the legal toolbox, each a gate of the leads it serves |
+| legal | 3 | 2 | the doors of the legal toolbox, each a gate of the leads it serves |
 | repository | 1 | 1 | the doors of the repository toolbox, each a gate of the leads it serves |
 | standards | 2 | 0 | the doors of the standards toolbox, each a gate of the leads it serves |
 | payload | 2 | 10 | the doors of the payload toolbox, each a gate of the leads it serves |
 | extension | 1 | 3 | the doors of the extension toolbox, each a gate of the leads it serves |
 | crypto | 3 | 1 | the doors of the crypto toolbox, each a gate of the leads it serves |
-| patents | 7 | 1 | the offices and indexes the patents tool passes |
+| patents | 7 | 0 | the offices and indexes the patents tool passes |
 | certificates | 8 | 1 | the beacon, the logs, the directory, the vulnerability index and the physics the attest tool passes |
 | currency | 5 | 0 | the rate sources the currency tool harmonises |
-| competitions | 7 | 2 | the rules pages the compete tool follows |
+| competitions | 7 | 1 | the rules pages the compete tool follows |
 | mcp | 68 | 7 | the servers discovery reads, and the servers the registry names beside them: proposed, never called from the tree |
 | references | 28 | 13 | the vocabularies, codes and references the verifier reads |
 | news | 7 | 0 | the public news APIs wired as adapters of the DOI research: the mentions of every record of precedence, by source |
