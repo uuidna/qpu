@@ -3,7 +3,7 @@
 //   1. exports under src/quantum that no test, tool, example or other module references → lead "unproven export"
 //   2. files under src/quantum that nothing imports and that are not tests → lead "orphan file"
 //   3. the README's measured table is regenerated from git, tsc, the test receipt, lake build, the theorem ledger and tools/list
-import { leaksOf } from '../src/quantum/audit.ts'
+import { leaksOf, LEAK_ALLOWED } from '../src/quantum/audit.ts'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { appendFileSync, existsSync, readFileSync, readdirSync, writeFileSync, renameSync } from 'node:fs'
 import { join } from 'node:path'
@@ -60,10 +60,9 @@ for (const [address, texts] of addressed) if (texts.size > 1) { collisions += 1;
 console.log(`purify: ${addressed.size} addresses scanned, ${collisions} collision(s)`)
 // no email in the tree: the deployer's address is read from the Cloudflare account at build and deploy and never written; every address found in a
 // tracked file that is not an upstream placeholder (the MIT fork's own, example domains) is a leak — a lead and a red step, so a commit stops
-const EMAIL_ALLOWED = new Set(['payloadcms.com', 'example.com', 'test.com', 'thirdparty.com', 'github.com', 'anthropic.com', 'localhost.test', 'local.test'])
 const scanned = tracked.filter((f) => !/pnpm-lock|package-lock|\.(png|jpg|jpeg|gif|mp4|ico|woff2?|pdf|svg)$/.test(f))
 const leaks: { file: string; domain: string }[] = []
-for (const f of scanned) { let text = ''; try { text = readFileSync(join(ROOT, f), 'utf8') } catch { continue }; for (const m of text.matchAll(/[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})/g)) { const domain = m[1]!.toLowerCase(); if (!EMAIL_ALLOWED.has(domain) && !leaksOf({ m: m[0] }).setAside) leaks.push({ file: f, domain }) } } // the notations audit { leaks } sets aside (a block address <uuid>@<host>, the reserved test domains, documentation placeholders) are not addresses
+for (const f of scanned) { let text = ''; try { text = readFileSync(join(ROOT, f), 'utf8') } catch { continue }; for (const m of text.matchAll(/[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+\.[A-Za-z]{2,})/g)) { const domain = m[1]!.toLowerCase(); if (!LEAK_ALLOWED.has(domain) && !leaksOf({ m: m[0] }).setAside) leaks.push({ file: f, domain }) } } // the notations audit { leaks } sets aside (a block address <uuid>@<host>, the reserved test domains, documentation placeholders) are not addresses
 if (leaks.length) leads.push({ id: 'email-leak', source: [...new Set(leaks.map((l) => l.file))].join(', '), statement: `${leaks.length} email address(es) in tracked files (${[...new Set(leaks.map((l) => l.domain))].join(', ')}): the tree keeps none; the deployer's is read from the Cloudflare account at build and deploy`, status: 'open', reason: 'remove the address; a contact is a URL' })
 console.log(`purify: ${scanned.length} tracked files scanned for email addresses, ${leaks.length} leak(s)${leaks.length ? ` in ${[...new Set(leaks.map((l) => l.file))].join(', ')}` : ''}`)
 

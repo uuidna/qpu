@@ -583,7 +583,7 @@ export const THEOREMS: readonly { key: string; module: string; statement: string
   {"key":"textbook_lean_served_whole","module":"Qpu.Textbook","statement":"∀ (hand generated : Nat), hand + generated - generated = hand"},
   {"key":"textbook_legal_plan_calls","module":"Qpu.Textbook","statement":"∀ (claims : Nat), claims + 2 - claims = 2"},
   {"key":"textbook_licence_chain","module":"Qpu.Textbook","statement":"∀ (n : Nat), n + 1 - 1 = n"},
-  {"key":"textbook_literal_in_registry","module":"Qpu.Textbook","statement":"∀ (registry clean : Bool), clean = registry → clean = true → registry = true"},
+  {"key":"textbook_literal_in_registry","module":"Qpu.Textbook","statement":"∀ (roots url path : List String),   roots = [\"src\", \"scripts\", \"site/src\"] →     url =         [\"src/quantum/discovery.ts\", \"src/quantum/discovery-document.ts\", \"src/quantum/sources.ts\",           \"src/quantum/leads.ts\", \"src/quantum/payload-surface.ts\"] →       path =           [\"src/quantum/toolboxes/payload.ts\", \"src/quantum/toolboxes/repository.ts\", \"src/quantum/audit.ts\",             \"src/quantum/machine.ts\", \"scripts/next.ts\"] →         (∀ (f : String), f ∈ url → ¬f ∈ path) ∧           ∀ (f : String), f ∈ url ++ path → ∃ r, r ∈ roots ∧ (r ++ \"/\").toList.isPrefixOf f.toList = true"},
   {"key":"textbook_machine_allow_list","module":"Qpu.Textbook","statement":"∀ (asked allowed : Nat), allowed ≤ asked → asked - allowed + allowed = asked"},
   {"key":"textbook_majority_of_three","module":"Qpu.Textbook","statement":"2 * 2 > 3"},
   {"key":"textbook_margin_makes_price","module":"Qpu.Textbook","statement":"∀ (price cost : Nat), cost ≤ price → price - cost + cost = price"},

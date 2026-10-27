@@ -43,7 +43,7 @@ export const ENTROPY_KINDS: readonly { kind: EntropyKind; says: string; explore:
 ]
 export type EntropyFinding = { kind: EntropyKind; file: string; line: number; excerpt: string; address: string }
 export type EntropyLead = { id: string; kind: EntropyKind; source: string; statement: string; status: 'open'; tool: 'audit'; occurrences: number; address: string; explore: string; config: string | null }
-const LEAK_ALLOWED = new Set(['payloadcms.com', 'example.com', 'test.com', 'thirdparty.com', 'github.com', 'anthropic.com', 'localhost.test', 'local.test', 'ethereal.email'])
+export const LEAK_ALLOWED = new Set(['payloadcms.com', 'example.com', 'test.com', 'thirdparty.com', 'github.com', 'anthropic.com', 'localhost.test', 'local.test'])
 /** Paths and URLs each live in their one registry: a repo path is named by its role (FILE_ROLES / fileOf, in the Payload toolbox, and the
  *  generated files' table in the repository toolbox), an external URL in the sources, discovery and leads tables. A literal anywhere else in
  *  hand-written source is dirty code, priced harmonically by its own bytes; a file a generator wrote, the examples' fixtures and the tests are

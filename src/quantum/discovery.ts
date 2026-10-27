@@ -8,9 +8,10 @@ import { stem } from './match.js'
 
 export type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract'
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
+export const CLOUDFLARE_DOCS_MCP = 'https://docs.mcp.cloudflare.com/mcp'
 /** Cloudflare's MCP servers: the documentation server answers in the open; the rest answer 401 until a tenant brings its OAuth token. */
 export const CLOUDFLARE_MCP: readonly { host: string; url: string; about: string }[] = [
-  { host: 'docs.mcp.cloudflare.com', url: 'https://docs.mcp.cloudflare.com/mcp', about: 'the Cloudflare documentation, searchable' },
+  { host: 'docs.mcp.cloudflare.com', url: CLOUDFLARE_DOCS_MCP, about: 'the Cloudflare documentation, searchable' },
   { host: 'bindings.mcp.cloudflare.com', url: 'https://bindings.mcp.cloudflare.com/mcp', about: 'Workers bindings: KV, R2, D1, Durable Objects of the account' },
   { host: 'observability.mcp.cloudflare.com', url: 'https://observability.mcp.cloudflare.com/mcp', about: 'Workers logs and analytics of the account' },
   { host: 'radar.mcp.cloudflare.com', url: 'https://radar.mcp.cloudflare.com/mcp', about: 'Cloudflare Radar: internet traffic and trends' },
@@ -72,7 +73,7 @@ export const KNOWN_MCP: readonly { host: string; url: string; about: string; aut
   ...GITHUB_MCP.map((g) => ({ ...g, auth: 'token' as const, maps: 'the repository toolbox: branches, tags and releases watched through the doors list_branches, list_tags and list_releases instead of the REST contract; the next-leads docket as issues when the tenant asks' })),
 ]
 /** The hosts discovered when a tenant names none: the unit, this tree, Cloudflare's eight servers and GitHub's. */
-export const DEFAULT_MCP_HOSTS: readonly string[] = ['https://uuidna.com/mcp', 'https://qpu.uuidna.com/mcp', ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url), ...GOOGLE_MCP.map((g) => g.url)]
+export const UNIT_MCP = 'https://uuidna.com/mcp', QPU_MCP = 'https://qpu.uuidna.com/mcp', DEFAULT_MCP_HOSTS: readonly string[] = [UNIT_MCP, QPU_MCP, ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url), ...GOOGLE_MCP.map((g) => g.url)]
 /** The JSON of an MCP answer, whether the host answered JSON or an event stream (the data line that is JSON). */
 export const dataOf = (text: string): string => (/^(event|data):/m.test(text) ? (text.split('\n').filter((l) => l.startsWith('data:')).map((l) => l.slice(5).trim()).find((l) => l.startsWith('{')) ?? text) : text)
 export type Answer = Request & { status: number; type: string; text: string }
@@ -266,7 +267,7 @@ export const bestDoorsOf = (lead: { id: string; statement: string }, remotes: re
 /** Open MCP servers the QPU's tools/list is measured against: each answered initialize and tools/list without a key (measured 2026-10-26);
  *  baselines only, not integrations. Learning Commons answered 401 and is not one. */
 export const OPEN_MCP_BASELINES: readonly { id: string; url: string }[] = [
-  { id: 'cloudflare-docs', url: 'https://docs.mcp.cloudflare.com/mcp' },
+  { id: 'cloudflare-docs', url: CLOUDFLARE_DOCS_MCP },
   { id: 'deepwiki', url: 'https://mcp.deepwiki.com/mcp' },
   { id: 'microsoft-learn', url: 'https://learn.microsoft.com/api/mcp' },
   { id: 'context7', url: 'https://mcp.context7.com/mcp' },

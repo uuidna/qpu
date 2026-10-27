@@ -88,8 +88,8 @@ theorem textbook_new_doors_proven (news proven : Nat) (hp : proven ≤ news) (hu
 theorem textbook_cells_text (links escaped : Nat) (h : escaped = links) : links - escaped = 0 := by omega
 /-- a list read whole leaves nothing out: toolsOf reads the full tools/list, filtered by nothing, so every tool of every toolbox it serves is counted — the one reader fourteen copies of the same call fold onto (examples: e2e-plan-reads-every-tool) -/
 theorem textbook_tools_listed : ∀ l : List Nat, (l.filter (fun _ => true)).length = l.length := by intro l; simp
-/-- a path or URL literal is clean exactly when it sits in its registry: clean agrees with in the registry, so a clean literal is one in its registry (examples: repository-literals, repository-literal-moved) -/
-theorem textbook_literal_in_registry (registry clean : Bool) (h : clean = registry) : clean = true → registry = true := by intro hc; rw [← h]; exact hc
+/-- the registry holds its own addresses (CLOUDFLARE_DOCS_MCP and UNIT_MCP among them): a path or URL literal is clean exactly when it sits in its registry: decided over the registries, no module holds both kinds and each sits under a root the rule reads (examples: repository-literals, repository-literal-moved, repository-literals-registered) -/
+theorem textbook_literal_in_registry (roots url path : List String) (hr : roots = ["src","scripts","site/src"]) (hu : url = ["src/quantum/discovery.ts","src/quantum/discovery-document.ts","src/quantum/sources.ts","src/quantum/leads.ts","src/quantum/payload-surface.ts"]) (hp : path = ["src/quantum/toolboxes/payload.ts","src/quantum/toolboxes/repository.ts","src/quantum/audit.ts","src/quantum/machine.ts","scripts/next.ts"]) : (∀ f ∈ url, f ∉ path) ∧ ∀ f ∈ url ++ path, ∃ r ∈ roots, (r ++ "/").toList.isPrefixOf f.toList := by subst hr hu hp; decide
 /-- the hex digits above nine are spoken as Ⰺ (ten) and a unit, and read back by adding them: ten and one to five are eleven to fifteen, so every hex digit returns as itself (examples: fold-speak) -/
 theorem textbook_glagolitic_round_trip : 10 + 1 = 11 ∧ 10 + 2 = 12 ∧ 10 + 3 = 13 ∧ 10 + 4 = 14 ∧ 10 + 5 = 15 := by decide
 /-- a coverage never claims more than all: when the doors counted are among the servers counted, their share in whole percent is at most a hundred (examples: extend-coverage) -/
@@ -430,7 +430,7 @@ theorem textbook_axioms_linked (examples linked : Nat) (h : linked = examples) :
 theorem textbook_collision_solves_many (k : Nat) (h : 2 ≤ k) : 1 < k ∧ 1 ≤ k - 1 := by omega
 /-- the quantum core computes on the classical world only through coins fused into coils, and the classical world reaches it only the same way back: two loops of one double torus, every crossing a finite step with always a next and one step back (examples: stripe-fusion) -/
 theorem textbook_double_torus (n : Nat) : n < n + 1 ∧ n + 1 - 1 = n := by omega
-/-- problem solving requires problem finding: every leak found in what is published is reported by its kind and place and redacted, so none of its values is repeated, however many are found (examples: audit-leaks) -/
+/-- problem solving requires problem finding (the one allowance shared with purify, LEAK_ALLOWED): every leak found in what is published is reported by its kind and place and redacted, so none of its values is repeated, however many are found (examples: audit-leaks, audit-leak-allowed) -/
 theorem textbook_leaks_redacted (found redacted : Nat) (h : redacted = found) : found - redacted = 0 := by omega
 /-- every textbook expression is a tool: when each closed statement evaluated exactly agrees with what the kernel proved, none disagrees, and every number the prose states rests on one of them or is a lead (examples: textbook-expressions, textbook-prose) -/
 theorem textbook_expressions_evaluate (closed held : Nat) (h : held = closed) : closed - held = 0 := by omega
