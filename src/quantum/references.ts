@@ -7,7 +7,7 @@ import { uuidOf } from './blocks.js'
 export type RefDoc = { id: string; slug?: string; doc?: unknown; markdown?: string }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 /** The internal targets a path names: /slug or /<uuid>, its query and fragment dropped; an absolute URL is not internal. */
-export const internalTargetOf = (url: string): string | null => { const u = url.trim(); if (!u.startsWith('/') || u.startsWith('//')) return null; const p = u.split(/[?#]/)[0]!.replace(/\/+$/, '').split('/').filter(Boolean).pop(); return p ? decodeURIComponent(p) : null }
+const internalTargetOf = (url: string): string | null => { const u = url.trim(); if (!u.startsWith('/') || u.startsWith('//')) return null; const p = u.split(/[?#]/)[0]!.replace(/\/+$/, '').split('/').filter(Boolean).pop(); return p ? decodeURIComponent(p) : null }
 /** Every reference one document makes, as the names it gives (slugs, ids, uuids). */
 export const referencesOf = (d: RefDoc): string[] => {
   const out: string[] = []

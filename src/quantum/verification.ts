@@ -5,7 +5,7 @@ import { THEOREMS, THEOREM_KEYS } from './theorems-index.js'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 import { CLAIMS } from './claims-index.js'
 
-export const LEAN_ROOT = 'https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/lean'
+const LEAN_ROOT = 'https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/lean'
 /** One theorem as the client verifies it: accepted by the kernel or not, its module and statement, its Lean text, where to read and build it. */
 export const theoremOf = (key: string) => {
   const t = THEOREMS.find((x) => x.key === key), tb = TEXTBOOK_THEOREMS.find((x) => x.key === key)

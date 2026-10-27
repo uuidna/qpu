@@ -9,7 +9,7 @@ import { PAYLOAD_SURFACE } from '../payload-surface.js'
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.js'
 import type { Lead } from '../leads.js'
 
-export type PayloadFieldConfig = { name?: string; type: string; required?: boolean; hasMany?: boolean; fields?: PayloadFieldConfig[]; blocks?: { slug: string; fields: PayloadFieldConfig[] }[]; tabs?: { name?: string; fields: PayloadFieldConfig[] }[]; options?: (string | { value: string })[]; relationTo?: string | string[]; label?: string }
+type PayloadFieldConfig = { name?: string; type: string; required?: boolean; hasMany?: boolean; fields?: PayloadFieldConfig[]; blocks?: { slug: string; fields: PayloadFieldConfig[] }[]; tabs?: { name?: string; fields: PayloadFieldConfig[] }[]; options?: (string | { value: string })[]; relationTo?: string | string[]; label?: string }
 export type PayloadCollectionInput = { slug: string; fields: PayloadFieldConfig[] }
 
 const SCOPE_ORDER = ['collection', 'global', 'auth', 'access', 'preferences', 'jobs', 'custom', 'graphql'] as const
@@ -18,7 +18,7 @@ const ACCESS_LEVELS = ['collection', 'global', 'field', 'jobs'] as const
 const typeOf = (t: string) => PAYLOAD_SURFACE.fieldTypes.find((f) => f.type === t)
 
 /** The counts of the surface, each a number a theorem states: computed from the table, never written by hand. */
-export const surfaceCountsOf = () => {
+const surfaceCountsOf = () => {
   const data = PAYLOAD_SURFACE.fieldTypes.filter((f) => f.data).length, presentational = PAYLOAD_SURFACE.fieldTypes.length - data
   const byScope = SCOPE_ORDER.map((s) => PAYLOAD_SURFACE.operations.filter((o) => o.scope === s).length)
   const collectionOps = byScope[0]!
@@ -39,7 +39,7 @@ export const surfaceCountsOf = () => {
 export const numbersOfTheorem = (lean: string) => { const stmt = lean.slice(lean.indexOf(':') + 1, lean.includes(':=') ? lean.indexOf(':=') : undefined); return [...stmt.matchAll(/\d+/g)].map((m) => Number(m[0])) }
 
 /** Every dimension of the surface named and meant by its textbook theorem, its count computed here and decided through the MCP. */
-export const dimensionsOf = (ctx: Context) => {
+const dimensionsOf = (ctx: Context) => {
   const counts = surfaceCountsOf()
   const keys: Record<keyof typeof counts, string> = { fieldTypes: 'textbook_payload_field_types', operations: 'textbook_payload_operations', schemas: 'textbook_payload_schemas', queries: 'textbook_payload_queries', hooks: 'textbook_payload_hooks', access: 'textbook_payload_access', coordination: 'textbook_payload_coordination' }
   return (Object.keys(counts) as (keyof typeof counts)[]).map((dimension) => {
@@ -56,7 +56,7 @@ export const dimensionsOf = (ctx: Context) => {
 const graphqlScalarOf = (g: string | null) => g ? g.replace(/^GraphQL/, '').replace(/^(String|Int|Float|Boolean|ID|JSON|DateTime|JSONObject)$/, '$1') : 'JSON'
 
 /** Any collection's fields as JSON Schema 2020-12, by the shape each field type generates (the table's own); nesting by recursion. */
-export const jsonSchemaOf = (fields: readonly PayloadFieldConfig[]): { type: 'object'; properties: Record<string, unknown>; required: string[]; additionalProperties: false } => {
+const jsonSchemaOf = (fields: readonly PayloadFieldConfig[]): { type: 'object'; properties: Record<string, unknown>; required: string[]; additionalProperties: false } => {
   const properties: Record<string, unknown> = {}, required: string[] = []
   const add = (name: string, schema: unknown, req: boolean | undefined) => { properties[name] = schema; if (req) required.push(name) }
   for (const f of fields) {
@@ -77,7 +77,7 @@ export const jsonSchemaOf = (fields: readonly PayloadFieldConfig[]): { type: 'ob
 }
 
 /** The GraphQL type of a collection, in SDL, from the type each field type maps to. */
-export const graphqlOf = (slug: string, fields: readonly PayloadFieldConfig[]): string => {
+const graphqlOf = (slug: string, fields: readonly PayloadFieldConfig[]): string => {
   const Type = slug.replace(/(^|[-_])(\w)/g, (_, __, c: string) => c.toUpperCase())
   const lines = fields.flatMap(function line(f): string[] {
     const t = typeOf(f.type)
@@ -93,14 +93,14 @@ export const graphqlOf = (slug: string, fields: readonly PayloadFieldConfig[]): 
 }
 
 /** The MCP tools the plugin exposes for a collection (its config keys over the plugin's tool names), each with the input schema computed here. */
-export const mcpToolsOf = (slug: string, fields: readonly PayloadFieldConfig[]) => {
+const mcpToolsOf = (slug: string, fields: readonly PayloadFieldConfig[]) => {
   const data = jsonSchemaOf(fields)
   const where = { type: 'object', description: `Where: { [path]: { [operator]: value }, and?, or? } over ${PAYLOAD_SURFACE.whereOperators.length} operators (${PAYLOAD_SURFACE.whereOperators.map((w) => w.operator).join(', ')})` }
   return PAYLOAD_SURFACE.mcp.tools.filter((t) => t.scope === 'collection').map((t) => ({ name: t.name, configKey: t.configKey, does: t.does, inputSchema: { type: 'object', properties: { collection: { const: slug }, ...(t.configKey === 'find' || t.configKey === 'count' || t.configKey === 'findDistinct' ? { where, limit: { type: 'integer' }, page: { type: 'integer' }, sort: { type: 'string' }, depth: { type: 'integer' } } : {}), ...(t.configKey === 'update' || t.configKey === 'delete' || t.configKey === 'duplicate' || t.configKey === 'findVersionByID' || t.configKey === 'restoreVersion' ? { id: { type: 'string' } } : {}), ...(t.configKey === 'create' || t.configKey === 'update' ? { data } : {}) } } }))
 }
 
 /** The OpenAPI 3.1 paths of a collection: every collection operation's REST method and path with the slug substituted, the data schema the collection's. */
-export const openapiPathsOf = (slug: string, fields: readonly PayloadFieldConfig[]) => {
+const openapiPathsOf = (slug: string, fields: readonly PayloadFieldConfig[]) => {
   const schema = jsonSchemaOf(fields)
   const paths: Record<string, Record<string, unknown>> = {}
   for (const o of PAYLOAD_SURFACE.operations) {
@@ -113,10 +113,10 @@ export const openapiPathsOf = (slug: string, fields: readonly PayloadFieldConfig
 }
 
 /** The realtime coordination: every channel over every operation it touches, coordinated by the content address (the collision guard), never a socket of its own. */
-export const coordinationOf = () => PAYLOAD_SURFACE.realtime.map((r) => ({ channel: r.name, transport: r.transport, mechanism: r.mechanism, operations: PAYLOAD_SURFACE.operations.filter((o) => /autosave|lock|schedule|job/i.test(r.name) ? /update|version|job|lock/i.test(o.name) : /preview/i.test(r.name) ? /find|update/i.test(o.name) : /mcp/i.test(r.name) ? o.scope === 'collection' || o.scope === 'global' : false).map((o) => o.name), coordinatedBy: 'the content address the edit names (If-Match, context.prev, editBase): accepted while the document still folds to it, a collision answered with both addresses', url: r.url }))
+const coordinationOf = () => PAYLOAD_SURFACE.realtime.map((r) => ({ channel: r.name, transport: r.transport, mechanism: r.mechanism, operations: PAYLOAD_SURFACE.operations.filter((o) => /autosave|lock|schedule|job/i.test(r.name) ? /update|version|job|lock/i.test(o.name) : /preview/i.test(r.name) ? /find|update/i.test(o.name) : /mcp/i.test(r.name) ? o.scope === 'collection' || o.scope === 'global' : false).map((o) => o.name), coordinatedBy: 'the content address the edit names (If-Match, context.prev, editBase): accepted while the document still folds to it, a collision answered with both addresses', url: r.url }))
 
 /** The surface re-read from its sources (the client fetched them; text by url) and compared to the table: every differing count a lead. */
-export const rereadOf = (answers: Record<string, string>) => {
+const rereadOf = (answers: Record<string, string>) => {
   const text = (part: string) => Object.entries(answers).find(([u]) => u.includes(part))?.[1]
   const types = text('fields/config/types.ts'), constants = text('types/constants.ts'), endpoints = text('collections/endpoints/index.ts')
   const union = types ? (() => { const i = types.indexOf('export type Field ='); if (i < 0) return null; const body = types.slice(i, types.indexOf('\n\n', i) > 0 ? types.indexOf('\n\n', i) : undefined); return [...body.matchAll(/\|\s*([A-Z][A-Za-z]*Field)\b/g)].map((m) => m[1]!) })() : null

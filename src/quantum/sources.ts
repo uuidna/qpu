@@ -13,7 +13,7 @@ import { routeOf } from './match.js'
 import type { Example } from './examples.js'
 import type { Lead } from './leads.js'
 
-export type SourceKind = 'immutable' | 'licence' | 'precedence' | 'textbook' | 'mcp'
+type SourceKind = 'immutable' | 'licence' | 'precedence' | 'textbook' | 'mcp'
 export type SourceRequest = { id: string; source: string; kind: SourceKind; method: 'GET'; url: string; accept: string; page?: number }
 export type SourceAnswer = { id: string; url: string; status: number; text: string }
 export type SourceContext = { repository: string; owner: string; package: string; hosts: readonly string[]; subjects?: readonly string[]; maintainers?: readonly string[] }
@@ -36,8 +36,8 @@ export const SOURCES: readonly { id: string; kind: SourceKind; name: string; imm
   { id: 'mcp-registry', kind: 'mcp', name: 'The MCP registry: the servers that serve books, papers and libraries', immutable: 'each server is named at a version', url: 'https://registry.modelcontextprotocol.io/v0/servers?search=<term>&limit=100' },
 ]
 /** the subjects Open Library is asked for: the fields the QPU's theorems compute in */
-export const SUBJECTS = ['quantum_computing', 'quantum_theory', 'quantum_mechanics', 'linear_algebra', 'number_theory', 'group_theory', 'combinatorics', 'cryptography', 'information_theory', 'mathematical_logic', 'algorithms', 'error-correcting_codes_(information_theory)', 'harmonics', 'acoustics'] as const
-export const MCP_TERMS = ['book', 'textbook', 'library', 'scholar', 'paper', 'doi', 'arxiv', 'patent', 'citation'] as const
+const SUBJECTS = ['quantum_computing', 'quantum_theory', 'quantum_mechanics', 'linear_algebra', 'number_theory', 'group_theory', 'combinatorics', 'cryptography', 'information_theory', 'mathematical_logic', 'algorithms', 'error-correcting_codes_(information_theory)', 'harmonics', 'acoustics'] as const
+const MCP_TERMS = ['book', 'textbook', 'library', 'scholar', 'paper', 'doi', 'arxiv', 'patent', 'citation'] as const
 
 const accept = 'application/json'
 const req = (source: string, kind: SourceKind, id: string, url: string, page?: number): SourceRequest => ({ id: `${source}:${id}${page === undefined ? '' : `:${page}`}`, source, kind, method: 'GET', url, accept, ...(page === undefined ? {} : { page }) })

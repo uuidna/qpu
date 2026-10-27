@@ -5,9 +5,9 @@
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.js'
 import { statementOf } from './expressions.js'
 
-export const PRECEDENCE_YEAR = 2026
+const PRECEDENCE_YEAR = 2026
 const words = (s: string) => new Set(s.toLowerCase().match(/[a-z]{4,}/g) ?? [])
-export const claimKindOf = (lean: string): 'general' | 'own' => (statementOf(lean).variables.length > 0 ? 'general' : 'own')
+const claimKindOf = (lean: string): 'general' | 'own' => (statementOf(lean).variables.length > 0 ? 'general' : 'own')
 /** The requests: one OpenAlex search per general theorem, its sentence as the query, DOI-registered works only. */
 export const claimsPlanOf = () => TEXTBOOK_THEOREMS.filter((t) => claimKindOf(t.lean) === 'general').map((t) => ({ id: t.key, url: `https://api.openalex.org/works?search=${encodeURIComponent(t.says.split(/[:;]/)[0]!)}&filter=has_doi:true&per-page=200`, accept: 'application/json' }))
 export type Claim = { theorem: string; kind: 'general' | 'own'; status: 'own' | 'candidate' | 'unrecognised' | 'recognised' | 'unasked'; candidates: { doi: string; title: string; year: number; shared: number }[]; recognisedBy: { doi: string; by: string } | null }

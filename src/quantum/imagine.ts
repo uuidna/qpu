@@ -7,7 +7,7 @@ import type { Rpc } from './audit.js'
 import { matcherOf } from './match.js'
 import { VERIFIERS } from './verifiers.js'
 
-export type ImagineRow = { lead: string; status: string; verdict: string; tool?: string; cluster: number; verify: number; factors: number; angles: number; queries: number; opened: number }
+type ImagineRow = { lead: string; status: string; verdict: string; tool?: string; cluster: number; verify: number; factors: number; angles: number; queries: number; opened: number }
 export type Imagination = { leads: number; verdicts: Record<string, number>; verifyRequests: number; imaginedLeads: number; rows: ImagineRow[]; imagined: Lead[] }
 
 const APPLICATIONS: { family: string; entry: string; verifier: string }[] = [

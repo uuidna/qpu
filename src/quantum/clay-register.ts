@@ -91,7 +91,7 @@ export const evaluate = (src: string): number => {
 export type Relation = { name: string; statement: string; sides: { expression: string; value: number }[]; holds: boolean; bits: number }
 /** Every relation recomputed: each `=` compared, each `∧` all holding, and the bit width of the largest value. */
 /** 16-bit limbs a value needs: what an 8-bit machine with 16-bit software arithmetic (the Pravets 8M) holds it in. */
-export const limbs16Of = (bits: number): number => Math.max(1, Math.ceil(bits / 16))
+const limbs16Of = (bits: number): number => Math.max(1, Math.ceil(bits / 16))
 export const recomputeClay = (): { relations: Relation[]; total: number; holding: number; maxBits: number; maxLimbs16: number; ledger: string } => {
   const relations: Relation[] = CLAY_RELATIONS.map(({ name, statement }) => {
     const sides = [...new Set(statement.split('∧').flatMap((eq) => eq.split('=')).map((s) => s.trim()))].map((expression) => ({ expression, value: evaluate(expression) }))
@@ -107,7 +107,7 @@ export const recomputeClay = (): { relations: Relation[]; total: number; holding
 
 /** The technique applied to the register: every relation's value read as a vortex seed with its σ_10 reflection and both
  * trinities; relations whose seeds reflect each other paired; the fixed ones (seed 5) named; the key's trinity (3, 6, 9) marked. */
-export type ClayReading = { name: string; value: number; seed: number; reflection: number; trinity: number[]; reflected: number[]; tuned: boolean; fixed: boolean }
+type ClayReading = { name: string; value: number; seed: number; reflection: number; trinity: number[]; reflected: number[]; tuned: boolean; fixed: boolean }
 export const seedOf = (n: number): number => (n === 0 ? 0 : 1 + ((n - 1) % 9))
 export const trinityOf = (seed: number): number[] => (seed === 0 ? [] : seed % 3 === 0 ? [3, 6, 9] : [7, 4, 1].includes(seed) ? [7, 4, 1] : [2, 5, 8])
 export const reflectionOfRegister = (relations: readonly Relation[]): { readings: ClayReading[]; bySeed: Record<string, string[]>; byTrinity: Record<string, string[]>; pairs: { a: string; b: string; seeds: [number, number] }[]; fixed: string[]; tuned: string[] } => {

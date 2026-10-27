@@ -14,7 +14,7 @@ const ROWS: readonly [row: number, from: number, to: number][] = [
 ]
 
 /** Willow's sites, row by row: 105 of them. */
-export const WILLOW_SITES: readonly Site[] = ROWS.flatMap(([row, from, to]) =>
+const WILLOW_SITES: readonly Site[] = ROWS.flatMap(([row, from, to]) =>
   Array.from({ length: to - from + 1 }, (_, i) => GridQubit.of(row, from + i)))
 
 /** The couplers: each pair of sites next to each other along a row or along a column of the grid. */

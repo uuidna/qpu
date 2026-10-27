@@ -5,9 +5,9 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFile
 import { join } from 'node:path'
 import { handle } from '../src/quantum/mcp.ts'
 
-export type Shard = { index: number; count: number } | 'merge' | null
+type Shard = { index: number; count: number } | 'merge' | null
 const DIR = join(process.cwd(), '.qpu', 'cache')
-export const SHARD: Shard = (() => { const v = process.env.QPU_SHARD; if (!v) return null; if (v === 'merge') return 'merge'; const m = /^(\d+)\/(\d+)$/.exec(v); return m ? { index: Number(m[1]), count: Number(m[2]) } : null })()
+const SHARD: Shard = (() => { const v = process.env.QPU_SHARD; if (!v) return null; if (v === 'merge') return 'merge'; const m = /^(\d+)\/(\d+)$/.exec(v); return m ? { index: Number(m[1]), count: Number(m[2]) } : null })()
 export const isShard = SHARD !== null && SHARD !== 'merge'
 export const isMerge = SHARD === 'merge'
 /** This shard's share of a list: every count-th item from index. A whole run or the merge takes all. */

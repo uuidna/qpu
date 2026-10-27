@@ -48,7 +48,7 @@ export const STANDARDS: readonly { id: string; name: string; contract: string; k
   { id: 'cldr-territories', name: 'Unicode CLDR territory names (ISO 3166-1)', contract: 'https://raw.githubusercontent.com/unicode-org/cldr-json/main/cldr-json/cldr-localenames-full/main/en/territories.json', kind: 'codes' },
 ]
 
-export type JsonLd = Record<string, unknown> & { '@context': 'https://schema.org'; '@type': string }
+type JsonLd = Record<string, unknown> & { '@context': 'https://schema.org'; '@type': string }
 const AUTHOR = { '@type': 'Person', name: LICENSE.author, '@id': LICENSE.orcid, identifier: LICENSE.orcid }
 const APPLICATION = { '@type': 'SoftwareApplication', name: '@uuidna/qpu', applicationCategory: 'DeveloperApplication', license: LICENSE.url, author: AUTHOR }
 
@@ -65,7 +65,7 @@ export const offerJsonLdOf = (v: { product: string; variant: string; unit: strin
   '@context': 'https://schema.org', '@type': 'Offer', name: `${v.product} ${v.variant}`, description: v.description, price: (v.amount / 100).toFixed(2), priceCurrency: v.currency.toUpperCase(), itemOffered: { ...APPLICATION, name: `QPU ${v.product.replace(/^qpu-/, '')}` }, seller: AUTHOR, availability: 'https://schema.org/InStock', ...(v.interval === 'month' || v.interval === 'year' ? { priceSpecification: { '@type': 'UnitPriceSpecification', price: (v.amount / 100).toFixed(2), priceCurrency: v.currency.toUpperCase(), unitText: v.unit, billingIncrement: 1, billingDuration: 1, unitCode: v.interval === 'month' ? 'MON' : 'ANN' } } : {}),
 })
 
-export type Codes = { languages: Set<string>; currencies: Set<string>; territories: Set<string> }
+type Codes = { languages: Set<string>; currencies: Set<string>; territories: Set<string> }
 /** The CLDR lists read into code sets: ISO 639 languages, ISO 4217 currencies, ISO 3166-1 territories. */
 export const codesOf = (cldr: { languages?: unknown; currencies?: unknown; territories?: unknown }): Codes => {
   const main = (doc: unknown) => { const m = (doc as { main?: Record<string, unknown> } | undefined)?.main; return m ? (Object.values(m)[0] as Record<string, unknown> | undefined) : undefined }
@@ -108,7 +108,7 @@ export const API_ENDPOINTS: readonly { method: string; path: string; takes: stri
   { method: 'POST', path: '/docket/stripe', takes: 'a Stripe webhook, signed', answers: 'the event as an entry, idempotent', auth: 'STRIPE_WEBHOOK_SECRET_<TENANT>' },
   { method: 'GET', path: '/health', takes: 'nothing', answers: 'status, tenant, licence and the metrics computed now', auth: 'none' },
 ]
-export type ApiTool = { name: string; description: string; inputSchema: object }
+type ApiTool = { name: string; description: string; inputSchema: object }
 export const OPENAPI_RESOURCE = 'openapi://qpu'
 /** The QPU's own contract in the standard the discover step asks every host for: an OpenAPI 3.1 document derived from tools/list and the
  *  endpoint table, never written by hand — every tool a component schema (its JSON Schema as tools/list serves it), every endpoint a path,

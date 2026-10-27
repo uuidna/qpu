@@ -21,7 +21,7 @@ export type Answer = Call & { answer?: unknown; refusal?: string }
 /** The court every cheap gate leads a violator to: the rules a gate refuses by, each named by the theorem that states it and the remedy that
  *  satisfies it; a refusal computes the case (its content address) and the MCP call the violator makes to file it — the gate writes nothing
  *  (textbook_cheap_gates), the violator's own client carries the case to the docket (kind case) or appeals through the match tool. */
-export const COURT_RULES: readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[] = [
+const COURT_RULES: readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[] = [
   { rule: 'shape', violated: 'the request is not the shape the gate takes (an id, a kind, a digest, a body, the arguments a tool\'s schema names)', theorem: 'textbook_uuid_is_36', remedy: 'the shape the error names: an RFC 9562 UUID of 36 characters, a kind of lower-case letters, a digest of 64 hex digits', statuses: [400, -32602, -32700] },
   { rule: 'role', violated: 'the role the token carries does not allow the act at this tenant', theorem: 'textbook_rest_rbac', remedy: 'the role the act needs (reader, writer, admin), the tenant\'s own token, or a licence of the catalogue', statuses: [401, 403] },
   { rule: 'links', violated: 'a link names no entry, or an entry linked by others cannot be deleted', theorem: 'textbook_licence_chain', remedy: 'the links first: the chain walked link by link, the linking entries released before the linked one', statuses: [404, 409] },
@@ -33,7 +33,7 @@ export const COURT_RULES: readonly { rule: string; violated: string; theorem: st
   { rule: 'search', violated: 'a request to find what an address hides by trying candidates: a brute-force search', theorem: 'textbook_decode_not_search', remedy: 'decode algebraically where the scheme is invertible (one step per position); a content address is one-way: what it hides stays a lead, no candidate is tried', statuses: [422] },
   { rule: 'integrity', violated: 'fragments lost or altered beyond what one parity repairs, or a seal that fails', theorem: 'textbook_fold_mirror', remedy: 'heal from a mirror by address; a seal that fails is not an address', statuses: [500, -32603] },
 ]
-export type Summons = { gate: string; status?: number; code?: number; rule?: string; evidence?: unknown; tenant?: string }
+type Summons = { gate: string; status?: number; code?: number; rule?: string; evidence?: unknown; tenant?: string }
 export const courtOf = (v: Summons) => {
   const rule = COURT_RULES.find((r) => r.rule === v.rule) ?? COURT_RULES.find((r) => r.statuses.includes(v.status ?? v.code ?? 0)) ?? COURT_RULES[0]!
   const summons = { gate: v.gate, status: v.status ?? null, code: v.code ?? null, rule: rule.rule, evidence: v.evidence ?? null, tenant: v.tenant ?? null }
@@ -47,7 +47,7 @@ export const courtOf = (v: Summons) => {
   }
 }
 
-export type Texts = { readme?: string; citation?: string; zenodo?: string; package?: string; worker?: string; billing?: string; hmac?: string; mcp?: string }
+type Texts = { readme?: string; citation?: string; zenodo?: string; package?: string; worker?: string; billing?: string; hmac?: string; mcp?: string }
 
 /** The claims the author makes, read from the tree and its metadata; each a sentence a door can judge. */
 export const claimsOf = (texts: Texts, leads: readonly Lead[], cite?: { theorem?: string | null }): Claim[] => {
@@ -101,8 +101,8 @@ export const NEWS_APIS: readonly { id: string; name: string; url: string; open: 
   { id: 'guardian', name: 'The Guardian content API', url: 'https://content.guardianapis.com/search?q=<query>', open: false, key: 'GUARDIAN_API_KEY', reads: 'response.total' },
   { id: 'nyt', name: 'The New York Times article search', url: 'https://api.nytimes.com/svc/search/v2/articlesearch.json?q=<query>', open: false, key: 'NYT_API_KEY', reads: 'response.meta.hits' },
 ]
-export const newsRequestsOf = () => PRECEDENCE.flatMap((p) => NEWS_APIS.filter((a) => a.open).map((a) => ({ id: `${a.id}:${p.doi}`, api: a.id, doi: p.doi, method: 'GET' as const, url: a.url.replace('<doi>', encodeURIComponent(p.doi)).replace('<query>', encodeURIComponent(a.id === 'crossref-events' ? p.doi : p.title)), accept: 'application/json' })))
-export const mentionsOf = (answers: readonly { id: string; status: number; text: string }[]) => {
+const newsRequestsOf = () => PRECEDENCE.flatMap((p) => NEWS_APIS.filter((a) => a.open).map((a) => ({ id: `${a.id}:${p.doi}`, api: a.id, doi: p.doi, method: 'GET' as const, url: a.url.replace('<doi>', encodeURIComponent(p.doi)).replace('<query>', encodeURIComponent(a.id === 'crossref-events' ? p.doi : p.title)), accept: 'application/json' })))
+const mentionsOf = (answers: readonly { id: string; status: number; text: string }[]) => {
   const read = (api: string, text: string): number | null => { try { const j = JSON.parse(text) as Record<string, unknown>; switch (api) { case 'gdelt': return Array.isArray((j as { articles?: unknown[] }).articles) ? (j as { articles: unknown[] }).articles.length : 0; case 'hn-algolia': return Number((j as { nbHits?: number }).nbHits ?? 0); case 'crossref-events': return Number((j as { message?: { 'total-results'?: number } }).message?.['total-results'] ?? 0); case 'wikipedia-search': return Number((j as { query?: { searchinfo?: { totalhits?: number } } }).query?.searchinfo?.totalhits ?? 0); default: return null } } catch { return null } }
   const rows = answers.map((a) => { const i = a.id.indexOf(':'); const api = a.id.slice(0, i), doi = a.id.slice(i + 1); return { api, doi, status: a.status, mentions: a.status === 200 ? read(api, a.text) : null } })
   const byRecord = Object.fromEntries(PRECEDENCE.map((p) => [p.doi, rows.filter((r) => r.doi === p.doi).reduce((n, r) => n + (r.mentions ?? 0), 0)]))
@@ -156,7 +156,7 @@ export const auditOf = (claims: readonly Claim[], answers: readonly Answer[], se
   return { claims: claims.length, findings, verdicts, violations, drift, legalFacts: legal ?? null, rights: rights ? { holder: rights.holder, license: rights.license, licenseAddress: rights.licenseAddress, imprint: rights.imprint, receipt: rights.receipt } : null, licence: licence ? { scope: licence.scope, spdx: licence.spdx, free: licence.bill?.free } : null, priorArt: priorArt ? { exhibits: priorArt.exhibits?.length ?? 0, missing: priorArt.missing?.length ?? 0, author: priorArt.author } : null, dueProcess: due ? { allGuaranteesSealed: due.allGuaranteesSealed, gaps: due.gaps?.length ?? 0, docket: due.docket?.length ?? 0, traitors: due.traitors?.length ?? 0 } : null, securityDoors, security: [...security], securityPassed: security.filter((c) => c.passed).length, securityTotal: security.length, refusals: answers.filter((a) => a.refusal !== undefined).length }
 }
 
-export const legalPageOf = (a: ReturnType<typeof auditOf>, plan: { agents: string[]; by: string; absent: string[] }, date: string): string => ['---', 'title: Legal', 'order: 56', '---', '', '# The legal and security audit, through MCP', '',
+const legalPageOf = (a: ReturnType<typeof auditOf>, plan: { agents: string[]; by: string; absent: string[] }, date: string): string => ['---', 'title: Legal', 'order: 56', '---', '', '# The legal and security audit, through MCP', '',
   `> ${(a.legalFacts as { disclaimer?: string } | null)?.disclaimer ?? LICENSE.disclaimer}`, '', `Run by \`npm run next\` on ${date} through the \`legal\` tool: every claim the author makes in this tree sent to the unit's forensic and verification doors, the unit's legal facts and rights beside this tree's licence module, the licence computed for this tree, the prior art of its theorems, due process over the claims, every security door the unit serves, and the tree's own security checks over its sources. Agents: ${plan.agents.join(', ')} (${plan.by}${plan.absent.length ? `; absent: ${plan.absent.join(', ')}` : ''}). ${LICENSE.disclaimer}`, '',
   `## Claims: ${a.claims}; verdicts ${Object.entries(a.verdicts).map(([k, v]) => `${k} ${v}`).join(', ')}; violations ${a.violations}; refusals ${a.refusals}`, '',
   '| Claim | Door | Verdict | Clean | Violations | Receipt | Note or refusal |', '|---|---|---|---|---:|---|---|', ...a.findings.map((f) => `| ${f.claim} | ${f.door} | ${f.verdict ?? '—'} | ${f.clean === null ? '—' : f.clean} | ${f.violations} | ${f.receipt ?? '—'} | ${(f.note || f.refusal || '').replace(/\|/g, '\\|')} |`), '',
@@ -237,7 +237,7 @@ export const COMPETITIONS: readonly { id: string; name: string; prize: string; r
 /** The registry's MCPs for grants and funding (2026-10-26: grant 20, funding 20, competition 2, prize 0, hackathon 0): proposed, extended by the discover step through the lead, never called here. */
 export const FUNDING_MCPS = ['ca.netgrant/canadian-grants', 'com.cedargrant/federal-grants', 'com.dropwatchhq/grant-finder', 'io.github.Ansvar-Systems/uk-farm-grants', 'io.github.Froydinger/grantsignal-us', 'ai.rallyprop/gov-funding', 'com.funding-radar/radar', 'com.modernmustardseed/funding-finder', 'eu.tech.funding/fundi', 'com.meridianlabssoftware/sec-form-d-funding-rounds'] as const
 /** A competition's window read from its page: "Registration opens on <date>, and closes on <date>" → open, closed or upcoming at `now`; "applications are open" → open; nothing read → unknown. Autonomy: the entry state is measured from the page on every run, never hand-set. */
-export const windowOf = (text: string, now: number): { entry: 'open' | 'closed' | 'upcoming' | 'unknown'; opens: string | null; closes: string | null; says: string } => {
+const windowOf = (text: string, now: number): { entry: 'open' | 'closed' | 'upcoming' | 'unknown'; opens: string | null; closes: string | null; says: string } => {
   const m = /[Rr]egistration opens on ([A-Z][a-z]+ \d{1,2}, \d{4}),? and closes on ([A-Z][a-z]+ \d{1,2}, \d{4})/.exec(text)
   if (m) { const opens = Date.parse(`${m[1]!} UTC`); const closes = Date.parse(`${m[2]!} UTC`) + 86_399_000; /* the day the window closes counts whole, in UTC */ const entry = now < opens ? 'upcoming' : now > closes ? 'closed' : 'open'; return { entry, opens: new Date(opens).toISOString().slice(0, 10), closes: new Date(closes).toISOString().slice(0, 10), says: `the page says registration opens ${m[1]} and closes ${m[2]}: ${entry} on ${new Date(now).toISOString().slice(0, 10)}` } }
   if (/applications? (?:are|is) (?:now |currently )?open/i.test(text)) return { entry: 'open', opens: null, closes: null, says: 'the page says applications are open' }
@@ -251,7 +251,7 @@ export const knowOf = (c: (typeof COMPETITIONS)[number]) => {
   const theorems = TEXTBOOK_THEOREMS.filter((t) => t.examples.includes('compete-rules') || (c.id === 'clay-millennium' && /clay|sigma|relation|triad/.test(t.key))).map((t) => t.key)
   return { competitors: c.competitors.known.length, source: c.competitors.source, read: c.competitors.read, measured: c.competitors.measured, theorems, both: c.competitors.known.length > 0 && theorems.length > 0, says: c.competitors.known.length ? 'known from the page' : 'no name on the page: a lead to read where the page points' }
 }
-export const competeOf = (evidence: { theorems: number; kernel: number; hosts: number; licence: string; published: boolean; pushed: boolean; conduct?: boolean; acceptance?: ReturnType<typeof mentionsOf> | null }, pages: Record<string, string> = {}, now = 0) => {
+const competeOf = (evidence: { theorems: number; kernel: number; hosts: number; licence: string; published: boolean; pushed: boolean; conduct?: boolean; acceptance?: ReturnType<typeof mentionsOf> | null }, pages: Record<string, string> = {}, now = 0) => {
   const judged = COMPETITIONS.map((c0) => {
     // the window measured from the page when a page was read: the fixture's entry stands only until then
     const w = pages[c0.id] ? windowOf(pages[c0.id]!, now || Date.now()) : null
@@ -306,7 +306,7 @@ export const PATENT_APIS: readonly { id: string; name: string; url: string; open
 export const PATENT_MCPS = ['ai.findip/patent-search', 'ai.g62/patent-search', 'ai.patentdata/patent-data', 'com.goveda/patent-mcp', 'com.unfoldip/patent-search', 'dev.patent/patent', 'io.github.FoundryNet/patent-intel-mcp', 'io.github.guptaprakhariitr/uspto-patents-mcp', 'io.github.pipeworx-io/patents', 'io.github.pipeworx-io/uspto-ptab', 'com.thenextgennexus/patents-trademarks-ip-mcp-server'] as const
 export type Patent = { number: string; title: string; priority: string | null; filing: string | null; publication: string | null; grant: string | null; assignee: string | null; inventor: string | null; office: string; kind: string | null }
 /** A patent number read: the office (the two letters), the kind code; US, EP, WO, CN and the rest. */
-export const patentNumberOf = (n: string): { office: string; kind: string | null; wellFormed: boolean } => {
+const patentNumberOf = (n: string): { office: string; kind: string | null; wellFormed: boolean } => {
   const m = /^([A-Z]{2})(\d+)([A-Z]\d?)?$/.exec(n)
   if (!m) return { office: n.slice(0, 2), kind: null, wellFormed: false }
   const office = m[1]!; const digits = m[2]!; const kind = m[3] ?? null
@@ -314,7 +314,7 @@ export const patentNumberOf = (n: string): { office: string; kind: string | null
   return { office, kind, wellFormed }
 }
 /** Google Patents\' answer read into patents: the )]}\' prefix stripped, every cluster\'s results taken. */
-export const patentsOf = (text: string): { total: number; patents: Patent[] } | { error: string } => {
+const patentsOf = (text: string): { total: number; patents: Patent[] } | { error: string } => {
   try {
     const j = JSON.parse(text.replace(/^\)\]\}'\n?/, '')) as { results?: { total_num_results?: number; cluster?: { result?: { patent?: Record<string, string> }[] }[] } }
     const r = j.results ?? {}
@@ -324,7 +324,7 @@ export const patentsOf = (text: string): { total: number; patents: Patent[] } | 
 }
 const dayOf = (d: string | null): number | null => (d ? Math.floor(Date.parse(d + 'T00:00:00Z') / 86_400_000) : null)
 /** The theorems over patents, verified on every patent read: the dates are ordered (priority ≤ filing ≤ publication, filing ≤ grant), the number is well formed for its office, and a granted patent\'s term ends twenty years after its filing (US utility, EP: Art. 63 EPC): every violation is named, never hidden. */
-export const patentTheoremsOf = (patents: readonly Patent[]): { checked: number; passed: number; violations: { number: string; theorem: string; says: string }[]; byTheorem: Record<string, { passed: number; failed: number }> } => {
+const patentTheoremsOf = (patents: readonly Patent[]): { checked: number; passed: number; violations: { number: string; theorem: string; says: string }[]; byTheorem: Record<string, { passed: number; failed: number }> } => {
   const violations: { number: string; theorem: string; says: string }[] = []
   const byTheorem: Record<string, { passed: number; failed: number }> = {}
   const tally = (t: string, ok: boolean, number: string, says: string) => { byTheorem[t] = byTheorem[t] ?? { passed: 0, failed: 0 }; if (ok) byTheorem[t]!.passed += 1; else { byTheorem[t]!.failed += 1; violations.push({ number, theorem: t, says }) } }

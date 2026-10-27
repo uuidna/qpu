@@ -69,7 +69,7 @@ export const channelOf = (name: ErrorChannel, p: number): Channel => ({ name, p 
 
 /** One point of the code's performance: the raw error of the unencoded qubit and the logical error after one cycle, both from
  *  the simulated density matrix, at the channel probability p. */
-export type CodePoint = { p: number; physicalError: number; logicalError: number }
+type CodePoint = { p: number; physicalError: number; logicalError: number }
 
 export const codePoint = (code: RepetitionCode, channel: ErrorChannel, p: number, logical: LogicalState = '0'): CodePoint => ({
   p,

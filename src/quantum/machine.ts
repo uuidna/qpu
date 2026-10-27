@@ -12,9 +12,9 @@ import { courtOf } from './toolboxes/legal.js'
 import type { WorkflowFacts } from './toolboxes/repository.js'
 type Decide = (name: 'pre-commit' | 'pre-push', facts: WorkflowFacts) => { allowed: boolean; says: string; violated: string[]; unknown: string[] }
 
-export type MachineAction = { id: string; kind: 'read' | 'write'; cmd: string; args: readonly string[]; says: string; needs?: 'message' | 'confirm' | 'branch'; workflow?: 'pre-commit' | 'pre-push' }
+type MachineAction = { id: string; kind: 'read' | 'write'; cmd: string; args: readonly string[]; says: string; needs?: 'message' | 'confirm' | 'branch'; workflow?: 'pre-commit' | 'pre-push' }
 /** A branch a merge may name: letters, digits, dot, underscore, slash and dash, never starting with a dash (it would be read as an option). */
-export const BRANCH_RE = /^[A-Za-z0-9._/-]{1,200}$/
+const BRANCH_RE = /^[A-Za-z0-9._/-]{1,200}$/
 export const MACHINE_ACTIONS: readonly MachineAction[] = [
   { id: 'status', kind: 'read', cmd: 'git', args: ['status', '--porcelain=v1', '--branch'], says: 'the working tree: what changed, the branch and how far it is from its remote' },
   { id: 'log', kind: 'read', cmd: 'git', args: ['log', '--oneline', '-n', '50'], says: 'the last fifty commits' },
@@ -93,7 +93,7 @@ export type StreamEvent = { at: string; kind: string; subject: string; ms?: numb
 /** An ETA is the mean of the recorded times, or absent: never a constant (textbook_eta_from_receipts). */
 export const etaOf = (times: readonly number[]): number | null => (times.length ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : null)
 /** The largest gap between consecutive events while work runs, against the heartbeat bound (textbook_stream_no_silence). */
-export const silenceOf = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) => {
+const silenceOf = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) => {
   const ts = events.map((e) => Date.parse(e.at)).filter(Number.isFinite)
   let maxGapMs = 0, at: string | null = null
   for (let i = 1; i < ts.length; i++) if (ts[i]! - ts[i - 1]! > maxGapMs) { maxGapMs = ts[i]! - ts[i - 1]!; at = events[i]!.at }

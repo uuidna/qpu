@@ -109,7 +109,7 @@ const contract4 = (w: Contracted, x: Contracted, y: Contracted, z: Contracted): 
 /** The molecule's integrals and energies at one bond length: the atomic-orbital matrices, the molecular orbitals g and u, the
  *  one-electron integrals h_pq and the two-electron (pq|rs) over them, the nuclear repulsion, and the Hartree-Fock, MP2 and
  *  full-CI energies the integrals give. All in hartree; the bond length in ångström. */
-export type Hydrogen = {
+type Hydrogen = {
   bondLength: number
   nuclearRepulsion: number
   overlapAB: number
@@ -170,7 +170,7 @@ export const hydrogen = (bondLength: number = TUTORIAL_ENERGIES.bondLengthDefaul
 }
 
 /** A Pauli term of a qubit Hamiltonian: a real coefficient and the Paulis by qubit key (unlisted qubits take the identity). */
-export type PauliTerm = { coefficient: number; paulis: Record<string, 'X' | 'Y' | 'Z'>; label: string }
+type PauliTerm = { coefficient: number; paulis: Record<string, 'X' | 'Y' | 'Z'>; label: string }
 
 /** The two-qubit Hamiltonian of H₂ in the two-electron S_z = 0 sector: qubit line:0 says which orbital the spin-up electron
  *  occupies (|0⟩ = g, |1⟩ = u) and line:1 the same for spin-down. The 4 × 4 matrix elements follow the Slater-Condon rules for

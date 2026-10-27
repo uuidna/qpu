@@ -40,21 +40,21 @@ const satisfies = (value: unknown, cond: unknown): boolean => {
   return same(value, cond) || (Array.isArray(value) && value.some((v) => same(v, cond)))
 }
 /** Does a document match a filter? */
-export const matchesOf = (doc: Doc, filter: Filter): boolean => Object.entries(filter).every(([k, cond]) => {
+const matchesOf = (doc: Doc, filter: Filter): boolean => Object.entries(filter).every(([k, cond]) => {
   if (k === '$and') return (cond as Filter[]).every((f) => matchesOf(doc, f))
   if (k === '$or') return (cond as Filter[]).some((f) => matchesOf(doc, f))
   if (k === '$nor') return !(cond as Filter[]).some((f) => matchesOf(doc, f))
   return satisfies(pathOf(doc, k), cond)
 })
 /** find: filter, sort ({field: 1 | -1}), skip; no limit unless asked (no caps). */
-export const findOf = (docs: readonly Doc[], filter: Filter = {}, sort: Record<string, 1 | -1> = {}, skip = 0, limit?: number): Doc[] => {
+const findOf = (docs: readonly Doc[], filter: Filter = {}, sort: Record<string, 1 | -1> = {}, skip = 0, limit?: number): Doc[] => {
   const out = docs.filter((d) => matchesOf(d, filter))
   for (const [k, dir] of Object.entries(sort).reverse()) out.sort((a, b) => dir * cmp(pathOf(a, k), pathOf(b, k)))
   const sliced = out.slice(skip)
   return limit === undefined ? sliced : sliced.slice(0, limit)
 }
 /** An update applied: $set, $unset, $inc, $push, $pull, or a whole replacement; the result is a new document, never a mutation. */
-export const updateOf = (doc: Doc, update: Record<string, unknown>): Doc => {
+const updateOf = (doc: Doc, update: Record<string, unknown>): Doc => {
   const ops = Object.keys(update).filter((k) => k.startsWith('$'))
   if (!ops.length) return { ...update, _id: doc._id }
   const out: Doc = JSON.parse(JSON.stringify(doc))

@@ -11,11 +11,11 @@ const sigma = (x: number) => 15 - x
 const partsOf = (uuid: string) => { const c = channelOf(uuid); return { handle: c.handle, program: c.program, tail: c.tail } }
 /** The UUID rebuilt from its own parts (uuidFromParts): what every witness maps back to. A UUID made from parts equals it; one made by uuidOf
  *  carries a different stamp and differs from it in that nibble alone, which the check reports (isCanonical) rather than hides. */
-export const canonicalOf = (uuid: string) => { const p = partsOf(uuid); return uuidFromParts(p.handle, p.program, p.tail) }
+const canonicalOf = (uuid: string) => { const p = partsOf(uuid); return uuidFromParts(p.handle, p.program, p.tail) }
 const reflectHandle = (handle: string, i: number) => handle.slice(0, i) + sigma(parseInt(handle[i]!, 16)).toString(16) + handle.slice(i + 1)
 
 /** The fourteen faces: six square (program rotated 1..6 places), eight triangular (one handle nibble reflected by σ). */
-export const witnessesOf = (uuid: string): Witness[] => {
+const witnessesOf = (uuid: string): Witness[] => {
   const { handle, program, tail } = partsOf(uuid)
   const squares = [1, 2, 3, 4, 5, 6].map((k): Witness => ({ face: 'square', index: k, uuid: uuidFromParts(handle, rotate(program, k), tail), how: `program rotated ${k} place(s)` }))
   const triangles = [0, 1, 2, 3, 4, 5, 6, 7].map((i): Witness => ({ face: 'triangle', index: i, uuid: uuidFromParts(reflectHandle(handle, i), program, tail), how: `handle nibble ${i} reflected by σ` }))

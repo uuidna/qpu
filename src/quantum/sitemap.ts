@@ -4,7 +4,6 @@
 // This file is generated from the fetched XML; it is data, not code.
 
 export const SITEMAP_FETCHED = '2026-10-25'
-export const SITEMAP_INDEX_LASTMOD = '2026-10-25T01:49:53+00:00'
 export const SITEMAP_CHILD_CHARACTERS = 1120891
 
 /** Every page of the child sitemap: its path and the date of its lastmod. */

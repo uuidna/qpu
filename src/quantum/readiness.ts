@@ -7,15 +7,15 @@ import type { WaveResult } from './wave.js'
 import { TAKES } from './discovery.js'
 import { cellOf as cell } from './widgets.js'
 
-export type Judged = { lead: string; source: string; status: string; class: 'served' | 'refuted' | 'trial'; by: string }
+type Judged = { lead: string; source: string; status: string; class: 'served' | 'refuted' | 'trial'; by: string }
 export type Source = { source: string; reached: true; settled: number; why: string; open: { source: string; what: string; owes: string }[] }
-export type BorderCall = { door: string; host: string; arguments: Record<string, unknown> }
+type BorderCall = { door: string; host: string; arguments: Record<string, unknown> }
 export type BorderAnswer = { door: string; host: string; arguments?: Record<string, unknown>; answer?: unknown; refusal?: string }
-export type Border = { door: string; host: string; args: string[]; verdict: string | null; receipt: string | null; sealed: boolean; note: string | null; refusal: string | null }
+type Border = { door: string; host: string; args: string[]; verdict: string | null; receipt: string | null; sealed: boolean; note: string | null; refusal: string | null }
 export type Page = { status: number; title: string | null; url: string }
 
 const SITE_SUFFIX = /\s*\|\s*(Cirq|Google Quantum AI|OpenFermion|TensorFlow Quantum|Qualtran|Stim)\s*/gi
-export const decodeTitle = (t: string): string => t.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(SITE_SUFFIX, ' ').replace(/\s+/g, ' ').trim()
+const decodeTitle = (t: string): string => t.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(SITE_SUFFIX, ' ').replace(/\s+/g, ' ').trim()
 
 /** The page each lead's source answered with, from the wave's source-page results. */
 export const pagesOf = (results: readonly WaveResult[]): Map<string, Page> => {
@@ -89,9 +89,9 @@ export const borderOf = (answers: readonly BorderAnswer[]): Border[] => answers.
 })
 
 /** The tree's own vortex: the doubling cycle and the trinities, each with its σ_10 reflection, as every tail is read. */
-export const TREE_VORTEX = { forward: [1, 2, 4, 8, 7, 5, 3, 6, 9], reflected: [9, 8, 6, 2, 3, 5, 7, 4, 1], trinities: [[3, 6, 9], [7, 4, 1], [2, 5, 8]], fixed: [5] }
+const TREE_VORTEX = { forward: [1, 2, 4, 8, 7, 5, 3, 6, 9], reflected: [9, 8, 6, 2, 3, 5, 7, 4, 1], trinities: [[3, 6, 9], [7, 4, 1], [2, 5, 8]], fixed: [5] }
 /** The unit's vortex doors read against the tree's: agreement is measured, a one-sided triad is named. */
-export const vortexOf = (unit: { reflection?: { forward?: number[]; reflected?: number[]; involution?: boolean; pairsSumTen?: boolean; fixedPoints?: number[] } | null; triad?: number[] | null; doubleTorus?: { dims?: string[]; root?: string } | null }): { agree: boolean; why: string; triadOneSided: boolean; forward: number[] | null; reflected: number[] | null; doubleTorusRoot: string | null; dims: number } => {
+const vortexOf = (unit: { reflection?: { forward?: number[]; reflected?: number[]; involution?: boolean; pairsSumTen?: boolean; fixedPoints?: number[] } | null; triad?: number[] | null; doubleTorus?: { dims?: string[]; root?: string } | null }): { agree: boolean; why: string; triadOneSided: boolean; forward: number[] | null; reflected: number[] | null; doubleTorusRoot: string | null; dims: number } => {
   const r = unit.reflection
   const sameSet = (a: number[] | undefined, b: number[]) => !!a && a.length === b.length && [...a].sort().join() === [...b].sort().join()
   const agree = !!r && sameSet(r.forward, TREE_VORTEX.forward) && sameSet(r.reflected, TREE_VORTEX.reflected) && r.involution === true && r.pairsSumTen === true && (r.reflected ?? []).every((x, i) => x + (r.forward ?? [])[i]! === 10)

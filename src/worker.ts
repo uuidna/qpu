@@ -23,7 +23,7 @@ import type { SignaturePlan } from './quantum/toolboxes/crypto.js'
 
 /** The slice of the Workers runtime this file uses, typed here so the tree needs no runtime types package to typecheck. */
 export type Storage = { get<T>(key: string): Promise<T | undefined>; put(key: string, value: unknown): Promise<void>; delete(key: string): Promise<unknown>; list<T>(opts?: { prefix?: string }): Promise<Map<string, T>> }
-export type DocketStub = { fetch(request: Request): Promise<Response> }
+type DocketStub = { fetch(request: Request): Promise<Response> }
 export type Env = { QPU_WRITE_TOKEN?: string; /** the tenant's ML-DSA signing key (a private JWK of kty AKP): QPU_SIGNING_KEY_<TENANT>, or this one for every tenant */ QPU_SIGNING_KEY?: string; QPU_ADMIN_TOKEN?: string; QPU_DATA_KEY?: string; QPU_MIRRORS?: string; /** the MCP host that manages roles (a Payload MCP plugin): tools/call of QPU_RBAC_TOOL with { token, tenant, host } answers { role } */ QPU_RBAC_MCP?: string; QPU_RBAC_TOOL?: string; /** the built site, served as static assets by the same Worker: the web OS */ ASSETS?: { fetch(request: Request): Promise<Response> }; DOCKET?: { idFromName(name: string): unknown; get(id: unknown): DocketStub }; [tenantToken: string]: unknown }
 
 /** Tenants: one Worker, several hosts, each host its own docket and its own tokens. A security collision — one tenant's token
@@ -44,7 +44,7 @@ export const roleAt = async (env: Env, tenant: string, host: string, token: stri
   return { ...roleOf(env, tenant, token), by: 'tenant-secrets' }
 }
 /** The role a request holds at a tenant, from its token alone; a token of another tenant holds no role here and says so. */
-export const roleOf = (env: Env, tenant: string, token: string | undefined): { role: Role; collision?: string } => {
+const roleOf = (env: Env, tenant: string, token: string | undefined): { role: Role; collision?: string } => {
   const T = tenant.toUpperCase()
   const tokenOf = (kind: 'WRITE' | 'ADMIN', t: string) => (env[`QPU_${kind}_TOKEN_${t.toUpperCase()}`] as string | undefined) ?? (env[`QPU_${kind}_TOKEN`] as string | undefined)
   if (!token) return { role: 'reader' }
@@ -103,7 +103,7 @@ export { discoveryOf, protectedResourceOf }
  *  a cheap read asks each mirror for its fingerprint of the entry and reports the agreement. */
 export const STRIPE = 4
 export const FRAGMENT_BYTES = 32 * 1024
-export const MAX_ENTRY_BYTES = 4 * 1024 * 1024
+const MAX_ENTRY_BYTES = 4 * 1024 * 1024
 const ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 const enc = new TextEncoder()
 const dec = new TextDecoder()
@@ -112,7 +112,7 @@ const b64 = (b: Uint8Array): string => btoa(latin1(b))
 const unb64 = (t: string): Uint8Array => Uint8Array.from(atob(t), (c) => c.charCodeAt(0))
 const buf = (u: Uint8Array): ArrayBuffer => u.buffer.slice(u.byteOffset, u.byteOffset + u.byteLength) as ArrayBuffer
 export const hashOf = (bytes: Uint8Array): string => uuidOf(latin1(bytes))
-export const sha256Of = async (bytes: Uint8Array): Promise<string> => [...new Uint8Array(await crypto.subtle.digest('SHA-256', buf(bytes)))].map((b) => b.toString(16).padStart(2, '0')).join('')
+const sha256Of = async (bytes: Uint8Array): Promise<string> => [...new Uint8Array(await crypto.subtle.digest('SHA-256', buf(bytes)))].map((b) => b.toString(16).padStart(2, '0')).join('')
 /** Constant-time string equality, so a token comparison leaks no prefix. */
 export const sameToken = (a: string | undefined, b: string | undefined): boolean => {
   if (!a || !b) return false
@@ -323,7 +323,7 @@ export class Docket {
 /** The page a UUID unfurls into, computed from the id alone: head from the channel (handle, hex program, message tail), the seal,
  *  the aura swatch as an inline SVG data URL, the licence. The body loads client-side from the JSON route; a crawler reads the head. */
 const escapeHtml = (t: string): string => t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
-export type Superposition = { prev?: string; next?: { href: string; label: string }; compiled?: Step[]; result?: unknown; notes?: string[]; locale?: string }
+type Superposition = { prev?: string; next?: { href: string; label: string }; compiled?: Step[]; result?: unknown; notes?: string[]; locale?: string }
 /** The next step of an id: its program compiled against the tools, the first step executed, and the href that continues the walk. */
 export const nextOf = (id: string, origin: string): { href: string; label: string; compiled: Step[]; result: unknown } => {
   const ch = channelOf(id)
@@ -375,12 +375,12 @@ ${sp.result && typeof sp.result === 'object' && 'widget' in (sp.result as object
 }
 
 /** The referer, when it names a page of this unit or any http origin: the previous step of the walk. */
-export const refererOf = (request: Request): string | undefined => { const r = request.headers.get('referer'); return r && /^https?:\/\//.test(r) ? r : undefined }
+const refererOf = (request: Request): string | undefined => { const r = request.headers.get('referer'); return r && /^https?:\/\//.test(r) ? r : undefined }
 
 /** Catch all, decide and translate later. A path is read as handle / program / tail where it is hex (the walk), a locale prefix
  *  is stripped and recorded as a translation lead, and anything else is put to the match tool as a statement: served, proved
  *  impossible, or returned as a lead. Nothing ends in a bare 404 without a decision. */
-export const catchAll = (request: Request, url: URL, env: Env): Response | Promise<Response> => {
+const catchAll = (request: Request, url: URL, env: Env): Response | Promise<Response> => {
   const segments = url.pathname.split('/').filter(Boolean).map(decodeURIComponent)
   const notes: string[] = []
   let locale = 'en'
@@ -499,7 +499,7 @@ const signingKeyOf = async (algorithm: string, env: Env, tenant: string): Promis
   return { pair: await ephemeralKeys.get(algorithm)!, keyed: 'ephemeral' }
 }
 const bytesOfHex = (h: string): Uint8Array => new Uint8Array((h.match(/../g) ?? []).map((x) => parseInt(x, 16)))
-export const signAtEdge = async (reply: { result: { structuredContent: { sha256: string; signature: SignaturePlan } } }, env: Env, tenant: string): Promise<unknown> => {
+const signAtEdge = async (reply: { result: { structuredContent: { sha256: string; signature: SignaturePlan } } }, env: Env, tenant: string): Promise<unknown> => {
   const sc = reply.result.structuredContent
   const plan = sc.signature
   try {

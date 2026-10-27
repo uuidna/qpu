@@ -11,12 +11,12 @@ import { toolsOf, type Context } from './toolbox.js'
 
 export type E2eRequest = { id: string; combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; arguments: Record<string, unknown>; host: string; url: string; method: 'POST'; accept: string; headers: Record<string, string>; body: unknown; local: string; localError?: string }
 export type E2eAnswer = E2eRequest & { status: number; ms: number; text: string; etag?: string | null; address?: string | null; version?: string | null; /** the answer already decoded by the client the moment it arrived, its body released: a run of hundreds of copies holds values, never bodies (the heap ran out holding 870 bodies: measured) */ decoded?: ReturnType<typeof valueOf> }
-export type ErrorBlock = { uuid: string; kind: 'flip' | 'erasure' | 'refusal'; host: string; tool: string; combo: string; expected: string; got: string; syndrome: string[] }
-export type Decoded = { combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; local: string; copies: { host: string; value: string; ms: number; involution?: true }[]; involutions: number; materialised: number; outcome: 'agree' | 'corrected' | 'erased' | 'uncorrectable'; logical: string; syndrome: string[]; errors: ErrorBlock[]; codes: CodeRun[]; winner: string | null; possibilities: { value: string; copies: string[] }[] }
+type ErrorBlock = { uuid: string; kind: 'flip' | 'erasure' | 'refusal'; host: string; tool: string; combo: string; expected: string; got: string; syndrome: string[] }
+type Decoded = { combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; local: string; copies: { host: string; value: string; ms: number; involution?: true }[]; involutions: number; materialised: number; outcome: 'agree' | 'corrected' | 'erased' | 'uncorrectable'; logical: string; syndrome: string[]; errors: ErrorBlock[]; codes: CodeRun[]; winner: string | null; possibilities: { value: string; copies: string[] }[] }
 /** A code: one way of deciding the logical value from the copies, with the time it needs (the ms at which it can decide). */
-export type CodeRun = { code: 'involution' | 'any' | 'first-two-agree' | 'tree-reference' | 'majority'; logical: string | null; ms: number; correct: boolean | null; copiesUsed: number }
+type CodeRun = { code: 'involution' | 'any' | 'first-two-agree' | 'tree-reference' | 'majority'; logical: string | null; ms: number; correct: boolean | null; copiesUsed: number }
 /** The competition: every code decides from the same copies; the fastest code whose decision is the consensus wins. A tie goes to the stronger code (more copies checked). */
-export const competitionOf = (local: string, copies: readonly { host: string; value: string; ms: number; kind?: 'erasure' | 'refusal'; involution?: true }[], consensus: string | null): { codes: CodeRun[]; winner: string | null } => {
+const competitionOf = (local: string, copies: readonly { host: string; value: string; ms: number; kind?: 'erasure' | 'refusal'; involution?: true }[], consensus: string | null): { codes: CodeRun[]; winner: string | null } => {
   const valid = copies.filter((c) => !c.kind).sort((a, b) => a.ms - b.ms)
   const runs: CodeRun[] = []
   // involution: the fastest host that answered 304 proved the tree's content by hash at the edge; nothing was computed or sent
@@ -38,8 +38,8 @@ export const competitionOf = (local: string, copies: readonly { host: string; va
 }
 
 /** The rules of the competition, written once and judged on every run: (1) a code decides from the copies that had arrived by its decision (the tree's copy at 0 ms counts as one); (2) the fastest code whose decision is the consensus wins; (3) a tie goes to the stronger code (more copies checked); (4) a code is correct only when its decision is the consensus; (5) no winner without a consensus. A broken rule is a lead, never a win. */
-export const COMPETITION_RULES = ['a code decides from the copies that had arrived by its decision time', 'the fastest code whose decision is the consensus wins', 'a tie goes to the stronger code', 'a code is correct only when its decision is the consensus', 'no winner without a consensus'] as const
-export type RuleVerdict = { rules: readonly string[]; judged: number; violations: { combo: string; rule: number; code: string | null; says: string }[]; followed: boolean }
+const COMPETITION_RULES = ['a code decides from the copies that had arrived by its decision time', 'the fastest code whose decision is the consensus wins', 'a tie goes to the stronger code', 'a code is correct only when its decision is the consensus', 'no winner without a consensus'] as const
+type RuleVerdict = { rules: readonly string[]; judged: number; violations: { combo: string; rule: number; code: string | null; says: string }[]; followed: boolean }
 export const rulesOf = (decoded: readonly { combo: string; logical: string; outcome: string; codes: readonly CodeRun[]; winner: string | null; copies: readonly { ms: number; kind?: string }[] }[]): RuleVerdict => {
   const strength = { any: 0, 'first-two-agree': 1, 'tree-reference': 2, majority: 3, involution: 4 }
   const violations: RuleVerdict['violations'] = []
@@ -58,9 +58,9 @@ export const rulesOf = (decoded: readonly { combo: string; logical: string; outc
 }
 
 /** The tools never called through the gate: the flow (they fetch), the audit and the metrics (they replay everything). */
-export const E2E_SKIP = new Set(['discover', 'wave', 'readiness', 'imagine', 'e2e', 'audit', 'metrics'])
+const E2E_SKIP = new Set(['discover', 'wave', 'readiness', 'imagine', 'e2e', 'audit', 'metrics'])
 /** A combination the Worker executes at the edge with the tenant's secret (a Stripe checkout plan) answers per tenant, not as a copy of a pure value: the gate does not decode it, and says so. */
-export const executedAtEdge = (tool: string, args: Record<string, unknown>): boolean => (tool === 'stripe' && args.op === 'plan') || (tool === 'seal' && !!args.sign)
+const executedAtEdge = (tool: string, args: Record<string, unknown>): boolean => (tool === 'stripe' && args.op === 'plan') || (tool === 'seal' && !!args.sign)
 /** The hash of a result with the clock masked: ISO 8601 instants and epoch-shaped integers (seconds or milliseconds since 2020) become one token, so copies computed at different moments agree and only what the arguments determine is compared. */
 export const hashOf = (v: unknown) => uuidOf((JSON.stringify(v) ?? 'undefined').replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})/g, '<instant>').replace(/(?<![\d.])1[6-9]\d{8}(\d{3})?(?![\d.])/g, '<epoch>'))
 

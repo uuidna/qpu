@@ -7,7 +7,7 @@ import { sha256, utf8, hex } from './hmac.js'
 
 export const CODATA_URL = 'https://physics.nist.gov/cuu/Constants/Table/allascii.txt'
 /** A decimal as written in the table ("6.674 30 e-11") as exact integers: mantissa × 10^exponent. */
-export const decimalOf = (s: string): { mantissa: string; exponent: number } | null => {
+const decimalOf = (s: string): { mantissa: string; exponent: number } | null => {
   const m = /^(-?)(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/.exec(s.replace(/\s+/g, '').replace(/\.\.\.$/, ''))
   if (!m) return null
   const frac = m[3] ?? ''

@@ -7,7 +7,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 
-export type ClaudeMount = { phase: 'needs-key' | 'mounted' | 'differs' | 'refused' | 'failed'; model?: string; sha256Here?: string; sha256ByClaude?: string | null; stopReason?: string; servedBy?: string; usage?: { input: number; output: number }; note: string }
+type ClaudeMount = { phase: 'needs-key' | 'mounted' | 'differs' | 'refused' | 'failed'; model?: string; sha256Here?: string; sha256ByClaude?: string | null; stopReason?: string; servedBy?: string; usage?: { input: number; output: number }; note: string }
 
 export const mountThroughClaude = async (origin = 'https://qpu.uuidna.com'): Promise<ClaudeMount> => {
   // the key from the environment or .dev.vars (the file the Worker's secrets live in, ignored by git); its value is never printed or carried

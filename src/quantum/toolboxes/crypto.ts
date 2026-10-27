@@ -16,8 +16,8 @@ import { splitOf } from '../split.js'
 import { raysOf } from '../theme.js'
 import { speakHexOf } from '../i18n.js'
 
-export type Piece = { index: number; reflection: number; address: string; sha256: string; bytes: number; rows: number; firstKey: string | null; lastKey: string | null; seed: number; trinity: number[] }
-export type Fold = { bytes: number; bound: number; fits: boolean; excess: number; pieces: Piece[]; count: number; root: string; fold: string; boundary: { d: number; sigma: string; says: string }; decided: { by: string; comparisons: number } }
+type Piece = { index: number; reflection: number; address: string; sha256: string; bytes: number; rows: number; firstKey: string | null; lastKey: string | null; seed: number; trinity: number[] }
+type Fold = { bytes: number; bound: number; fits: boolean; excess: number; pieces: Piece[]; count: number; root: string; fold: string; boundary: { d: number; sigma: string; says: string }; decided: { by: string; comparisons: number } }
 
 const sha = (s: string) => hex(sha256(utf8(s)))
 const keyOf = (row: string): string | null => { const m = /^\s*\{\s*"(?:key|id|address|uuid)"\s*:\s*"([^"]+)"/.exec(row) ?? /^([^\s,|]+)/.exec(row); return m ? m[1]! : null }
@@ -42,7 +42,7 @@ export const foldOf = (text: string, bound: number): Fold => {
 }
 
 /** The piece a key sits in: by its address (the piece's own), or by the key range of the rows it holds. Decided without reading the whole. */
-export const pieceOfKey = (fold: Fold, key: string): { index: number; address: string; why: string } | null => {
+const pieceOfKey = (fold: Fold, key: string): { index: number; address: string; why: string } | null => {
   const byAddress = fold.pieces.find((p) => p.address === key || p.sha256 === key)
   if (byAddress) return { index: byAddress.index, address: byAddress.address, why: 'the key is the piece\'s own address' }
   for (const p of fold.pieces) if (p.firstKey !== null && p.lastKey !== null && p.firstKey <= key && key <= p.lastKey) return { index: p.index, address: p.address, why: `the key sits between ${p.firstKey} and ${p.lastKey}, the piece's first and last rows` }
@@ -50,7 +50,7 @@ export const pieceOfKey = (fold: Fold, key: string): { index: number; address: s
 }
 
 /** The whole recomputed from its pieces: the root agrees or names the piece that does not. */
-export const unfoldOf = (pieces: readonly { index: number; text: string; sha256?: string }[], root?: string): { whole: string; root: string; agrees: boolean | null; wrong: number[] } => {
+const unfoldOf = (pieces: readonly { index: number; text: string; sha256?: string }[], root?: string): { whole: string; root: string; agrees: boolean | null; wrong: number[] } => {
   const sorted = [...pieces].sort((a, b) => a.index - b.index)
   const wrong = sorted.filter((p) => p.sha256 && sha(p.text) !== p.sha256).map((p) => p.index)
   const r = sha(sorted.map((p) => sha(p.text)).join(''))
@@ -147,21 +147,21 @@ const seal = toolOf('crypto', {
 /** The Workers compatibility flag that turns ML-DSA on in Web Crypto: the wrangler configuration MCP computes carries it because the seal tool needs it. */
 export const WEBCRYPTO_FLAG = 'webcrypto_modern_algorithms'
 /** The ML-DSA parameter sets of FIPS 204 (table 2 of the standard: public key and signature sizes in bytes) and the Web Crypto names Workers and Node give them. */
-export const ML_DSA = {
+const ML_DSA = {
   'ML-DSA-44': { category: 2, publicKey: 1312, signature: 2420 },
   'ML-DSA-65': { category: 3, publicKey: 1952, signature: 3309 },
   'ML-DSA-87': { category: 5, publicKey: 2592, signature: 4627 },
 } as const
-export type MlDsa = keyof typeof ML_DSA
+type MlDsa = keyof typeof ML_DSA
 export type SignaturePlan = { algorithm: MlDsa; fips: 204; over: 'sha256'; message: string; signed: string; executedBy: 'host'; keyVar: string; webcrypto: { flag: string; generateKey: { name: MlDsa }; sign: { name: MlDsa }; keyFormat: 'jwk'; kty: 'AKP'; since: string }; sizes: { publicKey: number; signature: number }; verify: string; value?: string; publicKey?: Record<string, unknown>; keyed?: 'secret' | 'ephemeral'; phase?: 'planned' | 'signed' | 'unsupported'; note?: string }
 /** The signature plan, pure: what the host signs (the 32 bytes of the digest), with which algorithm, under which key variable, through which Web Crypto call; the host fills value, publicKey and keyed. */
-export const signaturePlanOf = (digest: string, sign: unknown): SignaturePlan => {
+const signaturePlanOf = (digest: string, sign: unknown): SignaturePlan => {
   const algorithm: MlDsa = sign === true || sign === 'ML-DSA-65' ? 'ML-DSA-65' : sign === 'ML-DSA-44' ? 'ML-DSA-44' : sign === 'ML-DSA-87' ? 'ML-DSA-87' : (() => { throw new Error(`sign is ML-DSA-44, ML-DSA-65 or ML-DSA-87 (FIPS 204), not ${JSON.stringify(sign)}`) })()
   return { algorithm, fips: 204, over: 'sha256', message: digest, signed: 'the 32 bytes of the SHA-256 digest (256 bits, whatever the text\'s length)', executedBy: 'host', keyVar: 'QPU_SIGNING_KEY[_<TENANT>] (a private JWK of kty AKP; absent, the host signs with a key it generates for its own lifetime and says so)', webcrypto: { flag: WEBCRYPTO_FLAG, generateKey: { name: algorithm }, sign: { name: algorithm }, keyFormat: 'jwk', kty: 'AKP', since: POST_QUANTUM.workers.changelog }, sizes: { publicKey: ML_DSA[algorithm].publicKey, signature: ML_DSA[algorithm].signature }, verify: `crypto.subtle.verify({ name: '${algorithm}' }, publicKey, signature, bytesOf(sha256)) with the public key the answer carries: no secret needed`, phase: 'planned' }
 }
 
 /** What this seal is against a quantum adversary, and what NIST standardised: read at CSRC on 2026-10-25, carried as the standards nist-fips-203/204/205 discovery reads. */
-export const POST_QUANTUM = {
+const POST_QUANTUM = {
   thisSeal: 'SHA-256 and HMAC-SHA256 are symmetric: Grover\'s search halves their bits, so 256 bits keep 128 against a quantum adversary; no public-key step is taken here, so nothing of this seal falls to Shor',
   standards: [
     { fips: 203, name: 'ML-KEM (Module-Lattice-Based Key-Encapsulation Mechanism)', published: '2024-08-13', at: 'https://csrc.nist.gov/pubs/fips/203/final' },
@@ -186,13 +186,13 @@ export const ATTEST_APIS: readonly { id: string; name: string; url: string; open
   { id: 'tls-live', name: "a host's live TLS certificate, read by the client (openssl or node:tls), never fetched by the tree", url: 'tls://<host>:443', open: true, measured: 'qpu.uuidna.com: Google Trust Services WE1, 2026-09-09 to 2026-12-08 (90 days)' },
   { id: 'csrc-pqc', name: 'NIST CSRC, the post-quantum cryptography project page', url: 'https://csrc.nist.gov/projects/post-quantum-cryptography', open: true, measured: 'HTTP 200 HTML (60 KB) naming FIPS 203, 204, 205' },
 ]
-export type AttestAnswer = { id: string; text: string; status?: number }
+type AttestAnswer = { id: string; text: string; status?: number }
 type Verdict = { theorem: string; passed: boolean; says: string }
 const dayMs = 86_400_000
 const b64len = (b64: string): number => { const s = b64.replace(/=+$/, ''); return Math.floor((s.length * 3) / 4) }
 const ms = (d: string | undefined): number | null => (d ? Date.parse(d) : null)
 /** The theorems verified over what each API answered, source by source; a follow-up names the request the next read needs (the beacon's previous pulse): the coordination of the combination. */
-export const attestOf = (answers: readonly AttestAnswer[], now = 0): { sources: Record<string, { status: 'read' | 'unreadable' | 'absent'; facts: Record<string, unknown>; verdicts: Verdict[] }>; followUps: { id: string; url: string; accept: string }[]; checked: number; passed: number; violations: { source: string; theorem: string; says: string }[]; byTheorem: Record<string, { passed: number; failed: number }> } => {
+const attestOf = (answers: readonly AttestAnswer[], now = 0): { sources: Record<string, { status: 'read' | 'unreadable' | 'absent'; facts: Record<string, unknown>; verdicts: Verdict[] }>; followUps: { id: string; url: string; accept: string }[]; checked: number; passed: number; violations: { source: string; theorem: string; says: string }[]; byTheorem: Record<string, { passed: number; failed: number }> } => {
   const byId = new Map(answers.map((a) => [a.id, a]))
   const sources: Record<string, { status: 'read' | 'unreadable' | 'absent'; facts: Record<string, unknown>; verdicts: Verdict[] }> = {}
   const followUps: { id: string; url: string; accept: string }[] = []

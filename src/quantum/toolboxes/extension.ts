@@ -9,7 +9,7 @@ import { flowWidget } from '../widgets.js'
 type ForeignTool = { name: string; description?: string; inputSchema?: { properties?: Record<string, unknown>; required?: string[] }; outputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean } }
 const hostOf = (url: string) => { try { return new URL(url).host } catch { return url } }
 /** The tools of a host's answer: a tools/list result, its envelope, or the raw text the host answered (JSON or event stream). */
-export const toolsOfAnswer = (answer: unknown): ForeignTool[] => {
+const toolsOfAnswer = (answer: unknown): ForeignTool[] => {
   if (Array.isArray(answer)) return answer as ForeignTool[]
   if (typeof answer === 'string') { try { return toolsOfAnswer(JSON.parse(dataOf(answer))) } catch { return [] } }
   if (answer && typeof answer === 'object') { const o = answer as { tools?: ForeignTool[]; result?: { tools?: ForeignTool[] } }; return o.tools ?? o.result?.tools ?? [] }

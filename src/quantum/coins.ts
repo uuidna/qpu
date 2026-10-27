@@ -2,7 +2,7 @@
 // ("gate CLEAN … · deposit 2 · <receipt>", and _meta.audit with the gate). The unit's own register is per process and reports
 // silence, which is not a finding that nobody paid; so this tree reads the deposit from every answer it receives and keeps
 // the ledger, one line per call, content-addressed by the call and its gate. Pure parsing; the clients append.
-export type Deposit = { door: string; deposit: number; gate: string | null; receipt: string | null; clean: boolean | null; surface: string | null }
+type Deposit = { door: string; deposit: number; gate: string | null; receipt: string | null; clean: boolean | null; surface: string | null }
 const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g
 
 /** The deposit a raw JSON-RPC answer of the unit states, or zero when it states none (a refusal, a non-gated door). */

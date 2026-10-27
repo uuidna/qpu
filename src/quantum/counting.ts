@@ -78,7 +78,7 @@ export const isClifford = (gate: Gate): boolean => {
 
 /** How a gate is counted: Clifford (no T), a T gate (1), a controlled-S (3), a Toffoli (7), a rotation by an angle the Clifford+T
  *  table does not cover (listed, uncounted), or a gate this repository has not decomposed (listed, uncounted). */
-export type GateClass = { kind: 'clifford' } | { kind: 't'; tCount: 1 } | { kind: 'controlled_s'; tCount: 3 } | { kind: 'toffoli'; tCount: 7 } | { kind: 'rotation'; angle: number } | { kind: 'undecomposed' }
+type GateClass = { kind: 'clifford' } | { kind: 't'; tCount: 1 } | { kind: 'controlled_s'; tCount: 3 } | { kind: 'toffoli'; tCount: 7 } | { kind: 'rotation'; angle: number } | { kind: 'undecomposed' }
 
 /** The base and exponent of a power gate from its name, G**t with an optional adjoint mark; null for any other name. */
 const powerOfName = (name: string): { base: string; t: number } | null => {
@@ -113,7 +113,7 @@ export const classify = (gate: Gate): GateClass => {
 
 /** The resource count of a circuit. The T-count sums the counted classes; complete says whether every non-Clifford gate was
  *  counted, and the rotations and undecomposed gates list what was not. */
-export type ResourceCount = {
+type ResourceCount = {
   qubits: number
   depth: number
   operations: number

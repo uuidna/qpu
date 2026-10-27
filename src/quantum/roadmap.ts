@@ -19,10 +19,6 @@ export const ROADMAP: readonly Milestone[] = [
   { number: 6, title: 'Error-corrected quantum computer', year: null, physicalQubits: 1000000, status: 'planned' },
 ]
 
-/** The milestone Google is working towards, with the figure's own definition: capable of living for 1 million computational
- *  steps with less than 1 error. */
-export const TARGET = 'Milestone 3: a long-lived logical qubit, capable of living for 1 million computational steps with less than 1 error'
-
 /** The applications Google's roadmap figure predicts, by the physical qubits each needs with quantum error correction. */
 export const APPLICATIONS: readonly { band: string; low: number; high: number; applications: readonly string[] }[] = [
   { band: '50k–100k', low: 50000, high: 100000, applications: ['Fundamental physics: quantum gravity, many-body states', 'Certified randomness'] },

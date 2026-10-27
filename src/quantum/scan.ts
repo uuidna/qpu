@@ -12,14 +12,14 @@ import { usageOrderOf } from './toolboxes/billing.js'
 /** Usage rated by the chain's combinatorics: a stream of n samples is a chain of n − 1 links; every full period (36 frames, 35 links) is one call;
  *  the first period is the coin (verification is algebra, free), every further period a coil (the fusion: the device keeps streaming under the
  *  licence), the address space 16^32 = 2^128 (textbook_chain_bits); the colour of the rate is the coin's or the coil's. */
-export const rateOf = (samples: number, currency = 'eur') => {
+const rateOf = (samples: number, currency = 'eur') => {
   const calls = Math.ceil(samples / SCAN.frames), free = Math.min(1, calls), coils = calls - free
   const colour = coilColourOf()
   return { samples, links: Math.max(samples - 1, 0), linksPerPeriod: SCAN.frames - 1, calls, free, coils, bits: 32 * 4, chains: '16^32 = 2^128', fused: coils > 0, colour: coils > 0 ? colour.coil : colour.coin, order: usageOrderOf(calls, currency, undefined, { free, coils }), theorems: ['textbook_scan_links', 'textbook_chain_bits', 'textbook_free_or_coil'], says: `${samples} sample(s): ${Math.max(samples - 1, 0)} link(s), ${calls} call(s): ${free} coin, ${coils} coil(s)${coils > 0 ? ' (fused: green)' : ''}` }
 }
 
-export type EntropySample = { phase: number; t: number; nonce?: number; x?: number; y?: number }
-export type ScanSample = { t: number; hue: number | null }
+type EntropySample = { phase: number; t: number; nonce?: number; x?: number; y?: number }
+type ScanSample = { t: number; hue: number | null }
 
 /** The animated SVG of the stream: a frame per character, discrete, repeating; 1200 × 630 for Open Graph. One frame shows one character and nothing else. */
 export const scanSvgOf = (uuid: string, width = 1200, height = 630): string => {

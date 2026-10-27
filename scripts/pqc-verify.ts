@@ -5,8 +5,8 @@ import { webcrypto } from 'node:crypto'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import type { SignaturePlan } from '../src/quantum/toolboxes/crypto.ts'
 
-export type PqcHost = { host: string; status: number; ms: number; phase: string; keyed?: string; algorithm?: string; verified: boolean | null; note: string }
-export type PqcPass = { algorithm: 'ML-DSA-65'; text: 'qpu'; sha256Here: string; hosts: PqcHost[]; verified: number; note: string }
+type PqcHost = { host: string; status: number; ms: number; phase: string; keyed?: string; algorithm?: string; verified: boolean | null; note: string }
+type PqcPass = { algorithm: 'ML-DSA-65'; text: 'qpu'; sha256Here: string; hosts: PqcHost[]; verified: number; note: string }
 
 const bytesOfHex = (h: string): Uint8Array => new Uint8Array((h.match(/../g) ?? []).map((x) => parseInt(x, 16)))
 const unb64 = (s: string): Uint8Array => new Uint8Array(Buffer.from(s, 'base64'))

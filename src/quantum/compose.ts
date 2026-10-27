@@ -10,14 +10,14 @@ import { stemsOf } from './audit.js'
 import { usageOrderOf, recursiveLicenceOf } from './toolboxes/billing.js'
 import { coilColourOf } from './theme.js'
 
-export const ASSET_KINDS = ['code', 'sdk', 'registry', 'block'] as const
-export type AssetKind = typeof ASSET_KINDS[number]
+const ASSET_KINDS = ['code', 'sdk', 'registry', 'block'] as const
+type AssetKind = typeof ASSET_KINDS[number]
 export type Asset = { kind: AssetKind; id: string; url: string; address: string; bytes: number; verified: boolean; stems: string[]; score: number; text?: string; tool?: string; replay?: { tool: string; arguments: Record<string, unknown> } }
 
 const intersect = (a: Set<string>, b: Set<string>) => [...a].filter((x) => b.has(x))
 
 /** Every cached asset the handler can compute, each at its address: the code of the full stack, the SDK, the registry items, the examples' blocks. */
-export const assetsOf = (ctx: Context, origin: string): Omit<Asset, 'score'>[] => {
+const assetsOf = (ctx: Context, origin: string): Omit<Asset, 'score'>[] => {
   const files = (ctx.call('configure', { kind: 'fullstack' })?.config?.files as Record<string, string> | undefined) ?? {}
   const sdk = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'sdk://qpu/lib' } }) as { result?: { contents?: { text?: string }[] } }).result?.contents?.[0]?.text ?? ''
   const textAsset = (kind: AssetKind, id: string, text: string, url: string): Omit<Asset, 'score'> => { const address = uuidOf(text); return { kind, id, url, address, bytes: text.length, verified: verifyOf(address, text).valid, stems: [...stemsOf(id.replace(/\.[a-z]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2'))], text } }

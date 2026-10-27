@@ -41,7 +41,7 @@ export const routeOf = (statement: string, examples: readonly Example[], top = 3
   return { routed: theorems.length > 0, theorems, threshold: ROUTE_THRESHOLD, theorem: 'textbook_route_or_lead', says: theorems.length ? `routed to ${theorems.map((t) => t.theorem).join(', ')} by the weight of the words the prompt shares with them` : 'no theorem reached by its subject or two specific words: the prompt is a lead' }
 }
 /** a route needs the weight of a word only one or two theorems use plus another: ln(n / 2) for the rarest is about four and a half */
-export const ROUTE_THRESHOLD = 5
+const ROUTE_THRESHOLD = 5
 import { uuidOf } from './blocks.js'
 
 export type Verdict = 'served' | 'impossible' | 'unknown'

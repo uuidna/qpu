@@ -5,7 +5,7 @@
 import type { Lead } from './leads.js'
 import { LICENSE, PRECEDENCE } from './license.js'
 
-export type FactKind = 'integer' | 'factors' | 'repository' | 'page' | 'preprint' | 'doi' | 'constant' | 'dataset' | 'sequence'
+type FactKind = 'integer' | 'factors' | 'repository' | 'page' | 'preprint' | 'doi' | 'constant' | 'dataset' | 'sequence'
 export type Fact = { kind: FactKind; value: string; detail?: Record<string, string | number>; lead?: string }
 export type VerifyRequest = { verifier: string; url: string; method: 'GET' | 'POST'; body?: unknown; accept: string; check: string; via: string }
 export type Verifier = { id: string; name: string; kind: 'api' | 'page' | 'mcp'; free: true; docs: string; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string; verifies: readonly FactKind[]; /** narrows a kind to the facts this adaptor actually holds */ only?: (fact: Fact) => boolean; requestOf: (fact: Fact) => { url: string; accept: string; check: string; method?: 'POST'; body?: unknown } }

@@ -20,7 +20,7 @@ export type Toolbox = { name: string; idea: string; tools: Tool[]; examples: Exa
 
 /** The full tools/list as the handler serves it, read whole: every tool of every toolbox with its schema and its _meta (the short list served by
  *  default is a view of this one). The one reader the toolboxes fold onto. */
-export type ListedTool = { name: string; description: string; inputSchema: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean; idempotentHint?: boolean }; _meta?: { toolbox?: string; skill?: { instructions: string; directions: number }; ui?: { resourceUri?: string } } }
+type ListedTool = { name: string; description: string; inputSchema: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean; idempotentHint?: boolean }; _meta?: { toolbox?: string; skill?: { instructions: string; directions: number }; ui?: { resourceUri?: string } } }
 export const toolsOf = (ctx: Pick<Context, 'handle'>): ListedTool[] => (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: ListedTool[] } }).result.tools
 /** A selftest's checks folded into one place: each toolbox names its checks, and done() returns them with whether every one passed. */
 export const checksOf = () => { const checks: Check[] = []; return { check: (id: string, passed: boolean, evidence: string) => { checks.push({ id, passed, evidence }) }, done: () => ({ passed: checks.every((c) => c.passed), checks }) } }

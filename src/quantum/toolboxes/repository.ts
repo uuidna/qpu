@@ -17,7 +17,7 @@ import { literalsOf, manualDocsOf } from '../audit.js'
 /** The theorems the one passable way rests on, and what the literature and the hosts say of them: each one's claim as the sealed OpenAlex search
  *  and the readers' confirmations left it (nothing recognised without a recorded confirmation; a theorem never searched is unasked), and the e2e
  *  gate's decoding of the same answers on every host. Counts only: the tree states what the kernel accepts and the records show, no verdict. */
-export const WAY_THEOREMS = ['textbook_penalty_clear_involution', 'textbook_double_entry', 'textbook_free_or_coil', 'textbook_penalty_antimatter_annihilates', 'textbook_coins_coils_balanced', 'textbook_penalty_harmonic'] as const
+const WAY_THEOREMS = ['textbook_penalty_clear_involution', 'textbook_double_entry', 'textbook_free_or_coil', 'textbook_penalty_antimatter_annihilates', 'textbook_coins_coils_balanced', 'textbook_penalty_harmonic'] as const
 /** The path and URL literals outside their registries as penalties of the dirty-code kind, priced harmonically (each literal's bytes at four a
  *  token): the ones already in the tree listed and priced to the tree, never blocking; each one's antimatter waiting on confirm. */
 const literalPenaltiesOf = (files: Record<string, string>) => { const l = literalsOf(files); return { urls: l.urls, paths: l.paths, outside: l.outside, tokens: l.tokens, priced: 'the tree', blocking: 0, autoAnnihilated: l.dirty.filter((x) => x.antimatter === null).length, confirm: l.dirty.filter((x) => x.antimatter?.needs === 'confirm').length, byFile: l.byFile, dirty: l.dirty, theorem: l.theorem, says: `${l.outside} literal(s) outside their registry (${l.urls} URLs and ${l.paths} paths read), ${l.tokens} token(s) priced to the tree, listed and never blocking; a new one blocks its commit (the rule registered)` } }
@@ -34,21 +34,21 @@ const wayEvidenceOf = (e2e?: E2eOutcomes) => {
 /** The git hooks and the CI as client MCP workflows: one door answers the steps of each (a command of next, the e2e gate, an imprint, the
  *  trailers, the unit's signature over the hosted door), the hook script walks them (scripts/hook.ts) and decides nothing itself; the CI
  *  workflow is the same flow on a runner, measured against the file the hand holds. Four hooks and the CI: five workflows (textbook_hook_workflows). */
-export const WORKFLOWS = ['pre-commit', 'commit-msg', 'pre-push', 'post-commit', 'prepare-commit-msg', 'ci', 'pre-deploy'] as const
+const WORKFLOWS = ['pre-commit', 'commit-msg', 'pre-push', 'post-commit', 'prepare-commit-msg', 'ci', 'pre-deploy'] as const
 /** what the Payload app over OpenNext needs bound: the adapters' bindings (D1, R2, KV), the static assets, the QPU Worker as a service, Workers AI */
-export const NEEDED_BINDINGS = ['ASSETS', 'D1', 'R2', 'KV', 'QPU', 'AI'] as const
-export const NEEDED_FLAGS = ['nodejs_compat', 'webcrypto_modern_algorithms'] as const
+const NEEDED_BINDINGS = ['ASSETS', 'D1', 'R2', 'KV', 'QPU', 'AI'] as const
+const NEEDED_FLAGS = ['nodejs_compat', 'webcrypto_modern_algorithms'] as const
 /** The strict rules of when to commit and when to push, each decided by a theorem over the facts the client hands over (the receipt it just
  *  wrote, the approval the configs step recorded, the gate's decoding): a commit needs the flow green (no red step: textbook_commit_green);
  *  a push needs that, the version sequential and representing the package (textbook_version_sequential) and the gate decoded with nothing
  *  uncorrectable (textbook_majority_of_three); a release needs nothing carried (textbook_carry_release). A violated rule is a case the court computes. */
 export type WorkflowFacts = { /** the commit message as git hands it to commit-msg */ message?: string | null; /** each GitHub workflow's text by its file */ workflows?: Record<string, string> | null; /** the staged diff of the hand-written roots and the files whose header names a generator (pre-commit): the core reads literals, folded and proven from it */ staged?: { diff: string; generated?: readonly string[] } | null; folded?: { added: number; removed: number; lines?: { added: number; removed: number } } | null; proven?: { news: string[]; unproven: string[] } | null; /** the path and URL literals this commit adds outside their registries (pre-commit) */ literals?: { added: { file: string; literal: string; kind: string }[] } | null; /** the penalties the docket holds without a clearing */ penalties?: { open: number; openKeys: string[] } | null; /** the generated files whose staged content differs from what their generators just wrote */ automated?: { drifted: string[]; manual?: string[] } | null; /** the local branches and the workspaces (git worktrees) as the hook read them */ sole?: { branches: string[]; worktrees: number } | null; /** the newest full run of the commit being pushed: its docs build and its publish, as the receipts record them; null when no full run of that commit exists */ published?: { head: string; branch: string; build: string; publish: string } | null; /** the deploy configuration's text as the client read it, parsed here */ config?: string | null; /** the docket's documents as the Payload MCP answered them (findEntries), folded here */ docket?: { body?: unknown; createdAt?: string }[] | null; openNext?: { worker: boolean; assets: boolean; builtAt: number; sourcesAt: number } | null; wrangler?: { bindings: string[]; placeholders: number; flags: string[]; d1: string[]; r2: string[]; kv: string[] } | null; account?: { d1: string[]; r2: string[]; kv: string[]; workers: string[] } | null; observability?: { requests: number; errors5xx: number; window: string } | null; usage?: CloudflareUsage | null; receipt?: { steps?: { name: string; status: string }[] } | null; approval?: { approved?: boolean; violation?: string | null; agrees?: boolean; represents?: string; package?: string } | null; e2e?: { uncorrectable?: number; agree?: number; erased?: number } | null; carried?: number | null }
 /** The placeholder the generator writes where a tenant's resource id belongs; the docket's resource with that binding fills it. */
-export const PLACEHOLDER = "<the tenant's>"
+const PLACEHOLDER = "<the tenant's>"
 type Body = Record<string, unknown>
 /** The docket's documents folded into facts, naming no provider and no resource: the newest body of each kind (account, observability,
  *  usage) is that fact, every resource body is kept by its binding; the details live in the RAID and arrive through the Payload MCP. */
-export const docketFactsOf = (docs: readonly { body?: unknown; createdAt?: string }[]) => {
+const docketFactsOf = (docs: readonly { body?: unknown; createdAt?: string }[]) => {
   const rows = docs.filter((d) => d.body && typeof d.body === 'object').map((d) => ({ at: d.createdAt ?? '', body: d.body as Body })).sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0))
   const newest = (kind: string) => { const b = rows.find((r) => r.body.kind === kind)?.body; if (!b) return null; const { kind: _k, _id, by: _by, read: _r, notes: _n, ...rest } = b; return rest }
   const resources = new Map<string, Body>(); for (const r of rows) if (r.body.kind === 'resource' && typeof r.body.binding === 'string' && !resources.has(r.body.binding)) resources.set(r.body.binding, r.body)
@@ -56,7 +56,7 @@ export const docketFactsOf = (docs: readonly { body?: unknown; createdAt?: strin
 }
 /** The deploy configuration (JSON with line comments) read into the bindings, the flags and the resources it names; a placeholder id is
  *  left only when the docket holds no resource of that binding with an id. */
-export const deployConfigOf = (text: string, resources: readonly Body[] = []): WorkflowFacts['wrangler'] => {
+const deployConfigOf = (text: string, resources: readonly Body[] = []): WorkflowFacts['wrangler'] => {
   let w: any = null; try { w = JSON.parse(text.replace(/^\s*\/\/.*$/gm, '')) } catch { return null }
   const idOf = (binding: string) => { const r = resources.find((x) => x.binding === binding); return typeof r?.id === 'string' && r.id ? r.id : null }
   const d1 = (w.d1_databases ?? []) as { binding: string; database_name: string; database_id: string }[], r2 = (w.r2_buckets ?? []) as { binding: string; bucket_name: string }[], kv = (w.kv_namespaces ?? []) as { binding: string; id: string }[]
@@ -102,7 +102,7 @@ export const STEP_CACHE: Readonly<Record<string, { roots: readonly string[]; gen
 /** Which steps a hook runs and which it reuses: a step runs when it is not cacheable, has no sealed green record, its input address changed, or
  *  (a generator) its outputs changed since; every other step reuses its sealed record. The steps run are never more than those whose inputs
  *  changed or that cannot be cached (textbook_hook_steps_monotone). Pure. */
-export const stepPlanOf = (steps: readonly { name: string; key: string | null; outputs?: string | null }[], sealed: readonly { name: string; key: string; status: string; outputs?: string | null }[]) => {
+const stepPlanOf = (steps: readonly { name: string; key: string | null; outputs?: string | null }[], sealed: readonly { name: string; key: string; status: string; outputs?: string | null }[]) => {
   const plan = steps.map((s) => { const r = sealed.find((x) => x.name === s.name); const reuse = s.key !== null && !!r && r.status === 'green' && r.key === s.key && (s.outputs === undefined || s.outputs === r.outputs); return { name: s.name, cacheable: s.key !== null, reuse, why: s.key === null ? 'not cacheable: it reads the network, the clock or the run\'s own artefacts' : !r ? 'no sealed record' : r.status !== 'green' ? 'its last record is not green' : r.key !== s.key ? 'its inputs changed' : s.outputs !== undefined && s.outputs !== r.outputs ? 'its outputs changed since it wrote them' : 'inputs and outputs unchanged: reused' } })
   const run = plan.filter((p) => !p.reuse).map((p) => p.name), reuse = plan.filter((p) => p.reuse).map((p) => p.name)
   return { plan, run, reuse, steps: steps.length, says: `${run.length} of ${steps.length} step(s) to run, ${reuse.length} reused from their sealed records`, theorem: 'textbook_hook_steps_monotone' }
@@ -113,7 +113,7 @@ export const RUN_FILES = { receipt: 'docs/public/receipt.json', configs: 'docs/p
 /** What Payload writes itself (its types, the admin import map), generated whatever its header says; the sitemaps lie outside LITERAL_ROOTS. */
 const PAYLOAD_WRITES = /^site\/src\/(payload-types\.ts|app\/\(payload\)\/admin\/importMap\.js)$/
 export const GENERATED_FILES = ['src/quantum/theorems-index.ts', 'src/quantum/processing/unit/lean/Qpu/Textbook.lean', 'src/quantum/clay-statements.ts', 'docs/public/mcp.json', 'docs/mcp.md', 'docs/.vitepress/config.mts', 'docs/public/manifest.webmanifest', 'site/src/payload.qpu.config.ts', 'site/src/payload.qpu.mcp.ts', 'site/src/payload.qpu.adapters.ts', 'site/src/payload.qpu.ecommerce.ts', 'site/src/collections/Entries.ts', 'site/src/collections/Tenants.ts', 'site/src/blocks/Qpu/config.ts'] as const
-export const WORKFLOW_RULES: readonly { rule: string; theorem: string; appliesTo: readonly WorkflowName[]; says: string; decide: (f: WorkflowFacts) => { holds: boolean | null; evidence: string } }[] = [
+const WORKFLOW_RULES: readonly { rule: string; theorem: string; appliesTo: readonly WorkflowName[]; says: string; decide: (f: WorkflowFacts) => { holds: boolean | null; evidence: string } }[] = [
   { rule: 'green', theorem: 'textbook_commit_green', appliesTo: ['pre-commit', 'pre-push', 'ci', 'pre-deploy'], says: 'the flow is green: no step of the receipt is red (green and skipped and zero red is green and skipped)', decide: (f) => { const steps = f.receipt?.steps; if (!steps) return { holds: null, evidence: 'no receipt' }; const red = steps.filter((s) => s.status === 'red').map((s) => s.name); return { holds: red.length === 0, evidence: red.length ? `red: ${red.join(', ')}` : `${steps.filter((s) => s.status === 'green').length} green, ${steps.filter((s) => s.status === 'skipped').length} skipped, 0 red` } } },
   { rule: 'sequential', theorem: 'textbook_version_sequential', appliesTo: ['pre-push'], says: 'the version is the last tag or its one next step, and the build it names is the one the package answers on initialize', decide: (f) => { const a = f.approval; if (!a) return { holds: null, evidence: 'no approval recorded (the configs step records it when a tag exists)' }; return { holds: a.approved === true, evidence: a.violation ?? (a.agrees === false ? `${a.represents} does not represent the package ${a.package}` : `${a.represents} represents the package, sequential after the last tag`) } } },
   { rule: 'decoded', theorem: 'textbook_majority_of_three', appliesTo: ['pre-push'], says: 'the e2e gate decoded every combination by majority: nothing uncorrectable', decide: (f) => { const e = f.e2e; if (!e || typeof e.uncorrectable !== 'number') return { holds: null, evidence: 'the gate has not run' }; return { holds: e.uncorrectable === 0, evidence: `agree ${e.agree ?? '?'}, erased ${e.erased ?? '?'}, uncorrectable ${e.uncorrectable}` } } },
@@ -141,8 +141,8 @@ export const decideOf = (name: WorkflowName, given: WorkflowFacts) => {
   const allowed = strict ? violated.length === 0 && unknown.length === 0 : true
   return { workflow: name, strict, rules, verify: verificationOf(rules.map((r) => r.theorem)), allowed, violated: violated.map((r) => r.rule), unknown: unknown.map((r) => r.rule), court: violated.length || (strict && unknown.length) ? { tool: 'legal', arguments: { court: { gate: `git ${name}`, status: 412, rule: 'collision', evidence: { violated: violated.map((r) => `${r.rule}: ${r.evidence}`), unknown: unknown.map((r) => r.rule) } } }, says: 'the violation is a case the court computes; the committer files it or satisfies the rule' } : null, says: allowed ? `${name} allowed: ${rules.map((r) => `${r.rule} holds (${r.theorem})`).join(', ') || 'no strict rule'}` : `${name} refused: ${[...violated.map((r) => `${r.rule} violated (${r.evidence})`), ...unknown.map((r) => `${r.rule} unknown (${r.evidence})`)].join('; ')}` }
 }
-export type WorkflowName = typeof WORKFLOWS[number]
-export const workflowOf = (name: WorkflowName, o: { offline?: boolean } = {}) => {
+type WorkflowName = typeof WORKFLOWS[number]
+const workflowOf = (name: WorkflowName, o: { offline?: boolean } = {}) => {
   const next = (flags: string[]) => ({ id: 'next', kind: 'run' as const, cmd: 'npm', args: ['run', 'next', '--', ...flags], says: `next ${flags.join(' ')}: generation, typecheck, tests, Lean, audit, purify${flags.includes('--offline') ? ', offline' : ''}` })
   const by: Record<WorkflowName, { strict: boolean; says: string; steps: { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; detach?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }[] }> = {
     'pre-commit': { strict: false, says: 'pre-commit is next itself, offline and fast; whatever it finds is in the leads docket when the commit lands; it never blocks; the generated files it rewrote join the commit', steps: [next(['--offline', '--fast']), { id: 'stage', kind: 'stage', files: ['docs/public/mcp.json', 'docs/mcp.md', 'docs/.vitepress/config.mts', 'src/quantum/clay-statements.ts', 'README.md', 'docs/public/manifest.webmanifest', 'docs/public/configs.json'], says: 'the generated files join the commit' }] },
@@ -161,14 +161,14 @@ export const workflowOf = (name: WorkflowName, o: { offline?: boolean } = {}) =>
 export type Local = { probes?: { adc: boolean; payload: { installed: string | null; declared: string | null } }; remote: string | null; head: string; branch: string; version: string; worktrees: { path: string; head: string; branch: string | null }[]; branches: { name: string; upstream: string | null; head: string }[]; tags: { name: string; commit: string }[]; conceptDoi?: string | null; /** the package name on the registry */ pkg?: string | null; /** the workflow files held here (.github/workflows) */ workflows?: string[] }
 export type Request = { id: string; url: string; purpose: 'branches' | 'tags' | 'releases' | 'zenodo' | 'npm' | 'runs' | 'workflows' | 'protection'; contracted: 'yes' | 'no' | 'unknown'; method?: 'POST'; body?: unknown; via?: 'rest' | 'mcp' }
 /** GitHub's MCP: the doors that watch a repository, with the arguments the server's own contract names. */
-export const GITHUB_MCP_URL = 'https://api.githubcopilot.com/mcp/'
+const GITHUB_MCP_URL = 'https://api.githubcopilot.com/mcp/'
 const GITHUB_DOORS: Record<'branches' | 'tags' | 'releases', string> = { branches: 'list_branches', tags: 'list_tags', releases: 'list_releases' }
 export type Answer = Request & { status: number; text: string }
 export type Watch = { remote: string | null; owner: string | null; repo: string | null; head: string; branch: string; version: string; worktrees: number; branches: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[] }; tags: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[]; mismatch: string[] }; releases: { count: number | null; latest: string | null; withoutTag: string[]; versionHasTag: boolean; versionHasRelease: boolean | null }; zenodo: { versions: number | null; latest: string | null; withoutRelease: string[] }; npm: { latest: string | null; behind: boolean | null; published: string | null }; runs: { latest: { name: string; conclusion: string | null; url: string }[]; red: string[] }; workflows: { remote: string[] | null; onlyRemote: string[]; onlyLocal: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; refusals: string[] }
 
-export const ownerRepoOf = (remote: string | null): { owner: string; repo: string } | null => { const m = remote ? /github\.com[:/]([^/]+)\/([^/.]+)(?:\.git)?$/.exec(remote) : null; return m ? { owner: m[1]!, repo: m[2]! } : null }
+const ownerRepoOf = (remote: string | null): { owner: string; repo: string } | null => { const m = remote ? /github\.com[:/]([^/]+)\/([^/.]+)(?:\.git)?$/.exec(remote) : null; return m ? { owner: m[1]!, repo: m[2]! } : null }
 
-export const watchRequestsOf = (local: Local, contracts: Readonly<Record<string, readonly string[]>> = {}, via: 'rest' | 'mcp' = 'rest'): Request[] => {
+const watchRequestsOf = (local: Local, contracts: Readonly<Record<string, readonly string[]>> = {}, via: 'rest' | 'mcp' = 'rest'): Request[] => {
   const or = ownerRepoOf(local.remote); const out: Request[] = []
   const req = (id: string, url: string, purpose: Request['purpose']) => out.push({ id, url, purpose, contracted: contractedOf(url, contracts) })
   // through GitHub's MCP, when the tenant's token opens it: the same three facts through the doors, one tools/call each; the token travels in the client's request
@@ -183,7 +183,7 @@ export const watchRequestsOf = (local: Local, contracts: Readonly<Record<string,
 // an answer read whether REST (the JSON body) or MCP (the door's structured content, or the JSON its text carries, whether JSON or an event stream)
 const parse = <T>(a: Answer | undefined): T | null => { if (!a || a.status !== 200) return null; try { if ((a as { via?: string }).via === 'mcp') { const r = answerOf(a.text); return r.ok ? (typeof r.result === 'string' ? JSON.parse(r.result) : r.result) as T : null } return JSON.parse(a.text) as T } catch { return null } }
 
-export const watchOf = (local: Local, answers: readonly Answer[]): Watch => {
+const watchOf = (local: Local, answers: readonly Answer[]): Watch => {
   const or = ownerRepoOf(local.remote)
   const refusals = answers.filter((a) => a.status !== 200).map((a) => `${a.purpose}: HTTP ${a.status || 'none'} ${a.text.slice(0, 80)}`)
   const remoteBranches = parse<{ name: string; commit: { sha: string } }[]>(answers.find((a) => a.purpose === 'branches'))
@@ -235,7 +235,7 @@ export const watchOf = (local: Local, answers: readonly Answer[]): Watch => {
     workflows: { remote: remoteWorkflows, onlyRemote: remoteWorkflows ? remoteWorkflows.filter((w) => !localWorkflows.includes(w)) : [], onlyLocal: remoteWorkflows ? localWorkflows.filter((w) => !remoteWorkflows.includes(w)) : [] }, leads, refusals }
 }
 
-export const watchPageOf = (w: Watch, date: string): string => ['---', 'title: Repository', 'order: 57', '---', '', '# Workspaces, branches, tags and releases, watched', '',
+const watchPageOf = (w: Watch, date: string): string => ['---', 'title: Repository', 'order: 57', '---', '', '# Workspaces, branches, tags and releases, watched', '',
   `Gathered here and verified online on ${date} by \`npm run next\` through the \`repository\` tool: ${w.owner ? `${w.owner}/${w.repo}` : 'no GitHub remote'}, HEAD ${w.head.slice(0, 8)} on ${w.branch}, package version ${w.version}, ${w.worktrees} workspace(s).`, '',
   '| Kind | Here | Remote | Agree | Only here | Only remote |', '|---|---:|---:|---:|---|---|',
   `| branches | ${w.branches.local} | ${w.branches.remote ?? 'not reached'} | ${w.branches.agree.length} | ${w.branches.onlyLocal.join(', ') || '—'} | ${w.branches.onlyRemote.join(', ') || '—'} |`,

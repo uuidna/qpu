@@ -20,13 +20,13 @@ export const WORKSPACE_MCP: readonly { product: string; host: string; url: strin
   { product: 'People', host: 'people.googleapis.com', url: 'https://people.googleapis.com/mcp/v1', enable: ['people.googleapis.com'], scopes: ['directory.readonly', 'userinfo.profile', 'contacts.readonly'], renders: 'the directory as entries; users and tenant roles by the admin\'s act' },
   { product: 'Classroom', host: 'classroommcp.googleapis.com', url: 'https://classroommcp.googleapis.com/mcp/v1', enable: ['classroommcp.googleapis.com', 'classroom.googleapis.com'], scopes: ['classroom.announcements', 'classroom.courses.readonly', 'classroom.coursework.students', 'classroom.courseworkmaterials', 'classroom.rosters.readonly', 'classroom.student-submissions.students.readonly', 'classroom.topics.readonly'], renders: 'courses, coursework, submissions and rosters as entries; the textbook\'s questions go out as coursework' },
 ]
-export const WORKSPACE_SCOPE_PREFIX = 'https://www.googleapis.com/auth/'
+const WORKSPACE_SCOPE_PREFIX = 'https://www.googleapis.com/auth/'
 /** A call of the Payload MCP plugin's create tool for a collection: the document's own fields are its arguments (the plugin reads the collection's schema). */
 export const createCallOf = (collection: string, data: Record<string, unknown>) => ({ tool: `create${collection[0]!.toUpperCase()}${collection.slice(1).replace(/-(\w)/g, (_m, c: string) => c.toUpperCase())}`, arguments: data })
 
 /** The editions an institution holds, as Google states them (prices in cents per user per month; null where Google publishes none). */
-export type Edition = { id: string; family: 'education' | 'nonprofit' | 'workspace'; name: string; cents: number | null; flexibleCents?: number | null; introCents?: number | null; currency: 'USD' | 'EUR'; cap: number | null; needs?: string; adds: string; source: string }
-export const EDITIONS: readonly Edition[] = [
+type Edition = { id: string; family: 'education' | 'nonprofit' | 'workspace'; name: string; cents: number | null; flexibleCents?: number | null; introCents?: number | null; currency: 'USD' | 'EUR'; cap: number | null; needs?: string; adds: string; source: string }
+const EDITIONS: readonly Edition[] = [
   { id: 'education-fundamentals', family: 'education', name: 'Google Workspace for Education Fundamentals', cents: 0, currency: 'USD', cap: null, needs: 'a qualifying institution', adds: 'Classroom, Gmail, Calendar, Meet (100), Docs, Sheets, Slides, Forms, Drive, Admin; 100 TB pooled; Gemini for Education', source: 'https://edu.google.com/workspace-for-education/editions/compare-editions/' },
   { id: 'education-plus', family: 'education', name: 'Google Workspace for Education Plus', cents: null, currency: 'USD', cap: null, needs: 'Education Fundamentals; contact for pricing, annual, discounts for two years or more', adds: 'advanced security and analytics, Meet (1,000), unlimited originality reports, 20 GB more per licence, Gemini in Docs, Sheets, Slides, Vids and Forms', source: 'https://edu.google.com/workspace-for-education/editions/compare-editions/' },
   { id: 'nonprofits', family: 'nonprofit', name: 'Google Workspace for Nonprofits', cents: 0, currency: 'USD', cap: 2000, needs: 'eligibility verified through Google for Nonprofits', adds: 'custom-domain email, Meet (150), 100 TB shared', source: 'https://www.google.com/nonprofits/offerings/workspace/' },
@@ -49,9 +49,9 @@ const natOf = (src: string): number | null => {
   const v = add(); return v !== null && i === s.length && Number.isSafeInteger(v) ? v : null
 }
 /** The textbook's closed equations: a theorem `name : <closed expression> = <n> := by decide` is a question whose answer the kernel decided. */
-export const questionsOf = () => TEXTBOOK_THEOREMS.flatMap((t) => { const m = /^theorem\s+(\S+)\s*:\s*(.+?)\s*=\s*(\d+)\s*:=\s*by decide$/.exec(t.lean); if (!m) return []; const v = natOf(m[2]!); return v === null ? [] : [{ theorem: t.key, ask: `${m[2]} = ?`, answer: Number(m[3]), recomputed: v, says: t.says }] })
+const questionsOf = () => TEXTBOOK_THEOREMS.flatMap((t) => { const m = /^theorem\s+(\S+)\s*:\s*(.+?)\s*=\s*(\d+)\s*:=\s*by decide$/.exec(t.lean); if (!m) return []; const v = natOf(m[2]!); return v === null ? [] : [{ theorem: t.key, ask: `${m[2]} = ?`, answer: Number(m[3]), recomputed: v, says: t.says }] })
 
-export type InstitutionRequest = { /** the tenant (its id) every page and entry is assigned to: tenant-scoped collections refuse a record without one */ tenant?: string; sets?: boolean; set?: { index?: number | string; family?: string; doors?: Record<string, string> }; edition?: string; users?: number; theorems?: string[]; course?: string; answers?: { theorem: string; answer: number | string }[] }
+type InstitutionRequest = { /** the tenant (its id) every page and entry is assigned to: tenant-scoped collections refuse a record without one */ tenant?: string; sets?: boolean; set?: { index?: number | string; family?: string; doors?: Record<string, string> }; edition?: string; users?: number; theorems?: string[]; course?: string; answers?: { theorem: string; answer: number | string }[] }
 /** An institution's whole plan: its edition and bill under the cap, the Workspace doors it opens and how each lands, the textbook's
  *  questions as Classroom coursework, every record as a docket entry through the Payload MCP, answers graded by recomputation, and the
  *  acts that are the institution's own. */
@@ -84,14 +84,14 @@ export const institutionOf = (r: InstitutionRequest) => {
 // rendered by the shadcn items its own address picks. Any of the space is addressable by its index; the singles are named.
 
 export const SET_FAMILIES = ['education', 'nonprofit', 'workspace'] as const
-export type SetFamily = (typeof SET_FAMILIES)[number]
+type SetFamily = (typeof SET_FAMILIES)[number]
 const WHO: Readonly<Record<SetFamily, { people: string; group: string; outside: string; leader: string }>> = {
   education: { people: 'teachers and students', group: 'classes', outside: 'guardians', leader: 'the school\'s administrators' },
   nonprofit: { people: 'staff and volunteers', group: 'programmes', outside: 'donors and partners', leader: 'the board' },
   workspace: { people: 'employees', group: 'teams', outside: 'customers', leader: 'management' },
 }
 const isRead = (s: string) => /readonly|freebusy|readstate|userinfo/.test(s)
-export const modesOf = (d: (typeof WORKSPACE_MCP)[number]) => (d.scopes.some((s) => !isRead(s)) ? (['off', 'read', 'write'] as const) : (['off', 'read'] as const))
+const modesOf = (d: (typeof WORKSPACE_MCP)[number]) => (d.scopes.some((s) => !isRead(s)) ? (['off', 'read', 'write'] as const) : (['off', 'read'] as const))
 export const SET_RADICES: readonly number[] = [SET_FAMILIES.length, ...WORKSPACE_MCP.map((d) => modesOf(d).length)]
 const ACTION: Readonly<Record<string, { read: string; write: string }>> = {
   Gmail: { read: 'search and read the {people}\'s mail into the docket', write: 'draft mail to {outside} from the docket for a person to send' },
