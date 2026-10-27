@@ -27,6 +27,8 @@ export type Gate = { name: string; arity: number; matrix: [number, number][] }
 
 const s2 = Math.SQRT1_2
 const c = (re: number, im = 0): [number, number] => [re, im]
+/** A matrix row-major, entry by entry. O(dim²). */
+const matrixOf = (dim: number, entry: (r: number, s: number) => [number, number]): [number, number][] => Array.from({ length: dim * dim }, (_, k) => entry(Math.floor(k / dim), k % dim))
 
 export const X: Gate = { name: 'X', arity: 1, matrix: [c(0), c(1), c(1), c(0)] }
 export const Y: Gate = { name: 'Y', arity: 1, matrix: [c(0), c(0, -1), c(0, 1), c(0)] }
@@ -43,27 +45,23 @@ export const ZZ: Gate = { name: 'ZZ', arity: 2, matrix: [c(1), c(0), c(0), c(0),
 export const TOFFOLI: Gate = {
   name: 'TOFFOLI',
   arity: 3,
-  matrix: Array.from({ length: 64 }, (_, k) => {
-    const r = Math.floor(k / 8), col = k % 8
-    const swapped = (r === 6 && col === 7) || (r === 7 && col === 6)
-    return c(r === col && r < 6 || swapped ? 1 : 0)
-  }),
+  matrix: matrixOf(8, (r, col) => c((r === col && r < 6) || (r === 6 && col === 7) || (r === 7 && col === 6) ? 1 : 0)),
 }
 
 /** Refuses a gate that is not an involution (G·G ≠ I): the powers and exponentials here are exact for involutions only. */
 const assertInvolution = (gate: Gate, what: string): void => {
   const dim = 1 << gate.arity
   const at = (m: [number, number][], r: number, s: number) => m[r * dim + s]!
-  for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
+  const square = matrixOf(dim, (r, s) => {
     let sr = 0, si = 0
     for (let k = 0; k < dim; k++) {
       const [ar, ai] = at(gate.matrix, r, k), [br, bi] = at(gate.matrix, k, s)
       sr += ar * br - ai * bi
       si += ar * bi + ai * br
     }
-    const id = r === s ? 1 : 0
-    if (Math.abs(sr - id) > 1e-12 || Math.abs(si) > 1e-12) throw new Error(`${gate.name} is not an involution, so its ${what} is not defined here`)
-  }
+    return [sr, si]
+  })
+  if (square.some(([sr, si], k) => Math.abs(sr - (k % (dim + 1) === 0 ? 1 : 0)) > 1e-12 || Math.abs(si) > 1e-12)) throw new Error(`${gate.name} is not an involution, so its ${what} is not defined here`)
 }
 
 /** Cirq's gate power, G**t: the +1 eigenspace keeps its phase and the −1 eigenspace takes e^{iπt}, so X**0.5 is the square
@@ -73,15 +71,14 @@ export const powerOf = (gate: Gate, t: number): Gate => {
   const dim = 1 << gate.arity
   const at = (m: [number, number][], r: number, s: number) => m[r * dim + s]!
   const [cr, ci] = [Math.cos(Math.PI * t), Math.sin(Math.PI * t)]
-  const matrix: [number, number][] = []
-  for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
+  const matrix = matrixOf(dim, (r, s) => {
     const [gr, gi] = at(gate.matrix, r, s)
     const id = r === s ? 1 : 0
     // P+ = (I+G)/2 and P- = (I-G)/2 are the projectors; the result is P+ + e^{iπt}·P-
     const pr = (id + gr) / 2, pi = gi / 2
     const mr = (id - gr) / 2, mi = -gi / 2
-    matrix.push([pr + cr * mr - ci * mi, pi + cr * mi + ci * mr])
-  }
+    return [pr + cr * mr - ci * mi, pi + cr * mi + ci * mr]
+  })
   return { name: `${gate.name}**${t}`, arity: gate.arity, matrix }
 }
 
@@ -92,13 +89,11 @@ export const exponentialOf = (gate: Gate, theta: number): Gate => {
   assertInvolution(gate, 'exponential')
   const dim = 1 << gate.arity
   const [cs, sn] = [Math.cos(theta), Math.sin(theta)]
-  const matrix: [number, number][] = []
-  for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
+  const matrix = matrixOf(dim, (r, s) => {
     const [gr, gi] = gate.matrix[r * dim + s]!
-    const id = r === s ? 1 : 0
     // −i·sinθ·(gr + i·gi) = sinθ·gi − i·sinθ·gr
-    matrix.push([cs * id + sn * gi, -sn * gr])
-  }
+    return [cs * (r === s ? 1 : 0) + sn * gi, -sn * gr]
+  })
   return { name: `exp(−i·${theta}·${gate.name})`, arity: gate.arity, matrix }
 }
 
@@ -110,13 +105,11 @@ export const pauliProduct = (paulis: readonly ('X' | 'Y' | 'Z' | 'I')[]): Gate =
   let matrix: [number, number][] = [c(1)]
   let dim = 1
   for (const f of factors) {
-    const next: [number, number][] = []
-    for (let r = 0; r < dim * 2; r++) for (let s = 0; s < dim * 2; s++) {
+    matrix = matrixOf(dim * 2, (r, s) => {
       const [ar, ai] = matrix[Math.floor(r / 2) * dim + Math.floor(s / 2)]!
       const [br, bi] = f.matrix[(r % 2) * 2 + (s % 2)]!
-      next.push([ar * br - ai * bi, ar * bi + ai * br])
-    }
-    matrix = next
+      return [ar * br - ai * bi, ar * bi + ai * br]
+    })
     dim *= 2
   }
   return { name: paulis.join('⊗'), arity: paulis.length, matrix }
@@ -126,12 +119,7 @@ export const pauliProduct = (paulis: readonly ('X' | 'Y' | 'Z' | 'I')[]): Gate =
  *  its backward half with the true inverse of each operation rather than the operation itself. */
 export const adjointOf = (gate: Gate): Gate => {
   const dim = 1 << gate.arity
-  const matrix: [number, number][] = []
-  for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
-    const [re, im] = gate.matrix[s * dim + r]!
-    matrix.push([re, -im])
-  }
-  return { name: `${gate.name}†`, arity: gate.arity, matrix }
+  return { name: `${gate.name}†`, arity: gate.arity, matrix: matrixOf(dim, (r, s) => { const [re, im] = gate.matrix[s * dim + r]!; return [re, -im] }) }
 }
 
 export type Operation =
@@ -189,26 +177,15 @@ export class Circuit {
     return this
   }
 
+  /** Places one operation: NEW at the end, INLINE in the last moment when it does not clash there, EARLIEST after the last moment
+   *  it clashes with, found walking back from the end. O(moments · ops a moment). */
   private place(single: Operation, strategy: Exclude<InsertStrategy, 'NEW_THEN_INLINE'>): void {
     const mine = new Set(single.qubits.map(keyOf))
-    if (strategy === 'NEW') {
-      this.moments.push(new Moment([single]))
-      return
-    }
-    if (strategy === 'INLINE') {
-      const last = this.moments.length - 1
-      if (last >= 0 && !this.moments[last]!.operations.some((o) => touches(o, mine))) {
-        this.moments[last] = new Moment([...this.moments[last]!.operations, single])
-      } else {
-        this.moments.push(new Moment([single]))
-      }
-      return
-    }
-    let last = -1
-    this.moments.forEach((m, i) => { if (m.operations.some((o) => touches(o, mine))) last = i })
-    const at = last + 1
-    if (at === this.moments.length) this.moments.push(new Moment([single]))
-    else this.moments[at] = new Moment([...this.moments[at]!.operations, single])
+    const free = (i: number) => !this.moments[i]!.operations.some((o) => touches(o, mine))
+    let at = this.moments.length
+    if (strategy === 'EARLIEST') while (at > 0 && free(at - 1)) at -= 1
+    else if (strategy === 'INLINE' && at > 0 && free(at - 1)) at -= 1
+    this.moments[at] = new Moment([...(this.moments[at]?.operations ?? []), single])
   }
 
   /** The qubits the circuit acts on, in key order: the basis order of the simulator. */
@@ -287,36 +264,31 @@ export class Result {
 }
 
 type State = { re: Float64Array; im: Float64Array }
+/** Zeros of a size, or a copy. O(size). */
+const complexOf = (from: number | State): State => (typeof from === 'number' ? { re: new Float64Array(from), im: new Float64Array(from) } : { re: new Float64Array(from.re), im: new Float64Array(from.im) })
 
 const MAX_QUBITS = 20
+const indexerOf = (order: Qubit[]) => { const pos = new Map(order.map((q, i) => [keyOf(q), i])); return (q: Qubit) => pos.get(keyOf(q))! }
 
-/** Applies a gate to the qubits at the given indices of the state. Index bit k is the k-th qubit in the basis order. */
+/** Applies a gate in place (index bit k is the k-th qubit). O(2^n · nonzero entries): a permutation gate costs one term a row. */
 const applyGate = (state: State, gate: Gate, indices: number[]): void => {
-  const n = Math.log2(state.re.length)
   const dim = 1 << gate.arity
-  const mask = indices.reduce((m, i) => m | (1 << i), 0)
+  const offsets = Array.from({ length: dim }, (_, s) => indices.reduce((k, q, b) => (s & (1 << (gate.arity - 1 - b)) ? k | (1 << q) : k), 0))
+  const mask = offsets[dim - 1]!, re = new Float64Array(dim), im = new Float64Array(dim)
+  const rows = Array.from({ length: dim }, (_, r) => gate.matrix.slice(r * dim, r * dim + dim).flatMap(([mr, mi], s) => (mr || mi ? [[s, mr, mi] as const] : [])))
   for (let base = 0; base < state.re.length; base++) {
     if (base & mask) continue
-    const idx = new Array<number>(dim)
-    for (let s = 0; s < dim; s++) {
-      let k = base
-      for (let b = 0; b < gate.arity; b++) if (s & (1 << (gate.arity - 1 - b))) k |= 1 << indices[b]!
-      idx[s] = k
-    }
-    const re = idx.map((k) => state.re[k]!)
-    const im = idx.map((k) => state.im[k]!)
+    for (let s = 0; s < dim; s++) { re[s] = state.re[base | offsets[s]!]!; im[s] = state.im[base | offsets[s]!]! }
     for (let r = 0; r < dim; r++) {
       let nr = 0, ni = 0
-      for (let s = 0; s < dim; s++) {
-        const [mr, mi] = gate.matrix[r * dim + s]!
+      for (const [s, mr, mi] of rows[r]!) {
         nr += mr * re[s]! - mi * im[s]!
         ni += mr * im[s]! + mi * re[s]!
       }
-      state.re[idx[r]!] = nr
-      state.im[idx[r]!] = ni
+      state.re[base | offsets[r]!] = nr
+      state.im[base | offsets[r]!] = ni
     }
   }
-  void n
 }
 
 /** The probability of each bit value of one qubit, and the collapse of the state to a measured value. */
@@ -347,57 +319,54 @@ export class Simulator {
   private initial(circuit: Circuit): { state: State; order: Qubit[]; indexOf: (q: Qubit) => number } {
     const order = circuit.qubits
     if (order.length > MAX_QUBITS) throw new Error(`the simulator handles up to ${MAX_QUBITS} qubits, the circuit has ${order.length}`)
-    const dim = 1 << order.length
-    const re = new Float64Array(dim)
-    const im = new Float64Array(dim)
-    re[0] = 1
-    const pos = new Map(order.map((q, i) => [keyOf(q), i]))
-    return { state: { re, im }, order, indexOf: (q) => pos.get(keyOf(q))! }
+    const state = complexOf(1 << order.length)
+    state.re[0] = 1
+    return { state, order, indexOf: indexerOf(order) }
+  }
+
+  /** Gates in place, measurements into bits. O(ops · 2^n). */
+  private apply(state: State, ops: readonly Operation[], indexOf: (q: Qubit) => number, bits = new Map<string, number[]>()): Map<string, number[]> {
+    for (const op of ops) {
+      if (op.kind === 'channel') throw new Error(`a ${op.channel.name} channel runs on the density matrix, not on a state vector`)
+      if (op.kind === 'gate') applyGate(state, op.gate, op.qubits.map(indexOf))
+      else bits.set(op.key, op.qubits.map((q) => measureQubit(state, indexOf(q), this.random)))
+    }
+    return bits
   }
 
   /** The final wave function: a list of amplitudes, one per basis state, with the qubit order of circuit.qubits. */
   simulate(circuit: Circuit): { amplitudes: [number, number][]; qubits: Qubit[] } {
     const { state, order, indexOf } = this.initial(circuit)
-    for (const op of circuit.operations) {
-      if (op.kind === 'channel') throw new Error(`a ${op.channel.name} channel runs on the density matrix, not on a state vector`)
-      if (op.kind === 'gate') applyGate(state, op.gate, op.qubits.map(indexOf))
-    }
+    this.apply(state, circuit.operations.filter((op) => op.kind !== 'measure'), indexOf)
     return { amplitudes: Array.from(state.re, (r, k) => [r, state.im[k]!] as [number, number]), qubits: order }
   }
 
-  /** Sampled results: the circuit is run once per repetition, with each measurement collapsing the state. */
+  /** Sampled results: the gates before the first measurement draw nothing at random, so they run once and each repetition copies that state. */
   run(circuit: Circuit, repetitions: number): Result {
     if (!circuit.operations.some((op) => op.kind === 'measure')) throw new Error('run needs at least one measurement')
+    const { state: prefix, indexOf } = this.initial(circuit)
+    const first = circuit.operations.findIndex((op) => op.kind !== 'gate')
+    this.apply(prefix, circuit.operations.slice(0, first), indexOf)
+    const rest = circuit.operations.slice(first)
     const records = new Map<string, string[]>()
     for (let rep = 0; rep < repetitions; rep++) {
-      const { state, indexOf } = this.initial(circuit)
-      const bits = new Map<string, number[]>()
-      for (const op of circuit.operations) {
-        if (op.kind === 'channel') throw new Error(`a ${op.channel.name} channel runs on the density matrix, not on a state vector`)
-        if (op.kind === 'gate') applyGate(state, op.gate, op.qubits.map(indexOf))
-        else bits.set(op.key, op.qubits.map((q) => measureQubit(state, indexOf(q), this.random)))
-      }
-      for (const [key, values] of bits) {
-        const list = records.get(key) ?? []
-        list.push(values.join(''))
-        records.set(key, list)
-      }
+      for (const [key, values] of this.apply(complexOf(prefix), rest, indexOf)) { const list = records.get(key) ?? []; list.push(values.join('')); records.set(key, list) }
     }
     return new Result(records)
   }
 }
 
 /** A square complex matrix, row-major: entry (r, c) is re[r * dim + c] + i·im[r * dim + c]. */
-type Matrix = { re: Float64Array; im: Float64Array }
+type Matrix = State
 
 const MAX_DENSITY_QUBITS = 8
 
 /** The unitary a gate acts as on n qubits: column c is the state the gate makes of basis state |c>. */
 const unitaryOf = (gate: Gate, indices: number[], n: number): Matrix => {
   const dim = 1 << n
-  const u: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  const u = complexOf(dim * dim)
   for (let c = 0; c < dim; c++) {
-    const column: State = { re: new Float64Array(dim), im: new Float64Array(dim) }
+    const column = complexOf(dim)
     column.re[c] = 1
     applyGate(column, gate, indices)
     for (let r = 0; r < dim; r++) {
@@ -409,7 +378,7 @@ const unitaryOf = (gate: Gate, indices: number[], n: number): Matrix => {
 }
 
 const multiply = (a: Matrix, b: Matrix, dim: number): Matrix => {
-  const out: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  const out = complexOf(dim * dim)
   for (let r = 0; r < dim; r++)
     for (let k = 0; k < dim; k++) {
       const ar = a.re[r * dim + k]!, ai = a.im[r * dim + k]!
@@ -424,7 +393,7 @@ const multiply = (a: Matrix, b: Matrix, dim: number): Matrix => {
 
 /** The adjoint of a matrix: the conjugate transpose. */
 const dagger = (m: Matrix, dim: number): Matrix => {
-  const out: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  const out = complexOf(dim * dim)
   for (let r = 0; r < dim; r++) for (let c = 0; c < dim; c++) {
     out.re[r * dim + c] = m.re[c * dim + r]!
     out.im[r * dim + c] = -m.im[c * dim + r]!
@@ -498,7 +467,7 @@ const krausOf = (channel: Channel): Gate[] => {
 /** A channel acting on one qubit of the density matrix: the sum of its Kraus operators conjugating ρ. */
 const channelOn = (rho: Matrix, index: number, channel: Channel, n: number): Matrix => {
   const dim = 1 << n
-  const out: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  const out = complexOf(dim * dim)
   for (const kraus of krausOf(channel)) {
     const term = conjugate(unitaryOf(kraus, [index], n), rho, dim)
     for (let k = 0; k < dim * dim; k++) {
@@ -524,17 +493,17 @@ export class DensityMatrixSimulator {
     if (order.length > MAX_DENSITY_QUBITS) throw new Error(`the density-matrix simulator handles up to ${MAX_DENSITY_QUBITS} qubits, the circuit has ${order.length}`)
     const n = order.length
     const dim = 1 << n
-    const pos = new Map(order.map((q, i) => [keyOf(q), i]))
-    let rho: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+    const indexOf = indexerOf(order)
+    let rho = complexOf(dim * dim)
     rho.re[0] = 1
     for (const op of circuit.operations) {
       if (op.kind === 'channel') {
         krausOf(op.channel)
-        for (const q of op.qubits) rho = channelOn(rho, pos.get(keyOf(q))!, op.channel, n)
+        for (const q of op.qubits) rho = channelOn(rho, indexOf(q), op.channel, n)
         continue
       }
       if (op.kind !== 'gate') continue
-      const indices = op.qubits.map((q) => pos.get(keyOf(q))!)
+      const indices = op.qubits.map(indexOf)
       rho = conjugate(unitaryOf(op.gate, indices, n), rho, dim)
       const noise = typeof channels === 'function' ? channels(op.gate.arity) : channels
       for (const i of indices) for (const channel of noise) rho = channelOn(rho, i, channel, n)
@@ -554,7 +523,7 @@ export const expectationOf = (result: DensityResult, observable: Record<string, 
   const dim = 1 << n
   const index = new Map(result.qubits.map((q, i) => [keyOf(q), i]))
   const paulis: Record<'X' | 'Y' | 'Z', Gate> = { X, Y, Z }
-  let op: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  let op: Matrix = complexOf(dim * dim)
   for (let k = 0; k < dim; k++) op.re[k * dim + k] = 1
   for (const [key, pauli] of Object.entries(observable)) {
     const i = index.get(key)
