@@ -22,7 +22,7 @@ theorem textbook_workspace_sets : 3 * 3 * 3 * 3 * 3 * 3 * 2 * 3 * 2 * 3 = 26244 
 theorem textbook_namespace_narrows (named held : Bool) : (named && held) = true → held = true := by cases named <;> cases held <;> simp
 /-- a deterministic check of equal inputs has an equal verdict: an example whose answer folds to the integers its theorem's confirmed pass recorded is decided by that theorem, and the text checks run only to confirm a new integer (examples: audit-self) -/
 theorem textbook_integers_first (a b : Nat) (v : Nat → Bool) (h : a = b) : v a = v b := by rw [h]
-/-- a size ratio rounded down never overstates: the framework's bytes over the stylesheet's, times the stylesheet's, is at most the framework's bytes (examples: css-compare, extend-compare) -/
+/-- a size ratio rounded down never overstates: the framework's bytes over the stylesheet's, times the stylesheet's, is at most the framework's bytes; measuredOf reads the measured rows of every comparison by size (examples: css-compare, extend-compare) -/
 theorem textbook_size_ratio_bound (framework qpu : Nat) : framework / qpu * qpu ≤ framework := Nat.div_mul_le_self framework qpu
 /-- every line books the same amount on both sides, so debits equal credits and the journal nets to zero both ways: a coin at zero, a coil at its price, a settlement as cash and fees against the receivable (examples: stripe-ledger, compete-economics) -/
 theorem textbook_double_entry (debits credits : Nat) (h : debits = credits) : debits - credits = 0 ∧ credits - debits = 0 := by subst h; exact ⟨Nat.sub_self _, Nat.sub_self _⟩
