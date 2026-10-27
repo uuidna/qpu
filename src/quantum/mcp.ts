@@ -750,7 +750,7 @@ const textbook = toolOf('tree', {
     if (typeof args.reuse === 'string') {
       const e = EXAMPLES.find((x) => x.id === args.reuse)
       if (!e) throw new Error(`no example ${args.reuse}; the textbook has ${EXAMPLES.map((x) => x.id).join(', ')}`)
-      const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }) as { result?: { structuredContent: unknown }; error?: { message: string } }
+      const r = callOf(e.tool, e.arguments)
       if (r.error) throw new Error(r.error.message)
       const why = e.expect(r.result!.structuredContent)
       return { reused: e.id, tool: e.tool, toolbox: boxOf.get(e.tool) ?? 'none', theorem: e.theorem ?? null, shows: e.shows, asDocumented: why === null, why, result: r.result!.structuredContent }
@@ -921,13 +921,15 @@ const chatInner = (statement: string, c: { role?: string; call?: { tool: string;
     else { const to = h.defaults[p] ?? opts[0]; args[p] = to; corrected.push({ property: p, from: v, to, why: `the ${role} role may not choose ${String(v)}: its harmonic default within the values it may choose` }) }
   }
   if (c.run === false) return { statement, role, by, call: { name: call.name, arguments: args }, corrected, routed, theorems: ['textbook_rbac_options'], says: `${call.name} corrected for the ${role} role, not run` }
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: call.name, arguments: args } }) as { result?: { structuredContent?: unknown }; error?: { message: string } }
+  const r = callOf(call.name, args)
   const theorems = ['textbook_rbac_options', 'textbook_fallback_involution', ...routed]
   const verify = verificationOf(theorems)
   if (r.error) return { statement, role, by, verify, call: { name: call.name, arguments: args }, corrected, routed, handled: { error: r.error.message, remedy: remediesOf([r.error.message]), fallback: handleOrCorrect([r.error.message], false, 'handling'), court: courtOf({ gate: `chat ${call.name}`, rule: 'shape', evidence: { message: r.error.message } }) }, theorems, says: `${call.name} refused it; answered with its remedy and the court's case, nothing thrown` }
   return { statement, role, by, verify, call: { name: call.name, arguments: args }, corrected, routed, reply: r.result?.structuredContent ?? null, theorems, says: `${call.name} answered under the ${role} role (${by})${corrected.length ? `; ${corrected.length} value(s) corrected to what the role may choose` : ''}` }
 }
-const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS }, call: (name, args = {}) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent?: unknown } }).result?.structuredContent }
+// the tools/call envelope, written once
+const callOf = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent?: any }; error?: { message: string } }
+const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS }, call: (name, args = {}) => callOf(name, args).result?.structuredContent }
 
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
 
@@ -936,7 +938,7 @@ const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q
 export const handleBatch = (messages: readonly Rpc[]): Reply[] => messages.map((m) => handle(m))
 /** One door for every client written once: a tool called by name, its structured answer returned or its error thrown — the tools/call
  *  envelope the scripts wrote out each for itself (recognised as a shape by the entropy cleaner). */
-export const toolCallerOf = (name: string) => (args: Record<string, unknown> = {}): any => { const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent: unknown }; error?: { message: string } }; if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
+export const toolCallerOf = (name: string) => (args: Record<string, unknown> = {}): any => { const r = callOf(name, args); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
 export const handle = (message: Rpc): Reply => {
   if (Array.isArray(message)) return handleBatch(message as unknown as Rpc[]) as unknown as Reply
   const id = message.id ?? null
@@ -953,7 +955,7 @@ export const handle = (message: Rpc): Reply => {
       // short by default: first sentences for every description, the toolbox's instructions left out; the full text for a toolbox, for tools named, or with full: true
       const scope = params as { tools?: string[] | string; brief?: boolean; statement?: string; toolbox?: string; full?: boolean }
       const wanted = typeof scope.tools === 'string' ? scope.tools.split(',').map((s) => s.trim()).filter(Boolean) : Array.isArray(scope.tools) ? scope.tools.map(String) : null
-      const cluster = typeof scope.statement === 'string' && scope.statement.trim() ? (() => { const r = handle({ jsonrpc: '2.0', id: 0, method: 'tools/call', params: { name: 'match', arguments: { statement: scope.statement } } }) as { result?: { structuredContent?: { tool?: string | null; cluster?: { kind: string; id: string }[] } } }; const c = r.result?.structuredContent; return [...new Set([...(c?.tool ? [c.tool] : []), ...(c?.cluster ?? []).filter((x) => x.kind === 'tool').map((x) => x.id)])] })() : null
+      const cluster = typeof scope.statement === 'string' && scope.statement.trim() ? (() => { const c = callOf('match', { statement: scope.statement }).result?.structuredContent as { tool?: string | null; cluster?: { kind: string; id: string }[] } | undefined; return [...new Set([...(c?.tool ? [c.tool] : []), ...(c?.cluster ?? []).filter((x) => x.kind === 'tool').map((x) => x.id)])] })() : null
       const box = typeof scope.toolbox === 'string' ? scope.toolbox : null
       const chosen = SERVED.filter((t) => (!wanted || wanted.includes(t.name)) && (!cluster || cluster.includes(t.name)) && (!box || t.toolbox === box))
       const full = scope.full === true || Boolean(wanted) || Boolean(box)

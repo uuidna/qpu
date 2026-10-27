@@ -3,7 +3,7 @@
 import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle, cellOf as cell } from '../src/quantum/mcp.ts'
+import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { accountOf, depositOf } from '../src/quantum/coins.ts'
 import { readJson, getOf } from './mcp.ts'
@@ -32,9 +32,7 @@ const main = async () => {
     } catch (e) { advantageByUnit = { error: (e as Error).message } }
   }
   const artefacts = { advantageByUnit, e2e: e2eNow, coins: accountOf(coinLines), receipt: pub('receipt.json'), sizes, discovery: pub('discovery.json'), verification: pub('verification.json'), readiness: pub('readiness.json'), repository: pub('repository.json'), legal: pub('legal.json'), docket, receipts: { count: receipts.length, last: receipts.length ? (JSON.parse(receipts.at(-1)!) as { id: string }).id : null } }
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'metrics', arguments: { artefacts } } }) as any
-  if (r.error) throw new Error(r.error.message)
-  const m = r.result.structuredContent as Record<string, unknown>
+  const m = toolCallerOf('metrics')({ artefacts }) as Record<string, unknown>
   writeFileSync(join(ROOT, 'docs', 'public', 'metrics.json'), JSON.stringify({ license: LICENSE.attribution, ...m }, null, 1) + '\n')
   // every cell escaped once: an angle bracket or a brace in a value is text, never a tag (the remedy the tree learned: Element is missing end tag)
   const rows = Object.entries(m).filter(([k]) => !['selftests', 'license'].includes(k)).map(([k, v]) => `| ${k} | ${cell(typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v))} |`)
