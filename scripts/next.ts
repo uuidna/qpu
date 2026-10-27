@@ -32,6 +32,7 @@ const TIMES = await timesOf(ROOT), budgetOf = (s: Step) => Math.min(2 * (s.budge
 const steps: Step[] = [
   { name: 'clay:gen', cmd: 'node', args: ['--import', 'tsx', 'scripts/gen-clay.ts'], wave: 1 },
   { name: 'docs:gen', cmd: 'npx', args: ['tsx', 'scripts/gen-docs.ts'], wave: 1 },
+  { name: 'session', cmd: 'node', args: ['--import', 'tsx', 'scripts/session.ts'], skip: fast ? 'fast' : undefined, budgetMs: 600_000, wave: 1 }, // every session read to decide what is next and how; offline only the Payload writes and the unit's calls wait
   { name: 'configs', cmd: 'node', args: ['--import', 'tsx', 'scripts/configs.ts'], wave: 1 }, // always: every configuration (configs, scopes, fields, validations, access, hooks, bindings, actions) improved — the tool's files written, the hand's measured
   { name: 'typecheck', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'], wave: 2 },
   { name: 'test', cmd: 'node', args: ['--import', 'tsx', '--test', 'src/quantum/*.test.ts'], budgetMs: 300_000, wave: 2 },
@@ -70,12 +71,12 @@ const receipt: { license: string; date: string; head: string; steps: { name: str
 // Two runs in one tree write the same files under docs/public; the second is not stopped, it is recorded as a lead of this run.
 const lockPath = pub('next.lock')
 const alive = (pid: number): boolean => { try { process.kill(pid, 0); return true } catch { return false } }
-const concurrent: { pid: number; date: string } | null = (() => { try { const l = JSON.parse(readFileSync(lockPath, 'utf8')) as { pid: number; date: string }; return alive(l.pid) ? l : null } catch { return null } })()
+const concurrent: { pid: number; date: string } | null = (() => { const l = readJson(lockPath) as { pid: number; date: string } | null; return l && alive(l.pid) ? l : null })()
 if (concurrent) console.log(`⚠ another next run (pid ${concurrent.pid}, since ${concurrent.date}) is writing the same files; recorded as a lead, this run continues`)
 writeFileSync(lockPath, JSON.stringify({ pid: process.pid, date: receipt.date }) + '\n')
 // the blocks teleported between this run's steps start empty: a block from an earlier run was computed by earlier code
 rmSync(join(ROOT, '.qpu', 'blocks'), { recursive: true, force: true })
-process.on('exit', () => { try { const l = JSON.parse(readFileSync(lockPath, 'utf8')) as { pid: number }; if (l.pid === process.pid) unlinkSync(lockPath) } catch { /* already gone */ } })
+process.on('exit', () => { if ((readJson(lockPath) as { pid: number } | null)?.pid === process.pid) try { unlinkSync(lockPath) } catch { /* already gone */ } })
 // time and heat, the two measures of every step: wall nanoseconds here, and the CPU microseconds and peak RSS of every Node process the step
 // spawns, each appending its own on exit (scripts/heat.mjs, preloaded through NODE_OPTIONS) to a file of the step's own
 const HEAT = pathToFileURL(join(ROOT, 'scripts', 'heat.mjs')).href
@@ -108,7 +109,7 @@ const inputKeyOf = (s: Step): string | null => {
 let excludes: string[] | null = null
 const generatedDocsExcludes = () => excludes ??= (() => { const git = (a: string[]) => spawnSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 }).stdout ?? ''; const scripts = Object.fromEntries(git(['ls-files', 'scripts']).trim().split('\n').filter((f) => /\.(ts|mjs)$/.test(f)).map((f) => [f, readFileSync(join(ROOT, f), 'utf8')])); return manualDocsOf(git(['ls-files', 'docs']).trim().split('\n').filter((f) => f.endsWith('.md')).map((path) => ({ path, bytes: 0 })), scripts).rows.filter((r) => r.generator).map((r) => `:(exclude)${r.path}`) })()
 const outputsOf = () => { const h = createHash('sha256'); for (const f of GENERATED_FILES) { h.update(f); try { h.update(readFileSync(join(ROOT, f))) } catch { h.update('gone') } } return h.digest('hex') }
-const sealedOf = (name: string) => { try { return JSON.parse(readFileSync(recordPath(name), 'utf8')) as { name: string; key: string; status: string; outputs?: string; counts?: Record<string, number>; date: string; sha256: string } } catch { return null } }
+const sealedOf = (name: string) => readJson(recordPath(name)) as { name: string; key: string; status: string; outputs?: string; counts?: Record<string, number>; date: string; sha256: string } | null
 const run = async (s: Step): Promise<boolean> => {
   const key = s.skip ? null : inputKeyOf(s), sealed = key ? sealedOf(s.name) : null
   if (key && sealed && sealed.status === 'green' && sealed.key === key && (!STEP_CACHE[s.name]?.generator || sealed.outputs === outputsOf())) {
@@ -201,7 +202,7 @@ Object.assign(capacityIn, { ...(idleRead?.input ?? {}), cores: capacityIn.cores 
   const audit = [...history].reverse().flatMap((r) => r.steps ?? []).find((x) => x.name === 'audit' && x.ms > 0 && x.counts?.checks)
   const perExample = audit ? Math.round(audit.ms / Math.max(1, audit.counts!.checks!)) : null
   const idleItems = (idleRead as { top?: unknown[]; counts?: Record<string, { idleNames?: string[] } | null> } | null)?.counts ? Object.values((idleRead as { counts: Record<string, { idleNames?: string[] } | null> }).counts).reduce((n, m) => n + (m?.idleNames?.length ?? 0), 0) : 0
-  const leadsOpen = ['next-leads.json', 'purify-leads.json'].reduce((n, f) => { try { return n + (JSON.parse(readFileSync(pub(f), 'utf8')) as { status?: string }[]).filter((l) => l.status === 'open').length } catch { return n } }, 0)
+  const leadsOpen = ['next-leads.json', 'purify-leads.json'].reduce((n, f) => n + (readJson(pub(f), []) as { status?: string }[]).filter((l) => l.status === 'open').length, 0)
   capacityIn.remaining = [
     { category: 'pending steps', count: pending.length, ms: pending.every((p) => p.ms === null) ? null : pending.reduce((n, p) => n + (p.ms ?? 0), 0), how: `each at its last measured run in the receipts${pending.some((p) => p.ms === null) ? `; never measured: ${pending.filter((p) => p.ms === null).map((p) => p.name).join(', ')}` : ''}` },
     { category: 'idle items', count: idleItems, ms: perExample === null ? null : idleItems * perExample, how: `the audit's measured ms per check (${perExample ?? '?'} ms) per generated example` },

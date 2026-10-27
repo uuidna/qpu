@@ -25,6 +25,7 @@ const answerOf = (r: Request): Answer => {
   if (r.purpose === 'catalogue') return text(200, 'application/json', call({ tools: [{ name: 'list_tools', description: 'the catalogue' }, { name: 'get_rights', description: 'Get rights. Returns {license,receipt}.' }, { name: 'verify_claim', description: 'Verify claim. Returns {statement,verdict,receipt,note}.' }, { name: 'get_css', description: 'Get css. Returns {css}.' }, { name: 'sign_commit', description: 'Sign commit. Returns {signed,verdict,address}.' }] }))
   if (r.purpose === 'contract' && r.name === 'verify_claim') return text(200, 'application/json', call({ name: 'verify_claim', inputSchema: { type: 'object', properties: { statement: { type: 'string' } }, required: ['statement'] }, outputSchema: { type: 'object', properties: { statement: {}, verdict: {}, receipt: {}, note: {} } }, annotations: { readOnlyHint: true } }))
   if (r.purpose === 'contract' && r.name === 'sign_commit') return text(200, 'application/json', call({ name: 'sign_commit', inputSchema: { type: 'object', properties: { message: { type: 'string' }, theorems: { type: 'array' } }, required: ['message', 'theorems'] }, outputSchema: { type: 'object', properties: { signed: {}, verdict: {}, address: {} } }, annotations: { readOnlyHint: true } }))
+  if (r.purpose === 'sitemap') return text(200, 'application/xml', r.name ? `<urlset><url><loc>${new URL(r.url).origin}/cirq</loc><lastmod>2026-10-20</lastmod></url></urlset>` : `<sitemapindex><sitemap><loc>${r.url}.0</loc><lastmod>2026-10-25</lastmod></sitemap></sitemapindex>`)
   if (r.purpose === 'well-known') return text(404, 'text/html', '<html><title>404</title></html>')
   if (r.purpose === 'api-contract') {
     if (r.host === 'raw.githubusercontent.com') return text(200, 'application/json', JSON.stringify({ openapi: '3.1.0', paths: { '/repos/{owner}/{repo}': {}, '/orgs/{org}/repos': {} } }))
@@ -48,10 +49,11 @@ export const flowSelftestOf = (handle: (m: Rpc) => any, examples: readonly Examp
   const answers = requests.map(answerOf)
   check('discover:requests-answerable', answers.every((a) => a.status !== 0), `${requests.length} requests, every one answered by the client fixture`)
   const followUps = followUpsOf(answers)
-  check('discover:follow-ups', followUps.map((f) => f.name).sort().join(',') === 'sign_commit,verify_claim', `follow-ups for ${followUps.map((f) => f.name).join(', ') || 'none'}: the catalogue doors that answer a verdict and are not in tools/list`)
+  check('discover:follow-ups', followUps.filter((f) => f.purpose === 'contract').map((f) => f.name).sort().join(',') === 'sign_commit,verify_claim' && followUps.filter((f) => f.purpose === 'sitemap').length === 1, `follow-ups for ${followUps.map((f) => f.name).join(', ') || 'none'}: the catalogue doors that answer a verdict and are not in tools/list`)
   const all = [...answers, ...followUps.map(answerOf)]
   check('discover:no-third-wave', followUpsOf(all).length === 0, 'every follow-up answered, nothing left to ask')
   const discovery = discoveryOf(all, VERIFIERS)
+  check('discover:sitemap', discovery.sitemap.sitemaps.length === 1 && discovery.sitemap.urls.map((u) => new URL(u.loc).pathname + ' ' + u.lastmod).join() === '/cirq 2026-10-20', `the index named ${discovery.sitemap.sitemaps.length} child, read as ${discovery.sitemap.urls.length} url(s) by sitemaps.org's loc and lastmod`)
   const unit = discovery.hosts.find((h) => h.host === 'unit.test' && h.kind === 'mcp')
   const unitDoors = unit?.doors ?? []
   check('discover:doors-read', unitDoors.length === 5 && unitDoors.some((d) => d.name === 'verify_claim' && d.contract === 'catalogue' && d.required.join() === 'statement'), `${unitDoors.length} doors: ${unitDoors.map((d) => d.name).join(', ')}`)
