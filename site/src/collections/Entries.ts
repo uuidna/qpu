@@ -4,7 +4,7 @@
 // fold address of what it holds, the sha256 beside it — never overwritten; the four verbs are Payload's REST (/api/entries).
 import type { CollectionConfig } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
-import { handle, toolCallerOf } from '@uuidna/qpu/mcp'
+import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
 import { signedRoleOf } from '@uuidna/qpu/roles'
 
 type TenantUser = { roles?: string[]; tenants?: { tenant?: { id?: string } | string; roles?: string[] }[] } | null | undefined
@@ -52,19 +52,19 @@ export const Entries: CollectionConfig = {
       const role = isSuperAdmin(req.user) || claimedRole(req) === 'admin' || memberOf(req.user, tenantId, ['tenant-admin']) ? 'admin' : claimedRole(req) === 'writer' || memberOf(req.user, tenantId, ['editor']) ? 'writer' : 'reader'
       const chatDoor = (statement: string, chat: Record<string, unknown>) => toolCallerOf('match')({ statement, chat })
       // a call is folded as it will run: its arguments corrected for the role first, so the same address always holds the same reply
-      const asked = data.body as { tool?: string; arguments?: Record<string, unknown>; statement?: string } | undefined
+      const asked = data.body as { tool?: string; arguments?: Record<string, unknown>; statement?: string; choice?: string } | undefined
       let corrected: unknown[] = []
       if (data.kind === 'call' && asked?.tool) { const c = chatDoor('call ' + asked.tool, { role, run: false, call: { tool: asked.tool, arguments: asked.arguments ?? {} } }); if (c?.call) { data.body = { tool: asked.tool, arguments: c.call.arguments }; corrected = c.corrected ?? [] } }
-      // a chat entry: the statement and the role are its body; the hook answers it through the chat door, nothing thrown back
-      if (data.kind === 'chat') data.body = { statement: String(asked?.statement ?? ''), role }
-      const chat = data.kind === 'chat' ? chatDoor(String(asked?.statement ?? ''), { role }) : undefined
+      // a chat entry: the statement, the role and any choice are its body; the hook answers it through the chat door, nothing thrown back
+      if (data.kind === 'chat') data.body = { statement: String(asked?.statement ?? ''), role, ...(asked?.choice && { choice: String(asked.choice) }) }
+      const chat = data.kind === 'chat' ? chatDoor(String(asked?.statement ?? ''), { role, choice: asked?.choice }) : undefined
       const text = JSON.stringify({ kind: data.kind, from: data.from, body: data.body ?? null })
       const bytes = new TextEncoder().encode(text)
       const digest = await crypto.subtle.digest('SHA-256', bytes)
       // the API built from the config: an entry of kind call carries a tool and its arguments, and the hook answers it from the handler; the address folds the call, not the reply, so the same call is the same entry (read free, computed once)
       const body = data.body as { tool?: string; arguments?: Record<string, unknown> } | undefined
       // the reply's result stands as the entry's result (content, structuredContent, _meta with the widget); a refusal stands as { error }
-      const reply = data.kind === 'call' && body?.tool ? (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: body.tool, arguments: body.arguments ?? {} } }) as { result?: unknown; error?: { message: string } }) : undefined
+      const reply = data.kind === 'call' && body?.tool ? callOf(body.tool, body.arguments ?? {}) : undefined
       const result = chat ? chat : reply ? { ...((reply.result ?? { error: reply.error }) as object), ...(corrected.length ? { corrected } : {}) } : undefined
       return { ...data, id: uuidOf(text), sha256: [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join(''), ...(result ? { result } : {}) }
     }],

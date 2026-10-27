@@ -2,7 +2,7 @@
 // read into doors that join this catalogue (the same door reading discovery uses), and a foreign door is served by one
 // request the client fetches, the answer read back whether JSON or an event stream. Outward, this catalogue is expressed as
 // the registration any MCP client mounts (tools/list as every client receives it, the mcpServers fragment). Pure: no fetch.
-import { toolOf, checksOf, toolsOf, type Toolbox, type Context } from '../toolbox.js'
+import { toolOf, isObj, checksOf, toolsOf, type Toolbox, type Context } from '../toolbox.js'
 import { doorOf, dataOf, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, CLOUDFLARE_DOCS_MCP, QPU_MCP, KNOWN_MCP, CLAUDE_API, GEMINI_API, OPEN_MCP_BASELINES, toolsListCompareOf, coverageRequestOf, coverageOf, type Door } from '../discovery.js'
 import { flowWidget } from '../widgets.js'
 
@@ -12,7 +12,7 @@ const hostOf = (url: string) => { try { return new URL(url).host } catch { retur
 const toolsOfAnswer = (answer: unknown): ForeignTool[] => {
   if (Array.isArray(answer)) return answer as ForeignTool[]
   if (typeof answer === 'string') { try { return toolsOfAnswer(JSON.parse(dataOf(answer))) } catch { return [] } }
-  if (answer && typeof answer === 'object') { const o = answer as { tools?: ForeignTool[]; result?: { tools?: ForeignTool[] } }; return o.tools ?? o.result?.tools ?? [] }
+  if (isObj(answer)) { const o = answer as { tools?: ForeignTool[]; result?: { tools?: ForeignTool[] } }; return o.tools ?? o.result?.tools ?? [] }
   return []
 }
 /** A foreign door read back: the structured content, the text, or the error the host answered. */
@@ -48,14 +48,14 @@ const extend = toolOf('extension', {
     if (args.selftest) return { selftest: true, ...EXTENSION.skill.selftest(ctx) }
     // the coverage of the registered MCP world: the registry's first page named for the client to walk, then its count turned into a ratio of the gates' MCP doors
     if (args.coverage === true) return { phase: 'requests' as const, request: coverageRequestOf(), says: 'walk every page of the official registry (latest version of each server) and hand back coverage: { registryTotal }' } as never
-    if (args.coverage && typeof args.coverage === 'object') { const total = Number((args.coverage as { registryTotal?: unknown }).registryTotal ?? 0); const gates = ((ctx.call('configure', { kind: 'gates' })?.config?.gates as { category: string }[] | undefined) ?? []); const tools = toolsOf(ctx).length; return { phase: 'coverage' as const, ...coverageOf(gates.filter((g) => g.category === 'mcp').length, Number.isFinite(total) ? total : 0, tools) } as never }
+    if (isObj(args.coverage)) { const total = Number((args.coverage as { registryTotal?: unknown }).registryTotal ?? 0); const gates = ((ctx.call('configure', { kind: 'gates' })?.config?.gates as { category: string }[] | undefined) ?? []); const tools = toolsOf(ctx).length; return { phase: 'coverage' as const, ...coverageOf(gates.filter((g) => g.category === 'mcp').length, Number.isFinite(total) ? total : 0, tools) } as never }
     // the QPU's tools/list against the open MCP servers by size: the servers named for the client to ask, then the sizes it measured turned into ratios
     // the Gemini API as an operator agent the tenant names: the request planned (endpoint, header named, body), the key never valued; a coil, never called by the tree
-    if (args.gemini && typeof args.gemini === 'object') { const g = args.gemini as { prompt?: string; model?: string }; if (typeof g.prompt !== 'string' || !g.prompt.trim()) throw new Error('gemini takes a prompt: { prompt, model? }'); const model = typeof g.model === 'string' && /^[a-z0-9.-]{1,80}$/.test(g.model) ? g.model : GEMINI_API.model; return { phase: 'plan' as const, api: GEMINI_API, request: { method: 'POST', url: GEMINI_API.endpoint.replace('{model}', model), headers: { 'content-type': 'application/json', [GEMINI_API.header]: `<${GEMINI_API.key}>` }, body: { contents: [{ parts: [{ text: g.prompt }] }] } }, side: 'coil', says: `a Gemini ${model} call planned for the tenant's harness: its key goes in the ${GEMINI_API.header} header from ${GEMINI_API.key}, never in the URL or the tree; a crossing to a paid service, so a coil; the tree never calls it unprompted`, theorem: 'textbook_free_or_coil' } as never }
+    if (isObj(args.gemini)) { const g = args.gemini as { prompt?: string; model?: string }; if (typeof g.prompt !== 'string' || !g.prompt.trim()) throw new Error('gemini takes a prompt: { prompt, model? }'); const model = typeof g.model === 'string' && /^[a-z0-9.-]{1,80}$/.test(g.model) ? g.model : GEMINI_API.model; return { phase: 'plan' as const, api: GEMINI_API, request: { method: 'POST', url: GEMINI_API.endpoint.replace('{model}', model), headers: { 'content-type': 'application/json', [GEMINI_API.header]: `<${GEMINI_API.key}>` }, body: { contents: [{ parts: [{ text: g.prompt }] }] } }, side: 'coil', says: `a Gemini ${model} call planned for the tenant's harness: its key goes in the ${GEMINI_API.header} header from ${GEMINI_API.key}, never in the URL or the tree; a crossing to a paid service, so a coil; the tree never calls it unprompted`, theorem: 'textbook_free_or_coil' } as never }
     if (args.compare !== undefined) { const own = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result?: { tools?: unknown[] } }).result ?? { tools: [] }; const qpu = { bytes: new TextEncoder().encode(JSON.stringify(own)).length, tools: own.tools?.length ?? 0 }; const fullList = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result?: unknown }).result ?? {}; const full = { bytes: new TextEncoder().encode(JSON.stringify(fullList)).length }; if (args.compare === true) return { phase: 'requests' as const, qpu, full, servers: OPEN_MCP_BASELINES, says: 'initialize each server, ask its tools/list with the session it names, and hand back { id, status, bytes, tools }, bytes counted over the JSON of the result' } as never; const c = args.compare as { answers?: { id: string; status: number; bytes: number; tools: number }[] }; return { phase: 'compared' as const, ...toolsListCompareOf(qpu, c.answers ?? [], full) } as never }
     const host = typeof args.host === 'string' ? args.host : QPU_MCP
     const direction = String(args.direction ?? 'both')
-    if (args.call && typeof args.call === 'object') {
+    if (isObj(args.call)) {
       const c = args.call as { tool?: string; arguments?: Record<string, unknown> }
       if (!c.tool) throw new Error('call.tool names the foreign door')
       const request = { method: 'POST' as const, url: host, accept: 'application/json, text/event-stream', body: rpcBody('tools/call', { name: c.tool, arguments: c.arguments ?? {} }) }

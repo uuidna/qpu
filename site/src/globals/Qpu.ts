@@ -3,7 +3,7 @@
 // The discovery document as a Payload global: GET /api/globals/qpu answers it from the handler alone, computed on read by the global's own hook; no custom endpoint.
 import type { GlobalConfig } from 'payload'
 import { discoveryOf } from '@uuidna/qpu/discovery-document'
-import { handle, toolCallerOf } from '@uuidna/qpu/mcp'
+import { toolCallerOf } from '@uuidna/qpu/mcp'
 
 export const QpuGlobal: GlobalConfig = {
   slug: 'qpu',

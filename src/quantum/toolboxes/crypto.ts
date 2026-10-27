@@ -3,7 +3,7 @@
 // one piece it sits in, so a door answers from that piece and never from the whole. The bound is a reflective boundary:
 // σ_n(i) = n − i mirrors every piece onto the one across the fold, and the excess over the bound is reflected into the count
 // of pieces, decided by integer comparisons before anything is computed. Pure: SHA-256 and the fold address, nothing else.
-import { toolOf, checksOf, type Toolbox } from '../toolbox.js'
+import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.js'
 import { memoOf, uuidOf, presentationOf, streamOf, uuidSchemasOf, UUID_SCHEMAS, compositionsOf, compositionOf, compositionIndexOf, harmonicDefaultsOf, type StreamQuery } from '../blocks.js'
 import { entropyOf } from '../scan.js'
 import { courtOf } from './legal.js'
@@ -67,9 +67,9 @@ const fold = toolOf('crypto', {
     // a UUID split into time and space, with its timeless twin, and the pair drawn as rays
     if (typeof args.split === 'string') { const s = splitOf(args.split); return { phase: 'split' as const, ...s, rays: raysOf([s.uuid, s.timeless]) } as never }
     if (typeof args.speak === 'string') return { phase: 'speak' as const, ...speakHexOf(args.speak) }
-    if (args.harmonic && typeof args.harmonic === 'object') { const h = args.harmonic as { schema?: { properties?: Record<string, { enum?: readonly unknown[]; default?: unknown }> }; referrer?: string; role?: Role; tool?: string }; const r = harmonicDefaultsOf(h.schema ?? {}, h.referrer, h.role && h.tool ? (prop, value) => mayChoose(h.role!, h.tool!, prop, value) : undefined); return { phase: 'harmonic' as const, combinations: r.count.toString(), index: r.index.toString(), from: r.from, defaults: r.defaults, options: r.options, withheld: r.withheld, theorems: ['textbook_harmonic_default', 'textbook_mixed_radix'], says: `${r.count} combinations held at once; the ${r.from === 'referrer' ? 'referrer' : 'a432 key'} chooses number ${r.index}` } }
+    if (isObj(args.harmonic)) { const h = args.harmonic as { schema?: { properties?: Record<string, { enum?: readonly unknown[]; default?: unknown }> }; referrer?: string; role?: Role; tool?: string }; const r = harmonicDefaultsOf(h.schema ?? {}, h.referrer, h.role && h.tool ? (prop, value) => mayChoose(h.role!, h.tool!, prop, value) : undefined); return { phase: 'harmonic' as const, combinations: r.count.toString(), index: r.index.toString(), from: r.from, defaults: r.defaults, options: r.options, withheld: r.withheld, theorems: ['textbook_harmonic_default', 'textbook_mixed_radix'], says: `${r.count} combinations held at once; the ${r.from === 'referrer' ? 'referrer' : 'a432 key'} chooses number ${r.index}` } }
     // decoding by combinatorics, never by search: an invertible address inverted in one step per position; a one-way address refused with the court's case
-    if (args.decode && typeof args.decode === 'object') {
+    if (isObj(args.decode)) {
       const d = args.decode as { radices?: number[]; address?: string; uuid?: string }
       const radices = (d.radices ?? []).map(Number); if (!radices.length || radices.some((r) => !Number.isInteger(r) || r < 1)) throw new Error('decode names the radices: the number of choices at each position')
       const count = compositionsOf(radices)
@@ -89,7 +89,7 @@ const fold = toolOf('crypto', {
       throw new Error('decode takes an address or a uuid')
     }
     // Queneau's combinatorics: one primitive for every combination space, the count, the composition an index addresses, and the index of a composition
-    if (args.spaces && typeof args.spaces === 'object') { const spaces = Object.entries(args.spaces as Record<string, number[]>).map(([name, radices]) => ({ name, radices, count: compositionsOf(radices).toString() })); return { phase: 'spaces' as const, spaces, primitive: 'compositionsOf(radices): the product of the choices', theorems: ['textbook_mixed_radix', 'textbook_queneau_compositions'] } }
+    if (isObj(args.spaces)) { const spaces = Object.entries(args.spaces as Record<string, number[]>).map(([name, radices]) => ({ name, radices, count: compositionsOf(radices).toString() })); return { phase: 'spaces' as const, spaces, primitive: 'compositionsOf(radices): the product of the choices', theorems: ['textbook_mixed_radix', 'textbook_queneau_compositions'] } }
     if (Array.isArray(args.radices)) {
       const radices = args.radices.map(Number); if (radices.some((r) => !Number.isInteger(r) || r < 1)) throw new Error('every position has a whole number of choices, one at least')
       const count = compositionsOf(radices)
@@ -101,7 +101,7 @@ const fold = toolOf('crypto', {
       return { phase: 'composition' as const, positions: radices.length, radices, count: count.toString(), index: index?.toString() ?? null, digits, address, uuid: address ? uuidOf(`composition\n${radices.join(',')}\n${address}`) : null, returns: index === null ? null : compositionIndexOf(radices, digits!) === index, theorems: ['textbook_mixed_radix', 'textbook_queneau_compositions'], says: index === null ? `${radices.length} positions make ${count} compositions, every one computed from its index` : `composition ${index} of ${count}: ${digits!.join(' ')}, and its digits make the index back` }
     }
     if (typeof args.hex === 'string') { const p = presentationOf(args.hex); return { phase: 'presented' as const, ...p, ...(p.nibbles === 32 ? { schemas: uuidSchemasOf(p.uuid) } : {}) } }
-    if (Array.isArray(args.uuids)) return { phase: 'streamed' as const, ...streamOf(args.uuids.map(String), (args.query && typeof args.query === 'object' ? args.query : {}) as StreamQuery) }
+    if (Array.isArray(args.uuids)) return { phase: 'streamed' as const, ...streamOf(args.uuids.map(String), (isObj(args.query) ? args.query : {}) as StreamQuery) }
     if (Array.isArray(args.pieces)) { const u = unfoldOf(args.pieces as { index: number; text: string; sha256?: string }[], typeof args.root === 'string' ? args.root : undefined); return { phase: 'unfolded' as const, bytes: utf8(u.whole).length, root: u.root, agrees: u.agrees, wrong: u.wrong, ...(args.withPieces ? { whole: u.whole } : {}) } }
     if (typeof args.text !== 'string') throw new Error('text folds, or pieces unfold')
     const bound = typeof args.bound === 'number' && args.bound >= 1 ? Math.floor(args.bound) : 131072
@@ -122,7 +122,7 @@ const seal = toolOf('crypto', {
     if (args.selftest) return { selftest: true, ...CRYPTO.skill.selftest(ctx) }
     // the physical constants as coins: the request for CODATA's table, then the table read into exact integers, each constant sealed with its stated uncertainty
     if (args.constants === true) return { phase: 'requests' as const, requestList: [{ id: 'codata', method: 'GET', url: CODATA_URL, accept: 'text/plain' }], says: 'fetch the table once and hand its text back as constants: { text }' } as never
-    if (args.constants && typeof args.constants === 'object') { const c = args.constants as { text?: string }; return { phase: 'sealed' as const, ...constantsOf(String(c.text ?? '')) } as never }
+    if (isObj(args.constants)) { const c = args.constants as { text?: string }; return { phase: 'sealed' as const, ...constantsOf(String(c.text ?? '')) } as never }
     const text = String(args.text)
     const digest = sha(text)
     if (Array.isArray(args.artifacts)) {
@@ -130,7 +130,7 @@ const seal = toolOf('crypto', {
       const verified = rows.filter((r) => r.verified).length, mismatched = rows.filter((r) => r.verdict === 'mismatch').length, unreached = rows.filter((r) => !r.reached).length
       return { phase: 'artifacts' as const, artifacts: rows.length, verified, mismatched, unreached, bySource: Object.fromEntries([...new Set(rows.map((r) => r.source))].map((s) => [s, `${rows.filter((r) => r.source === s && r.verified).length}/${rows.filter((r) => r.source === s).length}`])), bytes: rows.reduce((n, r) => n + (r.bytes ?? 0), 0), rows, theorems: ['textbook_artifacts_verified', 'textbook_tamper_detected'], says: `${verified} of ${rows.length} public artifacts verify against the digests their registries recorded; ${mismatched} mismatch${mismatched ? ', each with the court\'s case' : ''}; ${unreached} unreached, measured again next run` }
     }
-    if (args.tamper && typeof args.tamper === 'object') {
+    if (isObj(args.tamper)) {
       const t = args.tamper as { text?: string; address?: string; sha256?: string }
       if (typeof t.text !== 'string' || typeof t.address !== 'string') throw new Error('tamper takes the text of the copy and the address the original carried')
       const address = uuidOf(t.text), digest = sha(t.text)

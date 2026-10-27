@@ -5,7 +5,7 @@
 // default, overridden only by the operator's own list. Phase two reads the answers into verdicts, drift and findings, beside
 // the tree's own security checks over its source texts. Pure; the client fetches. Recomputable facts, not legal advice.
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.js'
-import { toolOf, checksOf, type Toolbox } from '../toolbox.js'
+import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.js'
 import { LICENSE, PRECEDENCE } from '../license.js'
 import { UNIT_MCP, CLAUDE_API, type Discovery } from '../discovery.js'
 import type { Lead } from '../leads.js'
@@ -172,7 +172,7 @@ const legal = toolOf('legal', {
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...LEGAL.skill.selftest(ctx) }
     if (args.court === true) return { rules: COURT_RULES, count: COURT_RULES.length, theorem: 'textbook_cheap_gates', says: 'every gate refuses by one of these rules and answers the case computed: the violator files it through its own MCP, the gate writes nothing' }
-    if (args.court && typeof args.court === 'object') return courtOf(args.court as Summons)
+    if (isObj(args.court)) return courtOf(args.court as Summons)
     const texts = (args.texts ?? {}) as Texts
     const claims = claimsOf(texts, ctx.leads, { theorem: typeof args.citeTheorem === 'string' ? args.citeTheorem : null })
     const security = securityOf(texts)
@@ -287,7 +287,7 @@ const compete = toolOf('legal', {
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...LEGAL.skill.selftest(ctx) }
     if (args.news) { const requests = newsRequestsOf(); return { op: 'news' as const, apis: NEWS_APIS, open: NEWS_APIS.filter((a) => a.open).map((a) => a.id), keyed: NEWS_APIS.filter((a) => !a.open).map((a) => ({ id: a.id, key: a.key })), records: PRECEDENCE.length, requests: requests.length, requestList: requests, says: 'the public news APIs wired as adapters of the DOI research: one request per open API per record of precedence; the keyed ones wait for a tenant\'s name; the mentions are read by compete { mentions }' } }
-    return competeOf({ theorems: THEOREMS.length, kernel: KERNEL_THEOREMS, hosts: typeof args.hosts === 'number' ? args.hosts : 3, licence: LICENSE.spdx, published: args.published === true, pushed: args.pushed === true, conduct: args.conduct === true, acceptance: Array.isArray(args.mentions) ? mentionsOf(args.mentions as { id: string; status: number; text: string }[]) : null }, args.pages && typeof args.pages === 'object' ? args.pages as Record<string, string> : {}, typeof args.now === 'number' ? args.now : 0)
+    return competeOf({ theorems: THEOREMS.length, kernel: KERNEL_THEOREMS, hosts: typeof args.hosts === 'number' ? args.hosts : 3, licence: LICENSE.spdx, published: args.published === true, pushed: args.pushed === true, conduct: args.conduct === true, acceptance: Array.isArray(args.mentions) ? mentionsOf(args.mentions as { id: string; status: number; text: string }[]) : null }, isObj(args.pages) ? args.pages as Record<string, string> : {}, typeof args.now === 'number' ? args.now : 0)
   },
   widget: flowWidget,
 })

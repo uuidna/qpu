@@ -1,0 +1,14 @@
+{
+ "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+ "name": "qpu-chat",
+ "type": "registry:component",
+ "title": "QPU chat",
+ "description": "The chat as an MCP App: <QpuApp /> with no tool hosts ui://qpu/chat, every turn a tools/call through the app's MCP.",
+ "registryDependencies": [
+  "https://qpu.uuidna.com/r/qpu-app.json"
+ ],
+ "categories": [
+  "mcp",
+  "qpu"
+ ]
+}

@@ -4,20 +4,20 @@
 // here and lands as a new entry linked to the old, since entries are immutable and addressed by content. Nothing here does
 // I/O: the client reads the docket's rows and writes the entries this toolbox returns. Payload's mongodb adapter interface is
 // the shape this ports to, not Cloudflare's D1.
-import { toolOf, checksOf, type Toolbox, type Context } from '../toolbox.js'
+import { toolOf, isObj, checksOf, type Toolbox, type Context } from '../toolbox.js'
 import { uuidOf } from '../blocks.js'
 import { flowWidget } from '../widgets.js'
 
 export type Doc = Record<string, unknown>
 export type Filter = Record<string, unknown>
 
-const pathOf = (doc: unknown, path: string): unknown => path.split('.').reduce<unknown>((v, k) => (v && typeof v === 'object' ? (v as Record<string, unknown>)[k] : undefined), doc)
+const pathOf = (doc: unknown, path: string): unknown => path.split('.').reduce<unknown>((v, k) => (isObj(v) ? (v as Record<string, unknown>)[k] : undefined), doc)
 const cmp = (a: unknown, b: unknown): number => (typeof a === 'number' && typeof b === 'number' ? a - b : String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0)
 const same = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b)
 
 /** Does a value satisfy a Mongo operator object (or equal a plain value)? */
 const satisfies = (value: unknown, cond: unknown): boolean => {
-  if (cond && typeof cond === 'object' && !Array.isArray(cond) && Object.keys(cond).every((k) => k.startsWith('$'))) {
+  if (isObj(cond) && !Array.isArray(cond) && Object.keys(cond).every((k) => k.startsWith('$'))) {
     return Object.entries(cond as Record<string, unknown>).every(([op, arg]) => {
       switch (op) {
         case '$eq': return same(value, arg) || (Array.isArray(value) && value.some((v) => same(v, arg)))

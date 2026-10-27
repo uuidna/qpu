@@ -19,6 +19,7 @@
     "https://qpu.uuidna.com/r/qpu-style.json",
     "https://qpu.uuidna.com/r/qpu-block.json",
     "https://qpu.uuidna.com/r/qpu-app.json",
+    "https://qpu.uuidna.com/r/qpu-chat.json",
     "https://qpu.uuidna.com/r/qpu-card.json",
     "https://qpu.uuidna.com/r/qpu-badge.json",
     "https://qpu.uuidna.com/r/qpu-table.json",
@@ -262,7 +263,8 @@
    "files": [
     {
      "path": "blocks/qpu-dashboard/page.tsx",
-     "type": "registry:page"
+     "type": "registry:page",
+     "target": "app/qpu/page.tsx"
     }
    ]
   },
@@ -281,6 +283,20 @@
     }
    ],
    "docs": "import { QpuApp } from '@/components/qpu/app' — <QpuApp tool=\"processor\" args={{ name: 'Willow' }} result={reply.result} mcp=\"https://qpu.uuidna.com/mcp\" /> (the Worker takes no key); against a Payload app's /api/mcp pass apiKey (a payload-mcp-api-keys key the admin made) or html read by your server",
+   "categories": [
+    "mcp",
+    "qpu"
+   ]
+  },
+  {
+   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+   "name": "qpu-chat",
+   "type": "registry:component",
+   "title": "QPU chat",
+   "description": "The chat as an MCP App: <QpuApp /> with no tool hosts ui://qpu/chat, every turn a tools/call through the app's MCP.",
+   "registryDependencies": [
+    "https://qpu.uuidna.com/r/qpu-app.json"
+   ],
    "categories": [
     "mcp",
     "qpu"

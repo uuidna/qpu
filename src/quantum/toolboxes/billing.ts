@@ -5,7 +5,7 @@
 // entries at any tenant, since a licence names the domains it is valid on and the entries mirror. Every scenario between
 // tenants is an entry and a rule, never a special case: the same licence at another domain, a refund after a grant, a
 // dispute, a renewal, a replayed event, a wrong tenant's signature.
-import { toolOf, checksOf, type Toolbox } from '../toolbox.js'
+import { toolOf, isObj, checksOf, type Toolbox } from '../toolbox.js'
 import { hmacSha256, utf8, hex, sameHex, sha256 } from '../hmac.js'
 import { uuidOf } from '../blocks.js'
 import { LICENSE } from '../license.js'
@@ -136,7 +136,7 @@ const stripe = toolOf('billing', {
     if (op === 'usecases') return stripeUseCasesOf(Array.isArray(args.paths) ? args.paths.map(String) : [])
     if (op === 'ledger') return { op: 'ledger' as const, ...ledgerOf(Array.isArray(args.calls) ? (args.calls as { tool: string; tenant: string }[]) : [], Array.isArray(args.settled) ? (args.settled as { tenant?: string; amount: number; fee: number; net: number; currency: string }[]) : [], (['eur', 'usd', 'bgn'] as const).find((c) => c === args.currency) ?? 'eur') } as never
     if (op === 'fusion') { const tools = Array.isArray(args.tools) ? args.tools.map(String) : []; const rows = tools.map((t) => fusionOf(t)); return { op: 'fusion', tools: rows, coins: rows.filter((r) => r.side === 'coin').length, coils: rows.filter((r) => r.side === 'coil').length, algebra: ALGEBRA_TOOLS, enforced: 'every tools/call result carries _meta.fusion; the Worker answers 402 with the court\'s case to a request declaring commercial use (x-qpu-use: commercial) of a coil, or a commercial write into the docket, without a licence at the tenant', theorems: ['textbook_free_or_coil', 'textbook_double_torus'] } }
-    if (op === 'catalogue') { const c = catalogueOf(tenant, Array.isArray(args.currencies) ? args.currencies.map(String) : ['eur', 'usd', 'bgn']); return { op, tenant, margins: marginsOf(args.costs && typeof args.costs === 'object' ? args.costs as Record<string, number> : {}), products: c.products.length, prices: c.prices.length, variants: CATALOGUE.length, secret: c.secret, catalogue: CATALOGUE, forms: c, procedure: `the Worker creates the products and prices at Stripe with <${c.secret}> once per tenant; the price ids come back in the webhooks' metadata` } }
+    if (op === 'catalogue') { const c = catalogueOf(tenant, Array.isArray(args.currencies) ? args.currencies.map(String) : ['eur', 'usd', 'bgn']); return { op, tenant, margins: marginsOf(isObj(args.costs) ? args.costs as Record<string, number> : {}), products: c.products.length, prices: c.prices.length, variants: CATALOGUE.length, secret: c.secret, catalogue: CATALOGUE, forms: c, procedure: `the Worker creates the products and prices at Stripe with <${c.secret}> once per tenant; the price ids come back in the webhooks' metadata` } }
     if (op === 'usage') { if (typeof args.subject !== 'string') throw new Error('usage needs subject'); const u = usageOf((Array.isArray(args.entries) ? args.entries : []) as Parameters<typeof usageOf>[0], args.subject, Number(args.from ?? 0), Number(args.to ?? now)); return { op, tenant, subject: args.subject, ...u, procedure: 'the Worker posts the form to /v1/subscription_items/<item>/usage_records with the tenant key; the receipt is an entry' } }
     if (op === 'settle') { const st = settlementOf((Array.isArray(args.transactions) ? args.transactions : []) as Parameters<typeof settlementOf>[0]); return { op, tenant, ...st, procedure: 'balance transactions are read from Stripe with the tenant key (net and fee are Stripe\'s figures); the settlement entry is written to the docket as the author\'s compensation ledger' } }
     throw new Error(`op ${op} is not one of plan, webhook, state, catalogue, usage, settle`)
@@ -564,7 +564,7 @@ const currency = toolOf('billing', {
     const rates = harmoniseOf(tables, symbols)
     const tenant = String(args.tenant ?? 'local'); const domain = typeof args.domain === 'string' ? args.domain : null
     const tld = domain ? domain.split('.').pop()!.toLowerCase() : null
-    const amounts = args.amounts && typeof args.amounts === 'object' ? Object.fromEntries(Object.entries(args.amounts as Record<string, number>).map(([k, v]) => [k, amountsOf(Number(v), rates)])) : {}
+    const amounts = isObj(args.amounts) ? Object.fromEntries(Object.entries(args.amounts as Record<string, number>).map(([k, v]) => [k, amountsOf(Number(v), rates)])) : {}
     const outcomes = Object.values(rates).reduce<Record<string, number>>((acc, r) => ({ ...acc, [r.outcome]: (acc[r.outcome] ?? 0) + 1 }), {})
     return { op, base: 'EUR', sources: tables.map((t) => ({ source: t.source, date: t.date, currencies: Object.keys(t.rates).length })), errors, rates, outcomes, tenant: { tenant, currency: TENANT_CURRENCY[tenant] ?? 'EUR' }, domain: domain ? { domain, tld, currency: (tld && DOMAIN_CURRENCY[tld]) ?? 'EUR' } : null, amounts, says: `${tables.length} source(s) read${errors.length ? `, ${errors.length} unreadable` : ''}; ${Object.entries(outcomes).map(([k, v]) => `${v} ${k}`).join(', ')} of ${symbols.length} currencies` }
   },
