@@ -1,14 +1,14 @@
 // The client of the compete tool, a step of every next: online it reads every competition's rules page once and asks GitHub whether
 // the remote main is the local head (pushed), then hands the pages and the evidence to the tool, which judges every rule and
 // measures each window from its page. Offline, the judgement stands on the fixtures. Writes the Compete page and compete.json.
-import { writeFileSync, existsSync, readFileSync } from 'node:fs'
+import { writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
 import './teleport.ts'
 import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { COMPETITIONS } from '../src/quantum/toolboxes/legal.ts'
-import { getOf } from './mcp.ts'
+import { getOf, readJson } from './mcp.ts'
 
 const ROOT = process.cwd()
 const offline = process.env.QPU_OFFLINE === '1'
@@ -20,7 +20,7 @@ const main = async () => {
   console.log(`compete selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
   // offline, an online judgement of today stands: the pages and the remote were read then, and a judgement without them would only lose what was measured
   const prevPath = join(ROOT, 'docs', 'public', 'compete.json')
-  if (offline && existsSync(prevPath)) { try { const prev = JSON.parse(readFileSync(prevPath, 'utf8')) as { date?: string; offline?: boolean; competitions?: unknown[] }; if (prev.date && !prev.offline && Date.now() - Date.parse(prev.date) < 86_400_000) { console.log(`compete: offline; the online judgement of ${prev.date} stands (${prev.competitions?.length ?? 0} competitions)`); return } } catch { /* judged afresh below */ } }
+  if (offline) { const prev = readJson(prevPath, {}) as { date?: string; offline?: boolean; competitions?: unknown[] }; if (prev.date && !prev.offline && Date.now() - Date.parse(prev.date) < 86_400_000) { console.log(`compete: offline; the online judgement of ${prev.date} stands (${prev.competitions?.length ?? 0} competitions)`); return } }
   const pages: Record<string, string> = {}
   const fetched: { id: string; status: number; ms: number; bytes: number }[] = []
   let pushed: boolean | null = null

@@ -17,7 +17,7 @@ const call = toolCallerOf('imagine')
 const toolsNow = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
 const inputs = uuidOf(JSON.stringify({ leads: LEADS, examples: EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, arguments: e.arguments, shows: e.shows })), tools: toolsNow, writer: readFileSync(import.meta.filename, 'utf8') }))
 const outPath = join(ROOT, 'docs', 'public', 'imagination.json')
-try { const prev = JSON.parse(readFileSync(outPath, 'utf8')) as { inputs?: string; imaginedLeads?: number; leads?: number; partial?: boolean }; if (prev.inputs === inputs && !prev.partial) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } } catch { /* re-imagine */ }
+{ const prev = readJson(outPath, {}) as { inputs?: string; imaginedLeads?: number; leads?: number; partial?: boolean }; if (prev.inputs === inputs && !prev.partial) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } }
 const selftest = call({ selftest: true })
 console.log(`imagine selftest: ${selftest.passed ? 'pass' : 'FAIL'} (${selftest.checks.filter((c: { passed: boolean }) => c.passed).length}/${selftest.checks.length})`)
 // the quantum: every lead imagined once per (statement, tools), kept by its own hash; a run imagines only the new hashes, in

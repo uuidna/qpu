@@ -1,6 +1,6 @@
 // The client of the repository tool: git facts in, GitHub and Zenodo answers in, the watch and its leads out. Selftest first.
 // Offline (QPU_OFFLINE=1) the local facts alone are written. Its leads join the next-leads docket, deduplicated by id.
-import { existsSync, readFileSync, writeFileSync, readdirSync } from 'node:fs'
+import { existsSync, writeFileSync, readdirSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
@@ -25,9 +25,7 @@ const main = async () => {
     tags: git('for-each-ref', '--format=%(refname:short) %(objectname:short)', 'refs/tags').split('\n').filter(Boolean).map((l) => { const [name, commit] = l.split(' '); return { name: name!, commit: commit! } }),
     conceptDoi, probes: { adc: existsSync(process.env.GOOGLE_APPLICATION_CREDENTIALS ?? join(homedir(), '.config', 'gcloud', 'application_default_credentials.json')), payload: { installed: readJson(join('site', 'node_modules', 'payload', 'package.json'))?.version ?? null, declared: readJson(join('site', 'package.json'))?.dependencies?.payload ?? null } },
   }
-  const discoveryPath = join(ROOT, 'docs', 'public', 'discovery.json')
-  const contracts: Record<string, string[]> = {}
-  if (existsSync(discoveryPath)) { try { for (const h of (JSON.parse(readFileSync(discoveryPath, 'utf8')) as { hosts: { host: string; paths?: string[] }[] }).hosts) if (h.paths?.length) contracts[h.host] = h.paths } catch { /* unknown contracts */ } }
+  const contracts: Record<string, string[]> = Object.fromEntries(((readJson(join(ROOT, 'docs', 'public', 'discovery.json'), {}) as { hosts?: { host: string; paths?: string[] }[] }).hosts ?? []).filter((h) => h.paths?.length).map((h) => [h.host, h.paths!]))
   const offline = process.env.QPU_OFFLINE === '1'
   // the tenant's token for GitHub's MCP (QPU_MCP_TOKEN_API_GITHUBCOPILOT_COM, from the environment or .dev.vars): with it the watch goes through the doors; without it, the REST contract, said so
   const githubToken = process.env.QPU_MCP_TOKEN_API_GITHUBCOPILOT_COM

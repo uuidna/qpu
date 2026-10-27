@@ -1,5 +1,5 @@
 {
- "date": "2026-10-27T11:40:29.805Z",
+ "date": "2026-10-27T11:48:25.190Z",
  "literals": {
   "urls": 842,
   "distinctUrls": 440,
@@ -684,10 +684,10 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 949,
- "lines": 86033,
- "findings": 936,
+ "lines": 86026,
+ "findings": 935,
  "fused": 324,
- "reactions": 612,
+ "reactions": 611,
  "gravity": "5a6ccb52-ef33-6ed5-95cf-5a76ff6fcb85",
  "vacuum": false,
  "byKind": {
@@ -700,7 +700,7 @@
    "leads": 1
   },
   "cap": {
-   "findings": 84,
+   "findings": 83,
    "leads": 21
   },
   "clock": {
@@ -754,11 +754,11 @@
   {
    "id": "entropy-cap-4c776128",
    "kind": "cap",
-   "source": "scripts/claims.ts:21, scripts/claims.ts:44, scripts/penalties.ts:18, scripts/penalties.ts:20, scripts/theorems-raid.ts:13, scripts/theorems-raid.ts:17, site/src/app/_data/index.ts:460, site/src/app/_data/index.ts:465, site/src/app/_data/index.ts:470, site/src/app/_data/index.ts:475, src/quantum/toolboxes/repository.ts:153",
+   "source": "scripts/claims.ts:21, scripts/claims.ts:44, scripts/penalties.ts:18, scripts/theorems-raid.ts:13, scripts/theorems-raid.ts:17, site/src/app/_data/index.ts:460, site/src/app/_data/index.ts:465, site/src/app/_data/index.ts:470, site/src/app/_data/index.ts:475, src/quantum/toolboxes/repository.ts:153",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — limit: 100",
    "status": "open",
    "tool": "audit",
-   "occurrences": 11,
+   "occurrences": 10,
    "address": "4c776128-5803-7382-80d0-c56a0a56a0e6",
    "explore": "match",
    "config": "actions"

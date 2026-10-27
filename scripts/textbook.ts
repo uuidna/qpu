@@ -1,25 +1,24 @@
 // The client of the textbook wave: the examples' verification requests, served from the wave the flow already fetched
 // (verification.json) and, for any request the wave did not carry, fetched here by this device over its network — GET only,
 // free public sources, a named user agent, no credential, a timeout — then joined back and sealed. Offline: the plan alone.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { LICENSE } from '../src/quantum/license.ts'
-import { getOf } from './mcp.ts'
+import { getOf, readJson } from './mcp.ts'
 const ROOT = process.cwd()
 const call = toolCallerOf('textbook')
 const main = async () => {
   // fast when clean: the wave is a function of the examples, the leads, the tools and the wave's results; the same inputs give the same seal
   const { uuidOf } = await import('../src/quantum/blocks.ts'); const { EXAMPLES } = await import('../src/quantum/examples.ts'); const { LEADS } = await import('../src/quantum/leads.ts')
   const outPath = join(ROOT, 'docs', 'public', 'textbook.json')
-  const vpathEarly = join(ROOT, 'docs', 'public', 'verification.json')
-  const inputs = uuidOf(JSON.stringify({ examples: EXAMPLES.map((e) => [e.id, e.tool, e.arguments, e.shows, e.theorem ?? null]), leads: LEADS.length, tools: handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }), wave: existsSync(vpathEarly) ? (JSON.parse(readFileSync(vpathEarly, 'utf8')) as { date?: string }).date ?? null : null, offline: process.env.QPU_OFFLINE === '1' }))
-  if (existsSync(outPath)) { try { const prev = JSON.parse(readFileSync(outPath, 'utf8')) as { inputs?: string; id?: string }; if (prev.inputs === inputs) { console.log(`textbook: inputs unchanged (${inputs}); sealed wave ${prev.id} stands`); return } } catch { /* re-run */ } }
-  const plan = call({ verify: true })
   const vpath = join(ROOT, 'docs', 'public', 'verification.json')
-  const fetched: { url: string; status: number; ok: boolean; contracted?: string }[] = existsSync(vpath) ? ((JSON.parse(readFileSync(vpath, 'utf8')) as { results?: { url: string; status: number; ok: boolean; contracted?: string }[] }).results ?? []) : []
+  const inputs = uuidOf(JSON.stringify({ examples: EXAMPLES.map((e) => [e.id, e.tool, e.arguments, e.shows, e.theorem ?? null]), leads: LEADS.length, tools: handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }), wave: (readJson(vpath, {}) as { date?: string }).date ?? null, offline: process.env.QPU_OFFLINE === '1' }))
+  { const prev = readJson(outPath, {}) as { inputs?: string; id?: string }; if (prev.inputs === inputs) { console.log(`textbook: inputs unchanged (${inputs}); sealed wave ${prev.id} stands`); return } }
+  const plan = call({ verify: true })
+  const fetched: { url: string; status: number; ok: boolean; contracted?: string }[] = (readJson(vpath, {}) as { results?: { url: string; status: number; ok: boolean; contracted?: string }[] }).results ?? []
   const have = new Set(fetched.map((r) => r.url))
   if (isMerge) for (const r of gatherShards<{ url: string; status: number; ok: boolean; contracted?: string }[]>('textbook', [])) if (!have.has(r.url)) { fetched.push(r); have.add(r.url) }
   const missing = shareOf((plan.requestList as { url: string }[]).filter((r) => !have.has(r.url)))

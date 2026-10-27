@@ -1,12 +1,13 @@
 // The client of the wave tool: it asks for the requests, fetches each once (a pool in flight, paced per host, progressive
 // writes), hands the bodies back with the contracts discovery found, and writes what the tool returns. Selftest first.
-import { writeFileSync, existsSync, readFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import type { WaveRequest, WaveResult } from '../src/quantum/wave.ts'
 import { isShard, isMerge, shareOf, leaveShard, gatherShards, shardLabel } from './shard.ts'
+import { readJson } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('wave')
@@ -18,9 +19,8 @@ const main = async () => {
   // the quantum: what an earlier run fetched today stands (by url); only the rest is fetched, and no more than the quantum allows
   const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
   const started0 = Date.now()
-  const vpath0 = join(ROOT, 'docs', 'public', 'verification.json')
-  const kept: WaveResult[] = []
-  if (existsSync(vpath0)) { try { const prev = JSON.parse(readFileSync(vpath0, 'utf8')) as { date?: string; results?: WaveResult[] }; if (prev.date && Date.now() - Date.parse(prev.date) < 86_400_000) for (const r of prev.results ?? []) if (r.url && typeof r.status === 'number') kept.push(r) } catch { /* nothing kept */ } }
+  const kept: WaveResult[] = [], prev = readJson(join(ROOT, 'docs', 'public', 'verification.json'), {}) as { date?: string; results?: WaveResult[] }
+  if (prev.date && Date.now() - Date.parse(prev.date) < 86_400_000) for (const r of prev.results ?? []) if (r.url && typeof r.status === 'number') kept.push(r)
   const keyOf = (r: WaveRequest) => (r.method === 'POST' ? `${r.url}#${JSON.stringify(r.body)}` : r.url)
   // the merge gathers what the shards fetched, as if kept from today
   if (isMerge) for (const r of gatherShards<WaveResult[]>('verify', [])) if (!kept.some((k) => keyOf(k) === keyOf(r))) kept.push(r)
@@ -29,9 +29,7 @@ const main = async () => {
   const queue = shareOf(all.filter((r) => !have.has(keyOf(r))))
   console.log(`verify (${shardLabel()})`)
   console.log(`verify: ${all.length} requests, ${all.length - queue.length} kept from today, ${queue.length} to fetch in a quantum of ${QUANTUM_MS / 1000} s`)
-  const discoveryPath = join(ROOT, 'docs', 'public', 'discovery.json')
-  const contracts: Record<string, string[]> = {}
-  if (existsSync(discoveryPath)) { try { for (const h of (JSON.parse(readFileSync(discoveryPath, 'utf8')) as { hosts: { host: string; paths?: string[] }[] }).hosts) if (h.paths?.length) contracts[h.host] = h.paths } catch { /* no discovery: every request uncontracted, said so by the tool */ } }
+  const contracts: Record<string, string[]> = Object.fromEntries(((readJson(join(ROOT, 'docs', 'public', 'discovery.json'), {}) as { hosts?: { host: string; paths?: string[] }[] }).hosts ?? []).filter((h) => h.paths?.length).map((h) => [h.host, h.paths!]))
   const results: WaveResult[] = kept.filter((r) => all.some((a) => keyOf(a) === keyOf(r)))
   const byHost = new Map<string, number>()
   const inFlight = new Set<Promise<void>>()
