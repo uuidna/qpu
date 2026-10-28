@@ -1007,7 +1007,7 @@ const MCP_COLLECTIONS: Readonly<Record<string, McpCollection>> = {
   users: { description: 'the users: who edits; keys never travel', enabled: findAnd(false, false) , scoped: false, filter: 'self, or an admin', relations: { 'tenants.tenant': 'tenants' }, enums: { roles: Object.keys(ROLES), 'tenants.roles': [...TENANT_ROLES] }, hooks: ['firstUserBootstrap (beforeChange)', 'useAPIKey'] }
 }
 /** Which installed plugin owns which served collection: the SDK's plugin builders follow it (the QPU plugin owns the docket). */
-const PLUGIN_COLLECTIONS: Readonly<Record<string, readonly string[]>> = { payload: ['pages', 'posts', 'media', 'users'], 'form-builder': ['forms', 'form-submissions'], ecommerce: ['products', 'variants', 'carts', 'orders', 'transactions', 'addresses'], 'multi-tenant': ['tenants'], search: ['search'], redirects: ['redirects'], qpu: ['entries'] }
+const PLUGIN_COLLECTIONS = TABLES.PLUGIN_COLLECTIONS as unknown as Readonly<Record<string, readonly string[]>>
 /** The MCP plugin\'s own secrets collection: never served, by design. */
 const MCP_UNSERVED: readonly { collection: string; why: string }[] = [{ collection: 'payload-mcp-api-keys', why: 'the MCP plugin\'s own API keys: secrets never travel' }]
 const hookNames = () => Object.values(qpuHooksOf({}).pairs as Record<string, { before?: string; after?: string }[]>).flat().flatMap((p) => [p.before, p.after].filter(Boolean)).length

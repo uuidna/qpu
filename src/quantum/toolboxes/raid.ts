@@ -4,6 +4,7 @@
 // here and lands as a new entry linked to the old, since entries are immutable and addressed by content. Nothing here does
 // I/O: the client reads the docket's rows and writes the entries this toolbox returns. Payload's mongodb adapter interface is
 // the shape this ports to, not Cloudflare's D1.
+import { TABLES } from '../tables-index.ts'
 import { defineTool, isObj, createChecks, type Toolbox, type Context } from '../toolbox.ts'
 import { uuidOf } from '../blocks.ts'
 import { flowWidget } from '../widgets.ts'
@@ -126,11 +127,7 @@ const mongo = defineTool('raid', {
   widget: flowWidget,
 })
 
-const SAMPLE: Doc[] = [
-  { _id: 'a', title: 'Willow', qubits: 105, tags: ['processor', 'google'], meta: { year: 2024 } },
-  { _id: 'b', title: 'Sycamore', qubits: 54, tags: ['processor'], meta: { year: 2019 } },
-  { _id: 'c', title: 'Quantum Echoes', qubits: 65, tags: ['experiment'], meta: { year: 2025 } },
-]
+const SAMPLE = TABLES.SAMPLE as unknown as Doc[]
 
 export const RAID: Toolbox = {
   name: 'raid',

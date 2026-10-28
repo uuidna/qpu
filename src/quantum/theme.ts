@@ -171,11 +171,7 @@ export const createTheme = (key: number = KEY, origin = 'https://qpu.uuidna.com'
 
 /** The stylesheets the QPU's is measured against, pinned so every run fetches the same bytes (jsDelivr, read 2026-10-26); Tailwind ships no
  *  fixed stylesheet (each project generates its own), so it has no row. */
-export const CSS_FRAMEWORKS: readonly { id: string; name: string; url: string }[] = [
-  { id: 'pico', name: 'Pico 2.0.6', url: 'https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.min.css' },
-  { id: 'bootstrap', name: 'Bootstrap 5.3.3', url: 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css' },
-  { id: 'bulma', name: 'Bulma 1.0.2', url: 'https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css' },
-]
+export const CSS_FRAMEWORKS = TABLES.CSS_FRAMEWORKS as unknown as readonly { id: string; name: string; url: string }[]
 /** The rows a client measured, a ratio each: one reader for every comparison by size (the stylesheet, the tools/list). */
 export const keepMeasured = <R extends object>(rows: readonly R[]) => rows.filter((r): r is Extract<R, { ratio: number | null }> => 'ratio' in r)
 /** The comparison by size, as the client measured it: each framework's bytes raw and gzipped over the QPU stylesheet's, a ratio above one

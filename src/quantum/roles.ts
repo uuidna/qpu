@@ -8,11 +8,7 @@ export const ROLES = TABLES.ROLES as unknown as Readonly<Record<Role, { may: str
 export const ROLE_RANK: Readonly<Record<Role, number>> = { reader: 0, writer: 1, admin: 2 }
 /** The enum values that write, per tool and property, with the role each needs; every other value is a read any role may choose. A table, not a
  *  guess from the word: "plan" starts a checkout in the stripe tool and only plans requests in the currency, patents and attest tools. */
-export const ENUM_POLICY: Readonly<Record<string, Readonly<Record<string, Role>>>> = {
-  'mongo.op': { insert: 'writer', update: 'writer', mirror: 'writer', delete: 'admin' },
-  'stripe.op': { plan: 'writer', webhook: 'writer', settle: 'admin' },
-  'repository.workflow': { 'pre-commit': 'writer', 'commit-msg': 'writer', 'prepare-commit-msg': 'writer', 'post-commit': 'writer', ci: 'writer', 'pre-push': 'admin', 'pre-deploy': 'admin' },
-}
+export const ENUM_POLICY = TABLES.ENUM_POLICY as unknown as Readonly<Record<string, Readonly<Record<string, Role>>>>
 /** Whether a role may choose a value of a tool's enum: the value's role at or below the caller's. */
 export const mayChoose = (role: Role, tool: string, prop: string, value: unknown): boolean => ROLE_RANK[role] >= ROLE_RANK[ENUM_POLICY[`${tool}.${prop}`]?.[String(value)] ?? 'reader']
 

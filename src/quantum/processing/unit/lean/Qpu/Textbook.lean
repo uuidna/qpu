@@ -318,6 +318,14 @@ theorem textbook_catalogue_prices_reflected (σ : Nat) : σ - (27) = σ - (9 * 3
 theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583 / 100000 := rfl
 /-- textbook_peg_is_fixed reflected by its shape, equality (examples: currency-harmonise, currency-plan) -/
 theorem textbook_peg_is_fixed_reflected (eur : Nat) (σ : Nat) : σ - (eur * 195583 / 100000) = σ - (eur * 195583 / 100000) := congrArg (σ - ·) (Eq.symm (textbook_peg_is_fixed eur))
+/-- every prize prose is converted to a computable value with a basis (prizeOf, via the billing currencies); only a winnable basis — purse, fund, per-problem — counts to the total the compete tool reports from the records, never the prose, so capital only invested and the non-monetary are excluded (examples: compete-prizes) -/
+theorem textbook_prizes_computable (purse fund perproblem invested none total winnable : Nat) (h : purse + fund + perproblem + invested + none = total) (w : winnable = purse + fund + perproblem) : total - invested - none = winnable := by omega
+/-- textbook_prizes_computable reflected by its shape, equality (examples: compete-prizes) -/
+theorem textbook_prizes_computable_reflected (purse fund perproblem invested none total winnable : Nat) (h : purse + fund + perproblem + invested + none = total) (w : winnable = purse + fund + perproblem) (σ : Nat) : σ - (winnable) = σ - (total - invested - none) := congrArg (σ - ·) (Eq.symm (textbook_prizes_computable purse fund perproblem invested none total winnable h w))
+/-- the contrapositive of textbook_prizes_computable (examples: compete-prizes) -/
+theorem textbook_prizes_computable_contrapositive (purse fund perproblem invested none total winnable : Nat) : ¬ (total - invested - none = winnable) → ¬ ((purse + fund + perproblem + invested + none = total) ∧ (winnable = purse + fund + perproblem)) := fun hc hh => hc (textbook_prizes_computable purse fund perproblem invested none total winnable hh.1 hh.2)
+/-- the converse of textbook_prizes_computable, refuted by a counterexample the kernel decides (examples: compete-prizes) -/
+theorem textbook_prizes_computable_converse_refuted : ¬ ∀ (purse fund perproblem invested none total winnable : Nat), (total - invested - none = winnable) → (purse + fund + perproblem + invested + none = total) ∧ (winnable = purse + fund + perproblem) := fun h => absurd (h 0 0 0 0 0 1 1 (by decide)) (by decide)
 /-- CMI's three conditions are conjoined: a proposed solution is considered only when every one holds (examples: compete-rules) -/
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
 /-- textbook_clay_conditions reflected by its shape, implication (examples: compete-rules) -/

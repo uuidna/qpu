@@ -13,7 +13,7 @@ import { flowWidget } from '../widgets.ts'
 import { sha256, utf8, hex } from '../hmac.ts'
 import { uuidOf } from '../blocks.ts'
 import { THEOREMS, KERNEL_THEOREMS } from '../theorems-index.ts'
-import { createLedger } from './billing.ts'
+import { createLedger, convertAmounts, RATE_SOURCES } from './billing.ts'
 import { TABLES } from '../tables-index.ts'
 
 type Claim = { id: string; source: string; text: string }
@@ -196,6 +196,20 @@ export const knowCompetition = (c: (typeof COMPETITIONS)[number]) => {
   const theorems = TEXTBOOK_THEOREMS.filter((t) => t.examples.includes('compete-rules') || (c.id === 'clay-millennium' && /clay|sigma|relation|triad/.test(t.key))).map((t) => t.key)
   return { competitors: c.competitors.known.length, source: c.competitors.source, read: c.competitors.read, measured: c.competitors.measured, theorems, both: c.competitors.known.length > 0 && theorems.length > 0, says: c.competitors.known.length ? 'known from the page' : 'no name on the page: a lead to read where the page points' }
 }
+// Every prize prose made a computable value via the billing currencies: the amount, its currency and basis (purse/fund/per-problem to win,
+// invested, or none). Only a winnable basis counts to a total; invested and non-monetary are 0.
+const CURRENCY_OF: Record<string, string> = { USD: 'usd', '$': 'usd', EUR: 'eur', '€': 'eur', GBP: 'gbp', '£': 'gbp' }
+export const prizeOf = (prose: string): { value: number; currency: string; basis: 'purse' | 'fund' | 'per-problem' | 'invested' | 'none'; says: string } => {
+  const m = /(USD|EUR|GBP|\$|€|£)\s*([0-9][0-9  ,.]*)\s*(million|billion)?/i.exec(prose)
+  if (!m) return { value: 0, currency: 'usd', basis: 'none', says: 'no stated amount (non-monetary: tools, mentorship, credits)' }
+  let value = parseFloat(m[2]!.replace(/[  ,]/g, '')); const scale = /billion/i.test(m[3] ?? '') ? 1e9 : /million/i.test(m[3] ?? '') ? 1e6 : 1; value *= scale
+  const currency = CURRENCY_OF[m[1]!.toUpperCase()] ?? CURRENCY_OF[m[1]!] ?? 'usd'
+  if (/invest|venture capital|access to .{0,30}(capital|partners)/i.test(prose)) return { value: 0, currency, basis: 'invested', says: `${m[0]} is capital access or investment, not a prize to win: 0 to the total` }
+  const per = /per (?:problem|milestone|pinnacle)[^.]*?\b(seven|six|five|four|three|two|\d+)\b/i.exec(prose)
+  if (per) { const k = ({ two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7 } as Record<string, number>)[per[1]!.toLowerCase()] ?? (parseInt(per[1]!) || 1); return { value: value * k, currency, basis: 'per-problem', says: `${m[0]} per problem × ${k}` } }
+  return { value, currency, basis: /\bfund\b/i.test(prose) ? 'fund' : 'purse', says: m[0] }
+}
+
 const judgeCompetitions = (evidence: { theorems: number; kernel: number; hosts: number; licence: string; published: boolean; pushed: boolean; conduct?: boolean; acceptance?: ReturnType<typeof countMentions> | null }, pages: Record<string, string> = {}, now = 0) => {
   const judged = COMPETITIONS.map((c0) => {
     // the window measured from the page when a page was read: the fixture's entry stands only until then
@@ -224,9 +238,9 @@ const judgeCompetitions = (evidence: { theorems: number; kernel: number; hosts: 
     const know = knowCompetition(c0)
     const ledger = createLedger(know.theorems.map((theorem) => ({ tool: 'textbook', tenant: 'author', arguments: { theorem } })))
     const economics = { prize: c.prize, evidence: know.theorems.length, calls: know.theorems.map((theorem) => ({ name: 'textbook', arguments: { theorem } })), coins: ledger.coins, coils: ledger.coils, costMillicents: ledger.debits, balanced: ledger.balanced, says: `${know.theorems.length} theorem(s) of evidence served as ${ledger.coins} coin(s) at a cost of ${ledger.debits} thousandths of a cent, beside the prize as stated (${c.prize}); no prize is won and no problem solved by this`, theorem: 'textbook_double_entry' }
-    return { ...c, rules, counts, know, economics, satisfied: `${counts.satisfied ?? 0}/${rules.length}`, enterable: c.entry !== 'closed' && rules.every((r) => r.status !== 'open' && r.status !== 'closed'), ready: rules.every((r) => r.status === 'satisfied') }
+    return { ...c, prizeValue: prizeOf(c.prize), rules, counts, know, economics, satisfied: `${counts.satisfied ?? 0}/${rules.length}`, enterable: c.entry !== 'closed' && rules.every((r) => r.status !== 'open' && r.status !== 'closed'), ready: rules.every((r) => r.status === 'satisfied') }
   })
-  return { precedence: PRECEDENCE, acceptance: evidence.acceptance ?? null, news: { apis: NEWS_APIS.length, open: NEWS_APIS.filter((a) => a.open).length, keyed: NEWS_APIS.filter((a) => !a.open).map((a) => ({ id: a.id, key: a.key })) }, competitions: judged, know: { competitors: judged.reduce((n, c) => n + c.know.competitors, 0), theorems: new Set(judged.flatMap((c) => c.know.theorems)).size, both: judged.filter((c) => c.know.both).map((c) => c.id), says: 'to win, know the competitors as well as the theorems: a competition is known when both are; the names live in the competition gate pages (the pages collection the Payload MCP plugin serves), nothing added' }, prizes: judged.filter((c) => c.kind === 'prize').length, funding: judged.filter((c) => c.kind === 'funding').length, enterable: judged.filter((c) => c.enterable).map((c) => c.id), ready: judged.filter((c) => c.ready).map((c) => c.id), says: 'enterable: every rule is satisfied or the author\'s act; ready: every rule satisfied', closed: judged.filter((c) => c.entry === 'closed').map((c) => c.id), relatedMcps: FUNDING_MCPS, honest: 'nothing here is a prize won or a problem solved: every rule is judged against evidence, and what remains is the author\'s act (publish, push, apply) or a lead; the tree competes by following the rules, measured on every run', internalCompetition: 'the gate\'s competition of codes (five codes a combination, the fastest correct wins) is judged against its five written rules on every run: see the e2e tool' }
+  return { precedence: PRECEDENCE, acceptance: evidence.acceptance ?? null, news: { apis: NEWS_APIS.length, open: NEWS_APIS.filter((a) => a.open).length, keyed: NEWS_APIS.filter((a) => !a.open).map((a) => ({ id: a.id, key: a.key })) }, prizeTotals: (() => { const w = judged.map((j) => j.prizeValue).filter((x) => x.basis === 'purse' || x.basis === 'fund' || x.basis === 'per-problem'); const byCurrency = w.reduce((a2, x) => ({ ...a2, [x.currency]: (a2[x.currency] ?? 0) + x.value }), {} as Record<string, number>); return { winnable: w.length, byCurrency, basis: judged.reduce((a2, j) => ({ ...a2, [j.prizeValue.basis]: (a2[j.prizeValue.basis] ?? 0) + 1 }), {} as Record<string, number>), rateSources: RATE_SOURCES.length, convert: (rates: Record<string, { rate: number }>) => convertAmounts(byCurrency.usd ?? 0, rates), theorem: 'textbook_prizes_computable', says: Object.entries(byCurrency).map(([k, v]) => k + ' ' + v.toLocaleString('en-US')).join(', ') + ' across ' + w.length + ' winnable prizes, read from the records not the prose' } })(), competitions: judged, know: { competitors: judged.reduce((n, c) => n + c.know.competitors, 0), theorems: new Set(judged.flatMap((c) => c.know.theorems)).size, both: judged.filter((c) => c.know.both).map((c) => c.id), says: 'to win, know the competitors as well as the theorems: a competition is known when both are; the names live in the competition gate pages (the pages collection the Payload MCP plugin serves), nothing added' }, prizes: judged.filter((c) => c.kind === 'prize').length, funding: judged.filter((c) => c.kind === 'funding').length, enterable: judged.filter((c) => c.enterable).map((c) => c.id), ready: judged.filter((c) => c.ready).map((c) => c.id), says: 'enterable: every rule is satisfied or the author\'s act; ready: every rule satisfied', closed: judged.filter((c) => c.entry === 'closed').map((c) => c.id), relatedMcps: FUNDING_MCPS, honest: 'nothing here is a prize won or a problem solved: every rule is judged against evidence, and what remains is the author\'s act (publish, push, apply) or a lead; the tree competes by following the rules, measured on every run', internalCompetition: 'the gate\'s competition of codes (five codes a combination, the fastest correct wins) is judged against its five written rules on every run: see the e2e tool' }
 }
 
 const compete = defineTool('legal', {

@@ -33,12 +33,7 @@ export const translateOf = (text: string, from: string, to: string): { text: str
 /** The Glagolitic numerals, additive like the Cyrillic system: each letter carries the value of its alphabetic place, units,
  * tens and hundreds, then Ⱍ for 1000 (en.wikipedia.org/wiki/Glagolitic_numerals). Values above 1000 are not in this table:
  * a lead, never guessed. */
-export const GLAGOLITIC: Readonly<Record<string, number>> = {
-  'Ⰰ': 1, 'Ⰱ': 2, 'Ⰲ': 3, 'Ⰳ': 4, 'Ⰴ': 5, 'Ⰵ': 6, 'Ⰶ': 7, 'Ⰷ': 8, 'Ⰸ': 9,
-  'Ⰺ': 10, 'Ⰻ': 20, 'Ⰼ': 30, 'Ⰽ': 40, 'Ⰾ': 50, 'Ⰿ': 60, 'Ⱀ': 70, 'Ⱁ': 80, 'Ⱂ': 90,
-  'Ⱃ': 100, 'Ⱄ': 200, 'Ⱅ': 300, 'Ⱆ': 400, 'Ⱇ': 500, 'Ⱈ': 600, 'Ⱉ': 700, 'Ⱋ': 800, 'Ⱌ': 900,
-  'Ⱍ': 1000,
-}
+export const GLAGOLITIC = PAYLOAD_TABLES.GLAGOLITIC as unknown as Readonly<Record<string, number>>
 // Glagolitic has a lower case (U+2C30..) with the same values; the table is written in capitals and read in both.
 const GLAGOLITIC_RUN = new RegExp(`[${Object.keys(GLAGOLITIC).map((g) => g + g.toLowerCase()).join('')}]+`, 'gu')
 /** An integer 1..1999 written in Glagolitic numerals, largest letter first; null beyond the table. */

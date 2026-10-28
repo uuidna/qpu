@@ -3,6 +3,7 @@
 // Decoding is majority: a copy that differs is a flip, a host that does not answer an erasure, no majority is uncorrectable
 // — the syndrome names the hosts. Every error is a block with a UUID (host, tool, the arguments' address, the hashes), so
 // errors travel in UUID streams between hosts without their bodies. Pure: the client fetches; the tree computes and decodes.
+import { TABLES } from './tables-index.ts'
 import { uuidOf } from './blocks.ts'
 import { getEventData, rpcBody } from './discovery.ts'
 import { textbookLogicalError } from './qec.ts'
@@ -38,7 +39,7 @@ const runCompetition = (local: string, copies: readonly { host: string; value: s
 }
 
 /** The rules of the competition, written once and judged on every run: (1) a code decides from the copies that had arrived by its decision (the tree's copy at 0 ms counts as one); (2) the fastest code whose decision is the consensus wins; (3) a tie goes to the stronger code (more copies checked); (4) a code is correct only when its decision is the consensus; (5) no winner without a consensus. A broken rule is a lead, never a win. */
-const COMPETITION_RULES = ['a code decides from the copies that had arrived by its decision time', 'the fastest code whose decision is the consensus wins', 'a tie goes to the stronger code', 'a code is correct only when its decision is the consensus', 'no winner without a consensus'] as const
+const COMPETITION_RULES = TABLES.COMPETITION_RULES
 type RuleVerdict = { rules: readonly string[]; judged: number; violations: { combo: string; rule: number; code: string | null; says: string }[]; followed: boolean }
 export const judgeRules = (decoded: readonly { combo: string; logical: string; outcome: string; codes: readonly CodeRun[]; winner: string | null; copies: readonly { ms: number; kind?: string }[] }[]): RuleVerdict => {
   const strength = { any: 0, 'first-two-agree': 1, 'tree-reference': 2, majority: 3, involution: 4 }

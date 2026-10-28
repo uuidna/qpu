@@ -45,12 +45,7 @@ const coveredPaths = (): Set<string> => {
   return covered
 }
 
-const OTHER_VENDORS: Record<string, string> = {
-  cirq_ionq: 'IonQ\'s trapped-ion hardware integration in Cirq',
-  cirq_aqt: 'AQT\'s trapped-ion hardware integration in Cirq',
-  cirq_pasqal: 'Pasqal\'s neutral-atom hardware integration in Cirq',
-  cirq_web: 'Cirq\'s web visualisation package',
-}
+const OTHER_VENDORS = TABLES.OTHER_VENDORS as unknown as Record<string, string>
 
 /** The lead one page of the sitemap makes, by what the page is and what this repository implements of it. */
 const sitemapLead = (path: string, lastmod: string): Lead => {

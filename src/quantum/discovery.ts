@@ -29,7 +29,7 @@ export const GOOGLE_HOST = /(^|\.)(googleapis\.com|google\.com|google|google-ana
 export const GOOGLE_ENDPOINTS = TABLES.GOOGLE_ENDPOINTS as unknown as Readonly<Record<string, { url: string; httpMethod: string; secret: { param: string; named: string } }>>
 export const GOOGLE_DISCOVERY = { rest: 'https://www.googleapis.com/discovery/v1/apis/{api}/{version}/rest', token: 'https://oauth2.googleapis.com/token' } as const
 /** Google's Discovery documents the workspace door reads, fetched by this door as contracts and kept in its cache: the preferred list (no Sites API in it), Forms v1, Docs v1, Drive v3 */
-export const GOOGLE_DOCUMENTS = { list: 'https://www.googleapis.com/discovery/v1/apis?preferred=true', forms: 'https://forms.googleapis.com/$discovery/rest?version=v1', docs: 'https://docs.googleapis.com/$discovery/rest?version=v1', drive: 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest' } as const
+export const GOOGLE_DOCUMENTS = TABLES.GOOGLE_DOCUMENTS
 /** A Drive file's address by id: /view to open it, /preview to embed it */
 export const DRIVE_FILE_URL = 'https://drive.google.com/file/d/'
 export const GOOGLE_MCPS = ['io.github.googleapis/genai-toolbox', 'io.github.googleapis/mcp-toolbox', 'io.github.GoogleCloudPlatform/gemini-cloud-assist-mcp'] as const
