@@ -8,7 +8,7 @@ import { existsSync, readFileSync, readdirSync, renameSync, mkdirSync, writeFile
 import { homedir } from 'node:os'
 import path from 'node:path'
 import { createSign } from 'node:crypto'
-import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
+import { callOf, toolCallerOf, redact } from '@uuidna/qpu/mcp'
 import { qpuHooksOf } from '@uuidna/qpu/blocks'
 import { Qpu } from '../blocks/Qpu/config'
 import { Entries } from '../collections/Entries'
@@ -105,7 +105,7 @@ const googleCallTask: TaskConfig<{ input: Record<string, any>; output: { entry: 
     const auth = plan.allowed ? await googleAuthOf(req, input.tenant, plan.token, plan.request.scopes, plan.secret) : null, url = plan.allowed ? new URL(plan.request.url) : null, body = plan.request?.body
     for (const [k, v] of Object.entries(auth?.query ?? {})) url?.searchParams.set(k, v)
     const res = url ? await fetch(url, { method: plan.request.httpMethod, headers: { ...(auth?.bearer ? { authorization: 'Bearer ' + auth.bearer } : {}), ...(body != null ? { 'content-type': 'application/json' } : {}) }, body: body != null ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000) }).then(async (r) => ({ status: r.status, text: await r.text() }), (e: Error) => ({ status: 0, text: e.message })) : null
-    const entry = await req.payload.create({ collection: 'entries' as never, data: { kind: 'call', from: 'qpu-google-call', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, method: plan.method ?? null, allowed: plan.allowed === true, why: plan.why ?? (plan.allowed ? null : 'the Discovery document was not read'), by: auth?.by ?? null, status: res?.status ?? null, answer: res?.text ?? null } } as never, overrideAccess: true, context: { qpuGoogle: true } })
+    const entry = await req.payload.create({ collection: 'entries' as never, data: { kind: 'call', from: 'qpu-google-call', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, method: plan.method ?? null, allowed: plan.allowed === true, why: plan.why ?? (plan.allowed ? null : 'the Discovery document was not read'), by: auth?.by ?? null, status: res?.status ?? null, answer: res?.text == null ? null : redact(res.text) } } as never, overrideAccess: true, context: { qpuGoogle: true } })
     return { output: { entry: String((entry as { id: string }).id) } }
   },
 }

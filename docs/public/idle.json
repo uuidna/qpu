@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T07:31:47.808Z",
+ "date": "2026-10-28T08:06:42.582Z",
  "input": {
   "doors": [
    {
@@ -160,7 +160,12 @@
    },
    {
     "name": "algorithm.name",
-    "bytes": 105,
+    "bytes": 113,
+    "reached": true
+   },
+   {
+    "name": "algorithm.integer",
+    "bytes": 210,
     "reached": true
    },
    {
@@ -2946,6 +2951,11 @@
     "used": true
    },
    {
+    "key": "textbook_factors_divide",
+    "bytes": 90,
+    "used": true
+   },
+   {
     "key": "textbook_questions_matched",
     "bytes": 130,
     "used": true
@@ -3014,6 +3024,10 @@
   "qubits": {
    "bound": 6,
    "calls": [
+    {
+     "door": "algorithm",
+     "used": 1
+    },
     {
      "door": "circuit",
      "used": 1
@@ -3808,8 +3822,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 51571,
-   "used": 42035,
+   "capacity": 51789,
+   "used": 42253,
    "idle": 9536,
    "percentIdle": 18,
    "idleNames": [
@@ -3932,8 +3946,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 27950,
-   "used": 27950,
+   "capacity": 28040,
+   "used": 28040,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []
@@ -4005,11 +4019,12 @@
   },
   "qubits": {
    "unit": "qubits per call",
-   "capacity": 54,
-   "used": 11,
-   "idle": 43,
-   "percentIdle": 79,
+   "capacity": 60,
+   "used": 12,
+   "idle": 48,
+   "percentIdle": 80,
    "idleNames": [
+    "algorithm",
     "circuit",
     "circuit",
     "circuit",

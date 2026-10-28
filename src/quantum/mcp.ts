@@ -144,6 +144,7 @@ import { extractFacts, createVerifyRequests } from './verifiers.ts'
 import { CRYPTO } from './toolboxes/crypto.ts'
 import { blockJsonLd, createOpenapi, OPENAPI_RESOURCE } from './standards.ts'
 export { cellOf } from './widgets.ts'
+export { redact } from './machine.ts' // the leak table's redaction, for the generated plugin
 
 /** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
 // The tools of this host's own two toolboxes, named below; `tool` is the host-side helper until each is a file of its own.

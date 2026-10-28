@@ -119,7 +119,7 @@ const weighted = (a: string[], b: string[], w: (t: string) => number): number =>
 type ToolSpec = { name: string; description: string; inputSchema: { properties?: Record<string, { type?: string; enum?: unknown[]; maximum?: number; minimum?: number; description?: string }> } }
 
 /** Words in a statement that name a bounded parameter, and the number that follows or precedes them. */
-const BOUND_WORDS: Record<string, string> = { n: 'N', rsa: 'N', factor: 'N', factorise: 'N', factorize: 'N', semiprime: 'N', modulus: 'N', qubit: 'qubits', qubits: 'qubits', bit: 'bits', bits: 'bits', node: 'nodes', nodes: 'nodes', vertices: 'nodes', milestone: 'milestone', shots: 'repetitions', repetitions: 'repetitions', samples: 'repetitions' }
+const BOUND_WORDS = TABLES.BOUND_WORDS as unknown as Record<string, string>
 
 const numbersNear = (statement: string): { property: string; value: number; phrase: string }[] => {
   const out: { property: string; value: number; phrase: string }[] = []
