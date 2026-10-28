@@ -3,15 +3,15 @@
 // host-agnostic: it fetches what it is told, asks the doors discovery found, and writes what comes back. Any flow tool
 // called with selftest runs the toolbox's cross-test.
 import { defineTool, type Toolbox, type Context } from '../toolbox.ts'
-import { buildDiscoveryRequests, findFollowUps, readDiscovery, renderDiscoveryPage, DEFAULT_MCP_HOSTS, UNIT_MCP, QPU_MCP, buildRegistryRequests, findRelatedServers, type Answer, type Discovery } from '../discovery.ts'
-import { buildWaveRequests, readWave, renderWavePage, type WaveResult } from '../wave.ts'
-import { indexPages, judgeLead, listSources, planBorder, readBorder, renderReadinessPage, type BorderAnswer, type UnitAnswers } from '../readiness.ts'
-import { imagineLeads, renderImaginePage } from '../imagine.ts'
+import { createDiscoveryRequests, listFollowUps, getDiscovery, getDiscoveryPage, DEFAULT_MCP_HOSTS, UNIT_MCP, QPU_MCP, createRegistryRequests, listRelatedServers, type Answer, type Discovery } from '../discovery.ts'
+import { createWaveRequests, getWave, getWavePage, type WaveResult } from '../wave.ts'
+import { indexPages, judgeLead, listSources, planBorder, getBorder, getReadinessPage, type BorderAnswer, type UnitAnswers } from '../readiness.ts'
+import { imagineLeads, getImaginePage } from '../imagine.ts'
 import { runFlowSelftest } from '../selftest.ts'
-import { makeMatcher } from '../match.ts'
+import { createMatcher } from '../match.ts'
 import { VERIFIERS } from '../verifiers.ts'
 import { flowWidget } from '../widgets.ts'
-import { buildE2eRequests, decodeE2e, renderE2ePage, type E2eAnswer } from '../e2e.ts'
+import { createE2eRequests, decodeE2e, getE2ePage, type E2eAnswer } from '../e2e.ts'
 import { TENANTS } from '../tenants.ts'
 
 const BLOCK_IDS = new WeakMap<readonly unknown[], { example: string; id: string | undefined }[]>()
@@ -29,17 +29,17 @@ const discover = defineTool('flow', {
     if (typeof args.lead === 'string') {
       const lead = ctx.leads.find((l) => l.id === args.lead) ?? (typeof args.statement === 'string' ? { id: args.lead, statement: args.statement } : null)
       if (!lead) throw new Error(`no lead ${args.lead}; give statement to ask for a lead not in the registry`)
-      if (!Array.isArray(args.answers)) { const requests = buildRegistryRequests(lead); return { phase: 'registry' as const, lead: lead.id, words: [...new Set(requests.filter((r) => r.accept === 'application/json').map((r) => r.word))], directories: [...new Set(requests.map((r) => r.directory))], requests: requests.length, requestList: requests, note: 'the client fetches each (GET, public, no token) and calls again with answers: the related servers and the tools/list request that extends each through qpu' } }
-      const related = findRelatedServers(lead.id, args.answers as { id: string; word?: string; status: number; text: string }[])
-      return { phase: 'related' as const, ...related, servers: related.servers.length, serverList: related.servers, extendRequests: related.extend.length, extendList: related.extend, leads: related.servers.length ? [] : [{ id: `no-related-mcp-${lead.id}`, statement: `no MCP in the public registry answers the words of lead ${lead.id} (${buildRegistryRequests(lead).map((r) => r.word).join(', ')})`, status: 'open', reason: 'the lead is served by this tree alone until a server appears in the registry; the words are asked again on every run' }] }
+      if (!Array.isArray(args.answers)) { const requests = createRegistryRequests(lead); return { phase: 'registry' as const, lead: lead.id, words: [...new Set(requests.filter((r) => r.accept === 'application/json').map((r) => r.word))], directories: [...new Set(requests.map((r) => r.directory))], requests: requests.length, requestList: requests, note: 'the client fetches each (GET, public, no token) and calls again with answers: the related servers and the tools/list request that extends each through qpu' } }
+      const related = listRelatedServers(lead.id, args.answers as { id: string; word?: string; status: number; text: string }[])
+      return { phase: 'related' as const, ...related, servers: related.servers.length, serverList: related.servers, extendRequests: related.extend.length, extendList: related.extend, leads: related.servers.length ? [] : [{ id: `no-related-mcp-${lead.id}`, statement: `no MCP in the public registry answers the words of lead ${lead.id} (${createRegistryRequests(lead).map((r) => r.word).join(', ')})`, status: 'open', reason: 'the lead is served by this tree alone until a server appears in the registry; the words are asked again on every run' }] }
     }
     const hosts = Array.isArray(args.mcpHosts) ? args.mcpHosts.map(String) : DEFAULT_MCP_HOSTS
-    if (!Array.isArray(args.answers)) { const requests = buildDiscoveryRequests(hosts, VERIFIERS, (args.auth && typeof args.auth === 'object' ? args.auth : {}) as Record<string, string>); return { phase: 'requests' as const, requests: requests.length, requestList: requests } }
+    if (!Array.isArray(args.answers)) { const requests = createDiscoveryRequests(hosts, VERIFIERS, (args.auth && typeof args.auth === 'object' ? args.auth : {}) as Record<string, string>); return { phase: 'requests' as const, requests: requests.length, requestList: requests } }
     const answers = args.answers as Answer[]
-    const followUps = findFollowUps(answers)
+    const followUps = listFollowUps(answers)
     if (followUps.length) return { phase: 'follow-ups' as const, requests: followUps.length, requestList: followUps }
-    const discovery = readDiscovery(answers, VERIFIERS)
-    return { phase: 'discovery' as const, hosts: discovery.hosts.length, doors: discovery.doors.length, statementVerdict: discovery.capabilities.statementVerdict.length, leads: discovery.leads.length, discovery, page: renderDiscoveryPage(discovery, new Date().toISOString()) }
+    const discovery = getDiscovery(answers, VERIFIERS)
+    return { phase: 'discovery' as const, hosts: discovery.hosts.length, doors: discovery.doors.length, statementVerdict: discovery.capabilities.statementVerdict.length, leads: discovery.leads.length, discovery, page: getDiscoveryPage(discovery, new Date().toISOString()) }
   }),
   widget: flowWidget,
 })
@@ -50,9 +50,9 @@ const e2e = defineTool('flow', {
   inputSchema: { type: 'object', properties: { hosts: { type: 'array', items: { type: 'string' }, description: 'MCP endpoints to call; default https://<tenant host>/mcp for every tenant and the operator\'s workers.dev' }, tools: { type: 'array', items: { type: 'string' }, description: 'only these tools\' combinations; default every tool' }, answers: { type: 'array', items: { type: 'object' } }, ...SELFTEST } },
   run: (args, ctx) => selftestOr(args, ctx, () => {
     const hosts = Array.isArray(args.hosts) ? args.hosts.map(String) : [...Object.keys(TENANTS).map((h) => `https://${h}/mcp`), 'https://qpu.ceci.workers.dev/mcp']
-    if (!Array.isArray(args.answers)) { const requests = buildE2eRequests(ctx, hosts, Array.isArray(args.tools) ? args.tools.map(String) : undefined); return { phase: 'requests' as const, hosts, combos: new Set(requests.map((r) => r.combo)).size, requests: requests.length, requestList: requests } }
+    if (!Array.isArray(args.answers)) { const requests = createE2eRequests(ctx, hosts, Array.isArray(args.tools) ? args.tools.map(String) : undefined); return { phase: 'requests' as const, hosts, combos: new Set(requests.map((r) => r.combo)).size, requests: requests.length, requestList: requests } }
     const r = decodeE2e(args.answers as E2eAnswer[])
-    return { phase: 'decoded' as const, hosts, ...r, page: renderE2ePage(r, new Date().toISOString(), hosts, { remaining: 0 }) }
+    return { phase: 'decoded' as const, hosts, ...r, page: getE2ePage(r, new Date().toISOString(), hosts, { remaining: 0 }) }
   }),
   widget: flowWidget,
 })
@@ -80,9 +80,9 @@ const wave = defineTool('flow', {
   inputSchema: { type: 'object', properties: { results: { type: 'array', items: { type: 'object' } }, contracts: { type: 'object', description: 'host → OpenAPI path templates, from the discovery' }, leads: { type: 'array', items: { type: 'string' }, description: 'lead ids to restrict the wave to; default all' }, ...SELFTEST } },
   run: (args, ctx) => selftestOr(args, ctx, () => {
     const chosen = Array.isArray(args.leads) ? ctx.leads.filter((l) => (args.leads as string[]).includes(l.id)) : ctx.leads
-    if (!Array.isArray(args.results)) { const requests = buildWaveRequests(chosen); return { phase: 'requests' as const, leads: chosen.length, requests: requests.length, requestList: requests } }
-    const w = readWave(args.results as WaveResult[], (args.contracts ?? {}) as Record<string, string[]>)
-    return { phase: 'results' as const, leads: chosen.length, requests: w.results.length, reachable: w.reachable, summary: w.summary, results: w.results, page: renderWavePage(w, chosen.length, new Date().toISOString(), Object.keys((args.contracts ?? {}) as object).length > 0) }
+    if (!Array.isArray(args.results)) { const requests = createWaveRequests(chosen); return { phase: 'requests' as const, leads: chosen.length, requests: requests.length, requestList: requests } }
+    const w = getWave(args.results as WaveResult[], (args.contracts ?? {}) as Record<string, string[]>)
+    return { phase: 'results' as const, leads: chosen.length, requests: w.results.length, reachable: w.reachable, summary: w.summary, results: w.results, page: getWavePage(w, chosen.length, new Date().toISOString(), Object.keys((args.contracts ?? {}) as object).length > 0) }
   }),
   widget: flowWidget,
 })
@@ -98,7 +98,7 @@ const readiness = defineTool('flow', {
     const probeKey = typeof args.probeKey === 'string' ? args.probeKey : 'clay_sigma'
     const probeRow = (Array.isArray(args.ledger) ? (args.ledger as { key: string; statement: string }[]) : []).find((r) => r.key === probeKey)
     const probe = { key: probeKey, statement: probeRow?.statement ?? null }
-    const match = makeMatcher(ctx.handle, ctx.examples, ctx.leads)
+    const match = createMatcher(ctx.handle, ctx.examples, ctx.leads)
     const pages = indexPages(verification?.results ?? [])
     const judged = ctx.leads.map((l) => judgeLead(l, pages, present, match, verification?.date ?? null))
     const classes = { served: judged.filter((x) => x.class === 'served').length, refuted: judged.filter((x) => x.class === 'refuted').length, trial: judged.filter((x) => x.class === 'trial').length }
@@ -108,11 +108,11 @@ const readiness = defineTool('flow', {
     const unitPlan = [{ name: 'check_release_readiness', arguments: { sources } }, { name: 'get_rights', arguments: {} }, { name: 'compute_address', arguments: { value: 'qpu' } }, { name: 'get_vortex_reflection', arguments: {} }, { name: 'get_triad', arguments: {} }, { name: 'compute_double_torus', arguments: { addresses: auraSubjects.map((a) => a.id) } }, ...((ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: { technique: 'reflection' } } }) as { result?: { structuredContent: { unitPlan: { name: string; arguments: Record<string, unknown> }[] } } }).result?.structuredContent.unitPlan ?? []), ...auraSubjects.map((a) => ({ name: 'compute_aura', arguments: { subject: a.id }, example: a.example }))]
     const base = { probe, judged, classes, sources, borderPlan: plan.calls, unfillable: plan.unfillable, unitPlan, leads: ctx.leads.length }
     if (!Array.isArray(args.border) || !args.unit) return { phase: 'plan' as const, served: classes.served, refuted: classes.refuted, trial: classes.trial, borderCalls: plan.calls.length, unitCalls: unitPlan.length, ...base }
-    const border = [...readBorder(args.border as BorderAnswer[]), ...plan.unfillable]
+    const border = [...getBorder(args.border as BorderAnswer[]), ...plan.unfillable]
     const sealedBy = border.filter((b) => b.sealed).map((b) => b.door)
     const answers = args.unit as UnitAnswers
     const date = new Date().toISOString()
-    return { phase: 'judged' as const, served: classes.served, refuted: classes.refuted, trial: classes.trial, ready: answers.readiness.ready, sealedBy: sealedBy.length, ...base, border, sealedByDoors: sealedBy, page: renderReadinessPage({ unit: typeof args.unitUrl === 'string' ? args.unitUrl : UNIT_MCP, date, measured: verification?.date ?? null, discovered: discovery?.date ?? null, probe, judged, classes, sources, border, sealedBy, answers }) }
+    return { phase: 'judged' as const, served: classes.served, refuted: classes.refuted, trial: classes.trial, ready: answers.readiness.ready, sealedBy: sealedBy.length, ...base, border, sealedByDoors: sealedBy, page: getReadinessPage({ unit: typeof args.unitUrl === 'string' ? args.unitUrl : UNIT_MCP, date, measured: verification?.date ?? null, discovered: discovery?.date ?? null, probe, judged, classes, sources, border, sealedBy, answers }) }
   }),
   widget: flowWidget,
 })
@@ -124,7 +124,7 @@ const imagine = defineTool('flow', {
   run: (args, ctx) => selftestOr(args, ctx, () => {
     const started = Date.now()
     const im = imagineLeads(ctx.handle, ctx.examples, ctx.leads, Array.isArray(args.leads) ? args.leads.map(String) : undefined, Array.isArray(args.statements) ? (args.statements as { id: string; statement: string }[]) : undefined)
-    return { leads: im.leads, served: im.verdicts.served ?? 0, impossible: im.verdicts.impossible ?? 0, unknown: im.verdicts.unknown ?? 0, verifyRequests: im.verifyRequests, imaginedLeads: im.imaginedLeads, ms: Date.now() - started, imagination: im, page: renderImaginePage(im, new Date().toISOString(), Date.now() - started) }
+    return { leads: im.leads, served: im.verdicts.served ?? 0, impossible: im.verdicts.impossible ?? 0, unknown: im.verdicts.unknown ?? 0, verifyRequests: im.verifyRequests, imaginedLeads: im.imaginedLeads, ms: Date.now() - started, imagination: im, page: getImaginePage(im, new Date().toISOString(), Date.now() - started) }
   }),
   widget: flowWidget,
 })

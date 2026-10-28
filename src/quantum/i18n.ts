@@ -56,7 +56,7 @@ export const toGlagolitic = (n: number): string | null => {
   return rest === 0 ? out : null
 }
 /** Every run of Glagolitic letters in a text read as one additive numeral and written as digits; the runs are reported. */
-export const readNumerals = (text: string): { text: string; numerals: { glyphs: string; value: number }[] } => {
+export const listNumerals = (text: string): { text: string; numerals: { glyphs: string; value: number }[] } => {
   const numerals: { glyphs: string; value: number }[] = []
   const out = text.replace(GLAGOLITIC_RUN, (glyphs) => { const value = [...glyphs].reduce((n, g) => n + GLAGOLITIC[g.toUpperCase()]!, 0); numerals.push({ glyphs, value }); return String(value) })
   return { text: out, numerals }

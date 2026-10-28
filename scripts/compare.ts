@@ -4,13 +4,13 @@
 import { gzipSync } from 'node:zlib'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { openSession, readJson, fetchWithTimeout } from './mcp.ts'
-import { buildCoverageRequest } from '../src/quantum/discovery.ts'
+import { openSession, getJson, getWithTimeout } from './mcp.ts'
+import { createCoverageRequest } from '../src/quantum/discovery.ts'
 
 export const compareStylesheets = async () => {
   const css = toolCallerOf('css')
   const plan = css({ compare: true }) as { stylesheet: string; frameworks: { id: string; url: string }[] }
-  const answers = await Promise.all(plan.frameworks.map(async (f) => { const res = await fetchWithTimeout(f.url).catch(() => null); const body = res?.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0); return { id: f.id, status: res?.status ?? 0, bytes: body.length, gzip: body.length ? gzipSync(body).length : 0 } }))
+  const answers = await Promise.all(plan.frameworks.map(async (f) => { const res = await getWithTimeout(f.url).catch(() => null); const body = res?.ok ? Buffer.from(await res.arrayBuffer()) : Buffer.alloc(0); return { id: f.id, status: res?.status ?? 0, bytes: body.length, gzip: body.length ? gzipSync(body).length : 0 } }))
   const qpu = Buffer.from(plan.stylesheet)
   return css({ compare: { qpu: { bytes: qpu.length, gzip: gzipSync(qpu).length }, answers } }) as { says: string; rows: unknown[]; measured: number }
 }
@@ -26,17 +26,17 @@ export const compareToolLists = async () => {
 /** The coverage of the registered MCP world: every page of the official registry walked by its cursor, its servers counted, the count handed
  *  back; a page that does not answer ends the walk and is named, never estimated past. */
 export const compareCoverage = async (kept = '.qpu/cache/coverage.json') => { // the walk the registry answered today is kept a day: it changes slowly and takes 500 pages
-  const was = readJson(kept) as { at: string; out: { says: string } } | null; if (was && Date.now() - Date.parse(was.at) < 86_400_000) return { ...was.out, says: `${was.out.says} (walked ${was.at}, kept a day)` }
+  const was = getJson(kept) as { at: string; out: { says: string } } | null; if (was && Date.now() - Date.parse(was.at) < 86_400_000) return { ...was.out, says: `${was.out.says} (walked ${was.at}, kept a day)` }
   const extend = toolCallerOf('extend')
   let request = (extend({ coverage: true }) as { request: { url: string; accept: string } }).request
   let total = 0, pages = 0, stopped: string | null = null
   for (;;) {
-    const res = await fetchWithTimeout(request.url, request.accept).catch((e: Error) => e)
+    const res = await getWithTimeout(request.url, request.accept).catch((e: Error) => e)
     if (res instanceof Error || !res.ok) { stopped = res instanceof Error ? res.message : `HTTP ${res.status}`; break }
     const j = (await res.json()) as { servers?: unknown[]; metadata?: { nextCursor?: string } }
     total += (j.servers ?? []).length; pages++
     if (!j.metadata?.nextCursor) break
-    request = buildCoverageRequest(j.metadata.nextCursor)
+    request = createCoverageRequest(j.metadata.nextCursor)
   }
   const out = extend({ coverage: { registryTotal: stopped ? 0 : total } }) as { says: string; doors: number; registryTotal: number; percent: number | null }
   const result = { ...out, pages, stopped, says: stopped ? `the registry walk stopped after ${pages} page(s) (${stopped}): no total, no ratio` : `${out.says}; ${pages} pages walked` }

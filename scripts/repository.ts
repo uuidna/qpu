@@ -6,24 +6,24 @@ import { join } from 'node:path'
 import { homedir } from 'node:os'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { readJson, runSelftest, publishRecord } from './mcp.ts'
+import { getJson, runSelftest, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('repository')
 const git = (...args: string[]) => { try { return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).trim() } catch { return '' } }
 const main = async () => {
   const selftest = runSelftest('repository', call)
-  const zen = readJson('.zenodo.json', {}) as { related_identifiers?: { identifier: string; relation: string }[] }
+  const zen = getJson('.zenodo.json', {}) as { related_identifiers?: { identifier: string; relation: string }[] }
   const conceptDoi = zen.related_identifiers?.find((r) => r.relation === 'isVersionOf' || r.relation === 'isPartOf')?.identifier ?? (process.env.QPU_CONCEPT_DOI ?? '10.5281/zenodo.22700098')
   const local = {
-    pkg: readJson('package.json').name ?? null, workflows: (() => { try { return readdirSync(join(ROOT, '.github', 'workflows')).filter((f) => /\.ya?ml$/.test(f)) } catch { return [] } })(),
-    remote: git('remote', 'get-url', 'origin') || null, head: git('rev-parse', 'HEAD'), branch: git('rev-parse', '--abbrev-ref', 'HEAD'), version: (readJson('package.json') as { version: string }).version,
+    pkg: getJson('package.json').name ?? null, workflows: (() => { try { return readdirSync(join(ROOT, '.github', 'workflows')).filter((f) => /\.ya?ml$/.test(f)) } catch { return [] } })(),
+    remote: git('remote', 'get-url', 'origin') || null, head: git('rev-parse', 'HEAD'), branch: git('rev-parse', '--abbrev-ref', 'HEAD'), version: (getJson('package.json') as { version: string }).version,
     worktrees: git('worktree', 'list', '--porcelain').split('\n\n').filter(Boolean).map((block) => { const f = Object.fromEntries(block.split('\n').map((l) => [l.split(' ')[0]!, l.slice(l.indexOf(' ') + 1)])); return { path: f.worktree ?? '', head: f.HEAD ?? '', branch: f.branch ? f.branch.replace('refs/heads/', '') : null } }),
     branches: git('for-each-ref', '--format=%(refname:short) %(upstream:short) %(objectname:short)', 'refs/heads').split('\n').filter(Boolean).map((l) => { const [name, a, b] = l.split(' '); return b ? { name: name!, upstream: a!, head: b } : { name: name!, upstream: null, head: a! } }),
     tags: git('for-each-ref', '--format=%(refname:short) %(objectname:short)', 'refs/tags').split('\n').filter(Boolean).map((l) => { const [name, commit] = l.split(' '); return { name: name!, commit: commit! } }),
-    conceptDoi, probes: { appKey: Boolean(process.env.QPU_APP_KEY), adc: existsSync(process.env.GOOGLE_APPLICATION_CREDENTIALS ?? join(homedir(), '.config', 'gcloud', 'application_default_credentials.json')), payload: { installed: readJson(join('site', 'node_modules', 'payload', 'package.json'))?.version ?? null, declared: readJson(join('site', 'package.json'))?.dependencies?.payload ?? null } },
+    conceptDoi, probes: { appKey: Boolean(process.env.QPU_APP_KEY), adc: existsSync(process.env.GOOGLE_APPLICATION_CREDENTIALS ?? join(homedir(), '.config', 'gcloud', 'application_default_credentials.json')), payload: { installed: getJson(join('site', 'node_modules', 'payload', 'package.json'))?.version ?? null, declared: getJson(join('site', 'package.json'))?.dependencies?.payload ?? null } },
   }
-  const contracts: Record<string, string[]> = Object.fromEntries(((readJson(join(ROOT, 'docs', 'public', 'discovery.json'), {}) as { hosts?: { host: string; paths?: string[] }[] }).hosts ?? []).filter((h) => h.paths?.length).map((h) => [h.host, h.paths!]))
+  const contracts: Record<string, string[]> = Object.fromEntries(((getJson(join(ROOT, 'docs', 'public', 'discovery.json'), {}) as { hosts?: { host: string; paths?: string[] }[] }).hosts ?? []).filter((h) => h.paths?.length).map((h) => [h.host, h.paths!]))
   const offline = process.env.QPU_OFFLINE === '1'
   // the tenant's token for GitHub's MCP (QPU_MCP_TOKEN_API_GITHUBCOPILOT_COM, from the environment or .dev.vars): with it the watch goes through the doors; without it, the REST contract, said so
   const githubToken = process.env.QPU_MCP_TOKEN_API_GITHUBCOPILOT_COM
@@ -41,7 +41,7 @@ const main = async () => {
   writeFileSync(join(ROOT, 'docs', 'repository.md'), w.page)
   // the watch's leads in the docket next keeps, replaced each run
   const docket = join(ROOT, 'docs', 'public', 'next-leads.json')
-  const previous = readJson(docket, []) as { id: string; source?: string }[]
+  const previous = getJson(docket, []) as { id: string; source?: string }[]
   const fresh = (w.watch.leads as { id: string }[]).map((l) => ({ ...l, source: 'repository watch', evidence: w.watch.remote ?? 'git', head: local.head.slice(0, 8), date }))
   writeFileSync(docket, JSON.stringify([...previous.filter((p) => p.source !== 'repository watch'), ...fresh], null, 1) + '\n')
   console.log(`repository: ${w.branches} branches, ${w.tags} tags, releases ${w.releases < 0 ? 'not reached' : w.releases}, ${w.leads} lead(s), ${w.refusals} refusal(s)${offline ? ' (offline: local facts only)' : ''}`)

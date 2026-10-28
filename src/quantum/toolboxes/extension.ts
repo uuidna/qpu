@@ -3,8 +3,8 @@
 // request the client fetches, the answer read back whether JSON or an event stream. Outward, this catalogue is expressed as
 // the registration any MCP client mounts (tools/list as every client receives it, the mcpServers fragment). Pure: no fetch.
 import { TABLES } from '../tables-index.ts'
-import { defineTool, isObj, makeChecks, listTools, type Toolbox, type Context } from '../toolbox.ts'
-import { toDoor, parseEventData, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, CLOUDFLARE_DOCS_MCP, QPU_MCP, KNOWN_MCP, CLAUDE_API, GEMINI_API, OPEN_MCP_BASELINES, compareToolsLists, buildCoverageRequest, measureCoverage, type Door } from '../discovery.ts'
+import { defineTool, isObj, createChecks, listTools, type Toolbox, type Context } from '../toolbox.ts'
+import { toDoor, getEventData, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, CLOUDFLARE_DOCS_MCP, QPU_MCP, KNOWN_MCP, CLAUDE_API, GEMINI_API, OPEN_MCP_BASELINES, compareToolsLists, createCoverageRequest, getCoverage, type Door } from '../discovery.ts'
 import { flowWidget } from '../widgets.ts'
 
 type ForeignTool = { name: string; description?: string; inputSchema?: { properties?: Record<string, unknown>; required?: string[] }; outputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean } }
@@ -12,20 +12,20 @@ const urlHost = (url: string) => { try { return new URL(url).host } catch { retu
 /** The tools of a host's answer: a tools/list result, its envelope, or the raw text the host answered (JSON or event stream). */
 const toolsOfAnswer = (answer: unknown): ForeignTool[] => {
   if (Array.isArray(answer)) return answer as ForeignTool[]
-  if (typeof answer === 'string') { try { return toolsOfAnswer(JSON.parse(parseEventData(answer))) } catch { return [] } }
+  if (typeof answer === 'string') { try { return toolsOfAnswer(JSON.parse(getEventData(answer))) } catch { return [] } }
   if (isObj(answer)) { const o = answer as { tools?: ForeignTool[]; result?: { tools?: ForeignTool[] } }; return o.tools ?? o.result?.tools ?? [] }
   return []
 }
 /** A foreign door read back: the structured content, the text, or the error the host answered. */
-export const parseAnswer = (text: string): { ok: boolean; result?: unknown; error?: string } => {
+export const getAnswer = (text: string): { ok: boolean; result?: unknown; error?: string } => {
   try {
-    const j = JSON.parse(parseEventData(text)) as { result?: { structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
+    const j = JSON.parse(getEventData(text)) as { result?: { structuredContent?: unknown; content?: { text: string }[]; isError?: boolean }; error?: { message: string } }
     if (j.error) return { ok: false, error: j.error.message }
     if (j.result?.isError) return { ok: false, error: j.result.content?.[0]?.text ?? 'refused' }
     if (j.result?.structuredContent !== undefined) return { ok: true, result: j.result.structuredContent }
     const t = j.result?.content?.[0]?.text; if (t !== undefined) { try { return { ok: true, result: JSON.parse(t) } } catch { return { ok: true, result: t } } }
     return { ok: true, result: j.result }
-  } catch (e) { const data = parseEventData(text); return { ok: false, error: `not JSON (${(e as Error).message.slice(0, 60)}; stream ${/^(event|data):/m.test(text)}; data ${JSON.stringify(data.slice(0, 40))}): ${text.slice(0, 80)}` } }
+  } catch (e) { const data = getEventData(text); return { ok: false, error: `not JSON (${(e as Error).message.slice(0, 60)}; stream ${/^(event|data):/m.test(text)}; data ${JSON.stringify(data.slice(0, 40))}): ${text.slice(0, 80)}` } }
 }
 const mine = (ctx: Context) => (listTools(ctx))
 /** Inward: the host's tools as doors of this catalogue, each named host:tool. */
@@ -48,8 +48,8 @@ const extend = defineTool('extension', {
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...EXTENSION.skill.selftest(ctx) }
     // the coverage of the registered MCP world: the registry's first page named for the client to walk, then its count turned into a ratio of the gates' MCP doors
-    if (args.coverage === true) return { phase: 'requests' as const, request: buildCoverageRequest(), says: 'walk every page of the official registry (latest version of each server) and hand back coverage: { registryTotal }' } as never
-    if (isObj(args.coverage)) { const total = Number((args.coverage as { registryTotal?: unknown }).registryTotal ?? 0); const gates = ((ctx.call('configure', { kind: 'gates' })?.config?.gates as { category: string }[] | undefined) ?? []); const tools = listTools(ctx).length; return { phase: 'coverage' as const, ...measureCoverage(gates.filter((g) => g.category === 'mcp').length, Number.isFinite(total) ? total : 0, tools) } as never }
+    if (args.coverage === true) return { phase: 'requests' as const, request: createCoverageRequest(), says: 'walk every page of the official registry (latest version of each server) and hand back coverage: { registryTotal }' } as never
+    if (isObj(args.coverage)) { const total = Number((args.coverage as { registryTotal?: unknown }).registryTotal ?? 0); const gates = ((ctx.call('configure', { kind: 'gates' })?.config?.gates as { category: string }[] | undefined) ?? []); const tools = listTools(ctx).length; return { phase: 'coverage' as const, ...getCoverage(gates.filter((g) => g.category === 'mcp').length, Number.isFinite(total) ? total : 0, tools) } as never }
     // the QPU's tools/list against the open MCP servers by size: the servers named for the client to ask, then the sizes it measured turned into ratios
     // the Gemini API as an operator agent the tenant names: the request planned (endpoint, header named, body), the key never valued; a coil, never called by the tree
     if (isObj(args.gemini)) { const g = args.gemini as { prompt?: string; model?: string }; if (typeof g.prompt !== 'string' || !g.prompt.trim()) throw new Error('gemini takes a prompt: { prompt, model? }'); const model = typeof g.model === 'string' && /^[a-z0-9.-]{1,80}$/.test(g.model) ? g.model : GEMINI_API.model; return { phase: 'plan' as const, api: GEMINI_API, request: { method: 'POST', url: GEMINI_API.endpoint.replace('{model}', model), headers: { 'content-type': 'application/json', [GEMINI_API.header]: `<${GEMINI_API.key}>` }, body: { contents: [{ parts: [{ text: g.prompt }] }] } }, side: 'coil', says: `a Gemini ${model} call planned for the tenant's harness: its key goes in the ${GEMINI_API.header} header from ${GEMINI_API.key}, never in the URL or the tree; a crossing to a paid service, so a coil; the tree never calls it unprompted`, theorem: 'textbook_free_or_coil' } as never }
@@ -61,7 +61,7 @@ const extend = defineTool('extension', {
       if (!c.tool) throw new Error('call.tool names the foreign door')
       const request = { method: 'POST' as const, url: host, accept: 'application/json, text/event-stream', body: rpcBody('tools/call', { name: c.tool, arguments: c.arguments ?? {} }) }
       if (typeof args.answer !== 'string') return { phase: 'request' as const, host: urlHost(host), door: `${urlHost(host)}:${c.tool}`, request, note: 'the client fetches this request with the tenant\'s token if the host asks for one and calls again with the answer' }
-      const read = parseAnswer(args.answer)
+      const read = getAnswer(args.answer)
       return { phase: 'served' as const, host: urlHost(host), door: `${urlHost(host)}:${c.tool}`, request, ok: read.ok, result: read.result, error: read.error }
     }
     const out: Record<string, unknown> = { host: urlHost(host), direction, defaults: DEFAULT_MCP_HOSTS, cloudflare: CLOUDFLARE_MCP, integrations: KNOWN_MCP.map((k) => ({ host: k.host, url: k.url, auth: k.auth, token: k.auth === 'token' ? `QPU_MCP_TOKEN_${k.host.toUpperCase().replace(/[.-]/g, '_')}[_<TENANT>]` : null, about: k.about, maps: k.maps })) }
@@ -96,7 +96,7 @@ export const EXTENSION: Toolbox = {
     instructions: 'Inward: call extend with a host (direction in); fetch the one request it emits, adding the tenant\'s bearer token where the host asks for one (QPU_MCP_TOKEN_<HOST>); call again with tools and the host\'s doors join the catalogue as host:tool. Serve one: extend with call { tool, arguments }; fetch the request; call again with answer. Outward: extend with direction out gives the registration (mcpServers fragment) any MCP client mounts. The discover tool extends the default hosts (the unit, this tree, Cloudflare\'s eight servers) on every run; a tenant names its own hosts with QPU_MCP_HOSTS[_<TENANT>].',
     directions: ['server only: a fixture tools/list read into doors; an event-stream answer read back; the registration from this catalogue', 'client → server: the client fetches tools/list and tools/call of the foreign host, token in the request, never in the tool', 'server → client: every answer the host gives is read the same way discovery reads it (JSON or event stream, error, refusal)', 'toolbox → toolbox: the door reading is discovery\'s own (doorOf); the matcher never calls a foreign door to serve a statement; QPU extended by itself is the identity'],
     selftest: (ctx) => {
-      const { check, done } = makeChecks()
+      const { check, done } = createChecks()
       const run = (args: Record<string, unknown>) => ctx.call('extend', args)
       const inward = run({ direction: 'in', host: CLOUDFLARE_DOCS_MCP, tools: DOCS_FIXTURE })
       check('extension:inward', inward.phase === 'extended' && inward.inward === 1 && inward.doors[0].takes.join() === 'query' && inward.doors[0].required.join() === 'query', `${inward.inward} door, takes ${inward.doors?.[0]?.takes}`)

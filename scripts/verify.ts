@@ -6,7 +6,7 @@ import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import type { WaveRequest, WaveResult } from '../src/quantum/wave.ts'
 import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { readJson, fetchWithTimeout, runSelftest, publishRecord } from './mcp.ts'
+import { getJson, getWithTimeout, runSelftest, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('wave')
@@ -17,7 +17,7 @@ const main = async () => {
   // the quantum: what an earlier run fetched today stands (by url); only the rest is fetched, and no more than the quantum allows
   const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
   const started0 = Date.now()
-  const kept: WaveResult[] = [], prev = readJson(join(ROOT, 'docs', 'public', 'verification.json'), {}) as { date?: string; results?: WaveResult[] }
+  const kept: WaveResult[] = [], prev = getJson(join(ROOT, 'docs', 'public', 'verification.json'), {}) as { date?: string; results?: WaveResult[] }
   if (prev.date && Date.now() - Date.parse(prev.date) < 86_400_000) for (const r of prev.results ?? []) if (r.url && typeof r.status === 'number') kept.push(r)
   const keyOf = (r: WaveRequest) => (r.method === 'POST' ? `${r.url}#${JSON.stringify(r.body)}` : r.url)
   // the merge gathers what the shards fetched, as if kept from today
@@ -27,7 +27,7 @@ const main = async () => {
   const queue = takeShare(all.filter((r) => !have.has(keyOf(r))))
   console.log(`verify (${shardLabel()})`)
   console.log(`verify: ${all.length} requests, ${all.length - queue.length} kept from today, ${queue.length} to fetch in a quantum of ${QUANTUM_MS / 1000} s`)
-  const contracts: Record<string, string[]> = Object.fromEntries(((readJson(join(ROOT, 'docs', 'public', 'discovery.json'), {}) as { hosts?: { host: string; paths?: string[] }[] }).hosts ?? []).filter((h) => h.paths?.length).map((h) => [h.host, h.paths!]))
+  const contracts: Record<string, string[]> = Object.fromEntries(((getJson(join(ROOT, 'docs', 'public', 'discovery.json'), {}) as { hosts?: { host: string; paths?: string[] }[] }).hosts ?? []).filter((h) => h.paths?.length).map((h) => [h.host, h.paths!]))
   const results: WaveResult[] = kept.filter((r) => all.some((a) => keyOf(a) === keyOf(r)))
   const byHost = new Map<string, number>()
   const inFlight = new Set<Promise<void>>()
@@ -40,7 +40,7 @@ const main = async () => {
     byHost.set(host, Date.now() + wait)
     if (wait) await sleep(wait)
     const started = Date.now()
-    try { const res = await fetchWithTimeout(r.url, r.accept, 20000, { method: r.method, body: r.body }); results.push({ ...r, status: res.status, ok: res.ok, ms: Date.now() - started, text: await res.text() }) }
+    try { const res = await getWithTimeout(r.url, r.accept, 20000, { method: r.method, body: r.body }); results.push({ ...r, status: res.status, ok: res.ok, ms: Date.now() - started, text: await res.text() }) }
     catch (e) { results.push({ ...r, status: 0, ok: false, ms: Date.now() - started, text: `fetch failed: ${(e as Error).message}` }) }
     i += 1
     if (i % 50 === 0) { console.log(`verify ${i}/${queue.length + i}`); writeFileSync(join(ROOT, 'docs', 'public', 'verification.json'), JSON.stringify({ date: new Date().toISOString(), partial: true, leads: plan.leads, requests: all.length, done: results.length, results: call({ results, contracts }).results }, null, 1) + '\n') }

@@ -18,7 +18,7 @@ export const publishRecord = (name: string, record: object) => writeFileSync(joi
 /** A toolbox's selftest run through its caller and its tally printed as every step's first line */
 export const runSelftest = (name: string, call: (a: { selftest: true }) => any) => { const s = call({ selftest: true }); console.log(`${name} selftest: ${s.passed ? 'pass' : 'FAIL'} (${s.checks.filter((c: { passed: boolean }) => c.passed).length}/${s.checks.length})`); return s }
 /** A published file's JSON, or the fallback when it is missing or unreadable: the one reader every script shares, never a throw */
-export const readJson = (path: string, fallback: any = null): any => { try { return JSON.parse(readFileSync(path, 'utf8')) } catch { return fallback } }
+export const getJson = (path: string, fallback: any = null): any => { try { return JSON.parse(readFileSync(path, 'utf8')) } catch { return fallback } }
 const UA = 'uuidna-qpu-verify (+https://qpu.uuidna.com)'
 /** A Google host asked of the qpu-google-call job through the Payload MCP, never fetched here: the call is an entry addressed by its content (one
  *  a day), the job's answer the entry naming it, read back; without the app or its key the answer says so (textbook_google_one_door) */
@@ -28,7 +28,7 @@ export const askGoogle = async (url: string, httpMethod = 'GET', body: unknown =
   return { status: a?.status ?? 0, text: a?.answer ?? `the qpu-google-call job did not answer (${made.error ?? 'no answer entry'})` }
 }
 /** A request with the named user agent and a timeout: the one fetcher of the public sources, a Google host through askGoogle */
-export const fetchWithTimeout = (url: string, accept = '*/*', ms = 20000, init: { method?: string; body?: unknown; agent?: string; headers?: Record<string, string> } = {}) => (GOOGLE_HOST.test(new URL(url).hostname) ? askGoogle(url, init.method, init.body ?? null).then((a) => new Response(a.text, { status: a.status || 503 })) : fetch(url, { method: init.method, headers: { accept, 'user-agent': init.agent ?? UA, ...(init.body ? { 'content-type': 'application/json' } : {}), ...init.headers }, body: init.body ? JSON.stringify(init.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(ms) }))
+export const getWithTimeout = (url: string, accept = '*/*', ms = 20000, init: { method?: string; body?: unknown; agent?: string; headers?: Record<string, string> } = {}) => (GOOGLE_HOST.test(new URL(url).hostname) ? askGoogle(url, init.method, init.body ?? null).then((a) => new Response(a.text, { status: a.status || 503 })) : fetch(url, { method: init.method, headers: { accept, 'user-agent': init.agent ?? UA, ...(init.body ? { 'content-type': 'application/json' } : {}), ...init.headers }, body: init.body ? JSON.stringify(init.body) : undefined, redirect: 'follow', signal: AbortSignal.timeout(ms) }))
 type Reply = { status: number; bytes: number; result?: any; error?: string }
 /** A session with one MCP server: every request answered as its status, the bytes of its result, the result or the error. */
 export const openSession = (url: string, key?: string) => {
@@ -102,12 +102,12 @@ export const mcpClient = (url: string = process.env.QPU_APP_MCP ?? MCP_URL, key:
  *  else .qpu at the root), every version verified by its address; the source named, nothing when neither holds it (textbook_binding_zero_hex_path) */
 export const raidRead = async (collection: string, read: () => Promise<Record<string, unknown>[] | null>) => {
   const docs = await read().catch(() => null); if (docs) return { docs, from: 'payload' }
-  const dir = process.env.QPU_BINDING0 ?? join(process.cwd(), '.qpu'), { readBinding0 } = await import('../src/quantum/toolboxes/raid.ts')
-  const back = readBinding0(collection, null, existsSync(dir) ? Object.fromEntries(readdirSync(dir, { recursive: true }).map(String).filter((p) => /[\da-f-]{36}(\.latest)?$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) : {}) as { docs: Record<string, unknown>[]; refused: string[] }
+  const dir = process.env.QPU_BINDING0 ?? join(process.cwd(), '.qpu'), { getBinding0 } = await import('../src/quantum/toolboxes/raid.ts')
+  const back = getBinding0(collection, null, existsSync(dir) ? Object.fromEntries(readdirSync(dir, { recursive: true }).map(String).filter((p) => /[\da-f-]{36}(\.latest)?$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) : {}) as { docs: Record<string, unknown>[]; refused: string[] }
   return { docs: back.docs.length ? back.docs : null, from: back.docs.length ? `binding 0 (${back.refused.length} refused)` : 'unread' }
 }
 /** The leads beyond the core: every Research leads page's record (its leads block's lead), read in the RAID's order and handed to the tools as records */
-export const readLeads = async () => {
+export const listLeads = async () => {
   const m = mcpClient(), find = async (where: object) => (await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify(where) })).docs as Record<string, unknown>[] | null
   // a lead is a leads block on any page, whatever the page is for: Payload's where on the layout, binding 0's copy read the same way
   const holds = (p: Record<string, unknown>) => ((p.layout ?? []) as { tool?: string }[]).some((b) => b.tool === 'leads')
@@ -132,11 +132,11 @@ if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'lead') {
 // every lead of the code written into Payload as a record (a leads block each, beside the leads Payload already holds), so the
 // pre-commit hook can move them out of code once their records are equal: node scripts/mcp.ts leads-sync
 if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'leads-sync') {
-  const m = mcpClient(), { records } = await readLeads(), held = new Set(records.map((l) => l.id)), { LEADS } = await import('../src/quantum/leads.ts'), fresh = LEADS.filter((l) => !held.has(l.id))
+  const m = mcpClient(), { records } = await listLeads(), held = new Set(records.map((l) => l.id)), { LEADS } = await import('../src/quantum/leads.ts'), fresh = LEADS.filter((l) => !held.has(l.id))
   const page = ((await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify({ 'layout.tool': { equals: 'leads' } }) })).docs ?? [])[0] as { id: string; tenant?: unknown; layout?: { blockType: string; tool: string; arguments: unknown }[] } | undefined, blocks = fresh.map((lead) => ({ blockType: 'qpu', tool: 'leads', arguments: { lead } }))
   const r = !fresh.length ? { error: null } : page ? await m.call('updatePages', { id: page.id, layout: [...(page.layout ?? []).map((b) => ({ blockType: b.blockType, tool: b.tool, arguments: b.arguments })), ...blocks] }) : await m.call('createPages', { title: 'Leads', hero: { type: 'default' }, layout: blocks })
   // and back: every lead Payload holds, as the generated index the pure tools read (the leads this code computes take their own place)
-  const keys = ['id', 'source', 'statement', 'status', 'tool', 'reason', 'lastmod'] as const, rows = (await readLeads()).records.map((l) => Object.fromEntries(keys.filter((k) => l[k] !== undefined).map((k) => [k, l[k]])))
+  const keys = ['id', 'source', 'statement', 'status', 'tool', 'reason', 'lastmod'] as const, rows = (await listLeads()).records.map((l) => Object.fromEntries(keys.filter((k) => l[k] !== undefined).map((k) => [k, l[k]])))
   if (rows.length) writeFileSync(join(process.cwd(), 'src', 'quantum', 'leads-index.ts'), "// GENERATED by node scripts/mcp.ts leads-sync from the lead records Payload holds. Do not edit: Payload decides.\nimport type { Lead } from './leads.ts'\nexport const LEAD_ROWS: readonly Lead[] = " + JSON.stringify(rows) + '\n')
   console.log(r.error ? `refused: ${String(r.error).slice(0, 300)}` : `${fresh.length} lead(s) written into Payload, ${rows.length} read back into the index`)
 }
@@ -154,7 +154,7 @@ if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'tables-sync') {
 // the leads that run themselves, started from Payload: every lead Payload holds that names its door, asked of the job qpu-lead-run by an entry
 // of kind call; the job calls the door in the app, links its answer, and marks the lead served: node scripts/mcp.ts leads-run
 if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'leads-run') {
-  const m = mcpClient(), { records } = await readLeads(), { toolCallerOf } = await import('../src/quantum/mcp.ts'), { runs } = toolCallerOf('leads')({ runnable: { leads: records } }) as { runs: { lead: string; tool: string }[] }
+  const m = mcpClient(), { records } = await listLeads(), { toolCallerOf } = await import('../src/quantum/mcp.ts'), { runs } = toolCallerOf('leads')({ runnable: { leads: records } }) as { runs: { lead: string; tool: string }[] }
   let served = 0
   for (const r of runs) { const made = await m.call('createEntries', { kind: 'call', from: 'qpu-lead-run', body: { lead: r.lead } }); const answered = ((await m.findAll('findEntries', { where: JSON.stringify({ kind: { equals: 'lead-run' } }), depth: 0 })).docs ?? []).some((e) => (e as { body?: { lead?: string; ok?: boolean } }).body?.lead === r.lead && (e as { body?: { ok?: boolean } }).body?.ok); if (answered) served++; else console.log(`${r.lead}: ${String(made.error ?? 'not served').slice(0, 160)}`) }
   console.log(`${runs.length} runnable lead(s) asked of qpu-lead-run, ${served} served`)
@@ -165,7 +165,7 @@ if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'leads-run') {
 // created leaves first so each names ids that exist; a $ref back into its own path (a cycle) kept as the component's name, not linked
 if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'openapi-import') {
   const a = process.argv.slice(3), flag = (n: string) => (a.includes(n) ? a[a.indexOf(n) + 1] : undefined), url = flag('--url') ?? '', ops = (flag('--ops') ?? '').split(',').filter(Boolean), m = mcpClient()
-  const text = await (await fetchWithTimeout(url, 'application/json', 180000)).text(), spec = JSON.parse(text) as { servers?: { url?: string }[]; paths: Record<string, Record<string, { operationId?: string; summary?: string; requestBody?: { content?: Record<string, { schema?: unknown }> } }>>; components?: { schemas?: Record<string, unknown> } }
+  const text = await (await getWithTimeout(url, 'application/json', 180000)).text(), spec = JSON.parse(text) as { servers?: { url?: string }[]; paths: Record<string, Record<string, { operationId?: string; summary?: string; requestBody?: { content?: Record<string, { schema?: unknown }> } }>>; components?: { schemas?: Record<string, unknown> } }
   const sha256 = createHash('sha256').update(text).digest('hex'), held = new Map<string, string>(), refsOf = (x: unknown): string[] => (JSON.stringify(x ?? null).match(/"#\/components\/schemas\/[^"]+"/g) ?? []).map((r) => r.slice(22, -1))
   // an entry held by its address, computed as the entries hook computes it (kind, from, body and the links it names): reused when Payload
   // holds it, created when it does not, so a second import neither duplicates nor loses a link

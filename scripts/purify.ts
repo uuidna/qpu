@@ -3,18 +3,18 @@
 //   1. exports under src/quantum that no test, tool, example or other module references → lead "unproven export"
 //   2. files under src/quantum that nothing imports and that are not tests → lead "orphan file"
 //   3. the README's measured table is regenerated from git, tsc, the test receipt, lake build, the theorem ledger and tools/list
-import { findLeaks } from '../src/quantum/audit.ts'
+import { listLeaks } from '../src/quantum/audit.ts'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { appendFileSync, existsSync, readFileSync, readdirSync, writeFileSync, renameSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle, cellOf as cell } from '../src/quantum/mcp.ts'
 import { EXAMPLES } from '../src/quantum/examples.ts'
-import { findCleanupSubjects } from '../src/quantum/leads.ts'
-import { VERIFIERS, extractFacts, buildVerifyRequests } from '../src/quantum/verifiers.ts'
+import { listCleanupSubjects } from '../src/quantum/leads.ts'
+import { VERIFIERS, extractFacts, createVerifyRequests } from '../src/quantum/verifiers.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
-import { readJson, readLeads } from './mcp.ts'
-const { all: LEADS } = await readLeads()
+import { getJson, listLeads } from './mcp.ts'
+const { all: LEADS } = await listLeads()
 
 const ROOT = process.cwd()
 // text that reaches a page is escaped once: an angle bracket in evidence or a node name is text, never a tag
@@ -42,11 +42,11 @@ for (const f of files) {
 }
 
 // A cleanup lead is settled only while its subject stays absent: the status is a measurement, re-taken each run, never a memory.
-const presentSubjects = (subjects: ReturnType<typeof findCleanupSubjects>): string[] => !subjects ? [] : subjects.kind === 'branches'
+const presentSubjects = (subjects: ReturnType<typeof listCleanupSubjects>): string[] => !subjects ? [] : subjects.kind === 'branches'
   ? subjects.names.filter((b) => execFileSync('git', ['branch', '--list', b], { cwd: ROOT, encoding: 'utf8' }).trim() !== '')
   : subjects.names.filter((path) => existsSync(join(ROOT, path)))
 for (const l of LEADS) {
-  const present = presentSubjects(findCleanupSubjects(l))
+  const present = presentSubjects(listCleanupSubjects(l))
   if (present.length) leads.push({ id: `${l.id}-returned`, source: l.source, statement: `${l.id} records a removal, yet ${present.join(', ')} is present again`, status: 'open', reason: 'a cleanup is settled only while its subject stays absent; remove it or reopen the lead' })
 }
 
@@ -63,7 +63,7 @@ console.log(`purify: ${addressed.size} addresses scanned, ${collisions} collisio
 // no email in the tree: the deployer's address is read from the Cloudflare account at build and deploy and never written; every address the
 // one leak table finds in a tracked file and does not set aside (LEAK_ALLOWED, a block address, the test domains) is a lead and a red step
 const scanned = tracked.filter((f) => !/pnpm-lock|package-lock|\.(png|jpg|jpeg|gif|mp4|ico|woff2?|pdf|svg)$/.test(f) && existsSync(join(ROOT, f)))
-const leaks = findLeaks(Object.fromEntries(scanned.map((f) => [f, readFileSync(join(ROOT, f), 'utf8')]))).findings.filter((f) => f.kind === 'email'), leaked = [...new Set(leaks.map((l) => l.where))].join(', ')
+const leaks = listLeaks(Object.fromEntries(scanned.map((f) => [f, readFileSync(join(ROOT, f), 'utf8')]))).findings.filter((f) => f.kind === 'email'), leaked = [...new Set(leaks.map((l) => l.where))].join(', ')
 if (leaks.length) leads.push({ id: 'email-leak', source: leaked, statement: `${leaks.reduce((n, l) => n + l.count, 0)} email address(es) in tracked files: the tree keeps none; the deployer's is read from the Cloudflare account at build and deploy`, status: 'open', reason: 'remove the address; a contact is a URL' })
 console.log(`purify: ${scanned.length} tracked files scanned for email addresses, ${leaks.length} leak(s)${leaks.length ? ` in ${leaked}` : ''}`)
 
@@ -71,7 +71,7 @@ console.log(`purify: ${scanned.length} tracked files scanned for email addresses
 const sh = (cmd: string, args: string[]): string => { const r = spawnSync(cmd, args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 }); return `${r.stdout ?? ''}${r.stderr ?? ''}` }
 const tsSources = tracked.filter((f) => /^src\/quantum\/[^/]+\.ts$/.test(f) && !f.endsWith('.test.ts'))
 const tsLines = tsSources.reduce((n, f) => n + readFileSync(join(ROOT, f), 'utf8').split('\n').length, 0)
-const receipt = readJson(join(ROOT, 'docs', 'public', 'receipt.json'), { steps: [] })
+const receipt = getJson(join(ROOT, 'docs', 'public', 'receipt.json'), { steps: [] })
 const step = (name: string) => receipt.steps.filter((s: { name: string }) => s.name === name).at(-1)
 const tests = step('test')?.counts ?? {}
 const lean = step('lean')?.counts ?? {}
@@ -104,8 +104,8 @@ writeFileSync(join(ROOT, 'docs', 'theorems.md'), ['---', 'title: Theorems', 'ord
   '| Key | Statement | Axioms |', '|---|---|---|', ...handWritten.map((r) => `| \`${r.key}\` | \`${r.statement.replace(/\|/g, '\\|').replace(/`/g, "'")}\` | ${r.axioms.join(', ') || '—'} |`), ''].join('\n'))
 const declared = tracked.filter((f) => f.endsWith('.lean') && !f.startsWith('scripts/')).reduce((n, f) => n + (readFileSync(join(ROOT, f), 'utf8').match(/^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+)?theorem /gm) ?? []).length, 0)
 const modules = tracked.filter((f) => /src\/quantum\/processing\/unit\/lean\/Qpu(\/|\.lean$)/.test(f)).length
-const deps = Object.keys(readJson('package.json').dependencies ?? {}).length
-const verification = readJson(join(ROOT, 'docs', 'public', 'verification.json'))
+const deps = Object.keys(getJson('package.json').dependencies ?? {}).length
+const verification = getJson(join(ROOT, 'docs', 'public', 'verification.json'))
 const rows: [string, string][] = [
   ['Tracked files', String(tracked.length)],
   ['Source files under `src/quantum` (TypeScript)', `${tsSources.length} (${tsLines.toLocaleString('en-US')} lines)`],
@@ -181,7 +181,7 @@ for (const e of EXAMPLES) {
 for (const l of LEADS) {
   nodes.push({ id: `lead:${l.id}`, kind: 'lead', label: `${l.status}: ${l.statement.slice(0, 80)}` })
   if (l.tool && toolNames.some((t) => t.name === l.tool)) both(`lead:${l.id}`, `tool:${l.tool}`, 'served by', 'serves')
-  for (const f of extractFacts(l)) for (const r of buildVerifyRequests(f)) both(`lead:${l.id}`, `verifier:${r.verifier}`, 'verified via', 'verifies')
+  for (const f of extractFacts(l)) for (const r of createVerifyRequests(f)) both(`lead:${l.id}`, `verifier:${r.verifier}`, 'verified via', 'verifies')
 }
 const graph = { date: new Date().toISOString(), nodes, edges, counts: { nodes: nodes.length, edges: edges.length } }
 writeFileSync(join(ROOT, 'docs', 'public', 'graph.json'), JSON.stringify(graph) + '\n')

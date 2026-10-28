@@ -7,7 +7,7 @@
 // the argument vector a plan returns, streaming its lines as progress to a caller that sent a progress token.
 import { uuidOf } from './blocks.ts'
 import { sha256, utf8, hex } from './hmac.ts'
-import { findLeaks, LEAK_PATTERNS } from './audit.ts'
+import { listLeaks, LEAK_PATTERNS } from './audit.ts'
 import { summonCourt } from './toolboxes/legal.ts'
 import type { WorkflowFacts } from './toolboxes/repository.ts'
 type Decide = (name: 'pre-commit' | 'pre-push', facts: WorkflowFacts) => { allowed: boolean; says: string; violated: string[]; unknown: string[] }
@@ -87,7 +87,7 @@ export const redact = (text: string, root?: string, home?: string, leaks = true)
 }
 /** A run judged: redacted, the record a docket entry at its address. */
 export const recordMachine = (run: MachineRun) => {
-  const relative = redact(`${run.stdout}${run.stderr ? `\n${run.stderr}` : ''}`, run.root, run.home, false), found = findLeaks({ output: relative }), output = redact(relative)
+  const relative = redact(`${run.stdout}${run.stderr ? `\n${run.stderr}` : ''}`, run.root, run.home, false), found = listLeaks({ output: relative }), output = redact(relative)
   const body = { action: run.action, command: [run.command.cmd, ...run.command.args].join(' '), status: run.status, ms: run.ms, output, leaks: found.byKind }
   const text = JSON.stringify({ kind: 'machine', from: 'local', body })
   const id = uuidOf(text)
@@ -112,7 +112,7 @@ export const forecastTimes = (times: readonly number[], o: { a?: number; q?: num
   return { estimated: true as const, point, interval: half === null ? null : [Math.max(0, point - half), point + half] as [number, number], confidence: 0.95, n, alpha: `${a}/${q}`, level: `${num}/${den}`, seasonal: index ? { period: m, index } : null, method: 'additive decomposition by a moving average (ARIMA_PLUS documents STL), then simple exponential smoothing in exact rationals (ARIMA_PLUS: an ARIMA trend, ETS seasonality, spikes, steps and holidays cleaned)', reference: 'TimesFM (google-research/timesfm), not run' }
 }
 /** The largest gap between consecutive events while work runs, against the heartbeat bound (textbook_stream_no_silence). */
-const measureSilence = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) => {
+const getSilence = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) => {
   const ts = events.map((e) => Date.parse(e.at)).filter(Number.isFinite)
   let maxGapMs = 0, at: string | null = null
   for (let i = 1; i < ts.length; i++) if (ts[i]! - ts[i - 1]! > maxGapMs) { maxGapMs = ts[i]! - ts[i - 1]!; at = events[i]!.at }
@@ -125,5 +125,5 @@ export const machineStatus = (s: { events: readonly StreamEvent[]; times?: Recor
   const elapsed = started && last ? Date.parse(last.at) - Date.parse(started.at) : null
   const forecasts = Object.fromEntries(Object.entries(s.times ?? {}).map(([k, v]) => [k, forecastTimes(v, { period: s.period })])), f = started ? forecasts[started.subject] ?? null : null, eta = f?.point ?? null
   const questions = ev.filter((e) => e.kind === 'question' && !ev.some((x) => x.kind === 'decision' && x.subject === e.subject && x.at >= e.at))
-  return { running: started ? { subject: started.subject, since: started.at, elapsed, eta, interval: f?.interval ?? null, remaining: eta !== null && elapsed !== null ? Math.max(0, eta - elapsed) : null } : null, last: ev.slice(-(s.last ?? 10)), questions, forecasts, held: s.held ?? null, silence: measureSilence(ev), theorems: ['textbook_eta_from_receipts', 'textbook_stream_no_silence'] }
+  return { running: started ? { subject: started.subject, since: started.at, elapsed, eta, interval: f?.interval ?? null, remaining: eta !== null && elapsed !== null ? Math.max(0, eta - elapsed) : null } : null, last: ev.slice(-(s.last ?? 10)), questions, forecasts, held: s.held ?? null, silence: getSilence(ev), theorems: ['textbook_eta_from_receipts', 'textbook_stream_no_silence'] }
 }

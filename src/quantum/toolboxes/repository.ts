@@ -4,15 +4,15 @@
 // for the concept DOI, each checked against the contract discovery found. Phase two reads the answers into agreement and
 // leads: a local branch with no remote, a remote branch not here, a tag here and not there or there and not here, a release
 // without its tag, a package version with no tag, a Zenodo version with no release. Nothing here runs git or fetches.
-import { parseAnswer } from './extension.ts'
-import { defineTool, isObj, makeChecks, type Toolbox } from '../toolbox.ts'
+import { getAnswer } from './extension.ts'
+import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { isContracted } from '../wave.ts'
 import { flowWidget } from '../widgets.ts'
 import { verifyTheorems } from '../verification.ts'
 import { MACHINE_ACTIONS, planMachine, recordMachine, machineStatus, forecastTimes, type MachineRequest, type MachineRun } from '../machine.ts'
-import { billCloudflare, pricePenalty, countPenalties, measureCapacity, type CapacityInput, type CloudflareUsage } from './billing.ts'
+import { billCloudflare, pricePenalty, countPenalties, getCapacity, type CapacityInput, type CloudflareUsage } from './billing.ts'
 import { CLAIMS } from '../claims-index.ts'
-import { findLiterals, findManualDocs, ERROR_REMEDIES, FALLBACKS, ENTROPY_KINDS } from '../audit.ts'
+import { listLiterals, listManualDocs, ERROR_REMEDIES, FALLBACKS, ENTROPY_KINDS } from '../audit.ts'
 import { uuidOf } from '../blocks.ts'
 import { GOOGLE_HOST } from '../discovery.ts'
 import { checkAccess, type Ability, type ScopedRole } from './payload.ts'
@@ -24,7 +24,7 @@ import { TABLES } from '../tables-index.ts'
 const WAY_THEOREMS = ['textbook_penalty_clear_involution', 'textbook_double_entry', 'textbook_free_or_coil', 'textbook_penalty_antimatter_annihilates', 'textbook_coins_coils_balanced', 'textbook_penalty_harmonic'] as const
 /** The path and URL literals outside their registries as penalties of the dirty-code kind, priced harmonically (each literal's bytes at four a
  *  token): the ones already in the tree listed and priced to the tree, never blocking; each one's antimatter waiting on confirm. */
-const penaliseLiterals = (files: Record<string, string>) => { const l = findLiterals(files); return { urls: l.urls, paths: l.paths, outside: l.outside, tokens: l.tokens, priced: 'the tree', blocking: 0, autoAnnihilated: l.dirty.filter((x) => x.antimatter === null).length, confirm: l.dirty.filter((x) => x.antimatter?.needs === 'confirm').length, byFile: l.byFile, dirty: l.dirty, theorem: l.theorem, says: `${l.outside} literal(s) outside their registry (${l.urls} URLs and ${l.paths} paths read), ${l.tokens} token(s) priced to the tree, listed and never blocking; a new one blocks its commit (the rule registered)` } }
+const penaliseLiterals = (files: Record<string, string>) => { const l = listLiterals(files); return { urls: l.urls, paths: l.paths, outside: l.outside, tokens: l.tokens, priced: 'the tree', blocking: 0, autoAnnihilated: l.dirty.filter((x) => x.antimatter === null).length, confirm: l.dirty.filter((x) => x.antimatter?.needs === 'confirm').length, byFile: l.byFile, dirty: l.dirty, theorem: l.theorem, says: `${l.outside} literal(s) outside their registry (${l.urls} URLs and ${l.paths} paths read), ${l.tokens} token(s) priced to the tree, listed and never blocking; a new one blocks its commit (the rule registered)` } }
 type E2eOutcomes = { agree?: number; erased?: number; uncorrectable?: number }
 const wayEvidence = (e2e?: E2eOutcomes) => {
   const rows = WAY_THEOREMS.map((t) => { const c = CLAIMS.find((x) => x.theorem === t); return { theorem: t, status: c?.status ?? 'unasked', candidates: c?.candidates.length ?? 0, recognisedBy: c?.recognisedBy ?? null } })
@@ -55,7 +55,7 @@ const PLACEHOLDER = "<the tenant's>"
 type Body = Record<string, unknown>
 /** The docket's documents folded into facts, naming no provider and no resource: the newest body of each kind (account, observability,
  *  usage) is that fact, every resource body is kept by its binding; the details live in the RAID and arrive through the Payload MCP. */
-const readDocketFacts = (docs: readonly { body?: unknown; createdAt?: string }[]) => {
+const listDocketFacts = (docs: readonly { body?: unknown; createdAt?: string }[]) => {
   const rows = docs.filter((d) => isObj(d.body)).map((d) => ({ at: d.createdAt ?? '', body: d.body as Body })).sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0))
   const newest = (kind: string) => { const b = rows.find((r) => r.body.kind === kind)?.body; if (!b) return null; const { kind: _k, _id, by: _by, read: _r, notes: _n, ...rest } = b; return rest }
   const resources = new Map<string, Body>(); for (const r of rows) if (r.body.kind === 'resource' && typeof r.body.binding === 'string' && !resources.has(r.body.binding)) resources.set(r.body.binding, r.body)
@@ -63,7 +63,7 @@ const readDocketFacts = (docs: readonly { body?: unknown; createdAt?: string }[]
 }
 /** The deploy configuration (JSON with line comments) read into the bindings, the flags and the resources it names; a placeholder id is
  *  left only when the docket holds no resource of that binding with an id. */
-const parseDeployConfig = (text: string, resources: readonly Body[] = []): WorkflowFacts['wrangler'] => {
+const getDeployConfig = (text: string, resources: readonly Body[] = []): WorkflowFacts['wrangler'] => {
   let w: any = null; try { w = JSON.parse(text.replace(/^\s*\/\/.*$/gm, '')) } catch { return null }
   const idOf = (binding: string) => { const r = resources.find((x) => x.binding === binding); return typeof r?.id === 'string' && r.id ? r.id : null }
   const d1 = (w.d1_databases ?? []) as { binding: string; database_name: string; database_id: string }[], r2 = (w.r2_buckets ?? []) as { binding: string; bucket_name: string }[], kv = (w.kv_namespaces ?? []) as { binding: string; id: string }[]
@@ -74,26 +74,31 @@ const parseDeployConfig = (text: string, resources: readonly Body[] = []): Workf
 /** The staged diff read once: each hand-written file's added text, the code lines added and removed outside the proof tables (the rule folded), and
  *  the exports it adds that no added theorem and example names (the rule proven). A generated file is not hand-written; a proof table never counts as growth. */
 const PROOF_FILES: readonly string[] = ['src/quantum/examples.ts', 'src/quantum/textbook-theorems.ts']
-const readStaged = (diff: string, generated: readonly string[] = [], renames: readonly Rename[] = []) => {
+const getStaged = (diff: string, generated: readonly string[] = [], renames: readonly Rename[] = []) => {
   const side: Record<'+' | '-', Record<string, string>> = { '+': {}, '-': {} }; let file = ''
   for (const l of diff.split('\n')) { if (l.startsWith('+++ ') || l.startsWith('--- ')) { file = l.startsWith('+++ ') ? l.slice(4).replace(/^b\//, () => '') : file; continue } if ((l[0] === '+' || l[0] === '-') && file && ![...GENERATED_FILES, ...generated].includes(file) && !PAYLOAD_WRITES.test(file)) side[l[0]][file] = (side[l[0]][file] ?? '') + l.slice(1) + '\n' }
   const code = (t: Record<string, string>) => Object.entries(t).filter(([f]) => !PROOF_FILES.includes(f)), count = (t: Record<string, string>, bytes = true) => code(t).reduce((n, [, x]) => n + (bytes ? new TextEncoder().encode(x.replace(/\n/g, () => '')).length : x.split('\n').length - 1), 0)
   const declarationsOf = (t: Record<string, string>) => code(t).flatMap(([file, x]) => [...x.matchAll(/^(export )?(?:async )?(?:const|function) ([A-Za-z_$][\w$]*)(.*)$/gm)].map((m) => ({ file, exported: !!m[1], name: m[2]!, rest: m[3]! })))
   // a rename is neither a new export nor growth: a removed and an added declaration of one file whose first lines agree once the commit's renames
   // are read back, paired until no pair is left; the added code is then counted with every rename read back
-  const gone = declarationsOf(side['-']), came = declarationsOf(side['+']), was = new Set(gone.filter((e) => e.exported).map((e) => e.name)), renamed = new Map<string, string>()
-  const back = (s: string) => s.replace(/[A-Za-z_$][\w$]*/g, (w) => renamed.get(w) ?? w)
+  const gone = declarationsOf(side['-']), came = declarationsOf(side['+']), was = new Set(gone.filter((e) => e.exported).map((e) => e.name)), renamed = new Map<string, Map<string, string>>(), paired = new Set<Rename>()
+  // the names read back per file: one new name may come from different old names in different files, so a file's own renames decide it, and
+  // another file reads a name back only where every rename to it agrees on the old one
+  const shared = () => { const by = new Map<string, Set<string>>(); for (const r of paired) (by.get(r.to) ?? by.set(r.to, new Set()).get(r.to)!).add(r.from); return new Map([...by].filter(([, s]) => s.size === 1).map(([k, s]) => [k, [...s][0]!])) }
+  const back = (file: string, s: string, all = shared()) => { const own = renamed.get(file); return s.replace(/[A-Za-z_$][\w$]*/g, (w) => own?.get(w) ?? all.get(w) ?? w) }
   // only the renames Payload holds, each crossed three ways (the rosetta): the address it recorded, the removed line's, the added line's read back
-  for (let paired = true; paired;) { paired = false; for (const r of renames) { if (renamed.get(r.to) === r.from) continue; const g = gone.find((x) => x.file === r.file && x.name === r.from), a = came.find((x) => x.file === r.file && x.name === r.to); if (g && a && uuidOf(g.rest) === r.rest && back(a.rest.split(r.to).join(r.from)) === g.rest) { renamed.set(r.to, r.from); paired = true } } }
-  const news = [...new Set(came.filter((e) => e.exported).map((e) => e.name))].filter((n) => !was.has(n) && !renamed.has(n) && !gone.some((g) => g.name === n)), readBack = Object.fromEntries(Object.entries(side['+']).map(([f, x]) => [f, back(x)]))
-  return { added: side['+'], removed: side['-'], folded: { added: count(readBack), removed: count(side['-']), lines: { added: count(side['+'], false), removed: count(side['-'], false) } }, proven: { news, unproven: news.filter((n) => !PROOF_FILES.every((p) => (side['+'][p] ?? '').includes(n))) }, renames: { recorded: renames.length, paired: renamed.size, unpaired: renames.filter((r) => renamed.get(r.to) !== r.from).map((r) => `${r.file}:${r.from}→${r.to}`) } }
+  // each rename pairs at most once, so the passes end
+  for (let grew = true; grew;) { grew = false; for (const r of renames) { if (paired.has(r)) continue; const g = gone.find((x) => x.file === r.file && x.name === r.from), a = came.find((x) => x.file === r.file && x.name === r.to); if (g && a && uuidOf(g.rest) === r.rest && back(r.file, a.rest.split(r.to).join(r.from)) === g.rest) { (renamed.get(r.file) ?? renamed.set(r.file, new Map()).get(r.file)!).set(r.to, r.from); paired.add(r); grew = true } } }
+  const all = shared()
+  const news = [...new Set(came.filter((e) => e.exported).map((e) => e.name))].filter((n) => !was.has(n) && ![...renamed.values()].some((m) => m.has(n)) && !gone.some((g) => g.name === n)), readBack = Object.fromEntries(Object.entries(side['+']).map(([f, x]) => [f, back(f, x, all)]))
+  return { added: side['+'], removed: side['-'], folded: { added: count(readBack), removed: count(side['-']), lines: { added: count(side['+'], false), removed: count(side['-'], false) } }, proven: { news, unproven: news.filter((n) => !PROOF_FILES.every((p) => (side['+'][p] ?? '').includes(n))) }, renames: { recorded: renames.length, paired: paired.size, unpaired: renames.filter((r) => !paired.has(r)).map((r) => `${r.file}:${r.from}→${r.to}`) } }
 }
 const gatherFacts = (given: WorkflowFacts): WorkflowFacts => {
-  const s = given.staged ? readStaged(given.staged.diff, given.staged.generated, given.staged.renames) : null
-  const f = s ? { ...given, literals: given.literals ?? { added: findLiterals(s.added).dirty.filter((x) => !(s.removed[x.file] ?? '').includes(x.literal)).map((x) => ({ file: x.file, literal: x.literal, kind: x.kind })) }, folded: given.folded ?? s.folded, proven: given.proven ?? s.proven } : given
+  const s = given.staged ? getStaged(given.staged.diff, given.staged.generated, given.staged.renames) : null
+  const f = s ? { ...given, literals: given.literals ?? { added: listLiterals(s.added).dirty.filter((x) => !(s.removed[x.file] ?? '').includes(x.literal)).map((x) => ({ file: x.file, literal: x.literal, kind: x.kind })) }, folded: given.folded ?? s.folded, proven: given.proven ?? s.proven } : given
   if (f.config == null && f.docket == null) return f
-  const d = f.docket ? readDocketFacts(f.docket) : null
-  return { ...f, wrangler: f.wrangler ?? (typeof f.config === 'string' ? parseDeployConfig(f.config, d?.resources ?? []) : null), account: f.account ?? d?.account ?? null, observability: f.observability ?? d?.observability ?? null, usage: f.usage ?? d?.usage ?? null }
+  const d = f.docket ? listDocketFacts(f.docket) : null
+  return { ...f, wrangler: f.wrangler ?? (typeof f.config === 'string' ? getDeployConfig(f.config, d?.resources ?? []) : null), account: f.account ?? d?.account ?? null, observability: f.observability ?? d?.observability ?? null, usage: f.usage ?? d?.usage ?? null }
 }
 /** The generated files whose content is a function of the tree alone (dated records such as configs.json and the entropy stream are not among them). */
 /** The inputs of every cacheable step of next, by root: a deterministic step whose inputs have the same content address as when it last ran
@@ -158,7 +163,7 @@ const decideWorkflow = (name: WorkflowName, given: WorkflowFacts) => {
   return { workflow: name, strict, rules, violations, verify: verifyTheorems(rules.map((r) => r.theorem)), allowed, violated: violated.map((r) => r.rule), unknown: unknown.map((r) => r.rule), court: violated.length || (strict && unknown.length) ? { tool: 'legal', arguments: { court: { gate: `git ${name}`, status: 412, rule: 'collision', evidence: { violated: violated.map((r) => `${r.rule}: ${r.evidence}`), unknown: unknown.map((r) => r.rule) } } }, says: 'the violation is a case the court computes; the committer files it or satisfies the rule' } : null, says: allowed ? `${name} allowed: ${rules.map((r) => `${r.rule} holds (${r.theorem})`).join(', ') || 'no strict rule'}` : `${name} refused: ${[...violated.map((r) => `${r.rule} violated (${r.evidence})`), ...unknown.map((r) => `${r.rule} unknown (${r.evidence})`)].join('; ')}` }
 }
 type WorkflowName = typeof WORKFLOWS[number]
-const readWorkflow = (name: WorkflowName, o: { offline?: boolean } = {}) => {
+const getWorkflow = (name: WorkflowName, o: { offline?: boolean } = {}) => {
   const next = (flags: string[]) => ({ id: 'next', kind: 'run' as const, cmd: 'npm', args: ['run', 'next', '--', ...flags], says: `next ${flags.join(' ')}: generation, typecheck, tests, Lean, audit, purify${flags.includes('--offline') ? ', offline' : ''}` })
   const by: Record<WorkflowName, { says: string; steps: { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; detach?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }[] }> = {
     'pre-commit': { says: 'pre-commit is next itself, offline, fast and strict: any violation, a red step among them, refuses the commit; the generated files it rewrote join the commit', steps: [next(['--offline', '--fast', '--strict']), { id: 'stage', kind: 'stage', files: ['docs/public/mcp.json', 'docs/mcp.md', 'docs/.vitepress/config.mts', 'src/quantum/clay-statements.ts', 'README.md', 'docs/public/manifest.webmanifest', 'docs/public/configs.json'], says: 'the generated files join the commit' }] },
@@ -183,10 +188,10 @@ const GITHUB_DOORS: Record<'branches' | 'tags' | 'releases', string> = { branche
 type Answer = Request & { status: number; text: string }
 type Watch = { remote: string | null; owner: string | null; repo: string | null; head: string; branch: string; version: string; worktrees: number; branches: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[] }; tags: { local: number; remote: number | null; onlyLocal: string[]; onlyRemote: string[]; agree: string[]; mismatch: string[] }; releases: { count: number | null; latest: string | null; withoutTag: string[]; versionHasTag: boolean; versionHasRelease: boolean | null }; zenodo: { versions: number | null; latest: string | null; withoutRelease: string[] }; npm: { latest: string | null; behind: boolean | null; published: string | null }; runs: { latest: { name: string; conclusion: string | null; url: string }[]; red: string[] }; workflows: { remote: string[] | null; onlyRemote: string[]; onlyLocal: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; refusals: string[] }
 
-const parseOwnerRepo = (remote: string | null): { owner: string; repo: string } | null => { const m = remote ? /github\.com[:/]([^/]+)\/([^/.]+)(?:\.git)?$/.exec(remote) : null; return m ? { owner: m[1]!, repo: m[2]! } : null }
+const getOwnerRepo = (remote: string | null): { owner: string; repo: string } | null => { const m = remote ? /github\.com[:/]([^/]+)\/([^/.]+)(?:\.git)?$/.exec(remote) : null; return m ? { owner: m[1]!, repo: m[2]! } : null }
 
-const buildWatchRequests = (local: Local, contracts: Readonly<Record<string, readonly string[]>> = {}, via: 'rest' | 'mcp' = 'rest'): Request[] => {
-  const or = parseOwnerRepo(local.remote); const out: Request[] = []
+const createWatchRequests = (local: Local, contracts: Readonly<Record<string, readonly string[]>> = {}, via: 'rest' | 'mcp' = 'rest'): Request[] => {
+  const or = getOwnerRepo(local.remote); const out: Request[] = []
   const req = (id: string, url: string, purpose: Request['purpose']) => out.push({ id, url, purpose, contracted: isContracted(url, contracts) })
   // through GitHub's MCP, when the tenant's token opens it: the same three facts through the doors, one tools/call each; the token travels in the client's request
   if (or && via === 'mcp') { for (const purpose of ['branches', 'tags', 'releases'] as const) out.push({ id: purpose, url: GITHUB_MCP_URL, purpose, contracted: 'yes', method: 'POST', via: 'mcp', body: { jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: GITHUB_DOORS[purpose], arguments: { owner: or.owner, repo: or.repo, perPage: 100 } } } }); if (local.conceptDoi) req('zenodo', `https://zenodo.org/api/records?q=conceptdoi:%22${local.conceptDoi}%22&allversions=1&size=25`, 'zenodo'); if (local.pkg) req('npm', `https://registry.npmjs.org/${encodeURIComponent(local.pkg)}`, 'npm'); req('runs', `https://api.github.com/repos/${or.owner}/${or.repo}/actions/runs?per_page=20`, 'runs'); req('workflows', `https://api.github.com/repos/${or.owner}/${or.repo}/actions/workflows`, 'workflows'); return out }
@@ -198,10 +203,10 @@ const buildWatchRequests = (local: Local, contracts: Readonly<Record<string, rea
 }
 
 // an answer read whether REST (the JSON body) or MCP (the door's structured content, or the JSON its text carries, whether JSON or an event stream)
-const parse = <T>(a: Answer | undefined): T | null => { if (!a || a.status !== 200) return null; try { if ((a as { via?: string }).via === 'mcp') { const r = parseAnswer(a.text); return r.ok ? (typeof r.result === 'string' ? JSON.parse(r.result) : r.result) as T : null } return JSON.parse(a.text) as T } catch { return null } }
+const parse = <T>(a: Answer | undefined): T | null => { if (!a || a.status !== 200) return null; try { if ((a as { via?: string }).via === 'mcp') { const r = getAnswer(a.text); return r.ok ? (typeof r.result === 'string' ? JSON.parse(r.result) : r.result) as T : null } return JSON.parse(a.text) as T } catch { return null } }
 
-const readWatch = (local: Local, answers: readonly Answer[]): Watch => {
-  const or = parseOwnerRepo(local.remote)
+const getWatch = (local: Local, answers: readonly Answer[]): Watch => {
+  const or = getOwnerRepo(local.remote)
   const refusals = answers.filter((a) => a.status !== 200).map((a) => `${a.purpose}: HTTP ${a.status || 'none'} ${a.text.slice(0, 80)}`)
   const remoteBranches = parse<{ name: string; commit: { sha: string } }[]>(answers.find((a) => a.purpose === 'branches'))
   const remoteTags = parse<{ name: string; commit: { sha: string } }[]>(answers.find((a) => a.purpose === 'tags'))
@@ -253,7 +258,7 @@ const readWatch = (local: Local, answers: readonly Answer[]): Watch => {
     workflows: { remote: remoteWorkflows, onlyRemote: remoteWorkflows ? remoteWorkflows.filter((w) => !localWorkflows.includes(w)) : [], onlyLocal: remoteWorkflows ? localWorkflows.filter((w) => !remoteWorkflows.includes(w)) : [] }, leads, refusals }
 }
 
-const renderWatchPage = (w: Watch, date: string): string => ['---', 'title: Repository', 'order: 57', '---', '', '# Workspaces, branches, tags and releases, watched', '',
+const getWatchPage = (w: Watch, date: string): string => ['---', 'title: Repository', 'order: 57', '---', '', '# Workspaces, branches, tags and releases, watched', '',
   `Gathered here and verified online on ${date} by \`npm run next\` through the \`repository\` tool: ${w.owner ? `${w.owner}/${w.repo}` : 'no GitHub remote'}, HEAD ${w.head.slice(0, 8)} on ${w.branch}, package version ${w.version}, ${w.worktrees} workspace(s).`, '',
   '| Kind | Here | Remote | Agree | Only here | Only remote |', '|---|---:|---:|---:|---|---|',
   `| branches | ${w.branches.local} | ${w.branches.remote ?? 'not reached'} | ${w.branches.agree.length} | ${w.branches.onlyLocal.join(', ') || '—'} | ${w.branches.onlyRemote.join(', ') || '—'} |`,
@@ -276,15 +281,15 @@ const repository = defineTool('repository', {
     }
     if (isObj(args.status)) { const st = args.status as Parameters<typeof machineStatus>[0]; return { phase: 'status' as const, ...machineStatus({ ...st, events: st.events ?? [] }) } }
     if (isObj(args.steps)) { const st = args.steps as { plan?: Parameters<typeof planSteps>[0]; sealed?: Parameters<typeof planSteps>[1] }; return { phase: 'steps' as const, ...planSteps(st.plan ?? [], st.sealed ?? []) } }
-    if (Array.isArray(args.penalties)) return { phase: 'penalties' as const, ...countPenalties(args.penalties as Parameters<typeof countPenalties>[0]), ...wayEvidence(args.e2e as E2eOutcomes | undefined), ...(isObj(args.literals) ? { literals: penaliseLiterals(args.literals as Record<string, string>) } : {}), ...(isObj(args.capacity) ? { capacity: measureCapacity(args.capacity as CapacityInput) } : {}), ...(isObj(args.docs) ? { docs: findManualDocs((args.docs as { pages: { path: string; bytes: number }[] }).pages ?? [], (args.docs as { scripts?: Record<string, string> }).scripts ?? {}) } : {}) }
+    if (Array.isArray(args.penalties)) return { phase: 'penalties' as const, ...countPenalties(args.penalties as Parameters<typeof countPenalties>[0]), ...wayEvidence(args.e2e as E2eOutcomes | undefined), ...(isObj(args.literals) ? { literals: penaliseLiterals(args.literals as Record<string, string>) } : {}), ...(isObj(args.capacity) ? { capacity: getCapacity(args.capacity as CapacityInput) } : {}), ...(isObj(args.docs) ? { docs: listManualDocs((args.docs as { pages: { path: string; bytes: number }[] }).pages ?? [], (args.docs as { scripts?: Record<string, string> }).scripts ?? {}) } : {}) }
     if (isObj(args.violation)) { const v = args.violation as { kind: string; rule: string; evidence: string; theorem?: string }; return { phase: 'violation' as const, ...recordViolation(v.kind, v.rule, String(v.evidence), v.theorem ?? null) } }
     if (isObj(args.penalty)) return { phase: 'penalty' as const, ...pricePenalty(args.penalty as Parameters<typeof pricePenalty>[0]) }
-    if (typeof args.workflow === 'string') { if (!WORKFLOWS.includes(args.workflow as WorkflowName)) throw new Error(`no workflow ${args.workflow}; the workflows are ${WORKFLOWS.join(', ')}`); return { workflow: readWorkflow(args.workflow as WorkflowName, { offline: args.offline === true }), ...(isObj(args.facts) ? { decision: decideWorkflow(args.workflow as WorkflowName, args.facts as WorkflowFacts) } : {}), workflows: WORKFLOWS.length, rules: WORKFLOW_RULES.length, theorem: 'textbook_hook_workflows' } }
+    if (typeof args.workflow === 'string') { if (!WORKFLOWS.includes(args.workflow as WorkflowName)) throw new Error(`no workflow ${args.workflow}; the workflows are ${WORKFLOWS.join(', ')}`); return { workflow: getWorkflow(args.workflow as WorkflowName, { offline: args.offline === true }), ...(isObj(args.facts) ? { decision: decideWorkflow(args.workflow as WorkflowName, args.facts as WorkflowFacts) } : {}), workflows: WORKFLOWS.length, rules: WORKFLOW_RULES.length, theorem: 'textbook_hook_workflows' } }
     const local = args.local as Local | undefined
     if (!local) throw new Error('repository needs local: the facts the client gathered with git')
-    if (!Array.isArray(args.answers)) { const requests = buildWatchRequests(local, (args.contracts ?? {}) as Record<string, string[]>, args.via === 'mcp' ? 'mcp' : 'rest'); return { phase: 'requests' as const, requests: requests.length, requestList: requests } }
-    const w = readWatch(local, args.answers as Answer[])
-    return { phase: 'watch' as const, branches: w.branches.local, tags: w.tags.local, releases: w.releases.count ?? -1, leads: w.leads.length, refusals: w.refusals.length, watch: w, page: renderWatchPage(w, new Date().toISOString()) }
+    if (!Array.isArray(args.answers)) { const requests = createWatchRequests(local, (args.contracts ?? {}) as Record<string, string[]>, args.via === 'mcp' ? 'mcp' : 'rest'); return { phase: 'requests' as const, requests: requests.length, requestList: requests } }
+    const w = getWatch(local, args.answers as Answer[])
+    return { phase: 'watch' as const, branches: w.branches.local, tags: w.tags.local, releases: w.releases.count ?? -1, leads: w.leads.length, refusals: w.refusals.length, watch: w, page: getWatchPage(w, new Date().toISOString()) }
   },
   widget: flowWidget,
 })
@@ -303,39 +308,39 @@ export const REPOSITORY: Toolbox = {
     instructions: 'The client gathers with git: the remote url, HEAD, the branch, package.json\'s version, worktree list, every branch with its upstream and head, every tag with its commit, and the concept DOI from .zenodo.json\'s related identifiers; calls repository for the requests; fetches them (GitHub needs no token for public reads); calls again with the answers; writes repository.json and the page; its leads join the next-leads docket. Offline, the local facts alone are written.',
     directions: ['server only: fixture facts against fixture answers give every kind of lead once', 'client → server: git facts in, GitHub and Zenodo bodies in', 'toolbox → toolbox: requests checked against the contracts discovery found; leads feed readiness'],
     selftest: () => {
-      const { check, done } = makeChecks()
+      const { check, done } = createChecks()
       const va = recordViolation('folded', 'folded', 'net 400'), vb = recordViolation('folded', 'folded', 'net 400'), unknownKind = (() => { try { recordViolation('free-text', 'x', 'y'); return false } catch { return true } })()
       check('repository:violation-addressed', va.address === vb.address && recordViolation('folded', 'folded', 'net 401').address !== va.address && unknownKind && va.fallback.length > 0, 'one violation, one address: the same content the same record, other content another, a kind outside the closed set refused')
-      const reqs = buildWatchRequests(LOCAL, { 'api.github.com': ['/repos/{owner}/{repo}/branches', '/repos/{owner}/{repo}/tags', '/repos/{owner}/{repo}/releases'] })
+      const reqs = createWatchRequests(LOCAL, { 'api.github.com': ['/repos/{owner}/{repo}/branches', '/repos/{owner}/{repo}/tags', '/repos/{owner}/{repo}/releases'] })
       check('repository:requests', reqs.length === 8 && reqs.filter((r) => r.contracted === 'yes').length === 3 && reqs.some((r) => r.purpose === 'zenodo') && reqs.some((r) => r.purpose === 'npm') && reqs.some((r) => r.purpose === 'runs') && reqs.some((r) => r.purpose === 'workflows'), `${reqs.length} requests, ${reqs.filter((r) => r.contracted === 'yes').length} inside GitHub's contract`)
       const fc = forecastTimes([1200, 1200, 1200, 1200]), fs = forecastTimes([100, 300, 100, 300, 100, 300], { period: 2 })
       check('repository:forecast-exact', fc?.point === 1200 && fc.level === '1200000/1000' && fc.interval?.join() === '1200,1200' && fs?.point === 100 && fs.seasonal?.index.join() === '-100,100' && forecastTimes([]) === null, 'equal times forecast exactly that time, a seasonal series its phase, none recorded none (textbook_eta_from_receipts)')
       const renameDiff = (a: string, b: string) => `+++ b/src/quantum/x.ts\n-export const fooOf = (n: number) => barOf(n)\n-export const barOf = (n: number) => n\n+export const ${a} = (n: number) => ${b}(n)\n+export const ${b} = (n: number) => n\n+export const fresh = () => 1\n`
       const held: Rename[] = [{ file: 'src/quantum/x.ts', from: 'fooOf', to: 'readFoo', rest: uuidOf(' = (n: number) => barOf(n)') }, { file: 'src/quantum/x.ts', from: 'barOf', to: 'readBar', rest: uuidOf(' = (n: number) => n') }]
-      const rn = readStaged(renameDiff('readFoo', 'readBar'), [], held).proven, unheld = readStaged(renameDiff('readFoo', 'readBar')).proven, forged = readStaged(renameDiff('readFoo', 'readBar'), [], [{ ...held[0]!, rest: uuidOf('x') }, held[1]!]).renames
-      const only = readStaged(renameDiff('readFoo', 'readBar').split('\n').filter((l) => !l.includes('fresh')).join('\n'), [], held).folded
+      const rn = getStaged(renameDiff('readFoo', 'readBar'), [], held).proven, unheld = getStaged(renameDiff('readFoo', 'readBar')).proven, forged = getStaged(renameDiff('readFoo', 'readBar'), [], [{ ...held[0]!, rest: uuidOf('x') }, held[1]!]).renames
+      const only = getStaged(renameDiff('readFoo', 'readBar').split('\n').filter((l) => !l.includes('fresh')).join('\n'), [], held).folded
       const waived = (roles: { name: string }[], branch: string) => decideWorkflow('commit-msg', { message: 'x', branch, waivers: [{ rule: 'described', by: 'u1', reason: 'a draft', roles }] })
       const [byTenantAdmin, byMachine] = [waived([{ name: 'tenant-admin' }], 'dev/x'), waived([{ name: 'machine' }], 'dev/x')]
       check('repository:waiver-by-abilities', byTenantAdmin.allowed && byTenantAdmin.rules.find((r) => r.rule === 'described')?.holds === true && !byMachine.allowed && byMachine.violated.includes('described'), 'a waiver of described by a tenant admin stands (the rule abilities Payload holds let that role waive it), the same waiver by the machine does not')
       check('repository:rename-is-no-new-export', rn.news.join() === 'fresh' && rn.unproven.join() === 'fresh' && only.added === only.removed && unheld.news.length === 3 && forged.unpaired.join() === 'src/quantum/x.ts:fooOf→readFoo', `two renames Payload holds, one calling the other, add neither an export nor growth; unheld they are new, a forged witness unpairs its own; the one new export (${rn.news.join()}) still owes its proof (textbook_new_doors_proven)`)
-      check('repository:no-remote', buildWatchRequests({ ...LOCAL, remote: null, conceptDoi: null, pkg: null }).length === 0 && parseOwnerRepo('git@github.com:uuidna/qpu.git')?.repo === 'qpu', 'no remote, no requests; an ssh remote parses')
-      const w = readWatch(LOCAL, ANSWERS)
+      check('repository:no-remote', createWatchRequests({ ...LOCAL, remote: null, conceptDoi: null, pkg: null }).length === 0 && getOwnerRepo('git@github.com:uuidna/qpu.git')?.repo === 'qpu', 'no remote, no requests; an ssh remote parses')
+      const w = getWatch(LOCAL, ANSWERS)
       const ids = w.leads.map((l) => l.id)
       check('repository:leads', ids.includes('branch-only-local-rebuild-phase-1') && ids.includes('branch-only-remote-clean') && ids.includes('tag-only-local-waves-complete') && ids.includes('tag-only-remote-v1-0-1') && ids.includes('tag-moved-v1-4-0') && ids.includes('release-without-tag-v0-9-0') && ids.includes('version-without-release-v1-4-0') && ids.includes('zenodo-without-release-1-1-1') && ids.includes('workspace-qpu-2') && ids.includes('npm-behind-1-0-1') && ids.includes('workflow-red-publish') && ids.includes('workflow-only-remote-publish-yml') && !ids.some((i) => i.startsWith('version-without-tag')), ids.join(', '))
-      const offline = readWatch(LOCAL, [])
+      const offline = getWatch(LOCAL, [])
       check('repository:offline', offline.branches.remote === null && offline.leads.length === 1 && offline.leads[0]!.id === 'workspace-qpu-2' && offline.refusals.length === 0, 'without answers only the local facts speak: the second workspace')
-      const refused = readWatch(LOCAL, [{ ...ANSWERS[0]!, status: 403, text: 'rate limited' }])
+      const refused = getWatch(LOCAL, [{ ...ANSWERS[0]!, status: 403, text: 'rate limited' }])
       check('repository:refusal', refused.refusals.length === 1 && refused.branches.remote === null, 'a refused request is recorded, never read as agreement')
-      check('repository:page', renderWatchPage(w, '2026-01-01').includes('| tags | 3 | 3 | 1 | waves-complete | v1.0.1 |'), 'the page renders the tags row')
+      check('repository:page', getWatchPage(w, '2026-01-01').includes('| tags | 3 | 3 | 1 | waves-complete | v1.0.1 |'), 'the page renders the tags row')
             {
-        const viaMcp = buildWatchRequests(LOCAL, {}, 'mcp')
+        const viaMcp = createWatchRequests(LOCAL, {}, 'mcp')
         const stream = (v: unknown) => 'event: message\ndata: ' + JSON.stringify({ jsonrpc: '2.0', id: 1, result: { content: [{ type: 'text', text: JSON.stringify(v) }] } }) + '\n\n'
         const mcpAnswers: Answer[] = [
           { ...viaMcp[0]!, status: 200, text: stream([{ name: 'main', commit: { sha: '1111' } }, { name: 'rebuild/phase-1', commit: { sha: '2222' } }]) } as Answer,
           { ...viaMcp[1]!, status: 200, text: stream([{ name: 'v1.4.0', commit: { sha: '4444' } }]) } as Answer,
           { ...viaMcp[2]!, status: 200, text: stream([{ tag_name: 'v1.4.0', name: 'v1.4.0', draft: false, prerelease: false, published_at: '2026-10-01T00:00:00Z' }]) } as Answer,
         ]
-        const wm = readWatch(LOCAL, mcpAnswers)
+        const wm = getWatch(LOCAL, mcpAnswers)
         check('repository:github-mcp-doors', viaMcp.filter((r) => r.via === 'mcp').length === 3 && viaMcp.every((r) => r.via !== 'mcp' || (r.method === 'POST' && (r.body as { params: { name: string } }).params.name.startsWith('list_'))) && wm.branches.remote === 2 && wm.tags.remote === 1 && wm.releases.count === 1, `three doors (${viaMcp.filter((r) => r.via === 'mcp').map((r) => (r.body as { params: { name: string } }).params.name).join(', ')}), their event-stream answers read into ${wm.branches.remote} branches, ${wm.tags.remote} tags, ${wm.releases.count} release(s)`)
       }
       return done()

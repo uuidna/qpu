@@ -22,7 +22,7 @@ export const listReferences = (d: RefDoc): string[] => {
   return out
 }
 /** The graph, its cycles and its order. */
-export const buildReferenceGraph = (docs: readonly RefDoc[]) => {
+export const createReferenceGraph = (docs: readonly RefDoc[]) => {
   const byName = new Map<string, string>(); for (const d of docs) { byName.set(d.id, d.id); if (d.slug) byName.set(d.slug, d.id) }
   const edges: { from: string; to: string }[] = [], dangling: { from: string; name: string }[] = []
   for (const d of docs) for (const name of listReferences(d)) { const to = byName.get(name) ?? (UUID.test(name) ? byName.get(name.toLowerCase()) : undefined); if (to) edges.push({ from: d.id, to }); else dangling.push({ from: d.id, name }) }

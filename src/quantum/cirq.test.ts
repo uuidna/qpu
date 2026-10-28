@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { willowNoise } from './processor.ts'
-import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, TOFFOLI, X, Z, applied, computeExpectation, measure, raiseGate } from './cirq.ts'
+import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, TOFFOLI, X, Z, applied, getExpectation, measure, raiseGate } from './cirq.ts'
 
 const [q0, q1] = LineQubit.range(2)
 const BELL = [applied(H, q0!), applied(CNOT, q0!, q1!)]
@@ -117,12 +117,12 @@ test('amplitude damping takes |1> to |0> with probability gamma, as Cirq\'s ampl
 
 test('Pauli-string expectation values: Z on |0> is 1, on |1> is -1, and a Bell pair has ZZ and XX equal to 1', () => {
   const zero = new DensityMatrixSimulator().simulate(new Circuit([applied(H, q0!), applied(H, q0!)]))
-  assert.ok(Math.abs(computeExpectation(zero, { 'line:0': 'Z' }) - 1) < 1e-12)
+  assert.ok(Math.abs(getExpectation(zero, { 'line:0': 'Z' }) - 1) < 1e-12)
   const one = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]))
-  assert.ok(Math.abs(computeExpectation(one, { 'line:0': 'Z' }) + 1) < 1e-12)
+  assert.ok(Math.abs(getExpectation(one, { 'line:0': 'Z' }) + 1) < 1e-12)
   const bell = new DensityMatrixSimulator().simulate(new Circuit(BELL))
-  assert.ok(Math.abs(computeExpectation(bell, { 'line:0': 'Z', 'line:1': 'Z' }) - 1) < 1e-12)
-  assert.ok(Math.abs(computeExpectation(bell, { 'line:0': 'X', 'line:1': 'X' }) - 1) < 1e-12)
+  assert.ok(Math.abs(getExpectation(bell, { 'line:0': 'Z', 'line:1': 'Z' }) - 1) < 1e-12)
+  assert.ok(Math.abs(getExpectation(bell, { 'line:0': 'X', 'line:1': 'X' }) - 1) < 1e-12)
 })
 
 test('the device exposes its qubit set and its couplers, and validates a moment as a whole', () => {

@@ -88,7 +88,7 @@ export const textbookLogicalError = (code: RepetitionCode, channel: ErrorChannel
 /** The break-even probability found from the simulation itself: the p at which the logical error stops being lower than the
  *  physical error, located by bisection between the last sweep point where the code helps and the first where it does not.
  *  Null when the sweep shows no crossing. */
-export const findBreakEven = (code: RepetitionCode, channel: ErrorChannel, logical: LogicalState, sweep: readonly CodePoint[]): number | null => {
+export const getBreakEven = (code: RepetitionCode, channel: ErrorChannel, logical: LogicalState, sweep: readonly CodePoint[]): number | null => {
   const helps = (pt: CodePoint) => pt.logicalError < pt.physicalError
   let lo: number | null = null
   let hi: number | null = null

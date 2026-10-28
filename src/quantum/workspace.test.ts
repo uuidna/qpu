@@ -9,9 +9,9 @@ import { readFileSync, readdirSync, mkdtempSync, mkdirSync, renameSync } from 'n
 import { tmpdir } from 'node:os'
 import { pathToFileURL } from 'node:url'
 import { WORKSPACE_FIXTURES as W } from './examples.ts'
-import { readWorkspace } from './workspace.ts'
+import { getWorkspace } from './workspace.ts'
 import { qpuHooksOf } from './blocks.ts'
-import { readBinding0 } from './toolboxes/raid.ts'
+import { getBinding0 } from './toolboxes/raid.ts'
 import { register } from 'tsx/esm/api'
 
 register() // the site's extensionless imports load through tsx; the tree runs on Node's own type stripping
@@ -34,7 +34,7 @@ test('a Lexical form block validates, its submission lands, every rich text fiel
   const w = rich[0].hooks, node = (f: any) => f.editor.editorConfig.features.nodeHooks.beforeChange.get('block')?.[0], blocks = rich.flatMap((f) => (f.editor.editorConfig.resolvedFeatureMap.get('blocks')?.sanitizedServerFeatureProps.blocks ?? []).map(() => f))
   assert.deepEqual([rich.filter((f) => Object.keys(w).every((h) => f.hooks[h].includes(w[h][0]))).length, rich.length, blocks.filter((f) => node(f) === node(rich[0])).length, blocks.length], [5, 5, 6, 6]) // two bodies, the form builder's three; form, qpu and driveFile in each editor
   const payload = await getPayload({ config }), context: Record<string, any> = {}
-  const read = readWorkspace({ forms: readWorkspace({ form: W.form }).forms })
+  const read = getWorkspace({ forms: getWorkspace({ form: W.form }).forms })
   const form = await payload.create({ collection: 'forms', data: { ...read.form, confirmationType: 'message', confirmationMessage: W.form.fields[4]!.message } })
   const block = (fields: object) => ({ root: { type: 'root', version: 1, direction: null, format: '', indent: 0, children: [{ type: 'block', version: 2, format: '', fields: { id: 'b', blockName: '', ...fields } }] } })
   await payload.create({ collection: 'pages', data: { body: block({ blockType: 'form', form: form.id }) } })
@@ -42,14 +42,14 @@ test('a Lexical form block validates, its submission lands, every rich text fiel
   await payload.create({ collection: 'pages', data: { body: drive, items: [{ layout: [{ blockType: 'note', body: drive }] }] }, context })
   const at = context.qpuWitness
   assert.deepEqual([keys.filter((k) => at[k]?.before && at[k].after && at[k].collapse < 14).length, at[keys[0]!].changed, at[keys[3]!].changed, context.qpuWitnessErrors], [4, true, false, undefined])
-  await payload.create({ collection: 'form-submissions', data: { ...readWorkspace({ response: W.response }).submission, form: form.id } })
+  await payload.create({ collection: 'form-submissions', data: { ...getWorkspace({ response: W.response }).submission, form: form.id } })
   assert.equal(rows['form-submissions']?.length, 1)
   assert.deepEqual(rows['forms']![0].fields.map((f: { blockType: string }) => f.blockType), W.form.fields.map((f: { blockType: string }) => f.blockType))
   await assert.rejects(payload.create({ collection: 'pages', data: { body: block({ blockType: 'nope' }) } }))
   // every plugin's collection (the form builder's two among them) read back from binding 0; then one version moved back to its first-four-digit
   // folder, and the qpu-raid-verify batch moves it to the UUID's middle and finds every version Payload holds on two verified copies or rebuilt at binding 0
   const files = () => Object.fromEntries(readdirSync(b0, { recursive: true }).map(String).filter((f) => /[\da-f-]{36}(\.latest)?$/.test(f)).map((f) => [f, readFileSync(join(b0, f), 'utf8')]))
-  for (const c of ['pages', 'forms', 'form-submissions']) { const back = readBinding0(c, null, files()); assert.deepEqual([back.docs?.map((d) => d.id).sort(), back.refused], [rows[c]!.map((d) => d.id).sort(), []], c) }
+  for (const c of ['pages', 'forms', 'form-submissions']) { const back = getBinding0(c, null, files()); assert.deepEqual([back.docs?.map((d) => d.id).sort(), back.refused], [rows[c]!.map((d) => d.id).sort(), []], c) }
   const moved = Object.keys(files()).find((f) => !f.endsWith('.latest'))!, id = moved.split('/').at(-1)!, legacy = join(b0, id.slice(0, 2), id.slice(2, 4), id)
   mkdirSync(join(legacy, '..'), { recursive: true }); renameSync(join(b0, moved), legacy)
   await config.jobs.tasks.find((t: { slug: string }) => t.slug === 'qpu-raid-verify').handler({ input: {}, req: { payload } })

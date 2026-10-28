@@ -14,10 +14,10 @@ mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
 const UA = 'uuidna-qpu-discover (https://qpu.uuidna.com)'
 const call = toolCallerOf('discover')
 import { setTimeout as sleep } from 'node:timers/promises'
-import { readJson, fetchWithTimeout, mcpClient, runSelftest, publishRecord, readLeads } from './mcp.ts'
-const { all: LEADS } = await readLeads()
-const fetchOne = async (r: Request): Promise<Answer> => {
-  try { const res = await fetchWithTimeout(r.url, 'application/json, text/event-stream, application/yaml, text/xml, */*', 30000, { method: r.method, body: r.body, agent: UA, headers: r.headers }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
+import { getJson, getWithTimeout, mcpClient, runSelftest, publishRecord, listLeads } from './mcp.ts'
+const { all: LEADS } = await listLeads()
+const getOne = async (r: Request): Promise<Answer> => {
+  try { const res = await getWithTimeout(r.url, 'application/json, text/event-stream, application/yaml, text/xml, */*', 30000, { method: r.method, body: r.body, agent: UA, headers: r.headers }); return { ...r, status: res.status, type: res.headers.get('content-type') ?? '', text: await res.text() } }
   catch (e) { return { ...r, status: 0, type: '', text: `fetch failed: ${(e as Error).message}` } }
 }
 const main = async () => {
@@ -27,7 +27,7 @@ const main = async () => {
   const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
   const started0 = Date.now()
   const cachePath = join(ROOT, (await import('../src/quantum/toolboxes/repository.ts')).RUN_FILES.discoveryAnswers)
-  const cache: Record<string, Answer & { at: string }> = readJson(cachePath, {})
+  const cache: Record<string, Answer & { at: string }> = getJson(cachePath, {})
   if (isMerge) Object.assign(cache, gatherShards<Record<string, Answer & { at: string }>>('discover', {}))
   const shardCache: Record<string, Answer & { at: string }> = {}
   console.log(`discover (${shardLabel()})`)
@@ -49,7 +49,7 @@ const main = async () => {
       const c = cache[r.id]
       if (c && fresh(c) && c.status !== 0) { answers.push({ ...r, status: c.status, type: c.type, text: c.text }); reused += 1; continue }
       if (Date.now() - started0 >= QUANTUM_MS) { remaining += 1; continue }
-      const a = await fetchOne(r); answers.push(a); fetched += 1; cache[r.id] = { ...a, at: new Date().toISOString() }; shardCache[r.id] = cache[r.id]!
+      const a = await getOne(r); answers.push(a); fetched += 1; cache[r.id] = { ...a, at: new Date().toISOString() }; shardCache[r.id] = cache[r.id]!
       await sleep(r.purpose === 'contract' ? 150 : 300)
     }
     // a shard leaves its answers and stops after the first phase: the merge runs every phase with everything kept
@@ -76,7 +76,7 @@ const main = async () => {
       const c = cache[r.id]
       if (c && fresh(c) && c.status !== 0) { got.push({ ...r, status: c.status, type: c.type, text: c.text }); continue }
       if (Date.now() - started0 >= QUANTUM_MS) { relatedRemaining += 1; continue }
-      const a = await fetchOne(r); got.push(a); relatedFetched += 1; cache[r.id] = { ...a, at: new Date().toISOString() }
+      const a = await getOne(r); got.push(a); relatedFetched += 1; cache[r.id] = { ...a, at: new Date().toISOString() }
       await sleep(200)
     }
     if (!got.length) continue
@@ -88,7 +88,7 @@ const main = async () => {
       let a: Answer
       if (c && fresh(c)) a = { ...e, purpose: 'mcp-list', host: new URL(e.url).host, method: 'POST', status: c.status, type: c.type, text: c.text } as Answer
       else if (Date.now() - started0 >= QUANTUM_MS) { relatedRemaining += 1; continue }
-      else { a = await fetchOne({ ...e, purpose: 'mcp-list', host: new URL(e.url).host, method: 'POST' } as Request); relatedFetched += 1; cache[e.id] = { ...a, at: new Date().toISOString() }; await sleep(200) }
+      else { a = await getOne({ ...e, purpose: 'mcp-list', host: new URL(e.url).host, method: 'POST' } as Request); relatedFetched += 1; cache[e.id] = { ...a, at: new Date().toISOString() }; await sleep(200) }
       let doors = 0; try { const j = JSON.parse(a.text.startsWith('event:') || a.text.startsWith('data:') ? (a.text.split('\n').find((x) => x.startsWith('data:')) ?? '').slice(5) : a.text); const tools = (j.result?.tools ?? []) as { name: string; description?: string }[]; doors = tools.length; if (tools.length) remotes.push({ server: e.server, url: e.url, tools }) } catch { /* no doors read */ }
       extended.push({ server: e.server, url: e.url, status: a.status, doors })
     }

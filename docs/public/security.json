@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T18:56:48.998Z",
+ "date": "2026-10-28T04:25:05.812Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -130,7 +130,7 @@
    "id": "dependencies:site",
    "perspective": "developer",
    "passed": true,
-   "evidence": "info 0, low 0, moderate 1, high 0, critical 0",
+   "evidence": "info 0, low 1, moderate 1, high 0, critical 0",
    "remedy": "npm audit fix or a pinned fixed version; a finding is a lead"
   },
   {
@@ -185,7 +185,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1305 kernel-accepted theorems",
+   "evidence": "1771 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -515,7 +515,7 @@
   "says": "the access audit from every perspective over the generated code and the answered configurations: every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms"
  },
  "leaks": {
-  "texts": 3500,
+  "texts": 5085,
   "findings": [
    {
     "where": "docs/public/graph.json",
@@ -532,18 +532,11 @@
     "remedy": "a host by its public name; a private address says the network"
    },
    {
-    "where": "docs/public/next-leads.json",
-    "kind": "local-path",
-    "count": 22,
+    "where": "docs/public/legal.json",
+    "kind": "email",
+    "count": 8,
     "served": false,
-    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
-   },
-   {
-    "where": "docs/public/repository.json",
-    "kind": "local-path",
-    "count": 22,
-    "served": false,
-    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+    "remedy": "a contact is a URL; an address never enters the tree (purify)"
    },
    {
     "where": "docs/public/session.json",
@@ -621,6 +614,153 @@
     "count": 226,
     "served": true,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/683dd945-dcc3-45c2-9431-0cad43dce615",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/0bc9e0b6-6b5a-5fbb-9a59-f6b73038cef1",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/8ed8bd83-b1d3-6ac9-842b-d023cb980310",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/b73aedb6-1c86-6e3e-872a-8cb526b1e27b",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/7331bd32-905b-2a0f-b6ec-ff8c8bb4b86c",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/a812d88b-cbcc-8b79-9014-d26cb704899f",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/343ec2be-3935-1b73-859b-d2932a3c2b09",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/9f37ed4d-5ee8-8fa6-b59b-8f89a65e5abe",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/b3c9d49b-771d-7535-8f3d-76e2cd4b8185",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/18659c3b-f053-29a8-8fe2-1a47fe090182",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/14d8885d-2b8b-5540-899a-3f29f732788f",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/509857d5-e998-5c24-adc0-fbe664bdb188",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/7845aa5a-bde2-21f1-ae5d-838dda06ed4c",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/78b94272-1d0a-39f3-828c-cd74cf1e6770",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/2ebbbeb8-9501-87e6-84aa-18e4bffd48fb",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/f79543a7-a2cc-6beb-83e8-41bce3346af0",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/725cc05d-b3c6-40e9-bbdf-6657fe110b73",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/362c34ad-50c0-64f1-aa3f-6a971b292deb",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/9c435dcd-d2d7-5180-a396-ef85d4f97f6a",
+    "kind": "token",
+    "count": 9,
+    "served": true,
+    "remedy": "revoke the token where it was issued and issue a new one into the secrets"
+   },
+   {
+    "where": "payload/entries/a67a18ad-5fdc-26b5-8bba-315d80174797",
+    "kind": "local-path",
+    "count": 30,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/a67a18ad-5fdc-26b5-8bba-315d80174797",
+    "kind": "private-ip",
+    "count": 8,
+    "served": true,
+    "remedy": "a host by its public name; a private address says the network"
    },
    {
     "where": "payload/entries/cc816190-db41-562d-b14a-490ae75d2bd0",
@@ -848,17 +988,17 @@
    }
   ],
   "byKind": {
-   "email": 410,
+   "email": 418,
    "stripe-secret": 0,
-   "token": 160,
+   "token": 331,
    "jwt": 0,
    "private-key": 0,
-   "local-path": 989,
-   "private-ip": 2
+   "local-path": 975,
+   "private-ip": 10
   },
-  "total": 1561,
-  "served": 41,
-  "setAside": 25,
+  "total": 1734,
+  "served": 62,
+  "setAside": 83,
   "clean": false,
   "leads": [
    {
@@ -876,16 +1016,9 @@
     "reason": "not served yet: remove it at the source before it is"
    },
    {
-    "id": "leak-local-path-docs-public-next-leads-json",
-    "source": "docs/public/next-leads.json",
-    "statement": "22 local-path finding(s) in docs/public/next-leads.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
-    "status": "open",
-    "reason": "not served yet: remove it at the source before it is"
-   },
-   {
-    "id": "leak-local-path-docs-public-repository-json",
-    "source": "docs/public/repository.json",
-    "statement": "22 local-path finding(s) in docs/public/repository.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "id": "leak-email-docs-public-legal-json",
+    "source": "docs/public/legal.json",
+    "statement": "8 email finding(s) in docs/public/legal.json: a contact is a URL; an address never enters the tree (purify)",
     "status": "open",
     "reason": "not served yet: remove it at the source before it is"
    },
@@ -963,6 +1096,153 @@
     "id": "leak-local-path-qpu-ceci-workers-dev-receipts-ndjson",
     "source": "qpu.ceci.workers.dev/receipts.ndjson",
     "statement": "226 local-path finding(s) in qpu.ceci.workers.dev/receipts.ndjson, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-683dd945-dcc3-45c2-9431-0cad43dce615",
+    "source": "payload/entries/683dd945-dcc3-45c2-9431-0cad43dce615",
+    "statement": "9 token finding(s) in payload/entries/683dd945-dcc3-45c2-9431-0cad43dce615, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-0bc9e0b6-6b5a-5fbb-9a59-f6b73038cef1",
+    "source": "payload/entries/0bc9e0b6-6b5a-5fbb-9a59-f6b73038cef1",
+    "statement": "9 token finding(s) in payload/entries/0bc9e0b6-6b5a-5fbb-9a59-f6b73038cef1, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-8ed8bd83-b1d3-6ac9-842b-d023cb980310",
+    "source": "payload/entries/8ed8bd83-b1d3-6ac9-842b-d023cb980310",
+    "statement": "9 token finding(s) in payload/entries/8ed8bd83-b1d3-6ac9-842b-d023cb980310, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-b73aedb6-1c86-6e3e-872a-8cb526b1e27b",
+    "source": "payload/entries/b73aedb6-1c86-6e3e-872a-8cb526b1e27b",
+    "statement": "9 token finding(s) in payload/entries/b73aedb6-1c86-6e3e-872a-8cb526b1e27b, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-7331bd32-905b-2a0f-b6ec-ff8c8bb4b86c",
+    "source": "payload/entries/7331bd32-905b-2a0f-b6ec-ff8c8bb4b86c",
+    "statement": "9 token finding(s) in payload/entries/7331bd32-905b-2a0f-b6ec-ff8c8bb4b86c, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-a812d88b-cbcc-8b79-9014-d26cb704899f",
+    "source": "payload/entries/a812d88b-cbcc-8b79-9014-d26cb704899f",
+    "statement": "9 token finding(s) in payload/entries/a812d88b-cbcc-8b79-9014-d26cb704899f, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-343ec2be-3935-1b73-859b-d2932a3c2b09",
+    "source": "payload/entries/343ec2be-3935-1b73-859b-d2932a3c2b09",
+    "statement": "9 token finding(s) in payload/entries/343ec2be-3935-1b73-859b-d2932a3c2b09, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-9f37ed4d-5ee8-8fa6-b59b-8f89a65e5abe",
+    "source": "payload/entries/9f37ed4d-5ee8-8fa6-b59b-8f89a65e5abe",
+    "statement": "9 token finding(s) in payload/entries/9f37ed4d-5ee8-8fa6-b59b-8f89a65e5abe, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-b3c9d49b-771d-7535-8f3d-76e2cd4b8185",
+    "source": "payload/entries/b3c9d49b-771d-7535-8f3d-76e2cd4b8185",
+    "statement": "9 token finding(s) in payload/entries/b3c9d49b-771d-7535-8f3d-76e2cd4b8185, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-18659c3b-f053-29a8-8fe2-1a47fe090182",
+    "source": "payload/entries/18659c3b-f053-29a8-8fe2-1a47fe090182",
+    "statement": "9 token finding(s) in payload/entries/18659c3b-f053-29a8-8fe2-1a47fe090182, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-14d8885d-2b8b-5540-899a-3f29f732788f",
+    "source": "payload/entries/14d8885d-2b8b-5540-899a-3f29f732788f",
+    "statement": "9 token finding(s) in payload/entries/14d8885d-2b8b-5540-899a-3f29f732788f, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-509857d5-e998-5c24-adc0-fbe664bdb188",
+    "source": "payload/entries/509857d5-e998-5c24-adc0-fbe664bdb188",
+    "statement": "9 token finding(s) in payload/entries/509857d5-e998-5c24-adc0-fbe664bdb188, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-7845aa5a-bde2-21f1-ae5d-838dda06ed4c",
+    "source": "payload/entries/7845aa5a-bde2-21f1-ae5d-838dda06ed4c",
+    "statement": "9 token finding(s) in payload/entries/7845aa5a-bde2-21f1-ae5d-838dda06ed4c, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-78b94272-1d0a-39f3-828c-cd74cf1e6770",
+    "source": "payload/entries/78b94272-1d0a-39f3-828c-cd74cf1e6770",
+    "statement": "9 token finding(s) in payload/entries/78b94272-1d0a-39f3-828c-cd74cf1e6770, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-2ebbbeb8-9501-87e6-84aa-18e4bffd48fb",
+    "source": "payload/entries/2ebbbeb8-9501-87e6-84aa-18e4bffd48fb",
+    "statement": "9 token finding(s) in payload/entries/2ebbbeb8-9501-87e6-84aa-18e4bffd48fb, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-f79543a7-a2cc-6beb-83e8-41bce3346af0",
+    "source": "payload/entries/f79543a7-a2cc-6beb-83e8-41bce3346af0",
+    "statement": "9 token finding(s) in payload/entries/f79543a7-a2cc-6beb-83e8-41bce3346af0, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-725cc05d-b3c6-40e9-bbdf-6657fe110b73",
+    "source": "payload/entries/725cc05d-b3c6-40e9-bbdf-6657fe110b73",
+    "statement": "9 token finding(s) in payload/entries/725cc05d-b3c6-40e9-bbdf-6657fe110b73, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-362c34ad-50c0-64f1-aa3f-6a971b292deb",
+    "source": "payload/entries/362c34ad-50c0-64f1-aa3f-6a971b292deb",
+    "statement": "9 token finding(s) in payload/entries/362c34ad-50c0-64f1-aa3f-6a971b292deb, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-token-payload-entries-9c435dcd-d2d7-5180-a396-ef85d4f97f6a",
+    "source": "payload/entries/9c435dcd-d2d7-5180-a396-ef85d4f97f6a",
+    "statement": "9 token finding(s) in payload/entries/9c435dcd-d2d7-5180-a396-ef85d4f97f6a, served publicly: revoke the token where it was issued and issue a new one into the secrets",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-a67a18ad-5fdc-26b5-8bba-315d80174797",
+    "source": "payload/entries/a67a18ad-5fdc-26b5-8bba-315d80174797",
+    "statement": "30 local-path finding(s) in payload/entries/a67a18ad-5fdc-26b5-8bba-315d80174797, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-private-ip-payload-entries-a67a18ad-5fdc-26b5-8bba-315d80174797",
+    "source": "payload/entries/a67a18ad-5fdc-26b5-8bba-315d80174797",
+    "statement": "8 private-ip finding(s) in payload/entries/a67a18ad-5fdc-26b5-8bba-315d80174797, served publicly: a host by its public name; a private address says the network",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
@@ -1192,6 +1472,6 @@
    }
   ],
   "theorem": "textbook_leaks_redacted",
-  "says": "1561 finding(s) in 38 text(s), 41 served publicly; values redacted, 25 notation(s) set aside"
+  "says": "1734 finding(s) in 57 text(s), 62 served publicly; values redacted, 83 notation(s) set aside"
  }
 }

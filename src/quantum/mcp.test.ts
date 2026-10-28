@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { handle } from './mcp.ts'
-import { LEADS, findCleanupSubjects } from './leads.ts'
+import { LEADS, listCleanupSubjects } from './leads.ts'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
@@ -273,13 +273,13 @@ test('the repositories tool serves the seventeen quantumlib repositories, and fi
 })
 
 test('a cleanup lead parses to the subjects whose absence settles it: paths or git branches, and nothing else parses', () => {
-  const cleanups = LEADS.filter((l) => findCleanupSubjects(l))
+  const cleanups = LEADS.filter((l) => listCleanupSubjects(l))
   assert.equal(cleanups.length, 4)
-  assert.deepEqual(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-census-consolidated')!), { kind: 'paths', names: ['scripts/census.lean'] })
-  assert.deepEqual(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-auto-release-script')!), { kind: 'paths', names: ['scripts/auto-release.ts'] })
-  assert.deepEqual(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-next-build-dir')!), { kind: 'paths', names: ['.next'] })
-  assert.deepEqual(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-stale-branches')!), { kind: 'branches', names: ['snapshot/pre-purge', 'purge/google-only'] })
-  assert.equal(findCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-fnv1a-consolidated')!), null, 'a cleanup served by a tool is settled by that tool, not by absence')
+  assert.deepEqual(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-census-consolidated')!), { kind: 'paths', names: ['scripts/census.lean'] })
+  assert.deepEqual(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-auto-release-script')!), { kind: 'paths', names: ['scripts/auto-release.ts'] })
+  assert.deepEqual(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-next-build-dir')!), { kind: 'paths', names: ['.next'] })
+  assert.deepEqual(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-stale-branches')!), { kind: 'branches', names: ['snapshot/pre-purge', 'purge/google-only'] })
+  assert.equal(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-fnv1a-consolidated')!), null, 'a cleanup served by a tool is settled by that tool, not by absence')
 })
 
 test('the cheapest view: an LLM reads only the cheapest way to have the answer and what tampering with it would cost, the full answer kept in structuredContent', () => {

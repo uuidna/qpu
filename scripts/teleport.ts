@@ -23,14 +23,14 @@ let loaded = 0, files = 0, bytes = 0, onTheWay = 0
 // used (backward: producers learn what is wanted, unused blocks can be pruned), and flushes its own fresh blocks every second while it runs,
 // watching the folder, so a sibling in the same wave receives them on the way instead of computing them again
 const own = `${(process.argv[1] ?? 'step').split('/').pop()!.replace(/\.ts$/, '')}-${process.pid}.json`
-const loadFile = (f: string): number => { try { const text = readFileSync(join(DIR, f), 'utf8'), parsed = JSON.parse(text) as { fingerprint?: string; blocks?: unknown[] }; if (parsed.fingerprint !== FINGERPRINT || !Array.isArray(parsed.blocks)) return 0; bytes += text.length; return balancerLoad(parsed.blocks as never) } catch { return 0 } }
+const getFile = (f: string): number => { try { const text = readFileSync(join(DIR, f), 'utf8'), parsed = JSON.parse(text) as { fingerprint?: string; blocks?: unknown[] }; if (parsed.fingerprint !== FINGERPRINT || !Array.isArray(parsed.blocks)) return 0; bytes += text.length; return balancerLoad(parsed.blocks as never) } catch { return 0 } }
 mkdirSync(DIR, { recursive: true })
-for (const f of readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== own)) { const n = loadFile(f); if (n) { loaded += n; files++ } }
+for (const f of readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== own)) { const n = getFile(f); if (n) { loaded += n; files++ } }
 const teleported = { files, blocks: loaded, bytes, ms: Date.now() - started }
 if (loaded) console.log(`teleport: ${loaded} blocks from ${files} step(s) (${(bytes / 1024).toFixed(0)} KB) in ${teleported.ms} ms`)
 const flush = () => { try { const fresh = balancerSnapshot({ onlyNew: true }), used = balancerSnapshot({ used: true }).map((b) => b.address); if (!fresh.length && !used.length) return 0; const tmp = join(DIR, own + '.tmp'); writeFileSync(tmp, JSON.stringify({ fingerprint: FINGERPRINT, blocks: fresh, used })); renameSync(tmp, join(DIR, own)); return fresh.length } catch { return 0 } }
 const timer = setInterval(flush, 1000); timer.unref()
-try { watch(DIR, (_e, f) => { if (f && f.endsWith('.json') && f !== own) onTheWay += loadFile(f) }).unref() } catch { /* no watcher: start and exit carry the blocks */ }
+try { watch(DIR, (_e, f) => { if (f && f.endsWith('.json') && f !== own) onTheWay += getFile(f) }).unref() } catch { /* no watcher: start and exit carry the blocks */ }
 process.on('exit', () => {
   clearInterval(timer); const left = flush(), used = balancerSnapshot({ used: true }).length
   if (left) console.log(`teleport: ${left} block(s) left for the next step (${(statSync(join(DIR, own)).size / 1024).toFixed(0)} KB)`)

@@ -28,7 +28,7 @@ export type Gate = { name: string; arity: number; matrix: [number, number][] }
 const s2 = Math.SQRT1_2
 const c = (re: number, im = 0): [number, number] => [re, im]
 /** A matrix row-major, entry by entry. O(dim²). */
-const buildMatrix = (dim: number, entry: (r: number, s: number) => [number, number]): [number, number][] => Array.from({ length: dim * dim }, (_, k) => entry(Math.floor(k / dim), k % dim))
+const createMatrix = (dim: number, entry: (r: number, s: number) => [number, number]): [number, number][] => Array.from({ length: dim * dim }, (_, k) => entry(Math.floor(k / dim), k % dim))
 
 export const X: Gate = { name: 'X', arity: 1, matrix: [c(0), c(1), c(1), c(0)] }
 export const Y: Gate = { name: 'Y', arity: 1, matrix: [c(0), c(0, -1), c(0, 1), c(0)] }
@@ -45,14 +45,14 @@ export const ZZ: Gate = { name: 'ZZ', arity: 2, matrix: [c(1), c(0), c(0), c(0),
 export const TOFFOLI: Gate = {
   name: 'TOFFOLI',
   arity: 3,
-  matrix: buildMatrix(8, (r, col) => c((r === col && r < 6) || (r === 6 && col === 7) || (r === 7 && col === 6) ? 1 : 0)),
+  matrix: createMatrix(8, (r, col) => c((r === col && r < 6) || (r === 6 && col === 7) || (r === 7 && col === 6) ? 1 : 0)),
 }
 
 /** Refuses a gate that is not an involution (G·G ≠ I): the powers and exponentials here are exact for involutions only. */
 const assertInvolution = (gate: Gate, what: string): void => {
   const dim = 1 << gate.arity
   const at = (m: [number, number][], r: number, s: number) => m[r * dim + s]!
-  const square = buildMatrix(dim, (r, s) => {
+  const square = createMatrix(dim, (r, s) => {
     let sr = 0, si = 0
     for (let k = 0; k < dim; k++) {
       const [ar, ai] = at(gate.matrix, r, k), [br, bi] = at(gate.matrix, k, s)
@@ -71,7 +71,7 @@ export const raiseGate = (gate: Gate, t: number): Gate => {
   const dim = 1 << gate.arity
   const at = (m: [number, number][], r: number, s: number) => m[r * dim + s]!
   const [cr, ci] = [Math.cos(Math.PI * t), Math.sin(Math.PI * t)]
-  const matrix = buildMatrix(dim, (r, s) => {
+  const matrix = createMatrix(dim, (r, s) => {
     const [gr, gi] = at(gate.matrix, r, s)
     const id = r === s ? 1 : 0
     // P+ = (I+G)/2 and P- = (I-G)/2 are the projectors; the result is P+ + e^{iπt}·P-
@@ -89,7 +89,7 @@ export const exponentiateGate = (gate: Gate, theta: number): Gate => {
   assertInvolution(gate, 'exponential')
   const dim = 1 << gate.arity
   const [cs, sn] = [Math.cos(theta), Math.sin(theta)]
-  const matrix = buildMatrix(dim, (r, s) => {
+  const matrix = createMatrix(dim, (r, s) => {
     const [gr, gi] = gate.matrix[r * dim + s]!
     // −i·sinθ·(gr + i·gi) = sinθ·gi − i·sinθ·gr
     return [cs * (r === s ? 1 : 0) + sn * gi, -sn * gr]
@@ -105,7 +105,7 @@ export const pauliProduct = (paulis: readonly ('X' | 'Y' | 'Z' | 'I')[]): Gate =
   let matrix: [number, number][] = [c(1)]
   let dim = 1
   for (const f of factors) {
-    matrix = buildMatrix(dim * 2, (r, s) => {
+    matrix = createMatrix(dim * 2, (r, s) => {
       const [ar, ai] = matrix[Math.floor(r / 2) * dim + Math.floor(s / 2)]!
       const [br, bi] = f.matrix[(r % 2) * 2 + (s % 2)]!
       return [ar * br - ai * bi, ar * bi + ai * br]
@@ -119,7 +119,7 @@ export const pauliProduct = (paulis: readonly ('X' | 'Y' | 'Z' | 'I')[]): Gate =
  *  its backward half with the true inverse of each operation rather than the operation itself. */
 export const adjointGate = (gate: Gate): Gate => {
   const dim = 1 << gate.arity
-  return { name: `${gate.name}†`, arity: gate.arity, matrix: buildMatrix(dim, (r, s) => { const [re, im] = gate.matrix[s * dim + r]!; return [re, -im] }) }
+  return { name: `${gate.name}†`, arity: gate.arity, matrix: createMatrix(dim, (r, s) => { const [re, im] = gate.matrix[s * dim + r]!; return [re, -im] }) }
 }
 
 export type Operation =
@@ -271,7 +271,7 @@ type State = { re: Float64Array; im: Float64Array }
 const toComplexState = (from: number | State): State => (typeof from === 'number' ? { re: new Float64Array(from), im: new Float64Array(from) } : { re: new Float64Array(from.re), im: new Float64Array(from.im) })
 
 const MAX_QUBITS = 20
-const makeIndexer = (order: Qubit[]) => { const pos = new Map(order.map((q, i) => [qubitKey(q), i])); return (q: Qubit) => pos.get(qubitKey(q))! }
+const createIndexer = (order: Qubit[]) => { const pos = new Map(order.map((q, i) => [qubitKey(q), i])); return (q: Qubit) => pos.get(qubitKey(q))! }
 
 /** Applies a gate in place (index bit k is the k-th qubit). O(2^n · nonzero entries): a permutation gate costs one term a row. */
 const applyGate = (state: State, gate: Gate, indices: number[]): void => {
@@ -295,7 +295,7 @@ const applyGate = (state: State, gate: Gate, indices: number[]): void => {
 }
 
 /** The probability of each bit value of one qubit, and the collapse of the state to a measured value. */
-const measureQubit = (state: State, index: number, random: () => number): number => {
+const getQubit = (state: State, index: number, random: () => number): number => {
   let p1 = 0
   for (let k = 0; k < state.re.length; k++) if (k & (1 << index)) p1 += state.re[k]! ** 2 + state.im[k]! ** 2
   const bit = random() < p1 ? 1 : 0
@@ -325,7 +325,7 @@ export class Simulator {
     if (order.length > MAX_QUBITS) throw new Error(`the simulator handles up to ${MAX_QUBITS} qubits, the circuit has ${order.length}`)
     const state = toComplexState(1 << order.length)
     state.re[0] = 1
-    return { state, order, indexOf: makeIndexer(order) }
+    return { state, order, indexOf: createIndexer(order) }
   }
 
   /** Gates in place, measurements into bits. O(ops · 2^n). */
@@ -333,7 +333,7 @@ export class Simulator {
     for (const op of ops) {
       if (op.kind === 'channel') throw new Error(`a ${op.channel.name} channel runs on the density matrix, not on a state vector`)
       if (op.kind === 'gate') applyGate(state, op.gate, op.qubits.map(indexOf))
-      else bits.set(op.key, op.qubits.map((q) => measureQubit(state, indexOf(q), this.random)))
+      else bits.set(op.key, op.qubits.map((q) => getQubit(state, indexOf(q), this.random)))
     }
     return bits
   }
@@ -497,7 +497,7 @@ export class DensityMatrixSimulator {
     if (order.length > MAX_DENSITY_QUBITS) throw new Error(`the density-matrix simulator handles up to ${MAX_DENSITY_QUBITS} qubits, the circuit has ${order.length}`)
     const n = order.length
     const dim = 1 << n
-    const indexOf = makeIndexer(order)
+    const indexOf = createIndexer(order)
     let rho = toComplexState(dim * dim)
     rho.re[0] = 1
     for (const op of circuit.operations) {
@@ -522,7 +522,7 @@ export class DensityMatrixSimulator {
 
 /** Cirq's simulate_expectation_values for a Pauli string: Tr(ρ O), where O is the tensor product of the Paulis named by
  *  qubit, and the identity on every other qubit. For a Hermitian observable the trace is real. */
-export const computeExpectation = (result: DensityResult, observable: Record<string, 'X' | 'Y' | 'Z'>): number => {
+export const getExpectation = (result: DensityResult, observable: Record<string, 'X' | 'Y' | 'Z'>): number => {
   const n = result.qubits.length
   const dim = 1 << n
   const index = new Map(result.qubits.map((q, i) => [qubitKey(q), i]))

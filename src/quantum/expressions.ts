@@ -67,7 +67,7 @@ export const evaluate = (src: string, env: Env): { value: Value; parts: { text: 
 }
 
 /** A theorem's statement read back: its variables, its hypotheses and its conclusion, from the Lean text alone. */
-export const parseStatement = (lean: string) => {
+export const getStatement = (lean: string) => {
   const head = lean.replace(/^theorem\s+\S+\s*/, '').replace(/\s*:=[\s\S]*$/, '')
   const variables: string[] = [], hypotheses: { name: string; text: string }[] = []
   let rest = head.trim()
@@ -86,7 +86,7 @@ export const parseStatement = (lean: string) => {
 export const evaluateTheorem = (key: string, values: Readonly<Record<string, number | string>> = {}) => {
   const t = TEXTBOOK_THEOREMS.find((x) => x.key === key)
   if (!t) throw new Error(`no textbook theorem ${key}`)
-  const s = parseStatement(t.lean)
+  const s = getStatement(t.lean)
   const env: Env = Object.fromEntries(Object.entries(values).filter(([k]) => s.variables.includes(k)).map(([k, v]) => [k, BigInt(String(v))]))
   const needs = s.variables.filter((v) => !(v in env))
   const inputSchema = { type: 'object', properties: Object.fromEntries(s.variables.map((v) => [v, { type: 'integer', minimum: 0 }])), required: s.variables }, head = { theorem: key, says: t.says, lean: t.lean, ...s, inputSchema }
@@ -111,7 +111,7 @@ const NUMBER = /(?<![\w./:#-])(\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)(?![\w./:-]|\.\d
 const IGNORE = [/https?:\/\/\S+/g, /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, /\b\d{4}-\d{2}-\d{2}(?:T[\d:.]+Z?)?\b/g, /\bv?\d+\.\d+\.\d+\b/g, /\b10\.\d{4,}\/\S+/g, /`[^`]*`/g, /\b(?:RFC|ISO|FIPS|ML-DSA|ML-KEM|SLH-DSA)[ -]?\d+(?:-\d+)?\b/g, /\b(?:19|20)\d{2}\b/g]
 // a verdict is solved, unsolved, not solved or disproved beside the Clay problems; "proved by the kernel" states what the kernel accepts and stays
 const VERDICT = /\b(Clay|Millennium)\b[^.]{0,120}\b(solved|unsolved|not solved|disproved)\b|\b(solved|unsolved|not solved|disproved)\b[^.]{0,120}\b(Clay|Millennium)\b/i
-export const readProse = (texts: Readonly<Record<string, string>>, examples: readonly Example[]) => {
+export const getProse = (texts: Readonly<Record<string, string>>, examples: readonly Example[]) => {
   const numbersOfTheorem = new Map(TEXTBOOK_THEOREMS.map((t) => [t.key, new Set([...t.lean.replace(/^theorem\s+\S+/, '').matchAll(/\d+/g)].map((m) => m[0]))]))
   const rows: { text: string; sentence: string; number: string; expression: string | null; by: 'route' | 'number' | null }[] = []
   const verdicts: { text: string; sentence: string }[] = []

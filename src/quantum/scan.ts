@@ -22,7 +22,7 @@ type EntropySample = { phase: number; t: number; nonce?: number; x?: number; y?:
 type ScanSample = { t: number; hue: number | null }
 
 /** The animated SVG of the stream: a frame per character, discrete, repeating; 1200 × 630 for Open Graph. One frame shows one character and nothing else. */
-export const renderScanSvg = (uuid: string, width = 1200, height = 630): string => {
+export const getScanSvg = (uuid: string, width = 1200, height = 630): string => {
   const frames = toFrames(uuid)
   const dur = `${(SCAN.periodMs / 1000).toFixed(3)}s`
   const fills = frames.map((f) => (f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`)).join(';')
@@ -34,7 +34,7 @@ export const renderScanSvg = (uuid: string, width = 1200, height = 630): string 
 
 /** The stream read back: samples (time, hue) from a device, placed by their time within the period, the nearest hue a digit, a black sample a dash.
  *  Fewer than 36 distinct frames link nothing (impossibleFromOne); 36 frames read the address, whose seal decides the link. */
-export const readScan = (samples: readonly ScanSample[]) => {
+export const getScan = (samples: readonly ScanSample[]) => {
   const slots = new Map<number, (string | null)[]>()
   for (const s of samples) { const i = Math.floor(((s.t % SCAN.periodMs) + SCAN.periodMs) % SCAN.periodMs / SCAN.frameMs); const d = s.hue === null ? '-' : (Math.round(((s.hue % 360) + 360) % 360 / SCAN.hueStep) % 16).toString(16); slots.set(i, [...(slots.get(i) ?? []), d]) }
   const chars = [...Array(SCAN.frames).keys()].map((i) => { const votes = slots.get(i) ?? []; if (!votes.length) return null; const by = new Map<string | null, number>(); for (const v of votes) by.set(v, (by.get(v) ?? 0) + 1); return [...by.entries()].sort((a, b) => b[1] - a[1])[0]![0] })

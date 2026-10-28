@@ -5,12 +5,12 @@
 // entries at any tenant, since a licence names the domains it is valid on and the entries mirror. Every scenario between
 // tenants is an entry and a rule, never a special case: the same licence at another domain, a refund after a grant, a
 // dispute, a renewal, a replayed event, a wrong tenant's signature.
-import { defineTool, isObj, makeChecks, type Toolbox } from '../toolbox.ts'
+import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { hmacSha256, utf8, hex, sameHex, sha256 } from '../hmac.ts'
 import { uuidOf } from '../blocks.ts'
 import { LICENSE } from '../license.ts'
 import { flowWidget } from '../widgets.ts'
-import { diffMembers, findRemedies, GENERATOR_REMEDIES } from '../audit.ts'
+import { diffMembers, listRemedies, GENERATOR_REMEDIES } from '../audit.ts'
 import { TABLES } from '../tables-index.ts'
 
 type Checkout = { tenant: string; host: string; subject: string; domains: string[]; mode: 'payment' | 'subscription'; price?: string; amount?: number; currency: string; successUrl: string; cancelUrl: string; customerEmail?: string }
@@ -22,13 +22,13 @@ type LicenceEntry = { id: string; kind: 'licence'; from: string; body: { event: 
 type Variant = { product: string; variant: string; unit: 'domain' | 'tenant' | 'seat' | 'thousand-calls' | 'million-readings' | 'thousand-copies' | 'platform' | 'none'; interval: 'month' | 'year' | 'once' | 'metered'; amounts: Record<string, number>; domains: '*' | 'named'; description: string }
 export const CATALOGUE: readonly Variant[] = TABLES.CATALOGUE as readonly Variant[]
 /** The Stripe product and price objects a tenant's catalogue needs, as the forms Stripe takes; the tenant's key sends them. */
-const buildCatalogue = (tenant: string, currencies: readonly string[] = ['eur']): { products: { form: Record<string, string> }[]; prices: { form: Record<string, string> }[]; secret: string } => {
+const createCatalogue = (tenant: string, currencies: readonly string[] = ['eur']): { products: { form: Record<string, string> }[]; prices: { form: Record<string, string> }[]; secret: string } => {
   const products = [...new Set(CATALOGUE.map((v) => v.product))].map((product) => ({ form: { name: `QPU ${product.replace(/^qpu-/, '')}`, 'metadata[product]': product, 'metadata[tenant]': tenant, 'metadata[licence]': LICENSE.address, description: CATALOGUE.find((v) => v.product === product)!.description } }))
   const prices = CATALOGUE.flatMap((v) => currencies.filter((c) => c in v.amounts).map((currency) => ({ form: { product_data: `QPU ${v.product.replace(/^qpu-/, '')}`, currency, unit_amount: String(v.amounts[currency]), 'metadata[product]': v.product, 'metadata[variant]': v.variant, 'metadata[unit]': v.unit, 'metadata[tenant]': tenant, 'metadata[domains]': v.domains, ...(v.interval === 'month' || v.interval === 'year' ? { 'recurring[interval]': v.interval } : v.interval === 'metered' ? { 'recurring[interval]': 'month', 'recurring[usage_type]': 'metered' } : {}) } })))
   return { products, prices, secret: SECRET_OF(tenant) }
 }
 /** Metered usage from the docket: the receipts of a subject in a period, as the usage record Stripe takes (per thousand calls). */
-const measureUsage = (entries: readonly { kind?: string; from?: string; body?: { subject?: string; calls?: number }; date?: string }[], subject: string, from: number, to: number): { calls: number; thousands: number; form: Record<string, string> } => {
+const getUsage = (entries: readonly { kind?: string; from?: string; body?: { subject?: string; calls?: number }; date?: string }[], subject: string, from: number, to: number): { calls: number; thousands: number; form: Record<string, string> } => {
   const calls = entries.filter((e) => e.kind === 'usage' && e.body?.subject === subject && e.date && Date.parse(e.date) / 1000 >= from && Date.parse(e.date) / 1000 < to).reduce((n, e) => n + (e.body?.calls ?? 0), 0)
   const thousands = Math.ceil(calls / 1000)
   return { calls, thousands, form: { quantity: String(thousands), timestamp: String(to), action: 'set' } }
@@ -125,10 +125,10 @@ const stripe = defineTool('billing', {
       return { op, tenant, subject: args.subject, domain: String(args.domain ?? args.host ?? tenant), ...st }
     }
     if (op === 'usecases') return listStripeUseCases(Array.isArray(args.paths) ? args.paths.map(String) : [])
-    if (op === 'ledger') return { op: 'ledger' as const, ...buildLedger(Array.isArray(args.calls) ? (args.calls as { tool: string; tenant: string }[]) : [], Array.isArray(args.settled) ? (args.settled as { tenant?: string; amount: number; fee: number; net: number; currency: string }[]) : [], (['eur', 'usd', 'bgn'] as const).find((c) => c === args.currency) ?? 'eur') } as never
+    if (op === 'ledger') return { op: 'ledger' as const, ...createLedger(Array.isArray(args.calls) ? (args.calls as { tool: string; tenant: string }[]) : [], Array.isArray(args.settled) ? (args.settled as { tenant?: string; amount: number; fee: number; net: number; currency: string }[]) : [], (['eur', 'usd', 'bgn'] as const).find((c) => c === args.currency) ?? 'eur') } as never
     if (op === 'fusion') { const tools = Array.isArray(args.tools) ? args.tools.map(String) : []; const rows = tools.map((t) => fuseCall(t)); return { op: 'fusion', tools: rows, coins: rows.filter((r) => r.side === 'coin').length, coils: rows.filter((r) => r.side === 'coil').length, algebra: ALGEBRA_TOOLS, enforced: 'every tools/call result carries _meta.fusion; the Worker answers 402 with the court\'s case to a request declaring commercial use (x-qpu-use: commercial) of a coil, or a commercial write into the docket, without a licence at the tenant', theorems: ['textbook_free_or_coil', 'textbook_double_torus'] } }
-    if (op === 'catalogue') { const c = buildCatalogue(tenant, Array.isArray(args.currencies) ? args.currencies.map(String) : ['eur', 'usd', 'bgn']); return { op, tenant, margins: computeMargins(isObj(args.costs) ? args.costs as Record<string, number> : {}), products: c.products.length, prices: c.prices.length, variants: CATALOGUE.length, secret: c.secret, catalogue: CATALOGUE, forms: c, procedure: `the Worker creates the products and prices at Stripe with <${c.secret}> once per tenant; the price ids come back in the webhooks' metadata` } }
-    if (op === 'usage') { if (typeof args.subject !== 'string') throw new Error('usage needs subject'); const u = measureUsage((Array.isArray(args.entries) ? args.entries : []) as Parameters<typeof measureUsage>[0], args.subject, Number(args.from ?? 0), Number(args.to ?? now)); return { op, tenant, subject: args.subject, ...u, procedure: 'the Worker posts the form to /v1/subscription_items/<item>/usage_records with the tenant key; the receipt is an entry' } }
+    if (op === 'catalogue') { const c = createCatalogue(tenant, Array.isArray(args.currencies) ? args.currencies.map(String) : ['eur', 'usd', 'bgn']); return { op, tenant, margins: listMargins(isObj(args.costs) ? args.costs as Record<string, number> : {}), products: c.products.length, prices: c.prices.length, variants: CATALOGUE.length, secret: c.secret, catalogue: CATALOGUE, forms: c, procedure: `the Worker creates the products and prices at Stripe with <${c.secret}> once per tenant; the price ids come back in the webhooks' metadata` } }
+    if (op === 'usage') { if (typeof args.subject !== 'string') throw new Error('usage needs subject'); const u = getUsage((Array.isArray(args.entries) ? args.entries : []) as Parameters<typeof getUsage>[0], args.subject, Number(args.from ?? 0), Number(args.to ?? now)); return { op, tenant, subject: args.subject, ...u, procedure: 'the Worker posts the form to /v1/subscription_items/<item>/usage_records with the tenant key; the receipt is an entry' } }
     if (op === 'settle') { const st = settleTransactions((Array.isArray(args.transactions) ? args.transactions : []) as Parameters<typeof settleTransactions>[0]); return { op, tenant, ...st, procedure: 'balance transactions are read from Stripe with the tenant key (net and fee are Stripe\'s figures); the settlement entry is written to the docket as the author\'s compensation ledger' } }
     throw new Error(`op ${op} is not one of plan, webhook, state, catalogue, usage, settle`)
   },
@@ -217,8 +217,8 @@ type Move = { cmd: string; args: string[]; needs: 'auto' | 'confirm' }
  *  machine plan (argument vectors, no shell) or a door call, ready to run. It runs by itself only when every move is reversible and touches
  *  generated or derived files (regenerate, restage, purify, standardise, shard); a move that discards work or uses force (force-remove, branch -D,
  *  dropping uncommitted changes) is planned with needs: 'confirm' and never run without the user. Null when nothing is learned yet: a lead. */
-export const buildAntimatter = (kind: GapKind, rule: string, evidence: Record<string, unknown> = {}) => {
-  const of = (says: string, run: Move[], door: { tool: string; arguments: Record<string, unknown> } | null = null) => { const needs = run.some((m) => m.needs === 'confirm') ? 'confirm' as const : 'auto' as const; return { needs, run, door, says, way: findWay(evidence), learn: false, address: uuidOf(JSON.stringify({ kind, run, door })) } }
+export const createAntimatter = (kind: GapKind, rule: string, evidence: Record<string, unknown> = {}) => {
+  const of = (says: string, run: Move[], door: { tool: string; arguments: Record<string, unknown> } | null = null) => { const needs = run.some((m) => m.needs === 'confirm') ? 'confirm' as const : 'auto' as const; return { needs, run, door, says, way: getWay(evidence), learn: false, address: uuidOf(JSON.stringify({ kind, run, door })) } }
   const auto = (cmd: string, args: string[]): Move => ({ cmd, args, needs: 'auto' })
   const violated = (evidence.violated as string[] | undefined) ?? []
   const sole = evidence.sole as { worktrees?: { path: string; dirty: boolean }[]; branches?: { name: string; merged: boolean }[] } | undefined
@@ -256,7 +256,7 @@ export const buildAntimatter = (kind: GapKind, rule: string, evidence: Record<st
     return { ...of(`${says}; folding it away instead needs the user's confirmation`, [], door), fold: { needs: 'confirm' as const, says: `fold ${name} into its nearest door or theorem, or remove it` } }
   }
   if (kind === 'gemini-compat') return of('narrow each schema to the Gemini subset the compatibility check names: the unsupported keywords dropped, their meaning kept in the description', [], { tool: 'extend', arguments: { gemini: { compat: true } } })
-  const row = findRemedies([String(evidence.says ?? rule)]).leads[0]
+  const row = listRemedies([String(evidence.says ?? rule)]).leads[0]
   if (row?.remedy) return { ...of(row.remedy, []), needs: row.automated ? 'auto' as const : 'confirm' as const }
   if (violated.includes('green')) return of('run next again, offline and fast: the red step regenerated and rechecked', [auto('npm', ['run', '-s', 'next', '--', '--offline', '--fast'])])
   // a refusal no row has learned yet: its antimatter is the lead that teaches the next row, its text the evidence (counted as none until learned)
@@ -267,7 +267,7 @@ export const buildAntimatter = (kind: GapKind, rule: string, evidence: Record<st
  *  coil (it crosses into data or services) is answered first by its free side — the kernel's own statement of the theorem it rests on, a coin —
  *  and the coil stays the licence's, never forced (textbook_free_or_coil). The way never dead-ends: every gap kind has antimatter
  *  (textbook_antimatter_total), so from any gap the next step is defined. */
-const findWay = (evidence: Record<string, unknown> = {}) => {
+const getWay = (evidence: Record<string, unknown> = {}) => {
   const tool = typeof evidence.tool === 'string' ? evidence.tool : null, args = (evidence.arguments as Record<string, unknown> | undefined) ?? undefined
   const fusion = tool ? fuseCall(tool, args) : null
   const free = fusion?.side === 'coil' ? { tool: 'textbook', arguments: { theorem: typeof evidence.theorem === 'string' ? evidence.theorem : 'textbook_free_or_coil' } } : tool ? { tool, arguments: args ?? {} } : null
@@ -304,7 +304,7 @@ export const pricePenalty = (p: { rule: string; kind?: string; subject?: string;
   const snapshot = { rule: p.rule, kind, subject, ...(p.evidence ?? {}), ...(price ? { measures: { ...p.measures, wallNs: String(p.measures!.wallNs) }, price } : {}), ...(occurrences > 1 ? { occurrences } : {}), key: String((p.evidence as { key?: unknown } | undefined)?.key ?? `${kind}:${subject}`) }
   const text = JSON.stringify(snapshot)
   const seal = { sha256: hex(sha256(utf8(text))), address: uuidOf(text) }
-  const matter = buildAntimatter(kind, p.rule, { ...(p.evidence ?? {}), subject, ...(p.measures ? { measures: p.measures } : {}) })
+  const matter = createAntimatter(kind, p.rule, { ...(p.evidence ?? {}), subject, ...(p.measures ? { measures: p.measures } : {}) })
   const antimatter = { ...matter, cost: { amount: tokens, per: harmonic.per, occurrences, unit: harmonic.unit } }
   const violated = ((p.evidence as { violated?: string[] } | undefined)?.violated ?? []).length ? (p.evidence as { violated: string[] }).violated : [kind]
   // the involution of thinking: a signature whose correction was learned from an earlier clearing is corrected before it is decided, never raised
@@ -327,7 +327,7 @@ export const pricePenalty = (p: { rule: string; kind?: string; subject?: string;
   return { kind: 'penalty' as const, antimatter, printed: GAP_PRINTED[kind], body: { kind, subject, status: 'open' as const, blocks, printed: GAP_PRINTED[kind], rule: p.rule, tokens, coin, antimatter, snapshot, seal }, tokens, coin, price, balanced: lineBalanced(coin), says: `${p.rule}: ${tokens} token(s) of work booked against ${committer} and to the author, at zero price — work, not money; antimatter ${antimatter ? `(${antimatter.needs}) ${antimatter.says}` : 'not learned yet: a lead'}`, harmonic: { ...harmonic, occurrences, price: tokens, theorems: ['textbook_penalty_harmonic', 'textbook_penalty_proportional'] }, theorem: price && kind === 'waiting' ? 'textbook_penalty_time_heat_monotone' : 'textbook_penalty_harmonic' }
 }
 type Line = { debit: string; credit: string; amount: number; count?: number }
-type GapBody = { prevented?: boolean; rule?: string; kind?: string; subject?: string; tenant?: string; blocks?: boolean; cleared?: boolean; tokens?: number; coin?: Line | null; reversal?: Line | null; coil?: Line | null; antimatter?: ReturnType<typeof buildAntimatter>; snapshot?: { key?: string; price?: ReturnType<typeof priceWait> } & Record<string, unknown>; seal?: { address?: string } }
+type GapBody = { prevented?: boolean; rule?: string; kind?: string; subject?: string; tenant?: string; blocks?: boolean; cleared?: boolean; tokens?: number; coin?: Line | null; reversal?: Line | null; coil?: Line | null; antimatter?: ReturnType<typeof createAntimatter>; snapshot?: { key?: string; price?: ReturnType<typeof priceWait> } & Record<string, unknown>; seal?: { address?: string } }
 /** Unused quantum capacity, each measure in its own unit, used + idle = capacity (textbook_capacity_conserved): doors no example, e2e cell, chat
  *  route or next step reaches (their schema bytes), theorems nothing names (their statement's bytes), gates with no successful call in the last
  *  online run (one call each), idle cores (wall ms × cores − CPU ms, per step), the qubits a quantum call leaves unused below the simulator's
@@ -350,7 +350,7 @@ const priceIdle = (idleMs: number, remaining: RemainingWork) => {
   const after = Math.max(0, remainingMs - Math.max(0, idleMs))
   return { idleMs, remainingMs, byCategory: remaining, unmeasured: remaining.filter((r) => r.ms === null).map((r) => r.category), price, scheduled, scheduledMs: scheduled.reduce((n, x) => n + x.ms, 0), priceAfterScheduling: Math.min(Math.max(0, idleMs - (remainingMs - after)), after), remainingAfter: after, theorems: ['textbook_idle_priced_by_remaining', 'textbook_idle_scheduled_clears'], says: `${idleMs} ms of idle capacity against ${remainingMs} ms of measured remaining work: idle priced at ${price} ms; scheduled cheapest first, ${after} ms would remain` }
 }
-export const measureCapacity = (c: CapacityInput) => {
+export const getCapacity = (c: CapacityInput) => {
   const measure = (unit: string, rows: { name: string; capacity: number; used: number }[]) => { const capacity = rows.reduce((n, r) => n + r.capacity, 0), used = rows.reduce((n, r) => n + Math.min(r.used, r.capacity), 0), idle = capacity - used; return { unit, capacity, used, idle, percentIdle: capacity ? Math.floor((idle * 100) / capacity) : 0, idleNames: rows.filter((r) => r.used < r.capacity).map((r) => r.name), conserved: used + idle === capacity } }
   const doors = c.doors ? measure('schema bytes', c.doors.map((d) => ({ name: d.name, capacity: d.bytes, used: d.reached ? d.bytes : 0 }))) : null
   const theorems = c.theorems ? measure('statement bytes', c.theorems.map((t) => ({ name: t.key, capacity: t.bytes, used: t.used ? t.bytes : 0 }))) : null
@@ -363,7 +363,7 @@ export const measureCapacity = (c: CapacityInput) => {
   const measures = { doors, theorems, gates, cores, qubits, shor }
   const gaps = Object.entries(measures).flatMap(([m, r]) => (r ? r.idleNames.map((name) => ({ measure: m, name })) : []))
   const per = (m: string, name: string) => { if (m === 'doors') return Math.ceil((c.doors!.find((d) => d.name === name)?.bytes ?? 0) / 4); if (m === 'theorems') return Math.ceil((c.theorems!.find((t) => t.key === name)?.bytes ?? 0) / 4); if (m === 'cores') { const x = c.cores!.find((y) => y.step === name)!; return x.wallMs * x.cores - Math.min(x.cpuMs, x.wallMs * x.cores) } if (m === 'qubits') return c.qubits!.calls.filter((q) => q.door === name).reduce((n, q) => n + Math.max(0, c.qubits!.bound - q.used), 0); return 1 }
-  const priced = gaps.map((g) => ({ ...g, kind: 'idle' as const, blocks: false, tokens: per(g.measure, g.name), unit: measures[g.measure as keyof typeof measures]!.unit, antimatter: buildAntimatter('idle', 'idle', { measure: g.measure === 'doors' ? 'door' : g.measure === 'theorems' ? 'theorem' : g.measure === 'gates' ? 'gate' : g.measure, name: g.name }) })).sort((a, b) => b.tokens - a.tokens)
+  const priced = gaps.map((g) => ({ ...g, kind: 'idle' as const, blocks: false, tokens: per(g.measure, g.name), unit: measures[g.measure as keyof typeof measures]!.unit, antimatter: createAntimatter('idle', 'idle', { measure: g.measure === 'doors' ? 'door' : g.measure === 'theorems' ? 'theorem' : g.measure === 'gates' ? 'gate' : g.measure, name: g.name }) })).sort((a, b) => b.tokens - a.tokens)
   const idleMs = cores ? cores.idle : 0
   return { ...measures, idlePrice: c.remaining ? priceIdle(idleMs, c.remaining) : null, advantage: { measured: null, says: 'the measured advantage of each served quantum door is the hosted door\'s (get_quantum_advantage): unmeasured here' }, clusters: c.clusters ? { ...c.clusters, unsharded: Math.max(0, c.clusters.named - c.clusters.sharded), priced: false } : null, gaps: priced, top: priced.slice(0, 10), conserved: Object.values(measures).every((r) => !r || r.conserved), theorem: 'textbook_capacity_conserved', says: `${priced.length} idle item(s) across ${Object.values(measures).filter(Boolean).length} measure(s), each priced in its own unit, listed and never blocking; the bounds are the simulator's stated constants, never a hardware claim` }
 }
@@ -387,7 +387,7 @@ const runReactor = (bodies: readonly GapBody[]) => {
 /** What the penalties taught, in the docket's order: every cleared gap's signature (its rule) is a learned correction; a gap raised again with a
  *  signature already learned is a recurrence (the target is zero); a body marked prevented is a violation the learned correction annihilated
  *  before it was decided, no penalty raised (textbook_penalty_learned_prevents). */
-const readLearning = (bodies: readonly GapBody[]) => {
+const getLearning = (bodies: readonly GapBody[]) => {
   const learned = new Set<string>(); let recurrences = 0, prevented = 0
   for (const b of bodies) { const sig = b.rule ?? ''; if (b.prevented) { prevented++; continue } if (b.cleared) { const l = (b as { learned?: { needs?: string }; antimatter?: { learn?: boolean } }); if (l.learned?.needs === 'auto' && !l.antimatter?.learn) learned.add(sig); continue } if (learned.has(sig)) recurrences++ }
   return { learned: [...learned], remedies: learned.size, prevented, recurrences, target: 0, says: `${learned.size} correction(s) learned from cleared gaps, ${prevented} violation(s) corrected before they were decided, ${recurrences} recurrence(s) after learning (target 0)`, theorem: 'textbook_penalty_learned_prevents' }
@@ -406,7 +406,7 @@ export const countPenalties = (entries: readonly { body?: GapBody }[]) => {
     const pr = b.snapshot?.price; if (!b.cleared && pr) { const s = String(b.subject ?? keyOf(b)), t = steps.get(s) ?? { step: s, runs: 0, wallMs: 0, cpuMs: 0, coins: 0 }; steps.set(s, { step: s, runs: t.runs + 1, wallMs: t.wallMs + pr.wallMs, cpuMs: t.cpuMs + pr.cpuMs, coins: t.coins + pr.coins }) }
   }
   const kindOf = (k: string) => classifyGap(bodyOf.get(k)?.rule ?? '', bodyOf.get(k)?.kind)
-  const antimatterAt = (k: string) => { const b = bodyOf.get(k); return b?.antimatter !== undefined ? b.antimatter : buildAntimatter(kindOf(k), b?.rule ?? '', { ...(b?.snapshot ?? {}) }) }
+  const antimatterAt = (k: string) => { const b = bodyOf.get(k); return b?.antimatter !== undefined ? b.antimatter : createAntimatter(kindOf(k), b?.rule ?? '', { ...(b?.snapshot ?? {}) }) }
   const closed = [...cleared].filter((k) => opened.has(k))
   const open = [...opened].filter((k) => !cleared.has(k))
   // lex mitior: a gap blocks only when it blocked when raised and its kind blocks now, so lightening a kind applies at once and making it heavier never reaches back
@@ -417,12 +417,12 @@ export const countPenalties = (entries: readonly { body?: GapBody }[]) => {
   return {
     antimatter, antimatterCounts: { generated: antimatter.length - none.length, autoAnnihilated: closed.filter((k) => antimatterAt(k)?.needs === 'auto').length, confirm: antimatter.filter((a) => a.antimatter?.needs === 'confirm').length, none: none.length, noneKeys: none },
     opened: opened.size, cleared: closed.length, open: open.length, openKeys: open, blocking: blocking.length, blockingKeys: blocking, byKind,
-    learning: readLearning(entries.map((e) => e.body).filter((b): b is GapBody => !!b)),
+    learning: getLearning(entries.map((e) => e.body).filter((b): b is GapBody => !!b)),
     correlation: open.reduce<Record<string, number>>((a, k) => { const r = bodyOf.get(k)?.rule ?? ''; return { ...a, [r]: (a[r] ?? 0) + 1 } }, {}),
     timeHeat: [...steps.values()].sort((a, b) => b.coins - a.coins), reactor: runReactor(entries.map((e) => e.body).filter((b): b is GapBody => !!b)), conserved: closed.length + open.length === opened.size, theorem: 'textbook_penalty_conserved',
   }
 }
-export const buildLedger = (calls: readonly { tool: string; tenant: string; arguments?: Record<string, unknown> }[], settled: readonly { tenant?: string; amount: number; fee: number; net: number; currency: string }[] = [], currency: 'eur' | 'usd' | 'bgn' = 'eur') => {
+export const createLedger = (calls: readonly { tool: string; tenant: string; arguments?: Record<string, unknown> }[], settled: readonly { tenant?: string; amount: number; fee: number; net: number; currency: string }[] = [], currency: 'eur' | 'usd' | 'bgn' = 'eur') => {
   const metered = CATALOGUE.find((v) => v.product === 'qpu-metered')!
   const price = (metered.amounts as Record<string, number>)[currency] ?? 0 // cents per thousand calls = thousandths of a cent per call
   const lines: { debit: string; credit: string; amount: number; why: string }[] = []
@@ -472,7 +472,7 @@ const listStripeUseCases = (paths: readonly string[]) => {
 /** The margins of the catalogue at best: every variant's price against the provider's cost per unit when the client passes it (read from the provider's
  *  pricing page by the verifier: Durable Objects rows written for a reading, requests for a call, the gate's copies for delivered computing); without
  *  a cost the margin is a lead, never a number asserted (textbook_margin_makes_price). */
-const computeMargins = (costs: Readonly<Record<string, number>> = {}, currency = 'eur') => Object.fromEntries(CATALOGUE.map((v) => { const price = v.amounts[currency.toLowerCase()] ?? v.amounts.eur ?? 0; const cost = costs[v.product] ?? costs[`${v.product}/${v.variant}`] ?? null; return [`${v.product}/${v.variant}`, { price, unit: v.unit, cost, margin: cost == null ? null : price > 0 ? Number(((price - cost) / price).toFixed(3)) : null, basis: cost == null ? (price === 0 ? 'free: the a432 default, no margin and no cost' : 'the provider\'s cost per unit read from its pricing page by the verifier: a lead until read') : 'margin = (price − cost) / price; the price and the cost in the same minor units per unit' }] }))
+const listMargins = (costs: Readonly<Record<string, number>> = {}, currency = 'eur') => Object.fromEntries(CATALOGUE.map((v) => { const price = v.amounts[currency.toLowerCase()] ?? v.amounts.eur ?? 0; const cost = costs[v.product] ?? costs[`${v.product}/${v.variant}`] ?? null; return [`${v.product}/${v.variant}`, { price, unit: v.unit, cost, margin: cost == null ? null : price > 0 ? Number(((price - cost) / price).toFixed(3)) : null, basis: cost == null ? (price === 0 ? 'free: the a432 default, no margin and no cost' : 'the provider\'s cost per unit read from its pricing page by the verifier: a lead until read') : 'margin = (price − cost) / price; the price and the cost in the same minor units per unit' }] }))
 export const orderUsage = (calls: number, currency = 'eur', energy?: { kWh: number; tariffEurPerKwh: number | null }, split?: { free: number; coils: number; commercial?: boolean; delivered?: number; readings?: number }) => {
   const v = CATALOGUE.find((c) => c.product === 'qpu-metered' && c.variant === 'per-thousand-calls')!
   const a432 = CATALOGUE.find((c) => c.product === 'qpu-a432')!
@@ -494,7 +494,7 @@ export const TENANT_CURRENCY: Readonly<Record<string, string>> = { uuidna: 'EUR'
 export const CURRENCY_MCPS = ['com.datakoot/fx-currency-exchange-rates', 'com.invokera/currency-rates', 'io.github.FoundryNet/currency-intel-mcp', 'io.github.OlsOls4/currencykit', 'cn.pianam.mcp/exchange-rate-mcp', 'dev.workers.bhazarstudio.datoqa/historical-exchange-rates', 'io.github.hatgit/forex-gpt-mcp', 'io.github.Exchange-RateAPI/mcp-server', 'io.github.cyanheads/exchange-rates-mcp-server'] as const
 type RateTable = { source: string; date: string | null; base: 'EUR'; rates: Record<string, number> }
 /** A source's text read into a rate table: XML of the ECB or the BNB, JSON of the others; what cannot be read is said. */
-const parseRates = (source: string, text: string): RateTable | { source: string; error: string } => {
+const listRates = (source: string, text: string): RateTable | { source: string; error: string } => {
   const src = RATE_SOURCES.find((r) => r.id === source)
   if (!src) return { source, error: `no rate source ${source}; the sources are ${RATE_SOURCES.map((r) => r.id).join(', ')}` }
   try {
@@ -533,7 +533,7 @@ const currency = defineTool('billing', {
     if (op === 'plan') return { op, sources: RATE_SOURCES, requests: RATE_SOURCES.map((r) => ({ id: `currency:${r.id}`, source: r.id, method: 'GET' as const, url: r.url, accept: r.format.startsWith('xml') ? '*/*' : 'application/json' })) /* the BNB's gateway refuses an accept of text/xml (measured 2026-10-26): any accept, the XML comes */, pegs: PEGS, relatedMcps: CURRENCY_MCPS, realtime: 'reference rates are daily: the day is the real time of a reference rate; an intraday rate is a paid provider\'s door (a related MCP), the operator\'s act' }
     if (op !== 'harmonise') throw new Error(`op ${op} is not plan or harmonise`)
     const answers = (Array.isArray(args.answers) ? args.answers : []) as { source: string; text: string }[]
-    const read = answers.map((a) => parseRates(String(a.source), String(a.text ?? '')))
+    const read = answers.map((a) => listRates(String(a.source), String(a.text ?? '')))
     const tables = read.filter((r): r is RateTable => 'rates' in r)
     const errors = read.filter((r): r is { source: string; error: string } => 'error' in r)
     const symbols = (Array.isArray(args.symbols) && args.symbols.length ? args.symbols.map(String) : ['EUR', 'USD', 'BGN', 'GBP', 'CHF'])
@@ -568,7 +568,7 @@ export const BILLING: Toolbox = {
     instructions: 'Per tenant the author sets two wrangler secrets, STRIPE_SECRET_KEY_<TENANT> and STRIPE_WEBHOOK_SECRET_<TENANT>, and registers https://<host>/docket/stripe as the webhook endpoint at Stripe. A client calls stripe plan and the Worker executes the plan with the tenant key, answering the session url. Stripe posts events to the tenant\'s endpoint; the Worker calls stripe webhook with the raw body, the Stripe-Signature header and the tenant secret, writes the entry it gets to the tenant docket (mirrors carry it to the others), and answers 200 on a duplicate. Any host answers stripe state for a subject at its domain from the entries it holds.',
     directions: ['server only: SHA-256 and HMAC vectors, the signature round trip, every event type to its state, every scenario between tenants', 'client → server: the Worker hands the raw body, the header and the secret; the handler never holds a key', 'toolbox → toolbox: entries are addressed with the tree\'s uuidOf, kept in the raid docket, verified by the tree toolbox\'s verify'],
     selftest: () => {
-      const { check, done } = makeChecks()
+      const { check, done } = createChecks()
       check('billing:sha256-vector', hex(hmacSha256(utf8('key'), utf8('The quick brown fox jumps over the lazy dog'))) === 'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8', 'RFC 2104 / Wikipedia HMAC-SHA256 vector')
       const sig = signStripe(SECRET, 1_700_000_000, COMPLETED)
       check('billing:signature-valid', verifySignature(SECRET, sig, COMPLETED, 1_700_000_010).valid, 'the tenant\'s own secret verifies')
@@ -588,16 +588,16 @@ export const BILLING: Toolbox = {
       const plan = planCheckout({ tenant: 'uuidna', host: 'qpu.uuidna.com', subject: 'acme', domains: ['*'], mode: 'payment', amount: 43200, currency: 'eur', successUrl: 'https://qpu.uuidna.com/ok', cancelUrl: 'https://qpu.uuidna.com/no' })
       const changed = toLicenceEntry('psg', JSON.parse(EVENT('evt_5', 'customer.subscription.updated', 1_731_600_000, { customer: 'cus_1', items: { data: [{ quantity: 3, price: { metadata: { product: 'qpu-seat', variant: 'monthly' } } }] }, metadata: { subject: 'acme' } })), [e1, renewed])
       check('billing:variants', changed.body.state === 'changed' && changed.body.product === 'qpu-seat' && changed.body.quantity === 3 && changed.links.length === 2 && licenceState([e1, renewed, changed], 'acme', 'qpu.psg.bg', now).variant === 'monthly', 'a subscription change keeps the licence and records the new variant and quantity, linked to the grants')
-      const cat = buildCatalogue('psg', ['eur', 'bgn'])
+      const cat = createCatalogue('psg', ['eur', 'bgn'])
       check('billing:catalogue', cat.prices.length === 18 && cat.prices.every((p) => p.form['metadata[tenant]'] === 'psg') && cat.prices.some((p) => p.form['recurring[usage_type]'] === 'metered') && CATALOGUE.every((v) => Object.values(v.amounts).every((a) => Number.isInteger(a) && a >= 0)), 'per-tenant catalogue, metered variant, integer minor units')
-      const usage = measureUsage([{ kind: 'usage', date: '2026-10-10T00:00:00Z', body: { subject: 'acme', calls: 1500 } }, { kind: 'usage', date: '2026-10-20T00:00:00Z', body: { subject: 'acme', calls: 600 } }, { kind: 'usage', date: '2026-11-02T00:00:00Z', body: { subject: 'acme', calls: 999 } }], 'acme', Date.parse('2026-10-01T00:00:00Z') / 1000, Date.parse('2026-11-01T00:00:00Z') / 1000)
+      const usage = getUsage([{ kind: 'usage', date: '2026-10-10T00:00:00Z', body: { subject: 'acme', calls: 1500 } }, { kind: 'usage', date: '2026-10-20T00:00:00Z', body: { subject: 'acme', calls: 600 } }, { kind: 'usage', date: '2026-11-02T00:00:00Z', body: { subject: 'acme', calls: 999 } }], 'acme', Date.parse('2026-10-01T00:00:00Z') / 1000, Date.parse('2026-11-01T00:00:00Z') / 1000)
       check('billing:usage', usage.calls === 2100 && usage.thousands === 3 && usage.form.quantity === '3', 'calls in the period summed from usage entries, rounded up to thousands')
       const settle = settleTransactions([{ id: 'txn_1', amount: 43200, fee: 1278, net: 41922, currency: 'eur', product: 'qpu-domain', tenant: 'psg' }, { id: 'txn_2', amount: 2700, fee: 103, net: 2597, currency: 'eur', product: 'qpu-seat', tenant: 'uuidna' }, { id: 'txn_3', amount: 47500, fee: 1400, net: 46100, currency: 'usd', product: 'qpu-domain', tenant: 'psg' }])
       check('billing:settlement', settle.net.eur === 44519 && settle.net.usd === 46100 && settle.byProduct['qpu-domain:eur'] === 41922 && settle.byTenant['uuidna:eur'] === 2597 && settle.entry.id.length === 36 && settleTransactions([]).transactions === 0, 'net by currency, product and tenant from Stripe\'s own figures; the ledger content-addressed')
       check('billing:plan', plan.secret === 'STRIPE_SECRET_KEY_UUIDNA' && plan.form['metadata[domains]'] === '*' && plan.headers['idempotency-key']!.length === 36 && plan.form['line_items[0][price_data][unit_amount]'] === '43200', 'the plan names the tenant secret, the domains and an idempotency key')
-      const ecb = parseRates('ecb', ECB_FIXTURE) as RateTable; const er = parseRates('er-api', ERAPI_FIXTURE) as RateTable; const fr = parseRates('frankfurter', FRANKFURTER_FIXTURE) as RateTable
+      const ecb = listRates('ecb', ECB_FIXTURE) as RateTable; const er = listRates('er-api', ERAPI_FIXTURE) as RateTable; const fr = listRates('frankfurter', FRANKFURTER_FIXTURE) as RateTable
       const h = harmoniseRates([ecb, er, fr], ['EUR', 'USD', 'BGN', 'GBP', 'JPY'])
-      check('billing:rates-read-from-every-format', ecb.rates.USD === 1.1193 && ecb.date === '2026-10-23' && er.rates.BGN === 1.95583 && fr.rates.GBP === 0.83728 && 'error' in parseRates('ecb', 'not xml') && 'error' in parseRates('nowhere', ''), 'the ECB XML, er-api JSON and Frankfurter JSON read; an unreadable body and an unknown source said so')
+      check('billing:rates-read-from-every-format', ecb.rates.USD === 1.1193 && ecb.date === '2026-10-23' && er.rates.BGN === 1.95583 && fr.rates.GBP === 0.83728 && 'error' in listRates('ecb', 'not xml') && 'error' in listRates('nowhere', ''), 'the ECB XML, er-api JSON and Frankfurter JSON read; an unreadable body and an unknown source said so')
       check('billing:rates-harmonised-by-median', h.USD!.rate === 1.1193 && h.USD!.outcome === 'agree' && h.USD!.sources.length === 3 && h.BGN!.outcome === 'peg' && h.BGN!.rate === 1.95583 && h.JPY!.outcome === 'erased' && h.EUR!.rate === 1, `USD ${h.USD!.rate} from three sources (spread ${(h.USD!.spread * 100).toFixed(2)} %), BGN pegged, JPY erased (no source)`)
       const drift = harmoniseRates([ecb, { source: 'x', date: null, base: 'EUR', rates: { USD: 1.2 } }], ['USD'])
       check('billing:drift-named', drift.USD!.outcome === 'drift' && drift.USD!.drifting.includes('x'), 'a source 7 % off the median is named as drifting')

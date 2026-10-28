@@ -8,8 +8,8 @@ import { EXAMPLES } from '../src/quantum/examples.ts'
 import { LICENSE } from '../src/quantum/license.ts'
 import { uuidOf } from '../src/quantum/blocks.ts'
 import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { readJson, runSelftest, readLeads } from './mcp.ts'
-const { all: LEADS } = await readLeads()
+import { getJson, runSelftest, listLeads } from './mcp.ts'
+const { all: LEADS } = await listLeads()
 
 const ROOT = process.cwd()
 mkdirSync(join(ROOT, '.qpu', 'cache'), { recursive: true })
@@ -17,7 +17,7 @@ const call = toolCallerOf('imagine')
 const toolsNow = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
 const inputs = uuidOf(JSON.stringify({ leads: LEADS, examples: EXAMPLES.map((e) => ({ id: e.id, tool: e.tool, arguments: e.arguments, shows: e.shows })), tools: toolsNow, writer: readFileSync(import.meta.filename, 'utf8') }))
 const outPath = join(ROOT, 'docs', 'public', 'imagination.json')
-{ const prev = readJson(outPath, {}) as { inputs?: string; imaginedLeads?: number; leads?: number; partial?: boolean }; if (prev.inputs === inputs && !prev.partial) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } }
+{ const prev = getJson(outPath, {}) as { inputs?: string; imaginedLeads?: number; leads?: number; partial?: boolean }; if (prev.inputs === inputs && !prev.partial) { console.log(`imagine: ${prev.leads} leads unchanged (inputs ${inputs}); ${prev.imaginedLeads} imagined leads stand`); process.exit(0) } }
 const selftest = runSelftest('imagine', call)
 // the quantum: every lead imagined once per (statement, tools), kept by its own hash; a run imagines only the new hashes, in
 // chunks, for no longer than the quantum; the rest wait for the next run, said so in the file
@@ -25,7 +25,7 @@ const QUANTUM_MS = Number(process.env.QPU_QUANTUM_MS ?? 180_000)
 const started = Date.now()
 const rowsPath = join(ROOT, '.qpu', 'cache', 'imagination-rows.json')
 type Kept = { hash: string; row: unknown; opened: unknown[]; verify: number; verdict: string }
-const kept: Record<string, Kept> = readJson(rowsPath, {})
+const kept: Record<string, Kept> = getJson(rowsPath, {})
 const toolsHash = uuidOf(JSON.stringify(toolsNow))
 const hashOf = (l: { id: string; statement: string; status: string }) => uuidOf(`${l.id}${l.statement}${l.status}${toolsHash}`)
 if (isMerge) Object.assign(kept, gatherShards<Record<string, Kept>>('imagine', {}))

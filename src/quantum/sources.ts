@@ -73,7 +73,7 @@ export const nextOf = (r: SourceRequest, a: SourceAnswer): SourceRequest | null 
 type Book = { source: string; id: string; title: string; subjects: string[]; licence: string | null; year: number | null }
 
 /** the answers judged: immutable facts, licence candidates with their cases, precedence by date, textbooks routed by the theorems, MCP doors */
-export const readSources = (c: SourceContext, answers: readonly SourceAnswer[], examples: readonly Example[]) => {
+export const listSources = (c: SourceContext, answers: readonly SourceAnswer[], examples: readonly Example[]) => {
   const by = (source: string) => answers.filter((a) => a.id.startsWith(`${source}:`))
   const ok = (a: SourceAnswer) => a.status === 200 ? json(a.text) : null
   const repo = c.repository.replace(/\.git$/, '').replace(/^https:\/\/github\.com\//, '')

@@ -5,7 +5,7 @@
 // default, overridden only by the operator's own list. Phase two reads the answers into verdicts, drift and findings, beside
 // the tree's own security checks over its source texts. Pure; the client fetches. Recomputable facts, not legal advice.
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
-import { defineTool, isObj, makeChecks, type Toolbox } from '../toolbox.ts'
+import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { LICENSE, PRECEDENCE } from '../license.ts'
 import { UNIT_MCP, CLAUDE_API, type Discovery } from '../discovery.ts'
 import type { Lead } from '../leads.ts'
@@ -13,7 +13,7 @@ import { flowWidget } from '../widgets.ts'
 import { sha256, utf8, hex } from '../hmac.ts'
 import { uuidOf } from '../blocks.ts'
 import { THEOREMS, KERNEL_THEOREMS } from '../theorems-index.ts'
-import { buildLedger } from './billing.ts'
+import { createLedger } from './billing.ts'
 import { TABLES } from '../tables-index.ts'
 
 type Claim = { id: string; source: string; text: string }
@@ -40,7 +40,7 @@ export const summonCourt = (v: Summons) => {
 type Texts = { readme?: string; citation?: string; zenodo?: string; package?: string; worker?: string; billing?: string; hmac?: string; mcp?: string }
 
 /** The claims the author makes, read from the tree and its metadata; each a sentence a door can judge. */
-const findClaims = (texts: Texts, leads: readonly Lead[], cite?: { theorem?: string | null }): Claim[] => {
+const listClaims = (texts: Texts, leads: readonly Lead[], cite?: { theorem?: string | null }): Claim[] => {
   // a claim with legal words is backed by a sealed guarantee of the unit's own court (a theorem key its due-process door names),
   // never by a receipt: the forensic door admits a cited theorem and treats any other UUID as an address it must find sealed
   const backed = ` backed by theorem ${cite?.theorem ?? 'legal_only_the_proven_is_admitted'}`
@@ -65,7 +65,7 @@ const findClaims = (texts: Texts, leads: readonly Lead[], cite?: { theorem?: str
 const checkLegalSecurity = (texts: Texts): { id: string; passed: boolean; evidence: string }[] => {
   const w = texts.worker ?? ''; const b = texts.billing ?? ''; const h = texts.hmac ?? ''; const m = texts.mcp ?? ''
   const all = `${w}\n${b}\n${h}\n${m}\n${texts.readme ?? ''}`
-  const { check, done } = makeChecks()
+  const { check, done } = createChecks()
   if (!w) { check('security:worker-text', false, 'no worker source given: nothing measured'); return done().checks }
   check('security:no-live-secret-literal', !/\b(sk_live_|whsec_[0-9A-Za-z]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN (RSA |EC )?PRIVATE KEY)/.test(all), 'no live Stripe key, webhook secret, AWS key or private key literal in the sources')
   check('security:tokens-compared-in-constant-time', /const sameToken[\s\S]*?\^/.test(w) || /sameToken = [\s\S]{0,400}\^/.test(w), 'sameToken xors the bytes; no early exit on a mismatch')
@@ -83,7 +83,7 @@ const checkLegalSecurity = (texts: Texts): { id: string; passed: boolean; eviden
 /** The public news APIs wired as adapters of the DOI research: the open ones answer mentions of each record of precedence without a key, the keyed ones
  *  wait for a tenant's name (never a value); the mentions by source are the measure the acceptance rule reads, never a verdict (textbook_news_adapters). */
 export const NEWS_APIS: readonly { id: string; name: string; url: string; open: boolean; key: string | null; reads: string }[] = TABLES.NEWS_APIS as readonly { id: string; name: string; url: string; open: boolean; key: string | null; reads: string }[]
-const buildNewsRequests = () => PRECEDENCE.flatMap((p) => NEWS_APIS.filter((a) => a.open).map((a) => ({ id: `${a.id}:${p.doi}`, api: a.id, doi: p.doi, method: 'GET' as const, url: a.url.replace('<doi>', encodeURIComponent(p.doi)).replace('<query>', encodeURIComponent(a.id === 'crossref-events' ? p.doi : p.title)), accept: 'application/json' })))
+const createNewsRequests = () => PRECEDENCE.flatMap((p) => NEWS_APIS.filter((a) => a.open).map((a) => ({ id: `${a.id}:${p.doi}`, api: a.id, doi: p.doi, method: 'GET' as const, url: a.url.replace('<doi>', encodeURIComponent(p.doi)).replace('<query>', encodeURIComponent(a.id === 'crossref-events' ? p.doi : p.title)), accept: 'application/json' })))
 const countMentions = (answers: readonly { id: string; status: number; text: string }[]) => {
   const read = (api: string, text: string): number | null => { try { const j = JSON.parse(text) as Record<string, unknown>; switch (api) { case 'gdelt': return Array.isArray((j as { articles?: unknown[] }).articles) ? (j as { articles: unknown[] }).articles.length : 0; case 'hn-algolia': return Number((j as { nbHits?: number }).nbHits ?? 0); case 'crossref-events': return Number((j as { message?: { 'total-results'?: number } }).message?.['total-results'] ?? 0); case 'wikipedia-search': return Number((j as { query?: { searchinfo?: { totalhits?: number } } }).query?.searchinfo?.totalhits ?? 0); default: return null } } catch { return null } }
   const rows = answers.map((a) => { const i = a.id.indexOf(':'); const api = a.id.slice(0, i), doi = a.id.slice(i + 1); return { api, doi, status: a.status, mentions: a.status === 200 ? read(api, a.text) : null } })
@@ -138,7 +138,7 @@ const auditClaims = (claims: readonly Claim[], answers: readonly Answer[], secur
   return { claims: claims.length, findings, verdicts, violations, drift, legalFacts: legal ?? null, rights: rights ? { holder: rights.holder, license: rights.license, licenseAddress: rights.licenseAddress, imprint: rights.imprint, receipt: rights.receipt } : null, licence: licence ? { scope: licence.scope, spdx: licence.spdx, free: licence.bill?.free } : null, priorArt: priorArt ? { exhibits: priorArt.exhibits?.length ?? 0, missing: priorArt.missing?.length ?? 0, author: priorArt.author } : null, dueProcess: due ? { allGuaranteesSealed: due.allGuaranteesSealed, gaps: due.gaps?.length ?? 0, docket: due.docket?.length ?? 0, traitors: due.traitors?.length ?? 0 } : null, securityDoors, security: [...security], securityPassed: security.filter((c) => c.passed).length, securityTotal: security.length, refusals: answers.filter((a) => a.refusal !== undefined).length }
 }
 
-const renderLegalPage = (a: ReturnType<typeof auditClaims>, plan: { agents: string[]; by: string; absent: string[] }, date: string): string => ['---', 'title: Legal', 'order: 56', '---', '', '# The legal and security audit, through MCP', '',
+const getLegalPage = (a: ReturnType<typeof auditClaims>, plan: { agents: string[]; by: string; absent: string[] }, date: string): string => ['---', 'title: Legal', 'order: 56', '---', '', '# The legal and security audit, through MCP', '',
   `> ${(a.legalFacts as { disclaimer?: string } | null)?.disclaimer ?? LICENSE.disclaimer}`, '', `Run by \`npm run next\` on ${date} through the \`legal\` tool: every claim the author makes in this tree sent to the unit's forensic and verification doors, the unit's legal facts and rights beside this tree's licence module, the licence computed for this tree, the prior art of its theorems, due process over the claims, every security door the unit serves, and the tree's own security checks over its sources. Agents: ${plan.agents.join(', ')} (${plan.by}${plan.absent.length ? `; absent: ${plan.absent.join(', ')}` : ''}). ${LICENSE.disclaimer}`, '',
   `## Claims: ${a.claims}; verdicts ${Object.entries(a.verdicts).map(([k, v]) => `${k} ${v}`).join(', ')}; violations ${a.violations}; refusals ${a.refusals}`, '',
   '| Claim | Door | Verdict | Clean | Violations | Receipt | Note or refusal |', '|---|---|---|---|---:|---|---|', ...a.findings.map((f) => `| ${f.claim} | ${f.door} | ${f.verdict ?? '—'} | ${f.clean === null ? '—' : f.clean} | ${f.violations} | ${f.receipt ?? '—'} | ${(f.note || f.refusal || '').replace(/\|/g, '\\|')} |`), '',
@@ -156,7 +156,7 @@ const legal = defineTool('legal', {
     if (args.court === true) return { rules: COURT_RULES, count: COURT_RULES.length, theorem: 'textbook_cheap_gates', says: 'every gate refuses by one of these rules and answers the case computed: the violator files it through its own MCP, the gate writes nothing' }
     if (isObj(args.court)) return summonCourt(args.court as Summons)
     const texts = (args.texts ?? {}) as Texts
-    const claims = findClaims(texts, ctx.leads, { theorem: typeof args.citeTheorem === 'string' ? args.citeTheorem : null })
+    const claims = listClaims(texts, ctx.leads, { theorem: typeof args.citeTheorem === 'string' ? args.citeTheorem : null })
     const security = checkLegalSecurity(texts)
     const plan = planLegal(claims, (args.discovery as Discovery | undefined) ?? null, Array.isArray(args.agents) ? args.agents.map(String) : null, Array.isArray(args.theoremKeys) ? args.theoremKeys.map(String) : [])
     if (!Array.isArray(args.answers)) return { phase: 'plan' as const, claims: claims.length, calls: plan.calls.length, agents: plan.agents.length, by: plan.by, securityPassed: security.filter((c) => c.passed).length, securityTotal: security.length, claimList: claims, plan, security }
@@ -167,7 +167,7 @@ const legal = defineTool('legal', {
     const inputs = { texts: Object.fromEntries(Object.entries(texts).filter(([, t]) => typeof t === 'string').map(([k, t]) => [k, hex(sha256(utf8(t as string)))])), discovery: args.discovery ? hex(sha256(utf8(JSON.stringify(args.discovery)))) : null, theoremKeys: hex(sha256(utf8(JSON.stringify(args.theoremKeys ?? [])))), answers: hex(sha256(utf8(JSON.stringify(args.answers)))) }
     const content = JSON.stringify({ inputs, audit, agents: plan.agents, by: plan.by })
     const id = uuidOf(content)
-    return { phase: 'audit' as const, id, sha256: hex(sha256(utf8(content))), inputs, claims: audit.claims, violations: audit.violations, refusals: audit.refusals, drift: audit.drift.length, securityPassed: audit.securityPassed, securityTotal: audit.securityTotal, by: plan.by, audit, page: renderLegalPage(audit, plan, date) }
+    return { phase: 'audit' as const, id, sha256: hex(sha256(utf8(content))), inputs, claims: audit.claims, violations: audit.violations, refusals: audit.refusals, drift: audit.drift.length, securityPassed: audit.securityPassed, securityTotal: audit.securityTotal, by: plan.by, audit, page: getLegalPage(audit, plan, date) }
   },
   widget: flowWidget,
 })
@@ -182,7 +182,7 @@ export const COMPETITIONS: readonly { id: string; name: string; prize: string; r
 /** The registry's MCPs for grants and funding (2026-10-26: grant 20, funding 20, competition 2, prize 0, hackathon 0): proposed, extended by the discover step through the lead, never called here. */
 export const FUNDING_MCPS = ['ca.netgrant/canadian-grants', 'com.cedargrant/federal-grants', 'com.dropwatchhq/grant-finder', 'io.github.Ansvar-Systems/uk-farm-grants', 'io.github.Froydinger/grantsignal-us', 'ai.rallyprop/gov-funding', 'com.funding-radar/radar', 'com.modernmustardseed/funding-finder', 'eu.tech.funding/fundi', 'com.meridianlabssoftware/sec-form-d-funding-rounds'] as const
 /** A competition's window read from its page: "Registration opens on <date>, and closes on <date>" → open, closed or upcoming at `now`; "applications are open" → open; nothing read → unknown. Autonomy: the entry state is measured from the page on every run, never hand-set. */
-const readEntryWindow = (text: string, now: number): { entry: 'open' | 'closed' | 'upcoming' | 'unknown'; opens: string | null; closes: string | null; says: string } => {
+const getEntryWindow = (text: string, now: number): { entry: 'open' | 'closed' | 'upcoming' | 'unknown'; opens: string | null; closes: string | null; says: string } => {
   const m = /[Rr]egistration opens on ([A-Z][a-z]+ \d{1,2}, \d{4}),? and closes on ([A-Z][a-z]+ \d{1,2}, \d{4})/.exec(text)
   if (m) { const opens = Date.parse(`${m[1]!} UTC`); const closes = Date.parse(`${m[2]!} UTC`) + 86_399_000; /* the day the window closes counts whole, in UTC */ const entry = now < opens ? 'upcoming' : now > closes ? 'closed' : 'open'; return { entry, opens: new Date(opens).toISOString().slice(0, 10), closes: new Date(closes).toISOString().slice(0, 10), says: `the page says registration opens ${m[1]} and closes ${m[2]}: ${entry} on ${new Date(now).toISOString().slice(0, 10)}` } }
   if (/applications? (?:are|is) (?:now |currently )?open/i.test(text)) return { entry: 'open', opens: null, closes: null, says: 'the page says applications are open' }
@@ -199,7 +199,7 @@ export const knowCompetition = (c: (typeof COMPETITIONS)[number]) => {
 const judgeCompetitions = (evidence: { theorems: number; kernel: number; hosts: number; licence: string; published: boolean; pushed: boolean; conduct?: boolean; acceptance?: ReturnType<typeof countMentions> | null }, pages: Record<string, string> = {}, now = 0) => {
   const judged = COMPETITIONS.map((c0) => {
     // the window measured from the page when a page was read: the fixture's entry stands only until then
-    const w = pages[c0.id] ? readEntryWindow(pages[c0.id]!, now || Date.now()) : null
+    const w = pages[c0.id] ? getEntryWindow(pages[c0.id]!, now || Date.now()) : null
     const c = w && w.entry !== 'unknown' ? { ...c0, entry: w.entry === 'upcoming' ? 'closed' as const : w.entry, window: w } : { ...c0, window: w }
     const rules: Rule[] = c.requires.map((r) => {
       // a rule the page states that the tree fails as it stands (its licence, its age, its author alone): closed until the author's act changes it;
@@ -222,7 +222,7 @@ const judgeCompetitions = (evidence: { theorems: number; kernel: number; hosts: 
     // the coin cost of the evidence: every theorem the tree carries for the competition served as a coin through textbook { theorem }, booked in
     // the ledger beside the prize as its page states it; a cost, never a claim: no prize is won and no problem solved by booking it
     const know = knowCompetition(c0)
-    const ledger = buildLedger(know.theorems.map((theorem) => ({ tool: 'textbook', tenant: 'author', arguments: { theorem } })))
+    const ledger = createLedger(know.theorems.map((theorem) => ({ tool: 'textbook', tenant: 'author', arguments: { theorem } })))
     const economics = { prize: c.prize, evidence: know.theorems.length, calls: know.theorems.map((theorem) => ({ name: 'textbook', arguments: { theorem } })), coins: ledger.coins, coils: ledger.coils, costMillicents: ledger.debits, balanced: ledger.balanced, says: `${know.theorems.length} theorem(s) of evidence served as ${ledger.coins} coin(s) at a cost of ${ledger.debits} thousandths of a cent, beside the prize as stated (${c.prize}); no prize is won and no problem solved by this`, theorem: 'textbook_double_entry' }
     return { ...c, rules, counts, know, economics, satisfied: `${counts.satisfied ?? 0}/${rules.length}`, enterable: c.entry !== 'closed' && rules.every((r) => r.status !== 'open' && r.status !== 'closed'), ready: rules.every((r) => r.status === 'satisfied') }
   })
@@ -235,7 +235,7 @@ const compete = defineTool('legal', {
   inputSchema: { type: 'object', properties: { conduct: { type: 'boolean', description: 'the client found a CODE_OF_CONDUCT in the repository' }, news: { type: 'boolean', description: 'the public news APIs as adapters of the DOI research: the requests the client makes to the open ones for every record of precedence, the keyed ones named' }, mentions: { type: 'array', items: { type: 'object' }, description: 'the answers to the news requests ({ id, status, text }): the mentions by source and by record, read into the acceptance rule' }, pages: { type: 'object', description: 'competition id → the text of its rules page, read by the client: the entry window is measured from it' }, now: { type: 'number', description: 'the clock (ms) the window is judged at; the host\'s when absent' }, published: { type: 'boolean', description: 'a publication in a qualifying outlet exists (the author says so)' }, pushed: { type: 'boolean', description: 'the repository is public (the author pushed)' }, hosts: { type: 'integer' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...LEGAL.skill.selftest(ctx) }
-    if (args.news) { const requests = buildNewsRequests(); return { op: 'news' as const, apis: NEWS_APIS, open: NEWS_APIS.filter((a) => a.open).map((a) => a.id), keyed: NEWS_APIS.filter((a) => !a.open).map((a) => ({ id: a.id, key: a.key })), records: PRECEDENCE.length, requests: requests.length, requestList: requests, says: 'the public news APIs wired as adapters of the DOI research: one request per open API per record of precedence; the keyed ones wait for a tenant\'s name; the mentions are read by compete { mentions }' } }
+    if (args.news) { const requests = createNewsRequests(); return { op: 'news' as const, apis: NEWS_APIS, open: NEWS_APIS.filter((a) => a.open).map((a) => a.id), keyed: NEWS_APIS.filter((a) => !a.open).map((a) => ({ id: a.id, key: a.key })), records: PRECEDENCE.length, requests: requests.length, requestList: requests, says: 'the public news APIs wired as adapters of the DOI research: one request per open API per record of precedence; the keyed ones wait for a tenant\'s name; the mentions are read by compete { mentions }' } }
     return judgeCompetitions({ theorems: THEOREMS.length, kernel: KERNEL_THEOREMS, hosts: typeof args.hosts === 'number' ? args.hosts : 3, licence: LICENSE.spdx, published: args.published === true, pushed: args.pushed === true, conduct: args.conduct === true, acceptance: Array.isArray(args.mentions) ? countMentions(args.mentions as { id: string; status: number; text: string }[]) : null }, isObj(args.pages) ? args.pages as Record<string, string> : {}, typeof args.now === 'number' ? args.now : 0)
   },
   widget: flowWidget,
@@ -247,7 +247,7 @@ export const PATENT_APIS: readonly { id: string; name: string; url: string; open
 export const PATENT_MCPS = ['ai.findip/patent-search', 'ai.g62/patent-search', 'ai.patentdata/patent-data', 'com.goveda/patent-mcp', 'com.unfoldip/patent-search', 'dev.patent/patent', 'io.github.FoundryNet/patent-intel-mcp', 'io.github.guptaprakhariitr/uspto-patents-mcp', 'io.github.pipeworx-io/patents', 'io.github.pipeworx-io/uspto-ptab', 'com.thenextgennexus/patents-trademarks-ip-mcp-server'] as const
 type Patent = { number: string; title: string; priority: string | null; filing: string | null; publication: string | null; grant: string | null; assignee: string | null; inventor: string | null; office: string; kind: string | null }
 /** A patent number read: the office (the two letters), the kind code; US, EP, WO, CN and the rest. */
-const parsePatentNumber = (n: string): { office: string; kind: string | null; wellFormed: boolean } => {
+const getPatentNumber = (n: string): { office: string; kind: string | null; wellFormed: boolean } => {
   const m = /^([A-Z]{2})(\d+)([A-Z]\d?)?$/.exec(n)
   if (!m) return { office: n.slice(0, 2), kind: null, wellFormed: false }
   const office = m[1]!; const digits = m[2]!; const kind = m[3] ?? null
@@ -255,11 +255,11 @@ const parsePatentNumber = (n: string): { office: string; kind: string | null; we
   return { office, kind, wellFormed }
 }
 /** Google Patents\' answer read into patents: the )]}\' prefix stripped, every cluster\'s results taken. */
-const parsePatents = (text: string): { total: number; patents: Patent[] } | { error: string } => {
+const listPatents = (text: string): { total: number; patents: Patent[] } | { error: string } => {
   try {
     const j = JSON.parse(text.replace(/^\)\]\}'\n?/, '')) as { results?: { total_num_results?: number; cluster?: { result?: { patent?: Record<string, string> }[] }[] } }
     const r = j.results ?? {}
-    const patents: Patent[] = (r.cluster ?? []).flatMap((c) => c.result ?? []).map((x) => x.patent).filter((p): p is Record<string, string> => !!p).map((p) => { const n = parsePatentNumber(p.publication_number ?? ''); return { number: p.publication_number ?? '', title: (p.title ?? '').replace(/<[^>]+>/g, '').trim(), priority: p.priority_date || null, filing: p.filing_date || null, publication: p.publication_date || null, grant: p.grant_date || null, assignee: p.assignee || null, inventor: p.inventor || null, office: n.office, kind: n.kind } })
+    const patents: Patent[] = (r.cluster ?? []).flatMap((c) => c.result ?? []).map((x) => x.patent).filter((p): p is Record<string, string> => !!p).map((p) => { const n = getPatentNumber(p.publication_number ?? ''); return { number: p.publication_number ?? '', title: (p.title ?? '').replace(/<[^>]+>/g, '').trim(), priority: p.priority_date || null, filing: p.filing_date || null, publication: p.publication_date || null, grant: p.grant_date || null, assignee: p.assignee || null, inventor: p.inventor || null, office: n.office, kind: n.kind } })
     return { total: r.total_num_results ?? 0, patents }
   } catch (e) { return { error: (e as Error).message } }
 }
@@ -274,7 +274,7 @@ const checkPatentTheorems = (patents: readonly Patent[]): { checked: number; pas
     if (pr !== null && fi !== null) tally('textbook_patent_dates_ordered', pr <= fi, p.number, `priority ${p.priority} after filing ${p.filing}`)
     if (fi !== null && pu !== null) tally('textbook_patent_dates_ordered', fi <= pu, p.number, `filing ${p.filing} after publication ${p.publication}`)
     if (fi !== null && gr !== null) tally('textbook_patent_dates_ordered', fi <= gr, p.number, `filing ${p.filing} after grant ${p.grant}`)
-    tally('textbook_patent_number_well_formed', parsePatentNumber(p.number).wellFormed, p.number, `the number is not well formed for ${p.office}`)
+    tally('textbook_patent_number_well_formed', getPatentNumber(p.number).wellFormed, p.number, `the number is not well formed for ${p.office}`)
     if (fi !== null && gr !== null && (p.office === 'US' || p.office === 'EP')) { const term = new Date(Date.parse(p.filing! + 'T00:00:00Z')); term.setUTCFullYear(term.getUTCFullYear() + 20); tally('textbook_patent_term_twenty_years', gr < Math.floor(term.getTime() / 86_400_000), p.number, `granted ${p.grant} after the twenty-year term from filing ${p.filing}`) }
   }
   const checked = Object.values(byTheorem).reduce((n, t) => n + t.passed + t.failed, 0)
@@ -294,7 +294,7 @@ const patents = defineTool('legal', {
     if (op === 'plan') return { op, apis: PATENT_APIS, open: PATENT_APIS.filter((a) => a.open).map((a) => a.id), keyed: PATENT_APIS.filter((a) => !a.open).map((a) => ({ id: a.id, key: a.key })), requests: [...queries.map((q) => ({ id: `patents:google:${q}`, api: 'google-patents', query: q, method: 'GET' as const, url: `https://patents.google.com/xhr/query?url=${encodeURIComponent(`q=${q.replace(/\s+/g, '+')}&num=${count}`)}`, accept: 'application/json' })), { id: 'patents:epo-dates', api: 'epo-publication-server', query: null, method: 'GET' as const, url: PATENT_APIS[1]!.url, accept: 'text/html' }], relatedMcps: PATENT_MCPS, theorems: ['textbook_patent_dates_ordered', 'textbook_patent_number_well_formed', 'textbook_patent_term_twenty_years'] }
     if (op !== 'read') throw new Error(`op ${op} is not plan or read`)
     const answers = (Array.isArray(args.answers) ? args.answers : []) as { id: string; query?: string; text: string }[]
-    const byQuery = answers.filter((a) => a.id.startsWith('patents:google:')).map((a) => ({ query: a.query ?? a.id.replace('patents:google:', ''), ...parsePatents(String(a.text ?? '')) }))
+    const byQuery = answers.filter((a) => a.id.startsWith('patents:google:')).map((a) => ({ query: a.query ?? a.id.replace('patents:google:', ''), ...listPatents(String(a.text ?? '')) }))
     const epo = answers.find((a) => a.id === 'patents:epo-dates')
     // the EPO lists its dates as publication-dates/YYYYMMDD (measured 2026-10-26: 20261021, 20261014, 20261007 …)
     const epoDates = epo ? [...new Set((String(epo.text).match(/publication-dates\/(20\d{6})/g) ?? []).map((m) => m.slice(-8)))] : []
@@ -324,8 +324,8 @@ export const LEGAL: Toolbox = {
     instructions: 'The client reads the tree\'s texts (README, CITATION.cff, .zenodo.json, package.json, src/worker.ts, the billing and hmac modules, mcp.ts), the discovery and the theorem ledger, calls legal for the plan, makes every call against its host, and calls legal again with the answers; it writes legal.json and the page. Agents are the free doors discovery found; the operator overrides with agents: [...] and nothing else does. A refusal is recorded, never retried blindly.',
     directions: ['server only: claims from fixture metadata, security checks on fixture sources, the plan, the audit of fixture answers', 'client → server: the texts come from the tree, the answers from the doors', 'toolbox → toolbox: the doors come from discovery; the claims include every perspective lead; the licence module is the measure of drift'],
     selftest: (ctx) => {
-      const { check, done } = makeChecks()
-      const claims = findClaims(FIXTURE_TEXTS, ctx.leads)
+      const { check, done } = createChecks()
+      const claims = listClaims(FIXTURE_TEXTS, ctx.leads)
       check('legal:claims', claims.some((c) => c.id === 'citation-cff' && c.text.includes('Tsvetan Rouschev')) && claims.some((c) => c.id === 'zenodo-json') && claims.some((c) => c.id === 'package-json') && claims.some((c) => c.id.startsWith('readme-tests')) && claims.filter((c) => c.id.startsWith('perspective-')).length >= 10, `${claims.length} claims: ${claims.slice(0, 8).map((c) => c.id).join(', ')}…`)
       const sec = checkLegalSecurity(FIXTURE_TEXTS)
       check('legal:security-checks', sec.length === 10 && sec.every((c) => c.passed), sec.filter((c) => !c.passed).map((c) => c.id).join(', ') || 'all pass on the fixture sources')
@@ -338,20 +338,20 @@ export const LEGAL: Toolbox = {
       const answers: Answer[] = [...plan.calls.map((c): Answer => c.purpose === 'forensics' ? { ...c, answer: { verdict: 'UNVERIFIED', clean: true, violations: [], receipt: 'r', note: 'no decidable test' } } : c.purpose === 'verify' ? { ...c, answer: { verdict: 'UNVERIFIED', receipt: 'r2' } } : c.door === 'get_rights' ? { ...c, answer: { holder: `${LICENSE.author} (https://qpu.uuidna.com)`, license: LICENSE.spdx, licenseAddress: LICENSE.address, imprint: 'other-imprint', receipt: 'r3' } } : c.door === 'audit_security' ? { ...c, answer: { checks: 7, passed: 7, failed: 0, receipt: 'r4' } } : c.door === 'compute_prior_art' ? { ...c, refusal: 'the edge does not hold the whole ledger' } : { ...c, answer: { receipt: 'r5' } })]
       const audit = auditClaims(claims, answers, sec)
       check('legal:audit-read', audit.findings.length === claims.length * 2 && audit.verdicts.UNVERIFIED === claims.length * 2 && audit.violations === 0 && audit.drift.length === 1 && audit.drift[0]!.startsWith('imprint') && audit.refusals === 1 && audit.securityDoors.find((d) => d.door === 'audit_security')?.failed === 0, `${audit.findings.length} findings, drift ${audit.drift.join('; ')}, refusals ${audit.refusals}`)
-      check('legal:page', renderLegalPage(audit, plan, '2026-01-01').includes('Drift against this tree: imprint'), 'the page renders the drift')
+      check('legal:page', getLegalPage(audit, plan, '2026-01-01').includes('Drift against this tree: imprint'), 'the page renders the drift')
       const run = (t: Texts) => ctx.call('legal', { texts: t, answers: [] }) as { id: string; sha256: string }
       const a1 = run(FIXTURE_TEXTS); const a2 = run(FIXTURE_TEXTS); const a3 = run({ ...FIXTURE_TEXTS, readme: FIXTURE_TEXTS.readme + '| Tampered | yes |\n' })
       check('legal:tamper-evident', a1.id === a2.id && a1.sha256 === a2.sha256 && a1.id !== a3.id && a1.sha256 !== a3.sha256, 'the same inputs give the same address; one changed line changes it')
       const comp = judgeCompetitions({ theorems: 12, kernel: 1000, hosts: 3, licence: 'CC-BY-NC-ND-4.0', published: false, pushed: false })
       const pub = judgeCompetitions({ theorems: 12, kernel: 1000, hosts: 3, licence: 'CC-BY-NC-ND-4.0', published: true, pushed: true })
-      const win = readEntryWindow('Phase II Wild Card Registration opens on January 14, 2026, and closes on March 4, 2026.', Date.parse('2026-02-01'))
-      const after = readEntryWindow('Phase II Wild Card Registration opens on January 14, 2026, and closes on March 4, 2026.', Date.parse('2026-10-26'))
+      const win = getEntryWindow('Phase II Wild Card Registration opens on January 14, 2026, and closes on March 4, 2026.', Date.parse('2026-02-01'))
+      const after = getEntryWindow('Phase II Wild Card Registration opens on January 14, 2026, and closes on March 4, 2026.', Date.parse('2026-10-26'))
       const measured = judgeCompetitions({ theorems: 12, kernel: 1000, hosts: 3, licence: 'CC-BY-NC-ND-4.0', published: false, pushed: false }, { 'xprize-quantum-applications': 'Registration opens on January 14, 2027, and closes on March 4, 2027.' }, Date.parse('2027-02-01'))
-      check('legal:window-measured-from-the-page', readEntryWindow('Applications are currently closed.', 1).entry === 'closed' && win.entry === 'open' && win.opens === '2026-01-14' && after.entry === 'closed' && readEntryWindow('', 1).entry === 'unknown' && measured.competitions.find((c) => c.id === 'xprize-quantum-applications')!.entry === 'open' && measured.enterable.includes('xprize-quantum-applications'), 'the XPRIZE window read from its sentence: open on 2026-02-01, closed on 2026-10-26; a page naming a 2027 window makes the competition enterable in 2027')
+      check('legal:window-measured-from-the-page', getEntryWindow('Applications are currently closed.', 1).entry === 'closed' && win.entry === 'open' && win.opens === '2026-01-14' && after.entry === 'closed' && getEntryWindow('', 1).entry === 'unknown' && measured.competitions.find((c) => c.id === 'xprize-quantum-applications')!.entry === 'open' && measured.enterable.includes('xprize-quantum-applications'), 'the XPRIZE window read from its sentence: open on 2026-02-01, closed on 2026-10-26; a page naming a 2027 window makes the competition enterable in 2027')
       check('legal:compete-judges-never-claims', comp.ready.length === 0 && comp.enterable.length > 0 && comp.competitions.every((c) => !c.enterable || (c.entry !== 'closed' && c.rules.every((r) => !/^FLAG:/.test(r.needs ?? '')))) && !comp.enterable.includes('vercel-oss-program') && !comp.enterable.includes('gemini-xprize-hackathon') && comp.competitions.every((c) => c.rules.every((r) => r.status !== 'satisfied')) && pub.competitions.find((c) => c.id === 'github-maintainer-programs')!.rules[0]!.status === 'satisfied' && pub.ready.length === 0 && pub.competitions.find((c) => c.id === 'clay-millennium')!.rules[0]!.status === 'open' && /nothing here is a prize won/.test(comp.honest), 'unpushed and unpublished, nothing is ready and three funding programs are enterable by the author\'s acts (Google\'s accelerator among them; the Gemini XPRIZE hackathon closed) (Vercel\'s says applications are currently closed); pushed, the public-repository rule is satisfied and the application stays the author\'s; a Millennium problem stays open whatever the author does here')
-      const read = parsePatents(GOOGLE_FIXTURE)
+      const read = listPatents(GOOGLE_FIXTURE)
       const th = 'patents' in read ? checkPatentTheorems(read.patents) : { checked: 0, passed: 0, violations: [], byTheorem: {} }
-      check('legal:patents-read-and-theorems-verified', 'patents' in read && read.total === 2 && read.patents[0]!.number === 'US12242926B2' && read.patents[0]!.title === 'Quantum system controller' && th.violations.length === 2 && th.violations.every((v) => v.number === 'EP1234567B1') && parsePatentNumber('WO2020123456A1').wellFormed && !parsePatentNumber('EP12A').wellFormed && 'error' in parsePatents('not json'), `${th.checked} checks over 2 patents, ${th.violations.length} violations on the second (dates, term); numbers read for US, EP, WO; an unreadable body said so`)
+      check('legal:patents-read-and-theorems-verified', 'patents' in read && read.total === 2 && read.patents[0]!.number === 'US12242926B2' && read.patents[0]!.title === 'Quantum system controller' && th.violations.length === 2 && th.violations.every((v) => v.number === 'EP1234567B1') && getPatentNumber('WO2020123456A1').wellFormed && !getPatentNumber('EP12A').wellFormed && 'error' in listPatents('not json'), `${th.checked} checks over 2 patents, ${th.violations.length} violations on the second (dates, term); numbers read for US, EP, WO; an unreadable body said so`)
       return done()
     },
   },

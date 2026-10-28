@@ -28,7 +28,7 @@ export const offerJsonLd = (v: { product: string; variant: string; unit: string;
 
 type Codes = { languages: Set<string>; currencies: Set<string>; territories: Set<string> }
 /** The CLDR lists read into code sets: ISO 639 languages, ISO 4217 currencies, ISO 3166-1 territories. */
-export const readCodes = (cldr: { languages?: unknown; currencies?: unknown; territories?: unknown }): Codes => {
+export const listCodes = (cldr: { languages?: unknown; currencies?: unknown; territories?: unknown }): Codes => {
   const main = (doc: unknown) => { const m = (doc as { main?: Record<string, unknown> } | undefined)?.main; return m ? (Object.values(m)[0] as Record<string, unknown> | undefined) : undefined }
   const languages = new Set(Object.keys(((main(cldr.languages) as { localeDisplayNames?: { languages?: Record<string, string> } } | undefined)?.localeDisplayNames?.languages ?? {})))
   const currencies = new Set(Object.keys(((main(cldr.currencies) as { numbers?: { currencies?: Record<string, unknown> } } | undefined)?.numbers?.currencies ?? {})))
@@ -65,7 +65,7 @@ export const OPENAPI_RESOURCE = 'openapi://qpu'
  *  (textbook_openapi_contract). The same document stands in the discovery document at /.well-known/qpu.json and as the resource
  *  openapi://qpu, so the tree detects its own hosts as `openapi 3.1.0` the way it detects any other's. What an AI API and a quantum API
  *  share — a named tool, its schema, a structured result at a content address — is this contract. Pure. */
-export const buildOpenapi = (origin: string, tools: readonly ApiTool[], hosts: readonly string[] = [origin]) => {
+export const createOpenapi = (origin: string, tools: readonly ApiTool[], hosts: readonly string[] = [origin]) => {
   const paths: Record<string, Record<string, unknown>> = {}
   for (const e of API_ENDPOINTS) {
     const path = e.path.replace(/<([a-z]+)>/g, '{$1}'); const method = e.method.toLowerCase()

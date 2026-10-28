@@ -4,7 +4,7 @@ import { handle } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { LEADS } from './leads.ts'
 import { matchStatement, tokens, translateVerdict, listForeignVerdicts } from './match.ts'
-import { GLAGOLITIC, toGlagolitic, readNumerals, translateOf } from './i18n.ts'
+import { GLAGOLITIC, toGlagolitic, listNumerals, translateOf } from './i18n.ts'
 
 const match = (statement: string) => matchStatement(statement, handle, EXAMPLES, LEADS)
 
@@ -76,9 +76,9 @@ test('a verdict crossing the border is translated by table, and a call carries i
 
 test('Glagolitic numerals round-trip through the table and are read as integers before a match', () => {
   assert.equal(Object.keys(GLAGOLITIC).length, 28)
-  for (const n of [1, 9, 10, 15, 99, 105, 432, 999, 1000, 1999]) assert.equal(readNumerals(toGlagolitic(n)!).numerals[0]!.value, n, `${n}`)
+  for (const n of [1, 9, 10, 15, 99, 105, 432, 999, 1000, 1999]) assert.equal(listNumerals(toGlagolitic(n)!).numerals[0]!.value, n, `${n}`)
   assert.equal(toGlagolitic(2000), null, 'above the table is a lead, never guessed')
-  assert.deepEqual(readNumerals('Factor Ⰺⰴ with Shor'), { text: 'Factor 15 with Shor', numerals: [{ glyphs: 'Ⰺⰴ', value: 15 }] })
+  assert.deepEqual(listNumerals('Factor Ⰺⰴ with Shor'), { text: 'Factor 15 with Shor', numerals: [{ glyphs: 'Ⰺⰴ', value: 15 }] })
   const m = matchStatement('Factor Ⰺⰴ with Shor', handle, EXAMPLES, LEADS)
   assert.equal(m.verdict, 'served'); assert.equal(m.tool, 'algorithm'); assert.equal(m.reflection.factors[0]?.factors, '3 × 5'); assert.equal(m.read?.numerals[0]?.value, 15)
 })

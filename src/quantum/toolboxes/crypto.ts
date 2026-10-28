@@ -3,7 +3,7 @@
 // one piece it sits in, so a door answers from that piece and never from the whole. The bound is a reflective boundary:
 // σ_n(i) = n − i mirrors every piece onto the one across the fold, and the excess over the bound is reflected into the count
 // of pieces, decided by integer comparisons before anything is computed. Pure: SHA-256 and the fold address, nothing else.
-import { defineTool, isObj, makeChecks, type Toolbox } from '../toolbox.ts'
+import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { memoOf, uuidOf, presentationOf, streamOf, neighboursOf, uuidSchemasOf, UUID_SCHEMAS, compositionsOf, compositionOf, compositionIndexOf, harmonicDefaultsOf, type StreamQuery } from '../blocks.ts'
 import { foldEntropy } from '../scan.ts'
 import { summonCourt } from './legal.ts'
@@ -11,7 +11,7 @@ import { mayChoose, type Role } from '../roles.ts'
 import { sha256, hmacSha256, sha512, utf8, hex } from '../hmac.ts'
 import { digitalRoot, trinityFor } from '../clay-register.ts'
 import { flowWidget } from '../widgets.ts'
-import { CODATA_URL, parseConstants } from '../constants.ts'
+import { CODATA_URL, listConstants } from '../constants.ts'
 import { splitUuid } from '../split.ts'
 import { castRays } from '../theme.ts'
 import { speakHex } from '../i18n.ts'
@@ -137,7 +137,7 @@ const deriveRefererSeeds = (referer: unknown, key: unknown) => {
  *  length — then its JSON and BIN chunks) or a .gltf (the JSON, its .bin and images beside it); what the scene holds; its extensions by prefix
  *  (KHR Khronos-ratified, EXT multi-vendor, any other a vendor's); loadable unless it requires an extension the reader does not support. */
 const GLB_MAGIC = 0x46546c67, GLB_JSON = 0x4e4f534a, GLB_BIN = 0x004e4942
-const readGltf = (g: { glb64?: string; json?: unknown }, supported: readonly string[]) => {
+const getGltf = (g: { glb64?: string; json?: unknown }, supported: readonly string[]) => {
   let doc: Record<string, any> | null = null, bin = 0, why: string | null = null
   if (typeof g.glb64 === 'string') { const b = Uint8Array.from(atob(g.glb64), (c) => c.charCodeAt(0)), v = new DataView(b.buffer)
     if (b.length < 20 || v.getUint32(0, true) !== GLB_MAGIC) why = 'not a .glb: the magic is not glTF'
@@ -162,10 +162,10 @@ const seal = defineTool('crypto', {
     if (args.selftest) return { selftest: true, ...CRYPTO.skill.selftest(ctx) }
     // the physical constants as coins: the request for CODATA's table, then the table read into exact integers, each constant sealed with its stated uncertainty
     if (args.constants === true) return { phase: 'requests' as const, requestList: [{ id: 'codata', method: 'GET', url: CODATA_URL, accept: 'text/plain' }], says: 'fetch the table once and hand its text back as constants: { text }' } as never
-    if (isObj(args.constants)) { const c = args.constants as { text?: string }; return { phase: 'sealed' as const, ...parseConstants(String(c.text ?? '')) } as never }
+    if (isObj(args.constants)) { const c = args.constants as { text?: string }; return { phase: 'sealed' as const, ...listConstants(String(c.text ?? '')) } as never }
     const text = String(args.text)
     const digest = sha(text)
-    if (isObj(args.gltf)) return readGltf(args.gltf as { glb64?: string; json?: unknown }, ((TABLES as Record<string, unknown>).GLTF_EXTENSIONS as { name: string }[] | undefined ?? []).map((x) => x.name)) as never
+    if (isObj(args.gltf)) return getGltf(args.gltf as { glb64?: string; json?: unknown }, ((TABLES as Record<string, unknown>).GLTF_EXTENSIONS as { name: string }[] | undefined ?? []).map((x) => x.name)) as never
     if (Array.isArray(args.artifacts)) {
       const rows = (args.artifacts as { source: string; name: string; url: string; algorithm: string; claimed: string; computed?: string | null; bytes?: number | null; status?: number }[]).map((a) => { const reached = a.status === 200 && typeof a.computed === 'string'; const verified = reached && a.computed!.toLowerCase() === a.claimed.toLowerCase(); return { ...a, reached, verified, verdict: !reached ? 'unreached' : verified ? 'verified' : 'mismatch', court: reached && !verified ? summonCourt({ gate: `artifact ${a.source}`, rule: 'integrity', evidence: { name: a.name, url: a.url, algorithm: a.algorithm } }) : null } })
       const verified = rows.filter((r) => r.verified).length, mismatched = rows.filter((r) => r.verdict === 'mismatch').length, unreached = rows.filter((r) => !r.reached).length
@@ -314,7 +314,7 @@ export const CRYPTO: Toolbox = {
     instructions: 'fold { text, bound } before sending a payload to a place with a limit (an isolate, a request, a quantum): send the pieces, each under the bound; a reader asks fold { text, bound, key } to learn which piece a key sits in and reads that piece alone; fold { pieces, root } checks the whole came back. seal names any text the way blocks and pieces are named.',
     directions: ['server only: a ledger folded under a bound, pieces under the bound, keys located, the root recomputed from the pieces, a wrong piece named', 'toolbox → toolbox: the fold address is the balancer\'s and the docket\'s (blocks.ts), the hash the billing toolbox\'s (hmac.ts), the seed and trinity the Clay register\'s', 'client → server: the unit\'s doors answer from one piece (rowsForKeys) or the baked root — this is the fold they need'],
     selftest: () => {
-      const { check, done } = makeChecks()
+      const { check, done } = createChecks()
       const f = foldLedger(LEDGER, 600)
       check('crypto:pieces-under-the-bound', f.pieces.every((p) => p.bytes <= 600) && f.count > 1 && !f.fits && f.excess === f.bytes - 600, `${f.count} pieces, the largest ${Math.max(...f.pieces.map((p) => p.bytes))} bytes under 600`)
       check('crypto:reflective-boundary', f.pieces.every((p) => p.reflection === f.count - 1 - p.index) && f.boundary.d === f.count - 1, f.boundary.sigma)

@@ -6,13 +6,13 @@ import { join } from 'node:path'
 import { connect } from 'node:tls'
 import './teleport.ts'
 import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { fetchWithTimeout, runSelftest, publishRecord } from './mcp.ts'
+import { getWithTimeout, runSelftest, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('attest')
-const get = async (r: { id: string; url: string; accept: string }) => { const t0 = Date.now(); try { const res = await fetchWithTimeout(r.url, r.accept, 25000); return { id: r.id, status: res.status, ms: Date.now() - t0, text: await res.text() } } catch (e) { return { id: r.id, status: 0, ms: Date.now() - t0, text: '' } } }
+const get = async (r: { id: string; url: string; accept: string }) => { const t0 = Date.now(); try { const res = await getWithTimeout(r.url, r.accept, 25000); return { id: r.id, status: res.status, ms: Date.now() - t0, text: await res.text() } } catch (e) { return { id: r.id, status: 0, ms: Date.now() - t0, text: '' } } }
 // the live certificate of a host, read here: its dates and issuer, nothing else carried
-const readCertificate = (host: string): Promise<{ id: string; status: number; ms: number; text: string }> => new Promise((resolve) => {
+const getCertificate = (host: string): Promise<{ id: string; status: number; ms: number; text: string }> => new Promise((resolve) => {
   const t0 = Date.now()
   const sock = connect({ host, port: 443, servername: host, timeout: 10000 }, () => { const c = sock.getPeerCertificate(); sock.end(); resolve({ id: `tls:${host}`, status: c?.valid_from ? 200 : 0, ms: Date.now() - t0, text: c?.valid_from ? JSON.stringify({ notBefore: new Date(c.valid_from).toISOString(), notAfter: new Date(c.valid_to).toISOString(), issuer: [c.issuer?.O, c.issuer?.CN].filter(Boolean).join(' ') }) : '' }) })
   sock.on('error', () => resolve({ id: `tls:${host}`, status: 0, ms: Date.now() - t0, text: '' })); sock.on('timeout', () => { sock.destroy(); resolve({ id: `tls:${host}`, status: 0, ms: Date.now() - t0, text: '' }) })
@@ -21,7 +21,7 @@ const main = async () => {
   const started = Date.now()
   const selftest = runSelftest('attest', call)
   const plan = call({ op: 'plan' })
-  const answers = [...await Promise.all((plan.requests as { id: string; url: string; accept: string }[]).map(get)), ...await Promise.all((plan.liveCertificates as { host: string }[]).map((c) => readCertificate(c.host)))]
+  const answers = [...await Promise.all((plan.requests as { id: string; url: string; accept: string }[]).map(get)), ...await Promise.all((plan.liveCertificates as { host: string }[]).map((c) => getCertificate(c.host)))]
   let r = call({ op: 'read', answers: answers.map((a) => ({ id: a.id, text: a.text, status: a.status })), now: Date.now() })
   let rounds = 1
   while (r.followUps.length && rounds < 4) { const more = await Promise.all((r.followUps as { id: string; url: string; accept: string }[]).map(get)); answers.push(...more); r = call({ op: 'read', answers: answers.map((a) => ({ id: a.id, text: a.text, status: a.status })), now: Date.now() }); rounds += 1 }

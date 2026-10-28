@@ -27,7 +27,7 @@ export const narrowScope = (r: NarrowRequest) => {
 
 /** An app's sandbox planned: its tenant by namespace (no domain), the key its client holds, the header every request carries, and what is
  *  sandboxed (the scoped collections) and what stays shared (everything else, read as before). */
-export const buildSandbox = (r: { name?: string; app?: string; scoped?: readonly string[] }) => {
+export const createSandbox = (r: { name?: string; app?: string; scoped?: readonly string[] }) => {
   const name = r.name ?? (r.app ? `app ${r.app.slice(0, 8)}` : null)
   if (!name) throw new Error('a sandbox needs a name or an app address')
   const namespace = toNamespace(r.app ? `app-${r.app.slice(0, 8)}` : name)

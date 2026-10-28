@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T03:40:02.688Z",
+ "date": "2026-10-28T03:50:32.858Z",
  "input": {
   "doors": [
    {
@@ -416,6 +416,11 @@
    {
     "name": "metrics.artefacts",
     "bytes": 184,
+    "reached": true
+   },
+   {
+    "name": "textbook.reflect",
+    "bytes": 120,
     "reached": true
    },
    {
@@ -2999,6 +3004,11 @@
     "key": "textbook_raid_bit_zero_verify",
     "bytes": 129,
     "used": true
+   },
+   {
+    "key": "textbook_reflection_by_shape",
+    "bytes": 190,
+    "used": true
    }
   ],
   "qubits": {
@@ -3798,8 +3808,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 51451,
-   "used": 41915,
+   "capacity": 51571,
+   "used": 42035,
    "idle": 9536,
    "percentIdle": 18,
    "idleNames": [
@@ -3922,8 +3932,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 27760,
-   "used": 27760,
+   "capacity": 27950,
+   "used": 27950,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

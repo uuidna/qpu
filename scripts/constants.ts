@@ -5,13 +5,13 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
-import { fetchWithTimeout } from './mcp.ts'
+import { getWithTimeout } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('seal')
 const plan = call({ text: 'codata', constants: true }) as { requestList: { url: string; accept: string }[] }
 const r = plan.requestList[0]!
-const res = await fetchWithTimeout(r.url, r.accept).catch(() => null)
+const res = await getWithTimeout(r.url, r.accept).catch(() => null)
 const text = res?.ok ? await res.text() : ''
 const out = call({ text: 'codata', constants: { text } }) as { adjustment: string | null; constants: unknown[]; exact: number; measured: number; says: string }
 writeFileSync(join(ROOT, 'docs', 'public', 'constants.json'), JSON.stringify({ license: LICENSE.attribution, date: new Date().toISOString(), source: r.url, status: res?.status ?? 0, adjustment: out.adjustment, exact: out.exact, measured: out.measured, constants: out.constants }, null, 1))

@@ -13,14 +13,14 @@ import { TABLES } from './tables-index.ts'
 export const WORKSPACE_MCP: readonly { product: string; host: string; url: string; enable: readonly string[]; scopes: readonly string[]; renders: string }[] = TABLES.WORKSPACE_MCP as readonly { product: string; host: string; url: string; enable: readonly string[]; scopes: readonly string[]; renders: string }[]
 const WORKSPACE_SCOPE_PREFIX = 'https://www.googleapis.com/auth/'
 /** A call of the Payload MCP plugin's create tool for a collection: the document's own fields are its arguments (the plugin reads the collection's schema). */
-export const buildCreateCall = (collection: string, data: Record<string, unknown>) => ({ tool: `create${collection[0]!.toUpperCase()}${collection.slice(1).replace(/-(\w)/g, (_m, c: string) => c.toUpperCase())}`, arguments: data })
+export const createCreateCall = (collection: string, data: Record<string, unknown>) => ({ tool: `create${collection[0]!.toUpperCase()}${collection.slice(1).replace(/-(\w)/g, (_m, c: string) => c.toUpperCase())}`, arguments: data })
 
 /** The editions an institution holds, as Google states them (prices in cents per user per month; null where Google publishes none). */
 type Edition = { id: string; family: 'education' | 'nonprofit' | 'workspace'; name: string; cents: number | null; flexibleCents?: number | null; introCents?: number | null; currency: 'USD' | 'EUR'; cap: number | null; needs?: string; adds: string; source: string }
 const EDITIONS: readonly Edition[] = TABLES.EDITIONS as readonly Edition[]
 
 // Lean's natural-number arithmetic for a closed expression: + − (truncated) * / (floor) % ^ and parentheses; anything else is not closed
-const parseNat = (src: string): number | null => {
+const getNat = (src: string): number | null => {
   const s = src.replace(/\s+/g, ''); let i = 0
   const num = (): number | null => { if (s[i] === '(') { i++; const v = add(); if (s[i] !== ')') return null; i++; return v } const m = /^\d+/.exec(s.slice(i)); if (!m) return null; i += m[0].length; return Number(m[0]) }
   const pow = (): number | null => { const b = num(); if (b === null) return null; if (s[i] === '^') { i++; const e = pow(); return e === null ? null : b ** e } return b }
@@ -29,7 +29,7 @@ const parseNat = (src: string): number | null => {
   const v = add(); return v !== null && i === s.length && Number.isSafeInteger(v) ? v : null
 }
 /** The textbook's closed equations: a theorem `name : <closed expression> = <n> := by decide` is a question whose answer the kernel decided. */
-const listQuestions = () => TEXTBOOK_THEOREMS.flatMap((t) => { const m = /^theorem\s+(\S+)\s*:\s*(.+?)\s*=\s*(\d+)\s*:=\s*by decide$/.exec(t.lean); if (!m) return []; const v = parseNat(m[2]!); return v === null ? [] : [{ theorem: t.key, ask: `${m[2]} = ?`, answer: Number(m[3]), recomputed: v, says: t.says }] })
+const listQuestions = () => TEXTBOOK_THEOREMS.flatMap((t) => { const m = /^theorem\s+(\S+)\s*:\s*(.+?)\s*=\s*(\d+)\s*:=\s*by decide$/.exec(t.lean); if (!m) return []; const v = getNat(m[2]!); return v === null ? [] : [{ theorem: t.key, ask: `${m[2]} = ?`, answer: Number(m[3]), recomputed: v, says: t.says }] })
 
 type InstitutionRequest = { /** the tenant (its id) every page and entry is assigned to: tenant-scoped collections refuse a record without one */ tenant?: string; sets?: boolean; set?: { index?: number | string; family?: string; doors?: Record<string, string> }; edition?: string; users?: number; theorems?: string[]; course?: string; answers?: { theorem: string; answer: number | string }[] }
 /** An institution's whole plan: its edition and bill under the cap, the Workspace doors it opens and how each lands, the textbook's
@@ -43,9 +43,9 @@ export const planInstitution = (r: InstitutionRequest) => {
   const bill = e.cents === null ? null : { perMonth: (users * e.cents) / 100, perYear: (users * e.cents * 12) / 100, atCap: e.cap === null ? null : (e.cap * e.cents) / 100, currency: e.currency, flexiblePerMonth: e.flexibleCents ? (users * e.flexibleCents) / 100 : null, introductoryPerMonth: e.introCents ? (Math.min(users, 20) * e.introCents + Math.max(0, users - 20) * e.cents) / 100 : null }
   const all = listQuestions(); const chosen = r.theorems?.length ? all.filter((q) => r.theorems!.includes(q.theorem)) : all
   const course = r.course ?? '{courseId}'
-  const coursework = chosen.map((q) => { const body = { title: q.theorem.replace(/^textbook_/, '').replace(/_/g, ' '), description: `${q.says}\n\n${q.ask}`, workType: 'SHORT_ANSWER_QUESTION', state: 'DRAFT', maxPoints: 1 }; return { theorem: q.theorem, ask: q.ask, rest: { method: 'POST', url: `https://classroom.googleapis.com/v1/courses/${course}/courseWork`, body }, entry: buildCreateCall('entries', { kind: 'document', from: 'classroom', body: { kind: 'coursework', theorem: q.theorem, ask: q.ask, course } }) } })
+  const coursework = chosen.map((q) => { const body = { title: q.theorem.replace(/^textbook_/, '').replace(/_/g, ' '), description: `${q.says}\n\n${q.ask}`, workType: 'SHORT_ANSWER_QUESTION', state: 'DRAFT', maxPoints: 1 }; return { theorem: q.theorem, ask: q.ask, rest: { method: 'POST', url: `https://classroom.googleapis.com/v1/courses/${course}/courseWork`, body }, entry: createCreateCall('entries', { kind: 'document', from: 'classroom', body: { kind: 'coursework', theorem: q.theorem, ask: q.ask, course } }) } })
   const graded = (r.answers ?? []).map((a) => { const q = all.find((x) => x.theorem === a.theorem); const given = Number(a.answer); return { theorem: a.theorem, given: a.answer, correct: q ? given === q.answer && q.answer === q.recomputed : null, by: q ? 'recomputed from the kernel-accepted equation' : 'no closed equation of that name' } })
-  const doors = WORKSPACE_MCP.map((d) => ({ product: d.product, url: d.url, enable: d.enable, scopes: d.scopes.map((s) => WORKSPACE_SCOPE_PREFIX + s), renders: d.renders, lands: buildCreateCall('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' }) }))
+  const doors = WORKSPACE_MCP.map((d) => ({ product: d.product, url: d.url, enable: d.enable, scopes: d.scopes.map((s) => WORKSPACE_SCOPE_PREFIX + s), renders: d.renders, lands: createCreateCall('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' }) }))
   const acts = [
     ...(e.needs ? [`${e.needs} (${e.source})`] : []),
     'join the Google Workspace Developer Preview Program: every Workspace MCP server is in Developer Preview',
@@ -77,7 +77,7 @@ const ACTION: Readonly<Record<string, { read: string; write: string }>> = TABLES
 const fill = (s: string, f: SetFamily) => s.replace(/\{(\w+)\}/g, (_m, k: string) => WHO[f][k as keyof (typeof WHO)[SetFamily]])
 export const SET_SPACE = compositionsOf(SET_RADICES)
 /** One set: by its index in the space, or by its family and the mode of each door it names. */
-export const buildFamilySet = (p: { index?: number | string; family?: string; doors?: Record<string, string> }) => {
+export const createFamilySet = (p: { index?: number | string; family?: string; doors?: Record<string, string> }) => {
   let digits: number[]
   if (p.index !== undefined) { const i = BigInt(p.index); if (i < 0n || i >= SET_SPACE) throw new Error(`a set index is below ${SET_SPACE}`); digits = compositionOf(SET_RADICES, i) }
   else {
@@ -92,10 +92,10 @@ export const buildFamilySet = (p: { index?: number | string; family?: string; do
   const id = uuidOf(JSON.stringify({ set: 'workspace', digits }))
   const uses = doors.map(({ d, mode }) => `${d.product}: ${fill(ACTION[d.product]![mode as 'read' | 'write'], family)}`)
   const title = doors.length ? `${family[0]!.toUpperCase()}${family.slice(1)}: ${doors.map(({ d, mode }) => `${d.product} ${mode}`).join(', ')}` : `${family[0]!.toUpperCase()}${family.slice(1)}: no door`
-  return { id, index: index.toString(), family, doors: doors.map(({ d, mode }) => ({ product: d.product, mode, url: d.url })), scopes, role, uses, title, editions: EDITIONS.filter((e) => e.family === family).map((e) => e.id), lands: doors.map(({ d }) => buildCreateCall('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' })), ui: presentationOf(id.replace(/-/g, '')).layout, theorem: 'textbook_workspace_sets' }
+  return { id, index: index.toString(), family, doors: doors.map(({ d, mode }) => ({ product: d.product, mode, url: d.url })), scopes, role, uses, title, editions: EDITIONS.filter((e) => e.family === family).map((e) => e.id), lands: doors.map(({ d }) => createCreateCall('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' })), ui: presentationOf(id.replace(/-/g, '')).layout, theorem: 'textbook_workspace_sets' }
 }
 /** The space and its named singles: every family with one door in one mode. */
 export const listFamilySets = () => {
-  const singles = SET_FAMILIES.flatMap((family) => WORKSPACE_MCP.flatMap((d) => listModes(d).filter((m) => m !== 'off').map((m) => buildFamilySet({ family, doors: { [d.product]: m } }))))
+  const singles = SET_FAMILIES.flatMap((family) => WORKSPACE_MCP.flatMap((d) => listModes(d).filter((m) => m !== 'off').map((m) => createFamilySet({ family, doors: { [d.product]: m } }))))
   return { space: SET_SPACE.toString(), radices: SET_RADICES, perFamily: (SET_SPACE / BigInt(SET_FAMILIES.length)).toString(), families: SET_FAMILIES, singles, says: `every family by every door off, read or write: ${SET_SPACE} sets, each addressable by its index; ${singles.length} named singles`, theorem: 'textbook_workspace_sets' }
 }

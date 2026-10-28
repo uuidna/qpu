@@ -3,8 +3,8 @@
 // program rotated to), nested by the referer chain as the nested-docs plugin nests (parent, breadcrumbs), described by the
 // SEO plugin's fields from the block's Open Graph, carrying its JSON-LD and its licence. Pure and small: computed once per
 // block by the balancer, so the cost is a few kilobytes and no computation on the device — the battery is the result.
-import { narrowScope, buildSandbox, type NarrowRequest } from '../namespaces.ts'
-import { defineTool, makeChecks, listTools, isObj, type Toolbox, type Context } from '../toolbox.ts'
+import { narrowScope, createSandbox, type NarrowRequest } from '../namespaces.ts'
+import { defineTool, createChecks, listTools, isObj, type Toolbox, type Context } from '../toolbox.ts'
 import { compositionIndexOf, channelOf, uuidFromParts, uuidOf, styleOf, presentationOf, streamOf, qpuHooksOf, PRESENTABLE_ITEMS, type StreamQuery } from '../blocks.ts'
 import { digitalRoot, trinityFor } from '../clay-register.ts'
 import { TENANTS, tenantOf } from '../tenants.ts'
@@ -13,8 +13,8 @@ import { CLOUDFLARE_MCP, DEFAULT_MCP_HOSTS, CLAUDE_API, KNOWN_MCP, MCP_REGISTRY,
 import { KEY, hueOf, ANGLES, createTheme, coilColour } from '../theme.ts'
 import { VERSION } from '../version.ts'
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
-import { parseAnswer } from './extension.ts'
-import { blockJsonLd, STANDARDS, API_ENDPOINTS, buildOpenapi } from '../standards.ts'
+import { getAnswer } from './extension.ts'
+import { blockJsonLd, STANDARDS, API_ENDPOINTS, createOpenapi } from '../standards.ts'
 import { LICENSE, INSTRUCTIONS } from '../license.ts'
 import { flowWidget } from '../widgets.ts'
 import { WEBCRYPTO_FLAG, ATTEST_APIS } from './crypto.ts'
@@ -22,12 +22,12 @@ import { ROLES } from '../roles.ts'
 import { CATALOGUE, convertAmounts, RATE_SOURCES, CURRENCY_MCPS, TENANT_CURRENCY, DOMAIN_CURRENCY } from './billing.ts'
 import { PATENT_APIS, PATENT_MCPS, COMPETITIONS, FUNDING_MCPS, NEWS_APIS, knowCompetition } from './legal.ts'
 import type { Lead } from '../leads.ts'
-import { diffMembers, computeAdvantage, scanLexical } from '../audit.ts'
-import { buildReferenceGraph, listReferences, type RefDoc } from '../references.ts'
+import { diffMembers, getAdvantage, scanLexical } from '../audit.ts'
+import { createReferenceGraph, listReferences, type RefDoc } from '../references.ts'
 import { MACHINE_ACTIONS } from '../machine.ts'
-import { buildSchemas, type PayloadCollectionInput } from './payload-schemas.ts'
+import { createSchemas, type PayloadCollectionInput } from './payload-schemas.ts'
 import { portAt, listPorts, PORT_RADICES } from '../port.ts'
-import { readWorkspace } from '../workspace.ts'
+import { getWorkspace } from '../workspace.ts'
 import { TABLES } from '../tables-index.ts'
 import { configKinds, TENANT_ROLES, OPERATIONS } from '../payload-vocabulary.ts'
 
@@ -158,23 +158,23 @@ const payload = defineTool('payload', {
     if (isObj(args.app) && isObj(args.app.validate)) return appValidationOf(args.app.validate)
     if (isObj(args.app)) return appOf(ctx, args.app as Parameters<typeof appOf>[1])
     // the references between documents as one graph: its cycles, its dangling references, an order when it has none
-    if (isObj(args.references)) { const r = args.references as { docs?: RefDoc[] }; if (!Array.isArray(r.docs)) throw new Error('references takes documents: { docs: [{ id, slug?, doc | markdown }] }'); return { phase: 'references' as const, ...buildReferenceGraph(r.docs) } }
+    if (isObj(args.references)) { const r = args.references as { docs?: RefDoc[] }; if (!Array.isArray(r.docs)) throw new Error('references takes documents: { docs: [{ id, slug?, doc | markdown }] }'); return { phase: 'references' as const, ...createReferenceGraph(r.docs) } }
     if (isObj(args.googleCall)) return googleCallOf(args.googleCall)
     if (isObj(args.access)) { const a = args.access as { abilities?: Ability[]; roles?: ScopedRole[]; subject?: string; action?: string; user?: { id?: string; tenants?: string[] } }; if (!Array.isArray(a.abilities) || typeof a.subject !== 'string' || typeof a.action !== 'string') throw new Error('access takes { abilities, roles, subject, action, user? }'); return { phase: 'access' as const, subject: a.subject, action: a.action, access: getAccess(a.abilities, a.roles ?? [], a.subject, a.action, a.user ?? {}), ...('doc' in a ? { may: checkAccess(a.abilities, a.roles ?? [], a.subject, a.action, (a as { doc?: unknown }).doc, a.user ?? {}) } : {}), theorem: 'textbook_abilities_merge' } as never }
     if (isObj(args.rolesFromGroups)) { const g = args.rolesFromGroups as { mapping?: (ScopedRole & { group: string })[]; groups?: { email?: string }[]; userKey?: string }; return listRolesFromGroups(g.mapping ?? [], g.groups, g.userKey) as never }
     if (isObj(args.hooks)) return { phase: 'hooks' as const, ...hooksOf(args.hooks) }
-    if (isObj(args.workspace)) return { phase: 'workspace' as const, ...readWorkspace(args.workspace) }
+    if (isObj(args.workspace)) return { phase: 'workspace' as const, ...getWorkspace(args.workspace) }
     if (isObj(args.google)) return { phase: 'google' as const, ...googleOf(args.google, listTools(ctx).filter((t) => t._meta?.toolbox === 'google').map((t) => t.name)) }
     if (isObj(args.standardise)) { const s = args.standardise as { doc?: LexicalDoc }; if (!s.doc?.root) throw new Error('standardise takes a document: { doc: { root } }'); return { phase: 'standardise' as const, ...standardiseOf(s.doc) } }
     // a lexical document's qpu blocks run through MCP: each block is a tool and its arguments, answered through the chat door under the caller's role (corrected where the role requires, a refusal handled, never thrown)
     if (isObj(args.lexical)) { const l = args.lexical as { doc?: LexicalDoc; role?: string; id?: string; slug?: string }; if (!l.doc?.root) throw new Error('lexical takes a document: { doc: { root }, role? }'); const served = (listTools(ctx)).map((x) => x.name); const security = scanLexical(l.doc, served); const stopped = new Set(security.findings.filter((f) => f.blocks && f.uuid).map((f) => f.uuid!)); const self = [l.id, l.slug].filter((x): x is string => typeof x === 'string' && x.length > 0); const selfRefs = new Set(blocksOf(l.doc).filter((n) => listReferences({ id: '_', doc: { root: { children: [n] } } }).some((x) => self.includes(x))).map((n) => n.fields.uuid));  // whatever references its own document back is fused, not refused: those blocks run once each, in address order, after the rest, never re-entering the document
  const all = blocksOf(l.doc); const ordered = [...all.filter((n) => !selfRefs.has(n.fields.uuid)), ...all.filter((n) => selfRefs.has(n.fields.uuid)).sort((a, b) => (a.fields.uuid < b.fields.uuid ? -1 : 1))].filter((n, i, xs) => xs.findIndex((y) => y.fields.uuid === n.fields.uuid) === i); const runs = ordered.map((n) => { if (n.fields.tool === 'payload' && selfRefs.has(n.fields.uuid)) return { uuid: n.fields.uuid, tool: n.fields.tool, theorem: n.fields.theorem ?? null, says: 'fused: it would re-enter its own document, which this run already is', corrected: [], answered: true, handled: null, reply: null, fused: true }; if (stopped.has(n.fields.uuid)) return { uuid: n.fields.uuid, tool: n.fields.tool, theorem: n.fields.theorem ?? null, says: 'refused before it ran: ' + security.findings.filter((f) => f.uuid === n.fields.uuid).map((f) => f.kind + ' ' + f.detail).join('; '), corrected: [], answered: false, handled: { refused: security.findings.filter((f) => f.uuid === n.fields.uuid) }, reply: null }; const a = ctx.call('match', { statement: `block ${n.fields.tool}`, chat: { role: l.role ?? 'reader', call: { tool: n.fields.tool, arguments: n.fields.arguments ?? {} } } }) as { reply?: unknown; handled?: unknown; corrected?: unknown[]; says?: string } | undefined; return { uuid: n.fields.uuid, tool: n.fields.tool, theorem: n.fields.theorem ?? null, says: a?.says ?? null, corrected: a?.corrected ?? [], answered: a?.reply !== undefined && a?.reply !== null, handled: a?.handled ?? null, reply: a?.reply ?? null } }); return { phase: 'lexical' as const, security, fused: [...selfRefs], blocks: runs.length, answered: runs.filter((r) => r.answered).length, runs, says: `${runs.length} qpu block(s) run through the chat door: ${runs.filter((r) => r.answered).length} answered, ${runs.filter((r) => r.handled).length} handled` } }
     // tenants as namespaces: an app's sandbox planned, or a credential narrowed to the namespace a request names (the app's MCP auth asks this)
-    if (isObj(args.namespace)) { const n = args.namespace as { narrow?: NarrowRequest; name?: string; app?: string }; return n.narrow ? { phase: 'narrow' as const, ...narrowScope(n.narrow) } : { phase: 'sandbox' as const, ...buildSandbox({ name: n.name, app: n.app, scoped: SCOPES.collections }) } }
+    if (isObj(args.namespace)) { const n = args.namespace as { narrow?: NarrowRequest; name?: string; app?: string }; return n.narrow ? { phase: 'narrow' as const, ...narrowScope(n.narrow) } : { phase: 'sandbox' as const, ...createSandbox({ name: n.name, app: n.app, scoped: SCOPES.collections }) } }
     if (isObj(args.skills)) return { phase: 'skills' as const, ...skillsOf(args.skills as Parameters<typeof skillsOf>[0]) }
     if (isObj(args.website)) return { phase: 'website' as const, ...websiteOf(args.website as Parameters<typeof websiteOf>[0], Array.isArray(args.liveBlockTypes) ? args.liveBlockTypes.map(String) : []) }
     // the textbook's axioms replaced by theorems through the Payload MCP plugin, as a client: the doors picked by what they take and answer, never by a name
-    if (args.schemas) return buildSchemas(ctx, { collection: isObj(args.collection) && Array.isArray((args.collection as { fields?: unknown }).fields) ? args.collection as PayloadCollectionInput : undefined, answers: isObj(args.answers) && !('list' in (args.answers as object)) ? args.answers as Record<string, string> : undefined })
+    if (args.schemas) return createSchemas(ctx, { collection: isObj(args.collection) && Array.isArray((args.collection as { fields?: unknown }).fields) ? args.collection as PayloadCollectionInput : undefined, answers: isObj(args.answers) && !('list' in (args.answers as object)) ? args.answers as Record<string, string> : undefined })
     if (args.theorems) {
       const url = typeof args.payloadUrl === 'string' ? args.payloadUrl.replace(/\/$/, '') : null
       const endpoint = url ? `${url}/api/mcp` : '<QPU_PAYLOAD_URL>/api/mcp'
@@ -182,14 +182,14 @@ const payload = defineTool('payload', {
       const byExample = Object.fromEntries(TEXTBOOK_THEOREMS.flatMap((t) => t.examples.map((e) => [e, t.key])))
       if (!args.answers || typeof args.answers !== 'object') return { phase: 'plan' as const, endpoint, auth, requestList: [{ id: 'payload-mcp-list', method: 'POST' as const, url: endpoint, accept: 'application/json, text/event-stream', body: { jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} } }], theorems: TEXTBOOK_THEOREMS.length, examplesBacked: Object.keys(byExample).length, steps: ['tools/list: pick the find and update doors of the pages collection by what they take (a slug, a where, an id) and answer (documents), never by a name', 'find the pages whose layout holds a qpu block without a theorem', 'for each block, the theorem the textbook names for the example its tool and arguments are (TEXTBOOK_THEOREMS)', 'update each page: the block\'s theorem field written; the kernel-accepted key, nothing asserted'], note: 'the client calls again with answers: { list: <tools/list text>, found?: <find text> }' }
       const a = args.answers as { list?: string; found?: string }
-      const list = a.list ? parseAnswer(a.list) : { ok: false, error: 'no tools/list answer' }
+      const list = a.list ? getAnswer(a.list) : { ok: false, error: 'no tools/list answer' }
       const tools = (list.ok && isObj(list.result) && Array.isArray((list.result as { tools?: unknown[] }).tools) ? (list.result as { tools: { name: string; description?: string; inputSchema?: { properties?: Record<string, unknown> } }[] }).tools : [])
       const takes = (t: { inputSchema?: { properties?: Record<string, unknown> } }) => Object.keys(t.inputSchema?.properties ?? {})
       const findDoor = tools.find((t) => takes(t).includes('slug') && (takes(t).includes('where') || takes(t).includes('limit')) && !takes(t).includes('data'))
       const updateDoor = tools.find((t) => takes(t).includes('slug') && takes(t).includes('data') && (takes(t).includes('id') || takes(t).includes('where')))
       if (!findDoor || !updateDoor) return { phase: 'doors' as const, endpoint, tools: tools.length, findDoor: findDoor?.name ?? null, updateDoor: updateDoor?.name ?? null, leads: [{ id: 'payload-mcp-doors-missing', statement: `the Payload MCP at ${endpoint} lists ${tools.length} tool(s) and none takes a slug with a where (to find) or a slug with data (to update)`, status: 'open', reason: 'the pages collection\'s built-in find and update tools are disabled or the key has no access to them' }] }
       if (!a.found) return { phase: 'find' as const, endpoint, findDoor: findDoor.name, updateDoor: updateDoor.name, requestList: [{ id: 'payload-mcp-find', method: 'POST' as const, url: endpoint, accept: 'application/json, text/event-stream', body: { jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: findDoor.name, arguments: { slug: 'pages', where: { 'layout.blockType': { equals: 'qpu' } }, pagination: false } } } }], note: 'the client calls again with answers.found' }
-      const found = parseAnswer(a.found)
+      const found = getAnswer(a.found)
       const docs = (found.ok && isObj(found.result) ? ((found.result as { docs?: unknown[] }).docs ?? []) : []) as { id: string; layout?: { blockType?: string; tool?: string; arguments?: unknown; theorem?: string | null; id?: string }[] }[]
       const updates = docs.flatMap((d) => { const layout = (d.layout ?? []).map((b) => { if (b.blockType !== 'qpu' || b.theorem) return b; const ex = ctx.examples.find((e) => e.tool === b.tool && JSON.stringify(e.arguments) === JSON.stringify(b.arguments ?? {})); const key = ex ? (ex.theorem ?? byExample[ex.id]) : undefined; return key ? { ...b, theorem: key } : b }); return JSON.stringify(layout) === JSON.stringify(d.layout ?? []) ? [] : [{ id: `payload-mcp-update-${d.id}`, method: 'POST' as const, url: endpoint, accept: 'application/json, text/event-stream', body: { jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: updateDoor.name, arguments: { slug: 'pages', id: d.id, data: { layout } } } } }] })
       const blocks = docs.flatMap((d) => d.layout ?? []).filter((b) => b.blockType === 'qpu')
@@ -1108,7 +1108,7 @@ const configOf = (kind: ConfigKind, ctx: Context, p: { version?: string; descrip
       const origin = 'https://qpu.uuidna.com'
       const apiHosts = [...hosts.map((h) => `https://${h}`), 'https://qpu.ceci.workers.dev']
       // the standard contract, and the tree's own reading of it: the discover step's detector over the document, as over any host's
-      const openapi = buildOpenapi(origin, list, apiHosts)
+      const openapi = createOpenapi(origin, list, apiHosts)
       const standard = detect({ status: 200, type: 'application/json', text: JSON.stringify(openapi) })
       return {
         name: '@uuidna/qpu', version: VERSION, origin, hosts: apiHosts,
@@ -2092,7 +2092,7 @@ export const accessAuditOf = (ctx: Context) => {
   // a credential-named argument is allowed only where the Worker itself passes it at the edge and a client never holds it (the Stripe webhook secret)
   const credentialArgs = tools.flatMap((t) => Object.entries((t.inputSchema.properties ?? {}) as Record<string, { description?: string }>).filter(([k]) => /token|secret|password|apikey|api_key/i.test(k)).map(([k, v]) => ({ tool: t.name, arg: k, edge: /Worker passes|client never has|never travels/.test(String(v.description ?? '')) })))
   c('client:pure-tools-no-credential', 'client', tools.length > 0 && tools.every((t) => t.annotations?.readOnlyHint === true && t.annotations?.idempotentHint === true) && credentialArgs.every((a) => a.edge), `${tools.length} tools, every one read-only and idempotent; credential-named arguments: ${credentialArgs.map((a) => `${a.tool}.${a.arg} (${a.edge ? 'the Worker passes it at the edge' : 'a client could hold it'})`).join(', ') || 'none'}`, 'none: the tools are pure functions of their arguments', 'free: a 304 by involution needs no scope at all', 'BY: the a432 default free to all under attribution', 'no credential travels through a tool from a client; where the Worker passes one at the edge, a client never holds it')
-  const unlimited = computeAdvantage(3, 3); const finite = computeAdvantage(4, 3); const none = computeAdvantage(0, 0)
+  const unlimited = getAdvantage(3, 3); const finite = getAdvantage(4, 3); const none = getAdvantage(0, 0)
   const metricsSchema = tools.find((t) => t.name === 'metrics')?.inputSchema.properties ?? {}
   c('client:advantage-unlimited-no-interaction', 'client', unlimited?.unbounded === true && unlimited.ratio === null && finite?.ratio === 4 && finite.unbounded === false && none === null && Object.keys(metricsSchema).length === 1 && 'artefacts' in metricsSchema, 'the advantage is computed from the run\'s counts alone: when every copy is an involution it is unbounded; the metrics tool takes artefacts and nothing else', 'none: the gate decodes, the involution answers 304, the metric follows', 'free: no approval, no token, no bound (textbook_advantage_unbounded)', 'the advantage is what commercial use is billed on, and what non-commercial use gets free', 'consideration measured by the unit (bill_call), recheckable by anyone')
   // the developer, in the generated code
@@ -2231,7 +2231,7 @@ export const PAYLOAD: Toolbox = {
     instructions: 'configure: a client calls it with no kind to test every configuration around the torus, with kind and current (its file text) to learn the drift as leads, with kind tenant and the names of its environment to learn what the operator still has to set; gen-docs writes the manifest from kind pwa. A Payload host with the default plugins (lexical, nested-docs, seo) stores _meta.payload of any result as it is: the lexical field is the document, nestedDocs.parent the parent relation, seo the plugin\'s fields; the block\'s uuid is the id. A device renders the block from its uuid alone (the walk) and never recomputes what the balancer computed.',
     directions: ['server only: the document shape on a fixture block; the next uuid is the program rotated; the breadcrumbs follow the chain', 'toolbox → toolbox: the block\'s Open Graph and JSON-LD come from the tree and standards toolboxes', 'client → server: a Payload host reads the document; the device reads the uuid'],
     selftest: (ctx) => {
-      const { check, done } = makeChecks()
+      const { check, done } = createChecks()
       const d = payloadDocOf({ uuid: '941ef62e-d97b-2438-bfc8-22ae9e5da781', tool: 'software', arguments: {}, description: 'd', openGraph: { 'og:title': 'software · @uuidna/qpu', 'og:description': 'five tools' }, prev: '016da774-e74c-2e44-8742-f8bcf5e8e8f5', chain: ['00000000-0000-1000-8000-000000000000'] })
       const block = d.lexical.root.children[1] as { type: string; fields: { blockType: string; uuid: string; next: string; program: string; handle: string } }
       const ch = channelOf(d.id); const nx = channelOf(block.fields.next)

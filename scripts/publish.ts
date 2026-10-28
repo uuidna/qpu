@@ -14,7 +14,7 @@ if (existsSync('.dev.vars')) process.loadEnvFile('.dev.vars')
 const from = process.env.QPU_HOST ?? 'qpu.uuidna.com'
 const tenant = ({ 'qpu.uuidna.com': 'UUIDNA', 'qpu.psg.bg': 'PSG' } as Record<string, string>)[from]
 const dockets = (process.env.QPU_DOCKETS ?? `https://${from}/docket`).split(',').map((s) => s.trim()).filter(Boolean)
-const token = process.env.QPU_WRITE_TOKEN ?? process.env[`QPU_WRITE_TOKEN_${tenant}`]
+const token = process.env[`QPU_WRITE_TOKEN_${tenant}`] ?? process.env.QPU_WRITE_TOKEN // the tenant's own first: the Worker refuses another tenant's
 const artefacts: [kind: string, file: string][] = [
   ['receipt', 'docs/public/receipt.json'], ['verification', 'docs/public/verification.json'], ['imagination', 'docs/public/imagination.json'],
   ['graph', 'docs/public/graph.json'], ['purify-leads', 'docs/public/purify-leads.json'], ['next-leads', 'docs/public/next-leads.json'], ['readiness', 'docs/public/readiness.json'],

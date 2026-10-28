@@ -5,7 +5,7 @@ order: 53
 
 # Security audit, both perspectives as one
 
-Performed by `npm run next` on 2026-10-27T18:56:48.998Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 26/26 pass; clean. Every finding is a lead with the remedy manual work taught.
+Performed by `npm run next` on 2026-10-28T04:25:05.812Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 26/26 pass; clean. Every finding is a lead with the remedy manual work taught.
 
 | Check | Perspective | Pass | Evidence | Remedy |
 |---|---|---|---|---|
@@ -26,7 +26,7 @@ Performed by `npm run next` on 2026-10-27T18:56:48.998Z through the `audit` tool
 | surface-audit:qpu.ceci.workers.dev | client | ✓ | 952/952 checks pass over MCP | every failed check is a lead with its evidence |
 | payload-mcp-key | client | ✓ | the app is not deployed: the plugin requires Authorization: &lt;users&gt; API-Key (measured locally), pending online | the Payload MCP plugin refuses a request without a user's API key |
 | dependencies:root | developer | ✓ | info 0, low 0, moderate 0, high 0, critical 0, total 0 | npm audit fix or a pinned fixed version; a finding is a lead |
-| dependencies:site | developer | ✓ | info 0, low 0, moderate 1, high 0, critical 0 | npm audit fix or a pinned fixed version; a finding is a lead |
+| dependencies:site | developer | ✓ | info 0, low 1, moderate 1, high 0, critical 0 | npm audit fix or a pinned fixed version; a finding is a lead |
 | no-leaks | developer | ✓ | 0 address(es) in the tree | contacts are URLs; the account email is read at deploy |
 | no-autologin | developer | ✓ | no auto-login in the Payload config | remove admin.autoLogin from site/src/payload.config.ts: the first user comes from the deployer's account, its password by reset |
 | env-named-not-valued | developer | ✓ | the environment example names every variable and holds no value | values never travel: names only |
@@ -34,7 +34,7 @@ Performed by `npm run next` on 2026-10-27T18:56:48.998Z through the `audit` tool
 | hooks-guarded | developer | ✓ | hooks: collisionGuard, firstUserBootstrap, appRequest | the plugin adds the collision guard, the first-user bootstrap and the validated app request |
 | signing-at-edge | developer | ✓ | ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc) | the Worker signs with ML-DSA under the Web Crypto flag |
 | rest-rbac-both-ways | both | ✓ | two directions under three tenant roles on every adapter dimension (textbook_rest_rbac) |  |
-| theorems-sealed | both | ✓ | 1305 kernel-accepted theorems | the textbook is the proof |
+| theorems-sealed | both | ✓ | 1771 kernel-accepted theorems | the textbook is the proof |
 
 ## Access from every perspective
 

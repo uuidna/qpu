@@ -77,7 +77,7 @@ const toJsonSchema = (fields: readonly PayloadFieldConfig[]): { type: 'object'; 
 }
 
 /** The GraphQL type of a collection, in SDL, from the type each field type maps to. */
-const renderGraphql = (slug: string, fields: readonly PayloadFieldConfig[]): string => {
+const getGraphql = (slug: string, fields: readonly PayloadFieldConfig[]): string => {
   const Type = slug.replace(/(^|[-_])(\w)/g, (_, __, c: string) => c.toUpperCase())
   const lines = fields.flatMap(function line(f): string[] {
     const t = fieldType(f.type)
@@ -100,7 +100,7 @@ const listMcpTools = (slug: string, fields: readonly PayloadFieldConfig[]) => {
 }
 
 /** The OpenAPI 3.1 paths of a collection: every collection operation's REST method and path with the slug substituted, the data schema the collection's. */
-const buildOpenapiPaths = (slug: string, fields: readonly PayloadFieldConfig[]) => {
+const createOpenapiPaths = (slug: string, fields: readonly PayloadFieldConfig[]) => {
   const schema = toJsonSchema(fields)
   const paths: Record<string, Record<string, unknown>> = {}
   for (const o of PAYLOAD_SURFACE.operations) {
@@ -134,10 +134,10 @@ const rereadAnswers = (answers: Record<string, string>) => {
   return { answered: Object.keys(answers).length, measures, unread: measures.filter((m) => m.read === null).map((m) => m.measure), agree: measures.filter((m) => m.read !== null).every((m) => m.read === m.held), leads }
 }
 
-export const buildSchemas = (ctx: Context, input: { collection?: PayloadCollectionInput; answers?: Record<string, string> }) => {
+export const createSchemas = (ctx: Context, input: { collection?: PayloadCollectionInput; answers?: Record<string, string> }) => {
   const collection = input.collection ?? { slug: 'entries', fields: [{ name: 'kind', type: 'text', required: true }, { name: 'from', type: 'text', required: true }, { name: 'body', type: 'json' }, { name: 'links', type: 'relationship', relationTo: 'entries', hasMany: true }, { name: 'date', type: 'date' }, { name: 'status', type: 'select', options: ['committed', 'revealed'] }] }
   const dimensions = listDimensions(ctx)
-  const schema = { slug: collection.slug, jsonSchema: toJsonSchema(collection.fields), graphql: renderGraphql(collection.slug, collection.fields), mcpTools: listMcpTools(collection.slug, collection.fields), openapiPaths: buildOpenapiPaths(collection.slug, collection.fields) }
+  const schema = { slug: collection.slug, jsonSchema: toJsonSchema(collection.fields), graphql: getGraphql(collection.slug, collection.fields), mcpTools: listMcpTools(collection.slug, collection.fields), openapiPaths: createOpenapiPaths(collection.slug, collection.fields) }
   const standards = PAYLOAD_SURFACE.standards.map((s) => ({ id: s.id, standard: s.standard, canonical: s.canonical, describes: s.describes }))
   const requestList = PAYLOAD_SURFACE.sources.map((url, i) => ({ id: `payload-source-${i + 1}`, method: 'GET' as const, url, verifier: 'the source text: the Field union, validOperators and the endpoints counted and compared to the table' }))
   const reread = input.answers ? rereadAnswers(input.answers) : null

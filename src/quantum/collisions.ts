@@ -8,7 +8,7 @@ import { routeStatement, routeStems } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 
-export const findCollisions = (leads: readonly Lead[], examples: readonly Example[]) => {
+export const listCollisions = (leads: readonly Lead[], examples: readonly Example[]) => {
   const problems = leads.filter((l) => l.status === 'open' || l.status === 'partial')
   // every problem as an involution: its address, its mirror, and σ applied twice returning its parts
   const involutions = problems.map((l) => { const address = uuidOf(`lead\n${l.id}`); const once = reflectionOf(address); const twice = reflectionOf(once.mirror); const c = channelOf(address); return { id: l.id, address, mirror: once.mirror, returns: twice.handle === c.handle && twice.program.join('') === c.program.join('') && twice.tail === c.tail } })

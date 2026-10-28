@@ -33,7 +33,7 @@ import { appendFileSync, mkdirSync, readFileSync, writeFileSync, existsSync } fr
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
 import { forecastTimes, MACHINE_ACTIONS, type StreamEvent } from '../src/quantum/machine.ts'
-import { readJson } from './mcp.ts'
+import { getJson } from './mcp.ts'
 import { LITERAL_ROOTS } from '../src/quantum/audit.ts'
 
 const runFiles = async () => (await import('../src/quantum/toolboxes/repository.ts')).RUN_FILES
@@ -64,7 +64,7 @@ export const timesOf = async (root: string) => {
 /** Runs an asked action: planned by the workflow rules against the facts at the root, run with no shell and streamed (its start with the ETA, a
  *  heartbeat every second, each finished step of next), then recorded; an action the rules refuse answers its plan and runs nothing. */
 export const runMachine = async (args: Record<string, unknown>, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) => {
-  const repository = (await import('../src/quantum/mcp.ts')).toolCallerOf('repository'), read = (f: string) => readJson(join(cwd, f))
+  const repository = (await import('../src/quantum/mcp.ts')).toolCallerOf('repository'), read = (f: string) => getJson(join(cwd, f))
   const files = await runFiles(), plan = repository({ machine: { plan: { ...args, facts: { receipt: read(files.receipt), approval: read(files.configs)?.approval ?? null, e2e: read(files.e2e)?.outcomes ?? null } } } })
   if (!plan?.allowed) return { plan, answer: plan }
   // the action's own hooks run first, before use: a refusal is answered here, before anything is changed or booked
@@ -147,7 +147,7 @@ if (process.argv[1]?.endsWith('machine.ts')) {
         if (names.length && names.every((n: any) => n.kind === ts.SyntaxKind.Identifier && !kept.has(n.text) && (ls.findReferences(sf.fileName, n.getStart()) ?? []).every((r: any) => r.references.every((x: any) => x.fileName === sf.fileName)))) edits.push({ file: sf.fileName, start: mod.getStart(), end: mod.getEnd() + 1, text: '' }) }
       console.log(`unexported ${apply(edits)} name(s) only their own file uses`) }
   }
-  else if (action === 'receipt') { const r = readJson(join(process.cwd(), (await runFiles()).receipt)) as { head?: string; steps?: { name: string; status: string; tail: string }[] } | null, red = (r?.steps ?? []).filter((s) => s.status === 'red'); for (const s of red) console.log(`${s.name}: ${s.tail.split('\n').filter((l) => /✗|✖|rror/.test(l)).slice(0, 3).join(' | ')}`); console.log(`${r?.head}: ${red.length} red`) }
+  else if (action === 'receipt') { const r = getJson(join(process.cwd(), (await runFiles()).receipt)) as { head?: string; steps?: { name: string; status: string; tail: string }[] } | null, red = (r?.steps ?? []).filter((s) => s.status === 'red'); for (const s of red) console.log(`${s.name}: ${s.tail.split('\n').filter((l) => /✗|✖|rror/.test(l)).slice(0, 3).join(' | ')}`); console.log(`${r?.head}: ${red.length} red`) }
   else if (action === 'merge') { const file = flag('--message-file'), f = await mergeFlow(flag('--branch') ?? '', file ? readFileSync(file, 'utf8') : flag('-m'), process.cwd()); for (const x of [f.aside, f.merged, f.commit]) if (x) console.log(say(x)) }
   else if (action) { const file = flag('--message-file'), r = await runMachine({ action, confirm: rest.includes('--confirm'), message: file ? readFileSync(file, 'utf8') : flag('-m'), branch: flag('--branch') }, process.cwd()); console.log(say(r)) }
 }

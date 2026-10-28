@@ -1601,3 +1601,19 @@
 {"date":"2026-10-28T03:39:03.617Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
 {"date":"2026-10-28T03:41:20.981Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:138","explore":"match","config":"actions"}
 {"date":"2026-10-28T03:41:20.981Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:47:33.303Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:139","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:47:33.303Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:48:45.200Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:139","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:48:45.200Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:49:19.511Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:139","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:49:19.511Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:49:57.941Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:139","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:49:57.941Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:59:01.932Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:139","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:59:01.932Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:59:01.932Z","address":"b1e93893-7168-2565-b33e-b296763841df","id":"entropy-duplicate-b1e93893","kind":"duplicate","occurrences":2,"source":"scripts/idle.ts:36, scripts/next.ts:223","explore":"match","config":"fullstack"}
+{"date":"2026-10-28T03:59:01.932Z","address":"13ca14e8-2e32-2fe0-ba63-187ec653b56a","id":"entropy-duplicate-13ca14e8","kind":"duplicate","occurrences":2,"source":"scripts/repository.ts:26, scripts/verify.ts:30","explore":"match","config":"fullstack"}
+{"date":"2026-10-28T03:59:01.932Z","address":"30331e08-07a5-39bc-9fa8-e13539aa99c0","settled":true}
+{"date":"2026-10-28T03:59:01.932Z","address":"fc3cf024-f6eb-71f1-8a2c-e6cfa494b7f3","settled":true}
+{"date":"2026-10-28T06:49:00.286Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:139","explore":"match","config":"actions"}
+{"date":"2026-10-28T06:49:00.286Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}

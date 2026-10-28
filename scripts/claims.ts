@@ -8,7 +8,7 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf } from '../src/quantum/mcp.ts'
 import { LICENSE } from '../src/quantum/license.ts'
-import { mcpClient, fetchWithTimeout } from './mcp.ts'
+import { mcpClient, getWithTimeout } from './mcp.ts'
 
 const ROOT = process.cwd()
 const call = toolCallerOf('textbook')
@@ -25,21 +25,21 @@ const answers: { id: string; status: number; text: string }[] = []
 for (const [id, b] of valid) answers.push({ id, status: b.status, text: JSON.stringify({ results: b.results }) })
 const todo = plan.filter((r) => !valid.has(r.id))
 // how long a search stays valid: the source's own Cache-Control max-age or Expires when it states one, else one day, stated as such
-const readValidity = (res: Response, at: number): { validUntil: string; validity: string } => { const age = /max-age=(\d+)/.exec(res.headers.get('cache-control') ?? '')?.[1]; if (age) return { validUntil: new Date(at + Number(age) * 1000).toISOString(), validity: `max-age ${age} s, as OpenAlex states` }; const exp = Date.parse(res.headers.get('expires') ?? ''); if (Number.isFinite(exp) && exp > at) return { validUntil: new Date(exp).toISOString(), validity: 'Expires, as OpenAlex states' }; return { validUntil: new Date(at + 86_400_000).toISOString(), validity: 'one day: OpenAlex states no lifetime' } }
+const getValidity = (res: Response, at: number): { validUntil: string; validity: string } => { const age = /max-age=(\d+)/.exec(res.headers.get('cache-control') ?? '')?.[1]; if (age) return { validUntil: new Date(at + Number(age) * 1000).toISOString(), validity: `max-age ${age} s, as OpenAlex states` }; const exp = Date.parse(res.headers.get('expires') ?? ''); if (Number.isFinite(exp) && exp > at) return { validUntil: new Date(exp).toISOString(), validity: 'Expires, as OpenAlex states' }; return { validUntil: new Date(at + 86_400_000).toISOString(), validity: 'one day: OpenAlex states no lifetime' } }
 // four at a time; a throttled or failed request asked again after a growing pause, a body cut by the timeout read as empty
 const pause = (ms: number) => new Promise((ok) => setTimeout(ok, ms))
-const searchClaim = async (r: { id: string; url: string; accept: string }) => {
+const getClaim = async (r: { id: string; url: string; accept: string }) => {
   let res: Response | null = null
-  for (let wait = 500; wait <= 16000; wait *= 2) { res = await fetchWithTimeout(r.url, r.accept).catch(() => null); if (res && res.status !== 429 && res.status < 500) break; await pause(wait) }
+  for (let wait = 500; wait <= 16000; wait *= 2) { res = await getWithTimeout(r.url, r.accept).catch(() => null); if (res && res.status !== 429 && res.status < 500) break; await pause(wait) }
   const at = Date.now(), text = res ? await res.text().catch(() => '') : ''
   answers.push({ id: r.id, status: res?.status ?? 0, text })
   if (!res || res.status !== 200) return 0
   let results: Sealed['results'] = []; try { results = ((JSON.parse(text) as { results?: Sealed['results'] }).results ?? []).map((w) => ({ doi: w.doi, title: w.title, publication_year: w.publication_year })) } catch { return 0 }
-  const seal = await mcp.call('createEntries', { kind: 'document', from: 'claims-searches', body: { theorem: r.id, url: r.url, status: res.status, results, at: new Date(at).toISOString(), ...readValidity(res, at) } })
+  const seal = await mcp.call('createEntries', { kind: 'document', from: 'claims-searches', body: { theorem: r.id, url: r.url, status: res.status, results, at: new Date(at).toISOString(), ...getValidity(res, at) } })
   return seal.error === undefined ? 1 : 0
 }
 let sealed = 0
-for (let i = 0; i < todo.length; i += 4) sealed += (await Promise.all(todo.slice(i, i + 4).map(searchClaim))).reduce((a: number, b: number) => a + b, 0)
+for (let i = 0; i < todo.length; i += 4) sealed += (await Promise.all(todo.slice(i, i + 4).map(getClaim))).reduce((a: number, b: number) => a + b, 0)
 const ms = Math.round(performance.now() - t0)
 const read = await mcp.findAll('findEntries', { where: JSON.stringify({ from: { equals: 'claims' } }), limit: 100 })
 const confirmations = (read.docs ?? []).map((d) => (d as { body?: { theorem?: string; doi?: string; by?: string } }).body ?? {}).filter((b): b is { theorem: string; doi: string; by: string } => typeof b.theorem === 'string' && typeof b.doi === 'string' && typeof b.by === 'string')

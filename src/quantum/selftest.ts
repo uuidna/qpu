@@ -6,13 +6,13 @@ import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import type { Rpc, Check } from './audit.ts'
 import { VERIFIERS } from './verifiers.ts'
-import { buildDiscoveryRequests, findFollowUps, readDiscovery, renderDiscoveryPage, type Answer, type Request } from './discovery.ts'
-import { buildWaveRequests, readWave, renderWavePage, type WaveResult } from './wave.ts'
-import { indexPages, judgeLead, listSources, planBorder, readBorder, renderReadinessPage } from './readiness.ts'
-import { imagineLeads, renderImaginePage } from './imagine.ts'
-import { makeMatcher } from './match.ts'
+import { createDiscoveryRequests, listFollowUps, getDiscovery, getDiscoveryPage, type Answer, type Request } from './discovery.ts'
+import { createWaveRequests, getWave, getWavePage, type WaveResult } from './wave.ts'
+import { indexPages, judgeLead, listSources, planBorder, getBorder, getReadinessPage } from './readiness.ts'
+import { imagineLeads, getImaginePage } from './imagine.ts'
+import { createMatcher } from './match.ts'
 import { decodeE2e, judgeRules, decodeValue, type E2eAnswer } from './e2e.ts'
-import { buildRegistryRequests, findRelatedServers, rankBestDoors } from './discovery.ts'
+import { createRegistryRequests, listRelatedServers, rankBestDoors } from './discovery.ts'
 
 const UNIT = 'https://unit.test/mcp'
 const rpcOk = (result: unknown) => JSON.stringify({ jsonrpc: '2.0', id: 1, result })
@@ -45,14 +45,14 @@ export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Exam
   const safe = (id: string, f: () => void) => { try { f() } catch (e) { check(id, false, `threw: ${(e as Error).message.slice(0, 160)}`) } }
 
   // discover: server → client → server
-  const requests = buildDiscoveryRequests([UNIT], VERIFIERS)
+  const requests = createDiscoveryRequests([UNIT], VERIFIERS)
   const answers = requests.map(answerRequest)
   check('discover:requests-answerable', answers.every((a) => a.status !== 0), `${requests.length} requests, every one answered by the client fixture`)
-  const followUps = findFollowUps(answers)
+  const followUps = listFollowUps(answers)
   check('discover:follow-ups', followUps.filter((f) => f.purpose === 'contract').map((f) => f.name).sort().join(',') === 'sign_commit,verify_claim' && followUps.filter((f) => f.purpose === 'sitemap').length === 1, `follow-ups for ${followUps.map((f) => f.name).join(', ') || 'none'}: the catalogue doors that answer a verdict and are not in tools/list`)
   const all = [...answers, ...followUps.map(answerRequest)]
-  check('discover:no-third-wave', findFollowUps(all).length === 0, 'every follow-up answered, nothing left to ask')
-  const discovery = readDiscovery(all, VERIFIERS)
+  check('discover:no-third-wave', listFollowUps(all).length === 0, 'every follow-up answered, nothing left to ask')
+  const discovery = getDiscovery(all, VERIFIERS)
   check('discover:sitemap', discovery.sitemap.sitemaps.length === 1 && discovery.sitemap.urls.map((u) => new URL(u.loc).pathname + ' ' + u.lastmod).join() === '/cirq 2026-10-20', `the index named ${discovery.sitemap.sitemaps.length} child, read as ${discovery.sitemap.urls.length} url(s) by sitemaps.org's loc and lastmod`)
   const unit = discovery.hosts.find((h) => h.host === 'unit.test' && h.kind === 'mcp')
   const unitDoors = unit?.doors ?? []
@@ -63,11 +63,11 @@ export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Exam
   check('discover:openapi-yaml', discovery.hosts.find((h) => h.host === 'en.wikipedia.org')?.paths?.join() === '/page/summary/{title}', 'yaml paths read')
   check('discover:oai-and-html', discovery.hosts.find((h) => h.host === 'export.arxiv.org')?.detected === 'oai-pmh identify' && discovery.hosts.find((h) => h.host === 'api.crossref.org')?.detected === 'html page', 'identify and html page detected')
   check('discover:leads', discovery.leads.some((l) => l.id === 'contract-api.crossref.org') && discovery.leads.some((l) => l.id === 'contract-oeis.org'), `${discovery.leads.length} contract leads: the html page and the hosts with no machine contract named`)
-  safe('discover:page', () => check('discover:page', renderDiscoveryPage(discovery, '2026-01-01').includes('| unit.test | mcp |'), 'the page renders the hosts table'))
+  safe('discover:page', () => check('discover:page', getDiscoveryPage(discovery, '2026-01-01').includes('| unit.test | mcp |'), 'the page renders the hosts table'))
 
   // wave: server → client → server, with discovery's contracts (toolbox → toolbox)
   const two = leads.filter((l) => l.id === 'willow-spec' || l.id === 'repo-cirq').concat(leads.filter((l) => l.status === 'open' && l.source.startsWith('quantumai.google/')).slice(0, 1))
-  const wreq = buildWaveRequests(two, [])
+  const wreq = createWaveRequests(two, [])
   check('wave:requests', wreq.length > 0 && wreq.every((r) => r.verifier && r.url.startsWith('http') && r.check && r.leads.length > 0), `${wreq.length} requests from ${two.length} leads, each with verifier, url, check and leads`)
   const contracts = Object.fromEntries(discovery.hosts.filter((h) => h.paths?.length).map((h) => [h.host, h.paths!]))
   const results: WaveResult[] = [
@@ -77,14 +77,14 @@ export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Exam
     { verifier: 'github', url: 'https://raw.githubusercontent.com/repos/quantumlib/Cirq', check: 'the repository exists', leads: ['repo-cirq'], status: 200, ok: true, ms: 1, text: '{"description":"A Python framework","language":"Python"}' },
     { verifier: 'github', url: 'https://raw.githubusercontent.com/nowhere', check: 'a path outside the contract', leads: ['repo-x'], status: 200, ok: true, ms: 1, text: '{}' },
   ]
-  const wave = readWave(results, contracts)
+  const wave = getWave(results, contracts)
   check('wave:notes', wave.results.find((r) => r.url.endsWith('/cirq/build'))?.note === 'title="Research libraries and tools &nbsp;|&nbsp; Cirq"' && wave.results.find((r) => r.leads.includes('repo-cirq'))?.note === 'description="A Python framework" language=Python', 'titles and GitHub descriptions read from the bodies')
   check('wave:contracted', wave.results.find((r) => r.leads.includes('repo-cirq'))?.contracted === 'yes' && wave.results.find((r) => r.leads.includes('repo-x'))?.contracted === 'no' && wave.results.find((r) => r.verifier === 'source-page')?.contracted === 'unknown', "yes inside the discovered contract, no outside it, unknown where no contract was discovered")
   check('wave:summary', wave.summary['source-page']?.requests === 3 && wave.summary['source-page']?.ok === 2 && wave.summary.github?.contracted === 1 && wave.summary.github?.uncontracted === 1, JSON.stringify(wave.summary))
-  safe('wave:page', () => check('wave:page', renderWavePage(wave, two.length, '2026-01-01', true).includes('| github | 2 | 2 | 1 | 1 |'), 'the page renders the summary row'))
+  safe('wave:page', () => check('wave:page', getWavePage(wave, two.length, '2026-01-01', true).includes('| github | 2 | 2 | 1 | 1 |'), 'the page renders the summary row'))
 
   // readiness: wave's pages and discovery's doors read into a judgement and a border (toolbox → toolbox → toolbox)
-  const match = makeMatcher(handle, examples, leads)
+  const match = createMatcher(handle, examples, leads)
   const pages = indexPages(wave.results)
   const fixture: Lead[] = [
     { id: 'served-one', source: 'quantumai.google/x', statement: 'served', status: 'served', tool: 'processor' },
@@ -106,12 +106,12 @@ export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Exam
   check('readiness:sources', q?.settled === 5 && q.open.length === 1 && sources.find((s) => s.source === 'scripts')?.open[0]?.owes === 'scripts/back.ts is present again' && sources.find((s) => s.source === 'uuidna.com')?.why === '1 open of 1', sources.map((s) => `${s.source} ${s.why}`).join('; '))
   const plan = planBorder(discovery, { key: 'clay_sigma', statement: '1 + 1 = 2' })
   check('readiness:border-plan', plan.calls.length === 1 && plan.calls[0]!.door === 'verify_claim' && plan.calls[0]!.arguments.statement === 'clay_sigma: 1 + 1 = 2' && plan.unfillable.length === 0, JSON.stringify(plan.calls))
-  const border = readBorder([{ door: 'verify_claim', host: 'unit.test', arguments: plan.calls[0]!.arguments, answer: { verdict: 'VERIFIED', receipt: 'r-1', note: 'decided' } }, { door: 'deposit_trial', host: 'unit.test', arguments: {}, refusal: 'the edge does not hold the whole ledger' }, { door: 'prove_verdict', host: 'unit.test', arguments: {}, answer: { verdict: 'UNVERIFIED', receipt: 'r-2' } }])
+  const border = getBorder([{ door: 'verify_claim', host: 'unit.test', arguments: plan.calls[0]!.arguments, answer: { verdict: 'VERIFIED', receipt: 'r-1', note: 'decided' } }, { door: 'deposit_trial', host: 'unit.test', arguments: {}, refusal: 'the edge does not hold the whole ledger' }, { door: 'prove_verdict', host: 'unit.test', arguments: {}, answer: { verdict: 'UNVERIFIED', receipt: 'r-2' } }])
   check('readiness:border-read', border[0]!.sealed && border[0]!.receipt === 'r-1' && !border[1]!.sealed && (border[1]!.refusal ?? '').startsWith('the edge') && !border[2]!.sealed && border[2]!.verdict === 'UNVERIFIED', border.map((b) => `${b.door}:${b.verdict ?? b.refusal?.slice(0, 20)}:${b.sealed}`).join(' '))
-  safe('readiness:page', () => check('readiness:page', renderReadinessPage({ unit: UNIT, date: '2026-01-01', measured: '2026-01-01', discovered: '2026-01-01', probe: { key: 'clay_sigma', statement: '1 + 1 = 2' }, judged, classes: { served: judged.filter((j) => j.class === 'served').length, refuted: judged.filter((j) => j.class === 'refuted').length, trial: judged.filter((j) => j.class === 'trial').length }, sources, border, sealedBy: ['verify_claim'], answers: { readiness: { ready: false, why: 'fixture', settled: 7, asked: 3, answered: 3, receipt: 'fixture' }, auras: {}, rights: { drift: [] }, address: { probe: 'qpu', here: 'a', unit: 'a', agree: true, note: 'fixture' } } }).includes('Sealed or verified by: verify_claim.'), 'the page renders the border verdict'))
+  safe('readiness:page', () => check('readiness:page', getReadinessPage({ unit: UNIT, date: '2026-01-01', measured: '2026-01-01', discovered: '2026-01-01', probe: { key: 'clay_sigma', statement: '1 + 1 = 2' }, judged, classes: { served: judged.filter((j) => j.class === 'served').length, refuted: judged.filter((j) => j.class === 'refuted').length, trial: judged.filter((j) => j.class === 'trial').length }, sources, border, sealedBy: ['verify_claim'], answers: { readiness: { ready: false, why: 'fixture', settled: 7, asked: 3, answered: 3, receipt: 'fixture' }, auras: {}, rights: { drift: [] }, address: { probe: 'qpu', here: 'a', unit: 'a', agree: true, note: 'fixture' } } }).includes('Sealed or verified by: verify_claim.'), 'the page renders the border verdict'))
 
   // imagine: the matcher feeds the imagination (toolbox → toolbox), on a subset
-  safe('imagine:subset', () => { const im = imagineLeads(handle, examples, leads, ['willow-spec', 'learn']); check('imagine:subset', im.leads === 2 && im.rows.length === 2 && Object.values(im.verdicts).reduce((a, b) => a + b, 0) === 2 && im.imagined.some((l) => l.id.startsWith('application-')) && renderImaginePage(im, '2026-01-01', 10).includes('| willow-spec |'), `${im.rows.map((r) => `${r.lead}:${r.verdict}`).join(' ')}; ${im.imaginedLeads} imagined`) })
+  safe('imagine:subset', () => { const im = imagineLeads(handle, examples, leads, ['willow-spec', 'learn']); check('imagine:subset', im.leads === 2 && im.rows.length === 2 && Object.values(im.verdicts).reduce((a, b) => a + b, 0) === 2 && im.imagined.some((l) => l.id.startsWith('application-')) && getImaginePage(im, '2026-01-01', 10).includes('| willow-spec |'), `${im.rows.map((r) => `${r.lead}:${r.verdict}`).join(' ')}; ${im.imaginedLeads} imagined`) })
 
     // sharding: the shares of n shards cover the list exactly once
   {
@@ -123,14 +123,14 @@ export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Exam
   // leads first: the registry asked with a lead's words, its answer read into related servers and the requests that extend them
   {
     const lead = { id: 'x', statement: 'Cloudflare MCP servers answer 401 without a token; the documentation server answers in the open' }
-    const reqs = buildRegistryRequests(lead)
+    const reqs = createRegistryRequests(lead)
     const answer = JSON.stringify({ servers: [{ server: { name: 'com.cloudflare.mcp/mcp', description: 'Cloudflare MCP servers', remotes: [{ url: 'https://docs.mcp.cloudflare.com/mcp' }, { url: 'https://bindings.mcp.cloudflare.com/mcp' }] } }, { server: { name: 'x/none', description: 'no remote', remotes: [] } }] })
-    const rel = findRelatedServers('x', reqs.filter((r) => r.directory === 'official').map((r) => ({ id: r.id, word: r.word, status: 200, text: answer })))
+    const rel = listRelatedServers('x', reqs.filter((r) => r.directory === 'official').map((r) => ({ id: r.id, word: r.word, status: 200, text: answer })))
     const best = rankBestDoors(lead, [{ server: 's', url: 'https://x/mcp', tools: [{ name: 'list_tokens', description: 'the tokens of an account' }, { name: 'search_documentation', description: 'search the Cloudflare documentation' }, { name: 'unrelated', description: 'nothing of this' }] }])
     check('discover:best-doors-by-shared-words', best.length === 2 && best[0]!.door === 'search_documentation' && best[0]!.shared.includes('documentation') && best[1]!.door === 'list_tokens' && best[1]!.shared.includes('token'), `${best.map((b) => `${b.door}=${b.score}`).join(', ')}: the doors sharing stems with the lead (tokens meets token), the best first; the unrelated one left out`)
     // the directory's own origin, read from the request it is asked by: a page, its locale copy and an unrelated slug
     const site = new URL(reqs.find((r) => r.directory === 'mcpservers.org')!.url).origin, map = ['/servers/cloudflare-docs-mcp', '/ja/servers/cloudflare-docs-mcp', '/servers/airtable-mcp-server'].map((p) => `<url><loc>${site}${p}</loc></url>`).join(''), smithery = JSON.stringify({ servers: [{ qualifiedName: 'acme/cloudflare-tokens', description: 'tokens', remote: true }] })
-    const dirs = findRelatedServers('x', reqs.filter((r) => r.directory !== 'official').map((r) => ({ id: r.id, word: r.word, status: 200, text: r.directory === 'smithery' ? smithery : map })))
+    const dirs = listRelatedServers('x', reqs.filter((r) => r.directory !== 'official').map((r) => ({ id: r.id, word: r.word, status: 200, text: r.directory === 'smithery' ? smithery : map })))
     check('discover:directories-beside-the-registry', ['official', 'smithery', 'mcpservers.org'].every((d) => reqs.some((r) => r.directory === d)) && !reqs.some((r) => /glama|pulsemcp|mcp\.so/.test(r.url) || (r.directory === 'mcpservers.org' && /\/api\//.test(r.url))) && dirs.servers.map((s) => s.name).sort().join() === 'acme/cloudflare-tokens,cloudflare-docs-mcp', `${new Set(reqs.map((r) => r.directory)).size} directories asked (open searches and open sitemaps; keyed ones named, a disallowed /api/ never); ${dirs.servers.map((s) => s.name).join(', ')} read, the locale copy and the unrelated slug left out`)
     check('discover:lead-asks-the-registry-first', reqs.length >= 1 && reqs.some((r) => r.url.includes('registry.modelcontextprotocol.io/v0/servers?limit=10&search=')) && rel.servers.length === 2 && rel.extend.length === 2 && rel.extend.every((e) => (e.body as { method: string }).method === 'tools/list'), `${reqs.map((r) => r.word).join(', ')} asked; ${rel.servers.length} related, ${rel.extend.length} remote(s) to extend`)
   }

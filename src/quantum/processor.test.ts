@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { PROCESSORS, SYCAMORE, SYCAMORE23, WILLOW, computeAverageConnectivity, isBelowThreshold, deriveCouplers, toDevice, fitsProcessor } from './processor.ts'
+import { PROCESSORS, SYCAMORE, SYCAMORE23, WILLOW, getAverageConnectivity, isBelowThreshold, deriveCouplers, toDevice, fitsProcessor } from './processor.ts'
 import { Circuit, applied, CZ, GridQubit, H, qubitKey } from './cirq.ts'
 
 test('Willow has 105 sites on the spec sheet grid, all distinct', () => {
@@ -10,7 +10,7 @@ test('Willow has 105 sites on the spec sheet grid, all distinct', () => {
 
 test('the couplers of the grid give the sheet\'s average connectivity, 3.47, to two places', () => {
   assert.equal(WILLOW.couplers.length, 182)
-  const average = computeAverageConnectivity(WILLOW.sites, WILLOW.couplers)
+  const average = getAverageConnectivity(WILLOW.sites, WILLOW.couplers)
   assert.equal(average.toFixed(2), WILLOW.statedAverageConnectivity.toFixed(2))
 })
 

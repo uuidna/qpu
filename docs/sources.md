@@ -5,7 +5,7 @@ order: 57
 
 # The immutable sources of leads
 
-Read on 2026-10-27T18:59:03.850Z by `leads { sources }`: 278 of 282 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 18098 open books of which 2141 the theorems reach and 15825 of their domain are leads; 584 MCP doors proposed.
+Read on 2026-10-28T04:03:00.675Z by `leads { sources }`: 286 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 591 MCP doors proposed.
 
 ## Licence candidates
 
@@ -19,108 +19,129 @@ Each is a candidate the court computed a case for. None is a verdict.
 
 | record | date | neighbours | before | after |
 | --- | --- | --- | --- | --- |
-| 10.5281/zenodo.21781602 | 2026-08-04 | 0 | 0 | 0 |
+| 10.5281/zenodo.21781602 | 2026-08-04 | 3 | 2 | 1 |
 | 10.5281/zenodo.22700098 | 2026-09-11 | 0 | 0 | 0 |
 | 10.5281/zenodo.23156998 | 2026-09-11 | 0 | 0 | 0 |
 
 ## Textbooks
 
-18098 open books: 2141 reached by the theorems, 15825 of their domain are leads, 132 outside.
+23679 open books: 2403 reached by the theorems, 21153 of their domain are leads, 123 outside.
 
 | theorem | books |
 | --- | --- |
-| `textbook_code_folds` | 495 |
-| `textbook_payload_field_types` | 433 |
-| `textbook_patent_number_well_formed` | 137 |
-| `textbook_binding_zero_hex_path` | 83 |
-| `textbook_repetition_code_tenth` | 67 |
-| `textbook_collision_solves_many` | 66 |
-| `computer` | 51 |
-| `textbook_double_torus` | 51 |
-| `textbook_uuid_time_space` | 48 |
-| `textbook_willow_holds_codes` | 48 |
-| `textbook_dashboard_spaces` | 42 |
+| `textbook_code_folds` | 515 |
+| `textbook_double_torus` | 220 |
+| `textbook_uuid_time_space` | 153 |
+| `textbook_patent_number_well_formed` | 153 |
+| `textbook_binding_zero_hex_path` | 91 |
+| `textbook_echo_qubits_within_willow` | 83 |
+| `textbook_collision_solves_many` | 74 |
+| `textbook_repetition_code_tenth` | 68 |
+| `textbook_payload_operations` | 61 |
+| `computer` | 54 |
+| `textbook_willow_holds_codes` | 51 |
+| `textbook_dashboard_spaces` | 41 |
 | `textbook_software_cirq_implemented` | 40 |
-| `textbook_payload_operations` | 39 |
-| `textbook_dashboard_algorithm_combinations` | 32 |
-| `textbook_harmonic_default` | 28 |
+| `superconductivity` | 40 |
+| `textbook_dashboard_algorithm_combinations` | 31 |
+| `textbook_harmonic_default` | 30 |
+| `textbook_payload_field_types` | 29 |
+| `textbook_abilities_merge` | 27 |
 | `textbook_repositories_by_language` | 22 |
-| `textbook_echo_qubits_within_willow` | 19 |
-| `textbook_payload_access` | 16 |
+| `quantum` | 22 |
+| `textbook_payload_access` | 22 |
+| `textbook_gate_adapters` | 19 |
+| `textbook_google_api_surfaces` | 18 |
+| `textbook_workspace_sets` | 18 |
+| `textbook_google_measured` | 16 |
 | `design` | 16 |
+| `textbook_uuid_core` | 16 |
 | `textbook_step_cache_sound` | 16 |
-| `textbook_google_measured` | 12 |
-| `textbook_workspace_sets` | 12 |
+| `textbook_association_fields` | 15 |
+| `temperature` | 14 |
+| `textbook_workspace_round_trip` | 13 |
+| `textbook_chat_call_or_question` | 12 |
+| `Qpu.Federated.communication_lower_bound` | 11 |
 | `textbook_error_remedies` | 11 |
-| `textbook_payload_schemas` | 10 |
-| `textbook_context_balanced` | 10 |
+| `textbook_route_waves` | 10 |
 | `textbook_set_union` | 10 |
-| `Qpu.Federated.communication_lower_bound` | 9 |
-| `textbook_chat_call_or_question` | 9 |
-| `textbook_workspace_docs_round_trip` | 9 |
-| `textbook_mixed_radix` | 9 |
+| `textbook_mongo_find_filter` | 10 |
+| `textbook_penalty_time_burned` | 8 |
+| `textbook_context_balanced` | 8 |
+| `textbook_mixed_radix` | 8 |
 | `textbook_expressions_evaluate` | 8 |
-| `superconductivity` | 7 |
 | `textbook_free_or_coil` | 7 |
-| `textbook_penalty_time_burned` | 6 |
+| `textbook_leaks_redacted` | 6 |
 | `textbook_security_perspectives` | 6 |
-| `textbook_route_waves` | 6 |
-| `Qpu.ProgramSynthesis.checkLower_sound` | 6 |
-| `textbook_chain_bits` | 5 |
-| `textbook_uuid_core` | 5 |
+| `textbook_bill_covered` | 6 |
+| `textbook_textbook_categories` | 5 |
+| `textbook_orcid_digits` | 5 |
 | `textbook_shor_fifteen_order` | 5 |
-| `textbook_shor_narrowed_cells` | 5 |
+| `textbook_reflection_by_shape` | 5 |
 | `ramsey_three_three` | 5 |
+| `textbook_codes_locales` | 5 |
+| `Qpu.ProgramSynthesis.checkLower_sound` | 5 |
+| `textbook_rbac_options` | 5 |
 | `textbook_payload_queries` | 5 |
 | `textbook_violation_one_kind` | 4 |
-| `quantum` | 4 |
-| `textbook_witness_pair` | 4 |
-| `textbook_gate_adapters` | 4 |
+| `textbook_penalty_time_heat_monotone` | 4 |
+| `textbook_news_adapters` | 4 |
+| `Qpu.Xai.integrated_gradients_linear` | 4 |
+| `textbook_one_holder` | 4 |
+| `textbook_chain_bits` | 4 |
+| `textbook_entropy_fusion` | 4 |
+| `textbook_advantage_unbounded` | 4 |
 | `textbook_textbooks_partition` | 4 |
-| `textbook_processor_cells` | 4 |
+| `infinite` | 4 |
+| `textbook_shor_narrowed_cells` | 4 |
+| `textbook_witness_pair` | 4 |
+| `Qpu.ZeroShot.semantic_transitivity` | 4 |
 | `textbook_url_combinations` | 4 |
+| `textbook_idle_scheduled_clears` | 4 |
 | `textbook_decode_not_search` | 3 |
-| `textbook_penalty_time_heat_monotone` | 3 |
-| `textbook_leaks_redacted` | 3 |
-| `textbook_news_adapters` | 3 |
-| `Qpu.Xai.integrated_gradients_linear` | 3 |
-| `textbook_one_holder` | 3 |
-| `textbook_textbook_categories` | 3 |
+| `textbook_billing_complete` | 3 |
+| `textbook_google_call_schema` | 3 |
 | `textbook_actions_pinned` | 3 |
-| `temperature` | 3 |
+| `textbook_fractal_scales` | 3 |
 | `textbook_retry_supersedes` | 3 |
+| `textbook_rsa_beyond_bound` | 3 |
 | `textbook_site_documents` | 3 |
-| `infinite` | 3 |
-| `textbook_orcid_digits` | 3 |
-| `textbook_codes_locales` | 3 |
-| `Qpu.ZeroShot.semantic_transitivity` | 3 |
-| `textbook_idle_scheduled_clears` | 3 |
+| `textbook_branding_sources` | 3 |
+| `textbook_processor_cells` | 3 |
 | `noise` | 3 |
-| `textbook_rbac_options` | 3 |
-| `textbook_mongo_find_filter` | 3 |
+| `textbook_h2_below_hartree_fock` | 3 |
+| `textbook_integers_first` | 3 |
+| `textbook_roadmap_decades` | 3 |
+| `textbook_app_fields_validated` | 3 |
 | `textbook_rosetta_conventions` | 3 |
 | `textbook_penalty_learned_prevents` | 2 |
 | `textbook_edit_collides` | 2 |
-| `textbook_billing_complete` | 2 |
-| `textbook_google_call_schema` | 2 |
-| `textbook_fractal_scales` | 2 |
-| `textbook_workspace_round_trip` | 2 |
+| `textbook_payload_schemas` | 2 |
+| `textbook_queneau_compositions` | 2 |
+| `cooling_stays_positive` | 2 |
+| `textbook_workspace_docs_round_trip` | 2 |
+| `fused_additive_form` | 2 |
 | `mersenne_127` | 2 |
-| `textbook_rsa_beyond_bound` | 2 |
 | `textbook_lead_cells` | 2 |
+| `textbook_qft_three_amplitudes` | 2 |
 | `textbook_registry_words_searched` | 2 |
 | `textbook_deploy_sets` | 2 |
 | `textbook_references_acyclic` | 2 |
 | `textbook_hook_steps_monotone` | 2 |
-| `textbook_branding_sources` | 2 |
+| `Qpu.Federated.shares_length` | 2 |
 | `textbook_redact_before_publish` | 2 |
 | `textbook_codata_g_ppb` | 2 |
+| `textbook_margin_makes_price` | 2 |
 | `Qpu.CausalInference.length_filter_partition` | 2 |
+| `textbook_google_one_door` | 2 |
+| `textbook_validation_helpers` | 2 |
+| `textbook_poles_pyramid` | 2 |
 | `Qpu.CausalInference.common_support` | 2 |
+| `Qpu.ProgramSynthesis.synth_typed` | 2 |
 | `textbook_cuboctahedron_faces` | 2 |
 | `textbook_wave_requests_by_lead` | 2 |
 | `Qpu.ProgramSynthesis.testing_incomplete` | 2 |
-| `textbook_integers_first` | 2 |
+| `textbook_streams_cover_gateways` | 2 |
 | `textbook_eta_from_receipts` | 2 |
 | `textbook_new_doors_proven` | 2 |
 | `Qpu.ZeroShot.allClasses_length` | 2 |
@@ -130,31 +151,29 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `shor_factored` | 2 |
 | `Qpu.ProgramSynthesis.repair_root` | 2 |
 | `Qpu.ProgramSynthesis.size_of_mem_layer` | 2 |
+| `textbook_phase_three_bits` | 2 |
+| `textbook_fullstack_files_by_role` | 2 |
+| `textbook_payload_hooks` | 2 |
+| `textbook_roadmap_milestone_three` | 2 |
+| `textbook_stream_no_silence` | 2 |
+| `sciences` | 2 |
 | `textbook_memo_identity` | 1 |
 | `Qpu.ProgramSynthesis.size_compose` | 1 |
 | `textbook_bulgarian_statement_words` | 1 |
 | `Qpu.Federated.lt_mintOf_self` | 1 |
 | `textbook_plugins_by_capability` | 1 |
-| `textbook_queneau_compositions` | 1 |
 | `textbook_actions_experience` | 1 |
-| `cooling_stays_positive` | 1 |
-| `textbook_bill_covered` | 1 |
-| `textbook_entropy_fusion` | 1 |
-| `textbook_advantage_unbounded` | 1 |
 | `amplitudes_as_sum` | 1 |
 | `factorial_succ` | 1 |
 | `next_cover` | 1 |
-| `fused_additive_form` | 1 |
-| `textbook_gates_partition` | 1 |
 | `Qpu.ZeroShot.allClasses_uniform` | 1 |
 | `triangular_four` | 1 |
+| `planes` | 1 |
 | `choose_symm_small` | 1 |
 | `textbook_readiness_judged` | 1 |
 | `textbook_openapi_contract` | 1 |
 | `textbook_tamper_one_nibble` | 1 |
-| `textbook_margin_makes_price` | 1 |
 | `textbook_integrations_are_thirty_five` | 1 |
-| `textbook_google_one_door` | 1 |
 | `textbook_observed_errors` | 1 |
 | `textbook_stream_filter` | 1 |
 | `textbook_clay_conditions` | 1 |
@@ -165,36 +184,34 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_commit_green` | 1 |
 | `Qpu.Federated.lattice_instance` | 1 |
 | `textbook_qaoa_random_cut` | 1 |
-| `Qpu.ProgramSynthesis.synth_typed` | 1 |
 | `textbook_workspace_drive` | 1 |
-| `textbook_willow_distance_seven` | 1 |
 | `textbook_scan_stream` | 1 |
 | `coins_bridges_forms` | 1 |
 | `textbook_raid_bit_zero_verify` | 1 |
-| `textbook_extend_inward` | 1 |
+| `textbook_hadamard_amplitudes` | 1 |
 | `textbook_theorems_plan_steps` | 1 |
-| `textbook_roadmap_decades` | 1 |
-| `textbook_access_combinations` | 1 |
 | `textbook_mongo_update_inc` | 1 |
 | `textbook_route_or_lead` | 1 |
 | `textbook_double_entry` | 1 |
 | `textbook_artifacts_verified` | 1 |
 | `textbook_referer_binds_not_entropy` | 1 |
-| `textbook_foreign_door_name` | 1 |
-| `Qpu.Federated.shares_length` | 1 |
-| `textbook_rest_rbac` | 1 |
+| `textbook_foreign_verdicts` | 1 |
 | `Qpu.ProgramSynthesis.double_equiv` | 1 |
+| `textbook_tamper_detected` | 1 |
 | `Qpu.CausalInference.do_value_self` | 1 |
 | `faces_both_forms` | 1 |
-| `textbook_streams_cover_gateways` | 1 |
 | `textbook_skills_documents` | 1 |
 | `all_product` | 1 |
-| `textbook_configurations_closed` | 1 |
 | `textbook_patent_term_twenty_years` | 1 |
 | `textbook_repository_watch_leads` | 1 |
-| `textbook_phase_three_bits` | 1 |
+| `textbook_extend_inward` | 1 |
+| `textbook_cl_described` | 1 |
 | `Qpu.Xai.attention_weight_le_total` | 1 |
 | `Qpu.ZeroShot.exact_match_best` | 1 |
+| `Qpu.Federated.quantization_error` | 1 |
+| `energy` | 1 |
+| `textbook_session_partition` | 1 |
+| `textbook_cells_text` | 1 |
 
 ## Integrity of the public artifacts
 
@@ -243,6 +260,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | ai.waj/booking | https://mcp.waj.ai/b/&#123;subdomain&#125;/mcp |
 | app.actionbook/actionbook | https://edge.actionbook.app/mcp |
 | app.belcome/booking | https://belcome.app/mcp |
+| app.fotofoto/photo-book | https://fotofoto.app/mcp |
 | app.longbook/mcp | https://longbook.app/mcp |
 | app.myfinancebook/myfinancebook | https://mcp.myfinancebook.app |
 | app.ridedesk/bookings | https://&#123;tenant_domain&#125;/api/mcp |
@@ -275,14 +293,12 @@ Each is a candidate the court computed a case for. None is a verdict.
 | com.booklint/desk | https://booklint.com/mcp |
 | com.booklint/stamp | https://booklint-stamp.fly.dev/mcp |
 | com.bookresorts/hotel-booking | https://www.bookresorts.com/api/br/mcp |
+| com.booksmate/booksmate | https://mcp.booksmate.com |
 | com.bookthetee/golf | https://bookthetee.com/mcp |
 | com.bouldercountydryervent/booking | https://keeps-pty-ultimately-payroll.trycloudflare.com/mcp |
 | com.boxerbook/boxing | https://mcp.boxerbook.com/mcp |
 | com.caribooks/quickbooks | https://caribooks.com/api/mcp |
 | com.cherishedbook/memorials | https://app.cherishedbook.com/api/mcp |
-| com.chsbackflow/booking | https://chsbackflow.com/mcp |
-| com.coloringbookify/mcp | https://coloringbookify.com/mcp |
-| com.commontape/booking | https://commontape.com/api/mcp |
 | io.github.AnonymousOnyx22/open-textbook-finder-mcp |  |
 | ai.childadhd/library | https://childadhd.ai/api/mcp/v1 |
 | ai.childanxiety/library | https://childanxiety.ai/api/mcp/v1 |
@@ -315,6 +331,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | design.60fps/library | https://mcp.60fps.design/mcp |
 | dev.libraryapi/libraryapi-mcp |  |
 | dev.reapx/books-library | https://mcp.apify.com/?actors=reapx/open-library-scraper |
+| il.co.taster/library | https://www.taster.co.il/api/mcp |
 | io.github.8enSmith/mcp-open-library |  |
 | io.github.ADahling/builders-prompt-library | https://buildersprompt.com/mcp |
 | io.github.AndrewVG23/library | https://library-mcp-production-0ea7.up.railway.app/mcp |
@@ -445,6 +462,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | com.citationsafe/verifier | https://citationsafe.com/api/mcp |
 | com.engagemii/citation-watch | https://api.engagemii.com/api/mcp |
 | com.textforagents/elicitation-bridge-unsupported-clients | https://textforagents.com/products/elicitation-bridge-unsupported-clients/mcp |
+| com.textforagents/elicitation-destination-verdict | https://textforagents.com/products/elicitation-destination-verdict/mcp |
 | dev.provinglab/browser-citation-capture | https://provinglab.dev/mcp |
 | io.github.4hmetuyar/elicitation-auditor |  |
 | io.github.6forwater29/citation-dialogue |  |
@@ -460,6 +478,9 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.rocnubie/mla-citation-generator-mcp |  |
 | io.github.theluckystrike/citation-generator | https://citation-generator.zovo.one/mcp |
 | legal.loupe/citation-lookup | https://loupe.legal/mcp-public |
+| com.chsbackflow/booking | https://chsbackflow.com/mcp |
+| com.coloringbookify/mcp | https://coloringbookify.com/mcp |
+| com.commontape/booking | https://commontape.com/api/mcp |
 | com.corpuscarfix/booking | https://corpuscarfix.com/mcp |
 | com.ctlsurf/notebook | https://app.ctlsurf.com/api/mcp |
 | com.daedalmap/world_factbook | https://app.daedalmap.com/mcp/world_factbook |
@@ -525,9 +546,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | com.scalingfirm.book/tsf-booking | https://book.scalingfirm.com/mcp |
 | com.seatswiper/booking | https://www.seatswiper.com/api/mcp |
 | com.servecounter/booking | https://api.servecounter.com/mcp |
-| com.simplechinatrip/china-attraction-booking | https://simplechinatrip.com/mcp |
-| com.skyhighpartyrentals/booking | https://mcp.shpr.me/hugo/public/mcp |
-| com.sonlightwindow/booking | https://sonlightwindow.com/mcp |
 | io.github.adriancisnerosspeed-hub/civic-library-mcp |  |
 | io.github.benthepythondev00/ad-library-intelligence | https://ad-library-intelligence.mcpize.run/mcp |
 | io.github.cyanheads/openlibrary-mcp-server | https://openlibrary.caseyjhand.com/mcp |
@@ -560,6 +578,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.Eclipse-Cj/paper-distill-mcp |  |
 | io.github.LAHutchins91/papers | https://papers-mcp.vercel.app/mcp |
 | io.github.MCPServings/paper-mcp | https://latex-tools.online/mcp |
+| io.github.NoPaperSpray/veilleur |  |
 | io.github.Saidiibrahim/search-papers |  |
 | io.github.TonyChen56/paperbanana-prompts | https://paperbanana-prompts-mcp.873217126.workers.dev/mcp |
 | io.github.agent-next/polymarket-paper-trader |  |
@@ -587,6 +606,9 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.pcp183/paper-lookup | https://paper-lookup-production-56b0.up.railway.app/mcp |
 | io.github.pipeworx-io/paperswithcode | https://gateway.pipeworx.io/paperswithcode/mcp |
 | io.github.proompteng/bilig-workpaper | https://bilig.proompteng.ai/mcp |
+| com.simplechinatrip/china-attraction-booking | https://simplechinatrip.com/mcp |
+| com.skyhighpartyrentals/booking | https://mcp.shpr.me/hugo/public/mcp |
+| com.sonlightwindow/booking | https://sonlightwindow.com/mcp |
 | com.spellbook-finance/mcp | https://api.spellbook-finance.com/mcp |
 | com.summabooking/summabooking | https://app.summabooking.com/api/mcp |
 | com.superagnt/facebook-data | https://mcp.superagnt.com/mcp/facebook |
@@ -640,10 +662,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.Epochal-dev/open-notebook |  |
 | io.github.Everyways/upsalt-booking | https://ai.upsalt.io/mcp/booking |
 | io.github.Evozim/binance-orderbook-mcp | https://api.m2mcent.com/binance-orderbook-mcp/sse |
-| io.github.Evozim/booking-hotel-prices-mcp | https://api.m2mcent.com/booking-hotel-prices-mcp/sse |
-| io.github.Fisher521/bookmarks-lifecycle |  |
-| io.github.Fisher521/bookmarks-mcp |  |
-| io.github.GoodTurnStudio/bookslikethis | https://goodturn-mcp.pages.dev/bookslikethis/mcp |
 | io.github.theluckystrike/contract-clause-library-proposal-template-docx | https://mcp.zovo.one/mcp/clauses |
 | io.github.theluckystrike/glossary-terms-definitions-library |  |
 | io.github.wywy-llc/gas-library-hub | https://appscripthub.com/api/mcp |
@@ -667,6 +685,10 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.graph-paper/graph-paper | https://graph-paper.io/mcp |
 | io.usefulapi/paperform | https://paperform.usefulapi.io/mcp |
 | io.usefulapi/papershift | https://papershift.usefulapi.io/mcp |
+| io.github.Evozim/booking-hotel-prices-mcp | https://api.m2mcent.com/booking-hotel-prices-mcp/sse |
+| io.github.Fisher521/bookmarks-lifecycle |  |
+| io.github.Fisher521/bookmarks-mcp |  |
+| io.github.GoodTurnStudio/bookslikethis | https://goodturn-mcp.pages.dev/bookslikethis/mcp |
 | io.github.HelloBooksAIAgents/hellobooks-mcp | https://agents.hellobooks.ai/mcp |
 | io.github.Ifeanyiejindu/qarunbook | https://qarunbook.com/api/mcp |
 | io.github.Influship/sponsorbook-mcp | https://app.sponsorbook.io/mcp |
@@ -795,6 +817,8 @@ Each is a candidate the court computed a case for. None is a verdict.
 | net.andrii/booking | https://andrii.net/mcp |
 | net.bookmax/bookmax | https://my.bookmax.net/mcp |
 | net.useapi/gemini-notebook | https://api.useapi.net/v1/gemini-notebook/mcp |
+| nl.feminiqrides/booking | https://www.feminiqrides.nl/mcp |
+| nl.jetcabams.www/booking | https://www.jetcabams.nl/mcp |
 | nz.wanakahaus/booking | https://wanakahaus.nz/api/mcp |
 | org.bibooks/bibooks | https://bibooks.org/mcp |
 | org.jainebooks/catalogue | https://jainebooks.org/mcp |

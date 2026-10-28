@@ -7,7 +7,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { readJson, fetchWithTimeout, publishRecord, mcpClient } from './mcp.ts'
+import { getJson, getWithTimeout, publishRecord, mcpClient } from './mcp.ts'
 
 const ROOT = process.cwd()
 const HOSTS = (process.env.QPU_E2E_HOSTS ?? 'https://qpu.uuidna.com,https://qpu.psg.bg,https://qpu.ceci.workers.dev').split(',').map((h) => h.trim()).filter(Boolean)
@@ -28,7 +28,7 @@ const main = async () => {
   }
   const payloadUrl = process.env.QPU_PAYLOAD_URL
   const unauthenticated = payloadUrl ? await fetch(payloadUrl.replace(/\/$/, '') + '/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }), signal: AbortSignal.timeout(20_000) }).then((r) => r.status).catch(() => 0) : null
-  const entropy = (readJson(join(ROOT, 'docs', 'public', 'entropy.json')) as { byKind: Record<string, { leads: number }> } | null)
+  const entropy = (getJson(join(ROOT, 'docs', 'public', 'entropy.json')) as { byKind: Record<string, { leads: number }> } | null)
   const env = existsSync(join(ROOT, 'site', '.env.qpu.example')) ? readFileSync(join(ROOT, 'site', '.env.qpu.example'), 'utf8') : ''
   const plugin = existsSync(join(ROOT, 'site', 'src', 'plugins', 'qpu.ts')) ? readFileSync(join(ROOT, 'site', 'src', 'plugins', 'qpu.ts'), 'utf8') : ''
   const wrangler = existsSync(join(ROOT, 'wrangler.jsonc')) ? readFileSync(join(ROOT, 'wrangler.jsonc'), 'utf8') : ''
@@ -42,7 +42,7 @@ const main = async () => {
   const { readdirSync } = await import('node:fs')
   const published = Object.fromEntries(readdirSync(pub).filter((f) => /\.(json|ndjson|md|txt|xml|webmanifest|html)$/.test(f)).map((f) => [`docs/public/${f}`, readFileSync(join(pub, f), 'utf8')]))
   const live: Record<string, string> = {}
-  for (const origin of HOSTS) for (const f of ['next-leads.json', 'receipts.ndjson', 'receipt.json', 'security.json']) { try { const r = await fetchWithTimeout(`${origin}/${f}`); if (r.ok) live[`${new URL(origin).host}/${f}`] = await r.text() } catch { /* unreached: measured next run */ } }
+  for (const origin of HOSTS) for (const f of ['next-leads.json', 'receipts.ndjson', 'receipt.json', 'security.json']) { try { const r = await getWithTimeout(`${origin}/${f}`); if (r.ok) live[`${new URL(origin).host}/${f}`] = await r.text() } catch { /* unreached: measured next run */ } }
   // and every document Payload holds, read through its MCP as a client reads it: a page or an entry is served
   const app = mcpClient(), held: Record<string, string> = {}
   for (const find of ['findPages', 'findEntries']) for (const d of ((await app.findAll(find, { draft: true, depth: 0 })).docs ?? []) as { id: string }[]) held[`payload/${find.slice(4).toLowerCase()}/${d.id}`] = JSON.stringify(d)

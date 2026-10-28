@@ -25,7 +25,7 @@ export const listTools = (ctx: Pick<Context, 'handle'>): ListedTool[] => (ctx.ha
 /** An argument given as an object. */
 export const isObj = (x: unknown): x is Record<string, any> => !!x && typeof x === 'object'
 /** A selftest's checks folded into one place: each toolbox names its checks, and done() returns them with whether every one passed. */
-export const makeChecks = () => { const checks: Check[] = []; return { check: (id: string, passed: boolean, evidence: string) => { checks.push({ id, passed, evidence }) }, done: () => ({ passed: checks.every((c) => c.passed), checks }) } }
+export const createChecks = () => { const checks: Check[] = []; return { check: (id: string, passed: boolean, evidence: string) => { checks.push({ id, passed, evidence }) }, done: () => ({ passed: checks.every((c) => c.passed), checks }) } }
 export const defineTool = <T>(toolbox: string, spec: { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>, ctx: Context) => T; widget: (data: T) => string }): Tool => ({
   name: spec.name, toolbox, description: spec.description, inputSchema: spec.inputSchema,
   call: (args, ctx) => { const data = spec.run(args, ctx); return { structured: data, widget: spec.widget(data) } },

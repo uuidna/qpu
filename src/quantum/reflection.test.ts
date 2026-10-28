@@ -4,10 +4,10 @@ import { handle } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { LEADS } from './leads.ts'
 import { matchStatement, reflectStatement } from './match.ts'
-import { extractFacts, buildVerifyRequests, VERIFIERS } from './verifiers.ts'
+import { extractFacts, createVerifyRequests, VERIFIERS } from './verifiers.ts'
 import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf, tailReadingsOf, reflectionOf } from './blocks.ts'
 import { TREE_FACTS } from './verifiers.ts'
-import { KEY, renderCss, cmykOfUuid, accentOfUuid, hueOf, HARMONICS } from './theme.ts'
+import { KEY, getCss, cmykOfUuid, accentOfUuid, hueOf, HARMONICS } from './theme.ts'
 import { translateOf, LOCALES } from './i18n.ts'
 
 const match = (statement: string) => matchStatement(statement, handle, EXAMPLES, LEADS)
@@ -49,9 +49,9 @@ test('the verifiers registry covers every fact kind and only free sources', () =
   const kinds = new Set(VERIFIERS.flatMap((v) => v.verifies))
   for (const k of ['integer', 'factors', 'repository', 'page', 'preprint', 'doi', 'constant']) assert.ok(kinds.has(k as never), k)
   assert.ok(VERIFIERS.every((v) => v.free))
-  const reqs = buildVerifyRequests({ kind: 'doi', value: '10.5281/zenodo.23156998' })
+  const reqs = createVerifyRequests({ kind: 'doi', value: '10.5281/zenodo.23156998' })
   assert.deepEqual(reqs.map((r) => r.verifier).sort(), ['datacite', 'doi-org', 'zenodo'])
-  const cern = buildVerifyRequests({ kind: 'doi', value: '10.7483/OPENDATA.CMS.53FG.V2S9' })
+  const cern = createVerifyRequests({ kind: 'doi', value: '10.7483/OPENDATA.CMS.53FG.V2S9' })
   assert.deepEqual(cern.map((r) => r.verifier).sort(), ['cern-opendata', 'datacite', 'doi-org'])
   const repo = LEADS.find((l) => l.id.startsWith('repo-'))
   if (repo) assert.ok(extractFacts(repo).some((f) => f.kind === 'repository'))
@@ -80,14 +80,14 @@ test('small: blocks and receipts are named by content-addressed RFC 9562 v8 UUID
   assert.equal(u, uuidOf('qpu'))
   assert.notEqual(u, uuidOf('qpu '))
   const doi = TREE_FACTS.find((f) => f.kind === 'doi')!
-  assert.deepEqual(buildVerifyRequests(doi).map((r) => r.verifier).sort(), ['datacite', 'doi-org', 'zenodo'])
+  assert.deepEqual(createVerifyRequests(doi).map((r) => r.verifier).sort(), ['datacite', 'doi-org', 'zenodo'])
 })
 
 test('the stylesheet derives from the key 432 and each block takes its accent from the middle of its UUID as CMYK', () => {
   assert.equal(KEY, 432)
   assert.equal(hueOf(KEY), 72)
   assert.deepEqual(HARMONICS.map(hueOf), [72, 216, 108, 54, 27])
-  const css = renderCss()
+  const css = getCss()
   assert.ok(css.includes('--a432-hue: 72;') && css.includes('--a432-1: hsl(72 '))
   const u = uuidOf('qpu')
   const c = cmykOfUuid(u)

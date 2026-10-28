@@ -6,7 +6,7 @@
 // energies at bond lengths 0.7 and 0.8 Å from OpenFermion's data, and the integrals here are checked against those printed
 // figures in the tests and in the tool's output. Every energy a VQE sweep returns is an expectation value of a simulated state.
 
-import { Circuit, DensityMatrixSimulator, LineQubit, applied, exponentiateGate, computeExpectation, pauliProduct } from './cirq.ts'
+import { Circuit, DensityMatrixSimulator, LineQubit, applied, exponentiateGate, getExpectation, pauliProduct } from './cirq.ts'
 
 /** The STO-3G hydrogen 1s function: three primitive Gaussians, exponents and contraction coefficients as Hehre, Stewart and
  *  Pople fit them (J. Chem. Phys. 51, 2657 (1969)), with the exponents scaled for hydrogen (ζ = 1.24), as the basis set is
@@ -223,7 +223,7 @@ export const ansatzCircuit = (theta: number): Circuit => {
 /** The energy of the ansatz at θ: the Pauli terms' expectation values on the simulated density matrix, summed. */
 export const energyAt = (terms: readonly PauliTerm[], theta: number): number => {
   const state = new DensityMatrixSimulator().simulate(ansatzCircuit(theta))
-  return terms.reduce((sum, t) => sum + t.coefficient * computeExpectation(state, t.paulis), 0)
+  return terms.reduce((sum, t) => sum + t.coefficient * getExpectation(state, t.paulis), 0)
 }
 
 /** The VQE sweep: θ over a grid of [−π/2, π/2), each energy from the simulator, then a golden-section search between the

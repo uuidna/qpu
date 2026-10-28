@@ -57,7 +57,7 @@ export const LITERAL_ROOTS = ['src', 'scripts', 'site/src'] as const
 export const LITERAL_REGISTRIES = { url: ['src/quantum/discovery.ts', 'src/quantum/discovery-document.ts', 'src/quantum/sources.ts', 'src/quantum/leads.ts', 'src/quantum/payload-surface.ts'], path: ['src/quantum/toolboxes/payload.ts', 'src/quantum/toolboxes/repository.ts', 'src/quantum/audit.ts', 'src/quantum/machine.ts', 'scripts/next.ts'] } as const
 const LITERAL_EXEMPT = /uuidna\.com\/licen[cs]e|creativecommons\.org\/licenses|contributor-covenant\.org|\(\+https:\/\/qpu\.uuidna\.com\)/
 type Literal = { kind: 'url' | 'path'; file: string; line: number; literal: string; clean: boolean; why: string; tokens: number; antimatter: { needs: 'confirm'; says: string } | null }
-export const findLiterals = (files: Readonly<Record<string, string>>) => {
+export const listLiterals = (files: Readonly<Record<string, string>>) => {
   const all: Literal[] = []
   for (const [file, text] of Object.entries(files)) {
     if (!/^(src|scripts|site\/src)\//.test(file) || /\.test\.ts$/.test(file) || /^src\/quantum\/examples\.ts$/.test(file) || /\.(md|mdx|txt|json)$/.test(file)) continue
@@ -82,14 +82,14 @@ export const findLiterals = (files: Readonly<Record<string, string>>) => {
  *  The dated audit dockets are records, exempt and stated as such. A write target built at run time from a variable is not seen by this read, so
  *  a page it writes is listed as manual until its generator names it: a lead, never a ruling. */
 const DOCS_EXEMPT = /^docs\/audit\/\d{4}-\d{2}-\d{2}-[^/]+\.md$/
-export const findManualDocs = (pages: readonly { path: string; bytes: number }[], scripts: Readonly<Record<string, string>>) => {
+export const listManualDocs = (pages: readonly { path: string; bytes: number }[], scripts: Readonly<Record<string, string>>) => {
   const writes = Object.entries(scripts).flatMap(([file, text]) => text.split('\n').filter((l) => /writeFileSync|appendFileSync|writePage|write\(/.test(l)).map((l) => ({ file, l })))
   const writerOf = (path: string) => { const name = path.replace(/^docs\//, '').replace(/\.md$/, ''), base = name.split('/').pop()!; return writes.find((w) => w.l.includes(`'${name}.md'`) || w.l.includes(`'${base}.md'`) || w.l.includes(`"${base}.md"`) || w.l.includes(`/${base}.md`))?.file ?? null }
   const rows = pages.map((p) => { const exempt = DOCS_EXEMPT.test(p.path), writer = exempt ? null : writerOf(p.path); return { ...p, exempt, generator: writer, manual: !exempt && !writer, tokens: !exempt && !writer ? Math.ceil(p.bytes / 4) : 0 } })
   const manual = rows.filter((r) => r.manual).sort((a, b) => b.bytes - a.bytes)
   return { pages: rows.length, generated: rows.filter((r) => r.generator).length, exempt: rows.filter((r) => r.exempt).length, manual: manual.length, bytes: manual.reduce((n, r) => n + r.bytes, 0), tokens: manual.reduce((n, r) => n + r.tokens, 0), largest: manual.slice(0, 10).map((r) => ({ path: r.path, bytes: r.bytes, antimatter: { needs: 'auto' as const, says: `write a generator for ${r.path} from the tool, theorems and examples it describes, so the page is generated and its gap annihilates` } })), rows, says: `${manual.length} of ${rows.length} docs page(s) written by hand (${manual.reduce((n, r) => n + r.bytes, 0)} bytes), ${rows.filter((r) => r.exempt).length} dated record(s) exempt; generated means a generator writes the path` }
 }
-export const measureEntropy = (files: Readonly<Record<string, string>>) => {
+export const getEntropy = (files: Readonly<Record<string, string>>) => {
   const findings: EntropyFinding[] = []
   const add = (kind: EntropyKind, file: string, line: number, excerpt: string) => { const t = excerpt.trim(); findings.push({ kind, file, line, excerpt: t, address: uuidOf(`${kind}\n${t}`) }) }
   const repeated = new Map<string, { file: string; line: number }[]>()
@@ -126,7 +126,7 @@ export const measureEntropy = (files: Readonly<Record<string, string>>) => {
   const leads: EntropyLead[] = [...byAddress.entries()].map(([address, fs]) => { const k = kindOf[fs[0]!.kind]; return { id: `entropy-${k.kind}-${address.slice(0, 8)}`, kind: k.kind, source: fs.map((f) => `${f.file}:${f.line}`).join(', '), statement: `${k.says} — ${fs[0]!.excerpt}`, status: 'open', tool: 'audit', occurrences: fs.length, address, explore: k.explore, config: k.config } })
   const addresses = [...byAddress.keys()].sort()
   const byKind = Object.fromEntries(ENTROPY_KINDS.map((k) => [k.kind, { findings: findings.filter((f) => f.kind === k.kind).length, leads: leads.filter((l) => l.kind === k.kind).length }]))
-  return { literals: findLiterals(files), files: Object.keys(files).length, lines, findings: findings.length, fused: leads.length, reactions: findings.length - leads.length, byKind, gravity: uuidOf(addresses.join('\n')), vacuum: findings.length === 0, kinds: ENTROPY_KINDS, leads, found: findings, toExplore: Object.fromEntries([...new Set(leads.map((l) => l.explore))].map((t) => [t, leads.filter((l) => l.explore === t).length])), toConfig: Object.fromEntries([...new Set(leads.map((l) => l.config ?? 'none'))].map((c) => [c, leads.filter((l) => (l.config ?? 'none') === c).length])), says: 'entropy measured over the texts supplied, every finding a lead and none a ruling; findings of one address fuse into one lead (f findings, f − d leads); the gravity is the fold of the sorted addresses and the vacuum is a tree whose gravity folds nothing' }
+  return { literals: listLiterals(files), files: Object.keys(files).length, lines, findings: findings.length, fused: leads.length, reactions: findings.length - leads.length, byKind, gravity: uuidOf(addresses.join('\n')), vacuum: findings.length === 0, kinds: ENTROPY_KINDS, leads, found: findings, toExplore: Object.fromEntries([...new Set(leads.map((l) => l.explore))].map((t) => [t, leads.filter((l) => l.explore === t).length])), toConfig: Object.fromEntries([...new Set(leads.map((l) => l.config ?? 'none'))].map((c) => [c, leads.filter((l) => (l.config ?? 'none') === c).length])), says: 'entropy measured over the texts supplied, every finding a lead and none a ruling; findings of one address fuse into one lead (f findings, f − d leads); the gravity is the fold of the sorted addresses and the vacuum is a tree whose gravity folds nothing' }
 }
 
 /** Differences become leads, agnostic of what differs and proven by theorem: two named sets of members (addresses, paths, ids, lines,
@@ -150,7 +150,7 @@ export const diffMembers = (a: { name: string; members: readonly string[] }, b: 
  *  answered with the remedy learned (textbook_error_remedies: the remedied and the unremedied make the errors); in an error-free environment
  *  the table stays dormant and the stream's gravity is the vacuum. An error without a remedy is a lead that teaches the next row. */
 export const ERROR_REMEDIES: readonly { signature: string; learned: string; remedy: string; automated: boolean }[] = TABLES.ERROR_REMEDIES as readonly { signature: string; learned: string; remedy: string; automated: boolean }[]
-export const findRemedies = (errors: readonly string[]) => {
+export const listRemedies = (errors: readonly string[]) => {
   const leads = errors.map((text) => { const row = ERROR_REMEDIES.find((r) => new RegExp(r.signature).test(text)); const address = uuidOf(`error\n${text.trim()}`); return { id: `error-${address.slice(0, 8)}`, address, signature: row?.signature ?? null, remedy: row?.remedy ?? null, automated: row?.automated ?? false, learned: row?.learned ?? null, statement: row ? `${text.trim().split('\n')[0]} — remedy: ${row.remedy}` : `${text.trim().split('\n')[0]} — no remedy learned yet: a lead that teaches the next row`, status: 'open' as const } })
   const remedied = leads.filter((l) => l.remedy).length
   return { errors: errors.length, remedied, unremedied: errors.length - remedied, leads, table: ERROR_REMEDIES.length, gravity: uuidOf(leads.map((l) => l.address).sort().join('\n')), vacuum: errors.length === 0, says: 'every error matched against what manual work taught; the remedied and the unremedied make the errors; in an error-free environment the table is dormant and the gravity is the vacuum' }
@@ -167,7 +167,7 @@ export const handleOrCorrect = (errors: readonly string[], majority: boolean, mo
   let m = mode
   for (let swap = 0; swap < 3; swap += 1) {
     if (m === 'correction') { if (majority) { steps.push({ mode: m, result: 'corrected by majority' }); return { mode: m, steps, swaps: swap, terminated: true } } steps.push({ mode: m, result: 'no majority: the correction errors' }); m = flipMode(m); continue }
-    const r = findRemedies(errors)
+    const r = listRemedies(errors)
     if (r.remedied > 0 || errors.length === 0) { steps.push({ mode: m, result: errors.length ? `${r.remedied} of ${r.errors} remedied` : 'nothing to handle' }); return { mode: m, steps, swaps: swap, terminated: true, remedies: r } }
     steps.push({ mode: m, result: 'no remedy learned: the lead teaches the next row' }); m = flipMode(m)
   }
@@ -209,7 +209,7 @@ export const auditSecurity = (client: SecurityClient, developer: SecurityDevelop
 /** The quantum advantage of a gate run as a magnitude, unlimited by default and computed from the counts alone — no credential, no
  *  interaction, no bound: the copies proven by hash (304 by involution, nothing computed, nothing sent) over the copies recomputed; when
  *  every copy is an involution the ratio has no bound and the result says so (textbook_advantage_unbounded). Pure. */
-export const computeAdvantage = (copies: number, verified: number) => {
+export const getAdvantage = (copies: number, verified: number) => {
   if (!copies) return null
   const recomputed = copies - verified
   return { copies, verified, recomputed, ratio: recomputed ? Number((copies / recomputed).toFixed(2)) : null, unbounded: recomputed === 0, interaction: 'none: computed from the run\'s own counts, no token, no approval, no bound', basis: 'verify beats recompute by magnitude: copies over copies recomputed; the unit bills the same counts (advantageByUnit)' }
@@ -219,7 +219,7 @@ export const computeAdvantage = (copies: number, verified: number) => {
  *  examples it backs; the theorem sharing the most stems (two at least) addresses the lead, and that theorem's example names the tool that explores
  *  it; what no theorem reaches stays open and says so. Addressed and unaddressed make the leads (textbook_leads_addressed). Pure. */
 export const wordStems = (text: string): Set<string> => new Set(text.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/[\s-]+/).filter((w) => w.length > 3).map((w) => w.replace(/(ing|ed|es|s)$/, '')))
-export const findAddressedByTheorem = (leads: readonly { id: string; statement: string; status: string }[], theorems: readonly { key: string; says: string; examples: readonly string[] }[], examples: readonly { id: string; tool: string }[]) => {
+export const getAddressedByTheorem = (leads: readonly { id: string; statement: string; status: string }[], theorems: readonly { key: string; says: string; examples: readonly string[] }[], examples: readonly { id: string; tool: string }[]) => {
   const toolOf = new Map(examples.map((e) => [e.id, e.tool]))
   const index = theorems.map((t) => ({ key: t.key, stems: wordStems(t.says + ' ' + t.examples.join(' ').replace(/-/g, ' ')), tools: [...new Set(t.examples.map((e) => toolOf.get(e)).filter((x): x is string => Boolean(x)))] }))
   const rows = leads.map((l) => {
@@ -238,7 +238,7 @@ export const findAddressedByTheorem = (leads: readonly { id: string; statement: 
  *  names (the energy sector), every IoT reading a docket entry billed by this bill per device (textbook_billing_complete, textbook_kwh_joules). Pure. */
 const BOLTZMANN_J_PER_K = 1.380649e-23
 const JOULES_PER_KWH = 3600 * 1000
-export const computeBill = (u: { tokens?: number; bits?: number; ms?: number; temperatureK?: number; coins?: number; saved?: { tokens?: number; bits?: number; ms?: number }; tariffEurPerKwh?: number | null; devices?: number }) => {
+export const getBill = (u: { tokens?: number; bits?: number; ms?: number; temperatureK?: number; coins?: number; saved?: { tokens?: number; bits?: number; ms?: number }; tariffEurPerKwh?: number | null; devices?: number }) => {
   const temperatureK = u.temperatureK ?? 300
   const landauerJoulesPerBit = BOLTZMANN_J_PER_K * temperatureK * Math.LN2
   const tokens = u.tokens ?? 0, bits = u.bits ?? 0, ms = u.ms ?? 0, coins = u.coins ?? 0
@@ -320,7 +320,7 @@ export const listDeclarations = (files: Readonly<Record<string, string>>) => {
 }
 /** The one table's hits in a text, the notations set aside marked: every scanner reads the table through this */
 const leakHitsOf = (text: string) => LEAK_PATTERNS.flatMap((p) => [...text.matchAll(p.re)].map((m) => ({ kind: p.kind, aside: NOT_A_LEAK(p.kind, m[0]) })))
-export const findLeaks = (texts: Readonly<Record<string, string>>, served: readonly string[] = []) => {
+export const listLeaks = (texts: Readonly<Record<string, string>>, served: readonly string[] = []) => {
   const findings: { where: string; kind: string; count: number; served: boolean; remedy: string }[] = []
   let setAside = 0
   for (const [where, text] of Object.entries(texts)) for (const p of LEAK_PATTERNS) { let count = 0; for (const m of text.matchAll(p.re)) { if (NOT_A_LEAK(p.kind, m[0])) setAside++; else count++ } if (count) findings.push({ where, kind: p.kind, count, served: served.includes(where), remedy: p.remedy }) }
@@ -459,7 +459,7 @@ export const scanLexical = (doc: unknown, tools: readonly string[]) => {
     ;(o.children ?? []).forEach((c, i) => walk(c, `${path}.${i}`, d + 1))
   }
   walk((doc as { root?: unknown })?.root, 'root', 1)
-  const leaks = findLeaks(texts)
+  const leaks = listLeaks(texts)
   for (const [kind, n] of Object.entries(leaks.byKind)) if (n) findings.push({ at: 'text', kind: `leak-${kind}`, blocks: false, detail: `${n} by kind` })
   return { nodes, depth, findings, blocking: findings.filter((f) => f.blocks).length, clean: findings.length === 0, says: findings.length ? `${findings.length} finding(s) in ${nodes} node(s), ${findings.filter((f) => f.blocks).length} blocking: a blocking finding stops its block or link, the rest is noted` : `${nodes} node(s), depth ${depth}: nothing found`, theorem: 'textbook_namespace_narrows' }
 }

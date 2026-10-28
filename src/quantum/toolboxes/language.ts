@@ -2,8 +2,8 @@
 // lead; the vocabulary measured against every term the surface emits, so the tables are updated from measurement; and
 // programmable prose: a tool's result and its toolbox's skill rendered as sentences in any locale, backed by the toolset
 // (the numbers are the tool's) and the skillset (the words are the vocabulary's). Pure.
-import { defineTool, makeChecks, listTools, type Toolbox, type Context } from '../toolbox.ts'
-import { LOCALES, TABLES, translateOf, readNumerals } from '../i18n.ts'
+import { defineTool, createChecks, listTools, type Toolbox, type Context } from '../toolbox.ts'
+import { LOCALES, TABLES, translateOf, listNumerals } from '../i18n.ts'
 import { flowWidget } from '../widgets.ts'
 
 /** Every term the surface emits as a label a reader sees: statuses, verdicts, classes, phases and the headings of its pages. */
@@ -12,7 +12,7 @@ const SURFACE_TERMS: readonly string[] = ['served', 'partial', 'blocked', 'open'
 const splitWords = (key: string): string => key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').toLowerCase()
 
 /** The vocabulary measured: for every filled locale, which surface terms have no entry. */
-const measureLocaleCoverage = (): { locale: string; filled: boolean; terms: number; missing: string[] }[] => Object.entries(LOCALES).filter(([code]) => code !== 'en').map(([code, l]) => {
+const getLocaleCoverage = (): { locale: string; filled: boolean; terms: number; missing: string[] }[] => Object.entries(LOCALES).filter(([code]) => code !== 'en').map(([code, l]) => {
   const table = TABLES[code]
   const missing = table ? SURFACE_TERMS.filter((t) => !(t in table)) : [...SURFACE_TERMS]
   return { locale: code, filled: l.filled && !!table, terms: table ? Object.keys(table).length : 0, missing }
@@ -38,9 +38,9 @@ const translate = defineTool('language', {
   inputSchema: { type: 'object', properties: { text: { type: 'string' }, from: { type: 'string', enum: Object.keys(LOCALES) }, to: { type: 'string', enum: Object.keys(LOCALES) }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...LANGUAGE.skill.selftest(ctx) }
-    if (typeof args.text !== 'string') { const coverage = measureLocaleCoverage(); return { phase: 'coverage' as const, terms: SURFACE_TERMS.length, locales: coverage.length, filled: coverage.filter((c) => c.filled).length, missingTotal: coverage.reduce((n, c) => n + c.missing.length, 0), coverage } }
+    if (typeof args.text !== 'string') { const coverage = getLocaleCoverage(); return { phase: 'coverage' as const, terms: SURFACE_TERMS.length, locales: coverage.length, filled: coverage.filter((c) => c.filled).length, missingTotal: coverage.reduce((n, c) => n + c.missing.length, 0), coverage } }
     const from = typeof args.from === 'string' ? args.from : 'en'; const to = typeof args.to === 'string' ? args.to : 'bg'
-    const num = readNumerals(args.text)
+    const num = listNumerals(args.text)
     const r = translateOf(num.text, from, to)
     return { phase: 'translated' as const, from, to, text: r.text, via: r.via, untranslated: r.untranslated.length, untranslatedWords: r.untranslated, numerals: num.numerals }
   },
@@ -79,14 +79,14 @@ export const LANGUAGE: Toolbox = {
     instructions: 'translate takes text, from and to and answers by vocabulary; call it without text to measure the tables and get the missing terms per locale, which are the leads to fill (from the unit\'s vocabulary door where discovery finds one, or by a person). prose takes a tool, its arguments and a locale and renders the answer as sentences; feed its untranslated words back as vocabulary leads.',
     directions: ['server only: every table reads both ways (en→locale→en returns the term)', 'toolbox → toolbox: prose renders the tree and flow toolboxes\' answers; numerals read by the match toolbox\'s reader', 'client → server: the coverage phase hands the client the missing terms to fill'],
     selftest: (ctx: Context) => {
-      const { check, done } = makeChecks()
+      const { check, done } = createChecks()
       for (const [code, table] of Object.entries(TABLES)) {
         // a term returns if the inverse gives it or a synonym that shares its translation; an empty translation (no article in the locale) has no inverse
         const synonyms = (term: string) => Object.keys(table).filter((k) => table[k] === table[term]).map((k) => k.toLowerCase())
         const broken = Object.keys(table).filter((term) => table[term] !== '' && !synonyms(term).includes(translateOf(translateOf(term, 'en', code).text, code, 'en').text.toLowerCase()))
         check(`language:round-trip:${code}`, broken.length === 0, broken.length ? `${broken.length} term(s) do not return: ${broken.slice(0, 5).join(', ')}` : `${Object.keys(table).length} terms return through ${code}`)
       }
-      const cov = measureLocaleCoverage().find((c) => c.locale === 'bg')!
+      const cov = getLocaleCoverage().find((c) => c.locale === 'bg')!
       check('language:coverage-measured', cov.terms > 0 && Array.isArray(cov.missing), `bg: ${cov.terms} terms, ${cov.missing.length} surface terms missing${cov.missing.length ? ` (${cov.missing.slice(0, 6).join(', ')})` : ''}`)
       const p = writeProse({ name: 'tree', idea: 'the tree knows itself', instructions: 'call match' }, 'clay', { total: 54, holding: 54, maxBits: 33 }, 'bg')
       check('language:prose-bg', p.sentences.length === 3 && p.text.includes('54') && /инструмент/.test(p.text), p.text.slice(0, 160))

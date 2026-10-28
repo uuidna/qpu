@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T18:55:14.173Z",
- "ms": 14566,
+ "date": "2026-10-28T03:59:21.921Z",
+ "ms": 14511,
  "rounds": 2,
  "selftest": {
   "passed": true
@@ -10,73 +10,73 @@
   {
    "id": "nist-beacon",
    "status": 200,
-   "ms": 803,
+   "ms": 1319,
    "bytes": 3633
   },
   {
    "id": "ct-sth",
-   "status": 200,
-   "ms": 5532,
-   "bytes": 237428
+   "status": 503,
+   "ms": 13677,
+   "bytes": 12
   },
   {
    "id": "acme-directory",
    "status": 200,
-   "ms": 656,
+   "ms": 649,
    "bytes": 961
   },
   {
    "id": "nvd-cves",
    "status": 200,
-   "ms": 725,
+   "ms": 583,
    "bytes": 21839
   },
   {
    "id": "cern-opendata",
    "status": 200,
-   "ms": 413,
+   "ms": 424,
    "bytes": 119560
   },
   {
    "id": "csrc-pqc",
    "status": 200,
-   "ms": 979,
+   "ms": 882,
    "bytes": 60973
   },
   {
    "id": "crt-sh",
    "status": 200,
-   "ms": 12329,
+   "ms": 3939,
    "bytes": 2
   },
   {
    "id": "tls:qpu.uuidna.com",
    "status": 200,
-   "ms": 102,
+   "ms": 50,
    "bytes": 115
   },
   {
    "id": "tls:qpu.psg.bg",
    "status": 200,
-   "ms": 100,
+   "ms": 52,
    "bytes": 115
   },
   {
    "id": "tls:opendata.cern.ch",
    "status": 200,
-   "ms": 171,
+   "ms": 99,
    "bytes": 107
   },
   {
    "id": "tls:beacon.nist.gov",
    "status": 200,
-   "ms": 356,
+   "ms": 254,
    "bytes": 107
   },
   {
    "id": "nist-beacon-previous",
    "status": 200,
-   "ms": 1537,
+   "ms": 190,
    "bytes": 3633
   }
  ],
@@ -144,9 +144,9 @@
    "status": "read",
    "facts": {
     "chainIndex": 2,
-    "pulseIndex": 2001871,
-    "timeStamp": "2026-10-27T18:53:00.000Z",
-    "previous": 2001870
+    "pulseIndex": 2002415,
+    "timeStamp": "2026-10-28T03:57:00.000Z",
+    "previous": 2002414
    },
    "verdicts": [
     {
@@ -162,7 +162,7 @@
     {
      "theorem": "textbook_chain_index_steps",
      "passed": true,
-     "says": "pulse 2001871 follows 2001870"
+     "says": "pulse 2002415 follows 2002414"
     },
     {
      "theorem": "textbook_beacon_period",

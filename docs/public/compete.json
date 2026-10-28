@@ -1,55 +1,229 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-27T18:55:18.707Z",
- "ms": 19138,
+ "date": "2026-10-28T03:59:45.014Z",
+ "ms": 37041,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "da3f1e5a8a35e67d55165fe50eac35fe2e4af461",
+ "head": "dfc182308765bdbf65dfe79b655c95ac218311ac",
  "pushed": false,
  "fetched": [
   {
    "id": "gemini-xprize-hackathon",
    "status": 403,
-   "ms": 432,
-   "bytes": 5483
+   "ms": 425,
+   "bytes": 5519
   },
   {
    "id": "clay-millennium",
    "status": 200,
-   "ms": 619,
+   "ms": 538,
    "bytes": 79933
-  },
-  {
-   "id": "xprize-quantum-applications",
-   "status": 200,
-   "ms": 695,
-   "bytes": 179490
-  },
-  {
-   "id": "cloudflare-workers-launchpad",
-   "status": 200,
-   "ms": 745,
-   "bytes": 402586
   },
   {
    "id": "vercel-oss-program",
    "status": 200,
-   "ms": 771,
-   "bytes": 825334
+   "ms": 485,
+   "bytes": 825752
+  },
+  {
+   "id": "cloudflare-workers-launchpad",
+   "status": 200,
+   "ms": 612,
+   "bytes": 402588
+  },
+  {
+   "id": "aimo-prize",
+   "status": 200,
+   "ms": 653,
+   "bytes": 26036
   },
   {
    "id": "github-maintainer-programs",
    "status": 200,
-   "ms": 985,
-   "bytes": 398537
+   "ms": 1010,
+   "bytes": 398700
+  },
+  {
+   "id": "beal-prize",
+   "status": 403,
+   "ms": 1221,
+   "bytes": 28986
+  },
+  {
+   "id": "justin-sun-prize",
+   "status": 200,
+   "ms": 1440,
+   "bytes": 317011
+  },
+  {
+   "id": "erdos-problems-prizes",
+   "status": 200,
+   "ms": 1514,
+   "bytes": 33706
+  },
+  {
+   "id": "qhack-2026",
+   "status": 200,
+   "ms": 1556,
+   "bytes": 454414
+  },
+  {
+   "id": "quantinuum-startup-partner-program",
+   "status": 200,
+   "ms": 1685,
+   "bytes": 495534
+  },
+  {
+   "id": "unitaryhack-2026",
+   "status": 200,
+   "ms": 1762,
+   "bytes": 15460
+  },
+  {
+   "id": "sair-andrews-curtis-challenge",
+   "status": 200,
+   "ms": 1767,
+   "bytes": 6491
+  },
+  {
+   "id": "sair-lean-kernel-challenge",
+   "status": 200,
+   "ms": 1768,
+   "bytes": 6276
+  },
+  {
+   "id": "nlnet-ngi-zero-open-calls",
+   "status": 200,
+   "ms": 1908,
+   "bytes": 43178
+  },
+  {
+   "id": "cloudflare-project-alexandria",
+   "status": 403,
+   "ms": 1937,
+   "bytes": 5613
+  },
+  {
+   "id": "q-ctrl-programs",
+   "status": 200,
+   "ms": 1981,
+   "bytes": 351787
+  },
+  {
+   "id": "sair-equational-theories-stage2",
+   "status": 200,
+   "ms": 2024,
+   "bytes": 7431
+  },
+  {
+   "id": "breakthrough-new-horizons-mathematics",
+   "status": 200,
+   "ms": 2040,
+   "bytes": 9341
+  },
+  {
+   "id": "ibm-quantum-challenge",
+   "status": 200,
+   "ms": 2153,
+   "bytes": 58183
+  },
+  {
+   "id": "sovereign-tech-fund",
+   "status": 200,
+   "ms": 2407,
+   "bytes": 116936
+  },
+  {
+   "id": "github-fund",
+   "status": 200,
+   "ms": 2437,
+   "bytes": 409068
+  },
+  {
+   "id": "github-secure-open-source-fund",
+   "status": 200,
+   "ms": 2526,
+   "bytes": 435346
+  },
+  {
+   "id": "floss-fund",
+   "status": 200,
+   "ms": 2563,
+   "bytes": 7681
+  },
+  {
+   "id": "devpost-mcp-hackathons",
+   "status": 403,
+   "ms": 2582,
+   "bytes": 5506
+  },
+  {
+   "id": "kiroween-2026",
+   "status": 403,
+   "ms": 2638,
+   "bytes": 5485
+  },
+  {
+   "id": "claude-for-open-source",
+   "status": 200,
+   "ms": 2658,
+   "bytes": 262200
+  },
+  {
+   "id": "unitary-foundation-microgrants",
+   "status": 200,
+   "ms": 2713,
+   "bytes": 269763
+  },
+  {
+   "id": "lean-fro-programs",
+   "status": 200,
+   "ms": 2940,
+   "bytes": 120005
+  },
+  {
+   "id": "xprize-quantum-applications",
+   "status": 200,
+   "ms": 3003,
+   "bytes": 179490
+  },
+  {
+   "id": "numfocus-small-development-grants",
+   "status": 200,
+   "ms": 3309,
+   "bytes": 262284
+  },
+  {
+   "id": "ai-for-math-fund",
+   "status": 200,
+   "ms": 3357,
+   "bytes": 529914
+  },
+  {
+   "id": "microsoft-research-lean-award",
+   "status": 200,
+   "ms": 3921,
+   "bytes": 194943
+  },
+  {
+   "id": "built-with-claude-japan-2026",
+   "status": 200,
+   "ms": 4843,
+   "bytes": 63020
   },
   {
    "id": "google-for-startups-accelerator",
+   "status": 503,
+   "ms": 18079,
+   "bytes": 12
+  },
+  {
+   "id": "google-summer-of-code",
    "status": 200,
-   "ms": 5731,
-   "bytes": 237428
+   "ms": 25784,
+   "bytes": 76284
   }
  ],
  "precedence": [
@@ -76,6 +250,18 @@
   "rows": [
    {
     "api": "hn-algolia",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "wikipedia-search",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "hn-algolia",
     "doi": "10.5281/zenodo.23156998",
     "status": 200,
     "mentions": 0
@@ -97,53 +283,41 @@
     "doi": "10.5281/zenodo.22700098",
     "status": 200,
     "mentions": 0
-   },
-   {
-    "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "hn-algolia",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "gdelt",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "gdelt",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 0,
-    "mentions": null
    },
    {
     "api": "gdelt",
     "doi": "10.5281/zenodo.21781602",
     "status": 429,
+    "mentions": null
+   },
+   {
+    "api": "gdelt",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 429,
+    "mentions": null
+   },
+   {
+    "api": "gdelt",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 429,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 0,
     "mentions": null
    }
   ],
@@ -185,14 +359,14 @@
   {
    "id": "clay-millennium",
    "name": "Clay Mathematics Institute, the Millennium Prize Problems",
-   "prize": "USD 1 000 000 per problem (seven; one solved, Poincaré)",
+   "prize": "USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)",
    "rules": [
     {
      "rule": "a solution of one of the seven problems",
      "needs": "a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README",
      "act": "the author's record stands at its DOI; the community's acceptance is measured by the rules below",
      "status": "open",
-     "evidence": "740 theorems kernel-accepted (1305 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
+     "evidence": "1165 theorems kernel-accepted (1771 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
@@ -216,18 +390,19 @@
      "evidence": "0 mentions of the records across 6 of 12 public source reads: gdelt 0, hn-algolia 0, crossref-events 0, wikipedia-search 0"
     }
    ],
-   "competitors": {
-    "source": "https://www.claymath.org/millennium-problems/",
-    "read": "2026-10-26",
-    "measured": "seven problems; one solved (the Poincaré conjecture, Grigori Perelman, prize declined 2010); the competitors are every mathematician who publishes",
-    "known": [
-     "Poincaré conjecture: solved (Grigori Perelman), prize declined"
-    ]
-   },
-   "read": "2026-10-26",
+   "read": "2026-10-27",
    "kind": "prize",
    "entry": "rolling",
-   "note": "CMI considers a proposed solution only when all three conditions hold: (i) published in a Qualifying Outlet (§6), (ii) two years passed since publication, (iii) general acceptance in the mathematics community; then the Scientific Advisory Board advises",
+   "note": "No window: CMI considers a proposed solution only after (i) publication in a Qualifying Outlet, (ii) two years since publication, (iii) general acceptance; rules revised 2018-09-26; CMI does not accept direct submissions.",
+   "competitors": {
+    "source": "https://www.claymath.org/millennium-problems/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (rules 79 945 B, problems 90 145 B). The problems page now groups the seven as 'Active problems' (Navier-Stokes), 'Unsolved problems' (BSD, Hodge, P vs NP, Riemann, Yang-Mills) and 'Solved problems' (Poincare). CMI news of 2026-09-11, 'Navier-Stokes Announcement', says the problem 'has apparently been settled' and that the rules' evaluation process is deliberately unhurried, with updates to follow.",
+    "known": [
+     "Poincare conjecture: listed by the page under 'Solved problems' (Perelman's proof)",
+     "Navier-Stokes: listed as 'Active'; CMI announcement of 2026-09-11 (no claimant named on the CMI page)"
+    ]
+   },
    "requires": [
     {
      "rule": "a solution of one of the seven problems",
@@ -250,6 +425,11 @@
      "act": "none the tree can take"
     }
    ],
+   "http": 200,
+   "changedSince": {
+    "since": "2026-10-26",
+    "change": "Rules unchanged (2018 revision). Not in the held row: the problems page groups Navier-Stokes as 'Active' and CMI's 2026-09-11 Navier-Stokes announcement; whether either changed between 2026-10-26 and today cannot be told from the held row, which did not record the grouping."
+   },
    "window": {
     "entry": "unknown",
     "opens": null,
@@ -261,10 +441,10 @@
     "pending": 3
    },
    "know": {
-    "competitors": 1,
+    "competitors": 2,
     "source": "https://www.claymath.org/millennium-problems/",
-    "read": "2026-10-26",
-    "measured": "seven problems; one solved (the Poincaré conjecture, Grigori Perelman, prize declined 2010); the competitors are every mathematician who publishes",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (rules 79 945 B, problems 90 145 B). The problems page now groups the seven as 'Active problems' (Navier-Stokes), 'Unsolved problems' (BSD, Hodge, P vs NP, Riemann, Yang-Mills) and 'Solved problems' (Poincare). CMI news of 2026-09-11, 'Navier-Stokes Announcement', says the problem 'has apparently been settled' and that the rules' evaluation process is deliberately unhurried, with updates to follow.",
     "theorems": [
      "textbook_sigma_involution",
      "textbook_clay_conditions",
@@ -275,7 +455,7 @@
     "says": "known from the page"
    },
    "economics": {
-    "prize": "USD 1 000 000 per problem (seven; one solved, Poincaré)",
+    "prize": "USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)",
     "evidence": 4,
     "calls": [
      {
@@ -307,7 +487,7 @@
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "4 theorem(s) of evidence served as 4 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 000 000 per problem (seven; one solved, Poincaré)); no prize is won and no problem solved by this",
+    "says": "4 theorem(s) of evidence served as 4 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
    "satisfied": "0/4",
@@ -316,15 +496,15 @@
   },
   {
    "id": "xprize-quantum-applications",
-   "name": "XPRIZE Quantum Applications (Google Quantum AI, title sponsor)",
-   "prize": "USD 5 000 000 purse",
+   "name": "XPRIZE Quantum Applications",
+   "prize": "USD 5 million purse (the page)",
    "rules": [
     {
      "rule": "registration within the window",
      "needs": "Phase II Wild Card registration 2026-01-14 to 2026-03-04",
      "act": "closed: the next XPRIZE quantum competition is a lead to watch",
      "status": "closed",
-     "evidence": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-10-27"
+     "evidence": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-10-28"
     },
     {
      "rule": "a quantum algorithm with a plausible pathway to quantum advantage, technical novelty and algorithmic rigor",
@@ -334,18 +514,18 @@
      "evidence": "the author's act"
     }
    ],
-   "competitors": {
-    "source": "https://www.xprize.org/prizes/qc-apps",
-    "read": "2026-10-26",
-    "measured": "HTTP 200 (174 KB): 20 teams from around the world as Semifinalists; 7 teams as Finalists now in Phase II (evidence-driven performance); the names are in the Finalist Teams Book 2025 the page links",
-    "known": [
-     "7 finalist teams (Phase II) and 20 semifinalist teams, named in the Finalist Teams Book 2025 the page links"
-    ]
-   },
-   "read": "2026-10-26",
+   "read": "2026-10-27",
    "kind": "prize",
    "entry": "closed",
-   "note": "Finalist teams chosen (news of 2026-05-10); Phase II Wild Card registration opened 2026-01-14 and closed 2026-03-04; winners announced in the spring of 2027: no entry is open",
+   "note": "Phase II Wild Card registration ran 2026-01-14 to 2026-03-04; 7 finalists are in Phase II; winners to be announced in spring 2027; no entry window open.",
+   "competitors": {
+    "source": "https://www.xprize.org/competitions/qc-apps",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 after a redirect from /prizes/qc-apps to /competitions/qc-apps (179 510 B): 133 submissions from 31 countries, 20 semifinalists, 7 finalists in Phase II; Phase I guidelines updated 2025-12-15; latest news 2026-05-10 (2026 Finalist Teams Book).",
+    "known": [
+     "7 finalist teams (Phase II) and 20 semifinalists, named in the Finalist Teams Books the page links (Phasecraft - Materials Team among those shown)"
+    ]
+   },
    "requires": [
     {
      "rule": "registration within the window",
@@ -358,11 +538,16 @@
      "act": "the author submits when a window opens"
     }
    ],
+   "http": 200,
+   "changedSince": {
+    "since": "2026-10-26",
+    "change": "No change in content; the URL now redirects to /competitions/qc-apps (the held row read /prizes/qc-apps as 200)."
+   },
    "window": {
     "entry": "closed",
     "opens": "2026-01-14",
     "closes": "2026-03-04",
-    "says": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-10-27"
+    "says": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-10-28"
    },
    "counts": {
     "closed": 1,
@@ -370,9 +555,9 @@
    },
    "know": {
     "competitors": 1,
-    "source": "https://www.xprize.org/prizes/qc-apps",
-    "read": "2026-10-26",
-    "measured": "HTTP 200 (174 KB): 20 teams from around the world as Semifinalists; 7 teams as Finalists now in Phase II (evidence-driven performance); the names are in the Finalist Teams Book 2025 the page links",
+    "source": "https://www.xprize.org/competitions/qc-apps",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 after a redirect from /prizes/qc-apps to /competitions/qc-apps (179 510 B): 133 submissions from 31 countries, 20 semifinalists, 7 finalists in Phase II; Phase I guidelines updated 2025-12-15; latest news 2026-05-10 (2026 Finalist Teams Book).",
     "theorems": [
      "textbook_clay_conditions",
      "textbook_compete_knows"
@@ -381,7 +566,7 @@
     "says": "known from the page"
    },
    "economics": {
-    "prize": "USD 5 000 000 purse",
+    "prize": "USD 5 million purse (the page)",
     "evidence": 2,
     "calls": [
      {
@@ -401,7 +586,7 @@
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 5 000 000 purse); no prize is won and no problem solved by this",
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 5 million purse (the page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
    "satisfied": "0/2",
@@ -410,8 +595,8 @@
   },
   {
    "id": "github-maintainer-programs",
-   "name": "GitHub maintainer programs (Accelerator, Fund, Sponsors)",
-   "prize": "funding, security tools, mentorship (page: \"Get funding, security tools, mentorship, and community\")",
+   "name": "GitHub open source maintainer programs",
+   "prize": "funding, security tools, mentorship and community (the page); USD 130 million+ invested via Sponsors, Secure OSS, GitHub Fund and M12 (the page)",
    "rules": [
     {
      "rule": "an open source project on GitHub maintained in public",
@@ -426,18 +611,25 @@
      "act": "the author applies",
      "status": "pending",
      "evidence": "the page names no window"
+    },
+    {
+     "rule": "an open source project maintained in public on GitHub",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify (the page says 'open source' without naming a licence list)",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify (the page says 'open source' without naming a licence list)"
     }
    ],
-   "competitors": {
-    "source": "https://github.com/accelerator",
-    "read": "2026-10-26",
-    "measured": "HTTP 200 (394 KB): the page names the programs (Accelerator, Fund, Secure Open Source Fund, Sponsors) and no cohort list",
-    "known": []
-   },
-   "read": "2026-10-26",
+   "read": "2026-10-27",
    "kind": "funding",
    "entry": "unknown",
-   "note": "the page names the programs; a cohort's application window is announced by GitHub",
+   "note": "No window on the umbrella page: /accelerator redirects (301) to /open-source, whose program list names GitHub Fund, Secure Open Source Fund (rolling, its own row), Sponsors, Maintainer community and Security Lab.",
+   "competitors": {
+    "source": "https://github.com/open-source",
+    "read": "2026-10-27",
+    "measured": "HTTP 301 to https://github.com/open-source, then 200 (398 772 B). The program list no longer names the GitHub Accelerator; the word appears only in the Unsloth story ('first startup backed by the GitHub Accelerator, GitHub Fund, and Microsoft's M12'). Copilot Pro is free for maintainers of popular projects.",
+    "known": []
+   },
    "requires": [
     {
      "rule": "an open source project on GitHub maintained in public",
@@ -448,8 +640,18 @@
      "rule": "an application in a cohort window",
      "needs": "GitHub's announcement",
      "act": "the author applies"
+    },
+    {
+     "rule": "an open source project maintained in public on GitHub",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify (the page says 'open source' without naming a licence list)",
+     "act": "the author's"
     }
    ],
+   "http": 301,
+   "changedSince": {
+    "since": "2026-10-26",
+    "change": "The held row listed the Accelerator among the programs; today /accelerator redirects to /open-source and the program list does not name the Accelerator."
+   },
    "window": {
     "entry": "unknown",
     "opens": null,
@@ -457,13 +659,14 @@
     "says": "the page names no window"
    },
    "counts": {
-    "pending": 2
+    "pending": 2,
+    "closed": 1
    },
    "know": {
     "competitors": 0,
-    "source": "https://github.com/accelerator",
-    "read": "2026-10-26",
-    "measured": "HTTP 200 (394 KB): the page names the programs (Accelerator, Fund, Secure Open Source Fund, Sponsors) and no cohort list",
+    "source": "https://github.com/open-source",
+    "read": "2026-10-27",
+    "measured": "HTTP 301 to https://github.com/open-source, then 200 (398 772 B). The program list no longer names the GitHub Accelerator; the word appears only in the Unsloth story ('first startup backed by the GitHub Accelerator, GitHub Fund, and Microsoft's M12'). Copilot Pro is free for maintainers of popular projects.",
     "theorems": [
      "textbook_clay_conditions",
      "textbook_compete_knows"
@@ -472,7 +675,7 @@
     "says": "no name on the page: a lead to read where the page points"
    },
    "economics": {
-    "prize": "funding, security tools, mentorship (page: \"Get funding, security tools, mentorship, and community\")",
+    "prize": "funding, security tools, mentorship and community (the page); USD 130 million+ invested via Sponsors, Secure OSS, GitHub Fund and M12 (the page)",
     "evidence": 2,
     "calls": [
      {
@@ -492,17 +695,17 @@
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (funding, security tools, mentorship (page: \"Get funding, security tools, mentorship, and community\")); no prize is won and no problem solved by this",
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (funding, security tools, mentorship and community (the page); USD 130 million+ invested via Sponsors, Secure OSS, GitHub Fund and M12 (the page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
-   "satisfied": "0/2",
-   "enterable": true,
+   "satisfied": "0/3",
+   "enterable": false,
    "ready": false
   },
   {
    "id": "cloudflare-workers-launchpad",
-   "name": "Cloudflare Workers Launchpad (funding program for startups on Workers)",
-   "prize": "funding from the Launchpad's venture capital partners: \"more than $2 billion towards Workers-based startups\" (the page, read in the browser 2026-10-26)",
+   "name": "Cloudflare Workers Launchpad",
+   "prize": "access to Cloudflare's venture capital partners, who 'fund more than $2 billion towards Workers-based startups' (the page)",
    "rules": [
     {
      "rule": "a startup building on Cloudflare Workers",
@@ -519,20 +722,18 @@
      "evidence": "the page names no window"
     }
    ],
-   "competitors": {
-    "source": "https://www.cloudflare.com/startups/workers-launchpad/",
-    "read": "2026-10-26",
-    "measured": "HTTP 403 to the verifier (its gateway); read in a browser: Cohort #5 demo day; testimonials from earlier cohorts name Langbase, Sherpo and Tightknit",
-    "known": [
-     "Langbase (Ahmad Awais)",
-     "Sherpo (Giacomo Di Pinto)",
-     "Tightknit (Zach Hawtof)"
-    ]
-   },
-   "read": "2026-10-26 (through the browser; the gateway answers 403 to the verifier; /lp/workers-launchpad/ redirects here)",
+   "read": "2026-10-27",
    "kind": "funding",
    "entry": "unknown",
-   "note": "six cohorts so far (#1 to #6) with a Demo Day each; the page names no application window in its text",
+   "note": "Six cohorts listed (#1 to #6) with a Demo Day for the latest; the page names no application window and carries no apply link.",
+   "competitors": {
+    "source": "https://www.cloudflare.com/startups/workers-launchpad/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 to the verifier today (401 845 B); cohorts #1-#6 linked (/lp/workers-launchpad/cohort1..5); no application form or date in the page.",
+    "known": [
+     "cohort pages #1-#5 linked from the page; earlier testimonials named Langbase, Sherpo, Tightknit (held row)"
+    ]
+   },
    "requires": [
     {
      "rule": "a startup building on Cloudflare Workers",
@@ -545,6 +746,11 @@
      "act": "the author applies when a cohort opens"
     }
    ],
+   "http": 200,
+   "changedSince": {
+    "since": "2026-10-26",
+    "change": "The page now answers HTTP 200 to the verifier (the held row recorded 403 to the verifier, read through a browser). Content: cohorts #1-#6, no window, unchanged."
+   },
    "window": {
     "entry": "unknown",
     "opens": null,
@@ -555,10 +761,10 @@
     "pending": 2
    },
    "know": {
-    "competitors": 3,
+    "competitors": 1,
     "source": "https://www.cloudflare.com/startups/workers-launchpad/",
-    "read": "2026-10-26",
-    "measured": "HTTP 403 to the verifier (its gateway); read in a browser: Cohort #5 demo day; testimonials from earlier cohorts name Langbase, Sherpo and Tightknit",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 to the verifier today (401 845 B); cohorts #1-#6 linked (/lp/workers-launchpad/cohort1..5); no application form or date in the page.",
     "theorems": [
      "textbook_clay_conditions",
      "textbook_compete_knows"
@@ -567,7 +773,7 @@
     "says": "known from the page"
    },
    "economics": {
-    "prize": "funding from the Launchpad's venture capital partners: \"more than $2 billion towards Workers-based startups\" (the page, read in the browser 2026-10-26)",
+    "prize": "access to Cloudflare's venture capital partners, who 'fund more than $2 billion towards Workers-based startups' (the page)",
     "evidence": 2,
     "calls": [
      {
@@ -587,7 +793,7 @@
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (funding from the Launchpad's venture capital partners: \"more than $2 billion towards Workers-based startups\" (the page, read in the browser 2026-10-26)); no prize is won and no problem solved by this",
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (access to Cloudflare's venture capital partners, who 'fund more than $2 billion towards Workers-based startups' (the page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
    "satisfied": "0/2",
@@ -596,8 +802,8 @@
   },
   {
    "id": "vercel-oss-program",
-   "name": "Vercel Open Source Program (platform credits for open source projects)",
-   "prize": "USD 3 600 of Vercel platform credits over 3 years, the OSS Starter Pack, community support (the page, read in the browser 2026-10-26)",
+   "name": "Vercel Open Source Program",
+   "prize": "USD 3 600 of Vercel platform credits over 3 years, the OSS Starter Pack, community support (the page)",
    "rules": [
     {
      "rule": "an open source project actively developed and maintained",
@@ -640,26 +846,30 @@
      "act": "the author applies when the page says open",
      "status": "closed",
      "evidence": "the page says applications are currently closed"
+    },
+    {
+     "rule": "an open source project actively developed and maintained",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify; the page does not name a licence list",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify; the page does not name a licence list"
     }
    ],
-   "competitors": {
-    "source": "https://vercel.com/open-source-program",
-    "read": "2026-10-26",
-    "measured": "HTTP 200 (827 KB): 139 GitHub repositories linked from the page as the program's projects",
-    "known": [
-     "47ng/nuqs",
-     "AnswerOverflow/AnswerOverflow",
-     "HelixDB/helix-db",
-     "APIs-guru/openapi-directory",
-     "AmanVarshney01/create-better-t-stack",
-     "1weiho/open-slide",
-     "and 133 more linked from the page"
-    ]
-   },
-   "read": "2026-10-26 (through the browser: vercel.com/oss is a showcase of Vercel's own projects, the program lives at /open-source-program)",
+   "read": "2026-10-27",
    "kind": "funding",
    "entry": "closed",
-   "note": "the page says \"Applications are currently closed\"; cohorts Spring 2026, Winter 2026, Fall 2025, Summer 2025, Spring 2025: a window opens per cohort",
+   "note": "The page says 'Applications are currently closed'; cohorts Spring 2026, Winter 2026, Fall 2025, Summer 2025, Spring 2025; a window opens per cohort.",
+   "competitors": {
+    "source": "https://vercel.com/open-source-program",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (825 384 B); 138 distinct GitHub repositories linked as program projects by today's count (the held row counted 139 links; counting method differs).",
+    "known": [
+     "47ng/nuqs",
+     "1weiho/open-slide",
+     "lukevella/rallly",
+     "and the other projects linked from the page"
+    ]
+   },
    "requires": [
     {
      "rule": "an open source project actively developed and maintained",
@@ -690,8 +900,18 @@
      "rule": "an application in a cohort window",
      "needs": "the page saying applications are open",
      "act": "the author applies when the page says open"
+    },
+    {
+     "rule": "an open source project actively developed and maintained",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify; the page does not name a licence list",
+     "act": "the author's"
     }
    ],
+   "http": 200,
+   "changedSince": {
+    "since": "2026-10-26",
+    "change": "No change: applications still closed, same benefits and criteria."
+   },
    "window": {
     "entry": "closed",
     "opens": null,
@@ -701,13 +921,13 @@
    "counts": {
     "pending": 4,
     "satisfied": 1,
-    "closed": 1
+    "closed": 2
    },
    "know": {
-    "competitors": 7,
+    "competitors": 4,
     "source": "https://vercel.com/open-source-program",
-    "read": "2026-10-26",
-    "measured": "HTTP 200 (827 KB): 139 GitHub repositories linked from the page as the program's projects",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (825 384 B); 138 distinct GitHub repositories linked as program projects by today's count (the held row counted 139 links; counting method differs).",
     "theorems": [
      "textbook_clay_conditions",
      "textbook_compete_knows"
@@ -716,7 +936,7 @@
     "says": "known from the page"
    },
    "economics": {
-    "prize": "USD 3 600 of Vercel platform credits over 3 years, the OSS Starter Pack, community support (the page, read in the browser 2026-10-26)",
+    "prize": "USD 3 600 of Vercel platform credits over 3 years, the OSS Starter Pack, community support (the page)",
     "evidence": 2,
     "calls": [
      {
@@ -736,24 +956,24 @@
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 3 600 of Vercel platform credits over 3 years, the OSS Starter Pack, community support (the page, read in the browser 2026-10-26)); no prize is won and no problem solved by this",
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 3 600 of Vercel platform credits over 3 years, the OSS Starter Pack, community support (the page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
-   "satisfied": "1/6",
+   "satisfied": "1/7",
    "enterable": false,
    "ready": false
   },
   {
    "id": "gemini-xprize-hackathon",
-   "name": "Build with Gemini XPRIZE Hackathon (Google, XPRIZE)",
-   "prize": "USD 2 000 000 in prizes: 500 000 first, 200 000 second, 100 000 third to fifth, fifteen runners-up and five category prizes of 50 000",
+   "name": "Build with Gemini XPRIZE (Devpost)",
+   "prize": "USD 2 000 000 in prizes: 500 000 first, 200 000 second, 100 000 third to fifth, 15 runners-up of 50 000, five category prizes of 50 000 (the page)",
    "rules": [
     {
      "rule": "registration within the window",
      "needs": "the 90-day build window ending 2026-08-17",
      "act": "closed: the next Gemini competition is a lead to watch",
      "status": "closed",
-     "evidence": "a 90-day build ending 2026-08-17 (Devpost); open to individuals of age, teams and organisations under 25 employees; five categories, Education & Human Potential among them"
+     "evidence": "Submission period 2026-05-19 to 2026-08-17, judging 2026-08-18 to 2026-09-15, results on or around 2026-09-25; the page says 'This hackathon has ended'."
     },
     {
      "rule": "a real business launched in the window with users and revenue (business viability)",
@@ -775,18 +995,27 @@
      "act": "adoption is measured, never claimed",
      "status": "pending",
      "evidence": "textbook { institution } prices an institution and sends the kernel's closed equations as Classroom coursework; textbook { institution: { sets } } gives 26,244 Workspace sets, 8,748 for education, each a page in the admin: the users benefit by choosing, never by a claim"
+    },
+    {
+     "rule": "New Projects Only: created after the start of the submission period",
+     "needs": "FLAG: an existing project fails this rule",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: an existing project fails this rule"
     }
    ],
-   "competitors": {
-    "source": "https://xprize.devpost.com/",
-    "read": "2026-10-26",
-    "measured": "HTTP 403 to the verifier (Devpost); the announcement (opportunitydesk.org, 2026-06-08) and Google DeepMind's post name the prize pool and the deadline, no entrant list",
-    "known": []
-   },
-   "read": "2026-10-26",
+   "read": "2026-10-27",
    "kind": "prize",
    "entry": "closed",
-   "note": "a 90-day build ending 2026-08-17 (Devpost); open to individuals of age, teams and organisations under 25 employees; five categories, Education & Human Potential among them",
+   "note": "Submission period 2026-05-19 to 2026-08-17, judging 2026-08-18 to 2026-09-15, results on or around 2026-09-25; the page says 'This hackathon has ended'.",
+   "competitors": {
+    "source": "https://xprize.devpost.com/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 to the verifier today (204 747 B); 26 399 participants; 'View the winners' links the project gallery, where 24 projects carry the 'Winner' label (Polyfork, TICIAN Cierre, MyFixam among them).",
+    "known": [
+     "24 projects labelled 'Winner' in https://xprize.devpost.com/project-gallery"
+    ]
+   },
    "requires": [
     {
      "rule": "registration within the window",
@@ -807,27 +1036,37 @@
      "rule": "category impact: Education & Human Potential",
      "needs": "the textbook as an education tool for institutions and the Google Workspace sets",
      "act": "adoption is measured, never claimed"
+    },
+    {
+     "rule": "New Projects Only: created after the start of the submission period",
+     "needs": "FLAG: an existing project fails this rule",
+     "act": "the author's"
     }
    ],
+   "http": 200,
+   "changedSince": {
+    "since": "2026-10-26",
+    "change": "Devpost now answers HTTP 200 to the verifier (held: 403); the hackathon is marked ended and its winners gallery is published; judging and announcement dates read from the rules."
+   },
    "window": null,
    "counts": {
-    "closed": 1,
+    "closed": 2,
     "pending": 3
    },
    "know": {
-    "competitors": 0,
+    "competitors": 1,
     "source": "https://xprize.devpost.com/",
-    "read": "2026-10-26",
-    "measured": "HTTP 403 to the verifier (Devpost); the announcement (opportunitydesk.org, 2026-06-08) and Google DeepMind's post name the prize pool and the deadline, no entrant list",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 to the verifier today (204 747 B); 26 399 participants; 'View the winners' links the project gallery, where 24 projects carry the 'Winner' label (Polyfork, TICIAN Cierre, MyFixam among them).",
     "theorems": [
      "textbook_clay_conditions",
      "textbook_compete_knows"
     ],
-    "both": false,
-    "says": "no name on the page: a lead to read where the page points"
+    "both": true,
+    "says": "known from the page"
    },
    "economics": {
-    "prize": "USD 2 000 000 in prizes: 500 000 first, 200 000 second, 100 000 third to fifth, fifteen runners-up and five category prizes of 50 000",
+    "prize": "USD 2 000 000 in prizes: 500 000 first, 200 000 second, 100 000 third to fifth, 15 runners-up of 50 000, five category prizes of 50 000 (the page)",
     "evidence": 2,
     "calls": [
      {
@@ -847,17 +1086,17 @@
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 2 000 000 in prizes: 500 000 first, 200 000 second, 100 000 third to fifth, fifteen runners-up and five category prizes of 50 000); no prize is won and no problem solved by this",
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 2 000 000 in prizes: 500 000 first, 200 000 second, 100 000 third to fifth, 15 runners-up of 50 000, five category prizes of 50 000 (the page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
-   "satisfied": "0/4",
+   "satisfied": "0/5",
    "enterable": false,
    "ready": false
   },
   {
    "id": "google-for-startups-accelerator",
-   "name": "Google for Startups Accelerator (Americas; Europe, Middle East and Africa; Asia Pacific)",
-   "prize": "equity-free support for the programme, Cloud and Google product credits on review, free Cloud TPU access for open source ML research, mentoring (the page, read 2026-10-26)",
+   "name": "Google for Startups Accelerator",
+   "prize": "equity-free support, mentoring, Google product and Cloud credits on review, free Cloud TPU access for open source ML research (the page)",
    "rules": [
     {
      "rule": "a startup between Seed and Series A demonstrating traction, deeply technical",
@@ -870,20 +1109,20 @@
      "rule": "an application in a cohort window",
      "needs": "Google's announcement of the next regional cohort",
      "act": "the author applies when a window opens",
-     "status": "pending",
-     "evidence": "the page names no window"
+     "status": "closed",
+     "evidence": "Every EMEA programme page reads 'Applications are now closed' (Africa 2026-02-04 to 03-18, Europe & Israel 2026-05-04 to 06-12, MENAT 2026-07-13 to 08-31, South Africa 2026-07-21 to 08-28); Americas and Asia Pacific pages not read; no 2027 window announced."
     }
    ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "closed",
+   "note": "Every EMEA programme page reads 'Applications are now closed' (Africa 2026-02-04 to 03-18, Europe & Israel 2026-05-04 to 06-12, MENAT 2026-07-13 to 08-31, South Africa 2026-07-21 to 08-28); Americas and Asia Pacific pages not read; no 2027 window announced.",
    "competitors": {
-    "source": "https://startup.google.com/programs/accelerator/",
-    "read": "2026-10-26",
-    "measured": "cohorts of 10 to 15 startups per programme; the 2026 regional windows closed between June and August 2026 (South Africa 21 July to 28 August); no 2027 window announced",
+    "source": "https://startup.google.com/programs/accelerator/europe-middle-east-africa/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (195 310 B); cohorts of 10-15 startups; entry criteria: traction between Seed and Series A, scalable product, deeply technical; Europe & Israel programme is for AI startups in the energy sector.",
     "known": []
    },
-   "read": "2026-10-26",
-   "kind": "funding",
-   "entry": "unknown",
-   "note": "regional cohorts; each programme states its own requirements and window",
    "requires": [
     {
      "rule": "a startup between Seed and Series A demonstrating traction, deeply technical",
@@ -896,20 +1135,21 @@
      "act": "the author applies when a window opens"
     }
    ],
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
+   "http": 200,
+   "changedSince": {
+    "since": "2026-10-26",
+    "change": "No change: the 2026 EMEA windows are closed as held; entry set to closed for EMEA (held: unknown)."
    },
+   "window": null,
    "counts": {
-    "pending": 2
+    "pending": 1,
+    "closed": 1
    },
    "know": {
     "competitors": 0,
-    "source": "https://startup.google.com/programs/accelerator/",
-    "read": "2026-10-26",
-    "measured": "cohorts of 10 to 15 startups per programme; the 2026 regional windows closed between June and August 2026 (South Africa 21 July to 28 August); no 2027 window announced",
+    "source": "https://startup.google.com/programs/accelerator/europe-middle-east-africa/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (195 310 B); cohorts of 10-15 startups; entry criteria: traction between Seed and Series A, scalable product, deeply technical; Europe & Israel programme is for AI startups in the energy sector.",
     "theorems": [
      "textbook_clay_conditions",
      "textbook_compete_knows"
@@ -918,7 +1158,7 @@
     "says": "no name on the page: a lead to read where the page points"
    },
    "economics": {
-    "prize": "equity-free support for the programme, Cloud and Google product credits on review, free Cloud TPU access for open source ML research, mentoring (the page, read 2026-10-26)",
+    "prize": "equity-free support, mentoring, Google product and Cloud credits on review, free Cloud TPU access for open source ML research (the page)",
     "evidence": 2,
     "calls": [
      {
@@ -938,38 +1178,2923 @@
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (equity-free support for the programme, Cloud and Google product credits on review, free Cloud TPU access for open source ML research, mentoring (the page, read 2026-10-26)); no prize is won and no problem solved by this",
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (equity-free support, mentoring, Google product and Cloud credits on review, free Cloud TPU access for open source ML research (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/2",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "aimo-prize",
+   "name": "AI Mathematical Olympiad (AIMO) Prize, XTX Markets",
+   "prize": "USD 10 million fund: USD 5 million grand prize and progress prizes up to USD 5 million (the page); over USD 1.6 million awarded",
+   "rules": [
+    {
+     "rule": "entry to an AIMO progress prize on Kaggle",
+     "needs": "none will run; the funding moved to SAIR, Lean FRO and Mathlib",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "closed",
+   "note": "Closed 2026-09-16: XTX Markets closed the AIMO Prize and will not progress the Grand Prize; AIMO 3 ran Nov 2025 to Apr 2026 and the invite-only Proof Pilot in June 2026.",
+   "competitors": {
+    "source": "https://aimoprize.com/updates/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; the update reallocates funds to Lean FRO (USD 10 million), the Mathlib Initiative (USD 10 million) and SAIR competitions (Andrews-Curtis Stage 1, Lean Kernel Challenge Stage 1, Inverse Galois Stage 2).",
+    "known": [
+     "AIMO 3 teams announced 2026-06-24: Exalted Joseph, varianceofx, SKobayak, TAMU-TACO, yemao ye",
+     "Proof Pilot: Yi-Chia Chen (announced 2026-07)"
+    ]
+   },
+   "requires": [
+    {
+     "rule": "entry to an AIMO progress prize on Kaggle",
+     "needs": "none will run; the funding moved to SAIR, Lean FRO and Mathlib",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 1
+   },
+   "know": {
+    "competitors": 2,
+    "source": "https://aimoprize.com/updates/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; the update reallocates funds to Lean FRO (USD 10 million), the Mathlib Initiative (USD 10 million) and SAIR competitions (Andrews-Curtis Stage 1, Lean Kernel Challenge Stage 1, Inverse Galois Stage 2).",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
+   "economics": {
+    "prize": "USD 10 million fund: USD 5 million grand prize and progress prizes up to USD 5 million (the page); over USD 1.6 million awarded",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 10 million fund: USD 5 million grand prize and progress prizes up to USD 5 million (the page); over USD 1.6 million awarded); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/1",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "sair-lean-kernel-challenge",
+   "name": "SAIR Lean Kernel Challenge, Stage 1 (Lean FRO and SAIR Foundation)",
+   "prize": "not stated on the overview page; sponsored by Susquehanna International Group and XTX Markets",
+   "rules": [
+    {
+     "rule": "a SAIR account, profile and agreement to the SAIR competition terms",
+     "needs": "registration by the author; the terms were not readable without signing in",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "one Submission.lean per problem (at most 1 MiB) with impl and impl_correct: a full Lean proof that impl matches the spec for every input",
+     "needs": "the author's Lean code, built against the locked dependencies",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "no sorry, admit, native_decide, unapproved axioms, partial or unsafe; no precomputed answer tables",
+     "needs": "the tree's proofs checked by #print axioms before submission",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "individual or team; each person in one team only",
+     "needs": "solo entry is allowed",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "acknowledge sources used from the Contributor Network or open source",
+     "needs": "attribution, compatible with CC-BY",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "submission before 2026-11-20 AoE",
+     "needs": "the window",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "open",
+   "note": "Registration opened 2026-08-26, launch 2026-09-15, submission deadline 2026-11-20 23:59 AoE; Stage 2 begins December 2026.",
+   "competitors": {
+    "source": "https://competition.sair.foundation/competitions",
+    "read": "2026-10-27",
+    "measured": "Read through a browser (JS-rendered): ACTIVE, 333 participants; co-organised by Joachim Breitner, Leonardo de Moura, Kim Morrison and Terence Tao; eight problems with fixed Lean specifications; ranked by kernel computation instruction count.",
+    "known": [
+     "333 registered participants; per-problem leaderboards on the page"
+    ]
+   },
+   "requires": [
+    {
+     "rule": "a SAIR account, profile and agreement to the SAIR competition terms",
+     "needs": "registration by the author; the terms were not readable without signing in",
+     "act": "the author's"
+    },
+    {
+     "rule": "one Submission.lean per problem (at most 1 MiB) with impl and impl_correct: a full Lean proof that impl matches the spec for every input",
+     "needs": "the author's Lean code, built against the locked dependencies",
+     "act": "the author's"
+    },
+    {
+     "rule": "no sorry, admit, native_decide, unapproved axioms, partial or unsafe; no precomputed answer tables",
+     "needs": "the tree's proofs checked by #print axioms before submission",
+     "act": "the author's"
+    },
+    {
+     "rule": "individual or team; each person in one team only",
+     "needs": "solo entry is allowed",
+     "act": "the author's"
+    },
+    {
+     "rule": "acknowledge sources used from the Contributor Network or open source",
+     "needs": "attribution, compatible with CC-BY",
+     "act": "the author's"
+    },
+    {
+     "rule": "submission before 2026-11-20 AoE",
+     "needs": "the window",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 6
+   },
+   "know": {
+    "competitors": 1,
+    "source": "https://competition.sair.foundation/competitions",
+    "read": "2026-10-27",
+    "measured": "Read through a browser (JS-rendered): ACTIVE, 333 participants; co-organised by Joachim Breitner, Leonardo de Moura, Kim Morrison and Terence Tao; eight problems with fixed Lean specifications; ranked by kernel computation instruction count.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
+   "economics": {
+    "prize": "not stated on the overview page; sponsored by Susquehanna International Group and XTX Markets",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (not stated on the overview page; sponsored by Susquehanna International Group and XTX Markets); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/6",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "sair-andrews-curtis-challenge",
+   "name": "SAIR Andrews-Curtis Conjecture (ACC) Challenge (Caltech and SAIR Foundation)",
+   "prize": "not stated on the overview page; sponsored by XTX Markets",
+   "rules": [
+    {
+     "rule": "a SAIR account and agreement to the SAIR competition terms",
+     "needs": "registration by the author",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "Proof Track: submitting requires agreeing to share; submissions are published in the Contributor Network for others to build on with credit",
+     "needs": "FLAG: conflicts with the ND clause for whatever is submitted; the author would license that submission separately",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: conflicts with the ND clause for whatever is submitted; the author would license that submission separately"
+    },
+    {
+     "rule": "cite work by others with a full commit hash",
+     "needs": "attribution",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "submission before 2026-11-30 AoE",
+     "needs": "the window",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "open",
+   "note": "Discovery and Proof Tracks launched 2026-09-11; submission deadline for all tracks 2026-11-30 23:59 AoE.",
+   "competitors": {
+    "source": "https://competition.sair.foundation/competitions",
+    "read": "2026-10-27",
+    "measured": "Read through a browser: ACTIVE, 177 participants; co-organised by Lucas Fagan, Sergei Gukov and Terence Tao; Discovery Track (short trivializations) and Proof Track (ideas, partial results, proofs or disproofs).",
+    "known": [
+     "177 registered participants; Discoveries and Leaderboard pages linked"
+    ]
+   },
+   "requires": [
+    {
+     "rule": "a SAIR account and agreement to the SAIR competition terms",
+     "needs": "registration by the author",
+     "act": "the author's"
+    },
+    {
+     "rule": "Proof Track: submitting requires agreeing to share; submissions are published in the Contributor Network for others to build on with credit",
+     "needs": "FLAG: conflicts with the ND clause for whatever is submitted; the author would license that submission separately",
+     "act": "the author's"
+    },
+    {
+     "rule": "cite work by others with a full commit hash",
+     "needs": "attribution",
+     "act": "the author's"
+    },
+    {
+     "rule": "submission before 2026-11-30 AoE",
+     "needs": "the window",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 3,
+    "closed": 1
+   },
+   "know": {
+    "competitors": 1,
+    "source": "https://competition.sair.foundation/competitions",
+    "read": "2026-10-27",
+    "measured": "Read through a browser: ACTIVE, 177 participants; co-organised by Lucas Fagan, Sergei Gukov and Terence Tao; Discovery Track (short trivializations) and Proof Track (ideas, partial results, proofs or disproofs).",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
+   "economics": {
+    "prize": "not stated on the overview page; sponsored by XTX Markets",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (not stated on the overview page; sponsored by XTX Markets); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/4",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "sair-equational-theories-stage2",
+   "name": "SAIR Mathematics Distillation Challenge, Equational Theories, Stage 2",
+   "prize": "not read (page not opened beyond the list)",
+   "rules": [
+    {
+     "rule": "submission within the window",
+     "needs": "closed; a Stage 3 or new SAIR challenge is a lead to watch",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "closed",
+   "note": "Pre-registration 2026-04-23, start 2026-05-01, deadline 2026-08-31 AoE; status EVALUATING.",
+   "competitors": {
+    "source": "https://competition.sair.foundation/competitions",
+    "read": "2026-10-27",
+    "measured": "List page: a solver producing Lean 4 certificates (proof or finite magma counterexample) judged by a deterministic Lean judge; 294 participants. Other SAIR rows on the list: Modular Arithmetic Challenge (2026-06-08 to 08-12, EVALUATING, 130), IGP24 (2026-06-16 to 08-15, FINISHED, 256), Equational Theories Stage 1 (2026-03-14 to 04-20, FINISHED, 1 061).",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "submission within the window",
+     "needs": "closed; a Stage 3 or new SAIR challenge is a lead to watch",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://competition.sair.foundation/competitions",
+    "read": "2026-10-27",
+    "measured": "List page: a solver producing Lean 4 certificates (proof or finite magma counterexample) judged by a deterministic Lean judge; 294 participants. Other SAIR rows on the list: Modular Arithmetic Challenge (2026-06-08 to 08-12, EVALUATING, 130), IGP24 (2026-06-16 to 08-15, FINISHED, 256), Equational Theories Stage 1 (2026-03-14 to 04-20, FINISHED, 1 061).",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "not read (page not opened beyond the list)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (not read (page not opened beyond the list)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/1",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "justin-sun-prize",
+   "name": "The Justin Sun Prize (x MathDB)",
+   "prize": "USD 1 million per Pinnacle Problem (Riemann, P vs NP, BSD, Hodge, Navier-Stokes, Yang-Mills, global Langlands functoriality); catalogue prizes per problem (the pages)",
+   "rules": [
+    {
+     "rule": "only complete solutions of the original problem and complete Lean proofs; no sorry, admit or new unproven assumptions",
+     "needs": "a complete Lean proof of the original statement; partial or conditional results are not accepted",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "the mathematical solution confirmed first from a public publication and attribution evidence",
+     "needs": "a public proof or publication accepted by the prize's review before the Lean proof is verified",
+     "act": "the community's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "the claimant's own GitHub account owns the repository with the Lean proof; full 40-char commit SHA, toolchain, pinned mathlib, #print axioms output",
+     "needs": "the author's repository and commit",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "priority by the specified commit's date, backed by independently verifiable public history (release, archive)",
+     "needs": "a public release or archive (e.g. the Zenodo DOI) dated before competing proofs",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "14-day public review, identity verification and written confirmation",
+     "needs": "the review period",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "open access of proofs and verification materials",
+     "needs": "CC-BY-NC-ND allows public reading; publication of materials by the prize may need the author's permission",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "rolling",
+   "note": "No closing date: claims by GitHub PR or issue against the catalogue at github.com/TheJustinSunPrize/awards; a 14-day public review starts when a candidate entry is published; covers results from 2026-01-01 on.",
+   "competitors": {
+    "source": "https://www.hejustinsun.com/prize",
+    "read": "2026-10-27",
+    "measured": "Read through a browser: 'Proved, then paid'; open to all regardless of nationality or status, human or AI; on 2026-09-21 the catalogue held 66 problems marked Eligible to claim = Yes out of 1 022. Secondary press (sponsored) reports a Navier-Stokes award, not confirmed on the official page read.",
+    "known": [
+     "catalogue entries with recorded solver and formalization sources in the GitHub repository"
+    ]
+   },
+   "requires": [
+    {
+     "rule": "only complete solutions of the original problem and complete Lean proofs; no sorry, admit or new unproven assumptions",
+     "needs": "a complete Lean proof of the original statement; partial or conditional results are not accepted",
+     "act": "the author's"
+    },
+    {
+     "rule": "the mathematical solution confirmed first from a public publication and attribution evidence",
+     "needs": "a public proof or publication accepted by the prize's review before the Lean proof is verified",
+     "act": "the community's"
+    },
+    {
+     "rule": "the claimant's own GitHub account owns the repository with the Lean proof; full 40-char commit SHA, toolchain, pinned mathlib, #print axioms output",
+     "needs": "the author's repository and commit",
+     "act": "the author's"
+    },
+    {
+     "rule": "priority by the specified commit's date, backed by independently verifiable public history (release, archive)",
+     "needs": "a public release or archive (e.g. the Zenodo DOI) dated before competing proofs",
+     "act": "the author's"
+    },
+    {
+     "rule": "14-day public review, identity verification and written confirmation",
+     "needs": "the review period",
+     "act": "time"
+    },
+    {
+     "rule": "open access of proofs and verification materials",
+     "needs": "CC-BY-NC-ND allows public reading; publication of materials by the prize may need the author's permission",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 6
+   },
+   "know": {
+    "competitors": 1,
+    "source": "https://www.hejustinsun.com/prize",
+    "read": "2026-10-27",
+    "measured": "Read through a browser: 'Proved, then paid'; open to all regardless of nationality or status, human or AI; on 2026-09-21 the catalogue held 66 problems marked Eligible to claim = Yes out of 1 022. Secondary press (sponsored) reports a Navier-Stokes award, not confirmed on the official page read.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
+   "economics": {
+    "prize": "USD 1 million per Pinnacle Problem (Riemann, P vs NP, BSD, Hodge, Navier-Stokes, Yang-Mills, global Langlands functoriality); catalogue prizes per problem (the pages)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 million per Pinnacle Problem (Riemann, P vs NP, BSD, Hodge, Navier-Stokes, Yang-Mills, global Langlands functoriality); catalogue prizes per problem (the pages)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/6",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "erdos-problems-prizes",
+   "name": "Erdos problem prizes (erdosproblems.com; awarded by the Combinatorics Foundation)",
+   "prize": "USD 59 733 total listed: 2 problems at USD 10 000, 1 at 5 000, 10 at 1 000, 32 at 500 and smaller amounts (the page)",
+   "rules": [
+    {
+     "rule": "publication of a solution in a reputable journal",
+     "needs": "a refereed publication of a complete solution",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "documentation that Erdos offered the amount",
+     "needs": "the problem's prize record",
+     "act": "the community's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "contact the administrator after publication",
+     "needs": "the author's claim",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "rolling",
+   "note": "No window: prizes are awarded by the Combinatorics Foundation (administered by Steve Butler) only after publication of a solution in a reputable journal with documentation that Erdos offered that amount.",
+   "competitors": {
+    "source": "https://www.erdosproblems.com/prizes",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (24 654 B); 1 107 problems listed at USD 0; the site owner does not pay prizes.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "publication of a solution in a reputable journal",
+     "needs": "a refereed publication of a complete solution",
+     "act": "the author's"
+    },
+    {
+     "rule": "documentation that Erdos offered the amount",
+     "needs": "the problem's prize record",
+     "act": "the community's"
+    },
+    {
+     "rule": "contact the administrator after publication",
+     "needs": "the author's claim",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 3
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://www.erdosproblems.com/prizes",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (24 654 B); 1 107 problems listed at USD 0; the site owner does not pay prizes.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "USD 59 733 total listed: 2 problems at USD 10 000, 1 at 5 000, 10 at 1 000, 32 at 500 and smaller amounts (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 59 733 total listed: 2 problems at USD 10 000, 1 at 5 000, 10 at 1 000, 32 at 500 and smaller amounts (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/3",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "beal-prize",
+   "name": "Beal Prize (American Mathematical Society)",
+   "prize": "USD 1 000 000 for a proof or counterexample of the Beal conjecture, held by the AMS (the committee chair's page)",
+   "rules": [
+    {
+     "rule": "rules as stated on the AMS page",
+     "needs": "to be read when the page is reachable",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "a proof or counterexample published in a refereed journal (reported, not verified today)",
+     "needs": "a refereed publication",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "no publication in a qualifying outlet"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "unknown",
+   "note": "The official AMS page could not be read today (HTTP 403 to the verifier; a browser stops at a 'Verifying your connection' check that was not bypassed); no window applies per the secondary page.",
+   "competitors": {
+    "source": "https://sites.math.unt.edu/~mauldin/beal.html",
+    "read": "2026-10-27",
+    "measured": "Official page unreachable; the Beal Prize Committee chair's page (UNT) states the USD 1 000 000 amount and points to the AMS for the rules. Conditions reported in search results (refereed publication, two-year wait, outside verification) were not verified on the official page.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "rules as stated on the AMS page",
+     "needs": "to be read when the page is reachable",
+     "act": "time"
+    },
+    {
+     "rule": "a proof or counterexample published in a refereed journal (reported, not verified today)",
+     "needs": "a refereed publication",
+     "act": "the author's"
+    }
+   ],
+   "http": 403,
+   "window": null,
+   "counts": {
+    "pending": 2
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://sites.math.unt.edu/~mauldin/beal.html",
+    "read": "2026-10-27",
+    "measured": "Official page unreachable; the Beal Prize Committee chair's page (UNT) states the USD 1 000 000 amount and points to the AMS for the rules. Conditions reported in search results (refereed publication, two-year wait, outside verification) were not verified on the official page.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "USD 1 000 000 for a proof or counterexample of the Beal conjecture, held by the AMS (the committee chair's page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 000 000 for a proof or counterexample of the Beal conjecture, held by the AMS (the committee chair's page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
    "satisfied": "0/2",
    "enterable": true,
    "ready": false
+  },
+  {
+   "id": "breakthrough-new-horizons-mathematics",
+   "name": "Breakthrough Prize: New Horizons in Mathematics",
+   "prize": "up to three USD 100 000 awards for early-career researchers; Breakthrough Prize in Mathematics USD 3 million (the page)",
+   "rules": [
+    {
+     "rule": "nominated by someone else; self-nominations prohibited",
+     "needs": "FLAG: a solo author cannot enter alone; a third party must nominate",
+     "act": "the community's",
+     "status": "closed",
+     "evidence": "FLAG: a solo author cannot enter alone; a third party must nominate"
+    },
+    {
+     "rule": "early-career researcher who has already produced important work",
+     "needs": "the nominee's record",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "nomination within the April window",
+     "needs": "the 2028-prize window, expected April 2027",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "closed",
+   "note": "2027 nominations ran 2026-04-22 to 2026-07-17; the nominations page says nominations are closed and will again be taken in April.",
+   "competitors": {
+    "source": "https://breakthroughprize.org/Nominations",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; self-nominations are prohibited; anyone may nominate another person.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "nominated by someone else; self-nominations prohibited",
+     "needs": "FLAG: a solo author cannot enter alone; a third party must nominate",
+     "act": "the community's"
+    },
+    {
+     "rule": "early-career researcher who has already produced important work",
+     "needs": "the nominee's record",
+     "act": "the author's"
+    },
+    {
+     "rule": "nomination within the April window",
+     "needs": "the 2028-prize window, expected April 2027",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "closed": 1,
+    "pending": 2
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://breakthroughprize.org/Nominations",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; self-nominations are prohibited; anyone may nominate another person.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "up to three USD 100 000 awards for early-career researchers; Breakthrough Prize in Mathematics USD 3 million (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (up to three USD 100 000 awards for early-career researchers; Breakthrough Prize in Mathematics USD 3 million (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/3",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "qhack-2026",
+   "name": "QHack 2026 (Xanadu, PennyLane)",
+   "prize": "up to USD 67 000 in cash prizes; 1st USD 15 000, 2nd 13 000, 3rd 11 000 (the page)",
+   "rules": [
+    {
+     "rule": "solve PennyLane coding challenges within the competition week",
+     "needs": "closed; QHack 2027 is a lead to watch",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "closed",
+   "note": "Competition ran 2026-10-16 to 2026-10-23 (registration competition 2026-08-24 to 10-23); ended four days before this read.",
+   "competitors": {
+    "source": "https://qhack.ai/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (454 480 B): 23 quantum challenges in PennyLane; solo or teams up to four; leaderboard by speed and difficulty.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "solve PennyLane coding challenges within the competition week",
+     "needs": "closed; QHack 2027 is a lead to watch",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://qhack.ai/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (454 480 B): 23 quantum challenges in PennyLane; solo or teams up to four; leaderboard by speed and difficulty.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "up to USD 67 000 in cash prizes; 1st USD 15 000, 2nd 13 000, 3rd 11 000 (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (up to USD 67 000 in cash prizes; 1st USD 15 000, 2nd 13 000, 3rd 11 000 (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/1",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "ibm-quantum-challenge",
+   "name": "IBM Quantum Challenge / Qiskit events",
+   "prize": "not stated",
+   "rules": [
+    {
+     "rule": "a challenge window announced by IBM",
+     "needs": "none listed",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "unknown",
+   "note": "No IBM Quantum Challenge is listed among upcoming or past events today; Qiskit Fall Fest runs 2026-10-01 to 2026-11-30 and the IBM Quantum Developer Conference 2026-11-11 to 13.",
+   "competitors": {
+    "source": "https://www.ibm.com/quantum/events",
+    "read": "2026-10-27",
+    "measured": "Read through a browser (JS-rendered; curl returned only the shell). https://challenges.quantum.ibm.com/ could not be reached (no connection).",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "a challenge window announced by IBM",
+     "needs": "none listed",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://www.ibm.com/quantum/events",
+    "read": "2026-10-27",
+    "measured": "Read through a browser (JS-rendered; curl returned only the shell). https://challenges.quantum.ibm.com/ could not be reached (no connection).",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "not stated",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (not stated); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/1",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "unitary-foundation-microgrants",
+   "name": "Unitary Foundation microgrants",
+   "prize": "not stated on the page; more than 100 microgrants to 31+ countries (the page)",
+   "rules": [
+    {
+     "rule": "an application through the linked form",
+     "needs": "the author's application",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "open source quantum work (implied by the page's grantees; no licence rule stated)",
+     "needs": "FLAG to check: the foundation funds open source; CC-BY-NC-ND may not count",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "FLAG to check: the foundation funds open source; CC-BY-NC-ND may not count"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "unknown",
+   "note": "The page links an application form (Typeform) and states no window, deadline, amount or eligibility.",
+   "competitors": {
+    "source": "https://unitary.foundation/grants/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (270 409 B); recent grants listed include Qernel (agentic CLI for quantum code) and QECirc.",
+    "known": [
+     "recent grantees named on the page: Qernel (Seun Omonije), QECirc, topologiq"
+    ]
+   },
+   "requires": [
+    {
+     "rule": "an application through the linked form",
+     "needs": "the author's application",
+     "act": "the author's"
+    },
+    {
+     "rule": "open source quantum work (implied by the page's grantees; no licence rule stated)",
+     "needs": "FLAG to check: the foundation funds open source; CC-BY-NC-ND may not count",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 2
+   },
+   "know": {
+    "competitors": 1,
+    "source": "https://unitary.foundation/grants/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (270 409 B); recent grants listed include Qernel (agentic CLI for quantum code) and QECirc.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
+   "economics": {
+    "prize": "not stated on the page; more than 100 microgrants to 31+ countries (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (not stated on the page; more than 100 microgrants to 31+ countries (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/2",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "unitaryhack-2026",
+   "name": "unitaryHACK 2026 (Unitary Foundation)",
+   "prize": "bounties on open source quantum projects (the page)",
+   "rules": [
+    {
+     "rule": "a project listed as a bounty host (maintainer guide)",
+     "needs": "the author registers the project as a host for unitaryHACK 2027",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "open source project",
+     "needs": "FLAG: hosting projects are open source; CC-BY-NC-ND is not",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: hosting projects are open source; CC-BY-NC-ND is not"
+    },
+    {
+     "rule": "the June window",
+     "needs": "the 2027 window",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "closed",
+   "note": "Ran 2026-06-03 to 2026-06-17; the page says it has come to a close.",
+   "competitors": {
+    "source": "https://unitaryhack.dev/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; sponsors include IonQ, Microsoft, PsiQuantum, QuEra, Xanadu; maintainers list bounty issues.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "a project listed as a bounty host (maintainer guide)",
+     "needs": "the author registers the project as a host for unitaryHACK 2027",
+     "act": "the author's"
+    },
+    {
+     "rule": "open source project",
+     "needs": "FLAG: hosting projects are open source; CC-BY-NC-ND is not",
+     "act": "the author's"
+    },
+    {
+     "rule": "the June window",
+     "needs": "the 2027 window",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 2,
+    "closed": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://unitaryhack.dev/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; sponsors include IonQ, Microsoft, PsiQuantum, QuEra, Xanadu; maintainers list bounty issues.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "bounties on open source quantum projects (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (bounties on open source quantum projects (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/3",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "quantinuum-startup-partner-program",
+   "name": "Quantinuum Startup Partner Program",
+   "prize": "access to Quantinuum hardware, software and services (the page)",
+   "rules": [
+    {
+     "rule": "a startup",
+     "needs": "a company; a single author without one fails",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "contact through the form",
+     "needs": "the author's contact",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "unknown",
+   "note": "A contact form; no window, amount or criteria stated.",
+   "competitors": {
+    "source": "https://www.quantinuum.com/startup-partner-program",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (495 601 B); partner list placeholder only in the static HTML.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "a startup",
+     "needs": "a company; a single author without one fails",
+     "act": "the author's"
+    },
+    {
+     "rule": "contact through the form",
+     "needs": "the author's contact",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 2
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://www.quantinuum.com/startup-partner-program",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (495 601 B); partner list placeholder only in the static HTML.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "access to Quantinuum hardware, software and services (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (access to Quantinuum hardware, software and services (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/2",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "q-ctrl-programs",
+   "name": "Q-CTRL programs",
+   "prize": "none found",
+   "rules": [
+    {
+     "rule": "an announced program",
+     "needs": "none found",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "unknown",
+   "note": "No competition, grant or startup program found on the homepage or in a web search today.",
+   "competitors": {
+    "source": "https://q-ctrl.com/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (352 070 B): products (Black Opal, Fire Opal, Boulder Opal), research and navigation; no open call.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "an announced program",
+     "needs": "none found",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://q-ctrl.com/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (352 070 B): products (Black Opal, Fire Opal, Boulder Opal), research and navigation; no open call.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "none found",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (none found); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/1",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "nlnet-ngi-zero-open-calls",
+   "name": "NLnet open calls (Restack, CodeSupply, Other / open call; NGI Zero)",
+   "prize": "EUR 5 000 to 50 000 for a first grant (the form)",
+   "rules": [
+    {
+     "rule": "all software released under a recognised free and open source licence in its entirety",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify"
+    },
+    {
+     "rule": "GenAI policy v2.0: no generative AI in writing the proposal",
+     "needs": "the author writes the proposal unaided",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "GenAI policy v2.0: no generative AI for any artefact in funded work; read-only use only; disclose an existing codebase with significant AI-generated code",
+     "needs": "FLAG: the tree is developed with an AI coding agent; it must be disclosed and funded work done without generative AI",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: the tree is developed with an AI coding agent; it must be disclosed and funded work done without generative AI"
+    },
+    {
+     "rule": "a strong European dimension (Horizon Europe-eligible applicants) for EU-supported funds",
+     "needs": "the author's residence",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "individuals may apply",
+     "needs": "solo author eligible as applicant type",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "deadline 2026-11-03 12:00 CET",
+     "needs": "the window",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "open",
+   "note": "Back-to-back calls with a deadline on the 3rd of every odd month; next deadline 2026-11-03 12:00 CET.",
+   "competitors": {
+    "source": "https://nlnet.nl/funding.html",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; funds in the form: Restack, CodeSupply, Other / open call; 47 projects funded (news 2026-10-15); GenAI policy v2.0 published 2026-10-20, effective for the 2026-11-03 deadline.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "all software released under a recognised free and open source licence in its entirety",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify",
+     "act": "the author's"
+    },
+    {
+     "rule": "GenAI policy v2.0: no generative AI in writing the proposal",
+     "needs": "the author writes the proposal unaided",
+     "act": "the author's"
+    },
+    {
+     "rule": "GenAI policy v2.0: no generative AI for any artefact in funded work; read-only use only; disclose an existing codebase with significant AI-generated code",
+     "needs": "FLAG: the tree is developed with an AI coding agent; it must be disclosed and funded work done without generative AI",
+     "act": "the author's"
+    },
+    {
+     "rule": "a strong European dimension (Horizon Europe-eligible applicants) for EU-supported funds",
+     "needs": "the author's residence",
+     "act": "the author's"
+    },
+    {
+     "rule": "individuals may apply",
+     "needs": "solo author eligible as applicant type",
+     "act": "the author's"
+    },
+    {
+     "rule": "deadline 2026-11-03 12:00 CET",
+     "needs": "the window",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "closed": 2,
+    "pending": 4
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://nlnet.nl/funding.html",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; funds in the form: Restack, CodeSupply, Other / open call; 47 projects funded (news 2026-10-15); GenAI policy v2.0 published 2026-10-20, effective for the 2026-11-03 deadline.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "EUR 5 000 to 50 000 for a first grant (the form)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (EUR 5 000 to 50 000 for a first grant (the form)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/6",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "sovereign-tech-fund",
+   "name": "Sovereign Tech Fund (Sovereign Tech Agency)",
+   "prize": "work costing more than EUR 50 000 (current minimum) (the page)",
+   "rules": [
+    {
+     "rule": "code under an OSI-approved or FSF free licence; documentation licences without non-commercial or no-derivatives clauses",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify; the ND and NC clauses also fail the documentation rule",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify; the ND and NC clauses also fail the documentation rule"
+    },
+    {
+     "rule": "open digital base technology (libraries, protocols, developer tools), not a user-facing app",
+     "needs": "the Lean core or MCP library as a component, not the app",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "prevalence and community endorsement",
+     "needs": "adoption measured by the community",
+     "act": "the community's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "no other public funding for the same activities",
+     "needs": "the author's declaration",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "rolling",
+   "note": "No window: applications through the application platform at any time; first reply within 10 weeks, about 6 months to a contract.",
+   "competitors": {
+    "source": "https://www.sovereign.tech/programs/fund",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (116 587 B); invests in open digital base technologies; not user-facing applications and not prototypes.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "code under an OSI-approved or FSF free licence; documentation licences without non-commercial or no-derivatives clauses",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify; the ND and NC clauses also fail the documentation rule",
+     "act": "the author's"
+    },
+    {
+     "rule": "open digital base technology (libraries, protocols, developer tools), not a user-facing app",
+     "needs": "the Lean core or MCP library as a component, not the app",
+     "act": "the author's"
+    },
+    {
+     "rule": "prevalence and community endorsement",
+     "needs": "adoption measured by the community",
+     "act": "the community's"
+    },
+    {
+     "rule": "no other public funding for the same activities",
+     "needs": "the author's declaration",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "closed": 1,
+    "pending": 3
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://www.sovereign.tech/programs/fund",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (116 587 B); invests in open digital base technologies; not user-facing applications and not prototypes.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "work costing more than EUR 50 000 (current minimum) (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (work costing more than EUR 50 000 (current minimum) (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/4",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "github-secure-open-source-fund",
+   "name": "GitHub Secure Open Source Fund",
+   "prize": "USD 10 000 per project (6 000 during the program, 2 000 at 6 months, 2 000 at 12 months) plus USD 10 000 in Azure credits (the page)",
+   "rules": [
+    {
+     "rule": "a current maintainer of an open source project",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify; the page does not name a licence list",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify; the page does not name a licence list"
+    },
+    {
+     "rule": "security impact of the project as a dependency",
+     "needs": "adoption as a dependency is measured by others",
+     "act": "the community's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "the application",
+     "needs": "the author's application",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "open",
+   "note": "Applications are open on a rolling basis and considered for all program sessions; the 3-week program follows a virtual interview.",
+   "competitors": {
+    "source": "https://github.com/open-source/github-secure-open-source-fund",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (resources.github.com redirects here); apply form linked; projects selected for their ability to improve security.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "a current maintainer of an open source project",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify; the page does not name a licence list",
+     "act": "the author's"
+    },
+    {
+     "rule": "security impact of the project as a dependency",
+     "needs": "adoption as a dependency is measured by others",
+     "act": "the community's"
+    },
+    {
+     "rule": "the application",
+     "needs": "the author's application",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "open",
+    "opens": null,
+    "closes": null,
+    "says": "the page says applications are open"
+   },
+   "counts": {
+    "closed": 1,
+    "pending": 2
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://github.com/open-source/github-secure-open-source-fund",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (resources.github.com redirects here); apply form linked; projects selected for their ability to improve security.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "USD 10 000 per project (6 000 during the program, 2 000 at 6 months, 2 000 at 12 months) plus USD 10 000 in Azure credits (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 10 000 per project (6 000 during the program, 2 000 at 6 months, 2 000 at 12 months) plus USD 10 000 in Azure credits (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/3",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "github-fund",
+   "name": "GitHub Fund (with M12)",
+   "prize": "pre-seed to seed investment (the page)",
+   "rules": [
+    {
+     "rule": "an open source company at pre-seed or seed",
+     "needs": "a company; a single author without one fails",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "unknown",
+   "note": "No window: a 'Contact us' link.",
+   "competitors": {
+    "source": "https://github.com/open-source/github-fund",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; invests in open source companies in AI, developer tools, infrastructure and cyber security.",
+    "known": [
+     "portfolio named on the page (ByteWax among others)"
+    ]
+   },
+   "requires": [
+    {
+     "rule": "an open source company at pre-seed or seed",
+     "needs": "a company; a single author without one fails",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 1
+   },
+   "know": {
+    "competitors": 1,
+    "source": "https://github.com/open-source/github-fund",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; invests in open source companies in AI, developer tools, infrastructure and cyber security.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
+   "economics": {
+    "prize": "pre-seed to seed investment (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (pre-seed to seed investment (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/1",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "google-summer-of-code",
+   "name": "Google Summer of Code (as a mentoring organization)",
+   "prize": "a small stipend to mentoring organizations; contributor stipends (the FAQ)",
+   "rules": [
+    {
+     "rule": "an active open source project that has released software under an OSI-approved licence",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify"
+    },
+    {
+     "rule": "a solid community and mentors",
+     "needs": "mentors besides the author",
+     "act": "the community's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "the January organization window",
+     "needs": "January 2027",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "closed",
+   "note": "2026 organization applications ran 2026-01-19 to 2026-02-03; the general timeline opens organization applications each January for two weeks.",
+   "competitors": {
+    "source": "https://developers.google.com/open-source/gsoc/timeline",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; summerofcode.withgoogle.com shows 'Organization registration closed'.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "an active open source project that has released software under an OSI-approved licence",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify",
+     "act": "the author's"
+    },
+    {
+     "rule": "a solid community and mentors",
+     "needs": "mentors besides the author",
+     "act": "the community's"
+    },
+    {
+     "rule": "the January organization window",
+     "needs": "January 2027",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "closed": 1,
+    "pending": 2
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://developers.google.com/open-source/gsoc/timeline",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; summerofcode.withgoogle.com shows 'Organization registration closed'.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "a small stipend to mentoring organizations; contributor stipends (the FAQ)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (a small stipend to mentoring organizations; contributor stipends (the FAQ)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/3",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "cloudflare-project-alexandria",
+   "name": "Cloudflare Project Alexandria",
+   "prize": "recurring annual credits: plan upgrades, more Workers and Pages requests, more R2 storage, Zero Trust (the page)",
+   "rules": [
+    {
+     "rule": "maintain an open source project with a recognized OSS licence",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify"
+    },
+    {
+     "rule": "operate solely on a non-profit basis",
+     "needs": "FLAG: the author's commercial licensing of the framework conflicts with 'solely non-profit'",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: the author's commercial licensing of the framework conflicts with 'solely non-profit'"
+    },
+    {
+     "rule": "a Cloudflare account with a payment method",
+     "needs": "the author's account",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "rolling",
+   "note": "No window: a sponsorship request form on the page.",
+   "competitors": {
+    "source": "https://www.cloudflare.com/lp/project-alexandria/",
+    "read": "2026-10-27",
+    "measured": "HTTP 403 to the verifier; read through a browser: acceptance at Cloudflare's sole discretion; credits non-transferable.",
+    "known": [
+     "OpenJS Foundation, OpenTofu, JuliaLang (Cloudflare blog, 2024)"
+    ]
+   },
+   "requires": [
+    {
+     "rule": "maintain an open source project with a recognized OSS licence",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify",
+     "act": "the author's"
+    },
+    {
+     "rule": "operate solely on a non-profit basis",
+     "needs": "FLAG: the author's commercial licensing of the framework conflicts with 'solely non-profit'",
+     "act": "the author's"
+    },
+    {
+     "rule": "a Cloudflare account with a payment method",
+     "needs": "the author's account",
+     "act": "the author's"
+    }
+   ],
+   "http": 403,
+   "window": null,
+   "counts": {
+    "closed": 2,
+    "pending": 1
+   },
+   "know": {
+    "competitors": 1,
+    "source": "https://www.cloudflare.com/lp/project-alexandria/",
+    "read": "2026-10-27",
+    "measured": "HTTP 403 to the verifier; read through a browser: acceptance at Cloudflare's sole discretion; credits non-transferable.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
+   "economics": {
+    "prize": "recurring annual credits: plan upgrades, more Workers and Pages requests, more R2 storage, Zero Trust (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (recurring annual credits: plan upgrades, more Workers and Pages requests, more R2 storage, Zero Trust (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/3",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "floss-fund",
+   "name": "FLOSS/fund (Zerodha)",
+   "prize": "up to USD 100 000 per project per year; minimum USD 10 000, then multiples of 25 000; USD 1 million a year in total (the pages)",
+   "rules": [
+    {
+     "rule": "a Free/Libre and Open Source project",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify"
+    },
+    {
+     "rule": "existing, widely used and impactful; very new or minimally used projects are not considered",
+     "needs": "FLAG: usage the community measures; 0 public mentions held",
+     "act": "the community's",
+     "status": "closed",
+     "evidence": "FLAG: usage the community measures; 0 public mentions held"
+    },
+    {
+     "rule": "a bank account and tax documents to receive funds",
+     "needs": "the author's",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "rolling",
+   "note": "No window: publish a funding.json manifest and submit its URL; applications evaluated at the end of every quarter.",
+   "competitors": {
+    "source": "https://floss.fund/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; last update on the page 2025-10-18 (second tranche).",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "a Free/Libre and Open Source project",
+     "needs": "FLAG: CC-BY-NC-ND-4.0 is not an OSI-approved or FSF free licence (NC and ND clauses); the tree fails this rule as licensed; only the MIT fork could qualify",
+     "act": "the author's"
+    },
+    {
+     "rule": "existing, widely used and impactful; very new or minimally used projects are not considered",
+     "needs": "FLAG: usage the community measures; 0 public mentions held",
+     "act": "the community's"
+    },
+    {
+     "rule": "a bank account and tax documents to receive funds",
+     "needs": "the author's",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "closed": 2,
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://floss.fund/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; last update on the page 2025-10-18 (second tranche).",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "up to USD 100 000 per project per year; minimum USD 10 000, then multiples of 25 000; USD 1 million a year in total (the pages)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (up to USD 100 000 per project per year; minimum USD 10 000, then multiples of 25 000; USD 1 million a year in total (the pages)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/3",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "numfocus-small-development-grants",
+   "name": "NumFOCUS Small Development Grants",
+   "prize": "up to USD 10 000 per proposal (the page)",
+   "rules": [
+    {
+     "rule": "a NumFOCUS fiscally sponsored or affiliated project",
+     "needs": "FLAG: the project is neither; affiliation requires an OSI licence",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: the project is neither; affiliation requires an OSI licence"
+    },
+    {
+     "rule": "a call window",
+     "needs": "the next round",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "unknown",
+   "note": "The page lists only 2025 rounds (round 2 deadline 2025-10-17); calls are sent each January via the newsletter.",
+   "competitors": {
+    "source": "https://numfocus.org/programs/small-development-grants",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (262 251 B).",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "a NumFOCUS fiscally sponsored or affiliated project",
+     "needs": "FLAG: the project is neither; affiliation requires an OSI licence",
+     "act": "the author's"
+    },
+    {
+     "rule": "a call window",
+     "needs": "the next round",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "closed": 1,
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://numfocus.org/programs/small-development-grants",
+    "read": "2026-10-27",
+    "measured": "HTTP 200 (262 251 B).",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "up to USD 10 000 per proposal (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (up to USD 10 000 per proposal (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/2",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "claude-for-open-source",
+   "name": "Claude for Open Source (Anthropic)",
+   "prize": "6 months of free Claude Max 20x (the page)",
+   "rules": [
+    {
+     "rule": "one of the adoption or contribution thresholds",
+     "needs": "FLAG: none is met by a new single-author project as far as the held data shows; the page allows an explained application",
+     "act": "the community's",
+     "status": "closed",
+     "evidence": "FLAG: none is met by a new single-author project as far as the held data shows; the page allows an explained application"
+    },
+    {
+     "rule": "the application",
+     "needs": "the author's application",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "open",
+   "note": "Applications open ('Apply now'); the page states no deadline.",
+   "competitors": {
+    "source": "https://claude.com/contact-sales/claude-for-oss",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; any one criterion: 500+ dependent repos, 100+ dependent packages or 200 000+ monthly downloads; listed committer on a recognized foundation or language project; 100+ merged PRs to others' repos in 12 months; 20+ external contributors in 12 months; OpenSSF criticality 0.4+; others may apply and explain.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "one of the adoption or contribution thresholds",
+     "needs": "FLAG: none is met by a new single-author project as far as the held data shows; the page allows an explained application",
+     "act": "the community's"
+    },
+    {
+     "rule": "the application",
+     "needs": "the author's application",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "closed": 1,
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://claude.com/contact-sales/claude-for-oss",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; any one criterion: 500+ dependent repos, 100+ dependent packages or 200 000+ monthly downloads; listed committer on a recognized foundation or language project; 100+ merged PRs to others' repos in 12 months; 20+ external contributors in 12 months; OpenSSF criticality 0.4+; others may apply and explain.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "6 months of free Claude Max 20x (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (6 months of free Claude Max 20x (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/2",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "built-with-claude-japan-2026",
+   "name": "Built with Claude: Japan 2026 (Anthropic and Cerebral Valley)",
+   "prize": "about USD 50 000 in Claude API credits (reported)",
+   "rules": [
+    {
+     "rule": "residence in Japan",
+     "needs": "FLAG: a residency rule the author must meet",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: a residency rule the author must meet"
+    },
+    {
+     "rule": "application by 2026-10-26",
+     "needs": "closed",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "closed",
+   "note": "Applications closed 2026-10-26 23:59 JST; the online event runs 2026-11-02 to 11-10 (reported); the official event page was not reached.",
+   "competitors": {
+    "source": "https://www.gamebusiness.jp/article/2026/10/21/28404.html",
+    "read": "2026-10-27",
+    "measured": "Secondary sources only: 250 selected participants, residents of Japan aged 18+, teams of up to two.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "residence in Japan",
+     "needs": "FLAG: a residency rule the author must meet",
+     "act": "the author's"
+    },
+    {
+     "rule": "application by 2026-10-26",
+     "needs": "closed",
+     "act": "time"
+    }
+   ],
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "closed": 1,
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://www.gamebusiness.jp/article/2026/10/21/28404.html",
+    "read": "2026-10-27",
+    "measured": "Secondary sources only: 250 selected participants, residents of Japan aged 18+, teams of up to two.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "about USD 50 000 in Claude API credits (reported)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (about USD 50 000 in Claude API credits (reported)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/2",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "devpost-mcp-hackathons",
+   "name": "MCP-themed hackathons on Devpost",
+   "prize": "none listed",
+   "rules": [
+    {
+     "rule": "an MCP hackathon window",
+     "needs": "none listed today",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "unknown",
+   "note": "Devpost's hackathon API lists no open or upcoming hackathon matching 'model context protocol'; 'MCP' matches one open AR hackathon (Learn AR with SPECS, 2026-10-15 to 11-09, USD 2 500) not themed on MCP.",
+   "competitors": {
+    "source": "https://devpost.com/api/hackathons?search=MCP&status[]=open&status[]=upcoming",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; searches 'Claude' and 'Anthropic' return small upcoming events (LarpHacks, DevFest Munster Agentic AI Hackathon 2026-11-21) with no MCP rule.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "an MCP hackathon window",
+     "needs": "none listed today",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": null,
+   "counts": {
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://devpost.com/api/hackathons?search=MCP&status[]=open&status[]=upcoming",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; searches 'Claude' and 'Anthropic' return small upcoming events (LarpHacks, DevFest Munster Agentic AI Hackathon 2026-11-21) with no MCP rule.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "none listed",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (none listed); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/1",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "kiroween-2026",
+   "name": "Kiroween 2026 (Kiro, Devpost)",
+   "prize": "USD 100 000 in cash prizes (the page)",
+   "rules": [
+    {
+     "rule": "only new projects created during the submission period",
+     "needs": "FLAG: the existing project fails; only a new project built from 2026-10-30 could enter",
+     "act": "the author's",
+     "status": "closed",
+     "evidence": "FLAG: the existing project fails; only a new project built from 2026-10-30 could enter"
+    },
+    {
+     "rule": "built with Kiro",
+     "needs": "the author uses Kiro",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    },
+    {
+     "rule": "submission by 2026-12-04",
+     "needs": "the window",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "prize",
+   "entry": "open",
+   "note": "Registration open now; submissions open 2026-10-30 and close 2026-12-04 14:00 PT; full rules released 2026-10-30.",
+   "competitors": {
+    "source": "https://kiroween.devpost.com/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; 1 730 participants registered; a Kiro user ID or AWS account ID is required to register.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "only new projects created during the submission period",
+     "needs": "FLAG: the existing project fails; only a new project built from 2026-10-30 could enter",
+     "act": "the author's"
+    },
+    {
+     "rule": "built with Kiro",
+     "needs": "the author uses Kiro",
+     "act": "the author's"
+    },
+    {
+     "rule": "submission by 2026-12-04",
+     "needs": "the window",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": null,
+   "counts": {
+    "closed": 1,
+    "pending": 2
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://kiroween.devpost.com/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; 1 730 participants registered; a Kiro user ID or AWS account ID is required to register.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "USD 100 000 in cash prizes (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 100 000 in cash prizes (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/3",
+   "enterable": false,
+   "ready": false
+  },
+  {
+   "id": "ai-for-math-fund",
+   "name": "AI for Math Fund (Renaissance Philanthropy, XTX Markets)",
+   "prize": "annual grants USD 100 000 to 1 000 000 for 12-24 months; seed grants up to USD 100 000 (the page)",
+   "rules": [
+    {
+     "rule": "all code, datasets and research outputs open-access, preprints in public repositories",
+     "needs": "FLAG to check: CC-BY-NC-ND is open to read but restricts reuse; the RFP's exact definition was not read",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "FLAG to check: CC-BY-NC-ND is open to read but restricts reuse; the RFP's exact definition was not read"
+    },
+    {
+     "rule": "a seed application",
+     "needs": "the author's application",
+     "act": "the author's",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "rolling",
+   "note": "The 2026 annual round closed (abstracts by 2026-03-30, decisions August 2026); seed grants are reviewed on a rolling basis.",
+   "competitors": {
+    "source": "https://www.renaissancephilanthropy.org/ai-for-math-fund/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; open to individuals and teams worldwide; seed categories include automated theorem proving, AI-assisted proof development, datasets and benchmarks, field-building. The seed-grant details document (a Google Doc) was not read.",
+    "known": [
+     "2026 grant awards listed at https://www.renaissancephilanthropy.org/ai-for-math-fund-2026-projects"
+    ]
+   },
+   "requires": [
+    {
+     "rule": "all code, datasets and research outputs open-access, preprints in public repositories",
+     "needs": "FLAG to check: CC-BY-NC-ND is open to read but restricts reuse; the RFP's exact definition was not read",
+     "act": "the author's"
+    },
+    {
+     "rule": "a seed application",
+     "needs": "the author's application",
+     "act": "the author's"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 2
+   },
+   "know": {
+    "competitors": 1,
+    "source": "https://www.renaissancephilanthropy.org/ai-for-math-fund/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; open to individuals and teams worldwide; seed categories include automated theorem proving, AI-assisted proof development, datasets and benchmarks, field-building. The seed-grant details document (a Google Doc) was not read.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": true,
+    "says": "known from the page"
+   },
+   "economics": {
+    "prize": "annual grants USD 100 000 to 1 000 000 for 12-24 months; seed grants up to USD 100 000 (the page)",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (annual grants USD 100 000 to 1 000 000 for 12-24 months; seed grants up to USD 100 000 (the page)); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/2",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "lean-fro-programs",
+   "name": "Lean FRO programs",
+   "prize": "none found",
+   "rules": [
+    {
+     "rule": "an announced external program",
+     "needs": "none found",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "unknown",
+   "note": "The Lean FRO page (lean-fro.org redirects to lean-lang.org/fro) lists no grant, bounty or fellowship call; Lean FRO co-organises the SAIR Lean Kernel Challenge (its own row).",
+   "competitors": {
+    "source": "https://lean-lang.org/fro/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; XTX Markets granted USD 10 million to Lean FRO for core costs to 2030 (AIMO update of 2026-09-16).",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "an announced external program",
+     "needs": "none found",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://lean-lang.org/fro/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; XTX Markets granted USD 10 million to Lean FRO for core costs to 2030 (AIMO update of 2026-09-16).",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "none found",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (none found); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/1",
+   "enterable": true,
+   "ready": false
+  },
+  {
+   "id": "microsoft-research-lean-award",
+   "name": "Microsoft Research Lean Award Program",
+   "prize": "not stated",
+   "rules": [
+    {
+     "rule": "a new call",
+     "needs": "none announced",
+     "act": "time",
+     "status": "pending",
+     "evidence": "the author's act"
+    }
+   ],
+   "read": "2026-10-27",
+   "kind": "funding",
+   "entry": "closed",
+   "note": "The page says 'Closed for academic year 2023'; no later call.",
+   "competitors": {
+    "source": "https://www.microsoft.com/en-us/research/academic-program/microsoft-research-lean-award-program/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; awarded to persons or organizations advocating Lean; 2023 recipients were university mathematicians.",
+    "known": []
+   },
+   "requires": [
+    {
+     "rule": "a new call",
+     "needs": "none announced",
+     "act": "time"
+    }
+   ],
+   "http": 200,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "counts": {
+    "pending": 1
+   },
+   "know": {
+    "competitors": 0,
+    "source": "https://www.microsoft.com/en-us/research/academic-program/microsoft-research-lean-award-program/",
+    "read": "2026-10-27",
+    "measured": "HTTP 200; awarded to persons or organizations advocating Lean; 2023 recipients were university mathematicians.",
+    "theorems": [
+     "textbook_clay_conditions",
+     "textbook_compete_knows"
+    ],
+    "both": false,
+    "says": "no name on the page: a lead to read where the page points"
+   },
+   "economics": {
+    "prize": "not stated",
+    "evidence": 2,
+    "calls": [
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_conditions"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_compete_knows"
+      }
+     }
+    ],
+    "coins": 2,
+    "coils": 0,
+    "costMillicents": 0,
+    "balanced": true,
+    "says": "2 theorem(s) of evidence served as 2 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (not stated); no prize is won and no problem solved by this",
+    "theorem": "textbook_double_entry"
+   },
+   "satisfied": "0/1",
+   "enterable": false,
+   "ready": false
   }
  ],
  "know": {
-  "competitors": 12,
+  "competitors": 18,
   "theorems": 4,
   "both": [
    "clay-millennium",
    "xprize-quantum-applications",
    "cloudflare-workers-launchpad",
-   "vercel-oss-program"
+   "vercel-oss-program",
+   "gemini-xprize-hackathon",
+   "aimo-prize",
+   "sair-lean-kernel-challenge",
+   "sair-andrews-curtis-challenge",
+   "justin-sun-prize",
+   "unitary-foundation-microgrants",
+   "github-fund",
+   "cloudflare-project-alexandria",
+   "ai-for-math-fund"
   ],
   "says": "to win, know the competitors as well as the theorems: a competition is known when both are; the names live in the competition gate pages (the pages collection the Payload MCP plugin serves), nothing added"
  },
- "prizes": 3,
- "funding": 4,
+ "prizes": 17,
+ "funding": 19,
  "enterable": [
-  "github-maintainer-programs",
   "cloudflare-workers-launchpad",
-  "google-for-startups-accelerator"
+  "sair-lean-kernel-challenge",
+  "justin-sun-prize",
+  "erdos-problems-prizes",
+  "beal-prize",
+  "ibm-quantum-challenge",
+  "unitary-foundation-microgrants",
+  "quantinuum-startup-partner-program",
+  "q-ctrl-programs",
+  "github-fund",
+  "devpost-mcp-hackathons",
+  "ai-for-math-fund",
+  "lean-fro-programs"
  ],
  "ready": [],
  "says": "enterable: every rule is satisfied or the author's act; ready: every rule satisfied",
  "closed": [
   "xprize-quantum-applications",
   "vercel-oss-program",
-  "gemini-xprize-hackathon"
+  "gemini-xprize-hackathon",
+  "google-for-startups-accelerator",
+  "aimo-prize",
+  "sair-equational-theories-stage2",
+  "breakthrough-new-horizons-mathematics",
+  "qhack-2026",
+  "unitaryhack-2026",
+  "google-summer-of-code",
+  "built-with-claude-japan-2026",
+  "microsoft-research-lean-award"
  ],
  "relatedMcps": [
   "ca.netgrant/canadian-grants",

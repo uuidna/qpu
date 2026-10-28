@@ -5,13 +5,13 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
 import { tallyAccount, recordDeposit } from '../src/quantum/coins.ts'
-import { readJson, fetchWithTimeout, publishRecord } from './mcp.ts'
+import { getJson, getWithTimeout, publishRecord } from './mcp.ts'
 const ROOT = process.cwd()
-const pub = (f: string) => readJson(join(ROOT, 'docs', 'public', f), undefined)
+const pub = (f: string) => getJson(join(ROOT, 'docs', 'public', f), undefined)
 const main = async () => {
   const receipts = existsSync(join(ROOT, 'docs', 'public', 'receipts.ndjson')) ? readFileSync(join(ROOT, 'docs', 'public', 'receipts.ndjson'), 'utf8').split('\n').filter(Boolean) : []
   let docket: { entries?: number; root?: string | null; mirrors?: number } = {}
-  if (process.env.QPU_OFFLINE !== '1') { try { const r = await fetchWithTimeout(`https://${process.env.QPU_HOST ?? 'qpu.uuidna.com'}/docket`); const j = await r.json() as { count?: number; root?: string | null }; docket = { entries: j.count ?? 0, root: j.root ?? null, mirrors: 0 } } catch { docket = {} } }
+  if (process.env.QPU_OFFLINE !== '1') { try { const r = await getWithTimeout(`https://${process.env.QPU_HOST ?? 'qpu.uuidna.com'}/docket`); const j = await r.json() as { count?: number; root?: string | null }; docket = { entries: j.count ?? 0, root: j.root ?? null, mirrors: 0 } } catch { docket = {} } }
   const sizes: Record<string, number> = {}
   for (const f of ['e2e.json', 'discovery.json', 'verification.json', 'readiness.json', 'repository.json', 'legal.json', 'imagination.json', 'receipt.json', 'receipts.ndjson', 'theorems.ndjson', 'next-leads.json', 'purify-leads.json']) { const p = join(ROOT, 'docs', 'public', f); if (existsSync(p)) sizes[f] = readFileSync(p).length }
   for (const f of ['leads.md', 'mcp.md', 'examples.md', 'readiness.md', 'verification.md', 'discovery.md', 'legal.md', 'repository.md', 'theorems.md', 'imagination.md']) { const p = join(ROOT, 'docs', f); if (existsSync(p)) sizes[`docs/${f}`] = readFileSync(p).length }

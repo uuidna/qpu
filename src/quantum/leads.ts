@@ -19,7 +19,7 @@ export const listRunnableLeads = (leads: readonly Lead[]) => leads.filter((l) =>
 
 // A cleanup lead names what was removed: file paths, or git branches. Its settlement is a measurement (is the subject still absent?)
 // taken by the scripts that can see the tree; this parse is the pure half, shared so purify and readiness measure the same thing.
-export const findCleanupSubjects = (l: Lead): { kind: 'branches' | 'paths'; names: string[] } | null => {
+export const listCleanupSubjects = (l: Lead): { kind: 'branches' | 'paths'; names: string[] } | null => {
   if (!l.id.startsWith('cleanup-') || l.status !== 'out_of_scope') return null
   const branches = /^git branches (.+)$/.exec(l.source)
   return branches ? { kind: 'branches', names: branches[1]!.split(/,\s*/) } : { kind: 'paths', names: [l.source.split(/\s/)[0]!.replace(/\/$/, '')] }

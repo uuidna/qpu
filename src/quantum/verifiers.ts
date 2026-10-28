@@ -43,7 +43,7 @@ export const VERIFIERS: readonly Verifier[] = [
 ]
 
 /** Every request every verifier can make for a fact: cross-verification across all adaptors that can see it. */
-export const buildVerifyRequests = (fact: Fact): VerifyRequest[] =>
+export const createVerifyRequests = (fact: Fact): VerifyRequest[] =>
   VERIFIERS.filter((v) => v.verifies.includes(fact.kind) && (v.only?.(fact) ?? true)).map((v) => ({ verifier: v.id, via: VIA, method: 'GET' as const, ...v.requestOf(fact) }))
 
 /** The facts a lead carries, read from its source and statement. */

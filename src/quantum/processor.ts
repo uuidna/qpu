@@ -29,7 +29,7 @@ export const deriveCouplers = (sites: readonly Site[]): [Site, Site][] => {
 }
 
 /** Average connectivity: each coupler joins two sites, so the average over N sites is 2E/N. */
-export const computeAverageConnectivity = (sites: readonly Site[], couplers: readonly [Site, Site][]): number =>
+export const getAverageConnectivity = (sites: readonly Site[], couplers: readonly [Site, Site][]): number =>
   (2 * couplers.length) / sites.length
 
 /** The errors and coherence common to both chips' reset options, as the spec sheet lists them. */

@@ -11,11 +11,11 @@ import { tmpdir, availableParallelism, homedir } from 'node:os'
 import { pathToFileURL } from 'node:url'
 import { uuidOf } from '../src/quantum/blocks.ts'
 import { cellOf as cell } from '../src/quantum/widgets.ts'
-import { findRemedies, findManualDocs } from '../src/quantum/audit.ts'
+import { listRemedies, listManualDocs } from '../src/quantum/audit.ts'
 import { STEP_CACHE, GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
 import { timesOf } from './machine.ts'
 import { forecastTimes, redact } from '../src/quantum/machine.ts'
-import { readJson, fetchWithTimeout, mcpClient } from './mcp.ts'
+import { getJson, getWithTimeout, mcpClient } from './mcp.ts'
 
 const ROOT = process.cwd()
 const pub = (f: string) => join(ROOT, 'docs', 'public', f)
@@ -75,16 +75,16 @@ const receipt: { license: string; date: string; head: string; steps: { name: str
 // Two runs in one tree write the same files under docs/public; the second is not stopped, it is recorded as a lead of this run.
 const lockPath = pub('next.lock')
 const alive = (pid: number): boolean => { try { process.kill(pid, 0); return true } catch { return false } }
-const concurrent: { pid: number; date: string } | null = (() => { const l = readJson(lockPath) as { pid: number; date: string } | null; return l && alive(l.pid) ? l : null })()
+const concurrent: { pid: number; date: string } | null = (() => { const l = getJson(lockPath) as { pid: number; date: string } | null; return l && alive(l.pid) ? l : null })()
 if (concurrent) console.log(`⚠ another next run (pid ${concurrent.pid}, since ${concurrent.date}) is writing the same files; recorded as a lead, this run continues`)
 writeFileSync(lockPath, JSON.stringify({ pid: process.pid, date: receipt.date }) + '\n')
 // the blocks teleported between this run's steps start empty: a block from an earlier run was computed by earlier code
 rmSync(join(ROOT, '.qpu', 'blocks'), { recursive: true, force: true })
-process.on('exit', () => { if ((readJson(lockPath) as { pid: number } | null)?.pid === process.pid) try { unlinkSync(lockPath) } catch { /* already gone */ } })
+process.on('exit', () => { if ((getJson(lockPath) as { pid: number } | null)?.pid === process.pid) try { unlinkSync(lockPath) } catch { /* already gone */ } })
 // time and heat, the two measures of every step: wall nanoseconds here, and the CPU microseconds and peak RSS of every Node process the step
 // spawns, each appending its own on exit (scripts/heat.mjs, preloaded through NODE_OPTIONS) to a file of the step's own
 const HEAT = pathToFileURL(join(ROOT, 'scripts', 'heat.mjs')).href
-const readHeat = (file: string) => { let cpuUs = 0, rssKb = 0; try { for (const l of readFileSync(file, 'utf8').trim().split('\n')) { if (!l) continue; const h = JSON.parse(l) as { cpuUs: number; rssKb: number }; cpuUs += h.cpuUs; rssKb = Math.max(rssKb, h.rssKb) } unlinkSync(file) } catch { /* no Node process of the step wrote its heat */ } return { cpuUs, rssKb } }
+const getHeat = (file: string) => { let cpuUs = 0, rssKb = 0; try { for (const l of readFileSync(file, 'utf8').trim().split('\n')) { if (!l) continue; const h = JSON.parse(l) as { cpuUs: number; rssKb: number }; cpuUs += h.cpuUs; rssKb = Math.max(rssKb, h.rssKb) } unlinkSync(file) } catch { /* no Node process of the step wrote its heat */ } return { cpuUs, rssKb } }
 const spawned = (s: Step, shard?: string): Promise<{ status: number | null; out: string; timedOut: boolean; cpuUs: number; rssKb: number; firstMs: number | null }> => new Promise((resolve) => {
   const t0 = Date.now(); let firstMs: number | null = null
   const heat = join(tmpdir(), `qpu-heat-${process.pid}-${s.name.replace(/[^a-z0-9-]/gi, '_')}-${(shard ?? 'all').replace('/', 'of')}.ndjson`)
@@ -94,8 +94,8 @@ const spawned = (s: Step, shard?: string): Promise<{ status: number | null; out:
   child.stdout.on('data', (d) => { out += d; firstMs ??= Date.now() - t0 }); child.stderr.on('data', (d) => { out += d; firstMs ??= Date.now() - t0 })
   // the budget kills the step's whole process group: a grandchild outlived its npx parent
   const timer = setTimeout(() => { timedOut = true; try { process.kill(-child.pid!, 'SIGKILL') } catch { child.kill('SIGKILL') } }, budgetFor(s))
-  child.on('error', (e) => { clearTimeout(timer); resolve({ status: null, out: out + `\n${e.message}`, timedOut, firstMs, ...readHeat(heat) }) })
-  child.on('close', (status) => { clearTimeout(timer); resolve({ status, out, timedOut, firstMs, ...readHeat(heat) }) })
+  child.on('error', (e) => { clearTimeout(timer); resolve({ status: null, out: out + `\n${e.message}`, timedOut, firstMs, ...getHeat(heat) }) })
+  child.on('close', (status) => { clearTimeout(timer); resolve({ status, out, timedOut, firstMs, ...getHeat(heat) }) })
 })
 // the step cache: a deterministic step whose inputs (their staged blobs, and the content of any file changed beside them) have the address they had
 // when it last ran green is reused from its sealed record, never rerun; a generator also needs its generated files to be exactly what it wrote
@@ -111,11 +111,11 @@ const inputKey = (s: Step): string | null => {
 }
 // the docs pages a script writes, read from the scripts' own write targets, excluded from a step's inputs: they are the run's outputs
 let excludes: string[] | null = null
-const generatedDocsExcludes = () => excludes ??= (() => { const git = (a: string[]) => spawnSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 }).stdout ?? ''; const scripts = Object.fromEntries(git(['ls-files', 'scripts']).trim().split('\n').filter((f) => /\.(ts|mjs)$/.test(f)).map((f) => [f, readFileSync(join(ROOT, f), 'utf8')])); return findManualDocs(git(['ls-files', 'docs']).trim().split('\n').filter((f) => f.endsWith('.md')).map((path) => ({ path, bytes: 0 })), scripts).rows.filter((r) => r.generator).map((r) => `:(exclude)${r.path}`) })()
+const generatedDocsExcludes = () => excludes ??= (() => { const git = (a: string[]) => spawnSync('git', a, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 }).stdout ?? ''; const scripts = Object.fromEntries(git(['ls-files', 'scripts']).trim().split('\n').filter((f) => /\.(ts|mjs)$/.test(f)).map((f) => [f, readFileSync(join(ROOT, f), 'utf8')])); return listManualDocs(git(['ls-files', 'docs']).trim().split('\n').filter((f) => f.endsWith('.md')).map((path) => ({ path, bytes: 0 })), scripts).rows.filter((r) => r.generator).map((r) => `:(exclude)${r.path}`) })()
 const hashOutputs = () => { const h = createHash('sha256'); for (const f of GENERATED_FILES) { h.update(f); try { h.update(readFileSync(join(ROOT, f))) } catch { h.update('gone') } } return h.digest('hex') }
-const readSealed = (name: string) => readJson(recordPath(name)) as { name: string; key: string; status: string; outputs?: string; counts?: Record<string, number>; date: string; sha256: string } | null
+const getSealed = (name: string) => getJson(recordPath(name)) as { name: string; key: string; status: string; outputs?: string; counts?: Record<string, number>; date: string; sha256: string } | null
 const run = async (s: Step): Promise<boolean> => {
-  const key = s.skip ? null : inputKey(s), sealed = key ? readSealed(s.name) : null
+  const key = s.skip ? null : inputKey(s), sealed = key ? getSealed(s.name) : null
   if (key && sealed && sealed.status === 'green' && sealed.key === key && (!STEP_CACHE[s.name]?.generator || sealed.outputs === hashOutputs())) {
     receipt.steps.push({ name: s.name, status: 'green', ms: 0, tail: `reused: its inputs ${key.slice(0, 12)} unchanged since ${sealed.date} (sealed ${sealed.sha256.slice(0, 12)})`, counts: { ...(sealed.counts ?? {}), reused: 1 }, measures: { wallNs: '0', cpuUs: 0, rssKb: 0, firstOutputMs: 0 } })
     console.log(`↺ ${s.name}: reused (inputs unchanged since ${sealed.date})`); return true
@@ -171,20 +171,20 @@ console.log(`waves: ${[...new Set(steps.map((s) => s.wave))].length}; steps ${(s
 // The docket: every red step as an open lead with its evidence, accumulated across runs and deduplicated by id.
 type NextLead = { id: string; source: string; statement: string; status: 'open'; reason: string; evidence: string; head: string; date: string }
 const docket = pub('next-leads.json')
-const previous: NextLead[] = readJson(docket, [])
+const previous: NextLead[] = getJson(docket, [])
 const opened: NextLead[] = stillRed.map((s) => {
   const step = receipt.steps.filter((x) => x.name === s.name).at(-1)!
-  const remedy = findRemedies([step.tail]).leads[0]
+  const remedy = listRemedies([step.tail]).leads[0]
   return { id: `next-${s.name}-${receipt.head}`, source: `npm run next ${receipt.date}`, statement: `${s.name} is red at ${receipt.head}${remedy?.remedy ? ` — remedy: ${remedy.remedy}` : ' — no remedy learned yet: a lead that teaches the next row'}`, status: 'open', reason: 'a stop is a lead to follow next; stopping is the failure', evidence: step.tail, head: receipt.head, date: receipt.date }
 })
 if (concurrent) opened.push({ id: `next-concurrent-${receipt.head}-${receipt.date.slice(11, 19).replace(/:/g, '')}`, source: `npm run next ${receipt.date}`, statement: `two next runs wrote docs/public at once (this run beside pid ${concurrent.pid} started ${concurrent.date})`, status: 'open', reason: 'the flow has no queue: a run that starts while another writes the same files can read a half-written artefact; serialise the runs or give each its own output', evidence: `lock ${lockPath}`, head: receipt.head, date: receipt.date })
 // time and heat priced: every step over the one-second budget is a waiting gap — listed, never blocking — priced in its own milliseconds over the
 // budget plus its CPU milliseconds (textbook_penalty_time_heat_monotone); the slowest and hottest first, each a lead naming the antimatter that
 // removes it (a shard split by the shard theorems, or a cache key), replaced every run, so a step back under the budget closes its own lead
-const { priceWait, buildAntimatter, measureCapacity, priceRunWait } = await import('../src/quantum/toolboxes/billing.ts')
+const { priceWait, createAntimatter, getCapacity, priceRunWait } = await import('../src/quantum/toolboxes/billing.ts')
 const waiting = receipt.steps.filter((x) => x.measures && x.status !== 'skipped').map((x) => ({ step: x.name, measures: x.measures!, price: priceWait(x.measures!) }))
 const over = waiting.filter((w) => !w.price.free).sort((a, b) => b.price.coins - a.price.coins)
-for (const w of over) opened.push({ id: `next-waiting-${w.step}`, source: `npm run next ${receipt.date}`, statement: `${w.step} took ${w.price.wallMs} ms on the wall and ${w.price.cpuMs} CPU ms (peak ${w.price.rssKb ?? '?'} kB): ${w.price.coins} coin(s) of waiting — antimatter: ${buildAntimatter('waiting', 'next:waiting', { step: w.step, measures: w.measures }).says}`, status: 'open', reason: 'a task over one second is slow: waiting is a penalty, priced in time and heat (heat is CPU work, never a die temperature)', evidence: JSON.stringify(w.price), head: receipt.head, date: receipt.date })
+for (const w of over) opened.push({ id: `next-waiting-${w.step}`, source: `npm run next ${receipt.date}`, statement: `${w.step} took ${w.price.wallMs} ms on the wall and ${w.price.cpuMs} CPU ms (peak ${w.price.rssKb ?? '?'} kB): ${w.price.coins} coin(s) of waiting — antimatter: ${createAntimatter('waiting', 'next:waiting', { step: w.step, measures: w.measures }).says}`, status: 'open', reason: 'a task over one second is slow: waiting is a penalty, priced in time and heat (heat is CPU work, never a die temperature)', evidence: JSON.stringify(w.price), head: receipt.head, date: receipt.date })
 console.log(`time and heat: ${over.length} of ${waiting.length} step(s) over the 1 s budget, ${over.reduce((n, w) => n + w.price.coins, 0)} coin(s) of waiting${over.length ? `; the hottest ${over.slice(0, 4).map((w) => `${w.step} ${w.price.coins}`).join(', ')}` : ''}`)
 // unused quantum capacity, each measure in its own unit (used + idle = capacity): the cores every step left idle on this machine, always; on a full
 // run also the arguments of the tools no example passes, the textbook theorems nothing names or cites, the gates discovery never reached, the
@@ -192,10 +192,10 @@ console.log(`time and heat: ${over.length} of ${waiting.length} step(s) over the
 // antimatter that wires it
 const cores = availableParallelism()
 // idle cores over the whole run, not per step (steps of one wave share the cores): the run's wall ms times the cores, less the CPU ms of every step
-const capacityIn: Parameters<typeof measureCapacity>[0] = { cores: [{ step: 'next run', wallMs, cpuMs: waiting.reduce((n, w) => n + w.price.cpuMs, 0), cores }] }
+const capacityIn: Parameters<typeof getCapacity>[0] = { cores: [{ step: 'next run', wallMs, cpuMs: waiting.reduce((n, w) => n + w.price.cpuMs, 0), cores }] }
 // the full measures run in the background, detached by post-commit (scripts/idle.ts, the machine action idle), never inside a hook: their latest
 // recorded state is read here, never computed
-const idleRead = (readJson(pub('idle.json')) as { input?: Parameters<typeof measureCapacity>[0] } | null)
+const idleRead = (getJson(pub('idle.json')) as { input?: Parameters<typeof getCapacity>[0] } | null)
 Object.assign(capacityIn, { ...(idleRead?.input ?? {}), cores: capacityIn.cores })
 // the remaining work, from the tree's own records, in ms: the steps this run did not run, each at its last measured run in the receipts; the idle
 // items at the audit's measured ms per example; the open leads counted, their cost unmeasured (said so, never guessed)
@@ -206,22 +206,22 @@ Object.assign(capacityIn, { ...(idleRead?.input ?? {}), cores: capacityIn.cores 
   const audit = [...history].reverse().flatMap((r) => r.steps ?? []).find((x) => x.name === 'audit' && x.ms > 0 && x.counts?.checks)
   const perExample = audit ? Math.round(audit.ms / Math.max(1, audit.counts!.checks!)) : null
   const idleItems = (idleRead as { top?: unknown[]; counts?: Record<string, { idleNames?: string[] } | null> } | null)?.counts ? Object.values((idleRead as { counts: Record<string, { idleNames?: string[] } | null> }).counts).reduce((n, m) => n + (m?.idleNames?.length ?? 0), 0) : 0
-  const leadsOpen = ['next-leads.json', 'purify-leads.json'].reduce((n, f) => n + (readJson(pub(f), []) as { status?: string }[]).filter((l) => l.status === 'open').length, 0)
+  const leadsOpen = ['next-leads.json', 'purify-leads.json'].reduce((n, f) => n + (getJson(pub(f), []) as { status?: string }[]).filter((l) => l.status === 'open').length, 0)
   capacityIn.remaining = [
     { category: 'pending steps', count: pending.length, ms: pending.every((p) => p.ms === null) ? null : pending.reduce((n, p) => n + (p.ms ?? 0), 0), how: `each at its last measured run in the receipts${pending.some((p) => p.ms === null) ? `; never measured: ${pending.filter((p) => p.ms === null).map((p) => p.name).join(', ')}` : ''}` },
     { category: 'idle items', count: idleItems, ms: perExample === null ? null : idleItems * perExample, how: `the audit's measured ms per check (${perExample ?? '?'} ms) per generated example` },
     { category: 'open leads', count: leadsOpen, ms: null, how: 'counted; no per-lead cost is measured yet' },
   ]
 }
-const capacity = measureCapacity(capacityIn)
+const capacity = getCapacity(capacityIn)
 for (const g of capacity.top) opened.push({ id: `next-idle-${g.measure}-${g.name}`, source: `npm run next ${receipt.date}`, statement: `${g.name} leaves ${g.tokens} ${g.unit} of quantum capacity idle (${g.measure}) — antimatter: ${g.antimatter.says}`, status: 'open', reason: 'unused quantum capacity is an idle gap: listed, never blocking, priced in its own unit', evidence: JSON.stringify({ measure: g.measure, tokens: g.tokens, unit: g.unit }), head: receipt.head, date: receipt.date })
 if (capacity.idlePrice) console.log(`idle priced by the remaining work: ${capacity.idlePrice.says}`)
 console.log(`capacity: ${Object.entries(capacity).filter(([k, v]) => ['doors', 'theorems', 'gates', 'cores', 'qubits', 'shor'].includes(k) && v).map(([k, v]) => `${k} ${(v as { percentIdle: number }).percentIdle}% idle`).join(', ')}; ${capacity.gaps.length} idle item(s), the ten largest as leads (${cores} cores)`)
 Object.assign(receipt, { capacity: { cores, idlePrice: capacity.idlePrice ? { idleMs: capacity.idlePrice.idleMs, remainingMs: capacity.idlePrice.remainingMs, price: capacity.idlePrice.price, byCategory: capacity.idlePrice.byCategory, scheduledMs: capacity.idlePrice.scheduledMs } : null, measures: Object.fromEntries(Object.entries(capacity).filter(([k, v]) => ['doors', 'theorems', 'gates', 'cores', 'qubits', 'shor'].includes(k) && v).map(([k, v]) => { const m = v as { unit: string; capacity: number; used: number; idle: number; percentIdle: number }; return [k, { unit: m.unit, capacity: m.capacity, used: m.used, idle: m.idle, percentIdle: m.percentIdle }] })) } })
 // booked in the RAID when a key is named: a step newly over the budget raises its waiting gap, one back under it annihilates the open one
 if (process.env.QPU_APP_KEY) {
-  const { penalise, clear, readOpenPenalties } = await import('./penalties.ts')
-  const standing = await readOpenPenalties()
+  const { penalise, clear, listOpenPenalties } = await import('./penalties.ts')
+  const standing = await listOpenPenalties()
   const openWaiting = new Map((standing.open ?? []).filter((b) => (b.snapshot?.key ?? '').startsWith('waiting:next:')).map((b) => [b.snapshot!.key!, b]))
   // the idle cores priced by the remaining work: a listed gap of the waiting family raised by every run that leaves cores idle while work is
   // queued, annihilated by the run that leaves none (the time it stood burned)
@@ -243,7 +243,7 @@ if (process.env.QPU_APP_KEY) {
   // every red step and every leak the scanner found: a gap penalised once against the acting key (its address, never the key), announced on
   // that key's UUID stream, and cleared by the run that shows it gone
   const actor = uuidOf(process.env.QPU_APP_KEY), held = new Map((standing.open ?? []).map((b) => [b.snapshot?.key ?? '', b]))
-  const scanned = receipt.steps.some((s) => s.name === 'security' && s.status !== 'skipped'), found = (readJson(pub('security.json')) as { leaks?: { findings?: { where: string; kind: string }[] } } | null)?.leaks?.findings ?? []
+  const scanned = receipt.steps.some((s) => s.name === 'security' && s.status !== 'skipped'), found = (getJson(pub('security.json')) as { leaks?: { findings?: { where: string; kind: string }[] } } | null)?.leaks?.findings ?? []
   const gaps = [...receipt.steps.filter((s) => s.status === 'red').map((s) => ({ key: `step:next:${s.name}`, kind: 'step', subject: s.name })), ...found.map((x) => ({ key: `leak:${x.kind}:${x.where}`, kind: 'leak', subject: x.where }))]
   const tell = (says: string) => mcpClient().call('createEntries', { kind: 'message', from: 'penalties', body: { to: actor, says, head: receipt.head } })
   for (const g of gaps) if (!held.has(g.key)) { await penalise({ rule: `next:${g.kind}`, kind: g.kind, subject: g.subject, committer: actor, evidence: { key: g.key, head: receipt.head } } as Parameters<typeof penalise>[0]); await tell(`penalised: ${g.key}`) }
