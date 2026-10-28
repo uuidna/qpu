@@ -1,5 +1,5 @@
 {
- "date": "2026-10-28T09:55:31.004Z",
+ "date": "2026-10-28T10:35:14.605Z",
  "literals": {
   "urls": 420,
   "distinctUrls": 221,
@@ -640,7 +640,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 936,
- "lines": 80944,
+ "lines": 80948,
  "findings": 920,
  "fused": 327,
  "reactions": 593,
@@ -746,7 +746,7 @@
   {
    "id": "entropy-cap-113d3f3c",
    "kind": "cap",
-   "source": "scripts/machine.ts:76, scripts/machine.ts:140, src/quantum/discovery.ts:250, src/quantum/discovery.ts:252, src/quantum/examples.ts:133, src/quantum/examples.ts:250, src/quantum/examples.ts:316, src/quantum/examples.ts:317, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:40",
+   "source": "scripts/machine.ts:76, scripts/machine.ts:144, src/quantum/discovery.ts:250, src/quantum/discovery.ts:252, src/quantum/examples.ts:133, src/quantum/examples.ts:250, src/quantum/examples.ts:316, src/quantum/examples.ts:317, src/quantum/expressions.ts:123, src/quantum/expressions.ts:131, src/quantum/readiness.ts:119, src/quantum/verifiers.ts:40",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 200)",
    "status": "open",
    "tool": "audit",

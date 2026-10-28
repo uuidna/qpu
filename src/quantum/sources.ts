@@ -21,7 +21,7 @@ export type SourceContext = { repository: string; owner: string; package: string
 
 export const SOURCES: readonly { id: string; kind: SourceKind; name: string; immutable: string; url: string }[] = TABLES.SOURCES as readonly { id: string; kind: SourceKind; name: string; immutable: string; url: string }[]
 /** the subjects Open Library is asked for: the fields the QPU's theorems compute in */
-const SUBJECTS = ['quantum_computing', 'quantum_theory', 'quantum_mechanics', 'linear_algebra', 'number_theory', 'group_theory', 'combinatorics', 'cryptography', 'information_theory', 'mathematical_logic', 'algorithms', 'error-correcting_codes_(information_theory)', 'harmonics', 'acoustics'] as const
+const SUBJECTS = TABLES.SUBJECTS
 const MCP_TERMS = ['book', 'textbook', 'library', 'scholar', 'paper', 'doi', 'arxiv', 'patent', 'citation'] as const
 
 const accept = 'application/json'

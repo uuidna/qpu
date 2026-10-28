@@ -135,7 +135,11 @@ if (process.argv[1]?.endsWith('machine.ts')) {
       if (!process.env.QPU_APP_KEY) { console.log('renames not recorded: no QPU_APP_KEY, so the pre-commit rule counts them as growth'); process.exit(0) }
       const { mcpClient } = await import('./mcp.ts'), { uuidOf } = await import('../src/quantum/blocks.ts'), m = mcpClient(), base = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), ids: string[] = []
       for (const [file, from, to] of rows) { const line = execFileSync('git', ['show', `${base}:${file}`], { encoding: 'utf8', maxBuffer: 1 << 28 }).split('\n').find((l) => new RegExp(`^(export )?(async )?(const|function) ${from}\\b`).test(l)); if (!line) continue
-        const made = await m.call('createEntries', { kind: 'rename', from: 'machine', body: { file, from, to, base, rest: uuidOf(line.slice(line.indexOf(from) + from!.length)) } }), id = (m.docsOf(made.text ?? '')[0] as { id?: string } | undefined)?.id; if (id) ids.push(id) }
+        const body = { file, from, to, base, rest: uuidOf(line.slice(line.indexOf(from) + from!.length)) }
+        const made = await m.call('createEntries', { kind: 'rename', from: 'machine', body })
+        // the rename's id is its content address, computed as the entries hook does; a duplicate means it is already recorded, so link that same id
+        const id = (m.docsOf(made.text ?? '')[0] as { id?: string } | undefined)?.id ?? uuidOf(JSON.stringify({ kind: 'rename', from: 'machine', body }))
+        ids.push(id) }
       const wave = await m.call('createEntries', { kind: 'rename-wave', from: 'machine', body: { base, renames: ids.length }, links: ids })
       console.log(wave.error ? `the wave was refused: ${String(wave.error).slice(0, 200)}` : `${ids.length} of ${rows.length} rename(s) recorded in Payload at ${base.slice(0, 9)}, one wave having many`) }
     else { const PUBLIC = /\/(blocks|mcp|roles)\.ts$|toolboxes\/payload\.ts$/, edits: { file: string; start: number; end: number; text: string }[] = []

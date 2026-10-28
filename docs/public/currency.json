@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T09:39:03.009Z",
- "ms": 524,
+ "date": "2026-10-28T10:21:59.805Z",
+ "ms": 782,
  "selftest": {
   "passed": true
  },
@@ -9,31 +9,31 @@
   {
    "source": "ecb",
    "status": 200,
-   "ms": 452,
+   "ms": 507,
    "bytes": 1547
   },
   {
    "source": "frankfurter",
    "status": 200,
-   "ms": 309,
+   "ms": 355,
    "bytes": 439
   },
   {
    "source": "bnb",
    "status": 200,
-   "ms": 369,
+   "ms": 636,
    "bytes": 746
   },
   {
    "source": "er-api",
    "status": 200,
-   "ms": 297,
+   "ms": 482,
    "bytes": 3042
   },
   {
    "source": "fawazahmed",
    "status": 200,
-   "ms": 270,
+   "ms": 563,
    "bytes": 7533
   }
  ],

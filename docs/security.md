@@ -5,7 +5,7 @@ order: 53
 
 # Security audit, both perspectives as one
 
-Performed by `npm run next` on 2026-10-28T09:43:37.606Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 26/26 pass; clean. Every finding is a lead with the remedy manual work taught.
+Performed by `npm run next` on 2026-10-28T10:22:21.415Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 26/26 pass; clean. Every finding is a lead with the remedy manual work taught.
 
 | Check | Perspective | Pass | Evidence | Remedy |
 |---|---|---|---|---|

@@ -5,7 +5,7 @@ order: 57
 
 # The immutable sources of leads
 
-Read on 2026-10-28T09:41:47.854Z by `leads { sources }`: 283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2422 the theorems reach and 21131 of their domain are leads; 594 MCP doors proposed.
+Read on 2026-10-28T10:25:42.634Z by `leads { sources }`: 281 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2422 the theorems reach and 21131 of their domain are leads; 593 MCP doors proposed.
 
 ## Licence candidates
 
@@ -392,7 +392,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.QAtlasHub/doiget |  |
 | io.github.alfredoizdev/contextforge-mcp |  |
 | io.github.ecfaria/todoist-mcp |  |
-| io.github.j-doi/domain-bannin | https://domain-bannin.jp/api/mcp |
 | io.github.neubuot/doichain | https://doi-api.sendlabs.de/mcp |
 | io.github.nexus-mcp-infra/useful-data-source-for-agents-doing-product-price-sdk | https://useful-data-source-for-agents-production.up.railway.app/mcp |
 | io.github.pipeworx-io/todoist | https://gateway.pipeworx.io/todoist/mcp |

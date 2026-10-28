@@ -1,11 +1,11 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T09:41:47.854Z",
+ "date": "2026-10-28T10:25:42.634Z",
  "phase": "judged",
- "address": "8278491c-eb1b-81b9-b3b5-0ac28367b211",
+ "address": "ffda9c4d-2906-8467-90bc-7c295d67955a",
  "summary": {
   "requests": 287,
-  "reached": 283,
+  "reached": 281,
   "versions": 14,
   "visits": 0,
   "captures": 0,
@@ -15,8 +15,8 @@
   "routed": 2422,
   "domainLeads": 21131,
   "outside": 126,
-  "doors": 594,
-  "leads": 21136
+  "doors": 593,
+  "leads": 21138
  },
  "immutable": {
   "package": "@uuidna/qpu",
@@ -112,13 +112,13 @@
     "host": "qpu.uuidna.com",
     "url": null,
     "timestamp": null,
-    "status": 200
+    "status": 429
    },
    {
     "host": "qpu.psg.bg",
     "url": null,
     "timestamp": null,
-    "status": 200
+    "status": 429
    }
   ],
   "records": [
@@ -5512,13 +5512,6 @@
     "description": "MCP server for Todoist task management integration",
     "remote": null,
     "repository": "https://github.com/ecfaria/todoist-mcp"
-   },
-   {
-    "name": "io.github.j-doi/domain-bannin",
-    "version": "0.1.0",
-    "description": "ドメインの設定を調べる MCP サーバー。SPF / DKIM / DMARC・DNS・SSL 証明書・セキュリティヘッダ・サブドメイン・類似ドメインを、公開情報だけで確認します。登録不要・無料。",
-    "remote": "https://domain-bannin.jp/api/mcp",
-    "repository": "https://github.com/j-doi/domain-shield"
    },
    {
     "name": "io.github.neubuot/doichain",
@@ -156550,6 +156543,20 @@
    "reason": "measured on the next run"
   },
   {
+   "id": "source-unreached-wayback-qpu-uuidna-com",
+   "source": "https://archive.org/wayback/available?url=qpu.uuidna.com",
+   "statement": "the source wayback:qpu.uuidna.com answered 429",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-wayback-qpu-psg-bg",
+   "source": "https://archive.org/wayback/available?url=qpu.psg.bg",
+   "statement": "the source wayback:qpu.psg.bg answered 429",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
    "id": "source-unreached-openalex-near-10-5281-zenodo-21781602-1",
    "source": "https://api.openalex.org/works?search=All%20Seven%20Clay%20Millennium%20Problems%20Sealed%20via%20Universal%20%CF%83-Involution&per-page=200&page=1",
    "statement": "the source openalex-near:10.5281/zenodo.21781602:1 answered 429",
@@ -156577,15 +156584,15 @@
   "textbook_route_or_lead",
   "textbook_cheap_gates"
  ],
- "says": "283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2422 the theorems reach and 21131 of their domain are leads; 594 MCP doors proposed",
+ "says": "281 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2422 the theorems reach and 21131 of their domain are leads; 593 MCP doors proposed",
  "counts": {
   "served": 0,
   "partial": 0,
   "open": 21132,
-  "blocked": 4,
+  "blocked": 6,
   "out_of_scope": 0
  },
- "total": 21136,
+ "total": 21138,
  "integrity": {
   "phase": "artifacts",
   "artifacts": 17,
