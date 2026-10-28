@@ -1,5 +1,6 @@
 // The standards toolbox: schema.org JSON-LD for any block, page or offer, and the tree's ISO codes validated against the
 // CLDR lists a client fetched. Pure; the discover tool reads the standards' documents as contracts.
+import { TABLES } from '../tables-index.ts'
 import { defineTool, createChecks, type Toolbox } from '../toolbox.ts'
 import { blockJsonLd, pageJsonLdOf, offerJsonLd, listCodes, validateCodes, STANDARDS, detectStandard } from '../standards.ts'
 import { LOCALES } from '../i18n.ts'
@@ -37,7 +38,7 @@ const codes = defineTool('standards', {
   widget: flowWidget,
 })
 
-const CLDR_FIXTURE = { languages: { main: { en: { localeDisplayNames: { languages: { en: 'English', bg: 'Bulgarian', de: 'German', fr: 'French', es: 'Spanish', it: 'Italian', ru: 'Russian', zh: 'Chinese', ja: 'Japanese', pt: 'Portuguese', nl: 'Dutch' } } } } }, currencies: { main: { en: { numbers: { currencies: { EUR: {}, USD: {}, BGN: {} } } } } }, territories: { main: { en: { localeDisplayNames: { territories: { BG: 'Bulgaria', US: 'United States' } } } } } }
+const CLDR_FIXTURE = Object.fromEntries(Object.entries(TABLES.CLDR_FIXTURE).map(([k, v]) => [k, JSON.parse(v)]))
 
 export const STANDARDS_BOX: Toolbox = {
   name: 'standards',

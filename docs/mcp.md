@@ -817,9 +817,15 @@ The textbook algorithms of the Cirq page
         "grover",
         "teleportation",
         "qaoa",
-        "shor"
+        "shor",
+        "factor"
       ],
-      "default": "qaoa"
+      "default": "qft"
+    },
+    "integer": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "factor"
     },
     "N": {
       "type": "integer",
@@ -887,8 +893,8 @@ The textbook algorithms of the Cirq page
     }
   },
   "x-harmonic": {
-    "combinations": "7",
-    "index": "5",
+    "combinations": "8",
+    "index": "0",
     "from": "a432"
   }
 }

@@ -26,10 +26,7 @@ export { WORKSPACE_MCP }
 export const GOOGLE_HOST = /(^|\.)(googleapis\.com|google\.com|google|google-analytics\.com|recaptcha\.net)$/
 /** Google's endpoints outside Discovery the app calls, by name: each with the secret it takes as a query parameter, which the job adds from
  *  the variable the tenant's bindings name (one whose name holds `named`), never from the caller */
-export const GOOGLE_ENDPOINTS: Readonly<Record<string, { url: string; httpMethod: string; secret: { param: string; named: string } }>> = {
-  'recaptcha.siteverify': { url: 'https://www.google.com/recaptcha/api/siteverify', httpMethod: 'POST', secret: { param: 'secret', named: 'RECAPTCHA_SECRET' } },
-  'analytics.collect': { url: 'https://www.google-analytics.com/mp/collect', httpMethod: 'POST', secret: { param: 'api_secret', named: 'API_SECRET' } },
-}
+export const GOOGLE_ENDPOINTS = TABLES.GOOGLE_ENDPOINTS as unknown as Readonly<Record<string, { url: string; httpMethod: string; secret: { param: string; named: string } }>>
 export const GOOGLE_DISCOVERY = { rest: 'https://www.googleapis.com/discovery/v1/apis/{api}/{version}/rest', token: 'https://oauth2.googleapis.com/token' } as const
 /** Google's Discovery documents the workspace door reads, fetched by this door as contracts and kept in its cache: the preferred list (no Sites API in it), Forms v1, Docs v1, Drive v3 */
 export const GOOGLE_DOCUMENTS = { list: 'https://www.googleapis.com/discovery/v1/apis?preferred=true', forms: 'https://forms.googleapis.com/$discovery/rest?version=v1', docs: 'https://docs.googleapis.com/$discovery/rest?version=v1', drive: 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest' } as const
@@ -44,16 +41,8 @@ const GITHUB_MCP: readonly { host: string; url: string; about: string }[] = [
 /** The Gemini API (ai.google.dev/api/generate-content and /gemini-api/docs/api-key, read 2026-10-27): POST generateContent with the key in the
  *  x-goog-api-key header, never in the URL and never in the tree (Google: "Never check API keys into source control"); the tenant's key opens it,
  *  the tree plans the request and never calls it unprompted. The model is the newest stable Flash on Google's models page. */
-export const GEMINI_API = { docs: 'https://ai.google.dev/api/generate-content', keys: 'https://ai.google.dev/gemini-api/docs/api-key', endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent', header: 'x-goog-api-key', key: 'GEMINI_API_KEY[_<TENANT>]', model: 'gemini-3.8-flash', read: '2026-10-27' } as const
-export const CLAUDE_API = {
-  docs: 'https://platform.claude.com/docs/en/api/overview',
-  messages: 'https://api.anthropic.com/v1/messages',
-  models: 'https://api.anthropic.com/v1/models',
-  version: '2023-06-01',
-  key: 'ANTHROPIC_API_KEY[_<TENANT>]',
-  model: 'claude-opus-5-5',
-  mcpConnector: { beta: 'mcp-client-2025-11-20', note: 'mcp_servers: [{ type: url, url, name }] with tools: [{ type: mcp_toolset, mcp_server_name }] — both halves, or the request is refused' },
-} as const
+export const GEMINI_API = TABLES.GEMINI_API
+export const CLAUDE_API = TABLES.CLAUDE_API
 /** Every MCP this tree knows how to integrate, with what it does with each once the tenant's token opens it. */
 export const KNOWN_MCP: readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[] = TABLES.KNOWN_MCP as readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[]
 /** The hosts discovered when a tenant names none: the unit, this tree, Cloudflare's eight servers and GitHub's. */

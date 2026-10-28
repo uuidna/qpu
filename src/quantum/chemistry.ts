@@ -6,6 +6,7 @@
 // energies at bond lengths 0.7 and 0.8 Å from OpenFermion's data, and the integrals here are checked against those printed
 // figures in the tests and in the tool's output. Every energy a VQE sweep returns is an expectation value of a simulated state.
 
+import { TABLES } from './tables-index.ts'
 import { Circuit, DensityMatrixSimulator, LineQubit, applied, exponentiateGate, getExpectation, pauliProduct } from './cirq.ts'
 
 /** The STO-3G hydrogen 1s function: three primitive Gaussians, exponents and contraction coefficients as Hehre, Stewart and
@@ -22,14 +23,7 @@ export const STO3G_H = {
 export const BOHR_ANGSTROM = 0.52917720859
 
 /** The energies the OpenFermion tutorial prints for H₂ (STO-3G, singlet) at two bond lengths, as stated there. */
-export const TUTORIAL_ENERGIES = {
-  source: 'quantumai.google/openfermion/tutorials/intro_to_openfermion, the printed energies of molecular hydrogen',
-  bondLengthDefault: 0.7414,
-  points: [
-    { bondLength: 0.7, hartreeFock: -1.1173490350703141, mp2: -1.1295815518324286, fci: -1.1361894542708848, nuclearRepulsion: 0.7559674408428572, orbitalEnergies: [-0.5954634716745077, 0.7141652810054977] },
-    { bondLength: 0.8, hartreeFock: -1.1108503969854677, mp2: -1.125453091983669, fci: -1.1341476663578605, nuclearRepulsion: 0.6614715107375, orbitalEnergies: [-0.5544958797639515, 0.6126180834930599] },
-  ],
-} as const
+export const TUTORIAL_ENERGIES = TABLES.TUTORIAL_ENERGIES
 
 /** The error function: its Taylor series up to 2.5, and the continued fraction of erfc beyond, each to double precision. */
 export const erf = (x: number): number => {

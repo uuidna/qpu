@@ -2,6 +2,7 @@
 // it says what to fetch; called with answers it reads them into data and a page. The client between the phases is thin and
 // host-agnostic: it fetches what it is told, asks the doors discovery found, and writes what comes back. Any flow tool
 // called with selftest runs the toolbox's cross-test.
+import { readInteger, writeInteger } from '../algorithms.ts'
 import { defineTool, type Toolbox, type Context } from '../toolbox.ts'
 import { createDiscoveryRequests, listFollowUps, getDiscovery, getDiscoveryPage, DEFAULT_MCP_HOSTS, UNIT_MCP, QPU_MCP, createRegistryRequests, listRelatedServers, type Answer, type Discovery } from '../discovery.ts'
 import { createWaveRequests, getWave, getWavePage, type WaveResult } from '../wave.ts'
@@ -65,11 +66,12 @@ const shard = defineTool('flow', {
   inputSchema: { type: 'object', properties: { list: { type: 'array', description: 'the items (or their ids)' }, index: { type: 'integer', minimum: 0 }, count: { type: 'integer', minimum: 1 }, ...SELFTEST } },
   run: (args, ctx) => selftestOr(args, ctx, () => {
     const list = Array.isArray(args.list) ? args.list : []
-    const count = typeof args.count === 'number' && args.count >= 1 ? Math.floor(args.count) : 1
-    const index = typeof args.index === 'number' && args.index >= 0 ? Math.floor(args.index) : 0
-    if (index >= count) throw new Error(`shard ${index} of ${count}: the index is below the count (textbook_shards_cover)`)
-    const share = takeShare(list, index, count)
-    return { index, count, items: list.length, share: share.length, shareList: share, theorems: ['textbook_shards_cover', 'textbook_shards_disjoint'], covers: 'every item in exactly one shard' }
+    // any index and count, exactly: a count of 0 is read as 1 (one shard holds the list), an index at or above the count as its residue mod
+    // the count, the same shard (textbook_shards_cover); the share is every position the residue names, in BigInt when the count is large
+    const asked = { index: readInteger(args.index, 'index', 0n), count: readInteger(args.count, 'count', 1n) }, c = asked.count < 1n ? 1n : asked.count, i = asked.index % c
+    const share = c <= BigInt(Number.MAX_SAFE_INTEGER) ? takeShare(list, Number(i), Number(c)) : list.filter((_, p) => BigInt(p) === i)
+    const index = writeInteger(i), count = writeInteger(c), reduced = i !== asked.index || c !== asked.count
+    return { index, count, ...(reduced ? { asked: { index: writeInteger(asked.index), count: writeInteger(asked.count) }, reduced: 'the index read as its residue mod the count, a count below 1 as 1: the same shard' } : {}), items: list.length, share: share.length, shareList: share, theorems: ['textbook_shards_cover', 'textbook_shards_disjoint'], covers: 'every item in exactly one shard' }
   }),
   widget: flowWidget,
 })

@@ -1,13 +1,14 @@
 // Google Workspace in Payload, in the shapes the Discovery documents define: a form ↔ a Forms Form, Lexical ↔ a Docs Document, a document
 // ↔ a Drive File (calls in the Drive MCP's shapes), each checked against its schema, the coverage as exact pairs. No Sites API is listed,
 // so a Sites page is covered as what it is made of. Pure: discover fetches the documents; the Drive MCP answers behind a QPU door.
+import { TABLES } from './tables-index.ts'
 import { GOOGLE_DOCUMENTS, DRIVE_FILE_URL } from './discovery.ts'
 import { WORKSPACE_MCP } from './institutions.ts'
 
 type J = Record<string, any>
 const keep = (o: J, drop: string[] = []) => Object.fromEntries(Object.entries(o).filter(([k, v]) => v !== undefined && !drop.includes(k)))
 /** blockType → [item kind, question kind, choice type or paragraph]; a block's other fields are its kind's own */
-const FORM_KINDS: Record<string, [string, string?, (string | boolean)?]> = { text: ['questionItem', 'textQuestion', false], textarea: ['questionItem', 'textQuestion', true], radio: ['questionItem', 'choiceQuestion', 'RADIO'], checkboxes: ['questionItem', 'choiceQuestion', 'CHECKBOX'], select: ['questionItem', 'choiceQuestion', 'DROP_DOWN'], date: ['questionItem', 'dateQuestion'], time: ['questionItem', 'timeQuestion'], scale: ['questionItem', 'scaleQuestion'], rating: ['questionItem', 'ratingQuestion'], fileUpload: ['questionItem', 'fileUploadQuestion'], grid: ['questionGroupItem', 'rowQuestion'], message: ['textItem'], image: ['imageItem'], video: ['videoItem'], pageBreak: ['pageBreakItem'] }
+const FORM_KINDS = TABLES.FORM_KINDS as unknown as Record<string, [string, string?, (string | boolean)?]>
 const NATIVE = ['text', 'textarea', 'radio', 'select', 'date', 'message'], OWN = ['id', 'blockName', 'blockType', 'name', 'label', 'required', 'width', 'defaultValue', 'placeholder', 'options', 'message']
 const mirrorName = ([item, q]: [string, string?, unknown?]) => (item === 'questionItem' ? q! : item).replace(/^./, (c) => c.toUpperCase())
 const eq = (a: J, b: J) => JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(b).sort())

@@ -29,7 +29,7 @@ import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.ts'
 import { DEVICES, PROCESSORS, toDevice, willowNoise, getAverageConnectivity, isBelowThreshold } from './processor.ts'
 import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, entropyWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, matchWidget, clayWidget, verifyWidget } from './widgets.ts'
 import { APPLICATIONS, ROADMAP } from './roadmap.ts'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.ts'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, readInteger, testPrimality, findFactors } from './algorithms.ts'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.ts'
 import { LEADS, leadCounts, combineLeads, listRunnableLeads, runSession, sitemapLeads, type Lead, type LeadStatus, type CellLead, type SessionInput } from './leads.ts'
 import { REPOSITORIES } from './repositories.ts'
@@ -113,6 +113,14 @@ const OBSERVABLE_SCHEMA = {
 const INSERT_SCHEMA = { enum: ['EARLIEST', 'NEW', 'INLINE', 'NEW_THEN_INLINE'], default: 'EARLIEST' }
 
 const complex = ([re, im]: [number, number]) => ({ re, im })
+/** An integer of any size answered by the classical door: its bits, its primality, its prime factors within the budget, the product checked. */
+const answerFactor = (n: bigint, via?: string) => {
+  const bits = n.toString(2).length, p = testPrimality(n), f = p.prime ? { factors: [n], left: [], steps: 0, budget: 0, verified: true } : findFactors(n)
+  const primality = p.prime ? (p.certain ? 'prime' : 'a probable prime (Miller–Rabin, 24 bases)') : 'composite'
+  return { name: 'factor', integer: n.toString(), bits, prime: p.prime, certain: p.certain, factors: f.factors.map(String), left: f.left.map(String), complete: f.left.length === 0, verified: f.verified, steps: f.steps, theorem: 'textbook_factors_divide',
+    says: `a ${bits}-bit integer, ${primality}${p.prime ? '' : `: ${f.factors.length} prime factor(s) found${f.left.length ? `, ${f.left.length} composite part(s) left unfactored within ${f.budget} rho steps (no classical method here factors an RSA-class semiprime)` : ''}`}; the parts multiply back to the integer: ${f.verified}`,
+    ...(via ? { via } : {}), summary: [['Bits', String(bits)], ['Primality', primality], ['Prime factors found', String(f.factors.length)], ['Left unfactored', String(f.left.length)], ['Product checked', f.verified ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: [...f.factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']), ...f.left.map((x) => [x.toString(), String(x.toString(2).length), 'composite, unfactored'])] }
+}
 const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
 
 /** One tool: its name, what it does, its input schema (JSON Schema 2020-12), and the call that compiles or reads it: the
@@ -278,7 +286,8 @@ const OWN: Tool[] = [
       type: 'object',
       required: ['name'],
       properties: {
-        name: { enum: ['qft', 'inverse_qft', 'phase_estimation', 'grover', 'teleportation', 'qaoa', 'shor'] },
+        name: { enum: ['qft', 'inverse_qft', 'phase_estimation', 'grover', 'teleportation', 'qaoa', 'shor', 'factor'] },
+        integer: { type: 'string', pattern: '^[0-9]+$', description: 'factor: the integer, any size, as a decimal string: its bits, its primality (Miller–Rabin), its prime factors within the step budget, the product checked' },
         N: { type: 'integer', minimum: 3, maximum: 21, default: 15 },
         a: { type: 'integer', minimum: 2, default: 7 },
         sweep: { type: 'boolean', default: false, description: 'qaoa: sweep alpha and beta on the grid of the page and return the best' },
@@ -297,9 +306,8 @@ const OWN: Tool[] = [
       const name = String(args.name)
       if (name === 'qft' || name === 'inverse_qft') {
         const n = Number(args.qubits ?? 3)
-        const x = Number(args.input ?? 0)
         if (!Number.isInteger(n) || n < 1 || n > 6) reject('qubits is an integer from 1 to 6')
-        if (!Number.isInteger(x) || x < 0 || x >= 1 << n) reject(`input is an integer from 0 to ${(1 << n) - 1}`)
+        const x = Number(readInteger(args.input, 'input', 0n) % (1n << BigInt(n))) // the residue mod 2^qubits: the same basis state
         const qs = LineQubit.range(n)
         const prep = qs.filter((_, i) => (x >> i) & 1).map((q) => applied(X, q))
         const transform = name === 'qft' ? qftOperations(qs) : inverseOperations(qftOperations(qs))
@@ -379,12 +387,16 @@ const OWN: Tool[] = [
           rows: graph.edges.map((e) => [`${qubitKey(e.a)} – ${qubitKey(e.b)}`, e.weight.toFixed(2)]),
         }
       }
+      if (name === 'factor') return answerFactor(readInteger(args.integer, 'integer'))
       if (name === 'shor') {
-        const N = Number(args.N ?? 15)
-        const a = Number(args.a ?? 7)
+        // beyond the state-vector bound the goal is landed by the classical door, exactly, never refused
+        const askedN = readInteger(args.N, 'N', 15n)
+        if (askedN < 3n || askedN > 21n) return answerFactor(askedN, `N = ${askedN} lies beyond the state-vector bound (3 to 21): answered by the classical door, algorithm { name: factor, integer }`)
+        const N = Number(askedN)
+        const askedA = readInteger(args.a, 'a', 7n) % askedN, shared = gcdOf(Number(askedA), N)
+        if (askedA >= 2n && shared > 1) return { ...answerFactor(askedN, `a = ${String(args.a ?? 7)} shares the factor ${shared} with N: Euclid finds it before any circuit`), sharedFactor: shared }
+        let a = Number(askedA); while (a < 2 || gcdOf(a, N) !== 1) a++
         const repetitions = Number(args.repetitions ?? 20)
-        if (!Number.isInteger(N) || N < 3 || N > 21) reject('N is an integer from 3 to 21 (the state-vector size bound)')
-        if (!Number.isInteger(a) || a < 2 || a >= N || gcdOf(a, N) !== 1) reject('a must be an integer from 2 to N−1 with no common factor with N')
         const run = new Simulator(seededRandom(JSON.stringify(args))).run(shorCircuit(N, a), repetitions)
         const found = shorFactors(N, a, run.measurements('m'))
         const counts = new Map<string, number>()
@@ -577,12 +589,12 @@ const OWN: Tool[] = [
     run: (args) => {
       const which = String(args.circuit ?? 'all')
       const n = Number(args.qubits ?? 3)
-      const N = Number(args.N ?? 15)
-      const a = Number(args.a ?? 7)
+      const askedN = readInteger(args.N, 'N', 15n)
+      const beyond = askedN < 3n || askedN > 21n ? { ...answerFactor(askedN, `the fault-tolerant design builds Shor's circuit for N 3 to 21: N = ${askedN} lands by the classical door, its circuit's resources a lead`), lead: 'shor-resources-beyond-21' } : null
+      const N = beyond ? 15 : Number(askedN)
+      let a = Number(readInteger(args.a, 'a', 7n) % askedN); while (a < 2 || gcdOf(a, N) !== 1) a++
       const nodes = Number(args.nodes ?? 12)
       if (!Number.isInteger(n) || n < 1 || n > 6) reject('qubits is an integer from 1 to 6')
-      if (!Number.isInteger(N) || N < 3 || N > 21) reject('N is an integer from 3 to 21')
-      if (!Number.isInteger(a) || a < 2 || a >= N || gcdOf(a, N) !== 1) reject('a must be an integer from 2 to N−1 with no common factor with N')
       if (!Number.isInteger(nodes) || nodes < 2 || nodes > 12) reject('nodes is an integer from 2 to 12')
       const builders: Record<string, () => Circuit> = {
         qft: () => new Circuit().append(qftOperations(LineQubit.range(n))),
@@ -593,10 +605,12 @@ const OWN: Tool[] = [
         qec: () => repetitionCycle('bit_flip', { name: 'bit_flip', p: 0.1 }, '0'),
       }
       if (which !== 'all' && !(which in builders)) reject(`circuit ${which} is not one of ${Object.keys(builders).join(', ')}, all`)
-      const names = which === 'all' ? Object.keys(builders) : [which]
+      if (beyond) delete builders.shor
+      const names = which === 'all' ? Object.keys(builders) : beyond && which === 'shor' ? [] : [which]
       const circuits = names.map((name) => ({ name: name === 'qft' ? `qft on ${n} qubits` : name === 'shor' ? `shor N=${N} a=${a}` : name === 'qaoa' ? `qaoa on ${nodes} nodes (alpha = 0.5, beta = 0.25)` : name === 'qec' ? 'repetition code cycle (bit flip, p = 0.1)' : name, count: countResources(builders[name]!()) }))
       return {
         circuits,
+        ...(beyond ? { beyond } : {}),
         costs: {
           toffoli: { tCount: 7, source: 'Nielsen & Chuang, Quantum Computation and Quantum Information, figure 4.9; Amy, Maslov, Mosca, Roetteler, IEEE TCAD 32, 818 (2013)' },
           t: { tCount: 1, source: 'T = Z**0.25; X**0.25 = H·T·H' },

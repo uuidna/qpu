@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T03:59:21.921Z",
- "ms": 14511,
+ "date": "2026-10-28T07:35:09.649Z",
+ "ms": 26450,
  "rounds": 2,
  "selftest": {
   "passed": true
@@ -10,73 +10,73 @@
   {
    "id": "nist-beacon",
    "status": 200,
-   "ms": 1319,
+   "ms": 837,
    "bytes": 3633
   },
   {
    "id": "ct-sth",
    "status": 503,
-   "ms": 13677,
+   "ms": 4365,
    "bytes": 12
   },
   {
    "id": "acme-directory",
    "status": 200,
-   "ms": 649,
+   "ms": 748,
    "bytes": 961
   },
   {
    "id": "nvd-cves",
    "status": 200,
-   "ms": 583,
+   "ms": 668,
    "bytes": 21839
   },
   {
    "id": "cern-opendata",
    "status": 200,
-   "ms": 424,
+   "ms": 561,
    "bytes": 119560
   },
   {
    "id": "csrc-pqc",
    "status": 200,
-   "ms": 882,
+   "ms": 867,
    "bytes": 60973
   },
   {
    "id": "crt-sh",
-   "status": 200,
-   "ms": 3939,
-   "bytes": 2
+   "status": 0,
+   "ms": 25000,
+   "bytes": 0
   },
   {
    "id": "tls:qpu.uuidna.com",
    "status": 200,
-   "ms": 50,
+   "ms": 136,
    "bytes": 115
   },
   {
    "id": "tls:qpu.psg.bg",
    "status": 200,
-   "ms": 52,
+   "ms": 137,
    "bytes": 115
   },
   {
    "id": "tls:opendata.cern.ch",
    "status": 200,
-   "ms": 99,
+   "ms": 969,
    "bytes": 107
   },
   {
    "id": "tls:beacon.nist.gov",
    "status": 200,
-   "ms": 254,
+   "ms": 310,
    "bytes": 107
   },
   {
    "id": "nist-beacon-previous",
    "status": 200,
-   "ms": 190,
+   "ms": 216,
    "bytes": 3633
   }
  ],
@@ -144,9 +144,9 @@
    "status": "read",
    "facts": {
     "chainIndex": 2,
-    "pulseIndex": 2002415,
-    "timeStamp": "2026-10-28T03:57:00.000Z",
-    "previous": 2002414
+    "pulseIndex": 2002631,
+    "timeStamp": "2026-10-28T07:33:00.000Z",
+    "previous": 2002630
    },
    "verdicts": [
     {
@@ -162,7 +162,7 @@
     {
      "theorem": "textbook_chain_index_steps",
      "passed": true,
-     "says": "pulse 2002415 follows 2002414"
+     "says": "pulse 2002631 follows 2002630"
     },
     {
      "theorem": "textbook_beacon_period",
@@ -355,10 +355,8 @@
    ]
   },
   "crt-sh": {
-   "status": "read",
-   "facts": {
-    "entries": 0
-   },
+   "status": "unreadable",
+   "facts": {},
    "verdicts": []
   },
   "tls-live": {
@@ -522,5 +520,5 @@
    "failed": 0
   }
  },
- "says": "7 source(s) read of 8; 44 theorem checks, 0 violation(s)"
+ "says": "6 source(s) read of 8; 44 theorem checks, 0 violation(s)"
 }

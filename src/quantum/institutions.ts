@@ -65,11 +65,7 @@ export const planInstitution = (r: InstitutionRequest) => {
 
 export const SET_FAMILIES = ['education', 'nonprofit', 'workspace'] as const
 type SetFamily = (typeof SET_FAMILIES)[number]
-const WHO: Readonly<Record<SetFamily, { people: string; group: string; outside: string; leader: string }>> = {
-  education: { people: 'teachers and students', group: 'classes', outside: 'guardians', leader: 'the school\'s administrators' },
-  nonprofit: { people: 'staff and volunteers', group: 'programmes', outside: 'donors and partners', leader: 'the board' },
-  workspace: { people: 'employees', group: 'teams', outside: 'customers', leader: 'management' },
-}
+const WHO = TABLES.WHO as unknown as Readonly<Record<SetFamily, { people: string; group: string; outside: string; leader: string }>>
 const isRead = (s: string) => /readonly|freebusy|readstate|userinfo/.test(s)
 const listModes = (d: (typeof WORKSPACE_MCP)[number]) => (d.scopes.some((s) => !isRead(s)) ? (['off', 'read', 'write'] as const) : (['off', 'read'] as const))
 export const SET_RADICES: readonly number[] = [SET_FAMILIES.length, ...WORKSPACE_MCP.map((d) => listModes(d).length)]

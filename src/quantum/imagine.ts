@@ -1,6 +1,7 @@
 // Imagination as a pure toolbox: every lead's statement matched with the reflection on, so each lead gets its hidden factors,
 // its angles, its mirror queries, its cluster and its verification requests; every reflection that finds something is a new
 // open lead; every enum value no example exercises is an untried door; every application family is an adaptor to build.
+import { TABLES } from './tables-index.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import type { Rpc } from './audit.ts'
@@ -10,18 +11,7 @@ import { VERIFIERS } from './verifiers.ts'
 type ImagineRow = { lead: string; status: string; verdict: string; tool?: string; cluster: number; verify: number; factors: number; angles: number; queries: number; opened: number }
 type Imagination = { leads: number; verdicts: Record<string, number>; verifyRequests: number; imaginedLeads: number; rows: ImagineRow[]; imagined: Lead[] }
 
-const APPLICATIONS: { family: string; entry: string; verifier: string }[] = [
-  { family: 'IoT sensing', entry: '{ kind: "reading", from: device, body: { quantity, unit, value, at } }', verifier: 'source-page or nist-codata for the reference value' },
-  { family: 'IoT actuation', entry: '{ kind: "command", from: controller, body: { target, action, at } } and the device\'s { kind: "ack" }', verifier: 'the ack entry linked to the command' },
-  { family: 'lab instruments', entry: '{ kind: "measurement", from: instrument, body: { observable, value, uncertainty } }', verifier: 'nist-codata, oeis for integer counts' },
-  { family: 'phones and kiosks', entry: 'the block a human device renders (widget, Open Graph, shadcn item)', verifier: 'the audit\'s widget and licence checks' },
-  { family: 'assistive devices', entry: 'the same block, read aloud or in braille from its HTML structure', verifier: 'an accessibility audit of the widgets' },
-  { family: 'energy meters', entry: '{ kind: "reading", from: meter, body: { kWh, at } }', verifier: 'the grid operator\'s public interval data where published' },
-  { family: 'vehicles', entry: '{ kind: "reading", from: vehicle, body: { position, speed, at } }', verifier: 'a public map or transit feed' },
-  { family: 'wearables', entry: '{ kind: "reading", from: wearable, body: { heartRate, at } } under the wearer\'s consent', verifier: 'no public verifier: the wearer is the witness' },
-  { family: 'education kits', entry: '{ kind: "result", from: kit, body: { exercise, answer } } (the Qubit Game is a lead already)', verifier: 'the surface\'s own tools recompute the exercise' },
-  { family: 'other MCP servers', entry: '{ kind: "reply", from: host, body: the tools/call result }', verifier: 'the host\'s own receipt; the unit\'s fan-out names the hosts' },
-]
+const APPLICATIONS = TABLES.IMAGINE_APPLICATIONS as unknown as { family: string; entry: string; verifier: string }[]
 
 /** Every lead (or the subset named) imagined. Pure; the matcher is built once. */
 export const imagineLeads = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], subset?: readonly string[], statements?: readonly { id: string; statement: string }[]): Imagination => {

@@ -265,18 +265,9 @@ const gateAdapterOf = (g: { id: string; category: string; kind: GateKind; by: st
   return { plugin: 'qpuPlugin', dimension: g.id, kind: g.kind, lands: l.lands, hook: l.hook, fields: l.fields, rest, stream, ui: { item: p.parts[0]!.item, variant: p.parts[0]!.variant, style: p.style }, says: 'a dimension of the one plugin over the default schema: nothing added, the API\'s answers land where Payload already holds them, presented by the item its address picks' }
 }
 /** Every dev dependency of the tree as an MCP door usable in the UI: the step of next that runs it is its tool, its gate page carries that step's block rendered by the MCP App. */
-const DEV_DEPENDENCY_ROLES: Readonly<Record<string, { step: string; does: string }>> = {
-  typescript: { step: 'typecheck', does: 'the type check of every module (tsc --noEmit): the step typecheck of next' },
-  tsx: { step: 'next', does: 'the TypeScript loader every client script of next runs under' },
-  vitepress: { step: 'docs:build', does: 'the site built from the pages: the step docs:build of next' },
-  wrangler: { step: 'deploy', does: 'the Worker deployed and run locally: npm run deploy, wrangler dev' },
-  '@types/node': { step: 'typecheck', does: 'the Node types the scripts compile against' },
-}
+const DEV_DEPENDENCY_ROLES = TABLES.DEV_DEPENDENCY_ROLES as unknown as Readonly<Record<string, { step: string; does: string }>>
 /** The energy sector's gates: the market prices the bill's kilowatt-hours are priced against, keyed by the tenant; proposed, never called from the tree. */
-const ENERGY_APIS: readonly { id: string; name: string; url: string; key: string }[] = [
-  { id: 'entsoe', name: 'ENTSO-E transparency platform: day-ahead prices by bidding zone', url: 'https://web-api.tp.entsoe.eu/api', key: 'ENTSOE_API_TOKEN' },
-  { id: 'eia', name: 'EIA open data: electricity retail prices by state', url: 'https://api.eia.gov/v2/electricity/retail-sales/data/', key: 'EIA_API_KEY' },
-]
+const ENERGY_APIS = TABLES.ENERGY_APIS as unknown as readonly { id: string; name: string; url: string; key: string }[]
 const gatesOf = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}, google: GoogleApis = {}) => {
   const tools = listTools(ctx)
   const external: RawGate[] = [
@@ -519,7 +510,7 @@ const ecommerceOf = (rates?: Record<string, { rate: number }>) => {
 /** The UI as a configuration (MCP Apps, SEP-1865, specification 2026-01-26, read at the source 2026-10-26): one app shell for every tool, a pure
  * function of the key and the theme — no randomness, no clock, no external domain — served as the ui:// resource of each tool and hosted by any
  * host that negotiates the extension; the site's playground hosts the same resource. The widget the tool computes is what the shell renders. */
-export const MCP_APPS = { extension: 'io.modelcontextprotocol/ui', mimeType: 'text/html;profile=mcp-app', specification: 'https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/2026-01-26/apps.mdx', scheme: 'ui://qpu/<tool>', read: '2026-10-26', methods: { view: ['ui/initialize', 'ui/notifications/initialized', 'ui/notifications/size-changed'], host: ['ui/notifications/tool-input', 'ui/notifications/tool-result', 'ui/notifications/tool-cancelled'] } } as const
+export const MCP_APPS = TABLES.MCP_APPS
 /** The host's standardised theme variables mapped onto the tokens every widget of this tree uses: the widget never changes, the host's theme shows through. A token never maps onto its own name (a self-reference is a cycle the browser drops: measured as serif text in the playground); --font-sans is the host's own and read where it is used. */
 const UI_TOKENS = TABLES.UI_TOKENS as unknown as readonly [string, string, string][]
 /** The host of an MCP App in React (a client component): reads the tool's ui:// resource over the app's own MCP endpoint, hosts it in a sandboxed frame and speaks the Apps protocol; the same host the site's playground runs in Vue. Served to any shadcn frontend as the registry item qpu-app. */

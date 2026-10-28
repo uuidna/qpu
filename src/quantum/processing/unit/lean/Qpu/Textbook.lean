@@ -1284,6 +1284,8 @@ theorem textbook_bill_covered_reflected (price cost : Nat) (h : cost ≤ price) 
 theorem textbook_bill_covered_contrapositive (price cost : Nat) : ¬ (price - cost + cost = price) → ¬ ((cost ≤ price)) := fun hc hh => hc (textbook_bill_covered price cost hh)
 /-- the converse of textbook_bill_covered, proved (examples: repository-predeploy) -/
 theorem textbook_bill_covered_converse (price cost : Nat) : (price - cost + cost = price) → (cost ≤ price) := fun hc => by omega
+/-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: the classical door checks every factor it finds by that product (readInteger and writeInteger, testPrimality, findFactors), at any size (examples: algorithm-factor-1000-bit, algorithm-factor-mersenne) -/
+theorem textbook_factors_divide (f c n : Nat) (h : f * c = n) : f ∣ n := ⟨c, h.symm⟩
 /-- every question read from a source Payload holds is decided or a lead: the questions less the leads are the decided ones, a lexical neighbour counted a lead (examples: match-questions) -/
 theorem textbook_questions_matched (decided leads total : Nat) (h : decided + leads = total) : total - leads = decided := by omega
 /-- textbook_questions_matched reflected by its shape, equality (examples: match-questions) -/

@@ -3,6 +3,7 @@
 // one piece it sits in, so a door answers from that piece and never from the whole. The bound is a reflective boundary:
 // σ_n(i) = n − i mirrors every piece onto the one across the fold, and the excess over the bound is reflected into the count
 // of pieces, decided by integer comparisons before anything is computed. Pure: SHA-256 and the fold address, nothing else.
+import { readInteger, writeInteger } from '../algorithms.ts'
 import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { memoOf, uuidOf, presentationOf, streamOf, neighboursOf, uuidSchemasOf, UUID_SCHEMAS, compositionsOf, compositionOf, compositionIndexOf, harmonicDefaultsOf, type StreamQuery } from '../blocks.ts'
 import { foldEntropy } from '../scan.ts'
@@ -106,8 +107,9 @@ const fold = defineTool('crypto', {
     if (Array.isArray(args.uuids)) return { phase: 'streamed' as const, ...streamOf(args.uuids.map(String), (isObj(args.query) ? args.query : {}) as StreamQuery) }
     if (Array.isArray(args.pieces)) { const u = unfoldPieces(args.pieces as { index: number; text: string; sha256?: string }[], typeof args.root === 'string' ? args.root : undefined); return { phase: 'unfolded' as const, bytes: utf8(u.whole).length, root: u.root, agrees: u.agrees, wrong: u.wrong, ...(args.withPieces ? { whole: u.whole } : {}) } }
     if (typeof args.text !== 'string') throw new Error('text folds, or pieces unfold')
-    const bound = typeof args.bound === 'number' && args.bound >= 1 ? Math.floor(args.bound) : 131072
-    const f = foldLedger(args.text, bound)
+    // any bound folds: one at least the text's bytes is the whole text in one piece, and a bound of 0 holds no byte, so it is read as 1
+    const asked = readInteger(args.bound, 'bound', 131072n), whole = BigInt(Math.max(1, utf8(args.text).length)), bound = Number(asked < 1n ? 1n : asked > whole ? whole : asked)
+    const f = { ...foldLedger(args.text, bound), asked: writeInteger(asked) }
     const located = typeof args.key === 'string' ? pieceOfKey(f, args.key) : null
     const texts = args.withPieces ? (args.text.includes('\n') ? undefined : undefined) : undefined
     void texts

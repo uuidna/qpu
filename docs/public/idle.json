@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T03:50:32.858Z",
+ "date": "2026-10-28T07:31:47.808Z",
  "input": {
   "doors": [
    {
@@ -3065,7 +3065,7 @@
    },
    {
     "name": "uuidna.com",
-    "called": false
+    "called": true
    },
    {
     "name": "qpu.uuidna.com",
@@ -3941,11 +3941,10 @@
   "gates": {
    "unit": "calls",
    "capacity": 108,
-   "used": 51,
-   "idle": 57,
-   "percentIdle": 52,
+   "used": 52,
+   "idle": 56,
+   "percentIdle": 51,
    "idleNames": [
-    "uuidna.com",
     "docs.mcp.cloudflare.com",
     "bindings.mcp.cloudflare.com",
     "bindings.mcp.cloudflare.com",

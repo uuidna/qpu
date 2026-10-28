@@ -66,7 +66,7 @@ const verifySignature = (secret: string, header: string, payload: string, now: n
 }
 
 /** Every Stripe event this surface understands, read into the state it means for the licence. */
-const STATE_OF: Record<string, LicenceEntry['body']['state']> = { 'checkout.session.completed': 'granted', 'customer.subscription.created': 'granted', 'invoice.paid': 'renewed', 'customer.subscription.updated': 'changed', 'charge.refunded': 'revoked', 'customer.subscription.deleted': 'revoked', 'charge.dispute.created': 'disputed', 'charge.dispute.closed': 'renewed', 'invoice.payment_failed': 'failed', 'checkout.session.expired': 'noted', 'payment_intent.succeeded': 'noted' }
+const STATE_OF = TABLES.STATE_OF as unknown as Record<string, LicenceEntry['body']['state']>
 /** One idempotent entry per event: the same event again gives the same address, and the docket says duplicate. */
 const toLicenceEntry = (tenant: string, event: { id: string; type: string; created?: number; data?: { object?: Record<string, unknown> } }, earlier: readonly LicenceEntry[] = []): LicenceEntry => {
   const previous = earlier.filter((p) => p && p.body) // a row without its body cannot be read; it is skipped, never guessed
@@ -456,7 +456,7 @@ export const chainLicence = (parties: readonly string[]) => {
   return { parties: parties.length, links: parties.length - 1, theorem: 'textbook_licence_chain', levels, verify: 'verify { uuid, prev, next } on each licence entry: prev is the licence above, next a sublicence below; a broken link ends the chain there', says: `${parties.length - 1} sublicence(s) under one licence are ${parties.length - 1} links, each a Stripe hook at the reseller's own keys, the author paid at the root` }
 }
 /** The Stripe resources the MCP's combinations already use, by the stripe tool's ops and the ecommerce plugin's collections: the side of the comparison the tree holds. */
-const MCP_STRIPE_RESOURCES: Readonly<Record<string, readonly string[]>> = { checkout: ['plan', 'webhook'], products: ['catalogue', 'ecommerce: products'], prices: ['catalogue', 'ecommerce: variants'], events: ['webhook'], webhook_endpoints: ['webhook'], customers: ['state', 'ecommerce: customers'], subscriptions: ['state'], invoices: ['usage'], billing: ['usage', 'settle'], balance: ['settle'], payouts: ['settle'], payment_intents: ['ecommerce: transactions'], refunds: ['ecommerce: transactions'] }
+const MCP_STRIPE_RESOURCES = TABLES.MCP_STRIPE_RESOURCES as unknown as Readonly<Record<string, readonly string[]>>
 /** Every use case of the Stripe API, read from its own contract (the paths of its OpenAPI specification, discovered each run), grouped by resource and
  *  compared automatically to the MCP's combinations: every resource the MCP does not combine is a lead to explore and to config (the difference door,
  *  textbook_difference_leads); nothing enumerated by hand. */
@@ -491,7 +491,7 @@ export const orderUsage = (calls: number, currency = 'eur', energy?: { kWh: numb
 }
 export const TENANT_CURRENCY: Readonly<Record<string, string>> = { uuidna: 'EUR', psg: 'EUR', ceci: 'EUR', local: 'EUR' }
 /** The related MCPs the registry names for currency (2026-10-26, remotes marked by the discover step; proposed, never called from here). */
-export const CURRENCY_MCPS = ['com.datakoot/fx-currency-exchange-rates', 'com.invokera/currency-rates', 'io.github.FoundryNet/currency-intel-mcp', 'io.github.OlsOls4/currencykit', 'cn.pianam.mcp/exchange-rate-mcp', 'dev.workers.bhazarstudio.datoqa/historical-exchange-rates', 'io.github.hatgit/forex-gpt-mcp', 'io.github.Exchange-RateAPI/mcp-server', 'io.github.cyanheads/exchange-rates-mcp-server'] as const
+export const CURRENCY_MCPS = TABLES.CURRENCY_MCPS
 type RateTable = { source: string; date: string | null; base: 'EUR'; rates: Record<string, number> }
 /** A source's text read into a rate table: XML of the ECB or the BNB, JSON of the others; what cannot be read is said. */
 const listRates = (source: string, text: string): RateTable | { source: string; error: string } => {

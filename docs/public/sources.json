@@ -1,11 +1,11 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T04:03:00.675Z",
+ "date": "2026-10-28T07:38:31.379Z",
  "phase": "judged",
- "address": "109a00b1-6bb9-73ef-9767-acb3034a9944",
+ "address": "a70b1d78-8d08-2f17-a326-19df6290fd65",
  "summary": {
   "requests": 287,
-  "reached": 286,
+  "reached": 283,
   "versions": 14,
   "visits": 0,
   "captures": 0,
@@ -15,8 +15,8 @@
   "routed": 2403,
   "domainLeads": 21153,
   "outside": 123,
-  "doors": 591,
-  "leads": 21155
+  "doors": 592,
+  "leads": 21158
  },
  "immutable": {
   "package": "@uuidna/qpu",
@@ -306,10 +306,10 @@
    "doi": "10.5281/zenodo.21781602",
    "title": "All Seven Clay Millennium Problems Sealed via Universal σ-Involution",
    "date": "2026-08-04",
-   "works": 3,
-   "before": 2,
-   "after": 1,
-   "earliest": "2026-02-26",
+   "works": 0,
+   "before": 0,
+   "after": 0,
+   "earliest": null,
    "says": "neighbours by title, dated: before is prior art to cite, after is a work that may build on the record; read, never a verdict"
   },
   {
@@ -5408,10 +5408,10 @@
    },
    {
     "name": "com.paperplanepost/office",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Turn a photo into a real printed postcard, mailed anywhere. Returns a link to finish and pay.",
     "remote": "https://api.paperplanepost.com/v1/mcp",
-    "repository": null
+    "repository": "https://github.com/paperplanepost/agents"
    },
    {
     "name": "com.paperporter/paperporter",
@@ -5489,13 +5489,6 @@
     "description": "Academic paper search MCP server through OpenAlex. No key needed.",
     "remote": null,
     "repository": "https://github.com/AnonymousOnyx22/paper-finder-student-mcp"
-   },
-   {
-    "name": "io.github.AwakeWeb3/papertax",
-    "version": "0.9.1",
-    "description": "Hyperliquid tax exports, papertrade trade view and a token launchpad with the $TAX airdrop",
-    "remote": "https://papertax.xyz/mcp",
-    "repository": null
    },
    {
     "name": "io.github.QAtlasHub/doiget",
@@ -6695,6 +6688,13 @@
     "repository": "https://github.com/mrfentmen/awesome-servers"
    },
    {
+    "name": "io.github.mrfentmen/library-of-congress-mcp",
+    "version": "1.0.2",
+    "description": "Search the Library of Congress catalogue, collections and digitised items - keyless.",
+    "remote": null,
+    "repository": "https://github.com/mrfentmen/awesome-servers"
+   },
+   {
     "name": "io.github.mrfentmen/open-library-mcp",
     "version": "1.0.0",
     "description": "Open Library search, works, authors, editions, and ISBN.",
@@ -6784,6 +6784,13 @@
     "description": "Search inside scanned US newspapers and browse the Library of Congress catalogue. No API key.",
     "remote": null,
     "repository": "https://github.com/smeet666/mcp-libraryofcongress"
+   },
+   {
+    "name": "io.github.AwakeWeb3/papertax",
+    "version": "0.9.1",
+    "description": "Hyperliquid tax exports, papertrade trade view and a token launchpad with the $TAX airdrop",
+    "remote": "https://papertax.xyz/mcp",
+    "repository": null
    },
    {
     "name": "io.github.Eclipse-Cj/paper-distill-mcp",
@@ -7928,7 +7935,7 @@
    },
    {
     "name": "io.github.goyohan0611-png/turnbook",
-    "version": "0.9.46",
+    "version": "0.9.47",
     "description": "Local long-term memory shared by all your AI agents, kept word for word on your own PC.",
     "remote": null,
     "repository": "https://github.com/goyohan0611-png/turnbook"
@@ -8502,8 +8509,8 @@
    },
    {
     "name": "org.bibooks/bibooks",
-    "version": "1.0.0",
-    "description": "Search and read free bilingual audiobooks: aligned two-language text, CEFR levels, audio.",
+    "version": "1.1.0",
+    "description": "Search and read free bilingual audiobooks for language learners: parallel text, CEFR levels, audio.",
     "remote": "https://bibooks.org/mcp",
     "repository": null
    },
@@ -96859,6 +96866,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol12569234w",
+   "source": "open-library /works/OL12569234W",
+   "statement": "An evaluation of factors affecting document ranking by information retrieval systems (algorithms, Information storage and retrieval systems, Algorithms) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol8849806w",
    "source": "open-library /works/OL8849806W",
    "statement": "Vector Games Math Processors (Wordware Game Math Library) (algorithms, Vector processing (Computer science), Computer games) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -122909,13 +122923,6 @@
    "id": "textbook-open-library-works-ol12568032w",
    "source": "open-library /works/OL12568032W",
    "statement": "Iterative methods for the solution of equations (algorithms, Algorithms, Numerical calculations) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol12569234w",
-   "source": "open-library /works/OL12569234W",
-   "statement": "An evaluation of factors affecting document ranking by information retrieval systems (algorithms, Information storage and retrieval systems, Algorithms) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -156672,6 +156679,27 @@
    "statement": "the source swh-visits:uuidna/qpu answered 404",
    "status": "blocked",
    "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-openalex-near-10-5281-zenodo-21781602-1",
+   "source": "https://api.openalex.org/works?search=All%20Seven%20Clay%20Millennium%20Problems%20Sealed%20via%20Universal%20%CF%83-Involution&per-page=200&page=1",
+   "statement": "the source openalex-near:10.5281/zenodo.21781602:1 answered 429",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-openalex-near-10-5281-zenodo-22700098-1",
+   "source": "https://api.openalex.org/works?search=%40uuidna%2Fqpu%2C%20all%20versions&per-page=200&page=1",
+   "statement": "the source openalex-near:10.5281/zenodo.22700098:1 answered 429",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-openalex-near-10-5281-zenodo-23156998-1",
+   "source": "https://api.openalex.org/works?search=%40uuidna%2Fqpu%20v1.4.0&per-page=200&page=1",
+   "statement": "the source openalex-near:10.5281/zenodo.23156998:1 answered 429",
+   "status": "blocked",
+   "reason": "measured on the next run"
   }
  ],
  "theorems": [
@@ -156680,15 +156708,15 @@
   "textbook_route_or_lead",
   "textbook_cheap_gates"
  ],
- "says": "286 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 591 MCP doors proposed",
+ "says": "283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 592 MCP doors proposed",
  "counts": {
   "served": 0,
   "partial": 0,
   "open": 21154,
-  "blocked": 1,
+  "blocked": 4,
   "out_of_scope": 0
  },
- "total": 21155,
+ "total": 21158,
  "integrity": {
   "phase": "artifacts",
   "artifacts": 17,

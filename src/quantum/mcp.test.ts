@@ -248,7 +248,9 @@ test('the algorithm tool factors N = 15 by Shor\'s order finding, and runs the Q
   const summary = (shor.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
   assert.equal(summary[2]![1], '4')
   assert.equal(summary[3]![1], '3 × 5')
-  assert.ok('error' in call('algorithm', { name: 'shor', N: 15, a: 5 }), 'a must have no common factor with N')
+  // re-fused, not refused: a that shares a factor with N is that factor already (Euclid, Shor's own classical step)
+  const shared = (call('algorithm', { name: 'shor', N: 15, a: 5 }) as { result?: { structuredContent?: { sharedFactor?: number; factors?: string[] } } }).result?.structuredContent
+  assert.deepEqual([shared?.sharedFactor, shared?.factors], [5, ['3', '5']], 'a = 5 shares the factor 5 with N = 15')
   const sweep = call('algorithm', { name: 'qaoa', nodes: 6, sweep: true })
   assert.ok('result' in sweep)
   const sw = (sweep.result as { structuredContent: { summary: string[][] } }).structuredContent.summary

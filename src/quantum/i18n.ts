@@ -3,13 +3,7 @@ import { TABLES as PAYLOAD_TABLES } from './tables-index.ts'
 // headings — and a table per language translates it both ways. A word with no entry stays as it is and is reported as a
 // lead, never guessed. Free text inside entries is not translated. Any language or dialect is one more table.
 
-export const LOCALES: Record<string, { name: string; native: string; filled: boolean }> = {
-  en: { name: 'English', native: 'English', filled: true },
-  bg: { name: 'Bulgarian', native: 'Български', filled: true },
-  de: { name: 'German', native: 'Deutsch', filled: false }, fr: { name: 'French', native: 'Français', filled: false }, es: { name: 'Spanish', native: 'Español', filled: false },
-  it: { name: 'Italian', native: 'Italiano', filled: false }, ru: { name: 'Russian', native: 'Русский', filled: false }, zh: { name: 'Chinese', native: '中文', filled: false },
-  ja: { name: 'Japanese', native: '日本語', filled: false }, pt: { name: 'Portuguese', native: 'Português', filled: false }, nl: { name: 'Dutch', native: 'Nederlands', filled: false },
-}
+export const LOCALES = PAYLOAD_TABLES.LOCALES as unknown as Record<string, { name: string; native: string; filled: boolean }>
 
 /** English → Bulgarian for every term the surface emits. The inverse is derived, so the table reads both ways. */
 const BG: Record<string, string> = PAYLOAD_TABLES.I18N_BG as Record<string, string>

@@ -2,12 +2,13 @@
 // lead; the vocabulary measured against every term the surface emits, so the tables are updated from measurement; and
 // programmable prose: a tool's result and its toolbox's skill rendered as sentences in any locale, backed by the toolset
 // (the numbers are the tool's) and the skillset (the words are the vocabulary's). Pure.
+import { TABLES as PAYLOAD_TABLES } from '../tables-index.ts'
 import { defineTool, createChecks, listTools, type Toolbox, type Context } from '../toolbox.ts'
 import { LOCALES, TABLES, translateOf, listNumerals } from '../i18n.ts'
 import { flowWidget } from '../widgets.ts'
 
 /** Every term the surface emits as a label a reader sees: statuses, verdicts, classes, phases and the headings of its pages. */
-const SURFACE_TERMS: readonly string[] = ['served', 'partial', 'blocked', 'open', 'out of scope', 'impossible', 'unknown', 'refuted', 'trial', 'requests', 'results', 'discovery', 'plan', 'judged', 'verdict', 'receipt', 'evidence', 'lead', 'leads', 'tool', 'tools', 'toolbox', 'example', 'examples', 'seal', 'valid', 'invalid', 'channel', 'program', 'handle', 'tail', 'previous', 'next', 'page', 'statement', 'door', 'doors', 'address', 'content', 'licence', 'author', 'ready', 'not ready', 'passed', 'failed', 'checks', 'hosts', 'contract', 'phase', 'selftest']
+const SURFACE_TERMS = PAYLOAD_TABLES.SURFACE_TERMS as unknown as readonly string[]
 
 const splitWords = (key: string): string => key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ').toLowerCase()
 

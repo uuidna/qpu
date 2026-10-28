@@ -5,7 +5,7 @@ order: 57
 
 # The immutable sources of leads
 
-Read on 2026-10-28T04:03:00.675Z by `leads { sources }`: 286 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 591 MCP doors proposed.
+Read on 2026-10-28T07:38:31.379Z by `leads { sources }`: 283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 592 MCP doors proposed.
 
 ## Licence candidates
 
@@ -19,7 +19,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 
 | record | date | neighbours | before | after |
 | --- | --- | --- | --- | --- |
-| 10.5281/zenodo.21781602 | 2026-08-04 | 3 | 2 | 1 |
+| 10.5281/zenodo.21781602 | 2026-08-04 | 0 | 0 | 0 |
 | 10.5281/zenodo.22700098 | 2026-09-11 | 0 | 0 | 0 |
 | 10.5281/zenodo.23156998 | 2026-09-11 | 0 | 0 | 0 |
 
@@ -390,7 +390,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | dev.reapx/scientific-papers | https://mcp.apify.com/?actors=reapx/arxiv-papers-scraper,reapx/openalex-scraper,reapx/crossref-scraper |
 | dev.urantia/urantia-papers | https://api.urantia.dev/mcp |
 | io.github.AnonymousOnyx22/paper-finder-student-mcp |  |
-| io.github.AwakeWeb3/papertax | https://papertax.xyz/mcp |
 | io.github.QAtlasHub/doiget |  |
 | io.github.alfredoizdev/contextforge-mcp |  |
 | io.github.ecfaria/todoist-mcp |  |
@@ -562,6 +561,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.malamutemayhem/openlibrary |  |
 | io.github.malkreide/eth-library-mcp |  |
 | io.github.mrfentmen/launch-library-mcp |  |
+| io.github.mrfentmen/library-of-congress-mcp |  |
 | io.github.mrfentmen/open-library-mcp |  |
 | io.github.mrfentmen/openlibrary-mcp |  |
 | io.github.ofershap/recipe-library | https://recipes.gitshow.dev/mcp |
@@ -575,6 +575,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.proxy-intell/linkedin-ads-library |  |
 | io.github.proxy-intell/tiktok-ads-library |  |
 | io.github.smeet666/mcp-libraryofcongress |  |
+| io.github.AwakeWeb3/papertax | https://papertax.xyz/mcp |
 | io.github.Eclipse-Cj/paper-distill-mcp |  |
 | io.github.LAHutchins91/papers | https://papers-mcp.vercel.app/mcp |
 | io.github.MCPServings/paper-mcp | https://latex-tools.online/mcp |
