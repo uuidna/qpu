@@ -14,7 +14,7 @@ import { configKinds, TENANT_ROLES, OPERATIONS } from './payload-vocabulary.ts'
 import { ROLES } from './roles.ts'
 // what only the tools compute (the toolboxes, the generated files, the configurations) read through the QPU's own MCP: mcp.ts hands its
 // sources over once it has loaded (updateTheoremSources), and the getters below read them, each once, so no import cycle is ever read early
-type TheoremSources = { toolboxes: readonly { tools: readonly unknown[] }[]; call: (name: string, args: unknown) => unknown; googleMcps: readonly string[] }
+type TheoremSources = { toolboxes: readonly { tools: readonly unknown[] }[]; call: (name: string, args: unknown) => unknown; googleMcps: readonly string[]; examples: readonly { id: string; tool: string; arguments: unknown }[] }
 let sources: TheoremSources | null = null
 export const updateTheoremSources = (s: TheoremSources) => { sources = s }
 const from = (): TheoremSources => { if (!sources) throw new Error('the theorem sources are handed over by mcp.ts: import it before reading a measured theorem'); return sources }
@@ -23,6 +23,10 @@ const configure = (args: Record<string, unknown>) => (from().call('configure', a
 const BOXES = once(() => from().toolboxes.map((b) => b.tools.length)), PLUGINS = once((): number => configure({ kind: 'payload' }).config.plugins.length)
 const FILES = once(() => configure({ files: true }) as { tool: number; hand: number; unfiled: number; kinds: number })
 const FULLSTACK = once((): string => String(configure({ kind: 'fullstack' }).config.partition)), FULLSTACK_FILES = once(() => Number(FULLSTACK().split(' = ')[1]))
+// a theorem's numbers read from the example it names: the tool's answer over the example's own arguments
+const exampleOf = (id: string) => { const e = from().examples.find((x) => x.id === id); if (!e) throw new Error(`no example ${id}`); return (from().call(e.tool, e.arguments) as { result?: { structuredContent?: any } }).result?.structuredContent }
+const WEBSITE = once(() => { const s = exampleOf('payload-website') as { pluginsShared: string[]; pluginsOnlyHere: string[] }; return { shared: s.pluginsShared.length, beyond: s.pluginsOnlyHere.length } })
+const SKILLS = once(() => exampleOf('payload-skills') as { skills: number; references: number })
 const PACKAGES = once(() => configure({ kind: 'packages' }).config as { count: number; counts: Record<string, number> }), PACKAGE_KINDS = ['plugins', 'databases', 'storage', 'email', 'editors', 'live-preview', 'runtime-and-tooling'] as const
 // the counts the theorems state, read from their sources (the tables Payload holds, Payload's surface, the locales) when gen-docs writes the Lean
 // file: never a number written by hand that a new row would falsify
@@ -85,8 +89,8 @@ export const TEXTBOOK_THEOREMS: readonly TextbookTheorem[] = [
   { key: 'textbook_cuboctahedron_faces', lean: 'theorem textbook_cuboctahedron_faces : 8 + 6 = 14 := by decide', says: 'the vector equilibrium has fourteen faces, eight triangles and six squares: around every UUID, eight witnesses with one handle nibble reflected and six with the program rotated', examples: ['verify-witnesses'] },
   { key: 'textbook_sigma_involution', lean: 'theorem textbook_sigma_involution (x : Nat) (h : x ≤ 15) : 15 - (15 - x) = x := by omega', says: 'σ is an involution on a nibble: reflected twice, 15 − (15 − x), it is x again, so every triangular witness maps back exactly to the UUID it witnesses', examples: ['verify-witnesses', 'verify-witnesses-merge'] },
   { key: 'textbook_providers_are_tenants_plus_operator', lean: 'theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide', says: 'two tenant hosts and the operator\'s are three providers', examples: ['configure-migration'] },
-  { key: 'textbook_website_plugins_partition', lean: 'theorem textbook_website_plugins_partition : 4 + 3 + 1 = 8 := by decide', says: 'of the eight plugins MCP configures, four are the site\'s own, three go beyond it, one is the editor', examples: ['payload-website'] },
-  { key: 'textbook_skills_documents', lean: 'theorem textbook_skills_documents : 2 + 12 = 14 := by decide', says: 'two skills and twelve references are fourteen documents', examples: ['payload-skills'] },
+  { key: 'textbook_website_plugins_partition', get lean() { const w = WEBSITE(); return `theorem textbook_website_plugins_partition : ${w.shared} + ${w.beyond} + ${PLUGINS() - w.shared - w.beyond} = ${PLUGINS()} := by decide` }, get says() { const w = WEBSITE(); return `of the ${PLUGINS()} plugins MCP configures, ${w.shared} are the site's own, ${w.beyond} go beyond it, the rest the editor` }, examples: ['payload-website'] },
+  { key: 'textbook_skills_documents', get lean() { const k = SKILLS(); return `theorem textbook_skills_documents : ${k.skills} + ${k.references} = ${k.skills + k.references} := by decide` }, get says() { const k = SKILLS(); return `the skills Payload publishes for agents and their references are ${k.skills + k.references} documents` }, examples: ['payload-skills'] },
   { key: 'textbook_shards_cover', lean: 'theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt k h', says: 'the shard of item k among n shards, k mod n, is one of the n shards: every item is shared', examples: ['shard-share', 'audit-shard'] },
   { key: 'textbook_shards_disjoint', lean: 'theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl', says: 'an item belongs to one shard only: the shares never overlap', examples: ['shard-share', 'audit-shard'] },
   { key: 'textbook_signature_over_digest', lean: 'theorem textbook_signature_over_digest : 32 * 8 = 256 := by decide', says: 'the signature is over the 32-byte SHA-256 digest: 256 bits, whatever the length of the text', examples: ['seal-sign'] },

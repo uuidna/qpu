@@ -14,12 +14,12 @@ and no axiom beyond `propext` and `Quot.sound`. The MCP handler is a pure functi
 performs no I/O, and returns each result with a widget. There is no server, no network access and no hardware access
 in this tree.
 
-Every figure below was measured on this tree on 2026-10-27 with the commands in §6.
+Every figure below was measured on this tree on 2026-10-28 with the commands in §6.
 
 | Measure | Value |
 |---|---:|
 | Tracked files | 1664 |
-| Source files under `src/quantum` (TypeScript) | 61 (11,092 lines) |
+| Source files under `src/quantum` (TypeScript) | 61 (11,096 lines) |
 | MCP tools | 46 |
 | Tests (`node --test`) | 177 pass, 0 fail of 177 |
 | Type check (`tsc --noEmit`) | 0 errors |

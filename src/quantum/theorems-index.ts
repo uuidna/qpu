@@ -730,7 +730,7 @@ export const THEOREMS: readonly { key: string; module: string; statement: string
   {"key":"textbook_vocabulary_measured","module":"Qpu.Textbook","statement":"∀ (terms known : Nat), known ≤ terms → terms - known + known = terms"},
   {"key":"textbook_wave_requests_by_lead","module":"Qpu.Textbook","statement":"3 + 2 + 7 * 3 + 1 + 1 = 28"},
   {"key":"textbook_webhook_tolerance","module":"Qpu.Textbook","statement":"1700000100 - 1700000000 = 100 ∧ 100 ≤ 300"},
-  {"key":"textbook_website_plugins_partition","module":"Qpu.Textbook","statement":"4 + 3 + 1 = 8"},
+  {"key":"textbook_website_plugins_partition","module":"Qpu.Textbook","statement":"4 + 4 + 1 = 9"},
   {"key":"textbook_widget_skilled_tools","module":"Qpu.Textbook","statement":"∀ (w s : Nat), w = s → min w s = w"},
   {"key":"textbook_widgets_cover_mcp","module":"Qpu.Textbook","statement":"8 * 2 = 16"},
   {"key":"textbook_willow_connectivity","module":"Qpu.Textbook","statement":"(2 * 182 * 100 + 52) / 105 = 347"},

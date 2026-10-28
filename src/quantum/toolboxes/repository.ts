@@ -289,7 +289,7 @@ const repository = defineTool('repository', {
   widget: flowWidget,
 })
 
-const LOCAL: Local = { remote: 'https://github.com/uuidna/qpu.git', head: 'abcdef1234567890', branch: 'rebuild/phase-1', version: '1.4.0', worktrees: [{ path: '/w/qpu', head: 'abcdef12', branch: 'rebuild/phase-1' }, { path: '/w/qpu-2', head: '1234abcd', branch: null }], branches: [{ name: 'main', upstream: 'origin/main', head: '1111' }, { name: 'rebuild/phase-1', upstream: null, head: 'abcdef12' }, { name: 'orphan/v1.1.1-audit', upstream: null, head: '2222' }], tags: [{ name: 'v1.3.2', commit: '3333' }, { name: 'v1.4.0', commit: '4444' }, { name: 'waves-complete', commit: '5555' }], conceptDoi: '10.5281/zenodo.22700098', pkg: '@uuidna/qpu', workflows: ['next.yml'] }
+const LOCAL = TABLES.LOCAL as unknown as Local
 const ANSWERS = TABLES.ANSWERS as unknown as Answer[]
 
 export const REPOSITORY: Toolbox = {

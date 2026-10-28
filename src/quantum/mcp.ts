@@ -961,7 +961,7 @@ const chatInner = (statement: string, c: Ask) => {
 // the tools/call envelope, written once
 export const callOf = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent?: any }; error?: { message: string } }
 // the theorems that count what the tools compute read it from here
-updateTheoremSources({ toolboxes: TOOLBOXES, call: callOf, googleMcps: GOOGLE_MCPS })
+updateTheoremSources({ toolboxes: TOOLBOXES, call: callOf, googleMcps: GOOGLE_MCPS, get examples() { return EXAMPLES } })
 // questions asked elsewhere, read through the APIs Payload holds (QUESTION_SOURCES: Stack Exchange's unanswered, MathOverflow's among them), each
 // title matched; a site that disallows crawling is read by its API only, the answer's backoff honoured; a question keeps its link and tags
 // (CC BY-SA 4.0), never its text. A question is decided only when its route calls an example over two shared stems at least: one stem in common is

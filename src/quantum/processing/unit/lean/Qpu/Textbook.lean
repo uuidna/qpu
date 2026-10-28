@@ -100,9 +100,9 @@ theorem textbook_cuboctahedron_faces : 8 + 6 = 14 := by decide
 theorem textbook_sigma_involution (x : Nat) (h : x ≤ 15) : 15 - (15 - x) = x := by omega
 /-- two tenant hosts and the operator's are three providers (examples: configure-migration) -/
 theorem textbook_providers_are_tenants_plus_operator : 2 + 1 = 3 := by decide
-/-- of the eight plugins MCP configures, four are the site's own, three go beyond it, one is the editor (examples: payload-website) -/
-theorem textbook_website_plugins_partition : 4 + 3 + 1 = 8 := by decide
-/-- two skills and twelve references are fourteen documents (examples: payload-skills) -/
+/-- of the 9 plugins MCP configures, 4 are the site's own, 4 go beyond it, the rest the editor (examples: payload-website) -/
+theorem textbook_website_plugins_partition : 4 + 4 + 1 = 9 := by decide
+/-- the skills Payload publishes for agents and their references are 14 documents (examples: payload-skills) -/
 theorem textbook_skills_documents : 2 + 12 = 14 := by decide
 /-- the shard of item k among n shards, k mod n, is one of the n shards: every item is shared (examples: shard-share, audit-shard) -/
 theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt k h
