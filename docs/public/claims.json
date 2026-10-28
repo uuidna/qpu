@@ -1,11 +1,11 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T07:39:35.859Z",
+ "date": "2026-10-28T09:07:23.398Z",
  "counts": {
   "own": 140,
   "unrecognised": 94,
   "candidate": 3,
-  "unasked": 35
+  "unasked": 36
  },
  "confirmations": 0,
  "claims": [
@@ -1856,6 +1856,13 @@
   },
   {
    "theorem": "textbook_bill_covered",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_factors_divide",
    "kind": "general",
    "status": "unasked",
    "candidates": [],

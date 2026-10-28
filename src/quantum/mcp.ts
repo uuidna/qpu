@@ -29,7 +29,7 @@ import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.ts'
 import { DEVICES, PROCESSORS, toDevice, willowNoise, getAverageConnectivity, isBelowThreshold } from './processor.ts'
 import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, entropyWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, matchWidget, clayWidget, verifyWidget } from './widgets.ts'
 import { APPLICATIONS, ROADMAP } from './roadmap.ts'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, readInteger, testPrimality, findFactors } from './algorithms.ts'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, readInteger, writeInteger, testPrimality, findFactors, shorReduction } from './algorithms.ts'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.ts'
 import { LEADS, leadCounts, combineLeads, listRunnableLeads, runSession, sitemapLeads, type Lead, type LeadStatus, type CellLead, type SessionInput } from './leads.ts'
 import { REPOSITORIES } from './repositories.ts'
@@ -93,18 +93,7 @@ const channelOf = (j: ChannelJson): Channel => {
   }
 }
 
-const CHANNEL_SCHEMA = {
-  type: 'object',
-  required: ['name'],
-  properties: {
-    name: { enum: ['bit_flip', 'phase_flip', 'depolarize', 'asymmetric_depolarize', 'amplitude_damp', 'phase_damp', 'generalized_amplitude_damp', 'reset'] },
-    p: { type: 'number', minimum: 0, maximum: 1 },
-    p_x: { type: 'number', minimum: 0, maximum: 1 },
-    p_y: { type: 'number', minimum: 0, maximum: 1 },
-    p_z: { type: 'number', minimum: 0, maximum: 1 },
-    gamma: { type: 'number', minimum: 0, maximum: 1 },
-  },
-}
+const CHANNEL_SCHEMA = TABLES.CHANNEL_SCHEMA
 const OBSERVABLE_SCHEMA = {
   type: 'object',
   description: 'A Pauli string: each qubit key (line:x, grid:row,col or named:name) mapped to X, Y or Z; unlisted qubits take the identity',
@@ -122,6 +111,7 @@ const answerFactor = (n: bigint, via?: string) => {
     ...(via ? { via } : {}), summary: [['Bits', String(bits)], ['Primality', primality], ['Prime factors found', String(f.factors.length)], ['Left unfactored', String(f.left.length)], ['Product checked', f.verified ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: [...f.factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']), ...f.left.map((x) => [x.toString(), String(x.toString(2).length), 'composite, unfactored'])] }
 }
 const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
+const gcdB = (x: bigint, y: bigint): bigint => { while (y) [x, y] = [y, x % y]; return x }
 
 /** One tool: its name, what it does, its input schema (JSON Schema 2020-12), and the call that compiles or reads it: the
  *  structured result and the widget that shows it. */
@@ -160,13 +150,7 @@ const proofCheck = (args: Record<string, unknown>) => {
 }
 const tool = <T>(spec: { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>, ctx: Context) => T; widget: (data: T) => string }): Tool => defineTool(TREE.has(spec.name) ? 'tree' : 'google', spec)
 
-const QUBIT_SCHEMA = {
-  oneOf: [
-    { type: 'object', required: ['kind', 'row', 'col'], properties: { kind: { const: 'grid' }, row: { type: 'integer' }, col: { type: 'integer' } } },
-    { type: 'object', required: ['kind', 'x'], properties: { kind: { const: 'line' }, x: { type: 'integer' } } },
-    { type: 'object', required: ['kind', 'name'], properties: { kind: { const: 'named' }, name: { type: 'string' } } },
-  ],
-}
+const QUBIT_SCHEMA = TABLES.QUBIT_SCHEMA
 const OPERATION_SCHEMA = {
   type: 'object',
   required: ['gate', 'qubits'],
@@ -289,6 +273,7 @@ const OWN: Tool[] = [
       properties: {
         name: { enum: ['qft', 'inverse_qft', 'phase_estimation', 'grover', 'teleportation', 'qaoa', 'shor', 'factor'] },
         integer: { type: 'string', pattern: '^[0-9]+$', description: 'factor: the integer, any size, as a decimal string: its bits, its primality (Miller–Rabin), its prime factors within the step budget, the product checked' },
+        order: { type: 'string', pattern: '^[0-9]+$', description: 'shor: the order r of a mod N (the quantum-hard quantity a QPU measures; the simulation reaches it only for N ≤ 21). Given it, Shor\'s reduction gcd(a^(r/2) ± 1, N) runs exactly at any size' },
         N: { type: 'integer', minimum: 3, maximum: 21, default: 15 },
         a: { type: 'integer', minimum: 2, default: 7 },
         sweep: { type: 'boolean', default: false, description: 'qaoa: sweep alpha and beta on the grid of the page and return the best' },
@@ -390,13 +375,21 @@ const OWN: Tool[] = [
       }
       if (name === 'factor') return answerFactor(readInteger(args.integer, 'integer'))
       if (name === 'shor') {
-        // beyond the state-vector bound the goal is landed by the classical door, exactly, never refused
-        const askedN = readInteger(args.N, 'N', 15n)
-        if (askedN < 3n || askedN > 21n) return answerFactor(askedN, `N = ${askedN} lies beyond the state-vector bound (3 to 21): answered by the classical door, algorithm { name: factor, integer }`)
-        const N = Number(askedN)
-        const askedA = readInteger(args.a, 'a', 7n) % askedN, shared = gcdOf(Number(askedA), N)
-        if (askedA >= 2n && shared > 1) return { ...answerFactor(askedN, `a = ${String(args.a ?? 7)} shares the factor ${shared} with N: Euclid finds it before any circuit`), sharedFactor: shared }
-        let a = Number(askedA); while (a < 2 || gcdOf(a, N) !== 1) a++
+        const askedN = readInteger(args.N, 'N', 15n), askedA = readInteger(args.a, 'a', 7n) % askedN
+        // a that shares a factor with N is that factor already (Euclid, Shor's own classical first step); 0 and 1 give way to the next unit
+        const shared = gcdB(askedA, askedN)
+        if (askedA >= 2n && shared > 1n) return { name: 'shor', N: writeInteger(askedN), a: writeInteger(askedA), sharedFactor: writeInteger(shared), factors: [writeInteger(shared < askedN / shared ? shared : askedN / shared), writeInteger(shared < askedN / shared ? askedN / shared : shared)], via: 'gcd(a, N): a shares a factor with N, so Euclid finds it before any circuit', theorem: 'textbook_shor_reduction', summary: [['N', String(writeInteger(askedN))], ['a', String(writeInteger(askedA))], ['gcd(a, N)', String(writeInteger(shared))], ['Factors', `${writeInteger(shared)} × ${writeInteger(askedN / shared)}`]], header: ['step', 'at this size'], rows: [['gcd(a, N)', 'a shares a factor with N: Euclid finds it, no circuit']] }
+        // the order supplied (any size): Shor's reduction runs exactly, the quantum-hard order never searched here, only used and verified
+        if (args.order !== undefined) { const r = readInteger(args.order, 'order'); const red = shorReduction(askedN, askedA, r)
+          return { name: 'shor', N: writeInteger(askedN), a: writeInteger(askedA), order: writeInteger(r), reduction: { ...red, order: writeInteger(red.order), factors: red.factors?.map(writeInteger) ?? null }, factors: red.factors?.map(writeInteger) ?? null, verified: red.verified, bits: askedN.toString(2).length, theorem: 'textbook_shor_reduction',
+            summary: [['N', String(writeInteger(askedN))], ['a', String(writeInteger(askedA))], ['Order r (given)', String(writeInteger(r))], ['r even', String(red.even)], ['Factors', red.factors ? `${writeInteger(red.factors[0])} × ${writeInteger(red.factors[1])}` : red.why], ['Product checked', red.verified ? 'yes' : 'no']], header: ['step', 'at this size'], rows: [['order-finding', `the quantum step a QPU measures; the simulation reaches it for N ≤ 21${askedN > 21n ? `, not ${askedN.toString(2).length} bits` : ''}`], ['reduction gcd(a^(r/2) ± 1, N)', red.nonTrivial ? 'exact, the factors found' : red.why]], says: `${red.why}` }
+        }
+        if (askedN < 3n || askedN > 21n) {
+          // no order, beyond the simulation: the reduction is a formula, order-finding is the quantum step; the classical door says what it can and can't, never a false factor
+          const classical = answerFactor(askedN, `order-finding for N = ${askedN} (${askedN.toString(2).length} bits) is the quantum step the state-vector simulation reaches only for N ≤ 21; Shor's reduction runs at this size once the order is given (order: <r>)`)
+          return { ...classical, name: 'shor', quantumStep: 'order-finding (the period of a^x mod N): supply order to run the reduction at this size, or a QPU measures it', theorem: 'textbook_shor_reduction' }
+        }
+        const N = Number(askedN); let a = Number(askedA); while (a < 2 || gcdOf(a, N) !== 1) a++
         const repetitions = Number(args.repetitions ?? 20)
         const run = new Simulator(seededRandom(JSON.stringify(args))).run(shorCircuit(N, a), repetitions)
         const found = shorFactors(N, a, run.measurements('m'))
@@ -404,7 +397,7 @@ const OWN: Tool[] = [
         for (const e of found.estimates) counts.set(e.toFixed(6), (counts.get(e.toFixed(6)) ?? 0) + 1)
         return {
           name,
-          summary: [['N', String(N)], ['a', String(a)], ['Order of a mod N', found.order === null ? 'not found' : String(found.order)], ['Factors', found.factors ? `${found.factors[0]} × ${found.factors[1]}` : 'not found'], ['Prime dust', (() => { const d: number[] = []; let n = N; for (let p = 2; p * p <= n; p += 1) while (n % p === 0) { d.push(p); n /= p } if (n > 1) d.push(n); return `${d.join(' × ')} (verified: product = ${d.reduce((x, y) => x * y, 1)})` })()]],
+          summary: [['N', String(N)], ['a', String(a)], ['Order of a mod N', found.order === null ? 'not found' : String(found.order)], ['Factors', found.factors ? `${found.factors[0]} × ${found.factors[1]}` : 'not found'], ['Prime dust', found.factors ? `${found.factors[0]} × ${found.factors[1]} (verified: product = ${found.factors[0] * found.factors[1]})` : 'rerun with another a']],
           header: ['Measured phase', 'Count', 'Share'],
           rows: [...counts.entries()].sort((x, y) => y[1] - x[1]).map(([phase, c]) => [phase, String(c), `${((c / repetitions) * 100).toFixed(1)}%`]),
         }

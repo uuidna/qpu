@@ -1,11 +1,11 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T07:38:31.379Z",
+ "date": "2026-10-28T09:04:58.723Z",
  "phase": "judged",
- "address": "a70b1d78-8d08-2f17-a326-19df6290fd65",
+ "address": "3cfa3c36-a63a-7e0e-93a2-438e0fd6b3af",
  "summary": {
   "requests": 287,
-  "reached": 283,
+  "reached": 281,
   "versions": 14,
   "visits": 0,
   "captures": 0,
@@ -15,8 +15,8 @@
   "routed": 2403,
   "domainLeads": 21153,
   "outside": 123,
-  "doors": 592,
-  "leads": 21158
+  "doors": 593,
+  "leads": 21160
  },
  "immutable": {
   "package": "@uuidna/qpu",
@@ -112,13 +112,13 @@
     "host": "qpu.uuidna.com",
     "url": null,
     "timestamp": null,
-    "status": 200
+    "status": 429
    },
    {
     "host": "qpu.psg.bg",
     "url": null,
     "timestamp": null,
-    "status": 200
+    "status": 429
    }
   ],
   "records": [
@@ -1159,6 +1159,7 @@
    "Convolution integrals",
    "Convolutions (Mathematics)",
    "Coordinates",
+   "Corps finis",
    "Corps valué",
    "Correctie",
    "Correspondence",
@@ -1827,7 +1828,6 @@
    "Geometric group theory",
    "Geometric programming",
    "Geometric quantization",
-   "Geometric quantum phases",
    "Geometrical models",
    "Geometrie",
    "Geometrische Quantisierung",
@@ -2559,6 +2559,7 @@
    "Mesoscopic phenomena (physics)",
    "Mesoskopisches System",
    "Mesure",
+   "Mesures",
    "Metadata",
    "Metaheuristics",
    "Metal matrix composites",
@@ -2814,6 +2815,8 @@
    "Number theory -- Arithmetic algebraic geometry (Diophantine geometry) [See also 11Dxx, 14Gxx, 14Kxx] -- Curves over finite and local fields [See also 14H25]",
    "Number theory -- Arithmetic algebraic geometry (Diophantine geometry) [See also 11Dxx, 14Gxx, 14Kxx] -- Varieties over finite and local fields [See also 14G15, 14G20]",
    "Number theory -- Computational number theory -- Algorithms; complexity",
+   "Number theory -- Computational number theory -- Factorization",
+   "Number theory -- Computational number theory -- Primality",
    "Number theory -- Diophantine approximation, transcendental number theory -- Continued fractions and generalizations",
    "Number theory -- Diophantine approximation, transcendental number theory -- Diophantine approximation, transcendental number theory",
    "Number theory -- Diophantine approximation, transcendental number theory -- Transcendence (general theory)",
@@ -2858,6 +2861,7 @@
    "Number theory -- Forms and linear algebraic groups -- Sums of squares and representations by other particular quadratic forms",
    "Number theory -- Geometry of numbers -- Geometry of numbers",
    "Number theory -- Geometry of numbers -- Relations with coding theory",
+   "Number theory -- Instructional exposition (textbooks, tutorial papers, etc.)",
    "Number theory -- Instructional exposition (textbooks, tutorial papers, etc.).",
    "Number theory -- Miscellaneous applications of number theory -- Miscellaneous applications of number theory",
    "Number theory -- Multiplicative number theory -- Asymptotic results on arithmetic functions",
@@ -3149,7 +3153,10 @@
    "Presentations of groups (Mathematics)",
    "Presidents",
    "Prices",
+   "Priemgetallen",
    "Prime Numbers",
+   "Primzahl",
+   "Primzahltest",
    "Printed circuits",
    "Printing",
    "Probabilistic methods",
@@ -3331,9 +3338,6 @@
    "Quantum theory -- Quantum field theory; related classical field theories -- Quantum field theory on curved space backgrounds",
    "Quantum theory -- Quantum field theory; related classical field theories -- Quantum field theory; related classical field theories",
    "Quantum theory -- Quantum field theory; related classical field theories -- String and superstring theories; other extended objects (e.g., branes)",
-   "Quantum theory -- Quantum field theory; related classical field theories -- Supersymmetric field theories",
-   "Quantum theory -- Quantum field theory; related classical field theories -- Topological field theories",
-   "Quantum theory -- Quantum field theory; related classical field theories -- Two-dimensional field theories, conformal field theories, etc..",
    "Quantum theory -- Research exposition (monographs, survey articles)",
    "Quantum wells",
    "Quark models",
@@ -3848,6 +3852,8 @@
    "Systèmes de télécommunications",
    "Systèmes experts (Informatique)",
    "Systèmes homme-machine",
+   "Systèmes informatiques",
+   "Sécurité",
    "Sécurité informatique",
    "TECHNOLOGY",
    "TECHNOLOGY & ENGINEERING",
@@ -3890,6 +3896,7 @@
    "Terminology",
    "Test stands",
    "Testing",
+   "Tests",
    "Tetrahedrons",
    "Text processing (Computer science)",
    "Textbooks",
@@ -3965,7 +3972,6 @@
    "Topological Groups",
    "Topological algebras",
    "Topological dynamics",
-   "Topological fields",
    "Topological groups",
    "Topological groups, Lie groups -- Lie groups -- Analysis on $p$-adic Lie groups",
    "Topological groups, Lie groups -- Lie groups -- Infinite-dimensional Lie groups and their Lie algebras: general properties",
@@ -4075,6 +4081,8 @@
    "Varieties over finite and local fields",
    "Varieties over global fields",
    "Variétés (Mathématiques)",
+   "Variétés abéliennes",
+   "Variëteiten van Abel",
    "Vaste stoffen",
    "Vastestoffysica",
    "Vector analysis",
@@ -4286,7 +4294,7 @@
    "textbook_security_perspectives": 6,
    "textbook_queneau_compositions": 2,
    "textbook_one_holder": 4,
-   "textbook_double_torus": 220,
+   "textbook_double_torus": 212,
    "textbook_chain_bits": 4,
    "textbook_actions_experience": 1,
    "textbook_code_folds": 515,
@@ -4310,7 +4318,7 @@
    "design": 16,
    "textbook_actions_pinned": 3,
    "textbook_willow_holds_codes": 51,
-   "textbook_payload_operations": 61,
+   "textbook_payload_operations": 62,
    "textbook_workspace_sets": 18,
    "temperature": 14,
    "textbook_payload_field_types": 29,
@@ -4346,6 +4354,7 @@
    "textbook_registry_words_searched": 2,
    "ramsey_three_three": 5,
    "triangular_four": 1,
+   "textbook_factors_divide": 8,
    "planes": 1,
    "textbook_deploy_sets": 2,
    "choose_symm_small": 1,
@@ -4416,7 +4425,6 @@
    "Qpu.CausalInference.treated_control_partition": 2,
    "textbook_foreign_verdicts": 1,
    "textbook_payload_queries": 5,
-   "shor_factored": 2,
    "Qpu.ProgramSynthesis.repair_root": 2,
    "Qpu.ProgramSynthesis.double_equiv": 1,
    "Qpu.ProgramSynthesis.size_of_mem_layer": 2,
@@ -4435,6 +4443,7 @@
    "textbook_stream_no_silence": 2,
    "textbook_extend_inward": 1,
    "textbook_cl_described": 1,
+   "shor_factored": 1,
    "Qpu.Xai.attention_weight_le_total": 1,
    "Qpu.ZeroShot.exact_match_best": 1,
    "Qpu.Federated.quantization_error": 1,
@@ -4456,8 +4465,8 @@
    },
    {
     "name": "ai.agentplaybooks/agentplaybooks",
-    "version": "1.0.0",
-    "description": "Manage portable AI agent playbooks, Agent Skills, MCP configurations, personas, and memory.",
+    "version": "0.8.1",
+    "description": "Vendor-neutral home for portable agents: skills, MCP tools, memory, canvas, and secret proxy.",
     "remote": "https://agentplaybooks.ai/api/mcp/manage",
     "repository": "https://github.com/matebenyovszky/agentplaybooks"
    },
@@ -4844,13 +4853,6 @@
     "version": "1.4.0",
     "description": "QuickBooks Online in Claude and ChatGPT: 221 tools, full ledger, multi-company, Canada + US, FR/EN.",
     "remote": "https://caribooks.com/api/mcp",
-    "repository": null
-   },
-   {
-    "name": "com.cherishedbook/memorials",
-    "version": "1.0.0",
-    "description": "Create and look after online memorials for people and pets who have died.",
-    "remote": "https://app.cherishedbook.com/api/mcp",
     "repository": null
    },
    {
@@ -6100,6 +6102,13 @@
     "repository": null
    },
    {
+    "name": "com.cherishedbook/memorials",
+    "version": "1.0.0",
+    "description": "Create and look after online memorials for people and pets who have died.",
+    "remote": "https://app.cherishedbook.com/api/mcp",
+    "repository": null
+   },
+   {
     "name": "com.chsbackflow/booking",
     "version": "1.0.0",
     "description": "Book backflow testing in Charleston, SC: prices, ZIP coverage, free callback.",
@@ -6569,13 +6578,6 @@
     "repository": null
    },
    {
-    "name": "com.servecounter/booking",
-    "version": "1.0.0",
-    "description": "Find businesses that use ServeCounter, see their services, prices and free times, and book.",
-    "remote": "https://api.servecounter.com/mcp",
-    "repository": null
-   },
-   {
     "name": "io.github.adriancisnerosspeed-hub/civic-library-mcp",
     "version": "0.1.1",
     "description": "US civic & property data: geocoding, census tracts, Opportunity Zones, FEMA flood zones.",
@@ -7010,6 +7012,13 @@
     "repository": "https://github.com/proompteng/bilig"
    },
    {
+    "name": "com.servecounter/booking",
+    "version": "1.0.0",
+    "description": "Find businesses that use ServeCounter, see their services, prices and free times, and book.",
+    "remote": "https://api.servecounter.com/mcp",
+    "repository": null
+   },
+   {
     "name": "com.simplechinatrip/china-attraction-booking",
     "version": "1.0.0",
     "description": "How foreigners book 135 China attractions: official channels, passport rules, ticket release times.",
@@ -7395,13 +7404,6 @@
     "repository": null
    },
    {
-    "name": "io.github.Evozim/binance-orderbook-mcp",
-    "version": "2.0.0",
-    "description": "Premium agentic endpoint for binance-orderbook-mcp.",
-    "remote": "https://api.m2mcent.com/binance-orderbook-mcp/sse",
-    "repository": null
-   },
-   {
     "name": "io.github.theluckystrike/contract-clause-library-proposal-template-docx",
     "version": "0.9.5",
     "description": "A personal library of reusable contract and proposal clauses, assembled into a real Word .docx.",
@@ -7561,6 +7563,13 @@
     "description": "Read Papershift absences, vacation, time tracking and shifts; request and review absences.",
     "remote": "https://papershift.usefulapi.io/mcp",
     "repository": "https://github.com/m190/usefulapi-mcp"
+   },
+   {
+    "name": "io.github.Evozim/binance-orderbook-mcp",
+    "version": "2.0.0",
+    "description": "Premium agentic endpoint for binance-orderbook-mcp.",
+    "remote": "https://api.m2mcent.com/binance-orderbook-mcp/sse",
+    "repository": null
    },
    {
     "name": "io.github.Evozim/booking-hotel-prices-mcp",
@@ -8442,6 +8451,13 @@
     "version": "1.25.0",
     "description": "Read spaces, collections, pages and content; search docs and manage GitBook organization spaces.",
     "remote": "https://gitbook.usefulapi.io/mcp",
+    "repository": "https://github.com/m190/usefulapi-mcp"
+   },
+   {
+    "name": "io.usefulapi/wubook",
+    "version": "1.0.0",
+    "description": "Read WuBook ZaK rooms, availability and reservations; manage inventory and guest check-in.",
+    "remote": "https://wubook.usefulapi.io/mcp",
     "repository": "https://github.com/m190/usefulapi-mcp"
    },
    {
@@ -27356,6 +27372,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol20672517w",
+   "source": "open-library /works/OL20672517W",
+   "statement": "Symmetries in Fundamental Physics (quantum theory, Symmetry (physics), Mathematical physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol20705251w",
    "source": "open-library /works/OL20705251W",
    "statement": "Finite Sample Analysis in Quantum Estimation (quantum theory, Quantum statistics, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -28864,6 +28887,13 @@
    "id": "textbook-open-library-works-ol3502326w",
    "source": "open-library /works/OL3502326W",
    "statement": "Quantum pharmacology (quantum theory, Pharmacology, Quantum pharmacology) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol35703369w",
+   "source": "open-library /works/OL35703369W",
+   "statement": "Classical and Quantum Dynamics in Condensed Phase Simulations (quantum theory, Quantum theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -42728,13 +42758,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol19896457w",
-   "source": "open-library /works/OL19896457W",
-   "statement": "Primality testing and Abelian varieties over finite fields (number theory, Finite fields (Algebra), Prime Numbers) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol20283605w",
    "source": "open-library /works/OL20283605W",
    "statement": "Combinatorics And Partially Ordered Sets (combinatorics, Combinatorial analysis, Statistics) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -45062,13 +45085,6 @@
    "id": "textbook-open-library-works-ol2738618w",
    "source": "open-library /works/OL2738618W",
    "statement": "Advances in Cryptology (cryptography, Cryptographie, Transmission) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol2736758w",
-   "source": "open-library /works/OL2736758W",
-   "statement": "Primality testing and integer factorization in public-key cryptography (cryptography, Computer security, Cryptography) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -65996,6 +66012,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol20867181w",
+   "source": "open-library /works/OL20867181W",
+   "statement": "Breaking of Supersymmetry and Ultraviolet Divergences in Extended Supergravity (quantum theory, Supersymmetry, Supergravity) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol20817246w",
    "source": "open-library /works/OL20817246W",
    "statement": "Quantum Plasmonics (quantum theory, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -70777,13 +70800,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol20680786w",
-   "source": "open-library /works/OL20680786W",
-   "statement": "Factorization and Primality Testing (number theory, Numbers, prime, Mathematics) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol20688925w",
    "source": "open-library /works/OL20688925W",
    "statement": "A Course in Computational Algebraic Number Theory (algorithms, Algebraic number theory, Algorithms) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -74417,13 +74433,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol23313118w",
-   "source": "open-library /works/OL23313118W",
-   "statement": "Primality testing for beginners (number theory, Number theory, Number theory -- Instructional exposition (textbooks, tutorial papers, etc.).) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol23193442w",
    "source": "open-library /works/OL23193442W",
    "statement": "Lectures on the Riemann zeta function (number theory, Zeta Functions, Riemann hypothesis) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -74462,13 +74471,6 @@
    "id": "textbook-open-library-works-ol22475167w",
    "source": "open-library /works/OL22475167W",
    "statement": "Zahlentheorie (number theory, Congresses, Number theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol22544115w",
-   "source": "open-library /works/OL22544115W",
-   "statement": "The Joy of Factoring (number theory, Factorization (Mathematics), Number theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -86425,13 +86427,6 @@
    "id": "textbook-open-library-works-ol16978554w",
    "source": "open-library /works/OL16978554W",
    "statement": "Formal Aspects of Security and Trust (cryptography, Information Systems, Computer science) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol16954137w",
-   "source": "open-library /works/OL16954137W",
-   "statement": "Primality Testing and Integer Factorization in Public-Key Cryptography (cryptography, Computer science, Data protection) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -108622,13 +108617,6 @@
    "id": "textbook-open-library-works-ol39793445w",
    "source": "open-library /works/OL39793445W",
    "statement": "Improve Your Number Literacy (number theory, Number concept, Number theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol39326658w",
-   "source": "open-library /works/OL39326658W",
-   "statement": "Zur Theorie der quadratischen und kubischen Reste (number theory, Congruences and residues, Number theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -140084,6 +140072,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol12570070w",
+   "source": "open-library /works/OL12570070W",
+   "statement": "Geometric phases in classical and quantum mechanics (quantum theory, Quantum theory, Mathematical physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol12570109w",
    "source": "open-library /works/OL12570109W",
    "statement": "Measurements and time reversal in objective quantum theory (quantum theory, Quantum theory, Wave functions) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -140122,6 +140117,13 @@
    "id": "textbook-open-library-works-ol12521616w",
    "source": "open-library /works/OL12521616W",
    "statement": "The application of a fixed-JT averaging spectral distribution method to many-particle spectroscopy (quantum theory, Quantum theory, Physics Theses) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol12482783w",
+   "source": "open-library /works/OL12482783W",
+   "statement": "Geometric phases in classical and quantum mechanics (quantum theory, Quantum theory, Mathematical physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -142674,6 +142676,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol16529062w",
+   "source": "open-library /works/OL16529062W",
+   "statement": "Mathematical foundations of quantum field theory and perturbative string theory (quantum theory, Mathematics, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol16474497w",
    "source": "open-library /works/OL16474497W",
    "statement": "Electroweak and strong interactions (quantum theory, Particles (Nuclear physics), Nuclear reactions) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -143769,6 +143778,13 @@
    "id": "textbook-open-library-works-ol16981297w",
    "source": "open-library /works/OL16981297W",
    "statement": "Bohmian mechanics (quantum theory, Quantum theory, Mathematics) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol16981328w",
+   "source": "open-library /works/OL16981328W",
+   "statement": "Geometric phases in classical and quantum mechanics (quantum theory, Quantum theory, Mathematical physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -156681,6 +156697,20 @@
    "reason": "measured on the next run"
   },
   {
+   "id": "source-unreached-wayback-qpu-uuidna-com",
+   "source": "https://archive.org/wayback/available?url=qpu.uuidna.com",
+   "statement": "the source wayback:qpu.uuidna.com answered 429",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-wayback-qpu-psg-bg",
+   "source": "https://archive.org/wayback/available?url=qpu.psg.bg",
+   "statement": "the source wayback:qpu.psg.bg answered 429",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
    "id": "source-unreached-openalex-near-10-5281-zenodo-21781602-1",
    "source": "https://api.openalex.org/works?search=All%20Seven%20Clay%20Millennium%20Problems%20Sealed%20via%20Universal%20%CF%83-Involution&per-page=200&page=1",
    "statement": "the source openalex-near:10.5281/zenodo.21781602:1 answered 429",
@@ -156708,15 +156738,15 @@
   "textbook_route_or_lead",
   "textbook_cheap_gates"
  ],
- "says": "283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 592 MCP doors proposed",
+ "says": "281 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 593 MCP doors proposed",
  "counts": {
   "served": 0,
   "partial": 0,
   "open": 21154,
-  "blocked": 4,
+  "blocked": 6,
   "out_of_scope": 0
  },
- "total": 21158,
+ "total": 21160,
  "integrity": {
   "phase": "artifacts",
   "artifacts": 17,

@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T08:55:12.191Z",
+ "date": "2026-10-28T08:57:39.306Z",
  "input": {
   "doors": [
    {
@@ -3029,6 +3029,10 @@
      "used": 1
     },
     {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
      "door": "circuit",
      "used": 1
     },
@@ -4019,11 +4023,12 @@
   },
   "qubits": {
    "unit": "qubits per call",
-   "capacity": 60,
-   "used": 12,
-   "idle": 48,
+   "capacity": 66,
+   "used": 13,
+   "idle": 53,
    "percentIdle": 80,
    "idleNames": [
+    "algorithm",
     "algorithm",
     "circuit",
     "circuit",

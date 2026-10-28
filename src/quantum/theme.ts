@@ -3,6 +3,7 @@
 // The a432 harmonic default is the program side of the unit, offered for anyone's free benefit under attribution; the QPU
 // framework, over UUID or by any other means, is the other side, licensed for commercial use by the author on request (see README, License).
 
+import { TABLES } from './tables-index.ts'
 import { GLAGOLITIC } from './i18n.ts'
 /** the Glagolitic numeral of a seed (1..9) and of its reflection (10 − seed, 10 among them): the rosetta of the rays, one signal in two scripts */
 const GLAGOLITIC_OF: Readonly<Record<number, string>> = Object.fromEntries(Object.entries(GLAGOLITIC).filter(([, v]) => v <= 10).map(([k, v]) => [v, k]))
@@ -99,7 +100,7 @@ const styleOf = (uuid: string): string => Object.entries(cssVars(uuid)).map(([k,
  * cost (content-visibility), dark and light from the device's preference. */
 /** The angles: from the 60-degree angle six streams meet at a point and none collides, while the four 90-degree gateways stay covered; the two
  *  poles as pyramids base to base are the octahedron, whose eight 60-degree faces and four equatorial gateways Euler closes (6 − 12 + 8 = 2). */
-export const ANGLES = { streams: 60, gateways: 90, perspectives: 360 / 60, operations: 360 / 90, poles: 2, faces: 8, equator: 4, euler: '6 − 12 + 8 = 2', navigation: { earth: 'the four compass gateways of the equator (N, E, S, W): the four operations', space: 'the six directions ±x, ±y, ±z: the octahedron\'s six vertices, the six perspectives', water: 'the currents between the poles: the streams, collision free at 60 degrees', web: 'prev and next (the program rotated), parent and children (the nested docs): the same gateways by address', says: 'earth, space, water and web navigation follow the same laws and combinatorics: six vertices, twelve edges, eight faces, four gateways' }, says: 'from the 60-degree angle all streams are collision free and still cover all 90-degree gateways: six perspectives over four operations; the poles of the earth as pyramids base to base are the octahedron (textbook_streams_cover_gateways, textbook_poles_pyramid)' } as const
+export const ANGLES = TABLES.ANGLES
 export const getCss = (key: number = KEY): string => {
   const accent = 'var(--qpu-accent, var(--a432-accent))', period = `var(--qpu-period, ${key * 9}ms)`
   const lines = [`:root {`, `  --a432-key: ${key};`, `  --a432-hue: ${hueOf(key)};`, ...HARMONICS.map((h, i) => `  --a432-${i + 1}: hsl(${hueOf(h)} 62% ${44 + i * 8}%);`), `  --a432-accent: hsl(${hueOf(key)} 62% 44%);`, `  --qpu-coin: hsl(${hueOf(key)} 62% 44%);`, `  --qpu-coil: hsl(${hueOf(key) + key / 9} 62% 44%);`, `  --qpu-coil-cmyk: ${(() => { const c = coilColour(key).coil.cmyk; return `${c.c} ${c.m} ${c.y} ${c.k}` })()};`, `}`,

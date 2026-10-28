@@ -5,6 +5,7 @@
 // at its content address with its SHA-256, the same shape the Worker's docket and the Payload entries address. No shell, no arbitrary
 // command: the one runner (scripts/machine.ts), called by the stdio transport and by the Payload MCP plugin's machine tool, executes only
 // the argument vector a plan returns, streaming its lines as progress to a caller that sent a progress token.
+import { TABLES } from './tables-index.ts'
 import { uuidOf } from './blocks.ts'
 import { sha256, utf8, hex } from './hmac.ts'
 import { listLeaks, LEAK_PATTERNS } from './audit.ts'
@@ -15,33 +16,7 @@ type Decide = (name: 'pre-commit' | 'pre-push', facts: WorkflowFacts) => { allow
 type MachineAction = { id: string; kind: 'read' | 'write'; cmd?: string; args: readonly string[]; says: string; needs?: 'message' | 'confirm' | 'branch'; workflow?: 'pre-commit' | 'pre-push' }
 /** A branch a merge may name: letters, digits, dot, underscore, slash and dash, never starting with a dash (it would be read as an option). */
 const BRANCH_RE = /^[A-Za-z0-9._/-]{1,200}$/
-const ROWS: readonly MachineAction[] = [
-  { id: 'status', kind: 'read', args: ['status', '--porcelain=v1', '--branch'], says: 'the working tree: what changed, the branch and how far it is from its remote' },
-  { id: 'log', kind: 'read', args: ['log', '--oneline', '-n', '50'], says: 'the last fifty commits' },
-  { id: 'ahead', kind: 'read', args: ['rev-list', '--left-right', '--count', 'origin/main...main'], says: 'how many commits the remote and this branch each hold that the other does not' },
-  { id: 'tags', kind: 'read', args: ['tag', '--sort=-creatordate'], says: 'the release tags, newest first' },
-  { id: 'diff', kind: 'read', args: ['diff', '--stat'], says: 'what the unstaged changes touch' },
-  { id: 'versions', kind: 'read', cmd: 'node', args: ['--version'], says: 'the runtime this machine runs the tree with' },
-  { id: 'next', kind: 'write', cmd: 'npm', args: ['run', 'next', '--', '--offline', '--fast'], says: 'the development loop, offline and fast: generation, typecheck, tests, Lean, audit, purify' },
-  { id: 'precheck', kind: 'write', cmd: 'node', args: ['scripts/hook.ts', 'pre-deploy'], says: 'the strict pre-check before a deploy: the OpenNext build, the dry run and the rules decided by theorems; nothing deployed' },
-  { id: 'stage', kind: 'write', args: ['add', '-A'], says: 'every change staged for the next commit' },
-  { id: 'commit', kind: 'write', args: ['commit', '-F', '-'], says: 'the staged changes committed through the hooks, the message given', needs: 'message', workflow: 'pre-commit' },
-  { id: 'push', kind: 'write', args: ['push', 'origin', 'main'], says: 'main pushed to its remote through the pre-push workflow', needs: 'confirm', workflow: 'pre-push' },
-  { id: 'dispatch', kind: 'write', cmd: 'gh', args: ['workflow', 'run', 'deploy.yml', '--ref', 'main'], says: 'the deploy workflow started on GitHub for main: it runs in the protected production environment, whose reviewer approves it before any secret in GitHub Secrets is exposed, then next, the pre-deploy theorems, the deploy and the publish; started only through the super admin\'s machine tool and the pre-push rules', needs: 'confirm', workflow: 'pre-push' },
-  { id: 'merge', kind: 'write', args: ['merge', '--no-ff', '--no-commit'], says: 'a branch merged into the current one, never fast-forwarded and not yet committed: the working tree set aside first, the merge completed by the commit action, whose pre-commit rules decide the merged tree; the branch is the one parameter', needs: 'branch' },
-  { id: 'set-aside', kind: 'write', args: ['stash', 'push', '-m', 'qpu: set aside before a merge'], says: 'the working tree\'s changes set aside under a tag, recoverable by the SHA the record names, so a merge never meets them' },
-  { id: 'sync', kind: 'write', args: ['pull', '--no-rebase', '--no-ff', '--no-edit', '-X', 'subtree=site', 'website', 'main'], says: 'payloadcms/website pulled into site/ as a subtree', workflow: 'pre-commit' },
-  { id: 'idle', kind: 'write', cmd: 'node', args: ['scripts/idle.ts'], says: 'unused quantum capacity measured in the background, never inside a hook: the state the hooks read written, the largest idle items raised as idle gaps and the used ones annihilated, progress line by line' },
-  { id: 'regenerate', kind: 'write', cmd: 'node', args: ['scripts/regenerate.ts'], says: 'the generators in their order: the docs and the Lean file, every configuration, the theorem index and purity' },
-  { id: 'worktree-remove', kind: 'write', args: ['worktree', 'remove', '--force'], says: 'a worktree removed', needs: 'confirm' },
-  { id: 'branch-delete', kind: 'write', args: ['branch', '-d'], says: 'a branch deleted when merged (-D only when an archive tag already points at its commit)', needs: 'confirm' },
-  { id: 'tag', kind: 'write', args: ['tag'], says: 'a local archive tag at a commit, never pushed by this action', needs: 'confirm' },
-  { id: 'port', kind: 'write', cmd: 'cp', args: [], says: 'one file of a worktree copied onto the same path in main, to be committed through the hook', needs: 'confirm' },
-  { id: 'now', kind: 'read', cmd: 'node', args: ['scripts/machine.ts', 'now'], says: 'the status on request: what runs, for how long, its ETA, the last events, the open questions and what is held' },
-  { id: 'site-audit', kind: 'read', cmd: 'pnpm', args: ['--dir', 'site', 'audit'], says: 'the app\'s dependency advisories, by severity' },
-  { id: 'site-install', kind: 'write', cmd: 'pnpm', args: ['--dir', 'site', 'install'], says: 'the app\'s dependencies installed as its package.json and overrides name them', needs: 'confirm' },
-  { id: 'site-build', kind: 'write', cmd: 'pnpm', args: ['--dir', 'site', 'exec', 'next', 'build', '--webpack'], says: 'the app built and type-checked by next build, no database migrated', needs: 'confirm' },
-]
+const ROWS = TABLES.MACHINE_ROWS as unknown as readonly MachineAction[]
 export const MACHINE_ACTIONS = ROWS.map((a) => ({ ...a, cmd: a.cmd ?? 'git', says: a.needs === 'confirm' ? `${a.says}: only on the user's confirmation` : a.says }))
 
 /** The parameters of the actions that discard or move work, checked before anything runs. */

@@ -1162,8 +1162,22 @@ const configOf = (kind: ConfigKind, ctx: Context, p: { version?: string; descrip
 import type { Block } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { qpuFieldsOf } from '@uuidna/qpu/payload'
-import { callOf } from '@uuidna/qpu/mcp'
+import { callOf, handle } from '@uuidna/qpu/mcp'
 import { createHmac, createPrivateKey, hkdfSync, sign } from 'node:crypto'
+// the tools an editor names, each with its schema from the MCP's own tools/list: the tool checked on save, and its arguments against that
+// tool's schema (the required keys, the types, the enums); a bound is the tool's to re-fuse, and a key the schema does not name is the tool's
+type ToolSchema = { required?: string[]; properties?: Record<string, { type?: string | string[]; enum?: unknown[] }> }
+const TOOL_SCHEMAS = new Map((handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; inputSchema: ToolSchema }[] } }).result.tools.map((t) => [t.name, t.inputSchema]))
+const typeOk = (v: unknown, t?: string | string[]) => !t || [t].flat().some((k) => (k === 'integer' ? Number.isInteger(v) || (typeof v === 'string' && /^[0-9]+$/.test(v)) : k === 'number' ? typeof v === 'number' : k === 'array' ? Array.isArray(v) : k === 'object' ? !!v && typeof v === 'object' && !Array.isArray(v) : k === 'null' ? v === null : typeof v === k))
+const checkTool = (v: unknown) => TOOL_SCHEMAS.has(String(v)) || \`\${String(v)} is no tool: name one of \${[...TOOL_SCHEMAS.keys()].join(', ')}\`
+const checkArguments = (v: unknown, { siblingData }: { siblingData?: { tool?: string } }) => {
+  const s = TOOL_SCHEMAS.get(String(siblingData?.tool)); if (!s) return true
+  if (v != null && (typeof v !== 'object' || Array.isArray(v))) return 'the arguments are one object'
+  const a = (v ?? {}) as Record<string, unknown>, missing = (s.required ?? []).filter((k) => !(k in a))
+  if (missing.length) return \`\${siblingData!.tool} needs \${missing.join(', ')}\`
+  for (const [k, p] of Object.entries(s.properties ?? {})) { if (!(k in a)) continue; if (!typeOk(a[k], p.type)) return \`\${k} is \${[p.type].flat().join(' or ')}\`; if (p.enum && !p.enum.includes(a[k])) return \`\${k} is one of \${p.enum.join(', ')}\` }
+  return true
+}
 // the proof keys made once per process from their witnesses (the deployment secret, the signing seed), then only used, as a factor is
 let keys: { mac: Buffer | null; signing: ReturnType<typeof createPrivateKey> | null } | undefined
 const keysOf = () => (keys ??= { mac: process.env.QPU_DATA_KEY ? Buffer.from(hkdfSync('sha256', process.env.QPU_DATA_KEY, '', 'qpu proof mac', 32)) : null, signing: process.env.QPU_PROOF_SIGNING_KEY ? createPrivateKey({ key: Buffer.from(process.env.QPU_PROOF_SIGNING_KEY, 'base64'), format: 'der', type: 'pkcs8' }) : null })
@@ -1176,8 +1190,8 @@ export const Qpu: Block = {
     { name: 'handle', type: 'text', admin: { readOnly: true } },
     { name: 'program', type: 'text', admin: { readOnly: true, description: 'the hex program (the version and variant nibbles rotated)' } },
     { name: 'tail', type: 'text', admin: { readOnly: true } },
-    { name: 'tool', type: 'text', required: true, admin: { description: 'the tool whose result this block is' } },
-    { name: 'arguments', type: 'json', admin: { description: 'the arguments, so the block recomputes anywhere' } },
+    { name: 'tool', type: 'text', required: true, validate: checkTool, admin: { description: 'the tool whose result this block is: one the MCP lists (tools/list)' } },
+    { name: 'arguments', type: 'json', validate: checkArguments as never, admin: { description: 'the arguments, so the block recomputes anywhere: checked on save against the schema of the tool' } },
     { name: 'prev', type: 'text', ${validateOf('qpu', 'prev')}, admin: { description: 'the referer block' } },
     { name: 'next', type: 'text', ${validateOf('qpu', 'next')}, admin: { description: 'the program rotated: the next step' } },
     { name: 'stream', type: 'text', admin: { readOnly: true, description: 'the scannable stream of the address: the frames as a CSS gradient, stepped through by the qpu-scan item; computed by the lexical hook from uuid, never typed' }, custom: { theorem: 'textbook_scan_stream' }, hooks: { afterRead: [({ siblingData }) => { const u = String(siblingData?.uuid ?? ''); if (!/^[0-9a-f-]{36}$/.test(u)) return null; const hue = (ch: string) => (ch === '-' ? null : parseInt(ch, 16) * 22.5); return 'linear-gradient(90deg, ' + [...u].map((ch, i) => (hue(ch) === null ? 'hsl(0 0% 0%)' : 'hsl(' + hue(ch) + ' 62% 44%)') + ' ' + ((i / 36) * 100).toFixed(3) + '% ' + (((i + 1) / 36) * 100).toFixed(3) + '%').join(', ') + ')' }] } },

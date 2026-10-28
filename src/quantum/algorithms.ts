@@ -299,3 +299,19 @@ export const findFactors = (n: bigint, budget = 1 << 16) => {
   factors.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
   return { factors, left, steps, budget, verified: [...factors, ...left].reduce((a, b) => a * b, 1n) === n }
 }
+
+// Shor's reduction, exact at any size: factoring is order-finding. Given the order r of a mod N (the quantum-hard quantity a real QPU measures,
+// which the state-vector simulation reaches only for N up to 21), the factors follow by a classical formula — gcd(a^(r/2) ± 1, N) — over BigInt,
+// so it runs whole at 1000 bits and beyond. This does not find r; it is the half of Shor that is a formula, stated and verified, never a search.
+export const shorReduction = (N: bigint, a: bigint, r: bigint): { order: bigint; even: boolean; nonTrivial: boolean; factors: [bigint, bigint] | null; verified: boolean; why: string } => {
+  const no = (why: string): ReturnType<typeof shorReduction> => ({ order: r, even: r % 2n === 0n, nonTrivial: false, factors: null, verified: false, why })
+  if (a < 2n || a >= N || gcdBig(a, N) !== 1n) return no('a is a unit mod N, 2 ≤ a < N with gcd(a, N) = 1: otherwise gcd(a, N) is itself a factor, no order needed')
+  if (r < 1n || powMod(a, r, N) !== 1n) return no(`r is the order of a mod N (a^r ≡ 1): a^${r} mod N ≠ 1, so the measured period is wrong`)
+  if (r % 2n === 1n) return no('the order is odd: this a yields no factor; another a is tried (the circuit is rerun, textbook_refuse_is_refuse)')
+  const half = powMod(a, r / 2n, N)
+  if (half === N - 1n) return no('a^(r/2) ≡ −1 mod N: this a yields only the trivial factor; another a is tried')
+  const p = gcdBig(half - 1n, N), q = gcdBig(half + 1n, N), f = [p, q].find((x) => x > 1n && x < N)
+  if (f === undefined) return no('gcd(a^(r/2) ± 1, N) is trivial: another a is tried')
+  const g = f, h = N / f
+  return { order: r, even: true, nonTrivial: true, factors: [g < h ? g : h, g < h ? h : g], verified: g * h === N, why: `gcd(a^(r/2) ± 1, N) splits N: a ${N.toString(2).length}-bit factoring finished from its order, the product checked` }
+}

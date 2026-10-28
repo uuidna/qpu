@@ -318,3 +318,5 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `clay-relation_10518300` | served | clay | relation_10518300: chooseOf bits vertices = choose bits vertices = 10518300 (24 bits, seed 9) |  |
 | `clay-relation_40116600` | served | clay | relation_40116600: chooseOf plane faces = choose plane faces = 40116600 (26 bits, seed 9) |  |
 | `clay-relation_471435600` | served | clay | relation_471435600: chooseOf bits faces = choose bits faces = 471435600 (29 bits, seed 3) |  |
+| `admin-blocks-unserved-languages` | open | — | 29 pages (Protocol Buffers, GoogleSQL, CEL, Carbon and others) carry a qpu block naming the tool languages, which no door serves: the admin now refuses to save them until each names a tool the MCP lists | a door for the languages, or the blocks pointed at the tool that serves them; answer: the tool to name |
+| `admin-blocks-textbook-cross` | open | — | 173 qpu blocks pass textbook &#123; cross &#125;, a key no textbook door reads: the argument is ignored | serve cross from the textbook tool (an argument, an example, a theorem) or drop the key from the blocks; answer: serve or drop |

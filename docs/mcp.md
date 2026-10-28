@@ -827,6 +827,11 @@ The textbook algorithms of the Cirq page
       "pattern": "^[0-9]+$",
       "description": "factor"
     },
+    "order": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "shor"
+    },
     "N": {
       "type": "integer",
       "minimum": 3,
@@ -2189,6 +2194,10 @@ Workspaces, branches, tags, releases, the registry and the workflows watched and
 {
   "type": "object",
   "properties": {
+    "status": {
+      "type": "object",
+      "description": "the machine's status on request"
+    },
     "penalties": {
       "type": "array",
       "items": {

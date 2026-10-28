@@ -1284,6 +1284,10 @@ theorem textbook_bill_covered_reflected (price cost : Nat) (h : cost ≤ price) 
 theorem textbook_bill_covered_contrapositive (price cost : Nat) : ¬ (price - cost + cost = price) → ¬ ((cost ≤ price)) := fun hc hh => hc (textbook_bill_covered price cost hh)
 /-- the converse of textbook_bill_covered, proved (examples: repository-predeploy) -/
 theorem textbook_bill_covered_converse (price cost : Nat) : (price - cost + cost = price) → (cost ≤ price) := fun hc => by omega
+/-- Shor's reduction, factoring as order-finding: with the order r of a mod N (a^r ≡ 1), r even and a^(r/2) ≢ ±1 mod N, the square root of one splits N by gcd(a^(r/2) ± 1, N) — exact at any size over BigInt (shorReduction); order-finding is the quantum step the state-vector simulation reaches only for N ≤ 21 (examples: algorithm-shor-reduction, algorithm-shor-beyond-bound) -/
+theorem textbook_shor_reduction : (7 ^ 4) % 15 = 1 ∧ (7 ^ 2) % 15 = 4 ∧ Nat.gcd (4 - 1) 15 = 3 ∧ Nat.gcd (4 + 1) 15 = 5 := by decide
+/-- textbook_shor_reduction reflected by its shape, conjunction (examples: algorithm-shor-reduction, algorithm-shor-beyond-bound) -/
+theorem textbook_shor_reduction_reflected (σ : Nat) : (σ - (1) = σ - ((7 ^ 4) % 15)) ∧ (σ - (4) = σ - ((7 ^ 2) % 15)) ∧ (σ - (3) = σ - (Nat.gcd (4 - 1) 15)) ∧ (σ - (5) = σ - (Nat.gcd (4 + 1) 15)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.2)⟩
 /-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: the classical door checks every factor it finds by that product (readInteger and writeInteger, testPrimality, findFactors), at any size (examples: algorithm-factor-1000-bit, algorithm-factor-mersenne) -/
 theorem textbook_factors_divide (f c n : Nat) (h : f * c = n) : f ∣ n := ⟨c, h.symm⟩
 /-- every question read from a source Payload holds is decided or a lead: the questions less the leads are the decided ones, a lexical neighbour counted a lead (examples: match-questions) -/

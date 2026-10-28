@@ -5,7 +5,7 @@ order: 57
 
 # The immutable sources of leads
 
-Read on 2026-10-28T07:38:31.379Z by `leads { sources }`: 283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 592 MCP doors proposed.
+Read on 2026-10-28T09:04:58.723Z by `leads { sources }`: 281 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 593 MCP doors proposed.
 
 ## Licence candidates
 
@@ -30,14 +30,14 @@ Each is a candidate the court computed a case for. None is a verdict.
 | theorem | books |
 | --- | --- |
 | `textbook_code_folds` | 515 |
-| `textbook_double_torus` | 220 |
+| `textbook_double_torus` | 212 |
 | `textbook_uuid_time_space` | 153 |
 | `textbook_patent_number_well_formed` | 153 |
 | `textbook_binding_zero_hex_path` | 91 |
 | `textbook_echo_qubits_within_willow` | 83 |
 | `textbook_collision_solves_many` | 74 |
 | `textbook_repetition_code_tenth` | 68 |
-| `textbook_payload_operations` | 61 |
+| `textbook_payload_operations` | 62 |
 | `computer` | 54 |
 | `textbook_willow_holds_codes` | 51 |
 | `textbook_dashboard_spaces` | 41 |
@@ -70,6 +70,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_context_balanced` | 8 |
 | `textbook_mixed_radix` | 8 |
 | `textbook_expressions_evaluate` | 8 |
+| `textbook_factors_divide` | 8 |
 | `textbook_free_or_coil` | 7 |
 | `textbook_leaks_redacted` | 6 |
 | `textbook_security_perspectives` | 6 |
@@ -148,7 +149,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_machine_allow_list` | 2 |
 | `textbook_kind_alphabet` | 2 |
 | `Qpu.CausalInference.treated_control_partition` | 2 |
-| `shor_factored` | 2 |
 | `Qpu.ProgramSynthesis.repair_root` | 2 |
 | `Qpu.ProgramSynthesis.size_of_mem_layer` | 2 |
 | `textbook_phase_three_bits` | 2 |
@@ -206,6 +206,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_repository_watch_leads` | 1 |
 | `textbook_extend_inward` | 1 |
 | `textbook_cl_described` | 1 |
+| `shor_factored` | 1 |
 | `Qpu.Xai.attention_weight_le_total` | 1 |
 | `Qpu.ZeroShot.exact_match_best` | 1 |
 | `Qpu.Federated.quantization_error` | 1 |
@@ -298,7 +299,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | com.bouldercountydryervent/booking | https://keeps-pty-ultimately-payroll.trycloudflare.com/mcp |
 | com.boxerbook/boxing | https://mcp.boxerbook.com/mcp |
 | com.caribooks/quickbooks | https://caribooks.com/api/mcp |
-| com.cherishedbook/memorials | https://app.cherishedbook.com/api/mcp |
 | io.github.AnonymousOnyx22/open-textbook-finder-mcp |  |
 | ai.childadhd/library | https://childadhd.ai/api/mcp/v1 |
 | ai.childanxiety/library | https://childanxiety.ai/api/mcp/v1 |
@@ -477,6 +477,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.rocnubie/mla-citation-generator-mcp |  |
 | io.github.theluckystrike/citation-generator | https://citation-generator.zovo.one/mcp |
 | legal.loupe/citation-lookup | https://loupe.legal/mcp-public |
+| com.cherishedbook/memorials | https://app.cherishedbook.com/api/mcp |
 | com.chsbackflow/booking | https://chsbackflow.com/mcp |
 | com.coloringbookify/mcp | https://coloringbookify.com/mcp |
 | com.commontape/booking | https://commontape.com/api/mcp |
@@ -544,7 +545,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | com.runbookdesk/site | https://runbookdesk.com/mcp |
 | com.scalingfirm.book/tsf-booking | https://book.scalingfirm.com/mcp |
 | com.seatswiper/booking | https://www.seatswiper.com/api/mcp |
-| com.servecounter/booking | https://api.servecounter.com/mcp |
 | io.github.adriancisnerosspeed-hub/civic-library-mcp |  |
 | io.github.benthepythondev00/ad-library-intelligence | https://ad-library-intelligence.mcpize.run/mcp |
 | io.github.cyanheads/openlibrary-mcp-server | https://openlibrary.caseyjhand.com/mcp |
@@ -607,6 +607,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.pcp183/paper-lookup | https://paper-lookup-production-56b0.up.railway.app/mcp |
 | io.github.pipeworx-io/paperswithcode | https://gateway.pipeworx.io/paperswithcode/mcp |
 | io.github.proompteng/bilig-workpaper | https://bilig.proompteng.ai/mcp |
+| com.servecounter/booking | https://api.servecounter.com/mcp |
 | com.simplechinatrip/china-attraction-booking | https://simplechinatrip.com/mcp |
 | com.skyhighpartyrentals/booking | https://mcp.shpr.me/hugo/public/mcp |
 | com.sonlightwindow/booking | https://sonlightwindow.com/mcp |
@@ -662,7 +663,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.CYAN-ECLIPSE-TECHNOLOGIES-LLC/book |  |
 | io.github.Epochal-dev/open-notebook |  |
 | io.github.Everyways/upsalt-booking | https://ai.upsalt.io/mcp/booking |
-| io.github.Evozim/binance-orderbook-mcp | https://api.m2mcent.com/binance-orderbook-mcp/sse |
 | io.github.theluckystrike/contract-clause-library-proposal-template-docx | https://mcp.zovo.one/mcp/clauses |
 | io.github.theluckystrike/glossary-terms-definitions-library |  |
 | io.github.wywy-llc/gas-library-hub | https://appscripthub.com/api/mcp |
@@ -686,6 +686,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.graph-paper/graph-paper | https://graph-paper.io/mcp |
 | io.usefulapi/paperform | https://paperform.usefulapi.io/mcp |
 | io.usefulapi/papershift | https://papershift.usefulapi.io/mcp |
+| io.github.Evozim/binance-orderbook-mcp | https://api.m2mcent.com/binance-orderbook-mcp/sse |
 | io.github.Evozim/booking-hotel-prices-mcp | https://api.m2mcent.com/booking-hotel-prices-mcp/sse |
 | io.github.Fisher521/bookmarks-lifecycle |  |
 | io.github.Fisher521/bookmarks-mcp |  |
@@ -812,6 +813,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.usefulapi/bookeo | https://bookeo.usefulapi.io/mcp |
 | io.usefulapi/bookingmood | https://bookingmood.usefulapi.io/mcp |
 | io.usefulapi/gitbook | https://gitbook.usefulapi.io/mcp |
+| io.usefulapi/wubook | https://wubook.usefulapi.io/mcp |
 | io.usefulapi/youcanbookme | https://youcanbookme.usefulapi.io/mcp |
 | io.usefulapi/zenbooker | https://zenbooker.usefulapi.io/mcp |
 | kz.tehprof.booking/reservations | https://booking.tehprof.kz/mcp |
