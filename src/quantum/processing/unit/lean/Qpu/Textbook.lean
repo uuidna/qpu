@@ -536,7 +536,7 @@ theorem textbook_google_mcps_reflected (σ : Nat) : σ - (18) = σ - (15 + 3) :=
 theorem textbook_gates_by_kind (parts : List Nat) (a b total : Nat) (h : a + b = parts.sum) (ht : total = parts.sum) : total - b = a := by omega
 /-- textbook_gates_by_kind reflected by its shape, equality (examples: configure-gates) -/
 theorem textbook_gates_by_kind_reflected (parts : List Nat) (a b total : Nat) (h : a + b = parts.sum) (ht : total = parts.sum) (σ : Nat) : σ - (a) = σ - (total - b) := congrArg (σ - ·) (Eq.symm (textbook_gates_by_kind parts a b total h ht))
-/-- the database, storage and email adapters Payload holds multiply into the adapter combinations; each adapter is a Payload plugin (qpuAdapterPlugins), so the plugins add up to the radices (examples: configure-adapters) -/
+/-- the database, storage and email adapters Payload holds multiply into the adapter combinations (combinationsFromAdapters, from the records not a literal); each adapter is a Payload plugin (qpuAdapterPlugins), so the plugins add up to the radices (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 3 = 75 := by decide
 /-- textbook_adapter_combinations reflected by its shape, equality (examples: configure-adapters) -/
 theorem textbook_adapter_combinations_reflected (σ : Nat) : σ - (75) = σ - (5 * 5 * 3) := congrArg (σ - ·) (Eq.symm (textbook_adapter_combinations))

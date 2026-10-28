@@ -1,13 +1,11 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T10:16:48.101Z",
+ "date": "2026-10-28T10:40:09.084Z",
  "counts": {
   "own": 141,
-  "unrecognised": 94,
-  "candidate": 3,
-  "unasked": 36
+  "unasked": 133
  },
- "confirmations": 0,
+ "confirmations": "unread: no MCP key for http://localhost:3000/api/mcp: QPU_APP_KEY, or the keychain item qpu-app-key (security add-generic-password -s qpu-app-key -a \"$USER\" -w, the user's act)",
  "claims": [
   {
    "theorem": "textbook_plugin_combinations",
@@ -33,14 +31,14 @@
   {
    "theorem": "textbook_reflection_sums_to_ten",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_fold_mirror",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -54,7 +52,7 @@
   {
    "theorem": "textbook_institution_bill",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -68,42 +66,42 @@
   {
    "theorem": "textbook_namespace_narrows",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_integers_first",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_size_ratio_bound",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_double_entry",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_typography_idempotent",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_references_acyclic",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -124,126 +122,126 @@
   {
    "theorem": "textbook_own_keys_only",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_balanced",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_clear_involution",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_conserved",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_tokens_bound",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_once",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_time_heat_monotone",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_no_cliff",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_free_under_budget",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_antimatter_annihilates",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_no_punishment",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_time_burned",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_visibility_harmonic",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_step_cache_sound",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_hook_steps_monotone",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_idle_priced_by_remaining",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_idle_scheduled_clears",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_capacity_conserved",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -257,49 +255,49 @@
   {
    "theorem": "textbook_coins_coils_balanced",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_harmonic",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_proportional",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_penalty_learned_prevents",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_code_folds",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_new_doors_proven",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_cells_text",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -327,7 +325,7 @@
   {
    "theorem": "textbook_coverage_bounded",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -341,7 +339,7 @@
   {
    "theorem": "textbook_sigma_involution",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -369,14 +367,14 @@
   {
    "theorem": "textbook_shards_cover",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_shards_disjoint",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -411,14 +409,14 @@
   {
    "theorem": "textbook_peg_is_fixed",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_clay_conditions",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -446,7 +444,7 @@
   {
    "theorem": "textbook_stream_filter",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -460,14 +458,14 @@
   {
    "theorem": "textbook_ui_deterministic",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_patent_dates_ordered",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -481,15 +479,8 @@
   {
    "theorem": "textbook_patent_term_twenty_years",
    "kind": "general",
-   "status": "candidate",
-   "candidates": [
-    {
-     "doi": "10.55540/0031-1723.2568",
-     "title": "Twenty Years After the Cold War: A Strategic Survey",
-     "year": 2011,
-     "shared": 3
-    }
-   ],
+   "status": "unasked",
+   "candidates": [],
    "recognisedBy": null
   },
   {
@@ -502,42 +493,42 @@
   {
    "theorem": "textbook_beacon_period",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_chain_index_steps",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_cvss_bounded",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_cert_validity_bound",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_dates_ordered",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_plugins_by_capability",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -551,14 +542,14 @@
   {
    "theorem": "textbook_workspace_docs_round_trip",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_workspace_coverage",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -572,21 +563,21 @@
   {
    "theorem": "textbook_workspace_drive",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_google_measured",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_one_holder",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -600,7 +591,7 @@
   {
    "theorem": "textbook_compete_knows",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -614,75 +605,56 @@
   {
    "theorem": "textbook_edit_collides",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_difference_leads",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_security_perspectives",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_error_remedies",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_fallback_involution",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_entropy_fusion",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_set_union",
    "kind": "general",
-   "status": "candidate",
-   "candidates": [
-    {
-     "doi": "10.1016/0012-365x(82)90221-7",
-     "title": "Principle of inclusion-exclusion on partially ordered sets",
-     "year": 1982,
-     "shared": 3
-    },
-    {
-     "doi": "10.5948/upo9780883859742.036",
-     "title": "Inclusion-Exclusion and the Topology of Partially Ordered Sets",
-     "year": 2009,
-     "shared": 3
-    },
-    {
-     "doi": "10.2991/eusflat.2011.37",
-     "title": "The Inclusion-Exclusion Principle On the Set of IF-sets",
-     "year": 2011,
-     "shared": 3
-    }
-   ],
+   "status": "unasked",
+   "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_widget_skilled_tools",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -696,14 +668,14 @@
   {
    "theorem": "textbook_gates_partition",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_gate_adapters",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -724,7 +696,7 @@
   {
    "theorem": "textbook_gates_by_kind",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -738,21 +710,21 @@
   {
    "theorem": "textbook_configurations_closed",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_openapi_contract",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_bindings_named_not_valued",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -766,14 +738,14 @@
   {
    "theorem": "textbook_advantage_unbounded",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_merge_commutes",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -829,14 +801,14 @@
   {
    "theorem": "textbook_leads_addressed",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_context_balanced",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -857,14 +829,14 @@
   {
    "theorem": "textbook_margin_makes_price",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_carry_release",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -878,7 +850,7 @@
   {
    "theorem": "textbook_lean_served_whole",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -948,7 +920,7 @@
   {
    "theorem": "textbook_licence_chain",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -1039,14 +1011,14 @@
   {
    "theorem": "textbook_abilities_merge",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_cannot_binds",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -1067,7 +1039,7 @@
   {
    "theorem": "textbook_runnable_leads",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -1102,7 +1074,7 @@
   {
    "theorem": "textbook_hue_shift",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -1116,21 +1088,21 @@
   {
    "theorem": "textbook_cheap_gates",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_cl_described",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_actions_pinned",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -1144,56 +1116,43 @@
   {
    "theorem": "textbook_commit_green",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_google_one_door",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_google_call_schema",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_violation_one_kind",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_retry_supersedes",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_version_sequential",
    "kind": "general",
-   "status": "candidate",
-   "candidates": [
-    {
-     "doi": "10.1108/978-1-61735-386-420251004",
-     "title": "When the Children of their Fathers Push Back!",
-     "year": 2011,
-     "shared": 3
-    },
-    {
-     "doi": "10.5465/ambpp.2017.13988symposium",
-     "title": "Confronting Bias: When, How, and Why Do Coworkers Push Back?",
-     "year": 2017,
-     "shared": 3
-    }
-   ],
+   "status": "unasked",
+   "candidates": [],
    "recognisedBy": null
   },
   {
@@ -1206,28 +1165,28 @@
   {
    "theorem": "textbook_chat_call_or_question",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_route_or_lead",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_use_completes",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
   {
    "theorem": "textbook_textbooks_partition",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -1255,7 +1214,7 @@
   {
    "theorem": "textbook_readiness_judged",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -1332,7 +1291,7 @@
   {
    "theorem": "textbook_legal_plan_calls",
    "kind": "general",
-   "status": "unrecognised",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },

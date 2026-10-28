@@ -1,11 +1,8 @@
 // The roles of the docket per tenant: what each may do, the header that carries it, how it is issued; pure.
+import { TABLES } from './tables-index.ts'
 import { hmacSha256, sameHex, utf8, hex } from './hmac.ts'
 export type Role = 'reader' | 'writer' | 'admin'
-export const ROLES: Readonly<Record<Role, { may: string; header: string | null; issued: string }>> = {
-  reader: { may: 'GET: read the docket, the discovery document, every tool over POST /mcp', header: null, issued: 'no token: every reader is a reader' },
-  writer: { may: 'POST /docket: append entries, commitments and reveals to this tenant\'s docket', header: 'Authorization: Bearer <writer token of this tenant>', issued: 'by the author, one wrangler secret per tenant (QPU_WRITE_TOKEN_<TENANT>) or the shared QPU_WRITE_TOKEN' },
-  admin: { may: 'DELETE /docket/<id>: delete an unlinked entry of this tenant\'s docket', header: 'Authorization: Bearer <admin token of this tenant>', issued: 'by the author, one wrangler secret per tenant (QPU_ADMIN_TOKEN_<TENANT>) or the shared QPU_ADMIN_TOKEN' },
-}
+export const ROLES = TABLES.ROLES as unknown as Readonly<Record<Role, { may: string; header: string | null; issued: string }>>
 
 /** The roles in order: a role may choose what a lower one may. */
 export const ROLE_RANK: Readonly<Record<Role, number>> = { reader: 0, writer: 1, admin: 2 }
