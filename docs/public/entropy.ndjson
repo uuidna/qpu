@@ -1596,3 +1596,8 @@
 {"date":"2026-10-28T03:05:14.592Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
 {"date":"2026-10-28T03:06:50.317Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:138","explore":"match","config":"actions"}
 {"date":"2026-10-28T03:06:50.317Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:39:03.617Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:138","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:39:03.617Z","address":"ada78332-3d5c-605a-81a7-938965ca9c2d","id":"entropy-cap-ada78332","kind":"cap","occurrences":1,"source":"src/quantum/hmac.ts:8","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:39:03.617Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:41:20.981Z","address":"a3c13145-dcc0-2e22-8637-05bf548f8f9c","id":"entropy-cap-a3c13145","kind":"cap","occurrences":1,"source":"src/quantum/expressions.ts:138","explore":"match","config":"actions"}
+{"date":"2026-10-28T03:41:20.981Z","address":"bf74c132-4793-6d99-bf4e-4fa92ce53e73","id":"entropy-cap-bf74c132","kind":"cap","occurrences":1,"source":"src/quantum/port.ts:35","explore":"match","config":"actions"}
