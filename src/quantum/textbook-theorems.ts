@@ -39,6 +39,11 @@ const LOCALE_COUNT = Object.keys(LOCALES).length
 const DATA_TYPES = count(PS.fieldTypes, (x) => x.data), COLLECTION_OPS = count(PS.operations, (o) => o.scope === 'collection'), SCOPES = (['collection', 'global', 'auth', 'access', 'preferences', 'jobs', 'custom', 'graphql'] as const).map((s) => [s, count(PS.operations, (o) => o.scope === s)] as const) // Payload's scopes in the order its docs list them
 const HOOK_LEVELS = (['root', 'collection', 'global', 'field'] as const).map((k) => (PS.hooks as Record<string, readonly unknown[]>)[k]!.length), ACCESS_LEVELS = (['collection', 'global', 'field', 'jobs'] as const).map((k) => (PS.access as Record<string, readonly unknown[]>)[k]!.length)
 const [ADB, AST, AEM] = PORT_RADICES
+import { PRECEDENCE } from './license.js'
+export type TextbookTheorem = { key: string; lean: string; says: string; examples: readonly string[] }
+import { LITERAL_REGISTRIES, LITERAL_ROOTS } from './audit.js'
+import { SET_FAMILIES, SET_RADICES, SET_SPACE } from './institutions.js'
+import { evaluate } from './expressions.js'
 export const TEXTBOOK_THEOREMS: readonly TextbookTheorem[] = [
   { key: 'textbook_plugin_combinations', get lean() { return `theorem textbook_plugin_combinations : 2 ^ ${PLUGINS()} = ${2 ** PLUGINS()} := by decide` }, get says() { return `the ${PLUGINS()} default plugins MCP configures, each in or out: ${2 ** PLUGINS()} configurations` }, examples: ['configure-payload'] },
   { key: 'textbook_prices_are_variants_times_currencies', lean: `theorem textbook_prices_are_variants_times_currencies : ${CAT} * 2 = ${CAT * 2} := by decide`, says: `the ${CAT} variants Payload holds priced in two currencies are ${CAT * 2} prices`, examples: ['stripe-catalogue'] },
@@ -311,7 +316,86 @@ export const TEXTBOOK_THEOREMS: readonly TextbookTheorem[] = [
   { key: 'textbook_rosetta_conventions', lean: 'theorem textbook_rosetta_conventions (n : Nat) : (n % 10 + (10 - n % 10) % 10) % 10 = 0 ∧ 1 + (n - 1) % 9 + (10 - (1 + (n - 1) % 9)) = 10 ∧ 3432 % 9 = 3 ∧ 3432 % 10 = 2 ∧ 15 % 9 ≠ 15 % 10 := by refine ⟨by omega, by omega, by decide, by decide, by decide⟩', says: 'the Clay rosetta: the unit seeds a value by its last decimal digit and the tree by its digital root; σ₁₀ holds on both sides for every n, and the two conventions name the same seed exactly when n mod 9 and n mod 10 agree (3432: 3 against 2; 15: 6 against 5), a difference of convention, never of error', examples: ['clay-rosetta'] },
   { key: 'textbook_binding_zero_hex_path', lean: 'theorem textbook_binding_zero_hex_path : 4 + 1 + 4 + 1 + 4 + 1 + 36 = 51 ∧ 16 * 16 * 16 * 16 = 65536 := by decide', says: 'binding 0 is the filesystem: hexPath puts a document at g1/g2/g3/<uuid>, the three middle groups of its address (four hex digits each, so one program\'s versions share a folder) and the 36 characters of the address, 51 in all, the R2 key and the GCS object of the same document; 65 536 folders a level; Payload\'s qpu-raid plugin (qpuRaid) writes each version once through readBinding0 with a pointer to the latest and reads back only what its address verifies, wherever its file lies; RAID_ORDER puts binding 0 last on every profile, so raidRead and readLeads always have a place to read when Payload does not answer', examples: ['raid-binding0-mirror', 'raid-binding0-restore'] },
   { key: 'textbook_raid_bit_zero_verify', lean: 'theorem textbook_raid_bit_zero_verify (v m d b : Nat) (h : v + m + d = b) (k : 1 ≤ v) : m + d + v = b ∧ m + d < b := by omega', says: 'verifyCopies: each binding\'s copy of a version is verified by the address its own bytes recompute (bit 0), missing, or differing, so the three counts sum to the bindings; with one verified copy the rebuilds (missing and differing) are fewer than the bindings, each written from a verified copy at its middle-part path, and a file outside that path is moved there; Payload runs it as the qpu-raid-verify batch', examples: ['raid-bit-zero-verify'] },
+  { key: 'textbook_binding_zero_hex_path', lean: 'theorem textbook_binding_zero_hex_path : 2 + 1 + 2 + 1 + 36 = 42 ∧ 16 * 16 = 256 ∧ 256 * 256 = 65536 := by decide', says: 'binding 0 is the filesystem: hexPathOf puts a document at ab/cd/<uuid>, two hex digits, a slash, two more, a slash and the 36 characters of its address, 42 in all, the R2 key and the GCS object of the same document; 256 folders a level, 65 536 at the second; Payload\'s qpu-raid plugin (qpuRaid) writes each version once through binding0Of with a pointer to the latest and reads back only what its address verifies; RAID_ORDER puts binding 0 last on every profile, so raidRead and leadsOf always have a place to read when Payload does not answer', examples: ['raid-binding0-mirror', 'raid-binding0-restore'] },
+  { key: 'textbook_reflection_by_shape', lean: 'theorem textbook_reflection_by_shape (d a b : Nat) (h : a ≤ b) (P Q : Prop) (hpq : P → Q) : d - b ≤ d - a ∧ (¬ Q → ¬ P) := ⟨Nat.sub_le_sub_left h d, fun hq hp => hq (hpq hp)⟩', says: 'reflectionsOf and reflectedOf: every textbook theorem reflected by its shape, never assumed — σ reverses order on the naturals, so a ≤ b gives σ − b ≤ σ − a, and an implication gives its contrapositive; equalities, conjunctions, disjunctions and equivalences reflect by symmetry part by part, and each converse is proved, refuted by a counterexample the evaluate of the expressions finds and the kernel decides, or left open', examples: ['textbook-reflected'] },
 ]
+// Every theorem of the table reflected by the shape of its statement, generated beside it into Qpu/Textbook.lean and never assumed: an
+// equality a = b over the naturals reflects to σ − b = σ − a for every σ (its symmetry and σ_σ at once), any other equality to b = a; an order
+// a ≤ b to σ − b ≤ σ − a, since σ reverses order, and a < b to σ − b < σ − a wherever b ≤ σ; a conjunction part by part; a disjunction, an
+// equivalence and a disequality by symmetry; an implication, stated or by hypotheses, by its contrapositive, which always holds, and its
+// converse, proved by omega where no counterexample exists and the arithmetic is linear, refuted by a counterexample the kernel decides, or open.
+type Reflection = { key: string; shape: string; lean: string[]; converse: 'proved' | 'refuted' | 'open' | null; counterexample: Record<string, string> | null }
+/** The top-level parts of a statement split at an operator, outside every bracket. */
+const partsOf = (s: string, op: string): string[] => { const out: string[] = []; let d = 0, from = 0; for (let i = 0; i < s.length; i++) { const c = s[i]!; if ('(⟨[{'.includes(c)) d++; else if (')⟩]}'.includes(c)) d--; else if (d === 0 && s.startsWith(op, i)) { out.push(s.slice(from, i).trim()); from = i + op.length } } return [...out, s.slice(from).trim()] }
+const parens = (s: string) => `(${s})`
+/** A statement without the parentheses that wrap all of it. */
+const bare = (s: string): string => { let d = 0; for (let i = 0; i < s.length && s[0] === '('; i++) if ('(⟨[{'.includes(s[i]!)) d++; else if (')⟩]}'.includes(s[i]!) && --d === 0) return i === s.length - 1 ? bare(s.slice(1, -1).trim()) : s; return s }
+const projOf = (x: string, k: number, n: number) => (n === 1 ? x : `${x}${'.2'.repeat(k)}${k < n - 1 ? '.1' : ''}`)
+const reflectionOf = (t: TextbookTheorem): Reflection => {
+  const m = /^theorem\s+(\S+)\s*([\s\S]*)$/.exec(t.lean)!; let rest = m[2]!; const binders: { text: string; names: string[]; type: string; explicit: boolean }[] = []
+  while (/^[({[]/.test(rest)) { let d = 0, i = 0; for (; i < rest.length; i++) { if ('({['.includes(rest[i]!)) d++; else if (')}]'.includes(rest[i]!) && --d === 0) break } const text = rest.slice(0, i + 1), c = text.indexOf(':'); binders.push({ text, names: text.slice(1, c).trim().split(/\s+/), type: text.slice(c + 1, -1).trim(), explicit: text[0] === '(' }); rest = rest.slice(i + 1).trimStart() }
+  const prop = partsOf(rest.replace(/^:\s*/, () => ''), ':=')[0]!, args = binders.filter((b) => b.explicit).flatMap((b) => b.names), call = parens([m[1]!, ...args].join(' '))
+  const vars = binders.filter((b) => b.type === 'Nat').flatMap((b) => b.names), env = Object.fromEntries(vars.map((v) => [v, 1n]))
+  const kind = (e: string) => { try { return typeof evaluate(e, env).value } catch { return null } }
+  const hyps = binders.filter((b) => b.type !== 'Nat'), arithmetic = binders.every((b) => b.explicit && (b.type === 'Nat' || kind(b.type) === 'boolean'))
+  const extra: string[] = []
+  const contra = (premises: string[], concl: string, f: (h: string) => string) => ({ s: `¬ ${parens(concl)} → ¬ ${parens(premises.map(parens).join(' ∧ '))}`, p: `fun hc hh => hc ${parens(f('hh'))}` })
+  const applied = (proof: string, premises: string[]) => (h: string) => [proof, ...premises.map((_, k, a) => projOf(h, k, a.length))].join(' ')
+  // one statement by its shape, its proof given: a ∀ kept and applied, an implication by its contrapositive, a relation as above
+  const part = (text: string, proof: string): { s: string; p: string } | null => {
+    const t = bare(text), q = /^∀\s*((?:[A-Za-z_][\w']*\s*)+?)\s*(:[^,]*)?,\s*([\s\S]+)$/.exec(t), im = partsOf(t, '→')
+    if (q) { const r = part(q[3]!, `(${proof} ${q[1]})`); return r && { s: `∀ ${q[1]}${q[2] ? ` ${q[2]}` : ''}, ${r.s}`, p: `fun ${q[1]} => ${r.p}` } }
+    if (im.length > 1) return contra(im.slice(0, -1), im.at(-1)!, applied(proof, im.slice(0, -1)))
+    for (const op of ['≠', '≤', '≥', '<', '>', '=']) {
+      const ps = partsOf(t, op); if (ps.length !== 2) continue
+      const [a, b] = ps.map(parens) as [string, string]
+      if (op === '≠') return { s: `${b} ≠ ${a}`, p: `Ne.symm ${proof}` }
+      if (kind(a) !== 'bigint' || kind(b) !== 'bigint') return op === '=' ? { s: `${b} = ${a}`, p: `Eq.symm ${proof}` } : null
+      if (op === '=') return { s: `σ - ${b} = σ - ${a}`, p: `congrArg (σ - ·) (Eq.symm ${proof})` }
+      const [lo, hi] = op === '≤' || op === '<' ? [a, b] : [b, a]
+      if (op === '≤' || op === '≥') return { s: `σ - ${hi} ≤ σ - ${lo}`, p: `Nat.sub_le_sub_left ${proof} σ` }
+      const h = `hσ${extra.length}`; extra.push(`(${h} : ${hi} ≤ σ)`)
+      return { s: `σ - ${hi} < σ - ${lo}`, p: `Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le ${proof} ${h}) ${proof}` }
+    }
+    return null
+  }
+  const conj = partsOf(prop, '∧'), disj = partsOf(prop, '∨'), iff = partsOf(prop, '↔'), impl = partsOf(prop, '→')
+  const shape = /^∃/.test(prop) ? 'existential' : /^∀/.test(prop) ? 'universal' : impl.length > 1 ? 'implication' : iff.length === 2 ? 'equivalence' : conj.length > 1 ? 'conjunction' : disj.length > 1 ? 'disjunction' : /[≤≥<>]/.test(prop) && partsOf(prop, '=').length === 1 ? 'order' : 'equality'
+  const r = shape === 'equivalence' ? { s: `${parens(iff[1]!)} ↔ ${parens(iff[0]!)}`, p: `Iff.symm ${call}` }
+    : shape === 'disjunction' ? { s: `${parens(disj.slice(1).join(' ∨ '))} ∨ ${parens(disj[0]!)}`, p: `Or.symm ${call}` }
+    : shape === 'conjunction' ? (() => { const rs = conj.map((c, k) => part(c, projOf(call, k, conj.length))); return rs.every(Boolean) ? { s: rs.map((x) => parens(x!.s)).join(' ∧ '), p: `⟨${rs.map((x) => x!.p).join(', ')}⟩` } : null })()
+    : shape === 'existential' ? null : part(prop, call)
+  const lean: string[] = []
+  const bind = (s: string) => [...binders.map((b) => b.text), ...(s.includes('σ') ? ['(σ : Nat)'] : []), ...extra].join(' ')
+  if (r) lean.push(`theorem ${t.key}_reflected ${bind(r.s)} : ${r.s} := ${r.p}`)
+  // an implication by hypotheses over the naturals: its contrapositive, and its converse decided
+  const premises = shape === 'implication' ? impl.slice(0, -1) : hyps.map((h) => h.type), concl = shape === 'implication' ? impl.at(-1)! : prop
+  if (!arithmetic || !premises.length || ![...premises, concl].every((e) => kind(e) === 'boolean')) return { key: t.key, shape, lean, converse: null, counterexample: null }
+  const own = binders.filter((b) => b.type === 'Nat').map((b) => b.text).join(' '), hp = premises.map(parens).join(' ∧ ')
+  if (shape !== 'implication') { const c = contra(premises, concl, (h) => [m[1]!, ...binders.flatMap((b) => (b.type === 'Nat' ? b.names : [projOf(h, hyps.indexOf(b), hyps.length)]))].join(' ')); lean.push(`theorem ${t.key}_contrapositive ${own} : ${c.s} := ${c.p}`) }
+  const lits = [...new Set([0n, 1n, 2n, 3n, ...(vars.length <= 3 ? [...`${hp} ${concl}`.matchAll(/\b\d+\b/g)].flatMap((x) => [BigInt(x[0]) - 1n, BigInt(x[0]), BigInt(x[0]) + 1n]) : [])].filter((x) => x >= 0n))]
+  const holds = (e: string, at: Record<string, bigint>) => { try { return evaluate(e, at).value === true } catch { return false } }
+  const search = (k: number, at: Record<string, bigint>): Record<string, bigint> | null => (k === vars.length ? (holds(concl, at) && !holds(hp, at) ? at : null) : lits.reduce<Record<string, bigint> | null>((f, x) => f ?? search(k + 1, { ...at, [vars[k]!]: x }), null))
+  const found = search(0, {})
+  if (found) { lean.push(`theorem ${t.key}_converse_refuted : ¬ ${vars.length ? `∀ ${own}, ` : ''}${parens(concl)} → ${hp} := fun h => absurd (h ${vars.map((v) => found[v]!.toString()).join(' ')} (by decide)) (by decide)`); return { key: t.key, shape, lean, converse: 'refuted', counterexample: Object.fromEntries(Object.entries(found).map(([k, v]) => [k, v.toString()])) } }
+  if (/([A-Za-z_][\w']*|\))\s*[*/%^]\s*[A-Za-z_(]|[\d)]\s*\^\s*[A-Za-z_(]/.test(`${hp} ${concl}`)) return { key: t.key, shape, lean, converse: 'open', counterexample: null }
+  lean.push(`theorem ${t.key}_converse ${own} : ${parens(concl)} → ${hp} := fun hc => ${premises.length > 1 ? `⟨${premises.map(() => 'by omega').join(', ')}⟩` : 'by omega'}`)
+  return { key: t.key, shape, lean, converse: 'proved', counterexample: null }
+}
+let reflections: Reflection[] | undefined
+/** Every textbook theorem reflected by its shape, once: the Lean each one generates, and its converse decided where it is an implication. */
+export const reflectionsOf = () => (reflections ??= TEXTBOOK_THEOREMS.map(reflectionOf))
+/** The reflections measured against the kernel's index: each generated theorem accepted or not, the converses decided, and per theorem the books
+ *  of the sealed open-textbook catalogue (OpenStax, the Open Textbook Library, Open Library) that the sources step routed to it. */
+export const reflectedOf = (kernel: ReadonlySet<string>, books: Readonly<Record<string, number>> = {}) => {
+  const rows = reflectionsOf().map((r) => ({ ...r, names: r.lean.map((l) => /^theorem (\S+)/.exec(l)![1]!), books: books[r.key] ?? 0 }))
+  const count = (suffix: string) => ({ generated: rows.filter((r) => r.names.includes(r.key + suffix)).length, accepted: rows.filter((r) => kernel.has(r.key + suffix)).length })
+  const generated = rows.reduce((n, r) => n + r.names.length, 0), accepted = rows.reduce((n, r) => n + r.names.filter((k) => kernel.has(k)).length, 0)
+  const reflected = count('_reflected'), converse = (s: string) => rows.filter((r) => r.converse === s).length, cited = rows.filter((r) => r.books > 0)
+  return { theorems: rows.length, reflected: reflected.accepted, unreflected: rows.filter((r) => !kernel.has(`${r.key}_reflected`)).map((r) => r.key), contrapositives: count('_contrapositive'), converses: { total: rows.filter((r) => r.converse).length, proved: converse('proved'), refuted: converse('refuted'), open: converse('open'), accepted: count('_converse').accepted + count('_converse_refuted').accepted }, generated, accepted, byShape: rows.reduce<Record<string, number>>((a, r) => ({ ...a, [r.shape]: (a[r.shape] ?? 0) + 1 }), {}), books: { cited: cited.length, routed: cited.reduce((n, r) => n + r.books, 0), stated: 0 }, rows: rows.map(({ lean: _, ...r }) => r), theorem: 'textbook_reflection_by_shape', says: `${reflected.accepted} of ${rows.length} textbook theorems with a kernel-accepted reflection by shape; converses ${converse('proved')} proved, ${converse('refuted')} refuted by a counterexample, ${converse('open')} open; ${accepted} of ${generated} generated theorems accepted; ${cited.length} theorems reached by a book of the sealed catalogue, no book's own statements sealed yet` }
+}
 /** A sentence made safe inside a Lean doc comment: Lean block comments nest, so an opening /- or a closing -/ in the prose would open or end one early; both are parted by a space. */
 export const escapeLeanDoc = (s: string) => s.replace(/\/-/g, '/ -').replace(/-\//g, '- /')
 export const TEXTBOOK_LEAN = (): string => ['/-! # Qpu.Textbook', 'The textbook\'s axioms replaced by theorems: every arithmetic relation an example asserts, stated so the kernel checks it.', 'GENERATED by scripts/gen-docs.ts from src/quantum/textbook-theorems.ts; edit the table, never this file. -/', '', ...TEXTBOOK_THEOREMS.map((t) => `/-- ${escapeLeanDoc(t.says)} (examples: ${t.examples.join(', ') || 'none yet'}) -/\n${t.lean}`), ''].join('\n')
+export const leanDocOf = (s: string) => s.replace(/\/-/g, '/ -').replace(/-\//g, '- /')
+export const TEXTBOOK_LEAN = (): string => ['/-! # Qpu.Textbook', 'The textbook\'s axioms replaced by theorems: every arithmetic relation an example asserts, stated so the kernel checks it, and each one reflected by its shape.', 'GENERATED by scripts/gen-docs.ts from src/quantum/textbook-theorems.ts; edit the table, never this file. -/', '', ...TEXTBOOK_THEOREMS.map((t, i) => [`/-- ${leanDocOf(t.says)} (examples: ${t.examples.join(', ') || 'none yet'}) -/\n${t.lean}`, ...reflectionsOf()[i]!.lean.map((l) => `/-- ${{ reflected: `${t.key} reflected by its shape, ${reflectionsOf()[i]!.shape}`, contrapositive: `the contrapositive of ${t.key}`, converse: `the converse of ${t.key}, proved`, converse_refuted: `the converse of ${t.key}, refuted by a counterexample the kernel decides` }[/^theorem \S+?_(reflected|contrapositive|converse_refuted|converse) /.exec(l)![1]!]} (examples: ${t.examples.join(', ') || 'none yet'}) -/\n${l}`)].join('\n')), ''].join('\n')
