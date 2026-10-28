@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T09:06:11.623Z",
+ "date": "2026-10-28T09:43:37.606Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -185,7 +185,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1772 kernel-accepted theorems",
+   "evidence": "1774 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -515,7 +515,7 @@
   "says": "the access audit from every perspective over the generated code and the answered configurations: every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms"
  },
  "leaks": {
-  "texts": 5270,
+  "texts": 5318,
   "findings": [
    {
     "where": "docs/public/graph.json",
@@ -609,6 +609,20 @@
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
+    "where": "payload/entries/82a8b10a-aec7-5fce-b31a-43db403c1de8",
+    "kind": "local-path",
+    "count": 30,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/82a8b10a-aec7-5fce-b31a-43db403c1de8",
+    "kind": "private-ip",
+    "count": 8,
+    "served": true,
+    "remedy": "a host by its public name; a private address says the network"
+   },
+   {
     "where": "payload/entries/9659f3c6-2721-214d-9a81-96f4fc8d7b92",
     "kind": "local-path",
     "count": 30,
@@ -629,12 +643,12 @@
    "token": 0,
    "jwt": 0,
    "private-key": 0,
-   "local-path": 954,
-   "private-ip": 10
+   "local-path": 984,
+   "private-ip": 18
   },
-  "total": 1345,
-  "served": 11,
-  "setAside": 60,
+  "total": 1383,
+  "served": 13,
+  "setAside": 87,
   "clean": false,
   "leads": [
    {
@@ -729,6 +743,20 @@
     "reason": "published: remove it at the source and from what is served"
    },
    {
+    "id": "leak-local-path-payload-entries-82a8b10a-aec7-5fce-b31a-43db403c1de8",
+    "source": "payload/entries/82a8b10a-aec7-5fce-b31a-43db403c1de8",
+    "statement": "30 local-path finding(s) in payload/entries/82a8b10a-aec7-5fce-b31a-43db403c1de8, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-private-ip-payload-entries-82a8b10a-aec7-5fce-b31a-43db403c1de8",
+    "source": "payload/entries/82a8b10a-aec7-5fce-b31a-43db403c1de8",
+    "statement": "8 private-ip finding(s) in payload/entries/82a8b10a-aec7-5fce-b31a-43db403c1de8, served publicly: a host by its public name; a private address says the network",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
     "id": "leak-local-path-payload-entries-9659f3c6-2721-214d-9a81-96f4fc8d7b92",
     "source": "payload/entries/9659f3c6-2721-214d-9a81-96f4fc8d7b92",
     "statement": "30 local-path finding(s) in payload/entries/9659f3c6-2721-214d-9a81-96f4fc8d7b92, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
@@ -744,6 +772,6 @@
    }
   ],
   "theorem": "textbook_leaks_redacted",
-  "says": "1345 finding(s) in 9 text(s), 11 served publicly; values redacted, 60 notation(s) set aside"
+  "says": "1383 finding(s) in 10 text(s), 13 served publicly; values redacted, 87 notation(s) set aside"
  }
 }

@@ -5,7 +5,7 @@ order: 57
 
 # The immutable sources of leads
 
-Read on 2026-10-28T09:04:58.723Z by `leads { sources }`: 281 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 593 MCP doors proposed.
+Read on 2026-10-28T09:41:47.854Z by `leads { sources }`: 283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2422 the theorems reach and 21131 of their domain are leads; 594 MCP doors proposed.
 
 ## Licence candidates
 
@@ -25,16 +25,16 @@ Each is a candidate the court computed a case for. None is a verdict.
 
 ## Textbooks
 
-23679 open books: 2403 reached by the theorems, 21153 of their domain are leads, 123 outside.
+23679 open books: 2422 reached by the theorems, 21131 of their domain are leads, 126 outside.
 
 | theorem | books |
 | --- | --- |
 | `textbook_code_folds` | 515 |
-| `textbook_double_torus` | 212 |
+| `textbook_double_torus` | 208 |
 | `textbook_uuid_time_space` | 153 |
 | `textbook_patent_number_well_formed` | 153 |
-| `textbook_binding_zero_hex_path` | 91 |
-| `textbook_echo_qubits_within_willow` | 83 |
+| `textbook_binding_zero_hex_path` | 88 |
+| `textbook_echo_qubits_within_willow` | 78 |
 | `textbook_collision_solves_many` | 74 |
 | `textbook_repetition_code_tenth` | 68 |
 | `textbook_payload_operations` | 62 |
@@ -43,6 +43,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_dashboard_spaces` | 41 |
 | `textbook_software_cirq_implemented` | 40 |
 | `superconductivity` | 40 |
+| `textbook_shor_reduction` | 37 |
 | `textbook_dashboard_algorithm_combinations` | 31 |
 | `textbook_harmonic_default` | 30 |
 | `textbook_payload_field_types` | 29 |
@@ -60,12 +61,12 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_association_fields` | 15 |
 | `temperature` | 14 |
 | `textbook_workspace_round_trip` | 13 |
-| `textbook_chat_call_or_question` | 12 |
 | `Qpu.Federated.communication_lower_bound` | 11 |
 | `textbook_error_remedies` | 11 |
+| `textbook_chat_call_or_question` | 11 |
 | `textbook_route_waves` | 10 |
 | `textbook_set_union` | 10 |
-| `textbook_mongo_find_filter` | 10 |
+| `textbook_mongo_find_filter` | 9 |
 | `textbook_penalty_time_burned` | 8 |
 | `textbook_context_balanced` | 8 |
 | `textbook_mixed_radix` | 8 |
@@ -139,7 +140,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_poles_pyramid` | 2 |
 | `Qpu.CausalInference.common_support` | 2 |
 | `Qpu.ProgramSynthesis.synth_typed` | 2 |
-| `textbook_cuboctahedron_faces` | 2 |
 | `textbook_wave_requests_by_lead` | 2 |
 | `Qpu.ProgramSynthesis.testing_incomplete` | 2 |
 | `textbook_streams_cover_gateways` | 2 |
@@ -153,7 +153,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `Qpu.ProgramSynthesis.size_of_mem_layer` | 2 |
 | `textbook_phase_three_bits` | 2 |
 | `textbook_fullstack_files_by_role` | 2 |
-| `textbook_payload_hooks` | 2 |
 | `textbook_roadmap_milestone_three` | 2 |
 | `textbook_stream_no_silence` | 2 |
 | `sciences` | 2 |
@@ -197,9 +196,9 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_referer_binds_not_entropy` | 1 |
 | `textbook_foreign_verdicts` | 1 |
 | `Qpu.ProgramSynthesis.double_equiv` | 1 |
-| `textbook_tamper_detected` | 1 |
 | `Qpu.CausalInference.do_value_self` | 1 |
 | `faces_both_forms` | 1 |
+| `textbook_payload_hooks` | 1 |
 | `textbook_skills_documents` | 1 |
 | `all_product` | 1 |
 | `textbook_patent_term_twenty_years` | 1 |
@@ -820,6 +819,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | net.andrii/booking | https://andrii.net/mcp |
 | net.bookmax/bookmax | https://my.bookmax.net/mcp |
 | net.useapi/gemini-notebook | https://api.useapi.net/v1/gemini-notebook/mcp |
+| net.vegoritida/booking | https://api.vegoritida.net/mcp |
 | nl.feminiqrides/booking | https://www.feminiqrides.nl/mcp |
 | nl.jetcabams.www/booking | https://www.jetcabams.nl/mcp |
 | nz.wanakahaus/booking | https://wanakahaus.nz/api/mcp |

@@ -1,15 +1,15 @@
 {
- "date": "2026-10-28T09:26:48.790Z",
+ "date": "2026-10-28T09:55:31.004Z",
  "literals": {
-  "urls": 421,
-  "distinctUrls": 222,
-  "paths": 148,
-  "outside": 423,
-  "tokens": 4107,
+  "urls": 420,
+  "distinctUrls": 221,
+  "paths": 147,
+  "outside": 422,
+  "tokens": 4097,
   "byFile": [
    [
     "src/quantum/toolboxes/payload.ts",
-    44
+    43
    ],
    [
     "src/quantum/verifiers.ts",
@@ -640,10 +640,10 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 936,
- "lines": 80941,
- "findings": 921,
+ "lines": 80944,
+ "findings": 920,
  "fused": 327,
- "reactions": 594,
+ "reactions": 593,
  "gravity": "fbee6128-0cae-438b-9956-d12203b9a24b",
  "vacuum": false,
  "byKind": {
@@ -668,7 +668,7 @@
    "leads": 284
   },
   "shape": {
-   "findings": 96,
+   "findings": 95,
    "leads": 4
   },
   "todo": {
@@ -682,7 +682,7 @@
  },
  "difference": {
   "appeared": 2,
-  "settled": 1
+  "settled": 0
  },
  "toExplore": {
   "match": 307,
@@ -4586,11 +4586,11 @@
   {
    "id": "entropy-shape-0d8252de",
    "kind": "shape",
-   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/legal.ts:30, scripts/machine.ts:116, scripts/machine.ts:117, scripts/machine.ts:130, scripts/mcp.ts:21, scripts/mcp.ts:195, scripts/names.ts:16, scripts/publish.ts:27, scripts/publish.ts:43, scripts/shard.ts:22, src/quantum/audit.test.ts:37, src/quantum/examples.ts:120",
+   "source": "scripts/audit.ts:25, scripts/audit.ts:55, scripts/legal.ts:30, scripts/machine.ts:116, scripts/machine.ts:117, scripts/machine.ts:130, scripts/mcp.ts:21, scripts/mcp.ts:195, scripts/names.ts:16, scripts/publish.ts:46, scripts/shard.ts:22, src/quantum/audit.test.ts:37, src/quantum/examples.ts:120",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a JSON file read and parsed: one reader of the published files, null when a file is missing",
    "status": "open",
    "tool": "audit",
-   "occurrences": 14,
+   "occurrences": 13,
    "address": "0d8252de-feac-88b8-84b4-371eea5536ea",
    "explore": "match",
    "config": null
@@ -4598,7 +4598,7 @@
   {
    "id": "entropy-shape-7458ed19",
    "kind": "shape",
-   "source": "scripts/e2e.ts:29, scripts/hook.ts:67, scripts/mcp.ts:31, scripts/mcp.ts:38, scripts/metrics.ts:25, scripts/pqc-verify.ts:20, scripts/publish.ts:30, scripts/publish.ts:55, scripts/repository.ts:35, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/textbook.ts:33, site/src/collections/Entries.ts:49, site/src/plugins/qpu.ts:104, site/src/plugins/qpu.ts:107, src/quantum/examples.ts:120, src/quantum/toolboxes/payload.ts:1382, src/quantum/toolboxes/payload.ts:1888, src/quantum/toolboxes/payload.ts:1891, src/worker.ts:38, src/worker.ts:480",
+   "source": "scripts/e2e.ts:29, scripts/hook.ts:67, scripts/mcp.ts:31, scripts/mcp.ts:38, scripts/metrics.ts:25, scripts/pqc-verify.ts:20, scripts/publish.ts:33, scripts/publish.ts:58, scripts/repository.ts:35, scripts/security.ts:21, scripts/security.ts:24, scripts/security.ts:25, scripts/security.ts:30, scripts/textbook.ts:33, site/src/collections/Entries.ts:49, site/src/plugins/qpu.ts:104, site/src/plugins/qpu.ts:107, src/quantum/examples.ts:120, src/quantum/toolboxes/payload.ts:1382, src/quantum/toolboxes/payload.ts:1888, src/quantum/toolboxes/payload.ts:1891, src/worker.ts:38, src/worker.ts:480",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — a request with its timeout: one fetcher with the named user agent and the timeout",
    "status": "open",
    "tool": "audit",

@@ -1,6 +1,8 @@
 // Generated data leaves the working tree: every artefact of a run is posted to each configured docket (the Durable Object
 // on this host, the unit's, any mirror), so a write lands on all and a read is served by any. Locally the files are build
 // output only, ignored by git. Configure QPU_DOCKETS (comma-separated URLs ending in /docket) and QPU_WRITE_TOKEN.
+import { homedir } from 'node:os'
+import { redact } from '../src/quantum/machine.ts'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
@@ -24,7 +26,8 @@ const main = async () => {
   const results: { kind: string; docket: string; status: number; id?: string }[] = []
   for (const [kind, file] of artefacts) {
     if (!existsSync(join(ROOT, file))) continue
-    const body = JSON.parse(readFileSync(join(ROOT, file), 'utf8'))
+    // redacted before it leaves for the docket: a local path, the home, and every leak the table names replaced by its kind, so the hosted copy keeps none (the same redaction the commit hook applies to docs)
+    const body = JSON.parse(redact(readFileSync(join(ROOT, file), 'utf8'), ROOT, homedir()))
     for (const docket of dockets) {
       try {
         const res = await fetch(docket, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ kind, from, body }), signal: AbortSignal.timeout(30000) })

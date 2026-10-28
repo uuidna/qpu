@@ -29,7 +29,7 @@ Every figure below was measured on this tree on 2026-10-28 with the commands in 
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
 | Self-audit checks | 2293 of 2293 pass |
-| Cross-verification requests (free public sources) | 412 requests, 368 reachable on 2026-10-28 |
+| Cross-verification requests (free public sources) | 414 requests, 370 reachable on 2026-10-28 |
 | Servers, workers, network calls in the handler | 0 |
 
 ## 1. What the tree contains

@@ -411,7 +411,7 @@ the Google Quantum AI layer: the Willow processor as its spec sheet states it, C
 
 ## Gates
 
-Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 212 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 36 + 68 + 28 + 7 + 2 + 5 = 212) in 21 categories, 234 nested pages, 272 of 309 leads placed; by kind tool 51, open 84, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
+Every API is a gate of some sort — a door of this catalogue, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate), so each doc is a gate of lexical leads: the leads that pass through it listed in its body and answered live by its one block (`leads { ids }`). 212 gates (10 + 13 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 + 7 + 8 + 5 + 36 + 68 + 28 + 7 + 2 + 5 = 212) in 21 categories, 234 nested pages, 272 of 311 leads placed; by kind tool 51, open 84, keyed 43, browser 1, proposed 33. The root is [/504bb942-11b3-54a9-8600-743050903445](https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445).
 
 | Category | Gates | Leads | Says |
 |---|---:|---:|---|

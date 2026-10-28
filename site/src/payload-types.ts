@@ -3269,11 +3269,11 @@ export interface QpuBlock {
   program?: string | null;
   tail?: string | null;
   /**
-   * the tool whose result this block is
+   * the tool whose result this block is: one the MCP lists (tools/list)
    */
   tool: string;
   /**
-   * the arguments, so the block recomputes anywhere
+   * the arguments, so the block recomputes anywhere: checked on save against the schema of the tool
    */
   arguments?:
     | {

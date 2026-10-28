@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T08:57:39.306Z",
+ "date": "2026-10-28T09:28:17.629Z",
  "input": {
   "doors": [
    {
@@ -166,6 +166,11 @@
    {
     "name": "algorithm.integer",
     "bytes": 210,
+    "reached": true
+   },
+   {
+    "name": "algorithm.order",
+    "bytes": 245,
     "reached": true
    },
    {
@@ -1037,6 +1042,11 @@
     "name": "patents.selftest",
     "bytes": 18,
     "reached": false
+   },
+   {
+    "name": "repository.status",
+    "bytes": 132,
+    "reached": true
    },
    {
     "name": "repository.penalties",
@@ -2951,6 +2961,11 @@
     "used": true
    },
    {
+    "key": "textbook_shor_reduction",
+    "bytes": 138,
+    "used": true
+   },
+   {
     "key": "textbook_factors_divide",
     "bytes": 90,
     "used": true
@@ -3073,6 +3088,7 @@
   "shor": {
    "bound": 21,
    "asked": [
+    15,
     15
    ]
   },
@@ -3826,8 +3842,8 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 51789,
-   "used": 42253,
+   "capacity": 52166,
+   "used": 42630,
    "idle": 9536,
    "percentIdle": 18,
    "idleNames": [
@@ -3950,8 +3966,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 28040,
-   "used": 28040,
+   "capacity": 28178,
+   "used": 28178,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

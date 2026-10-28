@@ -1,22 +1,22 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T09:04:58.723Z",
+ "date": "2026-10-28T09:41:47.854Z",
  "phase": "judged",
- "address": "3cfa3c36-a63a-7e0e-93a2-438e0fd6b3af",
+ "address": "8278491c-eb1b-81b9-b3b5-0ac28367b211",
  "summary": {
   "requests": 287,
-  "reached": 281,
+  "reached": 283,
   "versions": 14,
   "visits": 0,
   "captures": 0,
   "records": 3,
   "candidates": 1,
   "books": 23679,
-  "routed": 2403,
-  "domainLeads": 21153,
-  "outside": 123,
-  "doors": 593,
-  "leads": 21160
+  "routed": 2422,
+  "domainLeads": 21131,
+  "outside": 126,
+  "doors": 594,
+  "leads": 21136
  },
  "immutable": {
   "package": "@uuidna/qpu",
@@ -112,13 +112,13 @@
     "host": "qpu.uuidna.com",
     "url": null,
     "timestamp": null,
-    "status": 429
+    "status": 200
    },
    {
     "host": "qpu.psg.bg",
     "url": null,
     "timestamp": null,
-    "status": 429
+    "status": 200
    }
   ],
   "records": [
@@ -395,7 +395,7 @@
  ],
  "textbooks": {
   "books": 23679,
-  "routed": 2403,
+  "routed": 2422,
   "domain": [
    "$K$-theory",
    "$K$-theory -- Higher algebraic $K$-theory -- Higher symbols, Milnor $K$-theory",
@@ -450,8 +450,6 @@
    "Adventure and adventurers, fiction",
    "Adventure fiction",
    "Adventure stories",
-   "Aerial operations",
-   "Aerial operations, British",
    "Aerial triangulation",
    "Aeroacoustics",
    "Aerodynamic characteristics",
@@ -580,6 +578,7 @@
    "Analog electronic systems .",
    "Analog integrated circuits",
    "Analogies",
+   "Analyse dimensionnelle",
    "Analyse diophantienne",
    "Analyse numérique",
    "Analyse stochastique",
@@ -592,7 +591,6 @@
    "Analytic spaces",
    "Analytischer Raum",
    "Anatomy & histology",
-   "Anderson model",
    "Angles (Geometry)",
    "Animal Vocalization",
    "Animal communication",
@@ -636,6 +634,7 @@
    "Arithmetic, problems, exercises, etc.",
    "Arithmetical algebraic geometry",
    "Armed Forces",
+   "Arms control",
    "Arquitetura de sistemas de computacao",
    "Artificial Intelligence (incl. Robotics)",
    "Artificial Intelligence - General",
@@ -662,7 +661,6 @@
    "Astronomical photometry",
    "Astronomie",
    "Astronomy",
-   "Astronomy - General",
    "Astrophysics",
    "Astrophysics & Space Science",
    "Astrophysics and Astroparticles",
@@ -671,6 +669,7 @@
    "Asymptotes",
    "Asymptotic expansions",
    "Asymptotic methods",
+   "Asymptotic properties",
    "Asymptotic theory",
    "Atiyah-Singer, Théorème d'",
    "Atmospheric attenuation",
@@ -682,6 +681,7 @@
    "Atomic Spectrophotometry",
    "Atomic orbitals",
    "Atomic spectra",
+   "Atomic spectroscopy",
    "Atomic structure",
    "Atomic theory",
    "Atomic, Molecular, Optical and Plasma Physics",
@@ -725,6 +725,7 @@
    "Bearings",
    "Bees",
    "Beispielsammlung",
+   "Belgium, biography",
    "Bell inequalities",
    "Berechnungskomplexitat",
    "Berechnungstheorie",
@@ -782,8 +783,6 @@
    "Brain, mathematical models",
    "Branch and bound algorithms",
    "Brauer groups",
-   "British Aerial operations",
-   "British Personal narratives",
    "Broglie, louis, prince de, 1892-1987",
    "Broken symmetry (Physics)",
    "Brothers and sisters",
@@ -835,6 +834,7 @@
    "Calibrating",
    "Campaigns",
    "Cancer",
+   "Canonical correlation (Statistics)",
    "Cantorian",
    "Caractères de groupes",
    "Carrier to noise ratios",
@@ -842,7 +842,7 @@
    "Cartoons and comics",
    "Case studies",
    "Casimir effect",
-   "Cataclysmic stars",
+   "Catalan-Vermutung",
    "Categories (Mathematics)",
    "Categories (mathematics)",
    "Category theory; homological algebra",
@@ -863,8 +863,10 @@
    "Cell aggregation",
    "Cellular automata",
    "Certification",
+   "Champs de jauge (Physique)",
    "Champs, Theorie des (Physique)",
    "Champs, Théorie des (physique)",
+   "Champs, théorie quantique des",
    "Chance",
    "Change detection",
    "Channels (Data transmission)",
@@ -892,7 +894,6 @@
    "Chirality",
    "Choice (Psychology)",
    "Choice (psychology)",
-   "Cholesky factorization",
    "Christianity",
    "Church buildings",
    "Ciencia Da Computacao Ou Informatica",
@@ -1336,7 +1337,9 @@
    "Dimension 2",
    "Dimension 4",
    "Dimension 4.",
+   "Dimension reduction (Statistics)",
    "Dimension theory (Algebra)",
+   "Dimensional analysis",
    "Dioid",
    "Diophantine analysis",
    "Diophantine approximation",
@@ -1424,7 +1427,6 @@
    "Educational equipment & technology, computer-aided learning (CAL)",
    "Effet Hall quantique",
    "Eigenvalues",
-   "Eigenvectors",
    "Eigenwerteinschliessung",
    "Einführung",
    "Eingebettetes System",
@@ -1455,6 +1457,8 @@
    "Electromagnetism",
    "Electromagnétisme",
    "Electron configuration",
+   "Electron mobility",
+   "Electron-electron interactions",
    "Electronic Circuit Design",
    "Electronic Circuits and Devices",
    "Electronic and Computer Engineering",
@@ -1491,7 +1495,6 @@
    "Elliptic Curves",
    "Elliptic functions",
    "Elliptische Kurve",
-   "Emanuel",
    "Embedded computer systems",
    "Embeddings (Mathematics)",
    "Emergency medical services -- United States -- Data processing",
@@ -1559,8 +1562,12 @@
    "Error-correcting codes (Inform",
    "Error-correcting codes (Information theory)",
    "Error-correcting codes (information theory)",
+   "Espace de Hilbert",
    "Espace et temps",
    "Espaces analytiques",
+   "Espaces de Hilbert",
+   "Espaces fibrés (Mathématiques)",
+   "Espaces vectoriels",
    "Espaces vectoriels topologiques",
    "Espionage, Soviet",
    "Espionage, russian",
@@ -1582,6 +1589,7 @@
    "Evaluation",
    "Evidence",
    "Evolution",
+   "Evolution equations",
    "Evolutionary computation",
    "Evolutionary programming (Computer science)",
    "Evolutionary programming (computer science)",
@@ -1655,6 +1663,7 @@
    "Feynman integrals",
    "Feynman, richard p. (richard phillips), 1918-1988",
    "Fiber optics",
+   "Fiber spaces (Mathematics)",
    "Fiber-matrix interfaces",
    "Fibonacci numbers",
    "Fiction",
@@ -1678,7 +1687,6 @@
    "Field theory and polynomials -- General field theory -- Skew fields, division rings",
    "Field theory and polynomials -- Topological fields -- Non-Archimedean valued fields",
    "Filters (Mathematics)",
-   "Finance",
    "Finance, data processing",
    "Finite difference theory",
    "Finite differences",
@@ -1692,6 +1700,7 @@
    "Finite simple groups",
    "Finite volume method",
    "Finite-Elemente-Methode",
+   "Fir filters",
    "Fisica Atomica (Metodos Experimentais)",
    "Fisica Atomica E Molecular",
    "Fisica atomica (metodos experimentais)",
@@ -1853,7 +1862,9 @@
    "Geophysics",
    "Geophysics/Geodesy",
    "Geopotential",
+   "Geordende ruimten",
    "Geordnete algebraische Struktur",
+   "Geordneter Vektorraum",
    "German Aerial operations",
    "German Naval operations",
    "Germany",
@@ -1899,9 +1910,6 @@
    "Gravitation",
    "Gravitational waves",
    "Gravity",
-   "Great Britain",
-   "Great Britain. Royal Air Force",
-   "Great Britain. Royal Flying Corps",
    "Great britain, politics and government",
    "Grid generation (Mathematics)",
    "Ground operational support system",
@@ -2014,6 +2022,7 @@
    "Hilbert algebras",
    "Hilbert modular surfaces",
    "Hilbert space",
+   "Hilbert-Raum",
    "Histoire",
    "Historiography",
    "History",
@@ -2053,7 +2062,9 @@
    "Humor",
    "Hungary, history",
    "Hydraulic engineering",
+   "Hydrides",
    "Hydrodynamics",
+   "Hydrogen",
    "Hyperbolic Differential equations",
    "Hyperbolic Geometry",
    "Hyperbolic groups",
@@ -2067,7 +2078,6 @@
    "IBM computers",
    "Ice formation",
    "Identification",
-   "Identity (Psychology)",
    "Ill-conditioned problems (Mathematics)",
    "Image and Speech Processing Signal",
    "Image compression",
@@ -2095,7 +2105,6 @@
    "Indians of north america, southwest, new",
    "Indices, Théorèmes des",
    "Indigenous peoples",
-   "Individuality",
    "Induction (Logic)",
    "Induction (Mathematics)",
    "Induction (mathematics)",
@@ -2202,7 +2211,6 @@
    "Inverse problems (Differential equations)",
    "Inverse problems (differential equations)",
    "Investigation",
-   "Investment advisors",
    "Inviscid flow",
    "Invisible Writing",
    "Ion bombardment",
@@ -2212,6 +2220,7 @@
    "Iroquois Indians",
    "Irrational Numbers",
    "Irreversible processes",
+   "Isobaric spin",
    "Isomorphisms (Mathematics)",
    "Ite ration (mathe matiques)",
    "Iteration",
@@ -2333,6 +2342,7 @@
    "Lifting theory",
    "Ligand field theory",
    "Lightning",
+   "Lineaire algebra",
    "Linear Algebras",
    "Linear algebra",
    "Linear algebraic groups",
@@ -2356,7 +2366,6 @@
    "Local area networks (computer networks)",
    "Local ground fields",
    "Local theory of Banach spaces",
-   "Localization theory",
    "Locally compact Abelian groups",
    "Logarithms",
    "Logic",
@@ -2401,7 +2410,6 @@
    "Magnetic recorders and recording",
    "Magnetic recorders and recording.",
    "Magnetism",
-   "Magnetohydrodynamics",
    "Magnetoresistance",
    "Man-woman relationships",
    "Management",
@@ -2434,6 +2442,7 @@
    "Matematica Aplicada",
    "Matematiksel fizik",
    "Materials",
+   "Materials Science",
    "Materials Science, general",
    "Materials at high temperatures",
    "Materials, testing",
@@ -2517,6 +2526,7 @@
    "Maxwell equations",
    "Maxwell-Boltzmann distribution law",
    "Maze gardens",
+   "Mean square values",
    "Measure and Integration",
    "Measure and integration",
    "Measure and integration -- Classical measure theory -- Contents, measures, outer measures, capacities",
@@ -2648,7 +2658,6 @@
    "Multidisciplinary design optimization",
    "Multigrid methods (Numerical analysis)",
    "Multimedia systems",
-   "Multiple criteria decision making",
    "Multiplexing",
    "Multiplikative Zahlentheorie",
    "Multiprocessing (Computers)",
@@ -2764,8 +2773,8 @@
    "Notions of recurrence",
    "Novela juvenil",
    "Noyaux (Mathématiques)",
-   "Nuclear Physics",
    "Nuclear Physics, Heavy Ions, Hadrons",
+   "Nuclear arms control",
    "Nuclear chemistry",
    "Nuclear counters",
    "Nuclear fission",
@@ -2956,7 +2965,6 @@
    "Optimal control",
    "Optimization",
    "Optimization. Operations Research.",
-   "Options (Finance)",
    "Oracle (Computer file)",
    "Oral history",
    "Orbital maneuvers",
@@ -2988,7 +2996,6 @@
    "P-adic groups",
    "PASCAL",
    "PDP-8 (Computer)",
-   "PHYSICS",
    "PLASMA PHYSICS",
    "POLITICAL SCIENCE",
    "PROBLEM SOLVING",
@@ -3015,7 +3022,6 @@
    "Partial differential equations -- Miscellaneous topics -- Partial differential equations on graphs and networks (ramified or polygonal spaces)",
    "Partial differential equations -- Spectral theory and eigenvalue problems -- Estimation of eigenvalues, upper and lower bounds",
    "Partial differential equations -- Spectral theory and eigenvalue problems -- General topics in linear spectral theory",
-   "Partially ordered sets",
    "Participation, Indian",
    "Particle acceleration",
    "Particle and Nuclear Physics",
@@ -3043,7 +3049,6 @@
    "Perkolationstheorie",
    "Perl (computer program language)",
    "Permutation groups",
-   "Personal narratives, British",
    "Perturbation",
    "Perturbation (Mathematics)",
    "Perturbation (Quantum dynamics)",
@@ -3062,14 +3067,11 @@
    "Philosophy",
    "Philosophy (General)",
    "Philosophy / Logic",
-   "Philosophy Of Psychology",
    "Philosophy and aesthetics",
-   "Philosophy and science",
    "Philosophy of education",
    "Philosophy of mathematics",
    "Philosophy of mind",
    "Philosophy of nature",
-   "Philosophy of science",
    "Philosophy, polish",
    "Phonetic method",
    "Phonetics",
@@ -3113,9 +3115,7 @@
    "Planning",
    "Plasma (Ionized gases)",
    "Plasma Physics",
-   "Plasma astrophysics",
    "Plasma density",
-   "Plasma physics",
    "Platonic Solids",
    "Poincaré series",
    "Point fixe, Théorème du",
@@ -3229,9 +3229,6 @@
    "Psychological aspects",
    "Psychological aspects..",
    "Psychology",
-   "Psychology Of Literature",
-   "Psychology and literature",
-   "Psychology and philosophy",
    "Psychology, mathematical models",
    "Psychophysics",
    "Public Policy",
@@ -3301,6 +3298,7 @@
    "Quantum computing",
    "Quantum cosmology",
    "Quantum dot",
+   "Quantum dots",
    "Quantum electrodynamics",
    "Quantum electronics",
    "Quantum entanglement",
@@ -3357,6 +3355,7 @@
    "RELATIVITY",
    "Radar, antennas",
    "Radiance",
+   "Radiation",
    "Radiative transfer",
    "Radio",
    "Radio broadcasting",
@@ -3453,6 +3452,7 @@
    "Remote sensing",
    "Renewable and Green Energy",
    "Renewable energy sources",
+   "Renormalization (Physics)",
    "Renormalization group",
    "Representation des connaissances",
    "Representations of Lie and linear algebraic groups over global fields and adèle rings",
@@ -3491,6 +3491,7 @@
    "Rural Land use",
    "Rydberg states",
    "Réactions de fragmentation",
+   "Réduction de dimension (Statistique)",
    "Répartition modulo 1",
    "Résolution de problème",
    "SCIENCE",
@@ -3530,7 +3531,6 @@
    "Schwarzes Loch",
    "Science",
    "Science (General)",
-   "Science / Astronomy",
    "Science / Physics",
    "Science Fiction",
    "Science in General",
@@ -3725,6 +3725,7 @@
    "Spintronics",
    "Spintronics Quantum Information Technology",
    "Spiritual life",
+   "Square root",
    "Squeezed states (Quantum theory)",
    "Stability tests",
    "Stagnation point",
@@ -4128,6 +4129,7 @@
    "Wave Phenomena Classical Electrodynamics",
    "Wave equation",
    "Wave equations",
+   "Wave fronts",
    "Wave functions",
    "Wave mechanics",
    "Wave propagation",
@@ -4138,13 +4140,13 @@
    "Waves",
    "Waves & Wave Mechanics",
    "Weak interactions (Nuclear physics)",
+   "Weapons of mass destruction",
    "Wear tests",
    "Web search engines",
    "Web site development",
    "Web sites",
    "Web sites, design",
    "Wedges",
-   "Western philosophy, from c 1900 -",
    "Western stories",
    "Weyl groups",
    "Weyl theory",
@@ -4237,7 +4239,6 @@
    "open_syllabus_project",
    "origination of the world",
    "origination of time and space",
-   "partocle acceleration",
    "philosophy",
    "physics",
    "positive operator-valued measures",
@@ -4264,8 +4265,8 @@
    "Математика",
    "Оптимизация. Исследование операций."
   ],
-  "inDomain": 21153,
-  "outside": 123,
+  "inDomain": 21131,
+  "outside": 126,
   "byTheorem": {
    "textbook_penalty_time_burned": 8,
    "textbook_repositories_by_language": 22,
@@ -4275,7 +4276,7 @@
    "textbook_penalty_time_heat_monotone": 4,
    "textbook_leaks_redacted": 6,
    "textbook_collision_solves_many": 74,
-   "textbook_binding_zero_hex_path": 91,
+   "textbook_binding_zero_hex_path": 88,
    "computer": 54,
    "Qpu.ProgramSynthesis.size_compose": 1,
    "textbook_news_adapters": 4,
@@ -4294,11 +4295,11 @@
    "textbook_security_perspectives": 6,
    "textbook_queneau_compositions": 2,
    "textbook_one_holder": 4,
-   "textbook_double_torus": 212,
+   "textbook_double_torus": 208,
    "textbook_chain_bits": 4,
    "textbook_actions_experience": 1,
    "textbook_code_folds": 515,
-   "textbook_echo_qubits_within_willow": 83,
+   "textbook_echo_qubits_within_willow": 78,
    "cooling_stays_positive": 2,
    "textbook_bill_covered": 6,
    "quantum": 22,
@@ -4311,10 +4312,11 @@
    "textbook_textbook_categories": 5,
    "textbook_advantage_unbounded": 4,
    "textbook_payload_access": 22,
+   "textbook_shor_reduction": 37,
    "textbook_gate_adapters": 19,
    "textbook_context_balanced": 8,
    "textbook_google_call_schema": 3,
-   "textbook_chat_call_or_question": 12,
+   "textbook_chat_call_or_question": 11,
    "design": 16,
    "textbook_actions_pinned": 3,
    "textbook_willow_holds_codes": 51,
@@ -4396,13 +4398,12 @@
    "textbook_qaoa_random_cut": 1,
    "noise": 3,
    "Qpu.ProgramSynthesis.synth_typed": 2,
-   "textbook_cuboctahedron_faces": 2,
    "textbook_workspace_drive": 1,
    "textbook_wave_requests_by_lead": 2,
    "textbook_scan_stream": 1,
    "Qpu.ProgramSynthesis.testing_incomplete": 2,
    "textbook_streams_cover_gateways": 2,
-   "textbook_mongo_find_filter": 10,
+   "textbook_mongo_find_filter": 9,
    "textbook_h2_below_hartree_fock": 3,
    "textbook_integers_first": 3,
    "textbook_eta_from_receipts": 2,
@@ -4429,11 +4430,10 @@
    "Qpu.ProgramSynthesis.double_equiv": 1,
    "Qpu.ProgramSynthesis.size_of_mem_layer": 2,
    "textbook_phase_three_bits": 2,
-   "textbook_tamper_detected": 1,
    "Qpu.CausalInference.do_value_self": 1,
    "textbook_fullstack_files_by_role": 2,
    "faces_both_forms": 1,
-   "textbook_payload_hooks": 2,
+   "textbook_payload_hooks": 1,
    "textbook_rosetta_conventions": 3,
    "textbook_skills_documents": 1,
    "all_product": 1,
@@ -8168,7 +8168,7 @@
    },
    {
     "name": "io.github.productdevbook/yuva",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "description": "Customer support inbox: search, read, triage and draft replies to e-mail and chat.",
     "remote": "https://{yuva_host}/mcp",
     "repository": "https://github.com/productdevbook/yuva"
@@ -8500,6 +8500,13 @@
     "version": "1.0.5",
     "description": "Google Gemini Notebook (NotebookLM): notebooks, sources, cited chat, podcasts, video, slides",
     "remote": "https://api.useapi.net/v1/gemini-notebook/mcp",
+    "repository": null
+   },
+   {
+    "name": "net.vegoritida/booking",
+    "version": "1.0.0",
+    "description": "Check availability and book lake-view apartments near Edessa, Greece. No credit card needed.",
+    "remote": "https://api.vegoritida.net/mcp",
     "repository": null
    },
    {
@@ -14023,13 +14030,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-textbook-library-876",
-   "source": "open-textbook-library 876",
-   "statement": "Intermediate Microeconomics with Microsoft Excel (Finance; Attribution-ShareAlike) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-textbook-library-877",
    "source": "open-textbook-library 877",
    "statement": "Fundamentals of Business Law (Administrative Law, Civil Law, Constitutional Law; Attribution) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -15857,13 +15857,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-textbook-library-1180",
-   "source": "open-textbook-library 1180",
-   "statement": "Principles of Finance (Finance; Attribution) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-textbook-library-1186",
    "source": "open-textbook-library 1186",
    "statement": "A la defensa del disenso (Political Science, Social Sciences; Attribution-NonCommercial) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -16049,13 +16042,6 @@
    "id": "textbook-open-textbook-library-1220",
    "source": "open-textbook-library 1220",
    "statement": "Microbiomes: Health and the Environment (Biology; Attribution) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-textbook-library-1221",
-   "source": "open-textbook-library 1221",
-   "statement": "Introduction to Financial Analysis (Finance; Attribution) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -22710,13 +22696,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol19843376w",
-   "source": "open-library /works/OL19843376W",
-   "statement": "Dimensional reduction of gauge theories, spontaneous compactification and model building (quantum theory, Gauge fields (Physics), Quantum field theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol19889096w",
    "source": "open-library /works/OL19889096W",
    "statement": "Molekülphysik und Quantenchemie (quantum theory, Information and Physics Quantum Computing, Physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -23956,6 +23935,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol8229448w",
+   "source": "open-library /works/OL8229448W",
+   "statement": "My Life as a Quant (quantum theory, Business, Finance) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol8332151w",
    "source": "open-library /works/OL8332151W",
    "statement": "Modern canonical quantum general relativity (quantum theory, Quantum theory, General relativity (Physics)) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -24992,13 +24978,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol25202504w",
-   "source": "open-library /works/OL25202504W",
-   "statement": "Quantum Theory Without Reduction, (quantum theory, Quantum theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol25214711w",
    "source": "open-library /works/OL25214711W",
    "statement": "Linear Induction Accelerators for High-Power Microwave Devices (quantum theory, Betatrons, Microwave devices) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -25727,6 +25706,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol146559w",
+   "source": "open-library /works/OL146559W",
+   "statement": "Five years in the Royal Flying Corps (quantum theory, World War, 1914-1918, Aerial operations, British) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol3387100w",
    "source": "open-library /works/OL3387100W",
    "statement": "The Racah-Wigner algebra in quantum theory (quantum theory, Quantum theory, Racah algebra) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -26038,6 +26024,13 @@
    "id": "textbook-open-library-works-ol3124649w",
    "source": "open-library /works/OL3124649W",
    "statement": "Kvantovai͡a︡ ėlektrodinamika (quantum theory, Quantum electrodynamics, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol5844259w",
+   "source": "open-library /works/OL5844259W",
+   "statement": "Seeing Double (quantum theory, Psychology and literature, Psychology and philosophy) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -26472,6 +26465,13 @@
    "id": "textbook-open-library-works-ol3517777w",
    "source": "open-library /works/OL3517777W",
    "statement": "Quantum mechanics in Hilbert space (quantum theory, Quantum theory, Hilbert space) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol3505969w",
+   "source": "open-library /works/OL3505969W",
+   "statement": "Plasma astrophysics (quantum theory, Plasma astrophysics, Double stars) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -28625,13 +28625,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol12056002w",
-   "source": "open-library /works/OL12056002W",
-   "statement": "Feynman-Kac formulae (quantum theory, Path integrals, Evolution equations) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol1263557w",
    "source": "open-library /works/OL1263557W",
    "statement": "Rechenmethoden der Quantentheorie dargestellt in Aufgaben und Lösungen (quantum theory, Quantum theory, Mathematical physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -28887,13 +28880,6 @@
    "id": "textbook-open-library-works-ol3502326w",
    "source": "open-library /works/OL3502326W",
    "statement": "Quantum pharmacology (quantum theory, Pharmacology, Quantum pharmacology) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol35703369w",
-   "source": "open-library /works/OL35703369W",
-   "statement": "Classical and Quantum Dynamics in Condensed Phase Simulations (quantum theory, Quantum theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -31708,13 +31694,6 @@
    "id": "textbook-open-library-works-ol1399319w",
    "source": "open-library /works/OL1399319W",
    "statement": "Lectures on the Mordell-Weil Theorem (Aspects of Mathematics) (number theory, Diophantine analysis, Analyse diophantienne) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol13804746w",
-   "source": "open-library /works/OL13804746W",
-   "statement": "Catalan's conjecture (number theory, Numerical Roots, Number theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -38239,6 +38218,13 @@
    "id": "textbook-open-library-works-ol3455661w",
    "source": "open-library /works/OL3455661W",
    "statement": "Band theory of solids (group theory, Group theory, Symmetry (Physics)) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol21120806w",
+   "source": "open-library /works/OL21120806W",
+   "statement": "Fence Methods (group theory, Group theory, Partially ordered sets) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -57801,13 +57787,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol17390819w",
-   "source": "open-library /works/OL17390819W",
-   "statement": "Multilabel Dimensionality Reduction (algorithms, Least squares, Algorithms) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol17515700w",
    "source": "open-library /works/OL17515700W",
    "statement": "Kernel Learning Algorithms For Face Recognition (algorithms, Human face recognition (Computer science), Machine learning) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -60412,6 +60391,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol6323725w",
+   "source": "open-library /works/OL6323725W",
+   "statement": "An analysis of spectral envelope-reduction via quadratic assignment problems (algorithms, Algorithms, Cholesky factorization) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol6214196w",
    "source": "open-library /works/OL6214196W",
    "statement": "Algorithms for minimization without derivatives (algorithms, Algorithms, Approximation theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -60758,13 +60744,6 @@
    "id": "textbook-open-library-works-ol11604311w",
    "source": "open-library /works/OL11604311W",
    "statement": "A spectral algorithm for envelope reduction of sparse matrices (algorithms, Algorithms, Eigenvectors) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol11602365w",
-   "source": "open-library /works/OL11602365W",
-   "statement": "Computer simulation results and analysis for a root-raised cosine filter design using canonical signed digits (algorithms, Mean square values, Optimization) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -61700,6 +61679,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol16959554w",
+   "source": "open-library /works/OL16959554W",
+   "statement": "Least squares support vector machines (algorithms, Algorithms, Least squares) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol16925648w",
    "source": "open-library /works/OL16925648W",
    "statement": "Discovering mathematics with Magma (algorithms, Data processing, Algebra) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -62508,13 +62494,6 @@
    "id": "textbook-open-library-works-ol19148438w",
    "source": "open-library /works/OL19148438W",
    "statement": "Language in Primates: Perspectives and Implications (Springer Series in Language and Communication) (acoustics, Human-animal communication, Apes) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol19909490w",
-   "source": "open-library /works/OL19909490W",
-   "statement": "Verification of Arms Reductions (acoustics, Acoustics, Physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -69578,13 +69557,6 @@
    "id": "textbook-open-library-works-ol12150408w",
    "source": "open-library /works/OL12150408W",
    "statement": "The interpretation and development of quantum theory (quantum theory, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol12199832w",
-   "source": "open-library /works/OL12199832W",
-   "statement": "Irreducible tensorial sets (quantum theory, Quantum theory, Calculus of tensors) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -82822,6 +82794,13 @@
    "id": "textbook-open-library-works-ol21135232w",
    "source": "open-library /works/OL21135232W",
    "statement": "Shattered Symmetry (group theory, Group theory, Symmetry (physics)) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol20874064w",
+   "source": "open-library /works/OL20874064W",
+   "statement": "Abelian Groups and Representations of Finite Partially Ordered Sets (group theory, Mathematics, Group theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -100347,6 +100326,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol12631601w",
+   "source": "open-library /works/OL12631601W",
+   "statement": "Least squares support vector machines (algorithms, Algorithms, Least squares) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol13233523w",
    "source": "open-library /works/OL13233523W",
    "statement": "On proving the correctness of computer programs (algorithms, Algorithms, Computer programming) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -104344,6 +104330,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol18349031w",
+   "source": "open-library /works/OL18349031W",
+   "statement": "Anderson localization and its ramifications (quantum theory, Anderson model, Coherent states) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol18371875w",
    "source": "open-library /works/OL18371875W",
    "statement": "Theoretical chemistry (quantum theory, Quantum theory, Statistical mechanics) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -104445,13 +104438,6 @@
    "id": "textbook-open-library-works-ol16915981w",
    "source": "open-library /works/OL16915981W",
    "statement": "Model of the Response Function of CUORE Bolometers (quantum theory, Quantum theory, Physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol16916174w",
-   "source": "open-library /works/OL16916174W",
-   "statement": "Theory of Semiconductor Quantum Devices (quantum theory, Engineering, Computer engineering) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -106566,13 +106552,6 @@
    "id": "textbook-open-library-works-ol8056465w",
    "source": "open-library /works/OL8056465W",
    "statement": "Applications of Self Adjoint Extensions in Quantum Physics (quantum theory, Quantum theory, Mathematical physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol8058964w",
-   "source": "open-library /works/OL8058964W",
-   "statement": "Dirac Kets, Gamow Vectors, and Gel'fand triplets (quantum theory, Hilbert space, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -108806,13 +108785,6 @@
    "id": "textbook-open-library-works-ol42240005w",
    "source": "open-library /works/OL42240005W",
    "statement": "El número natural y sus generalizaciones (number theory, Number theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol42240938w",
-   "source": "open-library /works/OL42240938W",
-   "statement": "Toepassing van de meetkunde der getallen op ongelijheden in K(1) en K (i[square root of]m) (number theory, Number theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -115239,6 +115211,13 @@
    "id": "textbook-open-library-works-ol19835191w",
    "source": "open-library /works/OL19835191W",
    "statement": "Cohomology of groups (group theory, Group theory, Pre-Calculus) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol19907344w",
+   "source": "open-library /works/OL19907344W",
+   "statement": "Topological and Algebraic Structures in Fuzzy Sets (group theory, Group theory, Symbolic and mathematical Logic) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -122614,13 +122593,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol11623041w",
-   "source": "open-library /works/OL11623041W",
-   "statement": "Two improved algorithms for envelope and wavefront reduction (algorithms, Algorithms, Wave fronts) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol12062281w",
    "source": "open-library /works/OL12062281W",
    "statement": "Pattern recognition algorithms for data mining (algorithms, Computer algorithms, Granular computing) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -128361,13 +128333,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol2975535w",
-   "source": "open-library /works/OL2975535W",
-   "statement": "Evolution processes and the Feynman-Kac formula (quantum theory, Path integrals, Evolution equations) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol29824731w",
    "source": "open-library /works/OL29824731W",
    "statement": "Elements of Photoionization Quantum Dynamics Methods (quantum theory, Quantum theory, Photoionization of gases) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -128613,6 +128578,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol27387267w",
+   "source": "open-library /works/OL27387267W",
+   "statement": "Search for New Physics in (Tt) Final States with Additional Heavy-Flavor Jets with the Atlas Detector (quantum theory, Bosons, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol27387620w",
    "source": "open-library /works/OL27387620W",
    "statement": "Theory of Quark and Gluon Interactions (quantum theory, Quantum theory, Physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -128763,13 +128735,6 @@
    "id": "textbook-open-library-works-ol2742883w",
    "source": "open-library /works/OL2742883W",
    "statement": "Quantum logic in algebraic approach (quantum theory, Hilbert space, Quantum logic) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol27389162w",
-   "source": "open-library /works/OL27389162W",
-   "statement": "Quantum Simulations with Photons and Polaritons (quantum theory, Photons, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -129740,13 +129705,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol6840997w",
-   "source": "open-library /works/OL6840997W",
-   "statement": "The vector quantum theory of radiation (quantum theory, Quantum theory, Radiation) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol6925281w",
    "source": "open-library /works/OL6925281W",
    "statement": "Symmetry, orbitals, and spectra (S.O.S.) (quantum theory, Symmetry (Physics), Atomic orbitals) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -129757,13 +129715,6 @@
    "id": "textbook-open-library-works-ol6926697w",
    "source": "open-library /works/OL6926697W",
    "statement": "Theorie der chemischen Bindung auf quantentheoretischer Grundlage (quantum theory, Quantum theory, Conditions and laws of Chemical reaction) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol7001871w",
-   "source": "open-library /works/OL7001871W",
-   "statement": "Foundations of quantum mechanics and ordered linear spaces (quantum theory, Hilbert space, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -129855,13 +129806,6 @@
    "id": "textbook-open-library-works-ol685429w",
    "source": "open-library /works/OL685429W",
    "statement": "Atome, Kausalität, Quantensprünge (quantum theory, Philosophy, Physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol6862714w",
-   "source": "open-library /works/OL6862714W",
-   "statement": "Elementer af en vektor- og matrixformalisme for kvantemekanikken (quantum theory, Matrices, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -132561,20 +132505,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol2677393w",
-   "source": "open-library /works/OL2677393W",
-   "statement": "Dynamical generation of electron motions in ground state H₂⁺, in ground state H₂, and in the first excited state of H₂ (quantum theory, Computer simulation, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol2677394w",
-   "source": "open-library /works/OL2677394W",
-   "statement": "Dynamical simulation of the simplest hydrides (quantum theory, Quantum theory, Mathematics) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol26753041w",
    "source": "open-library /works/OL26753041W",
    "statement": "Mécanique Quantique - Tome 1 (quantum theory, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -133663,13 +133593,6 @@
    "id": "textbook-open-library-works-ol13367031w",
    "source": "open-library /works/OL13367031W",
    "statement": "Lagrangian analysis and quantum mechanics (quantum theory, Asymptotic theory, Differential equations, Partial) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol13358920w",
-   "source": "open-library /works/OL13358920W",
-   "statement": "Foundations of quantum mechanics and ordered linear spaces (quantum theory, Quantum theory, Hilbert space) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -139414,20 +139337,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol1235222w",
-   "source": "open-library /works/OL1235222W",
-   "statement": "Lec ʹons sur la the orie des spineurs.. (quantum theory, Quantum theory, Calculus of tensors) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol1235223w",
-   "source": "open-library /works/OL1235223W",
-   "statement": "Lecons sur la théorie des spineurs .. (quantum theory, Quantum theory, Calculus of tensors) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol12424749w",
    "source": "open-library /works/OL12424749W",
    "statement": "Was ist die Welt? (quantum theory, Quantum theory, Philosophy) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -143145,20 +143054,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol16346449w",
-   "source": "open-library /works/OL16346449W",
-   "statement": "Foundations of quantum mechanics and ordered linear spaces (quantum theory, Quantum theory, Hilbert space) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol16355520w",
-   "source": "open-library /works/OL16355520W",
-   "statement": "Dirac Kets, Gamow Vectors, and Gel'fand triplets (quantum theory, Quantum theory, Hilbert space) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol16356011w",
    "source": "open-library /works/OL16356011W",
    "statement": "Nonlinear evolution equations and dynamical systems (quantum theory, Congresses, Nonlinear Evolution equations) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -145098,13 +144993,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol4085064w",
-   "source": "open-library /works/OL4085064W",
-   "statement": "Yang-Mills theories in algebraic non-covariant gauges (quantum theory, Gauge fields (Physics), Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol40897008w",
    "source": "open-library /works/OL40897008W",
    "statement": "The Physics of Atoms and Quanta (quantum theory, Physical and theoretical Chemistry, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -146442,13 +146330,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol3234573w",
-   "source": "open-library /works/OL3234573W",
-   "statement": "Irreducible tensorial sets (quantum theory, Quantum theory, Calculus of tensors) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol3234575w",
    "source": "open-library /works/OL3234575W",
    "statement": "Symmetries in quantum physics (quantum theory, Quantum theory, Mathematics) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -146564,13 +146445,6 @@
    "id": "textbook-open-library-works-ol32702432w",
    "source": "open-library /works/OL32702432W",
    "statement": "Le monde quantique (quantum theory, Quantum theory, Philosophy) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol3269099w",
-   "source": "open-library /works/OL3269099W",
-   "statement": "Kvazispin i izospin v teorii atoma (quantum theory, Quantum theory, Calculus of tensors) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -149816,13 +149690,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol4316713w",
-   "source": "open-library /works/OL4316713W",
-   "statement": "Dirac Kets, Gamow Vectors, and Gel'fand triplets (quantum theory, Hilbert space, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol4316714w",
    "source": "open-library /works/OL4316714W",
    "statement": "The rigged Hilbert space and quantum mechanics (quantum theory, Hilbert space, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -151240,13 +151107,6 @@
    "id": "textbook-open-library-works-ol19502927w",
    "source": "open-library /works/OL19502927W",
    "statement": "Progress in nonequilibrium Green's functions (quantum theory, Quantum theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol19499912w",
-   "source": "open-library /works/OL19499912W",
-   "statement": "Espaces fibrés et structure de la mécanique classique ou quantique (quantum theory, Espaces vectoriels, Théorie quantique) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -154114,13 +153974,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol17946640w",
-   "source": "open-library /works/OL17946640W",
-   "statement": "Irreducible tensorial sets (quantum theory, Quantum theory, Calculus of tensors) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol1801354w",
    "source": "open-library /works/OL1801354W",
    "statement": "The [ Gamma]-equivariant form of the Berezin quantization of the upper half plane (quantum theory, Quantum theory, Mathematical physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -154285,13 +154138,6 @@
    "id": "textbook-open-library-works-ol18482042w",
    "source": "open-library /works/OL18482042W",
    "statement": "Modern physical theory (quantum theory, Quantum theory, Physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol18491867w",
-   "source": "open-library /works/OL18491867W",
-   "statement": "Irreducible tensorial sets (quantum theory, Quantum theory, Calculus of tensors) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -154677,6 +154523,13 @@
    "id": "textbook-open-library-works-ol20877327w",
    "source": "open-library /works/OL20877327W",
    "statement": "Comment l'activisme quantique peut sauver l'humanité (quantum theory, Problèmes sociaux, Aspect religieux) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol20826631w",
+   "source": "open-library /works/OL20826631W",
+   "statement": "Study of Double Charm B Decays with the LHCb Experiment at CERN and Track Reconstruction for the LHCb Upgrade (quantum theory, Particles (nuclear physics), Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -156025,6 +155878,13 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
+   "id": "textbook-open-library-works-ol27387393w",
+   "source": "open-library /works/OL27387393W",
+   "statement": "Search for New Physics in Tt ̅ Final States with Additional Heavy-Flavor Jets with the ATLAS Detector (quantum theory, Bosons, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
    "id": "textbook-open-library-works-ol12653886w",
    "source": "open-library /works/OL12653886W",
    "statement": "Applications of group theory in quantum mechanics (quantum theory, Groups, Theory of, Quantum theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -156557,13 +156417,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol16355519w",
-   "source": "open-library /works/OL16355519W",
-   "statement": "Dirac Kets, Gamow Vectors, and Gel'fand triplets (quantum theory, Quantum theory, Hilbert space) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol16372797w",
    "source": "open-library /works/OL16372797W",
    "statement": "50 let kvantovoĭ mekhaniki (quantum theory, Quantum theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -156697,20 +156550,6 @@
    "reason": "measured on the next run"
   },
   {
-   "id": "source-unreached-wayback-qpu-uuidna-com",
-   "source": "https://archive.org/wayback/available?url=qpu.uuidna.com",
-   "statement": "the source wayback:qpu.uuidna.com answered 429",
-   "status": "blocked",
-   "reason": "measured on the next run"
-  },
-  {
-   "id": "source-unreached-wayback-qpu-psg-bg",
-   "source": "https://archive.org/wayback/available?url=qpu.psg.bg",
-   "statement": "the source wayback:qpu.psg.bg answered 429",
-   "status": "blocked",
-   "reason": "measured on the next run"
-  },
-  {
    "id": "source-unreached-openalex-near-10-5281-zenodo-21781602-1",
    "source": "https://api.openalex.org/works?search=All%20Seven%20Clay%20Millennium%20Problems%20Sealed%20via%20Universal%20%CF%83-Involution&per-page=200&page=1",
    "statement": "the source openalex-near:10.5281/zenodo.21781602:1 answered 429",
@@ -156738,15 +156577,15 @@
   "textbook_route_or_lead",
   "textbook_cheap_gates"
  ],
- "says": "281 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2403 the theorems reach and 21153 of their domain are leads; 593 MCP doors proposed",
+ "says": "283 of 287 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23679 open books of which 2422 the theorems reach and 21131 of their domain are leads; 594 MCP doors proposed",
  "counts": {
   "served": 0,
   "partial": 0,
-  "open": 21154,
-  "blocked": 6,
+  "open": 21132,
+  "blocked": 4,
   "out_of_scope": 0
  },
- "total": 21160,
+ "total": 21136,
  "integrity": {
   "phase": "artifacts",
   "artifacts": 17,

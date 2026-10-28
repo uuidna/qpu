@@ -1,77 +1,83 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T09:02:56.472Z",
- "ms": 25405,
- "rounds": 1,
+ "date": "2026-10-28T09:39:07.631Z",
+ "ms": 5328,
+ "rounds": 2,
  "selftest": {
   "passed": true
  },
  "fetched": [
   {
    "id": "nist-beacon",
-   "status": 0,
-   "ms": 25001,
-   "bytes": 0
+   "status": 200,
+   "ms": 677,
+   "bytes": 3633
   },
   {
    "id": "ct-sth",
    "status": 503,
-   "ms": 5999,
+   "ms": 4363,
    "bytes": 12
   },
   {
    "id": "acme-directory",
    "status": 200,
-   "ms": 657,
+   "ms": 723,
    "bytes": 961
   },
   {
    "id": "nvd-cves",
    "status": 200,
-   "ms": 1277,
+   "ms": 648,
    "bytes": 21839
   },
   {
    "id": "cern-opendata",
    "status": 200,
-   "ms": 359,
+   "ms": 469,
    "bytes": 119560
   },
   {
    "id": "csrc-pqc",
    "status": 200,
-   "ms": 643,
+   "ms": 752,
    "bytes": 60973
   },
   {
    "id": "crt-sh",
    "status": 200,
-   "ms": 22513,
+   "ms": 644,
    "bytes": 2
   },
   {
    "id": "tls:qpu.uuidna.com",
    "status": 200,
-   "ms": 161,
+   "ms": 160,
    "bytes": 115
   },
   {
    "id": "tls:qpu.psg.bg",
    "status": 200,
-   "ms": 169,
+   "ms": 166,
    "bytes": 115
   },
   {
    "id": "tls:opendata.cern.ch",
    "status": 200,
-   "ms": 212,
+   "ms": 204,
    "bytes": 107
   },
   {
    "id": "tls:beacon.nist.gov",
    "status": 200,
-   "ms": 348,
+   "ms": 329,
    "bytes": 107
+  },
+  {
+   "id": "nist-beacon-previous",
+   "status": 200,
+   "ms": 480,
+   "bytes": 3633
   }
  ],
  "apis": [
@@ -135,9 +141,45 @@
  "op": "read",
  "sources": {
   "nist-beacon": {
-   "status": "unreadable",
-   "facts": {},
-   "verdicts": []
+   "status": "read",
+   "facts": {
+    "chainIndex": 2,
+    "pulseIndex": 2002755,
+    "timeStamp": "2026-10-28T09:37:00.000Z",
+    "previous": 2002754
+   },
+   "verdicts": [
+    {
+     "theorem": "textbook_hash_bits",
+     "passed": true,
+     "says": "outputValue 128 hex digits (512 bits)"
+    },
+    {
+     "theorem": "textbook_beacon_period",
+     "passed": true,
+     "says": "period 60000 ms"
+    },
+    {
+     "theorem": "textbook_chain_index_steps",
+     "passed": true,
+     "says": "pulse 2002755 follows 2002754"
+    },
+    {
+     "theorem": "textbook_beacon_period",
+     "passed": true,
+     "says": "60000 ms between the pulses"
+    },
+    {
+     "theorem": "textbook_chain_links_by_output",
+     "passed": true,
+     "says": "the last pulse's previous value is the previous pulse's output"
+    },
+    {
+     "theorem": "textbook_precommitment_is_sha512",
+     "passed": true,
+     "says": "SHA-512 of the last local random value is the previous precommitment"
+    }
+   ]
   },
   "ct-sth": {
    "status": "unreadable",
@@ -411,10 +453,30 @@
   }
  },
  "followUps": [],
- "checked": 38,
- "passed": 38,
+ "checked": 44,
+ "passed": 44,
  "violations": [],
  "byTheorem": {
+  "textbook_hash_bits": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_beacon_period": {
+   "passed": 2,
+   "failed": 0
+  },
+  "textbook_chain_index_steps": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_chain_links_by_output": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_precommitment_is_sha512": {
+   "passed": 1,
+   "failed": 0
+  },
   "textbook_acme_resources_five": {
    "passed": 1,
    "failed": 0
@@ -460,5 +522,5 @@
    "failed": 0
   }
  },
- "says": "6 source(s) read of 8; 38 theorem checks, 0 violation(s)"
+ "says": "7 source(s) read of 8; 44 theorem checks, 0 violation(s)"
 }
