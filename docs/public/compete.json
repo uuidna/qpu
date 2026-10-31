@@ -1,12 +1,12 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-31T22:41:34.076Z",
- "ms": 60,
+ "date": "2026-10-31T22:51:28.589Z",
+ "ms": 57,
  "offline": true,
  "selftest": {
   "passed": true
  },
- "head": "0ee1cb6d17109f3def25d5e49504df093f59cf86",
+ "head": "6c45e4ab23a8c2999e88643ce4ad5baa2b14c4b4",
  "pushed": null,
  "fetched": [],
  "precedence": [
@@ -76,7 +76,7 @@
      "needs": "a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README",
      "act": "the author's record stands at its DOI; the community's acceptance is measured by the rules below",
      "status": "open",
-     "evidence": "1225 theorems kernel-accepted (1843 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602"
+     "evidence": "1237 theorems kernel-accepted (1855 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
