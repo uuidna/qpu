@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-31T22:51:35.274Z",
+ "date": "2026-10-31T22:55:15.523Z",
  "input": {
   "doors": [
    {
@@ -3041,6 +3041,31 @@
     "used": true
    },
    {
+    "key": "textbook_ldpc_code",
+    "bytes": 79,
+    "used": true
+   },
+   {
+    "key": "textbook_reed_muller",
+    "bytes": 107,
+    "used": true
+   },
+   {
+    "key": "textbook_color_code_d5",
+    "bytes": 93,
+    "used": true
+   },
+   {
+    "key": "textbook_surface_distance_ladder",
+    "bytes": 129,
+    "used": true
+   },
+   {
+    "key": "textbook_concatenated_code",
+    "bytes": 108,
+    "used": true
+   },
+   {
     "key": "textbook_pascal_rule",
     "bytes": 89,
     "used": true
@@ -3683,8 +3708,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 32264,
-   "used": 32264,
+   "capacity": 32780,
+   "used": 32780,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []
