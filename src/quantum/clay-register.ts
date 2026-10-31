@@ -34,6 +34,11 @@ export const powMod = (a: number, e: number, m: number): number => powModAux(e, 
 const periodAux = (fuel: number, a: number, m: number, r: number): number => (fuel === 0 ? 0 : powMod(a, r, m) === 1 ? r : periodAux(fuel - 1, a, m, r + 1))
 export const multiplicativePeriod = (a: number, m: number): number => periodAux(m, a, m, 1)
 const half = (a: number, m: number): number => powMod(a, Math.floor(multiplicativePeriod(a, m) / 2), m)
+// Crypto (Shor): gcd by the Euclidean recursion, and the modulus and base named by the lattice (Qpu/Shor.lean, ported one for one)
+const gcdOf = (a: number, b: number): number => (b === 0 ? a : gcdOf(b, a % b))
+const totient = (nn: number): number => { let c = 0; for (let k = 1; k <= nn; k++) if (gcdOf(k, nn) === 1) c += 1; return c }
+const shorModulus = rays * (faces - seed)
+const shorBase = mintOf(n)
 // Galois, Anyon, Annealing, Clifford, Coil, Grover, Hybrid, Magic, Qaoa, Qft, Stabilizer
 const glProd = memo((nn: number, i: number): number => (i === 0 ? 1 : nat(Math.max(0, mintOf(nn) - mintOf(i - 1)) * glProd(nn, i - 1), 'glProd')))
 const fibAux = (k: number, a: number, b: number): number => (k === 0 ? a : fibAux(k - 1, b, nat(a + b, 'fibFusion')))
@@ -57,10 +62,10 @@ const qftDepth = (q: number): number => Math.max(0, 2 * q - 1)
 const qftStates = (q: number): number => nat(2 ** q, 'qftStates')
 const paulis = (nn: number): number => mintOf(2 * nn + 2)
 
-const CONSTANTS: Record<string, number> = { n, seed, coins, rays, vertices, hexbit, bits, faces, amplitudes, fused, plane, coil, hybridSpeed, magicBlock, magicCubic }
+const CONSTANTS: Record<string, number> = { n, seed, coins, rays, vertices, hexbit, bits, faces, amplitudes, fused, plane, coil, hybridSpeed, magicBlock, magicCubic, shorBase, shorModulus }
 const FUNCTIONS: Record<string, { arity: number; f: (...a: number[]) => number }> = {
   mintOf: { arity: 1, f: (k) => mintOf(k!) }, chooseOf: { arity: 2, f: (a, k) => chooseOf(a!, k!) }, choose: { arity: 2, f: (a, k) => choose(a!, k!) }, factorial: { arity: 1, f: (k) => factorial(k!) }, triangular: { arity: 1, f: (k) => triangular(k!) },
-  powMod: { arity: 3, f: (a, e, m) => powMod(a!, e!, m!) }, periodOf: { arity: 2, f: (a, m) => multiplicativePeriod(a!, m!) }, half: { arity: 2, f: (a, m) => half(a!, m!) },
+  powMod: { arity: 3, f: (a, e, m) => powMod(a!, e!, m!) }, periodOf: { arity: 2, f: (a, m) => multiplicativePeriod(a!, m!) }, half: { arity: 2, f: (a, m) => half(a!, m!) }, gcdOf: { arity: 2, f: (a, b) => gcdOf(a!, b!) }, totient: { arity: 1, f: (nn) => totient(nn!) },
   glProd: { arity: 2, f: (a, b) => glProd(a!, b!) }, fibFusion: { arity: 1, f: (k) => fibFusion(k!) }, isingFusion: { arity: 1, f: (k) => isingFusion(k!) }, chimera: { arity: 1, f: (k) => chimera(k!) },
   cliffordOrder: { arity: 1, f: (k) => cliffordOrder(k!) }, groverIters: { arity: 1, f: (k) => groverIters(k!) }, groverSize: { arity: 1, f: (k) => groverSize(k!) },
   qaoaParams: { arity: 1, f: (k) => qaoaParams(k!) }, qaoaZz: { arity: 2, f: (a, b) => qaoaZz(a!, b!) }, qaoaX: { arity: 2, f: (a, b) => qaoaX(a!, b!) },
@@ -88,16 +93,16 @@ export const evaluate = (src: string): number => {
   return v
 }
 
-type Relation = { name: string; statement: string; sides: { expression: string; value: number }[]; holds: boolean; bits: number }
+type Relation = { name: string; statement: string; sides: { expression: string; value: number }[]; holds: boolean; bits: number; families: readonly string[] }
 /** Every relation recomputed: each `=` compared, each `∧` all holding, and the bit width of the largest value. */
 /** 16-bit limbs a value needs: what an 8-bit machine with 16-bit software arithmetic (the Pravets 8M) holds it in. */
 const countLimbs16 = (bits: number): number => Math.max(1, Math.ceil(bits / 16))
 export const recomputeClay = (): { relations: Relation[]; total: number; holding: number; maxBits: number; maxLimbs16: number; ledger: string } => {
-  const relations: Relation[] = CLAY_RELATIONS.map(({ name, statement }) => {
+  const relations: Relation[] = CLAY_RELATIONS.map(({ name, statement, families }) => {
     const sides = [...new Set(statement.split('∧').flatMap((eq) => eq.split('=')).map((s) => s.trim()))].map((expression) => ({ expression, value: evaluate(expression) }))
     const holds = statement.split('∧').every((eq) => { const [a, b] = eq.split('=').map((s) => evaluate(s.trim())); return a === b })
     const bits = Math.max(1, ...sides.map((s) => (s.value === 0 ? 1 : Math.floor(Math.log2(s.value)) + 1)))
-    return { name, statement, sides, holds, bits }
+    return { name, statement, sides, holds, bits, families: families ?? [] }
   })
   const holding = relations.filter((r) => r.holds).length
   const ledger = relations.map((r) => `${r.name}=${r.sides[0]!.value}`).join('\n')

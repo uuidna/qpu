@@ -292,7 +292,7 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `clay-relation_70` | served | clay | relation_70: chooseOf vertices hexbit = choose vertices hexbit = 70 (7 bits, seed 7) |  |
 | `clay-relation_1024` | served | clay | relation_1024: qaoaZz bits bits = qaoaX bits bits ∧ qaoaZz bits bits = paulis hexbit = 1024 (11 bits, seed 7) |  |
 | `clay-relation_27` | served | clay | relation_27: powMod n n bits = powMod n n plane ∧ powMod n n bits = half n plane = 27 (5 bits, seed 9) |  |
-| `clay-relation_36` | served | clay | relation_36: triangular vertices = qftGates vertices = 36 (6 bits, seed 9) |  |
+| `clay-relation_36` | served | clay | relation_36: triangular vertices = qftGates vertices ∧ triangular vertices = totient 74 = 36 (6 bits, seed 9) |  |
 | `clay-relation_42` | served | clay | relation_42: glProd n coins = qaoaZz n faces ∧ glProd n coins = qaoaZz faces n = 42 (6 bits, seed 6) |  |
 | `clay-relation_49` | served | clay | relation_49: qaoaZz rays rays = qaoaX rays rays = 49 (6 bits, seed 4) |  |
 | `clay-relation_91` | served | clay | relation_91: chooseOf faces coins = choose faces coins = 91 (7 bits, seed 1) |  |
@@ -320,3 +320,4 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `clay-relation_10518300` | served | clay | relation_10518300: chooseOf bits vertices = choose bits vertices = 10518300 (24 bits, seed 9) |  |
 | `clay-relation_40116600` | served | clay | relation_40116600: chooseOf plane faces = choose plane faces = 40116600 (26 bits, seed 9) |  |
 | `clay-relation_471435600` | served | clay | relation_471435600: chooseOf bits faces = choose bits faces = 471435600 (29 bits, seed 3) |  |
+| `clay-relation_7` | served | clay | relation_7: rays = gcdOf (half shorBase shorModulus - seed) shorModulus ∧ faces - seed = gcdOf (half shorBase shorModulus + seed) shorModulus = 7 (4 bits, seed 7) |  |

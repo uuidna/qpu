@@ -150,20 +150,12 @@ export default defineConfig({
         "link": "/audit"
       },
       {
-        "text": "Discovery",
-        "link": "/discovery"
-      },
-      {
         "text": "Match",
         "link": "/match"
       },
       {
         "text": "Theorems",
         "link": "/theorems"
-      },
-      {
-        "text": "Verification",
-        "link": "/verification"
       },
       {
         "text": "Receipts",
@@ -188,10 +180,6 @@ export default defineConfig({
       {
         "text": "Graph",
         "link": "/graph"
-      },
-      {
-        "text": "Readiness",
-        "link": "/readiness"
       },
       {
         "text": "Security",
@@ -331,20 +319,12 @@ export default defineConfig({
             "link": "/audit"
           },
           {
-            "text": "Discovery",
-            "link": "/discovery"
-          },
-          {
             "text": "Match",
             "link": "/match"
           },
           {
             "text": "Theorems",
             "link": "/theorems"
-          },
-          {
-            "text": "Verification",
-            "link": "/verification"
           },
           {
             "text": "Receipts",
@@ -369,10 +349,6 @@ export default defineConfig({
           {
             "text": "Graph",
             "link": "/graph"
-          },
-          {
-            "text": "Readiness",
-            "link": "/readiness"
           },
           {
             "text": "Security",

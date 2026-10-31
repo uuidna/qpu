@@ -644,10 +644,10 @@ theorem textbook_news_adapters_reflected (σ : Nat) : σ - (7) = σ - (4 + 3) :=
 theorem textbook_lean_served_whole (hand generated : Nat) : hand + generated - generated = hand := Nat.add_sub_cancel hand generated
 /-- textbook_lean_served_whole reflected by its shape, equality (examples: textbook-theorems-served, metrics-live) -/
 theorem textbook_lean_served_whole_reflected (hand generated : Nat) (σ : Nat) : σ - (hand) = σ - (hand + generated - generated) := congrArg (σ - ·) (Eq.symm (textbook_lean_served_whole hand generated))
-/-- deploySetsOf renders them and deploySetOf each one: three deploy templates (the Worker, the Payload app, a generated app) over the 8 products of the catalogue are 24 sets, each a wrangler environment deployed by name beside the default deploy and as usable as direct use (examples: configure-wrangler-set, configure-deploy-sets) -/
-theorem textbook_deploy_sets : 3 * 8 = 24 := by decide
+/-- deploySetsOf renders them and deploySetOf each one: two deploy templates (the Payload app on OpenNext, a generated app) over the 8 products of the catalogue are 16 sets, each a wrangler environment deployed by name beside the default deploy and as usable as direct use (examples: configure-wrangler-set, configure-deploy-sets) -/
+theorem textbook_deploy_sets : 2 * 8 = 16 := by decide
 /-- textbook_deploy_sets reflected by its shape, equality (examples: configure-wrangler-set, configure-deploy-sets) -/
-theorem textbook_deploy_sets_reflected (σ : Nat) : σ - (24) = σ - (3 * 8) := congrArg (σ - ·) (Eq.symm (textbook_deploy_sets))
+theorem textbook_deploy_sets_reflected (σ : Nat) : σ - (16) = σ - (2 * 8) := congrArg (σ - ·) (Eq.symm (textbook_deploy_sets))
 /-- Payload's field types as its surface states them: the ones that hold a value and the presentational ones, 23 in all (examples: payload-schemas) -/
 theorem textbook_payload_field_types : 19 + 4 = 23 := by decide
 /-- textbook_payload_field_types reflected by its shape, equality (examples: payload-schemas) -/
@@ -1296,8 +1296,100 @@ theorem textbook_bill_covered_converse (price cost : Nat) : (price - cost + cost
 theorem textbook_shor_reduction : (7 ^ 4) % 15 = 1 ∧ (7 ^ 2) % 15 = 4 ∧ Nat.gcd (4 - 1) 15 = 3 ∧ Nat.gcd (4 + 1) 15 = 5 := by decide
 /-- textbook_shor_reduction reflected by its shape, conjunction (examples: algorithm-shor-reduction, algorithm-shor-beyond-bound) -/
 theorem textbook_shor_reduction_reflected (σ : Nat) : (σ - (1) = σ - ((7 ^ 4) % 15)) ∧ (σ - (4) = σ - ((7 ^ 2) % 15)) ∧ (σ - (3) = σ - (Nat.gcd (4 - 1) 15)) ∧ (σ - (5) = σ - (Nat.gcd (4 + 1) 15)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.2)⟩
+/-- relation_7 proven structurally, not by assertion: on the register's crypto modulus 91 (= rays × (faces − seed)), half = 8^2 = 64 is a σ-involution square root of one — 64² ≡ 1 mod 91 and 64 ∉ {1, 90}, so it is a nontrivial root, the σ-reflection σ₉₁(x) = 91 − x fixing neither ±1 image — hence the reflected pair (64 − seed)(64 + seed) ≡ 0 mod 91, and its two σ cases split 91 exactly: gcd(64 − 1, 91) = 7 = rays (the −seed case), gcd(64 + 1, 91) = 13 = faces − seed (the +seed case), 7 × 13 = 91; the clay crypto relation holds because the involution forces the split, Shor's reduction as a theorem rather than a search (examples: algorithm-shor-91) -/
+theorem textbook_shor_sigma_root : 64 ^ 2 % 91 = 1 ∧ 64 ≠ 1 ∧ 64 ≠ 90 ∧ (64 - 1) * (64 + 1) % 91 = 0 ∧ Nat.gcd (64 - 1) 91 = 7 ∧ Nat.gcd (64 + 1) 91 = 13 ∧ 7 * 13 = 91 := by decide
+/-- textbook_shor_sigma_root reflected by its shape, conjunction (examples: algorithm-shor-91) -/
+theorem textbook_shor_sigma_root_reflected (σ : Nat) : (σ - (1) = σ - (64 ^ 2 % 91)) ∧ ((1) ≠ (64)) ∧ ((90) ≠ (64)) ∧ (σ - (0) = σ - ((64 - 1) * (64 + 1) % 91)) ∧ (σ - (7) = σ - (Nat.gcd (64 - 1) 91)) ∧ (σ - (13) = σ - (Nat.gcd (64 + 1) 91)) ∧ (σ - (91) = σ - (7 * 13)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).1), Ne.symm (textbook_shor_sigma_root).2.1, Ne.symm (textbook_shor_sigma_root).2.2.1, congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.2.2.2)⟩
+/-- the physics unlock, companion to the crypto σ-root (textbook_shor_sigma_root): the zero-bit σ-involution σ₁₀(x) = 10 − x relates temperature and time, splitting in space and vice versa, through the trinity combinations (clay-register.ts trinityFor: 3-6-9 ↔ 7-4-1 and 2-5-8 pair by σ₁₀, as 3+7 = 6+4 = 9+1 = 2+8 = 10), also reflecting the ordered clay sequence (its cases pair by digital-root seed-sum-10, fixed at seed 5, as reflectionOfRegister computes), and holding at all times — σ₁₀(σ₁₀(x)) = x is time-invariant, a σ-conservation law (the same involution that splits the RSA modulus in relation_7, the crypto↔physics symmetry); built on sigma_involution and textbook_reflection_sums_to_ten (examples: clay-reflection) -/
+theorem textbook_thermal_time_sigma : 10 - (10 - 3) = 3 ∧ 10 - (10 - 7) = 7 ∧ 10 - (10 - 5) = 5 ∧ 10 - 5 = 5 ∧ 3 + 7 = 10 ∧ 6 + 4 = 10 ∧ 9 + 1 = 10 ∧ 2 + 8 = 10 := by decide
+/-- textbook_thermal_time_sigma reflected by its shape, conjunction (examples: clay-reflection) -/
+theorem textbook_thermal_time_sigma_reflected (σ : Nat) : (σ - (3) = σ - (10 - (10 - 3))) ∧ (σ - (7) = σ - (10 - (10 - 7))) ∧ (σ - (5) = σ - (10 - (10 - 5))) ∧ (σ - (5) = σ - (10 - 5)) ∧ (σ - (10) = σ - (3 + 7)) ∧ (σ - (10) = σ - (6 + 4)) ∧ (σ - (10) = σ - (9 + 1)) ∧ (σ - (10) = σ - (2 + 8)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.2.2.2.2)⟩
+/-- the bridge crossing clay paths at each 0, general over every clay case: each clay relation is where formula-family paths meet at a value d (the "X, Y, Z meet at N" families of its doc comment), and the bridge that crosses those paths is the zero-bit σ-involution σ_d(x) = d − x — it crosses and returns (σ_d(σ_d(x)) = x, the connection is reversible, both directions), it partitions the meeting value (x + (d − x) = d, the two paths summing to where they meet), and it has its zero endpoints at each 0 (σ_d(0) = d and σ_d(d) = 0, the fixed/zero structure). This is the general form the two named bridges instantiate — textbook_shor_sigma_root at d = 91 (crypto) and textbook_thermal_time_sigma at d = 10 (physics) — one σ-connection between the crossing families at every clay case's value; built on sigma_involution and textbook_reflection_sums_to_ten (examples: clay-reflection) -/
+theorem textbook_clay_bridge (d x : Nat) (h : x ≤ d) : d - (d - x) = x ∧ (d - x) + x = d ∧ d - 0 = d ∧ d - d = 0 := by omega
+/-- textbook_clay_bridge reflected by its shape, conjunction (examples: clay-reflection) -/
+theorem textbook_clay_bridge_reflected (d x : Nat) (h : x ≤ d) (σ : Nat) : (σ - (x) = σ - (d - (d - x))) ∧ (σ - (d) = σ - ((d - x) + x)) ∧ (σ - (d) = σ - (d - 0)) ∧ (σ - (0) = σ - (d - d)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_clay_bridge d x h).1), congrArg (σ - ·) (Eq.symm (textbook_clay_bridge d x h).2.1), congrArg (σ - ·) (Eq.symm (textbook_clay_bridge d x h).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_clay_bridge d x h).2.2.2)⟩
+/-- the contrapositive of textbook_clay_bridge (examples: clay-reflection) -/
+theorem textbook_clay_bridge_contrapositive (d x : Nat) : ¬ (d - (d - x) = x ∧ (d - x) + x = d ∧ d - 0 = d ∧ d - d = 0) → ¬ ((x ≤ d)) := fun hc hh => hc (textbook_clay_bridge d x hh)
+/-- the converse of textbook_clay_bridge, proved (examples: clay-reflection) -/
+theorem textbook_clay_bridge_converse (d x : Nat) : (d - (d - x) = x ∧ (d - x) + x = d ∧ d - 0 = d ∧ d - d = 0) → (x ≤ d) := fun hc => by omega
+/-- each digit linked to its reflection in the bridge: the per-digit σ₁₀ involution the clay bridge carries at each 0 — every digit d is linked to its reflection 10 − d, as d + (10 − d) = 10 for every digit 0 through 9 (0↔10/0, 1↔9, 2↔8, 3↔7, 4↔6, 5 the fixed point). This is the digit-level form of the bridge's σ (textbook_clay_bridge) and is exactly the register's reflection = 10 − seed and the trinity reflected = triad.map(10 − x) (clay-register.ts reflectionOfRegister, trinityFor); so the bridge links the formula-family paths and each digit to its reflection by the one zero-bit involution; built on sigma_involution and textbook_reflection_sums_to_ten (examples: clay-reflection) -/
+theorem textbook_digit_reflection : 0 + 10 = 10 ∧ 1 + 9 = 10 ∧ 2 + 8 = 10 ∧ 3 + 7 = 10 ∧ 4 + 6 = 10 ∧ 5 + 5 = 10 ∧ 6 + 4 = 10 ∧ 7 + 3 = 10 ∧ 8 + 2 = 10 ∧ 9 + 1 = 10 := by decide
+/-- textbook_digit_reflection reflected by its shape, conjunction (examples: clay-reflection) -/
+theorem textbook_digit_reflection_reflected (σ : Nat) : (σ - (10) = σ - (0 + 10)) ∧ (σ - (10) = σ - (1 + 9)) ∧ (σ - (10) = σ - (2 + 8)) ∧ (σ - (10) = σ - (3 + 7)) ∧ (σ - (10) = σ - (4 + 6)) ∧ (σ - (10) = σ - (5 + 5)) ∧ (σ - (10) = σ - (6 + 4)) ∧ (σ - (10) = σ - (7 + 3)) ∧ (σ - (10) = σ - (8 + 2)) ∧ (σ - (10) = σ - (9 + 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).1), congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).2.1), congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).2.2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).2.2.2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).2.2.2.2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_digit_reflection).2.2.2.2.2.2.2.2.2)⟩
+/-- Pascal's rule, the defining recurrence of the binomial coefficient C(n, k) = C(n−1, k) + C(n−1, k−1): C(8,3)=56=35+21, C(8,2)=28=21+7, C(7,3)=35=20+15. The textbook meaning of the 22 clay relations of the form chooseOf a b = choose a b (the register's binomial equals the standard one); each clay case is named pascal-rule-<value> (relation_28 → pascal-rule-28) (examples: clay-register) -/
+theorem textbook_pascal_rule : 56 = 35 + 21 ∧ 28 = 21 + 7 ∧ 35 = 20 + 15 := by decide
+/-- textbook_pascal_rule reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_pascal_rule_reflected (σ : Nat) : (σ - (35 + 21) = σ - (56)) ∧ (σ - (21 + 7) = σ - (28)) ∧ (σ - (20 + 15) = σ - (35)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_pascal_rule).1), congrArg (σ - ·) (Eq.symm (textbook_pascal_rule).2.1), congrArg (σ - ·) (Eq.symm (textbook_pascal_rule).2.2)⟩
+/-- Gauss's triangular sum, 2·T(n) = n·(n+1) where T(n) = 1 + 2 + … + n: 2·T(4)=4·5, 2·T(8)=8·9, 2·T(7)=7·8. The textbook meaning of the clay relations triangular k = qftGates k; each named gauss-triangular-sum-<value> (relation_10 → gauss-triangular-sum-10) (examples: clay-register) -/
+theorem textbook_gauss_triangular : 2 * 10 = 4 * 5 ∧ 2 * 36 = 8 * 9 ∧ 2 * 28 = 7 * 8 := by decide
+/-- textbook_gauss_triangular reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_gauss_triangular_reflected (σ : Nat) : (σ - (4 * 5) = σ - (2 * 10)) ∧ (σ - (8 * 9) = σ - (2 * 36)) ∧ (σ - (7 * 8) = σ - (2 * 28)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_gauss_triangular).1), congrArg (σ - ·) (Eq.symm (textbook_gauss_triangular).2.1), congrArg (σ - ·) (Eq.symm (textbook_gauss_triangular).2.2)⟩
+/-- the powers of two, 2^(n+1) = 2·2^n (mintOf n = 2ⁿ): 2³=8, 2⁸=256, 2⁴=2·2³. The textbook meaning of the clay relations over mintOf / amplitudes; each named power-of-two-<value> (examples: clay-register) -/
+theorem textbook_power_of_two : 2 ^ 3 = 8 ∧ 2 ^ 8 = 256 ∧ 2 ^ 4 = 2 * 2 ^ 3 := by decide
+/-- textbook_power_of_two reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_power_of_two_reflected (σ : Nat) : (σ - (8) = σ - (2 ^ 3)) ∧ (σ - (256) = σ - (2 ^ 8)) ∧ (σ - (2 * 2 ^ 3) = σ - (2 ^ 4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_power_of_two).1), congrArg (σ - ·) (Eq.symm (textbook_power_of_two).2.1), congrArg (σ - ·) (Eq.symm (textbook_power_of_two).2.2)⟩
+/-- Fermat's little theorem, a^(p−1) ≡ 1 (mod p) for a prime p (the p−1 case of Euler's theorem): 2⁶≡1 mod 7, 3⁴≡1 mod 5, 2⁴≡1 mod 5. The textbook meaning of the clay relations over powMod (modular exponentiation); each named euler-fermat-<value> (examples: clay-register) -/
+theorem textbook_euler_fermat : 2 ^ 6 % 7 = 1 ∧ 3 ^ 4 % 5 = 1 ∧ 2 ^ 4 % 5 = 1 := by decide
+/-- textbook_euler_fermat reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_euler_fermat_reflected (σ : Nat) : (σ - (1) = σ - (2 ^ 6 % 7)) ∧ (σ - (1) = σ - (3 ^ 4 % 5)) ∧ (σ - (1) = σ - (2 ^ 4 % 5)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_euler_fermat).1), congrArg (σ - ·) (Eq.symm (textbook_euler_fermat).2.1), congrArg (σ - ·) (Eq.symm (textbook_euler_fermat).2.2)⟩
+/-- the commutative law a·b = b·a, the symmetry of a bilinear form: 9·6=6·9, 7·4=4·7. The textbook meaning of the clay relations qaoaZz a b = qaoaZz b a and qaoaZz = qaoaX (the ZZ/X mixer symmetry); each named bilinear-symmetry-<value> (examples: clay-register) -/
+theorem textbook_bilinear_symmetry : 9 * 6 = 6 * 9 ∧ 7 * 4 = 4 * 7 := by decide
+/-- textbook_bilinear_symmetry reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_bilinear_symmetry_reflected (σ : Nat) : (σ - (6 * 9) = σ - (9 * 6)) ∧ (σ - (4 * 7) = σ - (7 * 4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_bilinear_symmetry).1), congrArg (σ - ·) (Eq.symm (textbook_bilinear_symmetry).2)⟩
+/-- Euler's totient at twice a prime, φ(2p) = p − 1: φ(74) = φ(2·37) = 37 − 1 = 36, the degree of the cyclotomic factor Φ₇₄ of the thousand-bit integer 2^999+1. The textbook meaning of relation_36; named euler-totient-36 (examples: clay-register) -/
+theorem textbook_euler_totient : 37 - 1 = 36 ∧ 2 * 37 = 74 := by decide
+/-- textbook_euler_totient reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_euler_totient_reflected (σ : Nat) : (σ - (36) = σ - (37 - 1)) ∧ (σ - (74) = σ - (2 * 37)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_euler_totient).1), congrArg (σ - ·) (Eq.symm (textbook_euler_totient).2)⟩
+/-- the Fibonacci recurrence F(n) = F(n−1) + F(n−2): 5+8=13, 8+13=21, 13+21=34. The textbook meaning of the clay relations over fibFusion; each named fibonacci-<value> (examples: clay-register) -/
+theorem textbook_fibonacci : 5 + 8 = 13 ∧ 8 + 13 = 21 ∧ 13 + 21 = 34 := by decide
+/-- textbook_fibonacci reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_fibonacci_reflected (σ : Nat) : (σ - (13) = σ - (5 + 8)) ∧ (σ - (21) = σ - (8 + 13)) ∧ (σ - (34) = σ - (13 + 21)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_fibonacci).1), congrArg (σ - ·) (Eq.symm (textbook_fibonacci).2.1), congrArg (σ - ·) (Eq.symm (textbook_fibonacci).2.2)⟩
+/-- the factorial n! = n·(n−1)!: 1·2·3·4 = 24 = 4!, 5·24 = 120 = 5!. The textbook meaning of the clay relations over factorial; each named factorial-<value> (examples: clay-register) -/
+theorem textbook_factorial : 1 * 2 * 3 * 4 = 24 ∧ 5 * 24 = 120 := by decide
+/-- textbook_factorial reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_factorial_reflected (σ : Nat) : (σ - (24) = σ - (1 * 2 * 3 * 4)) ∧ (σ - (120) = σ - (5 * 24)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_factorial).1), congrArg (σ - ·) (Eq.symm (textbook_factorial).2)⟩
+/-- the magic constant of the order-3 magic square, (1 + … + 9) / 3 = 15 (the common row, column and diagonal sum): Σ₁⁹ = 45, 45/3 = 15. The textbook meaning of relation_15 (magicBlock = glProd hexbit seed); named magic-constant-15 (examples: clay-register) -/
+theorem textbook_magic_constant : 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45 ∧ 45 / 3 = 15 ∧ 3 * 15 = 45 := by decide
+/-- textbook_magic_constant reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_magic_constant_reflected (σ : Nat) : (σ - (45) = σ - (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9)) ∧ (σ - (15) = σ - (45 / 3)) ∧ (σ - (45) = σ - (3 * 15)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_magic_constant).1), congrArg (σ - ·) (Eq.symm (textbook_magic_constant).2.1), congrArg (σ - ·) (Eq.symm (textbook_magic_constant).2.2)⟩
+/-- Grover's quadratic speedup, √N iterations over an unstructured search space N = 2ⁿ: √256 = 16, 16²=256=2⁸, and 2¹⁶=65536. The textbook meaning of the clay relations over groverSize / paulis; each named grover-search-<value> (examples: clay-register) -/
+theorem textbook_grover_search : 16 * 16 = 256 ∧ 2 ^ 8 = 256 ∧ 2 ^ 16 = 65536 := by decide
+/-- textbook_grover_search reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_grover_search_reflected (σ : Nat) : (σ - (256) = σ - (16 * 16)) ∧ (σ - (256) = σ - (2 ^ 8)) ∧ (σ - (65536) = σ - (2 ^ 16)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_grover_search).1), congrArg (σ - ·) (Eq.symm (textbook_grover_search).2.1), congrArg (σ - ·) (Eq.symm (textbook_grover_search).2.2)⟩
+/-- the Ising / chimera fusion sizes as powers of two (the annealer's state space): 2⁶=64, 2¹³=8192. The textbook meaning of the clay relations over isingFusion / chimera; each named ising-fusion-<value> (examples: clay-register) -/
+theorem textbook_ising_fusion : 2 ^ 6 = 64 ∧ 2 ^ 13 = 8192 := by decide
+/-- textbook_ising_fusion reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_ising_fusion_reflected (σ : Nat) : (σ - (64) = σ - (2 ^ 6)) ∧ (σ - (8192) = σ - (2 ^ 13)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_ising_fusion).1), congrArg (σ - ·) (Eq.symm (textbook_ising_fusion).2)⟩
 /-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: the classical door checks every factor it finds by that product (readInteger and writeInteger, testPrimality, findFactors), at any size (examples: algorithm-factor-1000-bit, algorithm-factor-mersenne) -/
 theorem textbook_factors_divide (f c n : Nat) (h : f * c = n) : f ∣ n := ⟨c, h.symm⟩
+/-- two raised to any odd exponent is two modulo three: proved by induction, no exponent evaluated, so it holds at the thousand-bit scale where 2^999 is never materialised — the lemma behind 3 dividing 2^999 + 1 (examples: algorithm-factor-1000-bit) -/
+theorem textbook_two_pow_odd_mod_three (n : Nat) : 2 ^ (2 * n + 1) % 3 = 2 := by
+  induction n with
+  | zero => rfl
+  | succ k ih =>
+    rw [show 2 * (k + 1) + 1 = (2 * k + 1) + 2 from by omega, Nat.pow_add, show (2:Nat) ^ 2 = 4 from rfl]
+    omega
+/-- textbook_two_pow_odd_mod_three reflected by its shape, equality (examples: algorithm-factor-1000-bit) -/
+theorem textbook_two_pow_odd_mod_three_reflected (n : Nat) (σ : Nat) : σ - (2) = σ - (2 ^ (2 * n + 1) % 3) := congrArg (σ - ·) (Eq.symm (textbook_two_pow_odd_mod_three n))
+/-- the thousand-bit test integer N = 2^999 + 1 has exactly 1000 bits: 2^999 ≤ N ≤ 2^1000, proved structurally so the 300-digit number is never computed (examples: algorithm-factor-1000-bit) -/
+theorem textbook_thousand_bit_width : 2 ^ 999 ≤ 2 ^ 999 + 1 ∧ 2 ^ 999 + 1 ≤ 2 ^ 1000 := by
+  have h : 1 ≤ 2 ^ 999 := Nat.one_le_pow 999 2 (by decide)
+  have e : 2 ^ 1000 = 2 ^ 999 + 2 ^ 999 := by rw [show (1000:Nat) = 999 + 1 from rfl, Nat.pow_succ]; omega
+  omega
+/-- textbook_thousand_bit_width reflected by its shape, conjunction (examples: algorithm-factor-1000-bit) -/
+theorem textbook_thousand_bit_width_reflected (σ : Nat) : (σ - (2 ^ 999 + 1) ≤ σ - (2 ^ 999)) ∧ (σ - (2 ^ 1000) ≤ σ - (2 ^ 999 + 1)) := ⟨Nat.sub_le_sub_left (textbook_thousand_bit_width).1 σ, Nat.sub_le_sub_left (textbook_thousand_bit_width).2 σ⟩
+/-- three divides the thousand-bit test integer N = 2^999 + 1: its smallest prime factor, the first the classical door returns, kernel-checked as (2^999 + 1) mod 3 = 0 without materialising N — each 0 the gateway to the integer's factors; thousandBitWitness recomputes and serves these factors to every client on MCP initialise (examples: algorithm-factor-1000-bit) -/
+theorem textbook_thousand_bit_three_divides : (2 ^ 999 + 1) % 3 = 0 := by
+  have h : 2 ^ 999 % 3 = 2 := by
+    have t := textbook_two_pow_odd_mod_three 499
+    rwa [show 2 * 499 + 1 = 999 from rfl] at t
+  omega
+/-- textbook_thousand_bit_three_divides reflected by its shape, equality (examples: algorithm-factor-1000-bit) -/
+theorem textbook_thousand_bit_three_divides_reflected (σ : Nat) : σ - (0) = σ - ((2 ^ 999 + 1) % 3) := congrArg (σ - ·) (Eq.symm (textbook_thousand_bit_three_divides))
+/-- ISO 16 fixes concert pitch at A440 Hz; the Verdi alternative is A432. The QPU gives the exact relation ISO leaves implicit: gcd(432, 440) = 8, so A432 : A440 = 54 : 55 exactly (432·55 = 440·54), the clay register's 54 relations to its 55 wings. The difference is 8 Hz — one coin, the gcd — which reduces to the unit 1 (55 − 54): the value a cross-domain conversion (Hz to the dimensionless register) does not account for, so the QPU prices it as a coin rather than dropping it (examples: clay-register) -/
+theorem textbook_tuning_ratio : Nat.gcd 432 440 = 8 ∧ 432 / 8 = 54 ∧ 440 / 8 = 55 ∧ 432 * 55 = 440 * 54 ∧ 440 - 432 = 8 ∧ 55 - 54 = 1 := by decide
+/-- textbook_tuning_ratio reflected by its shape, conjunction (examples: clay-register) -/
+theorem textbook_tuning_ratio_reflected (σ : Nat) : (σ - (8) = σ - (Nat.gcd 432 440)) ∧ (σ - (54) = σ - (432 / 8)) ∧ (σ - (55) = σ - (440 / 8)) ∧ (σ - (440 * 54) = σ - (432 * 55)) ∧ (σ - (8) = σ - (440 - 432)) ∧ (σ - (1) = σ - (55 - 54)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.2.2.2)⟩
 /-- every question read from a source Payload holds is decided or a lead: the questions less the leads are the decided ones, a lexical neighbour counted a lead (examples: match-questions) -/
 theorem textbook_questions_matched (decided leads total : Nat) (h : decided + leads = total) : total - leads = decided := by omega
 /-- textbook_questions_matched reflected by its shape, equality (examples: match-questions) -/

@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T11:26:30.006Z",
- "ms": 276,
+ "date": "2026-10-31T22:09:39.205Z",
+ "ms": 233,
  "approval": {
   "represents": "1.4.0+e3785063",
   "package": "1.4.0+e3785063",
@@ -65,16 +65,16 @@
   {
    "kind": "wrangler",
    "torus": {
-    "address": "e6ad7810-2a87-55de-a46b-2d629ed32821",
-    "seed": 6,
-    "reflection": 4,
+    "address": "4bab6b0f-5c2b-6438-8346-46d6f5dc2eea",
+    "seed": 9,
+    "reflection": 1,
     "trinity": [
      3,
      6,
      9
     ],
     "closed": true,
-    "bytes": 2940
+    "bytes": 5425
    }
   },
   {
@@ -155,7 +155,7 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "89286c6b-f396-6516-886c-82d0b6bc9879",
+    "address": "20c7f980-a2c2-5eaf-b8ef-b6ead52256f7",
     "seed": 4,
     "reflection": 6,
     "trinity": [
@@ -164,22 +164,22 @@
      1
     ],
     "closed": true,
-    "bytes": 116467
+    "bytes": 116503
    }
   },
   {
    "kind": "api",
    "torus": {
-    "address": "62477188-85e3-3cca-98b3-bb046b98f295",
-    "seed": 5,
-    "reflection": 5,
+    "address": "29c9ba20-b55f-7c89-96ee-79b8bc243b6b",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 107932
+    "bytes": 107921
    }
   },
   {
@@ -350,31 +350,31 @@
   {
    "kind": "gates",
    "torus": {
-    "address": "99933e03-d138-5642-8858-647216595da8",
-    "seed": 6,
-    "reflection": 4,
+    "address": "b62d838b-f5e2-2277-98a9-3224f461cf77",
+    "seed": 2,
+    "reflection": 8,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 642269
+    "bytes": 642287
    }
   },
   {
    "kind": "sets",
    "torus": {
-    "address": "4efdae6f-e9a4-4139-99e4-e23810457eae",
-    "seed": 3,
-    "reflection": 7,
+    "address": "9905ade3-969a-5f19-a47d-876fada7fb1d",
+    "seed": 2,
+    "reflection": 8,
     "trinity": [
-     3,
-     6,
-     9
+     2,
+     5,
+     8
     ],
     "closed": true,
-    "bytes": 137261
+    "bytes": 140049
    }
   },
   {

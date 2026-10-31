@@ -4,7 +4,7 @@
 # the full `next` must be green and the strict pre-deploy rules, decided by theorems, must allow it.
 #
 # Secrets, by name only (set their values in the repository's Settings → Secrets and variables → Actions, scoped to `production`):
-#   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID  the Worker and the app deploy through wrangler
+#   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID  the app deploys through OpenNext on Cloudflare
 #   QPU_APP_MCP, QPU_APP_KEY                     the pre-deploy rules read the account facts from the RAID through the app's Payload MCP
 #   QPU_ROLE_SECRET                              signs role claims between the Worker and the app
 #   NPM_TOKEN                                    publishes the package with provenance
@@ -49,11 +49,6 @@ jobs:
         env:
           QPU_APP_MCP: ${{ secrets.QPU_APP_MCP }}
           QPU_APP_KEY: ${{ secrets.QPU_APP_KEY }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      - name: deploy the Worker
-        run: npx wrangler deploy
-        env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - name: deploy the app (OpenNext on Cloudflare)

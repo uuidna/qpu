@@ -18,5 +18,5 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src/quantum", "src/worker.ts", "scripts"]
+  "include": ["src/quantum", "scripts"]
 }
