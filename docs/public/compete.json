@@ -1,12 +1,12 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-31T22:06:26.469Z",
- "ms": 64,
+ "date": "2026-10-31T22:37:49.642Z",
+ "ms": 58,
  "offline": true,
  "selftest": {
   "passed": true
  },
- "head": "74015eb696d83201a96c0cd8acd14c7aeac41850",
+ "head": "0ee1cb6d17109f3def25d5e49504df093f59cf86",
  "pushed": null,
  "fetched": [],
  "precedence": [
@@ -76,7 +76,7 @@
      "needs": "a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README",
      "act": "the author's record stands at its DOI; the community's acceptance is measured by the rules below",
      "status": "open",
-     "evidence": "1213 theorems kernel-accepted (1827 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602"
+     "evidence": "1225 theorems kernel-accepted (1843 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
@@ -163,14 +163,16 @@
      "textbook_clay_register_width",
      "textbook_shor_sigma_root",
      "textbook_thermal_time_sigma",
-     "textbook_clay_bridge"
+     "textbook_clay_bridge",
+     "textbook_gravity_torus_sigma",
+     "textbook_mind_sigma"
     ],
     "both": true,
     "says": "known from the page"
    },
    "economics": {
     "prize": "USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)",
-    "evidence": 7,
+    "evidence": 9,
     "calls": [
      {
       "name": "textbook",
@@ -213,13 +215,25 @@
       "arguments": {
        "theorem": "textbook_clay_bridge"
       }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_gravity_torus_sigma"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_mind_sigma"
+      }
      }
     ],
-    "coins": 7,
+    "coins": 9,
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "7 theorem(s) of evidence served as 7 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)); no prize is won and no problem solved by this",
+    "says": "9 theorem(s) of evidence served as 9 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
    "satisfied": "0/4",
@@ -3842,7 +3856,7 @@
  ],
  "know": {
   "competitors": 18,
-  "theorems": 7,
+  "theorems": 9,
   "both": [
    "clay-millennium",
    "xprize-quantum-applications",
