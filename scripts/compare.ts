@@ -3,9 +3,9 @@
 // servers (each initialized through the one MCP client, its tools/list measured); the tools answer the ratios.
 import { gzipSync } from 'node:zlib'
 import { mkdirSync, writeFileSync } from 'node:fs'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
 import { openSession, getJson, getWithTimeout } from './mcp.ts'
-import { createCoverageRequest } from '../src/quantum/discovery.ts'
+import { createCoverageRequest } from '../src/quantum/processing/discovery.ts'
 
 export const compareStylesheets = async () => {
   const css = toolCallerOf('css')

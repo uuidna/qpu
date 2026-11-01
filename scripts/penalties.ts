@@ -1,13 +1,13 @@
 // The penalties recorded where every detail lives, the RAID: the pure door (repository { penalty }) prices and seals each one, this client writes
 // it to the docket through the one MCP client (createEntries, from 'penalties'). The same gap has the same address, so it is one entry however
 // often it is penalised; a clearing names the gap its evidence closed. Without a key or an app it says so and queues the penalty in .qpu.
-import { toolCallerOf } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
 import { mcpClient } from './mcp.ts'
 import { appendFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { RUN_FILES } from '../src/quantum/toolboxes/repository.ts'
-import { checkAccess, type Ability } from '../src/quantum/toolboxes/payload.ts'
-import { TABLES } from '../src/quantum/tables-index.ts'
+import { RUN_FILES } from '../src/quantum/processing/toolboxes/repository.ts'
+import { checkAccess, type Ability } from '../src/quantum/processing/toolboxes/payload.ts'
+import { TABLES } from '../src/quantum/processing/tables-index.ts'
 
 const repository = toolCallerOf('repository')
 type Penalty = { rule: string; kind?: string; subject?: string; bytes?: number; tokens?: number; committer?: string | null; evidence: Record<string, unknown> & { key: string } }

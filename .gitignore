@@ -49,3 +49,7 @@ docs/public/imagination-rows.json
 docs/public/unit-cache.json
 docs/public/blocks/
 .qpu/
+
+
+# generated: payloadcms/website clone configured with QPU (not committed)
+/.qpu-app/

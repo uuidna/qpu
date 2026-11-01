@@ -5,14 +5,14 @@ import { writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 import './teleport.ts'
-import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { LICENSE } from '../src/quantum/license.ts'
-import { GOOGLE_DOCUMENTS, DRIVE_FILE_URL } from '../src/quantum/discovery.ts'
-import { fileOf } from '../src/quantum/toolboxes/payload.ts'
+import { toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
+import { LICENSE } from '../src/quantum/processing/unit/license.ts'
+import { GOOGLE_DOCUMENTS, DRIVE_FILE_URL } from '../src/quantum/processing/discovery.ts'
+import { fileOf } from '../src/quantum/processing/toolboxes/payload.ts'
 import { mcpClient, getJson } from './mcp.ts'
 
 const ROOT = process.cwd(), date = new Date().toISOString()
-const cache = getJson(join(ROOT, (await import('../src/quantum/toolboxes/repository.ts')).RUN_FILES.discoveryAnswers), {}) as Record<string, { status: number; text: string }>
+const cache = getJson(join(ROOT, (await import('../src/quantum/processing/toolboxes/repository.ts')).RUN_FILES.discoveryAnswers), {}) as Record<string, { status: number; text: string }>
 const discovery = Object.fromEntries(Object.entries(GOOGLE_DOCUMENTS).flatMap(([k, url]) => { const a = cache[`api-contract:${new URL(url).host}:google-${k}`]; try { return a?.status === 200 ? [[k, JSON.parse(a.text)]] : [] } catch { return [] } }))
 const unread = Object.keys(GOOGLE_DOCUMENTS).filter((k) => !discovery[k])
 const w = toolCallerOf('payload')({ workspace: { discovery } })

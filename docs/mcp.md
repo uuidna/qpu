@@ -5,7 +5,7 @@ order: 40
 
 # MCP tools
 
-The handler in `src/quantum/mcp.ts` answers `initialize`, `tools/list` and `tools/call` as JSON-RPC 2.0. Its tools take typed
+The handler in `src/quantum/processing/mcp.ts` answers `initialize`, `tools/list` and `tools/call` as JSON-RPC 2.0. Its tools take typed
 POST parameters described by the JSON Schema below, and they compile the circuit they describe on each call. The tools are
 organised in toolboxes, each one idea complete with its toolset and its skillset (instructions, directions, selftest, examples);
 `tools/list` names each tool's toolbox in `_meta.toolbox`, and `initialize` carries every toolbox's instructions.
@@ -98,7 +98,7 @@ the standards fused: schema.org on every block, page and offer; ISO 8601, 639-1,
 
 **Tests itself:** server only: JSON-LD shapes on fixtures; CLDR fixtures read into code sets; the tree's codes validated; client → server: the CLDR lists come from Unicode's repository; toolbox → toolbox: offers come from the billing catalogue, locales from the language toolbox, the contracts from discovery.
 
-Tools: [jsonld](#jsonld), [codes](#codes).
+Tools: [jsonld](#jsonld), [codes](#codes), [validate](#validate).
 
 ## Toolbox `payload`
 
@@ -183,6 +183,17 @@ Any statement, matched against everything the surface can do
     },
     "questions": {
       "description": "true"
+    },
+    "search": {
+      "type": "string",
+      "description": "MCP/Payload search as the lexical chat (match) over Clay case decisions"
+    },
+    "news": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the day's news as problems"
     },
     "verdict": {
       "type": "string",
@@ -818,9 +829,50 @@ The textbook algorithms of the Cirq page
         "teleportation",
         "qaoa",
         "shor",
-        "factor"
+        "factor",
+        "deutsch_jozsa",
+        "bernstein_vazirani",
+        "simon",
+        "vqe",
+        "chsh",
+        "trotter",
+        "xeb",
+        "no_cloning",
+        "holevo",
+        "gottesman_knill",
+        "eastin_knill",
+        "solovay_kitaev",
+        "steane"
       ],
-      "default": "qft"
+      "default": "chsh"
+    },
+    "depth": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 40,
+      "default": 12,
+      "description": "xeb"
+    },
+    "balanced": {
+      "type": "boolean",
+      "default": true,
+      "description": "deutsch_jozsa"
+    },
+    "hidden": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "description": "bernstein_vazirani"
+    },
+    "steps": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200,
+      "default": 20,
+      "description": "vqe"
     },
     "integer": {
       "type": "string",
@@ -898,8 +950,8 @@ The textbook algorithms of the Cirq page
     }
   },
   "x-harmonic": {
-    "combinations": "8",
-    "index": "0",
+    "combinations": "21",
+    "index": "12",
     "from": "a432"
   }
 }
@@ -1262,6 +1314,13 @@ The surface audits itself through tools/call
         "type": "string"
       },
       "description": "error texts"
+    },
+    "repair": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "the remedy for a hacked or vulnerable system"
     },
     "fallbacks": {
       "type": "boolean",
@@ -1784,10 +1843,11 @@ The ported MongoDB over the docket, pure
         "mirror",
         "restore",
         "verify",
+        "health",
         "associate",
         "validate"
       ],
-      "default": "find"
+      "default": "update"
     },
     "association": {
       "type": "object",
@@ -1835,8 +1895,8 @@ The ported MongoDB over the docket, pure
     }
   },
   "x-harmonic": {
-    "combinations": "9",
-    "index": "0",
+    "combinations": "10",
+    "index": "2",
     "from": "a432"
   }
 }
@@ -2070,6 +2130,9 @@ The full legal and security audit with forensic analysis, through MCP
     "court": {
       "description": "true"
     },
+    "ancient": {
+      "description": "true"
+    },
     "selftest": {
       "type": "boolean"
     }
@@ -2088,6 +2151,10 @@ The competitions with prizes and funding, their rules read at the source and jud
     "conduct": {
       "type": "boolean",
       "description": "the client found a CODE_OF_CONDUCT in the repository"
+    },
+    "claim": {
+      "type": "boolean",
+      "description": "the claim verb"
     },
     "news": {
       "type": "boolean",
@@ -2384,6 +2451,26 @@ The tree's ISO codes validated against the CLDR lists a client fetched (language
 }
 ```
 
+## validate
+
+Validate against all standards via Payload's standard implementation, in the cheapest possible slices
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "bound": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "standards per slice (default 6)"
+    },
+    "selftest": {
+      "type": "boolean"
+    }
+  }
+}
+```
+
 ## payload
 
 Any tool's result as the document Payload's default plugins hold, no custom collection
@@ -2403,6 +2490,14 @@ Any tool's result as the document Payload's default plugins hold, no custom coll
     "references": {
       "type": "object",
       "description": "the references between documents as one graph"
+    },
+    "report": {
+      "type": "object",
+      "description": "Payload handles the proof of a quantum computation as a report"
+    },
+    "referenceIndex": {
+      "type": "object",
+      "description": "every reference indexed by scope and combination, cached by query hash, over the Payload search results"
     },
     "hooks": {
       "type": "object",
@@ -2745,9 +2840,25 @@ The split folds
       },
       "description": "Queneau's combinatorics"
     },
+    "rosetta": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "description": "the radices of a grid read two ways — e"
+    },
+    "order": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "description": "with rosetta"
+    },
     "index": {
       "type": "string",
-      "description": "with radices"
+      "description": "with radices or rosetta"
     },
     "digits": {
       "type": "array",
@@ -2775,6 +2886,10 @@ The split folds
     "neighbours": {
       "type": "string",
       "description": "a UUID"
+    },
+    "navigate": {
+      "type": "string",
+      "description": "a UUID actor"
     },
     "query": {
       "type": "object",

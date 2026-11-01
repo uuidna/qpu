@@ -11,6 +11,7 @@ import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { resendAdapter } from '@payloadcms/email-resend'
 import { r2Storage } from '@payloadcms/storage-r2'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { qpuRaidDb } from '../../toolboxes/payload.qpu.db'
 import path from 'node:path'
 import { definePlugin, type Config, type EmailAdapter, type Plugin } from 'payload'
 
@@ -51,6 +52,7 @@ const ADAPTERS: Record<'db' | 'email' | 'storage', Adapter[]> = {
   ],
 }
 const chosen = (part: keyof typeof ADAPTERS): Adapter => ADAPTERS[part].find((a) => a.named())!
-export const qpuDb = () => chosen('db').make() as Config['db']
+// the RAID database over binding 0 (or the bindings when there is no filesystem) when QPU_ADAPTERS names it, else the adapter the environment chooses
+export const qpuDb = () => (process.env.QPU_ADAPTERS === 'raid' ? qpuRaidDb() : chosen('db').make()) as Config['db']
 export const qpuEmail = () => chosen('email').make() as EmailAdapter
-export const qpuAdapterPlugins = (): Plugin[] => (Object.keys(ADAPTERS) as (keyof typeof ADAPTERS)[]).flatMap((part) => ADAPTERS[part].map((a) => definePlugin<{ enabled?: boolean }>({ slug: 'qpu-' + a.pkg, plugin: ({ config, enabled }) => (enabled === false || chosen(part) !== a ? config : part === 'storage' ? (a.make() as Plugin)(config) : { ...config, [part]: a.make() }) })({})))
+export const qpuAdapterPlugins = (): Plugin[] => (Object.keys(ADAPTERS) as (keyof typeof ADAPTERS)[]).flatMap((part) => ADAPTERS[part].map((a) => definePlugin<{ enabled?: boolean }>({ slug: 'qpu-' + a.pkg, plugin: ({ config, enabled }) => (enabled === false || chosen(part) !== a || (part === 'db' && process.env.QPU_ADAPTERS === 'raid') ? config : part === 'storage' ? (a.make() as Plugin)(config) : { ...config, [part]: a.make() }) })({})))

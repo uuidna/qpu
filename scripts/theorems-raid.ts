@@ -3,9 +3,9 @@
 // address is the fold of its content, the same the app's hook computes, so one already present is skipped and never written twice. With no key
 // or no app it says so and writes nothing: an unread docket is never a file.
 import './teleport.ts'
-import { TEXTBOOK_THEOREMS } from '../src/quantum/textbook-theorems.ts'
-import { THEOREM_KEYS } from '../src/quantum/theorems-index.ts'
-import { uuidOf } from '../src/quantum/blocks.ts'
+import { TEXTBOOK_THEOREMS } from '../src/quantum/processing/textbook-theorems.ts'
+import { THEOREM_KEYS } from '../src/quantum/processing/theorems-index.ts'
+import { uuidOf } from '../src/quantum/processing/unit/blocks.ts'
 import { mcpClient } from './mcp.ts'
 
 const mcp = mcpClient()

@@ -8,7 +8,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { tmpdir } from 'node:os'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
 import { mcpClient } from './mcp.ts'
 
 const ROOT = process.cwd(), machine = join(dirname(fileURLToPath(import.meta.url)), 'machine.ts'), git = (a: string[]) => execFileSync('git', a, { encoding: 'utf8', maxBuffer: 1 << 28 })
@@ -19,7 +19,7 @@ type Declarations = { renames: [string, string, string][]; kept: string[]; custo
 const asked = { declarations: { files } }
 const d: Declarations = process.env.QPU_APP_KEY ? await (async () => { const m = mcpClient(), made = await m.call('createEntries', { kind: 'call', from: 'names', body: { tool: 'audit', arguments: asked } }); return (m.docsOf(made.text ?? '')[0] as { result?: { structuredContent?: Declarations } } | undefined)?.result?.structuredContent ?? (toolCallerOf('audit')(asked) as Declarations) })() : (toolCallerOf('audit')(asked) as Declarations)
 if (!d.renames.length || !process.env.QPU_APP_KEY) { console.log(`names: ${d.says}; ${process.env.QPU_APP_KEY ? 'nothing to rename' : 'no wave without QPU_APP_KEY: an unrecorded rename would count as growth'}`); process.exit(0) }
-const failed = () => Number(spawnSync('node', ['--input-type=module', '-e', "const { handle } = await import('./src/quantum/mcp.ts'); const r = await handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: {} } }); console.log(r.result.structuredContent.failed)"], { encoding: 'utf8', maxBuffer: 1 << 26 }).stdout.trim().split('\n').pop() ?? NaN)
+const failed = () => Number(spawnSync('node', ['--input-type=module', '-e', "const { handle } = await import('./src/quantum/processing/mcp.ts'); const r = await handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: {} } }); console.log(r.result.structuredContent.failed)"], { encoding: 'utf8', maxBuffer: 1 << 26 }).stdout.trim().split('\n').pop() ?? NaN)
 const typed = () => spawnSync('npx', ['tsc', '--noEmit', '-p', 'tsconfig.json'], { encoding: 'utf8' }).status === 0
 const base = failed(), dir = mkdtempSync(join(tmpdir(), 'qpu-names-')), map = join(dir, 'map.json'), back = join(dir, 'back.json')
 writeFileSync(map, JSON.stringify(d.renames)); writeFileSync(back, JSON.stringify(d.renames.map(([f, a, b]) => [f, b, a])))

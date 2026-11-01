@@ -3,14 +3,20 @@
   "version": "1.4.0",
   "type": "module",
   "exports": {
-    "./mcp": "./src/quantum/mcp.ts",
-    "./discovery-document": "./src/quantum/discovery-document.ts",
-    "./version": "./src/quantum/version.ts",
-    "./blocks": "./src/quantum/blocks.ts",
-    "./roles": "./src/quantum/roles.ts",
+    ".": "./src/quantum/processing/unit/index.ts",
+    "./mcp": "./src/quantum/processing/mcp.ts",
+    "./discovery-document": "./src/quantum/processing/discovery-document.ts",
+    "./version": "./src/quantum/processing/unit/version.ts",
+    "./blocks": "./src/quantum/processing/unit/blocks.ts",
+    "./roles": "./src/quantum/processing/unit/roles.ts",
     "./machine": "./scripts/machine.ts",
-    "./payload": "./src/quantum/toolboxes/payload.ts"
+    "./payload": "./src/quantum/processing/toolboxes/payload.ts"
   },
+  "files": [
+    "src/quantum",
+    "scripts/machine.ts",
+    "!src/quantum/**/*.test.ts"
+  ],
   "license": "CC-BY-NC-ND-4.0",
   "author": {
     "name": "Tsvetan Rouschev",
@@ -21,12 +27,13 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "node --test 'src/quantum/*.test.ts'",
+    "test": "node --test 'src/quantum/**/*.test.ts'",
     "docs:gen": "node scripts/gen-docs.ts",
     "docs:dev": "npm run docs:gen && vitepress dev docs",
     "docs:build": "npm run docs:gen && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "audit": "node scripts/audit.ts",
+    "mcp:crypto": "node --import tsx src/mcp/crypto/index.ts",
     "test:e2e": "node scripts/e2e.ts",
     "next": "node scripts/next.ts",
     "precheck": "node scripts/hook.ts pre-deploy",
@@ -41,7 +48,10 @@
     "publish": "node scripts/publish.ts",
     "clay:gen": "node scripts/gen-clay.ts",
     "pretest": "node scripts/gen-clay.ts && node scripts/gen-docs.ts",
-    "next:fast": "node scripts/next.ts --offline --fast"
+    "next:fast": "node scripts/next.ts --offline --fast",
+    "next:chain": "QPU_NEXT_CHAIN=1 node scripts/next.ts",
+    "leads": "node scripts/mcp.ts leads-sync",
+    "clean": "node scripts/mcp.ts leads-sync && node scripts/mcp.ts tables-sync"
   },
   "devDependencies": {
     "@types/node": "26.6.4",

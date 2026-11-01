@@ -3,8 +3,8 @@
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
-import type { WaveRequest, WaveResult } from '../src/quantum/wave.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
+import type { WaveRequest, WaveResult } from '../src/quantum/processing/wave.ts'
 import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { getJson, getWithTimeout, runSelftest, publishRecord } from './mcp.ts'
 

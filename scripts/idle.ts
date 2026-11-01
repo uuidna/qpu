@@ -6,18 +6,18 @@
 import { spawnSync } from 'node:child_process'
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { getCapacity } from '../src/quantum/toolboxes/billing.ts'
+import { getCapacity } from '../src/quantum/processing/toolboxes/billing.ts'
 import { getJson, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()
 const started = performance.now()
 const capacityIn: Parameters<typeof getCapacity>[0] = {}
-const { handle } = await import('../src/quantum/mcp.ts'), { EXAMPLES } = await import('../src/quantum/examples.ts'), { TEXTBOOK_THEOREMS } = await import('../src/quantum/textbook-theorems.ts'), { QUANTUM_BOUNDS } = await import('../src/quantum/discovery-document.ts')
+const { handle } = await import('../src/quantum/processing/mcp.ts'), { EXAMPLES } = await import('../src/quantum/processing/examples.ts'), { TEXTBOOK_THEOREMS } = await import('../src/quantum/processing/textbook-theorems.ts'), { QUANTUM_BOUNDS } = await import('../src/quantum/processing/discovery-document.ts')
 const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: { name: string; inputSchema: { properties?: Record<string, unknown> } }[] } }).result.tools
 const passed = new Set(EXAMPLES.flatMap((e) => Object.keys((e.arguments ?? {}) as Record<string, unknown>).map((k) => `${e.tool}.${k}`)))
 capacityIn.doors = tools.flatMap((t) => Object.entries(t.inputSchema.properties ?? {}).map(([k, v]) => ({ name: `${t.name}.${k}`, bytes: Buffer.byteLength(JSON.stringify(v)), reached: passed.has(`${t.name}.${k}`) })))
 const named = new Set(EXAMPLES.map((e) => e.theorem).filter(Boolean)), ids = new Set(EXAMPLES.map((e) => e.id))
-const cited = spawnSync('git', ['grep', '-ho', '-E', 'textbook_[a-z0-9_]+', '--', 'src', 'scripts', ':!src/quantum/textbook-theorems.ts', ':!src/quantum/theorems-index.ts', ':!src/quantum/examples.ts', ':!*.lean'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 }).stdout.split('\n')
+const cited = spawnSync('git', ['grep', '-ho', '-E', 'textbook_[a-z0-9_]+', '--', 'src', 'scripts', ':!src/quantum/processing/textbook-theorems.ts', ':!src/quantum/processing/theorems-index.ts', ':!src/quantum/processing/examples.ts', ':!*.lean'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 28 }).stdout.split('\n')
 const citedSet = new Set(cited)
 capacityIn.theorems = TEXTBOOK_THEOREMS.map((t) => ({ key: t.key, bytes: Buffer.byteLength(t.lean), used: named.has(t.key) || t.examples.some((x) => ids.has(x)) || citedSet.has(t.key) }))
 const quantum = EXAMPLES.filter((e) => ['circuit', 'echo', 'algorithm'].includes(e.tool))

@@ -1,229 +1,229 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T10:22:19.452Z",
- "ms": 20908,
+ "date": "2026-11-01T18:42:46.177Z",
+ "ms": 15334,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "fe1b4517bdde2894bcec205d21770d915bf82842",
+ "head": "74015eb696d83201a96c0cd8acd14c7aeac41850",
  "pushed": false,
  "fetched": [
   {
-   "id": "google-for-startups-accelerator",
-   "status": 503,
-   "ms": 86,
-   "bytes": 209
-  },
-  {
-   "id": "google-summer-of-code",
-   "status": 503,
-   "ms": 9,
-   "bytes": 209
-  },
-  {
-   "id": "clay-millennium",
-   "status": 200,
-   "ms": 922,
-   "bytes": 79933
-  },
-  {
    "id": "gemini-xprize-hackathon",
    "status": 403,
-   "ms": 671,
-   "bytes": 5519
+   "ms": 106,
+   "bytes": 5562
   },
   {
    "id": "vercel-oss-program",
    "status": 200,
-   "ms": 673,
-   "bytes": 825752
+   "ms": 205,
+   "bytes": 825408
+  },
+  {
+   "id": "clay-millennium",
+   "status": 200,
+   "ms": 583,
+   "bytes": 79933
   },
   {
    "id": "aimo-prize",
    "status": 200,
-   "ms": 806,
+   "ms": 534,
    "bytes": 26036
   },
   {
    "id": "beal-prize",
    "status": 403,
-   "ms": 943,
-   "bytes": 28986
-  },
-  {
-   "id": "justin-sun-prize",
-   "status": 200,
-   "ms": 986,
-   "bytes": 317011
-  },
-  {
-   "id": "qhack-2026",
-   "status": 200,
-   "ms": 1101,
-   "bytes": 454414
-  },
-  {
-   "id": "erdos-problems-prizes",
-   "status": 200,
-   "ms": 1153,
-   "bytes": 33706
+   "ms": 533,
+   "bytes": 29050
   },
   {
    "id": "cloudflare-workers-launchpad",
    "status": 200,
-   "ms": 1315,
-   "bytes": 402587
+   "ms": 541,
+   "bytes": 402589
   },
   {
-   "id": "github-maintainer-programs",
+   "id": "justin-sun-prize",
    "status": 200,
-   "ms": 1355,
-   "bytes": 398700
-  },
-  {
-   "id": "unitaryhack-2026",
-   "status": 200,
-   "ms": 1394,
-   "bytes": 15460
+   "ms": 545,
+   "bytes": 317010
   },
   {
    "id": "quantinuum-startup-partner-program",
    "status": 200,
-   "ms": 1401,
+   "ms": 680,
    "bytes": 495534
-  },
-  {
-   "id": "q-ctrl-programs",
-   "status": 200,
-   "ms": 1547,
-   "bytes": 351875
   },
   {
    "id": "cloudflare-project-alexandria",
    "status": 403,
-   "ms": 1534,
-   "bytes": 5613
+   "ms": 732,
+   "bytes": 5655
   },
   {
-   "id": "sair-lean-kernel-challenge",
+   "id": "q-ctrl-programs",
    "status": 200,
-   "ms": 1612,
-   "bytes": 6276
+   "ms": 793,
+   "bytes": 351896
   },
   {
-   "id": "breakthrough-new-horizons-mathematics",
+   "id": "unitaryhack-2026",
    "status": 200,
-   "ms": 1651,
-   "bytes": 9341
+   "ms": 805,
+   "bytes": 15460
   },
   {
-   "id": "sair-andrews-curtis-challenge",
+   "id": "qhack-2026",
    "status": 200,
-   "ms": 1672,
-   "bytes": 6491
-  },
-  {
-   "id": "ibm-quantum-challenge",
-   "status": 200,
-   "ms": 1750,
-   "bytes": 58183
+   "ms": 836,
+   "bytes": 454414
   },
   {
    "id": "unitary-foundation-microgrants",
    "status": 200,
-   "ms": 1863,
+   "ms": 845,
    "bytes": 269763
   },
   {
-   "id": "sovereign-tech-fund",
-   "status": 200,
-   "ms": 1867,
-   "bytes": 116936
-  },
-  {
    "id": "nlnet-ngi-zero-open-calls",
-   "status": 0,
-   "ms": 1942,
-   "bytes": 0
+   "status": 200,
+   "ms": 855,
+   "bytes": 43352
   },
   {
-   "id": "sair-equational-theories-stage2",
+   "id": "github-maintainer-programs",
    "status": 200,
-   "ms": 1978,
-   "bytes": 7431
-  },
-  {
-   "id": "github-fund",
-   "status": 200,
-   "ms": 2049,
-   "bytes": 409069
-  },
-  {
-   "id": "github-secure-open-source-fund",
-   "status": 200,
-   "ms": 2230,
-   "bytes": 435345
+   "ms": 912,
+   "bytes": 377040
   },
   {
    "id": "devpost-mcp-hackathons",
    "status": 403,
-   "ms": 2207,
-   "bytes": 5506
+   "ms": 1016,
+   "bytes": 5570
   },
   {
    "id": "kiroween-2026",
    "status": 403,
-   "ms": 2287,
-   "bytes": 5485
+   "ms": 1090,
+   "bytes": 5549
   },
   {
-   "id": "floss-fund",
+   "id": "sovereign-tech-fund",
    "status": 200,
-   "ms": 2353,
-   "bytes": 7681
-  },
-  {
-   "id": "xprize-quantum-applications",
-   "status": 200,
-   "ms": 2635,
-   "bytes": 179490
-  },
-  {
-   "id": "ai-for-math-fund",
-   "status": 200,
-   "ms": 2543,
-   "bytes": 529914
-  },
-  {
-   "id": "lean-fro-programs",
-   "status": 200,
-   "ms": 2559,
-   "bytes": 120005
+   "ms": 1198,
+   "bytes": 116569
   },
   {
    "id": "claude-for-open-source",
    "status": 200,
-   "ms": 2643,
-   "bytes": 262200
+   "ms": 1197,
+   "bytes": 263438
   },
   {
-   "id": "microsoft-research-lean-award",
+   "id": "breakthrough-new-horizons-mathematics",
    "status": 200,
-   "ms": 3337,
-   "bytes": 194943
+   "ms": 1469,
+   "bytes": 9341
+  },
+  {
+   "id": "floss-fund",
+   "status": 200,
+   "ms": 1469,
+   "bytes": 7314
+  },
+  {
+   "id": "ibm-quantum-challenge",
+   "status": 200,
+   "ms": 1472,
+   "bytes": 57698
+  },
+  {
+   "id": "google-for-startups-accelerator",
+   "status": 503,
+   "ms": 1478,
+   "bytes": 53
+  },
+  {
+   "id": "google-summer-of-code",
+   "status": 503,
+   "ms": 1473,
+   "bytes": 53
+  },
+  {
+   "id": "github-fund",
+   "status": 200,
+   "ms": 1476,
+   "bytes": 387410
+  },
+  {
+   "id": "github-secure-open-source-fund",
+   "status": 200,
+   "ms": 1477,
+   "bytes": 413702
+  },
+  {
+   "id": "sair-andrews-curtis-challenge",
+   "status": 200,
+   "ms": 1502,
+   "bytes": 6130
+  },
+  {
+   "id": "sair-lean-kernel-challenge",
+   "status": 200,
+   "ms": 1502,
+   "bytes": 5915
+  },
+  {
+   "id": "xprize-quantum-applications",
+   "status": 200,
+   "ms": 1528,
+   "bytes": 177951
+  },
+  {
+   "id": "erdos-problems-prizes",
+   "status": 200,
+   "ms": 1645,
+   "bytes": 33882
+  },
+  {
+   "id": "sair-equational-theories-stage2",
+   "status": 200,
+   "ms": 1696,
+   "bytes": 7070
+  },
+  {
+   "id": "ai-for-math-fund",
+   "status": 200,
+   "ms": 1734,
+   "bytes": 1022068
   },
   {
    "id": "numfocus-small-development-grants",
    "status": 200,
-   "ms": 3900,
-   "bytes": 262276
+   "ms": 2068,
+   "bytes": 262278
+  },
+  {
+   "id": "lean-fro-programs",
+   "status": 200,
+   "ms": 2114,
+   "bytes": 143839
+  },
+  {
+   "id": "microsoft-research-lean-award",
+   "status": 200,
+   "ms": 2478,
+   "bytes": 195215
   },
   {
    "id": "built-with-claude-japan-2026",
    "status": 200,
-   "ms": 9375,
-   "bytes": 62904
+   "ms": 3840,
+   "bytes": 61711
   }
  ],
  "precedence": [
@@ -256,19 +256,19 @@
    },
    {
     "api": "hn-algolia",
-    "doi": "10.5281/zenodo.23156998",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "wikipedia-search",
+    "doi": "10.5281/zenodo.22700098",
     "status": 200,
     "mentions": 0
    },
    {
     "api": "hn-algolia",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.22700098",
+    "doi": "10.5281/zenodo.23156998",
     "status": 200,
     "mentions": 0
    },
@@ -291,9 +291,15 @@
     "mentions": null
    },
    {
-    "api": "crossref-events",
+    "api": "gdelt",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 429,
+    "mentions": null
+   },
+   {
+    "api": "gdelt",
     "doi": "10.5281/zenodo.23156998",
-    "status": 0,
+    "status": 429,
     "mentions": null
    },
    {
@@ -309,15 +315,9 @@
     "mentions": null
    },
    {
-    "api": "gdelt",
+    "api": "crossref-events",
     "doi": "10.5281/zenodo.23156998",
-    "status": 429,
-    "mentions": null
-   },
-   {
-    "api": "gdelt",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 429,
+    "status": 0,
     "mentions": null
    }
   ],
@@ -355,6 +355,23 @@
    }
   ]
  },
+ "prizeTotals": {
+  "winnable": 18,
+  "byCurrency": {
+   "usd": 26600333,
+   "eur": 55000
+  },
+  "basis": {
+   "per-problem": 1,
+   "purse": 16,
+   "invested": 2,
+   "none": 16,
+   "fund": 1
+  },
+  "rateSources": 5,
+  "theorem": "textbook_prizes_computable",
+  "says": "usd 26,600,333, eur 55,000 across 18 winnable prizes, read from the records not the prose"
+ },
  "competitions": [
   {
    "id": "clay-millennium",
@@ -366,7 +383,7 @@
      "needs": "a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README",
      "act": "the author's record stands at its DOI; the community's acceptance is measured by the rules below",
      "status": "open",
-     "evidence": "1168 theorems kernel-accepted (1774 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
+     "evidence": "1251 theorems kernel-accepted (1882 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
@@ -436,6 +453,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 7000000,
+    "currency": "usd",
+    "basis": "per-problem",
+    "says": "USD 1 000 000  per problem × 7"
+   },
    "counts": {
     "open": 1,
     "pending": 3
@@ -449,14 +472,15 @@
      "textbook_sigma_involution",
      "textbook_clay_conditions",
      "textbook_compete_knows",
-     "textbook_clay_register_width"
+     "textbook_clay_register_width",
+     "textbook_relation_rsa"
     ],
     "both": true,
     "says": "known from the page"
    },
    "economics": {
     "prize": "USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)",
-    "evidence": 4,
+    "evidence": 5,
     "calls": [
      {
       "name": "textbook",
@@ -481,13 +505,19 @@
       "arguments": {
        "theorem": "textbook_clay_register_width"
       }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_relation_rsa"
+      }
      }
     ],
-    "coins": 4,
+    "coins": 5,
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "4 theorem(s) of evidence served as 4 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)); no prize is won and no problem solved by this",
+    "says": "5 theorem(s) of evidence served as 5 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
    "satisfied": "0/4",
@@ -504,7 +534,7 @@
      "needs": "Phase II Wild Card registration 2026-01-14 to 2026-03-04",
      "act": "closed: the next XPRIZE quantum competition is a lead to watch",
      "status": "closed",
-     "evidence": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-10-28"
+     "evidence": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-11-01"
     },
     {
      "rule": "a quantum algorithm with a plausible pathway to quantum advantage, technical novelty and algorithmic rigor",
@@ -547,7 +577,13 @@
     "entry": "closed",
     "opens": "2026-01-14",
     "closes": "2026-03-04",
-    "says": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-10-28"
+    "says": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-11-01"
+   },
+   "prizeValue": {
+    "value": 5000000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 5 million"
    },
    "counts": {
     "closed": 1,
@@ -658,6 +694,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "invested",
+    "says": "USD 130 million is capital access or investment, not a prize to win: 0 to the total"
+   },
    "counts": {
     "pending": 2,
     "closed": 1
@@ -756,6 +798,12 @@
     "opens": null,
     "closes": null,
     "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "invested",
+    "says": "$2 billion is capital access or investment, not a prize to win: 0 to the total"
    },
    "counts": {
     "pending": 2
@@ -918,6 +966,12 @@
     "closes": null,
     "says": "the page says applications are currently closed"
    },
+   "prizeValue": {
+    "value": 3600,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 3 600 "
+   },
    "counts": {
     "pending": 4,
     "satisfied": 1,
@@ -1049,6 +1103,12 @@
     "change": "Devpost now answers HTTP 200 to the verifier (held: 403); the hackathon is marked ended and its winners gallery is published; judging and announcement dates read from the rules."
    },
    "window": null,
+   "prizeValue": {
+    "value": 2000000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 2 000 000 "
+   },
    "counts": {
     "closed": 2,
     "pending": 3
@@ -1141,6 +1201,12 @@
     "change": "No change: the 2026 EMEA windows are closed as held; entry set to closed for EMEA (held: unknown)."
    },
    "window": null,
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "pending": 1,
     "closed": 1
@@ -1224,6 +1290,12 @@
     "opens": null,
     "closes": null,
     "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 10000000,
+    "currency": "usd",
+    "basis": "fund",
+    "says": "USD 10 million"
    },
    "counts": {
     "pending": 1
@@ -1367,6 +1439,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "pending": 6
    },
@@ -1485,6 +1563,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "pending": 3,
     "closed": 1
@@ -1565,6 +1649,12 @@
     "opens": null,
     "closes": null,
     "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
    },
    "counts": {
     "pending": 1
@@ -1708,6 +1798,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 1000000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 1 million"
+   },
    "counts": {
     "pending": 6
    },
@@ -1812,6 +1908,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 59733,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 59 733 "
+   },
    "counts": {
     "pending": 3
    },
@@ -1899,6 +2001,12 @@
    ],
    "http": 403,
    "window": null,
+   "prizeValue": {
+    "value": 1000000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 1 000 000 "
+   },
    "counts": {
     "pending": 2
    },
@@ -2003,6 +2111,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 100000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 100 000 "
+   },
    "counts": {
     "closed": 1,
     "pending": 2
@@ -2084,6 +2198,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 67000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 67 000 "
+   },
    "counts": {
     "pending": 1
    },
@@ -2163,6 +2283,12 @@
     "opens": null,
     "closes": null,
     "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
    },
    "counts": {
     "pending": 1
@@ -2257,6 +2383,12 @@
     "opens": null,
     "closes": null,
     "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
    },
    "counts": {
     "pending": 2
@@ -2362,6 +2494,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "pending": 2,
     "closed": 1
@@ -2455,6 +2593,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "pending": 2
    },
@@ -2534,6 +2678,12 @@
     "opens": null,
     "closes": null,
     "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
    },
    "counts": {
     "pending": 1
@@ -2669,7 +2819,18 @@
     }
    ],
    "http": 200,
-   "window": null,
+   "window": {
+    "entry": "unknown",
+    "opens": null,
+    "closes": null,
+    "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 5000,
+    "currency": "eur",
+    "basis": "purse",
+    "says": "EUR 5 000 "
+   },
    "counts": {
     "closed": 2,
     "pending": 4
@@ -2787,6 +2948,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 50000,
+    "currency": "eur",
+    "basis": "purse",
+    "says": "EUR 50 000 "
+   },
    "counts": {
     "closed": 1,
     "pending": 3
@@ -2892,6 +3059,12 @@
     "closes": null,
     "says": "the page says applications are open"
    },
+   "prizeValue": {
+    "value": 10000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 10 000 "
+   },
    "counts": {
     "closed": 1,
     "pending": 2
@@ -2974,6 +3147,12 @@
     "opens": null,
     "closes": null,
     "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
    },
    "counts": {
     "pending": 1
@@ -3074,6 +3253,12 @@
    ],
    "http": 200,
    "window": null,
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "closed": 1,
     "pending": 2
@@ -3176,6 +3361,12 @@
    ],
    "http": 403,
    "window": null,
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "closed": 2,
     "pending": 1
@@ -3281,6 +3472,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 100000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 100 000 "
+   },
    "counts": {
     "closed": 2,
     "pending": 1
@@ -3373,6 +3570,12 @@
     "opens": null,
     "closes": null,
     "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 10000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 10 000 "
    },
    "counts": {
     "closed": 1,
@@ -3467,6 +3670,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "closed": 1,
     "pending": 1
@@ -3559,6 +3768,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 50000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 50 000 "
+   },
    "counts": {
     "closed": 1,
     "pending": 1
@@ -3635,6 +3850,12 @@
    ],
    "http": 200,
    "window": null,
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "pending": 1
    },
@@ -3734,6 +3955,12 @@
    ],
    "http": 200,
    "window": null,
+   "prizeValue": {
+    "value": 100000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 100 000 "
+   },
    "counts": {
     "closed": 1,
     "pending": 2
@@ -3829,6 +4056,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 100000,
+    "currency": "usd",
+    "basis": "purse",
+    "says": "USD 100 000 "
+   },
    "counts": {
     "pending": 2
    },
@@ -3908,6 +4141,12 @@
     "opens": null,
     "closes": null,
     "says": "the page names no window"
+   },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
    },
    "counts": {
     "pending": 1
@@ -3989,6 +4228,12 @@
     "closes": null,
     "says": "the page names no window"
    },
+   "prizeValue": {
+    "value": 0,
+    "currency": "usd",
+    "basis": "none",
+    "says": "no stated amount (non-monetary: tools, mentorship, credits)"
+   },
    "counts": {
     "pending": 1
    },
@@ -4035,7 +4280,7 @@
  ],
  "know": {
   "competitors": 18,
-  "theorems": 4,
+  "theorems": 5,
   "both": [
    "clay-millennium",
    "xprize-quantum-applications",

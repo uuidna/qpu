@@ -4,11 +4,11 @@
 import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
 import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
-import { recordDeposit } from '../src/quantum/coins.ts'
+import { recordDeposit } from '../src/quantum/processing/unit/coins.ts'
 import { openSession, getJson, runSelftest } from './mcp.ts'
-import { LICENSE } from '../src/quantum/license.ts'
+import { LICENSE } from '../src/quantum/processing/unit/license.ts'
 
 const ROOT = process.cwd()
 // the coins paid at the wire, one line per call, kept by this payer (the unit's own register is per process and silent)
@@ -18,12 +18,12 @@ const text = (f: string) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT,
 const rpc = (url: string, name: string, args: unknown) => openSession(url).tool(name, args, (r) => account(name, r))
 const main = async () => {
   const selftest = runSelftest('legal', call)
-  const texts = { readme: text('README.md'), citation: text('CITATION.cff'), zenodo: text('.zenodo.json'), package: text('package.json'), worker: text('src/worker.ts'), billing: text('src/quantum/toolboxes/billing.ts'), hmac: text('src/quantum/hmac.ts'), mcp: text('src/quantum/mcp.ts') }
+  const texts = { readme: text('README.md'), citation: text('CITATION.cff'), zenodo: text('.zenodo.json'), package: text('package.json'), worker: text('src/worker.ts'), billing: text('src/quantum/processing/toolboxes/billing.ts'), hmac: text('src/quantum/processing/unit/hmac.ts'), mcp: text('src/quantum/processing/mcp.ts') }
   const discovery = getJson('docs/public/discovery.json')
   const ledger = text('docs/public/theorems.ndjson')?.split('\n').filter(Boolean).map((l) => (JSON.parse(l) as { key: string }).key).filter((k) => !k.startsWith('_private.') && !/\.(eq_\d+|match_\d+|_proof(?:_\d+)+|_simp(?:_\d+)+)$/.test(k)) ?? []
   const agents = process.env.QPU_AUDIT_AGENTS ? process.env.QPU_AUDIT_AGENTS.split(',').map((s) => s.trim()).filter(Boolean) : undefined
   const offline = process.env.QPU_OFFLINE === '1'
-  const inputs = (await import('../src/quantum/blocks.ts')).uuidOf(JSON.stringify({ texts, discovery: discovery ? discovery.date : null, ledger, agents, offline }))
+  const inputs = (await import('../src/quantum/processing/unit/blocks.ts')).uuidOf(JSON.stringify({ texts, discovery: discovery ? discovery.date : null, ledger, agents, offline }))
   const outPath = join(ROOT, 'docs', 'public', 'legal.json')
   if (existsSync(outPath)) {
     try {

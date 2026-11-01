@@ -5,7 +5,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
 
 type ClaudeMount = { phase: 'needs-key' | 'mounted' | 'differs' | 'refused' | 'failed'; model?: string; sha256Here?: string; sha256ByClaude?: string | null; stopReason?: string; servedBy?: string; usage?: { input: number; output: number }; note: string }
 

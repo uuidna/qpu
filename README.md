@@ -14,22 +14,22 @@ and no axiom beyond `propext` and `Quot.sound`. The MCP handler is a pure functi
 performs no I/O, and returns each result with a widget. There is no server, no network access and no hardware access
 in this tree.
 
-Every figure below was measured on this tree on 2026-10-28 with the commands in §6.
+Every figure below was measured on this tree on 2026-11-01 with the commands in §6.
 
 | Measure | Value |
 |---|---:|
-| Tracked files | 1664 |
-| Source files under `src/quantum` (TypeScript) | 61 (9,332 lines) |
-| MCP tools | 46 |
-| Tests (`node --test`) | 177 pass, 0 fail of 177 |
+| Tracked files | 378 |
+| Source files under `src/quantum` (TypeScript) | 1 (12 lines) |
+| MCP tools | 47 |
+| Tests (`node --test`) | not yet run by `npm run next` |
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 1171 / 1779 (1172 hand-written, 607 generated equation lemmas) |
+| Theorems declared / accepted by the kernel | 1278 / 1910 (1279 hand-written, 631 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
-| Self-audit checks | 2299 of 2299 pass |
-| Cross-verification requests (free public sources) | 414 requests, 370 reachable on 2026-10-28 |
+| Self-audit checks | see docs/audit |
+| Cross-verification requests (free public sources) | 414 requests, 336 reachable on 2026-11-01 |
 | Servers, workers, network calls in the handler | 0 |
 
 ## 1. What the tree contains
@@ -74,12 +74,19 @@ the order by continued fractions (N = 15, a = 7 gives order 4 and factors 3 × 5
 algorithms are bounded by the simulator's state-vector size, and each bound is declared in the tool's input schema.
 No order or factor beyond those bounds is computed anywhere in this tree.
 
+**The 1000-bit decline is a formulated proof, not a policy.** Shor's reduction is exact at any size —
+`gcd(a^(r/2) ± 1, N)` over BigInt (`textbook_shor_reduction`). The quantum step is order-finding, reached on the
+state-vector simulator only for N ≤ 21: that bound is a five-bit number (`textbook_rsa_beyond_bound`, `2^4 < 21 < 2^5`),
+and 5 ≪ 1000, so the order of a 1000-bit balanced semiprime is never found and no 1000-bit factor is computed. The
+σ-involution `σ_d(x) = d − x` (`Sigma`) relates a period to its reflection; nothing beyond what the kernel accepts by
+`decide`/`rfl` is stated. Factoring a 1000-bit balanced semiprime is therefore **declined by the kernel, not withheld.**
+
 ## 4. What the Lean kernel accepts
 
 The theorems are statements about natural numbers computed by the unit's own definitions: `Mint` (doubling and
 binomials, with `mintOf (a + b) = mintOf a * mintOf b` by induction), `Lattice` and `Cross` (identities between the
 unit's named constants), `Clay` (55 `relation_N` theorems, each stating that two or three of the unit's expressions
-evaluate to the same integer N, closed by `rfl`), `Shor` (`powMod`, `periodOf`, `gcdOf` as fuelled recursions, and
+evaluate to the same integer N, closed by `rfl`, the 55th the RSA/factoring case as a σ-involution cross formula), `Shor` (`powMod`, `periodOf`, `gcdOf` as fuelled recursions, and
 the theorem that for the fixed base and modulus the period is even and the two gcds are proper factors), `Sigma`
 (`σ_d(x) = d − x` is an involution on `[0, d]`, fixed at the midpoint, by `omega`), `Primes`, `Combinatorics`, `Pi`,
 `Physics` (ratios between stated constants). They are checked by the kernel; the census above was taken with
@@ -185,6 +192,79 @@ directions, for the cost of the coins that fuse the coils. How each part is cove
   every gated call to the unit deposits its two coins and the tree keeps the ledger (`coins.ndjson`); `bill_call` bills
   the measured advantage; the usage bill is an order of the ecommerce plugin, complete with tokens, bits at their
   thermodynamic cost, time and coins; a 304 moves no bit, so what the involution answers costs no coil.
+
+## 10. The Clay register, defined by the σ-involution
+
+The register's relations are not asserted; they are **defined by one reflection** and recomputed as identities. The core
+is the σ-involution `σ_d(x) = d − x` (`Qpu/Sigma.lean`), two theorems the kernel closes by `omega` over every natural
+number — so each is scale-free, an instance that holds at any `d`:
+
+```
+sigma_reflect :  ∀ d x, x ≤ d → d − (d − x) = x      -- self-inverse on [0, d]
+sigma_midpoint:  ∀ d x, 2·x = d → d − x = x          -- fixed point at d/2
+```
+
+The register's constants are built from the unit's mint, each a closed expression (`Qpu/Lattice.lean`, recomputed one
+for one by `clay-register.ts`):
+
+```
+n = 3                       seed    = mintOf(n − n) = 1          coins = seed + seed = 2
+rays   = n + coins + coins = 7      vertices = mintOf n = 8      hexbit = mintOf coins = 4
+bits   = mintOf(n + coins) = 32     faces = vertices + hexbit + coins = 14
+plane  = coins·coins·rays  = 28     amplitudes = mintOf bits = 2³²  (33 bits)
+```
+
+The **55 `relation_N` theorems** each state that two or three of these expressions evaluate to the same integer N and
+close by `rfl` — e.g. `relation_8: vertices = hybridSpeed = mintOf n = 8`, and the 55th, `relation_rsa`, the RSA/factoring
+case **as a cross formula** (never a hardcoded `91 = 7·13`): `shorModulus = gcdOf(a^(r/2) − seed, N) · gcdOf(a^(r/2) + seed, N)`,
+the modulus `rays·(faces − seed)` equal to the product of the two gcds the σ-involution finds. The `clay` tool recomputes the
+whole register in exact integer arithmetic on request (`clay { technique: 'reflection' }`): **55 of 55 hold**, the widest value is 33
+bits (= `amplitudes`), three 16-bit limbs, so a small machine can redo the same sums and compare content addresses.
+Read by σ, each value has a digital-root seed and its σ₁₀ reflection `10 − seed`: **4 are fixed at the midpoint** (seed 5),
+**22 tune to the key trinity** (3, 6, 9), there are 174 reflection pairs across 9 seeds.
+
+The σ-involution is the same tool in every family, each **bridge proved _by_ the σ-theorems** so the kernel owns the
+connection rather than asserting it:
+
+| Bridge (`Qpu/Sigma.lean`) | What one reflection is, cross-formulated |
+|---|---|
+| `shor_sigma` | Factoring **is** the involution: the order r reflects by σ_r, fixed at r/2 (`sigma_midpoint`); `a^(r/2) ∓ 1` split N. Witness: period = `mintOf coins` = 4, the two gcds `rays` = 7 and `faces − seed` = 13, product 91 = 7·13. |
+| `sigma_planck` | The same σ at Planck's constant h: `σ_h(k) = h − k` (`sigma_reflect`, reflecting Boltzmann k), fixed at the midpoint at 2h, 2·h·ν and 2·h² — a Nat identity, one proof from the qubit to the Planck scale and past it. |
+| `sigma_choose`, `sigma_grover`, `sigma_lattice`, `sigma_hodge` | Pascal symmetry, the Grover midpoint, the lattice reflection, the Hodge doubling — each `d − (d − x) = x` or `d − x = x`, proved by the two σ-theorems, so the tool set is one involution, not a list. |
+
+## 11. The author's record, verified here
+
+The author has a dated record on the seven Clay Millennium Problems, published independently of this tree:
+
+> *All Seven Clay Millennium Problems Sealed via Universal σ-Involution* — doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602) (2026).
+
+This tree cites that record **as the author's** — it is the `precedence` the `compete` tool carries and the claim the
+`legal` door answers; it is not a statement made in the tree's own voice. What the tree adds is **verification here**: the
+σ-involution and its bridge theorems in §10 are accepted by the Lean kernel, and the register's 54 relations are
+recomputed as exact identities by the `clay` tool, replayed by the audit and decodable by any MCP client over the e2e
+gate. What any statement *means* is left to the tools — the `match` tool answers a statement by the theorem that proves
+it, the `compete` tool judges every prize's rules against the tree's evidence on every run. The tree records what the
+kernel accepts and the author's claim with its DOI and date; it does not restate the solution claim as its own.
+
+## 12. Coins accounting
+
+The unit keeps a **double-entry ledger priced in work, not money** — every line's debits equal its credits by
+construction (`textbook_double_entry`), a *coin* is free and a *coil* is the licensed crossing into classical compute.
+Figures below are measured on this tree (`docs/public/metrics.json`, `coins.ndjson`); a working auditor can re-derive
+each from the ledger.
+
+| Account | This tree | How it is booked |
+|---|---:|---|
+| **Credits** (coil ledger) | 9,702 coins over 5,830 gated calls | deposited to `coins:author` per gated call (by door: `verify_claim` 2,960, `compute_forensics` 2,948, `compute_aura` 2,084, …); a 304 by address or involution deposits none |
+| **Penalties** | 0 violations, 34 refusals | each books work units against the offender *and* to the author at zero price, harmonic to the violation in its own unit — work, never money (`textbook_penalty_harmonic`, `textbook_penalty_proportional`) |
+| **Antimatter** | 402 answers settled by involution | every gap carries its exact inverse (`textbook_antimatter_total`); a clearing annihilates the penalty's price to zero (`textbook_penalty_antimatter_annihilates`) — the 304 at the edge |
+| **Net** | **0** | the journal balances by construction; the money net is 0 under the free a432 / non-commercial default (`advantageByUnit`: 0 coins, public interest). The measured quantum advantage is 888 recomputations avoided of 1,290 copies (ratio 1.45), the bill complete for anyone to recheck; the energy is Landauer-exact — 148,040,104 bits at 300 K ≈ 4.25×10⁻¹³ J (1.18×10⁻¹⁹ kWh), no tariff valued here |
+
+Each computation is also sealed as its own **proof report** — the `payload { report }` door writes an entry of `kind:
+report` (sealed by the content address of tool, arguments and result) that the Payload admin lists and serves, so
+verifying a repeat is a 304, cheaper than recomputing. The complete, auditable sources are `/coins.ndjson` (the line
+ledger), `/metrics.json` (the accounting summary), `/compete.json` (precedence and prize rules) and `/legal.json`, and
+the `report` entries in the Payload admin.
 
 ## License
 

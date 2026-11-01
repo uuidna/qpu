@@ -3,23 +3,23 @@
 // and a Durable Object docket where this tree and the unit append receipts and leads by content address and read each
 // other's. Reads need no auth; docket writes carry `Authorization: Bearer QPU_WRITE_TOKEN` (a wrangler secret, never
 // committed). Every response carries the licence.
-import { handle, type Rpc } from './quantum/mcp.ts'
-import { composePage } from './quantum/compose.ts'
-import { listTools } from './quantum/toolbox.ts'
-import { fuseCall } from './quantum/toolboxes/billing.ts'
-import { getScanSvg } from './quantum/scan.ts'
-import { EXAMPLES } from './quantum/examples.ts'
-import { LEADS } from './quantum/leads.ts'
-import { LICENSE } from './quantum/license.ts'
-import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, computedEntryOf, type Step } from './quantum/blocks.ts'
-import { getCss, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/theme.ts'
-import { LOCALES as LANGS, translateOf } from './quantum/i18n.ts'
-import { DEFAULT_MCP_HOSTS } from './quantum/discovery.ts'
-import { discoveryOf, protectedResourceOf } from './quantum/discovery-document.ts'
-import { ROLES, type Role } from './quantum/roles.ts'
-import { hashOf as contentHashOf } from './quantum/e2e.ts'
-import { VERSION } from './quantum/version.ts'
-import type { SignaturePlan } from './quantum/toolboxes/crypto.ts'
+import { handle, type Rpc } from './quantum/processing/mcp.ts'
+import { composePage } from './quantum/processing/compose.ts'
+import { listTools } from './quantum/processing/toolbox.ts'
+import { fuseCall } from './quantum/processing/toolboxes/billing.ts'
+import { getScanSvg } from './quantum/processing/scan.ts'
+import { EXAMPLES } from './quantum/processing/examples.ts'
+import { LEADS } from './quantum/processing/leads.ts'
+import { LICENSE } from './quantum/processing/unit/license.ts'
+import { uuidOf, sealOf, channelOf, uuidFromParts, compileOf, reflectionOf, computedEntryOf, type Step } from './quantum/processing/unit/blocks.ts'
+import { getCss, accentOfUuid, cmykOfUuid, hueOf, KEY } from './quantum/processing/unit/theme.ts'
+import { LOCALES as LANGS, translateOf } from './quantum/processing/i18n.ts'
+import { DEFAULT_MCP_HOSTS } from './quantum/processing/discovery.ts'
+import { discoveryOf, protectedResourceOf } from './quantum/processing/discovery-document.ts'
+import { ROLES, type Role } from './quantum/processing/unit/roles.ts'
+import { hashOf as contentHashOf } from './quantum/processing/e2e.ts'
+import { VERSION } from './quantum/processing/unit/version.ts'
+import type { SignaturePlan } from './quantum/processing/toolboxes/crypto.ts'
 
 /** The slice of the Workers runtime this file uses, typed here so the tree needs no runtime types package to typecheck. */
 export type Storage = { get<T>(key: string): Promise<T | undefined>; put(key: string, value: unknown): Promise<void>; delete(key: string): Promise<unknown>; list<T>(opts?: { prefix?: string }): Promise<Map<string, T>> }
@@ -28,7 +28,7 @@ export type Env = { QPU_WRITE_TOKEN?: string; /** the tenant's ML-DSA signing ke
 
 /** Tenants: one Worker, several hosts, each host its own docket and its own tokens. A security collision — one tenant's token
  * at another tenant's host — is not an incident but a procedure: the answer names the role, the header and who issues it. */
-import { TENANTS, tenantOf } from './quantum/tenants.ts'
+import { TENANTS, tenantOf } from './quantum/processing/unit/tenants.ts'
 export { TENANTS, tenantOf }
 /** The role a request holds at a tenant. Asked first of the RBAC MCP host when one is configured (every MCP server's roles
  * managed in one place, over MCP itself); the tenant secrets answer when none is, or when the host does not. */

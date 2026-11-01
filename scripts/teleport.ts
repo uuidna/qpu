@@ -5,8 +5,8 @@
 // its balancer; reading and writing files is the client's. A block teleported is a block not computed: the receipt counts.
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, statSync, renameSync, watch } from 'node:fs'
 import { join } from 'node:path'
-import { balancerLoad, balancerSnapshot } from '../src/quantum/mcp.ts'
-import { uuidOf } from '../src/quantum/blocks.ts'
+import { balancerLoad, balancerSnapshot } from '../src/quantum/processing/mcp.ts'
+import { uuidOf } from '../src/quantum/processing/unit/blocks.ts'
 
 // the folder every step publishes into, made once: every step imports this module first
 mkdirSync(join(process.cwd(), 'docs', 'public'), { recursive: true })

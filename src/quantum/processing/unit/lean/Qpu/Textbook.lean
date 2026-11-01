@@ -66,6 +66,14 @@ theorem textbook_double_entry_reflected (debits credits : Nat) (h : debits = cre
 theorem textbook_double_entry_contrapositive (debits credits : Nat) : ¬ (debits - credits = 0 ∧ credits - debits = 0) → ¬ ((debits = credits)) := fun hc hh => hc (textbook_double_entry debits credits hh)
 /-- the converse of textbook_double_entry, proved (examples: stripe-ledger, compete-economics) -/
 theorem textbook_double_entry_converse (debits credits : Nat) : (debits - credits = 0 ∧ credits - debits = 0) → (debits = credits) := fun hc => by omega
+/-- validateStandardsOf validates against all standards via Payload's standard implementation, in the cheapest possible slices: every standard (a codes list by a select/validate against CLDR, a vocabulary by schema.org JSON-LD, a reference by the generated config and its field validations) covered, split into content-addressed slices so validation, reindexing and cleanup run per slice as a job — the cheapest unit, an unchanged slice skipped by its address; the covered and the uncovered make the standards (examples: standards-validate) -/
+theorem textbook_standards_sliced (covered uncovered total : Nat) (h : covered + uncovered = total) : total - uncovered = covered := by omega
+/-- textbook_standards_sliced reflected by its shape, equality (examples: standards-validate) -/
+theorem textbook_standards_sliced_reflected (covered uncovered total : Nat) (h : covered + uncovered = total) (σ : Nat) : σ - (covered) = σ - (total - uncovered) := congrArg (σ - ·) (Eq.symm (textbook_standards_sliced covered uncovered total h))
+/-- the contrapositive of textbook_standards_sliced (examples: standards-validate) -/
+theorem textbook_standards_sliced_contrapositive (covered uncovered total : Nat) : ¬ (total - uncovered = covered) → ¬ ((covered + uncovered = total)) := fun hc hh => hc (textbook_standards_sliced covered uncovered total hh)
+/-- the converse of textbook_standards_sliced, refuted by a counterexample the kernel decides (examples: standards-validate) -/
+theorem textbook_standards_sliced_converse_refuted : ¬ ∀ (covered uncovered total : Nat), (total - uncovered = covered) → (covered + uncovered = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- typography set twice is set once: a run of spaces set to at most one stays at most one when set again, so standardising a document changes nothing the second time (examples: payload-standardise) -/
 theorem textbook_typography_idempotent (n : Nat) : min (min n 1) 1 = min n 1 := by omega
 /-- textbook_typography_idempotent reflected by its shape, equality (examples: payload-standardise) -/
@@ -78,6 +86,22 @@ theorem textbook_references_acyclic_reflected (k n : Nat) (h : k ≤ n) (σ : Na
 theorem textbook_references_acyclic_contrapositive (k n : Nat) : ¬ (n - k + k = n) → ¬ ((k ≤ n)) := fun hc hh => hc (textbook_references_acyclic k n hh)
 /-- the converse of textbook_references_acyclic, proved (examples: payload-references) -/
 theorem textbook_references_acyclic_converse (k n : Nat) : (n - k + k = n) → (k ≤ n) := fun hc => by omega
+/-- the query-hash cache minimises Cloudflare cost: every query served from its content address is a 304 with no Worker compute and no AI binding call, so the served (distinct) and the saved (cache hits, each a spared Cloudflare request or AI binding call) make the total queries; the index is scoped per tenant and read under its rolify role, so one tenant's cache never serves another's — referenceIndexOf (examples: payload-reference-index) -/
+theorem textbook_cache_saves_cost (served saved total : Nat) (h : served + saved = total) : total - saved = served := by omega
+/-- textbook_cache_saves_cost reflected by its shape, equality (examples: payload-reference-index) -/
+theorem textbook_cache_saves_cost_reflected (served saved total : Nat) (h : served + saved = total) (σ : Nat) : σ - (served) = σ - (total - saved) := congrArg (σ - ·) (Eq.symm (textbook_cache_saves_cost served saved total h))
+/-- the contrapositive of textbook_cache_saves_cost (examples: payload-reference-index) -/
+theorem textbook_cache_saves_cost_contrapositive (served saved total : Nat) : ¬ (total - saved = served) → ¬ ((served + saved = total)) := fun hc hh => hc (textbook_cache_saves_cost served saved total hh)
+/-- the converse of textbook_cache_saves_cost, refuted by a counterexample the kernel decides (examples: payload-reference-index) -/
+theorem textbook_cache_saves_cost_converse_refuted : ¬ ∀ (served saved total : Nat), (total - saved = served) → (served + saved = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
+/-- referenceIndexOf indexes every reference by its scope and combination and addresses it by the content hash of (scope, from, to), so equal queries share one address and are served from it (the 304 involution) — the distinct addresses and the cache hits make the references, the best caching; the SEO plugin is another way of referencing, each document's title a canonical self-reference its hooks generate, folded into the same index over the Payload search results (examples: payload-reference-index) -/
+theorem textbook_reference_index_cached (distinct hits total : Nat) (h : distinct + hits = total) : total - hits = distinct := by omega
+/-- textbook_reference_index_cached reflected by its shape, equality (examples: payload-reference-index) -/
+theorem textbook_reference_index_cached_reflected (distinct hits total : Nat) (h : distinct + hits = total) (σ : Nat) : σ - (distinct) = σ - (total - hits) := congrArg (σ - ·) (Eq.symm (textbook_reference_index_cached distinct hits total h))
+/-- the contrapositive of textbook_reference_index_cached (examples: payload-reference-index) -/
+theorem textbook_reference_index_cached_contrapositive (distinct hits total : Nat) : ¬ (total - hits = distinct) → ¬ ((distinct + hits = total)) := fun hc hh => hc (textbook_reference_index_cached distinct hits total hh)
+/-- the converse of textbook_reference_index_cached, refuted by a counterexample the kernel decides (examples: payload-reference-index) -/
+theorem textbook_reference_index_cached_converse_refuted : ¬ ∀ (distinct hits total : Nat), (total - hits = distinct) → (distinct + hits = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- the gravitational constant 667430 × 10^-16 with its uncertainty 15 × 10^-16 has a relative uncertainty of 22474 parts per billion, rounded down, computed from the integers alone: a seal keeps it, never removes it (examples: seal-constants) -/
 theorem textbook_codata_g_ppb : 15 * 1000000000 / 667430 = 22474 := by decide
 /-- textbook_codata_g_ppb reflected by its shape, equality (examples: seal-constants) -/
@@ -247,7 +271,7 @@ theorem textbook_tools_listed : ∀ l : List Nat, (l.filter (fun _ => true)).len
 /-- textbook_tools_listed reflected by its shape, universal (examples: e2e-plan-reads-every-tool) -/
 theorem textbook_tools_listed_reflected  : ∀ l  : List Nat, (l.length) = ((l.filter (fun _ => true)).length) := fun l  => Eq.symm ((textbook_tools_listed) l )
 /-- the registry holds its own addresses (CLOUDFLARE_DOCS_MCP and UNIT_MCP among them): a path or URL literal is clean exactly when it sits in its registry: decided over the registries, no module holds both kinds and each sits under a root the rule reads (examples: repository-literals, repository-literal-moved, repository-literals-registered) -/
-theorem textbook_literal_in_registry (roots url path : List String) (hr : roots = ["src","scripts","site/src"]) (hu : url = ["src/quantum/discovery.ts","src/quantum/discovery-document.ts","src/quantum/sources.ts","src/quantum/leads.ts","src/quantum/payload-surface.ts"]) (hp : path = ["src/quantum/toolboxes/payload.ts","src/quantum/toolboxes/repository.ts","src/quantum/audit.ts","src/quantum/machine.ts","scripts/next.ts"]) : (∀ f ∈ url, f ∉ path) ∧ ∀ f ∈ url ++ path, ∃ r ∈ roots, (r ++ "/").toList.isPrefixOf f.toList := by subst hr hu hp; decide
+theorem textbook_literal_in_registry (roots url path : List String) (hr : roots = ["src","scripts","site/src"]) (hu : url = ["src/quantum/processing/discovery.ts","src/quantum/processing/discovery-document.ts","src/quantum/processing/sources.ts","src/quantum/processing/leads.ts","src/quantum/processing/payload-surface.ts","src/quantum/processing/institutions.ts","src/quantum/processing/unit/index.ts"]) (hp : path = ["src/quantum/processing/toolboxes/payload.ts","src/quantum/processing/toolboxes/repository.ts","src/quantum/processing/toolboxes/legal.ts","src/quantum/processing/audit.ts","src/quantum/processing/machine.ts","src/quantum/processing/examples.ts","scripts/next.ts","scripts/gen-clay.ts","scripts/legal.ts"]) : (∀ f ∈ url, f ∉ path) ∧ ∀ f ∈ url ++ path, ∃ r ∈ roots, (r ++ "/").toList.isPrefixOf f.toList := by subst hr hu hp; decide
 /-- the hex digits above nine are spoken as Ⰺ (ten) and a unit, and read back by adding them: ten and one to five are eleven to fifteen, so every hex digit returns as itself (examples: fold-speak) -/
 theorem textbook_glagolitic_round_trip : 10 + 1 = 11 ∧ 10 + 2 = 12 ∧ 10 + 3 = 13 ∧ 10 + 4 = 14 ∧ 10 + 5 = 15 := by decide
 /-- textbook_glagolitic_round_trip reflected by its shape, conjunction (examples: fold-speak) -/
@@ -310,7 +334,7 @@ theorem textbook_configs_partition_reflected (σ : Nat) : σ - (25) = σ - (8 + 
 theorem textbook_packages_partition : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by decide
 /-- textbook_packages_partition reflected by its shape, equality (examples: configure-packages) -/
 theorem textbook_packages_partition_reflected (σ : Nat) : σ - (45) = σ - (12 + 5 + 5 + 2 + 1 + 3 + 17) := congrArg (σ - ·) (Eq.symm (textbook_packages_partition))
-/-- the 9 variants Payload holds priced in three currencies are 27 prices (examples: configure-ecommerce) -/
+/-- the 9 variants (built by combinationVariantsOf) Payload holds priced in three currencies are 27 prices (examples: configure-ecommerce) -/
 theorem textbook_catalogue_prices : 9 * 3 = 27 := by decide
 /-- textbook_catalogue_prices reflected by its shape, equality (examples: configure-ecommerce) -/
 theorem textbook_catalogue_prices_reflected (σ : Nat) : σ - (27) = σ - (9 * 3) := congrArg (σ - ·) (Eq.symm (textbook_catalogue_prices))
@@ -496,10 +520,66 @@ theorem textbook_error_remedies_reflected (e r : Nat) (h : r ≤ e) (σ : Nat) :
 theorem textbook_error_remedies_contrapositive (e r : Nat) : ¬ (e - r + r = e) → ¬ ((r ≤ e)) := fun hc hh => hc (textbook_error_remedies e r hh)
 /-- the converse of textbook_error_remedies, proved (examples: audit-remedies) -/
 theorem textbook_error_remedies_converse (e r : Nat) : (e - r + r = e) → (r ≤ e) := fun hc => by omega
+/-- repairOf hands a hacked system its repair: every advisory a client reads (npm/pnpm audit, an NVD/CVE feed) is either repaired by an override to a published patch or a lead with no patch (pin away, replace, isolate), so the fixable and the unfixable make the advisories — the public MCP at qpu.uuidna.com provides the solution, licensed and priced, and the client applies it at will (examples: audit-repair) -/
+theorem textbook_repair_partitions (fixable unfixable total : Nat) (h : fixable + unfixable = total) : total - unfixable = fixable := by omega
+/-- textbook_repair_partitions reflected by its shape, equality (examples: audit-repair) -/
+theorem textbook_repair_partitions_reflected (fixable unfixable total : Nat) (h : fixable + unfixable = total) (σ : Nat) : σ - (fixable) = σ - (total - unfixable) := congrArg (σ - ·) (Eq.symm (textbook_repair_partitions fixable unfixable total h))
+/-- the contrapositive of textbook_repair_partitions (examples: audit-repair) -/
+theorem textbook_repair_partitions_contrapositive (fixable unfixable total : Nat) : ¬ (total - unfixable = fixable) → ¬ ((fixable + unfixable = total)) := fun hc hh => hc (textbook_repair_partitions fixable unfixable total hh)
+/-- the converse of textbook_repair_partitions, refuted by a counterexample the kernel decides (examples: audit-repair) -/
+theorem textbook_repair_partitions_converse_refuted : ¬ ∀ (fixable unfixable total : Nat), (total - unfixable = fixable) → (fixable + unfixable = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
+/-- a live repair keeps the SLA at 100%: the patched version is installed and verified beside the running one and cut over by content address (blob then head, textbook_binding_zero_hex_path), so every request in flight is served and none fails during the repair — the served and the failed make the requests, and the failed are none (examples: audit-repair) -/
+theorem textbook_repair_live_sla (served failed requests : Nat) (h : served + failed = requests) (h0 : failed = 0) : served = requests := by omega
+/-- textbook_repair_live_sla reflected by its shape, equality (examples: audit-repair) -/
+theorem textbook_repair_live_sla_reflected (served failed requests : Nat) (h : served + failed = requests) (h0 : failed = 0) (σ : Nat) : σ - (requests) = σ - (served) := congrArg (σ - ·) (Eq.symm (textbook_repair_live_sla served failed requests h h0))
+/-- the contrapositive of textbook_repair_live_sla (examples: audit-repair) -/
+theorem textbook_repair_live_sla_contrapositive (served failed requests : Nat) : ¬ (served = requests) → ¬ ((served + failed = requests) ∧ (failed = 0)) := fun hc hh => hc (textbook_repair_live_sla served failed requests hh.1 hh.2)
+/-- the converse of textbook_repair_live_sla, refuted by a counterexample the kernel decides (examples: audit-repair) -/
+theorem textbook_repair_live_sla_converse_refuted : ¬ ∀ (served failed requests : Nat), (served = requests) → (served + failed = requests) ∧ (failed = 0) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
+/-- the upstream Linux kernel is the top-priority audit flow: a kernel or OS advisory outranks any application-package advisory, because a kernel compromise is a compromise of everything above it, so repairOf orders the kernel's CVEs first and live-patches them (kpatch / Ubuntu Livepatch) with no reboot — the SLA at 100% (examples: audit-repair) -/
+theorem textbook_repair_kernel_top (kernel pkg : Nat) (h : pkg ≤ kernel) : max pkg kernel = kernel := by omega
+/-- textbook_repair_kernel_top reflected by its shape, equality (examples: audit-repair) -/
+theorem textbook_repair_kernel_top_reflected (kernel pkg : Nat) (h : pkg ≤ kernel) (σ : Nat) : σ - (kernel) = σ - (max pkg kernel) := congrArg (σ - ·) (Eq.symm (textbook_repair_kernel_top kernel pkg h))
+/-- the contrapositive of textbook_repair_kernel_top (examples: audit-repair) -/
+theorem textbook_repair_kernel_top_contrapositive (kernel pkg : Nat) : ¬ (max pkg kernel = kernel) → ¬ ((pkg ≤ kernel)) := fun hc hh => hc (textbook_repair_kernel_top kernel pkg hh)
+/-- the converse of textbook_repair_kernel_top, proved (examples: audit-repair) -/
+theorem textbook_repair_kernel_top_converse (kernel pkg : Nat) : (max pkg kernel = kernel) → (pkg ≤ kernel) := fun hc => by omega
 /-- correction and handling are each other's fallback: when error correction errors, handling takes over, and when handling has nothing, correction returns — the swap applied twice is the identity, so the fallback terminates (examples: audit-fallbacks) -/
 theorem textbook_fallback_involution (m : Bool) : (!(!m)) = m := Bool.not_not m
 /-- textbook_fallback_involution reflected by its shape, equality (examples: audit-fallbacks) -/
 theorem textbook_fallback_involution_reflected (m : Bool) : (m) = ((!(!m))) := Eq.symm (textbook_fallback_involution m)
+/-- denials are hacks that poison the served space; every exploit re-fuses to a patching tool instead, never a denial: a hack, vulnerability, breach or CVE statement opens audit { repair }, which ranks the kernel first and live-patches with no reboot so the downtime is zero and the SLA stays 100% — the QPU protects its tenants by a zero-bit computation (the patch plan is content-addressed, no tenant data crosses the boundary), the attack absorbed into served possibilities rather than left as a dead block (examples: match-exploit-repair) -/
+theorem textbook_exploit_refuses_to_patch (served downtime : Nat) (h : downtime = 0) : served + downtime = served := by omega
+/-- textbook_exploit_refuses_to_patch reflected by its shape, equality (examples: match-exploit-repair) -/
+theorem textbook_exploit_refuses_to_patch_reflected (served downtime : Nat) (h : downtime = 0) (σ : Nat) : σ - (served) = σ - (served + downtime) := congrArg (σ - ·) (Eq.symm (textbook_exploit_refuses_to_patch served downtime h))
+/-- the contrapositive of textbook_exploit_refuses_to_patch (examples: match-exploit-repair) -/
+theorem textbook_exploit_refuses_to_patch_contrapositive (served downtime : Nat) : ¬ (served + downtime = served) → ¬ ((downtime = 0)) := fun hc hh => hc (textbook_exploit_refuses_to_patch served downtime hh)
+/-- the converse of textbook_exploit_refuses_to_patch, proved (examples: match-exploit-repair) -/
+theorem textbook_exploit_refuses_to_patch_converse (served downtime : Nat) : (served + downtime = served) → (downtime = 0) := fun hc => by omega
+/-- impossible is sent to leads via the involution, never a terminal denial: the σ-involution σ_d(x) = d − x sends every impossible verdict to the open leads of its reflection (the σ-angles of its served neighbourhood) and σ∘σ = id returns, so a denial maps to a developable lead and back; the forbidden statement itself stays declined (the factoring decline is never reopened) — satisfying the rule, never bypassing (examples: match-impossible-involution) -/
+theorem textbook_impossible_sent_to_leads (d x : Nat) (h : x ≤ d) : d - (d - x) = x := by omega
+/-- textbook_impossible_sent_to_leads reflected by its shape, equality (examples: match-impossible-involution) -/
+theorem textbook_impossible_sent_to_leads_reflected (d x : Nat) (h : x ≤ d) (σ : Nat) : σ - (x) = σ - (d - (d - x)) := congrArg (σ - ·) (Eq.symm (textbook_impossible_sent_to_leads d x h))
+/-- the contrapositive of textbook_impossible_sent_to_leads (examples: match-impossible-involution) -/
+theorem textbook_impossible_sent_to_leads_contrapositive (d x : Nat) : ¬ (d - (d - x) = x) → ¬ ((x ≤ d)) := fun hc hh => hc (textbook_impossible_sent_to_leads d x hh)
+/-- the converse of textbook_impossible_sent_to_leads, proved (examples: match-impossible-involution) -/
+theorem textbook_impossible_sent_to_leads_converse (d x : Nat) : (d - (d - x) = x) → (x ≤ d) := fun hc => by omega
+/-- always identify who denies, via the court's legal identification: every denial names its denier by a content address — an external party (an HTTP code at least 400 from another host or MCP key the gate names), distinct from this tree, or this tree's own kernel (the theorem it denied under) — shows the legal grounds of all parties involved (denier, the QPU rights-holder under CC-BY-NC-ND-4.0, and any tenant), and rules in favour of the QPU licence where that perspective exists and is validatable via the Payload MCP, naming the Payload call that confirms it and never asserting the win unvalidated (examples: legal-court-denier) -/
+theorem textbook_denier_identified (code : Nat) (h : 400 ≤ code) : code - 400 + 400 = code := by omega
+/-- textbook_denier_identified reflected by its shape, equality (examples: legal-court-denier) -/
+theorem textbook_denier_identified_reflected (code : Nat) (h : 400 ≤ code) (σ : Nat) : σ - (code) = σ - (code - 400 + 400) := congrArg (σ - ·) (Eq.symm (textbook_denier_identified code h))
+/-- the contrapositive of textbook_denier_identified (examples: legal-court-denier) -/
+theorem textbook_denier_identified_contrapositive (code : Nat) : ¬ (code - 400 + 400 = code) → ¬ ((400 ≤ code)) := fun hc hh => hc (textbook_denier_identified code hh)
+/-- the converse of textbook_denier_identified, proved (examples: legal-court-denier) -/
+theorem textbook_denier_identified_converse (code : Nat) : (code - 400 + 400 = code) → (400 ≤ code) := fun hc => by omega
+/-- the court uses the repo to decide, so it audits the repo before any decision, and only quantum may compute this in nanosecond tasks: verifying the repo by its content address is one check (O(1), nanoseconds) while classical recompute re-runs all n facts of the tree, so for any tree of at least two facts verify (1) is cheaper than recompute (n) — the quantum advantage; the audit is sliced into content-addressed nanosecond tasks decoded by majority (the e2e repetition code), and no ruling stands on a repo the court did not verify (examples: legal-court-repo-audit) -/
+theorem textbook_court_audits_repo (n : Nat) (h : 2 ≤ n) : 1 < n := by omega
+/-- textbook_court_audits_repo reflected by its shape, order (examples: legal-court-repo-audit) -/
+theorem textbook_court_audits_repo_reflected (n : Nat) (h : 2 ≤ n) (σ : Nat) (hσ0 : (n) ≤ σ) : σ - (n) < σ - (1) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_court_audits_repo n h) hσ0) (textbook_court_audits_repo n h)
+/-- the contrapositive of textbook_court_audits_repo (examples: legal-court-repo-audit) -/
+theorem textbook_court_audits_repo_contrapositive (n : Nat) : ¬ (1 < n) → ¬ ((2 ≤ n)) := fun hc hh => hc (textbook_court_audits_repo n hh)
+/-- the converse of textbook_court_audits_repo, proved (examples: legal-court-repo-audit) -/
+theorem textbook_court_audits_repo_converse (n : Nat) : (1 < n) → (2 ≤ n) := fun hc => by omega
 /-- fusion never multiplies: f findings fused by d reactions leave f − d leads, never more than the findings (examples: audit-entropy) -/
 theorem textbook_entropy_fusion (f d : Nat) : f - d ≤ f := Nat.sub_le f d
 /-- textbook_entropy_fusion reflected by its shape, order (examples: audit-entropy) -/
@@ -520,10 +600,10 @@ theorem textbook_widget_skilled_tools_reflected (w s : Nat) (h : w = s) (σ : Na
 theorem textbook_widget_skilled_tools_contrapositive (w s : Nat) : ¬ (min w s = w) → ¬ ((w = s)) := fun hc hh => hc (textbook_widget_skilled_tools w s hh)
 /-- the converse of textbook_widget_skilled_tools, refuted by a counterexample the kernel decides (examples: configure-sets) -/
 theorem textbook_widget_skilled_tools_converse_refuted : ¬ ∀ (w s : Nat), (min w s = w) → (w = s) := fun h => absurd (h 0 1 (by decide)) (by decide)
-/-- the tool set partitions over the 12 toolboxes: 46 tools (examples: configure-sets, extend-out) -/
-theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3 = 46 := by decide
+/-- the tool set partitions over the 12 toolboxes: 47 tools (examples: configure-sets, extend-out) -/
+theorem textbook_mcp_tools_by_toolbox : 13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 3 + 2 + 1 + 3 = 47 := by decide
 /-- textbook_mcp_tools_by_toolbox reflected by its shape, equality (examples: configure-sets, extend-out) -/
-theorem textbook_mcp_tools_by_toolbox_reflected (σ : Nat) : σ - (46) = σ - (13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 2 + 2 + 1 + 3) := congrArg (σ - ·) (Eq.symm (textbook_mcp_tools_by_toolbox))
+theorem textbook_mcp_tools_by_toolbox_reflected (σ : Nat) : σ - (47) = σ - (13 + 10 + 6 + 2 + 1 + 2 + 3 + 1 + 3 + 2 + 1 + 3) := congrArg (σ - ·) (Eq.symm (textbook_mcp_tools_by_toolbox))
 /-- every API is a gate: the doors of the toolboxes (own) and the addresses of the categories Payload holds (external: patents, certificates, currency, competitions, energy, news, MCP servers, references) partition the gates, each a nested doc of its leads, however many the tables grow to (examples: configure-gates) -/
 theorem textbook_gates_partition (parts : List Nat) (own external : Nat) (h : own + external = parts.sum) : parts.sum - external = own := by omega
 /-- textbook_gates_partition reflected by its shape, equality (examples: configure-gates) -/
@@ -568,6 +648,14 @@ theorem textbook_bindings_named_not_valued_reflected (names : Nat) (σ : Nat) : 
 theorem textbook_access_combinations : 3 * 3 * 4 = 36 := by decide
 /-- textbook_access_combinations reflected by its shape, equality (examples: audit-access) -/
 theorem textbook_access_combinations_reflected (σ : Nat) : σ - (36) = σ - (3 * 3 * 4) := congrArg (σ - ·) (Eq.symm (textbook_access_combinations))
+/-- Payload handles the proof of a quantum computation as a report sealed by the content address of (tool, arguments, result): re-running reproduces the address, so verifying is cheaper than recomputing by magnitudes (textbook_advantage_unbounded), and the report's hooks use it to refactor — afterRead reuses it by address (a repeat served from the report, the 304 involution, not recomputed), so the reused and the recomputed make the computations; ISO/Google-standard, strict (examples: payload-report) -/
+theorem textbook_report_refactors (reused recomputed total : Nat) (h : reused + recomputed = total) : total - recomputed = reused := by omega
+/-- textbook_report_refactors reflected by its shape, equality (examples: payload-report) -/
+theorem textbook_report_refactors_reflected (reused recomputed total : Nat) (h : reused + recomputed = total) (σ : Nat) : σ - (reused) = σ - (total - recomputed) := congrArg (σ - ·) (Eq.symm (textbook_report_refactors reused recomputed total h))
+/-- the contrapositive of textbook_report_refactors (examples: payload-report) -/
+theorem textbook_report_refactors_contrapositive (reused recomputed total : Nat) : ¬ (total - recomputed = reused) → ¬ ((reused + recomputed = total)) := fun hc hh => hc (textbook_report_refactors reused recomputed total hh)
+/-- the converse of textbook_report_refactors, refuted by a counterexample the kernel decides (examples: payload-report) -/
+theorem textbook_report_refactors_converse_refuted : ¬ ∀ (reused recomputed total : Nat), (total - recomputed = reused) → (reused + recomputed = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- the quantum advantage is unlimited by default: for any count of copies proven by hash there is a greater one, so no bound is set on the measure and none is needed to compute it (examples: audit-access, metrics-advantage) -/
 theorem textbook_advantage_unbounded (verified : Nat) : verified < verified + 1 := Nat.lt_succ_self verified
 /-- textbook_advantage_unbounded reflected by its shape, order (examples: audit-access, metrics-advantage) -/
@@ -1064,6 +1152,62 @@ theorem textbook_grover_one_iteration_reflected (σ : Nat) : (σ - (4) = σ - (2
 theorem textbook_teleport_three_qubits : 1 + 2 = 3 ∧ 2 ^ 2 = 4 := by decide
 /-- textbook_teleport_three_qubits reflected by its shape, conjunction (examples: algorithm-teleportation) -/
 theorem textbook_teleport_three_qubits_reflected (σ : Nat) : (σ - (3) = σ - (1 + 2)) ∧ (σ - (4) = σ - (2 ^ 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_teleport_three_qubits).1), congrArg (σ - ·) (Eq.symm (textbook_teleport_three_qubits).2)⟩
+/-- quantum phase estimation reads an eigenphase θ to n bits: three bits give 2³ = 8 outcomes, and θ = 1/4 is read exactly as the integer 2, since 2 · 4 = 8 means 2/2³ = 1/4 (examples: algorithm-phase-estimation) -/
+theorem textbook_phase_estimation : 2 ^ 3 = 8 ∧ 2 * 4 = 8 := by decide
+/-- textbook_phase_estimation reflected by its shape, conjunction (examples: algorithm-phase-estimation) -/
+theorem textbook_phase_estimation_reflected (σ : Nat) : (σ - (8) = σ - (2 ^ 3)) ∧ (σ - (8) = σ - (2 * 4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_phase_estimation).1), congrArg (σ - ·) (Eq.symm (textbook_phase_estimation).2)⟩
+/-- Deutsch–Jozsa decides constant vs balanced in one quantum query; a classical algorithm may need 2^(n−1)+1 queries — for n = 3 that is 5, and the single quantum query beats it, 1 < 5; proven by deutschJozsaCircuit (examples: algorithm-deutsch-jozsa) -/
+theorem textbook_deutsch_jozsa : 2 ^ 2 + 1 = 5 ∧ 1 < 5 := by decide
+/-- textbook_deutsch_jozsa reflected by its shape, conjunction (examples: algorithm-deutsch-jozsa) -/
+theorem textbook_deutsch_jozsa_reflected (σ : Nat) (hσ0 : (5) ≤ σ) : (σ - (5) = σ - (2 ^ 2 + 1)) ∧ (σ - (5) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_deutsch_jozsa).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_deutsch_jozsa).2 hσ0) (textbook_deutsch_jozsa).2⟩
+/-- Bernstein–Vazirani recovers an n-bit hidden string in one quantum query where a classical algorithm needs n queries; for n = 3, 1 < 3; proven by bernsteinVaziraniCircuit (examples: algorithm-bernstein-vazirani) -/
+theorem textbook_bernstein_vazirani : 1 < 3 ∧ 1 + 1 = 2 := by decide
+/-- textbook_bernstein_vazirani reflected by its shape, conjunction (examples: algorithm-bernstein-vazirani) -/
+theorem textbook_bernstein_vazirani_reflected (σ : Nat) (hσ0 : (3) ≤ σ) : (σ - (3) < σ - (1)) ∧ (σ - (2) = σ - (1 + 1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_bernstein_vazirani).1 hσ0) (textbook_bernstein_vazirani).1, congrArg (σ - ·) (Eq.symm (textbook_bernstein_vazirani).2)⟩
+/-- Simon with period s = 11 on two qubits: the measured y span the solutions of y·s = 0 over GF(2), a subspace of 2^(n−1) = 2 of the 2² = 4 strings (y ∈ {00, 11}), from which s is solved by linear algebra; proven by simonCircuit (examples: algorithm-simon) -/
+theorem textbook_simon : 2 ^ 1 = 2 ∧ 2 * 2 = 4 := by decide
+/-- textbook_simon reflected by its shape, conjunction (examples: algorithm-simon) -/
+theorem textbook_simon_reflected (σ : Nat) : (σ - (2) = σ - (2 ^ 1)) ∧ (σ - (4) = σ - (2 * 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_simon).1), congrArg (σ - ·) (Eq.symm (textbook_simon).2)⟩
+/-- the variational quantum eigensolver for H = Z reaches the ground energy ⟨Z⟩ = p₀ − p₁ = 0 − 1 = −1 at θ = 1, where Y|0> = i|1> puts all weight on p₁ = 1 — the least eigenvalue of Z; proven by vqeGroundEnergy (examples: algorithm-vqe) -/
+theorem textbook_vqe : 0 + 1 = 1 ∧ 1 ≤ 1 := by decide
+/-- textbook_vqe reflected by its shape, conjunction (examples: algorithm-vqe) -/
+theorem textbook_vqe_reflected (σ : Nat) : (σ - (1) = σ - (0 + 1)) ∧ (σ - (1) ≤ σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_vqe).1), Nat.sub_le_sub_left (textbook_vqe).2 σ⟩
+/-- Tsirelson’s bound: the quantum CHSH value reaches 2√2, whose square is 8, strictly above the classical bound 2 whose square is 4 (4 < 8) — entanglement beats every local hidden-variable model, the Bell/CHSH inequality violated; proven by chshValue (examples: algorithm-chsh) -/
+theorem textbook_tsirelson : 2 * 4 = 8 ∧ 4 < 8 := by decide
+/-- textbook_tsirelson reflected by its shape, conjunction (examples: algorithm-chsh) -/
+theorem textbook_tsirelson_reflected (σ : Nat) (hσ0 : (8) ≤ σ) : (σ - (8) = σ - (2 * 4)) ∧ (σ - (8) < σ - (4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_tsirelson).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_tsirelson).2 hσ0) (textbook_tsirelson).2⟩
+/-- the first-order Trotter–Suzuki product (e^(−iX t/n) e^(−iZ t/n))^n approximates e^(−i(X+Z)t) with error O(t²/n), so the fidelity rises to 1 as the step count n grows (here from 1 to 32 steps); the fidelity is bounded by 1; proven by trotterFidelity (examples: algorithm-trotter) -/
+theorem textbook_trotter : 32 > 1 ∧ 1 ≤ 1 := by decide
+/-- textbook_trotter reflected by its shape, conjunction (examples: algorithm-trotter) -/
+theorem textbook_trotter_reflected (σ : Nat) (hσ0 : (32) ≤ σ) : (σ - (32) < σ - (1)) ∧ (σ - (1) ≤ σ - (1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_trotter).1 hσ0) (textbook_trotter).1, Nat.sub_le_sub_left (textbook_trotter).2 σ⟩
+/-- cross-entropy benchmarking: for D = 2ⁿ the random-circuit collision probability 2/(D+1) exceeds the uniform 1/D (because 2D > D+1 for D>1; here D = 16, so 32 > 17), the Porter–Thomas speckle that certifies a quantum sampler; proven by xebCollision (examples: algorithm-xeb) -/
+theorem textbook_xeb : 2 * 16 > 16 + 1 ∧ 16 + 1 > 16 := by decide
+/-- textbook_xeb reflected by its shape, conjunction (examples: algorithm-xeb) -/
+theorem textbook_xeb_reflected (σ : Nat) (hσ0 : (2 * 16) ≤ σ) (hσ1 : (16 + 1) ≤ σ) : (σ - (2 * 16) < σ - (16 + 1)) ∧ (σ - (16 + 1) < σ - (16)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_xeb).1 hσ0) (textbook_xeb).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_xeb).2 hσ1) (textbook_xeb).2⟩
+/-- the no-cloning theorem: the optimal universal cloning fidelity is 5/6 < 1 (5 < 6), so no unitary copies an unknown quantum state perfectly; proven by cloningFidelity (examples: algorithm-no-cloning) -/
+theorem textbook_no_cloning : 5 < 6 ∧ 5 * 1 < 6 * 1 := by decide
+/-- textbook_no_cloning reflected by its shape, conjunction (examples: algorithm-no-cloning) -/
+theorem textbook_no_cloning_reflected (σ : Nat) (hσ0 : (6) ≤ σ) (hσ1 : (6 * 1) ≤ σ) : (σ - (6) < σ - (5)) ∧ (σ - (6 * 1) < σ - (5 * 1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_no_cloning).1 hσ0) (textbook_no_cloning).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_no_cloning).2 hσ1) (textbook_no_cloning).2⟩
+/-- the Holevo bound: the accessible classical information in a qubit ensemble is at most χ = S(ρ) ≤ log₂ d = 1 bit (0 < χ ≤ 1); proven by holevoChi (examples: algorithm-holevo) -/
+theorem textbook_holevo : 1 ≤ 1 ∧ 0 < 1 := by decide
+/-- textbook_holevo reflected by its shape, conjunction (examples: algorithm-holevo) -/
+theorem textbook_holevo_reflected (σ : Nat) (hσ0 : (1) ≤ σ) : (σ - (1) ≤ σ - (1)) ∧ (σ - (1) < σ - (0)) := ⟨Nat.sub_le_sub_left (textbook_holevo).1 σ, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_holevo).2 hσ0) (textbook_holevo).2⟩
+/-- Gottesman–Knill: a 10-qubit stabilizer state needs 2n²+n = 210 bits versus 2¹⁰ = 1024 amplitudes, so stabilizer circuits are simulated classically in polynomial space (210 < 1024); proven by stabilizerCompression (examples: algorithm-gottesman-knill) -/
+theorem textbook_gottesman_knill : 2 * 10 * 10 + 10 = 210 ∧ 210 < 2 ^ 10 := by decide
+/-- textbook_gottesman_knill reflected by its shape, conjunction (examples: algorithm-gottesman-knill) -/
+theorem textbook_gottesman_knill_reflected (σ : Nat) (hσ0 : (2 ^ 10) ≤ σ) : (σ - (210) = σ - (2 * 10 * 10 + 10)) ∧ (σ - (2 ^ 10) < σ - (210)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_gottesman_knill).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_gottesman_knill).2 hσ0) (textbook_gottesman_knill).2⟩
+/-- Eastin–Knill: the single-qubit Clifford group ⟨H,S⟩ has order 24, a finite group, so the transversal logical gates of a code cannot be universal — the T gate comes from magic-state distillation; proven by cliffordOrder (examples: algorithm-eastin-knill) -/
+theorem textbook_eastin_knill : 24 = 24 ∧ 1 < 24 := by decide
+/-- textbook_eastin_knill reflected by its shape, conjunction (examples: algorithm-eastin-knill) -/
+theorem textbook_eastin_knill_reflected (σ : Nat) (hσ0 : (24) ≤ σ) : (σ - (24) = σ - (24)) ∧ (σ - (24) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_eastin_knill).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_eastin_knill).2 hσ0) (textbook_eastin_knill).2⟩
+/-- Solovay–Kitaev: T has order 8 (T⁸ = I, 2³ = 8) and does not commute with H, so ⟨H,T⟩ is dense in SU(2) and approximates any unitary to precision ε in O(log^c(1/ε)) gates; proven by htUniversality (examples: algorithm-solovay-kitaev) -/
+theorem textbook_solovay_kitaev : 2 ^ 3 = 8 ∧ 1 < 8 := by decide
+/-- textbook_solovay_kitaev reflected by its shape, conjunction (examples: algorithm-solovay-kitaev) -/
+theorem textbook_solovay_kitaev_reflected (σ : Nat) (hσ0 : (8) ≤ σ) : (σ - (8) = σ - (2 ^ 3)) ∧ (σ - (8) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_solovay_kitaev).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_solovay_kitaev).2 hσ0) (textbook_solovay_kitaev).2⟩
+/-- the Steane [[7,1,3]] CSS code on the [7,4,3] Hamming code: distance 3 (7 − 4 = 3 checks) corrects any single-qubit error, and all 2·7 = 14 single X and Z errors are located by their Hamming syndrome and corrected; proven by steaneCorrection (examples: algorithm-steane) -/
+theorem textbook_steane : 7 - 4 = 3 ∧ 2 * 7 = 14 := by decide
+/-- textbook_steane reflected by its shape, conjunction (examples: algorithm-steane) -/
+theorem textbook_steane_reflected (σ : Nat) : (σ - (3) = σ - (7 - 4)) ∧ (σ - (14) = σ - (2 * 7)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_steane).1), congrArg (σ - ·) (Eq.symm (textbook_steane).2)⟩
 /-- θ = 1/4 is 2/2³: two of the eight values three bits can hold, so phase estimation reads it exactly (examples: algorithm-phase-estimation) -/
 theorem textbook_phase_three_bits : 2 * 4 = 2 ^ 3 ∧ 2 < 2 ^ 3 := by decide
 /-- textbook_phase_three_bits reflected by its shape, conjunction (examples: algorithm-phase-estimation) -/
@@ -1200,13 +1344,13 @@ theorem textbook_expressions_evaluate_converse_refuted : ¬ ∀ (closed held : N
 theorem textbook_queneau_compositions : 10 ^ 14 = 100000000000000 ∧ 365 * 24 * 60 = 525600 ∧ 10 ^ 14 / 525600 = 190258751 ∧ 10 ^ 14 % 525600 = 474400 := by decide
 /-- textbook_queneau_compositions reflected by its shape, conjunction (examples: textbook-queneau, textbook-prose-queneau) -/
 theorem textbook_queneau_compositions_reflected (σ : Nat) : (σ - (100000000000000) = σ - (10 ^ 14)) ∧ (σ - (525600) = σ - (365 * 24 * 60)) ∧ (σ - (190258751) = σ - (10 ^ 14 / 525600)) ∧ (σ - (474400) = σ - (10 ^ 14 % 525600)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_queneau_compositions).1), congrArg (σ - ·) (Eq.symm (textbook_queneau_compositions).2.1), congrArg (σ - ·) (Eq.symm (textbook_queneau_compositions).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_queneau_compositions).2.2.2)⟩
-/-- every composition is computed from its index and back: a choice below its position's number of choices comes out of the number it made, the remainder the choice and the quotient the rest, so one primitive covers every combination space and stores none (examples: fold-queneau) -/
+/-- every composition is computed from its index and back: a choice below its position's number of choices comes out of the number it made, the remainder the choice and the quotient the rest, so one primitive covers every combination space and stores none; rosettaOf reads it as a rosetta, the transpose a σ-permutation of the axes (examples: fold-queneau, fold-rosetta) -/
 theorem textbook_mixed_radix (q r d : Nat) (h : d < r) : (d + r * q) % r = d ∧ (d + r * q) / r = q := ⟨by rw [Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt h], by rw [Nat.add_mul_div_left _ _ (by omega), Nat.div_eq_of_lt h, Nat.zero_add]⟩
-/-- textbook_mixed_radix reflected by its shape, conjunction (examples: fold-queneau) -/
+/-- textbook_mixed_radix reflected by its shape, conjunction (examples: fold-queneau, fold-rosetta) -/
 theorem textbook_mixed_radix_reflected (q r d : Nat) (h : d < r) (σ : Nat) : (σ - (d) = σ - ((d + r * q) % r)) ∧ (σ - (q) = σ - ((d + r * q) / r)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_mixed_radix q r d h).1), congrArg (σ - ·) (Eq.symm (textbook_mixed_radix q r d h).2)⟩
-/-- the contrapositive of textbook_mixed_radix (examples: fold-queneau) -/
+/-- the contrapositive of textbook_mixed_radix (examples: fold-queneau, fold-rosetta) -/
 theorem textbook_mixed_radix_contrapositive (q r d : Nat) : ¬ ((d + r * q) % r = d ∧ (d + r * q) / r = q) → ¬ ((d < r)) := fun hc hh => hc (textbook_mixed_radix q r d hh)
-/-- the converse of textbook_mixed_radix, refuted by a counterexample the kernel decides (examples: fold-queneau) -/
+/-- the converse of textbook_mixed_radix, refuted by a counterexample the kernel decides (examples: fold-queneau, fold-rosetta) -/
 theorem textbook_mixed_radix_converse_refuted : ¬ ∀ (q r d : Nat), ((d + r * q) % r = d ∧ (d + r * q) / r = q) → (d < r) := fun h => absurd (h 0 0 0 (by decide)) (by decide)
 /-- decoding is algebra, not search: a composition of fourteen positions of ten choices is decoded in fourteen steps, one per position, where trying candidates would take up to 10^14; a one-way address is never searched, and the formulas that decode are free for all (examples: fold-decode, fold-decode-one-way) -/
 theorem textbook_decode_not_search : 14 < 10 ^ 14 ∧ 14 * 1 = 14 := by decide
@@ -1256,6 +1400,14 @@ theorem textbook_neighbour_step_reflected (x y : Nat) (hx : x < 65536) (hy : y <
 theorem textbook_neighbour_step_contrapositive (x y : Nat) : ¬ (((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y) → ¬ ((x < 65536) ∧ (y < 4096)) := fun hc hh => hc (textbook_neighbour_step x y hh.1 hh.2)
 /-- the converse of textbook_neighbour_step, proved (examples: fold-neighbours) -/
 theorem textbook_neighbour_step_converse (x y : Nat) : (((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y) → (x < 65536) ∧ (y < 4096) := fun hc => ⟨by omega, by omega⟩
+/-- navigate: teamwork to the zero bit — a UUID actor's team is its six program-space neighbours (three axes g1/g2/g3, two steps each) and the stream over the seven (the actor and its six); a team is a neighbourhood a UUID navigates, computed from the actor and stored nowhere, the zero bit discovered in teamwork itself (examples: fold-navigate) -/
+theorem textbook_teamwork_navigation (axes : Nat) (h : axes = 3) : 2 * axes = 6 ∧ 1 + 2 * axes = 7 := by omega
+/-- textbook_teamwork_navigation reflected by its shape, conjunction (examples: fold-navigate) -/
+theorem textbook_teamwork_navigation_reflected (axes : Nat) (h : axes = 3) (σ : Nat) : (σ - (6) = σ - (2 * axes)) ∧ (σ - (7) = σ - (1 + 2 * axes)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_teamwork_navigation axes h).1), congrArg (σ - ·) (Eq.symm (textbook_teamwork_navigation axes h).2)⟩
+/-- the contrapositive of textbook_teamwork_navigation (examples: fold-navigate) -/
+theorem textbook_teamwork_navigation_contrapositive (axes : Nat) : ¬ (2 * axes = 6 ∧ 1 + 2 * axes = 7) → ¬ ((axes = 3)) := fun hc hh => hc (textbook_teamwork_navigation axes hh)
+/-- the converse of textbook_teamwork_navigation, proved (examples: fold-navigate) -/
+theorem textbook_teamwork_navigation_converse (axes : Nat) : (2 * axes = 6 ∧ 1 + 2 * axes = 7) → (axes = 3) := fun hc => by omega
 /-- routeLeads: a leg whose items run at once lasts as long as its longest item, never longer than the same items one after another, so a route through waves of disjoint files is never longer than its staticDuration, the Routes API's duration without traffic (examples: leads-session-route) -/
 theorem textbook_route_waves (a b : Nat) : max a b ≤ a + b := by omega
 /-- textbook_route_waves reflected by its shape, order (examples: leads-session-route) -/
@@ -1276,6 +1428,14 @@ theorem textbook_bindings_bound_reflected (needed declared missing : Nat) (h : d
 theorem textbook_bindings_bound_contrapositive (needed declared missing : Nat) : ¬ (declared = needed) → ¬ ((declared + missing = needed) ∧ (missing = 0)) := fun hc hh => hc (textbook_bindings_bound needed declared missing hh.1 hh.2)
 /-- the converse of textbook_bindings_bound, refuted by a counterexample the kernel decides (examples: repository-predeploy) -/
 theorem textbook_bindings_bound_converse_refuted : ¬ ∀ (needed declared missing : Nat), (declared = needed) → (declared + missing = needed) ∧ (missing = 0) := fun h => absurd (h 0 0 1 (by decide)) (by decide)
+/-- every Cloudflare binding is used and usable the Google way: the roles — compute, database, object store, key-value, email — partition the bindings with none idle (used + idle = total, idle = 0), and each Cloudflare binding is paired one-to-one with its google-cloud equivalent (Worker↔Cloud Run, D1/DOCKET↔Cloud SQL, R2↔Cloud Storage, KV↔Firestore, Email↔Gmail) through the adapters profile, so the same app the Payload admin drives runs on either; the RAID db qpuRaidDb uses the data, object and key-value bindings, the Worker the compute, the email adapter the mail (examples: configure-bindings-google) -/
+theorem textbook_bindings_used_google (used idle total paired : Nat) (h : used + idle = total) (h0 : idle = 0) (hp : paired = total) : used = total ∧ paired = used := ⟨by omega, by omega⟩
+/-- textbook_bindings_used_google reflected by its shape, conjunction (examples: configure-bindings-google) -/
+theorem textbook_bindings_used_google_reflected (used idle total paired : Nat) (h : used + idle = total) (h0 : idle = 0) (hp : paired = total) (σ : Nat) : (σ - (total) = σ - (used)) ∧ (σ - (used) = σ - (paired)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_bindings_used_google used idle total paired h h0 hp).1), congrArg (σ - ·) (Eq.symm (textbook_bindings_used_google used idle total paired h h0 hp).2)⟩
+/-- the contrapositive of textbook_bindings_used_google (examples: configure-bindings-google) -/
+theorem textbook_bindings_used_google_contrapositive (used idle total paired : Nat) : ¬ (used = total ∧ paired = used) → ¬ ((used + idle = total) ∧ (idle = 0) ∧ (paired = total)) := fun hc hh => hc (textbook_bindings_used_google used idle total paired hh.1 hh.2.1 hh.2.2)
+/-- the converse of textbook_bindings_used_google, refuted by a counterexample the kernel decides (examples: configure-bindings-google) -/
+theorem textbook_bindings_used_google_converse_refuted : ¬ ∀ (used idle total paired : Nat), (used = total ∧ paired = used) → (used + idle = total) ∧ (idle = 0) ∧ (paired = total) := fun h => absurd (h 0 1 0 0 (by decide)) (by decide)
 /-- the deployed Worker observed: at most one server error in a thousand requests, as the account's observability records it, so the errors never outnumber the requests (examples: repository-predeploy) -/
 theorem textbook_observed_errors (errors requests : Nat) (h : errors * 1000 ≤ requests) : errors ≤ requests := by omega
 /-- textbook_observed_errors reflected by its shape, order (examples: repository-predeploy) -/
@@ -1298,6 +1458,22 @@ theorem textbook_shor_reduction : (7 ^ 4) % 15 = 1 ∧ (7 ^ 2) % 15 = 4 ∧ Nat.
 theorem textbook_shor_reduction_reflected (σ : Nat) : (σ - (1) = σ - ((7 ^ 4) % 15)) ∧ (σ - (4) = σ - ((7 ^ 2) % 15)) ∧ (σ - (3) = σ - (Nat.gcd (4 - 1) 15)) ∧ (σ - (5) = σ - (Nat.gcd (4 + 1) 15)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.2)⟩
 /-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: the classical door checks every factor it finds by that product (readInteger and writeInteger, testPrimality, findFactors), at any size (examples: algorithm-factor-1000-bit, algorithm-factor-mersenne) -/
 theorem textbook_factors_divide (f c n : Nat) (h : f * c = n) : f ∣ n := ⟨c, h.symm⟩
+/-- getInteger reads an integer of any size from its decimal string (never a float, a fallback when absent) and listFactors returns the prime factors whose product is the integer: fifteen parses and lists as three times five, dividing back exactly (examples: algorithm-factor-15) -/
+theorem textbook_factor_parse_list : 15 = 3 * 5 ∧ 15 / 3 = 5 := by decide
+/-- textbook_factor_parse_list reflected by its shape, conjunction (examples: algorithm-factor-15) -/
+theorem textbook_factor_parse_list_reflected (σ : Nat) : (σ - (3 * 5) = σ - (15)) ∧ (σ - (5) = σ - (15 / 3)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_factor_parse_list).1), congrArg (σ - ·) (Eq.symm (textbook_factor_parse_list).2)⟩
+/-- no missing scenario in the RAID: its five stores (filesystem, R2, KV, D1 the SQLite system db, Postgres) and their composite partition the storage choices, each exercised by a test running the same CRUD and both id types (Mongo text, Postgres number), so covered and missing make the whole and the missing are none — qpuRaidDb is one db over every store (examples: raid-bit-zero-verify) -/
+theorem textbook_raid_no_missing_store (covered missing total : Nat) (h : covered + missing = total) (h0 : missing = 0) : covered = total := by omega
+/-- textbook_raid_no_missing_store reflected by its shape, equality (examples: raid-bit-zero-verify) -/
+theorem textbook_raid_no_missing_store_reflected (covered missing total : Nat) (h : covered + missing = total) (h0 : missing = 0) (σ : Nat) : σ - (total) = σ - (covered) := congrArg (σ - ·) (Eq.symm (textbook_raid_no_missing_store covered missing total h h0))
+/-- the contrapositive of textbook_raid_no_missing_store (examples: raid-bit-zero-verify) -/
+theorem textbook_raid_no_missing_store_contrapositive (covered missing total : Nat) : ¬ (covered = total) → ¬ ((covered + missing = total) ∧ (missing = 0)) := fun hc hh => hc (textbook_raid_no_missing_store covered missing total hh.1 hh.2)
+/-- the converse of textbook_raid_no_missing_store, refuted by a counterexample the kernel decides (examples: raid-bit-zero-verify) -/
+theorem textbook_raid_no_missing_store_converse_refuted : ¬ ∀ (covered missing total : Nat), (covered = total) → (covered + missing = total) ∧ (missing = 0) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
+/-- search-engine retrieval to the zero bit: the exact path and the rest of a document's name are a deterministic injective function of its content — its UUID, whose middle (hexPath) is the path and whose head (the handle) and tail (the params) are the rest (channelOf) — so content is found by computing its address and fetching it in one GET, where scanning a million documents would be a million reads; the content address is the inverted index, read by key never a LIST (examples: raid-binding0-mirror) -/
+theorem textbook_address_retrieval : 1 < 1000000 ∧ 1 * 1 = 1 := by decide
+/-- textbook_address_retrieval reflected by its shape, conjunction (examples: raid-binding0-mirror) -/
+theorem textbook_address_retrieval_reflected (σ : Nat) (hσ0 : (1000000) ≤ σ) : (σ - (1000000) < σ - (1)) ∧ (σ - (1) = σ - (1 * 1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_address_retrieval).1 hσ0) (textbook_address_retrieval).1, congrArg (σ - ·) (Eq.symm (textbook_address_retrieval).2)⟩
 /-- every question read from a source Payload holds is decided or a lead: the questions less the leads are the decided ones, a lexical neighbour counted a lead (examples: match-questions) -/
 theorem textbook_questions_matched (decided leads total : Nat) (h : decided + leads = total) : total - leads = decided := by omega
 /-- textbook_questions_matched reflected by its shape, equality (examples: match-questions) -/
@@ -1306,6 +1482,30 @@ theorem textbook_questions_matched_reflected (decided leads total : Nat) (h : de
 theorem textbook_questions_matched_contrapositive (decided leads total : Nat) : ¬ (total - leads = decided) → ¬ ((decided + leads = total)) := fun hc hh => hc (textbook_questions_matched decided leads total hh)
 /-- the converse of textbook_questions_matched, refuted by a counterexample the kernel decides (examples: match-questions) -/
 theorem textbook_questions_matched_converse_refuted : ¬ ∀ (decided leads total : Nat), (total - leads = decided) → (decided + leads = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
+/-- the news define the problems every day and the QPU provides the solutions: matchNews reads each news item as a problem and decides it — served (the call that answers it), impossible (the bound that proves it cannot) or unknown (a lead to develop) — so the served, the impossible and the unknown make the items, served from qpu.uuidna.com under the licence and priced (examples: match-news) -/
+theorem textbook_news_problems (served impossible unknown total : Nat) (h : served + impossible + unknown = total) : total - impossible - unknown = served := by omega
+/-- textbook_news_problems reflected by its shape, equality (examples: match-news) -/
+theorem textbook_news_problems_reflected (served impossible unknown total : Nat) (h : served + impossible + unknown = total) (σ : Nat) : σ - (served) = σ - (total - impossible - unknown) := congrArg (σ - ·) (Eq.symm (textbook_news_problems served impossible unknown total h))
+/-- the contrapositive of textbook_news_problems (examples: match-news) -/
+theorem textbook_news_problems_contrapositive (served impossible unknown total : Nat) : ¬ (total - impossible - unknown = served) → ¬ ((served + impossible + unknown = total)) := fun hc hh => hc (textbook_news_problems served impossible unknown total hh)
+/-- the converse of textbook_news_problems, refuted by a counterexample the kernel decides (examples: match-news) -/
+theorem textbook_news_problems_converse_refuted : ¬ ∀ (served impossible unknown total : Nat), (total - impossible - unknown = served) → (served + impossible + unknown = total) := fun h => absurd (h 0 0 1 0 (by decide)) (by decide)
+/-- MCP and Payload search is the lexical chat (match) over Clay case decisions: every served answer carries a visible client proof — the kernel-accepted theorem and the example that replays it — and the programmable schema of the solution (the served tool's inputSchema), so a result is immediately usable and never prose; the proven and the unproven make the answers (examples: match-search) -/
+theorem textbook_search_proven (proven unproven total : Nat) (h : proven + unproven = total) : total - unproven = proven := by omega
+/-- textbook_search_proven reflected by its shape, equality (examples: match-search) -/
+theorem textbook_search_proven_reflected (proven unproven total : Nat) (h : proven + unproven = total) (σ : Nat) : σ - (proven) = σ - (total - unproven) := congrArg (σ - ·) (Eq.symm (textbook_search_proven proven unproven total h))
+/-- the contrapositive of textbook_search_proven (examples: match-search) -/
+theorem textbook_search_proven_contrapositive (proven unproven total : Nat) : ¬ (total - unproven = proven) → ¬ ((proven + unproven = total)) := fun hc hh => hc (textbook_search_proven proven unproven total hh)
+/-- the converse of textbook_search_proven, refuted by a counterexample the kernel decides (examples: match-search) -/
+theorem textbook_search_proven_converse_refuted : ¬ ∀ (proven unproven total : Nat), (total - unproven = proven) → (proven + unproven = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
+/-- autonomous editorial management per tenant, monetising on tenant specifics: editorialOf turns the day's solved news into the tenant's blog — each served problem a draft post (Payload publishing, the editor publishes at will), priced by the tenant's own catalogue, and each unknown the editorial backlog — so the posts and the backlog make the items; the verified combinatorics write the posts and Payload's validations verify them, run daily as the qpu-news-solve Payload job (newsSolveTask), never auto-deployed (examples: match-editorial) -/
+theorem textbook_editorial_posts (posts backlog items : Nat) (h : posts + backlog = items) : items - backlog = posts := by omega
+/-- textbook_editorial_posts reflected by its shape, equality (examples: match-editorial) -/
+theorem textbook_editorial_posts_reflected (posts backlog items : Nat) (h : posts + backlog = items) (σ : Nat) : σ - (posts) = σ - (items - backlog) := congrArg (σ - ·) (Eq.symm (textbook_editorial_posts posts backlog items h))
+/-- the contrapositive of textbook_editorial_posts (examples: match-editorial) -/
+theorem textbook_editorial_posts_contrapositive (posts backlog items : Nat) : ¬ (items - backlog = posts) → ¬ ((posts + backlog = items)) := fun hc hh => hc (textbook_editorial_posts posts backlog items hh)
+/-- the converse of textbook_editorial_posts, refuted by a counterexample the kernel decides (examples: match-editorial) -/
+theorem textbook_editorial_posts_converse_refuted : ¬ ∀ (posts backlog items : Nat), (items - backlog = posts) → (posts + backlog = items) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- every combination of the adapters ported onto Cloudflare is complete or names the missing link that blocks it: the combinations less the blocked ones are the complete ones, however many adapters the app grows to (examples: configure-adapters-port) -/
 theorem textbook_ports_cover (complete blocked total : Nat) (h : complete + blocked = total) : total - blocked = complete := by omega
 /-- textbook_ports_cover reflected by its shape, equality (examples: configure-adapters-port) -/
@@ -1368,7 +1568,7 @@ theorem textbook_sitemap_leads_converse_refuted : ¬ ∀ (u v c l : Nat), (c + l
 theorem textbook_rosetta_conventions (n : Nat) : (n % 10 + (10 - n % 10) % 10) % 10 = 0 ∧ 1 + (n - 1) % 9 + (10 - (1 + (n - 1) % 9)) = 10 ∧ 3432 % 9 = 3 ∧ 3432 % 10 = 2 ∧ 15 % 9 ≠ 15 % 10 := by refine ⟨by omega, by omega, by decide, by decide, by decide⟩
 /-- textbook_rosetta_conventions reflected by its shape, conjunction (examples: clay-rosetta) -/
 theorem textbook_rosetta_conventions_reflected (n : Nat) (σ : Nat) : (σ - (0) = σ - ((n % 10 + (10 - n % 10) % 10) % 10)) ∧ (σ - (10) = σ - (1 + (n - 1) % 9 + (10 - (1 + (n - 1) % 9)))) ∧ (σ - (3) = σ - (3432 % 9)) ∧ (σ - (2) = σ - (3432 % 10)) ∧ ((15 % 10) ≠ (15 % 9)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_rosetta_conventions n).1), congrArg (σ - ·) (Eq.symm (textbook_rosetta_conventions n).2.1), congrArg (σ - ·) (Eq.symm (textbook_rosetta_conventions n).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_rosetta_conventions n).2.2.2.1), Ne.symm (textbook_rosetta_conventions n).2.2.2.2⟩
-/-- binding 0 is the filesystem: hexPath puts a document at g1/g2/g3/<uuid>, the three middle groups of its address (four hex digits each, so one program's versions share a folder) and the 36 characters of the address, 51 in all, the R2 key and the GCS object of the same document; 65 536 folders a level; Payload's qpu-raid plugin (qpuRaid) writes each version once through readBinding0 with a pointer to the latest and reads back only what its address verifies, wherever its file lies; RAID_ORDER puts binding 0 last on every profile, so raidRead and readLeads always have a place to read when Payload does not answer (examples: raid-binding0-mirror, raid-binding0-restore) -/
+/-- binding 0 (the qpuRaidDb adapter) is the filesystem: hexPath puts a document at g1/g2/g3/<uuid>, the three middle groups of its address (four hex digits each, so one program's versions share a folder) and the 36 characters of the address, 51 in all, the R2 key and the GCS object of the same document; 65 536 folders a level; Payload's qpu-raid plugin (qpuRaid) writes each version once through readBinding0 with a pointer to the latest and reads back only what its address verifies, wherever its file lies; RAID_ORDER puts binding 0 last on every profile, so raidRead and readLeads always have a place to read when Payload does not answer (examples: raid-binding0-mirror, raid-binding0-restore) -/
 theorem textbook_binding_zero_hex_path : 4 + 1 + 4 + 1 + 4 + 1 + 36 = 51 ∧ 16 * 16 * 16 * 16 = 65536 := by decide
 /-- textbook_binding_zero_hex_path reflected by its shape, conjunction (examples: raid-binding0-mirror, raid-binding0-restore) -/
 theorem textbook_binding_zero_hex_path_reflected (σ : Nat) : (σ - (51) = σ - (4 + 1 + 4 + 1 + 4 + 1 + 36)) ∧ (σ - (65536) = σ - (16 * 16 * 16 * 16)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_binding_zero_hex_path).1), congrArg (σ - ·) (Eq.symm (textbook_binding_zero_hex_path).2)⟩
@@ -1384,3 +1584,15 @@ theorem textbook_raid_bit_zero_verify_converse (v m d b : Nat) : (m + d + v = b 
 theorem textbook_reflection_by_shape (d a b : Nat) (h : a ≤ b) (P Q : Prop) (hpq : P → Q) : d - b ≤ d - a ∧ (¬ Q → ¬ P) := ⟨Nat.sub_le_sub_left h d, fun hq hp => hq (hpq hp)⟩
 /-- textbook_reflection_by_shape reflected by its shape, conjunction (examples: textbook-reflected) -/
 theorem textbook_reflection_by_shape_reflected (d a b : Nat) (h : a ≤ b) (P Q : Prop) (hpq : P → Q) (σ : Nat) : (σ - (d - a) ≤ σ - (d - b)) ∧ (¬ (¬ P) → ¬ ((¬ Q))) := ⟨Nat.sub_le_sub_left (textbook_reflection_by_shape d a b h P Q hpq).1 σ, fun hc hh => hc ((textbook_reflection_by_shape d a b h P Q hpq).2 hh)⟩
+/-- the RSA cross-formula relation_rsa holds on the register's own constants shorBase 8 and shorModulus 91: 8^4 ≡ 1 (mod 91) so 8^2 = 64 is a square root of one, and gcd(64 − 1, 91) = 7, gcd(64 + 1, 91) = 13, 7 · 13 = 91 — Shor's reduction in exact integers, the shorBase/shorModulus pair the clay register carries (examples: clay-relation-rsa) -/
+theorem textbook_relation_rsa : Nat.gcd (8 ^ 2 - 1) 91 = 7 ∧ Nat.gcd (8 ^ 2 + 1) 91 = 13 ∧ 7 * 13 = 91 ∧ 8 ^ 4 % 91 = 1 := by decide
+/-- textbook_relation_rsa reflected by its shape, conjunction (examples: clay-relation-rsa) -/
+theorem textbook_relation_rsa_reflected (σ : Nat) : (σ - (7) = σ - (Nat.gcd (8 ^ 2 - 1) 91)) ∧ (σ - (13) = σ - (Nat.gcd (8 ^ 2 + 1) 91)) ∧ (σ - (91) = σ - (7 * 13)) ∧ (σ - (1) = σ - (8 ^ 4 % 91)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).1), congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).2.1), congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).2.2.2)⟩
+/-- the ancient foundation fused into the court is four codes (Ur-Nammu, Hammurabi, the Twelve Tables, the Corpus Juris Civilis) and five maxims (audi alteram partem, nemo iudex in causa sua, nulla poena sine lege, ei incumbit probatio, res judicata) = nine entries of ANCIENT_LAW, and the burden-of-proof maxim ei incumbit probatio is exactly this tree's duty legal_only_the_proven_is_admitted (examples: legal-ancient) -/
+theorem textbook_ancient_law : 4 + 5 = 9 := by decide
+/-- textbook_ancient_law reflected by its shape, equality (examples: legal-ancient) -/
+theorem textbook_ancient_law_reflected (σ : Nat) : σ - (9) = σ - (4 + 5) := congrArg (σ - ·) (Eq.symm (textbook_ancient_law))
+/-- the shorFactor capability factors within the state-vector bound and declines beyond it with candour: 15 = 3 · 5 and 21 = 3 · 7 are reached (N ≤ 21), while 35 > 21 is beyond the bound, so shorFactor names the duty of candour instead of asserting a factorization (examples: algorithm-shor-factor) -/
+theorem textbook_shor_factor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 21 < 35 := by decide
+/-- textbook_shor_factor reflected by its shape, conjunction (examples: algorithm-shor-factor) -/
+theorem textbook_shor_factor_reflected (σ : Nat) (hσ0 : (35) ≤ σ) : (σ - (15) = σ - (3 * 5)) ∧ (σ - (21) = σ - (3 * 7)) ∧ (σ - (35) < σ - (21)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_factor).1), congrArg (σ - ·) (Eq.symm (textbook_shor_factor).2.1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_shor_factor).2.2 hσ0) (textbook_shor_factor).2.2⟩

@@ -4,14 +4,14 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle, toolCallerOf } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf } from '../src/quantum/processing/mcp.ts'
 import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { getWithTimeout, getJson, publishRecord } from './mcp.ts'
 const ROOT = process.cwd()
 const call = toolCallerOf('textbook')
 const main = async () => {
   // fast when clean: the wave is a function of the examples, the leads, the tools and the wave's results; the same inputs give the same seal
-  const { uuidOf } = await import('../src/quantum/blocks.ts'); const { EXAMPLES } = await import('../src/quantum/examples.ts'); const { LEADS } = await import('../src/quantum/leads.ts')
+  const { uuidOf } = await import('../src/quantum/processing/unit/blocks.ts'); const { EXAMPLES } = await import('../src/quantum/processing/examples.ts'); const { LEADS } = await import('../src/quantum/processing/leads.ts')
   const outPath = join(ROOT, 'docs', 'public', 'textbook.json')
   const vpath = join(ROOT, 'docs', 'public', 'verification.json')
   const inputs = uuidOf(JSON.stringify({ examples: EXAMPLES.map((e) => [e.id, e.tool, e.arguments, e.shows, e.theorem ?? null]), leads: LEADS.length, tools: handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }), wave: (getJson(vpath, {}) as { date?: string }).date ?? null, offline: process.env.QPU_OFFLINE === '1' }))

@@ -4,9 +4,9 @@
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { CATALOGUE } from '../src/quantum/toolboxes/billing.ts'
-import { TENANTS } from '../src/quantum/tenants.ts'
+import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
+import { CATALOGUE } from '../src/quantum/processing/toolboxes/billing.ts'
+import { TENANTS } from '../src/quantum/processing/unit/tenants.ts'
 import { getWithTimeout, getJson, runSelftest, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()

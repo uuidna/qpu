@@ -5,8 +5,8 @@ import { writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
 import './teleport.ts'
-import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { COMPETITIONS } from '../src/quantum/toolboxes/legal.ts'
+import { toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
+import { COMPETITIONS } from '../src/quantum/processing/toolboxes/legal.ts'
 import { getWithTimeout, getJson, runSelftest, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()

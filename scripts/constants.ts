@@ -3,8 +3,8 @@
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { LICENSE } from '../src/quantum/license.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
+import { LICENSE } from '../src/quantum/processing/unit/license.ts'
 import { getWithTimeout } from './mcp.ts'
 
 const ROOT = process.cwd()

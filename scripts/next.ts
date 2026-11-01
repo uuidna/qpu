@@ -7,14 +7,16 @@ import { spawnSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { appendFileSync, existsSync, readFileSync, writeFileSync, unlinkSync, rmSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { tmpdir, availableParallelism, homedir } from 'node:os'
+import { tmpdir, availableParallelism, homedir, totalmem } from 'node:os'
 import { pathToFileURL } from 'node:url'
-import { uuidOf } from '../src/quantum/blocks.ts'
-import { cellOf as cell } from '../src/quantum/widgets.ts'
-import { listRemedies, listManualDocs } from '../src/quantum/audit.ts'
-import { STEP_CACHE, GENERATED_FILES } from '../src/quantum/toolboxes/repository.ts'
+import { uuidOf } from '../src/quantum/processing/unit/blocks.ts'
+import { cellOf as cell } from '../src/quantum/processing/widgets.ts'
+import { listRemedies, listManualDocs, getAddressedByTheorem } from '../src/quantum/processing/audit.ts'
+import { EXAMPLES } from '../src/quantum/processing/examples.ts'
+import { TEXTBOOK_THEOREMS } from '../src/quantum/processing/textbook-theorems.ts'
+import { STEP_CACHE, GENERATED_FILES } from '../src/quantum/processing/toolboxes/repository.ts'
 import { timesOf } from './machine.ts'
-import { forecastTimes, redact } from '../src/quantum/machine.ts'
+import { forecastTimes, redact } from '../src/quantum/processing/machine.ts'
 import { getJson, getWithTimeout, mcpClient } from './mcp.ts'
 
 const ROOT = process.cwd()
@@ -38,7 +40,7 @@ const steps: Step[] = [
   { name: 'session', cmd: 'node', args: ['scripts/session.ts'], skip: fast ? 'fast' : undefined, budgetMs: 600_000, wave: 1 }, // every session read to decide what is next and how; offline only the Payload writes and the unit's calls wait
   { name: 'configs', cmd: 'node', args: ['scripts/configs.ts'], wave: 1 }, // always: every configuration (configs, scopes, fields, validations, access, hooks, bindings, actions) improved — the tool's files written, the hand's measured
   { name: 'typecheck', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'], wave: 2 },
-  { name: 'test', cmd: 'node', args: ['--test', 'src/quantum/*.test.ts'], budgetMs: 300_000, wave: 2 },
+  { name: 'test', cmd: 'node', args: ['--test', 'src/quantum/**/*.test.ts'], budgetMs: 300_000, wave: 2 },
   { name: 'lean', cmd: lake, args: ['build'], wave: 1.5 }, // before purify, which reads the kernel's environment
   { name: 'audit', cmd: 'node', args: ['scripts/audit.ts'], wave: 2 },
   { name: 'imagine', cmd: 'node', args: ['scripts/imagine.ts'], budgetMs: 300_000, skip: fast ? 'fast' : undefined, wave: 3, shards: 4 }, // a quantum: the leads not yet imagined, as many as fit; the rest next run
@@ -115,12 +117,12 @@ const generatedDocsExcludes = () => excludes ??= (() => { const git = (a: string
 const hashOutputs = () => { const h = createHash('sha256'); for (const f of GENERATED_FILES) { h.update(f); try { h.update(readFileSync(join(ROOT, f))) } catch { h.update('gone') } } return h.digest('hex') }
 const getSealed = (name: string) => getJson(recordPath(name)) as { name: string; key: string; status: string; outputs?: string; counts?: Record<string, number>; date: string; sha256: string } | null
 const run = async (s: Step): Promise<boolean> => {
-  const key = s.skip ? null : inputKey(s), sealed = key ? getSealed(s.name) : null
+  const key = inputKey(s), sealed = key ? getSealed(s.name) : null // the seal is consulted even for a skipped step: offline, a cacheable step verifies from its last sealed receipt by content address (iso: no online/offline gap)
   if (key && sealed && sealed.status === 'green' && sealed.key === key && (!STEP_CACHE[s.name]?.generator || sealed.outputs === hashOutputs())) {
     receipt.steps.push({ name: s.name, status: 'green', ms: 0, tail: `reused: its inputs ${key.slice(0, 12)} unchanged since ${sealed.date} (sealed ${sealed.sha256.slice(0, 12)})`, counts: { ...(sealed.counts ?? {}), reused: 1 }, measures: { wallNs: '0', cpuUs: 0, rssKb: 0, firstOutputMs: 0 } })
     console.log(`↺ ${s.name}: reused (inputs unchanged since ${sealed.date})`); return true
   }
-  if (s.skip) { receipt.steps.push({ name: s.name, status: 'skipped', ms: 0, tail: s.skip }); console.log(`· ${s.name}: skipped (${s.skip})`); return true }
+  if (s.skip) { const gap = s.skip === 'offline' && !!STEP_CACHE[s.name] && !sealed; receipt.steps.push({ name: s.name, status: 'skipped', ms: 0, tail: gap ? 'offline: no sealed receipt to verify from — unverified, re-verify online (a named gap, never a silent skip)' : s.skip }); console.log(`${gap ? '○' : '·'} ${s.name}: ${gap ? 'offline gap — no seal to verify from' : `skipped (${s.skip})`}`); return true }
   const started = Date.now(), startedNs = process.hrtime.bigint()
   // short multitasks: the shards run at once, each with its share and its own budget, then the merge; the outputs are read as one
   const r = s.shards && !s.skip ? await (async () => { const parts = await Promise.all(Array.from({ length: s.shards! }, (_, i) => spawned(s, `${i}/${s.shards}`))); const merge = await spawned(s, 'merge'); return { status: parts.every((p) => p.status === 0) && merge.status === 0 ? 0 : (parts.find((p) => p.status !== 0)?.status ?? merge.status), out: [...parts.map((p) => p.out), merge.out].join('\n'), timedOut: parts.some((p) => p.timedOut) || merge.timedOut, cpuUs: [...parts, merge].reduce((n, p) => n + p.cpuUs, 0), rssKb: Math.max(...[...parts, merge].map((p) => p.rssKb)), firstMs: parts.map((p) => p.firstMs).filter((x): x is number => x !== null).sort((a, b) => a - b)[0] ?? null } })() : await spawned(s)
@@ -148,9 +150,16 @@ const run = async (s: Step): Promise<boolean> => {
 const main = async () => {
 const wall0 = Date.now()
 const failed: Step[] = []
+// memory-pressure budget: a step's heap presses on the machine's memory, so the steps that run at once are bounded by capacity ÷ heap —
+// (lanes × heapMb) ≤ capacityMb, so lanes = ⌊capacity / heap⌋, never more than the cores. Unbounded parallelism overcommits RAM and a step
+// is killed by the OS (the memory-pressure OOM); this holds the sum of the running heaps under what the machine has.
+const heapMb = Number(/--max-old-space-size[= ](\d+)/.exec(process.env.NODE_OPTIONS ?? '')?.[1]) || 4096
+const capacityMb = Math.floor((totalmem() / 1048576) * 0.7)
+const lanes = Math.max(1, Math.min(availableParallelism(), Math.floor(capacityMb / heapMb)))
+const pool = async <T, R>(items: readonly T[], fn: (x: T) => Promise<R>, n: number): Promise<R[]> => { const out = new Array<R>(items.length); let i = 0; const worker = async (): Promise<void> => { while (i < items.length) { const k = i++; out[k] = await fn(items[k]!) } }; await Promise.all(Array.from({ length: Math.min(n, items.length) }, worker)); return out }
 for (const wave of [...new Set(steps.map((s) => s.wave))].sort((a, b) => a - b)) {
   const inWave = steps.filter((s) => s.wave === wave)
-  const results = await Promise.all(inWave.map((s) => run(s)))
+  const results = await pool(inWave, (s) => run(s), lanes)
   for (const [i, ok] of results.entries()) if (!ok) failed.push(inWave[i]!)
 }
 // A stop is a lead to follow next: retry the red steps once, now that the generators have run.
@@ -181,7 +190,7 @@ if (concurrent) opened.push({ id: `next-concurrent-${receipt.head}-${receipt.dat
 // time and heat priced: every step over the one-second budget is a waiting gap — listed, never blocking — priced in its own milliseconds over the
 // budget plus its CPU milliseconds (textbook_penalty_time_heat_monotone); the slowest and hottest first, each a lead naming the antimatter that
 // removes it (a shard split by the shard theorems, or a cache key), replaced every run, so a step back under the budget closes its own lead
-const { priceWait, createAntimatter, getCapacity, priceRunWait } = await import('../src/quantum/toolboxes/billing.ts')
+const { priceWait, createAntimatter, getCapacity, priceRunWait } = await import('../src/quantum/processing/toolboxes/billing.ts')
 const waiting = receipt.steps.filter((x) => x.measures && x.status !== 'skipped').map((x) => ({ step: x.name, measures: x.measures!, price: priceWait(x.measures!) }))
 const over = waiting.filter((w) => !w.price.free).sort((a, b) => b.price.coins - a.price.coins)
 for (const w of over) opened.push({ id: `next-waiting-${w.step}`, source: `npm run next ${receipt.date}`, statement: `${w.step} took ${w.price.wallMs} ms on the wall and ${w.price.cpuMs} CPU ms (peak ${w.price.rssKb ?? '?'} kB): ${w.price.coins} coin(s) of waiting — antimatter: ${createAntimatter('waiting', 'next:waiting', { step: w.step, measures: w.measures }).says}`, status: 'open', reason: 'a task over one second is slow: waiting is a penalty, priced in time and heat (heat is CPU work, never a die temperature)', evidence: JSON.stringify(w.price), head: receipt.head, date: receipt.date })
@@ -267,6 +276,17 @@ const receipts = join(ROOT, 'docs', 'receipts.md')
 if (!existsSync(receipts)) writeFileSync(receipts, '---\ntitle: Receipts\norder: 49\n---\n\n# Receipts of `npm run next`\n\nOne row per run of the platform on itself: the steps, their status, and the counts read from their output.\n\n| Date | Head | Steps |\n|---|---|---|\n')
 appendFileSync(receipts, line)
 console.log(red ? `\nnext: ${stillRed.length} step(s) red → ${opened.length} lead(s) opened in docs/next-leads.md; the run fails` : '\nnext: green')
+// hook next to next: a green run that closed more leads than it opened advances to the next iteration (self-development), bounded by progress and a
+// max depth; QPU_NEXT_CHAIN enables it so a plain run never loops, and the chain stops as soon as a run stops closing leads
+const chainDepth = Number(process.env.QPU_NEXT_DEPTH ?? 0), chainMax = Number(process.env.QPU_NEXT_MAX ?? 8)
+if (!red && process.env.QPU_NEXT_CHAIN && leadsNow.length < previous.length && chainDepth < chainMax) {
+  // cross-formulation is the discovery core: each open lead is addressed by the theorem whose words it shares (getAddressedByTheorem, the clay
+  // σ-reflection algebra over the register) — the addressed leads are the prompt the next iteration executes autonomously as Payload jobs through the
+  // capability plugins (the leads-run step, qpu-lead-run); the chain stops when a run stops closing leads
+  const addressed = getAddressedByTheorem(leadsNow.map((l) => ({ id: l.id, statement: l.statement || l.evidence || '', status: 'open' })), TEXTBOOK_THEOREMS, EXAMPLES).leads.filter((x) => !/^open: no theorem/.test(x.statement)).slice(0, 5)
+  console.log(`next → next: ${previous.length - leadsNow.length} lead(s) closed; cross-formula prompt (${addressed.length}): ${addressed.map((p) => p.id).join(', ') || 'none addressed yet'}; chaining ${chainDepth + 1}/${chainMax}, executed via the leads-run Payload jobs`)
+  spawn(process.execPath, [process.argv[1]!, ...process.argv.slice(2)], { detached: true, stdio: 'inherit', env: { ...process.env, QPU_NEXT_DEPTH: String(chainDepth + 1), QPU_NEXT_PROMPT: JSON.stringify(addressed.map((p) => p.id)) } }).unref()
+}
 process.exit(red ? 1 : 0)
 }
 main().catch((e) => { console.error(e); process.exit(1) })

@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 import './teleport.ts'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
 import { getJson, runSelftest, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()

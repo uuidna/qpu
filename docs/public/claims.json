@@ -1,11 +1,11 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T10:40:09.084Z",
+ "date": "2026-11-01T19:01:24.026Z",
  "counts": {
-  "own": 141,
-  "unasked": 133
+  "own": 146,
+  "unasked": 151
  },
- "confirmations": "unread: no MCP key for http://localhost:3000/api/mcp: QPU_APP_KEY, or the keychain item qpu-app-key (security add-generic-password -s qpu-app-key -a \"$USER\" -w, the user's act)",
+ "confirmations": 0,
  "claims": [
   {
    "theorem": "textbook_plugin_combinations",
@@ -92,6 +92,13 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_standards_sliced",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_typography_idempotent",
    "kind": "general",
    "status": "unasked",
@@ -100,6 +107,20 @@
   },
   {
    "theorem": "textbook_references_acyclic",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_cache_saves_cost",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_reference_index_cached",
    "kind": "general",
    "status": "unasked",
    "candidates": [],
@@ -414,6 +435,13 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_prizes_computable",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_clay_conditions",
    "kind": "general",
    "status": "unasked",
@@ -631,7 +659,56 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_repair_partitions",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_repair_live_sla",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_repair_kernel_top",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_fallback_involution",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_exploit_refuses_to_patch",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_impossible_sent_to_leads",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_denier_identified",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_court_audits_repo",
    "kind": "general",
    "status": "unasked",
    "candidates": [],
@@ -732,6 +809,13 @@
    "theorem": "textbook_access_combinations",
    "kind": "own",
    "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_report_refactors",
+   "kind": "general",
+   "status": "unasked",
    "candidates": [],
    "recognisedBy": null
   },
@@ -1786,6 +1870,13 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_teamwork_navigation",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_route_waves",
    "kind": "general",
    "status": "unasked",
@@ -1801,6 +1892,13 @@
   },
   {
    "theorem": "textbook_bindings_bound",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_bindings_used_google",
    "kind": "general",
    "status": "unasked",
    "candidates": [],
@@ -1835,7 +1933,49 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_factor_parse_list",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_raid_no_missing_store",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_address_retrieval",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_questions_matched",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_news_problems",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_search_proven",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_editorial_posts",
    "kind": "general",
    "status": "unasked",
    "candidates": [],
@@ -1922,6 +2062,27 @@
    "theorem": "textbook_reflection_by_shape",
    "kind": "general",
    "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_relation_rsa",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_ancient_law",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_shor_factor",
+   "kind": "own",
+   "status": "own",
    "candidates": [],
    "recognisedBy": null
   }

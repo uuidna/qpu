@@ -5,7 +5,7 @@
       "name": "payload",
       "runtimeExecutable": "scripts/site-local.sh",
       "runtimeArgs": [
-        "start"
+        "dev"
       ],
       "port": 3000
     }

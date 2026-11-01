@@ -70,6 +70,17 @@
           "questions": {
             "description": "true"
           },
+          "search": {
+            "type": "string",
+            "description": "MCP/Payload search as the lexical chat (match) over Clay case decisions"
+          },
+          "news": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "the day's news as problems"
+          },
           "verdict": {
             "type": "string",
             "description": "a verdict from another vocabulary (verify_claim"
@@ -816,9 +827,50 @@
               "teleportation",
               "qaoa",
               "shor",
-              "factor"
+              "factor",
+              "deutsch_jozsa",
+              "bernstein_vazirani",
+              "simon",
+              "vqe",
+              "chsh",
+              "trotter",
+              "xeb",
+              "no_cloning",
+              "holevo",
+              "gottesman_knill",
+              "eastin_knill",
+              "solovay_kitaev",
+              "steane"
             ],
-            "default": "qft"
+            "default": "chsh"
+          },
+          "depth": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 40,
+            "default": 12,
+            "description": "xeb"
+          },
+          "balanced": {
+            "type": "boolean",
+            "default": true,
+            "description": "deutsch_jozsa"
+          },
+          "hidden": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "description": "bernstein_vazirani"
+          },
+          "steps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 20,
+            "description": "vqe"
           },
           "integer": {
             "type": "string",
@@ -896,8 +948,8 @@
           }
         },
         "x-harmonic": {
-          "combinations": "8",
-          "index": "0",
+          "combinations": "21",
+          "index": "12",
           "from": "a432"
         }
       },
@@ -1404,6 +1456,13 @@
               "type": "string"
             },
             "description": "error texts"
+          },
+          "repair": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "the remedy for a hacked or vulnerable system"
           },
           "fallbacks": {
             "type": "boolean",
@@ -2150,10 +2209,11 @@
               "mirror",
               "restore",
               "verify",
+              "health",
               "associate",
               "validate"
             ],
-            "default": "find"
+            "default": "update"
           },
           "association": {
             "type": "object",
@@ -2201,8 +2261,8 @@
           }
         },
         "x-harmonic": {
-          "combinations": "9",
-          "index": "0",
+          "combinations": "10",
+          "index": "2",
           "from": "a432"
         }
       },
@@ -2484,6 +2544,9 @@
           "court": {
             "description": "true"
           },
+          "ancient": {
+            "description": "true"
+          },
           "selftest": {
             "type": "boolean"
           }
@@ -2518,6 +2581,10 @@
           "conduct": {
             "type": "boolean",
             "description": "the client found a CODE_OF_CONDUCT in the repository"
+          },
+          "claim": {
+            "type": "boolean",
+            "description": "the claim verb"
           },
           "news": {
             "type": "boolean",
@@ -2897,6 +2964,42 @@
       }
     },
     {
+      "name": "validate",
+      "description": "Validate against all standards via Payload's standard implementation, in the cheapest possible slices",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bound": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "standards per slice (default 6)"
+          },
+          "selftest": {
+            "type": "boolean"
+          }
+        }
+      },
+      "annotations": {
+        "title": "validate",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "_meta": {
+        "toolbox": "standards",
+        "skill": {
+          "directions": 3
+        },
+        "ui": {
+          "resourceUri": "ui://qpu/validate",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
+      }
+    },
+    {
       "name": "payload",
       "description": "Any tool's result as the document Payload's default plugins hold, no custom collection",
       "inputSchema": {
@@ -2913,6 +3016,14 @@
           "references": {
             "type": "object",
             "description": "the references between documents as one graph"
+          },
+          "report": {
+            "type": "object",
+            "description": "Payload handles the proof of a quantum computation as a report"
+          },
+          "referenceIndex": {
+            "type": "object",
+            "description": "every reference indexed by scope and combination, cached by query hash, over the Payload search results"
           },
           "hooks": {
             "type": "object",
@@ -3303,9 +3414,25 @@
             },
             "description": "Queneau's combinatorics"
           },
+          "rosetta": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "the radices of a grid read two ways — e"
+          },
+          "order": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "with rosetta"
+          },
           "index": {
             "type": "string",
-            "description": "with radices"
+            "description": "with radices or rosetta"
           },
           "digits": {
             "type": "array",
@@ -3333,6 +3460,10 @@
           "neighbours": {
             "type": "string",
             "description": "a UUID"
+          },
+          "navigate": {
+            "type": "string",
+            "description": "a UUID actor"
           },
           "query": {
             "type": "object",

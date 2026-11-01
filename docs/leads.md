@@ -296,6 +296,7 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `clay-relation_42` | served | clay | relation_42: glProd n coins = qaoaZz n faces ∧ glProd n coins = qaoaZz faces n = 42 (6 bits, seed 6) |  |
 | `clay-relation_49` | served | clay | relation_49: qaoaZz rays rays = qaoaX rays rays = 49 (6 bits, seed 4) |  |
 | `clay-relation_91` | served | clay | relation_91: chooseOf faces coins = choose faces coins = 91 (7 bits, seed 1) |  |
+| `clay-relation_rsa` | served | clay | relation_rsa: shorModulus = gcdOf (half shorBase shorModulus - seed) shorModulus * gcdOf (half shorBase shorModulus + seed) shorModulus = 91 (7 bits, seed 1) |  |
 | `clay-relation_96` | served | clay | relation_96: qaoaZz n bits = qaoaZz bits n ∧ qaoaZz n bits = qaoaX n bits = 96 (7 bits, seed 6) |  |
 | `clay-relation_196` | served | clay | relation_196: qaoaZz rays plane = qaoaZz faces faces ∧ qaoaZz rays plane = qaoaZz plane rays = 196 (8 bits, seed 7) |  |
 | `clay-relation_224` | served | clay | relation_224: qaoaZz rays bits = qaoaZz vertices plane ∧ qaoaZz rays bits = qaoaZz bits rays = 224 (8 bits, seed 8) |  |

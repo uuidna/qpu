@@ -7,7 +7,7 @@ import React from 'react'
 import { getPayload } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
 import { handle } from '@uuidna/qpu/mcp'
-import { QpuApp } from './App'
+import { QpuApp } from '../../toolboxes/App'
 
 type Call = { id: string; result?: { structuredContent?: Record<string, unknown>; _meta?: { widget?: string; theme?: Record<string, string> }; error?: { message: string } } }
 // the tenant of the request: the host that names it (the tenants' domains, as the Worker's TENANTS), else the first tenant (a local run)

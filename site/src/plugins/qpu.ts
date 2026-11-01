@@ -10,16 +10,16 @@ import path from 'node:path'
 import { createSign } from 'node:crypto'
 import { callOf, toolCallerOf, redact } from '@uuidna/qpu/mcp'
 import { qpuHooksOf } from '@uuidna/qpu/blocks'
-import { Qpu } from '../blocks/Qpu/config'
-import { Entries } from '../collections/Entries'
-import { Tenants } from '../collections/Tenants'
-import { QpuGlobal } from '../globals/Qpu'
-import { qpuPlugins } from '../payload.qpu.config'
-import { collisionGuard } from '../collections/pages.qpu.hooks'
-import { firstUserBootstrap } from '../collections/users.qpu.hooks'
-import { appRequest } from '../collections/form-submissions.qpu.hooks'
-import { qpuDb, qpuEmail, qpuAdapterPlugins } from '../payload.qpu.adapters'
-import { qpuMachineTool } from '../payload.qpu.mcp'
+import { Qpu } from '../../blocks/Qpu/config'
+import { Entries } from '../../collections/Entries'
+import { Tenants } from '../../collections/Tenants'
+import { QpuGlobal } from '../../globals/Qpu'
+import { qpuPlugins } from '../../payload.qpu.config'
+import { collisionGuard } from '../../collections/pages.qpu.hooks'
+import { firstUserBootstrap } from '../../collections/users.qpu.hooks'
+import { appRequest } from '../../collections/form-submissions.qpu.hooks'
+import { qpuDb, qpuEmail, qpuAdapterPlugins } from '../../payload.qpu.adapters'
+import { qpuMachineTool } from '../../payload.qpu.mcp'
 
 // the block added wherever a layout takes blocks: by object, or by reference where the field references the config's blocks
 const withBlock = (fields: Field[], block: Block): Field[] => fields.map((f): Field => {
@@ -60,7 +60,7 @@ export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu', plugin: ({ 
   ...incoming,
   db: incoming.db ?? qpuDb(),
   email: incoming.email ?? qpuEmail(),
-  admin: branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, beforeDashboard: [...(incoming.admin?.components?.beforeDashboard ?? []), '@root/components/blocks/Qpu/App#QpuApp'], graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
+  admin: branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, beforeDashboard: [...(incoming.admin?.components?.beforeDashboard ?? []), ...[{ tool: 'clay', args: { technique: 'reflection' } }, { tool: 'dashboard', args: {} }, { tool: 'leads', args: {} }, { tool: 'metrics', args: {} }, { tool: 'match', args: {} }, { tool: 'repository', args: { machine: { actions: true } } }].map((p) => ({ path: '@root/components/blocks/Qpu/App#QpuApp', clientProps: p }))], graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
   collections: [...(incoming.collections ?? []).filter((c) => c.slug !== Tenants.slug && c.slug !== Entries.slug), Tenants, Entries],
   globals: [...(incoming.globals ?? []).filter((g) => g.slug !== QpuGlobal.slug), QpuGlobal],
   blocks: [...(incoming.blocks ?? []).filter((b) => b.slug !== Qpu.slug), Qpu],
@@ -137,10 +137,27 @@ const leadRunTask: TaskConfig<{ input: { lead?: string; request?: string }; outp
     return { output: { entry: String((entry as { id: string }).id) } }
   },
 }
+// the daily editorial loop as a Payload job (payloadcms.com/docs/jobs-queue/tasks, scheduled daily, never a deploy): a tenant's news read as problems,
+// the served ones solved and written as draft blog posts (Payload publishing — the tenant's editor publishes each at will), the unknown ones the editorial
+// backlog, monetised on the tenant's own catalogue. editorialOf (the match tool) writes the posts from the verified combinatorics; Payload's validations verify them.
+export const newsSolveTask: TaskConfig<{ input: { tenant?: string; news?: unknown }; output: { entry: string; posts: number } }> = {
+  slug: 'qpu-news-solve', retries: 0, inputSchema: [{ name: 'tenant', type: 'text' }, { name: 'news', type: 'json' }], outputSchema: [{ name: 'entry', type: 'text' }, { name: 'posts', type: 'number' }],
+  handler: async ({ input, req }) => {
+    const tenantSlug = input.tenant ?? 'uuidna', items = Array.isArray(input.news) ? input.news : typeof input.news === 'string' ? (JSON.parse(input.news) as unknown[]) : []
+    const r = callOf('match', { tenant: tenantSlug, news: items }) as { result?: { structuredContent?: { drafts?: { title: string; content?: unknown[] }[]; apps?: unknown[] } }; error?: { message: string } }
+    const ed = r.result?.structuredContent, drafts = ed?.drafts ?? [], apps = ed?.apps ?? []
+    // the tenant relationship: the tenant doc by its slug, so each post belongs to its tenant's blog (newsSolveTask writes the solution as the content body)
+    const tenantDoc = (await req.payload.find({ collection: 'tenants' as never, where: { slug: { equals: tenantSlug } }, depth: 0, limit: 1, overrideAccess: true }).then((x) => x, () => ({ docs: [] }))).docs?.[0] as { id?: string } | undefined
+    let posts = 0
+    for (const d of drafts) { try { await req.payload.create({ collection: 'posts' as never, data: { title: d.title, content: d.content, ...(tenantDoc?.id ? { tenant: tenantDoc.id } : {}), _status: 'draft' } as never, draft: true, overrideAccess: true }); posts++ } catch { /* a post the editor's backlog keeps until its fields are complete */ } }
+    const entry = await req.payload.create({ collection: 'entries' as never, data: { kind: 'editorial', from: 'qpu-news-solve', body: { tenant: tenantSlug, items: items.length, posts, apps: apps.length } } as never, overrideAccess: true })
+    return { output: { entry: String((entry as { id: string }).id), posts } }
+  },
+}
 export const qpuMachine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-machine', order: 5, plugin: ({ config, plugins, enabled }) => {
   const o = plugins['@payloadcms/plugin-mcp']?.options
   if (o && enabled !== false) o.mcp = { ...o.mcp, tools: [...(o.mcp?.tools ?? []).filter((t) => t.name !== qpuMachineTool.name), qpuMachineTool as never] }
-  return enabled === false ? config : { ...config, jobs: withTask(config, leadRunTask) }
+  return enabled === false ? config : { ...config, jobs: withTask({ ...config, jobs: withTask(config, leadRunTask) }, newsSolveTask) }
 } })
 // binding 0 (payloadcms.com/docs/hooks/collections): every document a collection changes or reads, at its content address in hex folders by the UUID's
 // middle beside the repository (its R2 key, its GCS object) with a pointer to its latest version, the copy the RAID reads back verified when no other binding answers

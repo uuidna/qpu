@@ -6,9 +6,9 @@ import { join } from 'node:path'
 import { execSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import './teleport.ts'
-import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { TENANTS } from '../src/quantum/tenants.ts'
-import type { SourceRequest, SourceAnswer } from '../src/quantum/sources.ts'
+import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
+import { TENANTS } from '../src/quantum/processing/unit/tenants.ts'
+import type { SourceRequest, SourceAnswer } from '../src/quantum/processing/sources.ts'
 import { getJson, getWithTimeout, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()

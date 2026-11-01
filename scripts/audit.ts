@@ -12,7 +12,7 @@ import './teleport.ts'
 type Check = { id: string; passed: boolean; evidence: string }
 type Result = { shard: { i: number; n: number }; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[]; integers: Record<string, string>; decided: { bySeal: number; byInteger: number; byText: number; sealed: boolean } }
 const auditCall = async (args: Record<string, unknown>): Promise<Result> => {
-  const { handle } = await import('../src/quantum/mcp.ts')
+  const { handle } = await import('../src/quantum/processing/mcp.ts')
   const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: args } }) as { result?: { structuredContent: Result }; error?: unknown }
   if (!reply.result) { console.error(reply.error); process.exit(2) }
   return reply.result.structuredContent
@@ -63,7 +63,7 @@ const seen = new Map<string, number>(); for (const c of checks) if (c.id.startsW
 const twice = [...seen].filter(([, k]) => k > 1).map(([id]) => id.slice('example-tool:'.length))
 const head = shares.find((s) => s.shard.i === 0) ?? shares[0]!
 if (twice.length || seen.size !== head.examples) {
-  const { EXAMPLES } = await import('../src/quantum/examples.ts')
+  const { EXAMPLES } = await import('../src/quantum/processing/examples.ts')
   const missing = EXAMPLES.map((e) => e.id).filter((id) => !seen.has(`example-tool:${id}`))
   console.error(`the shares broke the shard theorems: ${missing.length ? `not covered: ${missing.join(', ')}` : ''}${twice.length ? ` audited twice: ${twice.join(', ')}` : ''}`)
   process.exit(3)

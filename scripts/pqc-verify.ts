@@ -2,8 +2,8 @@
 // verified here with the public key it carries and nothing else (Node's Web Crypto, FIPS 204): a host whose signature does
 // not verify is an error block like any other. Runs only online; the plan's shape is the tool's, this is a thin client.
 import { webcrypto } from 'node:crypto'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
-import type { SignaturePlan } from '../src/quantum/toolboxes/crypto.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
+import type { SignaturePlan } from '../src/quantum/processing/toolboxes/crypto.ts'
 
 type PqcHost = { host: string; status: number; ms: number; phase: string; keyed?: string; algorithm?: string; verified: boolean | null; note: string }
 type PqcPass = { algorithm: 'ML-DSA-65'; text: 'qpu'; sha256Here: string; hosts: PqcHost[]; verified: number; note: string }

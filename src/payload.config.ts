@@ -1,0 +1,594 @@
+import { revalidateRedirects } from '@hooks/revalidateRedirects'
+import { qpuPlugin } from './plugins/qpu' // the QPU as one plugin: its collections, global, block, hooks and the plugins it composes (generated)
+import { qpuDb, qpuEmail } from './payload.qpu.adapters'
+import { qpuFormFields, qpuLexicalBlocks } from './payload.qpu.lexical' // forms, qpu and Drive blocks in Lexical; the form builder's fields from Google Forms (generated)
+import { mongooseAdapter } from '@payloadcms/db-mongodb'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
+import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
+import { redirectsPlugin } from '@payloadcms/plugin-redirects'
+import { seoPlugin } from '@payloadcms/plugin-seo'
+import {
+  BlocksFeature,
+  EXPERIMENTAL_TableFeature,
+  lexicalEditor,
+  LinkFeature,
+  UploadFeature,
+} from '@payloadcms/richtext-lexical'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import link from '@root/fields/link'
+import { LabelFeature } from '@root/fields/richText/features/label/server'
+import { LargeBodyFeature } from '@root/fields/richText/features/largeBody/server'
+import { googleAnalytics } from '@zubricks/plugin-google-analytics'
+import { revalidateTag } from 'next/cache'
+import path from 'path'
+import { buildConfig, type TextField } from 'payload'
+import { fileURLToPath } from 'url'
+
+import { BlogContent } from './blocks/BlogContent'
+import { BlogMarkdown } from './blocks/BlogMarkdown'
+import { Callout } from './blocks/Callout'
+import { CallToAction } from './blocks/CallToAction'
+import { CardGrid } from './blocks/CardGrid'
+import { CaseStudiesHighlight } from './blocks/CaseStudiesHighlight'
+import { CaseStudyCards } from './blocks/CaseStudyCards'
+import { CaseStudyParallax } from './blocks/CaseStudyParallax'
+import { Code } from './blocks/Code'
+import { CodeFeature } from './blocks/CodeFeature'
+import { ComparisonTable } from './blocks/ComparisonTable'
+import { Content } from './blocks/Content'
+import { ContentGrid } from './blocks/ContentGrid'
+import { DownloadBlock } from './blocks/Download'
+import { CodeExampleBlock, ExampleTabs, MediaExampleBlock } from './blocks/ExampleTabs'
+import { Form } from './blocks/Form'
+import { HoverCards } from './blocks/HoverCards'
+import { HoverHighlights } from './blocks/HoverHighlights'
+import { LinkGrid } from './blocks/LinkGrid'
+import { LogoGrid } from './blocks/LogoGrid'
+import { MediaBlock } from './blocks/Media'
+import { MediaContent } from './blocks/MediaContent'
+import { MediaContentAccordion } from './blocks/MediaContentAccordion'
+import { Pricing } from './blocks/Pricing'
+import { ReusableContent as ReusableContentBlock } from './blocks/ReusableContent'
+import { Slider } from './blocks/Slider'
+import { Statement } from './blocks/Statement'
+import { Steps } from './blocks/Steps'
+import { StickyHighlights } from './blocks/StickyHighlights'
+import { CaseStudies } from './collections/CaseStudies'
+import { Categories } from './collections/Categories'
+import { CommunityHelp } from './collections/CommunityHelp'
+import { Docs } from './collections/Docs'
+import { ArrowBlock } from './collections/Docs/blocks/arrow'
+import { BannerBlock } from './collections/Docs/blocks/banner'
+import { BulletListBlock } from './collections/Docs/blocks/bulletList'
+import { CardBlock } from './collections/Docs/blocks/card'
+import { CardGroupBlock } from './collections/Docs/blocks/cardGroup'
+import { CodeBlock } from './collections/Docs/blocks/code'
+import { CodeTabsBlock } from './collections/Docs/blocks/codeTabs'
+import { ComponentPreviewBlock } from './collections/Docs/blocks/componentPreview'
+import { LightDarkImageBlock } from './collections/Docs/blocks/lightDarkImage'
+import { PayloadMediaBlock } from './collections/Docs/blocks/payloadMedia'
+import { PillBlock } from './collections/Docs/blocks/pill'
+import { ResourceBlock } from './collections/Docs/blocks/resource'
+import { RestExamplesBlock } from './collections/Docs/blocks/restExamples'
+import { TableWithDrawersBlock } from './collections/Docs/blocks/tableWithDrawers'
+import { UploadBlock } from './collections/Docs/blocks/upload'
+import { VideoDrawerBlock } from './collections/Docs/blocks/VideoDrawer'
+import { YoutubeBlock } from './collections/Docs/blocks/youtube'
+import { DocsFeedback } from './collections/DocsFeedback'
+import { Media } from './collections/Media'
+import { Pages } from './collections/Pages'
+import { Budgets, Industries, Regions, Specialties } from './collections/PartnerFilters'
+import { Partners } from './collections/Partners'
+import { Posts } from './collections/Posts'
+import { ReusableContent } from './collections/ReusableContent'
+import { Users } from './collections/Users'
+import { Footer } from './globals/Footer'
+import { GetStarted } from './globals/GetStarted'
+import { MainMenu } from './globals/MainMenu'
+import { PartnerProgram } from './globals/PartnerProgram'
+import { TopBar } from './globals/TopBar'
+import { opsCounterPlugin } from './plugins/opsCounter'
+import createReleasePost from './scripts/createReleasePost'
+import createReleasePostFromAdmin from './scripts/createReleasePostFromAdmin'
+import redeployWebsite from './scripts/redeployWebsite'
+import { refreshMdxToLexical, syncDocs } from './scripts/syncDocs'
+import { askJob } from './utilities/qpuGoogle'
+
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
+
+const sendGridAPIKey = process.env.SENDGRID_API_KEY
+
+// SendGrid over SMTP: no package beyond nodemailer, no old request dependency in the config's import graph
+const sendgridConfig = {
+  transportOptions: { host: 'smtp.sendgrid.net', port: 587, auth: { user: 'apikey', pass: sendGridAPIKey } },
+}
+
+export default buildConfig({
+  admin: {
+    components: {
+      afterNavLinks: ['@root/components/AfterNavActions'],
+      beforeDashboard: ['@root/components/BeforeDashboard'],
+    },
+    importMap: {
+      baseDir: dirname,
+    },
+  },
+  blocks: [
+    BlogContent,
+    BlogMarkdown,
+    CodeExampleBlock,
+    MediaExampleBlock,
+    Callout,
+    CallToAction,
+    DownloadBlock,
+    LightDarkImageBlock,
+    PayloadMediaBlock,
+    TableWithDrawersBlock,
+    YoutubeBlock,
+    PillBlock,
+    ArrowBlock,
+    BulletListBlock,
+    CardBlock,
+    CardGroupBlock,
+    ComponentPreviewBlock,
+    CardGrid,
+    CaseStudyCards,
+    CaseStudiesHighlight,
+    UploadBlock,
+    CaseStudyParallax,
+    CodeFeature,
+    Content,
+    ContentGrid,
+    ComparisonTable,
+    Form,
+    HoverCards,
+    HoverHighlights,
+    LinkGrid,
+    LogoGrid,
+    MediaBlock,
+    MediaContent,
+    MediaContentAccordion,
+    RestExamplesBlock,
+    Pricing,
+    ReusableContentBlock,
+    ResourceBlock,
+    Slider,
+    Statement,
+    Steps,
+    StickyHighlights,
+    ExampleTabs,
+    {
+      slug: 'spotlight',
+      fields: [
+        {
+          name: 'element',
+          type: 'select',
+          options: [
+            {
+              label: 'H1',
+              value: 'h1',
+            },
+            {
+              label: 'H2',
+              value: 'h2',
+            },
+            {
+              label: 'H3',
+              value: 'h3',
+            },
+            {
+              label: 'Paragraph',
+              value: 'p',
+            },
+          ],
+        },
+        {
+          name: 'richText',
+          type: 'richText',
+          editor: lexicalEditor(),
+        },
+      ],
+      interfaceName: 'SpotlightBlock',
+    },
+    {
+      slug: 'video',
+      fields: [
+        {
+          name: 'url',
+          type: 'text',
+        },
+      ],
+      interfaceName: 'VideoBlock',
+    },
+    {
+      slug: 'br',
+      fields: [
+        {
+          name: 'ignore',
+          type: 'text',
+        },
+      ],
+
+      interfaceName: 'BrBlock',
+    },
+    VideoDrawerBlock,
+    {
+      slug: 'commandLine',
+      fields: [
+        {
+          name: 'command',
+          type: 'text',
+        },
+      ],
+      interfaceName: 'CommandLineBlock',
+    },
+    {
+      slug: 'command',
+      fields: [
+        {
+          name: 'command',
+          type: 'text',
+          required: true,
+        },
+      ],
+      labels: {
+        plural: 'Command Lines',
+        singular: 'Command Line',
+      },
+    },
+    {
+      slug: 'link',
+      fields: [link()],
+      labels: {
+        plural: 'Links',
+        singular: 'Link',
+      },
+    },
+    {
+      slug: 'templateCards',
+      fields: [
+        {
+          name: 'templates',
+          type: 'array',
+          fields: [
+            {
+              name: 'name',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'description',
+              type: 'textarea',
+              required: true,
+            },
+            {
+              name: 'image',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'slug',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'order',
+              type: 'number',
+              required: true,
+            },
+          ],
+          labels: {
+            plural: 'Templates',
+            singular: 'Template',
+          },
+        },
+      ],
+      interfaceName: 'TemplateCardsBlock',
+    },
+    BannerBlock,
+    CodeBlock,
+    CodeTabsBlock,
+    Code,
+  ],
+  collections: [
+    CaseStudies,
+    CommunityHelp,
+    Docs,
+    DocsFeedback,
+    Media,
+    Pages,
+    Posts,
+    Categories,
+    ReusableContent,
+    Users,
+    Partners,
+    Industries,
+    Specialties,
+    Regions,
+    Budgets,
+  ],
+  cors: [
+    process.env.PAYLOAD_PUBLIC_APP_URL || '',
+    'https://payloadcms.com',
+    'https://discord.com/api',
+  ].filter(Boolean),
+  db: qpuDb(), // the adapter the environment names: D1 under a Cloudflare binding, the site's MongoDB otherwise (generated: payload.qpu.adapters.ts)
+  defaultDepth: 1,
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [
+      ...defaultFeatures.filter((feature) => feature.key !== 'link'),
+      LinkFeature({
+        fields({ defaultFields }) {
+          return [
+            ...defaultFields.filter((field) => field.name !== 'url'),
+            {
+              // Own url field to disable URL encoding links starting with '../'
+              name: 'url',
+              type: 'text',
+              label: ({ t }) => t('fields:enterURL'),
+              required: true,
+              validate: (value: string, options) => {
+                return
+              },
+            } as TextField,
+          ]
+        },
+      }),
+      EXPERIMENTAL_TableFeature(),
+      UploadFeature({
+        collections: {
+          media: {
+            fields: [
+              {
+                name: 'enableLink',
+                type: 'checkbox',
+                label: 'Enable Link',
+              },
+              link({
+                appearances: false,
+                disableLabel: true,
+                overrides: {
+                  admin: {
+                    condition: (_, data) => Boolean(data?.enableLink),
+                  },
+                },
+              }),
+            ],
+          },
+        },
+      }),
+      LabelFeature(),
+      LargeBodyFeature(),
+      BlocksFeature({
+        // Consolidated onto the QPU/ecommerce model: the legacy layout blocks are dropped from the inline editor.
+        // 'form' is also excluded here — the form-builder's own 'message' richText inherits this editor, so embedding
+        // the form block re-entered it and overflowed generateImportMap (an infinite field cycle). The qpu block and
+        // the Drive-file block carry no richText, so the editor is acyclic.
+        blocks: qpuLexicalBlocks.filter((b) => b !== 'form'),
+      }),
+    ],
+  }),
+  email: qpuEmail(), // Resend over HTTP when its key is named (it runs in a Worker), nodemailer with SendGrid otherwise (generated)
+  endpoints: [
+    {
+      handler: syncDocs,
+      method: 'post',
+      path: '/sync/docs',
+    },
+    {
+      handler: redeployWebsite,
+      method: 'post',
+      path: '/redeploy/website',
+    },
+    {
+      handler: refreshMdxToLexical,
+      method: 'get',
+      path: '/refresh/mdx-to-lexical',
+    },
+    {
+      handler: createReleasePost,
+      method: 'post',
+      path: '/create-release-post',
+    },
+    {
+      handler: createReleasePostFromAdmin,
+      method: 'post',
+      path: '/create-release-post-from-admin',
+    },
+  ],
+  globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar],
+  graphQL: {
+    disablePlaygroundInProduction: false,
+  },
+  plugins: [
+    opsCounterPlugin({
+      max: 200,
+      warnAt: 25,
+    }),
+    googleAnalytics({
+      // Optional: Configure which widgets to enable
+      enabledWidgets: ['analytics-overview', 'top-pages', 'active-users', 'channel-groups'],
+    }),
+    formBuilderPlugin({
+      fields: qpuFormFields,
+      formOverrides: {
+        fields: ({ defaultFields }) => [
+          ...defaultFields,
+          {
+            name: 'hubSpotFormID',
+            type: 'text',
+            admin: {
+              position: 'sidebar',
+            },
+            label: 'HubSpot Form ID',
+          },
+          {
+            name: 'customID',
+            type: 'text',
+            admin: {
+              description: 'Attached to submission button to track clicks',
+              position: 'sidebar',
+            },
+            label: 'Custom ID',
+          },
+          {
+            name: 'requireRecaptcha',
+            type: 'checkbox',
+            admin: {
+              position: 'sidebar',
+            },
+            label: 'Require reCAPTCHA',
+          },
+        ],
+        hooks: {
+          afterChange: [
+            ({ doc }) => {
+              revalidateTag(`form-${doc.title}`, { expire: 0 })
+            },
+          ],
+        },
+      },
+      formSubmissionOverrides: {
+        fields: ({ defaultFields }) => [
+          ...defaultFields,
+          {
+            name: 'recaptcha',
+            type: 'text',
+            validate: async (value, { req, siblingData }) => {
+              const form = await req.payload.findByID({
+                id: siblingData?.form,
+                collection: 'forms',
+              })
+
+              if (!form?.requireRecaptcha) {
+                return true
+              }
+
+              if (!value) {
+                return 'Please complete the reCAPTCHA'
+              }
+
+              // siteverify through the qpu-google-call job, run within this request; the secret is the one the tenant's bindings name
+              const answer = await askJob(req.payload, { endpoint: 'recaptcha.siteverify', params: { response: String(value) } }, req)
+              if (!JSON.parse(answer?.answer || '{}').success) {
+                return 'Invalid captcha'
+              } else {
+                return true
+              }
+            },
+          },
+        ],
+        hooks: {
+          afterChange: [
+            async ({ doc, req }) => {
+              req.payload.logger.info('Form Submission Received')
+              req.payload.logger.info(Object.fromEntries(req?.headers.entries()))
+
+              const body = req.json ? await req.json() : {}
+
+              const sendSubmissionToHubSpot = async (): Promise<void> => {
+                const { form, submissionData: submissionDataFromDoc } = doc
+                const portalID = process.env.NEXT_PRIVATE_HUBSPOT_PORTAL_KEY
+
+                // Remove partnerId from HubSpot submission (toEmail already populated by beforeChange hook)
+                const submissionData = submissionDataFromDoc.filter(
+                  (field) => field.field !== 'partnerId',
+                )
+
+                const data = {
+                  context: {
+                    ...('hubspotCookie' in body && { hutk: body?.hubspotCookie }),
+                    pageName: 'pageName' in body ? body?.pageName : '',
+                    pageUri: 'pageUri' in body ? body?.pageUri : '',
+                  },
+                  fields: submissionData.map((key) => ({
+                    name: key.field,
+                    value: key.value,
+                  })),
+                }
+
+                try {
+                  await fetch(
+                    `https://api.hsforms.com/submissions/v3/integration/submit/${portalID}/${form.hubSpotFormID}`,
+                    {
+                      body: JSON.stringify(data),
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      method: 'POST',
+                    },
+                  )
+                } catch (err: unknown) {
+                  req.payload.logger.error({
+                    err,
+                    msg: 'Fetch to HubSpot form submissions failed',
+                  })
+                }
+              }
+              await sendSubmissionToHubSpot()
+            },
+          ],
+          beforeChange: [
+            async ({ data, req }) => {
+              // Look up partner email if partnerId is present and populate toEmail field
+              // This runs before email notifications are sent
+              const partnerIdField = data?.submissionData?.find(
+                (field) => field.field === 'partnerId',
+              )
+
+              if (partnerIdField?.value) {
+                try {
+                  const partner = await req.payload.findByID({
+                    id: partnerIdField.value,
+                    collection: 'partners',
+                    overrideAccess: true,
+                  })
+
+                  if (partner?.email) {
+                    // Add toEmail field to submissionData for email notifications
+                    data.submissionData.push({
+                      field: 'toEmail',
+                      value: partner.email,
+                    })
+                  }
+                } catch (err) {
+                  req.payload.logger.error({
+                    err,
+                    msg: 'Failed to lookup partner email',
+                  })
+                }
+              }
+
+              return data
+            },
+          ],
+        },
+      },
+    }),
+    seoPlugin({
+      collections: ['case-studies', 'pages', 'posts'],
+      globals: ['get-started'],
+      uploadsCollection: 'media',
+    }),
+    nestedDocsPlugin({
+      collections: ['pages'],
+      generateLabel: (_, doc) => doc.title as string,
+      generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug as string}`, ''),
+    }),
+    redirectsPlugin({
+      collections: ['case-studies', 'pages', 'posts'],
+      overrides: {
+        hooks: {
+          afterChange: [revalidateRedirects],
+        },
+      },
+    }),
+    qpuPlugin({ adapters: 'auto' }), // last: the QPU as one plugin with multidimensional capabilities, hooking the collections the plugins above created (form-submissions among them); generated
+  ],
+  secret: process.env.PAYLOAD_SECRET || '',
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
+  },
+})

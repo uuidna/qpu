@@ -5,7 +5,7 @@ import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { connect } from 'node:tls'
 import './teleport.ts'
-import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
+import { toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
 import { getWithTimeout, runSelftest, publishRecord } from './mcp.ts'
 
 const ROOT = process.cwd()

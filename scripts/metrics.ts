@@ -3,8 +3,8 @@
 import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import './teleport.ts'
-import { toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
-import { tallyAccount, recordDeposit } from '../src/quantum/coins.ts'
+import { toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
+import { tallyAccount, recordDeposit } from '../src/quantum/processing/unit/coins.ts'
 import { getJson, getWithTimeout, publishRecord } from './mcp.ts'
 const ROOT = process.cwd()
 const pub = (f: string) => getJson(join(ROOT, 'docs', 'public', f), undefined)

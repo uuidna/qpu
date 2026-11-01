@@ -2,12 +2,12 @@
 // on this host, the unit's, any mirror), so a write lands on all and a read is served by any. Locally the files are build
 // output only, ignored by git. Configure QPU_DOCKETS (comma-separated URLs ending in /docket) and QPU_WRITE_TOKEN.
 import { homedir } from 'node:os'
-import { redact } from '../src/quantum/machine.ts'
+import { redact } from '../src/quantum/processing/machine.ts'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
 import { execSync } from 'node:child_process'
-import { channelOf, uuidFromParts, uuidOf } from '../src/quantum/blocks.ts'
+import { channelOf, uuidFromParts, uuidOf } from '../src/quantum/processing/unit/blocks.ts'
 
 const ROOT = process.cwd()
 // The tenant's docket and its writer token: from the environment, or from .dev.vars (the file wrangler keeps out of git) —

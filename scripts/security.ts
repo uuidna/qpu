@@ -2,30 +2,41 @@
 // surface audit over MCP) and what the developer sees in the tree (the dependency audits, the leak scan, the environment example, the access
 // rules, the hooks the plugin adds, the signing flag, the theorem ledger), hands both to the audit tool, which merges them as one, and writes
 // what it returns. Network; skipped by `next --offline`.
-import { execFileSync } from 'node:child_process'
+import { execFile } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { promisify } from 'node:util'
 import './teleport.ts'
-import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/mcp.ts'
+import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
 import { getJson, getWithTimeout, publishRecord, mcpClient } from './mcp.ts'
 
 const ROOT = process.cwd()
 const HOSTS = (process.env.QPU_E2E_HOSTS ?? 'https://qpu.uuidna.com,https://qpu.psg.bg,https://qpu.ceci.workers.dev').split(',').map((h) => h.trim()).filter(Boolean)
 const call = toolCallerOf('audit')
-const json = (cmd: string, args: string[], cwd: string): Record<string, number> => { try { const out = execFileSync(cmd, args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 120_000 }); const j = JSON.parse(out) as { metadata?: { vulnerabilities?: Record<string, number> } }; return j.metadata?.vulnerabilities ?? {} } catch (e) { const out = (e as { stdout?: string }).stdout; try { const j = JSON.parse(out ?? '') as { metadata?: { vulnerabilities?: Record<string, number> } }; return j.metadata?.vulnerabilities ?? {} } catch { return { unmeasured: 1 } } } }
+const pexec = promisify(execFile)
+// a dependency audit as JSON; async so the two (root, site) run concurrently instead of blocking the event loop one after the other. npm/pnpm audit
+// exit non-zero when they find vulnerabilities, so the count is read from the error's stdout too; a large report needs a bigger maxBuffer than the 1 MB default.
+const json = async (cmd: string, args: string[], cwd: string): Promise<Record<string, number>> => { try { const { stdout } = await pexec(cmd, args, { cwd, encoding: 'utf8', timeout: 120_000, maxBuffer: 1 << 26 }); const j = JSON.parse(stdout) as { metadata?: { vulnerabilities?: Record<string, number> } }; return j.metadata?.vulnerabilities ?? {} } catch (e) { const out = (e as { stdout?: string }).stdout; try { const j = JSON.parse(out ?? '') as { metadata?: { vulnerabilities?: Record<string, number> } }; return j.metadata?.vulnerabilities ?? {} } catch { return { unmeasured: 1 } } } }
 const main = async () => {
-  const hosts = []
-  for (const origin of HOSTS) {
+  // the three heavy, independent phases start together and run concurrently — the dependency audits, the docket read, and the host probe — so the step's
+  // wall time is the slowest one, not their sum (serially they summed past the budget even after the finder and the host probe were made parallel/keyset).
+  const vulnP = Promise.all([json('npm', ['audit', '--omit=dev', '--json'], ROOT), json('pnpm', ['audit', '--prod', '--json'], join(ROOT, 'site'))])
+  const app = mcpClient()
+  const heldP = (async () => { const held: Record<string, string> = {}; for (const find of ['findPages', 'findEntries']) await app.findEach(find, { draft: true, depth: 0 }, (d) => { held[`payload/${find.slice(4).toLowerCase()}/${(d as { id: string }).id}`] = JSON.stringify(d) }); return held })()
+  // every host probed at once, not one after another: the step's wall time is the slowest single host, not their sum (the serial loop summed past the budget)
+  const hosts = await Promise.all(HOSTS.map(async (origin) => {
     const host = new URL(origin).host
     try {
       const r = await fetch(origin + '/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: {} } }), signal: AbortSignal.timeout(90_000) })
       const headers: Record<string, string> = {}; r.headers.forEach((v, k) => { headers[k] = v })
       const audit = ((await r.json()) as { result?: { structuredContent?: { total: number; failed: number } } }).result?.structuredContent
-      const options = await fetch(origin + '/mcp', { method: 'OPTIONS', signal: AbortSignal.timeout(20_000) }).then((o) => o.status).catch(() => 0)
-      const write = await fetch(origin + '/entries', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(20_000) }).then((w) => w.status).catch(() => 0)
-      hosts.push({ host, status: r.status, headers, optionsStatus: options, writeWithoutToken: write, ...(audit ? { audit: { total: audit.total, failed: audit.failed } } : {}) })
-    } catch (e) { hosts.push({ host, status: 0, headers: {}, writeWithoutToken: 0 }); console.log(`security: ${host} unreachable: ${(e as Error).message}`) }
-  }
+      const [options, write] = await Promise.all([
+        fetch(origin + '/mcp', { method: 'OPTIONS', signal: AbortSignal.timeout(20_000) }).then((o) => o.status).catch(() => 0),
+        fetch(origin + '/entries', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}', signal: AbortSignal.timeout(20_000) }).then((w) => w.status).catch(() => 0),
+      ])
+      return { host, status: r.status, headers, optionsStatus: options, writeWithoutToken: write, ...(audit ? { audit: { total: audit.total, failed: audit.failed } } : {}) }
+    } catch (e) { console.log(`security: ${host} unreachable: ${(e as Error).message}`); return { host, status: 0, headers: {} as Record<string, string>, writeWithoutToken: 0 } }
+  }))
   const payloadUrl = process.env.QPU_PAYLOAD_URL
   const unauthenticated = payloadUrl ? await fetch(payloadUrl.replace(/\/$/, '') + '/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }), signal: AbortSignal.timeout(20_000) }).then((r) => r.status).catch(() => 0) : null
   const entropy = (getJson(join(ROOT, 'docs', 'public', 'entropy.json')) as { byKind: Record<string, { leads: number }> } | null)
@@ -35,17 +46,18 @@ const main = async () => {
   const access = toolCallerOf('configure')({ kind: 'access' }).config as { entries?: { update?: string }; tenants?: { write?: string } }
   const theorems = existsSync(join(ROOT, 'docs', 'public', 'theorems.ndjson')) ? readFileSync(join(ROOT, 'docs', 'public', 'theorems.ndjson'), 'utf8').split('\n').filter(Boolean).length : 0
   const payloadConfig = existsSync(join(ROOT, 'site', 'src', 'payload.config.ts')) ? readFileSync(join(ROOT, 'site', 'src', 'payload.config.ts'), 'utf8') : ''
-  const developer = { autoLogin: /autoLogin\s*:/.test(payloadConfig), vulnerabilities: { root: json('npm', ['audit', '--omit=dev', '--json'], ROOT), site: json('pnpm', ['audit', '--prod', '--json'], join(ROOT, 'site')) }, leaks: entropy?.byKind.leak?.leads ?? 0, envExampleValueless: !env.split('\n').some((l) => /^[A-Z_]+=\S/.test(l)), access, hooks: ['collisionGuard', 'firstUserBootstrap', 'appRequest'].filter((h) => plugin.includes(h)), signing: /webcrypto_modern_algorithms/.test(wrangler) ? 'ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc)' : 'no signing flag', theorems }
+  const [vulnRoot, vulnSite] = await vulnP
+  const developer = { autoLogin: /autoLogin\s*:/.test(payloadConfig), vulnerabilities: { root: vulnRoot, site: vulnSite }, leaks: entropy?.byKind.leak?.leads ?? 0, envExampleValueless: !env.split('\n').some((l) => /^[A-Z_]+=\S/.test(l)), access, hooks: ['collisionGuard', 'firstUserBootstrap', 'appRequest'].filter((h) => plugin.includes(h)), signing: /webcrypto_modern_algorithms/.test(wrangler) ? 'ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc)' : 'no signing flag', theorems }
   const result = call({ security: { client: { hosts, payloadMcp: { unauthenticated } }, developer } })
   // leaks found before they are published, and where already served: every published file and the live copies of the logs, through audit { leaks }
   const pub = join(ROOT, 'docs', 'public')
   const { readdirSync } = await import('node:fs')
   const published = Object.fromEntries(readdirSync(pub).filter((f) => /\.(json|ndjson|md|txt|xml|webmanifest|html)$/.test(f)).map((f) => [`docs/public/${f}`, readFileSync(join(pub, f), 'utf8')]))
   const live: Record<string, string> = {}
-  for (const origin of HOSTS) for (const f of ['next-leads.json', 'receipts.ndjson', 'receipt.json', 'security.json']) { try { const r = await getWithTimeout(`${origin}/${f}`); if (r.ok) live[`${new URL(origin).host}/${f}`] = await r.text() } catch { /* unreached: measured next run */ } }
+  // every live file on every host fetched at once, not nested serial loops, for the same reason the host probe is parallel
+  await Promise.all(HOSTS.flatMap((origin) => ['next-leads.json', 'receipts.ndjson', 'receipt.json', 'security.json'].map(async (f) => { try { const r = await getWithTimeout(`${origin}/${f}`); if (r.ok) live[`${new URL(origin).host}/${f}`] = await r.text() } catch { /* unreached: measured next run */ } })))
   // and every document Payload holds, read through its MCP as a client reads it: a page or an entry is served
-  const app = mcpClient(), held: Record<string, string> = {}
-  for (const find of ['findPages', 'findEntries']) for (const d of ((await app.findAll(find, { draft: true, depth: 0 })).docs ?? []) as { id: string }[]) held[`payload/${find.slice(4).toLowerCase()}/${d.id}`] = JSON.stringify(d)
+  const held = await heldP // the docket read started concurrently at the top; awaited here, just before it is scanned
   const leaks = call({ leaks: { texts: { ...published, ...live, ...held }, served: [...Object.keys(live), ...Object.keys(held)] } })
   console.log(`leaks: ${leaks.says}`)
   // the access audit from every perspective: the generated collections, hooks and scopes, every cell naming its licence clause and its legal fact

@@ -3,7 +3,7 @@
 // (QPU_SHARD=merge) gathers every shard's file and writes the step's artefacts. Without QPU_SHARD a step runs whole, as before.
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle } from '../src/quantum/processing/mcp.ts'
 
 type Shard = { index: number; count: number } | 'merge' | null
 const DIR = join(process.cwd(), '.qpu', 'cache')

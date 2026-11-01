@@ -32,11 +32,11 @@ const spawnRun = (plan: { action: string; command: { cmd: string; args: readonly
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
-import { forecastTimes, MACHINE_ACTIONS, type StreamEvent } from '../src/quantum/machine.ts'
+import { forecastTimes, MACHINE_ACTIONS, type StreamEvent } from '../src/quantum/processing/machine.ts'
 import { getJson } from './mcp.ts'
-import { LITERAL_ROOTS } from '../src/quantum/audit.ts'
+import { LITERAL_ROOTS } from '../src/quantum/processing/audit.ts'
 
-const runFiles = async () => (await import('../src/quantum/toolboxes/repository.ts')).RUN_FILES
+const runFiles = async () => (await import('../src/quantum/processing/toolboxes/repository.ts')).RUN_FILES
 export const streamOf = async (root: string) => {
   const file = join(root, (await runFiles()).stream)
   mkdirSync(dirname(file), { recursive: true })
@@ -64,7 +64,7 @@ export const timesOf = async (root: string) => {
 /** Runs an asked action: planned by the workflow rules against the facts at the root, run with no shell and streamed (its start with the ETA, a
  *  heartbeat every second, each finished step of next), then recorded; an action the rules refuse answers its plan and runs nothing. */
 export const runMachine = async (args: Record<string, unknown>, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) => {
-  const repository = (await import('../src/quantum/mcp.ts')).toolCallerOf('repository'), read = (f: string) => getJson(join(cwd, f))
+  const repository = (await import('../src/quantum/processing/mcp.ts')).toolCallerOf('repository'), read = (f: string) => getJson(join(cwd, f))
   const files = await runFiles(), plan = repository({ machine: { plan: { ...args, facts: { receipt: read(files.receipt), approval: read(files.configs)?.approval ?? null, e2e: read(files.e2e)?.outcomes ?? null } } } })
   if (!plan?.allowed) return { plan, answer: plan }
   // the action's own hooks run first, before use: a refusal is answered here, before anything is changed or booked
@@ -92,7 +92,7 @@ const mergeFlow = async (branch: string, message: string | undefined, cwd: strin
 export const now = async (root: string, last = 20) => {
   const file = join(root, (await runFiles()).stream)
   const events = existsSync(file) ? readFileSync(file, 'utf8').trim().split('\n').flatMap((l) => { try { return [JSON.parse(l)] } catch { return [] } }) : []
-  const { toolCallerOf } = await import('../src/quantum/mcp.ts')
+  const { toolCallerOf } = await import('../src/quantum/processing/mcp.ts')
   return toolCallerOf('repository')({ status: { events, times: await timesOf(root), last } })
 }
 
@@ -102,7 +102,7 @@ if (process.argv[1]?.endsWith('machine.ts')) {
   const say = (x: Awaited<ReturnType<typeof runMachine>>) => (x.answer as { preUse?: string }).preUse ?? (x.answer as { record?: { says?: string } }).record?.says ?? (x.answer as { says?: string }).says ?? JSON.stringify(x.answer)
   if (action === 'now') console.log(JSON.stringify(await now(process.cwd()), null, 1))
   else if (action === 'proof-keys' || action === 'proof-verify') {
-    const c = await import('node:crypto'), { mcpClient } = await import('./mcp.ts'), { toolCallerOf } = await import('../src/quantum/mcp.ts'), keyFile = join(dirname(join(process.cwd(), (await runFiles()).receipt)), 'proof-key.json')
+    const c = await import('node:crypto'), { mcpClient } = await import('./mcp.ts'), { toolCallerOf } = await import('../src/quantum/processing/mcp.ts'), keyFile = join(dirname(join(process.cwd(), (await runFiles()).receipt)), 'proof-key.json')
     const referer = flag('--referer'), sk = process.env.QPU_PROOF_SIGNING_KEY
     // keys bound to a referer: each chunk's seed is HKDF over the signing seed, the referer the salt (the plan seal { referer } answers); the public ids printed, never a private key
     if (action === 'proof-keys' && referer) { const plan = (toolCallerOf('seal')({ text: referer, referer: { address: referer, chunks: Number(flag('--chunks') ?? 1) } }) as { derivation: { infos: string[] } }).derivation, seed = Buffer.from(sk ?? '', 'base64').subarray(-32)
@@ -119,7 +119,7 @@ if (process.argv[1]?.endsWith('machine.ts')) {
         return { same: again === b.proof!.signed, signature: b.proof!.signature ? c.verify(null, Buffer.from(b.proof!.signed), pk, Buffer.from(b.proof!.signature, 'base64')) : null, mac: b.proof!.mac && process.env.QPU_DATA_KEY ? c.createHmac('sha256', Buffer.from(c.hkdfSync('sha256', process.env.QPU_DATA_KEY, '', 'qpu proof mac', 32))).update(b.proof!.signed).digest('hex') === b.proof!.mac : null } })
       console.log(`${blocks.length} block(s), ${proved.length} with a proof: ${rows.filter((r) => r.same).length} recomputed equal, ${rows.filter((r) => r.signature === true).length} signatures verified with the public key alone, ${rows.filter((r) => r.mac === true).length} MACs verified with the secret, ${rows.filter((r) => r.signature === false || r.mac === false || !r.same).length} failed`) }
   }
-  else if (action === 'leaks') { const dir = dirname(join(process.cwd(), (await runFiles()).receipt)), { readdirSync } = await import('node:fs'), { toolCallerOf } = await import('../src/quantum/mcp.ts'); const r = toolCallerOf('audit')({ leaks: { texts: Object.fromEntries(readdirSync(dir).filter((p) => /\.(md|json|ndjson|txt|xml|html)$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) } }) as { byKind: Record<string, number>; says: string }; console.log(r.says); console.log(JSON.stringify(r.byKind)) }
+  else if (action === 'leaks') { const dir = dirname(join(process.cwd(), (await runFiles()).receipt)), { readdirSync } = await import('node:fs'), { toolCallerOf } = await import('../src/quantum/processing/mcp.ts'); const r = toolCallerOf('audit')({ leaks: { texts: Object.fromEntries(readdirSync(dir).filter((p) => /\.(md|json|ndjson|txt|xml|html)$/.test(p)).map((p) => [p, readFileSync(join(dir, p), 'utf8')])) } }) as { byKind: Record<string, number>; says: string }; console.log(r.says); console.log(JSON.stringify(r.byKind)) }
   else if (action === 'unexport' || action === 'rename') {
     // the type checker's own language service (the site's TypeScript, which exposes it) over the tree's tsconfig: never a text replace
     const ts = (await import('node:module')).default.createRequire(join(process.cwd(), 'site', 'package.json'))('typescript') as any, root = process.cwd()
@@ -133,7 +133,7 @@ if (process.argv[1]?.endsWith('machine.ts')) {
       // each rename recorded in Payload with its witness (the content address of its declaration's first line at the base commit, after the name)
       // and one wave that has many of them (links): the pre-commit rule pairs only what Payload holds and the diff agrees with
       if (!process.env.QPU_APP_KEY) { console.log('renames not recorded: no QPU_APP_KEY, so the pre-commit rule counts them as growth'); process.exit(0) }
-      const { mcpClient } = await import('./mcp.ts'), { uuidOf } = await import('../src/quantum/blocks.ts'), m = mcpClient(), base = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), ids: string[] = []
+      const { mcpClient } = await import('./mcp.ts'), { uuidOf } = await import('../src/quantum/processing/unit/blocks.ts'), m = mcpClient(), base = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), ids: string[] = []
       for (const [file, from, to] of rows) { const line = execFileSync('git', ['show', `${base}:${file}`], { encoding: 'utf8', maxBuffer: 1 << 28 }).split('\n').find((l) => new RegExp(`^(export )?(async )?(const|function) ${from}\\b`).test(l)); if (!line) continue
         const body = { file, from, to, base, rest: uuidOf(line.slice(line.indexOf(from) + from!.length)) }
         const made = await m.call('createEntries', { kind: 'rename', from: 'machine', body })

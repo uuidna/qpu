@@ -77,6 +77,11 @@ theorem relation_42 : glProd n coins = qaoaZz n faces ∧ glProd n coins = qaoaZ
 theorem relation_49 : qaoaZz rays rays = qaoaX rays rays := rfl
 /-- Combinatorics, Mint meet at 91. -/
 theorem relation_91 : chooseOf faces coins = choose faces coins := rfl
+/-- RSA: factoring is the σ-involution. The modulus `rays·(faces−seed)` equals the product of the two gcds the
+    involution finds, `gcdOf (a^(r/2) ∓ seed, modulus)` — a cross formula over the register's own constants and the
+    Shor reduction, closed by `rfl`, never a hardcoded `91 = 7·13`. The quantum step (order-finding) is reached only
+    for this small modulus; no bound is bypassed (`textbook_rsa_beyond_bound`). -/
+theorem relation_rsa : shorModulus = gcdOf (half shorBase shorModulus - seed) shorModulus * gcdOf (half shorBase shorModulus + seed) shorModulus := rfl
 /-- Qaoa, Shor meet at 96. -/
 theorem relation_96 : qaoaZz n bits = qaoaZz bits n ∧ qaoaZz n bits = qaoaX n bits := ⟨rfl, rfl⟩
 /-- Qaoa, Shor meet at 196. -/

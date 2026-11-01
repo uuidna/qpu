@@ -5,22 +5,36 @@
 import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, statSync, readdirSync, openSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { spawnSync, execSync, spawn } from 'node:child_process'
-import { toolCallerOf } from '../src/quantum/mcp.ts'
-import { GENERATED_FILES, RUN_FILES, type Rename } from '../src/quantum/toolboxes/repository.ts'
-import { LITERAL_ROOTS, listManualDocs } from '../src/quantum/audit.ts'
-import { GAP_KINDS, classifyGap } from '../src/quantum/toolboxes/billing.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
+import { GENERATED_FILES, RUN_FILES, type Rename } from '../src/quantum/processing/toolboxes/repository.ts'
+import { LITERAL_ROOTS, listManualDocs } from '../src/quantum/processing/audit.ts'
+import { GAP_KINDS, classifyGap } from '../src/quantum/processing/toolboxes/billing.ts'
 import { createHash } from 'node:crypto'
 import { penalise, clear, correctPenalty, recordPrevented, listOpenPenalties } from './penalties.ts'
-import { mcpClient, getJson, raidRead } from './mcp.ts'
-import { redact } from '../src/quantum/machine.ts'
+import { mcpClient, getJson, raidRead, MCP_URL } from './mcp.ts'
+import { redact } from '../src/quantum/processing/machine.ts'
 import { homedir } from 'node:os'
 
 type Step = { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; detach?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; files?: string[]; says: string }
 const name = process.argv[2] ?? ''
 const git = (a: string[]) => spawnSync('git', a, { encoding: 'utf8', maxBuffer: 1 << 30 }).stdout?.trim() ?? ''
 const extra = process.argv.slice(3)
+// the repository tool answered by the running Payload app when up and keyed — the decision over its live records, under the tenant's roles, so
+// pre-commit and pre-push are Payload hooks — else computed in-process (offline); the e2e gate proves the two answers equal
+// the Payload app's CRUD REST is the MCP: a tool runs as POST /api/entries { kind: 'call', body: { tool, arguments } }, the entries beforeValidate
+// hook computing the result through callOf — the same core, inside the app, over its live records under the key's roles; offline, in-process
+const appBase = (process.env.QPU_APP_MCP ?? MCP_URL).replace(/\/api\/mcp$/, ''), appAuth = `${process.env.QPU_APP_AUTH_COLLECTION ?? 'users'} API-Key ${process.env.QPU_APP_KEY}`
+let said = false
+const repositoryTool = async (a: Record<string, unknown>): Promise<any> => {
+  if (process.env.QPU_OFFLINE !== '1' && process.env.QPU_APP_KEY) try {
+    const res = await fetch(`${appBase}/api/entries`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', authorization: appAuth }, body: JSON.stringify({ kind: 'call', from: 'hook', body: { tool: 'repository', arguments: a } }), signal: AbortSignal.timeout(30000) })
+    if (res.ok) { const r = ((await res.json()) as { doc?: { result?: { content?: { text: string }[]; structuredContent?: unknown } } }).doc?.result, out = r?.content ? JSON.parse(r.content[0]!.text) : r?.structuredContent ?? r; if (out) { if (!said) { console.error(`hook ${name}: decided by the Payload app (${appBase})`); said = true } return out } }
+    else console.error(`hook ${name}: the Payload app answered HTTP ${res.status}; in-process`)
+  } catch (e) { console.error(`hook ${name}: the Payload app did not answer (${(e as Error).message.slice(0, 60)}); in-process`) }
+  return toolCallerOf('repository')(a)
+}
 let w: { name: string; steps: Step[]; strict: boolean } | undefined, why = 'no such workflow'
-try { w = toolCallerOf('repository')({ workflow: name, offline: process.env.QPU_OFFLINE === '1' }).workflow } catch (e) { why = (e as Error).message }
+try { w = (await repositoryTool({ workflow: name, offline: process.env.QPU_OFFLINE === '1' }))?.workflow } catch (e) { why = (e as Error).message }
 if (!w) { console.error(`hook ${name}: ${why}`); process.exit(1) }
 let red = false
 // the open penalties first, before any step: their count, the tokens and coins they book, and each one's rule and subject
@@ -92,19 +106,26 @@ if (name === 'pre-commit' && automated && automated.drifted.length && standing.l
 // pre-commit: the staged diff of the hand-written roots, read once: the core reads literals, folded and proven from it (a file declaring its generator excluded)
 // the renames this commit carries, read from Payload: the wave the rename door recorded at HEAD, its renames populated through links (has many)
 const renamesAtHead = name === 'pre-commit' && process.env.QPU_APP_KEY ? await (async () => { const m = mcpClient(), head = git(['rev-parse', 'HEAD']), waves = (((await m.findAll('findEntries', { where: JSON.stringify({ kind: { equals: 'rename-wave' } }), depth: 1 })).docs ?? []) as { body?: { base?: string }; links?: { body?: Rename }[] }[]).filter((w) => w.body?.base === head); return waves.flatMap((w) => (w.links ?? []).flatMap((l) => (l.body ? [l.body] : []))) })() : []
-const getStagedDiff = () => { const diff = git(['diff', '--cached', '-U0', '--no-color', '--', ...LITERAL_ROOTS]); return { diff, renames: renamesAtHead, generated: [...diff.matchAll(/^\+\+\+ b\/(.+)$/gm)].map((m) => m[1]!).filter((f) => { try { return /^\/\/ generated by |(automatically|generated) by payload|generated by configure \{/im.test(readFileSync(f, 'utf8').slice(0, 800)) } catch { return true } }) } }
+const getStagedDiff = () => { const diff = git(['diff', '--cached', '-U0', '--no-color', '--no-renames', '--', ...LITERAL_ROOTS]); return { diff, renames: renamesAtHead, generated: [...diff.matchAll(/^\+\+\+ b\/(.+)$/gm)].map((m) => m[1]!).filter((f) => { try { return /^\/\/ generated by |(automatically|generated) by payload|generated by configure \{/im.test(readFileSync(f, 'utf8').slice(0, 800)) } catch { return true } }) } }
 // the hook pays for what a commit adds, before it decides: while the staged code grows, a lead of any status whose record already lives, equal, in Payload,
 // whose id no code names and whose prefix no check counts, leaves leads.ts and is staged
 if (name === 'pre-commit' && process.env.QPU_APP_KEY) {
-  const folded = (toolCallerOf('repository')({ workflow: name, facts: { staged: getStagedDiff() } }).decision as { rules?: { rule: string; evidence?: string }[] } | undefined)?.rules?.find((r) => r.rule === 'folded')?.evidence ?? ''
+  const folded = ((await repositoryTool({ workflow: name, facts: { staged: getStagedDiff() } })).decision as { rules?: { rule: string; evidence?: string }[] } | undefined)?.rules?.find((r) => r.rule === 'folded')?.evidence ?? ''
   let owed = Number(/net (-?\d+)/.exec(folded)?.[1] ?? 0)
   if (owed > 0) {
-    const { listLeads } = await import('./mcp.ts'), { LEADS } = await import('../src/quantum/leads.ts'), held = new Map((await listLeads()).records.map((l) => [l.id, l]))
-    const counted = [...new Set(git(['grep', '-h', '-o', "startsWith('[a-z]*-')", '--', 'src', 'scripts']).match(/'[a-z]+-'/g) ?? [])].map((p) => p.slice(1, -1)), file = 'src/quantum/leads.ts', moved: string[] = []
+    // the held leads (what Payload holds, so a code lead may leave leads.ts) read fast from the local content-addressed mirror leads-index.ts
+    // (generated from Payload by leads-sync): a lookup, not the slow live docket query that times out on the large docket (verify_beats_recompute);
+    // the live read is the fallback only when the mirror is empty
+    const { listLeads } = await import('./mcp.ts'), { LEADS } = await import('../src/quantum/processing/leads.ts'), { LEAD_ROWS } = await import('../src/quantum/processing/leads-index.ts')
+    const held = new Map((LEAD_ROWS.length ? LEAD_ROWS : (await listLeads()).records).map((l) => [l.id, l]))
+    const counted = [...new Set(git(['grep', '-h', '-o', "startsWith('[a-z]*-')", '--', 'src', 'scripts']).match(/'[a-z]+-'/g) ?? [])].map((p) => p.slice(1, -1)), file = 'src/quantum/processing/leads.ts', moved: string[] = []
     // paid in chunks of five, each kept only if a fresh-process audit stays as green as before it, else put back and the next chunk tried
-    const failedNow = () => Number(spawnSync('node', ['--input-type=module', '-e', "const { handle } = await import('./src/quantum/mcp.ts'); const r = await handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: {} } }); console.log(r.result.structuredContent.failed)"], { encoding: 'utf8', maxBuffer: 1 << 26 }).stdout.trim().split('\n').pop() ?? NaN), base = failedNow(), candidates: { id: string; row: string }[] = []
+    const failedNow = () => Number(spawnSync('node', ['--input-type=module', '-e', "const { handle } = await import('./src/quantum/processing/mcp.ts'); const r = await handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: {} } }); console.log(r.result.structuredContent.failed)"], { encoding: 'utf8', maxBuffer: 1 << 26 }).stdout.trim().split('\n').pop() ?? NaN), base = failedNow(), candidates: { id: string; row: string }[] = []
     let text = readFileSync(file, 'utf8')
-    for (const l of LEADS) { const p = held.get(l.id); if (p?.statement !== l.statement || p?.status !== l.status || counted.some((c) => l.id.startsWith(c)) || git(['grep', '-l', '-F', `'${l.id}'`, '--', 'src', 'scripts', 'site/src']).split('\n').some((f) => f && f !== file)) continue; const row = text.split('\n').find((x) => x.includes(`id: '${l.id}'`)); if (row) candidates.push({ id: l.id, row }) }
+    // a generated file (a header-declared mirror, e.g. leads-index.ts from the docket) is not code that names the lead: its appearance there must not
+    // disqualify the lead from being externalised — the mirror reflects Payload, where the lead lives after the move (textbook_cheap_gates)
+    const isGen = (f: string) => { try { return /^\/\/ generated by |(automatically|generated) by payload|generated by configure \{/im.test(readFileSync(f, 'utf8').slice(0, 800)) } catch { return false } }
+    for (const l of LEADS) { const p = held.get(l.id); if (p?.statement !== l.statement || p?.status !== l.status || counted.some((c) => l.id.startsWith(c)) || git(['grep', '-l', '-F', `'${l.id}'`, '--', 'src', 'scripts', 'site/src']).split('\n').some((f) => f && f !== file && !isGen(f))) continue; const row = text.split('\n').find((x) => x.includes(`id: '${l.id}'`)); if (row) candidates.push({ id: l.id, row }) }
     for (let i = 0; i < candidates.length && owed > 0; i += 5) {
       const chunk = candidates.slice(i, i + 5), next = chunk.reduce((t, c) => t.split(c.row + '\n').join(''), text); writeFileSync(file, next)
       if (failedNow() > base) { writeFileSync(file, text); continue }
@@ -135,7 +156,7 @@ const publishedFact = name === 'pre-push' ? (() => { const head = git(['rev-pars
 const soleFact = name === 'pre-push' ? { branches: git(['branch', '--format=%(refname:short)']).split('\n').filter(Boolean), worktrees: git(['worktree', 'list', '--porcelain']).split('\n').filter((l) => l.startsWith('worktree ')).length } : undefined
 const facts = { // the penalties this workflow raised itself are re-decided by this very run (cleared if it passes), so they don't count against it: no deadlock
 ...(name === 'pre-push' ? { penalties: standing.open ? (() => { const others = standing.open.filter((b) => (b.snapshot as { workflow?: string } | undefined)?.workflow !== name && (b as { blocks?: boolean }).blocks !== false && GAP_KINDS[classifyGap(b.rule ?? '', b.kind)]); /* lex mitior: blocks when it blocked when raised and its kind blocks now */ return { open: others.length, openKeys: others.map((b) => b.snapshot?.key ?? '') } })() : null } : {}), ...(name === 'pre-commit' ? { automated: automated ? { drifted: automated.drifted, manual: manualFact } : null, staged: stagedFact ?? null } : {}), ...(soleFact !== undefined ? { sole: soleFact } : {}), ...(name === 'commit-msg' ? { message: readFileSync(extra[0]!, 'utf8') } : {}), ...(name === 'pre-commit' || name === 'pre-push' ? { workflows: Object.fromEntries(readdirSync(RUN_FILES.workflows).map((f) => [f, readFileSync(join(RUN_FILES.workflows, f), 'utf8')])) } : {}), ...(publishedFact !== undefined ? { published: publishedFact } : {}), ...deployFacts, receipt: getJson(RUN_FILES.receipt) as { steps?: { name: string; status: string }[] } | null, approval: (getJson(RUN_FILES.configs) as { approval?: unknown } | null)?.approval ?? null, e2e: (getJson(RUN_FILES.e2e) as { outcomes?: { uncorrectable: number; agree: number; erased: number } } | null)?.outcomes ?? null }
-const d = toolCallerOf('repository')({ workflow: name, facts }).decision as { allowed: boolean; strict: boolean; says: string; court: { arguments: { court: unknown } } | null } | undefined
+const d = (await repositoryTool({ workflow: name, facts })).decision as { allowed: boolean; strict: boolean; says: string; court: { arguments: { court: unknown } } | null } | undefined
 if (d) {
   console.log(`hook ${name}: ${d.says}`)
   const held = new Set(((d as { rules?: { rule: string; holds: boolean | null }[] }).rules ?? []).filter((r) => r.holds === true).map((r) => r.rule))
