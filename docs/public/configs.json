@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T18:48:22.924Z",
- "ms": 390,
+ "date": "2026-11-02T19:31:09.269Z",
+ "ms": 480,
  "approval": {
   "represents": "1.4.0+dc1613a9",
   "package": "1.4.0+dc1613a9",
@@ -33,18 +33,18 @@
  "drift": 0,
  "experience": {
   "measured": {
-   "copies": 1380,
+   "copies": 1386,
    "involutions": 381,
    "msByHost": {
-    "qpu.uuidna.com": 43,
-    "qpu.ceci.workers.dev": 43,
-    "qpu.psg.bg": 41
+    "qpu.uuidna.com": 35,
+    "qpu.psg.bg": 37,
+    "qpu.ceci.workers.dev": 37
    }
   },
-  "freeShare": 28,
-  "slowestMedianMs": 43,
-  "shardSize": 23,
-  "says": "28% of the gate's copies answered free (304 by involution); the slowest host answers in 43 ms, so a batch is sharded to 23 calls a shard to stay within a second"
+  "freeShare": 27,
+  "slowestMedianMs": 37,
+  "shardSize": 27,
+  "says": "27% of the gate's copies answered free (304 by involution); the slowest host answers in 37 ms, so a batch is sharded to 27 calls a shard to stay within a second"
  },
  "configs": [
   {
@@ -170,16 +170,16 @@
   {
    "kind": "api",
    "torus": {
-    "address": "5b8e5187-9448-4e19-a06f-8516a1026b1d",
-    "seed": 2,
-    "reflection": 8,
+    "address": "03d952cb-1d74-2dd8-9988-db1298641c59",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 133261
+    "bytes": 133663
    }
   },
   {
@@ -275,13 +275,13 @@
   {
    "kind": "actions",
    "torus": {
-    "address": "b5bcf5e4-c7e7-2d05-b2e6-f13ce644a616",
-    "seed": 4,
-    "reflection": 6,
+    "address": "7ff70570-0e13-7db4-b5c1-10b686aa1f1b",
+    "seed": 9,
+    "reflection": 1,
     "trinity": [
-     7,
-     4,
-     1
+     3,
+     6,
+     9
     ],
     "closed": true,
     "bytes": 1207
@@ -305,13 +305,13 @@
   {
    "kind": "ecommerce",
    "torus": {
-    "address": "20b15cb0-5c85-3377-842b-48dedc9b7c31",
-    "seed": 4,
-    "reflection": 6,
+    "address": "5dfc5597-ce92-7444-97b0-63063f8c4d99",
+    "seed": 9,
+    "reflection": 1,
     "trinity": [
-     7,
-     4,
-     1
+     3,
+     6,
+     9
     ],
     "closed": true,
     "bytes": 4306

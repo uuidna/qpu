@@ -2991,6 +2991,9 @@ The split folds
     "dna": {
       "description": "uuid dna uuidna"
     },
+    "reflect": {
+      "description": "the reflective cut"
+    },
     "selftest": {
       "type": "boolean"
     }
