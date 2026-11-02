@@ -12,7 +12,7 @@ build time; a verdict that changes fails the build.
 
 <script setup>
 import { ref } from 'vue'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle } from '../src/quantum/processing/mcp.ts'
 
 const match = (statement) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement } } })
 const fixed = [

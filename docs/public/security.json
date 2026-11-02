@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-01T18:42:29.908Z",
+ "date": "2026-11-01T23:38:45.190Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -130,7 +130,7 @@
    "id": "dependencies:site",
    "perspective": "developer",
    "passed": true,
-   "evidence": "info 0, low 1, moderate 0, high 0, critical 0",
+   "evidence": "no vulnerabilities reported",
    "remedy": "npm audit fix or a pinned fixed version; a finding is a lead"
   },
   {
@@ -185,7 +185,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1882 kernel-accepted theorems",
+   "evidence": "1912 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -523,7 +523,7 @@
   "says": "the access audit from every perspective over the generated code and the answered configurations: every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms"
  },
  "leaks": {
-  "texts": 52,
+  "texts": 325,
   "findings": [
    {
     "where": "docs/public/graph.json",
@@ -540,18 +540,11 @@
     "remedy": "a host by its public name; a private address says the network"
    },
    {
-    "where": "docs/public/session.json",
+    "where": "qpu.uuidna.com/next-leads.json",
     "kind": "local-path",
-    "count": 4,
-    "served": false,
+    "count": 78,
+    "served": true,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
-   },
-   {
-    "where": "docs/public/session.json",
-    "kind": "private-ip",
-    "count": 1,
-    "served": false,
-    "remedy": "a host by its public name; a private address says the network"
    },
    {
     "where": "qpu.ceci.workers.dev/next-leads.json",
@@ -568,27 +561,6 @@
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
-    "where": "qpu.uuidna.com/next-leads.json",
-    "kind": "local-path",
-    "count": 78,
-    "served": true,
-    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
-   },
-   {
-    "where": "qpu.ceci.workers.dev/receipts.ndjson",
-    "kind": "email",
-    "count": 127,
-    "served": true,
-    "remedy": "a contact is a URL; an address never enters the tree (purify)"
-   },
-   {
-    "where": "qpu.ceci.workers.dev/receipts.ndjson",
-    "kind": "local-path",
-    "count": 226,
-    "served": true,
-    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
-   },
-   {
     "where": "qpu.uuidna.com/receipts.ndjson",
     "kind": "email",
     "count": 127,
@@ -615,20 +587,55 @@
     "count": 226,
     "served": true,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "qpu.ceci.workers.dev/receipts.ndjson",
+    "kind": "email",
+    "count": 127,
+    "served": true,
+    "remedy": "a contact is a URL; an address never enters the tree (purify)"
+   },
+   {
+    "where": "qpu.ceci.workers.dev/receipts.ndjson",
+    "kind": "local-path",
+    "count": 226,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/0e998a47-9dd1-143a-ac17-9edc0cedfdbb",
+    "kind": "email",
+    "count": 7,
+    "served": true,
+    "remedy": "a contact is a URL; an address never enters the tree (purify)"
+   },
+   {
+    "where": "payload/entries/43b6161b-ad23-88f6-b4dc-cd5cdd4f38d5",
+    "kind": "email",
+    "count": 7,
+    "served": true,
+    "remedy": "a contact is a URL; an address never enters the tree (purify)"
+   },
+   {
+    "where": "payload/entries/a979b1c6-9a86-1252-9167-0e9064b1a715",
+    "kind": "email",
+    "count": 7,
+    "served": true,
+    "remedy": "a contact is a URL; an address never enters the tree (purify)"
    }
   ],
   "byKind": {
-   "email": 381,
+   "email": 402,
    "stripe-secret": 0,
    "token": 0,
    "jwt": 0,
    "private-key": 0,
-   "local-path": 924,
-   "private-ip": 2
+   "local-path": 920,
+   "private-ip": 1
   },
-  "total": 1307,
-  "served": 9,
-  "setAside": 4,
+  "total": 1323,
+  "served": 12,
+  "setAside": 6,
   "clean": false,
   "leads": [
    {
@@ -646,18 +653,11 @@
     "reason": "not served yet: remove it at the source before it is"
    },
    {
-    "id": "leak-local-path-docs-public-session-json",
-    "source": "docs/public/session.json",
-    "statement": "4 local-path finding(s) in docs/public/session.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "id": "leak-local-path-qpu-uuidna-com-next-leads-json",
+    "source": "qpu.uuidna.com/next-leads.json",
+    "statement": "78 local-path finding(s) in qpu.uuidna.com/next-leads.json, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
-    "reason": "not served yet: remove it at the source before it is"
-   },
-   {
-    "id": "leak-private-ip-docs-public-session-json",
-    "source": "docs/public/session.json",
-    "statement": "1 private-ip finding(s) in docs/public/session.json: a host by its public name; a private address says the network",
-    "status": "open",
-    "reason": "not served yet: remove it at the source before it is"
+    "reason": "published: remove it at the source and from what is served"
    },
    {
     "id": "leak-local-path-qpu-ceci-workers-dev-next-leads-json",
@@ -670,27 +670,6 @@
     "id": "leak-local-path-qpu-psg-bg-next-leads-json",
     "source": "qpu.psg.bg/next-leads.json",
     "statement": "78 local-path finding(s) in qpu.psg.bg/next-leads.json, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
-    "status": "open",
-    "reason": "published: remove it at the source and from what is served"
-   },
-   {
-    "id": "leak-local-path-qpu-uuidna-com-next-leads-json",
-    "source": "qpu.uuidna.com/next-leads.json",
-    "statement": "78 local-path finding(s) in qpu.uuidna.com/next-leads.json, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
-    "status": "open",
-    "reason": "published: remove it at the source and from what is served"
-   },
-   {
-    "id": "leak-email-qpu-ceci-workers-dev-receipts-ndjson",
-    "source": "qpu.ceci.workers.dev/receipts.ndjson",
-    "statement": "127 email finding(s) in qpu.ceci.workers.dev/receipts.ndjson, served publicly: a contact is a URL; an address never enters the tree (purify)",
-    "status": "open",
-    "reason": "published: remove it at the source and from what is served"
-   },
-   {
-    "id": "leak-local-path-qpu-ceci-workers-dev-receipts-ndjson",
-    "source": "qpu.ceci.workers.dev/receipts.ndjson",
-    "statement": "226 local-path finding(s) in qpu.ceci.workers.dev/receipts.ndjson, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
@@ -721,9 +700,44 @@
     "statement": "226 local-path finding(s) in qpu.psg.bg/receipts.ndjson, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-email-qpu-ceci-workers-dev-receipts-ndjson",
+    "source": "qpu.ceci.workers.dev/receipts.ndjson",
+    "statement": "127 email finding(s) in qpu.ceci.workers.dev/receipts.ndjson, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-qpu-ceci-workers-dev-receipts-ndjson",
+    "source": "qpu.ceci.workers.dev/receipts.ndjson",
+    "statement": "226 local-path finding(s) in qpu.ceci.workers.dev/receipts.ndjson, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-email-payload-entries-0e998a47-9dd1-143a-ac17-9edc0cedfdbb",
+    "source": "payload/entries/0e998a47-9dd1-143a-ac17-9edc0cedfdbb",
+    "statement": "7 email finding(s) in payload/entries/0e998a47-9dd1-143a-ac17-9edc0cedfdbb, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-email-payload-entries-43b6161b-ad23-88f6-b4dc-cd5cdd4f38d5",
+    "source": "payload/entries/43b6161b-ad23-88f6-b4dc-cd5cdd4f38d5",
+    "statement": "7 email finding(s) in payload/entries/43b6161b-ad23-88f6-b4dc-cd5cdd4f38d5, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-email-payload-entries-a979b1c6-9a86-1252-9167-0e9064b1a715",
+    "source": "payload/entries/a979b1c6-9a86-1252-9167-0e9064b1a715",
+    "statement": "7 email finding(s) in payload/entries/a979b1c6-9a86-1252-9167-0e9064b1a715, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
    }
   ],
   "theorem": "textbook_leaks_redacted",
-  "says": "1307 finding(s) in 8 text(s), 9 served publicly; values redacted, 4 notation(s) set aside"
+  "says": "1323 finding(s) in 10 text(s), 12 served publicly; values redacted, 6 notation(s) set aside"
  }
 }

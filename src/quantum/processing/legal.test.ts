@@ -1,15 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { ANCIENT_LAW, summonCourt } from './toolboxes/legal.ts'
-import { shorFactor } from './algorithms.ts'
 
 // Complete legal: the court is summoned on any security finding, lead or capability decline, each bringing its own theorem and remedy,
 // judged under the duty of candour (legal_only_the_proven_is_admitted). The ten HTTP gate rules still match as before.
 
 test('the court is summoned on a capability decline, citing its theorem, remedy and the duty of candour', () => {
-  const d = shorFactor(35)
-  assert.equal(d.declined, true, '35 is beyond the bound')
-  const c = summonCourt({ gate: 'shorFactor', violated: 'beyond the order-finding bound N ≤ 21', theorem: d.bound, remedy: d.handle, duty: d.duty, evidence: { N: 35, needsQubits: d.needsQubits } })
+  const c = summonCourt({ gate: 'shorFactor', violated: 'beyond the order-finding bound N ≤ 21', theorem: 'textbook_rsa_beyond_bound', remedy: 'declined by candour: never a factorization of N beyond the simulation bound; supply the order to run the reduction, or a QPU measures it — do not assert factors', duty: 'legal_only_the_proven_is_admitted', evidence: { N: 35, needsQubits: 12 } })
   assert.equal(c.theorem, 'textbook_rsa_beyond_bound', 'the case cites the bound theorem, not a mis-mapped HTTP rule')
   assert.equal(c.duty, 'legal_only_the_proven_is_admitted', 'the duty of candour is cited')
   assert.match(c.remedy, /never a factorization|do not assert/, 'the remedy is the honest handling')

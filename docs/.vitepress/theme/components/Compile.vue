@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { handle } from '../../../../src/quantum/mcp.ts'
-import { channelOf, compileOf, uuidFromParts } from '../../../../src/quantum/blocks.ts'
+import { handle } from '../../../../src/quantum/processing/mcp.ts'
+import { channelOf, compileOf, uuidFromParts } from '../../../../src/quantum/processing/unit/blocks.ts'
 const props = defineProps<{ uuid: string; prev?: string }>()
 const ch = computed(() => channelOf(props.uuid))
 const tools = computed(() => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: Parameters<typeof compileOf>[1] } }).result.tools)

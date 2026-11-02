@@ -29,7 +29,7 @@ import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.ts'
 import { DEVICES, PROCESSORS, toDevice, willowNoise, getAverageConnectivity, isBelowThreshold } from './processor.ts'
 import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, entropyWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, matchWidget, clayWidget, verifyWidget } from './widgets.ts'
 import { APPLICATIONS, ROADMAP } from './roadmap.ts'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, shorFactor, teleportationCircuit, getInteger, writeInteger, testPrimality, listFactors, shorReduction, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection } from './algorithms.ts'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, getInteger, writeInteger, testPrimality, listFactors, shorReduction, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection } from './algorithms.ts'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.ts'
 import { LEADS, leadCounts, combineLeads, listRunnableLeads, runSession, sitemapLeads, type Lead, type LeadStatus, type CellLead, type SessionInput } from './leads.ts'
 import { REPOSITORIES } from './repositories.ts'
@@ -102,13 +102,15 @@ const OBSERVABLE_SCHEMA = {
 const INSERT_SCHEMA = { enum: ['EARLIEST', 'NEW', 'INLINE', 'NEW_THEN_INLINE'], default: 'EARLIEST' }
 
 const complex = ([re, im]: [number, number]) => ({ re, im })
-/** An integer of any size answered by the classical door: its bits, its primality, its prime factors within the budget, the product checked. */
-const answerFactor = (n: bigint, via?: string) => {
-  const bits = n.toString(2).length, p = testPrimality(n), f = p.prime ? { factors: [n], left: [], steps: 0, budget: 0, verified: true } : listFactors(n)
+/** An integer of any size answered by the classical door: its bits, primality, the factors the σ-reflection computes, the centre reached, the product checked.
+ *  The search is unbounded and resumable (`reflections` centres from `from`, ⌈√N⌉ by default; a part not split reports `reached`): it computes, never declines. */
+const answerFactor = (n: bigint, via?: string, reflections = 1n << 12n, from?: bigint) => {
+  const bits = n.toString(2).length, p = testPrimality(n)
+  const f = p.prime ? { factors: [n], left: [] as bigint[], reached: null as bigint | null, searched: 0n, verified: true } : listFactors(n, reflections, from)
   const primality = p.prime ? (p.certain ? 'prime' : 'a probable prime (Miller–Rabin, 24 bases)') : 'composite'
-  return { name: 'factor', integer: n.toString(), bits, prime: p.prime, certain: p.certain, factors: f.factors.map(String), left: f.left.map(String), complete: f.left.length === 0, verified: f.verified, steps: f.steps, theorem: 'textbook_factors_divide',
-    says: `a ${bits}-bit integer, ${primality}${p.prime ? '' : `: ${f.factors.length} prime factor(s) found${f.left.length ? `, ${f.left.length} composite part(s) left unfactored within ${f.budget} rho steps (no classical method here factors an RSA-class semiprime)` : ''}`}; the parts multiply back to the integer: ${f.verified}`,
-    ...(via ? { via } : {}), summary: [['Bits', String(bits)], ['Primality', primality], ['Prime factors found', String(f.factors.length)], ['Left unfactored', String(f.left.length)], ['Product checked', f.verified ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: [...f.factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']), ...f.left.map((x) => [x.toString(), String(x.toString(2).length), 'composite, unfactored'])] }
+  return { name: 'factor', integer: n.toString(), bits, prime: p.prime, certain: p.certain, factors: f.factors.map(String), left: f.left.map(String), complete: f.left.length === 0, verified: f.verified, searched: f.searched.toString(), reached: f.reached === null ? null : f.reached.toString(), theorem: 'textbook_factors_divide',
+    says: `a ${bits}-bit integer, ${primality}${p.prime ? '' : `: ${f.factors.length} prime factor(s) found${f.left.length ? `, ${f.left.length} part(s) under the σ-reflection search — searched ${f.searched} centre(s), reached ${f.reached}; resume with from=${f.reached} (unbounded, computing, never declined; a balanced semiprime's reflection is the order-finding of textbook_shor_reduction)` : ''}`}; the parts multiply back to the integer: ${f.verified}`,
+    ...(via ? { via } : {}), summary: [['Bits', String(bits)], ['Primality', primality], ['Prime factors found', String(f.factors.length)], ['Under σ-reflection search', String(f.left.length)], ['Reflections searched', f.searched.toString()], ['Product checked', f.verified ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: [...f.factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']), ...f.left.map((x) => [x.toString(), String(x.toString(2).length), 'composite, under σ-reflection search'])] }
 }
 const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
 const gcdB = (x: bigint, y: bigint): bigint => { while (y) [x, y] = [y, x % y]; return x }
@@ -276,8 +278,10 @@ const OWN: Tool[] = [
         balanced: { type: 'boolean', default: true, description: 'deutsch_jozsa: a balanced oracle (parity) vs a constant one' },
         hidden: { type: 'array', items: { type: 'integer', minimum: 0, maximum: 1 }, description: 'bernstein_vazirani: the hidden bit string s, recovered in one query' },
         steps: { type: 'integer', minimum: 1, maximum: 200, default: 20, description: 'vqe: points of the θ sweep over [0, 1]' },
-        integer: { type: 'string', pattern: '^[0-9]+$', description: 'factor: the integer, any size, as a decimal string: its bits, its primality (Miller–Rabin), its prime factors within the step budget, the product checked' },
-        order: { type: 'string', pattern: '^[0-9]+$', description: 'shor: the order r of a mod N (the quantum-hard quantity a QPU measures; the simulation reaches it only for N ≤ 21). Given it, Shor\'s reduction gcd(a^(r/2) ± 1, N) runs exactly at any size' },
+        integer: { type: 'string', pattern: '^[0-9]+$', description: 'factor: the integer, any size, as a decimal string: its bits, its primality (Miller–Rabin), and the factors the σ-involution reflection computes, the product checked' },
+        reflections: { type: 'string', pattern: '^[0-9]+$', description: 'factor: σ-reflection centres to search this call from ⌈√N⌉ (no ceiling; default 4096), resumable' },
+        from: { type: 'string', pattern: '^[0-9]+$', description: 'factor: resume the σ-reflection search from this centre (a previous call\'s reached value)' },
+        order: { type: 'string', pattern: '^[0-9]+$', description: 'shor: the order r of a mod N (the quantum-hard quantity a QPU measures; the state-vector simulation reaches it only for N ≤ 21). Given it, Shor\'s reduction gcd(a^(r/2) ± 1, N) runs exactly at any size' },
         N: { type: 'integer', minimum: 3, maximum: 21, default: 15 },
         a: { type: 'integer', minimum: 2, default: 7 },
         sweep: { type: 'boolean', default: false, description: 'qaoa: sweep alpha and beta on the grid of the page and return the best' },
@@ -477,7 +481,7 @@ const OWN: Tool[] = [
           summary: [['Code', '[[7,1,3]] Steane (CSS)'], ['Distance', String(c.distance)], ['Single-qubit errors corrected', `${c.corrected}/${c.total}`]],
           header: ['Error', 'Syndrome', 'Located'], rows: c.rows.map((r) => [r.error, r.syndrome, String(r.located)]) }
       }
-      if (name === 'factor') return answerFactor(getInteger(args.integer, 'integer'))
+      if (name === 'factor') return answerFactor(getInteger(args.integer, 'integer'), undefined, args.reflections !== undefined ? getInteger(args.reflections, 'reflections') : undefined, args.from !== undefined ? getInteger(args.from, 'from') : undefined)
       if (name === 'shor') {
         const askedN = getInteger(args.N, 'N', 15n), askedA = getInteger(args.a, 'a', 7n) % askedN
         // a that shares a factor with N is that factor already (Euclid, Shor's own classical first step); 0 and 1 give way to the next unit
@@ -491,9 +495,8 @@ const OWN: Tool[] = [
         if (askedN < 3n || askedN > 21n) {
           // no order, beyond the simulation: the reduction is a formula, order-finding is the quantum step; the classical door says what it can and can't, never a false factor
           const classical = answerFactor(askedN, `order-finding for N = ${askedN} (${askedN.toString(2).length} bits) is the quantum step the state-vector simulation reaches only for N ≤ 21; Shor's reduction runs at this size once the order is given (order: <r>)`)
-          // the capability served with the legal duty of candour (shorFactor): beyond the bound it declines to assert factors and names how to handle, never a false factorization
-          const candour = askedN <= BigInt(Number.MAX_SAFE_INTEGER) ? shorFactor(Number(askedN)) : null
-          return { ...classical, name: 'shor', quantumStep: 'order-finding (the period of a^x mod N): supply order to run the reduction at this size, or a QPU measures it', theorem: 'textbook_shor_reduction', ...(candour ? { declined: candour.declined, duty: candour.duty, capability: candour.capability, handle: candour.handle, needsQubits: candour.needsQubits } : {}) }
+          // beyond the simulation, the classical door computes by the σ-reflection and reports the centre it reached, never a false factor (duty of candour by honest reporting, not a decline)
+          return { ...classical, name: 'shor', quantumStep: 'order-finding (the period of a^x mod N): supply order to run the reduction at this size, or a QPU measures it', theorem: 'textbook_shor_reduction', duty: 'legal_only_the_proven_is_admitted', needsQubits: 2 * askedN.toString(2).length }
         }
         const N = Number(askedN); let a = Number(askedA); while (a < 2 || gcdOf(a, N) !== 1) a++
         const repetitions = Number(args.repetitions ?? 20)

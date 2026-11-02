@@ -12,7 +12,7 @@ register, can redo these sums and compare content addresses; the kernel check ha
 Nothing here proves an open problem: the relations are identities between the unit's own constants, and the page says so.
 
 <script setup>
-import { handle } from '../src/quantum/mcp.ts'
+import { handle } from '../src/quantum/processing/mcp.ts'
 const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: {} } })
 const clay = 'result' in reply ? reply.result.structuredContent : null
 const widget = 'result' in reply ? reply.result._meta?.widget ?? '' : ''

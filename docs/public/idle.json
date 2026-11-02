@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-10-28T11:28:36.225Z",
+ "date": "2026-11-01T22:22:13.929Z",
  "input": {
   "doors": [
    {
@@ -26,6 +26,16 @@
    {
     "name": "match.questions",
     "bytes": 237,
+    "reached": true
+   },
+   {
+    "name": "match.search",
+    "bytes": 406,
+    "reached": true
+   },
+   {
+    "name": "match.news",
+    "bytes": 705,
     "reached": true
    },
    {
@@ -160,6 +170,26 @@
    },
    {
     "name": "algorithm.name",
+    "bytes": 269,
+    "reached": true
+   },
+   {
+    "name": "algorithm.depth",
+    "bytes": 109,
+    "reached": true
+   },
+   {
+    "name": "algorithm.balanced",
+    "bytes": 109,
+    "reached": true
+   },
+   {
+    "name": "algorithm.hidden",
+    "bytes": 151,
+    "reached": true
+   },
+   {
+    "name": "algorithm.steps",
     "bytes": 113,
     "reached": true
    },
@@ -411,6 +441,11 @@
    {
     "name": "audit.errors",
     "bytes": 180,
+    "reached": true
+   },
+   {
+    "name": "audit.repair",
+    "bytes": 503,
     "reached": true
    },
    {
@@ -725,7 +760,7 @@
    },
    {
     "name": "mongo.op",
-    "bytes": 128,
+    "bytes": 139,
     "reached": true
    },
    {
@@ -964,6 +999,11 @@
     "reached": true
    },
    {
+    "name": "legal.ancient",
+    "bytes": 379,
+    "reached": true
+   },
+   {
     "name": "legal.selftest",
     "bytes": 18,
     "reached": false
@@ -972,6 +1012,11 @@
     "name": "compete.conduct",
     "bytes": 87,
     "reached": false
+   },
+   {
+    "name": "compete.claim",
+    "bytes": 275,
+    "reached": true
    },
    {
     "name": "compete.news",
@@ -1199,6 +1244,16 @@
     "reached": false
    },
    {
+    "name": "validate.bound",
+    "bytes": 78,
+    "reached": true
+   },
+   {
+    "name": "validate.selftest",
+    "bytes": 18,
+    "reached": false
+   },
+   {
     "name": "payload.access",
     "bytes": 377,
     "reached": true
@@ -1211,6 +1266,16 @@
    {
     "name": "payload.references",
     "bytes": 614,
+    "reached": true
+   },
+   {
+    "name": "payload.report",
+    "bytes": 578,
+    "reached": true
+   },
+   {
+    "name": "payload.referenceIndex",
+    "bytes": 666,
     "reached": true
    },
    {
@@ -1519,8 +1584,18 @@
     "reached": true
    },
    {
+    "name": "fold.rosetta",
+    "bytes": 292,
+    "reached": true
+   },
+   {
+    "name": "fold.order",
+    "bytes": 187,
+    "reached": false
+   },
+   {
     "name": "fold.index",
-    "bytes": 102,
+    "bytes": 113,
     "reached": true
    },
    {
@@ -1546,6 +1621,11 @@
    {
     "name": "fold.neighbours",
     "bytes": 111,
+    "reached": true
+   },
+   {
+    "name": "fold.navigate",
+    "bytes": 281,
     "reached": true
    },
    {
@@ -1726,6 +1806,11 @@
     "used": true
    },
    {
+    "key": "textbook_standards_sliced",
+    "bytes": 141,
+    "used": true
+   },
+   {
     "key": "textbook_typography_idempotent",
     "bytes": 88,
     "used": true
@@ -1733,6 +1818,16 @@
    {
     "key": "textbook_references_acyclic",
     "bytes": 89,
+    "used": true
+   },
+   {
+    "key": "textbook_cache_saves_cost",
+    "bytes": 126,
+    "used": true
+   },
+   {
+    "key": "textbook_reference_index_cached",
+    "bytes": 135,
     "used": true
    },
    {
@@ -1882,7 +1977,7 @@
    },
    {
     "key": "textbook_literal_in_registry",
-    "bytes": 566,
+    "bytes": 867,
     "used": true
    },
    {
@@ -2116,8 +2211,43 @@
     "used": true
    },
    {
+    "key": "textbook_repair_partitions",
+    "bytes": 142,
+    "used": true
+   },
+   {
+    "key": "textbook_repair_live_sla",
+    "bytes": 146,
+    "used": true
+   },
+   {
+    "key": "textbook_repair_kernel_top",
+    "bytes": 112,
+    "used": true
+   },
+   {
     "key": "textbook_fallback_involution",
     "bytes": 79,
+    "used": true
+   },
+   {
+    "key": "textbook_exploit_refuses_to_patch",
+    "bytes": 125,
+    "used": true
+   },
+   {
+    "key": "textbook_impossible_sent_to_leads",
+    "bytes": 97,
+    "used": true
+   },
+   {
+    "key": "textbook_denier_identified",
+    "bytes": 104,
+    "used": true
+   },
+   {
+    "key": "textbook_court_audits_repo",
+    "bytes": 78,
     "used": true
    },
    {
@@ -2188,6 +2318,11 @@
    {
     "key": "textbook_access_combinations",
     "bytes": 66,
+    "used": true
+   },
+   {
+    "key": "textbook_report_refactors",
+    "bytes": 141,
     "used": true
    },
    {
@@ -2766,6 +2901,76 @@
     "used": true
    },
    {
+    "key": "textbook_phase_estimation",
+    "bytes": 72,
+    "used": true
+   },
+   {
+    "key": "textbook_deutsch_jozsa",
+    "bytes": 69,
+    "used": true
+   },
+   {
+    "key": "textbook_bernstein_vazirani",
+    "bytes": 70,
+    "used": true
+   },
+   {
+    "key": "textbook_simon",
+    "bytes": 61,
+    "used": true
+   },
+   {
+    "key": "textbook_vqe",
+    "bytes": 57,
+    "used": true
+   },
+   {
+    "key": "textbook_tsirelson",
+    "bytes": 61,
+    "used": true
+   },
+   {
+    "key": "textbook_trotter",
+    "bytes": 58,
+    "used": true
+   },
+   {
+    "key": "textbook_xeb",
+    "bytes": 67,
+    "used": true
+   },
+   {
+    "key": "textbook_no_cloning",
+    "bytes": 66,
+    "used": true
+   },
+   {
+    "key": "textbook_holevo",
+    "bytes": 56,
+    "used": true
+   },
+   {
+    "key": "textbook_gottesman_knill",
+    "bytes": 87,
+    "used": true
+   },
+   {
+    "key": "textbook_eastin_knill",
+    "bytes": 63,
+    "used": true
+   },
+   {
+    "key": "textbook_solovay_kitaev",
+    "bytes": 66,
+    "used": true
+   },
+   {
+    "key": "textbook_steane",
+    "bytes": 63,
+    "used": true
+   },
+   {
     "key": "textbook_phase_three_bits",
     "bytes": 76,
     "used": true
@@ -2941,6 +3146,11 @@
     "used": true
    },
    {
+    "key": "textbook_teamwork_navigation",
+    "bytes": 112,
+    "used": true
+   },
+   {
     "key": "textbook_route_waves",
     "bytes": 72,
     "used": true
@@ -2953,6 +3163,11 @@
    {
     "key": "textbook_bindings_bound",
     "bytes": 148,
+    "used": true
+   },
+   {
+    "key": "textbook_bindings_used_google",
+    "bytes": 193,
     "used": true
    },
    {
@@ -2976,8 +3191,38 @@
     "used": true
    },
    {
+    "key": "textbook_factor_parse_list",
+    "bytes": 75,
+    "used": true
+   },
+   {
+    "key": "textbook_raid_no_missing_store",
+    "bytes": 149,
+    "used": true
+   },
+   {
+    "key": "textbook_address_retrieval",
+    "bytes": 75,
+    "used": true
+   },
+   {
     "key": "textbook_questions_matched",
     "bytes": 130,
+    "used": true
+   },
+   {
+    "key": "textbook_news_problems",
+    "bytes": 166,
+    "used": true
+   },
+   {
+    "key": "textbook_search_proven",
+    "bytes": 132,
+    "used": true
+   },
+   {
+    "key": "textbook_editorial_posts",
+    "bytes": 128,
     "used": true
    },
    {
@@ -3039,11 +3284,30 @@
     "key": "textbook_reflection_by_shape",
     "bytes": 190,
     "used": true
+   },
+   {
+    "key": "textbook_relation_rsa",
+    "bytes": 138,
+    "used": true
+   },
+   {
+    "key": "textbook_ancient_law",
+    "bytes": 53,
+    "used": true
+   },
+   {
+    "key": "textbook_shor_factor",
+    "bytes": 81,
+    "used": true
    }
   ],
   "qubits": {
    "bound": 6,
    "calls": [
+    {
+     "door": "algorithm",
+     "used": 1
+    },
     {
      "door": "algorithm",
      "used": 1
@@ -3087,6 +3351,58 @@
     {
      "door": "algorithm",
      "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 3
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 4
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 6
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
     }
    ]
   },
@@ -3094,7 +3410,8 @@
    "bound": 21,
    "asked": [
     15,
-    15
+    15,
+    35
    ]
   },
   "gates": [
@@ -3444,7 +3761,7 @@
    },
    {
     "name": "data.epo.org",
-    "called": false
+    "called": true
    },
    {
     "name": "beacon.nist.gov",
@@ -3534,20 +3851,17 @@
  },
  "top": [
   {
-   "measure": "doors",
-   "name": "circuit.observables",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 57,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add circuit.observables to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3557,28 +3871,25 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold circuit.observables into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   },
   {
-   "measure": "doors",
-   "name": "repository.via",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 56,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add repository.via to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3588,28 +3899,25 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold repository.via into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   },
   {
-   "measure": "doors",
-   "name": "leads.records",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 54,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add leads.records to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3619,28 +3927,25 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold leads.records into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   },
   {
-   "measure": "doors",
-   "name": "circuit.device_noise",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 49,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add circuit.device_noise to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3650,28 +3955,25 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold circuit.device_noise into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   },
   {
-   "measure": "doors",
-   "name": "quantum-error-correction.logical",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 48,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add quantum-error-correction.logical to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3681,28 +3983,25 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold quantum-error-correction.logical into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   },
   {
-   "measure": "doors",
-   "name": "legal.citeTheorem",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 46,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add legal.citeTheorem to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3712,28 +4011,25 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold legal.citeTheorem into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   },
   {
-   "measure": "doors",
-   "name": "payload.devDependencies",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 45,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add payload.devDependencies to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3743,28 +4039,25 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold payload.devDependencies into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   },
   {
-   "measure": "doors",
-   "name": "quantum-error-correction.sweep",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 42,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add quantum-error-correction.sweep to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3774,28 +4067,25 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold quantum-error-correction.sweep into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   },
   {
-   "measure": "doors",
-   "name": "configure.rates",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 41,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add configure.rates to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3805,28 +4095,25 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold configure.rates into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   },
   {
-   "measure": "doors",
-   "name": "textbook.verify",
+   "measure": "qubits",
+   "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 40,
-   "unit": "schema bytes",
+   "tokens": 93,
+   "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
     "run": [],
-    "door": {
-     "tool": "e2e",
-     "arguments": {}
-    },
-    "says": "add textbook.verify to the e2e cells and give it an example, so the gate reaches it; folding it away instead needs the user's confirmation",
+    "door": null,
+    "says": "generate examples and e2e cells for algorithm at every qubit count up to the simulator's bound; folding it away instead needs the user's confirmation",
     "way": {
      "harmonic": "a432",
      "side": "coin",
@@ -3836,10 +4123,10 @@
      "theorem": "textbook_free_or_coil"
     },
     "learn": false,
-    "address": "89f51d3f-5752-4e7d-88ae-b7fb3e7505dd",
+    "address": "68b1416f-9099-6bfa-9eee-e3312027cc66",
     "fold": {
      "needs": "confirm",
-     "says": "fold textbook.verify into its nearest door or theorem, or remove it"
+     "says": "fold algorithm into its nearest door or theorem, or remove it"
     }
    }
   }
@@ -3847,10 +4134,10 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 52166,
-   "used": 42630,
-   "idle": 9536,
-   "percentIdle": 18,
+   "capacity": 57194,
+   "used": 47453,
+   "idle": 9741,
+   "percentIdle": 17,
    "idleNames": [
     "verify.prev",
     "verify.self",
@@ -3949,6 +4236,7 @@
     "codes.cldr",
     "codes.territories",
     "codes.selftest",
+    "validate.selftest",
     "payload.devDependencies",
     "payload.chain",
     "payload.origin",
@@ -3959,6 +4247,7 @@
     "configure.name",
     "configure.selftest",
     "extend.selftest",
+    "fold.order",
     "fold.digits",
     "fold.pieces",
     "fold.root",
@@ -3971,8 +4260,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 28421,
-   "used": 28421,
+   "capacity": 32287,
+   "used": 32287,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []
@@ -3980,9 +4269,9 @@
   "gates": {
    "unit": "calls",
    "capacity": 108,
-   "used": 52,
-   "idle": 56,
-   "percentIdle": 51,
+   "used": 53,
+   "idle": 55,
+   "percentIdle": 50,
    "idleNames": [
     "docs.mcp.cloudflare.com",
     "bindings.mcp.cloudflare.com",
@@ -4032,7 +4321,6 @@
     "androidmanagement.googleapis.com",
     "androidmanagement.googleapis.com",
     "patents.google.com",
-    "data.epo.org",
     "ct.googleapis.com",
     "oeis.org",
     "quantumai.google",
@@ -4044,17 +4332,30 @@
   },
   "qubits": {
    "unit": "qubits per call",
-   "capacity": 66,
-   "used": 13,
-   "idle": 53,
-   "percentIdle": 80,
+   "capacity": 150,
+   "used": 37,
+   "idle": 113,
+   "percentIdle": 75,
    "idleNames": [
+    "algorithm",
     "algorithm",
     "algorithm",
     "circuit",
     "circuit",
     "circuit",
     "echo",
+    "algorithm",
+    "algorithm",
+    "algorithm",
+    "algorithm",
+    "algorithm",
+    "algorithm",
+    "algorithm",
+    "algorithm",
+    "algorithm",
+    "algorithm",
+    "algorithm",
+    "algorithm",
     "algorithm",
     "algorithm",
     "algorithm",

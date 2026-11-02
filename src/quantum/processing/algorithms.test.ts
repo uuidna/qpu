@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { Circuit, DensityMatrixSimulator, LineQubit, Simulator, X, applied, getExpectation } from './cirq.ts'
-import { pageInstance, groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaEstimate, qaoaExpectedCut, qaoaSweep, qftOperations, shorCircuit, shorFactor, shorFactors, teleportationCircuit } from './algorithms.ts'
+import { pageInstance, groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaEstimate, qaoaExpectedCut, qaoaSweep, qftOperations, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.ts'
 import { numpyWeights } from './unit/random.ts'
 import { DEVICES } from './processor.ts'
 
@@ -87,30 +87,6 @@ test('Shor\'s order finding factors 15 into 3 and 5, from bases 7 and 2 (both of
     assert.equal(found.order, 4, `order of ${a} mod 15`)
     assert.deepEqual(found.factors, [3, 5])
   }
-})
-
-test('Shor end to end factors 15 and 21 with real factors, and declines beyond the N ≤ 21 bound', () => {
-  // no hard-defined factors: the tool is used to produce them and the result is checked by the formula — nontrivial factors whose product is N
-  const dividesBack = (r: { factored: boolean; factors: [number, number] | null }, N: number) => r.factored && !!r.factors && r.factors[0] > 1 && r.factors[1] > 1 && r.factors[0] * r.factors[1] === N
-  const r15 = shorFactor(15)
-  assert.ok(dividesBack(r15, 15), 'shorFactor(15) produces nontrivial factors whose product is 15 (the formula, not a hard value)')
-  assert.equal(r15.reduction, 'textbook_shor_reduction')
-  const r21 = shorFactor(21)
-  assert.ok(dividesBack(r21, 21), 'shorFactor(21) produces nontrivial factors whose product is 21')
-  // 35 is beyond the published order-finding bound N ≤ 21: the reduction holds, the period-find is declined, no factor guessed
-  const r35 = shorFactor(35)
-  assert.equal(r35.factored, false, '35 is not factored')
-  assert.equal(r35.declined, true, '35 is declined, beyond the bound')
-  assert.equal(r35.factors, null, 'no factor is guessed')
-  assert.equal(r35.bound, 'textbook_rsa_beyond_bound')
-  assert.ok(r35.needsQubits >= 12, 'the declined case states the logical-qubit need')
-  // the decline is a legal duty of candour: it states the capability and exactly how to handle it, hooked to the legal tool
-  assert.equal(r35.duty, 'legal_only_the_proven_is_admitted', 'the decline carries the legal duty of candour')
-  assert.equal(r15.duty, 'legal_only_the_proven_is_admitted', 'candour holds for the admissible case too')
-  assert.match(r35.capability, /textbook_shor_reduction/, 'capability states what is proven')
-  assert.match(r35.handle, /never a factorization|do not assert/, 'the handle forbids asserting a factor')
-  assert.match(r35.handle, /attest/, 'the handle names the receipt door')
-  assert.match(r35.handle, /legal tool \{ court/, 'the handle names the legal door to file or appeal')
 })
 
 test('the QAOA sweep finds angles whose expected cut beats the random baseline, on seeded weights in [0, 5) to two decimals', () => {

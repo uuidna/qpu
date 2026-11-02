@@ -3,7 +3,7 @@
      built from the MCP, the same resource any host renders; nothing is drawn here by hand. -->
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { handle } from '../../../../src/quantum/mcp.ts'
+import { handle } from '../../../../src/quantum/processing/mcp.ts'
 
 const props = defineProps<{ tool: string; args: Record<string, unknown>; result: unknown }>()
 const frame = ref<HTMLIFrameElement | null>(null)

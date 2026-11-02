@@ -10,8 +10,8 @@ test suite replays the same list, and the `audit` tool replays it again on reque
 build fails: the page cannot show a result the tool does not return.
 
 <script setup>
-import { handle } from '../src/quantum/mcp.ts'
-import { EXAMPLES } from '../src/quantum/examples.ts'
+import { handle } from '../src/quantum/processing/mcp.ts'
+import { EXAMPLES } from '../src/quantum/processing/examples.ts'
 
 const rows = EXAMPLES.map((e) => {
   const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } })

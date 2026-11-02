@@ -1,9 +1,1224 @@
 {
- "date": "2026-11-01T18:45:33.093Z",
+ "date": "2026-11-02T00:08:58.315Z",
  "partial": true,
- "remaining": 825,
- "fetched": 0,
- "leads": 0,
- "withServers": 0,
- "related": []
+ "remaining": 800,
+ "fetched": 55,
+ "leads": 3,
+ "withServers": 3,
+ "related": [
+  {
+   "lead": "rbac-standards-as-subjects",
+   "words": [
+    "standard",
+    "descriptions",
+    "pre-commit"
+   ],
+   "servers": 38,
+   "serverList": [
+    {
+     "name": "com.standardblanks/shop",
+     "description": "Search blank apparel, check availability, price orders and build a cart on standardblanks.com.",
+     "remotes": [
+      "https://standardblanks.com/mcp/shop"
+     ],
+     "word": "standard"
+    },
+    {
+     "name": "com.strengthstandardscalc/site",
+     "description": "Strength Standards Calc: the site's own MCP server — dataset, enquiry (enquiry = a human...",
+     "remotes": [
+      "https://strengthstandardscalc.com/mcp"
+     ],
+     "word": "standard"
+    },
+    {
+     "name": "com.trycloudflare.newark-commerce-standards-bye/uptime-marketplace",
+     "description": "Live uptime and source-URL verification for AI agents, with per-call x402/USDC paid endpoints.",
+     "remotes": [
+      "https://newark-commerce-standards-bye.trycloudflare.com/mcp"
+     ],
+     "word": "standard"
+    },
+    {
+     "name": "com.wiastandards/standards",
+     "description": "Search WIA's own voluntary standards (not ISO/IEC/ITU) and read their specification files.",
+     "remotes": [
+      "https://mcp-standards.wiastandards.com/mcp"
+     ],
+     "word": "standard"
+    },
+    {
+     "name": "com.wiastandards/wihp",
+     "description": "Write foreign words and short sentences in Hangul with WIHP rules; look up IPA in its dictionary.",
+     "remotes": [
+      "https://mcp-wihp.wiastandards.com/mcp"
+     ],
+     "word": "standard"
+    },
+    {
+     "name": "com.wiastandards/wisdom",
+     "description": "Search WIA Wisdom's curated documents on 9 traditions of thought (EN/KO) and read excerpts.",
+     "remotes": [
+      "https://mcp-wisdom.wiastandards.com/mcp"
+     ],
+     "word": "standard"
+    },
+    {
+     "name": "io.github.Applied-Form/standards",
+     "description": "Lint rendered pages against a design system in a real browser, across six widths, with the fix.",
+     "remotes": [],
+     "word": "standard"
+    },
+    {
+     "name": "io.github.AtticStandard/atom-mcp-server",
+     "description": "The global price benchmark for AI inference: 23 price indexes, market KPIs and SKU-level prices.",
+     "remotes": [
+      "https://mcp.atticstandard.com/mcp"
+     ],
+     "word": "standard"
+    },
+    {
+     "name": "harness:harness-compliance-standards-api",
+     "description": "The Compliance Standards API from Harness — 3 operation(s) for compliance standards.",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://developer.harness.io/docs/continuous-integration"
+    },
+    {
+     "name": "harness:harness-tf-standard-backend-api",
+     "description": "HTTP standard backend for Terraform",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "vonage:vonage-standard-api",
+     "description": "The Standard API from Vonage — 1 operation(s) for standard.",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://developer.vonage.com/en/api/sms"
+    },
+    {
+     "name": "soda-data:soda-data-data-standards-api",
+     "description": "The Data Standards surface of the Soda Cloud v4 API — 13 operation(s) across 10 path(s).",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://docs.soda.io/reference/soda-apis/rest-api/data-standards"
+    },
+    {
+     "name": "api-evangelist:api-evangelist-standards",
+     "description": "Common Internet or industry standards used to consistently define API operations and keep the API factory floor well-defined and interoperable.",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://standards.apievangelist.com"
+    },
+    {
+     "name": "moneyhub:moneyhub-standard-financial-statements-api",
+     "description": "The standard-financial-statements API from Moneyhub — 2 operation(s) for standard-financial-statements.",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://docs.moneyhubenterprise.com/reference"
+    },
+    {
+     "name": "harness:harness-compliancestandardsfilter-api",
+     "description": "The ComplianceStandardsFilter API from Harness — 1 operation(s) for compliancestandardsfilter.",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "adobe-campaign:io-campaign-standard-sdk",
+     "description": "A Node.js JavaScript SDK wrapping Adobe Campaign Standard REST APIs for use in Adobe I/O Runtime and App Builder applications. Provides convenience methods for profile management, service operations, ",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://github.com/adobe/aio-lib-campaign-standard"
+    },
+    {
+     "name": "servicenow:servicenow-standard-changes-api",
+     "description": "Operations for managing standard change requests based on pre-approved templates.",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://www.servicenow.com/docs/bundle/yokohama-api-reference/page/integrate/inbound-rest/concept/c_TableAPI.html"
+    },
+    {
+     "name": "canvas:canvas-grading-standards-api",
+     "description": "The Grading Standards API from Canvas — 4 operation(s) for grading standards.",
+     "remotes": [],
+     "word": "standard",
+     "directory": "apis.io",
+     "page": "https://canvas.instructure.com/doc/api/"
+    },
+    {
+     "name": "wistia:wistia-extended-audio-descriptions-api",
+     "description": "The Extended Audio Descriptions API from Wistia — 4 operation(s) for extended audio descriptions.",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://docs.wistia.com/reference/getting-started-with-the-data-api"
+    },
+    {
+     "name": "booking-com:booking-com-property-description-api-api",
+     "description": "Create, update and retrieve property description",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://developers.booking.com/demand/docs/open-api/3.2/demand-api"
+    },
+    {
+     "name": "wikidata:wikidata-descriptions-api",
+     "description": "Description management",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://www.wikidata.org/wiki/Wikidata:REST_API"
+    },
+    {
+     "name": "clio:clio-activity-descriptions-api",
+     "description": "Activity Descriptions are custom Time Entry templates. Activity Descriptions help firms expedite their process for recording Time Entries, and ensure that their Time Entry descriptions are consistent.",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://docs.developers.clio.com/"
+    },
+    {
+     "name": "holidu:holidu-descriptions-api",
+     "description": "The Descriptions API from Holidu — 1 operation(s) for descriptions.",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://developer.holidu.com/reference/intro-1"
+    },
+    {
+     "name": "eumetsat:eumetsat-description-document-api",
+     "description": "The Description Document API from EUMETSAT — 1 operation(s) for description document.",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://user.eumetsat.int/data-access"
+    },
+    {
+     "name": "insider:insider-algorithm-descriptions-api",
+     "description": "The Algorithm Descriptions API from Insider — 19 operation(s) for algorithm descriptions.",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://academy.insiderone.com/docs/ucd-user-data-apis-overview"
+    },
+    {
+     "name": "epa:epa-codes-descriptions-api",
+     "description": "The Codes & Descriptions API from EPA — U.S. Environmental Protection Agency — 2 operation(s) for codes & descriptions.",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://aqs.epa.gov/aqsweb/documents/data_api.html"
+    },
+    {
+     "name": "hostfully:hostfully-property-descriptions-api",
+     "description": "The Property Descriptions API from Hostfully — 2 operation(s) for property descriptions.",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://dev.hostfully.com/reference/getting-started"
+    },
+    {
+     "name": "level2:level2-update-user-description-api",
+     "description": "The Update User Description API from Level2 — 1 operation(s) for update user description.",
+     "remotes": [],
+     "word": "descriptions",
+     "directory": "apis.io",
+     "page": "https://learn.trylevel2.com/docs/Broker/API/broker-api"
+    },
+    {
+     "name": "palo-alto-networks:palo-alto-networks-repository-importance-score-api",
+     "description": "The Repository Importance Score indicates the relative criticality of a repository, allowing you to focus on the most critical repositories, thereby enabling you to make informed decisions about secur",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://pan.dev/panos/docs/xmlapi/"
+    },
+    {
+     "name": "sentry-system:sentry-system-commits-api",
+     "description": "Manage commits associated with releases",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://sentry.io"
+    },
+    {
+     "name": "gitlab:apiv4commits",
+     "description": "The GitLab Commits API provides programmatic access to Git commits within GitLab projects. It supports listing, creating, and retrieving commits, viewing commit diffs and comments, cherry-picking comm",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://docs.gitlab.com/api/commits/"
+    },
+    {
+     "name": "microsoft-azure-devops:microsoft-azure-devops-commits-api",
+     "description": "Operations for accessing commits and commit history",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://learn.microsoft.com/en-us/rest/api/azure/devops/"
+    },
+    {
+     "name": "atlassian:atlassian-commits-api",
+     "description": "The Commits API from Atlassian — 19 operation(s) for commits.",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://developer.atlassian.com/cloud/bitbucket/rest/api-group-addon/#api-group-addon"
+    },
+    {
+     "name": "github:github-commits-api",
+     "description": "The GitHub Commits API lets you list, retrieve, and compare commits in a repository, as well as manage commit comments and commit statuses. It provides endpoints for viewing commit details, listing pu",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://docs.github.com/en/rest/commits?apiVersion=2022-11-28"
+    },
+    {
+     "name": "pluralsight:pluralsight-commits-api",
+     "description": "Commit data operations",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://developer.pluralsight.com"
+    },
+    {
+     "name": "atlassian:atlassian-commit-statuses-api",
+     "description": "The Commit Statuses API from Atlassian — 3 operation(s) for commit statuses.",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://developer.atlassian.com/cloud/bitbucket/rest/api-group-addon/#api-group-addon"
+    },
+    {
+     "name": "atlassian:atlassian-reports-commits-api",
+     "description": "The Reports - Commits API from Atlassian — 4 operation(s) for reports - commits.",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://developer.atlassian.com/cloud/bitbucket/rest/api-group-addon/#api-group-addon"
+    },
+    {
+     "name": "ablo:ablo-commits-api",
+     "description": "The commits API from Ablo — 2 operation(s) for commits.",
+     "remotes": [],
+     "word": "pre-commit",
+     "directory": "apis.io",
+     "page": "https://docs.abloatai.com/api-reference"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.standardblanks/shop",
+     "url": "https://standardblanks.com/mcp/shop",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.strengthstandardscalc/site",
+     "url": "https://strengthstandardscalc.com/mcp",
+     "status": 200,
+     "doors": 10
+    },
+    {
+     "server": "com.trycloudflare.newark-commerce-standards-bye/uptime-marketplace",
+     "url": "https://newark-commerce-standards-bye.trycloudflare.com/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "com.wiastandards/standards",
+     "url": "https://mcp-standards.wiastandards.com/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.wiastandards/wihp",
+     "url": "https://mcp-wihp.wiastandards.com/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.wiastandards/wisdom",
+     "url": "https://mcp-wisdom.wiastandards.com/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "io.github.AtticStandard/atom-mcp-server",
+     "url": "https://mcp.atticstandard.com/mcp",
+     "status": 200,
+     "doors": 11
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.standardblanks/shop",
+     "url": "https://standardblanks.com/mcp/shop",
+     "door": "get_product",
+     "score": 2,
+     "shared": [
+      "description",
+      "method"
+     ]
+    },
+    {
+     "server": "io.github.AtticStandard/atom-mcp-server",
+     "url": "https://mcp.atticstandard.com/mcp",
+     "door": "compare_prices",
+     "score": 1,
+     "shared": [
+      "standard"
+     ]
+    },
+    {
+     "server": "com.strengthstandardscalc/site",
+     "url": "https://strengthstandardscalc.com/mcp",
+     "door": "dataset_columns",
+     "score": 1,
+     "shared": [
+      "standard"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "rbac-readability-role",
+   "words": [
+    "readability",
+    "google",
+    "role"
+   ],
+   "servers": 40,
+   "serverList": [
+    {
+     "name": "ai.adplane/google-ads",
+     "description": "Google Ads reporting and campaign management. Everything it creates starts paused.",
+     "remotes": [
+      "https://mcp.adplane.ai"
+     ],
+     "word": "google"
+    },
+    {
+     "name": "ai.adramp/google-ads",
+     "description": "Google Ads MCP server — manage campaigns, keywords, and metrics.",
+     "remotes": [
+      "https://mcp.adramp.ai/sse"
+     ],
+     "word": "google"
+    },
+    {
+     "name": "ai.b77/google-ads",
+     "description": "Read and manage your Google Ads account in chat.",
+     "remotes": [
+      "https://google-ads.b77.ai/mcp"
+     ],
+     "word": "google"
+    },
+    {
+     "name": "ai.b77/google-news",
+     "description": "Search and read the latest news in chat.",
+     "remotes": [
+      "https://google-news.b77.ai/mcp"
+     ],
+     "word": "google"
+    },
+    {
+     "name": "br.com.rolesemsp/roles-catalogue-mcp",
+     "description": "Cultural and gastronomic discovery MCP concierge for São Paulo, Brazil.",
+     "remotes": [
+      "https://rolesemsp.com.br/mcp"
+     ],
+     "word": "role"
+    },
+    {
+     "name": "click.findyourrolefirst/jobfeed",
+     "description": "Fresh job listings read direct from thousands of company career pages, for your AI agent.",
+     "remotes": [
+      "https://findyourrolefirst.click/mcp"
+     ],
+     "word": "role"
+    },
+    {
+     "name": "com.aeroleads/mcp",
+     "description": "Find, count and save B2B contacts (work emails, phones) using your AeroLeads credits.",
+     "remotes": [
+      "https://aeroleads.com/mcp"
+     ],
+     "word": "role"
+    },
+    {
+     "name": "com.agoramerit/role-assessment",
+     "description": "Free job-responsibility assessments with report quotes and private human review links.",
+     "remotes": [
+      "https://agoramerit.com/mcp"
+     ],
+     "word": "role"
+    },
+    {
+     "name": "com.anywhereroles/jobs",
+     "description": "Remote job search as MCP tools: jobs, companies, categories, salaries. Links to original postings.",
+     "remotes": [
+      "https://anywhereroles.com/mcp"
+     ],
+     "word": "role"
+    },
+    {
+     "name": "com.prolevelmax/prolevelmax",
+     "description": "Real-time public data from 73 platforms for AI: TikTok, Reddit, Instagram, Xiaohongshu and more",
+     "remotes": [
+      "https://prolevelmax.com/mcp"
+     ],
+     "word": "role"
+    },
+    {
+     "name": "mercury-hq-com:mercury-hq-com-cited-readability-api",
+     "description": "The cited-readability API from MERCURY — 1 operation(s) for cited-readability.",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://network.mercury-hq.com/university/docs"
+    },
+    {
+     "name": "optimizely:optimizely-reachability-api",
+     "description": "The Reachability API from Optimizely — 2 operation(s) for reachability.",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://support.optimizely.com/hc/en-us/articles/45320607594893-Optimizely-Experimentation-MCP-server-overview"
+    },
+    {
+     "name": "textgears:textgears-readability-api",
+     "description": "Text readability scoring and analysis",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://textgears.com/api"
+    },
+    {
+     "name": "harness:srm-api",
+     "description": "APIs for managing service level objectives, monitored services, and service dashboards for balancing feature velocity with reliability.",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://developer.harness.io/docs/service-reliability-management"
+    },
+    {
+     "name": "zaius:zaius-reachability-api",
+     "description": "The Reachability API from Zaius — 2 operation(s) for reachability.",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://docs.developers.optimizely.com/optimizely-data-platform/reference/introduction"
+    },
+    {
+     "name": "delx-ai:delx-ai-reliability-api",
+     "description": "The reliability API from Delx — 1 operation(s) for reliability.",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://ontology.delx.ai/docs"
+    },
+    {
+     "name": "dynatrace:dynatrace-slo-api",
+     "description": "The Dynatrace Service-Level Objectives API is a management API for creating, editing, listing, deleting, and evaluating SLOs and SLO templates within a Dynatrace environment. It enables programmatic d",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://docs.dynatrace.com/docs/discover-dynatrace/references/dynatrace-api/environment-api/service-level-objectives"
+    },
+    {
+     "name": "sonatype:sonatype-reachability-evidence-api",
+     "description": "Use this REST API to retrieve reachability evidence showing call paths to vulnerable methods for a hosted repository component.",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://help.sonatype.com/en/iq-api-reference.html"
+    },
+    {
+     "name": "harness:chaos-api",
+     "description": "APIs for chaos engineering, load testing, and disaster recovery testing including chaos experiments, probes, actions, faults, and resilience scoring.",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://developer.harness.io/docs/resilience-testing"
+    },
+    {
+     "name": "datadog-apm:datadog-apm-service-level-objectives-api",
+     "description": "[Service Level Objectives](https://docs.datadoghq.com/monitors/service_level_objectives/#configuration) (or SLOs) are a key part of the site reliability engineering toolkit. SLOs provide a framework f",
+     "remotes": [],
+     "word": "readability",
+     "directory": "apis.io",
+     "page": "https://docs.datadoghq.com/api/latest/spans/"
+    },
+    {
+     "name": "google:google-ads-api",
+     "description": "The Google Ads API is the programmatic interface to Google Ads and is used for managing large or complex Google Ads accounts and campaigns efficiently.",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://developers.google.com/google-ads/api"
+    },
+    {
+     "name": "google:google-keep-api",
+     "description": "The Google Keep API enables enterprise applications to programmatically manage and access Google Keep notes and lists on behalf of users within a Google Workspace domain.",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://developers.google.com/workspace/keep/api"
+    },
+    {
+     "name": "google:google-maps-api",
+     "description": "Create real-world, real-time experiences with the latest Maps, Routes, and Places features from Google Maps Platform. Built by the Google team for developers everywhere.",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://developers.google.com/maps"
+    },
+    {
+     "name": "google:google-slides-api",
+     "description": "The Google Slides API lets you create and modify Google Slides presentations, enabling applications to build slide decks automatically from user and system-provided data.",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://developers.google.com/workspace/slides/api/guides/overview"
+    },
+    {
+     "name": "google:google-fonts-api",
+     "description": "The Google Fonts Developer API provides programmatic access to the metadata for all font families served by Google Fonts, allowing applications to query for available font families, styles, and subset",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://developers.google.com/fonts"
+    },
+    {
+     "name": "google:google-tasks-api",
+     "description": "The Google Tasks API lets you search, read, and update Google Tasks content and metadata using a RESTful interface, enabling programmatic management of task lists and individual tasks.",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://developers.google.com/workspace/tasks/overview"
+    },
+    {
+     "name": "google:google-chat-api",
+     "description": "The Google Chat API enables developers to build Chat apps that bring services and resources into Google Chat, letting users get information and take action without leaving the conversation.",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://developers.google.com/workspace/chat/overview"
+    },
+    {
+     "name": "google:google-picker-api",
+     "description": "The Google Picker API is a JavaScript API that allows users to select or upload Google Drive files through a familiar dialog, providing a browser-based file picker for Drive content.",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://developers.google.com/workspace/drive/picker"
+    },
+    {
+     "name": "google:google-applications-api",
+     "description": "The Applications API from Google — 2 operation(s) for applications.",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://cloud.google.com/api-gateway/docs"
+    },
+    {
+     "name": "google:google-bookshelves-api",
+     "description": "The Bookshelves API from Google — 3 operation(s) for bookshelves.",
+     "remotes": [],
+     "word": "google",
+     "directory": "apis.io",
+     "page": "https://cloud.google.com/api-gateway/docs"
+    },
+    {
+     "name": "twilio:twilio-roles-api",
+     "description": "The Roles API from Twilio — 2 operation(s) for roles.",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://www.twilio.com/docs/iam/api/account"
+    },
+    {
+     "name": "kinde:kinde-roles-api",
+     "description": "The Roles API from Kinde — 7 operation(s) for roles.",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://docs.kinde.com/kinde-apis/management/"
+    },
+    {
+     "name": "hubspot:hubspot-roles-api",
+     "description": "The Roles API from HubSpot — 1 operation(s) for roles.",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://developers.hubspot.com/docs/api/cms/url-redirects"
+    },
+    {
+     "name": "openai:openai-roles-api",
+     "description": "The Roles API from OpenAI — 4 operation(s) for roles.",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://platform.openai.com/docs/assistants/overview"
+    },
+    {
+     "name": "twilio:twilio-role-assignments-api",
+     "description": "Role assignment operations",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://www.twilio.com/docs/iam/api/account"
+    },
+    {
+     "name": "harness:harness-roles-api",
+     "description": "This contains APIs for CRUD on roles",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "clickup:clickup-roles-api",
+     "description": "The Roles API from Clickup — 1 operation(s) for roles.",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://developer.clickup.com/docs/tasks"
+    },
+    {
+     "name": "wso2:wso2-roles-api",
+     "description": "The Roles API from WSO2 — 1 operation(s) for roles.",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://apim.docs.wso2.com/en/latest/reference/product-apis/publisher-apis/publisher-v4/publisher-v4/"
+    },
+    {
+     "name": "outreach:outreach-role-api",
+     "description": "<SchemaDefinition schemaRef=\"#/components/schemas/role\" /> ## Role Relationships <SchemaDefinition schemaRef=\"#/components/schemas/roleRelationships\" /> ## Role Resource Metadata | **METADATA NAME**| ",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://developers.outreach.io/api/"
+    },
+    {
+     "name": "weavr:weavr-roles-api",
+     "description": "The Roles API from Weavr — 1 operation(s) for roles.",
+     "remotes": [],
+     "word": "role",
+     "directory": "apis.io",
+     "page": "https://api.weavr.io/products/multi/openapi"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.adplane/google-ads",
+     "url": "https://mcp.adplane.ai",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.adramp/google-ads",
+     "url": "https://mcp.adramp.ai/sse",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.b77/google-ads",
+     "url": "https://google-ads.b77.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.b77/google-news",
+     "url": "https://google-news.b77.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "br.com.rolesemsp/roles-catalogue-mcp",
+     "url": "https://rolesemsp.com.br/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "click.findyourrolefirst/jobfeed",
+     "url": "https://findyourrolefirst.click/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.aeroleads/mcp",
+     "url": "https://aeroleads.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.agoramerit/role-assessment",
+     "url": "https://agoramerit.com/mcp",
+     "status": 503,
+     "doors": 0
+    },
+    {
+     "server": "com.anywhereroles/jobs",
+     "url": "https://anywhereroles.com/mcp",
+     "status": 200,
+     "doors": 8
+    },
+    {
+     "server": "com.prolevelmax/prolevelmax",
+     "url": "https://prolevelmax.com/mcp",
+     "status": 401,
+     "doors": 0
+    }
+   ],
+   "bestDoors": []
+  },
+  {
+   "lead": "rbac-owners-scoped",
+   "words": [
+    "relationship",
+    "collection",
+    "instance"
+   ],
+   "servers": 46,
+   "serverList": [
+    {
+     "name": "ai.homouniversalis/four-pillars-tzolkin-dreamspell-hexagram-gene-keys-genekeys-sephiroth-tree-of-life-gematria-arcana-chakras-kundalini-ayurveda-elements-relationship-matchmaking-couple-lineage",
+     "description": "Four Pillars, Tzolkin, Hexagrams, Tree of Life, 4 Elements, Couple Matchmaking & Family Lineage MCP.",
+     "remotes": [
+      "https://homouniversalis.ai/mcp?pillar=sacred-keys"
+     ],
+     "word": "relationship"
+    },
+    {
+     "name": "info.astroway/relationships",
+     "description": "Synastry, composite, compatibility scores, family dynamics and pet charts.",
+     "remotes": [
+      "https://mcp.astroway.info/mcp/relationships"
+     ],
+     "word": "relationship"
+    },
+    {
+     "name": "io.github.agentindexworld/relationship-memory",
+     "description": "Free MCP: relationship_memory validate, store (local), retrieve — portable interlocutor cards v1.",
+     "remotes": [
+      "https://x402.agentindex.world/mcp/relationship-memory/"
+     ],
+     "word": "relationship"
+    },
+    {
+     "name": "io.github.visionastro48-dev/aether-machine-relationship-mesh",
+     "description": "Machine-native relationship mesh for discovery, help, evidence, and earned trust.",
+     "remotes": [
+      "https://yztkpjvkpqdfhltjqbzx.supabase.co/functions/v1/angels-peer-probe"
+     ],
+     "word": "relationship"
+    },
+    {
+     "name": "ai.saifs/collections-optimizer",
+     "description": "Prioritise overdue accounts by recovery uplift and recommend a compliant contact strategy.",
+     "remotes": [
+      "https://collections-optimizer-mcp.saifs.ai/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "com.whenisbins/bin-collections",
+     "description": "UK household bin collection dates by address, council-sourced. Free anonymous use, with limits",
+     "remotes": [
+      "https://whenisbins.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.Evozim/debt-collection-bot-mcp",
+     "description": "Premium agentic endpoint for debt-collection-bot-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/debt-collection-bot-mcp/sse"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.jediapps/jedi-collection-sort",
+     "description": "Manage Shopify collection sorting by chat: strategies, assignments, and on-demand sorts.",
+     "remotes": [
+      "https://api.collection-sort.jediapps.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.kerbelp/ai-collection",
+     "description": "Discover and compare AI tools: search, browse categories, find alternatives and curated picks.",
+     "remotes": [
+      "https://thataicollection.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.ssskay/myfigurecollection-api",
+     "description": "Read MyFigureCollection.net: search figures, JAN barcode lookup, shop prices, collections and clubs.",
+     "remotes": [],
+     "word": "collection"
+    },
+    {
+     "name": "io.moderncollections/mcp",
+     "description": "Place overdue B2B invoices for collection and track outreach, payments and remittances.",
+     "remotes": [
+      "https://api.moderncollections.io/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "me.remem/collections",
+     "description": "Browse Bible verse collections from Remember Me, a free memorization app in 48 languages",
+     "remotes": [
+      "https://mcp.remem.me/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "com.netgenium/instance",
+     "description": "Read and write the data and applications of your NET Genium instance; read the framework docs.",
+     "remotes": [
+      "https://{instance}.netgenium.online/api.aspx",
+      "https://{host}/api.aspx"
+     ],
+     "word": "instance"
+    },
+    {
+     "name": "com.zennolab/instance-pm",
+     "description": "Drive the browser of ZennoPoster ProjectMaker: open pages, read and click elements, screenshots.",
+     "remotes": [],
+     "word": "instance"
+    },
+    {
+     "name": "com.zennolab/instance-zp",
+     "description": "Drive the browsers of running ZennoPoster tasks: open pages, read and click elements, screenshots.",
+     "remotes": [],
+     "word": "instance"
+    },
+    {
+     "name": "io.github.arden-instance/x402lint",
+     "description": "Lint an HTTP endpoint's x402 402 conformance; decode X-PAYMENT blobs; inspect a facilitator.",
+     "remotes": [],
+     "word": "instance"
+    },
+    {
+     "name": "salesforce:salesforce-relationships-api",
+     "description": "The Relationships API from Salesforce — 1 operation(s) for relationships.",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/"
+    },
+    {
+     "name": "clickup:clickup-task-relationships-api",
+     "description": "The Task Relationships API from Clickup — 2 operation(s) for task relationships.",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://developer.clickup.com/docs/tasks"
+    },
+    {
+     "name": "optimizely:optimizely-relationships-schema-api",
+     "description": "The Relationships schema API from Optimizely — 2 operation(s) for relationships schema.",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://support.optimizely.com/hc/en-us/articles/45320607594893-Optimizely-Experimentation-MCP-server-overview"
+    },
+    {
+     "name": "feedly:feedly-relationships-api",
+     "description": "The Relationships API from Feedly — 5 operation(s) for relationships.",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://developers.feedly.com/reference/introduction"
+    },
+    {
+     "name": "builtwith:builtwith-relationships-api",
+     "description": "The Relationships API from BuiltWith — 1 operation(s) for relationships.",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://api.builtwith.com/domain-api"
+    },
+    {
+     "name": "auth0:auth0-relationship-queries-api",
+     "description": "The Relationship Queries API from Auth0 — 6 operation(s) for relationship queries.",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://auth0.com/docs/api/management/v2"
+    },
+    {
+     "name": "auth0:auth0-relationship-tuples-api",
+     "description": "The Relationship Tuples API from Auth0 — 3 operation(s) for relationship tuples.",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://auth0.com/docs/api/management/v2"
+    },
+    {
+     "name": "zaius:zaius-relationships-schema-api",
+     "description": "The Relationships schema API from Zaius — 2 operation(s) for relationships schema.",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://docs.developers.optimizely.com/optimizely-data-platform/reference/introduction"
+    },
+    {
+     "name": "onetrust:onetrust-relationship-management-api",
+     "description": "The Relationship Management APIs are used to manage relationships between AI Governance entities.",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://developer.onetrust.com/onetrust/reference/attribute-management"
+    },
+    {
+     "name": "dotcms:dotcms-relationships-api",
+     "description": "Content relationship management",
+     "remotes": [],
+     "word": "relationship",
+     "directory": "apis.io",
+     "page": "https://dev.dotcms.com/docs/build/apis/api-basics/rest-apis"
+    },
+    {
+     "name": "shopify:shopify-collection-api",
+     "description": "The Collection API from Shopify — 66 operation(s) for collection.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://shopify.dev/docs/api/admin-rest"
+    },
+    {
+     "name": "shopify:shopify-collections-api",
+     "description": "Retrieve collection data",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://shopify.dev/docs/api/admin-rest"
+    },
+    {
+     "name": "salesforce:salesforce-collections-api",
+     "description": "The Collections API from Salesforce — 4 operation(s) for collections.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/"
+    },
+    {
+     "name": "telnyx:telnyx-ai-collections-api",
+     "description": "Create and manage logical collections of your Telnyx data, tune retrieval settings, manage sources, and run collection-scoped semantic search.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://developers.telnyx.com/api"
+    },
+    {
+     "name": "snyk:snyk-collection-api",
+     "description": "The Collection API from Snyk — 3 operation(s) for collection.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://apidocs.snyk.io/?version=2024-10-15"
+    },
+    {
+     "name": "harness:harness-collections-api",
+     "description": "This contains APIs specific to Collections",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "shopify:shopify-custom-collections-api",
+     "description": "Manage manual collections",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://shopify.dev/docs/api/admin-rest"
+    },
+    {
+     "name": "shopify:shopify-smart-collections-api",
+     "description": "Manage automated collections",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://shopify.dev/docs/api/admin-rest"
+    },
+    {
+     "name": "customer-io:customer-io-collections-api",
+     "description": "Manage collections of data used in message personalization.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://docs.customer.io/integrations/api/track/"
+    },
+    {
+     "name": "cloudflare:cloudflare-collections-api",
+     "description": "The Collections API from Cloudflare — 7 operation(s) for collections.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://developers.cloudflare.com/load-balancing/"
+    },
+    {
+     "name": "harness:harness-instance-api",
+     "description": "The instance service for working with instances",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "tray-ai:tray-ai-agent-instances-api",
+     "description": "{'$ref': 'descriptions/trayapi/tags/agent-instances.md'}",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://tray.ai/documentation/developer/openapi/embeddedapi-introduction/"
+    },
+    {
+     "name": "tray-ai:tray-ai-solution-instances-api",
+     "description": "Create, update, enable, disable, and delete solution instances for end users. Requires a user token for most operations.",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://tray.ai/documentation/developer/openapi/embeddedapi-introduction/"
+    },
+    {
+     "name": "datadog:datadog-instances-api",
+     "description": "The Instances API from Datadog — 1 operation(s) for instances.",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://docs.datadoghq.com/api/latest/"
+    },
+    {
+     "name": "canonical:canonical-instances-api",
+     "description": "The instances API from Canonical — 29 operation(s) for instances.",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://api.snapcraft.io/docs/"
+    },
+    {
+     "name": "harness:harness-database-instance-api",
+     "description": "This contains APIs for performing CRUD operations on Database Instance Entity",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "apigee:apigee-instances-api",
+     "description": "Manage Apigee runtime instances",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://cloud.google.com/apigee/docs"
+    },
+    {
+     "name": "laravel:laravel-instances-api",
+     "description": "The Instances API from Laravel — 10 operation(s) for instances.",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://forge.laravel.com/docs/api-reference/introduction"
+    },
+    {
+     "name": "amazon-lightsail:amazon-lightsail-instances-api",
+     "description": "Lightsail virtual server instance management",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://aws.amazon.com/lightsail/"
+    },
+    {
+     "name": "logicmonitor:logicmonitor-datasource-instances-api",
+     "description": "The Datasource Instances API from LogicMonitor — 13 operation(s) for datasource instances.",
+     "remotes": [],
+     "word": "instance",
+     "directory": "apis.io",
+     "page": "https://www.logicmonitor.com/support/rest-api-developers-guide/"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.homouniversalis/four-pillars-tzolkin-dreamspell-hexagram-gene-keys-genekeys-sephiroth-tree-of-life-gematria-arcana-chakras-kundalini-ayurveda-elements-relationship-matchmaking-couple-lineage",
+     "url": "https://homouniversalis.ai/mcp?pillar=sacred-keys",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "info.astroway/relationships",
+     "url": "https://mcp.astroway.info/mcp/relationships",
+     "status": 200,
+     "doors": 45
+    },
+    {
+     "server": "io.github.agentindexworld/relationship-memory",
+     "url": "https://x402.agentindex.world/mcp/relationship-memory/",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "io.github.visionastro48-dev/aether-machine-relationship-mesh",
+     "url": "https://yztkpjvkpqdfhltjqbzx.supabase.co/functions/v1/angels-peer-probe",
+     "status": 429,
+     "doors": 0
+    },
+    {
+     "server": "ai.saifs/collections-optimizer",
+     "url": "https://collections-optimizer-mcp.saifs.ai/mcp",
+     "status": 401,
+     "doors": 0
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "info.astroway/relationships",
+     "url": "https://mcp.astroway.info/mcp/relationships",
+     "door": "astroway_agent_tools",
+     "score": 1,
+     "shared": [
+      "document"
+     ]
+    },
+    {
+     "server": "info.astroway/relationships",
+     "url": "https://mcp.astroway.info/mcp/relationships",
+     "door": "astroway_mcp_ai_comparison_coach",
+     "score": 1,
+     "shared": [
+      "relationship"
+     ]
+    },
+    {
+     "server": "info.astroway/relationships",
+     "url": "https://mcp.astroway.info/mcp/relationships",
+     "door": "astroway_pet_owner_pet_compatibility",
+     "score": 1,
+     "shared": [
+      "owner"
+     ]
+    }
+   ]
+  }
+ ]
 }

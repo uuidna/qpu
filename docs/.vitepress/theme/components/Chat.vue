@@ -5,9 +5,9 @@
 // exchange is broadcast to every open tab of the web OS (BroadcastChannel) and told to the service worker; the log stays on
 // this device. Offline, the MCP answers here alone and says so.
 import { ref, onMounted } from 'vue'
-import { handle } from '../../../../src/quantum/mcp.ts'
+import { handle } from '../../../../src/quantum/processing/mcp.ts'
 import App from './App.vue'
-import { hashOf } from '../../../../src/quantum/e2e.ts'
+import { hashOf } from '../../../../src/quantum/processing/e2e.ts'
 type Turn = { at: string; statement: string; verdict: string; tool: string | null; address: string | null; hash: string; teleport: 'proven' | 'differs' | 'offline' | 'asking' | 'refused'; ms: number; widget: string; from: 'here' | 'signal'; result?: unknown; route?: { theorem: string; lean: string; shared: string[]; routes: { example: string; call: { name: string; arguments: Record<string, unknown> } }[] }[] }
 const statement = ref('')
 const turns = ref<Turn[]>([])

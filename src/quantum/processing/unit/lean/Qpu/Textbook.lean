@@ -1456,7 +1456,7 @@ theorem textbook_bill_covered_converse (price cost : Nat) : (price - cost + cost
 theorem textbook_shor_reduction : (7 ^ 4) % 15 = 1 ∧ (7 ^ 2) % 15 = 4 ∧ Nat.gcd (4 - 1) 15 = 3 ∧ Nat.gcd (4 + 1) 15 = 5 := by decide
 /-- textbook_shor_reduction reflected by its shape, conjunction (examples: algorithm-shor-reduction, algorithm-shor-beyond-bound) -/
 theorem textbook_shor_reduction_reflected (σ : Nat) : (σ - (1) = σ - ((7 ^ 4) % 15)) ∧ (σ - (4) = σ - ((7 ^ 2) % 15)) ∧ (σ - (3) = σ - (Nat.gcd (4 - 1) 15)) ∧ (σ - (5) = σ - (Nat.gcd (4 + 1) 15)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.2)⟩
-/-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: the classical door checks every factor it finds by that product (readInteger and writeInteger, testPrimality, findFactors), at any size (examples: algorithm-factor-1000-bit, algorithm-factor-mersenne) -/
+/-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: the classical door checks every factor it finds by that product (readInteger and writeInteger, testPrimality, findFactors), at any size; the σ-involution reflection N = a² − b² = (a − b)(a + b) reads a factor pair off when a² − N is a square (reflectShift) (examples: algorithm-factor-1000-bit, algorithm-factor-mersenne) -/
 theorem textbook_factors_divide (f c n : Nat) (h : f * c = n) : f ∣ n := ⟨c, h.symm⟩
 /-- getInteger reads an integer of any size from its decimal string (never a float, a fallback when absent) and listFactors returns the prime factors whose product is the integer: fifteen parses and lists as three times five, dividing back exactly (examples: algorithm-factor-15) -/
 theorem textbook_factor_parse_list : 15 = 3 * 5 ∧ 15 / 3 = 5 := by decide
@@ -1592,7 +1592,3 @@ theorem textbook_relation_rsa_reflected (σ : Nat) : (σ - (7) = σ - (Nat.gcd (
 theorem textbook_ancient_law : 4 + 5 = 9 := by decide
 /-- textbook_ancient_law reflected by its shape, equality (examples: legal-ancient) -/
 theorem textbook_ancient_law_reflected (σ : Nat) : σ - (9) = σ - (4 + 5) := congrArg (σ - ·) (Eq.symm (textbook_ancient_law))
-/-- the shorFactor capability factors within the state-vector bound and declines beyond it with candour: 15 = 3 · 5 and 21 = 3 · 7 are reached (N ≤ 21), while 35 > 21 is beyond the bound, so shorFactor names the duty of candour instead of asserting a factorization (examples: algorithm-shor-factor) -/
-theorem textbook_shor_factor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 21 < 35 := by decide
-/-- textbook_shor_factor reflected by its shape, conjunction (examples: algorithm-shor-factor) -/
-theorem textbook_shor_factor_reflected (σ : Nat) (hσ0 : (35) ≤ σ) : (σ - (15) = σ - (3 * 5)) ∧ (σ - (21) = σ - (3 * 7)) ∧ (σ - (35) < σ - (21)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_factor).1), congrArg (σ - ·) (Eq.symm (textbook_shor_factor).2.1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_shor_factor).2.2 hσ0) (textbook_shor_factor).2.2⟩

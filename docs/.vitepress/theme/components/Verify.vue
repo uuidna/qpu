@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { handle } from '../../../../src/quantum/mcp.ts'
+import { handle } from '../../../../src/quantum/processing/mcp.ts'
 const props = defineProps<{ uuid?: string; compact?: boolean }>()
 const input = ref(props.uuid ?? '')
 const content = ref('')

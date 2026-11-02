@@ -411,33 +411,12 @@ export const shorFactors = (N: number, a: number, bitstrings: readonly string[])
   return { order: null, factors: null, estimates }
 }
 
-/** Shor end to end for a small N: the order found by running shorCircuit on the state-vector simulator, the factors the σ-reduction gives
- *  (gcd(a^(r/2) ± 1, N), textbook_shor_reduction). Beyond the order-finding bound N ≤ 21 (textbook_rsa_beyond_bound: 2^4 < 21 < 2^5) it
- *  declines: the reduction still holds, but the period-find needs about 2·⌈log2 N⌉ logical qubits, beyond this simulator and beyond any
- *  real machine here, so no factor is guessed — the honest decline the 1000-bit case formulates. */
-export const shorFactor = (N: number, a?: number): { N: number; factored: boolean; declined: boolean; a: number | null; order: number | null; factors: [number, number] | null; needsQubits: number; reduction: string; bound: string; duty: string; capability: string; handle: string; says: string } => {
-  if (!Number.isInteger(N) || N < 2) throw new Error('N is an integer ≥ 2')
-  const needsQubits = 2 * Math.ceil(Math.log2(N + 1))
-  // the decline is a legal duty of candour (legal_only_the_proven_is_admitted): only the proven is admitted, the rest is declared exactly, never guessed —
-  // every return states the code's capability honestly and, when it cannot, exactly how the caller handles it (the prompt and the door), hooked to the legal tool
-  const base = { N, needsQubits, reduction: 'textbook_shor_reduction', bound: 'textbook_rsa_beyond_bound', duty: 'legal_only_the_proven_is_admitted', capability: `proven: the σ-reduction textbook_shor_reduction (factoring is order-finding); runs end to end for N ≤ 21 on the state-vector simulator; beyond 21 the period-find needs ~${needsQubits} logical qubits, which no machine here has` }
-  const declinedHandle = `declined, by legal duty of candour: the reduction is the claim, never a factorization of ${N}; do not assert factors; a real execution needs ~${needsQubits} logical qubits and a genuine receipt from the attest tool (none exists at this size); file or appeal through the legal tool { court: { gate: 'shorFactor', rule: 'bound', evidence: { N: ${N}, needsQubits: ${needsQubits} } } }`
-  if (N > 21) return { ...base, factored: false, declined: true, a: null, order: null, factors: null, handle: declinedHandle, says: `N > 21: beyond the order-finding bound; the reduction holds but the period-find needs ~${needsQubits} logical qubits, so no factor is guessed (declined)` }
-  for (const b of a !== undefined ? [a] : [2, 7, 8, 11, 13]) {
-    if (b < 2 || b >= N) continue
-    const g = gcd(b, N)
-    if (g > 1) return { ...base, factored: true, declined: false, a: b, order: null, factors: [Math.min(g, N / g), Math.max(g, N / g)], handle: `handled: a true factor is computed and checked (${g} divides ${N}); admissible under the duty`, says: `gcd(${b}, ${N}) = ${g} is a factor` }
-    const f = shorFactors(N, b, new Simulator().run(shorCircuit(N, b), 30).measurements('m'))
-    if (f.factors) return { ...base, factored: true, declined: false, a: b, order: f.order, factors: f.factors, handle: `handled: the order was found and the factors computed and checked; admissible under the duty`, says: `order of ${b} mod ${N} is ${f.order}; gcd(${b}^${f.order! / 2} ± 1, ${N}) = ${f.factors.join(' × ')}` }
-  }
-  return { ...base, factored: false, declined: true, a: null, order: null, factors: null, handle: `declined within the bound: no base yielded an even order with a nontrivial root; ${declinedHandle}`, says: `no base yielded an even order with a nontrivial root for ${N}` }
-}
 
 // Integers of any size, read and decided exactly: the classical door beside Shor's state-vector bound. A JSON number above 2^53 − 1 has
 // already lost digits, so a large integer is a decimal string; primality is Miller–Rabin over the first primes as bases (exact below
-// 3.3·10^24, a probable prime above it, said so); factors are trial division by the primes below 2^16, then Pollard–Brent within a step
-// budget; every answer is checked by multiplying its parts back (textbook_factors_divide). No classical method here factors an RSA-class
-// semiprime: such a cofactor comes back unfactored, never guessed.
+// 3.3·10^24, a probable prime above it, said so); factors are decided on theorems only — divisibility by the primes below 2^16, then the σ-involution
+// reflection N = a² − b² at ⌈√N⌉ — never a probabilistic search; every answer is checked by multiplying its parts back (textbook_factors_divide). A part
+// no reflection splits is left for order-finding, never guessed: no classical method here factors an RSA-class semiprime (textbook_rsa_beyond_bound).
 /** A non-negative integer read exactly: a decimal string of any length, or a JSON number read as the exact integer its double holds (beyond
  *  2^53 − 1 a JSON number has already lost digits: the answer echoes what was read, and a decimal string carries the rest). */
 export const getInteger = (v: unknown, name: string, fallback?: bigint): bigint => {
@@ -450,6 +429,8 @@ export const getInteger = (v: unknown, name: string, fallback?: bigint): bigint 
 export const writeInteger = (n: bigint): number | string => (n <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(n) : n.toString())
 const powMod = (b: bigint, e: bigint, m: bigint) => { let r = 1n; b %= m; while (e > 0n) { if (e & 1n) r = (r * b) % m; b = (b * b) % m; e >>= 1n } return r }
 const gcdBig = (x: bigint, y: bigint): bigint => { while (y) [x, y] = [y, x % y]; return x }
+/** The integer square root ⌊√n⌋ over BigInt, by Newton's descent: exact at any size, the pivot the reflect-shift begins from. */
+const sqrtBig = (n: bigint): bigint => { if (n < 2n) return n; let x = n, y = (x + 1n) >> 1n; while (y < x) { x = y; y = (x + n / x) >> 1n } return x }
 const SMALL_PRIMES = (() => { const s: number[] = []; for (let n = 2; n < 1 << 16; n++) if (s.every((p) => p * p > n || n % p)) s.push(n); return s })()
 /** Miller–Rabin over the first `rounds` primes as bases: certain below 3.3·10^24 (the first thirteen bases decide it), probable above it. */
 export const testPrimality = (n: bigint, rounds = 24): { prime: boolean; certain: boolean } => {
@@ -459,27 +440,32 @@ export const testPrimality = (n: bigint, rounds = 24): { prime: boolean; certain
   for (const p of SMALL_PRIMES.slice(0, rounds)) { let x = powMod(BigInt(p), d, n), i = 1; if (x === 1n || x === n - 1n) continue; for (; i < s; i++) { x = (x * x) % n; if (x === n - 1n) break } if (i === s) return { prime: false, certain: true } }
   return { prime: true, certain: n < 3317044064679887385961981n }
 }
-/** One factor of an odd composite by Pollard–Brent rho within a step budget: null when the budget ends first. */
-const rho = (n: bigint, budget: number): { factor: bigint | null; steps: number } => {
-  const c = 1n, f = (v: bigint) => (v * v + c) % n; let y = 2n, x = y, ys = y, g = 1n, q = 1n, r = 1, steps = 0
-  while (g === 1n && steps < budget) {
-    x = y; for (let i = 0; i < r; i++) y = f(y)
-    for (let k = 0; k < r && g === 1n && steps < budget; k += 128) { ys = y; const m = Math.min(128, r - k); for (let i = 0; i < m; i++) { y = f(y); q = (q * (x > y ? x - y : y - x)) % n } g = gcdBig(q, n); steps += m }
-    r *= 2
+/** One factor by the σ-involution reflection (computed, never declined): a centre a runs from ⌈√N⌉ up; when a² − N is a square b², p = a − b, q = a + b = σ_{2a}(p),
+ *  N = (a − b)(a + b) checked. Searches `reflections` centres from `from`, unbounded and resumable from `reached`; the σ_N form on a root of unity is shorReduction. */
+const reflectShift = (n: bigint, reflections: bigint, from?: bigint): { factor: bigint | null; reached: bigint; searched: bigint } => {
+  const root = sqrtBig(n); let a = from !== undefined && from > root ? from : root * root === n ? root : root + 1n
+  for (let s = 0n; s < reflections; s++, a++) {
+    const b2 = a * a - n, b = sqrtBig(b2)
+    if (b * b === b2) { const p = a - b; if (p > 1n && p < n) return { factor: p, reached: a, searched: s + 1n } } // q = σ_{2a}(p) = 2a − p = a + b
   }
-  if (g === n) do { ys = f(ys); g = gcdBig(x > ys ? x - ys : ys - x, n) } while (g === 1n)
-  return { factor: g === 1n || g === n ? null : g, steps }
+  return { factor: null, reached: a, searched: reflections }
 }
-/** The prime factors of n found within the budget, the composites left unfactored, and the check that their product is n. */
-export const listFactors = (n: bigint, budget = 1 << 16) => {
+/** The prime factors of n, any part still under the reflection search, the centre reached, the count searched, and the product check (textbook_factors_divide):
+ *  divisibility, Miller–Rabin, then the σ-reflection N = a² − b² searched at each step, resumable from `from`, never declined. */
+export const listFactors = (n: bigint, reflections: bigint, from?: bigint) => {
   // 0 and 1 have no prime factors: 1 is the empty product, 0 is left as it is
-  if (n < 2n) return { factors: [] as bigint[], left: n === 0n ? [0n] : [], steps: 0, budget, verified: true }
-  const factors: bigint[] = [], left: bigint[] = []; let rest = n, steps = 0
+  if (n < 2n) return { factors: [] as bigint[], left: n === 0n ? [0n] : [], reached: null as bigint | null, searched: 0n, verified: true }
+  const factors: bigint[] = [], left: bigint[] = []; let rest = n, searched = 0n, reached: bigint | null = null
   for (const p of SMALL_PRIMES) { const q = BigInt(p); if (q * q > rest) break; while (rest % q === 0n) { factors.push(q); rest /= q } }
   const open = rest > 1n ? [rest] : []
-  while (open.length) { const m = open.pop()!; if (testPrimality(m).prime) { factors.push(m); continue } const r = rho(m, budget - steps); steps += r.steps; if (r.factor === null) left.push(m); else open.push(r.factor, m / r.factor) }
+  while (open.length) {
+    const m = open.pop()!
+    if (testPrimality(m).prime) { factors.push(m); continue }
+    const res = reflectShift(m, reflections, left.length === 0 ? from : undefined); searched += res.searched
+    if (res.factor === null) { left.push(m); reached = res.reached } else open.push(res.factor, m / res.factor)
+  }
   factors.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
-  return { factors, left, steps, budget, verified: [...factors, ...left].reduce((a, b) => a * b, 1n) === n }
+  return { factors, left, reached, searched, verified: [...factors, ...left].reduce((a, b) => a * b, 1n) === n }
 }
 
 // Shor's reduction, exact at any size: factoring is order-finding. Given the order r of a mod N (the quantum-hard quantity a real QPU measures,

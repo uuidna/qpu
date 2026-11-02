@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vitepress'
-import { handle } from '../../../../src/quantum/mcp.ts'
-import { uuidFromParts } from '../../../../src/quantum/blocks.ts'
-import { translateOf, LOCALES } from '../../../../src/quantum/i18n.ts'
+import { handle } from '../../../../src/quantum/processing/mcp.ts'
+import { uuidFromParts } from '../../../../src/quantum/processing/unit/blocks.ts'
+import { translateOf, LOCALES } from '../../../../src/quantum/processing/i18n.ts'
 import Compile from './Compile.vue'
 import Channel from './Channel.vue'
 import Speak from './Speak.vue'

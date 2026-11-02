@@ -879,6 +879,16 @@ The textbook algorithms of the Cirq page
       "pattern": "^[0-9]+$",
       "description": "factor"
     },
+    "reflections": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "factor"
+    },
+    "from": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "factor"
+    },
     "order": {
       "type": "string",
       "pattern": "^[0-9]+$",

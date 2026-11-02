@@ -14,7 +14,7 @@ and no axiom beyond `propext` and `Quot.sound`. The MCP handler is a pure functi
 performs no I/O, and returns each result with a widget. There is no server, no network access and no hardware access
 in this tree.
 
-Every figure below was measured on this tree on 2026-11-01 with the commands in §6.
+Every figure below was measured on this tree on 2026-11-02 with the commands in §6.
 
 | Measure | Value |
 |---|---:|
@@ -25,11 +25,11 @@ Every figure below was measured on this tree on 2026-11-01 with the commands in 
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 1278 / 1910 (1279 hand-written, 631 generated equation lemmas) |
+| Theorems declared / accepted by the kernel | 1276 / 1908 (1277 hand-written, 631 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
 | Self-audit checks | see docs/audit |
-| Cross-verification requests (free public sources) | 414 requests, 336 reachable on 2026-11-01 |
+| Cross-verification requests (free public sources) | 414 requests, 336 reachable on 2026-11-02 |
 | Servers, workers, network calls in the handler | 0 |
 
 ## 1. What the tree contains

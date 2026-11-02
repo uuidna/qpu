@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-01T18:42:20.255Z",
- "ms": 25687,
+ "date": "2026-11-02T00:07:20.652Z",
+ "ms": 21150,
  "rounds": 2,
  "selftest": {
   "passed": true
@@ -10,73 +10,73 @@
   {
    "id": "nist-beacon",
    "status": 200,
-   "ms": 678,
+   "ms": 639,
    "bytes": 3633
   },
   {
    "id": "ct-sth",
-   "status": 503,
-   "ms": 235,
-   "bytes": 53
+   "status": 200,
+   "ms": 759,
+   "bytes": 241
   },
   {
    "id": "acme-directory",
    "status": 200,
-   "ms": 595,
+   "ms": 676,
    "bytes": 961
   },
   {
    "id": "nvd-cves",
    "status": 200,
-   "ms": 702,
+   "ms": 788,
    "bytes": 21839
   },
   {
    "id": "cern-opendata",
    "status": 200,
-   "ms": 358,
+   "ms": 587,
    "bytes": 119915
   },
   {
    "id": "csrc-pqc",
    "status": 200,
-   "ms": 633,
+   "ms": 934,
    "bytes": 61149
   },
   {
    "id": "crt-sh",
-   "status": 0,
-   "ms": 25001,
-   "bytes": 0
+   "status": 200,
+   "ms": 20620,
+   "bytes": 2
   },
   {
    "id": "tls:qpu.uuidna.com",
    "status": 200,
-   "ms": 20,
+   "ms": 47,
    "bytes": 115
   },
   {
    "id": "tls:qpu.psg.bg",
    "status": 200,
-   "ms": 22,
+   "ms": 48,
    "bytes": 115
   },
   {
    "id": "tls:opendata.cern.ch",
    "status": 200,
-   "ms": 81,
+   "ms": 93,
    "bytes": 107
   },
   {
    "id": "tls:beacon.nist.gov",
    "status": 200,
-   "ms": 328,
+   "ms": 279,
    "bytes": 107
   },
   {
    "id": "nist-beacon-previous",
    "status": 200,
-   "ms": 167,
+   "ms": 173,
    "bytes": 3633
   }
  ],
@@ -144,9 +144,9 @@
    "status": "read",
    "facts": {
     "chainIndex": 2,
-    "pulseIndex": 2009058,
-    "timeStamp": "2026-11-01T18:40:00.000Z",
-    "previous": 2009057
+    "pulseIndex": 2009383,
+    "timeStamp": "2026-11-02T00:05:00.000Z",
+    "previous": 2009382
    },
    "verdicts": [
     {
@@ -162,7 +162,7 @@
     {
      "theorem": "textbook_chain_index_steps",
      "passed": true,
-     "says": "pulse 2009058 follows 2009057"
+     "says": "pulse 2009383 follows 2009382"
     },
     {
      "theorem": "textbook_beacon_period",
@@ -182,9 +182,28 @@
    ]
   },
   "ct-sth": {
-   "status": "unreadable",
-   "facts": {},
-   "verdicts": []
+   "status": "read",
+   "facts": {
+    "treeSize": 3478454260,
+    "timestamp": 1793577932523
+   },
+   "verdicts": [
+    {
+     "theorem": "textbook_hash_bits",
+     "passed": true,
+     "says": "root hash 32 bytes"
+    },
+    {
+     "theorem": "textbook_tree_size_positive",
+     "passed": true,
+     "says": "tree size 3478454260"
+    },
+    {
+     "theorem": "textbook_dates_ordered",
+     "passed": true,
+     "says": "the tree head is not from the future"
+    }
+   ]
   },
   "acme-directory": {
    "status": "read",
@@ -355,8 +374,10 @@
    ]
   },
   "crt-sh": {
-   "status": "unreadable",
-   "facts": {},
+   "status": "read",
+   "facts": {
+    "entries": 0
+   },
    "verdicts": []
   },
   "tls-live": {
@@ -451,12 +472,12 @@
   }
  },
  "followUps": [],
- "checked": 44,
- "passed": 44,
+ "checked": 47,
+ "passed": 47,
  "violations": [],
  "byTheorem": {
   "textbook_hash_bits": {
-   "passed": 1,
+   "passed": 2,
    "failed": 0
   },
   "textbook_beacon_period": {
@@ -475,16 +496,20 @@
    "passed": 1,
    "failed": 0
   },
+  "textbook_tree_size_positive": {
+   "passed": 1,
+   "failed": 0
+  },
+  "textbook_dates_ordered": {
+   "passed": 10,
+   "failed": 0
+  },
   "textbook_acme_resources_five": {
    "passed": 1,
    "failed": 0
   },
   "textbook_cve_id_well_formed": {
    "passed": 5,
-   "failed": 0
-  },
-  "textbook_dates_ordered": {
-   "passed": 9,
    "failed": 0
   },
   "textbook_cvss_bounded": {
@@ -520,5 +545,5 @@
    "failed": 0
   }
  },
- "says": "6 source(s) read of 8; 44 theorem checks, 0 violation(s)"
+ "says": "8 source(s) read of 8; 47 theorem checks, 0 violation(s)"
 }

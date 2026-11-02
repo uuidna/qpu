@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { channelOf, sealOf, reflectionOf } from '../../../../src/quantum/blocks.ts'
+import { channelOf, sealOf, reflectionOf } from '../../../../src/quantum/processing/unit/blocks.ts'
 const props = defineProps<{ uuid: string }>()
 const ch = computed(() => channelOf(props.uuid))
 const seal = computed(() => sealOf(props.uuid))

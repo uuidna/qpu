@@ -9,7 +9,7 @@ Call a tool in the browser. The page runs the same `handle` function the MCP sur
 
 <script setup>
 import { ref } from 'vue'
-import { handle } from '../src/quantum/mcp.ts'
+import { handle } from '../src/quantum/processing/mcp.ts'
 import App from './.vitepress/theme/components/App.vue'
 
 const tools = handle({ jsonrpc: '2.0', id: 0, method: 'tools/list' }).result.tools.map((t) => t.name)
