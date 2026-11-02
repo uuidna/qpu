@@ -43,7 +43,7 @@ export const routeStatement = (statement: string, examples: readonly Example[], 
 }
 /** a route needs the weight of a word only one or two theorems use plus another: ln(n / 2) for the rarest is about four and a half */
 const ROUTE_THRESHOLD = 5
-import { uuidOf } from './unit/blocks.ts'
+import { uuidOf, navigate } from './unit/blocks.ts'
 
 type Verdict = 'served' | 'impossible' | 'unknown'
 /** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.
@@ -88,6 +88,9 @@ type Match = { /** the content address of the recognised call: a recognition is 
   verify: VerifyRequest[]
   /** when in doubt: the hidden factors and angles in the reflection of the analog, each a lead to develop */
   reflection: Reflection
+  /** impossible hooked in realtime to the endless searchable quantum possibilities: the statement's address and its program-space neighbours as an
+   *  executed UUID stream (navigate), the next address, page and dashboard each one answers — computed on request, none stored (16^32 combinations) */
+  possibilities?: ReturnType<typeof navigate>
   /** the statement as a lead: served with its tool, or blocked/out of scope with the proof, or a new lead to develop */
   lead: Lead
   /** how the statement was read before matching: Glagolitic numerals as integers, a locale translated by vocabulary, offline */
@@ -353,7 +356,10 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     ...found.map((c) => ({ id: `mirror-${c.id}`, ...mirror, statement: c.text, tool: c.kind === 'tool' ? c.id : examples.find((e) => e.id === c.id)?.tool, reason: 'found only in the mirror form of the statement' })),
   ]
   const verify: VerifyRequest[] = [...new Map([...matchedLeads, ...reflectionLeads].flatMap((l) => extractFacts(l).flatMap(createVerifyRequests)).map((r) => [r.url + JSON.stringify(r.body), r])).values()]
-  const reflection: Reflection = { factors, angles, queries, found, leads: reflectionLeads }, around = { candidates, cluster, verify, reflection }, asLead = { id: slug(statement), source: 'statement', statement }
+  // impossible (and every verdict) hooked in realtime to the endless searchable quantum possibilities: the statement's own address navigated — its six
+  // program-space neighbours and the stream over them, executed to the next address, page and dashboard each answers; computed here, none stored
+  const possibilities = navigate(uuidOf(statement), { execute: true })
+  const reflection: Reflection = { factors, angles, queries, found, leads: reflectionLeads }, around = { candidates, cluster, verify, reflection, possibilities }, asLead = { id: slug(statement), source: 'statement', statement }
   const callOf = (c: Candidate) => { const example = c.kind === 'example' ? examples.find((e) => e.id === c.id)! : examples.find((e) => e.tool === c.id), tool = c.kind === 'example' ? example!.tool : c.id, call = { name: tool, arguments: example?.arguments ?? {} }; return { example, tool, call, reply: toolsCall(handle, call) } }
 
   if (evidence.length > 0) {
