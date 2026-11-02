@@ -54,7 +54,7 @@
     "clean": "node scripts/mcp.ts leads-sync && node scripts/mcp.ts tables-sync"
   },
   "devDependencies": {
-    "@types/node": "26.6.4",
+    "@types/node": "26.6.6",
     "tsx": "4.22.4",
     "typescript": "7.0.2",
     "vitepress": "2.0.0-alpha.20",
