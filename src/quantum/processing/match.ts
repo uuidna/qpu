@@ -21,7 +21,7 @@ const ROUTE_STOP = new Set(['many', 'much', 'more', 'most', 'when', 'what', 'whi
 export const routeStems = (text: string): Set<string> => new Set(text.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().replace(/[^a-z0-9\s_.-]/g, ' ').split(/[\s_.-]+/).filter((w) => w.length > 3 && !ROUTE_STOP.has(w)).map((w) => w.replace(/(ings?|ed|es|e|s)$/, '')).filter((w) => w.length > 2))
 let routeIndex: { key: string; says: string; lean: string; examples: readonly string[]; keyStems: Set<string>; stems: Set<string> }[] | null = null
 let routeIdf: Map<string, number> | null = null
-export const routeStatement = (statement: string, examples: readonly Example[], top = 3) => {
+export const routeStatement = (statement: string, examples: readonly Example[], top?: number) => {
   if (!routeIndex || !routeIdf) {
     const kernel = new Set(THEOREMS.map((t) => t.key)), textbook = new Set(TEXTBOOK_THEOREMS.map((t) => t.key))
     // every kernel-accepted theorem routes: a textbook theorem by its key and what it says, any other by its key and its module; an example names the theorem it rests on, so its examples are its routes
@@ -36,7 +36,7 @@ export const routeStatement = (statement: string, examples: readonly Example[], 
   }
   // a word of the theorem's own key is its subject and weighs twice; a route needs two shared words or one subject word, and the weight above the threshold
   const s = routeStems(statement)
-  const ranked = routeIndex.map((t) => { const shared = [...t.stems].filter((w) => s.has(w)); const subject = shared.filter((w) => t.keyStems.has(w)); return { t, shared, subject, weight: shared.reduce((n, w) => n + (routeIdf!.get(w) ?? 0) * (t.keyStems.has(w) ? 2 : 1), 0) } }).filter((r) => (r.shared.length >= 2 || r.subject.length >= 1) && r.weight >= ROUTE_THRESHOLD).sort((a, b) => b.weight - a.weight || a.t.key.localeCompare(b.t.key)).slice(0, top)
+  const ranked = routeIndex.map((t) => { const shared = [...t.stems].filter((w) => s.has(w)); const subject = shared.filter((w) => t.keyStems.has(w)); return { t, shared, subject, weight: shared.reduce((n, w) => n + (routeIdf!.get(w) ?? 0) * (t.keyStems.has(w) ? 2 : 1), 0) } }).filter((r) => (r.shared.length >= 2 || r.subject.length >= 1) && r.weight >= ROUTE_THRESHOLD).sort((a, b) => b.weight - a.weight || a.t.key.localeCompare(b.t.key)).slice(0, top ?? Infinity) // top undefined: every theorem past the threshold, used at once (no cap — both sides, however many)
   const byId = new Map(examples.map((e) => [e.id, e]))
   const theorems = ranked.map((r) => ({ theorem: r.t.key, lean: r.t.lean, says: r.t.says, shared: r.shared, subject: r.subject, weight: Math.round(r.weight * 100) / 100, routes: r.t.examples.map((id) => byId.get(id)).filter((e): e is Example => !!e).map((e) => ({ example: e.id, call: { name: e.tool, arguments: e.arguments } })) }))
   return { routed: theorems.length > 0, theorems, threshold: ROUTE_THRESHOLD, theorem: 'textbook_route_or_lead', says: theorems.length ? `routed to ${theorems.map((t) => t.theorem).join(', ')} by the weight of the words the prompt shares with them` : 'no theorem reached by its subject or two specific words: the prompt is a lead' }
@@ -384,6 +384,10 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   const { example, tool, call, reply } = callOf(top)
   if ('result' in reply) {
     const why = example ? example.expect(reply.result.structuredContent) : null
+    // honesty hooked to the court's standard — only the proven is admitted (legal_only_the_proven_is_admitted): a weak match (it covers too little of the
+    // statement) or one whose example does not replay as documented is not admitted as served; it is routed towards discovery — verified online research —
+    // so an open frontier (Riemann, P=NP) becomes a discovery lead, never a false "served" (textbook_impossible_sent_to_leads).
+    if (coverage < 0.7 || (example && why !== null)) return { statement, verdict: 'unknown', theorem: 'textbook_claim_prove_involution', evidence: [`honesty hooked to the court (legal_only_the_proven_is_admitted — only the proven is admitted): the best match ${example ? `example ${example.id}` : `tool ${tool}`} ${why !== null ? `does not replay as documented (${why})` : `covers only ${Math.round(coverage * 100)}% of the statement`} — not admitted as served; the overclaim is processed as an underclaim (textbook_claim_prove_involution: a claim never exceeds the proven) and routed towards discovery for verified online research`], tool: 'discover', coverage, ...around, lead: { ...asLead, status: 'open', tool: 'discover', reason: `overclaim processed as underclaim (${Math.round(coverage * 100)}% coverage); the court admits only the proven — discover and verify online, then it is a lead or a served proof` } }
     return { statement, verdict: 'served', evidence: [example ? `example ${example.id}: ${why ?? 'as documented'}` : `tool ${tool} answered the call`], tool, call, result: reply.result.structuredContent, coverage, weak: coverage < 0.7, ...around, lead: { ...asLead, status: 'served', tool } }
   }
   return { statement, verdict: 'impossible', evidence: [`tool ${tool} refused: ${reply.error.message}`], tool, call, ...around, lead: { ...asLead, status: 'blocked', reason: reply.error.message } }
