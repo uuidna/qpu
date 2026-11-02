@@ -22,16 +22,6 @@ type EntropySample = { phase: number; t: number; nonce?: number; x?: number; y?:
 type ScanSample = { t: number; hue: number | null }
 
 /** The animated SVG of the stream: a frame per character, discrete, repeating; 1200 × 630 for Open Graph. One frame shows one character and nothing else. */
-export const getScanSvg = (uuid: string, width = 1200, height = 630): string => {
-  const frames = toFrames(uuid)
-  const dur = `${(SCAN.periodMs / 1000).toFixed(3)}s`
-  const fills = frames.map((f) => (f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`)).join(';')
-  const keyTimes = frames.map((_, i) => (i / frames.length).toFixed(4)).join(';')
-  const glyphs = frames.map((f, i) => `<text x="50%" y="56%" text-anchor="middle" font-family="serif" font-size="${Math.round(height * 0.5)}" fill="hsl(0 0% 100%)" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;${(i / frames.length).toFixed(4)};${((i + 1) / frames.length).toFixed(4)}" calcMode="discrete" dur="${dur}" repeatCount="indefinite"/>${f.glyph}</text>`).join('')
-  const ray = `<g transform-origin="50% 50%"><rect x="50%" y="2%" width="2" height="12%" fill="hsl(0 0% 100%)" opacity="0.8"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="${dur}" repeatCount="indefinite"/></g>`
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="${width}" height="${height}" fill="${frames[0]!.hue === null ? 'hsl(0 0% 0%)' : `hsl(${frames[0]!.hue} 62% 44%)`}"><animate attributeName="fill" values="${fills}" keyTimes="${keyTimes}" calcMode="discrete" dur="${dur}" repeatCount="indefinite"/></rect>${ray}${glyphs}</svg>`
-}
-
 /** The stream read back: samples (time, hue) from a device, placed by their time within the period, the nearest hue a digit, a black sample a dash.
  *  Fewer than 36 distinct frames link nothing (impossibleFromOne); 36 frames read the address, whose seal decides the link. */
 export const getScan = (samples: readonly ScanSample[]) => {

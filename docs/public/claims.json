@@ -1,10 +1,10 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T00:28:40.095Z",
+ "date": "2026-11-02T09:11:19.312Z",
  "counts": {
-  "own": 160,
+  "own": 191,
   "unrecognised": 97,
-  "unasked": 51,
+  "unasked": 55,
   "candidate": 3
  },
  "confirmations": 0,
@@ -2093,6 +2093,258 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_shor_sigma_root",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_thermal_time_sigma",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_clay_bridge",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_digit_reflection",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_clock_clone_involution",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_gravity_torus_sigma",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_mind_sigma",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_claim_prove_involution",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_toric_torus_code",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_hamming_code",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_reed_solomon_mds",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_bch_code",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_steane_css",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_involution_decoder",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_ldpc_code",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_reed_muller",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_color_code_d5",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_surface_distance_ladder",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_concatenated_code",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_shor_nine_code",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_golay_code",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_pascal_rule",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_gauss_triangular",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_power_of_two",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_euler_fermat",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_bilinear_symmetry",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_euler_totient",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_fibonacci",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_factorial",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_magic_constant",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_grover_search",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_ising_fusion",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_two_pow_odd_mod_three",
+   "kind": "general",
+   "status": "unasked",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_thousand_bit_width",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_thousand_bit_three_divides",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_tuning_ratio",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_questions_matched",
    "kind": "general",
    "status": "unasked",
@@ -2213,13 +2465,6 @@
   },
   {
    "theorem": "textbook_ancient_law",
-   "kind": "own",
-   "status": "own",
-   "candidates": [],
-   "recognisedBy": null
-  },
-  {
-   "theorem": "textbook_shor_factor",
    "kind": "own",
    "status": "own",
    "candidates": [],

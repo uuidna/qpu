@@ -33,3 +33,18 @@ test('the clay tool serves the register over MCP and one relation by name', () =
   const bad = handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'clay', arguments: { name: 'relation_0' } } })
   assert.ok('error' in bad)
 })
+
+test('every clay case surfaces all its kernel-accepted proofs and docs over MCP under a strict textbook-sourced name (textbook = product, case = variant)', () => {
+  const rels = (handle({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'clay', arguments: {} } }) as { result: { structuredContent: { relations: { name: string; case: string; theorems: { theorem: string; case: string; proof: string; docs: string; kernelAccepted: boolean }[] }[] } } }).result.structuredContent.relations
+  assert.equal(rels.length, CLAY_RELATIONS.length)
+  for (const rel of rels) {
+    assert.ok(rel.theorems.length >= 1, rel.name)
+    for (const t of rel.theorems) {
+      const b = t.theorem.replace(/^textbook_/, '').replace(/_/g, '-')
+      assert.ok(t.kernelAccepted && t.proof.length > 0 && t.docs.length > 0 && t.theorem.startsWith('textbook_'), t.theorem)
+      assert.ok(/^[a-z0-9-]+$/.test(t.case) && t.case.startsWith(b) && t.case !== rel.name && !/impossible|capped|bound/.test(t.case), t.case)
+    }
+  }
+  assert.equal(rels.find((x) => x.name === 'relation_28')!.case, 'pascal-rule-28')
+  assert.ok(rels.find((x) => x.name === 'relation_28')!.theorems.some((t) => t.theorem === 'textbook_pascal_rule' && t.proof.includes('theorem textbook_pascal_rule')))
+})

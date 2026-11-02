@@ -141,6 +141,13 @@ export { redact } from './machine.ts' // the leak table's redaction, for the gen
 /** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
 // The tools of this host's own two toolboxes, named below; `tool` is the host-side helper until each is a file of its own.
 const TREE = new Set(['leads', 'audit', 'match', 'clay', 'verify'])
+// Each clay case instances the textbook theorem it proves: the case surfaces that kernel proof (Lean) and docs under its textbook name (pascal-rule-28).
+const CLAY_THEOREM_FN: Readonly<Record<string, string>> = { chooseOf: 'pascal_rule', choose: 'pascal_rule', triangular: 'gauss_triangular', qftGates: 'gauss_triangular', qftDepth: 'gauss_triangular', qftStates: 'power_of_two', mintOf: 'power_of_two', amplitudes: 'clay_register_width', powMod: 'euler_fermat', qaoaZz: 'bilinear_symmetry', qaoaX: 'bilinear_symmetry', paulis: 'grover_search', groverSize: 'grover_search', groverIters: 'grover_search', totient: 'euler_totient', fibFusion: 'fibonacci', factorial: 'factorial', cliffordOrder: 'factorial', magicBlock: 'magic_constant', magicCubic: 'magic_constant', glProd: 'magic_constant', isingFusion: 'ising_fusion', chimera: 'ising_fusion', coil: 'free_or_coil', shorModulus: 'relation_rsa', gcdOf: 'relation_rsa' }
+const clayCaseTheorems = (r: { name: string; statement: string }) => {
+  const names = new Set(r.name === 'relation_7' ? ['shor_sigma_root'] : []), v = r.name.replace('relation_', '')
+  for (const fn in CLAY_THEOREM_FN) if (new RegExp(`\\b${fn}\\b`).test(r.statement)) names.add(CLAY_THEOREM_FN[fn]!)
+  return [...names].flatMap((nm) => { const key = 'textbook_' + nm, tb = TEXTBOOK_THEOREMS.find((t) => t.key === key), k = THEOREMS.find((t) => t.key === key), b = nm.replace(/_/g, '-'); return k ? [{ theorem: key, case: b.endsWith(v) ? b : `${b}-${v}`, proof: tb?.lean ?? k.statement, docs: tb?.says ?? '', kernelAccepted: true }] : [] })
+}
 /** A proof checked both ways and cheaply: a theorem by its key (accepted by the kernel, its statement, the examples it proves), a call by its
  *  content address (the theorem of the example making the same call, and that theorem's examples holding the call again); one lookup, the call
  *  never recomputed — verifying costs a lookup where producing cost the run. */
@@ -746,7 +753,8 @@ const OWN: Tool[] = [
     description: 'The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N statement parsed and evaluated, each side\'s value and the bit width it needs reported. What the Lean kernel accepted by rfl, redone with + − × ÷ on naturals only, so a small machine can redo the same sums and compare addresses. Nothing here is a proof of an open problem: the relations are identities between the unit\'s own constants.',
     inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' }, technique: { type: 'string', enum: ['reflection'], description: 'the register read by the σ-reflection technique: every value\'s vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit\'s sequence answers compared' }, unit: { type: 'array', items: { type: 'object' }, description: 'the unit\'s run_sequence answers per value ({ value, answer | refusal })' } } },
     run: (args) => {
-      const all = recomputeClay()
+      const base = recomputeClay()
+      const all = { ...base, relations: base.relations.map((r) => { const theorems = clayCaseTheorems(r); return { ...r, case: theorems[0]?.case ?? r.name, theorems } }) } // sellable unit: textbook = product, case = variant
       if (args.technique === 'reflection') {
         const reading = reflectionOfRegister(all.relations)
         const unit = Array.isArray(args.unit) ? (args.unit as { value: number; answer?: { seed?: number; reflection?: number; fixed?: boolean }; refusal?: string }[]) : []
