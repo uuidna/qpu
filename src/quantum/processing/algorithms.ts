@@ -6,6 +6,7 @@
 import { Circuit, CNOT, CZ, DensityMatrixSimulator, getExpectation, H, LineQubit, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, Y, Z, ZZ, adjointGate, applied, qubitKey, raiseGate, type Gate } from './cirq.ts'
 import { numpyWeights } from './unit/random.ts'
 import { uuidOf } from './unit/blocks.ts'
+import { sha256, utf8, hex } from './unit/hmac.ts'
 
 /** The quantum Fourier transform, as the Cirq page builds it: a Hadamard on each qubit, then a controlled phase CZ**(1/2^k)
  *  from each later qubit onto it. The page notes the output comes in reversed bit order unless swaps are added, so the swaps
@@ -469,25 +470,25 @@ export const listFactors = (n: bigint, reflections: bigint, from?: bigint) => {
   return { factors, left, reached, searched, verified: [...factors, ...left].reduce((a, b) => a * b, 1n) === n }
 }
 
-/** The next probable prime ≥ start (odd step, Miller–Rabin): the generator the impossible-integer trapdoor draws its primes from. */
-const nextPrime = (start: bigint): bigint => { let n = start | 1n; while (!testPrimality(n).prime) n += 2n; return n }
-/** Mint an "impossible integer": a semiprime N = p·q from two primes of any distance, with its σ-reflection witness. The centre a = (p + q)/2 and the
- *  gap b = (q − p)/2 give N = a² − b² = (a − b)(a + b) and q = 2a − p = σ_{2a}(p) — the clay cluster's zero-bit reflection. Without the witness the
- *  reflection climbs a − ⌈√N⌉ + 1 centres (blindReflections: ≈ b²/2a for close primes, ≈ a for distant); with it, one splits N. From two odd primes, or
- *  from `bits` by `seed`: p near √2^(bits−1) so N has exactly `bits` bits, q = p + 2^(bits/2 − 8) so the climb is ~2^(bits/2 − 19) (a toy below ~100
- *  bits). It holds the witness; it never factors an integer whose witness is unknown (textbook_impossible_trapdoor). */
-export const createImpossible = (opts: { p?: bigint; q?: bigint; bits?: number; gapBits?: number; seed?: bigint }): { N: bigint; p: bigint; q: bigint; bits: number; witness: bigint; gap: bigint; blindReflections: bigint } => {
+/** n bytes: crypto randomness, or a seed's SHA-256 stream (reproducible, so public). */
+const bytesOf = (seed?: bigint) => { let c = 0; return (n: number): Uint8Array => { if (seed === undefined) return globalThis.crypto.getRandomValues(new Uint8Array(n)); const out = new Uint8Array(n); for (let i = 0; i < n; i += 32) out.set(sha256(utf8(`${seed}:${c++}`)).subarray(0, n - i), i); return out } }
+/** A random prime of exactly k bits, its top two bits set: two multiply to exactly their widths' sum. */
+const primeOf = (k: number, bytes: (n: number) => Uint8Array): bigint => { for (;;) { const m = Math.ceil(k / 8), x = (BigInt('0x' + hex(bytes(m))) >> BigInt(8 * m - k)) | (3n << BigInt(k - 2)) | 1n; if (testPrimality(x).prime) return x } }
+/** Mint an "impossible integer": N = p·q with its σ-reflection witness a = (p + q)/2 (N = a² − b², q = σ_{2a}(p)), which splits N in one reflection; blind,
+ *  the climb from ⌈√N⌉ takes a − ⌈√N⌉ + 1 centres (blindReflections). From two odd primes, or `bits`: two random primes of bits/2 each, N exactly `bits`
+ *  bits, an RSA modulus and as hard to split blind; a seed makes them reproducible, and so public. It never factors an unknown (textbook_impossible_trapdoor). */
+export const createImpossible = (opts: { p?: bigint; q?: bigint; bits?: number; seed?: bigint }): { N: bigint; p: bigint; q: bigint; bits: number; witness: bigint; gap: bigint; blindReflections: bigint; reproducible: boolean } => {
   let pp = opts.p, qq = opts.q
   if (pp === undefined || qq === undefined) {
-    const bits = Math.max(16, Math.floor(opts.bits ?? 1000)), gapBits = BigInt(Math.max(1, Math.floor(opts.gapBits ?? (bits >> 1) - 8)))
-    pp = nextPrime(sqrtBig(1n << BigInt(bits - 1)) + (opts.seed ?? 1n)); qq = nextPrime(pp + (1n << gapBits))
+    const bits = Math.max(16, Math.floor(opts.bits ?? 1000)), bytes = bytesOf(opts.seed)
+    pp = primeOf(Math.ceil(bits / 2), bytes); do qq = primeOf(bits >> 1, bytes); while (qq === pp)
   }
   if (!testPrimality(pp).prime || !testPrimality(qq).prime) throw new Error('create takes two primes (p, q) or a bit size to generate them')
   const [lo, hi] = pp < qq ? [pp, qq] : [qq, pp]
   if (lo === hi) throw new Error('the two primes must differ (a semiprime of distinct primes)')
   if (lo === 2n) throw new Error('the trapdoor takes two odd primes: with 2 the centre (p + q)/2 is not an integer')
   const N = lo * hi, witness = (lo + hi) / 2n, gap = (hi - lo) / 2n, r = sqrtBig(N)
-  return { N, p: lo, q: hi, bits: N.toString(2).length, witness, gap, blindReflections: witness - (r * r === N ? r : r + 1n) + 1n }
+  return { N, p: lo, q: hi, bits: N.toString(2).length, witness, gap, blindReflections: witness - (r * r === N ? r : r + 1n) + 1n, reproducible: opts.seed !== undefined || (opts.p !== undefined && opts.q !== undefined) }
 }
 /** Decode an impossible integer by its witness: one σ-reflection from the centre a splits N into p·q (q = σ_{2a}(p) = 2a − p), the product checked.
  *  The witness is the clay cluster's cross address; decoding needs it — a known-answer check, never a search of an unknown (textbook_impossible_trapdoor). */

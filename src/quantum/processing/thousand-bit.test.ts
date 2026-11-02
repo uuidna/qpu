@@ -43,4 +43,9 @@ test('the σ-trapdoor mints exactly 1000 bits and decodes by its witness in one 
   assert.ok(made.blindReflections > 1n << 400n) // the centres from ⌈√N⌉ up to the witness
   for (const w of [0n, made.witness - 2n, made.witness + 2n]) assert.equal(decodeImpossible(made.N, w).decoded, false)
   assert.equal(decodeImpossible(15n * (2n ** 127n - 1n) * (2n ** 89n - 1n), 1n).decoded, false) // a composite left
+  const d = made.q - made.p
+  assert.ok(d - (1n << BigInt(d.toString(2).length - 1)) > 1n << 64n) // no 2^g + small gap to guess
+  assert.ok(!made.reproducible && createImpossible({ bits: 1000 }).N !== made.N) // unseeded: every mint new
+  const s = createImpossible({ bits: 64, seed: 7n })
+  assert.ok(s.reproducible && s.N === createImpossible({ bits: 64, seed: 7n }).N) // seeded: reproducible, so public
 })

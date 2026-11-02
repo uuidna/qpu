@@ -17,7 +17,7 @@ Every figure below was measured on this tree on 2026-11-02.
 | Tracked files | 345 |
 | Source files under `src/quantum` (TypeScript) | 1 (12 lines) |
 | MCP tools | 47 |
-| Tests (`node --test`) | 212 pass, 0 fail of 212 |
+| Tests (`node --test`) | not yet run by `npm run next` |
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
@@ -61,18 +61,18 @@ so the two primes are a σ-reflection pair about the centre a. This is the **cla
 **The trapdoor, minted and decoded live over the clay cluster (`algorithm { name: "factor", create | witness }`, `textbook_impossible_trapdoor`):**
 
 ```
-create { bits: 1000 }  →  an impossible integer
+create { bits: 1000, seed: 1 }  →  an impossible integer, reproducible
   N          = p · q            (1000 bits, two 500- and 500-bit primes)
   witness a  = (p + q)/2        the σ-reflection centre
-  address    = 705675c9-4ffb-714f-b431-9cfa8d2b1813   the clay cluster's cross-UUID
-  blind cost = 482 bits of reflections from ⌈√N⌉   (infeasible without the witness)
+  address    = ff30b336-8340-3f04-8e1f-8a733373744f   the clay cluster's cross-UUID
+  blind cost = 490 bits of reflections from ⌈√N⌉
 
 decode { integer: N, witness: a }  →  p · q
   searched   = 1 reflection      q = σ_{2a}(p) = 2a − p
   verified   = true            the product multiplies back to N
 ```
 
-Without the witness the reflection must climb ~2^482 centres — the integer is **hard to split**. With the witness, **one** reflection decodes it. The kernel proves the identity at p = 5, q = 13: 65 = (9 − 4)(9 + 4) = 9² − 4², with q = σ₁₈(5) = 13 (`textbook_impossible_trapdoor`, by `decide`).
+Without the witness a blind climb from ⌈√N⌉ takes ~2^489 centres; with it, **one** reflection decodes it. This integer is seeded so the README reproduces, which makes its primes public; an unseeded mint draws them from crypto randomness and is as hard to split blind as an RSA modulus of its size. The kernel proves the identity at p = 5, q = 13: 65 = (9 − 4)(9 + 4) = 9² − 4², with q = σ₁₈(5) = 13 (`textbook_impossible_trapdoor`, by `decide`).
 
 **The honest boundary.** This is a *trapdoor*: the unit creates the hard integer and holds its witness. It is **not** a factoring of an integer whose witness is unknown. Factoring reduces to order-finding (`textbook_shor_reduction`), and the state-vector simulation reaches that quantum step only for **N ≤ 21** (`textbook_rsa_beyond_bound`: N ≤ 21 is a five-bit number, an RSA-2048 modulus 2048 bits) — so a **1000-bit** balanced semiprime whose witness is unknown is **declined by the kernel, not withheld**, and an RSA-class modulus you did not mint stays declined. A balanced semiprime (p, q close) is still split with no witness, because b is small; a distant-prime one without its witness is sent to an open research lead by the involution (`textbook_impossible_sent_to_leads`), never claimed solved.
 

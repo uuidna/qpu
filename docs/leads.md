@@ -322,3 +322,10 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `clay-relation_40116600` | served | clay | relation_40116600: chooseOf plane faces = choose plane faces = 40116600 (26 bits, seed 9) |  |
 | `clay-relation_471435600` | served | clay | relation_471435600: chooseOf bits faces = choose bits faces = 471435600 (29 bits, seed 3) |  |
 | `clay-relation_7` | served | clay | relation_7: rays = gcdOf (half shorBase shorModulus - seed) shorModulus ∧ faces - seed = gcdOf (half shorBase shorModulus + seed) shorModulus = 7 (4 bits, seed 7) |  |
+| `missing-peace-work` | partial | match | the QPU's own work in the preceding year meets the Peace Prize criterion: fraternity between nations, fewer standing armies, peace congresses | processed by match: unknown (entry 3f9073f4-3a32-3ef1-8620-29aea1595e2e) |
+| `missing-peace-nomination` | blocked | — | a valid Peace Prize nomination by a qualified nominator | a qualified nominator's act; self-nomination is not accepted; the QPU offers verified facts only |
+| `missing-peace-committee` | blocked | — | the Norwegian Nobel Committee's decision | a human committee's vote; no computation decides it |
+| `missing-1000bit-blind` | partial | algorithm | the 1000-bit gate integer factored without a witness | processed by algorithm: incomplete (entry ca135ca9-2e92-8810-9531-4a5afed15402) |
+| `missing-singularity` | partial | match | clay rewrites the textbooks harmonised in quantum singularity | processed by match: unknown (entry 1f3427ac-68c1-1813-a0a1-5aeabcf4a17d) |
+| `missing-hardware-attestation` | blocked | — | a hardware attestation (TPM quote, SEV-SNP or Nitro report) witnesses a save | an instance must provide the quote; none of the local or Cloudflare instances does |
+| `missing-metatron-solids` | open | match | Metatron's cube, the 13-circle figure, contains all five Platonic solids |  |

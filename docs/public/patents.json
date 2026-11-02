@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T22:50:58.903Z",
- "ms": 53310,
+ "date": "2026-11-02T23:15:18.607Z",
+ "ms": 48827,
  "selftest": {
   "passed": true
  },
@@ -9,31 +9,31 @@
   {
    "id": "patents:google:quantum error correction",
    "status": 200,
-   "ms": 8703,
+   "ms": 138,
    "bytes": 1120891
   },
   {
    "id": "patents:google:content addressed storage universally unique identifier",
    "status": 200,
-   "ms": 16134,
+   "ms": 87,
    "bytes": 1120891
   },
   {
    "id": "patents:google:model context protocol tools",
    "status": 200,
-   "ms": 270,
+   "ms": 93,
    "bytes": 1120891
   },
   {
    "id": "patents:google:post-quantum signature lattice",
    "status": 200,
-   "ms": 5882,
+   "ms": 84,
    "bytes": 1120891
   },
   {
    "id": "patents:epo-dates",
    "status": 200,
-   "ms": 687,
+   "ms": 549,
    "bytes": 222487
   }
  ],
