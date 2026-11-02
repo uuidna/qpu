@@ -9,7 +9,7 @@ import { TABLES } from './tables-index.ts'
 import { listDeclarations, scanLexical, runAudit, getEntropy, diffMembers, auditSecurity, listRemedies, repairOf, getAdvantage, getAddressedByTheorem, getBill, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, linkAxioms, listLeaks } from './audit.ts'
 import { TEXTBOOK_THEOREMS, updateTheoremSources, getReflections } from './textbook-theorems.ts'
 import { sdkOf, accessAuditOf, buildOf } from './toolboxes/payload.ts'
-import { blockOf, verifyOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf, memoOf } from './unit/blocks.ts'
+import { blockOf, verifyOf, sealOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf, memoOf } from './unit/blocks.ts'
 import { INSTRUCTIONS, LICENSE } from './unit/license.ts'
 import { recomputeClay, reflectionOfRegister, digitalRoot } from './clay-register.ts'
 import { composePage } from './compose.ts'
@@ -126,12 +126,30 @@ const answerImpossible = (args: Record<string, unknown>) => {
       says: `an impossible integer minted over the clay cluster: a ${made.bits}-bit semiprime N = p·q, its σ-reflection witness the centre a = (p + q)/2, published at the cross-UUID address ${address}. Blind, the reflection must climb ${made.blindReflections.toString(2).length} bits of centres from ⌈√N⌉ to split it; with the witness, one reflection decodes it (q = σ_{2a}(p) = 2a − p). This creates the hard integer and holds its witness, never factors an unknown.`,
       summary: [['Bits', String(made.bits)], ['p bits', String(made.p.toString(2).length)], ['q bits', String(made.q.toString(2).length)], ['Blind reflections (bits)', String(made.blindReflections.toString(2).length)], ['Witness address', address]], header: ['field', 'value'], rows: [['N', made.N.toString()], ['witness a', made.witness.toString()], ['address', address]] }
   }
-  const N = getInteger(args.integer, 'integer'), witness = getInteger(args.witness, 'witness')
+  return hybridDecode(args)
+}
+// The hybrid reverse: one door that decodes N through whichever channel the caller supplies — the witness (the crypto/UUID trapdoor, one σ-reflection
+// from the centre a), or the order r (the quantum step, Shor's reduction gcd(a^(r/2) ± 1, N)) — crypto, UUID and quantum upgraded as one. Every decode
+// binds a sealed UUID receipt (uuidOf of N, its factors and the channel), so a reversal is itself a validated address (textbook_impossible_trapdoor,
+// textbook_shor_reduction, unified by the σ-involution of textbook_shor_sigma_root). No channel fabricates: an N with neither a witness nor an order is
+// declined (answerFactor's classical reflection reaches only a balanced semiprime; the RSA-class decline of textbook_rsa_beyond_bound stands).
+const decodeReceipt = (N: bigint, factors: readonly string[], via: string) => { const receipt = uuidOf(JSON.stringify({ decode: N.toString(), factors: [...factors], via })); return { receipt, sealed: sealOf(receipt).valid } }
+const hybridDecode = (args: Record<string, unknown>) => {
+  const N = getInteger(args.integer, 'integer')
+  if (args.order !== undefined) {
+    // the quantum channel: given the order r (the state-vector simulation reaches it only for N ≤ 21; supplied here at any size), the reduction is a formula
+    const order = getInteger(args.order, 'order'), a = args.a !== undefined ? getInteger(args.a, 'a') : 2n
+    const red = shorReduction(N, a, order), factors = (red.factors ?? []).map(String), r = decodeReceipt(N, factors, 'order')
+    return { name: 'factor', mode: 'decode', via: 'order', integer: N.toString(), bits: N.toString(2).length, order: order.toString(), a: a.toString(), factors, decoded: !!red.factors, verified: red.verified, why: red.why, receipt: r.receipt, sealed: r.sealed, theorem: 'textbook_shor_reduction',
+      says: `decoded by the quantum channel: with the order r = ${order.toString()} of ${a.toString()} mod N, Shor's reduction gcd(a^(r/2) ± 1, N) ${red.factors ? `splits the ${N.toString(2).length}-bit integer into ${factors.join(' × ')}` : `does not split it (${red.why})`}; the decode is sealed as the UUID ${r.receipt} (${r.sealed ? 'valid' : 'invalid'}) — crypto and UUID upgraded with the quantum step`,
+      summary: [['Bits', String(N.toString(2).length)], ['Order r', order.toString()], ['Decoded', red.factors ? 'yes' : 'no'], ['Product checked', red.verified ? 'yes' : 'no'], ['Receipt sealed', r.sealed ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: factors.map((x) => [x, String(BigInt(x).toString(2).length), 'prime']) }
+  }
+  const witness = getInteger(args.witness, 'witness')
   const d = decodeImpossible(N, witness), address = impossibleAddress(N, witness)
-  const addressOk = typeof args.address !== 'string' || args.address === address
-  return { name: 'factor', mode: 'decode', integer: N.toString(), bits: N.toString(2).length, witness: witness.toString(), address, addressVerified: addressOk, factors: d.factors.map(String), decoded: d.decoded, verified: d.verified, searched: d.searched.toString(), theorem: 'textbook_impossible_trapdoor',
-    says: `decoded over the clay cluster: one σ-reflection from the witness a = ${witness.toString()} split the ${N.toString(2).length}-bit integer into ${d.factors.map(String).join(' × ')} in ${d.searched.toString()} centre(s); the product multiplies back: ${d.verified}${typeof args.address === 'string' ? `; the witness matches the published address: ${addressOk}` : ''}.`,
-    summary: [['Bits', String(N.toString(2).length)], ['Reflections searched', d.searched.toString()], ['Decoded', d.decoded ? 'yes' : 'no'], ['Product checked', d.verified ? 'yes' : 'no'], ['Address verified', addressOk ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: d.factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']) }
+  const addressOk = typeof args.address !== 'string' || args.address === address, factors = d.factors.map(String), r = decodeReceipt(N, factors, 'witness')
+  return { name: 'factor', mode: 'decode', via: 'witness', integer: N.toString(), bits: N.toString(2).length, witness: witness.toString(), address, addressVerified: addressOk, factors, decoded: d.decoded, verified: d.verified, searched: d.searched.toString(), receipt: r.receipt, sealed: r.sealed, theorem: 'textbook_impossible_trapdoor',
+    says: `decoded over the clay cluster: one σ-reflection from the witness a = ${witness.toString()} split the ${N.toString(2).length}-bit integer into ${factors.join(' × ')} in ${d.searched.toString()} centre(s); the product multiplies back: ${d.verified}${typeof args.address === 'string' ? `; the witness matches the published address: ${addressOk}` : ''}; the decode is sealed as the UUID ${r.receipt} (${r.sealed ? 'valid' : 'invalid'})`,
+    summary: [['Bits', String(N.toString(2).length)], ['Reflections searched', d.searched.toString()], ['Decoded', d.decoded ? 'yes' : 'no'], ['Product checked', d.verified ? 'yes' : 'no'], ['Address verified', addressOk ? 'yes' : 'no'], ['Receipt sealed', r.sealed ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: factors.map((x) => [x, String(BigInt(x).toString(2).length), 'prime']) }
 }
 const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
 const gcdB = (x: bigint, y: bigint): bigint => { while (y) [x, y] = [y, x % y]; return x }
@@ -590,7 +608,9 @@ const OWN: Tool[] = [
           header: ['Error', 'Syndrome', 'Located'], rows: c.rows.map((r) => [r.error, r.syndrome, String(r.located)]) }
       }
       if (name === 'factor') {
-        if (isObj(args.create) || args.witness !== undefined) return answerImpossible(args)
+        if (isObj(args.create)) return answerImpossible(args)
+        // the hybrid reverse: a witness (crypto/UUID) or an order (quantum) decodes N through one door, each sealed as a UUID receipt
+        if (args.witness !== undefined || args.order !== undefined) return hybridDecode(args) as never
         return answerFactor(getInteger(args.integer, 'integer'), undefined, args.reflections !== undefined ? getInteger(args.reflections, 'reflections') : undefined, args.from !== undefined ? getInteger(args.from, 'from') : undefined)
       }
       if (name === 'shor') {
