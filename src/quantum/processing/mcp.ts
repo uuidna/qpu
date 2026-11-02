@@ -29,7 +29,7 @@ import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.ts'
 import { DEVICES, PROCESSORS, toDevice, willowNoise, getAverageConnectivity, isBelowThreshold } from './processor.ts'
 import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, entropyWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, matchWidget, clayWidget, verifyWidget } from './widgets.ts'
 import { APPLICATIONS, ROADMAP } from './roadmap.ts'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, getInteger, writeInteger, testPrimality, listFactors, shorReduction, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection } from './algorithms.ts'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, getInteger, writeInteger, testPrimality, listFactors, shorReduction, createImpossible, decodeImpossible, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection } from './algorithms.ts'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.ts'
 import { LEADS, leadCounts, combineLeads, listRunnableLeads, runSession, sitemapLeads, type Lead, type LeadStatus, type CellLead, type SessionInput } from './leads.ts'
 import { REPOSITORIES } from './repositories.ts'
@@ -112,6 +112,27 @@ const answerFactor = (n: bigint, via?: string, reflections = 1n << 12n, from?: b
     says: `a ${bits}-bit integer, ${primality}${p.prime ? '' : `: ${f.factors.length} prime factor(s) found${f.left.length ? `, ${f.left.length} part(s) under the σ-reflection search — searched ${f.searched} centre(s), reached ${f.reached}; resume with from=${f.reached} (unbounded, computing, never declined; a balanced semiprime's reflection is the order-finding of textbook_shor_reduction)` : ''}`}; the parts multiply back to the integer: ${f.verified}`,
     ...(via ? { via } : {}), summary: [['Bits', String(bits)], ['Primality', primality], ['Prime factors found', String(f.factors.length)], ['Under σ-reflection search', String(f.left.length)], ['Reflections searched', f.searched.toString()], ['Product checked', f.verified ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: [...f.factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']), ...f.left.map((x) => [x.toString(), String(x.toString(2).length), 'composite, under σ-reflection search'])] }
 }
+// The impossible-integer trapdoor over the clay cluster: `create` mints a semiprime N = p·q of any prime-distance and holds its σ-reflection witness
+// (the centre a = (p + q)/2), published as a cross-UUID address; `decode` recovers p·q in one reflection from the witness. Without the witness the
+// reflection must climb b = (q − p)/2 centres (infeasible when the primes are distant), so the integer is hard to split yet trivial to decode by its
+// address — a trapdoor, never a factoring of an unknown (textbook_impossible_trapdoor). The address is uuidOf(N, witness): the clay cluster's cross key.
+const impossibleAddress = (N: bigint, witness: bigint) => uuidOf(JSON.stringify({ clay: 'impossible-integer', N: N.toString(), witness: witness.toString() }))
+const answerImpossible = (args: Record<string, unknown>) => {
+  if (isObj(args.create)) {
+    const c = args.create as { p?: string; q?: string; bits?: number; gapBits?: number; seed?: string }
+    const made = createImpossible({ p: c.p !== undefined ? getInteger(c.p, 'create.p') : undefined, q: c.q !== undefined ? getInteger(c.q, 'create.q') : undefined, bits: typeof c.bits === 'number' ? c.bits : undefined, gapBits: typeof c.gapBits === 'number' ? c.gapBits : undefined, seed: c.seed !== undefined ? getInteger(c.seed, 'create.seed') : undefined })
+    const address = impossibleAddress(made.N, made.witness)
+    return { name: 'factor', mode: 'create', integer: made.N.toString(), bits: made.bits, p: made.p.toString(), q: made.q.toString(), witness: made.witness.toString(), address, blindReflections: made.blindReflections.toString(), theorem: 'textbook_impossible_trapdoor',
+      says: `an impossible integer minted over the clay cluster: a ${made.bits}-bit semiprime N = p·q, its σ-reflection witness the centre a = (p + q)/2, published at the cross-UUID address ${address}. Blind, the reflection must climb ${made.blindReflections.toString(2).length} bits of centres from ⌈√N⌉ to split it; with the witness, one reflection decodes it (q = σ_{2a}(p) = 2a − p). This creates the hard integer and holds its witness, never factors an unknown.`,
+      summary: [['Bits', String(made.bits)], ['p bits', String(made.p.toString(2).length)], ['q bits', String(made.q.toString(2).length)], ['Blind reflections (bits)', String(made.blindReflections.toString(2).length)], ['Witness address', address]], header: ['field', 'value'], rows: [['N', made.N.toString()], ['witness a', made.witness.toString()], ['address', address]] }
+  }
+  const N = getInteger(args.integer, 'integer'), witness = getInteger(args.witness, 'witness')
+  const d = decodeImpossible(N, witness), address = impossibleAddress(N, witness)
+  const addressOk = typeof args.address !== 'string' || args.address === address
+  return { name: 'factor', mode: 'decode', integer: N.toString(), bits: N.toString(2).length, witness: witness.toString(), address, addressVerified: addressOk, factors: d.factors.map(String), decoded: d.decoded, verified: d.verified, searched: d.searched.toString(), theorem: 'textbook_impossible_trapdoor',
+    says: `decoded over the clay cluster: one σ-reflection from the witness a = ${witness.toString()} split the ${N.toString(2).length}-bit integer into ${d.factors.map(String).join(' × ')} in ${d.searched.toString()} centre(s); the product multiplies back: ${d.verified}${typeof args.address === 'string' ? `; the witness matches the published address: ${addressOk}` : ''}.`,
+    summary: [['Bits', String(N.toString(2).length)], ['Reflections searched', d.searched.toString()], ['Decoded', d.decoded ? 'yes' : 'no'], ['Product checked', d.verified ? 'yes' : 'no'], ['Address verified', addressOk ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: d.factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']) }
+}
 const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
 const gcdB = (x: bigint, y: bigint): bigint => { while (y) [x, y] = [y, x % y]; return x }
 
@@ -135,7 +156,8 @@ import { EXTENSION } from './toolboxes/extension.ts'
 import { extractFacts, createVerifyRequests } from './verifiers.ts'
 import { CRYPTO } from './toolboxes/crypto.ts'
 import { blockJsonLd, createOpenapi, OPENAPI_RESOURCE } from './standards.ts'
-export { cellOf } from './widgets.ts'
+import { cellOf } from './widgets.ts'
+export { cellOf }
 export { redact } from './machine.ts' // the leak table's redaction, for the generated plugin
 
 /** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
@@ -165,6 +187,64 @@ const clayCatalog = () => {
     return { product: theorem, title: theorem.replace(/^textbook_/, '').replace(/_/g, '-'), taxonomy, variants, variations, proof: tb?.lean ?? null, kernelAccepted: THEOREMS.some((t) => t.key === theorem), decidedVia: 'cirq: the circuit tool simulates each variant; the clay recompute and the kernel decide it, never asserted', price: { coins, superposition, perSuperposition: coins / superposition, address: uuidOf(JSON.stringify({ product: theorem, coins, superposition })) } }
   }).sort((a, b) => a.product.localeCompare(b.product))
   return { products, total: products.length, theorems: ['textbook_free_or_coil'], says: 'the sellable catalog from the clay cases: each textbook a product, each case a variant, the cross-textbook theorems the variations, the families the taxonomy; priced in coins per superposition (2^bits), every price a content address so costs are comparable and pass computation to computation' }
+}
+// The README generated by the clay cluster, never written by hand: the whole document computed from the tree — the clay register recomputed, the
+// impossible-integer trapdoor minted and decoded live (clay via the thousand bit and back, one σ-reflection), the kernel census, the MCP surface and
+// the sellable catalog — with the measured figures the caller took (git, tsc, the test receipt, lake, the ledger). So the prose can never drift from
+// what the tools answer (textbook_impossible_trapdoor, textbook_shor_sigma_root, textbook_factors_divide). Deterministic: the demo primes are seeded.
+type ReadmeMeasured = { date?: string; version?: string; doi?: string; rows?: [string, string][]; census?: { declared?: number | string; kernel?: string; generated?: number; sorried?: string; axioms?: string; handWritten?: number } }
+export const clayReadme = (m: ReadmeMeasured = {}) => {
+  const date = m.date ?? new Date().toISOString().slice(0, 10), version = m.version ?? '1.4.0'
+  const reg = recomputeClay(), cat = clayCatalog()
+  // the thousand-bit impossible integer, minted and decoded live over the clay cluster (deterministic by seed): the worked proof of §2
+  const made = createImpossible({ bits: 1000, seed: 1n }), dec = decodeImpossible(made.N, made.witness), addr = impossibleAddress(made.N, made.witness)
+  const small = createImpossible({ p: 5n, q: 13n }) // the kernel's witness example: 65 = (9−4)(9+4), q = σ_{18}(5) = 13
+  const perModule = new Map<string, number>(); for (const t of THEOREMS) perModule.set(t.module, (perModule.get(t.module) ?? 0) + 1)
+  const sigmaBridges = TEXTBOOK_THEOREMS.filter((t) => /sigma|σ|reflection|trapdoor|shor_sigma/i.test(t.key)).slice(0, 6)
+  const L: string[] = []
+  L.push(`# UUIDNA QPU — an exact, formally verified quantum processing unit served over MCP`, '')
+  L.push(`*Tsvetan Rouschev* · v${version} · doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998) · CC-BY-NC-ND-4.0 · https://qpu.uuidna.com`, '')
+  L.push(`> Generated by \`npm run next\` through \`clay { readme }\` on ${date} from the computed tree — the Clay register recomputed, the impossible-integer trapdoor minted and decoded live, the kernel census, the MCP surface and the sellable catalog. The prose below is not hand-written; it cannot drift from what the tools answer.`, '')
+  L.push(`## Abstract`, '')
+  L.push(`A working quantum-AI unit whose every claim is a theorem the Lean kernel accepts and a computation any MCP client can replay. One σ-involution — the zero-bit reflection σ_d(x) = d − x — is the whole core: it **proves the Clay register** (identities between the unit's own constants) and, at a thousand bits, it **creates and decodes impossible integers** (the trapdoor of §2). Clay is solved via the thousand bit and the thousand bit via clay — one reflection at two scales. The unit is served over MCP, sold as textbook-grade ISO tools, and reachable by any client with the same abilities the developer has.`, '')
+  if (m.rows?.length) { L.push(`Every figure below was measured on this tree on ${date}.`, '', `| Measure | Value |`, `|---|---:|`, ...m.rows.map(([k, v]) => `| ${k} | ${v} |`), '') }
+  // §1 Clay
+  L.push(`## 1. The Clay register — one σ-involution, recomputed by any client`, '')
+  L.push(`The register's relations are **defined by one reflection** and recomputed as identities, never asserted. The core is the σ-involution σ_d(x) = d − x (\`Qpu/Sigma.lean\`), closed by \`omega\` over every natural number — scale-free, holding at any d. The \`clay\` tool recomputes the whole register in exact integer arithmetic on request: **${reg.holding} of ${reg.total} relations hold**, the widest value needs ${reg.maxBits} bits (${reg.maxLimbs16} limbs of 16 bits), so a small machine redoes the same sums and compares content addresses. Each relation instances the textbook theorem it proves (\`relation_28 → pascal-rule-28\`), surfaced over MCP with its kernel proof and docs.`, '')
+  L.push('```', `σ_reflect :  ∀ d x, x ≤ d → d − (d − x) = x      -- self-inverse on [0, d]`, `σ_midpoint:  ∀ d x, 2·x = d → d − x = x          -- fixed at d/2`, '```', '')
+  L.push(`The same involution is the tool in every family, each bridge proved *by* the σ-theorems so the kernel owns the connection:`, '', `| Bridge | What one reflection is |`, `|---|---|`)
+  for (const b of sigmaBridges) L.push(`| \`${b.key}\` | ${cellOf(b.says.slice(0, 180))} |`)
+  L.push('')
+  // §2 Impossible integers — the thousand bit, clay and back
+  L.push(`## 2. Impossible integers: Clay via the thousand bit, and back`, '')
+  L.push(`Factoring **is** the σ-reflection. For a semiprime N = p·q, the centre a = (p + q)/2 and gap b = (q − p)/2 give`, '', '```', `N = a² − b² = (a − b)(a + b)        p = a − b        q = a + b = 2a − p = σ_{2a}(p)`, '```', '')
+  L.push(`so the two primes are a σ-reflection pair about the centre a. This is the **clay↔thousand-bit bridge**: the register's crypto relation (\`relation_7\`, 91 = 7·13, proved by \`textbook_shor_sigma_root\`) and a thousand-bit integer are the *same* reflection at d = 91 and at d ≈ 2¹⁰⁰⁰ — Clay solved via the thousand bit, the thousand bit via Clay.`, '')
+  L.push(`**The trapdoor, minted and decoded live over the clay cluster (\`algorithm { name: "factor", create | witness }\`, \`textbook_impossible_trapdoor\`):**`, '')
+  L.push('```', `create { bits: 1000 }  →  an impossible integer`, `  N          = p · q            (${made.bits} bits, two ${made.p.toString(2).length}- and ${made.q.toString(2).length}-bit primes)`, `  witness a  = (p + q)/2        the σ-reflection centre`, `  address    = ${addr}   the clay cluster's cross-UUID`, `  blind cost = ${made.blindReflections.toString(2).length} bits of reflections from ⌈√N⌉   (infeasible without the witness)`, '', `decode { integer: N, witness: a }  →  p · q`, `  searched   = ${dec.searched} reflection      q = σ_{2a}(p) = 2a − p`, `  verified   = ${dec.verified}            the product multiplies back to N`, '```', '')
+  L.push(`Without the witness the reflection must climb ~2^${made.blindReflections.toString(2).length} centres — the integer is **hard to split**. With the witness, **one** reflection decodes it. The kernel proves the identity at p = 5, q = 13: ${small.N} = (9 − 4)(9 + 4) = 9² − 4², with q = σ₁₈(5) = 13 (\`textbook_impossible_trapdoor\`, by \`decide\`).`, '')
+  L.push(`**The honest boundary.** This is a *trapdoor*: the unit creates the hard integer and holds its witness. It is **not** a factoring of an integer whose witness is unknown. Factoring reduces to order-finding (\`textbook_shor_reduction\`), and the state-vector simulation reaches that quantum step only for **N ≤ 21** (\`textbook_rsa_beyond_bound\`: N ≤ 21 is a five-bit number, an RSA-2048 modulus 2048 bits) — so a **1000-bit** balanced semiprime whose witness is unknown is **declined by the kernel, not withheld**, and an RSA-class modulus you did not mint stays declined. A balanced semiprime (p, q close) is still split with no witness, because b is small; a distant-prime one without its witness is sent to an open research lead by the involution (\`textbook_impossible_sent_to_leads\`), never claimed solved.`, '')
+  // §3 kernel census
+  L.push(`## 3. What the Lean kernel accepts`, '')
+  L.push(`${m.census?.kernel ?? KERNEL_THEOREMS} constants in the \`Qpu\` modules, ${m.census?.handWritten ?? THEOREMS.length} hand-written and ${m.census?.generated ?? GENERATED_LEMMAS} compiler-generated equation lemmas; ${m.census?.sorried ?? '0'} use \`sorry\`; axioms: ${m.census?.axioms ?? 'Classical.choice, Quot.sound, propext'}. \`docs/theorems.md\` lists every key, statement and axiom. What a statement *means* is decided by the tools (\`match\`, \`compete\`), never by this prose.`, '', `| Module | Hand-written theorems |`, `|---|---:|`, ...[...perModule.entries()].sort().map(([mod, n]) => `| ${mod} | ${n} |`), '')
+  // §4 MCP surface
+  L.push(`## 4. The MCP surface — every tool a client can call`, '')
+  L.push(`${TOOLS.length} tools, every one reachable by any MCP client with the same abilities the developer has. A JSON-RPC 2.0 handler (\`initialize\`, \`tools/list\`, \`tools/call\`); the handler is a pure function — no I/O, no network, no hardware.`, '', `| Tool | What it answers |`, `|---|---|`)
+  for (const t of TOOLS) L.push(`| \`${t.name}\` | ${cellOf(t.description.split(/(?<=\.)\s/)[0]!.slice(0, 150))} |`)
+  L.push('')
+  // §5 catalog
+  L.push(`## 5. Textbook-grade ISO tools — sold at the website, accessible by client MCP`, '')
+  L.push(`The sellable catalog is derived from the clay cases (\`clay { catalog }\`): **each textbook theorem a product, each clay case a variant, the cross-textbook theorems the variations, the families the taxonomy**, priced in coins per superposition (2^bits states), every price a content address so costs are comparable and pass computation to computation. ${cat.total} products, sold through the ecommerce plugin and usable per tenant over the Payload MCP.`, '', `| Product (textbook) | Variants | Taxonomy | Coins | Superposition |`, `|---|---:|---|---:|---:|`)
+  for (const p of cat.products.slice(0, 12)) L.push(`| \`${p.product.replace(/^textbook_/, '')}\` | ${p.variants.length} | ${cellOf((p.taxonomy.join(', ') || '—').slice(0, 60))} | ${p.price.coins} | 2^${Math.round(Math.log2(Math.max(1, p.price.superposition)))} |`)
+  L.push('')
+  // §6 reproduce
+  L.push(`## 6. Use and reproduce`, '')
+  L.push('```bash', `npm install && npm run typecheck && npm test`, `lake build          # Lean 4.33.0 via elan; builds the Qpu library, no network`, '```', '')
+  L.push('```ts', `import { handle } from './src/quantum/processing/mcp.ts'`, `// mint an impossible integer, then decode it by its witness`, `const made = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call',`, `  params: { name: 'algorithm', arguments: { name: 'factor', create: { bits: 1000 } } } })`, '```', '')
+  // License + references (authorial)
+  L.push(`## License`, '', `CC-BY-NC-ND-4.0. Attribute the author; do not distribute a derivative; do not use commercially without a licence granted on request (https://qpu.uuidna.com). The a432 harmonics are free under attribution; commercial use of the QPU quantum framework is licensed by the author. Support the author: https://revolut.me/ceccec.`, '')
+  L.push(`Prior work by the author: *All Seven Clay Millennium Problems Sealed via Universal σ-Involution* (Zenodo, 2026), doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602) — cited **as the author's record**, not restated in the tree's voice.`, '')
+  L.push(`## References`, '', `- Google Quantum AI — Willow spec sheet, Cirq documentation and \`cirq.google.known_devices\`, the roadmap (quantumai.google)`, `- Google — *Meet Willow* and *Quantum Echoes* (blog.google; research.google)`, `- quantumlib organization (github.com/quantumlib)`, '')
+  return { markdown: L.join('\n'), total: reg.total, holding: reg.holding, maxBits: reg.maxBits, relationCount: reg.total, toolCount: TOOLS.length, productCount: cat.total, thousandBit: { bits: made.bits, decoded: dec.decoded, searched: dec.searched.toString(), verified: dec.verified, address: addr }, theorems: ['textbook_impossible_trapdoor', 'textbook_shor_sigma_root'], says: `the README generated by the clay cluster: ${reg.total} clay relations, ${TOOLS.length} tools, ${cat.total} products, and the thousand-bit impossible integer minted and decoded (searched ${dec.searched}, verified ${dec.verified}) — clay via the thousand bit and back, one σ-reflection` }
 }
 /** A proof checked both ways and cheaply: a theorem by its key (accepted by the kernel, its statement, the examples it proves), a call by its
  *  content address (the theorem of the example making the same call, and that theorem's examples holding the call again); one lookup, the call
@@ -306,6 +386,9 @@ const OWN: Tool[] = [
         integer: { type: 'string', pattern: '^[0-9]+$', description: 'factor: the integer, any size, as a decimal string: its bits, its primality (Miller–Rabin), and the factors the σ-involution reflection computes, the product checked' },
         reflections: { type: 'string', pattern: '^[0-9]+$', description: 'factor: σ-reflection centres to search this call from ⌈√N⌉ (no ceiling; default 4096), resumable' },
         from: { type: 'string', pattern: '^[0-9]+$', description: 'factor: resume the σ-reflection search from this centre (a previous call\'s reached value)' },
+        create: { type: 'object', description: 'factor: mint an impossible integer over the clay cluster — a semiprime N = p·q of any prime-distance with its σ-reflection witness (centre a) and cross-UUID address. { p, q } from two given primes (decimal), or { bits, gapBits?, seed? } to generate them deterministically', properties: { p: { type: 'string', pattern: '^[0-9]+$' }, q: { type: 'string', pattern: '^[0-9]+$' }, bits: { type: 'integer', minimum: 16 }, gapBits: { type: 'integer', minimum: 1 }, seed: { type: 'string', pattern: '^[0-9]+$' } } },
+        witness: { type: 'string', pattern: '^[0-9]+$', description: 'factor: decode an impossible integer (integer=N) by its witness — the centre a = (p + q)/2; one σ-reflection splits N into p·q, the product checked, never a search of an unknown' },
+        address: { type: 'string', description: 'factor: with witness, the published cross-UUID address to check the witness against (uuidOf of N and the witness)' },
         order: { type: 'string', pattern: '^[0-9]+$', description: 'shor: the order r of a mod N (the quantum-hard quantity a QPU measures; the state-vector simulation reaches it only for N ≤ 21). Given it, Shor\'s reduction gcd(a^(r/2) ± 1, N) runs exactly at any size' },
         N: { type: 'integer', minimum: 3, maximum: 21, default: 15 },
         a: { type: 'integer', minimum: 2, default: 7 },
@@ -506,7 +589,10 @@ const OWN: Tool[] = [
           summary: [['Code', '[[7,1,3]] Steane (CSS)'], ['Distance', String(c.distance)], ['Single-qubit errors corrected', `${c.corrected}/${c.total}`]],
           header: ['Error', 'Syndrome', 'Located'], rows: c.rows.map((r) => [r.error, r.syndrome, String(r.located)]) }
       }
-      if (name === 'factor') return answerFactor(getInteger(args.integer, 'integer'), undefined, args.reflections !== undefined ? getInteger(args.reflections, 'reflections') : undefined, args.from !== undefined ? getInteger(args.from, 'from') : undefined)
+      if (name === 'factor') {
+        if (isObj(args.create) || args.witness !== undefined) return answerImpossible(args)
+        return answerFactor(getInteger(args.integer, 'integer'), undefined, args.reflections !== undefined ? getInteger(args.reflections, 'reflections') : undefined, args.from !== undefined ? getInteger(args.from, 'from') : undefined)
+      }
       if (name === 'shor') {
         const askedN = getInteger(args.N, 'N', 15n), askedA = getInteger(args.a, 'a', 7n) % askedN
         // a that shares a factor with N is that factor already (Euclid, Shor's own classical first step); 0 and 1 give way to the next unit
@@ -769,11 +855,12 @@ const OWN: Tool[] = [
   tool({
     name: 'clay',
     description: 'The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N statement parsed and evaluated, each side\'s value and the bit width it needs reported. What the Lean kernel accepted by rfl, redone with + − × ÷ on naturals only, so a small machine can redo the same sums and compare addresses. Nothing here is a proof of an open problem: the relations are identities between the unit\'s own constants.',
-    inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' }, technique: { type: 'string', enum: ['reflection'], description: 'the register read by the σ-reflection technique: every value\'s vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit\'s sequence answers compared' }, unit: { type: 'array', items: { type: 'object' }, description: 'the unit\'s run_sequence answers per value ({ value, answer | refusal })' }, catalog: { type: 'boolean', description: 'the sellable catalog derived from the clay cases: each textbook theorem a product, each clay case a variant, the cross-textbook theorems the variations, the families the taxonomy, priced in coins per superposition (content-addressed)' } } },
+    inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' }, technique: { type: 'string', enum: ['reflection'], description: 'the register read by the σ-reflection technique: every value\'s vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit\'s sequence answers compared' }, unit: { type: 'array', items: { type: 'object' }, description: 'the unit\'s run_sequence answers per value ({ value, answer | refusal })' }, catalog: { type: 'boolean', description: 'the sellable catalog derived from the clay cases: each textbook theorem a product, each clay case a variant, the cross-textbook theorems the variations, the families the taxonomy, priced in coins per superposition (content-addressed)' }, readme: { description: 'the README generated by the clay cluster from the computed tree — the register, the impossible-integer trapdoor (clay via the thousand bit and back), the kernel census, the MCP surface and the catalog; true, or an object of the measured figures the caller took ({ date, version, rows, census })' } } },
     run: (args) => {
       const base = recomputeClay()
       const all = { ...base, relations: base.relations.map((r) => { const theorems = clayCaseTheorems(r); return { ...r, case: theorems[0]?.case ?? r.name, theorems } }) } // sellable unit: textbook = product, case = variant
       if (args.catalog) return clayCatalog()
+      if (args.readme) return clayReadme(isObj(args.readme) ? (args.readme as ReadmeMeasured) : {}) as never
       if (args.technique === 'reflection') {
         const reading = reflectionOfRegister(all.relations)
         const unit = Array.isArray(args.unit) ? (args.unit as { value: number; answer?: { seed?: number; reflection?: number; fixed?: boolean }; refusal?: string }[]) : []

@@ -69,6 +69,9 @@ jobs:
             @payloadcms/plugin-multi-tenant@3.90.1 \
             @opennextjs/cloudflare@^1.20.13 \
             '@uuidna/qpu@link:..'
+          # Build the Worker bundle only: drop the website build's `payload migrate` (needs a live DB) and `generate:llms` (needs a GitHub token)
+          # from the build script — neither is needed to compile the bundle; migrations run against the live D1 after deploy.
+          node -e "const f='package.json',p=require('./'+f);if(p.scripts&&p.scripts.build){p.scripts.build=p.scripts.build.replace(/pnpm (payload migrate|generate:llms) &&\s*/g,'');require('fs').writeFileSync(f,JSON.stringify(p,null,2)+'\n')}"
         env:
           QPU_APP_MCP: http://127.0.0.1:1/api/mcp
       - run: pnpm install
@@ -80,6 +83,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           QPU_ROLE_SECRET: ${{ secrets.QPU_ROLE_SECRET }}
+          # Payload instantiates its config at build (generate:importmap, next build) and needs a secret key; reuse the role secret so no new secret
+          # is required. GITHUB_ACCESS_TOKEN is read by the website's generate step when present; the built-in token suffices.
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || secrets.QPU_ROLE_SECRET }}
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: publish the package with provenance (on a release only)
         if: github.event_name == 'release'
         run: npm publish --provenance --access public

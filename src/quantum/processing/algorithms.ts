@@ -468,6 +468,32 @@ export const listFactors = (n: bigint, reflections: bigint, from?: bigint) => {
   return { factors, left, reached, searched, verified: [...factors, ...left].reduce((a, b) => a * b, 1n) === n }
 }
 
+/** The next probable prime ≥ start (odd step, Miller–Rabin): the generator the impossible-integer trapdoor draws its primes from. */
+const nextPrime = (start: bigint): bigint => { let n = start | 1n; while (!testPrimality(n).prime) n += 2n; return n }
+/** Mint an "impossible integer": a semiprime N = p·q from two primes of any distance, with its σ-reflection witness. The centre a = (p + q)/2 and the
+ *  gap b = (q − p)/2 give N = a² − b² = (a − b)(a + b) and q = 2a − p = σ_{2a}(p) — the clay cluster's zero-bit reflection. Without the witness the
+ *  reflection must climb b centres from ⌈√N⌉ (infeasible when the primes are distant: blindReflections); with it, one reflection splits N. From a given
+ *  prime pair, or generated from `bits` (p near 2^(bits/2), q near p + 2^gapBits) deterministically by `seed`. This creates the hard integer and holds
+ *  its witness; it is not a factoring of an integer whose witness is unknown (textbook_impossible_trapdoor, textbook_factors_divide). */
+export const createImpossible = (opts: { p?: bigint; q?: bigint; bits?: number; gapBits?: number; seed?: bigint }): { N: bigint; p: bigint; q: bigint; bits: number; witness: bigint; gap: bigint; blindReflections: bigint } => {
+  let pp = opts.p, qq = opts.q
+  if (pp === undefined || qq === undefined) {
+    const bits = Math.max(16, Math.floor(opts.bits ?? 1000)), half = BigInt(Math.floor(bits / 2)), gapBits = BigInt(Math.max(1, opts.gapBits ?? Math.floor(bits / 4)))
+    pp = nextPrime((1n << half) + (opts.seed ?? 1n)); qq = nextPrime(pp + (1n << gapBits))
+  }
+  if (!testPrimality(pp).prime || !testPrimality(qq).prime) throw new Error('create takes two primes (p, q) or a bit size to generate them')
+  const [lo, hi] = pp < qq ? [pp, qq] : [qq, pp]
+  if (lo === hi) throw new Error('the two primes must differ (a semiprime of distinct primes)')
+  const N = lo * hi, witness = (lo + hi) / 2n, gap = (hi - lo) / 2n
+  return { N, p: lo, q: hi, bits: N.toString(2).length, witness, gap, blindReflections: gap }
+}
+/** Decode an impossible integer by its witness: one σ-reflection from the centre a splits N into p·q (q = σ_{2a}(p) = 2a − p), the product checked.
+ *  The witness is the clay cluster's cross address; decoding needs it — a known-answer check, never a search of an unknown (textbook_impossible_trapdoor). */
+export const decodeImpossible = (N: bigint, witness: bigint): { factors: bigint[]; verified: boolean; searched: bigint; decoded: boolean } => {
+  const r = listFactors(N, 1n, witness)
+  return { factors: r.factors, verified: r.verified, searched: r.searched, decoded: r.factors.length >= 2 && r.verified }
+}
+
 // Shor's reduction, exact at any size: factoring is order-finding. Given the order r of a mod N (the quantum-hard quantity a real QPU measures,
 // which the state-vector simulation reaches only for N up to 21), the factors follow by a classical formula — gcd(a^(r/2) ± 1, N) — over BigInt,
 // so it runs whole at 1000 bits and beyond. This does not find r; it is the half of Shor that is a formula, stated and verified, never a search.
