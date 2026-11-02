@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@types/node": "26.6.4",
-    "tsx": "4.22.4",
+    "tsx": "4.23.15",
     "typescript": "7.0.2",
     "vitepress": "2.0.0-alpha.20",
     "wrangler": "^4.152.0"
