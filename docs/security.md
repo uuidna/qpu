@@ -5,7 +5,7 @@ order: 53
 
 # Security audit, both perspectives as one
 
-Performed by `npm run next` on 2026-11-02T21:01:26.183Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 25/26 pass; 1 finding(s), each a lead with its remedy. Every finding is a lead with the remedy manual work taught.
+Performed by `npm run next` on 2026-11-02T23:08:42.831Z through the `audit` tool: what a client of the MCP measures on 3 host(s) and what the developer measures in the tree, merged as one list (16 client, 8 developer, 2 both): 25/26 pass; 1 finding(s), each a lead with its remedy. Every finding is a lead with the remedy manual work taught.
 
 | Check | Perspective | Pass | Evidence | Remedy |
 |---|---|---|---|---|
@@ -34,7 +34,7 @@ Performed by `npm run next` on 2026-11-02T21:01:26.183Z through the `audit` tool
 | hooks-guarded | developer | ✓ | hooks: collisionGuard, firstUserBootstrap, appRequest | the plugin adds the collision guard, the first-user bootstrap and the validated app request |
 | signing-at-edge | developer | ✓ | ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc) | the Worker signs with ML-DSA under the Web Crypto flag |
 | rest-rbac-both-ways | both | ✓ | two directions under three tenant roles on every adapter dimension (textbook_rest_rbac) |  |
-| theorems-sealed | both | ✓ | 1985 kernel-accepted theorems | the textbook is the proof |
+| theorems-sealed | both | ✓ | 1997 kernel-accepted theorems | the textbook is the proof |
 
 ## Access from every perspective
 

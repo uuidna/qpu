@@ -1,22 +1,22 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T20:18:22.572Z",
+ "date": "2026-11-02T22:54:29.340Z",
  "phase": "judged",
- "address": "42e70816-a6a2-8a01-90bf-a04cde2be8ba",
+ "address": "1522ab7f-3cb7-4a8f-89d9-c3e6251fc1b1",
  "summary": {
-  "requests": 297,
-  "reached": 289,
+  "requests": 294,
+  "reached": 284,
   "versions": 14,
   "visits": 0,
   "captures": 0,
   "records": 3,
-  "candidates": 1,
-  "books": 23939,
-  "routed": 3915,
-  "domainLeads": 19943,
-  "outside": 81,
-  "doors": 622,
-  "leads": 19952
+  "candidates": 0,
+  "books": 23843,
+  "routed": 3973,
+  "domainLeads": 19802,
+  "outside": 68,
+  "doors": 624,
+  "leads": 19812
  },
  "immutable": {
   "package": "@uuidna/qpu",
@@ -333,151 +333,16 @@
    "says": "neighbours by title, dated: before is prior art to cite, after is a work that may build on the record; read, never a verdict"
   }
  ],
- "licence": [
-  {
-   "where": "software-heritage",
-   "name": "https://www.npmjs.com/package/@uuidna/qpu",
-   "url": "https://www.npmjs.com/package/@uuidna/qpu",
-   "why": "an archived origin that names the work outside the author's accounts",
-   "case": {
-    "case": "2c0fe050-50d8-3fc3-8998-ce78afd98604",
-    "gate": "licence scan software-heritage",
-    "status": null,
-    "code": null,
-    "rule": "licence",
-    "evidence": {
-     "name": "https://www.npmjs.com/package/@uuidna/qpu",
-     "url": "https://www.npmjs.com/package/@uuidna/qpu",
-     "why": "an archived origin that names the work outside the author's accounts"
-    },
-    "tenant": "uuidna",
-    "ancient": [
-     {
-      "id": "ei-incumbit-probatio",
-      "era": "Roman maxim",
-      "principle": "the burden of proof lies on the one who asserts, not the one who denies",
-      "enactedBy": "legal_only_the_proven_is_admitted — the duty of candour: only the proven is admitted, the rest declared, never asserted",
-      "theorem": "legal_only_the_proven_is_admitted"
-     }
-    ],
-    "denier": {
-     "kind": "self",
-     "party": "the QPU kernel",
-     "id": "f7bb8284-cc3c-59ee-9017-edfa00791626",
-     "by": "theorem textbook_free_or_coil, this tree's own law",
-     "identified": "this tree itself, by the kernel theorem that is the law it denied under"
-    },
-    "grounds": [
-     {
-      "party": "the QPU kernel",
-      "role": "denier",
-      "ground": "theorem textbook_free_or_coil, this tree's own law",
-      "identified": "f7bb8284-cc3c-59ee-9017-edfa00791626"
-     },
-     {
-      "party": "the QPU (Tsvetan Rouschev)",
-      "role": "rights-holder",
-      "ground": "CC-BY-NC-ND-4.0: the author's rights in the QPU framework (https://uuidna.com/license); the a432 harmonic default is free under attribution",
-      "identified": "11529d84-c9bb-562b-815c-efadb4095884"
-     },
-     {
-      "party": "tenant uuidna",
-      "role": "subject",
-      "ground": "the tenant's scoped rights under the CC-BY-NC-ND-4.0 licence",
-      "identified": "c3cd69e3-dfe9-2b35-81df-862a25d7cdd8"
-     }
-    ],
-    "ruling": {
-     "favour": "the QPU licence",
-     "exists": true,
-     "basis": "CC-BY-NC-ND-4.0 and textbook_free_or_coil",
-     "validatableVia": {
-      "tool": "payload",
-      "arguments": {
-       "report": {
-        "tool": "legal",
-        "arguments": {
-         "court": {
-          "gate": "licence scan software-heritage",
-          "status": null,
-          "code": null,
-          "rule": "licence",
-          "evidence": {
-           "name": "https://www.npmjs.com/package/@uuidna/qpu",
-           "url": "https://www.npmjs.com/package/@uuidna/qpu",
-           "why": "an archived origin that names the work outside the author's accounts"
-          },
-          "tenant": "uuidna"
-         }
-        }
-       }
-      }
-     },
-     "says": "the QPU licence perspective exists (every result carries CC-BY-NC-ND-4.0) and is validatable via the Payload MCP; the court rules for it where a client validates it via Payload, else it stands as the claim to validate — never asserted unvalidated"
-    },
-    "repoAudit": {
-     "required": "the court decides only on an audited repo; its integrity is verified before any ruling",
-     "quantum": "verify the repo by its content address — O(1) per check, nanoseconds — beats classical recompute (the whole tree) by magnitudes (verify_beats_recompute_by_magnitudes)",
-     "nanosecondTasks": "sliced into content-addressed pieces each decided in nanoseconds, decoded by majority (the e2e repetition code), as a fold or RSA is sliced",
-     "validatableVia": {
-      "tool": "audit",
-      "arguments": {}
-     },
-     "theorem": "textbook_court_audits_repo"
-    },
-    "violated": "commercial use beyond the a432 harmonic default without a licence",
-    "theorem": "textbook_free_or_coil",
-    "remedy": "a licence of the catalogue through the ecommerce checkout; GDPR and KYC at Stripe",
-    "duty": "legal_only_the_proven_is_admitted",
-    "verdict": "refused at the gate; the case computed, nothing written",
-    "via": {
-     "file": {
-      "tool": "legal",
-      "arguments": {
-       "court": {
-        "gate": "licence scan software-heritage",
-        "status": null,
-        "code": null,
-        "rule": "licence",
-        "evidence": {
-         "name": "https://www.npmjs.com/package/@uuidna/qpu",
-         "url": "https://www.npmjs.com/package/@uuidna/qpu",
-         "why": "an archived origin that names the work outside the author's accounts"
-        },
-        "tenant": "uuidna"
-       }
-      }
-     },
-     "docket": {
-      "how": "POST /docket { kind: \"case\", from: <the client>, body: <this case> } with the tenant's writer token, or the Payload MCP's createEntries",
-      "says": "the violator files its own case through its MCP; the gate wrote nothing"
-     },
-     "appeal": {
-      "tool": "match",
-      "arguments": {
-       "statement": "commercial use beyond the a432 harmonic default without a licence at licence scan software-heritage"
-      }
-     }
-    },
-    "cost": "computed from the refusal alone: the gate stays cheap",
-    "theorems": [
-     "textbook_free_or_coil",
-     "textbook_cheap_gates",
-     "textbook_denier_identified",
-     "textbook_court_audits_repo"
-    ],
-    "says": "licence scan software-heritage: commercial use beyond the a432 harmonic default without a licence — denied by the QPU kernel (self, theorem textbook_free_or_coil, this tree's own law); the legal grounds of all 3 parties shown, ruling in favour of the QPU licence where validatable via Payload; remedy: a licence of the catalogue through the ecommerce checkout; GDPR and KYC at Stripe; the case 2c0fe050-50d8-3fc3-8998-ce78afd98604 is the violator's to file through its MCP"
-   }
-  }
- ],
+ "licence": [],
  "textbooks": {
-  "books": 23939,
-  "routed": 3915,
+  "books": 23843,
+  "routed": 3973,
   "domain": [
    "$K$-theory",
    "$K$-theory -- Higher algebraic $K$-theory -- Higher symbols, Milnor $K$-theory",
    "$K$-theory -- Higher algebraic $K$-theory -- Symmetric monoidal categories",
    "$p$-adic theory, local fields",
+   "003.54",
    "08.36 philosophical anthropology, philosophy of psychology",
    "1867-1914",
    "18th century",
@@ -492,6 +357,7 @@
    "33.50 physics of elementary particles and fields: general",
    "3672",
    "39.30 cosmology",
+   "519.4",
    "530/.0285/53",
    "539.7",
    "A4 Paper sizes",
@@ -675,6 +541,7 @@
    "Alphabets & Writing Systems",
    "Alternate worlds",
    "Alternative Medicine",
+   "Alternative medicine",
    "American",
    "American Diplomatic and consular service",
    "American Naval operations",
@@ -903,6 +770,7 @@
    "Berkeley University of California",
    "Berühmte Persönlichkeit",
    "Besm computer",
+   "Best sellers",
    "Betatrons",
    "Bethe-ansatz technique",
    "Beweis",
@@ -1162,6 +1030,7 @@
    "Cholesky factorization",
    "Christianity",
    "Church buildings",
+   "Ciencia Da Computacao Ou Informatica",
    "Cipher and telegraph codes",
    "Ciphers",
    "Ciphers.",
@@ -1203,10 +1072,12 @@
    "Cluster theory (Nuclear physics)",
    "Cluster theory (nuclear physics)",
    "Codage",
+   "Codage (Informatique)",
    "Code and cipher stories",
    "Code generators",
    "Code jacobien",
    "Code names",
+   "Coderingstheorie",
    "Coders",
    "Codes",
    "Codes correcteurs d'erreurs (Theorie de l'information)",
@@ -1647,7 +1518,6 @@
    "Designs and configurations",
    "Desktop Applications",
    "Detective and mystery stories",
-   "Detective and mystery stories, English",
    "Determinante",
    "Determinants",
    "Development",
@@ -1767,7 +1637,6 @@
    "Dose-response relationship",
    "Dose-response relationship, Drug",
    "Double stars",
-   "Drama",
    "Dreams",
    "Drone aircraft",
    "Drug therapy",
@@ -1968,6 +1837,7 @@
    "Engineering mathematics",
    "Engineering, data processing",
    "Engineering, general",
+   "Engineers",
    "Engineers, biography",
    "England",
    "English language",
@@ -2140,6 +2010,7 @@
    "Fiber-matrix interfaces",
    "Fiction",
    "Fiction in English",
+   "Fiction, authorship",
    "Fiction, family life",
    "Fiction, family life, general",
    "Fiction, fantasy, general",
@@ -2578,7 +2449,6 @@
    "Handbooks",
    "Handbooks, manuals",
    "Handbooks, manuals, etc",
-   "Handbooks, manuals, etc.",
    "Hardy spaces",
    "Harmonic analysis",
    "Harmonic analysis on Euclidean spaces",
@@ -2595,6 +2465,7 @@
    "Harmony of the spheres",
    "Hartree-Fock approximation",
    "Hashing (Computer science)",
+   "Healing",
    "Hearing",
    "Heat",
    "Heavy ion collisions",
@@ -2649,7 +2520,6 @@
    "Holism",
    "Holistic Medicine",
    "Holistic medicine",
-   "Holmes, Sherlock (Fictitious character)",
    "Holomorphic functions",
    "Holomorphic modular forms of integral weight",
    "Home",
@@ -2764,6 +2634,7 @@
    "Influence (Literary, artistic, etc.)",
    "Info pack. Background material",
    "Información, Teoría de la",
+   "Informatietheorie",
    "Informatik",
    "Information",
    "Information Storage & Retrieval",
@@ -2812,7 +2683,6 @@
    "Informatique",
    "Informatique quantique",
    "Infrared radiation",
-   "Inheritance and succession",
    "Injection guidance",
    "Inlet flow",
    "Inner product spaces",
@@ -3111,7 +2981,6 @@
    "Literature",
    "Literature and the war",
    "Literature, Rhetoric, and Poetry",
-   "Little blue book",
    "Loads (Forces)",
    "Local area networks (computer networks)",
    "Local ground fields",
@@ -3283,6 +3152,7 @@
    "Mathematics of Computing",
    "Mathematics, competitions",
    "Mathematics, computer network resources",
+   "Mathematics, dictionaries",
    "Mathematics, examinations, questions, etc.",
    "Mathematics, general",
    "Mathematics, juvenile literature",
@@ -3354,6 +3224,7 @@
    "Mechanik",
    "Mechanism (Philosophy)",
    "Mecânica quântica",
+   "Media Studies",
    "Medical",
    "Medical / Internal Medicine",
    "Medical / Nursing",
@@ -3390,6 +3261,8 @@
    "Metaphysics",
    "Meteorological parameters",
    "Meteorological satellites",
+   "Meteorology",
+   "Meteorology/Climatology",
    "Method of characteristics",
    "Methodist Episcopal Church",
    "Methodology",
@@ -3454,7 +3327,6 @@
    "Modular curves",
    "Modular functions",
    "Modular representations of groups",
-   "Modulation",
    "Modulation (electronics)",
    "Modulators",
    "Modules (Algebra)",
@@ -3498,6 +3370,7 @@
    "Mordell conjecture",
    "Mormonen",
    "Mormons",
+   "Morse code",
    "Mothers and daughters",
    "Motion",
    "Motion pictures, history",
@@ -3869,7 +3742,6 @@
    "Occultism",
    "Ocean data acquisitions systems",
    "Ocean surface",
-   "Oedipus (Greek mythological figure)",
    "Offensive (Military science)",
    "Officers",
    "Oligonucleotide Array Sequence Analysis",
@@ -4085,7 +3957,6 @@
    "Phase error",
    "Phase modulation",
    "Phase rule and equilibrium",
-   "Phase shift keying",
    "Phase space (Statistical physics)",
    "Phase space (statistical physics)",
    "Phase transformations (Statistical physics)",
@@ -4119,6 +3990,7 @@
    "Photochemistry",
    "Photographs from space",
    "Photon correlation",
+   "Photon detectors",
    "Photon echoes",
    "Photonics",
    "Photonics Laser Technology",
@@ -4230,6 +4102,7 @@
    "Popular Science",
    "Popular Science in Mathematics/Computer Science/Natural Science/Technology",
    "Popular Science, general",
+   "Popular literature",
    "Popular works",
    "Population",
    "Portfolio management",
@@ -4381,6 +4254,7 @@
    "Public-Key-Kryptosystem",
    "Public-key cryptography",
    "Publishers and publishing",
+   "Publishers and publishing, united states",
    "Puces à ADN",
    "Puissances consécutives (Algèbre)",
    "Pulsars",
@@ -4398,8 +4272,10 @@
    "Q-groups",
    "Q-series",
    "Q183.9 .g36 1997",
+   "Q360 .m25 2004",
    "QUANTUM MECHANICS",
    "QUANTUM THEORY",
+   "Qa268 .h35 1986",
    "Qa268 .l48 2000",
    "Qc173 .h17513 1994",
    "Qc174.12 .b633 1981",
@@ -4811,7 +4687,6 @@
    "Secondary Education",
    "Secondary School Language Arts",
    "Secret service",
-   "Secret societies",
    "Secretarial & office skills",
    "Secretos de la familia",
    "Securities",
@@ -4877,7 +4752,6 @@
    "Shirley, Anne (Fictitious character)",
    "Shock (mechanics)",
    "Shock waves",
-   "Short stories",
    "Sick",
    "Siege warfare",
    "Siegel domains",
@@ -5081,6 +4955,7 @@
    "Statistics for Engineering, Physics, Computer Science, Chemistry & Geosciences",
    "Statistics for Engineering, Physics, Computer Science, Chemistry and Earth Sciences",
    "Statistics, general",
+   "Statistiek",
    "Statistique quantique",
    "Statistische Physik",
    "Statistische mechanica",
@@ -5205,6 +5080,7 @@
    "Symétrie moléculaire",
    "Synoptic meteorology",
    "System Administration",
+   "System Theory",
    "System analysis",
    "System design",
    "System identification",
@@ -5261,6 +5137,7 @@
    "Temps",
    "Tensoren",
    "Tensors",
+   "Teoria Da Informacao",
    "Teoria Dos Grupos",
    "Teoria Dos Numeros",
    "Teoria cuantica",
@@ -5415,7 +5292,7 @@
    "Trace formulas",
    "Tradeoffs",
    "Trades & technology -> industrial technology -> materials science",
-   "Tragedies (Drama)",
+   "Traffic",
    "Traitement d'images",
    "Traitement de l'information chez l'homme",
    "Traitement du signal",
@@ -5552,7 +5429,6 @@
    "Viscous flow",
    "Visual programming languages (Computer science)",
    "Visualization",
-   "Viterbi decodes",
    "Vloeistoffen",
    "Vocational guidance",
    "Volume (Cubic content)",
@@ -5804,8 +5680,8 @@
    "Оптимизация. Исследование операций.",
    "Физика"
   ],
-  "inDomain": 19943,
-  "outside": 81,
+  "inDomain": 19802,
+  "outside": 68,
   "byTheorem": {
    "textbook_mind_sigma": 421,
    "textbook_penalty_time_burned": 5,
@@ -5818,9 +5694,9 @@
    "computer": 52,
    "textbook_clay_bridge": 216,
    "Qpu.ProgramSynthesis.size_compose": 1,
-   "textbook_binding_zero_hex_path": 56,
+   "textbook_binding_zero_hex_path": 55,
    "textbook_news_adapters": 5,
-   "textbook_google_api_surfaces": 16,
+   "textbook_google_api_surfaces": 15,
    "textbook_standards_sliced": 28,
    "textbook_bulgarian_statement_words": 1,
    "textbook_thermal_time_sigma": 174,
@@ -5841,17 +5717,17 @@
    "textbook_queneau_compositions": 2,
    "textbook_gottesman_knill": 2,
    "textbook_one_holder": 3,
-   "textbook_court_audits_repo": 22,
+   "textbook_court_audits_repo": 20,
    "textbook_chain_bits": 4,
    "textbook_actions_experience": 1,
-   "textbook_search_proven": 11,
+   "textbook_search_proven": 7,
    "textbook_news_problems": 56,
-   "textbook_dna_base4": 4,
+   "textbook_dna_base4": 3,
    "textbook_clock_clone_involution": 75,
    "textbook_address_retrieval": 27,
    "textbook_tsirelson": 162,
    "cooling_stays_positive": 2,
-   "textbook_color_code_d5": 42,
+   "textbook_color_code_d5": 41,
    "textbook_surface_distance_ladder": 20,
    "textbook_order_finding": 51,
    "textbook_xeb": 63,
@@ -5875,15 +5751,15 @@
    "textbook_chat_call_or_question": 9,
    "sciences": 3,
    "textbook_actions_pinned": 3,
-   "textbook_willow_holds_codes": 16,
+   "textbook_willow_holds_codes": 13,
    "textbook_payload_operations": 63,
    "textbook_echo_qubits_within_willow": 2,
-   "textbook_report_refactors": 18,
+   "textbook_report_refactors": 17,
    "temperature": 13,
    "textbook_eastin_knill": 200,
    "textbook_fractal_scales": 3,
-   "textbook_ldpc_code": 50,
-   "textbook_concatenated_code": 47,
+   "textbook_ldpc_code": 45,
+   "textbook_concatenated_code": 40,
    "textbook_payload_field_types": 22,
    "amplitudes_as_sum": 1,
    "textbook_deutsch_jozsa": 3,
@@ -5891,11 +5767,11 @@
    "textbook_simon": 24,
    "factorial_succ": 1,
    "textbook_dashboard_spaces": 22,
-   "textbook_patent_number_well_formed": 154,
+   "textbook_patent_number_well_formed": 152,
    "textbook_workspace_docs_round_trip": 2,
    "textbook_repair_partitions": 8,
    "textbook_mixed_radix": 13,
-   "textbook_golay_code": 46,
+   "textbook_golay_code": 48,
    "fused_additive_form": 2,
    "textbook_euler_fermat": 6,
    "textbook_shor_sigma_root": 8,
@@ -5905,6 +5781,7 @@
    "textbook_free_or_coil": 9,
    "textbook_exploit_refuses_to_patch": 21,
    "textbook_reed_muller": 19,
+   "textbook_code_folds": 97,
    "textbook_expressions_evaluate": 4,
    "Qpu.ZeroShot.allClasses_uniform": 1,
    "textbook_magic_constant": 8,
@@ -5926,7 +5803,7 @@
    "choose_symm_small": 1,
    "textbook_reed_solomon_mds": 19,
    "textbook_witness_clock_move": 1,
-   "textbook_bch_code": 268,
+   "textbook_bch_code": 266,
    "textbook_involution_decoder": 10,
    "textbook_set_union": 10,
    "textbook_hamming_code": 7,
@@ -5935,25 +5812,24 @@
    "textbook_shor_nine_code": 7,
    "textbook_hook_steps_monotone": 1,
    "textbook_rosetta_conventions": 4,
-   "textbook_tools_listed": 1,
-   "textbook_codes_locales": 6,
+   "textbook_codes_locales": 5,
    "textbook_denier_identified": 4,
-   "textbook_step_cache_sound": 18,
+   "textbook_step_cache_sound": 17,
    "Qpu.Federated.shares_length": 2,
    "textbook_dashboard_algorithm_combinations": 31,
    "Qpu.ZeroShot.semantic_transitivity": 4,
    "textbook_codata_g_ppb": 2,
-   "textbook_url_combinations": 5,
    "textbook_cache_saves_cost": 4,
    "textbook_prizes_computable": 3,
-   "textbook_context_balanced": 8,
    "Qpu.CausalInference.length_filter_partition": 3,
    "textbook_integrations_are_thirty_five": 1,
    "textbook_google_one_door": 1,
+   "textbook_context_balanced": 4,
    "textbook_stream_filter": 1,
    "textbook_processor_cells": 3,
    "design": 11,
    "textbook_clay_conditions": 1,
+   "textbook_url_combinations": 3,
    "textbook_validation_helpers": 2,
    "Qpu.CausalInference.valueF_stable": 1,
    "textbook_idle_scheduled_clears": 4,
@@ -5978,15 +5854,16 @@
    "textbook_scan_stream": 2,
    "textbook_branding_sources": 2,
    "Qpu.ProgramSynthesis.testing_incomplete": 2,
-   "textbook_holevo": 9,
+   "textbook_holevo": 8,
    "double_is_sum": 1,
    "textbook_witness_pair": 1,
    "textbook_bill_covered": 2,
    "textbook_mongo_find_filter": 9,
    "textbook_h2_below_hartree_fock": 3,
    "textbook_integers_first": 2,
-   "textbook_eta_from_receipts": 3,
+   "textbook_eta_from_receipts": 2,
    "textbook_workspace_sets": 7,
+   "textbook_new_doors_proven": 1,
    "textbook_euler_totient": 1,
    "textbook_raid_bit_zero_verify": 1,
    "textbook_reflection_by_shape": 4,
@@ -6032,7 +5909,7 @@
    "Qpu.ZeroShot.exact_match_best": 1,
    "Qpu.Federated.quantization_error": 1,
    "energy": 1,
-   "textbook_cl_described": 3,
+   "textbook_cl_described": 2,
    "textbook_coins_coils_balanced": 3,
    "textbook_authorship_tracked": 1
   },
@@ -6286,6 +6163,13 @@
     "repository": null
    },
    {
+    "name": "chat.conecto/bookkeeping",
+    "version": "1.0.0",
+    "description": "Double-entry bookkeeping with bank matching, reports and DATEV export. Pay per action.",
+    "remote": "https://api.conecto.chat/mcp/books",
+    "repository": null
+   },
+   {
     "name": "co.youngster.tools/booking",
     "version": "1.1.0",
     "description": "Book seniors into free, in-person tech-help sessions at libraries and venues across Australia.",
@@ -6381,13 +6265,6 @@
     "version": "1.0.0",
     "description": "Book mobile mechanic in Boise, ID: prices, service area by ZIP, free callback from a local pro.",
     "remote": "https://boisecarfix.com/mcp",
-    "repository": null
-   },
-   {
-    "name": "com.bonissystems/booking-request",
-    "version": "1.0.0",
-    "description": "Self-authenticating booking-request receipt anchored to the Knox chain; never represents a person.",
-    "remote": "https://bonissystems.com/api/knox/agents/booking-request/mcp",
     "repository": null
    },
    {
@@ -6900,6 +6777,13 @@
     "description": "Academic literature search, retrieval, and private library management on top of OpenAlex.",
     "remote": "https://app.papertext.app/mcp",
     "repository": "https://github.com/jhytabest/papertext"
+   },
+   {
+    "name": "app.tuper/openalex-papers",
+    "version": "1.0.0",
+    "description": "OpenAlex academic papers, authors and citations search via the official API. Runs on Apify.",
+    "remote": "https://mcp.apify.com?tools=tuper/openalex-papers",
+    "repository": null
    },
    {
     "name": "co.paperjoy/paperjoy",
@@ -7477,7 +7361,7 @@
    },
    {
     "name": "io.github.pipeworx-io/jpo-patent-info",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "JPO patent information: Japanese patent, utility model and trademark status from the Japan Patent…",
     "remote": "https://gateway.pipeworx.io/jpo-patent-info/mcp",
     "repository": "https://github.com/pipeworx-io/mcp-jpo-patent-info"
@@ -7704,6 +7588,13 @@
     "version": "1.0.0",
     "description": "Check if a US legal citation exists, names its case and has a valid pin cite; or find a case. Free.",
     "remote": "https://loupe.legal/mcp-public",
+    "repository": null
+   },
+   {
+    "name": "com.bonissystems/booking-request",
+    "version": "1.0.0",
+    "description": "Self-authenticating booking-request receipt anchored to the Knox chain; never represents a person.",
+    "remote": "https://bonissystems.com/api/knox/agents/booking-request/mcp",
     "repository": null
    },
    {
@@ -8148,13 +8039,6 @@
     "repository": null
    },
    {
-    "name": "com.nearfine/books",
-    "version": "1.0.0",
-    "description": "Search booksellers worldwide for any book, new or used, and set alerts for copies not listed yet.",
-    "remote": "https://nearfine.com/mcp",
-    "repository": null
-   },
-   {
     "name": "io.github.Spacemandomains/library-mcp",
     "version": "1.1.7",
     "description": "Search and discover 25,000+ MCP servers across all major registries. Connect and pay autonomously.",
@@ -8545,6 +8429,13 @@
     "description": "Papers (ML research) MCP.",
     "remote": "https://gateway.pipeworx.io/paperswithcode/mcp",
     "repository": "https://github.com/pipeworx-io/mcp-paperswithcode"
+   },
+   {
+    "name": "com.nearfine/books",
+    "version": "1.0.0",
+    "description": "Search booksellers worldwide for any book, new or used, and set alerts for copies not listed yet.",
+    "remote": "https://nearfine.com/mcp",
+    "repository": null
    },
    {
     "name": "com.nisebookings/booking",
@@ -10398,13 +10289,6 @@
   "says": "servers that serve books, papers and libraries: proposed as doors of discovery, never called from the tree"
  },
  "leads": [
-  {
-   "id": "licence-software-heritage-https-www-npmjs-com-package-uuidna-qpu",
-   "source": "https://www.npmjs.com/package/@uuidna/qpu",
-   "statement": "https://www.npmjs.com/package/@uuidna/qpu (software-heritage): an archived origin that names the work outside the author's accounts; the case 2c0fe050-50d8-3fc3-8998-ce78afd98604 is the author's to file",
-   "status": "open",
-   "reason": "a candidate, never a verdict: the court computes the case, the author decides"
-  },
   {
    "id": "textbook-openstax-873",
    "source": "openstax 873",
@@ -45532,13 +45416,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol3482355w",
-   "source": "open-library /works/OL3482355W",
-   "statement": "Secrets of making and breaking codes (cryptography, Cryptography) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol3810450w",
    "source": "open-library /works/OL3810450W",
    "statement": "El Alamein (cryptography, Cryptography, El Alamein, Battle of, Egypt, 1942) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -45675,13 +45552,6 @@
    "id": "textbook-open-library-works-ol1648425w",
    "source": "open-library /works/OL1648425W",
    "statement": "Digital Signature Standard (DSS) (cryptography, Standards, Data processing) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol16575822w",
-   "source": "open-library /works/OL16575822W",
-   "statement": "Selected topics in information and coding theory (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -48913,13 +48783,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol16638838w",
-   "source": "open-library /works/OL16638838W",
-   "statement": "A student's guide to coding and information theory (information theory, Coding theory, Codierungstheorie) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol16461841w",
    "source": "open-library /works/OL16461841W",
    "statement": "Algebraic and stochastic coding theory (information theory, COMPUTERS / Security / Cryptography, MATHEMATICS / Applied) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -48993,13 +48856,6 @@
    "id": "textbook-open-library-works-ol22144532w",
    "source": "open-library /works/OL22144532W",
    "statement": "Algorithms (information theory, Artificial intelligence, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol20039595w",
-   "source": "open-library /works/OL20039595W",
-   "statement": "The bestseller code (information theory, Books and reading, Best sellers) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -49473,13 +49329,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol4640594w",
-   "source": "open-library /works/OL4640594W",
-   "statement": "The theory of information and coding (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol25937w",
    "source": "open-library /works/OL25937W",
    "statement": "Ergodic theory and information (information theory, Ergodic theory, Statistical communication theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -49564,13 +49413,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol13361122w",
-   "source": "open-library /works/OL13361122W",
-   "statement": "Coding theorems of information theory (information theory, Information theory, Mathematics) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol160539w",
    "source": "open-library /works/OL160539W",
    "statement": "Information theory (information theory, Information theory, Telecommunication) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -49581,13 +49423,6 @@
    "id": "textbook-open-library-works-ol16626477w",
    "source": "open-library /works/OL16626477W",
    "statement": "Approximation algorithms and semidefinite programming (algorithms, Approximation algorithms, Semidefinite programming) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol13834649w",
-   "source": "open-library /works/OL13834649W",
-   "statement": "2007 IEEE Information Theory Workshop (information theory, Congresses, Signal theory (Telecommunication)) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -50019,13 +49854,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol28039745w",
-   "source": "open-library /works/OL28039745W",
-   "statement": "Information Theory (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol2636829w",
    "source": "open-library /works/OL2636829W",
    "statement": "Coding and redundancy (information theory, Animal communication, Mathematical models) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -50428,13 +50256,6 @@
    "id": "textbook-open-library-works-ol16951465w",
    "source": "open-library /works/OL16951465W",
    "statement": "Bioinspired Computation in Combinatorial Optimization (information theory, Mathematical optimization, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol16940857w",
-   "source": "open-library /works/OL16940857W",
-   "statement": "Fundamentals in Information Theory and Coding (information theory, Engineering, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -51433,13 +51254,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol2776930w",
-   "source": "open-library /works/OL2776930W",
-   "statement": "1998 Information Theory Workshop, Killarney, Ireland (information theory, Congresses, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol2776839w",
    "source": "open-library /works/OL2776839W",
    "statement": "Entropy in ergodic theory (information theory, Statistical mechanics, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -51783,13 +51597,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol23744172w",
-   "source": "open-library /works/OL23744172W",
-   "statement": "Mathematics of information and coding (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol23744515w",
    "source": "open-library /works/OL23744515W",
    "statement": "Steiner trees in industry (information theory, Engineering mathematics, Industrial engineering) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -51975,13 +51782,6 @@
    "id": "textbook-open-library-works-ol12143188w",
    "source": "open-library /works/OL12143188W",
    "statement": "Statistical theory of communication (information theory, Communication, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol1185124w",
-   "source": "open-library /works/OL1185124W",
-   "statement": "Coding and information theory (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -52406,13 +52206,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol4150864w",
-   "source": "open-library /works/OL4150864W",
-   "statement": "Informationstheorie und Codierung (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol38726577w",
    "source": "open-library /works/OL38726577W",
    "statement": "Opera aperta (information theory, Poetry, Semantics (Philosophy)) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -52574,13 +52367,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol1906717w",
-   "source": "open-library /works/OL1906717W",
-   "statement": "Applied Coding and Information Theory for Engineers (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol19123235w",
    "source": "open-library /works/OL19123235W",
    "statement": "Readings in multimedia computing and networking (information theory, Multimedia systems, Computer networks) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -52612,13 +52398,6 @@
    "id": "textbook-open-library-works-ol1886637w",
    "source": "open-library /works/OL1886637W",
    "statement": "Physics from Fisher information (information theory, Methodology, Physical measurements) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol18542594w",
-   "source": "open-library /works/OL18542594W",
-   "statement": "Information theory and coding (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -53050,13 +52829,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol192440w",
-   "source": "open-library /works/OL192440W",
-   "statement": "Modulation and coding in information systems (information theory, Information theory, Telecommunication) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol1813639w",
    "source": "open-library /works/OL1813639W",
    "statement": "Knowledge Representation (information theory, Knowledge representation (Information theory), Artificial Intelligence) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -53246,13 +53018,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol20510512w",
-   "source": "open-library /works/OL20510512W",
-   "statement": "Information Theory for Electrical Engineers (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol20664966w",
    "source": "open-library /works/OL20664966W",
    "statement": "Understanding Information (information theory, Information science, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -53270,13 +53035,6 @@
    "id": "textbook-open-library-works-ol20665811w",
    "source": "open-library /works/OL20665811W",
    "statement": "The Information Theory of Comparisons (information theory, Information theory, Statistics) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol20724375w",
-   "source": "open-library /works/OL20724375W",
-   "statement": "Mathematical Modeling (information theory, Mathematical models, Mathematics) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -53631,13 +53389,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol9443533w",
-   "source": "open-library /works/OL9443533W",
-   "statement": "Unlocking the Healing Code (information theory, Information theory, Healing) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol9539148w",
    "source": "open-library /works/OL9539148W",
    "statement": "Communication Theory (information theory, Communication, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -53897,13 +53648,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol9949852w",
-   "source": "open-library /works/OL9949852W",
-   "statement": "Joho to fugo no riron nyumon (Joho kogaku nyumon sensho) (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol9953043w",
    "source": "open-library /works/OL9953043W",
    "statement": "Joho to shisutemu no tetsugaku (information theory, Information theory, System theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -54089,13 +53833,6 @@
    "id": "textbook-open-library-works-ol28309960w",
    "source": "open-library /works/OL28309960W",
    "statement": "Kolmogorov Complexity and Algorithmic Randomness (information theory, Computational complexity, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol28328713w",
-   "source": "open-library /works/OL28328713W",
-   "statement": "Fundamentals of Index Coding (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -54359,13 +54096,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol27787746w",
-   "source": "open-library /works/OL27787746W",
-   "statement": "Polarization and Polar Codes (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol28015168w",
    "source": "open-library /works/OL28015168W",
    "statement": "Introducing Communication Theory? : Analys (information theory, Communication, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -54534,13 +54264,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol5743422w",
-   "source": "open-library /works/OL5743422W",
-   "statement": "2004 IEEE Information Theory Workshop (information theory, Coding theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol5163368w",
    "source": "open-library /works/OL5163368W",
    "statement": "The efficiency of control strategies (information theory, Communication in management, Decision making) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -54558,13 +54281,6 @@
    "id": "textbook-open-library-works-ol5173273w",
    "source": "open-library /works/OL5173273W",
    "statement": "Informatik (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol5011785w",
-   "source": "open-library /works/OL5011785W",
-   "statement": "Osnovy teorii informat͡s︡ii i kodirovanii͡a︡ (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -57113,6 +56829,13 @@
    "id": "textbook-open-library-works-ol5607382w",
    "source": "open-library /works/OL5607382W",
    "statement": "Exponential fitting (algorithms, Curve fitting, Calculus & mathematical analysis) teaches a subject the theorems reach, and no theorem reaches this book yet",
+   "status": "open",
+   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
+  },
+  {
+   "id": "textbook-open-library-works-ol5644260w",
+   "source": "open-library /works/OL5644260W",
+   "statement": "On decoding of multi-level MPSK modulation codes (algorithms, Algorithms, Decoding) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -62860,13 +62583,6 @@
    "id": "textbook-open-library-works-ol19834254w",
    "source": "open-library /works/OL19834254W",
    "statement": "The Child's Conception of Language (acoustics, Acoustics, Physics) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol19899390w",
-   "source": "open-library /works/OL19899390W",
-   "statement": "Relative Information (information theory, Physics, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -70539,13 +70255,6 @@
    "id": "textbook-open-library-works-ol6496433w",
    "source": "open-library /works/OL6496433W",
    "statement": "Estimating Lx̳(1) (number theory, Number theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol6496582w",
-   "source": "open-library /works/OL6496582W",
-   "statement": "A new proof and generalization of some theorems of Brewer (number theory, Number theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -80315,13 +80024,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol23312855w",
-   "source": "open-library /works/OL23312855W",
-   "statement": "Photon counting applications, quantum optics, and quantum information transfer and processing II (cryptography, Photon detectors, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol23296620w",
    "source": "open-library /works/OL23296620W",
    "statement": "Kakinomoto no Hitomaro no nazo (cryptography, Symbolism, Cryptography) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -80535,13 +80237,6 @@
    "id": "textbook-open-library-works-ol2379140w",
    "source": "open-library /works/OL2379140W",
    "statement": "Lingua obscura (cryptography, Ciphers, Cryptography) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol23724512w",
-   "source": "open-library /works/OL23724512W",
-   "statement": "Problemas resueltos de teoría de la información, codificación y criptología (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -81351,13 +81046,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol12434100w",
-   "source": "open-library /works/OL12434100W",
-   "statement": "2007 10th Canadian Workshop on Information Theory, Edmonton, AB, Canada, 6-8 June 2007 (information theory, Congresses, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol12327114w",
    "source": "open-library /works/OL12327114W",
    "statement": "Advances in cryptology-CRYPTO'98 (cryptography, Congresses, Computers) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -82103,13 +81791,6 @@
    "id": "textbook-open-library-works-ol3638087w",
    "source": "open-library /works/OL3638087W",
    "statement": "ULTRA and the history of the United States Strategic Air Force in Europe vs. the German Air Force (cryptography, Cryptography, Germany) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol36451434w",
-   "source": "open-library /works/OL36451434W",
-   "statement": "Selected Topics in Information and Coding Theory (cryptography, Coding theory, Cryptography) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -84284,13 +83965,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol31699907w",
-   "source": "open-library /works/OL31699907W",
-   "statement": "Information theory (cryptography, Coding theory, Cryptography) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol29264647w",
    "source": "open-library /works/OL29264647W",
    "statement": "Sekret Enigmy (cryptography, War films, World War, 1939-1945) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -84623,13 +84297,6 @@
    "id": "textbook-open-library-works-ol22395619w",
    "source": "open-library /works/OL22395619W",
    "statement": "Media forensics and security II (cryptography, Cryptography, Multimedia systems) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol22639397w",
-   "source": "open-library /works/OL22639397W",
-   "statement": "Algebraic geometry modeling in information theory (cryptography, Algebraic Geometry, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -85845,13 +85512,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol19449777w",
-   "source": "open-library /works/OL19449777W",
-   "statement": "Code making and code breaking (cryptography, Ciphers, Cryptography) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol19561386w",
    "source": "open-library /works/OL19561386W",
    "statement": "Coding theory and cryptology (cryptography, Coding theory, Cryptography) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -86037,13 +85697,6 @@
    "id": "textbook-open-library-works-ol19824342w",
    "source": "open-library /works/OL19824342W",
    "statement": "Advances in Cryptology - ASIACRYPT 2010 (cryptography, Computational complexity, Information Systems) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol516960w",
-   "source": "open-library /works/OL516960W",
-   "statement": "Information Theory (Tracts in Pure & Applied Mathematics) (information theory, Information Theory, Information, Théorie de l') teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -86282,20 +85935,6 @@
    "id": "textbook-open-library-works-ol6233123w",
    "source": "open-library /works/OL6233123W",
    "statement": "El ámbito científico de la información (information theory, Communication, Information science) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol6160791w",
-   "source": "open-library /works/OL6160791W",
-   "statement": "Teoría de la información y de la codificación (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol6117381w",
-   "source": "open-library /works/OL6117381W",
-   "statement": "Mathematische Informationstheorie (information theory, Coding theory, Entropy (Information theory)) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -86559,13 +86198,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol7310014w",
-   "source": "open-library /works/OL7310014W",
-   "statement": "Information and coding theory (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol7363792w",
    "source": "open-library /works/OL7363792W",
    "statement": "Recent developments in information and decision processes (information theory, Congresses, Decision-making) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -86783,13 +86415,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol6039723w",
-   "source": "open-library /works/OL6039723W",
-   "statement": "2003 IEEE Information Theory Workshop (information theory, Coding theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol4975709w",
    "source": "open-library /works/OL4975709W",
    "statement": "Applied information theory (information theory, Cybernetics, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -86800,13 +86425,6 @@
    "id": "textbook-open-library-works-ol5323223w",
    "source": "open-library /works/OL5323223W",
    "statement": "Moderne Anwendungen algebraischer Methoden (information theory, Abstract Algebra, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol5323456w",
-   "source": "open-library /works/OL5323456W",
-   "statement": "Neue Aspekte der Informations- und Systemtheorie (information theory, Coding theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -87045,13 +86663,6 @@
    "id": "textbook-open-library-works-ol5542652w",
    "source": "open-library /works/OL5542652W",
    "statement": "Aspecte noi ale teoriei informației (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol5559919w",
-   "source": "open-library /works/OL5559919W",
-   "statement": "Information theory (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -87658,13 +87269,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol13353947w",
-   "source": "open-library /works/OL13353947W",
-   "statement": "Information transmission with simbols [sic] of different cost (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol11950419w",
    "source": "open-library /works/OL11950419W",
    "statement": "Formal concept analysis (information theory, Artificial intelligence, Comprehension (Theory of knowledge)) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -87798,13 +87402,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol11809198w",
-   "source": "open-library /works/OL11809198W",
-   "statement": "Information theory and coding (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol11809286w",
    "source": "open-library /works/OL11809286W",
    "statement": "Sistemy upraveleniia i kommutatsii (information theory, Collected works, Commutation (Electricity)) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -87868,13 +87465,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol12666396w",
-   "source": "open-library /works/OL12666396W",
-   "statement": "Teorii︠a︡ informat︠s︡ii i kodirovanie (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol12706948w",
    "source": "open-library /works/OL12706948W",
    "statement": "Learning systems and intelligent robots (information theory, Congresses, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -87913,13 +87503,6 @@
    "id": "textbook-open-library-works-ol12999467w",
    "source": "open-library /works/OL12999467W",
    "statement": "Form und In-formation: zur Logik selbstreferentieller Strukturgenese (information theory, Philosophy, OUR Brockhaus selection) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol12938026w",
-   "source": "open-library /works/OL12938026W",
-   "statement": "Proceedings of the 2002 IEEE Information Theory Workshop (information theory, Congresses, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -88393,13 +87976,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol11768707w",
-   "source": "open-library /works/OL11768707W",
-   "statement": "Proceedings of 2006 IEEE Information Theory Workshop (ITW '06) (information theory, Congresses, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol11735922w",
    "source": "open-library /works/OL11735922W",
    "statement": "Communication theory (information theory, Information theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -88813,30 +88389,9 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol35709219w",
-   "source": "open-library /works/OL35709219W",
-   "statement": "Geometric Patterns with Creative Coding (information theory, Information storage and retrieval systems, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol3409638w",
-   "source": "open-library /works/OL3409638W",
-   "statement": "Basic concepts in information theory and coding (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol35534866w",
    "source": "open-library /works/OL35534866W",
    "statement": "VIII Simpozium po probleme izbytochnosti v informat͡sionnykh sistemakh (information theory, Data compression (Telecommunication), Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol35534928w",
-   "source": "open-library /works/OL35534928W",
-   "statement": "Kurs teorii informat͡sii (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -89625,13 +89180,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol16678927w",
-   "source": "open-library /works/OL16678927W",
-   "statement": "2006 IEEE Information Theory Workshop (information theory, Congresses, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol16591596w",
    "source": "open-library /works/OL16591596W",
    "statement": "Computer science (information theory, Information theory, Computer science) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -89656,13 +89204,6 @@
    "id": "textbook-open-library-works-ol16599817w",
    "source": "open-library /works/OL16599817W",
    "statement": "Experimental semiotics (information theory, Interpersonal communication, Communication models) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol1646157w",
-   "source": "open-library /works/OL1646157W",
-   "statement": "Coding and information theory (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -89810,13 +89351,6 @@
    "id": "textbook-open-library-works-ol16351425w",
    "source": "open-library /works/OL16351425W",
    "statement": "Thermodynamics and regulation of biological processes (information theory, Thermodynamics, Ontogeny) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol16385940w",
-   "source": "open-library /works/OL16385940W",
-   "statement": "Neue Aspekte der Informations- und Systemtheorie (information theory, Congresses, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -90941,13 +90475,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol38551977w",
-   "source": "open-library /works/OL38551977W",
-   "statement": "Proceedings of the meeting on Information measures, Kitchener-Waterloo, Ontario, Canada, April 10-14, 1970 (information theory, Information theory, Congresses) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol38552123w",
    "source": "open-library /works/OL38552123W",
    "statement": "Kibernetika i metodologii︠a︡ nauk (information theory, Cybernetics, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -91431,13 +90958,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol21366110w",
-   "source": "open-library /works/OL21366110W",
-   "statement": "Topics in Multi-User Information Theory (information theory, Coding theory, Error analysis (mathematics)) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol21475107w",
    "source": "open-library /works/OL21475107W",
    "statement": "Information Theory, Statistical Decision Functions, Random Processes (information theory, Probabilities, Statistical decision) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -91564,13 +91084,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol22770830w",
-   "source": "open-library /works/OL22770830W",
-   "statement": "Duo yong hu xin xi lun (information theory, Traffic, Management) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol22719988w",
    "source": "open-library /works/OL22719988W",
    "statement": "Ėksperimentalʹnai︠a︡ informatika (information theory, Information theory, Electronic data processing) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -91634,13 +91147,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol22441762w",
-   "source": "open-library /works/OL22441762W",
-   "statement": "Principles of coding (information theory, Information theory, Telecommunication) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol22494976w",
    "source": "open-library /works/OL22494976W",
    "statement": "Informazione e testimonianza (information theory, Information theory in law, Philosophy) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -91693,13 +91199,6 @@
    "id": "textbook-open-library-works-ol22464545w",
    "source": "open-library /works/OL22464545W",
    "statement": "Reportazh s nicheĭnoĭ zemli (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol22581998w",
-   "source": "open-library /works/OL22581998W",
-   "statement": "Matematicheskie voprosy kibernetiki i vychislitelʹnoĭ tekhniki (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -92117,13 +91616,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol13589923w",
-   "source": "open-library /works/OL13589923W",
-   "statement": "Proceedings of the Seventh Symposium on Information Theory in Benelux, May 22-23, 1986, Noordwijkerhout, the Netherlands (information theory, Congresses, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol1376668w",
    "source": "open-library /works/OL1376668W",
    "statement": "Informatie en energie (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -92222,13 +91714,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol2166984w",
-   "source": "open-library /works/OL2166984W",
-   "statement": "Quantitative-qualitative measure of information (information theory, Information theory, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol21646153w",
    "source": "open-library /works/OL21646153W",
    "statement": "Quantum Information, 2 Volume Set (information theory, Quantum computers, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -92246,13 +91731,6 @@
    "id": "textbook-open-library-works-ol21294756w",
    "source": "open-library /works/OL21294756W",
    "statement": "Signal and Information Processing, Networking and Computers (information theory, Signal processing, Information networks) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol21840830w",
-   "source": "open-library /works/OL21840830W",
-   "statement": "Information Theory and Network Coding (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -92372,13 +91850,6 @@
    "id": "textbook-open-library-works-ol2303170w",
    "source": "open-library /works/OL2303170W",
    "statement": "Vers une philosophie scientifique (information theory, Science, Philosophy) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol22930640w",
-   "source": "open-library /works/OL22930640W",
-   "statement": "2012 IEEE Information Theory Workshop (ITW 2012) (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -114580,13 +114051,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol42475701w",
-   "source": "open-library /works/OL42475701W",
-   "statement": "Iteratively decodable codes for memoryless and intersymbol interference channels (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol42179171w",
    "source": "open-library /works/OL42179171W",
    "statement": "The concepts of information and entropy applied to the measurement process in quantum theory and statistical mechanics (quantum theory, Entropy, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -116540,13 +116004,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol20993099w",
-   "source": "open-library /works/OL20993099W",
-   "statement": "Information, Coding and Mathematics (information theory, Coding theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol20905093w",
    "source": "open-library /works/OL20905093W",
    "statement": "Social Computing and Social Media. Participation, User Experience, Consumer Experience, and Applications of Social Computing (information theory, Information theory, Computer networks) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -117114,13 +116571,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol16944930w",
-   "source": "open-library /works/OL16944930W",
-   "statement": "Towards an Information Theory of Complex Networks (information theory, Mathematics, Coding theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol4790371w",
    "source": "open-library /works/OL4790371W",
    "statement": "Subjectivity, information, systems (information theory, Cybernetics, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -117345,13 +116795,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-open-library-works-ol7197820w",
-   "source": "open-library /works/OL7197820W",
-   "statement": "Information theory and coding (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-open-library-works-ol16942812w",
    "source": "open-library /works/OL16942812W",
    "statement": "Transactions on Rough Sets XIV (information theory, Optical pattern recognition, Computer vision) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -117411,13 +116854,6 @@
    "id": "textbook-open-library-works-ol16384147w",
    "source": "open-library /works/OL16384147W",
    "statement": "Ėffektivnostʹ i strukturnai︠a︡ nadezhnostʹ informat︠s︡ionnykh sistem (information theory, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-open-library-works-ol16385941w",
-   "source": "open-library /works/OL16385941W",
-   "statement": "Neue Aspekte der Informations- und Systemtheorie (information theory, Congresses, Information theory) teaches a subject the theorems reach, and no theorem reaches this book yet",
    "status": "open",
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
@@ -148684,13 +148120,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-gutendex-1513",
-   "source": "gutendex 1513",
-   "statement": "Romeo and Juliet (Conflict of generations, Drama, Juliet (Fictitious character); Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-gutendex-345",
    "source": "gutendex 345",
    "statement": "Dracula (Dracula, Count (Fictitious character), Fiction, Epistolary fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -149153,13 +148582,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-gutendex-78084",
-   "source": "gutendex 78084",
-   "statement": "The mysterious Mr. Quin (Detective and mystery stories, English, Short stories, English; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "textbook-gutendex-78016",
    "source": "gutendex 78016",
    "statement": "Herman Melville (Melville, Herman, 1819-1891, Novelists, American, 19th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
@@ -149482,531 +148904,6 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-gutendex-78043",
-   "source": "gutendex 78043",
-   "statement": "Bushy : $b a romance founded on fact (Fathers and daughters, Fiction, Frontier and pioneer life; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78121",
-   "source": "gutendex 78121",
-   "statement": "The servant's behaviour book : $b or, Hints on manners and dress for maid servants in small households (Women household employees, England, Handbooks, manuals, etc.; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78114",
-   "source": "gutendex 78114",
-   "statement": "Miniatures of French history (France, History; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78076",
-   "source": "gutendex 78076",
-   "statement": "Robert Frost : $b A study in sensibility and good sense (Frost, Robert, 1874-1963, Poets, American, 20th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78071",
-   "source": "gutendex 78071",
-   "statement": "Kaksi morsianta : $b Yksinäytöksinen pila (Comedy plays, Finnish drama, 20th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78048",
-   "source": "gutendex 78048",
-   "statement": "Sandhills sketches (North Carolina, Description and travel; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78109",
-   "source": "gutendex 78109",
-   "statement": "Grateful Peter's new year's gift (Almshouses, Juvenile fiction, Charity; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78082",
-   "source": "gutendex 78082",
-   "statement": "The yellow book, an illustrated quarterly. Vol. 3, October, 1894 (English literature, 19th century, Periodicals; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-108",
-   "source": "gutendex 108",
-   "statement": "The Return of Sherlock Holmes (Detective and mystery stories, English, Holmes, Sherlock (Fictitious character), Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78085",
-   "source": "gutendex 78085",
-   "statement": "The Catholic Church and history (Catholic Church, Controversial literature, Catholic Church; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78058",
-   "source": "gutendex 78058",
-   "statement": "Lintukoto : $b Muutamia päiväkirjan lehtiä (Finnish fiction, 20th century, Short stories, Finnish; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78067",
-   "source": "gutendex 78067",
-   "statement": "Joe Strong and his wings of steel : $b or, A young acrobat in the clouds (Circus performers, Juvenile fiction, Flying-machines; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78108",
-   "source": "gutendex 78108",
-   "statement": "The bitter tea of General Yen (China, History, 20th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78127",
-   "source": "gutendex 78127",
-   "statement": "The golden journey of Mr. Paradyne (Lawyers, Fiction, Middle-aged men; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78014",
-   "source": "gutendex 78014",
-   "statement": "Khartoum, and the Blue and White Niles, Vol. 1 (of 2) (Egypt, Description and travel, Nile River; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78049",
-   "source": "gutendex 78049",
-   "statement": "Sointula : $b Kolminäytöksinen näytelmä (Finnish drama, 20th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78101",
-   "source": "gutendex 78101",
-   "statement": "L'homme à l'Hispano : $b roman (French fiction, 20th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-41445",
-   "source": "gutendex 41445",
-   "statement": "Frankenstein; or, The modern Prometheus (Frankenstein's monster (Fictitious character), Fiction, Frankenstein, Victor (Fictitious character); Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78018",
-   "source": "gutendex 78018",
-   "statement": "Karavaani ja muita juttuja (Finnish fiction, 20th century, Short stories, Finnish; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78042",
-   "source": "gutendex 78042",
-   "statement": "Ihmisvihaaja : $b Viisinäytöksinen huvinäytelmä (Comedy plays, France, Social life and customs; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78051",
-   "source": "gutendex 78051",
-   "statement": "Borrowed feathers (Love stories, Rings, Juvenile fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78073",
-   "source": "gutendex 78073",
-   "statement": "The winner and new... (Science fiction, Short stories, Television game shows; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78088",
-   "source": "gutendex 78088",
-   "statement": "The hand of God (Murder, Fiction, Sheriffs; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78099",
-   "source": "gutendex 78099",
-   "statement": "Household words, No. 2, April 6, 1850 : $b A weekly journal (English literature, Periodicals; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78036",
-   "source": "gutendex 78036",
-   "statement": "Quand le rideau s'est baissé (French fiction, 20th century, Short stories, French; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-2147",
-   "source": "gutendex 2147",
-   "statement": "The Works of Edgar Allan Poe — Volume 1 (American fiction, 19th century, Fantasy fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78045",
-   "source": "gutendex 78045",
-   "statement": "The happiness of Hazelbrook (Christian life, Juvenile fiction, Conduct of life; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78115",
-   "source": "gutendex 78115",
-   "statement": "The story of Nelson (Admirals, Great Britain, Biography; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78055",
-   "source": "gutendex 78055",
-   "statement": "The white rain came (Callisto (Satellite), Fiction, Mars (Planet); Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78070",
-   "source": "gutendex 78070",
-   "statement": "Velisurmaaja : $b Kolmenäytöksinen murhenäytelmä (Finnish drama, 20th century, Tragedies (Drama); Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78116",
-   "source": "gutendex 78116",
-   "statement": "The bar act (Cowboys, Fiction, Rodeos; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78072",
-   "source": "gutendex 78072",
-   "statement": "Preview (Motion pictures, Fiction, Science fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-158",
-   "source": "gutendex 158",
-   "statement": "Emma (Bildungsromans, England, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78061",
-   "source": "gutendex 78061",
-   "statement": "Household words, No. 26, September 21, 1850 : $b A weekly journal (English literature, Periodicals; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78057",
-   "source": "gutendex 78057",
-   "statement": "The vidiot (Cameras, Fiction, Inventions; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78037",
-   "source": "gutendex 78037",
-   "statement": "Les trente-six vues de la Tour Eiffel (Artists' books, France, Tour Eiffel (Paris, France) in art; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-2868",
-   "source": "gutendex 2868",
-   "statement": "The Green Mummy (Detective and mystery stories, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78096",
-   "source": "gutendex 78096",
-   "statement": "Hajamuistelmia pakolaiselämästä (Finland, History, Civil War, 1918; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78030",
-   "source": "gutendex 78030",
-   "statement": "Kloster Himmelpforte : $b Geschichtliches Drama in 4 Akten (Historical drama, Luther, Martin, 1483-1546, Drama; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78098",
-   "source": "gutendex 78098",
-   "statement": "L'art d'aimer: ou conseils à un jeune homme qui se destine à l'amour (Love; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78008",
-   "source": "gutendex 78008",
-   "statement": "\"Hauska tutustua!\" : $b Viisunikkarin elämyksiä Lännen kultamaassa (Finnish fiction, 20th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78081",
-   "source": "gutendex 78081",
-   "statement": "Huligaani : $b ynnä muita kertoelmia (Finnish fiction, 20th century, Short stories, Finnish; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78093",
-   "source": "gutendex 78093",
-   "statement": "Kotikuusta kuunnellessa : $b Uusia runoelmia (Finnish poetry, 20th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78100",
-   "source": "gutendex 78100",
-   "statement": "Läpi harmaan kiven : $b Kaksinäytöksinen näytelmä (Finnish drama, 20th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78086",
-   "source": "gutendex 78086",
-   "statement": "A municipal feud (Male friendship, Fiction, Short stories; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-175",
-   "source": "gutendex 175",
-   "statement": "The Phantom of the Opera (Composers, Fiction, French fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78228",
-   "source": "gutendex 78228",
-   "statement": "Two happy years in Ceylon (Sri Lanka, Description and travel; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78113",
-   "source": "gutendex 78113",
-   "statement": "Elämän urpuja (Finnish poetry, 20th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-1063",
-   "source": "gutendex 1063",
-   "statement": "The Cask of Amontillado (Horror tales, American, Revenge, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78080",
-   "source": "gutendex 78080",
-   "statement": "Journal de la société de 1789 - Nº II (France, History, Revolution, 1789-1799; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-70175",
-   "source": "gutendex 70175",
-   "statement": "The secret of Father Brown (Brown, Father (Fictitious character), Fiction, Catholics; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-78035",
-   "source": "gutendex 78035",
-   "statement": "The Old Lady flies (Air pilots, Fiction, Motion picture industry; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-70652",
-   "source": "gutendex 70652",
-   "statement": "At the mountains of madness (Antarctica, Fiction, Fantasy fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-27827",
-   "source": "gutendex 27827",
-   "statement": "The Kama Sutra of Vatsyayana: Translated From the Sanscrit in Seven Parts With Preface, Introduction and Concluding Remarks (Love, Sex; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-514",
-   "source": "gutendex 514",
-   "statement": "Little Women (Autobiographical fiction, Bildungsromans, Domestic fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-57342",
-   "source": "gutendex 57342",
-   "statement": "The Lives and Opinions of Eminent Philosophers (Philosophers, Ancient, Biography, Philosophy, Ancient; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-834",
-   "source": "gutendex 834",
-   "statement": "The Memoirs of Sherlock Holmes (Detective and mystery stories, English, Holmes, Sherlock (Fictitious character), Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-219",
-   "source": "gutendex 219",
-   "statement": "Heart of Darkness (Africa, Fiction, Degeneration; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-69700",
-   "source": "gutendex 69700",
-   "statement": "The case-book of Sherlock Holmes (Detective and mystery stories, English, Holmes, Sherlock (Fictitious character), Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-564",
-   "source": "gutendex 564",
-   "statement": "The Mystery of Edwin Drood (Cathedrals, Fiction, Choral conductors; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-601",
-   "source": "gutendex 601",
-   "statement": "The Monk: A Romance (Gothic fiction, Horror tales, Madrid (Spain); Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-223",
-   "source": "gutendex 223",
-   "statement": "The wisdom of Father Brown (Brown, Father (Fictitious character), Fiction, Catholics; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-66446",
-   "source": "gutendex 66446",
-   "statement": "The Plymouth Express Affair (Detective and mystery stories, Murder, Investigation; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-67160",
-   "source": "gutendex 67160",
-   "statement": "The Hunter's Lodge Case (Detective and mystery stories, Murder, Investigation; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-851",
-   "source": "gutendex 851",
-   "statement": "Narrative of the Captivity and Restoration of Mrs. Mary Rowlandson (Indian captivities, Massachusetts, King Philip's War, 1675-1676; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-68957",
-   "source": "gutendex 68957",
-   "statement": "Weird Tales, Volume 1, Number 1, March 1923: The unique magazine (Adventure stories, Periodicals, Fantasy literature, American; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-583",
-   "source": "gutendex 583",
-   "statement": "The Woman in White (Art teachers, Fiction, Country homes; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-1228",
-   "source": "gutendex 1228",
-   "statement": "On the Origin of Species By Means of Natural Selection: Or, the Preservation of Favoured Races in the Struggle for Life (Evolution (Biology), Natural selection; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-155",
-   "source": "gutendex 155",
-   "statement": "The Moonstone (Country homes, Fiction, East Indians; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-71046",
-   "source": "gutendex 71046",
-   "statement": "Modern English biography, volume 2 (of 6), I-Q (Great Britain, Biography, Dictionaries; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-6133",
-   "source": "gutendex 6133",
-   "statement": "The Extraordinary Adventures of Arsène Lupin, Gentleman-Burglar (Adventure stories, French, Translations into English, Burglars; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-57641",
-   "source": "gutendex 57641",
-   "statement": "One Woman: Being the Second Part of a Romance of Sussex (Sussex (England), Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-40521",
-   "source": "gutendex 40521",
-   "statement": "An Etymological Dictionary of the Scottish Language: in which the words are explained in their different senses, authorized by the names of the writers by whom they are used, or the titles of the works in which they occur, and deduced from their originals (Scots language, Etymology, Dictionaries; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-75201",
-   "source": "gutendex 75201",
-   "statement": "A farewell to arms (Man-woman relationships, Fiction, Military deserters; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-393",
-   "source": "gutendex 393",
-   "statement": "The Blue Lagoon: A Romance (Adventure stories, Bildungsromans, Castaways; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "source-unreached-swh-visits-uuidna-qpu",
    "source": "https://archive.softwareheritage.org/api/1/origin/https://github.com/uuidna/qpu/visits/?per_page=1000",
    "statement": "the source swh-visits:uuidna/qpu answered 404",
@@ -150049,16 +148946,30 @@
    "reason": "measured on the next run"
   },
   {
-   "id": "source-unreached-npm-search-uuidna-qpu-0",
-   "source": "https://registry.npmjs.org/-/v1/search?text=uuidna%20qpu&size=250&from=0",
-   "statement": "the source npm-search:uuidna qpu:0 answered 503",
+   "id": "source-unreached-swh-search-uuidna",
+   "source": "https://archive.softwareheritage.org/api/1/origin/search/uuidna/?limit=1000",
+   "statement": "the source swh-search:uuidna answered 500",
    "status": "blocked",
    "reason": "measured on the next run"
   },
   {
-   "id": "source-unreached-gutendex-books-9",
-   "source": "https://gutendex.com/books/?page=9",
-   "statement": "the source gutendex:books:9 answered nothing",
+   "id": "source-unreached-swh-search-uuidna-qpu",
+   "source": "https://archive.softwareheritage.org/api/1/origin/search/uuidna%20qpu/?limit=1000",
+   "statement": "the source swh-search:uuidna qpu answered 500",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-gutendex-books-6",
+   "source": "https://gutendex.com/books/?page=6",
+   "statement": "the source gutendex:books:6 answered nothing",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-swh-search-qpu",
+   "source": "https://archive.softwareheritage.org/api/1/origin/search/qpu/?limit=1000",
+   "statement": "the source swh-search:qpu answered 500",
    "status": "blocked",
    "reason": "measured on the next run"
   }
@@ -150069,15 +148980,15 @@
   "textbook_route_or_lead",
   "textbook_cheap_gates"
  ],
- "says": "289 of 297 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23939 open books of which 3915 the theorems reach and 19943 of their domain are leads; 622 MCP doors proposed",
+ "says": "284 of 294 answers read: 14 immutable versions, 0 archived snapshots, 0 licence candidate(s) with their cases, 23843 open books of which 3973 the theorems reach and 19802 of their domain are leads; 624 MCP doors proposed",
  "counts": {
   "served": 0,
   "partial": 0,
-  "open": 19944,
-  "blocked": 8,
+  "open": 19802,
+  "blocked": 10,
   "out_of_scope": 0
  },
- "total": 19952,
+ "total": 19812,
  "integrity": {
   "phase": "artifacts",
   "artifacts": 17,

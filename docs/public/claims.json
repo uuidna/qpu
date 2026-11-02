@@ -1,9 +1,9 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T20:19:27.550Z",
+ "date": "2026-11-02T22:56:47.688Z",
  "counts": {
   "own": 194,
-  "unrecognised": 93,
+  "unrecognised": 95,
   "unasked": 55,
   "candidate": 3
  },
@@ -298,6 +298,20 @@
   },
   {
    "theorem": "textbook_penalty_learned_prevents",
+   "kind": "general",
+   "status": "unrecognised",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_code_folds",
+   "kind": "general",
+   "status": "unrecognised",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_new_doors_proven",
    "kind": "general",
    "status": "unrecognised",
    "candidates": [],

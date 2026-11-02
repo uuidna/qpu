@@ -1,10 +1,10 @@
 {
- "date": "2026-11-02T20:12:09.397Z",
+ "date": "2026-11-02T22:49:39.514Z",
  "partial": true,
- "remaining": 239,
- "fetched": 150,
- "leads": 55,
- "withServers": 55,
+ "remaining": 167,
+ "fetched": 127,
+ "leads": 60,
+ "withServers": 60,
  "related": [
   {
    "lead": "rbac-standards-as-subjects",
@@ -18847,8 +18847,50 @@
     "device",
     "docket"
    ],
-   "servers": 37,
+   "servers": 43,
    "serverList": [
+    {
+     "name": "com.detentpoint/cluster-validator",
+     "description": "Read-only health validation for Windows Server failover clusters running SQL Server FCI.",
+     "remotes": [],
+     "word": "cluster"
+    },
+    {
+     "name": "com.soleilpictures/clusters",
+     "description": "Read and build visual moodboards, shot lists and lookbooks from an AI assistant.",
+     "remotes": [
+      "https://clusters.soleilpictures.com/api/v1/mcp"
+     ],
+     "word": "cluster"
+    },
+    {
+     "name": "dev.clusteragent/cluster-mcp",
+     "description": "Self-hostable index of AI financial agents — tokenized stocks + crypto, memory, LLM gateway.",
+     "remotes": [
+      "https://mcp.clusteragent.dev/mcp"
+     ],
+     "word": "cluster"
+    },
+    {
+     "name": "dev.clusterhack/clusterhack",
+     "description": "Run hackathons end to end: events, teams, submissions, judging and winners.",
+     "remotes": [
+      "https://clusterhack.dev/mcp/"
+     ],
+     "word": "cluster"
+    },
+    {
+     "name": "io.github.CYAN-ECLIPSE-TECHNOLOGIES-LLC/cluster",
+     "description": "Signed images, governed runtimes — the gate runs first: no verified signature and provenance, no",
+     "remotes": [],
+     "word": "cluster"
+    },
+    {
+     "name": "io.github.CloudCorpRecords/clusterport",
+     "description": "Core kubectl operations: get, describe, logs, apply, scale, patch, rollout and explain.",
+     "remotes": [],
+     "word": "cluster"
+    },
     {
      "name": "ai.devicelink/dlink",
      "description": "Read and search folders on your own computer with explicit consent. Files are never uploaded.",
@@ -19141,6 +19183,24 @@
     }
    ],
    "extended": [
+    {
+     "server": "com.soleilpictures/clusters",
+     "url": "https://clusters.soleilpictures.com/api/v1/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "dev.clusteragent/cluster-mcp",
+     "url": "https://mcp.clusteragent.dev/mcp",
+     "status": 530,
+     "doors": 0
+    },
+    {
+     "server": "dev.clusterhack/clusterhack",
+     "url": "https://clusterhack.dev/mcp/",
+     "status": 200,
+     "doors": 60
+    },
     {
      "server": "ai.devicelink/dlink",
      "url": "https://mcp.devicelink.ai/mcp",
@@ -21074,6 +21134,2284 @@
      "word": "plugin",
      "directory": "apis.io",
      "page": "https://developer.atlassian.com/cloud/trello/rest/"
+    }
+   ],
+   "extended": [
+    {
+     "server": "com.00widget/00widget",
+     "url": "https://api.00widget.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.textforagents/widget-storage-residue-verdict",
+     "url": "https://textforagents.com/products/widget-storage-residue-verdict/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.wwidgets/mcp",
+     "url": "https://mcp.wwidgets.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.adweave/meta-ads-mcp",
+     "url": "https://mcp.adweave.ai/meta-ads-mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.fastmetal/fastmetal",
+     "url": "https://mcp.fastmetal.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.livingmeta/ai-in-research",
+     "url": "https://ai-in-research.livingmeta.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.lumeta/lumeta",
+     "url": "https://mcp.lumeta.ai",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.metabind/banking-assistant",
+     "url": "https://mcp.metabind.ai/IgJH0BzIn4LlfnCbcDc7/projects/GLbHk5i3GLlIYcF63XFl",
+     "status": 200,
+     "doors": 9
+    },
+    {
+     "server": "ai.metabind/docs",
+     "url": "https://docs.metabind.ai/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "ai.metaday/ryan",
+     "url": "https://mcp.metaday.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "ai.primeta/primeta",
+     "url": "https://primeta.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.clauderegistry/plugin-catalog",
+     "url": "https://clauderegistry.com/mcp",
+     "status": 200,
+     "doors": 9
+    },
+    {
+     "server": "com.clearpostplugin/wordpress-seo",
+     "url": "https://{site_domain}/wp-json/clearpost/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "com.memoryplugin/memory",
+     "url": "https://www.memoryplugin.com/api/mcp/mcp",
+     "status": 200,
+     "doors": 14
+    },
+    {
+     "server": "com.memoryplugin/memory",
+     "url": "https://www.memoryplugin.com/api/mcp/sse",
+     "status": 200,
+     "doors": 14
+    },
+    {
+     "server": "com.royalplugins/royal-mcp",
+     "url": "https://demo.royalplugins.com/wp-json/royal-mcp/v1/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.sigistry/plugin-catalog",
+     "url": "https://sigistry.com/mcp",
+     "status": 200,
+     "doors": 9
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.clauderegistry/plugin-catalog",
+     "url": "https://clauderegistry.com/mcp",
+     "door": "check_mcp_app",
+     "score": 2,
+     "shared": [
+      "meta",
+      "resourceuri"
+     ]
+    },
+    {
+     "server": "com.sigistry/plugin-catalog",
+     "url": "https://sigistry.com/mcp",
+     "door": "check_mcp_app",
+     "score": 2,
+     "shared": [
+      "meta",
+      "resourceuri"
+     ]
+    },
+    {
+     "server": "com.clauderegistry/plugin-catalog",
+     "url": "https://clauderegistry.com/mcp",
+     "door": "list_categories",
+     "score": 2,
+     "shared": [
+      "list",
+      "plugin"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "payload-mcp-plugin-ui",
+   "words": [
+    "resources",
+    "plugin",
+    "host"
+   ],
+   "servers": 46,
+   "serverList": [
+    {
+     "name": "cloud.eresourcescheduler.app/eresource-scheduler",
+     "description": "Enterprise resource scheduling for optimal utilization and higher margins.",
+     "remotes": [
+      "https://app.eresourcescheduler.cloud/mcp"
+     ],
+     "word": "resources"
+    },
+    {
+     "name": "com.entityreach/public-resources",
+     "description": "Enterprise account-research resources, product information and reproducible corporate-group samples.",
+     "remotes": [
+      "https://entityreach.com/api/public-mcp"
+     ],
+     "word": "resources"
+    },
+    {
+     "name": "com.japanstartupresources/mcp",
+     "description": "Curated Japan startup news and events this week. Read-only tools; subscriber OAuth required.",
+     "remotes": [
+      "https://japanstartupresources.com/mcp"
+     ],
+     "word": "resources"
+    },
+    {
+     "name": "io.aviationresources/aviation-resources",
+     "description": "Search FAA handbooks and Airman Certification Standards; read and cite pages with figures.",
+     "remotes": [
+      "https://api.aviationresources.io/mcp"
+     ],
+     "word": "resources"
+    },
+    {
+     "name": "io.github.Drix10/ai-resources",
+     "description": "Search and read daily AI news briefings: models, companies, funding, tools. CC BY 4.0.",
+     "remotes": [],
+     "word": "resources"
+    },
+    {
+     "name": "io.github.robot-resources/router",
+     "description": "Intelligent LLM routing proxy — 60-90% cost savings by auto-selecting the cheapest model",
+     "remotes": [],
+     "word": "resources"
+    },
+    {
+     "name": "io.github.robot-resources/scraper",
+     "description": "Token compression for web content — 70-80% reduction from HTML to clean markdown",
+     "remotes": [],
+     "word": "resources"
+    },
+    {
+     "name": "io.github.sznt2010/agentresources-mcp",
+     "description": "MCP server for Agent Resources: Trust Cards, signed telemetry, ERC-8004 identity, x402.",
+     "remotes": [],
+     "word": "resources"
+    },
+    {
+     "name": "ai.circulara/plugin",
+     "description": "Circulara Observe MCP plugin - meters your AI agents' token spend and carbon, free tier.",
+     "remotes": [],
+     "word": "plugin"
+    },
+    {
+     "name": "com.clauderegistry/plugin-catalog",
+     "description": "Search and install Claude Code plugins from the ClaudeRegistry marketplace (read-only).",
+     "remotes": [
+      "https://clauderegistry.com/mcp"
+     ],
+     "word": "plugin"
+    },
+    {
+     "name": "com.clearpostplugin/wordpress-seo",
+     "description": "SEO agent for WordPress. Grows your organic traffic on autopilot. 12 tools, zero configuration.",
+     "remotes": [
+      "https://{site_domain}/wp-json/clearpost/mcp"
+     ],
+     "word": "plugin"
+    },
+    {
+     "name": "com.memoryplugin/memory",
+     "description": "Give every AI you use one shared, permanent memory. Store once, recall in whichever AI you open.",
+     "remotes": [
+      "https://www.memoryplugin.com/api/mcp/mcp",
+      "https://www.memoryplugin.com/api/mcp/sse"
+     ],
+     "word": "plugin"
+    },
+    {
+     "name": "com.royalplugins/royal-mcp",
+     "description": "Security-first WordPress MCP server. 129 tools for Claude, ChatGPT, Gemini. Free on wp.org.",
+     "remotes": [
+      "https://demo.royalplugins.com/wp-json/royal-mcp/v1/mcp"
+     ],
+     "word": "plugin"
+    },
+    {
+     "name": "com.sigistry/plugin-catalog",
+     "description": "Search and install Claude Code plugins from the Sigistry marketplace (read-only).",
+     "remotes": [
+      "https://sigistry.com/mcp"
+     ],
+     "word": "plugin"
+    },
+    {
+     "name": "ai.borealhost/mcp",
+     "description": "Agent-native web hosting — deploy sites, manage DNS, register domains, scale infrastructure",
+     "remotes": [
+      "https://borealhost.ai/mcp/"
+     ],
+     "word": "host"
+    },
+    {
+     "name": "ai.ghostedit/ghostedit",
+     "description": "Post to Instagram, TikTok, YouTube and more from your AI, checked first, then see what worked.",
+     "remotes": [
+      "https://mcp.ghostedit.ai"
+     ],
+     "word": "host"
+    },
+    {
+     "name": "salesforce:salesforce-resources-api",
+     "description": "The Resources API from Salesforce — 2 operation(s) for resources.",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/"
+    },
+    {
+     "name": "harness:harness-resource-api",
+     "description": "The resource API from Harness — 2 operation(s) for resource.",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "nylas:nylas-room-resources-api",
+     "description": "The Nylas Contacts API allows you to return information about rooms that you can book for meetings, conferences, and other events. ## Room resource booking scopes The table below lists the Microsoft a",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://developer.nylas.com/docs/reference/api/applications/"
+    },
+    {
+     "name": "shopify:shopify-resource-api",
+     "description": "The Resource API from Shopify — 12 operation(s) for resource.",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://shopify.dev/docs/api/admin-rest"
+    },
+    {
+     "name": "harness:harness-harness-resource-type-api",
+     "description": "This contains APIs related to Harness Resource Type",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "cloudflare:cloudflare-resources-api",
+     "description": "The Resources API from Cloudflare — 4 operation(s) for resources.",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://developers.cloudflare.com/load-balancing/"
+    },
+    {
+     "name": "harness:harness-harness-resource-group-api",
+     "description": "This contains APIs specific to the Harness Resource Group",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "elevenlabs:elevenlabs-resource-api",
+     "description": "Manage dubbing resources, including segments, speakers, and language tracks.",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://elevenlabs.io/docs/api-reference/introduction"
+    },
+    {
+     "name": "harness:harness-gitx-events-resource-api",
+     "description": "The GitX Events Resource API from Harness — 1 operation(s) for gitx events resource.",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "harness:harness-account-resource-groups-api",
+     "description": "This contains APIs for Account-scoped Resource Groups.",
+     "remotes": [],
+     "word": "resources",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "twilio:twilio-plugins-api",
+     "description": "Manage Flex plugins",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://www.twilio.com/docs/iam/api/account"
+    },
+    {
+     "name": "harness:harness-plugininfo-api",
+     "description": "Plugin Information",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "optimizely:optimizely-plugins-api",
+     "description": "The Plugins API from Optimizely — 7 operation(s) for plugins.",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://support.optimizely.com/hc/en-us/articles/45320607594893-Optimizely-Experimentation-MCP-server-overview"
+    },
+    {
+     "name": "confluent:confluent-custom-connector-plugins-connect-v1-api",
+     "description": "[![General Availability](https://img.shields.io/badge/Lifecycle%20Stage-General%20Availability-%2345c6e8)](#section/Versioning/API-Lifecycle-Policy) CustomConnectorPlugins objects represent Custom Con",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://www.confluent.io/"
+    },
+    {
+     "name": "confluent:confluent-custom-connect-plugins-ccpm-v1-api",
+     "description": "[![General Availability](https://img.shields.io/badge/Lifecycle%20Stage-General%20Availability-%2345c6e8)](#section/Versioning/API-Lifecycle-Policy) CustomConnectPlugins objects represent Custom Conne",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://www.confluent.io/"
+    },
+    {
+     "name": "confluent:confluent-custom-connect-plugin-versions-ccpm-v1-api",
+     "description": "[![General Availability](https://img.shields.io/badge/Lifecycle%20Stage-General%20Availability-%2345c6e8)](#section/Versioning/API-Lifecycle-Policy) CustomConnectPluginVersion objects represent Custom",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://www.confluent.io/"
+    },
+    {
+     "name": "harness:harness-mergedpluginsconfig-api",
+     "description": "Merged Plugins Configurations",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "harness:harness-custompluginsv2-api",
+     "description": "This contains APIs for Custom Plugins V2.",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "confluent:confluent-managed-connector-plugins-connect-v1-api",
+     "description": "[![General Availability](https://img.shields.io/badge/Lifecycle%20Stage-General%20Availability-%2345c6e8)](#section/Versioning/API-Lifecycle-Policy) API for Managed connectors in Confluent Cloud.",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://www.confluent.io/"
+    },
+    {
+     "name": "trello:trello-plugins-api",
+     "description": "Operations for managing Power-Up plugins, including listing, updating, and creating plugin marketplace listings.",
+     "remotes": [],
+     "word": "plugin",
+     "directory": "apis.io",
+     "page": "https://developer.atlassian.com/cloud/trello/rest/"
+    },
+    {
+     "name": "harness:harness-hosts-api",
+     "description": "This contains APIs related to Hosts as defined in Harness",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "dynatrace:dynatrace-oneagent-on-host-api",
+     "description": "The Dynatrace OneAgent on a Host API enables you to check the configuration and status of OneAgent instances deployed on your hosts. It provides endpoints for listing hosts with OneAgent details, retr",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://docs.dynatrace.com/docs/discover-dynatrace/references/dynatrace-api/environment-api/oneagent-on-host"
+    },
+    {
+     "name": "twilio:twilio-hostednumber-api",
+     "description": "The HostedNumber API from Twilio — 6 operation(s) for hostednumber.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://www.twilio.com/docs/iam/api/account"
+    },
+    {
+     "name": "adobe-suite:adobe-suite-hosts-api",
+     "description": "A host represents a hosted destination where a library build can be delivered and ultimately deployed. Hosts can be either Akamai or SFTP servers.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://developer.adobe.com/photoshop/"
+    },
+    {
+     "name": "controlup:controlup-host-pool-session-hosts-api",
+     "description": "The Host pool session hosts API from ControlUp — 1 operation(s) for host pool session hosts.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://api.controlup.io/reference"
+    },
+    {
+     "name": "datadog:datadog-hosts-api",
+     "description": "The Hosts API allows you to search for hosts by name, alias, or tag and retrieve host totals. Hosts live within the past 3 hours are included by default, with a retention of 7 days.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://docs.datadoghq.com/api/latest/hosts/"
+    },
+    {
+     "name": "controlup:controlup-host-api",
+     "description": "Host usage reports",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://api.controlup.io/reference"
+    },
+    {
+     "name": "harness:harness-validatehost-api",
+     "description": "This contains APIs related to SSH or WinRm host validation",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "controlup:controlup-host-pool-session-host-deployments-api",
+     "description": "The Host pool session host deployments API from ControlUp — 1 operation(s) for host pool session host deployments.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://api.controlup.io/reference"
+    },
+    {
+     "name": "microsoft-azure:microsoft-azure-hosts-api",
+     "description": "The Hosts API from Microsoft Azure — 4 operation(s) for hosts.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://learn.microsoft.com/en-us/rest/api/azure/"
+    }
+   ],
+   "extended": [
+    {
+     "server": "cloud.eresourcescheduler.app/eresource-scheduler",
+     "url": "https://app.eresourcescheduler.cloud/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.entityreach/public-resources",
+     "url": "https://entityreach.com/api/public-mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.japanstartupresources/mcp",
+     "url": "https://japanstartupresources.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.aviationresources/aviation-resources",
+     "url": "https://api.aviationresources.io/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "com.clauderegistry/plugin-catalog",
+     "url": "https://clauderegistry.com/mcp",
+     "status": 200,
+     "doors": 9
+    },
+    {
+     "server": "com.clearpostplugin/wordpress-seo",
+     "url": "https://{site_domain}/wp-json/clearpost/mcp",
+     "status": 0,
+     "doors": 0
+    },
+    {
+     "server": "com.memoryplugin/memory",
+     "url": "https://www.memoryplugin.com/api/mcp/mcp",
+     "status": 200,
+     "doors": 14
+    },
+    {
+     "server": "com.memoryplugin/memory",
+     "url": "https://www.memoryplugin.com/api/mcp/sse",
+     "status": 200,
+     "doors": 14
+    },
+    {
+     "server": "com.royalplugins/royal-mcp",
+     "url": "https://demo.royalplugins.com/wp-json/royal-mcp/v1/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.sigistry/plugin-catalog",
+     "url": "https://sigistry.com/mcp",
+     "status": 200,
+     "doors": 9
+    },
+    {
+     "server": "ai.borealhost/mcp",
+     "url": "https://borealhost.ai/mcp/",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.ghostedit/ghostedit",
+     "url": "https://mcp.ghostedit.ai",
+     "status": 401,
+     "doors": 0
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.clauderegistry/plugin-catalog",
+     "url": "https://clauderegistry.com/mcp",
+     "door": "check_mcp_app",
+     "score": 5,
+     "shared": [
+      "app",
+      "host",
+      "sandbox",
+      "meta",
+      "resourceuri"
+     ]
+    },
+    {
+     "server": "com.sigistry/plugin-catalog",
+     "url": "https://sigistry.com/mcp",
+     "door": "check_mcp_app",
+     "score": 5,
+     "shared": [
+      "app",
+      "host",
+      "sandbox",
+      "meta",
+      "resourceuri"
+     ]
+    },
+    {
+     "server": "io.aviationresources/aviation-resources",
+     "url": "https://api.aviationresources.io/mcp",
+     "door": "get_page",
+     "score": 1,
+     "shared": [
+      "resourc"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "payload-cms-default-plugins",
+   "words": [
+    "blocks",
+    "block",
+    "default"
+   ],
+   "servers": 47,
+   "serverList": [
+    {
+     "name": "ai.autoblocks/contextlayer-mcp",
+     "description": "Personal context management for AI assistants",
+     "remotes": [],
+     "word": "blocks"
+    },
+    {
+     "name": "ai.autoblocks/ctxl",
+     "description": "Personal context management for AI assistants",
+     "remotes": [],
+     "word": "blocks"
+    },
+    {
+     "name": "ai.autoblocks/ctxl-mcp",
+     "description": "Personal context management for AI assistants",
+     "remotes": [],
+     "word": "blocks"
+    },
+    {
+     "name": "ai.smithery/blockscout-mcp-server",
+     "description": "Provide AI agents and automation tools with contextual access to blockchain data including balance…",
+     "remotes": [
+      "https://server.smithery.ai/@blockscout/mcp-server/mcp"
+     ],
+     "word": "blocks"
+    },
+    {
+     "name": "com.blockscholes/mcp-server",
+     "description": "Real-time & historical data: volatility surfaces, options, futures, funding rates, spot and more.",
+     "remotes": [
+      "https://mcp.blockscholes.com/mcp"
+     ],
+     "word": "blocks"
+    },
+    {
+     "name": "com.blockscout/mcp-server",
+     "description": "MCP server for Blockscout",
+     "remotes": [
+      "https://mcp.blockscout.com/mcp"
+     ],
+     "word": "blocks"
+    },
+    {
+     "name": "ai.dablock/visibility-index",
+     "description": "Weekly open AI-visibility data for crypto: share of answer on ChatGPT, Perplexity and Gemini.",
+     "remotes": [
+      "https://dablock.ai/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "ai.unblockd/unblockd",
+     "description": "Plan, tasks, proof, and blockers for a project, plus sponsor asks a person on the team sends.",
+     "remotes": [
+      "https://unblockd.ai/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "com.airblockfz/coin-signal",
+     "description": "Crypto bottom/top signals: verdict + score per coin, market scans. Pay-per-call x402.",
+     "remotes": [
+      "https://coin-signal.airblock2026.workers.dev/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "com.airblockfz/commodity-signal",
+     "description": "Commodity futures bottom/top signals: 28 futures, verdict + score, scans. Pay-per-call x402.",
+     "remotes": [
+      "https://commodity-signal.airblock2026.workers.dev/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "com.airblockfz/dubai-property-signal",
+     "description": "Dubai property signals: 42 areas, AED/sqft index, verdict + rankings. Pay-per-call x402.",
+     "remotes": [
+      "https://dubai-property-signal.airblock2026.workers.dev/mcp"
+     ],
+     "word": "block"
+    },
+    {
+     "name": "com.defaultrank/mcp",
+     "description": "Check npm dependencies for outdated majors, and see which dev tools AI models pick.",
+     "remotes": [
+      "https://defaultrank.com/mcp"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "com.defaultverifier/settlement-witness",
+     "description": "Deterministic verification gate for agent execution and x402 settlement.",
+     "remotes": [
+      "https://defaultverifier.com/mcp"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "com.textforagents/default-watch-pinning",
+     "description": "Watches platforms for silent default-model changes, with signed attestations and session gating.",
+     "remotes": [
+      "https://textforagents.com/products/default-watch-pinning/mcp"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "io.github.Evozim/default-probability-model-mcp",
+     "description": "Premium agentic endpoint for default-probability-model-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/default-probability-model-mcp/sse"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "io.github.Evozim/default-risk-oracle-mcp",
+     "description": "Premium agentic endpoint for default-risk-oracle-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/default-risk-oracle-mcp/sse"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "io.github.NathanYoshua/defaultbench",
+     "description": "Search transparent sponsored listings for agents, APIs, tools, and MCP servers.",
+     "remotes": [
+      "https://defaultbench.com/mcp"
+     ],
+     "word": "default"
+    },
+    {
+     "name": "io.github.NomadBuilder/un-default",
+     "description": "Inclusive language scan/fix for AI and human copy. Local rules, no account.",
+     "remotes": [],
+     "word": "default"
+    },
+    {
+     "name": "sendgrid:sendgrid-blocks-api",
+     "description": "Twilio SendGrid Suppressions API: Blocks operations",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://www.twilio.com/docs/sendgrid/api-reference/account-provisioning"
+    },
+    {
+     "name": "telnyx:telnyx-phone-number-block-orders-api",
+     "description": "The Phone Number Block Orders API from Telnyx — 2 operation(s) for phone number block orders.",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://developers.telnyx.com/api"
+    },
+    {
+     "name": "telnyx:telnyx-phone-number-blocks-background-jobs-api",
+     "description": "Background jobs performed over a phone-numbers block's phone numbers",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://developers.telnyx.com/api"
+    },
+    {
+     "name": "oracle-hospitality:oracle-hospitality-block-api",
+     "description": "These APIs will allow you to completely create and manage your block in OPERA Cloud - including all related functionalities of a block such as manage Room allocation, Status update, block reservations",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://github.com/oracle/hospitality-api-docs/blob/main/rest-api-specs/distribution/outbound/aripublication.json"
+    },
+    {
+     "name": "optimizely:optimizely-coupon-blocks-api",
+     "description": "Manage coupon blocks that organize coupon codes",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://support.optimizely.com/hc/en-us/articles/45320607594893-Optimizely-Experimentation-MCP-server-overview"
+    },
+    {
+     "name": "elation-health:elation-health-custom-blocks-api",
+     "description": "The Custom Blocks API from Elation Health — 1 operation(s) for custom blocks.",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://docs.elationhealth.com/reference/get-token"
+    },
+    {
+     "name": "b3:b3-blockscout-blocks-api",
+     "description": "Blockscout block data",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://docs.b3.fun/data/api-reference/index"
+    },
+    {
+     "name": "oracle-hospitality:oracle-hospitality-blockstats-api",
+     "description": "Block Statistics provide statistical data of blocks that exist in OPERA Cloud.",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://github.com/oracle/hospitality-api-docs/blob/main/rest-api-specs/distribution/outbound/aripublication.json"
+    },
+    {
+     "name": "oracle-hospitality:oracle-hospitality-blockconfig-api",
+     "description": "The Block Configuration module offers capability of creating, managing, and retrieving of Block configuration.",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://github.com/oracle/hospitality-api-docs/blob/main/rest-api-specs/distribution/outbound/aripublication.json"
+    },
+    {
+     "name": "oracle-hospitality:oracle-hospitality-blockasync-api",
+     "description": "The Block Async Service Web Service provides capability to implement block related asynchronous operations in OPERA Cloud.",
+     "remotes": [],
+     "word": "blocks",
+     "directory": "apis.io",
+     "page": "https://github.com/oracle/hospitality-api-docs/blob/main/rest-api-specs/distribution/outbound/aripublication.json"
+    },
+    {
+     "name": "block:block-bookings-api",
+     "description": "The Bookings API from Block — 11 operation(s) for bookings.",
+     "remotes": [],
+     "word": "block",
+     "directory": "apis.io",
+     "page": "https://developer.squareup.com/"
+    },
+    {
+     "name": "block:block-cards-api",
+     "description": "The Cards API from Block — 3 operation(s) for cards.",
+     "remotes": [],
+     "word": "block",
+     "directory": "apis.io",
+     "page": "https://developer.squareup.com/"
+    },
+    {
+     "name": "block:block-channels-api",
+     "description": "The Channels API from Block — 3 operation(s) for channels.",
+     "remotes": [],
+     "word": "block",
+     "directory": "apis.io",
+     "page": "https://developer.squareup.com/"
+    },
+    {
+     "name": "block:block-checkout-api",
+     "description": "The Checkout API from Block — 5 operation(s) for checkout.",
+     "remotes": [],
+     "word": "block",
+     "directory": "apis.io",
+     "page": "https://developer.squareup.com/"
+    },
+    {
+     "name": "block:block-devices-api",
+     "description": "The Devices API from Block — 4 operation(s) for devices.",
+     "remotes": [],
+     "word": "block",
+     "directory": "apis.io",
+     "page": "https://developer.squareup.com/"
+    },
+    {
+     "name": "block:block-disputes-api",
+     "description": "The Disputes API from Block — 8 operation(s) for disputes.",
+     "remotes": [],
+     "word": "block",
+     "directory": "apis.io",
+     "page": "https://developer.squareup.com/"
+    },
+    {
+     "name": "block:block-employees-api",
+     "description": "The Employees API from Block — 2 operation(s) for employees.",
+     "remotes": [],
+     "word": "block",
+     "directory": "apis.io",
+     "page": "https://developer.squareup.com/"
+    },
+    {
+     "name": "block:block-events-api",
+     "description": "The Events API from Block — 4 operation(s) for events.",
+     "remotes": [],
+     "word": "block",
+     "directory": "apis.io",
+     "page": "https://developer.squareup.com/"
+    },
+    {
+     "name": "block:block-inventory-api",
+     "description": "The Inventory API from Block — 19 operation(s) for inventory.",
+     "remotes": [],
+     "word": "block",
+     "directory": "apis.io",
+     "page": "https://developer.squareup.com/"
+    },
+    {
+     "name": "harness:harness-default-pipeline-api",
+     "description": "The Default Pipeline API from Harness — 1 operation(s) for default pipeline.",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "didomi:didomi-partners-default-purposes-api",
+     "description": "The partners-default-purposes API from Didomi — 1 operation(s) for partners-default-purposes.",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://developers.didomi.io/api-and-platform/introduction"
+    },
+    {
+     "name": "aisa-one:aisa-one-default-api",
+     "description": "The default API from aisa-one — 848 operation(s) for default.",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://aisa.one/docs/api-reference"
+    },
+    {
+     "name": "procore:procore-default-field-controller-api",
+     "description": "The default-field-controller API from Procore — 18 operation(s) for default-field-controller.",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://www.procore.com/platform/procore-api"
+    },
+    {
+     "name": "procore:procore-correspondence-types-defaults-api",
+     "description": "The Correspondence Types Defaults API from Procore — 1 operation(s) for correspondence types defaults.",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://www.procore.com/platform/procore-api"
+    },
+    {
+     "name": "gluu:gluu-default-authentication-method-api",
+     "description": "The Default Authentication Method API from Gluu — 1 operation(s) for default authentication method.",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://gluu.org/flex/"
+    },
+    {
+     "name": "arthurai:arthurai-default-validation-api",
+     "description": "Endpoints to validate prompt and response on default rules",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://docs.arthur.ai"
+    },
+    {
+     "name": "palo-alto-networks:palo-alto-networks-application-defaults-api",
+     "description": "Prisma Access tenant initialization",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://pan.dev/panos/docs/xmlapi/"
+    },
+    {
+     "name": "amazon-quicksight:amazon-quicksight-default-qbusiness-application-api",
+     "description": "The Quicksight Default Qbusiness Application API from Amazon QuickSight — 1 operation(s) for quicksight default qbusiness application.",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://aws.amazon.com/quicksight/"
+    },
+    {
+     "name": "amazon-iot-core:amazon-iot-core-default-authorizer-api",
+     "description": "The Default Authorizer API from Amazon IoT Core — 1 operation(s) for default authorizer.",
+     "remotes": [],
+     "word": "default",
+     "directory": "apis.io",
+     "page": "https://aws.amazon.com/iot-core/"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.smithery/blockscout-mcp-server",
+     "url": "https://server.smithery.ai/@blockscout/mcp-server/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.blockscholes/mcp-server",
+     "url": "https://mcp.blockscholes.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "status": 200,
+     "doors": 16
+    },
+    {
+     "server": "ai.dablock/visibility-index",
+     "url": "https://dablock.ai/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "ai.unblockd/unblockd",
+     "url": "https://unblockd.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.airblockfz/coin-signal",
+     "url": "https://coin-signal.airblock2026.workers.dev/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "com.airblockfz/commodity-signal",
+     "url": "https://commodity-signal.airblock2026.workers.dev/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "com.airblockfz/dubai-property-signal",
+     "url": "https://dubai-property-signal.airblock2026.workers.dev/mcp",
+     "status": 200,
+     "doors": 5
+    },
+    {
+     "server": "com.defaultrank/mcp",
+     "url": "https://defaultrank.com/mcp",
+     "status": 200,
+     "doors": 3
+    },
+    {
+     "server": "com.defaultverifier/settlement-witness",
+     "url": "https://defaultverifier.com/mcp",
+     "status": 200,
+     "doors": 1
+    },
+    {
+     "server": "com.textforagents/default-watch-pinning",
+     "url": "https://textforagents.com/products/default-watch-pinning/mcp",
+     "status": 200,
+     "doors": 8
+    },
+    {
+     "server": "io.github.Evozim/default-probability-model-mcp",
+     "url": "https://api.m2mcent.com/default-probability-model-mcp/sse",
+     "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.Evozim/default-risk-oracle-mcp",
+     "url": "https://api.m2mcent.com/default-risk-oracle-mcp/sse",
+     "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.NathanYoshua/defaultbench",
+     "url": "https://defaultbench.com/mcp",
+     "status": 200,
+     "doors": 13
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "door": "get_block_info",
+     "score": 2,
+     "shared": [
+      "block",
+      "default"
+     ]
+    },
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "door": "get_address_info",
+     "score": 1,
+     "shared": [
+      "block"
+     ]
+    },
+    {
+     "server": "com.blockscout/mcp-server",
+     "url": "https://mcp.blockscout.com/mcp",
+     "door": "get_block_number",
+     "score": 1,
+     "shared": [
+      "block"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "payload-cms-host",
+   "words": [
+    "collection",
+    "discover",
+    "endpoint"
+   ],
+   "servers": 49,
+   "serverList": [
+    {
+     "name": "ai.saifs/collections-optimizer",
+     "description": "Prioritise overdue accounts by recovery uplift and recommend a compliant contact strategy.",
+     "remotes": [
+      "https://collections-optimizer-mcp.saifs.ai/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "com.whenisbins/bin-collections",
+     "description": "UK household bin collection dates by address, council-sourced. Free anonymous use, with limits",
+     "remotes": [
+      "https://whenisbins.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.Evozim/debt-collection-bot-mcp",
+     "description": "Premium agentic endpoint for debt-collection-bot-mcp.",
+     "remotes": [
+      "https://api.m2mcent.com/debt-collection-bot-mcp/sse"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.jediapps/jedi-collection-sort",
+     "description": "Manage Shopify collection sorting by chat: strategies, assignments, and on-demand sorts.",
+     "remotes": [
+      "https://api.collection-sort.jediapps.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.kerbelp/ai-collection",
+     "description": "Discover and compare AI tools: search, browse categories, find alternatives and curated picks.",
+     "remotes": [
+      "https://thataicollection.com/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "io.github.ssskay/myfigurecollection-api",
+     "description": "Read MyFigureCollection.net: search figures, JAN barcode lookup, shop prices, collections and clubs.",
+     "remotes": [],
+     "word": "collection"
+    },
+    {
+     "name": "io.moderncollections/mcp",
+     "description": "Place overdue B2B invoices for collection and track outreach, payments and remittances.",
+     "remotes": [
+      "https://api.moderncollections.io/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "me.remem/collections",
+     "description": "Browse Bible verse collections from Remember Me, a free memorization app in 48 languages",
+     "remotes": [
+      "https://mcp.remem.me/mcp"
+     ],
+     "word": "collection"
+    },
+    {
+     "name": "ai.afmr/discovery",
+     "description": "Read AFMR failure modes and discover scoped attestation and lift-evidence contracts.",
+     "remotes": [
+      "https://afmr.ai/api/rpc"
+     ],
+     "word": "discover"
+    },
+    {
+     "name": "ai.demanddiscovery/mcp",
+     "description": "Sales-agent MCP for Demand Discovery AI. Validate startup ideas with behavioral signals.",
+     "remotes": [
+      "https://mcp.demanddiscovery.ai/api/mcp"
+     ],
+     "word": "discover"
+    },
+    {
+     "name": "ai.discoveria/discoveria",
+     "description": "Read-only registry of AI-assisted scientific claims and where their evaluation stands (fr/en)",
+     "remotes": [
+      "https://mcp.discoveria.ai/mcp"
+     ],
+     "word": "discover"
+    },
+    {
+     "name": "ai.mekler/agent-discovery",
+     "description": "Discover paid CSV and spec validation, citation overlap, and web page extraction for agents.",
+     "remotes": [
+      "https://e4rdb2jtk6.execute-api.us-east-1.amazonaws.com/mcp"
+     ],
+     "word": "discover"
+    },
+    {
+     "name": "ai.smithery/DynamicEndpoints-autogen_mcp",
+     "description": "Create and manage AI agents that collaborate and solve problems through natural language interacti…",
+     "remotes": [
+      "https://server.smithery.ai/@DynamicEndpoints/autogen_mcp/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "ai.smithery/DynamicEndpoints-m365-core-mcp",
+     "description": "*Updated September 25th 2025** Manage your Microsoft 365 services effortlessly. Create and manage…",
+     "remotes": [
+      "https://server.smithery.ai/@DynamicEndpoints/m365-core-mcp/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "ai.smithery/DynamicEndpoints-powershell-exec-mcp-server",
+     "description": "Execute PowerShell commands securely with controlled timeouts and input validation. Retrieve syste…",
+     "remotes": [
+      "https://server.smithery.ai/@DynamicEndpoints/powershell-exec-mcp-server/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "ai.spendpoint/spendpoint",
+     "description": "Expense ledger for AI assistants: record receipts line by line, ask what you spent, export anytime.",
+     "remotes": [
+      "https://spendpoint.ai/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "au.humanendpoint/humanendpoint",
+     "description": "Human execution infrastructure for AI agents with quotes, x402 payment, job tracking, and evidence.",
+     "remotes": [
+      "https://humanendpoint.au/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "com.agentic-endpoints/agentic-endpoints",
+     "description": "Pay-per-call tools for autonomous agents, settled in USDC on Base via x402.",
+     "remotes": [
+      "https://agentic-endpoints.com/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "com.endpointo/site",
+     "description": "Endpointo: the site's own MCP server — dataset; every answer cites the site.",
+     "remotes": [
+      "https://endpointo.com/mcp"
+     ],
+     "word": "endpoint"
+    },
+    {
+     "name": "salesforce:salesforce-collections-api",
+     "description": "The Collections API from Salesforce — 4 operation(s) for collections.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/"
+    },
+    {
+     "name": "telnyx:telnyx-ai-collections-api",
+     "description": "Create and manage logical collections of your Telnyx data, tune retrieval settings, manage sources, and run collection-scoped semantic search.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://developers.telnyx.com/api"
+    },
+    {
+     "name": "harness:harness-collections-api",
+     "description": "This contains APIs specific to Collections",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "shopify:shopify-collection-api",
+     "description": "The Collection API from Shopify — 66 operation(s) for collection.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://shopify.dev/docs/api/admin-rest"
+    },
+    {
+     "name": "shopify:shopify-collections-api",
+     "description": "Retrieve collection data",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://shopify.dev/docs/api/admin-rest"
+    },
+    {
+     "name": "harness:harness-collection-categories-api",
+     "description": "This contains APIs specific to the Collection categories",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "customer-io:customer-io-collections-api",
+     "description": "Manage collections of data used in message personalization.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://docs.customer.io/integrations/api/track/"
+    },
+    {
+     "name": "cloudflare:cloudflare-collections-api",
+     "description": "The Collections API from Cloudflare — 7 operation(s) for collections.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://developers.cloudflare.com/load-balancing/"
+    },
+    {
+     "name": "snyk:snyk-collection-api",
+     "description": "The Collection API from Snyk — 3 operation(s) for collection.",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://apidocs.snyk.io/?version=2024-10-15"
+    },
+    {
+     "name": "shopify:shopify-custom-collections-api",
+     "description": "Manage manual collections",
+     "remotes": [],
+     "word": "collection",
+     "directory": "apis.io",
+     "page": "https://shopify.dev/docs/api/admin-rest"
+    },
+    {
+     "name": "sentry-system:sentry-system-discover-api",
+     "description": "Manage saved Discover queries",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://sentry.io"
+    },
+    {
+     "name": "cracked:cracked-discover-api",
+     "description": "The Discover API from Cracked API — 1 operation(s) for discover.",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://cracked.ai/docs/api"
+    },
+    {
+     "name": "discover:discover-fraud-alerts",
+     "description": "Discover Fraud Alerts is a service provided by Discover Financial Services that helps protect cardholders from unauthorized and fraudulent activity on their accounts. When unusual or suspicious transa",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://partner.discoverglobalnetwork.com/products/fraud-alerts?tab=overview"
+    },
+    {
+     "name": "discover:discover-travel-guides",
+     "description": "Discover Travel Guides is a comprehensive travel planning and booking service that helps travelers create unforgettable and seamless travel experiences. From researching destinations and finding the b",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://partner.discoverglobalnetwork.com/products/travel-guides?tab=overview"
+    },
+    {
+     "name": "discover:discover-country-acceptance",
+     "description": "Discover Country Acceptance is a financial institution that specializes in providing loans to individuals in rural and underserved communities. They understand the unique challenges faced by those liv",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://partner.discoverglobalnetwork.com/products/country-acceptance?tab=overview"
+    },
+    {
+     "name": "discover:discover-atm-locator",
+     "description": "Discover ATM Locator is a user-friendly tool that allows cardholders to easily find nearby ATMs where they can access their accounts and withdraw cash. By simply entering their location or zip code, u",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://partner.discoverglobalnetwork.com/products/atm-locator?tab=overview"
+    },
+    {
+     "name": "discover:discover-currency-converter",
+     "description": "Discover Currency Converter is a user-friendly tool that allows individuals to easily convert between different currencies. With a simple interface, users can input the amount of money in one currency",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://partner.discoverglobalnetwork.com/products/currency-converter?tab=overview"
+    },
+    {
+     "name": "discover:discover-tip-etiquette",
+     "description": "Discover Tip Etiquette is a platform designed to educate individuals on the proper etiquette and practices when it comes to tipping. This includes providing guidance on how much to tip in various situ",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://partner.discoverglobalnetwork.com/products/tip-etiquette?tab=overview"
+    },
+    {
+     "name": "n8n:n8n-discover-api",
+     "description": "API capability discovery",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://n8n.io/"
+    },
+    {
+     "name": "discover:discover-se-wallet-services",
+     "description": "Discover SE Wallet Services is a leading financial technology company that specializes in providing secure and innovative digital wallet solutions for consumers. Our platform enables users to store an",
+     "remotes": [],
+     "word": "discover",
+     "directory": "apis.io",
+     "page": "https://partner.discoverglobalnetwork.com/products/se-wallet-services?tab=overview"
+    },
+    {
+     "name": "confluent:confluent-endpoints-endpoint-v1-api",
+     "description": "[![General Availability](https://img.shields.io/badge/Lifecycle%20Stage-General%20Availability-%2345c6e8)](#section/Versioning/API-Lifecycle-Policy) An Endpoint object represents a Fully Qualified Dom",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io",
+     "page": "https://www.confluent.io/"
+    },
+    {
+     "name": "telnyx:telnyx-dynamic-emergency-endpoints-api",
+     "description": "Dynamic Emergency Endpoints",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io",
+     "page": "https://developers.telnyx.com/api"
+    },
+    {
+     "name": "openai:openai-webhook-endpoints-api",
+     "description": "The Webhook Endpoints API from OpenAI — 4 operation(s) for webhook endpoints.",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io",
+     "page": "https://platform.openai.com/docs/api-reference/responses"
+    },
+    {
+     "name": "stripe:stripe-webhook-endpoints-api",
+     "description": "The Webhook Endpoints API from Stripe — 2 operation(s) for webhook endpoints.",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io"
+    },
+    {
+     "name": "amazon-pinpoint:amazon-pinpoint-endpoints-api",
+     "description": "The Pinpoint Endpoints API from Amazon Pinpoint — 2 operation(s) for pinpoint endpoints.",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io",
+     "page": "https://aws.amazon.com/pinpoint/"
+    },
+    {
+     "name": "harness:harness-agent-mtls-endpoint-management-api",
+     "description": "Contains APIs related to Agent mTLS Endpoint management.",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "confluent-the-data-streaming-platform:confluent-the-data-streaming-platform-endpoints-endpoint-v1-api",
+     "description": "[![General Availability](https://img.shields.io/badge/Lifecycle%20Stage-General%20Availability-%2345c6e8)](#section/Versioning/API-Lifecycle-Policy) An Endpoint object represents a Fully Qualified Dom",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io",
+     "page": "https://docs.confluent.io/cloud/current/api.html"
+    },
+    {
+     "name": "sendgrid:sendgrid-external-integration-endpoints-api",
+     "description": "Third-Party Integrations for SendGrid Event Export",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io",
+     "page": "https://www.twilio.com/docs/sendgrid/api-reference/account-provisioning"
+    },
+    {
+     "name": "thousandeyes:thousandeyes-endpoint-agents-api",
+     "description": "The Endpoint Agents API from ThousandEyes — 6 operation(s) for endpoint agents.",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io",
+     "page": "https://developer.cisco.com/docs/thousandeyes/administration-administrative-api-overview/"
+    },
+    {
+     "name": "thousandeyes:thousandeyes-endpoint-proxies-api",
+     "description": "The Endpoint Proxies API from ThousandEyes — 1 operation(s) for endpoint proxies.",
+     "remotes": [],
+     "word": "endpoint",
+     "directory": "apis.io",
+     "page": "https://developer.cisco.com/docs/thousandeyes/administration-administrative-api-overview/"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.saifs/collections-optimizer",
+     "url": "https://collections-optimizer-mcp.saifs.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.whenisbins/bin-collections",
+     "url": "https://whenisbins.com/mcp",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "io.github.Evozim/debt-collection-bot-mcp",
+     "url": "https://api.m2mcent.com/debt-collection-bot-mcp/sse",
+     "status": 402,
+     "doors": 0
+    },
+    {
+     "server": "io.github.jediapps/jedi-collection-sort",
+     "url": "https://api.collection-sort.jediapps.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "io.github.kerbelp/ai-collection",
+     "url": "https://thataicollection.com/mcp",
+     "status": 200,
+     "doors": 7
+    },
+    {
+     "server": "io.moderncollections/mcp",
+     "url": "https://api.moderncollections.io/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "me.remem/collections",
+     "url": "https://mcp.remem.me/mcp",
+     "status": 400,
+     "doors": 0
+    },
+    {
+     "server": "ai.afmr/discovery",
+     "url": "https://afmr.ai/api/rpc",
+     "status": 200,
+     "doors": 4
+    },
+    {
+     "server": "ai.demanddiscovery/mcp",
+     "url": "https://mcp.demanddiscovery.ai/api/mcp",
+     "status": 200,
+     "doors": 10
+    },
+    {
+     "server": "ai.discoveria/discoveria",
+     "url": "https://mcp.discoveria.ai/mcp",
+     "status": 200,
+     "doors": 6
+    },
+    {
+     "server": "ai.mekler/agent-discovery",
+     "url": "https://e4rdb2jtk6.execute-api.us-east-1.amazonaws.com/mcp",
+     "status": 200,
+     "doors": 32
+    },
+    {
+     "server": "ai.smithery/DynamicEndpoints-autogen_mcp",
+     "url": "https://server.smithery.ai/@DynamicEndpoints/autogen_mcp/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "ai.smithery/DynamicEndpoints-m365-core-mcp",
+     "url": "https://server.smithery.ai/@DynamicEndpoints/m365-core-mcp/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "ai.smithery/DynamicEndpoints-powershell-exec-mcp-server",
+     "url": "https://server.smithery.ai/@DynamicEndpoints/powershell-exec-mcp-server/mcp",
+     "status": 404,
+     "doors": 0
+    },
+    {
+     "server": "ai.spendpoint/spendpoint",
+     "url": "https://spendpoint.ai/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "au.humanendpoint/humanendpoint",
+     "url": "https://humanendpoint.au/mcp",
+     "status": 200,
+     "doors": 10
+    },
+    {
+     "server": "com.agentic-endpoints/agentic-endpoints",
+     "url": "https://agentic-endpoints.com/mcp",
+     "status": 200,
+     "doors": 24
+    },
+    {
+     "server": "com.endpointo/site",
+     "url": "https://endpointo.com/mcp",
+     "status": 200,
+     "doors": 7
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "ai.afmr/discovery",
+     "url": "https://afmr.ai/api/rpc",
+     "door": "discover_afmr",
+     "score": 2,
+     "shared": [
+      "discover",
+      "endpoint"
+     ]
+    },
+    {
+     "server": "ai.mekler/agent-discovery",
+     "url": "https://e4rdb2jtk6.execute-api.us-east-1.amazonaws.com/mcp",
+     "door": "get_service",
+     "score": 2,
+     "shared": [
+      "contract",
+      "endpoint"
+     ]
+    },
+    {
+     "server": "ai.demanddiscovery/mcp",
+     "url": "https://mcp.demanddiscovery.ai/api/mcp",
+     "door": "ask_demand_discovery",
+     "score": 1,
+     "shared": [
+      "answer"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "rbac-payload-mcp",
+   "words": [
+    "host",
+    "tenant",
+    "configured"
+   ],
+   "servers": 36,
+   "serverList": [
+    {
+     "name": "ai.hyperscale0/hyperscale-tenant-tools",
+     "description": "Hyperscale Product reads and contract operations over MCP.",
+     "remotes": [
+      "https://hyperscale0.ai/v1/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.aitwire/tenant",
+     "description": "Review your AITWIRE recommendations and Brand Canon; file corrections for your approval.",
+     "remotes": [
+      "https://api.aitwire.com/mcp/tenant"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantback/cam-audit",
+     "description": "Audit a landlord's CAM reconciliation against the lease. Finds overcharges with clause citations.",
+     "remotes": [
+      "https://tenantback.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantsdb/tenantsdb",
+     "description": "Multi-tenant database orchestration: isolated Postgres, MySQL, MongoDB, Redis tenants on demand.",
+     "remotes": [
+      "https://api.tenantsdb.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "com.tenantvo/site",
+     "description": "Tenantvo: the site's own MCP server — dataset; every answer cites the site.",
+     "remotes": [
+      "https://tenantvo.com/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "io.agent4/agent4-tenant",
+     "description": "Build and run grounded business agents over MCP: agents, knowledge bases, skills, Storylines.",
+     "remotes": [
+      "https://api.agent4.io/v1/mcp"
+     ],
+     "word": "tenant"
+    },
+    {
+     "name": "harness:harness-hosts-api",
+     "description": "This contains APIs related to Hosts as defined in Harness",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "dynatrace:dynatrace-oneagent-on-host-api",
+     "description": "The Dynatrace OneAgent on a Host API enables you to check the configuration and status of OneAgent instances deployed on your hosts. It provides endpoints for listing hosts with OneAgent details, retr",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://docs.dynatrace.com/docs/discover-dynatrace/references/dynatrace-api/environment-api/oneagent-on-host"
+    },
+    {
+     "name": "twilio:twilio-hostednumber-api",
+     "description": "The HostedNumber API from Twilio — 6 operation(s) for hostednumber.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://www.twilio.com/docs/iam/api/account"
+    },
+    {
+     "name": "adobe-suite:adobe-suite-hosts-api",
+     "description": "A host represents a hosted destination where a library build can be delivered and ultimately deployed. Hosts can be either Akamai or SFTP servers.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://developer.adobe.com/photoshop/"
+    },
+    {
+     "name": "controlup:controlup-host-pool-session-hosts-api",
+     "description": "The Host pool session hosts API from ControlUp — 1 operation(s) for host pool session hosts.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://api.controlup.io/reference"
+    },
+    {
+     "name": "datadog:datadog-hosts-api",
+     "description": "The Hosts API allows you to search for hosts by name, alias, or tag and retrieve host totals. Hosts live within the past 3 hours are included by default, with a retention of 7 days.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://docs.datadoghq.com/api/latest/hosts/"
+    },
+    {
+     "name": "controlup:controlup-host-api",
+     "description": "Host usage reports",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://api.controlup.io/reference"
+    },
+    {
+     "name": "harness:harness-validatehost-api",
+     "description": "This contains APIs related to SSH or WinRm host validation",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://apidocs.harness.io"
+    },
+    {
+     "name": "controlup:controlup-host-pool-session-host-deployments-api",
+     "description": "The Host pool session host deployments API from ControlUp — 1 operation(s) for host pool session host deployments.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://api.controlup.io/reference"
+    },
+    {
+     "name": "microsoft-azure:microsoft-azure-hosts-api",
+     "description": "The Hosts API from Microsoft Azure — 4 operation(s) for hosts.",
+     "remotes": [],
+     "word": "host",
+     "directory": "apis.io",
+     "page": "https://learn.microsoft.com/en-us/rest/api/azure/"
+    },
+    {
+     "name": "acronis:acronis-tenants-api",
+     "description": "Tenant hierarchy management and configuration",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://developer.acronis.com/doc/account-management/v2/reference/index.html"
+    },
+    {
+     "name": "wso2:wso2-tenants-api",
+     "description": "The Tenants API from WSO2 — 3 operation(s) for tenants.",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://apim.docs.wso2.com/en/latest/reference/product-apis/publisher-apis/publisher-v4/publisher-v4/"
+    },
+    {
+     "name": "cloudflare:cloudflare-tenants-api",
+     "description": "The Tenants API from Cloudflare — 5 operation(s) for tenants.",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://developers.cloudflare.com/load-balancing/"
+    },
+    {
+     "name": "wso2:wso2-tenant-config-api",
+     "description": "The Tenant Config API from WSO2 — 1 operation(s) for tenant config.",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://apim.docs.wso2.com/en/latest/reference/product-apis/publisher-apis/publisher-v4/publisher-v4/"
+    },
+    {
+     "name": "wso2:wso2-tenant-logs-api",
+     "description": "The Tenant Logs API from WSO2 — 2 operation(s) for tenant logs.",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://apim.docs.wso2.com/en/latest/reference/product-apis/publisher-apis/publisher-v4/publisher-v4/"
+    },
+    {
+     "name": "wso2:wso2-tenant-theme-api",
+     "description": "The Tenant Theme API from WSO2 — 1 operation(s) for tenant theme.",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://apim.docs.wso2.com/en/latest/reference/product-apis/publisher-apis/publisher-v4/publisher-v4/"
+    },
+    {
+     "name": "snyk:snyk-tenants-api",
+     "description": "The Tenants API from Snyk — 4 operation(s) for tenants.",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://apidocs.snyk.io/?version=2024-10-15"
+    },
+    {
+     "name": "wso2:wso2-tenant-config-schema-api",
+     "description": "The Tenant Config Schema API from WSO2 — 1 operation(s) for tenant config schema.",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://apim.docs.wso2.com/en/latest/reference/product-apis/publisher-apis/publisher-v4/publisher-v4/"
+    },
+    {
+     "name": "adobe-suite:adobe-suite-tenants-api",
+     "description": "The Tenants API from Adobe Suite — 2 operation(s) for tenants.",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://developer.adobe.com/photoshop/"
+    },
+    {
+     "name": "controlup:controlup-tenants-api",
+     "description": "The Tenants API from ControlUp — 23 operation(s) for tenants.",
+     "remotes": [],
+     "word": "tenant",
+     "directory": "apis.io",
+     "page": "https://api.controlup.io/reference"
+    },
+    {
+     "name": "amazon-clean-rooms:amazon-clean-rooms-configured-tables-api",
+     "description": "Operations for managing configured tables",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io",
+     "page": "https://aws.amazon.com/clean-rooms/"
+    },
+    {
+     "name": "palo-alto-networks:palo-alto-networks-configured-ue-mappings-api",
+     "description": "The Configured UE Mappings API from Palo Alto Networks — 1 operation(s) for configured ue mappings.",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io",
+     "page": "https://pan.dev/panos/docs/xmlapi/"
+    },
+    {
+     "name": "amazon-web-services:amazon-web-services-configured-tables-api",
+     "description": "The Configured Tables API from Amazon Web Services — 4 operation(s) for configured tables.",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io",
+     "page": "https://aws.amazon.com/bedrock/"
+    },
+    {
+     "name": "palo-alto-networks:palo-alto-networks-total-number-of-configured-users-api",
+     "description": "The Total Number of Configured Users API from Palo Alto Networks — 1 operation(s) for total number of configured users.",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io",
+     "page": "https://pan.dev/panos/docs/xmlapi/"
+    },
+    {
+     "name": "amazon-web-services:amazon-web-services-configured-audience-model-api",
+     "description": "The Configured Audience Model API from Amazon Web Services — 3 operation(s) for configured audience model.",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io"
+    },
+    {
+     "name": "riveterhq-com:riveterhq-com-configured-list-builds-api",
+     "description": "Templated list builds (`cds_...`): a list generation whose prompt and columns staff configured for your account, run with `parameters` and a `tier`. The rows land in a dataset named by the run's `data",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io",
+     "page": "https://docs.riveterhq.com/"
+    },
+    {
+     "name": "amazon-clean-rooms:amazon-clean-rooms-configuredtableassociations-api",
+     "description": "The Clean Rooms Configuredtableassociations API from Amazon Clean Rooms — 2 operation(s) for clean rooms configuredtableassociations.",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io",
+     "page": "https://aws.amazon.com/clean-rooms/"
+    },
+    {
+     "name": "amazon-clean-rooms:amazon-clean-rooms-configuredaudiencemodelassociations-api",
+     "description": "The Clean Rooms Configuredaudiencemodelassociations API from Amazon Clean Rooms — 4 operation(s) for clean rooms configuredaudiencemodelassociations.",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io",
+     "page": "https://aws.amazon.com/clean-rooms/"
+    },
+    {
+     "name": "datadog:datadog-configure-api",
+     "description": "The Configure API from Datadog — 1 operation(s) for configure.",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io",
+     "page": "https://docs.datadoghq.com/api/latest/"
+    },
+    {
+     "name": "alayacare:alayacare-configured-vitals-api",
+     "description": "The Configured Vitals API from AlayaCare — 1 operation(s) for configured vitals.",
+     "remotes": [],
+     "word": "configured",
+     "directory": "apis.io",
+     "page": "https://alayacare.github.io/external-integration-docs/external-api-guide.html"
+    }
+   ],
+   "extended": [
+    {
+     "server": "ai.hyperscale0/hyperscale-tenant-tools",
+     "url": "https://hyperscale0.ai/v1/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.aitwire/tenant",
+     "url": "https://api.aitwire.com/mcp/tenant",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.tenantback/cam-audit",
+     "url": "https://tenantback.com/mcp",
+     "status": 200,
+     "doors": 2
+    },
+    {
+     "server": "com.tenantsdb/tenantsdb",
+     "url": "https://api.tenantsdb.com/mcp",
+     "status": 401,
+     "doors": 0
+    },
+    {
+     "server": "com.tenantvo/site",
+     "url": "https://tenantvo.com/mcp",
+     "status": 200,
+     "doors": 7
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "status": 200,
+     "doors": 50
+    }
+   ],
+   "bestDoors": [
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "build_knowledge_index",
+     "score": 2,
+     "shared": [
+      "rol",
+      "place"
+     ]
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "import_storyline",
+     "score": 2,
+     "shared": [
+      "payload",
+      "tenant"
+     ]
+    },
+    {
+     "server": "io.agent4/agent4-tenant",
+     "url": "https://api.agent4.io/v1/mcp",
+     "door": "list_mcp_servers",
+     "score": 2,
+     "shared": [
+      "tenant",
+      "secret"
+     ]
+    }
+   ]
+  },
+  {
+   "lead": "double-torus-trinities",
+   "words": [
+    "double-torus",
+    "combinations",
+    "-reflection"
+   ],
+   "servers": 31,
+   "serverList": [
+    {
+     "name": "com.hemelion/decision-reflection",
+     "description": "Read-only Clarity and MindScan routing, decision readiness, method, and private scan handoff tools.",
+     "remotes": [
+      "https://www.hemelion.com/mcp"
+     ],
+     "word": "-reflection"
+    },
+    {
+     "name": "io.github.CSOAI-ORG/meok-ai-reflection-mcp",
+     "description": "MEOK AI Labs - ai-reflection MCP server extracted from SOV3",
+     "remotes": [],
+     "word": "-reflection"
+    },
+    {
+     "name": "emporix:emporix-double-opt-in-api",
+     "description": "Allow option for double opt-in.",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://developer.emporix.io/api-references/readme/api-reference-1"
+    },
+    {
+     "name": "gofundme:gofundme-double-the-donation-api",
+     "description": "The Double the Donation API from GoFundMe — 2 operation(s) for double the donation.",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://developers.gofundme.com/pro/docs"
+    },
+    {
+     "name": "nedap:nedap-medication-doublecheck-api",
+     "description": "The medication.DoubleCheck API from Nedap — 2 operation(s) for medication.doublecheck.",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://ons-api.nl/english/english.html"
+    },
+    {
+     "name": "nedap:nedap-medication-doublecheckchange-api",
+     "description": "The medication.DoubleCheckChange API from Nedap — 2 operation(s) for medication.doublecheckchange.",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://ons-api.nl/english/english.html"
+    },
+    {
+     "name": "genius-sports:genius-sports-competitors-doubles-api",
+     "description": "Groups the operations related to competitors of type Double partnership. When creating a double partnership the competitors must be of the same sport, and the sport should allow creation of double par",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://developer.geniussports.com/"
+    },
+    {
+     "name": "kaltura:kaltura-doubleclick-api",
+     "description": "DoubleClick Service",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://developer.kaltura.com/"
+    },
+    {
+     "name": "launchdarkly:launchdarkly-contexts-api",
+     "description": "Contexts are people, services, machines, or other resources that encounter feature flags in your product. Contexts are identified by their `kind`, which describes the type of resources encountering fl",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://launchdarkly.com/docs/api/webhooks"
+    },
+    {
+     "name": "elk-stack:elk-stack-security-lists-api-api",
+     "description": "Lists can be used with detection rule exceptions to define values that prevent a rule from generating alerts. Lists are made up of: * **List containers**: A container for values of the same Elasticsea",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://www.elastic.co/docs/api/doc/elasticsearch/"
+    },
+    {
+     "name": "blnkfinance:blnk-cloud-api",
+     "description": "Managed Cloud REST surface covering OAuth auth, a Proxy API to a Core instance, Data API, Filters API, Alerts API, and the MCP endpoint. Auth via API keys or OAuth.",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://docs.blnkfinance.com/cloud/reference/overview.md"
+    },
+    {
+     "name": "blnkfinance:blnk-watch-api",
+     "description": "Rule-based transaction monitoring API (transaction evaluation, instruction management, Git-backed rule sync). Beta.",
+     "remotes": [],
+     "word": "double-torus",
+     "directory": "apis.io",
+     "page": "https://docs.blnkfinance.com/watch/reference/overview.md"
+    },
+    {
+     "name": "thomson-reuters:thomson-reuters-tax-combination-code-tcc-charts-api",
+     "description": "The Tax Combination Code (TCC) Charts API from Thomson Reuters — 6 operation(s) for tax combination code (tcc) charts.",
+     "remotes": [],
+     "word": "combinations",
+     "directory": "apis.io",
+     "page": "https://developers.thomsonreuters.com/"
+    },
+    {
+     "name": "amazon-sagemaker:amazon-sagemaker-compilation-job-api",
+     "description": "The Sagemaker Compilation Job API from Amazon SageMaker — 5 operation(s) for sagemaker compilation job.",
+     "remotes": [],
+     "word": "combinations",
+     "directory": "apis.io",
+     "page": "https://docs.aws.amazon.com/sagemaker/latest/dg/API_runtime_InvokeEndpoint.html"
+    },
+    {
+     "name": "jelly-belly:jelly-belly-combinations-api",
+     "description": "The Combinations API from Jelly Belly — 2 operation(s) for combinations.",
+     "remotes": [],
+     "word": "combinations",
+     "directory": "apis.io",
+     "page": "https://jelly-belly-wiki.netlify.app/"
+    },
+    {
+     "name": "revyl:revyl-recording-compilation-api",
+     "description": "The Recording Compilation API from Revyl — 2 operation(s) for recording compilation.",
+     "remotes": [],
+     "word": "combinations",
+     "directory": "apis.io",
+     "page": "https://revyl.com"
+    },
+    {
+     "name": "ios:ios-nominations-api",
+     "description": "The Nominations API from iOS — 2 operation(s) for nominations.",
+     "remotes": [],
+     "word": "combinations",
+     "directory": "apis.io",
+     "page": "https://developer.apple.com/app-store-connect/api/"
+    },
+    {
+     "name": "adobe-suite:adobe-suite-mlinstances-api",
+     "description": "MLInstances represent the combination of a specific Engine with particular set of configurations. An instance is often use-case specific for a customer or client.",
+     "remotes": [],
+     "word": "combinations",
+     "directory": "apis.io",
+     "page": "https://developer.adobe.com/photoshop/"
+    },
+    {
+     "name": "here:here-matrix-calculation-api",
+     "description": "Calculation of routing matrices in one of the following modes: * Flexible * Region * Profile The values of the `regionDefinition` and `profile` parameters determine which mode is used. The following t",
+     "remotes": [],
+     "word": "combinations",
+     "directory": "apis.io",
+     "page": "https://docs.here.com/identity-and-access-management/reference"
+    },
+    {
+     "name": "kong:kong-event-gateway-listeners-api",
+     "description": "A listener represents hostname-port or IP-port combinations that connect to TCP sockets. Listeners need at least as many ports as backend brokers if you use port mapping in a Forward to Virtual Cluste",
+     "remotes": [],
+     "word": "combinations",
+     "directory": "apis.io",
+     "page": "https://konghq.com/products/kong-gateway"
+    },
+    {
+     "name": "kong:kong-routes-api",
+     "description": "Route entities define rules to match client requests. Each route is associated with a service, and a service may have multiple routes associated to it. Every request matching a given route will be pro",
+     "remotes": [],
+     "word": "combinations",
+     "directory": "apis.io",
+     "page": "https://konghq.com/products/kong-gateway"
+    },
+    {
+     "name": "dremio-intelligent-lakehouse-platform:dremio-intelligent-lakehouse-platform-reflections-api",
+     "description": "The Reflections API from Dremio | Intelligent Lakehouse Platform — 2 operation(s) for reflections.",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://www.dremio.com/platform/"
+    },
+    {
+     "name": "treadio:treadio-reflection-api",
+     "description": "The Reflection API from tread.io — 3 operation(s) for reflection.",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://docs.tread.ai/api-reference/introduction"
+    },
+    {
+     "name": "flickr:flickr-reflection-api",
+     "description": "Programmatic discovery of available API methods",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://www.flickr.com/services/api/"
+    },
+    {
+     "name": "grpc:grpc-reflection-api",
+     "description": "Server Reflection service for runtime discovery of available gRPC services and their definitions.",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://grpc.io/docs/platforms/web/"
+    },
+    {
+     "name": "grpc:grpc-server-reflection",
+     "description": "The gRPC Server Reflection Protocol allows gRPC servers to declare the protobuf-defined APIs they export over a standardized RPC service, including all types referenced by request and response message",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://grpc.io/docs/guides/reflection/"
+    },
+    {
+     "name": "telnyx:telnyx-reference-data-api",
+     "description": "Static reference values the API accepts: call reasons, document types, rejection types.",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://developers.telnyx.com/api"
+    },
+    {
+     "name": "nationbuilder:nationbuilder-elections-api",
+     "description": "Elections are available on nations with voter features enabled. See more information about election functionality [here](https://support.nationbuilder.com/en/articles/2362732-set-up-your-election)",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://support.nationbuilder.com/en/collections/10408291-api"
+    },
+    {
+     "name": "agoragentic-com:agoragentic-com-agent-os-hermes-api",
+     "description": "Owner/admin Hermes Agent bridge and reflection preview layer. Control-plane only; no Hermes execution, provider calls, GitHub writes, deploys, wallet/x402, trust, marketplace, Seller OS, or private EC",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://agoragentic.com/developers/"
+    },
+    {
+     "name": "avetta:avetta-pegasuslogpoint-safety-selection-controller-api",
+     "description": "The pegasusLogpoint_safety-selection-controller API from Avetta — 3 operation(s) for pegasuslogpoint_safety-selection-controller.",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://docs.api.avetta.com"
+    },
+    {
+     "name": "inflectionio:inflectionio-mcp",
+     "description": "Inflection's first-party remote MCP server — the agent-facing authoring surface for journeys, audiences, segments, emails, tokens and analytics, gated by OAuth 2.1 with PKCE.",
+     "remotes": [],
+     "word": "-reflection",
+     "directory": "apis.io",
+     "page": "https://docs.inflection.io/agents/inflection-mcp"
     }
    ],
    "extended": [],

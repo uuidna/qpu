@@ -9,22 +9,23 @@ import { promisify } from 'node:util'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
 import { getJson, getWithTimeout, publishRecord, mcpClient } from './mcp.ts'
+import { listLeaks } from '../src/quantum/processing/audit.ts'
 
 const ROOT = process.cwd()
 const HOSTS = (process.env.QPU_E2E_HOSTS ?? 'https://qpu.uuidna.com,https://qpu.psg.bg,https://qpu.ceci.workers.dev').split(',').map((h) => h.trim()).filter(Boolean)
 const call = toolCallerOf('audit')
 const pexec = promisify(execFile)
-// a dependency audit as JSON; async so the two (root, site) run concurrently instead of blocking the event loop one after the other. npm/pnpm audit
+// a dependency audit as JSON; async so the two (root, site) run concurrently. npm/pnpm audit
 // exit non-zero when they find vulnerabilities, so the count is read from the error's stdout too; a large report needs a bigger maxBuffer than the 1 MB default.
 const json = async (cmd: string, args: string[], cwd: string): Promise<Record<string, number>> => { try { const { stdout } = await pexec(cmd, args, { cwd, encoding: 'utf8', timeout: 120_000, maxBuffer: 1 << 26 }); const j = JSON.parse(stdout) as { metadata?: { vulnerabilities?: Record<string, number> } }; return j.metadata?.vulnerabilities ?? {} } catch (e) { const out = (e as { stdout?: string }).stdout; try { const j = JSON.parse(out ?? '') as { metadata?: { vulnerabilities?: Record<string, number> } }; return j.metadata?.vulnerabilities ?? {} } catch { return { unmeasured: 1 } } } }
 const main = async () => {
   // the three heavy, independent phases start together and run concurrently — the dependency audits, the docket read, and the host probe — so the step's
-  // wall time is the slowest one, not their sum (serially they summed past the budget even after the finder and the host probe were made parallel/keyset).
+  // wall time is the slowest one, not their sum.
   const APP = [process.env.QPU_APP_DIR, '.qpu-app'].find((d) => d && existsSync(join(ROOT, d, 'package.json'))) ?? null
   const vulnP = Promise.all([json('npm', ['audit', '--omit=dev', '--json'], ROOT), APP ? json('pnpm', ['audit', '--prod', '--json'], join(ROOT, APP)) : Promise.resolve({})])
   const app = mcpClient()
-  const heldP = (async () => { const held: Record<string, string> = {}; for (const find of ['findPages', 'findEntries']) await app.findEach(find, { draft: true, depth: 0 }, (d) => { held[`payload/${find.slice(4).toLowerCase()}/${(d as { id: string }).id}`] = JSON.stringify(d) }); return held })()
-  // every host probed at once, not one after another: the step's wall time is the slowest single host, not their sum (the serial loop summed past the budget)
+  const heldP = (async () => { const held: Record<string, string> = {}; let read = 0; for (const find of ['findPages', 'findEntries']) await app.findEach(find, { draft: true, depth: 0 }, (d) => { const k = `payload/${find.slice(4).toLowerCase()}/${(d as { id: string }).id}`, t = JSON.stringify(d); read++; if (!listLeaks({ [k]: t }).clean) held[k] = t }); console.log(`docket: ${read} read, ${Object.keys(held).length} held for a finding`); return held })()
+  // every host probed at once, not one after another: the step's wall time is the slowest single host, not their sum
   const hosts = await Promise.all(HOSTS.map(async (origin) => {
     const host = new URL(origin).host
     try {
@@ -55,11 +56,11 @@ const main = async () => {
   const { readdirSync } = await import('node:fs')
   const published = Object.fromEntries(readdirSync(pub).filter((f) => /\.(json|ndjson|md|txt|xml|webmanifest|html)$/.test(f)).map((f) => [`docs/public/${f}`, readFileSync(join(pub, f), 'utf8')]))
   const live: Record<string, string> = {}
-  // every live file on every host fetched at once, not nested serial loops, for the same reason the host probe is parallel
+  // every live file on every host fetched at once, not nested serial loops
   await Promise.all(HOSTS.flatMap((origin) => ['next-leads.json', 'receipts.ndjson', 'receipt.json', 'security.json'].map(async (f) => { try { const r = await getWithTimeout(`${origin}/${f}`); if (r.ok) live[`${new URL(origin).host}/${f}`] = await r.text() } catch { /* unreached: measured next run */ } })))
   // and every document Payload holds, read through its MCP as a client reads it: a page or an entry is served
   const held = await heldP // the docket read started concurrently at the top; awaited here, just before it is scanned
-  const leaks = call({ leaks: { texts: { ...published, ...live, ...held }, served: [...Object.keys(live), ...Object.keys(held)] } })
+  const leaks = listLeaks({ ...published, ...live, ...held }, [...Object.keys(live), ...Object.keys(held)]) // the pure scanner: no tool call copying the texts
   console.log(`leaks: ${leaks.says}`)
   // the access audit from every perspective: the generated collections, hooks and scopes, every cell naming its licence clause and its legal fact
   const accessAudit = call({ access: true })

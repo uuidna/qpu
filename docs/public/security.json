@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T21:01:26.183Z",
+ "date": "2026-11-02T23:08:42.831Z",
  "hosts": [
   "https://qpu.uuidna.com",
   "https://qpu.psg.bg",
@@ -185,7 +185,7 @@
    "id": "theorems-sealed",
    "perspective": "both",
    "passed": true,
-   "evidence": "1985 kernel-accepted theorems",
+   "evidence": "1997 kernel-accepted theorems",
    "remedy": "the textbook is the proof"
   }
  ],
@@ -523,7 +523,7 @@
   "says": "the access audit from every perspective over the generated code and the answered configurations: every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms"
  },
  "leaks": {
-  "texts": 2591,
+  "texts": 90,
   "findings": [
    {
     "where": "docs/public/graph.json",
@@ -542,9 +542,23 @@
    {
     "where": "docs/public/legal.json",
     "kind": "email",
-    "count": 2,
+    "count": 6,
     "served": false,
     "remedy": "a contact is a URL; an address never enters the tree (purify)"
+   },
+   {
+    "where": "docs/public/next-leads.json",
+    "kind": "local-path",
+    "count": 9,
+    "served": false,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "docs/public/repository.json",
+    "kind": "local-path",
+    "count": 9,
+    "served": false,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
     "where": "docs/public/session.json",
@@ -561,7 +575,7 @@
     "remedy": "a host by its public name; a private address says the network"
    },
    {
-    "where": "qpu.ceci.workers.dev/next-leads.json",
+    "where": "qpu.uuidna.com/next-leads.json",
     "kind": "local-path",
     "count": 78,
     "served": true,
@@ -575,21 +589,21 @@
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
-    "where": "qpu.uuidna.com/next-leads.json",
+    "where": "qpu.ceci.workers.dev/next-leads.json",
     "kind": "local-path",
     "count": 78,
     "served": true,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
-    "where": "qpu.psg.bg/receipts.ndjson",
+    "where": "qpu.uuidna.com/receipts.ndjson",
     "kind": "email",
     "count": 127,
     "served": true,
     "remedy": "a contact is a URL; an address never enters the tree (purify)"
    },
    {
-    "where": "qpu.psg.bg/receipts.ndjson",
+    "where": "qpu.uuidna.com/receipts.ndjson",
     "kind": "local-path",
     "count": 226,
     "served": true,
@@ -610,16 +624,30 @@
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
-    "where": "qpu.uuidna.com/receipts.ndjson",
+    "where": "qpu.psg.bg/receipts.ndjson",
     "kind": "email",
     "count": 127,
     "served": true,
     "remedy": "a contact is a URL; an address never enters the tree (purify)"
    },
    {
-    "where": "qpu.uuidna.com/receipts.ndjson",
+    "where": "qpu.psg.bg/receipts.ndjson",
     "kind": "local-path",
     "count": 226,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/03c76138-1526-107e-9572-35157bf8e67b",
+    "kind": "local-path",
+    "count": 14,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/06dda890-8540-28d8-964d-4afeeede4c59",
+    "kind": "local-path",
+    "count": 5,
     "served": true,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
@@ -645,6 +673,27 @@
     "remedy": "a host by its public name; a private address says the network"
    },
    {
+    "where": "payload/entries/1ccdbc9c-95eb-259e-b36e-03f128343f22",
+    "kind": "local-path",
+    "count": 7,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/33b74341-4323-189c-9c17-2b037d25c719",
+    "kind": "local-path",
+    "count": 6,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/34c8de16-fd03-384c-9cf4-8a595e6ae646",
+    "kind": "local-path",
+    "count": 20,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
     "where": "payload/entries/389ee4c0-01dc-7fdd-a264-a362c4e4aed0",
     "kind": "local-path",
     "count": 30,
@@ -671,6 +720,13 @@
     "count": 8,
     "served": true,
     "remedy": "a host by its public name; a private address says the network"
+   },
+   {
+    "where": "payload/entries/3d6ef56e-5cf8-45cf-9813-b4578f84ece5",
+    "kind": "local-path",
+    "count": 93,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
     "where": "payload/entries/43b6161b-ad23-88f6-b4dc-cd5cdd4f38d5",
@@ -687,6 +743,62 @@
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
+    "where": "payload/entries/4c95a1a9-99bb-4457-8bd9-efa39aed7d77",
+    "kind": "email",
+    "count": 1,
+    "served": true,
+    "remedy": "a contact is a URL; an address never enters the tree (purify)"
+   },
+   {
+    "where": "payload/entries/4c95a1a9-99bb-4457-8bd9-efa39aed7d77",
+    "kind": "local-path",
+    "count": 3,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/5000050f-b40b-8f67-8eec-4d48aafe16f2",
+    "kind": "email",
+    "count": 1,
+    "served": true,
+    "remedy": "a contact is a URL; an address never enters the tree (purify)"
+   },
+   {
+    "where": "payload/entries/5000050f-b40b-8f67-8eec-4d48aafe16f2",
+    "kind": "local-path",
+    "count": 2,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/5365f101-5d5b-317f-99c4-b7d170d25bf7",
+    "kind": "local-path",
+    "count": 1,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/639cab56-227b-1512-9dcc-b11931a76bad",
+    "kind": "email",
+    "count": 2,
+    "served": true,
+    "remedy": "a contact is a URL; an address never enters the tree (purify)"
+   },
+   {
+    "where": "payload/entries/639cab56-227b-1512-9dcc-b11931a76bad",
+    "kind": "local-path",
+    "count": 12,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/69e2c496-b843-19f8-9367-01356a20480f",
+    "kind": "local-path",
+    "count": 49,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
     "where": "payload/entries/6d85bb40-e841-22db-ad2a-307675e93f1a",
     "kind": "local-path",
     "count": 30,
@@ -701,6 +813,13 @@
     "remedy": "a host by its public name; a private address says the network"
    },
    {
+    "where": "payload/entries/6ef86be5-96a6-6b1a-9563-92604e35ae66",
+    "kind": "local-path",
+    "count": 3,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
     "where": "payload/entries/6ffd24bb-04c2-2c21-b583-e51bc848679d",
     "kind": "local-path",
     "count": 30,
@@ -709,6 +828,48 @@
    },
    {
     "where": "payload/entries/6ffd24bb-04c2-2c21-b583-e51bc848679d",
+    "kind": "private-ip",
+    "count": 8,
+    "served": true,
+    "remedy": "a host by its public name; a private address says the network"
+   },
+   {
+    "where": "payload/entries/766c5d50-9c34-30cd-945f-a260d7d7c669",
+    "kind": "local-path",
+    "count": 3,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/797c8f98-dd80-872a-86f1-7f17b028b603",
+    "kind": "local-path",
+    "count": 5,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/86375f73-98af-3f39-a5fd-adfb192a5eae",
+    "kind": "local-path",
+    "count": 29,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/927fa18e-f440-6e43-9439-9b4ca891c470",
+    "kind": "local-path",
+    "count": 2,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/9fd8ade7-a7cf-1953-9067-924fd667fc71",
+    "kind": "local-path",
+    "count": 30,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/9fd8ade7-a7cf-1953-9067-924fd667fc71",
     "kind": "private-ip",
     "count": 8,
     "served": true,
@@ -727,6 +888,13 @@
     "count": 8,
     "served": true,
     "remedy": "a host by its public name; a private address says the network"
+   },
+   {
+    "where": "payload/entries/a7c56c80-5dce-5371-aa78-c8eb6e1c3929",
+    "kind": "local-path",
+    "count": 1,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
    {
     "where": "payload/entries/a979b1c6-9a86-1252-9167-0e9064b1a715",
@@ -739,6 +907,27 @@
     "where": "payload/entries/ae54b04d-d143-6818-b94e-294807cac9c7",
     "kind": "local-path",
     "count": 30,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/bd902b51-68a4-24b0-8c95-726a84a74a1e",
+    "kind": "local-path",
+    "count": 38,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/c071bb18-b850-1a99-a0bb-d3d1bc5b1957",
+    "kind": "local-path",
+    "count": 3,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/c4994070-5a00-6daf-8f5c-69699be2f7b0",
+    "kind": "local-path",
+    "count": 13,
     "served": true,
     "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    },
@@ -764,6 +953,20 @@
     "remedy": "a host by its public name; a private address says the network"
    },
    {
+    "where": "payload/entries/e2215969-4c68-401f-a546-83f6c2210649",
+    "kind": "local-path",
+    "count": 12,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
+   },
+   {
+    "where": "payload/entries/efc2c63b-e428-6471-a35b-00f39a7b6191",
+    "kind": "email",
+    "count": 3,
+    "served": true,
+    "remedy": "a contact is a URL; an address never enters the tree (purify)"
+   },
+   {
     "where": "payload/entries/f57fa9a2-181d-4a0f-bbf7-cca4116910e5",
     "kind": "local-path",
     "count": 30,
@@ -776,20 +979,27 @@
     "count": 8,
     "served": true,
     "remedy": "a host by its public name; a private address says the network"
+   },
+   {
+    "where": "payload/entries/fb282e57-9b2a-5c6d-9881-1c01e4621d92",
+    "kind": "local-path",
+    "count": 1,
+    "served": true,
+    "remedy": "paths relative to the repository root before a stack or an error is written into a lead or a receipt"
    }
   ],
   "byKind": {
-   "email": 404,
+   "email": 415,
    "stripe-secret": 0,
    "token": 0,
    "jwt": 0,
    "private-key": 0,
-   "local-path": 1285,
-   "private-ip": 66
+   "local-path": 1655,
+   "private-ip": 74
   },
-  "total": 1755,
-  "served": 31,
-  "setAside": 292,
+  "total": 2144,
+  "served": 59,
+  "setAside": 349,
   "clean": false,
   "leads": [
    {
@@ -809,7 +1019,21 @@
    {
     "id": "leak-email-docs-public-legal-json",
     "source": "docs/public/legal.json",
-    "statement": "2 email finding(s) in docs/public/legal.json: a contact is a URL; an address never enters the tree (purify)",
+    "statement": "6 email finding(s) in docs/public/legal.json: a contact is a URL; an address never enters the tree (purify)",
+    "status": "open",
+    "reason": "not served yet: remove it at the source before it is"
+   },
+   {
+    "id": "leak-local-path-docs-public-next-leads-json",
+    "source": "docs/public/next-leads.json",
+    "statement": "9 local-path finding(s) in docs/public/next-leads.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "not served yet: remove it at the source before it is"
+   },
+   {
+    "id": "leak-local-path-docs-public-repository-json",
+    "source": "docs/public/repository.json",
+    "statement": "9 local-path finding(s) in docs/public/repository.json: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "not served yet: remove it at the source before it is"
    },
@@ -828,9 +1052,9 @@
     "reason": "not served yet: remove it at the source before it is"
    },
    {
-    "id": "leak-local-path-qpu-ceci-workers-dev-next-leads-json",
-    "source": "qpu.ceci.workers.dev/next-leads.json",
-    "statement": "78 local-path finding(s) in qpu.ceci.workers.dev/next-leads.json, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "id": "leak-local-path-qpu-uuidna-com-next-leads-json",
+    "source": "qpu.uuidna.com/next-leads.json",
+    "statement": "78 local-path finding(s) in qpu.uuidna.com/next-leads.json, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
@@ -842,23 +1066,23 @@
     "reason": "published: remove it at the source and from what is served"
    },
    {
-    "id": "leak-local-path-qpu-uuidna-com-next-leads-json",
-    "source": "qpu.uuidna.com/next-leads.json",
-    "statement": "78 local-path finding(s) in qpu.uuidna.com/next-leads.json, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "id": "leak-local-path-qpu-ceci-workers-dev-next-leads-json",
+    "source": "qpu.ceci.workers.dev/next-leads.json",
+    "statement": "78 local-path finding(s) in qpu.ceci.workers.dev/next-leads.json, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
    {
-    "id": "leak-email-qpu-psg-bg-receipts-ndjson",
-    "source": "qpu.psg.bg/receipts.ndjson",
-    "statement": "127 email finding(s) in qpu.psg.bg/receipts.ndjson, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "id": "leak-email-qpu-uuidna-com-receipts-ndjson",
+    "source": "qpu.uuidna.com/receipts.ndjson",
+    "statement": "127 email finding(s) in qpu.uuidna.com/receipts.ndjson, served publicly: a contact is a URL; an address never enters the tree (purify)",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
    {
-    "id": "leak-local-path-qpu-psg-bg-receipts-ndjson",
-    "source": "qpu.psg.bg/receipts.ndjson",
-    "statement": "226 local-path finding(s) in qpu.psg.bg/receipts.ndjson, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "id": "leak-local-path-qpu-uuidna-com-receipts-ndjson",
+    "source": "qpu.uuidna.com/receipts.ndjson",
+    "statement": "226 local-path finding(s) in qpu.uuidna.com/receipts.ndjson, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
@@ -877,16 +1101,30 @@
     "reason": "published: remove it at the source and from what is served"
    },
    {
-    "id": "leak-email-qpu-uuidna-com-receipts-ndjson",
-    "source": "qpu.uuidna.com/receipts.ndjson",
-    "statement": "127 email finding(s) in qpu.uuidna.com/receipts.ndjson, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "id": "leak-email-qpu-psg-bg-receipts-ndjson",
+    "source": "qpu.psg.bg/receipts.ndjson",
+    "statement": "127 email finding(s) in qpu.psg.bg/receipts.ndjson, served publicly: a contact is a URL; an address never enters the tree (purify)",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
    {
-    "id": "leak-local-path-qpu-uuidna-com-receipts-ndjson",
-    "source": "qpu.uuidna.com/receipts.ndjson",
-    "statement": "226 local-path finding(s) in qpu.uuidna.com/receipts.ndjson, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "id": "leak-local-path-qpu-psg-bg-receipts-ndjson",
+    "source": "qpu.psg.bg/receipts.ndjson",
+    "statement": "226 local-path finding(s) in qpu.psg.bg/receipts.ndjson, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-03c76138-1526-107e-9572-35157bf8e67b",
+    "source": "payload/entries/03c76138-1526-107e-9572-35157bf8e67b",
+    "statement": "14 local-path finding(s) in payload/entries/03c76138-1526-107e-9572-35157bf8e67b, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-06dda890-8540-28d8-964d-4afeeede4c59",
+    "source": "payload/entries/06dda890-8540-28d8-964d-4afeeede4c59",
+    "statement": "5 local-path finding(s) in payload/entries/06dda890-8540-28d8-964d-4afeeede4c59, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
@@ -908,6 +1146,27 @@
     "id": "leak-private-ip-payload-entries-15e65978-4f56-45e5-af2d-05743361685d",
     "source": "payload/entries/15e65978-4f56-45e5-af2d-05743361685d",
     "statement": "8 private-ip finding(s) in payload/entries/15e65978-4f56-45e5-af2d-05743361685d, served publicly: a host by its public name; a private address says the network",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-1ccdbc9c-95eb-259e-b36e-03f128343f22",
+    "source": "payload/entries/1ccdbc9c-95eb-259e-b36e-03f128343f22",
+    "statement": "7 local-path finding(s) in payload/entries/1ccdbc9c-95eb-259e-b36e-03f128343f22, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-33b74341-4323-189c-9c17-2b037d25c719",
+    "source": "payload/entries/33b74341-4323-189c-9c17-2b037d25c719",
+    "statement": "6 local-path finding(s) in payload/entries/33b74341-4323-189c-9c17-2b037d25c719, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-34c8de16-fd03-384c-9cf4-8a595e6ae646",
+    "source": "payload/entries/34c8de16-fd03-384c-9cf4-8a595e6ae646",
+    "statement": "20 local-path finding(s) in payload/entries/34c8de16-fd03-384c-9cf4-8a595e6ae646, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
@@ -940,6 +1199,13 @@
     "reason": "published: remove it at the source and from what is served"
    },
    {
+    "id": "leak-local-path-payload-entries-3d6ef56e-5cf8-45cf-9813-b4578f84ece5",
+    "source": "payload/entries/3d6ef56e-5cf8-45cf-9813-b4578f84ece5",
+    "statement": "93 local-path finding(s) in payload/entries/3d6ef56e-5cf8-45cf-9813-b4578f84ece5, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
     "id": "leak-email-payload-entries-43b6161b-ad23-88f6-b4dc-cd5cdd4f38d5",
     "source": "payload/entries/43b6161b-ad23-88f6-b4dc-cd5cdd4f38d5",
     "statement": "7 email finding(s) in payload/entries/43b6161b-ad23-88f6-b4dc-cd5cdd4f38d5, served publicly: a contact is a URL; an address never enters the tree (purify)",
@@ -950,6 +1216,62 @@
     "id": "leak-local-path-payload-entries-4afa16d9-731d-64a4-be55-82c7af89428d",
     "source": "payload/entries/4afa16d9-731d-64a4-be55-82c7af89428d",
     "statement": "5 local-path finding(s) in payload/entries/4afa16d9-731d-64a4-be55-82c7af89428d, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-email-payload-entries-4c95a1a9-99bb-4457-8bd9-efa39aed7d77",
+    "source": "payload/entries/4c95a1a9-99bb-4457-8bd9-efa39aed7d77",
+    "statement": "1 email finding(s) in payload/entries/4c95a1a9-99bb-4457-8bd9-efa39aed7d77, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-4c95a1a9-99bb-4457-8bd9-efa39aed7d77",
+    "source": "payload/entries/4c95a1a9-99bb-4457-8bd9-efa39aed7d77",
+    "statement": "3 local-path finding(s) in payload/entries/4c95a1a9-99bb-4457-8bd9-efa39aed7d77, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-email-payload-entries-5000050f-b40b-8f67-8eec-4d48aafe16f2",
+    "source": "payload/entries/5000050f-b40b-8f67-8eec-4d48aafe16f2",
+    "statement": "1 email finding(s) in payload/entries/5000050f-b40b-8f67-8eec-4d48aafe16f2, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-5000050f-b40b-8f67-8eec-4d48aafe16f2",
+    "source": "payload/entries/5000050f-b40b-8f67-8eec-4d48aafe16f2",
+    "statement": "2 local-path finding(s) in payload/entries/5000050f-b40b-8f67-8eec-4d48aafe16f2, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-5365f101-5d5b-317f-99c4-b7d170d25bf7",
+    "source": "payload/entries/5365f101-5d5b-317f-99c4-b7d170d25bf7",
+    "statement": "1 local-path finding(s) in payload/entries/5365f101-5d5b-317f-99c4-b7d170d25bf7, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-email-payload-entries-639cab56-227b-1512-9dcc-b11931a76bad",
+    "source": "payload/entries/639cab56-227b-1512-9dcc-b11931a76bad",
+    "statement": "2 email finding(s) in payload/entries/639cab56-227b-1512-9dcc-b11931a76bad, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-639cab56-227b-1512-9dcc-b11931a76bad",
+    "source": "payload/entries/639cab56-227b-1512-9dcc-b11931a76bad",
+    "statement": "12 local-path finding(s) in payload/entries/639cab56-227b-1512-9dcc-b11931a76bad, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-69e2c496-b843-19f8-9367-01356a20480f",
+    "source": "payload/entries/69e2c496-b843-19f8-9367-01356a20480f",
+    "statement": "49 local-path finding(s) in payload/entries/69e2c496-b843-19f8-9367-01356a20480f, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
@@ -968,6 +1290,13 @@
     "reason": "published: remove it at the source and from what is served"
    },
    {
+    "id": "leak-local-path-payload-entries-6ef86be5-96a6-6b1a-9563-92604e35ae66",
+    "source": "payload/entries/6ef86be5-96a6-6b1a-9563-92604e35ae66",
+    "statement": "3 local-path finding(s) in payload/entries/6ef86be5-96a6-6b1a-9563-92604e35ae66, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
     "id": "leak-local-path-payload-entries-6ffd24bb-04c2-2c21-b583-e51bc848679d",
     "source": "payload/entries/6ffd24bb-04c2-2c21-b583-e51bc848679d",
     "statement": "30 local-path finding(s) in payload/entries/6ffd24bb-04c2-2c21-b583-e51bc848679d, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
@@ -978,6 +1307,48 @@
     "id": "leak-private-ip-payload-entries-6ffd24bb-04c2-2c21-b583-e51bc848679d",
     "source": "payload/entries/6ffd24bb-04c2-2c21-b583-e51bc848679d",
     "statement": "8 private-ip finding(s) in payload/entries/6ffd24bb-04c2-2c21-b583-e51bc848679d, served publicly: a host by its public name; a private address says the network",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-766c5d50-9c34-30cd-945f-a260d7d7c669",
+    "source": "payload/entries/766c5d50-9c34-30cd-945f-a260d7d7c669",
+    "statement": "3 local-path finding(s) in payload/entries/766c5d50-9c34-30cd-945f-a260d7d7c669, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-797c8f98-dd80-872a-86f1-7f17b028b603",
+    "source": "payload/entries/797c8f98-dd80-872a-86f1-7f17b028b603",
+    "statement": "5 local-path finding(s) in payload/entries/797c8f98-dd80-872a-86f1-7f17b028b603, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-86375f73-98af-3f39-a5fd-adfb192a5eae",
+    "source": "payload/entries/86375f73-98af-3f39-a5fd-adfb192a5eae",
+    "statement": "29 local-path finding(s) in payload/entries/86375f73-98af-3f39-a5fd-adfb192a5eae, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-927fa18e-f440-6e43-9439-9b4ca891c470",
+    "source": "payload/entries/927fa18e-f440-6e43-9439-9b4ca891c470",
+    "statement": "2 local-path finding(s) in payload/entries/927fa18e-f440-6e43-9439-9b4ca891c470, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-9fd8ade7-a7cf-1953-9067-924fd667fc71",
+    "source": "payload/entries/9fd8ade7-a7cf-1953-9067-924fd667fc71",
+    "statement": "30 local-path finding(s) in payload/entries/9fd8ade7-a7cf-1953-9067-924fd667fc71, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-private-ip-payload-entries-9fd8ade7-a7cf-1953-9067-924fd667fc71",
+    "source": "payload/entries/9fd8ade7-a7cf-1953-9067-924fd667fc71",
+    "statement": "8 private-ip finding(s) in payload/entries/9fd8ade7-a7cf-1953-9067-924fd667fc71, served publicly: a host by its public name; a private address says the network",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
@@ -996,6 +1367,13 @@
     "reason": "published: remove it at the source and from what is served"
    },
    {
+    "id": "leak-local-path-payload-entries-a7c56c80-5dce-5371-aa78-c8eb6e1c3929",
+    "source": "payload/entries/a7c56c80-5dce-5371-aa78-c8eb6e1c3929",
+    "statement": "1 local-path finding(s) in payload/entries/a7c56c80-5dce-5371-aa78-c8eb6e1c3929, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
     "id": "leak-email-payload-entries-a979b1c6-9a86-1252-9167-0e9064b1a715",
     "source": "payload/entries/a979b1c6-9a86-1252-9167-0e9064b1a715",
     "statement": "7 email finding(s) in payload/entries/a979b1c6-9a86-1252-9167-0e9064b1a715, served publicly: a contact is a URL; an address never enters the tree (purify)",
@@ -1006,6 +1384,27 @@
     "id": "leak-local-path-payload-entries-ae54b04d-d143-6818-b94e-294807cac9c7",
     "source": "payload/entries/ae54b04d-d143-6818-b94e-294807cac9c7",
     "statement": "30 local-path finding(s) in payload/entries/ae54b04d-d143-6818-b94e-294807cac9c7, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-bd902b51-68a4-24b0-8c95-726a84a74a1e",
+    "source": "payload/entries/bd902b51-68a4-24b0-8c95-726a84a74a1e",
+    "statement": "38 local-path finding(s) in payload/entries/bd902b51-68a4-24b0-8c95-726a84a74a1e, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-c071bb18-b850-1a99-a0bb-d3d1bc5b1957",
+    "source": "payload/entries/c071bb18-b850-1a99-a0bb-d3d1bc5b1957",
+    "statement": "3 local-path finding(s) in payload/entries/c071bb18-b850-1a99-a0bb-d3d1bc5b1957, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-c4994070-5a00-6daf-8f5c-69699be2f7b0",
+    "source": "payload/entries/c4994070-5a00-6daf-8f5c-69699be2f7b0",
+    "statement": "13 local-path finding(s) in payload/entries/c4994070-5a00-6daf-8f5c-69699be2f7b0, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
    },
@@ -1031,6 +1430,20 @@
     "reason": "published: remove it at the source and from what is served"
    },
    {
+    "id": "leak-local-path-payload-entries-e2215969-4c68-401f-a546-83f6c2210649",
+    "source": "payload/entries/e2215969-4c68-401f-a546-83f6c2210649",
+    "statement": "12 local-path finding(s) in payload/entries/e2215969-4c68-401f-a546-83f6c2210649, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-email-payload-entries-efc2c63b-e428-6471-a35b-00f39a7b6191",
+    "source": "payload/entries/efc2c63b-e428-6471-a35b-00f39a7b6191",
+    "statement": "3 email finding(s) in payload/entries/efc2c63b-e428-6471-a35b-00f39a7b6191, served publicly: a contact is a URL; an address never enters the tree (purify)",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
+   },
+   {
     "id": "leak-local-path-payload-entries-f57fa9a2-181d-4a0f-bbf7-cca4116910e5",
     "source": "payload/entries/f57fa9a2-181d-4a0f-bbf7-cca4116910e5",
     "statement": "30 local-path finding(s) in payload/entries/f57fa9a2-181d-4a0f-bbf7-cca4116910e5, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
@@ -1043,9 +1456,16 @@
     "statement": "8 private-ip finding(s) in payload/entries/f57fa9a2-181d-4a0f-bbf7-cca4116910e5, served publicly: a host by its public name; a private address says the network",
     "status": "open",
     "reason": "published: remove it at the source and from what is served"
+   },
+   {
+    "id": "leak-local-path-payload-entries-fb282e57-9b2a-5c6d-9881-1c01e4621d92",
+    "source": "payload/entries/fb282e57-9b2a-5c6d-9881-1c01e4621d92",
+    "statement": "1 local-path finding(s) in payload/entries/fb282e57-9b2a-5c6d-9881-1c01e4621d92, served publicly: paths relative to the repository root before a stack or an error is written into a lead or a receipt",
+    "status": "open",
+    "reason": "published: remove it at the source and from what is served"
    }
   ],
   "theorem": "textbook_leaks_redacted",
-  "says": "1755 finding(s) in 23 text(s), 31 served publicly; values redacted, 292 notation(s) set aside"
+  "says": "2144 finding(s) in 49 text(s), 59 served publicly; values redacted, 349 notation(s) set aside"
  }
 }
