@@ -2059,7 +2059,7 @@ export default QpuLogo
 `
       const fullLogo = `'use client'
 ${header}// The wordmark the fork rendered (Payload's) replaced by the computed branding: the hand-held header and footer import this file unchanged.
-export { QpuLogo as FullLogo, QpuLogo as default } from '../../../components/blocks/Qpu/Branding'
+export { QpuLogo as FullLogo, QpuLogo as default } from '../../components/blocks/Qpu/Branding'
 `
       // the docket's links as Payload's relation: up turns links stored as [{ entry }] rows into the ids the relationship holds, down turns them back
       // the docket's links as Payload's relation: up turns links stored as [{ entry }] rows into the ids the relationship holds, down turns them back

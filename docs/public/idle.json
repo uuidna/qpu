@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T14:41:03.756Z",
+ "date": "2026-11-02T15:19:40.836Z",
  "input": {
   "doors": [
    {
@@ -21,6 +21,11 @@
    {
     "name": "clay.catalog",
     "bytes": 268,
+    "reached": false
+   },
+   {
+    "name": "clay.readme",
+    "bytes": 314,
     "reached": false
    },
    {
@@ -212,6 +217,21 @@
     "name": "algorithm.from",
     "bytes": 145,
     "reached": false
+   },
+   {
+    "name": "algorithm.create",
+    "bytes": 536,
+    "reached": true
+   },
+   {
+    "name": "algorithm.witness",
+    "bytes": 236,
+    "reached": true
+   },
+   {
+    "name": "algorithm.address",
+    "bytes": 147,
+    "reached": true
    },
    {
     "name": "algorithm.order",
@@ -3201,6 +3221,11 @@
     "used": true
    },
    {
+    "key": "textbook_impossible_trapdoor",
+    "bytes": 145,
+    "used": true
+   },
+   {
     "key": "textbook_thermal_time_sigma",
     "bytes": 187,
     "used": true
@@ -3469,6 +3494,14 @@
   "qubits": {
    "bound": 6,
    "calls": [
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
     {
      "door": "algorithm",
      "used": 1
@@ -4020,7 +4053,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4048,7 +4081,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4076,7 +4109,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4104,7 +4137,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4132,7 +4165,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4160,7 +4193,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4188,7 +4221,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4216,7 +4249,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4244,7 +4277,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4272,7 +4305,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 93,
+   "tokens": 103,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4299,12 +4332,13 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 57780,
-   "used": 47270,
-   "idle": 10510,
+   "capacity": 59013,
+   "used": 48189,
+   "idle": 10824,
    "percentIdle": 18,
    "idleNames": [
     "clay.catalog",
+    "clay.readme",
     "verify.prev",
     "verify.self",
     "verify.next",
@@ -4429,8 +4463,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 35443,
-   "used": 35443,
+   "capacity": 35588,
+   "used": 35588,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []
@@ -4496,11 +4530,13 @@
   },
   "qubits": {
    "unit": "qubits per call",
-   "capacity": 150,
-   "used": 37,
-   "idle": 113,
+   "capacity": 162,
+   "used": 39,
+   "idle": 123,
    "percentIdle": 75,
    "idleNames": [
+    "algorithm",
+    "algorithm",
     "algorithm",
     "algorithm",
     "algorithm",
