@@ -4,6 +4,7 @@
 // if it does not land on another generated file — catching a broken overlay path before it reaches the deploy.
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { existsSync } from 'node:fs'
 import { dirname, join, normalize } from 'node:path'
 import { handle } from './mcp.ts'
 
@@ -19,6 +20,24 @@ test('every generated overlay file that re-exports or imports a QPU block/graphi
     for (const m of String(text).matchAll(/(?:from|import)\s+'(\.[^']*\/(?:components\/blocks\/Qpu|graphics\/FullLogo)[^']*)'/g)) if (!resolves(path, m[1]!)) broken.push(`${path} → ${m[1]}`)
   }
   assert.deepEqual(broken, [], `broken relative overlay import(s): ${broken.join('; ')}`)
+})
+
+test('every generated overlay file that imports a ./payload.qpu.* sibling resolves to a generated file or a committed repo module the deploy copies', () => {
+  // the deploy copies committed repo modules (e.g. src/payload.qpu.db.ts) into the overlay beside the generated ones; a sibling import must land on a
+  // generated file OR on such a committed module, or the website build fails with "Cannot resolve './payload.qpu.…'" (as the missing db adapter did)
+  const repoRoot = join(dirname(new URL(import.meta.url).pathname), '..', '..', '..')
+  const broken: string[] = []
+  for (const [path, text] of Object.entries(files)) {
+    if (!/\.tsx?$/.test(path)) continue
+    for (const m of String(text).matchAll(/(?:from|import)\s+'(\.\/payload\.qpu\.[a-z]+)'/g)) {
+      const spec = m[1]!
+      if (resolves(path, spec)) continue
+      const base = spec.replace(/^\.\//, '') // e.g. payload.qpu.db
+      if (existsSync(join(repoRoot, 'src', base + '.ts'))) continue
+      broken.push(`${path} → ${spec}`)
+    }
+  }
+  assert.deepEqual(broken, [], `unresolved overlay sibling import(s): ${broken.join('; ')}`)
 })
 
 test('the FullLogo re-export points at the generated Qpu/Branding component', () => {
