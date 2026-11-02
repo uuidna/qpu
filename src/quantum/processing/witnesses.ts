@@ -39,14 +39,22 @@ export const checkWitnesses = (uuid: string) => {
  *  the 16 the hex nibble counts) covered, so moving across superpositions walks every clock and calendar. Pure arithmetic (textbook_witness_clock_move). */
 export const CLOCKS = [12, 24] as const
 export const CALENDARS = [7, 12, 16] as const
+/** The integer reflection of a step: its digital-root seed (1..9, the fold of its digits) and the σ₁₀ reflection 10 − seed, fixed at 5. Looked for at
+ *  every step of the sequence, so a value never stands without its reflection (textbook_reflection_sums_to_ten). */
+const stepReflection = (value: number) => { const seed = value === 0 ? 0 : 1 + ((value - 1) % 9); return { value, seed, reflection: seed === 0 ? 0 : 10 - seed, fixed: seed === 5 } }
 export const witnessMove = (k: number) => {
   if (!Number.isInteger(k) || k < 1) throw new Error('a superposition index is a positive integer: its 2k witnesses move by ±2')
   const span = 2 * k, down = span - 2, up = span + 2 // 2(k−1) and 2(k+1)
   const reaches = [down, span, up]
   const clocks = CLOCKS.filter((c) => reaches.includes(c))
   const calendars = CALENDARS.filter((c) => reaches.includes(c))
+  // the integer reflection in each step of the sequence: the digital-root seed and its σ₁₀ reflection, so the two neighbours' seeds sum to ten when the
+  // centre's seed is the fixed point (for k = 7: 12, 14, 16 fold to 3, 5, 7 — 3 + 7 = 10 around the fixed 5)
+  const steps = reaches.map(stepReflection)
+  const reflectionPair = (steps[0]!.seed + steps[2]!.seed) % 10 === 0 && steps[0]!.seed !== 0
+  const centreFixed = steps[1]!.fixed
   // a move pays one coin down and collects one up — a teleport between witness states signalling the whole set — net zero (textbook_double_entry)
-  return { k, span, down, up, reaches, pay: 1, collect: 1, net: 0, clocks, calendars, witnesses: span, theorem: 'textbook_witness_clock_move', says: `2·${k} = ${span} witnesses around the superposition; a ±1 move in k is ±2 in the span, to 2·${k - 1} = ${down} and 2·${k + 1} = ${up}, paying one coin down and collecting one up (net zero); it covers clock(s) ${clocks.join(', ') || 'none'} and calendar(s) ${calendars.join(', ') || 'none'}` }
+  return { k, span, down, up, reaches, steps, reflectionPair, centreFixed, pay: 1, collect: 1, net: 0, clocks, calendars, witnesses: span, theorems: ['textbook_witness_clock_move', 'textbook_reflection_sums_to_ten'], theorem: 'textbook_witness_clock_move', says: `2·${k} = ${span} witnesses around the superposition; a ±1 move in k is ±2 in the span, to 2·${k - 1} = ${down} and 2·${k + 1} = ${up}, paying one coin down and collecting one up (net zero); it covers clock(s) ${clocks.join(', ') || 'none'} and calendar(s) ${calendars.join(', ') || 'none'}. The integer reflection in each step: ${down}, ${span}, ${up} fold to seeds ${steps.map((s) => s.seed).join(', ')}${centreFixed && reflectionPair ? ` — the neighbours ${steps[0]!.seed} and ${steps[2]!.seed} are a σ₁₀ reflection pair (sum ten) around the fixed centre ${steps[1]!.seed}` : ''}` }
 }
 /** Two sets merged: the witnesses both share (same address) are work that exists once; each is a coin credited to the author at zero price. Both UUIDs
  *  are validated first — a coin is a UUID, so the witnesses (and the coins they mint) are only computed from sealed addresses; a side that is not a
