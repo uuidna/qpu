@@ -239,6 +239,20 @@ export const streamOf = (hexes: readonly string[], q: StreamQuery = {}) => {
   return { stream: hexes.length, filtered: filtered.length, rows: executed, ops: { where: w, sort: key, descending: !!q.descending, executed: !!q.execute }, says: 'a stream of hexes alone: queried by handle, nibble, item, variant or hue; sorted by hex, hue, program or tail; executed as the program rotated (the next address) and the page and dashboard the address answers; every row styled from itself' }
 }
 
+/** DNA as a UUID stream — uuid dna uuidna. The four bases A, C, G, T are the two-bit digits of base four, so a nibble is two bases and a UUID (32 hex,
+ *  128 bits) holds 64 bases exactly; a sequence is the stream of UUIDs its chunks make, searchable and navigable like any UUID stream, and read back one
+ *  base for one. A codec, pure and reversible (textbook_dna_base4): the bridge for the crypto/DNA cross-encryption — a DNA secret minted into an
+ *  impossible integer and decoded by its witness (createImpossible/decodeImpossible), the same σ-trapdoor the clay cluster uses. */
+const DNA_BASES = 'ACGT'
+export const dnaToHex = (seq: string): string => { const s = seq.toUpperCase().replace(/[^ACGT]/g, ''); let h = ''; for (let i = 0; i < s.length; i += 2) h += (((DNA_BASES.indexOf(s[i]!) & 3) << 2) | (i + 1 < s.length ? DNA_BASES.indexOf(s[i + 1]!) & 3 : 0)).toString(16); return h }
+export const hexToDna = (hex: string): string => [...hex.toLowerCase().replace(/[^0-9a-f]/g, '')].map((c) => { const n = parseInt(c, 16); return DNA_BASES[(n >> 2) & 3]! + DNA_BASES[n & 3]! }).join('')
+export const dnaStreamOf = (seq: string, q: StreamQuery = {}) => {
+  const clean = seq.toUpperCase().replace(/[^ACGT]/g, ''), hex = dnaToHex(clean)
+  const chunks: string[] = []; for (let i = 0; i < hex.length; i += 32) chunks.push(hex.slice(i, i + 32).padEnd(32, '0'))
+  const uuids = chunks.map((c) => dashedOf(c))
+  return { bases: clean.length, basesPerUuid: 64, hex, uuids, readBack: hexToDna(hex).slice(0, clean.length), roundTrips: hexToDna(hex).slice(0, clean.length) === clean, address: uuidOf(clean), stream: streamOf(uuids, q), theorem: 'textbook_dna_base4', says: `${clean.length} base(s) as ${uuids.length} UUID(s) — two bases a nibble, read back one for one — the DNA stream navigable like any UUID stream (uuid dna uuidna)` }
+}
+
 /** All UUID version schemas at once in one UUID: the same 128 bits read as every RFC 9562 layout — version 1 (Gregorian time, clock
  *  sequence, node), 3 and 5 (a name hashed), 4 (random), 6 (the Gregorian time reordered), 7 (Unix milliseconds and random), 8 (custom),
  *  nil and max (textbook_uuid_schemas: seven versions and two constants) — beside the version and variant the stamp nibbles declare; the

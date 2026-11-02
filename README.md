@@ -12,14 +12,14 @@ Every figure below was measured on this tree on 2026-11-02.
 
 | Measure | Value |
 |---|---:|
-| Tracked files | 342 |
+| Tracked files | 343 |
 | Source files under `src/quantum` (TypeScript) | 1 (12 lines) |
 | MCP tools | 47 |
 | Tests (`node --test`) | not yet run by `npm run next` |
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 1346 / 1983 (1347 hand-written, 636 generated equation lemmas) |
+| Theorems declared / accepted by the kernel | 1348 / 1985 (1349 hand-written, 636 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
 | Self-audit checks | see docs/audit |
@@ -76,7 +76,7 @@ Without the witness the reflection must climb ~2^250 centres — the integer is 
 
 ## 3. What the Lean kernel accepts
 
-1983 constants in the `Qpu` modules, 1347 hand-written and 636 compiler-generated equation lemmas; 0 use `sorry`; axioms: Classical.choice, Quot.sound, propext. `docs/theorems.md` lists every key, statement and axiom. What a statement *means* is decided by the tools (`match`, `compete`), never by this prose.
+1985 constants in the `Qpu` modules, 1349 hand-written and 636 compiler-generated equation lemmas; 0 use `sorry`; axioms: Classical.choice, Quot.sound, propext. `docs/theorems.md` lists every key, statement and axiom. What a statement *means* is decided by the tools (`match`, `compete`), never by this prose.
 
 | Module | Hand-written theorems |
 |---|---:|
@@ -112,7 +112,7 @@ Without the witness the reflection must climb ~2^250 centres — the integer is 
 | Qpu.Sigma | 17 |
 | Qpu.Stabilizer | 1 |
 | Qpu.Surfacecode | 1 |
-| Qpu.Textbook | 864 |
+| Qpu.Textbook | 866 |
 
 ## 4. The MCP surface — every tool a client can call
 

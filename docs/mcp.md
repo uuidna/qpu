@@ -2988,6 +2988,9 @@ The split folds
       "type": "boolean",
       "description": "carry the pieces' texts in the answer (default"
     },
+    "dna": {
+      "description": "uuid dna uuidna"
+    },
     "selftest": {
       "type": "boolean"
     }
