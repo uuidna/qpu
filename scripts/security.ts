@@ -40,12 +40,12 @@ const main = async () => {
   const payloadUrl = process.env.QPU_PAYLOAD_URL
   const unauthenticated = payloadUrl ? await fetch(payloadUrl.replace(/\/$/, '') + '/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }), signal: AbortSignal.timeout(20_000) }).then((r) => r.status).catch(() => 0) : null
   const entropy = (getJson(join(ROOT, 'docs', 'public', 'entropy.json')) as { byKind: Record<string, { leads: number }> } | null)
-  const env = existsSync(join(ROOT, 'site', '.env.qpu.example')) ? readFileSync(join(ROOT, 'site', '.env.qpu.example'), 'utf8') : ''
-  const plugin = existsSync(join(ROOT, 'site', 'src', 'plugins', 'qpu.ts')) ? readFileSync(join(ROOT, 'site', 'src', 'plugins', 'qpu.ts'), 'utf8') : ''
+  const env = existsSync(join(ROOT, '.qpu-app', '.env.qpu.example')) ? readFileSync(join(ROOT, '.qpu-app', '.env.qpu.example'), 'utf8') : ''
+  const plugin = existsSync(join(ROOT, '.qpu-app', 'src', 'plugins', 'qpu.ts')) ? readFileSync(join(ROOT, '.qpu-app', 'src', 'plugins', 'qpu.ts'), 'utf8') : ''
   const wrangler = existsSync(join(ROOT, 'wrangler.jsonc')) ? readFileSync(join(ROOT, 'wrangler.jsonc'), 'utf8') : ''
   const access = toolCallerOf('configure')({ kind: 'access' }).config as { entries?: { update?: string }; tenants?: { write?: string } }
   const theorems = existsSync(join(ROOT, 'docs', 'public', 'theorems.ndjson')) ? readFileSync(join(ROOT, 'docs', 'public', 'theorems.ndjson'), 'utf8').split('\n').filter(Boolean).length : 0
-  const payloadConfig = existsSync(join(ROOT, 'site', 'src', 'payload.config.ts')) ? readFileSync(join(ROOT, 'site', 'src', 'payload.config.ts'), 'utf8') : ''
+  const payloadConfig = existsSync(join(ROOT, '.qpu-app', 'src', 'payload.config.ts')) ? readFileSync(join(ROOT, '.qpu-app', 'src', 'payload.config.ts'), 'utf8') : ''
   const [vulnRoot, vulnSite] = await vulnP
   const developer = { autoLogin: /autoLogin\s*:/.test(payloadConfig), vulnerabilities: { root: vulnRoot, site: vulnSite }, leaks: entropy?.byKind.leak?.leads ?? 0, envExampleValueless: !env.split('\n').some((l) => /^[A-Z_]+=\S/.test(l)), access, hooks: ['collisionGuard', 'firstUserBootstrap', 'appRequest'].filter((h) => plugin.includes(h)), signing: /webcrypto_modern_algorithms/.test(wrangler) ? 'ML-DSA under webcrypto_modern_algorithms (wrangler.jsonc)' : 'no signing flag', theorems }
   const result = call({ security: { client: { hosts, payloadMcp: { unauthenticated } }, developer } })

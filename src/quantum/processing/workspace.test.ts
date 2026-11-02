@@ -16,7 +16,7 @@ import { register } from 'tsx/esm/api'
 
 register() // the site's extensionless imports load through tsx; the tree runs on Node's own type stripping
 
-const APP = ([process.env.QPU_APP_DIR, 'site', '.qpu-app'].find((d) => d && existsSync(join(process.cwd(), d, 'package.json'))) ?? null) as string | null
+const APP = ([process.env.QPU_APP_DIR, '.qpu-app'].find((d) => d && existsSync(join(process.cwd(), d, 'package.json'))) ?? null) as string | null
 const site = (APP ? createRequire(join(process.cwd(), APP, 'package.json')) : { resolve: (m: string) => m }), load = (m: string) => import(pathToFileURL(site.resolve(m)).href)
 test('a Lexical form block validates, its submission lands, every rich text field and Lexical block is witnessed, every plugin\'s records kept at binding 0 and verified against bit 0', { skip: !APP }, async () => {
   const b0 = process.env.QPU_BINDING0 = mkdtempSync(join(tmpdir(), 'qpu-b0-')), { qpuRaid } = await import(pathToFileURL(join(process.cwd(), (APP as string), 'src', 'plugins', 'qpu.ts')).href)

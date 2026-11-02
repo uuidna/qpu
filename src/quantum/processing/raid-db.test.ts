@@ -1,4 +1,4 @@
-// Payload booted on the RAID database adapter (site/src/payload.qpu.db.ts): MongoDB ported in full over per-collection content-addressed blobs, no
+// Payload booted on the RAID database adapter (.qpu-app/src/payload.qpu.db.ts): MongoDB ported in full over per-collection content-addressed blobs, no
 // external server and no LIST. The same CRUD runs on binding 0 the filesystem and on a Cloudflare binding (an in-memory R2 stand-in) — create, find
 // (Mongo operators and sort translated from Payload's where), update, count, delete — every change a new blob addressed by its SHA-256, read back by
 // a second Payload on the same store. A last check shows the crypto integrity: a tampered blob is refused, not read.
@@ -12,7 +12,7 @@ import { pathToFileURL } from 'node:url'
 import { register } from 'tsx/esm/api'
 
 register() // the site's extensionless imports load through tsx, as workspace.test.ts does
-const APP = ([process.env.QPU_APP_DIR, 'site', '.qpu-app'].find((d) => d && existsSync(join(process.cwd(), d, 'package.json'))) ?? null) as string | null
+const APP = ([process.env.QPU_APP_DIR, '.qpu-app'].find((d) => d && existsSync(join(process.cwd(), d, 'package.json'))) ?? null) as string | null
 const site = (APP ? createRequire(join(process.cwd(), APP, 'package.json')) : { resolve: (m: string) => m }), load = (m: string) => import(pathToFileURL(site.resolve(m)).href)
 const dbMod = () => import(pathToFileURL(join(process.cwd(), (APP as string), 'src', 'payload.qpu.db.ts')).href) as Promise<{ qpuRaidDb: (o?: Record<string, unknown>) => unknown }>
 // an in-memory object store with the R2 shape the adapter speaks (get/put only — the design never lists), so the bindings path runs with no Worker

@@ -15,10 +15,10 @@ register()
 // the generated plugin pulls in the website's plugins (search, revalidate timers), which keep the process alive after the test; force a clean exit with
 // the recorded code so the run never hangs CI (the assertions have already decided pass or fail)
 after(() => process.exit(process.exitCode ?? 0))
-const APP = ([process.env.QPU_APP_DIR, 'site', '.qpu-app'].find((d) => d && existsSync(join(process.cwd(), d, 'package.json'))) ?? null) as string | null
+const APP = ([process.env.QPU_APP_DIR, '.qpu-app'].find((d) => d && existsSync(join(process.cwd(), d, 'package.json'))) ?? null) as string | null
 const site = (APP ? createRequire(join(process.cwd(), APP, 'package.json')) : { resolve: (m: string) => m }), load = (m: string) => import(pathToFileURL(site.resolve(m)).href)
 const dbMod = () => import(pathToFileURL(join(process.cwd(), (APP as string), 'src', 'payload.qpu.db.ts')).href) as Promise<{ qpuRaidDb: (o?: Record<string, unknown>) => unknown }>
-// newsSolveTask is generated into site/src/plugins/qpu.ts (the pluginModule template), not a payload.ts export — import it from the generated plugin
+// newsSolveTask is generated into .qpu-app/src/plugins/qpu.ts (the pluginModule template), not a payload.ts export — import it from the generated plugin
 const taskMod = () => import(pathToFileURL(join(process.cwd(), (APP as string), 'src', 'plugins', 'qpu.ts')).href) as Promise<{ newsSolveTask: { handler: (a: { input: Record<string, unknown>; req: unknown }) => Promise<{ output: { entry: string; posts: number } }> } }>
 
 test('qpu-news-solve writes the solved news as a tenant blog draft (solution the body, tenant the relationship)', { skip: !APP }, async () => {
