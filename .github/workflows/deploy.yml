@@ -87,8 +87,16 @@ jobs:
           # The generated overlay and the linked @uuidna/qpu package (a Node dev script among its exports) are generated/trusted code; the parent repo's
           # own TypeScript and tests are the source of truth and pass above. Tell the website's `next build` not to block on type or lint errors.
           node -e "const f='next.config.js';const fs=require('fs');if(fs.existsSync(f)){let s=fs.readFileSync(f,'utf8');if(!s.includes('ignoreBuildErrors')){s=s.replace('const nextConfig = withBundleAnalyzer({','const nextConfig = withBundleAnalyzer({ typescript: { ignoreBuildErrors: true }, eslint: { ignoreDuringBuilds: true },');fs.writeFileSync(f,s)}}"
+          # PAYLOAD_SECRET into the overlay's .env so Next loads it in every build context — page-data collection instantiates the Payload config
+          # (which needs a secret) in a process the step env does not always reach; .env is loaded by Next in all of them.
+          printf 'PAYLOAD_SECRET=%s\n' "${PAYLOAD_SECRET:-build-time-placeholder}" > .env
+          # Dynamic seeds computed by clay, not a build-time CMS dump: force every route dynamic so no page pre-renders against a database at build. The
+          # QPU's own content seed is computed by the clay register, and the website's CMS pages render at request time against D1 — so the build needs
+          # no live database. (append, never prepend — a layout/page keeps its imports; skip any file that already declares `dynamic`.)
+          node -e "const {readdirSync,statSync,readFileSync,writeFileSync}=require('fs');const {join}=require('path');const walk=(d)=>{for(const e of readdirSync(d)){const p=join(d,e);const st=statSync(p);if(st.isDirectory())walk(p);else if((e==='layout.tsx'||e==='page.tsx')){const s=readFileSync(p,'utf8');if(!/export const dynamic\b/.test(s))writeFileSync(p,s+\"\\nexport const dynamic = 'force-dynamic'\\n\")}}};walk('src/app')"
         env:
           QPU_APP_MCP: http://127.0.0.1:1/api/mcp
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || secrets.QPU_ROLE_SECRET }}
       - run: pnpm install
         working-directory: .qpu-app
       - name: deploy the app (OpenNext on Cloudflare)
