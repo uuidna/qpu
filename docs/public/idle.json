@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T10:50:29.699Z",
+ "date": "2026-11-02T12:39:26.059Z",
  "input": {
   "doors": [
    {
@@ -17,6 +17,11 @@
     "name": "clay.unit",
     "bytes": 130,
     "reached": true
+   },
+   {
+    "name": "clay.catalog",
+    "bytes": 268,
+    "reached": false
    },
    {
     "name": "match.statement",
@@ -4294,11 +4299,12 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 57512,
+   "capacity": 57780,
    "used": 47270,
-   "idle": 10242,
-   "percentIdle": 17,
+   "idle": 10510,
+   "percentIdle": 18,
    "idleNames": [
+    "clay.catalog",
     "verify.prev",
     "verify.self",
     "verify.next",

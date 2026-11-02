@@ -1,229 +1,229 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T09:05:54.460Z",
- "ms": 17956,
+ "date": "2026-11-02T12:46:22.089Z",
+ "ms": 15716,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "df83201aa6f835eb659e08bd5d34bd615bfe4a5b",
+ "head": "b4ba1d48242f82aec3c23935030808dd869362a9",
  "pushed": false,
  "fetched": [
   {
-   "id": "cloudflare-workers-launchpad",
-   "status": 200,
-   "ms": 552,
-   "bytes": 402587
+   "id": "gemini-xprize-hackathon",
+   "status": 403,
+   "ms": 335,
+   "bytes": 5562
   },
   {
    "id": "vercel-oss-program",
    "status": 200,
-   "ms": 575,
+   "ms": 445,
    "bytes": 825408
   },
   {
    "id": "clay-millennium",
    "status": 200,
-   "ms": 671,
+   "ms": 523,
    "bytes": 79933
   },
   {
    "id": "aimo-prize",
    "status": 200,
-   "ms": 630,
+   "ms": 492,
    "bytes": 26036
   },
   {
-   "id": "gemini-xprize-hackathon",
-   "status": 403,
-   "ms": 892,
-   "bytes": 5519
-  },
-  {
-   "id": "github-maintainer-programs",
+   "id": "cloudflare-workers-launchpad",
    "status": 200,
-   "ms": 974,
-   "bytes": 377042
+   "ms": 624,
+   "bytes": 402590
   },
   {
    "id": "beal-prize",
    "status": 403,
-   "ms": 1088,
+   "ms": 786,
    "bytes": 29050
+  },
+  {
+   "id": "github-maintainer-programs",
+   "status": 200,
+   "ms": 877,
+   "bytes": 377039
   },
   {
    "id": "qhack-2026",
    "status": 200,
-   "ms": 1309,
+   "ms": 1045,
    "bytes": 454414
-  },
-  {
-   "id": "erdos-problems-prizes",
-   "status": 200,
-   "ms": 1419,
-   "bytes": 33882
   },
   {
    "id": "justin-sun-prize",
    "status": 200,
-   "ms": 1432,
+   "ms": 1047,
    "bytes": 317010
   },
   {
-   "id": "unitary-foundation-microgrants",
+   "id": "erdos-problems-prizes",
    "status": 200,
-   "ms": 1554,
-   "bytes": 269763
+   "ms": 1069,
+   "bytes": 33882
   },
   {
    "id": "quantinuum-startup-partner-program",
    "status": 200,
-   "ms": 1573,
+   "ms": 1255,
    "bytes": 495534
-  },
-  {
-   "id": "unitaryhack-2026",
-   "status": 200,
-   "ms": 1579,
-   "bytes": 15460
   },
   {
    "id": "cloudflare-project-alexandria",
    "status": 403,
-   "ms": 1622,
+   "ms": 1282,
    "bytes": 5655
   },
   {
-   "id": "q-ctrl-programs",
+   "id": "unitary-foundation-microgrants",
    "status": 200,
-   "ms": 1659,
-   "bytes": 351896
+   "ms": 1336,
+   "bytes": 269763
+  },
+  {
+   "id": "unitaryhack-2026",
+   "status": 200,
+   "ms": 1356,
+   "bytes": 15460
   },
   {
    "id": "nlnet-ngi-zero-open-calls",
    "status": 200,
-   "ms": 1715,
+   "ms": 1401,
    "bytes": 43352
+  },
+  {
+   "id": "q-ctrl-programs",
+   "status": 200,
+   "ms": 1441,
+   "bytes": 351896
   },
   {
    "id": "ibm-quantum-challenge",
    "status": 200,
-   "ms": 1736,
+   "ms": 1555,
    "bytes": 56757
-  },
-  {
-   "id": "breakthrough-new-horizons-mathematics",
-   "status": 200,
-   "ms": 1913,
-   "bytes": 9341
   },
   {
    "id": "claude-for-open-source",
    "status": 200,
-   "ms": 1972,
+   "ms": 1621,
    "bytes": 263438
-  },
-  {
-   "id": "sovereign-tech-fund",
-   "status": 200,
-   "ms": 2004,
-   "bytes": 116569
-  },
-  {
-   "id": "github-secure-open-source-fund",
-   "status": 200,
-   "ms": 2125,
-   "bytes": 413704
-  },
-  {
-   "id": "github-fund",
-   "status": 200,
-   "ms": 2126,
-   "bytes": 387412
   },
   {
    "id": "devpost-mcp-hackathons",
    "status": 403,
-   "ms": 2233,
+   "ms": 1652,
    "bytes": 5570
   },
   {
    "id": "kiroween-2026",
    "status": 403,
-   "ms": 2255,
+   "ms": 1698,
    "bytes": 5549
   },
   {
-   "id": "sair-lean-kernel-challenge",
+   "id": "sovereign-tech-fund",
    "status": 200,
-   "ms": 2298,
-   "bytes": 5915
+   "ms": 1705,
+   "bytes": 116569
   },
   {
-   "id": "sair-andrews-curtis-challenge",
+   "id": "breakthrough-new-horizons-mathematics",
    "status": 200,
-   "ms": 2305,
-   "bytes": 6130
+   "ms": 1793,
+   "bytes": 9341
   },
   {
-   "id": "sair-equational-theories-stage2",
+   "id": "github-fund",
    "status": 200,
-   "ms": 2375,
-   "bytes": 7070
+   "ms": 1911,
+   "bytes": 387410
   },
   {
-   "id": "ai-for-math-fund",
+   "id": "github-secure-open-source-fund",
    "status": 200,
-   "ms": 2596,
-   "bytes": 3544038
+   "ms": 1941,
+   "bytes": 413703
   },
   {
    "id": "floss-fund",
    "status": 200,
-   "ms": 2670,
+   "ms": 1994,
    "bytes": 7314
   },
   {
    "id": "google-for-startups-accelerator",
    "status": 404,
-   "ms": 2720,
+   "ms": 2101,
    "bytes": 1577
   },
   {
    "id": "google-summer-of-code",
    "status": 404,
-   "ms": 2741,
+   "ms": 2105,
    "bytes": 1577
   },
   {
    "id": "xprize-quantum-applications",
    "status": 200,
-   "ms": 2754,
+   "ms": 2115,
    "bytes": 177952
+  },
+  {
+   "id": "sair-andrews-curtis-challenge",
+   "status": 200,
+   "ms": 2174,
+   "bytes": 6130
   },
   {
    "id": "lean-fro-programs",
    "status": 200,
-   "ms": 2798,
+   "ms": 2184,
    "bytes": 143839
+  },
+  {
+   "id": "sair-lean-kernel-challenge",
+   "status": 200,
+   "ms": 2209,
+   "bytes": 5915
+  },
+  {
+   "id": "ai-for-math-fund",
+   "status": 200,
+   "ms": 2577,
+   "bytes": 714610
   },
   {
    "id": "numfocus-small-development-grants",
    "status": 200,
-   "ms": 2853,
+   "ms": 2741,
    "bytes": 262284
+  },
+  {
+   "id": "sair-equational-theories-stage2",
+   "status": 200,
+   "ms": 2890,
+   "bytes": 7070
   },
   {
    "id": "microsoft-research-lean-award",
    "status": 200,
-   "ms": 3508,
+   "ms": 2933,
    "bytes": 195215
   },
   {
    "id": "built-with-claude-japan-2026",
    "status": 200,
-   "ms": 4975,
-   "bytes": 62923
+   "ms": 4566,
+   "bytes": 62995
   }
  ],
  "precedence": [
@@ -250,25 +250,13 @@
   "rows": [
    {
     "api": "hn-algolia",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "wikipedia-search",
     "doi": "10.5281/zenodo.21781602",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "hn-algolia",
+    "doi": "10.5281/zenodo.22700098",
     "status": 200,
     "mentions": 0
    },
@@ -279,45 +267,57 @@
     "mentions": 0
    },
    {
-    "api": "hn-algolia",
+    "api": "wikipedia-search",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "wikipedia-search",
     "doi": "10.5281/zenodo.21781602",
     "status": 200,
     "mentions": 0
    },
    {
-    "api": "crossref-events",
+    "api": "wikipedia-search",
     "doi": "10.5281/zenodo.23156998",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "gdelt",
-    "doi": "10.5281/zenodo.21781602",
     "status": 200,
-    "mentions": null
+    "mentions": 0
    },
    {
     "api": "gdelt",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 429,
+    "doi": "10.5281/zenodo.21781602",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.22700098",
+    "status": 0,
     "mentions": null
    },
    {
     "api": "gdelt",
     "doi": "10.5281/zenodo.22700098",
-    "status": 429,
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "gdelt",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 0,
+    "mentions": null
+   },
+   {
+    "api": "crossref-events",
+    "doi": "10.5281/zenodo.23156998",
+    "status": 0,
     "mentions": null
    }
   ],
@@ -333,7 +333,7 @@
    "wikipedia-search": 0
   },
   "total": 0,
-  "reachable": 7,
+  "reachable": 6,
   "of": 12,
   "says": "mentions of the author's records by public source, measured, never a verdict: the acceptance rule reads them"
  },
@@ -383,7 +383,7 @@
      "needs": "a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README",
      "act": "the author's record stands at its DOI; the community's acceptance is measured by the rules below",
      "status": "open",
-     "evidence": "1356 theorems kernel-accepted (1998 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
+     "evidence": "1341 theorems kernel-accepted (1977 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
@@ -404,7 +404,7 @@
      "needs": "the community",
      "act": "measured by the mentions the public sources answer; the community's act",
      "status": "pending",
-     "evidence": "0 mentions of the records across 7 of 12 public source reads: gdelt 0, hn-algolia 0, crossref-events 0, wikipedia-search 0"
+     "evidence": "0 mentions of the records across 6 of 12 public source reads: gdelt 0, hn-algolia 0, crossref-events 0, wikipedia-search 0"
     }
    ],
    "read": "2026-10-27",

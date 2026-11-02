@@ -1,39 +1,39 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T09:05:35.618Z",
- "ms": 49302,
+ "date": "2026-11-02T12:46:05.865Z",
+ "ms": 48635,
  "selftest": {
   "passed": true
  },
  "fetched": [
   {
    "id": "patents:google:quantum error correction",
-   "status": 200,
-   "ms": 12527,
-   "bytes": 79166
+   "status": 404,
+   "ms": 142,
+   "bytes": 1577
   },
   {
    "id": "patents:google:content addressed storage universally unique identifier",
-   "status": 503,
-   "ms": 342,
-   "bytes": 229
+   "status": 404,
+   "ms": 46,
+   "bytes": 1577
   },
   {
    "id": "patents:google:model context protocol tools",
-   "status": 503,
-   "ms": 6540,
-   "bytes": 229
+   "status": 404,
+   "ms": 54,
+   "bytes": 1577
   },
   {
    "id": "patents:google:post-quantum signature lattice",
    "status": 404,
-   "ms": 2874,
+   "ms": 71,
    "bytes": 1577
   },
   {
    "id": "patents:epo-dates",
    "status": 200,
-   "ms": 683,
+   "ms": 591,
    "bytes": 222487
   }
  ],
@@ -119,16 +119,15 @@
  "queries": [
   {
    "query": "quantum error correction",
-   "total": 0,
-   "read": 0
+   "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
   },
   {
    "query": "content addressed storage universally unique identifier",
-   "error": "Unexpected token 'h', \"the qpu-goo\"... is not valid JSON"
+   "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
   },
   {
    "query": "model context protocol tools",
-   "error": "Unexpected token 'h', \"the qpu-goo\"... is not valid JSON"
+   "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
   },
   {
    "query": "post-quantum signature lattice",
