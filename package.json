@@ -57,7 +57,7 @@
     "@types/node": "26.6.4",
     "tsx": "4.22.4",
     "typescript": "7.0.2",
-    "vitepress": "2.0.0-alpha.20",
+    "vitepress": "2.0.0-alpha.21",
     "wrangler": "^4.152.0"
   },
   "description": "The Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes with the benchmark Google states, and one MCP surface that compiles them on request.",
