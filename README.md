@@ -205,7 +205,9 @@ const made = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call',
 
 CC-BY-NC-ND-4.0. Attribute the author; do not distribute a derivative; do not use commercially without a licence granted on request (https://qpu.uuidna.com). The a432 harmonics are free under attribution; commercial use of the QPU quantum framework is licensed by the author. Support the author: https://revolut.me/ceccec.
 
-Prior work by the author: *All Seven Clay Millennium Problems Sealed via Universal σ-Involution* (Zenodo, 2026), doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602) — cited **as the author's record**, not restated in the tree's voice.
+## Citation (first author)
+
+Rouschev, T. (2026). *All Seven Clay Millennium Problems Sealed via Universal σ-Involution.* Zenodo. doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602). The QPU record: doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). The solution claim is the author's Zenodo record, **cited as the author's**, not restated in the tree's voice; the tree records only what the kernel accepts (§3) and the register the `clay` tool recomputes.
 
 ## References
 

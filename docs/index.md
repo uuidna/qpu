@@ -9,6 +9,24 @@ nav: false
 An exact, formally verified quantum processing unit served over MCP: the Google Quantum AI layer as a library, a Lean 4
 library of theorems the kernel accepts, and one endpoint every result of which is a content-addressed block.
 
+## Abstract
+
+UUIDNA QPU is an exact, formally verified quantum processing unit served over MCP. Every claim is a theorem the Lean 4
+kernel accepts (`sorry` 0, axioms `Classical.choice`, `Quot.sound`, `propext`) and a computation any MCP client can
+replay. The core is one σ-involution, `σ_d(x) = d − x`: it defines the Clay register as identities between the unit's
+own constants and, at a thousand bits, creates and decodes impossible integers (the σ-trapdoor, with order-finding over
+the UUID/RAID content-addressed space). What a statement *means* is decided by the tools — `match`, `compete` — never by
+prose, and a claim never exceeds the proven.
+
+**Proof.** The kernel accepts the register and the σ-bridges (`Qpu/Clay.lean`, `Qpu/Sigma.lean`, `Qpu/Shor.lean`); the
+`clay` tool recomputes every relation in exact integers; `verify` and the end-to-end gate let any client replay it over
+MCP. See [the Clay register](/clay) and [the theorems](/theorems).
+
+**Citation (first author).** Rouschev, T. (2026). *All Seven Clay Millennium Problems Sealed via Universal σ-Involution.*
+Zenodo. doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602). The QPU record:
+doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). The solution claim is the author's Zenodo record,
+cited as the author's; the tree records what the kernel accepts.
+
 ## The goal, and where each part is measured
 
 - **Clay in the client.** The register the kernel accepts, recomputed by any MCP client: [the Clay register](/clay),
