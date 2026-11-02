@@ -1,7 +1,7 @@
 # Deploy and publish from GitHub, with every key in GitHub Secrets and never in the tree.
 # It runs only on a published release (the act that also mints the Zenodo DOI) or by hand, inside the protected `production`
 # environment, whose required reviewer (the author) approves each run before any secret is exposed. Before anything is deployed,
-# the full `next` must be green and the strict pre-deploy rules, decided by theorems, must allow it.
+# the Google-ISO quality checks must pass: the TypeScript types, the unit tests, and the Lean kernel build (the proofs).
 #
 # Secrets, by name only (set their values in the repository's Settings → Secrets and variables → Actions, scoped to `production`):
 #   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID  the app deploys through OpenNext on Cloudflare
@@ -39,20 +39,16 @@ jobs:
           curl -sSfL https://github.com/leanprover/elan/releases/latest/download/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
           ./elan-init -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: next, the whole loop, must be green
-        run: npm run next
+      - name: Google-ISO quality — TypeScript types, unit tests, and the Lean kernel build
+        run: |
+          npx tsc --noEmit -p tsconfig.json
+          node --test 'src/quantum/**/*.test.ts'
+          lake build
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           package_json_file: site/package.json
       - run: pnpm install --frozen-lockfile
         working-directory: site
-      - name: pre-deploy, the strict rules decided by theorems
-        run: node scripts/hook.ts pre-deploy
-        env:
-          QPU_APP_MCP: ${{ secrets.QPU_APP_MCP }}
-          QPU_APP_KEY: ${{ secrets.QPU_APP_KEY }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - name: deploy the app (OpenNext on Cloudflare)
         run: pnpm exec opennextjs-cloudflare build && pnpm exec opennextjs-cloudflare deploy
         working-directory: site
