@@ -1,5 +1,5 @@
 {
- "date": "2026-11-02T13:01:43.270Z",
+ "date": "2026-11-02T13:08:31.539Z",
  "literals": {
   "urls": 272,
   "distinctUrls": 158,
@@ -223,11 +223,11 @@
   "priced": "the tree",
   "theorem": "textbook_literal_in_registry"
  },
- "files": 207,
- "lines": 25732,
- "findings": 599,
+ "files": 208,
+ "lines": 25774,
+ "findings": 600,
  "fused": 177,
- "reactions": 422,
+ "reactions": 423,
  "gravity": "3d048cf9-6be0-4957-88c7-1122911c4d77",
  "vacuum": false,
  "byKind": {
@@ -252,7 +252,7 @@
    "leads": 146
   },
   "shape": {
-   "findings": 106,
+   "findings": 107,
    "leads": 4
   },
   "todo": {
@@ -2359,11 +2359,11 @@
   {
    "id": "entropy-shape-2bad27d6",
    "kind": "shape",
-   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/currency.ts:31, scripts/hook.ts:123, scripts/names.ts:22, scripts/purify.ts:138, scripts/purify.ts:145, scripts/purify.ts:175, scripts/shard.ts:14, src/mcp/crypto/index.ts:8, src/quantum/processing/audit.test.ts:9, src/quantum/processing/audit.ts:375, src/quantum/processing/clay.test.ts:30, src/quantum/processing/clay.test.ts:33, src/quantum/processing/clay.test.ts:38, src/quantum/processing/clay.test.ts:53, src/quantum/processing/docs-calls.test.ts:18, src/quantum/processing/e2e.ts:78, src/quantum/processing/match.test.ts:49, src/quantum/processing/match.test.ts:70, src/quantum/processing/match.test.ts:73, src/quantum/processing/match.test.ts:90, src/quantum/processing/mcp.test.ts:7, src/quantum/processing/mcp.test.ts:288, src/quantum/processing/mcp.test.ts:298, src/quantum/processing/mcp.ts:1040, src/quantum/processing/mcp.ts:1113, src/quantum/processing/port.test.ts:11, src/quantum/processing/reflection.test.ts:63, src/quantum/processing/reflection.test.ts:96, src/quantum/processing/reflection.test.ts:115, src/quantum/processing/selftest.ts:119, src/quantum/processing/textbook.test.ts:33, src/quantum/processing/toolboxes/flow.ts:20, src/quantum/processing/toolboxes/flow.ts:110, src/quantum/processing/toolboxes/language.ts:59, src/quantum/processing/toolboxes/language.ts:95, src/quantum/processing/toolboxes/payload-schemas.ts:49, src/quantum/processing/toolboxes/payload.ts:146",
+   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/currency.ts:31, scripts/hook.ts:123, scripts/names.ts:22, scripts/purify.ts:138, scripts/purify.ts:145, scripts/purify.ts:175, scripts/shard.ts:14, src/mcp/crypto/index.ts:8, src/quantum/processing/audit.test.ts:9, src/quantum/processing/audit.ts:375, src/quantum/processing/clay.test.ts:30, src/quantum/processing/clay.test.ts:33, src/quantum/processing/clay.test.ts:38, src/quantum/processing/clay.test.ts:53, src/quantum/processing/docs-calls.test.ts:18, src/quantum/processing/e2e.ts:78, src/quantum/processing/match.test.ts:49, src/quantum/processing/match.test.ts:70, src/quantum/processing/match.test.ts:73, src/quantum/processing/match.test.ts:90, src/quantum/processing/mcp.test.ts:7, src/quantum/processing/mcp.test.ts:288, src/quantum/processing/mcp.test.ts:298, src/quantum/processing/mcp.ts:1040, src/quantum/processing/mcp.ts:1113, src/quantum/processing/port.test.ts:11, src/quantum/processing/reasoning.test.ts:10, src/quantum/processing/reflection.test.ts:63, src/quantum/processing/reflection.test.ts:96, src/quantum/processing/reflection.test.ts:115, src/quantum/processing/selftest.ts:119, src/quantum/processing/textbook.test.ts:33, src/quantum/processing/toolboxes/flow.ts:20, src/quantum/processing/toolboxes/flow.ts:110, src/quantum/processing/toolboxes/language.ts:59, src/quantum/processing/toolboxes/language.ts:95, src/quantum/processing/toolboxes/payload-schemas.ts:49, src/quantum/processing/toolboxes/payload.ts:146",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — the tools/call envelope: toolCallerOf(name) in mcp.ts",
    "status": "open",
    "tool": "audit",
-   "occurrences": 42,
+   "occurrences": 43,
    "address": "2bad27d6-3ea6-4a2c-b598-b5b416e9bbfc",
    "explore": "match",
    "config": null

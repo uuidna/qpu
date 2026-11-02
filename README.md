@@ -18,10 +18,10 @@ Every figure below was measured on this tree on 2026-11-02 with the commands in 
 
 | Measure | Value |
 |---|---:|
-| Tracked files | 376 |
+| Tracked files | 377 |
 | Source files under `src/quantum` (TypeScript) | 1 (12 lines) |
 | MCP tools | 47 |
-| Tests (`node --test`) | 173 pass, 0 fail of 173 |
+| Tests (`node --test`) | 175 pass, 0 fail of 175 |
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
