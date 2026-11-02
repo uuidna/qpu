@@ -7,7 +7,7 @@
 // dispute, a renewal, a replayed event, a wrong tenant's signature.
 import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { hmacSha256, utf8, hex, sameHex, sha256 } from '../unit/hmac.ts'
-import { uuidOf, compositionsOf, compositionOf } from '../unit/blocks.ts'
+import { uuidOf, compositionsOf, compositionOf, sealOf } from '../unit/blocks.ts'
 import { LICENSE } from '../unit/license.ts'
 import { flowWidget } from '../widgets.ts'
 import { diffMembers, listRemedies, GENERATOR_REMEDIES } from '../audit.ts'
@@ -450,11 +450,15 @@ export const createLedger = (calls: readonly { tool: string; tenant: string; arg
   return { currency, unit: 'thousandths of a cent', price, coins, coils, lines, debits, credits, balanced: debits === credits, balances, outstanding, reconciled: outstanding.length === 0, says: `${coins} coin(s) free, ${coils} coil(s) at ${price} thousandths of a cent each; debits ${debits} = credits ${credits}; ${outstanding.length ? `outstanding: ${outstanding.map((o) => `${o.tenant} ${o.millicents}`).join(', ')}` : 'every coil settled by Stripe'}`, theorem: 'textbook_double_entry' }
 }
 /** Work deduplicated as coins: every witness two UUIDs share is work that exists once, booked at zero price as a coin credited to the author —
- *  a count of free work, never money: money moves only when Stripe settles a coil. Each line books the same amount on both sides (textbook_double_entry). */
+ *  a count of free work, never money: money moves only when Stripe settles a coil. Each coin IS a UUID and a coin is only minted from a valid sealed
+ *  UUID (every coin a validated address, textbook_uuid_core): a shared witness whose seal does not hold is rejected, not booked. Each line books the
+ *  same amount on both sides (textbook_double_entry). */
 export const mintWitnessCoins = (shared: readonly string[]) => {
-  const lines = shared.map((uuid) => ({ debit: 'work:deduplicated', credit: 'coins:author', amount: 0, count: 1, why: `witness ${uuid} shared: computed once, not twice` }))
+  const valid: string[] = [], invalid: string[] = []
+  for (const uuid of shared) (sealOf(uuid).valid ? valid : invalid).push(uuid)
+  const lines = valid.map((uuid) => ({ debit: 'work:deduplicated', credit: 'coins:author', amount: 0, count: 1, why: `witness ${uuid} shared: computed once, not twice` }))
   const debits = lines.reduce((n, l) => n + l.amount, 0), credits = lines.reduce((n, l) => n + l.amount, 0)
-  return { lines, coins: lines.length, debits, credits, balanced: debits === credits, says: `${lines.length} coin(s) credited to the author for work that exists once; a coin here counts free work, not money: money moves only when Stripe settles a coil`, theorem: 'textbook_double_entry' }
+  return { lines, coins: lines.length, invalid, debits, credits, balanced: debits === credits, says: `${lines.length} coin(s) credited to the author for work that exists once; a coin here counts free work, not money: money moves only when Stripe settles a coil${invalid.length ? `; ${invalid.length} witness(es) rejected — not a sealed UUID (a coin is a validated address)` : ''}`, theorem: 'textbook_double_entry' }
 }
 /** Recursive licensing: a chain of parties, each holding its licence from the level above as a docket entry and selling sublicences to the
  *  level below through its own Stripe (the ecommerce plugin's order afterChange at that level writes the licence entry linked to the one

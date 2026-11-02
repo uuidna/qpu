@@ -3,7 +3,7 @@
 // Each witness maps back exactly — σ is an involution, a rotation is undone by its inverse — so the witnesses verify the UUID, and each
 // other through it. Two UUIDs' sets merged share the witnesses with the same address: work that exists once, not twice, booked as a coin
 // credited to the author at zero price — a count of free work, never money. Pure.
-import { channelOf, uuidFromParts } from './unit/blocks.ts'
+import { channelOf, uuidFromParts, sealOf } from './unit/blocks.ts'
 
 type Witness = { face: 'square' | 'triangle'; index: number; uuid: string; how: string }
 const rotate = (p: readonly number[], k: number) => p.map((_, i) => p[(i + k) % p.length]!)
@@ -33,11 +33,15 @@ export const checkWitnesses = (uuid: string) => {
   return { uuid, canonical, isCanonical: uuid === canonical, faces: witnesses.length, squares: 6, triangles: 8, witnesses, back, exact: back.every((b) => b.exact), duplicates, selfAmong, says: `${witnesses.length} witnesses around ${canonical}: ${back.filter((b) => b.exact).length} map back exactly${duplicates ? `, ${duplicates} coincide (a rotation that repeats the program)` : ''}${selfAmong ? '; one equals the UUID itself (its program is rotation-symmetric)' : ''}`, theorems: ['textbook_cuboctahedron_faces', 'textbook_sigma_involution'] }
 }
 
-/** Two sets merged: the witnesses both share (same address) are work that exists once; each is a coin credited to the author at zero price. */
+/** Two sets merged: the witnesses both share (same address) are work that exists once; each is a coin credited to the author at zero price. Both UUIDs
+ *  are validated first — a coin is a UUID, so the witnesses (and the coins they mint) are only computed from sealed addresses; a side that is not a
+ *  valid sealed UUID is named in `invalid` and contributes no witnesses, so no coin is ever minted from a malformed address (never a thrown error). */
 export const mergeWitnesses = (referrer: string, destination: string) => {
+  const invalid = [referrer, destination].filter((u) => !sealOf(u).valid)
+  if (invalid.length) return { referrer: { uuid: referrer, witnesses: [] as Witness[] }, destination: { uuid: destination, witnesses: [] as Witness[] }, shared: [] as string[], distinct: 0, of: 0, invalid, says: `${invalid.length} side(s) are not a sealed UUID; no witnesses computed and no coin minted (a coin is a validated address)` }
   const a = listWitnesses(referrer), b = listWitnesses(destination)
   const inB = new Set(b.map((w) => w.uuid))
   const shared = [...new Set(a.filter((w) => inB.has(w.uuid)).map((w) => w.uuid))]
   const distinct = new Set([...a, ...b].map((w) => w.uuid)).size
-  return { referrer: { uuid: referrer, witnesses: a }, destination: { uuid: destination, witnesses: b }, shared, distinct, of: a.length + b.length, says: `${a.length} + ${b.length} witnesses, ${distinct} distinct: ${shared.length} shared by address, each work that exists once, not twice` }
+  return { referrer: { uuid: referrer, witnesses: a }, destination: { uuid: destination, witnesses: b }, shared, distinct, of: a.length + b.length, invalid: [] as string[], says: `${a.length} + ${b.length} witnesses, ${distinct} distinct: ${shared.length} shared by address, each work that exists once, not twice` }
 }
