@@ -1,5 +1,4 @@
-// Process all overclaims as underclaims: match never admits a weak or unreplayed match as "served". Honesty is hooked to the court's standard — only the
-// proven is admitted — so an open frontier is routed towards discovery (a verified-research lead), never a false solution; a genuine match still serves.
+// Overclaims processed as underclaims: match never serves a weak or unreplayed match, and a genuine match still serves.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { handle } from './mcp.ts'
@@ -11,7 +10,7 @@ test('an open frontier is an underclaim: unknown, routed towards discovery, neve
     const m = match(q)
     assert.equal(m.verdict, 'unknown', q)
     assert.equal((m.lead as { tool?: string }).tool, 'discover', `${q} routed towards discovery`)
-    assert.equal(m.theorem, 'textbook_claim_prove_involution', `${q} cites the overclaim→underclaim principle`)
+    assert.equal(m.theorem, undefined, `${q} names no theorem as its proof`)
     assert.match((m.evidence as string[]).join(' '), /only the proven is admitted|overclaim is processed as an underclaim/)
   }
 })

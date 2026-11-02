@@ -1,22 +1,22 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T19:43:05.050Z",
+ "date": "2026-11-02T20:18:22.572Z",
  "phase": "judged",
- "address": "945f4615-67d0-4e9b-b8a1-53cc04521b1a",
+ "address": "42e70816-a6a2-8a01-90bf-a04cde2be8ba",
  "summary": {
-  "requests": 299,
-  "reached": 294,
+  "requests": 297,
+  "reached": 289,
   "versions": 14,
   "visits": 0,
   "captures": 0,
   "records": 3,
   "candidates": 1,
-  "books": 24003,
-  "routed": 3921,
-  "domainLeads": 19987,
-  "outside": 95,
+  "books": 23939,
+  "routed": 3915,
+  "domainLeads": 19943,
+  "outside": 81,
   "doors": 622,
-  "leads": 19993
+  "leads": 19952
  },
  "immutable": {
   "package": "@uuidna/qpu",
@@ -112,13 +112,13 @@
     "host": "qpu.uuidna.com",
     "url": null,
     "timestamp": null,
-    "status": 200
+    "status": 429
    },
    {
     "host": "qpu.psg.bg",
     "url": null,
     "timestamp": null,
-    "status": 200
+    "status": 429
    }
   ],
   "records": [
@@ -471,8 +471,8 @@
   }
  ],
  "textbooks": {
-  "books": 24003,
-  "routed": 3921,
+  "books": 23939,
+  "routed": 3915,
   "domain": [
    "$K$-theory",
    "$K$-theory -- Higher algebraic $K$-theory -- Higher symbols, Milnor $K$-theory",
@@ -890,7 +890,6 @@
    "Barbers",
    "Baryons",
    "Basses températures",
-   "Battle, Superintendent (Fictitious character)",
    "Bayesian statistical decision theory",
    "Beam Physics Particle Acceleration and Detection",
    "Bees",
@@ -901,8 +900,6 @@
    "Bell inequalities",
    "Bell's theorem",
    "Bell-Ungleichungen",
-   "Beresford, Tommy (Fictitious character)",
-   "Beresford, Tuppence (Fictitious character)",
    "Berkeley University of California",
    "Berühmte Persönlichkeit",
    "Besm computer",
@@ -1013,7 +1010,6 @@
    "Business and politics in fiction",
    "Business mathematics",
    "Business/Economics",
-   "Byzantine Empire",
    "Bêtatrons",
    "C",
    "C (Computer program language)",
@@ -1765,7 +1761,6 @@
    "Dogs, training",
    "Domains of holomorphy",
    "Domestic Architecture",
-   "Domestic fiction",
    "Doped semiconductors",
    "Doppler effect",
    "Dose-Response Relationship, Drug",
@@ -1943,7 +1938,6 @@
    "Embeddings (Mathematics)",
    "Emergence (Philosophy)",
    "Emergency medical services -- United States -- Data processing",
-   "Empire, 30 B.C.-476 A.D.",
    "Employment",
    "Employment interviewing",
    "Enclosure",
@@ -2585,7 +2579,6 @@
    "Handbooks, manuals",
    "Handbooks, manuals, etc",
    "Handbooks, manuals, etc.",
-   "Hannay, Richard (Fictitious character)",
    "Hardy spaces",
    "Harmonic analysis",
    "Harmonic analysis on Euclidean spaces",
@@ -2735,7 +2728,6 @@
    "Incidence algebras",
    "Incompleteness theorems",
    "Index.\u001e00",
-   "Indexes",
    "Indexes (Documentation)",
    "Indexing",
    "India, biography",
@@ -2857,7 +2849,6 @@
    "Intelligence artificielle",
    "Intelligence officers",
    "Intelligence officers, biography",
-   "Intelligence service",
    "Intelligence tests",
    "Intelligent agents (Computer software)",
    "Intelligent design (Teleology)",
@@ -3219,7 +3210,6 @@
    "Markov chain",
    "Markov processes",
    "Markov spectrum",
-   "Married people",
    "Maslov index",
    "Mass media",
    "Mass transfer",
@@ -4211,7 +4201,6 @@
    "Polar regions",
    "Polaritons",
    "Polarons",
-   "Police",
    "Police ethics",
    "Political Science, general",
    "Political activity",
@@ -4709,7 +4698,6 @@
    "Robustness (Mathematics)",
    "Romance fiction",
    "Romans, nouvelles",
-   "Rome",
    "Root-mean-square errors",
    "Rosen, Nathan",
    "Rosen, Nathan,",
@@ -5054,7 +5042,6 @@
    "Spiritual life",
    "Spiritualism",
    "Splitting",
-   "Spy stories",
    "Square root",
    "Squeezed states (Quantum theory)",
    "Stability tests",
@@ -5216,7 +5203,6 @@
    "Symétrie (Physique)",
    "Symétrie (physique)",
    "Symétrie moléculaire",
-   "Synonyms and antonyms",
    "Synoptic meteorology",
    "System Administration",
    "System analysis",
@@ -5392,7 +5378,6 @@
    "Time-resolved spectroscopy",
    "Time-series analysis",
    "Tin Woodman (Fictitious character)",
-   "To 527",
    "Todd, Sweeney (Legendary character)",
    "Toepassingen",
    "Tolérance aux fautes (Informatique)",
@@ -5819,8 +5804,8 @@
    "Оптимизация. Исследование операций.",
    "Физика"
   ],
-  "inDomain": 19987,
-  "outside": 95,
+  "inDomain": 19943,
+  "outside": 81,
   "byTheorem": {
    "textbook_mind_sigma": 421,
    "textbook_penalty_time_burned": 5,
@@ -5879,14 +5864,14 @@
    "textbook_bindings_used_google": 22,
    "textbook_phase_estimation": 63,
    "textbook_textbook_categories": 5,
-   "textbook_double_torus": 58,
+   "textbook_double_torus": 57,
    "textbook_payload_access": 19,
    "textbook_bernstein_vazirani": 85,
    "textbook_uuid_time_space": 65,
    "textbook_gate_adapters": 18,
    "textbook_retry_supersedes": 3,
    "textbook_vqe": 9,
-   "textbook_google_call_schema": 7,
+   "textbook_google_call_schema": 6,
    "textbook_chat_call_or_question": 9,
    "sciences": 3,
    "textbook_actions_pinned": 3,
@@ -5906,7 +5891,7 @@
    "textbook_simon": 24,
    "factorial_succ": 1,
    "textbook_dashboard_spaces": 22,
-   "textbook_patent_number_well_formed": 155,
+   "textbook_patent_number_well_formed": 154,
    "textbook_workspace_docs_round_trip": 2,
    "textbook_repair_partitions": 8,
    "textbook_mixed_radix": 13,
@@ -6016,7 +6001,7 @@
    "textbook_route_or_lead": 1,
    "textbook_double_entry": 1,
    "textbook_artifacts_verified": 1,
-   "textbook_reference_index_cached": 2,
+   "textbook_reference_index_cached": 1,
    "textbook_referer_binds_not_entropy": 1,
    "Qpu.CausalInference.treated_control_partition": 2,
    "textbook_foreign_verdicts": 1,
@@ -6047,10 +6032,9 @@
    "Qpu.ZeroShot.exact_match_best": 1,
    "Qpu.Federated.quantization_error": 1,
    "energy": 1,
-   "textbook_cl_described": 4,
+   "textbook_cl_described": 3,
    "textbook_coins_coils_balanced": 3,
-   "textbook_authorship_tracked": 1,
-   "textbook_translate_phrases": 1
+   "textbook_authorship_tracked": 1
   },
   "theorem": "textbook_textbooks_partition"
  },
@@ -7773,10 +7757,10 @@
    },
    {
     "name": "com.boxerbook/boxing",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "World professional boxing: schedule, results, boxer cards, rankings, forecasts. Free, no key.",
     "remote": "https://mcp.boxerbook.com/mcp",
-    "repository": "https://github.com/mvtk1978/boxerbook-mcp"
+    "repository": "https://github.com/maxvotek/boxerbook-mcp"
    },
    {
     "name": "com.caribooks/quickbooks",
@@ -8171,13 +8155,6 @@
     "repository": null
    },
    {
-    "name": "com.nisebookings/booking",
-    "version": "1.0.0",
-    "description": "Operate a nisebookings account: catalogue, staff schedules, free slots, customers, appointments",
-    "remote": "https://app.nisebookings.com/api/mcp",
-    "repository": null
-   },
-   {
     "name": "io.github.Spacemandomains/library-mcp",
     "version": "1.1.7",
     "description": "Search and discover 25,000+ MCP servers across all major registries. Connect and pay autonomously.",
@@ -8568,6 +8545,13 @@
     "description": "Papers (ML research) MCP.",
     "remote": "https://gateway.pipeworx.io/paperswithcode/mcp",
     "repository": "https://github.com/pipeworx-io/mcp-paperswithcode"
+   },
+   {
+    "name": "com.nisebookings/booking",
+    "version": "1.0.0",
+    "description": "Operate a nisebookings account: catalogue, staff schedules, free slots, customers, appointments",
+    "remote": "https://app.nisebookings.com/api/mcp",
+    "repository": null
    },
    {
     "name": "com.nolamechanic/booking",
@@ -150023,317 +150007,23 @@
    "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
   },
   {
-   "id": "textbook-gutendex-69608",
-   "source": "gutendex 69608",
-   "statement": "Weird Tales, Volume 1, Number 4, June, 1923: The unique magazine (Adventure stories, Periodicals, Fantasy literature, American; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-245",
-   "source": "gutendex 245",
-   "statement": "Life on the Mississippi (Authors, American, 19th century, Biography; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-70008",
-   "source": "gutendex 70008",
-   "statement": "Unnatural death (Detective and mystery stories, Private investigators, England; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-132",
-   "source": "gutendex 132",
-   "statement": "The Art of War (Military art and science, Early works to 1800, War; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-996",
-   "source": "gutendex 996",
-   "statement": "Don Quixote (Knights and knighthood, Spain, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-103",
-   "source": "gutendex 103",
-   "statement": "Around the World in Eighty Days (Adventure stories, Voyages around the world, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-72824",
-   "source": "gutendex 72824",
-   "statement": "The mystery of the Blue Train (Detective and mystery stories, Jewelry theft, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-589",
-   "source": "gutendex 589",
-   "statement": "Catriona (Adventure stories, Scotland, History; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-26225",
-   "source": "gutendex 26225",
-   "statement": "Fifteen Thousand Useful Phrases (English language, Terms and phrases; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-215",
-   "source": "gutendex 215",
-   "statement": "The call of the wild (Adventure stories, Animal welfare, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-468",
-   "source": "gutendex 468",
-   "statement": "Manon Lescaut (Adventure stories, Lescaut, Manon, 1689-1721, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-76639",
-   "source": "gutendex 76639",
-   "statement": "Eloisa : $b or, A series of original letters (Alps Region, History, 18th century; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-72679",
-   "source": "gutendex 72679",
-   "statement": "The lesser Key of Solomon, Goetia, the book of evil spirits : $b contains two hundred diagrams and seals for invocation and convocation of spirits, necromancy, witchcraft and black art (Magic, Occultism; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-135",
-   "source": "gutendex 135",
-   "statement": "Les Misérables (Epic literature, Ex-convicts, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-42324",
-   "source": "gutendex 42324",
-   "statement": "Frankenstein; or, The modern Prometheus (Frankenstein's monster (Fictitious character), Fiction, Frankenstein, Victor (Fictitious character); Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-3300",
-   "source": "gutendex 3300",
-   "statement": "An Inquiry into the Nature and Causes of the Wealth of Nations (Economics; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-389",
-   "source": "gutendex 389",
-   "statement": "The Great God Pan (Horror tales, Paranormal fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-113",
-   "source": "gutendex 113",
-   "statement": "The Secret Garden (Gardens, Juvenile fiction, Orphans; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-1399",
-   "source": "gutendex 1399",
-   "statement": "Anna Karenina (Adultery, Fiction, Didactic fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-829",
-   "source": "gutendex 829",
-   "statement": "Gulliver's Travels into Several Remote Nations of the World (Fantasy fiction, Gulliver, Lemuel (Fictitious character), Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-105",
-   "source": "gutendex 105",
-   "statement": "Persuasion (Dysfunctional families, Fiction, England; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-57763",
-   "source": "gutendex 57763",
-   "statement": "Daughters of Nijo: A Romance of Japan (Japan, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-974",
-   "source": "gutendex 974",
-   "statement": "The Secret Agent: A Simple Tale (Anarchists, Fiction, Bombings; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-45109",
-   "source": "gutendex 45109",
-   "statement": "The Enchiridion (Conduct of life, Early works to 1800, Ethics, Ancient; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-236",
-   "source": "gutendex 236",
-   "statement": "The Jungle Book (Adventure stories, English, Animals, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-221",
-   "source": "gutendex 221",
-   "statement": "The Return of Sherlock Holmes (Detective and mystery stories, English, Holmes, Sherlock (Fictitious character), Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-2527",
-   "source": "gutendex 2527",
-   "statement": "The Sorrows of Young Werther (Germany, Social life and customs, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-10636",
-   "source": "gutendex 10636",
-   "statement": "The Travels of Marco Polo — Volume 1 (Asia, Description and travel, Early works to 1800; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-76178",
-   "source": "gutendex 76178",
-   "statement": "I am a woman (Lesbians, Fiction, Love stories; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-36",
-   "source": "gutendex 36",
-   "statement": "The war of the worlds (Imaginary wars and battles, Fiction, Life on other planets; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-560",
-   "source": "gutendex 560",
-   "statement": "Mr. Standfast (Hannay, Richard (Fictitious character), Fiction, Intelligence service; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-30254",
-   "source": "gutendex 30254",
-   "statement": "The Romance of Lust: A classic Victorian erotic novel (Corporal punishment, Fiction, Erotic fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-537",
-   "source": "gutendex 537",
-   "statement": "Tales of Terror and Mystery (Detective and mystery stories, English, Horror tales, English; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-730",
-   "source": "gutendex 730",
-   "statement": "Oliver Twist (Bildungsromans, Boys, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-2814",
-   "source": "gutendex 2814",
-   "statement": "Dubliners (Dublin (Ireland), Fiction, Short stories; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-72",
-   "source": "gutendex 72",
-   "statement": "Thuvia, maid of Mars (Mars (Planet), Fiction, Martians; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-173",
-   "source": "gutendex 173",
-   "statement": "The Insidious Dr. Fu Manchu (Criminals, Fiction, Detective and mystery stories; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-79",
-   "source": "gutendex 79",
-   "statement": "Terminal Compromise (Computer security, Fiction, Didactic fiction; In copyright) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-3289",
-   "source": "gutendex 3289",
-   "statement": "The Valley of Fear (Detective and mystery stories, Holmes, Sherlock (Fictitious character), Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-11030",
-   "source": "gutendex 11030",
-   "statement": "Incidents in the Life of a Slave Girl, Written by Herself (Enslaved persons, United States, Biography; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-67098",
-   "source": "gutendex 67098",
-   "statement": "Winnie-the-Pooh (Animals, Juvenile fiction, Christopher Robin (Fictitious character); Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-1514",
-   "source": "gutendex 1514",
-   "statement": "A Midsummer Night's Dream (Athens (Greece), Drama, Comedy plays; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-766",
-   "source": "gutendex 766",
-   "statement": "David Copperfield (Autobiographical fiction, Bildungsromans, Boys; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
-   "id": "textbook-gutendex-521",
-   "source": "gutendex 521",
-   "statement": "The Life and Adventures of Robinson Crusoe (Adventure stories, Atlantic Ocean, Fiction; Public domain) teaches a subject the theorems reach, and no theorem reaches this book yet",
-   "status": "open",
-   "reason": "a book of the domain no theorem reaches: develop the theorem its subject names"
-  },
-  {
    "id": "source-unreached-swh-visits-uuidna-qpu",
    "source": "https://archive.softwareheritage.org/api/1/origin/https://github.com/uuidna/qpu/visits/?per_page=1000",
    "statement": "the source swh-visits:uuidna/qpu answered 404",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-wayback-qpu-uuidna-com",
+   "source": "https://archive.org/wayback/available?url=qpu.uuidna.com",
+   "statement": "the source wayback:qpu.uuidna.com answered 429",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-wayback-qpu-psg-bg",
+   "source": "https://archive.org/wayback/available?url=qpu.psg.bg",
+   "statement": "the source wayback:qpu.psg.bg answered 429",
    "status": "blocked",
    "reason": "measured on the next run"
   },
@@ -150359,9 +150049,16 @@
    "reason": "measured on the next run"
   },
   {
-   "id": "source-unreached-gutendex-books-11",
-   "source": "https://gutendex.com/books/?page=11",
-   "statement": "the source gutendex:books:11 answered nothing",
+   "id": "source-unreached-npm-search-uuidna-qpu-0",
+   "source": "https://registry.npmjs.org/-/v1/search?text=uuidna%20qpu&size=250&from=0",
+   "statement": "the source npm-search:uuidna qpu:0 answered 503",
+   "status": "blocked",
+   "reason": "measured on the next run"
+  },
+  {
+   "id": "source-unreached-gutendex-books-9",
+   "source": "https://gutendex.com/books/?page=9",
+   "statement": "the source gutendex:books:9 answered nothing",
    "status": "blocked",
    "reason": "measured on the next run"
   }
@@ -150372,15 +150069,15 @@
   "textbook_route_or_lead",
   "textbook_cheap_gates"
  ],
- "says": "294 of 299 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 24003 open books of which 3921 the theorems reach and 19987 of their domain are leads; 622 MCP doors proposed",
+ "says": "289 of 297 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23939 open books of which 3915 the theorems reach and 19943 of their domain are leads; 622 MCP doors proposed",
  "counts": {
   "served": 0,
   "partial": 0,
-  "open": 19988,
-  "blocked": 5,
+  "open": 19944,
+  "blocked": 8,
   "out_of_scope": 0
  },
- "total": 19993,
+ "total": 19952,
  "integrity": {
   "phase": "artifacts",
   "artifacts": 17,

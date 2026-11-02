@@ -5,10 +5,10 @@ import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 
 // The real meaning of "all", found by textbook indexing, and tested as meaningful combinatorial use.
 
-test('the real meaning of all is indexed in the textbook: use_completes, antimatter_total, audit_all_pass', () => {
+test('the real meaning of all is indexed in the textbook: use_completes, antimatter_total, code_folds, audit_all_pass', () => {
   // all is not a one-shot total: it is reached monotonically (use_completes), every gap has its antimatter so the way never dead-ends
-  // (antimatter_total), and all-pass is when no check fails (audit_all_pass).
-  for (const key of ['textbook_use_completes', 'textbook_antimatter_total', 'textbook_audit_all_pass'])
+  // (antimatter_total), each commit folds net <= 0 (code_folds), and all-pass is when no check fails (audit_all_pass).
+  for (const key of ['textbook_use_completes', 'textbook_antimatter_total', 'textbook_code_folds', 'textbook_audit_all_pass'])
     assert.ok(TEXTBOOK_THEOREMS.some((t) => t.key === key), `${key} indexes a face of the meaning of "all"`)
 })
 

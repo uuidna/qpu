@@ -108,19 +108,19 @@ const complex = ([re, im]: [number, number]) => ({ re, im })
 const answerFactor = (n: bigint, via?: string, reflections = 1n << 12n, from?: bigint) => {
   const bits = n.toString(2).length, p = testPrimality(n)
   const f = p.prime ? { factors: [n], left: [] as bigint[], reached: null as bigint | null, searched: 0n, verified: true } : listFactors(n, reflections, from)
-  const primality = p.prime ? (p.certain ? 'prime' : 'a probable prime (Miller–Rabin, 24 bases)') : 'composite'
+  const primality = n < 2n ? `${n}, neither prime nor composite` : p.prime ? (p.certain ? 'prime' : 'a probable prime (Miller–Rabin, 24 bases)') : 'composite'
   // the order channel, wired to a quantum backend: a part no classical reflection splits is left for order-finding — the one step not computed here (the
   // state-vector simulation reaches it only for N ≤ 21, textbook_rsa_beyond_bound; a physical quantum backend reaches it at scale). The plan names the
   // exact door to ask any quantum backend (the hosted QPU connector, or real hardware) for the order r of a mod the left part; feeding r back to the
   // hybrid order channel (algorithm { name: factor, integer, a, order }) finishes it by the reduction (textbook_shor_reduction). Never fabricated.
   const quantumOrder = f.left.length ? { needs: 'order-finding', the: 'the one step not computed quantum here', door: f.left.map((m) => ({ tool: 'algorithm', arguments: { name: 'shor', N: m.toString(), a: 2 } })), backend: 'any MCP that computes order-finding: the state-vector simulator answers N ≤ 21, a physical quantum backend at scale; feed the order r back as algorithm { name: "factor", integer, a, order } — the hybrid order channel', bound: 'textbook_rsa_beyond_bound', theorem: 'textbook_shor_reduction' } : null
-  return { name: 'factor', integer: n.toString(), bits, prime: p.prime, certain: p.certain, factors: f.factors.map(String), left: f.left.map(String), complete: f.left.length === 0, verified: f.verified, searched: f.searched.toString(), reached: f.reached === null ? null : f.reached.toString(), ...(quantumOrder ? { quantumOrder } : {}), theorem: 'textbook_factors_divide',
+  return { name: 'factor', integer: n.toString(), bits, prime: p.prime, certain: p.certain, factors: f.factors.map(String), left: f.left.map(String), complete: f.left.length === 0 && (!p.prime || p.certain), verified: f.verified, searched: f.searched.toString(), reached: f.reached === null ? null : f.reached.toString(), ...(quantumOrder ? { quantumOrder } : {}), theorem: 'textbook_factors_divide',
     says: `a ${bits}-bit integer, ${primality}${p.prime ? '' : `: ${f.factors.length} prime factor(s) found${f.left.length ? `, ${f.left.length} part(s) under the σ-reflection search — searched ${f.searched} centre(s), reached ${f.reached}; resume with from=${f.reached} (unbounded, computing, never declined; a balanced semiprime's reflection is the order-finding of textbook_shor_reduction). The one step not computed quantum here is order-finding: ask a quantum backend (quantumOrder.door) for the order r, then decode with it` : ''}`}; the parts multiply back to the integer: ${f.verified}`,
     ...(via ? { via } : {}), summary: [['Bits', String(bits)], ['Primality', primality], ['Prime factors found', String(f.factors.length)], ['Under σ-reflection search', String(f.left.length)], ['Reflections searched', f.searched.toString()], ['Product checked', f.verified ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: [...f.factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']), ...f.left.map((x) => [x.toString(), String(x.toString(2).length), 'composite, under σ-reflection search'])] }
 }
 // The impossible-integer trapdoor over the clay cluster: `create` mints a semiprime N = p·q of any prime-distance and holds its σ-reflection witness
 // (the centre a = (p + q)/2), published as a cross-UUID address; `decode` recovers p·q in one reflection from the witness. Without the witness the
-// reflection must climb b = (q − p)/2 centres (infeasible when the primes are distant), so the integer is hard to split yet trivial to decode by its
+// reflection climbs a − ⌈√N⌉ + 1 centres (out of reach when the primes are distant), so the integer is hard to split yet trivial to decode by its
 // address — a trapdoor, never a factoring of an unknown (textbook_impossible_trapdoor). The address is uuidOf(N, witness): the clay cluster's cross key.
 const impossibleAddress = (N: bigint, witness: bigint) => uuidOf(JSON.stringify({ clay: 'impossible-integer', N: N.toString(), witness: witness.toString() }))
 const answerImpossible = (args: Record<string, unknown>) => {
@@ -218,7 +218,7 @@ const clayCatalog = () => {
 // what the tools answer (textbook_impossible_trapdoor, textbook_shor_sigma_root, textbook_factors_divide). Deterministic: the demo primes are seeded.
 type ReadmeMeasured = { date?: string; version?: string; doi?: string; rows?: [string, string][]; census?: { declared?: number | string; kernel?: string; generated?: number; sorried?: string; axioms?: string; handWritten?: number } }
 export const clayReadme = (m: ReadmeMeasured = {}) => {
-  const date = m.date ?? new Date().toISOString().slice(0, 10), version = m.version ?? '0.0.0'
+  const date = m.date ?? new Date().toISOString().slice(0, 10), version = m.version ?? VERSION
   const reg = recomputeClay(), cat = clayCatalog()
   // the thousand-bit impossible integer, minted and decoded live over the clay cluster (deterministic by seed): the worked proof of §2
   const made = createImpossible({ bits: 1000, seed: 1n }), dec = decodeImpossible(made.N, made.witness), addr = impossibleAddress(made.N, made.witness)

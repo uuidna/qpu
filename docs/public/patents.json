@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T19:39:58.965Z",
- "ms": 55013,
+ "date": "2026-11-02T20:13:23.906Z",
+ "ms": 48720,
  "selftest": {
   "passed": true
  },
@@ -9,31 +9,31 @@
   {
    "id": "patents:google:quantum error correction",
    "status": 200,
-   "ms": 282,
-   "bytes": 68971
+   "ms": 1386,
+   "bytes": 1120891
   },
   {
    "id": "patents:google:content addressed storage universally unique identifier",
    "status": 200,
-   "ms": 167,
-   "bytes": 68971
+   "ms": 142,
+   "bytes": 1120891
   },
   {
    "id": "patents:google:model context protocol tools",
    "status": 200,
-   "ms": 18029,
+   "ms": 151,
    "bytes": 1120891
   },
   {
    "id": "patents:google:post-quantum signature lattice",
    "status": 200,
-   "ms": 136,
+   "ms": 158,
    "bytes": 1120891
   },
   {
    "id": "patents:epo-dates",
    "status": 200,
-   "ms": 798,
+   "ms": 324,
    "bytes": 222487
   }
  ],
@@ -119,13 +119,11 @@
  "queries": [
   {
    "query": "quantum error correction",
-   "total": 0,
-   "read": 0
+   "error": "Unexpected token '<', \"<?xml vers\"... is not valid JSON"
   },
   {
    "query": "content addressed storage universally unique identifier",
-   "total": 0,
-   "read": 0
+   "error": "Unexpected token '<', \"<?xml vers\"... is not valid JSON"
   },
   {
    "query": "model context protocol tools",

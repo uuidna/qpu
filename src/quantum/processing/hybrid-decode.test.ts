@@ -49,3 +49,10 @@ test('an integer with neither a witness nor an order is not decoded by the hybri
   assert.deepEqual(d.factors, [])
   assert.deepEqual(d.left, [N])
 })
+
+test('the factor door claims no more than it computed', () => {
+  assert.match(String(factor({ integer: '1' }).says), /1, neither prime nor composite/)
+  const m = factor({ integer: (2n ** 1279n - 1n).toString() })
+  assert.equal(m.certain, false)
+  assert.equal(m.complete, false)
+})

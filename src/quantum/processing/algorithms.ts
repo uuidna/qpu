@@ -431,7 +431,7 @@ export const writeInteger = (n: bigint): number | string => (n <= BigInt(Number.
 const powMod = (b: bigint, e: bigint, m: bigint) => { let r = 1n; b %= m; while (e > 0n) { if (e & 1n) r = (r * b) % m; b = (b * b) % m; e >>= 1n } return r }
 const gcdBig = (x: bigint, y: bigint): bigint => { while (y) [x, y] = [y, x % y]; return x }
 /** The integer square root ⌊√n⌋ over BigInt, by Newton's descent: exact at any size, the pivot the reflect-shift begins from. */
-const sqrtBig = (n: bigint): bigint => { if (n < 2n) return n; let x = n, y = (x + 1n) >> 1n; while (y < x) { x = y; y = (x + n / x) >> 1n } return x }
+const sqrtBig = (n: bigint): bigint => { if (n < 2n) return n; let x = 1n << BigInt((n.toString(2).length >> 1) + 1), y = (x + n / x) >> 1n; while (y < x) { x = y; y = (x + n / x) >> 1n } return x }
 const SMALL_PRIMES = (() => { const s: number[] = []; for (let n = 2; n < 1 << 16; n++) if (s.every((p) => p * p > n || n % p)) s.push(n); return s })()
 /** Miller–Rabin over the first `rounds` primes as bases: certain below 3.3·10^24 (the first thirteen bases decide it), probable above it. */
 export const testPrimality = (n: bigint, rounds = 24): { prime: boolean; certain: boolean } => {
@@ -473,34 +473,32 @@ export const listFactors = (n: bigint, reflections: bigint, from?: bigint) => {
 const nextPrime = (start: bigint): bigint => { let n = start | 1n; while (!testPrimality(n).prime) n += 2n; return n }
 /** Mint an "impossible integer": a semiprime N = p·q from two primes of any distance, with its σ-reflection witness. The centre a = (p + q)/2 and the
  *  gap b = (q − p)/2 give N = a² − b² = (a − b)(a + b) and q = 2a − p = σ_{2a}(p) — the clay cluster's zero-bit reflection. Without the witness the
- *  reflection must climb b centres from ⌈√N⌉ (infeasible when the primes are distant: blindReflections); with it, one reflection splits N. From a given
- *  prime pair, or generated from `bits` (p near 2^(bits/2), q near p + 2^gapBits) deterministically by `seed`. This creates the hard integer and holds
- *  its witness; it is not a factoring of an integer whose witness is unknown (textbook_impossible_trapdoor, textbook_factors_divide). */
+ *  reflection climbs a − ⌈√N⌉ + 1 centres (blindReflections: ≈ b²/2a for close primes, ≈ a for distant); with it, one splits N. From two odd primes, or
+ *  from `bits` by `seed`: p near √2^(bits−1) so N has exactly `bits` bits, q = p + 2^(bits/2 − 8) so the climb is ~2^(bits/2 − 19) (a toy below ~100
+ *  bits). It holds the witness; it never factors an integer whose witness is unknown (textbook_impossible_trapdoor). */
 export const createImpossible = (opts: { p?: bigint; q?: bigint; bits?: number; gapBits?: number; seed?: bigint }): { N: bigint; p: bigint; q: bigint; bits: number; witness: bigint; gap: bigint; blindReflections: bigint } => {
   let pp = opts.p, qq = opts.q
   if (pp === undefined || qq === undefined) {
-    const bits = Math.max(16, Math.floor(opts.bits ?? 1000)), half = BigInt(Math.floor(bits / 2)), gapBits = BigInt(Math.max(1, opts.gapBits ?? Math.floor(bits / 4)))
-    pp = nextPrime((1n << half) + (opts.seed ?? 1n)); qq = nextPrime(pp + (1n << gapBits))
+    const bits = Math.max(16, Math.floor(opts.bits ?? 1000)), gapBits = BigInt(Math.max(1, Math.floor(opts.gapBits ?? (bits >> 1) - 8)))
+    pp = nextPrime(sqrtBig(1n << BigInt(bits - 1)) + (opts.seed ?? 1n)); qq = nextPrime(pp + (1n << gapBits))
   }
   if (!testPrimality(pp).prime || !testPrimality(qq).prime) throw new Error('create takes two primes (p, q) or a bit size to generate them')
   const [lo, hi] = pp < qq ? [pp, qq] : [qq, pp]
   if (lo === hi) throw new Error('the two primes must differ (a semiprime of distinct primes)')
-  const N = lo * hi, witness = (lo + hi) / 2n, gap = (hi - lo) / 2n
-  return { N, p: lo, q: hi, bits: N.toString(2).length, witness, gap, blindReflections: gap }
+  if (lo === 2n) throw new Error('the trapdoor takes two odd primes: with 2 the centre (p + q)/2 is not an integer')
+  const N = lo * hi, witness = (lo + hi) / 2n, gap = (hi - lo) / 2n, r = sqrtBig(N)
+  return { N, p: lo, q: hi, bits: N.toString(2).length, witness, gap, blindReflections: witness - (r * r === N ? r : r + 1n) + 1n }
 }
 /** Decode an impossible integer by its witness: one σ-reflection from the centre a splits N into p·q (q = σ_{2a}(p) = 2a − p), the product checked.
  *  The witness is the clay cluster's cross address; decoding needs it — a known-answer check, never a search of an unknown (textbook_impossible_trapdoor). */
 export const decodeImpossible = (N: bigint, witness: bigint): { factors: bigint[]; verified: boolean; searched: bigint; decoded: boolean } => {
   const r = listFactors(N, 1n, witness)
-  return { factors: r.factors, verified: r.verified, searched: r.searched, decoded: r.factors.length >= 2 && r.verified }
+  return { factors: r.factors, verified: r.verified, searched: r.searched, decoded: r.factors.length >= 2 && r.verified && r.left.length === 0 }
 }
 
-/** Order-finding completed over the QPU's UUID quantum space and the RAID controller: the least r with a^r ≡ 1 mod N, by baby-step giant-step — a
- *  meet-in-the-middle a content-addressed store makes cheap. m = ⌈√budget⌉ baby steps a^0 … a^(m−1) mod N are each addressed by content (uuidOf of the
- *  residue — the UUID quantum space) and held in the RAID table (a content-addressed map, the RAID controller); giant steps a^(m·i) mod N meet a baby
- *  step at an address, so a^(m·i) ≡ a^j and r divides m·i − j, reduced to the least order and checked. Found exactly when the order is ≤ m² (the table
- *  squared), in O(√r) time and space; beyond the budget it is bounded, never guessed — order-finding at RSA scale is the one step a physical quantum
- *  backend computes (textbook_rsa_beyond_bound). This completes order-finding wherever the period fits the content-addressed space. */
+/** Order-finding: the least r with a^r ≡ 1 mod N by baby-step giant-step — m = ⌈√budget⌉ baby steps a^j mod N in a content-addressed RAID table (uuidOf
+ *  of each residue), giant steps a^(m·i) meeting one at an address, so r divides m·i − j, reduced to the least and checked. Exact when r ≤ m², O(√r) time
+ *  and space; beyond the budget it is bounded, never guessed — at RSA scale a physical quantum backend computes it (textbook_rsa_beyond_bound). */
 export const orderFinding = (a: bigint, N: bigint, budget = 1n << 22n): { order: string | null; found: boolean; babySteps: string; table: string; verified: boolean; via: string } => {
   if (N < 2n || a < 2n || a % N === 0n || gcdBig(a % N, N) !== 1n) return { order: null, found: false, babySteps: '0', table: 'empty', verified: false, via: 'a must be a unit mod N (2 ≤ a < N, gcd(a, N) = 1); otherwise gcd is a factor and no order is needed' }
   a %= N

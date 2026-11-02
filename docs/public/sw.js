@@ -1,5 +1,5 @@
 // The service worker of the web OS: the shell and every page kept by content; the MCP, the docket and the stream asked first.
-const SHELL = 'qpu-shell-1.0.2-8'
+const SHELL = 'qpu-shell-1.4.0-8'
 const PAGES = 'qpu-pages'
 const NETWORK_FIRST = [/^\/mcp/, /^\/docket/, /^\/health/, /^\/\.well-known\//, /\.ndjson$/, /\/receipt\.json$/, /\/metrics\.json$/, /\/readiness\.json$/]
 // the shell: the home page and every module it preloads (the app, the theme, its own page data), so offline the home renders whole

@@ -1,6 +1,4 @@
-// uuid dna uuidna: DNA is a base-four stream (A, C, G, T = 0, 1, 2, 3), two bases a nibble, 64 bases a UUID — encoded, addressed, navigable like any UUID
-// stream, and read back one base for one; the σ-trapdoor cross-encrypts a DNA secret and decodes it by its witness. These tests lock the codec, the
-// stream, the tool door, and the crypto↔DNA cross-encryption.
+// uuid dna uuidna: the base-four codec, its UUID stream and tool door, and a DNA secret cross-encrypted by the σ-trapdoor.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { dnaToHex, hexToDna, dnaStreamOf } from './unit/blocks.ts'
@@ -33,8 +31,8 @@ test('the fold door encodes and decodes DNA (uuid dna uuidna)', () => {
   const e = fold({ dna: seq })
   assert.equal(e.phase, 'dna')
   assert.equal(e.roundTrips, true)
-  const d = fold({ dna: { hex: e.hex } })
-  assert.equal((d.bases as string).slice(0, seq.length), seq)
+  assert.equal(fold({ dna: { hex: e.hex, bases: seq.length } }).bases, seq) // the count trims the padding
+  assert.throws(() => dnaStreamOf('ACGN'), /N at 3 is not a base/)
   const d2 = fold({ dna: { uuid: (e.uuids as string[])[0] } })
   assert.equal((d2.bases as string).slice(0, seq.length), seq)
 })

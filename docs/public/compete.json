@@ -1,229 +1,229 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T19:39:37.313Z",
- "ms": 15499,
+ "date": "2026-11-02T20:12:55.927Z",
+ "ms": 16831,
  "offline": false,
  "selftest": {
   "passed": true
  },
- "head": "49eec6181d5f7fd9f11850165a22650e9b2d7c50",
+ "head": "2475e9a46c22fc6b3eab4c5813f3d13ca6b9251d",
  "pushed": false,
  "fetched": [
   {
    "id": "gemini-xprize-hackathon",
    "status": 403,
-   "ms": 391,
+   "ms": 245,
    "bytes": 5562
-  },
-  {
-   "id": "clay-millennium",
-   "status": 200,
-   "ms": 551,
-   "bytes": 79933
-  },
-  {
-   "id": "cloudflare-workers-launchpad",
-   "status": 200,
-   "ms": 509,
-   "bytes": 402593
-  },
-  {
-   "id": "aimo-prize",
-   "status": 200,
-   "ms": 666,
-   "bytes": 26036
   },
   {
    "id": "beal-prize",
    "status": 403,
-   "ms": 710,
+   "ms": 287,
    "bytes": 29050
   },
   {
-   "id": "vercel-oss-program",
+   "id": "cloudflare-workers-launchpad",
    "status": 200,
-   "ms": 775,
-   "bytes": 825337
+   "ms": 304,
+   "bytes": 402589
   },
   {
-   "id": "justin-sun-prize",
+   "id": "aimo-prize",
    "status": 200,
-   "ms": 805,
-   "bytes": 317010
-  },
-  {
-   "id": "github-maintainer-programs",
-   "status": 200,
-   "ms": 1062,
-   "bytes": 376794
-  },
-  {
-   "id": "erdos-problems-prizes",
-   "status": 200,
-   "ms": 1151,
-   "bytes": 33882
-  },
-  {
-   "id": "qhack-2026",
-   "status": 200,
-   "ms": 1165,
-   "bytes": 454414
-  },
-  {
-   "id": "quantinuum-startup-partner-program",
-   "status": 200,
-   "ms": 1244,
-   "bytes": 495360
-  },
-  {
-   "id": "unitary-foundation-microgrants",
-   "status": 200,
-   "ms": 1255,
-   "bytes": 269763
-  },
-  {
-   "id": "sair-andrews-curtis-challenge",
-   "status": 200,
-   "ms": 1282,
-   "bytes": 6130
-  },
-  {
-   "id": "sair-lean-kernel-challenge",
-   "status": 200,
-   "ms": 1282,
-   "bytes": 5915
-  },
-  {
-   "id": "q-ctrl-programs",
-   "status": 200,
-   "ms": 1370,
-   "bytes": 351896
-  },
-  {
-   "id": "nlnet-ngi-zero-open-calls",
-   "status": 200,
-   "ms": 1472,
-   "bytes": 43352
-  },
-  {
-   "id": "sair-equational-theories-stage2",
-   "status": 200,
-   "ms": 1502,
-   "bytes": 7070
+   "ms": 368,
+   "bytes": 26036
   },
   {
    "id": "unitaryhack-2026",
    "status": 200,
-   "ms": 1528,
+   "ms": 401,
    "bytes": 15460
-  },
-  {
-   "id": "breakthrough-new-horizons-mathematics",
-   "status": 200,
-   "ms": 1560,
-   "bytes": 9341
-  },
-  {
-   "id": "claude-for-open-source",
-   "status": 200,
-   "ms": 1786,
-   "bytes": 263438
-  },
-  {
-   "id": "sovereign-tech-fund",
-   "status": 200,
-   "ms": 1819,
-   "bytes": 116569
-  },
-  {
-   "id": "github-secure-open-source-fund",
-   "status": 200,
-   "ms": 1904,
-   "bytes": 413421
   },
   {
    "id": "cloudflare-project-alexandria",
    "status": 403,
-   "ms": 1911,
-   "bytes": 5613
-  },
-  {
-   "id": "github-fund",
-   "status": 200,
-   "ms": 1938,
-   "bytes": 387165
-  },
-  {
-   "id": "ibm-quantum-challenge",
-   "status": 200,
-   "ms": 2042,
-   "bytes": 56757
+   "ms": 406,
+   "bytes": 5655
   },
   {
    "id": "devpost-mcp-hackathons",
    "status": 403,
-   "ms": 2101,
+   "ms": 423,
    "bytes": 5570
   },
   {
    "id": "kiroween-2026",
    "status": 403,
-   "ms": 2148,
+   "ms": 422,
    "bytes": 5549
+  },
+  {
+   "id": "clay-millennium",
+   "status": 200,
+   "ms": 543,
+   "bytes": 79933
+  },
+  {
+   "id": "qhack-2026",
+   "status": 200,
+   "ms": 478,
+   "bytes": 454414
+  },
+  {
+   "id": "nlnet-ngi-zero-open-calls",
+   "status": 200,
+   "ms": 478,
+   "bytes": 43352
   },
   {
    "id": "xprize-quantum-applications",
    "status": 200,
-   "ms": 2585,
+   "ms": 495,
    "bytes": 177952
+  },
+  {
+   "id": "unitary-foundation-microgrants",
+   "status": 200,
+   "ms": 487,
+   "bytes": 269763
+  },
+  {
+   "id": "quantinuum-startup-partner-program",
+   "status": 200,
+   "ms": 489,
+   "bytes": 495360
+  },
+  {
+   "id": "q-ctrl-programs",
+   "status": 200,
+   "ms": 494,
+   "bytes": 351896
+  },
+  {
+   "id": "claude-for-open-source",
+   "status": 200,
+   "ms": 554,
+   "bytes": 263438
   },
   {
    "id": "google-for-startups-accelerator",
    "status": 200,
-   "ms": 2622,
-   "bytes": 68971
-  },
-  {
-   "id": "numfocus-small-development-grants",
-   "status": 200,
-   "ms": 2619,
-   "bytes": 262195
-  },
-  {
-   "id": "lean-fro-programs",
-   "status": 200,
-   "ms": 2622,
-   "bytes": 143839
-  },
-  {
-   "id": "floss-fund",
-   "status": 200,
-   "ms": 2631,
-   "bytes": 7314
+   "ms": 602,
+   "bytes": 1120891
   },
   {
    "id": "google-summer-of-code",
    "status": 200,
-   "ms": 2649,
-   "bytes": 68971
+   "ms": 599,
+   "bytes": 1120891
+  },
+  {
+   "id": "justin-sun-prize",
+   "status": 200,
+   "ms": 605,
+   "bytes": 37078
+  },
+  {
+   "id": "vercel-oss-program",
+   "status": 200,
+   "ms": 638,
+   "bytes": 825337
+  },
+  {
+   "id": "sovereign-tech-fund",
+   "status": 200,
+   "ms": 703,
+   "bytes": 116569
+  },
+  {
+   "id": "erdos-problems-prizes",
+   "status": 200,
+   "ms": 757,
+   "bytes": 33882
+  },
+  {
+   "id": "github-fund",
+   "status": 200,
+   "ms": 831,
+   "bytes": 387123
+  },
+  {
+   "id": "lean-fro-programs",
+   "status": 200,
+   "ms": 920,
+   "bytes": 143839
+  },
+  {
+   "id": "sair-andrews-curtis-challenge",
+   "status": 200,
+   "ms": 1033,
+   "bytes": 6130
+  },
+  {
+   "id": "sair-lean-kernel-challenge",
+   "status": 200,
+   "ms": 1035,
+   "bytes": 5915
+  },
+  {
+   "id": "floss-fund",
+   "status": 200,
+   "ms": 1027,
+   "bytes": 7314
+  },
+  {
+   "id": "github-maintainer-programs",
+   "status": 200,
+   "ms": 1042,
+   "bytes": 376751
   },
   {
    "id": "ai-for-math-fund",
    "status": 200,
-   "ms": 3321,
-   "bytes": 529586
+   "ms": 1025,
+   "bytes": 695570
+  },
+  {
+   "id": "breakthrough-new-horizons-mathematics",
+   "status": 200,
+   "ms": 1195,
+   "bytes": 9341
+  },
+  {
+   "id": "sair-equational-theories-stage2",
+   "status": 200,
+   "ms": 1275,
+   "bytes": 7070
+  },
+  {
+   "id": "numfocus-small-development-grants",
+   "status": 200,
+   "ms": 1431,
+   "bytes": 262189
   },
   {
    "id": "microsoft-research-lean-award",
    "status": 200,
-   "ms": 3513,
+   "ms": 1433,
    "bytes": 195215
+  },
+  {
+   "id": "ibm-quantum-challenge",
+   "status": 200,
+   "ms": 1520,
+   "bytes": 56757
   },
   {
    "id": "built-with-claude-japan-2026",
    "status": 200,
-   "ms": 4539,
-   "bytes": 61717
+   "ms": 2747,
+   "bytes": 62983
+  },
+  {
+   "id": "github-secure-open-source-fund",
+   "status": 200,
+   "ms": 4193,
+   "bytes": 413379
   }
  ],
  "precedence": [
@@ -250,19 +250,25 @@
   "rows": [
    {
     "api": "hn-algolia",
-    "doi": "10.5281/zenodo.21781602",
+    "doi": "10.5281/zenodo.22700098",
     "status": 200,
     "mentions": 0
    },
    {
     "api": "hn-algolia",
+    "doi": "10.5281/zenodo.21781602",
+    "status": 200,
+    "mentions": 0
+   },
+   {
+    "api": "wikipedia-search",
     "doi": "10.5281/zenodo.22700098",
     "status": 200,
     "mentions": 0
    },
    {
     "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.21781602",
+    "doi": "10.5281/zenodo.23156998",
     "status": 200,
     "mentions": 0
    },
@@ -274,13 +280,7 @@
    },
    {
     "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.22700098",
+    "doi": "10.5281/zenodo.21781602",
     "status": 200,
     "mentions": 0
    },
@@ -300,12 +300,6 @@
     "api": "crossref-events",
     "doi": "10.5281/zenodo.22700098",
     "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "gdelt",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 429,
     "mentions": null
    },
    {
@@ -317,6 +311,12 @@
    {
     "api": "gdelt",
     "doi": "10.5281/zenodo.23156998",
+    "status": 429,
+    "mentions": null
+   },
+   {
+    "api": "gdelt",
+    "doi": "10.5281/zenodo.22700098",
     "status": 429,
     "mentions": null
    }

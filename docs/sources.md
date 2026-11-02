@@ -5,7 +5,7 @@ order: 57
 
 # The immutable sources of leads
 
-Read on 2026-11-02T19:43:05.050Z by `leads { sources }`: 294 of 299 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 24003 open books of which 3921 the theorems reach and 19987 of their domain are leads; 622 MCP doors proposed.
+Read on 2026-11-02T20:18:22.572Z by `leads { sources }`: 289 of 297 answers read: 14 immutable versions, 0 archived snapshots, 1 licence candidate(s) with their cases, 23939 open books of which 3915 the theorems reach and 19943 of their domain are leads; 622 MCP doors proposed.
 
 ## Licence candidates
 
@@ -25,7 +25,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 
 ## Textbooks
 
-24003 open books: 3921 reached by the theorems, 19987 of their domain are leads, 95 outside.
+23939 open books: 3915 reached by the theorems, 19943 of their domain are leads, 81 outside.
 
 | theorem | books |
 | --- | --- |
@@ -35,7 +35,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_eastin_knill` | 200 |
 | `textbook_thermal_time_sigma` | 174 |
 | `textbook_tsirelson` | 162 |
-| `textbook_patent_number_well_formed` | 155 |
+| `textbook_patent_number_well_formed` | 154 |
 | `textbook_raid_no_missing_store` | 129 |
 | `textbook_bernstein_vazirani` | 85 |
 | `textbook_clock_clone_involution` | 75 |
@@ -45,7 +45,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_xeb` | 63 |
 | `textbook_phase_estimation` | 63 |
 | `textbook_payload_operations` | 63 |
-| `textbook_double_torus` | 58 |
+| `textbook_double_torus` | 57 |
 | `textbook_binding_zero_hex_path` | 56 |
 | `textbook_news_problems` | 56 |
 | `computer` | 52 |
@@ -102,7 +102,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_bilinear_symmetry` | 8 |
 | `textbook_context_balanced` | 8 |
 | `textbook_ancient_law` | 7 |
-| `textbook_google_call_schema` | 7 |
 | `textbook_uuid_core` | 7 |
 | `textbook_hamming_code` | 7 |
 | `textbook_shor_nine_code` | 7 |
@@ -111,6 +110,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_editorial_posts` | 6 |
 | `textbook_error_remedies` | 6 |
 | `textbook_security_perspectives` | 6 |
+| `textbook_google_call_schema` | 6 |
 | `textbook_euler_fermat` | 6 |
 | `textbook_factors_divide` | 6 |
 | `textbook_codes_locales` | 6 |
@@ -136,7 +136,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_cache_saves_cost` | 4 |
 | `textbook_idle_scheduled_clears` | 4 |
 | `textbook_reflection_by_shape` | 4 |
-| `textbook_cl_described` | 4 |
 | `textbook_decode_not_search` | 3 |
 | `textbook_one_holder` | 3 |
 | `textbook_retry_supersedes` | 3 |
@@ -157,6 +156,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_h2_below_hartree_fock` | 3 |
 | `textbook_eta_from_receipts` | 3 |
 | `textbook_payload_queries` | 3 |
+| `textbook_cl_described` | 3 |
 | `textbook_coins_coils_balanced` | 3 |
 | `textbook_penalty_learned_prevents` | 2 |
 | `textbook_edit_collides` | 2 |
@@ -184,7 +184,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_integers_first` | 2 |
 | `Qpu.ZeroShot.allClasses_length` | 2 |
 | `textbook_kind_alphabet` | 2 |
-| `textbook_reference_index_cached` | 2 |
 | `Qpu.CausalInference.treated_control_partition` | 2 |
 | `Qpu.ProgramSynthesis.repair_root` | 2 |
 | `textbook_google_mcps` | 2 |
@@ -238,6 +237,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `textbook_route_or_lead` | 1 |
 | `textbook_double_entry` | 1 |
 | `textbook_artifacts_verified` | 1 |
+| `textbook_reference_index_cached` | 1 |
 | `textbook_referer_binds_not_entropy` | 1 |
 | `textbook_foreign_verdicts` | 1 |
 | `textbook_machine_allow_list` | 1 |
@@ -257,7 +257,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | `Qpu.Federated.quantization_error` | 1 |
 | `energy` | 1 |
 | `textbook_authorship_tracked` | 1 |
-| `textbook_translate_phrases` | 1 |
 
 ## Integrity of the public artifacts
 
@@ -589,7 +588,6 @@ Each is a candidate the court computed a case for. None is a verdict.
 | com.nadveo/service-booking | https://nadveo.com/mcp |
 | com.nashvillegutterguards/booking | https://nashvillegutterguards.com/mcp |
 | com.nearfine/books | https://nearfine.com/mcp |
-| com.nisebookings/booking | https://app.nisebookings.com/api/mcp |
 | io.github.Spacemandomains/library-mcp | https://librarymcp.vercel.app/api/mcp |
 | io.github.adriancisnerosspeed-hub/civic-library-mcp |  |
 | io.github.benthepythondev00/ad-library-intelligence | https://ad-library-intelligence.mcpize.run/mcp |
@@ -646,6 +644,7 @@ Each is a candidate the court computed a case for. None is a verdict.
 | io.github.papersflow-ai/papersflow | https://doxa.papersflow.ai/mcp |
 | io.github.pcp183/paper-lookup | https://paper-lookup-production-56b0.up.railway.app/mcp |
 | io.github.pipeworx-io/paperswithcode | https://gateway.pipeworx.io/paperswithcode/mcp |
+| com.nisebookings/booking | https://app.nisebookings.com/api/mcp |
 | com.nolamechanic/booking | https://nolamechanic.com/mcp |
 | com.okcwindshield/booking | https://okcwindshield.com/mcp |
 | com.omahahailguy/booking | https://omahahailguy.com/mcp |
