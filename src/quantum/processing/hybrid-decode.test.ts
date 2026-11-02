@@ -13,7 +13,7 @@ const factor = (args: Record<string, unknown>) => {
 }
 
 test('the witness channel decodes a minted integer in one reflection and seals the receipt', () => {
-  const made = factor({ create: { bits: 256 } })
+  const made = factor({ create: { bits: 256, seed: '42' } })
   const d = factor({ integer: made.integer, witness: made.witness, address: made.address })
   assert.equal(d.via, 'witness')
   assert.equal(d.decoded, true)
@@ -55,4 +55,9 @@ test('the factor door claims no more than it computed', () => {
   const m = factor({ integer: (2n ** 1279n - 1n).toString() })
   assert.equal(m.certain, false)
   assert.equal(m.complete, false)
+})
+
+test('create takes its entropy from the caller: the pure door draws none', () => {
+  assert.throws(() => factor({ create: { bits: 64 } }), /takes a seed/)
+  assert.notEqual(factor({ create: { bits: 64, seed: '1' } }).integer, factor({ create: { bits: 64, seed: '2' } }).integer)
 })

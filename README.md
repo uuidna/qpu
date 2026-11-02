@@ -17,7 +17,7 @@ Every figure below was measured on this tree on 2026-11-02.
 | Tracked files | 345 |
 | Source files under `src/quantum` (TypeScript) | 1 (12 lines) |
 | MCP tools | 47 |
-| Tests (`node --test`) | not yet run by `npm run next` |
+| Tests (`node --test`) | 213 pass, 0 fail of 213 |
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
@@ -200,7 +200,7 @@ lake build          # Lean 4.33.0 via elan; builds the Qpu library, no network
 import { handle } from './src/quantum/processing/mcp.ts'
 // mint an impossible integer, then decode it by its witness
 const made = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call',
-  params: { name: 'algorithm', arguments: { name: 'factor', create: { bits: 1000 } } } })
+  params: { name: 'algorithm', arguments: { name: 'factor', create: { bits: 1000, seed: [...crypto.getRandomValues(new Uint32Array(8))].join('') } } } })
 ```
 
 ## License

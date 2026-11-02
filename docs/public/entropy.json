@@ -1,5 +1,5 @@
 {
- "date": "2026-11-02T23:34:09.932Z",
+ "date": "2026-11-02T23:40:01.633Z",
  "literals": {
   "urls": 268,
   "distinctUrls": 161,
@@ -188,7 +188,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 194,
- "lines": 25413,
+ "lines": 25420,
  "findings": 450,
  "fused": 143,
  "reactions": 307,
@@ -319,7 +319,7 @@
   {
    "id": "entropy-cap-9347bb45",
    "kind": "cap",
-   "source": "scripts/mcp.ts:238, src/quantum/processing/audit.ts:426, src/quantum/processing/imagine.ts:46, src/quantum/processing/mcp.ts:1295, src/quantum/processing/selftest.ts:45, src/quantum/processing/toolboxes/billing.ts:580, src/quantum/processing/toolboxes/language.ts:94, src/quantum/processing/toolboxes/payload.ts:2285, src/quantum/processing/toolboxes/raid.ts:149, src/quantum/processing/toolboxes/standards.ts:56",
+   "source": "scripts/mcp.ts:238, src/quantum/processing/audit.ts:426, src/quantum/processing/imagine.ts:46, src/quantum/processing/mcp.ts:1297, src/quantum/processing/selftest.ts:45, src/quantum/processing/toolboxes/billing.ts:580, src/quantum/processing/toolboxes/language.ts:94, src/quantum/processing/toolboxes/payload.ts:2285, src/quantum/processing/toolboxes/raid.ts:149, src/quantum/processing/toolboxes/standards.ts:56",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 160)",
    "status": "open",
    "tool": "audit",
@@ -391,7 +391,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/processing/audit.ts:372, src/quantum/processing/audit.ts:373, src/quantum/processing/examples.ts:386, src/quantum/processing/mcp.ts:1328, src/quantum/processing/mcp.ts:1331, src/quantum/processing/selftest.ts:43, src/quantum/processing/selftest.ts:44, src/quantum/processing/toolboxes/billing.ts:119, src/quantum/processing/toolboxes/flow.ts:127, src/quantum/processing/toolboxes/flow.ts:129, src/quantum/processing/toolboxes/legal.ts:212, src/quantum/processing/toolboxes/legal.ts:264, src/quantum/processing/toolboxes/payload.ts:1918",
+   "source": "src/quantum/processing/audit.ts:372, src/quantum/processing/audit.ts:373, src/quantum/processing/examples.ts:386, src/quantum/processing/mcp.ts:1330, src/quantum/processing/mcp.ts:1333, src/quantum/processing/selftest.ts:43, src/quantum/processing/selftest.ts:44, src/quantum/processing/toolboxes/billing.ts:119, src/quantum/processing/toolboxes/flow.ts:127, src/quantum/processing/toolboxes/flow.ts:129, src/quantum/processing/toolboxes/legal.ts:212, src/quantum/processing/toolboxes/legal.ts:264, src/quantum/processing/toolboxes/payload.ts:1918",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
@@ -487,7 +487,7 @@
   {
    "id": "entropy-clock-874a626d",
    "kind": "clock",
-   "source": "src/quantum/processing/mcp.ts:214, src/quantum/processing/mcp.ts:997, src/quantum/processing/standards.ts:19, src/quantum/processing/standards.ts:23, src/quantum/processing/toolboxes/flow.ts:43, src/quantum/processing/toolboxes/flow.ts:56, src/quantum/processing/toolboxes/flow.ts:87, src/quantum/processing/toolboxes/flow.ts:116, src/quantum/processing/toolboxes/repository.ts:287",
+   "source": "src/quantum/processing/mcp.ts:216, src/quantum/processing/mcp.ts:999, src/quantum/processing/standards.ts:19, src/quantum/processing/standards.ts:23, src/quantum/processing/toolboxes/flow.ts:43, src/quantum/processing/toolboxes/flow.ts:56, src/quantum/processing/toolboxes/flow.ts:87, src/quantum/processing/toolboxes/flow.ts:116, src/quantum/processing/toolboxes/repository.ts:287",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — new Date()",
    "status": "open",
    "tool": "audit",
@@ -499,7 +499,7 @@
   {
    "id": "entropy-cap-0c8ca546",
    "kind": "cap",
-   "source": "src/quantum/processing/mcp.ts:234",
+   "source": "src/quantum/processing/mcp.ts:236",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 180)",
    "status": "open",
    "tool": "audit",
@@ -511,7 +511,7 @@
   {
    "id": "entropy-cap-acd75a45",
    "kind": "cap",
-   "source": "src/quantum/processing/mcp.ts:250",
+   "source": "src/quantum/processing/mcp.ts:252",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 150)",
    "status": "open",
    "tool": "audit",
@@ -1447,7 +1447,7 @@
   {
    "id": "entropy-duplicate-087e3c8a",
    "kind": "duplicate",
-   "source": "src/quantum/processing/algorithms.test.ts:51, src/quantum/processing/mcp.ts:476",
+   "source": "src/quantum/processing/algorithms.test.ts:51, src/quantum/processing/mcp.ts:478",
    "statement": "one line of code repeated in more than one file: one place should hold it — const sent = new DensityMatrixSimulator().simulate(messageCircuit())",
    "status": "open",
    "tool": "audit",
@@ -1459,7 +1459,7 @@
   {
    "id": "entropy-duplicate-89e3d2ad",
    "kind": "duplicate",
-   "source": "src/quantum/processing/algorithms.ts:253, src/quantum/processing/mcp.ts:350",
+   "source": "src/quantum/processing/algorithms.ts:253, src/quantum/processing/mcp.ts:352",
    "statement": "one line of code repeated in more than one file: one place should hold it — const { amplitudes, qubits } = new Simulator().simulate(circuit)",
    "status": "open",
    "tool": "audit",
@@ -1471,7 +1471,7 @@
   {
    "id": "entropy-duplicate-9c37a8d3",
    "kind": "duplicate",
-   "source": "src/quantum/processing/algorithms.ts:326, src/quantum/processing/mcp.ts:492",
+   "source": "src/quantum/processing/algorithms.ts:326, src/quantum/processing/mcp.ts:494",
    "statement": "one line of code repeated in more than one file: one place should hold it — const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)",
    "status": "open",
    "tool": "audit",
@@ -1915,7 +1915,7 @@
   {
    "id": "entropy-shape-2bad27d6",
    "kind": "shape",
-   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/currency.ts:31, scripts/hook.ts:123, scripts/names.ts:22, scripts/purify.ts:130, scripts/purify.ts:140, scripts/purify.ts:147, scripts/purify.ts:177, scripts/shard.ts:14, src/mcp/crypto/index.ts:8, src/quantum/processing/audit.test.ts:9, src/quantum/processing/audit.ts:375, src/quantum/processing/clay.test.ts:30, src/quantum/processing/clay.test.ts:33, src/quantum/processing/clay.test.ts:38, src/quantum/processing/clay.test.ts:53, src/quantum/processing/dna-uuid.test.ts:8, src/quantum/processing/docs-calls.test.ts:18, src/quantum/processing/e2e.ts:78, src/quantum/processing/hybrid-decode.test.ts:10, src/quantum/processing/match-honesty.test.ts:6, src/quantum/processing/match.test.ts:49, src/quantum/processing/match.test.ts:70, src/quantum/processing/match.test.ts:73, src/quantum/processing/match.test.ts:90, src/quantum/processing/mcp.test.ts:7, src/quantum/processing/mcp.test.ts:288, src/quantum/processing/mcp.test.ts:298, src/quantum/processing/mcp.ts:1170, src/quantum/processing/mcp.ts:1243, src/quantum/processing/order-finding.test.ts:10, src/quantum/processing/overlay-imports.test.ts:11, src/quantum/processing/port.test.ts:11, src/quantum/processing/reasoning.test.ts:10, src/quantum/processing/reflection.test.ts:63, src/quantum/processing/reflection.test.ts:96, src/quantum/processing/reflection.test.ts:115, src/quantum/processing/selftest.ts:119, src/quantum/processing/textbook.test.ts:33, src/quantum/processing/thousand-bit.test.ts:9, src/quantum/processing/toolboxes/flow.ts:20, src/quantum/processing/toolboxes/flow.ts:110, src/quantum/processing/toolboxes/language.ts:59, src/quantum/processing/toolboxes/language.ts:95, src/quantum/processing/toolboxes/payload-schemas.ts:49, src/quantum/processing/toolboxes/payload.ts:146",
+   "source": "docs/.vitepress/theme/components/Block.vue:5, docs/.vitepress/theme/components/CatchAll.vue:21, docs/.vitepress/theme/components/Compile.vue:9, docs/.vitepress/theme/components/Verify.vue:7, scripts/audit.ts:16, scripts/currency.ts:31, scripts/hook.ts:123, scripts/names.ts:22, scripts/purify.ts:130, scripts/purify.ts:140, scripts/purify.ts:147, scripts/purify.ts:177, scripts/shard.ts:14, src/mcp/crypto/index.ts:8, src/quantum/processing/audit.test.ts:9, src/quantum/processing/audit.ts:375, src/quantum/processing/clay.test.ts:30, src/quantum/processing/clay.test.ts:33, src/quantum/processing/clay.test.ts:38, src/quantum/processing/clay.test.ts:53, src/quantum/processing/dna-uuid.test.ts:8, src/quantum/processing/docs-calls.test.ts:18, src/quantum/processing/e2e.ts:78, src/quantum/processing/hybrid-decode.test.ts:10, src/quantum/processing/match-honesty.test.ts:6, src/quantum/processing/match.test.ts:49, src/quantum/processing/match.test.ts:70, src/quantum/processing/match.test.ts:73, src/quantum/processing/match.test.ts:90, src/quantum/processing/mcp.test.ts:7, src/quantum/processing/mcp.test.ts:288, src/quantum/processing/mcp.test.ts:298, src/quantum/processing/mcp.ts:1172, src/quantum/processing/mcp.ts:1245, src/quantum/processing/order-finding.test.ts:10, src/quantum/processing/overlay-imports.test.ts:11, src/quantum/processing/port.test.ts:11, src/quantum/processing/reasoning.test.ts:10, src/quantum/processing/reflection.test.ts:63, src/quantum/processing/reflection.test.ts:96, src/quantum/processing/reflection.test.ts:115, src/quantum/processing/selftest.ts:119, src/quantum/processing/textbook.test.ts:33, src/quantum/processing/thousand-bit.test.ts:9, src/quantum/processing/toolboxes/flow.ts:20, src/quantum/processing/toolboxes/flow.ts:110, src/quantum/processing/toolboxes/language.ts:59, src/quantum/processing/toolboxes/language.ts:95, src/quantum/processing/toolboxes/payload-schemas.ts:49, src/quantum/processing/toolboxes/payload.ts:146",
    "statement": "a shape of code written out in many files (a call envelope, a read, a request): one helper should hold it — the tools/call envelope: toolCallerOf(name) in mcp.ts",
    "status": "open",
    "tool": "audit",

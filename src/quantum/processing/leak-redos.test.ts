@@ -1,4 +1,4 @@
-// The leak scanner must stay linear on adversarial input (a ReDoS once hung the security step); addresses are built from parts so purify passes this file.
+// The leak scanner stays linear on adversarial input; addresses are built from parts so purify passes this file.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { listLeaks } from './audit.ts'

@@ -1,26 +1,26 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T23:11:54.175Z",
- "ms": 84605,
+ "date": "2026-11-02T23:36:52.593Z",
+ "ms": 86926,
  "offline": false,
  "read": {
   "sessions": 31,
   "subagents": 882,
-  "directives": 4443,
+  "directives": 4453,
   "answers": 103,
-  "toolInputs": 46877,
-  "errors": 1448
+  "toolInputs": 47009,
+  "errors": 1450
  },
  "decision": {
-  "total": 4546,
+  "total": 4556,
   "sessions": 25,
   "folded": 0,
-  "proposed": 573,
-  "once": 1341,
-  "assents": 767,
+  "proposed": 575,
+  "once": 1340,
+  "assents": 768,
   "answers": 103,
   "breaks": {
-   "raw git commit or push in a shell": 2218,
+   "raw git commit or push in a shell": 2220,
    "--no-verify": 21,
    "killing by name": 195,
    "raw npm or pnpm install": 201,
@@ -28,9 +28,9 @@
    "raw createEntries from a script": 47
   },
   "errors": {
-   "total": 1448,
+   "total": 1450,
    "byTool": {
-    "Bash": 893,
+    "Bash": 895,
     "Edit": 132,
     "WebFetch": 15,
     "ScheduleWakeup": 2,
@@ -88,7 +88,7 @@
     "match": 1
    }
   },
-  "items": 573,
+  "items": 575,
   "started": 0,
   "blockers": 0,
   "waves": 9
@@ -306,6 +306,35 @@
    "sessions": 3,
    "how": null,
    "files": [],
+   "cell": 18,
+   "wave": 1,
+   "blocked": false
+  },
+  {
+   "id": "proposed-40ddc16f-c8f7-8283-85c0-ff2fb25b750e",
+   "title": "do other work like improving and simplifying mcp to use full quantum",
+   "kind": "quality",
+   "netBytes": null,
+   "paid": true,
+   "proposed": true,
+   "act": false,
+   "started": false,
+   "priority": "high",
+   "directives": 7,
+   "sessions": 3,
+   "how": {
+    "name": "textbook",
+    "arguments": {
+     "evaluate": {
+      "theorem": "textbook_gravity_torus_sigma",
+      "values": {}
+     }
+    }
+   },
+   "files": [
+    "src/quantum/processing/coin-uuid.test.ts",
+    "src/quantum/processing/dna-uuid.test.ts"
+   ],
    "cell": 18,
    "wave": 1,
    "blocked": false
@@ -5121,7 +5150,7 @@
    "act": true,
    "started": false,
    "priority": "high",
-   "directives": 22,
+   "directives": 23,
    "sessions": 10,
    "how": {
     "name": "textbook",
@@ -6130,34 +6159,6 @@
    "sessions": 3,
    "how": null,
    "files": [],
-   "cell": 18,
-   "blocked": false
-  },
-  {
-   "id": "proposed-520319a5-71df-51c4-b0d3-2c67be53ea63",
-   "title": "each uuid is full featured formula",
-   "kind": "lead",
-   "netBytes": 998,
-   "paid": false,
-   "proposed": true,
-   "act": true,
-   "started": false,
-   "priority": "high",
-   "directives": 8,
-   "sessions": 5,
-   "how": {
-    "name": "textbook",
-    "arguments": {
-     "evaluate": {
-      "theorem": "textbook_gravity_torus_sigma",
-      "values": {}
-     }
-    }
-   },
-   "files": [
-    "src/quantum/processing/coin-uuid.test.ts",
-    "src/quantum/processing/dna-uuid.test.ts"
-   ],
    "cell": 18,
    "blocked": false
   },
@@ -8218,6 +8219,34 @@
    "blocked": false
   },
   {
+   "id": "proposed-520319a5-71df-51c4-b0d3-2c67be53ea63",
+   "title": "each uuid is full featured formula",
+   "kind": "lead",
+   "netBytes": 998,
+   "paid": false,
+   "proposed": true,
+   "act": true,
+   "started": false,
+   "priority": "high",
+   "directives": 5,
+   "sessions": 5,
+   "how": {
+    "name": "textbook",
+    "arguments": {
+     "evaluate": {
+      "theorem": "textbook_gravity_torus_sigma",
+      "values": {}
+     }
+    }
+   },
+   "files": [
+    "src/quantum/processing/coin-uuid.test.ts",
+    "src/quantum/processing/dna-uuid.test.ts"
+   ],
+   "cell": 18,
+   "blocked": false
+  },
+  {
    "id": "proposed-71fa3e62-f525-2407-a757-63c138a86077",
    "title": "are you going to address next steps?",
    "kind": "lead",
@@ -8331,6 +8360,23 @@
     "src/access/isAdminOrSelf.ts",
     "src/quantum/processing/reflection.test.ts"
    ],
+   "cell": 18,
+   "blocked": false
+  },
+  {
+   "id": "proposed-3db2dec7-50df-67f2-a163-033cd24790fe",
+   "title": "be strict and do not avoid the direct work to deliver the",
+   "kind": "lead",
+   "netBytes": 499,
+   "paid": false,
+   "proposed": true,
+   "act": true,
+   "started": false,
+   "priority": "high",
+   "directives": 4,
+   "sessions": 4,
+   "how": null,
+   "files": [],
    "cell": 18,
    "blocked": false
   },
@@ -10128,23 +10174,6 @@
    "blocked": false
   },
   {
-   "id": "proposed-3db2dec7-50df-67f2-a163-033cd24790fe",
-   "title": "be strict and do not avoid the direct work to deliver the",
-   "kind": "lead",
-   "netBytes": 499,
-   "paid": false,
-   "proposed": true,
-   "act": true,
-   "started": false,
-   "priority": "high",
-   "directives": 3,
-   "sessions": 3,
-   "how": null,
-   "files": [],
-   "cell": 18,
-   "blocked": false
-  },
-  {
    "id": "proposed-c57f25a4-1419-1514-a7ae-3e562d25651b",
    "title": "that block just made not possible the proof to surface and therefore",
    "kind": "lead",
@@ -11390,59 +11419,49 @@
    "directives": 5,
    "sessions": 4,
    "how": {
-    "name": "mongo",
+    "name": "leads",
     "arguments": {
-     "op": "find",
-     "collection": "processors",
-     "docs": [
-      {
-       "_id": "a",
-       "title": "Willow",
-       "qubits": 105,
-       "tags": [
-        "processor",
-        "google"
-       ],
-       "meta": {
-        "year": 2024
+     "sources": {
+      "context": {
+       "repository": "https://github.com/uuidna/qpu.git",
+       "owner": "uuidna",
+       "package": "@uuidna/qpu",
+       "hosts": [
+        "qpu.uuidna.com"
+       ]
+      },
+      "answers": [
+       {
+        "id": "npm-package:@uuidna/qpu",
+        "url": "https://registry.npmjs.org/@uuidna%2fqpu",
+        "status": 200,
+        "text": "{\"versions\":{\"1.4.0\":{\"dist\":{\"integrity\":\"sha512-x\"}}},\"time\":{\"1.4.0\":\"2026-10-20T00:00:00Z\"},\"maintainers\":[{\"name\":\"ceccec\"}]}"
+       },
+       {
+        "id": "npm-search:uuidna:0",
+        "url": "https://registry.npmjs.org/-/v1/search?text=uuidna",
+        "status": 200,
+        "text": "{\"total\":2,\"objects\":[{\"package\":{\"name\":\"@uuidna/qpu\",\"publisher\":{\"username\":\"ceccec\"}}},{\"package\":{\"name\":\"qpu-copy\",\"description\":\"a copy of uuidna qpu\",\"publisher\":{\"username\":\"someone\"}}}]}"
+       },
+       {
+        "id": "github-forks:uuidna/qpu:1",
+        "url": "https://api.github.com/repos/uuidna/qpu/forks",
+        "status": 200,
+        "text": "[{\"full_name\":\"x/qpu\",\"html_url\":\"https://github.com/x/qpu\",\"created_at\":\"2026-10-01T00:00:00Z\",\"pushed_at\":\"2026-10-02T00:00:00Z\"}]"
+       },
+       {
+        "id": "openstax:books:0",
+        "url": "https://openstax.org",
+        "status": 200,
+        "text": "{\"meta\":{\"total_count\":2},\"items\":[{\"id\":1,\"title\":\"Shor factoring and number theory\",\"book_subjects\":[{\"subject_name\":\"Math\"}]},{\"id\":2,\"title\":\"Principles of Accounting\",\"book_subjects\":[{\"subject_name\":\"Business\"}]}]}"
+       },
+       {
+        "id": "wayback:qpu.uuidna.com",
+        "url": "https://archive.org/wayback/available?url=qpu.uuidna.com",
+        "status": 429,
+        "text": ""
        }
-      },
-      {
-       "_id": "b",
-       "title": "Sycamore",
-       "qubits": 54,
-       "tags": [
-        "processor"
-       ],
-       "meta": {
-        "year": 2019
-       }
-      },
-      {
-       "_id": "c",
-       "title": "Quantum Echoes",
-       "qubits": 65,
-       "tags": [
-        "experiment"
-       ],
-       "meta": {
-        "year": 2025
-       }
-      }
-     ],
-     "filter": {
-      "_id": "b"
-     },
-     "update": {
-      "$set": {
-       "meta.year": 2020
-      },
-      "$inc": {
-       "qubits": 1
-      },
-      "$push": {
-       "tags": "updated"
-      }
+      ]
      }
     }
    },
@@ -12633,6 +12652,33 @@
    "files": [
     "src/collections/Tenants.ts",
     "src/quantum/processing/unit/tenants.ts"
+   ],
+   "cell": 18,
+   "blocked": false
+  },
+  {
+   "id": "proposed-640add1f-1cb8-2bce-852b-5c5de888d0f4",
+   "title": "kaggle app does not need payload.",
+   "kind": "lead",
+   "netBytes": 499,
+   "paid": false,
+   "proposed": true,
+   "act": false,
+   "started": false,
+   "priority": "high",
+   "directives": 3,
+   "sessions": 2,
+   "how": {
+    "name": "textbook",
+    "arguments": {
+     "evaluate": {
+      "theorem": "textbook_payload_access",
+      "values": {}
+     }
+    }
+   },
+   "files": [
+    "src/quantum/processing/leak-redos.test.ts"
    ],
    "cell": 18,
    "blocked": false
@@ -15193,6 +15239,35 @@
     }
    },
    "files": [],
+   "cell": 162,
+   "blocked": false
+  },
+  {
+   "id": "proposed-d88f49a7-7e27-4579-b108-f8cfa1bbd757",
+   "title": "split astronomical values with pi and primes and other crypto tools",
+   "kind": "lead",
+   "netBytes": 1497,
+   "paid": false,
+   "proposed": true,
+   "act": true,
+   "started": false,
+   "priority": "high",
+   "directives": 3,
+   "sessions": 2,
+   "how": {
+    "name": "textbook",
+    "arguments": {
+     "evaluate": {
+      "theorem": "textbook_impossible_trapdoor",
+      "values": {}
+     }
+    }
+   },
+   "files": [
+    "src/quantum/processing/split.ts",
+    "src/quantum/processing/toolboxes/crypto.ts",
+    "src/quantum/processing/unit/lean/Qpu/Primes.lean"
+   ],
    "cell": 162,
    "blocked": false
   },
@@ -19230,33 +19305,6 @@
    "sessions": 2,
    "how": null,
    "files": [],
-   "cell": 66,
-   "blocked": false
-  },
-  {
-   "id": "proposed-640add1f-1cb8-2bce-852b-5c5de888d0f4",
-   "title": "kaggle app does not need payload.",
-   "kind": "lead",
-   "netBytes": 499,
-   "paid": false,
-   "proposed": true,
-   "act": false,
-   "started": false,
-   "priority": "mid",
-   "directives": 2,
-   "sessions": 2,
-   "how": {
-    "name": "textbook",
-    "arguments": {
-     "evaluate": {
-      "theorem": "textbook_payload_access",
-      "values": {}
-     }
-    }
-   },
-   "files": [
-    "src/quantum/processing/leak-redos.test.ts"
-   ],
    "cell": 66,
    "blocked": false
   },
@@ -24146,9 +24194,9 @@
  ],
  "combinations": {
   "total": 432,
-  "placed": 754,
-  "filled": 37,
-  "empty": 395,
+  "placed": 760,
+  "filled": 38,
+  "empty": 394,
   "default": {
    "cell": 0,
    "from": "a432",
@@ -24169,12 +24217,12 @@
    {
     "cell": 56,
     "labels": "open · code · offline · gravity · cleanable · mid · doubling",
-    "count": 86
+    "count": 85
    },
    {
     "cell": 64,
     "labels": "open · code · offline · harmonic · judgment · mid · doubling",
-    "count": 64
+    "count": 67
    },
    {
     "cell": 97,
@@ -24192,14 +24240,14 @@
     "count": 48
    },
    {
-    "cell": 344,
-    "labels": "open · code · offline · gravity · cleanable · mid · zero",
+    "cell": 208,
+    "labels": "open · code · offline · harmonic · judgment · mid · axis",
     "count": 29
    },
    {
-    "cell": 208,
-    "labels": "open · code · offline · harmonic · judgment · mid · axis",
-    "count": 28
+    "cell": 344,
+    "labels": "open · code · offline · gravity · cleanable · mid · zero",
+    "count": 29
    },
    {
     "cell": 245,
@@ -24269,6 +24317,11 @@
    {
     "cell": 66,
     "labels": "open · payload · offline · harmonic · judgment · mid · doubling",
+    "count": 3
+   },
+   {
+    "cell": 80,
+    "labels": "open · code · offline · harmonic · blocked · mid · doubling",
     "count": 3
    },
    {
@@ -24345,17 +24398,17 @@
  },
  "rosetta": {
   "host": "uuidna.com",
-  "values": 21,
-  "verified": 21,
+  "values": 20,
+  "verified": 20,
   "disagree": 0,
   "refused": 0,
   "calls": 20,
   "sealedNow": 13,
-  "sealedKept": 69,
+  "sealedKept": 82,
   "grid": {
-   "cellsCovered": 113,
-   "asked": 78,
-   "verified": 78,
+   "cellsCovered": 127,
+   "asked": 90,
+   "verified": 90,
    "disagree": 0
   },
   "leads": []
@@ -24370,7 +24423,7 @@
    "size": "small",
    "tests": 8,
    "passed": 8,
-   "ms": 5,
+   "ms": 6,
    "budgetMs": 60000,
    "withinBudget": true
   },
@@ -24378,15 +24431,15 @@
    "size": "medium",
    "tests": 3,
    "passed": 1,
-   "ms": 35481,
+   "ms": 38260,
    "budgetMs": 300000,
    "withinBudget": true
   },
   {
    "size": "large",
-   "tests": 42,
-   "passed": 28,
-   "ms": 3565,
+   "tests": 40,
+   "passed": 25,
+   "ms": 663,
    "budgetMs": 900000,
    "withinBudget": true
   },
@@ -24394,7 +24447,7 @@
    "size": "enormous",
    "tests": 1,
    "passed": 1,
-   "ms": 18469,
+   "ms": 20893,
    "budgetMs": 3600000,
    "withinBudget": true
   }
@@ -24493,10 +24546,6 @@
    "passed": true
   },
   {
-   "name": "[large] rosetta 28 on uuidna.com",
-   "passed": true
-  },
-  {
    "name": "[large] rosetta 29 on uuidna.com",
    "passed": true
   },
@@ -24509,11 +24558,11 @@
    "passed": true
   },
   {
-   "name": "[large] rosetta 64 on uuidna.com",
+   "name": "[large] rosetta 67 on uuidna.com",
    "passed": true
   },
   {
-   "name": "[large] rosetta 86 on uuidna.com",
+   "name": "[large] rosetta 85 on uuidna.com",
    "passed": true
   },
   {
@@ -24577,10 +24626,6 @@
    "passed": true
   },
   {
-   "name": "[large] tree reading of 28 decoded by majority over 4 copies",
-   "passed": true
-  },
-  {
    "name": "[large] tree reading of 29 decoded by majority over 4 copies",
    "passed": false
   },
@@ -24593,11 +24638,11 @@
    "passed": false
   },
   {
-   "name": "[large] tree reading of 64 decoded by majority over 4 copies",
-   "passed": true
+   "name": "[large] tree reading of 67 decoded by majority over 4 copies",
+   "passed": false
   },
   {
-   "name": "[large] tree reading of 86 decoded by majority over 4 copies",
+   "name": "[large] tree reading of 85 decoded by majority over 4 copies",
    "passed": false
   },
   {
@@ -24609,7 +24654,7 @@
    "passed": false
   },
   {
-   "name": "[enormous] the grid quantum: 113 of 432 cells read on both sides",
+   "name": "[enormous] the grid quantum: 127 of 432 cells read on both sides",
    "passed": true
   },
   {
@@ -24622,12 +24667,12 @@
   }
  ],
  "quality": {
-  "items": 71,
+  "items": 72,
   "waves": 6,
   "freed": 20360,
   "cost": 499,
   "owed": 19960,
-  "unpaid": 476
+  "unpaid": 477
  },
  "route": {
   "estimated": true,
@@ -24641,6 +24686,7 @@
      "proposed-5209a115-4bb7-74da-884f-f16dd2c17903",
      "proposed-5f707530-a4a4-49a0-89cb-3935c1f8ea01",
      "proposed-0668c039-4333-7e09-a217-9c233457f6a9",
+     "proposed-40ddc16f-c8f7-8283-85c0-ff2fb25b750e",
      "proposed-1f12528a-786b-8f58-8a18-679ed192a423",
      "proposed-a00a6189-29a6-56a6-9f75-fb99b4ccf7e7",
      "proposed-2fc7423f-debb-54d1-8998-f76989cdbf90",
@@ -24686,9 +24732,9 @@
      "proposed-622270b0-e61a-5477-a730-e83e95f12365",
      "proposed-71e25a71-209f-5719-92d9-3b7493fcf898"
     ],
-    "distance": 72,
-    "duration": "35513s",
-    "staticDuration": "232449s"
+    "distance": 74,
+    "duration": "29842s",
+    "staticDuration": "200756s"
    },
    {
     "startLocation": "proposed-829c6538-34c9-73f5-9381-acb0316423e4",
@@ -24703,8 +24749,8 @@
      "proposed-e72704c3-ffc1-4702-8b62-559a0252e63b"
     ],
     "distance": 27,
-    "duration": "35513s",
-    "staticDuration": "87168s"
+    "duration": "29842s",
+    "staticDuration": "73249s"
    },
    {
     "startLocation": "proposed-e6ca2d22-8879-6f58-a018-24d924bf4981",
@@ -24718,8 +24764,8 @@
      "proposed-8cea7cd4-025d-8637-a460-71b958acbbc9"
     ],
     "distance": 22,
-    "duration": "35513s",
-    "staticDuration": "71026s"
+    "duration": "29842s",
+    "staticDuration": "59684s"
    },
    {
     "startLocation": "proposed-41182020-394e-5c97-a21a-9b0396dc88b8",
@@ -24731,8 +24777,8 @@
      "proposed-fe8d3014-59f3-3afe-b047-a26969497555"
     ],
     "distance": 18,
-    "duration": "35513s",
-    "staticDuration": "58112s"
+    "duration": "29842s",
+    "staticDuration": "48833s"
    },
    {
     "startLocation": "proposed-4a6e5bc5-4b8d-839a-8402-e14958c027a7",
@@ -24743,8 +24789,8 @@
      "proposed-1eb37cb5-9d25-7c98-bb50-6b83f736ff54"
     ],
     "distance": 15,
-    "duration": "35513s",
-    "staticDuration": "48427s"
+    "duration": "29842s",
+    "staticDuration": "40694s"
    },
    {
     "startLocation": "proposed-aa73ff0c-2e60-5ac6-84a2-97403558add5",
@@ -24754,8 +24800,8 @@
      "proposed-5edff834-8e8b-3a18-8fb8-7f2bd0908c9e"
     ],
     "distance": 8,
-    "duration": "19371s",
-    "staticDuration": "25828s"
+    "duration": "16278s",
+    "staticDuration": "21703s"
    },
    {
     "startLocation": "proposed-9d76da6d-17ae-7d48-a9e1-37d5f94d77ea",
@@ -24785,8 +24831,8 @@
      "proposed-0ca90a37-2d56-2268-b304-760266fab9ea"
     ],
     "distance": 35,
-    "duration": "12914s",
-    "staticDuration": "112996s"
+    "duration": "10852s",
+    "staticDuration": "94952s"
    },
    {
     "startLocation": "proposed-c450cd86-0b6a-601f-a01c-0a9c9428a30b",
@@ -24797,8 +24843,8 @@
      "proposed-bddbf080-1a2c-1499-9ba0-e29287380b9f"
     ],
     "distance": 3,
-    "duration": "3228s",
-    "staticDuration": "9685s"
+    "duration": "2713s",
+    "staticDuration": "8139s"
    },
    {
     "startLocation": "proposed-efabc864-9d86-3049-a65a-04d0457074d6",
@@ -24807,16 +24853,16 @@
      "proposed-efabc864-9d86-3049-a65a-04d0457074d6"
     ],
     "distance": 2,
-    "duration": "6457s",
-    "staticDuration": "6457s"
+    "duration": "5426s",
+    "staticDuration": "5426s"
    }
   ],
-  "distance": 202,
-  "duration": "219535s",
-  "staticDuration": "652149s",
+  "distance": 204,
+  "duration": "184479s",
+  "staticDuration": "553436s",
   "interval": [
    "0s",
-   "4965707s"
+   "4928950s"
   ],
   "theorem": "textbook_route_waves"
  }

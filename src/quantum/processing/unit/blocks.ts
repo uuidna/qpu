@@ -261,7 +261,7 @@ export const streamOf = (hexes: readonly string[], q: StreamQuery = {}) => {
   return { stream: hexes.length, filtered: filtered.length, rows: executed, ops: { where: w, sort: key, descending: !!q.descending, executed: !!q.execute }, says: 'a stream of hexes alone: queried by handle, nibble, item, variant or hue; sorted by hex, hue, program or tail; executed as the program rotated (the next address) and the page and dashboard the address answers; every row styled from itself' }
 }
 
-/** DNA as a UUID stream (uuid dna uuidna, textbook_dna_base4): A, C, G, T are base-four digits, two bases a nibble, 64 a UUID; read back exactly with the base count. */
+/** DNA as a UUID stream (textbook_dna_base4): two bases a nibble, 64 a UUID, read back exactly with the base count. */
 const DNA_BASES = 'ACGT'
 export const dnaToHex = (seq: string): string => { const s = seq.toUpperCase().replace(/[^ACGT]/g, ''); let h = ''; for (let i = 0; i < s.length; i += 2) h += (((DNA_BASES.indexOf(s[i]!) & 3) << 2) | (i + 1 < s.length ? DNA_BASES.indexOf(s[i + 1]!) & 3 : 0)).toString(16); return h }
 export const hexToDna = (hex: string): string => [...hex.toLowerCase().replace(/[^0-9a-f]/g, '')].map((c) => { const n = parseInt(c, 16); return DNA_BASES[(n >> 2) & 3]! + DNA_BASES[n & 3]! }).join('')

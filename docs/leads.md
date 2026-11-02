@@ -328,4 +328,4 @@ Every lead on quantumai.google and its linked PDF, with its status and the MCP t
 | `missing-1000bit-blind` | partial | algorithm | the 1000-bit gate integer factored without a witness | processed by algorithm: incomplete (entry ca135ca9-2e92-8810-9531-4a5afed15402) |
 | `missing-singularity` | partial | match | clay rewrites the textbooks harmonised in quantum singularity | processed by match: unknown (entry 1f3427ac-68c1-1813-a0a1-5aeabcf4a17d) |
 | `missing-hardware-attestation` | blocked | — | a hardware attestation (TPM quote, SEV-SNP or Nitro report) witnesses a save | an instance must provide the quote; none of the local or Cloudflare instances does |
-| `missing-metatron-solids` | open | match | Metatron's cube, the 13-circle figure, contains all five Platonic solids |  |
+| `missing-metatron-solids` | served | match | Metatron's cube, the 13-circle figure, contains all five Platonic solids | served by match (entry bd3ed8d6-26e5-8c47-93b1-b4f112edf865) |
