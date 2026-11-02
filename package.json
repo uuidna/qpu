@@ -1,6 +1,6 @@
 {
   "name": "@uuidna/qpu",
-  "version": "1.4.0",
+  "version": "1.0.2",
   "type": "module",
   "exports": {
     ".": "./src/quantum/processing/unit/index.ts",

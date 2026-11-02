@@ -11,6 +11,7 @@ import { TEXTBOOK_THEOREMS, updateTheoremSources, getReflections } from './textb
 import { sdkOf, accessAuditOf, buildOf } from './toolboxes/payload.ts'
 import { blockOf, verifyOf, sealOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf, memoOf } from './unit/blocks.ts'
 import { INSTRUCTIONS, LICENSE } from './unit/license.ts'
+import { VERSION } from './unit/version.ts'
 import { recomputeClay, reflectionOfRegister, digitalRoot } from './clay-register.ts'
 import { composePage } from './compose.ts'
 import { mayChoose, ROLE_RANK, type Role } from './unit/roles.ts'
@@ -217,7 +218,7 @@ const clayCatalog = () => {
 // what the tools answer (textbook_impossible_trapdoor, textbook_shor_sigma_root, textbook_factors_divide). Deterministic: the demo primes are seeded.
 type ReadmeMeasured = { date?: string; version?: string; doi?: string; rows?: [string, string][]; census?: { declared?: number | string; kernel?: string; generated?: number; sorried?: string; axioms?: string; handWritten?: number } }
 export const clayReadme = (m: ReadmeMeasured = {}) => {
-  const date = m.date ?? new Date().toISOString().slice(0, 10), version = m.version ?? '1.4.0'
+  const date = m.date ?? new Date().toISOString().slice(0, 10), version = m.version ?? '0.0.0'
   const reg = recomputeClay(), cat = clayCatalog()
   // the thousand-bit impossible integer, minted and decoded live over the clay cluster (deterministic by seed): the worked proof of §2
   const made = createImpossible({ bits: 1000, seed: 1n }), dec = decodeImpossible(made.N, made.witness), addr = impossibleAddress(made.N, made.witness)
@@ -1285,7 +1286,7 @@ export const handle = (message: Rpc): Reply => {
   const fail = (code: number, text: string): Reply => ({ jsonrpc: '2.0', id, error: { code, message: text, data: { court: summonCourt({ gate: `${message.method}${(message as { params?: { name?: string } }).params?.name ? ` ${(message as { params: { name: string } }).params.name}` : ''}`, code, evidence: text }) } } })
   const params = (message.params ?? {}) as Record<string, unknown>, ok = (result: unknown) => ({ jsonrpc: '2.0', id, result }) as Reply
   try {
-    if (message.method === 'initialize') return ok({ protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } } }, serverInfo: { name: 'qpu', version: '1.4.0' , build: buildOf(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
+    if (message.method === 'initialize') return ok({ protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } } }, serverInfo: { name: 'qpu', version: VERSION, build: buildOf(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {

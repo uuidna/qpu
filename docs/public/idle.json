@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T15:19:40.836Z",
+ "date": "2026-11-02T19:33:10.456Z",
  "input": {
   "doors": [
    {
@@ -86,6 +86,11 @@
    {
     "name": "verify.witnesses",
     "bytes": 424,
+    "reached": true
+   },
+   {
+    "name": "verify.move",
+    "bytes": 294,
     "reached": true
    },
    {
@@ -180,7 +185,7 @@
    },
    {
     "name": "algorithm.name",
-    "bytes": 269,
+    "bytes": 280,
     "reached": true
    },
    {
@@ -235,7 +240,17 @@
    },
    {
     "name": "algorithm.order",
-    "bytes": 258,
+    "bytes": 265,
+    "reached": true
+   },
+   {
+    "name": "algorithm.budget",
+    "bytes": 255,
+    "reached": false
+   },
+   {
+    "name": "algorithm.find",
+    "bytes": 240,
     "reached": true
    },
    {
@@ -1696,6 +1711,16 @@
    {
     "name": "fold.withPieces",
     "bytes": 109,
+    "reached": false
+   },
+   {
+    "name": "fold.dna",
+    "bytes": 272,
+    "reached": true
+   },
+   {
+    "name": "fold.reflect",
+    "bytes": 404,
     "reached": false
    },
    {
@@ -3196,6 +3221,11 @@
     "used": true
    },
    {
+    "key": "textbook_order_finding",
+    "bytes": 141,
+    "used": true
+   },
+   {
     "key": "textbook_factors_divide",
     "bytes": 90,
     "used": true
@@ -3243,6 +3273,16 @@
    {
     "key": "textbook_clock_clone_involution",
     "bytes": 200,
+    "used": true
+   },
+   {
+    "key": "textbook_witness_clock_move",
+    "bytes": 192,
+    "used": true
+   },
+   {
+    "key": "textbook_dna_base4",
+    "bytes": 147,
     "used": true
    },
    {
@@ -3494,6 +3534,14 @@
   "qubits": {
    "bound": 6,
    "calls": [
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
     {
      "door": "algorithm",
      "used": 1
@@ -3767,7 +3815,7 @@
    },
    {
     "name": "compute.googleapis.com",
-    "called": false
+    "called": true
    },
    {
     "name": "compute.googleapis.com",
@@ -3775,7 +3823,7 @@
    },
    {
     "name": "container.googleapis.com",
-    "called": false
+    "called": true
    },
    {
     "name": "container.googleapis.com",
@@ -3791,7 +3839,7 @@
    },
    {
     "name": "datastream.googleapis.com",
-    "called": false
+    "called": true
    },
    {
     "name": "datastream.googleapis.com",
@@ -3799,7 +3847,7 @@
    },
    {
     "name": "bigtableadmin.googleapis.com",
-    "called": false
+    "called": true
    },
    {
     "name": "bigtableadmin.googleapis.com",
@@ -3807,7 +3855,7 @@
    },
    {
     "name": "memorystore.googleapis.com",
-    "called": false
+    "called": true
    },
    {
     "name": "memorystore.googleapis.com",
@@ -3815,7 +3863,7 @@
    },
    {
     "name": "androidmanagement.googleapis.com",
-    "called": false
+    "called": true
    },
    {
     "name": "androidmanagement.googleapis.com",
@@ -3955,7 +4003,7 @@
    },
    {
     "name": "patents.google.com",
-    "called": false
+    "called": true
    },
    {
     "name": "data.epo.org",
@@ -4053,7 +4101,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4081,7 +4129,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4109,7 +4157,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4137,7 +4185,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4165,7 +4213,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4193,7 +4241,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4221,7 +4269,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4249,7 +4297,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4277,7 +4325,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4305,7 +4353,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 103,
+   "tokens": 113,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4332,9 +4380,9 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 59013,
-   "used": 48189,
-   "idle": 10824,
+   "capacity": 60496,
+   "used": 49013,
+   "idle": 11483,
    "percentIdle": 18,
    "idleNames": [
     "clay.catalog",
@@ -4348,6 +4396,7 @@
     "circuit.device_noise",
     "algorithm.reflections",
     "algorithm.from",
+    "algorithm.budget",
     "algorithm.sweep",
     "algorithm.repetitions",
     "algorithm.nodes",
@@ -4455,6 +4504,7 @@
     "fold.pieces",
     "fold.root",
     "fold.withPieces",
+    "fold.reflect",
     "fold.selftest",
     "seal.selftest",
     "attest.hosts",
@@ -4463,8 +4513,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 35588,
-   "used": 35588,
+   "capacity": 36068,
+   "used": 36068,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []
@@ -4472,9 +4522,9 @@
   "gates": {
    "unit": "calls",
    "capacity": 108,
-   "used": 58,
-   "idle": 50,
-   "percentIdle": 46,
+   "used": 65,
+   "idle": 43,
+   "percentIdle": 39,
    "idleNames": [
     "docs.mcp.cloudflare.com",
     "bindings.mcp.cloudflare.com",
@@ -4505,20 +4555,13 @@
     "stitch.googleapis.com",
     "stitch.googleapis.com",
     "compute.googleapis.com",
-    "compute.googleapis.com",
-    "container.googleapis.com",
     "container.googleapis.com",
     "composer.googleapis.com",
     "composer.googleapis.com",
     "datastream.googleapis.com",
-    "datastream.googleapis.com",
-    "bigtableadmin.googleapis.com",
     "bigtableadmin.googleapis.com",
     "memorystore.googleapis.com",
-    "memorystore.googleapis.com",
     "androidmanagement.googleapis.com",
-    "androidmanagement.googleapis.com",
-    "patents.google.com",
     "ct.googleapis.com",
     "oeis.org",
     "quantumai.google",
@@ -4530,11 +4573,13 @@
   },
   "qubits": {
    "unit": "qubits per call",
-   "capacity": 162,
-   "used": 39,
-   "idle": 123,
-   "percentIdle": 75,
+   "capacity": 174,
+   "used": 41,
+   "idle": 133,
+   "percentIdle": 76,
    "idleNames": [
+    "algorithm",
+    "algorithm",
     "algorithm",
     "algorithm",
     "algorithm",

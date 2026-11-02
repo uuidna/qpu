@@ -126,7 +126,7 @@ const rows: [string, string][] = [
 // (clay via the thousand bit and back), the kernel census, the MCP surface and the catalog — with the measured figures taken above, so the prose
 // can never drift from what the tools answer; never hand-written (textbook_impossible_trapdoor, textbook_shor_sigma_root, textbook_factors_divide).
 const readme = join(ROOT, 'README.md')
-const pkgVersion = (getJson('package.json') as { version?: string }).version ?? '1.4.0'
+const pkgVersion = (getJson('package.json') as { version?: string }).version ?? '0.0.0'
 const readmeGen = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: { readme: { date: new Date().toISOString().slice(0, 10), version: pkgVersion, rows, census: { declared, kernel, handWritten: handWritten.length, generated, sorried, axioms } } } } }) as { result?: { structuredContent?: { markdown?: string; thousandBit?: { decoded?: boolean; verified?: boolean; searched?: string } } }; error?: { message?: string } }
 const md = readmeGen.result?.structuredContent?.markdown
 const tb = readmeGen.result?.structuredContent?.thousandBit

@@ -1,8 +1,8 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T12:51:51.225Z",
+ "date": "2026-11-02T19:45:57.502Z",
  "counts": {
-  "own": 190,
+  "own": 194,
   "unrecognised": 93,
   "unasked": 55,
   "candidate": 3
@@ -2030,6 +2030,13 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_order_finding",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_factors_divide",
    "kind": "general",
    "status": "unasked",
@@ -2065,6 +2072,13 @@
    "recognisedBy": null
   },
   {
+   "theorem": "textbook_impossible_trapdoor",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
    "theorem": "textbook_thermal_time_sigma",
    "kind": "own",
    "status": "own",
@@ -2087,6 +2101,20 @@
   },
   {
    "theorem": "textbook_clock_clone_involution",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_witness_clock_move",
+   "kind": "own",
+   "status": "own",
+   "candidates": [],
+   "recognisedBy": null
+  },
+  {
+   "theorem": "textbook_dna_base4",
    "kind": "own",
    "status": "own",
    "candidates": [],
