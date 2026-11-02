@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T09:29:30.185Z",
+ "date": "2026-11-02T10:50:29.699Z",
  "input": {
   "doors": [
    {
@@ -391,7 +391,7 @@
    {
     "name": "leads.carry",
     "bytes": 198,
-    "reached": true
+    "reached": false
    },
    {
     "name": "leads.session",
@@ -1966,16 +1966,6 @@
     "used": true
    },
    {
-    "key": "textbook_code_folds",
-    "bytes": 100,
-    "used": true
-   },
-   {
-    "key": "textbook_new_doors_proven",
-    "bytes": 129,
-    "used": true
-   },
-   {
     "key": "textbook_cells_text",
     "bytes": 105,
     "used": true
@@ -1983,11 +1973,6 @@
    {
     "key": "textbook_tools_listed",
     "bytes": 114,
-    "used": true
-   },
-   {
-    "key": "textbook_literal_in_registry",
-    "bytes": 867,
     "used": true
    },
    {
@@ -2406,11 +2391,6 @@
     "used": true
    },
    {
-    "key": "textbook_carry_release",
-    "bytes": 106,
-    "used": true
-   },
-   {
     "key": "textbook_news_adapters",
     "bytes": 55,
     "used": true
@@ -2618,11 +2598,6 @@
    {
     "key": "textbook_google_call_schema",
     "bytes": 158,
-    "used": true
-   },
-   {
-    "key": "textbook_violation_one_kind",
-    "bytes": 103,
     "used": true
    },
    {
@@ -4320,8 +4295,8 @@
   "doors": {
    "unit": "schema bytes",
    "capacity": 57512,
-   "used": 47468,
-   "idle": 10044,
+   "used": 47270,
+   "idle": 10242,
    "percentIdle": 17,
    "idleNames": [
     "verify.prev",
@@ -4354,6 +4329,7 @@
     "fault-tolerant-design.nodes",
     "leads.records",
     "leads.lead",
+    "leads.carry",
     "leads.status",
     "leads.ids",
     "textbook.verify",
@@ -4447,8 +4423,8 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 36748,
-   "used": 36748,
+   "capacity": 35443,
+   "used": 35443,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []

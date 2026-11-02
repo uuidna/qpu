@@ -48,3 +48,21 @@ test('every clay case surfaces all its kernel-accepted proofs and docs over MCP 
   assert.equal(rels.find((x) => x.name === 'relation_28')!.case, 'pascal-rule-28')
   assert.ok(rels.find((x) => x.name === 'relation_28')!.theorems.some((t) => t.theorem === 'textbook_pascal_rule' && t.proof.includes('theorem textbook_pascal_rule')))
 })
+
+test('the clay catalog: each textbook a product, each case a variant, cross-textbook theorems the variations, priced in coins per superposition', () => {
+  const cat = (handle({ jsonrpc: '2.0', id: 5, method: 'tools/call', params: { name: 'clay', arguments: { catalog: true } } }) as { result: { structuredContent: { total: number; products: { product: string; title: string; taxonomy: string[]; variants: { case: string; relation: string; bits: number; superposition: number; coins: number; price: string }[]; variations: string[]; kernelAccepted: boolean; price: { coins: number; superposition: number; perSuperposition: number; address: string } }[] } } }).result.structuredContent
+  assert.ok(cat.total >= 1 && cat.products.length === cat.total)
+  for (const p of cat.products) {
+    assert.ok(p.product.startsWith('textbook_') && p.kernelAccepted, p.product)
+    assert.ok(p.variants.length >= 1, `${p.product} has no variant`)
+    assert.ok(Array.isArray(p.taxonomy) && !p.variations.includes(p.product), p.product)
+    assert.ok(p.price.coins > 0 && p.price.superposition > 0 && /^[0-9a-f-]{36}$/.test(p.price.address), `${p.product} price`)
+    for (const v of p.variants) assert.ok(v.coins > 0 && v.superposition === 2 ** v.bits && /^[0-9a-f-]{36}$/.test(v.price), `${p.product}/${v.case}`)
+  }
+  // cross-textbook use shows up as variations somewhere, and the families are the taxonomy
+  assert.ok(cat.products.some((p) => p.variations.length >= 1), 'no cross-textbook variations')
+  assert.ok(cat.products.some((p) => p.taxonomy.length >= 1), 'no taxonomy')
+  // pascal-rule is a product whose variants include the clay case for relation_28
+  const pascal = cat.products.find((p) => p.product === 'textbook_pascal_rule')
+  assert.ok(pascal && pascal.variants.some((v) => v.relation === 'relation_28' && v.case === 'pascal-rule-28'), 'pascal-rule product missing its variant')
+})

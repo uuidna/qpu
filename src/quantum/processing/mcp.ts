@@ -148,6 +148,24 @@ const clayCaseTheorems = (r: { name: string; statement: string }) => {
   for (const fn in CLAY_THEOREM_FN) if (new RegExp(`\\b${fn}\\b`).test(r.statement)) names.add(CLAY_THEOREM_FN[fn]!)
   return [...names].flatMap((nm) => { const key = 'textbook_' + nm, tb = TEXTBOOK_THEOREMS.find((t) => t.key === key), k = THEOREMS.find((t) => t.key === key), b = nm.replace(/_/g, '-'); return k ? [{ theorem: key, case: b.endsWith(v) ? b : `${b}-${v}`, proof: tb?.lean ?? k.statement, docs: tb?.says ?? '', kernelAccepted: true }] : [] })
 }
+// The sellable catalog derived from the clay cases: each textbook theorem a product, each clay case that instances it a variant, the other theorems
+// its cases cross a variation (the cross-textbook use), the case families the taxonomy; priced in coins per superposition (2^bits states), every
+// price the content address of its (product, relation, coins, superposition), so costs are comparable by the one UUID accounting and pass computation
+// to computation. The clay recompute and the kernel decide each case (and the circuit tool simulates its variant via Cirq), never asserted.
+const clayCatalog = () => {
+  const cases = recomputeClay().relations.map((r) => ({ name: r.name, bits: r.bits, families: r.families ?? [], theorems: clayCaseTheorems(r) }))
+  const byProduct = new Map<string, typeof cases>()
+  for (const c of cases) for (const t of c.theorems) { const arr = byProduct.get(t.theorem) ?? []; arr.push(c); byProduct.set(t.theorem, arr) }
+  const products = [...byProduct.entries()].map(([theorem, cs]) => {
+    const variants = cs.map((c) => { const superposition = 2 ** c.bits, coins = c.bits; return { case: c.theorems.find((t) => t.theorem === theorem)!.case, relation: c.name, bits: c.bits, superposition, coins, price: uuidOf(JSON.stringify({ product: theorem, relation: c.name, coins, superposition })) } })
+    const variations = [...new Set(cs.flatMap((c) => c.theorems.map((t) => t.theorem)).filter((k) => k !== theorem))].sort()
+    const taxonomy = [...new Set(cs.flatMap((c) => c.families))].sort()
+    const coins = variants.reduce((n, v) => n + v.coins, 0), superposition = variants.reduce((n, v) => n + v.superposition, 0)
+    const tb = TEXTBOOK_THEOREMS.find((t) => t.key === theorem)
+    return { product: theorem, title: theorem.replace(/^textbook_/, '').replace(/_/g, '-'), taxonomy, variants, variations, proof: tb?.lean ?? null, kernelAccepted: THEOREMS.some((t) => t.key === theorem), decidedVia: 'cirq: the circuit tool simulates each variant; the clay recompute and the kernel decide it, never asserted', price: { coins, superposition, perSuperposition: coins / superposition, address: uuidOf(JSON.stringify({ product: theorem, coins, superposition })) } }
+  }).sort((a, b) => a.product.localeCompare(b.product))
+  return { products, total: products.length, theorems: ['textbook_free_or_coil'], says: 'the sellable catalog from the clay cases: each textbook a product, each case a variant, the cross-textbook theorems the variations, the families the taxonomy; priced in coins per superposition (2^bits), every price a content address so costs are comparable and pass computation to computation' }
+}
 /** A proof checked both ways and cheaply: a theorem by its key (accepted by the kernel, its statement, the examples it proves), a call by its
  *  content address (the theorem of the example making the same call, and that theorem's examples holding the call again); one lookup, the call
  *  never recomputed — verifying costs a lookup where producing cost the run. */
@@ -751,10 +769,11 @@ const OWN: Tool[] = [
   tool({
     name: 'clay',
     description: 'The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N statement parsed and evaluated, each side\'s value and the bit width it needs reported. What the Lean kernel accepted by rfl, redone with + − × ÷ on naturals only, so a small machine can redo the same sums and compare addresses. Nothing here is a proof of an open problem: the relations are identities between the unit\'s own constants.',
-    inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' }, technique: { type: 'string', enum: ['reflection'], description: 'the register read by the σ-reflection technique: every value\'s vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit\'s sequence answers compared' }, unit: { type: 'array', items: { type: 'object' }, description: 'the unit\'s run_sequence answers per value ({ value, answer | refusal })' } } },
+    inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' }, technique: { type: 'string', enum: ['reflection'], description: 'the register read by the σ-reflection technique: every value\'s vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit\'s sequence answers compared' }, unit: { type: 'array', items: { type: 'object' }, description: 'the unit\'s run_sequence answers per value ({ value, answer | refusal })' }, catalog: { type: 'boolean', description: 'the sellable catalog derived from the clay cases: each textbook theorem a product, each clay case a variant, the cross-textbook theorems the variations, the families the taxonomy, priced in coins per superposition (content-addressed)' } } },
     run: (args) => {
       const base = recomputeClay()
       const all = { ...base, relations: base.relations.map((r) => { const theorems = clayCaseTheorems(r); return { ...r, case: theorems[0]?.case ?? r.name, theorems } }) } // sellable unit: textbook = product, case = variant
+      if (args.catalog) return clayCatalog()
       if (args.technique === 'reflection') {
         const reading = reflectionOfRegister(all.relations)
         const unit = Array.isArray(args.unit) ? (args.unit as { value: number; answer?: { seed?: number; reflection?: number; fixed?: boolean }; refusal?: string }[]) : []

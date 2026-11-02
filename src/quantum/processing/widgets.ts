@@ -245,11 +245,16 @@ export const matchWidget = (d: { statement: string; verdict: string; evidence: s
   ])
 
 /** The Clay register: the totals, then every relation with its sides, values and width. */
-export const clayWidget = (d: { total: number; holding: number; maxBits: number; relations: readonly { name: string; statement: string; sides: readonly { expression: string; value: number }[]; holds: boolean; bits: number }[] }): string =>
-  stack([
-    cards([['Relations', String(d.total)], ['Holding', String(d.holding)], ['Widest value', `${d.maxBits} bits`]]),
-    table(['Relation', 'Holds', 'Bits', 'Sides'], d.relations.map((r) => [r.name, mark(r.holds), String(r.bits), r.sides.map((s) => `${s.expression} = ${s.value}`).join(' · ')])),
-  ])
+export const clayWidget = (d: { total: number; holding?: number; maxBits?: number; relations?: readonly { name: string; statement: string; sides: readonly { expression: string; value: number }[]; holds: boolean; bits: number }[]; products?: readonly { title: string; taxonomy: readonly string[]; variants: readonly unknown[]; variations: readonly unknown[]; price: { coins: number; superposition: number } }[] }): string =>
+  d.products
+    ? stack([
+        cards([['Products', String(d.total)], ['Variants', String(d.products.reduce((n, p) => n + p.variants.length, 0))], ['Cross-use variations', String(d.products.reduce((n, p) => n + p.variations.length, 0))]]),
+        table(['Product', 'Variants', 'Variations', 'Taxonomy', 'Coins / superposition'], d.products.map((p) => [p.title, String(p.variants.length), String(p.variations.length), p.taxonomy.join(', '), `${p.price.coins} / ${p.price.superposition}`])),
+      ])
+    : stack([
+        cards([['Relations', String(d.total)], ['Holding', String(d.holding)], ['Widest value', `${d.maxBits} bits`]]),
+        table(['Relation', 'Holds', 'Bits', 'Sides'], (d.relations ?? []).map((r) => [r.name, mark(r.holds), String(r.bits), r.sides.map((s) => `${s.expression} = ${s.value}`).join(' · ')])),
+      ])
 
 /** One UUID's cheap checks, each with its evidence. */
 export const verifyWidget = (d: { uuid: string; valid: boolean; decided: number; cost: string; checks: readonly { check: string; passed: boolean | null; evidence: string }[] }): string =>

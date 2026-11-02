@@ -156,6 +156,10 @@ The Clay register recomputed in exact integer arithmetic
         "type": "object"
       },
       "description": "the unit's run_sequence answers per value ({ value, answer | refusal })"
+    },
+    "catalog": {
+      "type": "boolean",
+      "description": "the sellable catalog derived from the clay cases"
     }
   },
   "x-harmonic": {
