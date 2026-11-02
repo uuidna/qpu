@@ -75,6 +75,28 @@ export const navigate = (uuid: string, q: Parameters<typeof streamOf>[1] = {}) =
 /** A program compiled against the tools: each nibble picks a tool, enum parameters are chosen by the nibble, integer parameters
  *  come from the tail's three 16-bit readings clamped into the schema's bounds. The first step is `next`. */
 export type Step = { nibble: number; tool: string; arguments: Record<string, unknown> }
+/** A program compiled against the tools: each of the ten program nibbles picks a usable tool (not audit/match/verify), its enum parameters chosen by the
+ *  nibble and its integer parameters read from the tail's three 16-bit values clamped into the schema's bounds; the first step is `next`. Pure; served by
+ *  the Compile docs component (its use keeps it, textbook_program_compiles). */
+export const compileOf = (program: readonly number[], tools: readonly { name: string; inputSchema: { properties?: Record<string, { type?: string; enum?: unknown[]; minimum?: number; maximum?: number; default?: unknown }>; required?: string[] } }[], message: { three16: readonly number[] }): { steps: Step[]; next: Step | undefined } => {
+  const usable = tools.filter((t) => !['audit', 'match', 'verify'].includes(t.name))
+  const steps: Step[] = program.map((nibble, i) => {
+    const tool = usable[nibble % usable.length]!
+    const args: Record<string, unknown> = {}
+    let k = 0
+    for (const [name, spec] of Object.entries(tool.inputSchema.properties ?? {})) {
+      const required = tool.inputSchema.required?.includes(name)
+      if (spec.enum && (required || nibble % 2 === 1)) args[name] = spec.enum[(nibble + i) % spec.enum.length]
+      else if ((spec.type === 'integer' || spec.type === 'number') && (required || typeof spec.default !== 'undefined')) {
+        const raw = message.three16[k++ % 3]!
+        if (spec.type === 'number' && typeof spec.maximum !== 'number') args[name] = Math.round((raw / 65536) * 1e4) / 1e4 // an unbounded number reads the tail as a fraction
+        else { const lo = spec.minimum ?? 0, hi = spec.maximum ?? Math.max(lo, raw); args[name] = lo + (raw % (hi - lo + 1)) }
+      }
+    }
+    return { nibble, tool: tool.name, arguments: args }
+  })
+  return { steps, next: steps[0] }
+}
 /** The cheap check without the content: the version nibble the other 31 nibbles decide, read back. A tampered middle wears a
  *  version its content does not; one modular power tells. Shape and variant are checked too. */
 export const sealOf = (uuid: string): { valid: boolean; shape: boolean; variant: boolean; version: { found: string; expected: string; agree: boolean } } => {
