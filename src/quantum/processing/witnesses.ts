@@ -33,6 +33,21 @@ export const checkWitnesses = (uuid: string) => {
   return { uuid, canonical, isCanonical: uuid === canonical, faces: witnesses.length, squares: 6, triangles: 8, witnesses, back, exact: back.every((b) => b.exact), duplicates, selfAmong, says: `${witnesses.length} witnesses around ${canonical}: ${back.filter((b) => b.exact).length} map back exactly${duplicates ? `, ${duplicates} coincide (a rotation that repeats the program)` : ''}${selfAmong ? '; one equals the UUID itself (its program is rotation-symmetric)' : ''}`, theorems: ['textbook_cuboctahedron_faces', 'textbook_sigma_involution'] }
 }
 
+/** The clocks and calendars one superposition covers by moving its witnesses. A superposition at index k carries 2k witnesses (2·7 = 14, the cuboctahedron
+ *  the verify door checks); a move of ±1 in k is ±2 in the span, so it steps to 2(k − 1) and 2(k + 1) — the doubled neighbours (2·7 = 14 → 12 and 16;
+ *  2·55 = 110 → 108 and 112). The cycles the span and its two neighbours land on are the clocks (12-hour, 24-hour) and calendars (7-day week, 12 months,
+ *  the 16 the hex nibble counts) covered, so moving across superpositions walks every clock and calendar. Pure arithmetic (textbook_witness_clock_move). */
+export const CLOCKS = [12, 24] as const
+export const CALENDARS = [7, 12, 16] as const
+export const witnessMove = (k: number) => {
+  if (!Number.isInteger(k) || k < 1) throw new Error('a superposition index is a positive integer: its 2k witnesses move by ±2')
+  const span = 2 * k, down = span - 2, up = span + 2 // 2(k−1) and 2(k+1)
+  const reaches = [down, span, up]
+  const clocks = CLOCKS.filter((c) => reaches.includes(c))
+  const calendars = CALENDARS.filter((c) => reaches.includes(c))
+  // a move pays one coin down and collects one up — a teleport between witness states signalling the whole set — net zero (textbook_double_entry)
+  return { k, span, down, up, reaches, pay: 1, collect: 1, net: 0, clocks, calendars, witnesses: span, theorem: 'textbook_witness_clock_move', says: `2·${k} = ${span} witnesses around the superposition; a ±1 move in k is ±2 in the span, to 2·${k - 1} = ${down} and 2·${k + 1} = ${up}, paying one coin down and collecting one up (net zero); it covers clock(s) ${clocks.join(', ') || 'none'} and calendar(s) ${calendars.join(', ') || 'none'}` }
+}
 /** Two sets merged: the witnesses both share (same address) are work that exists once; each is a coin credited to the author at zero price. Both UUIDs
  *  are validated first — a coin is a UUID, so the witnesses (and the coins they mint) are only computed from sealed addresses; a side that is not a
  *  valid sealed UUID is named in `invalid` and contributes no witnesses, so no coin is ever minted from a malformed address (never a thrown error). */

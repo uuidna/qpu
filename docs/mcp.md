@@ -264,6 +264,11 @@ Cheap verification of one UUID
     "witnesses": {
       "description": "the fourteen witnesses around a UUID, the faces of a cuboctahedron"
     },
+    "move": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "the clock/calendar move of a superposition at index k"
+    },
     "uuid": {
       "type": "string",
       "description": "the UUID to verify"
