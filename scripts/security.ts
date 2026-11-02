@@ -20,7 +20,8 @@ const json = async (cmd: string, args: string[], cwd: string): Promise<Record<st
 const main = async () => {
   // the three heavy, independent phases start together and run concurrently — the dependency audits, the docket read, and the host probe — so the step's
   // wall time is the slowest one, not their sum (serially they summed past the budget even after the finder and the host probe were made parallel/keyset).
-  const vulnP = Promise.all([json('npm', ['audit', '--omit=dev', '--json'], ROOT), json('pnpm', ['audit', '--prod', '--json'], join(ROOT, 'site'))])
+  const APP = [process.env.QPU_APP_DIR, '.qpu-app'].find((d) => d && existsSync(join(ROOT, d, 'package.json'))) ?? null
+  const vulnP = Promise.all([json('npm', ['audit', '--omit=dev', '--json'], ROOT), APP ? json('pnpm', ['audit', '--prod', '--json'], join(ROOT, APP)) : Promise.resolve({})])
   const app = mcpClient()
   const heldP = (async () => { const held: Record<string, string> = {}; for (const find of ['findPages', 'findEntries']) await app.findEach(find, { draft: true, depth: 0 }, (d) => { held[`payload/${find.slice(4).toLowerCase()}/${(d as { id: string }).id}`] = JSON.stringify(d) }); return held })()
   // every host probed at once, not one after another: the step's wall time is the slowest single host, not their sum (the serial loop summed past the budget)
