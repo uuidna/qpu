@@ -150,10 +150,16 @@ export const reflectionOf = (uuid: string) => {
   return { of: uuid, mirror, handle, program, tail, readings: tailReadingsOf(tail), fixed: ch.program.filter((n) => n === 15 - n).length, note: 'σ_15 on nibbles has no fixed point; the pair is two states held at once' }
 }
 
-/** Canonical JSON text (sorted keys), the form the unit addresses a JSON value by. */
+/** Canonical text (sorted keys), the form the unit addresses a value by: a BigInt as its digits with an `n` marker (so 10n, 10 and "10" are
+ *  three addresses, never one — plain JSON.stringify throws on a BigInt); a value with a `toJSON` (a Date among them) by what it serialises to, as
+ *  JSON itself does (so two Dates never collide to `{}`); a non-finite number as its name; everything else as canonical JSON. A plain object with
+ *  no enumerable keys and no toJSON (a Map, a Set) still reads as `{}` — such values are not JSON and are not addressed by content. */
 export const canonicalTextOf = (value: unknown): string =>
-  Array.isArray(value) ? `[${value.map(canonicalTextOf).join(',')}]`
-    : value !== null && typeof value === 'object' ? `{${Object.keys(value as object).sort().map((k) => `${JSON.stringify(k)}:${canonicalTextOf((value as Record<string, unknown>)[k])}`).join(',')}}`
+  typeof value === 'bigint' ? `"${value}n"`
+    : Array.isArray(value) ? `[${value.map(canonicalTextOf).join(',')}]`
+    : value !== null && typeof value === 'object'
+      ? typeof (value as { toJSON?: unknown }).toJSON === 'function' ? canonicalTextOf((value as { toJSON: () => unknown }).toJSON())
+        : `{${Object.keys(value as object).sort().map((k) => `${JSON.stringify(k)}:${canonicalTextOf((value as Record<string, unknown>)[k])}`).join(',')}}`
     : typeof value === 'number' && !Number.isFinite(value) ? `"${value}"` : JSON.stringify(value) ?? 'null'
 
 /** f memoised by the content address of its arguments, unbounded; for a pure f only, memoOf(f)(x) = f(x) (textbook_memo_identity). */
