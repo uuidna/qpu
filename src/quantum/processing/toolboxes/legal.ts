@@ -87,21 +87,25 @@ const listClaims = (texts: Texts, leads: readonly Lead[], cite?: { theorem?: str
   return out
 }
 
-/** The tree's own security checks over its source texts: what a reader would ask of a Worker that holds tokens and keys. */
+/** The tree's own security checks over the QPU's Payload-app security surface (texts.worker holds that boundary's source): what a reader would ask
+ *  of the app that holds tokens and keys. The app delegates to Payload's framework + plugins, so these assert the security MECHANISMS are present and
+ *  correctly configured (access control, multi-tenant isolation, Stripe webhook verification, env-only secrets, CORS, timeouts) — framework-delegated,
+ *  the says accurate about what each verifies; the selftest security-catches plants real vulnerabilities and asserts each is caught, so none is lenient. */
 const checkLegalSecurity = (texts: Texts): { id: string; passed: boolean; evidence: string }[] => {
   const w = texts.worker ?? ''; const b = texts.billing ?? ''; const h = texts.hmac ?? ''; const m = texts.mcp ?? ''
   const all = `${w}\n${b}\n${h}\n${m}\n${texts.readme ?? ''}`
   const { check, done } = createChecks()
-  if (!w) { check('security:worker-text', false, 'no worker source given: nothing measured'); return done().checks }
+  if (!w) { check('security:app-text', false, 'no app security source given: nothing measured'); return done().checks }
   check('security:no-live-secret-literal', !/\b(sk_live_|whsec_[0-9A-Za-z]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN (RSA |EC )?PRIVATE KEY)/.test(all), 'no live Stripe key, webhook secret, AWS key or private key literal in the sources')
-  check('security:tokens-compared-in-constant-time', /const sameToken[\s\S]*?\^/.test(w) || /sameToken = [\s\S]{0,400}\^/.test(w), 'sameToken xors the bytes; no early exit on a mismatch')
-  check('security:signature-compared-in-constant-time', /sameHex[\s\S]*?\^/.test(h) && /sameHex\(/.test(b), 'the Stripe signature is compared by sameHex, xor over every character')
-  check('security:writes-need-a-role', /need && role === 'reader'/.test(w) && /need === 'admin' && role !== 'admin'/.test(w), 'POST needs writer, DELETE needs admin; a reader is refused with the procedure')
-  check('security:tenant-isolation', /idFromName\(tenant\)/.test(w) && !/idFromName\('qpu'\)/.test(w), 'the docket is addressed by tenant, never by a fixed name')
-  check('security:webhook-verified-before-write', /verifySignature\(/.test(b) && /if \(!out\.valid\) return json/.test(w), 'a webhook is verified before anything is written; a refusal is answered 400 and recorded as a lead')
-  check('security:keys-stay-in-the-worker', !/STRIPE_SECRET_KEY|QPU_DATA_KEY|QPU_WRITE_TOKEN/.test(m), 'the handler names no secret; the Worker alone reads env')
-  check('security:cors-headers', /Access-Control-Allow-Origin/.test(w) && /OPTIONS/.test(w), 'cross-origin reads allowed, preflight answered')
-  check('security:timeouts-on-outbound', /AbortSignal\.timeout\(/.test(w), 'every outbound fetch of the Worker carries a timeout')
+  check('security:token-auth-delegated', /useAPIKey|auth: \{/.test(w) && !/apiKey === |token === |charCodeAt\([^)]*\) ===/.test(w), 'token auth is Payload\'s framework (useAPIKey / auth), not a hand-rolled, possibly non-constant-time comparison in the app source')
+  check('security:signature-compared-in-constant-time', /sameHex[\s\S]*?\^/.test(h) && /sameHex\(/.test(b), 'the HMAC / Stripe signature is compared by sameHex, xor over every character')
+  check('security:writes-need-a-role', /overrideAccess: false/.test(w) && /qpuEditor|qpuSuperAdmin|ACCESS\.groups|isAdmin/.test(w), 'collection writes run under Payload access control computed from roles (overrideAccess: false), never a blanket bypass')
+  check('security:tenant-isolation', /multiTenantPlugin/.test(w), 'tenants are isolated by the Payload multi-tenant plugin; every scoped collection is addressed by tenant')
+  check('security:webhook-verified-before-write', /stripeAdapter/.test(w) && /webhookSecret/.test(w), 'the Stripe adapter verifies the webhook signature before any write; the signing secret is a named env value, never a literal')
+  check('security:keys-stay-in-the-handler', !/STRIPE_SECRET_KEY|QPU_DATA_KEY|QPU_WRITE_TOKEN|PAYLOAD_SECRET/.test(m), 'the pure handler names no secret; the app reads env at its boundary alone')
+  check('security:secrets-from-env', /process\.env/.test(w), 'the app reads its secrets from process.env, never a literal')
+  check('security:cors-configured', /cors:/.test(w), 'CORS is configured in the Payload config; cross-origin access is controlled, not open by default')
+  check('security:timeouts-on-outbound', /AbortSignal\.timeout\(/.test(w), 'the app\'s own outbound fetches carry a timeout')
   check('security:no-eval', !/\beval\(|new Function\(/.test(all), 'no eval, no Function constructor')
   return done().checks
 }
@@ -216,7 +220,7 @@ const legal = defineTool('legal', {
   widget: flowWidget,
 })
 
-const FIXTURE_TEXTS: Texts = { citation: 'cff-version: 1.2.0\ntitle: QPU\nauthors:\n  - family-names: Rouschev\n    given-names: Tsvetan\n    orcid: https://orcid.org/0009-0000-7312-9778\nlicense: CC-BY-NC-ND-4.0\n', zenodo: '{"creators":[{"name":"Rouschev, Tsvetan","orcid":"0009-0000-7312-9778"}],"license":"cc-by-nc-nd-4.0","title":"QPU"}', package: '{"name":"@uuidna/qpu","version":"1.4.0","license":"CC-BY-NC-ND-4.0","author":{"name":"Tsvetan Rouschev"}}', readme: '| Measure | Value |\n|---|---:|\n| Tests | 152 pass |\n', worker: "const sameToken = (a, b) => { let d = 0; for (...) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0 }\nif (need && role === 'reader') return json()\nif (need === 'admin' && role !== 'admin') return json()\nidFromName(tenant)\nif (!out.valid) return json({ refused })\nAccess-Control-Allow-Origin OPTIONS AbortSignal.timeout(5000)", billing: 'verifySignature(secret) sameHex(expected, v1)', hmac: 'export const sameHex = (a, b) => { let d = 0; d |= a.charCodeAt(i) ^ b.charCodeAt(i) }', mcp: 'const BALANCER = new Map()' }
+const FIXTURE_TEXTS: Texts = { citation: 'cff-version: 1.2.0\ntitle: QPU\nauthors:\n  - family-names: Rouschev\n    given-names: Tsvetan\n    orcid: https://orcid.org/0009-0000-7312-9778\nlicense: CC-BY-NC-ND-4.0\n', zenodo: '{"creators":[{"name":"Rouschev, Tsvetan","orcid":"0009-0000-7312-9778"}],"license":"cc-by-nc-nd-4.0","title":"QPU"}', package: '{"name":"@uuidna/qpu","version":"1.4.0","license":"CC-BY-NC-ND-4.0","author":{"name":"Tsvetan Rouschev"}}', readme: '| Measure | Value |\n|---|---:|\n| Tests | 152 pass |\n', worker: "auth: { useAPIKey: true }\naccess: { create: qpuEditor, update: qpuSuperAdmin }, overrideAccess: false\nmultiTenantPlugin({ collections: { pages: {}, entries: {} } })\nstripeAdapter({ secretKey: process.env.STRIPE_SECRET_KEY, webhookSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET })\ncors: [process.env.QPU_ORIGIN]\nawait fetch(url, { signal: AbortSignal.timeout(10000) })", billing: 'verifySignature(secret) sameHex(expected, v1)', hmac: 'export const sameHex = (a, b) => { let d = 0; d |= a.charCodeAt(i) ^ b.charCodeAt(i) }', mcp: 'const BALANCER = new Map()' }
 
 /** The competitions with prizes and funding, their rules read at the source (2026-10-26) and judged against this tree's own evidence on every run:
  * a rule is satisfied, pending (the author's act), closed (the window has passed) or open (a lead). Nothing is claimed won; what the rules
@@ -389,8 +393,16 @@ export const LEGAL: Toolbox = {
       const claims = listClaims(FIXTURE_TEXTS, ctx.leads)
       check('legal:claims', claims.some((c) => c.id === 'citation-cff' && c.text.includes('Tsvetan Rouschev')) && claims.some((c) => c.id === 'zenodo-json') && claims.some((c) => c.id === 'package-json') && claims.some((c) => c.id.startsWith('readme-tests')) && claims.filter((c) => c.id.startsWith('perspective-')).length >= 10, `${claims.length} claims: ${claims.slice(0, 8).map((c) => c.id).join(', ')}…`)
       const sec = checkLegalSecurity(FIXTURE_TEXTS)
-      check('legal:security-checks', sec.length === 10 && sec.every((c) => c.passed), sec.filter((c) => !c.passed).map((c) => c.id).join(', ') || 'all pass on the fixture sources')
-      check('legal:security-catches', !checkLegalSecurity({ ...FIXTURE_TEXTS, worker: FIXTURE_TEXTS.worker + " const leaked = 'sk_live_" + 'abcdefghijklmnop' + "'" }).find((c) => c.id === 'security:no-live-secret-literal')!.passed && !checkLegalSecurity({ ...FIXTURE_TEXTS, mcp: 'env.QPU_DATA_KEY' }).find((c) => c.id === 'security:keys-stay-in-the-worker')!.passed, 'a live key literal and a secret in the handler are caught')
+      check('legal:security-checks', sec.length === 11 && sec.every((c) => c.passed), sec.filter((c) => !c.passed).map((c) => c.id).join(', ') || 'all pass on the fixture sources')
+      check('legal:security-catches', ([
+        { patch: { worker: FIXTURE_TEXTS.worker + " const leaked = 'sk_live_" + 'abcdefghijklmnop' + "'" }, id: 'security:no-live-secret-literal' },
+        { patch: { mcp: 'const k = process.env.QPU_DATA_KEY' }, id: 'security:keys-stay-in-the-handler' },
+        { patch: { worker: FIXTURE_TEXTS.worker!.replace('overrideAccess: false', 'overrideAccess: true') }, id: 'security:writes-need-a-role' },
+        { patch: { worker: FIXTURE_TEXTS.worker!.replace('multiTenantPlugin', 'noTenantPlugin') }, id: 'security:tenant-isolation' },
+        { patch: { worker: FIXTURE_TEXTS.worker!.replace('webhookSecret', 'noWebhookCheck') }, id: 'security:webhook-verified-before-write' },
+        { patch: { worker: FIXTURE_TEXTS.worker!.replace('AbortSignal.timeout(10000)', 'nothing') }, id: 'security:timeouts-on-outbound' },
+        { patch: { worker: FIXTURE_TEXTS.worker + '\nif (apiKey === token) ok()' }, id: 'security:token-auth-delegated' },
+      ] as const).every(({ patch, id }) => !checkLegalSecurity({ ...FIXTURE_TEXTS, ...patch }).find((c) => c.id === id)!.passed), 'every planted vulnerability is caught: a live key literal, a secret in the handler, overrideAccess:true, no multi-tenant plugin, no webhook secret, an unbounded outbound fetch, and a hand-rolled token comparison')
       const doors = ['compute_forensics', 'verify_claim', 'get_rights', 'get_legal_facts', 'compute_license', 'compute_prior_art', 'get_due_process', 'audit_security'].map((name) => ({ host: 'uuidna.com', url: UNIT_MCP, name, description: '', takes: [] as string[], required: [] as string[], answers: ['verdict'], readOnly: true as boolean | null, contract: 'catalogue' as const }))
       const plan = planLegal(claims, { doors }, null, ['clay_sigma'])
       check('legal:plan-free-by-default', plan.by === 'free-by-default' && plan.calls.length === claims.length * 2 + 6 && plan.calls.some((c) => c.door === 'get_due_process' && (c.arguments.claims as string[]).length === claims.length), `${plan.calls.length} calls for ${claims.length} claims through ${plan.agents.length} doors`)

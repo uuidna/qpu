@@ -37,7 +37,7 @@ const newest = (read.docs ?? [])[0] as { body?: { integers?: Record<string, stri
 const known: Record<string, string> = newest?.body?.integers ?? {}
 const t0 = performance.now()
 const files = (dir: string): string[] => readdirSync(dir, { withFileTypes: true }).flatMap((f) => (f.isDirectory() ? (f.name === '.lake' || f.name === 'node_modules' ? [] : files(join(dir, f.name))) : /\.(ts|lean)$/.test(f.name) ? [join(dir, f.name)] : []))
-const code = createHash('sha256').update([...files('src/quantum'), 'src/worker.ts'].sort().map((f) => `${f}\n${readFileSync(f, 'utf8')}`).join('\n')).digest('hex')
+const code = createHash('sha256').update([...files('src/quantum')].sort().map((f) => `${f}\n${readFileSync(f, 'utf8')}`).join('\n')).digest('hex')
 
 // the number of shares: QPU_AUDIT_SHARDS (a number, or 'cores' for one per core); one by default, since measured on 10 cores the split is
 // slower (cold 8.6 s against 7.4 s, warm 1.06 s against 0.37 s): one example, readiness-plan, takes 9.4 s cold of the 12 s every example

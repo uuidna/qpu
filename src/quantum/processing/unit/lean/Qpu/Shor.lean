@@ -10,6 +10,9 @@ def periodOf (a m : Nat) : Nat := periodAux m a m 1
 def gcdAux : Nat → Nat → Nat → Nat | 0, a, _ => a | fuel + 1, a, b => if b = 0 then a else gcdAux fuel b (a % b)
 def gcdOf (a b : Nat) : Nat := gcdAux (a + b) a b
 def half (a m : Nat) : Nat := powMod a (periodOf a m / 2) m
+/-- Euler's totient by counting the coprimes (the crypto/number-theory φ the multiplicative period divides), via the gcd above -/
+def totientAux : Nat → Nat → Nat → Nat | 0, _, acc => acc | k + 1, n, acc => totientAux k n (if gcdOf (k + 1) n = 1 then acc + 1 else acc)
+def totient (n : Nat) : Nat := totientAux n n 0
 /-- the Shor modulus, named by the lattice: rays · (faces − seed) = 7 · 13 -/
 def shorModulus : Nat := rays * (faces - seed)
 /-- the Shor base, named by the lattice: mintOf n = 2^3 -/

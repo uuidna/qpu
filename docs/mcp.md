@@ -2652,7 +2652,7 @@ MCP configures Payload and the rest
         "policies"
       ],
       "description": "omit for all",
-      "default": "adapters"
+      "default": "packages"
     },
     "files": {
       "type": "boolean",
@@ -2690,12 +2690,11 @@ MCP configures Payload and the rest
     "template": {
       "type": "string",
       "enum": [
-        "worker",
         "site",
         "app"
       ],
       "description": "kind wrangler",
-      "default": "worker"
+      "default": "site"
     },
     "useCase": {
       "type": "string",
@@ -2744,8 +2743,8 @@ MCP configures Payload and the rest
     }
   },
   "x-harmonic": {
-    "combinations": "75",
-    "index": "57",
+    "combinations": "50",
+    "index": "32",
     "from": "a432"
   }
 }

@@ -1,231 +1,14 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T00:08:07.037Z",
- "ms": 19074,
- "offline": false,
+ "date": "2026-11-02T06:31:04.656Z",
+ "ms": 80,
+ "offline": true,
  "selftest": {
   "passed": true
  },
- "head": "b62b2a19288a9af7e0906ed7529b57a05155a733",
- "pushed": false,
- "fetched": [
-  {
-   "id": "gemini-xprize-hackathon",
-   "status": 403,
-   "ms": 460,
-   "bytes": 5562
-  },
-  {
-   "id": "vercel-oss-program",
-   "status": 200,
-   "ms": 509,
-   "bytes": 825408
-  },
-  {
-   "id": "clay-millennium",
-   "status": 200,
-   "ms": 628,
-   "bytes": 79933
-  },
-  {
-   "id": "cloudflare-workers-launchpad",
-   "status": 200,
-   "ms": 619,
-   "bytes": 402592
-  },
-  {
-   "id": "aimo-prize",
-   "status": 200,
-   "ms": 626,
-   "bytes": 26036
-  },
-  {
-   "id": "github-maintainer-programs",
-   "status": 200,
-   "ms": 976,
-   "bytes": 377034
-  },
-  {
-   "id": "beal-prize",
-   "status": 403,
-   "ms": 1117,
-   "bytes": 29050
-  },
-  {
-   "id": "qhack-2026",
-   "status": 200,
-   "ms": 1354,
-   "bytes": 454414
-  },
-  {
-   "id": "erdos-problems-prizes",
-   "status": 200,
-   "ms": 1511,
-   "bytes": 33882
-  },
-  {
-   "id": "unitaryhack-2026",
-   "status": 200,
-   "ms": 1799,
-   "bytes": 15460
-  },
-  {
-   "id": "quantinuum-startup-partner-program",
-   "status": 200,
-   "ms": 1819,
-   "bytes": 495534
-  },
-  {
-   "id": "sair-lean-kernel-challenge",
-   "status": 200,
-   "ms": 1827,
-   "bytes": 5915
-  },
-  {
-   "id": "sair-andrews-curtis-challenge",
-   "status": 200,
-   "ms": 1827,
-   "bytes": 6130
-  },
-  {
-   "id": "justin-sun-prize",
-   "status": 200,
-   "ms": 1881,
-   "bytes": 317010
-  },
-  {
-   "id": "cloudflare-project-alexandria",
-   "status": 403,
-   "ms": 1897,
-   "bytes": 5655
-  },
-  {
-   "id": "unitary-foundation-microgrants",
-   "status": 200,
-   "ms": 1916,
-   "bytes": 269763
-  },
-  {
-   "id": "nlnet-ngi-zero-open-calls",
-   "status": 200,
-   "ms": 1937,
-   "bytes": 43352
-  },
-  {
-   "id": "q-ctrl-programs",
-   "status": 200,
-   "ms": 2052,
-   "bytes": 351896
-  },
-  {
-   "id": "breakthrough-new-horizons-mathematics",
-   "status": 200,
-   "ms": 2083,
-   "bytes": 9341
-  },
-  {
-   "id": "ibm-quantum-challenge",
-   "status": 200,
-   "ms": 2187,
-   "bytes": 57722
-  },
-  {
-   "id": "sovereign-tech-fund",
-   "status": 200,
-   "ms": 2286,
-   "bytes": 116569
-  },
-  {
-   "id": "github-fund",
-   "status": 200,
-   "ms": 2389,
-   "bytes": 387404
-  },
-  {
-   "id": "github-secure-open-source-fund",
-   "status": 200,
-   "ms": 2467,
-   "bytes": 413696
-  },
-  {
-   "id": "sair-equational-theories-stage2",
-   "status": 200,
-   "ms": 2540,
-   "bytes": 7070
-  },
-  {
-   "id": "devpost-mcp-hackathons",
-   "status": 403,
-   "ms": 2552,
-   "bytes": 5570
-  },
-  {
-   "id": "kiroween-2026",
-   "status": 403,
-   "ms": 2603,
-   "bytes": 5549
-  },
-  {
-   "id": "claude-for-open-source",
-   "status": 200,
-   "ms": 2603,
-   "bytes": 263438
-  },
-  {
-   "id": "floss-fund",
-   "status": 200,
-   "ms": 3025,
-   "bytes": 7314
-  },
-  {
-   "id": "xprize-quantum-applications",
-   "status": 200,
-   "ms": 3208,
-   "bytes": 177952
-  },
-  {
-   "id": "ai-for-math-fund",
-   "status": 200,
-   "ms": 3309,
-   "bytes": 2232098
-  },
-  {
-   "id": "lean-fro-programs",
-   "status": 200,
-   "ms": 3313,
-   "bytes": 143839
-  },
-  {
-   "id": "numfocus-small-development-grants",
-   "status": 200,
-   "ms": 3375,
-   "bytes": 262286
-  },
-  {
-   "id": "google-for-startups-accelerator",
-   "status": 200,
-   "ms": 3410,
-   "bytes": 195294
-  },
-  {
-   "id": "microsoft-research-lean-award",
-   "status": 200,
-   "ms": 3756,
-   "bytes": 195215
-  },
-  {
-   "id": "google-summer-of-code",
-   "status": 200,
-   "ms": 3967,
-   "bytes": 76598
-  },
-  {
-   "id": "built-with-claude-japan-2026",
-   "status": 200,
-   "ms": 5589,
-   "bytes": 62905
-  }
- ],
+ "head": "52d87aef1f9b0b9ba33c1282a948962682a2abe4",
+ "pushed": null,
+ "fetched": [],
  "precedence": [
   {
    "doi": "10.5281/zenodo.21781602",
@@ -246,97 +29,7 @@
    "states": "this version of the software: the exact, formally verified quantum processing unit served over MCP"
   }
  ],
- "acceptance": {
-  "rows": [
-   {
-    "api": "hn-algolia",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "hn-algolia",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "hn-algolia",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "wikipedia-search",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 200,
-    "mentions": 0
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "crossref-events",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 0,
-    "mentions": null
-   },
-   {
-    "api": "gdelt",
-    "doi": "10.5281/zenodo.21781602",
-    "status": 429,
-    "mentions": null
-   },
-   {
-    "api": "gdelt",
-    "doi": "10.5281/zenodo.22700098",
-    "status": 429,
-    "mentions": null
-   },
-   {
-    "api": "gdelt",
-    "doi": "10.5281/zenodo.23156998",
-    "status": 429,
-    "mentions": null
-   }
-  ],
-  "byRecord": {
-   "10.5281/zenodo.21781602": 0,
-   "10.5281/zenodo.22700098": 0,
-   "10.5281/zenodo.23156998": 0
-  },
-  "bySource": {
-   "gdelt": 0,
-   "hn-algolia": 0,
-   "crossref-events": 0,
-   "wikipedia-search": 0
-  },
-  "total": 0,
-  "reachable": 6,
-  "of": 12,
-  "says": "mentions of the author's records by public source, measured, never a verdict: the acceptance rule reads them"
- },
+ "acceptance": null,
  "news": {
   "apis": 7,
   "open": 4,
@@ -383,7 +76,7 @@
      "needs": "a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README",
      "act": "the author's record stands at its DOI; the community's acceptance is measured by the rules below",
      "status": "open",
-     "evidence": "1279 theorems kernel-accepted (1910 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602; 0 mentions of the records by 4 public sources"
+     "evidence": "1356 theorems kernel-accepted (1998 in the kernel); the evidence of precedence the author's record doi:10.5281/zenodo.21781602"
     },
     {
      "rule": "(i) published in a Qualifying Outlet",
@@ -404,7 +97,7 @@
      "needs": "the community",
      "act": "measured by the mentions the public sources answer; the community's act",
      "status": "pending",
-     "evidence": "0 mentions of the records across 6 of 12 public source reads: gdelt 0, hn-algolia 0, crossref-events 0, wikipedia-search 0"
+     "evidence": "the public news APIs not yet read: compete { news: true } plans the requests, compete { mentions } reads them"
     }
    ],
    "read": "2026-10-27",
@@ -447,12 +140,7 @@
     "since": "2026-10-26",
     "change": "Rules unchanged (2018 revision). Not in the held row: the problems page groups Navier-Stokes as 'Active' and CMI's 2026-09-11 Navier-Stokes announcement; whether either changed between 2026-10-26 and today cannot be told from the held row, which did not record the grouping."
    },
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 7000000,
     "currency": "usd",
@@ -473,6 +161,11 @@
      "textbook_clay_conditions",
      "textbook_compete_knows",
      "textbook_clay_register_width",
+     "textbook_shor_sigma_root",
+     "textbook_thermal_time_sigma",
+     "textbook_clay_bridge",
+     "textbook_gravity_torus_sigma",
+     "textbook_mind_sigma",
      "textbook_relation_rsa"
     ],
     "both": true,
@@ -480,7 +173,7 @@
    },
    "economics": {
     "prize": "USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)",
-    "evidence": 5,
+    "evidence": 10,
     "calls": [
      {
       "name": "textbook",
@@ -509,15 +202,45 @@
      {
       "name": "textbook",
       "arguments": {
+       "theorem": "textbook_shor_sigma_root"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_thermal_time_sigma"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_clay_bridge"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_gravity_torus_sigma"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
+       "theorem": "textbook_mind_sigma"
+      }
+     },
+     {
+      "name": "textbook",
+      "arguments": {
        "theorem": "textbook_relation_rsa"
       }
      }
     ],
-    "coins": 5,
+    "coins": 10,
     "coils": 0,
     "costMillicents": 0,
     "balanced": true,
-    "says": "5 theorem(s) of evidence served as 5 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)); no prize is won and no problem solved by this",
+    "says": "10 theorem(s) of evidence served as 10 coin(s) at a cost of 0 thousandths of a cent, beside the prize as stated (USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page)); no prize is won and no problem solved by this",
     "theorem": "textbook_double_entry"
    },
    "satisfied": "0/4",
@@ -534,7 +257,7 @@
      "needs": "Phase II Wild Card registration 2026-01-14 to 2026-03-04",
      "act": "closed: the next XPRIZE quantum competition is a lead to watch",
      "status": "closed",
-     "evidence": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-11-02"
+     "evidence": "Phase II Wild Card registration ran 2026-01-14 to 2026-03-04; 7 finalists are in Phase II; winners to be announced in spring 2027; no entry window open."
     },
     {
      "rule": "a quantum algorithm with a plausible pathway to quantum advantage, technical novelty and algorithmic rigor",
@@ -573,12 +296,7 @@
     "since": "2026-10-26",
     "change": "No change in content; the URL now redirects to /competitions/qc-apps (the held row read /prizes/qc-apps as 200)."
    },
-   "window": {
-    "entry": "closed",
-    "opens": "2026-01-14",
-    "closes": "2026-03-04",
-    "says": "the page says registration opens January 14, 2026 and closes March 4, 2026: closed on 2026-11-02"
-   },
+   "window": null,
    "prizeValue": {
     "value": 5000000,
     "currency": "usd",
@@ -646,7 +364,7 @@
      "needs": "GitHub's announcement",
      "act": "the author applies",
      "status": "pending",
-     "evidence": "the page names no window"
+     "evidence": "No window on the umbrella page: /accelerator redirects (301) to /open-source, whose program list names GitHub Fund, Secure Open Source Fund (rolling, its own row), Sponsors, Maintainer community and Security Lab."
     },
     {
      "rule": "an open source project maintained in public on GitHub",
@@ -688,12 +406,7 @@
     "since": "2026-10-26",
     "change": "The held row listed the Accelerator among the programs; today /accelerator redirects to /open-source and the program list does not name the Accelerator."
    },
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -761,7 +474,7 @@
      "needs": "Cloudflare's announcement of the next cohort",
      "act": "the author applies when a cohort opens",
      "status": "pending",
-     "evidence": "the page names no window"
+     "evidence": "Six cohorts listed (#1 to #6) with a Demo Day for the latest; the page names no application window and carries no apply link."
     }
    ],
    "read": "2026-10-27",
@@ -793,12 +506,7 @@
     "since": "2026-10-26",
     "change": "The page now answers HTTP 200 to the verifier (the held row recorded 403 to the verifier, read through a browser). Content: cohorts #1-#6, no window, unchanged."
    },
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -893,7 +601,7 @@
      "needs": "the page saying applications are open",
      "act": "the author applies when the page says open",
      "status": "closed",
-     "evidence": "the page says applications are currently closed"
+     "evidence": "The page says 'Applications are currently closed'; cohorts Spring 2026, Winter 2026, Fall 2025, Summer 2025, Spring 2025; a window opens per cohort."
     },
     {
      "rule": "an open source project actively developed and maintained",
@@ -960,12 +668,7 @@
     "since": "2026-10-26",
     "change": "No change: applications still closed, same benefits and criteria."
    },
-   "window": {
-    "entry": "closed",
-    "opens": null,
-    "closes": null,
-    "says": "the page says applications are currently closed"
-   },
+   "window": null,
    "prizeValue": {
     "value": 3600,
     "currency": "usd",
@@ -1170,7 +873,7 @@
      "needs": "Google's announcement of the next regional cohort",
      "act": "the author applies when a window opens",
      "status": "closed",
-     "evidence": "the page names no window"
+     "evidence": "Every EMEA programme page reads 'Applications are now closed' (Africa 2026-02-04 to 03-18, Europe & Israel 2026-05-04 to 06-12, MENAT 2026-07-13 to 08-31, South Africa 2026-07-21 to 08-28); Americas and Asia Pacific pages not read; no 2027 window announced."
     }
    ],
    "read": "2026-10-27",
@@ -1200,12 +903,7 @@
     "since": "2026-10-26",
     "change": "No change: the 2026 EMEA windows are closed as held; entry set to closed for EMEA (held: unknown)."
    },
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -1290,12 +988,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 10000000,
     "currency": "usd",
@@ -1438,12 +1131,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -1562,12 +1250,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -1649,12 +1332,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -1797,12 +1475,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 1000000,
     "currency": "usd",
@@ -1907,12 +1580,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 59733,
     "currency": "usd",
@@ -2110,12 +1778,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 100000,
     "currency": "usd",
@@ -2197,12 +1860,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 67000,
     "currency": "usd",
@@ -2283,12 +1941,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -2383,12 +2036,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -2493,12 +2141,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -2592,12 +2235,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -2678,12 +2316,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -2824,12 +2457,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 5000,
     "currency": "eur",
@@ -2947,12 +2575,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 50000,
     "currency": "eur",
@@ -3032,7 +2655,7 @@
    ],
    "read": "2026-10-27",
    "kind": "funding",
-   "entry": "open",
+   "entry": "rolling",
    "note": "Applications are open on a rolling basis and considered for all program sessions; the 3-week program follows a virtual interview.",
    "competitors": {
     "source": "https://github.com/open-source/github-secure-open-source-fund",
@@ -3058,12 +2681,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "open",
-    "opens": null,
-    "closes": null,
-    "says": "the page says applications are open"
-   },
+   "window": null,
    "prizeValue": {
     "value": 10000,
     "currency": "usd",
@@ -3147,12 +2765,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -3257,12 +2870,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -3476,12 +3084,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 100000,
     "currency": "usd",
@@ -3575,12 +3178,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 10000,
     "currency": "usd",
@@ -3674,12 +3272,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -3772,12 +3365,7 @@
      "act": "time"
     }
    ],
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 50000,
     "currency": "usd",
@@ -4060,12 +3648,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 100000,
     "currency": "usd",
@@ -4146,12 +3729,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -4232,12 +3810,7 @@
     }
    ],
    "http": 200,
-   "window": {
-    "entry": "unknown",
-    "opens": null,
-    "closes": null,
-    "says": "the page names no window"
-   },
+   "window": null,
    "prizeValue": {
     "value": 0,
     "currency": "usd",
@@ -4290,7 +3863,7 @@
  ],
  "know": {
   "competitors": 18,
-  "theorems": 5,
+  "theorems": 10,
   "both": [
    "clay-millennium",
    "xprize-quantum-applications",
