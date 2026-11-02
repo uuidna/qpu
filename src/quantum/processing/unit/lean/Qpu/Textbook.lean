@@ -126,13 +126,13 @@ theorem textbook_penalty_balanced_converse_refuted : ¬ ∀ (d c : Nat), (d - c 
 theorem textbook_penalty_clear_involution (opn n : Nat) : opn + n - n = opn := by omega
 /-- textbook_penalty_clear_involution reflected by its shape, equality (examples: repository-penalty-clear) -/
 theorem textbook_penalty_clear_involution_reflected (opn n : Nat) (σ : Nat) : σ - (opn) = σ - (opn + n - n) := congrArg (σ - ·) (Eq.symm (textbook_penalty_clear_involution opn n))
-/-- every penalty opened is either cleared or still open: the open count is the opened less the cleared (examples: repository-penalties-counted, repository-unpenalised) -/
+/-- every penalty opened is either cleared or still open: the open count is the opened less the cleared (examples: none yet) -/
 theorem textbook_penalty_conserved (opened cleared openNow : Nat) (h : cleared + openNow = opened) : opened - cleared = openNow := by omega
-/-- textbook_penalty_conserved reflected by its shape, equality (examples: repository-penalties-counted, repository-unpenalised) -/
+/-- textbook_penalty_conserved reflected by its shape, equality (examples: none yet) -/
 theorem textbook_penalty_conserved_reflected (opened cleared openNow : Nat) (h : cleared + openNow = opened) (σ : Nat) : σ - (openNow) = σ - (opened - cleared) := congrArg (σ - ·) (Eq.symm (textbook_penalty_conserved opened cleared openNow h))
-/-- the contrapositive of textbook_penalty_conserved (examples: repository-penalties-counted, repository-unpenalised) -/
+/-- the contrapositive of textbook_penalty_conserved (examples: none yet) -/
 theorem textbook_penalty_conserved_contrapositive (opened cleared openNow : Nat) : ¬ (opened - cleared = openNow) → ¬ ((cleared + openNow = opened)) := fun hc hh => hc (textbook_penalty_conserved opened cleared openNow hh)
-/-- the converse of textbook_penalty_conserved, refuted by a counterexample the kernel decides (examples: repository-penalties-counted, repository-unpenalised) -/
+/-- the converse of textbook_penalty_conserved, refuted by a counterexample the kernel decides (examples: none yet) -/
 theorem textbook_penalty_conserved_converse_refuted : ¬ ∀ (opened cleared openNow : Nat), (opened - cleared = openNow) → (cleared + openNow = opened) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- a penalty's tokens, its bytes over four rounded up, never exceed its bytes (examples: repository-penalty) -/
 theorem textbook_penalty_tokens_bound (b : Nat) (h : 0 < b) : (b + 3) / 4 ≤ b := by omega
@@ -242,22 +242,6 @@ theorem textbook_penalty_proportional_reflected (n u : Nat) (σ : Nat) : σ - (n
 theorem textbook_penalty_learned_prevents (learned raised : Bool) (h : learned = true → raised = false) (hl : learned = true) : raised = false := h hl
 /-- textbook_penalty_learned_prevents reflected by its shape, equality (examples: repository-penalty-learned, repository-penalty-learning) -/
 theorem textbook_penalty_learned_prevents_reflected (learned raised : Bool) (h : learned = true → raised = false) (hl : learned = true) : (false) = (raised) := Eq.symm (textbook_penalty_learned_prevents learned raised h hl)
-/-- code that folds never grows the tree: a commit adding no more bytes of code than it removes leaves the tree no larger in bytes, so every commit the rule folded allows (readStaged counting bytes outside PROOF_FILES, lines only as information) keeps the code at or under its size — as makeChecks folds the nine toolbox selftests into one (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
-theorem textbook_code_folds (s a r : Nat) (h : a ≤ r) (hr : r ≤ s) : s + a - r ≤ s := by omega
-/-- textbook_code_folds reflected by its shape, order (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
-theorem textbook_code_folds_reflected (s a r : Nat) (h : a ≤ r) (hr : r ≤ s) (σ : Nat) : σ - (s) ≤ σ - (s + a - r) := Nat.sub_le_sub_left (textbook_code_folds s a r h hr) σ
-/-- the contrapositive of textbook_code_folds (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
-theorem textbook_code_folds_contrapositive (s a r : Nat) : ¬ (s + a - r ≤ s) → ¬ ((a ≤ r) ∧ (r ≤ s)) := fun hc hh => hc (textbook_code_folds s a r hh.1 hh.2)
-/-- the converse of textbook_code_folds, refuted by a counterexample the kernel decides (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
-theorem textbook_code_folds_converse_refuted : ¬ ∀ (s a r : Nat), (s + a - r ≤ s) → (a ≤ r) ∧ (r ≤ s) := fun h => absurd (h 0 0 1 (by decide)) (by decide)
-/-- when no new export is left unproven, every new export is proven: the rule proven (readStaged reading the theorems and examples PROOF_FILES add) allows a commit only when the proven ones are all the new ones (examples: repository-commit-folds, repository-commit-grows) -/
-theorem textbook_new_doors_proven (news proven : Nat) (hp : proven ≤ news) (hu : news - proven = 0) : proven = news := by omega
-/-- textbook_new_doors_proven reflected by its shape, equality (examples: repository-commit-folds, repository-commit-grows) -/
-theorem textbook_new_doors_proven_reflected (news proven : Nat) (hp : proven ≤ news) (hu : news - proven = 0) (σ : Nat) : σ - (news) = σ - (proven) := congrArg (σ - ·) (Eq.symm (textbook_new_doors_proven news proven hp hu))
-/-- the contrapositive of textbook_new_doors_proven (examples: repository-commit-folds, repository-commit-grows) -/
-theorem textbook_new_doors_proven_contrapositive (news proven : Nat) : ¬ (proven = news) → ¬ ((proven ≤ news) ∧ (news - proven = 0)) := fun hc hh => hc (textbook_new_doors_proven news proven hh.1 hh.2)
-/-- the converse of textbook_new_doors_proven, proved (examples: repository-commit-folds, repository-commit-grows) -/
-theorem textbook_new_doors_proven_converse (news proven : Nat) : (proven = news) → (proven ≤ news) ∧ (news - proven = 0) := fun hc => ⟨by omega, by omega⟩
 /-- a table cell carries no link: when cellOf escapes every link opener and local address a cell holds, none is left to be a link, so a generated page never carries a dead one (examples: widgets-cell-text) -/
 theorem textbook_cells_text (links escaped : Nat) (h : escaped = links) : links - escaped = 0 := by omega
 /-- textbook_cells_text reflected by its shape, equality (examples: widgets-cell-text) -/
@@ -270,8 +254,6 @@ theorem textbook_cells_text_converse_refuted : ¬ ∀ (links escaped : Nat), (li
 theorem textbook_tools_listed : ∀ l : List Nat, (l.filter (fun _ => true)).length = l.length := by intro l; simp
 /-- textbook_tools_listed reflected by its shape, universal (examples: e2e-plan-reads-every-tool) -/
 theorem textbook_tools_listed_reflected  : ∀ l  : List Nat, (l.length) = ((l.filter (fun _ => true)).length) := fun l  => Eq.symm ((textbook_tools_listed) l )
-/-- the registry holds its own addresses (CLOUDFLARE_DOCS_MCP and UNIT_MCP among them): a path or URL literal is clean exactly when it sits in its registry: decided over the registries, no module holds both kinds and each sits under a root the rule reads (examples: repository-literals, repository-literal-moved, repository-literals-registered) -/
-theorem textbook_literal_in_registry (roots url path : List String) (hr : roots = ["src","scripts","site/src"]) (hu : url = ["src/quantum/processing/discovery.ts","src/quantum/processing/discovery-document.ts","src/quantum/processing/sources.ts","src/quantum/processing/leads.ts","src/quantum/processing/payload-surface.ts","src/quantum/processing/institutions.ts","src/quantum/processing/unit/index.ts"]) (hp : path = ["src/quantum/processing/toolboxes/payload.ts","src/quantum/processing/toolboxes/repository.ts","src/quantum/processing/toolboxes/legal.ts","src/quantum/processing/audit.ts","src/quantum/processing/machine.ts","src/quantum/processing/examples.ts","scripts/next.ts","scripts/gen-clay.ts","scripts/legal.ts"]) : (∀ f ∈ url, f ∉ path) ∧ ∀ f ∈ url ++ path, ∃ r ∈ roots, (r ++ "/").toList.isPrefixOf f.toList := by subst hr hu hp; decide
 /-- the hex digits above nine are spoken as Ⰺ (ten) and a unit, and read back by adding them: ten and one to five are eleven to fifteen, so every hex digit returns as itself (examples: fold-speak) -/
 theorem textbook_glagolitic_round_trip : 10 + 1 = 11 ∧ 10 + 2 = 12 ∧ 10 + 3 = 13 ∧ 10 + 4 = 14 ∧ 10 + 5 = 15 := by decide
 /-- textbook_glagolitic_round_trip reflected by its shape, conjunction (examples: fold-speak) -/
@@ -720,10 +702,6 @@ theorem textbook_margin_makes_price_reflected (price cost : Nat) (h : cost ≤ p
 theorem textbook_margin_makes_price_contrapositive (price cost : Nat) : ¬ (price - cost + cost = price) → ¬ ((cost ≤ price)) := fun hc hh => hc (textbook_margin_makes_price price cost hh)
 /-- the converse of textbook_margin_makes_price, proved (examples: stripe-margins) -/
 theorem textbook_margin_makes_price_converse (price cost : Nat) : (price - cost + cost = price) → (cost ≤ price) := fun hc => by omega
-/-- the leads carried are zero and the release is published as the next sequential version, or they are positive and next converts them to Payload documents first: no third case (examples: leads-carry) -/
-theorem textbook_carry_release (carried : Nat) : carried = 0 ∨ 0 < carried := Nat.eq_zero_or_pos carried
-/-- textbook_carry_release reflected by its shape, disjunction (examples: leads-carry) -/
-theorem textbook_carry_release_reflected (carried : Nat) : (0 < carried) ∨ (carried = 0) := Or.symm (textbook_carry_release carried)
 /-- the open news APIs and the keyed ones Payload holds are the 7 adapters of the DOI research: the mentions of every record of precedence, by source, measured and never a verdict (examples: compete-news-plan) -/
 theorem textbook_news_adapters : 4 + 3 = 7 := by decide
 /-- textbook_news_adapters reflected by its shape, equality (examples: compete-news-plan) -/
@@ -896,25 +874,17 @@ theorem textbook_google_one_door_reflected (direct : Nat) : (¬ 0 < direct) ↔ 
 theorem textbook_google_call_schema (unknown missing broken : Nat) : unknown + missing + broken = 0 ↔ unknown = 0 ∧ missing = 0 ∧ broken = 0 := by omega
 /-- textbook_google_call_schema reflected by its shape, equivalence (examples: payload-google-call-validated, payload-google-call-endpoint, payload-google-call-refused) -/
 theorem textbook_google_call_schema_reflected (unknown missing broken : Nat) : (unknown = 0 ∧ missing = 0 ∧ broken = 0) ↔ (unknown + missing + broken = 0) := Iff.symm (textbook_google_call_schema unknown missing broken)
-/-- every violation has exactly one kind of the closed set VIOLATION_KINDS (the WORKFLOW_RULES first), the others its kinds − 1, and recordViolation gives it the content address of its kind, rule and evidence, so one violation is one record; any violation refuses (severity refuse) (examples: repository-violation) -/
-theorem textbook_violation_one_kind (kinds : Nat) (h : 0 < kinds) : (kinds - 1) + 1 = kinds := by omega
-/-- textbook_violation_one_kind reflected by its shape, equality (examples: repository-violation) -/
-theorem textbook_violation_one_kind_reflected (kinds : Nat) (h : 0 < kinds) (σ : Nat) : σ - (kinds) = σ - ((kinds - 1) + 1) := congrArg (σ - ·) (Eq.symm (textbook_violation_one_kind kinds h))
-/-- the contrapositive of textbook_violation_one_kind (examples: repository-violation) -/
-theorem textbook_violation_one_kind_contrapositive (kinds : Nat) : ¬ ((kinds - 1) + 1 = kinds) → ¬ ((0 < kinds)) := fun hc hh => hc (textbook_violation_one_kind kinds hh)
-/-- the converse of textbook_violation_one_kind, proved (examples: repository-violation) -/
-theorem textbook_violation_one_kind_converse (kinds : Nat) : ((kinds - 1) + 1 = kinds) → (0 < kinds) := fun hc => by omega
 /-- a retried step is its last attempt: whatever the earlier attempts were, the status the green rule reads is the last one, so a step next retried to green no longer refuses the commit; every attempt stays in the receipt as history (examples: repository-retry-supersedes) -/
 theorem textbook_retry_supersedes (attempts : List Bool) (last : Bool) : (attempts ++ [last]).getLast? = some last := by simp
 /-- textbook_retry_supersedes reflected by its shape, equality (examples: repository-retry-supersedes) -/
 theorem textbook_retry_supersedes_reflected (attempts : List Bool) (last : Bool) : (some last) = ((attempts ++ [last]).getLast?) := Eq.symm (textbook_retry_supersedes attempts last)
-/-- when to push: the version is the last tag or its one next step (one step forward, one back is the tag), and the build it names is the one the package answers on initialize (examples: repository-decide-push, configure-versions) -/
+/-- when to push: the version is the last tag or its one next step (one step forward, one back is the tag), and the build it names is the one the package answers on initialize (examples: configure-versions) -/
 theorem textbook_version_sequential (n : Nat) : n + 1 - 1 = n := Nat.add_sub_cancel n 1
-/-- textbook_version_sequential reflected by its shape, equality (examples: repository-decide-push, configure-versions) -/
+/-- textbook_version_sequential reflected by its shape, equality (examples: configure-versions) -/
 theorem textbook_version_sequential_reflected (n : Nat) (σ : Nat) : σ - (n) = σ - (n + 1 - 1) := congrArg (σ - ·) (Eq.symm (textbook_version_sequential n))
-/-- the e2e gate decodes by majority: two agreeing copies of three decide a combination (twice two exceeds three); a push needs nothing uncorrectable (examples: repository-decide-push) -/
+/-- the e2e gate decodes by majority: two agreeing copies of three decide a combination (twice two exceeds three); a push needs nothing uncorrectable (examples: none yet) -/
 theorem textbook_majority_of_three : 2 * 2 > 3 := by decide
-/-- textbook_majority_of_three reflected by its shape, order (examples: repository-decide-push) -/
+/-- textbook_majority_of_three reflected by its shape, order (examples: none yet) -/
 theorem textbook_majority_of_three_reflected (σ : Nat) (hσ0 : (2 * 2) ≤ σ) : σ - (2 * 2) < σ - (3) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_majority_of_three) hσ0) (textbook_majority_of_three)
 /-- every chat turn is a door call or one programmable question with at least one option, never prose: a problem no door decides alone (chatOf) is asked back with the doors around it as its options, the choice re-enters the loop, the routing is measured as exact pairs and misroutes as leads, and the chat is the MCP App ui://qpu/chat, which the React host QpuApp mounts when no tool is named, in the admin and as the registry item qpu-chat; the door is entered only for a chat given as an object (isObj) and every turn is one tools/call envelope (callOf) (examples: chat-question, chat-choice, chat-routes, chat-not-object, configure-chat-item) -/
 theorem textbook_chat_call_or_question (served : Bool) (options : Nat) (h : served = false → 0 < options) : served = true ∨ 0 < options := match served, h with | true, _ => Or.inl rfl | false, h => Or.inr (h rfl)

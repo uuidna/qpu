@@ -25,7 +25,7 @@ Every figure below was measured on this tree on 2026-11-02 with the commands in 
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 1355 / 1998 (1356 hand-written, 642 generated equation lemmas) |
+| Theorems declared / accepted by the kernel | 1340 / 1977 (1341 hand-written, 636 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
 | Self-audit checks | see docs/audit |
