@@ -5,6 +5,7 @@
 
 import { Circuit, CNOT, CZ, DensityMatrixSimulator, getExpectation, H, LineQubit, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, Y, Z, ZZ, adjointGate, applied, qubitKey, raiseGate, type Gate } from './cirq.ts'
 import { numpyWeights } from './unit/random.ts'
+import { uuidOf } from './unit/blocks.ts'
 
 /** The quantum Fourier transform, as the Cirq page builds it: a Hadamard on each qubit, then a controlled phase CZ**(1/2^k)
  *  from each later qubit onto it. The page notes the output comes in reversed bit order unless swaps are added, so the swaps
@@ -492,6 +493,40 @@ export const createImpossible = (opts: { p?: bigint; q?: bigint; bits?: number; 
 export const decodeImpossible = (N: bigint, witness: bigint): { factors: bigint[]; verified: boolean; searched: bigint; decoded: boolean } => {
   const r = listFactors(N, 1n, witness)
   return { factors: r.factors, verified: r.verified, searched: r.searched, decoded: r.factors.length >= 2 && r.verified }
+}
+
+/** Order-finding completed over the QPU's UUID quantum space and the RAID controller: the least r with a^r ≡ 1 mod N, by baby-step giant-step — a
+ *  meet-in-the-middle a content-addressed store makes cheap. m = ⌈√budget⌉ baby steps a^0 … a^(m−1) mod N are each addressed by content (uuidOf of the
+ *  residue — the UUID quantum space) and held in the RAID table (a content-addressed map, the RAID controller); giant steps a^(m·i) mod N meet a baby
+ *  step at an address, so a^(m·i) ≡ a^j and r divides m·i − j, reduced to the least order and checked. Found exactly when the order is ≤ m² (the table
+ *  squared), in O(√r) time and space; beyond the budget it is bounded, never guessed — order-finding at RSA scale is the one step a physical quantum
+ *  backend computes (textbook_rsa_beyond_bound). This completes order-finding wherever the period fits the content-addressed space. */
+export const orderFinding = (a: bigint, N: bigint, budget = 1n << 22n): { order: string | null; found: boolean; babySteps: string; table: string; verified: boolean; via: string } => {
+  if (N < 2n || a < 2n || a % N === 0n || gcdBig(a % N, N) !== 1n) return { order: null, found: false, babySteps: '0', table: 'empty', verified: false, via: 'a must be a unit mod N (2 ≤ a < N, gcd(a, N) = 1); otherwise gcd is a factor and no order is needed' }
+  a %= N
+  const m = sqrtBig(budget < 1n ? 1n : budget) + 1n
+  // the baby steps a^j mod N, each addressed by content (uuidOf of the residue — the UUID quantum space) in the RAID table (the content-addressed map)
+  const raid = new Map<string, bigint>()
+  let x = 1n % N
+  for (let j = 0n; j < m; j++) { const addr = uuidOf(x.toString()); if (!raid.has(addr)) raid.set(addr, j); x = (x * a) % N }
+  // the giant steps a^(m·i) mod N meet a baby step at its content address: a^(m·i) ≡ a^j ⇒ a^(m·i − j) ≡ 1, a multiple of the order
+  const aM = powMod(a, m, N)
+  let giant = 1n % N
+  for (let i = 0n; i <= m; i++) {
+    const j = raid.get(uuidOf(giant.toString()))
+    if (j !== undefined) {
+      let r = m * i - j // a multiple of the order (a^r ≡ 1); reduce it to the least order below
+      if (r > 0n && powMod(a, r, N) === 1n) {
+        // factor the multiple fully (it is ≤ m², trial division feasible) — small primes plus any large prime cofactor — then divide each out maximally
+        const primes: bigint[] = []; let t = r; for (let d = 2n; d * d <= t; d++) if (t % d === 0n) { primes.push(d); while (t % d === 0n) t /= d }
+        if (t > 1n) primes.push(t)
+        for (const pp of primes) while (r % pp === 0n && powMod(a, r / pp, N) === 1n) r /= pp
+        return { order: r.toString(), found: true, babySteps: m.toString(), table: `${raid.size} content-addressed residues`, verified: powMod(a, r, N) === 1n, via: 'baby-step giant-step over the UUID-addressed RAID table' }
+      }
+    }
+    giant = (giant * aM) % N
+  }
+  return { order: null, found: false, babySteps: m.toString(), table: `${raid.size} content-addressed residues`, verified: false, via: `the order exceeds m² ≈ ${(m * m).toString()} (the budget): bounded, never guessed — order-finding at this scale is computed by a physical quantum backend` }
 }
 
 // Shor's reduction, exact at any size: factoring is order-finding. Given the order r of a mod N (the quantum-hard quantity a real QPU measures,

@@ -842,6 +842,7 @@ The textbook algorithms of the Cirq page
         "qaoa",
         "shor",
         "factor",
+        "order",
         "deutsch_jozsa",
         "bernstein_vazirani",
         "simon",
@@ -856,7 +857,7 @@ The textbook algorithms of the Cirq page
         "solovay_kitaev",
         "steane"
       ],
-      "default": "chsh"
+      "default": "trotter"
     },
     "depth": {
       "type": "integer",
@@ -939,7 +940,16 @@ The textbook algorithms of the Cirq page
     "order": {
       "type": "string",
       "pattern": "^[0-9]+$",
-      "description": "shor"
+      "description": "shor/factor"
+    },
+    "budget": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "order/factor"
+    },
+    "find": {
+      "type": "boolean",
+      "description": "factor"
     },
     "N": {
       "type": "integer",
@@ -1007,8 +1017,8 @@ The textbook algorithms of the Cirq page
     }
   },
   "x-harmonic": {
-    "combinations": "21",
-    "index": "12",
+    "combinations": "22",
+    "index": "14",
     "from": "a432"
   }
 }

@@ -29,7 +29,7 @@ import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.ts'
 import { DEVICES, PROCESSORS, toDevice, willowNoise, getAverageConnectivity, isBelowThreshold } from './processor.ts'
 import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, entropyWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, matchWidget, clayWidget, verifyWidget } from './widgets.ts'
 import { APPLICATIONS, ROADMAP } from './roadmap.ts'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, getInteger, writeInteger, testPrimality, listFactors, shorReduction, createImpossible, decodeImpossible, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection } from './algorithms.ts'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, getInteger, writeInteger, testPrimality, listFactors, shorReduction, createImpossible, decodeImpossible, orderFinding, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection } from './algorithms.ts'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.ts'
 import { LEADS, leadCounts, combineLeads, listRunnableLeads, runSession, sitemapLeads, type Lead, type LeadStatus, type CellLead, type SessionInput } from './leads.ts'
 import { REPOSITORIES } from './repositories.ts'
@@ -108,8 +108,13 @@ const answerFactor = (n: bigint, via?: string, reflections = 1n << 12n, from?: b
   const bits = n.toString(2).length, p = testPrimality(n)
   const f = p.prime ? { factors: [n], left: [] as bigint[], reached: null as bigint | null, searched: 0n, verified: true } : listFactors(n, reflections, from)
   const primality = p.prime ? (p.certain ? 'prime' : 'a probable prime (Miller–Rabin, 24 bases)') : 'composite'
-  return { name: 'factor', integer: n.toString(), bits, prime: p.prime, certain: p.certain, factors: f.factors.map(String), left: f.left.map(String), complete: f.left.length === 0, verified: f.verified, searched: f.searched.toString(), reached: f.reached === null ? null : f.reached.toString(), theorem: 'textbook_factors_divide',
-    says: `a ${bits}-bit integer, ${primality}${p.prime ? '' : `: ${f.factors.length} prime factor(s) found${f.left.length ? `, ${f.left.length} part(s) under the σ-reflection search — searched ${f.searched} centre(s), reached ${f.reached}; resume with from=${f.reached} (unbounded, computing, never declined; a balanced semiprime's reflection is the order-finding of textbook_shor_reduction)` : ''}`}; the parts multiply back to the integer: ${f.verified}`,
+  // the order channel, wired to a quantum backend: a part no classical reflection splits is left for order-finding — the one step not computed here (the
+  // state-vector simulation reaches it only for N ≤ 21, textbook_rsa_beyond_bound; a physical quantum backend reaches it at scale). The plan names the
+  // exact door to ask any quantum backend (the hosted QPU connector, or real hardware) for the order r of a mod the left part; feeding r back to the
+  // hybrid order channel (algorithm { name: factor, integer, a, order }) finishes it by the reduction (textbook_shor_reduction). Never fabricated.
+  const quantumOrder = f.left.length ? { needs: 'order-finding', the: 'the one step not computed quantum here', door: f.left.map((m) => ({ tool: 'algorithm', arguments: { name: 'shor', N: m.toString(), a: 2 } })), backend: 'any MCP that computes order-finding: the state-vector simulator answers N ≤ 21, a physical quantum backend at scale; feed the order r back as algorithm { name: "factor", integer, a, order } — the hybrid order channel', bound: 'textbook_rsa_beyond_bound', theorem: 'textbook_shor_reduction' } : null
+  return { name: 'factor', integer: n.toString(), bits, prime: p.prime, certain: p.certain, factors: f.factors.map(String), left: f.left.map(String), complete: f.left.length === 0, verified: f.verified, searched: f.searched.toString(), reached: f.reached === null ? null : f.reached.toString(), ...(quantumOrder ? { quantumOrder } : {}), theorem: 'textbook_factors_divide',
+    says: `a ${bits}-bit integer, ${primality}${p.prime ? '' : `: ${f.factors.length} prime factor(s) found${f.left.length ? `, ${f.left.length} part(s) under the σ-reflection search — searched ${f.searched} centre(s), reached ${f.reached}; resume with from=${f.reached} (unbounded, computing, never declined; a balanced semiprime's reflection is the order-finding of textbook_shor_reduction). The one step not computed quantum here is order-finding: ask a quantum backend (quantumOrder.door) for the order r, then decode with it` : ''}`}; the parts multiply back to the integer: ${f.verified}`,
     ...(via ? { via } : {}), summary: [['Bits', String(bits)], ['Primality', primality], ['Prime factors found', String(f.factors.length)], ['Under σ-reflection search', String(f.left.length)], ['Reflections searched', f.searched.toString()], ['Product checked', f.verified ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: [...f.factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']), ...f.left.map((x) => [x.toString(), String(x.toString(2).length), 'composite, under σ-reflection search'])] }
 }
 // The impossible-integer trapdoor over the clay cluster: `create` mints a semiprime N = p·q of any prime-distance and holds its σ-reflection witness
@@ -396,7 +401,7 @@ const OWN: Tool[] = [
       type: 'object',
       required: ['name'],
       properties: {
-        name: { enum: ['qft', 'inverse_qft', 'phase_estimation', 'grover', 'teleportation', 'qaoa', 'shor', 'factor', 'deutsch_jozsa', 'bernstein_vazirani', 'simon', 'vqe', 'chsh', 'trotter', 'xeb', 'no_cloning', 'holevo', 'gottesman_knill', 'eastin_knill', 'solovay_kitaev', 'steane'] },
+        name: { enum: ['qft', 'inverse_qft', 'phase_estimation', 'grover', 'teleportation', 'qaoa', 'shor', 'factor', 'order', 'deutsch_jozsa', 'bernstein_vazirani', 'simon', 'vqe', 'chsh', 'trotter', 'xeb', 'no_cloning', 'holevo', 'gottesman_knill', 'eastin_knill', 'solovay_kitaev', 'steane'] },
         depth: { type: 'integer', minimum: 1, maximum: 40, default: 12, description: 'xeb: the depth of the random circuit' },
         balanced: { type: 'boolean', default: true, description: 'deutsch_jozsa: a balanced oracle (parity) vs a constant one' },
         hidden: { type: 'array', items: { type: 'integer', minimum: 0, maximum: 1 }, description: 'bernstein_vazirani: the hidden bit string s, recovered in one query' },
@@ -407,7 +412,9 @@ const OWN: Tool[] = [
         create: { type: 'object', description: 'factor: mint an impossible integer over the clay cluster — a semiprime N = p·q of any prime-distance with its σ-reflection witness (centre a) and cross-UUID address. { p, q } from two given primes (decimal), or { bits, gapBits?, seed? } to generate them deterministically', properties: { p: { type: 'string', pattern: '^[0-9]+$' }, q: { type: 'string', pattern: '^[0-9]+$' }, bits: { type: 'integer', minimum: 16 }, gapBits: { type: 'integer', minimum: 1 }, seed: { type: 'string', pattern: '^[0-9]+$' } } },
         witness: { type: 'string', pattern: '^[0-9]+$', description: 'factor: decode an impossible integer (integer=N) by its witness — the centre a = (p + q)/2; one σ-reflection splits N into p·q, the product checked, never a search of an unknown' },
         address: { type: 'string', description: 'factor: with witness, the published cross-UUID address to check the witness against (uuidOf of N and the witness)' },
-        order: { type: 'string', pattern: '^[0-9]+$', description: 'shor: the order r of a mod N (the quantum-hard quantity a QPU measures; the state-vector simulation reaches it only for N ≤ 21). Given it, Shor\'s reduction gcd(a^(r/2) ± 1, N) runs exactly at any size' },
+        order: { type: 'string', pattern: '^[0-9]+$', description: 'shor/factor: the order r of a mod N (the quantum-hard quantity a QPU measures; the state-vector simulation reaches it only for N ≤ 21). Given it, Shor\'s reduction gcd(a^(r/2) ± 1, N) runs exactly at any size' },
+        budget: { type: 'string', pattern: '^[0-9]+$', description: 'order/factor: the search budget for order-finding over the UUID/RAID content-addressed space (baby-step giant-step); the order is found when it is ≤ √budget squared, else bounded (default 4194304)' },
+        find: { type: 'boolean', description: 'factor: complete order-finding over the UUID/RAID space (orderFinding) for the part left by reflection, then reduce it to factors — one call end to end, bounded honestly when the order exceeds the budget' },
         N: { type: 'integer', minimum: 3, maximum: 21, default: 15 },
         a: { type: 'integer', minimum: 2, default: 7 },
         sweep: { type: 'boolean', default: false, description: 'qaoa: sweep alpha and beta on the grid of the page and return the best' },
@@ -607,10 +614,31 @@ const OWN: Tool[] = [
           summary: [['Code', '[[7,1,3]] Steane (CSS)'], ['Distance', String(c.distance)], ['Single-qubit errors corrected', `${c.corrected}/${c.total}`]],
           header: ['Error', 'Syndrome', 'Located'], rows: c.rows.map((r) => [r.error, r.syndrome, String(r.located)]) }
       }
+      // order-finding completed over the UUID quantum space and the RAID controller (baby-step giant-step): the least r with a^r ≡ 1 mod N
+      if (name === 'order') {
+        const oN = getInteger(args.N, 'N'), oA = getInteger(args.a, 'a', 2n), budget = args.budget !== undefined ? getInteger(args.budget, 'budget') : undefined
+        const o = orderFinding(oA, oN, budget)
+        return { name: 'order', N: oN.toString(), a: oA.toString(), order: o.order, found: o.found, verified: o.verified, babySteps: o.babySteps, table: o.table, via: o.via, theorem: 'textbook_shor_reduction',
+          says: o.found ? `order-finding completed over the UUID/RAID space: the order of ${oA} mod ${oN} is ${o.order} (${o.via}); feed it to the reduction to factor` : `order-finding ${o.via}`,
+          summary: [['N', oN.toString()], ['a', oA.toString()], ['Order', o.order ?? 'bounded'], ['Found', o.found ? 'yes' : 'no'], ['Baby steps', o.babySteps], ['Table', o.table]], header: ['step', 'value'], rows: [['order', o.order ?? 'bounded'], ['baby-step giant-step', o.via]] } as never
+      }
       if (name === 'factor') {
         if (isObj(args.create)) return answerImpossible(args)
         // the hybrid reverse: a witness (crypto/UUID) or an order (quantum) decodes N through one door, each sealed as a UUID receipt
         if (args.witness !== undefined || args.order !== undefined) return hybridDecode(args) as never
+        // find: complete order-finding over the UUID/RAID space for a part reflection leaves, then reduce it to factors — one call end to end
+        if (args.find) {
+          const fN = getInteger(args.integer, 'integer'), fA = getInteger(args.a, 'a', 2n), budget = args.budget !== undefined ? getInteger(args.budget, 'budget') : undefined
+          const base = answerFactor(fN, undefined, args.reflections !== undefined ? getInteger(args.reflections, 'reflections') : undefined)
+          const part = base.left.length ? getInteger(base.left[0]!, 'left') : null
+          if (part === null) return { ...base, find: 'order-finding not needed: reflection split it' } as never
+          const o = orderFinding(fA, part, budget)
+          if (!o.found || o.order === null) return { ...base, find: { needed: true, order: null, via: o.via, says: `order-finding over the UUID/RAID space is bounded for this part: ${o.via}` } } as never
+          const red = shorReduction(part, fA, BigInt(o.order)), factors = (red.factors ?? []).map(String), r = decodeReceipt(part, factors, 'order')
+          return { name: 'factor', mode: 'find', integer: fN.toString(), bits: fN.toString(2).length, a: fA.toString(), order: o.order, factors, decoded: !!red.factors, verified: red.verified, babySteps: o.babySteps, table: o.table, receipt: r.receipt, sealed: r.sealed, theorem: 'textbook_shor_reduction',
+            says: `order-finding completed over the UUID/RAID space (${o.via}): the order of ${fA} mod ${part} is ${o.order}; the reduction ${red.factors ? `splits it into ${factors.join(' × ')}` : `does not split it (${red.why})`}, sealed as ${r.receipt}`,
+            summary: [['Bits', String(fN.toString(2).length)], ['Order', o.order], ['Factors', factors.join(' × ') || red.why], ['Baby steps', o.babySteps], ['Receipt sealed', r.sealed ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: factors.map((x) => [x, String(BigInt(x).toString(2).length), 'prime']) } as never
+        }
         return answerFactor(getInteger(args.integer, 'integer'), undefined, args.reflections !== undefined ? getInteger(args.reflections, 'reflections') : undefined, args.from !== undefined ? getInteger(args.from, 'from') : undefined)
       }
       if (name === 'shor') {

@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T17:21:40.208Z",
- "ms": 335,
+ "date": "2026-11-02T17:42:07.654Z",
+ "ms": 296,
  "approval": {
   "represents": "1.4.0+dc1613a9",
   "package": "1.4.0+dc1613a9",
@@ -33,18 +33,18 @@
  "drift": 0,
  "experience": {
   "measured": {
-   "copies": 1368,
+   "copies": 1371,
    "involutions": 381,
    "msByHost": {
-    "qpu.uuidna.com": 34,
-    "qpu.ceci.workers.dev": 35,
-    "qpu.psg.bg": 34
+    "qpu.psg.bg": 33,
+    "qpu.uuidna.com": 31,
+    "qpu.ceci.workers.dev": 34
    }
   },
   "freeShare": 28,
-  "slowestMedianMs": 35,
-  "shardSize": 28,
-  "says": "28% of the gate's copies answered free (304 by involution); the slowest host answers in 35 ms, so a batch is sharded to 28 calls a shard to stay within a second"
+  "slowestMedianMs": 34,
+  "shardSize": 29,
+  "says": "28% of the gate's copies answered free (304 by involution); the slowest host answers in 34 ms, so a batch is sharded to 29 calls a shard to stay within a second"
  },
  "configs": [
   {
@@ -170,7 +170,7 @@
   {
    "kind": "api",
    "torus": {
-    "address": "7b0327b0-1155-5c7b-a1be-cc341f22cc7f",
+    "address": "9020ffed-ce5a-2c0e-a741-f90088b3b4f4",
     "seed": 1,
     "reflection": 9,
     "trinity": [
@@ -179,7 +179,7 @@
      1
     ],
     "closed": true,
-    "bytes": 132461
+    "bytes": 132986
    }
   },
   {
@@ -275,9 +275,9 @@
   {
    "kind": "actions",
    "torus": {
-    "address": "e239cbbb-a0d9-2fc3-bf94-e0c8662d29cb",
-    "seed": 5,
-    "reflection": 5,
+    "address": "10e258a5-3f05-4723-8bff-412d0253232c",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
      2,
      5,
@@ -365,16 +365,16 @@
   {
    "kind": "sets",
    "torus": {
-    "address": "514baff2-23fa-7ac0-8d6c-91375ae8e31e",
-    "seed": 3,
-    "reflection": 7,
+    "address": "924cc14c-a94d-5116-a244-02ba7f192ad5",
+    "seed": 6,
+    "reflection": 4,
     "trinity": [
      3,
      6,
      9
     ],
     "closed": true,
-    "bytes": 154156
+    "bytes": 154636
    }
   },
   {
