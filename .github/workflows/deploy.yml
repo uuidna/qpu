@@ -46,16 +46,20 @@ jobs:
           npx tsc --noEmit -p tsconfig.json
           node --test 'src/quantum/**/*.test.ts'
           lake build
-      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
       # Assemble the app the way the fullstack config states it (configure { kind: 'fullstack' }.steps): fork payloadcms/website (MIT)
-      # under .qpu-app/, then run the generator into the clone so every overlay file (the qpu block, the tenants collection, the plugins,
-      # the adapters, the MCP, the migrations, the registry, open-next.config.ts and wrangler.jsonc) is written from the tree. The clone is
-      # untracked (.gitignore), so CI rebuilds it on every run; @uuidna/qpu is linked from the repo root and the four plugins MCP mounts are added.
-      - name: fork payloadcms/website under .qpu-app and generate the QPU overlay into it
+      # under .qpu-app/ FIRST (so pnpm reads the clone's package.json), then set up pnpm, then run the generator into the clone so every
+      # overlay file (the qpu block, the tenants collection, the plugins, the adapters, the MCP, the migrations, the registry,
+      # open-next.config.ts and wrangler.jsonc) is written from the tree. The clone is untracked; @uuidna/qpu is linked from the repo root.
+      - name: fork payloadcms/website (MIT) under .qpu-app
         run: |
           rm -rf .qpu-app
           git clone --depth 1 https://github.com/payloadcms/website .qpu-app
           rm -rf .qpu-app/.git
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          package_json_file: .qpu-app/package.json
+      - name: generate the QPU overlay into the clone and add its dependencies
+        run: |
           node scripts/configs.ts
           cd .qpu-app
           pnpm add -w \
