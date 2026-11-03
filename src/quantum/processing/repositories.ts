@@ -5,4 +5,4 @@ import { TABLES } from './tables-index.ts'
 
 type Repository = { name: string; description: string; language: string }
 
-export const REPOSITORIES: readonly Repository[] = TABLES.REPOSITORIES as readonly Repository[]
+export const REPOSITORIES = TABLES.REPOSITORIES as readonly Repository[]

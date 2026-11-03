@@ -107,7 +107,7 @@ const gatherFacts = (given: WorkflowFacts): WorkflowFacts => {
  *  so a hand edit of its output always reruns it and the rule automated is always decided. A step that reads the network, the clock or the
  *  repository's own state (compete, repository, trunk, publish, every online step) and purify and metrics, which read the run's own artefacts,
  *  are never cached, and say so; metrics runs in the full flow, never in the fast pre-commit form. A table of paths, in the path registry. */
-export const STEP_CACHE: Readonly<Record<string, { roots: readonly string[]; generator?: true; /** the docs pages a generator writes are outputs of the run, never inputs */ generatedDocsExcluded?: true }>> = TABLES.STEP_CACHE as Readonly<Record<string, { roots: readonly string[]; generator?: true; /** the docs pages a generator writes are outputs of the run, never inputs */ generatedDocsExcluded?: true }>>
+export const STEP_CACHE = TABLES.STEP_CACHE as Readonly<Record<string, { roots: readonly string[]; generator?: true; /** the docs pages a generator writes are outputs of the run, never inputs */ generatedDocsExcluded?: true }>>
 /** Which steps a hook runs and which it reuses: a step runs when it is not cacheable, has no sealed green record, its input address changed, or
  *  (a generator) its outputs changed since; every other step reuses its sealed record. The steps run are never more than those whose inputs
  *  changed or that cannot be cached (textbook_hook_steps_monotone). Pure. */

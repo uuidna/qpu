@@ -11,11 +11,11 @@ type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contr
 export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
 export const CLOUDFLARE_DOCS_MCP = 'https://docs.mcp.cloudflare.com/mcp'
 /** Cloudflare's MCP servers: the documentation server answers in the open; the rest answer 401 until a tenant brings its OAuth token. */
-export const CLOUDFLARE_MCP: readonly { host: string; url: string; about: string }[] = TABLES.CLOUDFLARE_MCP as readonly { host: string; url: string; about: string }[]
+export const CLOUDFLARE_MCP = TABLES.CLOUDFLARE_MCP as readonly { host: string; url: string; about: string }[]
 /** Google's own MCP servers, measured in the registry on 2026-10-26 (search google: 296 servers, 175 with remotes, these at <service>.googleapis.com/mcp):
  *  every one a token door (Google OAuth), each mapped to what it is for the Payload plugin — an adapter the environment names, a deploy target,
  *  a measure, a door the tenant opens; proposed and never called from the tree. */
-const GOOGLE_MCP: readonly { host: string; url: string; about: string; maps: string }[] = TABLES.GOOGLE_MCP as readonly { host: string; url: string; about: string; maps: string }[]
+const GOOGLE_MCP = TABLES.GOOGLE_MCP as readonly { host: string; url: string; about: string; maps: string }[]
 /** Google Workspace's nine MCP servers (Gmail, Drive, Docs, Sheets, Slides, Calendar, Chat, People, Classroom): the institution's doors, each landing in the docket. */
 import { WORKSPACE_MCP } from './institutions.ts'
 import { TABLES } from './tables-index.ts'
@@ -44,7 +44,7 @@ const GITHUB_MCP: readonly { host: string; url: string; about: string }[] = [
 export const GEMINI_API = TABLES.GEMINI_API
 export const CLAUDE_API = TABLES.CLAUDE_API
 /** Every MCP this tree knows how to integrate, with what it does with each once the tenant's token opens it. */
-export const KNOWN_MCP: readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[] = TABLES.KNOWN_MCP as readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[]
+export const KNOWN_MCP = TABLES.KNOWN_MCP as readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[]
 /** The hosts discovered when a tenant names none: the unit, this tree, Cloudflare's eight servers and GitHub's. */
 export const UNIT_MCP = 'https://uuidna.com/mcp', QPU_MCP = 'https://qpu.uuidna.com/mcp', DEFAULT_MCP_HOSTS: readonly string[] = [UNIT_MCP, QPU_MCP, ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url), ...GOOGLE_MCP.map((g) => g.url)]
 /** The JSON of an MCP answer, whether the host answered JSON or an event stream (the data line that is JSON). */
@@ -221,7 +221,7 @@ const listRegistryWords = (lead: { id: string; statement: string; source?: strin
 /** The MCP directories beside the official registry, as each is read by a machine (measured 2026-10-27): a search asked with a lead's words, an
  *  open sitemap matched by its slugs, a keyed API named with its key (the key the operator's act), a site with no machine contract a lead.
  *  A path robots.txt disallows is never asked, and a page behind a bot challenge is never fetched past it. */
-const MCP_DIRECTORIES: readonly { id: string; read: 'search' | 'mcp' | 'sitemap' | 'keyed' | 'none'; url: string; tool?: string; keyVar?: string; note: string }[] = TABLES.MCP_DIRECTORIES as readonly { id: string; read: 'search' | 'mcp' | 'sitemap' | 'keyed' | 'none'; url: string; tool?: string; keyVar?: string; note: string }[]
+const MCP_DIRECTORIES = TABLES.MCP_DIRECTORIES as readonly { id: string; read: 'search' | 'mcp' | 'sitemap' | 'keyed' | 'none'; url: string; tool?: string; keyVar?: string; note: string }[]
 type RegistryRequest = { id: string; lead: string; word: string; directory: string; method: 'GET' | 'POST'; url: string; accept: string; body?: unknown }
 export const createRegistryRequests = (lead: { id: string; statement: string; source?: string }, at = 3): RegistryRequest[] => {
   const words = listRegistryWords(lead, at)
@@ -270,7 +270,7 @@ export const rankBestDoors = (lead: { id: string; statement: string }, remotes: 
 
 /** Open MCP servers the QPU's tools/list is measured against: each answered initialize and tools/list without a key (measured 2026-10-26);
  *  baselines only, not integrations. Learning Commons answered 401 and is not one. */
-export const OPEN_MCP_BASELINES: readonly { id: string; url: string }[] = TABLES.OPEN_MCP_BASELINES as readonly { id: string; url: string }[]
+export const OPEN_MCP_BASELINES = TABLES.OPEN_MCP_BASELINES as readonly { id: string; url: string }[]
 /** A tools/list as a client pays for it: its bytes, the tokens it costs at four bytes a token, and the bytes per tool. */
 const getToolsListCost = (bytes: number, tools: number) => ({ bytes, tokens: Math.ceil(bytes / 4), tools, perTool: tools ? Math.round(bytes / tools) : null })
 /** The official MCP registry, latest version of each server, a page at a time (measured 2026-10-26: no total in the answer, a nextCursor while

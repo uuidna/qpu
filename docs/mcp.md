@@ -2022,6 +2022,28 @@ Stripe per tenant, pure, the QPU as a product with its variants
       },
       "description": "op ledger"
     },
+    "journal": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "op ledger"
+    },
+    "mint": {
+      "type": "array",
+      "description": "op ledger"
+    },
+    "ideas": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "op ledger"
+    },
+    "royalty": {
+      "type": "object",
+      "description": "op ledger"
+    },
     "tools": {
       "type": "array",
       "items": {

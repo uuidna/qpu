@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-03T01:16:43.760Z",
- "ms": 569,
+ "date": "2026-11-03T02:25:57.755Z",
+ "ms": 311,
  "approval": {
   "represents": "1.4.0+dc1613a9",
   "package": "1.4.0+dc1613a9",
@@ -18,48 +18,9 @@
  "closed": true,
  "partition": "8 + 2 + 15 = 25",
  "improved": [
-  ".qpu-app/src/components/blocks/Qpu/Branding.tsx",
-  ".qpu-app/src/graphics/FullLogo/index.tsx",
-  ".qpu-app/src/blocks/Qpu/config.ts",
-  ".qpu-app/src/payload.qpu.config.ts",
-  ".qpu-app/README.qpu.md",
-  ".qpu-app/NOTICE.qpu.md",
-  ".qpu-app/src/payload.qpu.mcp.ts",
-  ".qpu-app/src/collections/Entries.ts",
-  ".qpu-app/src/globals/Qpu.ts",
-  ".qpu-app/src/payload.qpu.ecommerce.ts",
-  ".qpu-app/src/collections/Tenants.ts",
-  ".qpu-app/src/collections/form-submissions.qpu.hooks.ts",
-  ".qpu-app/src/collections/users.qpu.hooks.ts",
-  ".qpu-app/src/collections/pages.qpu.hooks.ts",
-  ".qpu-app/src/payload.qpu.adapters.ts",
-  ".qpu-app/src/components/blocks/Qpu/App.tsx",
-  ".qpu-app/src/components/blocks/Qpu/index.tsx",
-  ".qpu-app/src/components/blocks/Qpu/page.tsx",
-  ".qpu-app/src/components/blocks/Qpu/validate.tsx",
-  ".qpu-app/src/scripts/seedQpu.ts",
-  ".qpu-app/src/plugins/qpu.ts",
-  ".qpu-app/open-next.config.ts",
-  ".qpu-app/src/migrations/qpu/20261027_000000_entries_links.ts",
-  ".qpu-app/src/migrations/qpu/index.ts",
-  ".qpu-app/.env.qpu.example",
-  ".qpu-app/public/r/qpu-create.json",
   "docs/public/r/qpu-create.json",
-  ".qpu-app/public/r/registry.json",
-  ".qpu-app/public/r/qpu-app.json",
-  ".qpu-app/public/r/qpu-chat.json",
-  ".qpu-app/public/r/qpu-block.json",
   "docs/public/r/qpu-block.json",
-  ".qpu-app/public/r/qpu-sdk.json",
-  ".qpu-app/public/r/qpu-style.json",
-  "docs/public/r/qpu-style.json",
-  ".qpu-app/public/r/qpu-card.json",
-  ".qpu-app/public/r/qpu-badge.json",
-  ".qpu-app/public/r/qpu-table.json",
-  ".qpu-app/public/r/qpu-stream.json",
-  ".qpu-app/public/r/qpu-scan.json",
-  ".qpu-app/public/r/qpu-dashboard.json",
-  ".qpu-app/wrangler.jsonc"
+  "docs/public/r/qpu-style.json"
  ],
  "held": [
   {
@@ -220,16 +181,16 @@
   {
    "kind": "api",
    "torus": {
-    "address": "d92bd175-d32d-2a1d-b29e-a3725109f46e",
-    "seed": 2,
-    "reflection": 8,
+    "address": "c38ffccb-e1c3-79f6-8398-b08039ab17be",
+    "seed": 1,
+    "reflection": 9,
     "trinity": [
-     2,
-     5,
-     8
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 134030
+    "bytes": 134629
    }
   },
   {
@@ -415,16 +376,16 @@
   {
    "kind": "sets",
    "torus": {
-    "address": "5bdb1ad9-c3df-1eb2-a170-ef114ca9f2b9",
-    "seed": 5,
-    "reflection": 5,
+    "address": "91f2036e-e061-2ff3-a1ef-5b8941fc882c",
+    "seed": 8,
+    "reflection": 2,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 165756
+    "bytes": 167464
    }
   },
   {

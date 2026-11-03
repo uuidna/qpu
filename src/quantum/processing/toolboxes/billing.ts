@@ -1,26 +1,23 @@
-// The billing toolbox: Stripe per tenant, pure. A checkout is a plan (the request the Worker sends to Stripe with the tenant's
-// key, never the handler); a webhook is verified here by its Stripe-Signature (HMAC-SHA256 over timestamp.payload with the
-// tenant's webhook secret, tolerance on the timestamp) and read into one idempotent docket entry per event (granted,
-// renewed, revoked, disputed, failed), content-addressed by the event id; the licence state of a subject is read from its
-// entries at any tenant, since a licence names the domains it is valid on and the entries mirror. Every scenario between
-// tenants is an entry and a rule, never a special case: the same licence at another domain, a refund after a grant, a
-// dispute, a renewal, a replayed event, a wrong tenant's signature.
+// The billing toolbox: Stripe per tenant, pure, each op as the stripe tool's description states it. Every scenario between tenants is an entry
+// and a rule, never a special case: the same licence at another domain, a refund after a grant, a dispute, a renewal, a replayed event, a wrong
+// tenant's signature.
 import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { hmacSha256, utf8, hex, sameHex, sha256 } from '../unit/hmac.ts'
-import { uuidOf, compositionsOf, compositionOf, sealOf } from '../unit/blocks.ts'
+import { uuidOf, compositionsOf, compositionOf, sealOf, verifyOf } from '../unit/blocks.ts'
 import { LICENSE } from '../unit/license.ts'
 import { flowWidget } from '../widgets.ts'
 import { diffMembers, listRemedies, GENERATOR_REMEDIES } from '../audit.ts'
 import { TABLES } from '../tables-index.ts'
 
 type Checkout = { tenant: string; host: string; subject: string; domains: string[]; mode: 'payment' | 'subscription'; price?: string; amount?: number; currency: string; successUrl: string; cancelUrl: string; customerEmail?: string }
+type StripeEvent = { id: string; type: string; created?: number; data?: { object?: Record<string, unknown> } }
 type Plan = { method: 'POST'; url: string; headers: Record<string, string>; form: Record<string, string>; secret: string }
 type LicenceEntry = { id: string; kind: 'licence'; from: string; body: { event: string; type: string; state: 'granted' | 'renewed' | 'changed' | 'revoked' | 'disputed' | 'failed' | 'noted'; subject: string; tenant: string; domains: string[]; product: string | null; variant: string | null; quantity: number | null; customer: string | null; amount: number | null; currency: string | null; at: number; licence: string; terms: string }; links: string[] }
 
 /** The QPU as a product with its variants: what is sold, by what unit, on what interval; a tenant may price each variant in its own
  * currency. The a432 harmonic default stays free under attribution; the author's licence terms ride on every product. */
 type Variant = { product: string; variant: string; unit: 'domain' | 'tenant' | 'seat' | 'thousand-calls' | 'million-readings' | 'thousand-copies' | 'platform' | 'none'; interval: 'month' | 'year' | 'once' | 'metered'; amounts: Record<string, number>; domains: '*' | 'named'; description: string }
-export const CATALOGUE: readonly Variant[] = TABLES.CATALOGUE as readonly Variant[]
+export const CATALOGUE = TABLES.CATALOGUE as readonly Variant[]
 /** The nine capability plugins as three trinities (content, discovery, platform): a 3×3 organisation that refactors the taxonomy into threes. */
 const PLUGIN_TRINITIES = { content: ['lexical', 'nested-docs', 'seo'], discovery: ['search', 'redirects', 'form-builder'], platform: ['multi-tenant', 'ecommerce', 'mcp'] } as const
 const PLUGIN_CAPABILITIES = [...PLUGIN_TRINITIES.content, ...PLUGIN_TRINITIES.discovery, ...PLUGIN_TRINITIES.platform] as const
@@ -35,27 +32,30 @@ export const combinationVariantsOf = (base: Record<string, number> = { eur: 900,
   })
 }
 /** The Stripe product and price objects a tenant's catalogue needs, as the forms Stripe takes; the tenant's key sends them. */
-const createCatalogue = (tenant: string, currencies: readonly string[] = ['eur']): { products: { form: Record<string, string> }[]; prices: { form: Record<string, string> }[]; secret: string } => {
+const createCatalogue = (tenant: string, currencies: readonly string[] = ['eur']) => {
   // every product ISO-classified, inline and computed: UNSPSC 43230000 (software), ISO/IEC 19770 (software asset management) for the licence,
   // priced in ISO 4217 and dated ISO 8601, and the open standards the service itself implements — so a catalogue item is standardised goods, not just a price
   const products = [...new Set(CATALOGUE.map((v) => v.product))].map((product) => ({ form: { name: `QPU ${product.replace(/^qpu-/, '')}`, 'metadata[product]': product, 'metadata[tenant]': tenant, 'metadata[licence]': LICENSE.address, 'metadata[unspsc]': '43230000', 'metadata[iso]': 'ISO/IEC 19770 software asset management; priced ISO 4217; dated ISO 8601', 'metadata[implements]': 'Model Context Protocol; JSON-RPC 2.0; OpenAPI 3.1; SLSA', description: CATALOGUE.find((v) => v.product === product)!.description } }))
-  const prices = CATALOGUE.flatMap((v) => currencies.filter((c) => c in v.amounts).map((currency) => ({ form: { product_data: `QPU ${v.product.replace(/^qpu-/, '')}`, currency, unit_amount: String(v.amounts[currency]), 'metadata[product]': v.product, 'metadata[variant]': v.variant, 'metadata[unit]': v.unit, 'metadata[tenant]': tenant, 'metadata[domains]': v.domains, ...(v.interval === 'month' || v.interval === 'year' ? { 'recurring[interval]': v.interval } : v.interval === 'metered' ? { 'recurring[interval]': 'month', 'recurring[usage_type]': 'metered' } : {}) } })))
+  const prices: { form: Record<string, string> }[] = CATALOGUE.flatMap((v) => currencies.filter((c) => c in v.amounts).map((currency) => ({ form: { product_data: `QPU ${v.product.replace(/^qpu-/, '')}`, currency, unit_amount: String(v.amounts[currency]), 'metadata[product]': v.product, 'metadata[variant]': v.variant, 'metadata[unit]': v.unit, 'metadata[tenant]': tenant, 'metadata[domains]': v.domains, ...(v.interval === 'month' || v.interval === 'year' ? { 'recurring[interval]': v.interval } : v.interval === 'metered' ? { 'recurring[interval]': 'month', 'recurring[usage_type]': 'metered' } : {}) } })))
   return { products, prices, secret: SECRET_OF(tenant) }
 }
 /** Metered usage from the docket: the receipts of a subject in a period, as the usage record Stripe takes (per thousand calls). */
-const getUsage = (entries: readonly { kind?: string; from?: string; body?: { subject?: string; calls?: number }; date?: string }[], subject: string, from: number, to: number): { calls: number; thousands: number; form: Record<string, string> } => {
+const getUsage = (entries: readonly { kind?: string; from?: string; body?: { subject?: string; calls?: number }; date?: string }[], subject: string, from: number, to: number) => {
   const calls = entries.filter((e) => e.kind === 'usage' && e.body?.subject === subject && e.date && Date.parse(e.date) / 1000 >= from && Date.parse(e.date) / 1000 < to).reduce((n, e) => n + (e.body?.calls ?? 0), 0)
   const thousands = Math.ceil(calls / 1000)
   return { calls, thousands, form: { quantity: String(thousands), timestamp: String(to), action: 'set' } }
 }
 /** The author's compensation: the net of every balance transaction (Stripe's own fee figures, never assumed) by product and variant. */
-const settleTransactions = (transactions: readonly { id: string; net: number; fee: number; amount: number; currency: string; product?: string; variant?: string; tenant?: string }[]): { gross: Record<string, number>; fees: Record<string, number>; net: Record<string, number>; byProduct: Record<string, number>; byTenant: Record<string, number>; transactions: number; entry: { id: string; kind: 'settlement'; body: unknown } } => {
+const settleTransactions = (transactions: readonly { id: string; net: number; fee: number; amount: number; currency: string; product?: string; variant?: string; tenant?: string }[]) => {
   const sum = (k: 'amount' | 'fee' | 'net') => transactions.reduce<Record<string, number>>((acc, t) => ({ ...acc, [t.currency]: (acc[t.currency] ?? 0) + t[k] }), {})
   const by = (k: 'product' | 'tenant') => transactions.reduce<Record<string, number>>((acc, t) => ({ ...acc, [`${t[k] ?? 'unknown'}:${t.currency}`]: (acc[`${t[k] ?? 'unknown'}:${t.currency}`] ?? 0) + t.net }), {})
   const body = { gross: sum('amount'), fees: sum('fee'), net: sum('net'), byProduct: by('product'), byTenant: by('tenant'), transactions: transactions.map((t) => t.id).sort(), author: LICENSE.author, licence: LICENSE.address }
   return { ...body, transactions: transactions.length, entry: { id: uuidOf(`settlement${JSON.stringify(body)}`), kind: 'settlement', body } }
 }
 const SECRET_OF = (tenant: string) => `STRIPE_SECRET_KEY_${tenant.toUpperCase()}`
+const arr = (x: unknown): any[] => (Array.isArray(x) ? x : [])
+/** The royalty ratio, one table value: 2 coins of every 110 of a fee, a level (royaltyOf). */
+const ROYALTY = { num: 2n, den: 110n }
 
 /** The checkout session request, as Stripe's API takes it (form-encoded), with the licence in the metadata so the webhook carries it back. */
 const planCheckout = (c: Checkout): Plan => {
@@ -71,7 +71,7 @@ const planCheckout = (c: Checkout): Plan => {
 
 /** Stripe's signature scheme: `t=<timestamp>,v1=<hmac>`; the signed payload is `<timestamp>.<body>`; the tenant's secret signs. */
 export const signStripe = (secret: string, timestamp: number, payload: string): string => `t=${timestamp},v1=${hex(hmacSha256(utf8(secret), utf8(`${timestamp}.${payload}`)))}`
-const verifySignature = (secret: string, header: string, payload: string, now: number, toleranceSeconds = 300): { valid: boolean; why: string; timestamp: number | null } => {
+const verifySignature = (secret: string, header: string, payload: string, now: number, toleranceSeconds = 300) => {
   const parts = Object.fromEntries(header.split(',').map((p) => p.trim().split('=') as [string, string]))
   const t = Number(parts.t); const v1 = parts.v1
   if (!Number.isFinite(t) || !v1) return { valid: false, why: 'the header carries no t and v1', timestamp: null }
@@ -82,8 +82,10 @@ const verifySignature = (secret: string, header: string, payload: string, now: n
 
 /** Every Stripe event this surface understands, read into the state it means for the licence. */
 const STATE_OF = TABLES.STATE_OF as unknown as Record<string, LicenceEntry['body']['state']>
+/** The first alternative field of the type, else null: never guessed. */
+const first = <T>(type: string, ...xs: unknown[]) => (xs.find((x) => typeof x === type) ?? null) as T | null
 /** One idempotent entry per event: the same event again gives the same address, and the docket says duplicate. */
-const toLicenceEntry = (tenant: string, event: { id: string; type: string; created?: number; data?: { object?: Record<string, unknown> } }, earlier: readonly LicenceEntry[] = []): LicenceEntry => {
+const toLicenceEntry = (tenant: string, event: StripeEvent, earlier: readonly LicenceEntry[] = []): LicenceEntry => {
   const previous = earlier.filter((p) => p && p.body) // a row without its body cannot be read; it is skipped, never guessed
   const o = (event.data?.object ?? {}) as Record<string, unknown>
   const meta = (o.metadata ?? {}) as Record<string, string>
@@ -95,8 +97,8 @@ const toLicenceEntry = (tenant: string, event: { id: string; type: string; creat
   const price = (item?.price ?? o.price) as { metadata?: Record<string, string> } | undefined
   const pm = price?.metadata ?? {}
   const lastKnown = previous.filter((p) => p.body.subject === subject).at(-1)?.body
-  const body: LicenceEntry['body'] = { event: event.id, type: event.type, state, subject, tenant, domains, product: meta.product ?? pm.product ?? lastKnown?.product ?? null, variant: meta.variant ?? pm.variant ?? lastKnown?.variant ?? null, quantity: typeof item?.quantity === 'number' ? item.quantity : typeof o.quantity === 'number' ? o.quantity : null, customer: typeof o.customer === 'string' ? o.customer : typeof o.customer_email === 'string' ? o.customer_email : null, amount: typeof o.amount_total === 'number' ? o.amount_total : typeof o.amount === 'number' ? o.amount : typeof o.amount_paid === 'number' ? o.amount_paid : null, currency: typeof o.currency === 'string' ? o.currency : null, at: event.created ?? 0, licence: LICENSE.address, terms: LICENSE.terms }
-  return { id: uuidOf(`stripe-event${event.id}`), kind: 'licence', from: `stripe:${tenant}`, body, links: state === 'revoked' || state === 'disputed' || state === 'renewed' || state === 'changed' ? grants : [] }
+  const body: LicenceEntry['body'] = { event: event.id, type: event.type, state, subject, tenant, domains, product: meta.product ?? pm.product ?? lastKnown?.product ?? null, variant: meta.variant ?? pm.variant ?? lastKnown?.variant ?? null, quantity: first<number>('number', item?.quantity, o.quantity), customer: first<string>('string', o.customer, o.customer_email), amount: first<number>('number', o.amount_total, o.amount, o.amount_paid), currency: first<string>('string', o.currency), at: event.created ?? 0, licence: LICENSE.address, terms: LICENSE.terms }
+  return { id: uuidOf(`stripe-event${event.id}`), kind: 'licence', from: `stripe:${tenant}`, body, links: ['revoked', 'disputed', 'renewed', 'changed'].includes(state) ? grants : [] }
 }
 /** The licence state of a subject at a domain, from its entries in order: the last word wins; a domain outside the licence is unlicensed. */
 const licenceState = (entries: readonly LicenceEntry[], subject: string, domain: string, now: number): { state: 'licensed' | 'unlicensed' | 'disputed'; why: string; since: number | null; entries: number; product?: string | null; variant?: string | null; quantity?: number | null } => {
@@ -113,11 +115,11 @@ const licenceState = (entries: readonly LicenceEntry[], subject: string, domain:
 const stripe = defineTool('billing', {
   name: 'stripe',
   description: 'Stripe per tenant, pure, the QPU as a product with its variants. catalogue: every product and variant (domain, tenant, seat, metered, enterprise; month, year, metered; eur, usd, bgn) as the forms Stripe takes, per tenant. usage: metered calls from docket entries as a usage record. settle: the author\'s compensation from Stripe\'s own net figures, by product and tenant, as a settlement entry. plan: a checkout session request for a commercial licence (subject, domains, mode, price or amount) that the Worker sends with the tenant\'s secret key. webhook: the Stripe-Signature verified with the tenant\'s webhook secret (HMAC-SHA256, timestamp tolerance), the event read into one idempotent licence entry (granted, renewed, revoked, disputed, failed, noted) linked to what it changes. state: the licence state of a subject at a domain from its entries, at any tenant. The handler holds no key; the Worker executes plans and the docket keeps the entries.',
-  inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['plan', 'webhook', 'state', 'catalogue', 'usage', 'settle', 'usecases', 'fusion', 'ledger'] }, currency: { type: 'string', enum: ['eur', 'usd', 'bgn'], description: 'op ledger: the currency the coils are priced and settled in' }, calls: { type: 'array', items: { type: 'object' }, description: 'op ledger: the calls to book, { tool, tenant } each: a coin free, a coil at the metered price' }, settled: { type: 'array', items: { type: 'object' }, description: 'op ledger: what Stripe settled, { tenant, amount, fee, net, currency } in cents' }, tools: { type: 'array', items: { type: 'string' }, description: 'op fusion: the tools whose side of the fusion to answer (coin: pure algebra, free; coil: crosses to classical, licensed)' }, currencies: { type: 'array', items: { type: 'string' } }, from: { type: 'integer' }, to: { type: 'integer' }, transactions: { type: 'array', items: { type: 'object' }, description: 'settle: Stripe balance transactions {id, amount, fee, net, currency, product?, variant?, tenant?}' }, tenant: { type: 'string' }, host: { type: 'string' }, checkout: { type: 'object', description: 'plan: { subject, domains, mode, price | amount, currency, successUrl, cancelUrl, customerEmail? }' }, payload: { type: 'string', description: 'webhook: the raw body' }, signature: { type: 'string', description: 'webhook: the Stripe-Signature header' }, secret: { type: 'string', description: 'webhook: the tenant\'s webhook secret (the Worker passes it; a client never has it)' }, now: { type: 'integer', description: 'webhook/state: unix seconds; default the current time' }, entries: { type: 'array', items: { type: 'object' }, description: 'webhook/state: the subject\'s licence entries as read from the docket' }, subject: { type: 'string' }, domain: { type: 'string' }, selftest: { type: 'boolean' } } },
+  inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['plan', 'webhook', 'state', 'catalogue', 'usage', 'settle', 'usecases', 'fusion', 'ledger'] }, currency: { type: 'string', enum: ['eur', 'usd', 'bgn'], description: 'op ledger: the currency the coils are priced and settled in' }, calls: { type: 'array', items: { type: 'object' }, description: 'op ledger: the calls to book, { tool, tenant } each: a coin free, a coil at the metered price' }, settled: { type: 'array', items: { type: 'object' }, description: 'op ledger: what Stripe settled, { tenant, amount, fee, net, currency } in cents' }, journal: { type: 'array', items: { type: 'object' }, description: 'op ledger: entries { id, postings: [{ account, amount, count }] }, debit +, credit −, each measured' }, mint: { type: 'array', description: 'op ledger: UUIDs, or { uuid, content?, prev?, self?, next? }, a coin each whose witnesses pass' }, ideas: { type: 'array', items: { type: 'object' }, description: 'op ledger: ideas { links: [certificate, idea, product, sale] }: a coin to the contributor, or escrow' }, royalty: { type: 'object', description: `op ledger: { fee, chain, trade? }: the fee in coins, ${ROYALTY.num}/${ROYALTY.den} a level along the chain` }, tools: { type: 'array', items: { type: 'string' }, description: 'op fusion: the tools whose side of the fusion to answer (coin: pure algebra, free; coil: crosses to classical, licensed)' }, currencies: { type: 'array', items: { type: 'string' } }, from: { type: 'integer' }, to: { type: 'integer' }, transactions: { type: 'array', items: { type: 'object' }, description: 'settle: Stripe balance transactions {id, amount, fee, net, currency, product?, variant?, tenant?}' }, tenant: { type: 'string' }, host: { type: 'string' }, checkout: { type: 'object', description: 'plan: { subject, domains, mode, price | amount, currency, successUrl, cancelUrl, customerEmail? }' }, payload: { type: 'string', description: 'webhook: the raw body' }, signature: { type: 'string', description: 'webhook: the Stripe-Signature header' }, secret: { type: 'string', description: 'webhook: the tenant\'s webhook secret (the Worker passes it; a client never has it)' }, now: { type: 'integer', description: 'webhook/state: unix seconds; default the current time' }, entries: { type: 'array', items: { type: 'object' }, description: 'webhook/state: the subject\'s licence entries as read from the docket' }, subject: { type: 'string' }, domain: { type: 'string' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (args.selftest) return { selftest: true, ...BILLING.skill.selftest(ctx) }
     const op = String(args.op ?? 'state'); const tenant = String(args.tenant ?? 'local'); const now = typeof args.now === 'number' ? args.now : Math.floor(Date.now() / 1000)
-    const entries = (Array.isArray(args.entries) ? args.entries : []) as LicenceEntry[]
+    const entries = arr(args.entries) as LicenceEntry[]
     if (op === 'plan') {
       const c = (args.checkout ?? {}) as Partial<Checkout>
       if (!c.subject || !c.successUrl || !c.cancelUrl) throw new Error('plan needs checkout.subject, successUrl and cancelUrl')
@@ -128,7 +130,7 @@ const stripe = defineTool('billing', {
       if (typeof args.payload !== 'string' || typeof args.signature !== 'string' || typeof args.secret !== 'string') throw new Error('webhook needs payload, signature and secret')
       const v = verifySignature(args.secret, args.signature, args.payload, now)
       if (!v.valid) return { op, tenant, valid: false, why: v.why, timestamp: v.timestamp, entry: null, lead: { id: `stripe-webhook-refused-${tenant}`, statement: `a webhook at tenant ${tenant} was refused: ${v.why}`, status: 'open', reason: 'a refused webhook is a lead: a replay, a wrong tenant\'s secret, or a forged body; nothing was written' } }
-      let event: { id: string; type: string; created?: number; data?: { object?: Record<string, unknown> } }
+      let event: StripeEvent
       try { event = JSON.parse(args.payload) } catch { return { op, tenant, valid: true, why: 'signed, but the body is not JSON', entry: null } }
       const entry = toLicenceEntry(tenant, event, entries)
       const duplicate = entries.some((e) => e.id === entry.id)
@@ -136,15 +138,15 @@ const stripe = defineTool('billing', {
     }
     if (op === 'state') {
       if (typeof args.subject !== 'string') throw new Error('state needs subject')
-      const st = licenceState(entries, args.subject, String(args.domain ?? args.host ?? tenant), now)
-      return { op, tenant, subject: args.subject, domain: String(args.domain ?? args.host ?? tenant), ...st }
+      const domain = String(args.domain ?? args.host ?? tenant)
+      return { op, tenant, subject: args.subject, domain, ...licenceState(entries, args.subject, domain, now) }
     }
-    if (op === 'usecases') return listStripeUseCases(Array.isArray(args.paths) ? args.paths.map(String) : [])
-    if (op === 'ledger') return { op: 'ledger' as const, ...createLedger(Array.isArray(args.calls) ? (args.calls as { tool: string; tenant: string }[]) : [], Array.isArray(args.settled) ? (args.settled as { tenant?: string; amount: number; fee: number; net: number; currency: string }[]) : [], (['eur', 'usd', 'bgn'] as const).find((c) => c === args.currency) ?? 'eur') } as never
-    if (op === 'fusion') { const tools = Array.isArray(args.tools) ? args.tools.map(String) : []; const rows = tools.map((t) => fuseCall(t)); return { op: 'fusion', tools: rows, coins: rows.filter((r) => r.side === 'coin').length, coils: rows.filter((r) => r.side === 'coil').length, algebra: ALGEBRA_TOOLS, enforced: 'every tools/call result carries _meta.fusion; the Worker answers 402 with the court\'s case to a request declaring commercial use (x-qpu-use: commercial) of a coil, or a commercial write into the docket, without a licence at the tenant', theorems: ['textbook_free_or_coil', 'textbook_double_torus'] } }
+    if (op === 'usecases') return listStripeUseCases(arr(args.paths).map(String))
+    if (op === 'ledger') return { op: 'ledger' as const, ...createLedger(arr(args.calls), arr(args.settled), (['eur', 'usd', 'bgn'] as const).find((c) => c === args.currency) ?? 'eur'), ...(args.journal ? { journal: arr(args.journal).map(balanceOf) } : {}), ...(args.mint ? { mint: mintWitnessCoins(arr(args.mint)) } : {}), ...(args.ideas ? { ideas: arr(args.ideas).map(contributionOf) } : {}), ...(isObj(args.royalty) ? { royalty: royaltyOf(args.royalty.fee, arr(args.royalty.chain), undefined, String(args.royalty.trade ?? 'trade')) } : {}) } as never
+    if (op === 'fusion') { const tools = arr(args.tools).map(String); const rows = tools.map((t) => fuseCall(t)); return { op: 'fusion', tools: rows, coins: rows.filter((r) => r.side === 'coin').length, coils: rows.filter((r) => r.side === 'coil').length, algebra: ALGEBRA_TOOLS, enforced: 'every tools/call result carries _meta.fusion; the Worker answers 402 with the court\'s case to a request declaring commercial use (x-qpu-use: commercial) of a coil, or a commercial write into the docket, without a licence at the tenant', theorems: ['textbook_free_or_coil', 'textbook_double_torus'] } }
     if (op === 'catalogue') { const c = createCatalogue(tenant, Array.isArray(args.currencies) ? args.currencies.map(String) : ['eur', 'usd', 'bgn']); const combos = combinationVariantsOf(); return { op, tenant, margins: listMargins(isObj(args.costs) ? args.costs as Record<string, number> : {}), products: c.products.length, prices: c.prices.length, variants: CATALOGUE.length, combinations: { product: 'qpu-combination', variants: combos.length, trinities: Object.keys(PLUGIN_TRINITIES), sample: combos[combos.length - 1], says: 'every plugin combination a variant of one quantum product: 2^9 = 512 variations addressed by their mixed-radix index and UUID, priced by the capabilities they carry, organised by the three trinities, derived from the Queneau primitive and stored nowhere' }, secret: c.secret, catalogue: CATALOGUE, forms: c, procedure: `the Worker creates the products and prices at Stripe with <${c.secret}> once per tenant; the price ids come back in the webhooks' metadata` } }
-    if (op === 'usage') { if (typeof args.subject !== 'string') throw new Error('usage needs subject'); const u = getUsage((Array.isArray(args.entries) ? args.entries : []) as Parameters<typeof getUsage>[0], args.subject, Number(args.from ?? 0), Number(args.to ?? now)); return { op, tenant, subject: args.subject, ...u, procedure: 'the Worker posts the form to /v1/subscription_items/<item>/usage_records with the tenant key; the receipt is an entry' } }
-    if (op === 'settle') { const st = settleTransactions((Array.isArray(args.transactions) ? args.transactions : []) as Parameters<typeof settleTransactions>[0]); return { op, tenant, ...st, procedure: 'balance transactions are read from Stripe with the tenant key (net and fee are Stripe\'s figures); the settlement entry is written to the docket as the author\'s compensation ledger' } }
+    if (op === 'usage') { if (typeof args.subject !== 'string') throw new Error('usage needs subject'); const u = getUsage(entries as never, args.subject, Number(args.from ?? 0), Number(args.to ?? now)); return { op, tenant, subject: args.subject, ...u, procedure: 'the Worker posts the form to /v1/subscription_items/<item>/usage_records with the tenant key; the receipt is an entry' } }
+    if (op === 'settle') { const st = settleTransactions(arr(args.transactions)); return { op, tenant, ...st, procedure: 'balance transactions are read from Stripe with the tenant key (net and fee are Stripe\'s figures); the settlement entry is written to the docket as the author\'s compensation ledger' } }
     throw new Error(`op ${op} is not one of plan, webhook, state, catalogue, usage, settle`)
   },
   widget: flowWidget,
@@ -154,18 +156,13 @@ const SECRET = 'whsec_test_secret_of_tenant_psg'
 const EVENT = (id: string, type: string, created: number, object: Record<string, unknown>) => JSON.stringify({ id, type, created, data: { object } })
 const COMPLETED = EVENT('evt_1', 'checkout.session.completed', 1_700_000_000, { customer: 'cus_1', amount_total: 43200, currency: 'eur', metadata: { tenant: 'psg', subject: 'acme', domains: 'qpu.psg.bg,qpu.uuidna.com' } })
 
-/** The rate sources, every free currency API found (2026-10-26): the ECB's daily reference rates (the euro's own), Frankfurter (ECB-based JSON, v1), the
- * Bulgarian National Bank's reference rates (foreign currency per euro since Bulgaria adopted the euro on 2026-01-01), open.er-api (daily, free tier),
- * and fawazahmed0's currency-api on jsDelivr (daily, 200+ currencies incl. crypto). All EUR-based, all daily: real time is the day for reference rates;
- * an intraday rate is a paid provider's door, a lead. Fetched by the currency step and by the wave as references; parsed here, pure. */
-export const RATE_SOURCES: readonly { id: string; name: string; url: string; format: 'xml-ecb' | 'json-frankfurter' | 'xml-bnb' | 'json-er-api' | 'json-fawazahmed'; cadence: string; terms: string }[] = TABLES.RATE_SOURCES as readonly { id: string; name: string; url: string; format: 'xml-ecb' | 'json-frankfurter' | 'xml-bnb' | 'json-er-api' | 'json-fawazahmed'; cadence: string; terms: string }[]
+/** Every free currency rate API found (2026-10-26), all EUR-based and daily: the day is the real time of a reference rate, an intraday rate a paid
+ *  provider's door, a lead. Fetched by the currency step and the wave; parsed here, pure. */
+export const RATE_SOURCES = TABLES.RATE_SOURCES as readonly { id: string; name: string; url: string; format: 'xml-ecb' | 'json-frankfurter' | 'xml-bnb' | 'json-er-api' | 'json-fawazahmed'; cadence: string; terms: string }[]
 /** Legal conversion rates: a currency replaced by the euro converts at its fixed rate forever (Bulgaria: 1 EUR = 1.95583 BGN, euro adopted 2026-01-01). */
 const PEGS: Readonly<Record<string, { perEur: number; since: string; says: string }>> = { BGN: { perEur: 1.95583, since: '2026-01-01', says: 'the lev is retired: Bulgaria adopted the euro on 2026-01-01 at the fixed conversion rate of 1.95583 leva per euro; a BGN amount is the EUR amount shown in leva' } }
 /** The currency a domain prices in, by its top-level domain; a tenant prices in its own. */
 export const DOMAIN_CURRENCY: Readonly<Record<string, string>> = { bg: 'EUR', eu: 'EUR', de: 'EUR', fr: 'EUR', it: 'EUR', es: 'EUR', nl: 'EUR', at: 'EUR', com: 'USD', us: 'USD', uk: 'GBP', ch: 'CHF', jp: 'JPY', dev: 'USD', workers: 'USD' }
-/** The usage bill as the ecommerce plugin's own order, strictly the upstream shape: the metered variant of the catalogue times the thousands of calls
- *  (items: product, variant, quantity; the amount in minor units of the currency), the transactions the ledger, the checkout the plugin's own with the
- *  Stripe adapter; the energy line informational at the tariff the tenant names (textbook_billing_complete). Pure. */
 /** The pure algebraic formulas, free under attribution (the a432 harmonic default): the core's algebra over a UUID (fold, presentation, stream), the stylesheet
  *  from the key 432, the seal arithmetic a UUID verifies by, the register's integer identities. Every other call is covered by the licence. */
 export const ALGEBRA_TOOLS: readonly string[] = ['css', 'fold', 'verify', 'clay']
@@ -177,37 +174,25 @@ export type CloudflareUsage = Partial<Record<keyof typeof CLOUDFLARE_FREE, numbe
 /** The minimum bill of existing and computing: zero while every measured use stays within its free tier, else the paid plan's base a month;
  *  against it the cheapest licence of the catalogue a month, so the margin of the quantum framework is the licence less the bill. */
 export const billCloudflare = (usage: CloudflareUsage, currency = 'eur') => {
-  const over = (Object.keys(CLOUDFLARE_FREE) as (keyof typeof CLOUDFLARE_FREE)[]).filter((k) => typeof usage[k] === 'number' && usage[k]! > CLOUDFLARE_FREE[k].limit)
   const measured = (Object.keys(CLOUDFLARE_FREE) as (keyof typeof CLOUDFLARE_FREE)[]).filter((k) => typeof usage[k] === 'number')
+  const over = measured.filter((k) => usage[k]! > CLOUDFLARE_FREE[k].limit)
   const monthlyCents = over.length ? WORKERS_PAID_BASE_USD_CENTS : 0
   const paid = CATALOGUE.filter((v) => (v.amounts[currency] ?? 0) > 0 && (v.interval === 'month' || v.interval === 'year'))
   const cheapest = paid.map((v) => ({ product: v.product, variant: v.variant, perMonth: Math.round((v.amounts[currency] ?? 0) / (v.interval === 'year' ? 12 : 1)) })).sort((a, b) => a.perMonth - b.perMonth)[0] ?? null
   return { plan: over.length ? 'workers-paid' : 'free', over, measured: measured.length, of: Object.keys(CLOUDFLARE_FREE).length, monthlyCents, currency: over.length ? 'usd' : currency, cheapestLicence: cheapest, marginPerMonth: cheapest ? cheapest.perMonth - monthlyCents : null, covered: cheapest ? cheapest.perMonth >= monthlyCents : false, pages: [...new Set(Object.values(CLOUDFLARE_FREE).map((x) => x.page))], theorem: 'textbook_bill_covered', says: over.length ? `over the free tier on ${over.join(', ')}: the Workers Paid base, ${monthlyCents / 100} USD a month, against the cheapest licence` : `every measured use (${measured.length} of ${Object.keys(CLOUDFLARE_FREE).length}) within the free tier: a bill of zero, the licence all margin` }
 }
-/** Licensing by architecture: the quantum core computes on the classical world only through the fusion of coins into coils, and the classical
- *  world reaches the core only the same way back. A call is a coin when it stays pure algebra (free under attribution, the a432 default), a coil
- *  when it crosses to classical data or services (covered by the licence); every result carries which, and the Worker refuses a declared
- *  commercial coil, or a commercial write into the core, without a licence, with the case the court computes. The two directions are the two
- *  loops of the double torus, each crossing one finite step with always a next (textbook_double_torus). */
-/** A call is a coin when it stays in the pure algebra: a tool of the algebra, or the textbook asked only for one theorem (a read of what the kernel accepted). */
+/** A call is a coin when it stays in the pure algebra (a tool of the algebra, or the textbook asked only for one theorem), else a coil covered by
+ *  the licence: licensing by architecture, as the stripe-fusion example shows (textbook_double_torus). */
 const isCoinCall = (tool: string, args?: Record<string, unknown>) => ALGEBRA_TOOLS.includes(tool) || (tool === 'textbook' && !!args && Object.keys(args).length > 0 && Object.keys(args).every((k) => k === 'theorem'))
 export const fuseCall = (tool: string, args?: Record<string, unknown>) => { const coin = isCoinCall(tool, args); return { tool, side: (coin ? 'coin' : 'coil') as 'coin' | 'coil', crossing: coin ? 'none: pure algebra stays in the core' : 'quantum → classical: the result reaches data or services', licence: coin ? 'free under attribution (the a432 harmonic default)' : 'covered by the licence: non-commercial use free under its term, commercial use needs a licence of the catalogue', back: 'classical → quantum: a write into the docket is a coil the same way', theorem: 'textbook_free_or_coil' } }
-/** Coins and coils in double entry, in thousandths of a cent so nothing rounds: a coin (pure algebra) is booked at zero on both sides, a coil
- *  (a crossing into data or services) debits the tenant's receivable and credits the author's revenue at the metered price, and a Stripe
- *  settlement debits cash and fees and credits the receivable; the journal balances by construction (textbook_double_entry), and a tenant
- *  whose coils exceed what Stripe settled is named with the amount outstanding, never assumed paid. */
-/** A penalty, priced in work and sealed: every strict refusal, every open competition gap and every step that ends red, skipped or killed.
- *  Its tokens are the size of what has to be redone (the manual difference, the gap's text, the step's output) at four bytes a token; its coin line
- *  books that count against the one who caused it and to the author, at zero price — it counts work, never money, and debits equal credits
- *  (textbook_double_entry); its snapshot is the evidence, sealed by SHA-256 and addressed. A clearing names the penalty its evidence closed. Pure. */
 /** Every gap between the QPU and its prizes is one shape: a kind, a subject, open or cleared, its tokens, its coin line, its sealed snapshot. The
- *  kinds that block a push (manual edits, strict refusals, red steps, prize gaps, dirty code in changed files) and those only listed (waiting over
- *  the one-second bar, dirty prose, Gemini schema compatibility) differ only in this table, never in their path. */
-export const GAP_KINDS = { automated: true, refusal: true, step: true, prize: true, 'dirty-code': true, leak: true, waiting: false, 'dirty-prose': false, 'gemini-compat': false, idle: false, invisible: false } as const
+ *  kinds that block a push (manual edits, strict refusals, red steps, prize gaps, dirty code in changed files, an unbalanced entry) and those only
+ *  listed (waiting over the one-second bar, dirty prose, Gemini schema compatibility, a missing witness) differ only in this table, never in their path. */
+export const GAP_KINDS = { automated: true, refusal: true, step: true, prize: true, 'dirty-code': true, leak: true, unbalanced: true, waiting: false, 'dirty-prose': false, 'gemini-compat': false, idle: false, invisible: false, witness: false } as const
 /** A penalty is as visible as the action it prices (textbook_penalty_visibility_harmonic): every kind is printed first in a hook's output except
  *  an invisible action's — a task past the one-second budget with no progress event, receipt or docket entry within that second — which is
  *  recorded silently in the docket and counted on request, never printed. */
-const GAP_PRINTED: Readonly<Record<keyof typeof GAP_KINDS, boolean>> = { automated: true, leak: true, refusal: true, step: true, prize: true, 'dirty-code': true, waiting: true, 'dirty-prose': true, 'gemini-compat': true, idle: true, invisible: false }
+const GAP_PRINTED = (kind: GapKind) => kind !== 'invisible'
 type GapKind = keyof typeof GAP_KINDS
 export const classifyGap = (rule: string, kind?: string): GapKind => (kind && kind in GAP_KINDS ? (kind as GapKind) : /automated/.test(rule) ? 'automated' : 'refusal')
 /** Time and heat, the only two measures of a task: wall nanoseconds (process.hrtime.bigint) and CPU microseconds, user and system, with the peak
@@ -270,6 +255,7 @@ export const createAntimatter = (kind: GapKind, rule: string, evidence: Record<s
     const [says, door] = wire[measure] ?? wire.door!
     return { ...of(`${says}; folding it away instead needs the user's confirmation`, [], door), fold: { needs: 'confirm' as const, says: `fold ${name} into its nearest door or theorem, or remove it` } }
   }
+  if (kind === 'witness' || kind === 'unbalanced') return of(kind === 'witness' ? `supply ${String(evidence.missing)} of ${String(evidence.subject)}: verify decides it, then the coin books` : `post the reversing entry of the syndrome ${JSON.stringify(evidence.syndrome)} beside ${String(evidence.subject)}, its postings untouched`, [], kind === 'witness' ? { tool: 'verify', arguments: { uuid: String(evidence.subject) } } : null)
   if (kind === 'gemini-compat') return of('narrow each schema to the Gemini subset the compatibility check names: the unsupported keywords dropped, their meaning kept in the description', [], { tool: 'extend', arguments: { gemini: { compat: true } } })
   const row = listRemedies([String(evidence.says ?? rule)]).leads[0]
   if (row?.remedy) return { ...of(row.remedy, []), needs: row.automated ? 'auto' as const : 'confirm' as const }
@@ -289,16 +275,13 @@ const getWay = (evidence: Record<string, unknown> = {}) => {
   const harmonic = evidence.schema ? { tool: 'crypto', arguments: { harmonic: { schema: evidence.schema, ...(typeof evidence.referrer === 'string' ? { referrer: evidence.referrer } : {}) } } } : null
   return { harmonic: 'a432' as const, side: fusion?.side ?? 'coin', free, correct: harmonic, licence: fusion?.licence ?? 'free under attribution (the a432 harmonic default)', theorem: 'textbook_free_or_coil' }
 }
-/** A penalty is harmonic to its violation: priced in the violation's own unit, the work its antimatter must do to undo it — never a flat fine, never
- *  a price from another dimension. A byte-measured gap (a hand-edited generated file: the drifted bytes; dirty code or prose: the dirty spans;
- *  a refusal: its violated facts' evidence) is its bytes at four a token; a waiting gap is its milliseconds over the budget and its CPU
- *  milliseconds; a red step or prize gap with measures is its own measured milliseconds. So the price is the antimatter's cost
- *  (textbook_penalty_harmonic) and annihilation nets to exactly zero. A rule broken n times in one workflow costs n units, in proportion, never
- *  escalated (textbook_penalty_proportional); how many gaps share a rule is reported as their correlation, never compounded. */
+/** A penalty is harmonic to its violation: priced in its own unit, the work its antimatter must do to undo it, never a flat fine — a byte-measured
+ *  gap its bytes at four a token, a measured one its milliseconds — so annihilation nets to zero (textbook_penalty_harmonic); n occurrences in one
+ *  workflow cost n units, never escalated (textbook_penalty_proportional), and gaps sharing a rule are reported as their correlation. */
 const harmonicUnit = (kind: GapKind, p: { bytes?: number; tokens?: number; measures?: Measures }) => {
-  if (kind === 'waiting' && p.measures) { const w = priceWait(p.measures); return { per: w.coins, unit: 'ms over the budget + CPU ms' } }
-  if (kind === 'invisible' && p.measures) { const w = priceWait(p.measures); return { per: w.coins, unit: 'ms unseen over the budget + CPU ms' } }
-  if ((kind === 'step' || kind === 'prize') && p.measures) { const w = priceWait(p.measures); return { per: w.wallMs + w.cpuMs, unit: 'ms measured + CPU ms' } }
+  const w = p.measures ? priceWait(p.measures) : null
+  if (w && (kind === 'waiting' || kind === 'invisible')) return { per: w.coins, unit: `ms ${kind === 'invisible' ? 'unseen ' : ''}over the budget + CPU ms` }
+  if (w && (kind === 'step' || kind === 'prize')) return { per: w.wallMs + w.cpuMs, unit: 'ms measured + CPU ms' }
   if (typeof p.tokens === 'number') return { per: Math.max(0, Math.ceil(p.tokens)), unit: 'tokens measured' }
   return { per: Math.ceil(Math.max(0, p.bytes ?? 0) / 4), unit: 'tokens (bytes / 4)' }
 }
@@ -322,34 +305,25 @@ export const pricePenalty = (p: { rule: string; kind?: string; subject?: string;
   const matter = createAntimatter(kind, p.rule, { ...(p.evidence ?? {}), subject, ...(p.measures ? { measures: p.measures } : {}) })
   const antimatter = { ...matter, cost: { amount: tokens, per: harmonic.per, occurrences, unit: harmonic.unit } }
   const violated = ((p.evidence as { violated?: string[] } | undefined)?.violated ?? []).length ? (p.evidence as { violated: string[] }).violated : [kind]
-  // the involution of thinking: a signature whose correction was learned from an earlier clearing is corrected before it is decided, never raised
-  // — its antimatter applied, no penalty, no coin (textbook_penalty_learned_prevents)
-  // learned means a correction that ran by itself and cleared; it is a plan here — the client applies it, re-decides the rule, and records the
-  // prevention only when the rule holds again; a correction that needs confirmation, or no remedy learned yet, is never applied this way
+  // learned: a correction that ran by itself and cleared, a plan here; the client applies it and records the prevention only when the rule holds again
   if (!p.cleared && p.learned?.includes(p.rule) && antimatter.needs === 'auto' && !antimatter.learn) return { kind: 'corrected' as const, antimatter, body: { kind, subject, status: 'corrected' as const, blocks: false, rule: p.rule, prevented: true, correction: antimatter, snapshot, seal }, tokens: 0, coin: null, balanced: true, says: `${p.rule}: corrected by its learned antimatter (${antimatter.needs}) ${antimatter.says}; no penalty raised`, theorem: 'textbook_penalty_learned_prevents' }
   const annihilated = !p.cleared && Array.isArray(p.held) && violated.every((v) => p.held!.includes(v))
   if (p.cleared || annihilated) {
-    // clearing restores the status — open becomes cleared, nothing blocks, no mark stays on the offender's standing — and the reversing line nets
-    // the obstacle's harmonic price (its antimatter's own cost) to zero; the time the gap stood is charged like a proof-of-stake burn: its
-    // milliseconds over the budget plus its CPU milliseconds, debited to the offender and credited to the burn account, never refunded
-    // (textbook_penalty_no_punishment on status and standing, textbook_penalty_antimatter_annihilates, textbook_penalty_time_burned)
     const stood = p.stood ? priceWait(p.stood) : null, burned = stood?.coins ?? 0
     const reversal = tokens > 0 ? { debit: 'coins:author', credit: `coins:${committer}`, amount: 0, count: tokens } : null
     const burn = burned > 0 ? { debit: `coins:${committer}`, credit: 'burn', amount: 0, count: burned } : null
     return { kind: 'clearing' as const, body: { kind, subject, status: 'cleared' as const, blocks, rule: p.rule, cleared: true, annihilated, by: p.by ?? (annihilated ? `antimatter ${antimatter.address}: ${violated.join(', ')} hold again` : null), antimatter, reversal, coin: burn, burned, history: stood ? { stood } : null, learned: { signature: p.rule, correction: antimatter.says, run: antimatter.run, door: antimatter.door, needs: antimatter.needs }, snapshot, seal }, tokens: burned, coin: burn, reversal, burned, net: reversal ? tokens - reversal.count : 0, standing: { before: 'clear', after: 'clear' }, balanced: (!reversal || lineBalanced(reversal)) && (!burn || lineBalanced(burn)), says: `${p.rule} ${annihilated ? 'annihilated by its antimatter' : `cleared by ${p.by ?? 'its evidence'}`}: the status restored and the offender's standing as before the violation, the penalty's ${tokens} reversed to zero${burned ? `, ${burned} coin(s) burned for the ${stood!.wallMs} ms it stood (never refunded)` : ''}, the correction learned`, theorem: annihilated ? 'textbook_penalty_antimatter_annihilates' : 'textbook_penalty_no_punishment' }
   }
   const coin = { debit: `coins:${committer}`, credit: 'coins:author', amount: 0, count: tokens }
-  return { kind: 'penalty' as const, antimatter, printed: GAP_PRINTED[kind], body: { kind, subject, status: 'open' as const, blocks, printed: GAP_PRINTED[kind], rule: p.rule, tokens, coin, antimatter, snapshot, seal }, tokens, coin, price, balanced: lineBalanced(coin), says: `${p.rule}: ${tokens} token(s) of work booked against ${committer} and to the author, at zero price — work, not money; antimatter ${antimatter ? `(${antimatter.needs}) ${antimatter.says}` : 'not learned yet: a lead'}`, harmonic: { ...harmonic, occurrences, price: tokens, theorems: ['textbook_penalty_harmonic', 'textbook_penalty_proportional'] }, theorem: price && kind === 'waiting' ? 'textbook_penalty_time_heat_monotone' : 'textbook_penalty_harmonic' }
+  return { kind: 'penalty' as const, antimatter, printed: GAP_PRINTED(kind), body: { kind, subject, status: 'open' as const, blocks, printed: GAP_PRINTED(kind), rule: p.rule, tokens, coin, antimatter, snapshot, seal }, tokens, coin, price, balanced: lineBalanced(coin), says: `${p.rule}: ${tokens} token(s) of work booked against ${committer} and to the author, at zero price — work, not money; antimatter ${antimatter ? `(${antimatter.needs}) ${antimatter.says}` : 'not learned yet: a lead'}`, harmonic: { ...harmonic, occurrences, price: tokens, theorems: ['textbook_penalty_harmonic', 'textbook_penalty_proportional'] }, theorem: price && kind === 'waiting' ? 'textbook_penalty_time_heat_monotone' : 'textbook_penalty_harmonic' }
 }
 type Line = { debit: string; credit: string; amount: number; count?: number }
 type GapBody = { prevented?: boolean; rule?: string; kind?: string; subject?: string; tenant?: string; blocks?: boolean; cleared?: boolean; tokens?: number; coin?: Line | null; reversal?: Line | null; coil?: Line | null; antimatter?: ReturnType<typeof createAntimatter>; snapshot?: { key?: string; price?: ReturnType<typeof priceWait> } & Record<string, unknown>; seal?: { address?: string } }
 /** Unused quantum capacity, each measure in its own unit, used + idle = capacity (textbook_capacity_conserved): doors no example, e2e cell, chat
  *  route or next step reaches (their schema bytes), theorems nothing names (their statement's bytes), gates with no successful call in the last
  *  online run (one call each), idle cores (wall ms × cores − CPU ms, per step), the qubits a quantum call leaves unused below the simulator's
- *  stated bound (bound − used per call) and the Shor N never asked below its bound. The advantage of a served quantum door is the hosted door's
- *  to measure (get_quantum_advantage): unmeasured here, said so. Indexable clusters named but in no shard are reported, never priced. Every idle
- *  item is an idle gap — listed, never blocking — priced harmonically in its measure's unit, with antimatter that wires it (reversible) and a fold
- *  that waits on confirm. The bounds are the simulator's stated constants, never more, never a hardware claim. */
+ *  stated bound (bound − used per call) and the Shor N never asked below its bound. Every idle item is an idle gap, priced harmonically in its
+ *  measure's unit, its antimatter wiring it and its fold waiting on confirm. */
 type RemainingWork = { category: string; count: number; ms: number | null; how: string }[]
 export type CapacityInput = { remaining?: RemainingWork; doors?: { name: string; bytes: number; reached: boolean }[]; theorems?: { key: string; bytes: number; used: boolean }[]; gates?: { name: string; called: boolean }[]; cores?: { step: string; wallMs: number; cpuMs: number; cores: number }[]; qubits?: { bound: number; calls: { door: string; used: number }[] }; shor?: { bound: number; asked: number[] }; clusters?: { named: number; sharded: number } }
 /** Idle priced by the cost of the remaining work, both in ms: min(idle capacity, remaining work) — nothing left to do costs nothing, idle while work
@@ -383,20 +357,19 @@ export const getCapacity = (c: CapacityInput) => {
   return { ...measures, idlePrice: c.remaining ? priceIdle(idleMs, c.remaining) : null, advantage: { measured: null, says: 'the measured advantage of each served quantum door is the hosted door\'s (get_quantum_advantage): unmeasured here' }, clusters: c.clusters ? { ...c.clusters, unsharded: Math.max(0, c.clusters.named - c.clusters.sharded), priced: false } : null, gaps: priced, top: priced.slice(0, 10), conserved: Object.values(measures).every((r) => !r || r.conserved), theorem: 'textbook_capacity_conserved', says: `${priced.length} idle item(s) across ${Object.values(measures).filter(Boolean).length} measure(s), each priced in its own unit, listed and never blocking; the bounds are the simulator's stated constants, never a hardware claim` }
 }
 /** A coin or coil line is balanced when it debits one account and credits another of the same value: never a line to itself, never one side. */
-const lineBalanced = (l: { debit?: string; credit?: string; amount?: number; count?: number } | null | undefined) => !!l && !!l.debit && !!l.credit && l.debit !== l.credit && (l.amount ?? 0) >= 0 && (l.count ?? 0) >= 0
+const lineBalanced = (l: { debit?: string; credit?: string; amount?: number; count?: number } | null | undefined) => !!l && postingsOf(l as Line).length === 2 && (l.amount ?? 0) >= 0 && (l.count ?? 0) >= 0
 /** Coins against coils, the balance named the fusion reactor — only a name for the ledger's balance, no physics claim. Coins are work booked at
  *  zero price (a penalty's count, its reversal at annihilation); coils are paid use, at their price. Every line books one debit and one credit of
  *  the same value, so per tenant and per run the debits equal the credits and the net is zero (textbook_coins_coils_balanced). */
 const runReactor = (bodies: readonly GapBody[]) => {
   const tenants = new Map<string, { coins: number; coils: number; debits: number; credits: number }>()
-  // each side booked from its own account: a line with no debit account, no credit account or one account on both sides books one side only, and the run is unbalanced
-  const book = (tenant: string, l: Line, side: 'coins' | 'coils') => { const v = side === 'coins' ? (l.count ?? 0) : l.amount, t = tenants.get(tenant) ?? { coins: 0, coils: 0, debits: 0, credits: 0 }, ok = !!l.debit && !!l.credit && l.debit !== l.credit; tenants.set(tenant, { coins: t.coins + (side === 'coins' ? v : 0), coils: t.coils + (side === 'coils' ? v : 0), debits: t.debits + (l.debit ? v : 0), credits: t.credits + (ok ? v : 0) }) }
+  const book = (tenant: string, l: Line, side: 'coins' | 'coils') => { const v = side === 'coins' ? (l.count ?? 0) : l.amount, t = tenants.get(tenant) ?? { coins: 0, coils: 0, debits: 0, credits: 0 }, ok = postingsOf(l).length === 2; tenants.set(tenant, { coins: t.coins + (side === 'coins' ? v : 0), coils: t.coils + (side === 'coils' ? v : 0), debits: t.debits + (l.debit ? v : 0), credits: t.credits + (ok ? v : 0) }) }
   for (const b of bodies) { const tenant = b.tenant ?? 'qpu'; if (b.coin) book(tenant, b.coin, 'coins'); if (b.reversal) book(tenant, b.reversal, 'coins'); if (b.coil) book(tenant, b.coil, 'coils') }
   const byTenant = [...tenants].map(([tenant, t]) => ({ tenant, ...t, net: t.debits - t.credits }))
   const sum = (k: 'coins' | 'coils' | 'debits' | 'credits') => byTenant.reduce((n, t) => n + t[k], 0)
   const net = sum('debits') - sum('credits')
-  const burned = bodies.reduce((n, b) => n + (b.coin?.credit === 'burn' ? (b.coin.count ?? 0) : 0), 0)
   const burnedByTenant = Object.fromEntries([...new Set(bodies.map((b) => b.tenant ?? 'qpu'))].map((t) => [t, bodies.filter((b) => (b.tenant ?? 'qpu') === t && b.coin?.credit === 'burn').reduce((n, b) => n + (b.coin!.count ?? 0), 0)]))
+  const burned = Object.values(burnedByTenant).reduce((n, x) => n + x, 0)
   return { burned, burnedByTenant, coins: sum('coins'), coils: sum('coils'), debits: sum('debits'), credits: sum('credits'), net, byTenant, balanced: net === 0 && byTenant.every((t) => t.net === 0), name: 'fusion reactor', says: `coins ${sum('coins')} and coils ${sum('coils')} booked in double entry, net ${net}: “fusion reactor” names this balance only, the tree makes no physics claim`, theorem: 'textbook_coins_coils_balanced' }
 }
 /** What the penalties taught, in the docket's order: every cleared gap's signature (its rule) is a learned correction; a gap raised again with a
@@ -437,28 +410,79 @@ export const countPenalties = (entries: readonly { body?: GapBody }[]) => {
     timeHeat: [...steps.values()].sort((a, b) => b.coins - a.coins), reactor: runReactor(entries.map((e) => e.body).filter((b): b is GapBody => !!b)), conserved: closed.length + open.length === opened.size, theorem: 'textbook_penalty_conserved',
   }
 }
+/** A posting is one side of a journal entry, signed (a debit +, a credit −), in its amount (thousandths of a cent) and its count (coins): whole
+ *  numbers, exact in BigInt, a decimal string past 2^53. A line to itself or to no account posts one side only, so its entry cannot balance. */
+type Posting = { account: string; amount?: number | string; count?: number | string }
+const postingsOf = (l: Line): Posting[] => [...(l.debit ? [{ account: l.debit, amount: l.amount, count: l.count ?? 0 }] : []), ...(l.credit && l.credit !== l.debit ? [{ account: l.credit, amount: -l.amount, count: -(l.count ?? 0) }] : [])]
+const big = (x: unknown) => (typeof x === 'bigint' ? x : x === undefined ? 0n : (typeof x === 'number' && Number.isInteger(x)) || (typeof x === 'string' && /^-?\d+$/.test(x)) ? BigInt(x) : null), num = (b: bigint) => (Number.isSafeInteger(Number(b)) ? Number(b) : String(b))
+/** A gap in the one shape of every gap (pricePenalty's body), its evidence beside it: a syndrome, the witnesses missing or contradicted. */
+const gapOf = (kind: GapKind, subject: string, evidence: Record<string, unknown>) => ({ ...pricePenalty({ rule: `ledger:${kind}`, kind, subject, evidence: { key: `${kind}:${subject}`, ...evidence } }).body, ...evidence })
+const gapsOf = (...xs: readonly { gap: unknown }[]) => xs.flatMap((x) => (x.gap ? [x.gap] : []))
+/** A journal entry measured like a stabilizer: Σ amount and Σ count recomputed from its stored postings, the debits and the credits each from its
+ *  own side. Both zero is balanced (true, parity: textbook_postings_parity); else the syndrome { amount, count, entry }, an 'unbalanced' gap that
+ *  blocks, the postings untouched (false); a value not whole, or a posting with no account, a 'witness' gap naming it (null). */
+export const balanceOf = (e: { id: string; postings: readonly Posting[] }) => {
+  const s = { amount: 0n, count: 0n, debits: 0n, credits: 0n }, missing: string[] = Array.isArray(e?.postings) ? [] : ['postings'], entry = String(e?.id ?? '')
+  arr(e?.postings).forEach((p: Posting, i) => { if (!p?.account) missing.push(`postings[${i}].account`); for (const k of ['amount', 'count'] as const) { const v = big(p?.[k]); if (v === null) missing.push(`postings[${i}].${k}`); else { s[k] += v; if (k === 'amount') s[v < 0n ? 'credits' : 'debits'] += v < 0n ? -v : v } } })
+  const balanced = missing.length ? null : !s.amount && !s.count, syndrome = { amount: num(s.amount), count: num(s.count), entry }
+  return { entry, debits: num(s.debits), credits: num(s.credits), balanced, syndrome, gap: balanced === null ? gapOf('witness', entry, { missing }) : balanced ? null : gapOf('unbalanced', entry, { syndrome }) }
+}
+const journalOf = (name: string, lines: readonly Line[]) => balanceOf({ id: uuidOf(`${name}${JSON.stringify(lines)}`), postings: lines.flatMap(postingsOf) })
+/** What a coin rests on, decided by verifyOf: the seal, and the content and neighbours an item names. A named witness absent or misshapen is
+ *  missing (null: a 'witness' gap, listed), one that disagrees contradicted (false: a refusal); only every one passing (true) books the coin. */
+const witnessOf = (w: unknown) => {
+  const o: Record<string, unknown> = typeof w === 'string' ? { uuid: w } : isObj(w) ? w : {}, uuid = typeof o.uuid === 'string' ? o.uuid : '', has = (x: unknown, k: string) => (isObj(x) && typeof x[k] === 'string' ? (x as never) : undefined)
+  // a string not of a UUID's shape contradicts its own seal; no UUID at all is the first missing witness
+  const checks: { check: string; passed: boolean | null }[] = !uuid ? [] : sealOf(uuid).shape ? verifyOf(uuid, typeof o.content === 'string' ? o.content : undefined, has(o.prev, 'id'), has(o.next, 'prev'), has(o.self, 'prev')).checks : [{ check: 'seal', passed: false }]
+  const missing = uuid ? checks.filter((c) => c.passed === null && (c.check in o || (c.check === 'prev' && 'self' in o))).map((c) => (c.check === 'prev' && has(o.prev, 'id') ? 'self' : c.check)) : ['uuid'], contradicted = checks.filter((c) => c.passed === false).map((c) => c.check)
+  const state = contradicted.length ? 'contradicted' as const : missing.length ? 'missing' as const : 'passed' as const
+  return { uuid, state, missing, contradicted, gap: state === 'passed' ? null : gapOf(state === 'missing' ? 'witness' : 'refusal', uuid || 'uuid', { missing, contradicted }) }
+}
+/** Coins and coils in double entry, in thousandths of a cent so nothing rounds: a coin (pure algebra) debits the tenant's usage and credits the
+ *  author one coin at zero price, a coil debits the tenant's receivable and credits the author's revenue at the metered price, a Stripe settlement
+ *  debits cash and fees against the receivable; debits and credits measured by balanceOf, and a tenant whose coils exceed what Stripe settled is
+ *  named with the amount outstanding, never assumed paid (textbook_double_entry). */
 export const createLedger = (calls: readonly { tool: string; tenant: string; arguments?: Record<string, unknown> }[], settled: readonly { tenant?: string; amount: number; fee: number; net: number; currency: string }[] = [], currency: 'eur' | 'usd' | 'bgn' = 'eur') => {
   const metered = CATALOGUE.find((v) => v.product === 'qpu-metered')!
   const price = (metered.amounts as Record<string, number>)[currency] ?? 0 // cents per thousand calls = thousandths of a cent per call
-  const lines: { debit: string; credit: string; amount: number; why: string }[] = []
+  const lines: (Line & { why: string })[] = []
   let coins = 0, coils = 0
-  for (const c of calls) { const f = fuseCall(c.tool, c.arguments); if (f.side === 'coin') { coins++; lines.push({ debit: 'usage:free', credit: 'usage:free', amount: 0, why: `${c.tool}: a coin, pure algebra, free under attribution` }) } else { coils++; lines.push({ debit: `receivable:${c.tenant}`, credit: 'revenue:author', amount: price, why: `${c.tool}: a coil at the metered price` }) } }
+  for (const c of calls) { const f = fuseCall(c.tool, c.arguments); if (f.side === 'coin') { coins++; lines.push({ debit: `usage:${c.tenant}`, credit: 'coins:author', amount: 0, count: 1, why: `${c.tool}: a coin, pure algebra, free under attribution` }) } else { coils++; lines.push({ debit: `receivable:${c.tenant}`, credit: 'revenue:author', amount: price, why: `${c.tool}: a coil at the metered price` }) } }
   for (const s of settled.filter((x) => x.currency === currency)) { const t = s.tenant ?? 'unknown'; lines.push({ debit: 'cash:stripe', credit: `receivable:${t}`, amount: s.net * 1000, why: 'settled by Stripe, net' }); lines.push({ debit: 'fees:stripe', credit: `receivable:${t}`, amount: s.fee * 1000, why: "Stripe's fee" }) }
-  const debits = lines.reduce((n, l) => n + l.amount, 0), credits = lines.reduce((n, l) => n + l.amount, 0)
+  const { debits, credits, balanced, syndrome, gap } = journalOf('ledger', lines)
   const balances: Record<string, number> = {}; for (const l of lines) { balances[l.debit] = (balances[l.debit] ?? 0) + l.amount; balances[l.credit] = (balances[l.credit] ?? 0) - l.amount }
   const outstanding = Object.entries(balances).filter(([k, v]) => k.startsWith('receivable:') && v > 0).map(([k, v]) => ({ tenant: k.slice('receivable:'.length), millicents: v }))
-  return { currency, unit: 'thousandths of a cent', price, coins, coils, lines, debits, credits, balanced: debits === credits, balances, outstanding, reconciled: outstanding.length === 0, says: `${coins} coin(s) free, ${coils} coil(s) at ${price} thousandths of a cent each; debits ${debits} = credits ${credits}; ${outstanding.length ? `outstanding: ${outstanding.map((o) => `${o.tenant} ${o.millicents}`).join(', ')}` : 'every coil settled by Stripe'}`, theorem: 'textbook_double_entry' }
+  return { currency, unit: 'thousandths of a cent', price, coins, coils, lines, debits, credits, balanced, syndrome, gaps: gap ? [gap] : [], balances, outstanding, reconciled: outstanding.length === 0, says: `${coins} coin(s) free, ${coils} coil(s) at ${price} thousandths of a cent each; debits ${debits} ${balanced ? '=' : '≠'} credits ${credits}; ${outstanding.length ? `outstanding: ${outstanding.map((o) => `${o.tenant} ${o.millicents}`).join(', ')}` : 'every coil settled by Stripe'}`, theorem: 'textbook_double_entry' }
 }
 /** Work deduplicated as coins: every witness two UUIDs share is work that exists once, booked at zero price as a coin credited to the author —
- *  a count of free work, never money: money moves only when Stripe settles a coil. Each coin IS a UUID and a coin is only minted from a valid sealed
- *  UUID (every coin a validated address, textbook_uuid_core): a shared witness whose seal does not hold is rejected, not booked. Each line books the
- *  same amount on both sides (textbook_double_entry). */
-export const mintWitnessCoins = (shared: readonly string[]) => {
-  const valid: string[] = [], invalid: string[] = []
-  for (const uuid of shared) (sealOf(uuid).valid ? valid : invalid).push(uuid)
-  const lines = valid.map((uuid) => ({ debit: 'work:deduplicated', credit: 'coins:author', amount: 0, count: 1, why: `witness ${uuid} shared: computed once, not twice` }))
-  const debits = lines.reduce((n, l) => n + l.amount, 0), credits = lines.reduce((n, l) => n + l.amount, 0)
-  return { lines, coins: lines.length, invalid, debits, credits, balanced: debits === credits, says: `${lines.length} coin(s) credited to the author for work that exists once; a coin here counts free work, not money: money moves only when Stripe settles a coil${invalid.length ? `; ${invalid.length} witness(es) rejected — not a sealed UUID (a coin is a validated address)` : ''}`, theorem: 'textbook_double_entry' }
+ *  a count of free work, never money: money moves only when Stripe settles a coil. Each coin IS a UUID, minted only when witnessOf passes it
+ *  (textbook_uuid_core); a missing or contradicted witness books nothing, its gap named (textbook_witness_books_nothing). */
+export const mintWitnessCoins = (shared: readonly unknown[]) => {
+  const decided = shared.map(witnessOf), of = (state: string) => decided.filter((w) => w.state === state)
+  const lines = of('passed').map((w) => ({ debit: 'work:deduplicated', credit: 'coins:author', amount: 0, count: 1, why: `witness ${w.uuid} shared: computed once, not twice` }))
+  const j = journalOf('mint', lines), invalid = of('contradicted').map((w) => w.uuid), missing = of('missing').map((w) => ({ uuid: w.uuid, missing: w.missing }))
+  return { lines, coins: lines.length, invalid, missing, ...j, gaps: gapsOf(...decided, j), says: `${lines.length} coin(s) credited to the author for work that exists once; a coin here counts free work, not money: money moves only when Stripe settles a coil; ${invalid.length} refused, ${missing.length} held for a missing witness, nothing booked for either`, theorem: 'textbook_witness_books_nothing' }
+}
+/** An idea pays its contributor through its linked UUIDs (certificate, idea, product, sale), each decided by witnessOf and each after the first
+ *  naming the one before it: all passing, one coin to coins:<certificate>; a link missing holds it in escrow:<link>; one contradicted books nothing. */
+const contributionOf = (idea: unknown) => {
+  const links = (['certificate', 'idea', 'product', 'sale'] as const).reduce<(ReturnType<typeof witnessOf> & { link: string; content?: string })[]>((a, link, i) => { const l = arr(isObj(idea) ? idea.links : [])[i], o = typeof l === 'string' ? { uuid: l } : isObj(l) ? l : {}; return [...a, { link, content: o.content as string | undefined, ...witnessOf(i ? { ...o, prev: a[i - 1]!.uuid ? { id: a[i - 1]!.uuid, content: a[i - 1]!.content } : null } : o) }] }, [])
+  const held = links.find((l) => l.state === 'missing'), refused = links.some((l) => l.state === 'contradicted'), contributor = links[0]!.uuid
+  const lines = refused ? [] : [{ debit: `work:${links[1]!.uuid || 'idea'}`, credit: held ? `escrow:${held.uuid || held.link}` : `coins:${contributor}`, amount: 0, count: 1 }], j = journalOf('idea', lines)
+  return { contributor: contributor || null, links: links.map(({ gap: _, ...l }) => l), coins: held || refused ? 0 : 1, escrow: held && lines[0] ? lines[0].credit : null, lines, ...j, gaps: gapsOf(...links, j), theorem: 'textbook_witness_books_nothing' }
+}
+/** A trade's royalty, fractal along its chain as it stands at that trade, at the one ratio r: share₀ = ⌊fee·r⌋ to chain[0], shareⱼ = ⌊shareⱼ₋₁·r⌋
+ *  to chain[j] until 0, the remainder to revenue:author, exact in BigInt (textbook_royalty_fractal, textbook_royalty_conserved). A link witnessOf
+ *  does not pass is paid nothing: its share held in escrow:<link>. The fee is coins, never money: money moves only when Stripe settles a coil. */
+export const royaltyOf = (fee: unknown, chain: readonly unknown[], ratio = ROYALTY, trade = 'trade') => {
+  const F = fee === undefined ? null : big(fee)
+  if (F === null || F < 0n) throw new Error('royalty needs fee, a whole number of coins at least 0')
+  const shares: { level: number; uuid: string; share: bigint; account: string; w: ReturnType<typeof witnessOf> }[] = []
+  for (let j = 0, s = (F * ratio.num) / ratio.den; j < chain.length && s > 0n; j++, s = (s * ratio.num) / ratio.den) { const w = witnessOf(chain[j]); shares.push({ level: j, uuid: w.uuid, share: s, account: `${w.state === 'passed' ? 'coins' : 'escrow'}:${w.uuid || `level-${j}`}`, w }) }
+  const paid = shares.reduce((n, x) => n + x.share, 0n), remainder = F - paid
+  const postings = [{ account: `fees:${trade}`, amount: 0, count: num(F) }, ...shares.map((x) => ({ account: x.account, amount: 0, count: num(-x.share) })), { account: 'revenue:author', amount: 0, count: num(-remainder) }]
+  const j = balanceOf({ id: uuidOf(`royalty${JSON.stringify(postings)}`), postings })
+  return { fee: num(F), ratio: { num: num(ratio.num), den: num(ratio.den) }, shares: shares.map(({ w, share, ...x }) => ({ ...x, share: num(share), state: w.state })), paid: num(paid), remainder: num(remainder), bounded: paid <= F, postings, ...j, gaps: gapsOf(...shares.map((x) => x.w), j), says: `${num(paid)} of ${num(F)} coin(s) to ${shares.length} level(s), ${num(remainder)} to revenue:author: coins count work in a closed loop, never money`, theorem: 'textbook_royalty_conserved' }
 }
 /** Recursive licensing: a chain of parties, each holding its licence from the level above as a docket entry and selling sublicences to the
  *  level below through its own Stripe (the ecommerce plugin's order afterChange at that level writes the licence entry linked to the one
@@ -469,7 +493,7 @@ export const chainLicence = (parties: readonly string[]) => {
     level, party,
     holds: level === 0 ? 'the work itself (CC-BY-NC-ND-4.0; the a432 harmonic default free under attribution)' : `the licence entry granted by ${parties[level - 1]} (kind licence, links: [the entry above])`,
     sells: level === parties.length - 1 ? null : `sublicences to ${parties[level + 1]}: an order at this level's Stripe, the licence the completed order itself`,
-    stripe: level === parties.length - 1 ? null : { keys: [`STRIPE_SECRET_KEY_${party.toUpperCase().replace(/[^A-Z0-9]+/g, '_')}`, `STRIPE_WEBHOOK_SECRET_${party.toUpperCase().replace(/[^A-Z0-9]+/g, '_')}`], hook: 'orders afterChange (the ecommerce plugin): status completed → a licence entry in the docket, links: [the licence this level holds], so the chain is one walk of links', gdprKyc: 'Stripe\'s responsibility at every level' },
+    stripe: level === parties.length - 1 ? null : { keys: ['SECRET_KEY', 'WEBHOOK_SECRET'].map((k) => `STRIPE_${k}_${party.toUpperCase().replace(/[^A-Z0-9]+/g, '_')}`), hook: 'orders afterChange (the ecommerce plugin): status completed → a licence entry in the docket, links: [the licence this level holds], so the chain is one walk of links', gdprKyc: 'Stripe\'s responsibility at every level' },
     keeps: level === 0 ? 'the coins of every response and the catalogue price of each licence' : level === parties.length - 1 ? 'the use' : 'the margin between the price it pays above and the price it sells below (marginsOf)',
   }))
   return { parties: parties.length, links: parties.length - 1, theorem: 'textbook_licence_chain', levels, verify: 'verify { uuid, prev, next } on each licence entry: prev is the licence above, next a sublicence below; a broken link ends the chain there', says: `${parties.length - 1} sublicence(s) under one licence are ${parties.length - 1} links, each a Stripe hook at the reseller's own keys, the author paid at the root` }
@@ -491,20 +515,19 @@ const listStripeUseCases = (paths: readonly string[]) => {
 /** The margins of the catalogue at best: every variant's price against the provider's cost per unit when the client passes it (read from the provider's
  *  pricing page by the verifier: Durable Objects rows written for a reading, requests for a call, the gate's copies for delivered computing); without
  *  a cost the margin is a lead, never a number asserted (textbook_margin_makes_price). */
-const listMargins = (costs: Readonly<Record<string, number>> = {}, currency = 'eur') => Object.fromEntries(CATALOGUE.map((v) => { const price = v.amounts[currency.toLowerCase()] ?? v.amounts.eur ?? 0; const cost = costs[v.product] ?? costs[`${v.product}/${v.variant}`] ?? null; return [`${v.product}/${v.variant}`, { price, unit: v.unit, cost, margin: cost == null ? null : price > 0 ? Number(((price - cost) / price).toFixed(3)) : null, basis: cost == null ? (price === 0 ? 'free: the a432 default, no margin and no cost' : 'the provider\'s cost per unit read from its pricing page by the verifier: a lead until read') : 'margin = (price − cost) / price; the price and the cost in the same minor units per unit' }] }))
+const amountIn = (v: Variant, currency: string) => v.amounts[currency.toLowerCase()] ?? v.amounts.eur ?? 0
+const listMargins = (costs: Readonly<Record<string, number>> = {}, currency = 'eur') => Object.fromEntries(CATALOGUE.map((v) => { const price = amountIn(v, currency); const cost = costs[v.product] ?? costs[`${v.product}/${v.variant}`] ?? null; return [`${v.product}/${v.variant}`, { price, unit: v.unit, cost, margin: cost == null ? null : price > 0 ? Number(((price - cost) / price).toFixed(3)) : null, basis: cost == null ? (price === 0 ? 'free: the a432 default, no margin and no cost' : 'the provider\'s cost per unit read from its pricing page by the verifier: a lead until read') : 'margin = (price − cost) / price; the price and the cost in the same minor units per unit' }] }))
+/** The usage bill as the ecommerce plugin's own order, strictly the upstream shape (textbook_billing_complete). Pure. */
 export const orderUsage = (calls: number, currency = 'eur', energy?: { kWh: number; tariffEurPerKwh: number | null }, split?: { free: number; coils: number; commercial?: boolean; delivered?: number; readings?: number }) => {
   const v = CATALOGUE.find((c) => c.product === 'qpu-metered' && c.variant === 'per-thousand-calls')!
   const a432 = CATALOGUE.find((c) => c.product === 'qpu-a432')!
-  // the licence decides automatically: only the pure algebraic formulas are free (the a432 harmonic default under attribution: ALGEBRA_TOOLS); every other call is covered by the licence — a coil billed by the coins under a commercial licence, 0 coins under the non-commercial term — whether or not an involution answered it
   const free = split?.free ?? 0, coils = split?.coils ?? Math.max(0, calls), commercial = split?.commercial === true
   const quantity = Math.ceil(Math.max(0, coils) / 1000)
-  const unitAmount = commercial ? (v.amounts[currency.toLowerCase()] ?? v.amounts.eur ?? 0) : 0
-  const amount = quantity * unitAmount
-  const items = [{ product: a432.product, variant: a432.variant, quantity: free, unitAmount: 0, amount: 0, unit: 'call', interval: a432.interval, basis: 'free: the pure algebraic formulas (css, fold, verify, clay) — the a432 harmonic default under attribution' }, { product: v.product, variant: v.variant, quantity, unitAmount, amount, unit: v.unit, interval: v.interval, basis: commercial ? 'coils: every call beyond the pure algebra, covered by the licence and billed by the coins under the commercial licence' : 'coils: every call beyond the pure algebra, covered by the licence; 0 coins under its non-commercial term, the count kept for the record' }]
-  // delivered production quantum computing and IoT readings as metered lines when the run measured them: the copies the gate proved, the readings written
+  const itemOf = (x: Variant, quantity: number, basis: string, unitAmount = commercial ? amountIn(x, currency) : 0, unit: string = x.unit) => ({ product: x.product, variant: x.variant, quantity, unitAmount, amount: quantity * unitAmount, unit, interval: x.interval, basis })
+  const items = [itemOf(a432, free, 'free: the pure algebraic formulas (css, fold, verify, clay) — the a432 harmonic default under attribution', 0, 'call'), itemOf(v, quantity, commercial ? 'coils: every call beyond the pure algebra, covered by the licence and billed by the coins under the commercial licence' : 'coils: every call beyond the pure algebra, covered by the licence; 0 coins under its non-commercial term, the count kept for the record')], unitAmount = items[1]!.unitAmount
   const delivered = CATALOGUE.find((c) => c.product === 'qpu-delivered')!, iot = CATALOGUE.find((c) => c.product === 'qpu-iot')!
-  if (split?.delivered) { const q = Math.ceil(split.delivered / 1000); const u = commercial ? (delivered.amounts[currency.toLowerCase()] ?? delivered.amounts.eur ?? 0) : 0; items.push({ product: delivered.product, variant: delivered.variant, quantity: q, unitAmount: u, amount: q * u, unit: delivered.unit, interval: delivered.interval, basis: 'production quantum computing delivered: the copies the gate proved on the hosts, the subscription\'s measure' }) }
-  if (split?.readings) { const q = Math.ceil(split.readings / 1_000_000); const u = commercial ? (iot.amounts[currency.toLowerCase()] ?? iot.amounts.eur ?? 0) : 0; items.push({ product: iot.product, variant: iot.variant, quantity: q, unitAmount: u, amount: q * u, unit: iot.unit, interval: iot.interval, basis: 'IoT readings written as docket entries, per million' }) }
+  if (split?.delivered) items.push(itemOf(delivered, Math.ceil(split.delivered / 1000), 'production quantum computing delivered: the copies the gate proved on the hosts, the subscription\'s measure'))
+  if (split?.readings) items.push(itemOf(iot, Math.ceil(split.readings / 1_000_000), 'IoT readings written as docket entries, per million'))
   const total = items.reduce((n, i) => n + i.amount, 0)
   return { collection: 'orders', items, currency: currency.toUpperCase(), amount: total, minorUnits: true, status: 'pending', licence: { perspective: 'CC BY-NC-ND 4.0: non-commercial use free under attribution; commercial use of the QPU framework by licence (the coins)', free, coils, commercial, decides: 'automatically: free is the pure algebra alone (ALGEBRA_TOOLS), coils every other call, involution or not; the commercial flag is the tenant\'s licence order', algebra: ALGEBRA_TOOLS, compliance: { licensing: 'all non-harmonic use is licensed over MCP by billable automation: the licence is a completed order of the ecommerce plugin, the coins its measure', gdpr: 'the customer\'s identity and payment data stay at Stripe (Checkout, the customer object) under Stripe\'s DPA; the tree keeps the order, the tenant and the domains, never a name, an address or a card', kyc: 'Stripe\'s: the account verification and the identity checks are the payment provider\'s; the tree never verifies an identity' } }, energyLine: energy ? { kWh: energy.kWh, tariffEurPerKwh: energy.tariffEurPerKwh, costEur: energy.tariffEurPerKwh != null ? energy.kWh * energy.tariffEurPerKwh : null, says: 'informational: the joules the computations moved at the tariff the tenant names, not a catalogue price' } : null, transactions: 'the ecommerce plugin\'s transactions collection: one per payment, the ledger', checkout: '/checkout: the plugin\'s own, the Stripe adapter the payment', says: `${calls} calls billed as ${quantity} × ${v.product}/${v.variant} at ${unitAmount} ${currency.toUpperCase()} minor units: an order of the ecommerce plugin, nothing custom` }
 }
@@ -517,25 +540,27 @@ const listRates = (source: string, text: string): RateTable | { source: string; 
   const src = RATE_SOURCES.find((r) => r.id === source)
   if (!src) return { source, error: `no rate source ${source}; the sources are ${RATE_SOURCES.map((r) => r.id).join(', ')}` }
   try {
-    if (src.format === 'xml-ecb') { const date = /time='(\d{4}-\d{2}-\d{2})'/.exec(text)?.[1] ?? null; const rates: Record<string, number> = {}; for (const m of text.matchAll(/currency='([A-Z]{3})'\s+rate='([\d.]+)'/g)) rates[m[1]!] = Number(m[2]); if (!Object.keys(rates).length) throw new Error('no rates in the ECB XML'); return { source, date, base: 'EUR', rates } }
-    if (src.format === 'xml-bnb') { const date = /<CURR_DATE>(\d{2})\.(\d{2})\.(\d{4})<\/CURR_DATE>/.exec(text); const rates: Record<string, number> = {}; for (const m of text.matchAll(/<CODE>([A-Z]{3})<\/CODE>[\s\S]*?<RATE>([\d.]+)<\/RATE>/g)) rates[m[1]!] = Number(m[2]); if (!Object.keys(rates).length) throw new Error('no rates in the BNB XML'); return { source, date: date ? `${date[3]}-${date[2]}-${date[1]}` : null, base: 'EUR', rates } }
-    const j = JSON.parse(text) as Record<string, unknown>
-    if (src.format === 'json-frankfurter' || src.format === 'json-er-api') return { source, date: String(j.date ?? (j.time_last_update_utc ? new Date(String(j.time_last_update_utc)).toISOString().slice(0, 10) : '')) || null, base: 'EUR', rates: Object.fromEntries(Object.entries((j.rates ?? {}) as Record<string, number>).map(([k, v]) => [k.toUpperCase(), Number(v)])) }
-    return { source, date: String(j.date ?? '') || null, base: 'EUR', rates: Object.fromEntries(Object.entries((j.eur ?? {}) as Record<string, number>).filter(([k]) => /^[a-z]{3}$/.test(k)).map(([k, v]) => [k.toUpperCase(), Number(v)])) }
+    const xml = (re: RegExp) => { const rates: Record<string, number> = {}; for (const m of text.matchAll(re)) rates[m[1]!] = Number(m[2]); if (!Object.keys(rates).length) throw new Error(`no rates in the ${source.toUpperCase()} XML`); return rates }
+    if (src.format === 'xml-ecb') return { source, date: /time='(\d{4}-\d{2}-\d{2})'/.exec(text)?.[1] ?? null, base: 'EUR', rates: xml(/currency='([A-Z]{3})'\s+rate='([\d.]+)'/g) }
+    if (src.format === 'xml-bnb') { const date = /<CURR_DATE>(\d{2})\.(\d{2})\.(\d{4})<\/CURR_DATE>/.exec(text); return { source, date: date ? `${date[3]}-${date[2]}-${date[1]}` : null, base: 'EUR', rates: xml(/<CODE>([A-Z]{3})<\/CODE>[\s\S]*?<RATE>([\d.]+)<\/RATE>/g) } }
+    const j = JSON.parse(text) as Record<string, unknown>, upper = (o: unknown, own = /./) => Object.fromEntries(Object.entries((o ?? {}) as Record<string, number>).filter(([k]) => own.test(k)).map(([k, v]) => [k.toUpperCase(), Number(v)]))
+    if (src.format === 'json-frankfurter' || src.format === 'json-er-api') return { source, date: String(j.date ?? (j.time_last_update_utc ? new Date(String(j.time_last_update_utc)).toISOString().slice(0, 10) : '')) || null, base: 'EUR', rates: upper(j.rates) }
+    return { source, date: String(j.date ?? '') || null, base: 'EUR', rates: upper(j.eur, /^[a-z]{3}$/) }
   } catch (e) { return { source, error: (e as Error).message } }
 }
 const median = (xs: number[]): number => { const s = [...xs].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m]! : (s[m - 1]! + s[m]!) / 2 }
 /** The harmonised rate per currency: the median of every source that names it (a repetition code: agree within 0.5 %, else the sources that differ are named), pegs fixed by law, each rate with its sources and spread. */
-const harmoniseRates = (tables: readonly RateTable[], symbols: readonly string[]): Record<string, { rate: number; sources: string[]; spread: number; outcome: 'agree' | 'drift' | 'peg' | 'erased'; drifting: string[]; dates: string[] }> => {
+const harmoniseRates = (tables: readonly RateTable[], symbols: readonly string[]) => {
   const out: Record<string, { rate: number; sources: string[]; spread: number; outcome: 'agree' | 'drift' | 'peg' | 'erased'; drifting: string[]; dates: string[] }> = {}
   for (const sym of symbols.map((x) => x.toUpperCase())) {
     if (sym === 'EUR') { out[sym] = { rate: 1, sources: ['base'], spread: 0, outcome: 'agree', drifting: [], dates: [] }; continue }
-    if (PEGS[sym]) { out[sym] = { rate: PEGS[sym]!.perEur, sources: ['law'], spread: 0, outcome: 'peg', drifting: tables.filter((t) => t.rates[sym] !== undefined && Math.abs(t.rates[sym]! - PEGS[sym]!.perEur) / PEGS[sym]!.perEur > 0.0001).map((t) => t.source), dates: [PEGS[sym]!.since] }; continue }
+    const peg = PEGS[sym], off = (t: RateTable, r: number) => Math.abs(t.rates[sym]! - r) / r
+    if (peg) { out[sym] = { rate: peg.perEur, sources: ['law'], spread: 0, outcome: 'peg', drifting: tables.filter((t) => t.rates[sym] !== undefined && off(t, peg.perEur) > 0.0001).map((t) => t.source), dates: [peg.since] }; continue }
     const named = tables.filter((t) => typeof t.rates[sym] === 'number' && t.rates[sym]! > 0)
     if (!named.length) { out[sym] = { rate: 0, sources: [], spread: 0, outcome: 'erased', drifting: [], dates: [] }; continue }
     const rate = median(named.map((t) => t.rates[sym]!))
-    const spread = Math.max(...named.map((t) => Math.abs(t.rates[sym]! - rate) / rate))
-    out[sym] = { rate, sources: named.map((t) => t.source), spread, outcome: spread <= 0.005 ? 'agree' : 'drift', drifting: named.filter((t) => Math.abs(t.rates[sym]! - rate) / rate > 0.005).map((t) => t.source), dates: [...new Set(named.map((t) => t.date).filter(Boolean))] as string[] }
+    const spread = Math.max(...named.map((t) => off(t, rate)))
+    out[sym] = { rate, sources: named.map((t) => t.source), spread, outcome: spread <= 0.005 ? 'agree' : 'drift', drifting: named.filter((t) => off(t, rate) > 0.005).map((t) => t.source), dates: [...new Set(named.map((t) => t.date).filter(Boolean))] as string[] }
   }
   return out
 }
@@ -551,7 +576,7 @@ const currency = defineTool('billing', {
     const op = String(args.op ?? 'plan')
     if (op === 'plan') return { op, sources: RATE_SOURCES, requests: RATE_SOURCES.map((r) => ({ id: `currency:${r.id}`, source: r.id, method: 'GET' as const, url: r.url, accept: r.format.startsWith('xml') ? '*/*' : 'application/json' })) /* the BNB's gateway refuses an accept of text/xml (measured 2026-10-26): any accept, the XML comes */, pegs: PEGS, relatedMcps: CURRENCY_MCPS, realtime: 'reference rates are daily: the day is the real time of a reference rate; an intraday rate is a paid provider\'s door (a related MCP), the operator\'s act' }
     if (op !== 'harmonise') throw new Error(`op ${op} is not plan or harmonise`)
-    const answers = (Array.isArray(args.answers) ? args.answers : []) as { source: string; text: string }[]
+    const answers = arr(args.answers)
     const read = answers.map((a) => listRates(String(a.source), String(a.text ?? '')))
     const tables = read.filter((r): r is RateTable => 'rates' in r)
     const errors = read.filter((r): r is { source: string; error: string } => 'error' in r)

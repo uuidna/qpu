@@ -2404,6 +2404,28 @@
             },
             "description": "op ledger"
           },
+          "journal": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "op ledger"
+          },
+          "mint": {
+            "type": "array",
+            "description": "op ledger"
+          },
+          "ideas": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "op ledger"
+          },
+          "royalty": {
+            "type": "object",
+            "description": "op ledger"
+          },
           "tools": {
             "type": "array",
             "items": {
