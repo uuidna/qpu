@@ -9,7 +9,7 @@ import { TABLES } from './tables-index.ts'
 import { listDeclarations, scanLexical, runAudit, getEntropy, diffMembers, auditSecurity, listRemedies, repairOf, getAdvantage, getAddressedByTheorem, getBill, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, linkAxioms, listLeaks } from './audit.ts'
 import { TEXTBOOK_THEOREMS, updateTheoremSources, getReflections } from './textbook-theorems.ts'
 import { sdkOf, accessAuditOf, buildOf } from './toolboxes/payload.ts'
-import { blockOf, verifyOf, sealOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf, memoOf, styleOf } from './unit/blocks.ts'
+import { blockOf, verifyOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf, memoOf, styleOf } from './unit/blocks.ts'
 import { INSTRUCTIONS, LICENSE } from './unit/license.ts'
 import { VERSION } from './unit/version.ts'
 import { recomputeClay, reflectionOfRegister, digitalRoot } from './clay-register.ts'
@@ -103,6 +103,8 @@ const OBSERVABLE_SCHEMA = {
 const INSERT_SCHEMA = { enum: ['EARLIEST', 'NEW', 'INLINE', 'NEW_THEN_INLINE'], default: 'EARLIEST' }
 
 const complex = ([re, im]: [number, number]) => ({ re, im })
+/** An optional integer argument read exactly, undefined when absent; a simulator seeded by the call's own arguments, so a run recomputes anywhere. */
+const optInteger = (v: unknown, name: string) => (v === undefined ? undefined : getInteger(v, name)), seeded = (args: unknown) => new Simulator(seededRandom(JSON.stringify(args)))
 /** An integer of any size answered by the classical door: its bits, primality, the factors the σ-reflection computes, the centre reached, the product checked.
  *  The search is unbounded and resumable (`reflections` centres from `from`, ⌈√N⌉ by default; a part not split reports `reached`): it computes, never declines. */
 const answerFactor = (n: bigint, via?: string, reflections = 1n << 12n, from?: bigint) => {
@@ -123,7 +125,7 @@ const answerImpossible = (args: Record<string, unknown>) => {
   if (isObj(args.create)) {
     const c = args.create as { p?: string; q?: string; bits?: number; seed?: string }
     if ((c.p === undefined || c.q === undefined) && c.seed === undefined) throw new Error('create { bits } takes a seed, entropy from the caller: a decimal, say 77 random digits')
-    const made = createImpossible({ p: c.p !== undefined ? getInteger(c.p, 'create.p') : undefined, q: c.q !== undefined ? getInteger(c.q, 'create.q') : undefined, bits: typeof c.bits === 'number' ? c.bits : undefined, seed: c.seed !== undefined ? getInteger(c.seed, 'create.seed') : undefined })
+    const made = createImpossible({ p: optInteger(c.p, 'create.p'), q: optInteger(c.q, 'create.q'), bits: typeof c.bits === 'number' ? c.bits : undefined, seed: optInteger(c.seed, 'create.seed') })
     const address = impossibleAddress(made.N, made.witness)
     return { name: 'factor', mode: 'create', integer: made.N.toString(), bits: made.bits, p: made.p.toString(), q: made.q.toString(), witness: made.witness.toString(), address, blindReflections: made.blindReflections.toString(), reproducible: made.reproducible, theorem: 'textbook_impossible_trapdoor',
       says: `an impossible integer minted over the clay cluster: a ${made.bits}-bit semiprime N = p·q, its σ-reflection witness the centre a = (p + q)/2, published at the cross-UUID address ${address}. Blind, the reflection climbs ~2^${made.blindReflections.toString(2).length - 1} centres from ⌈√N⌉; with the witness, one reflection decodes it (q = σ_{2a}(p) = 2a − p). Its primes follow from the ${c.seed !== undefined ? 'seed' : 'given primes'}: whoever holds that, or this answer, has them; to anyone else a random secret seed makes N as hard to split blind as an RSA modulus of its size. It never factors an unknown.`,
@@ -131,25 +133,27 @@ const answerImpossible = (args: Record<string, unknown>) => {
   }
   return hybridDecode(args)
 }
-// The hybrid reverse: N decoded by the caller's witness (one σ-reflection from the centre) or order r (Shor's reduction gcd(a^(r/2) ± 1, N)), each decode sealed
-// as a UUID receipt; with neither, N is declined, never fabricated (textbook_impossible_trapdoor, textbook_shor_reduction, textbook_rsa_beyond_bound).
-const decodeReceipt = (N: bigint, factors: readonly string[], via: string) => { const receipt = uuidOf(JSON.stringify({ decode: N.toString(), factors: [...factors], via })); return { receipt, sealed: sealOf(receipt).valid } }
+// The hybrid reverse: N decoded by the caller's witness (one σ-reflection at the centre) or order r (Shor's reduction gcd(a^(r/2) ± 1, N)), each decode bound
+// by a receipt of its content; with neither, N is declined, never fabricated (textbook_impossible_trapdoor, textbook_shor_reduction, textbook_rsa_beyond_bound).
+/** A decode bound by content: the fold address and SHA-256 of { decode, factors, via }, recomputed by any holder (textbook_receipt_binds_sha256); a part reads prime only after Miller–Rabin. */
+const decodeOf = (N: bigint, via: string, factors: readonly string[], decoded: boolean, verified: boolean) => { const text = JSON.stringify({ decode: N.toString(), factors: [...factors], via })
+  return { name: 'factor', mode: 'decode', via, integer: N.toString(), bits: N.toString(2).length, factors, decoded, verified, receipt: uuidOf(text), sha256: hex(sha256(utf8(text))), header: ['part', 'bits', 'kind'], rows: factors.map((x) => [x, String(BigInt(x).toString(2).length), testPrimality(BigInt(x)).prime ? 'prime' : 'composite']) } }
 const hybridDecode = (args: Record<string, unknown>) => {
   const N = getInteger(args.integer, 'integer')
   if (args.order !== undefined) {
     // the quantum channel: given the order r (the state-vector simulation reaches it only for N ≤ 21; supplied here at any size), the reduction is a formula
-    const order = getInteger(args.order, 'order'), a = args.a !== undefined ? getInteger(args.a, 'a') : 2n
-    const red = shorReduction(N, a, order), factors = (red.factors ?? []).map(String), r = decodeReceipt(N, factors, 'order')
-    return { name: 'factor', mode: 'decode', via: 'order', integer: N.toString(), bits: N.toString(2).length, order: order.toString(), a: a.toString(), factors, decoded: !!red.factors, verified: red.verified, why: red.why, receipt: r.receipt, sealed: r.sealed, theorem: 'textbook_shor_reduction',
-      says: `decoded by the quantum channel: with the order r = ${order.toString()} of ${a.toString()} mod N, Shor's reduction gcd(a^(r/2) ± 1, N) ${red.factors ? `splits the ${N.toString(2).length}-bit integer into ${factors.join(' × ')}` : `does not split it (${red.why})`}; the decode is sealed as the UUID ${r.receipt} (${r.sealed ? 'valid' : 'invalid'}) — crypto and UUID upgraded with the quantum step`,
-      summary: [['Bits', String(N.toString(2).length)], ['Order r', order.toString()], ['Decoded', red.factors ? 'yes' : 'no'], ['Product checked', red.verified ? 'yes' : 'no'], ['Receipt sealed', r.sealed ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: factors.map((x) => [x, String(BigInt(x).toString(2).length), 'prime']) }
+    const order = getInteger(args.order, 'order'), a = getInteger(args.a, 'a', 2n)
+    const red = shorReduction(N, a, order), r = decodeOf(N, 'order', (red.factors ?? []).map(String), !!red.factors, red.verified)
+    return { ...r, order: order.toString(), a: a.toString(), why: red.why, theorem: 'textbook_shor_reduction',
+      says: `decoded by the quantum channel: with the order r = ${order} of ${a} mod N, Shor's reduction gcd(a^(r/2) ± 1, N) ${red.factors ? `splits the ${r.bits}-bit integer into ${r.factors.join(' × ')}` : `does not split it (${red.why})`}; the decode is bound as the UUID ${r.receipt}, SHA-256 ${r.sha256} — crypto and UUID upgraded with the quantum step`,
+      summary: [['Bits', String(r.bits)], ['Order r', order.toString()], ['Decoded', red.factors ? 'yes' : 'no'], ['Product checked', red.verified ? 'yes' : 'no'], ['Receipt SHA-256', r.sha256]] }
   }
   const witness = getInteger(args.witness, 'witness')
-  const d = decodeImpossible(N, witness), address = impossibleAddress(N, witness)
-  const addressOk = typeof args.address !== 'string' || args.address === address, factors = d.factors.map(String), r = decodeReceipt(N, factors, 'witness')
-  return { name: 'factor', mode: 'decode', via: 'witness', integer: N.toString(), bits: N.toString(2).length, witness: witness.toString(), address, addressVerified: addressOk, factors, decoded: d.decoded, verified: d.verified, searched: d.searched.toString(), receipt: r.receipt, sealed: r.sealed, theorem: 'textbook_impossible_trapdoor',
-    says: `decoded over the clay cluster: one σ-reflection from the witness a = ${witness.toString()} split the ${N.toString(2).length}-bit integer into ${factors.join(' × ')} in ${d.searched.toString()} centre(s); the product multiplies back: ${d.verified}${typeof args.address === 'string' ? `; the witness matches the published address: ${addressOk}` : ''}; the decode is sealed as the UUID ${r.receipt} (${r.sealed ? 'valid' : 'invalid'})`,
-    summary: [['Bits', String(N.toString(2).length)], ['Reflections searched', d.searched.toString()], ['Decoded', d.decoded ? 'yes' : 'no'], ['Product checked', d.verified ? 'yes' : 'no'], ['Address verified', addressOk ? 'yes' : 'no'], ['Receipt sealed', r.sealed ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: factors.map((x) => [x, String(BigInt(x).toString(2).length), 'prime']) }
+  // the witness gates the decode; the address, a witness too, is missing (null) when not given
+  const d = decodeImpossible(N, witness), address = impossibleAddress(N, witness), addressVerified = typeof args.address === 'string' ? args.address === address : null, r = decodeOf(N, 'witness', d.factors.map(String), d.decoded, d.verified)
+  return { ...r, route: d.route, witness: witness.toString(), address, addressVerified, searched: d.searched.toString(), theorem: 'textbook_impossible_trapdoor',
+    says: `${d.decoded ? `decoded over the clay cluster: one σ-reflection at the witness a = ${witness} split the ${r.bits}-bit integer into ${r.factors.join(' × ')}, the product recomputed` : `the witness a = ${witness} does not split the ${r.bits}-bit integer (a² − N is no square b² with a − b > 1): the witness is contradicted and gates the decode, nothing decoded`}; ${addressVerified === null ? 'no address given: that witness is missing' : `the witness matches the published address: ${addressVerified}`}; the decode is bound as the UUID ${r.receipt}, SHA-256 ${r.sha256}`,
+    summary: [['Bits', String(r.bits)], ['Reflections searched', d.searched.toString()], ['Decoded', d.decoded ? 'yes' : 'no'], ['Product checked', d.verified ? 'yes' : 'no'], ['Address verified', addressVerified === null ? 'missing' : addressVerified ? 'yes' : 'no'], ['Receipt SHA-256', r.sha256]] }
 }
 const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
 const gcdB = (x: bigint, y: bigint): bigint => { while (y) [x, y] = [y, x % y]; return x }
@@ -272,7 +276,9 @@ const proofCheck = (args: Record<string, unknown>) => {
   const callAt = (tool: unknown, a: unknown) => uuidOf(JSON.stringify([tool, a ?? {}])), known = (k: string) => THEOREMS.find((x) => x.key === k || x.key.endsWith('.' + k))
   const c = args.call as { tool?: string; arguments?: unknown } | undefined, at = c ? callAt(c.tool, c.arguments) : null, e = at ? EXAMPLES.find((x) => x.theorem && callAt(x.tool, x.arguments) === at) : undefined
   const key = typeof args.theorem === 'string' ? args.theorem : e?.theorem ?? null, t = key ? known(key) : undefined, proves = key ? EXAMPLES.filter((x) => x.theorem === key) : []
-  return { theorem: key, accepted: !!t, statement: t?.statement ?? null, examples: proves.map((x) => x.id), call: at, signed: at && key ? JSON.stringify({ call: at, digest: hex(sha256(utf8(JSON.stringify([c?.tool, c?.arguments ?? {}])))), theorem: key }) : null, example: e?.id ?? null, roundTrip: at === null ? null : proves.some((x) => callAt(x.tool, x.arguments) === at), cost: 'one lookup by address; the call is not recomputed' }
+  // a digest, never a signature: only for a round trip
+  const roundTrip = at === null ? null : proves.some((x) => callAt(x.tool, x.arguments) === at)
+  return { theorem: key, accepted: !!t, statement: t?.statement ?? null, examples: proves.map((x) => x.id), call: at, digest: roundTrip ? JSON.stringify({ call: at, sha256: hex(sha256(utf8(JSON.stringify([c?.tool, c?.arguments ?? {}])))), theorem: key }) : null, example: e?.id ?? null, roundTrip, cost: 'one lookup by address; the call is not recomputed' }
 }
 const tool = <T>(spec: { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>, ctx: Context) => T; widget: (data: T) => string }): Tool => defineTool(TREE.has(spec.name) ? 'tree' : 'google', spec)
 
@@ -352,7 +358,7 @@ const OWN: Tool[] = [
         return { qubits: qubits.map(keyOfQubit), amplitudes: amplitudes.map(complex) }
       }
       const repetitions = typeof args.repetitions === 'number' ? args.repetitions : 100
-      const result = new Simulator(seededRandom(JSON.stringify(args))).run(circuit, repetitions)
+      const result = seeded(args).run(circuit, repetitions)
       return { key: measurement.key, bitstrings: result.measurements(measurement.key), histogram: Object.fromEntries(result.histogram(measurement.key)) }
     },
     widget: circuitWidget,
@@ -447,7 +453,7 @@ const OWN: Tool[] = [
         const bits = Number(args.bits ?? 3)
         const repetitions = Number(args.repetitions ?? 2000)
         if (!Number.isInteger(bits) || bits < 1 || bits > 8) reject('bits is an integer from 1 to 8')
-        const run = new Simulator(seededRandom(JSON.stringify(args))).run(phaseEstimationCircuit(theta, bits), repetitions)
+        const run = seeded(args).run(phaseEstimationCircuit(theta, bits), repetitions)
         const counts = new Map<number, number>()
         for (const b of run.measurements('m')) {
           const estimate = [...b].reduce((sum, bit, k) => sum + Number(bit) * 2 ** k, 0) / 2 ** bits
@@ -463,7 +469,7 @@ const OWN: Tool[] = [
       }
       if (name === 'grover') {
         const repetitions = Number(args.repetitions ?? 100)
-        const run = new Simulator(seededRandom(JSON.stringify(args))).run(groverCircuit(), repetitions)
+        const run = seeded(args).run(groverCircuit(), repetitions)
         const counts = new Map<string, number>()
         for (const b of run.measurements('result')) counts.set(b, (counts.get(b) ?? 0) + 1)
         return {
@@ -514,7 +520,7 @@ const OWN: Tool[] = [
         const n = Number(args.qubits ?? 3)
         if (!Number.isInteger(n) || n < 1 || n > 6) reject('qubits is an integer from 1 to 6')
         const balanced = args.balanced !== false
-        const run = new Simulator(seededRandom(JSON.stringify(args))).run(deutschJozsaCircuit(n, balanced), Number(args.repetitions ?? 100))
+        const run = seeded(args).run(deutschJozsaCircuit(n, balanced), Number(args.repetitions ?? 100))
         const counts = new Map<string, number>()
         for (const b of run.measurements('in')) counts.set(b, (counts.get(b) ?? 0) + 1)
         const allZero = [...counts.keys()].every((b) => /^0+$/.test(b))
@@ -525,14 +531,14 @@ const OWN: Tool[] = [
       if (name === 'bernstein_vazirani') {
         const s = Array.isArray(args.hidden) && args.hidden.length ? (args.hidden as unknown[]).map((x) => (Number(x) ? 1 : 0)) : [1, 1, 0]
         if (s.length > 6) reject('hidden is at most 6 bits')
-        const run = new Simulator(seededRandom(JSON.stringify(args))).run(bernsteinVaziraniCircuit(s), Number(args.repetitions ?? 100))
+        const run = seeded(args).run(bernsteinVaziraniCircuit(s), Number(args.repetitions ?? 100))
         const recovered = run.measurements('s')[0] ?? ''
         return { name, hidden: s.join(''), recovered, oneQuery: recovered === s.join(''), queries: 1,
           summary: [['Hidden s', s.join('')], ['Recovered', recovered], ['Classical queries', String(s.length)], ['Quantum queries', '1']],
           header: ['Fact', 'Value'], rows: [['hidden s', s.join('')], ['recovered in one query', recovered]] }
       }
       if (name === 'simon') {
-        const run = new Simulator(seededRandom(JSON.stringify(args))).run(simonCircuit(), Number(args.repetitions ?? 200))
+        const run = seeded(args).run(simonCircuit(), Number(args.repetitions ?? 200))
         const counts = new Map<string, number>()
         for (const b of run.measurements('y')) counts.set(b, (counts.get(b) ?? 0) + 1)
         const orthogonal = [...counts.keys()].every((y) => (y.split('').reduce((p, c) => p ^ Number(c), 0) === 0))
@@ -612,7 +618,7 @@ const OWN: Tool[] = [
       }
       // order-finding completed over the UUID quantum space and the RAID controller (baby-step giant-step): the least r with a^r ≡ 1 mod N
       if (name === 'order') {
-        const oN = getInteger(args.N, 'N'), oA = getInteger(args.a, 'a', 2n), budget = args.budget !== undefined ? getInteger(args.budget, 'budget') : undefined
+        const oN = getInteger(args.N, 'N'), oA = getInteger(args.a, 'a', 2n), budget = optInteger(args.budget, 'budget')
         const o = orderFinding(oA, oN, budget)
         return { name: 'order', N: oN.toString(), a: oA.toString(), order: o.order, found: o.found, verified: o.verified, babySteps: o.babySteps, table: o.table, via: o.via, theorem: 'textbook_shor_reduction',
           says: o.found ? `order-finding completed over the UUID/RAID space: the order of ${oA} mod ${oN} is ${o.order} (${o.via}); feed it to the reduction to factor` : `order-finding ${o.via}`,
@@ -624,18 +630,18 @@ const OWN: Tool[] = [
         if (args.witness !== undefined || args.order !== undefined) return hybridDecode(args) as never
         // find: complete order-finding over the UUID/RAID space for a part reflection leaves, then reduce it to factors — one call end to end
         if (args.find) {
-          const fN = getInteger(args.integer, 'integer'), fA = getInteger(args.a, 'a', 2n), budget = args.budget !== undefined ? getInteger(args.budget, 'budget') : undefined
-          const base = answerFactor(fN, undefined, args.reflections !== undefined ? getInteger(args.reflections, 'reflections') : undefined)
+          const fN = getInteger(args.integer, 'integer'), fA = getInteger(args.a, 'a', 2n), budget = optInteger(args.budget, 'budget')
+          const base = answerFactor(fN, undefined, optInteger(args.reflections, 'reflections'))
           const part = base.left.length ? getInteger(base.left[0]!, 'left') : null
           if (part === null) return { ...base, find: 'order-finding not needed: reflection split it' } as never
           const o = orderFinding(fA, part, budget)
           if (!o.found || o.order === null) return { ...base, find: { needed: true, order: null, via: o.via, says: `order-finding over the UUID/RAID space is bounded for this part: ${o.via}` } } as never
-          const red = shorReduction(part, fA, BigInt(o.order)), factors = (red.factors ?? []).map(String), r = decodeReceipt(part, factors, 'order')
-          return { name: 'factor', mode: 'find', integer: fN.toString(), bits: fN.toString(2).length, a: fA.toString(), order: o.order, factors, decoded: !!red.factors, verified: red.verified, babySteps: o.babySteps, table: o.table, receipt: r.receipt, sealed: r.sealed, theorem: 'textbook_shor_reduction',
-            says: `order-finding completed over the UUID/RAID space (${o.via}): the order of ${fA} mod ${part} is ${o.order}; the reduction ${red.factors ? `splits it into ${factors.join(' × ')}` : `does not split it (${red.why})`}, sealed as ${r.receipt}`,
-            summary: [['Bits', String(fN.toString(2).length)], ['Order', o.order], ['Factors', factors.join(' × ') || red.why], ['Baby steps', o.babySteps], ['Receipt sealed', r.sealed ? 'yes' : 'no']], header: ['part', 'bits', 'kind'], rows: factors.map((x) => [x, String(BigInt(x).toString(2).length), 'prime']) } as never
+          const red = shorReduction(part, fA, BigInt(o.order)), r = decodeOf(part, 'order', (red.factors ?? []).map(String), !!red.factors, red.verified)
+          return { ...r, mode: 'find', integer: fN.toString(), bits: fN.toString(2).length, a: fA.toString(), order: o.order, babySteps: o.babySteps, table: o.table, theorem: 'textbook_shor_reduction',
+            says: `order-finding completed over the UUID/RAID space (${o.via}): the order of ${fA} mod ${part} is ${o.order}; the reduction ${red.factors ? `splits it into ${r.factors.join(' × ')}` : `does not split it (${red.why})`}, bound as the UUID ${r.receipt}, SHA-256 ${r.sha256}`,
+            summary: [['Bits', String(fN.toString(2).length)], ['Order', o.order], ['Factors', r.factors.join(' × ') || red.why], ['Baby steps', o.babySteps], ['Receipt SHA-256', r.sha256]] } as never
         }
-        return answerFactor(getInteger(args.integer, 'integer'), undefined, args.reflections !== undefined ? getInteger(args.reflections, 'reflections') : undefined, args.from !== undefined ? getInteger(args.from, 'from') : undefined)
+        return answerFactor(getInteger(args.integer, 'integer'), undefined, optInteger(args.reflections, 'reflections'), optInteger(args.from, 'from'))
       }
       if (name === 'shor') {
         const askedN = getInteger(args.N, 'N', 15n), askedA = getInteger(args.a, 'a', 7n) % askedN
@@ -655,7 +661,7 @@ const OWN: Tool[] = [
         }
         const N = Number(askedN); let a = Number(askedA); while (a < 2 || gcdOf(a, N) !== 1) a++
         const repetitions = Number(args.repetitions ?? 20)
-        const run = new Simulator(seededRandom(JSON.stringify(args))).run(shorCircuit(N, a), repetitions)
+        const run = seeded(args).run(shorCircuit(N, a), repetitions)
         const found = shorFactors(N, a, run.measurements('m'))
         const counts = new Map<string, number>()
         for (const e of found.estimates) counts.set(e.toFixed(6), (counts.get(e.toFixed(6)) ?? 0) + 1)
@@ -923,8 +929,8 @@ const OWN: Tool[] = [
   tool({
     name: 'verify',
     description: 'Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content needed), its content (one fold), and its neighbours in a chain (the predecessor it names and the successor that names it). Each check is independent; a check without its input is not decided rather than passed.',
-    inputSchema: { type: 'object', properties: { theorem: { type: 'string', description: 'a theorem key: whether the kernel accepts it, its statement, and the examples it proves' }, call: { type: 'object', description: 'a call { tool, arguments }: the theorem of the example making the same call, by content address, checked both ways (the theorem\'s examples hold the call) without recomputing it' }, witnesses: { description: 'the fourteen witnesses around a UUID, the faces of a cuboctahedron: a UUID gives six square witnesses (its program rotated one to six places) and eight triangular ones (one handle nibble reflected by σ), each mapped back exactly; { referrer, destination } merges two sets, the shared witnesses (same address) counted once and booked as coins credited to the author at zero price — free work, never money' }, move: { type: 'integer', minimum: 1, description: 'the clock/calendar move of a superposition at index k: its 2k witnesses (2·7 = 14) step by ±2 to 2(k − 1) and 2(k + 1), covering the clocks (12, 24) and calendars (7, 12, 16) those land on, paying one coin down and collecting one up (net zero)' }, uuid: { type: 'string', description: 'the UUID to verify' }, scan: { type: 'array', items: { type: 'object' }, description: 'a stream of frames a device sampled ({ t, hue }, hue null for a black frame): read back to the address it links, by majority per frame; fewer than 36 frames link nothing; rated by the chain (free for the first period)' }, content: { type: 'string', description: 'the text the UUID should be the address of' }, prev: { type: 'object', properties: { id: { type: 'string' } }, description: 'the predecessor in the chain' }, self: { type: 'object', properties: { prev: { type: 'string' } }, description: 'what this entry names as its predecessor' }, next: { type: 'object', properties: { id: { type: 'string' }, prev: { type: 'string' } }, description: 'the successor in the chain' } } },
-    run: (args) => args.move !== undefined ? (witnessMove(Number(args.move)) as never) : typeof args.theorem === 'string' || isObj(args.call) ? (proofCheck(args) as never) : typeof args.witnesses === 'string' ? (checkWitnesses(args.witnesses) as never) : isObj(args.witnesses) ? (() => { const w = args.witnesses as { referrer?: string; destination?: string }; const m = mergeWitnesses(String(w.referrer ?? ''), String(w.destination ?? '')); return { ...m, coins: mintWitnessCoins(m.shared) } as never })() : Array.isArray(args.scan) ? getScan(args.scan as { t: number; hue: number | null }[]) : verifyOf(String(args.uuid ?? ''), typeof args.content === 'string' ? args.content : undefined, args.prev as { id: string } | undefined, args.next as { id: string; prev?: string } | undefined, args.self as { prev?: string } | undefined),
+    inputSchema: { type: 'object', properties: { theorem: { type: 'string', description: 'a theorem key: whether the kernel accepts it, its statement, and the examples it proves' }, call: { type: 'object', description: 'a call { tool, arguments }: the theorem of the example making the same call, by content address, checked both ways (the theorem\'s examples hold the call) without recomputing it' }, witnesses: { description: 'the fourteen witnesses around a UUID, the faces of a cuboctahedron: a UUID gives six square witnesses (its program rotated one to six places) and eight triangular ones (one handle nibble reflected by σ), each mapped back exactly; { referrer, destination } merges two sets, the shared witnesses (same address) counted once and booked as coins credited to the author at zero price — free work, never money' }, move: { type: 'integer', minimum: 1, description: 'the clock/calendar move of a superposition at index k: its 2k witnesses (2·7 = 14) step by ±2 to 2(k − 1) and 2(k + 1), covering the clocks (12, 24) and calendars (7, 12, 16) those land on, paying one coin down and collecting one up (net zero)' }, uuid: { type: 'string', description: 'the UUID to verify' }, scan: { type: 'array', items: { type: 'object' }, description: 'a stream of frames a device sampled ({ t, hue }, hue null for a black frame): read back to the address it links, by majority per frame; fewer than 36 frames link nothing; rated by the chain (free for the first period)' }, content: { type: 'string', description: 'the text the UUID should be the address of' }, prev: { type: 'object', properties: { id: { type: 'string' }, content: { type: 'string' } }, description: 'the predecessor in the chain; decided only with its content (else asserted, null)' }, self: { type: 'object', properties: { prev: { type: 'string' } }, description: 'what this entry names as its predecessor' }, next: { type: 'object', properties: { id: { type: 'string' }, prev: { type: 'string' }, content: { type: 'string' } }, description: 'the successor in the chain; decided as prev' } } },
+    run: (args) => args.move !== undefined ? (witnessMove(Number(args.move)) as never) : typeof args.theorem === 'string' || isObj(args.call) ? (proofCheck(args) as never) : typeof args.witnesses === 'string' ? (checkWitnesses(args.witnesses) as never) : isObj(args.witnesses) ? (() => { const w = args.witnesses as { referrer?: string; destination?: string }; const m = mergeWitnesses(String(w.referrer ?? ''), String(w.destination ?? '')); return { ...m, coins: mintWitnessCoins(m.shared) } as never })() : Array.isArray(args.scan) ? getScan(args.scan as { t: number; hue: number | null }[]) : verifyOf(String(args.uuid ?? ''), typeof args.content === 'string' ? args.content : undefined, args.prev as never, args.next as never, args.self as { prev?: string } | undefined),
     widget: ((d: any) => ('witnesses' in d || 'shared' in d || 'roundTrip' in d ? flowWidget(d) : verifyWidget(d))) as never,
   }),
 ]
@@ -1340,9 +1346,9 @@ export const handle = (message: Rpc): Reply => {
       // the cheapest view (params._meta.view = 'cheapest', the Worker's ?view=cheapest): an LLM reads only the cheapest way to have the answer — its
       // address, the call that recomputes it, an index where the answer has one — and what tampering would cost; the full answer stays in structuredContent
       const view = meta.view
-      const full = JSON.stringify(structured)
-      const cheapest = view === 'cheapest' ? JSON.stringify({ address: block.id, sha256: hex(sha256(utf8(canonicalTextOf(structured)))), recompute: { tool: found.name, arguments: args }, tamper: { collision: '2^128', secondPreimage: '2^256' }, coins: ALGEBRA_TOOLS.includes(found.name) ? 0 : (CATALOGUE.find((v) => v.product === 'qpu-metered')?.amounts.eur ?? 0) / 1000, unlock: 'If-None-Match: address -> 304', theorem: 'textbook_advantage_unbounded', licence: LICENSE.spdx, commercial: ALGEBRA_TOOLS.includes(found.name) ? 'free under attribution' : 'a licence of the catalogue', tokens: Math.ceil(full.length / 4) }) : null
-      return ok({ content: [{ type: 'text', text: cheapest !== null && cheapest.length < full.length ? cheapest : full }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLd({ tool: found.name, id: block.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${block.id}` }), payload: found.name === 'payload' ? undefined : payloadDocOf({ uuid: block.id, tool: found.name, arguments: args, description: found.description, openGraph: block.openGraph as unknown as Record<string, string>, prev: prev ?? null }), widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, fusion: fuseCall(found.name), integrity: { address: block.id, sha256: hex(sha256(utf8(canonicalTextOf(structured)))), of: 'the canonical text of structuredContent', check: 'seal { tamper: { text, address, sha256 } }', says: 'the address is a fast fold that catches change; the SHA-256 is what a forger cannot match (a second preimage, 2^256 work); the edge adds an ML-DSA signature with seal { sign }' }, ...(prev ? { prev } : {}) } })
+      const full = JSON.stringify(structured), canon = canonicalTextOf(structured), digest = hex(sha256(utf8(canon)))
+      const cheapest = view === 'cheapest' ? JSON.stringify({ address: block.id, sha256: digest, recompute: { tool: found.name, arguments: args }, tamper: { collision: '2^128', secondPreimage: '2^256' }, coins: ALGEBRA_TOOLS.includes(found.name) ? 0 : (CATALOGUE.find((v) => v.product === 'qpu-metered')?.amounts.eur ?? 0) / 1000, unlock: 'If-None-Match: address -> 304', theorem: 'textbook_advantage_unbounded', licence: LICENSE.spdx, commercial: ALGEBRA_TOOLS.includes(found.name) ? 'free under attribution' : 'a licence of the catalogue', tokens: Math.ceil(full.length / 4) }) : null
+      return ok({ content: [{ type: 'text', text: cheapest !== null && cheapest.length < full.length ? cheapest : full }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLd({ tool: found.name, id: block.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${block.id}` }), payload: found.name === 'payload' ? undefined : payloadDocOf({ uuid: block.id, tool: found.name, arguments: args, description: found.description, openGraph: block.openGraph as unknown as Record<string, string>, prev: prev ?? null }), widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, fusion: fuseCall(found.name), integrity: { address: uuidOf(canon), sha256: digest, of: 'the canonical text of structuredContent', check: 'seal { tamper: { text, address, sha256 } }', says: 'the address is the fast fold of the same text, so an untouched result reads authentic and a change is caught; the SHA-256 is what a forger cannot match (a second preimage, 2^256 work); the edge adds an ML-DSA signature with seal { sign }' }, ...(prev ? { prev } : {}) } })
     }
     return fail(METHOD_NOT_FOUND, `method ${message.method} is not served`)
   } catch (error) {

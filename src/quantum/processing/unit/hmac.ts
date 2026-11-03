@@ -10,14 +10,16 @@ const rotr = (x: number, n: number) => (x >>> n) | (x << (32 - n))
 const ENCODER = new TextEncoder()
 export const utf8 = (s: string): Uint8Array => ENCODER.encode(s)
 export const hex = (b: Uint8Array): string => [...b].map((x) => x.toString(16).padStart(2, '0')).join('')
+/** The Merkle–Damgård padding SHA-256, SHA-1 (big-endian) and MD5 (little-endian) share: the message, 0x80, zeros to a 64-byte block, its bit length last. */
+const mdPad = (message: Uint8Array, le = false): DataView => {
+  const l = message.length, padded = new Uint8Array(((l + 9 + 63) >> 6) << 6), dv = new DataView(padded.buffer); padded.set(message); padded[l] = 0x80
+  dv.setUint32(padded.length - (le ? 4 : 8), Math.floor(l / 0x20000000), le); dv.setUint32(padded.length - (le ? 8 : 4), (l * 8) >>> 0, le); return dv
+}
 
 /** SHA-256 of bytes (FIPS 180-4). O(n), all int32: Int32Arrays wrap mod 2^32 on store, so no word becomes a double. */
 export const sha256 = (message: Uint8Array): Uint8Array => {
-  const h = Int32Array.from(H512, (x) => Number(x >> 32n))
-  const l = message.length, padded = new Uint8Array(((l + 9 + 63) >> 6) << 6), dv = new DataView(padded.buffer), w = new Int32Array(64)
-  padded.set(message); padded[l] = 0x80
-  dv.setUint32(padded.length - 8, Math.floor(l / 0x20000000)); dv.setUint32(padded.length - 4, l * 8)
-  for (let off = 0; off < padded.length; off += 64) {
+  const h = Int32Array.from(H512, (x) => Number(x >> 32n)), dv = mdPad(message), w = new Int32Array(64)
+  for (let off = 0; off < dv.byteLength; off += 64) {
     for (let i = 0; i < 16; i++) w[i] = dv.getInt32(off + i * 4)
     for (let i = 16; i < 64; i++) { const x = w[i - 15]!, y = w[i - 2]!; w[i] = w[i - 16]! + (rotr(x, 7) ^ rotr(x, 18) ^ (x >>> 3)) + w[i - 7]! + (rotr(y, 17) ^ rotr(y, 19) ^ (y >>> 10)) }
     let a = h[0]!, b = h[1]!, c = h[2]!, d = h[3]!, e = h[4]!, f = h[5]!, g = h[6]!, hh = h[7]!
@@ -173,29 +175,26 @@ const gmul128 = (x: Uint8Array, y: Uint8Array): Uint8Array => {
   return z
 }
 const ghash = (h: Uint8Array, data: Uint8Array): Uint8Array => { let y: Uint8Array = new Uint8Array(16); for (let off = 0; off < data.length; off += 16) { const blk = new Uint8Array(16); blk.set(data.subarray(off, off + 16)); for (let j = 0; j < 16; j++) y[j]! ^= blk[j]!; y = gmul128(y, h) } return y }
+/** The two halves of GCM both directions share, under the key and the IV: the counter-mode keystream XORed over the input, and the tag GHASH(aad ‖ ct ‖ lengths) ⊕ E(J0). */
+const pad16 = (n: number) => (16 - (n % 16)) % 16
+const gcmOf = (key: Uint8Array, iv: Uint8Array) => {
+  const rk = aesExpandKey256(key), h = aesEncBlock(rk, new Uint8Array(16)), j0 = new Uint8Array(16); j0.set(iv.subarray(0, 12)); j0[15] = 1
+  const ctr = (input: Uint8Array) => { const out = new Uint8Array(input.length), c = Uint8Array.from(j0); for (let off = 0; off < input.length; off += 16) { for (let i = 15; i >= 12; i--) { c[i] = (c[i]! + 1) & 0xff; if (c[i]) break } const ks = aesEncBlock(rk, c); for (let i = 0; i < 16 && off + i < input.length; i++) out[off + i] = input[off + i]! ^ ks[i]! } return out }
+  const tag = (aad: Uint8Array, ct: Uint8Array) => {
+    const g = new Uint8Array(aad.length + pad16(aad.length) + ct.length + pad16(ct.length) + 16), p = g.length - 16; g.set(aad, 0); g.set(ct, aad.length + pad16(aad.length))
+    new DataView(g.buffer).setBigUint64(p, BigInt(aad.length * 8)); new DataView(g.buffer).setBigUint64(p + 8, BigInt(ct.length * 8))
+    const s = ghash(h, g), ej0 = aesEncBlock(rk, j0); return s.map((x, i) => x ^ ej0[i]!)
+  }
+  return { ctr, tag }
+}
 export const aes256gcmEncrypt = (key: Uint8Array, iv: Uint8Array, plaintext: Uint8Array, aad: Uint8Array = new Uint8Array(0)): { ciphertext: Uint8Array; tag: Uint8Array } => {
-  const rk = aesExpandKey256(key), h = aesEncBlock(rk, new Uint8Array(16))
-  const j0 = new Uint8Array(16); j0.set(iv.subarray(0, 12)); j0[15] = 1
-  const ct = new Uint8Array(plaintext.length), ctr = Uint8Array.from(j0)
-  for (let off = 0; off < plaintext.length; off += 16) { for (let i = 15; i >= 12; i--) { ctr[i] = (ctr[i]! + 1) & 0xff; if (ctr[i]) break } const ks = aesEncBlock(rk, ctr); for (let i = 0; i < 16 && off + i < plaintext.length; i++) ct[off + i] = plaintext[off + i]! ^ ks[i]! }
-  const padLen = (n: number) => (16 - (n % 16)) % 16
-  const g = new Uint8Array(aad.length + padLen(aad.length) + ct.length + padLen(ct.length) + 16); let p = 0; g.set(aad, p); p += aad.length + padLen(aad.length); g.set(ct, p); p += ct.length + padLen(ct.length)
-  new DataView(g.buffer).setBigUint64(p, BigInt(aad.length * 8)); new DataView(g.buffer).setBigUint64(p + 8, BigInt(ct.length * 8))
-  const s = ghash(h, g), ej0 = aesEncBlock(rk, j0), tag = new Uint8Array(16); for (let i = 0; i < 16; i++) tag[i] = s[i]! ^ ej0[i]!
-  return { ciphertext: ct, tag }
+  const gcm = gcmOf(key, iv), ct = gcm.ctr(plaintext)
+  return { ciphertext: ct, tag: gcm.tag(aad, ct) }
 }
 /** AES-256-GCM decrypt: the inverse — the tag recomputed and compared in constant time before any plaintext is returned, so a forged or altered ciphertext yields null, never plaintext. */
 export const aes256gcmDecrypt = (key: Uint8Array, iv: Uint8Array, ciphertext: Uint8Array, tag: Uint8Array, aad: Uint8Array = new Uint8Array(0)): Uint8Array | null => {
-  const rk = aesExpandKey256(key), h = aesEncBlock(rk, new Uint8Array(16))
-  const j0 = new Uint8Array(16); j0.set(iv.subarray(0, 12)); j0[15] = 1
-  const padLen = (n: number) => (16 - (n % 16)) % 16
-  const g = new Uint8Array(aad.length + padLen(aad.length) + ciphertext.length + padLen(ciphertext.length) + 16); let p = 0; g.set(aad, p); p += aad.length + padLen(aad.length); g.set(ciphertext, p); p += ciphertext.length + padLen(ciphertext.length)
-  new DataView(g.buffer).setBigUint64(p, BigInt(aad.length * 8)); new DataView(g.buffer).setBigUint64(p + 8, BigInt(ciphertext.length * 8))
-  const s = ghash(h, g), ej0 = aesEncBlock(rk, j0), t = new Uint8Array(16); for (let i = 0; i < 16; i++) t[i] = s[i]! ^ ej0[i]!
-  if (!sameHex(hex(t), hex(tag))) return null
-  const pt = new Uint8Array(ciphertext.length), ctr = Uint8Array.from(j0)
-  for (let off = 0; off < ciphertext.length; off += 16) { for (let i = 15; i >= 12; i--) { ctr[i] = (ctr[i]! + 1) & 0xff; if (ctr[i]) break } const ks = aesEncBlock(rk, ctr); for (let i = 0; i < 16 && off + i < ciphertext.length; i++) pt[off + i] = ciphertext[off + i]! ^ ks[i]! }
-  return pt
+  const gcm = gcmOf(key, iv)
+  return sameHex(hex(gcm.tag(aad, ciphertext)), hex(tag)) ? gcm.ctr(ciphertext) : null
 }
 
 /** X25519 (RFC 7748), pure: Diffie-Hellman key agreement on Curve25519 by the Montgomery ladder over GF(2^255-19); the shared secret both sides compute without any key leaving either. */
@@ -215,8 +214,7 @@ export const x25519 = (scalar: Uint8Array, point: Uint8Array): Uint8Array => {
     x3 = mod(dapcb * dapcb); z3 = mod(x1 * mod(damcb * damcb)); x2 = mod(AA * BB); z2 = mod(E * mod(AA + mod(121665n * E)))
   }
   if (swap) { [x2, x3] = [x3, x2];[z2, z3] = [z3, z2] }
-  let r = 1n, b = z2 % P25519, e = P25519 - 2n; while (e > 0n) { if (e & 1n) r = (r * b) % P25519; b = (b * b) % P25519; e >>= 1n }
-  const res = mod(x2 * r); const out = new Uint8Array(32); let n = res; for (let i = 0; i < 32; i++) { out[i] = Number(n & 0xffn); n >>= 8n } return out
+  const res = mod(x2 * rsaModPow(z2, P25519 - 2n, P25519)); const out = new Uint8Array(32); let n = res; for (let i = 0; i < 32; i++) { out[i] = Number(n & 0xffn); n >>= 8n } return out
 }
 
 /** ChaCha20-Poly1305 AEAD (RFC 8439), pure: the other modern authenticated cipher beside AES-GCM; ChaCha20 (the quarter-round, 20 rounds, counter mode) with the Poly1305 one-time MAC over GF(2^130-5). KAT-verified. */
@@ -243,8 +241,7 @@ const poly1305 = (otk: Uint8Array, msg: Uint8Array): Uint8Array => {
 export const chacha20poly1305Encrypt = (key: Uint8Array, nonce: Uint8Array, plaintext: Uint8Array, aad: Uint8Array = new Uint8Array(0)): { ciphertext: Uint8Array; tag: Uint8Array } => {
   const otk = chachaBlock(key, 0, nonce).subarray(0, 32)
   const ct = chacha20(key, nonce, plaintext, 1)
-  const pad = (n: number) => (16 - (n % 16)) % 16
-  const mac = new Uint8Array(aad.length + pad(aad.length) + ct.length + pad(ct.length) + 16); let o = 0; mac.set(aad, o); o += aad.length + pad(aad.length); mac.set(ct, o); o += ct.length + pad(ct.length)
+  const mac = new Uint8Array(aad.length + pad16(aad.length) + ct.length + pad16(ct.length) + 16), o = mac.length - 16; mac.set(aad, 0); mac.set(ct, aad.length + pad16(aad.length))
   const dv = new DataView(mac.buffer); dv.setBigUint64(o, BigInt(aad.length), true); dv.setBigUint64(o + 8, BigInt(ct.length), true)
   return { ciphertext: ct, tag: poly1305(otk, mac) }
 }
@@ -252,9 +249,8 @@ export const chacha20poly1305Encrypt = (key: Uint8Array, nonce: Uint8Array, plai
 /** SHA-1 (FIPS 180-4), pure: deprecated for signatures but still required to read legacy systems (Git object ids, old TLS, HMAC-SHA1); provided for interop, KAT-verified — a gap, not a skip. */
 export const sha1 = (message: Uint8Array): Uint8Array => {
   const h = new Int32Array([0x67452301, 0xefcdab89 | 0, 0x98badcfe | 0, 0x10325476, 0xc3d2e1f0 | 0])
-  const l = message.length, padded = new Uint8Array(((l + 9 + 63) >> 6) << 6), dv = new DataView(padded.buffer), w = new Int32Array(80)
-  padded.set(message); padded[l] = 0x80; dv.setUint32(padded.length - 8, Math.floor(l / 0x20000000)); dv.setUint32(padded.length - 4, (l * 8) >>> 0)
-  for (let off = 0; off < padded.length; off += 64) {
+  const dv = mdPad(message), w = new Int32Array(80)
+  for (let off = 0; off < dv.byteLength; off += 64) {
     for (let i = 0; i < 16; i++) w[i] = dv.getInt32(off + i * 4)
     for (let i = 16; i < 80; i++) { const x = w[i - 3]! ^ w[i - 8]! ^ w[i - 14]! ^ w[i - 16]!; w[i] = (x << 1) | (x >>> 31) }
     let a = h[0]!, b = h[1]!, c = h[2]!, d = h[3]!, e = h[4]!
@@ -268,9 +264,8 @@ export const md5 = (message: Uint8Array): Uint8Array => {
   const S = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21]
   const K = Array.from({ length: 64 }, (_, i) => Math.floor(Math.abs(Math.sin(i + 1)) * 2 ** 32) | 0)
   let a0 = 0x67452301, b0 = 0xefcdab89 | 0, c0 = 0x98badcfe | 0, d0 = 0x10325476
-  const l = message.length, padded = new Uint8Array(((((l + 8) >> 6) + 1) << 6)); padded.set(message); padded[l] = 0x80
-  const dv = new DataView(padded.buffer); dv.setUint32(padded.length - 8, (l * 8) >>> 0, true); dv.setUint32(padded.length - 4, Math.floor(l / 0x20000000), true)
-  for (let off = 0; off < padded.length; off += 64) {
+  const dv = mdPad(message, true)
+  for (let off = 0; off < dv.byteLength; off += 64) {
     const M = new Int32Array(16); for (let i = 0; i < 16; i++) M[i] = dv.getInt32(off + i * 4, true)
     let A = a0, B = b0, C = c0, D = d0
     for (let i = 0; i < 64; i++) { let F: number, g: number; if (i < 16) { F = (B & C) | (~B & D); g = i } else if (i < 32) { F = (D & B) | (~D & C); g = (5 * i + 1) % 16 } else if (i < 48) { F = B ^ C ^ D; g = (3 * i + 5) % 16 } else { F = C ^ (B | ~D); g = (7 * i) % 16 } F = (F + A + K[i]! + M[g]!) | 0; A = D; D = C; C = B; B = (B + (((F << S[i]!) | (F >>> (32 - S[i]!))) | 0)) | 0 }

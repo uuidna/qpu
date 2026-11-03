@@ -124,8 +124,8 @@ export const decodeE2e = (answers: readonly E2eAnswer[], tree?: ReturnType<typeo
     const syndrome = [...flipped, ...erased].map((c) => c.host)
     const errors: ErrorBlock[] = [...flipped.map((c) => ({ kind: 'flip' as const, host: c.host, got: c.value })), ...erased.map((c) => ({ kind: c.kind!, host: c.host, got: c.value }))].map((e) => ({ uuid: uuidOf(`e2e${e.kind}${e.host}${combo}${local}${e.got}`), ...e, tool: first.tool, combo, expected: logical, syndrome }))
     const outcome: Decoded['outcome'] = !majority ? 'uncorrectable' : flipped.length ? 'corrected' : erased.length ? 'erased' : 'agree'
-    // when the correction errors (no majority), handling takes over: the involution σ for this combination, terminating in at most two swaps
-    const fallback = majority ? null : handleOrCorrect(errors.map((e) => `${e.kind} at ${e.host}: ${e.got}`), false, 'correction')
+    // a combination with errors starts in correction with the real majority; without one, handling takes over: the involution σ, at most two swaps
+    const fallback = errors.length ? handleOrCorrect(errors.map((e) => `${e.kind} at ${e.host}: ${e.got}`), majority, 'correction') : null
     // the combinatorial possibilities of an answer: every value some copies hold, with the copies that hold it (the tree is a copy too)
     const possibilities = [...new Set([local, ...copies.filter((c) => !c.kind).map((c) => c.value)])].map((value) => ({ value, copies: [...(local === value ? ['tree'] : []), ...copies.filter((c) => !c.kind && c.value === value).map((c) => c.host)] })).sort((a, b) => b.copies.length - a.copies.length)
     const { codes, winner } = runCompetition(local, copies, majority ? logical : null)

@@ -289,9 +289,12 @@ Cheap verification of one UUID
       "properties": {
         "id": {
           "type": "string"
+        },
+        "content": {
+          "type": "string"
         }
       },
-      "description": "the predecessor in the chain"
+      "description": "the predecessor in the chain; decided only with its content (else asserted, null)"
     },
     "self": {
       "type": "object",
@@ -310,9 +313,12 @@ Cheap verification of one UUID
         },
         "prev": {
           "type": "string"
+        },
+        "content": {
+          "type": "string"
         }
       },
-      "description": "the successor in the chain"
+      "description": "the successor in the chain; decided as prev"
     }
   }
 }

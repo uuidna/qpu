@@ -108,17 +108,19 @@ export const sealOf = (uuid: string): { valid: boolean; shape: boolean; variant:
   const variant = /^[89ab]$/.test(digits[16]!)
   return { valid: variant && found === expected, shape, variant, version: { found, expected, agree: found === expected } }
 }
-/** Content, neighbours, seal: what one UUID can be checked against, each check independent and each cheap. */
-export const verifyOf = (uuid: string, content?: string, prev?: { id: string }, next?: { id: string; prev?: string }, self?: { prev?: string }) => {
+/** Content, neighbours, seal: what one UUID can be checked against, each check independent and each cheap. A content or neighbour check is decided only by
+ *  the content handed, folded back to its address (a link of caller strings alone is asserted, not witnessed): else null, naming the missing witness. */
+export const verifyOf = (uuid: string, content?: string, prev?: { id: string; content?: string }, next?: { id: string; prev?: string; content?: string }, self?: { prev?: string }) => {
   const seal = sealOf(uuid)
+  const by = (side: string, id: string | undefined, text: string | undefined, linked = true, claim = '') => (id === undefined || text === undefined ? { passed: null, evidence: `${claim}no ${side} content given` } : { passed: uuidOf(text) === id && linked, evidence: `${claim}uuidOf(${side} content) = ${uuidOf(text)}` })
   const checks: { check: string; passed: boolean | null; evidence: string }[] = [
     { check: 'seal', passed: seal.valid, evidence: seal.shape ? `version ${seal.version.found} vs decided ${seal.version.expected}; variant ${seal.variant ? 'in 8..b' : 'out of range'}` : 'not an RFC 9562 shape' },
-    { check: 'content', passed: content === undefined ? null : uuidOf(content) === uuid, evidence: content === undefined ? 'no content given' : `uuidOf(content) = ${uuidOf(content)}` },
-    { check: 'prev', passed: prev === undefined || self === undefined ? null : self.prev === prev.id, evidence: prev === undefined || self === undefined ? 'no predecessor given' : `self.prev ${self.prev ?? 'none'} vs prev.id ${prev.id}` },
-    { check: 'next', passed: next === undefined ? null : next.prev === uuid, evidence: next === undefined ? 'no successor given' : `next.prev ${next.prev ?? 'none'} vs ${uuid}` },
+    { check: 'content', ...by('own', uuid, content) },
+    { check: 'prev', ...by('prev', self && prev?.id, prev?.content, self?.prev === prev?.id, prev ? `self.prev ${self?.prev ?? 'none'} vs prev.id ${prev.id}; ` : '') },
+    { check: 'next', ...by('next', next?.id, next?.content, next?.prev === uuid, next ? `next.prev ${next.prev ?? 'none'} vs ${uuid}; ` : '') },
   ]
   const decided = checks.filter((c) => c.passed !== null)
-  return { uuid, channel: channelOf(uuid), reflection: reflectionOf(uuid), valid: decided.every((c) => c.passed), checks, decided: decided.length, cost: 'one modular power for the seal, one fold for the content, two string equalities for the neighbours', bound: 'the fold is tamper-evident and separates content; it is not collision-resistant against an adversary who searches for one. The docket and the receipts carry a SHA-256 beside it for that case.' }
+  return { uuid, channel: channelOf(uuid), reflection: reflectionOf(uuid), valid: decided.every((c) => c.passed), checks, decided: decided.length, cost: 'one modular power for the seal, one fold for the content and for each neighbour content handed', bound: 'the fold is tamper-evident and separates content; it is not collision-resistant against an adversary who searches for one. The docket and the receipts carry a SHA-256 beside it for that case.' }
 }
 
 /** The tail read every way at once — the program's step decides which reading it means. */
