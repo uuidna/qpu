@@ -21,7 +21,7 @@ Every figure below was measured on this tree on 2026-11-03.
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 1416 / 2073 (1417 hand-written, 656 generated equation lemmas) |
+| Theorems declared / accepted by the kernel | 1418 / 2075 (1419 hand-written, 656 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
 | Self-audit checks | see docs/audit |
@@ -78,7 +78,7 @@ Without the witness a blind climb from ⌈√N⌉ takes ~2^489 centres; with it,
 
 ## 3. What the Lean kernel accepts
 
-2073 constants in the `Qpu` modules, 1417 hand-written and 656 compiler-generated equation lemmas; 0 use `sorry`; axioms: Classical.choice, Quot.sound, propext. `docs/theorems.md` lists every key, statement and axiom. What a statement *means* is decided by the tools (`match`, `compete`), never by this prose.
+2075 constants in the `Qpu` modules, 1419 hand-written and 656 compiler-generated equation lemmas; 0 use `sorry`; axioms: Classical.choice, Quot.sound, propext. `docs/theorems.md` lists every key, statement and axiom. What a statement *means* is decided by the tools (`match`, `compete`), never by this prose.
 
 | Module | Hand-written theorems |
 |---|---:|
@@ -114,7 +114,7 @@ Without the witness a blind climb from ⌈√N⌉ takes ~2^489 centres; with it,
 | Qpu.Sigma | 17 |
 | Qpu.Stabilizer | 1 |
 | Qpu.Surfacecode | 1 |
-| Qpu.Textbook | 934 |
+| Qpu.Textbook | 936 |
 
 ## 4. The MCP surface — every tool a client can call
 

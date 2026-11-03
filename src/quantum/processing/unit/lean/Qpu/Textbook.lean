@@ -1798,6 +1798,11 @@ theorem textbook_references_name_collision_reflected (σ : Nat) : (σ - (1) = σ
 theorem textbook_css_one_source : 23963508 % 360 = 108 ∧ 108 = 108 := by decide
 /-- textbook_css_one_source reflected by its shape, conjunction (examples: css-one-source, fold-hex-one-source) -/
 theorem textbook_css_one_source_reflected (σ : Nat) : (σ - (108) = σ - (23963508 % 360)) ∧ (σ - (108) = σ - (108)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_css_one_source).1), congrArg (σ - ·) (Eq.symm (textbook_css_one_source).2)⟩
+/-- division by zero is total in the kernel, for every number: x / 0 = 0 and x % 0 = x for every natural x, z / 0 = 0 for every integer z (Lean's convention, Mathlib's div_zero for fields); 0 has no inverse, so (x / 0) · 0 = x fails for x ≠ 0 (examples: match-div-zero) -/
+theorem textbook_div_zero (x : Nat) (z : Int) : x / Nat.zero = Nat.zero ∧ x % Nat.zero = x ∧ z / (Nat.zero : Int) = (Nat.zero : Int) := by simp
+example : (7 : Nat) / 0 = 0 ∧ (7 : Nat) % 0 = 7 ∧ (-7 : Int) / 0 = 0 := textbook_div_zero 7 (-7)
+/-- textbook_div_zero reflected by its shape, conjunction (examples: match-div-zero) -/
+theorem textbook_div_zero_reflected (x : Nat) (z : Int) : ((Nat.zero) = (x / Nat.zero)) ∧ ((x) = (x % Nat.zero)) ∧ (((Nat.zero : Int)) = (z / (Nat.zero : Int))) := ⟨Eq.symm (textbook_div_zero x z).1, Eq.symm (textbook_div_zero x z).2.1, Eq.symm (textbook_div_zero x z).2.2⟩
 /-- a receipt is bound by the SHA-256 of its content, recomputed by any holder: 256 bits written as 64 hex characters, a crafted collision about 2^128 trials, where the 64-bit fold collides by birthday in about 2^32 and a fold address passes the seal by construction, so a seal flag on a fold decided nothing; the same binding names an untouched result by the fold and the SHA-256 of its own canonical text, so seal { tamper } reads it authentic (examples: algorithm-factor-order-composite, algorithm-impossible-decode-wrong-witness) -/
 theorem textbook_receipt_binds_sha256 : 256 / 4 = 64 ∧ 64 / 2 = 32 ∧ 256 / 2 = 128 ∧ 2 ^ 32 < 2 ^ 128 := by decide
 /-- textbook_receipt_binds_sha256 reflected by its shape, conjunction (examples: algorithm-factor-order-composite, algorithm-impossible-decode-wrong-witness) -/
