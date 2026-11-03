@@ -6,9 +6,9 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { existsSync } from 'node:fs'
 import { dirname, join, normalize } from 'node:path'
-import { handle } from './mcp.ts'
+import { callOf } from './mcp.ts'
 
-const files = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'configure', arguments: { kind: 'fullstack' } } }) as { result: { structuredContent: { config: { files: Record<string, string> } } } }).result.structuredContent.config.files
+const files = (callOf('configure', { kind: 'fullstack' }) as { result: { structuredContent: { config: { files: Record<string, string> } } } }).result.structuredContent.config.files
 const keys = new Set(Object.keys(files))
 // a relative import resolves when the generated map holds the file it names, under any of the module extensions Next resolves
 const resolves = (from: string, spec: string): boolean => { const base = normalize(join(dirname(from), spec)); return ['.ts', '.tsx', '.js', '/index.ts', '/index.tsx', ''].some((ext) => keys.has(base + ext)) }

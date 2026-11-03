@@ -3,11 +3,11 @@
 // never as a proof. Every quantum domain the QPU reasons about has such a theorem in the kernel index.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.ts'
+import { callOf } from './mcp.ts'
 import { THEOREMS } from './theorems-index.ts'
 
 const kernel = new Set(THEOREMS.map((t) => t.key))
-const search = (q: string) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { search: q } } }) as { result: { structuredContent: { verdict: string; solved: boolean; proof: { theorem: string; kernelAccepted: boolean } | null; drift: boolean } } }).result.structuredContent
+const search = (q: string) => (callOf('match', { search: q }) as { result: { structuredContent: { verdict: string; solved: boolean; proof: { theorem: string; kernelAccepted: boolean } | null; drift: boolean } } }).result.structuredContent
 
 const QUANTUM_STATEMENTS = [
   'Shor factors 15', 'the surface code corrects a single error', 'Grover searches in sqrt N', 'QAOA max-cut on a triangle',

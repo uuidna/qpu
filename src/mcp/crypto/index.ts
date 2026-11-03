@@ -1,11 +1,11 @@
 // src/mcp/crypto — the crypto word-folder, run by `npm run mcp:crypto`: a thin client over the one pure handler (src/quantum/mcp.ts), the
 // crypto toolbox as any MCP client sees it. The toolbox tests itself (the selftest), then fold (content-address + the σ-involution) and seal
 // (SHA-256 + an ML-DSA post-quantum signature) answer through the handler. The folder is the word; the meaning is the crypto the handler serves.
-import { handle } from '../../quantum/processing/mcp.ts'
+import { callOf } from '../../quantum/processing/mcp.ts'
 
 type Reply = { result?: { content: { text: string }[] }; error?: { message: string } }
 const call = (name: string, args: Record<string, unknown>): Record<string, any> => {
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as Reply
+  const r = callOf(name, args) as Reply
   if (r.error) throw new Error(`${name}: ${r.error.message}`)
   return JSON.parse(r.result!.content[0]!.text) as Record<string, any>
 }

@@ -3,7 +3,7 @@
 // (QPU_SHARD=merge) gathers every shard's file and writes the step's artefacts. Without QPU_SHARD a step runs whole, as before.
 import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { handle } from '../src/quantum/processing/mcp.ts'
+import { callOf } from '../src/quantum/processing/mcp.ts'
 
 type Shard = { index: number; count: number } | 'merge' | null
 const DIR = join(process.cwd(), '.qpu', 'cache')
@@ -11,7 +11,7 @@ const SHARD: Shard = (() => { const v = process.env.QPU_SHARD; if (!v) return nu
 export const isShard = SHARD !== null && SHARD !== 'merge'
 export const isMerge = SHARD === 'merge'
 /** This shard's share of a list: every count-th item from index. A whole run or the merge takes all. */
-export const takeShare = <T>(list: readonly T[]): T[] => { if (!isShard) return [...list]; const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'shard', arguments: { list: list as unknown[], index: (SHARD as { index: number }).index, count: (SHARD as { count: number }).count } } }) as { result?: { structuredContent: { shareList: T[] } }; error?: { message: string } }; if (r.error) throw new Error(r.error.message); return r.result!.structuredContent.shareList }
+export const takeShare = <T>(list: readonly T[]): T[] => { if (!isShard) return [...list]; const r = callOf('shard', { list: list as unknown[], index: (SHARD as { index: number }).index, count: (SHARD as { count: number }).count }) as { result?: { structuredContent: { shareList: T[] } }; error?: { message: string } }; if (r.error) throw new Error(r.error.message); return r.result!.structuredContent.shareList }
 /** What this shard settled, left for the merge. */
 export const leaveShard = (name: string, data: unknown): void => { mkdirSync(DIR, { recursive: true }); writeFileSync(join(DIR, `${name}.shard-${(SHARD as { index: number }).index}.json`), JSON.stringify(data)) }
 /** Every shard's file of a name, gathered (arrays concatenated, objects merged), and removed once read. */
