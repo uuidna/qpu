@@ -4,7 +4,7 @@
 // throwing or colliding — so a change that breaks the address space fails here, not in a client.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { uuidOf, uuidFromParts, stampOf, foldOf, sealOf, channelOf, reflectionOf, neighboursOf, styleOf, presentationOf, streamOf, canonicalTextOf, memoOf, compositionsOf, compositionOf, compositionIndexOf, rosettaOf, harmonicDefaultsOf, tailReadingsOf, uuidSchemasOf } from './blocks.ts'
+import { blockOf, uuidOf, uuidFromParts, stampOf, foldOf, sealOf, channelOf, reflectionOf, neighboursOf, styleOf, presentationOf, streamOf, canonicalTextOf, memoOf, compositionsOf, compositionOf, compositionIndexOf, rosettaOf, harmonicDefaultsOf, tailReadingsOf, uuidSchemasOf } from './blocks.ts'
 
 test('uuidOf is deterministic, RFC-shaped, and the seal it mints holds (version decided, variant 8..b)', () => {
   const a = uuidOf('hello'), b = uuidOf('hello')
@@ -108,7 +108,9 @@ test('presentationOf and streamOf read a hex as itself: a nibble is one of sixte
   assert.equal(s.stream, 3)
   assert.ok(s.rows.every((r, i) => i === 0 || r.hue >= s.rows[i - 1]!.hue), 'sorted by hue ascending')
   const styled = styleOf(u)
-  assert.ok(styled.hue >= 0 && styled.hue < 360 && styled.vars['--qpu-accent'].startsWith('hsl('))
+  // one cascade source: the presentation's accent is the one the block wears inline
+  const b = blockOf('present', {}, null, '', 'x')
+  assert.ok(styled.hue >= 0 && styled.hue < 360 && styled.vars['--qpu-accent'] === p.style['--qpu-accent'] && b.html.includes(`style="${styleOf(b.id).css};`) && styleOf(b.id).vars['--qpu-accent'] === b.theme.accent)
 })
 
 test('the tail reads every way and uuidSchemasOf reads one UUID as every RFC layout', () => {

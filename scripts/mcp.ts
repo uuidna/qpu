@@ -6,7 +6,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
-import { uuidOf } from '../src/quantum/processing/unit/blocks.ts'
+import { uuidOf, canonicalTextOf, entryTextOf } from '../src/quantum/processing/unit/blocks.ts'
 import { LICENSE } from '../src/quantum/processing/unit/license.ts'
 import { execFileSync } from 'node:child_process'
 import { GOOGLE_HOST } from '../src/quantum/processing/discovery.ts'
@@ -201,11 +201,12 @@ if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'lead') {
   const a = process.argv.slice(3), flag = (n: string) => (a.includes(n) ? a[a.indexOf(n) + 1] : undefined), m = mcpClient(), title = flag('--title') ?? ''
   const find = async (where: object) => ((await m.findAll('findPages', { draft: true, depth: 0, where: JSON.stringify(where) })).docs ?? []) as { id: string; tenant?: unknown; layout?: { blockType: string; tool: string; arguments: unknown }[] }[]
   const statements = readFileSync(flag('--file') ?? '', 'utf8').split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean), block = (statement: string) => ({ blockType: 'qpu', tool: 'match', arguments: { statement } })
-  const page = (await find({ title: { equals: title } }))[0], held = JSON.stringify(page?.layout ?? []), fresh = statements.filter((s) => !held.includes(JSON.stringify(s).slice(1, 120)))
+  // held by content address (the tool and its arguments' canonical text), never by a prefix
+  const addressOf = (b: { tool: string; arguments: unknown }) => uuidOf(b.tool + canonicalTextOf(b.arguments)), page = (await find({ title: { equals: title } }))[0], held = new Set((page?.layout ?? []).map(addressOf)), fresh = [...new Set(statements)].filter((s) => !held.has(addressOf(block(s))))
   const parent = flag('--parent') ? { id: flag('--parent'), tenant: undefined } : (await find({ title: { equals: 'Open work' } }))[0]
   const r = page ? await m.call('updatePages', { id: page.id, layout: [...(page.layout ?? []).map((b) => ({ blockType: b.blockType, tool: b.tool, arguments: b.arguments })), ...fresh.map(block)] })
-    : await m.call('createPages', { tenant: (parent?.tenant as { id?: string } | undefined)?.id ?? parent?.tenant, title, parent: parent?.id, hero: { type: 'default' }, layout: statements.map(block) })
-  console.log(r.error ? `refused: ${String(r.error).slice(0, 300)}` : `${page ? 'appended' : 'created'}: ${title} (${page ? fresh.length : statements.length} statement(s))`)
+    : await m.call('createPages', { tenant: (parent?.tenant as { id?: string } | undefined)?.id ?? parent?.tenant, title, parent: parent?.id, hero: { type: 'default' }, layout: fresh.map(block) })
+  console.log(r.error ? `refused: ${String(r.error).slice(0, 300)}` : `${page ? 'appended' : 'created'}: ${title} (${fresh.length} statement(s))`)
 }
 
 // every lead of the code written into Payload as a record (a leads block each, beside the leads Payload already holds), so the
@@ -248,7 +249,7 @@ if (process.argv[1]?.endsWith('mcp.ts') && process.argv[2] === 'openapi-import')
   const sha256 = createHash('sha256').update(text).digest('hex'), held = new Map<string, string>(), refsOf = (x: unknown): string[] => (JSON.stringify(x ?? null).match(/"#\/components\/schemas\/[^"]+"/g) ?? []).map((r) => r.slice(22, -1))
   // an entry held by its address, computed as the entries hook computes it (kind, from, body and the links it names): reused when Payload
   // holds it, created when it does not, so a second import neither duplicates nor loses a link
-  const hold = async (kind: string, body: unknown, links: string[]): Promise<string | null> => { const sorted = [...links].sort(), id = uuidOf(JSON.stringify({ kind, from: 'openapi-import', body, ...(sorted.length ? { links: sorted } : {}) }))
+  const hold = async (kind: string, body: unknown, links: string[]): Promise<string | null> => { const id = uuidOf(entryTextOf({ kind, from: 'openapi-import', body, links }))
     if (m.docsOf((await m.call('findEntries', { where: JSON.stringify({ id: { equals: id } }), depth: 0 })).text ?? '')[0]) return id
     const made = await m.call('createEntries', { kind, from: 'openapi-import', body, links }); return (m.docsOf(made.text ?? '')[0] as { id?: string } | undefined)?.id ?? null }
   // a component's id once its referenced components hold theirs: a walk with an explicit stack, a $ref on the open path left as its name

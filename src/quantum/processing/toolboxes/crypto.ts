@@ -19,28 +19,29 @@ import { speakHex } from '../i18n.ts'
 import { TABLES } from '../tables-index.ts'
 
 type Piece = { index: number; reflection: number; address: string; sha256: string; bytes: number; rows: number; firstKey: string | null; lastKey: string | null; seed: number; trinity: number[] }
-type Fold = { bytes: number; bound: number; fits: boolean; excess: number; pieces: Piece[]; count: number; root: string; fold: string; boundary: { d: number; sigma: string; says: string }; decided: { by: string; comparisons: number } }
+type Fold = { bytes: number; bound: number; fits: boolean; excess: number; pieces: Piece[]; texts: string[]; count: number; root: string; fold: string; roundTrips: boolean; boundary: { d: number; sigma: string; says: string }; decided: { by: string; comparisons: number } }
 
 const sha = (s: string) => hex(sha256(utf8(s)))
 const rowKey = (row: string): string | null => { const m = /^\s*\{\s*"(?:key|id|address|uuid)"\s*:\s*"([^"]+)"/.exec(row) ?? /^([^\s,|]+)/.exec(row); return m ? m[1]! : null }
 
-/** The payload folded into pieces of at most `bound` bytes (UTF-8), split at row boundaries (lines) when rows exist, else at characters. */
+/** The payload folded into pieces of at most `bound` bytes (UTF-8), split at row boundaries (lines) when rows exist, else at characters: slices of the
+ *  text (a piece keeps its rows' newlines), so joined they are the text exactly, recomputed (roundTrips). */
 const foldLedger = (text: string, bound: number): Fold => {
   const bytes = utf8(text).length
-  const rows = text.includes('\n') ? text.split('\n') : [text]
+  const rows = text.split('\n').map((r, i, all) => (i < all.length - 1 ? `${r}\n` : r))
   const pieces: string[] = []
   let current = ''
   for (const row of rows) {
-    const next = current ? `${current}\n${row}` : row
+    const next = current + row
     if (current && utf8(next).length > bound) { pieces.push(current); current = row } else current = next
     // a single row above the bound is cut at characters: no row is larger than what the place can hold
     while (utf8(current).length > bound) { let cut = current.length; while (utf8(current.slice(0, cut)).length > bound) cut = Math.floor(cut / 2); pieces.push(current.slice(0, cut)); current = current.slice(cut) }
   }
   if (current || !pieces.length) pieces.push(current)
   const n = pieces.length
-  const out: Piece[] = pieces.map((p, i) => { const address = uuidOf(p); const lines = p ? p.split('\n') : []; return { index: i, reflection: n - 1 - i, address, sha256: sha(p), bytes: utf8(p).length, rows: lines.length, firstKey: lines.length ? rowKey(lines[0]!) : null, lastKey: lines.length ? rowKey(lines[lines.length - 1]!) : null, seed: digitalRoot(parseInt(address.slice(-2), 16) || 1), trinity: trinityFor(digitalRoot(parseInt(address.slice(-2), 16) || 1)) } })
+  const out: Piece[] = pieces.map((p, i) => { const address = uuidOf(p); const lines = p ? p.replace(/\n$/, '').split('\n') : []; return { index: i, reflection: n - 1 - i, address, sha256: sha(p), bytes: utf8(p).length, rows: lines.length, firstKey: lines.length ? rowKey(lines[0]!) : null, lastKey: lines.length ? rowKey(lines[lines.length - 1]!) : null, seed: digitalRoot(parseInt(address.slice(-2), 16) || 1), trinity: trinityFor(digitalRoot(parseInt(address.slice(-2), 16) || 1)) } })
   const root = sha(out.map((p) => p.sha256).join(''))
-  return { bytes, bound, fits: bytes <= bound, excess: Math.max(0, bytes - bound), pieces: out, count: n, root, fold: uuidOf(out.map((p) => p.address).join('')), boundary: { d: n - 1, sigma: `σ_${n - 1}(i) = ${n - 1} − i`, says: n === 1 ? 'the whole fits: one piece, its own mirror' : `${n} pieces under a bound of ${bound} bytes; piece i mirrors piece ${n - 1} − i across the fold; the excess of ${Math.max(0, bytes - bound)} bytes is reflected into ${n - 1} more piece(s)` }, decided: { by: 'integer comparisons: the byte count against the bound, the row count against the pieces', comparisons: rows.length + 1 } }
+  return { bytes, bound, fits: bytes <= bound, excess: Math.max(0, bytes - bound), pieces: out, texts: pieces, count: n, root, roundTrips: unfoldPieces(pieces.map((t, index) => ({ index, text: t })), root).whole === text, fold: uuidOf(out.map((p) => p.address).join('')), boundary: { d: n - 1, sigma: `σ_${n - 1}(i) = ${n - 1} − i`, says: n === 1 ? 'the whole fits: one piece, its own mirror' : `${n} pieces under a bound of ${bound} bytes; piece i mirrors piece ${n - 1} − i across the fold; the excess of ${Math.max(0, bytes - bound)} bytes is reflected into ${n - 1} more piece(s)` }, decided: { by: 'integer comparisons: the byte count against the bound, the row count against the pieces', comparisons: rows.length + 1 } }
 }
 
 /** The piece a key sits in: by its address (the piece's own), or by the key range of the rows it holds. Decided without reading the whole. */
@@ -51,12 +52,12 @@ const pieceOfKey = (fold: Fold, key: string): { index: number; address: string; 
   return null
 }
 
-/** The whole recomputed from its pieces: the root agrees or names the piece that does not. */
+/** The whole recomputed from its pieces joined as cut: the root agrees or names the piece that does not. */
 const unfoldPieces = (pieces: readonly { index: number; text: string; sha256?: string }[], root?: string): { whole: string; root: string; agrees: boolean | null; wrong: number[] } => {
   const sorted = [...pieces].sort((a, b) => a.index - b.index)
   const wrong = sorted.filter((p) => p.sha256 && sha(p.text) !== p.sha256).map((p) => p.index)
   const r = sha(sorted.map((p) => sha(p.text)).join(''))
-  return { whole: sorted.map((p) => p.text).join('\n'), root: r, agrees: root ? r === root : null, wrong }
+  return { whole: sorted.map((p) => p.text).join(''), root: r, agrees: root ? r === root : null, wrong }
 }
 
 const QUENEAU = Array.from({ length: 14 }, () => 10)
@@ -103,7 +104,7 @@ const fold = defineTool('crypto', {
       }
       let rhex = ''; for (let i = 0; i < faceCount; i++) rhex += dec[i]!.toString(16).padStart(W[i]!, '0')
       const bits = value.toString(2).length, exact = BigInt('0x' + rhex) === value
-      return { phase: 'reflect' as const, bits, faces: faceCount, rays: half, witnesses, reflections, reflectionsExact: exactRefl, roundTrips: exact, exact, widestGap: maxBlind.toString(), theorems: ['textbook_witness_clock_move', 'textbook_impossible_trapdoor'], says: `${bits} bits cut into ${faceCount} faces (2×${half}), decoded by ${half} σ-witnesses as ${reflections} reflections (σ_d(u) = v and σ_d(v) = u per face), reconstructed exactly: ${exact}; the widest face's gap is ${maxBlind.toString().length} digit(s)` } as never
+      return { phase: 'reflect' as const, bits, faces: faceCount, rays: half, nibbles: L, witnesses, reflections, reflectionsExact: exactRefl, roundTrips: exact, exact, widestGap: maxBlind.toString(), theorems: ['textbook_witness_clock_move', 'textbook_impossible_trapdoor'], says: `${bits} bits cut into ${faceCount} faces (2×${half}), decoded by ${half} σ-witnesses as ${reflections} reflections (σ_d(u) = v and σ_d(v) = u per face), reconstructed exactly from the witnesses and the ${L} nibbles (the face widths follow from them): ${exact}; the widest face's gap is ${maxBlind.toString().length} digit(s)` } as never
     }
     if (typeof args.speak === 'string') return { phase: 'speak' as const, ...speakHex(args.speak) }
     if (isObj(args.harmonic)) { const h = args.harmonic as { schema?: { properties?: Record<string, { enum?: readonly unknown[]; default?: unknown }> }; referrer?: string; role?: Role; tool?: string }; const r = harmonicDefaultsOf(h.schema ?? {}, h.referrer, h.role && h.tool ? (prop, value) => mayChoose(h.role!, h.tool!, prop, value) : undefined); return { phase: 'harmonic' as const, combinations: r.count.toString(), index: r.index.toString(), from: r.from, defaults: r.defaults, options: r.options, withheld: r.withheld, theorems: ['textbook_harmonic_default', 'textbook_mixed_radix'], says: `${r.count} combinations held at once; the ${r.from === 'referrer' ? 'referrer' : 'a432 key'} chooses number ${r.index}` } }
@@ -158,11 +159,9 @@ const fold = defineTool('crypto', {
     if (typeof args.text !== 'string') throw new Error('text folds, or pieces unfold')
     // any bound folds: one at least the text's bytes is the whole text in one piece, and a bound of 0 holds no byte, so it is read as 1
     const asked = getInteger(args.bound, 'bound', 131072n), whole = BigInt(Math.max(1, utf8(args.text).length)), bound = Number(asked < 1n ? 1n : asked > whole ? whole : asked)
-    const f = { ...foldLedger(args.text, bound), asked: writeInteger(asked) }
+    const f = { ...foldLedger(args.text, bound), asked: writeInteger(asked) }, { texts, ...folded } = f
     const located = typeof args.key === 'string' ? pieceOfKey(f, args.key) : null
-    const texts = args.withPieces ? (args.text.includes('\n') ? undefined : undefined) : undefined
-    void texts
-    return { phase: 'folded' as const, ...f, pieces: f.pieces.map((p) => ({ ...p })), ...(typeof args.key === 'string' ? { key: args.key, located, decision: located ? `ask piece ${located.index} (${located.address}); ${located.why}` : 'the key sits in no piece: answer from the root alone' } : {}) }
+    return { phase: 'folded' as const, ...folded, pieces: f.pieces.map((p, i) => (args.withPieces ? { ...p, text: texts[i]! } : p)), ...(typeof args.key === 'string' ? { key: args.key, located, decision: located ? `ask piece ${located.index} (${located.address}); ${located.why}` : 'the key sits in no piece: answer from the root alone' } : {}) }
   },
   widget: flowWidget,
 })
@@ -388,7 +387,7 @@ export const CRYPTO: Toolbox = {
     { id: 'fold-queneau', tool: 'fold', theorem: 'textbook_mixed_radix', arguments: { radices: QUENEAU, index: '99999999999999' }, shows: 'Queneau\'s combinatorics with minimum code: fourteen positions of ten choices are 10^14 compositions, and any one of them is computed from its index alone — here the last, every strip on its tenth choice — and its digits make the index back, the mixed-radix step proved by the kernel; nothing is stored.', expect: (s) => (s.count === '100000000000000' && s.digits.length === 14 && s.digits.every((d: number) => d === 9) && s.returns === true && s.address === '99999999999999-99999999999999' && /^[0-9a-f-]{36}$/.test(s.uuid) ? null : JSON.stringify(s)) },
     { id: 'fold-spaces', tool: 'fold', theorem: 'textbook_queneau_compositions', arguments: { spaces: { queneau: QUENEAU, plugins: [2, 2, 2, 2, 2, 2, 2, 2, 2], adapters: [5, 5, 2], sets: [3, 8], algorithm: [7, 19, 1, 2, 6, 1, 1, 8, 2, 11], installations: [3, 2, 5, 5, 2, 512] } }, shows: 'Every combination space of the tree counted by the one primitive: Queneau\'s 10^14, the 512 configurations of nine plugins, the 50 adapter combinations, the 24 deploy sets, the 280,896 inputs of the algorithm tool and the 153,600 installations (a verb of three — install, update, upgrade — over a channel of two — npm, the web MCP — the 50 adapter combinations and the 512 plugin configurations), each the product of its choices, the admin managing one by its address.', expect: (s) => (JSON.stringify(s.spaces.map((x: { count: string }) => x.count)) === JSON.stringify(['100000000000000', '512', '50', '24', '280896', '153600']) ? null : JSON.stringify(s.spaces)) },
     { id: 'fold-rosetta', tool: 'fold', theorem: 'textbook_mixed_radix', arguments: { rosetta: [6, 7], index: '20' }, shows: 'A rosetta: the 6×7 grid and its transpose 7×6 are the one scale of forty-two read two ways — every cell of the one ordering maps to one of the other and back, so a walk of both orderings covers the whole scale, the mixed-radix step the kernel proved; cell 20 of 6×7 is cell 38 of 7×6 and back to 20, nothing stored; rosettaOf is this read.', expect: (s) => (s.phase === 'rosetta' && s.scale === '42' && JSON.stringify(s.permuted) === JSON.stringify([7, 6]) && s.equalScale === true && s.covers === true && s.to === '38' && s.back === '20' ? null : JSON.stringify(s)) },
-    { id: 'fold-hex', tool: 'fold', theorem: 'textbook_uuid_core', arguments: { hex: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, shows: 'The one quantum core over MCP: any hex presented as a shadcn combination — thirty-two nibbles, each an item of eight and a variant of two, the whole styled from itself (hue from the handle, saturation and lightness from the program, radius and gap from the tail); every toolbox\'s result is such an address.', expect: (s) => (s.phase === 'presented' && s.nibbles === 32 && s.parts.length === 32 && s.choices === 16 && /^hsl\(/.test(s.style['--qpu-accent']) ? null : JSON.stringify(s.parts?.slice(0, 2))) },
+    { id: 'fold-hex', tool: 'fold', theorem: 'textbook_uuid_core', arguments: { hex: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, shows: 'The one quantum core over MCP: any hex presented as a shadcn combination — thirty-two nibbles, each an item of eight and a variant of two, the whole styled from itself (hue from the handle, saturation and lightness from the program, radius and gap from the tail); every toolbox\'s result is such an address.', expect: (s) => (s.phase === 'presented' && s.nibbles === 32 && s.parts.length === 32 && s.choices === 16 && /^rgb\(\d+ \d+ \d+\)$/.test(s.style['--qpu-accent']) && s.style['--qpu-hue'] === String(parseInt(s.uuid.slice(0, 8), 16) % 360) ? null : JSON.stringify(s.parts?.slice(0, 2))) },
     { id: 'fold-stream', tool: 'fold', theorem: 'textbook_stream_filter', arguments: { uuids: ['941ef62e-d97b-2438-bfc8-22ae9e5da781', '016da774-e74c-2e44-8742-f8bcf5e8e8f5', '00000000-0000-1000-8000-000000000000'], query: { where: { nibble: { at: 1, is: '0' } }, sort: 'hue', execute: true } }, shows: 'A UUID-only stream through the core: the addresses whose second nibble is 0 kept (one of three), sorted by their own hue, executed as the program rotated with the page and the dashboard each answers.', expect: (s) => (s.phase === 'streamed' && s.stream === 3 && s.filtered === 1 && s.rows[0].uuid === '00000000-0000-1000-8000-000000000000' && /^[0-9a-f-]{36}$/.test(s.rows[0].next) ? null : JSON.stringify(s.rows)) },
     { id: 'fold-schemas', tool: 'fold', theorem: 'textbook_uuid_schemas', arguments: { hex: '017f22e2-79b0-7cc3-98c4-dc0c0c07398f' }, shows: 'All UUID version schemas at once in one UUID: the same bits read as version 1 (Gregorian time, clock sequence, node), 3 and 5 (a digest), 4 (random), 6 (time reordered), 7 (Unix milliseconds: 2022-02-22T19:22:22Z for this one, the RFC 9562 example), 8 (custom), nil and max, beside the stamp\'s version 7 and RFC variant; the core\'s channel, style and presentation read none of them, so every schema presents the same.', expect: (s) => (s.schemas.stamped.version === 7 && s.schemas.stamped.variant.startsWith('RFC') && s.schemas.schemas.v7.time === '2022-02-22T19:22:22.000Z' && s.schemas.schemasRead === 9 && s.schemas.core.channel.handle === '017f22e2' && s.parts.length === 32 ? null : JSON.stringify(s.schemas?.schemas?.v7)) },
     { id: 'fold-ledger', tool: 'fold', theorem: 'textbook_fold_mirror', arguments: { text: LEDGER, bound: 600, key: 'k27' }, shows: 'A forty-row ledger folded under a bound of 600 bytes: the pieces, each with its address, SHA-256 and key range, the root over them, the mirror piece of each across the fold, and the one piece the key k27 sits in — decided by comparisons, the whole never read for it.', expect: (s) => (s.phase === 'folded' && !s.fits && s.count >= 4 && s.pieces.every((p: { reflection: number; index: number }) => p.reflection === s.count - 1 - p.index) && s.located && s.located.why.includes('k27') === false && s.located.index >= 0 && s.decision.startsWith('ask piece') ? null : `${s.phase} ${s.count} ${JSON.stringify(s.located)}`) },
@@ -411,10 +410,9 @@ export const CRYPTO: Toolbox = {
       check('crypto:reflective-boundary', f.pieces.every((p) => p.reflection === f.count - 1 - p.index) && f.boundary.d === f.count - 1, f.boundary.sigma)
       const loc = pieceOfKey(f, 'k27')!
       check('crypto:key-names-its-piece', !!loc && f.pieces[loc.index]!.firstKey! <= 'k27' && 'k27' <= f.pieces[loc.index]!.lastKey! && loc.address === f.pieces[loc.index]!.address, `k27 sits in piece ${loc?.index} by its key range`)
-      const texts = (() => { const rows = LEDGER.split('\n'); const out: string[] = []; let i = 0; for (const p of f.pieces) { out.push(rows.slice(i, i + p.rows).join('\n')); i += p.rows } return out })()
-      const u = unfoldPieces(texts.map((t, i) => ({ index: i, text: t, sha256: f.pieces[i]!.sha256 })), f.root)
-      check('crypto:unfold-agrees', u.agrees === true && u.whole === LEDGER && u.wrong.length === 0, 'the pieces give back the whole and the root agrees')
-      const bad = unfoldPieces(texts.map((t, i) => ({ index: i, text: i === 1 ? t.replace('row', 'ROW') : t, sha256: f.pieces[i]!.sha256 })), f.root)
+      const u = unfoldPieces(f.texts.map((t, i) => ({ index: i, text: t, sha256: f.pieces[i]!.sha256 })), f.root)
+      check('crypto:unfold-agrees', u.agrees === true && u.whole === LEDGER && u.wrong.length === 0 && f.roundTrips, 'the pieces give back the whole and the root agrees')
+      const bad = unfoldPieces(f.texts.map((t, i) => ({ index: i, text: i === 1 ? t.replace('row', 'ROW') : t, sha256: f.pieces[i]!.sha256 })), f.root)
       const nb = neighboursOf('6ae0b3da-d6e8-41d6-8b3e-b2346ae0b3da'), back = (g: string, d: number) => neighboursOf(nb.neighbours.find((x) => x.axis === g && x.step === d)!.uuid).neighbours.find((x) => x.axis === g && x.step === -d)!.program
       check('crypto:neighbours-step-back', nb.neighbours.length === 6 && nb.neighbours.every((x) => x.sealed) && ['g1', 'g2', 'g3'].every((g) => back(g, 1) === nb.program && back(g, -1) === nb.program), 'six sealed neighbours, each step undone by the step back (textbook_neighbour_step)')
       check('crypto:wrong-piece-named', bad.agrees === false && bad.wrong.join() === '1', 'a changed piece is named and the root disagrees')

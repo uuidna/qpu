@@ -3,14 +3,13 @@
 // The qpu block: one lexical/layout block of programmable UUID logic, the shape every tools/call result already carries in _meta.payload.
 import type { Block } from 'payload'
 import { uuidOf } from '@uuidna/qpu/blocks'
-import { qpuFieldsOf } from '@uuidna/qpu/payload'
+import { qpuFieldsOf, typeOk } from '@uuidna/qpu/payload'
 import { callOf, handle } from '@uuidna/qpu/mcp'
 import { createHmac, createPrivateKey, hkdfSync, sign } from 'node:crypto'
 // the tools an editor names, each with its schema from the MCP's own tools/list: the tool checked on save, and its arguments against that
 // tool's schema (the required keys, the types, the enums); a bound is the tool's to re-fuse, and a key the schema does not name is the tool's
 type ToolSchema = { required?: string[]; properties?: Record<string, { type?: string | string[]; enum?: unknown[] }> }
 const TOOL_SCHEMAS = new Map((handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; inputSchema: ToolSchema }[] } }).result.tools.map((t) => [t.name, t.inputSchema]))
-const typeOk = (v: unknown, t?: string | string[]) => !t || [t].flat().some((k) => (k === 'integer' ? Number.isInteger(v) || (typeof v === 'string' && /^[0-9]+$/.test(v)) : k === 'number' ? typeof v === 'number' : k === 'array' ? Array.isArray(v) : k === 'object' ? !!v && typeof v === 'object' && !Array.isArray(v) : k === 'null' ? v === null : typeof v === k))
 const checkTool = (v: unknown) => TOOL_SCHEMAS.has(String(v)) || `${String(v)} is no tool: name one of ${[...TOOL_SCHEMAS.keys()].join(', ')}`
 const checkArguments = (v: unknown, { siblingData }: { siblingData?: { tool?: string } }) => {
   const s = TOOL_SCHEMAS.get(String(siblingData?.tool)); if (!s) return true

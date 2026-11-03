@@ -4,7 +4,7 @@
 // fold address of what it holds, the sha256 beside it — never overwritten; the four verbs are Payload's REST (/api/entries).
 import { createHmac, hkdfSync } from 'node:crypto'
 import type { CollectionConfig, Where } from 'payload'
-import { uuidOf } from '@uuidna/qpu/blocks'
+import { entryTextOf, uuidOf } from '@uuidna/qpu/blocks'
 import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
 import { signedRoleOf } from '@uuidna/qpu/roles'
 
@@ -67,10 +67,9 @@ export const Entries: CollectionConfig = {
       // a chat entry: the statement, the role and any choice are its body; the hook answers it through the chat door, nothing thrown back
       if (data.kind === 'chat') data.body = { statement: String(asked?.statement ?? ''), role, ...(asked?.choice && { choice: String(asked.choice) }) }
       const chat = data.kind === 'chat' ? chatDoor(String(asked?.statement ?? ''), { role, choice: asked?.choice }) : undefined
-      // the address folds the entry's relations too when it has any (the ids it links, in order of their address): the same body linking other
-      // entries is another entry; an entry without links keeps the address it always had
-      const links = Array.isArray(data.links) ? [...data.links].map((l) => String(typeof l === 'object' && l ? (l as { id?: unknown }).id : l)).sort() : []
-      const text = JSON.stringify({ kind: data.kind, from: data.from, body: data.body ?? null, ...(links.length ? { links } : {}) })
+      // the address folds the entry's canonical text and the ids it links: the same body linking other entries is another entry
+      const links = Array.isArray(data.links) ? data.links.map((l) => String(typeof l === 'object' && l ? (l as { id?: unknown }).id : l)) : []
+      const text = entryTextOf({ kind: data.kind, from: data.from, body: data.body, links })
       const bytes = new TextEncoder().encode(text)
       const digest = await crypto.subtle.digest('SHA-256', bytes)
       // the API built from the config: an entry of kind call carries a tool and its arguments, and the hook answers it from the handler; the address folds the call, not the reply, so the same call is the same entry (read free, computed once)

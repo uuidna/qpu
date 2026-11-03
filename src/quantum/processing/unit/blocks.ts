@@ -5,7 +5,7 @@
 
 export type OpenGraph = { 'og:title': string; 'og:description': string; 'og:type': 'website'; 'og:url': string; 'og:site_name': string; 'article:author': string; license: string }
 export type RegistryItem = { $schema: 'https://ui.shadcn.com/schema/registry-item.json'; name: string; type: 'registry:block'; title: string; description: string; registryDependencies: string[]; author: string; license: string; files: { path: string; type: 'registry:block'; content: string }[]; meta: { tool: string; arguments: Record<string, unknown>; id: string } }
-import { KEY, accentOfUuid, cmykOfUuid, hueOf, wrapBlock } from './theme.ts'
+import { KEY, accentOfUuid, cmykOfUuid, hueOf, programHues, getFramesGradient, GLAGOLITIC_OF } from './theme.ts'
 import { LICENSE, attributionHtml } from './license.ts'
 
 export type Block = { id: string; html: string; theme: { key: number; hue: number; cmyk: { c: number; m: number; y: number; k: number }; accent: string }; openGraph: OpenGraph; shadcn: RegistryItem }
@@ -58,7 +58,7 @@ export const neighboursOf = (uuid: string) => {
     const w = 16 ** (e! - s!), v = (ch.program.slice(s, e).reduce((n, d) => n * 16 + d, 0) + step + w) % w, p = [...ch.program]
     for (let i = e! - 1, r = v; i >= s!; i--, r = Math.floor(r / 16)) p[i] = r % 16
     const id = uuidFromParts(ch.handle, p, ch.tail)
-    return { axis: `g${g + 1}`, step, uuid: id, program: hexOfProgram(p), colour: styleOf(id).vars['--qpu-accent'], sealed: sealOf(id).valid }
+    return { axis: `g${g + 1}`, step, uuid: id, program: hexOfProgram(p), colour: accentOfUuid(id), sealed: sealOf(id).valid }
   })), says: 'one step on g1, g2 or g3 either way, modulo the group\'s program bits; the handle and the tail kept, the stamp decided again' }
 }
 /** Navigation through the content-addressed UUID space: a position (a UUID) with its coordinates (the program), its six one-step neighbours
@@ -174,16 +174,19 @@ export const reflectionOf = (uuid: string) => {
 
 /** Canonical text (sorted keys), the form the unit addresses a value by: a BigInt as its digits with an `n` marker (so 10n, 10 and "10" are
  *  three addresses, never one — plain JSON.stringify throws on a BigInt); a value with a `toJSON` (a Date among them) by what it serialises to, as
- *  JSON itself does (so two Dates never collide to `{}`); a non-finite number as its name; everything else as canonical JSON. A plain object with
- *  no enumerable keys and no toJSON (a Map, a Set) still reads as `{}` — such values are not JSON and are not addressed by content. */
+ *  JSON itself does (so two Dates never collide to `{}`); a non-finite number as its name; a key whose value is undefined dropped, as on the wire (never
+ *  `{"a":null}`); everything else as canonical JSON. A plain object with no enumerable keys and no toJSON (a Map, a Set) still reads as `{}` — such
+ *  values are not JSON and are not addressed by content. */
 export const canonicalTextOf = (value: unknown): string =>
   typeof value === 'bigint' ? `"${value}n"`
     : Array.isArray(value) ? `[${value.map(canonicalTextOf).join(',')}]`
     : value !== null && typeof value === 'object'
       ? typeof (value as { toJSON?: unknown }).toJSON === 'function' ? canonicalTextOf((value as { toJSON: () => unknown }).toJSON())
-        : `{${Object.keys(value as object).sort().map((k) => `${JSON.stringify(k)}:${canonicalTextOf((value as Record<string, unknown>)[k])}`).join(',')}}`
+        : `{${Object.keys(value as object).filter((k) => (value as Record<string, unknown>)[k] !== undefined).sort().map((k) => `${JSON.stringify(k)}:${canonicalTextOf((value as Record<string, unknown>)[k])}`).join(',')}}`
     : typeof value === 'number' && !Number.isFinite(value) ? `"${value}"` : JSON.stringify(value) ?? 'null'
 
+/** A docket entry's canonical text (kind, source, body, the ids it links): what the entries hook addresses and every client predicting an address computes. */
+export const entryTextOf = (e: { kind: unknown; from: unknown; body?: unknown; links?: readonly string[] }): string => canonicalTextOf({ kind: e.kind, from: e.from, body: e.body ?? null, ...(e.links?.length ? { links: [...e.links].sort() } : {}) })
 /** f memoised by the content address of its arguments, unbounded; for a pure f only, memoOf(f)(x) = f(x) (textbook_memo_identity). */
 export const memoOf = <A extends unknown[], R>(f: (...a: A) => R): ((...a: A) => R) => { const m = new Map<string, R>(); return (...a) => { const k = uuidOf(canonicalTextOf(a)); if (!m.has(k)) m.set(k, f(...a)); return m.get(k)! } }
 
@@ -194,7 +197,8 @@ export const blockOf = (tool: string, args: Record<string, unknown>, structured:
   const id = uuidOf(`${tool}${JSON.stringify(args)}`)
   // A heading to land on: what a screen reader announces first, and what the audit's accessibility check measures.
   const heading = `<div role="heading" aria-level="2" style="font-size: var(--font-size-footnote); color: var(--text-muted); margin-bottom: var(--gap-sm, 6px);">${tool} · ${escapeOf(description)}</div>`
-  const wrapped = wrapBlock(id, heading + html + attributionHtml())
+  // the wrapper: the block's own custom properties inline, its accent drawn as the left rule
+  const style = styleOf(id), wrapped = `<div data-block="${id}" class="qpu-block" data-vortex="${style.vars['--qpu-vortex']}" style="${style.css}; border-left: 3px solid var(--qpu-accent); padding-left: var(--pad-sm, 8px);">${heading + html + attributionHtml()}</div>`
   return {
     id,
     html: wrapped,
@@ -219,17 +223,22 @@ export const blockOf = (tool: string, args: Record<string, unknown>, structured:
  *  (textbook_uuid_core); every toolbox's result is such an address, and the combinatorics below — the style an address computes for itself, the
  *  presentation of any hex as a shadcn combination, the query, sort, filter and execution of a UUID-only stream — are this module's alone:
  *  the crypto fold tool exposes them over MCP, the payload toolbox delegates to them, the site renders by them. */
-/** Every bit styled from the UUID stream itself, nothing loaded: a block's address decides its hue (the handle), its saturation and lightness
- *  (the program nibbles), its radius and gap (the tail) — pure, deterministic, inline CSS variables; no font, no stylesheet, no fetch. The
- *  shadcn items below (a style lib, a card, a badge, a table, the stream, a dashboard block) compose with these variables. */
+/** Every bit styled from the UUID stream itself, nothing loaded — the one cascade source: every custom property a block wears (inline, in the css
+ *  tool, the presentation, the shadcn items) is computed here once, one value each. The handle gives the hue, the middle as CMYK the accent, the
+ *  program the saturation and lightness, the tail the radius, the gap and the 9-vortex; the reflected hue and the drift's prime dust in the same pass. */
 export const styleOf = (uuid: string) => {
-  const ch = channelOf(uuid)
-  const hue = parseInt(ch.handle.slice(0, 3), 16) % 360
-  const sum = ch.program.reduce((n, d) => n + d, 0)
-  const sat = 40 + (sum % 40), light = 36 + (ch.program[0]! % 20)
-  const radius = 2 + (parseInt(ch.tail.slice(0, 1), 16) % 14), gap = 4 + (parseInt(ch.tail.slice(1, 2), 16) % 12)
-  const vars = { '--qpu-hue': String(hue), '--qpu-accent': `hsl(${hue} ${sat}% ${light}%)`, '--qpu-surface': `hsl(${hue} ${Math.round(sat / 4)}% 97%)`, '--qpu-ink': `hsl(${hue} ${Math.round(sat / 3)}% 14%)`, '--qpu-radius': `${radius}px`, '--qpu-gap': `${gap}px` }
-  return { uuid, hue, sat, light, radius, gap, vars, css: Object.entries(vars).map(([k, v]) => `${k}: ${v}`).join('; '), says: 'computed from the address: the handle gives the hue, the program the saturation and lightness, the tail the radius and the gap; nothing loaded' }
+  const ch = channelOf(uuid), { one48, vortex: { seed, trinity } } = ch.message, program = programHues(uuid), { c, m, y, k } = cmykOfUuid(uuid), accent = accentOfUuid(uuid)
+  const hue = parseInt(ch.handle, 16) % 360, sat = 40 + (ch.program.reduce((n, d) => n + d, 0) % 40), light = 36 + (ch.program[0]! % 20)
+  const radius = 2 + (parseInt(ch.tail.slice(0, 1), 16) % 14), gap = 4 + (parseInt(ch.tail.slice(1, 2), 16) % 12), drift = Math.abs(2 * hue - 360)
+  const dust: number[] = []; { let n = drift; for (let p = 2; p * p <= n; p += 1) while (n % p === 0) { dust.push(p); n /= p } if (n > 1) dust.push(n) }
+  const vars = {
+    '--qpu-hue': String(hue), '--qpu-reflected-hue': String((360 - hue) % 360), '--qpu-drift': String(drift), '--qpu-dust': dust.join(' ') || '0', '--qpu-drift-angle': ((2 * Math.PI * drift) / 360).toFixed(6),
+    '--qpu-frames': getFramesGradient(uuid), '--qpu-program': program.ring, '--qpu-shift': String(program.shift), '--qpu-c': c.toFixed(3), '--qpu-m': m.toFixed(3), '--qpu-y': y.toFixed(3), '--qpu-k': k.toFixed(3),
+    '--qpu-accent': accent, '--block-accent': accent, '--qpu-surface': `hsl(${hue} ${Math.round(sat / 4)}% 97%)`, '--qpu-ink': `hsl(${hue} ${Math.round(sat / 3)}% 14%)`, '--qpu-radius': `${radius}px`, '--qpu-gap': `${gap}px`,
+    '--qpu-tail': `rgb(${[0, 2, 4].map((i) => parseInt(ch.tail.slice(i, i + 2), 16)).join(' ')})`, '--qpu-angle': String(one48 % 360), '--qpu-vortex': String(seed), '--qpu-reflection': String(10 - seed),
+    '--qpu-signal': `'${GLAGOLITIC_OF[seed] ?? ''}'`, '--qpu-signal-reflected': `'${GLAGOLITIC_OF[10 - seed] ?? ''}'`, '--qpu-signal-digits': `'${seed} ${10 - seed}'`, '--qpu-trinity': String(trinity[0] ?? 0), '--qpu-period': `${(seed || 9) * KEY}ms`,
+  }
+  return { uuid, hue, sat, light, radius, gap, vars, css: Object.entries(vars).map(([k, v]) => `${k}: ${v}`).join('; '), says: 'computed from the address, one value per property: the handle gives the hue, the middle the accent, the program the saturation and lightness, the tail the radius, the gap and the vortex; nothing loaded' }
 }
 /** Any hex is presentable as a shadcn combination: each nibble picks one of the eight registry items (the two hosts and the six styled ones)
  *  and one of two variants (solid, outline) — sixteen choices, a nibble (textbook_hex_presentations) — so a UUID, a hash or an address is a

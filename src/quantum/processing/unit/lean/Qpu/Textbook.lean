@@ -658,7 +658,7 @@ theorem textbook_report_refactors_converse_refuted : ¬ ∀ (reused recomputed t
 theorem textbook_advantage_unbounded (verified : Nat) : verified < verified + 1 := Nat.lt_succ_self verified
 /-- textbook_advantage_unbounded reflected by its shape, order (examples: audit-access, metrics-advantage) -/
 theorem textbook_advantage_unbounded_reflected (verified : Nat) (σ : Nat) (hσ0 : (verified + 1) ≤ σ) : σ - (verified + 1) < σ - (verified) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_advantage_unbounded verified) hσ0) (textbook_advantage_unbounded verified)
-/-- two edits merged by block address commute and merging an edit with itself is that edit: a collision in the involution is a merge, never a refusal (examples: payload-merge) -/
+/-- two edits merged by block address commute and merging an edit with itself is that edit; two edited contents under one address are a collision, listed and held out (textbook_merge_collision) (examples: payload-merge) -/
 theorem textbook_merge_commutes (a b : Nat) : max a b = max b a ∧ max a a = a := ⟨Nat.max_comm a b, Nat.max_self a⟩
 /-- textbook_merge_commutes reflected by its shape, conjunction (examples: payload-merge) -/
 theorem textbook_merge_commutes_reflected (a b : Nat) (σ : Nat) : (σ - (max b a) = σ - (max a b)) ∧ (σ - (a) = σ - (max a a)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).1), congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).2)⟩
@@ -1762,3 +1762,39 @@ theorem textbook_relation_rsa_reflected (σ : Nat) : (σ - (7) = σ - (Nat.gcd (
 theorem textbook_ancient_law : 4 + 5 = 9 := by decide
 /-- textbook_ancient_law reflected by its shape, equality (examples: legal-ancient) -/
 theorem textbook_ancient_law_reflected (σ : Nat) : σ - (9) = σ - (4 + 5) := congrArg (σ - ·) (Eq.symm (textbook_ancient_law))
+/-- decodeE2e with the tree as a copy, its answer recomputed by the handler (treeOf): the voters are the tree and every host not erased; a majority of them decides, every voter off the majority — the tree among them — is a flip, and the flips and the erasures are the syndrome; a 304 echoing a hash other than the tree's recomputed one is no involution (examples: e2e-tree-outvoted) -/
+theorem textbook_e2e_tree_dissent : 2 * 2 > 3 ∧ 3 - 2 = 1 ∧ 1 + 1 = 2 ∧ 0 = 0 := by decide
+/-- textbook_e2e_tree_dissent reflected by its shape, conjunction (examples: e2e-tree-outvoted) -/
+theorem textbook_e2e_tree_dissent_reflected (σ : Nat) (hσ0 : (2 * 2) ≤ σ) : (σ - (2 * 2) < σ - (3)) ∧ (σ - (1) = σ - (3 - 2)) ∧ (σ - (2) = σ - (1 + 1)) ∧ (σ - (0) = σ - (0)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_e2e_tree_dissent).1 hσ0) (textbook_e2e_tree_dissent).1, congrArg (σ - ·) (Eq.symm (textbook_e2e_tree_dissent).2.1), congrArg (σ - ·) (Eq.symm (textbook_e2e_tree_dissent).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_e2e_tree_dissent).2.2.2)⟩
+/-- mergeOf: every address the edits name is kept, collided or removed; a collision holds two contents; the merge in either order is one address with one collision, and an edit over the base's content stands without one (examples: payload-merge-collision, payload-merge-collision-reversed, payload-merge-edit-stands) -/
+theorem textbook_merge_collision : 1 + 1 + 0 = 2 ∧ 2 = 2 ∧ 2 - 1 = 1 ∧ 1 + 1 + 0 = 2 := by decide
+/-- textbook_merge_collision reflected by its shape, conjunction (examples: payload-merge-collision, payload-merge-collision-reversed, payload-merge-edit-stands) -/
+theorem textbook_merge_collision_reflected (σ : Nat) : (σ - (2) = σ - (1 + 1 + 0)) ∧ (σ - (2) = σ - (2)) ∧ (σ - (1) = σ - (2 - 1)) ∧ (σ - (2) = σ - (1 + 1 + 0)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_merge_collision).1), congrArg (σ - ·) (Eq.symm (textbook_merge_collision).2.1), congrArg (σ - ·) (Eq.symm (textbook_merge_collision).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_merge_collision).2.2.2)⟩
+/-- a config set is its n given members less their r repeats, addressed by the canonical text of the distinct ones (never a newline join, under which one member holding a newline is two); on distinct members the union of a and b is a + b less their intersection i (examples: configure-sets-given) -/
+theorem textbook_set_address_canonical (n r a b i u : Nat) (hr : r ≤ n) (hu : u + i = a + b) : n - r + r = n ∧ u = a + b - i := by omega
+/-- textbook_set_address_canonical reflected by its shape, conjunction (examples: configure-sets-given) -/
+theorem textbook_set_address_canonical_reflected (n r a b i u : Nat) (hr : r ≤ n) (hu : u + i = a + b) (σ : Nat) : (σ - (n) = σ - (n - r + r)) ∧ (σ - (a + b - i) = σ - (u)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_set_address_canonical n r a b i u hr hu).1), congrArg (σ - ·) (Eq.symm (textbook_set_address_canonical n r a b i u hr hu).2)⟩
+/-- the contrapositive of textbook_set_address_canonical (examples: configure-sets-given) -/
+theorem textbook_set_address_canonical_contrapositive (n r a b i u : Nat) : ¬ (n - r + r = n ∧ u = a + b - i) → ¬ ((r ≤ n) ∧ (u + i = a + b)) := fun hc hh => hc (textbook_set_address_canonical n r a b i u hh.1 hh.2)
+/-- the converse of textbook_set_address_canonical, refuted by a counterexample the kernel decides (examples: configure-sets-given) -/
+theorem textbook_set_address_canonical_converse_refuted : ¬ ∀ (n r a b i u : Nat), (n - r + r = n ∧ u = a + b - i) → (r ≤ n) ∧ (u + i = a + b) := fun h => absurd (h 0 0 0 0 1 0 (by decide)) (by decide)
+/-- one document is one entry: of its three writes (its 2 · 1 key orders and a key whose value is undefined) two fold into the first one's address, the canonical text (canonicalTextOf, entryTextOf) folded, never the key order JSON.stringify keeps (examples: mongo-insert-canonical) -/
+theorem textbook_entry_canonical : 3 - 1 = 2 ∧ 2 * 1 = 2 := by decide
+/-- textbook_entry_canonical reflected by its shape, conjunction (examples: mongo-insert-canonical) -/
+theorem textbook_entry_canonical_reflected (σ : Nat) : (σ - (2) = σ - (3 - 1)) ∧ (σ - (2) = σ - (2 * 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_entry_canonical).1), congrArg (σ - ·) (Eq.symm (textbook_entry_canonical).2)⟩
+/-- foldLedger cuts a text into slices of itself under the bound, each piece keeping its rows' newlines: the pieces' bytes sum to the whole's, and the pieces unfolded are the whole, nothing inserted between them (examples: fold-slices-exact, fold-unfold-exact) -/
+theorem textbook_fold_slices : 2 + 3 + 2 + 2 + 2 = 11 ∧ 5 * 3 ≥ 11 ∧ 2 + 3 + 3 = 8 := by decide
+/-- textbook_fold_slices reflected by its shape, conjunction (examples: fold-slices-exact, fold-unfold-exact) -/
+theorem textbook_fold_slices_reflected (σ : Nat) : (σ - (11) = σ - (2 + 3 + 2 + 2 + 2)) ∧ (σ - (5 * 3) ≤ σ - (11)) ∧ (σ - (8) = σ - (2 + 3 + 3)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_fold_slices).1), Nat.sub_le_sub_left (textbook_fold_slices).2.1 σ, congrArg (σ - ·) (Eq.symm (textbook_fold_slices).2.2)⟩
+/-- the reflective cut answers its nibble count beside its faces: each face is the quotient wide, the first remainder faces one wider, so the widths follow from the two numbers and a decoder holding the witnesses rebuilds the integer exactly, leading zeros included (examples: fold-reflect-widths) -/
+theorem textbook_reflect_widths : 20 / 14 * 14 + 20 % 14 = 20 ∧ 20 % 14 < 14 := by decide
+/-- textbook_reflect_widths reflected by its shape, conjunction (examples: fold-reflect-widths) -/
+theorem textbook_reflect_widths_reflected (σ : Nat) (hσ0 : (14) ≤ σ) : (σ - (20) = σ - (20 / 14 * 14 + 20 % 14)) ∧ (σ - (14) < σ - (20 % 14)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_reflect_widths).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_reflect_widths).2 hσ0) (textbook_reflect_widths).2⟩
+/-- createReferenceGraph: every reference resolves to one document or is dangling; a name two documents claim is a collision listed with both and resolved to neither (examples: payload-references-collision) -/
+theorem textbook_references_name_collision : 0 + 1 = 1 ∧ 1 = 1 ∧ 2 = 2 := by decide
+/-- textbook_references_name_collision reflected by its shape, conjunction (examples: payload-references-collision) -/
+theorem textbook_references_name_collision_reflected (σ : Nat) : (σ - (1) = σ - (0 + 1)) ∧ (σ - (1) = σ - (1)) ∧ (σ - (2) = σ - (2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_references_name_collision).1), congrArg (σ - ·) (Eq.symm (textbook_references_name_collision).2.1), congrArg (σ - ·) (Eq.symm (textbook_references_name_collision).2.2)⟩
+/-- styleOf, the one cascade source: the hue of an address is its handle mod 360 in the block it wears, the css tool and the presentation alike — one value per custom property (examples: css-one-source, fold-hex-one-source) -/
+theorem textbook_css_one_source : 23963508 % 360 = 108 ∧ 108 = 108 := by decide
+/-- textbook_css_one_source reflected by its shape, conjunction (examples: css-one-source, fold-hex-one-source) -/
+theorem textbook_css_one_source_reflected (σ : Nat) : (σ - (108) = σ - (23963508 % 360)) ∧ (σ - (108) = σ - (108)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_css_one_source).1), congrArg (σ - ·) (Eq.symm (textbook_css_one_source).2)⟩

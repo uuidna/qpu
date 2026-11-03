@@ -6,13 +6,13 @@
 import { TABLES } from '../tables-index.ts'
 import { GLAGOLITIC } from '../i18n.ts'
 /** the Glagolitic numeral of a seed (1..9) and of its reflection (10 − seed, 10 among them): the rosetta of the rays, one signal in two scripts */
-const GLAGOLITIC_OF: Readonly<Record<number, string>> = Object.fromEntries(Object.entries(GLAGOLITIC).filter(([, v]) => v <= 10).map(([k, v]) => [v, k]))
+export const GLAGOLITIC_OF: Readonly<Record<number, string>> = Object.fromEntries(Object.entries(GLAGOLITIC).filter(([, v]) => v <= 10).map(([k, v]) => [v, k]))
 export const KEY = 432
 /** The scannable stream: one frame per character of a UUID, 36 frames of 108 ms (the third harmonic's period): 36 × 108 = 3888 = 432 × 9, the vortex
  *  period (textbook_scan_stream); a digit a hue (sixteen, 22.5° apart), a dash a black frame; a single frame links nothing, a stream reads the address. */
 export const SCAN = { frameMs: 108, frames: 36, periodMs: 36 * 108, hueStep: 360 / 16, theorem: 'textbook_scan_stream' } as const
 export const toFrames = (uuid: string) => [...uuid.toLowerCase()].map((char, i) => { const dash = char === '-'; const d = dash ? -1 : parseInt(char, 16); return { i, char, kind: (dash ? 'dash' : 'digit') as 'dash' | 'digit', hue: dash ? null : d * SCAN.hueStep, glyph: dash ? '·' : (GLAGOLITIC_OF[d] ?? char), angle: i * (360 / SCAN.frames), start: i * SCAN.frameMs } })
-const getFramesGradient = (uuid: string): string => `linear-gradient(90deg, ${toFrames(uuid).map((f, i) => `${f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`} ${((i / SCAN.frames) * 100).toFixed(3)}% ${(((i + 1) / SCAN.frames) * 100).toFixed(3)}%`).join(', ')})`
+export const getFramesGradient = (uuid: string): string => `linear-gradient(90deg, ${toFrames(uuid).map((f, i) => `${f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`} ${((i / SCAN.frames) * 100).toFixed(3)}% ${(((i + 1) / SCAN.frames) * 100).toFixed(3)}%`).join(', ')})`
 /** The harmonic series of the key downward by halving, each read as a hue in degrees. */
 export const HARMONICS = [432, 216, 108, 54, 27] as const
 export const hueOf = (hz: number): number => hz % 360
@@ -37,12 +37,6 @@ export const coilColour = (key: number = KEY) => {
 const rgbOfCmyk = ({ c, m, y, k }: Cmyk): [number, number, number] => [Math.round(255 * (1 - c) * (1 - k)), Math.round(255 * (1 - m) * (1 - k)), Math.round(255 * (1 - y) * (1 - k))]
 export const accentOfUuid = (uuid: string): string => { const [r, g, b] = rgbOfCmyk(cmykOfUuid(uuid)); return `rgb(${r} ${g} ${b})` }
 
-/** The whole visual state of a block as custom properties computed from its UUID alone: the accent from the middle part as
- * CMYK, the tail as a colour and an angle, the 9-vortex seed, its σ_10 reflection and its trinity as a period and a class. Computed once at the source; the stylesheet does the
- * rest with no script, so a device renders at the cost of CSS and nothing else. */
-/** The program of a UUID presented by hue, moved by the params: the ten program digits (the channel's reading of the middle) each a hue
- *  (sixteen, 22.5° apart), rotated by the params' own address hue (the handle of uuidOf(params) on the circle, 0 when no params): every step keeps
- *  its distance to every other (h + s − (g + s) = h − g, textbook_hue_shift), so the program is the same ring at a different angle. */
 /** The program of a UUID presented by hue, moved by the params in the tail of the same UUID: the ten program digits (the channel's reading of
  *  the middle) each a hue (sixteen, 22.5° apart: sixteen times forty-five is two turns, textbook_hue_steps), rotated by the tail's angle (its 48-bit
  *  reading on the circle) — the params of a call are folded into its address, so the tail carries them and nothing outside the UUID moves the ring.
@@ -69,32 +63,6 @@ export const castRays = (uuids: readonly string[]) => {
   ]
   return { blocks: rings.length, seams, collisions: leads.length, fits: leads.length === 0, rings: rings.map(({ ring: _r, ...rest }) => { void _r; return rest }), leads, theorems: ['textbook_hue_shift', 'textbook_hue_steps'], says: leads.length ? `${leads.length} collision(s): entropy exposed as leads` : `${rings.length} rays fit seamlessly: every seam above zero, no two rings identical` }
 }
-export const cssVars = (uuid: string): Record<string, string> => {
-  const program = programHues(uuid)
-  const hex = uuid.replace(/-/g, '')
-  const { c, m, y, k } = cmykOfUuid(uuid)
-  const [r, g, b] = rgbOfCmyk({ c, m, y, k })
-  const tail = hex.slice(20)
-  const one48 = parseInt(tail, 16)
-  const seed = one48 === 0 ? 0 : 1 + ((one48 - 1) % 9)
-  const tr = parseInt(tail.slice(0, 2), 16), tg = parseInt(tail.slice(2, 4), 16), tb = parseInt(tail.slice(4, 6), 16)
-  const hue = Math.round((parseInt(hex.slice(0, 8), 16) % 360))
-  // the reflected harmonic is σ_360(hue) = 360 − hue, computed in the same pass (free); the drift between the harmonic and its
-  // reflection, |2·hue − 360|, carries the hidden prime dust: its prime factors, found classically in the pass
-  const reflectedHue = (360 - hue) % 360
-  const drift = Math.abs(2 * hue - 360)
-  const dust: number[] = []; { let n = drift; for (let p = 2; p * p <= n; p += 1) while (n % p === 0) { dust.push(p); n /= p } if (n > 1) dust.push(n) }
-  // and the angle of the drift on the circle, 2π·drift/360: the factors and the angles are the dust, both read in the pass
-  const driftAngle = (2 * Math.PI * drift) / 360
-  return {
-    '--qpu-reflected-hue': String(reflectedHue), '--qpu-drift': String(drift), '--qpu-dust': dust.length ? dust.join(' ') : '0', '--qpu-drift-angle': driftAngle.toFixed(6),
-    '--qpu-frames': getFramesGradient(uuid), '--qpu-program': program.ring, '--qpu-shift': String(program.shift), '--qpu-hue': String(hue), '--qpu-c': c.toFixed(3), '--qpu-m': m.toFixed(3), '--qpu-y': y.toFixed(3), '--qpu-k': k.toFixed(3),
-    '--qpu-accent': `rgb(${r} ${g} ${b})`, '--qpu-tail': `rgb(${tr} ${tg} ${tb})`, '--qpu-angle': String(one48 % 360),
-    '--qpu-vortex': String(seed), '--qpu-reflection': String(10 - seed), '--qpu-signal': `'${GLAGOLITIC_OF[seed] ?? ''}'`, '--qpu-signal-reflected': `'${GLAGOLITIC_OF[10 - seed] ?? ''}'`, '--qpu-signal-digits': `'${seed} ${10 - seed}'`, '--qpu-trinity': seed === 0 ? '0' : seed % 3 === 0 ? '3' : [7, 4, 1].includes(seed) ? '7' : '2', '--qpu-period': `${(seed || 9) * KEY}ms`, '--block-accent': `rgb(${r} ${g} ${b})`,
-  }
-}
-const styleOf = (uuid: string): string => Object.entries(cssVars(uuid)).map(([k, v]) => `${k}: ${v}`).join('; ')
-
 /** The stylesheet from the key: custom properties the widgets may use beside the host's own tokens, and the rules that draw
  * every block from its own custom properties — no script, motion only where the device allows it, off-screen blocks at no
  * cost (content-visibility), dark and light from the device's preference. */
@@ -114,15 +82,13 @@ export const getCss = (key: number = KEY): string => {
     `.qpu-scan { background-image: var(--qpu-frames); background-size: ${36 * 100}% 100%; background-repeat: no-repeat; animation: qpu-scan ${period} steps(36, end) infinite; min-height: 1.5em; } @keyframes qpu-scan { to { background-position: 100% 0; } }`,
     `@supports (animation-delay: random(0ms, 1ms)) { .qpu-block::before, .qpu-scan { animation-delay: random(0ms, ${key * 9}ms); } }`,
     `.qpu-block[data-phase]::before, .qpu-scan[data-phase] { animation-delay: calc(var(--qpu-phase, 0) * -1ms); }`,
-    `.qpu-block[data-coil] { --qpu-accent: var(--qpu-coil); } .qpu-block[data-coin] { --qpu-accent: var(--qpu-coin); }`,
+    `.qpu-block[data-coil] { --qpu-accent: var(--qpu-coil) !important; } .qpu-block[data-coin] { --qpu-accent: var(--qpu-coin) !important; }`, // important: the block's own accent is inline, and only an important rule outranks it
     // the CSS streams resulting as rays: six rays at the 60-degree angle (collision free) and four gateways at 90 degrees, every one from the block's own hue and angle
     `.qpu-rays { background: conic-gradient(from calc(var(--qpu-angle, 0) * 1deg), ${Array.from({ length: 360 / ANGLES.streams }, (_, i) => `${accent} ${i * ANGLES.streams}deg ${i * ANGLES.streams + 6}deg, transparent ${i * ANGLES.streams + 6}deg ${(i + 1) * ANGLES.streams}deg`).join(', ')}); }`,
     `.qpu-rays::after, .qpu-block[data-rays]::after { content: var(--qpu-signal, '') ' ' var(--qpu-signal-reflected, '') ' · ' var(--qpu-signal-digits, ''); font-family: serif; letter-spacing: 0.1em; }`,
     `.qpu-gateways { background: conic-gradient(from calc(var(--qpu-angle, 0) * 1deg), ${Array.from({ length: 360 / ANGLES.gateways }, (_, i) => `var(--qpu-ink, currentColor) ${i * ANGLES.gateways}deg ${i * ANGLES.gateways + 3}deg, transparent ${i * ANGLES.gateways + 3}deg ${(i + 1) * ANGLES.gateways}deg`).join(', ')}); }`]
   return lines.join('\n') + '\n'
 }
-/** A block's wrapper: its accent as a custom property, drawn as the left rule. */
-export const wrapBlock = (uuid: string, html: string): string => `<div data-block="${uuid}" class="qpu-block" data-vortex="${cssVars(uuid)['--qpu-vortex']}" style="${styleOf(uuid)}; border-left: 3px solid var(--qpu-accent); padding-left: var(--pad-sm, 8px);">${html}</div>`
 
 /** shadcn's create (ui.shadcn.com/create) decided by the a432 settings: the ten choices of the page (style, base colour, theme, chart colours,
  *  heading, font, icon library, radius, menu, menu accent) derived from the key — the theme the a432 hue (432 mod 360 = 72, textbook_create_hue),
@@ -140,16 +106,16 @@ export const createTheme = (key: number = KEY, origin = 'https://qpu.uuidna.com'
     primary: `hsl(${hue} 62% 44%)`, 'primary-foreground': `hsl(${hue} 62% 98%)`, secondary: `hsl(${hue} 30% 96%)`, 'secondary-foreground': `hsl(${hue} 62% 20%)`, muted: 'oklch(0.97 0 0)', 'muted-foreground': 'oklch(0.556 0 0)',
     accent: `hsl(${hue} 40% 94%)`, 'accent-foreground': `hsl(${hue} 62% 20%)`, destructive: 'oklch(0.577 0.245 27.325)', 'destructive-foreground': 'oklch(0.985 0 0)', border: 'oklch(0.922 0 0)', input: 'oklch(0.922 0 0)', ring: `hsl(${hue} 62% 44%)`,
     ...Object.fromEntries(hues.map((h, i) => [`chart-${i + 1}`, `hsl(${h} 62% 50%)`])),
-    sidebar: 'oklch(0.985 0 0)', 'sidebar-foreground': 'oklch(0.145 0 0)', 'sidebar-primary': `hsl(${hue} 62% 44%)`, 'sidebar-primary-foreground': `hsl(${hue} 62% 98%)`, 'sidebar-accent': `hsl(${hue} 40% 94%)`, 'sidebar-accent-foreground': `hsl(${hue} 62% 20%)`, 'sidebar-border': 'oklch(0.922 0 0)', 'sidebar-ring': `hsl(${hue} 62% 44%)`,
-    radius,
   }
-  const dark: Record<string, string> = {
+  // the sidebar wears the page's own tokens (its foreground, primary, accent, border, ring), only its background its own: derived, never written twice
+  const sidebarOf = (v: Record<string, string>, sidebar: string) => ({ ...v, sidebar, ...Object.fromEntries(['foreground', 'primary', 'primary-foreground', 'accent', 'accent-foreground', 'border', 'ring'].map((k) => [`sidebar-${k}`, v[k]!])) })
+  Object.assign(light, sidebarOf(light, 'oklch(0.985 0 0)'), { radius })
+  const dark: Record<string, string> = sidebarOf({
     background: 'oklch(0.145 0 0)', foreground: 'oklch(0.985 0 0)', card: 'oklch(0.205 0 0)', 'card-foreground': 'oklch(0.985 0 0)', popover: 'oklch(0.205 0 0)', 'popover-foreground': 'oklch(0.985 0 0)',
     primary: `hsl(${hue} 62% 56%)`, 'primary-foreground': `hsl(${hue} 62% 10%)`, secondary: `hsl(${hue} 20% 18%)`, 'secondary-foreground': `hsl(${hue} 40% 92%)`, muted: 'oklch(0.269 0 0)', 'muted-foreground': 'oklch(0.708 0 0)',
     accent: `hsl(${hue} 30% 22%)`, 'accent-foreground': `hsl(${hue} 40% 92%)`, destructive: 'oklch(0.704 0.191 22.216)', 'destructive-foreground': 'oklch(0.985 0 0)', border: 'oklch(1 0 0 / 10%)', input: 'oklch(1 0 0 / 15%)', ring: `hsl(${hue} 62% 56%)`,
     ...Object.fromEntries(hues.map((h, i) => [`chart-${i + 1}`, `hsl(${h} 62% 60%)`])),
-    sidebar: 'oklch(0.205 0 0)', 'sidebar-foreground': 'oklch(0.985 0 0)', 'sidebar-primary': `hsl(${hue} 62% 56%)`, 'sidebar-primary-foreground': `hsl(${hue} 62% 10%)`, 'sidebar-accent': `hsl(${hue} 30% 22%)`, 'sidebar-accent-foreground': `hsl(${hue} 40% 92%)`, 'sidebar-border': 'oklch(1 0 0 / 10%)', 'sidebar-ring': `hsl(${hue} 62% 56%)`,
-  }
+  }, 'oklch(0.205 0 0)')
   const block = (sel: string, vars: Record<string, string>) => `${sel} {\n${Object.entries(vars).map(([k, v]) => `  --${k}: ${v};`).join('\n')}\n}`
   const themeInline = ['--font-sans: var(--font-sans)', '--font-heading: var(--font-sans)', '--font-mono: var(--font-mono)', ...Object.keys(light).filter((k) => k !== 'radius').map((k) => `--color-${k}: var(--${k})`), '--radius-sm: calc(var(--radius) * 0.6)', '--radius-md: calc(var(--radius) * 0.8)', '--radius-lg: var(--radius)', '--radius-xl: calc(var(--radius) * 1.4)', '--radius-2xl: calc(var(--radius) * 1.8)']
   const globalsCss = [`@import "tailwindcss";`, `@import "tw-animate-css";`, `@import "shadcn/tailwind.css";`, ``, `@custom-variant dark (&:is(.dark *));`, ``, `@theme inline {\n${themeInline.map((l) => `  ${l};`).join('\n')}\n}`, ``, `/* the a432 settings: the theme hue ${hue} (${key} mod 360), the chart colours the harmonics ${HARMONICS.join(', ')} Hz, the radius ${radius} (${key} / 1000) */`, block(':root', light), ``, block('.dark', dark), ``, `@layer base { * { @apply border-border outline-ring/50; } body { @apply bg-background text-foreground; } }`, ``, `/* the a432 stylesheet: every QPU block draws itself from its address */`, getCss(key)].join('\n')

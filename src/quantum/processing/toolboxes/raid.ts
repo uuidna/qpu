@@ -6,7 +6,7 @@
 // the shape this ports to, not Cloudflare's D1.
 import { TABLES } from '../tables-index.ts'
 import { defineTool, isObj, createChecks, type Toolbox, type Context } from '../toolbox.ts'
-import { uuidOf } from '../unit/blocks.ts'
+import { uuidOf, canonicalTextOf } from '../unit/blocks.ts'
 import { flowWidget } from '../widgets.ts'
 import { createAssociation, createValidation, type Association, type Validation } from './payload.ts'
 
@@ -71,10 +71,10 @@ const applyUpdate = (doc: Doc, update: Record<string, unknown>): Doc => {
   }
   return out
 }
-/** A document as a docket entry: content-addressed by its body, in a collection family, linked to the version it replaces. */
+/** A document as a docket entry: content-addressed by its body's canonical text (any key order, one address), in a collection family, linked to the version it replaces. */
 const toEntry = (collection: string, doc: Doc, replaces?: string): { id: string; kind: string; collection: string; body: Doc; links: string[] } => {
   const body = { ...doc }
-  const id = uuidOf(`${collection}${JSON.stringify(body)}`)
+  const id = uuidOf(`${collection}${canonicalTextOf(body)}`)
   return { id, kind: 'document', collection, body: { ...body, _id: body._id ?? id }, links: replaces ? [replaces] : [] }
 }
 

@@ -2778,9 +2778,6 @@ MCP configures Payload and the rest
     },
     "sets": {
       "type": "array",
-      "items": {
-        "type": "string"
-      },
       "description": "kind sets"
     },
     "devDependencies": {

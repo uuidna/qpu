@@ -3320,9 +3320,6 @@
           },
           "sets": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
             "description": "kind sets"
           },
           "devDependencies": {

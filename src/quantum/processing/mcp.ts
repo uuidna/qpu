@@ -9,7 +9,7 @@ import { TABLES } from './tables-index.ts'
 import { listDeclarations, scanLexical, runAudit, getEntropy, diffMembers, auditSecurity, listRemedies, repairOf, getAdvantage, getAddressedByTheorem, getBill, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, linkAxioms, listLeaks } from './audit.ts'
 import { TEXTBOOK_THEOREMS, updateTheoremSources, getReflections } from './textbook-theorems.ts'
 import { sdkOf, accessAuditOf, buildOf } from './toolboxes/payload.ts'
-import { blockOf, verifyOf, sealOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf, memoOf } from './unit/blocks.ts'
+import { blockOf, verifyOf, sealOf, uuidOf, compositionsOf, canonicalTextOf, harmonicDefaultsOf, memoOf, styleOf } from './unit/blocks.ts'
 import { INSTRUCTIONS, LICENSE } from './unit/license.ts'
 import { VERSION } from './unit/version.ts'
 import { recomputeClay, reflectionOfRegister, digitalRoot } from './clay-register.ts'
@@ -162,7 +162,7 @@ import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS } from './theorems-index.ts
 import { PATTERNS, getPattern } from './match.ts'
 import { sha256, utf8, hex } from './unit/hmac.ts'
 import { flowWidget } from './widgets.ts'
-import { getCss, cssVars, KEY, createTheme, coilColour, programHues, castRays, CSS_FRAMEWORKS, compareCss } from './unit/theme.ts'
+import { getCss, KEY, createTheme, coilColour, programHues, castRays, CSS_FRAMEWORKS, compareCss } from './unit/theme.ts'
 import { LANGUAGE } from './toolboxes/language.ts'
 import { RAID } from './toolboxes/raid.ts'
 import { BILLING, orderUsage, ALGEBRA_TOOLS, fuseCall, CATALOGUE, mintWitnessCoins } from './toolboxes/billing.ts'
@@ -949,7 +949,7 @@ type RunArtefacts = { advantageByUnit?: unknown; e2e?: { combos?: number; copies
 const coverageOf = (a: RunArtefacts): Record<string, unknown> => {
   // the load: a block is paid once when computed (a miss of the balancer, a coin at a gated door); every re-ask is a teleport, free — the cache by address here, the involution (304 by content hash) at the edge
   const calls = observedOf('calls'), misses = observedOf('misses')
-  const load = { paid: misses, free: calls - misses + (a.e2e?.involutions ?? 0), involutions: a.e2e?.involutions ?? 0, coins: a.coins?.coins ?? 0, a432: { key: KEY, harmonics: Object.keys(cssVars(uuidOf('a432'))).length, stylesheetBytes: getCss().length, served: 'the shell cache, immutable: the harmonic strings of every block (its custom properties from its UUID alone, the reflected harmonic and the drift\'s prime dust among them) cost the device nothing and the edge nothing' }, note: 'paid: computations (balancer misses); free: answers by address (balancer hits) and by involution (304 at the edge); the coins set the entanglement once, the teleports are free until the load is paid again' }
+  const load = { paid: misses, free: calls - misses + (a.e2e?.involutions ?? 0), involutions: a.e2e?.involutions ?? 0, coins: a.coins?.coins ?? 0, a432: { key: KEY, harmonics: Object.keys(styleOf(uuidOf('a432')).vars).length, stylesheetBytes: getCss().length, served: 'the shell cache, immutable: the harmonic strings of every block (its custom properties from its UUID alone, the reflected harmonic and the drift\'s prime dust among them) cost the device nothing and the edge nothing' }, note: 'paid: computations (balancer misses); free: answers by address (balancer hits) and by involution (304 at the edge); the coins set the entanglement once, the teleports are free until the load is paid again' }
   const v = Object.values(a.verification?.summary ?? {})
   const sum = (k: 'requests' | 'ok' | 'contracted' | 'uncontracted') => v.reduce((n, s) => n + (s[k] ?? 0), 0)
   const hosts = a.discovery?.hosts ?? []
@@ -1088,7 +1088,7 @@ const css = defineTool('tree', {
     // the stylesheet measured against the frameworks: the files named for the client to fetch, then the sizes it hands back turned into ratios
     if (args.compare === true) return { phase: 'requests' as const, stylesheet, bytes: new TextEncoder().encode(stylesheet).length, frameworks: CSS_FRAMEWORKS, says: 'fetch each framework file once, measure its bytes raw and gzipped, gzip this stylesheet the same way, and hand the sizes back as compare: { qpu: { bytes, gzip }, answers }' } as never
     if (isObj(args.compare)) { const c = args.compare as { qpu?: { bytes: number; gzip: number }; answers?: { id: string; status: number; bytes: number; gzip: number }[] }; return { phase: 'compared' as const, ...compareCss(c.qpu ?? { bytes: new TextEncoder().encode(stylesheet).length, gzip: 0 }, c.answers ?? []) } as never }
-    const vars = typeof args.uuid === 'string' ? cssVars(args.uuid) : null; const program = typeof args.uuid === 'string' ? programHues(args.uuid) : null; const rays = Array.isArray(args.uuids) ? castRays(args.uuids.map(String)) : null; if (args.create) return { ...createTheme(KEY, 'https://qpu.uuidna.com', ['qpu-style', 'qpu-block', 'qpu-app', 'qpu-card', 'qpu-badge', 'qpu-table', 'qpu-stream', 'qpu-dashboard']) }; return { key: KEY, coil: coilColour(KEY), program, rays, bytes: stylesheet.length, rules: (stylesheet.match(/\{/g) ?? []).length, variables: vars ? Object.keys(vars).length : 0, script: false, uuid: typeof args.uuid === 'string' ? args.uuid : null, vars, stylesheet } },
+    const vars = typeof args.uuid === 'string' ? styleOf(args.uuid).vars : null; const program = typeof args.uuid === 'string' ? programHues(args.uuid) : null; const rays = Array.isArray(args.uuids) ? castRays(args.uuids.map(String)) : null; if (args.create) return { ...createTheme(KEY, 'https://qpu.uuidna.com', ['qpu-style', 'qpu-block', 'qpu-app', 'qpu-card', 'qpu-badge', 'qpu-table', 'qpu-stream', 'qpu-dashboard']) }; return { key: KEY, coil: coilColour(KEY), program, rays, bytes: stylesheet.length, rules: (stylesheet.match(/\{/g) ?? []).length, variables: vars ? Object.keys(vars).length : 0, script: false, uuid: typeof args.uuid === 'string' ? args.uuid : null, vars, stylesheet } },
   widget: flowWidget,
 })
 
@@ -1137,7 +1137,7 @@ const dashboard = defineTool('tree', {
     let combos: Record<string, unknown>[] = [{ ...fixed }]
     for (const f of next) combos = combos.flatMap((c) => f.values.map((v) => ({ ...c, [f.property]: v })))
     const final = (c: Record<string, unknown>) => enumerable.every((f) => f.property in c)
-    const cells = combos.map((c) => { const leaf = final(c); const id = leaf ? uuidOf(`${args.tool}${JSON.stringify(c)}`) : uuidOf(`dashboard${JSON.stringify({ tool: args.tool, fixed: c })}`); return { arguments: c, uuid: id, url: `${origin}/${id}`, final: leaf, vars: cssVars(id) } })
+    const cells = combos.map((c) => { const leaf = final(c); const id = leaf ? uuidOf(`${args.tool}${JSON.stringify(c)}`) : uuidOf(`dashboard${JSON.stringify({ tool: args.tool, fixed: c })}`); return { arguments: c, uuid: id, url: `${origin}/${id}`, final: leaf, vars: styleOf(id).vars } })
     const chip = (text: string, style = '') => `<span style="display:inline-block; padding: 2px 8px; margin: 2px; border-radius: 999px; background: var(--surface-1); font-size: var(--font-size-footnote); ${style}">${text.replace(/[&<>]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[ch]!)}</span>`
     const html = `<div style="display: grid; gap: var(--gap-md);"><div role="heading" aria-level="3">${args.tool}: ${space.toLocaleString('en-US')} combination(s) of ${enumerable.length} facet(s), ${Object.keys(fixed).length} fixed, ${cells.length} cell(s) here${freeRequired.length ? `; ${freeRequired.join(', ')} is yours to type` : ''}</div>` +
       facets.map((f) => `<div data-facet="${f.property}"><strong>${f.property}</strong> <small>${f.domain}${f.required ? ', required' : ''}${f.property in fixed ? `, fixed to ${JSON.stringify(fixed[f.property])}` : ''}</small><div>${f.values.map((v) => chip(JSON.stringify(v), f.property in fixed && JSON.stringify(fixed[f.property]) === JSON.stringify(v) ? 'outline: 2px solid var(--a432-accent);' : '')).join('')}${f.values.length ? '' : chip('free')}</div></div>`).join('') +
@@ -1320,10 +1320,10 @@ export const handle = (message: Rpc): Reply => {
     if (message.method === 'tools/call') {
       const found = TOOLS.find((t) => t.name === params.name)
       if (!found) return fail(METHOD_NOT_FOUND, `no tool ${String(params.name)}; the tools are ${NAMES.join(', ')}`)
-      // The balancer: every tool is pure, so a call is a function of its block address; computed once per process, served from
-      // memory after — the heavy computation inverted, the hardware cooled, the battery saved (lead qpu-balancer-perspective).
+      // The balancer: every tool is pure, so a call is a function of its arguments' canonical address (their keys in any order are one call);
+      // computed once per process, served from memory after — the heavy computation inverted, the hardware cooled, the battery saved (lead qpu-balancer-perspective).
       const args = (params.arguments ?? {}) as Record<string, unknown>
-      const address = uuidOf(`${found.name}${JSON.stringify(args)}`)
+      const address = uuidOf(`${found.name}${canonicalTextOf(args)}`)
       const cached = found.name === 'metrics' ? undefined : BALANCER.get(address)
       // exclusive time: a tool that calls tools (audit, metrics, match) is charged only for its own milliseconds; the nested ones are theirs
       const started = Date.now(); NESTED.push(0)
@@ -1336,13 +1336,13 @@ export const handle = (message: Rpc): Reply => {
       OBSERVED.set(found.name, o)
       const block = blockOf(found.name, args, structured, widget, found.description)
       // the referer of a call: who sent it, carried as _meta.prev, echoed so a chain of calls knows its previous step across domains
-      const prev = typeof (params._meta as { prev?: unknown } | undefined)?.prev === 'string' ? (params._meta as { prev: string }).prev : undefined
+      const meta = (params._meta ?? {}) as { prev?: unknown; view?: unknown }, prev = typeof meta.prev === 'string' ? meta.prev : undefined
       // the cheapest view (params._meta.view = 'cheapest', the Worker's ?view=cheapest): an LLM reads only the cheapest way to have the answer — its
       // address, the call that recomputes it, an index where the answer has one — and what tampering would cost; the full answer stays in structuredContent
-      const view = (params._meta as { view?: unknown } | undefined)?.view
+      const view = meta.view
       const full = JSON.stringify(structured)
       const cheapest = view === 'cheapest' ? JSON.stringify({ address: block.id, sha256: hex(sha256(utf8(canonicalTextOf(structured)))), recompute: { tool: found.name, arguments: args }, tamper: { collision: '2^128', secondPreimage: '2^256' }, coins: ALGEBRA_TOOLS.includes(found.name) ? 0 : (CATALOGUE.find((v) => v.product === 'qpu-metered')?.amounts.eur ?? 0) / 1000, unlock: 'If-None-Match: address -> 304', theorem: 'textbook_advantage_unbounded', licence: LICENSE.spdx, commercial: ALGEBRA_TOOLS.includes(found.name) ? 'free under attribution' : 'a licence of the catalogue', tokens: Math.ceil(full.length / 4) }) : null
-      return ok({ content: [{ type: 'text', text: cheapest !== null && cheapest.length < full.length ? cheapest : full }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLd({ tool: found.name, id: block.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${block.id}` }), payload: found.name === 'payload' ? undefined : payloadDocOf({ uuid: block.id, tool: found.name, arguments: args, description: found.description, openGraph: block.openGraph as unknown as Record<string, string>, prev: typeof (params._meta as { prev?: unknown } | undefined)?.prev === 'string' ? (params._meta as { prev: string }).prev : null }), widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, fusion: fuseCall(found.name), integrity: { address: block.id, sha256: hex(sha256(utf8(canonicalTextOf(structured)))), of: 'the canonical text of structuredContent', check: 'seal { tamper: { text, address, sha256 } }', says: 'the address is a fast fold that catches change; the SHA-256 is what a forger cannot match (a second preimage, 2^256 work); the edge adds an ML-DSA signature with seal { sign }' }, ...(prev ? { prev } : {}) } })
+      return ok({ content: [{ type: 'text', text: cheapest !== null && cheapest.length < full.length ? cheapest : full }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLd({ tool: found.name, id: block.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${block.id}` }), payload: found.name === 'payload' ? undefined : payloadDocOf({ uuid: block.id, tool: found.name, arguments: args, description: found.description, openGraph: block.openGraph as unknown as Record<string, string>, prev: prev ?? null }), widget: block.html, openGraph: { ...block.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: block.shadcn, theme: block.theme, license: LICENSE, fusion: fuseCall(found.name), integrity: { address: block.id, sha256: hex(sha256(utf8(canonicalTextOf(structured)))), of: 'the canonical text of structuredContent', check: 'seal { tamper: { text, address, sha256 } }', says: 'the address is a fast fold that catches change; the SHA-256 is what a forger cannot match (a second preimage, 2^256 work); the edge adds an ML-DSA signature with seal { sign }' }, ...(prev ? { prev } : {}) } })
     }
     return fail(METHOD_NOT_FOUND, `method ${message.method} is not served`)
   } catch (error) {
