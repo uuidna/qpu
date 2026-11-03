@@ -6,7 +6,7 @@ import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import type { Rpc, Check } from './audit.ts'
 
-export type Context = { handle: (m: Rpc) => any; examples: readonly Example[]; leads: readonly Lead[]; /** a tool's structured content, undefined on an error */ call: (name: string, args?: Record<string, unknown>) => any }
+export type Context = { handle: (m: Rpc) => any; examples: readonly Example[]; leads: readonly Lead[]; /** a tool's structured content, undefined on an error */ call: (name: string, args?: Record<string, unknown>) => any; /** a toolbox's cross-test by its name, when the handler holds it */ selftestOf?: (toolbox: string, ctx: Context) => { passed: boolean } | undefined }
 export type Tool = { name: string; toolbox: string; description: string; inputSchema: object; call: (args: Record<string, unknown>, ctx: Context) => { structured: unknown; widget: string } }
 type Skill = {
   /** what a client must know to use the toolset: the order of calls, what it fetches between them, what it writes */
@@ -28,5 +28,6 @@ export const isObj = (x: unknown): x is Record<string, any> => !!x && typeof x =
 export const createChecks = () => { const checks: Check[] = []; return { check: (id: string, passed: boolean, evidence: string) => { checks.push({ id, passed, evidence }) }, done: () => ({ passed: checks.every((c) => c.passed), checks }) } }
 export const defineTool = <T>(toolbox: string, spec: { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>, ctx: Context) => T; widget: (data: T) => string }): Tool => ({
   name: spec.name, toolbox, description: spec.description, inputSchema: spec.inputSchema,
-  call: (args, ctx) => { const data = spec.run(args, ctx); return { structured: data, widget: spec.widget(data) } },
+  // a selftest is the toolbox's cross-test, answered here for each of its tools, never by the tool
+  call: (args, ctx) => { const t = args.selftest ? ctx.selftestOf?.(toolbox, ctx) : undefined, data = (t ? { selftest: true, ...t } : spec.run(args, ctx)) as T; return { structured: data, widget: spec.widget(data) } },
 })

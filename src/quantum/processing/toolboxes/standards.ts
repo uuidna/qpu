@@ -12,7 +12,6 @@ const jsonld = defineTool('standards', {
   description: 'schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of the catalogue (product, variant, currency). The author a Person with an ORCID, the licence a URL, dates ISO 8601, languages ISO 639-1, currencies ISO 4217. Every tools/call result already carries its block\'s JSON-LD in _meta.jsonLd; every documentation page carries its own in its head.',
   inputSchema: { type: 'object', properties: { kind: { type: 'string', enum: ['block', 'page', 'offer', 'catalogue'] }, tool: { type: 'string' }, id: { type: 'string' }, description: { type: 'string' }, url: { type: 'string' }, title: { type: 'string' }, uuid: { type: 'string' }, locale: { type: 'string', enum: Object.keys(LOCALES) }, product: { type: 'string' }, variant: { type: 'string' }, currency: { type: 'string' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
-    if (args.selftest) return { selftest: true, ...STANDARDS_BOX.skill.selftest(ctx) }
     const kind = String(args.kind ?? 'block')
     if (kind === 'block') return { kind, jsonLd: blockJsonLd({ tool: String(args.tool ?? 'qpu'), id: String(args.id ?? ''), description: String(args.description ?? ''), url: typeof args.url === 'string' ? args.url : undefined, locale: typeof args.locale === 'string' ? args.locale : undefined }) }
     if (kind === 'page') return { kind, jsonLd: pageJsonLdOf({ url: String(args.url ?? 'https://qpu.uuidna.com/'), title: String(args.title ?? '@uuidna/qpu'), description: String(args.description ?? ''), uuid: typeof args.uuid === 'string' ? args.uuid : undefined, locale: typeof args.locale === 'string' ? args.locale : undefined }) }
@@ -29,7 +28,6 @@ const codes = defineTool('standards', {
   description: 'The tree\'s ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1): every locale of the language toolbox, every currency of the catalogue, the tenants\' countries. Without the lists: what would be checked and where the lists are. A code the standard does not know is a lead, never a guess.',
   inputSchema: { type: 'object', properties: { cldr: { type: 'object', description: '{ languages, currencies, territories }: the CLDR JSON documents as fetched' }, territories: { type: 'array', items: { type: 'string' } }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
-    if (args.selftest) return { selftest: true, ...STANDARDS_BOX.skill.selftest(ctx) }
     const mine = { locales: Object.keys(LOCALES), currencies: [...new Set(CATALOGUE.flatMap((v) => Object.keys(v.amounts)))], territories: Array.isArray(args.territories) ? args.territories.map(String) : ['BG', 'US'] }
     if (!args.cldr) return { phase: 'plan' as const, locales: mine.locales.length, currencies: mine.currencies.length, territories: mine.territories.length, standards: STANDARDS.filter((s) => s.kind === 'codes').map((s) => ({ id: s.id, contract: s.contract })), mine }
     const v = validateCodes(listCodes(args.cldr as Parameters<typeof listCodes>[0]), mine)
@@ -42,7 +40,7 @@ const validate = defineTool('standards', {
   name: 'validate',
   description: 'Validate against all standards via Payload\'s standard implementation, in the cheapest possible slices: every standard (the vocabularies, the ISO code lists, the references) with the Payload mechanism that validates it, split into content-addressed slices so validation, reindexing and cleanup run per slice (a page, a job) — the cheapest unit, an unchanged slice skipped by its address (the 304 involution), never the whole at once.',
   inputSchema: { type: 'object', properties: { bound: { type: 'integer', minimum: 1, description: 'standards per slice (default 6)' }, selftest: { type: 'boolean' } } },
-  run: (args, ctx) => { if (args.selftest) return { selftest: true, ...STANDARDS_BOX.skill.selftest(ctx) }; return validateStandardsOf(typeof args.bound === 'number' ? args.bound : 6) },
+  run: (args, ctx) => { return validateStandardsOf(typeof args.bound === 'number' ? args.bound : 6) },
   widget: flowWidget,
 })
 

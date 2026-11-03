@@ -64,18 +64,21 @@ export const timesOf = async (root: string) => {
 /** Runs an asked action: planned by the workflow rules against the facts at the root, run with no shell and streamed (its start with the ETA, a
  *  heartbeat every second, each finished step of next), then recorded; an action the rules refuse answers its plan and runs nothing. */
 export const runMachine = async (args: Record<string, unknown>, cwd: string, onProgress: (p: MachineProgress) => void = () => {}) => {
-  const repository = (await import('../src/quantum/processing/mcp.ts')).toolCallerOf('repository'), read = (f: string) => getJson(join(cwd, f))
-  const files = await runFiles(), plan = repository({ machine: { plan: { ...args, facts: { receipt: read(files.receipt), approval: read(files.configs)?.approval ?? null, e2e: read(files.e2e)?.outcomes ?? null } } } })
+  const repository = (await import('../src/quantum/processing/mcp.ts')).toolCallerOf('repository'), files = await runFiles()
+  // planned with the facts where it runs: the root, or the worktree the plan validated
+  const planAt = (root: string) => { const read = (f: string) => getJson(join(root, f)); return repository({ machine: { plan: { ...args, facts: { receipt: read(files.receipt), approval: read(files.configs)?.approval ?? null, e2e: read(files.e2e)?.outcomes ?? null } } } }) }
+  let plan = planAt(cwd); const at = plan?.worktree ? join(cwd, plan.worktree) : cwd
+  if (at !== cwd) plan = planAt(at)
   if (!plan?.allowed) return { plan, answer: plan }
   // the action's own hooks run first, before use: a refusal is answered here, before anything is changed or booked
-  const workflow = MACHINE_ACTIONS.find((a) => a.id === plan.action)?.workflow, pre = workflow ? await spawnRun({ action: 'pre-use', command: { cmd: 'node', args: [...MACHINE_ACTIONS.find((a) => a.id === 'precheck')!.args.slice(0, 1), workflow, '--pre-use'] } }, cwd) : null
+  const workflow = MACHINE_ACTIONS.find((a) => a.id === plan.action)?.workflow, pre = workflow ? await spawnRun({ action: 'pre-use', command: { cmd: 'node', args: [...MACHINE_ACTIONS.find((a) => a.id === 'precheck')!.args.slice(0, 1), workflow, '--pre-use'] } }, at) : null
   if (pre && / refused/.test(pre.stdout + pre.stderr)) return { plan, answer: { plan, preUse: (pre.stdout + pre.stderr).trim() } }
   const s = await streamOf(cwd), subject = plan.action
   const f = forecastTimes((await timesOf(cwd))[subject] ?? [])
   s.start(subject, f?.point ?? null, f?.interval?.[1])
-  const run = await spawnRun(plan, cwd, (p) => { if (plan.action === 'next') s.emit({ kind: 'progress', subject, says: p.message.slice(0, 200) }); onProgress(p) })
+  const run = await spawnRun(plan, at, (p) => { if (plan.action === 'next') s.emit({ kind: 'progress', subject, says: p.message.slice(0, 200) }); onProgress(p) })
   s.end(run.status === 0, run.status === 0 ? '' : `status ${run.status}`)
-  const record = repository({ machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: run.ms, root: cwd, home: homedir() } } })
+  const record = repository({ machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: run.ms, root: at, home: homedir() } } })
   return { plan, record, answer: { plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry } } }
 }
 

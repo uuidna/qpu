@@ -1268,10 +1268,10 @@ const matchQuestions = (q: unknown) => {
   const leads = rows.filter((r) => !r.decided).map((r) => ({ id: `question-${r.source}-${r.id}`, source: r.link, statement: `an unanswered question (${r.tags.join(', ')}) no door decides yet`, status: 'open' as const, reason: r.routed ? `a lexical neighbour only (${r.routed.shared.join(', ')} shared with ${r.routed.theorem})` : 'matched by no tool, example or lead' }))
   return { phase: 'matched' as const, questions: rows.length, byVerdict, decided: rows.filter((r) => r.decided).length, rows, leads, backoff: Math.max(0, ...read.map(({ j }) => j.backoff ?? 0)), quotaRemaining: Math.min(...read.map(({ j }) => j.quota_remaining ?? Infinity)), theorem: 'textbook_questions_matched' }
 }
-const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS }, call: (name, args = {}) => callOf(name, args).result?.structuredContent }
+const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS }, call: (name, args = {}) => callOf(name, args).result?.structuredContent, selftestOf: (name, ctx) => TOOLBOXES.find((b) => b.name === name)?.skill.selftest(ctx) }
 // the leads beyond the core, handed by a client or a page's hook as arguments (records, or one lead): the call's leads, the core's ids kept first
 const isLead = (l: unknown): l is Lead => isObj(l) && ['id', 'statement', 'status'].every((k) => typeof (l as Record<string, unknown>)[k] === 'string')
-const recordsOf = (args: Record<string, unknown>): Context => { const given = [...(Array.isArray(args.records) ? args.records : []), args.lead].filter(isLead), ids = new Set(LEADS.map((l) => l.id)); return given.length ? { handle, examples: EXAMPLES, leads: [...LEADS, ...given.filter((l) => !ids.has(l.id) && ids.add(l.id))], call: CONTEXT.call } : CONTEXT }
+const recordsOf = (args: Record<string, unknown>): Context => { const given = [...(Array.isArray(args.records) ? args.records : []), args.lead].filter(isLead), ids = new Set(LEADS.map((l) => l.id)); return given.length ? { handle, examples: EXAMPLES, leads: [...LEADS, ...given.filter((l) => !ids.has(l.id) && ids.add(l.id))], call: CONTEXT.call, selftestOf: CONTEXT.selftestOf } : CONTEXT }
 
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
 

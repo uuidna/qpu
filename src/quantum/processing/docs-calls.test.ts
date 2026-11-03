@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { handle } from './mcp.ts'
+import { handle, callOf } from './mcp.ts'
 
 const DOCS = new URL('../../../docs/', import.meta.url).pathname
 const pages = readdirSync(DOCS).filter((f) => f.endsWith('.md')).map((f) => [f, readFileSync(join(DOCS, f), 'utf8')] as const)
@@ -15,7 +15,7 @@ test('every fenced tool call in the docs replays against the handler (docs → c
       try { parsed = JSON.parse(m[1]!) } catch { continue }
       if (!parsed || typeof parsed !== 'object' || !('name' in parsed) || !('arguments' in parsed)) continue
       const { name, arguments: args } = parsed as { name: string; arguments: unknown }
-      const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
+      const r: any = callOf(name, args)
       assert.ok('result' in r, `${file}: ${name} → ${'error' in r ? r.error.message : ''}`)
       calls += 1
     }

@@ -120,7 +120,7 @@ if (name === 'pre-commit' && process.env.QPU_APP_KEY) {
     const held = new Map((LEAD_ROWS.length ? LEAD_ROWS : (await listLeads()).records).map((l) => [l.id, l]))
     const counted = [...new Set(git(['grep', '-h', '-o', "startsWith('[a-z]*-')", '--', 'src', 'scripts']).match(/'[a-z]+-'/g) ?? [])].map((p) => p.slice(1, -1)), file = 'src/quantum/processing/leads.ts', moved: string[] = []
     // paid in chunks of five, each kept only if a fresh-process audit stays as green as before it, else put back and the next chunk tried
-    const failedNow = () => Number(spawnSync('node', ['--input-type=module', '-e', "const { handle } = await import('./src/quantum/processing/mcp.ts'); const r = await handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: {} } }); console.log(r.result.structuredContent.failed)"], { encoding: 'utf8', maxBuffer: 1 << 26 }).stdout.trim().split('\n').pop() ?? NaN), base = failedNow(), candidates: { id: string; row: string }[] = []
+    const failedNow = () => Number(spawnSync('node', ['--input-type=module', '-e', "const { toolCallerOf } = await import('./src/quantum/processing/mcp.ts'); console.log(toolCallerOf('audit')().failed)"], { encoding: 'utf8', maxBuffer: 1 << 26 }).stdout.trim().split('\n').pop() ?? NaN), base = failedNow(), candidates: { id: string; row: string }[] = []
     let text = readFileSync(file, 'utf8')
     // a generated file (a header-declared mirror, e.g. leads-index.ts from the docket) is not code that names the lead: its appearance there must not
     // disqualify the lead from being externalised — the mirror reflects Payload, where the lead lives after the move (textbook_cheap_gates)

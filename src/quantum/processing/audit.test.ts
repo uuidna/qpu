@@ -1,12 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { handle } from './mcp.ts'
+import { handle, callOf } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { LEADS } from './leads.ts'
 import { runAudit } from './audit.ts'
 
-const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
+const call = (name: string, args: unknown): any => callOf(name, args)
 
 test('the MCP surface audits itself through tools/call and every check passes', () => {
   const r = call('audit', {})

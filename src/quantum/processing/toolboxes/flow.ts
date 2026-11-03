@@ -18,14 +18,13 @@ import { TENANTS } from '../unit/tenants.ts'
 const BLOCK_IDS = new WeakMap<readonly unknown[], { example: string; id: string | undefined }[]>()
 /** The content address of every example's block, computed once per examples registry (a readiness call must not replay the examples). */
 const listBlockIds = (ctx: Context) => { const found = BLOCK_IDS.get(ctx.examples); if (found) return found; const ids = ctx.examples.filter((e) => e.tool !== 'audit' && !['readiness', 'imagine', 'discover', 'wave'].includes(e.tool)).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); return { example: e.id, id: r.result?._meta?.block?.meta?.id as string | undefined } }).filter((x) => x.id); BLOCK_IDS.set(ctx.examples, ids); return ids }
-const selftestOr = <T>(args: Record<string, unknown>, ctx: Context, f: () => T): T | { selftest: true; passed: boolean; checks: unknown[] } => (args.selftest ? { selftest: true, ...runFlowSelftest(ctx.handle, ctx.examples, ctx.leads) } : f())
 const SELFTEST = { selftest: { type: 'boolean', description: 'run the flow toolbox\'s cross-test instead: every direction, every toolbox feeding the next' } }
 
 const discover = defineTool('flow', {
   name: 'discover',
   description: 'Discovery before use. Without answers: every request the client must make for the contracts of the hosts this tree talks to (MCP tools/list and catalogue doors, the verifiers\' OpenAPI, index or identify documents, /.well-known/qpu.json). With answers: the follow-ups still to fetch (catalogue doors whose contract is unread) and, once none remain, the discovery: hosts, doors with what they take and answer, capabilities by which clients choose doors, and the leads (hosts with no machine contract). Pure; the client fetches.',
   inputSchema: { type: 'object', properties: { lead: { type: 'string', description: 'a lead id: its words are asked of the public MCP registry first; with answers, the related servers and their extend requests' }, statement: { type: 'string', description: 'with lead: the statement of a lead not in the registry' }, mcpHosts: { type: 'array', items: { type: 'string' }, description: 'MCP endpoints to ask; default the unit, this tree\'s own and Cloudflare\'s eight servers; a tenant names its own' }, auth: { type: 'object', description: 'host → bearer token, the tenant\'s own: forwarded as the authorization header of the requests emitted, never kept' }, answers: { type: 'array', items: { type: 'object' }, description: 'the requests answered: each request as emitted plus status, type and text' }, ...SELFTEST } },
-  run: (args, ctx) => selftestOr(args, ctx, () => {
+  run: (args, ctx) => {
     // leads first: a lead's words asked of the public MCP registry before any guess; with the registry's answers, the servers related to it and the request that extends each through this catalogue
     if (typeof args.lead === 'string') {
       const lead = ctx.leads.find((l) => l.id === args.lead) ?? (typeof args.statement === 'string' ? { id: args.lead, statement: args.statement } : null)
@@ -41,7 +40,7 @@ const discover = defineTool('flow', {
     if (followUps.length) return { phase: 'follow-ups' as const, requests: followUps.length, requestList: followUps }
     const discovery = getDiscovery(answers, VERIFIERS)
     return { phase: 'discovery' as const, hosts: discovery.hosts.length, doors: discovery.doors.length, statementVerdict: discovery.capabilities.statementVerdict.length, leads: discovery.leads.length, discovery, page: getDiscoveryPage(discovery, new Date().toISOString()) }
-  }),
+  },
   widget: flowWidget,
 })
 
@@ -49,12 +48,12 @@ const e2e = defineTool('flow', {
   name: 'e2e',
   description: 'The end-to-end gate as a repetition code. Without answers: every combination the dashboards lay out and every example of the textbook, as one tools/call request per host (default the tenants\' hosts and the operator\'s), each carrying the hash of the tree\'s own answer. With answers (each request plus status, ms, text): every combination decoded by majority over the tree and the hosts — agree, corrected (a flipped host, named by the syndrome), erased (a host that did not answer), uncorrectable (no majority) — the physical and logical error rates against the textbook 3-copy code, every error a UUID block for the stream, and the leads. Pure; the client fetches.',
   inputSchema: { type: 'object', properties: { hosts: { type: 'array', items: { type: 'string' }, description: 'MCP endpoints to call; default https://<tenant host>/mcp for every tenant and the operator\'s workers.dev' }, tools: { type: 'array', items: { type: 'string' }, description: 'only these tools\' combinations; default every tool' }, answers: { type: 'array', items: { type: 'object' } }, ...SELFTEST } },
-  run: (args, ctx) => selftestOr(args, ctx, () => {
+  run: (args, ctx) => {
     const hosts = Array.isArray(args.hosts) ? args.hosts.map(String) : [...Object.keys(TENANTS).map((h) => `https://${h}/mcp`), 'https://qpu.ceci.workers.dev/mcp']
     if (!Array.isArray(args.answers)) { const requests = createE2eRequests(ctx, hosts, Array.isArray(args.tools) ? args.tools.map(String) : undefined); return { phase: 'requests' as const, hosts, combos: new Set(requests.map((r) => r.combo)).size, requests: requests.length, requestList: requests } }
     const r = decodeE2e(args.answers as E2eAnswer[], treeOf(ctx))
     return { phase: 'decoded' as const, hosts, ...r, page: getE2ePage(r, new Date().toISOString(), hosts, { remaining: 0 }) }
-  }),
+  },
   widget: flowWidget,
 })
 
@@ -64,7 +63,7 @@ const shard = defineTool('flow', {
   name: 'shard',
   description: 'A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard\'s index — the shares cover the list exactly once, proven by the kernel (textbook_shards_cover, textbook_shards_disjoint). The clients of the flow take their share from this door and leave what they settled for the merge; nothing is decided by hand.',
   inputSchema: { type: 'object', properties: { list: { type: 'array', description: 'the items (or their ids)' }, index: { type: 'integer', minimum: 0 }, count: { type: 'integer', minimum: 1 }, ...SELFTEST } },
-  run: (args, ctx) => selftestOr(args, ctx, () => {
+  run: (args, ctx) => {
     const list = Array.isArray(args.list) ? args.list : []
     // any index and count, exactly: a count of 0 is read as 1 (one shard holds the list), an index at or above the count as its residue mod
     // the count, the same shard (textbook_shards_cover); the share is every position the residue names, in BigInt when the count is large
@@ -72,7 +71,7 @@ const shard = defineTool('flow', {
     const share = c <= BigInt(Number.MAX_SAFE_INTEGER) ? takeShare(list, Number(i), Number(c)) : list.filter((_, p) => BigInt(p) === i)
     const index = writeInteger(i), count = writeInteger(c), reduced = i !== asked.index || c !== asked.count
     return { index, count, ...(reduced ? { asked: { index: writeInteger(asked.index), count: writeInteger(asked.count) }, reduced: 'the index read as its residue mod the count, a count below 1 as 1: the same shard' } : {}), items: list.length, share: share.length, shareList: share, theorems: ['textbook_shards_cover', 'textbook_shards_disjoint'], covers: 'every item in exactly one shard' }
-  }),
+  },
   widget: flowWidget,
 })
 
@@ -80,12 +79,12 @@ const wave = defineTool('flow', {
   name: 'wave',
   description: 'The verification wave. Without results: every request the surface\'s leads and tree facts need, once per URL with the leads it serves. With results (each request plus status, ok, ms and the body text): what came back read into one-line notes, a check of each request against the OpenAPI contract its host published (from discovery), and a summary by verifier. Pure; the client fetches.',
   inputSchema: { type: 'object', properties: { results: { type: 'array', items: { type: 'object' } }, contracts: { type: 'object', description: 'host → OpenAPI path templates, from the discovery' }, leads: { type: 'array', items: { type: 'string' }, description: 'lead ids to restrict the wave to; default all' }, ...SELFTEST } },
-  run: (args, ctx) => selftestOr(args, ctx, () => {
+  run: (args, ctx) => {
     const chosen = Array.isArray(args.leads) ? ctx.leads.filter((l) => (args.leads as string[]).includes(l.id)) : ctx.leads
     if (!Array.isArray(args.results)) { const requests = createWaveRequests(chosen); return { phase: 'requests' as const, leads: chosen.length, requests: requests.length, requestList: requests } }
     const w = getWave(args.results as WaveResult[], (args.contracts ?? {}) as Record<string, string[]>)
     return { phase: 'results' as const, leads: chosen.length, requests: w.results.length, reachable: w.reachable, summary: w.summary, results: w.results, page: getWavePage(w, chosen.length, new Date().toISOString(), Object.keys((args.contracts ?? {}) as object).length > 0) }
-  }),
+  },
   widget: flowWidget,
 })
 
@@ -93,7 +92,7 @@ const readiness = defineTool('flow', {
   name: 'readiness',
   description: 'The unit judges the tree. Phase one (verification, discovery, present, ledger): every lead judged by measurement into served, refuted or trial; the sources as the unit\'s readiness door takes them; the border plan — every discovered door that takes a statement and answers a verdict, with a hand-written theorem filled in; and the unit plan, the calls the client makes. Phase two (plus border answers and unit answers): the border read, and the page. Pure; the client asks the unit.',
   inputSchema: { type: 'object', properties: { verification: { type: 'object', description: 'the wave tool\'s results phase' }, discovery: { type: 'object', description: 'the discover tool\'s discovery phase' }, present: { type: 'array', items: { type: 'string' }, description: 'cleanup subjects the client measured as present (paths or branches)' }, ledger: { type: 'array', items: { type: 'object' }, description: 'theorem rows {key, statement} from the theorem ledger' }, probeKey: { type: 'string', description: 'the hand-written theorem offered at the border; default clay_sigma' }, border: { type: 'array', items: { type: 'object' }, description: 'phase two: the border calls answered ({door, host, arguments, answer | refusal})' }, unit: { type: 'object', description: 'phase two: the unit\'s answers (readiness, auras, rights, address)' }, ...SELFTEST } },
-  run: (args, ctx) => selftestOr(args, ctx, () => {
+  run: (args, ctx) => {
     const verification = args.verification as { date?: string; results?: WaveResult[] } | undefined
     const discovery = (args.discovery as (Discovery & { date?: string }) | undefined) ?? null
     const present = new Set(Array.isArray(args.present) ? args.present.map(String) : [])
@@ -115,7 +114,7 @@ const readiness = defineTool('flow', {
     const answers = args.unit as UnitAnswers
     const date = new Date().toISOString()
     return { phase: 'judged' as const, served: classes.served, refuted: classes.refuted, trial: classes.trial, ready: answers.readiness.ready, sealedBy: sealedBy.length, ...base, border, sealedByDoors: sealedBy, page: getReadinessPage({ unit: typeof args.unitUrl === 'string' ? args.unitUrl : UNIT_MCP, date, measured: verification?.date ?? null, discovered: discovery?.date ?? null, probe, judged, classes, sources, border, sealedBy, answers }) }
-  }),
+  },
   widget: flowWidget,
 })
 
@@ -123,11 +122,11 @@ const imagine = defineTool('flow', {
   name: 'imagine',
   description: 'Imagination leads all leads: every lead (or the subset named) matched with the reflection on — hidden factors, angles, mirror queries, cluster, verification requests — every reflection that finds something a new open lead, every untried enum value of every schema a lead, every application family an adaptor to build. Pure.',
   inputSchema: { type: 'object', properties: { leads: { type: 'array', items: { type: 'string' }, description: 'lead ids to imagine; default all' }, statements: { type: 'array', items: { type: 'object' }, description: 'ad-hoc statements {id, statement} to imagine instead: the rest of the leads from any text' }, ...SELFTEST } },
-  run: (args, ctx) => selftestOr(args, ctx, () => {
+  run: (args, ctx) => {
     const started = Date.now()
     const im = imagineLeads(ctx.handle, ctx.examples, ctx.leads, Array.isArray(args.leads) ? args.leads.map(String) : undefined, Array.isArray(args.statements) ? (args.statements as { id: string; statement: string }[]) : undefined)
     return { leads: im.leads, served: im.verdicts.served ?? 0, impossible: im.verdicts.impossible ?? 0, unknown: im.verdicts.unknown ?? 0, verifyRequests: im.verifyRequests, imaginedLeads: im.imaginedLeads, ms: Date.now() - started, imagination: im, page: getImaginePage(im, new Date().toISOString(), Date.now() - started) }
-  }),
+  },
   widget: flowWidget,
 })
 

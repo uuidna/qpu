@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-03T03:57:33.074Z",
- "ms": 301,
+ "date": "2026-11-03T04:03:25.228Z",
+ "ms": 309,
  "approval": {
   "represents": "1.4.0+dc1613a9",
   "package": "1.4.0+dc1613a9",
@@ -17,7 +17,9 @@
  "kinds": 25,
  "closed": true,
  "partition": "8 + 2 + 15 = 25",
- "improved": [],
+ "improved": [
+  ".qpu-app/src/payload.qpu.config.ts"
+ ],
  "held": [
   {
    "kind": "payload",
@@ -162,16 +164,16 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "795492ad-00d5-2397-b9ce-f976566cd177",
-    "seed": 2,
-    "reflection": 8,
+    "address": "13173bfb-0e9a-3c43-b7cc-c96f38c9b1cb",
+    "seed": 5,
+    "reflection": 5,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 121690
+    "bytes": 122200
    }
   },
   {

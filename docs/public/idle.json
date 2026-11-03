@@ -1,6 +1,6 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T23:35:52.152Z",
+ "date": "2026-11-03T03:59:28.041Z",
  "input": {
   "doors": [
    {
@@ -110,18 +110,18 @@
    },
    {
     "name": "verify.prev",
-    "bytes": 100,
-    "reached": false
+    "bytes": 181,
+    "reached": true
    },
    {
     "name": "verify.self",
     "bytes": 114,
-    "reached": false
+    "reached": true
    },
    {
     "name": "verify.next",
-    "bytes": 123,
-    "reached": false
+    "bytes": 168,
+    "reached": true
    },
    {
     "name": "processor.name",
@@ -225,7 +225,7 @@
    },
    {
     "name": "algorithm.create",
-    "bytes": 599,
+    "bytes": 607,
     "reached": true
    },
    {
@@ -741,7 +741,7 @@
    {
     "name": "e2e.answers",
     "bytes": 42,
-    "reached": false
+    "reached": true
    },
    {
     "name": "e2e.selftest",
@@ -885,12 +885,32 @@
    },
    {
     "name": "stripe.calls",
-    "bytes": 152,
+    "bytes": 208,
     "reached": true
    },
    {
     "name": "stripe.settled",
     "bytes": 138,
+    "reached": true
+   },
+   {
+    "name": "stripe.journal",
+    "bytes": 160,
+    "reached": true
+   },
+   {
+    "name": "stripe.mint",
+    "bytes": 127,
+    "reached": true
+   },
+   {
+    "name": "stripe.ideas",
+    "bytes": 159,
+    "reached": true
+   },
+   {
+    "name": "stripe.royalty",
+    "bytes": 116,
     "reached": true
    },
    {
@@ -1410,7 +1430,7 @@
    },
    {
     "name": "payload.merge",
-    "bytes": 320,
+    "bytes": 422,
     "reached": true
    },
    {
@@ -1535,7 +1555,7 @@
    },
    {
     "name": "configure.sets",
-    "bytes": 295,
+    "bytes": 305,
     "reached": true
    },
    {
@@ -1701,7 +1721,7 @@
    {
     "name": "fold.pieces",
     "bytes": 101,
-    "reached": false
+    "reached": true
    },
    {
     "name": "fold.root",
@@ -1711,7 +1731,7 @@
    {
     "name": "fold.withPieces",
     "bytes": 109,
-    "reached": false
+    "reached": true
    },
    {
     "name": "fold.dna",
@@ -1721,7 +1741,7 @@
    {
     "name": "fold.reflect",
     "bytes": 346,
-    "reached": false
+    "reached": true
    },
    {
     "name": "fold.selftest",
@@ -1760,7 +1780,7 @@
    },
    {
     "name": "seal.artifacts",
-    "bytes": 387,
+    "bytes": 440,
     "reached": true
    },
    {
@@ -3539,6 +3559,116 @@
     "key": "textbook_ancient_law",
     "bytes": 53,
     "used": true
+   },
+   {
+    "key": "textbook_e2e_tree_dissent",
+    "bytes": 96,
+    "used": true
+   },
+   {
+    "key": "textbook_merge_collision",
+    "bytes": 103,
+    "used": true
+   },
+   {
+    "key": "textbook_set_address_canonical",
+    "bytes": 140,
+    "used": true
+   },
+   {
+    "key": "textbook_entry_canonical",
+    "bytes": 71,
+    "used": true
+   },
+   {
+    "key": "textbook_fold_slices",
+    "bytes": 101,
+    "used": true
+   },
+   {
+    "key": "textbook_reflect_widths",
+    "bytes": 91,
+    "used": true
+   },
+   {
+    "key": "textbook_references_name_collision",
+    "bytes": 87,
+    "used": true
+   },
+   {
+    "key": "textbook_css_one_source",
+    "bytes": 81,
+    "used": true
+   },
+   {
+    "key": "textbook_div_zero",
+    "bytes": 147,
+    "used": true
+   },
+   {
+    "key": "textbook_receipt_binds_sha256",
+    "bytes": 120,
+    "used": true
+   },
+   {
+    "key": "textbook_decode_rows_tested",
+    "bytes": 164,
+    "used": true
+   },
+   {
+    "key": "textbook_witness_gates_decode",
+    "bytes": 142,
+    "used": true
+   },
+   {
+    "key": "textbook_check_three_states",
+    "bytes": 208,
+    "used": true
+   },
+   {
+    "key": "textbook_digest_on_round_trip",
+    "bytes": 207,
+    "used": true
+   },
+   {
+    "key": "textbook_witness_move_computed",
+    "bytes": 202,
+    "used": true
+   },
+   {
+    "key": "textbook_correction_by_majority",
+    "bytes": 119,
+    "used": true
+   },
+   {
+    "key": "textbook_postings_parity",
+    "bytes": 88,
+    "used": true
+   },
+   {
+    "key": "textbook_royalty_fractal",
+    "bytes": 220,
+    "used": true
+   },
+   {
+    "key": "textbook_royalty_conserved",
+    "bytes": 122,
+    "used": true
+   },
+   {
+    "key": "textbook_witness_books_nothing",
+    "bytes": 137,
+    "used": true
+   },
+   {
+    "key": "textbook_witness_states",
+    "bytes": 233,
+    "used": true
+   },
+   {
+    "key": "textbook_lie_collides",
+    "bytes": 283,
+    "used": true
    }
   ],
   "qubits": {
@@ -3659,6 +3789,18 @@
     {
      "door": "algorithm",
      "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
+    },
+    {
+     "door": "algorithm",
+     "used": 1
     }
    ]
   },
@@ -3669,441 +3811,7 @@
     91,
     15
    ]
-  },
-  "gates": [
-   {
-    "name": "uuidna.com",
-    "called": true
-   },
-   {
-    "name": "uuidna.com",
-    "called": true
-   },
-   {
-    "name": "qpu.uuidna.com",
-    "called": true
-   },
-   {
-    "name": "qpu.uuidna.com",
-    "called": true
-   },
-   {
-    "name": "docs.mcp.cloudflare.com",
-    "called": true
-   },
-   {
-    "name": "docs.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "bindings.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "bindings.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "observability.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "observability.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "radar.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "radar.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "browser.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "browser.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "ai-gateway.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "ai-gateway.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "dns-analytics.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "dns-analytics.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "autorag.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "autorag.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "api.githubcopilot.com",
-    "called": false
-   },
-   {
-    "name": "api.githubcopilot.com",
-    "called": false
-   },
-   {
-    "name": "sqladmin.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "sqladmin.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "run.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "run.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "firestore.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "firestore.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "mapstools.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "mapstools.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "monitoring.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "monitoring.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "developerknowledge.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "developerknowledge.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "design.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "design.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "stitch.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "stitch.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "compute.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "compute.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "container.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "container.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "composer.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "composer.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "datastream.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "datastream.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "bigtableadmin.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "bigtableadmin.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "memorystore.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "memorystore.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "androidmanagement.googleapis.com",
-    "called": true
-   },
-   {
-    "name": "androidmanagement.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "json-schema.org",
-    "called": true
-   },
-   {
-    "name": "spec.openapis.org",
-    "called": true
-   },
-   {
-    "name": "spec.graphql.org",
-    "called": true
-   },
-   {
-    "name": "www.w3.org",
-    "called": true
-   },
-   {
-    "name": "modelcontextprotocol.io",
-    "called": true
-   },
-   {
-    "name": "www.rfc-editor.org",
-    "called": true
-   },
-   {
-    "name": "www.rfc-editor.org",
-    "called": true
-   },
-   {
-    "name": "www.rfc-editor.org",
-    "called": true
-   },
-   {
-    "name": "www.w3.org",
-    "called": true
-   },
-   {
-    "name": "www.rfc-editor.org",
-    "called": true
-   },
-   {
-    "name": "www.rfc-editor.org",
-    "called": true
-   },
-   {
-    "name": "www.rfc-editor.org",
-    "called": true
-   },
-   {
-    "name": "www.jsonrpc.org",
-    "called": true
-   },
-   {
-    "name": "payloadcms.com",
-    "called": true
-   },
-   {
-    "name": "raw.githubusercontent.com",
-    "called": true
-   },
-   {
-    "name": "csrc.nist.gov",
-    "called": true
-   },
-   {
-    "name": "csrc.nist.gov",
-    "called": true
-   },
-   {
-    "name": "csrc.nist.gov",
-    "called": true
-   },
-   {
-    "name": "csrc.nist.gov",
-    "called": true
-   },
-   {
-    "name": "developers.cloudflare.com",
-    "called": true
-   },
-   {
-    "name": "platform.claude.com",
-    "called": true
-   },
-   {
-    "name": "api.github.com",
-    "called": true
-   },
-   {
-    "name": "api.github.com",
-    "called": true
-   },
-   {
-    "name": "api.github.com",
-    "called": true
-   },
-   {
-    "name": "www.ecb.europa.eu",
-    "called": true
-   },
-   {
-    "name": "api.frankfurter.dev",
-    "called": true
-   },
-   {
-    "name": "www.bnb.bg",
-    "called": true
-   },
-   {
-    "name": "open.er-api.com",
-    "called": true
-   },
-   {
-    "name": "cdn.jsdelivr.net",
-    "called": true
-   },
-   {
-    "name": "www.claymath.org",
-    "called": true
-   },
-   {
-    "name": "www.xprize.org",
-    "called": true
-   },
-   {
-    "name": "vercel.com",
-    "called": true
-   },
-   {
-    "name": "github.com",
-    "called": true
-   },
-   {
-    "name": "patents.google.com",
-    "called": true
-   },
-   {
-    "name": "data.epo.org",
-    "called": true
-   },
-   {
-    "name": "beacon.nist.gov",
-    "called": true
-   },
-   {
-    "name": "ct.googleapis.com",
-    "called": false
-   },
-   {
-    "name": "acme-v02.api.letsencrypt.org",
-    "called": true
-   },
-   {
-    "name": "opendata.cern.ch",
-    "called": true
-   },
-   {
-    "name": "api.github.com",
-    "called": true
-   },
-   {
-    "name": "schema.org",
-    "called": true
-   },
-   {
-    "name": "raw.githubusercontent.com",
-    "called": true
-   },
-   {
-    "name": "raw.githubusercontent.com",
-    "called": true
-   },
-   {
-    "name": "raw.githubusercontent.com",
-    "called": true
-   },
-   {
-    "name": "oeis.org",
-    "called": false
-   },
-   {
-    "name": "raw.githubusercontent.com",
-    "called": true
-   },
-   {
-    "name": "quantumai.google",
-    "called": false
-   },
-   {
-    "name": "export.arxiv.org",
-    "called": true
-   },
-   {
-    "name": "api.datacite.org",
-    "called": true
-   },
-   {
-    "name": "zenodo.org",
-    "called": false
-   },
-   {
-    "name": "www.doi.org",
-    "called": false
-   },
-   {
-    "name": "api.crossref.org",
-    "called": true
-   },
-   {
-    "name": "opendata.cern.ch",
-    "called": true
-   },
-   {
-    "name": "physics.nist.gov",
-    "called": false
-   },
-   {
-    "name": "docs.mcp.cloudflare.com",
-    "called": false
-   },
-   {
-    "name": "en.wikipedia.org",
-    "called": true
-   }
-  ]
+  }
  },
  "top": [
   {
@@ -4111,7 +3819,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4139,7 +3847,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4167,7 +3875,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4195,7 +3903,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4223,7 +3931,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4251,7 +3959,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4279,7 +3987,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4307,7 +4015,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4335,7 +4043,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4363,7 +4071,7 @@
    "name": "algorithm",
    "kind": "idle",
    "blocks": false,
-   "tokens": 113,
+   "tokens": 128,
    "unit": "qubits per call",
    "antimatter": {
     "needs": "auto",
@@ -4390,16 +4098,13 @@
  "counts": {
   "doors": {
    "unit": "schema bytes",
-   "capacity": 60561,
-   "used": 49136,
-   "idle": 11425,
-   "percentIdle": 18,
+   "capacity": 61478,
+   "used": 50988,
+   "idle": 10490,
+   "percentIdle": 17,
    "idleNames": [
     "clay.catalog",
     "clay.readme",
-    "verify.prev",
-    "verify.self",
-    "verify.next",
     "circuit.insert",
     "circuit.device",
     "circuit.observables",
@@ -4453,7 +4158,6 @@
     "readiness.selftest",
     "imagine.statements",
     "imagine.selftest",
-    "e2e.answers",
     "e2e.selftest",
     "shard.selftest",
     "translate.selftest",
@@ -4511,10 +4215,7 @@
     "extend.selftest",
     "fold.order",
     "fold.digits",
-    "fold.pieces",
     "fold.root",
-    "fold.withPieces",
-    "fold.reflect",
     "fold.selftest",
     "seal.selftest",
     "attest.hosts",
@@ -4523,70 +4224,19 @@
   },
   "theorems": {
    "unit": "statement bytes",
-   "capacity": 36297,
-   "used": 36297,
+   "capacity": 39459,
+   "used": 39459,
    "idle": 0,
    "percentIdle": 0,
    "idleNames": []
   },
-  "gates": {
-   "unit": "calls",
-   "capacity": 108,
-   "used": 65,
-   "idle": 43,
-   "percentIdle": 39,
-   "idleNames": [
-    "docs.mcp.cloudflare.com",
-    "bindings.mcp.cloudflare.com",
-    "bindings.mcp.cloudflare.com",
-    "observability.mcp.cloudflare.com",
-    "observability.mcp.cloudflare.com",
-    "radar.mcp.cloudflare.com",
-    "radar.mcp.cloudflare.com",
-    "browser.mcp.cloudflare.com",
-    "browser.mcp.cloudflare.com",
-    "ai-gateway.mcp.cloudflare.com",
-    "ai-gateway.mcp.cloudflare.com",
-    "dns-analytics.mcp.cloudflare.com",
-    "dns-analytics.mcp.cloudflare.com",
-    "autorag.mcp.cloudflare.com",
-    "autorag.mcp.cloudflare.com",
-    "api.githubcopilot.com",
-    "api.githubcopilot.com",
-    "sqladmin.googleapis.com",
-    "run.googleapis.com",
-    "firestore.googleapis.com",
-    "mapstools.googleapis.com",
-    "monitoring.googleapis.com",
-    "monitoring.googleapis.com",
-    "developerknowledge.googleapis.com",
-    "design.googleapis.com",
-    "design.googleapis.com",
-    "stitch.googleapis.com",
-    "stitch.googleapis.com",
-    "compute.googleapis.com",
-    "container.googleapis.com",
-    "composer.googleapis.com",
-    "composer.googleapis.com",
-    "datastream.googleapis.com",
-    "bigtableadmin.googleapis.com",
-    "memorystore.googleapis.com",
-    "androidmanagement.googleapis.com",
-    "ct.googleapis.com",
-    "oeis.org",
-    "quantumai.google",
-    "zenodo.org",
-    "www.doi.org",
-    "physics.nist.gov",
-    "docs.mcp.cloudflare.com"
-   ]
-  },
+  "gates": null,
   "qubits": {
    "unit": "qubits per call",
-   "capacity": 174,
-   "used": 41,
-   "idle": 133,
-   "percentIdle": 76,
+   "capacity": 192,
+   "used": 44,
+   "idle": 148,
+   "percentIdle": 77,
    "idleNames": [
     "algorithm",
     "algorithm",
@@ -4599,6 +4249,9 @@
     "circuit",
     "circuit",
     "echo",
+    "algorithm",
+    "algorithm",
+    "algorithm",
     "algorithm",
     "algorithm",
     "algorithm",
