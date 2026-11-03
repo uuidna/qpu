@@ -1,10 +1,10 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { handle } from './mcp.ts'
+import { handle, callOf } from './mcp.ts'
 import { LEADS, listCleanupSubjects } from './leads.ts'
 
-const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
+const call = (name: string, args: unknown): any => callOf(name, args)
 
 test('tools/list serves the forty-seven tools in twelve toolboxes with input schemas, and initialize names the server', () => {
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })

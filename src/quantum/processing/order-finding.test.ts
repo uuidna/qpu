@@ -5,10 +5,10 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { orderFinding, shorReduction } from './algorithms.ts'
-import { handle } from './mcp.ts'
+import { callOf } from './mcp.ts'
 
 const factor = (args: Record<string, unknown>) => {
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'algorithm', arguments: args } }) as { result?: { structuredContent?: Record<string, unknown> }; error?: { message: string } }
+  const r = callOf('algorithm', args) as { result?: { structuredContent?: Record<string, unknown> }; error?: { message: string } }
   if (r.error) throw new Error(r.error.message)
   return r.result!.structuredContent as Record<string, unknown>
 }

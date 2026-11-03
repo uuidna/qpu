@@ -60,7 +60,7 @@ test('the verifiers registry covers every fact kind and only free sources', () =
 test('every tool result carries an Open Graph block and a shadcn registry item with the same HTML', () => {
   for (const e of EXAMPLES) {
     if (e.tool === 'audit') continue
-    const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } })
+    const r = callOf(e.tool, e.arguments)
     assert.ok('result' in r, e.id)
     const meta = (r.result as { _meta: { widget: string; openGraph: Record<string, string>; block: { $schema: string; type: string; files: { content: string }[]; meta: { id: string } } } })._meta
     assert.equal(meta.openGraph['og:site_name'], '@uuidna/qpu')
@@ -93,7 +93,7 @@ test('the stylesheet derives from the key 432 and each block takes its accent fr
   const c = cmykOfUuid(u)
   for (const v of Object.values(c)) assert.ok(v >= 0 && v <= 1)
   assert.match(accentOfUuid(u), /^rgb\(\d+ \d+ \d+\)$/)
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'processor', arguments: { name: 'Willow' } } })
+  const r = callOf('processor', { name: 'Willow' })
   const meta = (r as { result: { _meta: { widget: string; theme: { key: number; accent: string }; block: { meta: { id: string } } } } }).result._meta
   assert.equal(meta.theme.key, 432)
   assert.ok(meta.widget.startsWith(`<div data-block="${meta.block.meta.id}"`))
@@ -112,7 +112,7 @@ test('the licence travels with everything: initialize instructions, every result
   assert.equal(init.result.serverInfo.author, 'Tsvetan Rouschev')
   assert.ok(init.result.instructions.includes('commercial use'))
   for (const e of EXAMPLES) {
-    const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }) as { result: { _meta: { license: { spdx: string }; widget: string; block: { license: string; author: string }; openGraph: { license: string } } } }
+    const r = callOf(e.tool, e.arguments) as { result: { _meta: { license: { spdx: string }; widget: string; block: { license: string; author: string }; openGraph: { license: string } } } }
     assert.equal(r.result._meta.license.spdx, 'CC-BY-NC-ND-4.0', e.id)
     assert.ok(r.result._meta.widget.includes('data-license="CC-BY-NC-ND-4.0"'), e.id)
     assert.equal(r.result._meta.block.license, 'CC-BY-NC-ND-4.0')

@@ -2,7 +2,7 @@
 // textbook theorem names only examples that exist, and the same answer is served over MCP (textbook { axioms }) and checked by the audit.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.ts'
+import { callOf } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { THEOREMS } from './theorems-index.ts'
@@ -30,7 +30,7 @@ test('every textbook theorem is in the kernel, and names an example or is cited 
 })
 
 test('the same answer is served over MCP: textbook { axioms }', () => {
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'textbook', arguments: { axioms: true } } }) as { result?: { structuredContent: { complete: boolean; examples: number; linked: number } } }
+  const r = callOf('textbook', { axioms: true }) as { result?: { structuredContent: { complete: boolean; examples: number; linked: number } } }
   assert.equal(r.result?.structuredContent.complete, true)
   assert.equal(r.result?.structuredContent.linked, r.result?.structuredContent.examples)
 })

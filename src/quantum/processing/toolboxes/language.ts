@@ -38,7 +38,6 @@ const translate = defineTool('language', {
   description: 'Translation by vocabulary, offline, both ways: text, from, to. A word no table knows stays as it is and is reported, never guessed; Glagolitic numerals are read as integers. Without text: the vocabulary measured — for every locale, the surface terms with no entry (the leads of the tables).',
   inputSchema: { type: 'object', properties: { text: { type: 'string' }, from: { type: 'string', enum: Object.keys(LOCALES) }, to: { type: 'string', enum: Object.keys(LOCALES) }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
-    if (args.selftest) return { selftest: true, ...LANGUAGE.skill.selftest(ctx) }
     if (typeof args.text !== 'string') { const coverage = getLocaleCoverage(); return { phase: 'coverage' as const, terms: SURFACE_TERMS.length, locales: coverage.length, filled: coverage.filter((c) => c.filled).length, missingTotal: coverage.reduce((n, c) => n + c.missing.length, 0), coverage } }
     const from = typeof args.from === 'string' ? args.from : 'en'; const to = typeof args.to === 'string' ? args.to : 'bg'
     const num = listNumerals(args.text)
@@ -53,7 +52,6 @@ const prose = defineTool('language', {
   description: 'Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox\'s idea, the tool\'s scalar answers, the toolbox\'s instructions — every word from the vocabulary, every number from the tool, every unknown word reported.',
   inputSchema: { type: 'object', required: ['tool'], properties: { tool: { type: 'string' }, arguments: { type: 'object' }, locale: { type: 'string', enum: Object.keys(LOCALES) }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
-    if (args.selftest) return { selftest: true, ...LANGUAGE.skill.selftest(ctx) }
     const tool = String(args.tool); const locale = typeof args.locale === 'string' ? args.locale : 'en'
     const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args.arguments ?? {} } })
     if ('error' in r) throw new Error(r.error.message)

@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { recomputeClay, evaluate, mintOf, chooseOf, choose, powMod, multiplicativePeriod, n, vertices, faces, bits, plane, amplitudes } from './clay-register.ts'
 import { CLAY_RELATIONS } from './clay-statements.ts'
-import { handle } from './mcp.ts'
+import { handle, callOf } from './mcp.ts'
 
 test('the lattice constants recompute as the Lean definitions state them', () => {
   assert.equal(n, 3); assert.equal(vertices, 8); assert.equal(faces, 14); assert.equal(bits, 32); assert.equal(plane, 28); assert.equal(amplitudes, 2 ** 32)
@@ -27,7 +27,7 @@ test('the reader of Lean arithmetic follows its precedence: application, then ^,
 })
 
 test('the clay tool serves the register over MCP and one relation by name', () => {
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: { name: 'relation_4294967296' } } }) as { result: { structuredContent: { relations: { sides: { value: number }[]; bits: number }[] } } }
+  const r = callOf('clay', { name: 'relation_4294967296' }) as { result: { structuredContent: { relations: { sides: { value: number }[]; bits: number }[] } } }
   assert.equal(r.result.structuredContent.relations[0]!.bits, 33)
   assert.ok(r.result.structuredContent.relations[0]!.sides.every((s) => s.value === 4294967296))
   const bad = handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'clay', arguments: { name: 'relation_0' } } })
