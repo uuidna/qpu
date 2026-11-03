@@ -1,5 +1,5 @@
 {
- "date": "2026-11-03T02:46:00.345Z",
+ "date": "2026-11-03T02:49:37.712Z",
  "literals": {
   "urls": 271,
   "distinctUrls": 163,
@@ -188,7 +188,7 @@
   "theorem": "textbook_literal_in_registry"
  },
  "files": 194,
- "lines": 25550,
+ "lines": 25552,
  "findings": 446,
  "fused": 142,
  "reactions": 304,
@@ -319,7 +319,7 @@
   {
    "id": "entropy-cap-9347bb45",
    "kind": "cap",
-   "source": "scripts/mcp.ts:239, src/quantum/processing/audit.ts:394, src/quantum/processing/imagine.ts:46, src/quantum/processing/mcp.ts:1304, src/quantum/processing/selftest.ts:45, src/quantum/processing/toolboxes/billing.ts:605, src/quantum/processing/toolboxes/language.ts:93, src/quantum/processing/toolboxes/payload.ts:2286, src/quantum/processing/toolboxes/raid.ts:148, src/quantum/processing/toolboxes/standards.ts:56",
+   "source": "scripts/mcp.ts:239, src/quantum/processing/audit.ts:394, src/quantum/processing/imagine.ts:46, src/quantum/processing/mcp.ts:1304, src/quantum/processing/selftest.ts:45, src/quantum/processing/toolboxes/billing.ts:606, src/quantum/processing/toolboxes/language.ts:93, src/quantum/processing/toolboxes/payload.ts:2286, src/quantum/processing/toolboxes/raid.ts:148, src/quantum/processing/toolboxes/standards.ts:56",
    "statement": "a cap on a read or a walk (slice, limit, substring): the user asked for none — .slice(0, 160)",
    "status": "open",
    "tool": "audit",
@@ -391,7 +391,7 @@
   {
    "id": "entropy-clock-9cc020bd",
    "kind": "clock",
-   "source": "src/quantum/processing/audit.ts:340, src/quantum/processing/audit.ts:341, src/quantum/processing/examples.ts:386, src/quantum/processing/mcp.ts:1337, src/quantum/processing/mcp.ts:1340, src/quantum/processing/selftest.ts:43, src/quantum/processing/selftest.ts:44, src/quantum/processing/toolboxes/billing.ts:121, src/quantum/processing/toolboxes/flow.ts:127, src/quantum/processing/toolboxes/flow.ts:129, src/quantum/processing/toolboxes/legal.ts:200, src/quantum/processing/toolboxes/legal.ts:252, src/quantum/processing/toolboxes/payload.ts:1919",
+   "source": "src/quantum/processing/audit.ts:340, src/quantum/processing/audit.ts:341, src/quantum/processing/examples.ts:386, src/quantum/processing/mcp.ts:1337, src/quantum/processing/mcp.ts:1340, src/quantum/processing/selftest.ts:43, src/quantum/processing/selftest.ts:44, src/quantum/processing/toolboxes/billing.ts:122, src/quantum/processing/toolboxes/flow.ts:127, src/quantum/processing/toolboxes/flow.ts:129, src/quantum/processing/toolboxes/legal.ts:200, src/quantum/processing/toolboxes/legal.ts:252, src/quantum/processing/toolboxes/payload.ts:1919",
    "statement": "a clock or a die in a pure module: the result is no longer a function of its arguments — Date.now()",
    "status": "open",
    "tool": "audit",
