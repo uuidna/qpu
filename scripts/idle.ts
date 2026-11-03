@@ -4,7 +4,7 @@
 // prices each idle item in its own unit through repository { penalties, capacity }, writes the state the hooks and next read, and, with a key,
 // raises the ten largest as idle gaps in the docket and annihilates the ones now used. Progress line by line.
 import { spawnSync } from 'node:child_process'
-import { writeFileSync, mkdirSync } from 'node:fs'
+import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { getCapacity } from '../src/quantum/processing/toolboxes/billing.ts'
 import { getJson, publishRecord } from './mcp.ts'

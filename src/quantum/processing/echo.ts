@@ -5,7 +5,6 @@
 // included, so the echo returns with certainty when nothing perturbs it.
 
 import { Circuit, Simulator, adjointGate, type Operation } from './cirq.ts'
-import { PROCESSORS } from './processor.ts'
 import { TABLES } from './tables-index.ts'
 
 /** Google's Quantum Echoes result as its blog states it: the OTOC protocol run on the 105-qubit array of Willow, 13,000x

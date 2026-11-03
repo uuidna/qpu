@@ -2,7 +2,6 @@
 // author a Person with an ORCID, the licence a URL, dates in ISO 8601, languages in ISO 639-1, currencies in ISO 4217,
 // countries in ISO 3166-1), and the free CLDR lists (Unicode's JSON of the ISO codes with their names) read as contracts so
 // the tree's locales and currencies are validated against the standard, never against prose. No I/O here.
-import { PAYLOAD_SURFACE } from './payload-surface.ts'
 import { LICENSE } from './unit/license.ts'
 import { VERSION } from './unit/version.ts'
 import { TABLES } from './tables-index.ts'

@@ -3,7 +3,6 @@
 // programmable prose: a tool's result and its toolbox's skill rendered as sentences in any locale, backed by the toolset
 // (the numbers are the tool's) and the skillset (the words are the vocabulary's). Pure.
 import { TABLES as PAYLOAD_TABLES } from '../tables-index.ts'
-import { CLAY_RELATIONS } from '../clay-statements.ts'
 import { defineTool, createChecks, listTools, type Toolbox, type Context } from '../toolbox.ts'
 import { LOCALES, TABLES, translateOf, listNumerals } from '../i18n.ts'
 import { flowWidget } from '../widgets.ts'

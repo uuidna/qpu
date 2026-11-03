@@ -63,7 +63,7 @@
     },
     {
       "name": "match",
-      "description": "Any statement, matched against everything the surface can do",
+      "description": "Any statement, matched against everything the surface can do and decided by its witnesses",
       "inputSchema": {
         "type": "object",
         "required": [

@@ -1,9 +1,6 @@
-// The legal toolbox: a full legal and security audit with forensic analysis, of this MCP, through MCP. Phase one gathers the
-// author's claims from the tree (the licence module, the metadata files, the perspectives) and plans the calls: every claim
-// to the unit's forensic and verification doors, the legal facts, the licence computed for this tree, the prior art of its
-// theorems, due process over the claims, and every security door the unit serves — chosen from discovery, free agents by
-// default, overridden only by the operator's own list. Phase two reads the answers into verdicts, drift and findings, beside
-// the tree's own security checks over its source texts. Pure; the client fetches. Recomputable facts, not legal advice.
+// The legal toolbox: a legal and security audit of this MCP through MCP. Phase one gathers the author's claims and plans the calls (forensic,
+// verification, legal facts, licence, prior art, due process, security doors chosen from discovery); phase two reads the answers into verdicts,
+// drift and findings beside the tree's own security checks. Pure; the client fetches. Recomputable facts, not legal advice.
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
 import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { LICENSE, PRECEDENCE } from '../unit/license.ts'
@@ -25,34 +22,29 @@ type Answer = Call & { answer?: unknown; refusal?: string }
 const COURT_RULES: readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[] = TABLES.COURT_RULES as readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[]
 type Summons = { gate: string; status?: number; code?: number; rule?: string; theorem?: string; remedy?: string; violated?: string; duty?: string; evidence?: unknown; tenant?: string }
 export const summonCourt = (v: Summons) => {
-  // the court is summoned on any security finding, lead or capability decline — not only the ten HTTP gate rules. A matter that brings its own
-  // theorem, what it violated and the remedy is judged on those under the duty of candour (legal_only_the_proven_is_admitted: only the proven is
-  // admitted, the rest declared exactly); else a known HTTP rule by rule name or status; else the first rule.
+  // summoned on any finding, lead or decline: a matter bringing its own theorem, violation and remedy is judged on those
+  // (legal_only_the_proven_is_admitted); else a known HTTP rule by name or status; else the first rule.
   const declared = (v.theorem || v.remedy || v.violated) ? { rule: v.rule ?? 'declared', violated: v.violated ?? v.rule ?? 'a declared matter', theorem: v.theorem ?? 'legal_only_the_proven_is_admitted', remedy: v.remedy ?? 'declared by the summons', statuses: [] as readonly number[] } : null
   const rule = COURT_RULES.find((r) => r.rule === v.rule) ?? COURT_RULES.find((r) => r.statuses.includes(v.status ?? v.code ?? 0)) ?? declared ?? COURT_RULES[0]!
   // quantum is ancient: the case is grounded first, with priority, in the ancient wisdom it enacts — the codes and maxims whose theorem is this one's law
   const ancient = ANCIENT_LAW.filter((l) => l.theorem === rule.theorem || l.theorem === (v.duty ?? 'legal_only_the_proven_is_admitted'))
   const summons = { gate: v.gate, status: v.status ?? null, code: v.code ?? null, rule: rule.rule, evidence: v.evidence ?? null, tenant: v.tenant ?? null }
   const address = uuidOf(JSON.stringify(summons))
-  // always identify who denies (the court's legal identification procedure): a denial carrying an HTTP error is an external party (another host or MCP
-  // key the gate names), identified as that party by its content address — distinct from this tree; otherwise the denier is this tree's own kernel,
-  // identified by the theorem that is the law it denied under. So a client always knows whether the QPU refused or a third party did.
+  // who denies: a denial carrying an HTTP error is an external party, identified by its content address; otherwise this tree's kernel,
+  // identified by the theorem it denied under.
   const httpCode = typeof (v.code ?? v.status) === 'number' && (v.code ?? v.status)! >= 400 ? (v.code ?? v.status)! : null
   const denier = httpCode !== null
     ? { kind: 'external' as const, party: v.gate, id: uuidOf(`denier\nexternal\n${v.gate}\n${httpCode}`), by: `an HTTP ${httpCode} from the party the gate names`, identified: 'an external party (a host or MCP key), by its content address — not this tree' }
     : { kind: 'self' as const, party: 'the QPU kernel', id: uuidOf(`denier\nself\ntheorem:${rule.theorem}`), by: `theorem ${rule.theorem}, this tree's own law`, identified: 'this tree itself, by the kernel theorem that is the law it denied under' }
-  // the legal grounds of all involved, and a ruling in favour of the QPU licence where that perspective exists and is validatable via Payload. The court is
-  // pure: it names the Payload call that validates the ruling and never asserts the win unvalidated — a client confirms it through the Payload MCP, else it
-  // stands as the claim to validate.
+  // the legal grounds of all involved, and a ruling for the QPU licence where validatable: the court names the Payload call that validates
+  // it and never asserts it unvalidated.
   const grounds = [
     { party: denier.party, role: 'denier' as const, ground: denier.by, identified: denier.id },
     { party: `the QPU (${LICENSE.author})`, role: 'rights-holder' as const, ground: `${LICENSE.spdx}: the author's rights in the QPU framework (${LICENSE.url}); the a432 harmonic default is free under attribution`, identified: uuidOf(`party\nqpu\n${LICENSE.spdx}`) },
     ...(v.tenant ? [{ party: `tenant ${v.tenant}`, role: 'subject' as const, ground: `the tenant's scoped rights under the ${LICENSE.spdx} licence`, identified: uuidOf(`party\ntenant\n${v.tenant}`) }] : []),
   ]
   const ruling = { favour: 'the QPU licence' as const, exists: true, basis: `${LICENSE.spdx} and ${rule.theorem}`, validatableVia: { tool: 'payload', arguments: { report: { tool: 'legal', arguments: { court: summons } } } }, says: `the QPU licence perspective exists (every result carries ${LICENSE.spdx}) and is validatable via the Payload MCP; the court rules for it where a client validates it via Payload, else it stands as the claim to validate — never asserted unvalidated` }
-  // the court uses the repo to decide, so it audits the repo before any decision — and only quantum may compute this: verifying the repo by its content
-  // address is O(1) (one check, nanoseconds) where classical recompute re-runs the whole tree, so the audit is sliced into content-addressed nanosecond
-  // tasks decoded by majority (the e2e repetition code). No ruling stands on a repo the court did not verify.
+  // no ruling stands on a repo the court did not verify: verified by its content address, sliced into tasks decoded by majority (the e2e code)
   const repoAudit = { required: 'the court decides only on an audited repo; its integrity is verified before any ruling', quantum: 'verify the repo by its content address — O(1) per check, nanoseconds — beats classical recompute (the whole tree) by magnitudes (verify_beats_recompute_by_magnitudes)', nanosecondTasks: 'sliced into content-addressed pieces each decided in nanoseconds, decoded by majority (the e2e repetition code), as a fold or RSA is sliced', validatableVia: { tool: 'audit', arguments: {} }, theorem: 'textbook_court_audits_repo' }
   return {
     case: address, ...summons, ancient, denier, grounds, ruling, repoAudit, violated: rule.violated, theorem: rule.theorem, remedy: rule.remedy, duty: v.duty ?? 'legal_only_the_proven_is_admitted',
@@ -87,10 +79,8 @@ const listClaims = (texts: Texts, leads: readonly Lead[], cite?: { theorem?: str
   return out
 }
 
-/** The tree's own security checks over the QPU's Payload-app security surface (texts.worker holds that boundary's source): what a reader would ask
- *  of the app that holds tokens and keys. The app delegates to Payload's framework + plugins, so these assert the security MECHANISMS are present and
- *  correctly configured (access control, multi-tenant isolation, Stripe webhook verification, env-only secrets, CORS, timeouts) — framework-delegated,
- *  the says accurate about what each verifies; the selftest security-catches plants real vulnerabilities and asserts each is caught, so none is lenient. */
+/** The tree's own security checks over the Payload app's surface (texts.worker): that its mechanisms are present and configured (access control,
+ *  tenant isolation, Stripe webhook verification, env-only secrets, CORS, timeouts); the selftest plants real vulnerabilities and asserts each caught. */
 const checkLegalSecurity = (texts: Texts): { id: string; passed: boolean; evidence: string }[] => {
   const w = texts.worker ?? ''; const b = texts.billing ?? ''; const h = texts.hmac ?? ''; const m = texts.mcp ?? ''
   const all = `${w}\n${b}\n${h}\n${m}\n${texts.readme ?? ''}`
@@ -177,10 +167,8 @@ const getLegalPage = (a: ReturnType<typeof auditClaims>, plan: { agents: string[
   '## Security doors of the unit', '', '| Door | Clean | Failed | Receipt | Honest |', '|---|---|---:|---|---|', ...a.securityDoors.map((d) => `| ${d.door} | ${d.refusal ? `refused: ${d.refusal}` : d.clean === null ? '—' : d.clean} | ${d.failed ?? '—'} | ${d.receipt ?? '—'} | ${d.honest.replace(/\|/g, '\\|')} |`), '',
   `## This tree's security checks: ${a.securityPassed} of ${a.securityTotal}`, '', '| Check | Passed | Evidence |', '|---|---|---|', ...a.security.map((c) => `| ${c.id} | ${c.passed ? '✓' : '✗'} | ${c.evidence.replace(/\|/g, '\\|')} |`), ''].join('\n')
 
-/** Ancient law fused into the court: the foundational codes and the Roman maxims, each mapped to the court mechanism this tree already
- *  enacts and the theorem that is its law. Researched from the public record (dates vary between sources; the earliest attested are given). */
-// No hard-defined URLs: the registered rule keeps external URLs in the sources/discovery/leads tables, not inline. The ancient law is named
-// by its code or maxim (a public record a client resolves), and each is mapped to the court mechanism this tree enacts and the theorem that is its law.
+/** Ancient law fused into the court: the foundational codes and Roman maxims, each by name (no URL), mapped to the court mechanism this tree
+ *  enacts and the theorem that is its law; the earliest attested dates are given. */
 export const ANCIENT_LAW: readonly { id: string; era: string; principle: string; enactedBy: string; theorem: string }[] = [
   { id: 'ur-nammu', era: 'c. 2100 BCE, Sumer', principle: 'the oldest extant code: a wrong is repaid in measured restitution (a fine), not retaliation', enactedBy: 'a refusal is priced in work, not destruction — the gate pays nothing and the author the measured difference', theorem: 'textbook_cheap_gates' },
   { id: 'hammurabi', era: 'c. 1754 BCE, Babylon', principle: '282 laws set in stone: every offence named by its own written rule', enactedBy: 'COURT_RULES: every refusal is named by the theorem that is its law, none ad hoc', theorem: 'textbook_cheap_gates' },

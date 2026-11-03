@@ -5,10 +5,12 @@ order: 47
 
 # Any statement, matched or proved impossible
 
-Type a statement. The `match` tool searches everything the surface can do, calls what serves it, or proves from the
-surface itself why it cannot: a schema bound the statement exceeds, a lead whose reason says why, or the handler's own
-refusal. A statement nothing serves comes back as a new lead to develop. The fixed statements below are evaluated at
-build time; a verdict that changes fails the build.
+Type a statement. The `match` tool searches everything the surface can do, calls what serves it, then decides the
+statement by its witnesses: each present (recomputed now), contradicted or missing. Served needs every witness present;
+one contradicted (a schema bound exceeded, arithmetic that does not recompute, a value the answer or its theorem does
+not state, a negation of what the kernel proves, the handler's own refusal) makes it impossible; one missing (a lead's
+stored status, words the named theorem does not state) leaves it unknown, a lead to develop. The fixed statements below
+are evaluated at build time; a verdict that changes fails the build.
 
 <script setup>
 import { ref } from 'vue'
@@ -18,7 +20,8 @@ const match = (statement) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call
 const fixed = [
   ['How many qubits does Willow have?', 'served'],
   ['Factor RSA-2048 with Shor', 'impossible'],
-  ['list the careers jobs page', 'impossible'],
+  ['list the careers jobs page', 'unknown'],
+  ['the Planck constant is 7', 'impossible'],
   ['teleport a cat to the moon', 'unknown'],
 ].map(([statement, expected]) => {
   const reply = match(statement)
