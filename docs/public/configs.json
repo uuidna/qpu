@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T23:42:39.735Z",
- "ms": 243,
+ "date": "2026-11-03T00:02:58.251Z",
+ "ms": 271,
  "approval": {
   "represents": "1.4.0+dc1613a9",
   "package": "1.4.0+dc1613a9",
@@ -36,15 +36,15 @@
    "copies": 1398,
    "involutions": 381,
    "msByHost": {
-    "qpu.psg.bg": 33,
-    "qpu.uuidna.com": 31,
-    "qpu.ceci.workers.dev": 32
+    "qpu.psg.bg": 38,
+    "qpu.uuidna.com": 37,
+    "qpu.ceci.workers.dev": 38
    }
   },
   "freeShare": 27,
-  "slowestMedianMs": 33,
-  "shardSize": 30,
-  "says": "27% of the gate's copies answered free (304 by involution); the slowest host answers in 33 ms, so a batch is sharded to 30 calls a shard to stay within a second"
+  "slowestMedianMs": 38,
+  "shardSize": 26,
+  "says": "27% of the gate's copies answered free (304 by involution); the slowest host answers in 38 ms, so a batch is sharded to 26 calls a shard to stay within a second"
  },
  "configs": [
   {
@@ -125,16 +125,16 @@
   {
    "kind": "versions",
    "torus": {
-    "address": "7843eab2-7e5f-2cb6-aabc-31ddc9401868",
-    "seed": 5,
-    "reflection": 5,
+    "address": "f6ceadb4-32d8-1af0-8109-d66f4926c1d9",
+    "seed": 1,
+    "reflection": 9,
     "trinity": [
-     2,
-     5,
-     8
+     7,
+     4,
+     1
     ],
     "closed": true,
-    "bytes": 3953
+    "bytes": 4079
    }
   },
   {
@@ -275,7 +275,7 @@
   {
    "kind": "actions",
    "torus": {
-    "address": "4959a8ab-8c36-57ec-bf71-f7da910b3f87",
+    "address": "f6bccf9f-6e8c-27e8-be9b-f049cc2451ea",
     "seed": 9,
     "reflection": 1,
     "trinity": [
@@ -350,16 +350,16 @@
   {
    "kind": "gates",
    "torus": {
-    "address": "7be7a462-8816-13a3-bd30-c2bf973e02f8",
-    "seed": 5,
-    "reflection": 5,
+    "address": "7dc5049e-f3d7-5ec0-8a02-9fc75cd33fc8",
+    "seed": 2,
+    "reflection": 8,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 645744
+    "bytes": 645921
    }
   },
   {
