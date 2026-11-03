@@ -6,7 +6,7 @@
 // textbook_phase_bits), folded with the device's own crypto nonce into a seed the seal tool takes (entropyOf). Used in the Open Graph
 // image of every block (an animated SVG: a scraper shows one frame, a stream reads the link) and in the shadcn items (the CSS of the stream).
 import { uuidOf, sealOf } from './unit/blocks.ts'
-import { SCAN, toFrames, KEY, coilColour } from './unit/theme.ts'
+import { SCAN, KEY, coilColour } from './unit/theme.ts'
 import { orderUsage } from './toolboxes/billing.ts'
 
 /** Usage rated by the chain's combinatorics: a stream of n samples is a chain of n − 1 links; every full period (36 frames, 35 links) is one call;

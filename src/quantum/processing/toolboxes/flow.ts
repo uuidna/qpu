@@ -12,7 +12,7 @@ import { runFlowSelftest } from '../selftest.ts'
 import { createMatcher } from '../match.ts'
 import { VERIFIERS } from '../verifiers.ts'
 import { flowWidget } from '../widgets.ts'
-import { createE2eRequests, decodeE2e, getE2ePage, type E2eAnswer } from '../e2e.ts'
+import { createE2eRequests, decodeE2e, getE2ePage, treeOf, type E2eAnswer } from '../e2e.ts'
 import { TENANTS } from '../unit/tenants.ts'
 
 const BLOCK_IDS = new WeakMap<readonly unknown[], { example: string; id: string | undefined }[]>()
@@ -52,7 +52,7 @@ const e2e = defineTool('flow', {
   run: (args, ctx) => selftestOr(args, ctx, () => {
     const hosts = Array.isArray(args.hosts) ? args.hosts.map(String) : [...Object.keys(TENANTS).map((h) => `https://${h}/mcp`), 'https://qpu.ceci.workers.dev/mcp']
     if (!Array.isArray(args.answers)) { const requests = createE2eRequests(ctx, hosts, Array.isArray(args.tools) ? args.tools.map(String) : undefined); return { phase: 'requests' as const, hosts, combos: new Set(requests.map((r) => r.combo)).size, requests: requests.length, requestList: requests } }
-    const r = decodeE2e(args.answers as E2eAnswer[])
+    const r = decodeE2e(args.answers as E2eAnswer[], treeOf(ctx))
     return { phase: 'decoded' as const, hosts, ...r, page: getE2ePage(r, new Date().toISOString(), hosts, { remaining: 0 }) }
   }),
   widget: flowWidget,

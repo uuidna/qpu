@@ -5,7 +5,7 @@
 // The catch-all hands a single UUID segment to this component. Nothing is fetched from anywhere else; no custom endpoint.
 import React from 'react'
 import { getPayload } from 'payload'
-import { uuidOf } from '@uuidna/qpu/blocks'
+import { entryTextOf, uuidOf } from '@uuidna/qpu/blocks'
 import { handle } from '@uuidna/qpu/mcp'
 import { QpuApp } from './App'
 
@@ -29,7 +29,7 @@ export const callOf = async (tool: string, args: Record<string, unknown>): Promi
   // the tenant's settings (its tenants document, in this UI or through the Payload MCP plugin) configure every call under its hosts
   const from = 'page:' + tenant.slug // the same call at two tenants is two entries: the address folds the tenant through from
   const body = { tool, arguments: { ...args, ...(tenant.settings?.arguments ?? {}) } }
-  const id = uuidOf(JSON.stringify({ kind: 'call', from, body }))
+  const id = uuidOf(entryTextOf({ kind: 'call', from, body }))
   // the collection is QPU's own (the generated types of the fork name the site's); the id is the content address of the call
   try { return await payload.findByID({ collection: 'entries' as never, id }) as unknown as Call } catch { /* not yet called: created once below */ }
   return await payload.create({ collection: 'entries' as never, data: { id, kind: 'call', from, body, tenant: tenant.id } as never }) as unknown as Call

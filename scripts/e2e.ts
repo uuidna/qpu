@@ -8,7 +8,7 @@ import { handle, toolCallerOf } from '../src/quantum/processing/mcp.ts'
 import { runSelftest } from './mcp.ts'
 import { LICENSE } from '../src/quantum/processing/unit/license.ts'
 import type { E2eRequest, E2eAnswer } from '../src/quantum/processing/e2e.ts'
-import { decodeValue } from '../src/quantum/processing/e2e.ts'
+import { witnessOf } from '../src/quantum/processing/e2e.ts'
 import { mountThroughClaude } from './claude-mount.ts'
 import { verifySignaturesAt } from './pqc-verify.ts'
 import { compareStylesheets, compareToolLists, compareCoverage } from './compare.ts'
@@ -26,7 +26,7 @@ const main = async () => {
   const answers: E2eAnswer[] = []
   const one = async (r: E2eRequest) => {
     const t0 = Date.now()
-    try { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: r.accept, 'user-agent': 'uuidna-qpu-e2e (https://qpu.uuidna.com)', ...(r.headers ?? {}) }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(20000) }); const body = await res.text(); const base = { ...r, status: res.status, ms: Date.now() - t0, etag: res.headers.get('etag'), address: res.headers.get('x-qpu-address'), version: res.headers.get('x-qpu-version') }; answers.push(res.status === 200 ? { ...base, text: '', decoded: decodeValue({ status: 200, text: body }) } : { ...base, text: body }) /* a 200 is decoded on arrival and its body released; a 304 has no body and is checked against the tree's own copy */ }
+    try { const res = await fetch(r.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: r.accept, 'user-agent': 'uuidna-qpu-e2e (https://qpu.uuidna.com)', ...(r.headers ?? {}) }, body: JSON.stringify(r.body), signal: AbortSignal.timeout(20000) }); const body = await res.text(); const base = { ...r, status: res.status, ms: Date.now() - t0, etag: res.headers.get('etag'), address: res.headers.get('x-qpu-address'), version: res.headers.get('x-qpu-version') }; answers.push({ ...base, text: res.status === 200 ? witnessOf(body) : body }) /* a 200 kept as its witness, the rest released; the tree recomputes its value from it; a 304 has no body and is checked against the tree's own copy */ }
     catch (e) { answers.push({ ...r, status: 0, ms: Date.now() - t0, text: `fetch failed: ${(e as Error).message}` }) }
   }
   // the online measurements (the Claude mount, the signatures, the stylesheet, the tools/list, the coverage) wait on the network: overlapped with the requests

@@ -61,4 +61,4 @@ export const extractFacts = (lead: Lead): Fact[] => {
 }
 
 /** Facts the tree itself carries beyond its leads: the physics constants Qpu.Physics names, and the DOIs its metadata cites. */
-export const TREE_FACTS: readonly Fact[] = TABLES.TREE_FACTS as readonly Fact[]
+export const TREE_FACTS = TABLES.TREE_FACTS as readonly Fact[]

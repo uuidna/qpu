@@ -1,9 +1,5 @@
-// Every lead on quantumai.google, its linked PDFs and the quantumlib repositories, with its status and the MCP tool that serves
-// it. A lead is served when a tool answers it, partial when a tool answers part of it (the reason says which part), blocked when
-// the page could not be read (the reason says why, with the date and status code), out of scope when it is not technical content
-// this repository carries (a video, a jobs listing, a crawler file), and open when it is a page of the sitemap that is fetchable
-// and no tool follows yet. The hand-written leads are here; every page of the sitemap (the discover door's, sealed in the docket) that no
-// hand-written lead already names is a lead of its own through leads { sitemap }, so nothing the site lists is dropped.
+// Every lead on quantumai.google, its PDFs and the quantumlib repositories, with its status and serving tool: served, partial, blocked (the
+// reason dated), out of scope (not technical content) or open; every sitemap page no hand-written lead names is a lead through leads { sitemap }.
 
 import { TABLES } from './tables-index.ts'
 import * as cirq from './cirq.ts'
@@ -17,8 +13,7 @@ export type Lead = { id: string; source: string; statement: string; status: Lead
 /** The leads that run themselves: open, partial or blocked, and naming the door that serves them; each run by next as a Payload job. */
 export const listRunnableLeads = (leads: readonly Lead[]) => leads.filter((l) => l.run?.tool && l.status !== 'served' && l.status !== 'out_of_scope').map((l) => ({ lead: l.id, tool: l.run!.tool, arguments: l.run!.arguments ?? {} }))
 
-// A cleanup lead names what was removed: file paths, or git branches. Its settlement is a measurement (is the subject still absent?)
-// taken by the scripts that can see the tree; this parse is the pure half, shared so purify and readiness measure the same thing.
+// A cleanup lead names what was removed (paths or branches), settled by measuring its absence; this parse is shared by purify and readiness.
 export const listCleanupSubjects = (l: Lead): { kind: 'branches' | 'paths'; names: string[] } | null => {
   if (!l.id.startsWith('cleanup-') || l.status !== 'out_of_scope') return null
   const branches = /^git branches (.+)$/.exec(l.source)
@@ -27,8 +22,7 @@ export const listCleanupSubjects = (l: Lead): { kind: 'branches' | 'paths'; name
 
 
 
-/** The Cirq API symbols the sitemap documents that this repository implements, each with the export here that stands for it.
- *  Only entries whose export exists in cirq.ts are used, so the list cannot name an implementation that is not there. */
+/** The Cirq API symbols the sitemap documents that cirq.ts implements, each with its export; an entry without one is never used. */
 const CIRQ_SYMBOLS = TABLES.CIRQ_SYMBOLS as unknown as readonly [symbol: string, exported: string, note: string][]
 
 const CIRQ_IMPLEMENTED = new Map(CIRQ_SYMBOLS.filter(([, exported]) => exported in cirq).map(([symbol, exported, note]) => [symbol, { exported, note }]))
@@ -84,13 +78,12 @@ export const sitemapLeads = (urls: readonly { loc: string; lastmod?: string }[])
   return { leads: paths.filter(([p]) => !covered.has(p)).map(([p, d]) => sitemapLead(p, d)), urls: urls.length, covered: paths.filter(([p]) => covered.has(p)).length, refused: urls.filter((u) => !valid.includes(u)).map((u) => String(u?.loc)), theorem: 'textbook_sitemap_leads' }
 }
 
-/** Every relation of the Clay register as a lead: served by the clay tool, its integers facts for the wave (OEIS, Wikipedia),
- * its statement reflected by the imagination, its value read by the unit's sequence door at readiness. */
+/** Every relation of the Clay register as a lead served by the clay tool, its integers facts for the wave. */
 const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: `src/quantum/processing/unit/lean/Qpu/Clay.lean ${r.name}`, statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
 
 // every lead Payload holds, the ones this module computes taking their place: Payload is the source, the generated index its copy
 const COMPUTED = new Set(CLAY_LEADS.map((l) => l.id))
-// a lead is its id: the docket may hold the same lead as several entries (one per run that recorded it), but the tree carries each lead once, the first the index names
+// a lead is its id: of the docket's entries for one lead (one per run), the tree carries the first
 const byId = (ls: readonly Lead[]): Lead[] => { const seen = new Set<string>(); return ls.filter((l) => (seen.has(l.id) ? false : (seen.add(l.id), true))) }
 export const LEADS: readonly Lead[] = byId([...LEAD_ROWS.filter((l) => !COMPUTED.has(l.id)), ...CLAY_LEADS])
 
@@ -101,10 +94,8 @@ export const leadCounts = (leads: readonly Lead[] = LEADS): Record<LeadStatus, n
   return counts
 }
 
-// a432 builds every lead combination: the key 432 = 2⁴ · 3³ is the lead space, seven dimensions read from the lead's own fields, four binary
-// (open or closed, code or Payload, offline or online, harmonic or gravity) and three ternary (cleanable, judgment or blocked by its probe; the
-// user's priority high, mid or low; the gateway of its address: the doubling orbit, the 3/6 axis or 0/9). Every lead lands in exactly one cell by
-// mixed radix, nothing unplaced; the default cell is the a432 key (or a referrer's address) reduced mod 432 (textbook_lead_cells).
+// a432 = 2⁴ · 3³ is the lead space: four binary dimensions and three ternary read from the lead's fields, so every lead lands in exactly one
+// cell by mixed radix; the default cell is the key (or a referrer's address) mod 432 (textbook_lead_cells).
 const RADICES = [2, 2, 2, 2, 3, 3, 3] as const
 const PLACES = RADICES.map((_, i) => RADICES.filter((__, j) => j < i).reduce((p, r) => p * r, 1))
 const CELLS = RADICES.reduce((p: number, r) => p * r, 1)
@@ -130,8 +121,7 @@ const digitsOfLead = (l: CellLead): number[] => {
 }
 const cellOfLead = (l: CellLead) => digitsOfLead(l).reduce((n, d, k) => n + d * PLACES[k]!, 0)
 
-/** Every lead in its a432 cell: all 432 cells counted (the empty too), the filled ones as work clusters, the default cell from the key or a referrer,
- *  and the values the Clay rosetta reads (a cell's count, else its index) with the unit's run_sequence calls that read them. */
+/** Every lead in its a432 cell: all 432 counted, the filled ones as work clusters, and the values the Clay rosetta reads with their calls. */
 export const combineLeads = (leads: readonly CellLead[], referrer?: string) => {
   const byCell = Array.from({ length: CELLS }, () => [] as string[])
   for (const l of leads) byCell[cellOfLead(l)]!.push(l.id)
@@ -178,18 +168,16 @@ export type SessionInput = {
   /** the forecast of one commit of one predicted file, in ms, with its 95 % interval (forecastOf over the commit runs) */
   forecast?: { ms: number; interval?: readonly [number, number] | null }
 }
-/** The route through the waves as the Routes API's route takes it (legs with their start and end, steps, duration and staticDuration): each wave a leg whose items run at once, its
- *  duration its longest item (one commit per predicted file at the forecast), the route the sum of its legs; staticDuration the same items one
- *  after another, never shorter (textbook_route_waves). Estimated, with the interval the forecast gives, or absent without one. */
+/** The waves as a Routes API route: each wave a leg lasting its longest item, the route their sum; staticDuration the items one after another,
+ *  never shorter (textbook_route_waves). Absent without a forecast. */
 const routeLeads = (waves: readonly { files: Set<string>; items: readonly { id: string; files: readonly string[] }[] }[], f?: SessionInput['forecast']) => {
   if (!f) return null
   const span = (k: number, x: number) => Math.max(...waves[k]!.items.map((i) => x * Math.max(1, i.files.length))), sum = (x: number) => waves.reduce((n, _, k) => n + span(k, x), 0), s = (ms: number) => `${Math.round(ms / 1000)}s`
   const all = waves.flatMap((w) => w.items).reduce((n, i) => n + f.ms * Math.max(1, i.files.length), 0)
   return { estimated: true as const, legs: waves.map((w, k) => ({ startLocation: w.items[0]!.id, endLocation: w.items.at(-1)!.id, steps: w.items.map((i) => i.id), distance: w.files.size, duration: s(span(k, f.ms)), staticDuration: s(w.items.reduce((n, i) => n + f.ms * Math.max(1, i.files.length), 0)) })), distance: waves.reduce((n, w) => n + w.files.size, 0), duration: s(sum(f.ms)), staticDuration: s(all), interval: f.interval ? [s(sum(f.interval[0])), s(sum(f.interval[1]))] : null, theorem: 'textbook_route_waves' }
 }
-/** Every directive folded into an Open work item by shared stems or proposed new; every item ranked (started first, then the user's words, the
- *  repetitions and the age), routed to the call that does it, given its predicted files, its cell and its acceptance, and packed into parallel
- *  waves of disjoint files; a blocker is a probe-closed lead, never a wait (textbook_session_partition). */
+/** Every directive folded into an Open work item or proposed new; items ranked (started first), routed, given their files and cell, and packed
+ *  into parallel waves of disjoint files; a blocker is a probe-closed lead, never a wait (textbook_session_partition). */
 export const runSession = (input: SessionInput, route: (statement: string) => { call?: { name: string; arguments: Record<string, unknown> } | null; by?: string } = () => ({})) => {
   const now = Date.parse(input.now ?? '1970-01-01T00:00:00Z')
   const said: Directive[] = [...(input.directives ?? []), ...(input.answers ?? []).map((a) => ({ session: a.session, at: a.at, text: `${a.question} ${a.answer}` }))]

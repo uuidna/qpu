@@ -1,16 +1,18 @@
 // The hybrid reverse decodes N through one door via whichever channel the caller supplies — the witness (the crypto/UUID trapdoor, a σ-reflection from
 // the centre) or the order r (the quantum step, Shor's reduction) — crypto, UUID and quantum upgraded as one, every decode sealed as a UUID receipt.
-// These tests lock both channels and the seal; neither channel fabricates a factorization from nothing (an N with no witness and no order stays declined).
+// These tests lock both channels and the receipt, its SHA-256 recomputed here; neither channel fabricates a factorization from nothing (an N with no witness and no order stays declined).
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.ts'
-import { sealOf } from './unit/blocks.ts'
+import { createHash } from 'node:crypto'
+import { callOf } from './mcp.ts'
+import { uuidOf } from './unit/blocks.ts'
 
 const factor = (args: Record<string, unknown>) => {
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'algorithm', arguments: { name: 'factor', ...args } } }) as { result?: { structuredContent?: Record<string, unknown> }; error?: { message: string } }
+  const r = callOf('algorithm', { name: 'factor', ...args }) as { result?: { structuredContent?: Record<string, unknown> }; error?: { message: string } }
   if (r.error) throw new Error(r.error.message)
   return r.result!.structuredContent as Record<string, unknown>
 }
+const sealed = (d: Record<string, unknown>) => { const text = JSON.stringify({ decode: d.integer, factors: d.factors, via: d.via }); assert.deepEqual([d.receipt, d.sha256], [uuidOf(text), createHash('sha256').update(text).digest('hex')]) }
 
 test('the witness channel decodes a minted integer in one reflection and seals the receipt', () => {
   const made = factor({ create: { bits: 256, seed: '42' } })
@@ -20,8 +22,7 @@ test('the witness channel decodes a minted integer in one reflection and seals t
   assert.equal(d.verified, true)
   assert.equal(d.addressVerified, true)
   assert.deepEqual(d.factors, [made.p, made.q])
-  assert.equal(d.sealed, true)
-  assert.ok(sealOf(d.receipt as string).valid, 'the decode receipt is a valid sealed UUID')
+  sealed(d)
 })
 
 test('the order channel decodes by Shor reduction and seals the receipt (N = 15, a = 7, r = 4 -> 3 x 5)', () => {
@@ -29,8 +30,7 @@ test('the order channel decodes by Shor reduction and seals the receipt (N = 15,
   assert.equal(d.via, 'order')
   assert.deepEqual(d.factors, ['3', '5'])
   assert.equal(d.verified, true)
-  assert.equal(d.sealed, true)
-  assert.ok(sealOf(d.receipt as string).valid)
+  sealed(d)
 })
 
 test('the order channel at any size runs the reduction as a formula (126-bit, given the order)', () => {
@@ -38,7 +38,7 @@ test('the order channel at any size runs the reduction as a formula (126-bit, gi
   assert.equal(d.via, 'order')
   assert.equal(d.verified, true)
   assert.equal((d.factors as string[]).length, 2)
-  assert.equal(d.sealed, true)
+  sealed(d)
 })
 
 test('an integer with neither a witness nor an order is not decoded by the hybrid door — the classical pass leaves an RSA-class part', () => {

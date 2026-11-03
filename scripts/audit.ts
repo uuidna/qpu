@@ -12,8 +12,8 @@ import './teleport.ts'
 type Check = { id: string; passed: boolean; evidence: string }
 type Result = { shard: { i: number; n: number }; total: number; passed: number; failed: number; tools: number; examples: number; leads: number; checks: Check[]; integers: Record<string, string>; decided: { bySeal: number; byInteger: number; byText: number; sealed: boolean } }
 const auditCall = async (args: Record<string, unknown>): Promise<Result> => {
-  const { handle } = await import('../src/quantum/processing/mcp.ts')
-  const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'audit', arguments: args } }) as { result?: { structuredContent: Result }; error?: unknown }
+  const { callOf } = await import('../src/quantum/processing/mcp.ts')
+  const reply = callOf('audit', args) as { result?: { structuredContent: Result }; error?: unknown }
   if (!reply.result) { console.error(reply.error); process.exit(2) }
   return reply.result.structuredContent
 }

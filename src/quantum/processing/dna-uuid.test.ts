@@ -3,9 +3,9 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { dnaToHex, hexToDna, dnaStreamOf } from './unit/blocks.ts'
 import { createImpossible, decodeImpossible, testPrimality } from './algorithms.ts'
-import { handle } from './mcp.ts'
+import { callOf } from './mcp.ts'
 
-const fold = (args: Record<string, unknown>) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'fold', arguments: args } }) as { result: { structuredContent: Record<string, unknown> } }).result.structuredContent
+const fold = (args: Record<string, unknown>) => (callOf('fold', args) as { result: { structuredContent: Record<string, unknown> } }).result.structuredContent
 
 test('the DNA codec is reversible: bases ↔ hex one for one, two bases a nibble', () => {
   assert.equal(dnaToHex('ACGT'), '1b') // AC = 0·4+1 = 1, GT = 2·4+3 = 11 = b

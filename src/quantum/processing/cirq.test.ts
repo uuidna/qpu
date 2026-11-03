@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { willowNoise } from './processor.ts'
-import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, TOFFOLI, X, Z, applied, getExpectation, measure, raiseGate } from './cirq.ts'
+import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, TOFFOLI, X, applied, getExpectation, measure, raiseGate } from './cirq.ts'
 
 const [q0, q1] = LineQubit.range(2)
 const BELL = [applied(H, q0!), applied(CNOT, q0!, q1!)]

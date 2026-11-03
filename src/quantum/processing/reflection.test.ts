@@ -1,11 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.ts'
+import { handle, callOf } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { LEADS } from './leads.ts'
 import { matchStatement, reflectStatement } from './match.ts'
 import { extractFacts, createVerifyRequests, VERIFIERS } from './verifiers.ts'
-import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf, tailReadingsOf, reflectionOf } from './unit/blocks.ts'
+import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf, tailReadingsOf, reflectionOf, canonicalTextOf } from './unit/blocks.ts'
 import { TREE_FACTS } from './verifiers.ts'
 import { KEY, getCss, cmykOfUuid, accentOfUuid, hueOf, HARMONICS } from './unit/theme.ts'
 import { translateOf, LOCALES } from './i18n.ts'
@@ -60,7 +60,7 @@ test('the verifiers registry covers every fact kind and only free sources', () =
 test('every tool result carries an Open Graph block and a shadcn registry item with the same HTML', () => {
   for (const e of EXAMPLES) {
     if (e.tool === 'audit') continue
-    const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } })
+    const r = callOf(e.tool, e.arguments)
     assert.ok('result' in r, e.id)
     const meta = (r.result as { _meta: { widget: string; openGraph: Record<string, string>; block: { $schema: string; type: string; files: { content: string }[]; meta: { id: string } } } })._meta
     assert.equal(meta.openGraph['og:site_name'], '@uuidna/qpu')
@@ -93,7 +93,7 @@ test('the stylesheet derives from the key 432 and each block takes its accent fr
   const c = cmykOfUuid(u)
   for (const v of Object.values(c)) assert.ok(v >= 0 && v <= 1)
   assert.match(accentOfUuid(u), /^rgb\(\d+ \d+ \d+\)$/)
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'processor', arguments: { name: 'Willow' } } })
+  const r = callOf('processor', { name: 'Willow' })
   const meta = (r as { result: { _meta: { widget: string; theme: { key: number; accent: string }; block: { meta: { id: string } } } } }).result._meta
   assert.equal(meta.theme.key, 432)
   assert.ok(meta.widget.startsWith(`<div data-block="${meta.block.meta.id}"`))
@@ -112,7 +112,7 @@ test('the licence travels with everything: initialize instructions, every result
   assert.equal(init.result.serverInfo.author, 'Tsvetan Rouschev')
   assert.ok(init.result.instructions.includes('commercial use'))
   for (const e of EXAMPLES) {
-    const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }) as { result: { _meta: { license: { spdx: string }; widget: string; block: { license: string; author: string }; openGraph: { license: string } } } }
+    const r = callOf(e.tool, e.arguments) as { result: { _meta: { license: { spdx: string }; widget: string; block: { license: string; author: string }; openGraph: { license: string } } } }
     assert.equal(r.result._meta.license.spdx, 'CC-BY-NC-ND-4.0', e.id)
     assert.ok(r.result._meta.widget.includes('data-license="CC-BY-NC-ND-4.0"'), e.id)
     assert.equal(r.result._meta.block.license, 'CC-BY-NC-ND-4.0')
@@ -127,14 +127,19 @@ test('a UUID verifies cheaply: the seal from its own nibbles, the content by one
   const tampered = u.slice(0, -1) + (u.endsWith('a') ? 'b' : 'a')
   assert.equal(sealOf(tampered).valid, false)
   assert.equal(sealOf('not-a-uuid').shape, false)
-  const p = { id: uuidOf('first') }
+  const p = { id: uuidOf('first'), content: 'first' } // a link is witnessed by the neighbour's content, else null
   const self = { prev: p.id }
-  const next = { id: uuidOf('third'), prev: u }
+  const next = { id: uuidOf('third'), prev: u, content: 'third' }
   const v = verifyOf(u, 'qpu', p, next, self)
   assert.equal(v.valid, true); assert.equal(v.decided, 4)
-  const broken = verifyOf(u, 'qpu', p, { id: next.id, prev: 'elsewhere' }, self)
+  const broken = verifyOf(u, 'qpu', p, { ...next, prev: 'elsewhere' }, self)
   assert.equal(broken.valid, false)
   assert.equal(verifyOf(u).decided, 1)
+})
+
+test('_meta.integrity names the result itself, so seal { tamper } reads an untouched one authentic', () => {
+  const r = callOf('seal', { text: 'qpu' }).result as { structuredContent: unknown; _meta: { integrity: object } }
+  assert.equal(callOf('seal', { text: 'x', tamper: { text: canonicalTextOf(r.structuredContent), ...r._meta.integrity } }).result?.structuredContent.verdict, 'authentic')
 })
 
 test('the channel of a UUID is read from the id alone: handle, hex program with version and variant kept, message tail in three readings', () => {

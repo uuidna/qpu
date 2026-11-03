@@ -10,14 +10,14 @@ import { TABLES } from './tables-index.ts'
 
 /** Google Workspace's MCP servers (developers.google.com/workspace/guides/configure-mcp-servers, read 2026-10-26): Developer Preview,
  *  OAuth 2.0 with a web client marked for an AI-powered agent; each lands in the docket, rendered by the collection named beside it. */
-export const WORKSPACE_MCP: readonly { product: string; host: string; url: string; enable: readonly string[]; scopes: readonly string[]; renders: string }[] = TABLES.WORKSPACE_MCP as readonly { product: string; host: string; url: string; enable: readonly string[]; scopes: readonly string[]; renders: string }[]
+export const WORKSPACE_MCP = TABLES.WORKSPACE_MCP as readonly { product: string; host: string; url: string; enable: readonly string[]; scopes: readonly string[]; renders: string }[]
 const WORKSPACE_SCOPE_PREFIX = 'https://www.googleapis.com/auth/'
 /** A call of the Payload MCP plugin's create tool for a collection: the document's own fields are its arguments (the plugin reads the collection's schema). */
 export const createCreateCall = (collection: string, data: Record<string, unknown>) => ({ tool: `create${collection[0]!.toUpperCase()}${collection.slice(1).replace(/-(\w)/g, (_m, c: string) => c.toUpperCase())}`, arguments: data })
 
 /** The editions an institution holds, as Google states them (prices in cents per user per month; null where Google publishes none). */
 type Edition = { id: string; family: 'education' | 'nonprofit' | 'workspace'; name: string; cents: number | null; flexibleCents?: number | null; introCents?: number | null; currency: 'USD' | 'EUR'; cap: number | null; needs?: string; adds: string; source: string }
-const EDITIONS: readonly Edition[] = TABLES.EDITIONS as readonly Edition[]
+const EDITIONS = TABLES.EDITIONS as readonly Edition[]
 
 // Lean's natural-number arithmetic for a closed expression: + − (truncated) * / (floor) % ^ and parentheses; anything else is not closed
 const getNat = (src: string): number | null => {
@@ -69,7 +69,7 @@ const WHO = TABLES.WHO as unknown as Readonly<Record<SetFamily, { people: string
 const isRead = (s: string) => /readonly|freebusy|readstate|userinfo/.test(s)
 const listModes = (d: (typeof WORKSPACE_MCP)[number]) => (d.scopes.some((s) => !isRead(s)) ? (['off', 'read', 'write'] as const) : (['off', 'read'] as const))
 export const SET_RADICES: readonly number[] = [SET_FAMILIES.length, ...WORKSPACE_MCP.map((d) => listModes(d).length)]
-const ACTION: Readonly<Record<string, { read: string; write: string }>> = TABLES.ACTION as Readonly<Record<string, { read: string; write: string }>>
+const ACTION = TABLES.ACTION as Readonly<Record<string, { read: string; write: string }>>
 const fill = (s: string, f: SetFamily) => s.replace(/\{(\w+)\}/g, (_m, k: string) => WHO[f][k as keyof (typeof WHO)[SetFamily]])
 export const SET_SPACE = compositionsOf(SET_RADICES)
 /** One set: by its index in the space, or by its family and the mode of each door it names. */

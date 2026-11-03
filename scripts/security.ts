@@ -7,7 +7,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { promisify } from 'node:util'
 import './teleport.ts'
-import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
+import { toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
 import { getJson, getWithTimeout, publishRecord, mcpClient } from './mcp.ts'
 import { listLeaks } from '../src/quantum/processing/audit.ts'
 

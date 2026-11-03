@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.ts'
+import { handle, callOf } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { LEADS } from './leads.ts'
 import { matchStatement, tokens, translateVerdict, listForeignVerdicts } from './match.ts'
@@ -32,10 +32,10 @@ test('a statement that exceeds a schema bound is proved impossible by the schema
   assert.equal(m.lead.status, 'blocked')
 })
 
-test('a statement about an out-of-scope lead is impossible with the lead\'s own reason', () => {
+test('a statement about an out-of-scope lead is unknown, the lead its missing witness: a stored reason is no refutation recomputed now', () => {
   const m = match('list the careers jobs page')
-  assert.equal(m.verdict, 'impossible')
-  assert.ok(m.evidence[0]!.includes('out_of_scope'))
+  assert.equal(m.verdict, 'unknown'); assert.equal(m.state, 'gas')
+  assert.ok(m.evidence[0]!.includes('out_of_scope') && m.witnesses!.missing[0]!.includes('out_of_scope'))
 })
 
 test('a statement nothing serves becomes a new lead to develop', () => {
@@ -46,7 +46,7 @@ test('a statement nothing serves becomes a new lead to develop', () => {
 })
 
 test('the match tool is served over MCP and agrees with the direct call', () => {
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement: 'the Sycamore couplers' } } })
+  const r = callOf('match', { statement: 'the Sycamore couplers' })
   assert.ok('result' in r)
   const m = (r.result as { structuredContent: { verdict: string; tool?: string } }).structuredContent
   assert.equal(m.verdict, 'served')
@@ -87,7 +87,7 @@ test('a statement in Bulgarian is translated by vocabulary offline before the ma
   assert.equal(translateOf('Разложи 15 с Shor', 'bg', 'en').text, 'Factor 15 with Shor')
   const m = matchStatement('Разложи Ⰺⰴ с Shor', handle, EXAMPLES, LEADS, 'bg')
   assert.equal(m.verdict, 'served'); assert.equal(m.read?.verdictIn, 'обслужена'); assert.deepEqual(m.read?.untranslated, ['shor'], 'a name stays as it is and is reported, never guessed')
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement: 'Разложи Ⰺⰴ с Shor', locale: 'bg' } } })
+  const r = callOf('match', { statement: 'Разложи Ⰺⰴ с Shor', locale: 'bg' })
   assert.equal((r as { result: { structuredContent: { read: { locale: string } } } }).result.structuredContent.read.locale, 'bg')
 })
 

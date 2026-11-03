@@ -6,14 +6,13 @@
 // the shape this ports to, not Cloudflare's D1.
 import { TABLES } from '../tables-index.ts'
 import { defineTool, isObj, createChecks, type Toolbox, type Context } from '../toolbox.ts'
-import { uuidOf } from '../unit/blocks.ts'
+import { uuidOf, canonicalTextOf } from '../unit/blocks.ts'
 import { flowWidget } from '../widgets.ts'
-import { createAssociation, createValidation, type Association, type Validation } from './payload.ts'
+import { createAssociation, createValidation, valueAt, type Association, type Validation } from './payload.ts'
 
 type Doc = Record<string, unknown>
 type Filter = Record<string, unknown>
 
-const getPath = (doc: unknown, path: string): unknown => path.split('.').reduce<unknown>((v, k) => (isObj(v) ? (v as Record<string, unknown>)[k] : undefined), doc)
 const cmp = (a: unknown, b: unknown): number => (typeof a === 'number' && typeof b === 'number' ? a - b : String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0)
 const same = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b)
 
@@ -46,12 +45,12 @@ const matchesFilter = (doc: Doc, filter: Filter): boolean => Object.entries(filt
   if (k === '$and') return (cond as Filter[]).every((f) => matchesFilter(doc, f))
   if (k === '$or') return (cond as Filter[]).some((f) => matchesFilter(doc, f))
   if (k === '$nor') return !(cond as Filter[]).some((f) => matchesFilter(doc, f))
-  return satisfies(getPath(doc, k), cond)
+  return satisfies(valueAt(doc, k), cond)
 })
 /** find: filter, sort ({field: 1 | -1}), skip; no limit unless asked (no caps). */
 const listDocs = (docs: readonly Doc[], filter: Filter = {}, sort: Record<string, 1 | -1> = {}, skip = 0, limit?: number): Doc[] => {
   const out = docs.filter((d) => matchesFilter(d, filter))
-  for (const [k, dir] of Object.entries(sort).reverse()) out.sort((a, b) => dir * cmp(getPath(a, k), getPath(b, k)))
+  for (const [k, dir] of Object.entries(sort).reverse()) out.sort((a, b) => dir * cmp(valueAt(a, k), valueAt(b, k)))
   const sliced = out.slice(skip)
   return limit === undefined ? sliced : sliced.slice(0, limit)
 }
@@ -71,10 +70,10 @@ const applyUpdate = (doc: Doc, update: Record<string, unknown>): Doc => {
   }
   return out
 }
-/** A document as a docket entry: content-addressed by its body, in a collection family, linked to the version it replaces. */
+/** A document as a docket entry: content-addressed by its body's canonical text (any key order, one address), in a collection family, linked to the version it replaces. */
 const toEntry = (collection: string, doc: Doc, replaces?: string): { id: string; kind: string; collection: string; body: Doc; links: string[] } => {
   const body = { ...doc }
-  const id = uuidOf(`${collection}${JSON.stringify(body)}`)
+  const id = uuidOf(`${collection}${canonicalTextOf(body)}`)
   return { id, kind: 'document', collection, body: { ...body, _id: body._id ?? id }, links: replaces ? [replaces] : [] }
 }
 

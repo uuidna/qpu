@@ -23,7 +23,9 @@ export const listReferences = (d: RefDoc): string[] => {
 }
 /** The graph, its cycles and its order. */
 export const createReferenceGraph = (docs: readonly RefDoc[]) => {
-  const byName = new Map<string, string>(); for (const d of docs) { byName.set(d.id, d.id); if (d.slug) byName.set(d.slug, d.id) }
+  // a name two documents claim is a collision: listed with its claimants, resolved to none
+  const claims = new Map<string, Set<string>>(); for (const d of docs) for (const n of [d.id, d.slug]) if (n) (claims.get(n) ?? claims.set(n, new Set()).get(n)!).add(d.id)
+  const collisions = [...claims].filter(([, ids]) => ids.size > 1).map(([name, ids]) => ({ name, ids: [...ids].sort() })), byName = new Map([...claims].filter(([, ids]) => ids.size === 1).map(([n, ids]) => [n, [...ids][0]!]))
   const edges: { from: string; to: string }[] = [], dangling: { from: string; name: string }[] = []
   for (const d of docs) for (const name of listReferences(d)) { const to = byName.get(name) ?? (UUID.test(name) ? byName.get(name.toLowerCase()) : undefined); if (to) edges.push({ from: d.id, to }); else dangling.push({ from: d.id, name }) }
   const ids = docs.map((d) => d.id), next = new Map<string, string[]>(ids.map((i) => [i, []])); for (const e of edges) next.get(e.from)!.push(e.to)
@@ -41,7 +43,7 @@ export const createReferenceGraph = (docs: readonly RefDoc[]) => {
   const nodeOf = new Map<string, string>(); for (const f of fused) for (const m of f.members) nodeOf.set(m, f.id)
   const condensedEdges = [...new Set(edges.map((e) => [nodeOf.get(e.from)!, nodeOf.get(e.to)!]).filter(([a, b]) => a !== b).map((p) => p.join('→')))].map((p) => { const [from, to] = p.split('→') as [string, string]; return { from, to } })
   const condensation = { nodes: fused, edges: condensedEdges, order: [...fused].reverse().map((f) => f.id), acyclic: true as const }
-  return { nodes: ids.length, edges, cycles, dangling, acyclic: cycles.length === 0, order: cycles.length ? null : condensation.order, condensation, says: `${ids.length} document(s), ${edges.length} reference(s): ${cycles.length ? `${cycles.length} cycle(s) fused into one node each (${cycles.map((c) => c.join(' ↔ ')).join('; ')})` : 'no cycle'}; the condensation of ${fused.length} node(s) is acyclic and ordered${dangling.length ? `; ${dangling.length} dangling reference(s) noted` : ''}`, theorem: 'textbook_references_acyclic' }
+  return { nodes: ids.length, edges, cycles, dangling, collisions, acyclic: cycles.length === 0, order: cycles.length ? null : condensation.order, condensation, says: `${ids.length} document(s), ${edges.length} reference(s): ${cycles.length ? `${cycles.length} cycle(s) fused into one node each (${cycles.map((c) => c.join(' ↔ ')).join('; ')})` : 'no cycle'}; the condensation of ${fused.length} node(s) is acyclic and ordered${dangling.length ? `; ${dangling.length} dangling reference(s) noted` : ''}${collisions.length ? `; ${collisions.length} name(s) claimed by two documents, resolved to none` : ''}`, theorem: 'textbook_references_acyclic' }
 }
 
 /** The SEO plugin as another way of referencing, and every reference indexed for the best caching. A document's meta — the title and description its

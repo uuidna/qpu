@@ -5,7 +5,7 @@
 import './teleport.ts'
 import { TEXTBOOK_THEOREMS } from '../src/quantum/processing/textbook-theorems.ts'
 import { THEOREM_KEYS } from '../src/quantum/processing/theorems-index.ts'
-import { uuidOf } from '../src/quantum/processing/unit/blocks.ts'
+import { uuidOf, entryTextOf } from '../src/quantum/processing/unit/blocks.ts'
 import { mcpClient } from './mcp.ts'
 
 const mcp = mcpClient()
@@ -19,7 +19,7 @@ const have = new Set((present.docs ?? []).map((d) => (d as { id: string }).id))
 let written = 0, skipped = 0, failed = 0
 for (const t of TEXTBOOK_THEOREMS) {
   const body = { key: t.key, lean: t.lean, says: t.says, examples: t.examples, accepted: THEOREM_KEYS.has(t.key) }
-  const id = uuidOf(JSON.stringify({ kind: 'document', from: 'theorems', body }))
+  const id = uuidOf(entryTextOf({ kind: 'document', from: 'theorems', body }))
   if (have.has(id)) { skipped++; continue }
   const r = await mcp.call('createEntries', { tenant: own.id, kind: 'document', from: 'theorems', body })
   if (r.error !== undefined || !/```json/.test(r.text)) failed++; else written++

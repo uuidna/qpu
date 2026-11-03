@@ -6,7 +6,7 @@
 // command: the one runner (scripts/machine.ts), called by the stdio transport and by the Payload MCP plugin's machine tool, executes only
 // the argument vector a plan returns, streaming its lines as progress to a caller that sent a progress token.
 import { TABLES } from './tables-index.ts'
-import { uuidOf } from './unit/blocks.ts'
+import { uuidOf, entryTextOf } from './unit/blocks.ts'
 import { sha256, utf8, hex } from './unit/hmac.ts'
 import { listLeaks, LEAK_PATTERNS } from './audit.ts'
 import { summonCourt } from './toolboxes/legal.ts'
@@ -64,7 +64,7 @@ export const redact = (text: string, root?: string, home?: string, leaks = true)
 export const recordMachine = (run: MachineRun) => {
   const relative = redact(`${run.stdout}${run.stderr ? `\n${run.stderr}` : ''}`, run.root, run.home, false), found = listLeaks({ output: relative }), output = redact(relative)
   const body = { action: run.action, command: [run.command.cmd, ...run.command.args].join(' '), status: run.status, ms: run.ms, output, leaks: found.byKind }
-  const text = JSON.stringify({ kind: 'machine', from: 'local', body })
+  const text = entryTextOf({ kind: 'machine', from: 'local', body })
   const id = uuidOf(text)
   return { entry: { id, kind: 'machine', from: 'local', body, sha256: hex(sha256(utf8(text))) }, ok: run.status === 0, redacted: found.total, says: `${run.action} ${run.status === 0 ? 'ran' : `ended with status ${run.status}`} in ${run.ms} ms; ${found.total ? `${found.total} leak(s) redacted by kind; ` : ''}recorded at ${id}`, theorems: ['textbook_machine_allow_list', 'textbook_leaks_redacted'] }
 }

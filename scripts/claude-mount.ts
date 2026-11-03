@@ -3,8 +3,7 @@
 // compared with the block computed here. Runs only when the tenant's key is in the environment (ANTHROPIC_API_KEY, or
 // ANTHROPIC_API_KEY_<TENANT>); without it, the pass says what it needs and the lead stands. The official SDK, never raw HTTP.
 import Anthropic from '@anthropic-ai/sdk'
-import { existsSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync } from 'node:fs'
 import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
 
 type ClaudeMount = { phase: 'needs-key' | 'mounted' | 'differs' | 'refused' | 'failed'; model?: string; sha256Here?: string; sha256ByClaude?: string | null; stopReason?: string; servedBy?: string; usage?: { input: number; output: number }; note: string }

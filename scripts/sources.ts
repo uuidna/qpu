@@ -4,7 +4,6 @@
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
-import { createHash } from 'node:crypto'
 import './teleport.ts'
 import { handle, toolCallerOf, cellOf as cell } from '../src/quantum/processing/mcp.ts'
 import { TENANTS } from '../src/quantum/processing/unit/tenants.ts'
@@ -34,10 +33,10 @@ const main = async () => {
     }
   }))
   const j = call({ context, answers })
-  // the public artifacts verified against the digests their registries recorded: every one downloaded and hashed here, compared by the seal
+  // the public artifacts verified against the digests their registries recorded: every one downloaded here, its bytes hashed and compared by the seal
   const listed = (j.immutable?.artifacts ?? []) as { source: string; name: string; url: string; algorithm: string; claimed: string; bytes: number | null }[]
   const hashed = []
-  for (const a of listed) { try { const res = await getWithTimeout(a.url, '*/*', 120000); const buf = Buffer.from(await res.arrayBuffer()); const algo = a.algorithm === 'sha512' ? 'sha512' : a.algorithm === 'sha1' ? 'sha1' : a.algorithm === 'sha256' ? 'sha256' : 'md5'; const digest = createHash(algo).update(buf); hashed.push({ ...a, bytes: buf.length, status: res.status, computed: a.source === 'npm' ? digest.digest('base64') : digest.digest('hex') }) } catch { hashed.push({ ...a, status: 0, computed: null }) } }
+  for (const a of listed) { try { const res = await getWithTimeout(a.url, '*/*', 120000); hashed.push({ ...a, status: res.status, base64: Buffer.from(await res.arrayBuffer()).toString('base64') }) } catch { hashed.push({ ...a, status: 0 }) } }
   const integrity = toolCallerOf('seal')({ text: 'artifacts', artifacts: hashed })
   console.log(`sources: integrity: ${integrity?.says}`)
   const date = new Date().toISOString()

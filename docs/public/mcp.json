@@ -63,7 +63,7 @@
     },
     {
       "name": "match",
-      "description": "Any statement, matched against everything the surface can do",
+      "description": "Any statement, matched against everything the surface can do and decided by its witnesses",
       "inputSchema": {
         "type": "object",
         "required": [
@@ -191,9 +191,12 @@
             "properties": {
               "id": {
                 "type": "string"
+              },
+              "content": {
+                "type": "string"
               }
             },
-            "description": "the predecessor in the chain"
+            "description": "the predecessor in the chain; decided only with its content (else asserted, null)"
           },
           "self": {
             "type": "object",
@@ -212,9 +215,12 @@
               },
               "prev": {
                 "type": "string"
+              },
+              "content": {
+                "type": "string"
               }
             },
-            "description": "the successor in the chain"
+            "description": "the successor in the chain; decided as prev"
           }
         }
       },
@@ -2398,6 +2404,28 @@
             },
             "description": "op ledger"
           },
+          "journal": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "op ledger"
+          },
+          "mint": {
+            "type": "array",
+            "description": "op ledger"
+          },
+          "ideas": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "op ledger"
+          },
+          "royalty": {
+            "type": "object",
+            "description": "op ledger"
+          },
           "tools": {
             "type": "array",
             "items": {
@@ -3320,9 +3348,6 @@
           },
           "sets": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
             "description": "kind sets"
           },
           "devDependencies": {

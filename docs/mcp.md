@@ -175,7 +175,7 @@ The Clay register recomputed in exact integer arithmetic
 
 ## match
 
-Any statement, matched against everything the surface can do
+Any statement, matched against everything the surface can do and decided by its witnesses
 
 ```json
 {
@@ -289,9 +289,12 @@ Cheap verification of one UUID
       "properties": {
         "id": {
           "type": "string"
+        },
+        "content": {
+          "type": "string"
         }
       },
-      "description": "the predecessor in the chain"
+      "description": "the predecessor in the chain; decided only with its content (else asserted, null)"
     },
     "self": {
       "type": "object",
@@ -310,9 +313,12 @@ Cheap verification of one UUID
         },
         "prev": {
           "type": "string"
+        },
+        "content": {
+          "type": "string"
         }
       },
-      "description": "the successor in the chain"
+      "description": "the successor in the chain; decided as prev"
     }
   }
 }
@@ -2016,6 +2022,28 @@ Stripe per tenant, pure, the QPU as a product with its variants
       },
       "description": "op ledger"
     },
+    "journal": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "op ledger"
+    },
+    "mint": {
+      "type": "array",
+      "description": "op ledger"
+    },
+    "ideas": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "op ledger"
+    },
+    "royalty": {
+      "type": "object",
+      "description": "op ledger"
+    },
     "tools": {
       "type": "array",
       "items": {
@@ -2778,9 +2806,6 @@ MCP configures Payload and the rest
     },
     "sets": {
       "type": "array",
-      "items": {
-        "type": "string"
-      },
       "description": "kind sets"
     },
     "devDependencies": {

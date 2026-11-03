@@ -2,13 +2,12 @@
 // author a Person with an ORCID, the licence a URL, dates in ISO 8601, languages in ISO 639-1, currencies in ISO 4217,
 // countries in ISO 3166-1), and the free CLDR lists (Unicode's JSON of the ISO codes with their names) read as contracts so
 // the tree's locales and currencies are validated against the standard, never against prose. No I/O here.
-import { PAYLOAD_SURFACE } from './payload-surface.ts'
 import { LICENSE } from './unit/license.ts'
 import { VERSION } from './unit/version.ts'
 import { TABLES } from './tables-index.ts'
 import { uuidOf } from './unit/blocks.ts'
 
-export const STANDARDS: readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[] = TABLES.STANDARDS as readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[]
+export const STANDARDS = TABLES.STANDARDS as readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[]
 
 type JsonLd = Record<string, unknown> & { '@context': 'https://schema.org'; '@type': string }
 const AUTHOR = { '@type': 'Person', name: LICENSE.author, '@id': LICENSE.orcid, identifier: LICENSE.orcid }
@@ -57,7 +56,7 @@ export const detectStandard = (text: string): { detected: string; note: string }
 }
 
 /** The endpoints of the Worker, as the API overview states them (the source of docs/api.md) and as the OpenAPI document derives its paths. */
-export const API_ENDPOINTS: readonly { method: string; path: string; takes: string; answers: string; auth: string; errors?: string }[] = TABLES.API_ENDPOINTS as readonly { method: string; path: string; takes: string; answers: string; auth: string; errors?: string }[]
+export const API_ENDPOINTS = TABLES.API_ENDPOINTS as readonly { method: string; path: string; takes: string; answers: string; auth: string; errors?: string }[]
 type ApiTool = { name: string; description: string; inputSchema: object }
 export const OPENAPI_RESOURCE = 'openapi://qpu'
 /** The QPU's own contract in the standard the discover step asks every host for: an OpenAPI 3.1 document derived from tools/list and the

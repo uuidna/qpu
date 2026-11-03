@@ -3,11 +3,12 @@
 // cannot reach, and the honest bound at scale — order-finding at RSA scale stays bounded, never guessed.
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { orderFinding, shorReduction } from './algorithms.ts'
-import { handle } from './mcp.ts'
+import { callOf } from './mcp.ts'
 
 const factor = (args: Record<string, unknown>) => {
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'algorithm', arguments: args } }) as { result?: { structuredContent?: Record<string, unknown> }; error?: { message: string } }
+  const r = callOf('algorithm', args) as { result?: { structuredContent?: Record<string, unknown> }; error?: { message: string } }
   if (r.error) throw new Error(r.error.message)
   return r.result!.structuredContent as Record<string, unknown>
 }
@@ -38,9 +39,9 @@ test('the order door and factor find complete over the UUID/RAID space through t
   assert.ok((od.table as string).includes('content-addressed'))
   const fd = factor({ name: 'factor', integer: (65537n * 178481n).toString(), a: '2', find: true })
   assert.equal(fd.mode, 'find')
+  assert.equal(fd.sha256, createHash('sha256').update(JSON.stringify({ decode: fd.integer, factors: fd.factors, via: 'order' })).digest('hex'))
   assert.equal(fd.order, '736')
   assert.deepEqual((fd.factors as string[]).sort(), ['178481', '65537'])
-  assert.equal(fd.sealed, true)
 })
 
 test('order-finding at RSA scale is bounded, never guessed', () => {

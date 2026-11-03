@@ -1,9 +1,9 @@
 // Overclaims processed as underclaims: match never serves a weak or unreplayed match, and a genuine match still serves.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.ts'
+import { callOf } from './mcp.ts'
 
-const match = (statement: string) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement } } }) as { result: { structuredContent: Record<string, unknown> } }).result.structuredContent
+const match = (statement: string) => (callOf('match', { statement }) as { result: { structuredContent: Record<string, unknown> } }).result.structuredContent
 
 test('an open frontier is an underclaim: unknown, routed towards discovery, never a false served', () => {
   for (const q of ['Prove the Riemann hypothesis', 'Prove or disprove P equals NP', 'Prove Goldbach conjecture', 'Prove the Hodge conjecture']) {
