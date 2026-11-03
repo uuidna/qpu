@@ -1280,7 +1280,7 @@ export const qpuPlugins = [
     const own = req.user && !req.headers.get('authorization') && (await req.payload.find({ collection: 'payload-mcp-api-keys', where: { user: { equals: req.user.id } }, depth: 1, pagination: false, overrideAccess: true })).docs[0]
     if (own) Object.assign(own.user, { collection: 'users', _strategy: 'mcp-api-key' })
     // a user with no MCP key holds what its role grants: the super admin every capability the plugin asks of it, no key minted
-    const settings = own ?? (req.user ? { user: req.user } : await getDefault()), ns = req.headers.get('x-qpu-namespace')
+    const settings = own || (req.user ? { user: req.user } : await getDefault()), ns = req.headers.get('x-qpu-namespace')
     const out = () => (!own && qpuSuperAdmin(settings.user) ? new Proxy(settings, { get: (t: any, k) => (k in t ? t[k] : new Proxy({}, { get: () => true })) }) : settings)
     if (!ns) return out()
     const tenants = (await req.payload.find({ collection: 'tenants', where: { namespace: { equals: ns } }, limit: 1, depth: 0, overrideAccess: true })).docs.map((x: any) => ({ id: String(x.id), namespace: x.namespace }))
