@@ -1,7 +1,7 @@
 {
  "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-02T23:42:39.735Z",
- "ms": 243,
+ "date": "2026-11-03T00:22:34.571Z",
+ "ms": 341,
  "approval": {
   "represents": "1.4.0+dc1613a9",
   "package": "1.4.0+dc1613a9",
@@ -17,20 +17,68 @@
  "kinds": 25,
  "closed": true,
  "partition": "8 + 2 + 15 = 25",
- "improved": [],
+ "improved": [
+  ".qpu-app/src/components/blocks/Qpu/Branding.tsx",
+  ".qpu-app/src/graphics/FullLogo/index.tsx",
+  ".qpu-app/src/blocks/Qpu/config.ts",
+  ".qpu-app/src/payload.qpu.config.ts",
+  ".qpu-app/README.qpu.md",
+  ".qpu-app/NOTICE.qpu.md",
+  ".qpu-app/src/payload.qpu.mcp.ts",
+  ".qpu-app/src/collections/Entries.ts",
+  ".qpu-app/src/globals/Qpu.ts",
+  ".qpu-app/src/payload.qpu.ecommerce.ts",
+  ".qpu-app/src/collections/Tenants.ts",
+  ".qpu-app/src/collections/form-submissions.qpu.hooks.ts",
+  ".qpu-app/src/collections/users.qpu.hooks.ts",
+  ".qpu-app/src/collections/pages.qpu.hooks.ts",
+  ".qpu-app/src/payload.qpu.adapters.ts",
+  ".qpu-app/src/components/blocks/Qpu/App.tsx",
+  ".qpu-app/src/components/blocks/Qpu/index.tsx",
+  ".qpu-app/src/components/blocks/Qpu/page.tsx",
+  ".qpu-app/src/components/blocks/Qpu/validate.tsx",
+  ".qpu-app/src/scripts/seedQpu.ts",
+  ".qpu-app/src/plugins/qpu.ts",
+  ".qpu-app/open-next.config.ts",
+  ".qpu-app/src/migrations/qpu/20261027_000000_entries_links.ts",
+  ".qpu-app/src/migrations/qpu/index.ts",
+  ".qpu-app/.env.qpu.example",
+  ".qpu-app/public/r/qpu-create.json",
+  ".qpu-app/public/r/registry.json",
+  ".qpu-app/public/r/qpu-app.json",
+  ".qpu-app/public/r/qpu-chat.json",
+  ".qpu-app/public/r/qpu-block.json",
+  "docs/public/r/qpu-block.json",
+  ".qpu-app/public/r/qpu-sdk.json",
+  ".qpu-app/public/r/qpu-style.json",
+  ".qpu-app/public/r/qpu-card.json",
+  ".qpu-app/public/r/qpu-badge.json",
+  ".qpu-app/public/r/qpu-table.json",
+  ".qpu-app/public/r/qpu-stream.json",
+  ".qpu-app/public/r/qpu-scan.json",
+  ".qpu-app/public/r/qpu-dashboard.json",
+  ".qpu-app/wrangler.jsonc"
+ ],
  "held": [
   {
    "kind": "payload",
    "path": ".qpu-app/src/payload.config.ts",
-   "drift": []
+   "drift": [
+    "plugins.qpuPlugin",
+    "env.PAYLOAD_SECRET"
+   ]
   },
   {
    "kind": "api",
    "path": ".qpu-app/next.config.js",
-   "drift": []
+   "drift": [
+    "rewrite./api/globals/qpu",
+    "rewrite./api/mcp",
+    "rewrite./api/entries/:uuid"
+   ]
   }
  ],
- "drift": 0,
+ "drift": 5,
  "experience": {
   "measured": {
    "copies": 1398,
@@ -155,31 +203,31 @@
   {
    "kind": "fullstack",
    "torus": {
-    "address": "2f768a5c-57da-419c-8da2-bee99126b1cf",
-    "seed": 9,
-    "reflection": 1,
+    "address": "5b9773ac-8c07-4707-b765-7388c297a0c9",
+    "seed": 3,
+    "reflection": 7,
     "trinity": [
      3,
      6,
      9
     ],
     "closed": true,
-    "bytes": 120392
+    "bytes": 120479
    }
   },
   {
    "kind": "api",
    "torus": {
-    "address": "06b54f99-3918-6614-9c4a-15a8092fadc2",
-    "seed": 5,
-    "reflection": 5,
+    "address": "c43d1f7d-5387-639c-a401-a95a35222141",
+    "seed": 2,
+    "reflection": 8,
     "trinity": [
      2,
      5,
      8
     ],
     "closed": true,
-    "bytes": 133739
+    "bytes": 133918
    }
   },
   {
@@ -365,16 +413,16 @@
   {
    "kind": "sets",
    "torus": {
-    "address": "f2bcf22c-dc5c-14bb-b367-410574ff72b6",
-    "seed": 2,
-    "reflection": 8,
+    "address": "3e92b249-97fc-1ba2-bbb1-fa57d056d415",
+    "seed": 3,
+    "reflection": 7,
     "trinity": [
-     2,
-     5,
-     8
+     3,
+     6,
+     9
     ],
     "closed": true,
-    "bytes": 156834
+    "bytes": 160742
    }
   },
   {

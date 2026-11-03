@@ -3,10 +3,10 @@
 // Where the page's circuit uses a mid-circuit measurement, the deferred-measurement form is built instead: the same state,
 // with the corrections controlled by the qubits that would have been measured.
 
-import { Circuit, CNOT, CZ, DensityMatrixSimulator, getExpectation, H, LineQubit, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, Y, Z, ZZ, adjointGate, applied, qubitKey, raiseGate, type Gate } from './cirq.ts'
+import { Circuit, CNOT, CZ, DensityMatrixSimulator, getExpectation, H, LineQubit, measure, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, Y, Z, ZZ, adjointGate, applied, qubitKey, raiseGate, type Gate } from './cirq.ts'
 import { numpyWeights } from './unit/random.ts'
 import { uuidOf } from './unit/blocks.ts'
-import { sha256, utf8, hex } from './unit/hmac.ts'
+import { sha256, utf8, hex, rsaModPow as powMod } from './unit/hmac.ts'
 
 /** The quantum Fourier transform, as the Cirq page builds it: a Hadamard on each qubit, then a controlled phase CZ**(1/2^k)
  *  from each later qubit onto it. The page notes the output comes in reversed bit order unless swaps are added, so the swaps
@@ -40,7 +40,7 @@ export const phaseEstimationCircuit = (theta: number, bits: number): Circuit => 
     ops.push(applied(raiseGate(CZ, 2 * theta * 2 ** k), est[k]!, target))
   }
   ops.push(...inverseOperations(qftOperations(est)))
-  return new Circuit().append(ops).append({ kind: 'measure', key: 'm', qubits: est })
+  return new Circuit().append(ops).append(measure(est, 'm'))
 }
 
 /** Grover's search on two qubits for the marked state |00>, as the Cirq page builds it: Hadamards, the oracle (an open-control
@@ -54,7 +54,7 @@ export const groverCircuit = (): Circuit => {
     applied(X, a!), applied(X, b!), applied(TOFFOLI, a!, b!, anc!), applied(X, a!), applied(X, b!),
     applied(H, a!), applied(H, b!), applied(X, a!), applied(X, b!), applied(CZ, a!, b!), applied(X, a!), applied(X, b!), applied(H, a!), applied(H, b!),
   ]
-  return new Circuit().append(ops).append({ kind: 'measure', key: 'result', qubits: [a!, b!] })
+  return new Circuit().append(ops).append(measure([a!, b!], 'result'))
 }
 
 /** Teleportation, deferred-measurement form: the message qubit is prepared by X**0.25 as the page does, Alice and Bob share a
@@ -81,7 +81,7 @@ export const deutschJozsaCircuit = (n: number, balanced: boolean): Circuit => {
   const ops: Operation[] = [applied(X, anc), applied(H, anc), ...inputs.map((q) => applied(H, q))]
   if (balanced) for (const q of inputs) ops.push(applied(CNOT, q, anc))
   ops.push(...inputs.map((q) => applied(H, q)))
-  return new Circuit().append(ops).append({ kind: 'measure', key: 'in', qubits: inputs })
+  return new Circuit().append(ops).append(measure(inputs, 'in'))
 }
 
 /** Bernstein–Vazirani: one query recovers the hidden string s. n input qubits and a phase ancilla in |−>; the oracle f(x)=s·x
@@ -92,7 +92,7 @@ export const bernsteinVaziraniCircuit = (s: readonly number[]): Circuit => {
   const ops: Operation[] = [applied(X, anc), applied(H, anc), ...inputs.map((q) => applied(H, q))]
   s.forEach((bit, i) => { if (bit) ops.push(applied(CNOT, inputs[i]!, anc)) })
   ops.push(...inputs.map((q) => applied(H, q)))
-  return new Circuit().append(ops).append({ kind: 'measure', key: 's', qubits: inputs })
+  return new Circuit().append(ops).append(measure(inputs, 's'))
 }
 
 /** Simon's algorithm for the hidden period s = 11 on two qubits: the oracle f(x)=x₀⊕x₁ (a CNOT from each input onto one output)
@@ -104,7 +104,7 @@ export const simonCircuit = (): Circuit => {
     applied(H, q0!), applied(H, q1!),
     applied(CNOT, q0!, out!), applied(CNOT, q1!, out!),
     applied(H, q0!), applied(H, q1!),
-  ]).append({ kind: 'measure', key: 'y', qubits: [q0!, q1!] })
+  ]).append(measure([q0!, q1!], 'y'))
 }
 
 /** Cross-entropy benchmarking (XEB) of a random circuit: random single-qubit powers of X and Y on each qubit interleaved with
@@ -243,7 +243,7 @@ export const qaoaCircuit = (graph: Graph, alpha: number, beta: number): Circuit 
   const ops: Operation[] = graph.nodes.map((q) => applied(H, q))
   for (const e of graph.edges) ops.push(applied(raiseGate(ZZ, alpha * e.weight), e.a, e.b))
   for (const q of graph.nodes) ops.push(applied(raiseGate(X, beta), q))
-  return new Circuit().append(ops).append({ kind: 'measure', key: 'cut', qubits: graph.nodes })
+  return new Circuit().append(ops).append(measure(graph.nodes, 'cut'))
 }
 
 /** The expected cut value of the QAOA state: Σ over basis states of the probability times the weight of the edges the
@@ -334,17 +334,7 @@ export const qaoaSweep = (graph: Graph, gridSize = 5, shots = 20000): { grid: nu
 }
 
 /** A modular exponent by repeated squaring, for the small N of the demonstration. */
-const modPow = (base: number, exponent: number, modulus: number): number => {
-  let result = 1 % modulus
-  let b = base % modulus
-  let e = exponent
-  while (e > 0) {
-    if (e & 1) result = (result * b) % modulus
-    b = (b * b) % modulus
-    e >>= 1
-  }
-  return result
-}
+const modPow = (base: number, exponent: number, modulus: number): number => Number(powMod(BigInt(base), BigInt(exponent), BigInt(modulus)) % BigInt(modulus))
 
 /** The controlled modular multiplication: on control 1 the work register |x> becomes |a·x mod N> (x < N; larger x are fixed),
  *  on control 0 it is unchanged. Its matrix index is the control bit above the work bits, the work value in its natural bits. */
@@ -372,7 +362,7 @@ export const shorCircuit = (N: number, a: number): Circuit => {
     ops.push(applied(modularGate(modPow(a, 2 ** k, N), N, n), counts[k]!, ...[...work].reverse()))
   }
   ops.push(...inverseOperations(qftOperations(counts)))
-  return new Circuit().append(ops).append({ kind: 'measure', key: 'm', qubits: counts })
+  return new Circuit().append(ops).append(measure(counts, 'm'))
 }
 
 /** The continued-fraction denominators of x, up to maxDenominator: the candidates for the order's fraction s/r. */
@@ -429,10 +419,9 @@ export const getInteger = (v: unknown, name: string, fallback?: bigint): bigint 
 }
 /** An integer as JSON gives it back: a number while it is exact, its decimal string beyond 2^53 − 1. */
 export const writeInteger = (n: bigint): number | string => (n <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(n) : n.toString())
-const powMod = (b: bigint, e: bigint, m: bigint) => { let r = 1n; b %= m; while (e > 0n) { if (e & 1n) r = (r * b) % m; b = (b * b) % m; e >>= 1n } return r }
 const gcdBig = (x: bigint, y: bigint): bigint => { while (y) [x, y] = [y, x % y]; return x }
 /** The integer square root ⌊√n⌋ over BigInt, by Newton's descent: exact at any size, the pivot the reflect-shift begins from. */
-const sqrtBig = (n: bigint): bigint => { if (n < 2n) return n; let x = 1n << BigInt((n.toString(2).length >> 1) + 1), y = (x + n / x) >> 1n; while (y < x) { x = y; y = (x + n / x) >> 1n } return x }
+export const sqrtBig = (n: bigint): bigint => { if (n < 2n) return n; let x = 1n << BigInt((n.toString(2).length >> 1) + 1), y = (x + n / x) >> 1n; while (y < x) { x = y; y = (x + n / x) >> 1n } return x }
 const SMALL_PRIMES = (() => { const s: number[] = []; for (let n = 2; n < 1 << 16; n++) if (s.every((p) => p * p > n || n % p)) s.push(n); return s })()
 /** Miller–Rabin over the first `rounds` primes as bases: certain below 3.3·10^24 (the first thirteen bases decide it), probable above it. */
 export const testPrimality = (n: bigint, rounds = 24): { prime: boolean; certain: boolean } => {
@@ -490,11 +479,11 @@ export const createImpossible = (opts: { p?: bigint; q?: bigint; bits?: number; 
   const N = lo * hi, witness = (lo + hi) / 2n, gap = (hi - lo) / 2n, r = sqrtBig(N)
   return { N, p: lo, q: hi, bits: N.toString(2).length, witness, gap, blindReflections: witness - (r * r === N ? r : r + 1n) + 1n, reproducible: opts.seed !== undefined || (opts.p !== undefined && opts.q !== undefined) }
 }
-/** Decode an impossible integer by its witness: one σ-reflection from the centre a splits N into p·q (q = σ_{2a}(p) = 2a − p), the product checked.
- *  The witness is the clay cluster's cross address; decoding needs it — a known-answer check, never a search of an unknown (textbook_impossible_trapdoor). */
-export const decodeImpossible = (N: bigint, witness: bigint): { factors: bigint[]; verified: boolean; searched: bigint; decoded: boolean } => {
-  const r = listFactors(N, 1n, witness)
-  return { factors: r.factors, verified: r.verified, searched: r.searched, decoded: r.factors.length >= 2 && r.verified && r.left.length === 0 }
+/** Decode an impossible integer by its witness: one σ-reflection at the centre a splits N into p·q (q = σ_{2a}(p) = 2a − p), the product recomputed. The
+ *  witness gates it, no ⌈√N⌉ fallback nor trial division: a wrong one decodes nothing (textbook_impossible_trapdoor, textbook_witness_gates_decode). */
+export const decodeImpossible = (N: bigint, witness: bigint): { factors: bigint[]; verified: boolean; searched: bigint; decoded: boolean; route: 'witness' | null } => {
+  const b2 = witness * witness - N, b = sqrtBig(b2 < 0n ? 0n : b2), p = witness - b, q = witness + b, decoded = b * b === b2 && p > 1n && p * q === N
+  return { factors: decoded ? [p, q] : [], verified: decoded, searched: 1n, decoded, route: decoded ? 'witness' : null }
 }
 
 /** Order-finding: the least r with a^r ≡ 1 mod N by baby-step giant-step — m = ⌈√budget⌉ baby steps a^j mod N in a content-addressed RAID table (uuidOf

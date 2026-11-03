@@ -1,11 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { handle } from './mcp.ts'
+import { handle, callOf } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
 import { LEADS } from './leads.ts'
 import { matchStatement, reflectStatement } from './match.ts'
 import { extractFacts, createVerifyRequests, VERIFIERS } from './verifiers.ts'
-import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf, tailReadingsOf, reflectionOf } from './unit/blocks.ts'
+import { blockOf, foldOf, uuidOf, sealOf, verifyOf, channelOf, tailReadingsOf, reflectionOf, canonicalTextOf } from './unit/blocks.ts'
 import { TREE_FACTS } from './verifiers.ts'
 import { KEY, getCss, cmykOfUuid, accentOfUuid, hueOf, HARMONICS } from './unit/theme.ts'
 import { translateOf, LOCALES } from './i18n.ts'
@@ -127,14 +127,19 @@ test('a UUID verifies cheaply: the seal from its own nibbles, the content by one
   const tampered = u.slice(0, -1) + (u.endsWith('a') ? 'b' : 'a')
   assert.equal(sealOf(tampered).valid, false)
   assert.equal(sealOf('not-a-uuid').shape, false)
-  const p = { id: uuidOf('first') }
+  const p = { id: uuidOf('first'), content: 'first' } // a link is witnessed by the neighbour's content, else null
   const self = { prev: p.id }
-  const next = { id: uuidOf('third'), prev: u }
+  const next = { id: uuidOf('third'), prev: u, content: 'third' }
   const v = verifyOf(u, 'qpu', p, next, self)
   assert.equal(v.valid, true); assert.equal(v.decided, 4)
-  const broken = verifyOf(u, 'qpu', p, { id: next.id, prev: 'elsewhere' }, self)
+  const broken = verifyOf(u, 'qpu', p, { ...next, prev: 'elsewhere' }, self)
   assert.equal(broken.valid, false)
   assert.equal(verifyOf(u).decided, 1)
+})
+
+test('_meta.integrity names the result itself, so seal { tamper } reads an untouched one authentic', () => {
+  const r = callOf('seal', { text: 'qpu' }).result as { structuredContent: unknown; _meta: { integrity: object } }
+  assert.equal(callOf('seal', { text: 'x', tamper: { text: canonicalTextOf(r.structuredContent), ...r._meta.integrity } }).result?.structuredContent.verdict, 'authentic')
 })
 
 test('the channel of a UUID is read from the id alone: handle, hex program with version and variant kept, message tail in three readings', () => {

@@ -191,9 +191,12 @@
             "properties": {
               "id": {
                 "type": "string"
+              },
+              "content": {
+                "type": "string"
               }
             },
-            "description": "the predecessor in the chain"
+            "description": "the predecessor in the chain; decided only with its content (else asserted, null)"
           },
           "self": {
             "type": "object",
@@ -212,9 +215,12 @@
               },
               "prev": {
                 "type": "string"
+              },
+              "content": {
+                "type": "string"
               }
             },
-            "description": "the successor in the chain"
+            "description": "the successor in the chain; decided as prev"
           }
         }
       },
